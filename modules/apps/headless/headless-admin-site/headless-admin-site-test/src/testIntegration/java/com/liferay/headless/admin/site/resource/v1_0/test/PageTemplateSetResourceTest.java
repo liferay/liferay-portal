@@ -6,33 +6,61 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.PageTemplateSet;
 import com.liferay.headless.admin.site.client.pagination.Page;
+import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
+import com.liferay.headless.admin.site.client.resource.v1_0.PageTemplateSetResource;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -41,8 +69,11 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Rubén Pulido
+ * @author Georgel Pop
  */
-@FeatureFlag("LPD-35443")
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-35443"), @FeatureFlag("LPD-57283")}
+)
 @RunWith(Arquillian.class)
 public class PageTemplateSetResourceTest
 	extends BasePageTemplateSetResourceTestCase {
@@ -54,11 +85,33 @@ public class PageTemplateSetResourceTest
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
+		_depotEntry = _addDepotEntry(DepotConstants.TYPE_DESIGN_LIBRARY);
+	}
+
 	@Ignore
 	@Override
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		super.testBatchEngineDeleteImportTask();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-104838")
+	public void testDeleteDesignLibraryPageTemplateSet() throws Exception {
+		super.testDeleteDesignLibraryPageTemplateSet();
+
+		_testDeleteDesignLibraryPageTemplateSetWithAssetLibraryExternalReferenceCodeProblemException();
+		_testDeleteDesignLibraryPageTemplateSetWithFeatureFlagDisabledProblemException();
+		_testDeleteDesignLibraryPageTemplateSetWithSiteExternalReferenceCodeProblemException();
 	}
 
 	@Override
@@ -90,6 +143,25 @@ public class PageTemplateSetResourceTest
 			() -> pageTemplateSetResource.deleteSitePageTemplateSet(
 				irrelevantGroup.getExternalReferenceCode(),
 				liveGroupPageTemplateSet.getExternalReferenceCode()));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-104838")
+	public void testGetDesignLibraryPageTemplateSet() throws Exception {
+		super.testGetDesignLibraryPageTemplateSet();
+
+		_testGetDesignLibraryPageTemplateSetActions();
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-104838")
+	public void testGetDesignLibraryPageTemplateSetsPage() throws Exception {
+		super.testGetDesignLibraryPageTemplateSetsPage();
+
+		_testGetDesignLibraryPageTemplateSetsPageAsDesignLibraryOwner();
+		_testGetDesignLibraryPageTemplateSetsPageWithoutPermissions();
 	}
 
 	@Override
@@ -313,6 +385,78 @@ public class PageTemplateSetResourceTest
 	}
 
 	@Override
+	protected PageTemplateSet
+			testDeleteDesignLibraryPageTemplateSet_addPageTemplateSet()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateCollection(
+				group.getGroupId());
+
+		return new PageTemplateSet() {
+			{
+				setExternalReferenceCode(
+					layoutPageTemplateCollection::getExternalReferenceCode);
+			}
+		};
+	}
+
+	@Override
+	protected String
+			testDeleteDesignLibraryPageTemplateSet_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		return group.getExternalReferenceCode();
+	}
+
+	@Override
+	protected PageTemplateSet
+			testGetDesignLibraryPageTemplateSet_addPageTemplateSet()
+		throws Exception {
+
+		return _addDesignLibraryPageTemplateSet(
+			_depotEntry.getGroup(), randomPageTemplateSet());
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryPageTemplateSet_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		return group.getExternalReferenceCode();
+	}
+
+	@Override
+	protected PageTemplateSet
+			testGetDesignLibraryPageTemplateSetsPage_addPageTemplateSet(
+				String designLibraryExternalReferenceCode,
+				PageTemplateSet pageTemplateSet)
+		throws Exception {
+
+		return _addDesignLibraryPageTemplateSet(
+			_groupLocalService.getGroupByExternalReferenceCode(
+				designLibraryExternalReferenceCode,
+				TestPropsValues.getCompanyId()),
+			pageTemplateSet);
+	}
+
+	@Override
+	protected String
+			testGetDesignLibraryPageTemplateSetsPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		return group.getExternalReferenceCode();
+	}
+
+	@Override
 	protected Map<String, Map<String, String>>
 		testGetSitePageTemplateSetsPage_getExpectedActions(
 			String siteExternalReferenceCode) {
@@ -327,6 +471,50 @@ public class PageTemplateSetResourceTest
 
 		return pageTemplateSetResource.postSitePageTemplateSet(
 			testGroup.getExternalReferenceCode(), pageTemplateSet);
+	}
+
+	private DepotEntry _addDepotEntry(int type) throws Exception {
+		return _depotEntryLocalService.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, type,
+			ServiceContextTestUtil.getServiceContext(
+				testGroup.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	private PageTemplateSet _addDesignLibraryPageTemplateSet(
+			Group group, PageTemplateSet pageTemplateSet)
+		throws Exception {
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			_layoutPageTemplateCollectionLocalService.
+				addLayoutPageTemplateCollection(
+					pageTemplateSet.getExternalReferenceCode(),
+					TestPropsValues.getUserId(), group.getGroupId(),
+					LayoutPageTemplateConstants.
+						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+					pageTemplateSet.getKey(), pageTemplateSet.getName(),
+					pageTemplateSet.getDescription(),
+					LayoutPageTemplateCollectionTypeConstants.BASIC,
+					ServiceContextTestUtil.getServiceContext(
+						group.getGroupId(), TestPropsValues.getUserId()));
+
+		return pageTemplateSetResource.getDesignLibraryPageTemplateSet(
+			group.getExternalReferenceCode(),
+			layoutPageTemplateCollection.getExternalReferenceCode());
+	}
+
+	private void _assertActionHref(
+		Map<String, Map<String, String>> actions, String content,
+		String... keys) {
+
+		for (String key : keys) {
+			Map<String, String> action = actions.get(key);
+
+			String href = action.get("href");
+
+			Assert.assertTrue(key, href.contains(content));
+		}
 	}
 
 	private void _assertProblemException(
@@ -366,6 +554,57 @@ public class PageTemplateSetResourceTest
 		Assert.assertTrue(group.hasStagingGroup());
 	}
 
+	private PageTemplateSetResource
+			_getDesignLibraryOwnerPageTemplateSetResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		Group group = _depotEntry.getGroup();
+
+		_userLocalService.addGroupUser(group.getGroupId(), user.getUserId());
+
+		Role role = _roleLocalService.getRole(
+			testCompany.getCompanyId(),
+			DepotRolesConstants.DESIGN_LIBRARY_OWNER);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			user.getUserId(), group.getGroupId(),
+			new long[] {role.getRoleId()});
+
+		return _getPageTemplateSetResource(password, user);
+	}
+
+	private PageTemplateSetResource _getPageTemplateSetResource(
+		String password, User user) {
+
+		return PageTemplateSetResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private PageTemplateSetResource
+			_getUserWithoutPermissionsPageTemplateSetResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_userLocalService.addGroupUser(
+			testGroup.getGroupId(), user.getUserId());
+
+		return _getPageTemplateSetResource(password, user);
+	}
+
 	private void _postSitePageTemplateSetWithInvalidKey(
 			String key, String title)
 		throws Exception {
@@ -378,6 +617,118 @@ public class PageTemplateSetResourceTest
 			"CONFLICT", title,
 			() -> pageTemplateSetResource.postSitePageTemplateSet(
 				testGroup.getExternalReferenceCode(), pageTemplateSet));
+	}
+
+	private void _testDeleteDesignLibraryPageTemplateSetWithAssetLibraryExternalReferenceCodeProblemException()
+		throws Exception {
+
+		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		Group group = assetLibraryDepotEntry.getGroup();
+
+		_assertProblemException(
+			"BAD_REQUEST", null,
+			() -> pageTemplateSetResource.deleteDesignLibraryPageTemplateSet(
+				group.getExternalReferenceCode(),
+				RandomTestUtil.randomString()));
+	}
+
+	private void _testDeleteDesignLibraryPageTemplateSetWithFeatureFlagDisabledProblemException()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateCollection(
+				group.getGroupId());
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-57283"),
+					Boolean.FALSE.toString())) {
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				"Feature flag LPD-57283 is disabled for company " +
+					testCompany.getCompanyId(),
+				() ->
+					pageTemplateSetResource.deleteDesignLibraryPageTemplateSet(
+						group.getExternalReferenceCode(),
+						layoutPageTemplateCollection.
+							getExternalReferenceCode()));
+		}
+	}
+
+	private void _testDeleteDesignLibraryPageTemplateSetWithSiteExternalReferenceCodeProblemException()
+		throws Exception {
+
+		_assertProblemException(
+			"BAD_REQUEST", null,
+			() -> pageTemplateSetResource.deleteDesignLibraryPageTemplateSet(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString()));
+	}
+
+	private void _testGetDesignLibraryPageTemplateSetActions()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		PageTemplateSet pageTemplateSet = _addDesignLibraryPageTemplateSet(
+			group, randomPageTemplateSet());
+
+		PageTemplateSet getPageTemplateSet =
+			pageTemplateSetResource.getDesignLibraryPageTemplateSet(
+				group.getExternalReferenceCode(),
+				pageTemplateSet.getExternalReferenceCode());
+
+		_assertActionHref(
+			getPageTemplateSet.getActions(),
+			StringBundler.concat(
+				"/design-libraries/", group.getExternalReferenceCode(),
+				"/page-template-sets/",
+				pageTemplateSet.getExternalReferenceCode()),
+			"delete", "get");
+	}
+
+	private void _testGetDesignLibraryPageTemplateSetsPageAsDesignLibraryOwner()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		PageTemplateSet pageTemplateSet = _addDesignLibraryPageTemplateSet(
+			group, randomPageTemplateSet());
+
+		PageTemplateSetResource designLibraryOwnerPageTemplateSetResource =
+			_getDesignLibraryOwnerPageTemplateSetResource();
+
+		Page<PageTemplateSet> page =
+			designLibraryOwnerPageTemplateSetResource.
+				getDesignLibraryPageTemplateSetsPage(
+					group.getExternalReferenceCode(), null, null, null,
+					Pagination.of(1, 10), null);
+
+		assertContains(pageTemplateSet, (List<PageTemplateSet>)page.getItems());
+	}
+
+	private void _testGetDesignLibraryPageTemplateSetsPageWithoutPermissions()
+		throws Exception {
+
+		Group group = _depotEntry.getGroup();
+
+		_addDesignLibraryPageTemplateSet(group, randomPageTemplateSet());
+
+		PageTemplateSetResource userWithoutPermissionsPageTemplateSetResource =
+			_getUserWithoutPermissionsPageTemplateSetResource();
+
+		Page<PageTemplateSet> page =
+			userWithoutPermissionsPageTemplateSetResource.
+				getDesignLibraryPageTemplateSetsPage(
+					group.getExternalReferenceCode(), null, null, null,
+					Pagination.of(1, 10), null);
+
+		Assert.assertEquals(0, page.getTotalCount());
 	}
 
 	private void _testGetSitePageTemplateSet(PageTemplateSet pageTemplateSet)
@@ -405,11 +756,29 @@ public class PageTemplateSetResourceTest
 		return postPageTemplateSet;
 	}
 
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
 	@Inject
 	private LayoutPageTemplateCollectionLocalService
 		_layoutPageTemplateCollectionLocalService;
 
 	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
 	private StagingLocalService _stagingLocalService;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
