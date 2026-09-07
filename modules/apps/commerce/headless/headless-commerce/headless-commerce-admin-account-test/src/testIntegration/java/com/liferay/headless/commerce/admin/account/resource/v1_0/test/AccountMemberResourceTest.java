@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.account.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
@@ -13,18 +14,27 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountMember;
 import com.liferay.headless.commerce.admin.account.client.dto.v1_0.AccountRole;
 import com.liferay.headless.commerce.admin.account.client.problem.Problem;
+import com.liferay.headless.commerce.admin.account.client.resource.v1_0.AccountMemberResource;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -190,50 +200,15 @@ public class AccountMemberResourceTest
 	public void testPatchAccountByExternalReferenceCodeAccountMember()
 		throws Exception {
 
-		AccountMember accountMember1 = randomAccountMember();
-
-		accountMemberResource.postAccountByExternalReferenceCodeAccountMember(
-			_accountEntry.getExternalReferenceCode(), accountMember1);
-
-		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
-
-		accountMemberResource.patchAccountByExternalReferenceCodeAccountMember(
-			_accountEntry.getExternalReferenceCode(),
-			accountMember1.getUserId(), accountMember1);
-
-		AccountMember accountMember2 =
-			accountMemberResource.
-				getAccountByExternalReferenceCodeAccountMember(
-					_accountEntry.getExternalReferenceCode(),
-					accountMember1.getUserId());
-
-		assertEquals(accountMember1, accountMember2);
+		_testPatchAccountByExternalReferenceCodeAccountMember();
+		_testPatchAccountByExternalReferenceCodeAccountMemberWithPermission();
 	}
 
 	@Override
 	@Test
 	public void testPatchAccountIdAccountMember() throws Exception {
-		AccountMember accountMember1 = randomAccountMember();
-
-		accountMemberResource.postAccountIdAccountMember(
-			_accountEntry.getAccountEntryId(), accountMember1);
-
-		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
-
-		accountMemberResource.patchAccountIdAccountMember(
-			_accountEntry.getAccountEntryId(), accountMember1.getUserId(),
-			accountMember1);
-
-		AccountMember accountMember2 =
-			accountMemberResource.getAccountIdAccountMember(
-				_accountEntry.getAccountEntryId(), accountMember1.getUserId());
-
-		assertEquals(accountMember1, accountMember2);
-
-		_assertAccountRole(
-			accountMember -> accountMemberResource.patchAccountIdAccountMember(
-				_accountEntry.getAccountEntryId(), accountMember.getUserId(),
-				accountMember));
+		_testPatchAccountIdAccountMember();
+		_testPatchAccountIdAccountMemberWithPermission();
 	}
 
 	@Override
@@ -392,6 +367,30 @@ public class AccountMemberResourceTest
 			_accountEntry.getAccountEntryId(), accountMember.getUserId());
 	}
 
+	private void _addRoleUsers(
+			String className, long primKey, User user, String... actionIds)
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			testCompany.getCompanyId(), className,
+			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(primKey),
+			role.getRoleId(), actionIds);
+
+		_userLocalService.addRoleUsers(
+			role.getRoleId(), new long[] {user.getUserId()});
+	}
+
+	private User _addUser() throws Exception {
+		User user = UserTestUtil.addUser(testCompany);
+
+		_userLocalService.updatePassword(
+			user.getUserId(), _PASSWORD, _PASSWORD, false, true);
+
+		return user;
+	}
+
 	private void _assertAccountRole(
 			UnsafeConsumer<AccountMember, Exception> unsafeConsumer)
 		throws Exception {
@@ -500,6 +499,58 @@ public class AccountMemberResourceTest
 				serviceBuilderAccountRole1.getRoleId()));
 	}
 
+	private void _assertProblemException(
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
+	private AccountMember _getAccountMember(long... roleIds) {
+		if (roleIds.length == 0) {
+			return new AccountMember();
+		}
+
+		AccountMember accountMember = new AccountMember();
+
+		accountMember.setAccountRoles(
+			TransformUtil.transform(
+				roleIds,
+				roleId -> {
+					AccountRole accountRole = new AccountRole();
+
+					accountRole.setRoleId(roleId);
+
+					return accountRole;
+				},
+				AccountRole.class));
+
+		return accountMember;
+	}
+
+	private AccountMemberResource _getAccountMemberResource(
+		String password, User user) {
+
+		return AccountMemberResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private AccountMember _randomAccountMember() throws Exception {
 		User user = UserTestUtil.addUser(testCompany);
 
@@ -509,6 +560,154 @@ public class AccountMemberResourceTest
 				name = user.getFullName();
 			}
 		};
+	}
+
+	private void _testPatchAccountByExternalReferenceCodeAccountMember()
+		throws Exception {
+
+		AccountMember accountMember1 = randomAccountMember();
+
+		accountMemberResource.postAccountByExternalReferenceCodeAccountMember(
+			_accountEntry.getExternalReferenceCode(), accountMember1);
+
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
+
+		accountMemberResource.patchAccountByExternalReferenceCodeAccountMember(
+			_accountEntry.getExternalReferenceCode(),
+			accountMember1.getUserId(), accountMember1);
+
+		AccountMember accountMember2 =
+			accountMemberResource.
+				getAccountByExternalReferenceCodeAccountMember(
+					_accountEntry.getExternalReferenceCode(),
+					accountMember1.getUserId());
+
+		assertEquals(accountMember1, accountMember2);
+	}
+
+	private void _testPatchAccountByExternalReferenceCodeAccountMemberWithPermission()
+		throws Exception {
+
+		User user1 = _addUser();
+
+		_addRoleUsers(
+			AccountEntry.class.getName(), _accountEntry.getAccountEntryId(),
+			user1, ActionKeys.VIEW);
+
+		AccountMemberResource accountMemberResource = _getAccountMemberResource(
+			_PASSWORD, user1);
+
+		com.liferay.account.model.AccountRole serviceBuilderAccountRole =
+			_accountRoleLocalService.addAccountRole(
+				null, _serviceContext.getUserId(),
+				_accountEntry.getAccountEntryId(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+				null);
+		User user2 = UserTestUtil.addUser(testCompany);
+
+		_assertProblemException(
+			() ->
+				accountMemberResource.
+					patchAccountByExternalReferenceCodeAccountMember(
+						_accountEntry.getExternalReferenceCode(),
+						user2.getUserId(),
+						_getAccountMember(
+							serviceBuilderAccountRole.getRoleId())));
+
+		Assert.assertNull(
+			_userGroupRoleLocalService.fetchUserGroupRole(
+				user2.getUserId(), _accountEntry.getAccountEntryGroupId(),
+				serviceBuilderAccountRole.getRoleId()));
+
+		_addRoleUsers(
+			AccountEntry.class.getName(), _accountEntry.getAccountEntryId(),
+			user1, AccountActionKeys.ASSIGN_USERS);
+
+		_addRoleUsers(
+			Role.class.getName(), serviceBuilderAccountRole.getRoleId(), user1,
+			ActionKeys.VIEW);
+
+		accountMemberResource.patchAccountByExternalReferenceCodeAccountMember(
+			_accountEntry.getExternalReferenceCode(), user2.getUserId(),
+			_getAccountMember(serviceBuilderAccountRole.getRoleId()));
+	}
+
+	private void _testPatchAccountIdAccountMember() throws Exception {
+		AccountMember accountMember1 = randomAccountMember();
+
+		accountMemberResource.postAccountIdAccountMember(
+			_accountEntry.getAccountEntryId(), accountMember1);
+
+		accountMember1.setAccountId(_accountEntry.getAccountEntryId());
+
+		accountMemberResource.patchAccountIdAccountMember(
+			_accountEntry.getAccountEntryId(), accountMember1.getUserId(),
+			accountMember1);
+
+		AccountMember accountMember2 =
+			accountMemberResource.getAccountIdAccountMember(
+				_accountEntry.getAccountEntryId(), accountMember1.getUserId());
+
+		assertEquals(accountMember1, accountMember2);
+
+		_assertAccountRole(
+			accountMember -> accountMemberResource.patchAccountIdAccountMember(
+				_accountEntry.getAccountEntryId(), accountMember.getUserId(),
+				accountMember));
+	}
+
+	private void _testPatchAccountIdAccountMemberWithPermission()
+		throws Exception {
+
+		User user1 = _addUser();
+
+		AccountMemberResource accountMemberResource = _getAccountMemberResource(
+			_PASSWORD, user1);
+
+		com.liferay.account.model.AccountRole serviceBuilderAccountRole =
+			_accountRoleLocalService.addAccountRole(
+				null, _serviceContext.getUserId(),
+				_accountEntry.getAccountEntryId(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()), null,
+				null);
+		User user2 = UserTestUtil.addUser(testCompany);
+
+		_assertProblemException(
+			() -> accountMemberResource.patchAccountIdAccountMember(
+				_accountEntry.getAccountEntryId(), user2.getUserId(),
+				_getAccountMember(serviceBuilderAccountRole.getRoleId())));
+
+		Assert.assertNull(
+			_userGroupRoleLocalService.fetchUserGroupRole(
+				user2.getUserId(), _accountEntry.getAccountEntryGroupId(),
+				serviceBuilderAccountRole.getRoleId()));
+
+		_accountRoleLocalService.associateUser(
+			_accountEntry.getAccountEntryId(),
+			serviceBuilderAccountRole.getAccountRoleId(), user2.getUserId());
+
+		Assert.assertNotNull(
+			_userGroupRoleLocalService.fetchUserGroupRole(
+				user2.getUserId(), _accountEntry.getAccountEntryGroupId(),
+				serviceBuilderAccountRole.getRoleId()));
+
+		_assertProblemException(
+			() -> accountMemberResource.patchAccountIdAccountMember(
+				_accountEntry.getAccountEntryId(), user2.getUserId(),
+				_getAccountMember()));
+
+		Assert.assertNotNull(
+			_userGroupRoleLocalService.fetchUserGroupRole(
+				user2.getUserId(), _accountEntry.getAccountEntryGroupId(),
+				serviceBuilderAccountRole.getRoleId()));
+
+		_addRoleUsers(
+			AccountEntry.class.getName(), _accountEntry.getAccountEntryId(),
+			user1, AccountActionKeys.ASSIGN_USERS);
+
+		accountMemberResource.patchAccountIdAccountMember(
+			_accountEntry.getAccountEntryId(), user2.getUserId(),
+			_getAccountMember());
 	}
 
 	private AccountRole _toAccountRole(
@@ -523,6 +722,8 @@ public class AccountMemberResourceTest
 		};
 	}
 
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
 	private AccountEntry _accountEntry;
 
 	@Inject
@@ -531,10 +732,16 @@ public class AccountMemberResourceTest
 	@Inject
 	private AccountRoleLocalService _accountRoleLocalService;
 
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
 	private ServiceContext _serviceContext;
 	private User _user;
 
 	@Inject
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
