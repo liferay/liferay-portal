@@ -67,16 +67,16 @@ public class AzureTranslator extends BaseTranslator {
 			Http.Options options = new Http.Options();
 
 			options.addHeader(
+				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
+			options.addHeader(
+				HttpHeaders.USER_AGENT,
+				_getUserAgent(azureTranslatorConfiguration.userAgent()));
+			options.addHeader(
 				"Ocp-Apim-Subscription-Key",
 				azureTranslatorConfiguration.subscriptionKey());
 			options.addHeader(
 				"Ocp-Apim-Subscription-Region",
 				azureTranslatorConfiguration.resourceLocation());
-			options.addHeader(
-				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-			options.addHeader(
-				HttpHeaders.USER_AGENT,
-				_getUserAgent(azureTranslatorConfiguration.userAgent()));
 			options.setBody(
 				_getTranslatorPacketPayload(translatorPacket),
 				ContentTypes.APPLICATION_JSON, StringPool.UTF8);
