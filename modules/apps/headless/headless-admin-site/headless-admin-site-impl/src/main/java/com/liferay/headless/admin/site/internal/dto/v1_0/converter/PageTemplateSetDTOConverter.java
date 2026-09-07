@@ -39,6 +39,7 @@ public class PageTemplateSetDTOConverter
 
 		return new PageTemplateSet() {
 			{
+				setActions(dtoConverterContext::getActions);
 				setCreator(
 					() -> CreatorUtil.toCreator(
 						layoutPageTemplateCollection.getUserId(),
