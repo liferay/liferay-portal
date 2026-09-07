@@ -1369,6 +1369,12 @@ public class ObjectEntryLocalServiceImpl
 	public List<ObjectEntry> getObjectEntries(
 		long groupId, long objectDefinitionId, int status, int start, int end) {
 
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return objectEntryPersistence.findByG_ODI_NotS(
+				groupId, objectDefinitionId, WorkflowConstants.STATUS_IN_TRASH,
+				start, end);
+		}
+
 		return objectEntryPersistence.findByG_ODI_S(
 			groupId, objectDefinitionId, status, start, end);
 	}
@@ -1391,6 +1397,19 @@ public class ObjectEntryLocalServiceImpl
 	@Override
 	public int getObjectEntriesCount(long groupId, long objectDefinitionId) {
 		return objectEntryPersistence.countByG_ODI(groupId, objectDefinitionId);
+	}
+
+	@Override
+	public int getObjectEntriesCount(
+		long groupId, long objectDefinitionId, int status) {
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return objectEntryPersistence.countByG_ODI_NotS(
+				groupId, objectDefinitionId, WorkflowConstants.STATUS_IN_TRASH);
+		}
+
+		return objectEntryPersistence.countByG_ODI_S(
+			groupId, objectDefinitionId, status);
 	}
 
 	@Override
