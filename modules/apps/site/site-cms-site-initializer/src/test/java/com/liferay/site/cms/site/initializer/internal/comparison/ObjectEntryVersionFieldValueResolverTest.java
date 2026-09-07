@@ -290,12 +290,9 @@ public class ObjectEntryVersionFieldValueResolverTest {
 				"es_ES", objectEntryId, version);
 
 		Assert.assertEquals(fieldValues.toString(), 2, fieldValues.size());
-		Assert.assertTrue(
-			fieldValues.toString(), fieldValues.containsKey("title"));
-		Assert.assertNull(fieldValues.get("title"));
-
 		Assert.assertEquals(
 			"hello-world", fieldValues.get("objectEntryFriendlyURL"));
+		Assert.assertEquals("Hello", fieldValues.get("title"));
 	}
 
 	private void _testGetFieldValuesWithTranslation() throws Exception {

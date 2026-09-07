@@ -106,7 +106,11 @@ public class ObjectEntryVersionFieldValueResolver {
 				Map<String, Object> localizedValuesMap =
 					(Map<String, Object>)localizedValues;
 
-				fieldValue = localizedValuesMap.get(languageId);
+				Object localizedValue = localizedValuesMap.get(languageId);
+
+				if (localizedValue != null) {
+					fieldValue = localizedValue;
+				}
 			}
 
 			fieldValues.put(fieldName, fieldValue);
