@@ -36,7 +36,7 @@ const getSpaceId = (item: any) => {
 };
 
 function getNotExpiredFilter() {
-	return `(dateExpiration eq null or dateExpiration gt ${new Date().toISOString()})`;
+	return '(dateExpiration eq null or dateExpiration gt now())';
 }
 
 function getSpaceRootFilesURL(groupId: string) {
