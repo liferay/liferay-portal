@@ -235,7 +235,7 @@ test(
 				.getByRole('button', {name: 'Compare Versions Key Help'})
 				.click();
 
-			for (const key of ['Added', 'Deleted', 'Formatted Changes']) {
+			for (const key of ['Added', 'Deleted', 'Format Changes']) {
 				await expect(page.getByText(key, {exact: true})).toBeVisible();
 			}
 
