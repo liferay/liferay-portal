@@ -55,6 +55,7 @@ import java.util.regex.Pattern;
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.LocaleId;
 import net.sf.okapi.common.exceptions.OkapiIllegalFilterOperationException;
+import net.sf.okapi.common.resource.Code;
 import net.sf.okapi.common.resource.DocumentPart;
 import net.sf.okapi.common.resource.ITextUnit;
 import net.sf.okapi.common.resource.Property;
@@ -180,6 +181,12 @@ public class XLIFFTranslationSnapshotProvider
 		StartSubDocument startSubDocument = _getStartSubdocument(events);
 
 		_validateXLIFFStartSubdocument(infoItemReference, startSubDocument);
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-102730")) {
+
+			_validateInlineCodes(events);
+		}
 
 		Locale sourceLocale = _getSourceLocale(startSubDocument);
 		Locale targetLocale = _getTargetLocale(startSubDocument);
@@ -569,6 +576,49 @@ public class XLIFFTranslationSnapshotProvider
 					throw new XLIFFFileException.MustBeValid(
 						StringBundler.concat(
 							"Inline code \"", cTag.getId(),
+							"\" has no original data"));
+				}
+			}
+		}
+	}
+
+	private void _validateInlineCodes(List<Event> events)
+		throws XLIFFFileException.MustBeValid {
+
+		for (Event event : events) {
+			if (!event.isTextUnit()) {
+				continue;
+			}
+
+			ITextUnit iTextUnit = event.getTextUnit();
+
+			_validateInlineCodes(iTextUnit.getSource());
+
+			for (LocaleId targetLocaleId : iTextUnit.getTargetLocales()) {
+				_validateInlineCodes(iTextUnit.getTarget(targetLocaleId));
+			}
+		}
+	}
+
+	private void _validateInlineCodes(TextContainer textContainer)
+		throws XLIFFFileException.MustBeValid {
+
+		if (textContainer == null) {
+			return;
+		}
+
+		for (TextPart textPart : textContainer.getParts()) {
+			TextFragment textFragment = textPart.getContent();
+
+			if (textFragment == null) {
+				continue;
+			}
+
+			for (Code code : textFragment.getCodes()) {
+				if (Validator.isNull(code.getData())) {
+					throw new XLIFFFileException.MustBeValid(
+						StringBundler.concat(
+							"Inline code \"", code.getId(),
 							"\" has no original data"));
 				}
 			}
