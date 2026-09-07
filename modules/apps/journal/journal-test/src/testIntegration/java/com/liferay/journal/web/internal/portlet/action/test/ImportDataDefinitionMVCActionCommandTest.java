@@ -237,8 +237,7 @@ public class ImportDataDefinitionMVCActionCommandTest
 
 			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 				createMockLiferayPortletActionRequest(
-					"data_definition_with_nondefault_site_language.json",
-					null);
+					"data_definition_with_nondefault_site_language.json", null);
 
 			setUpUploadPortletRequest(mockLiferayPortletActionRequest);
 
