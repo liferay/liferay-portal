@@ -1,0 +1,1 @@
+../../../.agents/skills/commerce-catalogs/SKILL.md

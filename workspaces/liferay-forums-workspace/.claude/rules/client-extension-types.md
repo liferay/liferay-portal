@@ -1,0 +1,1 @@
+../../.agents/rules/client-extension-types.md

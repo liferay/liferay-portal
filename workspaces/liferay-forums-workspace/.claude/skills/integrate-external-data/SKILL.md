@@ -1,0 +1,1 @@
+../../../.agents/skills/integrate-external-data/SKILL.md

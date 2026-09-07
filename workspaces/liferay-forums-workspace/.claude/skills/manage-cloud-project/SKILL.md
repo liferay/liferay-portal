@@ -1,0 +1,1 @@
+../../../.agents/skills/manage-cloud-project/SKILL.md

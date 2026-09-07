@@ -1,0 +1,1 @@
+../../.agents/rules/site-initializer-format.md

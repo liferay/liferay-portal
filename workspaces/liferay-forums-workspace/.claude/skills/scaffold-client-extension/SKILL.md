@@ -1,0 +1,1 @@
+../../../.agents/skills/scaffold-client-extension/SKILL.md

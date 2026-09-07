@@ -1,0 +1,1 @@
+../../.agents/rules/guest-access.md

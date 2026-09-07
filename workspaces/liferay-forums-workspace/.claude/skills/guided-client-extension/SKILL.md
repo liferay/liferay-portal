@@ -1,0 +1,1 @@
+../../../.agents/skills/guided-client-extension/SKILL.md

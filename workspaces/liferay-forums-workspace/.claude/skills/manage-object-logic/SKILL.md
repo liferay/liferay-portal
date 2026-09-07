@@ -1,0 +1,1 @@
+../../../.agents/skills/manage-object-logic/SKILL.md
