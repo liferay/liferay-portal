@@ -1692,6 +1692,44 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
+	public Results<Account> getCampaignAccounts(
+			FaroProject faroProject, long channelId, String filterString,
+			String id, String query, String sortString, int cur, int delta)
+		throws FaroEngineClientException {
+
+		Map<String, Object> uriVariables = getUriVariables(
+			faroProject, cur, delta, null);
+
+		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(filterString)) {
+			uriVariables.put("filter", filterString);
+		}
+
+		uriVariables.put("id", id);
+
+		if (Validator.isNotNull(query)) {
+			uriVariables.put("query", query);
+		}
+
+		if (Validator.isNotNull(sortString)) {
+			uriVariables.put(
+				"sort",
+				Arrays.asList(
+					StringUtil.replace(
+						sortString, CharPool.COLON, CharPool.COMMA)));
+		}
+
+		PagedModel<?, Account> pagedModel = get(
+			faroProject, Rels.CAMPAIGN_ACCOUNTS,
+			new ParameterizedTypeReference<EntityModelPagedModel<Account>>() {
+			},
+			uriVariables);
+
+		return pagedModel.getResults();
+	}
+
+	@Override
 	public List<CampaignMetric> getCampaignMetrics(
 			FaroProject faroProject, long channelId)
 		throws FaroEngineClientException {

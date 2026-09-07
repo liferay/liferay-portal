@@ -345,6 +345,11 @@ public interface ContactsEngineClient {
 			FaroProject faroProject, long channelId, String id)
 		throws FaroEngineClientException;
 
+	public Results<Account> getCampaignAccounts(
+			FaroProject faroProject, long channelId, String filterString,
+			String id, String query, String sortString, int cur, int delta)
+		throws FaroEngineClientException;
+
 	public List<CampaignMetric> getCampaignMetrics(
 			FaroProject faroProject, long channelId)
 		throws FaroEngineClientException;

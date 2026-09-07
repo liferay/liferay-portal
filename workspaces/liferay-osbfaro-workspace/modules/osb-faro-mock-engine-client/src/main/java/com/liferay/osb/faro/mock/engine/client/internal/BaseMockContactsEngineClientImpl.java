@@ -660,6 +660,17 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
+	public Results<Account> getCampaignAccounts(
+			FaroProject faroProject, long channelId, String filterString,
+			String id, String query, String sortString, int cur, int delta)
+		throws FaroEngineClientException {
+
+		return contactsEngineClient.getCampaignAccounts(
+			faroProject, channelId, filterString, id, query, sortString, cur,
+			delta);
+	}
+
+	@Override
 	public List<CampaignMetric> getCampaignMetrics(
 			FaroProject faroProject, long channelId)
 		throws FaroEngineClientException {
