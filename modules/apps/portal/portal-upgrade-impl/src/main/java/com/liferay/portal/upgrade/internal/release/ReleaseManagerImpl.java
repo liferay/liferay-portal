@@ -5,7 +5,6 @@
 
 package com.liferay.portal.upgrade.internal.release;
 
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
@@ -414,7 +413,10 @@ public class ReleaseManagerImpl implements ReleaseManager {
 
 					release.setState(ReleaseConstants.STATE_UPGRADE_FAILURE);
 
-					ReflectionUtil.throwException(exception);
+					_log.error(
+						"Unable to create the schema for module ".concat(
+							bundleSymbolicName),
+						exception);
 				}
 				finally {
 					release = _releaseLocalService.updateRelease(release);
