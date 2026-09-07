@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.util.ArrayList;
@@ -88,14 +88,12 @@ public class DepotEntryUtil {
 
 		List<DepotEntry> filteredDepotEntries = new ArrayList<>();
 
-		ModelResourcePermission<DepotEntry> modelResourcePermission =
-			_depotEntryModelResourcePermissionSnapshot.get();
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		for (DepotEntry depotEntry : depotEntries) {
-			if (modelResourcePermission.contains(
-					permissionChecker, depotEntry, actionId)) {
+			if (GroupPermissionUtil.contains(
+					permissionChecker, depotEntry.getGroupId(), actionId)) {
 
 				filteredDepotEntries.add(depotEntry);
 			}
@@ -119,9 +117,5 @@ public class DepotEntryUtil {
 	private static final Snapshot<DepotEntryLocalService>
 		_depotEntryLocalServiceSnapshot = new Snapshot<>(
 			DepotEntryUtil.class, DepotEntryLocalService.class);
-	private static final Snapshot<ModelResourcePermission<DepotEntry>>
-		_depotEntryModelResourcePermissionSnapshot = new Snapshot<>(
-			DepotEntryUtil.class, Snapshot.cast(ModelResourcePermission.class),
-			"(model.class.name=com.liferay.depot.model.DepotEntry)");
 
 }
