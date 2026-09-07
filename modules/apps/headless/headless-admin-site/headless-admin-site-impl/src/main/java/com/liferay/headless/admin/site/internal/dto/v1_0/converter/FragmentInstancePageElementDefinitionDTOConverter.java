@@ -60,10 +60,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Eudaldo Alonso
  */
-@Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem",
-	service = DTOConverter.class
-)
+@Component(service = DTOConverter.class)
 public class FragmentInstancePageElementDefinitionDTOConverter
 	implements DTOConverter
 		<FragmentStyledLayoutStructureItem, PageElementDefinition> {
