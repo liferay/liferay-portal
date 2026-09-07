@@ -20,12 +20,18 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RoleAssignmentException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Alessio Antonio Rendina
@@ -87,6 +93,35 @@ public class AccountMemberUtil {
 		}
 
 		return user;
+	}
+
+	public static List<UserGroupRole> setUserGroupRoles(
+			AccountEntry accountEntry,
+			ModelResourcePermission<AccountEntry>
+				accountEntryModelResourcePermission,
+			AccountMember accountMember, User user)
+		throws PortalException {
+
+		accountEntryModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			accountEntry.getAccountEntryId(), AccountActionKeys.ASSIGN_USERS);
+
+		long[] roleIds = TransformUtil.transformToLongArray(
+			ListUtil.fromArray(accountMember.getAccountRoles()),
+			AccountRole::getRoleId);
+
+		validateAccountRoleIds(accountEntry.getAccountEntryId(), roleIds);
+
+		UserGroupRoleLocalServiceUtil.deleteUserGroupRoles(
+			user.getUserId(),
+			new long[] {accountEntry.getAccountEntryGroupId()});
+
+		if (ArrayUtil.isEmpty(roleIds)) {
+			return Collections.emptyList();
+		}
+
+		return UserGroupRoleLocalServiceUtil.addUserGroupRoles(
+			user.getUserId(), accountEntry.getAccountEntryGroupId(), roleIds);
 	}
 
 	public static void validateAccountRoleIds(
