@@ -59,6 +59,10 @@ public class ObjectFieldBag {
 		return _nameObjectFieldsMap.get(name);
 	}
 
+	public List<ObjectField> getObjectFields() {
+		return _objectFields;
+	}
+
 	private final Map<Long, ObjectField> _idObjectFieldsMap = new HashMap<>();
 	private final List<ObjectField> _indexedObjectFields = new ArrayList<>();
 	private final Map<String, ObjectField> _nameObjectFieldsMap =
