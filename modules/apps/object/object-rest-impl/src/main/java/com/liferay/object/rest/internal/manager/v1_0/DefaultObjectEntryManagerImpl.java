@@ -3069,6 +3069,9 @@ public class DefaultObjectEntryManagerImpl
 				WorkflowConstants.STATUS_ANY);
 		}
 
+		objectEntryLocalService.loadValues(
+			objectDefinition, serviceBuilderObjectEntries);
+
 		return Page.of(
 			serviceBuilderObjectEntries, pagination, objectEntriesCount);
 	}
