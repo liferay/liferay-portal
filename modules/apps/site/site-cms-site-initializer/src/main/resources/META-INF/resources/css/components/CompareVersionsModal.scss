@@ -38,7 +38,8 @@
 
 		[data-field-name]:has(.cms-compare-versions-diff) .ck-editor,
 		[data-field-name]:has(.cms-compare-versions-diff)
-			.form-control:not(.cms-compare-versions-diff) {
+			.form-control:not(.cms-compare-versions-diff),
+		[data-field-name]:has(.cms-compare-versions-diff) .localized-text {
 			display: none;
 		}
 

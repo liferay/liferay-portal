@@ -11,6 +11,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import ClayPopover from '@clayui/popover';
+import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {Key, useEffect, useMemo, useRef, useState} from 'react';
 
@@ -61,6 +62,25 @@ function getVersionItem(items: VersionItem[], version: number | null) {
 
 function getVersionNumber(item: VersionItem) {
 	return item.systemProperties.version.number;
+}
+
+function versionHasLanguage(
+	item: VersionItem,
+	languageId: string,
+	defaultLanguageId: string
+) {
+	if (languageId === defaultLanguageId) {
+		return true;
+	}
+
+	return Object.entries(item).some(
+		([key, value]) =>
+			key.endsWith('_i18n') &&
+			key !== 'friendlyUrlPath_i18n' &&
+			!isNullOrUndefined(value) &&
+			typeof value === 'object' &&
+			languageId in value
+	);
 }
 
 export default function CompareVersionsModalContent({
@@ -182,6 +202,7 @@ export default function CompareVersionsModalContent({
 				{versionsState.status === 'loaded' ? (
 					<div className="cms-compare-versions-panes d-flex flex-column flex-grow-1 flex-md-row">
 						<CompareVersionPane
+							defaultLanguageId={defaultLanguageId}
 							diffType="removals"
 							diffs={diffs?.source ?? null}
 							excludedVersion={targetVersion}
@@ -193,6 +214,7 @@ export default function CompareVersionsModalContent({
 						/>
 
 						<CompareVersionPane
+							defaultLanguageId={defaultLanguageId}
 							diffType="additions"
 							diffs={diffs?.target ?? null}
 							excludedVersion={sourceVersion}
@@ -249,6 +271,7 @@ function DiffKeyPopover() {
 }
 
 function CompareVersionPane({
+	defaultLanguageId,
 	diffType,
 	diffs,
 	excludedVersion,
@@ -258,6 +281,7 @@ function CompareVersionPane({
 	selectedVersion,
 	versions,
 }: {
+	defaultLanguageId: string;
 	diffType: DiffType;
 	diffs: Diffs | null;
 	excludedVersion: number | null;
@@ -272,6 +296,18 @@ function CompareVersionPane({
 	const [iframeStatus, setIframeStatus] = useState<'loaded' | 'loading'>(
 		'loading'
 	);
+
+	const selectedItem = getVersionItem(versions, selectedVersion);
+
+	const hasTranslation =
+		!selectedItem ||
+		versionHasLanguage(selectedItem, languageId, defaultLanguageId);
+
+	useEffect(() => {
+		if (!hasTranslation) {
+			setIframeStatus('loading');
+		}
+	}, [hasTranslation]);
 
 	useEffect(() => {
 		if (iframeStatus === 'loaded' && iframeRef.current) {
@@ -318,7 +354,7 @@ function CompareVersionPane({
 		);
 	}
 
-	const selectedItem = getVersionItem(versions, selectedVersion);
+	const noTranslationImage = getImage('no_translation_empty_state.svg');
 
 	return (
 		<div className="cms-compare-versions-pane d-flex flex-column">
@@ -351,19 +387,33 @@ function CompareVersionPane({
 				) : null}
 			</div>
 
-			<div className="cms-compare-versions-pane-content d-flex flex-column flex-grow-1 mx-2">
-				{iframeStatus === 'loading' ? (
-					<ClayLoadingIndicator className="my-5" />
-				) : null}
+			{hasTranslation ? (
+				<div className="cms-compare-versions-pane-content d-flex flex-column flex-grow-1 mx-2">
+					{iframeStatus === 'loading' ? (
+						<ClayLoadingIndicator className="my-5" />
+					) : null}
 
-				<iframe
-					className="border-0 flex-grow-1 w-100"
-					onLoad={() => setIframeStatus('loaded')}
-					ref={iframeRef}
-					src={`${VIEW_CONTENT_VERSION_URL}/compare_content_item?objectEntryId=${objectEntryId}&p_p_state=pop_up&version=${selectedVersion}`}
-					title={getVersionLabel(selectedVersion)}
-				/>
-			</div>
+					<iframe
+						className="border-0 flex-grow-1 w-100"
+						onLoad={() => setIframeStatus('loaded')}
+						ref={iframeRef}
+						src={`${VIEW_CONTENT_VERSION_URL}/compare_content_item?objectEntryId=${objectEntryId}&p_p_state=pop_up&version=${selectedVersion}`}
+						title={getVersionLabel(selectedVersion)}
+					/>
+				</div>
+			) : (
+				<div className="align-items-center d-flex flex-column flex-grow-1 justify-content-center mt-n8 text-center">
+					<ClayEmptyState
+						description={Liferay.Language.get(
+							'this-version-does-not-have-a-translation-in-the-selected-language.-try-a-different-version-or-language'
+						)}
+						imgSrc={noTranslationImage}
+						imgSrcReducedMotion={noTranslationImage}
+						small
+						title={Liferay.Language.get('no-translation-available')}
+					/>
+				</div>
+			)}
 		</div>
 	);
 }
