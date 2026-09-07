@@ -196,7 +196,7 @@ public class ImportDataDefinitionMVCActionCommandTest
 	public void testProcessActionWithNonsiteDefaultLanguage() throws Exception {
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			createMockLiferayPortletActionRequest(
-				"data_definition_with_non_default_site_language.json",
+				"data_definition_with_nondefault_site_language.json",
 				"Imported Structure");
 
 		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
@@ -237,7 +237,7 @@ public class ImportDataDefinitionMVCActionCommandTest
 
 			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 				createMockLiferayPortletActionRequest(
-					"data_definition_with_non_default_site_language.json",
+					"data_definition_with_nondefault_site_language.json",
 					null);
 
 			setUpUploadPortletRequest(mockLiferayPortletActionRequest);
