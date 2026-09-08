@@ -32,6 +32,9 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 
+import java.io.BufferedReader;
+import java.io.Reader;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,6 +89,13 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		_testGetFieldValuesWithEmptyTranslation();
 		_testGetFieldValuesWithoutTranslation();
 		_testGetFieldValuesWithTranslation();
+	}
+
+	@Test
+	public void testToDiffHtml() throws Exception {
+		_testToDiffHtmlWithAttachmentObjectField();
+		_testToDiffHtmlWithDateObjectField();
+		_testToDiffHtmlWithTextObjectField();
 	}
 
 	@Test
@@ -154,6 +164,12 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		);
 
 		return objectField;
+	}
+
+	private String _read(Reader reader) throws Exception {
+		BufferedReader bufferedReader = new BufferedReader(reader);
+
+		return bufferedReader.readLine();
 	}
 
 	private void _setUpAttachment(
@@ -366,6 +382,42 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		Assert.assertEquals(
 			"hola-mundo", fieldValues.get("objectEntryFriendlyURL"));
 		Assert.assertEquals("Hola", fieldValues.get("title"));
+	}
+
+	private void _testToDiffHtmlWithAttachmentObjectField() throws Exception {
+		Assert.assertEquals(
+			"<span class=\"diff-html-removed\">old.png</span>" +
+				"<span class=\"diff-html-added\">new.png</span>",
+			_objectEntryVersionFieldValueResolver.toDiffHtml(
+				"new.png",
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT),
+				"old.png"));
+	}
+
+	private void _testToDiffHtmlWithDateObjectField() throws Exception {
+		Assert.assertEquals(
+			"<span class=\"diff-html-added\">09/15/2026</span>",
+			_objectEntryVersionFieldValueResolver.toDiffHtml(
+				"09/15/2026",
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_DATE),
+				StringPool.BLANK));
+	}
+
+	private void _testToDiffHtmlWithTextObjectField() throws Exception {
+		Mockito.when(
+			_diffHtml.diff(Mockito.any(Reader.class), Mockito.any(Reader.class))
+		).thenAnswer(
+			invocation -> StringBundler.concat(
+				_read(invocation.getArgument(0)), "|",
+				_read(invocation.getArgument(1)))
+		);
+
+		Assert.assertEquals(
+			"old|new",
+			_objectEntryVersionFieldValueResolver.toDiffHtml(
+				"new",
+				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_TEXT),
+				"old"));
 	}
 
 	private void _testToDisplayValueWithAttachmentObjectField()

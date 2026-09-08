@@ -212,7 +212,7 @@ describe('injectContentDiffs', () => {
 
 		injectContentDiffs(
 			{
-				upload: '<span class="diff-html-removed"><img class="cms-compare-versions-attachment" src="a.png" /></span>',
+				upload: '<span class="diff-html-added"><img class="cms-compare-versions-attachment" src="a.png" /></span>',
 			},
 			'removals',
 			iframe
@@ -223,6 +223,38 @@ describe('injectContentDiffs', () => {
 				'.cms-compare-versions-attachment'
 			)
 		).toHaveClass('border-danger');
+	});
+
+	it('moves only its own image out when the image shares the mark with the file name', () => {
+		const iframe = createIframe(createFieldHTML('ObjectField_upload'));
+
+		injectContentDiffs(
+			{
+				upload: '<span class="diff-html-removed" style="display: none"><img class="cms-compare-versions-attachment" src="old.png" /> old.png</span><span class="diff-html-added"><img class="cms-compare-versions-attachment" src="new.png" /> new.png</span>',
+			},
+			'additions',
+			iframe
+		);
+
+		const formGroup = iframe.contentDocument!.querySelector(
+			'[data-field-name="ObjectField_upload"] .form-group'
+		)!;
+
+		const addedImage = formGroup.querySelector('img[src="new.png"]')!;
+
+		expect(addedImage).toHaveClass('border-success');
+		expect(addedImage.closest('.cms-compare-versions-diff')).toBeNull();
+
+		const removedImage = formGroup.querySelector('img[src="old.png"]')!;
+
+		expect(removedImage.closest('.diff-html-removed')).not.toBeNull();
+		expect(removedImage).not.toHaveClass('border-success');
+
+		const box = formGroup.querySelector('.cms-compare-versions-diff')!;
+
+		expect(box.querySelector('.diff-html-added')).toHaveTextContent(
+			'new.png'
+		);
 	});
 
 	it('hides the structural elements the hidden content leaves empty, unless they hold media', () => {
