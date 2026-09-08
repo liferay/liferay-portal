@@ -383,19 +383,21 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 			long dlFileEntryId = GetterUtil.getLong(value);
 
-			try {
-				DLFileEntry dlFileEntry =
-					_dlFileEntryLocalService.getDLFileEntry(dlFileEntryId);
+			if (dlFileEntryId != 0) {
+				try {
+					DLFileEntry dlFileEntry =
+						_dlFileEntryLocalService.getDLFileEntry(dlFileEntryId);
 
-				return JSONUtil.put(
-					"dlFileEntryId", dlFileEntryId
-				).put(
-					"title", dlFileEntry.getTitle()
-				);
-			}
-			catch (PortalException portalException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(portalException);
+					return JSONUtil.put(
+						"dlFileEntryId", dlFileEntryId
+					).put(
+						"title", dlFileEntry.getTitle()
+					);
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
 				}
 			}
 		}
