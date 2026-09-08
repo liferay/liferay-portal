@@ -190,12 +190,10 @@ export const isWebhookUserAgent = (userAgent?: string): boolean =>
  * "this campaign did not resolve" apart from "there was no campaign here".
  */
 export const getEventCampaign = ({
-	utmCampaignId,
-	utmCampaignName,
+	campaignId,
+	campaignName,
 }: UserSessionEvent): TimelineCampaign | undefined =>
-	utmCampaignId
-		? {campaignId: utmCampaignId, campaignName: utmCampaignName ?? null}
-		: undefined;
+	campaignId ? {campaignId, campaignName: campaignName ?? null} : undefined;
 
 /**
  * Formats UserSessions events and maps its attributes to the required to be used in VerticalTimeline component.

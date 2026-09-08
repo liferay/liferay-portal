@@ -59,8 +59,8 @@ describe('activities', () => {
 					applicationId: 'CustomEvent',
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'eventName',
-					utmCampaignId: '7013a000002QwErtAAG',
-					utmCampaignName: 'Spring Compactor Promo 2026'
+					campaignId: '7013a000002QwErtAAG',
+					campaignName: 'Spring Compactor Promo 2026'
 				},
 				{
 					applicationId: 'CustomEvent',
@@ -185,8 +185,8 @@ describe('activities', () => {
 		it('reads a resolved touch as its campaign id and name', () => {
 			expect(
 				getEventCampaign({
-					utmCampaignId: '7013a000002QwErtAAG',
-					utmCampaignName: 'Spring Compactor Promo 2026'
+					campaignId: '7013a000002QwErtAAG',
+					campaignName: 'Spring Compactor Promo 2026'
 				})
 			).toEqual({
 				campaignId: '7013a000002QwErtAAG',
@@ -197,8 +197,8 @@ describe('activities', () => {
 		it('keeps the raw id of a touch that resolved to no campaign', () => {
 			expect(
 				getEventCampaign({
-					utmCampaignId: '7013a000002XyZbAAK',
-					utmCampaignName: null
+					campaignId: '7013a000002XyZbAAK',
+					campaignName: null
 				})
 			).toEqual({
 				campaignId: '7013a000002XyZbAAK',
@@ -209,8 +209,8 @@ describe('activities', () => {
 		it('reads an event that carried no campaign identity as no campaign', () => {
 			expect(
 				getEventCampaign({
-					utmCampaignId: null,
-					utmCampaignName: null
+					campaignId: null,
+					campaignName: null
 				})
 			).toBeUndefined();
 
@@ -256,8 +256,8 @@ describe('activities', () => {
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
 					pageGroupId: 'https://liferay.com/home',
-					utmCampaignId: '7013a000002QwErtAAG',
-					utmCampaignName: 'Spring Compactor Promo 2026'
+					campaignId: '7013a000002QwErtAAG',
+					campaignName: 'Spring Compactor Promo 2026'
 				}
 			]);
 
@@ -275,8 +275,8 @@ describe('activities', () => {
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
 					pageGroupId: 'https://liferay.com/home',
-					utmCampaignId: '7013a000002XyZbAAK',
-					utmCampaignName: null
+					campaignId: '7013a000002XyZbAAK',
+					campaignName: null
 				}
 			]);
 
@@ -308,8 +308,8 @@ describe('activities', () => {
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
 					pageGroupId: 'https://liferay.com/home',
-					utmCampaignId: '7013a000002QwErtAAG',
-					utmCampaignName: 'Spring Compactor Promo 2026'
+					campaignId: '7013a000002QwErtAAG',
+					campaignName: 'Spring Compactor Promo 2026'
 				}
 			]);
 
