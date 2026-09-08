@@ -467,6 +467,14 @@ resource "kubernetes_manifest" "liferay_applicationset" {
 								"pod-security.kubernetes.io/enforce"="restricted"
 							}
 						}
+						retry={
+							backoff={
+								duration="15s"
+								factor=2
+								maxDuration="5m"
+							}
+							limit=10
+						}
 						syncOptions=[
 							"CreateNamespace=true",
 							"RespectIgnoreDifferences=true",

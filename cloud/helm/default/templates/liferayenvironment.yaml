@@ -2,6 +2,8 @@
 apiVersion: licensing.liferay.com/v1alpha1
 kind: LiferayEnvironment
 metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
     labels:
         app: {{ include "liferay.name" . }}
         {{- include "liferay.labels" . | nindent 8 }}

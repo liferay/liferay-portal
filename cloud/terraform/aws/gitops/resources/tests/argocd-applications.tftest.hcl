@@ -75,6 +75,26 @@ run "should_include_required_prefixes_for_the_marketplace_chart_to_gateway_name"
 		liferay_helm_chart_name="liferay-aws-marketplace"
 	}
 }
+run "should_leave_the_operator_settings_to_the_chart_by_default" {
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-dxp-operator.heartbeatInterval" || startswith(p.name, "liferay-dxp-operator.image.") || p.name == "liferay-dxp-operator.provisioning.baseURL" || p.name == "liferay-dxp-operator.retry.maxDelay"
+		]) == 0
+		error_message="The infrastructure provider Application must not override operator settings unless they are configured"
+	}
+	command=plan
+}
+run "should_leave_the_replica_count_to_the_operator" {
+	assert {
+		condition=length([
+			for difference in kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.ignoreDifferences : difference
+			if difference.kind == "StatefulSet" && contains(difference.managedFieldsManagers, "liferay-dxp-operator")
+		]) == 1
+		error_message="The Liferay ApplicationSet template must ignore spec.replicas on the workload, since the operator caps it against the licensed ceiling"
+	}
+	command=plan
+}
 run "should_name_the_appprojects" {
 	assert {
 		condition=kubernetes_manifest.infrastructure_applicationset.manifest.spec.template.spec.project == "liferay-infrastructure"
@@ -94,16 +114,6 @@ run "should_name_the_appprojects" {
 	}
 	command=plan
 }
-run "should_leave_the_replica_count_to_the_operator" {
-	assert {
-		condition=length([
-			for difference in kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.ignoreDifferences : difference
-			if difference.kind == "StatefulSet" && contains(difference.managedFieldsManagers, "liferay-dxp-operator")
-		]) == 1
-		error_message="The Liferay ApplicationSet template must ignore spec.replicas on the workload, since the operator caps it against the licensed ceiling"
-	}
-	command=plan
-}
 run "should_pass_cluster_identity_to_the_provider_application" {
 	assert {
 		condition=length([
@@ -118,16 +128,6 @@ run "should_pass_cluster_identity_to_the_provider_application" {
 			if p.name == "deploymentName" && p.value == "liferay-test"
 		]) == 1
 		error_message="The infrastructure provider Application must pass the deployment name as a Helm parameter"
-	}
-	command=plan
-}
-run "should_leave_the_operator_settings_to_the_chart_by_default" {
-	assert {
-		condition=length([
-			for p in kubernetes_manifest.infrastructure_provider_application.manifest.spec.sources[0].helm.parameters : p
-			if p.name == "liferay-dxp-operator.heartbeatInterval" || startswith(p.name, "liferay-dxp-operator.image.") || p.name == "liferay-dxp-operator.provisioning.baseURL" || p.name == "liferay-dxp-operator.retry.maxDelay"
-		]) == 0
-		error_message="The infrastructure provider Application must not override operator settings unless they are configured"
 	}
 	command=plan
 }
@@ -180,13 +180,18 @@ run "should_pass_the_configured_operator_settings_to_the_provider_application" {
 		}
 	}
 }
-run "should_scope_liferay_applicationset_helm_values_by_prefix" {
+run "should_retry_a_sync_that_lost_a_race_with_the_infrastructure_provider" {
 	assert {
-		condition=length([
-			for p in kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.sources[0].helm.parameters : p
-			if p.name == "liferay-default.network.gatewayName"
-		]) == 1
-		error_message="The liferay-aws chart must include prefix for liferay-default chart at gatewayName Helm parameter"
+		condition=kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.syncPolicy.retry.limit == 10
+		error_message="The Liferay ApplicationSet template must retry a failed sync, since ArgoCD does not retry a revision whose sync already failed"
+	}
+	assert {
+		condition=kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.syncPolicy.retry.backoff.maxDuration == "5m"
+		error_message="The Liferay ApplicationSet template must cap the retry backoff, so a custom resource definition that arrives late is still picked up"
+	}
+	assert {
+		condition=!contains(kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.syncPolicy.syncOptions, "SkipDryRunOnMissingResource=true")
+		error_message="The Liferay ApplicationSet template must keep the dry run for every resource, since tolerating a missing resource belongs on the one resource that needs it"
 	}
 	command=plan
 }
@@ -197,4 +202,14 @@ variables {
 	liferay_git_repo_url="https://github.com/example/liferay-gitops.git"
 	liferay_helm_chart_version="0.4.20"
 	region="us-east-1"
+}
+run "should_scope_liferay_applicationset_helm_values_by_prefix" {
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.sources[0].helm.parameters : p
+			if p.name == "liferay-default.network.gatewayName"
+		]) == 1
+		error_message="The liferay-aws chart must include prefix for liferay-default chart at gatewayName Helm parameter"
+	}
+	command=plan
 }

@@ -54,3 +54,10 @@ tests:
         set:
             licensing.enabled: true
             licensing.offline: true
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-options"]
+                    value: SkipDryRunOnMissingResource=true
+        it: Tolerates its own custom resource definition arriving late
+        set:
+            licensing.enabled: true
