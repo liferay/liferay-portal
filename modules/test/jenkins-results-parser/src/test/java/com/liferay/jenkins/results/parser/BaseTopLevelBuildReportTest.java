@@ -5,13 +5,19 @@
 
 package com.liferay.jenkins.results.parser;
 
+import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
+
+import java.net.URL;
+
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -21,6 +27,12 @@ import org.mockito.Mockito;
  */
 public class BaseTopLevelBuildReportTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Before
+	public void setUpTestrayCloudBucket() {
+		ReflectionTestUtil.setFieldValue(
+			TestrayCloudBucket.class, "_hasGoogleApplicationCredentials", null);
+	}
 
 	@Test
 	public void testAddDownstreamBuildReport() {
@@ -72,6 +84,46 @@ public class BaseTopLevelBuildReportTest
 			downstreamBuildReports.contains(cachedDownstreamBuildReport));
 		Assert.assertTrue(
 			downstreamBuildReports.contains(downstreamBuildReport));
+	}
+
+	@Test
+	public void testAddTestrayAttachmentURL() throws Exception {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(null);
+
+		baseTopLevelBuildReport.addTestrayAttachmentURL(
+			_newTestrayAttachmentURL());
+
+		_assertTestrayAttachmentURLs(baseTopLevelBuildReport, 0);
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.addTestrayAttachmentURL(
+			_newTestrayAttachmentURL());
+
+		_assertTestrayAttachmentURLs(baseTopLevelBuildReport, 1);
+
+		URL testrayAttachmentURL = _newTestrayAttachmentURL();
+
+		baseTopLevelBuildReport.addTestrayAttachmentURL(testrayAttachmentURL);
+
+		List<URL> testrayAttachmentURLs = _assertTestrayAttachmentURLs(
+			baseTopLevelBuildReport, 2);
+
+		Assert.assertEquals(
+			String.valueOf(testrayAttachmentURL),
+			String.valueOf(testrayAttachmentURLs.get(1)));
+	}
+
+	@Test
+	public void testGetBuildReportTestrayCloudObject() {
+		mockEnvironment(Collections.<String, String>emptyMap());
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport();
+
+		Assert.assertNull(
+			baseTopLevelBuildReport.getBuildReportTestrayCloudObject());
 	}
 
 	@Test
@@ -276,6 +328,19 @@ public class BaseTopLevelBuildReportTest
 		return downstreamBuildReports;
 	}
 
+	private List<URL> _assertTestrayAttachmentURLs(
+		BaseTopLevelBuildReport baseTopLevelBuildReport, int expectedCount) {
+
+		List<URL> testrayAttachmentURLs =
+			baseTopLevelBuildReport.getTestrayAttachmentURLs();
+
+		Assert.assertEquals(
+			testrayAttachmentURLs.toString(), expectedCount,
+			testrayAttachmentURLs.size());
+
+		return testrayAttachmentURLs;
+	}
+
 	private BaseTopLevelBuildReport _newBaseTopLevelBuildReport() {
 		return _newBaseTopLevelBuildReport(new JSONObject());
 	}
@@ -331,6 +396,10 @@ public class BaseTopLevelBuildReportTest
 		).put(
 			"totalDuration", 3000L
 		);
+	}
+
+	private URL _newTestrayAttachmentURL() throws Exception {
+		return new URL("https://test-1-1/" + RandomTestUtil.randomString());
 	}
 
 	private void _testGetControllerBuildReportNull(
