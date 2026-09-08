@@ -1007,6 +1007,10 @@
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>Sitemap Servlet</servlet-name>
+		<url-pattern>/sitemap-commerce-products.xml</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Sitemap Servlet</servlet-name>
 		<url-pattern>/sitemap-object-entries.xml</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>

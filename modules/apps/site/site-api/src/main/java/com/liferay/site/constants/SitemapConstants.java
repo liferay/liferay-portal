@@ -12,6 +12,9 @@ public class SitemapConstants {
 
 	public static final String ASSET_TYPE_KEY_CATEGORIES = "categories";
 
+	public static final String ASSET_TYPE_KEY_COMMERCE_PRODUCTS =
+		"commerce-products";
+
 	public static final String ASSET_TYPE_KEY_OBJECT_ENTRIES = "object-entries";
 
 	public static final String ASSET_TYPE_KEY_PAGES = "pages";
