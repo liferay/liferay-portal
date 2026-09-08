@@ -1,7 +1,6 @@
 import CampaignsDataSet from '../CampaignsDataSet';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
-import {mockCampaigns} from '../../utils/mock-campaigns';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
@@ -19,6 +18,9 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 
 const getFields = () => lastFDSProps.views[0].schema.fields;
 
+const renderDataSet = () =>
+	render(<CampaignsDataSet channelId="123" groupId="23" />);
+
 beforeAll(warmFrontendDataSet);
 
 describe('CampaignsDataSet', () => {
@@ -29,13 +31,7 @@ describe('CampaignsDataSet', () => {
 	afterEach(cleanup);
 
 	it('should render the FrontendDataSet with id "campaigns-list-dataset"', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		expect(screen.getByTestId('fds-component')).toHaveAttribute(
 			'id',
@@ -43,26 +39,22 @@ describe('CampaignsDataSet', () => {
 		);
 	});
 
-	it('should feed the mocked campaigns to the data set', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+	it('should point the data set at the campaigns endpoint', () => {
+		renderDataSet();
 
-		expect(lastFDSProps.items).toBe(mockCampaigns);
+		expect(lastFDSProps.apiURL).toBe(
+			'/o/faro/contacts/23/campaigns?channelId=123'
+		);
+	});
+
+	it('should leave the fetching to the data set rather than pass items', () => {
+		renderDataSet();
+
+		expect(lastFDSProps.items).toBeUndefined();
 	});
 
 	it('should render the three columns the design specifies', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		expect(getFields().map(({fieldName}: any) => fieldName)).toEqual([
 			'campaignName',
@@ -77,51 +69,27 @@ describe('CampaignsDataSet', () => {
 		]);
 	});
 
-	it('should leave the columns unsortable while the data set runs on items', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+	it('should leave the columns unsortable while the endpoint ignores sort', () => {
+		renderDataSet();
 
 		expect(getFields().every(({sortable}: any) => !sortable)).toBe(true);
 	});
 
 	it('should paginate', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		expect(lastFDSProps.showPagination).toBe(true);
 	});
 
 	it('should not offer a search box, nor the bar holding it', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		expect(lastFDSProps.showSearch).toBe(false);
 		expect(lastFDSProps.showManagementBar).toBe(false);
 	});
 
 	it('should link the campaign name at its detail screen', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.campaignNameRenderer({
@@ -137,13 +105,7 @@ describe('CampaignsDataSet', () => {
 	});
 
 	it('should render the campaign name in a heavier weight', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.campaignNameRenderer({
@@ -157,13 +119,7 @@ describe('CampaignsDataSet', () => {
 	});
 
 	it('should abbreviate the counts', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.countRenderer({value: 15200})
@@ -173,13 +129,7 @@ describe('CampaignsDataSet', () => {
 	});
 
 	it('should render a missing count as zero', () => {
-		render(
-			<CampaignsDataSet
-				channelId="123"
-				groupId="23"
-				items={mockCampaigns}
-			/>
-		);
+		renderDataSet();
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.countRenderer({})

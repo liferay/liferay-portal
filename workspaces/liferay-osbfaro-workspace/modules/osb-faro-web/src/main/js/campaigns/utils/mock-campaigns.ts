@@ -1,32 +1,13 @@
 import {LifecycleStages} from 'contacts/pages/account/utils/constants';
+import {ICampaign} from 'shared/api/campaigns';
 import {Metric} from 'contacts/pages/account/utils/types';
 import {TrendClassification} from 'segment/types';
 
 /**
- * Mocked stand-ins for the two campaign endpoints, neither of which exists
- * yet. The shapes below mirror the agreed contract so the backend
- * integration tasks can delete them and fetch the real thing without
- * touching the components that read them.
+ * The campaign the detail screen looks up by id, standing in until that screen
+ * fetches its own campaign. The list no longer reads these: it renders what
+ * the endpoint returns.
  */
-
-/**
- * `GET /campaigns?channelId&page&size`. The `PageDTO` envelope the endpoint
- * wraps these in is not modelled here: the data set fetches and unwraps it
- * itself once it runs on `apiURL`.
- *
- * The endpoint is all-time: it carries no time range.
- */
-export interface ICampaign {
-	accountsTouched: number;
-	campaignName: string;
-	campaignType: string;
-	endDate: string;
-	id: string;
-	individualsTouched: number;
-	startDate: string;
-	status: string;
-}
-
 export const mockCampaigns: ICampaign[] = [
 	{
 		accountsTouched: 342,
@@ -151,12 +132,16 @@ export const mockCampaigns: ICampaign[] = [
 ];
 
 /**
- * `GET /campaigns/metrics?channelId[&selectedMetrics]`, which returns a plain
- * list rather than a page, since these cards are not a table.
+ * Mocked stand-in for `GET /campaigns/metrics?channelId[&selectedMetrics]`,
+ * which returns a plain list rather than a page, since these cards are not a
+ * table.
  *
  * The endpoint computes every value over a fixed 90 day window and compares
  * it against the window before it, so the cards carry a trend the campaigns
  * table does not. The values below are the ones the design shows.
+ *
+ * The campaigns list half of this module is gone, now that the table fetches
+ * its endpoint. This half follows with LPD-104741.
  */
 export enum CampaignMetricType {
 	AccountsTouched = 'accountsTouched',

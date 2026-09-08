@@ -5,13 +5,11 @@ import {
 	FrontendDataSet,
 	pagination,
 } from 'shared/components/FrontendDataSet';
-import {ICampaign} from '../utils/mock-campaigns';
 import {Routes} from 'shared/util/router';
 
 interface ICampaignsDataSetProps {
 	channelId: string;
 	groupId: string;
-	items: ICampaign[];
 }
 
 const views = [
@@ -50,10 +48,10 @@ const views = [
 const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 	channelId,
 	groupId,
-	items,
 }) => (
 	<Card minHeight={300}>
 		<FrontendDataSet
+			apiURL={`/o/faro/contacts/${groupId}/campaigns?channelId=${channelId}`}
 			customDataRenderers={{
 				campaignNameRenderer: ({
 					itemData,
@@ -72,13 +70,14 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 				countRenderer: columns.countRenderer,
 			}}
 			id="campaigns-list-dataset"
-			items={items}
 			pagination={pagination}
 
-			// Search is served by the request, so it does nothing while the
-			// data set runs on `items`. Hiding it empties the management bar,
-			// which then renders as 65px of blank space, so that goes too. The
-			// backend integration task brings both back with the endpoint.
+			// The endpoint takes `search`, `filter` and `sort` and acts on
+			// none of them: asah declares all three on the controller and
+			// never reads them. Turning them on here would give the table a
+			// search box that filters nothing and headers that sort nothing,
+			// which reads as broken rather than as absent, so they stay off
+			// until asah implements them.
 
 			showManagementBar={false}
 			showPagination

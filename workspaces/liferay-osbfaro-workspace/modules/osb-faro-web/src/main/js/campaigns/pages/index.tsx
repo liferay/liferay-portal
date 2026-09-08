@@ -2,7 +2,7 @@ import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import CampaignsDataSet from '../components/CampaignsDataSet';
 import OverviewSection from '../components/OverviewSection';
-import {mockCampaigns, mockCampaignMetrics} from '../utils/mock-campaigns';
+import {mockCampaignMetrics} from '../utils/mock-campaigns';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {SectionHeader} from 'shared/components/SectionHeader';
@@ -53,11 +53,7 @@ const Campaigns: React.FC = () => {
 					title={title}
 				/>
 
-				<CampaignsDataSet
-					channelId={channelId!}
-					groupId={groupId!}
-					items={mockCampaigns}
-				/>
+				<CampaignsDataSet channelId={channelId!} groupId={groupId!} />
 			</BasePage.Body>
 		</BasePage>
 	);
