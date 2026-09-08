@@ -489,6 +489,12 @@ public class BundleSiteInitializerTest {
 					"Skipping design library because the feature flag " +
 						"LPD-57283 is disabled"));
 
+			Assert.assertFalse(
+				logEntries.toString(),
+				_hasLogEntryMessage(
+					logEntries,
+					"Unable to get asset library Test Design Library"));
+
 			Assert.assertNull(
 				_groupLocalService.fetchGroup(
 					_serviceContext.getCompanyId(), "Test Design Library"));
