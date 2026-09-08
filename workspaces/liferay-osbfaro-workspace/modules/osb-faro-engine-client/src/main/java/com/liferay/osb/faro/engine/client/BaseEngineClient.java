@@ -388,16 +388,15 @@ public abstract class BaseEngineClient {
 
 		restTemplate.setInterceptors(clientHttpRequestInterceptors);
 
+		List<HttpMessageConverter<?>> httpMessageConverters = new ArrayList<>();
+
 		MappingJackson2HttpMessageConverter
 			mappingJackson2HttpMessageConverter =
 				new MappingJackson2HttpMessageConverter();
 
 		mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
-
 		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(
 			Arrays.asList(MediaType.APPLICATION_JSON, MediaTypes.HAL_JSON));
-
-		List<HttpMessageConverter<?>> httpMessageConverters = new ArrayList<>();
 
 		httpMessageConverters.add(mappingJackson2HttpMessageConverter);
 
@@ -419,7 +418,6 @@ public abstract class BaseEngineClient {
 				}
 
 			});
-
 		restTemplate.setUriTemplateHandler(new UriBuilderFactory());
 
 		return restTemplate;
