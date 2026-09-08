@@ -505,23 +505,17 @@ definition {
 		}
 
 		if (isSet(webContentContent)) {
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME_2");
-
-			Type(
-				locator1 = "CKEditor#BODY",
-				value1 = ${webContentContent});
-
-			SelectFrame(value1 = "relative=top");
+			CKEditor.typeContentInEitherEditor(
+				content = ${webContentContent},
+				fieldLabel = "Content",
+				iframeLocator = "CKEditor#BODY_FIELD_IFRAME_2");
 		}
 
 		if (isSet(webContentDescription)) {
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
-
-			Type(
-				locator1 = "CKEditor#BODY",
-				value1 = ${webContentDescription});
-
-			SelectFrame(value1 = "relative=top");
+			CKEditor.typeContentInEitherEditor(
+				content = ${webContentDescription},
+				fieldLabel = "Description",
+				iframeLocator = "CKEditor#BODY_FIELD_IFRAME");
 		}
 
 		if (isSet(webContentSourceHtml)) {
@@ -887,27 +881,17 @@ definition {
 		}
 
 		if (isSet(webContentContent)) {
-			AssertElementPresent.assertVisible(locator1 = "CKEditor#BODY_FIELD_IFRAME_2");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME_2");
-
-			AssertTextEquals(
-				locator1 = "CKEditor#BODY",
-				value1 = ${webContentContent});
-
-			SelectFrame(value1 = "relative=top");
+			CKEditor.assertContentInEitherEditor(
+				content = ${webContentContent},
+				fieldLabel = "Content",
+				iframeLocator = "CKEditor#BODY_FIELD_IFRAME_2");
 		}
 
 		if (isSet(webContentDescription)) {
-			AssertElementPresent.assertVisible(locator1 = "CKEditor#BODY_FIELD_IFRAME");
-
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
-
-			AssertTextEquals(
-				locator1 = "CKEditor#BODY",
-				value1 = ${webContentDescription});
-
-			SelectFrame(value1 = "relative=top");
+			CKEditor.assertContentInEitherEditor(
+				content = ${webContentDescription},
+				fieldLabel = "Description",
+				iframeLocator = "CKEditor#BODY_FIELD_IFRAME");
 		}
 
 		if (isSet(webContentHtml)) {
