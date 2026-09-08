@@ -829,22 +829,10 @@ public class DefaultObjectEntryManagerImpl
 		List<ObjectEntry> objectEntries = null;
 		int objectEntriesCount = 0;
 
-		if (_isPlainListing(
+		if (_isUseComplexQuery(
 				groupIds, objectDefinition, predicate, preferApproved, search,
 				sorts)) {
 
-			objectEntries = TransformUtil.transform(
-				_objectEntryService.getObjectEntries(
-					groupIds[0], objectDefinition.getObjectDefinitionId(),
-					WorkflowConstants.STATUS_ANY, start, end),
-				serviceBuilderObjectEntry -> _getObjectEntry(
-					dtoConverterContext, objectDefinition,
-					serviceBuilderObjectEntry));
-			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
-				groupIds[0], objectDefinition.getObjectDefinitionId(),
-				WorkflowConstants.STATUS_ANY);
-		}
-		else {
 			objectEntries = TransformUtil.transform(
 				objectEntryLocalService.getPrimaryKeys(
 					groupIds, companyId, dtoConverterContext.getUserId(),
@@ -856,6 +844,18 @@ public class DefaultObjectEntryManagerImpl
 				groupIds, companyId, dtoConverterContext.getUserId(),
 				objectDefinition.getObjectDefinitionId(), predicate,
 				preferApproved, search);
+		}
+		else {
+			objectEntries = TransformUtil.transform(
+				_objectEntryService.getObjectEntries(
+					groupIds[0], objectDefinition.getObjectDefinitionId(),
+					WorkflowConstants.STATUS_ANY, start, end),
+				serviceBuilderObjectEntry -> _getObjectEntry(
+					dtoConverterContext, objectDefinition,
+					serviceBuilderObjectEntry));
+			objectEntriesCount = _objectEntryService.getObjectEntriesCount(
+				groupIds[0], objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY);
 		}
 
 		return Page.of(
@@ -3192,29 +3192,6 @@ public class DefaultObjectEntryManagerImpl
 		return false;
 	}
 
-	private boolean _isPlainListing(
-		Long[] groupIds, ObjectDefinition objectDefinition, Predicate predicate,
-		boolean preferApproved, String search, Sort[] sorts) {
-
-		if ((predicate != null) || preferApproved ||
-			Validator.isNotNull(search) || !_isDefaultSort(sorts) ||
-			ArrayUtil.isNotEmpty(
-				objectDefinition.getRootObjectDefinitionIds()) ||
-			(groupIds.length != 1)) {
-
-			return false;
-		}
-
-		if ((PermissionThreadLocal.getPermissionChecker() != null) &&
-			_inlineSQLHelper.isEnabled(
-				objectDefinition.getCompanyId(), groupIds[0])) {
-
-			return false;
-		}
-
-		return true;
-	}
-
 	private boolean _isUniqueName(
 			ObjectDefinition objectDefinition,
 			ObjectEntryFolder objectEntryFolder,
@@ -3234,6 +3211,29 @@ public class DefaultObjectEntryManagerImpl
 			false, null);
 
 		if (count == 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isUseComplexQuery(
+		Long[] groupIds, ObjectDefinition objectDefinition, Predicate predicate,
+		boolean preferApproved, String search, Sort[] sorts) {
+
+		if ((predicate != null) || preferApproved ||
+			Validator.isNotNull(search) || !_isDefaultSort(sorts) ||
+			ArrayUtil.isNotEmpty(
+				objectDefinition.getRootObjectDefinitionIds()) ||
+			(groupIds.length != 1)) {
+
+			return true;
+		}
+
+		if ((PermissionThreadLocal.getPermissionChecker() != null) &&
+			_inlineSQLHelper.isEnabled(
+				objectDefinition.getCompanyId(), groupIds[0])) {
+
 			return true;
 		}
 
