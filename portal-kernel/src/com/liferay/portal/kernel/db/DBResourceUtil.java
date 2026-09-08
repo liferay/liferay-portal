@@ -10,7 +10,6 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFacto
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -401,40 +400,29 @@ public class DBResourceUtil {
 			return columnDefinitionsMap;
 		}
 
-		String tableName = null;
+		Matcher matcher = _createTableColumnsPattern.matcher(sql);
 
-		for (String line : StringUtil.splitLines(sql)) {
-			line = line.trim();
+		while (matcher.find()) {
+			List<String> columnDefinitions = new ArrayList<>();
 
-			if (line.contains("create table ")) {
-				String createTableSQL = line.substring(
-					line.indexOf("create table "));
+			for (String columnDefinition :
+					_columnDefinitionSeparatorPattern.split(matcher.group(2))) {
 
-				tableName =
-					StringUtil.split(createTableSQL, StringPool.SPACE)[2];
+				columnDefinition = columnDefinition.trim();
 
-				columnDefinitionsMap.put(tableName, new ArrayList<>());
+				if (columnDefinition.isEmpty() ||
+					columnDefinition.startsWith("primary key")) {
 
-				continue;
+					continue;
+				}
+
+				columnDefinition = StringUtil.removeSubstring(
+					columnDefinition, "primary key");
+
+				columnDefinitions.add(columnDefinition.trim());
 			}
 
-			if (line.isEmpty() || line.startsWith(")") ||
-				line.startsWith(";") || line.startsWith("<") ||
-				line.startsWith("]]>") || line.startsWith("create ") ||
-				line.startsWith("primary key")) {
-
-				continue;
-			}
-
-			line = StringUtil.replaceLast(
-				line, CharPool.COMMA, StringPool.BLANK);
-			line = StringUtil.removeSubstring(line, "primary key");
-
-			columnDefinitionsMap.get(
-				tableName
-			).add(
-				line.trim()
-			);
+			columnDefinitionsMap.put(matcher.group(1), columnDefinitions);
 		}
 
 		return columnDefinitionsMap;
@@ -477,9 +465,13 @@ public class DBResourceUtil {
 	private static final Log _log = LogFactoryUtil.getLog(DBResourceUtil.class);
 
 	private static volatile boolean _cacheEnabled;
+	private static final Pattern _columnDefinitionSeparatorPattern =
+		Pattern.compile(",(?![^(]*\\))");
 	private static final Pattern _composedPrimaryKeyPattern = Pattern.compile(
 		"create table\\s+(\\w+)\\s*\\((?:[^;]*?)?primary key\\s*\\(([^)]+)\\)",
 		Pattern.DOTALL);
+	private static final Pattern _createTableColumnsPattern = Pattern.compile(
+		"create table (\\S+) \\(([^;]*)\\);");
 	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
 	private static final Pattern _inlinedPrimaryKeyPattern = Pattern.compile(
