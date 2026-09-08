@@ -71,7 +71,7 @@ import com.liferay.portal.kernel.service.OrgLaborService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.OrganizationService;
 import com.liferay.portal.kernel.service.PhoneService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -1462,7 +1462,7 @@ public class OrganizationResourceImpl
 		return ResourcePermissionUtil.setResourcePermissions(
 			serviceBuilderOrganization,
 			serviceBuilderOrganization.getCompanyId(),
-			organization.getPermissions(), _resourcePermissionLocalService,
+			organization.getPermissions(), _resourcePermissionService,
 			_roleService, _roleTypeContributorProvider);
 	}
 
@@ -1526,7 +1526,7 @@ public class OrganizationResourceImpl
 	private PhoneService _phoneService;
 
 	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
+	private ResourcePermissionService _resourcePermissionService;
 
 	@Reference
 	private RoleLocalService _roleLocalService;

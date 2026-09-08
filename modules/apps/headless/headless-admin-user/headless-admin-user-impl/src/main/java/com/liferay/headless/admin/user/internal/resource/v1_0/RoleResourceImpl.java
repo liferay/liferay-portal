@@ -23,7 +23,6 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.OrganizationService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -632,8 +631,8 @@ public class RoleResourceImpl
 
 		return ResourcePermissionUtil.setResourcePermissions(
 			serviceBuilderRole, serviceBuilderRole.getCompanyId(),
-			role.getPermissions(), _resourcePermissionLocalService,
-			_roleService, _roleTypeContributorProvider);
+			role.getPermissions(), _resourcePermissionService, _roleService,
+			_roleTypeContributorProvider);
 	}
 
 	private static final EntityModel _entityModel = new RoleEntityModel();
@@ -643,9 +642,6 @@ public class RoleResourceImpl
 
 	@Reference
 	private OrganizationService _organizationService;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Reference
 	private ResourcePermissionService _resourcePermissionService;

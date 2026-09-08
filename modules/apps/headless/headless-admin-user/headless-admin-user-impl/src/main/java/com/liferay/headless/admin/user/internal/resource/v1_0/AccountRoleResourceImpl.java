@@ -9,8 +9,9 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.NoSuchRoleException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.role.AccountRolePermissionThreadLocal;
-import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountRoleLocalService;
+import com.liferay.account.service.AccountRoleService;
 import com.liferay.headless.admin.user.dto.v1_0.Account;
 import com.liferay.headless.admin.user.dto.v1_0.AccountRole;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
@@ -160,7 +161,7 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 		throws Exception {
 
 		if (accountId > 0) {
-			_accountEntryLocalService.getAccountEntry(accountId);
+			_accountEntryService.getAccountEntry(accountId);
 		}
 
 		try (SafeCloseable safeCloseable =
@@ -209,15 +210,16 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 				String externalReferenceCode, String emailAddress)
 		throws Exception {
 
+		AccountEntry accountEntry =
+			_accountEntryService.getAccountEntryByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId());
 		User user = _userLocalService.getUserByEmailAddress(
 			contextCompany.getCompanyId(), emailAddress);
 
 		return Page.of(
 			transform(
 				_accountRoleLocalService.getAccountRoles(
-					DTOConverterUtil.getModelPrimaryKey(
-						_accountResourceDTOConverter, externalReferenceCode),
-					user.getUserId()),
+					accountEntry.getAccountEntryId(), user.getUserId()),
 				accountRole -> _toAccountRole(accountRole)));
 	}
 
@@ -228,12 +230,14 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 				String externalReferenceCode)
 		throws Exception {
 
+		AccountEntry accountEntry =
+			_accountEntryService.getAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, contextCompany.getCompanyId());
+
 		return Page.of(
 			transform(
 				_accountRoleLocalService.getAccountRoles(
-					DTOConverterUtil.getModelPrimaryKey(
-						_accountResourceDTOConverter,
-						accountExternalReferenceCode),
+					accountEntry.getAccountEntryId(),
 					DTOConverterUtil.getModelPrimaryKey(
 						_userResourceDTOConverter, externalReferenceCode)),
 				accountRole -> _toAccountRole(accountRole)));
@@ -277,7 +281,7 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 			Long accountId, Long accountRoleId, Long userAccountId)
 		throws Exception {
 
-		_accountRoleLocalService.associateUser(
+		_accountRoleService.associateUser(
 			accountId, accountRoleId, userAccountId);
 	}
 
@@ -387,13 +391,16 @@ public class AccountRoleResourceImpl extends BaseAccountRoleResourceImpl {
 		new AccountRoleEntityModel();
 
 	@Reference
-	private AccountEntryLocalService _accountEntryLocalService;
+	private AccountEntryService _accountEntryService;
 
 	@Reference(target = DTOConverterConstants.ACCOUNT_RESOURCE_DTO_CONVERTER)
 	private DTOConverter<AccountEntry, Account> _accountResourceDTOConverter;
 
 	@Reference
 	private AccountRoleLocalService _accountRoleLocalService;
+
+	@Reference
+	private AccountRoleService _accountRoleService;
 
 	@Reference
 	private UserLocalService _userLocalService;

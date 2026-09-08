@@ -71,7 +71,7 @@ import com.liferay.portal.kernel.service.ContactService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
 import com.liferay.portal.kernel.service.OrganizationService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -1429,7 +1429,7 @@ public class AccountResourceImpl
 
 		return ResourcePermissionUtil.setResourcePermissions(
 			accountEntry, accountEntry.getCompanyId(), account.getPermissions(),
-			_resourcePermissionLocalService, _roleService,
+			_resourcePermissionService, _roleService,
 			_roleTypeContributorProvider);
 	}
 
@@ -1513,7 +1513,7 @@ public class AccountResourceImpl
 	private Portal _portal;
 
 	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
+	private ResourcePermissionService _resourcePermissionService;
 
 	@Reference
 	private RoleService _roleService;

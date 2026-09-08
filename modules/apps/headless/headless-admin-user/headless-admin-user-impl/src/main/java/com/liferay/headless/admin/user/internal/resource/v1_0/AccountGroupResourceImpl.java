@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -523,7 +523,7 @@ public class AccountGroupResourceImpl
 		return ResourcePermissionUtil.setResourcePermissions(
 			serviceBuilderAccountGroup,
 			serviceBuilderAccountGroup.getCompanyId(),
-			accountGroup.getPermissions(), _resourcePermissionLocalService,
+			accountGroup.getPermissions(), _resourcePermissionService,
 			_roleService, _roleTypeContributorProvider);
 	}
 
@@ -564,7 +564,7 @@ public class AccountGroupResourceImpl
 	private Portal _portal;
 
 	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
+	private ResourcePermissionService _resourcePermissionService;
 
 	@Reference
 	private RoleService _roleService;

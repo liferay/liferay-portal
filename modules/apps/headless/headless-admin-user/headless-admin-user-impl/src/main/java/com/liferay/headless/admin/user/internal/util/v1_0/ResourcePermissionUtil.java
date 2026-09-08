@@ -7,10 +7,9 @@ package com.liferay.headless.admin.user.internal.util.v1_0;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionService;
 import com.liferay.portal.kernel.service.RoleService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -30,7 +29,7 @@ public class ResourcePermissionUtil {
 
 	public static <T> T setResourcePermissions(
 			BaseModel<T> baseModel, long companyId, Permission[] permissions,
-			ResourcePermissionLocalService resourcePermissionLocalService,
+			ResourcePermissionService resourcePermissionService,
 			RoleService roleService,
 			RoleTypeContributorProvider roleTypeContributorProvider)
 		throws Exception {
@@ -77,9 +76,8 @@ public class ResourcePermissionUtil {
 				externalReferenceCode, className, 0, name,
 				RoleConstants.getLabelType(permission.getRoleType()));
 
-			resourcePermissionLocalService.setResourcePermissions(
-				companyId, baseModel.getModelClassName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
+			resourcePermissionService.setIndividualResourcePermissions(
+				0, companyId, baseModel.getModelClassName(),
 				String.valueOf(
 					GetterUtil.getLong(baseModel.getPrimaryKeyObj())),
 				role.getRoleId(), actionIds);
