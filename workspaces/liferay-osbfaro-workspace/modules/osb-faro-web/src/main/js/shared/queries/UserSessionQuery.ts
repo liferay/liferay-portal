@@ -17,6 +17,7 @@ export interface UserSessionEvent {
 	properties: Array<{name: string; value: string}>;
 	referrer: string;
 	url: string;
+	utmProperties: Array<{name: string; value: string}>;
 }
 
 export interface UserSession {
@@ -110,6 +111,10 @@ export default gql`
 						}
 						referrer
 						url
+						utmProperties {
+							name
+							value
+						}
 					}
 					languageId
 					screenHeight

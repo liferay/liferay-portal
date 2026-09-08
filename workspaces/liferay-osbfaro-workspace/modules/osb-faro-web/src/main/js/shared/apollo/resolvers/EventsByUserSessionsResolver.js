@@ -32,7 +32,11 @@ export default () => ({
 					pageKeywords: '',
 					pageTitle:
 						'Tandem Rollers & Compactors - Full Product Range | RoadTech',
-					properties: [
+					properties: [],
+					referrer:
+						'https://marketplace.roadtech.com/lp/spring-compactor-promo',
+					url: 'https://marketplace.roadtech.com/compactors/tandem-rollers?utm_cid=7013a000002QwErtAAG',
+					utmProperties: [
 						{name: 'utm_source', value: 'salesforce'},
 						{name: 'utm_cid', value: '7013a000002QwErtAAG'},
 						{name: 'utm_medium', value: 'email'},
@@ -41,9 +45,6 @@ export default () => ({
 						{name: 'utm_term', value: ''},
 						{name: 'utm_lift', value: 'q1_report'},
 					],
-					referrer:
-						'https://marketplace.roadtech.com/lp/spring-compactor-promo',
-					url: 'https://marketplace.roadtech.com/compactors/tandem-rollers?utm_cid=7013a000002QwErtAAG',
 				},
 				{
 					__typename: 'Event',
@@ -67,6 +68,7 @@ export default () => ({
 					referrer:
 						'https://marketplace.roadtech.com/lp/spring-compactor-promo',
 					url: 'https://marketplace.roadtech.com/compactors/tandem-rollers',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -87,13 +89,14 @@ export default () => ({
 					pageKeywords: '',
 					pageTitle:
 						'Tandem Rollers & Compactors - Full Product Range | RoadTech',
-					properties: [
-						{name: 'utm_source', value: 'salesforce'},
-						{name: 'utm_cid', value: '7013a000002QwErtAAG'},
-					],
+					properties: [],
 					referrer:
 						'https://marketplace.roadtech.com/videos/hamm-hd90i-demo',
 					url: 'https://marketplace.roadtech.com/compactors/tandem-rollers?utm_cid=7013a000002QwErtAAG',
+					utmProperties: [
+						{name: 'utm_source', value: 'salesforce'},
+						{name: 'utm_cid', value: '7013a000002QwErtAAG'},
+					],
 				},
 				{
 					__typename: 'Event',
@@ -116,6 +119,7 @@ export default () => ({
 					referrer:
 						'https://marketplace.roadtech.com/compactors/tandem-rollers',
 					url: 'https://marketplace.roadtech.com/compactors/hamm-hd90i/quote',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -136,12 +140,13 @@ export default () => ({
 					pageKeywords: '',
 					pageTitle:
 						'Hamm HD+ 901 Live Compaction Demo - Asphalt Paving',
-					properties: [
+					properties: [],
+					referrer: 'https://www.linkedin.com/',
+					url: 'https://marketplace.roadtech.com/videos/hamm-hd90i-demo?utm_cid=7013a000002XyZbAAK',
+					utmProperties: [
 						{name: 'utm_source', value: 'linkedin'},
 						{name: 'utm_cid', value: '7013a000002XyZbAAK'},
 					],
-					referrer: 'https://www.linkedin.com/',
-					url: 'https://marketplace.roadtech.com/videos/hamm-hd90i-demo?utm_cid=7013a000002XyZbAAK',
 				},
 				{
 					__typename: 'Event',
@@ -164,6 +169,7 @@ export default () => ({
 					properties: [{name: 'videoId', value: 'hamm-hd90i-demo'}],
 					referrer: 'https://www.linkedin.com/',
 					url: 'https://marketplace.roadtech.com/videos/hamm-hd90i-demo',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -182,12 +188,13 @@ export default () => ({
 						'https://marketplace.roadtech.com/lp/spring-compactor-promo',
 					pageKeywords: '',
 					pageTitle: 'Spring Compactor Promo - Landing | RoadTech',
-					properties: [
+					properties: [],
+					referrer: 'https://mail.google.com/',
+					url: 'https://marketplace.roadtech.com/lp/spring-compactor-promo?utm_cid=7013a000002QwErtAAG',
+					utmProperties: [
 						{name: 'utm_source', value: 'salesforce'},
 						{name: 'utm_cid', value: '7013a000002QwErtAAG'},
 					],
-					referrer: 'https://mail.google.com/',
-					url: 'https://marketplace.roadtech.com/lp/spring-compactor-promo?utm_cid=7013a000002QwErtAAG',
 				},
 			],
 			individualId: 'e5d1f0a8-3c47-4b92-9a11-77c0b2d4e6f3',
@@ -229,6 +236,7 @@ export default () => ({
 					properties: [],
 					referrer: 'https://marketplace.roadtech.com/',
 					url: 'https://marketplace.roadtech.com/support',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -248,6 +256,7 @@ export default () => ({
 					properties: [],
 					referrer: '',
 					url: 'https://marketplace.roadtech.com/',
+					utmProperties: [],
 				},
 			],
 			individualId: 'e5d1f0a8-3c47-4b92-9a11-77c0b2d4e6f3',
@@ -291,6 +300,7 @@ export default () => ({
 					],
 					referrer: 'https://hubspot.com',
 					url: 'https://hubspot.com',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -316,6 +326,7 @@ export default () => ({
 					],
 					referrer: 'https://hubspot.com',
 					url: 'https://hubspot.com',
+					utmProperties: [],
 				},
 			],
 			individualId: null,
@@ -360,6 +371,7 @@ export default () => ({
 					],
 					referrer: '',
 					url: 'https://learn-dev.liferay.com/home',
+					utmProperties: [],
 				},
 			],
 			individualId: null,
@@ -409,6 +421,7 @@ export default () => ({
 					],
 					referrer: 'https://learn-dev.liferay.com/home',
 					url: 'https://learn-dev.liferay.com/capabilities/content-management-system',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -433,6 +446,7 @@ export default () => ({
 					],
 					referrer: 'https://learn-dev.liferay.com/c/portal/logout',
 					url: 'https://learn-dev.liferay.com/home',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -457,6 +471,7 @@ export default () => ({
 					],
 					referrer: '',
 					url: 'https://learn-dev.liferay.com/',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -482,6 +497,7 @@ export default () => ({
 					referrer:
 						'https://learn-dev.liferay.com/capabilities/security',
 					url: 'https://learn-dev.liferay.com/',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -508,6 +524,7 @@ export default () => ({
 					],
 					referrer: 'https://learn-dev.liferay.com/',
 					url: 'https://learn-dev.liferay.com/capabilities/security',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -533,6 +550,7 @@ export default () => ({
 					referrer:
 						'https://learn-dev.liferay.com/group/control_panel/manage?p_p_id=com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet&p_p_lifecycle=0&p_p_state=maximized&p_p_mode=view&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_mvcRenderCommandName=%2Fconfiguration_admin%2Fview_configuration_screen&_com_liferay_configuration_admin_web_portlet_InstanceSettingsPortlet_configurationScreenKey=analytics-cloud-connection',
 					url: 'https://learn-dev.liferay.com/',
+					utmProperties: [],
 				},
 			],
 			individualId: null,
@@ -576,6 +594,7 @@ export default () => ({
 					],
 					referrer: 'https://hubspot.com',
 					url: 'https://hubspot.com',
+					utmProperties: [],
 				},
 				{
 					__typename: 'Event',
@@ -601,6 +620,7 @@ export default () => ({
 					],
 					referrer: 'https://hubspot.com',
 					url: 'https://hubspot.com',
+					utmProperties: [],
 				},
 			],
 			individualId: null,

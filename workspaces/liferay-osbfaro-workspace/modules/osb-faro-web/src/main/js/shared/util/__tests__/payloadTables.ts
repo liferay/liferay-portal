@@ -48,11 +48,11 @@ describe('formatPayloadTables', () => {
 		]);
 	});
 
-	it('splits keys prefixed with utm into their own table', () => {
+	it('lays the utm properties out in a table of their own', () => {
 		expect(
 			formatPayloadTables({
 				eventId: 'pageViewed',
-				properties: {utm_medium: 'email'},
+				utmProperties: {utm_medium: 'email'},
 			})
 		).toEqual([
 			{
@@ -66,28 +66,25 @@ describe('formatPayloadTables', () => {
 		]);
 	});
 
-	it('splits camel cased utm keys the same way as snake cased ones', () => {
-		const [, utmTable] = formatPayloadTables({
-			eventId: 'pageViewed',
-			utmMedium: 'email',
-		});
-
-		expect(utmTable.rows).toEqual([
-			{property: 'utmMedium', value: 'email'},
+	it('leaves a utm named event property in the attributes table', () => {
+		expect(
+			formatPayloadTables({properties: {utm_medium: 'email'}})
+		).toEqual([
+			{
+				rows: [{property: 'utm_medium', value: 'email'}],
+				title: 'Event Attributes',
+			},
 		]);
 	});
 
-	it('does not mistake a key that merely contains utm for a utm key', () => {
-		const [{rows}, utmTable] = formatPayloadTables({
-			customUtmFlag: 'true',
-		});
-
-		expect(rows).toEqual([{property: 'customUtmFlag', value: 'true'}]);
-		expect(utmTable).toBeUndefined();
+	it('omits the utm table when the payload carries no utm properties', () => {
+		expect(formatPayloadTables({eventId: 'pageViewed'})).toHaveLength(1);
 	});
 
-	it('omits the utm table when the payload carries no utm key', () => {
-		expect(formatPayloadTables({eventId: 'pageViewed'})).toHaveLength(1);
+	it('omits the utm table when the utm properties are empty', () => {
+		expect(
+			formatPayloadTables({eventId: 'pageViewed', utmProperties: {}})
+		).toHaveLength(1);
 	});
 
 	it('renders an empty value as a dash', () => {

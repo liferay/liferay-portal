@@ -12,11 +12,15 @@ const EMPTY_VALUE = '-';
 const HEADER_KEY = 'header';
 
 /**
- * The payload key holding the event's own attributes, which arrive nested one
- * level down. They read as attributes like any other, so they are flattened
- * into the same table rather than shown as a nested structure.
+ * The payload keys holding groups of attributes, which arrive nested one level
+ * down. Each is flattened into the table named beside it, so which table a
+ * parameter lands in is the API's classification rather than a guess made from
+ * the parameter's name.
  */
-const PROPERTIES_KEY = 'properties';
+const NESTED_KEYS = {
+	properties: 'attributes',
+	utmProperties: 'utm',
+} as const;
 
 export type PayloadTableRow = {
 	property: string;
@@ -28,26 +32,13 @@ export type PayloadTable = {
 	title: string;
 };
 
-/**
- * Whether a property carries acquisition data, which the tables show apart from
- * the rest of the payload. The match is on the `utm` prefix rather than a fixed
- * list of parameters, so a tenant's custom `utm_*` parameter lands in the UTM
- * table alongside the standard five, and neither `utm_medium` nor `utmMedium`
- * depends on which spelling the API settles on.
- */
-const isUtmProperty = (property: string): boolean =>
-	property.toLowerCase().startsWith('utm');
-
 const formatValue = (value: unknown): string =>
 	value === null || value === undefined || value === ''
 		? EMPTY_VALUE
 		: String(value);
 
-const isNestedProperties = (
-	key: string,
-	value: unknown
-): value is Record<string, unknown> =>
-	key === PROPERTIES_KEY && typeof value === 'object' && value !== null;
+const isNestedGroup = (value: unknown): value is Record<string, unknown> =>
+	typeof value === 'object' && value !== null;
 
 /**
  * Splits an event or session payload into the tables the activity timeline
@@ -59,45 +50,43 @@ const isNestedProperties = (
 export const formatPayloadTables = (
 	payload: Record<string, unknown>
 ): PayloadTable[] => {
-	const attributeRows: PayloadTableRow[] = [];
-	const utmRows: PayloadTableRow[] = [];
+	const rowsByGroup: Record<string, PayloadTableRow[]> = {
+		attributes: [],
+		utm: [],
+	};
 
 	let title = Liferay.Language.get('event-attributes');
 
-	const addRow = (property: string, value: unknown) => {
-		const row = {property, value: formatValue(value)};
-
-		if (isUtmProperty(property)) {
-			utmRows.push(row);
-		}
-		else {
-			attributeRows.push(row);
-		}
-	};
+	const addRow = (group: string, property: string, value: unknown) =>
+		rowsByGroup[group].push({property, value: formatValue(value)});
 
 	Object.entries(payload).forEach(([key, value]) => {
 		if (key === HEADER_KEY) {
 			title = String(value);
 		}
-		else if (isNestedProperties(key, value)) {
-			Object.entries(value).forEach(([nestedKey, nestedValue]) =>
-				addRow(nestedKey, nestedValue)
-			);
+		else if (key in NESTED_KEYS) {
+			const group = NESTED_KEYS[key as keyof typeof NESTED_KEYS];
+
+			if (isNestedGroup(value)) {
+				Object.entries(value).forEach(([nestedKey, nestedValue]) =>
+					addRow(group, nestedKey, nestedValue)
+				);
+			}
 		}
 		else {
-			addRow(key, value);
+			addRow('attributes', key, value);
 		}
 	});
 
 	const tables: PayloadTable[] = [];
 
-	if (attributeRows.length) {
-		tables.push({rows: attributeRows, title});
+	if (rowsByGroup.attributes.length) {
+		tables.push({rows: rowsByGroup.attributes, title});
 	}
 
-	if (utmRows.length) {
+	if (rowsByGroup.utm.length) {
 		tables.push({
-			rows: utmRows,
+			rows: rowsByGroup.utm,
 			title: Liferay.Language.get('utm-parameters'),
 		});
 	}

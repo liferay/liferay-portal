@@ -196,6 +196,17 @@ export const getEventCampaign = ({
 	campaignId ? {campaignId, campaignName: campaignName ?? null} : undefined;
 
 /**
+ * Turns one of the name/value lists an event carries into the object the
+ * timeline expands into a table. Each list keeps its own entry in the payload
+ * rather than being merged into one, so the table a parameter lands in is the
+ * API's own classification.
+ */
+const toAttributeMap = (
+	attributes: Array<{name: string; value: string}>
+): Record<string, string> =>
+	Object.fromEntries(attributes.map(({name, value}) => [name, value]));
+
+/**
  * Formats UserSessions events and maps its attributes to the required to be used in VerticalTimeline component.
  * @param {Array} events Array of UserSessions events.
  * @returns {Array.<Object>} Array of objects for a vertical timeline.
@@ -218,6 +229,7 @@ export const formatEvents = (
 			name,
 			pageTitle,
 			properties,
+			utmProperties,
 		} = event;
 
 		const campaign = getEventCampaign(event);
@@ -228,12 +240,10 @@ export const formatEvents = (
 				...(eventDate && {eventDate}),
 				eventId,
 				...(properties?.length && {
-					properties: Object.fromEntries(
-						properties.map(({name: propName, value}) => [
-							propName,
-							value,
-						])
-					),
+					properties: toAttributeMap(properties),
+				}),
+				...(utmProperties?.length && {
+					utmProperties: toAttributeMap(utmProperties),
 				}),
 			},
 			...(campaign && {campaign}),

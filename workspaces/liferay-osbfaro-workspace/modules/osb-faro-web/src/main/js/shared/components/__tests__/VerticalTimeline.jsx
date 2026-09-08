@@ -364,7 +364,7 @@ describe('VerticalTimeline', () => {
 						...EVENT_ITEM,
 						attributes: {
 							...EVENT_ITEM.attributes,
-							properties: {utm_medium: 'email'}
+							utmProperties: {utm_medium: 'email'}
 						}
 					}
 				]
