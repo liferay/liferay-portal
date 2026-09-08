@@ -92,6 +92,7 @@ definition {
 	test CanUpdateGeneralInfos {
 		property portal.acceptance = "true";
 
+		var databasePartitionEnabled = PropsUtil.get("database.partition.enabled");
 		var portalInstanceName = JSONCompany.getPortalInstanceName();
 
 		PortalSettings.gotoConfiguration(
@@ -103,9 +104,15 @@ definition {
 			fieldName = "name",
 			fieldValue = "EditedLiferay");
 
-		FormFields.editText(
-			fieldName = "mx",
-			fieldValue = "newliferay.com");
+		if (${databasePartitionEnabled} != "true") {
+
+			// The mail domain of a virtual instance is read-only when
+			// database partitioning is enabled
+
+			FormFields.editText(
+				fieldName = "mx",
+				fieldValue = "newliferay.com");
+		}
 
 		FormFields.editText(
 			fieldName = "virtualHostname",
@@ -113,15 +120,9 @@ definition {
 
 		PortletEntry.save();
 
-		ApplicationsMenu.openApplicationsMenu();
-
-		AssertElementPresent(
-			key_site = "EditedLiferay",
-			locator1 = "ApplicationsMenu#SITE_LINK");
-
-		ApplicationsMenu.gotoSite(site = "EditedLiferay");
-
-		Navigator.openSpecificURL(url = "http://www.able.com:8080");
+		task ("Follow the instance to its new virtual host") {
+			Navigator.openSpecificURL(url = "http://www.able.com:8080");
+		}
 
 		AssertElementPresent(
 			key_pageName = "Home",
@@ -129,11 +130,23 @@ definition {
 
 		Navigator.gotoLoginPage();
 
-		AssertTextEquals(
-			locator1 = "TextInput#EMAIL_ADDRESS",
-			value1 = "@newliferay.com");
+		if (${databasePartitionEnabled} != "true") {
+			AssertTextEquals(
+				locator1 = "TextInput#EMAIL_ADDRESS",
+				value1 = "@newliferay.com");
+		}
 
 		User.firstLoginUI(specificURL = "http://www.able.com:8080");
+
+		task ("Assert the instance was renamed once signed in to its new virtual host") {
+			ApplicationsMenu.openApplicationsMenu();
+
+			AssertElementPresent(
+				key_site = "EditedLiferay",
+				locator1 = "ApplicationsMenu#SITE_LINK");
+
+			ApplicationsMenu.gotoSite(site = "EditedLiferay");
+		}
 
 		PortalSettings.gotoConfiguration(
 			baseURL = "http://www.able.com:8080",
@@ -368,9 +381,23 @@ definition {
 
 		Alert.viewRequestFailedToComplete();
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#ERROR_1",
-			value1 = "You do not have the required permissions.");
+		var databasePartitionEnabled = PropsUtil.get("database.partition.enabled");
+
+		if (${databasePartitionEnabled} == "true") {
+
+			// Each virtual instance stores its data in its own database
+			// schema, so the document of the other virtual instance cannot be
+			// found
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR_1",
+				value1 = "The document could not be found.");
+		}
+		else {
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#ERROR_1",
+				value1 = "You do not have the required permissions.");
+		}
 	}
 
 	@priority = 5

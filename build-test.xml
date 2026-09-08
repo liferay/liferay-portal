@@ -14454,6 +14454,17 @@ enterprise.product.enterprise.search.enabled=false</echo>
 			</elseif>
 		</if>
 
+		<get-testcase-property property.name="database.partition.enabled" />
+
+		<if>
+			<isset property="database.partition.enabled" />
+			<then>
+				<echo append="true" file="${test.ext.properties.file}">
+					database.partition.enabled=${database.partition.enabled}
+				</echo>
+			</then>
+		</if>
+
 		<get-testcase-property property.name="test.liferay.virtual.instance" />
 
 		<if>
