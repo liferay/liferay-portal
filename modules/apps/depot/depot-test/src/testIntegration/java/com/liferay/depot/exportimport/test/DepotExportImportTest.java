@@ -98,7 +98,7 @@ public class DepotExportImportTest {
 	public void setUp() throws Exception {
 		_depotEntry = _addDepotEntry();
 
-		_depotGroup = _depotEntry.getGroup();
+		_depotEntryGroup = _depotEntry.getGroup();
 
 		_group = GroupTestUtil.addGroup();
 	}
@@ -111,30 +111,30 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportDepotWithAssetListEntryToDepot()
+	public void testExportImportDepotEntryWithAssetListEntryToDepotEntry()
 		throws Exception {
 
 		AssetListEntry assetListEntry = _addAssetListEntry(
-			_depotGroup.getGroupId());
+			_depotEntryGroup.getGroupId());
 
-		_larFile = _export(_depotGroup.getGroupId());
+		_larFile = _export(_depotEntryGroup.getGroupId());
 
-		Group importedDepotGroup = _addImportedDepotGroup();
+		Group importedDepotEntryGroup = _addImportedDepotEntryGroup();
 
-		_import(importedDepotGroup.getGroupId(), _larFile);
+		_import(importedDepotEntryGroup.getGroupId(), _larFile);
 
 		_assertImportedAssetListEntry(
-			assetListEntry, importedDepotGroup.getGroupId());
+			assetListEntry, importedDepotEntryGroup.getGroupId());
 	}
 
 	@Test
-	public void testExportImportDepotWithAssetListEntryToGroup()
+	public void testExportImportDepotEntryWithAssetListEntryToGroup()
 		throws Exception {
 
 		AssetListEntry assetListEntry = _addAssetListEntry(
-			_depotGroup.getGroupId());
+			_depotEntryGroup.getGroupId());
 
-		_larFile = _export(_depotGroup.getGroupId());
+		_larFile = _export(_depotEntryGroup.getGroupId());
 
 		_import(_group.getGroupId(), _larFile);
 
@@ -142,23 +142,24 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportDepotWithDLFileEntryTypeToDepot()
+	public void testExportImportDepotEntryWithDLFileEntryTypeToDepotEntry()
 		throws Exception {
 
-		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			_depotGroup.getGroupId(), DLFileEntryMetadata.class.getName());
+		DDMStructure ddmStructure1 = DDMStructureTestUtil.addStructure(
+			_depotEntryGroup.getGroupId(), DLFileEntryMetadata.class.getName());
 
-		DDMStructure metadataSetDDMStructure =
-			DDMStructureTestUtil.addStructure(
-				_depotGroup.getGroupId(), DLFileEntryMetadata.class.getName());
+		DDMStructure ddmStructure2 = DDMStructureTestUtil.addStructure(
+			_depotEntryGroup.getGroupId(), DLFileEntryMetadata.class.getName());
 
 		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_depotGroup.getGroupId());
+			ServiceContextTestUtil.getServiceContext(
+				_depotEntryGroup.getGroupId());
 
 		DLFileEntryType dlFileEntryType =
 			_dlFileEntryTypeLocalService.addFileEntryType(
-				null, TestPropsValues.getUserId(), _depotGroup.getGroupId(),
-				ddmStructure.getStructureId(), null,
+				null, TestPropsValues.getUserId(),
+				_depotEntryGroup.getGroupId(), ddmStructure1.getStructureId(),
+				null,
 				HashMapBuilder.put(
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()
 				).build(),
@@ -172,8 +173,8 @@ public class DepotExportImportTest {
 			dlFileEntryType.getFileEntryTypeId(),
 			SetUtil.fromArray(
 				new long[] {
-					ddmStructure.getStructureId(),
-					metadataSetDDMStructure.getStructureId()
+					ddmStructure1.getStructureId(),
+					ddmStructure2.getStructureId()
 				}));
 
 		DLAppTestUtil.populateServiceContext(
@@ -181,39 +182,40 @@ public class DepotExportImportTest {
 
 		DDMFormValues ddmFormValues = DDMBeanTranslatorUtil.translate(
 			DDMFormValuesTestUtil.createDDMFormValuesWithRandomValues(
-				ddmStructure.getDDMForm()));
+				ddmStructure1.getDDMForm()));
 
 		serviceContext.setAttribute(
 			DDMFormValues.class.getName() + StringPool.POUND +
-				ddmStructure.getStructureId(),
+				ddmStructure1.getStructureId(),
 			ddmFormValues);
 
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), _depotGroup.getGroupId(),
+			null, TestPropsValues.getUserId(), _depotEntryGroup.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
 			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
 			serviceContext);
 
-		_larFile = _export(_depotGroup.getGroupId());
+		_larFile = _export(_depotEntryGroup.getGroupId());
 
-		Group importedDepotGroup = _addImportedDepotGroup();
+		Group importedDepotEntryGroup = _addImportedDepotEntryGroup();
 
-		_import(importedDepotGroup.getGroupId(), _larFile);
+		_import(importedDepotEntryGroup.getGroupId(), _larFile);
 
 		DLFileEntryType importedDLFileEntryType =
 			_dlFileEntryTypeLocalService.fetchDLFileEntryTypeByUuidAndGroupId(
-				dlFileEntryType.getUuid(), importedDepotGroup.getGroupId());
+				dlFileEntryType.getUuid(),
+				importedDepotEntryGroup.getGroupId());
 
 		Assert.assertEquals(
 			dlFileEntryType.getName(), importedDLFileEntryType.getName());
 
-		DDMStructure importedDDMStructure =
+		DDMStructure importedDDMStructure1 =
 			_ddmStructureLocalService.fetchDDMStructureByUuidAndGroupId(
-				ddmStructure.getUuid(), importedDepotGroup.getGroupId());
+				ddmStructure1.getUuid(), importedDepotEntryGroup.getGroupId());
 
 		Assert.assertEquals(
-			importedDDMStructure.getStructureId(),
+			importedDDMStructure1.getStructureId(),
 			importedDLFileEntryType.getDataDefinitionId());
 
 		List<DDMStructure> importedDDMStructures =
@@ -221,19 +223,19 @@ public class DepotExportImportTest {
 
 		Assert.assertEquals(
 			importedDDMStructures.toString(), 2, importedDDMStructures.size());
-		Assert.assertTrue(importedDDMStructures.contains(importedDDMStructure));
+		Assert.assertTrue(
+			importedDDMStructures.contains(importedDDMStructure1));
 
-		DDMStructure importedMetadataSetDDMStructure =
+		DDMStructure importedDDMStructure2 =
 			_ddmStructureLocalService.fetchDDMStructureByUuidAndGroupId(
-				metadataSetDDMStructure.getUuid(),
-				importedDepotGroup.getGroupId());
+				ddmStructure2.getUuid(), importedDepotEntryGroup.getGroupId());
 
 		Assert.assertTrue(
-			importedDDMStructures.contains(importedMetadataSetDDMStructure));
+			importedDDMStructures.contains(importedDDMStructure2));
 
 		FileEntry importedFileEntry =
 			_dlAppLocalService.getFileEntryByUuidAndGroupId(
-				fileEntry.getUuid(), importedDepotGroup.getGroupId());
+				fileEntry.getUuid(), importedDepotEntryGroup.getGroupId());
 
 		DLFileEntry importedDLFileEntry =
 			(DLFileEntry)importedFileEntry.getModel();
@@ -246,7 +248,7 @@ public class DepotExportImportTest {
 
 		DLFileEntryMetadata importedDLFileEntryMetadata =
 			_dlFileEntryMetadataLocalService.getFileEntryMetadata(
-				importedDDMStructure.getStructureId(),
+				importedDDMStructure1.getStructureId(),
 				importedFileVersion.getFileVersionId());
 
 		Assert.assertEquals(
@@ -257,11 +259,13 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportDepotWithFileEntryToGroup() throws Exception {
-		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
-			_depotGroup.getGroupId());
+	public void testExportImportDepotEntryWithFileEntryToGroup()
+		throws Exception {
 
-		_larFile = _export(_depotGroup.getGroupId());
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(
+			_depotEntryGroup.getGroupId());
+
+		_larFile = _export(_depotEntryGroup.getGroupId());
 
 		_import(_group.getGroupId(), _larFile);
 
@@ -273,14 +277,14 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportDepotWithJournalArticleToGroup()
+	public void testExportImportDepotEntryWithJournalArticleToGroup()
 		throws Exception {
 
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			_depotGroup.getGroupId(), RandomTestUtil.randomString(),
+			_depotEntryGroup.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 
-		_larFile = _export(_depotGroup.getGroupId());
+		_larFile = _export(_depotEntryGroup.getGroupId());
 
 		_import(_group.getGroupId(), _larFile);
 
@@ -293,24 +297,24 @@ public class DepotExportImportTest {
 	}
 
 	@Test
-	public void testExportImportDepotWithJournalDDMStructureToDepot()
+	public void testExportImportDepotEntryWithStructuredJournalArticleToDepotEntry()
 		throws Exception {
 
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			_depotGroup.getGroupId(), RandomTestUtil.randomString(),
+			_depotEntryGroup.getGroupId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString());
 
-		_larFile = _export(_depotGroup.getGroupId());
+		_larFile = _export(_depotEntryGroup.getGroupId());
 
-		Group importedDepotGroup = _addImportedDepotGroup();
+		Group importedDepotEntryGroup = _addImportedDepotEntryGroup();
 
-		_import(importedDepotGroup.getGroupId(), _larFile);
+		_import(importedDepotEntryGroup.getGroupId(), _larFile);
 
 		DDMStructure ddmStructure = journalArticle.getDDMStructure();
 
 		DDMStructure importedDDMStructure =
 			_ddmStructureLocalService.fetchDDMStructureByUuidAndGroupId(
-				ddmStructure.getUuid(), importedDepotGroup.getGroupId());
+				ddmStructure.getUuid(), importedDepotEntryGroup.getGroupId());
 
 		Assert.assertEquals(
 			ddmStructure.getName(), importedDDMStructure.getName());
@@ -322,7 +326,7 @@ public class DepotExportImportTest {
 
 		DDMTemplate importedDDMTemplate =
 			_ddmTemplateLocalService.fetchDDMTemplateByUuidAndGroupId(
-				ddmTemplate.getUuid(), importedDepotGroup.getGroupId());
+				ddmTemplate.getUuid(), importedDepotEntryGroup.getGroupId());
 
 		Assert.assertEquals(
 			importedDDMStructure.getStructureId(),
@@ -336,42 +340,45 @@ public class DepotExportImportTest {
 
 		JournalArticle importedJournalArticle =
 			_journalArticleLocalService.fetchJournalArticleByUuidAndGroupId(
-				journalArticle.getUuid(), importedDepotGroup.getGroupId());
+				journalArticle.getUuid(), importedDepotEntryGroup.getGroupId());
 
 		Assert.assertEquals(
 			journalArticle.getTitle(), importedJournalArticle.getTitle());
 	}
 
 	@Test
-	public void testExportImportGroupWithAssetListEntryToDepot()
+	public void testExportImportGroupWithAssetListEntryToDepotEntry()
 		throws Exception {
 
 		AssetListEntry assetListEntry = _addAssetListEntry(_group.getGroupId());
 
 		_larFile = _export(_group.getGroupId());
 
-		_import(_depotGroup.getGroupId(), _larFile);
+		_import(_depotEntryGroup.getGroupId(), _larFile);
 
-		_assertImportedAssetListEntry(assetListEntry, _depotGroup.getGroupId());
+		_assertImportedAssetListEntry(
+			assetListEntry, _depotEntryGroup.getGroupId());
 	}
 
 	@Test
-	public void testExportImportGroupWithFileEntryToDepot() throws Exception {
+	public void testExportImportGroupWithFileEntryToDepotEntry()
+		throws Exception {
+
 		FileEntry fileEntry = DLAppTestUtil.addFileEntry(_group.getGroupId());
 
 		_larFile = _export(_group.getGroupId());
 
-		_import(_depotGroup.getGroupId(), _larFile);
+		_import(_depotEntryGroup.getGroupId(), _larFile);
 
 		FileEntry importedFileEntry =
 			_dlAppLocalService.getFileEntryByUuidAndGroupId(
-				fileEntry.getUuid(), _depotGroup.getGroupId());
+				fileEntry.getUuid(), _depotEntryGroup.getGroupId());
 
 		Assert.assertEquals(fileEntry.getTitle(), importedFileEntry.getTitle());
 	}
 
 	@Test
-	public void testExportImportGroupWithJournalArticleToDepot()
+	public void testExportImportGroupWithJournalArticleToDepotEntry()
 		throws Exception {
 
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
@@ -380,11 +387,11 @@ public class DepotExportImportTest {
 
 		_larFile = _export(_group.getGroupId());
 
-		_import(_depotGroup.getGroupId(), _larFile);
+		_import(_depotEntryGroup.getGroupId(), _larFile);
 
 		JournalArticle importedJournalArticle =
 			_journalArticleLocalService.fetchJournalArticleByUuidAndGroupId(
-				journalArticle.getUuid(), _depotGroup.getGroupId());
+				journalArticle.getUuid(), _depotEntryGroup.getGroupId());
 
 		Assert.assertEquals(
 			journalArticle.getTitle(), importedJournalArticle.getTitle());
@@ -417,7 +424,7 @@ public class DepotExportImportTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private Group _addImportedDepotGroup() throws Exception {
+	private Group _addImportedDepotEntryGroup() throws Exception {
 		_importedDepotEntry = _addDepotEntry();
 
 		return _importedDepotEntry.getGroup();
@@ -539,10 +546,10 @@ public class DepotExportImportTest {
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
 
+	private Group _depotEntryGroup;
+
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	private Group _depotGroup;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
