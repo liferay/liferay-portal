@@ -149,6 +149,14 @@ export default function BulkUpdateWorkflowStateModalContent({
 
 								<ClayButton
 									aria-expanded={!collapsed}
+									aria-label={sub(
+										Liferay.Language.get(
+											collapsed
+												? 'expand-x'
+												: 'collapse-x'
+										),
+										workflowDefinitionName
+									)}
 									className="lfr-cmp__bulk-update-state-workflow-toggle"
 									displayType="unstyled"
 									onClick={() => toggleCollapsed(workflowKey)}
