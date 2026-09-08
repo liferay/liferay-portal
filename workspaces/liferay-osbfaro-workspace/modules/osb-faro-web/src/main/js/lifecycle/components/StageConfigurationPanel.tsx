@@ -137,7 +137,9 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				<div className="border mb-4 overflow-hidden rounded">
 					<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match text-secondary">
 						{sub(
-							Liferay.Language.get('x-of-these-criteria-must-be-met'),
+							Liferay.Language.get(
+								'x-of-these-criteria-must-be-met'
+							),
 							[
 								<Picker
 									aria-label={Liferay.Language.get(
