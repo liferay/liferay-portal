@@ -24,14 +24,12 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CollatorUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.admin.web.internal.display.context.IndexActionsDisplayContext;
-import com.liferay.portal.search.admin.web.internal.reindexer.IndexReindexerCategoryRegistry;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.search.cluster.StatsInformation;
 import com.liferay.portal.search.cluster.StatsInformationFactory;
@@ -86,16 +84,10 @@ public class IndexActionsDisplayContextBuilder {
 		return indexActionsDisplayContext;
 	}
 
-	public void setIndexReindexerCategoryRegistry(
-		IndexReindexerCategoryRegistry indexReindexerCategoryRegistry) {
+	public void setIndexReindexerClassNamesMap(
+		Map<String, List<String>> indexReindexerClassNamesMap) {
 
-		_indexReindexerCategoryRegistry = indexReindexerCategoryRegistry;
-	}
-
-	public void setIndexReindexerClassNames(
-		List<String> indexReindexerClassNames) {
-
-		_indexReindexerClassNames = indexReindexerClassNames;
+		_indexReindexerClassNamesMap = indexReindexerClassNamesMap;
 	}
 
 	public void setStatsInformationFactory(
@@ -114,7 +106,7 @@ public class IndexActionsDisplayContextBuilder {
 		).put(
 			"indexersMap", _getIndexersMap()
 		).put(
-			"indexReindexerNames", _getIndexReindexerNames()
+			"indexReindexerNames", _getIndexReindexerNamesMap()
 		).put(
 			"initialCompanyIds", _getInitialCompanyIds()
 		).put(
@@ -211,20 +203,19 @@ public class IndexActionsDisplayContextBuilder {
 		return indexersMap;
 	}
 
-	private Map<String, List<Object>> _getIndexReindexerNames() {
+	private Map<String, List<Object>> _getIndexReindexerNamesMap() {
 		Map<String, List<Object>> indexReindexerNamesMap = new TreeMap<>();
 
-		if (ListUtil.isNotNull(_indexReindexerClassNames)) {
-			for (String indexReindexerClassName : _indexReindexerClassNames) {
-				String categoryDisplayKey = _language.get(
-					_httpServletRequest,
-					_indexReindexerCategoryRegistry.getCategory(
-						indexReindexerClassName));
+		if (_indexReindexerClassNamesMap == null) {
+			return indexReindexerNamesMap;
+		}
 
-				List<Object> indexReindexerNames =
-					indexReindexerNamesMap.computeIfAbsent(
-						categoryDisplayKey, key -> new ArrayList<>());
+		for (Map.Entry<String, List<String>> entry :
+				_indexReindexerClassNamesMap.entrySet()) {
 
+			List<Object> indexReindexerNames = new ArrayList<>();
+
+			for (String indexReindexerClassName : entry.getValue()) {
 				indexReindexerNames.add(
 					HashMapBuilder.put(
 						"className", indexReindexerClassName
@@ -235,6 +226,10 @@ public class IndexActionsDisplayContextBuilder {
 							"model.resource." + indexReindexerClassName)
 					).build());
 			}
+
+			indexReindexerNamesMap.put(
+				_language.get(_httpServletRequest, entry.getKey()),
+				indexReindexerNames);
 		}
 
 		return indexReindexerNamesMap;
@@ -335,8 +330,7 @@ public class IndexActionsDisplayContextBuilder {
 		IndexActionsDisplayContextBuilder.class);
 
 	private final HttpServletRequest _httpServletRequest;
-	private IndexReindexerCategoryRegistry _indexReindexerCategoryRegistry;
-	private List<String> _indexReindexerClassNames;
+	private Map<String, List<String>> _indexReindexerClassNamesMap;
 	private final Language _language;
 	private final PermissionChecker _permissionChecker;
 	private final ReindexConfiguration _reindexConfiguration;

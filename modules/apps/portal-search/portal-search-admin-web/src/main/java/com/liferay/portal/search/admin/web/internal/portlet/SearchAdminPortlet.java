@@ -5,10 +5,13 @@
 
 package com.liferay.portal.search.admin.web.internal.portlet;
 
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -20,12 +23,12 @@ import com.liferay.portal.search.admin.web.internal.display.context.builder.Fiel
 import com.liferay.portal.search.admin.web.internal.display.context.builder.IndexActionsDisplayContextBuilder;
 import com.liferay.portal.search.admin.web.internal.display.context.builder.SearchAdminDisplayContextBuilder;
 import com.liferay.portal.search.admin.web.internal.display.context.builder.SearchEngineDisplayContextBuilder;
-import com.liferay.portal.search.admin.web.internal.reindexer.IndexReindexerCategoryRegistry;
 import com.liferay.portal.search.capabilities.SearchCapabilities;
 import com.liferay.portal.search.cluster.StatsInformationFactory;
 import com.liferay.portal.search.configuration.ReindexConfiguration;
 import com.liferay.portal.search.engine.SearchEngineInformation;
 import com.liferay.portal.search.index.IndexInformation;
+import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.search.spi.reindexer.IndexReindexerRegistry;
 
 import jakarta.portlet.Portlet;
@@ -35,12 +38,16 @@ import jakarta.portlet.RenderResponse;
 
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -138,10 +145,28 @@ public class SearchAdminPortlet extends MVCPortlet {
 						_language, _portal, _reindexConfiguration,
 						renderRequest, _searchCapabilities);
 
-			indexActionsDisplayContextBuilder.setIndexReindexerCategoryRegistry(
-				_indexReindexerCategoryRegistry);
-			indexActionsDisplayContextBuilder.setIndexReindexerClassNames(
-				indexReindexerClassNames);
+			Map<String, List<String>> indexReindexerClassNamesMap =
+				new TreeMap<>();
+
+			for (String category : _serviceTrackerMap.keySet()) {
+				List<String> categoryClassNames = new ArrayList<>();
+
+				for (IndexReindexer indexReindexer :
+						_serviceTrackerMap.getService(category)) {
+
+					Class<? extends IndexReindexer> clazz =
+						indexReindexer.getClass();
+
+					categoryClassNames.add(clazz.getName());
+				}
+
+				Collections.sort(categoryClassNames);
+
+				indexReindexerClassNamesMap.put(category, categoryClassNames);
+			}
+
+			indexActionsDisplayContextBuilder.setIndexReindexerClassNamesMap(
+				indexReindexerClassNamesMap);
 			indexActionsDisplayContextBuilder.setStatsInformationFactory(
 				_statsInformationFactorySnapshot.get());
 
@@ -154,9 +179,22 @@ public class SearchAdminPortlet extends MVCPortlet {
 	}
 
 	@Activate
-	protected void activate(Map<String, Object> properties) {
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
 		_reindexConfiguration = ConfigurableUtil.createConfigurable(
 			ReindexConfiguration.class, properties);
+		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
+			bundleContext, IndexReindexer.class, null,
+			(serviceReference, emitter) -> emitter.emit(
+				GetterUtil.getString(
+					serviceReference.getProperty("search.index.category"),
+					"general")));
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
 	}
 
 	private static final Snapshot<IndexInformation> _indexInformationSnapshot =
@@ -172,9 +210,6 @@ public class SearchAdminPortlet extends MVCPortlet {
 			true);
 
 	@Reference
-	private IndexReindexerCategoryRegistry _indexReindexerCategoryRegistry;
-
-	@Reference
 	private IndexReindexerRegistry _indexReindexerRegistry;
 
 	@Reference
@@ -187,5 +222,7 @@ public class SearchAdminPortlet extends MVCPortlet {
 
 	@Reference
 	private SearchCapabilities _searchCapabilities;
+
+	private ServiceTrackerMap<String, List<IndexReindexer>> _serviceTrackerMap;
 
 }
