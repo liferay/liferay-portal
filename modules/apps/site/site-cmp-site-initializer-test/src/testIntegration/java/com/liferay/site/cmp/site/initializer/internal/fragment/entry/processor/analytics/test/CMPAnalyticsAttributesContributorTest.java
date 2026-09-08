@@ -84,7 +84,6 @@ public class CMPAnalyticsAttributesContributorTest {
 
 		ObjectEntry cmpProjectObjectEntry =
 			CMPTestUtil.addCMPProjectObjectEntry();
-
 		ObjectEntry objectEntry = _addCMSBasicWebContentObjectEntry();
 
 		CMPTestUtil.addCMPProjectLinkObjectEntry(
@@ -97,7 +96,6 @@ public class CMPAnalyticsAttributesContributorTest {
 	public void testGetAnalyticsAttributesWithCMPTaskLink() throws Exception {
 		ObjectEntry cmpProjectObjectEntry =
 			CMPTestUtil.addCMPProjectObjectEntry();
-
 		ObjectEntry objectEntry = _addCMSBasicWebContentObjectEntry();
 
 		CMPTestUtil.addCMPTaskLinkObjectEntry(
