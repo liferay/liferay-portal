@@ -298,4 +298,27 @@ describe('formatAccountSessions', () => {
 			totalEvents: 2,
 		});
 	});
+
+	it('carries the experience a page view was served by, same as the individual stream', () => {
+		const [session] = formatAccountSessions([
+			buildSession({
+				events: [
+					{
+						applicationId: 'Page',
+						canonicalUrl: 'https://liferay.com/home',
+						createDate: '2026-07-16T10:00:00.000Z',
+						experienceId: '39201',
+						experienceName: 'Q3 Promo Experience',
+						name: 'pageViewed',
+						pageGroupId: 'https://liferay.com/home',
+						pageTitle: 'Home',
+					},
+				],
+			}),
+		]).filter(isSession);
+
+		expect(session.nestedItems[0]).toMatchObject({
+			experienceNames: ['Q3 Promo Experience'],
+		});
+	});
 });

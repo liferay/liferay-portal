@@ -86,6 +86,64 @@ describe('ActivityStreamCard', () => {
 		expect(getByText('Jane Doe')).toBeInTheDocument();
 	});
 
+	it('shows the experience label for a page view served by a non-default experience', async () => {
+		const {container, getByText} = render(
+			<Wrapper
+				mocks={[
+					mockAccountEventMetricsReq(),
+					mockAccountEventsTrendReq(),
+					mockAccountUserSessionsReq({
+						sessions: [
+							{
+								__typename: 'UserSession',
+								browserName: 'Chrome',
+								completeDate: '2024-04-03T08:30:00.000Z',
+								contentLanguageId: 'en-US',
+								createDate: '2024-04-03T08:00:00.000Z',
+								devicePixelRatio: 1,
+								deviceType: 'Desktop',
+								events: [
+									{
+										__typename: 'Event',
+										applicationId: 'Page',
+										assetTitle: 'Home',
+										canonicalUrl:
+											'https://liferay.com/home',
+										createDate: '2024-04-03T08:05:00.000Z',
+										eventDate: '2024-04-03T08:05:00.000Z',
+										eventId: 'pageViewed',
+										experienceId: '39201',
+										experienceName: 'Q3 Promo Experience',
+										name: 'pageViewed',
+										pageDescription: '',
+										pageGroupId: 'https://liferay.com/home',
+										pageKeywords: '',
+										pageTitle: 'Home',
+										properties: [],
+										referrer: '',
+										url: 'https://liferay.com/home',
+									},
+								],
+								individualId: 'jane-doe-id',
+								languageId: 'en-US',
+								screenHeight: 1080,
+								screenWidth: 1920,
+								timezoneOffset: '-03:00',
+								userAgent: 'Mozilla/5.0',
+								userId: 'jane-doe-id',
+								userName: 'Jane Doe',
+							},
+						] as any,
+					}),
+				]}
+			/>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(getByText('Experience')).toBeInTheDocument();
+	});
+
 	it('includes accountId and accountName as query params on a page event link', async () => {
 		const {container} = render(
 			<Wrapper

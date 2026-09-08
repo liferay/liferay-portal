@@ -294,6 +294,76 @@ describe('VerticalTimeline', () => {
 
 			expect(screen.getByText('pageViewed')).toBeInTheDocument();
 		});
+
+		it('does not show the experience label when the page carries no experience data', () => {
+			renderTimeline({items: [PAGE_ITEM]});
+
+			expect(screen.queryByText('Experience')).not.toBeInTheDocument();
+		});
+
+		it('does not show the experience label when experienceNames is empty', () => {
+			renderTimeline({items: [{...PAGE_ITEM, experienceNames: []}]});
+
+			expect(screen.queryByText('Experience')).not.toBeInTheDocument();
+		});
+
+		it('shows the experience label when the page was served by a non-default experience', () => {
+			renderTimeline({
+				items: [
+					{...PAGE_ITEM, experienceNames: ['Q3 Promo Experience']}
+				]
+			});
+
+			expect(screen.getByText('Experience')).toBeInTheDocument();
+		});
+
+		it('names the experience in the label\'s tooltip', () => {
+			renderTimeline({
+				items: [
+					{...PAGE_ITEM, experienceNames: ['Q3 Promo Experience']}
+				]
+			});
+
+			expect(
+				screen.getByText('Experience').closest('.experience-label-root')
+			).toHaveAttribute('title', 'Q3 Promo Experience');
+		});
+
+		it('lists every distinct experience in the tooltip, one per line', () => {
+			renderTimeline({
+				items: [
+					{
+						...PAGE_ITEM,
+						experienceNames: [
+							'Q3 Promo Experience',
+							'Winter Sale Experience'
+						]
+					}
+				]
+			});
+
+			expect(
+				screen.getByText('Experience').closest('.experience-label-root')
+			).toHaveAttribute(
+				'title',
+				'Q3 Promo Experience\nWinter Sale Experience'
+			);
+		});
+
+		it('shows the experience label alongside the event count, not on a nested event', () => {
+			const {container} = renderTimeline({
+				items: [
+					{...PAGE_ITEM, experienceNames: ['Q3 Promo Experience']}
+				]
+			});
+
+			expect(
+				container.querySelector('.row-metrics .event-count-pill')
+			).toBeInTheDocument();
+			expect(
+				container.querySelector('.row-metrics .experience-label')
+			).toBeInTheDocument();
+		});
 	});
 
 	describe('event row', () => {

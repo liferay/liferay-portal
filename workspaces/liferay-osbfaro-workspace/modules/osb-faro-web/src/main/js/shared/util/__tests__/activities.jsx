@@ -76,6 +76,36 @@ describe('activities', () => {
 			expect(withoutCampaign.campaign).toBeUndefined();
 		});
 
+		it('includes the raw experience id and name in attributes when the event carries one', () => {
+			const result = formatEvents([
+				{
+					applicationId: 'Page',
+					createDate: '2026-07-16T10:00:00.000Z',
+					experienceId: '39201',
+					experienceName: 'Q3 Promo Experience',
+					name: 'pageViewed'
+				}
+			]);
+
+			expect(result[0].attributes.experienceId).toBe('39201');
+			expect(result[0].attributes.experienceName).toBe(
+				'Q3 Promo Experience'
+			);
+		});
+
+		it('omits the experience attributes when the event carries none', () => {
+			const result = formatEvents([
+				{
+					applicationId: 'Page',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed'
+				}
+			]);
+
+			expect(result[0].attributes).not.toHaveProperty('experienceId');
+			expect(result[0].attributes).not.toHaveProperty('experienceName');
+		});
+
 		it('should decode canonicalUrl into subtitle for DXP events', () => {
 			const result = formatEvents([
 				{
@@ -314,6 +344,120 @@ describe('activities', () => {
 			]);
 
 			expect(result[0].nestedItems[0].campaign).toBeUndefined();
+		});
+
+		it('adds the experience a page view was served by onto the group', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					experienceId: '39201',
+					experienceName: 'Q3 Promo Experience',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				}
+			]);
+
+			expect(result[0].experienceNames).toEqual(['Q3 Promo Experience']);
+		});
+
+		it('falls back to the raw id when the group\'s experience has no name', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					experienceId: '39201',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				}
+			]);
+
+			expect(result[0].experienceNames).toEqual(['39201']);
+		});
+
+		it('excludes the default experience from the group', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					experienceId: 'DEFAULT',
+					experienceName: 'Default',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				}
+			]);
+
+			expect(result[0].experienceNames).toBeUndefined();
+		});
+
+		it('leaves a page no view specified an experience for without one', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				}
+			]);
+
+			expect(result[0].experienceNames).toBeUndefined();
+		});
+
+		it('collapses the same experience seen on more than one view of the group into a single name', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					experienceId: '39201',
+					experienceName: 'Q3 Promo Experience',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				},
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:05:00.000Z',
+					experienceId: '39201',
+					experienceName: 'Q3 Promo Experience',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				}
+			]);
+
+			expect(result[0].experienceNames).toEqual(['Q3 Promo Experience']);
+		});
+
+		it('keeps every distinct experience a group\'s views were served by, in the order they were seen', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					experienceId: '39201',
+					experienceName: 'Q3 Promo Experience',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				},
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:05:00.000Z',
+					experienceId: '39202',
+					experienceName: 'Winter Sale Experience',
+					name: 'pageViewed',
+					pageGroupId: 'https://liferay.com/home'
+				}
+			]);
+
+			expect(result[0].experienceNames).toEqual([
+				'Q3 Promo Experience',
+				'Winter Sale Experience'
+			]);
 		});
 
 		it('does not repeat the page subtitle on the group\'s own nested events', () => {
