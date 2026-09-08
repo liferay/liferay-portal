@@ -10,7 +10,8 @@ const DEFAULT_MAX_ENTRIES = 20;
 const STORAGE_KEY_PREFIX = 'LFR_RECENT_SEARCHES_';
 
 /**
- * Stores a search query, most recent first.
+ * Stores a search query, most recent first, and returns the queries stored
+ * afterwards.
  *
  * Queries are deduplicated case insensitively, and a query that continues a
  * stored query within the same word replaces it, so typing "pant" and then
@@ -27,11 +28,11 @@ function add(
 	fdsName: string,
 	query: string,
 	{maxEntries = DEFAULT_MAX_ENTRIES}: {maxEntries?: number} = {}
-): void {
+): string[] {
 	const search = query.trim();
 
 	if (!search) {
-		return;
+		return get(fdsName);
 	}
 
 	const recentSearches = get(fdsName);
@@ -41,10 +42,10 @@ function add(
 			_continuesWord(search, recentSearch)
 		)
 	) {
-		return;
+		return recentSearches;
 	}
 
-	_setRecentSearches(
+	return _setRecentSearches(
 		fdsName,
 		[
 			search,
@@ -58,11 +59,12 @@ function add(
 }
 
 /**
- * Removes every stored search query for a Data Set.
+ * Removes every stored search query for a Data Set and returns the queries
+ * stored afterwards.
  *
  * @param fdsName Name of the Data Set
  */
-function clear(fdsName: string): void {
+function clear(fdsName: string): string[] {
 	try {
 		_checkConsentFunctionalCookies();
 
@@ -71,6 +73,8 @@ function clear(fdsName: string): void {
 	catch (error) {
 		_logStorageWarning(error);
 	}
+
+	return get(fdsName);
 }
 
 /**
@@ -111,13 +115,14 @@ function get(fdsName: string): string[] {
 }
 
 /**
- * Removes a single stored search query, matched case insensitively.
+ * Removes a single stored search query, matched case insensitively, and returns
+ * the queries stored afterwards.
  *
  * @param fdsName Name of the Data Set
  * @param query The search query to remove
  */
-function remove(fdsName: string, query: string): void {
-	_setRecentSearches(
+function remove(fdsName: string, query: string): string[] {
+	return _setRecentSearches(
 		fdsName,
 		get(fdsName).filter(
 			(recentSearch) => !_isSameSearch(recentSearch, query)
@@ -163,7 +168,14 @@ function _logStorageWarning(error: unknown) {
 	}
 }
 
-function _setRecentSearches(fdsName: string, recentSearches: string[]): void {
+// The queries are read back rather than returned as written, so a write that
+// browser storage rejects cannot leave the caller showing a history the Data
+// Set does not have
+
+function _setRecentSearches(
+	fdsName: string,
+	recentSearches: string[]
+): string[] {
 	try {
 		_checkConsentFunctionalCookies();
 
@@ -176,6 +188,8 @@ function _setRecentSearches(fdsName: string, recentSearches: string[]): void {
 	catch (error) {
 		_logStorageWarning(error);
 	}
+
+	return get(fdsName);
 }
 
 export default {

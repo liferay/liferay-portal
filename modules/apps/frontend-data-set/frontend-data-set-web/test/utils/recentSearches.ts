@@ -231,4 +231,53 @@ describe('recentSearches', () => {
 			expect(recentSearches.get(FDS_NAME)).toEqual(['pantalon']);
 		});
 	});
+
+	describe('the queries a change returns', () => {
+		it('holds the query added', () => {
+			expect(recentSearches.add(FDS_NAME, 'pantalon')).toEqual([
+				'pantalon',
+			]);
+		});
+
+		it('holds the queries left by a removal', () => {
+			recentSearches.add(FDS_NAME, 'blogs');
+			recentSearches.add(FDS_NAME, 'documents');
+
+			expect(recentSearches.remove(FDS_NAME, 'blogs')).toEqual([
+				'documents',
+			]);
+		});
+
+		it('is empty after every query is cleared', () => {
+			recentSearches.add(FDS_NAME, 'pantalon');
+
+			expect(recentSearches.clear(FDS_NAME)).toEqual([]);
+		});
+
+		it('holds the stored queries when a query is not worth adding', () => {
+			recentSearches.add(FDS_NAME, 'pantalon');
+
+			expect(recentSearches.add(FDS_NAME, '  ')).toEqual(['pantalon']);
+			expect(recentSearches.add(FDS_NAME, 'pant')).toEqual(['pantalon']);
+		});
+
+		it('holds what browser storage took, not what the change asked for', () => {
+			recentSearches.add(FDS_NAME, 'pantalon');
+
+			const setItem = jest
+				.spyOn(localStorage, 'setItem')
+				.mockImplementation(() => {
+					throw new Error('storage is full');
+				});
+
+			try {
+				expect(recentSearches.remove(FDS_NAME, 'pantalon')).toEqual([
+					'pantalon',
+				]);
+			}
+			finally {
+				setItem.mockRestore();
+			}
+		});
+	});
 });
