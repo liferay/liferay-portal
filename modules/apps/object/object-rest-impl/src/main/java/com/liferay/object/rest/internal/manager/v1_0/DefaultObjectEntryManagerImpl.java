@@ -823,7 +823,6 @@ public class DefaultObjectEntryManagerImpl
 
 		boolean preferApproved = GetterUtil.getBoolean(
 			dtoConverterContext.getAttribute("preferApproved"));
-
 		int start = _getStartPosition(pagination);
 		int end = _getEndPosition(pagination);
 
