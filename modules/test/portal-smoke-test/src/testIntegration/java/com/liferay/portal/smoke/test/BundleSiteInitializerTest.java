@@ -1753,6 +1753,14 @@ public class BundleSiteInitializerTest {
 		Assert.assertNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				group2.getGroupId(), "test-design-library-style-book"));
+
+		List<DepotAppCustomization> depotAppCustomizations =
+			_depotAppCustomizationLocalService.getDepotAppCustomizations(
+				group2.getClassPK());
+
+		Assert.assertTrue(
+			depotAppCustomizations.toString(),
+			depotAppCustomizations.isEmpty());
 	}
 
 	private Group _assertDesignLibraryAssets(
