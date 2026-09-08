@@ -31,6 +31,21 @@ run "should_honor_a_custom_crossplane_namespace" {
 		crossplane_namespace="xplane"
 	}
 }
+run "should_honor_custom_master_cidr_and_observability_config" {
+	assert {
+		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
+		error_message="A custom observability_config.namespace must flow into crossplane-metrics-ingress"
+	}
+	assert {
+		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == "10.1.2.0/28"
+		error_message="A custom master_ipv4_cidr_block must flow into crossplane-webhook-ingress"
+	}
+	command=plan
+	variables {
+		master_ipv4_cidr_block="10.1.2.0/28"
+		observability_config={namespace="custom-observability"}
+	}
+}
 run "should_scope_the_manual_network_policies_correctly" {
 	assert {
 		condition=length(yamldecode(helm_release.crossplane.values[0]).extraObjects) == 4
@@ -93,21 +108,6 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="default-deny-ingress must declare zero ingress rules — any ingress key at all would allow something"
 	}
 	command=plan
-}
-run "should_honor_custom_master_cidr_and_observability_config" {
-	assert {
-		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-webhook-ingress"][0].spec.ingress[0].from[0].ipBlock.cidr == "10.1.2.0/28"
-		error_message="A custom master_ipv4_cidr_block must flow into crossplane-webhook-ingress"
-	}
-	assert {
-		condition=[for o in yamldecode(helm_release.crossplane.values[0]).extraObjects : o if o.metadata.name == "crossplane-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
-		error_message="A custom observability_config.namespace must flow into crossplane-metrics-ingress"
-	}
-	command=plan
-	variables {
-		master_ipv4_cidr_block="10.1.2.0/28"
-		observability_config={namespace="custom-observability"}
-	}
 }
 variables {
 	argo_workflows_helm_chart_version="2.0.3"
