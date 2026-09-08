@@ -116,7 +116,6 @@ public class DSRRoomUtilTest {
 			Assert.assertArrayEquals(
 				new String[] {"1", "3"},
 				DSRRoomUtil.getGroupIds(null, _permissionChecker));
-
 			Assert.assertArrayEquals(
 				new String[] {"1"},
 				DSRRoomUtil.getGroupIds(
