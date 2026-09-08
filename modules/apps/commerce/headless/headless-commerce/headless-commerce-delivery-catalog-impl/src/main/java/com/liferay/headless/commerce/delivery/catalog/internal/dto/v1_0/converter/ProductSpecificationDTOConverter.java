@@ -22,7 +22,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  */
 @Component(
-	property = "dto.class.name=CPDefinitionSpecificationOptionValue",
+	property = {
+		"default=true", "dto.class.name=CPDefinitionSpecificationOptionValue"
+	},
 	service = DTOConverter.class
 )
 public class ProductSpecificationDTOConverter

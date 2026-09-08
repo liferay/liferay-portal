@@ -17,7 +17,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.FragmentDropZoneLayoutStructureItem",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.util.structure.FragmentDropZoneLayoutStructureItem"
+	},
 	service = DTOConverter.class
 )
 public class FragmentDropZonePageElementDefinitionDTOConverter

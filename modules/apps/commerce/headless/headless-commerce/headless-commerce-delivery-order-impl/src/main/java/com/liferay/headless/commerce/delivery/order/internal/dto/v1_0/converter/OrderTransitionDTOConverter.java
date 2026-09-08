@@ -20,7 +20,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.delivery.order.dto.v1_0.OrderTransition",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.delivery.order.dto.v1_0.OrderTransition"
+	},
 	service = DTOConverter.class
 )
 public class OrderTransitionDTOConverter

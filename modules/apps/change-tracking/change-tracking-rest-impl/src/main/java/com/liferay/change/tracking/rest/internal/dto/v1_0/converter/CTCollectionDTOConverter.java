@@ -26,7 +26,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Pei-Jung Lan
  */
 @Component(
-	property = "dto.class.name=com.liferay.change.tracking.model.CTCollection",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.change.tracking.model.CTCollection"
+	},
 	service = DTOConverter.class
 )
 public class CTCollectionDTOConverter

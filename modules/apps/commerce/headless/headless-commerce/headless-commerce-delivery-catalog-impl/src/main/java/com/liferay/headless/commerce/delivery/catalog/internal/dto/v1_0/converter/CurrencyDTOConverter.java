@@ -19,7 +19,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Michele Vigilante
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Currency",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Currency"
+	},
 	service = DTOConverter.class
 )
 public class CurrencyDTOConverter

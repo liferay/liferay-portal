@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"application.name=Liferay.Headless.DSR",
+		"application.name=Liferay.Headless.DSR", "default=true",
 		"dto.class.name=com.liferay.headless.dsr.dto.v1_0.InvitedMember",
 		"version=v1.0"
 	},

@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"application.name=Liferay.Headless.Admin.Workflow",
+		"application.name=Liferay.Headless.Admin.Workflow", "default=true",
 		"dto.class.name=com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken",
 		"version=v1.0"
 	},

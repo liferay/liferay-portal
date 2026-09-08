@@ -31,7 +31,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Mikel Lorza
  */
 @Component(
-	property = "dto.class.name=com.liferay.document.library.kernel.model.DLFileEntryType",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.document.library.kernel.model.DLFileEntryType"
+	},
 	service = DTOConverter.class
 )
 public class DocumentDataDefinitionTypeDTOConverter

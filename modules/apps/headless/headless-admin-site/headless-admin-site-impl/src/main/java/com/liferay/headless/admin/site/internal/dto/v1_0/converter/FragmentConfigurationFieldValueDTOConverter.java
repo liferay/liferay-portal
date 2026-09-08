@@ -69,7 +69,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Lourdes Fernández Besada
  */
 @Component(
-	property = "dto.class.name=com.liferay.fragment.util.configuration.FragmentConfigurationField",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.fragment.util.configuration.FragmentConfigurationField"
+	},
 	service = DTOConverter.class
 )
 public class FragmentConfigurationFieldValueDTOConverter

@@ -27,7 +27,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gabriel Albuquerque
  */
 @Component(
-	property = "dto.class.name=com.liferay.object.model.ObjectValidationRule",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.object.model.ObjectValidationRule"
+	},
 	service = DTOConverter.class
 )
 public class ObjectValidationRuleDTOConverter

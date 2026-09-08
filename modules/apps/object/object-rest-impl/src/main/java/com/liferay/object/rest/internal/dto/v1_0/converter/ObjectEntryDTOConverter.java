@@ -132,7 +132,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	property = {
-		"dto.class.name=com.liferay.object.model.ObjectEntry",
+		"default=true", "dto.class.name=com.liferay.object.model.ObjectEntry",
 		"service.ranking:Integer=100"
 	},
 	service = DTOConverter.class

@@ -71,7 +71,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jürgen Kappler
  */
 @Component(
-	property = "dto.class.name=com.liferay.portal.kernel.model.Layout",
+	property = {
+		"default=true", "dto.class.name=com.liferay.portal.kernel.model.Layout"
+	},
 	service = DTOConverter.class
 )
 public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {

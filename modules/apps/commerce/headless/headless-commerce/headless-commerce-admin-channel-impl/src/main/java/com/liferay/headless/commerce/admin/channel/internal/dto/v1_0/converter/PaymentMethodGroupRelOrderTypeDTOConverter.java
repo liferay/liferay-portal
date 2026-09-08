@@ -20,7 +20,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Alberti
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.payment.model.CommercePaymentMethodGroupRelQualifier-OrderType",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.payment.model.CommercePaymentMethodGroupRelQualifier-OrderType"
+	},
 	service = DTOConverter.class
 )
 public class PaymentMethodGroupRelOrderTypeDTOConverter

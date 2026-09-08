@@ -32,7 +32,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.util.structure.ContainerStyledLayoutStructureItem"
+	},
 	service = DTOConverter.class
 )
 public class ContainerPageElementDefinitionDTOConverter

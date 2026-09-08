@@ -46,7 +46,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Javier Gamarra
  */
 @Component(
-	property = "dto.class.name=com.liferay.message.boards.model.MBThread",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.message.boards.model.MBThread"
+	},
 	service = DTOConverter.class
 )
 public class MessageBoardThreadDTOConverter

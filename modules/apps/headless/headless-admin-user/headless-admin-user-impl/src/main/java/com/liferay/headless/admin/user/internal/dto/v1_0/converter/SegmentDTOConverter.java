@@ -27,7 +27,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Jürgen Kappler
  */
 @Component(
-	property = "dto.class.name=com.liferay.segments.model.SegmentsEntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.segments.model.SegmentsEntry"
+	},
 	service = DTOConverter.class
 )
 public class SegmentDTOConverter

@@ -29,7 +29,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.utility.page.model.LayoutUtilityPageEntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.utility.page.model.LayoutUtilityPageEntry"
+	},
 	service = DTOConverter.class
 )
 public class UtilityPageDTOConverter

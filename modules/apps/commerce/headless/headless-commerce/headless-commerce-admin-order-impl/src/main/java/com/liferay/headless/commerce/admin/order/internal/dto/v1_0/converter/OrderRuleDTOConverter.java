@@ -22,7 +22,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Alberti
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.order.rule.model.COREntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.order.rule.model.COREntry"
+	},
 	service = DTOConverter.class
 )
 public class OrderRuleDTOConverter

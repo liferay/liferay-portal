@@ -20,7 +20,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Ferrari
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.machine.learning.forecast.SkuCommerceMLForecast",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.machine.learning.forecast.SkuCommerceMLForecast"
+	},
 	service = DTOConverter.class
 )
 public class SkuForecastDTOConverter

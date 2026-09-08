@@ -41,7 +41,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alicia García
  */
 @Component(
-	property = "dto.class.name=com.liferay.object.model.ObjectEntryFolder",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.object.model.ObjectEntryFolder"
+	},
 	service = DTOConverter.class
 )
 public class ObjectEntryFolderDTOConverter

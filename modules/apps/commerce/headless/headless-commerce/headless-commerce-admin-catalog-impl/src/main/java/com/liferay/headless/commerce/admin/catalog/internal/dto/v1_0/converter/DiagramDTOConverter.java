@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.shop.by.diagram.model.CSDiagramSetting",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.shop.by.diagram.model.CSDiagramSetting"
+	},
 	service = DTOConverter.class
 )
 public class DiagramDTOConverter

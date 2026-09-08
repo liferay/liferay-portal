@@ -22,7 +22,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Danny Situ
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.admin.channel.dto.v1_0.CategoryDisplayPage",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.admin.channel.dto.v1_0.CategoryDisplayPage"
+	},
 	service = DTOConverter.class
 )
 public class CategoryDisplayPageDTOConverter

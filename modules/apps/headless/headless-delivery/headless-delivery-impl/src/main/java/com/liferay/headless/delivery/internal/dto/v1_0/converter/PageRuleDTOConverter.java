@@ -21,7 +21,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Lourdes Fernández Besada
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.LayoutStructureRule",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.util.structure.LayoutStructureRule"
+	},
 	service = DTOConverter.class
 )
 public class PageRuleDTOConverter

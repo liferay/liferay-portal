@@ -18,7 +18,9 @@ import org.osgi.service.component.annotations.Component;
  * @author Riccardo Ferrari
  */
 @Component(
-	property = "dto.class.name=com.liferay.portal.kernel.model.Group",
+	property = {
+		"default=true", "dto.class.name=com.liferay.portal.kernel.model.Group"
+	},
 	service = DTOConverter.class
 )
 public class SiteDTOConverter implements DTOConverter<Group, Site> {

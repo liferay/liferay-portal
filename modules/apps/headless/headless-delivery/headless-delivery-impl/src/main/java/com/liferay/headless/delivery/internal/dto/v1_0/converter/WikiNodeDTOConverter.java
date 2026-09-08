@@ -21,7 +21,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Luis Miguel Barcos
  */
 @Component(
-	property = "dto.class.name=com.liferay.wiki.model.WikiNode",
+	property = {
+		"default=true", "dto.class.name=com.liferay.wiki.model.WikiNode"
+	},
 	service = DTOConverter.class
 )
 public class WikiNodeDTOConverter

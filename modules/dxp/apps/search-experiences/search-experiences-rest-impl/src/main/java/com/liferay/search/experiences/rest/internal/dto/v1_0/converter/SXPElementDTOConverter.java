@@ -22,7 +22,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	enabled = false,
-	property = "dto.class.name=com.liferay.search.experiences.model.SXPElement",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.search.experiences.model.SXPElement"
+	},
 	service = DTOConverter.class
 )
 public class SXPElementDTOConverter

@@ -39,7 +39,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rubén Pulido
  */
 @Component(
-	property = "dto.class.name=com.liferay.message.boards.model.MBMessage",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.message.boards.model.MBMessage"
+	},
 	service = DTOConverter.class
 )
 public class MessageBoardMessageDTOConverter

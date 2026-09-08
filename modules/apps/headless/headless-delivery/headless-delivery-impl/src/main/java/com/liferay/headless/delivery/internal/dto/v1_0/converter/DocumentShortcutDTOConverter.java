@@ -22,7 +22,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sam Ziemer
  */
 @Component(
-	property = "dto.class.name=com.liferay.document.library.kernel.model.DLFileShortcut",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.document.library.kernel.model.DLFileShortcut"
+	},
 	service = DTOConverter.class
 )
 public class DocumentShortcutDTOConverter

@@ -35,7 +35,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.RowStyledLayoutStructureItem",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.util.structure.RowStyledLayoutStructureItem"
+	},
 	service = DTOConverter.class
 )
 public class GridPageElementDefinitionDTOConverter

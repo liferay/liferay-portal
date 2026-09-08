@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Thiago Buarque
  */
 @Component(
-	property = "dto.class.name=com.liferay.style.book.model.StyleBookEntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.style.book.model.StyleBookEntry"
+	},
 	service = DTOConverter.class
 )
 public class StyleBookDTOConverter

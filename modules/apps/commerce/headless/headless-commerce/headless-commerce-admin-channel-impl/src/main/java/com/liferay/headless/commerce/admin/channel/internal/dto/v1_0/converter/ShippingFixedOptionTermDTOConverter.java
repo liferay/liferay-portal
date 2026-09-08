@@ -20,7 +20,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.payment.model.CommerceShippingFixedOptionQualifier-Term",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.payment.model.CommerceShippingFixedOptionQualifier-Term"
+	},
 	service = DTOConverter.class
 )
 public class ShippingFixedOptionTermDTOConverter

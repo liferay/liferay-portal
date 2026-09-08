@@ -19,7 +19,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.product.model.CPOptionCategory",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.product.model.CPOptionCategory"
+	},
 	service = DTOConverter.class
 )
 public class OptionCategoryDTOConverter

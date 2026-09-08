@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eudaldo Alonso
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.FormStepContainerStyledLayoutStructureItem",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.util.structure.FormStepContainerStyledLayoutStructureItem"
+	},
 	service = DTOConverter.class
 )
 public class FormStepContainerPageElementDefinitionDTOConverter

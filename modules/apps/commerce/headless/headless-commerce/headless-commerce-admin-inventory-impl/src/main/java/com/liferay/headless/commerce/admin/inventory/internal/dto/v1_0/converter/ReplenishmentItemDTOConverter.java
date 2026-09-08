@@ -19,7 +19,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Crescenzo Rega
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.admin.inventory.dto.v1_0.ReplenishmentItem",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.admin.inventory.dto.v1_0.ReplenishmentItem"
+	},
 	service = DTOConverter.class
 )
 public class ReplenishmentItemDTOConverter

@@ -21,7 +21,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Marco Leo
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.order.rule.model.COREntryRel-AccountGroup",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.order.rule.model.COREntryRel-AccountGroup"
+	},
 	service = DTOConverter.class
 )
 public class OrderRuleAccountGroupDTOConverter

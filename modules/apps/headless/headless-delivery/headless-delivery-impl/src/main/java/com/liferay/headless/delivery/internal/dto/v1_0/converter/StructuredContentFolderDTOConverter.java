@@ -30,7 +30,9 @@ import org.osgi.service.component.annotations.Reference;
  * @author Víctor Galán
  */
 @Component(
-	property = "dto.class.name=com.liferay.journal.model.JournalFolder",
+	property = {
+		"default=true", "dto.class.name=com.liferay.journal.model.JournalFolder"
+	},
 	service = DTOConverter.class
 )
 public class StructuredContentFolderDTOConverter

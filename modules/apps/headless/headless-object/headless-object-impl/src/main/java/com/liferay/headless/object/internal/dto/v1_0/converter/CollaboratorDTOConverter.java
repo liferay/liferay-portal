@@ -31,7 +31,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Mikel Lorza
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.object.dto.v1_0.Collaborator",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.object.dto.v1_0.Collaborator"
+	},
 	service = DTOConverter.class
 )
 public class CollaboratorDTOConverter

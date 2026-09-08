@@ -21,7 +21,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.pricing.model.CommercePriceModifierRel-ProductGroup",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.pricing.model.CommercePriceModifierRel-ProductGroup"
+	},
 	service = DTOConverter.class
 )
 public class PriceModifierProductGroupDTOConverter

@@ -33,7 +33,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Carlos Correa
  */
 @Component(
-	property = "dto.class.name=com.liferay.portal.kernel.model.UserNotificationEvent",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.portal.kernel.model.UserNotificationEvent"
+	},
 	service = DTOConverter.class
 )
 public class UserNotificationDTOConverter

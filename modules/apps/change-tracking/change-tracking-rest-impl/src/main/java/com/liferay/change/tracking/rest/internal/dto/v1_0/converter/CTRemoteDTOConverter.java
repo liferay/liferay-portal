@@ -15,7 +15,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Pei-Jung Lan
  */
 @Component(
-	property = "dto.class.name=com.liferay.change.tracking.model.CTRemote",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.change.tracking.model.CTRemote"
+	},
 	service = DTOConverter.class
 )
 public class CTRemoteDTOConverter

@@ -39,7 +39,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Stefano Motta
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuVirtualSettings",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuVirtualSettings"
+	},
 	service = DTOConverter.class
 )
 public class SkuVirtualSettingsDTOConverter

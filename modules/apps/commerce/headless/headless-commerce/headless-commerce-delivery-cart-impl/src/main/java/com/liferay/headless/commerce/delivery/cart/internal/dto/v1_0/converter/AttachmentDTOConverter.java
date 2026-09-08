@@ -18,7 +18,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Stefano Motta
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.delivery.cart.dto.v1_0.Attachment",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.delivery.cart.dto.v1_0.Attachment"
+	},
 	service = DTOConverter.class
 )
 public class AttachmentDTOConverter

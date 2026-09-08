@@ -16,7 +16,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Riccardo Ferrari
  */
 @Component(
-	property = "dto.class.name=AnalyticsDataSource",
+	property = {"default=true", "dto.class.name=AnalyticsDataSource"},
 	service = DTOConverter.class
 )
 public class DataSourceDTOConverter

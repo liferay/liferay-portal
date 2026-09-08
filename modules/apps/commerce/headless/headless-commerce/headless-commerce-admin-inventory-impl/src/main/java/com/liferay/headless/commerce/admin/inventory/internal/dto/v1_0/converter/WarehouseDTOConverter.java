@@ -19,7 +19,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouse",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouse"
+	},
 	service = DTOConverter.class
 )
 public class WarehouseDTOConverter

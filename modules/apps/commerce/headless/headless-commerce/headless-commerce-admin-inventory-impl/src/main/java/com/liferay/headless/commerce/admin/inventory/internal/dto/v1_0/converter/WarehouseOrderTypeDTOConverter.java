@@ -22,7 +22,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Crescenzo Rega
  */
 @Component(
-	property = "dto.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel-OrderType",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.commerce.inventory.model.CommerceInventoryWarehouseRel-OrderType"
+	},
 	service = DTOConverter.class
 )
 public class WarehouseOrderTypeDTOConverter

@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alessio Antonio Rendina
  */
 @Component(
-	property = "dto.class.name=com.liferay.account.model.AccountEntryUserRel",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.account.model.AccountEntryUserRel"
+	},
 	service = DTOConverter.class
 )
 public class AccountMemberDTOConverter

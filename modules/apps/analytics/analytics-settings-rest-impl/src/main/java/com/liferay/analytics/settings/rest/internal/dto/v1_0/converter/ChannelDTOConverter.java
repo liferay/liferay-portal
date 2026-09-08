@@ -21,7 +21,8 @@ import org.osgi.service.component.annotations.Reference;
  * @author Riccardo Ferrari
  */
 @Component(
-	property = "dto.class.name=AnalyticsChannel", service = DTOConverter.class
+	property = {"default=true", "dto.class.name=AnalyticsChannel"},
+	service = DTOConverter.class
 )
 public class ChannelDTOConverter
 	implements DTOConverter<AnalyticsChannel, Channel> {

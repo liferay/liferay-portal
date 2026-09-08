@@ -29,7 +29,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Javier Moral
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.FormRelationshipStyledLayoutStructureItem",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.util.structure.FormRelationshipStyledLayoutStructureItem"
+	},
 	service = DTOConverter.class
 )
 public class FormRelationshipPageElementDefinitionDTOConverter

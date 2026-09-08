@@ -40,7 +40,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rubén Pulido
  */
 @Component(
-	property = "dto.class.name=com.liferay.fragment.model.FragmentEntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.fragment.model.FragmentEntry"
+	},
 	service = DTOConverter.class
 )
 public class FragmentDTOConverter

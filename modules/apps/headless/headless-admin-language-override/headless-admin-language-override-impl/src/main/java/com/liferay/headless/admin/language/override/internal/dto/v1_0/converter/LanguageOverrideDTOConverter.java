@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Thiago Buarque
  */
 @Component(
-	property = "dto.class.name=com.liferay.portal.language.override.model.PLOEntry",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.portal.language.override.model.PLOEntry"
+	},
 	service = DTOConverter.class
 )
 public class LanguageOverrideDTOConverter

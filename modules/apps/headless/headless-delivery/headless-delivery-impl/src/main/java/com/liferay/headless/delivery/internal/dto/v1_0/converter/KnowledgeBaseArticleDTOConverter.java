@@ -41,7 +41,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rubén Pulido
  */
 @Component(
-	property = "dto.class.name=com.liferay.knowledge.base.model.KBArticle",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.knowledge.base.model.KBArticle"
+	},
 	service = DTOConverter.class
 )
 public class KnowledgeBaseArticleDTOConverter

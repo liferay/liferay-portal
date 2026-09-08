@@ -29,7 +29,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrderItemShipment",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.delivery.order.dto.v1_0.PlacedOrderItemShipment"
+	},
 	service = DTOConverter.class
 )
 public class PlacedOrderItemShipmentDTOConverter

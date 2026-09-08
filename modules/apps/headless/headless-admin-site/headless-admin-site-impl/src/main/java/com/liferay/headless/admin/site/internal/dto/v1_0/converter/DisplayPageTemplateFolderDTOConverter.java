@@ -19,7 +19,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Bárbara Cabrera
  */
 @Component(
-	property = "dto.class.name=com.liferay.portal.kernel.model.LayoutPageTemplateCollection",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.portal.kernel.model.LayoutPageTemplateCollection"
+	},
 	service = DTOConverter.class
 )
 public class DisplayPageTemplateFolderDTOConverter

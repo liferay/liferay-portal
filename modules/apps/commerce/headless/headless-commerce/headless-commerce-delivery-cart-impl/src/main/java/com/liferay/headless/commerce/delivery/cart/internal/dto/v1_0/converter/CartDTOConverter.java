@@ -74,7 +74,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  */
 @Component(
-	property = "dto.class.name=com.liferay.headless.commerce.delivery.cart.dto.v1_0.Cart",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.headless.commerce.delivery.cart.dto.v1_0.Cart"
+	},
 	service = DTOConverter.class
 )
 public class CartDTOConverter implements DTOConverter<CommerceOrder, Cart> {

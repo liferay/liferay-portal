@@ -25,7 +25,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Sam Ziemer
  */
 @Component(
-	property = "dto.class.name=com.liferay.dynamic.data.mapping.model.DDMStructure",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.dynamic.data.mapping.model.DDMStructure"
+	},
 	service = DTOConverter.class
 )
 public class DocumentMetadataSetDTOConverter

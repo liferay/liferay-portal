@@ -31,7 +31,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Mikel Lorza
  */
 @Component(
-	property = "dto.class.name=com.liferay.layout.util.structure.DropZoneLayoutStructureItem",
+	property = {
+		"default=true",
+		"dto.class.name=com.liferay.layout.util.structure.DropZoneLayoutStructureItem"
+	},
 	service = DTOConverter.class
 )
 public class DropZonePageElementDefinitionDTOConverter
