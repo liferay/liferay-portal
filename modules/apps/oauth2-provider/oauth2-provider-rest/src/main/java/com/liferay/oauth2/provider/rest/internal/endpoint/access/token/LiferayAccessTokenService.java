@@ -123,6 +123,15 @@ public class LiferayAccessTokenService extends AccessTokenService {
 	protected void injectContextIntoOAuthProviders() {
 	}
 
+	@Override
+	protected boolean isValidPublicClient(Client client, String clientId) {
+		if (client == null) {
+			return false;
+		}
+
+		return super.isValidPublicClient(client, clientId);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		LiferayAccessTokenService.class);
 

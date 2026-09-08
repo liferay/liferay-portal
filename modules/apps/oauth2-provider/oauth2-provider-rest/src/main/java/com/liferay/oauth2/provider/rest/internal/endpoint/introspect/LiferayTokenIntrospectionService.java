@@ -121,6 +121,15 @@ public class LiferayTokenIntrospectionService extends AbstractTokenService {
 		return super.authenticateClientIfNeeded(params);
 	}
 
+	@Override
+	protected boolean isValidPublicClient(Client client, String clientId) {
+		if (client == null) {
+			return false;
+		}
+
+		return super.isValidPublicClient(client, clientId);
+	}
+
 	private boolean _clientsMatch(Client client1, Client client2) {
 		if (!Objects.equals(client1.getClientId(), client2.getClientId())) {
 			return false;
