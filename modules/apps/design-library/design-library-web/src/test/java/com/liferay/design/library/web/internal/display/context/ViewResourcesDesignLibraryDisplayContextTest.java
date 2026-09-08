@@ -244,12 +244,12 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		Map<String, Object> resourceType = resourceTypes.get(0);
 
 		Assert.assertEquals("style-book-color", resourceType.get("color"));
+		Assert.assertNull(resourceType.get("creationItems"));
 		Assert.assertEquals("edit", resourceType.get("defaultActionId"));
 		Assert.assertEquals(_CLASS_NAME_3, resourceType.get("entryClassName"));
 		Assert.assertEquals("style-book", resourceType.get("key"));
 		Assert.assertEquals("style-book-label", resourceType.get("label"));
 		Assert.assertEquals("style-book-icon", resourceType.get("symbol"));
-		Assert.assertNull(resourceType.get("creationItems"));
 		Assert.assertNull(resourceType.get("type"));
 	}
 
