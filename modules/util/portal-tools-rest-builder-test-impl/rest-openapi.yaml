@@ -246,6 +246,30 @@ components:
                 testEntity:
                     $ref: "#/components/schemas/TestEntity"
             type: object
+        ObjectArrayPropertyTestEntity:
+            properties:
+                name:
+                    type: string
+                objectArrayProperty:
+                    items:
+                        type: object
+                    type: array
+            title: ObjectArrayPropertyTestEntity
+            type: object
+        OneOfPropertyTestEntity:
+            properties:
+                name:
+                    type: string
+                oneOfProperty:
+                    oneOf:
+                        -   type: array
+                        -   type: boolean
+                        -   type: integer
+                        -   type: number
+                        -   type: object
+                        -   type: string
+            title: OneOfPropertyTestEntity
+            type: object
         Schema:
             properties:
                 property1:
