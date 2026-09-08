@@ -362,23 +362,6 @@ public abstract class BaseEngineClient {
 	protected RestTemplate getRestTemplate(FaroProject faroProject) {
 		RestTemplate restTemplate = new RestTemplate();
 
-		restTemplate.setUriTemplateHandler(new UriBuilderFactory());
-
-		MappingJackson2HttpMessageConverter
-			mappingJackson2HttpMessageConverter =
-				new MappingJackson2HttpMessageConverter();
-
-		mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
-
-		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(
-			Arrays.asList(MediaType.APPLICATION_JSON, MediaTypes.HAL_JSON));
-
-		List<HttpMessageConverter<?>> httpMessageConverters = new ArrayList<>();
-
-		httpMessageConverters.add(mappingJackson2HttpMessageConverter);
-
-		restTemplate.setMessageConverters(httpMessageConverters);
-
 		restTemplate.setErrorHandler(new ResponseErrorHandler());
 
 		List<ClientHttpRequestInterceptor> clientHttpRequestInterceptors =
@@ -405,6 +388,21 @@ public abstract class BaseEngineClient {
 
 		restTemplate.setInterceptors(clientHttpRequestInterceptors);
 
+		MappingJackson2HttpMessageConverter
+			mappingJackson2HttpMessageConverter =
+				new MappingJackson2HttpMessageConverter();
+
+		mappingJackson2HttpMessageConverter.setObjectMapper(objectMapper);
+
+		mappingJackson2HttpMessageConverter.setSupportedMediaTypes(
+			Arrays.asList(MediaType.APPLICATION_JSON, MediaTypes.HAL_JSON));
+
+		List<HttpMessageConverter<?>> httpMessageConverters = new ArrayList<>();
+
+		httpMessageConverters.add(mappingJackson2HttpMessageConverter);
+
+		restTemplate.setMessageConverters(httpMessageConverters);
+
 		restTemplate.setRequestFactory(
 			new HttpComponentsClientHttpRequestFactory() {
 
@@ -421,6 +419,8 @@ public abstract class BaseEngineClient {
 				}
 
 			});
+
+		restTemplate.setUriTemplateHandler(new UriBuilderFactory());
 
 		return restTemplate;
 	}
