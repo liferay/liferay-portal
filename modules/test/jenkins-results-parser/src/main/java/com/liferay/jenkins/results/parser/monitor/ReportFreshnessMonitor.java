@@ -113,16 +113,9 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 	}
 
 	private String _getReadFailureMessage(Exception exception) {
-		String message = exception.getMessage();
-
-		if (message == null) {
-			Class<?> clazz = exception.getClass();
-
-			message = clazz.getName();
-		}
-
 		return JenkinsResultsParserUtil.combine(
-			"Unable to read ", _reportDataURL, ": ", message);
+			"Unable to read ", _reportDataURL, ": ",
+			JenkinsResultsParserUtil.getMessage(exception));
 	}
 
 	private String _getStaleMessage(long outputAgeSeconds) {

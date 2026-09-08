@@ -76,13 +76,7 @@ public class HTTPEndpointMonitor extends BaseMonitor {
 				"Endpoint ", _endpointURL, " was not found");
 		}
 
-		String message = exception.getMessage();
-
-		if (message == null) {
-			Class<?> clazz = exception.getClass();
-
-			message = clazz.getName();
-		}
+		String message = JenkinsResultsParserUtil.getMessage(exception);
 
 		Matcher matcher = _responseCodePattern.matcher(message);
 

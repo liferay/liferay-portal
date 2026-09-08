@@ -152,17 +152,10 @@ public class MonitorRunner {
 		catch (ExecutionException executionException) {
 			Throwable throwable = executionException.getCause();
 
-			String message = throwable.getMessage();
-
-			if (message == null) {
-				Class<?> clazz = throwable.getClass();
-
-				message = clazz.getName();
-			}
-
 			return _newUnknownMonitorResult(
 				JenkinsResultsParserUtil.combine(
-					"Monitor ", monitor.getId(), " failed: ", message));
+					"Monitor ", monitor.getId(), " failed: ",
+					JenkinsResultsParserUtil.getMessage(throwable)));
 		}
 		catch (InterruptedException interruptedException) {
 			Thread thread = Thread.currentThread();

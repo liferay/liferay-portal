@@ -2873,6 +2873,18 @@ public class JenkinsResultsParserUtil {
 		return localURL + localURLQueryString;
 	}
 
+	public static String getMessage(Throwable throwable) {
+		String message = throwable.getMessage();
+
+		if (message != null) {
+			return message;
+		}
+
+		Class<?> clazz = throwable.getClass();
+
+		return clazz.getName();
+	}
+
 	public static long getMillis(LocalDateTime localDateTime) {
 		ZonedDateTime zonedDateTime = ZonedDateTime.of(
 			localDateTime, ZoneId.systemDefault());
