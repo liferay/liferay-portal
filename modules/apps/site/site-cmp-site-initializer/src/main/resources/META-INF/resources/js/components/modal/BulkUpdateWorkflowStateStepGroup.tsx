@@ -18,15 +18,15 @@ import {WorkflowTaskItemData} from '../../utils/types';
 export default function BulkUpdateWorkflowStateStepGroup({
 	deselectedTaskIds,
 	getTaskURL,
-	onToggleTasks,
-	onTransitionChange,
+	onTasksSelectedChange,
+	onTransitionNameChange,
 	stepGroup,
 	transitionName,
 }: {
 	deselectedTaskIds: number[];
 	getTaskURL: (task: WorkflowTaskItemData) => string;
-	onToggleTasks: (taskIds: number[], deselect: boolean) => void;
-	onTransitionChange: (transitionName: string) => void;
+	onTasksSelectedChange: (taskIds: number[], selected: boolean) => void;
+	onTransitionNameChange: (transitionName: string) => void;
 	stepGroup: StepGroup;
 	transitionName?: string;
 }) {
@@ -54,9 +54,9 @@ export default function BulkUpdateWorkflowStateStepGroup({
 											!deselectedTaskIds.includes(id)
 										}
 										onChange={() =>
-											onToggleTasks(
+											onTasksSelectedChange(
 												[id],
-												!deselectedTaskIds.includes(id)
+												deselectedTaskIds.includes(id)
 											)
 										}
 									/>
@@ -101,7 +101,9 @@ export default function BulkUpdateWorkflowStateStepGroup({
 					)}
 					items={stepGroup.transitions}
 					messages={PICKER_MESSAGES}
-					onSelectionChange={(key) => onTransitionChange(String(key))}
+					onSelectionChange={(key) =>
+						onTransitionNameChange(String(key))
+					}
 					placeholder={Liferay.Language.get('select-a-transition')}
 					selectedKey={transitionName ?? ''}
 				>

@@ -37,10 +37,20 @@ export default function useBulkUpdateWorkflowState(
 	const isCollapsed = (workflowKey: string) =>
 		collapsedWorkflowKeys.includes(workflowKey);
 
-	const selectTransitionName = (
-		stepGroupKey: string,
-		transitionName: string
-	) =>
+	const setTasksSelected = (taskIds: number[], selected: boolean) =>
+		setDeselectedTaskIds((previousDeselectedTaskIds) => {
+			if (selected) {
+				return previousDeselectedTaskIds.filter(
+					(taskId) => !taskIds.includes(taskId)
+				);
+			}
+
+			return Array.from(
+				new Set([...previousDeselectedTaskIds, ...taskIds])
+			);
+		});
+
+	const setTransitionName = (stepGroupKey: string, transitionName: string) =>
 		setTransitionNames((previousTransitionNames) => ({
 			...previousTransitionNames,
 			[stepGroupKey]: transitionName,
@@ -57,26 +67,13 @@ export default function useBulkUpdateWorkflowState(
 			return [...previousCollapsedWorkflowKeys, workflowKey];
 		});
 
-	const toggleTasks = (taskIds: number[], deselect: boolean) =>
-		setDeselectedTaskIds((previousDeselectedTaskIds) => {
-			if (deselect) {
-				return Array.from(
-					new Set([...previousDeselectedTaskIds, ...taskIds])
-				);
-			}
-
-			return previousDeselectedTaskIds.filter(
-				(taskId) => !taskIds.includes(taskId)
-			);
-		});
-
 	return {
 		changeTransitions,
 		deselectedTaskIds,
 		isCollapsed,
-		selectTransitionName,
+		setTasksSelected,
+		setTransitionName,
 		toggleCollapsed,
-		toggleTasks,
 		transitionNames,
 		workflowGroups,
 	};

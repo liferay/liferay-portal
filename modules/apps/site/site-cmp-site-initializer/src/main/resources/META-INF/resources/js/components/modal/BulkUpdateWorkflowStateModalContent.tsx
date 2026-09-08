@@ -50,9 +50,9 @@ export default function BulkUpdateWorkflowStateModalContent({
 		changeTransitions,
 		deselectedTaskIds,
 		isCollapsed,
-		selectTransitionName,
+		setTasksSelected,
+		setTransitionName,
 		toggleCollapsed,
-		toggleTasks,
 		transitionNames,
 		workflowGroups,
 	} = useBulkUpdateWorkflowState(items);
@@ -128,9 +128,9 @@ export default function BulkUpdateWorkflowStateModalContent({
 										!allTasksSelected
 									}
 									onChange={() =>
-										toggleTasks(
+										setTasksSelected(
 											workflowTaskIds,
-											allTasksSelected
+											!allTasksSelected
 										)
 									}
 								/>
@@ -185,11 +185,13 @@ export default function BulkUpdateWorkflowStateModalContent({
 											}
 											getTaskURL={getTaskURL}
 											key={stepGroupKey}
-											onToggleTasks={toggleTasks}
-											onTransitionChange={(
+											onTasksSelectedChange={
+												setTasksSelected
+											}
+											onTransitionNameChange={(
 												transitionName
 											) =>
-												selectTransitionName(
+												setTransitionName(
 													stepGroupKey,
 													transitionName
 												)
