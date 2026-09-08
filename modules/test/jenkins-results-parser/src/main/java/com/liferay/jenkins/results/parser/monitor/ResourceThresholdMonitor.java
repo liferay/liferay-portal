@@ -77,7 +77,8 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
 					"Unable to read the ", _getMetricDescription(), " for ",
-					_masterName, ": ", exception.getMessage()),
+					_masterName, ": ",
+					JenkinsResultsParserUtil.getMessage(exception)),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 

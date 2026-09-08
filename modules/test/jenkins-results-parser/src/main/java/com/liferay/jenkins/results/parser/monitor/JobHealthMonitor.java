@@ -59,7 +59,7 @@ public class JobHealthMonitor extends BaseMonitor {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
 					"Unable to read ", _jenkinsMaster.getURL(), ": ",
-					exception.getMessage()),
+					JenkinsResultsParserUtil.getMessage(exception)),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
@@ -190,7 +190,7 @@ public class JobHealthMonitor extends BaseMonitor {
 				messages.add(
 					JenkinsResultsParserUtil.combine(
 						"Unable to read the schedule for job ", _jobName, ": ",
-						exception.getMessage()));
+						JenkinsResultsParserUtil.getMessage(exception)));
 
 				statuses.add(MonitorResult.Status.UNKNOWN);
 			}

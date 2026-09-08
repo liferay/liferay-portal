@@ -39,7 +39,8 @@ public class MonitorEngine {
 				System.out.println(
 					JenkinsResultsParserUtil.combine(
 						"WARNING: Unable to prepare monitor ", monitor.getId(),
-						": ", runtimeException.getMessage()));
+						": ",
+						JenkinsResultsParserUtil.getMessage(runtimeException)));
 			}
 		}
 
