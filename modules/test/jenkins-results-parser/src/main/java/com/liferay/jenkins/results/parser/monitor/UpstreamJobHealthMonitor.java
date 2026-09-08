@@ -94,8 +94,6 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 			currentTimeMillis, lastBuildJSONObject.optLong("timestamp"),
 			messages, metrics, statuses);
 
-		int skippedCount = 0;
-		boolean pendingInvocation = false;
 		JSONObject invocationJSONObject = null;
 
 		for (int i = 0; i < buildsCount; i++) {
@@ -108,31 +106,20 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 				break;
 			}
-
-			if (_isSkippedPendingInvocation(description)) {
-				pendingInvocation = true;
-
-				continue;
-			}
-
-			if (!_isSkippedAlreadyRan(description)) {
-				break;
-			}
-
-			skippedCount++;
 		}
 
-		metrics.put("controller.skipped.streak", String.valueOf(skippedCount));
-
 		if (invocationJSONObject == null) {
-			_checkMissingInvocation(
-				buildsCount, messages, pendingInvocation, skippedCount,
-				statuses);
+			messages.add(
+				JenkinsResultsParserUtil.combine(
+					"Unable to determine the last upstream testsuite run for ",
+					"branch ", _branch));
+
+			statuses.add(MonitorResult.Status.UNKNOWN);
 		}
 		else {
 			_checkInvocation(
 				currentTimeMillis, invocationJSONObject, messages, metrics,
-				pendingInvocation, statuses);
+				statuses);
 		}
 
 		return _newMonitorResult(
@@ -175,7 +162,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 	private void _checkInvocation(
 		long currentTimeMillis, JSONObject invocationJSONObject,
 		List<String> messages, Map<String, String> metrics,
-		boolean pendingInvocation, List<MonitorResult.Status> statuses) {
+		List<MonitorResult.Status> statuses) {
 
 		String description = invocationJSONObject.optString("description", "");
 
@@ -191,70 +178,61 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 			metrics.put("last.invocation.build.url", invocationBuildURL);
 		}
 
-		if (_isFailure(description)) {
-			metrics.put("last.invocation.result", "FAILURE");
+		String result = _getInvocationResult(description);
 
-			if (_expectedGreen) {
-				messages.add(
-					JenkinsResultsParserUtil.combine(
-						"The upstream testsuite for branch ", _branch,
-						" completed with the result \"FAILURE\""));
+		metrics.put("last.invocation.result", result);
 
-				statuses.add(MonitorResult.Status.CRITICAL);
-			}
-
-			return;
-		}
-
-		if (!_isPending(description) && !pendingInvocation) {
-			metrics.put("last.invocation.result", "COMPLETED");
-
-			return;
-		}
-
-		metrics.put("last.invocation.result", "PENDING");
-
-		if (ageSeconds > _triggerLatencySeconds) {
+		if (result.equals(_RESULT_EXPIRE)) {
 			messages.add(
 				JenkinsResultsParserUtil.combine(
 					"Branch ", _branch, " was merged ",
 					JenkinsResultsParserUtil.toDurationString(
 						ageSeconds * 1000),
-					" ago, but its upstream testsuite has not run, ",
-					"exceeding the expected trigger latency of ",
-					JenkinsResultsParserUtil.toDurationString(
-						_triggerLatencySeconds * 1000)));
-
-			statuses.add(MonitorResult.Status.WARN);
-		}
-	}
-
-	private void _checkMissingInvocation(
-		int buildsCount, List<String> messages, boolean pendingInvocation,
-		int skippedCount, List<MonitorResult.Status> statuses) {
-
-		if (skippedCount == buildsCount) {
-			return;
-		}
-
-		if (pendingInvocation) {
-			messages.add(
-				JenkinsResultsParserUtil.combine(
-					"The upstream testsuite for branch ", _branch,
-					" has been pending for longer than the last ",
-					String.valueOf(buildsCount), " controller builds"));
+					" ago, but its upstream testsuite was expired before it ",
+					"completed"));
 
 			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}
 
-		messages.add(
-			JenkinsResultsParserUtil.combine(
-				"Unable to determine the last upstream testsuite run for ",
-				"branch ", _branch));
+		if (result.equals(_RESULT_IN_PROGRESS) ||
+			result.equals(_RESULT_IN_QUEUE)) {
 
-		statuses.add(MonitorResult.Status.UNKNOWN);
+			if (ageSeconds > _triggerLatencySeconds) {
+				messages.add(
+					JenkinsResultsParserUtil.combine(
+						"Branch ", _branch, " was merged ",
+						JenkinsResultsParserUtil.toDurationString(
+							ageSeconds * 1000),
+						" ago, but its upstream testsuite has not run, ",
+						"exceeding the expected trigger latency of ",
+						JenkinsResultsParserUtil.toDurationString(
+							_triggerLatencySeconds * 1000)));
+
+				statuses.add(MonitorResult.Status.WARN);
+			}
+
+			return;
+		}
+
+		if (!_expectedGreen) {
+			return;
+		}
+
+		if (result.equals(_RESULT_ABORTED)) {
+			messages.add(_getNotGreenMessage(result));
+
+			statuses.add(MonitorResult.Status.WARN);
+
+			return;
+		}
+
+		if (result.equals(_RESULT_FAILURE)) {
+			messages.add(_getNotGreenMessage(result));
+
+			statuses.add(MonitorResult.Status.CRITICAL);
+		}
 	}
 
 	private JSONArray _getBuildsJSONArray() throws IOException {
@@ -283,56 +261,46 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 		return matcher.group();
 	}
 
-	private boolean _isFailure(String description) {
-		return description.contains("FAILURE");
+	private String _getInvocationResult(String description) {
+		if (description.contains(_RESULT_EXPIRE)) {
+			return _RESULT_EXPIRE;
+		}
+
+		if (description.contains(_RESULT_IN_QUEUE)) {
+			return _RESULT_IN_QUEUE;
+		}
+
+		if (description.contains(_RESULT_IN_PROGRESS)) {
+			return _RESULT_IN_PROGRESS;
+		}
+
+		if (description.contains(_RESULT_FAILURE)) {
+			return _RESULT_FAILURE;
+		}
+
+		if (description.contains(_RESULT_ABORTED)) {
+			return _RESULT_ABORTED;
+		}
+
+		if (description.contains(_RESULT_UNSTABLE)) {
+			return _RESULT_UNSTABLE;
+		}
+
+		if (description.contains(_RESULT_SUCCESS)) {
+			return _RESULT_SUCCESS;
+		}
+
+		return _RESULT_COMPLETED;
+	}
+
+	private String _getNotGreenMessage(String result) {
+		return JenkinsResultsParserUtil.combine(
+			"The upstream testsuite for branch ", _branch,
+			" completed with the result \"", result, "\"");
 	}
 
 	private boolean _isInvocation(String description) {
-		if (_isPending(description)) {
-			return true;
-		}
-
-		String invocationBuildURL = _getInvocationBuildURL(description);
-
-		if (invocationBuildURL != null) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _isPending(String description) {
-		if (description.contains("IN PROGRESS") ||
-			description.contains("IN QUEUE")) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _isSkippedAlreadyRan(String description) {
-		if (description.contains("SKIPPED") &&
-			description.contains("was already ran")) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _isSkippedPendingInvocation(String description) {
-		if (!description.contains("SKIPPED")) {
-			return false;
-		}
-
-		if (description.contains("already invoked") ||
-			description.contains("already running")) {
-
-			return true;
-		}
-
-		return false;
+		return description.contains(_MARKER_GIT_ID);
 	}
 
 	private MonitorResult _newMonitorResult(
@@ -352,6 +320,24 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 	}
 
 	private static final long _BUILDS_MAXIMUM_DEFAULT = 24;
+
+	private static final String _MARKER_GIT_ID = "Git ID:";
+
+	private static final String _RESULT_ABORTED = "ABORTED";
+
+	private static final String _RESULT_COMPLETED = "COMPLETED";
+
+	private static final String _RESULT_EXPIRE = "EXPIRE";
+
+	private static final String _RESULT_FAILURE = "FAILURE";
+
+	private static final String _RESULT_IN_PROGRESS = "IN PROGRESS";
+
+	private static final String _RESULT_IN_QUEUE = "IN QUEUE";
+
+	private static final String _RESULT_SUCCESS = "SUCCESS";
+
+	private static final String _RESULT_UNSTABLE = "UNSTABLE";
 
 	private static final int _RETRIES_SIZE_MAX = 1;
 
