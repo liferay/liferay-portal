@@ -23,6 +23,22 @@
 			"name": "MCPServerProfileTool",
 			"objectFields": [
 				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"defaultValue": "null",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Restrict Fields"
+					},
+					"name": "restrictFields",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
 					"DBType": "String",
 					"businessType": "Text",
 					"defaultValue": "null",
