@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -230,6 +231,19 @@ public class JenkinsResultsParserUtilTest
 			"http://mirrors.lax.liferay.com/releases.liferay.com/portal/",
 			JenkinsResultsParserUtil.getLocalURL(
 				"https://releases.liferay.com/portal/"));
+	}
+
+	@Test
+	public void testGetMessage() {
+		String message = RandomTestUtil.randomString();
+
+		testEquals(
+			message,
+			JenkinsResultsParserUtil.getMessage(new IOException(message)));
+
+		testEquals(
+			"java.io.IOException",
+			JenkinsResultsParserUtil.getMessage(new IOException()));
 	}
 
 	@Test
