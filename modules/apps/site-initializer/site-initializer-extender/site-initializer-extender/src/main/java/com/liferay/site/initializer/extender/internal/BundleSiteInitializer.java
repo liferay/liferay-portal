@@ -5872,10 +5872,27 @@ public class BundleSiteInitializer implements SiteInitializer {
 				continue;
 			}
 
-			groups.put(
-				parentResourcePath + StringPool.SLASH +
-					jsonObject.getString("path"),
-				group);
+			String path = jsonObject.getString("path");
+
+			if (Validator.isNull(path)) {
+				_log.error(
+					"Asset library " + assetLibraryName + " has no path");
+
+				continue;
+			}
+
+			String resourcePath = parentResourcePath + StringPool.SLASH + path;
+
+			Enumeration<URL> enumeration = _siteBundle.findEntries(
+				resourcePath, StringPool.STAR, true);
+
+			if (enumeration == null) {
+				_log.error("Unable to get design assets in " + resourcePath);
+
+				continue;
+			}
+
+			groups.put(resourcePath, group);
 		}
 
 		return groups;
