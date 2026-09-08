@@ -190,7 +190,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		_setUpPortletURLMocks();
 
 		_setUpRegistry(
-			_mockContributor(false, _FRAGMENT_CLASS_NAME, "fragment", null));
+			_mockContributor(false, _CLASS_NAME_1, "fragment", null));
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			_viewResourcesDesignLibraryDisplayContext.
@@ -204,7 +204,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			fdsActionDropdownItems.get(0));
 
 		Assert.assertEquals(
-			_FRAGMENT_CLASS_NAME, visibilityFilters.get("entryClassName"));
+			_CLASS_NAME_1, visibilityFilters.get("entryClassName"));
 		Assert.assertFalse(
 			visibilityFilters.toString(),
 			visibilityFilters.containsKey("type"));
@@ -216,8 +216,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 		_setUpPortletURLMocks();
 
-		_setUpRegistry(
-			_mockContributor(false, _LAYOUT_CLASS_NAME, "master", "3"));
+		_setUpRegistry(_mockContributor(false, _CLASS_NAME_2, "master", "3"));
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			_viewResourcesDesignLibraryDisplayContext.
@@ -227,7 +226,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			fdsActionDropdownItems.get(0));
 
 		Assert.assertEquals(
-			_LAYOUT_CLASS_NAME, visibilityFilters.get("entryClassName"));
+			_CLASS_NAME_2, visibilityFilters.get("entryClassName"));
 		Assert.assertEquals("3", visibilityFilters.get("type"));
 	}
 
@@ -236,8 +235,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		_setUpPortletURLMocks();
 
 		_setUpRegistry(
-			_mockContributor(
-				false, _STYLE_BOOK_CLASS_NAME, "style-book", null));
+			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
 
 		List<Map<String, Object>> resourceTypes = _getResourceTypes();
 
@@ -247,8 +245,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 		Assert.assertEquals("style-book-color", resourceType.get("color"));
 		Assert.assertEquals("edit", resourceType.get("defaultActionId"));
-		Assert.assertEquals(
-			_STYLE_BOOK_CLASS_NAME, resourceType.get("entryClassName"));
+		Assert.assertEquals(_CLASS_NAME_3, resourceType.get("entryClassName"));
 		Assert.assertEquals("style-book", resourceType.get("key"));
 		Assert.assertEquals("style-book-label", resourceType.get("label"));
 		Assert.assertEquals("style-book-icon", resourceType.get("symbol"));
@@ -263,7 +260,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		_setUpPortletURLMocks();
 
 		_setUpRegistry(
-			_mockContributor(true, _STYLE_BOOK_CLASS_NAME, "style-book", null));
+			_mockContributor(true, _CLASS_NAME_3, "style-book", null));
 
 		List<Map<String, Object>> resourceTypes = _getResourceTypes();
 
@@ -291,8 +288,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			_viewResourcesDesignLibraryDisplayContext.hasContentAccess());
 
 		_setUpRegistry(
-			_mockContributor(
-				false, _STYLE_BOOK_CLASS_NAME, "style-book", null));
+			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
 
 		Assert.assertTrue(
 			_viewResourcesDesignLibraryDisplayContext.hasContentAccess());
@@ -539,21 +535,21 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	private void _setUpClassNameIds() {
 		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getClassNameId(_FRAGMENT_CLASS_NAME)
+			() -> PortalUtil.getClassNameId(_CLASS_NAME_1)
 		).thenReturn(
-			_FRAGMENT_CLASS_NAME_ID
+			_CLASS_NAME_ID_1
 		);
 
 		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getClassNameId(_LAYOUT_CLASS_NAME)
+			() -> PortalUtil.getClassNameId(_CLASS_NAME_2)
 		).thenReturn(
-			_LAYOUT_CLASS_NAME_ID
+			_CLASS_NAME_ID_2
 		);
 
 		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getClassNameId(_STYLE_BOOK_CLASS_NAME)
+			() -> PortalUtil.getClassNameId(_CLASS_NAME_3)
 		).thenReturn(
-			_STYLE_BOOK_CLASS_NAME_ID
+			_CLASS_NAME_ID_3
 		);
 	}
 
@@ -673,9 +669,8 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	private void _testGetAPIURL() throws Exception {
 		_setUpRegistry(
-			_mockContributor(false, _FRAGMENT_CLASS_NAME, "fragment", null),
-			_mockContributor(
-				false, _STYLE_BOOK_CLASS_NAME, "style-book", null));
+			_mockContributor(false, _CLASS_NAME_1, "fragment", null),
+			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
 
 		String url = _viewResourcesDesignLibraryDisplayContext.getAPIURL();
 
@@ -683,8 +678,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			url,
 			url.contains(
 				StringBundler.concat(
-					"entryClassNames=", _FRAGMENT_CLASS_NAME, ",",
-					_STYLE_BOOK_CLASS_NAME)));
+					"entryClassNames=", _CLASS_NAME_1, ",", _CLASS_NAME_3)));
 		Assert.assertTrue(
 			url,
 			url.contains(
@@ -694,9 +688,8 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	private void _testGetAPIURLNarrowsByClassNameId() throws Exception {
 		_setUpRegistry(
-			_mockContributor(false, _FRAGMENT_CLASS_NAME, "fragment", null),
-			_mockContributor(
-				false, _STYLE_BOOK_CLASS_NAME, "style-book", null));
+			_mockContributor(false, _CLASS_NAME_1, "fragment", null),
+			_mockContributor(false, _CLASS_NAME_3, "style-book", null));
 
 		String url = _viewResourcesDesignLibraryDisplayContext.getAPIURL();
 
@@ -704,14 +697,14 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			url,
 			url.contains(
 				StringBundler.concat(
-					"(classNameId eq ", _FRAGMENT_CLASS_NAME_ID,
-					" or classNameId eq ", _STYLE_BOOK_CLASS_NAME_ID, ")")));
+					"(classNameId eq ", _CLASS_NAME_ID_1, " or classNameId eq ",
+					_CLASS_NAME_ID_3, ")")));
 	}
 
 	private void _testGetAPIURLNarrowsByType() throws Exception {
 		_setUpRegistry(
-			_mockContributor(false, _LAYOUT_CLASS_NAME, "master", "3"),
-			_mockContributor(false, _LAYOUT_CLASS_NAME, "display-page", "1"));
+			_mockContributor(false, _CLASS_NAME_2, "master", "3"),
+			_mockContributor(false, _CLASS_NAME_2, "display-page", "1"));
 
 		String url = _viewResourcesDesignLibraryDisplayContext.getAPIURL();
 
@@ -719,27 +712,27 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			url,
 			url.contains(
 				StringBundler.concat(
-					"((classNameId eq ", _LAYOUT_CLASS_NAME_ID,
-					" and type eq '3') or (classNameId eq ",
-					_LAYOUT_CLASS_NAME_ID, " and type eq '1'))")));
+					"((classNameId eq ", _CLASS_NAME_ID_2,
+					" and type eq '3') or (classNameId eq ", _CLASS_NAME_ID_2,
+					" and type eq '1'))")));
 	}
 
-	private static final long _DEPOT_ENTRY_ID = 12345;
-
-	private static final String _FRAGMENT_CLASS_NAME =
+	private static final String _CLASS_NAME_1 =
 		"com.liferay.fragment.model.FragmentCollection";
 
-	private static final long _FRAGMENT_CLASS_NAME_ID = 101;
-
-	private static final String _LAYOUT_CLASS_NAME =
+	private static final String _CLASS_NAME_2 =
 		"com.liferay.layout.page.template.model.LayoutPageTemplateEntry";
 
-	private static final long _LAYOUT_CLASS_NAME_ID = 103;
-
-	private static final String _STYLE_BOOK_CLASS_NAME =
+	private static final String _CLASS_NAME_3 =
 		"com.liferay.style.book.model.StyleBookEntry";
 
-	private static final long _STYLE_BOOK_CLASS_NAME_ID = 102;
+	private static final long _CLASS_NAME_ID_1 = 101;
+
+	private static final long _CLASS_NAME_ID_2 = 102;
+
+	private static final long _CLASS_NAME_ID_3 = 103;
+
+	private static final long _DEPOT_ENTRY_ID = 12345;
 
 	private final DepotEntry _depotEntry = Mockito.mock(DepotEntry.class);
 	private final Group _group = Mockito.mock(Group.class);
