@@ -10,6 +10,10 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.UrlReader;
 
+import java.io.IOException;
+
+import java.time.Instant;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +45,7 @@ public class UpstreamJobHealthMonitorTest
 
 	@Test
 	public void testExecuteControllerNeverRan() throws Exception {
-		_setBuildsJSONObject();
+		_setURLReaderOutput(_newHeadCommitJSONObject(0, _newSHA()));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -53,8 +57,11 @@ public class UpstreamJobHealthMonitorTest
 
 	@Test
 	public void testExecuteControllerStale() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(28800, _newSkippedAlreadyRanDescription()));
+		String sha = _newSHA();
+
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(0, sha),
+			_newBuildJSONObject(28800, _newInvocationDescription(sha)));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -69,52 +76,46 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteExpired() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _newSkippedAlreadyRanDescription()),
-			_newBuildJSONObject(21600, _newInvocationDescription("EXPIRE")));
+	public void testExecuteHeadIsUnreadable() throws Exception {
+		String sha = _newSHA();
+
+		UrlReader urlReader = _setURLReaderOutput(
+			null, _newBuildJSONObject(0, _newInvocationDescription(sha)));
+
+		setUrlReaderException(
+			new IOException("Unable to read"), _HEAD_COMMIT_API_URL, urlReader);
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
-
-		Map<String, String> metrics = monitorResult.getMetrics();
-
-		testEquals("EXPIRE", metrics.get("last.invocation.result"));
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 
 		String message = monitorResult.getMessage();
 
-		Assert.assertTrue(message.contains("was expired before it completed"));
+		Assert.assertTrue(
+			message.contains("Unable to read the head of branch master"));
 	}
 
 	@Test
 	public void testExecuteMergeWithoutSubsequentRun() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _SKIPPED_RUNNING_DESCRIPTION),
-			_newBuildJSONObject(
-				21600, _newInvocationDescription("IN PROGRESS")));
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(21600, _newSHA()),
+			_newBuildJSONObject(0, _newInvocationDescription(_newSHA())));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
 		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 
-		Map<String, String> metrics = monitorResult.getMetrics();
-
-		testEquals("IN PROGRESS", metrics.get("last.invocation.result"));
-		testEquals(
-			_INVOCATION_BUILD_URL, metrics.get("last.invocation.build.url"));
-
 		String message = monitorResult.getMessage();
 
 		Assert.assertTrue(message.contains("Branch master was merged"));
+		Assert.assertTrue(
+			message.contains("but its upstream testsuite last ran against"));
 	}
 
 	@Test
 	public void testExecuteNoInvocationInWindow() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _newSkippedAlreadyRanDescription()),
-			_newBuildJSONObject(3600, _newSkippedAlreadyRanDescription()),
-			_newBuildJSONObject(7200, _newSkippedAlreadyRanDescription()));
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(0, _newSHA()), _newBuildJSONObject(0, ""));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -128,40 +129,12 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteNotGreen() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _newInvocationDescription("FAILURE")));
-
-		MonitorResult monitorResult = _execute(_newMonitorProperties());
-
-		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
-		testEquals(
-			"The upstream testsuite for branch master completed with the " +
-				"result \"FAILURE\"",
-			monitorResult.getMessage());
-	}
-
-	@Test
-	public void testExecuteNotGreenWhenExpectedGreenIsFalse() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _newInvocationDescription("FAILURE")));
-
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.setProperty(
-			"monitor[a].parameter[expected.green]", "false");
-
-		MonitorResult monitorResult = _execute(monitorProperties);
-
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-	}
-
-	@Test
 	public void testExecuteQuietBranchDoesNotAlert() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _newSkippedAlreadyRanDescription()),
-			_newBuildJSONObject(3600, _newSkippedAlreadyRanDescription()),
-			_newBuildJSONObject(432000, _newInvocationDescription("SUCCESS")));
+		String sha = _newSHA();
+
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(432000, sha), _newBuildJSONObject(0, ""),
+			_newBuildJSONObject(432000, _newInvocationDescription(sha)));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -172,14 +145,15 @@ public class UpstreamJobHealthMonitorTest
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
-		testEquals("SUCCESS", metrics.get("last.invocation.result"));
+		testEquals(sha, metrics.get("branch.head.sha"));
+		testEquals(sha, metrics.get("last.invocation.sha"));
 	}
 
 	@Test
 	public void testExecuteRecentMergeIsNotOverdue() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(
-				1800, _newInvocationDescription("IN PROGRESS")));
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(1800, _newSHA()),
+			_newBuildJSONObject(3600, _newInvocationDescription(_newSHA())));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -187,9 +161,19 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteUnstableIsGreen() throws Exception {
-		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _newInvocationDescription("UNSTABLE")));
+	public void testExecuteSingleRunnerDescription() throws Exception {
+		String sha = _newSHA();
+
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(0, sha),
+			_newBuildJSONObject(
+				0,
+				JenkinsResultsParserUtil.combine(
+					"<strong>UNSTABLE</strong> - <a href=\"", _BUILD_URL,
+					"\">Build URL</a><ul><li><strong>Git ID:</strong> ",
+					"<a href=\"https://github.com/liferay/liferay-portal",
+					"/commit/", sha, "\">", sha.substring(0, 7),
+					"</a></li></ul>")));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -197,13 +181,11 @@ public class UpstreamJobHealthMonitorTest
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
-		testEquals("UNSTABLE", metrics.get("last.invocation.result"));
+		testEquals(sha, metrics.get("last.invocation.sha"));
 	}
 
 	@Test
 	public void testUpstreamJobHealthMonitor() {
-		_testUpstreamJobHealthMonitorInvalidProperty(
-			"monitor[a].parameter[expected.green]", "yes");
 		_testUpstreamJobHealthMonitorInvalidProperty(
 			"monitor[a].threshold[trigger.latency]", "-1");
 
@@ -236,15 +218,34 @@ public class UpstreamJobHealthMonitorTest
 		);
 	}
 
-	private String _newInvocationDescription(String result) {
-		String sha = RandomTestUtil.randomSHA();
+	private JSONObject _newHeadCommitJSONObject(long ageSeconds, String sha) {
+		long currentTimeMillis =
+			JenkinsResultsParserUtil.getCurrentTimeMillis();
 
+		Instant instant = Instant.ofEpochMilli(
+			currentTimeMillis - (ageSeconds * 1000));
+
+		return new JSONObject(
+		).put(
+			"commit",
+			new JSONObject(
+			).put(
+				"committer",
+				new JSONObject(
+				).put(
+					"date", instant.toString()
+				)
+			)
+		).put(
+			"sha", sha
+		);
+	}
+
+	private String _newInvocationDescription(String sha) {
 		return JenkinsResultsParserUtil.combine(
-			"<strong>", result, "</strong> - <a href=\"", _INVOCATION_BUILD_URL,
-			"\">Build URL</a><ul><li><strong>",
-			"Git ID:</strong> <a href=\"https://github.com/liferay",
-			"/liferay-portal/commit/", sha, "\">", sha.substring(0, 7),
-			"</a></li></ul>");
+			"object, <strong>GIT ID</strong> - <a href=\"",
+			"https://github.com/liferay/liferay-portal/commit/", sha, "\">",
+			sha.substring(0, 7), "</a>");
 	}
 
 	private Properties _newMonitorProperties() {
@@ -260,13 +261,8 @@ public class UpstreamJobHealthMonitorTest
 		return monitorProperties;
 	}
 
-	private String _newSkippedAlreadyRanDescription() {
-		String sha = RandomTestUtil.randomSHA();
-
-		return JenkinsResultsParserUtil.combine(
-			"<strong>SKIPPED</strong> - <a href=\"https://github.com/liferay",
-			"/liferay-portal/commit/", sha, "\">", sha.substring(0, 7),
-			"</a> was already ran");
+	private String _newSHA() {
+		return RandomTestUtil.randomSHA();
 	}
 
 	private UpstreamJobHealthMonitor _newUpstreamJobHealthMonitor(
@@ -278,7 +274,8 @@ public class UpstreamJobHealthMonitorTest
 		return new UpstreamJobHealthMonitor(monitorConfigs.get(0));
 	}
 
-	private void _setBuildsJSONObject(JSONObject... buildJSONObjects)
+	private UrlReader _setURLReaderOutput(
+			JSONObject headCommitJSONObject, JSONObject... buildJSONObjects)
 		throws Exception {
 
 		JSONArray buildsJSONArray = new JSONArray();
@@ -295,6 +292,14 @@ public class UpstreamJobHealthMonitorTest
 		);
 
 		setUrlReaderOutput(jobJSONObject.toString(), _JOB_API_URL, urlReader);
+
+		if (headCommitJSONObject != null) {
+			setUrlReaderOutput(
+				headCommitJSONObject.toString(), _HEAD_COMMIT_API_URL,
+				urlReader);
+		}
+
+		return urlReader;
 	}
 
 	private void _testUpstreamJobHealthMonitorInvalidProperty(
@@ -329,20 +334,20 @@ public class UpstreamJobHealthMonitorTest
 
 	private static final String _BRANCH = "master";
 
+	private static final String _BUILD_URL =
+		"https://test-1-41.liferay.com/job/test-portal-testsuite-upstream" +
+			"(master)/1234/";
+
 	private static final String _CONTROLLER_JOB_NAME =
 		"test-portal-testsuite-upstream-controller(master)";
 
-	private static final String _INVOCATION_BUILD_URL =
-		"https://test-1-41.liferay.com/job/test-portal-testsuite-upstream" +
-			"(master)/1234/";
+	private static final String _HEAD_COMMIT_API_URL =
+		"https://api.github.com/repos/liferay/liferay-portal/commits/master";
 
 	private static final String _JOB_API_URL =
 		"http://test-9-1/job/test-portal-testsuite-upstream-controller" +
 			"(master)/api/json";
 
 	private static final String _MASTER_NAME = "test-9-1";
-
-	private static final String _SKIPPED_RUNNING_DESCRIPTION =
-		"<strong>SKIPPED</strong> - Job is already running";
 
 }
