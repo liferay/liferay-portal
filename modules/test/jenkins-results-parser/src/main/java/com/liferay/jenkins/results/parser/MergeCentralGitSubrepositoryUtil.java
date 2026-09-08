@@ -55,13 +55,10 @@ public class MergeCentralGitSubrepositoryUtil {
 				Properties gitrepoProperties = _getPropertiesFromGitrepoFile(
 					gitrepoFile);
 
-				String remote = gitrepoProperties.getProperty("remote");
+				String remote = _getRemote(gitrepoProperties, gitrepoFile);
 
-				Matcher matcher = _githubRemotePattern.matcher(remote);
-
-				if (matcher.find() && !subrepoMergeBlacklist.isEmpty() &&
-					subrepoMergeBlacklist.contains(
-						matcher.group("gitSubrepositoryName"))) {
+				if ((remote == null) ||
+					_isBlacklisted(remote, subrepoMergeBlacklist)) {
 
 					continue;
 				}
@@ -256,8 +253,8 @@ public class MergeCentralGitSubrepositoryUtil {
 					upstreamGitRemote);
 		}
 
-		String mergeBranchNamePrefix = mergeBranchName.substring(
-			0, mergeBranchName.lastIndexOf("-"));
+		String mergeBranchNamePrefix = _getMergeBranchNamePrefix(
+			mergeBranchName);
 
 		for (String upstreamRemoteGitBranchName :
 				_upstreamRemoteGitBranchNames) {
@@ -316,8 +313,8 @@ public class MergeCentralGitSubrepositoryUtil {
 			}
 		}
 
-		String mergeBranchNamePrefix = mergeBranchName.substring(
-			0, mergeBranchName.lastIndexOf("-"));
+		String mergeBranchNamePrefix = _getMergeBranchNamePrefix(
+			mergeBranchName);
 
 		for (int i = 0; i < _pullsJSONArray.length(); i++) {
 			JSONObject jsonObject = _pullsJSONArray.getJSONObject(i);
@@ -384,6 +381,10 @@ public class MergeCentralGitSubrepositoryUtil {
 			"-", gitSubrepositoryUpstreamCommit);
 	}
 
+	private static String _getMergeBranchNamePrefix(String mergeBranchName) {
+		return mergeBranchName.substring(0, mergeBranchName.lastIndexOf("-"));
+	}
+
 	private static Properties _getPropertiesFromGitrepoFile(File gitrepoFile)
 		throws IOException {
 
@@ -392,6 +393,39 @@ public class MergeCentralGitSubrepositoryUtil {
 		properties.load(new FileInputStream(gitrepoFile));
 
 		return properties;
+	}
+
+	private static String _getRemote(
+		Properties gitrepoProperties, File gitrepoFile) {
+
+		String remote = gitrepoProperties.getProperty("remote");
+
+		if (remote == null) {
+			System.out.println(
+				"WARNING: Skipping " + gitrepoFile.getPath() +
+					": missing required 'remote' key");
+		}
+
+		return remote;
+	}
+
+	private static boolean _isBlacklisted(
+		String remote, List<String> subrepoMergeBlacklist) {
+
+		if (subrepoMergeBlacklist.isEmpty()) {
+			return false;
+		}
+
+		Matcher matcher = _githubRemotePattern.matcher(remote);
+
+		if (matcher.find() &&
+			subrepoMergeBlacklist.contains(
+				matcher.group("gitSubrepositoryName"))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static void _pushMergeLocalGitBranchToRemote(
