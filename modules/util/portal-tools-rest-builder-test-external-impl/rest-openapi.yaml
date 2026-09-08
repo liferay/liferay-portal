@@ -1,0 +1,18 @@
+components:
+    schemas:
+        ExternalScopedTestEntity:
+            properties:
+                externalReferenceCode:
+                    type: string
+                scope:
+                    type: scope
+            type: object
+info:
+    description:
+        "A REST API referenced from another OpenAPI document to test external schema referencing."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: Portal Tools REST Builder Test External
+    version: v1.0
+openapi: 3.0.1

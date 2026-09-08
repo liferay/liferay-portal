@@ -1,0 +1,8 @@
+apiDir: ../portal-tools-rest-builder-test-external-api/src/main/java
+apiPackagePath: com.liferay.portal.tools.rest.builder.test.external
+author: Rubén Pulido
+compatibilityVersion: 16
+forcePredictableOperationId: true
+generateGraphQL: false
+generateOpenAPI: false
+javaEEPackage: jakarta
