@@ -212,6 +212,57 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
+	public void testGetTopLevelActiveDuration() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(
+				new JSONObject(
+				).put(
+					"duration", 5000L
+				));
+
+		Assert.assertEquals(
+			0L, baseTopLevelBuildReport.getTopLevelActiveDuration());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(
+			_newStopWatchBuildReportJSONObject(
+				5000L,
+				_newStopWatchRecordJSONObject(2000L, "wait.for.invoked.jobs")));
+
+		Assert.assertEquals(
+			3000L, baseTopLevelBuildReport.getTopLevelActiveDuration());
+	}
+
+	@Test
+	public void testGetTopLevelPassiveDuration() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport();
+
+		Assert.assertEquals(
+			0L, baseTopLevelBuildReport.getTopLevelPassiveDuration());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(
+			_newStopWatchBuildReportJSONObject(
+				9000L,
+				_newStopWatchRecordJSONObject(
+					4000L, "invoke.downstream.builds")));
+
+		Assert.assertEquals(
+			4000L, baseTopLevelBuildReport.getTopLevelPassiveDuration());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(
+			_newStopWatchBuildReportJSONObject(
+				9000L,
+				_newStopWatchRecordJSONObject(2000L, "wait.for.invoked.jobs"),
+				_newStopWatchRecordJSONObject(
+					3000L, "wait.for.invoked.smoke.jobs"),
+				_newStopWatchRecordJSONObject(
+					4000L, "invoke.downstream.builds")));
+
+		Assert.assertEquals(
+			5000L, baseTopLevelBuildReport.getTopLevelPassiveDuration());
+	}
+
+	@Test
 	public void testGetTotalActualDuration() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport(_newDurationsJSONObject());
@@ -395,6 +446,29 @@ public class BaseTopLevelBuildReportTest
 			"totalCachedDuration", 2000L
 		).put(
 			"totalDuration", 3000L
+		);
+	}
+
+	private JSONObject _newStopWatchBuildReportJSONObject(
+		long duration, JSONObject... stopWatchRecordJSONObjects) {
+
+		return new JSONObject(
+		).put(
+			"duration", duration
+		).put(
+			"stopWatchRecords",
+			new JSONArray(Arrays.asList(stopWatchRecordJSONObjects))
+		);
+	}
+
+	private JSONObject _newStopWatchRecordJSONObject(
+		long duration, String name) {
+
+		return new JSONObject(
+		).put(
+			"duration", duration
+		).put(
+			"name", name
 		);
 	}
 
