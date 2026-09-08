@@ -229,7 +229,8 @@ public class OrganizationResourceImpl
 
 		AccountEntryOrganizationRel accountEntryOrganizationRel =
 			_accountEntryOrganizationRelService.getAccountEntryOrganizationRel(
-				accountEntry.getAccountEntryId(), Long.valueOf(organizationId));
+				accountEntry.getAccountEntryId(),
+				GetterUtil.getLong(organizationId));
 
 		return _toOrganization(
 			String.valueOf(accountEntryOrganizationRel.getOrganizationId()));
@@ -258,7 +259,8 @@ public class OrganizationResourceImpl
 
 		AccountEntryOrganizationRel accountEntryOrganizationRel =
 			_accountEntryOrganizationRelService.getAccountEntryOrganizationRel(
-				accountEntry.getAccountEntryId(), Long.valueOf(organizationId));
+				accountEntry.getAccountEntryId(),
+				GetterUtil.getLong(organizationId));
 
 		return _toOrganization(
 			String.valueOf(accountEntryOrganizationRel.getOrganizationId()));
