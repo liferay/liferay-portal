@@ -7,6 +7,7 @@ package com.liferay.portal.language.override.internal.upgrade.registry;
 
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.language.override.internal.upgrade.v1_1_0.PLOEntryExternalReferenceCodeUpgradeProcess;
+import com.liferay.portal.language.override.internal.upgrade.v1_2_0.PLOEntryLanguageIdUpgradeProcess;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -23,6 +24,9 @@ public class PortalLanguageOverrideServiceUpgradeStepRegistrator
 		registry.register(
 			"1.0.0", "1.1.0",
 			(UpgradeProcess)new PLOEntryExternalReferenceCodeUpgradeProcess());
+
+		registry.register(
+			"1.1.0", "1.2.0", new PLOEntryLanguageIdUpgradeProcess());
 	}
 
 }
