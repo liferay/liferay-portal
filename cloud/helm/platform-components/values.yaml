@@ -73,6 +73,7 @@ gitops:
         usernameProperty: git_machine_user_id
 infrastructure:
     enabled: true
+    parameters: []
     path: ""
     repoURL: ""
     targetRevision: ""

@@ -280,6 +280,14 @@ function _install_liferay_platform_chart {
 						provider: $platform_module_outputs.cluster_secret_store_provider.value
 					},
 					deploymentContext: $platform_module_outputs.deployment_context.value,
+					infrastructure: {
+						parameters: [
+							{
+								name: "persistence.storageClassName",
+								value: "managed-csi-premium-v2"
+							}
+						]
+					},
 					liferay: {
 						parameters: $liferay_parameters
 					},

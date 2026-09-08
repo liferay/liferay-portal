@@ -159,6 +159,26 @@ tests:
     -   asserts:
             -   contains:
                     content:
+                        name: persistence.storageClassName
+                        value: managed-csi-premium-v2
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.sources[0].helm.parameters[6]
+                    value:
+                        name: persistence.storageClassName
+                        value: managed-csi-premium-v2
+                template: templates/applicationset-infrastructure.yaml
+        it: Passes the configured infrastructure parameters to the infrastructure ApplicationSet
+        set:
+            infrastructure:
+                parameters:
+                    -   name: persistence.storageClassName
+                        value: managed-csi-premium-v2
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+    -   asserts:
+            -   contains:
+                    content:
                         name: deploymentContext.deploymentName
                         value: liferay-test
                     path: spec.sources[0].helm.parameters
