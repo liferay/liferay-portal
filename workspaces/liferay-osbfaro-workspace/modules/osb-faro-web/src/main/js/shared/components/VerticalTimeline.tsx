@@ -248,9 +248,13 @@ const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
 			<ClayTable.Body>
 				{rows.map(({property, value}) => (
 					<ClayTable.Row key={property}>
-						<ClayTable.Cell headingCell>{property}</ClayTable.Cell>
+						<ClayTable.Cell className="text-dark" headingCell>
+							{property}
+						</ClayTable.Cell>
 
-						<ClayTable.Cell>{value}</ClayTable.Cell>
+						<ClayTable.Cell className="text-secondary">
+							{value}
+						</ClayTable.Cell>
 					</ClayTable.Row>
 				))}
 			</ClayTable.Body>
