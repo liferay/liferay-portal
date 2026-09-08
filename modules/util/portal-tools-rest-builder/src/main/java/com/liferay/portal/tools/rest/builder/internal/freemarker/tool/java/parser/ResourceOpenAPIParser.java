@@ -639,7 +639,7 @@ public class ResourceOpenAPIParser {
 			return "";
 		}
 
-		StringBundler sb = new StringBundler(5);
+		StringBundler sb = new StringBundler(6);
 
 		sb.append(
 			StringBundler.concat(
@@ -663,6 +663,10 @@ public class ResourceOpenAPIParser {
 		if (parameter.getExample() != null) {
 			sb.append(
 				String.format(", example = \"%s\"", parameter.getExample()));
+		}
+
+		if (parameter.isRequired()) {
+			sb.append(String.format(", required = %s", parameter.isRequired()));
 		}
 
 		sb.append("),");
