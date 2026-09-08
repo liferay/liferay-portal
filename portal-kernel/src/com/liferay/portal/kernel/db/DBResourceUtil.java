@@ -110,6 +110,12 @@ public class DBResourceUtil {
 		return liferayTableNames;
 	}
 
+	public static Map<String, List<String>> getModuleColumnDefinitionsMap(
+		Bundle bundle) {
+
+		return _parseColumnDefinitionsMap(getModuleTablesSQL(bundle));
+	}
+
 	public static String getModuleIndexesSQL(Bundle bundle) {
 		return _read(bundle, "/META-INF/sql/indexes.sql");
 	}
@@ -181,6 +187,10 @@ public class DBResourceUtil {
 		}
 
 		return nonserviceBuildTableNames;
+	}
+
+	public static Map<String, List<String>> getPortalColumnDefinitionsMap() {
+		return _parseColumnDefinitionsMap(getPortalTablesSQL());
 	}
 
 	public static String getPortalIndexesSQL() {
