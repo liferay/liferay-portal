@@ -90,8 +90,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"application.name=Liferay.Headless.Admin.User", "default=true",
-		"dto.class.name=com.liferay.portal.kernel.model.User",
-		"service.ranking:Integer=" + Integer.MAX_VALUE, "version=v1.0"
+		"dto.class.name=com.liferay.portal.kernel.model.User", "version=v1.0"
 	},
 	service = DTOConverter.class
 )
