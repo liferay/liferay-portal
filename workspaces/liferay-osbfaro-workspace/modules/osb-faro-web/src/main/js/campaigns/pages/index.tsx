@@ -1,18 +1,24 @@
+import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import CampaignsDataSet from '../components/CampaignsDataSet';
 import OverviewSection from '../components/OverviewSection';
-import {mockCampaignMetrics} from '../utils/mock-campaigns';
 import React, {useContext} from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {Text} from '@clayui/core';
 import {useParams} from 'react-router-dom';
+import {useRequest} from 'shared/hooks/useRequest';
 
 const Campaigns: React.FC = () => {
 	const {selectedChannel} = useContext(ChannelContext);
 
 	const {channelId, groupId} = useParams();
+
+	const {data: metrics, loading} = useRequest({
+		dataSourceFn: API.campaigns.fetchCampaignMetrics,
+		variables: {channelId: channelId!, groupId: groupId!},
+	});
 
 	const title = Liferay.Language.get('campaigns');
 
@@ -34,7 +40,7 @@ const Campaigns: React.FC = () => {
 			</BasePage.Header>
 
 			<BasePage.Body>
-				<OverviewSection metrics={mockCampaignMetrics} />
+				<OverviewSection loading={loading} metrics={metrics} />
 
 				<SectionHeader
 					icon="megaphone"

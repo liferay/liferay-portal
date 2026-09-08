@@ -3,6 +3,7 @@ import * as activities from './activities';
 import * as apiTokens from './api-tokens';
 import * as assets from './assets';
 import * as blockedKeywords from './blocked-keywords';
+import * as campaigns from './campaigns';
 import * as catalog from './catalog';
 import * as categories from './categories';
 import * as channels from './channels';
@@ -33,6 +34,7 @@ export {
 	apiTokens,
 	assets,
 	blockedKeywords,
+	campaigns,
 	catalog,
 	categories,
 	channels,

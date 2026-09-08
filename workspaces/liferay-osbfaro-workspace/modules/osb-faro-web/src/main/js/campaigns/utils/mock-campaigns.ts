@@ -1,7 +1,5 @@
 import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 import {ICampaign} from 'shared/api/campaigns';
-import {Metric} from 'contacts/pages/account/utils/types';
-import {TrendClassification} from 'segment/types';
 
 /**
  * The campaign the detail screen looks up by id, standing in until that screen
@@ -128,64 +126,6 @@ export const mockCampaigns: ICampaign[] = [
 		individualsTouched: 1500,
 		startDate: '2026-09-01',
 		status: 'In Progress',
-	},
-];
-
-/**
- * Mocked stand-in for `GET /campaigns/metrics?channelId[&selectedMetrics]`,
- * which returns a plain list rather than a page, since these cards are not a
- * table.
- *
- * The endpoint computes every value over a fixed 90 day window and compares
- * it against the window before it, so the cards carry a trend the campaigns
- * table does not. The values below are the ones the design shows.
- *
- * The campaigns list half of this module is gone, now that the table fetches
- * its endpoint. This half follows with LPD-104741.
- */
-export enum CampaignMetricType {
-	AccountsTouched = 'accountsTouched',
-	CampaignCount = 'campaignCount',
-	ClosedWonAmount = 'closedWonAmount',
-	OpenPipelineAmount = 'openPipelineAmount',
-}
-
-export interface ICampaignMetric extends Metric {
-	metricType: CampaignMetricType;
-}
-
-export const mockCampaignMetrics: ICampaignMetric[] = [
-	{
-		metricType: CampaignMetricType.CampaignCount,
-		trend: {
-			percentage: 36.8,
-			trendClassification: TrendClassification.Positive,
-		},
-		value: 202,
-	},
-	{
-		metricType: CampaignMetricType.AccountsTouched,
-		trend: {
-			percentage: 14.1,
-			trendClassification: TrendClassification.Positive,
-		},
-		value: 1800,
-	},
-	{
-		metricType: CampaignMetricType.OpenPipelineAmount,
-		trend: {
-			percentage: 1.3,
-			trendClassification: TrendClassification.Positive,
-		},
-		value: 504000000,
-	},
-	{
-		metricType: CampaignMetricType.ClosedWonAmount,
-		trend: {
-			percentage: 0.6,
-			trendClassification: TrendClassification.Positive,
-		},
-		value: 124000000,
 	},
 ];
 

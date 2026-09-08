@@ -2,13 +2,14 @@ import ClayLayout from '@clayui/layout';
 import MetricCard from 'shared/components/MetricCard';
 import React from 'react';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
-import {CampaignMetricType, ICampaignMetric} from '../utils/mock-campaigns';
+import {CampaignMetricType, ICampaignMetric} from 'shared/api/campaigns';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
 
 interface IOverviewSectionProps {
-	metrics: ICampaignMetric[];
+	loading?: boolean;
+	metrics?: ICampaignMetric[] | null;
 }
 
 const CARDS = [
@@ -45,7 +46,10 @@ const CARDS = [
 const renderTrendLabel = (percentageNode: React.ReactNode) =>
 	sub(Liferay.Language.get('x-vs-last-x-days'), [percentageNode, 90], false);
 
-const OverviewSection: React.FC<IOverviewSectionProps> = ({metrics}) => (
+const OverviewSection: React.FC<IOverviewSectionProps> = ({
+	loading = false,
+	metrics,
+}) => (
 	<>
 		<SectionHeader
 			icon="box-container"
@@ -55,7 +59,7 @@ const OverviewSection: React.FC<IOverviewSectionProps> = ({metrics}) => (
 
 		<ClayLayout.Row className="row g-4">
 			{CARDS.map(({description, metricType, title}) => {
-				const metric = metrics.find(
+				const metric = metrics?.find(
 					(metric) => metric.metricType === metricType
 				);
 
@@ -63,6 +67,7 @@ const OverviewSection: React.FC<IOverviewSectionProps> = ({metrics}) => (
 					<ClayLayout.Col key={metricType} lg={3} md={6}>
 						<MetricCard
 							description={description}
+							loading={loading}
 							minHeight={200}
 							renderTrendLabel={renderTrendLabel}
 							title={title}
