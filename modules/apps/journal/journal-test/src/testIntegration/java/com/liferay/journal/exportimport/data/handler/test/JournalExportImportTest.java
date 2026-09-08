@@ -1397,6 +1397,83 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		_assertClassPK(liveArticle2Content, liveArticle1.getResourcePrimKey());
 	}
 
+	@Test
+	@TestInfo("LPS-75802")
+	public void testPublishPortletWithImportedStructureDefaultValues()
+		throws Exception {
+
+		JournalArticle defaultValuesArticle =
+			JournalTestUtil.addArticleDefaultValues(
+				TestPropsValues.getUserId(), group.getGroupId(),
+				RandomTestUtil.randomString());
+
+		DDMStructure ddmStructure = DDMStructureLocalServiceUtil.getStructure(
+			defaultValuesArticle.getDDMStructureId());
+
+		JournalArticle article = JournalTestUtil.addArticleWithXMLContent(
+			group.getGroupId(),
+			DDMStructureTestUtil.getSampleStructuredContent(),
+			ddmStructure.getStructureKey(),
+			defaultValuesArticle.getDDMTemplateKey());
+
+		exportPortlet(JournalPortletKeys.JOURNAL, layout);
+
+		_liveGroup = GroupTestUtil.addGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_liveGroup.getGroupId());
+
+		Map<String, Serializable> attributes = serviceContext.getAttributes();
+
+		attributes.putAll(
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap());
+
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), _liveGroup, false, false,
+			serviceContext);
+
+		Group stagingGroup = _liveGroup.getStagingGroup();
+
+		Group originalImportedGroup = importedGroup;
+
+		importedGroup = stagingGroup;
+
+		importPortlet(JournalPortletKeys.JOURNAL, layout);
+
+		importedGroup = originalImportedGroup;
+
+		Assert.assertNotNull(
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				article.getUuid(), stagingGroup.getGroupId()));
+
+		Layout liveLayout = LayoutTestUtil.addTypePortletLayout(_liveGroup);
+
+		StagingUtil.publishPortlet(
+			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			_liveGroup.getGroupId(), importedLayout.getPlid(),
+			liveLayout.getPlid(), JournalPortletKeys.JOURNAL,
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap());
+
+		Assert.assertNotNull(
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				article.getUuid(), _liveGroup.getGroupId()));
+
+		DDMStructure liveDDMStructure =
+			DDMStructureLocalServiceUtil.getDDMStructureByUuidAndGroupId(
+				ddmStructure.getUuid(), _liveGroup.getGroupId());
+
+		JournalArticle liveDefaultValuesArticle =
+			JournalArticleLocalServiceUtil.getArticle(
+				_liveGroup.getGroupId(), DDMStructure.class.getName(),
+				liveDDMStructure.getStructureId());
+
+		Assert.assertEquals(
+			defaultValuesArticle.getContent(),
+			liveDefaultValuesArticle.getContent());
+	}
+
 	@Override
 	protected StagedModel addStagedModel(long groupId) throws Exception {
 		return JournalTestUtil.addArticle(
