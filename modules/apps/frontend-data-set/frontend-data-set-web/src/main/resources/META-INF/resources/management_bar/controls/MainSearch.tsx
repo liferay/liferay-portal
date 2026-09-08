@@ -10,14 +10,12 @@ import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {SEARCH_AS_YOU_TYPE_DEBOUNCE_DELAY} from '../../constants';
-import recentSearches from '../../utils/recentSearches';
 import RecentSearches from './RecentSearches';
 
 function MainSearch({onClear}: {onClear: () => void}) {
 	const {
 		apiURL,
 		appURL,
-		id,
 		onSearch,
 
 		recentSearches: recentSearchesEnabled,
@@ -26,7 +24,6 @@ function MainSearch({onClear}: {onClear: () => void}) {
 	} = useContext(FrontendDataSetContext);
 
 	const [inputValue, setInputValue] = useState(searchParam || '');
-	const [recentQueries, setRecentQueries] = useState<Array<string>>([]);
 	const [recentSearchesActive, setRecentSearchesActive] = useState(false);
 
 	const inputGroupItemRef = useRef<HTMLDivElement>(null);
@@ -56,8 +53,6 @@ function MainSearch({onClear}: {onClear: () => void}) {
 		onSearch({query});
 	};
 
-	const readRecentQueries = () => setRecentQueries(recentSearches.get(id));
-
 	// Clicking counts as well as focusing, because an input that already holds
 	// the focus fires no focus event, and it does hold it after a search or
 	// after Escape closed the dropdown
@@ -66,8 +61,6 @@ function MainSearch({onClear}: {onClear: () => void}) {
 		if (!recentSearchesEnabled) {
 			return;
 		}
-
-		readRecentQueries();
 
 		setRecentSearchesActive(true);
 	};
@@ -138,30 +131,20 @@ function MainSearch({onClear}: {onClear: () => void}) {
 					/>
 				</ClayInput.GroupInsetItem>
 
-				<RecentSearches
-					active={recentSearchesActive}
-					alignElementRef={inputGroupItemRef}
-					onActiveChange={setRecentSearchesActive}
-					onClearAll={() => {
-						recentSearches.clear(id);
+				{recentSearchesActive && (
+					<RecentSearches
+						alignElementRef={inputGroupItemRef}
+						onActiveChange={setRecentSearchesActive}
+						onQueryClick={(query) => {
+							setRecentSearchesActive(false);
 
-						readRecentQueries();
-					}}
-					onQueryClick={(query) => {
-						setRecentSearchesActive(false);
+							setInputValue(query);
 
-						setInputValue(query);
-
-						doSearch(query);
-					}}
-					onQueryRemove={(query) => {
-						recentSearches.remove(id, query);
-
-						readRecentQueries();
-					}}
-					queries={recentQueries}
-					value={inputValue}
-				/>
+							doSearch(query);
+						}}
+						value={inputValue}
+					/>
+				)}
 			</ClayInput.GroupItem>
 		</ClayInput.Group>
 	);

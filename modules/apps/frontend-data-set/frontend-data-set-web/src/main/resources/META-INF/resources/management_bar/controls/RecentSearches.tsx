@@ -5,7 +5,10 @@
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+
+import FrontendDataSetContext from '../../FrontendDataSetContext';
+import recentSearches from '../../utils/recentSearches';
 
 interface IMatch {
 	index: number;
@@ -13,27 +16,26 @@ interface IMatch {
 }
 
 interface IProps {
-	active: boolean;
 	alignElementRef: React.RefObject<HTMLElement>;
 	onActiveChange: (active: boolean) => void;
-	onClearAll: () => void;
 	onQueryClick: (query: string) => void;
-	onQueryRemove: (query: string) => void;
-	queries: Array<string>;
 	value: string;
 }
 
 function RecentSearches({
-	active,
 	alignElementRef,
 	onActiveChange,
-	onClearAll,
 	onQueryClick,
-	onQueryRemove,
-	queries,
 	value,
 }: IProps) {
+	const {id} = useContext(FrontendDataSetContext);
+
 	const menuRef = useRef<HTMLDivElement>(null);
+
+	// The menu is mounted for as long as it is open, so the history is read
+	// once on the way in and kept in step with the API from there on
+
+	const [queries, setQueries] = useState(() => recentSearches.get(id));
 
 	// The menu is as wide as the search box, so it watches the box rather than
 	// the viewport: the box also reports no width once the management bar hides
@@ -61,25 +63,26 @@ function RecentSearches({
 	// the edge of the page, so it closes with the box
 
 	useEffect(() => {
-		if (active && searchBoxWidth === 0) {
+		if (searchBoxWidth === 0) {
 			onActiveChange(false);
 		}
-	}, [active, onActiveChange, searchBoxWidth]);
+	}, [onActiveChange, searchBoxWidth]);
 
 	const matchedQueries = queries
 		.map((query) => ({match: _getMatch(query, value), query}))
 		.filter(({match}) => !!match) as Array<{match: IMatch; query: string}>;
 
-	// The menu keeps its markup once mounted, so it is only mounted while it
-	// has something to show and leaves nothing for a screen reader otherwise.
+	// Clay keeps the menu's markup in the page once it is mounted, so it is
+	// rendered only while a query matches and leaves nothing for a screen
+	// reader otherwise
 
-	if (!active || !matchedQueries.length) {
+	if (!matchedQueries.length) {
 		return null;
 	}
 
 	return (
 		<ClayDropDown.Menu
-			active={active}
+			active
 			alignElementRef={alignElementRef}
 			className="fds-recent-searches"
 			onActiveChange={onActiveChange}
@@ -105,7 +108,7 @@ function RecentSearches({
 				<ClayButton
 					className="fds-recent-searches-clear-all"
 					displayType="link"
-					onClick={onClearAll}
+					onClick={() => setQueries(recentSearches.clear(id))}
 					small
 				>
 					{Liferay.Language.get('clear-all')}
@@ -148,7 +151,9 @@ function RecentSearches({
 							aria-label={Liferay.Language.get('clear-search')}
 							className="fds-recent-searches-item-remove"
 							displayType="unstyled"
-							onClick={() => onQueryRemove(query)}
+							onClick={() =>
+								setQueries(recentSearches.remove(id, query))
+							}
 							role="menuitem"
 							size="sm"
 							symbol="times-small"
