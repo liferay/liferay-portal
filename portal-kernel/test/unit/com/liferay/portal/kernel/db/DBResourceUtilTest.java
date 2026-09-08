@@ -14,6 +14,8 @@ import java.io.InputStream;
 
 import java.net.URL;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,6 +32,63 @@ import org.osgi.framework.Bundle;
  * @author Mariano Álvaro Sáiz
  */
 public class DBResourceUtilTest {
+
+	@Test
+	public void testGetModuleColumnDefinitionsMapWithNullTablesSQL()
+		throws Exception {
+
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		Mockito.when(
+			bundle.getResource(ArgumentMatchers.anyString())
+		).thenReturn(
+			null
+		);
+
+		Map<String, List<String>> moduleColumnDefinitionsMap =
+			DBResourceUtil.getModuleColumnDefinitionsMap(bundle);
+
+		Assert.assertTrue(moduleColumnDefinitionsMap.isEmpty());
+	}
+
+	@Test
+	public void testGetModuleColumnDefinitionsMapWithTablesSQL()
+		throws Exception {
+
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		URL url = Mockito.mock(URL.class);
+
+		String sql = StringBundler.concat(
+			"create table TestTable1 (testTableId LONG not null primary key);",
+			"create table TestTable2 (column1 LONG default 0 not null, ",
+			"column2 LONG not null, column3 NUMERIC(13,4) null, primary key ",
+			"(column1, column2));");
+
+		Mockito.when(
+			url.openStream()
+		).thenReturn(
+			new ByteArrayInputStream(sql.getBytes())
+		);
+
+		Mockito.when(
+			bundle.getResource(ArgumentMatchers.anyString())
+		).thenReturn(
+			url
+		);
+
+		Map<String, List<String>> moduleColumnDefinitionsMap =
+			DBResourceUtil.getModuleColumnDefinitionsMap(bundle);
+
+		Assert.assertEquals(
+			Arrays.asList("testTableId LONG not null"),
+			moduleColumnDefinitionsMap.get("TestTable1"));
+		Assert.assertEquals(
+			Arrays.asList(
+				"column1 LONG default 0 not null", "column2 LONG not null",
+				"column3 NUMERIC(13,4) null"),
+			moduleColumnDefinitionsMap.get("TestTable2"));
+	}
 
 	@Test
 	public void testGetModuleIndexesSQL() throws Exception {
@@ -89,6 +148,42 @@ public class DBResourceUtilTest {
 		Assert.assertArrayEquals(
 			new String[] {"column1", "column2"},
 			moduleTablesPrimaryKeyColumnNames.get("TestTable2"));
+	}
+
+	@Test
+	public void testGetPortalColumnDefinitionsMap() throws Exception {
+		try (MockedStatic<StringUtil> stringUtilMockedStatic =
+				Mockito.mockStatic(
+					StringUtil.class, Mockito.CALLS_REAL_METHODS)) {
+
+			stringUtilMockedStatic.when(
+				() -> StringUtil.read(
+					Mockito.nullable(Class.class), Mockito.anyString())
+			).thenReturn(
+				StringBundler.concat(
+					"create table Company (\n",
+					"companyId LONG not null primary key,\n",
+					"mvccVersion LONG default 0 not null\n);\n\n",
+					"create table VirtualHost (\n",
+					"ctCollectionId LONG default 0 not null,\n",
+					"virtualHostId LONG not null,\n",
+					"primary key (virtualHostId, ctCollectionId)\n);")
+			);
+
+			Map<String, List<String>> portalColumnDefinitionsMap =
+				DBResourceUtil.getPortalColumnDefinitionsMap();
+
+			Assert.assertEquals(
+				Arrays.asList(
+					"companyId LONG not null",
+					"mvccVersion LONG default 0 not null"),
+				portalColumnDefinitionsMap.get("Company"));
+			Assert.assertEquals(
+				Arrays.asList(
+					"ctCollectionId LONG default 0 not null",
+					"virtualHostId LONG not null"),
+				portalColumnDefinitionsMap.get("VirtualHost"));
+		}
 	}
 
 	@Test
