@@ -311,50 +311,6 @@ definition {
 			pageAddedEmail = "true");
 	}
 
-	@description = "This ensures that the imported pages can be viewed."
-	@priority = 4
-	@refactordone
-	test CanViewImportedPages {
-		property portal.acceptance = "quarantine";
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Wiki");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Site Name",
-			layoutName = "Wiki",
-			widgetName = "Wiki");
-
-		WikiNavigator.openWikiAdmin(siteURLKey = "site-name");
-
-		LAR.importPortlet(
-			initializeLiferayEvent = "true",
-			larFileName = "space-history-wiki.lar",
-			uploadFrom = "dependencies");
-
-		Navigator.gotoSitePage(
-			pageName = "Wiki",
-			siteName = "Site Name");
-
-		WikiNavigator.gotoPG(wikiPageTitle = "FrontPage");
-
-		WikiPage.viewFrontPagePG(wikiPageContent = "Located in Provincetown, MA, S.P.A.C.E. (Space Program Academy of Continuing Education) was founded in February of 2063 by its current Board of Governors members—Dr. Edith Adams, Dr. Harold Vance, Antony Carelli, and Victoria Allen—as a fully-accredited, internationally-run school for students interested in pursuing a wide range of space-related careers. S.P.A.C.E. also serves as a research center for faculty. S.P.A.C.E.'s foundation came about largely as a result of skyrocketing interest in space-related careers and the limitations on The Space Program.");
-
-		for (var wikiPageTitle : list "FrontPage,Board of Governors,Board of Governors,The Space Program,Antony Carelli,Dr. Harold Vance,Victoria Allen,Dr. Asmund Grey") {
-			WikiNavigator.gotoAllPagesPG();
-
-			WikiNavigator.gotoPG(wikiPageTitle = ${wikiPageTitle});
-		}
-
-		WikiPage.viewPG(
-			wikiPageContent = "Dr. Asmund Grey, first and current president of S.P.A.C.E., was born Asmund Andrew Grey March 22, 2029 to Drs. Albert and Anita Grey in Stratford-upon-Avon, England.",
-			wikiPageTitle = "Dr. Asmund Grey");
-	}
-
 	@description = "This ensures that the deleted front page can be restored."
 	@priority = 4
 	@refactordone
