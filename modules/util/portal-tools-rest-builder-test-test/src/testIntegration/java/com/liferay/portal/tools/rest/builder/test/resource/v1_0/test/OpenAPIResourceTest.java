@@ -131,7 +131,20 @@ public class OpenAPIResourceTest {
 											).put(
 												"type", "array"
 											)
-										)))))))
+										))))))
+				).put(
+					"/v1.0/test-entities/count",
+					JSONUtil.put(
+						"get",
+						JSONUtil.put(
+							"parameters",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"name", "requiredQueryParameter"
+								).put(
+									"required", true
+								))))
+				)
 			).toString(),
 			HTTPTestUtil.invokeToJSONObject(
 				null, "portal-tools-rest-builder-test/v1.0/openapi.json",

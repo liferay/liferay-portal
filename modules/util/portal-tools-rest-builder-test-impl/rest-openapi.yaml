@@ -2678,6 +2678,12 @@ paths:
             description:
                 Retrieves the count.
             operationId: getTestEntityCount
+            parameters:
+                -   in: query
+                    name: requiredQueryParameter
+                    required: true
+                    schema:
+                        type: string
             responses:
                 200:
                     content:
