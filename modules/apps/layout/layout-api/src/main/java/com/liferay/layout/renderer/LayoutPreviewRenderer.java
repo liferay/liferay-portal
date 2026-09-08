@@ -19,6 +19,10 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface LayoutPreviewRenderer {
 
 	public String render(
+			Layout layout, Locale locale, long segmentsExperienceId)
+		throws Exception;
+
+	public String render(
 			Layout layout, Locale locale, long segmentsExperienceId,
 			ServiceContext serviceContext)
 		throws Exception;

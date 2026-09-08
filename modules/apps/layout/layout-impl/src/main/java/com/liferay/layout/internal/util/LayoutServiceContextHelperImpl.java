@@ -6,6 +6,7 @@
 package com.liferay.layout.internal.util;
 
 import com.liferay.layout.util.LayoutServiceContextHelper;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -14,6 +15,7 @@ import com.liferay.portal.kernel.model.ColorScheme;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -26,6 +28,7 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -48,6 +51,7 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.webserver.WebServerServletToken;
 import com.liferay.portal.theme.ThemeDisplayFactory;
 
 import jakarta.servlet.RequestDispatcher;
@@ -119,6 +123,9 @@ public class LayoutServiceContextHelperImpl
 	private GroupLocalService _groupLocalService;
 
 	@Reference
+	private ImageLocalService _imageLocalService;
+
+	@Reference
 	private LayoutLocalService _layoutLocalService;
 
 	@Reference
@@ -129,6 +136,9 @@ public class LayoutServiceContextHelperImpl
 
 	@Reference
 	private UserLocalService _userLocalService;
+
+	@Reference
+	private WebServerServletToken _webServerServletToken;
 
 	private class ServiceContextTemporarySwapper implements AutoCloseable {
 
@@ -383,6 +393,14 @@ public class LayoutServiceContextHelperImpl
 				_portal.getPortalURL(
 					company.getVirtualHostname(), portalServerPort, secure));
 
+			themeDisplay.setPathContext(_portal.getPathContext());
+			themeDisplay.setPathFriendlyURLPrivateGroup(
+				_portal.getPathFriendlyURLPrivateGroup());
+			themeDisplay.setPathFriendlyURLPrivateUser(
+				_portal.getPathFriendlyURLPrivateUser());
+			themeDisplay.setPathFriendlyURLPublic(
+				_portal.getPathFriendlyURLPublic());
+			themeDisplay.setPathImage(_portal.getPathImage());
 			themeDisplay.setPathMain(_portal.getPathMain());
 			themeDisplay.setPermissionChecker(permissionChecker);
 			themeDisplay.setRealUser(user);
@@ -392,8 +410,14 @@ public class LayoutServiceContextHelperImpl
 			themeDisplay.setServerPort(portalServerPort);
 			themeDisplay.setSignedIn(!user.isGuestUser());
 			themeDisplay.setSiteGroupId(_group.getGroupId());
+			themeDisplay.setThemeCssFastLoad(PropsValues.THEME_CSS_FAST_LOAD);
+			themeDisplay.setThemeJsFastLoad(PropsValues.JAVASCRIPT_FAST_LOAD);
 			themeDisplay.setTimeZone(user.getTimeZone());
+			themeDisplay.setURLPortal(
+				themeDisplay.getPortalURL() + _portal.getPathContext());
 			themeDisplay.setUser(user);
+
+			_setCompanyLogo(themeDisplay, company);
 
 			if (_layout != null) {
 				themeDisplay.setLanguageId(_layout.getDefaultLanguageId());
@@ -468,6 +492,33 @@ public class LayoutServiceContextHelperImpl
 			}
 			else if (name != null) {
 				_attributes.remove(name);
+			}
+		}
+
+		private void _setCompanyLogo(
+			ThemeDisplay themeDisplay, Company company) {
+
+			String companyLogo = _portal.getPathImage() + "/company_logo";
+
+			long companyLogoId = company.getLogoId();
+
+			if (companyLogoId <= 0) {
+				themeDisplay.setCompanyLogo(companyLogo);
+
+				return;
+			}
+
+			themeDisplay.setCompanyLogo(
+				StringBundler.concat(
+					companyLogo, "?img_id=", companyLogoId, "&t=",
+					_webServerServletToken.getToken(companyLogoId)));
+
+			Image companyLogoImage = _imageLocalService.getCompanyLogo(
+				companyLogoId);
+
+			if (companyLogoImage != null) {
+				themeDisplay.setCompanyLogoHeight(companyLogoImage.getHeight());
+				themeDisplay.setCompanyLogoWidth(companyLogoImage.getWidth());
 			}
 		}
 

@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.PortletServlet;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -555,8 +556,27 @@ public class LayoutContentVersionLocalServiceTest {
 		LayoutPreviewRenderer originalLayoutPreviewRenderer =
 			ReflectionTestUtil.getAndSetFieldValue(
 				layoutContentVersionLocalServiceImpl, "_layoutPreviewRenderer",
-				(layout, locale, segmentsExperienceId, serviceContext) -> {
-					throw new Exception();
+				new LayoutPreviewRenderer() {
+
+					@Override
+					public String render(
+							Layout layout, Locale locale,
+							long segmentsExperienceId)
+						throws Exception {
+
+						throw new Exception();
+					}
+
+					@Override
+					public String render(
+							Layout layout, Locale locale,
+							long segmentsExperienceId,
+							ServiceContext serviceContext)
+						throws Exception {
+
+						throw new Exception();
+					}
+
 				});
 
 		return () -> ReflectionTestUtil.setFieldValue(
