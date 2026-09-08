@@ -5,6 +5,7 @@
 
 package com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0;
 
+import com.liferay.portal.tools.rest.builder.test.dto.v1_0.ReferencingTestEntity;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ReferencingTestEntityResource;
 
 import org.osgi.service.component.annotations.Component;
@@ -20,4 +21,13 @@ import org.osgi.service.component.annotations.ServiceScope;
 )
 public class ReferencingTestEntityResourceImpl
 	extends BaseReferencingTestEntityResourceImpl {
+
+	@Override
+	public ReferencingTestEntity postReferencingTestEntity(
+			ReferencingTestEntity referencingTestEntity)
+		throws Exception {
+
+		return referencingTestEntity;
+	}
+
 }
