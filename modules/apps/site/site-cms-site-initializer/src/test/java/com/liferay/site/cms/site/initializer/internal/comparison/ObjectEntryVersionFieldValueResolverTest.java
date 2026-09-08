@@ -5,6 +5,7 @@
 
 package com.liferay.site.cms.site.initializer.internal.comparison;
 
+import com.liferay.diff.DiffHtml;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
@@ -75,8 +76,8 @@ public class ObjectEntryVersionFieldValueResolverTest {
 
 		_objectEntryVersionFieldValueResolver =
 			new ObjectEntryVersionFieldValueResolver(
-				_dlAppLocalService, _dlFileEntryLocalService, _dlURLHelper,
-				_language, _listTypeEntryLocalService,
+				_diffHtml, _dlAppLocalService, _dlFileEntryLocalService,
+				_dlURLHelper, _language, _listTypeEntryLocalService,
 				_objectEntryVersionService);
 	}
 
@@ -85,22 +86,6 @@ public class ObjectEntryVersionFieldValueResolverTest {
 		_testGetFieldValuesWithEmptyTranslation();
 		_testGetFieldValuesWithoutTranslation();
 		_testGetFieldValuesWithTranslation();
-	}
-
-	@Test
-	public void testIsDateBusinessType() {
-		Assert.assertTrue(
-			_objectEntryVersionFieldValueResolver.isDateBusinessType(
-				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_DATE)));
-		Assert.assertTrue(
-			_objectEntryVersionFieldValueResolver.isDateBusinessType(
-				_mockObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)));
-		Assert.assertFalse(
-			_objectEntryVersionFieldValueResolver.isDateBusinessType(
-				_mockObjectField(ObjectFieldConstants.BUSINESS_TYPE_TEXT)));
-		Assert.assertFalse(
-			_objectEntryVersionFieldValueResolver.isDateBusinessType(null));
 	}
 
 	@Test
@@ -662,6 +647,7 @@ public class ObjectEntryVersionFieldValueResolverTest {
 
 	private static final String _LANGUAGE_ID = "en_US";
 
+	private final DiffHtml _diffHtml = Mockito.mock(DiffHtml.class);
 	private final DLAppLocalService _dlAppLocalService = Mockito.mock(
 		DLAppLocalService.class);
 	private final DLFileEntryLocalService _dlFileEntryLocalService =

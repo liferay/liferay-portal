@@ -119,7 +119,7 @@ function applyFieldDiffs(
 
 		// XSS: diffHTML is escaped by
 		// ObjectEntryVersionFieldValueResolver.toDisplayValue, except rich
-		// text, which is HTML by design
+		// text and attachments, which are HTML by design
 
 		container.innerHTML = diffHTML;
 
@@ -130,12 +130,19 @@ function applyFieldDiffs(
 		container
 			.querySelectorAll('.cms-compare-versions-attachment')
 			.forEach((image) => {
+				if (image.closest('.diff-html-removed')) {
+					return;
+				}
+
 				image.classList.add(borderColorCssClass);
 
-				formGroup.insertBefore(
-					image.closest('[class*="diff-html"]') ?? image,
-					container
-				);
+				const mark = image.closest('[class*="diff-html"]');
+
+				formGroup.insertBefore(image, container);
+
+				if (mark && !mark.textContent?.trim()) {
+					mark.remove();
+				}
 			});
 	});
 }
