@@ -308,12 +308,12 @@ public class WikiPageAttachmentResourceTest
 
 		// File entry that is not a wiki page attachment
 
-		FileEntry fileEntry = _addFileEntry();
+		_assertNoSuchWikiPageAttachment(_addFileEntry());
 
-		assertHttpResponseStatusCode(
-			404,
-			wikiPageAttachmentResource.getWikiPageAttachmentHttpResponse(
-				fileEntry.getFileEntryId()));
+		// File entry in a folder named after a wiki page
+
+		_assertNoSuchWikiPageAttachment(
+			_addFileEntry(String.valueOf(_wikiPage.getResourcePrimKey())));
 	}
 
 	@Ignore
@@ -495,6 +495,10 @@ public class WikiPageAttachmentResourceTest
 	}
 
 	private FileEntry _addFileEntry() throws Exception {
+		return _addFileEntry(RandomTestUtil.randomString());
+	}
+
+	private FileEntry _addFileEntry(String folderName) throws Exception {
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setAddGroupPermissions(true);
@@ -502,9 +506,8 @@ public class WikiPageAttachmentResourceTest
 
 		Folder folder = DLAppLocalServiceUtil.addFolder(
 			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, folderName,
+			RandomTestUtil.randomString(), serviceContext);
 
 		return DLAppLocalServiceUtil.addFileEntry(
 			null, TestPropsValues.getUserId(), testGroup.getGroupId(),
@@ -557,6 +560,15 @@ public class WikiPageAttachmentResourceTest
 		return wikiPageAttachmentResource.postWikiPageWikiPageAttachment(
 			wikiPage.getResourcePrimKey(), randomWikiPageAttachment(),
 			getMultipartFiles());
+	}
+
+	private void _assertNoSuchWikiPageAttachment(FileEntry fileEntry)
+		throws Exception {
+
+		assertHttpResponseStatusCode(
+			404,
+			wikiPageAttachmentResource.getWikiPageAttachmentHttpResponse(
+				fileEntry.getFileEntryId()));
 	}
 
 	private WikiPageAttachmentResource
