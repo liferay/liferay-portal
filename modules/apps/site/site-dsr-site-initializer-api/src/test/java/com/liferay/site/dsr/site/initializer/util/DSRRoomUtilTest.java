@@ -60,8 +60,6 @@ public class DSRRoomUtilTest {
 					Mockito.mockStatic(
 						ObjectDefinitionLocalServiceUtil.class)) {
 
-			// No object definition
-
 			Assert.assertArrayEquals(
 				new String[0],
 				DSRRoomUtil.getGroupIds(null, _permissionChecker));
@@ -91,23 +89,17 @@ public class DSRRoomUtilTest {
 				RandomTestUtil.randomLong()
 			);
 
-			// No search results
-
 			_mockGroups(groupServiceUtilMockedStatic);
 
 			Assert.assertArrayEquals(
 				new String[0],
 				DSRRoomUtil.getGroupIds(null, _permissionChecker));
 
-			// No owned groups
-
 			_mockGroups(groupServiceUtilMockedStatic, 1L, 2L, 3L);
 
 			Assert.assertArrayEquals(
 				new String[0],
 				DSRRoomUtil.getGroupIds(null, _permissionChecker));
-
-			// Owned groups
 
 			Mockito.when(
 				_permissionChecker.isGroupOwner(1L)
@@ -125,14 +117,10 @@ public class DSRRoomUtilTest {
 				new String[] {"1", "3"},
 				DSRRoomUtil.getGroupIds(null, _permissionChecker));
 
-			// Requested group IDs intersected with the owned ones
-
 			Assert.assertArrayEquals(
 				new String[] {"1"},
 				DSRRoomUtil.getGroupIds(
 					new String[] {"1", "2", "999"}, _permissionChecker));
-
-			// Company admin sees every group
 
 			Mockito.when(
 				_permissionChecker.isCompanyAdmin()
