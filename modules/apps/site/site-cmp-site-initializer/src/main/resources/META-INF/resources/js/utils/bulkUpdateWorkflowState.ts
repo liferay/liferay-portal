@@ -30,11 +30,31 @@ function compareWorkflowGroups(
 	);
 }
 
+/**
+ * Pairs every selected task with the transition chosen for its step group.
+ * transitionNames is keyed by getStepGroupKey, so step groups without a chosen
+ * transition and tasks in deselectedTaskIds are left out. Returns one
+ * ChangeTransition per remaining task, without a comment; the comment modal
+ * adds that later.
+ *
+ * With tasks 1, 2 and 3 in the "review" step of "Single Approver" version 1,
+ * task 2 deselected and "approve" chosen for that step:
+ *
+ * deselectedTaskIds = [2]
+ * transitionNames = {'Single Approver-1-review': 'approve'}
+ *
+ * returns
+ *
+ * [
+ *     {transitionName: 'approve', workflowTaskId: 1},
+ *     {transitionName: 'approve', workflowTaskId: 3},
+ * ]
+ */
 export function getChangeTransitions(
 	deselectedTaskIds: number[],
 	transitionNames: Record<string, string>,
 	workflowGroups: WorkflowGroup[]
-) {
+): ChangeTransition[] {
 	const changeTransitions: ChangeTransition[] = [];
 
 	workflowGroups.forEach((workflowGroup) => {
