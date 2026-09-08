@@ -103,7 +103,7 @@ export default function BulkUpdateWorkflowStateStepGroup({
 					messages={PICKER_MESSAGES}
 					onSelectionChange={(key) => onTransitionChange(String(key))}
 					placeholder={Liferay.Language.get('select-a-transition')}
-					selectedKey={transitionName}
+					selectedKey={transitionName ?? ''}
 				>
 					{(transition) => (
 						<Option
