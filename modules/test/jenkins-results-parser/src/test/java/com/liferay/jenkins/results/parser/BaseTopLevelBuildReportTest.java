@@ -154,6 +154,49 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
+	public void testGetDistinctFailureReports() {
+		FailureReport failureReport = Mockito.mock(FailureReport.class);
+		FailureReport similarFailureReport = Mockito.mock(FailureReport.class);
+		FailureReport uniqueFailureReport = Mockito.mock(FailureReport.class);
+
+		Mockito.doReturn(
+			true
+		).when(
+			similarFailureReport
+		).isSimilar(
+			failureReport
+		);
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
+			BaseTopLevelBuildReport.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTopLevelBuildReport
+		).getDistinctFailureReports();
+
+		Mockito.doReturn(
+			Arrays.asList(
+				failureReport, similarFailureReport, uniqueFailureReport)
+		).when(
+			baseTopLevelBuildReport
+		).getFailureReports();
+
+		List<FailureReport> distinctFailureReports =
+			baseTopLevelBuildReport.getDistinctFailureReports();
+
+		Assert.assertEquals(
+			distinctFailureReports.toString(), 2,
+			distinctFailureReports.size());
+		Assert.assertTrue(distinctFailureReports.contains(failureReport));
+		Assert.assertTrue(distinctFailureReports.contains(uniqueFailureReport));
+
+		Assert.assertSame(
+			distinctFailureReports,
+			baseTopLevelBuildReport.getDistinctFailureReports());
+	}
+
+	@Test
 	public void testGetDownstreamBuildReport() {
 		String axisName = RandomTestUtil.randomString();
 
@@ -366,6 +409,39 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
+	public void testGetUniqueFailureReports() {
+		FailureReport failureReport = Mockito.mock(FailureReport.class);
+		FailureReport previousFailureReport = Mockito.mock(FailureReport.class);
+
+		Mockito.doReturn(
+			true
+		).when(
+			failureReport
+		).isSimilar(
+			previousFailureReport
+		);
+
+		_testGetUniqueFailureReports(
+			Collections.singletonList(failureReport), failureReport, null);
+
+		TopLevelBuildReport previousTopLevelBuildReport = Mockito.mock(
+			TopLevelBuildReport.class);
+
+		Mockito.doReturn(
+			Collections.singletonList(previousFailureReport)
+		).when(
+			previousTopLevelBuildReport
+		).getDistinctFailureReports();
+
+		FailureReport unaffectedFailureReport = Mockito.mock(
+			FailureReport.class);
+
+		_testGetUniqueFailureReports(
+			Arrays.asList(failureReport, unaffectedFailureReport),
+			unaffectedFailureReport, previousTopLevelBuildReport);
+	}
+
+	@Test
 	public void testInitialize() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport();
@@ -546,6 +622,43 @@ public class BaseTopLevelBuildReportTest
 			_newBaseTopLevelBuildReport(buildReportJSONObject);
 
 		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
+	}
+
+	private void _testGetUniqueFailureReports(
+		List<FailureReport> distinctFailureReports,
+		FailureReport expectedFailureReport,
+		TopLevelBuildReport previousTopLevelBuildReport) {
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
+			BaseTopLevelBuildReport.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTopLevelBuildReport
+		).getUniqueFailureReports();
+
+		Mockito.doReturn(
+			distinctFailureReports
+		).when(
+			baseTopLevelBuildReport
+		).getDistinctFailureReports();
+
+		Mockito.doReturn(
+			previousTopLevelBuildReport
+		).when(
+			baseTopLevelBuildReport
+		).getPreviousTopLevelBuildReport();
+
+		List<FailureReport> uniqueFailureReports =
+			baseTopLevelBuildReport.getUniqueFailureReports();
+
+		Assert.assertEquals(
+			uniqueFailureReports.toString(), 1, uniqueFailureReports.size());
+		Assert.assertTrue(uniqueFailureReports.contains(expectedFailureReport));
+
+		Assert.assertSame(
+			uniqueFailureReports,
+			baseTopLevelBuildReport.getUniqueFailureReports());
 	}
 
 }
