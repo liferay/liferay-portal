@@ -34,11 +34,14 @@ import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.model.PLOEntryTable;
 import com.liferay.portal.language.override.service.base.PLOEntryLocalServiceBaseImpl;
 
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -172,13 +175,23 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 		languageId = _normalizeLanguageId(languageId);
 
+		if (!_isAvailableLanguageId(companyId, languageId)) {
+			PLOEntryImportException.InvalidTranslations invalidTranslations =
+				new PLOEntryImportException.InvalidTranslations();
+
+			invalidTranslations.addSuppressed(
+				new PLOEntryLanguageIdException.MustBeAvailable(
+					_getAvailableLanguageIds(companyId), languageId));
+
+			throw invalidTranslations;
+		}
+
 		PLOEntryImportException.InvalidTranslations invalidTranslations = null;
 
 		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 			try {
-				_validate(
-					companyId, (String)entry.getKey(), languageId,
-					(String)entry.getValue());
+				_validateKeyAndValue(
+					(String)entry.getKey(), (String)entry.getValue());
 			}
 			catch (Exception exception) {
 				if (invalidTranslations == null) {
@@ -291,6 +304,23 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		return addPLOEntry(ploEntry);
 	}
 
+	private String[] _getAvailableLanguageIds(long companyId) {
+		Set<String> availableLanguageIds = new LinkedHashSet<>();
+
+		Collections.addAll(
+			availableLanguageIds,
+			LocaleUtil.toLanguageIds(
+				_language.getCompanyAvailableLocales(companyId)));
+
+		for (String languageId : PropsValues.LOCALES) {
+			availableLanguageIds.add(
+				LocaleUtil.toLanguageId(
+					LocaleUtil.fromLanguageId(languageId, false)));
+		}
+
+		return availableLanguageIds.toArray(new String[0]);
+	}
+
 	private Predicate _getPredicate(long companyId, String keywords) {
 		return PLOEntryTable.INSTANCE.companyId.eq(
 			companyId
@@ -319,25 +349,8 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 	}
 
 	private boolean _isAvailableLanguageId(long companyId, String languageId) {
-		if (ArrayUtil.contains(
-				LocaleUtil.toLanguageIds(
-					_language.getCompanyAvailableLocales(companyId)),
-				languageId)) {
-
-			return true;
-		}
-
-		Locale locale = LocaleUtil.fromLanguageId(languageId, false);
-
-		for (String availableLanguageId : PropsValues.LOCALES) {
-			if (locale.equals(
-					LocaleUtil.fromLanguageId(availableLanguageId, false))) {
-
-				return true;
-			}
-		}
-
-		return false;
+		return ArrayUtil.contains(
+			_getAvailableLanguageIds(companyId), languageId);
 	}
 
 	private String _normalizeLanguageId(String languageId) {
@@ -356,20 +369,31 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 			return locale.toString();
 		}
 
-		languageId =
-			StringUtil.lowerCase(parts[0]) + StringPool.UNDERLINE +
-				StringUtil.upperCase(parts[1]);
+		Locale locale = null;
 
 		if (parts.length == 3) {
-			languageId += StringPool.UNDERLINE + parts[2];
+			locale = new Locale(parts[0], parts[1], parts[2]);
+		}
+		else {
+			locale = new Locale(parts[0], parts[1]);
 		}
 
-		return LocaleUtil.toLanguageId(
-			LocaleUtil.fromLanguageId(languageId, false));
+		return locale.toString();
 	}
 
 	private void _validate(
 			long companyId, String key, String languageId, String value)
+		throws PortalException {
+
+		if (!_isAvailableLanguageId(companyId, languageId)) {
+			throw new PLOEntryLanguageIdException.MustBeAvailable(
+				_getAvailableLanguageIds(companyId), languageId);
+		}
+
+		_validateKeyAndValue(key, value);
+	}
+
+	private void _validateKeyAndValue(String key, String value)
 		throws PortalException {
 
 		if (Validator.isBlank(key)) {
@@ -381,16 +405,6 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 		if (key.length() > keyMaxLength) {
 			throw new PLOEntryKeyException.MustBeShorter(keyMaxLength);
-		}
-
-		if (!_isAvailableLanguageId(companyId, languageId)) {
-			String[] availableLanguageIds = ArrayUtil.append(
-				LocaleUtil.toLanguageIds(
-					_language.getCompanyAvailableLocales(companyId)),
-				PropsValues.LOCALES);
-
-			throw new PLOEntryLanguageIdException.MustBeAvailable(
-				availableLanguageIds, languageId);
 		}
 
 		if (Validator.isBlank(value)) {
