@@ -280,7 +280,9 @@ public class OpenAPIUtil {
 
 		properties.put(name, parameterSchemaMap);
 
-		if (Objects.equals(parameterJSONObject.getString("in"), "path")) {
+		if (Objects.equals(parameterJSONObject.getString("in"), "path") ||
+			parameterJSONObject.getBoolean("required")) {
+
 			requiredPropertyNames.add(name);
 		}
 	}

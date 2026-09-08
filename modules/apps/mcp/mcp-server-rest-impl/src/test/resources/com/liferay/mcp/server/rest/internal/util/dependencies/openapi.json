@@ -297,6 +297,7 @@
 						"description": "This is the description",
 						"in": "query",
 						"name": "active",
+						"required": true,
 						"schema": {
 							"type": "boolean"
 						}
