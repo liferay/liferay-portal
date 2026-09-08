@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Eudaldo Alonso
+ * @author Thiago Buarque
  */
 @Component(
 	property = {
@@ -52,7 +53,9 @@ public class AddStyleBookEntryMVCActionCommand extends BaseMVCActionCommand {
 			StyleBookEntry styleBookEntry = _addStyleBookEntry(actionRequest);
 
 			String backURLTitle = ParamUtil.getString(
-				actionRequest, "backURLTitle");
+				_portal.getOriginalServletRequest(
+					_portal.getHttpServletRequest(actionRequest)),
+				"p_l_back_url_title");
 			String redirect = _portal.escapeRedirect(
 				ParamUtil.getString(actionRequest, "redirect"));
 
@@ -110,7 +113,7 @@ public class AddStyleBookEntryMVCActionCommand extends BaseMVCActionCommand {
 		).setRedirect(
 			redirect
 		).setParameter(
-			"backURLTitle", backURLTitle
+			"p_l_back_url_title", backURLTitle
 		).setParameter(
 			"styleBookEntryId", styleBookEntry.getStyleBookEntryId()
 		).buildString();

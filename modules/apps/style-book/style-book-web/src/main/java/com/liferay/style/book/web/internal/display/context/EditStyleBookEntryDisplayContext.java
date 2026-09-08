@@ -84,6 +84,7 @@ import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso
+ * @author Thiago Buarque
  */
 public class EditStyleBookEntryDisplayContext {
 
@@ -703,13 +704,7 @@ public class EditStyleBookEntryDisplayContext {
 
 		portletDisplay.setShowBackIcon(true);
 		portletDisplay.setURLBack(_getRedirect());
-
-		String backURLTitle = ParamUtil.getString(
-			_httpServletRequest, "backURLTitle");
-
-		portletDisplay.setURLBackTitle(
-			Validator.isNotNull(backURLTitle) ? backURLTitle :
-				portletDisplay.getPortletDisplayName());
+		portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
 		_renderResponse.setTitle(_getStyleBookEntryTitle());
 	}

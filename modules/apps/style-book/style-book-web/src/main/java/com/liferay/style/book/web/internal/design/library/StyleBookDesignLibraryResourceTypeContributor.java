@@ -156,7 +156,8 @@ public class StyleBookDesignLibraryResourceTypeContributor
 		).setRedirect(
 			backURL
 		).setParameter(
-			"backURLTitle", _getDepotGroupName(httpServletRequest, depotEntry)
+			"p_l_back_url_title",
+			_getDepotGroupName(httpServletRequest, depotEntry)
 		).buildString();
 	}
 
