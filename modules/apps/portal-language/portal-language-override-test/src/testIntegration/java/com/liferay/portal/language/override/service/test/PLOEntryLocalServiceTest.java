@@ -224,6 +224,58 @@ public class PLOEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testDeletePLOEntryWithLegacyISOLanguageId() throws Exception {
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		try {
+			Company company = CompanyTestUtil.addCompany();
+
+			CompanyTestUtil.resetCompanyLocales(
+				company.getCompanyId(), "en_US,iw_IL", "en_US");
+
+			String key = RandomTestUtil.randomString();
+
+			_addOrUpdatePLOEntry(
+				company.getCompanyId(), key, "iw_IL",
+				RandomTestUtil.randomString());
+
+			_ploEntryLocalService.deletePLOEntry(
+				company.getCompanyId(), key, "iw_IL");
+
+			Assert.assertNull(
+				_ploEntryLocalService.fetchPLOEntry(
+					company.getCompanyId(), key,
+					LocaleUtil.toLanguageId(new Locale("iw", "IL"))));
+		}
+		finally {
+			CompanyThreadLocal.setCompanyId(companyId);
+		}
+	}
+
+	@Test
+	public void testDeletePLOEntryWithNoncanonicalLanguageId()
+		throws Exception {
+
+		String key = RandomTestUtil.randomString();
+
+		PLOEntry ploEntry = _addOrUpdatePLOEntry(
+			key, "pt-BR", RandomTestUtil.randomString());
+
+		Assert.assertEquals("pt_BR", ploEntry.getLanguageId());
+
+		Assert.assertNotNull(
+			_ploEntryLocalService.fetchPLOEntry(
+				TestPropsValues.getCompanyId(), key, "pt-BR"));
+
+		_ploEntryLocalService.deletePLOEntry(
+			TestPropsValues.getCompanyId(), key, "pt-BR");
+
+		Assert.assertNull(
+			_ploEntryLocalService.fetchPLOEntry(
+				TestPropsValues.getCompanyId(), key, "pt_BR"));
+	}
+
+	@Test
 	public void testGetPLOEntries() throws Exception {
 		_testGetPLOEntriesIgnoresKeyCase();
 		_testGetPLOEntriesIgnoresValueCase();
