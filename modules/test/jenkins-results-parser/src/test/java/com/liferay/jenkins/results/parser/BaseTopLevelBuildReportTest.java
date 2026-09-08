@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -32,6 +33,11 @@ public class BaseTopLevelBuildReportTest
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
+
+		Map<String, ?> topLevelBuildReports = ReflectionTestUtil.getFieldValue(
+			BuildReportFactory.class, "_topLevelBuildReports");
+
+		topLevelBuildReports.clear();
 
 		ReflectionTestUtil.setFieldValue(
 			TestrayCloudBucket.class, "_hasGoogleApplicationCredentials", null);
@@ -326,6 +332,89 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
+	public void testGetPreviousTopLevelBuildReport() throws Exception {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport();
+
+		Assert.assertNull(
+			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
+
+		baseTopLevelBuildReport.setControllerBuildReport(
+			_newControllerBuildReport(1));
+
+		Assert.assertNull(
+			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
+
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"builds",
+					new JSONArray(
+					).put(
+						_newControllerBuildJSONObject(4, "SUCCESS")
+					).put(
+						_newControllerBuildJSONObject(3, "SUCCESS")
+					).put(
+						_newControllerBuildJSONObject(2, "ABORTED")
+					).put(
+						_newControllerBuildJSONObject(1, "SUCCESS")
+					)
+				)),
+			"controller-job", urlReader);
+
+		setUrlReaderOutput("{}", "previous-job/1/", urlReader);
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.setControllerBuildReport(
+			_newControllerBuildReport(3));
+
+		TopLevelBuildReport previousTopLevelBuildReport =
+			baseTopLevelBuildReport.getPreviousTopLevelBuildReport();
+
+		Assert.assertEquals(
+			"https://test-1-1.liferay.com/job/previous-job/1",
+			String.valueOf(previousTopLevelBuildReport.getBuildURL()));
+
+		Assert.assertSame(
+			previousTopLevelBuildReport,
+			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
+
+		setUrlReaderOutput(
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"builds",
+					new JSONArray(
+					).put(
+						new JSONObject(
+						).put(
+							"number", 3
+						)
+					).put(
+						new JSONObject(
+						).put(
+							"description", RandomTestUtil.randomString()
+						).put(
+							"number", 2
+						)
+					)
+				)),
+			"controller-job", urlReader);
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.setControllerBuildReport(
+			_newControllerBuildReport(3));
+
+		Assert.assertNull(
+			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
+	}
+
+	@Test
 	public void testGetTopLevelActiveDuration() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport(
@@ -559,6 +648,54 @@ public class BaseTopLevelBuildReportTest
 			}
 
 		};
+	}
+
+	private JSONObject _newControllerBuildJSONObject(
+		int buildNumber, String status) {
+
+		return new JSONObject(
+		).put(
+			"description",
+			JenkinsResultsParserUtil.combine(
+				"<strong>", status, "</strong> - <a href=\"https://test-1-1",
+				"/job/previous-job/", String.valueOf(buildNumber),
+				"/\">Build URL</a>")
+		).put(
+			"number", buildNumber
+		);
+	}
+
+	private ControllerBuildReport _newControllerBuildReport(int buildNumber) {
+		ControllerBuildReport controllerBuildReport = Mockito.mock(
+			ControllerBuildReport.class);
+
+		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
+
+		Mockito.doReturn(
+			"https://test-1-1.liferay.com/"
+		).when(
+			jenkinsMaster
+		).getRemoteURL();
+
+		Mockito.doReturn(
+			buildNumber
+		).when(
+			controllerBuildReport
+		).getBuildNumber();
+
+		Mockito.doReturn(
+			jenkinsMaster
+		).when(
+			controllerBuildReport
+		).getJenkinsMaster();
+
+		Mockito.doReturn(
+			"controller-job"
+		).when(
+			controllerBuildReport
+		).getJobName();
+
+		return controllerBuildReport;
 	}
 
 	private JSONObject _newControllerJSONObject() {
