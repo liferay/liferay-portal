@@ -2209,16 +2209,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 				}
 			}
 
+			Map<String, Boolean> depotAppCustomizationMap =
+				Collections.emptyMap();
+
 			JSONObject depotAppCustomizationJSONObject =
 				jsonObject.getJSONObject("depotAppCustomization");
 
-			_depotEntryLocalService.updateDepotEntry(
-				(group != null) ? group.getClassPK() :
-					depotEntry.getDepotEntryId(),
-				SiteInitializerUtil.toMap(jsonObject.getString("name_i18n")),
-				SiteInitializerUtil.toMap(
-					jsonObject.getString("description_i18n")),
-				HashMapBuilder.put(
+			if (depotAppCustomizationJSONObject != null) {
+				depotAppCustomizationMap = HashMapBuilder.put(
 					PortletKeys.ASSET_LIST,
 					GetterUtil.getBoolean(
 						depotAppCustomizationJSONObject.getBoolean(
@@ -2242,8 +2240,17 @@ public class BundleSiteInitializer implements SiteInitializer {
 						depotAppCustomizationJSONObject.getBoolean(
 							PortletKeys.TRANSLATION),
 						true)
-				).build(),
-				null, unicodeProperties, serviceContext);
+				).build();
+			}
+
+			_depotEntryLocalService.updateDepotEntry(
+				(group != null) ? group.getClassPK() :
+					depotEntry.getDepotEntryId(),
+				SiteInitializerUtil.toMap(jsonObject.getString("name_i18n")),
+				SiteInitializerUtil.toMap(
+					jsonObject.getString("description_i18n")),
+				depotAppCustomizationMap, null, unicodeProperties,
+				serviceContext);
 
 			Group scopeGroup = serviceContext.getScopeGroup();
 
