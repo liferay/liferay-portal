@@ -5,25 +5,35 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {selectMaxItemsPerPage} from '../../../../utils/pagination';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
 export class DefaultPermissionsPage {
 	readonly page: Page;
+	readonly itemsPerPageButton: Locator;
+	readonly maxItemsPerPageOption: Locator;
 	readonly permissionsModal: Locator;
 	readonly permissionsModalCancelButton: Locator;
 	readonly permissionsModalSaveButton: Locator;
 	readonly permissionsModalSelectRole: Locator;
+	readonly permissionsTable: Locator;
 	readonly propagateCheckbox: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.permissionsModal = page.locator('.modal-dialog');
+		this.itemsPerPageButton =
+			this.permissionsModal.getByLabel('Items Per Page');
+		this.maxItemsPerPageOption = page.getByRole('option', {
+			name: '60 items',
+		});
 		this.permissionsModalCancelButton =
 			this.permissionsModal.getByTestId('button-cancel');
 		this.permissionsModalSaveButton =
 			this.permissionsModal.getByTestId('button-save');
 		this.permissionsModalSelectRole =
 			this.permissionsModal.getByLabel('Select Role');
+		this.permissionsTable = this.permissionsModal.getByRole('table');
 		this.propagateCheckbox = this.permissionsModal.getByLabel(
 			'I understand that these changes will also affect existing entities.'
 		);
@@ -35,6 +45,8 @@ export class DefaultPermissionsPage {
 		propagate = false
 	) {
 		await expect(this.permissionsModal).toBeVisible();
+
+		await this.showAllRoles();
 
 		for (const permission of permissions) {
 			const checkbox = this.permissionsModal.getByTestId(
@@ -81,10 +93,21 @@ export class DefaultPermissionsPage {
 		}
 	}
 
+	async showAllRoles() {
+		await expect(this.permissionsTable).toBeVisible();
+
+		await selectMaxItemsPerPage(
+			this.itemsPerPageButton,
+			this.maxItemsPerPageOption
+		);
+	}
+
 	async verifyPermissions(
 		permissions: Array<{action: string; checked: boolean; role: string}>
 	) {
 		await expect(this.permissionsModal).toBeVisible();
+
+		await this.showAllRoles();
 
 		for (const permission of permissions) {
 			if (permission.checked) {

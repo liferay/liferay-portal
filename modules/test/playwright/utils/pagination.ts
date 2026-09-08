@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Page, expect} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 function getPaginator(page: Page | FrameLocator) {
 	return page.locator('[data-qa-id="paginator"]');
@@ -56,4 +56,25 @@ export async function setItemsPerPage(page, limit: 20 | 40 | 60) {
 	});
 
 	await option.press('Enter');
+}
+
+export async function selectMaxItemsPerPage(
+	itemsPerPageButton: Locator,
+	maxItemsPerPageOption: Locator
+) {
+	if (!(await itemsPerPageButton.isVisible())) {
+		return;
+	}
+
+	if ((await itemsPerPageButton.textContent())?.includes('60')) {
+		return;
+	}
+
+	await expect(async () => {
+		await itemsPerPageButton.click({timeout: 2000});
+
+		await maxItemsPerPageOption.click({timeout: 2000});
+	}).toPass({timeout: 10000});
+
+	await expect(itemsPerPageButton).toContainText('60');
 }
