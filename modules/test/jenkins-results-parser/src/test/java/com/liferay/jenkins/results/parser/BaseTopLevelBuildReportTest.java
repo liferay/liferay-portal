@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.junit.Assert;
@@ -119,6 +120,31 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
+	public void testGetControllerBuildReport() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(
+				new JSONObject(
+				).put(
+					"controller", _newControllerJSONObject()
+				));
+
+		ControllerBuildReport controllerBuildReport =
+			baseTopLevelBuildReport.getControllerBuildReport();
+
+		Assert.assertNotNull(controllerBuildReport);
+		Assert.assertSame(
+			controllerBuildReport,
+			baseTopLevelBuildReport.getControllerBuildReport());
+
+		_testGetControllerBuildReportNull(new JSONObject());
+		_testGetControllerBuildReportNull(
+			new JSONObject(
+			).put(
+				"controller", new JSONObject()
+			));
+	}
+
+	@Test
 	public void testGetDownstreamBuildReport() {
 		String axisName = RandomTestUtil.randomString();
 
@@ -154,6 +180,72 @@ public class BaseTopLevelBuildReportTest
 			baseTopLevelBuildReport.getDownstreamBuildReport(axisName));
 	}
 
+	@Test
+	public void testInitialize() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.initialize(
+			new JSONObject(
+			).put(
+				"batches",
+				new JSONArray(
+				).put(
+					new JSONObject(
+					).put(
+						"batchName", RandomTestUtil.randomString()
+					).put(
+						"builds",
+						new JSONArray(
+						).put(
+							new JSONObject(
+							).put(
+								"buildURL",
+								"https://test-1-1/job/test-job" +
+									"/AXIS_VARIABLE=0/1"
+							)
+						).put(
+							new JSONObject()
+						)
+					)
+				).put(
+					new JSONObject(
+					).put(
+						"batchName", RandomTestUtil.randomString()
+					)
+				).put(
+					new JSONObject(
+					).put(
+						"builds",
+						new JSONArray(
+						).put(
+							new JSONObject(
+							).put(
+								"buildURL",
+								"https://test-1-1/job/test-job" +
+									"/AXIS_VARIABLE=1/1"
+							)
+						)
+					)
+				)
+			).put(
+				"controller", _newControllerJSONObject()
+			));
+
+		_assertDownstreamBuildReports(baseTopLevelBuildReport, 1);
+
+		Assert.assertNotNull(
+			baseTopLevelBuildReport.getControllerBuildReport());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.initialize(new JSONObject());
+
+		_assertDownstreamBuildReports(baseTopLevelBuildReport, 0);
+
+		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
+	}
+
 	private List<DownstreamBuildReport> _assertDownstreamBuildReports(
 		BaseTopLevelBuildReport baseTopLevelBuildReport, int expectedCount) {
 
@@ -185,6 +277,13 @@ public class BaseTopLevelBuildReportTest
 		};
 	}
 
+	private JSONObject _newControllerJSONObject() {
+		return new JSONObject(
+		).put(
+			"buildURL", "https://test-1-1/job/controller-job/7"
+		);
+	}
+
 	private DownstreamBuildReport _newDownstreamBuildReport(
 		String axisName, boolean buildCached) {
 
@@ -204,6 +303,15 @@ public class BaseTopLevelBuildReportTest
 		).isBuildCached();
 
 		return downstreamBuildReport;
+	}
+
+	private void _testGetControllerBuildReportNull(
+		JSONObject buildReportJSONObject) {
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(buildReportJSONObject);
+
+		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
 	}
 
 }
