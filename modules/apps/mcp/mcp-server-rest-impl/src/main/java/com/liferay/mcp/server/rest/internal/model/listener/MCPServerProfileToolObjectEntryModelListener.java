@@ -12,11 +12,16 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.servlet.Servlet;
+
+import jakarta.validation.ValidationException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -51,10 +56,25 @@ public class MCPServerProfileToolObjectEntryModelListener
 	}
 
 	@Override
+	public void onBeforeCreate(ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		_validateRestrictFields(objectEntry);
+	}
+
+	@Override
 	public void onBeforeRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
 		_invalidateServlet(objectEntry);
+	}
+
+	@Override
+	public void onBeforeUpdate(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		_validateRestrictFields(objectEntry);
 	}
 
 	private void _invalidateServlet(ObjectEntry objectEntry) {
@@ -85,6 +105,29 @@ public class MCPServerProfileToolObjectEntryModelListener
 		mcpServerServlet.invalidate(
 			objectEntry.getCompanyId(),
 			MapUtil.getString(mcpServerProfileObjectEntry.getValues(), "name"));
+	}
+
+	private void _validateRestrictFields(ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		String[] restrictFieldNames = StringUtil.split(
+			MapUtil.getString(objectEntry.getValues(), "restrictFields"));
+
+		for (String restrictFieldName : restrictFieldNames) {
+			for (String ancestorFieldName : restrictFieldNames) {
+				if (restrictFieldName.startsWith(
+						ancestorFieldName + StringPool.PERIOD)) {
+
+					throw new ModelListenerException(
+						new ValidationException(
+							StringBundler.concat(
+								"Unable to restrict field \"",
+								restrictFieldName,
+								"\" because restricted field \"",
+								ancestorFieldName, "\" already hides it")));
+				}
+			}
+		}
 	}
 
 	@Reference
