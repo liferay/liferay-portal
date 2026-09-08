@@ -281,6 +281,14 @@ public abstract class BaseToolResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("outputSchema", additionalAssertFieldName)) {
+				if (tool.getOutputSchema() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -419,6 +427,17 @@ public abstract class BaseToolResourceTestCase {
 
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(tool1.getName(), tool2.getName())) {
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("outputSchema", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)tool1.getOutputSchema(),
+						(Map)tool2.getOutputSchema())) {
+
 					return false;
 				}
 
@@ -627,6 +646,11 @@ public abstract class BaseToolResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("outputSchema")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		throw new IllegalArgumentException(
@@ -903,4 +927,4 @@ public abstract class BaseToolResourceTestCase {
 		_toolResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2038430757
+// LIFERAY-REST-BUILDER-HASH:-2055338289

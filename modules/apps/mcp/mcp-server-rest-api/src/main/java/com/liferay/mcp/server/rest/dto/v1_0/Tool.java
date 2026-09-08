@@ -40,11 +40,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A tool exposed by a tool-set, including its input schema.",
+	description = "A tool exposed by a tool-set, including its input and output schemas.",
 	value = "Tool"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A tool exposed by a tool-set, including its input schema.",
+	description = "A tool exposed by a tool-set, including its input and output schemas.",
 	requiredProperties = {"name"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -194,6 +194,52 @@ public class Tool implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "JSON Schema describing the body the tool returns. Read it to learn which fields the response carries, for example to narrow `fields` in the input. Absent when the tool returns no JSON body."
+	)
+	@Valid
+	public Map<String, ?> getOutputSchema() {
+		if (_outputSchemaSupplier != null) {
+			outputSchema = _outputSchemaSupplier.get();
+
+			_outputSchemaSupplier = null;
+		}
+
+		return outputSchema;
+	}
+
+	public void setOutputSchema(Map<String, ?> outputSchema) {
+		this.outputSchema = outputSchema;
+
+		_outputSchemaSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setOutputSchema(
+		UnsafeSupplier<Map<String, ?>, Exception> outputSchemaUnsafeSupplier) {
+
+		_outputSchemaSupplier = () -> {
+			try {
+				return outputSchemaUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "JSON Schema describing the body the tool returns. Read it to learn which fields the response carries, for example to narrow `fields` in the input. Absent when the tool returns no JSON body."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Map<String, ?> outputSchema;
+
+	@JsonIgnore
+	private Supplier<Map<String, ?>> _outputSchemaSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -263,6 +309,18 @@ public class Tool implements Serializable {
 			sb.append(_escape(name));
 
 			sb.append("\"");
+		}
+
+		Map<String, ?> outputSchema = getOutputSchema();
+
+		if (outputSchema != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"outputSchema\": ");
+
+			sb.append(_toJSON(outputSchema));
 		}
 
 		sb.append("}");
@@ -387,4 +445,4 @@ public class Tool implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-503775145
+// LIFERAY-REST-BUILDER-HASH:1533134519

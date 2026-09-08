@@ -87,6 +87,27 @@ public class Tool implements Cloneable, Serializable {
 
 	protected String name;
 
+	public Map<String, ?> getOutputSchema() {
+		return outputSchema;
+	}
+
+	public void setOutputSchema(Map<String, ?> outputSchema) {
+		this.outputSchema = outputSchema;
+	}
+
+	public void setOutputSchema(
+		UnsafeSupplier<Map<String, ?>, Exception> outputSchemaUnsafeSupplier) {
+
+		try {
+			outputSchema = outputSchemaUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, ?> outputSchema;
+
 	@Override
 	public Tool clone() throws CloneNotSupportedException {
 		return (Tool)super.clone();
@@ -119,4 +140,4 @@ public class Tool implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1581666220
+// LIFERAY-REST-BUILDER-HASH:1228513677

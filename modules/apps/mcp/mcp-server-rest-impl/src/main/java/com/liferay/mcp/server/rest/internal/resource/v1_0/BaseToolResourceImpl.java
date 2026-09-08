@@ -48,7 +48,7 @@ public abstract class BaseToolResourceImpl implements ToolResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/mcp-server/v1.0/tool-sets/{toolSetName}/tools/{toolName}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Use this once you have identified a tool (via `getToolSetToolSetNameToolSummariesPage`) and need its input schema before invoking it. Returns the tool's `inputSchema`. Build an input map matching `inputSchema` and POST it to `invoke` under the same URL to execute the tool."
+		description = "Use this once you have identified a tool (via `getToolSetToolSetNameToolSummariesPage`) and need its input schema before invoking it. Returns the tool's `inputSchema`, and its `outputSchema` when the tool returns a JSON body. Build an input map matching `inputSchema` and POST it to `invoke` under the same URL to execute the tool."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -579,4 +579,4 @@ public abstract class BaseToolResourceImpl implements ToolResource {
 		LogFactoryUtil.getLog(BaseToolResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:355470292
+// LIFERAY-REST-BUILDER-HASH:-2049712330
