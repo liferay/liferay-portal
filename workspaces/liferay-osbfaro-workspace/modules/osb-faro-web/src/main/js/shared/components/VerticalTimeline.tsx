@@ -232,7 +232,7 @@ const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
 			{title}
 		</div>
 
-		<ClayTable className="table-sm">
+		<ClayTable className="table-sm" striped={false}>
 			<ClayTable.Head>
 				<ClayTable.Row>
 					<ClayTable.Cell headingCell>
