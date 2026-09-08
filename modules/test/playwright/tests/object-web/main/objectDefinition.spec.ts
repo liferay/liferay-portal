@@ -1037,11 +1037,9 @@ test.describe('Manage object definitions through View Object Definitions', () =>
 
 		await viewObjectDefinitionsPage.goto();
 
-		await viewObjectDefinitionsPage.clickObjectDefinitionActionButton(
+		await viewObjectDefinitionsPage.deleteDraftObjectDefinition(
 			objectDefinition2.label['en_US']
 		);
-
-		await viewObjectDefinitionsPage.deleteObjectDefinitionOption.click();
 
 		apiHelpers.data.splice(
 			apiHelpers.data.findIndex(
