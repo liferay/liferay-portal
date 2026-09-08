@@ -141,7 +141,7 @@ function _configure_gcs_bucket {
 
 	local service_agent
 
-	service_agent="$(gcloud storage service-agent --project "${project_id}")"
+	service_agent="$(gcloud storage service-agent --format="value(.)" --project "${project_id}")"
 
 	gcloud kms keys add-iam-policy-binding \
 		"${key_name}" \
