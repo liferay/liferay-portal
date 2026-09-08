@@ -168,6 +168,10 @@ public class OpenAPIUtil {
 						operation._pathParametersJSONArray));
 
 				setName(() -> toolName);
+
+				setOutputSchema(
+					() -> _getOutputSchema(
+						openAPIJSONObject, operation._operationJSONObject));
 			}
 		};
 	}
@@ -864,6 +868,26 @@ public class OpenAPIUtil {
 			"OpenAPI document has no tool with name \"" + toolName + "\"");
 	}
 
+	private static Map<String, Object> _getOutputSchema(
+		JSONObject openAPIJSONObject, JSONObject operationJSONObject) {
+
+		JSONObject responseSchemaJSONObject = _getResponseSchemaJSONObject(
+			operationJSONObject);
+
+		if (responseSchemaJSONObject == null) {
+			return null;
+		}
+
+		Object schemaObject = _getSchemaObject(
+			openAPIJSONObject, responseSchemaJSONObject, new HashSet<>());
+
+		if (!(schemaObject instanceof Map)) {
+			return null;
+		}
+
+		return (Map<String, Object>)schemaObject;
+	}
+
 	private static Map<String, Object> _getParameterSchemaMap(
 		String description, Collection<String> enumFieldNames) {
 
@@ -1019,46 +1043,9 @@ public class OpenAPIUtil {
 	private static Collection<String> _getResponseFieldNames(
 		JSONObject openAPIJSONObject, JSONObject operationJSONObject) {
 
-		JSONObject responsesJSONObject = operationJSONObject.getJSONObject(
-			"responses");
-
-		JSONObject responseJSONObject = null;
-
-		if (responsesJSONObject != null) {
-			for (String code : responsesJSONObject.keySet()) {
-				if (code.startsWith("2")) {
-					responseJSONObject = responsesJSONObject.getJSONObject(
-						code);
-
-					break;
-				}
-			}
-
-			if (responseJSONObject == null) {
-				responseJSONObject = responsesJSONObject.getJSONObject(
-					"default");
-			}
-		}
-
-		JSONObject responseSchemaJSONObject = null;
-
-		if (responseJSONObject != null) {
-			JSONObject contentJSONObject = responseJSONObject.getJSONObject(
-				"content");
-
-			if (contentJSONObject != null) {
-				JSONObject mediaTypeJSONObject =
-					contentJSONObject.getJSONObject("application/json");
-
-				if (mediaTypeJSONObject != null) {
-					responseSchemaJSONObject =
-						mediaTypeJSONObject.getJSONObject("schema");
-				}
-			}
-		}
-
 		return _getResponseFieldNames(
-			openAPIJSONObject, responseSchemaJSONObject, new HashSet<>());
+			openAPIJSONObject,
+			_getResponseSchemaJSONObject(operationJSONObject), new HashSet<>());
 	}
 
 	private static Set<String> _getResponseFieldNames(
@@ -1121,6 +1108,51 @@ public class OpenAPIUtil {
 		}
 
 		return responseFieldNames;
+	}
+
+	private static JSONObject _getResponseSchemaJSONObject(
+		JSONObject operationJSONObject) {
+
+		JSONObject responsesJSONObject = operationJSONObject.getJSONObject(
+			"responses");
+
+		if (responsesJSONObject == null) {
+			return null;
+		}
+
+		JSONObject responseJSONObject = null;
+
+		for (String code : responsesJSONObject.keySet()) {
+			if (code.startsWith("2")) {
+				responseJSONObject = responsesJSONObject.getJSONObject(code);
+
+				break;
+			}
+		}
+
+		if (responseJSONObject == null) {
+			responseJSONObject = responsesJSONObject.getJSONObject("default");
+		}
+
+		if (responseJSONObject == null) {
+			return null;
+		}
+
+		JSONObject contentJSONObject = responseJSONObject.getJSONObject(
+			"content");
+
+		if (contentJSONObject == null) {
+			return null;
+		}
+
+		JSONObject mediaTypeJSONObject = contentJSONObject.getJSONObject(
+			"application/json");
+
+		if (mediaTypeJSONObject == null) {
+			return null;
+		}
+
+		return mediaTypeJSONObject.getJSONObject("schema");
 	}
 
 	private static Object _getSchemaObject(
