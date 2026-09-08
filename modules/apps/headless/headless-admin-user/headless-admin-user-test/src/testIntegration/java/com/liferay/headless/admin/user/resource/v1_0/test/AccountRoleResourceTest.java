@@ -6,8 +6,10 @@
 package com.liferay.headless.admin.user.resource.v1_0.test;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.user.client.dto.v1_0.Account;
@@ -21,26 +23,36 @@ import com.liferay.headless.admin.user.client.dto.v1_0.WebUrl;
 import com.liferay.headless.admin.user.client.pagination.Page;
 import com.liferay.headless.admin.user.client.pagination.Pagination;
 import com.liferay.headless.admin.user.client.resource.v1_0.AccountResource;
+import com.liferay.headless.admin.user.client.resource.v1_0.AccountRoleResource;
 import com.liferay.headless.admin.user.client.resource.v1_0.UserAccountResource;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroupRole;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -65,13 +77,18 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 		_accountResource = AccountResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
-
 		_userAccountResource = UserAccountResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
@@ -333,72 +350,9 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 	@Override
 	@Test
 	public void testGetAccountAccountRolesPage() throws Exception {
-		Page<AccountRole> page = accountRoleResource.getAccountAccountRolesPage(
-			testGetAccountAccountRolesPage_getAccountId(),
-			RandomTestUtil.randomString(), null, Pagination.of(1, 2), null);
-
-		Assert.assertEquals(0, page.getTotalCount());
-
-		Long accountId = testGetAccountAccountRolesPage_getAccountId();
-
-		Long irrelevantAccountId =
-			testGetAccountAccountRolesPage_getIrrelevantAccountId();
-
-		if (irrelevantAccountId != null) {
-			AccountRole irrelevantAccountRole =
-				testGetAccountAccountRolesPage_addAccountRole(
-					irrelevantAccountId, randomIrrelevantAccountRole());
-
-			page = accountRoleResource.getAccountAccountRolesPage(
-				irrelevantAccountId, null, null, Pagination.of(1, 2), null);
-
-			Assert.assertEquals(1, page.getTotalCount());
-
-			assertEquals(
-				Collections.singletonList(irrelevantAccountRole),
-				(List<AccountRole>)page.getItems());
-			assertValid(page);
-		}
-
-		AccountRole accountRole1 =
-			testGetAccountAccountRolesPage_addAccountRole(
-				accountId, randomAccountRole());
-
-		AccountRole accountRole2 =
-			testGetAccountAccountRolesPage_addAccountRole(
-				accountId, randomAccountRole());
-
-		List<AccountRole> expectedAccountRoles = ListUtil.concat(
-			Arrays.asList(accountRole1, accountRole2), _sharedAccountRoles);
-
-		page = accountRoleResource.getAccountAccountRolesPage(
-			accountId, null, null,
-			Pagination.of(1, expectedAccountRoles.size()), null);
-
-		Assert.assertEquals(_addSharedAccountRoles(2), page.getTotalCount());
-
-		assertEqualsIgnoringOrder(
-			expectedAccountRoles, (List<AccountRole>)page.getItems());
-		assertValid(page);
-
-		AccountRole accountRole3 =
-			testGetAccountAccountRolesPage_addAccountRole(
-				accountId, randomAccountRole());
-
-		page = accountRoleResource.getAccountAccountRolesPage(
-			accountId, null,
-			String.format("name eq '%s'", accountRole3.getName()),
-			Pagination.of(1, expectedAccountRoles.size()), null);
-
-		Assert.assertEquals(1, page.getTotalCount());
-		Assert.assertEquals(accountRole3, page.fetchFirstItem());
-
-		page = accountRoleResource.getAccountAccountRolesPage(
-			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, null, null,
-			Pagination.of(1, _sharedAccountRoles.size()), null);
-
-		assertEqualsIgnoringOrder(
-			_sharedAccountRoles, (List<AccountRole>)page.getItems());
+		_testGetAccountAccountRolesPage();
+		_testGetAccountAccountRolesPageWithPermission();
+		_testGetAccountAccountRolesPageWithViewableAccountRole();
 	}
 
 	@Override
@@ -444,6 +398,64 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 
 		assertEqualsIgnoringOrder(
 			expectedAccountRoles, (List<AccountRole>)page3.getItems());
+	}
+
+	@Test
+	public void testGetAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPage()
+		throws Exception {
+
+		AccountRole accountRole = _addAccountAccountRole(_account);
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		_accountRoleLocalService.associateUser(
+			_account.getId(), accountRole.getId(), userAccount.getId());
+
+		Page<AccountRole> page =
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPage(
+					_account.getExternalReferenceCode(),
+					userAccount.getEmailAddress());
+
+		Assert.assertTrue(page.getTotalCount() > 0);
+
+		AccountRoleResource accountRoleResource = _getAccountRoleResource(
+			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
+
+		assertHttpResponseStatusCode(
+			404,
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPageHttpResponse(
+					_account.getExternalReferenceCode(),
+					userAccount.getEmailAddress()));
+	}
+
+	@Test
+	public void testGetAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPage()
+		throws Exception {
+
+		AccountRole accountRole = _addAccountAccountRole(_account);
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		_accountRoleLocalService.associateUser(
+			_account.getId(), accountRole.getId(), userAccount.getId());
+
+		Page<AccountRole> page =
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPage(
+					_account.getExternalReferenceCode(),
+					userAccount.getExternalReferenceCode());
+
+		Assert.assertTrue(page.getTotalCount() > 0);
+
+		AccountRoleResource accountRoleResource = _getAccountRoleResource(
+			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
+
+		assertHttpResponseStatusCode(
+			404,
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPageHttpResponse(
+					_account.getExternalReferenceCode(),
+					userAccount.getExternalReferenceCode()));
 	}
 
 	@Ignore
@@ -504,27 +516,8 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 	public void testPostAccountAccountRoleUserAccountAssociation()
 		throws Exception {
 
-		AccountRole accountRole = _addAccountAccountRole(_account);
-		UserAccount userAccount = _addAccountUserAccount(_account);
-
-		_assertAccountRoleUserAccountAssociation(
-			_account, accountRole, userAccount, false);
-
-		assertHttpResponseStatusCode(
-			204,
-			accountRoleResource.
-				postAccountAccountRoleUserAccountAssociationHttpResponse(
-					_account.getId(), accountRole.getId(),
-					userAccount.getId()));
-
-		_assertAccountRoleUserAccountAssociation(
-			_account, accountRole, userAccount, true);
-
-		assertHttpResponseStatusCode(
-			404,
-			accountRoleResource.
-				postAccountAccountRoleUserAccountAssociationHttpResponse(
-					_account.getId(), 0L, userAccount.getId()));
+		_testPostAccountAccountRoleUserAccountAssociation();
+		_testPostAccountAccountRoleUserAccountAssociationWithPermission();
 	}
 
 	@Override
@@ -1109,6 +1102,39 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 		}
 	}
 
+	private void _associateUser(String roleName, User user) throws Exception {
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			_account.getId(), user.getUserId());
+
+		if (Validator.isNull(roleName)) {
+			return;
+		}
+
+		Role role = _roleLocalService.getRole(
+			testCompany.getCompanyId(), roleName);
+
+		com.liferay.account.model.AccountRole serviceBuilderAccountRole =
+			_accountRoleLocalService.fetchAccountRoleByRoleId(role.getRoleId());
+
+		_accountRoleLocalService.associateUser(
+			_account.getId(), serviceBuilderAccountRole.getAccountRoleId(),
+			user.getUserId());
+	}
+
+	private AccountRoleResource _getAccountRoleResource(
+		String password, User user) {
+
+		return AccountRoleResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private Account _randomAccount() {
 		return new Account() {
 			{
@@ -1240,6 +1266,166 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 		};
 	}
 
+	private void _testGetAccountAccountRolesPage() throws Exception {
+		Page<AccountRole> page = accountRoleResource.getAccountAccountRolesPage(
+			testGetAccountAccountRolesPage_getAccountId(),
+			RandomTestUtil.randomString(), null, Pagination.of(1, 2), null);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		Long accountId = testGetAccountAccountRolesPage_getAccountId();
+
+		AccountRole accountRole1 =
+			testGetAccountAccountRolesPage_addAccountRole(
+				accountId, randomAccountRole());
+		AccountRole accountRole2 =
+			testGetAccountAccountRolesPage_addAccountRole(
+				accountId, randomAccountRole());
+
+		List<AccountRole> expectedAccountRoles = ListUtil.concat(
+			Arrays.asList(accountRole1, accountRole2), _sharedAccountRoles);
+
+		page = accountRoleResource.getAccountAccountRolesPage(
+			accountId, null, null,
+			Pagination.of(1, expectedAccountRoles.size()), null);
+
+		Assert.assertEquals(_addSharedAccountRoles(2), page.getTotalCount());
+
+		assertEqualsIgnoringOrder(
+			expectedAccountRoles, (List<AccountRole>)page.getItems());
+		assertValid(page);
+
+		AccountRole accountRole3 =
+			testGetAccountAccountRolesPage_addAccountRole(
+				accountId, randomAccountRole());
+
+		page = accountRoleResource.getAccountAccountRolesPage(
+			accountId, null,
+			String.format("name eq '%s'", accountRole3.getName()),
+			Pagination.of(1, expectedAccountRoles.size()), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+		Assert.assertEquals(accountRole3, page.fetchFirstItem());
+
+		page = accountRoleResource.getAccountAccountRolesPage(
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, null, null,
+			Pagination.of(1, _sharedAccountRoles.size()), null);
+
+		assertEqualsIgnoringOrder(
+			_sharedAccountRoles, (List<AccountRole>)page.getItems());
+	}
+
+	private void _testGetAccountAccountRolesPageWithPermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
+
+		AccountRoleResource accountRoleResource = _getAccountRoleResource(
+			_PASSWORD, user);
+
+		assertHttpResponseStatusCode(
+			404,
+			accountRoleResource.getAccountAccountRolesPageHttpResponse(
+				_account.getId(), null, null, Pagination.of(1, 100), null));
+
+		_associateUser(
+			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR,
+			user);
+
+		Page<AccountRole> page = accountRoleResource.getAccountAccountRolesPage(
+			_account.getId(), null, null, Pagination.of(1, 100), null);
+
+		Assert.assertTrue(page.getTotalCount() > 0);
+	}
+
+	private void _testGetAccountAccountRolesPageWithViewableAccountRole()
+		throws Exception {
+
+		AccountRole accountRole = _addAccountAccountRole(_account);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			testCompany.getCompanyId(), Role.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(accountRole.getRoleId()), role.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		AccountRoleResource accountRoleResource = _getAccountRoleResource(
+			_PASSWORD, user);
+
+		assertHttpResponseStatusCode(
+			404,
+			accountRoleResource.getAccountAccountRolesPageHttpResponse(
+				_account.getId(), null, null, Pagination.of(1, 100), null));
+	}
+
+	private void _testPostAccountAccountRoleUserAccountAssociation()
+		throws Exception {
+
+		AccountRole accountRole = _addAccountAccountRole(_account);
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		_assertAccountRoleUserAccountAssociation(
+			_account, accountRole, userAccount, false);
+
+		assertHttpResponseStatusCode(
+			204,
+			accountRoleResource.
+				postAccountAccountRoleUserAccountAssociationHttpResponse(
+					_account.getId(), accountRole.getId(),
+					userAccount.getId()));
+
+		_assertAccountRoleUserAccountAssociation(
+			_account, accountRole, userAccount, true);
+
+		assertHttpResponseStatusCode(
+			404,
+			accountRoleResource.
+				postAccountAccountRoleUserAccountAssociationHttpResponse(
+					_account.getId(), 0L, userAccount.getId()));
+	}
+
+	private void _testPostAccountAccountRoleUserAccountAssociationWithPermission()
+		throws Exception {
+
+		Account account = _accountResource.putAccountByExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()),
+			_randomAccount());
+
+		AccountRole accountRole = _addAccountAccountRole(account);
+
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
+
+		_associateUser(
+			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR,
+			user);
+
+		AccountRoleResource accountRoleResource = _getAccountRoleResource(
+			_PASSWORD, user);
+
+		assertHttpResponseStatusCode(
+			403,
+			accountRoleResource.
+				postAccountAccountRoleUserAccountAssociationHttpResponse(
+					_account.getId(), accountRole.getId(),
+					userAccount.getId()));
+
+		accountRole = _addAccountAccountRole(_account);
+
+		assertHttpResponseStatusCode(
+			204,
+			accountRoleResource.
+				postAccountAccountRoleUserAccountAssociationHttpResponse(
+					_account.getId(), accountRole.getId(),
+					userAccount.getId()));
+	}
+
 	private void _testPostAccountAccountRoleWithExternalReferenceCode()
 		throws Exception {
 
@@ -1258,15 +1444,26 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 			externalReferenceCode, postAccountRole.getExternalReferenceCode());
 	}
 
+	private static final String _PASSWORD = RandomTestUtil.randomString();
+
 	private Account _account;
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
+	@Inject
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
+
 	private AccountResource _accountResource;
 
 	@Inject
 	private AccountRoleLocalService _accountRoleLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	private List<AccountRole> _sharedAccountRoles;
 	private UserAccount _userAccount;
