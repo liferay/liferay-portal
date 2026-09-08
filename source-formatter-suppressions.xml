@@ -79,11 +79,9 @@
 	<source-check>
 		<suppress checks="CDNCheck" files="test\.properties" />
 		<suppress checks="CSPTagIllegalAttributesCheck" files="portal-web/docroot/html/taglib/ui/page_iterator/deprecated/start\.jsp" />
-		<suppress checks="CSPTagIllegalAttributesCheck" files="portal-web/test/functional/com/liferay/portalweb/tests/enduser/wem/journal/dependencies/frontpage_3_column_with_images_template\.ftl" />
 		<suppress checks="CSPTagIllegalAttributesCheck" files="workspaces/.*" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="portal-impl/src/com/liferay/portal/tools/propertiesdoc/dependencies/properties\.ftl" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="portal-web/test/functional/com/liferay/portalweb/tests/enduser/documentmanagement/documentsadministration/dependencies/adt_media_gallery_carousel\.ftl" />
-		<suppress checks="CSPTagMissingAttributesCheck" files="portal-web/test/functional/com/liferay/portalweb/tests/enduser/wem/journal/dependencies/frontpage_3_column_with_images_template\.ftl" />
 		<suppress checks="CSPTagMissingAttributesCheck" files="workspaces/.*" />
 		<suppress checks="GetterUtilCheck" files="portal-kernel/test/unit/com/liferay/portal/kernel/util/GetterUtilTest\.java" />
 		<suppress checks="GradleDependencyConfigurationCheck" files="workspaces/.*" />
