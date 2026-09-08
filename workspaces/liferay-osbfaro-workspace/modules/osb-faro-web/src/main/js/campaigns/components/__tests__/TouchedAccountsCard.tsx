@@ -1,7 +1,6 @@
 import React from 'react';
 import TouchedAccountsCard from '../TouchedAccountsCard';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
-import {mockCampaignAccounts} from '../../utils/mock-campaigns';
 import {warmFrontendDataSet} from 'test/warm-frontend-data-set';
 
 jest.unmock('react-dom');
@@ -20,13 +19,7 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 beforeAll(warmFrontendDataSet);
 
 const renderCard = () =>
-	render(
-		<TouchedAccountsCard
-			channelId="123"
-			groupId="23"
-			items={mockCampaignAccounts}
-		/>
-	);
+	render(<TouchedAccountsCard campaignId="7" channelId="123" groupId="23" />);
 
 const getFields = () => lastFDSProps.views[0].schema.fields;
 
@@ -80,14 +73,37 @@ describe('TouchedAccountsCard', () => {
 		expect(getFields().every(({sortable}: any) => !sortable)).toBe(true);
 	});
 
-	it('should feed the mocked accounts to the data set', () => {
+	it('should point the data set at the campaign accounts endpoint', () => {
 		renderCard();
 
-		expect(lastFDSProps.items).toBe(mockCampaignAccounts);
+		expect(lastFDSProps.apiURL).toBe(
+			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123'
+		);
 		expect(screen.getByTestId('fds-component')).toHaveAttribute(
 			'id',
 			'campaign-accounts-dataset'
 		);
+	});
+
+	it('should leave the fetching to the data set rather than pass items', () => {
+		renderCard();
+
+		expect(lastFDSProps.items).toBeUndefined();
+	});
+
+	// The endpoint serves `AccountDisplay`, which names the account
+	// `accountName` and flattens the two amounts out of `calculatedFields`
+	// into top level keys of the form `<namespace>/<name>`.
+
+	it('should read the fields under the names the endpoint returns', () => {
+		renderCard();
+
+		expect(getFields().map(({fieldName}: any) => fieldName)).toEqual([
+			'accountName',
+			'lifecycleStage',
+			'salesforce/openPipelineAmount',
+			'salesforce/closedWonAmount',
+		]);
 	});
 
 	it('should link the account name at its Overview tab', () => {
@@ -136,12 +152,11 @@ describe('TouchedAccountsCard', () => {
 	});
 
 	it('should leave the empty result to the data set default', () => {
-		render(<TouchedAccountsCard channelId="123" groupId="23" items={[]} />);
+		renderCard();
 
 		// The design asks for the FrontendDataSet default here, so the card
 		// must not override `emptyState` with one of its own.
 
-		expect(lastFDSProps.items).toEqual([]);
 		expect(lastFDSProps.emptyState).toBeUndefined();
 	});
 

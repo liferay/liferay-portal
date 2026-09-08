@@ -1,21 +1,24 @@
+import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import React, {useContext} from 'react';
 import TouchedAccountsCard from '../components/TouchedAccountsCard';
 import {ChannelContext} from 'shared/context/channel';
-import {mockCampaignAccounts, mockCampaigns} from '../utils/mock-campaigns';
 import {useParams} from 'react-router-dom';
+import {useRequest} from 'shared/hooks/useRequest';
 
 const CampaignDetail: React.FC = () => {
 	const {selectedChannel} = useContext(ChannelContext);
 
 	const {channelId, groupId, id} = useParams();
 
-	// The campaign the row was built from, looked up in the mock the list
-	// screen renders. The integration task replaces this with the fetch the
-	// endpoint serves, at which point the name arrives with the campaign.
+	const {data: campaign} = useRequest({
+		dataSourceFn: API.campaigns.fetchCampaign,
+		variables: {channelId: channelId!, groupId: groupId!, id: id!},
+	});
 
-	const campaign = mockCampaigns.find((campaign) => campaign.id === id);
+	// Empty until the campaign arrives. The title doubles as the last
+	// breadcrumb, so a placeholder would show up twice on the way in.
 
 	const title = campaign?.campaignName ?? '';
 
@@ -43,9 +46,9 @@ const CampaignDetail: React.FC = () => {
 
 			<BasePage.Body>
 				<TouchedAccountsCard
+					campaignId={id!}
 					channelId={channelId!}
 					groupId={groupId!}
-					items={mockCampaignAccounts}
 				/>
 			</BasePage.Body>
 		</BasePage>

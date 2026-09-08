@@ -6,7 +6,6 @@ import {
 	FrontendDataSet,
 	pagination,
 } from 'shared/components/FrontendDataSet';
-import {ICampaignAccount} from '../utils/mock-campaigns';
 import {
 	LifecycleStages,
 	lifecycleStagesLabelMap,
@@ -15,9 +14,9 @@ import {Routes} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
 
 interface ITouchedAccountsCardProps {
+	campaignId: string;
 	channelId: string;
 	groupId: string;
-	items: ICampaignAccount[];
 }
 
 // Individuals Touched is a placeholder: the design shows the tab, but nothing
@@ -46,7 +45,7 @@ const views = [
 			fields: [
 				{
 					contentRenderer: 'accountNameRenderer',
-					fieldName: 'name',
+					fieldName: 'accountName',
 					label: Liferay.Language.get('name'),
 					sortable: false,
 					truncate: true,
@@ -59,13 +58,13 @@ const views = [
 				},
 				{
 					contentRenderer: 'amountRenderer',
-					fieldName: 'openPipelineAmount',
+					fieldName: 'salesforce/openPipelineAmount',
 					label: Liferay.Language.get('pipeline-value'),
 					sortable: false,
 				},
 				{
 					contentRenderer: 'amountRenderer',
-					fieldName: 'closedWonAmount',
+					fieldName: 'salesforce/closedWonAmount',
 					label: Liferay.Language.get('closed-won'),
 					sortable: false,
 				},
@@ -76,9 +75,9 @@ const views = [
 ];
 
 const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
+	campaignId,
 	channelId,
 	groupId,
-	items,
 }) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 
@@ -101,6 +100,7 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 			</ClayTabs>
 
 			<FrontendDataSet
+				apiURL={`/o/faro/contacts/${groupId}/campaigns/${campaignId}/accounts?channelId=${channelId}`}
 				customDataRenderers={{
 					accountNameRenderer: ({
 						itemData,
@@ -139,11 +139,12 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 						}),
 				}}
 				id="campaign-accounts-dataset"
-				items={items}
 				pagination={pagination}
 
-				// Same as the campaigns table: both are served by the request,
-				// so neither does anything while the data set runs on `items`.
+				// Same as the campaigns table: asah declares `search`, `filter`
+				// and `sort` on this endpoint and reads none of them, sorting by
+				// account id regardless. Offering either control would look
+				// functional and do nothing.
 
 				showManagementBar={false}
 				showPagination

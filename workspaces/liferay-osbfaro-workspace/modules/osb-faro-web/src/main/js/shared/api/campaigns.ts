@@ -29,6 +29,24 @@ export interface ICampaignMetric extends Metric {
 	metricType: CampaignMetricType;
 }
 
+interface IFetchCampaign {
+	channelId: string;
+	groupId: string;
+	id: string;
+}
+
+export async function fetchCampaign({
+	channelId,
+	groupId,
+	id,
+}: IFetchCampaign): Promise<ICampaign> {
+	return sendRequest({
+		data: {channelId},
+		method: 'GET',
+		path: `contacts/${groupId}/campaigns/${id}`,
+	});
+}
+
 interface IFetchCampaignMetrics {
 	channelId: string;
 	groupId: string;
