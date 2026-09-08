@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 /**
  * @author Gabriel Lima
+ * @author Thiago Buarque
  */
 public class FrontendTokenDefinitionUtil {
 
@@ -86,8 +88,9 @@ public class FrontendTokenDefinitionUtil {
 
 		JSONArray mergedFrontendTokenCategoriesJSONArray =
 			_mergeJSONArraysByName(
-				0, frontendTokenCategoriesJSONArray,
-				overrideFrontendTokenCategoriesJSONArray);
+				frontendTokenCategoriesJSONArray,
+				overrideFrontendTokenCategoriesJSONArray, "frontendTokenSets",
+				"frontendTokens");
 
 		mergedFrontendTokenDefinitionJSONObject.put(
 			"frontendTokenCategories", mergedFrontendTokenCategoriesJSONArray);
@@ -175,9 +178,10 @@ public class FrontendTokenDefinitionUtil {
 	}
 
 	private static void _mergeChildJSONArraysByName(
-		int depth, JSONObject jsonObject, JSONObject overrideJSONObject) {
+		JSONObject jsonObject, JSONObject overrideJSONObject,
+		String... childArrayKeys) {
 
-		String childArrayKey = _CHILD_ARRAY_KEYS[depth];
+		String childArrayKey = childArrayKeys[0];
 
 		JSONArray overrideChildJSONArray = overrideJSONObject.getJSONArray(
 			childArrayKey);
@@ -195,11 +199,13 @@ public class FrontendTokenDefinitionUtil {
 		jsonObject.put(
 			childArrayKey,
 			_mergeJSONArraysByName(
-				depth + 1, childJSONArray, overrideChildJSONArray));
+				childJSONArray, overrideChildJSONArray,
+				Arrays.copyOfRange(childArrayKeys, 1, childArrayKeys.length)));
 	}
 
 	private static JSONArray _mergeJSONArraysByName(
-		int depth, JSONArray jsonArray, JSONArray overrideJSONArray) {
+		JSONArray jsonArray, JSONArray overrideJSONArray,
+		String... childArrayKeys) {
 
 		Map<String, JSONObject> jsonObjectsByName = new HashMap<>();
 
@@ -224,22 +230,18 @@ public class FrontendTokenDefinitionUtil {
 			if (jsonObject == null) {
 				jsonArray.put(_clone(overrideJSONObject));
 			}
-			else if (depth == _CHILD_ARRAY_KEYS.length) {
+			else if (childArrayKeys.length == 0) {
 				jsonArray = JSONUtil.replace(
 					jsonArray, "name", _clone(overrideJSONObject));
 			}
 			else {
 				_mergeChildJSONArraysByName(
-					depth, jsonObject, overrideJSONObject);
+					jsonObject, overrideJSONObject, childArrayKeys);
 			}
 		}
 
 		return jsonArray;
 	}
-
-	private static final String[] _CHILD_ARRAY_KEYS = {
-		"frontendTokenSets", "frontendTokens"
-	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		FrontendTokenDefinitionUtil.class);
