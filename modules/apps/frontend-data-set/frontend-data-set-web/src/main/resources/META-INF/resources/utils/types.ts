@@ -386,7 +386,7 @@ export interface IFrontendDataSetProps {
 		initialPageNumber?: number;
 	};
 	portletId?: string;
-	saveUserPreferencesURL?: string;
+	saveDataSetUserPreferencesURL?: string;
 	searchAsYouType?: boolean;
 	searchSuggestionsEnabled?: boolean;
 	selectedItems?: any[];

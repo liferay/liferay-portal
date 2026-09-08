@@ -249,7 +249,7 @@ public class FDSRendererImpl implements FDSRenderer {
 						return paginationJSONObject;
 					}
 				).put(
-					"saveUserPreferencesURL",
+					"saveDataSetUserPreferencesURL",
 					() -> {
 						ResourceURL resourceURL =
 							(ResourceURL)_portal.getControlPanelPortletURL(

@@ -157,7 +157,7 @@ const FrontendDataSetContent = ({
 	overrideEmptyResultView,
 	pagination,
 	portletId,
-	saveUserPreferencesURL,
+	saveDataSetUserPreferencesURL,
 	searchAsYouType = false,
 	searchSuggestionsEnabled = false,
 	selectedItems: externalSelectedItems,
@@ -2076,11 +2076,11 @@ const FrontendDataSetContent = ({
 	};
 
 	const updateUserPreferences = (preferences: IUserPreferences) => {
-		if (!saveUserPreferencesURL) {
+		if (!saveDataSetUserPreferencesURL) {
 			return Promise.reject(new Error());
 		}
 
-		return fetch(saveUserPreferencesURL, {
+		return fetch(saveDataSetUserPreferencesURL, {
 			body: new URLSearchParams({
 				fdsName: id,
 				preferences: JSON.stringify(preferences),
@@ -2413,7 +2413,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
-				saveUserPreferencesURL,
+				saveDataSetUserPreferencesURL,
 				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searchSuggestionsEnabled,
