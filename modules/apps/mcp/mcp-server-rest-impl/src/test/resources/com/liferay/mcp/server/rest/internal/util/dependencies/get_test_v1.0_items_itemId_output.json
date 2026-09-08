@@ -1,0 +1,32 @@
+{
+	"properties": {
+		"array": {
+			"items": {
+				"type": "string"
+			},
+			"type": "array"
+		},
+		"boolean": {
+			"type": "boolean"
+		},
+		"integer": {
+			"type": "integer"
+		},
+		"number": {
+			"type": "number"
+		},
+		"object1": {
+			"type": "object"
+		},
+		"object2": {
+			"type": "object"
+		},
+		"string": {
+			"type": "string"
+		}
+	},
+	"required": [
+		"string"
+	],
+	"type": "object"
+}

@@ -59,6 +59,18 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 		Assert.assertEquals("getToolSetsPage", tool.getName());
 		Assert.assertNotNull(tool.getInputSchema());
 
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"description", JSONUtil.put("type", "string")
+			).put(
+				"name", JSONUtil.put("type", "string")
+			).toString(),
+			JSONUtil.getValueAsString(
+				JSONFactoryUtil.createJSONObject(String.valueOf(tool)),
+				"JSONObject/outputSchema", "JSONObject/items",
+				"JSONObject/properties"),
+			false);
+
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
 

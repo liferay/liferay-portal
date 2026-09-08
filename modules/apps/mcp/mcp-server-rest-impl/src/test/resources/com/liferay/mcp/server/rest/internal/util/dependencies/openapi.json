@@ -369,6 +369,14 @@
 							}
 						}
 					}
+				},
+				"responses": {
+					"default": {
+						"content": {
+							"application/json": {
+							}
+						}
+					}
 				}
 			},
 			"put": {
@@ -390,6 +398,11 @@
 								"$ref": "#/components/schemas/Item"
 							}
 						}
+					}
+				},
+				"responses": {
+					"204": {
+						"description": "no content"
 					}
 				}
 			}
