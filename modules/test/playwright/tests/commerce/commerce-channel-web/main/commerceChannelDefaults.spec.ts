@@ -112,6 +112,13 @@ test(
 					scope: 1,
 				},
 				{
+					actionIds: ['VIEW'],
+					primaryKey: companyId,
+					resourceName:
+						'com.liferay.commerce.product.model.CommerceCatalog',
+					scope: 1,
+				},
+				{
 					actionIds: ['UPDATE', 'VIEW'],
 					primaryKey: companyId,
 					resourceName:
