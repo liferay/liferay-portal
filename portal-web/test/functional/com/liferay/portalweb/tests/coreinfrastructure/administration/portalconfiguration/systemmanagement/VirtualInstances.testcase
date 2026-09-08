@@ -91,6 +91,7 @@ definition {
 	@priority = 4
 	test CanUpdateGeneralInfos {
 		property portal.acceptance = "true";
+		property test.assert.warning.exceptions = "false";
 
 		var databasePartitionEnabled = PropsUtil.get("database.partition.enabled");
 		var portalInstanceName = JSONCompany.getPortalInstanceName();
