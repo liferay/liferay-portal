@@ -352,10 +352,10 @@ journalEditArticleDisplayContext.setViewAttributes();
 							</div>
 
 							<div id="<portlet:namespace />descriptionMapAsXMLWrapper">
-								<label for="<portlet:namespace />descriptionMapAsXML" id="<portlet:namespace />Aria"><liferay-ui:message key="description" /></label>
-
 								<c:choose>
 									<c:when test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+										<label for="<portlet:namespace />descriptionMapAsXML" id="<portlet:namespace />Aria"><liferay-ui:message key="description" /></label>
+
 										<liferay-editor:input-localized
 											autofillFromDefault="<%= true %>"
 											availableLocales="<%= journalEditArticleDisplayContext.getAvailableLocales() %>"
@@ -419,6 +419,7 @@ journalEditArticleDisplayContext.setViewAttributes();
 											ignoreRequestValue="<%= journalEditArticleDisplayContext.isChangeStructure() %>"
 											languagesDropdownVisible="<%= false %>"
 											name="descriptionMapAsXML"
+											placeholder="description"
 											selectedLanguageId="<%= journalEditArticleDisplayContext.getSelectedLanguageId() %>"
 											type="editor"
 											xml="<%= (article != null) ? article.getDescriptionMapAsXML() : StringPool.BLANK %>"
