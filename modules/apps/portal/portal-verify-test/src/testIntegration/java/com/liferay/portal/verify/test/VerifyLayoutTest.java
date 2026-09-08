@@ -6,6 +6,7 @@
 package com.liferay.portal.verify.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.log.Log;
@@ -138,16 +139,23 @@ public class VerifyLayoutTest extends BaseVerifyProcessTestCase {
 
 		super.testVerify();
 
-		Assert.assertEquals(
-			_errorMessages.toString(), 2, _errorMessages.size());
+		String errorMessages = _errorMessages.toString();
 
-		String errorMessage1 = _errorMessages.get(0);
+		Assert.assertEquals(errorMessages, 2, _errorMessages.size());
 
-		String errorMessage2 = _errorMessages.get(1);
+		Assert.assertTrue(
+			errorMessages,
+			errorMessages.contains(
+				StringBundler.concat(
+					StringPool.QUOTE, StringPool.FORWARD_SLASH, _keyword1,
+					StringPool.QUOTE)));
 
-		Assert.assertTrue(errorMessage1.contains(_keyword1));
-
-		Assert.assertTrue(errorMessage2.contains(_keyword2));
+		Assert.assertTrue(
+			errorMessages,
+			errorMessages.contains(
+				StringBundler.concat(
+					StringPool.QUOTE, StringPool.FORWARD_SLASH, _keyword2,
+					StringPool.QUOTE)));
 	}
 
 	@Test
