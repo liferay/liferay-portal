@@ -96,8 +96,11 @@ public class DataMaskObjectEntryModelListener
 					_log.warn(
 						StringBundler.concat(
 							"Unable to attach system mask \"",
-							values.get("name"), "\" to profile ",
-							mcpServerProfileObjectEntry.getObjectEntryId()),
+							objectEntry.getExternalReferenceCode(),
+							"\" to profile \"",
+							mcpServerProfileObjectEntry.
+								getExternalReferenceCode(),
+							"\""),
 						portalException);
 				}
 			}

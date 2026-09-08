@@ -147,10 +147,10 @@ public class MCPServerProfileToolsObjectFieldModelListener
 				throw new ModelListenerException(
 					StringBundler.concat(
 						"The tools object field cannot be deleted because the ",
-						"profile tool \"", tool, "\" of profile ",
-						mcpServerProfileObjectEntry.getObjectEntryId(),
-						" was not migrated to an MCPServerProfileTool object ",
-						"entry"));
+						"profile tool \"", tool, "\" of profile \"",
+						mcpServerProfileObjectEntry.getExternalReferenceCode(),
+						"\" was not migrated to an MCPServerProfileTool ",
+						"object entry"));
 			}
 		}
 	}
