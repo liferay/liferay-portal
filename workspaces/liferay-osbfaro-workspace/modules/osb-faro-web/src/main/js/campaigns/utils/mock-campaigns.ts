@@ -1,3 +1,4 @@
+import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 import {Metric} from 'contacts/pages/account/utils/types';
 import {TrendClassification} from 'segment/types';
 
@@ -200,5 +201,67 @@ export const mockCampaignMetrics: ICampaignMetric[] = [
 			trendClassification: TrendClassification.Positive,
 		},
 		value: 124000000,
+	},
+];
+
+/**
+ * `GET /campaigns/{id}/accounts?channelId&page&size`. Like the campaigns list,
+ * the `PageDTO` envelope is not modelled here: the data set unwraps it itself
+ * once it runs on `apiURL`.
+ *
+ * The two amounts are flat here and are not on the endpoint, which nests them
+ * in `calculatedFields` as `salesforce/openPipelineAmount` and
+ * `salesforce/closedWonAmount`. Flattening keeps the mock readable; the
+ * integration task is where that mapping belongs.
+ *
+ * An account can have neither amount, which the table renders as an empty cell
+ * rather than a zero.
+ */
+export interface ICampaignAccount {
+	closedWonAmount?: number;
+	id: string;
+	lifecycleStage: LifecycleStages;
+	name: string;
+	openPipelineAmount?: number;
+}
+
+export const mockCampaignAccounts: ICampaignAccount[] = [
+	{
+		closedWonAmount: 4200000,
+		id: '101',
+		lifecycleStage: LifecycleStages.ESTABLISHED,
+		name: 'Hydrofield Industries',
+		openPipelineAmount: 18500000,
+	},
+	{
+		closedWonAmount: 1900000,
+		id: '102',
+		lifecycleStage: LifecycleStages.ENGAGED,
+		name: 'Northwind Manufacturing',
+		openPipelineAmount: 9600000,
+	},
+	{
+		id: '103',
+		lifecycleStage: LifecycleStages.PIPELINE,
+		name: 'Cascade Logistics',
+		openPipelineAmount: 7300000,
+	},
+	{
+		closedWonAmount: 950000,
+		id: '104',
+		lifecycleStage: LifecycleStages.AT_RISK,
+		name: 'Beacon Health Group',
+	},
+	{
+		id: '105',
+		lifecycleStage: LifecycleStages.AWARE,
+		name: 'Riverstone Capital',
+	},
+	{
+		closedWonAmount: 2400000,
+		id: '106',
+		lifecycleStage: LifecycleStages.ONBOARDING,
+		name: 'Vertex Materials',
+		openPipelineAmount: 5100000,
 	},
 ];
