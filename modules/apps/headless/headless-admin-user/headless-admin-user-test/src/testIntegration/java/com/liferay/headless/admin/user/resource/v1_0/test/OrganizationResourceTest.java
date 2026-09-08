@@ -151,24 +151,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 	@Override
 	@Test
-	public void testDeleteAccountByExternalReferenceCodeOrganization()
-		throws Exception {
-
-		Organization organization =
-			testDeleteAccountByExternalReferenceCodeOrganization_addOrganization();
-
-		assertHttpResponseStatusCode(
-			204,
-			organizationResource.
-				deleteAccountByExternalReferenceCodeOrganizationHttpResponse(
-					_accountEntry.getExternalReferenceCode(),
-					organization.getId()));
-	}
-
-	@Override
-	@Test
 	public void testDeleteAccountOrganization() throws Exception {
-		_testDeleteAccountOrganization();
+		super.testDeleteAccountOrganization();
+
 		_testDeleteAccountOrganizationWithPermission();
 	}
 
@@ -298,41 +283,6 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 				_userLocalService.hasOrganizationUser(
 					organizationId, user.getUserId()));
 		}
-	}
-
-	@Override
-	@Test
-	public void testGetAccountByExternalReferenceCodeOrganization()
-		throws Exception {
-
-		testGetAccountOrganization();
-	}
-
-	@Override
-	@Test
-	public void testGetAccountOrganization() throws Exception {
-		com.liferay.portal.kernel.model.Organization
-			serviceBuilderOrganization = OrganizationTestUtil.addOrganization();
-
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			_accountEntry.getAccountEntryId(),
-			serviceBuilderOrganization.getOrganizationId());
-
-		Assert.assertNotNull(
-			_accountEntryOrganizationRelLocalService.
-				fetchAccountEntryOrganizationRel(
-					_accountEntry.getAccountEntryId(),
-					serviceBuilderOrganization.getOrganizationId()));
-
-		organizationResource.deleteAccountOrganization(
-			_accountEntry.getAccountEntryId(),
-			String.valueOf(serviceBuilderOrganization.getOrganizationId()));
-
-		Assert.assertNull(
-			_accountEntryOrganizationRelLocalService.
-				fetchAccountEntryOrganizationRel(
-					_accountEntry.getAccountEntryId(),
-					serviceBuilderOrganization.getOrganizationId()));
 	}
 
 	@Override
@@ -634,6 +584,15 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 	}
 
 	@Override
+	protected String
+			testDeleteAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
+				Organization organization)
+		throws Exception {
+
+		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
 	protected Organization testDeleteAccountOrganization_addOrganization()
 		throws Exception {
 
@@ -666,6 +625,29 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 
 	@Override
 	protected Organization
+			testGetAccountByExternalReferenceCodeOrganization_addOrganization()
+		throws Exception {
+
+		Organization organization = organizationResource.postOrganization(
+			randomOrganization());
+
+		organizationResource.postAccountByExternalReferenceCodeOrganization(
+			_accountEntry.getExternalReferenceCode(), organization.getId());
+
+		return organization;
+	}
+
+	@Override
+	protected String
+			testGetAccountByExternalReferenceCodeOrganization_getExternalReferenceCode(
+				Organization organization)
+		throws Exception {
+
+		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Organization
 			testGetAccountByExternalReferenceCodeOrganizationsPage_addOrganization(
 				String externalReferenceCode, Organization organization)
 		throws Exception {
@@ -684,6 +666,18 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 		throws Exception {
 
 		return _accountEntry.getExternalReferenceCode();
+	}
+
+	@Override
+	protected Organization testGetAccountOrganization_addOrganization()
+		throws Exception {
+
+		return testGetAccountByExternalReferenceCodeOrganization_addOrganization();
+	}
+
+	@Override
+	protected Long testGetAccountOrganization_getAccountId() throws Exception {
+		return _accountEntry.getAccountEntryId();
 	}
 
 	@Override
@@ -1108,21 +1102,6 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 					});
 			}
 		};
-	}
-
-	private void _testDeleteAccountOrganization() throws Exception {
-		com.liferay.portal.kernel.model.Organization
-			serviceBuilderOrganization = OrganizationTestUtil.addOrganization();
-
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			_accountEntry.getAccountEntryId(),
-			serviceBuilderOrganization.getOrganizationId());
-
-		Assert.assertNotNull(
-			_accountEntryOrganizationRelLocalService.
-				fetchAccountEntryOrganizationRel(
-					_accountEntry.getAccountEntryId(),
-					serviceBuilderOrganization.getOrganizationId()));
 	}
 
 	private void _testDeleteAccountOrganizationWithPermission()
