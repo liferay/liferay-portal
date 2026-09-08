@@ -53,7 +53,11 @@ const Campaigns: React.FC = () => {
 					title={title}
 				/>
 
-				<CampaignsDataSet items={mockCampaigns} />
+				<CampaignsDataSet
+					channelId={channelId!}
+					groupId={groupId!}
+					items={mockCampaigns}
+				/>
 			</BasePage.Body>
 		</BasePage>
 	);

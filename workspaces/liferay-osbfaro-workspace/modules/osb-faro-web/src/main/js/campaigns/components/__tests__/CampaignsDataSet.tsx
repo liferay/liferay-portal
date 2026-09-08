@@ -29,7 +29,13 @@ describe('CampaignsDataSet', () => {
 	afterEach(cleanup);
 
 	it('should render the FrontendDataSet with id "campaigns-list-dataset"', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		expect(screen.getByTestId('fds-component')).toHaveAttribute(
 			'id',
@@ -38,13 +44,25 @@ describe('CampaignsDataSet', () => {
 	});
 
 	it('should feed the mocked campaigns to the data set', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		expect(lastFDSProps.items).toBe(mockCampaigns);
 	});
 
 	it('should render the three columns the design specifies', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		expect(getFields().map(({fieldName}: any) => fieldName)).toEqual([
 			'campaignName',
@@ -60,29 +78,76 @@ describe('CampaignsDataSet', () => {
 	});
 
 	it('should leave the columns unsortable while the data set runs on items', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		expect(getFields().every(({sortable}: any) => !sortable)).toBe(true);
 	});
 
 	it('should paginate', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		expect(lastFDSProps.showPagination).toBe(true);
 	});
 
 	it('should not offer a search box, nor the bar holding it', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		expect(lastFDSProps.showSearch).toBe(false);
 		expect(lastFDSProps.showManagementBar).toBe(false);
 	});
 
-	it('should render the campaign name in a heavier weight', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+	it('should link the campaign name at its detail screen', () => {
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.campaignNameRenderer({
+				itemData: {id: '7'},
+				value: 'Multi-Cloud Solutions Guide',
+			})
+		);
+
+		expect(container.querySelector('a')).toHaveAttribute(
+			'href',
+			'/workspace/23/123/campaigns/7'
+		);
+	});
+
+	it('should render the campaign name in a heavier weight', () => {
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
+
+		const {container} = render(
+			lastFDSProps.customDataRenderers.campaignNameRenderer({
+				itemData: {id: '1'},
 				value: 'Q3 Manufacturing Webinar',
 			})
 		);
@@ -92,7 +157,13 @@ describe('CampaignsDataSet', () => {
 	});
 
 	it('should abbreviate the counts', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.countRenderer({value: 15200})
@@ -102,7 +173,13 @@ describe('CampaignsDataSet', () => {
 	});
 
 	it('should render a missing count as zero', () => {
-		render(<CampaignsDataSet items={mockCampaigns} />);
+		render(
+			<CampaignsDataSet
+				channelId="123"
+				groupId="23"
+				items={mockCampaigns}
+			/>
+		);
 
 		const {container} = render(
 			lastFDSProps.customDataRenderers.countRenderer({})

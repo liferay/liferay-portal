@@ -133,6 +133,12 @@ const CampaignsDashboard = lazy(() =>
 	)
 );
 
+const CampaignDetail = lazy(() =>
+	import(
+		/* webpackChunkName: "CampaignDetail" */ '../../campaigns/pages/CampaignDetail'
+	)
+);
+
 /* Lifecycle */
 const LifecycleDashboard = lazy(() =>
 	import(
@@ -277,6 +283,18 @@ const AppSidebarRoutes = ({LDPEnabled, currentUser, groupId}) => {
 										/>
 									}
 									path=":channelId?/campaigns"
+								/>
+							)}
+
+							{LDPEnabled && ENABLE_CAMPAIGNS && (
+								<Route
+									element={
+										<BundleRouter
+											data={CampaignDetail}
+											destructured={false}
+										/>
+									}
+									path=":channelId?/campaigns/:id"
 								/>
 							)}
 

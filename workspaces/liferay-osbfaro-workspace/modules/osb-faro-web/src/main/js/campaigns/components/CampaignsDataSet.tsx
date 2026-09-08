@@ -6,9 +6,11 @@ import {
 	pagination,
 } from 'shared/components/FrontendDataSet';
 import {ICampaign} from '../utils/mock-campaigns';
-import {Text} from '@clayui/core';
+import {Routes} from 'shared/util/router';
 
 interface ICampaignsDataSetProps {
+	channelId: string;
+	groupId: string;
 	items: ICampaign[];
 }
 
@@ -45,13 +47,28 @@ const views = [
 	},
 ];
 
-const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({items}) => (
+const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
+	channelId,
+	groupId,
+	items,
+}) => (
 	<Card minHeight={300}>
 		<FrontendDataSet
 			customDataRenderers={{
-				campaignNameRenderer: ({value}: {value: string}) => (
-					<Text weight="semi-bold">{value}</Text>
-				),
+				campaignNameRenderer: ({
+					itemData,
+					value,
+				}: {
+					itemData: {id: string};
+					value: string;
+				}) =>
+					columns.nameAndLinkRenderer({
+						channelId,
+						groupId,
+						itemData,
+						route: Routes.CAMPAIGNS_DETAIL,
+						value,
+					}),
 				countRenderer: columns.countRenderer,
 			}}
 			id="campaigns-list-dataset"

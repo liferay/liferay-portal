@@ -54,6 +54,11 @@ export const getAccounts = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
 	label: Liferay.Language.get('accounts'),
 });
 
+export const getCampaigns = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
+	href: toRoute(Routes.CAMPAIGNS, {channelId, groupId}),
+	label: Liferay.Language.get('campaigns'),
+});
+
 export const getIndividuals = ({
 	LDPEnabled,
 	channelId,
