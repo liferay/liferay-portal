@@ -2183,6 +2183,55 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		reindex(userId);
 	}
 
+	/**
+	 * Removes the user from the user group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param user the user
+	 */
+	@Override
+	public void deleteUserGroupUser(long userGroupId, User user)
+		throws PortalException {
+
+		deleteUserGroupUser(userGroupId, user.getUserId());
+	}
+
+	/**
+	 * Removes the users from the user group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param users the users
+	 */
+	@Override
+	public void deleteUserGroupUsers(long userGroupId, List<User> users) {
+		super.deleteUserGroupUsers(userGroupId, users);
+
+		try {
+			reindex(users);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+	}
+
+	/**
+	 * Removes the users from the user group.
+	 *
+	 * @param userGroupId the primary key of the user group
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void deleteUserGroupUsers(long userGroupId, long[] userIds) {
+		super.deleteUserGroupUsers(userGroupId, userIds);
+
+		try {
+			reindex(userIds);
+		}
+		catch (PortalException portalException) {
+			throw new SystemException(portalException);
+		}
+	}
+
 	@Override
 	public void destroy() {
 		_batchProcessor.close();
