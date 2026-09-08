@@ -50,6 +50,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Jorge Ferrer
  * @author Michael C. Han
+ * @author Thiago Buarque
  */
 @Component(service = ConfigurationEntryRetriever.class)
 public class ConfigurationEntryRetrieverImpl
@@ -257,16 +258,6 @@ public class ConfigurationEntryRetrieverImpl
 		Set<ConfigurationEntry> configurationEntries = new TreeSet<>(
 			_getConfigurationEntryComparator());
 
-		if (configurationModels != null) {
-			for (ConfigurationModel configurationModel : configurationModels) {
-				if (configurationModel.isGenerateUI()) {
-					configurationEntries.add(
-						new ConfigurationModelConfigurationEntry(
-							configurationModel));
-				}
-			}
-		}
-
 		List<ConfigurationScreen> configurationScreens =
 			_configurationScreensServiceTrackerMap.getService(
 				configurationCategory);
@@ -284,6 +275,16 @@ public class ConfigurationEntryRetrieverImpl
 				configurationEntries.add(
 					new ConfigurationScreenConfigurationEntry(
 						configurationScreen));
+			}
+		}
+
+		if (configurationModels != null) {
+			for (ConfigurationModel configurationModel : configurationModels) {
+				if (configurationModel.isGenerateUI()) {
+					configurationEntries.add(
+						new ConfigurationModelConfigurationEntry(
+							configurationModel));
+				}
 			}
 		}
 
