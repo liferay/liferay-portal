@@ -184,3 +184,74 @@ test(
 		await expect(page.locator('h2.sheet-title')).toHaveText(structureName);
 	}
 );
+
+test(
+	'The content references warning is not hidden behind the toolbar when web content exists for the structure',
+	{
+		tag: '@LPD-104383',
+	},
+	async ({apiHelpers, journalStructuresPage, page, site}) => {
+		const structureName = getRandomString();
+
+		const structure = await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: Array.from({length: 10}, (_, index) => ({
+					name: `TextFieldTest${index}`,
+					repeatable: false,
+				})),
+				name: structureName,
+			})
+		);
+
+		await apiHelpers.headlessDelivery.postStructuredContent({
+			contentStructureId: Number(structure.id),
+			datePublished: null,
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+
+		await page
+			.getByRole('link', {exact: true, name: structureName})
+			.click();
+
+		await expect(page.locator('.ddm-field-container')).toHaveCount(10);
+
+		await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+
+		const alert = page.locator('.alert-warning').filter({
+			hasText: 'There are content references to this structure',
+		});
+		const toolbar = page.locator('.component-tbar.tbar-structure');
+
+		await expect(alert).toBeVisible();
+		await expect(toolbar).toBeVisible();
+
+		const alertBoundingBox = await alert.boundingBox();
+		const toolbarBoundingBox = await toolbar.boundingBox();
+
+		expect(alertBoundingBox.y).toBeGreaterThanOrEqual(
+			toolbarBoundingBox.y + toolbarBoundingBox.height
+		);
+
+		const stickyTop = await toolbar.evaluate((element) =>
+			parseFloat(getComputedStyle(element).top)
+		);
+
+		await alert.hover();
+		await page.mouse.wheel(0, 400);
+
+		await expect
+			.poll(async () => (await alert.boundingBox()).y)
+			.toBeLessThan(alertBoundingBox.y);
+
+		const scrolledToolbarBoundingBox = await toolbar.boundingBox();
+
+		expect(
+			Math.abs(scrolledToolbarBoundingBox.y - stickyTop)
+		).toBeLessThanOrEqual(1);
+	}
+);
