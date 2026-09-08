@@ -56,6 +56,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -160,10 +161,15 @@ public class MCPServerServlet extends HttpServlet {
 						"/mcp/" + mcpServerProfileName : "/mcp"
 				).build();
 
+		List<ObjectEntry> mcpServerProfileToolObjectEntries =
+			_getMCPServerProfileToolObjectEntries(mcpServerProfileObjectEntry);
+
+		Map<String, String> restrictFieldsMap = _getRestrictFieldsMap(
+			mcpServerProfileToolObjectEntries);
+
 		List<McpStatelessServerFeatures.SyncToolSpecification>
 			syncToolSpecifications = TransformUtil.transform(
-				_getMCPServerProfileToolObjectEntries(
-					mcpServerProfileObjectEntry),
+				mcpServerProfileToolObjectEntries,
 				mcpServerProfileToolObjectEntry -> {
 					Map<String, Serializable> mcpServerProfileToolValues =
 						mcpServerProfileToolObjectEntry.getValues();
@@ -177,12 +183,13 @@ public class MCPServerServlet extends HttpServlet {
 						return new McpStatelessServerFeatures.
 							SyncToolSpecification(
 								_getTool(
-									httpServletRequest, toolName, toolSetName),
+									httpServletRequest, restrictFieldsMap,
+									toolName, toolSetName),
 								(mcpTransportContext, callToolRequest) -> _call(
 									mcpTransportContext,
 									callToolRequest.arguments(), companyId,
 									mcpServerProfileExternalReferenceCode,
-									toolName, toolSetName));
+									restrictFieldsMap, toolName, toolSetName));
 					}
 					catch (Exception exception) {
 						_log.error(
@@ -251,7 +258,8 @@ public class MCPServerServlet extends HttpServlet {
 	private McpSchema.CallToolResult _call(
 		McpTransportContext mcpTransportContext, Object inputObject,
 		long companyId, String mcpServerProfileExternalReferenceCode,
-		String toolName, String toolSetName) {
+		Map<String, String> restrictFieldsMap, String toolName,
+		String toolSetName) {
 
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)mcpTransportContext.get("httpServletRequest");
@@ -260,7 +268,8 @@ public class MCPServerServlet extends HttpServlet {
 			Response response = ToolSetUtil.invokeTool(
 				_getDataMaskExternalReferenceCodes(
 					companyId, mcpServerProfileExternalReferenceCode),
-				httpServletRequest, inputObject, toolName, toolSetName);
+				httpServletRequest, inputObject, restrictFieldsMap, toolName,
+				toolSetName);
 
 			int responseCode = response.getStatus();
 			String content = (String)response.getEntity();
@@ -412,6 +421,33 @@ public class MCPServerServlet extends HttpServlet {
 		}
 	}
 
+	private Map<String, String> _getRestrictFieldsMap(
+		List<ObjectEntry> mcpServerProfileToolObjectEntries) {
+
+		Map<String, String> restrictFieldsMap = new HashMap<>();
+
+		for (ObjectEntry mcpServerProfileToolObjectEntry :
+				mcpServerProfileToolObjectEntries) {
+
+			Map<String, Serializable> values =
+				mcpServerProfileToolObjectEntry.getValues();
+
+			String restrictFields = MapUtil.getString(values, "restrictFields");
+
+			if (Validator.isNull(restrictFields)) {
+				continue;
+			}
+
+			restrictFieldsMap.put(
+				ToolSetUtil.getToolKey(
+					MapUtil.getString(values, "toolSetName"),
+					MapUtil.getString(values, "toolName")),
+				restrictFields);
+		}
+
+		return restrictFieldsMap;
+	}
+
 	private Servlet _getServlet(
 		HttpServletRequest httpServletRequest, long companyId,
 		ObjectEntry mcpServerProfileObjectEntry) {
@@ -475,12 +511,13 @@ public class MCPServerServlet extends HttpServlet {
 	}
 
 	private McpSchema.Tool _getTool(
-		HttpServletRequest httpServletRequest, String toolName,
+		HttpServletRequest httpServletRequest,
+		Map<String, String> restrictFieldsMap, String toolName,
 		String toolSetName) {
 
 		try {
 			Tool tool = ToolSetUtil.getTool(
-				httpServletRequest, toolName, toolSetName);
+				httpServletRequest, restrictFieldsMap, toolName, toolSetName);
 
 			return McpSchema.Tool.builder(
 			).description(

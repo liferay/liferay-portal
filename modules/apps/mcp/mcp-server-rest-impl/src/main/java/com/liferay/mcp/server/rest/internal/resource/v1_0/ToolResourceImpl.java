@@ -50,7 +50,7 @@ public class ToolResourceImpl extends BaseToolResourceImpl {
 			contextCompany.getCompanyId(), "LPD-63311");
 
 		return ToolSetUtil.getTool(
-			contextHttpServletRequest, toolName, toolSetName);
+			contextHttpServletRequest, null, toolName, toolSetName);
 	}
 
 	@Override
@@ -62,7 +62,8 @@ public class ToolResourceImpl extends BaseToolResourceImpl {
 			contextCompany.getCompanyId(), "LPD-63311");
 
 		return ToolSetUtil.invokeTool(
-			null, contextHttpServletRequest, object, toolName, toolSetName);
+			null, contextHttpServletRequest, object, null, toolName,
+			toolSetName);
 	}
 
 }
