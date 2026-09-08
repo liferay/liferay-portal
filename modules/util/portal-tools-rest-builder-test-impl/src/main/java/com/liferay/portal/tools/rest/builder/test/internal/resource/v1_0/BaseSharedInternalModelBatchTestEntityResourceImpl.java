@@ -81,7 +81,7 @@ public abstract class BaseSharedInternalModelBatchTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -138,7 +138,7 @@ public abstract class BaseSharedInternalModelBatchTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -317,7 +317,7 @@ public abstract class BaseSharedInternalModelBatchTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1111,4 +1111,4 @@ public abstract class BaseSharedInternalModelBatchTestEntityResourceImpl
 			BaseSharedInternalModelBatchTestEntityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1284374206
+// LIFERAY-REST-BUILDER-HASH:-691923316

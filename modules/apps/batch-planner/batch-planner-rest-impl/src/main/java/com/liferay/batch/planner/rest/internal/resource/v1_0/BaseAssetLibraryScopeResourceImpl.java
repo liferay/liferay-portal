@@ -53,7 +53,7 @@ public abstract class BaseAssetLibraryScopeResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "internalClassNameKey"
+				name = "internalClassNameKey", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -529,4 +529,4 @@ public abstract class BaseAssetLibraryScopeResourceImpl
 		LogFactoryUtil.getLog(BaseAssetLibraryScopeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1381329072
+// LIFERAY-REST-BUILDER-HASH:-1966928346

@@ -55,7 +55,7 @@ public abstract class BaseObjectEntryHistogramMetricResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "objectEntryId"
+				name = "objectEntryId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -542,4 +542,4 @@ public abstract class BaseObjectEntryHistogramMetricResourceImpl
 		LogFactoryUtil.getLog(BaseObjectEntryHistogramMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:588427646
+// LIFERAY-REST-BUILDER-HASH:326405796

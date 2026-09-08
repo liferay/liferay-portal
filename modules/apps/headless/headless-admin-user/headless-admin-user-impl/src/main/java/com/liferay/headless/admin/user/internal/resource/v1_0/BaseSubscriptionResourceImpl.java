@@ -75,7 +75,7 @@ public abstract class BaseSubscriptionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "subscriptionId"
+				name = "subscriptionId", required = true
 			)
 		}
 	)
@@ -103,7 +103,7 @@ public abstract class BaseSubscriptionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "subscriptionId"
+				name = "subscriptionId", required = true
 			)
 		}
 	)
@@ -821,4 +821,4 @@ public abstract class BaseSubscriptionResourceImpl
 		LogFactoryUtil.getLog(BaseSubscriptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2000426773
+// LIFERAY-REST-BUILDER-HASH:-596532145

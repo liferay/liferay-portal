@@ -80,7 +80,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			)
 		}
 	)
@@ -108,7 +108,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataListViewId"
+				name = "dataListViewId", required = true
 			)
 		}
 	)
@@ -180,7 +180,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -232,7 +232,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataListViewId"
+				name = "dataListViewId", required = true
 			)
 		}
 	)
@@ -262,7 +262,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			)
 		}
 	)
@@ -294,7 +294,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -348,7 +348,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -432,7 +432,7 @@ public abstract class BaseDataListViewResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataListViewId"
+				name = "dataListViewId", required = true
 			)
 		}
 	)
@@ -1260,4 +1260,4 @@ public abstract class BaseDataListViewResourceImpl
 		LogFactoryUtil.getLog(BaseDataListViewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-504442287
+// LIFERAY-REST-BUILDER-HASH:921209129

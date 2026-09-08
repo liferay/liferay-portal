@@ -97,7 +97,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -172,7 +172,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -334,7 +334,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -394,7 +394,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -468,7 +468,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -729,7 +729,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -826,7 +826,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -924,7 +924,7 @@ public abstract class BaseAssetLibraryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetLibraryExternalReferenceCode"
+				name = "assetLibraryExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -1844,4 +1844,4 @@ public abstract class BaseAssetLibraryResourceImpl
 		LogFactoryUtil.getLog(BaseAssetLibraryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-762953308
+// LIFERAY-REST-BUILDER-HASH:1828625024

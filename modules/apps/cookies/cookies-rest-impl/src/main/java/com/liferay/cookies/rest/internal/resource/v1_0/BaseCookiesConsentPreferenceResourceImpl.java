@@ -76,7 +76,7 @@ public abstract class BaseCookiesConsentPreferenceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "name"
+				name = "name", required = true
 			)
 		}
 	)
@@ -111,7 +111,7 @@ public abstract class BaseCookiesConsentPreferenceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "name"
+				name = "name", required = true
 			)
 		}
 	)
@@ -608,4 +608,4 @@ public abstract class BaseCookiesConsentPreferenceResourceImpl
 		LogFactoryUtil.getLog(BaseCookiesConsentPreferenceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1824720156
+// LIFERAY-REST-BUILDER-HASH:-619871194

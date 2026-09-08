@@ -79,7 +79,7 @@ public abstract class BaseMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "key"
+				name = "key", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -114,7 +114,7 @@ public abstract class BaseMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "key"
+				name = "key", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -173,11 +173,11 @@ public abstract class BaseMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "key"
+				name = "key", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "languageId"
+				name = "languageId", required = true
 			)
 		}
 	)
@@ -275,7 +275,7 @@ public abstract class BaseMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "languageId"
+				name = "languageId", required = true
 			)
 		}
 	)
@@ -305,7 +305,7 @@ public abstract class BaseMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "languageId"
+				name = "languageId", required = true
 			)
 		}
 	)
@@ -1106,4 +1106,4 @@ public abstract class BaseMessageResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-562393878
+// LIFERAY-REST-BUILDER-HASH:-1523909814

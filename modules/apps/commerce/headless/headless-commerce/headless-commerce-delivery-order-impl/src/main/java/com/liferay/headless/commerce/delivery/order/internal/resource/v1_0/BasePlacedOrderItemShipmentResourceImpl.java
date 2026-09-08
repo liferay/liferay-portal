@@ -81,7 +81,7 @@ public abstract class BasePlacedOrderItemShipmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -122,7 +122,7 @@ public abstract class BasePlacedOrderItemShipmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order item under a non-open placed order. Addresses the line-item scope for read and nested-shipment listing.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderItemId"
+				name = "placedOrderItemId", required = true
 			)
 		}
 	)
@@ -160,7 +160,7 @@ public abstract class BasePlacedOrderItemShipmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order item under a non-open placed order. Addresses the line-item scope for read and nested-shipment listing.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderItemId"
+				name = "placedOrderItemId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -903,4 +903,4 @@ public abstract class BasePlacedOrderItemShipmentResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderItemShipmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-649932557
+// LIFERAY-REST-BUILDER-HASH:-1217616313

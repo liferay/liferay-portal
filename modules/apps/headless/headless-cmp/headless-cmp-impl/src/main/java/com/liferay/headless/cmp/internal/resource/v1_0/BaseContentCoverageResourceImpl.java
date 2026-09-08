@@ -51,7 +51,7 @@ public abstract class BaseContentCoverageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "projectId"
+				name = "projectId", required = true
 			)
 		}
 	)
@@ -519,4 +519,4 @@ public abstract class BaseContentCoverageResourceImpl
 		LogFactoryUtil.getLog(BaseContentCoverageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1679994135
+// LIFERAY-REST-BUILDER-HASH:1969617591

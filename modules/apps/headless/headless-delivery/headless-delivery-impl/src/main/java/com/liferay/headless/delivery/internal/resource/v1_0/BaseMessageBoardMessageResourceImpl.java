@@ -101,7 +101,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -184,7 +184,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -221,11 +221,11 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -266,7 +266,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -315,7 +315,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "parentMessageBoardMessageId"
+				name = "parentMessageBoardMessageId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -409,7 +409,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -453,7 +453,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -533,7 +533,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardThreadId"
+				name = "messageBoardThreadId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -620,11 +620,11 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -677,11 +677,11 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "friendlyUrlPath"
+				name = "friendlyUrlPath", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -733,7 +733,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -807,7 +807,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -897,11 +897,11 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "userId"
+				name = "userId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -954,7 +954,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1069,7 +1069,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "parentMessageBoardMessageId"
+				name = "parentMessageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1110,7 +1110,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1151,7 +1151,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardThreadId"
+				name = "messageBoardThreadId", required = true
 			)
 		}
 	)
@@ -1189,7 +1189,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardThreadId"
+				name = "messageBoardThreadId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -1247,7 +1247,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardThreadId"
+				name = "messageBoardThreadId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -1341,7 +1341,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -1436,7 +1436,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1520,7 +1520,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1557,7 +1557,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1595,7 +1595,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1692,7 +1692,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1726,7 +1726,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1760,7 +1760,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardMessageId"
+				name = "messageBoardMessageId", required = true
 			)
 		}
 	)
@@ -1797,11 +1797,11 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1844,7 +1844,7 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			)
 		}
 	)
@@ -2985,4 +2985,4 @@ public abstract class BaseMessageBoardMessageResourceImpl
 		LogFactoryUtil.getLog(BaseMessageBoardMessageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:565963369
+// LIFERAY-REST-BUILDER-HASH:1883933065

@@ -99,7 +99,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			)
 		}
 	)
@@ -182,7 +182,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -231,7 +231,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "parentMessageBoardSectionId"
+				name = "parentMessageBoardSectionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -315,7 +315,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -392,11 +392,11 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "friendlyUrlPath"
+				name = "friendlyUrlPath", required = true
 			)
 		}
 	)
@@ -436,7 +436,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -510,7 +510,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -600,7 +600,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			)
 		}
 	)
@@ -675,7 +675,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "parentMessageBoardSectionId"
+				name = "parentMessageBoardSectionId", required = true
 			)
 		}
 	)
@@ -716,7 +716,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			)
 		}
 	)
@@ -752,7 +752,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -808,7 +808,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -903,7 +903,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			)
 		}
 	)
@@ -987,7 +987,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			)
 		}
 	)
@@ -1084,7 +1084,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			)
 		}
 	)
@@ -1118,7 +1118,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "messageBoardSectionId"
+				name = "messageBoardSectionId", required = true
 			)
 		}
 	)
@@ -1152,7 +1152,7 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			)
 		}
 	)
@@ -2184,4 +2184,4 @@ public abstract class BaseMessageBoardSectionResourceImpl
 		LogFactoryUtil.getLog(BaseMessageBoardSectionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1728785549
+// LIFERAY-REST-BUILDER-HASH:1163313773

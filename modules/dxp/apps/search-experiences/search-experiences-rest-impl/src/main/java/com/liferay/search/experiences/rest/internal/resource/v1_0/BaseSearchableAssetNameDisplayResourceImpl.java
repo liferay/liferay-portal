@@ -76,7 +76,7 @@ public abstract class BaseSearchableAssetNameDisplayResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "languageId"
+				name = "languageId", required = true
 			)
 		}
 	)
@@ -766,4 +766,4 @@ public abstract class BaseSearchableAssetNameDisplayResourceImpl
 		LogFactoryUtil.getLog(BaseSearchableAssetNameDisplayResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:869754021
+// LIFERAY-REST-BUILDER-HASH:-836004273

@@ -79,11 +79,11 @@ public abstract class BaseDSRecipientViewDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dsEnvelopeId"
+				name = "dsEnvelopeId", required = true
 			)
 		}
 	)
@@ -125,11 +125,11 @@ public abstract class BaseDSRecipientViewDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dsEnvelopeId"
+				name = "dsEnvelopeId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -894,4 +894,4 @@ public abstract class BaseDSRecipientViewDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseDSRecipientViewDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:603766716
+// LIFERAY-REST-BUILDER-HASH:-1486088544

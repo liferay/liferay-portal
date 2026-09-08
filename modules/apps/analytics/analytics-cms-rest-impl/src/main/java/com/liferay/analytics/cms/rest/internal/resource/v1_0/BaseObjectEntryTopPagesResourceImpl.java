@@ -55,7 +55,7 @@ public abstract class BaseObjectEntryTopPagesResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "objectEntryId"
+				name = "objectEntryId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -535,4 +535,4 @@ public abstract class BaseObjectEntryTopPagesResourceImpl
 		LogFactoryUtil.getLog(BaseObjectEntryTopPagesResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1616016456
+// LIFERAY-REST-BUILDER-HASH:-218583512

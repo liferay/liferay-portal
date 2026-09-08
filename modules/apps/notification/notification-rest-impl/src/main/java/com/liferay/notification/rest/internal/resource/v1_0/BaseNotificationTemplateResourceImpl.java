@@ -81,7 +81,7 @@ public abstract class BaseNotificationTemplateResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationTemplateId"
+				name = "notificationTemplateId", required = true
 			)
 		}
 	)
@@ -161,7 +161,7 @@ public abstract class BaseNotificationTemplateResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationTemplateId"
+				name = "notificationTemplateId", required = true
 			)
 		}
 	)
@@ -195,7 +195,7 @@ public abstract class BaseNotificationTemplateResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -291,7 +291,7 @@ public abstract class BaseNotificationTemplateResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationTemplateId"
+				name = "notificationTemplateId", required = true
 			)
 		}
 	)
@@ -488,7 +488,7 @@ public abstract class BaseNotificationTemplateResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationTemplateId"
+				name = "notificationTemplateId", required = true
 			)
 		}
 	)
@@ -606,7 +606,7 @@ public abstract class BaseNotificationTemplateResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationTemplateId"
+				name = "notificationTemplateId", required = true
 			)
 		}
 	)
@@ -690,7 +690,7 @@ public abstract class BaseNotificationTemplateResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1525,4 +1525,4 @@ public abstract class BaseNotificationTemplateResourceImpl
 		LogFactoryUtil.getLog(BaseNotificationTemplateResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1776382939
+// LIFERAY-REST-BUILDER-HASH:-1124951111

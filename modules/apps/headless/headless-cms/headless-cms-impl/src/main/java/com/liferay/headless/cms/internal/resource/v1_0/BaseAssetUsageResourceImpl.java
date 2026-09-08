@@ -57,7 +57,7 @@ public abstract class BaseAssetUsageResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "assetId"
+				name = "assetId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -552,4 +552,4 @@ public abstract class BaseAssetUsageResourceImpl
 		LogFactoryUtil.getLog(BaseAssetUsageResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1782483579
+// LIFERAY-REST-BUILDER-HASH:-190438563

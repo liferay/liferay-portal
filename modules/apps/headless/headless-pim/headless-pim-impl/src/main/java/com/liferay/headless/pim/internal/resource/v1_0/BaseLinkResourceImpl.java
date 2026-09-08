@@ -50,19 +50,19 @@ public abstract class BaseLinkResourceImpl implements LinkResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "scopeKey"
+				name = "scopeKey", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "className"
+				name = "className", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "type"
+				name = "type", required = true
 			)
 		}
 	)
@@ -102,7 +102,7 @@ public abstract class BaseLinkResourceImpl implements LinkResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "scopeKey"
+				name = "scopeKey", required = true
 			)
 		}
 	)
@@ -568,4 +568,4 @@ public abstract class BaseLinkResourceImpl implements LinkResource {
 		LogFactoryUtil.getLog(BaseLinkResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:617293264
+// LIFERAY-REST-BUILDER-HASH:-1806255782

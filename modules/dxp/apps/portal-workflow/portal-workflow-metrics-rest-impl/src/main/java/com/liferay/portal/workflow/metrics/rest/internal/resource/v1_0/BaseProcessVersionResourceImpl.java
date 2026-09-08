@@ -77,7 +77,7 @@ public abstract class BaseProcessVersionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			)
 		}
 	)
@@ -109,7 +109,7 @@ public abstract class BaseProcessVersionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -845,4 +845,4 @@ public abstract class BaseProcessVersionResourceImpl
 		LogFactoryUtil.getLog(BaseProcessVersionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:24232754
+// LIFERAY-REST-BUILDER-HASH:404436104

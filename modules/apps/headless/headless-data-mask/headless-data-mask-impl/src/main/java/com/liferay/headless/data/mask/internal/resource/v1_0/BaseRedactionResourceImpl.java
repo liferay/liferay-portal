@@ -53,7 +53,7 @@ public abstract class BaseRedactionResourceImpl implements RedactionResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "detectionRegex"
+				name = "detectionRegex", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -61,11 +61,11 @@ public abstract class BaseRedactionResourceImpl implements RedactionResource {
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "replacementValue"
+				name = "replacementValue", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "text"
+				name = "text", required = true
 			)
 		}
 	)
@@ -542,4 +542,4 @@ public abstract class BaseRedactionResourceImpl implements RedactionResource {
 		LogFactoryUtil.getLog(BaseRedactionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:842957580
+// LIFERAY-REST-BUILDER-HASH:-1541624706

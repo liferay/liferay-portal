@@ -80,7 +80,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectLayoutId"
+				name = "objectLayoutId", required = true
 			)
 		}
 	)
@@ -152,7 +152,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -207,7 +207,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -261,7 +261,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectLayoutId"
+				name = "objectLayoutId", required = true
 			)
 		}
 	)
@@ -291,7 +291,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -325,7 +325,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -359,7 +359,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -413,7 +413,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -497,7 +497,7 @@ public abstract class BaseObjectLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectLayoutId"
+				name = "objectLayoutId", required = true
 			)
 		}
 	)
@@ -1332,4 +1332,4 @@ public abstract class BaseObjectLayoutResourceImpl
 		LogFactoryUtil.getLog(BaseObjectLayoutResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1094773032
+// LIFERAY-REST-BUILDER-HASH:1841019928

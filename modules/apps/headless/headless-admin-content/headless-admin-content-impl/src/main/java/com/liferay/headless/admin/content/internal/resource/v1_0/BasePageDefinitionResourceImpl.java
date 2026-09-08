@@ -54,7 +54,7 @@ public abstract class BasePageDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			)
 		}
 	)
@@ -527,4 +527,4 @@ public abstract class BasePageDefinitionResourceImpl
 		LogFactoryUtil.getLog(BasePageDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2058691284
+// LIFERAY-REST-BUILDER-HASH:-1190887012

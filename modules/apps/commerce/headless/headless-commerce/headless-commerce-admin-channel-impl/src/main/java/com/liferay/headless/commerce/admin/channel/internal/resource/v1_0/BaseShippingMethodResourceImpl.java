@@ -81,7 +81,7 @@ public abstract class BaseShippingMethodResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of a commerce channel. Addresses a single storefront bound to a Liferay site, with its own currency, account visibility, and display pages.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "1-based page number for paginated responses. Defaults to 1.",
@@ -125,7 +125,7 @@ public abstract class BaseShippingMethodResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of a commerce channel. Addresses a single storefront bound to a Liferay site, with its own currency, account visibility, and display pages.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -861,4 +861,4 @@ public abstract class BaseShippingMethodResourceImpl
 		LogFactoryUtil.getLog(BaseShippingMethodResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-112073331
+// LIFERAY-REST-BUILDER-HASH:-243708679

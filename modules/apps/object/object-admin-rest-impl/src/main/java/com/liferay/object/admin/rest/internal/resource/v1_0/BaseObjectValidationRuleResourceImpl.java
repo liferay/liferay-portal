@@ -80,7 +80,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectValidationRuleId"
+				name = "objectValidationRuleId", required = true
 			)
 		}
 	)
@@ -160,7 +160,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -219,7 +219,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -278,7 +278,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectValidationRuleId"
+				name = "objectValidationRuleId", required = true
 			)
 		}
 	)
@@ -312,7 +312,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectValidationRuleId"
+				name = "objectValidationRuleId", required = true
 			)
 		}
 	)
@@ -408,7 +408,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -447,7 +447,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -485,7 +485,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -543,7 +543,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -631,7 +631,7 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectValidationRuleId"
+				name = "objectValidationRuleId", required = true
 			)
 		}
 	)
@@ -1498,4 +1498,4 @@ public abstract class BaseObjectValidationRuleResourceImpl
 		LogFactoryUtil.getLog(BaseObjectValidationRuleResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1391995284
+// LIFERAY-REST-BUILDER-HASH:974548722

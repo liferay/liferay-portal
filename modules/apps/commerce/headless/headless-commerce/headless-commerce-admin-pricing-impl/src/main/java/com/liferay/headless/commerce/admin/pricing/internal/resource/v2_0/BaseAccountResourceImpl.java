@@ -54,7 +54,7 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target discount-account binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "discountAccountId"
+				name = "discountAccountId", required = true
 			)
 		}
 	)
@@ -88,7 +88,7 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target price-list-account binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "priceListAccountId"
+				name = "priceListAccountId", required = true
 			)
 		}
 	)
@@ -554,4 +554,4 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:161649381
+// LIFERAY-REST-BUILDER-HASH:2002031683

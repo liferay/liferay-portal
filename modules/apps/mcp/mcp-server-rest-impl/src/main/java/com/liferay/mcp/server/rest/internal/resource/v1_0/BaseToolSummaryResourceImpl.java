@@ -57,7 +57,7 @@ public abstract class BaseToolSummaryResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "The tool-set name returned by `getToolSetsPage`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "toolSetName"
+				name = "toolSetName", required = true
 			)
 		}
 	)
@@ -523,4 +523,4 @@ public abstract class BaseToolSummaryResourceImpl
 		LogFactoryUtil.getLog(BaseToolSummaryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:182064571
+// LIFERAY-REST-BUILDER-HASH:-571842207

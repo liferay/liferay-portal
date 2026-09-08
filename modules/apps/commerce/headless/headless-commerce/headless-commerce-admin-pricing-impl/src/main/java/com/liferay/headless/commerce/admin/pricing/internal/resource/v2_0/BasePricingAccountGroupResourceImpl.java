@@ -55,7 +55,7 @@ public abstract class BasePricingAccountGroupResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target discount-account-group binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "discountAccountGroupId"
+				name = "discountAccountGroupId", required = true
 			)
 		}
 	)
@@ -95,7 +95,7 @@ public abstract class BasePricingAccountGroupResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target price-list-account-group binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "priceListAccountGroupId"
+				name = "priceListAccountGroupId", required = true
 			)
 		}
 	)
@@ -567,4 +567,4 @@ public abstract class BasePricingAccountGroupResourceImpl
 		LogFactoryUtil.getLog(BasePricingAccountGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1201937932
+// LIFERAY-REST-BUILDER-HASH:1969570484

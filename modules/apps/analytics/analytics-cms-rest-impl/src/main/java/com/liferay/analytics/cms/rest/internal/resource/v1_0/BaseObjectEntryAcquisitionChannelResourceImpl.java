@@ -57,7 +57,7 @@ public abstract class BaseObjectEntryAcquisitionChannelResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "objectEntryId"
+				name = "objectEntryId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -539,4 +539,4 @@ public abstract class BaseObjectEntryAcquisitionChannelResourceImpl
 			BaseObjectEntryAcquisitionChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1154306428
+// LIFERAY-REST-BUILDER-HASH:441277904

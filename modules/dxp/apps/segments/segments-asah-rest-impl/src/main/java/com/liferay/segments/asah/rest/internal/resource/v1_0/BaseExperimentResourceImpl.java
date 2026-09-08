@@ -76,7 +76,7 @@ public abstract class BaseExperimentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "experimentId"
+				name = "experimentId", required = true
 			)
 		}
 	)
@@ -148,7 +148,7 @@ public abstract class BaseExperimentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "experimentId"
+				name = "experimentId", required = true
 			)
 		}
 	)
@@ -846,4 +846,4 @@ public abstract class BaseExperimentResourceImpl
 		LogFactoryUtil.getLog(BaseExperimentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1139033061
+// LIFERAY-REST-BUILDER-HASH:2010166907

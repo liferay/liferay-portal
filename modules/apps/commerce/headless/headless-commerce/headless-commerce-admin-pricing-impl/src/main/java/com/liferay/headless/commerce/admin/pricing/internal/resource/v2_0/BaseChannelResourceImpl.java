@@ -54,7 +54,7 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target discount-channel binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "discountChannelId"
+				name = "discountChannelId", required = true
 			)
 		}
 	)
@@ -88,7 +88,7 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target price-list-channel binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "priceListChannelId"
+				name = "priceListChannelId", required = true
 			)
 		}
 	)
@@ -554,4 +554,4 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:378481936
+// LIFERAY-REST-BUILDER-HASH:-210911402

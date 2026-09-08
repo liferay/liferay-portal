@@ -59,7 +59,7 @@ public abstract class BaseSiteHistogramMetricResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "interval"
+				name = "interval", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -124,7 +124,7 @@ public abstract class BaseSiteHistogramMetricResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "interval"
+				name = "interval", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -618,4 +618,4 @@ public abstract class BaseSiteHistogramMetricResourceImpl
 		LogFactoryUtil.getLog(BaseSiteHistogramMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1603093011
+// LIFERAY-REST-BUILDER-HASH:1853189563

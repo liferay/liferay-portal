@@ -79,7 +79,7 @@ public abstract class BaseCurrencyResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code of the addressed CommerceChannel; raises 404 when no channel with this code exists in the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 $filter expression applied to the indexed entity. Supported fields are sourced from the entity model -- ChannelEntityModel exposes siteGroupId, name; AccountEntityModel exposes dateCreated, dateModified, name, type; ProductEntityModel exposes categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, createDate, modifiedDate, catalogId, statusCode, externalReferenceCode, name, productType plus every expando custom column. Currency, mapped product, and most child endpoints do not publish an entity model and ignore filter.",
@@ -148,7 +148,7 @@ public abstract class BaseCurrencyResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceChannel; raises 404 when no channel with this primary key exists.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 $filter expression applied to the indexed entity. Supported fields are sourced from the entity model -- ChannelEntityModel exposes siteGroupId, name; AccountEntityModel exposes dateCreated, dateModified, name, type; ProductEntityModel exposes categoryIds, categoryNames, gtins, specificationNames, specificationValues, tags, createDate, modifiedDate, catalogId, statusCode, externalReferenceCode, name, productType plus every expando custom column. Currency, mapped product, and most child endpoints do not publish an entity model and ignore filter.",
@@ -860,4 +860,4 @@ public abstract class BaseCurrencyResourceImpl
 		LogFactoryUtil.getLog(BaseCurrencyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:59193085
+// LIFERAY-REST-BUILDER-HASH:-1791166957

@@ -78,7 +78,8 @@ public abstract class BaseInstanceConfigurationResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "instanceConfigurationExternalReferenceCode"
+				name = "instanceConfigurationExternalReferenceCode",
+				required = true
 			)
 		}
 	)
@@ -289,7 +290,8 @@ public abstract class BaseInstanceConfigurationResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "instanceConfigurationExternalReferenceCode"
+				name = "instanceConfigurationExternalReferenceCode",
+				required = true
 			)
 		}
 	)
@@ -1080,4 +1082,4 @@ public abstract class BaseInstanceConfigurationResourceImpl
 		LogFactoryUtil.getLog(BaseInstanceConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-420267825
+// LIFERAY-REST-BUILDER-HASH:-751733153

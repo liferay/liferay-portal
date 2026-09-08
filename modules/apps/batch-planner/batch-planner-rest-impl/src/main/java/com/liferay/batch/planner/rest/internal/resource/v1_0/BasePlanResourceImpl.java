@@ -56,7 +56,7 @@ public abstract class BasePlanResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "planId"
+				name = "planId", required = true
 			)
 		}
 	)
@@ -84,7 +84,7 @@ public abstract class BasePlanResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "planId"
+				name = "planId", required = true
 			)
 		}
 	)
@@ -114,7 +114,7 @@ public abstract class BasePlanResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "internalClassNameKey"
+				name = "internalClassNameKey", required = true
 			)
 		}
 	)
@@ -177,7 +177,7 @@ public abstract class BasePlanResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "planId"
+				name = "planId", required = true
 			)
 		}
 	)
@@ -667,4 +667,4 @@ public abstract class BasePlanResourceImpl
 		LogFactoryUtil.getLog(BasePlanResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:288561669
+// LIFERAY-REST-BUILDER-HASH:1294587279

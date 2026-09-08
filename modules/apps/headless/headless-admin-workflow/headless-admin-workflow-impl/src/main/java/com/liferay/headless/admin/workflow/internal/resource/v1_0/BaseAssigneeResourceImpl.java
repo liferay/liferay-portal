@@ -75,7 +75,7 @@ public abstract class BaseAssigneeResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowTaskId"
+				name = "workflowTaskId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -763,4 +763,4 @@ public abstract class BaseAssigneeResourceImpl
 		LogFactoryUtil.getLog(BaseAssigneeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-385289366
+// LIFERAY-REST-BUILDER-HASH:282102054

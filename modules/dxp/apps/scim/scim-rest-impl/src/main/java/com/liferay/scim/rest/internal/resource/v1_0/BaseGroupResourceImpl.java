@@ -61,7 +61,7 @@ public abstract class BaseGroupResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -93,7 +93,7 @@ public abstract class BaseGroupResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -181,7 +181,7 @@ public abstract class BaseGroupResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -257,7 +257,7 @@ public abstract class BaseGroupResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -734,4 +734,4 @@ public abstract class BaseGroupResourceImpl
 		LogFactoryUtil.getLog(BaseGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:503619028
+// LIFERAY-REST-BUILDER-HASH:-81765876

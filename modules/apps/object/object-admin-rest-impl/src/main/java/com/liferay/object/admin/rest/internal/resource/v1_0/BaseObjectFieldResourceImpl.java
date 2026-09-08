@@ -80,7 +80,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFieldId"
+				name = "objectFieldId", required = true
 			)
 		}
 	)
@@ -152,7 +152,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -213,7 +213,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -273,7 +273,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFieldId"
+				name = "objectFieldId", required = true
 			)
 		}
 	)
@@ -303,7 +303,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFieldId"
+				name = "objectFieldId", required = true
 			)
 		}
 	)
@@ -427,7 +427,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -461,7 +461,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -495,7 +495,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -549,7 +549,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -639,7 +639,7 @@ public abstract class BaseObjectFieldResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFieldId"
+				name = "objectFieldId", required = true
 			)
 		}
 	)
@@ -1483,4 +1483,4 @@ public abstract class BaseObjectFieldResourceImpl
 		LogFactoryUtil.getLog(BaseObjectFieldResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:625914717
+// LIFERAY-REST-BUILDER-HASH:1228435827

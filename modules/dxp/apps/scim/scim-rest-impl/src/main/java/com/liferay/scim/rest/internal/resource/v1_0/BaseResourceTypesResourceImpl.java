@@ -54,7 +54,7 @@ public abstract class BaseResourceTypesResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Resource type defines the endpoints.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -543,4 +543,4 @@ public abstract class BaseResourceTypesResourceImpl
 		LogFactoryUtil.getLog(BaseResourceTypesResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1643033261
+// LIFERAY-REST-BUILDER-HASH:-119898173

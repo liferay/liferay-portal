@@ -80,12 +80,12 @@ public abstract class BaseListTypeDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of a catalog Specification. Addresses a single specification definition that can be bound to products through ProductSpecification entries.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "specificationId"
+				name = "specificationId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the ListTypeDefinition used as a specification's picklist. Addresses a single list type definition; resolved against the company scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "listTypeDefinitionId"
+				name = "listTypeDefinitionId", required = true
 			)
 		}
 	)
@@ -125,7 +125,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target resource. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -161,7 +161,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target resource. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -245,12 +245,12 @@ public abstract class BaseListTypeDefinitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of a catalog Specification. Addresses a single specification definition that can be bound to products through ProductSpecification entries.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "specificationId"
+				name = "specificationId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the ListTypeDefinition used as a specification's picklist. Addresses a single list type definition; resolved against the company scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "listTypeDefinitionId"
+				name = "listTypeDefinitionId", required = true
 			)
 		}
 	)
@@ -938,4 +938,4 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseListTypeDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1397871352
+// LIFERAY-REST-BUILDER-HASH:1290266282

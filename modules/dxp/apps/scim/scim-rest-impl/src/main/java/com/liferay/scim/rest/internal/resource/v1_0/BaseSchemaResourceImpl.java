@@ -53,7 +53,7 @@ public abstract class BaseSchemaResourceImpl implements SchemaResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "The schema's unique identifier.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -536,4 +536,4 @@ public abstract class BaseSchemaResourceImpl implements SchemaResource {
 		LogFactoryUtil.getLog(BaseSchemaResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1789157476
+// LIFERAY-REST-BUILDER-HASH:-964304670

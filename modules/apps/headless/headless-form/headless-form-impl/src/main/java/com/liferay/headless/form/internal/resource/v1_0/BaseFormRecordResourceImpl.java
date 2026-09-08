@@ -82,7 +82,7 @@ public abstract class BaseFormRecordResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formId"
+				name = "formId", required = true
 			)
 		}
 	)
@@ -114,7 +114,7 @@ public abstract class BaseFormRecordResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formId"
+				name = "formId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -155,7 +155,7 @@ public abstract class BaseFormRecordResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formRecordId"
+				name = "formRecordId", required = true
 			)
 		}
 	)
@@ -187,7 +187,7 @@ public abstract class BaseFormRecordResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formId"
+				name = "formId", required = true
 			)
 		}
 	)
@@ -221,7 +221,7 @@ public abstract class BaseFormRecordResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formId"
+				name = "formId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -275,7 +275,7 @@ public abstract class BaseFormRecordResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formId"
+				name = "formId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -346,7 +346,7 @@ public abstract class BaseFormRecordResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formRecordId"
+				name = "formRecordId", required = true
 			)
 		}
 	)
@@ -1155,4 +1155,4 @@ public abstract class BaseFormRecordResourceImpl
 		LogFactoryUtil.getLog(BaseFormRecordResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:579021088
+// LIFERAY-REST-BUILDER-HASH:364654140

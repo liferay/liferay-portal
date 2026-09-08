@@ -84,7 +84,7 @@ public abstract class BaseTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "testEntityId"
+				name = "testEntityId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -203,7 +203,7 @@ public abstract class BaseTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "testEntityId"
+				name = "testEntityId", required = true
 			)
 		}
 	)
@@ -236,7 +236,7 @@ public abstract class BaseTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "requiredQueryParameter"
+				name = "requiredQueryParameter", required = true
 			)
 		}
 	)
@@ -266,7 +266,7 @@ public abstract class BaseTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "testEntityId"
+				name = "testEntityId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -534,7 +534,7 @@ public abstract class BaseTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "testEntityId"
+				name = "testEntityId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -624,7 +624,7 @@ public abstract class BaseTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "testEntityId"
+				name = "testEntityId", required = true
 			)
 		}
 	)
@@ -1431,4 +1431,4 @@ public abstract class BaseTestEntityResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2064811637
+// LIFERAY-REST-BUILDER-HASH:858919215

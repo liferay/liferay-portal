@@ -53,7 +53,7 @@ public abstract class BaseUserGroupResourceImpl implements UserGroupResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "projectId"
+				name = "projectId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -535,4 +535,4 @@ public abstract class BaseUserGroupResourceImpl implements UserGroupResource {
 		LogFactoryUtil.getLog(BaseUserGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1764852011
+// LIFERAY-REST-BUILDER-HASH:722668225

@@ -76,7 +76,7 @@ public abstract class BaseAssigneeResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			)
 		}
 	)
@@ -757,4 +757,4 @@ public abstract class BaseAssigneeResourceImpl
 		LogFactoryUtil.getLog(BaseAssigneeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2011119476
+// LIFERAY-REST-BUILDER-HASH:1187033212

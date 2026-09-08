@@ -79,12 +79,12 @@ public abstract class BaseProductResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceChannel; raises 404 when no channel with this primary key exists.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CProduct (product head). The resource resolves the active CPDefinition through fetchCPDefinitionByCProductId; raises 404 when missing.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "productId"
+				name = "productId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -135,12 +135,12 @@ public abstract class BaseProductResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceChannel; raises 404 when no channel with this primary key exists.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Localized friendly URL slug of the addressed Product (sourced from the storefront URL). Resolved against the company group via CPDefinitionLocalService.fetchCPDefinitionByFriendlyURL; raises 404 when no product matches.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "friendlyUrlPath"
+				name = "friendlyUrlPath", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -193,7 +193,7 @@ public abstract class BaseProductResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceChannel; raises 404 when no channel with this primary key exists.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -914,4 +914,4 @@ public abstract class BaseProductResourceImpl
 		LogFactoryUtil.getLog(BaseProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1440678435
+// LIFERAY-REST-BUILDER-HASH:-865063759

@@ -81,12 +81,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order. Used as the parent context when accessing nested resources (items, notes, attachments, addresses).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "orderId"
+				name = "orderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order attachment.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentId"
+				name = "attachmentId", required = true
 			)
 		}
 	)
@@ -122,12 +122,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses an attachment under an order. The code is the integration-supplied idempotency key, unique per attachment within the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentExternalReferenceCode"
+				name = "attachmentExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -166,12 +166,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order. Used as the parent context when accessing nested resources (items, notes, attachments, addresses).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "orderId"
+				name = "orderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order attachment.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentId"
+				name = "attachmentId", required = true
 			)
 		}
 	)
@@ -209,7 +209,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order. Used as the parent context when accessing nested resources (items, notes, attachments, addresses).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "orderId"
+				name = "orderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model -- typically accountId, channelId, orderStatus, orderTypeId, paymentStatus, sku, name, and createDate. Example -- filter=orderStatus eq 10.",
@@ -276,12 +276,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses an attachment under an order. The code is the integration-supplied idempotency key, unique per attachment within the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentExternalReferenceCode"
+				name = "attachmentExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -322,7 +322,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model -- typically accountId, channelId, orderStatus, orderTypeId, paymentStatus, sku, name, and createDate. Example -- filter=orderStatus eq 10.",
@@ -391,12 +391,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order. Used as the parent context when accessing nested resources (items, notes, attachments, addresses).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "orderId"
+				name = "orderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order attachment.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentId"
+				name = "attachmentId", required = true
 			)
 		}
 	)
@@ -436,12 +436,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses an attachment under an order. The code is the integration-supplied idempotency key, unique per attachment within the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentExternalReferenceCode"
+				name = "attachmentExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -484,7 +484,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target order. Used as the parent context when accessing nested resources (items, notes, attachments, addresses).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "orderId"
+				name = "orderId", required = true
 			)
 		}
 	)
@@ -520,7 +520,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1240,4 +1240,4 @@ public abstract class BaseAttachmentResourceImpl
 		LogFactoryUtil.getLog(BaseAttachmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:178123424
+// LIFERAY-REST-BUILDER-HASH:464805438

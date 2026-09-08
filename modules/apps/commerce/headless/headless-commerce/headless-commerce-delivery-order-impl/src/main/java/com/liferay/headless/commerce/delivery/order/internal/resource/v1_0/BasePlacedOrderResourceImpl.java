@@ -84,12 +84,12 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the buyer account that owns the placed orders. Addresses the account scope when listing orders by account within a channel.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "accountId"
+				name = "accountId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the commerce channel that owns the placed orders. Addresses the channel scope when listing orders by channel.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model (for PlacedOrder typically account, author, createDate, externalReferenceCode, modifiedDate, name, orderStatus, orderType, purchaseOrderNumber).",
@@ -167,12 +167,12 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code of the buyer account that owns the placed orders. Addresses the account scope when listing orders by account-ERC within a channel-ERC.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "accountExternalReferenceCode"
+				name = "accountExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code of the commerce channel that owns the placed orders. Addresses the channel scope when listing or filtering orders by channel ERC.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelExternalReferenceCode"
+				name = "channelExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model (for PlacedOrder typically account, author, createDate, externalReferenceCode, modifiedDate, name, orderStatus, orderType, purchaseOrderNumber).",
@@ -251,7 +251,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model (for PlacedOrder typically account, author, createDate, externalReferenceCode, modifiedDate, name, orderStatus, orderType, purchaseOrderNumber).",
@@ -325,7 +325,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of the commerce channel that owns the placed orders. Addresses the channel scope when listing orders by channel.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model (for PlacedOrder typically account, author, createDate, externalReferenceCode, modifiedDate, name, orderStatus, orderType, purchaseOrderNumber).",
@@ -397,7 +397,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order. Addresses a single non-open placed order owned by the authenticated buyer or a delegated account user.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Comma-separated list of nested fields to embed in each returned resource. Each value names a relationship exposed on the resource; when omitted, those relationships are not expanded inline.",
@@ -436,7 +436,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Comma-separated list of nested fields to embed in each returned resource. Each value names a relationship exposed on the resource; when omitted, those relationships are not expanded inline.",
@@ -477,7 +477,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Optional URL the payment gateway redirects the buyer to after the payment flow completes. When omitted, the buyer is routed back to the order-confirmation step on the storefront checkout.",
@@ -523,7 +523,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order. Addresses a single non-open placed order owned by the authenticated buyer or a delegated account user.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Optional URL the payment gateway redirects the buyer to after the payment flow completes. When omitted, the buyer is routed back to the order-confirmation step on the storefront checkout.",
@@ -567,7 +567,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order. Addresses a single non-open placed order owned by the authenticated buyer or a delegated account user.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			)
 		}
 	)
@@ -603,7 +603,7 @@ public abstract class BasePlacedOrderResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1320,4 +1320,4 @@ public abstract class BasePlacedOrderResourceImpl
 		LogFactoryUtil.getLog(BasePlacedOrderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2097233777
+// LIFERAY-REST-BUILDER-HASH:554260775

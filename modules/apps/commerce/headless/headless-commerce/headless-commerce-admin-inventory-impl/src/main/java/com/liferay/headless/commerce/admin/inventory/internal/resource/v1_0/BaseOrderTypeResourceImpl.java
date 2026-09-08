@@ -53,7 +53,7 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "warehouseOrderTypeId"
+				name = "warehouseOrderTypeId", required = true
 			)
 		}
 	)
@@ -521,4 +521,4 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 		LogFactoryUtil.getLog(BaseOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1732192832
+// LIFERAY-REST-BUILDER-HASH:-1187228022

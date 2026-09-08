@@ -79,7 +79,7 @@ public abstract class BaseWorkflowLogResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowInstanceId"
+				name = "workflowInstanceId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -127,7 +127,7 @@ public abstract class BaseWorkflowLogResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowLogId"
+				name = "workflowLogId", required = true
 			)
 		}
 	)
@@ -157,7 +157,7 @@ public abstract class BaseWorkflowLogResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowTaskId"
+				name = "workflowTaskId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -203,7 +203,7 @@ public abstract class BaseWorkflowLogResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowInstanceId"
+				name = "workflowInstanceId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -281,7 +281,7 @@ public abstract class BaseWorkflowLogResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowTaskId"
+				name = "workflowTaskId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -1034,4 +1034,4 @@ public abstract class BaseWorkflowLogResourceImpl
 		LogFactoryUtil.getLog(BaseWorkflowLogResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1970983510
+// LIFERAY-REST-BUILDER-HASH:674359026

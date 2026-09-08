@@ -53,7 +53,7 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "warehouseAccountId"
+				name = "warehouseAccountId", required = true
 			)
 		}
 	)
@@ -519,4 +519,4 @@ public abstract class BaseAccountResourceImpl implements AccountResource {
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-321314695
+// LIFERAY-REST-BUILDER-HASH:487282163

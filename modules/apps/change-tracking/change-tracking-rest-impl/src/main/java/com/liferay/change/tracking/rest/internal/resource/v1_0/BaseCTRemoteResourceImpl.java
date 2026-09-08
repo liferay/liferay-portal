@@ -80,7 +80,7 @@ public abstract class BaseCTRemoteResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -152,7 +152,7 @@ public abstract class BaseCTRemoteResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -226,7 +226,7 @@ public abstract class BaseCTRemoteResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -416,7 +416,7 @@ public abstract class BaseCTRemoteResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -1226,4 +1226,4 @@ public abstract class BaseCTRemoteResourceImpl
 		LogFactoryUtil.getLog(BaseCTRemoteResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1633982270
+// LIFERAY-REST-BUILDER-HASH:-566802508

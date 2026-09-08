@@ -81,7 +81,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			)
 		}
 	)
@@ -109,7 +109,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataLayoutId"
+				name = "dataLayoutId", required = true
 			)
 		}
 	)
@@ -181,7 +181,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -233,7 +233,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataLayoutId"
+				name = "dataLayoutId", required = true
 			)
 		}
 	)
@@ -263,15 +263,15 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "contentType"
+				name = "contentType", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataLayoutKey"
+				name = "dataLayoutKey", required = true
 			)
 		}
 	)
@@ -311,7 +311,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			)
 		}
 	)
@@ -343,7 +343,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -397,7 +397,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -481,7 +481,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataLayoutId"
+				name = "dataLayoutId", required = true
 			)
 		}
 	)
@@ -515,7 +515,7 @@ public abstract class BaseDataLayoutResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataLayoutId"
+				name = "dataLayoutId", required = true
 			)
 		}
 	)
@@ -1343,4 +1343,4 @@ public abstract class BaseDataLayoutResourceImpl
 		LogFactoryUtil.getLog(BaseDataLayoutResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2084177957
+// LIFERAY-REST-BUILDER-HASH:-1934942833

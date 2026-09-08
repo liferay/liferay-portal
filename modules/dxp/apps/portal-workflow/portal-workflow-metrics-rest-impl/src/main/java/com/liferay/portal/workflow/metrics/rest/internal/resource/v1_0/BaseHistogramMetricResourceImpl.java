@@ -52,7 +52,7 @@ public abstract class BaseHistogramMetricResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -64,7 +64,7 @@ public abstract class BaseHistogramMetricResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "unit"
+				name = "unit", required = true
 			)
 		}
 	)
@@ -542,4 +542,4 @@ public abstract class BaseHistogramMetricResourceImpl
 		LogFactoryUtil.getLog(BaseHistogramMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:610155190
+// LIFERAY-REST-BUILDER-HASH:1889190520

@@ -80,7 +80,7 @@ public abstract class BaseNotificationQueueEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationQueueEntryId"
+				name = "notificationQueueEntryId", required = true
 			)
 		}
 	)
@@ -216,7 +216,7 @@ public abstract class BaseNotificationQueueEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationQueueEntryId"
+				name = "notificationQueueEntryId", required = true
 			)
 		}
 	)
@@ -409,7 +409,7 @@ public abstract class BaseNotificationQueueEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "notificationQueueEntryId"
+				name = "notificationQueueEntryId", required = true
 			)
 		}
 	)
@@ -1161,4 +1161,4 @@ public abstract class BaseNotificationQueueEntryResourceImpl
 		LogFactoryUtil.getLog(BaseNotificationQueueEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1239347271
+// LIFERAY-REST-BUILDER-HASH:-1184223779

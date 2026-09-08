@@ -85,7 +85,7 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal primary key that identifies the resource.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -170,7 +170,7 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that identifies the resource. Idempotency key for create and update; must be unique per entity within the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "One-based page index used together with pageSize to slice the result set. The first page is 1.",
@@ -222,7 +222,7 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal primary key that identifies the resource.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -260,7 +260,7 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal primary key that identifies the resource.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "One-based page index used together with pageSize to slice the result set. The first page is 1.",
@@ -310,7 +310,7 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal primary key that identifies the resource.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -350,7 +350,7 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that identifies the resource. Idempotency key for create and update; must be unique per entity within the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -393,7 +393,7 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal primary key that identifies the resource.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -1250,4 +1250,4 @@ public abstract class BaseAccountChannelShippingOptionResourceImpl
 			BaseAccountChannelShippingOptionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:444582193
+// LIFERAY-REST-BUILDER-HASH:-1328940605

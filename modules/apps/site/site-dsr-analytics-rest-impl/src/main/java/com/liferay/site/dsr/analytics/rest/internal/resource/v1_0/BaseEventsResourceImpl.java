@@ -66,7 +66,7 @@ public abstract class BaseEventsResourceImpl implements EventsResource {
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "page"
+				name = "page", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -82,7 +82,7 @@ public abstract class BaseEventsResourceImpl implements EventsResource {
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "size"
+				name = "size", required = true
 			)
 		}
 	)
@@ -573,4 +573,4 @@ public abstract class BaseEventsResourceImpl implements EventsResource {
 		LogFactoryUtil.getLog(BaseEventsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2089466232
+// LIFERAY-REST-BUILDER-HASH:375227524

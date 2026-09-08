@@ -163,7 +163,7 @@ public abstract class BaseDispatchTriggerResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dispatchTriggerId"
+				name = "dispatchTriggerId", required = true
 			)
 		}
 	)
@@ -935,4 +935,4 @@ public abstract class BaseDispatchTriggerResourceImpl
 		LogFactoryUtil.getLog(BaseDispatchTriggerResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:888276171
+// LIFERAY-REST-BUILDER-HASH:-492738247

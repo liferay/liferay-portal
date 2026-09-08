@@ -59,7 +59,7 @@ public abstract class BasePortalInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "portalInstanceId"
+				name = "portalInstanceId", required = true
 			)
 		}
 	)
@@ -92,7 +92,7 @@ public abstract class BasePortalInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "portalInstanceId"
+				name = "portalInstanceId", required = true
 			)
 		}
 	)
@@ -161,7 +161,7 @@ public abstract class BasePortalInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "portalInstanceId"
+				name = "portalInstanceId", required = true
 			)
 		}
 	)
@@ -222,7 +222,7 @@ public abstract class BasePortalInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "portalInstanceId"
+				name = "portalInstanceId", required = true
 			)
 		}
 	)
@@ -259,7 +259,7 @@ public abstract class BasePortalInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "portalInstanceId"
+				name = "portalInstanceId", required = true
 			)
 		}
 	)
@@ -319,7 +319,7 @@ public abstract class BasePortalInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "portalInstanceId"
+				name = "portalInstanceId", required = true
 			)
 		}
 	)
@@ -352,7 +352,7 @@ public abstract class BasePortalInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "portalInstanceId"
+				name = "portalInstanceId", required = true
 			)
 		}
 	)
@@ -818,4 +818,4 @@ public abstract class BasePortalInstanceResourceImpl
 		LogFactoryUtil.getLog(BasePortalInstanceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2095087814
+// LIFERAY-REST-BUILDER-HASH:909612900

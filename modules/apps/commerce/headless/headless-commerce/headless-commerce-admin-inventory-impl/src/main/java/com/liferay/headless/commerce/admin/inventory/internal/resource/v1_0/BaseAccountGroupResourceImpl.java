@@ -54,7 +54,7 @@ public abstract class BaseAccountGroupResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "warehouseAccountGroupId"
+				name = "warehouseAccountGroupId", required = true
 			)
 		}
 	)
@@ -522,4 +522,4 @@ public abstract class BaseAccountGroupResourceImpl
 		LogFactoryUtil.getLog(BaseAccountGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1826058639
+// LIFERAY-REST-BUILDER-HASH:-947924251

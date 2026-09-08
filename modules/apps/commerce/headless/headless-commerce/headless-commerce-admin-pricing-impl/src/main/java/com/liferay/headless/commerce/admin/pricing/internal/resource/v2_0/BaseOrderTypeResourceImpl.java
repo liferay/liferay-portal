@@ -51,7 +51,7 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target discount-order-type binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "discountOrderTypeId"
+				name = "discountOrderTypeId", required = true
 			)
 		}
 	)
@@ -87,7 +87,7 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target price-list-order-type binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "priceListOrderTypeId"
+				name = "priceListOrderTypeId", required = true
 			)
 		}
 	)
@@ -555,4 +555,4 @@ public abstract class BaseOrderTypeResourceImpl implements OrderTypeResource {
 		LogFactoryUtil.getLog(BaseOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1599364940
+// LIFERAY-REST-BUILDER-HASH:-414261936

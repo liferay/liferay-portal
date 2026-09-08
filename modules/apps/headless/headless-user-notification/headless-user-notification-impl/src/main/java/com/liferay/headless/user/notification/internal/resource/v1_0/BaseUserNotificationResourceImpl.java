@@ -143,7 +143,7 @@ public abstract class BaseUserNotificationResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "userAccountId"
+				name = "userAccountId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -214,7 +214,7 @@ public abstract class BaseUserNotificationResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "userNotificationId"
+				name = "userNotificationId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -257,7 +257,7 @@ public abstract class BaseUserNotificationResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "userNotificationId"
+				name = "userNotificationId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -298,7 +298,7 @@ public abstract class BaseUserNotificationResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "userNotificationId"
+				name = "userNotificationId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -993,4 +993,4 @@ public abstract class BaseUserNotificationResourceImpl
 		LogFactoryUtil.getLog(BaseUserNotificationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2025853489
+// LIFERAY-REST-BUILDER-HASH:332358727

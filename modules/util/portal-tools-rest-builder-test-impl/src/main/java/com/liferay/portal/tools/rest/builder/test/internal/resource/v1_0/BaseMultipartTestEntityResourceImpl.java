@@ -84,7 +84,7 @@ public abstract class BaseMultipartTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "multipartTestEntityId"
+				name = "multipartTestEntityId", required = true
 			)
 		}
 	)
@@ -118,7 +118,7 @@ public abstract class BaseMultipartTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteExternalReferenceCode"
+				name = "siteExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -156,7 +156,7 @@ public abstract class BaseMultipartTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "multipartTestEntityId"
+				name = "multipartTestEntityId", required = true
 			)
 		}
 	)
@@ -288,7 +288,7 @@ public abstract class BaseMultipartTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "multipartTestEntityId"
+				name = "multipartTestEntityId", required = true
 			)
 		}
 	)
@@ -376,7 +376,7 @@ public abstract class BaseMultipartTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteExternalReferenceCode"
+				name = "siteExternalReferenceCode", required = true
 			)
 		}
 	)
@@ -1151,4 +1151,4 @@ public abstract class BaseMultipartTestEntityResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2010847609
+// LIFERAY-REST-BUILDER-HASH:873351163

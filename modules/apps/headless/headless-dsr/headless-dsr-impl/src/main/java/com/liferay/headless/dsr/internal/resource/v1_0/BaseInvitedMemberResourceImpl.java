@@ -53,11 +53,11 @@ public abstract class BaseInvitedMemberResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "roomId"
+				name = "roomId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "invitedMemberId"
+				name = "invitedMemberId", required = true
 			)
 		}
 	)
@@ -91,7 +91,7 @@ public abstract class BaseInvitedMemberResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "roomId"
+				name = "roomId", required = true
 			)
 		}
 	)
@@ -123,11 +123,11 @@ public abstract class BaseInvitedMemberResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "roomId"
+				name = "roomId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "invitedMemberId"
+				name = "invitedMemberId", required = true
 			)
 		}
 	)
@@ -601,4 +601,4 @@ public abstract class BaseInvitedMemberResourceImpl
 		LogFactoryUtil.getLog(BaseInvitedMemberResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-357422291
+// LIFERAY-REST-BUILDER-HASH:46405585

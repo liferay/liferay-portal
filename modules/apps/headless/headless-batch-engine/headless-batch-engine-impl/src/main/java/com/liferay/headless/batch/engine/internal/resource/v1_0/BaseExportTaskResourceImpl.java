@@ -56,7 +56,7 @@ public abstract class BaseExportTaskResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "exportTaskId"
+				name = "exportTaskId", required = true
 			)
 		}
 	)
@@ -89,7 +89,7 @@ public abstract class BaseExportTaskResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -124,7 +124,7 @@ public abstract class BaseExportTaskResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -161,7 +161,7 @@ public abstract class BaseExportTaskResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "exportTaskId"
+				name = "exportTaskId", required = true
 			)
 		}
 	)
@@ -196,11 +196,11 @@ public abstract class BaseExportTaskResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "className"
+				name = "className", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "contentType"
+				name = "contentType", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -710,4 +710,4 @@ public abstract class BaseExportTaskResourceImpl
 		LogFactoryUtil.getLog(BaseExportTaskResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1911581508
+// LIFERAY-REST-BUILDER-HASH:-685308106

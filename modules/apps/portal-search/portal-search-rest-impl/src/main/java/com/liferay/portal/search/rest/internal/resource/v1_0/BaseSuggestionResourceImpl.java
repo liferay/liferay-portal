@@ -79,7 +79,7 @@ public abstract class BaseSuggestionResourceImpl implements SuggestionResource {
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "search"
+				name = "search", required = true
 			)
 		}
 	)
@@ -566,4 +566,4 @@ public abstract class BaseSuggestionResourceImpl implements SuggestionResource {
 		LogFactoryUtil.getLog(BaseSuggestionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1637898469
+// LIFERAY-REST-BUILDER-HASH:-616536549

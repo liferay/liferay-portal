@@ -85,7 +85,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseAttachmentId"
+				name = "knowledgeBaseAttachmentId", required = true
 			)
 		}
 	)
@@ -170,15 +170,16 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseArticleExternalReferenceCode"
+				name = "knowledgeBaseArticleExternalReferenceCode",
+				required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -226,7 +227,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseArticleId"
+				name = "knowledgeBaseArticleId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -278,7 +279,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseAttachmentId"
+				name = "knowledgeBaseAttachmentId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -329,15 +330,16 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseArticleExternalReferenceCode"
+				name = "knowledgeBaseArticleExternalReferenceCode",
+				required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -400,7 +402,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseArticleId"
+				name = "knowledgeBaseArticleId", required = true
 			)
 		}
 	)
@@ -439,7 +441,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseArticleId"
+				name = "knowledgeBaseArticleId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -499,7 +501,7 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "knowledgeBaseArticleId"
+				name = "knowledgeBaseArticleId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -1330,4 +1332,4 @@ public abstract class BaseKnowledgeBaseAttachmentResourceImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1151979505
+// LIFERAY-REST-BUILDER-HASH:109587083

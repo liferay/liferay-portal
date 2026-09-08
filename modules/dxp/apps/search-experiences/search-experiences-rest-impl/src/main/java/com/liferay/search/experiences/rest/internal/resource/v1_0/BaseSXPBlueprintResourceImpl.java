@@ -82,7 +82,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpBlueprintId"
+				name = "sxpBlueprintId", required = true
 			)
 		}
 	)
@@ -154,7 +154,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpBlueprintId"
+				name = "sxpBlueprintId", required = true
 			)
 		}
 	)
@@ -184,7 +184,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -216,7 +216,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpBlueprintId"
+				name = "sxpBlueprintId", required = true
 			)
 		}
 	)
@@ -298,7 +298,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpBlueprintId"
+				name = "sxpBlueprintId", required = true
 			)
 		}
 	)
@@ -451,7 +451,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpBlueprintId"
+				name = "sxpBlueprintId", required = true
 			)
 		}
 	)
@@ -580,7 +580,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpBlueprintId"
+				name = "sxpBlueprintId", required = true
 			)
 		}
 	)
@@ -656,7 +656,7 @@ public abstract class BaseSXPBlueprintResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1466,4 +1466,4 @@ public abstract class BaseSXPBlueprintResourceImpl
 		LogFactoryUtil.getLog(BaseSXPBlueprintResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1385115714
+// LIFERAY-REST-BUILDER-HASH:-742764380

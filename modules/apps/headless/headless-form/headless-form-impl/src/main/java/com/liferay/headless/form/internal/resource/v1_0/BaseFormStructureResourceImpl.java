@@ -81,7 +81,7 @@ public abstract class BaseFormStructureResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formStructureId"
+				name = "formStructureId", required = true
 			)
 		}
 	)
@@ -115,7 +115,7 @@ public abstract class BaseFormStructureResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -158,7 +158,7 @@ public abstract class BaseFormStructureResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -891,4 +891,4 @@ public abstract class BaseFormStructureResourceImpl
 		LogFactoryUtil.getLog(BaseFormStructureResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-688468012
+// LIFERAY-REST-BUILDER-HASH:-1155172556

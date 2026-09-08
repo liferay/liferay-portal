@@ -82,7 +82,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpElementId"
+				name = "sxpElementId", required = true
 			)
 		}
 	)
@@ -154,7 +154,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpElementId"
+				name = "sxpElementId", required = true
 			)
 		}
 	)
@@ -184,7 +184,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -216,7 +216,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpElementId"
+				name = "sxpElementId", required = true
 			)
 		}
 	)
@@ -298,7 +298,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpElementId"
+				name = "sxpElementId", required = true
 			)
 		}
 	)
@@ -458,7 +458,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpElementId"
+				name = "sxpElementId", required = true
 			)
 		}
 	)
@@ -604,7 +604,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "sxpElementId"
+				name = "sxpElementId", required = true
 			)
 		}
 	)
@@ -680,7 +680,7 @@ public abstract class BaseSXPElementResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1486,4 +1486,4 @@ public abstract class BaseSXPElementResourceImpl
 		LogFactoryUtil.getLog(BaseSXPElementResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:137671617
+// LIFERAY-REST-BUILDER-HASH:-1440273959

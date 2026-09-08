@@ -80,7 +80,7 @@ public abstract class BaseFormDocumentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formDocumentId"
+				name = "formDocumentId", required = true
 			)
 		}
 	)
@@ -156,7 +156,7 @@ public abstract class BaseFormDocumentResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "formDocumentId"
+				name = "formDocumentId", required = true
 			)
 		}
 	)
@@ -859,4 +859,4 @@ public abstract class BaseFormDocumentResourceImpl
 		LogFactoryUtil.getLog(BaseFormDocumentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1712273395
+// LIFERAY-REST-BUILDER-HASH:-1069401381

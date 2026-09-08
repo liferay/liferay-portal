@@ -81,7 +81,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "listTypeDefinitionId"
+				name = "listTypeDefinitionId", required = true
 			)
 		}
 	)
@@ -157,7 +157,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "listTypeDefinitionId"
+				name = "listTypeDefinitionId", required = true
 			)
 		}
 	)
@@ -189,7 +189,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -281,7 +281,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "listTypeDefinitionId"
+				name = "listTypeDefinitionId", required = true
 			)
 		}
 	)
@@ -500,7 +500,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "listTypeDefinitionId"
+				name = "listTypeDefinitionId", required = true
 			)
 		}
 	)
@@ -580,7 +580,7 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1400,4 +1400,4 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseListTypeDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1364558015
+// LIFERAY-REST-BUILDER-HASH:1480458137

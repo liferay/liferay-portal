@@ -81,7 +81,7 @@ public abstract class BaseObjectFolderResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFolderId"
+				name = "objectFolderId", required = true
 			)
 		}
 	)
@@ -153,7 +153,7 @@ public abstract class BaseObjectFolderResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFolderId"
+				name = "objectFolderId", required = true
 			)
 		}
 	)
@@ -183,7 +183,7 @@ public abstract class BaseObjectFolderResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -253,7 +253,7 @@ public abstract class BaseObjectFolderResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFolderId"
+				name = "objectFolderId", required = true
 			)
 		}
 	)
@@ -433,7 +433,7 @@ public abstract class BaseObjectFolderResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectFolderId"
+				name = "objectFolderId", required = true
 			)
 		}
 	)
@@ -509,7 +509,7 @@ public abstract class BaseObjectFolderResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1319,4 +1319,4 @@ public abstract class BaseObjectFolderResourceImpl
 		LogFactoryUtil.getLog(BaseObjectFolderResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2019572582
+// LIFERAY-REST-BUILDER-HASH:2062164078

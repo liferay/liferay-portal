@@ -50,7 +50,7 @@ public abstract class BaseRoomResourceImpl implements RoomResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "roomId"
+				name = "roomId", required = true
 			)
 		}
 	)
@@ -518,4 +518,4 @@ public abstract class BaseRoomResourceImpl implements RoomResource {
 		LogFactoryUtil.getLog(BaseRoomResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:113858518
+// LIFERAY-REST-BUILDER-HASH:-153990256

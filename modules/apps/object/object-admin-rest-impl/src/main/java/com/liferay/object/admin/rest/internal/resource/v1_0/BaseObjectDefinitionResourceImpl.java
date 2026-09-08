@@ -81,7 +81,7 @@ public abstract class BaseObjectDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -157,7 +157,7 @@ public abstract class BaseObjectDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -189,7 +189,7 @@ public abstract class BaseObjectDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -281,7 +281,7 @@ public abstract class BaseObjectDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -535,7 +535,7 @@ public abstract class BaseObjectDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -649,7 +649,7 @@ public abstract class BaseObjectDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "objectDefinitionId"
+				name = "objectDefinitionId", required = true
 			)
 		}
 	)
@@ -729,7 +729,7 @@ public abstract class BaseObjectDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1548,4 +1548,4 @@ public abstract class BaseObjectDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseObjectDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1899599085
+// LIFERAY-REST-BUILDER-HASH:-310458283

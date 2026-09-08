@@ -82,7 +82,7 @@ public abstract class BaseWarehouseAccountResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "warehouseAccountId"
+				name = "warehouseAccountId", required = true
 			)
 		}
 	)
@@ -161,7 +161,7 @@ public abstract class BaseWarehouseAccountResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -212,7 +212,7 @@ public abstract class BaseWarehouseAccountResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -279,7 +279,7 @@ public abstract class BaseWarehouseAccountResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -319,7 +319,7 @@ public abstract class BaseWarehouseAccountResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -1106,4 +1106,4 @@ public abstract class BaseWarehouseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseWarehouseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2041486650
+// LIFERAY-REST-BUILDER-HASH:607707704

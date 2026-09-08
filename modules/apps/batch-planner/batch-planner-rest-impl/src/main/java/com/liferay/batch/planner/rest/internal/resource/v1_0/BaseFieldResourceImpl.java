@@ -52,7 +52,7 @@ public abstract class BaseFieldResourceImpl implements FieldResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "internalClassNameKey"
+				name = "internalClassNameKey", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -525,4 +525,4 @@ public abstract class BaseFieldResourceImpl implements FieldResource {
 		LogFactoryUtil.getLog(BaseFieldResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1089768146
+// LIFERAY-REST-BUILDER-HASH:-1721607662

@@ -76,7 +76,7 @@ public abstract class BaseNodeMetricResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -806,4 +806,4 @@ public abstract class BaseNodeMetricResourceImpl
 		LogFactoryUtil.getLog(BaseNodeMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:568687490
+// LIFERAY-REST-BUILDER-HASH:1113798120

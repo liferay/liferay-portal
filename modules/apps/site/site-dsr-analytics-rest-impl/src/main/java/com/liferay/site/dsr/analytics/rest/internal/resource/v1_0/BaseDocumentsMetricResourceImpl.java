@@ -71,19 +71,19 @@ public abstract class BaseDocumentsMetricResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "size"
+				name = "size", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "sortColumn"
+				name = "sortColumn", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "sortType"
+				name = "sortType", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "start"
+				name = "start", required = true
 			)
 		}
 	)
@@ -578,4 +578,4 @@ public abstract class BaseDocumentsMetricResourceImpl
 		LogFactoryUtil.getLog(BaseDocumentsMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1171927082
+// LIFERAY-REST-BUILDER-HASH:-1455751902

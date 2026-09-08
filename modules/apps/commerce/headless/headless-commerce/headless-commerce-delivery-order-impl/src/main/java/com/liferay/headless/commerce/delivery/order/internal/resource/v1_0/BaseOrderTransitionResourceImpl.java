@@ -82,7 +82,7 @@ public abstract class BaseOrderTransitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order. Addresses a single non-open placed order owned by the authenticated buyer or a delegated account user.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			)
 		}
 	)
@@ -118,7 +118,7 @@ public abstract class BaseOrderTransitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order. Addresses a single non-open placed order owned by the authenticated buyer or a delegated account user.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			)
 		}
 	)
@@ -153,7 +153,7 @@ public abstract class BaseOrderTransitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order. Addresses a single non-open placed order owned by the authenticated buyer or a delegated account user.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -210,7 +210,7 @@ public abstract class BaseOrderTransitionResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order. Addresses a single non-open placed order owned by the authenticated buyer or a delegated account user.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -985,4 +985,4 @@ public abstract class BaseOrderTransitionResourceImpl
 		LogFactoryUtil.getLog(BaseOrderTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:543836175
+// LIFERAY-REST-BUILDER-HASH:481424299

@@ -57,7 +57,7 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "entityModelResourceTestEntity2Id"
+				name = "entityModelResourceTestEntity2Id", required = true
 			)
 		}
 	)
@@ -535,4 +535,4 @@ public abstract class BaseEntityModelResourceTestEntity2ResourceImpl
 			BaseEntityModelResourceTestEntity2ResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1401931497
+// LIFERAY-REST-BUILDER-HASH:396715459

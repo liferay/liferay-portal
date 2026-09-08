@@ -78,7 +78,7 @@ public abstract class BaseSegmentUserResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "segmentId"
+				name = "segmentId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -767,4 +767,4 @@ public abstract class BaseSegmentUserResourceImpl
 		LogFactoryUtil.getLog(BaseSegmentUserResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1546570702
+// LIFERAY-REST-BUILDER-HASH:-2124047308

@@ -96,7 +96,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataRecordCollectionId"
+				name = "dataRecordCollectionId", required = true
 			)
 		}
 	)
@@ -176,7 +176,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			)
 		}
 	)
@@ -212,7 +212,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -265,7 +265,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataRecordCollectionId"
+				name = "dataRecordCollectionId", required = true
 			)
 		}
 	)
@@ -299,7 +299,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataRecordCollectionId"
+				name = "dataRecordCollectionId", required = true
 			)
 		}
 	)
@@ -335,7 +335,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataRecordCollectionId"
+				name = "dataRecordCollectionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -401,11 +401,11 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "siteId"
+				name = "siteId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataRecordCollectionKey"
+				name = "dataRecordCollectionKey", required = true
 			)
 		}
 	)
@@ -446,7 +446,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			)
 		}
 	)
@@ -484,7 +484,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -542,7 +542,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -624,7 +624,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataRecordCollectionId"
+				name = "dataRecordCollectionId", required = true
 			)
 		}
 	)
@@ -708,7 +708,7 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataRecordCollectionId"
+				name = "dataRecordCollectionId", required = true
 			)
 		}
 	)
@@ -1742,4 +1742,4 @@ public abstract class BaseDataRecordCollectionResourceImpl
 		LogFactoryUtil.getLog(BaseDataRecordCollectionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-221524471
+// LIFERAY-REST-BUILDER-HASH:842439853

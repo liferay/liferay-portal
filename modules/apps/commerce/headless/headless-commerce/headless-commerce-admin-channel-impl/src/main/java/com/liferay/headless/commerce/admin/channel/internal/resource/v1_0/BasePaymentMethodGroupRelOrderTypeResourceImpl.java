@@ -81,7 +81,7 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of a binding between a payment method group and an order type. Addresses a single rule controlling which payment options apply for a given order type.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "paymentMethodGroupRelOrderTypeId"
+				name = "paymentMethodGroupRelOrderTypeId", required = true
 			)
 		}
 	)
@@ -168,7 +168,7 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target resource. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model; see the per-resource list operation description for specifics. For example, filter=externalReferenceCode eq 'AB-34098-789-N'.",
@@ -242,7 +242,7 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target resource. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id"
+				name = "id", required = true
 			)
 		}
 	)
@@ -968,4 +968,4 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceImpl
 			BasePaymentMethodGroupRelOrderTypeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1420855220
+// LIFERAY-REST-BUILDER-HASH:1551781230

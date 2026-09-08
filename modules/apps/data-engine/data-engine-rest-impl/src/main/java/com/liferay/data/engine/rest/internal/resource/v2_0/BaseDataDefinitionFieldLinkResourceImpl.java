@@ -77,7 +77,7 @@ public abstract class BaseDataDefinitionFieldLinkResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -121,7 +121,7 @@ public abstract class BaseDataDefinitionFieldLinkResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "dataDefinitionId"
+				name = "dataDefinitionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -872,4 +872,4 @@ public abstract class BaseDataDefinitionFieldLinkResourceImpl
 		LogFactoryUtil.getLog(BaseDataDefinitionFieldLinkResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1213772644
+// LIFERAY-REST-BUILDER-HASH:423182064

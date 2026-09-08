@@ -83,7 +83,7 @@ public abstract class BaseWishListResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceWishList; raises 404 when missing or when the caller lacks VIEW permission.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "wishListId"
+				name = "wishListId", required = true
 			)
 		}
 	)
@@ -159,7 +159,7 @@ public abstract class BaseWishListResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code of the addressed CommerceChannel; raises 404 when no channel with this code exists in the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -227,7 +227,7 @@ public abstract class BaseWishListResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceChannel; raises 404 when no channel with this primary key exists.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -293,7 +293,7 @@ public abstract class BaseWishListResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceWishList; raises 404 when missing or when the caller lacks VIEW permission.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "wishListId"
+				name = "wishListId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Comma-separated list of nested fields to embed in each returned resource. Each value names a relationship exposed on the resource; when omitted, those relationships are not expanded inline.",
@@ -332,7 +332,7 @@ public abstract class BaseWishListResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceWishList; raises 404 when missing or when the caller lacks VIEW permission.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "wishListId"
+				name = "wishListId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -376,7 +376,7 @@ public abstract class BaseWishListResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code of the addressed CommerceChannel; raises 404 when no channel with this code exists in the company.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -422,7 +422,7 @@ public abstract class BaseWishListResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the addressed CommerceChannel; raises 404 when no channel with this primary key exists.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "channelId"
+				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Reference to the AccountEntry the request is scoped to. When omitted, AccountUtil resolves the effective account from the authenticated user's commerce account assignments and channel eligibility; when the user has multiple accounts the explicit value is required (NoSuchEntryException otherwise).",
@@ -1171,4 +1171,4 @@ public abstract class BaseWishListResourceImpl
 		LogFactoryUtil.getLog(BaseWishListResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1146709118
+// LIFERAY-REST-BUILDER-HASH:1593497894

@@ -52,7 +52,7 @@ public abstract class BaseSiteScopeResourceImpl implements SiteScopeResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "internalClassNameKey"
+				name = "internalClassNameKey", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -525,4 +525,4 @@ public abstract class BaseSiteScopeResourceImpl implements SiteScopeResource {
 		LogFactoryUtil.getLog(BaseSiteScopeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2135656510
+// LIFERAY-REST-BUILDER-HASH:-304267186

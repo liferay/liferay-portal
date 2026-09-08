@@ -52,7 +52,7 @@ public abstract class BaseTestEntityAddressResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "testEntityId"
+				name = "testEntityId", required = true
 			)
 		}
 	)
@@ -520,4 +520,4 @@ public abstract class BaseTestEntityAddressResourceImpl
 		LogFactoryUtil.getLog(BaseTestEntityAddressResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1989630754
+// LIFERAY-REST-BUILDER-HASH:-523193978

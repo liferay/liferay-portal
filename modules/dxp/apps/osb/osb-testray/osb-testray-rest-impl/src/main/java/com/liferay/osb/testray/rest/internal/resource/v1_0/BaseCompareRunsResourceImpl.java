@@ -51,11 +51,11 @@ public abstract class BaseCompareRunsResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "idRunA"
+				name = "idRunA", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "idRunB"
+				name = "idRunB", required = true
 			)
 		}
 	)
@@ -525,4 +525,4 @@ public abstract class BaseCompareRunsResourceImpl
 		LogFactoryUtil.getLog(BaseCompareRunsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1094316023
+// LIFERAY-REST-BUILDER-HASH:1318127755

@@ -81,7 +81,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "countryId"
+				name = "countryId", required = true
 			)
 		}
 	)
@@ -154,7 +154,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -241,7 +241,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "countryId"
+				name = "countryId", required = true
 			)
 		}
 	)
@@ -271,7 +271,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "a2"
+				name = "a2", required = true
 			)
 		}
 	)
@@ -301,7 +301,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "a3"
+				name = "a3", required = true
 			)
 		}
 	)
@@ -331,7 +331,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -363,7 +363,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "name"
+				name = "name", required = true
 			)
 		}
 	)
@@ -393,7 +393,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "number"
+				name = "number", required = true
 			)
 		}
 	)
@@ -423,7 +423,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "countryId"
+				name = "countryId", required = true
 			)
 		}
 	)
@@ -520,7 +520,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -765,7 +765,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "countryId"
+				name = "countryId", required = true
 			)
 		}
 	)
@@ -844,7 +844,7 @@ public abstract class BaseCountryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1675,4 +1675,4 @@ public abstract class BaseCountryResourceImpl
 		LogFactoryUtil.getLog(BaseCountryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-265534735
+// LIFERAY-REST-BUILDER-HASH:-1164594759

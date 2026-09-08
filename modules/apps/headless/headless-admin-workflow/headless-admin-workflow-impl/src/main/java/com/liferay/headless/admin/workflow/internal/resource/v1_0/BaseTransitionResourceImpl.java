@@ -75,7 +75,7 @@ public abstract class BaseTransitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowInstanceId"
+				name = "workflowInstanceId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -116,7 +116,7 @@ public abstract class BaseTransitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowTaskId"
+				name = "workflowTaskId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -805,4 +805,4 @@ public abstract class BaseTransitionResourceImpl
 		LogFactoryUtil.getLog(BaseTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1683946656
+// LIFERAY-REST-BUILDER-HASH:-234511148

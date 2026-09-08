@@ -78,7 +78,7 @@ public abstract class BaseCTProcessResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "ctProcessId"
+				name = "ctProcessId", required = true
 			)
 		}
 	)
@@ -150,7 +150,7 @@ public abstract class BaseCTProcessResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "ctProcessId"
+				name = "ctProcessId", required = true
 			)
 		}
 	)
@@ -237,7 +237,7 @@ public abstract class BaseCTProcessResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "ctProcessId"
+				name = "ctProcessId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -1038,4 +1038,4 @@ public abstract class BaseCTProcessResourceImpl
 		LogFactoryUtil.getLog(BaseCTProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:237227952
+// LIFERAY-REST-BUILDER-HASH:233622042

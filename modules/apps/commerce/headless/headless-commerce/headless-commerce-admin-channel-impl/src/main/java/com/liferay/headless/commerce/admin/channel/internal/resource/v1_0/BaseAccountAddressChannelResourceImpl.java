@@ -80,7 +80,7 @@ public abstract class BaseAccountAddressChannelResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of an account-address-channel binding. Addresses a single mapping that scopes an account address to a specific channel for shipping or billing eligibility.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "accountAddressChannelId"
+				name = "accountAddressChannelId", required = true
 			)
 		}
 	)
@@ -164,7 +164,7 @@ public abstract class BaseAccountAddressChannelResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; it is assigned by the client rather than the server.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Comma-separated list of nested fields to embed in each returned resource. Each value names a relationship exposed on the resource; when omitted, those relationships are not expanded inline.",
@@ -221,7 +221,7 @@ public abstract class BaseAccountAddressChannelResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of an account address. Addresses a single postal address attached to a commerce account.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "addressId"
+				name = "addressId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model; see the per-resource list operation description for specifics. For example, filter=externalReferenceCode eq 'AB-34098-789-N'.",
@@ -300,7 +300,7 @@ public abstract class BaseAccountAddressChannelResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; it is assigned by the client rather than the server.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -343,7 +343,7 @@ public abstract class BaseAccountAddressChannelResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Identifier of an account address. Addresses a single postal address attached to a commerce account.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "addressId"
+				name = "addressId", required = true
 			)
 		}
 	)
@@ -1058,4 +1058,4 @@ public abstract class BaseAccountAddressChannelResourceImpl
 		LogFactoryUtil.getLog(BaseAccountAddressChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1502780634
+// LIFERAY-REST-BUILDER-HASH:1585377370

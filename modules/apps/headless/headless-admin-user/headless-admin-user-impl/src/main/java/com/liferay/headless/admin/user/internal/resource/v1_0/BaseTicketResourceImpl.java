@@ -53,7 +53,7 @@ public abstract class BaseTicketResourceImpl implements TicketResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "userAccountId"
+				name = "userAccountId", required = true
 			)
 		}
 	)
@@ -88,7 +88,7 @@ public abstract class BaseTicketResourceImpl implements TicketResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "userAccountId"
+				name = "userAccountId", required = true
 			)
 		}
 	)
@@ -554,4 +554,4 @@ public abstract class BaseTicketResourceImpl implements TicketResource {
 		LogFactoryUtil.getLog(BaseTicketResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1684375199
+// LIFERAY-REST-BUILDER-HASH:-1555727971

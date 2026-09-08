@@ -52,7 +52,7 @@ public abstract class BaseStrategyResourceImpl implements StrategyResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "internalClassNameKey"
+				name = "internalClassNameKey", required = true
 			)
 		}
 	)
@@ -518,4 +518,4 @@ public abstract class BaseStrategyResourceImpl implements StrategyResource {
 		LogFactoryUtil.getLog(BaseStrategyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-670009969
+// LIFERAY-REST-BUILDER-HASH:1269052983

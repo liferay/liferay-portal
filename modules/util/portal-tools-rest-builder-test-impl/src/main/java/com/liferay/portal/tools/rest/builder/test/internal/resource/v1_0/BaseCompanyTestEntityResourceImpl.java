@@ -99,7 +99,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -180,7 +180,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "companyTestEntityId"
+				name = "companyTestEntityId", required = true
 			)
 		}
 	)
@@ -235,7 +235,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -288,7 +288,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "companyTestEntityId"
+				name = "companyTestEntityId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -351,7 +351,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "companyTestEntityId"
+				name = "companyTestEntityId", required = true
 			)
 		}
 	)
@@ -577,7 +577,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "companyTestEntityId"
+				name = "companyTestEntityId", required = true
 			)
 		}
 	)
@@ -685,7 +685,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -744,7 +744,7 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "companyTestEntityId"
+				name = "companyTestEntityId", required = true
 			)
 		}
 	)
@@ -1796,4 +1796,4 @@ public abstract class BaseCompanyTestEntityResourceImpl
 		LogFactoryUtil.getLog(BaseCompanyTestEntityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1601141409
+// LIFERAY-REST-BUILDER-HASH:-952601565

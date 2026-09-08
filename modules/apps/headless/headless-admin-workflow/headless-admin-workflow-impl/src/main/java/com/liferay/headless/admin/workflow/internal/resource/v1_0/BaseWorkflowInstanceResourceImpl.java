@@ -83,7 +83,7 @@ public abstract class BaseWorkflowInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowInstanceId"
+				name = "workflowInstanceId", required = true
 			)
 		}
 	)
@@ -159,7 +159,7 @@ public abstract class BaseWorkflowInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowInstanceId"
+				name = "workflowInstanceId", required = true
 			)
 		}
 	)
@@ -245,7 +245,7 @@ public abstract class BaseWorkflowInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowInstanceId"
+				name = "workflowInstanceId", required = true
 			)
 		}
 	)
@@ -279,7 +279,7 @@ public abstract class BaseWorkflowInstanceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowInstanceId"
+				name = "workflowInstanceId", required = true
 			)
 		}
 	)
@@ -1143,4 +1143,4 @@ public abstract class BaseWorkflowInstanceResourceImpl
 		LogFactoryUtil.getLog(BaseWorkflowInstanceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:139236569
+// LIFERAY-REST-BUILDER-HASH:-41333879

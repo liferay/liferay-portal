@@ -167,11 +167,11 @@ public abstract class BaseBulkActionResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "page"
+				name = "page", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "pageSize"
+				name = "pageSize", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -661,4 +661,4 @@ public abstract class BaseBulkActionResourceImpl
 		LogFactoryUtil.getLog(BaseBulkActionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1847981399
+// LIFERAY-REST-BUILDER-HASH:1269879939

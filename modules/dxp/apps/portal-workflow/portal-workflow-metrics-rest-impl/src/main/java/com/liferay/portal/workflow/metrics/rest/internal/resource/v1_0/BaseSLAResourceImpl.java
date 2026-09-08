@@ -80,7 +80,7 @@ public abstract class BaseSLAResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "slaId"
+				name = "slaId", required = true
 			)
 		}
 	)
@@ -152,7 +152,7 @@ public abstract class BaseSLAResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -198,7 +198,7 @@ public abstract class BaseSLAResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "slaId"
+				name = "slaId", required = true
 			)
 		}
 	)
@@ -228,7 +228,7 @@ public abstract class BaseSLAResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			)
 		}
 	)
@@ -260,7 +260,7 @@ public abstract class BaseSLAResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -312,7 +312,7 @@ public abstract class BaseSLAResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -387,7 +387,7 @@ public abstract class BaseSLAResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "slaId"
+				name = "slaId", required = true
 			)
 		}
 	)
@@ -1206,4 +1206,4 @@ public abstract class BaseSLAResourceImpl
 		LogFactoryUtil.getLog(BaseSLAResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:719710804
+// LIFERAY-REST-BUILDER-HASH:1427321210

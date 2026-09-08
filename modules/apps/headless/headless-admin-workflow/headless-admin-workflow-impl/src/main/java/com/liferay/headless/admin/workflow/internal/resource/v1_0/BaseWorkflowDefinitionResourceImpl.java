@@ -81,7 +81,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowDefinitionId"
+				name = "workflowDefinitionId", required = true
 			)
 		}
 	)
@@ -157,11 +157,11 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "name"
+				name = "name", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "version"
+				name = "version", required = true
 			)
 		}
 	)
@@ -195,7 +195,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowDefinitionId"
+				name = "workflowDefinitionId", required = true
 			)
 		}
 	)
@@ -227,7 +227,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "name"
+				name = "name", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -438,15 +438,15 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "active"
+				name = "active", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "name"
+				name = "name", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "version"
+				name = "version", required = true
 			)
 		}
 	)
@@ -569,7 +569,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "workflowDefinitionId"
+				name = "workflowDefinitionId", required = true
 			)
 		}
 	)
@@ -1391,4 +1391,4 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseWorkflowDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:777378861
+// LIFERAY-REST-BUILDER-HASH:733129733

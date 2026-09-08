@@ -79,7 +79,7 @@ public abstract class BaseStatusResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "experimentId"
+				name = "experimentId", required = true
 			)
 		}
 	)
@@ -111,7 +111,7 @@ public abstract class BaseStatusResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "experimentId"
+				name = "experimentId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -853,4 +853,4 @@ public abstract class BaseStatusResourceImpl
 		LogFactoryUtil.getLog(BaseStatusResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-171729171
+// LIFERAY-REST-BUILDER-HASH:1762809907

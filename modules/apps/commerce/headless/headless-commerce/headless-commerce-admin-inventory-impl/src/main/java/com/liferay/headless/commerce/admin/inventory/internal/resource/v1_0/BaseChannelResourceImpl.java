@@ -53,7 +53,7 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "warehouseChannelId"
+				name = "warehouseChannelId", required = true
 			)
 		}
 	)
@@ -519,4 +519,4 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:385863771
+// LIFERAY-REST-BUILDER-HASH:-164084795

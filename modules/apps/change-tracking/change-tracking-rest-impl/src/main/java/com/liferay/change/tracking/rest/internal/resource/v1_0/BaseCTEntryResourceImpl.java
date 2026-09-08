@@ -77,7 +77,7 @@ public abstract class BaseCTEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "classNameId"
+				name = "classNameId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -149,7 +149,7 @@ public abstract class BaseCTEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "ctEntryId"
+				name = "ctEntryId", required = true
 			)
 		}
 	)
@@ -179,7 +179,7 @@ public abstract class BaseCTEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "ctCollectionId"
+				name = "ctCollectionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -244,15 +244,15 @@ public abstract class BaseCTEntryResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "ctCollectionId"
+				name = "ctCollectionId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "modelClassNameId"
+				name = "modelClassNameId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "modelClassPK"
+				name = "modelClassPK", required = true
 			)
 		}
 	)
@@ -943,4 +943,4 @@ public abstract class BaseCTEntryResourceImpl
 		LogFactoryUtil.getLog(BaseCTEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:819859586
+// LIFERAY-REST-BUILDER-HASH:807697494

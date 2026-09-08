@@ -55,7 +55,7 @@ public abstract class BaseUserSessionsResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "entityType"
+				name = "entityType", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -67,7 +67,7 @@ public abstract class BaseUserSessionsResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "page"
+				name = "page", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -83,7 +83,7 @@ public abstract class BaseUserSessionsResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "size"
+				name = "size", required = true
 			)
 		}
 	)
@@ -575,4 +575,4 @@ public abstract class BaseUserSessionsResourceImpl
 		LogFactoryUtil.getLog(BaseUserSessionsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1467958647
+// LIFERAY-REST-BUILDER-HASH:57830709

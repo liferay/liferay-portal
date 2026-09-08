@@ -50,7 +50,7 @@ public abstract class BaseSLAResultResourceImpl implements SLAResultResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "processId"
+				name = "processId", required = true
 			)
 		}
 	)
@@ -516,4 +516,4 @@ public abstract class BaseSLAResultResourceImpl implements SLAResultResource {
 		LogFactoryUtil.getLog(BaseSLAResultResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1387762024
+// LIFERAY-REST-BUILDER-HASH:1900634894

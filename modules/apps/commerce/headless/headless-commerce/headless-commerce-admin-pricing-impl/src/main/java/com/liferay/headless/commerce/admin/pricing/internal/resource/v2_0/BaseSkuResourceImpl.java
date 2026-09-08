@@ -54,7 +54,7 @@ public abstract class BaseSkuResourceImpl implements SkuResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target discount-sku binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "discountSkuId"
+				name = "discountSkuId", required = true
 			)
 		}
 	)
@@ -88,7 +88,7 @@ public abstract class BaseSkuResourceImpl implements SkuResource {
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of the target price-entry binding. Server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "priceEntryId"
+				name = "priceEntryId", required = true
 			)
 		}
 	)
@@ -554,4 +554,4 @@ public abstract class BaseSkuResourceImpl implements SkuResource {
 		LogFactoryUtil.getLog(BaseSkuResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1157822417
+// LIFERAY-REST-BUILDER-HASH:1282256587

@@ -51,7 +51,7 @@ public abstract class BaseConnectionInfoResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "depotEntryGroupId"
+				name = "depotEntryGroupId", required = true
 			)
 		}
 	)
@@ -519,4 +519,4 @@ public abstract class BaseConnectionInfoResourceImpl
 		LogFactoryUtil.getLog(BaseConnectionInfoResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-347486682
+// LIFERAY-REST-BUILDER-HASH:379232110

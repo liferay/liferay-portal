@@ -54,15 +54,15 @@ public abstract class BaseLinkReferenceResourceImpl
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "scopeKey"
+				name = "scopeKey", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "className"
+				name = "className", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -554,4 +554,4 @@ public abstract class BaseLinkReferenceResourceImpl
 		LogFactoryUtil.getLog(BaseLinkReferenceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:313207932
+// LIFERAY-REST-BUILDER-HASH:-808733850

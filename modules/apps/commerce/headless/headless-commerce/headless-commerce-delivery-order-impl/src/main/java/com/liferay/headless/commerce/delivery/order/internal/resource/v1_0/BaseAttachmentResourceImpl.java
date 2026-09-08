@@ -82,12 +82,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of an order attachment. Addresses a single attachment within the parent placed order.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentId"
+				name = "attachmentId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order used as the path scope for nested attachment endpoints. Addresses the parent placed order under which the attachment is created, listed, or deleted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			)
 		}
 	)
@@ -125,12 +125,12 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code of the order attachment. Addresses a single attachment within the parent placed order ERC scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "attachmentExternalReferenceCode"
+				name = "attachmentExternalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -169,7 +169,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order used as the path scope for nested attachment endpoints. Addresses the parent placed order under which the attachment is created, listed, or deleted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model (for PlacedOrder typically account, author, createDate, externalReferenceCode, modifiedDate, name, orderStatus, orderType, purchaseOrderNumber).",
@@ -236,7 +236,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model (for PlacedOrder typically account, author, createDate, externalReferenceCode, modifiedDate, name, orderStatus, orderType, purchaseOrderNumber).",
@@ -306,7 +306,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order used as the path scope for nested attachment endpoints. Addresses the parent placed order under which the attachment is created, listed, or deleted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			)
 		}
 	)
@@ -339,7 +339,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal identifier of a placed order used as the path scope for nested attachment endpoints. Addresses the parent placed order under which the attachment is created, listed, or deleted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "placedOrderId"
+				name = "placedOrderId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "OData v4 filter expression that narrows the result set. Supported fields depend on the endpoint and are sourced from the matching entity model (for PlacedOrder typically account, author, createDate, externalReferenceCode, modifiedDate, name, orderStatus, orderType, purchaseOrderNumber).",
@@ -436,7 +436,7 @@ public abstract class BaseAttachmentResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "External reference code that addresses the target resource on the by-externalReferenceCode paths. The code is the integration-supplied idempotency key, unique within the resource scope.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode"
+				name = "externalReferenceCode", required = true
 			)
 		}
 	)
@@ -1135,4 +1135,4 @@ public abstract class BaseAttachmentResourceImpl
 		LogFactoryUtil.getLog(BaseAttachmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:171253293
+// LIFERAY-REST-BUILDER-HASH:-860375475

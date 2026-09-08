@@ -67,11 +67,11 @@ public abstract class BaseMostActiveVisitorsResourceImpl
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "size"
+				name = "size", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "start"
+				name = "start", required = true
 			)
 		}
 	)
@@ -555,4 +555,4 @@ public abstract class BaseMostActiveVisitorsResourceImpl
 		LogFactoryUtil.getLog(BaseMostActiveVisitorsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-196146557
+// LIFERAY-REST-BUILDER-HASH:-231946257

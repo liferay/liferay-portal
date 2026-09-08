@@ -55,7 +55,7 @@ public abstract class BaseOrderAccountGroupResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Internal numeric identifier of an order-rule-to-account-group relationship (COREntryRel).",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "orderRuleAccountGroupId"
+				name = "orderRuleAccountGroupId", required = true
 			)
 		}
 	)
@@ -525,4 +525,4 @@ public abstract class BaseOrderAccountGroupResourceImpl
 		LogFactoryUtil.getLog(BaseOrderAccountGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1559592105
+// LIFERAY-REST-BUILDER-HASH:939148077
