@@ -10,6 +10,7 @@ import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
 import java.net.URL;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -186,6 +187,63 @@ public class BaseTopLevelBuildReportTest
 		Assert.assertSame(
 			cachedDownstreamBuildReport,
 			baseTopLevelBuildReport.getDownstreamBuildReport(axisName));
+	}
+
+	@Test
+	public void testGetFailureReports() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(
+				new JSONObject(
+				).put(
+					"failureReports",
+					new JSONArray(
+					).put(
+						new JSONObject(
+						).put(
+							"message", RandomTestUtil.randomString()
+						)
+					)
+				).put(
+					"result", "FAILURE"
+				));
+
+		FailureReport cachedFailureReport = Mockito.mock(FailureReport.class);
+
+		DownstreamBuildReport cachedDownstreamBuildReport =
+			_newDownstreamBuildReport(RandomTestUtil.randomString(), true);
+
+		Mockito.doReturn(
+			Collections.singletonList(cachedFailureReport)
+		).when(
+			cachedDownstreamBuildReport
+		).getFailureReports();
+
+		FailureReport downstreamFailureReport = Mockito.mock(
+			FailureReport.class);
+
+		DownstreamBuildReport downstreamBuildReport = _newDownstreamBuildReport(
+			RandomTestUtil.randomString(), false);
+
+		Mockito.doReturn(
+			Collections.singletonList(downstreamFailureReport)
+		).when(
+			downstreamBuildReport
+		).getFailureReports();
+
+		baseTopLevelBuildReport.addDownstreamBuildReport(
+			cachedDownstreamBuildReport);
+		baseTopLevelBuildReport.addDownstreamBuildReport(downstreamBuildReport);
+
+		List<FailureReport> failureReports =
+			baseTopLevelBuildReport.getFailureReports();
+
+		Assert.assertEquals(
+			failureReports.toString(), 3, failureReports.size());
+		Assert.assertTrue(failureReports.contains(cachedFailureReport));
+		Assert.assertTrue(failureReports.contains(downstreamFailureReport));
+
+		Assert.assertSame(
+			failureReports, baseTopLevelBuildReport.getFailureReports());
 	}
 
 	@Test
