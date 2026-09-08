@@ -63,6 +63,32 @@ public class DTOConverterRegistryTest {
 	}
 
 	@Test
+	public void testGetDTOClassNamesWithMultipleConvertersAndNoDefault()
+		throws Exception {
+
+		String dtoClassName = RandomTestUtil.randomString();
+
+		try (AutoCloseable autoCloseable1 = _registerDTOConverter(
+				null, dtoClassName, new TestDTOConverter(), null);
+			AutoCloseable autoCloseable2 = _registerDTOConverter(
+				null, dtoClassName, new TestDTOConverter(), null)) {
+
+			Set<String> dtoClassNames =
+				_dtoConverterRegistry.getDTOClassNames();
+
+			Assert.assertFalse(dtoClassNames.contains(dtoClassName));
+
+			try (AutoCloseable autoCloseable3 = _registerDefaultDTOConverter(
+					dtoClassName, new TestDTOConverter())) {
+
+				dtoClassNames = _dtoConverterRegistry.getDTOClassNames();
+
+				Assert.assertTrue(dtoClassNames.contains(dtoClassName));
+			}
+		}
+	}
+
+	@Test
 	public void testGetDTOConverterWithApplicationNameDTOClassNameAndVersionProperties()
 		throws Exception {
 

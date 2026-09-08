@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +35,15 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 
 	@Override
 	public Set<String> getDTOClassNames() {
-		return _serviceTrackerMap.keySet();
+		Set<String> dtoClassNames = new HashSet<>();
+
+		for (String dtoClassName : _serviceTrackerMap.keySet()) {
+			if (_getDTOConverter(dtoClassName) != null) {
+				dtoClassNames.add(dtoClassName);
+			}
+		}
+
+		return dtoClassNames;
 	}
 
 	@Override
