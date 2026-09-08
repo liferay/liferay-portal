@@ -1,21 +1,13 @@
 #!/usr/bin/env bash
 
-_BUMPED_CHART_DIRS=()
+SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-_MAXIMUM_PASSES=16
+ROOT_CLOUD_DIR=$(cd "${SCRIPTS_DIR}/.." && pwd)
 
-_MODIFIED_CHART_DIRS=()
-
-_PASSES=0
-
-_SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-
-_ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
-
-readonly _MAXIMUM_PASSES _ROOT_CLOUD_DIR _SCRIPTS_DIR
+readonly ROOT_CLOUD_DIR SCRIPTS_DIR
 
 function bump_chart_version {
-	local chart_dir="${1}"
+	local chart_dir=${1}
 
 	local helm_chart_yaml="${chart_dir}/Chart.yaml"
 
@@ -33,7 +25,7 @@ function bump_chart_version {
 		--expression "s/^version: .*$/version: ${new_version}/" \
 		"${helm_chart_yaml}"
 
-	_BUMPED_CHART_DIRS+=("${chart_dir}")
+	CHART_VERSION_COMMON_BUMPED_CHART_DIRS+=("${chart_dir}")
 
 	local helm_chart_name
 
@@ -48,15 +40,15 @@ function bump_chart_version {
 function bump_modified_charts {
 	count_pass
 
-	local chart_dirs=("${_MODIFIED_CHART_DIRS[@]}")
+	local chart_dirs=("${CHART_VERSION_COMMON_MODIFIED_CHART_DIRS[@]}")
 
-	_MODIFIED_CHART_DIRS=()
+	CHART_VERSION_COMMON_MODIFIED_CHART_DIRS=()
 
 	local chart_dir
 
 	for chart_dir in "${chart_dirs[@]}"
 	do
-		if has_array_element "${chart_dir}" "${_BUMPED_CHART_DIRS[@]}"
+		if has_array_element "${chart_dir}" "${CHART_VERSION_COMMON_BUMPED_CHART_DIRS[@]}"
 		then
 			continue
 		fi
@@ -66,25 +58,25 @@ function bump_modified_charts {
 }
 
 function count_pass {
-	_PASSES=$((_PASSES + 1))
+	CHART_VERSION_COMMON_PASSES=$((CHART_VERSION_COMMON_PASSES + 1))
 
-	if [[ "${_PASSES}" -gt "${_MAXIMUM_PASSES}" ]]
+	if [[ "${CHART_VERSION_COMMON_PASSES}" -gt "${CHART_VERSION_COMMON_MAXIMUM_PASSES}" ]]
 	then
-		echo "The versions were unable to converge after ${_MAXIMUM_PASSES} passes." >&2
+		echo "The versions were unable to converge after ${CHART_VERSION_COMMON_MAXIMUM_PASSES} passes." >&2
 
 		exit 1
 	fi
 }
 
 function get_file_checksum {
-	local file="${1}"
+	local file=${1}
 
 	md5sum "${file}" | awk '{print $1}'
 }
 
 function git_blame_line {
-	local pattern="${1}"
-	local git_path="${2}"
+	local pattern=${1}
+	local git_path=${2}
 
 	local blame_line
 
@@ -94,8 +86,8 @@ function git_blame_line {
 }
 
 function git_blame_sha {
-	local pattern="${1}"
-	local git_path="${2}"
+	local pattern=${1}
+	local git_path=${2}
 
 	local blame_line
 
@@ -109,7 +101,7 @@ function git_blame_sha {
 }
 
 function has_array_element {
-	local element="${1}"
+	local element=${1}
 
 	shift
 
@@ -127,7 +119,7 @@ function has_array_element {
 }
 
 function has_modified_charts {
-	if [[ "${#_MODIFIED_CHART_DIRS[@]}" -eq 0 ]]
+	if [[ "${#CHART_VERSION_COMMON_MODIFIED_CHART_DIRS[@]}" -eq 0 ]]
 	then
 		return 1
 	fi
@@ -136,7 +128,7 @@ function has_modified_charts {
 }
 
 function is_commit {
-	local sha="${1}"
+	local sha=${1}
 
 	if [ -z "${sha}" ]
 	then
@@ -152,7 +144,7 @@ function is_commit {
 }
 
 function record_chart_file_update {
-	local file="${1}"
+	local file=${1}
 
 	shift
 
@@ -168,20 +160,27 @@ function record_chart_file_update {
 	fi
 }
 
+function _init_chart_version_common {
+	CHART_VERSION_COMMON_BUMPED_CHART_DIRS=()
+	CHART_VERSION_COMMON_MAXIMUM_PASSES=16
+	CHART_VERSION_COMMON_MODIFIED_CHART_DIRS=()
+	CHART_VERSION_COMMON_PASSES=0
+}
+
 function _record_modified_chart_dir {
-	local file="${1}"
+	local file=${1}
 
 	local chart_dir
 
 	chart_dir=$(cd "$(dirname "${file}")" && pwd)
 
-	while [[ "${chart_dir}" == "${_ROOT_CLOUD_DIR}"/* ]]
+	while [[ "${chart_dir}" == "${ROOT_CLOUD_DIR}"/* ]]
 	do
 		if [ -f "${chart_dir}/Chart.yaml" ]
 		then
-			if ! has_array_element "${chart_dir}" "${_BUMPED_CHART_DIRS[@]}" "${_MODIFIED_CHART_DIRS[@]}"
+			if ! has_array_element "${chart_dir}" "${CHART_VERSION_COMMON_BUMPED_CHART_DIRS[@]}" "${CHART_VERSION_COMMON_MODIFIED_CHART_DIRS[@]}"
 			then
-				_MODIFIED_CHART_DIRS+=("${chart_dir}")
+				CHART_VERSION_COMMON_MODIFIED_CHART_DIRS+=("${chart_dir}")
 			fi
 
 			return
@@ -192,9 +191,9 @@ function _record_modified_chart_dir {
 }
 
 function _update_chart_dependency_version {
-	local chart_name="${1}"
-	local current_chart_yaml="${2}"
-	local new_version="${3}"
+	local chart_name=${1}
+	local current_chart_yaml=${2}
+	local new_version=${3}
 
 	local subchart_dir
 
@@ -237,5 +236,7 @@ function _update_chart_dependency_version {
 				--expression "/name: ${chart_name}\$/,/version: / s/version: .*/version: ${new_version}/" \
 				--in-place \
 				"${chart_yaml_file}"
-	done < <(find "${_ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f)
+	done < <(find "${ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f)
 }
+
+_init_chart_version_common

@@ -9,36 +9,36 @@ source "$(dirname "${BASH_SOURCE[0]}")/_chart_version_common.sh"
 _BUMPED_BOOTSTRAPS=()
 _MODIFIED_BOOTSTRAPS=()
 
-_VERSIONS_JSON_FILE="${_SCRIPTS_DIR}/versions.json"
+_VERSIONS_JSON_FILE="${SCRIPTS_DIR}/versions.json"
 
 readonly _VERSIONS_JSON_FILE
 
 function main {
 	local aws_bootstrap_sources=(
-		"${_ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
-		"${_ROOT_CLOUD_DIR}/terraform/aws/eks"
-		"${_ROOT_CLOUD_DIR}/terraform/aws/gitops/platform"
-		"${_ROOT_CLOUD_DIR}/terraform/aws/gitops/resources"
+		"${ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
+		"${ROOT_CLOUD_DIR}/terraform/aws/eks"
+		"${ROOT_CLOUD_DIR}/terraform/aws/gitops/platform"
+		"${ROOT_CLOUD_DIR}/terraform/aws/gitops/resources"
 	)
 
 	_check_bootstrap "aws" "${aws_bootstrap_sources[@]}"
 
 	local azure_bootstrap_sources=(
-		"${_ROOT_CLOUD_DIR}/scripts/_azure_common.sh"
-		"${_ROOT_CLOUD_DIR}/scripts/chart_versions.json"
-		"${_ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
-		"${_ROOT_CLOUD_DIR}/terraform/azure/aks"
-		"${_ROOT_CLOUD_DIR}/terraform/azure/platform"
-		"${_ROOT_CLOUD_DIR}/terraform/modules/argocd"
+		"${ROOT_CLOUD_DIR}/scripts/_azure_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/chart_versions.json"
+		"${ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
+		"${ROOT_CLOUD_DIR}/terraform/azure/aks"
+		"${ROOT_CLOUD_DIR}/terraform/azure/platform"
+		"${ROOT_CLOUD_DIR}/terraform/modules/argocd"
 	)
 
 	_check_bootstrap "azure" "${azure_bootstrap_sources[@]}"
 
 	local gcp_bootstrap_sources=(
-		"${_ROOT_CLOUD_DIR}/scripts/setup_gcp.sh"
-		"${_ROOT_CLOUD_DIR}/terraform/gcp/gke"
-		"${_ROOT_CLOUD_DIR}/terraform/gcp/gitops/platform"
-		"${_ROOT_CLOUD_DIR}/terraform/gcp/gitops/resources"
+		"${ROOT_CLOUD_DIR}/scripts/setup_gcp.sh"
+		"${ROOT_CLOUD_DIR}/terraform/gcp/gke"
+		"${ROOT_CLOUD_DIR}/terraform/gcp/gitops/platform"
+		"${ROOT_CLOUD_DIR}/terraform/gcp/gitops/resources"
 	)
 
 	_check_bootstrap "gcp" "${gcp_bootstrap_sources[@]}"
@@ -66,7 +66,7 @@ function main {
 }
 
 function _bump_bootstrap_version {
-	local bootstrap_name="${1}"
+	local bootstrap_name=${1}
 
 	_BUMPED_BOOTSTRAPS+=("${bootstrap_name}")
 
@@ -78,7 +78,7 @@ function _bump_bootstrap_version {
 
 	new_version=$(echo "${current_version}" | awk -F "." -v OFS="." '{$NF += 1; print}')
 
-	local config_json_example_file="${_ROOT_CLOUD_DIR}/scripts/config.json.example_${bootstrap_name}"
+	local config_json_example_file="${ROOT_CLOUD_DIR}/scripts/config.json.example_${bootstrap_name}"
 
 	local updated_config_json
 
@@ -134,7 +134,7 @@ function _bump_operator_version {
 		--expression "${blame_line}s/\"liferay-dxp-operator\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-dxp-operator\": \"${new_version}\"/" \
 		"${_VERSIONS_JSON_FILE}"
 
-	local operator_values_yaml="${_ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
+	local operator_values_yaml="${ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
 
 	record_chart_file_update \
 		"${operator_values_yaml}" \
@@ -146,7 +146,7 @@ function _bump_operator_version {
 }
 
 function _check_bootstrap {
-	local bootstrap_name="${1}"
+	local bootstrap_name=${1}
 
 	shift
 
@@ -197,11 +197,11 @@ function _check_operator {
 
 	local commit_count
 
-	commit_count=$(git rev-list --count "${blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator")
+	commit_count=$(git rev-list --count "${blame_sha}..HEAD" -- "${ROOT_CLOUD_DIR}/operator")
 
 	if [[ "${commit_count}" -gt 0 ]]
 	then
-		git rev-list --oneline "${blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator"
+		git rev-list --oneline "${blame_sha}..HEAD" -- "${ROOT_CLOUD_DIR}/operator"
 
 		echo "The version in ${_VERSIONS_JSON_FILE} is outdated. Updating liferay-dxp-operator version." >&2
 		echo "" >&2
@@ -220,8 +220,8 @@ function _has_modified_bootstraps {
 }
 
 function _record_bootstrap_file_update {
-	local bootstrap_name="${1}"
-	local file="${2}"
+	local bootstrap_name=${1}
+	local file=${2}
 
 	shift 2
 
@@ -238,7 +238,7 @@ function _record_bootstrap_file_update {
 }
 
 function _record_modified_bootstrap {
-	local bootstrap_name="${1}"
+	local bootstrap_name=${1}
 
 	if has_array_element "${bootstrap_name}" "${_BUMPED_BOOTSTRAPS[@]}" "${_MODIFIED_BOOTSTRAPS[@]}"
 	then
@@ -250,9 +250,9 @@ function _record_modified_bootstrap {
 
 function _update_chart_versions_json {
 	local chart_name="liferay-${1}"
-	local new_version="${2}"
+	local new_version=${2}
 
-	local chart_versions_json_file="${_SCRIPTS_DIR}/chart_versions.json"
+	local chart_versions_json_file="${SCRIPTS_DIR}/chart_versions.json"
 
 	_record_bootstrap_file_update \
 		"azure" \
@@ -261,7 +261,7 @@ function _update_chart_versions_json {
 }
 
 function _update_default_chart_version {
-	local helm_chart_yaml="${1}"
+	local helm_chart_yaml=${1}
 
 	local helm_chart_name
 
@@ -305,14 +305,14 @@ function _update_default_versions {
 	while read -r chart_yaml_file
 	do
 		_update_default_chart_version "${chart_yaml_file}"
-	done < <(find "${_ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f)
+	done < <(find "${ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f)
 }
 
 function _update_platform_components_target_revision {
-	local chart_repository_name="${1}"
-	local new_version="${2}"
+	local chart_repository_name=${1}
+	local new_version=${2}
 
-	local platform_components_values_yaml="${_ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
+	local platform_components_values_yaml="${ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
 
 	record_chart_file_update \
 		"${platform_components_values_yaml}" \
@@ -323,9 +323,9 @@ function _update_platform_components_target_revision {
 }
 
 function _update_platform_target_revision {
-	local new_version="${1}"
+	local new_version=${1}
 
-	local platform_values_yaml="${_ROOT_CLOUD_DIR}/helm/platform/values.yaml"
+	local platform_values_yaml="${ROOT_CLOUD_DIR}/helm/platform/values.yaml"
 
 	record_chart_file_update \
 		"${platform_values_yaml}" \
@@ -336,11 +336,11 @@ function _update_platform_target_revision {
 }
 
 function _update_resources_tfvars {
-	local cloud="${1}"
-	local variable_name="${2}"
-	local new_version="${3}"
+	local cloud=${1}
+	local variable_name=${2}
+	local new_version=${3}
 
-	local resources_tfvars_file="${_ROOT_CLOUD_DIR}/terraform/${cloud}/gitops/resources/terraform.tfvars"
+	local resources_tfvars_file="${ROOT_CLOUD_DIR}/terraform/${cloud}/gitops/resources/terraform.tfvars"
 
 	_record_bootstrap_file_update \
 		"${cloud}" \
@@ -352,13 +352,19 @@ function _update_resources_tfvars {
 }
 
 function _write_chart_versions_json {
-	local chart_name="${1}"
-	local new_version="${2}"
-	local chart_versions_json_file="${3}"
+	local chart_name=${1}
+	local new_version=${2}
+	local chart_versions_json_file=${3}
 
 	local updated_chart_versions_json
 
-	updated_chart_versions_json=$(jq --arg chart_name "${chart_name}" --arg version "${new_version}" --tab '.[$chart_name] = $version' "${chart_versions_json_file}")
+	updated_chart_versions_json=$( \
+		jq \
+			--arg chart_name "${chart_name}" \
+			--arg version "${new_version}" \
+			--tab \
+			'.[$chart_name] = $version' \
+			"${chart_versions_json_file}")
 
 	printf '%s' "${updated_chart_versions_json}" > "${chart_versions_json_file}"
 }
