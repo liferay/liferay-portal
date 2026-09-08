@@ -90,6 +90,29 @@ public abstract class BaseVerifyProcessTestCase {
 		}
 	}
 
+	protected void alterColumnName(
+			String tableName, String oldColumnName, String newColumnDefinition)
+		throws Exception {
+
+		DB db = DBManagerUtil.getDB();
+
+		try (Connection connection = DataAccess.getConnection()) {
+			db.alterColumnName(
+				connection, tableName, oldColumnName, newColumnDefinition);
+		}
+	}
+
+	protected void alterColumnType(
+			String tableName, String columnName, String columnType)
+		throws Exception {
+
+		DB db = DBManagerUtil.getDB();
+
+		try (Connection connection = DataAccess.getConnection()) {
+			db.alterColumnType(connection, tableName, columnName, columnType);
+		}
+	}
+
 	protected void doVerify() throws VerifyException {
 		VerifyProcess verifyProcess = getVerifyProcess();
 
