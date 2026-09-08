@@ -8,7 +8,10 @@ package com.liferay.jenkins.results.parser.monitor;
 import com.liferay.jenkins.results.parser.JenkinsMasterTestUtil;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
+import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 import com.liferay.jenkins.results.parser.UrlReader;
+
+import java.io.IOException;
 
 import java.util.Calendar;
 import java.util.Collections;
@@ -280,6 +283,26 @@ public class JobHealthMonitorTest
 		testEquals(
 			"Job generate-reports-controller has the schedule 0 0 31 2 *, " +
 				"which never comes round",
+			monitorResult.getMessage());
+	}
+
+	@Test
+	public void testExecuteCronUnreadableSchedule() throws Exception {
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderException(new IOException(), _JOB_CONFIG_URL, urlReader);
+
+		_setJobsJSONObject(
+			_newJobJSONObject(
+				42, "SUCCESS", JenkinsResultsParserUtil.getCurrentTimeMillis()),
+			urlReader);
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(
+			"Unable to read the schedule for job " +
+				"generate-reports-controller: java.io.IOException",
 			monitorResult.getMessage());
 	}
 
@@ -596,6 +619,33 @@ public class JobHealthMonitorTest
 	}
 
 	@Test
+	public void testExecuteReadFailure() throws Exception {
+		MasterResourceReader masterResourceReader = Mockito.mock(
+			MasterResourceReader.class);
+
+		Mockito.doThrow(
+			new IOException()
+		).when(
+			masterResourceReader
+		).getJobJSONObjects(
+			Mockito.anyInt()
+		);
+
+		Map<String, MasterResourceReader> masterResourceReaders =
+			ReflectionTestUtil.getFieldValue(
+				MasterResourceReader.class, "_masterResourceReaders");
+
+		masterResourceReaders.put(_MASTER_NAME, masterResourceReader);
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+		testEquals(
+			"Unable to read http://test-9-1: java.io.IOException",
+			monitorResult.getMessage());
+	}
+
+	@Test
 	public void testExecuteRunningPastCadence() throws Exception {
 		_setJobJSONObject(
 			_newRunningJobJSONObject(
@@ -840,10 +890,14 @@ public class JobHealthMonitorTest
 
 		UrlReader urlReader = mockUrlReader();
 
-		String jobConfigURL =
-			"http://test-9-1/job/generate-reports-controller/config.xml";
+		setUrlReaderOutput(configXML, _JOB_CONFIG_URL, urlReader);
 
-		setUrlReaderOutput(configXML, jobConfigURL, urlReader);
+		_setJobsJSONObject(jobJSONObject, urlReader);
+	}
+
+	private void _setJobsJSONObject(
+			JSONObject jobJSONObject, UrlReader urlReader)
+		throws Exception {
 
 		JSONObject jobsJSONObject = new JSONObject(
 		).put(
@@ -889,6 +943,9 @@ public class JobHealthMonitorTest
 		_testJobHealthMonitorExpectedIllegalArgumentException(
 			monitorProperties);
 	}
+
+	private static final String _JOB_CONFIG_URL =
+		"http://test-9-1/job/generate-reports-controller/config.xml";
 
 	private static final String _JOB_NAME = "generate-reports-controller";
 

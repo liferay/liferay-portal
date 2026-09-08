@@ -8,6 +8,9 @@ package com.liferay.jenkins.results.parser.monitor;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -196,14 +199,30 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 			new MonitorResultStore(),
 			Arrays.<Monitor>asList(failingTestMonitor, testMonitor));
 
-		Map<Monitor, MonitorResult> monitorResultsMap =
-			monitorEngine.runCycle();
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+		PrintStream printStream = System.out;
+
+		System.setOut(new PrintStream(byteArrayOutputStream, true));
+
+		try {
+			Map<Monitor, MonitorResult> monitorResultsMap =
+				monitorEngine.runCycle();
+
+			testEquals(2, monitorResultsMap.size());
+		}
+		finally {
+			System.setOut(printStream);
+		}
 
 		Mockito.verify(
 			testMonitor
 		).prepareCycle();
 
-		testEquals(2, monitorResultsMap.size());
+		testEquals(
+			"WARNING: Unable to prepare monitor a: " +
+				"java.lang.RuntimeException\n",
+			byteArrayOutputStream.toString());
 	}
 
 	@Test(timeout = 10000)
