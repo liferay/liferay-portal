@@ -94,7 +94,7 @@ export default function BulkUpdateWorkflowStateModalContent({
 			<ClayModal.Body className="lfr-cmp__bulk-update-state-body">
 				<p className="lfr-cmp__bulk-update-state-description">
 					{Liferay.Language.get(
-						'choose-a-transition-for-each-task-group'
+						'choose-a-transition-for-the-selected-tasks'
 					)}
 				</p>
 
