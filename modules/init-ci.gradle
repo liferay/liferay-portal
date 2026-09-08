@@ -160,6 +160,9 @@ private boolean _isModuleDir(File dir) {
 
 private void _writeReport(Map reportGroup, String reportGroupName, File testResultsDir) {
 	synchronized (reportGroup) {
+		Date date = new Date()
+		double duration = reportGroup.durationAdder.sum()
+
 		List<String> failureMessages = new ArrayList<String>(reportGroup.failureMessages)
 
 		Set<String> pendingTaskPaths = new TreeSet<String>(reportGroup.expectedTaskPaths)
@@ -172,9 +175,8 @@ private void _writeReport(Map reportGroup, String reportGroupName, File testResu
 			failureMessages.add(pendingTaskPath + " was not executed. Please check the logs for details.")
 		}
 
-		Date date = new Date()
-		double duration = reportGroup.durationAdder.sum()
 		int failureCount = failureMessages.isEmpty() ? 0 : 1
+
 		String failureElementString = ""
 
 		if (failureCount != 0) {
