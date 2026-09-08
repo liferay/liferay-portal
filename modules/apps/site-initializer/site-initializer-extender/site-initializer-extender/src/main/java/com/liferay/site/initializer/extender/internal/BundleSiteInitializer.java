@@ -5828,6 +5828,12 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String parentResourcePath, ServiceContext serviceContext)
 		throws Exception {
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				serviceContext.getCompanyId(), "LPD-57283")) {
+
+			return Collections.emptyMap();
+		}
+
 		String json = SiteInitializerUtil.read(
 			parentResourcePath + "/asset-libraries.json", _servletContext);
 
