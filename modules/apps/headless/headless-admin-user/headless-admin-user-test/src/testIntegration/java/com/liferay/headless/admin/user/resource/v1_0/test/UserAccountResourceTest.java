@@ -3054,7 +3054,10 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 			UserAccountResource.Builder builder = UserAccountResource.builder();
 
-			UserAccountResource userAccountResourceGuestUser = builder.locale(
+			UserAccountResource userAccountResourceGuestUser = builder.endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
 				LocaleUtil.getDefault()
 			).build();
 
@@ -3077,7 +3080,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			captcha = captchaResource.getCaptchaChallenge();
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				EncryptorUtil.decrypt(
+				EncryptorUtil.decryptAuthenticated(
 					testCompany.getKeyObj(), captcha.getToken()));
 
 			userAccountResourceGuestUser.postUserAccount(
