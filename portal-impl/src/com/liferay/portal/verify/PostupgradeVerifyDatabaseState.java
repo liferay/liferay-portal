@@ -17,12 +17,16 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.model.ReleaseConstants;
+import com.liferay.portal.kernel.module.util.BundleUtil;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ReleaseLocalServiceUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+
+import java.sql.ResultSet;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,6 +36,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListMap;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Mariano Álvaro Sáiz
@@ -144,6 +152,9 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			warnMessagesMap, staleViewNames, "Stale views were detected",
 			historicalServiceComponentTablesServletContextNames);
 
+		_verifyColumns(
+			databaseTableNames, dbInspector, errorMessagesMap, warnMessagesMap);
+
 		Set<String> servletContextNames = new TreeSet<>(
 			errorMessagesMap.keySet());
 
@@ -203,6 +214,40 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		}
 	}
 
+	private static Map<String, List<String>> _getColumnDefinitionsMap() {
+		Map<String, List<String>> columnDefinitionsMap =
+			DBResourceUtil.getPortalColumnDefinitionsMap();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			if (BundleUtil.isLiferayRequireSchemaVersionBundle(bundle) ||
+				BundleUtil.isLiferayServiceBundle(bundle)) {
+
+				columnDefinitionsMap.putAll(
+					DBResourceUtil.getModuleColumnDefinitionsMap(bundle));
+			}
+		}
+
+		return columnDefinitionsMap;
+	}
+
+	private void _addColumnMessages(
+		Map<String, List<String>> columnMessagesMap,
+		Map<String, List<String>> messagesMap,
+		Map<String, String> tablesServletContextNames) {
+
+		for (Map.Entry<String, List<String>> entry :
+				columnMessagesMap.entrySet()) {
+
+			List<String> messages = messagesMap.computeIfAbsent(
+				tablesServletContextNames.get(entry.getKey()),
+				key -> new ArrayList<>());
+
+			messages.addAll(entry.getValue());
+		}
+	}
+
 	private void _addMessages(
 		Map<String, List<String>> messagesMap, Collection<String> names,
 		String prefix, Map<String, String> servletContextNames) {
@@ -236,23 +281,28 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 	private String _getMessage(
 		Collection<String> names, String prefix, String servletContextName) {
 
-		if (PropsValues.DATABASE_PARTITION_ENABLED) {
-			prefix = StringBundler.concat(
-				prefix, " for company ",
-				CompanyThreadLocal.getNonsystemCompanyId());
-		}
-
-		if (!servletContextName.isEmpty()) {
-			prefix = StringBundler.concat(
-				prefix, " in module ", servletContextName);
-		}
-
 		Set<String> sortedNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
 		sortedNames.addAll(names);
 
 		return StringBundler.concat(
-			prefix, StringPool.COLON, StringPool.SPACE, sortedNames);
+			_getMessage(prefix, servletContextName), StringPool.COLON,
+			StringPool.SPACE, sortedNames);
+	}
+
+	private String _getMessage(String message, String servletContextName) {
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			message = StringBundler.concat(
+				message, " for company ",
+				CompanyThreadLocal.getNonsystemCompanyId());
+		}
+
+		if (!servletContextName.isEmpty()) {
+			message = StringBundler.concat(
+				message, " in module ", servletContextName);
+		}
+
+		return message;
 	}
 
 	private String _getReleaseStateLabel(int state) {
@@ -278,9 +328,139 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		return names;
 	}
 
+	private void _verifyColumns(
+			Set<String> databaseTableNames, DBInspector dbInspector,
+			Map<String, List<String>> errorMessagesMap,
+			Map<String, List<String>> warnMessagesMap)
+		throws Exception {
+
+		Map<String, List<String>> columnDefinitionsMap =
+			_columnDefinitionsMapDCLSingleton.getSingleton(
+				PostupgradeVerifyDatabaseState::_getColumnDefinitionsMap);
+
+		Map<String, String> tablesServletContextNames =
+			_tablesServletContextNamesDCLSingleton.getSingleton(
+				DBResourceUtil::getTablesServletContextNames);
+
+		Map<String, List<String>> errorColumnMessagesMap =
+			new ConcurrentSkipListMap<>();
+		Map<String, List<String>> warnColumnMessagesMap =
+			new ConcurrentSkipListMap<>();
+
+		processConcurrently(
+			columnDefinitionsMap,
+			entry -> {
+				String tableName = entry.getKey();
+
+				String servletContextName = tablesServletContextNames.get(
+					tableName);
+
+				if ((servletContextName == null) ||
+					!databaseTableNames.contains(tableName)) {
+
+					return;
+				}
+
+				Set<String> databaseColumnNames = new TreeSet<>(
+					String.CASE_INSENSITIVE_ORDER);
+
+				try (ResultSet resultSet = dbInspector.getColumnsResultSet(
+						tableName)) {
+
+					while (resultSet.next()) {
+						databaseColumnNames.add(
+							resultSet.getString("COLUMN_NAME"));
+					}
+				}
+
+				String normalizedTableName = dbInspector.normalizeName(
+					tableName);
+
+				Set<String> expectedColumnNames = new TreeSet<>(
+					String.CASE_INSENSITIVE_ORDER);
+
+				for (String columnDefinition : entry.getValue()) {
+					int index = columnDefinition.indexOf(StringPool.SPACE);
+
+					String columnName = columnDefinition.substring(0, index);
+
+					expectedColumnNames.add(columnName);
+
+					if (!databaseColumnNames.contains(columnName)) {
+						continue;
+					}
+
+					String columnType = columnDefinition.substring(index + 1);
+
+					if (!dbInspector.isSupportedColumnType(columnType) ||
+						dbInspector.hasColumnType(
+							tableName, columnName, columnType)) {
+
+						continue;
+					}
+
+					List<String> messages =
+						warnColumnMessagesMap.computeIfAbsent(
+							tableName, key -> new ArrayList<>());
+
+					messages.add(
+						_getMessage(
+							StringBundler.concat(
+								"Column ",
+								dbInspector.normalizeName(columnName),
+								" is not defined as ", columnType, " for ",
+								normalizedTableName),
+							servletContextName));
+				}
+
+				Set<String> missingColumnNames = _asymmetricDifference(
+					expectedColumnNames, databaseColumnNames);
+
+				if (!missingColumnNames.isEmpty()) {
+					List<String> messages =
+						errorColumnMessagesMap.computeIfAbsent(
+							tableName, key -> new ArrayList<>());
+
+					messages.add(
+						_getMessage(
+							TransformUtil.transform(
+								missingColumnNames, dbInspector::normalizeName),
+							"Missing columns were detected for " +
+								normalizedTableName,
+							servletContextName));
+				}
+
+				Set<String> staleColumnNames = _asymmetricDifference(
+					databaseColumnNames, expectedColumnNames);
+
+				if (!staleColumnNames.isEmpty()) {
+					List<String> messages =
+						warnColumnMessagesMap.computeIfAbsent(
+							tableName, key -> new ArrayList<>());
+
+					messages.add(
+						_getMessage(
+							TransformUtil.transform(
+								staleColumnNames, dbInspector::normalizeName),
+							"Stale columns were detected for " +
+								normalizedTableName,
+							servletContextName));
+				}
+			},
+			null);
+
+		_addColumnMessages(
+			errorColumnMessagesMap, errorMessagesMap,
+			tablesServletContextNames);
+		_addColumnMessages(
+			warnColumnMessagesMap, warnMessagesMap, tablesServletContextNames);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		PostupgradeVerifyDatabaseState.class);
 
+	private static final DCLSingleton<Map<String, List<String>>>
+		_columnDefinitionsMapDCLSingleton = new DCLSingleton<>();
 	private static final DCLSingleton<Map<String, String>>
 		_historicalServiceComponentTablesServletContextNamesDCLSingleton =
 			new DCLSingleton<>();

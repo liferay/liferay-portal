@@ -406,6 +406,14 @@ public class DBInspector {
 			StringUtil.toLowerCase(tableName));
 	}
 
+	public boolean isSupportedColumnType(String columnType) {
+		if (_getByColumnType(columnType, DB::getSQLType) != null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public String normalizeName(String name) throws SQLException {
 		return normalizeName(name, _connection.getMetaData());
 	}
