@@ -5,7 +5,7 @@
 
 import {Page, expect} from '@playwright/test';
 
-import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {DataApiHelpers, getHeader} from '../../../helpers/ApiHelpers';
 import {TPermission} from '../../../helpers/HeadlessAdminUserApiHelper';
 import {CommerceAdminChannelDetailsPage} from '../../../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsPage';
 import {CommerceAdminChannelsPage} from '../../../pages/commerce/commerce-channel-web/commerceAdminChannelsPage';
@@ -385,6 +385,34 @@ export async function configureOperationsManagerUserForSite(
 	return operationsManagerUser;
 }
 
+/**
+ * Selects the given account as the current account of the site for the logged
+ * in user. Without an explicit selection, the storefront falls back to the
+ * first account the user belongs to, sorted by name.
+ */
+export async function selectCurrentAccount(
+	accountId: number,
+	apiHelpers: DataApiHelpers,
+	siteId: number | string
+) {
+	const response = await apiHelpers.postResponse(
+		`${apiHelpers.baseUrl}commerce-ui/set-current-account?groupId=${siteId}`,
+		{
+			data: `accountId=${accountId}`,
+			headers: await getHeader(
+				apiHelpers.page,
+				'application/x-www-form-urlencoded'
+			),
+		}
+	);
+
+	if (!response.ok()) {
+		throw new Error(
+			`Cannot select account ${accountId} as the current account of site ${siteId}: ${response.status()} ${await response.text()}`
+		);
+	}
+}
+
 export async function completedVirtualOrderItemSetUp(
 	apiHelpers: DataApiHelpers,
 	orderItemQuantity: number
@@ -422,6 +450,8 @@ export async function completedVirtualOrderItemSetUp(
 		account.id,
 		['test@liferay.com']
 	);
+
+	await selectCurrentAccount(account.id, apiHelpers, site.id);
 
 	const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
 		account.id,
