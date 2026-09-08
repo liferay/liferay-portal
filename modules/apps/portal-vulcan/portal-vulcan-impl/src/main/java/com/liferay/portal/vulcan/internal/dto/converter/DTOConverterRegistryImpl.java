@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -105,21 +106,33 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 			return dtoConverterHolder.getDTOConverter();
 		}
 
-		DTOConverter<?, ?> defaultDTOConverter = null;
+		DTOConverterHolder defaultDTOConverterHolder = null;
 
 		for (DTOConverterHolder dtoConverterHolder : dtoConverterHolders) {
 			if (!dtoConverterHolder.isDefault()) {
 				continue;
 			}
 
-			if (defaultDTOConverter != null) {
+			if (defaultDTOConverterHolder == null) {
+				defaultDTOConverterHolder = dtoConverterHolder;
+
+				continue;
+			}
+
+			if (defaultDTOConverterHolder.getServiceRanking() ==
+					dtoConverterHolder.getServiceRanking()) {
+
 				return null;
 			}
 
-			defaultDTOConverter = dtoConverterHolder.getDTOConverter();
+			break;
 		}
 
-		return defaultDTOConverter;
+		if (defaultDTOConverterHolder == null) {
+			return null;
+		}
+
+		return defaultDTOConverterHolder.getDTOConverter();
 	}
 
 	private String _getKey(
@@ -136,14 +149,20 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 	private static class DTOConverterHolder {
 
 		public DTOConverterHolder(
-			boolean defaultDTOConverter, DTOConverter<?, ?> dtoConverter) {
+			boolean defaultDTOConverter, DTOConverter<?, ?> dtoConverter,
+			int serviceRanking) {
 
 			_defaultDTOConverter = defaultDTOConverter;
 			_dtoConverter = dtoConverter;
+			_serviceRanking = serviceRanking;
 		}
 
 		public DTOConverter<?, ?> getDTOConverter() {
 			return _dtoConverter;
+		}
+
+		public int getServiceRanking() {
+			return _serviceRanking;
 		}
 
 		public boolean isDefault() {
@@ -152,6 +171,7 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 
 		private final boolean _defaultDTOConverter;
 		private final DTOConverter<?, ?> _dtoConverter;
+		private final int _serviceRanking;
 
 	}
 
@@ -171,7 +191,9 @@ public class DTOConverterRegistryImpl implements DTOConverterRegistry {
 
 			return new DTOConverterHolder(
 				GetterUtil.getBoolean(serviceReference.getProperty("default")),
-				_bundleContext.getService(serviceReference));
+				_bundleContext.getService(serviceReference),
+				GetterUtil.getInteger(
+					serviceReference.getProperty(Constants.SERVICE_RANKING)));
 		}
 
 		@Override
