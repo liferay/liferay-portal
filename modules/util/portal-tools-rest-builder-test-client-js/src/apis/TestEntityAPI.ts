@@ -190,9 +190,11 @@ export class TestEntityAPI {
 
 		/**
 		 * Retrieves the count.
+				 * @param requiredQueryParameter
 		 * @param headers Optional custom request headers
 		 */
 		public async getTestEntityCount(
+						requiredQueryParameter: string,
 			headers?: {[name: string]: string},
 		): Promise<{
 				body: number;
@@ -200,9 +202,17 @@ export class TestEntityAPI {
 		}> {
 
 			const path = this._basePath + "/portal-tools-rest-builder-test/v1.0/test-entities/count"
-;
+				;
 
 			const queryParameters: any = {};
+
+						if (requiredQueryParameter === null || requiredQueryParameter === undefined) {
+							throw new Error("Required parameter requiredQueryParameter was null or undefined when calling getTestEntityCount.");
+						}
+
+						if (requiredQueryParameter !== undefined) {
+							queryParameters["requiredQueryParameter"] = ObjectSerializer.serialize(requiredQueryParameter, "string");
+						}
 
 			const queryString = Object.keys(queryParameters).length ?
 				"?" + new URLSearchParams(queryParameters).toString() :

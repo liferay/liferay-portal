@@ -62,9 +62,11 @@ public interface TestEntityResource {
 	public HttpInvoker.HttpResponse getTestEntityHttpResponse(Long testEntityId)
 		throws Exception;
 
-	public Integer getTestEntityCount() throws Exception;
+	public Integer getTestEntityCount(String requiredQueryParameter)
+		throws Exception;
 
-	public HttpInvoker.HttpResponse getTestEntityCountHttpResponse()
+	public HttpInvoker.HttpResponse getTestEntityCountHttpResponse(
+			String requiredQueryParameter)
 		throws Exception;
 
 	public TestEntity patchTestEntity(
@@ -665,9 +667,11 @@ public interface TestEntityResource {
 			return httpInvoker.invoke();
 		}
 
-		public Integer getTestEntityCount() throws Exception {
+		public Integer getTestEntityCount(String requiredQueryParameter)
+			throws Exception {
+
 			HttpInvoker.HttpResponse httpResponse =
-				getTestEntityCountHttpResponse();
+				getTestEntityCountHttpResponse(requiredQueryParameter);
 
 			String content = httpResponse.getContent();
 
@@ -728,7 +732,8 @@ public interface TestEntityResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse getTestEntityCountHttpResponse()
+		public HttpInvoker.HttpResponse getTestEntityCountHttpResponse(
+				String requiredQueryParameter)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -751,6 +756,12 @@ public interface TestEntityResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (requiredQueryParameter != null) {
+				httpInvoker.parameter(
+					"requiredQueryParameter",
+					String.valueOf(requiredQueryParameter));
+			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
@@ -1839,4 +1850,4 @@ public interface TestEntityResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-708346312
+// LIFERAY-REST-BUILDER-HASH:2106398141

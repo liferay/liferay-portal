@@ -63,7 +63,8 @@ public interface TestEntityResource {
 
 	public TestEntity getTestEntity(Long testEntityId) throws Exception;
 
-	public Integer getTestEntityCount() throws Exception;
+	public Integer getTestEntityCount(String requiredQueryParameter)
+		throws Exception;
 
 	public TestEntity patchTestEntity(
 			Long testEntityId, Long optionalParameter, TestEntity testEntity)
@@ -195,4 +196,4 @@ public interface TestEntityResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:634988717
+// LIFERAY-REST-BUILDER-HASH:1299198636

@@ -81,7 +81,7 @@ public class TestEntityResourceImpl extends BaseTestEntityResourceImpl {
 	}
 
 	@Override
-	public Integer getTestEntityCount() {
+	public Integer getTestEntityCount(String requiredQueryParameter) {
 		return _testEntities.size();
 	}
 

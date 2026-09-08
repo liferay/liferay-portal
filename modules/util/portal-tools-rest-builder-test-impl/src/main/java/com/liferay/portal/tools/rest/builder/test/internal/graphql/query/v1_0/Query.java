@@ -1005,14 +1005,19 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {testEntityCount{}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {testEntityCount(requiredQueryParameter: ___){}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(description = "Retrieves the count.")
-	public Integer testEntityCount() throws Exception {
+	public Integer testEntityCount(
+			@GraphQLName("requiredQueryParameter") String
+				requiredQueryParameter)
+		throws Exception {
+
 		return _applyComponentServiceObjects(
 			_testEntityResourceComponentServiceObjects,
 			this::_populateResourceContext,
-			testEntityResource -> testEntityResource.getTestEntityCount());
+			testEntityResource -> testEntityResource.getTestEntityCount(
+				requiredQueryParameter));
 	}
 
 	/**
@@ -2149,4 +2154,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:913081705
+// LIFERAY-REST-BUILDER-HASH:-1479221263

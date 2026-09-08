@@ -94,13 +94,15 @@ public class TestEntityResourceTest extends BaseTestEntityResourceTestCase {
 	@Override
 	@Test
 	public void testGetTestEntityCount() throws Exception {
-		int initialCount = testEntityResource.getTestEntityCount();
+		int initialCount = testEntityResource.getTestEntityCount(
+			RandomTestUtil.randomString());
 
 		testEntityResource.postTestEntity(randomTestEntity());
 
 		Assert.assertEquals(
 			Integer.valueOf(initialCount + 1),
-			testEntityResource.getTestEntityCount());
+			testEntityResource.getTestEntityCount(
+				RandomTestUtil.randomString()));
 	}
 
 	@Ignore
