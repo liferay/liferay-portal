@@ -119,6 +119,19 @@ describe('BulkUpdateWorkflowStateModalContent', () => {
 		taskId = 0;
 	});
 
+	it('collapses a workflow behind its header button', () => {
+		renderModal([task({assetTitle: 'One'})]);
+
+		fireEvent.click(screen.getByRole('button', {name: 'collapse-x'}));
+
+		expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+		expect(screen.queryByText('One')).not.toBeInTheDocument();
+
+		fireEvent.click(screen.getByRole('button', {name: 'expand-x'}));
+
+		expect(screen.getByRole('combobox')).toBeInTheDocument();
+	});
+
 	it('excludes a deselected task from the transitions it hands over', () => {
 		renderModal([task({assetTitle: 'One'}), task({assetTitle: 'Two'})]);
 
@@ -231,5 +244,32 @@ describe('BulkUpdateWorkflowStateModalContent', () => {
 				.getAllByRole('link')
 				.map((node) => node.textContent?.split('(')[0])
 		).toEqual(['A1', 'A2', 'A10', 'B1']);
+	});
+
+	it('toggles every task in a workflow from its header checkbox', () => {
+		renderModal([task({assetTitle: 'One'}), task({assetTitle: 'Two'})]);
+
+		fireEvent.change(screen.getByRole('combobox'), {
+			target: {value: 'approve'},
+		});
+
+		const workflowCheckbox = screen.getByRole('checkbox', {
+			name: 'Workflow A',
+		});
+
+		fireEvent.click(screen.getByRole('checkbox', {name: 'Two'}));
+
+		expect(workflowCheckbox).toBePartiallyChecked();
+
+		fireEvent.click(workflowCheckbox);
+
+		expect(screen.getByRole('checkbox', {name: 'One'})).toBeChecked();
+		expect(screen.getByRole('checkbox', {name: 'Two'})).toBeChecked();
+
+		fireEvent.click(workflowCheckbox);
+
+		expect(screen.getByRole('checkbox', {name: 'One'})).not.toBeChecked();
+		expect(screen.getByRole('checkbox', {name: 'Two'})).not.toBeChecked();
+		expect(screen.getByText('update-state')).toBeDisabled();
 	});
 });
