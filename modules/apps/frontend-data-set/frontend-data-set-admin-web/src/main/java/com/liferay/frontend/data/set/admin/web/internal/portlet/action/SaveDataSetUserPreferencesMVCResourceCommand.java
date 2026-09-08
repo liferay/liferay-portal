@@ -79,7 +79,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 		JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
 			ParamUtil.getString(httpServletRequest, "preferences"));
 
-		_checkInitialDataSetSnapshotERCUserPreference(
+		_checkInitialDataSetSnapshotERC(
 			companyId, payloadJSONObject, preferencesJSONObject, user);
 
 		ObjectDefinition objectDefinition =
@@ -106,7 +106,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 			resourceRequest, resourceResponse, preferencesJSONObject);
 	}
 
-	private void _checkInitialDataSetSnapshotERCUserPreference(
+	private void _checkInitialDataSetSnapshotERC(
 			long companyId, JSONObject payloadJSONObject,
 			JSONObject preferencesJSONObject, User user)
 		throws Exception {

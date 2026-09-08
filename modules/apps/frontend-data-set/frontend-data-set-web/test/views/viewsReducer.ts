@@ -7,9 +7,9 @@ import viewsReducer, {
 	EViewsActionTypes,
 } from '../../src/main/resources/META-INF/resources/views/viewsReducer';
 
-describe('viewsReducer user preferences', () => {
+describe('viewsReducer preferences', () => {
 	describe('UPDATE_USER_PREFERENCES', () => {
-		it('sets the initial data set snapshot ERC user preference', () => {
+		it('sets the initial data set snapshot ERC preference', () => {
 			const state = {userPreferences: null};
 
 			const nextState = viewsReducer(state, {
@@ -22,7 +22,7 @@ describe('viewsReducer user preferences', () => {
 			});
 		});
 
-		it('replaces a previously set initial data set snapshot ERC user preference', () => {
+		it('replaces a previously set initial data set snapshot ERC preference', () => {
 			const state = {
 				userPreferences: {initialDataSetSnapshotERC: 'erc-1'},
 			};
@@ -50,7 +50,7 @@ describe('viewsReducer user preferences', () => {
 			userPreferences: {initialDataSetSnapshotERC: 'erc-1'},
 		};
 
-		it('clears the initial data set snapshot ERC user preference when snapshot is deleted', () => {
+		it('clears the initial data set snapshot ERC preference when snapshot is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-1'},
@@ -61,7 +61,7 @@ describe('viewsReducer user preferences', () => {
 			});
 		});
 
-		it('keeps the initial data set snapshot ERC user preference when a different snapshot is deleted', () => {
+		it('keeps the initial data set snapshot ERC preference when a different snapshot is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-2'},

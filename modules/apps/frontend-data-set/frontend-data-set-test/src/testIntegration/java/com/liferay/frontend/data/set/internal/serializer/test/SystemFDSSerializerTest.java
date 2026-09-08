@@ -132,9 +132,9 @@ public class SystemFDSSerializerTest {
 					"L_DATA_SET_USER_PREFERENCES",
 					TestPropsValues.getCompanyId());
 
-		// malformed user preferences
+		// malformed preferences
 
-		_userPreferencesObjectEntry =
+		_dataSetUserPreferencesObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
 				_memberUser.getExternalReferenceCode() + StringPool.UNDERLINE +
 					_FDS_NAME,
@@ -152,12 +152,12 @@ public class SystemFDSSerializerTest {
 			_fdsSerializer.serializeUserPreferences(
 				_FDS_NAME, httpServletRequest));
 
-		// valid user preferences
+		// valid preferences
 
-		_userPreferencesObjectEntry =
+		_dataSetUserPreferencesObjectEntry =
 			_objectEntryLocalService.updateObjectEntry(
 				_memberUser.getUserId(),
-				_userPreferencesObjectEntry.getObjectEntryId(),
+				_dataSetUserPreferencesObjectEntry.getObjectEntryId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
@@ -244,6 +244,9 @@ public class SystemFDSSerializerTest {
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
+	@DeleteAfterTestRun
+	private ObjectEntry _dataSetUserPreferencesObjectEntry;
+
 	@Inject(filter = "frontend.data.set.serializer.type=system")
 	private FDSSerializer _fdsSerializer;
 
@@ -273,8 +276,5 @@ public class SystemFDSSerializerTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
-
-	@DeleteAfterTestRun
-	private ObjectEntry _userPreferencesObjectEntry;
 
 }
