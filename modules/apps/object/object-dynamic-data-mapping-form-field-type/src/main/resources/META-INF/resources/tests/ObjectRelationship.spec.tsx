@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render, waitFor} from '@testing-library/react';
+import {act, fireEvent, render, waitFor} from '@testing-library/react';
 import {fetch} from 'frontend-js-web';
 import React from 'react';
 
@@ -86,6 +86,50 @@ describe('fetchData', () => {
 		await waitFor(() =>
 			expect(onChange).toHaveBeenCalledWith({target: {value: null}})
 		);
+	});
+
+	it('ignores the response of a request the search term has superseded', async () => {
+		let resolveInitialFetch: (response: unknown) => void = () => {};
+
+		(fetch as jest.Mock)
+			.mockReset()
+			.mockReturnValueOnce(
+				new Promise((resolve) => {
+					resolveInitialFetch = resolve;
+				})
+			)
+			.mockResolvedValueOnce({
+				json: () => Promise.resolve({items: [{id: 2, label: 'Org B'}]}),
+			});
+
+		const {getAllByRole, getByRole} = render(
+			<ObjectRelationship {...DEFAULT_PROPS} apiURL={API_URL} />
+		);
+
+		fireEvent.focus(getByRole('textbox'));
+		fireEvent.change(getByRole('textbox'), {target: {value: 'Org B'}});
+
+		await waitFor(() =>
+			expect(getByRole('menu')).toHaveTextContent('Org B')
+		);
+
+		await act(async () => {
+			resolveInitialFetch({
+				json: () =>
+					Promise.resolve({
+						items: [
+							{id: 1, label: 'Org A'},
+							{id: 2, label: 'Org B'},
+						],
+					}),
+			});
+
+			await new Promise((resolve) => setTimeout(resolve, 0));
+		});
+
+		expect(getAllByRole('menuitem')).toHaveLength(1);
+		expect(getByRole('menu')).not.toHaveTextContent('Org A');
+		expect(fetch).toHaveBeenCalledTimes(2);
 	});
 
 	it('joins the search term with "&" when the apiURL already has a query string', async () => {

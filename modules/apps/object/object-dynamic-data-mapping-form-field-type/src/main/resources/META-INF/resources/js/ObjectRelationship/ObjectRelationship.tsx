@@ -163,6 +163,8 @@ export default function ObjectRelationship({
 
 	const onChangeRef = useRef(onChange);
 
+	const latestURLRef = useRef<string | null>(null);
+
 	const parameterObjectFieldId = parameterObjectFieldName
 		? objectRelationships?.[parameterObjectFieldName]
 		: null;
@@ -202,11 +204,17 @@ export default function ObjectRelationship({
 				return;
 			}
 
+			latestURLRef.current = newURL;
+
 			setState((prevState) => ({...prevState, loading: true}));
 
 			try {
 				const items =
 					(await fetchOptions<Resource>(newURL))?.items ?? [];
+
+				if (latestURLRef.current !== newURL) {
+					return;
+				}
 
 				const state: State = {
 					list:
@@ -235,6 +243,10 @@ export default function ObjectRelationship({
 							`${baseAPIURL}/${value}${apiURLQueryString ? `?${apiURLQueryString}` : ''}`
 						);
 
+						if (latestURLRef.current !== newURL) {
+							return;
+						}
+
 						selected = matchesValue(item) ? item : undefined;
 					}
 
@@ -252,13 +264,18 @@ export default function ObjectRelationship({
 				}));
 			}
 			catch (error) {
+				console.error(error);
+
+				if (latestURLRef.current !== newURL) {
+					return;
+				}
+
 				setState(({active, searchTerm}) => ({
 					active,
 					loading: false,
 					searchTerm,
 					url,
 				}));
-				console.error(error);
 			}
 		};
 
