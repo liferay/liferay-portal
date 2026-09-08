@@ -827,7 +827,7 @@ const FrontendDataSetContent = ({
 	// A response is only ever applied when it is the newest one, so the query
 	// held here is the one it answers
 
-	const searchQueryRef = useRef(globalFDSState.search.query);
+	const searchQueryRef = useRef<string>();
 
 	searchQueryRef.current = globalFDSState.search.query;
 
@@ -838,9 +838,13 @@ const FrontendDataSetContent = ({
 
 	const recordSearch = useCallback(
 		(totalCount: number) => {
+			if (!recentSearchesEnabled) {
+				return;
+			}
+
 			const query = (searchQueryRef.current ?? '').trim();
 
-			if (!query || !recentSearchesEnabled) {
+			if (!query) {
 				return;
 			}
 
