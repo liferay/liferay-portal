@@ -12,14 +12,26 @@ tests:
             licensing.enabled: true
     -   asserts:
             -   equal:
-                    path: spec.offline
-                    value: true
-            -   notExists:
-                    path: spec.offlineActivationBundle
-        it: Requests offline activation and waits for a bundle to be named
+                    path: spec.activationCodeSecretRef.name
+                    value: liferay-default-activation
+        it: Keeps the activation code reference the custom resource requires
         set:
             licensing.enabled: true
             licensing.offline: true
+    -   asserts:
+            -   notExists:
+                    path: spec.dxpVersion
+        it: Leaves the DXP version to the operator unless one is named
+        set:
+            licensing.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.dxpVersion
+                    value: 2026.q3.0
+        it: Names the DXP version the operator reports to the provisioning service
+        set:
+            licensing.dxpVersion: 2026.q3.0
+            licensing.enabled: true
     -   asserts:
             -   equal:
                     path: spec.offline
@@ -34,9 +46,11 @@ tests:
             licensing.offlineActivationBundle: activation-bundle.zip
     -   asserts:
             -   equal:
-                    path: spec.activationCodeSecretRef.name
-                    value: liferay-default-activation
-        it: Keeps the activation code reference the custom resource requires
+                    path: spec.offline
+                    value: true
+            -   notExists:
+                    path: spec.offlineActivationBundle
+        it: Requests offline activation and waits for a bundle to be named
         set:
             licensing.enabled: true
             licensing.offline: true
