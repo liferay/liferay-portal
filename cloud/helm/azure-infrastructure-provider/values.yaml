@@ -8,6 +8,8 @@ deploymentContext:
     resourceGroupName: ""
     subscriptionId: ""
     tenantId: ""
+liferay-subchart-backup-restore:
+    enabled: true
 network:
     databaseSubnetCidr: 10.0.16.0/20
 providers:

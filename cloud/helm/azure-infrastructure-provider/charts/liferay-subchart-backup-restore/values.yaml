@@ -1,0 +1,27 @@
+argo:
+    workflowSpec:
+        podGC:
+            strategy: OnWorkflowSuccess
+        ttlStrategy:
+            secondsAfterCompletion: 86400
+azureBackupService:
+    restoreWaitTimeoutSeconds: 7200
+images:
+    azureCli:
+        repository: mcr.microsoft.com/azure-cli
+        tag: 2.64.0
+    helmKubectl:
+        repository: dtzar/helm-kubectl
+        tag: 4.1.1
+liferayInfrastructure:
+    waitTimeoutSeconds: 3600
+liferayWorkload:
+    rolloutTimeout: 15m
+resources:
+    default:
+        limits:
+            cpu: 250m
+            memory: 256Mi
+        requests:
+            cpu: 100m
+            memory: 128Mi

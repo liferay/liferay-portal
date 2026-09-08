@@ -1,0 +1,57 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: Backup Restore ClusterRole
+templates:
+    -   charts/liferay-subchart-backup-restore/templates/clusterrole.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: ClusterRole
+            -   equal:
+                    path: metadata.name
+                    value: backup-restore-cluster-role
+            -   equal:
+                    path: metadata.labels["component"]
+                    value: backup-restore-platform
+            -   equal:
+                    path: rules
+                    value:
+                        -   apiGroups: [""]
+                            resources: ["namespaces"]
+                            verbs: ["get", "list"]
+                        -   apiGroups: ["apps"]
+                            resources: ["statefulsets"]
+                            verbs: ["get", "list", "patch", "watch"]
+                        -   apiGroups: ["argoproj.io"]
+                            resources: ["workflowtaskresults"]
+                            verbs: ["create", "patch"]
+                        -   apiGroups: ["dataprotection.azure.m.upbound.io"]
+                            resources: ["backupinstanceblobstorages", "backupvaults"]
+                            verbs: ["get", "list"]
+                        -   apiGroups: ["liferay.com"]
+                            resources: ["liferayinfrastructures"]
+                            verbs: ["get", "list", "patch", "watch"]
+                        -   apiGroups: ["storage.azure.m.upbound.io"]
+                            resources: ["accounts"]
+                            verbs: ["get", "list"]
+        it: Renders the backup restore cluster role
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        apiGroups: ["azure.liferay.com"]
+                    path: rules
+            -   notContains:
+                    any: true
+                    content:
+                        apiGroups: ["dbforpostgresql.azure.m.upbound.io"]
+                    path: rules
+            -   notContains:
+                    any: true
+                    content:
+                        resources: ["secrets"]
+                    path: rules
+        it: Grants no access to a cloud specific composite, the Flexible Server, or secrets
