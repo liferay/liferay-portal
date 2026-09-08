@@ -6,6 +6,7 @@
 import {ProfileTool} from '../types';
 import confirmAndRemoveProfileToolAction from './actions/confirmAndRemoveProfileToolAction';
 import openAddToolsModal from './actions/openAddToolsModal';
+import openRestrictFieldsModal from './actions/openRestrictFieldsModal';
 
 interface CreationActionItem {
 	href?: string;
@@ -50,6 +51,9 @@ export default function ProfileToolsFDSPropsTransformer({
 		}) {
 			if (action?.data?.id === 'remove') {
 				confirmAndRemoveProfileToolAction({itemData, loadData});
+			}
+			else if (action?.data?.id === 'restrict-fields') {
+				openRestrictFieldsModal({itemData});
 			}
 		},
 	};

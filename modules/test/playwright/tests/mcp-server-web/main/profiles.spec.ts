@@ -979,7 +979,7 @@ test.describe('Profiles - Tools tab', () => {
 
 			await profilesPage.gotoToolsTab(name);
 
-			await profilesPage.removeToolButton('getToolSetsPage').click();
+			await profilesPage.clickAction('getToolSetsPage', 'Remove');
 
 			await profilesPage.dialog
 				.getByRole('button', {exact: true, name: 'Remove'})
@@ -1003,7 +1003,7 @@ test.describe('Profiles - Tools tab', () => {
 
 			await profilesPage.gotoToolsTab(name);
 
-			await profilesPage.removeToolButton('getToolSetsPage').click();
+			await profilesPage.clickAction('getToolSetsPage', 'Remove');
 
 			await profilesPage.dialog
 				.getByRole('button', {name: 'Cancel'})

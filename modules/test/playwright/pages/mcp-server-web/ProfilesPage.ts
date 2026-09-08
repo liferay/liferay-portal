@@ -106,12 +106,6 @@ export class ProfilesPage extends FDSTablePage {
 		return this.masksRows.filter({hasText: name});
 	}
 
-	removeToolButton(name: string): Locator {
-		return this.rows
-			.filter({has: this.page.getByRole('cell', {exact: true, name})})
-			.getByLabel('Remove');
-	}
-
 	toolCheckbox(name: string): Locator {
 		return this.toolTreeItem(name).getByRole('checkbox');
 	}

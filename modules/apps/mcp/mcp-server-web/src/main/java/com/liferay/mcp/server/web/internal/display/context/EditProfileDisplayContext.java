@@ -103,6 +103,10 @@ public class EditProfileDisplayContext {
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
 		return List.of(
 			new FDSActionDropdownItem(
+				"#", "low-vision", "restrict-fields",
+				LanguageUtil.get(_httpServletRequest, "restrict-fields"), "get",
+				null, null),
+			new FDSActionDropdownItem(
 				"#", "times-circle", "remove",
 				LanguageUtil.get(_httpServletRequest, "remove"), "get", null,
 				null));
