@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -122,6 +123,14 @@ public class BaseTopLevelBuildReportTest
 		Assert.assertEquals(
 			String.valueOf(testrayAttachmentURL),
 			String.valueOf(testrayAttachmentURLs.get(1)));
+	}
+
+	@Test
+	public void testGetBuildProfile() {
+		_testGetBuildProfile("portal", Job.BuildProfile.PORTAL);
+		_testGetBuildProfile(
+			RandomTestUtil.randomString(), Job.BuildProfile.DXP);
+		_testGetBuildProfile(null, Job.BuildProfile.DXP);
 	}
 
 	@Test
@@ -332,6 +341,45 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
+	public void testGetJobReport() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
+			BaseTopLevelBuildReport.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTopLevelBuildReport
+		).getJobReport();
+
+		Mockito.doReturn(
+			null
+		).when(
+			baseTopLevelBuildReport
+		).getBuildURL();
+
+		try {
+			baseTopLevelBuildReport.getJobReport();
+
+			Assert.fail("Expected a RuntimeException for an invalid build URL");
+		}
+		catch (RuntimeException runtimeException) {
+			String message = runtimeException.getMessage();
+
+			Assert.assertTrue(message.startsWith("Invalid Build URL"));
+		}
+
+		try {
+			_newBaseTopLevelBuildReport(new JSONObject(), "not-a-build-url");
+
+			Assert.fail("Expected a RuntimeException for an invalid build URL");
+		}
+		catch (RuntimeException runtimeException) {
+			String message = runtimeException.getMessage();
+
+			Assert.assertTrue(message.startsWith("Invalid Build URL"));
+		}
+	}
+
+	@Test
 	public void testGetPreviousTopLevelBuildReport() throws Exception {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport();
@@ -412,6 +460,22 @@ public class BaseTopLevelBuildReportTest
 
 		Assert.assertNull(
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
+	}
+
+	@Test
+	public void testGetTestResultsJSONUserContentURL() {
+		_testGetTestResultsJSONUserContentURL(
+			"https://test-1-0.liferay.com/userContent/testResults/test-job" +
+				"/builds/123/test.results.json",
+			null);
+		_testGetTestResultsJSONUserContentURL(
+			"https://test-9-9.liferay.com/userContent/testResults/test-job" +
+				"/builds/123/test.results.json",
+			"https://test-9-9.liferay.com");
+		_testGetTestResultsJSONUserContentURL(
+			"https://test-9-9.liferay.com/userContent/testResults/test-job" +
+				"/builds/123/test.results.json",
+			"https://test-9-9.liferay.com/");
 	}
 
 	@Test
@@ -639,8 +703,14 @@ public class BaseTopLevelBuildReportTest
 	private BaseTopLevelBuildReport _newBaseTopLevelBuildReport(
 		JSONObject buildReportJSONObject) {
 
-		return new BaseTopLevelBuildReport(
-			"https://test-1-1/job/test-job/123") {
+		return _newBaseTopLevelBuildReport(
+			buildReportJSONObject, "https://test-1-1/job/test-job/123");
+	}
+
+	private BaseTopLevelBuildReport _newBaseTopLevelBuildReport(
+		JSONObject buildReportJSONObject, String buildURLString) {
+
+		return new BaseTopLevelBuildReport(buildURLString) {
 
 			@Override
 			public JSONObject getBuildReportJSONObject() {
@@ -780,6 +850,27 @@ public class BaseTopLevelBuildReportTest
 		return new URL("https://test-1-1/" + RandomTestUtil.randomString());
 	}
 
+	private void _testGetBuildProfile(
+		String buildProfileString, Job.BuildProfile expectedBuildProfile) {
+
+		JSONObject buildReportJSONObject = new JSONObject();
+
+		if (buildProfileString != null) {
+			buildReportJSONObject.put(
+				"buildParameters",
+				new JSONObject(
+				).put(
+					"TEST_PORTAL_BUILD_PROFILE", buildProfileString
+				));
+		}
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(buildReportJSONObject);
+
+		Assert.assertEquals(
+			expectedBuildProfile, baseTopLevelBuildReport.getBuildProfile());
+	}
+
 	private void _testGetControllerBuildReportNull(
 		JSONObject buildReportJSONObject) {
 
@@ -787,6 +878,27 @@ public class BaseTopLevelBuildReportTest
 			_newBaseTopLevelBuildReport(buildReportJSONObject);
 
 		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
+	}
+
+	private void _testGetTestResultsJSONUserContentURL(
+		String expectedURLString, String jenkinsRemoteURL) {
+
+		Properties properties = new Properties();
+
+		if (jenkinsRemoteURL != null) {
+			properties.setProperty(
+				"jenkins.remote.url[test-1-0]", jenkinsRemoteURL);
+		}
+
+		JenkinsResultsParserUtil.setBuildProperties(properties);
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport();
+
+		Assert.assertEquals(
+			expectedURLString,
+			String.valueOf(
+				baseTopLevelBuildReport.getTestResultsJSONUserContentURL()));
 	}
 
 	private void _testGetUniqueFailureReports(
