@@ -136,9 +136,7 @@ describe('TouchedAccountsCard', () => {
 	});
 
 	it('should leave the empty result to the data set default', () => {
-		render(
-			<TouchedAccountsCard channelId="123" groupId="23" items={[]} />
-		);
+		render(<TouchedAccountsCard channelId="123" groupId="23" items={[]} />);
 
 		// The design asks for the FrontendDataSet default here, so the card
 		// must not override `emptyState` with one of its own.
