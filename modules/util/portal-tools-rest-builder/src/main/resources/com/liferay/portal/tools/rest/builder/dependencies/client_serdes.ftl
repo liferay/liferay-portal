@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -138,14 +139,7 @@ public class ${schemaName}SerDes {
 					<#elseif allSchemas[propertyType]??>
 						sb.append(String.valueOf(${schemaVarName}.get${capitalizedPropertyName}()));
 					<#elseif stringUtil.equals(propertyType, "Object")>
-						if (${schemaVarName}.get${capitalizedPropertyName}() instanceof String) {
-							sb.append("\"");
-							sb.append((String)${schemaVarName}.get${capitalizedPropertyName}());
-							sb.append("\"");
-						}
-						else {
-							sb.append(${schemaVarName}.get${capitalizedPropertyName}());
-						}
+						sb.append(_toJSON(${schemaVarName}.get${capitalizedPropertyName}()));
 					<#else>
 						<#if propertyType?contains("[]")>
 							sb.append("[");
@@ -482,6 +476,12 @@ public class ${schemaName}SerDes {
 	private static String _toJSON(Object value) {
 		if (value == null) {
 			return "null";
+		}
+
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
 		}
 
 		if (value instanceof Map) {

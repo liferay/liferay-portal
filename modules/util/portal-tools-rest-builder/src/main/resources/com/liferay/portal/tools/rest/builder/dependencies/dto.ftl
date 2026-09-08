@@ -542,41 +542,25 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 				<#elseif allSchemas[propertyType]??>
 					sb.append(String.valueOf(${propertyName}));
 				<#elseif stringUtil.equals(propertyType, "Object")>
-					if (${propertyName} instanceof Collection) {
-						sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)${propertyName}));
-					}
-					else if (${propertyName} instanceof Map) {
-						sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)${propertyName}));
-					}
-					else if (${propertyName} instanceof Object[]) {
-						sb.append(JSONFactoryUtil.createJSONArray(Arrays.asList((Object[])${propertyName})));
-					}
-					else if (${propertyName} instanceof String) {
-						sb.append("\"");
-						sb.append(_escape((String)${propertyName}));
-						sb.append("\"");
-					}
-					else {
-						sb.append(${propertyName});
-					}
+					sb.append(_toJSON(${propertyName}));
 				<#else>
 					<#if propertyType?contains("[]")>
 						sb.append("[");
 
 						for (int i = 0; i < ${propertyName}.length; i++) {
-							<#if stringUtil.equals(propertyType, "Date[]") || stringUtil.equals(propertyType, "Object[]") || stringUtil.equals(propertyType, "String[]") || toStringEnumSchemas?keys?seq_contains(propertyType)>
+							<#if stringUtil.equals(propertyType, "Date[]") || stringUtil.equals(propertyType, "String[]") || toStringEnumSchemas?keys?seq_contains(propertyType)>
 								sb.append("\"");
 
 								<#if stringUtil.equals(propertyType, "Date[]")>
 									sb.append(liferayToJSONDateFormat.format(${propertyName}[i]));
-								<#elseif stringUtil.equals(propertyType, "Object[]") || stringUtil.equals(propertyType, "String[]")>
+								<#elseif stringUtil.equals(propertyType, "String[]")>
 									sb.append(_escape(${propertyName}[i]));
 								<#else>
 									sb.append(${propertyName}[i]);
 								</#if>
 
 								sb.append("\"");
-							<#elseif stringUtil.startsWith(propertyType, "Map<")>
+							<#elseif stringUtil.startsWith(propertyType, "Map<") || stringUtil.equals(propertyType, "Object[]")>
 								sb.append(_toJSON(${propertyName}[i]));
 							<#elseif allSchemas[propertyType?remove_ending("[]")]??>
 								sb.append(String.valueOf(${propertyName}[i]));
@@ -677,6 +661,23 @@ public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} 
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(JSONFactoryUtil.createJSONArray(Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
