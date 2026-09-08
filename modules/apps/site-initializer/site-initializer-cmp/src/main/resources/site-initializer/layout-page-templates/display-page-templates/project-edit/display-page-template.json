@@ -1,6 +1,6 @@
 {
 	"contentType": {
-		"className": "com.liferay.object.model.ObjectDefinition#I5U9"
+		"className": "[$OBJECT_DEFINITION_CLASS_NAME:CMPProject$]"
 	},
 	"name": "Edit Project"
 }

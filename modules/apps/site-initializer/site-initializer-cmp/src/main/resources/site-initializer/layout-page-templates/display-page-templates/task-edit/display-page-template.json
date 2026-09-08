@@ -1,6 +1,6 @@
 {
 	"contentType": {
-		"className": "com.liferay.object.model.ObjectDefinition#C1N3"
+		"className": "[$OBJECT_DEFINITION_CLASS_NAME:CMPTask$]"
 	},
 	"name": "Edit Task"
 }

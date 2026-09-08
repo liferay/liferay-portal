@@ -5575,15 +5575,17 @@ public class BundleSiteInitializer implements SiteInitializer {
 		).put(
 			addLayoutPageTemplatesR,
 			_dependsOn(
-				addOrUpdateBlogPostingsR, addCPDefinitionsR,
-				addOrUpdateClientExtensionEntriesR, addFragmentEntriesR,
-				addOrUpdateJournalArticlesR, addOrUpdateSXPBlueprintR)
+				addObjectDefinitionsR, addOrUpdateBlogPostingsR,
+				addCPDefinitionsR, addOrUpdateClientExtensionEntriesR,
+				addFragmentEntriesR, addOrUpdateJournalArticlesR,
+				addOrUpdateSXPBlueprintR)
 		).put(
 			addLayoutUtilityPageEntriesR,
 			_dependsOn(
-				addOrUpdateBlogPostingsR, addCPDefinitionsR,
-				addOrUpdateClientExtensionEntriesR, addFragmentEntriesR,
-				addOrUpdateJournalArticlesR, addOrUpdateSXPBlueprintR)
+				addObjectDefinitionsR, addOrUpdateBlogPostingsR,
+				addCPDefinitionsR, addOrUpdateClientExtensionEntriesR,
+				addFragmentEntriesR, addOrUpdateJournalArticlesR,
+				addOrUpdateSXPBlueprintR)
 		).put(
 			addObjectDefinitionsR,
 			_dependsOn(
