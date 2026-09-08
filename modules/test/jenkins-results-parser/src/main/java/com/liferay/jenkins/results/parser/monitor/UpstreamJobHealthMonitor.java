@@ -10,6 +10,8 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.io.IOException;
 
+import java.time.Instant;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -33,8 +35,11 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 		_branch = getRequiredParameter("branch", parameters);
 		_controllerJobName = getRequiredParameter(
 			"controller.job.name", parameters);
-		_expectedGreen = getBooleanValue(
-			"parameter", true, "expected.green", parameters);
+		_portalRepositoryName = _getParameter(
+			_PORTAL_REPOSITORY_NAME_DEFAULT, parameters,
+			"portal.repository.name");
+		_portalUsername = _getParameter(
+			_PORTAL_USERNAME_DEFAULT, parameters, "portal.username");
 
 		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
 			getRequiredParameter("master.name", parameters));
@@ -172,66 +177,80 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 		metrics.put("last.invocation.age.seconds", String.valueOf(ageSeconds));
 
-		String invocationBuildURL = _getInvocationBuildURL(description);
+		String invocationSHA = _getSHA(description);
 
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(invocationBuildURL)) {
-			metrics.put("last.invocation.build.url", invocationBuildURL);
+		if (invocationSHA == null) {
+			messages.add(
+				JenkinsResultsParserUtil.combine(
+					"Unable to determine the commit the upstream testsuite ",
+					"for branch ", _branch, " last ran against"));
+
+			statuses.add(MonitorResult.Status.UNKNOWN);
+
+			return;
 		}
 
-		String result = _getInvocationResult(description);
+		metrics.put("last.invocation.sha", invocationSHA);
 
-		metrics.put("last.invocation.result", result);
+		JSONObject headCommitJSONObject = null;
 
-		if (result.equals(_RESULT_EXPIRE)) {
+		try {
+			headCommitJSONObject = _getHeadCommitJSONObject();
+		}
+		catch (Exception exception) {
+			headCommitJSONObject = null;
+		}
+
+		if (headCommitJSONObject == null) {
+			messages.add(
+				JenkinsResultsParserUtil.combine(
+					"Unable to read the head of branch ", _branch, " from ",
+					_portalUsername, "/", _portalRepositoryName));
+
+			statuses.add(MonitorResult.Status.UNKNOWN);
+
+			return;
+		}
+
+		String headSHA = headCommitJSONObject.optString("sha");
+
+		metrics.put("branch.head.sha", headSHA);
+
+		if (headSHA.equals(invocationSHA)) {
+			return;
+		}
+
+		long headCommitTimestamp = _getHeadCommitTimestamp(
+			headCommitJSONObject);
+
+		if (headCommitTimestamp <= 0) {
+			messages.add(
+				JenkinsResultsParserUtil.combine(
+					"Unable to determine when branch ", _branch,
+					" was last merged"));
+
+			statuses.add(MonitorResult.Status.UNKNOWN);
+
+			return;
+		}
+
+		long mergeAgeSeconds = (currentTimeMillis - headCommitTimestamp) / 1000;
+
+		metrics.put("branch.head.age.seconds", String.valueOf(mergeAgeSeconds));
+
+		if (mergeAgeSeconds > _triggerLatencySeconds) {
 			messages.add(
 				JenkinsResultsParserUtil.combine(
 					"Branch ", _branch, " was merged ",
 					JenkinsResultsParserUtil.toDurationString(
-						ageSeconds * 1000),
-					" ago, but its upstream testsuite was expired before it ",
-					"completed"));
+						mergeAgeSeconds * 1000),
+					" ago, but its upstream testsuite last ran against ",
+					invocationSHA.substring(0, 7), ", exceeding the expected ",
+					"trigger latency of ",
+					JenkinsResultsParserUtil.toDurationString(
+						_triggerLatencySeconds * 1000)));
 
 			statuses.add(MonitorResult.Status.WARN);
-
-			return;
-		}
-
-		if (result.equals(_RESULT_IN_PROGRESS) ||
-			result.equals(_RESULT_IN_QUEUE)) {
-
-			if (ageSeconds > _triggerLatencySeconds) {
-				messages.add(
-					JenkinsResultsParserUtil.combine(
-						"Branch ", _branch, " was merged ",
-						JenkinsResultsParserUtil.toDurationString(
-							ageSeconds * 1000),
-						" ago, but its upstream testsuite has not run, ",
-						"exceeding the expected trigger latency of ",
-						JenkinsResultsParserUtil.toDurationString(
-							_triggerLatencySeconds * 1000)));
-
-				statuses.add(MonitorResult.Status.WARN);
-			}
-
-			return;
-		}
-
-		if (!_expectedGreen) {
-			return;
-		}
-
-		if (result.equals(_RESULT_ABORTED)) {
-			messages.add(_getNotGreenMessage(result));
-
-			statuses.add(MonitorResult.Status.WARN);
-
-			return;
-		}
-
-		if (result.equals(_RESULT_FAILURE)) {
-			messages.add(_getNotGreenMessage(result));
-
-			statuses.add(MonitorResult.Status.CRITICAL);
 		}
 	}
 
@@ -251,56 +270,71 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 		return jobJSONObject.optJSONArray("builds");
 	}
 
-	private String _getInvocationBuildURL(String description) {
-		Matcher matcher = _buildURLPattern.matcher(description);
+	private JSONObject _getHeadCommitJSONObject() throws IOException {
+		return JenkinsResultsParserUtil.toJSONObject(
+			JenkinsResultsParserUtil.getGitHubAPIURL(
+				_portalRepositoryName, _portalUsername, "commits/" + _branch),
+			false, _RETRIES_SIZE_MAX, null, null, _SECONDS_RETRY_PERIOD,
+			getAttemptTimeoutMillis(_RETRIES_SIZE_MAX), null);
+	}
+
+	private long _getHeadCommitTimestamp(JSONObject headCommitJSONObject) {
+		JSONObject commitJSONObject = headCommitJSONObject.optJSONObject(
+			"commit");
+
+		if (commitJSONObject == null) {
+			return 0;
+		}
+
+		JSONObject committerJSONObject = commitJSONObject.optJSONObject(
+			"committer");
+
+		if (committerJSONObject == null) {
+			return 0;
+		}
+
+		String date = committerJSONObject.optString("date");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(date)) {
+			return 0;
+		}
+
+		try {
+			Instant instant = Instant.parse(date);
+
+			return instant.toEpochMilli();
+		}
+		catch (Exception exception) {
+			return 0;
+		}
+	}
+
+	private String _getParameter(
+		String defaultValue, Map<String, String> parameters, String name) {
+
+		String value = parameters.get(name);
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+			return defaultValue;
+		}
+
+		return value;
+	}
+
+	private String _getSHA(String description) {
+		Matcher matcher = _commitSHAPattern.matcher(description);
 
 		if (!matcher.find()) {
 			return null;
 		}
 
-		return matcher.group();
-	}
-
-	private String _getInvocationResult(String description) {
-		if (description.contains(_RESULT_EXPIRE)) {
-			return _RESULT_EXPIRE;
-		}
-
-		if (description.contains(_RESULT_IN_QUEUE)) {
-			return _RESULT_IN_QUEUE;
-		}
-
-		if (description.contains(_RESULT_IN_PROGRESS)) {
-			return _RESULT_IN_PROGRESS;
-		}
-
-		if (description.contains(_RESULT_FAILURE)) {
-			return _RESULT_FAILURE;
-		}
-
-		if (description.contains(_RESULT_ABORTED)) {
-			return _RESULT_ABORTED;
-		}
-
-		if (description.contains(_RESULT_UNSTABLE)) {
-			return _RESULT_UNSTABLE;
-		}
-
-		if (description.contains(_RESULT_SUCCESS)) {
-			return _RESULT_SUCCESS;
-		}
-
-		return _RESULT_COMPLETED;
-	}
-
-	private String _getNotGreenMessage(String result) {
-		return JenkinsResultsParserUtil.combine(
-			"The upstream testsuite for branch ", _branch,
-			" completed with the result \"", result, "\"");
+		return matcher.group("sha");
 	}
 
 	private boolean _isInvocation(String description) {
-		return description.contains(_MARKER_GIT_ID);
+		Matcher matcher = _gitIDPattern.matcher(description);
+
+		return matcher.find();
 	}
 
 	private MonitorResult _newMonitorResult(
@@ -321,23 +355,10 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 	private static final long _BUILDS_MAXIMUM_DEFAULT = 24;
 
-	private static final String _MARKER_GIT_ID = "Git ID:";
+	private static final String _PORTAL_REPOSITORY_NAME_DEFAULT =
+		"liferay-portal";
 
-	private static final String _RESULT_ABORTED = "ABORTED";
-
-	private static final String _RESULT_COMPLETED = "COMPLETED";
-
-	private static final String _RESULT_EXPIRE = "EXPIRE";
-
-	private static final String _RESULT_FAILURE = "FAILURE";
-
-	private static final String _RESULT_IN_PROGRESS = "IN PROGRESS";
-
-	private static final String _RESULT_IN_QUEUE = "IN QUEUE";
-
-	private static final String _RESULT_SUCCESS = "SUCCESS";
-
-	private static final String _RESULT_UNSTABLE = "UNSTABLE";
+	private static final String _PORTAL_USERNAME_DEFAULT = "liferay";
 
 	private static final int _RETRIES_SIZE_MAX = 1;
 
@@ -345,15 +366,17 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 	private static final long _SECONDS_TRIGGER_LATENCY_DEFAULT = 4 * 60 * 60;
 
-	private static final Pattern _buildURLPattern = Pattern.compile(
-		"https?://test-\\d+-\\d+(-aws)?\\.liferay\\.com/job/[^/\\s\"]+/" +
-			"\\d+/?");
+	private static final Pattern _commitSHAPattern = Pattern.compile(
+		"/commit/(?<sha>[0-9a-f]{40})");
+	private static final Pattern _gitIDPattern = Pattern.compile(
+		"GIT ID", Pattern.CASE_INSENSITIVE);
 
 	private final String _branch;
 	private final long _buildsMaximum;
 	private final String _controllerJobName;
 	private final String _controllerJobURL;
-	private final boolean _expectedGreen;
+	private final String _portalRepositoryName;
+	private final String _portalUsername;
 	private final long _triggerLatencySeconds;
 
 }
