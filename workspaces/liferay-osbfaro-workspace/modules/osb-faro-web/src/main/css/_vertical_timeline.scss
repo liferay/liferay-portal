@@ -89,11 +89,39 @@
 
 		.attributes-payload {
 			border-top: 1px solid $mainLighten74;
-			font-family: monospace;
-			font-size: $fontSizeExtraSmall;
 			padding: ($baseline * 2) ($baseline * 2) ($baseline * 2)
 				$timeColumnWidth + $baseline * 2;
-			white-space: pre-wrap;
+
+			// The payload reads as one table per group of attributes, each
+			// under its own header, so a long list of acquisition parameters
+			// never has to be told apart from the event's own attributes.
+
+			.payload-table + .payload-table {
+				margin-top: $baseline * 2;
+			}
+
+			.payload-table-title {
+				font-size: $fontSizeExtraSmall;
+				letter-spacing: 0.5px;
+				margin-bottom: $baseline;
+			}
+
+			// Both columns are fixed at half the width so the values line up
+			// down the table however long a property name runs, and a value
+			// with no spaces in it (an id, a URL) wraps instead of stretching
+			// the row.
+
+			.table {
+				margin-bottom: 0;
+				table-layout: fixed;
+
+				td,
+				th {
+					font-size: $fontSizeSmall;
+					width: 50%;
+					word-break: break-word;
+				}
+			}
 		}
 	}
 

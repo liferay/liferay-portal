@@ -139,6 +139,17 @@ describe('VerticalTimeline', () => {
 			).toHaveTextContent('Session Attributes');
 		});
 
+		it('titles the attributes table with the header, instead of listing it as an attribute', () => {
+			const {container} = renderTimeline({items: [SESSION_ITEM]});
+
+			fireEvent.click(container.querySelector('.session-row .row-main'));
+
+			expect(
+				container.querySelector('.payload-table-title')
+			).toHaveTextContent('Session Attributes');
+			expect(screen.queryByText('header')).not.toBeInTheDocument();
+		});
+
 		it('always shows its pages, without needing to expand', () => {
 			renderTimeline({
 				items: [
@@ -331,6 +342,46 @@ describe('VerticalTimeline', () => {
 			expect(
 				container.querySelector('.attributes-payload')
 			).toHaveTextContent('HubSpot');
+		});
+
+		it('lays the attributes out as a property and value table', () => {
+			const {container} = renderTimeline({items: [EVENT_ITEM]});
+
+			fireEvent.click(container.querySelector('.event-row .row-main'));
+
+			expect(screen.getByText('Property')).toBeInTheDocument();
+			expect(screen.getByText('Value')).toBeInTheDocument();
+
+			expect(
+				screen.getByText('applicationId').closest('tr')
+			).toHaveTextContent('HubSpot');
+		});
+
+		it('shows the acquisition parameters in a table of their own', () => {
+			const {container} = renderTimeline({
+				items: [
+					{
+						...EVENT_ITEM,
+						attributes: {
+							...EVENT_ITEM.attributes,
+							properties: {utm_medium: 'email'}
+						}
+					}
+				]
+			});
+
+			fireEvent.click(container.querySelector('.event-row .row-main'));
+
+			const [attributesTable, utmTable] =
+				container.querySelectorAll('.payload-table');
+
+			expect(attributesTable).toHaveTextContent('Event Attributes');
+			expect(attributesTable).not.toHaveTextContent('utm_medium');
+
+			expect(utmTable).toHaveTextContent('UTM Parameters');
+			expect(
+				screen.getByText('utm_medium').closest('tr')
+			).toHaveTextContent('email');
 		});
 	});
 });

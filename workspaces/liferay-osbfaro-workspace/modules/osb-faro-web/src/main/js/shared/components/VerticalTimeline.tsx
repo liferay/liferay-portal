@@ -2,6 +2,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
+import ClayTable from '@clayui/table';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import moment from 'moment';
@@ -9,6 +10,10 @@ import React, {FC, useState} from 'react';
 import TextTruncate from './TextTruncate';
 import {Colors} from 'shared/util/colors-size';
 import {formatDateToTimeZone} from 'shared/util/date';
+import {
+	formatPayloadTables,
+	PayloadTable as IPayloadTable,
+} from 'shared/util/payloadTables';
 import {
 	isWebhookUserAgent,
 	SessionEvent,
@@ -216,10 +221,49 @@ const ExternalLink: FC<{url: string}> = ({url}) => (
 	</ClayLink>
 );
 
+/**
+ * One titled table of the expanded row's payload. The property column carries
+ * the heading role so a screen reader announces which attribute a value belongs
+ * to, the same way the visible bold treatment does.
+ */
+const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
+	<div className="payload-table">
+		<div className="payload-table-title font-weight-semi-bold text-secondary text-uppercase">
+			{title}
+		</div>
+
+		<ClayTable>
+			<ClayTable.Head>
+				<ClayTable.Row>
+					<ClayTable.Cell headingCell>
+						{Liferay.Language.get('property')}
+					</ClayTable.Cell>
+
+					<ClayTable.Cell headingCell>
+						{Liferay.Language.get('value')}
+					</ClayTable.Cell>
+				</ClayTable.Row>
+			</ClayTable.Head>
+
+			<ClayTable.Body>
+				{rows.map(({property, value}) => (
+					<ClayTable.Row key={property}>
+						<ClayTable.Cell headingCell>{property}</ClayTable.Cell>
+
+						<ClayTable.Cell>{value}</ClayTable.Cell>
+					</ClayTable.Row>
+				))}
+			</ClayTable.Body>
+		</ClayTable>
+	</div>
+);
+
 const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => (
-	<code className="attributes-payload text-secondary d-block w-100">
-		{JSON.stringify(payload, null, 2)}
-	</code>
+	<div className="attributes-payload d-block w-100">
+		{formatPayloadTables(payload).map((table) => (
+			<PayloadTable key={table.title} table={table} />
+		))}
+	</div>
 );
 
 const DayRow: FC<{item: VerticalTimelineHeader}> = ({

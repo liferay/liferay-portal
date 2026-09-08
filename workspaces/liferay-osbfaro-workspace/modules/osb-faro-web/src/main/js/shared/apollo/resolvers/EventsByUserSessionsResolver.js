@@ -33,6 +33,11 @@ export default () => ({
 					properties: [
 						{name: 'utm_source', value: 'salesforce'},
 						{name: 'utm_cid', value: '7013a000002QwErtAAG'},
+						{name: 'utm_medium', value: 'email'},
+						{name: 'utm_campaign', value: 'q1_report'},
+						{name: 'utm_content', value: 'header_cta'},
+						{name: 'utm_term', value: ''},
+						{name: 'utm_lift', value: 'q1_report'},
 					],
 					referrer:
 						'https://marketplace.roadtech.com/lp/spring-compactor-promo',
