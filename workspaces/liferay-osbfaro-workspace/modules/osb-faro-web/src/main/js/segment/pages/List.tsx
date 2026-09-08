@@ -56,6 +56,7 @@ import {
 	NAME,
 	paginationDefaults,
 } from 'shared/util/pagination';
+import {isNil} from 'lodash';
 import {Link} from 'react-router-dom';
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
@@ -115,6 +116,27 @@ const SEGMENT_CATEGORIES_LABEL_MAP = {
 const SEGMENT_TYPES_LABEL_MAP = {
 	[SegmentTypes.Batch]: Liferay.Language.get('batch'),
 	[SegmentTypes.RealTime]: Liferay.Language.get('real-time'),
+};
+
+/**
+ * The membership counts are only available once the segment has been
+ * processed. A null count means the processing is still pending, while a zero
+ * count means the segment has been processed and has no members yet.
+ */
+const getMembershipLabel = (count: number, accountSegment: boolean) => {
+	if (isNil(count)) {
+		return Liferay.Language.get('processing');
+	}
+
+	if (!count) {
+		return '-';
+	}
+
+	const membershipLabel = accountSegment
+		? Liferay.Language.get('x-accounts')
+		: Liferay.Language.get('x-individuals');
+
+	return sub(membershipLabel.toLowerCase(), [toThousands(count)]);
 };
 
 const FILTER_BY_OPTIONS = [
@@ -700,22 +722,14 @@ export const List: React.FC<IListProps> = ({
 											segmentCategory ===
 											SegmentCategories.Account;
 
-										const count = accountSegment
-											? accountsCount
-											: individualCount;
-
-										const membershipLabel = accountSegment
-											? Liferay.Language.get('x-accounts')
-											: Liferay.Language.get(
-													'x-individuals'
-												);
-
 										return (
 											<td className="table-cell-expand">
 												<div className="text-truncate text-right">
-													{sub(
-														membershipLabel.toLowerCase(),
-														[toThousands(count)]
+													{getMembershipLabel(
+														accountSegment
+															? accountsCount
+															: individualCount,
+														accountSegment
 													)}
 												</div>
 											</td>
@@ -725,17 +739,34 @@ export const List: React.FC<IListProps> = ({
 								},
 								{
 									accessor: 'lastMembershipUpdateDate',
-									cellRenderer: DateCell,
-									cellRendererProps: {
-										dateFormatter: (
-											date: string | number
-										) =>
-											formatDateToTimeZone(
-												date,
-												getCustomDateTimeFormat()
-											),
-										datePath: 'lastMembershipUpdateDate',
-									},
+									cellRenderer: (item: {
+										className?: string;
+										data: {
+											lastMembershipUpdateDate: number;
+										};
+									}) =>
+										isNil(
+											item.data.lastMembershipUpdateDate
+										) ? (
+											<td className={item.className}>
+												{Liferay.Language.get(
+													'processing'
+												)}
+											</td>
+										) : (
+											<DateCell
+												{...item}
+												dateFormatter={(
+													date: string | number
+												) =>
+													formatDateToTimeZone(
+														date,
+														getCustomDateTimeFormat()
+													)
+												}
+												datePath="lastMembershipUpdateDate"
+											/>
+										),
 									className: 'table-column-text-start',
 									label: Liferay.Language.get(
 										'last-membership-update'
