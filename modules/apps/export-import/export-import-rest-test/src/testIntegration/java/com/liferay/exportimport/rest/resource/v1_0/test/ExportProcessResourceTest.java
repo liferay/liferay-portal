@@ -120,6 +120,7 @@ public class ExportProcessResourceTest
 	public void testGetExportProcess() throws Exception {
 		super.testGetExportProcess();
 
+		_testGetExportProcessErrorMessageWhenStatusIsSuccessful();
 		_testGetExportProcessErrorMessageWhenStatusMessageIsNotJSON();
 	}
 
@@ -837,6 +838,24 @@ public class ExportProcessResourceTest
 		}
 
 		return objectDefinition;
+	}
+
+	@TestInfo("LPD-102315")
+	private void _testGetExportProcessErrorMessageWhenStatusIsSuccessful()
+		throws Exception {
+
+		ExportProcess exportProcess = _addExportProcess(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			BackgroundTaskExecutorNames.LAYOUT_EXPORT_BACKGROUND_TASK_EXECUTOR);
+
+		_backgroundTaskLocalService.amendBackgroundTask(
+			exportProcess.getId(), null, null,
+			BackgroundTaskConstants.STATUS_SUCCESSFUL, null, null);
+
+		ExportProcess successfulExportProcess =
+			exportProcessResource.getExportProcess(exportProcess.getId());
+
+		Assert.assertNull(successfulExportProcess.getErrorMessage());
 	}
 
 	@TestInfo("LPD-102315")

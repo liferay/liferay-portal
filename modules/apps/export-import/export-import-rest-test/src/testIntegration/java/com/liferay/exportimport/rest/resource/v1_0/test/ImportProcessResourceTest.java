@@ -139,6 +139,7 @@ public class ImportProcessResourceTest
 	public void testGetImportProcess() throws Exception {
 		super.testGetImportProcess();
 
+		_testGetImportProcessErrorMessageWhenStatusIsSuccessful();
 		_testGetImportProcessErrorMessageWhenStatusMessageIsNotJSON();
 	}
 
@@ -720,6 +721,24 @@ public class ImportProcessResourceTest
 		}
 
 		return objectDefinition;
+	}
+
+	@TestInfo("LPD-102315")
+	private void _testGetImportProcessErrorMessageWhenStatusIsSuccessful()
+		throws Exception {
+
+		ImportProcess importProcess = _addImportProcess(
+			testGroup.getGroupId(), RandomTestUtil.randomString(),
+			BackgroundTaskExecutorNames.LAYOUT_IMPORT_BACKGROUND_TASK_EXECUTOR);
+
+		_backgroundTaskLocalService.amendBackgroundTask(
+			importProcess.getId(), null, null,
+			BackgroundTaskConstants.STATUS_SUCCESSFUL, null, null);
+
+		ImportProcess successfulImportProcess =
+			importProcessResource.getImportProcess(importProcess.getId());
+
+		Assert.assertNull(successfulImportProcess.getErrorMessage());
 	}
 
 	@TestInfo("LPD-102315")

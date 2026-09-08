@@ -516,6 +516,12 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 				setDateModified(backgroundTask::getModifiedDate);
 				setErrorMessage(
 					() -> {
+						if (backgroundTask.getStatus() !=
+								BackgroundTaskConstants.STATUS_FAILED) {
+
+							return null;
+						}
+
 						JSONObject jsonObject =
 							_jsonFactory.safeCreateJSONObject(
 								backgroundTask.getStatusMessage(), true);

@@ -127,6 +127,7 @@ public class PublishProcessResourceTest
 	public void testGetPublishProcess() throws Exception {
 		super.testGetPublishProcess();
 
+		_testGetPublishProcessErrorMessageWhenStatusIsSuccessful();
 		_testGetPublishProcessErrorMessageWhenStatusMessageIsNotJSON();
 	}
 
@@ -363,6 +364,24 @@ public class PublishProcessResourceTest
 		return _stagingGroupHelper.fetchLocalStagingGroup(
 			_groupLocalService.fetchGroupByExternalReferenceCode(
 				siteExternalReferenceCode, testCompany.getCompanyId()));
+	}
+
+	@TestInfo("LPD-102315")
+	private void _testGetPublishProcessErrorMessageWhenStatusIsSuccessful()
+		throws Exception {
+
+		PublishProcess publishProcess = _addPublishProcess(
+			testGroup.getExternalReferenceCode(),
+			RandomTestUtil.randomString());
+
+		_backgroundTaskLocalService.amendBackgroundTask(
+			publishProcess.getId(), null, null,
+			BackgroundTaskConstants.STATUS_SUCCESSFUL, null, null);
+
+		PublishProcess successfulPublishProcess =
+			publishProcessResource.getPublishProcess(publishProcess.getId());
+
+		Assert.assertNull(successfulPublishProcess.getErrorMessage());
 	}
 
 	@TestInfo("LPD-102315")
