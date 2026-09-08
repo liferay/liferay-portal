@@ -247,6 +247,7 @@ describe('AssetTags', () => {
 		renderComponent({
 			cmsGroupId: 456,
 			contentRawText: 'persisted content',
+			keywords: ['tag1', 'tag2'],
 			scopeId: 123,
 		});
 
@@ -260,9 +261,35 @@ describe('AssetTags', () => {
 				expect.objectContaining({
 					agent: 'L_GENERATE_TAGS',
 					cmsGroupId: 456,
+					currentTagNames: ['tag1', 'tag2'],
 					scopeId: 123,
 				})
 			)
+		);
+	});
+
+	it('keeps the fired tag names when a keyword is removed afterwards', async () => {
+		const fire = jest.fn();
+
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+		(global as any).Liferay.fire = fire;
+
+		renderComponent({
+			contentRawText: 'persisted content',
+			keywords: ['tag1', 'tag2'],
+		});
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'generate-tags-with-ai'})
+		);
+
+		await waitFor(() => expect(fire).toHaveBeenCalled());
+
+		fireEvent.click(screen.getAllByRole('button', {name: 'close'})[0]);
+
+		expect(fire).toHaveBeenCalledWith(
+			'cms:aiAssistant:categorize',
+			expect.objectContaining({currentTagNames: ['tag1', 'tag2']})
 		);
 	});
 
