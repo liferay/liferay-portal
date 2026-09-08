@@ -383,11 +383,24 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 				"Company ID " + companyId + " is the default company ID");
 		}
 
+		String lowerCaseVirtualHostname = StringUtil.toLowerCase(
+			StringUtil.trim(virtualHostname));
+
+		if (Validator.isNotNull(webId)) {
+			validateWebId(webId);
+		}
+
+		if (Validator.isNotNull(lowerCaseVirtualHostname)) {
+			validateVirtualHost(
+				GetterUtil.getString(webId), lowerCaseVirtualHostname);
+		}
+
 		try (SafeCloseable safeCloseable1 =
 				PortalInstances.setImportInProcessCompanyIdWithSafeCloseable(
 					companyId)) {
 
-			DBPartitionUtil.importDBPartition(companyId);
+			DBPartitionUtil.importDBPartition(
+				companyId, lowerCaseVirtualHostname, webId);
 
 			try (SafeCloseable safeCloseable2 =
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
@@ -416,30 +429,13 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 							_companyInfoPersistence.update(companyInfo);
 						}
 
-						String lowerCaseVirtualHostname =
-							StringUtil.toLowerCase(
-								StringUtil.trim(virtualHostname));
-
 						if (Validator.isNotNull(lowerCaseVirtualHostname) &&
 							!StringUtil.equals(
 								company.getVirtualHostname(),
 								lowerCaseVirtualHostname)) {
 
-							validateVirtualHost(
-								company.getWebId(), lowerCaseVirtualHostname);
-
 							company = updateVirtualHostname(
 								companyId, lowerCaseVirtualHostname);
-						}
-
-						if (Validator.isNotNull(webId) &&
-							!StringUtil.equals(company.getWebId(), webId)) {
-
-							validateWebId(webId);
-
-							company.setWebId(webId);
-
-							company = companyPersistence.update(company);
 						}
 
 						return _addDBPartitionCompany(company);

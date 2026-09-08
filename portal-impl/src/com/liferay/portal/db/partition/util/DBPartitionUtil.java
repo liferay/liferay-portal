@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.util.InfrastructureUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.spring.hibernate.DialectDetector;
 
 import java.sql.Connection;
@@ -356,7 +357,8 @@ public class DBPartitionUtil {
 		return PropsValues.DATABASE_PARTITION_SCHEMA_NAME_PREFIX + companyId;
 	}
 
-	public static boolean importDBPartition(long companyId)
+	public static boolean importDBPartition(
+			long companyId, String virtualHostname, String webId)
 		throws PortalException {
 
 		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
@@ -373,7 +375,7 @@ public class DBPartitionUtil {
 
 			AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
 
-			_importDBPartition(connection, companyId);
+			_importDBPartition(connection, companyId, virtualHostname, webId);
 		}
 		catch (PortalException portalException) {
 			throw portalException;
@@ -1476,7 +1478,8 @@ public class DBPartitionUtil {
 	}
 
 	private static void _importDBPartition(
-			Connection connection, long companyId)
+			Connection connection, long companyId, String virtualHostname,
+			String webId)
 		throws PortalException {
 
 		String sourcePartitionName = getExportedPartitionName(companyId);
@@ -1513,6 +1516,11 @@ public class DBPartitionUtil {
 
 				statement.executeUpdate(renamePartitionSQL);
 			}
+
+			_updateCompanyVirtualHostname(
+				connection, companyId, virtualHostname);
+
+			_updateCompanyWebId(connection, companyId, webId);
 
 			DBInspector dbInspector = new DBInspector(connection);
 
@@ -1754,6 +1762,48 @@ public class DBPartitionUtil {
 				StringUtil.merge(replaceSQLs), ", ",
 				StringUtil.merge(columnNames), " from ", tableName,
 				_getQuartzWhereClauseSQL(fromCompanyId, tableName)));
+	}
+
+	private static void _updateCompanyVirtualHostname(
+			Connection connection, long companyId, String virtualHostname)
+		throws SQLException {
+
+		if (Validator.isNull(virtualHostname)) {
+			return;
+		}
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"update ", getPartitionName(companyId),
+					".VirtualHost set hostname = ? where companyId = ? and ",
+					"layoutSetId = 0 and defaultVirtualHost = ?"))) {
+
+			preparedStatement.setString(1, virtualHostname);
+			preparedStatement.setLong(2, companyId);
+			preparedStatement.setBoolean(3, true);
+
+			preparedStatement.executeUpdate();
+		}
+	}
+
+	private static void _updateCompanyWebId(
+			Connection connection, long companyId, String webId)
+		throws SQLException {
+
+		if (Validator.isNull(webId)) {
+			return;
+		}
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"update ", getPartitionName(companyId),
+					".Company set webId = ? where companyId = ?"))) {
+
+			preparedStatement.setString(1, webId);
+			preparedStatement.setLong(2, companyId);
+
+			preparedStatement.executeUpdate();
+		}
 	}
 
 	private static Statement _wrapStatement(Statement statement) {

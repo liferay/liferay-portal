@@ -214,7 +214,7 @@ public abstract class BaseDBPartitionTestCase {
 
 	protected static void importDBPartitions() throws Exception {
 		for (long companyId : COMPANY_IDS) {
-			DBPartitionUtil.importDBPartition(companyId);
+			DBPartitionUtil.importDBPartition(companyId, null, null);
 		}
 	}
 
