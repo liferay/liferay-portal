@@ -1,0 +1,21 @@
+{
+	"pageElement": {
+		"pageElements": [
+			{
+				"definition": {
+					"formConfig": {
+						"formReference": {
+							"contextSource": "DisplayPageItem"
+						},
+						"formType": "simple",
+						"numberOfSteps": 0
+					},
+					"indexed": true
+				},
+				"type": "Form"
+			}
+		],
+		"type": "Root"
+	},
+	"version": 1.0
+}

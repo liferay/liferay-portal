@@ -2216,6 +2216,24 @@ public class BundleSiteInitializerTest {
 		Assert.assertNotNull(layoutPageTemplateEntry);
 		Assert.assertEquals(
 			"Test Master Page", layoutPageTemplateEntry.getName());
+
+		// Test Object Definition Display Page Template
+
+		layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				"Test Object Definition Display Page Template",
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				_group.getCompanyId(), "C_TestObjectDefinition3");
+
+		Assert.assertEquals(
+			objectDefinition.getClassName(),
+			_portal.getClassName(layoutPageTemplateEntry.getClassNameId()));
 	}
 
 	private void _assertLayouts1() throws Exception {
