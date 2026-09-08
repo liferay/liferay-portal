@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -37,8 +38,10 @@ import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import org.junit.Assert;
@@ -59,6 +62,44 @@ public class PostupgradeVerifyDatabaseStateTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testVerifyPostupgradeColumns() throws Exception {
+		alterColumnName("UserTracker", "companyId", "companyId_backup LONG");
+
+		try {
+			_testVerifyColumns(
+				_getExpectedMessage(
+					"Missing columns were detected for " +
+						getNormalizedName("UserTracker"),
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+					getNormalizedName("companyId")),
+				_getExpectedMessage(
+					"Stale columns were detected for " +
+						getNormalizedName("UserTracker"),
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+					getNormalizedName("companyId_backup")));
+		}
+		finally {
+			alterColumnName(
+				"UserTracker", "companyId_backup", "companyId LONG");
+		}
+
+		alterColumnType("Address", "city", "VARCHAR(100)");
+
+		try {
+			_testVerifyColumns(
+				_getExpectedMessage(
+					StringBundler.concat(
+						"Column ", getNormalizedName("city"),
+						" is not defined as VARCHAR(75) null for ",
+						getNormalizedName("Address")),
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME));
+		}
+		finally {
+			alterColumnType("Address", "city", "VARCHAR(75)");
+		}
+	}
 
 	@Test
 	public void testVerifyPostupgradeCustomTable() throws Exception {
@@ -299,22 +340,30 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	private String _getExpectedMessage(
-			String prefix, String servletContextName, String tableName)
+			String message, String servletContextName)
 		throws Exception {
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
-			prefix = StringBundler.concat(
-				prefix, " for company ", TestPropsValues.getCompanyId());
+			message = StringBundler.concat(
+				message, " for company ", TestPropsValues.getCompanyId());
 		}
 
 		if (!servletContextName.isEmpty()) {
-			prefix = StringBundler.concat(
-				prefix, " in module ", servletContextName);
+			message = StringBundler.concat(
+				message, " in module ", servletContextName);
 		}
 
+		return message;
+	}
+
+	private String _getExpectedMessage(
+			String prefix, String servletContextName, String name)
+		throws Exception {
+
 		return StringBundler.concat(
-			prefix, StringPool.COLON, StringPool.SPACE, StringPool.OPEN_BRACKET,
-			tableName, StringPool.CLOSE_BRACKET);
+			_getExpectedMessage(prefix, servletContextName), StringPool.COLON,
+			StringPool.SPACE, StringPool.OPEN_BRACKET, name,
+			StringPool.CLOSE_BRACKET);
 	}
 
 	private String _getMessage(LogCapture logCapture, String text) {
@@ -327,6 +376,32 @@ public class PostupgradeVerifyDatabaseStateTest
 		}
 
 		return messages.toString();
+	}
+
+	private void _testVerifyColumns(String... expectedMessages)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				PostupgradeVerifyDatabaseState.class.getName(),
+				LoggerTestUtil.WARN)) {
+
+			testVerify();
+
+			Set<String> messages = new HashSet<>();
+
+			for (String message : logCapture.getMessages()) {
+				if (message.startsWith("Column ") ||
+					message.startsWith("Missing columns") ||
+					message.startsWith("Stale columns")) {
+
+					messages.add(message);
+				}
+			}
+
+			Assert.assertEquals(
+				messages.toString(), SetUtil.fromArray(expectedMessages),
+				messages);
+		}
 	}
 
 	private static final String _BUILD_NAMESPACE = "com.liferay.test.service";
