@@ -3461,19 +3461,9 @@ cluster.link.bind.addr["cluster-link-udp"]=${ip.address}</echo>
 				</then>
 			</if>
 
-			<propertycopy from="database.partition.enabled[${env.CI_TEST_SUITE}]" name="database.partition.enabled" override="true" silent="true" />
+			<get-testcase-property property.name="database.partition.enabled" />
 
-			<if>
-				<or>
-					<equals arg1="database.partition.enabled" arg2="" />
-					<not>
-						<isset property="database.partition.enabled" />
-					</not>
-				</or>
-				<then>
-					<get-testcase-property property.name="database.partition.enabled" />
-				</then>
-			</if>
+			<propertycopy from="database.partition.enabled[${env.CI_TEST_SUITE}]" name="database.partition.enabled" silent="true" />
 
 			<get-testcase-property property.name="liferay.online.properties" />
 			<get-testcase-property property.name="portal.version" />
@@ -14455,6 +14445,8 @@ enterprise.product.enterprise.search.enabled=false</echo>
 		</if>
 
 		<get-testcase-property property.name="database.partition.enabled" />
+
+		<propertycopy from="database.partition.enabled[${env.CI_TEST_SUITE}]" name="database.partition.enabled" silent="true" />
 
 		<if>
 			<isset property="database.partition.enabled" />
