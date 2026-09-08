@@ -21,7 +21,9 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.wiki.model.WikiNode;
+import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiNodeLocalServiceUtil;
+import com.liferay.wiki.service.WikiPageLocalServiceUtil;
 import com.liferay.wiki.test.util.WikiTestUtil;
 
 import java.util.Date;
@@ -167,6 +169,38 @@ public class WikiNodeStagedModelDataHandlerTest
 				Assert.assertNull(exportedStagedModel);
 			}
 		}
+	}
+
+	@Test
+	@TestInfo("LPS-71134")
+	public void testImportNodeWithExistingName() throws Exception {
+		WikiNode node = WikiTestUtil.addDefaultNode(stagingGroup.getGroupId());
+
+		WikiPage page = WikiTestUtil.addPage(
+			TestPropsValues.getUserId(), node.getNodeId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true,
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId()));
+
+		WikiNode existingNode = WikiTestUtil.addDefaultNode(
+			liveGroup.getGroupId());
+
+		exportImportStagedModel(page);
+
+		WikiNode importedNode =
+			WikiNodeLocalServiceUtil.getWikiNodeByUuidAndGroupId(
+				node.getUuid(), liveGroup.getGroupId());
+
+		Assert.assertEquals(node.getName() + " 2", importedNode.getName());
+		Assert.assertEquals(
+			1,
+			WikiPageLocalServiceUtil.getPagesCount(
+				importedNode.getNodeId(), true));
+
+		Assert.assertEquals(
+			0,
+			WikiPageLocalServiceUtil.getPagesCount(
+				existingNode.getNodeId(), true));
 	}
 
 	@Override
