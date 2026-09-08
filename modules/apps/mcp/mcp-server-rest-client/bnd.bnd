@@ -1,6 +1,6 @@
 Bundle-Name: Liferay MCP Server REST Client
 Bundle-SymbolicName: com.liferay.mcp.server.rest.client
-Bundle-Version: 1.0.4
+Bundle-Version: 1.1.0
 Export-Package:\
 	com.liferay.mcp.server.rest.client.dto.v1_0,\
 	com.liferay.mcp.server.rest.client.function
