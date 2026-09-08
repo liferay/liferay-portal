@@ -53,11 +53,11 @@ public class ConfigurationModelConfigurationEntry
 	public String getEditURL(
 		RenderRequest renderRequest, RenderResponse renderResponse) {
 
-		Map<String, String> editURLParameters = getEditURLParameters();
-
 		PortletURL portletURL = PortletURLBuilder.createRenderURL(
 			renderResponse
 		).buildPortletURL();
+
+		Map<String, String> editURLParameters = getEditURLParameters();
 
 		for (Map.Entry<String, String> entry : editURLParameters.entrySet()) {
 			portletURL.setParameter(entry.getKey(), entry.getValue());

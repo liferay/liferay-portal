@@ -128,10 +128,10 @@ public abstract class BaseSettingsPanelApp extends BasePanelApp {
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
 
+		PortletURL portletURL = getPortletURL(httpServletRequest);
+
 		Map<String, String> editURLParameters =
 			configurationEntry.getEditURLParameters();
-
-		PortletURL portletURL = getPortletURL(httpServletRequest);
 
 		for (Map.Entry<String, String> entry : editURLParameters.entrySet()) {
 			portletURL.setParameter(entry.getKey(), entry.getValue());
