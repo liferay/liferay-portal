@@ -73,7 +73,6 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		StyleBookEntry importedStyleBookEntry = (StyleBookEntry)getStagedModel(
 			styleBookEntry.getUuid(), liveGroup);
 
-		Assert.assertNotNull(importedStyleBookEntry);
 		Assert.assertTrue(importedStyleBookEntry.getPreviewFileEntryId() > 0);
 
 		DateTestUtil.assertEquals(
@@ -109,7 +108,6 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		StyleBookEntry importedStyleBookEntry = (StyleBookEntry)getStagedModel(
 			styleBookEntry.getUuid(), liveGroup);
 
-		Assert.assertNotNull(importedStyleBookEntry);
 		Assert.assertNotEquals(
 			externalReferenceCode,
 			importedStyleBookEntry.getExternalReferenceCode());
@@ -142,7 +140,6 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		StyleBookEntry importedStyleBookEntry = (StyleBookEntry)getStagedModel(
 			styleBookEntry.getUuid(), liveGroup);
 
-		Assert.assertNotNull(importedStyleBookEntry);
 		Assert.assertEquals(
 			styleBookEntry.getUuid(), importedStyleBookEntry.getUuid());
 		Assert.assertNotEquals(name, importedStyleBookEntry.getName());
