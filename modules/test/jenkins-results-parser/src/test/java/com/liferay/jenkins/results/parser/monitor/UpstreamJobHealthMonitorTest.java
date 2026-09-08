@@ -69,10 +69,10 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteMergeWithoutSubsequentRun() throws Exception {
+	public void testExecuteExpired() throws Exception {
 		_setBuildsJSONObject(
-			_newBuildJSONObject(0, _SKIPPED_RUNNING_DESCRIPTION),
-			_newBuildJSONObject(21600, _newInProgressDescription()));
+			_newBuildJSONObject(0, _newSkippedAlreadyRanDescription()),
+			_newBuildJSONObject(21600, _newInvocationDescription("EXPIRE")));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -80,7 +80,27 @@ public class UpstreamJobHealthMonitorTest
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
-		testEquals("PENDING", metrics.get("last.invocation.result"));
+		testEquals("EXPIRE", metrics.get("last.invocation.result"));
+
+		String message = monitorResult.getMessage();
+
+		Assert.assertTrue(message.contains("was expired before it completed"));
+	}
+
+	@Test
+	public void testExecuteMergeWithoutSubsequentRun() throws Exception {
+		_setBuildsJSONObject(
+			_newBuildJSONObject(0, _SKIPPED_RUNNING_DESCRIPTION),
+			_newBuildJSONObject(
+				21600, _newInvocationDescription("IN PROGRESS")));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		testEquals("IN PROGRESS", metrics.get("last.invocation.result"));
 		testEquals(
 			_INVOCATION_BUILD_URL, metrics.get("last.invocation.build.url"));
 
@@ -90,7 +110,7 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteNoMergeAndNoRun() throws Exception {
+	public void testExecuteNoInvocationInWindow() throws Exception {
 		_setBuildsJSONObject(
 			_newBuildJSONObject(0, _newSkippedAlreadyRanDescription()),
 			_newBuildJSONObject(3600, _newSkippedAlreadyRanDescription()),
@@ -98,19 +118,19 @@ public class UpstreamJobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-		testEquals(
-			"The upstream testsuite for branch master is OK",
-			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 
-		Map<String, String> metrics = monitorResult.getMetrics();
+		String message = monitorResult.getMessage();
 
-		testEquals("3", metrics.get("controller.skipped.streak"));
+		Assert.assertTrue(
+			message.contains(
+				"Unable to determine the last upstream testsuite run"));
 	}
 
 	@Test
 	public void testExecuteNotGreen() throws Exception {
-		_setBuildsJSONObject(_newBuildJSONObject(0, _newFailureDescription()));
+		_setBuildsJSONObject(
+			_newBuildJSONObject(0, _newInvocationDescription("FAILURE")));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
@@ -119,15 +139,12 @@ public class UpstreamJobHealthMonitorTest
 			"The upstream testsuite for branch master completed with the " +
 				"result \"FAILURE\"",
 			monitorResult.getMessage());
-
-		Map<String, String> metrics = monitorResult.getMetrics();
-
-		testEquals("FAILURE", metrics.get("last.invocation.result"));
 	}
 
 	@Test
 	public void testExecuteNotGreenWhenExpectedGreenIsFalse() throws Exception {
-		_setBuildsJSONObject(_newBuildJSONObject(0, _newFailureDescription()));
+		_setBuildsJSONObject(
+			_newBuildJSONObject(0, _newInvocationDescription("FAILURE")));
 
 		Properties monitorProperties = _newMonitorProperties();
 
@@ -140,13 +157,47 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteRecentMergeIsNotOverdue() throws Exception {
+	public void testExecuteQuietBranchDoesNotAlert() throws Exception {
 		_setBuildsJSONObject(
-			_newBuildJSONObject(1800, _newInProgressDescription()));
+			_newBuildJSONObject(0, _newSkippedAlreadyRanDescription()),
+			_newBuildJSONObject(3600, _newSkippedAlreadyRanDescription()),
+			_newBuildJSONObject(432000, _newInvocationDescription("SUCCESS")));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
 		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+		testEquals(
+			"The upstream testsuite for branch master is OK",
+			monitorResult.getMessage());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		testEquals("SUCCESS", metrics.get("last.invocation.result"));
+	}
+
+	@Test
+	public void testExecuteRecentMergeIsNotOverdue() throws Exception {
+		_setBuildsJSONObject(
+			_newBuildJSONObject(
+				1800, _newInvocationDescription("IN PROGRESS")));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+	}
+
+	@Test
+	public void testExecuteUnstableIsGreen() throws Exception {
+		_setBuildsJSONObject(
+			_newBuildJSONObject(0, _newInvocationDescription("UNSTABLE")));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
+
+		Map<String, String> metrics = monitorResult.getMetrics();
+
+		testEquals("UNSTABLE", metrics.get("last.invocation.result"));
 	}
 
 	@Test
@@ -185,15 +236,15 @@ public class UpstreamJobHealthMonitorTest
 		);
 	}
 
-	private String _newFailureDescription() {
-		return JenkinsResultsParserUtil.combine(
-			"<strong style=\"color: red\">FAILURE</strong> - ",
-			_INVOCATION_BUILD_URL);
-	}
+	private String _newInvocationDescription(String result) {
+		String sha = RandomTestUtil.randomSHA();
 
-	private String _newInProgressDescription() {
 		return JenkinsResultsParserUtil.combine(
-			"<strong>IN PROGRESS</strong> - ", _INVOCATION_BUILD_URL);
+			"<strong>", result, "</strong> - <a href=\"", _INVOCATION_BUILD_URL,
+			"\">Build URL</a><ul><li><strong>",
+			"Git ID:</strong> <a href=\"https://github.com/liferay",
+			"/liferay-portal/commit/", sha, "\">", sha.substring(0, 7),
+			"</a></li></ul>");
 	}
 
 	private Properties _newMonitorProperties() {
