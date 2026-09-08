@@ -1,8 +1,9 @@
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import React, {useContext} from 'react';
+import TouchedAccountsCard from '../components/TouchedAccountsCard';
 import {ChannelContext} from 'shared/context/channel';
-import {mockCampaigns} from '../utils/mock-campaigns';
+import {mockCampaignAccounts, mockCampaigns} from '../utils/mock-campaigns';
 import {useParams} from 'react-router-dom';
 
 const CampaignDetail: React.FC = () => {
@@ -40,7 +41,13 @@ const CampaignDetail: React.FC = () => {
 				</BasePage.Row>
 			</BasePage.Header>
 
-			<BasePage.Body />
+			<BasePage.Body>
+				<TouchedAccountsCard
+					channelId={channelId!}
+					groupId={groupId!}
+					items={mockCampaignAccounts}
+				/>
+			</BasePage.Body>
 		</BasePage>
 	);
 };
