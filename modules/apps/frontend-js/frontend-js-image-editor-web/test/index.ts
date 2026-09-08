@@ -8,7 +8,11 @@ import '@testing-library/jest-dom';
 import * as surface from '../src/main/resources/META-INF/resources/js/index';
 
 describe('the module surface', () => {
-	it('exists and starts empty on purpose', () => {
-		expect(Object.keys(surface)).toHaveLength(0);
+	it('exports the core contracts', () => {
+		expect(Object.keys(surface).sort()).toEqual([
+			'ImageEditorLoadError',
+			'disposeLoadedImage',
+			'loadImage',
+		]);
 	});
 });
