@@ -6,6 +6,8 @@ import React from 'react';
 import {act} from '@testing-library/react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render, screen, within} from '@testing-library/react';
+import {formatDateToTimeZone, getCustomDateTimeFormat} from 'shared/util/date';
+import {getTimestamp} from 'test/data';
 import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
@@ -231,5 +233,134 @@ describe('List', () => {
 
 		expect(within(row).getByText('Individual')).toBeInTheDocument();
 		expect(within(row).getByText('2.3K individuals')).toBeInTheDocument();
+	});
+
+	it('shows a dash as the membership of a segment without members', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					accountsCount: 0,
+					individualCount: 0,
+					segmentCategory: SegmentCategories.Individual
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('-')).toBeInTheDocument();
+		expect(within(row).queryByText('0 individuals')).toBeNull();
+	});
+
+	it('shows a dash as the membership of an account segment without accounts', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					accountsCount: 0,
+					individualCount: 2300,
+					segmentCategory: SegmentCategories.Account
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('-')).toBeInTheDocument();
+		expect(within(row).queryByText('0 accounts')).toBeNull();
+	});
+
+	it('shows the membership as processing while the count is not available', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					accountsCount: null,
+					individualCount: null,
+					lastMembershipUpdateDate: getTimestamp(),
+					segmentCategory: SegmentCategories.Individual
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('Processing')).toBeInTheDocument();
+		expect(within(row).queryByText('-')).toBeNull();
+	});
+
+	it('shows the last membership update date', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					lastMembershipUpdateDate: getTimestamp()
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(
+			within(row).getByText(
+				formatDateToTimeZone(getTimestamp(), getCustomDateTimeFormat())
+			)
+		).toBeInTheDocument();
+	});
+
+	it('shows a dash as the last membership update date when it is zero', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					lastMembershipUpdateDate: 0
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('-')).toBeInTheDocument();
+		expect(within(row).queryByText('Processing')).toBeNull();
+	});
+
+	it('shows the last membership update date as processing while it is not available', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					lastMembershipUpdateDate: null
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('Processing')).toBeInTheDocument();
 	});
 });
