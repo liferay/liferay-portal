@@ -1644,10 +1644,16 @@ paths:
                     application/json:
                         schema:
                             $ref: "#/components/schemas/ReferencingTestEntity"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ReferencingTestEntity"
             responses:
                 200:
                     content:
                         application/json:
+                            schema:
+                                $ref: "#/components/schemas/ReferencingTestEntity"
+                        application/xml:
                             schema:
                                 $ref: "#/components/schemas/ReferencingTestEntity"
             tags: ["ReferencingTestEntity"]

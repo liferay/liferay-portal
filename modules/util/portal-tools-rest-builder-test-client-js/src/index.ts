@@ -18,6 +18,7 @@
 	export {ERCSiteTestEntityAPI} from './apis/ERCSiteTestEntityAPI';
 	export {FilterAPI} from './apis/FilterAPI';
 	export {MultipartTestEntityAPI} from './apis/MultipartTestEntityAPI';
+	export {ReferencingTestEntityAPI} from './apis/ReferencingTestEntityAPI';
 	export {SchemaAPI} from './apis/SchemaAPI';
 	export {ScopedTestEntityAPI} from './apis/ScopedTestEntityAPI';
 	export {SharedInternalModelBatchTestEntityAPI} from './apis/SharedInternalModelBatchTestEntityAPI';
@@ -63,6 +64,7 @@
 	export {PageSort} from './models/PageSort';
 	export {PageTestEntity} from './models/PageTestEntity';
 	export {Permission} from './models/Permission';
+	export {ReferencingTestEntity} from './models/ReferencingTestEntity';
 	export {Schema} from './models/Schema';
 	export {ScopedTestEntity} from './models/ScopedTestEntity';
 	export {SharedInternalModelBatchTestEntity} from './models/SharedInternalModelBatchTestEntity';

@@ -105,6 +105,8 @@ public class OpenAPIResourceImpl {
 
 			add(MultipartTestEntityResourceImpl.class);
 
+			add(ReferencingTestEntityResourceImpl.class);
+
 			add(SchemaResourceImpl.class);
 
 			add(ScopedTestEntityResourceImpl.class);
@@ -124,4 +126,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1344498725
+// LIFERAY-REST-BUILDER-HASH:346215076

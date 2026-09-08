@@ -18,6 +18,7 @@ import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.EntityM
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.EntityModelResourceTestEntity2ResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.FilterResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.MultipartTestEntityResourceImpl;
+import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.ReferencingTestEntityResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.SchemaResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.ScopedTestEntityResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.SharedInternalModelBatchTestEntityResourceImpl;
@@ -35,6 +36,7 @@ import com.liferay.portal.tools.rest.builder.test.resource.v1_0.EntityModelResou
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.EntityModelResourceTestEntity2Resource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.FilterResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.MultipartTestEntityResource;
+import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ReferencingTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.SchemaResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ScopedTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.SharedInternalModelBatchTestEntityResource;
@@ -85,6 +87,8 @@ public class ServletDataImpl implements ServletData {
 			_filterResourceComponentServiceObjects);
 		Mutation.setMultipartTestEntityResourceComponentServiceObjects(
 			_multipartTestEntityResourceComponentServiceObjects);
+		Mutation.setReferencingTestEntityResourceComponentServiceObjects(
+			_referencingTestEntityResourceComponentServiceObjects);
 		Mutation.setSchemaResourceComponentServiceObjects(
 			_schemaResourceComponentServiceObjects);
 		Mutation.setScopedTestEntityResourceComponentServiceObjects(
@@ -435,6 +439,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							MultipartTestEntityResourceImpl.class,
 							"putSiteMultipartTestEntity"));
+					put(
+						"mutation#createReferencingTestEntity",
+						new ObjectValuePair<>(
+							ReferencingTestEntityResourceImpl.class,
+							"postReferencingTestEntity"));
+					put(
+						"mutation#createReferencingTestEntityBatch",
+						new ObjectValuePair<>(
+							ReferencingTestEntityResourceImpl.class,
+							"postReferencingTestEntityBatch"));
 					put(
 						"mutation#createSchemasPageExportBatch",
 						new ObjectValuePair<>(
@@ -916,6 +930,10 @@ public class ServletDataImpl implements ServletData {
 		_multipartTestEntityResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<ReferencingTestEntityResource>
+		_referencingTestEntityResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<SchemaResource>
 		_schemaResourceComponentServiceObjects;
 
@@ -948,4 +966,4 @@ public class ServletDataImpl implements ServletData {
 		_testEntityAddressResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1186725564
+// LIFERAY-REST-BUILDER-HASH:-725757873
