@@ -7,6 +7,7 @@ package com.liferay.mcp.server.rest.internal.upgrade.registry;
 
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileDataMaskUpgradeProcess;
+import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileToolUpgradeProcess;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileUpgradeProcess;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPPromptUpgradeProcess;
 import com.liferay.object.constants.ObjectDefinitionConstants;
@@ -57,6 +58,12 @@ public class MCPServerRestUpgradeStepRegistrator
 				_objectDefinitionLocalService, _objectEntryLocalService,
 				_objectFieldLocalService, _objectFieldSettingLocalService,
 				_objectFolderLocalService, _objectRelationshipLocalService));
+
+		registry.register(
+			"1.2.0", "1.3.0",
+			new MCPProfileToolUpgradeProcess(
+				_companyLocalService, _objectDefinitionLocalService,
+				_objectFieldLocalService));
 	}
 
 	@Reference
