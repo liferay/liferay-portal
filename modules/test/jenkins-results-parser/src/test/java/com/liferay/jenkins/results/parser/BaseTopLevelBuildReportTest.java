@@ -22,6 +22,51 @@ public class BaseTopLevelBuildReportTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testAccessorsWithBuildReport() {
+		String testSuiteName = RandomTestUtil.randomString();
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(
+				new JSONObject(
+				).put(
+					"testSuiteName", testSuiteName
+				).put(
+					"totalActualDuration", 1000L
+				).put(
+					"totalCachedDuration", 2000L
+				).put(
+					"totalDuration", 3000L
+				));
+
+		Assert.assertEquals(
+			1000L, baseTopLevelBuildReport.getTotalActualDuration());
+		Assert.assertEquals(
+			2000L, baseTopLevelBuildReport.getTotalCachedDuration());
+		Assert.assertEquals(3000L, baseTopLevelBuildReport.getTotalDuration());
+		Assert.assertEquals(
+			testSuiteName, baseTopLevelBuildReport.getTestSuiteName());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		Assert.assertEquals("", baseTopLevelBuildReport.getTestSuiteName());
+	}
+
+	@Test
+	public void testAccessorsWithoutBuildReport() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(null);
+
+		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
+		Assert.assertNull(baseTopLevelBuildReport.getTestSuiteName());
+
+		Assert.assertEquals(
+			0L, baseTopLevelBuildReport.getTotalActualDuration());
+		Assert.assertEquals(
+			0L, baseTopLevelBuildReport.getTotalCachedDuration());
+		Assert.assertEquals(0L, baseTopLevelBuildReport.getTotalDuration());
+	}
+
+	@Test
 	public void testAddDownstreamBuildReport() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport();
@@ -123,12 +168,18 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	private BaseTopLevelBuildReport _newBaseTopLevelBuildReport() {
+		return _newBaseTopLevelBuildReport(new JSONObject());
+	}
+
+	private BaseTopLevelBuildReport _newBaseTopLevelBuildReport(
+		JSONObject buildReportJSONObject) {
+
 		return new BaseTopLevelBuildReport(
 			"https://test-1-1/job/test-job/123") {
 
 			@Override
 			public JSONObject getBuildReportJSONObject() {
-				return new JSONObject();
+				return buildReportJSONObject;
 			}
 
 		};
