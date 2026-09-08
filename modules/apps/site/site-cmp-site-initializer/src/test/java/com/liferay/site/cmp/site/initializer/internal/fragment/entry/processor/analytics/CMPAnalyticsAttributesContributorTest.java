@@ -16,11 +16,12 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Collections;
@@ -31,6 +32,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -62,62 +64,89 @@ public class CMPAnalyticsAttributesContributorTest {
 			_objectEntryLocalService);
 	}
 
-	@FeatureFlag(enable = false, value = "LPD-58677")
 	@Test
 	public void testGetAnalyticsAttributesWhenCMPIsDisabled() throws Exception {
-		Assert.assertEquals(
-			Collections.emptyMap(),
-			_cmpAnalyticsAttributesContributor.getAnalyticsAttributes(
-				_getInfoItemFieldMapped(), LocaleUtil.US));
+		try (MockedStatic<LicenseManagerUtil> licenseManagerUtilMockedStatic =
+				Mockito.mockStatic(LicenseManagerUtil.class)) {
 
-		Mockito.verifyNoInteractions(_objectDefinitionLocalService);
+			licenseManagerUtilMockedStatic.when(
+				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
+			).thenReturn(
+				false
+			);
+
+			Assert.assertEquals(
+				Collections.emptyMap(),
+				_cmpAnalyticsAttributesContributor.getAnalyticsAttributes(
+					_getInfoItemFieldMapped(), LocaleUtil.US));
+
+			Mockito.verifyNoInteractions(_objectDefinitionLocalService);
+		}
 	}
 
-	@FeatureFlag("LPD-58677")
 	@Test
 	public void testGetAnalyticsAttributesWhenObjectEntryIsNotCMSAsset()
 		throws Exception {
 
-		Mockito.when(
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					Mockito.eq("L_CMP_PROJECT"), Mockito.anyLong())
-		).thenReturn(
-			Mockito.mock(ObjectDefinition.class)
-		);
+		try (MockedStatic<LicenseManagerUtil> licenseManagerUtilMockedStatic =
+				Mockito.mockStatic(LicenseManagerUtil.class)) {
 
-		Assert.assertEquals(
-			Collections.emptyMap(),
-			_cmpAnalyticsAttributesContributor.getAnalyticsAttributes(
-				_getInfoItemFieldMapped(
-					_getObjectEntryFolder(RandomTestUtil.randomString())),
-				LocaleUtil.US));
+			licenseManagerUtilMockedStatic.when(
+				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
+			).thenReturn(
+				true
+			);
 
-		Mockito.verifyNoInteractions(_groupLocalService);
-		Mockito.verifyNoInteractions(_objectEntryLocalService);
+			Mockito.when(
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						Mockito.eq("L_CMP_PROJECT"), Mockito.anyLong())
+			).thenReturn(
+				Mockito.mock(ObjectDefinition.class)
+			);
+
+			Assert.assertEquals(
+				Collections.emptyMap(),
+				_cmpAnalyticsAttributesContributor.getAnalyticsAttributes(
+					_getInfoItemFieldMapped(
+						_getObjectEntryFolder(RandomTestUtil.randomString())),
+					LocaleUtil.US));
+
+			Mockito.verifyNoInteractions(_groupLocalService);
+			Mockito.verifyNoInteractions(_objectEntryLocalService);
+		}
 	}
 
-	@FeatureFlag("LPD-58677")
 	@Test
 	public void testGetAnalyticsAttributesWithoutCMPProjectObjectDefinition()
 		throws Exception {
 
-		Mockito.when(
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					Mockito.eq("L_CMP_PROJECT"), Mockito.anyLong())
-		).thenReturn(
-			null
-		);
+		try (MockedStatic<LicenseManagerUtil> licenseManagerUtilMockedStatic =
+				Mockito.mockStatic(LicenseManagerUtil.class)) {
 
-		Assert.assertEquals(
-			Collections.emptyMap(),
-			_cmpAnalyticsAttributesContributor.getAnalyticsAttributes(
-				_getInfoItemFieldMapped(), LocaleUtil.US));
+			licenseManagerUtilMockedStatic.when(
+				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
+			).thenReturn(
+				true
+			);
 
-		Mockito.verifyNoInteractions(_groupLocalService);
-		Mockito.verifyNoInteractions(_objectEntryFolderLocalService);
-		Mockito.verifyNoInteractions(_objectEntryLocalService);
+			Mockito.when(
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						Mockito.eq("L_CMP_PROJECT"), Mockito.anyLong())
+			).thenReturn(
+				null
+			);
+
+			Assert.assertEquals(
+				Collections.emptyMap(),
+				_cmpAnalyticsAttributesContributor.getAnalyticsAttributes(
+					_getInfoItemFieldMapped(), LocaleUtil.US));
+
+			Mockito.verifyNoInteractions(_groupLocalService);
+			Mockito.verifyNoInteractions(_objectEntryFolderLocalService);
+			Mockito.verifyNoInteractions(_objectEntryLocalService);
+		}
 	}
 
 	private InfoItemFieldMapped _getInfoItemFieldMapped() {

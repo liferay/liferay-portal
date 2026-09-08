@@ -16,9 +16,10 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -46,21 +47,16 @@ public class CMPAnalyticsAttributesContributor
 		throws PortalException {
 
 		if (!(infoItemFieldMapped.getObject() instanceof
-				ObjectEntry objectEntry)) {
+				ObjectEntry objectEntry) ||
+			!LicenseManagerUtil.isAppEnabled(App.CMP)) {
 
-			return Collections.emptyMap();
-		}
-
-		long companyId = objectEntry.getCompanyId();
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-58677")) {
 			return Collections.emptyMap();
 		}
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_CMP_PROJECT", companyId);
+					"L_CMP_PROJECT", objectEntry.getCompanyId());
 
 		if ((objectDefinition == null) ||
 			!CMPObjectEntryUtil.isCMSAsset(

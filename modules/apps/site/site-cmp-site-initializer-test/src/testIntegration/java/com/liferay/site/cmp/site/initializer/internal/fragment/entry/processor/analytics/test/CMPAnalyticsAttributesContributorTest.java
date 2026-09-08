@@ -14,12 +14,13 @@ import com.liferay.fragment.entry.processor.helper.InfoItemFieldMapped;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -29,6 +30,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -38,7 +40,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Marcos Martins
  */
-@FeatureFlag("LPD-58677")
 @RunWith(Arquillian.class)
 public class CMPAnalyticsAttributesContributorTest {
 
@@ -51,6 +52,8 @@ public class CMPAnalyticsAttributesContributorTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Assume.assumeTrue(LicenseManagerUtil.isAppEnabled(App.CMP));
+
 		CMPTestUtil.getOrAddGroup(CMPAnalyticsAttributesContributorTest.class);
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
