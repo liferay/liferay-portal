@@ -4473,26 +4473,40 @@ public class BundleSiteInitializer implements SiteInitializer {
 				continue;
 			}
 
-			Page<TaxonomyVocabulary> taxonomyVocabularyPage =
-				taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
-					groupId, "", null,
-					taxonomyVocabularyResource.toFilter(
-						StringBundler.concat(
-							"name eq '", taxonomyVocabulary.getName(), "'")),
-					null, null);
+			if (Validator.isNotNull(
+					taxonomyVocabulary.getExternalReferenceCode())) {
 
-			TaxonomyVocabulary existingTaxonomyVocabulary =
-				taxonomyVocabularyPage.fetchFirstItem();
-
-			if (existingTaxonomyVocabulary == null) {
 				taxonomyVocabulary =
-					taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
-						groupId, taxonomyVocabulary);
+					taxonomyVocabularyResource.
+						putSiteTaxonomyVocabularyByExternalReferenceCode(
+							groupId,
+							taxonomyVocabulary.getExternalReferenceCode(),
+							taxonomyVocabulary);
 			}
 			else {
-				taxonomyVocabulary =
-					taxonomyVocabularyResource.patchTaxonomyVocabulary(
-						existingTaxonomyVocabulary.getId(), taxonomyVocabulary);
+				Page<TaxonomyVocabulary> taxonomyVocabularyPage =
+					taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
+						groupId, "", null,
+						taxonomyVocabularyResource.toFilter(
+							StringBundler.concat(
+								"name eq '", taxonomyVocabulary.getName(),
+								"'")),
+						null, null);
+
+				TaxonomyVocabulary existingTaxonomyVocabulary =
+					taxonomyVocabularyPage.fetchFirstItem();
+
+				if (existingTaxonomyVocabulary == null) {
+					taxonomyVocabulary =
+						taxonomyVocabularyResource.postSiteTaxonomyVocabulary(
+							groupId, taxonomyVocabulary);
+				}
+				else {
+					taxonomyVocabulary =
+						taxonomyVocabularyResource.patchTaxonomyVocabulary(
+							existingTaxonomyVocabulary.getId(),
+							taxonomyVocabulary);
+				}
 			}
 
 			stringUtilReplaceValues.put(
@@ -4540,6 +4554,13 @@ public class BundleSiteInitializer implements SiteInitializer {
 			taxonomyCategoryResourceBuilder.user(
 				serviceContext.fetchUser()
 			).build();
+
+		if (Validator.isNotNull(taxonomyCategory.getExternalReferenceCode())) {
+			return taxonomyCategoryResource.
+				putTaxonomyVocabularyTaxonomyCategoryByExternalReferenceCode(
+					vocabularyId, taxonomyCategory.getExternalReferenceCode(),
+					taxonomyCategory);
+		}
 
 		Page<TaxonomyCategory> taxonomyCategoryPage =
 			taxonomyCategoryResource.
