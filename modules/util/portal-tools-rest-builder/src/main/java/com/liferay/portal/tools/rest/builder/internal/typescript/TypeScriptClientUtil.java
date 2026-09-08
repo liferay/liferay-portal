@@ -758,10 +758,24 @@ public class TypeScriptClientUtil {
 			return dataType;
 		}
 
+		if ((schema.getAnyOfSchemas() != null) ||
+			(schema.getOneOfSchemas() != null)) {
+
+			return "any";
+		}
+
 		String type = schema.getType();
+
+		if (type == null) {
+			return "any";
+		}
 
 		if (type.equals("array")) {
 			Items items = schema.getItems();
+
+			if (items == null) {
+				return "Array<any>";
+			}
 
 			return "Array<" + _getDataType(dataTypes, items.toSchema()) + ">";
 		}
