@@ -272,26 +272,34 @@ testWithIsolatedSite(
 
 		await pageEditorPage.selectFragment(collectionId);
 
-		const collectionStyle = page.getByLabel('CollectionStyle');
+		const configurationPanel = page.getByLabel('Configuration Panel', {
+			exact: true,
+		});
 
-		await expect(collectionStyle.getByLabel('Pagination')).toHaveValue(
-			'numeric'
-		);
+		await expect(
+			configurationPanel.getByLabel('Pagination', {exact: true})
+		).toHaveValue('numeric');
 
 		// Assert display all pages is checked by default and display all collection items is not visible
 
 		await expect(
-			collectionStyle.getByLabel('Display All Pages')
+			configurationPanel.getByLabel('Display All Pages', {
+				exact: true,
+			})
 		).toBeChecked();
 
 		await expect(
-			collectionStyle.getByLabel('Display All Collection Items')
+			configurationPanel.getByLabel('Display All Collection Items', {
+				exact: true,
+			})
 		).not.toBeVisible();
 
 		// Assert default value for maximum number of items per page
 
 		await expect(
-			collectionStyle.getByLabel('Maximum Number of Items per Page')
+			configurationPanel.getByLabel('Maximum Number of Items per Page', {
+				exact: true,
+			})
 		).toHaveValue('20');
 
 		// Assert performance message
@@ -361,7 +369,12 @@ testWithIsolatedSite(
 		});
 
 		await expect(
-			collectionStyle.getByLabel('Maximum Number of Pages to Display')
+			configurationPanel.getByLabel(
+				'Maximum Number of Pages to Display',
+				{
+					exact: true,
+				}
+			)
 		).toHaveValue('5');
 
 		await expect(page.getByLabel('Go to page, 1')).toBeVisible();
@@ -399,7 +412,12 @@ testWithIsolatedSite(
 		});
 
 		await expect(
-			collectionStyle.getByLabel('Maximum Number of Pages to Display')
+			configurationPanel.getByLabel(
+				'Maximum Number of Pages to Display',
+				{
+					exact: true,
+				}
+			)
 		).toHaveValue('1');
 
 		// Change pagination configuration to none
@@ -417,7 +435,12 @@ testWithIsolatedSite(
 		// Assert default value for maximun number of items to display
 
 		await expect(
-			collectionStyle.getByLabel('Maximum Number of Items to Display')
+			configurationPanel.getByLabel(
+				'Maximum Number of Items to Display',
+				{
+					exact: true,
+				}
+			)
 		).toHaveValue('5');
 
 		await pageEditorPage.changeConfiguration({
@@ -427,17 +450,21 @@ testWithIsolatedSite(
 		});
 
 		await expect(
-			collectionStyle.getByText('This collection has 25 items.')
+			configurationPanel.getByText('This collection has 25 items.')
 		).toBeVisible();
 
 		// Assert display all pages is not visible and display all collection items by default is disabled
 
 		await expect(
-			collectionStyle.getByLabel('Display All Pages')
+			configurationPanel.getByLabel('Display All Pages', {
+				exact: true,
+			})
 		).not.toBeVisible();
 
 		await expect(
-			collectionStyle.getByLabel('Display All Collection Items')
+			configurationPanel.getByLabel('Display All Collection Items', {
+				exact: true,
+			})
 		).not.toBeChecked();
 	}
 );
