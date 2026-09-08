@@ -8522,10 +8522,10 @@ public class DataFactory {
 
 		// Other fields
 
-		objectEntryModel.setDefaultLanguageId("en_US");
 		objectEntryModel.setHeadObjectEntryId(
 			objectEntryModel.getObjectEntryId());
 		objectEntryModel.setObjectDefinitionId(objectDefinitionId);
+		objectEntryModel.setDefaultLanguageId("en_US");
 		objectEntryModel.setStatus(WorkflowConstants.STATUS_APPROVED);
 		objectEntryModel.setStatusByUserId(_sampleUserId);
 		objectEntryModel.setStatusByUserName(_SAMPLE_USER_NAME);
