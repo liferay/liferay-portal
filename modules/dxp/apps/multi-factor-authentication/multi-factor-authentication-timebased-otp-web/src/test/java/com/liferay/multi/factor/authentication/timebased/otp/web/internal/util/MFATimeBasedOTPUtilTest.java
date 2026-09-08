@@ -6,7 +6,7 @@
 package com.liferay.multi.factor.authentication.timebased.otp.web.internal.util;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import javax.crypto.Mac;
@@ -31,7 +31,7 @@ public class MFATimeBasedOTPUtilTest {
 	public void test() throws Exception {
 		String sharedSecret = MFATimeBasedOTPUtil.generateSharedSecret(20);
 
-		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+		FIPSModeTestUtil.assertAlgorithmSwitch(
 			"HmacSHA1", Mac.class, "HmacSHA256", Mac::getInstance,
 			() -> _generateCurrentOTP(sharedSecret));
 	}

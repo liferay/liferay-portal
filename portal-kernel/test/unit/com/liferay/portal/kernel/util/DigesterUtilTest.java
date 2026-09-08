@@ -5,7 +5,7 @@
 
 package com.liferay.portal.kernel.util;
 
-import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import java.security.MessageDigest;
@@ -19,7 +19,7 @@ public class DigesterUtilTest {
 
 	@Test
 	public void test() throws Exception {
-		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+		FIPSModeTestUtil.assertAlgorithmSwitch(
 			DigesterUtil.SHA, MessageDigest.class, DigesterUtil.SHA_256,
 			MessageDigest::getInstance,
 			() -> DigesterUtil.digestHex(RandomTestUtil.randomString()));

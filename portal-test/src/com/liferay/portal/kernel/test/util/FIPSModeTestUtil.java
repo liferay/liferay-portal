@@ -9,13 +9,19 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 
+import org.junit.Assert;
+import org.junit.function.ThrowingRunnable;
+
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
+ * @author Caio Farias
  * @author Lucas Miranda
  */
-public class FIPSAlgorithmTestUtil {
+public class FIPSModeTestUtil {
+
+	public static final String AUTH_CLASS_NAME = "org.jgroups.auth.X509Token";
 
 	public static <T> void assertAlgorithmSwitch(
 			String algorithm, Class<T> classToMock, String fipsAlgorithm,
@@ -48,6 +54,17 @@ public class FIPSAlgorithmTestUtil {
 				() -> unsafeConsumer.accept(fipsAlgorithm),
 				Mockito.atLeastOnce());
 		}
+	}
+
+	public static void assertSecurityException(
+		String expectedMessage, ThrowingRunnable throwingRunnable) {
+
+		SecurityException securityException = Assert.assertThrows(
+			SecurityException.class, throwingRunnable);
+
+		String message = securityException.getMessage();
+
+		Assert.assertTrue(message, message.contains(expectedMessage));
 	}
 
 }

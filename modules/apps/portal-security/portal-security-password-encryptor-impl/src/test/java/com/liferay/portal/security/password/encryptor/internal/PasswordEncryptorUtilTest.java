@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DigesterUtil;
@@ -283,7 +283,7 @@ public class PasswordEncryptorUtilTest {
 				PasswordEncryptor.TYPE_SSHA);
 		}
 
-		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+		FIPSModeTestUtil.assertAlgorithmSwitch(
 			DigesterUtil.SHA_1, MessageDigest.class, DigesterUtil.SHA_256,
 			MessageDigest::getInstance,
 			() -> PasswordEncryptorUtil.encrypt(

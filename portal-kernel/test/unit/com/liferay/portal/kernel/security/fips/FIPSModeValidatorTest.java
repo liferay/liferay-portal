@@ -7,7 +7,11 @@ package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProvider;
+import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.DependenciesTestUtil;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -21,8 +25,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,6 +43,23 @@ import org.w3c.dom.NodeList;
  * @author Caio Farias
  */
 public class FIPSModeValidatorTest {
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+
+		Mockito.when(
+			_secureXMLFactoryProvider.newDocumentBuilderFactory()
+		).thenAnswer(
+			input -> DocumentBuilderFactory.newInstance()
+		);
+
+		SecureXMLFactoryProviderUtil secureXMLFactoryProviderUtil =
+			new SecureXMLFactoryProviderUtil();
+
+		secureXMLFactoryProviderUtil.setSecureXMLFactoryProvider(
+			_secureXMLFactoryProvider);
+	}
 
 	@Test
 	public void testGetAllowedTLSCipherSuites() {
@@ -131,8 +159,10 @@ public class FIPSModeValidatorTest {
 		Document document = ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_readChannelPropertiesDocument",
 			new Class<?>[] {String.class},
-			FIPSModeTestUtil.getChannelPropertiesLocation(
-				"cluster-link-channel-properties.xml"));
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class,
+					"cluster-link-channel-properties.xml")));
 
 		NodeList nodeList = document.getElementsByTagName("AUTH");
 
@@ -147,8 +177,10 @@ public class FIPSModeValidatorTest {
 		_assertSecurityException(
 			"Unable to parse the cluster link channel properties",
 			"_readChannelPropertiesDocument", new Class<?>[] {String.class},
-			FIPSModeTestUtil.getChannelPropertiesLocation(
-				"cluster-link-channel-properties-doctype.xml"));
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class,
+					"cluster-link-channel-properties-malformed.xml")));
 		_assertSecurityException(
 			"Unable to read the cluster link channel properties",
 			"_readChannelPropertiesDocument", new Class<?>[] {String.class},
@@ -273,23 +305,29 @@ public class FIPSModeValidatorTest {
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateClusterLinkChannelConfiguration",
 			new Class<?>[] {String.class},
-			FIPSModeTestUtil.getChannelPropertiesLocation(
-				"cluster-link-channel-properties.xml"));
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class,
+					"cluster-link-channel-properties.xml")));
 
 		_assertSecurityException(
 			"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in FIPS " +
 				"mode",
 			"_validateClusterLinkChannelConfiguration",
 			new Class<?>[] {String.class},
-			FIPSModeTestUtil.getChannelPropertiesLocation(
-				"cluster-link-channel-properties-asym-encrypt.xml"));
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class,
+					"cluster-link-channel-properties-asym-encrypt.xml")));
 		_assertSecurityException(
 			"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in FIPS " +
 				"mode",
 			"_validateClusterLinkChannelConfiguration",
 			new Class<?>[] {String.class},
-			FIPSModeTestUtil.getChannelPropertiesLocation(
-				"cluster-link-channel-properties-future-encrypt.xml"));
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class,
+					"cluster-link-channel-properties-future-encrypt.xml")));
 	}
 
 	@Test
@@ -361,8 +399,10 @@ public class FIPSModeValidatorTest {
 
 		PropsUtil.set(
 			transportKey,
-			FIPSModeTestUtil.getChannelPropertiesLocation(
-				"cluster-link-channel-properties.xml"));
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class,
+					"cluster-link-channel-properties.xml")));
 
 		try (SafeCloseable safeCloseable1 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -370,8 +410,10 @@ public class FIPSModeValidatorTest {
 			SafeCloseable safeCloseable2 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL",
-					FIPSModeTestUtil.getChannelPropertiesLocation(
-						"cluster-link-channel-properties.xml"),
+					String.valueOf(
+						DependenciesTestUtil.getDependencyAsFile(
+							FIPSModeValidatorTest.class,
+							"cluster-link-channel-properties.xml")),
 					false);
 			SafeCloseable safeCloseable3 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
@@ -396,8 +438,10 @@ public class FIPSModeValidatorTest {
 
 			PropsUtil.set(
 				transportKey,
-				FIPSModeTestUtil.getChannelPropertiesLocation(
-					"cluster-link-channel-properties.xml"));
+				String.valueOf(
+					DependenciesTestUtil.getDependencyAsFile(
+						FIPSModeValidatorTest.class,
+						"cluster-link-channel-properties.xml")));
 
 			_assertClusterLinkConfigurationSecurityException(
 				"must authenticate cluster members with \"" +
@@ -591,16 +635,6 @@ public class FIPSModeValidatorTest {
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> "TRUE",
 			Map.of(key, new String[] {"true"}));
-		ReflectionTestUtil.invoke(
-			FIPSModeValidator.class, "_validateRequiredPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "pkix",
-			Map.of(key, new String[] {"PKIX"}));
-		ReflectionTestUtil.invoke(
-			FIPSModeValidator.class, "_validateRequiredPropertyValues",
-			new Class<?>[] {Function.class, Map.class},
-			(Function<String, String>)curKey -> "true",
-			Map.of(key, new String[] {"true"}));
 
 		_assertSecurityException(
 			"FIPS mode requires the property \"" + key + "\"",
@@ -626,6 +660,13 @@ public class FIPSModeValidatorTest {
 			new Class<?>[] {Function.class, Map.class},
 			(Function<String, String>)curKey -> null,
 			Map.of(key, new String[] {"true"}));
+		_assertSecurityException(
+			"FIPS mode requires the property \"" + key +
+				"\" to include \"TLSv1.3\"",
+			"_validateRequiredPropertyValues",
+			new Class<?>[] {Function.class, Map.class},
+			(Function<String, String>)curKey -> "TLSv1.2",
+			Map.of(key, new String[] {"TLSv1.2", "TLSv1.3"}));
 
 		System.setProperty(key, "true");
 
@@ -700,7 +741,10 @@ public class FIPSModeValidatorTest {
 		throws Exception {
 
 		PropsUtil.set(
-			key, FIPSModeTestUtil.getChannelPropertiesLocation(fileName));
+			key,
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class, fileName)));
 
 		_assertSecurityException(
 			expectedMessage, "_validateClusterLinkConfiguration",
@@ -731,11 +775,16 @@ public class FIPSModeValidatorTest {
 		Document document = ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_readChannelPropertiesDocument",
 			new Class<?>[] {String.class},
-			FIPSModeTestUtil.getChannelPropertiesLocation(fileName));
+			String.valueOf(
+				DependenciesTestUtil.getDependencyAsFile(
+					FIPSModeValidatorTest.class, fileName)));
 
 		NodeList nodeList = document.getElementsByTagName(tagName);
 
 		return (Element)nodeList.item(0);
 	}
+
+	@Mock
+	private SecureXMLFactoryProvider _secureXMLFactoryProvider;
 
 }

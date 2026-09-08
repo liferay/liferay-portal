@@ -1,0 +1,3 @@
+<config>
+	<AUTH auth_class="org.jgroups.auth.X509Token" />
+</confi

@@ -6,7 +6,7 @@
 package com.liferay.analytics.settings.internal.security.auth.verifier;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -33,10 +33,10 @@ public class AnalyticsSecurityAuthVerifierTest {
 
 	@Test
 	public void testValidateSignature() throws Exception {
-		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+		FIPSModeTestUtil.assertAlgorithmSwitch(
 			"DSA", KeyFactory.class, "EC", KeyFactory::getInstance,
 			this::_invokeValidateSignature);
-		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+		FIPSModeTestUtil.assertAlgorithmSwitch(
 			"DSA", Signature.class, "SHA256withECDSA", Signature::getInstance,
 			this::_invokeValidateSignature);
 	}

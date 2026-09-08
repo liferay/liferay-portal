@@ -8,7 +8,7 @@ package com.liferay.oauth.client.persistence.service.impl;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.FIPSAlgorithmTestUtil;
+import com.liferay.portal.kernel.test.util.FIPSModeTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -32,7 +32,7 @@ public class OAuthClientASLocalMetadataLocalServiceImplTest {
 
 	@Test
 	public void testGenerateLocalWellKnownURI() throws Exception {
-		FIPSAlgorithmTestUtil.assertAlgorithmSwitch(
+		FIPSModeTestUtil.assertAlgorithmSwitch(
 			DigesterUtil.MD5, MessageDigest.class, DigesterUtil.SHA_256,
 			MessageDigest::getInstance,
 			() -> ReflectionTestUtil.invoke(
