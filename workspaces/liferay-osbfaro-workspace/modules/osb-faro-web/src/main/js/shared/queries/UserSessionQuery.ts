@@ -10,6 +10,8 @@ export interface UserSessionEvent {
 	createDate: string;
 	eventDate: string;
 	eventId: string;
+	experienceId?: string | null;
+	experienceName?: string | null;
 	name: string;
 	pageDescription: string;
 	pageGroupId?: string | null;
@@ -100,6 +102,8 @@ export default gql`
 						createDate
 						eventDate
 						eventId
+						experienceId
+						experienceName
 						name
 						pageDescription
 						pageGroupId

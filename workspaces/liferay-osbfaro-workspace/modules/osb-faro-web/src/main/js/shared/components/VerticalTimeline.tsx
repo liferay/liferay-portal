@@ -1,5 +1,5 @@
 import ClayIcon from '@clayui/icon';
-import ClayLabel from '@clayui/label';
+import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
@@ -17,7 +17,6 @@ import {
 import {
 	isWebhookUserAgent,
 	SessionEvent,
-	TimelineCampaign,
 	VerticalTimelineHeader,
 	VerticalTimelineIndividual,
 	VerticalTimelineItem,
@@ -98,40 +97,29 @@ const EventCountPill: FC<{totalEvents?: number}> = ({totalEvents}) =>
 		</span>
 	);
 
-/**
- * Marks a row the visitor reached through a campaign, shown beside the row's
- * event count. Every touch reads the same on the row itself; which campaign it
- * was rides in the tooltip, so a long Salesforce campaign name never stretches
- * the row. A touch whose identity matched no stored campaign names its raw id
- * there instead, so the two states stay tellable apart without the row
- * carrying a machine-readable string.
- */
-const CampaignLabel: FC<{campaign: TimelineCampaign}> = ({
-	campaign: {campaignId, campaignName},
-}) => (
+const RowIconLabel: FC<{
+	displayType: LabelDisplayType;
+	icon: string;
+	rootClassName: string;
+	text: string;
+	title: string;
+}> = ({displayType, icon, rootClassName, text, title}) => (
 	<span
-		className="campaign-label-root align-items-center d-inline-flex flex-shrink-0"
+		className={`${rootClassName}-root align-items-center d-inline-flex flex-shrink-0`}
 		data-tooltip
 		data-tooltip-align="top"
-		title={
-			campaignName ??
-			(sub(Liferay.Language.get('unresolved-campaign-x'), [
-				campaignId,
-			]) as string)
-		}
+		title={title}
 	>
 		<ClayLabel
-			className="campaign-label flex-shrink-0 font-weight-semi-bold m-0"
-			displayType="warning"
+			className={`${rootClassName} flex-shrink-0 font-weight-semi-bold m-0`}
+			displayType={displayType}
 			withClose={false}
 		>
 			<ClayLabel.ItemBefore>
-				<ClayIcon symbol="megaphone" />
+				<ClayIcon symbol={icon} />
 			</ClayLabel.ItemBefore>
 
-			<ClayLabel.ItemExpand>
-				{Liferay.Language.get('campaign-touch')}
-			</ClayLabel.ItemExpand>
+			<ClayLabel.ItemExpand>{text}</ClayLabel.ItemExpand>
 		</ClayLabel>
 	</span>
 );
@@ -436,6 +424,7 @@ const PageGroupRow: FC<IRowProps<VerticalTimelinePageGroup>> = ({
 	item: {
 		campaign,
 		descriptionUrl,
+		experienceNames,
 		nestedItems,
 		subtitle,
 		time,
@@ -485,7 +474,35 @@ const PageGroupRow: FC<IRowProps<VerticalTimelinePageGroup>> = ({
 						<div className="row-metrics d-flex align-items-center">
 							<EventCountPill totalEvents={totalEvents} />
 
-							{campaign && <CampaignLabel campaign={campaign} />}
+							{campaign && (
+								<RowIconLabel
+									displayType="warning"
+									icon="megaphone"
+									rootClassName="campaign-label"
+									text={Liferay.Language.get(
+										'campaign-touch'
+									)}
+									title={
+										campaign.campaignName ??
+										(sub(
+											Liferay.Language.get(
+												'unresolved-campaign-x'
+											),
+											[campaign.campaignId]
+										) as string)
+									}
+								/>
+							)}
+
+							{!!experienceNames?.length && (
+								<RowIconLabel
+									displayType="info"
+									icon="test"
+									rootClassName="experience-label"
+									text={Liferay.Language.get('experience')}
+									title={experienceNames.join('\n')}
+								/>
+							)}
 						</div>
 					</div>
 				</div>
@@ -559,7 +576,23 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 
 						{campaign && (
 							<div className="row-metrics d-flex align-items-center">
-								<CampaignLabel campaign={campaign} />
+								<RowIconLabel
+									displayType="warning"
+									icon="megaphone"
+									rootClassName="campaign-label"
+									text={Liferay.Language.get(
+										'campaign-touch'
+									)}
+									title={
+										campaign.campaignName ??
+										(sub(
+											Liferay.Language.get(
+												'unresolved-campaign-x'
+											),
+											[campaign.campaignId]
+										) as string)
+									}
+								/>
 							</div>
 						)}
 					</div>

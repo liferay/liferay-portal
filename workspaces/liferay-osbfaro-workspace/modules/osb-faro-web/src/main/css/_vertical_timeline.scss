@@ -137,8 +137,16 @@
 
 	.became-known-label,
 	.campaign-label,
-	.data-source-label {
+	.data-source-label,
+	.experience-label {
 		font-size: $fontSizeSmall;
+	}
+
+	.campaign-label,
+	.experience-label {
+		.label-item-before {
+			margin-right: 4px;
+		}
 	}
 
 	.device-icon {
@@ -216,7 +224,7 @@
 			column-gap: 12px;
 			max-width: 100%;
 
-			> .campaign-label-root:not(:first-child) {
+			> :first-child + * {
 				border-left: 1px solid $mainLighten74;
 				padding-left: 12px;
 			}
