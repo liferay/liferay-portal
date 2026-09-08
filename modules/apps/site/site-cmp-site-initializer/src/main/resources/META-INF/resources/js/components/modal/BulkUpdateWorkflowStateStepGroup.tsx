@@ -12,7 +12,7 @@ import React from 'react';
 
 import {PICKER_MESSAGES} from '../../utils/constants';
 import {getWorkflowTaskAssetTitle} from '../../utils/getWorkflowTaskAssetTitle';
-import {StepGroup} from '../../utils/groupWorkflowTasks';
+import {StepGroup, Transition} from '../../utils/groupWorkflowTasks';
 import {WorkflowTaskItemData} from '../../utils/types';
 
 export default function BulkUpdateWorkflowStateStepGroup({
@@ -94,7 +94,7 @@ export default function BulkUpdateWorkflowStateStepGroup({
 					</span>
 				)}
 
-				<Picker<StepGroup['transitions'][number]>
+				<Picker<Transition>
 					aria-label={sub(
 						Liferay.Language.get('transition-from-x-to'),
 						stepGroup.label
