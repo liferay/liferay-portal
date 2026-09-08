@@ -7,6 +7,7 @@ package com.liferay.portal.vulcan.internal.application.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -51,14 +52,14 @@ public class HeadlessApplicationProviderTest {
 		new LiferayIntegrationTestRule();
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		Bundle bundle = FrameworkUtil.getBundle(
 			HeadlessApplicationProviderTest.class);
 
-		BundleContext bundleContext = bundle.getBundleContext();
+		_bundleContext = bundle.getBundleContext();
 
 		_serviceRegistrations = Arrays.asList(
-			bundleContext.registerService(
+			_bundleContext.registerService(
 				Application.class, new TestApplication(),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"liferay.auth.verifier", true
@@ -72,7 +73,7 @@ public class HeadlessApplicationProviderTest {
 				).put(
 					"osgi.jaxrs.name", "Test.Vulcan"
 				).build()),
-			bundleContext.registerService(
+			_bundleContext.registerService(
 				TestResource_v1_0.class, new TestResource_v1_0(),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"api.version", "v1.0"
@@ -82,7 +83,7 @@ public class HeadlessApplicationProviderTest {
 				).put(
 					"osgi.jaxrs.resource", "true"
 				).build()),
-			bundleContext.registerService(
+			_bundleContext.registerService(
 				TestResource_v2_0.class, new TestResource_v2_0(),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"api.version", "v2.0"
@@ -92,7 +93,7 @@ public class HeadlessApplicationProviderTest {
 				).put(
 					"osgi.jaxrs.resource", "true"
 				).build()),
-			bundleContext.registerService(
+			_bundleContext.registerService(
 				Application.class, new TestApplication(),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"liferay.auth.verifier", true
@@ -107,13 +108,51 @@ public class HeadlessApplicationProviderTest {
 				).put(
 					"osgi.jaxrs.name", "Test.Vulcan.Unversioned"
 				).build()),
-			bundleContext.registerService(
+			_bundleContext.registerService(
 				TestResource.class, new TestResource(),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"osgi.jaxrs.application.select",
 					"(osgi.jaxrs.name=Test.Vulcan.Unversioned)"
 				).put(
 					"osgi.jaxrs.resource", "true"
+				).build()),
+			_bundleContext.registerService(
+				Application.class, new TestApplication(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"companyId",
+					Collections.singletonList(
+						String.valueOf(TestPropsValues.getCompanyId()))
+				).put(
+					"liferay.auth.verifier", true
+				).put(
+					"liferay.oauth2", false
+				).put(
+					"osgi.jaxrs.application.base",
+					"/test-vulcan-application-company"
+				).put(
+					"osgi.jaxrs.extension.select",
+					"(osgi.jaxrs.name=Liferay.Vulcan)"
+				).put(
+					"osgi.jaxrs.name", "Test.Vulcan.Company"
+				).build()),
+			_bundleContext.registerService(
+				Application.class, new TestApplication(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"companyId",
+					Collections.singletonList(
+						String.valueOf(TestPropsValues.getCompanyId() + 1))
+				).put(
+					"liferay.auth.verifier", true
+				).put(
+					"liferay.oauth2", false
+				).put(
+					"osgi.jaxrs.application.base",
+					"/test-vulcan-application-other-company"
+				).put(
+					"osgi.jaxrs.extension.select",
+					"(osgi.jaxrs.name=Liferay.Vulcan)"
+				).put(
+					"osgi.jaxrs.name", "Test.Vulcan.OtherCompany"
 				).build()));
 	}
 
@@ -174,6 +213,40 @@ public class HeadlessApplicationProviderTest {
 			"/test-vulcan-application-unversioned/openapi.json",
 			openAPIDocument.getPath(
 				HeadlessApplicationProvider.OpenAPIDocument.Type.JSON));
+
+		Assert.assertNotNull(
+			_getApplication("/test-vulcan-application-company"));
+		Assert.assertNull(
+			_getApplication("/test-vulcan-application-other-company"));
+
+		Assert.assertNull(_getApplication("/test-vulcan-application-added"));
+
+		ServiceRegistration<?> serviceRegistration =
+			_bundleContext.registerService(
+				Application.class, new TestApplication(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"liferay.auth.verifier", true
+				).put(
+					"liferay.oauth2", false
+				).put(
+					"osgi.jaxrs.application.base",
+					"/test-vulcan-application-added"
+				).put(
+					"osgi.jaxrs.extension.select",
+					"(osgi.jaxrs.name=Liferay.Vulcan)"
+				).put(
+					"osgi.jaxrs.name", "Test.Vulcan.Added"
+				).build());
+
+		try {
+			Assert.assertNotNull(
+				_getApplication("/test-vulcan-application-added"));
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		Assert.assertNull(_getApplication("/test-vulcan-application-added"));
 	}
 
 	public static class TestApplication extends Application {
@@ -275,6 +348,8 @@ public class HeadlessApplicationProviderTest {
 
 		return null;
 	}
+
+	private BundleContext _bundleContext;
 
 	@Inject
 	private HeadlessApplicationProvider _headlessApplicationProvider;

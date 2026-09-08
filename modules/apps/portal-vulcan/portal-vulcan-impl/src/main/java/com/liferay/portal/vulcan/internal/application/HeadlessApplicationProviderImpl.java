@@ -5,16 +5,17 @@
 
 package com.liferay.portal.vulcan.internal.application;
 
+import com.liferay.osgi.service.tracker.collections.ServiceReferenceServiceTuple;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.application.HeadlessApplicationProvider;
@@ -46,15 +47,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
 import org.osgi.service.jaxrs.runtime.dto.ApplicationDTO;
 import org.osgi.service.jaxrs.runtime.dto.ResourceDTO;
 import org.osgi.service.jaxrs.runtime.dto.ResourceMethodInfoDTO;
 import org.osgi.service.jaxrs.runtime.dto.RuntimeDTO;
+import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 /**
  * @author Alejandro Tardín
@@ -65,42 +69,119 @@ public class HeadlessApplicationProviderImpl
 
 	@Override
 	public List<Application> getApplications() {
-		JaxrsServiceRuntime jaxrsServiceRuntime =
-			_jaxrsServiceRuntimeSnapshot.get();
+		List<Application> applications = new ArrayList<>();
 
-		RuntimeDTO runtimeDTO = jaxrsServiceRuntime.getRuntimeDTO();
+		if (_applicationImpls == null) {
+			JaxrsServiceRuntime jaxrsServiceRuntime =
+				_jaxrsServiceRuntimeServiceTracker.getService();
 
-		return TransformUtil.transform(
-			ListUtil.filter(
-				ListUtil.fromArray(runtimeDTO.applicationDTOs),
-				applicationDTO -> _isRegisteredForCompany(
-					applicationDTO.serviceId)),
-			applicationDTO -> new ApplicationImpl(
-				_bundleContext, applicationDTO));
+			if (jaxrsServiceRuntime == null) {
+				return applications;
+			}
+
+			RuntimeDTO runtimeDTO = jaxrsServiceRuntime.getRuntimeDTO();
+
+			_applicationImpls = TransformUtil.transformToList(
+				runtimeDTO.applicationDTOs, ApplicationImpl::new);
+		}
+
+		List<ApplicationImpl> applicationImpls = _applicationImpls;
+
+		if (applicationImpls == null) {
+			return applications;
+		}
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		for (ApplicationImpl applicationImpl : applicationImpls) {
+			if (_isRegistered(
+					companyId,
+					_companyIdsServiceTrackerMap.getService(
+						applicationImpl._applicationDTO.serviceId))) {
+
+				applications.add(applicationImpl);
+			}
+		}
+
+		return applications;
 	}
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_bundleContext = bundleContext;
+		_jaxrsServiceRuntimeServiceTracker = ServiceTrackerFactory.open(
+			bundleContext, JaxrsServiceRuntime.class,
+			new ServiceTrackerCustomizer<>() {
+
+				@Override
+				public JaxrsServiceRuntime addingService(
+					ServiceReference<JaxrsServiceRuntime> serviceReference) {
+
+					_applicationImpls = null;
+
+					return bundleContext.getService(serviceReference);
+				}
+
+				@Override
+				public void modifiedService(
+					ServiceReference<JaxrsServiceRuntime> serviceReference,
+					JaxrsServiceRuntime jaxrsServiceRuntime) {
+
+					_applicationImpls = null;
+				}
+
+				@Override
+				public void removedService(
+					ServiceReference<JaxrsServiceRuntime> serviceReference,
+					JaxrsServiceRuntime jaxrsServiceRuntime) {
+
+					_applicationImpls = null;
+
+					bundleContext.ungetService(serviceReference);
+				}
+
+			});
+
+		_companyIdsServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, null,
+				"(&(objectClass=jakarta.ws.rs.core.Application)(companyId=*))",
+				new PropertyServiceReferenceMapper<>(Constants.SERVICE_ID),
+				new ServiceTrackerCustomizer<>() {
+
+					@Override
+					public ServiceReference<?> addingService(
+						ServiceReference<Object> serviceReference) {
+
+						return serviceReference;
+					}
+
+					@Override
+					public void modifiedService(
+						ServiceReference<Object> serviceReference,
+						ServiceReference<?> trackedServiceReference) {
+					}
+
+					@Override
+					public void removedService(
+						ServiceReference<Object> serviceReference,
+						ServiceReference<?> trackedServiceReference) {
+					}
+
+				});
+
+		_openAPIResourceServiceTrackerMap =
+			ServiceTrackerMapFactory.openMultiValueMap(
+				bundleContext, null, "(openapi.resource=true)",
+				new PropertyServiceReferenceMapper<>("openapi.resource.path"),
+				ServiceTrackerCustomizerFactory.serviceReferenceServiceTuple(
+					bundleContext));
 	}
 
-	private ServiceReference<?> _getServiceReference(long serviceId) {
-		try {
-			ServiceReference<?>[] serviceReferences =
-				_bundleContext.getAllServiceReferences(
-					null, "(service.id=" + serviceId + ")");
-
-			if (ArrayUtil.isEmpty(serviceReferences)) {
-				return null;
-			}
-
-			return serviceReferences[0];
-		}
-		catch (InvalidSyntaxException invalidSyntaxException) {
-			_log.error(invalidSyntaxException);
-
-			return null;
-		}
+	@Deactivate
+	protected void deactivate() {
+		_jaxrsServiceRuntimeServiceTracker.close();
+		_companyIdsServiceTrackerMap.close();
+		_openAPIResourceServiceTrackerMap.close();
 	}
 
 	private UriInfo _getUriInfo(String baseURL, String version) {
@@ -212,19 +293,12 @@ public class HeadlessApplicationProviderImpl
 		};
 	}
 
-	private boolean _isRegisteredForCompany(long serviceId) {
-		ServiceReference<?> serviceReference = _getServiceReference(serviceId);
+	private boolean _isRegistered(
+		long companyId, ServiceReference<?> serviceReference) {
 
 		if (serviceReference == null) {
 			return true;
 		}
-
-		return _isRegisteredForCompany(
-			CompanyThreadLocal.getCompanyId(), serviceReference);
-	}
-
-	private boolean _isRegisteredForCompany(
-		long companyId, ServiceReference<?> serviceReference) {
 
 		Object companyIds = serviceReference.getProperty("companyId");
 
@@ -243,15 +317,48 @@ public class HeadlessApplicationProviderImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		HeadlessApplicationProviderImpl.class);
 
-	private static final Snapshot<JaxrsServiceRuntime>
-		_jaxrsServiceRuntimeSnapshot = new Snapshot<>(
-			HeadlessApplicationProviderImpl.class, JaxrsServiceRuntime.class);
 	private static final Pattern _versionPattern = Pattern.compile(
 		"v[0-9]+\\.[0-9]+");
 
-	private BundleContext _bundleContext;
+	private volatile List<ApplicationImpl> _applicationImpls;
+	private ServiceTrackerMap<Long, ServiceReference<?>>
+		_companyIdsServiceTrackerMap;
+	private ServiceTracker<JaxrsServiceRuntime, JaxrsServiceRuntime>
+		_jaxrsServiceRuntimeServiceTracker;
+	private ServiceTrackerMap
+		<String, List<ServiceReferenceServiceTuple<Object, Object>>>
+			_openAPIResourceServiceTrackerMap;
 
-	private static class ApplicationImpl implements Application {
+	private static class ResourceMethodImpl implements ResourceMethod {
+
+		@Override
+		public String getMethod() {
+			return _resourceMethodInfoDTO.method;
+		}
+
+		@Override
+		public String getPath() {
+			return _basePath + _resourceMethodInfoDTO.path;
+		}
+
+		@Override
+		public String[] getProducingMimeTypes() {
+			return _resourceMethodInfoDTO.producingMimeType;
+		}
+
+		private ResourceMethodImpl(
+			String basePath, ResourceMethodInfoDTO resourceMethodInfoDTO) {
+
+			_basePath = basePath;
+			_resourceMethodInfoDTO = resourceMethodInfoDTO;
+		}
+
+		private final String _basePath;
+		private final ResourceMethodInfoDTO _resourceMethodInfoDTO;
+
+	}
+
+	private class ApplicationImpl implements Application {
 
 		@Override
 		public String getBasePath() {
@@ -304,15 +411,8 @@ public class HeadlessApplicationProviderImpl
 					getBasePath(), resourceMethodInfoDTO));
 		}
 
-		private ApplicationImpl(
-			BundleContext bundleContext, ApplicationDTO applicationDTO) {
-
-			_bundleContext = bundleContext;
+		private ApplicationImpl(ApplicationDTO applicationDTO) {
 			_applicationDTO = applicationDTO;
-		}
-
-		private BundleContext _getBundleContext() {
-			return _bundleContext;
 		}
 
 		private List<ResourceMethodInfoDTO> _getResourceMethodInfoDTOs(
@@ -349,11 +449,10 @@ public class HeadlessApplicationProviderImpl
 		}
 
 		private final ApplicationDTO _applicationDTO;
-		private final BundleContext _bundleContext;
 
 	}
 
-	private static class OpenAPIDocumentImpl implements OpenAPIDocument {
+	private class OpenAPIDocumentImpl implements OpenAPIDocument {
 
 		@Override
 		public Application getApplication() {
@@ -382,21 +481,32 @@ public class HeadlessApplicationProviderImpl
 
 		@Override
 		public String getDescription() {
-			ServiceReference<?> serviceReference = _getServiceReference();
+			ServiceReferenceServiceTuple<Object, Object>
+				serviceReferenceServiceTuple =
+					_getServiceReferenceServiceTuple();
 
-			if (serviceReference == null) {
+			if (serviceReferenceServiceTuple == null) {
 				return null;
 			}
 
-			BundleContext bundleContext = _applicationImpl._getBundleContext();
+			Object service = serviceReferenceServiceTuple.getService();
 
-			try {
-				return _getDescription(
-					bundleContext.getService(serviceReference));
+			if (service == null) {
+				return null;
 			}
-			finally {
-				bundleContext.ungetService(serviceReference);
+
+			Class<?> serviceClass = service.getClass();
+
+			OpenAPIDefinition openAPIDefinition = serviceClass.getAnnotation(
+				OpenAPIDefinition.class);
+
+			if (openAPIDefinition == null) {
+				return null;
 			}
+
+			Info info = openAPIDefinition.info();
+
+			return info.description();
 		}
 
 		@Override
@@ -437,36 +547,17 @@ public class HeadlessApplicationProviderImpl
 			_path = path;
 		}
 
-		private String _getDescription(Object service) {
-			if (service == null) {
-				return null;
-			}
-
-			Class<?> serviceClass = service.getClass();
-
-			OpenAPIDefinition openAPIDefinition = serviceClass.getAnnotation(
-				OpenAPIDefinition.class);
-
-			if (openAPIDefinition == null) {
-				return null;
-			}
-
-			Info info = openAPIDefinition.info();
-
-			return info.description();
-		}
-
 		private Object _getEntity(String serverURL, Type type) {
-			ServiceReference<?> serviceReference = _getServiceReference();
+			ServiceReferenceServiceTuple<Object, Object>
+				serviceReferenceServiceTuple =
+					_getServiceReferenceServiceTuple();
 
-			if (serviceReference == null) {
+			if (serviceReferenceServiceTuple == null) {
 				return null;
 			}
-
-			BundleContext bundleContext = _applicationImpl._getBundleContext();
 
 			try {
-				Object service = bundleContext.getService(serviceReference);
+				Object service = serviceReferenceServiceTuple.getService();
 
 				Class<?> serviceClass = service.getClass();
 
@@ -487,86 +578,43 @@ public class HeadlessApplicationProviderImpl
 
 				return null;
 			}
-			finally {
-				bundleContext.ungetService(serviceReference);
-			}
 		}
 
-		private ServiceReference<?> _getServiceReference() {
-			BundleContext bundleContext = _applicationImpl._getBundleContext();
+		private ServiceReferenceServiceTuple<Object, Object>
+			_getServiceReferenceServiceTuple() {
 
-			String filterString = "(!(api.version=*))";
+			List<ServiceReferenceServiceTuple<Object, Object>>
+				serviceReferenceServiceTuples =
+					_openAPIResourceServiceTrackerMap.getService(
+						_applicationImpl.getBasePath());
 
+			if (serviceReferenceServiceTuples == null) {
+				return null;
+			}
+
+			long companyId = CompanyThreadLocal.getCompanyId();
 			String version = getVersion();
 
-			if (version != null) {
-				filterString = "(api.version=" + version + ")";
-			}
+			for (ServiceReferenceServiceTuple<Object, Object>
+					serviceReferenceServiceTuple :
+						serviceReferenceServiceTuples) {
 
-			try {
-				ServiceReference<?>[] serviceReferences =
-					bundleContext.getAllServiceReferences(
-						null,
-						StringBundler.concat(
-							"(&(openapi.resource=true)(openapi.resource.path=",
-							_applicationImpl.getBasePath(), ")", filterString,
-							")"));
+				ServiceReference<Object> serviceReference =
+					serviceReferenceServiceTuple.getServiceReference();
 
-				if (ArrayUtil.isEmpty(serviceReferences)) {
-					return null;
+				if (Objects.equals(
+						version, serviceReference.getProperty("api.version")) &&
+					_isRegistered(companyId, serviceReference)) {
+
+					return serviceReferenceServiceTuple;
 				}
-
-				long companyId = CompanyThreadLocal.getCompanyId();
-
-				for (ServiceReference<?> serviceReference : serviceReferences) {
-					long serviceCompanyId = GetterUtil.getLong(
-						serviceReference.getProperty("companyId"), companyId);
-
-					if (serviceCompanyId == companyId) {
-						return serviceReference;
-					}
-				}
-
-				return null;
 			}
-			catch (InvalidSyntaxException invalidSyntaxException) {
-				_log.error(invalidSyntaxException);
 
-				return null;
-			}
+			return null;
 		}
 
 		private final ApplicationImpl _applicationImpl;
 		private final String _path;
-
-	}
-
-	private static class ResourceMethodImpl implements ResourceMethod {
-
-		@Override
-		public String getMethod() {
-			return _resourceMethodInfoDTO.method;
-		}
-
-		@Override
-		public String getPath() {
-			return _basePath + _resourceMethodInfoDTO.path;
-		}
-
-		@Override
-		public String[] getProducingMimeTypes() {
-			return _resourceMethodInfoDTO.producingMimeType;
-		}
-
-		private ResourceMethodImpl(
-			String basePath, ResourceMethodInfoDTO resourceMethodInfoDTO) {
-
-			_basePath = basePath;
-			_resourceMethodInfoDTO = resourceMethodInfoDTO;
-		}
-
-		private final String _basePath;
-		private final ResourceMethodInfoDTO _resourceMethodInfoDTO;
 
 	}
 
