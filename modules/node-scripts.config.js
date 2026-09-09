@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: 'a494cb0aac0cbf08472865e3607c489acdf78fcc212883d9eaa2f6ea3ffb4756',
+	hash: '61f09e04b921e349556867b15b5a18a20516924b154fee96d2d6964a263d4018',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -191,6 +191,7 @@ module.exports = {
 			'text-mask-core',
 			'ua-parser-js',
 		],
+		'@liferay/frontend-js-image-editor-sample-web': [],
 		'@liferay/frontend-js-image-editor-web': [],
 		'@liferay/frontend-js-importmaps-extender': [],
 		'@liferay/frontend-js-item-selector-sample-web': [],

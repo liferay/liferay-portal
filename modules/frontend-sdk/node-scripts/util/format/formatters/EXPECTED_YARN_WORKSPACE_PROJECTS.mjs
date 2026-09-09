@@ -145,6 +145,7 @@ export default [
 	'@liferay/frontend-js-codemirror-web',
 	'@liferay/frontend-js-components-sample-web',
 	'@liferay/frontend-js-dependencies-web',
+	'@liferay/frontend-js-image-editor-sample-web',
 	'@liferay/frontend-js-image-editor-web',
 	'@liferay/frontend-js-importmaps-extender',
 	'@liferay/frontend-js-item-selector-sample-web',

@@ -1,0 +1,15 @@
+{
+	"dependencies": {
+		"@liferay/frontend-js-image-editor-web": "*",
+		"frontend-js-web": "*",
+		"react": "18.2.0"
+	},
+	"main": "js/App.js",
+	"name": "@liferay/frontend-js-image-editor-sample-web",
+	"scripts": {
+		"build": "node-scripts build",
+		"checkFormat": "node-scripts format --check",
+		"format": "node-scripts format"
+	},
+	"version": "1.0.0"
+}

@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Frontend JS Image Editor Sample Web
+Bundle-SymbolicName: com.liferay.frontend.js.image.editor.sample.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /frontend-js-image-editor-sample-web
