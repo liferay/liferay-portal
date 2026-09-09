@@ -61,6 +61,25 @@ describe('VerticalTimeline', () => {
 			expect(screen.getByText('e484348e-anon')).toBeInTheDocument();
 		});
 
+		it('links an anonymous individual by their id, not by the generic label', () => {
+			renderTimeline({
+				items: [
+					{
+						...INDIVIDUAL_ITEM,
+						individualId: 'e484348e-anon',
+						individualName: 'Anonymous User',
+						isAnonymous: true
+					}
+				]
+			});
+
+			expect(screen.getByText('Anonymous User').closest('a')).toBeNull();
+			expect(screen.getByText('e484348e-anon').closest('a')).toHaveAttribute(
+				'href',
+				INDIVIDUAL_ITEM.individualUrl
+			);
+		});
+
 		it('shows the job title on its own line when the session carries one', () => {
 			renderTimeline({
 				items: [{...INDIVIDUAL_ITEM, jobTitle: 'Plant Manager'}]

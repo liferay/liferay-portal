@@ -201,6 +201,11 @@
 
 		.touch-name {
 			color: $main;
+
+			&:focus,
+			&:hover {
+				color: $main;
+			}
 		}
 
 		.touch-status {
@@ -232,10 +237,21 @@
 
 		.individual-name {
 			color: $main;
+
+			&:focus,
+			&:hover {
+				color: $main;
+			}
 		}
 
 		.individual-id {
+			color: $secondary;
 			word-break: break-all;
+
+			&:focus,
+			&:hover {
+				color: $secondary;
+			}
 		}
 	}
 

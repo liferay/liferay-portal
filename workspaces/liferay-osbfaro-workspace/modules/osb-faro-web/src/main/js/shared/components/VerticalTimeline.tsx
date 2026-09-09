@@ -243,7 +243,7 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 			</ClaySticker>
 
 			<div className="individual-info">
-				{individualUrl ? (
+				{individualUrl && !isAnonymous ? (
 					<ClayLink className="individual-name" href={individualUrl}>
 						<Text size={3} weight="semi-bold">
 							{individualName}
@@ -257,13 +257,23 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 					</span>
 				)}
 
-				{(jobTitle || individualId) && (
-					<div className="individual-id">
-						<Text color="secondary" size={3} weight="normal">
-							{jobTitle || individualId}
-						</Text>
-					</div>
-				)}
+				{!!(jobTitle || individualId) &&
+					(individualUrl && isAnonymous ? (
+						<ClayLink
+							className="individual-id"
+							href={individualUrl}
+						>
+							<Text color="secondary" size={3} weight="normal">
+								{individualId}
+							</Text>
+						</ClayLink>
+					) : (
+						<div className="individual-id">
+							<Text color="secondary" size={3} weight="normal">
+								{jobTitle || individualId}
+							</Text>
+						</div>
+					))}
 			</div>
 		</div>
 	</li>
