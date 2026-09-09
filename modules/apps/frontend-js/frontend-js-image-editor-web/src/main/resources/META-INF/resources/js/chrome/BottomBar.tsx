@@ -4,7 +4,6 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import ClayModal from '@clayui/modal';
 import React from 'react';
 
 import {t} from '../i18n';
@@ -42,125 +41,123 @@ export function BottomBar({
 	zoom,
 }: Props) {
 	return (
-		<ClayModal.Footer
-			className="editor-bottom-bar"
-			first={
-				<div className="editor-bar-group">
-					<ClayButtonWithIcon
-						aria-label={t('rotate-90')}
-						borderless
-						className="editor-bar-button"
-						displayType="secondary"
-						onClick={() => {
-							dispatch({type: 'rotate-90'});
-							onAnnounce(t('rotated-90'));
-						}}
-						symbol="rotate"
-						title={t('rotate-90')}
-					/>
+		<div className="editor-bottom-bar">
+			<div className="editor-bar-first editor-bar-group">
+				<ClayButtonWithIcon
+					aria-label={t('rotate-90')}
+					borderless
+					className="editor-bar-button"
+					displayType="secondary"
+					onClick={() => {
+						dispatch({type: 'rotate-90'});
+						onAnnounce(t('rotated-90'));
+					}}
+					symbol="rotate"
+					title={t('rotate-90')}
+				/>
 
-					<ClayButtonWithIcon
-						aria-label={t('flip-horizontal')}
-						borderless
-						className="editor-bar-button"
-						displayType="secondary"
-						onClick={() => {
-							dispatch({type: 'flip-horizontal'});
-							onAnnounce(t('flipped-horizontal'));
-						}}
-						symbol="flip-horizontal"
-						title={t('flip-horizontal')}
-					/>
+				<ClayButtonWithIcon
+					aria-label={t('flip-horizontal')}
+					borderless
+					className="editor-bar-button"
+					displayType="secondary"
+					onClick={() => {
+						dispatch({type: 'flip-horizontal'});
+						onAnnounce(t('flipped-horizontal'));
+					}}
+					symbol="flip-horizontal"
+					title={t('flip-horizontal')}
+				/>
 
-					<ClayButtonWithIcon
-						aria-label={t('undo')}
-						borderless
-						className="editor-bar-button"
-						disabled={!canUndo}
-						displayType="secondary"
-						onClick={onUndo}
-						symbol="undo"
-						title={t('undo')}
-					/>
+				<ClayButtonWithIcon
+					aria-label={t('undo')}
+					borderless
+					className="editor-bar-button"
+					disabled={!canUndo}
+					displayType="secondary"
+					onClick={onUndo}
+					symbol="undo"
+					title={t('undo')}
+				/>
 
-					<ClayButtonWithIcon
-						aria-label={t('redo')}
-						borderless
-						className="editor-bar-button"
-						disabled={!canRedo}
-						displayType="secondary"
-						onClick={onRedo}
-						symbol="redo"
-						title={t('redo')}
-					/>
+				<ClayButtonWithIcon
+					aria-label={t('redo')}
+					borderless
+					className="editor-bar-button"
+					disabled={!canRedo}
+					displayType="secondary"
+					onClick={onRedo}
+					symbol="redo"
+					title={t('redo')}
+				/>
 
-					<ClayButtonWithIcon
-						aria-label={t('keyboard-shortcuts')}
-						borderless
-						className="editor-bar-button"
-						displayType="secondary"
-						onClick={onShowShortcuts}
-						symbol="question-circle"
-						title={t('keyboard-shortcuts')}
-					/>
-				</div>
-			}
-			last={
-				<div aria-busy={saving} className="editor-bar-group">
-					<ClayButton
-						disabled={saving}
-						displayType="secondary"
-						onClick={onCancel}
-					>
-						{t('cancel')}
-					</ClayButton>
+				<ClayButtonWithIcon
+					aria-label={t('keyboard-shortcuts')}
+					borderless
+					className="editor-bar-button"
+					displayType="secondary"
+					onClick={onShowShortcuts}
+					symbol="question-circle"
+					title={t('keyboard-shortcuts')}
+				/>
+			</div>
 
-					<ClayButton
-						disabled={saving}
-						displayType="primary"
-						onClick={onSave}
-					>
-						{saving ? t('saving') : t('save')}
-					</ClayButton>
-				</div>
-			}
-			middle={
-				<div className="editor-bar-group">
-					<ClayButtonWithIcon
-						aria-label={t('zoom-out')}
-						borderless
-						className="editor-bar-button"
-						displayType="secondary"
-						onClick={() => onZoom(-1)}
-						symbol="minus-circle"
-						title={t('zoom-out')}
-					/>
+			<div className="editor-bar-group editor-bar-middle">
+				<ClayButtonWithIcon
+					aria-label={t('zoom-out')}
+					borderless
+					className="editor-bar-button"
+					displayType="secondary"
+					onClick={() => onZoom(-1)}
+					symbol="minus-circle"
+					title={t('zoom-out')}
+				/>
 
-					<span className="editor-zoom-level">
-						{t('zoom-percent', Math.round(zoom * 100))}
-					</span>
+				<span className="editor-zoom-level">
+					{t('zoom-percent', Math.round(zoom * 100))}
+				</span>
 
-					<ClayButtonWithIcon
-						aria-label={t('zoom-in')}
-						borderless
-						className="editor-bar-button"
-						displayType="secondary"
-						onClick={() => onZoom(1)}
-						symbol="plus-circle-full"
-						title={t('zoom-in')}
-					/>
+				<ClayButtonWithIcon
+					aria-label={t('zoom-in')}
+					borderless
+					className="editor-bar-button"
+					displayType="secondary"
+					onClick={() => onZoom(1)}
+					symbol="plus-circle-full"
+					title={t('zoom-in')}
+				/>
 
-					<ClayButtonWithIcon
-						aria-label={t('zoom-fit')}
-						borderless
-						className="editor-bar-button"
-						displayType="secondary"
-						onClick={onZoomFit}
-						symbol="autosize"
-						title={t('zoom-fit')}
-					/>
-				</div>
-			}
-		/>
+				<ClayButtonWithIcon
+					aria-label={t('zoom-fit')}
+					borderless
+					className="editor-bar-button"
+					displayType="secondary"
+					onClick={onZoomFit}
+					symbol="autosize"
+					title={t('zoom-fit')}
+				/>
+			</div>
+
+			<div
+				aria-busy={saving}
+				className="editor-bar-group editor-bar-last"
+			>
+				<ClayButton
+					disabled={saving}
+					displayType="secondary"
+					onClick={onCancel}
+				>
+					{t('cancel')}
+				</ClayButton>
+
+				<ClayButton
+					disabled={saving}
+					displayType="primary"
+					onClick={onSave}
+				>
+					{saving ? t('saving') : t('save')}
+				</ClayButton>
+			</div>
+		</div>
 	);
 }

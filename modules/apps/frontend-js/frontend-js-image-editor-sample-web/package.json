@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"@clayui/modal": "^3.166.0",
 		"@liferay/frontend-js-image-editor-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0"

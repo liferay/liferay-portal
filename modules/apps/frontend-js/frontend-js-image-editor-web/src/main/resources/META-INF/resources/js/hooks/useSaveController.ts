@@ -18,7 +18,7 @@ export function useSaveController(
 		signal: AbortSignal
 	) => Promise<void> | void,
 	announce: (message: string) => void,
-	closeModal: () => void
+	onClose: () => void
 ) {
 	const [saving, setSaving] = useState(false);
 	const [saveError, setSaveError] = useState(false);
@@ -58,7 +58,7 @@ export function useSaveController(
 
 			announce(t('image-saved-as-x', result.fileName));
 
-			closeModal();
+			onClose();
 		}
 		catch {
 			if (!controller.signal.aborted) {

@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
-.image-editor-modal {
+.image-editor {
 	--editor-accent: #4b9bff;
 	--editor-accent-text: var(--editor-primary);
 	--editor-border: var(--cadmin-gray-300, var(--gray-300, #e7e7ed));
@@ -11,83 +11,70 @@
 	--editor-surface-subtle: var(--cadmin-gray-100, var(--gray-100, #f7f8f9));
 	--editor-text-muted: var(--cadmin-secondary, var(--secondary, #6b6c7e));
 	--editor-workspace-bg: #23263a;
-}
 
-.image-editor-modal .modal-content {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	overflow: clip;
-}
-
-.image-editor-modal .modal-body {
-	overflow: clip;
-}
-
-.image-editor-modal .image-editor {
-	display: flex;
-	flex: 1;
-	flex-direction: column;
 	min-height: 0;
 }
 
-.image-editor-modal .editor-main {
+.image-editor .editor-main {
 	display: flex;
 	flex: 1;
 	min-height: 0;
 }
 
-.image-editor-modal .editor-bottom-bar {
-	column-gap: 1rem;
-	padding-bottom: 0.5rem;
-	padding-top: 0.5rem;
-}
-
-.image-editor-modal .editor-bottom-bar .modal-item {
+.image-editor .editor-bottom-bar {
 	align-items: center;
-	flex-direction: row;
-	justify-content: center;
+	border-top: 1px solid var(--editor-border);
+	column-gap: 1rem;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	padding: 0.5rem 1rem;
+	row-gap: 0.5rem;
 }
 
 @media (min-width: 60rem) {
-	.image-editor-modal .editor-bottom-bar {
+	.image-editor .editor-bottom-bar {
 		display: grid;
 		grid-template-columns:
 			minmax(max-content, 1fr) auto
 			minmax(max-content, 1fr);
 	}
 
-	.image-editor-modal .editor-bottom-bar .modal-item-first {
+	.image-editor .editor-bottom-bar .editor-bar-first {
 		justify-self: start;
 	}
 
-	.image-editor-modal .editor-bottom-bar .modal-item {
+	.image-editor .editor-bottom-bar .editor-bar-middle {
+		grid-column: 2;
 		justify-self: center;
 	}
 
-	.image-editor-modal .editor-bottom-bar .modal-item-last {
+	.image-editor .editor-bottom-bar .editor-bar-last {
 		justify-self: end;
 	}
 }
 
-.image-editor-modal .editor-bar-group {
+.image-editor .editor-bar-group {
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5rem;
 }
 
-.image-editor-modal .editor-bar-button {
+.image-editor .editor-bar-button {
 	min-height: 24px;
 	min-width: 24px;
 }
 
-.image-editor-modal .editor-zoom-level {
+.image-editor .editor-zoom-level {
 	min-width: 3.5rem;
 	text-align: center;
 }
 
-.image-editor-modal .editor-shortcut-list {
+.image-editor .editor-shortcut-list {
 	align-items: center;
 	display: grid;
 	gap: 0.625rem 1.25rem;
@@ -95,33 +82,32 @@
 	margin: 0;
 }
 
-.image-editor-modal .editor-shortcut-list dt {
+.image-editor .editor-shortcut-list dt {
 	font-weight: 400;
 }
 
-.image-editor-modal .editor-shortcut-list kbd {
+.image-editor .editor-shortcut-list kbd {
 	white-space: nowrap;
 }
 
-.image-editor-modal .editor-shortcut-list dd {
+.image-editor .editor-shortcut-list dd {
 	margin: 0;
 }
 
 @media (max-width: 700px) {
-	.image-editor-modal .editor-main {
+	.image-editor .editor-main {
 		flex-direction: column;
 	}
 
-	.image-editor-modal .editor-bottom-bar .modal-item-last {
-		justify-content: flex-end;
+	.image-editor .editor-bottom-bar .editor-bar-last {
 		margin-left: auto;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.image-editor-modal *,
-	.image-editor-modal *::before,
-	.image-editor-modal *::after {
+	.image-editor *,
+	.image-editor *::before,
+	.image-editor *::after {
 		animation-duration: 0.01ms !important;
 		animation-iteration-count: 1 !important;
 		scroll-behavior: auto !important;

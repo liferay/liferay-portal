@@ -20,7 +20,6 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.display-name=JS Image Editor Sample",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/view.jsp",
-		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=power-user,user",
 		"jakarta.portlet.version=4.0"
 	},

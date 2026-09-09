@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayModal, {useModal} from '@clayui/modal';
 import {
 	ImageEditor,
 	ImageEditorLoadError,
@@ -17,6 +18,43 @@ import React, {useEffect, useRef, useState} from 'react';
 setMessages(liferayMessages);
 
 const SAMPLE_URL = '/o/frontend-js-image-editor-sample-web/images/sample.jpg';
+
+function demoSave({blob, fileName}) {
+	const url = URL.createObjectURL(blob);
+
+	const anchor = document.createElement('a');
+
+	anchor.download = fileName;
+	anchor.href = url;
+
+	anchor.click();
+
+	setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+function EditorModal({image, onClose}) {
+	const {observer, onClose: closeModal} = useModal({onClose});
+
+	return (
+		<ClayModal observer={observer} size="full-screen">
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+				withTitle
+			>
+				{Liferay.Language.get('editing-image')}
+			</ClayModal.Header>
+
+			<ClayModal.Body className="overflow-hidden p-0">
+				<ImageEditor
+					image={image}
+					onClose={closeModal}
+					onSave={demoSave}
+					spritemap={Liferay.Icons.spritemap}
+				/>
+			</ClayModal.Body>
+		</ClayModal>
+	);
+}
 
 export function App() {
 	const [error, setError] = useState(null);
@@ -122,11 +160,7 @@ export function App() {
 			)}
 
 			{image && (
-				<ImageEditor
-					image={image}
-					onClose={() => close(image)}
-					spritemap={Liferay.Icons.spritemap}
-				/>
+				<EditorModal image={image} onClose={() => close(image)} />
 			)}
 		</div>
 	);
