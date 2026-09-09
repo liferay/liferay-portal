@@ -54,7 +54,7 @@ public class UserModelDocumentContributorTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testContributeAddressInReindexMode() throws Exception {
+	public void testContribute() throws Exception {
 		_user = UserTestUtil.addUser();
 
 		Country country = _countryService.getCountryByName(
