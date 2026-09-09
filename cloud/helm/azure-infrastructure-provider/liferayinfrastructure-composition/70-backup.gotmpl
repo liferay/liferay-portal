@@ -14,6 +14,7 @@
 
 {{- $backupPolicyStorageName := printf "%s-storage-policy-%s" $backupVaultName $backupScheduleHash -}}
 
+{{- $backupRestoreIdentityClientId := dig "liferay-backup-restore-identity" "resource" "status" "atProvider" "clientId" "" $observedResources -}}
 {{- $backupRestoreIdentityPrincipalId := dig "liferay-backup-restore-identity" "resource" "status" "atProvider" "principalId" "" $observedResources -}}
 {{- $backupVaultIdentity := dig "liferay-backup-vault" "resource" "status" "atProvider" "identity" dict $observedResources -}}
 
@@ -44,6 +45,28 @@ spec:
 {{- end }}
 {{- end }}
 {{- if $backupRestoreIdentityPrincipalId }}
+{{- range $dataPlane := $dataPlanes }}
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-storage-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $backupRestoreIdentityName }}-storage-{{ $dataPlane }}
+spec:
+    forProvider:
+        principalId: {{ $backupRestoreIdentityPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Storage Blob Data Contributor
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.Storage/storageAccounts/{{ $storageAccountBase }}{{ trunc 1 $dataPlane }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+---
+{{- end }}
 apiVersion: authorization.azure.m.upbound.io/v1beta1
 kind: RoleAssignment
 metadata:
@@ -57,6 +80,25 @@ spec:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
         roleDefinitionName: Backup Operator
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DataProtection/backupVaults/{{ $backupVaultName }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+---
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-vault-reader
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $backupRestoreIdentityName }}-vault-reader
+spec:
+    forProvider:
+        principalId: {{ $backupRestoreIdentityPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Reader
         scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DataProtection/backupVaults/{{ $backupVaultName }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
@@ -135,6 +177,58 @@ spec:
             {{- merge (dict) $tags ($backup.vaultTags | default dict) | toYaml | nindent 12 }}
     managementPolicies: {{ $managementPolicies }}
 ---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-role-binding
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-backup-restore-role-binding
+spec:
+    forProvider:
+        manifest:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: RoleBinding
+            metadata:
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: backup-restore-role-binding
+                namespace: {{ $namespace }}
+            roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: ClusterRole
+                name: backup-restore-cluster-role
+            subjects:
+                -   kind: ServiceAccount
+                    name: backup-restore-service-account
+                    namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
+---
+{{- if $backupRestoreIdentityClientId }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-service-account
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+    name: {{ $baseName }}-backup-restore-service-account
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+                annotations:
+                    azure.workload.identity/client-id: {{ $backupRestoreIdentityClientId }}
+                labels:
+                    {{- $tags | toYaml | nindent 20 }}
+                name: backup-restore-service-account
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
+---
+{{- end }}
 apiVersion: managedidentity.azure.m.upbound.io/v1beta1
 kind: FederatedIdentityCredential
 metadata:

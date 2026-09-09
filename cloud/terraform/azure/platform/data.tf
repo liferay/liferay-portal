@@ -23,6 +23,9 @@ data "azurerm_role_definition" "backup_operator" {
 data "azurerm_role_definition" "key_vault_crypto_service_encryption_user" {
 	name="Key Vault Crypto Service Encryption User"
 }
+data "azurerm_role_definition" "reader" {
+	name="Reader"
+}
 data "azurerm_role_definition" "storage_account_backup_contributor" {
 	name="Storage Account Backup Contributor"
 }

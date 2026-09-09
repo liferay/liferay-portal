@@ -37,6 +37,12 @@ tests:
                         -   apiGroups: ["batch"]
                             resources: ["jobs"]
                             verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+                        -   apiGroups: ["rbac.authorization.k8s.io"]
+                            resources: ["clusterroles"]
+                            verbs: ["bind", "get", "list", "watch"]
+                        -   apiGroups: ["rbac.authorization.k8s.io"]
+                            resources: ["rolebindings"]
+                            verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
             -   documentIndex: 1
                 isKind:
                     of: ClusterRoleBinding

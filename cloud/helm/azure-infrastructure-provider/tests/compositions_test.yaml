@@ -9,6 +9,24 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: backup-restore-role-binding"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: \\{\\{ \\$baseName \\}\\}-backup-restore-role-binding"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: ClusterRole\\s+name: backup-restore-cluster-role"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "kind: ServiceAccount\\s+name: backup-restore-service-account\\s+namespace: \\{\\{ \\$namespace \\}\\}"
+        it: Binds the restore service account to the restore cluster role
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "kind: Job"
             -   documentIndex: 0
                 matchRegex:
@@ -23,6 +41,24 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: postgresql.sql.m.crossplane.io
         it: Bootstraps the database through a job rather than the SQL provider
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: backup-restore-service-account"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \$backupRestoreIdentityClientId := dig "liferay-backup-restore-identity" "resource" "status" "atProvider" "clientId"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \{\{- if \$backupRestoreIdentityClientId \}\}
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "azure.workload.identity/client-id: \\{\\{ \\$backupRestoreIdentityClientId \\}\\}"
+        it: Creates the restore service account with its workload identity client id
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
@@ -59,6 +95,20 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: liferay-backup-restore-storage-\\{\\{ \\$dataPlane \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "name: \\{\\{ \\$backupRestoreIdentityName \\}\\}-storage-\\{\\{ \\$dataPlane \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Storage Blob Data Contributor\\s+scope: [^\\n]+Microsoft.Storage/storageAccounts/\\{\\{ \\$storageAccountBase \\}\\}\\{\\{ trunc 1 \\$dataPlane \\}\\}"
+        it: Grants the restore identity blob access on each plane storage account
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: \{\{- if \$backupRestoreIdentityPrincipalId \}\}
             -   documentIndex: 0
                 matchRegex:
@@ -76,7 +126,15 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "Microsoft.DataProtection/backupVaults/\\{\\{ \\$backupVaultName \\}\\}"
-        it: Grants the restore identity only the vault role a restore demands
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: liferay-backup-restore-vault-reader"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Reader\\s+scope: [^\\n]+Microsoft.DataProtection/backupVaults/\\{\\{ \\$backupVaultName \\}\\}"
+        it: Grants the restore identity the vault roles the restore and its polling demand
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
@@ -93,13 +151,9 @@ tests:
         it: Grants the shared owner role create rights on the public schema
     -   asserts:
             -   documentIndex: 0
-                notMatchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "roleDefinitionName: Reader"
-            -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "roleDefinitionName: Storage Account Backup Contributor"
+                    pattern: "principalId: \\{\\{ \\$backupVaultPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Storage Account Backup Contributor"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
