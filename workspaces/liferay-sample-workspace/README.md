@@ -104,7 +104,7 @@ For `liferay-sample-etc-cron` and `liferay-sample-etc-spring-boot` the third typ
 
 - *liferay-sample-editor-config-contributor-6*
 
-	Enable the CKEditor 5 email editing plugins (Email Configuration Helper, Merge Fields, Template, and Export with Inline Styles, plus the non-premium Layout Tables and Empty Block) as an example of registering premium and non-premium plugins via a client extension.
+	Enable the CKEditor 5 email editing plugins (Email Configuration Helper, Merge Fields, Template, and Export with Inline Styles, plus the nonpremium Layout Tables and Empty Block) as an example of registering premium and nonpremium plugins via a client extension.
 
 - *liferay-sample-etc-cron*
 

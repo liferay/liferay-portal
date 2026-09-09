@@ -20,7 +20,7 @@
 	"name": "@liferay/liferay-sample-editor-config-contributor-6",
 	"scripts": {
 		"build": "esbuild src/index.ts --outdir=build --bundle --format=esm --external:@ckeditor/*",
-		"start": "PORT=3004 serve --cors",
+		"start": "PORT=3003 serve --cors",
 		"watch": "tsc --watch"
 	},
 	"type": "module",
