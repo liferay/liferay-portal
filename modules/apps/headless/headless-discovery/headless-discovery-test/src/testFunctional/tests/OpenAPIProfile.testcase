@@ -47,9 +47,7 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("When navigate to /o/openapi/openapi.json endpoint") {
-			APIExplorer.navigateToOpenAPI(
-				api = "openapi",
-				version = "");
+			APIExplorer.navigateToOpenAPI(api = "openapi");
 		}
 
 		task ("Then global rest api loaded without errors") {
@@ -68,9 +66,7 @@ definition {
 		property portal.acceptance = "true";
 
 		task ("Given navigate to /o/openapi/openapi.json endpoint") {
-			APIExplorer.navigateToOpenAPI(
-				api = "openapi",
-				version = "");
+			APIExplorer.navigateToOpenAPI(api = "openapi");
 		}
 
 		task ("When executing HeadlessAdminWorkflow.v1.0.getOpenAPI") {

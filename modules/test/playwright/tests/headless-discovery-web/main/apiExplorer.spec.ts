@@ -104,6 +104,32 @@ test(
 );
 
 test(
+	'Renders the global OpenAPI document',
+	{tag: '@LPD-105213'},
+	async ({apiExplorer, page}) => {
+		const {baseUrl} = liferayConfig.environment;
+
+		await apiExplorer.goToApplication('openapi');
+
+		await expect(page.getByText('Forbidden access.')).toBeHidden();
+		await expect(
+			page.getByRole('heading', {name: 'Global REST API - OpenAPI'})
+		).toBeVisible({timeout: 60000});
+		await expect(page.locator('.servers select')).toHaveValue(
+			`${baseUrl}/o`
+		);
+
+		// The merged document keeps every application's operations
+
+		await expect(
+			page.getByText('HeadlessAdminWorkflow.v1.0.getOpenAPI', {
+				exact: true,
+			})
+		).toBeVisible({timeout: 60000});
+	}
+);
+
+test(
 	'Sends the CSRF token to an endpoint published by the portal',
 	{tag: '@LPD-102660'},
 	async ({apiExplorer, page}) => {

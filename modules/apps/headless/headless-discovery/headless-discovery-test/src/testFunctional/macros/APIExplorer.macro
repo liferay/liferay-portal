@@ -274,7 +274,12 @@ definition {
 		}
 
 		if (isSet(api)) {
-			Navigator.openSpecificURL(url = "${portalURL}/o/api?endpoint=${portalURL}/o/${api}/${version}/openapi.json");
+			if (isSet(version)) {
+				Navigator.openSpecificURL(url = "${portalURL}/o/api?endpoint=${portalURL}/o/${api}/${version}/openapi.json");
+			}
+			else {
+				Navigator.openSpecificURL(url = "${portalURL}/o/api?endpoint=${portalURL}/o/${api}/openapi.json");
+			}
 		}
 		else if (isSet(customObjectPlural)) {
 			Navigator.openSpecificURL(url = "${portalURL}/o/api?endpoint=${portalURL}/o/c/${customObjectPlural}/openapi.json");
