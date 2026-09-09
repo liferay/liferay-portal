@@ -23,6 +23,8 @@ import jakarta.servlet.Servlet;
 
 import jakarta.validation.ValidationException;
 
+import java.util.Objects;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -114,6 +116,17 @@ public class MCPServerProfileToolObjectEntryModelListener
 			MapUtil.getString(objectEntry.getValues(), "restrictFields"));
 
 		for (String restrictFieldName : restrictFieldNames) {
+			if (restrictFieldName.isEmpty() ||
+				!Objects.equals(restrictFieldName, restrictFieldName.trim())) {
+
+				throw new ModelListenerException(
+					new ValidationException(
+						StringBundler.concat(
+							"Unable to restrict field \"", restrictFieldName,
+							"\" because the name is blank or has surrounding ",
+							"whitespace")));
+			}
+
 			for (String ancestorFieldName : restrictFieldNames) {
 				if (restrictFieldName.startsWith(
 						ancestorFieldName + StringPool.PERIOD)) {
