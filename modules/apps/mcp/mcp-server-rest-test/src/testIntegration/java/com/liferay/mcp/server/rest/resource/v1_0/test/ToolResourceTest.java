@@ -67,7 +67,8 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 			).toString(),
 			JSONUtil.getValueAsString(
 				JSONFactoryUtil.createJSONObject(String.valueOf(tool)),
-				"JSONObject/outputSchema", "JSONObject/items",
+				"JSONObject/outputSchema", "JSONObject/properties",
+				"JSONObject/items", "JSONObject/items",
 				"JSONObject/properties"),
 			false);
 

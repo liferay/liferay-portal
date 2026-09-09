@@ -82,6 +82,10 @@
 					},
 					"string": {
 						"type": "string"
+					},
+					"writeOnly": {
+						"type": "string",
+						"writeOnly": true
 					}
 				},
 				"required": [

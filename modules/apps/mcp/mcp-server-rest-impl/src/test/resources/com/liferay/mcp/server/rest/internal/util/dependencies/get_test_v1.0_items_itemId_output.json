@@ -21,11 +21,16 @@
 		"object2": {
 			"type": "object"
 		},
+		"readOnly": {
+			"readOnly": true,
+			"type": "string"
+		},
 		"string": {
 			"type": "string"
 		}
 	},
 	"required": [
+		"readOnly",
 		"string"
 	],
 	"type": "object"
