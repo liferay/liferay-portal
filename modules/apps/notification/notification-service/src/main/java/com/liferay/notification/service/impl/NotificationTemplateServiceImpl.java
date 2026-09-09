@@ -116,6 +116,22 @@ public class NotificationTemplateServiceImpl
 	}
 
 	@Override
+	public NotificationTemplate getNotificationTemplateByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		NotificationTemplate notificationTemplate =
+			notificationTemplateLocalService.
+				getNotificationTemplateByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		_notificationTemplateModelResourcePermission.check(
+			getPermissionChecker(), notificationTemplate, ActionKeys.VIEW);
+
+		return notificationTemplate;
+	}
+
+	@Override
 	public NotificationTemplate updateNotificationTemplate(
 			NotificationContext notificationContext)
 		throws PortalException {
