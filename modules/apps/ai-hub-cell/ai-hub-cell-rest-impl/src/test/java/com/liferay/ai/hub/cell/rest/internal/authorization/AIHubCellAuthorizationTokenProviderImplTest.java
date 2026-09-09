@@ -86,8 +86,8 @@ public class AIHubCellAuthorizationTokenProviderImplTest {
 				aiHubCellAccessTokenWebCacheItemMockedStatic =
 					Mockito.mockStatic(AIHubCellAccessTokenWebCacheItem.class);
 			MockedStatic<AIHubCellUserTokenWebCacheItem>
-				aiHubCellUserTokenWebCacheItemMockedStatic =
-					Mockito.mockStatic(AIHubCellUserTokenWebCacheItem.class)) {
+				aiHubCellUserTokenWebCacheItemMockedStatic = Mockito.mockStatic(
+					AIHubCellUserTokenWebCacheItem.class)) {
 
 			aiHubCellAccessTokenWebCacheItemMockedStatic.when(
 				() -> AIHubCellAccessTokenWebCacheItem.get(
@@ -150,13 +150,10 @@ public class AIHubCellAuthorizationTokenProviderImplTest {
 	private final AIHubCellAuthorizationTokenProviderImpl
 		_aiHubCellAuthorizationTokenProviderImpl =
 			new AIHubCellAuthorizationTokenProviderImpl();
-
-	private final AIHubCellConfiguration _aiHubCellConfiguration =
-		Mockito.mock(AIHubCellConfiguration.class);
-
+	private final AIHubCellConfiguration _aiHubCellConfiguration = Mockito.mock(
+		AIHubCellConfiguration.class);
 	private final LocalOAuthClient _localOAuthClient = Mockito.mock(
 		LocalOAuthClient.class);
-
 	private final OAuth2Application _oAuth2Application = Mockito.mock(
 		OAuth2Application.class);
 
