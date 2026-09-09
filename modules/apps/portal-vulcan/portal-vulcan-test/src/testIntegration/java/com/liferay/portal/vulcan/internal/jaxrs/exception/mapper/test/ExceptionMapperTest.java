@@ -7,6 +7,7 @@ package com.liferay.portal.vulcan.internal.jaxrs.exception.mapper.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
+import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -90,6 +91,38 @@ public class ExceptionMapperTest {
 	@After
 	public void tearDown() {
 		_serviceRegistrations.forEach(ServiceRegistration::unregister);
+	}
+
+	@Test
+	@TestInfo("LPD-104899")
+	public void testIllegalArgumentException() throws Exception {
+		Assert.assertEquals(
+			400,
+			HTTPTestUtil.invokeToHttpCode(
+				null, "/test-vulcan/testIllegalArgumentException1",
+				Http.Method.GET));
+
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, "/test-vulcan/testIllegalArgumentException1",
+			Http.Method.GET);
+
+		Assert.assertEquals("BAD_REQUEST", jsonObject.getString("status"));
+		Assert.assertEquals(_MESSAGE, jsonObject.getString("title"));
+
+		Assert.assertEquals(
+			404,
+			HTTPTestUtil.invokeToHttpCode(
+				null, "/test-vulcan/testIllegalArgumentException2",
+				Http.Method.GET));
+
+		JSONObject expectedJSONObject = JSONUtil.put("status", "NOT_FOUND");
+
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, "/test-vulcan/testIllegalArgumentException2",
+			Http.Method.GET);
+
+		Assert.assertEquals(
+			expectedJSONObject.toString(), jsonObject.toString());
 	}
 
 	@Test
@@ -222,6 +255,21 @@ public class ExceptionMapperTest {
 		}
 
 		@GET
+		@Path("/testIllegalArgumentException1")
+		@Produces("application/json")
+		public String testIllegalArgumentException1() {
+			throw new IllegalArgumentException(_MESSAGE);
+		}
+
+		@GET
+		@Path("/testIllegalArgumentException2")
+		@Produces("application/json")
+		public String testIllegalArgumentException2() {
+			throw new IllegalArgumentException(
+				_MESSAGE, new NoSuchResourcePermissionException(_MESSAGE));
+		}
+
+		@GET
 		@Path("/testNoSuchModelException")
 		@Produces("application/json")
 		public String testNoSuchModelException() throws NoSuchModelException {
@@ -246,6 +294,8 @@ public class ExceptionMapperTest {
 	}
 
 	private static final String _DETAIL = RandomTestUtil.randomString();
+
+	private static final String _MESSAGE = RandomTestUtil.randomString();
 
 	private static final String _TITLE = RandomTestUtil.randomString();
 
