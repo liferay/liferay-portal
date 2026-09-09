@@ -2047,11 +2047,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 					@Override
 					public boolean getRecentSearchesEnabled() {
-						if (_recentSearchesEnabled != null) {
-							return _recentSearchesEnabled;
-						}
-
-						return SystemFDSEntry.super.getRecentSearchesEnabled();
+						return _recentSearchesEnabled;
 					}
 
 					@Override
@@ -2163,7 +2159,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		private boolean _hideManagementBarInEmptyState;
 		private int[] _listOfItemsPerPage;
 		private String _propsTransformer;
-		private Boolean _recentSearchesEnabled;
+		private boolean _recentSearchesEnabled;
 		private boolean _searchAsYouType;
 		private boolean _showSearch;
 		private boolean _snapshotsEnabled;
