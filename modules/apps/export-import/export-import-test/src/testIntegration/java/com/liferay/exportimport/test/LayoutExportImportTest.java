@@ -45,6 +45,7 @@ import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.journal.constants.JournalContentPortletKeys;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
@@ -115,6 +116,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
+
+import jakarta.portlet.PortletPreferences;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -1099,6 +1102,62 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			Arrays.asList(LocaleUtil.US, LocaleUtil.US),
 			Arrays.asList(LocaleUtil.US, LocaleUtil.SPAIN, LocaleUtil.US),
 			false);
+	}
+
+	@Test
+	public void testExportImportLayoutsWithJournalContentPortletIntoAnotherInstance()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			layout, JournalContentPortletKeys.JOURNAL_CONTENT,
+			HashMapBuilder.put(
+				"articleExternalReferenceCode",
+				new String[] {journalArticle.getExternalReferenceCode()}
+			).put(
+				"groupExternalReferenceCode",
+				new String[] {group.getExternalReferenceCode()}
+			).build());
+
+		exportLayouts(
+			new long[] {layout.getLayoutId()}, getExportParameterMap());
+
+		_company = CompanyTestUtil.addCompany(true);
+
+		User adminUser = UserTestUtil.getAdminUser(_company.getCompanyId());
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_company.getCompanyId())) {
+
+			Group newCompanyGroup = GroupTestUtil.addGroup(
+				_company.getCompanyId(), adminUser.getUserId(),
+				GroupConstants.DEFAULT_PARENT_GROUP_ID);
+
+			_importLayouts(adminUser, newCompanyGroup);
+
+			importedLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+				layout.getUuid(), newCompanyGroup.getGroupId(), false);
+
+			PortletPreferences portletPreferences =
+				LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
+
+			JournalArticle importedJournalArticle =
+				_journalArticleLocalService.
+					fetchLatestArticleByExternalReferenceCode(
+						newCompanyGroup.getGroupId(),
+						portletPreferences.getValue(
+							"articleExternalReferenceCode", null));
+
+			Assert.assertEquals(
+				journalArticle.getTitle(), importedJournalArticle.getTitle());
+			Assert.assertEquals(
+				journalArticle.getContent(),
+				importedJournalArticle.getContent());
+		}
 	}
 
 	@Test
