@@ -3538,7 +3538,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 									<exec executable="/bin/bash" failonerror="true" timeout="${test.class.playwright.setup.timeout}">
 										<arg value="modules/test/playwright/env/set_up.sh" />
 										<env key="APP_SERVER_TYPE" value="@{app.server.type}" />
-										<env if:set="ckeditor.dxp.license.key" key="CKEDITOR_DXP_LICENSE_KEY" value="${ckeditor.dxp.license.key}" />
+										<env if:set="ckeditor.dxp.license.key" key="CKEDITOR_DXP_LICENSE_KEY" unless:blank="${ckeditor.dxp.license.key}" value="${ckeditor.dxp.license.key}" />
 										<env key="DATABASE_TYPE" value="@{database.type}" />
 										<env key="JAVA_HOME" value="${java.jdk.home}" />
 										<env key="JAVA_OPTS" value="${java.jdk.opts}" />
