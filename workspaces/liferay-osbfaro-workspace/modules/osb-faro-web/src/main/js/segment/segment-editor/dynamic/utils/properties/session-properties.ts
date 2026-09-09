@@ -25,6 +25,7 @@ export const CHANNEL_OPTIONS = [
 	{label: Liferay.Language.get('paid'), value: 'paid'},
 	{label: Liferay.Language.get('referral'), value: 'referral'},
 	{label: Liferay.Language.get('social'), value: 'social'},
+	{label: Liferay.Language.get('ai-chatbot'), value: 'chatbot'},
 ];
 
 export interface IAcquisitionParameter {
