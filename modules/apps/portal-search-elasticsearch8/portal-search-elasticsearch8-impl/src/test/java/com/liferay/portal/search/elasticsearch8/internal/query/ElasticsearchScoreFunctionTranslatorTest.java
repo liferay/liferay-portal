@@ -9,9 +9,6 @@ import co.elastic.clients.elasticsearch._types.query_dsl.FunctionScore;
 
 import com.liferay.portal.search.elasticsearch8.internal.query.function.score.ElasticsearchScoreFunctionTranslator;
 import com.liferay.portal.search.elasticsearch8.internal.util.JsonpUtil;
-import com.liferay.portal.search.query.FunctionScoreQuery;
-import com.liferay.portal.search.query.Query;
-import com.liferay.portal.search.query.function.score.FieldValueFactorScoreFunction;
 import com.liferay.portal.search.query.function.score.ScoreFunction;
 import com.liferay.portal.search.test.util.query.BaseScoreFunctionTranslatorTestCase;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -31,32 +28,13 @@ public class ElasticsearchScoreFunctionTranslatorTest
 		LiferayUnitTestRule.INSTANCE;
 
 	@Override
-	protected String translate(
-		FieldValueFactorScoreFunction fieldValueFactorScoreFunction) {
-
-		FunctionScoreQuery.FilterQueryScoreFunctionHolder
-			filterQueryScoreFunctionHolder =
-				new FunctionScoreQuery.FilterQueryScoreFunctionHolder() {
-
-					@Override
-					public Query getFilterQuery() {
-						return null;
-					}
-
-					@Override
-					public ScoreFunction getScoreFunction() {
-						return fieldValueFactorScoreFunction;
-					}
-
-				};
-
+	protected String translate(ScoreFunction scoreFunction) {
 		ElasticsearchScoreFunctionTranslator
 			elasticsearchScoreFunctionTranslator =
 				new ElasticsearchScoreFunctionTranslator();
 
 		FunctionScore.Builder.ContainerBuilder containerBuilder =
-			elasticsearchScoreFunctionTranslator.translate(
-				filterQueryScoreFunctionHolder.getScoreFunction());
+			elasticsearchScoreFunctionTranslator.translate(scoreFunction);
 
 		return JsonpUtil.toString(containerBuilder.build());
 	}
