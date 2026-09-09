@@ -116,11 +116,38 @@ export type VerticalTimelineItem =
 	| SessionEvent;
 
 /**
- * One active day of the activity stream: the header that titles it and the
- * rows that belong to it. The day is a level above the timeline now, so it can
- * bracket both the day-level and the timed-activity sections.
+ * One Campaign Member response, shown as a row inside its campaign.
+ * `individualId` is null when the CRM contact matched no LDP individual — the
+ * name and job title still render, as plain text rather than a link, and never
+ * as an anonymous visitor. `status` is the raw CRM value, shown as it arrives.
+ */
+export type CampaignTouchMember = {
+	individualId: string | null;
+	individualName: string;
+	jobTitle: string | null;
+	status: string;
+};
+
+/**
+ * A campaign that touched the account on a given day. `touches` always arrives
+ * complete — the day-level card paginates over campaigns, never inside one —
+ * so the row's count is simply its length.
+ */
+export type CampaignTouch = {
+	campaignId: string;
+	campaignName: string;
+	dataSourceType: string;
+	touches: CampaignTouchMember[];
+};
+
+/**
+ * One active day of the activity stream: the header that titles it, the CRM
+ * campaigns that touched the account that day, and the session rows that
+ * belong to it. The day is a level above the timeline, so it can bracket both
+ * the day-level and the timed-activity sections.
  */
 export type TimelineDay = {
+	campaigns?: CampaignTouch[];
 	header: VerticalTimelineHeader;
 	items: VerticalTimelineItem[];
 };

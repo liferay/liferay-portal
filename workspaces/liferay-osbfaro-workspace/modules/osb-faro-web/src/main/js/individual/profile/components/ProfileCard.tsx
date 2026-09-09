@@ -1,4 +1,5 @@
 import ActivitiesChart from 'contacts/components/ActivitiesChart';
+import ActivitySectionEmptyState from 'shared/components/ActivitySectionEmptyState';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
@@ -393,6 +394,14 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 			<PaginatedDayList
 				{...sessionsMappedResults}
 				delta={delta}
+				emptyState={
+					<ActivitySectionEmptyState
+						linkHref={URLConstants.IndividualProfilesDocument}
+						linkLabel={Liferay.Language.get(
+							'learn-more-about-individuals'
+						)}
+					/>
+				}
 				initialExpanded={false}
 				LDPEnabled={LDPEnabled}
 				noResultsRenderer={renderNoResults()}

@@ -403,6 +403,14 @@ describe('VerticalTimeline', () => {
 			);
 		});
 
+		it('shows its icon on a sticker', () => {
+			const {container} = renderTimeline({items: [EVENT_ITEM]});
+
+			expect(
+				container.querySelector('.event-row .event-sticker .row-icon')
+			).toBeInTheDocument();
+		});
+
 		it('does not expand when the row itself is clicked', () => {
 			const {container} = renderTimeline({items: [EVENT_ITEM]});
 

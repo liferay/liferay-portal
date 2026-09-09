@@ -43,6 +43,7 @@ interface IActivityStreamCardProps {
 	chartView?: ChartView;
 	delta: number;
 	emptyChartContent?: React.ReactNode;
+	emptyState?: React.ReactNode;
 	footerLabel: React.ReactNode;
 	interval: Interval;
 	noResultsRenderer: React.ReactNode;
@@ -80,6 +81,7 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	chartView,
 	delta,
 	emptyChartContent,
+	emptyState,
 	footerLabel,
 	interval,
 	noResultsRenderer,
@@ -252,6 +254,7 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 						<PaginatedDayList
 							{...sessionsMappedResults}
 							delta={delta}
+							emptyState={emptyState}
 							initialExpanded={false}
 							noResultsRenderer={noResultsRenderer}
 							onDeltaChange={onDeltaChange}

@@ -51,8 +51,12 @@
 				background-color: $primaryLighten45;
 			}
 
-			&:focus,
-			&:focus-within,
+			// `:focus-visible` rather than `:focus`, or a click would leave the
+			// row focused and the caret stuck up until the next click
+			// elsewhere.
+
+			&:focus-visible,
+			&:has(:focus-visible),
 			&:hover {
 				.angle-icon,
 				.payload-button {
@@ -73,6 +77,7 @@
 		// White against a white row, so the sticker only reads once the row
 		// picks up its hover background.
 
+		.event-sticker,
 		.page-sticker {
 			background-color: $white;
 			height: $baseline * 4;
@@ -173,6 +178,57 @@
 		}
 	}
 
+	// The campaign a day-level touch belongs to. Its icon follows the page
+	// row's, white against a white row so it only reads on hover.
+
+	.campaign-row {
+		.campaign-sticker {
+			background-color: $white;
+			height: $baseline * 4;
+			margin-bottom: -$baseline;
+			margin-top: -$baseline;
+			width: $baseline * 4;
+		}
+
+		.title {
+			margin-left: $baseline * 2;
+		}
+	}
+
+	// One person's response inside a campaign, carrying their raw CRM status
+	// at the end of the row.
+
+	.touch-row {
+		// No `.row-main`, so the nested indent never reaches it. The avatar
+		// lines up under the campaign name it belongs to: the campaign's own
+		// sticker plus the gap before its title.
+
+		padding: ($baseline * 2) ($baseline * 2) ($baseline * 2) ($baseline * 8);
+
+		.row-content {
+			gap: $baseline * 2;
+		}
+
+		.touch-sticker {
+			flex-shrink: 0;
+		}
+
+		.touch-info {
+			align-items: flex-start;
+			display: flex;
+			flex-direction: column;
+			min-width: 0;
+		}
+
+		.touch-name {
+			color: $main;
+		}
+
+		.touch-status {
+			font-size: $fontSizeSmall;
+		}
+	}
+
 	// A plain, unexpandable row — no `.row-main`, so it needs its own padding —
 	// showing which individual the sessions below it belong to.
 
@@ -213,7 +269,11 @@
 		// instead of the default top alignment other rows use for their taller,
 		// multi-line content.
 
-		.row-main {
+		// Only the session's own row is a single line. Without the child
+		// combinator this also centred the page and event rows nested under
+		// it, dragging their carets off the first line.
+
+		> .row-main {
 			align-items: center !important;
 		}
 
@@ -282,6 +342,14 @@
 			display: flex;
 			gap: $baseline * 2;
 
+			// An event steps one indent deeper than the page it happened on,
+			// but from the icon onwards, so the time stays in the shared
+			// column.
+
+			.event-sticker {
+				margin-left: $rowIndent;
+			}
+
 			.title {
 				flex: 0 1 auto;
 				min-width: 0;
@@ -291,7 +359,7 @@
 		.event-info {
 			display: flex;
 			flex-direction: column;
-			margin-left: $timeColumnWidth + $baseline * 2; // time gap
+			margin-left: $timeColumnWidth + $baseline * 8 + $rowIndent;
 			row-gap: 4px;
 		}
 
@@ -312,9 +380,9 @@
 			padding-left: $baseline * 2 + $rowIndent * 2;
 		}
 
-		// The event row's left padding matches the page row's, regardless of
-		// whether the event is nested under a page group or sits loose directly
-		// under a session.
+		// An event keeps the page row's padding, so both rows' times share one
+		// column. The step deeper is applied to the icon and title instead —
+		// see `.event-row` above.
 
 		> .timeline-row.event-row > .row-main,
 		.timeline-rows.nested > .timeline-row.event-row > .row-main {
@@ -368,6 +436,14 @@
 	// over the rounded corners and the border reads as cut off.
 
 	overflow: hidden;
+
+	// A card fills independently of its sibling, so one can carry rows while
+	// the other carries this.
+
+	.activity-section-empty-state {
+		gap: $baseline;
+		padding: ($baseline * 6) ($baseline * 2);
+	}
 
 	.activity-section-header {
 		background-color: $lightBackground;

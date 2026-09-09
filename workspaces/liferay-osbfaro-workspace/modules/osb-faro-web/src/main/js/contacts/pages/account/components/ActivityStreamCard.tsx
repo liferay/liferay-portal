@@ -11,12 +11,14 @@ import AccountUserSessionQuery, {
 	AccountUserSessionVariables,
 } from 'shared/queries/AccountUserSessionQuery';
 import ActivityChartEmptyState from 'shared/components/ActivityChartEmptyState';
+import ActivitySectionEmptyState from 'shared/components/ActivitySectionEmptyState';
 import ActivityStreamCard from 'shared/components/ActivityStreamCard';
 import ActivityStreamNoResults from 'shared/components/ActivityStreamNoResults';
 import formatAccountSessions from '../utils/formatAccountSessions';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useEffect, useMemo, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
+import withCampaignTouchesFixture from 'shared/util/campaignTouchesFixture';
 import {ChartView} from 'shared/components/ChartViewSelector';
 import {fetchPolicyDefinition} from 'shared/util/graphql';
 import {getSafeRangeSelectors} from 'shared/util/util';
@@ -145,15 +147,17 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			mapListResultsToProps(
 				sessionsResponse,
 				({eventsByUserSessions}) => ({
-					items: formatAccountSessions(
-						eventsByUserSessions?.userSessions ?? [],
-						{
-							accountId,
-							accountName,
-							channelId,
-							groupId,
-							rangeSelectors,
-						}
+					items: withCampaignTouchesFixture(
+						formatAccountSessions(
+							eventsByUserSessions?.userSessions ?? [],
+							{
+								accountId,
+								accountName,
+								channelId,
+								groupId,
+								rangeSelectors,
+							}
+						)
 					),
 					total:
 						eventsByUserSessions?.totalPageGroupsMetric?.value ?? 0,
@@ -220,6 +224,14 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					)}
 					title={Liferay.Language.get(
 						'there-is-no-data-for-account-activities'
+					)}
+				/>
+			}
+			emptyState={
+				<ActivitySectionEmptyState
+					linkHref={URLConstants.AccountActivitiesDocumentationLink}
+					linkLabel={Liferay.Language.get(
+						'learn-more-about-accounts'
 					)}
 				/>
 			}

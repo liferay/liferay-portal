@@ -1,4 +1,5 @@
 import ActivityChartEmptyState from 'shared/components/ActivityChartEmptyState';
+import ActivitySectionEmptyState from 'shared/components/ActivitySectionEmptyState';
 import ActivityStreamCard from 'shared/components/ActivityStreamCard';
 import ActivityStreamNoResults from 'shared/components/ActivityStreamNoResults';
 import ClayIcon from '@clayui/icon';
@@ -201,6 +202,14 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 					)}
 					title={Liferay.Language.get(
 						'there-is-no-data-for-individual-activities'
+					)}
+				/>
+			}
+			emptyState={
+				<ActivitySectionEmptyState
+					linkHref={URLConstants.IndividualProfilesDocument}
+					linkLabel={Liferay.Language.get(
+						'learn-more-about-individuals'
 					)}
 				/>
 			}

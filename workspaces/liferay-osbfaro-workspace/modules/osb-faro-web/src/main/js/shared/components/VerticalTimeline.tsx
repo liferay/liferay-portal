@@ -550,6 +550,13 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 					<div className="event-header">
 						<RowTime time={time} timeZoneId={timeZoneId} />
 
+						<ClaySticker className="event-sticker flex-shrink-0">
+							<ClayIcon
+								className="row-icon icon-root text-secondary"
+								symbol="click"
+							/>
+						</ClaySticker>
+
 						<span className="title text-dark">
 							<TextTruncate title={title} />
 						</span>

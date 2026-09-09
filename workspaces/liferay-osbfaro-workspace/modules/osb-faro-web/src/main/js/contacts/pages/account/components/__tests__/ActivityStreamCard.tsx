@@ -179,9 +179,9 @@ describe('ActivityStreamCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(
-			container.querySelector('.pagination-results')
-		).toHaveTextContent('186');
+		const pagers = container.querySelectorAll('.pagination-results');
+
+		expect(pagers[pagers.length - 1]).toHaveTextContent('186');
 	});
 
 	it('renders the empty state when the histogram has no events', async () => {
