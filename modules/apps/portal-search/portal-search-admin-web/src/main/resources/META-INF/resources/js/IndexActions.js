@@ -87,6 +87,31 @@ function IndexerListItem({
 	);
 }
 
+function IndexerCategories({categories, cmd, disabled, onClick, progressMap}) {
+	return Object.keys(categories)
+		.sort()
+		.map((category) => (
+			<React.Fragment key={category}>
+				<ClayList.Header>{category}</ClayList.Header>
+
+				{categories[category].map(
+					({className, displayName, enabled = true}) => (
+						<IndexerListItem
+							className={className}
+							cmd={cmd}
+							disabled={disabled || !enabled}
+							displayName={displayName}
+							id={className}
+							key={className}
+							onClick={onClick}
+							progressPercentage={progressMap[className]}
+						/>
+					)
+				)}
+			</React.Fragment>
+		));
+}
+
 function getFailedReindexBackgroundTasksCount(htmlDocument, portletNamespace) {
 	const failedReindexBackgroundTasksCount = htmlDocument.documentElement
 		.querySelector(`#${portletNamespace}failedReindexBackgroundTasksCount`)
@@ -103,7 +128,7 @@ function IndexActions({
 	initialScope,
 	concurrentModeSupported = true,
 	virtualInstances = [],
-	indexReindexerNames = [],
+	indexReindexersMap = {},
 	omniadmin,
 	portletNamespace,
 	redirectURL = '',
@@ -519,6 +544,10 @@ function IndexActions({
 		return !!Object.keys(backgroundTaskMap).length;
 	};
 
+	const _isReindexDisabled =
+		executionMode === EXECUTION_MODES.CONCURRENT.value ||
+		_isBackgroundTaskRunning(['portal', 'spellCheckDictionaries']);
+
 	useEffect(() => {
 		const backgroundTaskMapString = document
 			.querySelector(`#${portletNamespace}classNameToBackgroundTaskMap`)
@@ -586,14 +615,7 @@ function IndexActions({
 
 								<IndexerListItem
 									cmd="reindexDictionaries"
-									disabled={
-										executionMode ===
-											EXECUTION_MODES.CONCURRENT.value ||
-										_isBackgroundTaskRunning([
-											'portal',
-											'spellCheckDictionaries',
-										])
-									}
+									disabled={_isReindexDisabled}
 									displayName={Liferay.Language.get(
 										'all-spell-check-dictionaries'
 									)}
@@ -601,97 +623,20 @@ function IndexActions({
 									onClick={_handleIndexerItemClick}
 								/>
 
-								{Object.keys(indexersMap)
-									.sort()
-									.map((category) => (
-										<React.Fragment key={category}>
-											<ClayList.Header>
-												{category}
-											</ClayList.Header>
+								<IndexerCategories
+									categories={indexersMap}
+									disabled={_isReindexDisabled}
+									onClick={_handleIndexerItemClick}
+									progressMap={backgroundTaskMap}
+								/>
 
-											{indexersMap[category].map(
-												({
-													className,
-													displayName,
-													enabled,
-												}) => (
-													<IndexerListItem
-														className={className}
-														disabled={
-															!enabled ||
-															executionMode ===
-																EXECUTION_MODES
-																	.CONCURRENT
-																	.value ||
-															_isBackgroundTaskRunning(
-																[
-																	'portal',
-																	'spellCheckDictionaries',
-																]
-															)
-														}
-														displayName={
-															displayName
-														}
-														id={className}
-														key={className}
-														onClick={
-															_handleIndexerItemClick
-														}
-														progressPercentage={
-															backgroundTaskMap[
-																className
-															]
-														}
-													/>
-												)
-											)}
-										</React.Fragment>
-									))}
-
-								{Object.keys(indexReindexerNames)
-									.sort()
-									.map((category) => (
-										<React.Fragment key={category}>
-											<ClayList.Header>
-												{category}
-											</ClayList.Header>
-
-											{indexReindexerNames[category].map(
-												({className, displayName}) => (
-													<IndexerListItem
-														className={className}
-														cmd="reindexIndexReindexer"
-														disabled={
-															executionMode ===
-																EXECUTION_MODES
-																	.CONCURRENT
-																	.value ||
-															_isBackgroundTaskRunning(
-																[
-																	'portal',
-																	'spellCheckDictionaries',
-																]
-															)
-														}
-														displayName={
-															displayName
-														}
-														id={className}
-														key={className}
-														onClick={
-															_handleIndexerItemClick
-														}
-														progressPercentage={
-															backgroundTaskMap[
-																className
-															]
-														}
-													/>
-												)
-											)}
-										</React.Fragment>
-									))}
+								<IndexerCategories
+									categories={indexReindexersMap}
+									cmd="reindexIndexReindexer"
+									disabled={_isReindexDisabled}
+									onClick={_handleIndexerItemClick}
+									progressMap={backgroundTaskMap}
+								/>
 							</ClayList>
 						</div>
 					</ClayLayout.Col>
@@ -710,7 +655,7 @@ export default function ({
 	const {
 		concurrentModeSupported,
 		controlMenuCategoryKey,
-		indexReindexerNames,
+		indexReindexersMap,
 		indexersMap,
 		initialCompanyIds,
 		initialExecutionMode,
@@ -725,7 +670,7 @@ export default function ({
 			<IndexActions
 				concurrentModeSupported={concurrentModeSupported}
 				controlMenuCategoryKey={controlMenuCategoryKey}
-				indexReindexerNames={indexReindexerNames}
+				indexReindexersMap={indexReindexersMap}
 				indexersMap={indexersMap}
 				initialCompanyIds={initialCompanyIds}
 				initialExecutionMode={initialExecutionMode}

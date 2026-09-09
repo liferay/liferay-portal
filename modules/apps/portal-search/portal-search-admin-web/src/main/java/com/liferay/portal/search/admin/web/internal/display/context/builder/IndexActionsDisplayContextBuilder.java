@@ -106,7 +106,7 @@ public class IndexActionsDisplayContextBuilder {
 		).put(
 			"indexersMap", _getIndexersMap()
 		).put(
-			"indexReindexerNames", _getIndexReindexerNamesMap()
+			"indexReindexersMap", _getIndexReindexersMap()
 		).put(
 			"initialCompanyIds", _getInitialCompanyIds()
 		).put(
@@ -203,20 +203,20 @@ public class IndexActionsDisplayContextBuilder {
 		return indexersMap;
 	}
 
-	private Map<String, List<Object>> _getIndexReindexerNamesMap() {
-		Map<String, List<Object>> indexReindexerNamesMap = new TreeMap<>();
+	private Map<String, List<Object>> _getIndexReindexersMap() {
+		Map<String, List<Object>> indexReindexersMap = new TreeMap<>();
 
 		if (_indexReindexerClassNamesMap == null) {
-			return indexReindexerNamesMap;
+			return indexReindexersMap;
 		}
 
 		for (Map.Entry<String, List<String>> entry :
 				_indexReindexerClassNamesMap.entrySet()) {
 
-			List<Object> indexReindexerNames = new ArrayList<>();
+			List<Object> indexReindexers = new ArrayList<>();
 
 			for (String indexReindexerClassName : entry.getValue()) {
-				indexReindexerNames.add(
+				indexReindexers.add(
 					HashMapBuilder.put(
 						"className", indexReindexerClassName
 					).put(
@@ -227,12 +227,12 @@ public class IndexActionsDisplayContextBuilder {
 					).build());
 			}
 
-			indexReindexerNamesMap.put(
+			indexReindexersMap.put(
 				_language.get(_httpServletRequest, entry.getKey()),
-				indexReindexerNames);
+				indexReindexers);
 		}
 
-		return indexReindexerNamesMap;
+		return indexReindexersMap;
 	}
 
 	private long[] _getInitialCompanyIds() {
