@@ -1,4 +1,6 @@
 Bundle-Name: Liferay AI Hub Cell API
 Bundle-SymbolicName: com.liferay.ai.hub.cell.api
-Bundle-Version: 3.0.2
-Export-Package: com.liferay.ai.hub.cell.configuration
+Bundle-Version: 3.1.0
+Export-Package: \
+	com.liferay.ai.hub.cell.authorization,\
+	com.liferay.ai.hub.cell.configuration

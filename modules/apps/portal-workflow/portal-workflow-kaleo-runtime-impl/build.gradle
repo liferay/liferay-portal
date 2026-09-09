@@ -9,6 +9,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.19"
+	compileOnly project(":apps:ai-hub-cell:ai-hub-cell-api")
 	compileOnly project(":apps:change-tracking:change-tracking-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:object:object-api")

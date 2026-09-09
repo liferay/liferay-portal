@@ -5,6 +5,7 @@
 
 package com.liferay.portal.workflow.kaleo.runtime.internal.node;
 
+import com.liferay.ai.hub.cell.authorization.AIHubCellAuthorizationTokenProvider;
 import com.liferay.petra.concurrent.NoticeableExecutorService;
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.string.StringBundler;
@@ -15,9 +16,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -156,8 +155,11 @@ public class AIHubAgentNodeExecutor extends BaseNodeExecutor {
 		KaleoInstanceToken kaleoInstanceToken =
 			executionContext.getKaleoInstanceToken();
 
-		JSONObject authorizationTokenJSONObject = _postAuthorizationToken(
-			_companyLocalService.getCompany(kaleoInstanceToken.getCompanyId()));
+		JSONObject authorizationTokenJSONObject =
+			_aiHubCellAuthorizationTokenProvider.
+				getAuthorizationTokenJSONObject(
+					kaleoInstanceToken.getCompanyId(),
+					kaleoInstanceToken.getUserId());
 
 		options.addHeader(
 			HttpHeaders.AUTHORIZATION,
@@ -241,26 +243,12 @@ public class AIHubAgentNodeExecutor extends BaseNodeExecutor {
 			kaleoTransition.getName(), workflowContext, false);
 	}
 
-	private JSONObject _postAuthorizationToken(Company company)
-		throws Exception {
-
-		Http.Options options = new Http.Options();
-
-		options.addHeader(HttpHeaders.ACCEPT, ContentTypes.APPLICATION_JSON);
-		options.setLocation(
-			company.getPortalURL(0) +
-				"/o/ai-hub-cell/v1.0/authorization-tokens");
-		options.setMethod(Http.Method.POST);
-		options.setTimeout(10000);
-
-		return _getResponseBodyJSONObject(options);
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		AIHubAgentNodeExecutor.class);
 
 	@Reference
-	private CompanyLocalService _companyLocalService;
+	private AIHubCellAuthorizationTokenProvider
+		_aiHubCellAuthorizationTokenProvider;
 
 	@Reference
 	private Http _http;
