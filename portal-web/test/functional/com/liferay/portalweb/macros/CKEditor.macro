@@ -19,6 +19,29 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro addContentInRepeatableWebContent(content = null, fieldLabel = null, index = null) {
+		if (IsElementPresent(index = ${index}, key_fieldLabel = ${fieldLabel}, locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE")) {
+			SelectFrame.selectFrameNoLoading(
+				index = ${index},
+				key_fieldLabel = ${fieldLabel},
+				locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
+
+			Type(
+				locator1 = "CKEditor#BODY",
+				value1 = ${content});
+
+			SelectFrameTop();
+		}
+		else {
+			Type(
+				index = ${index},
+				key_fieldLabel = ${fieldLabel},
+				locator1 = "CKEditor#ANY_BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
+				value1 = ${content});
+		}
+	}
+
+	@summary = "Default summary"
 	macro addContentInWebContent(fieldLabel = null, content = null) {
 		Type(
 			key_fieldLabel = ${fieldLabel},

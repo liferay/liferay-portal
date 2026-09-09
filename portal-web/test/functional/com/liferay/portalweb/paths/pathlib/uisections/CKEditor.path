@@ -16,6 +16,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ANY_BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE</td>
+	<td>xpath=(//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@class,'ck-editor__editable_inline')])[${index}]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>BODY_FIELD</td>
 	<td>//div[contains(@id,'cke')]</td>
 	<td></td>

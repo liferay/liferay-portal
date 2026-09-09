@@ -766,16 +766,10 @@ definition {
 		}
 
 		task ("Type content to the second Rich Text field") {
-			SelectFrame.selectFrameNoLoading(
-				index = 2,
-				key_fieldLabel = "Rich Text",
-				locator1 = "CKEditor#ANY_BODY_FIELD_IFRAME_WEB_CONTENT_ARTICLE");
-
-			Type(
-				locator1 = "CKEditor#BODY",
-				value1 = "This is the second HTML field");
-
-			SelectFrame(value1 = "relative=top");
+			CKEditor.addContentInRepeatableWebContent(
+				content = "This is the second HTML field",
+				fieldLabel = "Rich Text",
+				index = 2);
 
 			WebContent.publishWithPermissions();
 		}
