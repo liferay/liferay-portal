@@ -1,4 +1,13 @@
 locals {
+	argo_workflows_gateway_class_name="argo-workflows-gateway-class"
+	argo_workflows_gateway_name="argo-workflows-gateway"
+	argo_workflows_tls_enabled=var.argo_workflows_domain_config.hostname != null && var.argo_workflows_domain_config.tls_external_secret_name != null
+	argo_workflows_tls_external_secret_name=var.argo_workflows_domain_config.tls_external_secret_name == null ? null : (
+		startswith(var.argo_workflows_domain_config.tls_external_secret_name, local.secret_prefixes.certificates) ?
+		var.argo_workflows_domain_config.tls_external_secret_name :
+		"${local.secret_prefixes.certificates}${var.argo_workflows_domain_config.tls_external_secret_name}"
+	)
+	argo_workflows_tls_secret_name="argo-workflows-server-tls"
 	argocd_external_url=var.argocd_domain_config.hostname == null ? "" : "${local.argocd_tls_enabled ? "https" : "http"}://${var.argocd_domain_config.hostname}"
 	argocd_gateway_class_name="argocd-gateway-class"
 	argocd_gateway_name="argocd-gateway"

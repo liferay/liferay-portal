@@ -1,0 +1,218 @@
+resource "kubernetes_manifest" "argo_workflows_gateway" {
+	count=var.argo_workflows_domain_config.hostname != null ? 1 : 0
+	depends_on=[kubernetes_manifest.argo_workflows_server_tls_external_secret]
+	manifest={
+		apiVersion="gateway.networking.k8s.io/v1"
+		kind="Gateway"
+		metadata={
+			labels=merge(
+				local.common_labels,
+				{
+					"app.kubernetes.io/name"=local.argo_workflows_gateway_name
+				})
+			name=local.argo_workflows_gateway_name
+			namespace=var.argo_workflows_namespace
+		}
+		spec={
+			gatewayClassName=local.argo_workflows_gateway_class_name
+			listeners=concat(
+				[
+					{
+						allowedRoutes={
+							namespaces={
+								from="Same"
+							}
+						}
+						hostname=var.argo_workflows_domain_config.hostname
+						name="http"
+						port=80
+						protocol="HTTP"
+					},
+				],
+				local.argo_workflows_tls_enabled ? [
+					{
+						allowedRoutes={
+							namespaces={
+								from="Same"
+							}
+						}
+						hostname=var.argo_workflows_domain_config.hostname
+						name="https"
+						port=443
+						protocol="HTTPS"
+						tls={
+							certificateRefs=[{
+								name=local.argo_workflows_tls_secret_name
+							}]
+							mode="Terminate"
+						}
+					},
+				] : [])
+		}
+	}
+}
+resource "kubernetes_manifest" "argo_workflows_gateway_class" {
+	count=var.argo_workflows_domain_config.hostname != null ? 1 : 0
+	manifest={
+		apiVersion="gateway.networking.k8s.io/v1"
+		kind="GatewayClass"
+		metadata={
+			name=local.argo_workflows_gateway_class_name
+		}
+		spec={
+			controllerName="gateway.envoyproxy.io/gatewayclass-controller"
+			parametersRef={
+				group="gateway.envoyproxy.io"
+				kind="EnvoyProxy"
+				name="${local.argo_workflows_gateway_name}-proxy-config"
+				namespace=var.gateway_namespace
+			}
+		}
+	}
+}
+resource "kubernetes_manifest" "argo_workflows_gateway_proxy_config" {
+	count=var.argo_workflows_domain_config.hostname != null ? 1 : 0
+	manifest={
+		apiVersion="gateway.envoyproxy.io/v1alpha1"
+		kind="EnvoyProxy"
+		metadata={
+			labels=local.common_labels
+			name="${local.argo_workflows_gateway_name}-proxy-config"
+			namespace=var.gateway_namespace
+		}
+		spec={
+			provider={
+				kubernetes={
+					envoyDeployment={
+						replicas=2
+					}
+					envoyService={
+						annotations={
+							"networking.gke.io/load-balancer-type"="External"
+						}
+					}
+				}
+				type="Kubernetes"
+			}
+		}
+	}
+}
+resource "kubernetes_manifest" "argo_workflows_httproute" {
+	count=var.argo_workflows_domain_config.hostname != null ? 1 : 0
+	manifest={
+		apiVersion="gateway.networking.k8s.io/v1"
+		kind="HTTPRoute"
+		metadata={
+			labels=merge(
+				local.common_labels,
+				{
+					"app.kubernetes.io/name"="argo-workflows-server-route"
+				})
+			name="argo-workflows-server-route"
+			namespace=var.argo_workflows_namespace
+		}
+		spec={
+			hostnames=[var.argo_workflows_domain_config.hostname]
+			parentRefs=[
+				{
+					name=local.argo_workflows_gateway_name
+					sectionName=local.argo_workflows_tls_enabled ? "https" : "http"
+				},
+			]
+			rules=[
+				{
+					backendRefs=[
+						{
+							name="argo-workflows-server"
+							port=2746
+						},
+					]
+				},
+			]
+		}
+	}
+}
+resource "kubernetes_manifest" "argo_workflows_https_redirect" {
+	count=local.argo_workflows_tls_enabled ? 1 : 0
+	manifest={
+		apiVersion="gateway.networking.k8s.io/v1"
+		kind="HTTPRoute"
+		metadata={
+			labels=merge(
+				local.common_labels,
+				{
+					"app.kubernetes.io/name"="argo-workflows-redirect-route"
+				})
+			name="argo-workflows-redirect-route"
+			namespace=var.argo_workflows_namespace
+		}
+		spec={
+			hostnames=[var.argo_workflows_domain_config.hostname]
+			parentRefs=[
+				{
+					name=local.argo_workflows_gateway_name
+					sectionName="http"
+				},
+			]
+			rules=[
+				{
+					filters=[
+						{
+							requestRedirect={
+								scheme="https"
+								statusCode=301
+							}
+							type="RequestRedirect"
+						},
+					]
+				},
+			]
+		}
+	}
+}
+resource "kubernetes_manifest" "argo_workflows_server_tls_external_secret" {
+	count=local.argo_workflows_tls_external_secret_name != null ? 1 : 0
+	depends_on=[kubernetes_manifest.secret_store]
+	field_manager {
+		force_conflicts=true
+		name=local.terraform_manager_name
+	}
+	manifest={
+		apiVersion="external-secrets.io/v1"
+		kind="ExternalSecret"
+		metadata={
+			labels=local.common_labels
+			name=local.argo_workflows_tls_secret_name
+			namespace=var.argo_workflows_namespace
+		}
+		spec={
+			dataFrom=[
+				{
+					extract={
+						decodingStrategy="Auto"
+						key=local.argo_workflows_tls_external_secret_name
+					}
+				},
+			]
+			refreshInterval="1h0m0s"
+			secretStoreRef={
+				kind="ClusterSecretStore"
+				name=local.secret_store_name
+			}
+			target={
+				creationPolicy="Owner"
+				name=local.argo_workflows_tls_secret_name
+				template={
+					metadata={
+						labels=merge(
+							local.common_labels,
+							{
+								"app.kubernetes.io/name"=local.argo_workflows_tls_secret_name
+							})
+					}
+					type="kubernetes.io/tls"
+				}
+			}
+		}
+	}
+}

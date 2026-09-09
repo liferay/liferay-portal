@@ -1,3 +1,14 @@
+variable "argo_workflows_domain_config" {
+	default={}
+	type=object({
+		hostname=optional(string, null)
+		tls_external_secret_name=optional(string, null)
+	})
+}
+variable "argo_workflows_namespace" {
+	default="argo-workflows-system"
+	type=string
+}
 variable "argocd_domain_config" {
 	default={}
 	type=object({

@@ -1,3 +1,22 @@
+variable "argo_workflows_additional_allowed_cidr_blocks" {
+	default=[]
+	type=list(string)
+	validation {
+		condition=alltrue([for cidr in var.argo_workflows_additional_allowed_cidr_blocks : can(cidrhost(cidr, 0))])
+		error_message="The variable \"argo_workflows_additional_allowed_cidr_blocks\" must contain valid CIDR blocks."
+	}
+}
+variable "argo_workflows_domain_config" {
+	default={}
+	type=object({
+		hostname=optional(string, null)
+		tls_external_secret_name=optional(string, null)
+	})
+}
+variable "argo_workflows_namespace" {
+	default="argo-workflows-system"
+	type=string
+}
 variable "argocd_additional_allowed_cidr_blocks" {
 	default=[]
 	type=list(string)
