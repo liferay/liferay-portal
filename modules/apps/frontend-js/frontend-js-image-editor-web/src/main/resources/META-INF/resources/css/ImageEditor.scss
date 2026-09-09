@@ -12,8 +12,8 @@
 	);
 	--editor-accent-text: var(--editor-primary);
 	--editor-border: var(--cadmin-gray-300, var(--gray-300, #{$gray-300}));
-	--editor-primary: var(--cadmin-primary, var(--primary, #0b5fff));
-	--editor-surface: var(--cadmin-body-bg, var(--body-bg, #fff));
+	--editor-primary: var(--cadmin-primary, var(--primary, #{$primary}));
+	--editor-surface: var(--cadmin-body-bg, var(--body-bg, #{$body-bg}));
 	--editor-workspace-bg: #{$dark};
 
 	display: flex;

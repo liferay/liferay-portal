@@ -28,7 +28,7 @@
 }
 
 .image-editor .crop-dim {
-	fill: rgba(10, 11, 20, 0.6);
+	fill: rgba($dark, 0.6);
 }
 
 .image-editor .crop-border {
@@ -49,7 +49,7 @@
 }
 
 .image-editor .crop-grid line {
-	stroke: rgba(255, 255, 255, 0.5);
+	stroke: rgba($white, 0.5);
 }
 
 .image-editor .crop-recenter {
@@ -66,16 +66,16 @@
 }
 
 .image-editor .crop-recenter-disc {
-	fill: rgba(255, 255, 255, 0.9);
+	fill: rgba($white, 0.9);
 }
 
 .image-editor .crop-recenter-icon {
-	color: #14151f;
+	color: $dark;
 	pointer-events: none;
 }
 
 .image-editor .crop-handle-visual {
-	fill: #fff;
+	fill: $white;
 	stroke: var(--editor-accent);
 }
 
@@ -96,7 +96,7 @@
 }
 
 .image-editor .focus-ring-inner {
-	stroke: #fff;
+	stroke: $white;
 }
 
 .image-editor .focus-ring-outer {
