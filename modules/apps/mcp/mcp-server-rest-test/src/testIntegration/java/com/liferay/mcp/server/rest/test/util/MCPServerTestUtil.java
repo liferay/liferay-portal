@@ -132,6 +132,15 @@ public class MCPServerTestUtil {
 			String toolSetName)
 		throws Exception {
 
+		return addMCPServerProfileToolObjectEntry(
+			mcpServerProfileExternalReferenceCode, null, toolName, toolSetName);
+	}
+
+	public static ObjectEntry addMCPServerProfileToolObjectEntry(
+			String mcpServerProfileExternalReferenceCode, String restrictFields,
+			String toolName, String toolSetName)
+		throws Exception {
+
 		ObjectDefinition mcpServerProfileObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.
 				fetchObjectDefinitionByExternalReferenceCode(
@@ -156,6 +165,8 @@ public class MCPServerTestUtil {
 			HashMapBuilder.<String, Serializable>put(
 				"r_mcpServerProfileToTools_l_mcpServerProfileId",
 				mcpServerProfileObjectEntry.getObjectEntryId()
+			).put(
+				"restrictFields", () -> restrictFields
 			).put(
 				"toolName", toolName
 			).put(
@@ -376,6 +387,21 @@ public class MCPServerTestUtil {
 				prefix + "01.list.type.definition",
 				prefix + "02.object.definition", prefix + "03.object.entry"
 			});
+	}
+
+	public static void updateMCPServerProfileToolRestrictFields(
+			ObjectEntry mcpServerProfileToolObjectEntry, String restrictFields)
+		throws Exception {
+
+		ObjectEntryLocalServiceUtil.updateObjectEntry(
+			TestPropsValues.getUserId(),
+			mcpServerProfileToolObjectEntry.getObjectEntryId(), 0,
+			HashMapBuilder.<String, Serializable>putAll(
+				mcpServerProfileToolObjectEntry.getValues()
+			).put(
+				"restrictFields", restrictFields
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private static ObjectEntry _fetchObjectEntry(
