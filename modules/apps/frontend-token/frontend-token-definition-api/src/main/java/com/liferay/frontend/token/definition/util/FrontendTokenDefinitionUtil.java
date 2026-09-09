@@ -104,14 +104,15 @@ public class FrontendTokenDefinitionUtil {
 	}
 
 	public static JSONObject parseFrontendTokenDefinitionJSONObject(
-		String frontendTokenDefinition) {
+		String frontendTokenDefinitionJSON) {
 
-		if (Validator.isNull(frontendTokenDefinition)) {
+		if (Validator.isNull(frontendTokenDefinitionJSON)) {
 			return null;
 		}
 
 		try {
-			return JSONFactoryUtil.createJSONObject(frontendTokenDefinition);
+			return JSONFactoryUtil.createJSONObject(
+				frontendTokenDefinitionJSON);
 		}
 		catch (JSONException jsonException) {
 			if (_log.isWarnEnabled()) {
