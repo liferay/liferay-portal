@@ -12,6 +12,7 @@ export default {
 	'flipped-horizontal': 'Image flipped horizontally',
 	'image-saved-as-x': 'Image saved as {0}',
 	'image-workspace': 'Image workspace',
+	'keyboard-shortcuts': 'Keyboard Shortcuts',
 	'label-flip': 'Flip',
 	'label-rotate': 'rotation',
 	'redo': 'Redo',
@@ -21,6 +22,24 @@ export default {
 	'save': 'Save',
 	'save-failed': 'Saving failed. Please try again.',
 	'saving': 'Saving',
+	'shortcut-alt-drag': 'Resize the crop from its center while dragging',
+	'shortcut-arrows': 'Move or adjust the focused control by 1',
+	'shortcut-center-crop': 'Fit the crop area to the window',
+	'shortcut-copy': 'Copy the focused annotation',
+	'shortcut-escape': 'Close the editor or the open dialog',
+	'shortcut-multi-select':
+		'Add or remove an annotation from a group that moves and deletes together',
+	'shortcut-paste': 'Paste the copied annotation',
+	'shortcut-redo': 'Redo the last undone change',
+	'shortcut-shift-arrows': 'Move or adjust the focused control by 10',
+	'shortcut-shift-drag':
+		'Keep the proportions while resizing the crop or a box annotation',
+	'shortcut-undo': 'Undo the last change',
+	'shortcut-zoom':
+		'Zoom in and out while the workspace has focus, towards the pointer when it is over the image and towards the center of the view otherwise',
+	'shortcut-zoom-actual': 'Zoom to actual size',
+	'shortcut-zoom-fit':
+		'Fit the image to the window while the workspace has focus',
 	'undo': 'Undo',
 	'undo-x': 'Undo {0}',
 	'workspace-description':

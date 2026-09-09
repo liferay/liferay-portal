@@ -87,6 +87,26 @@
 	text-align: center;
 }
 
+.image-editor-modal .editor-shortcut-list {
+	align-items: center;
+	display: grid;
+	gap: 0.625rem 1.25rem;
+	grid-template-columns: auto 1fr;
+	margin: 0;
+}
+
+.image-editor-modal .editor-shortcut-list dt {
+	font-weight: 400;
+}
+
+.image-editor-modal .editor-shortcut-list kbd {
+	white-space: nowrap;
+}
+
+.image-editor-modal .editor-shortcut-list dd {
+	margin: 0;
+}
+
 @media (max-width: 700px) {
 	.image-editor-modal .editor-main {
 		flex-direction: column;

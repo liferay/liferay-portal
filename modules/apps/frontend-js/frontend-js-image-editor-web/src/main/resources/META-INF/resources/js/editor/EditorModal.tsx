@@ -8,6 +8,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {useAnnouncer} from '../chrome/Announcer';
 import {BottomBar} from '../chrome/BottomBar';
+import {ShortcutsDialog} from '../chrome/ShortcutsDialog';
 import {
 	EditorInstanceProvider,
 	nextEditorInstancePrefix,
@@ -102,6 +103,8 @@ export default function EditorModal({image, onClose, onSave}: Props) {
 	const [zoom, setZoom] = useState(() =>
 		fitZoom(null, image.width, image.height)
 	);
+
+	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
 	const workspaceRef = useRef<HTMLDivElement | null>(null);
 
@@ -316,6 +319,7 @@ export default function EditorModal({image, onClose, onSave}: Props) {
 						onCancel={closeModal}
 						onRedo={redo}
 						onSave={handleSave}
+						onShowShortcuts={() => setShortcutsOpen(true)}
 						onUndo={undo}
 						onZoom={zoomBy}
 						onZoomFit={zoomToFit}
@@ -324,6 +328,11 @@ export default function EditorModal({image, onClose, onSave}: Props) {
 					/>
 				</div>
 			</ClayModal>
+
+			<ShortcutsDialog
+				onOpenChange={setShortcutsOpen}
+				open={shortcutsOpen}
+			/>
 		</EditorInstanceProvider>
 	);
 }

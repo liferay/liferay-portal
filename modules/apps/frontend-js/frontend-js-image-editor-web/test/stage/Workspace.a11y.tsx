@@ -54,6 +54,7 @@ function EditorHarness() {
 				onCancel={() => {}}
 				onRedo={() => dispatch({type: 'redo'})}
 				onSave={() => {}}
+				onShowShortcuts={() => {}}
 				onUndo={() => dispatch({type: 'undo'})}
 				onZoom={zoomBy}
 				onZoomFit={() => setZoom(0.5)}

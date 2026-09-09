@@ -18,6 +18,7 @@ interface Props {
 	onCancel: () => void;
 	onRedo: () => void;
 	onSave: () => void;
+	onShowShortcuts: () => void;
 	onUndo: () => void;
 	onZoom: (direction: -1 | 1) => void;
 	onZoomFit: () => void;
@@ -33,6 +34,7 @@ export function BottomBar({
 	onCancel,
 	onRedo,
 	onSave,
+	onShowShortcuts,
 	onUndo,
 	onZoom,
 	onZoomFit,
@@ -51,9 +53,7 @@ export function BottomBar({
 						displayType="secondary"
 						onClick={() => {
 							dispatch({type: 'rotate-90'});
-							onAnnounce(
-								t('rotated-90')
-							);
+							onAnnounce(t('rotated-90'));
 						}}
 						symbol="rotate"
 						title={t('rotate-90')}
@@ -66,9 +66,7 @@ export function BottomBar({
 						displayType="secondary"
 						onClick={() => {
 							dispatch({type: 'flip-horizontal'});
-							onAnnounce(
-								t('flipped-horizontal')
-							);
+							onAnnounce(t('flipped-horizontal'));
 						}}
 						symbol="flip-horizontal"
 						title={t('flip-horizontal')}
@@ -95,6 +93,16 @@ export function BottomBar({
 						symbol="redo"
 						title={t('redo')}
 					/>
+
+					<ClayButtonWithIcon
+						aria-label={t('keyboard-shortcuts')}
+						borderless
+						className="editor-bar-button"
+						displayType="secondary"
+						onClick={onShowShortcuts}
+						symbol="question-circle"
+						title={t('keyboard-shortcuts')}
+					/>
 				</div>
 			}
 			last={
@@ -112,9 +120,7 @@ export function BottomBar({
 						displayType="primary"
 						onClick={onSave}
 					>
-						{saving
-							? t('saving')
-							: t('save')}
+						{saving ? t('saving') : t('save')}
 					</ClayButton>
 				</div>
 			}
@@ -131,8 +137,7 @@ export function BottomBar({
 					/>
 
 					<span className="editor-zoom-level">
-						{t('zoom-percent', Math.round(zoom * 100)
-						)}
+						{t('zoom-percent', Math.round(zoom * 100))}
 					</span>
 
 					<ClayButtonWithIcon
