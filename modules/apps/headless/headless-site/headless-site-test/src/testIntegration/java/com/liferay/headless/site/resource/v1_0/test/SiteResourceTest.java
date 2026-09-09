@@ -252,6 +252,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPutSiteBatchWithParentSiteExternalReferenceCode();
 		_testPutSiteWithExcludedTypeSettings();
 		_testPutSiteWithParentSiteExternalReferenceCode();
+		_testPutSiteWithoutUpdatePermission();
 	}
 
 	@Override
@@ -1334,6 +1335,41 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			Assert.assertEquals(
 				putSiteUnicodeProperties.get(randomSiteTypeSetting.getKey()),
 				randomSiteTypeSetting.getValue());
+		}
+	}
+
+	private void _testPutSiteWithoutUpdatePermission() throws Exception {
+		User user = UserTestUtil.addUser(false);
+
+		user = _userLocalService.updatePassword(
+			user.getUserId(), "test", "test", false, true);
+
+		SiteResource siteResource = SiteResource.builder(
+		).authentication(
+			user.getEmailAddress(), "test"
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		Site postSite = _testPostSite_addSite(randomSite());
+
+		Site randomSite = randomSite();
+
+		randomSite.setExternalReferenceCode(
+			postSite.getExternalReferenceCode());
+
+		try {
+			siteResource.putSite(randomSite);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
 	}
 
