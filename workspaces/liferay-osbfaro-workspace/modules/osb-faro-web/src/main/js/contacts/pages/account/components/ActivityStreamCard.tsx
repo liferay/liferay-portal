@@ -18,17 +18,21 @@ import formatAccountSessions from '../utils/formatAccountSessions';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useEffect, useMemo, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
-import withCampaignTouchesFixture from 'shared/util/campaignTouchesFixture';
 import {ChartView} from 'shared/components/ChartViewSelector';
 import {fetchPolicyDefinition} from 'shared/util/graphql';
 import {getSafeRangeSelectors} from 'shared/util/util';
 import {getSessionsDateRange} from 'shared/util/activityDateRange';
 import {Interval, RangeSelectors} from 'shared/types';
-import {mapEventMetricToActivityHistory} from 'shared/util/activities';
+import {
+	mapEventMetricToActivityHistory,
+	mergeCampaignDays,
+} from 'shared/util/activities';
 import {mapListResultsToProps} from 'shared/util/mappers';
+import {CAMPAIGN_TOUCHES_QUERY_ENABLED} from 'shared/queries/CampaignTouchesByDayQuery';
 import {SessionEntityTypes} from 'shared/util/constants';
 import {toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
+import {useCampaignTouchesByDay} from 'shared/hooks/useCampaignTouchesByDay';
 import {useQuery} from '@apollo/client';
 import {useSelectedPoint} from 'shared/hooks/useSelectedPoint';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
@@ -120,6 +124,23 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 		},
 	});
 
+	const campaignTouches = useCampaignTouchesByDay(
+		{
+			accountId,
+			channelId,
+			entityId: '',
+			entityType: SessionEntityTypes.Individual,
+			keywords,
+			...getSessionsDateRange({
+				activityHistory,
+				interval,
+				rangeSelectors,
+				selectedPoint,
+			}),
+		},
+		{skip: !CAMPAIGN_TOUCHES_QUERY_ENABLED}
+	);
+
 	const sessionsResponse = useQuery<
 		AccountUserSessionData,
 		AccountUserSessionVariables
@@ -147,7 +168,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			mapListResultsToProps(
 				sessionsResponse,
 				({eventsByUserSessions}) => ({
-					items: withCampaignTouchesFixture(
+					items: mergeCampaignDays(
 						formatAccountSessions(
 							eventsByUserSessions?.userSessions ?? [],
 							{
@@ -157,7 +178,8 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 								groupId,
 								rangeSelectors,
 							}
-						)
+						),
+						campaignTouches.days
 					),
 					total:
 						eventsByUserSessions?.totalPageGroupsMetric?.value ?? 0,
@@ -167,6 +189,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			sessionsResponse.data,
 			sessionsResponse.error,
 			sessionsResponse.loading,
+			campaignTouches.days,
 			accountId,
 			accountName,
 			channelId,
@@ -174,6 +197,11 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			rangeSelectors,
 		]
 	);
+
+	const {
+		onCampaignDeltaChange: handleCampaignDeltaChange,
+		onCampaignPageChange: handleCampaignPageChange,
+	} = campaignTouches;
 
 	const handleQuerySubmit = (value: string) => {
 		setKeywords(value);
@@ -202,6 +230,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	return (
 		<ActivityStreamCard
 			activityHistory={activityHistory}
+			campaignDays={campaignTouches.days}
 			chartError={error}
 			chartLoading={loading}
 			chartTooltipRenderRows={({
@@ -237,7 +266,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			}
 			emptyState={
 				<ActivitySectionEmptyState
-					linkHref={URLConstants.AccountActivitiesDocumentationLink}
+					linkHref={URLConstants.AccountsDocumentationLink}
 					linkLabel={Liferay.Language.get(
 						'learn-more-about-accounts'
 					)}
@@ -261,6 +290,8 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					onClearSearch={handleClearSearch}
 				/>
 			}
+			onCampaignDeltaChange={handleCampaignDeltaChange}
+			onCampaignPageChange={handleCampaignPageChange}
 			onChartReload={refetch}
 			onClearDateSelection={() => handleChangeSelection(null)}
 			onDeltaChange={onDeltaChange}

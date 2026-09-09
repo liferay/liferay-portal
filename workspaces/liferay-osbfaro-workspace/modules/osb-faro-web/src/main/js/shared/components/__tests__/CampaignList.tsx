@@ -25,33 +25,41 @@ const buildCampaigns = (total: number) =>
 		],
 	}));
 
+const renderList = (props = {}) =>
+	render(
+		<CampaignList
+			campaigns={buildCampaigns(8)}
+			onDeltaChange={() => {}}
+			onPageChange={() => {}}
+			page={1}
+			selectedDelta={8}
+			totalItems={9}
+			{...props}
+		/>
+	);
+
 describe('CampaignList', () => {
 	afterEach(cleanup);
 
-	it('shows only the first page of campaigns', () => {
-		const {container} = render(
-			<CampaignList campaigns={buildCampaigns(9)} />
-		);
+	it('renders the page it was given without slicing it', () => {
+		const {container} = renderList();
 
 		expect(container.querySelectorAll('.campaign-row')).toHaveLength(8);
 		expect(screen.getByText('Campaign 0')).toBeInTheDocument();
-		expect(screen.queryByText('Campaign 8')).not.toBeInTheDocument();
 	});
 
-	it('counts every campaign in the pager, not just the page', () => {
-		const {container} = render(
-			<CampaignList campaigns={buildCampaigns(9)} />
-		);
+	it('counts the day total in the pager, not the page it holds', () => {
+		const {container} = renderList();
 
 		expect(
 			container.querySelector('.pagination-results')
 		).toHaveTextContent('9');
 	});
 
-	it('shows the remaining campaigns on the next page', () => {
-		const {container} = render(
-			<CampaignList campaigns={buildCampaigns(9)} />
-		);
+	it('asks for another page rather than paging in place', () => {
+		const onPageChange = jest.fn();
+
+		const {container} = renderList({onPageChange});
 
 		const pager = container.querySelector(
 			'.pagination-bar-root'
@@ -59,12 +67,12 @@ describe('CampaignList', () => {
 
 		fireEvent.click(within(pager).getByText('2'));
 
-		expect(container.querySelectorAll('.campaign-row')).toHaveLength(1);
-		expect(screen.getByText('Campaign 8')).toBeInTheDocument();
+		expect(onPageChange).toHaveBeenCalledWith(2);
+		expect(container.querySelectorAll('.campaign-row')).toHaveLength(8);
 	});
 
 	it('leaves the pager out when a day holds no campaigns', () => {
-		const {container} = render(<CampaignList campaigns={[]} />);
+		const {container} = renderList({campaigns: [], totalItems: 0});
 
 		expect(
 			container.querySelector('.campaign-row')

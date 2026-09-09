@@ -116,12 +116,6 @@ export type VerticalTimelineItem =
 	| VerticalTimelinePageGroup
 	| SessionEvent;
 
-/**
- * One Campaign Member response, shown as a row inside its campaign.
- * `individualId` is null when the CRM contact matched no LDP individual — the
- * name and job title still render, as plain text rather than a link, and never
- * as an anonymous visitor. `status` is the raw CRM value, shown as it arrives.
- */
 export type CampaignTouchMember = {
 	individualId: string | null;
 	individualName: string;
@@ -129,11 +123,6 @@ export type CampaignTouchMember = {
 	status: string;
 };
 
-/**
- * A campaign that touched the account on a given day. `touches` always arrives
- * complete — the day-level card paginates over campaigns, never inside one —
- * so the row's count is simply its length.
- */
 export type CampaignTouch = {
 	campaignId: string;
 	campaignName: string;
@@ -141,14 +130,8 @@ export type CampaignTouch = {
 	touches: CampaignTouchMember[];
 };
 
-/**
- * One active day of the activity stream: the header that titles it, the CRM
- * campaigns that touched the account that day, and the session rows that
- * belong to it. The day is a level above the timeline, so it can bracket both
- * the day-level and the timed-activity sections.
- */
 export type TimelineDay = {
-	campaigns?: CampaignTouch[];
+	date: string;
 	header: VerticalTimelineHeader;
 	items: VerticalTimelineItem[];
 };
@@ -492,6 +475,35 @@ export const groupBy = <T,>(
 	return grouped;
 };
 
+export const toDayKey = (datetime: Date | string | number): string =>
+	moment.utc(datetime).format('YYYY-MM-DD');
+
+export const mergeCampaignDays = (
+	days: TimelineDay[],
+	campaignDays: Record<string, {campaigns: unknown[]}> = {}
+): TimelineDay[] => {
+	const sessionDayKeys = new Set(days.map(({date}) => toDayKey(date)));
+
+	const campaignOnlyDays = Object.entries(campaignDays)
+		.filter(
+			([dayKey, {campaigns}]) =>
+				campaigns.length && !sessionDayKeys.has(dayKey)
+		)
+		.map(([dayKey]) => ({
+			date: dayKey,
+			header: {
+				header: true as const,
+				title: formatGroupingTime(dayKey),
+				totalEvents: 0,
+			},
+			items: [],
+		}));
+
+	return [...days, ...campaignOnlyDays].sort(
+		(a, b) => moment.utc(b.date).valueOf() - moment.utc(a.date).valueOf()
+	);
+};
+
 /**
  * Groups sessions by the day they started, newest day first, and emits a day
  * header followed by that day's sessions. Shared by the account and individual
@@ -501,7 +513,7 @@ export const groupSessionsByDay = <
 	T extends {createDate: string; events?: unknown[] | null},
 >(
 	sessions: T[]
-): {daySessions: T[]; header: VerticalTimelineHeader}[] => {
+): {date: string; daySessions: T[]; header: VerticalTimelineHeader}[] => {
 	const sessionsByDay = groupBy(sessions, (session) =>
 		moment.utc(session.createDate).startOf('day').format()
 	);
@@ -512,6 +524,7 @@ export const groupSessionsByDay = <
 			const daySessions = sessionsByDay.get(dayKey) ?? [];
 
 			return {
+				date: dayKey,
 				daySessions: daySessions.sort(
 					(a, b) =>
 						moment(b.createDate).valueOf() -
@@ -539,7 +552,7 @@ export const formatSessions = (
 	sessions: UserSession[] = [],
 	context: EventDashboardContext = {}
 ): TimelineDay[] =>
-	groupSessionsByDay(sessions).map(({daySessions, header}) => {
+	groupSessionsByDay(sessions).map(({date, daySessions, header}) => {
 		const items: VerticalTimelineSession[] = [];
 
 		daySessions.forEach((session) => {
@@ -575,7 +588,7 @@ export const formatSessions = (
 			});
 		});
 
-		return {header, items};
+		return {date, header, items};
 	});
 
 /**

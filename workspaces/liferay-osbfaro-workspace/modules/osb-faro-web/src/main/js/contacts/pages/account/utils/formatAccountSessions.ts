@@ -98,7 +98,7 @@ export const formatAccountSessions = (
 	sessions: AccountUserSession[] = [],
 	context: EventDashboardContext = {}
 ): TimelineDay[] =>
-	groupSessionsByDay(sessions).map(({daySessions, header}) => {
+	groupSessionsByDay(sessions).map(({date, daySessions, header}) => {
 		const items: (VerticalTimelineIndividual | VerticalTimelineSession)[] =
 			[];
 
@@ -119,7 +119,7 @@ export const formatAccountSessions = (
 			);
 		});
 
-		return {header, items};
+		return {date, header, items};
 	});
 
 export default formatAccountSessions;

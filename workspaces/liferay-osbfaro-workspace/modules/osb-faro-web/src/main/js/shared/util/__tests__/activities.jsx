@@ -10,7 +10,9 @@ import {
 	groupEventsByPage,
 	groupSessionsByDay,
 	isWebhookUserAgent,
-	mapEventMetricToActivityHistory
+	mapEventMetricToActivityHistory,
+	mergeCampaignDays,
+	toDayKey
 } from '../activities';
 
 describe('activities', () => {
@@ -667,6 +669,53 @@ describe('activities', () => {
 			expect(points[0].totalCampaignActivities).toBeUndefined();
 			expect(points[0].totalEvents).toBe(7);
 			expect(points[0].totalSessions).toBe(3);
+		});
+	});
+
+	describe('mergeCampaignDays', () => {
+		const buildDay = (date) => ({
+			date,
+			header: {header: true, title: date, totalEvents: 1},
+			items: [{individual: true, individualName: 'Ada Lovelace'}]
+		});
+
+		const campaignDay = {campaigns: [{campaignId: 'c1'}]};
+
+		it('adds a day that only campaigns reached, newest first', () => {
+			const days = mergeCampaignDays(
+				[buildDay('2026-07-15T00:00:00Z')],
+				{'2026-07-16': campaignDay}
+			);
+
+			expect(days.map(({date}) => toDayKey(date))).toEqual([
+				'2026-07-16',
+				'2026-07-15'
+			]);
+			expect(days[0].items).toEqual([]);
+		});
+
+		it('does not repeat a day the sessions already cover', () => {
+			const days = mergeCampaignDays(
+				[buildDay('2026-07-16T10:00:00Z')],
+				{'2026-07-16': campaignDay}
+			);
+
+			expect(days).toHaveLength(1);
+			expect(days[0].items).toHaveLength(1);
+		});
+
+		it('ignores a day whose campaigns came back empty', () => {
+			const days = mergeCampaignDays([buildDay('2026-07-16T10:00:00Z')], {
+				'2026-07-14': {campaigns: []}
+			});
+
+			expect(days).toHaveLength(1);
+		});
+
+		it('returns the days untouched when nothing was fetched', () => {
+			const sessionDays = [buildDay('2026-07-16T10:00:00Z')];
+
+			expect(mergeCampaignDays(sessionDays)).toEqual(sessionDays);
 		});
 	});
 

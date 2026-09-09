@@ -7,6 +7,7 @@ import Loading from 'shared/components/Loading';
 import React from 'react';
 import SearchInput from 'shared/components/SearchInput';
 import {ActivityHistoryPoint} from 'shared/util/activities';
+import {CampaignDays} from 'shared/hooks/useCampaignTouchesByDay';
 import {ChartView} from 'shared/components/ChartViewSelector';
 import {compose, withPaginationBar} from 'shared/hoc';
 import {getIcon, getStatsColor} from 'shared/util/metrics';
@@ -35,6 +36,7 @@ export interface TrendSummary {
 
 interface IActivityStreamCardProps {
 	activityHistory: ActivityHistoryPoint[];
+	campaignDays?: CampaignDays;
 	chartError?: unknown;
 	chartLoading: boolean;
 	chartTooltipRenderRows?: (
@@ -47,6 +49,8 @@ interface IActivityStreamCardProps {
 	footerLabel: React.ReactNode;
 	interval: Interval;
 	noResultsRenderer: React.ReactNode;
+	onCampaignDeltaChange?: (date: string, delta: number) => void;
+	onCampaignPageChange?: (date: string, page: number) => void;
 	onChartReload?: () => void;
 	onClearDateSelection: () => void;
 	onDeltaChange: (delta: number) => void;
@@ -75,6 +79,7 @@ interface IActivityStreamCardProps {
  */
 const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	activityHistory,
+	campaignDays,
 	chartError,
 	chartLoading,
 	chartTooltipRenderRows,
@@ -85,6 +90,8 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	footerLabel,
 	interval,
 	noResultsRenderer,
+	onCampaignDeltaChange,
+	onCampaignPageChange,
 	onChartReload,
 	onClearDateSelection,
 	onDeltaChange,
@@ -253,10 +260,13 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					<Card.Body className="p-0">
 						<PaginatedDayList
 							{...sessionsMappedResults}
+							campaignDays={campaignDays}
 							delta={delta}
 							emptyState={emptyState}
 							initialExpanded={false}
 							noResultsRenderer={noResultsRenderer}
+							onCampaignDeltaChange={onCampaignDeltaChange}
+							onCampaignPageChange={onCampaignPageChange}
 							onDeltaChange={onDeltaChange}
 							onPageChange={onPageChange}
 							page={page}

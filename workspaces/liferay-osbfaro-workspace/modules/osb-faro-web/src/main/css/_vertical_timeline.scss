@@ -37,10 +37,6 @@
 				cursor: pointer;
 			}
 
-			// The caret and the info button only surface on hover, so a resting
-			// row stays quiet. `:focus-within` keeps the info button reachable
-			// by keyboard, since it is the only way into the payload.
-
 			.angle-icon,
 			.payload-button {
 				opacity: 0;
@@ -50,10 +46,6 @@
 			&:hover {
 				background-color: $primaryLighten45;
 			}
-
-			// `:focus-visible` rather than `:focus`, or a click would leave the
-			// row focused and the caret stuck up until the next click
-			// elsewhere.
 
 			&:focus-visible,
 			&:has(:focus-visible),
@@ -73,9 +65,6 @@
 		.row-icon {
 			font-size: $fontSizeMedium;
 		}
-
-		// White against a white row, so the sticker only reads once the row
-		// picks up its hover background.
 
 		.event-sticker,
 		.page-sticker {
@@ -107,10 +96,6 @@
 		}
 
 		.subtitle {
-			// Centring the icon on the line box leaves it riding above the
-			// text, since that box carries the descender space the URL rarely
-			// uses. A nudge puts it back on the text's own middle.
-
 			.lexicon-icon {
 				margin-top: 2px;
 			}
@@ -178,9 +163,6 @@
 		}
 	}
 
-	// The campaign a day-level touch belongs to. Its icon follows the page
-	// row's, white against a white row so it only reads on hover.
-
 	.campaign-row {
 		.campaign-sticker {
 			background-color: $white;
@@ -195,14 +177,7 @@
 		}
 	}
 
-	// One person's response inside a campaign, carrying their raw CRM status
-	// at the end of the row.
-
 	.touch-row {
-		// No `.row-main`, so the nested indent never reaches it. The avatar
-		// lines up under the campaign name it belongs to: the campaign's own
-		// sticker plus the gap before its title.
-
 		padding: ($baseline * 2) ($baseline * 2) ($baseline * 2) ($baseline * 8);
 
 		.row-content {
@@ -251,9 +226,6 @@
 			min-width: 0;
 		}
 
-		// The name links to the profile but reads as plain dark text, so the
-		// row stays quiet next to the labels and counts around it.
-
 		.individual-name {
 			color: $main;
 		}
@@ -268,11 +240,6 @@
 		// belong on the same line, so they're vertically centered together
 		// instead of the default top alignment other rows use for their taller,
 		// multi-line content.
-
-		// Only the session's own row is a single line. Without the child
-		// combinator this also centred the page and event rows nested under
-		// it, dragging their carets off the first line.
-
 		> .row-main {
 			align-items: center !important;
 		}
@@ -341,11 +308,6 @@
 			align-items: center;
 			display: flex;
 			gap: $baseline * 2;
-
-			// An event steps one indent deeper than the page it happened on,
-			// but from the icon onwards, so the time stays in the shared
-			// column.
-
 			.event-sticker {
 				margin-left: $rowIndent;
 			}
@@ -380,21 +342,12 @@
 			padding-left: $baseline * 2 + $rowIndent * 2;
 		}
 
-		// An event keeps the page row's padding, so both rows' times share one
-		// column. The step deeper is applied to the icon and title instead —
-		// see `.event-row` above.
-
 		> .timeline-row.event-row > .row-main,
 		.timeline-rows.nested > .timeline-row.event-row > .row-main {
 			padding-left: $baseline * 2 + $rowIndent;
 		}
 	}
 }
-
-// The count of events a row stands for, shown on the date header and on the
-// session and page rows. Clay sizes a label's slots for text, so the icon gap
-// and the number's minimum width both have to come down for a count this
-// short to sit snug.
 
 .event-count-pill {
 	font-size: $fontSizeSmall;
@@ -410,9 +363,6 @@
 }
 
 .date-header {
-	// The header lines up with the chart's date range above it rather than
-	// with the cards below, so it takes the card body's own padding.
-
 	padding: $baseline * 2 $baseline * 2 $baseline * 2 ($baseline * 3);
 
 	.day-icon {
@@ -431,15 +381,7 @@
 	border: 1px solid $mainLighten74;
 	border-radius: 4px;
 	margin: $baseline * 2;
-
-	// Rows carry their own opaque background, so without clipping they paint
-	// over the rounded corners and the border reads as cut off.
-
 	overflow: hidden;
-
-	// A card fills independently of its sibling, so one can carry rows while
-	// the other carries this.
-
 	.activity-section-empty-state {
 		gap: $baseline;
 		padding: ($baseline * 6) ($baseline * 2);

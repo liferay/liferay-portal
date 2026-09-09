@@ -6,8 +6,14 @@ jest.unmock('react-dom');
 
 const TIME_ZONE_ID = 'UTC';
 
-const buildDay = (title: string, totalEvents: number, individualName: string) =>
+const buildDay = (
+	title: string,
+	totalEvents: number,
+	individualName: string,
+	date = '2026-07-16'
+) =>
 	({
+		date,
 		header: {header: true, title, totalEvents},
 		items: [
 			{
@@ -31,6 +37,15 @@ const CAMPAIGN = {
 		},
 	],
 };
+
+const buildCampaignDays = (date: string) => ({
+	[date]: {
+		campaigns: [CAMPAIGN],
+		campaignsCount: 1,
+		delta: 8,
+		page: 1,
+	},
+});
 
 describe('DayList', () => {
 	afterEach(cleanup);
@@ -69,14 +84,14 @@ describe('DayList', () => {
 	});
 
 	it('gives every day both cards, whichever one holds the data', () => {
-		const withCampaigns = buildDay('Jul 16', 3, 'Ada Lovelace');
-
-		withCampaigns.campaigns = [CAMPAIGN];
-
 		render(
 			<DayList
+				campaignDays={buildCampaignDays('2026-07-16')}
 				emptyState={<div>{'Nothing here'}</div>}
-				items={[withCampaigns, buildDay('Jul 15', 2, 'Grace Hopper')]}
+				items={[
+					buildDay('Jul 16', 3, 'Ada Lovelace', '2026-07-16'),
+					buildDay('Jul 15', 2, 'Grace Hopper', '2026-07-15'),
+				]}
 				timeZoneId={TIME_ZONE_ID}
 			/>
 		);
@@ -86,13 +101,18 @@ describe('DayList', () => {
 	});
 
 	it('fills the two cards independently', () => {
-		const campaignsOnly = buildDay('Jul 16', 3, 'Ada Lovelace');
+		const campaignsOnly = buildDay(
+			'Jul 16',
+			3,
+			'Ada Lovelace',
+			'2026-07-16'
+		);
 
-		campaignsOnly.campaigns = [CAMPAIGN];
 		campaignsOnly.items = [];
 
 		render(
 			<DayList
+				campaignDays={buildCampaignDays('2026-07-16')}
 				emptyState={<div>{'Nothing here'}</div>}
 				items={[campaignsOnly]}
 				timeZoneId={TIME_ZONE_ID}
@@ -114,6 +134,26 @@ describe('DayList', () => {
 
 		expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
 		expect(screen.getByText('Nothing here')).toBeInTheDocument();
+	});
+
+	it('matches a day to its campaigns by day, not by instant', () => {
+		render(
+			<DayList
+				campaignDays={buildCampaignDays('2026-07-16')}
+				emptyState={<div>{'Nothing here'}</div>}
+				items={[
+					buildDay(
+						'Jul 16',
+						3,
+						'Ada Lovelace',
+						'2026-07-16T00:00:00.000Z'
+					),
+				]}
+				timeZoneId={TIME_ZONE_ID}
+			/>
+		);
+
+		expect(screen.getByText('Q3 Manufacturing ABM')).toBeInTheDocument();
 	});
 
 	it('renders nothing when there are no days', () => {

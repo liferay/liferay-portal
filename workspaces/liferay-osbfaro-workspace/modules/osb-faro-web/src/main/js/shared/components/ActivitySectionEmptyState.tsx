@@ -9,12 +9,6 @@ interface IActivitySectionEmptyStateProps {
 	title?: string;
 }
 
-/**
- * Shown inside a Day-Level or Timed Activity card that has nothing for its
- * day. The two cards fill independently, so one can carry rows while the other
- * carries this. Copy stays about the period rather than naming a data source,
- * since a card is empty whether none is connected or none reported that day.
- */
 const ActivitySectionEmptyState: React.FC<IActivitySectionEmptyStateProps> = ({
 	description = Liferay.Language.get(
 		'check-back-later-to-verify-if-data-has-been-received-from-your-data-sources,-or-you-can-try-a-different-date-range'
