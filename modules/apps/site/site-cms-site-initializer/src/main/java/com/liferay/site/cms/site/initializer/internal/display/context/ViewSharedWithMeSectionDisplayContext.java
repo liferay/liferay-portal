@@ -243,8 +243,8 @@ public class ViewSharedWithMeSectionDisplayContext {
 					_portal.getClassNameId(ObjectEntryFolder.class),
 					"/{classPK}"),
 				"download", "download-folder",
-				LanguageUtil.get(_httpServletRequest, "download"), "get", null,
-				"link",
+				LanguageUtil.get(_httpServletRequest, "download-folder"), "get",
+				null, "link",
 				HashMapBuilder.<String, Object>put(
 					"className", ObjectEntryFolder.class.getName()
 				).build()));
