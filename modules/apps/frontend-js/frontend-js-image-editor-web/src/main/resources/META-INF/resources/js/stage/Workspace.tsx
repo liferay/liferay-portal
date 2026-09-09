@@ -13,18 +13,48 @@ import {LoadedImage} from '../imaging/loadImage';
 
 interface Props {
 	image: LoadedImage;
+	onZoom: (direction: -1 | 1) => void;
+	onZoomActual: () => void;
+	onZoomFit: () => void;
 	workspaceRef?: React.Ref<HTMLDivElement>;
 	zoom: number;
 }
 
-export function Workspace({image, workspaceRef, zoom}: Props) {
+export function Workspace({
+	image,
+	onZoom,
+	onZoomActual,
+	onZoomFit,
+	workspaceRef,
+	zoom,
+}: Props) {
 	const eid = useEditorId();
+
+	const handleKeyDown = (event: React.KeyboardEvent) => {
+		if (event.key === '+' || event.key === '=') {
+			event.preventDefault();
+			onZoom(1);
+		}
+		else if (event.key === '-' || event.key === '_') {
+			event.preventDefault();
+			onZoom(-1);
+		}
+		else if (event.key === '0') {
+			event.preventDefault();
+			onZoomFit();
+		}
+		else if (event.key === '1') {
+			event.preventDefault();
+			onZoomActual();
+		}
+	};
 
 	return (
 		<div
 			aria-describedby={eid('workspace-description')}
 			aria-label={t('image-workspace')}
 			className="editor-workspace"
+			onKeyDown={handleKeyDown}
 			ref={workspaceRef}
 			role="region"
 			tabIndex={0}

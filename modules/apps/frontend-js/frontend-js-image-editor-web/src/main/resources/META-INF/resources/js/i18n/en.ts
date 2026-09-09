@@ -10,4 +10,9 @@ export default {
 	'image-workspace': 'Image workspace',
 	'workspace-description':
 		'Scrollable view of the image. Use the zoom buttons or plus and minus keys to zoom. Tab to reach the crop area and its handles.',
+	'zoom-fit': 'Fit image to window',
+	'zoom-in': 'Zoom In',
+	'zoom-level': 'Zoom {0}%',
+	'zoom-out': 'Zoom Out',
+	'zoom-percent': '{0}%',
 };

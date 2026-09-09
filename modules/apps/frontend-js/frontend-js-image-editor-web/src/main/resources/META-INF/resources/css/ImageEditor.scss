@@ -37,9 +37,64 @@
 	min-height: 0;
 }
 
+.image-editor-modal .editor-bottom-bar {
+	column-gap: 1rem;
+	padding-bottom: 0.5rem;
+	padding-top: 0.5rem;
+}
+
+.image-editor-modal .editor-bottom-bar .modal-item {
+	align-items: center;
+	flex-direction: row;
+	justify-content: center;
+}
+
+@media (min-width: 60rem) {
+	.image-editor-modal .editor-bottom-bar {
+		display: grid;
+		grid-template-columns:
+			minmax(max-content, 1fr) auto
+			minmax(max-content, 1fr);
+	}
+
+	.image-editor-modal .editor-bottom-bar .modal-item-first {
+		justify-self: start;
+	}
+
+	.image-editor-modal .editor-bottom-bar .modal-item {
+		justify-self: center;
+	}
+
+	.image-editor-modal .editor-bottom-bar .modal-item-last {
+		justify-self: end;
+	}
+}
+
+.image-editor-modal .editor-bar-group {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.image-editor-modal .editor-bar-button {
+	min-height: 24px;
+	min-width: 24px;
+}
+
+.image-editor-modal .editor-zoom-level {
+	min-width: 3.5rem;
+	text-align: center;
+}
+
 @media (max-width: 700px) {
 	.image-editor-modal .editor-main {
 		flex-direction: column;
+	}
+
+	.image-editor-modal .editor-bottom-bar .modal-item-last {
+		justify-content: flex-end;
+		margin-left: auto;
 	}
 }
 

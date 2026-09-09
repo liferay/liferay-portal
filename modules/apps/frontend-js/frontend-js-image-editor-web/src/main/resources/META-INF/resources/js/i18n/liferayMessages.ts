@@ -15,4 +15,9 @@ export const liferayMessages: EditorMessages = {
 	'editor-loaded': Liferay.Language.get('editor-loaded'),
 	'image-workspace': Liferay.Language.get('image-workspace'),
 	'workspace-description': Liferay.Language.get('workspace-description'),
+	'zoom-fit': Liferay.Language.get('zoom-fit'),
+	'zoom-in': Liferay.Language.get('zoom-in'),
+	'zoom-level': Liferay.Language.get('zoom-level'),
+	'zoom-out': Liferay.Language.get('zoom-out'),
+	'zoom-percent': Liferay.Language.get('zoom-percent'),
 };
