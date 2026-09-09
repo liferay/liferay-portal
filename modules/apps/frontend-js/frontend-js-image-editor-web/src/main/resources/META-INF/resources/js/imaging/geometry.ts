@@ -59,14 +59,39 @@ export function arrowDelta(key: string): [number, number] | null {
 }
 
 /**
+ * Factor the image must grow by so that, rotated by `angle`, it still
+ * covers a frame of the given size. Exported for unit testing.
+ */
+export function coverScale(
+	width: number,
+	height: number,
+	angle: number
+): number {
+	if (!angle) {
+		return 1;
+	}
+
+	const radians = (angle * Math.PI) / 180;
+
+	const cos = Math.abs(Math.cos(radians));
+	const sin = Math.abs(Math.sin(radians));
+
+	return Math.max(
+		(width * cos + height * sin) / width,
+		(width * sin + height * cos) / height
+	);
+}
+
+/**
  * The full transform placing the source image inside the stage: the
- * mirror, then the quarter turns. Shared by the preview and the export so
+ * quarter turns, then the straighten angle with its cover scale, both
+ * around the center of the frame. Shared by the preview and the export so
  * every projection stays aligned.
  */
 export function imageTransform(
 	state: Pick<
 		EditState,
-		'flipHorizontal' | 'rotation' | 'sourceHeight' | 'sourceWidth'
+		'angle' | 'flipHorizontal' | 'rotation' | 'sourceHeight' | 'sourceWidth'
 	>
 ): string | undefined {
 	const quarter = rotationTransform(state);
@@ -75,7 +100,23 @@ export function imageTransform(
 		? `translate(${rotatedSize(state as EditState).width} 0) scale(-1 1)`
 		: undefined;
 
-	return [mirror, quarter].filter(Boolean).join(' ') || undefined;
+	if (!state.angle) {
+		return [mirror, quarter].filter(Boolean).join(' ') || undefined;
+	}
+
+	const bounds = rotatedSize(state as EditState);
+
+	const centerX = bounds.width / 2;
+	const centerY = bounds.height / 2;
+
+	const scale = coverScale(bounds.width, bounds.height, state.angle);
+
+	const straighten =
+		`rotate(${state.angle} ${centerX} ${centerY}) ` +
+		`translate(${centerX} ${centerY}) scale(${scale}) ` +
+		`translate(${-centerX} ${-centerY})`;
+
+	return [mirror, straighten, quarter].filter(Boolean).join(' ');
 }
 
 function rotationTransform(

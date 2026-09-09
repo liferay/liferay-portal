@@ -7,9 +7,29 @@ import '@testing-library/jest-dom';
 
 import {
 	anchoredScroll,
+	coverScale,
 	imageTransform,
 } from '../../src/main/resources/META-INF/resources/js/imaging/geometry';
 import {initialEditState} from '../../src/main/resources/META-INF/resources/js/state/editorReducer';
+
+describe('coverScale', () => {
+	it('is neutral without an angle', () => {
+		expect(coverScale(1600, 1000, 0)).toBe(1);
+	});
+
+	it('grows the image so a rotated frame stays covered', () => {
+		expect(coverScale(1000, 1000, 45)).toBeCloseTo(Math.SQRT2, 4);
+		expect(coverScale(1000, 1000, -45)).toBeCloseTo(Math.SQRT2, 4);
+	});
+
+	it('grows monotonically with the angle', () => {
+		const small = coverScale(1600, 1000, 5);
+		const large = coverScale(1600, 1000, 20);
+
+		expect(small).toBeGreaterThan(1);
+		expect(large).toBeGreaterThan(small);
+	});
+});
 
 describe('imageTransform', () => {
 	it('is undefined when nothing is rotated', () => {
@@ -26,6 +46,18 @@ describe('imageTransform', () => {
 		expect(transform).toBe(
 			'translate(1000 0) scale(-1 1) translate(1000 0) rotate(90)'
 		);
+	});
+
+	it('combines the straighten angle with the quarter turns', () => {
+		const transform = imageTransform({
+			...initialEditState(1600, 1000),
+			angle: 8,
+			rotation: 90,
+		});
+
+		expect(transform).toContain('rotate(8');
+		expect(transform).toContain('rotate(90)');
+		expect(transform).toContain('scale(');
 	});
 });
 

@@ -18,6 +18,7 @@ export type EditorAction =
 	| {type: 'flip-horizontal'}
 	| {type: 'redo'}
 	| {type: 'rotate-90'}
+	| {angle: number; transient?: boolean; type: 'set-angle'}
 	| {crop: CropRect; transient?: boolean; type: 'set-crop'}
 	| {ratio: RatioPreset; type: 'set-ratio'}
 	| {type: 'undo'};
@@ -49,6 +50,23 @@ export function editorReducer(
 	const {present} = history;
 
 	switch (action.type) {
+		case 'set-angle': {
+			if (
+				!action.transient &&
+				!history.pendingBase &&
+				present.angle === action.angle
+			) {
+				return history;
+			}
+
+			return applyEdit(
+				history,
+				{...present, angle: action.angle},
+				Liferay.Language.get('straighten'),
+				action.transient
+			);
+		}
+
 		case 'set-crop': {
 			const crop = clampCrop(action.crop, rotatedSize(present));
 
@@ -206,6 +224,7 @@ export function initialEditState(
 	sourceHeight: number
 ): EditState {
 	return {
+		angle: 0,
 		crop: {height: sourceHeight, width: sourceWidth, x: 0, y: 0},
 		flipHorizontal: false,
 		ratio: 'original',

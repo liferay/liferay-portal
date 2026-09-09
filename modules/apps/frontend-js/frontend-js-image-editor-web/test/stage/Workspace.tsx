@@ -58,6 +58,7 @@ function EditorHarness() {
 				/>
 
 				<CropPanel
+					angle={history.present.angle}
 					aspectLocked={aspectLocked}
 					bounds={rotatedSize(history.present)}
 					crop={history.present.crop}
@@ -306,5 +307,34 @@ describe('Editor workspace composition', () => {
 		fireEvent.keyDown(heightInput, {key: 'Enter'});
 
 		expect(select.value).toBe('custom');
+	});
+
+	it('clips the stage only while the image is straightened', () => {
+		render(<EditorHarness />);
+
+		const imageGroup = () =>
+			document.querySelector('.editor-stage > g:not(.crop-grid)')!;
+
+		expect(imageGroup()).not.toHaveAttribute('clip-path');
+
+		const slider = screen.getByLabelText('straighten');
+
+		fireEvent.change(slider, {target: {value: '8'}});
+		fireEvent.keyUp(slider, {key: 'ArrowRight'});
+
+		expect(imageGroup()).toHaveAttribute(
+			'clip-path',
+			'url(#aie-stage-clip)'
+		);
+		expect(document.querySelector('image')!.parentElement).toHaveAttribute(
+			'transform',
+			expect.stringContaining('rotate(8')
+		);
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'reset-the-straighten-angle'})
+		);
+
+		expect(imageGroup()).not.toHaveAttribute('clip-path');
 	});
 });

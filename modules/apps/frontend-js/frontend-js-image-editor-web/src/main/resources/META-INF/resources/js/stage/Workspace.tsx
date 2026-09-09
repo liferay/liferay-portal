@@ -103,13 +103,41 @@ export function Workspace({
 				viewBox={`0 0 ${bounds.width} ${bounds.height}`}
 				width={bounds.width * zoom}
 			>
-				<g transform={imageTransform(state)}>
-					<image
-						height={state.sourceHeight}
-						href={image.previewUrl}
-						preserveAspectRatio="none"
-						width={state.sourceWidth}
-					/>
+				<defs>
+
+					{/*
+					 * A straighten angle scales the image up, so it
+					 * spills past the stage: clip it to the image area
+					 * to keep the surrounding padding clean.
+					 */}
+
+					<clipPath id={eid('stage-clip')}>
+						<rect
+							height={bounds.height}
+							width={bounds.width}
+							x={0}
+							y={0}
+						/>
+					</clipPath>
+				</defs>
+
+				<g
+					clipPath={
+
+						// Only needed while straightening, and clipping a
+						// 20MP-derived bitmap is not free.
+
+						state.angle ? `url(#${eid('stage-clip')})` : undefined
+					}
+				>
+					<g transform={imageTransform(state)}>
+						<image
+							height={state.sourceHeight}
+							href={image.previewUrl}
+							preserveAspectRatio="none"
+							width={state.sourceWidth}
+						/>
+					</g>
 				</g>
 
 				<CropMarquee

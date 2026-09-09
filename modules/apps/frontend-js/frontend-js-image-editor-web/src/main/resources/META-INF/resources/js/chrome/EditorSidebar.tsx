@@ -33,6 +33,7 @@ export function EditorSidebar({
 			className="editor-sidebar"
 		>
 			<CropPanel
+				angle={state.angle}
 				aspectLocked={aspectLocked}
 				bounds={rotatedSize(state)}
 				crop={state.crop}

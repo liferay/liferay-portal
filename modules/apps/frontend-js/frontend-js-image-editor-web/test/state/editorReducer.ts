@@ -254,3 +254,35 @@ describe('set-ratio', () => {
 		expect(state.present.ratio).toBe('original');
 	});
 });
+
+describe('set-angle', () => {
+	it('collapses a slider gesture into one undoable step', () => {
+		let state = initialHistory(WIDTH, HEIGHT);
+
+		for (const angle of [2, 4, 6]) {
+			state = editorReducer(state, {
+				angle,
+				transient: true,
+				type: 'set-angle',
+			});
+		}
+
+		state = editorReducer(state, {angle: 6, type: 'set-angle'});
+
+		expect(state.present.angle).toBe(6);
+		expect(state.past).toHaveLength(1);
+		expect(undoLabel(state)).toBe('straighten');
+
+		state = editorReducer(state, {type: 'undo'});
+
+		expect(state.present.angle).toBe(0);
+	});
+
+	it('ignores an angle that changes nothing', () => {
+		const initial = initialHistory(WIDTH, HEIGHT);
+
+		expect(editorReducer(initial, {angle: 0, type: 'set-angle'})).toBe(
+			initial
+		);
+	});
+});

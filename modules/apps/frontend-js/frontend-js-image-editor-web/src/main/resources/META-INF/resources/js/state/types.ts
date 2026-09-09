@@ -33,6 +33,7 @@ export interface EditorHistory {
 }
 
 export interface EditState {
+	angle: number;
 	crop: CropRect;
 
 	flipHorizontal: boolean;
