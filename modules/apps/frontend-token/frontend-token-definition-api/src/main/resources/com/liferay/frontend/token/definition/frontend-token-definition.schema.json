@@ -10,6 +10,10 @@
 					"$ref": "#/definitions/FrontendTokenValue",
 					"title": "The Default Value of the Frontend Token"
 				},
+				"description": {
+					"title": "The Description of the Frontend Token",
+					"type": "string"
+				},
 				"editorType": {
 					"enum": [
 						"ColorPicker",
@@ -122,6 +126,10 @@
 		"FrontendTokenSet": {
 			"additionalProperties": false,
 			"properties": {
+				"description": {
+					"title": "The Description of the Frontend Token Set",
+					"type": "string"
+				},
 				"frontendTokens": {
 					"items": {
 						"$ref": "#/definitions/FrontendToken"
