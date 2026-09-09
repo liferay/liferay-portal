@@ -53,6 +53,16 @@ run "should_name_the_appprojects" {
 	}
 	command=plan
 }
+run "should_not_permit_the_observability_chart_when_observability_is_disabled" {
+	assert {
+		condition=length([
+			for repo in kubernetes_manifest.infrastructure_appproject.manifest.spec.sourceRepos : repo
+			if strcontains(repo, "observability")
+		]) == 0
+		error_message="The infrastructure AppProject must not widen its allowed repositories when observability is disabled"
+	}
+	command=plan
+}
 run "should_pass_deployment_identity_to_the_provider_application" {
 	assert {
 		condition=length([
@@ -119,6 +129,47 @@ run "should_pass_the_configured_operator_settings_to_the_provider_application" {
 		}
 	}
 }
+variables {
+	deployment_name="liferay-test"
+	infrastructure_helm_chart_version="0.4.9"
+	infrastructure_provider_helm_chart_version="0.3.12"
+	liferay_git_repo_url="https://github.com/example/liferay-gitops.git"
+	liferay_helm_chart_version="0.4.20"
+	observability_helm_chart_version="0.1.0"
+	project_id="liferay-test-project"
+	region="us-central1"
+}
+run "should_permit_the_observability_chart_when_observability_is_enabled" {
+	assert {
+		condition=contains(kubernetes_manifest.infrastructure_appproject.manifest.spec.sourceRepos, "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability")
+		error_message="The infrastructure AppProject must permit the observability chart, since the observability Application it hosts is sourced from it"
+	}
+	assert {
+		condition=contains(kubernetes_manifest.infrastructure_appproject.manifest.spec.sourceRepos, "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability/*")
+		error_message="The infrastructure AppProject must permit the observability chart subpaths, the way it does for every other chart it allows"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
+run "should_permit_the_overridden_observability_chart_url" {
+	assert {
+		condition=contains(kubernetes_manifest.infrastructure_appproject.manifest.spec.sourceRepos, "oci://example.test/liferay-helm-chart/observability")
+		error_message="The infrastructure AppProject must permit whatever observability chart URL is configured, not only the default"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+		observability_helm_chart_config={
+			chart_url="oci://example.test/liferay-helm-chart/observability"
+		}
+	}
+}
 run "should_retry_a_sync_that_lost_a_race_with_the_infrastructure_provider" {
 	assert {
 		condition=kubernetes_manifest.liferay_applicationset.manifest.spec.template.spec.syncPolicy.retry.limit == 10
@@ -133,16 +184,6 @@ run "should_retry_a_sync_that_lost_a_race_with_the_infrastructure_provider" {
 		error_message="The Liferay ApplicationSet template must keep the dry run for every resource, since tolerating a missing resource belongs on the one resource that needs it"
 	}
 	command=plan
-}
-variables {
-	deployment_name="liferay-test"
-	infrastructure_helm_chart_version="0.4.9"
-	infrastructure_provider_helm_chart_version="0.3.12"
-	liferay_git_repo_url="https://github.com/example/liferay-gitops.git"
-	liferay_helm_chart_version="0.4.20"
-	observability_helm_chart_version="0.1.0"
-	project_id="liferay-test-project"
-	region="us-central1"
 }
 run "should_scope_liferay_applicationset_helm_values_by_prefix" {
 	assert {

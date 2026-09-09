@@ -180,13 +180,18 @@ resource "kubernetes_manifest" "infrastructure_appproject" {
 					server="https://kubernetes.default.svc"
 				},
 			]
-			sourceRepos=[
-				var.infrastructure_helm_chart_config.chart_url,
-				"${var.infrastructure_helm_chart_config.chart_url}/*",
-				var.infrastructure_provider_helm_chart_config.chart_url,
-				"${var.infrastructure_provider_helm_chart_config.chart_url}/*",
-				local.infrastructure_git_repo_url,
-			]
+			sourceRepos=concat(
+				[
+					var.infrastructure_helm_chart_config.chart_url,
+					"${var.infrastructure_helm_chart_config.chart_url}/*",
+					var.infrastructure_provider_helm_chart_config.chart_url,
+					"${var.infrastructure_provider_helm_chart_config.chart_url}/*",
+					local.infrastructure_git_repo_url,
+				],
+				var.observability_config.enabled ? [
+					var.observability_helm_chart_config.chart_url,
+					"${var.observability_helm_chart_config.chart_url}/*",
+				] : [])
 		}
 	}
 }
