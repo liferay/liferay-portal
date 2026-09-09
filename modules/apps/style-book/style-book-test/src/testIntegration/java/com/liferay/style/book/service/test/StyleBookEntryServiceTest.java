@@ -299,7 +299,8 @@ public class StyleBookEntryServiceTest {
 			UserTestUtil.setUser(user);
 
 			_styleBookEntryService.updateFrontendTokenDefinition(
-				styleBookEntry.getStyleBookEntryId(), frontendTokenDefinition);
+				styleBookEntry.getStyleBookEntryId(), frontendTokenDefinition,
+				_serviceContext);
 
 			Assert.fail();
 		}
@@ -319,7 +320,8 @@ public class StyleBookEntryServiceTest {
 		}
 
 		styleBookEntry = _styleBookEntryService.updateFrontendTokenDefinition(
-			styleBookEntry.getStyleBookEntryId(), frontendTokenDefinition);
+			styleBookEntry.getStyleBookEntryId(), frontendTokenDefinition,
+			_serviceContext);
 
 		Assert.assertEquals(
 			frontendTokenDefinition,
