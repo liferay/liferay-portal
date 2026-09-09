@@ -66,6 +66,7 @@ dependencies {
 	compileOnly project(":apps:oauth2-provider:oauth2-provider-scope-liferay-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
+	compileOnly project(":apps:portal-remote:portal-remote-jaxrs-whiteboard")
 	compileOnly project(":apps:portal-security:portal-security-service-access-policy-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:static:osgi:osgi-util")

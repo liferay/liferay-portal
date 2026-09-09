@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.remote.jaxrs.whiteboard.lifecycle.JAXRSLifecycle;
 import com.liferay.portal.vulcan.application.HeadlessApplicationProvider;
 
 import io.swagger.v3.core.util.Json;
@@ -52,6 +53,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.jaxrs.runtime.JaxrsServiceRuntime;
 import org.osgi.service.jaxrs.runtime.dto.ApplicationDTO;
 import org.osgi.service.jaxrs.runtime.dto.ResourceDTO;
@@ -72,6 +74,8 @@ public class HeadlessApplicationProviderImpl
 		List<Application> applications = new ArrayList<>();
 
 		if (_applicationImpls == null) {
+			_jaxrsLifecycle.ensureReady();
+
 			JaxrsServiceRuntime jaxrsServiceRuntime =
 				_jaxrsServiceRuntimeServiceTracker.getService();
 
@@ -323,6 +327,10 @@ public class HeadlessApplicationProviderImpl
 	private volatile List<ApplicationImpl> _applicationImpls;
 	private ServiceTrackerMap<Long, ServiceReference<?>>
 		_companyIdsServiceTrackerMap;
+
+	@Reference
+	private JAXRSLifecycle _jaxrsLifecycle;
+
 	private ServiceTracker<JaxrsServiceRuntime, JaxrsServiceRuntime>
 		_jaxrsServiceRuntimeServiceTracker;
 	private ServiceTrackerMap
