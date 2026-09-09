@@ -27,7 +27,11 @@ import performLogin, {
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
-import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
+import {
+	createAccountWithBuyerUser,
+	miniumSetUp,
+	selectCurrentAccount,
+} from '../../utils/commerce';
 import {
 	customFormatDateTimeYY,
 	customFormatDateTimeYYYY,
@@ -93,6 +97,8 @@ test('LPD-25831 Placed orders widget configuration to display full addresses and
 		account.id,
 		['test@liferay.com']
 	);
+
+	await selectCurrentAccount(account.id, apiHelpers, site.id);
 
 	const phoneNumber = '12345';
 
@@ -236,6 +242,8 @@ test(
 			account.id,
 			['test@liferay.com']
 		);
+
+		await selectCurrentAccount(account.id, apiHelpers, site.id);
 
 		const phoneNumber = '12345';
 
@@ -620,6 +628,8 @@ test(
 			['test@liferay.com']
 		);
 
+		await selectCurrentAccount(account.id, apiHelpers, site.id);
+
 		const address =
 			await apiHelpers.headlessCommerceAdminAccount.postAddress(
 				account.id,
@@ -740,6 +750,8 @@ test('LPD-26643 Reorder from placed orders details page', async ({
 
 	await performLogout(page);
 	await performLoginViaApi({page, screenName: user.alternateName});
+
+	await selectCurrentAccount(account.id, apiHelpers, site.id);
 
 	await page.goto(`/web/${site.name}`, {waitUntil: 'networkidle'});
 
@@ -1180,6 +1192,8 @@ test('LPD-33783 Placed orders table displays correct fields', async ({
 		type: 'person',
 	});
 
+	await selectCurrentAccount(account.id, apiHelpers, site.id);
+
 	await apiHelpers.headlessCommerceAdminOrder.postOrder({
 		accountId: account.id,
 		channelId: channel.id,
@@ -1249,6 +1263,8 @@ test('LPD-33658 Assert date and time are displayed as order date', async ({
 		name: getRandomString(),
 		type: 'business',
 	});
+
+	await selectCurrentAccount(account.id, apiHelpers, site.id);
 
 	await page.goto(
 		`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
@@ -1451,6 +1467,8 @@ test('LPD-33658 Global Settings for order date configuration', async ({
 		await performLogout(page);
 
 		await performLogin(page, user.alternateName);
+
+		await selectCurrentAccount(account.id, apiHelpers, site.id);
 
 		await page.goto(`/web/${site.name}`);
 
