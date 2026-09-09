@@ -5,8 +5,13 @@
 
 package com.liferay.portal.search.test.util.query;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.search.internal.query.function.score.ExponentialDecayScoreFunctionImpl;
 import com.liferay.portal.search.internal.query.function.score.FieldValueFactorScoreFunctionImpl;
+import com.liferay.portal.search.internal.query.function.score.GaussianDecayScoreFunctionImpl;
+import com.liferay.portal.search.internal.query.function.score.LinearDecayScoreFunctionImpl;
 import com.liferay.portal.search.query.function.score.FieldValueFactorScoreFunction;
+import com.liferay.portal.search.query.function.score.ScoreFunction;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -34,13 +39,72 @@ public abstract class BaseScoreFunctionTranslatorTestCase {
 		_assertContains("\"modifier\":\"ln1p\"", string);
 	}
 
-	protected abstract String translate(
-		FieldValueFactorScoreFunction fieldValueFactorScoreFunction);
+	@Test
+	public void testTranslateDecayWithoutMultiValueMode() {
+		_testTranslateDecayWithoutMultiValueMode(
+			"\"exp\"",
+			new ExponentialDecayScoreFunctionImpl(
+				"publishDate", "now", "1825d", "180d"));
+		_testTranslateDecayWithoutMultiValueMode(
+			"\"gauss\"",
+			new GaussianDecayScoreFunctionImpl(
+				"publishDate", "now", "1825d", "180d"));
+		_testTranslateDecayWithoutMultiValueMode(
+			"\"linear\"",
+			new LinearDecayScoreFunctionImpl(
+				"publishDate", "now", "1825d", "180d"));
+	}
+
+	@Test
+	public void testTranslateDecayWithoutOrigin() {
+		_testTranslateDecayWithoutOrigin(
+			"\"exp\"",
+			new ExponentialDecayScoreFunctionImpl(
+				"publishDate", null, "1825d", "180d"));
+		_testTranslateDecayWithoutOrigin(
+			"\"gauss\"",
+			new GaussianDecayScoreFunctionImpl(
+				"publishDate", null, "1825d", "180d"));
+		_testTranslateDecayWithoutOrigin(
+			"\"linear\"",
+			new LinearDecayScoreFunctionImpl(
+				"publishDate", null, "1825d", "180d"));
+	}
+
+	protected abstract String translate(ScoreFunction scoreFunction);
 
 	private void _assertContains(String expected, String actual) {
 		if (!actual.contains(expected)) {
 			Assert.assertEquals(expected, actual);
 		}
+	}
+
+	private void _assertNotContains(String unexpected, String actual) {
+		if (actual.contains(unexpected)) {
+			Assert.fail(
+				StringBundler.concat(
+					"Unexpected \"", unexpected, "\" found in ", actual));
+		}
+	}
+
+	private void _testTranslateDecayWithoutMultiValueMode(
+		String expectedFunctionName, ScoreFunction scoreFunction) {
+
+		String string = translate(scoreFunction);
+
+		_assertContains(expectedFunctionName, string);
+		_assertContains("\"scale\":\"1825d\"", string);
+		_assertNotContains("multi_value_mode", string);
+	}
+
+	private void _testTranslateDecayWithoutOrigin(
+		String expectedFunctionName, ScoreFunction scoreFunction) {
+
+		String string = translate(scoreFunction);
+
+		_assertContains(expectedFunctionName, string);
+		_assertContains("\"scale\":\"1825d\"", string);
+		_assertNotContains("\"origin\"", string);
 	}
 
 }
