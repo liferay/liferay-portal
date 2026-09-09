@@ -66,14 +66,14 @@ public class StyleBookEntryVersionThemeIdUpgradeProcessTest {
 		StyleBookEntry orphanedStyleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				groupId, false, null, RandomTestUtil.randomString(), null,
+				groupId, false, null, null, RandomTestUtil.randomString(), null,
 				themeId, _serviceContext);
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, RandomTestUtil.randomString(),
-				null, themeId, _serviceContext);
+				_group.getGroupId(), false, null, null,
+				RandomTestUtil.randomString(), null, themeId, _serviceContext);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.style.book.internal.upgrade.v1_8_0." +

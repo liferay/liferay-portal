@@ -75,8 +75,8 @@ public class UpdateStyleBookEntryPreviewMVCActionCommandTest {
 
 		_styleBookEntry = _styleBookEntryLocalService.addStyleBookEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
-			StringPool.BLANK, RandomTestUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(), serviceContext);
+			StringPool.BLANK, StringPool.BLANK, RandomTestUtil.randomString(),
+			StringPool.BLANK, RandomTestUtil.randomString(), serviceContext);
 
 		_themeDisplay = new ThemeDisplay();
 

@@ -62,7 +62,7 @@ public class StyleBookEntryThemeIdUpgradeProcessTest {
 		StyleBookEntry orphanedStyleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				groupId, false, null, RandomTestUtil.randomString(), null,
+				groupId, false, null, null, RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(), _serviceContext);
 
 		StyleBookEntry draftStyleBookEntry =
@@ -76,8 +76,9 @@ public class StyleBookEntryThemeIdUpgradeProcessTest {
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, RandomTestUtil.randomString(),
-				null, RandomTestUtil.randomString(), _serviceContext);
+				_group.getGroupId(), false, null, null,
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), _serviceContext);
 
 		draftStyleBookEntry = _styleBookEntryLocalService.getDraft(
 			styleBookEntry);

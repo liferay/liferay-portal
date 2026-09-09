@@ -225,7 +225,7 @@ public class StyleBookEntryProviderUtilTest {
 
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
-			false, null, name, null, themeId, null);
+			false, null, null, name, null, themeId, null);
 	}
 
 	private void _testGetStyleBookEntries(

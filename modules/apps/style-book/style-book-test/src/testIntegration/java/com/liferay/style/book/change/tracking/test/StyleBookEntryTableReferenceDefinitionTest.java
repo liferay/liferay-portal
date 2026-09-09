@@ -40,8 +40,9 @@ public class StyleBookEntryTableReferenceDefinitionTest
 	protected CTModel<?> addCTModel() throws Exception {
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			null, TestPropsValues.getUserId(), TestPropsValues.getGroupId(),
-			false, StringPool.BLANK, RandomTestUtil.randomString(),
-			StringPool.BLANK, RandomTestUtil.randomString(),
+			false, StringPool.BLANK, StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK,
+			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
 	}
 

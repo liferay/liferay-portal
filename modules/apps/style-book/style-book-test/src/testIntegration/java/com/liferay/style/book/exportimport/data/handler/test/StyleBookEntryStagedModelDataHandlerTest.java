@@ -89,7 +89,7 @@ public class StyleBookEntryStagedModelDataHandlerTest
 
 		_styleBookEntryLocalService.addStyleBookEntry(
 			externalReferenceCode, TestPropsValues.getUserId(),
-			liveGroup.getGroupId(), false, StringPool.BLANK,
+			liveGroup.getGroupId(), false, StringPool.BLANK, StringPool.BLANK,
 			RandomTestUtil.randomString(), StringPool.BLANK,
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -99,8 +99,8 @@ public class StyleBookEntryStagedModelDataHandlerTest
 			_styleBookEntryLocalService.addStyleBookEntry(
 				externalReferenceCode, TestPropsValues.getUserId(),
 				stagingGroup.getGroupId(), false, StringPool.BLANK,
-				RandomTestUtil.randomString(), StringPool.BLANK,
-				RandomTestUtil.randomString(),
+				StringPool.BLANK, RandomTestUtil.randomString(),
+				StringPool.BLANK, RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
 					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
 
@@ -124,16 +124,16 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		StyleBookEntry liveStyleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), liveGroup.getGroupId(),
-				false, StringPool.BLANK, name, StringPool.BLANK,
-				RandomTestUtil.randomString(),
+				false, StringPool.BLANK, StringPool.BLANK, name,
+				StringPool.BLANK, RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
 					liveGroup.getGroupId(), TestPropsValues.getUserId()));
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-				false, StringPool.BLANK, name, StringPool.BLANK,
-				RandomTestUtil.randomString(),
+				false, StringPool.BLANK, StringPool.BLANK, name,
+				StringPool.BLANK, RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
 					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
 
@@ -156,8 +156,9 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-				false, StringPool.BLANK, RandomTestUtil.randomString(),
-				StringPool.BLANK, RandomTestUtil.randomString(),
+				false, StringPool.BLANK, StringPool.BLANK,
+				RandomTestUtil.randomString(), StringPool.BLANK,
+				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
 					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
 
@@ -181,7 +182,7 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-				false,
+				false, StringPool.BLANK,
 				JSONUtil.put(
 					"this-token-does-not-exist",
 					JSONUtil.put("value", "#000000")
@@ -231,8 +232,8 @@ public class StyleBookEntryStagedModelDataHandlerTest
 
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			null, TestPropsValues.getUserId(), group.getGroupId(), false,
-			StringPool.BLANK, RandomTestUtil.randomString(), StringPool.BLANK,
-			RandomTestUtil.randomString(),
+			StringPool.BLANK, StringPool.BLANK, RandomTestUtil.randomString(),
+			StringPool.BLANK, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
 	}
 

@@ -547,7 +547,7 @@ public class PageSpecificationResourceTest
 
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			null, TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
-			false, null, RandomTestUtil.randomString(), null,
+			false, null, null, RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString(), serviceContext);
 	}
 
@@ -1021,7 +1021,7 @@ public class PageSpecificationResourceTest
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), irrelevantGroup.getGroupId(),
-				false, null, RandomTestUtil.randomString(), null,
+				false, null, null, RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
 					irrelevantGroup.getGroupId(), TestPropsValues.getUserId()));
@@ -1281,7 +1281,7 @@ public class PageSpecificationResourceTest
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				null, TestPropsValues.getUserId(), irrelevantGroup.getGroupId(),
-				false, null, RandomTestUtil.randomString(), null,
+				false, null, null, RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
 					irrelevantGroup.getGroupId(), TestPropsValues.getUserId()));

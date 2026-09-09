@@ -409,7 +409,7 @@ public class SettingsTestUtil {
 		StyleBookEntry styleBookEntry =
 			StyleBookEntryLocalServiceUtil.addStyleBookEntry(
 				null, TestPropsValues.getUserId(),
-				serviceContext.getScopeGroupId(), false, null,
+				serviceContext.getScopeGroupId(), false, null, null,
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(), serviceContext);
 
@@ -491,7 +491,7 @@ public class SettingsTestUtil {
 			StyleBookEntry styleBookEntry =
 				StyleBookEntryLocalServiceUtil.addStyleBookEntry(
 					null, TestPropsValues.getUserId(),
-					serviceContext.getScopeGroupId(), false, null,
+					serviceContext.getScopeGroupId(), false, null, null,
 					RandomTestUtil.randomString(), null,
 					RandomTestUtil.randomString(), serviceContext);
 

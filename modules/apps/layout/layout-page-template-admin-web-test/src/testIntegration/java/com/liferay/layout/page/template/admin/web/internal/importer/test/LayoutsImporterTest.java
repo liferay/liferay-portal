@@ -1686,8 +1686,9 @@ public class LayoutsImporterTest {
 
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			null, TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
-			false, StringPool.BLANK, RandomTestUtil.randomString(),
-			styleBookEntryKey, RandomTestUtil.randomString(), serviceContext);
+			false, StringPool.BLANK, StringPool.BLANK,
+			RandomTestUtil.randomString(), styleBookEntryKey,
+			RandomTestUtil.randomString(), serviceContext);
 	}
 
 	private void _assertExportedFileItemSelector(

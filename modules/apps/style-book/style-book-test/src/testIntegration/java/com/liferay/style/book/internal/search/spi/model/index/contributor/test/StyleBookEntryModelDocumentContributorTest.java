@@ -71,8 +71,9 @@ public class StyleBookEntryModelDocumentContributorTest {
 	private StyleBookEntry _addStyleBookEntry() throws Exception {
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(), false, null, RandomTestUtil.randomString(),
+			_group.getGroupId(), false, null, null,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
 	}

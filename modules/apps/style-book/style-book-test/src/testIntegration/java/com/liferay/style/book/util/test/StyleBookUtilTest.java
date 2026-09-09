@@ -87,8 +87,9 @@ public class StyleBookUtilTest {
 
 		_styleBookEntryLocalService.addStyleBookEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			_group.getGroupId(), true, null, RandomTestUtil.randomString(),
-			null, frontendTokenDefinition.getThemeId(), null);
+			_group.getGroupId(), true, null, null,
+			RandomTestUtil.randomString(), null,
+			frontendTokenDefinition.getThemeId(), null);
 
 		styleFromThemeStyleBookEntry =
 			StyleBookUtil.getStyleFromThemeStyleBookEntry(

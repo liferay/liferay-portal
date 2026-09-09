@@ -549,7 +549,7 @@ public class StagingLocalServiceTest {
 			StyleBookEntry styleBookEntry =
 				_styleBookEntryLocalService.addStyleBookEntry(
 					null, TestPropsValues.getUserId(), scopeGroup.getGroupId(),
-					false, null, RandomTestUtil.randomString(), null,
+					false, null, null, RandomTestUtil.randomString(), null,
 					RandomTestUtil.randomString(),
 					ServiceContextTestUtil.getServiceContext(
 						scopeGroup.getGroupId(), TestPropsValues.getUserId()));

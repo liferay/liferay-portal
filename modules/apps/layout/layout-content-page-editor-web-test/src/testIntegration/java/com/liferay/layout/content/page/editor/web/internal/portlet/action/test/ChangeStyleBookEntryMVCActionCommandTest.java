@@ -110,7 +110,7 @@ public class ChangeStyleBookEntryMVCActionCommandTest {
 	private StyleBookEntry _addStyleBookEntry(long groupId) throws Exception {
 		return _styleBookEntryLocalService.addStyleBookEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), groupId,
-			false, null, RandomTestUtil.randomString(), null,
+			false, null, null, RandomTestUtil.randomString(), null,
 			RandomTestUtil.randomString(), null);
 	}
 

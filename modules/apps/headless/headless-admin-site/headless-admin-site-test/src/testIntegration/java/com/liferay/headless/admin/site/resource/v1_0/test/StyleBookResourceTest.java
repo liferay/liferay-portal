@@ -276,8 +276,8 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		throws Exception {
 
 		return _styleBookEntryLocalService.addStyleBookEntry(
-			null, TestPropsValues.getUserId(), groupId, false, null, name, null,
-			themeId,
+			null, TestPropsValues.getUserId(), groupId, false, null, null, name,
+			null, themeId,
 			ServiceContextTestUtil.getServiceContext(
 				groupId, TestPropsValues.getUserId()));
 	}
