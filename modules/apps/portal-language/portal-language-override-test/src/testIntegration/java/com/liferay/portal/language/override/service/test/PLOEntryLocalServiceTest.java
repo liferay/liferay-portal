@@ -684,14 +684,16 @@ public class PLOEntryLocalServiceTest {
 	}
 
 	private void _testImportPLOEntries() throws PortalException {
-		String key1 = RandomTestUtil.randomString();
-		String key2 = RandomTestUtil.randomString();
-		String value1 = RandomTestUtil.randomString();
-		String value2 = RandomTestUtil.randomString();
-
 		Properties properties = new Properties();
 
+		String key1 = RandomTestUtil.randomString();
+		String value1 = RandomTestUtil.randomString();
+
 		properties.setProperty(key1, value1);
+
+		String key2 = RandomTestUtil.randomString();
+		String value2 = RandomTestUtil.randomString();
+
 		properties.setProperty(key2, value2);
 
 		_ploEntryLocalService.importPLOEntries(
