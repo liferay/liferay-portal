@@ -20,13 +20,14 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.workflow.constants.WorkflowPortletKeys;
-import com.liferay.portal.workflow.web.internal.constants.WorkflowNavigationConstants;
+import com.liferay.portal.workflow.constants.WorkflowWebKeys;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -59,7 +60,9 @@ public class ControlPanelWorkflowPanelApp extends BasePanelApp {
 				WebKeys.THEME_DISPLAY);
 
 		return TransformUtil.unsafeTransform(
-			WorkflowNavigationConstants.controlPanelWorkflowPortletTabNames,
+			Arrays.asList(
+				WorkflowWebKeys.WORKFLOW_TAB_DEFINITION,
+				WorkflowWebKeys.WORKFLOW_TAB_DEFINITION_LINK),
 			tabName -> new PanelAppNavigationItem(
 				_language.get(LocaleUtil.ENGLISH, tabName),
 				PortletURLBuilder.create(
