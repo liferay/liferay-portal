@@ -5,7 +5,29 @@
 
 import '@testing-library/jest-dom';
 
-import {anchoredScroll} from '../../src/main/resources/META-INF/resources/js/imaging/geometry';
+import {
+	anchoredScroll,
+	imageTransform,
+} from '../../src/main/resources/META-INF/resources/js/imaging/geometry';
+import {initialEditState} from '../../src/main/resources/META-INF/resources/js/state/editorReducer';
+
+describe('imageTransform', () => {
+	it('is undefined when nothing is rotated', () => {
+		expect(imageTransform(initialEditState(1600, 1000))).toBeUndefined();
+	});
+
+	it('mirrors before the quarter turn', () => {
+		const transform = imageTransform({
+			...initialEditState(1600, 1000),
+			flipHorizontal: true,
+			rotation: 90,
+		});
+
+		expect(transform).toBe(
+			'translate(1000 0) scale(-1 1) translate(1000 0) rotate(90)'
+		);
+	});
+});
 
 describe('anchoredScroll', () => {
 	const padding = 48;

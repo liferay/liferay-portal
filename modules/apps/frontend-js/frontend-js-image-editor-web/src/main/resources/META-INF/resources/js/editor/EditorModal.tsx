@@ -12,10 +12,13 @@ import {
 	EditorInstanceProvider,
 	nextEditorInstancePrefix,
 } from '../chrome/instance';
+import {useEditorHistory} from '../hooks/useEditorHistory';
 import {t} from '../i18n';
 import {anchoredScroll} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
 import {Workspace} from '../stage/Workspace';
+import {redoLabel, undoLabel} from '../state/editorReducer';
+import {rotatedSize} from '../state/types';
 
 const ZOOM_LEVELS = [0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.75, 1, 1.5, 2, 3];
 
@@ -61,7 +64,10 @@ export default function EditorModal({image, onClose}: Props) {
 
 	const {observer} = useModal({onClose});
 
-	const editorRef = useRef<HTMLDivElement | null>(null);
+	const {dispatch, editorRef, handleUndoShortcut, history, redo, undo} =
+		useEditorHistory(image, announce);
+
+	const state = history.present;
 
 	const [zoom, setZoom] = useState(() =>
 		fitZoom(null, image.width, image.height)
@@ -71,35 +77,56 @@ export default function EditorModal({image, onClose}: Props) {
 
 	const autoFitRef = useRef(true);
 
+	const stageBoundsRef = useRef(rotatedSize(state));
+
+	useEffect(() => {
+		stageBoundsRef.current = rotatedSize(state);
+	});
+
 	useEffect(() => {
 		announce(t('editor-loaded', image.width, image.height));
 	}, [announce, image]);
 
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
-	const handleWorkspaceRef = useCallback(
-		(element: HTMLDivElement | null) => {
-			resizeObserverRef.current?.disconnect();
-			resizeObserverRef.current = null;
+	const handleWorkspaceRef = useCallback((element: HTMLDivElement | null) => {
+		resizeObserverRef.current?.disconnect();
+		resizeObserverRef.current = null;
 
-			workspaceRef.current = element;
+		workspaceRef.current = element;
 
-			if (!element) {
-				return;
+		if (!element) {
+			return;
+		}
+
+		const observer = new ResizeObserver(() => {
+			if (autoFitRef.current) {
+				setZoom(
+					fitZoom(
+						element,
+						stageBoundsRef.current.width,
+						stageBoundsRef.current.height
+					)
+				);
 			}
+		});
 
-			const observer = new ResizeObserver(() => {
-				if (autoFitRef.current) {
-					setZoom(fitZoom(element, image.width, image.height));
-				}
-			});
+		observer.observe(element);
 
-			observer.observe(element);
+		resizeObserverRef.current = observer;
+	}, []);
 
-			resizeObserverRef.current = observer;
-		},
-		[image]
-	);
+	useEffect(() => {
+		if (autoFitRef.current && workspaceRef.current) {
+			setZoom(
+				fitZoom(
+					workspaceRef.current,
+					stageBoundsRef.current.width,
+					stageBoundsRef.current.height
+				)
+			);
+		}
+	}, [state.rotation]);
 
 	const pointerRef = useRef<{x: number; y: number} | null>(null);
 
@@ -182,7 +209,9 @@ export default function EditorModal({image, onClose}: Props) {
 	const zoomToFit = () => {
 		autoFitRef.current = true;
 
-		const next = fitZoom(workspaceRef.current, image.width, image.height);
+		const bounds = rotatedSize(state);
+
+		const next = fitZoom(workspaceRef.current, bounds.width, bounds.height);
 
 		setZoom(next);
 		announceZoom(next);
@@ -219,7 +248,11 @@ export default function EditorModal({image, onClose}: Props) {
 					{t('editing-image')}
 				</ClayModal.Header>
 
-				<div className="image-editor" ref={editorRef}>
+				<div
+					className="image-editor"
+					onKeyDown={handleUndoShortcut}
+					ref={editorRef}
+				>
 					<div className="editor-main">
 						<Workspace
 							image={image}
@@ -230,12 +263,19 @@ export default function EditorModal({image, onClose}: Props) {
 							onZoom={zoomBy}
 							onZoomActual={zoomToActual}
 							onZoomFit={zoomToFit}
+							state={state}
 							workspaceRef={handleWorkspaceRef}
 							zoom={zoom}
 						/>
 					</div>
 
 					<BottomBar
+						canRedo={!!redoLabel(history)}
+						canUndo={!!undoLabel(history)}
+						dispatch={dispatch}
+						onAnnounce={announce}
+						onRedo={redo}
+						onUndo={undo}
 						onZoom={zoomBy}
 						onZoomFit={zoomToFit}
 						zoom={zoom}

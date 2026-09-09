@@ -8,17 +8,89 @@ import ClayModal from '@clayui/modal';
 import React from 'react';
 
 import {t} from '../i18n';
+import {EditorAction} from '../state/editorReducer';
 
 interface Props {
+	canRedo: boolean;
+	canUndo: boolean;
+	dispatch: (action: EditorAction) => void;
+	onAnnounce: (message: string) => void;
+	onRedo: () => void;
+	onUndo: () => void;
 	onZoom: (direction: -1 | 1) => void;
 	onZoomFit: () => void;
 	zoom: number;
 }
 
-export function BottomBar({onZoom, onZoomFit, zoom}: Props) {
+export function BottomBar({
+	canRedo,
+	canUndo,
+	dispatch,
+	onAnnounce,
+	onRedo,
+	onUndo,
+	onZoom,
+	onZoomFit,
+	zoom,
+}: Props) {
 	return (
 		<ClayModal.Footer
 			className="editor-bottom-bar"
+			first={
+				<div className="editor-bar-group">
+					<ClayButtonWithIcon
+						aria-label={t('rotate-90')}
+						borderless
+						className="editor-bar-button"
+						displayType="secondary"
+						onClick={() => {
+							dispatch({type: 'rotate-90'});
+							onAnnounce(
+								t('rotated-90')
+							);
+						}}
+						symbol="rotate"
+						title={t('rotate-90')}
+					/>
+
+					<ClayButtonWithIcon
+						aria-label={t('flip-horizontal')}
+						borderless
+						className="editor-bar-button"
+						displayType="secondary"
+						onClick={() => {
+							dispatch({type: 'flip-horizontal'});
+							onAnnounce(
+								t('flipped-horizontal')
+							);
+						}}
+						symbol="flip-horizontal"
+						title={t('flip-horizontal')}
+					/>
+
+					<ClayButtonWithIcon
+						aria-label={t('undo')}
+						borderless
+						className="editor-bar-button"
+						disabled={!canUndo}
+						displayType="secondary"
+						onClick={onUndo}
+						symbol="undo"
+						title={t('undo')}
+					/>
+
+					<ClayButtonWithIcon
+						aria-label={t('redo')}
+						borderless
+						className="editor-bar-button"
+						disabled={!canRedo}
+						displayType="secondary"
+						onClick={onRedo}
+						symbol="redo"
+						title={t('redo')}
+					/>
+				</div>
+			}
 			middle={
 				<div className="editor-bar-group">
 					<ClayButtonWithIcon
@@ -32,7 +104,8 @@ export function BottomBar({onZoom, onZoomFit, zoom}: Props) {
 					/>
 
 					<span className="editor-zoom-level">
-						{t('zoom-percent', Math.round(zoom * 100))}
+						{t('zoom-percent', Math.round(zoom * 100)
+						)}
 					</span>
 
 					<ClayButtonWithIcon

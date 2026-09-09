@@ -9,7 +9,9 @@ import React from 'react';
 
 import {useEditorId} from '../chrome/instance';
 import {t} from '../i18n';
+import {imageTransform} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
+import {EditState, rotatedSize} from '../state/types';
 
 interface Props {
 	image: LoadedImage;
@@ -18,6 +20,7 @@ interface Props {
 	onZoom: (direction: -1 | 1) => void;
 	onZoomActual: () => void;
 	onZoomFit: () => void;
+	state: EditState;
 	workspaceRef?: React.Ref<HTMLDivElement>;
 	zoom: number;
 }
@@ -29,10 +32,13 @@ export function Workspace({
 	onZoom,
 	onZoomActual,
 	onZoomFit,
+	state,
 	workspaceRef,
 	zoom,
 }: Props) {
 	const eid = useEditorId();
+
+	const bounds = rotatedSize(state);
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {
 		if (event.key === '+' || event.key === '=') {
@@ -71,16 +77,18 @@ export function Workspace({
 
 			<svg
 				className="editor-stage"
-				height={image.height * zoom}
-				viewBox={`0 0 ${image.width} ${image.height}`}
-				width={image.width * zoom}
+				height={bounds.height * zoom}
+				viewBox={`0 0 ${bounds.width} ${bounds.height}`}
+				width={bounds.width * zoom}
 			>
-				<image
-					height={image.height}
-					href={image.previewUrl}
-					preserveAspectRatio="none"
-					width={image.width}
-				/>
+				<g transform={imageTransform(state)}>
+					<image
+						height={state.sourceHeight}
+						href={image.previewUrl}
+						preserveAspectRatio="none"
+						width={state.sourceWidth}
+					/>
+				</g>
 			</svg>
 		</div>
 	);
