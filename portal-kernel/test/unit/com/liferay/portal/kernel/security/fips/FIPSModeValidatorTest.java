@@ -323,6 +323,13 @@ public class FIPSModeValidatorTest {
 				new Class<?>[] {Element.class},
 				_getElement(
 					"cluster-link-channel-properties.xml", "SYM_ENCRYPT"));
+			ReflectionTestUtil.invoke(
+				FIPSModeValidator.class,
+				"_validateClusterLinkChannelSymEncryptElement",
+				new Class<?>[] {Element.class},
+				_getElement(
+					"cluster-link-channel-properties-provider-bcfips.xml",
+					"SYM_ENCRYPT"));
 
 			_assertSecurityException(
 				"Initialization vector size 0 is not allowed in FIPS mode",
@@ -371,18 +378,6 @@ public class FIPSModeValidatorTest {
 
 	@Test
 	public void testValidateClusterLinkConfiguration() throws Exception {
-		String transportKey =
-			PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_TRANSPORT + ".0";
-
-		String originalTransportValue = PropsUtil.get(transportKey);
-
-		PropsUtil.set(
-			transportKey,
-			String.valueOf(
-				DependenciesTestUtil.getDependencyAsFile(
-					FIPSModeValidatorTest.class,
-					"cluster-link-channel-properties.xml")));
-
 		try (SafeCloseable safeCloseable1 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"CLUSTER_LINK_AUTH_KEYSTORE_TYPE", "PKCS12", false);
@@ -396,8 +391,16 @@ public class FIPSModeValidatorTest {
 					false);
 			SafeCloseable safeCloseable3 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
-					"CLUSTER_LINK_ENABLED", true);
+					"CLUSTER_LINK_CHANNEL_PROPERTIES_TRANSPORT",
+					String.valueOf(
+						DependenciesTestUtil.getDependencyAsFile(
+							FIPSModeValidatorTest.class,
+							"cluster-link-channel-properties.xml")),
+					false);
 			SafeCloseable safeCloseable4 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"CLUSTER_LINK_ENABLED", true);
+			SafeCloseable safeCloseable5 =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
@@ -408,19 +411,12 @@ public class FIPSModeValidatorTest {
 			_assertClusterLinkConfigurationSecurityException(
 				"Key size 64 is not allowed in FIPS mode",
 				"cluster-link-channel-properties-sym-keylength-64.xml",
-				transportKey);
+				PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_TRANSPORT);
 			_assertClusterLinkConfigurationSecurityException(
 				"must encrypt intracluster traffic with \"SYM_ENCRYPT\" in " +
 					"FIPS mode",
 				"cluster-link-channel-properties-asym-encrypt.xml",
-				transportKey);
-
-			PropsUtil.set(
-				transportKey,
-				String.valueOf(
-					DependenciesTestUtil.getDependencyAsFile(
-						FIPSModeValidatorTest.class,
-						"cluster-link-channel-properties.xml")));
+				PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_TRANSPORT);
 
 			_assertClusterLinkConfigurationSecurityException(
 				"must authenticate cluster members with " +
@@ -428,7 +424,7 @@ public class FIPSModeValidatorTest {
 				"cluster-link-channel-properties-auth-class-md5-token.xml",
 				PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL);
 
-			try (SafeCloseable safeCloseable5 =
+			try (SafeCloseable safeCloseable6 =
 					PropsValuesTestUtil.swapWithSafeCloseable(
 						"CLUSTER_LINK_AUTH_KEYSTORE_TYPE",
 						RandomTestUtil.randomString(), false)) {
@@ -438,9 +434,6 @@ public class FIPSModeValidatorTest {
 						"\" to be set to only",
 					"_validateClusterLinkConfiguration", new Class<?>[0]);
 			}
-		}
-		finally {
-			PropsUtil.set(transportKey, originalTransportValue);
 		}
 	}
 
