@@ -56,6 +56,23 @@ public class FrontendTokenDefinitionJSONValidatorTest {
 			Assert.assertTrue(
 				message.contains("required key [frontendTokenSets] not found"));
 		}
+
+		try {
+			_frontendTokenDefinitionJSONValidator.validate(
+				URLUtil.toString(
+					FrontendTokenDefinitionJSONValidatorTest.class.getResource(
+						"dependencies/frontend-token-definition-unknown-" +
+							"property.json")));
+
+			Assert.fail();
+		}
+		catch (JSONValidatorException jsonValidatorException) {
+			String message = jsonValidatorException.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					"extraneous key [unknownProperty] is not permitted"));
+		}
 	}
 
 	private final FrontendTokenDefinitionJSONValidator
