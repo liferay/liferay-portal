@@ -328,10 +328,10 @@ public class CompareObjectEntryVersionsCMSServletTest
 			objectEntry.getObjectEntryId(), 1, 2, user);
 
 		Assert.assertEquals(
+			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
+		Assert.assertEquals(
 			HttpServletResponse.SC_FORBIDDEN,
 			mockHttpServletResponse.getStatus());
-		Assert.assertEquals(
-			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
 
 		_addModelResourcePermissions(
 			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW},
