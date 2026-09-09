@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.site.cms.site.initializer.internal.comparison.ObjectEntryVersionFieldValueResolver;
@@ -171,6 +172,13 @@ public class CompareObjectEntryVersionsCMSServlet extends BaseCMSServlet {
 						"target", targetDiffsJSONObject
 					)
 				).toString());
+		}
+		catch (PrincipalException principalException) {
+			httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+			if (_log.isWarnEnabled()) {
+				_log.warn(principalException);
+			}
 		}
 		catch (Exception exception) {
 			httpServletResponse.setStatus(
