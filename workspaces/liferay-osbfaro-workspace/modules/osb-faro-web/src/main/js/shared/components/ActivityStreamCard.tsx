@@ -2,10 +2,10 @@ import ActivitiesChart from 'contacts/components/ActivitiesChart';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import DayList from 'shared/components/DayList';
 import Loading from 'shared/components/Loading';
 import React from 'react';
 import SearchInput from 'shared/components/SearchInput';
-import VerticalTimeline from 'shared/components/VerticalTimeline';
 import {ActivityHistoryPoint} from 'shared/util/activities';
 import {ChartView} from 'shared/components/ChartViewSelector';
 import {compose, withPaginationBar} from 'shared/hoc';
@@ -20,12 +20,12 @@ import {TrendClassification} from 'segment/types';
 import {withEmpty} from 'cerebro-shared/hocs/utils';
 import {withError, withLoading, WrapSafeResults} from 'shared/hoc/util';
 
-const PaginatedVerticalTimeline = compose<any>(
+const PaginatedDayList = compose<any>(
 	withPaginationBar(),
 	withLoading({spacer: true}),
 	withError({page: false}),
 	withEmpty()
-)(VerticalTimeline);
+)(DayList);
 
 export interface TrendSummary {
 	classification?: TrendClassification;
@@ -249,7 +249,7 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					</Card.Body>
 
 					<Card.Body className="p-0">
-						<PaginatedVerticalTimeline
+						<PaginatedDayList
 							{...sessionsMappedResults}
 							delta={delta}
 							initialExpanded={false}

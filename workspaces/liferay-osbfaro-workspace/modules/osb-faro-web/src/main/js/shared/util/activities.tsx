@@ -106,15 +106,24 @@ export type VerticalTimelineIndividual = {
 /**
  * Every row shape the shared VerticalTimeline component can render. A
  * discriminated union — each variant carries its own literal-`true` tag
- * (`header`, `individual`, `session`, `pageGroup`), except `SessionEvent`,
- * the fallback case once the other four are ruled out.
+ * (`individual`, `session`, `pageGroup`), except `SessionEvent`, the fallback
+ * case once the other three are ruled out.
  */
 export type VerticalTimelineItem =
-	| VerticalTimelineHeader
 	| VerticalTimelineIndividual
 	| VerticalTimelineSession
 	| VerticalTimelinePageGroup
 	| SessionEvent;
+
+/**
+ * One active day of the activity stream: the header that titles it and the
+ * rows that belong to it. The day is a level above the timeline now, so it can
+ * bracket both the day-level and the timed-activity sections.
+ */
+export type TimelineDay = {
+	header: VerticalTimelineHeader;
+	items: VerticalTimelineItem[];
+};
 
 export interface ActivityHistoryPoint {
 	intervalInitDate: number;
@@ -489,16 +498,14 @@ export const groupSessionsByDay = <
  * Formats individual user sessions for the shared VerticalTimeline, grouping
  * them by day and grouping each session's events by the page they happened on.
  * The individual stream has no per-user level — the individual is the page's
- * subject — so a day header is followed straight by that day's sessions.
+ * subject — so a day holds its sessions directly.
  */
 export const formatSessions = (
 	sessions: UserSession[] = [],
 	context: EventDashboardContext = {}
-): (VerticalTimelineHeader | VerticalTimelineSession)[] => {
-	const items: (VerticalTimelineHeader | VerticalTimelineSession)[] = [];
-
-	groupSessionsByDay(sessions).forEach(({daySessions, header}) => {
-		items.push(header);
+): TimelineDay[] =>
+	groupSessionsByDay(sessions).map(({daySessions, header}) => {
+		const items: VerticalTimelineSession[] = [];
 
 		daySessions.forEach((session) => {
 			const events = (session.events ??
@@ -532,10 +539,9 @@ export const formatSessions = (
 				userAgent: session.userAgent,
 			});
 		});
-	});
 
-	return items;
-};
+		return {header, items};
+	});
 
 /**
  * Helper function get the correct pluralization of count label.

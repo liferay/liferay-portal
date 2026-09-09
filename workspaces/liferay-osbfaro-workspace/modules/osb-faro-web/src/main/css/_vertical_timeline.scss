@@ -31,10 +31,18 @@
 		}
 
 		.row-main {
-			cursor: pointer;
 			padding: $baseline * 2;
 
-			.angle-icon {
+			&.clickable {
+				cursor: pointer;
+			}
+
+			// The caret and the info button only surface on hover, so a resting
+			// row stays quiet. `:focus-within` keeps the info button reachable
+			// by keyboard, since it is the only way into the payload.
+
+			.angle-icon,
+			.payload-button {
 				opacity: 0;
 				transition: opacity 0.1s ease-in-out;
 			}
@@ -44,8 +52,10 @@
 			}
 
 			&:focus,
+			&:focus-within,
 			&:hover {
-				.angle-icon {
+				.angle-icon,
+				.payload-button {
 					opacity: 1;
 				}
 			}
@@ -60,9 +70,19 @@
 			font-size: $fontSizeMedium;
 		}
 
+		// White against a white row, so the sticker only reads once the row
+		// picks up its hover background.
+
+		.page-sticker {
+			background-color: $white;
+			height: $baseline * 4;
+			margin-bottom: -$baseline;
+			margin-top: -$baseline;
+			width: $baseline * 4;
+		}
+
 		.row-content {
 			min-width: 0;
-			overflow-x: clip;
 		}
 
 		.row-details {
@@ -82,6 +102,14 @@
 		}
 
 		.subtitle {
+			// Centring the icon on the line box leaves it riding above the
+			// text, since that box carries the descender space the URL rarely
+			// uses. A nudge puts it back on the text's own middle.
+
+			.lexicon-icon {
+				margin-top: 2px;
+			}
+
 			.text-truncate {
 				min-width: 0;
 			}
@@ -125,16 +153,6 @@
 		}
 	}
 
-	// The count of events a row stands for, shown on the day, session and page
-	// rows.
-
-	.event-count-pill {
-		border: 1px solid $mainLighten74;
-		border-radius: 4px;
-		font-size: $fontSizeSmall;
-		padding: 2px 6px;
-	}
-
 	.became-known-label,
 	.campaign-label,
 	.data-source-label,
@@ -152,13 +170,6 @@
 	.device-icon {
 		.icon-root {
 			font-size: $fontSizeMedium;
-		}
-	}
-
-	.day-row {
-		.title {
-			font-size: $fontSizeMedium;
-			margin-right: 12px;
 		}
 	}
 
@@ -182,6 +193,13 @@
 			flex-direction: column;
 			gap: 4px;
 			min-width: 0;
+		}
+
+		// The name links to the profile but reads as plain dark text, so the
+		// row stays quiet next to the labels and counts around it.
+
+		.individual-name {
+			color: $main;
 		}
 
 		.individual-id {
@@ -249,7 +267,7 @@
 		.page-info {
 			display: flex;
 			flex-direction: column;
-			margin-left: $timeColumnWidth + $baseline * 6;
+			margin-left: $timeColumnWidth + $baseline * 8;
 			row-gap: $baseline;
 		}
 	}
@@ -302,5 +320,59 @@
 		.timeline-rows.nested > .timeline-row.event-row > .row-main {
 			padding-left: $baseline * 2 + $rowIndent;
 		}
+	}
+}
+
+// The count of events a row stands for, shown on the date header and on the
+// session and page rows. Clay sizes a label's slots for text, so the icon gap
+// and the number's minimum width both have to come down for a count this
+// short to sit snug.
+
+.event-count-pill {
+	font-size: $fontSizeSmall;
+
+	.label-item-before {
+		margin-right: 4px;
+	}
+
+	.label-item-expand {
+		flex-grow: 0;
+		min-width: 0;
+	}
+}
+
+.date-header {
+	// The header lines up with the chart's date range above it rather than
+	// with the cards below, so it takes the card body's own padding.
+
+	padding: $baseline * 2 $baseline * 2 $baseline * 2 ($baseline * 3);
+
+	.day-icon {
+		color: $main;
+	}
+
+	.title {
+		color: $main;
+		font-size: $fontSizeMedium;
+		font-weight: $fontWeightSemiBold;
+		margin-right: 12px;
+	}
+}
+
+.activity-section {
+	border: 1px solid $mainLighten74;
+	border-radius: 4px;
+	margin: $baseline * 2;
+
+	// Rows carry their own opaque background, so without clipping they paint
+	// over the rounded corners and the border reads as cut off.
+
+	overflow: hidden;
+
+	.activity-section-header {
+		background-color: $lightBackground;
+		border-bottom: 1px solid $mainLighten74;
+		border-radius: 4px 4px 0 0;
+		padding: $baseline ($baseline * 2);
 	}
 }

@@ -25,7 +25,6 @@ import {Interval, RangeSelectors} from 'shared/types';
 import {mapEventMetricToActivityHistory} from 'shared/util/activities';
 import {mapListResultsToProps} from 'shared/util/mappers';
 import {SessionEntityTypes} from 'shared/util/constants';
-import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
 import {useQuery} from '@apollo/client';
@@ -224,9 +223,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					)}
 				/>
 			}
-			footerLabel={sub(Liferay.Language.get('account-s-events-x'), [
-				dateRangeLabel,
-			])}
+			footerLabel={dateRangeLabel}
 			interval={interval}
 			noResultsRenderer={
 				<ActivityStreamNoResults

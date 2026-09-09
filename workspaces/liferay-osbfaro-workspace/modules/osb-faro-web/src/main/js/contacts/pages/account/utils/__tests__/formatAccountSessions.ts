@@ -1,6 +1,7 @@
 import formatAccountSessions from '../formatAccountSessions';
 import {AccountUserSession} from 'shared/queries/AccountUserSessionQuery';
 import {
+	TimelineDay,
 	VerticalTimelineHeader,
 	VerticalTimelineIndividual,
 	VerticalTimelineSession,
@@ -8,19 +9,22 @@ import {
 
 const ANONYMOUS_USER = Liferay.Language.get('anonymous-user');
 
-type Item =
-	| VerticalTimelineHeader
-	| VerticalTimelineIndividual
-	| VerticalTimelineSession;
-
-const isHeader = (item: Item): item is VerticalTimelineHeader =>
-	'header' in item;
+type Item = VerticalTimelineIndividual | VerticalTimelineSession;
 
 const isIndividual = (item: Item): item is VerticalTimelineIndividual =>
 	'individual' in item;
 
 const isSession = (item: Item): item is VerticalTimelineSession =>
 	'session' in item;
+
+const headersOf = (days: TimelineDay[]): VerticalTimelineHeader[] =>
+	days.map(({header}) => header);
+
+const individualsOf = (days: TimelineDay[]): VerticalTimelineIndividual[] =>
+	days.flatMap(({items}) => items as Item[]).filter(isIndividual);
+
+const sessionsOf = (days: TimelineDay[]): VerticalTimelineSession[] =>
+	days.flatMap(({items}) => items as Item[]).filter(isSession);
 
 const buildSession = (
 	overrides: Record<string, unknown> = {}
@@ -60,7 +64,7 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('groups sessions by day, emitting one individual row per individual ahead of their sessions', () => {
-		const items = formatAccountSessions([
+		const days = formatAccountSessions([
 			buildSession({
 				createDate: '2026-07-16T10:00:00.000Z',
 				individualId: 'ind-1',
@@ -78,19 +82,34 @@ describe('formatAccountSessions', () => {
 			}),
 		]);
 
-		const dayHeaders = items.filter(isHeader);
-		const individuals = items.filter(isIndividual);
-		const sessions = items.filter(isSession);
-
-		expect(dayHeaders).toHaveLength(2);
-		expect(sessions).toHaveLength(3);
+		expect(days).toHaveLength(2);
+		expect(sessionsOf(days)).toHaveLength(3);
 		expect(
-			individuals.map((individual) => individual.individualName)
+			individualsOf(days).map((individual) => individual.individualName)
 		).toEqual(['Ada Lovelace', 'Alan Turing', 'Grace Hopper']);
 	});
 
+	it('keeps each day self-contained, holding only that day rows', () => {
+		const days = formatAccountSessions([
+			buildSession({
+				createDate: '2026-07-16T10:00:00.000Z',
+				individualId: 'ind-1',
+				userName: 'Ada Lovelace',
+			}),
+			buildSession({
+				createDate: '2026-07-15T10:00:00.000Z',
+				individualId: 'ind-3',
+				userName: 'Grace Hopper',
+			}),
+		]);
+
+		expect(individualsOf([days[0]])).toHaveLength(1);
+		expect(individualsOf([days[1]])).toHaveLength(1);
+		expect(sessionsOf([days[0]])).toHaveLength(1);
+	});
+
 	it('does not repeat the individual row for later sessions of the same day', () => {
-		const items = formatAccountSessions([
+		const days = formatAccountSessions([
 			buildSession({
 				createDate: '2026-07-16T10:00:00.000Z',
 				individualId: 'ind-1',
@@ -103,39 +122,45 @@ describe('formatAccountSessions', () => {
 			}),
 		]);
 
-		expect(items.filter(isIndividual)).toHaveLength(1);
-		expect(items.filter(isSession)).toHaveLength(2);
+		expect(individualsOf(days)).toHaveLength(1);
+		expect(sessionsOf(days)).toHaveLength(2);
 	});
 
 	it('always shows the generic "Anonymous User" label for an individual without an individualId, regardless of the tracked userName', () => {
-		const [individual] = formatAccountSessions([
-			buildSession({individualId: null, userName: 'tracked-name'}),
-		]).filter(isIndividual);
+		const [individual] = individualsOf(
+			formatAccountSessions([
+				buildSession({individualId: null, userName: 'tracked-name'}),
+			])
+		);
 
 		expect(individual.isAnonymous).toBe(true);
 		expect(individual.individualName).toBe(ANONYMOUS_USER);
 	});
 
 	it('marks an individual with an individualId as known', () => {
-		const [individual] = formatAccountSessions([
-			buildSession({individualId: 'ind-1', userName: 'Grace Hopper'}),
-		]).filter(isIndividual);
+		const [individual] = individualsOf(
+			formatAccountSessions([
+				buildSession({individualId: 'ind-1', userName: 'Grace Hopper'}),
+			])
+		);
 
 		expect(individual.isAnonymous).toBe(false);
 		expect(individual.individualName).toBe('Grace Hopper');
 	});
 
 	it('links a known individual to their profile by individualId', () => {
-		const [individual] = formatAccountSessions(
-			[
-				buildSession({
-					individualId: 'ind-1',
-					userId: 'abc123',
-					userName: 'Grace Hopper',
-				}),
-			],
-			{channelId: '420253908131944590', groupId: 'liferay.com'}
-		).filter(isIndividual);
+		const [individual] = individualsOf(
+			formatAccountSessions(
+				[
+					buildSession({
+						individualId: 'ind-1',
+						userId: 'abc123',
+						userName: 'Grace Hopper',
+					}),
+				],
+				{channelId: '420253908131944590', groupId: 'liferay.com'}
+			)
+		);
 
 		expect(individual.individualUrl).toBe(
 			'/workspace/liferay.com/420253908131944590/contacts/individuals/known-individuals/ind-1'
@@ -143,10 +168,12 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('links an anonymous individual by their userId when there is no individualId', () => {
-		const [individual] = formatAccountSessions(
-			[buildSession({userId: 'abc123', userName: null})],
-			{channelId: '420253908131944590', groupId: 'liferay.com'}
-		).filter(isIndividual);
+		const [individual] = individualsOf(
+			formatAccountSessions(
+				[buildSession({userId: 'abc123', userName: null})],
+				{channelId: '420253908131944590', groupId: 'liferay.com'}
+			)
+		);
 
 		expect(individual.isAnonymous).toBe(true);
 		expect(individual.individualId).toBe('abc123');
@@ -156,16 +183,18 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('does not link an individual without an individualId or userId', () => {
-		const [individual] = formatAccountSessions(
-			[
-				buildSession({
-					individualId: null,
-					userId: null,
-					userName: 'Grace Hopper',
-				}),
-			],
-			{channelId: '420253908131944590', groupId: 'liferay.com'}
-		).filter(isIndividual);
+		const [individual] = individualsOf(
+			formatAccountSessions(
+				[
+					buildSession({
+						individualId: null,
+						userId: null,
+						userName: 'Grace Hopper',
+					}),
+				],
+				{channelId: '420253908131944590', groupId: 'liferay.com'}
+			)
+		);
 
 		expect(individual.isAnonymous).toBe(true);
 		expect(individual.individualName).toBe(ANONYMOUS_USER);
@@ -173,7 +202,7 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('groups every anonymous session with neither an individualId nor a userId under a single individual', () => {
-		const items = formatAccountSessions([
+		const days = formatAccountSessions([
 			buildSession({
 				createDate: '2026-07-16T10:00:00.000Z',
 				individualId: null,
@@ -188,40 +217,42 @@ describe('formatAccountSessions', () => {
 			}),
 		]);
 
-		const individuals = items.filter(isIndividual);
+		const individuals = individualsOf(days);
 
 		expect(individuals).toHaveLength(1);
 		expect(individuals[0].individualName).toBe(ANONYMOUS_USER);
-		expect(items.filter(isSession)).toHaveLength(2);
+		expect(sessionsOf(days)).toHaveLength(2);
 	});
 
 	it('orders days most-recent first and sums the day event totals', () => {
-		const items = formatAccountSessions([
-			buildSession({
-				createDate: '2026-07-15T10:00:00.000Z',
-				events: [{}, {}],
-				userName: 'A',
-			}),
-			buildSession({
-				createDate: '2026-07-16T10:00:00.000Z',
-				events: [{}],
-				userName: 'B',
-			}),
-		]);
-
-		const dayHeaders = items.filter(isHeader);
+		const dayHeaders = headersOf(
+			formatAccountSessions([
+				buildSession({
+					createDate: '2026-07-15T10:00:00.000Z',
+					events: [{}, {}],
+					userName: 'A',
+				}),
+				buildSession({
+					createDate: '2026-07-16T10:00:00.000Z',
+					events: [{}],
+					userName: 'B',
+				}),
+			])
+		);
 
 		expect(dayHeaders[0].totalEvents).toBe(1);
 		expect(dayHeaders[1].totalEvents).toBe(2);
 	});
 
 	it("includes accountId and accountName in a page group's dashboard link", () => {
-		const [session] = formatAccountSessions([buildSession()], {
-			accountId: 'acc-1',
-			accountName: 'Acme Corporation',
-			channelId: '420253908131944590',
-			groupId: 'liferay.com',
-		}).filter(isSession);
+		const [session] = sessionsOf(
+			formatAccountSessions([buildSession()], {
+				accountId: 'acc-1',
+				accountName: 'Acme Corporation',
+				channelId: '420253908131944590',
+				groupId: 'liferay.com',
+			})
+		);
 
 		const [pageGroup] = session.nestedItems as {descriptionUrl?: string}[];
 
@@ -230,9 +261,9 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('maps session attributes with the correct field names', () => {
-		const [session] = formatAccountSessions([
-			buildSession({userName: 'Ada Lovelace'}),
-		]).filter(isSession);
+		const [session] = sessionsOf(
+			formatAccountSessions([buildSession({userName: 'Ada Lovelace'})])
+		);
 
 		expect(session.attributes).toMatchObject({
 			contentLanguageId: 'en-US',
@@ -245,13 +276,15 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('marks the session, sets its total events and passes through the device fields', () => {
-		const [session] = formatAccountSessions([
-			buildSession({
-				browserName: 'Firefox',
-				deviceType: 'Mobile',
-				events: [{applicationId: 'Page'}, {applicationId: 'Form'}],
-			}),
-		]).filter(isSession);
+		const [session] = sessionsOf(
+			formatAccountSessions([
+				buildSession({
+					browserName: 'Firefox',
+					deviceType: 'Mobile',
+					events: [{applicationId: 'Page'}, {applicationId: 'Form'}],
+				}),
+			])
+		);
 
 		expect(session.session).toBe(true);
 		expect(session.applicationId).toBe('Page');
@@ -261,35 +294,39 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('marks a webhook session as having no reliable timestamps', () => {
-		const [session] = formatAccountSessions([
-			buildSession({userAgent: 'HubSpot Webhook'}),
-		]).filter(isSession);
+		const [session] = sessionsOf(
+			formatAccountSessions([
+				buildSession({userAgent: 'HubSpot Webhook'}),
+			])
+		);
 
 		expect(session.noTimestamps).toBe(true);
 	});
 
 	it('groups the session events by the page they happened on', () => {
-		const [session] = formatAccountSessions([
-			buildSession({
-				events: [
-					{
-						applicationId: 'Page',
-						canonicalUrl: 'https://liferay.com/home',
-						createDate: '2026-07-16T10:00:00.000Z',
-						name: 'pageViewed',
-						pageGroupId: 'https://liferay.com/home',
-						pageTitle: 'Home',
-					},
-					{
-						applicationId: 'Page',
-						canonicalUrl: 'https://liferay.com/home',
-						createDate: '2026-07-16T10:01:00.000Z',
-						name: 'formSubmitted',
-						pageGroupId: 'https://liferay.com/home',
-					},
-				],
-			}),
-		]).filter(isSession);
+		const [session] = sessionsOf(
+			formatAccountSessions([
+				buildSession({
+					events: [
+						{
+							applicationId: 'Page',
+							canonicalUrl: 'https://liferay.com/home',
+							createDate: '2026-07-16T10:00:00.000Z',
+							name: 'pageViewed',
+							pageGroupId: 'https://liferay.com/home',
+							pageTitle: 'Home',
+						},
+						{
+							applicationId: 'Page',
+							canonicalUrl: 'https://liferay.com/home',
+							createDate: '2026-07-16T10:01:00.000Z',
+							name: 'formSubmitted',
+							pageGroupId: 'https://liferay.com/home',
+						},
+					],
+				}),
+			])
+		);
 
 		expect(session.nestedItems).toHaveLength(1);
 		expect(session.nestedItems[0]).toMatchObject({
@@ -300,22 +337,24 @@ describe('formatAccountSessions', () => {
 	});
 
 	it('carries the experience a page view was served by, same as the individual stream', () => {
-		const [session] = formatAccountSessions([
-			buildSession({
-				events: [
-					{
-						applicationId: 'Page',
-						canonicalUrl: 'https://liferay.com/home',
-						createDate: '2026-07-16T10:00:00.000Z',
-						experienceId: '39201',
-						experienceName: 'Q3 Promo Experience',
-						name: 'pageViewed',
-						pageGroupId: 'https://liferay.com/home',
-						pageTitle: 'Home',
-					},
-				],
-			}),
-		]).filter(isSession);
+		const [session] = sessionsOf(
+			formatAccountSessions([
+				buildSession({
+					events: [
+						{
+							applicationId: 'Page',
+							canonicalUrl: 'https://liferay.com/home',
+							createDate: '2026-07-16T10:00:00.000Z',
+							experienceId: '39201',
+							experienceName: 'Q3 Promo Experience',
+							name: 'pageViewed',
+							pageGroupId: 'https://liferay.com/home',
+							pageTitle: 'Home',
+						},
+					],
+				}),
+			])
+		);
 
 		expect(session.nestedItems[0]).toMatchObject({
 			experienceNames: ['Q3 Promo Experience'],

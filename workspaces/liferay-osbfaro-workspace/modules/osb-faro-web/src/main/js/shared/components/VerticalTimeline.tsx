@@ -3,11 +3,13 @@ import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
+import EventCountPill from 'shared/components/EventCountPill';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import moment from 'moment';
 import React, {FC, useState} from 'react';
 import TextTruncate from './TextTruncate';
+import {ClayButtonWithIcon} from '@clayui/button';
 import {Colors} from 'shared/util/colors-size';
 import {formatDateToTimeZone} from 'shared/util/date';
 import {
@@ -17,7 +19,6 @@ import {
 import {
 	isWebhookUserAgent,
 	SessionEvent,
-	VerticalTimelineHeader,
 	VerticalTimelineIndividual,
 	VerticalTimelineItem,
 	VerticalTimelinePageGroup,
@@ -64,37 +65,46 @@ type IRowProps<Item> = {
 };
 
 /**
- * The clickable part of a row: everything but the content it reveals. The caret
- * lives here so every expandable row carries it in the same place, on the right.
+ * The top part of a row: everything but the content it reveals. A row that
+ * reveals child rows is clickable across its whole width and carries a caret,
+ * while one that reveals a raw payload carries an info button instead — the
+ * only way in, so the row body itself stays inert.
  */
 const RowMain: FC<{
 	children: React.ReactNode;
 	expanded: boolean;
+	infoButton?: boolean;
 	onToggle: () => void;
-}> = ({children, expanded, onToggle}) => (
-	<div
-		className="row-main d-flex align-items-start"
-		onClick={onToggle}
-		onKeyPress={onToggle}
-		role="button"
-		tabIndex={0}
-	>
-		{children}
+}> = ({children, expanded, infoButton, onToggle}) =>
+	infoButton ? (
+		<div className="row-main d-flex align-items-start">
+			{children}
 
-		<ClayIcon
-			className="angle-icon icon-root ml-3 flex-shrink-0 text-secondary"
-			symbol={expanded ? 'angle-up' : 'angle-down'}
-		/>
-	</div>
-);
+			<ClayButtonWithIcon
+				aria-label={Liferay.Language.get('show-payload')}
+				borderless
+				className="payload-button ml-3 flex-shrink-0"
+				displayType="secondary"
+				onClick={onToggle}
+				size="sm"
+				symbol="info-circle"
+			/>
+		</div>
+	) : (
+		<div
+			className="row-main clickable d-flex align-items-start"
+			onClick={onToggle}
+			onKeyPress={onToggle}
+			role="button"
+			tabIndex={0}
+		>
+			{children}
 
-const EventCountPill: FC<{totalEvents?: number}> = ({totalEvents}) =>
-	totalEvents === undefined ? null : (
-		<span className="event-count-pill align-items-center d-inline-flex flex-shrink-0 font-weight-semi-bold text-secondary">
-			<ClayIcon className="icon-root" symbol="click" />
-
-			<span className="event-count ml-1">{totalEvents}</span>
-		</span>
+			<ClayIcon
+				className="angle-icon icon-root ml-3 flex-shrink-0 text-secondary"
+				symbol={expanded ? 'angle-up' : 'angle-down'}
+			/>
+		</div>
 	);
 
 const RowIconLabel: FC<{
@@ -258,21 +268,6 @@ const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => (
 	</div>
 );
 
-const DayRow: FC<{item: VerticalTimelineHeader}> = ({
-	item: {title, totalEvents},
-}) => (
-	<li className="timeline-row day-row p-3 bg-white w-100 d-flex align-items-center">
-		<ClayIcon
-			className="day-icon icon-root text-secondary mr-2"
-			symbol="calendar"
-		/>
-
-		<span className="title text-dark">{title}</span>
-
-		<EventCountPill totalEvents={totalEvents} />
-	</li>
-);
-
 /**
  * The individual a group of sessions belongs to: a plain, unexpandable row —
  * no caret, no click handler — ahead of that individual's sessions for the
@@ -293,13 +288,13 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 			<div className="individual-info">
 				{individualUrl ? (
 					<ClayLink className="individual-name" href={individualUrl}>
-						<Text color="primary" size={3} weight="semi-bold">
+						<Text size={3} weight="semi-bold">
 							{individualName}
 						</Text>
 					</ClayLink>
 				) : (
 					<span className="individual-name">
-						<Text color="primary" size={3} weight="semi-bold">
+						<Text size={3} weight="semi-bold">
 							{individualName}
 						</Text>
 					</span>
@@ -367,10 +362,11 @@ const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 		>
 			<RowMain
 				expanded={expanded}
+				infoButton
 				onToggle={() => setExpanded(!expanded)}
 			>
 				<div className="row-content flex-fill">
-					<span className="title text-dark">
+					<span className="title text-secondary">
 						{sub(Liferay.Language.get('session-x-x'), [
 							time
 								? formatDateToTimeZone(
@@ -449,10 +445,12 @@ const PageGroupRow: FC<IRowProps<VerticalTimelinePageGroup>> = ({
 					<div className="page-row-header">
 						<RowTime time={time} timeZoneId={timeZoneId} />
 
-						<ClayIcon
-							className="row-icon icon-root text-secondary mt-0 flex-shrink-0"
-							symbol="page"
-						/>
+						<ClaySticker className="page-sticker flex-shrink-0">
+							<ClayIcon
+								className="row-icon icon-root text-secondary"
+								symbol="page"
+							/>
+						</ClaySticker>
 
 						{descriptionUrl ? (
 							<ClayLink
@@ -545,6 +543,7 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 		>
 			<RowMain
 				expanded={expanded}
+				infoButton
 				onToggle={() => setExpanded(!expanded)}
 			>
 				<div className="row-content flex-fill">
@@ -606,10 +605,6 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 
 const TimelineRow: FC<IRowProps<ITEM_SHAPE>> = (props) => {
 	const {item} = props;
-
-	if ('header' in item) {
-		return <DayRow item={item} />;
-	}
 
 	if ('individual' in item) {
 		return <IndividualRow item={item} />;

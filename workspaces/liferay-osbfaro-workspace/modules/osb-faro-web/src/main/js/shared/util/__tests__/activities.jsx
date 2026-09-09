@@ -578,12 +578,12 @@ describe('activities', () => {
 			expect(Array.isArray(result)).toBe(true);
 			expect(result.length).toBeGreaterThan(0);
 
-			const header = result[0];
+			const [{header, items}] = result;
 			expect(header.header).toBe(true);
 			expect(typeof header.title).toBe('string');
 			expect(typeof header.totalEvents).toBe('number');
 
-			const session = result[1];
+			const [session] = items;
 			expect(session.session).toBe(true);
 			expect(session).toHaveProperty('attributes');
 			expect(session).toHaveProperty('device');
@@ -592,13 +592,13 @@ describe('activities', () => {
 		});
 
 		it('does not carry a duration, since it is not developed yet', () => {
-			const [, session] = formatSessions([data.mockSession(0)]);
+			const [{items: [session]}] = formatSessions([data.mockSession(0)]);
 
 			expect(session.duration).toBeUndefined();
 		});
 
 		it('marks the session the individual became known in', () => {
-			const [, session] = formatSessions([
+			const [{items: [session]}] = formatSessions([
 				data.mockSession(0, {becameKnown: true})
 			]);
 
@@ -606,7 +606,7 @@ describe('activities', () => {
 		});
 
 		it('leaves the sessions unmarked when the individual is still anonymous', () => {
-			const [, session] = formatSessions([
+			const [{items: [session]}] = formatSessions([
 				data.mockSession(0, {becameKnown: false})
 			]);
 

@@ -29,7 +29,6 @@ import {Individual} from 'shared/util/records';
 import {Interval, RangeSelectors} from 'shared/types';
 import {mapListResultsToProps} from 'shared/util/mappers';
 import {SessionEntityTypes} from 'shared/util/constants';
-import {sub} from 'shared/util/lang';
 import {useParams} from 'react-router-dom';
 import {useQuery} from '@apollo/client';
 import {useSelectedPoint} from 'shared/hooks/useSelectedPoint';
@@ -205,16 +204,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 					)}
 				/>
 			}
-			footerLabel={
-				activityHistory?.length
-					? sub(
-							Liferay.Language.get(
-								'the-individual-performed-the-events-during-x'
-							),
-							[date]
-						)
-					: Liferay.Language.get('individuals-events')
-			}
+			footerLabel={activityHistory?.length ? date : ''}
 			interval={interval}
 			noResultsRenderer={
 				<ActivityStreamNoResults

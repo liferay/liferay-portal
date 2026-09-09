@@ -2,6 +2,7 @@ import ActivitiesChart from 'contacts/components/ActivitiesChart';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
+import DayList from 'shared/components/DayList';
 import EventMetricQuery, {
 	EventMetricsData,
 	EventMetricsVariables,
@@ -18,7 +19,6 @@ import UserSessionQuery, {
 	UserSessionData,
 	UserSessionVariables,
 } from 'shared/queries/UserSessionQuery';
-import VerticalTimeline from 'shared/components/VerticalTimeline';
 import {compose, withPaginationBar} from 'shared/hoc';
 import {
 	DEFAULT_DATE_FORMAT,
@@ -41,7 +41,6 @@ import {
 	SessionEntityTypes,
 	Sizes,
 } from 'shared/util/constants';
-import {sub} from 'shared/util/lang';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQuery} from '@apollo/client';
 import {useSelectedPoint} from 'shared/hooks/useSelectedPoint';
@@ -57,12 +56,12 @@ const formatTimestamp = (timestamp: number) => {
 	return `${hours}:${minutes}:${seconds}`;
 };
 
-const PaginatedVerticalTimeline = compose<any>(
+const PaginatedDayList = compose<any>(
 	withPaginationBar(),
 	withLoading(),
 	withError({page: false}),
 	withEmpty()
-)(VerticalTimeline);
+)(DayList);
 
 interface IProfileCardProps extends React.HTMLAttributes<HTMLElement> {
 	channelId: string;
@@ -355,17 +354,7 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 					<div className="selected-info">
 						<div className="activities-date d-flex align-items-baseline">
 							<div className="h4">
-								{activityHistory?.length
-									? sub(
-											Liferay.Language.get(
-												'individuals-events-x'
-											),
-
-											[date]
-										)
-									: Liferay.Language.get(
-											'individuals-events'
-										)}
+								{activityHistory?.length ? date : ''}
 							</div>
 
 							{selected && (
@@ -401,7 +390,7 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 				total={sessionsMappedResults.total as number}
 			/>
 
-			<PaginatedVerticalTimeline
+			<PaginatedDayList
 				{...sessionsMappedResults}
 				delta={delta}
 				initialExpanded={false}
