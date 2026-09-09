@@ -410,7 +410,7 @@ public class SecurityTest extends BaseClientTestCase {
 		return getBodyAsString(invocationBuilder.get());
 	}
 
-	private Response _getUnauthenticatedResponse(
+	private Response _getPublicClientResponse(
 		String clientId, WebTarget webTarget) {
 
 		MultivaluedMap<String, String> formData = new MultivaluedHashMap<>();
@@ -425,9 +425,9 @@ public class SecurityTest extends BaseClientTestCase {
 	}
 
 	private void _testUnregisteredClientIdIsRejected(WebTarget webTarget) {
-		Response response1 = _getUnauthenticatedResponse(
+		Response response1 = _getPublicClientResponse(
 			_CLIENT_ID_CLIENT_CREDENTIALS, webTarget);
-		Response response2 = _getUnauthenticatedResponse(
+		Response response2 = _getPublicClientResponse(
 			RandomTestUtil.randomString(), webTarget);
 
 		Assert.assertEquals(401, getStatus(response1));
