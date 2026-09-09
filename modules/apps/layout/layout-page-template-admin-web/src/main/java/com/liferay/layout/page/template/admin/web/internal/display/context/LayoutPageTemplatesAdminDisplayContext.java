@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
@@ -52,7 +53,9 @@ public class LayoutPageTemplatesAdminDisplayContext {
 	public List<NavigationItem> getNavigationItems() {
 		Group group = _themeDisplay.getScopeGroup();
 
-		if (group.isCompany()) {
+		if (group.isCompany() ||
+			DesignLibraryUtil.isDesignLibraryScope(group)) {
+
 			return Collections.emptyList();
 		}
 
