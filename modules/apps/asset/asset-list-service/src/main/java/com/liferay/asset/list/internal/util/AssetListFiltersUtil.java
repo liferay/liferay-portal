@@ -603,8 +603,6 @@ public class AssetListFiltersUtil {
 		).put(
 			Field.REVIEW_DATE, _TYPE_DATE
 		).put(
-			Field.STATUS, _TYPE_INTEGER
-		).put(
 			Field.TITLE, _TYPE_TEXT
 		).put(
 			Field.USER_NAME, _TYPE_TEXT

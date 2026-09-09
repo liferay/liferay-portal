@@ -249,15 +249,6 @@ public class AssetListFiltersUtilTest {
 				_getCommonFieldFilterJSONObject(
 					"gt", Field.PRIORITY, priority)));
 
-		String status = String.valueOf(RandomTestUtil.randomInt());
-
-		_assertTermQuery(
-			Field.STATUS, status,
-			_assertCommonFieldQuery(
-				BooleanClauseOccur.MUST_NOT,
-				_getCommonFieldFilterJSONObject(
-					"not-eq", Field.STATUS, status)));
-
 		String title = RandomTestUtil.randomString();
 
 		_assertMatchQuery(
