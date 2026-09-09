@@ -6,7 +6,9 @@
 package com.liferay.jenkins.results.parser;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * @author Shuyang Zhou
@@ -53,6 +55,33 @@ public class ReflectionTestUtil {
 		}
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
+		}
+	}
+
+	public static <T> T invoke(
+			Class<?> clazz, String methodName, Class<?>[] parameterTypes,
+			Object... parameters)
+		throws Exception {
+
+		Method method = clazz.getDeclaredMethod(methodName, parameterTypes);
+
+		method.setAccessible(true);
+
+		if (!Modifier.isStatic(method.getModifiers())) {
+			throw new RuntimeException("Method is not static " + methodName);
+		}
+
+		try {
+			return (T)method.invoke(null, parameters);
+		}
+		catch (InvocationTargetException invocationTargetException) {
+			Throwable throwable = invocationTargetException.getCause();
+
+			if (throwable instanceof Exception) {
+				throw (Exception)throwable;
+			}
+
+			throw new RuntimeException(throwable);
 		}
 	}
 
