@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Types;
 
 import java.util.List;
 
@@ -299,6 +300,40 @@ public class DBInspectorUnitTest {
 		Assert.assertTrue(
 			dbInspector.isObjectTable(companyIds, "l_1_tableName"));
 		Assert.assertTrue(dbInspector.isObjectTable(companyIds, "r_tableName"));
+	}
+
+	@Test
+	public void testIsSupportedColumnType() {
+		try (MockedStatic<DBManagerUtil> dbManagerUtilMockedStatic =
+				Mockito.mockStatic(DBManagerUtil.class)) {
+
+			DB db = Mockito.mock(DB.class);
+
+			dbManagerUtilMockedStatic.when(
+				DBManagerUtil::getDB
+			).thenReturn(
+				db
+			);
+
+			Mockito.when(
+				db.getSQLType("NUMERIC")
+			).thenReturn(
+				null
+			);
+
+			Mockito.when(
+				db.getSQLType("VARCHAR")
+			).thenReturn(
+				Types.VARCHAR
+			);
+
+			DBInspector dbInspector = new DBInspector(_connection);
+
+			Assert.assertFalse(
+				dbInspector.isSupportedColumnType("NUMERIC(13,4) null"));
+			Assert.assertTrue(
+				dbInspector.isSupportedColumnType("VARCHAR(75) null"));
+		}
 	}
 
 	private void _mockTable(
