@@ -5,6 +5,7 @@
 
 package com.liferay.portal.workflow.kaleo.runtime.node.test;
 
+import com.liferay.ai.hub.cell.authorization.AIHubCellAuthorizationTokenProvider;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.concurrent.NoticeableExecutorService;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -144,8 +145,12 @@ public class AIHubAgentNodeExecutorTest {
 
 		try (AutoCloseable autoCloseable1 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
-					_nodeExecutor, "_http", _getHttp(optionsList));
+					_nodeExecutor, "_aiHubCellAuthorizationTokenProvider",
+					_getAIHubCellAuthorizationTokenProvider());
 			AutoCloseable autoCloseable2 =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					_nodeExecutor, "_http", _getHttp(optionsList));
+			AutoCloseable autoCloseable3 =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
 					_nodeExecutor, "_noticeableExecutorService",
 					_getNoticeableExecutorService(callables))) {
@@ -205,6 +210,29 @@ public class AIHubAgentNodeExecutorTest {
 		}
 	}
 
+	private AIHubCellAuthorizationTokenProvider
+		_getAIHubCellAuthorizationTokenProvider() {
+
+		return (AIHubCellAuthorizationTokenProvider)ProxyUtil.newProxyInstance(
+			AIHubCellAuthorizationTokenProvider.class.getClassLoader(),
+			new Class<?>[] {AIHubCellAuthorizationTokenProvider.class},
+			(proxy, method, args) -> {
+				if (Objects.equals(
+						method.getName(), "getAuthorizationTokenJSONObject")) {
+
+					return JSONUtil.put(
+						"accessToken", _ACCESS_TOKEN
+					).put(
+						"serviceURL", _SERVICE_URL
+					).put(
+						"userToken", _USER_TOKEN
+					);
+				}
+
+				return null;
+			});
+	}
+
 	private Http _getHttp(List<Http.Options> optionsList) {
 		return (Http)ProxyUtil.newProxyInstance(
 			Http.class.getClassLoader(), new Class<?>[] {Http.class},
@@ -227,19 +255,6 @@ public class AIHubAgentNodeExecutorTest {
 
 					return JSONUtil.put(
 						"output", _OUTPUT
-					).toString();
-				}
-
-				if (StringUtil.endsWith(
-						options.getLocation(),
-						"/o/ai-hub-cell/v1.0/authorization-tokens")) {
-
-					return JSONUtil.put(
-						"accessToken", _ACCESS_TOKEN
-					).put(
-						"serviceURL", _SERVICE_URL
-					).put(
-						"userToken", _USER_TOKEN
 					).toString();
 				}
 
