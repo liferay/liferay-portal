@@ -15,6 +15,8 @@ import {EditState, rotatedSize} from '../state/types';
 import {CropMarquee} from './CropMarquee';
 
 interface Props {
+	aspectLocked: boolean;
+
 	dispatch: (action: EditorAction) => void;
 	image: LoadedImage;
 	onAnnounce: (message: string) => void;
@@ -32,6 +34,7 @@ interface Props {
 }
 
 export function Workspace({
+	aspectLocked,
 	dispatch,
 	image,
 	onAnnounce,
@@ -110,6 +113,7 @@ export function Workspace({
 				</g>
 
 				<CropMarquee
+					aspectLocked={aspectLocked}
 					bounds={bounds}
 					crop={crop}
 					dispatch={dispatch}

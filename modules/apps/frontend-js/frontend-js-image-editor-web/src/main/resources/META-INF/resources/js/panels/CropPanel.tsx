@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
@@ -13,11 +14,14 @@ import {EditorAction, clampCrop} from '../state/editorReducer';
 import {CropRect} from '../state/types';
 
 interface Props {
+	aspectLocked: boolean;
+
 	bounds: {height: number; width: number};
 
 	crop: CropRect;
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
+	onAspectLockedChange: (locked: boolean) => void;
 }
 
 type Field = 'height' | 'width' | 'x' | 'y';
@@ -29,7 +33,14 @@ const FIELD_LABELS: Record<Field, string> = {
 	y: Liferay.Language.get('y-position'),
 };
 
-export function CropPanel({bounds, crop, dispatch, onAnnounce}: Props) {
+export function CropPanel({
+	aspectLocked,
+	bounds,
+	crop,
+	dispatch,
+	onAnnounce,
+	onAspectLockedChange,
+}: Props) {
 	const eid = useEditorId();
 
 	const [drafts, setDrafts] = useState<Record<Field, string>>({
@@ -61,6 +72,17 @@ export function CropPanel({bounds, crop, dispatch, onAnnounce}: Props) {
 		}
 
 		const requested: CropRect = {...crop, [field]: value};
+
+		if (aspectLocked && crop.height > 0) {
+			const aspect = crop.width / crop.height;
+
+			if (field === 'width') {
+				requested.height = Math.round(value / aspect);
+			}
+			else if (field === 'height') {
+				requested.width = Math.round(value * aspect);
+			}
+		}
 
 		const next = clampCrop(requested, bounds);
 
@@ -182,6 +204,26 @@ export function CropPanel({bounds, crop, dispatch, onAnnounce}: Props) {
 
 			<div className="editor-crop-size-row">
 				{renderField('width')}
+
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('lock-aspect-ratio')}
+					aria-pressed={aspectLocked}
+					borderless
+					className="editor-aspect-lock"
+					displayType="secondary"
+					onClick={() => {
+						onAnnounce(
+							aspectLocked
+								? Liferay.Language.get('aspect-ratio-unlocked')
+								: Liferay.Language.get('aspect-ratio-locked')
+						);
+
+						onAspectLockedChange(!aspectLocked);
+					}}
+					size="xs"
+					symbol={aspectLocked ? 'lock' : 'unlock'}
+					title={Liferay.Language.get('lock-aspect-ratio')}
+				/>
 
 				{renderField('height')}
 			</div>

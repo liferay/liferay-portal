@@ -199,3 +199,58 @@ describe('set-crop', () => {
 		});
 	});
 });
+
+describe('set-ratio', () => {
+	const start = () => initialHistory(1000, 600);
+
+	it('starts on the original ratio', () => {
+		expect(start().present.ratio).toBe('original');
+	});
+
+	it('centers the largest crop of the chosen ratio', () => {
+		const next = editorReducer(start(), {ratio: '1:1', type: 'set-ratio'});
+
+		expect(next.present.ratio).toBe('1:1');
+		expect(next.present.crop).toEqual({
+			height: 600,
+			width: 600,
+			x: 200,
+			y: 0,
+		});
+		expect(undoLabel(next)).toBe('ratio');
+	});
+
+	it('restores the full image on original and keeps the crop on custom', () => {
+		let state = editorReducer(start(), {ratio: '16:9', type: 'set-ratio'});
+
+		const framed = state.present.crop;
+
+		state = editorReducer(state, {ratio: 'custom', type: 'set-ratio'});
+
+		expect(state.present.crop).toEqual(framed);
+
+		state = editorReducer(state, {ratio: 'original', type: 'set-ratio'});
+
+		expect(state.present.crop).toEqual({
+			height: 600,
+			width: 1000,
+			x: 0,
+			y: 0,
+		});
+	});
+
+	it('falls back to custom when the crop is edited and to original on rotation', () => {
+		let state = editorReducer(start(), {ratio: '1:1', type: 'set-ratio'});
+
+		state = editorReducer(state, {
+			crop: {...state.present.crop, width: 500},
+			type: 'set-crop',
+		});
+
+		expect(state.present.ratio).toBe('custom');
+
+		state = editorReducer(state, {type: 'rotate-90'});
+
+		expect(state.present.ratio).toBe('original');
+	});
+});

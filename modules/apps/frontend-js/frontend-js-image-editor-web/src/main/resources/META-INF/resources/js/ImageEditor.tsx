@@ -103,6 +103,8 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
+	const [aspectLocked, setAspectLocked] = useState(false);
+
 	const [cropFramed, setCropFramed] = useState(false);
 
 	const programmaticScrollRef = useRef(false);
@@ -364,6 +366,7 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 			>
 				<div className="editor-main">
 					<Workspace
+						aspectLocked={aspectLocked}
 						dispatch={dispatch}
 						image={image}
 						onAnnounce={announce}
@@ -388,8 +391,10 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 					/>
 
 					<EditorSidebar
+						aspectLocked={aspectLocked}
 						dispatch={dispatch}
 						onAnnounce={announce}
+						onAspectLockedChange={setAspectLocked}
 						state={state}
 					/>
 				</div>
@@ -417,6 +422,7 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 					onUndo={undo}
 					onZoom={zoomBy}
 					onZoomFit={zoomToFit}
+					ratio={state.ratio}
 					saving={saving}
 					zoom={zoom}
 				/>

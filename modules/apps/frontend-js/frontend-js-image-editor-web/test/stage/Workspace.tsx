@@ -35,6 +35,8 @@ function EditorHarness() {
 	);
 	const [zoom, setZoom] = useState(0.5);
 
+	const [aspectLocked, setAspectLocked] = useState(false);
+
 	const zoomBy = (direction: -1 | 1) =>
 		setZoom((current) => current + direction * 0.25);
 
@@ -42,6 +44,7 @@ function EditorHarness() {
 		<ClayIconSpriteContext.Provider value="/icons.svg">
 			<EditorInstanceProvider value="aie-">
 				<Workspace
+					aspectLocked={aspectLocked}
 					dispatch={dispatch}
 					image={IMAGE}
 					onAnnounce={() => {}}
@@ -55,10 +58,12 @@ function EditorHarness() {
 				/>
 
 				<CropPanel
+					aspectLocked={aspectLocked}
 					bounds={rotatedSize(history.present)}
 					crop={history.present.crop}
 					dispatch={dispatch}
 					onAnnounce={() => {}}
+					onAspectLockedChange={setAspectLocked}
 				/>
 
 				<BottomBar
@@ -73,6 +78,7 @@ function EditorHarness() {
 					onUndo={() => dispatch({type: 'undo'})}
 					onZoom={zoomBy}
 					onZoomFit={() => setZoom(0.5)}
+					ratio={history.present.ratio}
 					saving={false}
 					zoom={zoom}
 				/>
@@ -249,5 +255,56 @@ describe('Editor workspace composition', () => {
 		fireEvent.keyDown(widthInput, {key: 'Enter'});
 
 		expect(document.querySelector('.crop-recenter')).toBeInTheDocument();
+	});
+
+	it('keeps the proportions of a numeric edit while the aspect is locked', () => {
+		render(<EditorHarness />);
+
+		const widthInput = screen.getByLabelText('width') as HTMLInputElement;
+		const heightInput = screen.getByLabelText('height') as HTMLInputElement;
+
+		fireEvent.click(screen.getByLabelText('lock-aspect-ratio'));
+
+		fireEvent.change(widthInput, {target: {value: '600'}});
+		fireEvent.keyDown(widthInput, {key: 'Enter'});
+
+		expect(widthInput.value).toBe('600');
+		expect(heightInput.value).toBe('400');
+	});
+
+	it('offers only the corner handles while the aspect is locked', () => {
+		render(<EditorHarness />);
+
+		fireEvent.click(screen.getByLabelText('lock-aspect-ratio'));
+
+		expect(
+			screen.queryByRole('button', {name: 'crop-handle-right-edge'})
+		).toBeNull();
+		expect(
+			screen.getByRole('button', {name: 'crop-handle-top-left-corner'})
+		).toBeInTheDocument();
+	});
+
+	it('centers a square crop from the ratio select and drops back to custom on a free edit', () => {
+		render(<EditorHarness />);
+
+		const select = screen.getByLabelText('ratio') as HTMLSelectElement;
+
+		fireEvent.change(select, {target: {value: '1:1'}});
+
+		expect(select.value).toBe('1:1');
+		expect((screen.getByLabelText('width') as HTMLInputElement).value).toBe(
+			'800'
+		);
+		expect(
+			(screen.getByLabelText('x-position') as HTMLInputElement).value
+		).toBe('200');
+
+		const heightInput = screen.getByLabelText('height');
+
+		fireEvent.change(heightInput, {target: {value: '500'}});
+		fireEvent.keyDown(heightInput, {key: 'Enter'});
+
+		expect(select.value).toBe('custom');
 	});
 });

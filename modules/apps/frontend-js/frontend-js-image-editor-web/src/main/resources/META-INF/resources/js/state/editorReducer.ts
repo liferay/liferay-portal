@@ -8,6 +8,8 @@ import {
 	EditState,
 	EditorHistory,
 	MIN_CROP_SIZE,
+	RATIO_VALUES,
+	RatioPreset,
 	rotatedSize,
 } from './types';
 
@@ -17,6 +19,7 @@ export type EditorAction =
 	| {type: 'redo'}
 	| {type: 'rotate-90'}
 	| {crop: CropRect; transient?: boolean; type: 'set-crop'}
+	| {ratio: RatioPreset; type: 'set-ratio'}
 	| {type: 'undo'};
 
 const HISTORY_LIMIT = 100;
@@ -59,9 +62,39 @@ export function editorReducer(
 
 			return applyEdit(
 				history,
-				{...present, crop},
+				{
+					...present,
+					crop,
+					ratio: cropsEqual(crop, present.crop)
+						? present.ratio
+						: 'custom',
+				},
 				Liferay.Language.get('crop'),
 				action.transient
+			);
+		}
+
+		case 'set-ratio': {
+			let crop = present.crop;
+
+			if (action.ratio === 'original') {
+				const bounds = rotatedSize(present);
+
+				crop = {
+					height: bounds.height,
+					width: bounds.width,
+					x: 0,
+					y: 0,
+				};
+			}
+			else if (action.ratio !== 'custom') {
+				crop = centeredCrop(present, RATIO_VALUES[action.ratio]);
+			}
+
+			return applyEdit(
+				history,
+				{...present, crop, ratio: action.ratio},
+				Liferay.Language.get('ratio')
 			);
 		}
 
@@ -101,6 +134,7 @@ export function editorReducer(
 						x: 0,
 						y: 0,
 					},
+					ratio: 'original',
 				},
 				Liferay.Language.get('rotation')
 			);
@@ -174,6 +208,7 @@ export function initialEditState(
 	return {
 		crop: {height: sourceHeight, width: sourceWidth, x: 0, y: 0},
 		flipHorizontal: false,
+		ratio: 'original',
 		rotation: 0,
 		sourceHeight,
 		sourceWidth,
@@ -236,6 +271,28 @@ function applyEdit(
 		pendingBase: undefined,
 		present: next,
 	};
+}
+
+function centeredCrop(state: EditState, ratio: number): CropRect {
+	const bounds = rotatedSize(state);
+
+	let width = bounds.width;
+	let height = width / ratio;
+
+	if (height > bounds.height) {
+		height = bounds.height;
+		width = height * ratio;
+	}
+
+	return clampCrop(
+		{
+			height,
+			width,
+			x: (bounds.width - width) / 2,
+			y: (bounds.height - height) / 2,
+		},
+		bounds
+	);
 }
 
 function cropsEqual(a: CropRect, b: CropRect): boolean {

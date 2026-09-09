@@ -55,6 +55,15 @@
 	grid-template-columns: 1fr 1fr;
 }
 
+.image-editor .editor-aspect-lock {
+	align-self: flex-end;
+	margin-bottom: 0.625rem;
+}
+
+.image-editor .editor-aspect-lock[aria-pressed='true'] {
+	color: var(--editor-accent-text);
+}
+
 @media (max-width: 700px) {
 	.image-editor .editor-sidebar {
 		border-left: 0;

@@ -12,22 +12,33 @@ import {EditorAction} from '../state/editorReducer';
 import {EditState, rotatedSize} from '../state/types';
 
 interface Props {
+	aspectLocked: boolean;
+
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
+	onAspectLockedChange: (locked: boolean) => void;
 	state: EditState;
 }
 
-export function EditorSidebar({dispatch, onAnnounce, state}: Props) {
+export function EditorSidebar({
+	aspectLocked,
+	dispatch,
+	onAnnounce,
+	onAspectLockedChange,
+	state,
+}: Props) {
 	return (
 		<aside
 			aria-label={Liferay.Language.get('edit-controls')}
 			className="editor-sidebar"
 		>
 			<CropPanel
+				aspectLocked={aspectLocked}
 				bounds={rotatedSize(state)}
 				crop={state.crop}
 				dispatch={dispatch}
 				onAnnounce={onAnnounce}
+				onAspectLockedChange={onAspectLockedChange}
 			/>
 		</aside>
 	);

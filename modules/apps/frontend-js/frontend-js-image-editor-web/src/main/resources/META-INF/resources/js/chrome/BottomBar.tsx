@@ -4,10 +4,23 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {ClaySelectWithOption} from '@clayui/form';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {EditorAction} from '../state/editorReducer';
+import {RatioPreset} from '../state/types';
+import {useEditorId} from './instance';
+
+const RATIO_OPTIONS: Array<{label: string; value: RatioPreset}> = [
+	{label: Liferay.Language.get('custom'), value: 'custom'},
+	{label: Liferay.Language.get('original'), value: 'original'},
+	{label: '1:1', value: '1:1'},
+	{label: '4:3', value: '4:3'},
+	{label: '16:9', value: '16:9'},
+	{label: '3:4', value: '3:4'},
+	{label: '9:16', value: '9:16'},
+];
 
 interface Props {
 	canRedo: boolean;
@@ -21,6 +34,7 @@ interface Props {
 	onUndo: () => void;
 	onZoom: (direction: -1 | 1) => void;
 	onZoomFit: () => void;
+	ratio: RatioPreset;
 	saving: boolean;
 	zoom: number;
 }
@@ -37,12 +51,36 @@ export function BottomBar({
 	onUndo,
 	onZoom,
 	onZoomFit,
+	ratio,
 	saving,
 	zoom,
 }: Props) {
+	const eid = useEditorId();
+
 	return (
 		<div className="editor-bottom-bar">
 			<div className="editor-bar-first editor-bar-group">
+				<label
+					className="editor-ratio-label"
+					htmlFor={eid('crop-ratio-select')}
+				>
+					{Liferay.Language.get('ratio')}
+				</label>
+
+				<ClaySelectWithOption
+					className="editor-ratio-select"
+					id={eid('crop-ratio-select')}
+					onChange={(event) => {
+						dispatch({
+							ratio: event.target.value as RatioPreset,
+							type: 'set-ratio',
+						});
+					}}
+					options={RATIO_OPTIONS}
+					sizing="sm"
+					value={ratio}
+				/>
+
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get(
 						'rotate-90-degrees-clockwise'

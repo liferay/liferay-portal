@@ -69,6 +69,8 @@ const HANDLES: Array<{
 	},
 ];
 
+const CORNER_HANDLES = HANDLES.filter(({direction}) => direction.length === 2);
+
 const MOVE_EDGES: Edges = {};
 
 function handlePosition(
@@ -184,6 +186,8 @@ export function applyResizeModifiers(
 }
 
 interface Props {
+	aspectLocked: boolean;
+
 	bounds: {height: number; width: number};
 
 	crop: CropRect;
@@ -197,6 +201,7 @@ interface Props {
 }
 
 export function CropMarquee({
+	aspectLocked,
 	bounds,
 	crop,
 	dispatch,
@@ -335,7 +340,7 @@ export function CropMarquee({
 			dispatch({
 				crop: applyResizeModifiers(base, gesture.crop, edges, {
 					center: event.altKey,
-					proportional: event.shiftKey,
+					proportional: event.shiftKey || aspectLocked,
 				}),
 				transient: true,
 				type: 'set-crop',
@@ -551,65 +556,69 @@ export function CropMarquee({
 					</g>
 				)}
 
-			{HANDLES.map(({direction, edges, label}) => {
-				const position = handlePosition(crop, direction);
+			{(aspectLocked ? CORNER_HANDLES : HANDLES).map(
+				({direction, edges, label}) => {
+					const position = handlePosition(crop, direction);
 
-				return (
-					<g key={direction}>
-						<circle
-							className="crop-handle-visual"
-							cx={position.x}
-							cy={position.y}
-							pointerEvents="none"
-							r={visualRadius}
-							strokeWidth={strokeWidth}
-						/>
-
-						{focused?.key === direction && (
-							<FocusRing
-								bounds={{
-									height: hitRadius * 2,
-									width: hitRadius * 2,
-									x: position.x - hitRadius,
-									y: position.y - hitRadius,
-								}}
-								emphasis={focused.modality}
-								shape="circle"
-								zoom={zoom}
+					return (
+						<g key={direction}>
+							<circle
+								className="crop-handle-visual"
+								cx={position.x}
+								cy={position.y}
+								pointerEvents="none"
+								r={visualRadius}
+								strokeWidth={strokeWidth}
 							/>
-						)}
 
-						<circle
-							aria-describedby={eid('crop-handle-description')}
-							aria-label={label}
-							className="crop-handle"
-							cx={position.x}
-							cy={position.y}
-							fill="transparent"
-							onBlur={() => setFocused(null)}
-							onFocus={(event) =>
-								setFocused({
-									key: direction,
-									modality: matchesFocusVisible(
-										event.currentTarget
-									)
-										? 'keyboard'
-										: 'pointer',
-								})
-							}
-							onKeyDown={handleKeyDown(edges, direction)}
-							onKeyUp={handleKeyUp}
-							onPointerCancel={handlePointerCancel}
-							onPointerDown={handlePointerDown}
-							onPointerMove={handlePointerMove(edges)}
-							onPointerUp={handlePointerUp}
-							r={hitRadius}
-							role="button"
-							tabIndex={0}
-						/>
-					</g>
-				);
-			})}
+							{focused?.key === direction && (
+								<FocusRing
+									bounds={{
+										height: hitRadius * 2,
+										width: hitRadius * 2,
+										x: position.x - hitRadius,
+										y: position.y - hitRadius,
+									}}
+									emphasis={focused.modality}
+									shape="circle"
+									zoom={zoom}
+								/>
+							)}
+
+							<circle
+								aria-describedby={eid(
+									'crop-handle-description'
+								)}
+								aria-label={label}
+								className="crop-handle"
+								cx={position.x}
+								cy={position.y}
+								fill="transparent"
+								onBlur={() => setFocused(null)}
+								onFocus={(event) =>
+									setFocused({
+										key: direction,
+										modality: matchesFocusVisible(
+											event.currentTarget
+										)
+											? 'keyboard'
+											: 'pointer',
+									})
+								}
+								onKeyDown={handleKeyDown(edges, direction)}
+								onKeyUp={handleKeyUp}
+								onPointerCancel={handlePointerCancel}
+								onPointerDown={handlePointerDown}
+								onPointerMove={handlePointerMove(edges)}
+								onPointerUp={handlePointerUp}
+								r={hitRadius}
+								role="button"
+								tabIndex={0}
+							/>
+						</g>
+					);
+				}
+			)}
 		</g>
 	);
 }
