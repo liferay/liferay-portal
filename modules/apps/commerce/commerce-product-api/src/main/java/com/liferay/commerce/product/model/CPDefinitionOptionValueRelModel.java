@@ -493,6 +493,20 @@ public interface CPDefinitionOptionValueRelModel
 	 */
 	public void setUnitOfMeasureKey(String unitOfMeasureKey);
 
+	/**
+	 * Returns the status of this cp definition option value rel.
+	 *
+	 * @return the status of this cp definition option value rel
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this cp definition option value rel.
+	 *
+	 * @param status the status of this cp definition option value rel
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -514,4 +528,4 @@ public interface CPDefinitionOptionValueRelModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1034540038
+// LIFERAY-SERVICE-BUILDER-HASH:-1146056341

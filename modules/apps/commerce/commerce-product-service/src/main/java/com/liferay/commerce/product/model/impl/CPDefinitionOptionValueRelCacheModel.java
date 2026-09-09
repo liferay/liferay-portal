@@ -74,7 +74,7 @@ public class CPDefinitionOptionValueRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -118,6 +118,8 @@ public class CPDefinitionOptionValueRelCacheModel
 		sb.append(quantity);
 		sb.append(", unitOfMeasureKey=");
 		sb.append(unitOfMeasureKey);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -213,6 +215,8 @@ public class CPDefinitionOptionValueRelCacheModel
 				unitOfMeasureKey);
 		}
 
+		cpDefinitionOptionValueRelImpl.setStatus(status);
+
 		cpDefinitionOptionValueRelImpl.resetOriginalValues();
 
 		return cpDefinitionOptionValueRelImpl;
@@ -252,6 +256,8 @@ public class CPDefinitionOptionValueRelCacheModel
 		priority = objectInput.readDouble();
 		quantity = (BigDecimal)objectInput.readObject();
 		unitOfMeasureKey = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -329,6 +335,8 @@ public class CPDefinitionOptionValueRelCacheModel
 		else {
 			objectOutput.writeUTF(unitOfMeasureKey);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -352,6 +360,7 @@ public class CPDefinitionOptionValueRelCacheModel
 	public double priority;
 	public BigDecimal quantity;
 	public String unitOfMeasureKey;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-466523228
+// LIFERAY-SERVICE-BUILDER-HASH:-721774598

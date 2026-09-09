@@ -170,6 +170,8 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		newCPDefinitionOptionValueRel.setUnitOfMeasureKey(
 			RandomTestUtil.randomString());
 
+		newCPDefinitionOptionValueRel.setStatus(RandomTestUtil.nextInt());
+
 		newCPDefinitionOptionValueRel = _persistence.update(
 			newCPDefinitionOptionValueRel);
 
@@ -247,6 +249,9 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		Assert.assertEquals(
 			existingCPDefinitionOptionValueRel.getUnitOfMeasureKey(),
 			newCPDefinitionOptionValueRel.getUnitOfMeasureKey());
+		Assert.assertEquals(
+			existingCPDefinitionOptionValueRel.getStatus(),
+			newCPDefinitionOptionValueRel.getStatus());
 	}
 
 	@Test(
@@ -404,7 +409,7 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 			"modifiedDate", true, "CPDefinitionOptionRelId", true,
 			"CPInstanceUuid", true, "CProductId", true, "key", true, "name",
 			true, "preselected", true, "price", true, "priority", true,
-			"quantity", true, "unitOfMeasureKey", true);
+			"quantity", true, "unitOfMeasureKey", true, "status", true);
 	}
 
 	@Test
@@ -798,6 +803,8 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(
 			RandomTestUtil.randomString());
 
+		cpDefinitionOptionValueRel.setStatus(RandomTestUtil.nextInt());
+
 		_cpDefinitionOptionValueRels.add(
 			_persistence.update(cpDefinitionOptionValueRel));
 
@@ -810,4 +817,4 @@ public class CPDefinitionOptionValueRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2098925013
+// LIFERAY-SERVICE-BUILDER-HASH:-529901618

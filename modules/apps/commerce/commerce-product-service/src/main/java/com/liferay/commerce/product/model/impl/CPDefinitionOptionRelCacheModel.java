@@ -69,7 +69,7 @@ public class CPDefinitionOptionRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(51);
+		StringBundler sb = new StringBundler(53);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -121,6 +121,8 @@ public class CPDefinitionOptionRelCacheModel
 		sb.append(priceType);
 		sb.append(", typeSettings=");
 		sb.append(typeSettings);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -235,6 +237,8 @@ public class CPDefinitionOptionRelCacheModel
 			cpDefinitionOptionRelImpl.setTypeSettings(typeSettings);
 		}
 
+		cpDefinitionOptionRelImpl.setStatus(status);
+
 		cpDefinitionOptionRelImpl.resetOriginalValues();
 
 		return cpDefinitionOptionRelImpl;
@@ -281,6 +285,8 @@ public class CPDefinitionOptionRelCacheModel
 		key = objectInput.readUTF();
 		priceType = objectInput.readUTF();
 		typeSettings = (String)objectInput.readObject();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -383,6 +389,8 @@ public class CPDefinitionOptionRelCacheModel
 		else {
 			objectOutput.writeObject(typeSettings);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -410,6 +418,7 @@ public class CPDefinitionOptionRelCacheModel
 	public String key;
 	public String priceType;
 	public String typeSettings;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-681827724
+// LIFERAY-SERVICE-BUILDER-HASH:-534252585

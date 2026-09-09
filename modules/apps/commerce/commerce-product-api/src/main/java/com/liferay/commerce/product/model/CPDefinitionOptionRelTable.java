@@ -102,10 +102,13 @@ public class CPDefinitionOptionRelTable
 	public final Column<CPDefinitionOptionRelTable, Clob> typeSettings =
 		createColumn(
 			"typeSettings", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionRelTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CPDefinitionOptionRelTable() {
 		super("CPDefinitionOptionRel", CPDefinitionOptionRelTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-155373855
+// LIFERAY-SERVICE-BUILDER-HASH:-1324443464

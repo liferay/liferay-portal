@@ -291,6 +291,7 @@ create table CPDefinitionOptionRel (
 	key_ VARCHAR(75) null,
 	priceType VARCHAR(75) null,
 	typeSettings TEXT null,
+	status INTEGER,
 	primary key (CPDefinitionOptionRelId, ctCollectionId)
 );
 
@@ -316,6 +317,7 @@ create table CPDefinitionOptionValueRel (
 	priority DOUBLE,
 	quantity BIGDECIMAL null,
 	unitOfMeasureKey VARCHAR(75) null,
+	status INTEGER,
 	primary key (CPDefinitionOptionValueRelId, ctCollectionId)
 );
 

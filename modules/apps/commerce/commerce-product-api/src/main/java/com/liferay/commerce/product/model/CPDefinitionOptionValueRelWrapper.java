@@ -63,6 +63,7 @@ public class CPDefinitionOptionValueRelWrapper
 		attributes.put("priority", getPriority());
 		attributes.put("quantity", getQuantity());
 		attributes.put("unitOfMeasureKey", getUnitOfMeasureKey());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -196,6 +197,12 @@ public class CPDefinitionOptionValueRelWrapper
 
 		if (unitOfMeasureKey != null) {
 			setUnitOfMeasureKey(unitOfMeasureKey);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -470,6 +477,16 @@ public class CPDefinitionOptionValueRelWrapper
 	@Override
 	public BigDecimal getQuantity() {
 		return model.getQuantity();
+	}
+
+	/**
+	 * Returns the status of this cp definition option value rel.
+	 *
+	 * @return the status of this cp definition option value rel
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -788,6 +805,16 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 	/**
+	 * Sets the status of this cp definition option value rel.
+	 *
+	 * @param status the status of this cp definition option value rel
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the unit of measure key of this cp definition option value rel.
 	 *
 	 * @param unitOfMeasureKey the unit of measure key of this cp definition option value rel
@@ -870,4 +897,4 @@ public class CPDefinitionOptionValueRelWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1916425059
+// LIFERAY-SERVICE-BUILDER-HASH:-479857731

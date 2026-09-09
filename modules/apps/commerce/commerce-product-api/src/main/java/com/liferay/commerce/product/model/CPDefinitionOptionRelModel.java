@@ -655,6 +655,20 @@ public interface CPDefinitionOptionRelModel
 	 */
 	public void setTypeSettings(String typeSettings);
 
+	/**
+	 * Returns the status of this cp definition option rel.
+	 *
+	 * @return the status of this cp definition option rel
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this cp definition option rel.
+	 *
+	 * @param status the status of this cp definition option rel
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -676,4 +690,4 @@ public interface CPDefinitionOptionRelModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1084972354
+// LIFERAY-SERVICE-BUILDER-HASH:1328712263

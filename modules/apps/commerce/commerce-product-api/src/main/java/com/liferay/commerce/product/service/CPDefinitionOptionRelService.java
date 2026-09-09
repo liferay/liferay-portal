@@ -59,16 +59,17 @@ public interface CPDefinitionOptionRelService extends BaseService {
 		throws PortalException;
 
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			String infoItemServiceKey, double priority,
-			boolean definedExternally, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			String typeSettings, ServiceContext serviceContext)
+			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String commerceOptionTypeKey, String infoItemServiceKey,
+			double priority, boolean definedExternally, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, String typeSettings,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public void deleteCPDefinitionOptionRel(long cpDefinitionOptionRelId)
@@ -138,6 +139,12 @@ public interface CPDefinitionOptionRelService extends BaseService {
 			long cpDefinitionId, boolean skuContributor)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			String commerceOptionTypeKey)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -179,4 +186,4 @@ public interface CPDefinitionOptionRelService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2047229131
+// LIFERAY-SERVICE-BUILDER-HASH:1042733544

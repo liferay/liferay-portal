@@ -63,6 +63,7 @@ public class CPDefinitionOptionRelWrapper
 		attributes.put("key", getKey());
 		attributes.put("priceType", getPriceType());
 		attributes.put("typeSettings", getTypeSettings());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -222,6 +223,12 @@ public class CPDefinitionOptionRelWrapper
 
 		if (typeSettings != null) {
 			setTypeSettings(typeSettings);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -623,6 +630,16 @@ public class CPDefinitionOptionRelWrapper
 	@Override
 	public boolean getSkuContributor() {
 		return model.getSkuContributor();
+	}
+
+	/**
+	 * Returns the status of this cp definition option rel.
+	 *
+	 * @return the status of this cp definition option rel
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -1088,6 +1105,16 @@ public class CPDefinitionOptionRelWrapper
 	}
 
 	/**
+	 * Sets the status of this cp definition option rel.
+	 *
+	 * @param status the status of this cp definition option rel
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the type settings of this cp definition option rel.
 	 *
 	 * @param typeSettings the type settings of this cp definition option rel
@@ -1169,4 +1196,4 @@ public class CPDefinitionOptionRelWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-799372217
+// LIFERAY-SERVICE-BUILDER-HASH:1839775525

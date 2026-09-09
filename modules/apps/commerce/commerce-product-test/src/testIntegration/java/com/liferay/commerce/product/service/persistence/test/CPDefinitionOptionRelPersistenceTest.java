@@ -170,6 +170,8 @@ public class CPDefinitionOptionRelPersistenceTest {
 
 		newCPDefinitionOptionRel.setTypeSettings(RandomTestUtil.randomString());
 
+		newCPDefinitionOptionRel.setStatus(RandomTestUtil.nextInt());
+
 		newCPDefinitionOptionRel = _persistence.update(
 			newCPDefinitionOptionRel);
 
@@ -256,6 +258,9 @@ public class CPDefinitionOptionRelPersistenceTest {
 		Assert.assertEquals(
 			existingCPDefinitionOptionRel.getTypeSettings(),
 			newCPDefinitionOptionRel.getTypeSettings());
+		Assert.assertEquals(
+			existingCPDefinitionOptionRel.getStatus(),
+			newCPDefinitionOptionRel.getStatus());
 	}
 
 	@Test(
@@ -417,7 +422,7 @@ public class CPDefinitionOptionRelPersistenceTest {
 			"name", true, "description", true, "commerceOptionTypeKey", true,
 			"infoItemServiceKey", true, "priority", true, "definedExternally",
 			true, "facetable", true, "required", true, "skuContributor", true,
-			"key", true, "priceType", true);
+			"key", true, "priceType", true, "status", true);
 	}
 
 	@Test
@@ -815,6 +820,8 @@ public class CPDefinitionOptionRelPersistenceTest {
 
 		cpDefinitionOptionRel.setTypeSettings(RandomTestUtil.randomString());
 
+		cpDefinitionOptionRel.setStatus(RandomTestUtil.nextInt());
+
 		_cpDefinitionOptionRels.add(_persistence.update(cpDefinitionOptionRel));
 
 		return cpDefinitionOptionRel;
@@ -826,4 +833,4 @@ public class CPDefinitionOptionRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1107974855
+// LIFERAY-SERVICE-BUILDER-HASH:879753978

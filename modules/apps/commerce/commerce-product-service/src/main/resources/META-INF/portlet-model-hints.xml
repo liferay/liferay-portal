@@ -365,6 +365,7 @@
 		<field name="typeSettings" type="String">
 			<hint-collection name="CLOB" />
 		</field>
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.product.model.CPDefinitionOptionValueRel">
 		<field name="mvccVersion" type="long" />
@@ -394,6 +395,7 @@
 		</field>
 		<field name="quantity" type="BigDecimal" />
 		<field name="unitOfMeasureKey" type="String" />
+		<field name="status" type="int" />
 	</model>
 	<model name="com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue">
 		<field name="mvccVersion" type="long" />

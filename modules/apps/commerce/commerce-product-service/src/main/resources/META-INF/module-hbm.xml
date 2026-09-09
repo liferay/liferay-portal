@@ -359,6 +359,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="key_" name="key" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="priceType" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="typeSettings" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="status" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class dynamic-update="true" name="com.liferay.commerce.product.model.impl.CPDefinitionOptionValueRelImpl" table="CPDefinitionOptionValueRel">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="CPDefinitionOptionValueRelId" type="long">
@@ -384,6 +385,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="priority" type="com.liferay.portal.dao.orm.hibernate.DoubleType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="quantity" type="big_decimal" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="unitOfMeasureKey" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="status" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
 	</class>
 	<class dynamic-update="true" name="com.liferay.commerce.product.model.impl.CPDefinitionSpecificationOptionValueImpl" table="CPDSpecificationOptionValue">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="CPDSpecificationOptionValueId" name="CPDefinitionSpecificationOptionValueId" type="long">

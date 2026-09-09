@@ -1442,6 +1442,7 @@ public class CPDefinitionOptionRelPersistenceImpl
 		ctMergeColumnNames.add("key_");
 		ctMergeColumnNames.add("priceType");
 		ctMergeColumnNames.add("typeSettings");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1845,4 +1846,4 @@ public class CPDefinitionOptionRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1701395493
+// LIFERAY-SERVICE-BUILDER-HASH:646778202

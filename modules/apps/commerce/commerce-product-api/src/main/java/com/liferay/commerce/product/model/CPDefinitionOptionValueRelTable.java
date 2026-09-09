@@ -89,6 +89,9 @@ public class CPDefinitionOptionValueRelTable
 		unitOfMeasureKey = createColumn(
 			"unitOfMeasureKey", String.class, Types.VARCHAR,
 			Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionOptionValueRelTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CPDefinitionOptionValueRelTable() {
 		super(
@@ -96,4 +99,4 @@ public class CPDefinitionOptionValueRelTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1740820427
+// LIFERAY-SERVICE-BUILDER-HASH:170659589

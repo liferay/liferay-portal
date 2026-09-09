@@ -85,7 +85,7 @@ public class CPDefinitionOptionRelModelImpl
 		{"definedExternally", Types.BOOLEAN}, {"facetable", Types.BOOLEAN},
 		{"required", Types.BOOLEAN}, {"skuContributor", Types.BOOLEAN},
 		{"key_", Types.VARCHAR}, {"priceType", Types.VARCHAR},
-		{"typeSettings", Types.CLOB}
+		{"typeSettings", Types.CLOB}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -117,10 +117,11 @@ public class CPDefinitionOptionRelModelImpl
 		TABLE_COLUMNS_MAP.put("key_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("priceType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("typeSettings", Types.CLOB);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPDefinitionOptionRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPDefinitionOptionRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPOptionId LONG,name STRING null,description STRING null,commerceOptionTypeKey VARCHAR(75) null,infoItemServiceKey VARCHAR(255) null,priority DOUBLE,definedExternally BOOLEAN,facetable BOOLEAN,required BOOLEAN,skuContributor BOOLEAN,key_ VARCHAR(75) null,priceType VARCHAR(75) null,typeSettings TEXT null,primary key (CPDefinitionOptionRelId, ctCollectionId))";
+		"create table CPDefinitionOptionRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPDefinitionOptionRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionId LONG,CPOptionId LONG,name STRING null,description STRING null,commerceOptionTypeKey VARCHAR(75) null,infoItemServiceKey VARCHAR(255) null,priority DOUBLE,definedExternally BOOLEAN,facetable BOOLEAN,required BOOLEAN,skuContributor BOOLEAN,key_ VARCHAR(75) null,priceType VARCHAR(75) null,typeSettings TEXT null,status INTEGER,primary key (CPDefinitionOptionRelId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPDefinitionOptionRel";
@@ -366,6 +367,8 @@ public class CPDefinitionOptionRelModelImpl
 				"priceType", CPDefinitionOptionRel::getPriceType);
 			attributeGetterFunctions.put(
 				"typeSettings", CPDefinitionOptionRel::getTypeSettings);
+			attributeGetterFunctions.put(
+				"status", CPDefinitionOptionRel::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -485,6 +488,10 @@ public class CPDefinitionOptionRelModelImpl
 				"typeSettings",
 				(BiConsumer<CPDefinitionOptionRel, String>)
 					CPDefinitionOptionRel::setTypeSettings);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CPDefinitionOptionRel, Integer>)
+					CPDefinitionOptionRel::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -1228,6 +1235,21 @@ public class CPDefinitionOptionRelModelImpl
 		_typeSettings = typeSettings;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1409,6 +1431,7 @@ public class CPDefinitionOptionRelModelImpl
 		cpDefinitionOptionRelImpl.setKey(getKey());
 		cpDefinitionOptionRelImpl.setPriceType(getPriceType());
 		cpDefinitionOptionRelImpl.setTypeSettings(getTypeSettings());
+		cpDefinitionOptionRelImpl.setStatus(getStatus());
 
 		cpDefinitionOptionRelImpl.resetOriginalValues();
 
@@ -1470,6 +1493,8 @@ public class CPDefinitionOptionRelModelImpl
 			this.<String>getColumnOriginalValue("priceType"));
 		cpDefinitionOptionRelImpl.setTypeSettings(
 			this.<String>getColumnOriginalValue("typeSettings"));
+		cpDefinitionOptionRelImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return cpDefinitionOptionRelImpl;
 	}
@@ -1694,6 +1719,8 @@ public class CPDefinitionOptionRelModelImpl
 			cpDefinitionOptionRelCacheModel.typeSettings = null;
 		}
 
+		cpDefinitionOptionRelCacheModel.status = getStatus();
+
 		return cpDefinitionOptionRelCacheModel;
 	}
 
@@ -1784,6 +1811,7 @@ public class CPDefinitionOptionRelModelImpl
 	private String _key;
 	private String _priceType;
 	private String _typeSettings;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1843,6 +1871,7 @@ public class CPDefinitionOptionRelModelImpl
 		_columnOriginalValues.put("key_", _key);
 		_columnOriginalValues.put("priceType", _priceType);
 		_columnOriginalValues.put("typeSettings", _typeSettings);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1917,6 +1946,8 @@ public class CPDefinitionOptionRelModelImpl
 
 		columnBitmasks.put("typeSettings", 16777216L);
 
+		columnBitmasks.put("status", 33554432L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1924,4 +1955,4 @@ public class CPDefinitionOptionRelModelImpl
 	private CPDefinitionOptionRel _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:944235997
+// LIFERAY-SERVICE-BUILDER-HASH:-350943952

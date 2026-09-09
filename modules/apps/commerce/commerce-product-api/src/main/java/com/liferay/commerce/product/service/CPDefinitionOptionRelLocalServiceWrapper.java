@@ -79,6 +79,16 @@ public class CPDefinitionOptionRelLocalServiceWrapper
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
 			long cpDefinitionId, long cpOptionId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
+			cpDefinitionId, cpOptionId, serviceContext);
+	}
+
+	@Override
+	public CPDefinitionOptionRel addCPDefinitionOptionRel(
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			String commerceOptionTypeKey, double priority, boolean facetable,
@@ -88,14 +98,15 @@ public class CPDefinitionOptionRelLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, priority, facetable, required,
-			skuContributor, importOptionValue, priceType, serviceContext);
+			externalReferenceCode, cpDefinitionId, cpOptionId, nameMap,
+			descriptionMap, commerceOptionTypeKey, priority, facetable,
+			required, skuContributor, importOptionValue, priceType,
+			serviceContext);
 	}
 
 	@Override
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId,
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
 			String commerceOptionTypeKey, String infoItemServiceKey,
@@ -106,20 +117,10 @@ public class CPDefinitionOptionRelLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, nameMap, descriptionMap,
-			commerceOptionTypeKey, infoItemServiceKey, priority,
+			externalReferenceCode, cpDefinitionId, cpOptionId, nameMap,
+			descriptionMap, commerceOptionTypeKey, infoItemServiceKey, priority,
 			definedExternally, facetable, required, skuContributor,
 			importOptionValue, priceType, typeSettings, serviceContext);
-	}
-
-	@Override
-	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
-			cpDefinitionId, cpOptionId, serviceContext);
 	}
 
 	/**
@@ -605,6 +606,18 @@ public class CPDefinitionOptionRelLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long companyId, long userId,
+			long cpDefinitionId, long cpOptionId, String commerceOptionTypeKey)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionOptionRelLocalService.
+			getOrAddEmptyCPDefinitionOptionRel(
+				externalReferenceCode, companyId, userId, cpDefinitionId,
+				cpOptionId, commerceOptionTypeKey);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -784,4 +797,4 @@ public class CPDefinitionOptionRelLocalServiceWrapper
 		_cpDefinitionOptionRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-300510455
+// LIFERAY-SERVICE-BUILDER-HASH:-1946511565

@@ -98,27 +98,28 @@ public interface CPDefinitionOptionRelLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
-	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			double priority, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			ServiceContext serviceContext)
-		throws PortalException;
-
-	@Indexable(type = IndexableType.REINDEX)
-	public CPDefinitionOptionRel addCPDefinitionOptionRel(
-			long cpDefinitionId, long cpOptionId, Map<Locale, String> nameMap,
-			Map<Locale, String> descriptionMap, String commerceOptionTypeKey,
-			String infoItemServiceKey, double priority,
-			boolean definedExternally, boolean facetable, boolean required,
-			boolean skuContributor, boolean importOptionValue, String priceType,
-			String typeSettings, ServiceContext serviceContext)
-		throws PortalException;
-
 	public CPDefinitionOptionRel addCPDefinitionOptionRel(
 			long cpDefinitionId, long cpOptionId, ServiceContext serviceContext)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CPDefinitionOptionRel addCPDefinitionOptionRel(
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String commerceOptionTypeKey, double priority, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, ServiceContext serviceContext)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public CPDefinitionOptionRel addCPDefinitionOptionRel(
+			String externalReferenceCode, long cpDefinitionId, long cpOptionId,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			String commerceOptionTypeKey, String infoItemServiceKey,
+			double priority, boolean definedExternally, boolean facetable,
+			boolean required, boolean skuContributor, boolean importOptionValue,
+			String priceType, String typeSettings,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -428,6 +429,12 @@ public interface CPDefinitionOptionRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
+			String externalReferenceCode, long companyId, long userId,
+			long cpDefinitionId, long cpOptionId, String commerceOptionTypeKey)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -522,4 +529,4 @@ public interface CPDefinitionOptionRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:231286003
+// LIFERAY-SERVICE-BUILDER-HASH:-634396289

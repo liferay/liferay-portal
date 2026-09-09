@@ -95,16 +95,17 @@ public interface CPDefinitionOptionValueRelLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, long cpInstanceId, String key,
-			Map<Locale, String> nameMap, boolean preselected,
-			BigDecimal deltaPrice, double priority, BigDecimal quantity,
-			String unitOfMeasureKey, ServiceContext serviceContext)
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			long cpInstanceId, String key, Map<Locale, String> nameMap,
+			boolean preselected, BigDecimal deltaPrice, double priority,
+			BigDecimal quantity, String unitOfMeasureKey,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, String key,
-			Map<Locale, String> nameMap, double priority,
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key, Map<Locale, String> nameMap, double priority,
 			ServiceContext serviceContext)
 		throws PortalException;
 
@@ -406,6 +407,12 @@ public interface CPDefinitionOptionValueRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
+			String externalReferenceCode, long companyId, long userId,
+			long cpDefinitionOptionRelId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -502,4 +509,4 @@ public interface CPDefinitionOptionValueRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1703008681
+// LIFERAY-SERVICE-BUILDER-HASH:50358428

@@ -86,7 +86,7 @@ public class CPDefinitionOptionValueRelModelImpl
 		{"key_", Types.VARCHAR}, {"name", Types.VARCHAR},
 		{"preselected", Types.BOOLEAN}, {"price", Types.DECIMAL},
 		{"priority", Types.DOUBLE}, {"quantity", Types.DECIMAL},
-		{"unitOfMeasureKey", Types.VARCHAR}
+		{"unitOfMeasureKey", Types.VARCHAR}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -114,10 +114,11 @@ public class CPDefinitionOptionValueRelModelImpl
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("quantity", Types.DECIMAL);
 		TABLE_COLUMNS_MAP.put("unitOfMeasureKey", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPDefinitionOptionValueRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPDefinitionOptionValueRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionOptionRelId LONG,CPInstanceUuid VARCHAR(75) null,CProductId LONG,key_ VARCHAR(75) null,name STRING null,preselected BOOLEAN,price BIGDECIMAL null,priority DOUBLE,quantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,primary key (CPDefinitionOptionValueRelId, ctCollectionId))";
+		"create table CPDefinitionOptionValueRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPDefinitionOptionValueRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPDefinitionOptionRelId LONG,CPInstanceUuid VARCHAR(75) null,CProductId LONG,key_ VARCHAR(75) null,name STRING null,preselected BOOLEAN,price BIGDECIMAL null,priority DOUBLE,quantity BIGDECIMAL null,unitOfMeasureKey VARCHAR(75) null,status INTEGER,primary key (CPDefinitionOptionValueRelId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPDefinitionOptionValueRel";
@@ -360,6 +361,8 @@ public class CPDefinitionOptionValueRelModelImpl
 			attributeGetterFunctions.put(
 				"unitOfMeasureKey",
 				CPDefinitionOptionValueRel::getUnitOfMeasureKey);
+			attributeGetterFunctions.put(
+				"status", CPDefinitionOptionValueRel::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -464,6 +467,10 @@ public class CPDefinitionOptionValueRelModelImpl
 				"unitOfMeasureKey",
 				(BiConsumer<CPDefinitionOptionValueRel, String>)
 					CPDefinitionOptionValueRel::setUnitOfMeasureKey);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CPDefinitionOptionValueRel, Integer>)
+					CPDefinitionOptionValueRel::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -1013,6 +1020,21 @@ public class CPDefinitionOptionValueRelModelImpl
 		_unitOfMeasureKey = unitOfMeasureKey;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1169,6 +1191,7 @@ public class CPDefinitionOptionValueRelModelImpl
 		cpDefinitionOptionValueRelImpl.setQuantity(getQuantity());
 		cpDefinitionOptionValueRelImpl.setUnitOfMeasureKey(
 			getUnitOfMeasureKey());
+		cpDefinitionOptionValueRelImpl.setStatus(getStatus());
 
 		cpDefinitionOptionValueRelImpl.resetOriginalValues();
 
@@ -1222,6 +1245,8 @@ public class CPDefinitionOptionValueRelModelImpl
 			this.<BigDecimal>getColumnOriginalValue("quantity"));
 		cpDefinitionOptionValueRelImpl.setUnitOfMeasureKey(
 			this.<String>getColumnOriginalValue("unitOfMeasureKey"));
+		cpDefinitionOptionValueRelImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return cpDefinitionOptionValueRelImpl;
 	}
@@ -1428,6 +1453,8 @@ public class CPDefinitionOptionValueRelModelImpl
 			cpDefinitionOptionValueRelCacheModel.unitOfMeasureKey = null;
 		}
 
+		cpDefinitionOptionValueRelCacheModel.status = getStatus();
+
 		return cpDefinitionOptionValueRelCacheModel;
 	}
 
@@ -1514,6 +1541,7 @@ public class CPDefinitionOptionValueRelModelImpl
 	private double _priority;
 	private BigDecimal _quantity;
 	private String _unitOfMeasureKey;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1569,6 +1597,7 @@ public class CPDefinitionOptionValueRelModelImpl
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("quantity", _quantity);
 		_columnOriginalValues.put("unitOfMeasureKey", _unitOfMeasureKey);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1635,6 +1664,8 @@ public class CPDefinitionOptionValueRelModelImpl
 
 		columnBitmasks.put("unitOfMeasureKey", 1048576L);
 
+		columnBitmasks.put("status", 2097152L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1642,4 +1673,4 @@ public class CPDefinitionOptionValueRelModelImpl
 	private CPDefinitionOptionValueRel _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1467934067
+// LIFERAY-SERVICE-BUILDER-HASH:2090149615

@@ -53,15 +53,16 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionOptionValueRelServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the cp definition option value rel remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CPDefinitionOptionValueRelServiceUtil} if injection and service tracking are not available.
 	 */
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, long cpInstanceId, String key,
-			Map<Locale, String> nameMap, boolean preselected,
-			BigDecimal deltaPrice, double priority, BigDecimal quantity,
-			String unitOfMeasureKey, ServiceContext serviceContext)
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			long cpInstanceId, String key, Map<Locale, String> nameMap,
+			boolean preselected, BigDecimal deltaPrice, double priority,
+			BigDecimal quantity, String unitOfMeasureKey,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public CPDefinitionOptionValueRel addCPDefinitionOptionValueRel(
-			long cpDefinitionOptionRelId, String key,
-			Map<Locale, String> nameMap, double priority,
+			String externalReferenceCode, long cpDefinitionOptionRelId,
+			String key, Map<Locale, String> nameMap, double priority,
 			ServiceContext serviceContext)
 		throws PortalException;
 
@@ -110,6 +111,11 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 	public int getCPDefinitionOptionValueRelsCount(long cpDefinitionOptionRelId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionOptionValueRel getOrAddEmptyCPDefinitionOptionValueRel(
+			String externalReferenceCode, long cpDefinitionOptionRelId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -151,4 +157,4 @@ public interface CPDefinitionOptionValueRelService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:912342208
+// LIFERAY-SERVICE-BUILDER-HASH:-849437097
