@@ -99,9 +99,16 @@ export async function loadImage(
 	// load leaks what the successful path would have owned.
 
 	try {
-		return await loadFromBitmap(bitmap, blob, fileName, (url) => {
-			previewUrl = url;
-		});
+		previewUrl = await createPreviewUrl(bitmap, blob);
+
+		return {
+			blob,
+			fileName,
+			height: bitmap.height,
+			previewUrl,
+			type: blob.type || 'image/jpeg',
+			width: bitmap.width,
+		};
 	}
 	catch (error) {
 		if (previewUrl) {
@@ -115,61 +122,45 @@ export async function loadImage(
 	}
 }
 
-async function loadFromBitmap(
+async function createPreviewUrl(
 	bitmap: ImageBitmap,
-	blob: Blob,
-	fileName: string,
-	onPreviewUrl: (url: string) => void
-): Promise<LoadedImage> {
+	blob: Blob
+): Promise<string> {
 	const {height, width} = bitmap;
-
-	let previewUrl: string;
 
 	const longestSide = Math.max(width, height);
 
-	if (longestSide > PREVIEW_MAX_SIZE) {
-		const scale = PREVIEW_MAX_SIZE / longestSide;
-
-		const canvas = document.createElement('canvas');
-
-		canvas.width = Math.round(width * scale);
-		canvas.height = Math.round(height * scale);
-
-		const context = canvas.getContext('2d');
-
-		if (!context) {
-			throw new Error('Could not create a 2d context for the preview');
-		}
-
-		context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-
-		const previewBlob = await new Promise<Blob>((resolve, reject) =>
-			canvas.toBlob(
-				(result) =>
-					result
-						? resolve(result)
-						: reject(new Error('Preview encoding failed')),
-				'image/jpeg',
-				0.9
-			)
-		);
-
-		previewUrl = URL.createObjectURL(previewBlob);
-	}
-	else {
-		previewUrl = URL.createObjectURL(blob);
+	if (longestSide <= PREVIEW_MAX_SIZE) {
+		return URL.createObjectURL(blob);
 	}
 
-	onPreviewUrl(previewUrl);
+	const scale = PREVIEW_MAX_SIZE / longestSide;
 
-	return {
-		blob,
-		fileName,
-		height,
-		previewUrl,
-		type: blob.type || 'image/jpeg',
-		width,
-	};
+	const canvas = document.createElement('canvas');
+
+	canvas.width = Math.round(width * scale);
+	canvas.height = Math.round(height * scale);
+
+	const context = canvas.getContext('2d');
+
+	if (!context) {
+		throw new Error('Could not create a 2d context for the preview');
+	}
+
+	context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+	const previewBlob = await new Promise<Blob>((resolve, reject) =>
+		canvas.toBlob(
+			(result) =>
+				result
+					? resolve(result)
+					: reject(new Error('Preview encoding failed')),
+			'image/jpeg',
+			0.9
+		)
+	);
+
+	return URL.createObjectURL(previewBlob);
 }
 
 /**
