@@ -12,6 +12,7 @@ import com.liferay.message.boards.constants.MBPortletKeys;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.service.MBCategoryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
@@ -109,6 +110,15 @@ public class MBCategoryAssetRendererFactory
 
 		return _categoryModelResourcePermission.contains(
 			permissionChecker, category, actionId);
+	}
+
+	@Override
+	public boolean isActive(long companyId) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-105225")) {
+			return false;
+		}
+
+		return super.isActive(companyId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
