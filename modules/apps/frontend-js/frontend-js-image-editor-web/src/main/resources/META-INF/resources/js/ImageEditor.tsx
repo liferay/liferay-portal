@@ -56,10 +56,6 @@ function stepZoom(zoom: number, direction: -1 | 1): number {
 	return smaller.length ? smaller[smaller.length - 1] : zoom;
 }
 
-export function sessionKeyOf(image: LoadedImage): string {
-	return image.previewUrl;
-}
-
 export interface EditorSaveResult {
 	blob: Blob;
 	fileName: string;
@@ -354,7 +350,7 @@ export function ImageEditor({
 			<AnnouncerProvider>
 				<Editor
 					image={image}
-					key={sessionKeyOf(image)}
+					key={image.previewUrl}
 					onClose={onClose}
 					onSave={onSave}
 				/>
