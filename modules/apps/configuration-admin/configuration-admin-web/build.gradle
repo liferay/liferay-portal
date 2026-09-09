@@ -19,6 +19,7 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:learn:learn-taglib")
 	compileOnly project(":apps:portal-search:portal-search-api")
+	compileOnly project(":apps:product-navigation:product-navigation-omni-search-api")
 	compileOnly project(":apps:site-navigation:site-navigation-taglib")
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
