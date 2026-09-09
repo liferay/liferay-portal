@@ -307,9 +307,7 @@ public class FrontendTokenDefinitionUtilTest {
 
 	private void _testMergeFrontendTokenDefinitionJSONObjectWithInvalidBaseCategory() {
 		String categoryName = RandomTestUtil.randomString();
-
 		String baseTokenName = RandomTestUtil.randomString();
-
 		String setName = RandomTestUtil.randomString();
 
 		JSONObject frontendTokenDefinitionJSONObject =
@@ -341,9 +339,7 @@ public class FrontendTokenDefinitionUtilTest {
 
 	private void _testMergeFrontendTokenDefinitionJSONObjectWithInvalidOverrideToken() {
 		String categoryName = RandomTestUtil.randomString();
-
 		String baseTokenName = RandomTestUtil.randomString();
-
 		String setName = RandomTestUtil.randomString();
 
 		JSONObject frontendTokenDefinitionJSONObject =
@@ -379,9 +375,7 @@ public class FrontendTokenDefinitionUtilTest {
 
 	private void _testMergeFrontendTokenDefinitionJSONObjectWithNewToken() {
 		String categoryName = RandomTestUtil.randomString();
-
 		String baseTokenName = RandomTestUtil.randomString();
-
 		String setName = RandomTestUtil.randomString();
 
 		JSONObject frontendTokenDefinitionJSONObject =
@@ -414,13 +408,9 @@ public class FrontendTokenDefinitionUtilTest {
 
 	private void _testMergeFrontendTokenDefinitionJSONObjectWithReplacedToken() {
 		String otherTokenName = RandomTestUtil.randomString();
-
 		String targetTokenName = RandomTestUtil.randomString();
-
 		String baseType = RandomTestUtil.randomString();
-
 		String setName = RandomTestUtil.randomString();
-
 		String categoryName = RandomTestUtil.randomString();
 
 		JSONObject frontendTokenDefinitionJSONObject =
@@ -476,7 +466,6 @@ public class FrontendTokenDefinitionUtilTest {
 
 	private void _testMergeFrontendTokenDefinitionJSONObjectWithUnknownCategoryName() {
 		String baseCategoryName = RandomTestUtil.randomString();
-
 		String baseTokenName = RandomTestUtil.randomString();
 
 		JSONObject frontendTokenDefinitionJSONObject =
@@ -485,7 +474,6 @@ public class FrontendTokenDefinitionUtilTest {
 				RandomTestUtil.randomString());
 
 		String overrideCategoryName = RandomTestUtil.randomString();
-
 		String overrideTokenName = RandomTestUtil.randomString();
 
 		JSONObject overrideFrontendTokenDefinitionJSONObject =
@@ -515,9 +503,7 @@ public class FrontendTokenDefinitionUtilTest {
 
 	private void _testMergeFrontendTokenDefinitionJSONObjectWithUnknownSetName() {
 		String categoryName = RandomTestUtil.randomString();
-
 		String baseTokenName = RandomTestUtil.randomString();
-
 		String baseSetName = RandomTestUtil.randomString();
 
 		JSONObject frontendTokenDefinitionJSONObject =
@@ -526,7 +512,6 @@ public class FrontendTokenDefinitionUtilTest {
 				baseSetName);
 
 		String overrideTokenName = RandomTestUtil.randomString();
-
 		String overrideSetName = RandomTestUtil.randomString();
 
 		JSONObject overrideFrontendTokenDefinitionJSONObject =
