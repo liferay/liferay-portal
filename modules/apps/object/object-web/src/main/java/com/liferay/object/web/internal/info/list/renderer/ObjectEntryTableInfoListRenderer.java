@@ -90,9 +90,10 @@ public class ObjectEntryTableInfoListRenderer
 			getInfoListBasicTableTag();
 
 		if ((objectEntries != null) && !objectEntries.isEmpty()) {
-			List<ObjectField> objectFields =
+			List<ObjectField> objectFields = ListUtil.filter(
 				_objectFieldLocalService.getObjectFields(
-					_objectDefinition.getObjectDefinitionId(), false);
+					_objectDefinition.getObjectDefinitionId()),
+				objectField -> !objectField.isMetadata());
 
 			try {
 				objectFields = _objectFieldLocalService.getActiveObjectFields(

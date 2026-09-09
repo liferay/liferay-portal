@@ -153,10 +153,13 @@ public class ObjectEntryRowInfoItemRenderer
 
 		Map<String, Serializable> values = new TreeMap<>();
 
+		List<ObjectField> objectFields = ListUtil.filter(
+			_objectFieldLocalService.getObjectFields(
+				_objectDefinition.getObjectDefinitionId()),
+			objectField -> !objectField.isMetadata());
+
 		for (ObjectField objectField :
-				_objectFieldLocalService.getActiveObjectFields(
-					_objectFieldLocalService.getObjectFields(
-						_objectDefinition.getObjectDefinitionId(), false))) {
+				_objectFieldLocalService.getActiveObjectFields(objectFields)) {
 
 			Object value = ObjectEntryUtil.getValue(
 				themeDisplay.getLocale(), objectField,
