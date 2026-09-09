@@ -8,9 +8,6 @@ package com.liferay.portal.search.opensearch2.internal.query;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
 import com.liferay.portal.search.opensearch2.internal.query.function.score.OpenSearchScoreFunctionTranslator;
 import com.liferay.portal.search.opensearch2.internal.util.JsonpUtil;
-import com.liferay.portal.search.query.FunctionScoreQuery.FilterQueryScoreFunctionHolder;
-import com.liferay.portal.search.query.Query;
-import com.liferay.portal.search.query.function.score.FieldValueFactorScoreFunction;
 import com.liferay.portal.search.query.function.score.ScoreFunction;
 import com.liferay.portal.search.test.util.query.BaseScoreFunctionTranslatorTestCase;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -34,30 +31,12 @@ public class OpenSearchScoreFunctionTranslatorTest
 		OpenSearchTestRule.INSTANCE;
 
 	@Override
-	protected String translate(
-		FieldValueFactorScoreFunction fieldValueFactorScoreFunction) {
-
-		FilterQueryScoreFunctionHolder filterQueryScoreFunctionHolder =
-			new FilterQueryScoreFunctionHolder() {
-
-				@Override
-				public Query getFilterQuery() {
-					return null;
-				}
-
-				@Override
-				public ScoreFunction getScoreFunction() {
-					return fieldValueFactorScoreFunction;
-				}
-
-			};
-
+	protected String translate(ScoreFunction scoreFunction) {
 		OpenSearchScoreFunctionTranslator openSearchScoreFunctionTranslator =
 			new OpenSearchScoreFunctionTranslator();
 
 		FunctionScore.Builder.ContainerBuilder containerBuilder =
-			openSearchScoreFunctionTranslator.translate(
-				filterQueryScoreFunctionHolder.getScoreFunction());
+			openSearchScoreFunctionTranslator.translate(scoreFunction);
 
 		return JsonpUtil.toString(containerBuilder.build());
 	}
