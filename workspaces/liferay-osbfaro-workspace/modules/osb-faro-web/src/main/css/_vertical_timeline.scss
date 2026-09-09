@@ -122,10 +122,6 @@
 				margin-bottom: $baseline * 2;
 			}
 
-			.payload-title {
-				font-size: $fontSizeSmall;
-			}
-
 			// The raw payload, which the code view falls back to. Monospace and
 			// preserved whitespace are what make the nesting the tables flatten
 			// away readable again.
@@ -155,7 +151,6 @@
 			}
 
 			.payload-table-title {
-				font-size: $fontSizeExtraSmall;
 				letter-spacing: 0.5px;
 				margin-bottom: $baseline;
 			}
