@@ -58,11 +58,8 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 					DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
 
 			_assertDepotRolePermission(
-				iterator.next(), roleName,
-				LayoutPageTemplateConstants.RESOURCE_NAME,
-				LayoutPageTemplateActionKeys.
-					ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION,
-				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
+				iterator.next(), roleName, Layout.class.getName(),
+				ActionKeys.UPDATE);
 			_assertDepotRolePermission(
 				iterator.next(), roleName,
 				LayoutPageTemplateCollection.class.getName(), ActionKeys.DELETE,
@@ -72,8 +69,11 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 				LayoutPageTemplateEntry.class.getName(), ActionKeys.DELETE,
 				ActionKeys.UPDATE);
 			_assertDepotRolePermission(
-				iterator.next(), roleName, Layout.class.getName(),
-				ActionKeys.UPDATE);
+				iterator.next(), roleName,
+				LayoutPageTemplateConstants.RESOURCE_NAME,
+				LayoutPageTemplateActionKeys.
+					ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION,
+				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
 		}
 	}
 
