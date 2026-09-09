@@ -242,7 +242,7 @@ describe('BulkUpdateWorkflowStateModalContent', () => {
 		expect(
 			screen
 				.getAllByRole('link')
-				.map((node) => node.textContent?.split('(')[0])
+				.map((node) => node.textContent?.split('(')[0]) // Drop the hidden "(Opens a new window)" text
 		).toEqual(['A1', 'A2', 'A10', 'B1']);
 	});
 
