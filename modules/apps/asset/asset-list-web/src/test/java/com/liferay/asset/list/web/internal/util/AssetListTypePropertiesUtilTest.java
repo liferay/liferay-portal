@@ -176,7 +176,7 @@ public class AssetListTypePropertiesUtilTest {
 			boolean expectedSortable = true;
 
 			if (name.equals("externalReferenceCode") ||
-				name.equals(Field.REVIEW_DATE) || name.equals("status")) {
+				name.equals(Field.REVIEW_DATE)) {
 
 				expectedSortable = false;
 			}
@@ -405,14 +405,14 @@ public class AssetListTypePropertiesUtilTest {
 		JSONArray itemsJSONArray = groupJSONObject.getJSONArray("items");
 
 		Assert.assertEquals(
-			itemsJSONArray.toString(), 12, itemsJSONArray.length());
+			itemsJSONArray.toString(), 11, itemsJSONArray.length());
 
 		Set<String> actualNames = JSONUtil.toStringSet(itemsJSONArray, "name");
 
 		String[] expectedNames = {
 			Field.CREATE_DATE, Field.DISPLAY_DATE, Field.EXPIRATION_DATE,
 			Field.MODIFIED_DATE, Field.PRIORITY, Field.PUBLISH_DATE,
-			Field.REVIEW_DATE, Field.STATUS, Field.TITLE, Field.USER_NAME,
+			Field.REVIEW_DATE, Field.TITLE, Field.USER_NAME,
 			"externalReferenceCode", "viewCount"
 		};
 

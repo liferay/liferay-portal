@@ -129,8 +129,6 @@ public class AssetListTypePropertiesUtil {
 				"publish-date", locale, Field.PUBLISH_DATE, "date"),
 			_getCommonFieldJSONObject(
 				"review-date", locale, Field.REVIEW_DATE, "date"),
-			_getCommonFieldJSONObject(
-				"status", locale, Field.STATUS, "integer"),
 			_getCommonFieldJSONObject("title", locale, Field.TITLE, "text"),
 			_getCommonFieldJSONObject(
 				"view-count", locale, "viewCount", "integer"));
