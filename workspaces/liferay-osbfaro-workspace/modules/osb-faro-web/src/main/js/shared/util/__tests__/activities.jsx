@@ -692,6 +692,7 @@ describe('activities', () => {
 				'2026-07-15'
 			]);
 			expect(days[0].items).toEqual([]);
+			expect(days[0].header.totalEvents).toBeUndefined();
 		});
 
 		it('does not repeat a day the sessions already cover', () => {

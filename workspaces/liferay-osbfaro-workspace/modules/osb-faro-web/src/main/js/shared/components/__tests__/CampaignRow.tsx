@@ -46,12 +46,15 @@ describe('CampaignRow', () => {
 		expect(screen.getByText(/salesforce/i)).toBeInTheDocument();
 	});
 
-	it('counts the touches it holds', () => {
+	it('counts the touches it holds, as responses rather than events', () => {
 		const {container} = renderRow();
 
 		expect(container.querySelector('.event-count-pill')).toHaveTextContent(
 			'2'
 		);
+		expect(
+			container.querySelector('.event-count-pill .lexicon-icon-comments')
+		).toBeInTheDocument();
 	});
 
 	it('collapses its touches by default', () => {

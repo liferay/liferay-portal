@@ -1,10 +1,12 @@
 import CampaignTouchesByDayQuery, {
+	CAMPAIGN_TOUCHES_QUERY_ENABLED,
 	CAMPAIGNS_PER_PAGE,
 	CampaignTouchesByDayData,
 	CampaignTouchesByDayVariables,
 } from 'shared/queries/CampaignTouchesByDayQuery';
 import {CampaignTouch, toDayKey} from 'shared/util/activities';
 import {useCallback, useEffect, useMemo, useState} from 'react';
+import {mockCampaignTouchesByDay} from 'shared/util/campaignTouchesMock';
 import {useLazyQuery, useQuery} from '@apollo/client';
 
 export type CampaignDay = {
@@ -34,7 +36,7 @@ export const useCampaignTouchesByDay = (
 		CampaignTouchesByDayData,
 		CampaignTouchesByDayVariables
 	>(CampaignTouchesByDayQuery, {
-		skip,
+		skip: skip || !CAMPAIGN_TOUCHES_QUERY_ENABLED,
 		variables: {
 			...variables,
 			date: null,
@@ -49,8 +51,12 @@ export const useCampaignTouchesByDay = (
 	>(CampaignTouchesByDayQuery, {fetchPolicy: 'network-only'});
 
 	useEffect(() => {
-		setDays({});
-	}, [entityId, keywords, rangeEnd, rangeKey, rangeStart]);
+		setDays(
+			skip || CAMPAIGN_TOUCHES_QUERY_ENABLED
+				? {}
+				: mockCampaignTouchesByDay({rangeEnd})
+		);
+	}, [entityId, keywords, rangeEnd, rangeKey, rangeStart, skip]);
 
 	useEffect(() => {
 		if (!data) {
@@ -75,7 +81,16 @@ export const useCampaignTouchesByDay = (
 	}, [data]);
 
 	const loadDay = useCallback(
-		(date: string, page: number, delta: number) =>
+		(date: string, page: number, delta: number) => {
+			if (!CAMPAIGN_TOUCHES_QUERY_ENABLED) {
+				setDays((allDays) => ({
+					...allDays,
+					...mockCampaignTouchesByDay({date, delta, page}),
+				}));
+
+				return;
+			}
+
 			fetchDay({
 				variables: {...variables, date, page: page - 1, size: delta},
 			}).then(({data}) => {
@@ -91,7 +106,8 @@ export const useCampaignTouchesByDay = (
 						touchesCount: day?.touchesCount ?? 0,
 					},
 				}));
-			}),
+			});
+		},
 		[fetchDay, variables]
 	);
 

@@ -22,6 +22,7 @@ import {
 	YAxis,
 } from 'recharts';
 import {CHART_COLOR_NAMES} from 'shared/util/charts';
+import {ENABLE_DAY_LEVEL_ACTIVITY} from 'shared/util/feature-flags';
 import {
 	ChartView,
 	DEFAULT_CHART_VIEW,
@@ -125,10 +126,18 @@ const ActivitiesChart: React.FC<
 							label: Liferay.Language.get('sessions'),
 							value: toLocale(totalSessions),
 						},
-						{
-							label: Liferay.Language.get('campaign-responses'),
-							value: toLocale(totalCampaignResponses ?? 0),
-						},
+						...(ENABLE_DAY_LEVEL_ACTIVITY
+							? [
+									{
+										label: Liferay.Language.get(
+											'campaign-responses'
+										),
+										value: toLocale(
+											totalCampaignResponses ?? 0
+										),
+									},
+								]
+							: []),
 					];
 
 			if (moment.utc(intervalInitDate).isSame(moment(), 'day')) {

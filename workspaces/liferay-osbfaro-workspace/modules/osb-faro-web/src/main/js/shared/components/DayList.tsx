@@ -4,6 +4,7 @@ import DateHeader from 'shared/components/DateHeader';
 import React, {FC} from 'react';
 import VerticalTimeline from 'shared/components/VerticalTimeline';
 import {CampaignDays} from 'shared/hooks/useCampaignTouchesByDay';
+import {ENABLE_DAY_LEVEL_ACTIVITY} from 'shared/util/feature-flags';
 import {TimelineDay, toDayKey} from 'shared/util/activities';
 
 type IDayListProps = {
@@ -39,24 +40,28 @@ const DayList: FC<IDayListProps> = ({
 						totalTouches={campaignDay?.touchesCount}
 					/>
 
-					<ActivitySection label={Liferay.Language.get('day-level')}>
-						{campaignDay?.campaigns.length ? (
-							<CampaignList
-								campaigns={campaignDay.campaigns}
-								onDeltaChange={(delta) =>
-									onCampaignDeltaChange?.(date, delta)
-								}
-								onPageChange={(page) =>
-									onCampaignPageChange?.(date, page)
-								}
-								page={campaignDay.page}
-								selectedDelta={campaignDay.delta}
-								totalItems={campaignDay.campaignsCount}
-							/>
-						) : (
-							emptyState
-						)}
-					</ActivitySection>
+					{ENABLE_DAY_LEVEL_ACTIVITY && (
+						<ActivitySection
+							label={Liferay.Language.get('day-level')}
+						>
+							{campaignDay?.campaigns.length ? (
+								<CampaignList
+									campaigns={campaignDay.campaigns}
+									onDeltaChange={(delta) =>
+										onCampaignDeltaChange?.(date, delta)
+									}
+									onPageChange={(page) =>
+										onCampaignPageChange?.(date, page)
+									}
+									page={campaignDay.page}
+									selectedDelta={campaignDay.delta}
+									totalItems={campaignDay.campaignsCount}
+								/>
+							) : (
+								emptyState
+							)}
+						</ActivitySection>
+					)}
 
 					<ActivitySection
 						label={Liferay.Language.get('timed-activity')}

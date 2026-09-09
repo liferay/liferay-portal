@@ -98,7 +98,10 @@ const CampaignRow: FC<{
 						<strong>{dataSourceType.toUpperCase()}</strong>
 					</ClayLabel>
 
-					<EventCountPill totalEvents={touches.length} />
+					<EventCountPill
+						symbol="comments"
+						totalEvents={touches.length}
+					/>
 				</div>
 
 				<ClayIcon

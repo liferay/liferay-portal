@@ -59,7 +59,7 @@ export type UserSessionAttributes = {
 export type VerticalTimelineHeader = {
 	header: true;
 	title: string;
-	totalEvents: number;
+	totalEvents?: number;
 };
 
 export type VerticalTimelinePageGroup = {
@@ -494,7 +494,6 @@ export const mergeCampaignDays = (
 			header: {
 				header: true as const,
 				title: formatGroupingTime(dayKey),
-				totalEvents: 0,
 			},
 			items: [],
 		}));

@@ -28,7 +28,7 @@ import {
 	mergeCampaignDays,
 } from 'shared/util/activities';
 import {mapListResultsToProps} from 'shared/util/mappers';
-import {CAMPAIGN_TOUCHES_QUERY_ENABLED} from 'shared/queries/CampaignTouchesByDayQuery';
+import {ENABLE_DAY_LEVEL_ACTIVITY} from 'shared/util/feature-flags';
 import {SessionEntityTypes} from 'shared/util/constants';
 import {toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
@@ -138,7 +138,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 				selectedPoint,
 			}),
 		},
-		{skip: !CAMPAIGN_TOUCHES_QUERY_ENABLED}
+		{skip: !ENABLE_DAY_LEVEL_ACTIVITY}
 	);
 
 	const sessionsResponse = useQuery<
@@ -246,10 +246,16 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					label: Liferay.Language.get('sessions'),
 					value: toThousands(totalSessions ?? 0),
 				},
-				{
-					label: Liferay.Language.get('campaign-responses'),
-					value: toThousands(totalCampaignResponses ?? 0),
-				},
+				...(ENABLE_DAY_LEVEL_ACTIVITY
+					? [
+							{
+								label: Liferay.Language.get(
+									'campaign-responses'
+								),
+								value: toThousands(totalCampaignResponses ?? 0),
+							},
+						]
+					: []),
 			]}
 			chartView={chartView}
 			delta={delta}
