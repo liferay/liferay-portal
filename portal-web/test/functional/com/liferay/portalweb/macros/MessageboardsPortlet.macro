@@ -47,13 +47,20 @@ definition {
 		}
 
 		if (isSet(bodyContent)) {
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+			if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+				SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-			Type(
-				locator1 = "CKEditor#BODY",
-				value1 = ${bodyContent});
+				Type(
+					locator1 = "CKEditor#BODY",
+					value1 = ${bodyContent});
 
-			SelectFrame(value1 = "relative=top");
+				SelectFrame(value1 = "relative=top");
+			}
+			else {
+				Type(
+					locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+					value1 = ${bodyContent});
+			}
 		}
 
 		PortletEntry.save();

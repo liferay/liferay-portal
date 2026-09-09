@@ -24,13 +24,20 @@ definition {
 				locator1 = "Configuration#NAVIGATION_PAGE_ADDED_EMAIL",
 				value1 = "Page Added Email");
 
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+			if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+				SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-			Type(
-				locator1 = "CKEditor#BODY",
-				value1 = ${bodyContent});
+				Type(
+					locator1 = "CKEditor#BODY",
+					value1 = ${bodyContent});
 
-			SelectFrame(value1 = "relative=top");
+				SelectFrame(value1 = "relative=top");
+			}
+			else {
+				Type(
+					locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+					value1 = ${bodyContent});
+			}
 
 			PortletEntry.save();
 		}
@@ -131,11 +138,18 @@ definition {
 				locator1 = "Configuration#NAVIGATION_PAGE_ADDED_EMAIL",
 				value1 = "Page Added Email");
 
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
+			if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
+				SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME");
 
-			AssertTextEquals.assertPartialText(
-				locator1 = "CKEditor#BODY",
-				value1 = ${bodyContent});
+				AssertTextEquals.assertPartialText(
+					locator1 = "CKEditor#BODY",
+					value1 = ${bodyContent});
+			}
+			else {
+				AssertTextEquals.assertPartialText(
+					locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE",
+					value1 = ${bodyContent});
+			}
 		}
 	}
 

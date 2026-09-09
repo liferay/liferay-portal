@@ -3,9 +3,11 @@ definition {
 	@summary = "Default summary"
 	macro _openComments() {
 		if (IsElementNotPresent.isNotVisible(locator1 = "CKEditor#BODY_FIELD_IFRAME")) {
-			AssertClick(
-				locator1 = "MyWorkflowTasksTask#COMMENTS",
-				value1 = "Comments");
+			if (IsElementNotPresent.isNotVisible(locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE")) {
+				AssertClick(
+					locator1 = "MyWorkflowTasksTask#COMMENTS",
+					value1 = "Comments");
+			}
 		}
 	}
 
