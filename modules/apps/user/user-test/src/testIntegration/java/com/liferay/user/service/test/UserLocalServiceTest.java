@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
@@ -45,6 +46,8 @@ import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.Authenticator;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -92,6 +95,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
@@ -691,6 +695,62 @@ public class UserLocalServiceTest {
 			user.getCompanyId(), User.class.getName(), user.getUserId());
 
 		Assert.assertEquals(tickets.toString(), 0, tickets.size());
+	}
+
+	@Test
+	public void testDeleteUserGroupUser() throws Exception {
+		User user = UserTestUtil.addUser();
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user);
+
+		Assert.assertTrue(
+			_userLocalService.hasUserGroupUser(
+				userGroup.getUserGroupId(), user.getUserId()));
+		Assert.assertEquals(
+			ListUtil.fromArray(user.getUserId()), _search(userGroup));
+
+		_userLocalService.deleteUserGroupUser(userGroup.getUserGroupId(), user);
+
+		Assert.assertFalse(
+			_userLocalService.hasUserGroupUser(
+				userGroup.getUserGroupId(), user.getUserId()));
+
+		Assert.assertEquals(Collections.emptyList(), _search(userGroup));
+	}
+
+	@Test
+	public void testDeleteUserGroupUsers() throws Exception {
+		User user1 = UserTestUtil.addUser();
+		User user2 = UserTestUtil.addUser();
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userLocalService.addUserGroupUsers(
+			userGroup.getUserGroupId(),
+			new long[] {user1.getUserId(), user2.getUserId()});
+
+		Assert.assertTrue(
+			_userLocalService.hasUserGroupUsers(userGroup.getUserGroupId()));
+		Assert.assertEquals(
+			ListUtil.sort(
+				ListUtil.fromArray(user1.getUserId(), user2.getUserId())),
+			_search(userGroup));
+
+		_userLocalService.deleteUserGroupUsers(
+			userGroup.getUserGroupId(), Collections.singletonList(user1));
+
+		Assert.assertFalse(
+			_userLocalService.hasUserGroupUser(
+				userGroup.getUserGroupId(), user1.getUserId()));
+		Assert.assertEquals(
+			ListUtil.fromArray(user2.getUserId()), _search(userGroup));
+
+		_userLocalService.deleteUserGroupUsers(
+			userGroup.getUserGroupId(), new long[] {user2.getUserId()});
+
+		Assert.assertFalse(
+			_userLocalService.hasUserGroupUsers(userGroup.getUserGroupId()));
+		Assert.assertEquals(Collections.emptyList(), _search(userGroup));
 	}
 
 	@Test
@@ -1946,6 +2006,20 @@ public class UserLocalServiceTest {
 		Assert.assertEquals(ldapUser ? 1 : -1, user.getLdapServerId());
 		Assert.assertTrue(user.isPasswordReset());
 		Assert.assertNotNull(user.getPasswordPolicy());
+	}
+
+	private List<Long> _search(UserGroup userGroup) {
+		Hits hits = _userLocalService.search(
+			userGroup.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
+			LinkedHashMapBuilder.<String, Object>put(
+				"usersUserGroups", userGroup.getUserGroupId()
+			).build(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, (Sort[])null);
+
+		return ListUtil.sort(
+			TransformUtil.transform(
+				hits.toList(),
+				document -> GetterUtil.getLong(document.get(Field.USER_ID))));
 	}
 
 	private void
