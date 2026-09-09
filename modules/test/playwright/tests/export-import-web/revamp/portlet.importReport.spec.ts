@@ -59,7 +59,10 @@ test(
 
 		const folderPath = await exportImportPage.download(exportName);
 
-		await apiHelpers.headlessAdminTaxonomy.deleteKeyword({id: tag.id});
+		await apiHelpers.headlessAdminTaxonomy.putKeyword({
+			id: tag.id,
+			name: `${tagName}-renamed`,
+		});
 
 		await apiHelpers.headlessAdminTaxonomy.postSiteKeyword({
 			name: tagName,

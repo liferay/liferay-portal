@@ -275,6 +275,20 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}
 
 	/**
+	 * It allows renaming a tag.
+	 *
+	 * @param id the id of the tag
+	 * @param name the new name of the tag
+	 */
+
+	async putKeyword({id, name}: {id: number; name: string}) {
+		return this.apiHelpers.put(
+			`${this.apiHelpers.baseUrl}${this.basePath}/keywords/${id}`,
+			{data: {name}}
+		);
+	}
+
+	/**
 	 * It allows deleting a tag.
 	 *
 	 * @param id the id of the tag
