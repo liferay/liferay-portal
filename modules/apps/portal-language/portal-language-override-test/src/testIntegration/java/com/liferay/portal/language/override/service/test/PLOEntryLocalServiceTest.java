@@ -77,7 +77,15 @@ public class PLOEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteByExternalReferenceCode() throws Exception {
+	public void testDeletePLOEntry() throws Throwable {
+		_testDeletePLOEntry();
+		_testDeletePLOEntryRollback();
+		_testDeletePLOEntryWithLegacyISOLanguageId();
+		_testDeletePLOEntryWithNoncanonicalLanguageId();
+	}
+
+	@Test
+	public void testDeletePLOEntryByExternalReferenceCode() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 
 		String externalReferenceCode = RandomTestUtil.randomString();
@@ -91,14 +99,6 @@ public class PLOEntryLocalServiceTest {
 
 		Assert.assertNull(
 			_ploEntryLocalService.fetchPLOEntry(ploEntry.getPloEntryId()));
-	}
-
-	@Test
-	public void testDeletePLOEntry() throws Throwable {
-		_testDeletePLOEntry();
-		_testDeletePLOEntryRollback();
-		_testDeletePLOEntryWithLegacyISOLanguageId();
-		_testDeletePLOEntryWithNoncanonicalLanguageId();
 	}
 
 	@Test
