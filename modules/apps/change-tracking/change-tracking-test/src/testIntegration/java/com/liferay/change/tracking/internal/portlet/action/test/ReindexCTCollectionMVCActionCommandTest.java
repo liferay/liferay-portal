@@ -84,7 +84,6 @@ public class ReindexCTCollectionMVCActionCommandTest {
 			Assert.assertArrayEquals(
 				new String[] {ActionKeys.UPDATE},
 				mustHavePermissionException.actionId);
-
 			Assert.assertEquals(
 				_ctCollection.getCtCollectionId(),
 				mustHavePermissionException.resourceId);
