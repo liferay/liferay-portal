@@ -24,6 +24,7 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:item-selector:item-selector-api")
+	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:message-boards:message-boards-service")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
