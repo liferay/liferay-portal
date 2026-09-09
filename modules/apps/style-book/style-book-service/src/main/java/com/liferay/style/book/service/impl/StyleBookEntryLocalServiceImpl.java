@@ -495,7 +495,8 @@ public class StyleBookEntryLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public StyleBookEntry updateFrontendTokenDefinition(
-			long styleBookEntryId, String frontendTokenDefinition)
+			long styleBookEntryId, String frontendTokenDefinition,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		StyleBookEntry styleBookEntry =
@@ -514,7 +515,7 @@ public class StyleBookEntryLocalServiceImpl
 			updateDraft(draftStyleBookEntry);
 		}
 
-		return styleBookEntryPersistence.update(styleBookEntry);
+		return styleBookEntryPersistence.update(styleBookEntry, serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
