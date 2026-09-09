@@ -274,7 +274,7 @@ const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => (
  * day.
  */
 const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
-	item: {individualId, individualName, individualUrl, isAnonymous},
+	item: {individualId, individualName, individualUrl, isAnonymous, jobTitle},
 }) => (
 	<li className="timeline-row individual-row bg-white w-100">
 		<div className="row-content flex-fill d-flex align-items-center">
@@ -300,10 +300,10 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 					</span>
 				)}
 
-				{individualId && (
+				{(jobTitle || individualId) && (
 					<div className="individual-id">
 						<Text color="secondary" size={3} weight="normal">
-							{individualId}
+							{jobTitle || individualId}
 						</Text>
 					</div>
 				)}

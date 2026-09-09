@@ -101,6 +101,7 @@ export type VerticalTimelineIndividual = {
 	individualName: string;
 	individualUrl?: string;
 	isAnonymous: boolean;
+	jobTitle?: string;
 };
 
 /**
@@ -154,11 +155,15 @@ export type TimelineDay = {
 
 export interface ActivityHistoryPoint {
 	intervalInitDate: number;
+	totalCampaignActivities?: number;
 	totalEvents: number;
 	totalSessions?: number;
 }
 
 interface EventMetricLike {
+	totalCampaignActivitiesMetric?: {
+		histogram?: {metrics?: Array<{value: number}>};
+	};
 	totalEventsMetric: {
 		histogram: {metrics?: Array<{key: string; value: number}>};
 	};
@@ -178,6 +183,9 @@ export const mapEventMetricToActivityHistory = (
 	eventMetric.totalEventsMetric.histogram.metrics?.map(
 		({key, value}, index) => ({
 			intervalInitDate: moment.utc(key).valueOf(),
+			totalCampaignActivities:
+				eventMetric?.totalCampaignActivitiesMetric?.histogram
+					?.metrics?.[index]?.value,
 			totalEvents: value,
 			totalSessions:
 				eventMetric?.totalSessionsMetric?.histogram?.metrics?.[index]

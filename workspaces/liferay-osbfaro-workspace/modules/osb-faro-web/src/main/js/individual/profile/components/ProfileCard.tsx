@@ -10,7 +10,6 @@ import EventMetricQuery, {
 } from 'shared/queries/EventMetricQuery';
 import IntervalSelector from 'shared/components/IntervalSelector';
 import Loading from 'shared/components/Loading';
-import moment from 'moment';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useState} from 'react';
 import SearchInput from 'shared/components/SearchInput';
@@ -30,7 +29,11 @@ import {
 } from 'shared/util/date';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {fetchPolicyDefinition} from 'shared/util/graphql';
-import {formatSessions, getActivityLabel} from 'shared/util/activities';
+import {
+	formatSessions,
+	getActivityLabel,
+	mapEventMetricToActivityHistory,
+} from 'shared/util/activities';
 import {getSafeRangeSelectors} from 'shared/util/util';
 import {Individual} from 'shared/util/records';
 import {Interval, RangeSelectors, SafeRangeSelectors} from 'shared/types';
@@ -127,16 +130,7 @@ const ProfileCard: React.FC<IProfileCardProps> = ({
 		refetch,
 		total: activityTotal,
 	} = mapListResultsToProps(activityResponse, ({eventMetric}) => ({
-		items: eventMetric.totalEventsMetric.histogram.metrics?.map(
-			({key, value}, index: number) => ({
-				intervalInitDate: moment.utc(key).valueOf(),
-				totalEvents: value,
-				totalSessions:
-					eventMetric?.totalSessionsMetric?.histogram?.metrics?.[
-						index
-					].value,
-			})
-		),
+		items: mapEventMetricToActivityHistory(eventMetric),
 		total: eventMetric.totalEventsMetric?.value,
 	}));
 

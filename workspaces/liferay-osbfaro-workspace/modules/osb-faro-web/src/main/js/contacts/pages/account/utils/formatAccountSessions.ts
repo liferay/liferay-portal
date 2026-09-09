@@ -26,7 +26,7 @@ const ANONYMOUS_KEY = '__anonymous__';
  * two ids is available.
  */
 const getIndividual = (
-	{individualId, userId, userName}: AccountUserSession,
+	{individualId, jobTitle, userId, userName}: AccountUserSession,
 	{channelId, groupId}: EventDashboardContext
 ): VerticalTimelineIndividual => {
 	const isAnonymous = !individualId;
@@ -49,6 +49,7 @@ const getIndividual = (
 				}),
 			}),
 		isAnonymous,
+		...(jobTitle && {jobTitle}),
 	};
 };
 

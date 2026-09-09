@@ -9,7 +9,8 @@ import {
 	getSafeRangeKey,
 	groupEventsByPage,
 	groupSessionsByDay,
-	isWebhookUserAgent
+	isWebhookUserAgent,
+	mapEventMetricToActivityHistory
 } from '../activities';
 
 describe('activities', () => {
@@ -629,6 +630,43 @@ describe('activities', () => {
 			expect(Array.isArray(result)).toBe(true);
 			expect(result.length).toBe(2);
 			expect(result[0]).toContain('Events');
+		});
+	});
+
+	describe('mapEventMetricToActivityHistory', () => {
+		const buildEventMetric = (extra = {}) => ({
+			totalEventsMetric: {
+				histogram: {
+					metrics: [
+						{key: '2026-09-07T00:00:00Z', value: 7},
+						{key: '2026-09-08T00:00:00Z', value: 4}
+					]
+				}
+			},
+			totalSessionsMetric: {
+				histogram: {metrics: [{value: 3}, {value: 2}]}
+			},
+			...extra
+		});
+
+		it('carries the campaign activities of each interval', () => {
+			const points = mapEventMetricToActivityHistory(
+				buildEventMetric({
+					totalCampaignActivitiesMetric: {
+						histogram: {metrics: [{value: 5}, {value: 1}]}
+					}
+				})
+			);
+
+			expect(points.map(({totalCampaignActivities}) => totalCampaignActivities)).toEqual([5, 1]);
+		});
+
+		it('leaves the campaign activities undefined while the metric is absent', () => {
+			const points = mapEventMetricToActivityHistory(buildEventMetric());
+
+			expect(points[0].totalCampaignActivities).toBeUndefined();
+			expect(points[0].totalEvents).toBe(7);
+			expect(points[0].totalSessions).toBe(3);
 		});
 	});
 

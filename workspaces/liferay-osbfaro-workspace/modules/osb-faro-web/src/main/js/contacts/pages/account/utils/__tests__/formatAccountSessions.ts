@@ -89,6 +89,26 @@ describe('formatAccountSessions', () => {
 		).toEqual(['Ada Lovelace', 'Alan Turing', 'Grace Hopper']);
 	});
 
+	it('carries the job title of a known individual onto their row', () => {
+		const days = formatAccountSessions([
+			buildSession({
+				individualId: 'ind-1',
+				jobTitle: 'Plant Manager',
+				userName: 'Elena Ruiz',
+			}),
+		]);
+
+		expect(individualsOf(days)[0].jobTitle).toBe('Plant Manager');
+	});
+
+	it('leaves the job title off a row whose session has none', () => {
+		const days = formatAccountSessions([
+			buildSession({individualId: 'ind-1', userName: 'Elena Ruiz'}),
+		]);
+
+		expect(individualsOf(days)[0]).not.toHaveProperty('jobTitle');
+	});
+
 	it('keeps each day self-contained, holding only that day rows', () => {
 		const days = formatAccountSessions([
 			buildSession({

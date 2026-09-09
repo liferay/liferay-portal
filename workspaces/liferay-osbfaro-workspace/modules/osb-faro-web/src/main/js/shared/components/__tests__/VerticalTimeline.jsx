@@ -61,6 +61,15 @@ describe('VerticalTimeline', () => {
 			expect(screen.getByText('e484348e-anon')).toBeInTheDocument();
 		});
 
+		it('shows the job title on its own line when the session carries one', () => {
+			renderTimeline({
+				items: [{...INDIVIDUAL_ITEM, jobTitle: 'Plant Manager'}]
+			});
+
+			expect(screen.getByText('Plant Manager')).toBeInTheDocument();
+			expect(screen.queryByText('ind-1')).toBeNull();
+		});
+
 		it('is not expandable', () => {
 			const {container} = renderTimeline({items: [INDIVIDUAL_ITEM]});
 

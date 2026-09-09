@@ -31,6 +31,7 @@ export interface AccountUserSession {
 	deviceType: string;
 	events: AccountUserSessionEvent[];
 	individualId: string | null;
+	jobTitle?: string | null;
 	languageId: string;
 	screenHeight: number;
 	screenWidth: number;
