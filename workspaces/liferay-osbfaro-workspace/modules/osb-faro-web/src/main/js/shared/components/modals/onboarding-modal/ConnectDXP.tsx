@@ -500,7 +500,7 @@ const TokenInput: FC<ITokenInputProps> = ({token}) => {
 						<CopyButton
 							className={copyButtonClassName}
 							displayType="unstyled"
-							onClick={() => {
+							onCopy={() => {
 								setTokenCopied(true);
 							}}
 							text={token}
