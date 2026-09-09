@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Style Book Test Utilities
+Bundle-SymbolicName: com.liferay.style.book.test.util
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.style.book.test.util

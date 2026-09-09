@@ -185,6 +185,11 @@ public class FrontendTokenDefinitionUtilTest {
 			"");
 
 		Assert.assertTrue(frontendTokenNames.isEmpty());
+
+		frontendTokenNames = FrontendTokenDefinitionUtil.getFrontendTokenNames(
+			(JSONObject)null);
+
+		Assert.assertTrue(frontendTokenNames.isEmpty());
 	}
 
 	private void _testGetFrontendTokenNamesWithDuplicateName() {

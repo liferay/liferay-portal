@@ -6,8 +6,6 @@
 package com.liferay.style.book.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -25,6 +23,7 @@ import com.liferay.style.book.exception.DuplicateStyleBookEntryExternalReference
 import com.liferay.style.book.exception.StyleBookEntryThemeIdException;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
+import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -124,6 +123,48 @@ public class StyleBookEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testCopyStyleBookEntry() throws Exception {
+		String frontendTokenDefinition =
+			FrontendTokenDefinitionTestUtil.getFrontendTokenDefinition(
+				RandomTestUtil.randomString());
+
+		StyleBookEntry sourceStyleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), false, frontendTokenDefinition,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				null, RandomTestUtil.randomString(), _serviceContext);
+
+		StyleBookEntry draftStyleBookEntry =
+			_styleBookEntryLocalService.getDraft(sourceStyleBookEntry);
+
+		String draftFrontendTokenDefinition =
+			FrontendTokenDefinitionTestUtil.getFrontendTokenDefinition(
+				RandomTestUtil.randomString());
+
+		draftStyleBookEntry.setFrontendTokenDefinition(
+			draftFrontendTokenDefinition);
+
+		_styleBookEntryLocalService.updateDraft(draftStyleBookEntry);
+
+		StyleBookEntry copyStyleBookEntry =
+			_styleBookEntryLocalService.copyStyleBookEntry(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				sourceStyleBookEntry.getStyleBookEntryId(), _serviceContext);
+
+		Assert.assertEquals(
+			frontendTokenDefinition,
+			copyStyleBookEntry.getFrontendTokenDefinition());
+
+		StyleBookEntry copyDraftStyleBookEntry =
+			_styleBookEntryLocalService.getDraft(copyStyleBookEntry);
+
+		Assert.assertEquals(
+			draftFrontendTokenDefinition,
+			copyDraftStyleBookEntry.getFrontendTokenDefinition());
+	}
+
+	@Test
 	public void testDeleteGroup() throws Exception {
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
@@ -218,49 +259,13 @@ public class StyleBookEntryLocalServiceTest {
 
 		long styleBookEntryId = styleBookEntry.getStyleBookEntryId();
 
-		String frontendTokenDefinition = JSONUtil.put(
-			"frontendTokenCategories",
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"frontendTokenSets",
-					JSONUtil.putAll(
-						JSONUtil.put(
-							"frontendTokens",
-							JSONUtil.putAll(
-								JSONUtil.put(
-									"defaultValue",
-									RandomTestUtil.randomString()
-								).put(
-									"editorType", "ColorPicker"
-								).put(
-									"label", RandomTestUtil.randomString()
-								).put(
-									"mappings",
-									JSONUtil.putAll(
-										JSONUtil.put(
-											"type", "cssVariable"
-										).put(
-											"value",
-											RandomTestUtil.randomString()
-										))
-								).put(
-									"name", RandomTestUtil.randomString()
-								).put(
-									"type", "String"
-								))
-						).put(
-							"label", RandomTestUtil.randomString()
-						).put(
-							"name", RandomTestUtil.randomString()
-						))
-				).put(
-					"name", RandomTestUtil.randomString()
-				))
-		).toString();
+		String frontendTokenDefinition =
+			FrontendTokenDefinitionTestUtil.getFrontendTokenDefinition(
+				RandomTestUtil.randomString());
 
 		styleBookEntry =
 			_styleBookEntryLocalService.updateFrontendTokenDefinition(
-				styleBookEntryId, frontendTokenDefinition);
+				styleBookEntryId, frontendTokenDefinition, _serviceContext);
 
 		Assert.assertEquals(
 			frontendTokenDefinition,

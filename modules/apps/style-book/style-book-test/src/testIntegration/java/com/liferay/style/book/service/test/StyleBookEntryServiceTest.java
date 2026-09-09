@@ -11,7 +11,6 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -33,6 +32,7 @@ import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.service.StyleBookEntryService;
+import com.liferay.style.book.test.util.FrontendTokenDefinitionTestUtil;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -252,45 +252,9 @@ public class StyleBookEntryServiceTest {
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(), _serviceContext);
 
-		String frontendTokenDefinition = JSONUtil.put(
-			"frontendTokenCategories",
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"frontendTokenSets",
-					JSONUtil.putAll(
-						JSONUtil.put(
-							"frontendTokens",
-							JSONUtil.putAll(
-								JSONUtil.put(
-									"defaultValue",
-									RandomTestUtil.randomString()
-								).put(
-									"editorType", "ColorPicker"
-								).put(
-									"label", RandomTestUtil.randomString()
-								).put(
-									"mappings",
-									JSONUtil.putAll(
-										JSONUtil.put(
-											"type", "cssVariable"
-										).put(
-											"value",
-											RandomTestUtil.randomString()
-										))
-								).put(
-									"name", RandomTestUtil.randomString()
-								).put(
-									"type", "String"
-								))
-						).put(
-							"label", RandomTestUtil.randomString()
-						).put(
-							"name", RandomTestUtil.randomString()
-						))
-				).put(
-					"name", RandomTestUtil.randomString()
-				))
-		).toString();
+		String frontendTokenDefinition =
+			FrontendTokenDefinitionTestUtil.getFrontendTokenDefinition(
+				RandomTestUtil.randomString());
 
 		User user = UserTestUtil.addGroupUser(
 			_group, RoleConstants.SITE_MEMBER);
