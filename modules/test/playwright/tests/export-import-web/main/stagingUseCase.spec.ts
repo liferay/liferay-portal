@@ -265,6 +265,7 @@ test('Staging only approved content goes to live', async ({
 	pageEditorPage,
 	stagingPage,
 	webContentDisplayPage,
+	widgetPagePage,
 	workflowPage,
 	workflowTasksPage,
 }) => {
@@ -315,6 +316,21 @@ test('Staging only approved content goes to live', async ({
 			`${site.friendlyUrlPath}-staging`
 		);
 
+	// The staging copies keep the external reference code of the live pages,
+	// but their draft layouts have their own friendly URLs, so the page editor
+	// must be opened through the staging drafts
+
+	const stagingDraftLayout1 =
+		await apiHelpers.jsonWebServicesLayout.getDraftLayoutByExternalReferenceCode(
+			layout1.externalReferenceCode,
+			stagingSite.id
+		);
+	const stagingDraftLayout2 =
+		await apiHelpers.jsonWebServicesLayout.getDraftLayoutByExternalReferenceCode(
+			layout2.externalReferenceCode,
+			stagingSite.id
+		);
+
 	const webcontentContent1 = getRandomString();
 	const webcontentContent2 = getRandomString();
 	const basicWebcontentStructureId =
@@ -333,7 +349,7 @@ test('Staging only approved content goes to live', async ({
 		titleMap: {en_US: getRandomString()},
 	});
 
-	await pageEditorPage.goto(layout1, stagingSite.friendlyUrlPath);
+	await pageEditorPage.goto(stagingDraftLayout1, stagingSite.friendlyUrlPath);
 
 	await webContentDisplayPage.addWebContentWithDisplay({
 		pageType: 'content',
@@ -341,7 +357,7 @@ test('Staging only approved content goes to live', async ({
 	});
 
 	await pageEditorPage.publishPage();
-	await pageEditorPage.goto(layout2, stagingSite.friendlyUrlPath);
+	await pageEditorPage.goto(stagingDraftLayout2, stagingSite.friendlyUrlPath);
 
 	await webContentDisplayPage.addWebContentWithDisplay({
 		pageType: 'content',
@@ -356,7 +372,7 @@ test('Staging only approved content goes to live', async ({
 	await workflowTasksPage.assignToMe(webContent2.title);
 	await workflowTasksPage.approve(webContent1.title);
 
-	await pageEditorPage.goto(layout1, stagingSite.friendlyUrlPath);
+	await pageEditorPage.goto(stagingDraftLayout1, stagingSite.friendlyUrlPath);
 	await reloadUntilVisible({
 		myLocator: page.getByText(webcontentContent1, {exact: true}),
 		page,
@@ -365,7 +381,7 @@ test('Staging only approved content goes to live', async ({
 		page.getByText(webcontentContent1, {exact: true})
 	).toBeVisible();
 
-	await pageEditorPage.goto(layout2, stagingSite.friendlyUrlPath);
+	await pageEditorPage.goto(stagingDraftLayout2, stagingSite.friendlyUrlPath);
 	await expect(
 		page.getByText(`${webContent2.title} is not approved.`)
 	).toBeVisible();
@@ -373,7 +389,9 @@ test('Staging only approved content goes to live', async ({
 	await stagingPage.goto(`${site.name}-staging`);
 	await stagingPage.publish();
 
-	await pageEditorPage.goto(layout1, site.friendlyUrlPath);
+	// Live pages of a staged site cannot be edited, so check them in view mode
+
+	await widgetPagePage.goto(layout1, site.friendlyUrlPath);
 	await reloadUntilVisible({
 		myLocator: page.getByText(webcontentContent1, {exact: true}),
 		page,
@@ -382,7 +400,7 @@ test('Staging only approved content goes to live', async ({
 		page.getByText(webcontentContent1, {exact: true})
 	).toBeVisible();
 
-	await pageEditorPage.goto(layout2, site.friendlyUrlPath);
+	await widgetPagePage.goto(layout2, site.friendlyUrlPath);
 	await expect(
 		page.getByText(webcontentContent2, {exact: true})
 	).toBeHidden();
@@ -398,12 +416,12 @@ test('Staging only approved content goes to live', async ({
 		webContent2.articleId
 	);
 
-	await pageEditorPage.goto(layout2, site.friendlyUrlPath);
+	await widgetPagePage.goto(layout2, site.friendlyUrlPath);
 
 	await stagingPage.goto(`${site.name}-staging`);
 	await stagingPage.publish();
 
-	await pageEditorPage.goto(layout2, stagingSite.friendlyUrlPath);
+	await pageEditorPage.goto(stagingDraftLayout2, stagingSite.friendlyUrlPath);
 
 	await expect(
 		page.getByText(

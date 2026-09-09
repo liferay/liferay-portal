@@ -145,13 +145,27 @@ export class JSONWebServicesLayoutApiHelper {
 	 * code of its live layout with a '-draft' suffix.
 	 */
 	async getDraftLayout(layout: Layout): Promise<Layout> {
+		return this.getDraftLayoutByExternalReferenceCode(
+			layout.externalReferenceCode,
+			layout.groupId
+		);
+	}
+
+	/**
+	 * Returns the draft layout of the content layout with the given external
+	 * reference code in the given group.
+	 */
+	async getDraftLayoutByExternalReferenceCode(
+		externalReferenceCode: string,
+		groupId: string
+	): Promise<Layout> {
 		const urlSearchParams = new URLSearchParams();
 
 		urlSearchParams.append(
 			'externalReferenceCode',
-			`${layout.externalReferenceCode}-draft`
+			`${externalReferenceCode}-draft`
 		);
-		urlSearchParams.append('groupId', layout.groupId);
+		urlSearchParams.append('groupId', groupId);
 
 		return this.apiHelpers.post(
 			`${liferayConfig.environment.baseUrl}${this.basePath}/get-layout-by-external-reference-code`,
