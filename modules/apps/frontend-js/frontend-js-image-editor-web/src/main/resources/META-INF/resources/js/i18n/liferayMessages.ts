@@ -10,11 +10,13 @@ import {EditorMessages} from './index';
  * edit by hand. The numeric ratio keys resolve to themselves by design.
  */
 export const liferayMessages: EditorMessages = {
+	'cancel': Liferay.Language.get('cancel'),
 	'close': Liferay.Language.get('close'),
 	'editing-image': Liferay.Language.get('editing-image'),
 	'editor-loaded': Liferay.Language.get('editor-loaded'),
 	'flip-horizontal': Liferay.Language.get('flip-horizontal'),
 	'flipped-horizontal': Liferay.Language.get('flipped-horizontal'),
+	'image-saved-as-x': Liferay.Language.get('image-saved-as-x'),
 	'image-workspace': Liferay.Language.get('image-workspace'),
 	'label-flip': Liferay.Language.get('label-flip'),
 	'label-rotate': Liferay.Language.get('label-rotate'),
@@ -22,6 +24,9 @@ export const liferayMessages: EditorMessages = {
 	'redo-x': Liferay.Language.get('redo-x'),
 	'rotate-90': Liferay.Language.get('rotate-90'),
 	'rotated-90': Liferay.Language.get('rotated-90'),
+	'save': Liferay.Language.get('save'),
+	'save-failed': Liferay.Language.get('save-failed'),
+	'saving': Liferay.Language.get('saving'),
 	'undo': Liferay.Language.get('undo'),
 	'undo-x': Liferay.Language.get('undo-x'),
 	'workspace-description': Liferay.Language.get('workspace-description'),

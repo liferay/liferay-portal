@@ -4,7 +4,7 @@
  */
 
 export {ImageEditor} from './ImageEditor';
-export type {ImageEditorProps} from './ImageEditor';
+export type {EditorSaveResult, ImageEditorProps} from './ImageEditor';
 
 export type {EditorMessages} from './i18n';
 export {setMessages} from './i18n';
@@ -15,3 +15,5 @@ export {
 	disposeLoadedImage,
 	loadImage,
 } from './imaging/loadImage';
+
+export type {EditState} from './state/types';

@@ -9,8 +9,10 @@ import {ClayIconSpriteContext} from '@clayui/icon';
 import React from 'react';
 
 import {AnnouncerProvider} from './chrome/Announcer';
-import EditorModal from './editor/EditorModal';
+import EditorModal, {EditorSaveResult} from './editor/EditorModal';
 import {LoadedImage} from './imaging/loadImage';
+
+export type {EditorSaveResult};
 
 export function sessionKeyOf(image: LoadedImage): string {
 	return image.previewUrl;
@@ -20,10 +22,20 @@ export interface ImageEditorProps {
 	image: LoadedImage;
 	onClose: () => void;
 
+	onSave: (
+		result: EditorSaveResult,
+		signal: AbortSignal
+	) => Promise<void> | void;
+
 	spritemap: string;
 }
 
-export function ImageEditor({image, onClose, spritemap}: ImageEditorProps) {
+export function ImageEditor({
+	image,
+	onClose,
+	onSave,
+	spritemap,
+}: ImageEditorProps) {
 	return (
 		<ClayIconSpriteContext.Provider value={spritemap}>
 			<AnnouncerProvider>
@@ -31,6 +43,7 @@ export function ImageEditor({image, onClose, spritemap}: ImageEditorProps) {
 					image={image}
 					key={sessionKeyOf(image)}
 					onClose={onClose}
+					onSave={onSave}
 				/>
 			</AnnouncerProvider>
 		</ClayIconSpriteContext.Provider>

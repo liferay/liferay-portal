@@ -4,11 +4,13 @@
  */
 
 export default {
+	'cancel': 'Cancel',
 	'close': 'Close',
 	'editing-image': 'Editing image',
 	'editor-loaded': 'Image editor opened. Image is {0} by {1} pixels.',
 	'flip-horizontal': 'Flip horizontally',
 	'flipped-horizontal': 'Image flipped horizontally',
+	'image-saved-as-x': 'Image saved as {0}',
 	'image-workspace': 'Image workspace',
 	'label-flip': 'Flip',
 	'label-rotate': 'rotation',
@@ -16,6 +18,9 @@ export default {
 	'redo-x': 'Redo {0}',
 	'rotate-90': 'Rotate 90 degrees clockwise',
 	'rotated-90': 'Rotated 90 degrees clockwise',
+	'save': 'Save',
+	'save-failed': 'Saving failed. Please try again.',
+	'saving': 'Saving',
 	'undo': 'Undo',
 	'undo-x': 'Undo {0}',
 	'workspace-description':

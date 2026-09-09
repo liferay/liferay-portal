@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ClayButtonWithIcon} from '@clayui/button';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
 import ClayModal from '@clayui/modal';
 import React from 'react';
 
@@ -15,10 +15,13 @@ interface Props {
 	canUndo: boolean;
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
+	onCancel: () => void;
 	onRedo: () => void;
+	onSave: () => void;
 	onUndo: () => void;
 	onZoom: (direction: -1 | 1) => void;
 	onZoomFit: () => void;
+	saving: boolean;
 	zoom: number;
 }
 
@@ -27,10 +30,13 @@ export function BottomBar({
 	canUndo,
 	dispatch,
 	onAnnounce,
+	onCancel,
 	onRedo,
+	onSave,
 	onUndo,
 	onZoom,
 	onZoomFit,
+	saving,
 	zoom,
 }: Props) {
 	return (
@@ -89,6 +95,27 @@ export function BottomBar({
 						symbol="redo"
 						title={t('redo')}
 					/>
+				</div>
+			}
+			last={
+				<div aria-busy={saving} className="editor-bar-group">
+					<ClayButton
+						disabled={saving}
+						displayType="secondary"
+						onClick={onCancel}
+					>
+						{t('cancel')}
+					</ClayButton>
+
+					<ClayButton
+						disabled={saving}
+						displayType="primary"
+						onClick={onSave}
+					>
+						{saving
+							? t('saving')
+							: t('save')}
+					</ClayButton>
 				</div>
 			}
 			middle={

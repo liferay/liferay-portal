@@ -51,10 +51,13 @@ function EditorHarness() {
 				canUndo={!!history.past.length}
 				dispatch={dispatch}
 				onAnnounce={() => {}}
+				onCancel={() => {}}
 				onRedo={() => dispatch({type: 'redo'})}
+				onSave={() => {}}
 				onUndo={() => dispatch({type: 'undo'})}
 				onZoom={zoomBy}
 				onZoomFit={() => setZoom(0.5)}
+				saving={false}
 				zoom={zoom}
 			/>
 		</>

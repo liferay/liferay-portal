@@ -49,8 +49,8 @@ describe('the catalogues stay in step', () => {
 
 describe('the i18n seam', () => {
 	it('formats Liferay-style placeholders', () => {
-		expect(t('editor-loaded', 1200, 800)).toBe(
-			'Image editor opened. Image is 1200 by 800 pixels.'
+		expect(t('image-saved-as-x', 'photo.jpg')).toBe(
+			'Image saved as photo.jpg'
 		);
 	});
 
@@ -59,14 +59,14 @@ describe('the i18n seam', () => {
 	});
 
 	it('lets a host override part of the dictionary, Clay-style', () => {
-		setMessages({close: 'Cerrar'});
+		setMessages({save: 'Guardar'});
 
-		expect(t('close')).toBe('Cerrar');
+		expect(t('save')).toBe('Guardar');
 
-		expect(t('editing-image')).toBe('Editing image');
+		expect(t('cancel')).toBe('Cancel');
 
 		setMessages(null);
 
-		expect(t('close')).toBe('Close');
+		expect(t('save')).toBe('Save');
 	});
 });

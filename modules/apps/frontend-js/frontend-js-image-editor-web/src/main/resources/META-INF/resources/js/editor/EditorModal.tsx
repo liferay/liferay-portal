@@ -13,12 +13,13 @@ import {
 	nextEditorInstancePrefix,
 } from '../chrome/instance';
 import {useEditorHistory} from '../hooks/useEditorHistory';
+import {useSaveController} from '../hooks/useSaveController';
 import {t} from '../i18n';
 import {anchoredScroll} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
 import {Workspace} from '../stage/Workspace';
 import {redoLabel, undoLabel} from '../state/editorReducer';
-import {rotatedSize} from '../state/types';
+import {EditState, rotatedSize} from '../state/types';
 
 const ZOOM_LEVELS = [0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.75, 1, 1.5, 2, 3];
 
@@ -52,22 +53,51 @@ function stepZoom(zoom: number, direction: -1 | 1): number {
 	return smaller.length ? smaller[smaller.length - 1] : zoom;
 }
 
+export interface EditorSaveResult {
+	blob: Blob;
+	fileName: string;
+	state: EditState;
+}
+
 interface Props {
 	image: LoadedImage;
 	onClose: () => void;
+
+	onSave: (
+		result: EditorSaveResult,
+		signal: AbortSignal
+	) => Promise<void> | void;
 }
 
-export default function EditorModal({image, onClose}: Props) {
+export default function EditorModal({image, onClose, onSave}: Props) {
 	const [instancePrefix] = useState(nextEditorInstancePrefix);
 
 	const announce = useAnnouncer();
 
-	const {observer} = useModal({onClose});
+	const {observer, onClose: closeModal} = useModal({onClose});
+
+	const savingRef = useRef(false);
 
 	const {dispatch, editorRef, handleUndoShortcut, history, redo, undo} =
-		useEditorHistory(image, announce);
+		useEditorHistory(image, announce, () => savingRef.current);
 
 	const state = history.present;
+
+	const {handleSave, saveError, saving} = useSaveController(
+		image,
+		state,
+		onSave,
+		announce,
+		closeModal
+	);
+
+	useEffect(() => {
+		savingRef.current = saving;
+	});
+
+	useEffect(() => {
+		editorRef.current?.toggleAttribute('inert', saving);
+	}, [saving, editorRef]);
 
 	const [zoom, setZoom] = useState(() =>
 		fitZoom(null, image.width, image.height)
@@ -269,15 +299,27 @@ export default function EditorModal({image, onClose}: Props) {
 						/>
 					</div>
 
+					{saveError && (
+						<div
+							className="alert alert-danger editor-save-error"
+							role="alert"
+						>
+							{t('save-failed')}
+						</div>
+					)}
+
 					<BottomBar
 						canRedo={!!redoLabel(history)}
 						canUndo={!!undoLabel(history)}
 						dispatch={dispatch}
 						onAnnounce={announce}
+						onCancel={closeModal}
 						onRedo={redo}
+						onSave={handleSave}
 						onUndo={undo}
 						onZoom={zoomBy}
 						onZoomFit={zoomToFit}
+						saving={saving}
 						zoom={zoom}
 					/>
 				</div>
