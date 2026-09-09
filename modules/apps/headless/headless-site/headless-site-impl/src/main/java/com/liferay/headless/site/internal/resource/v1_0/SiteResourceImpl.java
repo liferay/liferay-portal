@@ -204,6 +204,16 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			group = _addGroup(externalReferenceCode, site);
 		}
 		else {
+			if (!group.isSite()) {
+				throw new IllegalArgumentException(
+					"No site exists with external reference code " +
+						externalReferenceCode);
+			}
+
+			GroupPermissionUtil.check(
+				PermissionThreadLocal.getPermissionChecker(), group,
+				ActionKeys.UPDATE);
+
 			group = _updateGroup(group, site);
 		}
 
