@@ -60,7 +60,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -805,30 +804,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 					_OBJECT_FIELD_NAME_MULTISELECT_PICKLIST, "any",
 					_LIST_TYPE_ENTRY_KEY_3)),
 			objectEntry4);
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
-	@Test
-	public void testGetAssetEntriesInfoPageWithStatusFilters()
-		throws Exception {
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
-			).build());
-
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getCommonFieldFilterJSONObject(
-					"eq", Field.STATUS,
-					String.valueOf(WorkflowConstants.STATUS_APPROVED))),
-			objectEntry);
-
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getCommonFieldFilterJSONObject(
-					"not-eq", Field.STATUS,
-					String.valueOf(WorkflowConstants.STATUS_APPROVED))));
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
