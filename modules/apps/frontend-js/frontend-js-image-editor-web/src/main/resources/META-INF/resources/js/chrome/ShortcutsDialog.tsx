@@ -94,7 +94,7 @@ export function ShortcutsDialog({onOpenChange, open}: Props) {
 	}
 
 	return (
-		<ClayModal observer={observer}>
+		<ClayModal className="image-editor-shortcuts" observer={observer}>
 			<div
 				onKeyDown={(event: React.KeyboardEvent) => {
 					if (event.key !== 'Escape') {

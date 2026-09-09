@@ -74,7 +74,7 @@
 	text-align: center;
 }
 
-.image-editor .editor-shortcut-list {
+.image-editor-shortcuts .editor-shortcut-list {
 	align-items: center;
 	display: grid;
 	gap: 0.625rem 1.25rem;
@@ -82,15 +82,15 @@
 	margin: 0;
 }
 
-.image-editor .editor-shortcut-list dt {
+.image-editor-shortcuts .editor-shortcut-list dt {
 	font-weight: 400;
 }
 
-.image-editor .editor-shortcut-list kbd {
+.image-editor-shortcuts .editor-shortcut-list kbd {
 	white-space: nowrap;
 }
 
-.image-editor .editor-shortcut-list dd {
+.image-editor-shortcuts .editor-shortcut-list dd {
 	margin: 0;
 }
 
