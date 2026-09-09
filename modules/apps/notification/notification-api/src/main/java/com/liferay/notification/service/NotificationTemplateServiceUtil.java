@@ -66,6 +66,15 @@ public class NotificationTemplateServiceUtil {
 		return getService().getNotificationTemplate(notificationTemplateId);
 	}
 
+	public static NotificationTemplate
+			getNotificationTemplateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().getNotificationTemplateByExternalReferenceCode(
+			externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -93,4 +102,4 @@ public class NotificationTemplateServiceUtil {
 			NotificationTemplateService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1492224974
+// LIFERAY-SERVICE-BUILDER-HASH:-1989646015

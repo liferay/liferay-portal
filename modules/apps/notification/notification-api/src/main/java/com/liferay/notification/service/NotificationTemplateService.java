@@ -64,6 +64,11 @@ public interface NotificationTemplateService extends BaseService {
 			long notificationTemplateId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public NotificationTemplate getNotificationTemplateByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -76,4 +81,4 @@ public interface NotificationTemplateService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:54011445
+// LIFERAY-SERVICE-BUILDER-HASH:1823797729

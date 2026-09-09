@@ -262,6 +262,50 @@ public class NotificationTemplateServiceHttp {
 	}
 
 	public static com.liferay.notification.model.NotificationTemplate
+			getNotificationTemplateByExternalReferenceCode(
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				NotificationTemplateServiceUtil.class,
+				"getNotificationTemplateByExternalReferenceCode",
+				_getNotificationTemplateByExternalReferenceCodeParameterTypes5);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, companyId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.notification.model.NotificationTemplate)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.notification.model.NotificationTemplate
 			updateNotificationTemplate(
 				HttpPrincipal httpPrincipal,
 				com.liferay.notification.context.NotificationContext
@@ -272,7 +316,7 @@ public class NotificationTemplateServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				NotificationTemplateServiceUtil.class,
 				"updateNotificationTemplate",
-				_updateNotificationTemplateParameterTypes5);
+				_updateNotificationTemplateParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, notificationContext);
@@ -322,10 +366,13 @@ public class NotificationTemplateServiceHttp {
 			new Class[] {String.class, long.class};
 	private static final Class<?>[] _getNotificationTemplateParameterTypes4 =
 		new Class[] {long.class};
-	private static final Class<?>[] _updateNotificationTemplateParameterTypes5 =
+	private static final Class<?>[]
+		_getNotificationTemplateByExternalReferenceCodeParameterTypes5 =
+			new Class[] {String.class, long.class};
+	private static final Class<?>[] _updateNotificationTemplateParameterTypes6 =
 		new Class[] {
 			com.liferay.notification.context.NotificationContext.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:190395101
+// LIFERAY-SERVICE-BUILDER-HASH:759653946

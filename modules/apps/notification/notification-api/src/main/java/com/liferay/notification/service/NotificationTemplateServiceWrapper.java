@@ -79,6 +79,17 @@ public class NotificationTemplateServiceWrapper
 			notificationTemplateId);
 	}
 
+	@Override
+	public com.liferay.notification.model.NotificationTemplate
+			getNotificationTemplateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _notificationTemplateService.
+			getNotificationTemplateByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -115,4 +126,4 @@ public class NotificationTemplateServiceWrapper
 	private NotificationTemplateService _notificationTemplateService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2032659278
+// LIFERAY-SERVICE-BUILDER-HASH:1580272897
