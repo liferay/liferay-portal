@@ -13,6 +13,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -21,6 +22,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.junit.Before;
@@ -40,17 +42,30 @@ public class ObjectEntryTableInfoListRendererTest {
 
 	@Before
 	public void setUp() throws PortalException {
+		ObjectField metadataObjectField = Mockito.mock(ObjectField.class);
+
 		Mockito.when(
-			_objectFieldLocalService.getActiveObjectFields(Mockito.anyList())
+			metadataObjectField.isMetadata()
 		).thenReturn(
-			Collections.singletonList(_objectField)
+			true
 		);
 
 		Mockito.when(
-			_objectFieldLocalService.getObjectFields(
-				Mockito.anyLong(), Mockito.eq(false))
+			_objectField.getLabel(LocaleUtil.US)
 		).thenReturn(
-			Collections.singletonList(_objectField)
+			_LABEL
+		);
+
+		Mockito.when(
+			_objectFieldLocalService.getActiveObjectFields(Mockito.anyList())
+		).thenAnswer(
+			invocationOnMock -> invocationOnMock.getArgument(0)
+		);
+
+		Mockito.when(
+			_objectFieldLocalService.getObjectFields(Mockito.anyLong())
+		).thenReturn(
+			Arrays.asList(metadataObjectField, _objectField)
 		);
 
 		_setUpPortalUtil();
@@ -80,9 +95,9 @@ public class ObjectEntryTableInfoListRendererTest {
 				_httpServletRequest, Mockito.mock(HttpServletResponse.class)));
 
 		Mockito.verify(
-			_objectField
-		).getLabel(
-			LocaleUtil.US
+			infoListBasicTableTag
+		).setInfoListObjectColumnNames(
+			Collections.singletonList(_LABEL)
 		);
 	}
 
@@ -97,6 +112,8 @@ public class ObjectEntryTableInfoListRendererTest {
 
 		portalUtil.setPortal(_portal);
 	}
+
+	private static final String _LABEL = RandomTestUtil.randomString();
 
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
