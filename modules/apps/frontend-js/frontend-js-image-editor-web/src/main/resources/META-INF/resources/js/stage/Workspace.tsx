@@ -10,27 +10,39 @@ import React from 'react';
 import {useEditorId} from '../chrome/instance';
 import {imageTransform} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
+import {EditorAction} from '../state/editorReducer';
 import {EditState, rotatedSize} from '../state/types';
+import {CropMarquee} from './CropMarquee';
 
 interface Props {
+	dispatch: (action: EditorAction) => void;
 	image: LoadedImage;
+	onAnnounce: (message: string) => void;
+	onCenterCrop: () => void;
 	onWorkspacePointerLeave?: () => void;
 	onWorkspacePointerMove?: (event: React.PointerEvent) => void;
+	onWorkspaceScroll?: () => void;
 	onZoom: (direction: -1 | 1) => void;
 	onZoomActual: () => void;
 	onZoomFit: () => void;
+	showRecenter: boolean;
 	state: EditState;
 	workspaceRef?: React.Ref<HTMLDivElement>;
 	zoom: number;
 }
 
 export function Workspace({
+	dispatch,
 	image,
+	onAnnounce,
+	onCenterCrop,
 	onWorkspacePointerLeave,
 	onWorkspacePointerMove,
+	onWorkspaceScroll,
 	onZoom,
 	onZoomActual,
 	onZoomFit,
+	showRecenter,
 	state,
 	workspaceRef,
 	zoom,
@@ -38,6 +50,7 @@ export function Workspace({
 	const eid = useEditorId();
 
 	const bounds = rotatedSize(state);
+	const {crop} = state;
 
 	const handleKeyDown = (event: React.KeyboardEvent) => {
 		if (event.key === '+' || event.key === '=') {
@@ -56,6 +69,10 @@ export function Workspace({
 			event.preventDefault();
 			onZoomActual();
 		}
+		else if (event.key === '2') {
+			event.preventDefault();
+			onCenterCrop();
+		}
 	};
 
 	return (
@@ -66,6 +83,7 @@ export function Workspace({
 			onKeyDown={handleKeyDown}
 			onPointerLeave={onWorkspacePointerLeave}
 			onPointerMove={onWorkspacePointerMove}
+			onScroll={onWorkspaceScroll}
 			ref={workspaceRef}
 			role="region"
 			tabIndex={0}
@@ -90,6 +108,16 @@ export function Workspace({
 						width={state.sourceWidth}
 					/>
 				</g>
+
+				<CropMarquee
+					bounds={bounds}
+					crop={crop}
+					dispatch={dispatch}
+					onAnnounce={onAnnounce}
+					onCenterCrop={onCenterCrop}
+					showRecenter={showRecenter}
+					zoom={zoom}
+				/>
 			</svg>
 		</div>
 	);

@@ -6,7 +6,7 @@
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 
-import {EditState, rotatedSize} from '../state/types';
+import {EditState} from '../state/types';
 import {imageTransform} from './geometry';
 import {LoadedImage} from './loadImage';
 
@@ -16,13 +16,13 @@ export async function exportEditedImage(
 ): Promise<{blob: Blob; fileName: string}> {
 	const dataUrl = await blobToDataURL(image.blob);
 
-	const bounds = rotatedSize(state);
+	const {crop} = state;
 
 	const markup = renderToStaticMarkup(
 		<svg
-			height={bounds.height}
-			viewBox={`0 0 ${bounds.width} ${bounds.height}`}
-			width={bounds.width}
+			height={crop.height}
+			viewBox={`${crop.x} ${crop.y} ${crop.width} ${crop.height}`}
+			width={crop.width}
 			xmlns="http://www.w3.org/2000/svg"
 		>
 			<g transform={imageTransform(state)}>
@@ -41,8 +41,8 @@ export async function exportEditedImage(
 
 	const canvas = document.createElement('canvas');
 
-	canvas.width = bounds.width;
-	canvas.height = bounds.height;
+	canvas.width = crop.width;
+	canvas.height = crop.height;
 
 	const context = canvas.getContext('2d');
 

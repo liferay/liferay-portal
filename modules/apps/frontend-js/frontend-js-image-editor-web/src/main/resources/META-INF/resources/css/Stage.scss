@@ -26,3 +26,93 @@
 	overflow: visible;
 	padding: 24px;
 }
+
+.image-editor .crop-dim {
+	fill: rgba(10, 11, 20, 0.6);
+}
+
+.image-editor .crop-border {
+	stroke: var(--editor-accent);
+}
+
+.image-editor .crop-move {
+	cursor: move;
+}
+
+.image-editor .crop-grid {
+	opacity: 0;
+	transition: opacity 400ms ease-out;
+}
+
+.image-editor .crop-grid-visible {
+	opacity: 1;
+}
+
+.image-editor .crop-grid line {
+	stroke: rgba(255, 255, 255, 0.5);
+}
+
+.image-editor .crop-recenter {
+	cursor: pointer;
+	opacity: 0;
+	outline: none;
+	transition: opacity 250ms ease-out;
+}
+
+.image-editor .crop-move:hover ~ .crop-recenter,
+.image-editor .crop-recenter-focused,
+.image-editor .crop-recenter:hover {
+	opacity: 1;
+}
+
+.image-editor .crop-recenter-disc {
+	fill: rgba(255, 255, 255, 0.9);
+}
+
+.image-editor .crop-recenter-icon {
+	color: #14151f;
+	pointer-events: none;
+}
+
+.image-editor .crop-handle-visual {
+	fill: #fff;
+	stroke: var(--editor-accent);
+}
+
+.image-editor .crop-handle {
+	cursor: pointer;
+}
+
+.image-editor .crop-handle,
+.image-editor .crop-move {
+	outline: none;
+}
+
+.image-editor .crop-handle-visual,
+.image-editor .focus-ring-inner,
+.image-editor .focus-ring-outer,
+.image-editor .selection-ring {
+	animation: image-editor-stage-fade-in 220ms ease-out;
+}
+
+.image-editor .focus-ring-inner {
+	stroke: #fff;
+}
+
+.image-editor .focus-ring-outer {
+	stroke: var(--editor-accent);
+}
+
+.image-editor .selection-ring {
+	stroke: var(--editor-accent);
+}
+
+.image-editor .editor-crop-size-row {
+	align-items: center;
+	display: flex;
+	gap: 0.25rem;
+}
+
+.image-editor .editor-crop-size-row .form-group {
+	flex: 1;
+}
