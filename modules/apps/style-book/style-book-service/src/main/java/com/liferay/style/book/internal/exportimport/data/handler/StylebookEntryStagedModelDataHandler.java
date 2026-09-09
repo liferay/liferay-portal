@@ -14,9 +14,9 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
-import com.liferay.frontend.token.definition.FrontendToken;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
+import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -37,11 +37,9 @@ import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -215,28 +213,36 @@ public class StylebookEntryStagedModelDataHandler
 		return _stagedModelRepository;
 	}
 
+	private List<String> _getFrontendTokenNames(
+		PortletDataContext portletDataContext, StyleBookEntry styleBookEntry) {
+
+		FrontendTokenDefinition themeFrontendTokenDefinition =
+			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
+				portletDataContext.getCompanyId(), styleBookEntry.getThemeId());
+
+		JSONObject overrideFrontendTokenDefinitionJSONObject =
+			FrontendTokenDefinitionUtil.parseFrontendTokenDefinitionJSONObject(
+				styleBookEntry.getFrontendTokenDefinition());
+
+		if (themeFrontendTokenDefinition == null) {
+			return FrontendTokenDefinitionUtil.getFrontendTokenNames(
+				overrideFrontendTokenDefinitionJSONObject);
+		}
+
+		return FrontendTokenDefinitionUtil.getFrontendTokenNames(
+			FrontendTokenDefinitionUtil.mergeFrontendTokenDefinitionJSONObject(
+				themeFrontendTokenDefinition.getJSONObject(LocaleUtil.US),
+				overrideFrontendTokenDefinitionJSONObject));
+	}
+
 	private boolean _hasMissingTokens(
-			long companyId, String frontendTokensValues, String themeId)
+			List<String> frontendTokenNames, String frontendTokensValues)
 		throws Exception {
 
-		if (Validator.isNull(frontendTokensValues)) {
+		if (frontendTokenNames.isEmpty() ||
+			Validator.isBlank(frontendTokensValues)) {
+
 			return false;
-		}
-
-		FrontendTokenDefinition frontendTokenDefinition =
-			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
-				companyId, themeId);
-
-		if (frontendTokenDefinition == null) {
-			return false;
-		}
-
-		Set<String> frontendTokenNames = new HashSet<>();
-
-		for (FrontendToken frontendToken :
-				frontendTokenDefinition.getFrontendTokens()) {
-
-			frontendTokenNames.add(frontendToken.getName());
 		}
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -269,10 +275,9 @@ public class StylebookEntryStagedModelDataHandler
 					new String[] {originalName, name}));
 		}
 
-		String themeId = importedStyleBookEntry.getThemeId();
-
 		Theme theme = _themeLocalService.fetchTheme(
-			portletDataContext.getCompanyId(), themeId);
+			portletDataContext.getCompanyId(),
+			importedStyleBookEntry.getThemeId());
 
 		if (theme == null) {
 			String themeWarningMessage = _language.format(
@@ -285,9 +290,9 @@ public class StylebookEntryStagedModelDataHandler
 			warningMessages.add(themeWarningMessage);
 		}
 		else if (_hasMissingTokens(
-					portletDataContext.getCompanyId(),
-					importedStyleBookEntry.getFrontendTokensValues(),
-					themeId)) {
+					_getFrontendTokenNames(
+						portletDataContext, importedStyleBookEntry),
+					importedStyleBookEntry.getFrontendTokensValues())) {
 
 			warningMessages.add(
 				_language.format(

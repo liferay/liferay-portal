@@ -28,10 +28,7 @@ import java.util.Map;
 public class FrontendTokenDefinitionUtil {
 
 	public static List<String> getFrontendTokenNames(
-		String frontendTokenDefinition) {
-
-		JSONObject frontendTokenDefinitionJSONObject =
-			parseFrontendTokenDefinitionJSONObject(frontendTokenDefinition);
+		JSONObject frontendTokenDefinitionJSONObject) {
 
 		if (frontendTokenDefinitionJSONObject == null) {
 			return Collections.emptyList();
@@ -60,6 +57,14 @@ public class FrontendTokenDefinitionUtil {
 		}
 
 		return frontendTokenNames;
+	}
+
+	public static List<String> getFrontendTokenNames(
+		String frontendTokenDefinitionJSON) {
+
+		return getFrontendTokenNames(
+			parseFrontendTokenDefinitionJSONObject(
+				frontendTokenDefinitionJSON));
 	}
 
 	public static JSONObject mergeFrontendTokenDefinitionJSONObject(

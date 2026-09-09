@@ -177,7 +177,7 @@ public class FrontendTokenDefinitionUtilTest {
 
 	private void _testGetFrontendTokenNamesWithBlankDefinition() {
 		List<String> frontendTokenNames =
-			FrontendTokenDefinitionUtil.getFrontendTokenNames(null);
+			FrontendTokenDefinitionUtil.getFrontendTokenNames((String)null);
 
 		Assert.assertTrue(frontendTokenNames.isEmpty());
 
