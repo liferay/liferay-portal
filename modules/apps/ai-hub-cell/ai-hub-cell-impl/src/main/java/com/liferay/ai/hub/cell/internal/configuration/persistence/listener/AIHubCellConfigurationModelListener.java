@@ -11,7 +11,6 @@ import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
@@ -138,11 +137,8 @@ public class AIHubCellConfigurationModelListener
 
 			_sapEntryLocalService.addSAPEntry(
 				_userLocalService.getGuestUserId(company.getCompanyId()),
-				StringBundler.concat(
-					"com.liferay.ai.hub.cell.rest.internal.resource.v1_0.",
-					"AuthorizationTokenResourceImpl#postAuthorizationToken\n",
-					"com.liferay.portal.search.rest.internal.resource.v1_0.",
-					"SearchResultResourceImpl#getSearchPage"),
+				"com.liferay.portal.search.rest.internal.resource.v1_0." +
+					"SearchResultResourceImpl#getSearchPage",
 				true, true, _SAP_ENTRY_NAME,
 				Collections.singletonMap(
 					LocaleUtil.getDefault(), _SAP_ENTRY_NAME),

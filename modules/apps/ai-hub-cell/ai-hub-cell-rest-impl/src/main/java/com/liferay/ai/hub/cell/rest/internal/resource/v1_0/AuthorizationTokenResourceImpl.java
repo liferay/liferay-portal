@@ -17,6 +17,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,6 +39,11 @@ public class AuthorizationTokenResourceImpl
 				contextCompany.getCompanyId(), "LPD-62272")) {
 
 			throw new UnsupportedOperationException();
+		}
+
+		if (contextUser.isGuestUser()) {
+			throw new PrincipalException.MustBeAuthenticated(
+				contextUser.getUserId());
 		}
 
 		AIHubCellConfiguration aiHubCellConfiguration =
