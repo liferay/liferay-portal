@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
@@ -134,7 +135,19 @@ public class LayoutPageTemplateManagementToolbarDisplayContext
 	public CreationMenu getCreationMenu() {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
-				dropdownItem.setHref(_getSelectMasterLayoutURL());
+				if (DesignLibraryUtil.isDesignLibraryScope(
+						_themeDisplay.getScopeGroup())) {
+
+					dropdownItem.putData(
+						"action", "addLayoutPageTemplateEntry");
+					dropdownItem.putData(
+						"addPageTemplateURL",
+						_getAddLayoutPageTemplateEntryURL());
+				}
+				else {
+					dropdownItem.setHref(_getSelectMasterLayoutURL());
+				}
+
 				dropdownItem.setLabel(
 					LanguageUtil.get(
 						httpServletRequest, "content-page-template"));
@@ -144,6 +157,7 @@ public class LayoutPageTemplateManagementToolbarDisplayContext
 				Group scopeGroup = _themeDisplay.getScopeGroup();
 
 				return !scopeGroup.isLayoutSetPrototype() &&
+					   !DesignLibraryUtil.isDesignLibraryScope(scopeGroup) &&
 					   FeatureFlagManagerUtil.isEnabled(
 						   _themeDisplay.getCompanyId(), "LPD-76864");
 			},
@@ -179,6 +193,18 @@ public class LayoutPageTemplateManagementToolbarDisplayContext
 	@Override
 	protected String[] getOrderByKeys() {
 		return new String[] {"create-date", "name"};
+	}
+
+	private String _getAddLayoutPageTemplateEntryURL() {
+		return PortletURLBuilder.createActionURL(
+			liferayPortletResponse
+		).setActionName(
+			"/layout_page_template_admin/add_layout_page_template_entry"
+		).setParameter(
+			"layoutPageTemplateCollectionId",
+			_layoutPageTemplateDisplayContext.
+				getLayoutPageTemplateCollectionId()
+		).buildString();
 	}
 
 	private String _getAddLayoutPrototypeURL() {
