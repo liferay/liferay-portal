@@ -223,7 +223,7 @@ public class BaseTopLevelBuildReportTest
 							).put(
 								"buildURL",
 								"https://test-1-1/job/test-job" +
-									"/AXIS_VARIABLE=1/1"
+									"/AXIS_VARIABLE=1/2"
 							)
 						)
 					)
