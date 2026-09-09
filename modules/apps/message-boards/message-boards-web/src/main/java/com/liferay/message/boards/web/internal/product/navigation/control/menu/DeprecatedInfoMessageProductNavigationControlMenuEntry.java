@@ -5,13 +5,18 @@
 
 package com.liferay.message.boards.web.internal.product.navigation.control.menu;
 
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.product.navigation.control.menu.BaseInfoMessageProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.ProductNavigationControlMenuEntry;
 import com.liferay.product.navigation.control.menu.constants.InfoMessageProductNavigationControlMenuEntryTypeConstants;
 import com.liferay.product.navigation.control.menu.constants.ProductNavigationControlMenuCategoryKeys;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
@@ -28,6 +33,17 @@ public class DeprecatedInfoMessageProductNavigationControlMenuEntry
 	extends BaseInfoMessageProductNavigationControlMenuEntry {
 
 	@Override
+	public boolean isShow(HttpServletRequest httpServletRequest) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(httpServletRequest), "LPD-105225")) {
+
+			return false;
+		}
+
+		return super.isShow(httpServletRequest);
+	}
+
+	@Override
 	protected String getPortletName() {
 		return PortletKeys.MESSAGE_BOARDS_ADMIN;
 	}
@@ -37,5 +53,8 @@ public class DeprecatedInfoMessageProductNavigationControlMenuEntry
 		return InfoMessageProductNavigationControlMenuEntryTypeConstants.
 			DEPRECATED;
 	}
+
+	@Reference
+	private Portal _portal;
 
 }
