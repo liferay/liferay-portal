@@ -141,21 +141,19 @@ public class VerifyLayoutTest extends BaseVerifyProcessTestCase {
 
 		String errorMessages = _errorMessages.toString();
 
-		Assert.assertEquals(errorMessages, 2, _errorMessages.size());
-
 		Assert.assertTrue(
 			errorMessages,
 			errorMessages.contains(
 				StringBundler.concat(
 					StringPool.QUOTE, StringPool.FORWARD_SLASH, _keyword1,
 					StringPool.QUOTE)));
-
 		Assert.assertTrue(
 			errorMessages,
 			errorMessages.contains(
 				StringBundler.concat(
 					StringPool.QUOTE, StringPool.FORWARD_SLASH, _keyword2,
 					StringPool.QUOTE)));
+		Assert.assertEquals(errorMessages, 2, _errorMessages.size());
 	}
 
 	@Test
