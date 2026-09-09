@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
+import java.net.HttpURLConnection;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -99,6 +101,16 @@ public class AuthorizationTokenResourceTest
 		Assert.assertEquals(
 			jsonObject1.getString("accessToken"),
 			jsonObject2.getString("accessToken"));
+
+		HTTPTestUtil.customize(
+		).withGuest(
+		).apply(
+			() -> Assert.assertEquals(
+				HttpURLConnection.HTTP_FORBIDDEN,
+				HTTPTestUtil.invokeToHttpCode(
+					null, "ai-hub-cell/v1.0/authorization-tokens",
+					Http.Method.POST))
+		);
 	}
 
 	@Inject
