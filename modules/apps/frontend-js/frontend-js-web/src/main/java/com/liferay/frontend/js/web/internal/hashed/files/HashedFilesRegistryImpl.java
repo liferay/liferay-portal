@@ -53,8 +53,8 @@ public class HashedFilesRegistryImpl implements HashedFilesRegistry {
 		for (DataBag dataBag : _serviceTrackerMap.values()) {
 			Map<String, String> hashedFileURIs = dataBag._hashedFileURIs;
 
-			for (Map.Entry<String, String> entry2 : hashedFileURIs.entrySet()) {
-				biConsumer.accept(entry2.getKey(), entry2.getValue());
+			for (Map.Entry<String, String> entry : hashedFileURIs.entrySet()) {
+				biConsumer.accept(entry.getKey(), entry.getValue());
 			}
 		}
 	}
