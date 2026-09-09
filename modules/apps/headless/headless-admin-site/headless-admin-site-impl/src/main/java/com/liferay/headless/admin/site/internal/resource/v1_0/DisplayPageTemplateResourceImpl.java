@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
+import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.pagination.Page;
@@ -88,13 +89,18 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/display-page-template.properties",
-	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
+	property = {
+		"crud.entity.class.name=com.liferay.headless.admin.site.dto.v1_0.DisplayPageTemplate",
+		"crud.item.delegate=true",
+		"export.import.vulcan.batch.engine.task.item.delegate=true"
+	},
 	scope = ServiceScope.PROTOTYPE, service = DisplayPageTemplateResource.class
 )
 public class DisplayPageTemplateResourceImpl
 	extends BaseDisplayPageTemplateResourceImpl
 	implements ExportImportVulcanBatchEngineTaskItemDelegate
-		<DisplayPageTemplate> {
+		<DisplayPageTemplate>,
+			   VulcanCRUDItemDelegate<DisplayPageTemplate> {
 
 	@Override
 	public void deleteSiteDisplayPageTemplate(
@@ -172,6 +178,12 @@ public class DisplayPageTemplateResourceImpl
 			}
 
 		};
+	}
+
+	@Override
+	public DisplayPageTemplate getItem(Long id) throws Exception {
+		return _toDisplayPageTemplate(
+			_layoutPageTemplateEntryService.fetchLayoutPageTemplateEntry(id));
 	}
 
 	@Override
@@ -318,13 +330,7 @@ public class DisplayPageTemplateResourceImpl
 					"page type");
 		}
 
-		return _displayPageTemplateDTOConverter.toDTO(
-			DTOConverterContextUtil.getDTOConverterContext(
-				contextAcceptLanguage, _dtoConverterRegistry,
-				contextHttpServletRequest,
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				contextUriInfo, contextUser),
-			layoutPageTemplateEntry);
+		return _toDisplayPageTemplate(layoutPageTemplateEntry);
 	}
 
 	@Override
@@ -810,6 +816,23 @@ public class DisplayPageTemplateResourceImpl
 		}
 
 		return unicodeProperties;
+	}
+
+	private DisplayPageTemplate _toDisplayPageTemplate(
+			LayoutPageTemplateEntry layoutPageTemplateEntry)
+		throws Exception {
+
+		if (layoutPageTemplateEntry == null) {
+			return null;
+		}
+
+		return _displayPageTemplateDTOConverter.toDTO(
+			DTOConverterContextUtil.getDTOConverterContext(
+				contextAcceptLanguage, _dtoConverterRegistry,
+				contextHttpServletRequest,
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+				contextUriInfo, contextUser),
+			layoutPageTemplateEntry);
 	}
 
 	private static final EntityModel _entityModel =
