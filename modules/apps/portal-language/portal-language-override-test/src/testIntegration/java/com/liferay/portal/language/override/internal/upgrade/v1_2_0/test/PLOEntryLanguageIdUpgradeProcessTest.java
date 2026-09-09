@@ -41,43 +41,36 @@ public class PLOEntryLanguageIdUpgradeProcessTest {
 
 	@Test
 	public void testDoUpgrade() throws Exception {
-		long companyId = TestPropsValues.getCompanyId();
-
 		String key1 = RandomTestUtil.randomString();
+
+		PLOEntry ploEntry1 = _addPLOEntry(key1, "en_US", "iw_IL");
+
 		String key2 = RandomTestUtil.randomString();
 
-		try {
-			PLOEntry ploEntry1 = _addPLOEntry(key1, "en_US", "iw_IL");
+		PLOEntry ploEntry2 = _addPLOEntry(key2, "en_US", "pt-BR");
+		PLOEntry ploEntry3 = _addPLOEntry(key2, "en_CA", "pt_BR");
 
-			PLOEntry ploEntry2 = _addPLOEntry(key2, "en_US", "pt-BR");
-			PLOEntry ploEntry3 = _addPLOEntry(key2, "en_CA", "pt_BR");
+		_runUpgrade();
 
-			_runUpgrade();
+		CacheRegistryUtil.clear();
 
-			CacheRegistryUtil.clear();
+		_entityCache.clearCache();
+		_finderCache.clearCache();
 
-			_entityCache.clearCache();
-			_finderCache.clearCache();
+		ploEntry1 = _ploEntryLocalService.getPLOEntry(
+			ploEntry1.getPloEntryId());
 
-			PLOEntry upgradedPLOEntry1 = _ploEntryLocalService.getPLOEntry(
-				ploEntry1.getPloEntryId());
+		Assert.assertEquals(
+			LocaleUtil.toLanguageId(new Locale("iw", "IL")),
+			ploEntry1.getLanguageId());
 
-			Assert.assertEquals(
-				LocaleUtil.toLanguageId(new Locale("iw", "IL")),
-				upgradedPLOEntry1.getLanguageId());
+		Assert.assertNull(
+			_ploEntryLocalService.fetchPLOEntry(ploEntry2.getPloEntryId()));
 
-			Assert.assertNull(
-				_ploEntryLocalService.fetchPLOEntry(ploEntry2.getPloEntryId()));
+		PLOEntry upgradedPLOEntry3 = _ploEntryLocalService.getPLOEntry(
+			ploEntry3.getPloEntryId());
 
-			PLOEntry upgradedPLOEntry3 = _ploEntryLocalService.getPLOEntry(
-				ploEntry3.getPloEntryId());
-
-			Assert.assertEquals("pt_BR", upgradedPLOEntry3.getLanguageId());
-		}
-		finally {
-			_ploEntryLocalService.deletePLOEntries(companyId, key1);
-			_ploEntryLocalService.deletePLOEntries(companyId, key2);
-		}
+		Assert.assertEquals("pt_BR", upgradedPLOEntry3.getLanguageId());
 	}
 
 	private PLOEntry _addPLOEntry(
