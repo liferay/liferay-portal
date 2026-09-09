@@ -57,7 +57,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
 			<label>{label}</label>
 
 			<ClayAutocomplete.Input
-				crossOrigin=""
 				onBlur={() => setTimeout(() => setActive(false), 200)}
 				onChange={(event) => {
 					setValue(event.target.value);
@@ -81,7 +80,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
 								key={item.id}
 								match={value}
 								onClick={() => onClickItem(item.name)}
-								placeholder=""
 								value={item.name}
 							/>
 						))}

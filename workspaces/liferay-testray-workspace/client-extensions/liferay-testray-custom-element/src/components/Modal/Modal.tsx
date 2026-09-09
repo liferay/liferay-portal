@@ -6,6 +6,8 @@
 import ClayModal from '@clayui/modal';
 import React, {ReactElement, ReactNode} from 'react';
 
+import {Liferay} from '../../services/liferay';
+
 type ModalProps = {
 	children: ReactNode;
 	className?: string;

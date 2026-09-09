@@ -22,6 +22,10 @@ export type LiferayStorage = Storage & {
 	setItem(key: string, value: string, consentType: CONSENT_TYPE): void;
 };
 
+interface LiferayLanguage {
+	get: (key: string) => string;
+}
+
 interface LiferaySession {
 	reset: () => void;
 }
@@ -55,6 +59,7 @@ interface OAuth2Client {
 }
 
 interface ILiferay {
+	Language: LiferayLanguage;
 	OAuth2Client: OAuth2Client;
 	Session: LiferaySession;
 	ThemeDisplay: IThemeDisplay;
@@ -69,6 +74,9 @@ declare global {
 }
 
 export const Liferay = window.Liferay || {
+	Language: {
+		get: (key: string) => key,
+	},
 	OAuth2Client: {
 		FromUserAgentApplication: (_userAgent: string) => ({
 			authorizeURL: '',

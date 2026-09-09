@@ -4,8 +4,7 @@
  */
 
 import ClayAlert, {DisplayType as AlertDisplayType} from '@clayui/alert';
-import ClayButton from '@clayui/button';
-import {DisplayType as ButtonDisplayType} from '@clayui/button/lib/Button';
+import ClayButton, {ButtonProps} from '@clayui/button';
 import ClayLabel from '@clayui/label';
 import {useNavigate} from 'react-router-dom';
 import {useObjectPermission} from '~/hooks/data/useObjectPermission';
@@ -83,7 +82,9 @@ const BuildAlertBar: React.FC<BuildAlertBarProps> = ({
 		<ClayAlert
 			actions={
 				<ClayButton
-					displayType={alertProperty.displayType as ButtonDisplayType}
+					displayType={
+						alertProperty.displayType as ButtonProps['displayType']
+					}
 					onClick={() => navigate(`/testflow/${testrayTask.id}`)}
 					outline
 					small
