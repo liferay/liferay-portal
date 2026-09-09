@@ -33,7 +33,7 @@ const DayList: FC<IDayListProps> = ({
 			const campaignDay = campaignDays[toDayKey(date)];
 
 			return (
-				<div className="day-list-day" key={header.title}>
+				<div className="day-list-day" key={date}>
 					<DateHeader
 						title={header.title}
 						totalEvents={header.totalEvents}

@@ -167,7 +167,14 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 								rangeSelectors,
 							}
 						),
-						campaignTouches.days
+						campaignTouches.days,
+						{
+							isFirstPage: page === 1,
+							isLastPage:
+								page * delta >=
+								(eventsByUserSessions?.totalPageGroupsMetric
+									?.value ?? 0),
+						}
 					),
 					total:
 						eventsByUserSessions?.totalPageGroupsMetric?.value ?? 0,
@@ -179,6 +186,8 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 			sessionsResponse.loading,
 			campaignTouches.days,
 			channelId,
+			delta,
+			page,
 			groupId,
 			rangeSelectors,
 		]

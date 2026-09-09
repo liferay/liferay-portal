@@ -38,6 +38,12 @@ const CampaignList: FC<ICampaignListProps> = ({
 				onDeltaChange={onDeltaChange}
 				onPageChange={onPageChange}
 				page={page}
+				resultsMessagePlural={Liferay.Language.get(
+					'showing-x-to-x-of-x-campaign-entries'
+				)}
+				resultsMessageSingular={Liferay.Language.get(
+					'showing-x-to-x-of-x-campaign-entry'
+				)}
 				selectedDelta={selectedDelta}
 				totalItems={totalItems}
 			/>

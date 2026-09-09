@@ -2,7 +2,7 @@ import {CampaignTouch} from 'shared/util/activities';
 import {gql} from '@apollo/client';
 import {SessionEntityTypes} from 'shared/util/constants';
 
-export const CAMPAIGN_TOUCHES_QUERY_ENABLED = false;
+export const CAMPAIGN_TOUCHES_QUERY_ENABLED: boolean = false;
 
 export const CAMPAIGNS_PER_PAGE = 8;
 

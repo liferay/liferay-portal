@@ -179,7 +179,14 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 								rangeSelectors,
 							}
 						),
-						campaignTouches.days
+						campaignTouches.days,
+						{
+							isFirstPage: page === 1,
+							isLastPage:
+								page * delta >=
+								(eventsByUserSessions?.totalPageGroupsMetric
+									?.value ?? 0),
+						}
 					),
 					total:
 						eventsByUserSessions?.totalPageGroupsMetric?.value ?? 0,
@@ -191,6 +198,8 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			sessionsResponse.loading,
 			campaignTouches.days,
 			accountId,
+			delta,
+			page,
 			accountName,
 			channelId,
 			groupId,

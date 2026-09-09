@@ -23,6 +23,8 @@ export default (options = {}) =>
 				onDeltaChange: PropTypes.func,
 				onPageChange: PropTypes.func,
 				page: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+				resultsMessagePlural: PropTypes.string,
+				resultsMessageSingular: PropTypes.string,
 				showDeltaDropdown: PropTypes.bool,
 				total: PropTypes.number
 			};
@@ -33,6 +35,8 @@ export default (options = {}) =>
 					onDeltaChange,
 					onPageChange,
 					page,
+					resultsMessagePlural,
+					resultsMessageSingular,
 					showDeltaDropdown,
 					total
 				} = this.props;
@@ -48,6 +52,8 @@ export default (options = {}) =>
 								onDeltaChange={onDeltaChange}
 								onPageChange={onPageChange}
 								page={page}
+								resultsMessagePlural={resultsMessagePlural}
+								resultsMessageSingular={resultsMessageSingular}
 								selectedDelta={delta}
 								showDeltaDropdown={showDeltaDropdown}
 								totalItems={total}

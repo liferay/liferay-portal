@@ -71,6 +71,14 @@ describe('CampaignList', () => {
 		expect(container.querySelectorAll('.campaign-row')).toHaveLength(8);
 	});
 
+	it('counts what it pages as campaign entries', () => {
+		const {container} = renderList();
+
+		expect(
+			container.querySelector('.pagination-results')
+		).toHaveTextContent(/campaign entr/i);
+	});
+
 	it('leaves the pager out when a day holds no campaigns', () => {
 		const {container} = renderList({campaigns: [], totalItems: 0});
 

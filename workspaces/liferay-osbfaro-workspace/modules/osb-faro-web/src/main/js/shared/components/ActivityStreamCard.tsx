@@ -270,6 +270,12 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 							onDeltaChange={onDeltaChange}
 							onPageChange={onPageChange}
 							page={page}
+							resultsMessagePlural={Liferay.Language.get(
+								'showing-x-to-x-of-x-page-entries'
+							)}
+							resultsMessageSingular={Liferay.Language.get(
+								'showing-x-to-x-of-x-page-entry'
+							)}
 							timeZoneId={timeZoneId}
 							total={sessionsTotal}
 						/>

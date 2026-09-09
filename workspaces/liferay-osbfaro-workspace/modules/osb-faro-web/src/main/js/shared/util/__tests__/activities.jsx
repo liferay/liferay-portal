@@ -695,6 +695,15 @@ describe('activities', () => {
 			expect(days[0].header.totalEvents).toBeUndefined();
 		});
 
+		it('anchors an added day to UTC, so its header cannot drift a day', () => {
+			const [day] = mergeCampaignDays([], {
+				'2026-07-16': campaignDay
+			});
+
+			expect(day.date).toBe('2026-07-16T00:00:00Z');
+			expect(day.header.title).toBe(formatGroupingTime(day.date));
+		});
+
 		it('does not repeat a day the sessions already cover', () => {
 			const days = mergeCampaignDays(
 				[buildDay('2026-07-16T10:00:00Z')],
@@ -711,6 +720,56 @@ describe('activities', () => {
 			});
 
 			expect(days).toHaveLength(1);
+		});
+
+		it('leaves a campaign day to the page whose own days cover it', () => {
+			const middlePage = [
+				buildDay('2026-07-15T10:00:00Z'),
+				buildDay('2026-07-12T10:00:00Z')
+			];
+
+			const campaigns = {
+				'2026-07-13': campaignDay,
+				'2026-07-20': campaignDay,
+				'2026-07-01': campaignDay
+			};
+
+			const days = mergeCampaignDays(middlePage, campaigns, {
+				isFirstPage: false,
+				isLastPage: false
+			});
+
+			expect(days.map(({date}) => toDayKey(date))).toEqual([
+				'2026-07-15',
+				'2026-07-13',
+				'2026-07-12'
+			]);
+		});
+
+		it('gives the first page every day above it, so today is never dropped', () => {
+			const days = mergeCampaignDays(
+				[buildDay('2026-07-15T10:00:00Z')],
+				{'2026-07-20': campaignDay},
+				{isFirstPage: true, isLastPage: false}
+			);
+
+			expect(days.map(({date}) => toDayKey(date))).toEqual([
+				'2026-07-20',
+				'2026-07-15'
+			]);
+		});
+
+		it('gives the last page every day below it', () => {
+			const days = mergeCampaignDays(
+				[buildDay('2026-07-15T10:00:00Z')],
+				{'2026-07-01': campaignDay},
+				{isFirstPage: false, isLastPage: true}
+			);
+
+			expect(days.map(({date}) => toDayKey(date))).toEqual([
+				'2026-07-15',
+				'2026-07-01'
+			]);
 		});
 
 		it('returns the days untouched when nothing was fetched', () => {

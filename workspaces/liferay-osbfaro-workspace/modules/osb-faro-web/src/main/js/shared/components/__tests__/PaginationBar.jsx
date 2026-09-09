@@ -20,6 +20,27 @@ const DefaultComponent = props => (
 describe('PaginationBar', () => {
 	afterEach(cleanup);
 
+	it('names what it counts when the caller says so', () => {
+		const {container} = render(
+			<DefaultComponent
+				resultsMessagePlural='Showing {0} to {1} of {2} campaign entries.'
+				resultsMessageSingular='Showing {0} to {1} of {2} campaign entry.'
+			/>
+		);
+
+		expect(
+			container.querySelector('.pagination-results')
+		).toHaveTextContent(/campaign entr/i);
+	});
+
+	it('falls back to the shared message when the caller says nothing', () => {
+		const {container} = render(<DefaultComponent />);
+
+		expect(
+			container.querySelector('.pagination-results')
+		).toHaveTextContent(/of 100 entr/i);
+	});
+
 	it('should render', () => {
 		const {container} = render(<DefaultComponent />);
 

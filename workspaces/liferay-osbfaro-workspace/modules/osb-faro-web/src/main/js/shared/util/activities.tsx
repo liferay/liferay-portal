@@ -480,23 +480,50 @@ export const toDayKey = (datetime: Date | string | number): string =>
 
 export const mergeCampaignDays = (
 	days: TimelineDay[],
-	campaignDays: Record<string, {campaigns: unknown[]}> = {}
+	campaignDays: Record<string, {campaigns: unknown[]}> = {},
+	{
+		isFirstPage = true,
+		isLastPage = true,
+	}: {isFirstPage?: boolean; isLastPage?: boolean} = {}
 ): TimelineDay[] => {
-	const sessionDayKeys = new Set(days.map(({date}) => toDayKey(date)));
+	const dayKeys = days.map(({date}) => toDayKey(date));
+
+	const sessionDayKeys = new Set(dayKeys);
+
+	const newestDayKey = dayKeys[0];
+
+	const oldestDayKey = dayKeys[dayKeys.length - 1];
+
+	const ownsDay = (dayKey: string) => {
+		if (!dayKeys.length) {
+			return isFirstPage && isLastPage;
+		}
+
+		return (
+			(isFirstPage || dayKey <= newestDayKey) &&
+			(isLastPage || dayKey >= oldestDayKey)
+		);
+	};
 
 	const campaignOnlyDays = Object.entries(campaignDays)
 		.filter(
 			([dayKey, {campaigns}]) =>
-				campaigns.length && !sessionDayKeys.has(dayKey)
+				campaigns.length &&
+				!sessionDayKeys.has(dayKey) &&
+				ownsDay(dayKey)
 		)
-		.map(([dayKey]) => ({
-			date: dayKey,
-			header: {
-				header: true as const,
-				title: formatGroupingTime(dayKey),
-			},
-			items: [],
-		}));
+		.map(([dayKey]) => {
+			const date = moment.utc(dayKey).startOf('day').format();
+
+			return {
+				date,
+				header: {
+					header: true as const,
+					title: formatGroupingTime(date),
+				},
+				items: [],
+			};
+		});
 
 	return [...days, ...campaignOnlyDays].sort(
 		(a, b) => moment.utc(b.date).valueOf() - moment.utc(a.date).valueOf()
