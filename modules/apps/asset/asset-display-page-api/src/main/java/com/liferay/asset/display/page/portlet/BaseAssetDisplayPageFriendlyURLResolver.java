@@ -134,22 +134,32 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 		}
 
 		Locale locale = portal.getLocale(httpServletRequest);
+
 		Layout layout = getLayoutDisplayPageObjectProviderLayout(
 			groupId, friendlyURL, layoutDisplayPageObjectProvider,
 			layoutDisplayPageProvider);
 
-		InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
-			infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemFieldValuesProvider.class,
-				layoutDisplayPageObjectProvider.getClassName());
+		String mappedDescription = layout.getTypeSettingsProperty(
+			"mapped-description");
+		String mappedTitle = layout.getTypeSettingsProperty("mapped-title");
 
-		InfoItemFieldValues infoItemFieldValues =
-			infoItemFieldValuesProvider.getInfoItemFieldValues(
-				layoutDisplayPageObjectProvider.getDisplayObject());
+		InfoItemFieldValues infoItemFieldValues = null;
+
+		if (Validator.isNotNull(mappedDescription) ||
+			Validator.isNotNull(mappedTitle)) {
+
+			InfoItemFieldValuesProvider<Object> infoItemFieldValuesProvider =
+				infoItemServiceRegistry.getFirstInfoItemService(
+					InfoItemFieldValuesProvider.class,
+					layoutDisplayPageObjectProvider.getClassName());
+
+			infoItemFieldValues =
+				infoItemFieldValuesProvider.getInfoItemFieldValues(
+					layoutDisplayPageObjectProvider.getDisplayObject());
+		}
 
 		String description = _getMappedValue(
-			layout.getTypeSettingsProperty("mapped-description"),
-			infoItemFieldValues, locale);
+			mappedDescription, infoItemFieldValues, locale);
 
 		if (description == null) {
 			description = layoutDisplayPageObjectProvider.getDescription(
@@ -165,8 +175,7 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			httpServletRequest);
 
 		String title = _getMappedValue(
-			layout.getTypeSettingsProperty("mapped-title"), infoItemFieldValues,
-			locale);
+			mappedTitle, infoItemFieldValues, locale);
 
 		if (title == null) {
 			title = layoutDisplayPageObjectProvider.getTitle(locale);
