@@ -39,7 +39,7 @@ public class AdvancedSystemFDSEntry implements SystemFDSEntry {
 	}
 
 	@Override
-	public boolean getRecentSearches() {
+	public boolean getRecentSearchesEnabled() {
 		return true;
 	}
 

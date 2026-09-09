@@ -81,7 +81,7 @@ public interface FDSSerializer {
 	public String serializePropsTransformer(
 		String fdsName, HttpServletRequest httpServletRequest);
 
-	public boolean serializeRecentSearches(
+	public boolean serializeRecentSearchesEnabled(
 		String fdsName, HttpServletRequest httpServletRequest);
 
 	public boolean serializeSearchAsYouType(

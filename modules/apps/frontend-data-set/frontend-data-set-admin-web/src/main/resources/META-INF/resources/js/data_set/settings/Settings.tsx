@@ -53,8 +53,8 @@ const Settings = ({
 	const [hideManagementBarInEmptyState, setHideManagementBarInEmptyState] =
 		useState(dataSet.hideManagementBarInEmptyState ?? true);
 	const [loading, setLoading] = useState(true);
-	const [recentSearches, setRecentSearches] = useState(
-		dataSet.recentSearches ?? false
+	const [recentSearchesEnabled, setRecentSearchesEnabled] = useState(
+		dataSet.recentSearchesEnabled ?? false
 	);
 	const [searchAsYouType, setSearchAsYouType] = useState(
 		dataSet.searchAsYouType ?? false
@@ -103,7 +103,7 @@ const Settings = ({
 		const body = {
 			defaultVisualizationMode,
 			hideManagementBarInEmptyState,
-			recentSearches,
+			recentSearchesEnabled,
 			searchAsYouType,
 			showSearch,
 			snapshotsEnabled,
@@ -503,8 +503,8 @@ const Settings = ({
 							<ClayToggle
 								disabled={!showSearch}
 								id="recent-searches-toggle"
-								onToggle={setRecentSearches}
-								toggled={recentSearches}
+								onToggle={setRecentSearchesEnabled}
+								toggled={recentSearchesEnabled}
 							/>
 						</ClayLayout.Col>
 					</ClayLayout.Row>

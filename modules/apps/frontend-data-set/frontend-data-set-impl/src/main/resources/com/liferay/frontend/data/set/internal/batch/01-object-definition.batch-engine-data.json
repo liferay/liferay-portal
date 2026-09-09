@@ -209,14 +209,14 @@
 					"DBType": "Boolean",
 					"businessType": "Boolean",
 					"defaultValue": false,
-					"externalReferenceCode": "RECENT_SEARCHES",
+					"externalReferenceCode": "RECENT_SEARCHES_ENABLED",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"label": {
-						"en_US": "Recent Searches"
+						"en_US": "Recent Searches Enabled"
 					},
 					"localized": false,
-					"name": "recentSearches",
+					"name": "recentSearchesEnabled",
 					"required": false,
 					"state": false,
 					"system": true,

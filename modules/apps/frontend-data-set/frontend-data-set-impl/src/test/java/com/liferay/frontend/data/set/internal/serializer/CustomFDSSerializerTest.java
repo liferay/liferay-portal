@@ -907,20 +907,21 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
-	public void testSerializeRecentSearches() throws Exception {
-		_mockSerializeRecentSearches(
+	public void testSerializeRecentSearchesEnabled() throws Exception {
+		_mockSerializeRecentSearchesEnabled(
 			FDS_NAMES[0],
 			HashMapBuilder.<String, Object>put(
-				"recentSearches", true
+				"recentSearchesEnabled", true
 			).build());
 
-		_mockSerializeRecentSearches(FDS_NAMES[1], Collections.emptyMap());
+		_mockSerializeRecentSearchesEnabled(
+			FDS_NAMES[1], Collections.emptyMap());
 
 		Assert.assertTrue(
-			_customFDSSerializer.serializeRecentSearches(
+			_customFDSSerializer.serializeRecentSearchesEnabled(
 				FDS_NAMES[0], httpServletRequest));
 		Assert.assertFalse(
-			_customFDSSerializer.serializeRecentSearches(
+			_customFDSSerializer.serializeRecentSearchesEnabled(
 				FDS_NAMES[1], httpServletRequest));
 
 		_resetFDSSerializer();
@@ -1642,7 +1643,7 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		).thenCallRealMethod();
 	}
 
-	private void _mockSerializeRecentSearches(
+	private void _mockSerializeRecentSearchesEnabled(
 		String fdsName, Map<String, Object> properties) {
 
 		Mockito.when(
@@ -1653,7 +1654,7 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		);
 
 		Mockito.when(
-			_customFDSSerializer.serializeRecentSearches(
+			_customFDSSerializer.serializeRecentSearchesEnabled(
 				fdsName, httpServletRequest)
 		).thenCallRealMethod();
 	}

@@ -126,7 +126,8 @@ public class ImportSystemDataSetMVCResourceCommand
 			).put(
 				"propsTransformer", systemFDSEntry.getPropsTransformer()
 			).put(
-				"recentSearches", systemFDSEntry.getRecentSearches()
+				"recentSearchesEnabled",
+				systemFDSEntry.getRecentSearchesEnabled()
 			).put(
 				"restApplication", systemFDSEntry.getRESTApplication()
 			).put(

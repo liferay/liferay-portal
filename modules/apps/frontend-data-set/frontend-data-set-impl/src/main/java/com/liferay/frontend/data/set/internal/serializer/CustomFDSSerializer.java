@@ -486,13 +486,13 @@ public class CustomFDSSerializer
 	}
 
 	@Override
-	public boolean serializeRecentSearches(
+	public boolean serializeRecentSearchesEnabled(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
 		Map<String, Object> properties = getDataSetObjectEntryProperties(
 			fdsName, httpServletRequest);
 
-		return GetterUtil.getBoolean(properties.get("recentSearches"));
+		return GetterUtil.getBoolean(properties.get("recentSearchesEnabled"));
 	}
 
 	@Override

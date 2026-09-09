@@ -18,7 +18,7 @@ function MainSearch({onClear}: {onClear: () => void}) {
 		appURL,
 		onSearch,
 
-		recentSearches: recentSearchesEnabled,
+		recentSearchesEnabled,
 		searchAsYouType,
 		searchParam,
 	} = useContext(FrontendDataSetContext);

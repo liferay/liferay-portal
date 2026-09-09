@@ -1205,26 +1205,26 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 	}
 
 	@Test
-	public void testSerializeRecentSearches() throws Exception {
+	public void testSerializeRecentSearchesEnabled() throws Exception {
 		_registerServices(
 			_registerSystemFDSEntry(
 				SystemFDSEntryFactory.create(
 					FDS_NAMES[0]
-				).withRecentSearches(
+				).withRecentSearchesEnabled(
 					false
 				)),
 			_registerSystemFDSEntry(
 				SystemFDSEntryFactory.create(
 					FDS_NAMES[1]
-				).withRecentSearches(
+				).withRecentSearchesEnabled(
 					true
 				)));
 
 		Assert.assertFalse(
-			systemFDSSerializer.serializeRecentSearches(
+			systemFDSSerializer.serializeRecentSearchesEnabled(
 				FDS_NAMES[0], httpServletRequest));
 		Assert.assertTrue(
-			systemFDSSerializer.serializeRecentSearches(
+			systemFDSSerializer.serializeRecentSearchesEnabled(
 				FDS_NAMES[1], httpServletRequest));
 
 		_unregisterServices();
@@ -1232,7 +1232,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
 
 		Assert.assertFalse(
-			systemFDSSerializer.serializeRecentSearches(
+			systemFDSSerializer.serializeRecentSearchesEnabled(
 				FDS_NAMES[0], httpServletRequest));
 
 		_unregisterServices();
@@ -2046,12 +2046,12 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 					}
 
 					@Override
-					public boolean getRecentSearches() {
-						if (_recentSearches != null) {
-							return _recentSearches;
+					public boolean getRecentSearchesEnabled() {
+						if (_recentSearchesEnabled != null) {
+							return _recentSearchesEnabled;
 						}
 
-						return SystemFDSEntry.super.getRecentSearches();
+						return SystemFDSEntry.super.getRecentSearchesEnabled();
 					}
 
 					@Override
@@ -2127,10 +2127,10 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 			return this;
 		}
 
-		public SystemFDSEntryWrapper withRecentSearches(
-			boolean recentSearches) {
+		public SystemFDSEntryWrapper withRecentSearchesEnabled(
+			boolean recentSearchesEnabled) {
 
-			_recentSearches = recentSearches;
+			_recentSearchesEnabled = recentSearchesEnabled;
 
 			return this;
 		}
@@ -2163,7 +2163,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		private boolean _hideManagementBarInEmptyState;
 		private int[] _listOfItemsPerPage;
 		private String _propsTransformer;
-		private Boolean _recentSearches;
+		private Boolean _recentSearchesEnabled;
 		private boolean _searchAsYouType;
 		private boolean _showSearch;
 		private boolean _snapshotsEnabled;

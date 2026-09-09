@@ -40,7 +40,7 @@ public interface SystemFDSEntry {
 		return null;
 	}
 
-	public default boolean getRecentSearches() {
+	public default boolean getRecentSearchesEnabled() {
 		return false;
 	}
 

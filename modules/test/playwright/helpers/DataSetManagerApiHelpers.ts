@@ -471,7 +471,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		keywords,
 		label,
 		listOfItemsPerPage,
-		recentSearches,
+		recentSearchesEnabled,
 		searchAsYouType,
 		showSearch,
 		snapshotsEnabled,
@@ -484,7 +484,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 		keywords?: Array<string>;
 		label?: string;
 		listOfItemsPerPage?: string;
-		recentSearches?: boolean;
+		recentSearchesEnabled?: boolean;
 		searchAsYouType?: boolean;
 		showSearch?: boolean;
 		snapshotsEnabled?: boolean;
@@ -501,7 +501,7 @@ export class DataSetManagerApiHelpers extends ApiHelpers {
 			keywords,
 			label,
 			listOfItemsPerPage,
-			recentSearches,
+			recentSearchesEnabled,
 			searchAsYouType,
 			showSearch,
 			snapshotsEnabled,

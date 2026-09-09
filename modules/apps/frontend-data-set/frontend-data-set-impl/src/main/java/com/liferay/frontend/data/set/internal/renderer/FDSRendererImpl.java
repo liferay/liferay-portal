@@ -245,8 +245,8 @@ public class FDSRendererImpl implements FDSRenderer {
 						return paginationJSONObject;
 					}
 				).put(
-					"recentSearches",
-					() -> fdsSerializer.serializeRecentSearches(
+					"recentSearchesEnabled",
+					() -> fdsSerializer.serializeRecentSearchesEnabled(
 						fdsName, httpServletRequest)
 				).put(
 					"searchAsYouType",

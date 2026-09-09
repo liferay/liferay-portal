@@ -223,7 +223,7 @@ describe('FrontendDataSet', () => {
 		}
 
 		async function renderLoaded({
-			recentSearches = true,
+			recentSearchesEnabled = true,
 			searchAsYouType = false,
 		} = {}) {
 			const requests = mockPendingRequests();
@@ -232,7 +232,7 @@ describe('FrontendDataSet', () => {
 				<FrontendDataSet
 					apiURL="/o/products"
 					id={id}
-					recentSearches={recentSearches}
+					recentSearchesEnabled={recentSearchesEnabled}
 					searchAsYouType={searchAsYouType}
 					views={VIEWS}
 				/>
@@ -264,7 +264,7 @@ describe('FrontendDataSet', () => {
 				<FrontendDataSet
 					apiURL="/o/products"
 					id={id}
-					recentSearches={true}
+					recentSearchesEnabled={true}
 					views={VIEWS}
 				/>
 			);
@@ -285,7 +285,7 @@ describe('FrontendDataSet', () => {
 		});
 
 		it('remembers nothing when the Data Set does not ask for recent searches', async () => {
-			const requests = await renderLoaded({recentSearches: false});
+			const requests = await renderLoaded({recentSearchesEnabled: false});
 
 			await search(requests, 'nike', ['hit']);
 

@@ -142,7 +142,7 @@ const FrontendDataSetContent = ({
 	pagination,
 	portletId,
 
-	recentSearches: recentSearchesEnabled = false,
+	recentSearchesEnabled = false,
 	searchAsYouType = false,
 	selectedItems: externalSelectedItems,
 	selectedItemsKey = 'id',
@@ -2210,7 +2210,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
-				recentSearches: recentSearchesEnabled,
+				recentSearchesEnabled,
 				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searching,

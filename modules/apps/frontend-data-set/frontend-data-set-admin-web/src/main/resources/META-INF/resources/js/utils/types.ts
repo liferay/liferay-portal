@@ -97,7 +97,7 @@ export interface IDataSet {
 	itemActionsOrder?: string;
 	label: string;
 	listOfItemsPerPage: string;
-	recentSearches?: boolean;
+	recentSearchesEnabled?: boolean;
 	restApplication: string;
 	restEndpoint: string;
 	restSchema: string;
