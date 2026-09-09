@@ -8,8 +8,10 @@ package com.liferay.message.boards.web.internal.portlet;
 import com.liferay.asset.constants.AssetWebKeys;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.message.boards.constants.MBPortletKeys;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.trash.TrashHelper;
 import com.liferay.trash.util.TrashWebKeys;
 
@@ -60,6 +62,12 @@ public class MBAdminPortlet extends MVCPortlet {
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws IOException, PortletException {
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_portal.getCompanyId(renderRequest), "LPD-105225")) {
+
+			return;
+		}
+
 		renderRequest.setAttribute(AssetWebKeys.ASSET_HELPER, _assetHelper);
 		renderRequest.setAttribute(TrashWebKeys.TRASH_HELPER, _trashHelper);
 
@@ -68,6 +76,9 @@ public class MBAdminPortlet extends MVCPortlet {
 
 	@Reference
 	private AssetHelper _assetHelper;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(&(release.bundle.symbolic.name=com.liferay.message.boards.web)(&(release.schema.version>=1.0.0)(!(release.schema.version>=2.0.0))))"
