@@ -2,6 +2,9 @@
  * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
+
+@import 'atlas-variables';
+
 .image-editor .editor-workspace {
 	background: var(--editor-workspace-bg);
 	display: flex;
@@ -11,7 +14,7 @@
 }
 
 .image-editor .editor-workspace:focus-visible {
-	box-shadow: inset 0 0 0 3px rgb(255 255 255 / 60%);
+	box-shadow: inset 0 0 0 3px rgba($white, 0.6);
 	outline: 2px solid var(--editor-accent);
 	outline-offset: -2px;
 }
