@@ -1,0 +1,55 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+.image-editor-modal {
+	--editor-accent: #4b9bff;
+	--editor-accent-text: var(--editor-primary);
+	--editor-border: var(--cadmin-gray-300, var(--gray-300, #e7e7ed));
+	--editor-primary: var(--cadmin-primary, var(--primary, #0b5fff));
+	--editor-surface: var(--cadmin-body-bg, var(--body-bg, #fff));
+	--editor-surface-subtle: var(--cadmin-gray-100, var(--gray-100, #f7f8f9));
+	--editor-text-muted: var(--cadmin-secondary, var(--secondary, #6b6c7e));
+	--editor-workspace-bg: #23263a;
+}
+
+.image-editor-modal .modal-content {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	overflow: clip;
+}
+
+.image-editor-modal .modal-body {
+	overflow: clip;
+}
+
+.image-editor-modal .image-editor {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-height: 0;
+}
+
+.image-editor-modal .editor-main {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+}
+
+@media (max-width: 700px) {
+	.image-editor-modal .editor-main {
+		flex-direction: column;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.image-editor-modal *,
+	.image-editor-modal *::before,
+	.image-editor-modal *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
+}

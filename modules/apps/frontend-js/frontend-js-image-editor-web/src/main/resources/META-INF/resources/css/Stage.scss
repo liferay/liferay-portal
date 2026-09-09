@@ -1,0 +1,25 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+.image-editor-modal .editor-workspace {
+	background: var(--editor-workspace-bg);
+	display: flex;
+	flex: 1;
+	overflow: scroll;
+	scrollbar-gutter: stable;
+}
+
+.image-editor-modal .editor-workspace:focus-visible {
+	box-shadow: inset 0 0 0 3px rgb(255 255 255 / 60%);
+	outline: 2px solid var(--editor-accent);
+	outline-offset: -2px;
+}
+
+.image-editor-modal .editor-stage {
+	box-sizing: content-box;
+	display: block;
+	margin: auto;
+	overflow: visible;
+	padding: 24px;
+}

@@ -15,3 +15,6 @@ if (!globalThis.ResizeObserver) {
 		unobserve() {}
 	} as unknown as typeof ResizeObserver;
 }
+
+HTMLCanvasElement.prototype.getContext = (() =>
+	null) as unknown as HTMLCanvasElement['getContext'];

@@ -16,6 +16,9 @@
 	"jest": {
 		"setupFiles": [
 			"<rootDir>/jest-setup.config.ts"
+		],
+		"setupFilesAfterEnv": [
+			"<rootDir>/jest-setup-after.config.ts"
 		]
 	},
 	"main": "js/index.ts",
