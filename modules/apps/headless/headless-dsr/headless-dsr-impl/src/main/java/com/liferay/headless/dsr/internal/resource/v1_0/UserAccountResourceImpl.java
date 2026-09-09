@@ -8,7 +8,7 @@ package com.liferay.headless.dsr.internal.resource.v1_0;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.headless.dsr.dto.v1_0.UserAccount;
 import com.liferay.headless.dsr.internal.dto.v1_0.converter.UserAccountDTOConverterContext;
-import com.liferay.headless.dsr.internal.security.permission.DSRRoleAssignmentPermissionUtil;
+import com.liferay.headless.dsr.internal.security.permission.util.DSRRoleAssignmentPermissionUtil;
 import com.liferay.headless.dsr.internal.util.TicketUtil;
 import com.liferay.headless.dsr.resource.v1_0.UserAccountResource;
 import com.liferay.login.web.constants.LoginPortletKeys;

@@ -6,7 +6,7 @@
 package com.liferay.headless.dsr.internal.resource.v1_0;
 
 import com.liferay.headless.dsr.dto.v1_0.InvitedMember;
-import com.liferay.headless.dsr.internal.security.permission.DSRRoleAssignmentPermissionUtil;
+import com.liferay.headless.dsr.internal.security.permission.util.DSRRoleAssignmentPermissionUtil;
 import com.liferay.headless.dsr.resource.v1_0.InvitedMemberResource;
 import com.liferay.object.exception.ObjectEntryExpirationDateException;
 import com.liferay.object.model.ObjectDefinition;
