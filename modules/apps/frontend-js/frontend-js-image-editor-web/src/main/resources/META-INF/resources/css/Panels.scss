@@ -13,6 +13,8 @@
 }
 
 .image-editor .editor-panel {
+	--panel-header-collapse-icon-right: 0;
+
 	border: 0;
 	border-bottom: 1px solid var(--editor-border);
 	border-radius: 0;
@@ -28,7 +30,7 @@
 	border: 0;
 	display: flex;
 	justify-content: space-between;
-	padding: 0.75rem 0;
+	padding: 0.75rem 1.5rem 0.75rem 0;
 	width: 100%;
 }
 
