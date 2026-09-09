@@ -28,7 +28,7 @@ OmniSearchDisplayContext omniSearchDisplayContext = new OmniSearchDisplayContext
 	<react:component
 		module="{OmniSearch} from product-navigation-omni-search-web"
 		props='<%=
-			com.liferay.portal.kernel.util.HashMapBuilder.<String, Object>put(
+			HashMapBuilder.<String, Object>put(
 				"resultsURL", omniSearchDisplayContext.getResultsURL()
 			).build()
 		%>'

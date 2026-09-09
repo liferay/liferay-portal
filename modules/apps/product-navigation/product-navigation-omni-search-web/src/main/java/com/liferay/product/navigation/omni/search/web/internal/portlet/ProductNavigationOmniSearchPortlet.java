@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.system=true",
 		"com.liferay.portlet.use-default-template=false",
 		"jakarta.portlet.display-name=Omni Search",
+		"jakarta.portlet.init-param.view-template=/omni_search/view.jsp",
 		"jakarta.portlet.name=" + ProductNavigationOmniSearchPortletKeys.PRODUCT_NAVIGATION_OMNI_SEARCH,
 		"jakarta.portlet.security-role-ref=power-user,user",
 		"jakarta.portlet.version=4.0"

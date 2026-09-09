@@ -23,6 +23,10 @@ public class OmniSearchDisplayContext {
 		_httpServletRequest = httpServletRequest;
 	}
 
+	public String getApplicationsMenuPortletId() {
+		return _APPLICATIONS_MENU_PORTLET_ID;
+	}
+
 	public String getResultsURL() {
 		LiferayPortletURL liferayPortletURL = PortletURLFactoryUtil.create(
 			_httpServletRequest,
@@ -34,6 +38,10 @@ public class OmniSearchDisplayContext {
 
 		return liferayPortletURL.toString();
 	}
+
+	private static final String _APPLICATIONS_MENU_PORTLET_ID =
+		"com_liferay_product_navigation_applications_menu_web_internal_" +
+			"portlet_ProductNavigationApplicationsMenuPortlet";
 
 	private final HttpServletRequest _httpServletRequest;
 

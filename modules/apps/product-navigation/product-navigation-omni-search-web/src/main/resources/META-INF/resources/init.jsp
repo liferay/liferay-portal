@@ -6,7 +6,10 @@
 --%>
 
 <%@ taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
+taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %>
 
 <%@ page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
+page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
+page import="com.liferay.product.navigation.omni.search.web.internal.constants.ProductNavigationOmniSearchPortletKeys" %><%@
 page import="com.liferay.product.navigation.omni.search.web.internal.display.context.OmniSearchDisplayContext" %>
