@@ -92,10 +92,11 @@ test(
 			const content =
 				'<form action="" method="post"><input type="submit" value="Button A" /> <input type="submit" value="Button B" /></form><p><span id="capturedFormButtonElement"></span></p><script>Liferay.once("beforeNavigate", function(){buttonValue = Liferay.SPA.__capturedFormButtonElement__.value});Liferay.once("endNavigate", function(){document.getElementById("capturedFormButtonElement").textContent = buttonValue;})</script>';
 
-			await page
-				.getByLabel('Content', {exact: true})
-				.getByRole('textbox')
-				.fill(content);
+			await page.keyboard.insertText(content);
+
+			await expect(
+				page.locator('.CodeMirror-line').first()
+			).toContainText('Button B');
 
 			await journalEditArticlePage.publishArticle();
 		});
