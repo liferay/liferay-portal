@@ -138,7 +138,7 @@ export type TimelineDay = {
 
 export interface ActivityHistoryPoint {
 	intervalInitDate: number;
-	totalCampaignActivities?: number;
+	totalCampaignResponses?: number;
 	totalEvents: number;
 	totalSessions?: number;
 }
@@ -166,7 +166,7 @@ export const mapEventMetricToActivityHistory = (
 	eventMetric.totalEventsMetric.histogram.metrics?.map(
 		({key, value}, index) => ({
 			intervalInitDate: moment.utc(key).valueOf(),
-			totalCampaignActivities:
+			totalCampaignResponses:
 				eventMetric?.totalCampaignActivitiesMetric?.histogram
 					?.metrics?.[index]?.value,
 			totalEvents: value,

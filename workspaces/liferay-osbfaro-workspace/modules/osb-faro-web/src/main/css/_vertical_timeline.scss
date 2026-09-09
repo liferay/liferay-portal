@@ -365,6 +365,10 @@
 .date-header {
 	padding: $baseline * 2 $baseline * 2 $baseline * 2 ($baseline * 3);
 
+	.date-header-counts {
+		column-gap: $baseline;
+	}
+
 	.day-icon {
 		color: $main;
 	}

@@ -44,6 +44,7 @@ const buildCampaignDays = (date: string) => ({
 		campaignsCount: 1,
 		delta: 8,
 		page: 1,
+		touchesCount: 4,
 	},
 });
 
@@ -154,6 +155,35 @@ describe('DayList', () => {
 		);
 
 		expect(screen.getByText('Q3 Manufacturing ABM')).toBeInTheDocument();
+	});
+
+	it('counts the day touches beside its events on the header', () => {
+		const {container} = render(
+			<DayList
+				campaignDays={buildCampaignDays('2026-07-16')}
+				items={[buildDay('Jul 16', 3, 'Ada Lovelace', '2026-07-16')]}
+				timeZoneId={TIME_ZONE_ID}
+			/>
+		);
+
+		const counts = Array.from(
+			container.querySelectorAll('.date-header .event-count-pill')
+		);
+
+		expect(counts.map((count) => count.textContent)).toEqual(['3', '4']);
+	});
+
+	it('leaves the touch count off a day the campaigns did not reach', () => {
+		const {container} = render(
+			<DayList
+				items={[buildDay('Jul 16', 3, 'Ada Lovelace', '2026-07-16')]}
+				timeZoneId={TIME_ZONE_ID}
+			/>
+		);
+
+		expect(
+			container.querySelectorAll('.date-header .event-count-pill')
+		).toHaveLength(1);
 	});
 
 	it('renders nothing when there are no days', () => {

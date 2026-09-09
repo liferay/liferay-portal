@@ -57,7 +57,7 @@ interface IChartProps<T> extends React.HTMLAttributes<HTMLElement> {
 
 interface IActivitiesHistoryProps<initDateType = number> {
 	intervalInitDate: initDateType;
-	totalCampaignActivities?: number;
+	totalCampaignResponses?: number;
 	totalEvents: number;
 	totalSessions?: number;
 	uniqueVisitors?: number;
@@ -109,7 +109,7 @@ const ActivitiesChart: React.FC<
 
 			const {
 				intervalInitDate,
-				totalCampaignActivities,
+				totalCampaignResponses,
 				totalEvents,
 				totalSessions,
 			} = data;
@@ -126,8 +126,8 @@ const ActivitiesChart: React.FC<
 							value: toLocale(totalSessions),
 						},
 						{
-							label: Liferay.Language.get('campaign-activities'),
-							value: toLocale(totalCampaignActivities ?? 0),
+							label: Liferay.Language.get('campaign-responses'),
+							value: toLocale(totalCampaignResponses ?? 0),
 						},
 					];
 

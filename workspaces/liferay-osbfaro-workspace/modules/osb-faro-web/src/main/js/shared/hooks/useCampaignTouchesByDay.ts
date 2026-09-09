@@ -12,6 +12,7 @@ export type CampaignDay = {
 	campaignsCount: number;
 	delta: number;
 	page: number;
+	touchesCount: number;
 };
 
 export type CampaignDays = Record<string, CampaignDay>;
@@ -58,13 +59,14 @@ export const useCampaignTouchesByDay = (
 
 		setDays(
 			data.campaignTouchesByDay.reduce<CampaignDays>(
-				(allDays, {campaignsCount, date, items}) => ({
+				(allDays, {campaignsCount, date, items, touchesCount}) => ({
 					...allDays,
 					[toDayKey(date)]: {
 						campaigns: items,
 						campaignsCount,
 						delta: CAMPAIGNS_PER_PAGE,
 						page: 1,
+						touchesCount,
 					},
 				}),
 				{}
@@ -86,6 +88,7 @@ export const useCampaignTouchesByDay = (
 						campaignsCount: day?.campaignsCount ?? 0,
 						delta,
 						page,
+						touchesCount: day?.touchesCount ?? 0,
 					},
 				}));
 			}),

@@ -36,6 +36,7 @@ const DayList: FC<IDayListProps> = ({
 					<DateHeader
 						title={header.title}
 						totalEvents={header.totalEvents}
+						totalTouches={campaignDay?.touchesCount}
 					/>
 
 					<ActivitySection label={Liferay.Language.get('day-level')}>

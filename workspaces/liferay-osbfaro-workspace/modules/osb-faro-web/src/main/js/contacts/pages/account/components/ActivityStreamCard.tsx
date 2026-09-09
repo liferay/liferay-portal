@@ -234,7 +234,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			chartError={error}
 			chartLoading={loading}
 			chartTooltipRenderRows={({
-				totalCampaignActivities,
+				totalCampaignResponses,
 				totalEvents,
 				totalSessions,
 			}) => [
@@ -247,8 +247,8 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					value: toThousands(totalSessions ?? 0),
 				},
 				{
-					label: Liferay.Language.get('campaign-activities'),
-					value: toThousands(totalCampaignActivities ?? 0),
+					label: Liferay.Language.get('campaign-responses'),
+					value: toThousands(totalCampaignResponses ?? 0),
 				},
 			]}
 			chartView={chartView}

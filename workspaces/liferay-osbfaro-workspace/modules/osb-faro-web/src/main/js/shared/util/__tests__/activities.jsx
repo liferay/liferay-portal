@@ -660,13 +660,13 @@ describe('activities', () => {
 				})
 			);
 
-			expect(points.map(({totalCampaignActivities}) => totalCampaignActivities)).toEqual([5, 1]);
+			expect(points.map(({totalCampaignResponses}) => totalCampaignResponses)).toEqual([5, 1]);
 		});
 
 		it('leaves the campaign activities undefined while the metric is absent', () => {
 			const points = mapEventMetricToActivityHistory(buildEventMetric());
 
-			expect(points[0].totalCampaignActivities).toBeUndefined();
+			expect(points[0].totalCampaignResponses).toBeUndefined();
 			expect(points[0].totalEvents).toBe(7);
 			expect(points[0].totalSessions).toBe(3);
 		});
