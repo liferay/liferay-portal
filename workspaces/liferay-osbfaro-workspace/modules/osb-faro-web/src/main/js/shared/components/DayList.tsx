@@ -10,6 +10,7 @@ import {TimelineDay, toDayKey} from 'shared/util/activities';
 type IDayListProps = {
 	campaignDays?: CampaignDays;
 	emptyState?: React.ReactNode;
+	individualUrls?: Record<string, string>;
 	initialExpanded?: boolean;
 	items?: TimelineDay[];
 	LDPEnabled?: boolean;
@@ -21,6 +22,7 @@ type IDayListProps = {
 const DayList: FC<IDayListProps> = ({
 	campaignDays = {},
 	emptyState,
+	individualUrls,
 	initialExpanded,
 	items = [],
 	LDPEnabled = true,
@@ -47,6 +49,7 @@ const DayList: FC<IDayListProps> = ({
 							{campaignDay?.campaigns.length ? (
 								<CampaignList
 									campaigns={campaignDay.campaigns}
+									individualUrls={individualUrls}
 									onDeltaChange={(delta) =>
 										onCampaignDeltaChange?.(date, delta)
 									}

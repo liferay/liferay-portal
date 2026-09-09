@@ -1,6 +1,7 @@
 import * as data from 'test/data';
 import {
 	buildLegendItems,
+	buildTouchIndividualUrls,
 	formatEvents,
 	formatGroupingTime,
 	formatSessions,
@@ -776,6 +777,48 @@ describe('activities', () => {
 			const sessionDays = [buildDay('2026-07-16T10:00:00Z')];
 
 			expect(mergeCampaignDays(sessionDays)).toEqual(sessionDays);
+		});
+	});
+
+	describe('buildTouchIndividualUrls', () => {
+		const campaignDays = {
+			'2026-07-16': {
+				campaigns: [
+					{
+						touches: [
+							{individualId: 'ind-1'},
+							{individualId: null}
+						]
+					},
+					{touches: [{individualId: 'ind-2'}]}
+				]
+			}
+		};
+
+		it('routes every touch that matched an individual', () => {
+			const urls = buildTouchIndividualUrls(campaignDays, {
+				channelId: '456',
+				groupId: '23'
+			});
+
+			expect(Object.keys(urls)).toEqual(['ind-1', 'ind-2']);
+			expect(urls['ind-1']).toContain('ind-1');
+		});
+
+		it('routes nothing without a channel and a group to route within', () => {
+			expect(buildTouchIndividualUrls(campaignDays, {})).toEqual({});
+			expect(
+				buildTouchIndividualUrls(campaignDays, {channelId: '456'})
+			).toEqual({});
+		});
+
+		it('routes nothing when no day was fetched', () => {
+			expect(
+				buildTouchIndividualUrls(undefined, {
+					channelId: '456',
+					groupId: '23'
+				})
+			).toEqual({});
 		});
 	});
 

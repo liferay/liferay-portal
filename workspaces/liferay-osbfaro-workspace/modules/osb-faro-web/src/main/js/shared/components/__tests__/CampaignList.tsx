@@ -17,7 +17,7 @@ const buildCampaigns = (total: number) =>
 		dataSourceType: 'salesforce',
 		touches: [
 			{
-				individualId: null,
+				individualId: null as string | null,
 				individualName: `Person ${index}`,
 				jobTitle: 'Plant Manager',
 				status: 'Attended',
@@ -77,6 +77,29 @@ describe('CampaignList', () => {
 		expect(
 			container.querySelector('.pagination-results')
 		).toHaveTextContent(/campaign entr/i);
+	});
+
+	it('links a touch whose individual it was given a route for', () => {
+		const campaigns = buildCampaigns(1);
+
+		campaigns[0].touches[0].individualId = 'ind-1';
+
+		const {container} = renderList({
+			campaigns,
+			individualUrls: {
+				'ind-1': '/workspace/liferay.com/1/individuals/ind-1',
+			},
+			totalItems: 1,
+		});
+
+		fireEvent.click(
+			container.querySelector('.campaign-row .row-main') as HTMLElement
+		);
+
+		expect(screen.getByText('Person 0').closest('a')).toHaveAttribute(
+			'href',
+			'/workspace/liferay.com/1/individuals/ind-1'
+		);
 	});
 
 	it('leaves the pager out when a day holds no campaigns', () => {

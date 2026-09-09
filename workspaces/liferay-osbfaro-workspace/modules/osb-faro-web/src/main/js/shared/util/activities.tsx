@@ -8,6 +8,7 @@ import {getCustomDateFormat} from 'shared/util/date';
 import {getSafeDecodedURIComponent} from './util';
 import {AssetTypes, TimeIntervals} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
+import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {toLocale} from 'shared/util/numbers';
 import {UserSession, UserSessionEvent} from 'shared/queries/UserSessionQuery';
@@ -477,6 +478,36 @@ export const groupBy = <T,>(
 
 export const toDayKey = (datetime: Date | string | number): string =>
 	moment.utc(datetime).format('YYYY-MM-DD');
+
+export const buildTouchIndividualUrls = (
+	campaignDays: Record<
+		string,
+		{campaigns: Array<{touches: Array<{individualId: string | null}>}>}
+	> = {},
+	{channelId, groupId}: EventDashboardContext = {}
+): Record<string, string> => {
+	if (!channelId || !groupId) {
+		return {};
+	}
+
+	return Object.values(campaignDays).reduce<Record<string, string>>(
+		(urls, {campaigns}) => {
+			campaigns.forEach(({touches}) =>
+				touches.forEach(({individualId}) => {
+					if (individualId) {
+						urls[individualId] = toRoute(
+							Routes.CONTACTS_INDIVIDUAL,
+							{channelId, groupId, id: individualId}
+						);
+					}
+				})
+			);
+
+			return urls;
+		},
+		{}
+	);
+};
 
 export const mergeCampaignDays = (
 	days: TimelineDay[],

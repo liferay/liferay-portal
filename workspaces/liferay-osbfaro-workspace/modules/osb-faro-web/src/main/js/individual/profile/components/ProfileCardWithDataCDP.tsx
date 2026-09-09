@@ -23,6 +23,7 @@ import {fetchPolicyDefinition} from 'shared/util/graphql';
 import {
 	formatSessions,
 	mapEventMetricToActivityHistory,
+	buildTouchIndividualUrls,
 	mergeCampaignDays,
 } from 'shared/util/activities';
 import {getSafeRangeSelectors} from 'shared/util/util';
@@ -252,6 +253,10 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 				/>
 			}
 			footerLabel={activityHistory?.length ? date : ''}
+			individualUrls={buildTouchIndividualUrls(campaignTouches.days, {
+				channelId,
+				groupId,
+			})}
 			interval={interval}
 			noResultsRenderer={
 				<ActivityStreamNoResults

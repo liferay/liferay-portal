@@ -8,8 +8,8 @@ import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import moment from 'moment';
 import React, {FC, useState} from 'react';
+import RowMain from 'shared/components/RowMain';
 import TextTruncate from './TextTruncate';
-import {ClayButtonWithIcon} from '@clayui/button';
 import {Colors} from 'shared/util/colors-size';
 import {formatDateToTimeZone} from 'shared/util/date';
 import {
@@ -63,49 +63,6 @@ type IRowProps<Item> = {
 	LDPEnabled?: boolean;
 	timeZoneId: string;
 };
-
-/**
- * The top part of a row: everything but the content it reveals. A row that
- * reveals child rows is clickable across its whole width and carries a caret,
- * while one that reveals a raw payload carries an info button instead — the
- * only way in, so the row body itself stays inert.
- */
-const RowMain: FC<{
-	children: React.ReactNode;
-	expanded: boolean;
-	infoButton?: boolean;
-	onToggle: () => void;
-}> = ({children, expanded, infoButton, onToggle}) =>
-	infoButton ? (
-		<div className="row-main d-flex align-items-start">
-			{children}
-
-			<ClayButtonWithIcon
-				aria-label={Liferay.Language.get('show-payload')}
-				borderless
-				className="payload-button ml-3 flex-shrink-0"
-				displayType="secondary"
-				onClick={onToggle}
-				size="sm"
-				symbol="info-circle"
-			/>
-		</div>
-	) : (
-		<div
-			className="row-main clickable d-flex align-items-start"
-			onClick={onToggle}
-			onKeyPress={onToggle}
-			role="button"
-			tabIndex={0}
-		>
-			{children}
-
-			<ClayIcon
-				className="angle-icon icon-root ml-3 flex-shrink-0 text-secondary"
-				symbol={expanded ? 'angle-up' : 'angle-down'}
-			/>
-		</div>
-	);
 
 const RowIconLabel: FC<{
 	displayType: LabelDisplayType;

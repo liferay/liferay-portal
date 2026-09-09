@@ -164,6 +164,10 @@
 	}
 
 	.campaign-row {
+		> .row-main {
+			align-items: center;
+		}
+
 		.campaign-sticker {
 			background-color: $white;
 			height: $baseline * 4;

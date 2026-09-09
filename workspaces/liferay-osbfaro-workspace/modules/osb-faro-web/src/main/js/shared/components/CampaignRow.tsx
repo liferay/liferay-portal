@@ -5,6 +5,7 @@ import ClaySticker from '@clayui/sticker';
 import EventCountPill from 'shared/components/EventCountPill';
 import getCN from 'classnames';
 import React, {FC, useState} from 'react';
+import RowMain from 'shared/components/RowMain';
 import {CampaignTouch, CampaignTouchMember} from 'shared/util/activities';
 import {Text} from '@clayui/core';
 
@@ -72,12 +73,9 @@ const CampaignRow: FC<{
 				{expanded}
 			)}
 		>
-			<div
-				className="row-main clickable d-flex align-items-center"
-				onClick={() => setExpanded(!expanded)}
-				onKeyPress={() => setExpanded(!expanded)}
-				role="button"
-				tabIndex={0}
+			<RowMain
+				expanded={expanded}
+				onToggle={() => setExpanded(!expanded)}
 			>
 				<ClaySticker className="campaign-sticker flex-shrink-0">
 					<ClayIcon
@@ -103,12 +101,7 @@ const CampaignRow: FC<{
 						totalEvents={touches.length}
 					/>
 				</div>
-
-				<ClayIcon
-					className="angle-icon icon-root ml-3 flex-shrink-0 text-secondary"
-					symbol={expanded ? 'angle-up' : 'angle-down'}
-				/>
-			</div>
+			</RowMain>
 
 			{expanded && (
 				<ul className="timeline-rows nested">

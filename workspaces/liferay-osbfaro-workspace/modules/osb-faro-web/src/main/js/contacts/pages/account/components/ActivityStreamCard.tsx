@@ -25,6 +25,7 @@ import {getSessionsDateRange} from 'shared/util/activityDateRange';
 import {Interval, RangeSelectors} from 'shared/types';
 import {
 	mapEventMetricToActivityHistory,
+	buildTouchIndividualUrls,
 	mergeCampaignDays,
 } from 'shared/util/activities';
 import {mapListResultsToProps} from 'shared/util/mappers';
@@ -288,6 +289,10 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 				/>
 			}
 			footerLabel={dateRangeLabel}
+			individualUrls={buildTouchIndividualUrls(campaignTouches.days, {
+				channelId,
+				groupId,
+			})}
 			interval={interval}
 			noResultsRenderer={
 				<ActivityStreamNoResults

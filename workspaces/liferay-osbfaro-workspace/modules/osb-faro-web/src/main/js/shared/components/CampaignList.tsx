@@ -5,6 +5,7 @@ import {CampaignTouch} from 'shared/util/activities';
 
 type ICampaignListProps = {
 	campaigns: CampaignTouch[];
+	individualUrls?: Record<string, string>;
 	onDeltaChange: (delta: number) => void;
 	onPageChange: (page: number) => void;
 	page: number;
@@ -14,6 +15,7 @@ type ICampaignListProps = {
 
 const CampaignList: FC<ICampaignListProps> = ({
 	campaigns,
+	individualUrls,
 	onDeltaChange,
 	onPageChange,
 	page,
@@ -26,6 +28,7 @@ const CampaignList: FC<ICampaignListProps> = ({
 				{campaigns.map((campaign) => (
 					<CampaignRow
 						campaign={campaign}
+						individualUrls={individualUrls}
 						key={campaign.campaignId}
 					/>
 				))}
