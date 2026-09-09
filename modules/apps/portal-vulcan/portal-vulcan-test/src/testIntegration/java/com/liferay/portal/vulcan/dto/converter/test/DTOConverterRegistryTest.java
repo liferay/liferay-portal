@@ -7,6 +7,7 @@ package com.liferay.portal.vulcan.dto.converter.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -14,6 +15,7 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -25,6 +27,7 @@ import org.junit.runner.RunWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 /**
@@ -170,6 +173,32 @@ public class DTOConverterRegistryTest {
 				dtoConverter,
 				_dtoConverterRegistry.getDTOConverter(dtoClassName));
 		}
+	}
+
+	@Test
+	public void testGetDTOConverterWithEveryRegisteredDTOClassName()
+		throws Exception {
+
+		Set<String> unresolvedDTOClassNames = new TreeSet<>();
+
+		for (ServiceReference<DTOConverter<?, ?>> serviceReference :
+				_bundleContext.getServiceReferences(
+					(Class<DTOConverter<?, ?>>)(Class<?>)DTOConverter.class,
+					"(dto.class.name=*)")) {
+
+			String dtoClassName = GetterUtil.getString(
+				serviceReference.getProperty("dto.class.name"));
+
+			if (_dtoConverterRegistry.getDTOConverter(dtoClassName) != null) {
+				continue;
+			}
+
+			unresolvedDTOClassNames.add(dtoClassName);
+		}
+
+		Assert.assertTrue(
+			unresolvedDTOClassNames.toString(),
+			unresolvedDTOClassNames.isEmpty());
 	}
 
 	@Test
