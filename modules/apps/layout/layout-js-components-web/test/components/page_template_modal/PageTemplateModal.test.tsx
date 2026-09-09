@@ -55,7 +55,7 @@ describe('ConvertToPageTemplateModal', () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			act(() => {
+			await act(async () => {
 				jest.runAllTimers();
 			});
 
@@ -69,7 +69,7 @@ describe('ConvertToPageTemplateModal', () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			act(() => {
+			await act(async () => {
 				jest.runAllTimers();
 			});
 
@@ -95,7 +95,7 @@ describe('ConvertToPageTemplateModal', () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			act(() => {
+			await act(async () => {
 				jest.runAllTimers();
 			});
 
@@ -123,7 +123,7 @@ describe('ConvertToPageTemplateModal', () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			act(() => {
+			await act(async () => {
 				jest.runAllTimers();
 			});
 
@@ -147,7 +147,7 @@ describe('ConvertToPageTemplateModal', () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			act(() => {
+			await act(async () => {
 				jest.runAllTimers();
 			});
 
@@ -165,7 +165,7 @@ describe('ConvertToPageTemplateModal', () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			act(() => {
+			await act(async () => {
 				jest.runAllTimers();
 			});
 
@@ -203,7 +203,7 @@ describe('ConvertToPageTemplateModal', () => {
 				renderConvertToPageTemplateModal();
 			});
 
-			act(() => {
+			await act(async () => {
 				jest.runAllTimers();
 			});
 
