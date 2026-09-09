@@ -328,7 +328,7 @@ public class CompareObjectEntryVersionsCMSServletTest
 			objectEntry.getObjectEntryId(), 1, 2, user);
 
 		Assert.assertEquals(
-			HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+			HttpServletResponse.SC_FORBIDDEN,
 			mockHttpServletResponse.getStatus());
 		Assert.assertEquals(
 			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
