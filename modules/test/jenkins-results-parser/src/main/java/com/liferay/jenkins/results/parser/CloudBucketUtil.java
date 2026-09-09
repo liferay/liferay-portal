@@ -379,18 +379,19 @@ public class CloudBucketUtil {
 			return false;
 		}
 
-		if (isS3ObjectRefAvailable(s3ObjectPath)) {
-			return true;
-		}
-
 		try {
-			String listS3Files = listS3Files(s3ObjectPath, true);
+			String listS3Files = listS3Files(
+				_replaceS3ObjectPath(s3ObjectPath), true);
 
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(listS3Files.trim())) {
 				return true;
 			}
 		}
-		catch (IOException | TimeoutException exception) {
+		catch (IOException | RuntimeException | TimeoutException exception) {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"WARNING: Unable to check S3 object path ", s3ObjectPath,
+					"\n", String.valueOf(exception)));
 		}
 
 		return false;
