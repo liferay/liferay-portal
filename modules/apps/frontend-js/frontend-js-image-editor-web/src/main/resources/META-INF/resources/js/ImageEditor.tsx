@@ -6,6 +6,7 @@
 import '../css/ImageEditor.scss';
 
 import {ClayIconSpriteContext} from '@clayui/icon';
+import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {AnnouncerProvider, useAnnouncer} from './chrome/Announcer';
@@ -17,7 +18,6 @@ import {
 } from './chrome/instance';
 import {useEditorHistory} from './hooks/useEditorHistory';
 import {useSaveController} from './hooks/useSaveController';
-import {t} from './i18n';
 import {anchoredScroll} from './imaging/geometry';
 import {LoadedImage} from './imaging/loadImage';
 import {Workspace} from './stage/Workspace';
@@ -123,7 +123,15 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 	});
 
 	useEffect(() => {
-		announce(t('editor-loaded', image.width, image.height));
+		announce(
+			sub(
+				Liferay.Language.get(
+					'the-image-editor-was-opened-the-image-is-x-by-x-pixels'
+				),
+				image.width,
+				image.height
+			)
+		);
 	}, [announce, image]);
 
 	const resizeObserverRef = useRef<ResizeObserver | null>(null);
@@ -196,7 +204,9 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 	} | null>(null);
 
 	const announceZoom = (level: number) =>
-		announce(t('zoom-level', Math.round(level * 100)));
+		announce(
+			sub(Liferay.Language.get('zoom-x-percent'), Math.round(level * 100))
+		);
 
 	const zoomBy = (direction: -1 | 1) => {
 		autoFitRef.current = false;
@@ -302,7 +312,9 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 						className="alert alert-danger editor-save-error"
 						role="alert"
 					>
-						{t('save-failed')}
+						{Liferay.Language.get(
+							'unable-to-save-the-image-please-try-again'
+						)}
 					</div>
 				)}
 

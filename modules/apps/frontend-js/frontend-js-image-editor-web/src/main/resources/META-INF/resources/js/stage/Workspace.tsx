@@ -8,7 +8,6 @@ import '../../css/Stage.scss';
 import React from 'react';
 
 import {useEditorId} from '../chrome/instance';
-import {t} from '../i18n';
 import {imageTransform} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
 import {EditState, rotatedSize} from '../state/types';
@@ -62,7 +61,7 @@ export function Workspace({
 	return (
 		<div
 			aria-describedby={eid('workspace-description')}
-			aria-label={t('image-workspace')}
+			aria-label={Liferay.Language.get('image-workspace')}
 			className="editor-workspace"
 			onKeyDown={handleKeyDown}
 			onPointerLeave={onWorkspacePointerLeave}
@@ -72,7 +71,9 @@ export function Workspace({
 			tabIndex={0}
 		>
 			<span className="sr-only" id={eid('workspace-description')}>
-				{t('workspace-description')}
+				{Liferay.Language.get(
+					'scrollable-view-of-the-image-use-the-zoom-buttons-or-plus-and-minus-keys-to-zoom-tab-to-reach-the-crop-area-and-its-handles'
+				)}
 			</span>
 
 			<svg

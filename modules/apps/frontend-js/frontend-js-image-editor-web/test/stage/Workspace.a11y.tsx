@@ -70,11 +70,11 @@ describe('Editor workspace composition', () => {
 		renderEditor(<EditorHarness />);
 
 		const workspace = screen.getByRole('region', {
-			name: 'Image workspace',
+			name: 'image-workspace',
 		});
 
 		fireEvent.keyDown(workspace, {key: '+'});
 
-		expect(screen.getByText('75%')).toBeInTheDocument();
+		expect(screen.getByText('x-percent')).toBeInTheDocument();
 	});
 });

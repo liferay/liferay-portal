@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {t} from '../i18n';
 import {EditState, EditorHistory} from './types';
 
 export type EditorAction =
@@ -76,7 +75,7 @@ export function editorReducer(
 			return applyEdit(
 				history,
 				{...present, flipHorizontal: !present.flipHorizontal},
-				t('label-flip')
+				Liferay.Language.get('flip')
 			);
 		}
 
@@ -88,7 +87,7 @@ export function editorReducer(
 					rotation: ((present.rotation + 90) %
 						360) as EditState['rotation'],
 				},
-				t('label-rotate')
+				Liferay.Language.get('rotation')
 			);
 		}
 

@@ -8,14 +8,10 @@ import {
 	ImageEditor,
 	ImageEditorLoadError,
 	disposeLoadedImage,
-	liferayMessages,
 	loadImage,
-	setMessages,
 } from '@liferay/frontend-js-image-editor-web';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
-
-setMessages(liferayMessages);
 
 const SAMPLE_URL = '/o/frontend-js-image-editor-sample-web/images/sample.jpg';
 

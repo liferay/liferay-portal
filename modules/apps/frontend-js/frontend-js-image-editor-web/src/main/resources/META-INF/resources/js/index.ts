@@ -6,9 +6,6 @@
 export {ImageEditor} from './ImageEditor';
 export type {EditorSaveResult, ImageEditorProps} from './ImageEditor';
 
-export type {EditorMessages} from './i18n';
-export {setMessages} from './i18n';
-export {liferayMessages} from './i18n/liferayMessages';
 export type {ImageLoadErrorReason, LoadedImage} from './imaging/loadImage';
 export {
 	ImageEditorLoadError,

@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from 'frontend-js-web';
 import {useEffect, useRef, useState} from 'react';
 
-import {t} from '../i18n';
 import {exportEditedImage} from '../imaging/exportImage';
 import {LoadedImage} from '../imaging/loadImage';
 import {EditState} from '../state/types';
@@ -41,7 +41,7 @@ export function useSaveController(
 		setSaveError(false);
 		setSaving(true);
 
-		announce(t('saving'));
+		announce(Liferay.Language.get('saving'));
 
 		try {
 			const result = await exportEditedImage(image, state);
@@ -56,7 +56,12 @@ export function useSaveController(
 				return;
 			}
 
-			announce(t('image-saved-as-x', result.fileName));
+			announce(
+				sub(
+					Liferay.Language.get('the-image-was-saved-as-x'),
+					result.fileName
+				)
+			);
 
 			onClose();
 		}
@@ -64,7 +69,11 @@ export function useSaveController(
 			if (!controller.signal.aborted) {
 				setSaveError(true);
 
-				announce(t('save-failed'));
+				announce(
+					Liferay.Language.get(
+						'unable-to-save-the-image-please-try-again'
+					)
+				);
 			}
 		}
 		finally {

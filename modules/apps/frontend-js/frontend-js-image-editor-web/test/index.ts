@@ -13,9 +13,7 @@ describe('the module surface', () => {
 			'ImageEditor',
 			'ImageEditorLoadError',
 			'disposeLoadedImage',
-			'liferayMessages',
 			'loadImage',
-			'setMessages',
 		]);
 	});
 });

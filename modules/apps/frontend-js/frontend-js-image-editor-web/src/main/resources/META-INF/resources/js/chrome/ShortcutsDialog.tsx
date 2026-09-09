@@ -6,23 +6,79 @@
 import ClayModal, {useModal} from '@clayui/modal';
 import React from 'react';
 
-import {TranslationKey, t} from '../i18n';
-
-const SHORTCUTS: Array<{descriptionKey: TranslationKey; keys: string}> = [
-	{descriptionKey: 'shortcut-arrows', keys: 'Arrow keys'},
-	{descriptionKey: 'shortcut-shift-arrows', keys: 'Shift + Arrow keys'},
-	{descriptionKey: 'shortcut-shift-drag', keys: 'Shift + drag'},
-	{descriptionKey: 'shortcut-alt-drag', keys: 'Alt + drag'},
-	{descriptionKey: 'shortcut-zoom', keys: '+ / -'},
-	{descriptionKey: 'shortcut-zoom-fit', keys: '0'},
-	{descriptionKey: 'shortcut-zoom-actual', keys: '1'},
-	{descriptionKey: 'shortcut-center-crop', keys: '2'},
-	{descriptionKey: 'shortcut-multi-select', keys: 'Shift + click'},
-	{descriptionKey: 'shortcut-copy', keys: 'Ctrl/Cmd + C'},
-	{descriptionKey: 'shortcut-paste', keys: 'Ctrl/Cmd + V'},
-	{descriptionKey: 'shortcut-undo', keys: 'Ctrl/Cmd + Z'},
-	{descriptionKey: 'shortcut-redo', keys: 'Ctrl/Cmd + Shift + Z'},
-	{descriptionKey: 'shortcut-escape', keys: 'Esc'},
+const SHORTCUTS: Array<{description: string; keys: string}> = [
+	{
+		description: Liferay.Language.get(
+			'move-or-adjust-the-focused-control-by-1'
+		),
+		keys: 'Arrow keys',
+	},
+	{
+		description: Liferay.Language.get(
+			'move-or-adjust-the-focused-control-by-10'
+		),
+		keys: 'Shift + Arrow keys',
+	},
+	{
+		description: Liferay.Language.get(
+			'keep-the-proportions-while-resizing-the-crop-or-a-box-annotation'
+		),
+		keys: 'Shift + drag',
+	},
+	{
+		description: Liferay.Language.get(
+			'resize-the-crop-from-its-center-while-dragging'
+		),
+		keys: 'Alt + drag',
+	},
+	{
+		description: Liferay.Language.get(
+			'zoom-in-and-out-while-the-workspace-has-focus-towards-the-pointer-when-it-is-over-the-image-and-towards-the-center-of-the-view-otherwise'
+		),
+		keys: '+ / -',
+	},
+	{
+		description: Liferay.Language.get(
+			'fit-the-image-to-the-window-while-the-workspace-has-focus'
+		),
+		keys: '0',
+	},
+	{
+		description: Liferay.Language.get('zoom-to-actual-size'),
+		keys: '1',
+	},
+	{
+		description: Liferay.Language.get('fit-the-crop-area-to-the-window'),
+		keys: '2',
+	},
+	{
+		description: Liferay.Language.get(
+			'add-or-remove-an-annotation-from-a-group-that-moves-and-deletes-together'
+		),
+		keys: 'Shift + click',
+	},
+	{
+		description: Liferay.Language.get('copy-the-focused-annotation'),
+		keys: 'Ctrl/Cmd + C',
+	},
+	{
+		description: Liferay.Language.get('paste-the-copied-annotation'),
+		keys: 'Ctrl/Cmd + V',
+	},
+	{
+		description: Liferay.Language.get('undo-the-last-change'),
+		keys: 'Ctrl/Cmd + Z',
+	},
+	{
+		description: Liferay.Language.get('redo-the-last-undone-change'),
+		keys: 'Ctrl/Cmd + Shift + Z',
+	},
+	{
+		description: Liferay.Language.get(
+			'close-the-editor-or-the-open-dialog'
+		),
+		keys: 'Esc',
+	},
 ];
 
 interface Props {
@@ -46,19 +102,22 @@ export function ShortcutsDialog({onOpenChange, open}: Props) {
 					}
 				}}
 			>
-				<ClayModal.Header closeButtonAriaLabel={t('close')} withTitle>
-					{t('keyboard-shortcuts')}
+				<ClayModal.Header
+					closeButtonAriaLabel={Liferay.Language.get('close')}
+					withTitle
+				>
+					{Liferay.Language.get('keyboard-shortcuts')}
 				</ClayModal.Header>
 
 				<ClayModal.Body>
 					<dl className="editor-shortcut-list small">
-						{SHORTCUTS.map(({descriptionKey, keys}) => (
-							<React.Fragment key={descriptionKey}>
+						{SHORTCUTS.map(({description, keys}) => (
+							<React.Fragment key={keys}>
 								<dt>
 									<kbd>{keys}</kbd>
 								</dt>
 
-								<dd>{t(descriptionKey)}</dd>
+								<dd>{description}</dd>
 							</React.Fragment>
 						))}
 					</dl>

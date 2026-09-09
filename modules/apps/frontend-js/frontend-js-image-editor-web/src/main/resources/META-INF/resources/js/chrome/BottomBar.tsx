@@ -4,9 +4,9 @@
  */
 
 import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import {t} from '../i18n';
 import {EditorAction} from '../state/editorReducer';
 
 interface Props {
@@ -44,97 +44,110 @@ export function BottomBar({
 		<div className="editor-bottom-bar">
 			<div className="editor-bar-first editor-bar-group">
 				<ClayButtonWithIcon
-					aria-label={t('rotate-90')}
+					aria-label={Liferay.Language.get(
+						'rotate-90-degrees-clockwise'
+					)}
 					borderless
 					className="editor-bar-button"
 					displayType="secondary"
 					onClick={() => {
 						dispatch({type: 'rotate-90'});
-						onAnnounce(t('rotated-90'));
+						onAnnounce(
+							Liferay.Language.get(
+								'the-image-was-rotated-90-degrees-clockwise'
+							)
+						);
 					}}
 					symbol="rotate"
-					title={t('rotate-90')}
+					title={Liferay.Language.get('rotate-90-degrees-clockwise')}
 				/>
 
 				<ClayButtonWithIcon
-					aria-label={t('flip-horizontal')}
+					aria-label={Liferay.Language.get('flip-horizontally')}
 					borderless
 					className="editor-bar-button"
 					displayType="secondary"
 					onClick={() => {
 						dispatch({type: 'flip-horizontal'});
-						onAnnounce(t('flipped-horizontal'));
+						onAnnounce(
+							Liferay.Language.get(
+								'the-image-was-flipped-horizontally'
+							)
+						);
 					}}
 					symbol="flip-horizontal"
-					title={t('flip-horizontal')}
+					title={Liferay.Language.get('flip-horizontally')}
 				/>
 
 				<ClayButtonWithIcon
-					aria-label={t('undo')}
+					aria-label={Liferay.Language.get('undo')}
 					borderless
 					className="editor-bar-button"
 					disabled={!canUndo}
 					displayType="secondary"
 					onClick={onUndo}
 					symbol="undo"
-					title={t('undo')}
+					title={Liferay.Language.get('undo')}
 				/>
 
 				<ClayButtonWithIcon
-					aria-label={t('redo')}
+					aria-label={Liferay.Language.get('redo')}
 					borderless
 					className="editor-bar-button"
 					disabled={!canRedo}
 					displayType="secondary"
 					onClick={onRedo}
 					symbol="redo"
-					title={t('redo')}
+					title={Liferay.Language.get('redo')}
 				/>
 
 				<ClayButtonWithIcon
-					aria-label={t('keyboard-shortcuts')}
+					aria-label={Liferay.Language.get('keyboard-shortcuts')}
 					borderless
 					className="editor-bar-button"
 					displayType="secondary"
 					onClick={onShowShortcuts}
 					symbol="question-circle"
-					title={t('keyboard-shortcuts')}
+					title={Liferay.Language.get('keyboard-shortcuts')}
 				/>
 			</div>
 
 			<div className="editor-bar-group editor-bar-middle">
 				<ClayButtonWithIcon
-					aria-label={t('zoom-out')}
+					aria-label={Liferay.Language.get('zoom-out')}
 					borderless
 					className="editor-bar-button"
 					displayType="secondary"
 					onClick={() => onZoom(-1)}
 					symbol="minus-circle"
-					title={t('zoom-out')}
+					title={Liferay.Language.get('zoom-out')}
 				/>
 
 				<span className="editor-zoom-level">
-					{t('zoom-percent', Math.round(zoom * 100))}
+					{sub(
+						Liferay.Language.get('x-percent'),
+						Math.round(zoom * 100)
+					)}
 				</span>
 
 				<ClayButtonWithIcon
-					aria-label={t('zoom-in')}
+					aria-label={Liferay.Language.get('zoom-in')}
 					borderless
 					className="editor-bar-button"
 					displayType="secondary"
 					onClick={() => onZoom(1)}
 					symbol="plus-circle-full"
-					title={t('zoom-in')}
+					title={Liferay.Language.get('zoom-in')}
 				/>
 
 				<ClayButtonWithIcon
-					aria-label={t('zoom-fit')}
+					aria-label={Liferay.Language.get('fit-image-to-window')}
 					borderless
 					className="editor-bar-button"
 					displayType="secondary"
 					onClick={onZoomFit}
 					symbol="autosize"
-					title={t('zoom-fit')}
+					title={Liferay.Language.get('fit-image-to-window')}
 				/>
 			</div>
 
@@ -147,7 +160,7 @@ export function BottomBar({
 					displayType="secondary"
 					onClick={onCancel}
 				>
-					{t('cancel')}
+					{Liferay.Language.get('cancel')}
 				</ClayButton>
 
 				<ClayButton
@@ -155,7 +168,9 @@ export function BottomBar({
 					displayType="primary"
 					onClick={onSave}
 				>
-					{saving ? t('saving') : t('save')}
+					{saving
+						? Liferay.Language.get('saving')
+						: Liferay.Language.get('save')}
 				</ClayButton>
 			</div>
 		</div>

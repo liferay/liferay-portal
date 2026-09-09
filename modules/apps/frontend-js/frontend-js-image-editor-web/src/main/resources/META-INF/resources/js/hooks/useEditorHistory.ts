@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {sub} from 'frontend-js-web';
 import React, {useReducer, useRef} from 'react';
 
-import {t} from '../i18n';
 import {LoadedImage} from '../imaging/loadImage';
 import {
 	editorReducer,
@@ -33,7 +33,7 @@ export function useEditorHistory(
 
 		dispatch({type: 'undo'});
 
-		announce(t('undo-x', label));
+		announce(sub(Liferay.Language.get('undo-x'), label));
 	};
 
 	const redo = () => {
@@ -45,7 +45,7 @@ export function useEditorHistory(
 
 		dispatch({type: 'redo'});
 
-		announce(t('redo-x', label));
+		announce(sub(Liferay.Language.get('redo-x'), label));
 	};
 
 	const handleUndoShortcut = (event: React.KeyboardEvent) => {
