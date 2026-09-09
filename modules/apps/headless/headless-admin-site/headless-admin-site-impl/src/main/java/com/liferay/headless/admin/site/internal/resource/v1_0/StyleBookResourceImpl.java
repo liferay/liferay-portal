@@ -16,6 +16,7 @@ import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -310,8 +311,8 @@ public class StyleBookResourceImpl
 			_styleBookEntryService.addStyleBookEntry(
 				styleBook.getExternalReferenceCode(), groupId,
 				Boolean.TRUE.equals(styleBook.getDefaultStyleBook()),
-				styleBook.getFrontendTokensValues(), styleBook.getName(),
-				styleBook.getKey(), styleBook.getThemeId(),
+				StringPool.BLANK, styleBook.getFrontendTokensValues(),
+				styleBook.getName(), styleBook.getKey(), styleBook.getThemeId(),
 				_getServiceContext(groupId));
 
 		long previewFileEntryId = _getPreviewFileEntryId(
@@ -338,7 +339,7 @@ public class StyleBookResourceImpl
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.addStyleBookEntry(
 				styleBook.getExternalReferenceCode(), groupId,
-				styleBook.getDefaultStyleBook(),
+				styleBook.getDefaultStyleBook(), StringPool.BLANK,
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(), styleBook.getThemeId(),
 				_getServiceContext(groupId));
