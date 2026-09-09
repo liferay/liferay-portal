@@ -198,6 +198,7 @@ describe('List', () => {
 				data.mockSearch(data.mockSegment, 1, {
 					accountsCount: 1800,
 					individualCount: 2300,
+					lastMembershipUpdateDate: getTimestamp(),
 					segmentCategory: SegmentCategories.Account
 				})
 			)
@@ -220,6 +221,7 @@ describe('List', () => {
 				data.mockSearch(data.mockSegment, 1, {
 					accountsCount: 1800,
 					individualCount: 2300,
+					lastMembershipUpdateDate: getTimestamp(),
 					segmentCategory: SegmentCategories.Individual
 				})
 			)
@@ -242,6 +244,7 @@ describe('List', () => {
 				data.mockSearch(data.mockSegment, 1, {
 					accountsCount: 0,
 					individualCount: 0,
+					lastMembershipUpdateDate: getTimestamp(),
 					segmentCategory: SegmentCategories.Individual
 				})
 			)
@@ -264,6 +267,7 @@ describe('List', () => {
 				data.mockSearch(data.mockSegment, 1, {
 					accountsCount: 0,
 					individualCount: 2300,
+					lastMembershipUpdateDate: getTimestamp(),
 					segmentCategory: SegmentCategories.Account
 				})
 			)
@@ -279,14 +283,14 @@ describe('List', () => {
 		expect(within(row).queryByText('0 accounts')).toBeNull();
 	});
 
-	it('shows the membership as processing while the count is not available', async () => {
+	it('shows both columns as processing when the segment has never been counted', async () => {
 		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
 				data.mockSearch(data.mockSegment, 1, {
-					accountsCount: null,
-					individualCount: null,
-					lastMembershipUpdateDate: getTimestamp(),
+					accountsCount: 0,
+					individualCount: 0,
+					lastMembershipUpdateDate: null,
 					segmentCategory: SegmentCategories.Individual
 				})
 			)
@@ -298,8 +302,31 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getByText('Processing')).toBeInTheDocument();
+		expect(within(row).getAllByText('Processing')).toHaveLength(2);
 		expect(within(row).queryByText('-')).toBeNull();
+	});
+
+	it('hides a stale count behind processing when the segment has never been counted', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					accountsCount: 1800,
+					individualCount: 2300,
+					lastMembershipUpdateDate: null,
+					segmentCategory: SegmentCategories.Individual
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getAllByText('Processing')).toHaveLength(2);
+		expect(within(row).queryByText('2.3K individuals')).toBeNull();
 	});
 
 	it('shows the last membership update date', async () => {
@@ -325,26 +352,6 @@ describe('List', () => {
 		).toBeInTheDocument();
 	});
 
-	it('shows a dash as the last membership update date when it is zero', async () => {
-		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
-		API.individualSegment.search.mockReturnValue(
-			Promise.resolve(
-				data.mockSearch(data.mockSegment, 1, {
-					lastMembershipUpdateDate: 0
-				})
-			)
-		);
-
-		render(<DefaultComponent />);
-
-		await waitForLoadingToBeRemoved(document.body);
-
-		const row = screen.getByText('Seattle0').closest('tr');
-
-		expect(within(row).getByText('-')).toBeInTheDocument();
-		expect(within(row).queryByText('Processing')).toBeNull();
-	});
-
 	it('shows the last membership update date as processing while it is not available', async () => {
 		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(
@@ -361,6 +368,6 @@ describe('List', () => {
 
 		const row = screen.getByText('Seattle0').closest('tr');
 
-		expect(within(row).getByText('Processing')).toBeInTheDocument();
+		expect(within(row).getAllByText('Processing')).toHaveLength(2);
 	});
 });

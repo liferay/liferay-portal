@@ -119,15 +119,16 @@ const SEGMENT_TYPES_LABEL_MAP = {
 };
 
 /**
- * The membership counts are only available once the segment has been
- * processed. A null count means the processing is still pending, while a zero
- * count means the segment has been processed and has no members yet.
+ * A membership count always arrives as a number, because the engine flattens a
+ * count it has not computed yet to zero, so a zero count cannot tell a segment
+ * with no members apart from one that has not been counted. The last
+ * membership update date is the only field that still separates the two, so it
+ * decides for both membership columns.
  */
-const getMembershipLabel = (count: number, accountSegment: boolean) => {
-	if (isNil(count)) {
-		return Liferay.Language.get('processing');
-	}
+const isMembershipProcessing = (lastMembershipUpdateDate: number | null) =>
+	isNil(lastMembershipUpdateDate);
 
+const getMembershipLabel = (count: number, accountSegment: boolean) => {
 	if (!count) {
 		return '-';
 	}
@@ -709,12 +710,16 @@ export const List: React.FC<IListProps> = ({
 										data: {
 											accountsCount: number;
 											individualCount: number;
+											lastMembershipUpdateDate:
+												| number
+												| null;
 											segmentCategory: SegmentCategories;
 										};
 									}) => {
 										const {
 											accountsCount,
 											individualCount,
+											lastMembershipUpdateDate,
 											segmentCategory,
 										} = item.data;
 
@@ -725,12 +730,18 @@ export const List: React.FC<IListProps> = ({
 										return (
 											<td className="table-cell-expand">
 												<div className="text-truncate text-right">
-													{getMembershipLabel(
-														accountSegment
-															? accountsCount
-															: individualCount,
-														accountSegment
-													)}
+													{isMembershipProcessing(
+														lastMembershipUpdateDate
+													)
+														? Liferay.Language.get(
+																'processing'
+															)
+														: getMembershipLabel(
+																accountSegment
+																	? accountsCount
+																	: individualCount,
+																accountSegment
+															)}
 												</div>
 											</td>
 										);
@@ -742,10 +753,12 @@ export const List: React.FC<IListProps> = ({
 									cellRenderer: (item: {
 										className?: string;
 										data: {
-											lastMembershipUpdateDate: number;
+											lastMembershipUpdateDate:
+												| number
+												| null;
 										};
 									}) =>
-										isNil(
+										isMembershipProcessing(
 											item.data.lastMembershipUpdateDate
 										) ? (
 											<td className={item.className}>
