@@ -29,6 +29,14 @@ jest.mock('react-router-dom', () => ({
 	})
 }));
 
+jest.mock('segment/components/criteria-card', () => () => (
+	<div>{'SegmentCriteriaCard'}</div>
+));
+
+jest.mock('shared/components/accounts-data-set/AccountsDataSet', () => () => (
+	<div>{'SegmentAccountsDataSet'}</div>
+));
+
 const ENTITY_URL = '/workspace/23/123/contacts/segments/test';
 
 const ENTITY_ROUTE = `${Routes.CONTACTS_SEGMENT}/*`;
