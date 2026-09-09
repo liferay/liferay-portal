@@ -1,13 +1,22 @@
+import mockStore from 'test/mock-store';
 import React from 'react';
 import VerticalTimeline from '../VerticalTimeline';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen, within} from '@testing-library/react';
+import {Provider} from 'react-redux';
 
 jest.unmock('react-dom');
 
 const TIME_ZONE_ID = 'UTC';
 
+// The raw payload view carries a copy button, which announces a successful
+// copy through the alert store.
+
 const renderTimeline = (props) =>
-	render(<VerticalTimeline timeZoneId={TIME_ZONE_ID} {...props} />);
+	render(
+		<Provider store={mockStore()}>
+			<VerticalTimeline timeZoneId={TIME_ZONE_ID} {...props} />
+		</Provider>
+	);
 
 describe('VerticalTimeline', () => {
 	afterEach(cleanup);
@@ -507,6 +516,109 @@ describe('VerticalTimeline', () => {
 			expect(
 				screen.getByText('utm_medium').closest('tr')
 			).toHaveTextContent('email');
+		});
+
+		const expandFirstEvent = () => {
+			const {container} = renderTimeline({items: [EVENT_ITEM]});
+
+			fireEvent.click(
+				container.querySelector('.event-row .payload-button')
+			);
+
+			return container;
+		};
+
+		it('leaves the value column in the default text color', () => {
+			expandFirstEvent();
+
+			expect(
+				screen.getByText('applicationId').closest('tr').querySelector('td')
+			).not.toHaveClass('text-secondary');
+		});
+
+		describe('payload views', () => {
+			it('titles the payload and offers a table and a code view', () => {
+				expandFirstEvent();
+
+				expect(screen.getByText('Details')).toBeInTheDocument();
+				expect(screen.getByText('Table')).toBeInTheDocument();
+				expect(screen.getByText('Code')).toBeInTheDocument();
+			});
+
+			it('shows the tables first', () => {
+				const container = expandFirstEvent();
+
+				expect(container.querySelector('.payload-table')).toBeInTheDocument();
+				expect(container.querySelector('.payload-code')).not.toBeInTheDocument();
+			});
+
+			it('shows the raw payload once code is chosen', () => {
+				const container = expandFirstEvent();
+
+				fireEvent.click(screen.getByText('Code'));
+
+				expect(container.querySelector('.payload-code')).toHaveTextContent(
+					'"applicationId": "HubSpot"'
+				);
+				expect(container.querySelector('.payload-table')).not.toBeInTheDocument();
+			});
+
+			it('returns to the tables once table is chosen again', () => {
+				const container = expandFirstEvent();
+
+				fireEvent.click(screen.getByText('Code'));
+				fireEvent.click(screen.getByText('Table'));
+
+				expect(container.querySelector('.payload-table')).toBeInTheDocument();
+				expect(container.querySelector('.payload-code')).not.toBeInTheDocument();
+			});
+
+			it('offers no copy button while the tables are showing', () => {
+				const container = expandFirstEvent();
+
+				expect(
+					container.querySelector('.payload-copy')
+				).not.toBeInTheDocument();
+			});
+
+			it('offers a copy button carrying the raw payload in the code view', () => {
+				const container = expandFirstEvent();
+
+				fireEvent.click(screen.getByText('Code'));
+
+				expect(container.querySelector('.payload-copy')).toHaveAttribute(
+					'data-clipboard-text',
+					JSON.stringify(EVENT_ITEM.attributes, null, 2)
+				);
+			});
+
+			it('names the copy button after what it copies', () => {
+				const container = expandFirstEvent();
+
+				fireEvent.click(screen.getByText('Code'));
+
+				const copy = container.querySelector('.payload-copy');
+
+				expect(copy).toHaveAttribute('aria-label', 'Copy Details');
+				expect(copy).toHaveAttribute('title', 'Copy Details');
+			});
+
+			it('keeps the chosen view to the row it was chosen on', () => {
+				const {container} = renderTimeline({
+					items: [EVENT_ITEM, {...EVENT_ITEM, title: 'emailClicked'}]
+				});
+
+				const [firstRow, secondRow] = container.querySelectorAll('.event-row');
+
+				fireEvent.click(firstRow.querySelector('.payload-button'));
+				fireEvent.click(secondRow.querySelector('.payload-button'));
+
+				fireEvent.click(within(firstRow).getByText('Code'));
+
+				expect(firstRow.querySelector('.payload-code')).toBeInTheDocument();
+				expect(secondRow.querySelector('.payload-code')).not.toBeInTheDocument();
+				expect(secondRow.querySelector('.payload-table')).toBeInTheDocument();
+			});
 		});
 	});
 });

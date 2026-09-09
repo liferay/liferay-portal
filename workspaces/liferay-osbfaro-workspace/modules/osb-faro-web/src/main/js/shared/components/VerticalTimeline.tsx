@@ -1,8 +1,10 @@
+import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLabel, {LabelDisplayType} from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClaySticker from '@clayui/sticker';
 import ClayTable from '@clayui/table';
+import CopyButton from 'shared/components/CopyButton';
 import EventCountPill from 'shared/components/EventCountPill';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
@@ -183,7 +185,7 @@ const ExternalLink: FC<{url: string}> = ({url}) => (
  */
 const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
 	<div className="payload-table">
-		<div className="payload-table-title font-weight-semi-bold text-secondary text-uppercase">
+		<div className="payload-table-title font-weight-semi-bold text-dark text-uppercase">
 			{title}
 		</div>
 
@@ -207,9 +209,7 @@ const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
 							{property}
 						</ClayTable.Cell>
 
-						<ClayTable.Cell className="text-secondary">
-							{value}
-						</ClayTable.Cell>
+						<ClayTable.Cell>{value}</ClayTable.Cell>
 					</ClayTable.Row>
 				))}
 			</ClayTable.Body>
@@ -217,13 +217,96 @@ const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
 	</div>
 );
 
-const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => (
-	<div className="attributes-payload d-block w-100">
-		{formatPayloadTables(payload).map((table) => (
-			<PayloadTable key={table.title} table={table} />
+/**
+ * The payload as the API returned it, with a button that copies exactly what is
+ * on screen. The copy sits over the code rather than in the row's header so it
+ * travels with the view it belongs to, and never offers to copy a table.
+ */
+const PayloadCode: FC<{payload: Record<string, unknown>}> = ({payload}) => {
+	const code = JSON.stringify(payload, null, 2);
+
+	return (
+		<div className="payload-code-root position-relative">
+			<CopyButton
+				borderless
+				className="payload-copy"
+				displayType="secondary"
+				label={Liferay.Language.get('copy-details')}
+				monospaced
+				size="xs"
+				text={code}
+			/>
+
+			<code className="payload-code text-secondary d-block w-100">
+				{code}
+			</code>
+		</div>
+	);
+};
+
+const PAYLOAD_VIEWS = ['table', 'code'] as const;
+
+type PayloadView = (typeof PAYLOAD_VIEWS)[number];
+
+const PAYLOAD_VIEW_LANG_MAP: Record<PayloadView, string> = {
+	code: Liferay.Language.get('code'),
+	table: Liferay.Language.get('table'),
+};
+
+/**
+ * Picks which shape the expanded payload is read in. The tables are the way in,
+ * and the raw payload sits one click away for the times a reader needs the keys
+ * and nesting the tables flatten away.
+ */
+const PayloadViewSelector: FC<{
+	onChange: (view: PayloadView) => void;
+	view: PayloadView;
+}> = ({onChange, view}) => (
+	<ClayButton.Group className="payload-view-selector">
+		{PAYLOAD_VIEWS.map((payloadView) => (
+			<ClayButton
+				className={getCN('button-root payload-view-option', {
+					active: payloadView === view,
+				})}
+				displayType="secondary"
+				key={payloadView}
+				onClick={() => onChange(payloadView)}
+				size="xs"
+			>
+				{PAYLOAD_VIEW_LANG_MAP[payloadView]}
+			</ClayButton>
 		))}
-	</div>
+	</ClayButton.Group>
 );
+
+/**
+ * The payload an expanded row reveals. The chosen view is state of this
+ * component, which the timeline instantiates once per row, so switching one
+ * row to the raw payload leaves every other row on the tables.
+ */
+const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => {
+	const [view, setView] = useState<PayloadView>('table');
+
+	return (
+		<div className="attributes-payload d-block w-100">
+			<div className="payload-header d-flex align-items-center justify-content-between">
+				<span className="payload-title font-weight-semi-bold text-dark">
+					{Liferay.Language.get('details')}
+				</span>
+
+				<PayloadViewSelector onChange={setView} view={view} />
+			</div>
+
+			{view === 'table' ? (
+				formatPayloadTables(payload).map((table) => (
+					<PayloadTable key={table.title} table={table} />
+				))
+			) : (
+				<PayloadCode payload={payload} />
+			)}
+		</div>
+	);
+};
 
 /**
  * The individual a group of sessions belongs to: a plain, unexpandable row —

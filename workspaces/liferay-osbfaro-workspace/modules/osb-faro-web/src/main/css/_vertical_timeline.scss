@@ -106,10 +106,45 @@
 			}
 		}
 
+		// The payload is read as a panel of its own rather than as a
+		// continuation of the row above it, so it keeps the same gutter on both
+		// sides instead of aligning its left edge under the row's time column.
+
 		.attributes-payload {
 			border-top: 1px solid $mainLighten74;
-			padding: ($baseline * 2) ($baseline * 2) ($baseline * 2)
-				$timeColumnWidth + $baseline * 2;
+			padding: ($baseline * 2) ($baseline * 8);
+
+			// The header names the payload and carries the view selector, so
+			// the two shapes of the same data are switched from one place
+			// rather than from inside either of them.
+
+			.payload-header {
+				margin-bottom: $baseline * 2;
+			}
+
+			.payload-title {
+				font-size: $fontSizeSmall;
+			}
+
+			// The raw payload, which the code view falls back to. Monospace and
+			// preserved whitespace are what make the nesting the tables flatten
+			// away readable again.
+
+			.payload-code {
+				font-family: monospace;
+				font-size: $fontSizeExtraSmall;
+				white-space: pre-wrap;
+			}
+
+			// The copy button floats over the top right of the code rather than
+			// sitting in the flow, so a payload of any length keeps it in reach
+			// without the code having to leave a gutter for it.
+
+			.payload-copy {
+				position: absolute;
+				right: 0;
+				top: 0;
+			}
 
 			// The payload reads as one table per group of attributes, each
 			// under its own header, so a long list of acquisition parameters
@@ -256,13 +291,6 @@
 		> .row-main {
 			align-items: center !important;
 		}
-
-		// The session row has no time column for the payload to align under, so
-		// it only needs the row's own base indent.
-
-		.attributes-payload {
-			padding-left: $baseline * 2;
-		}
 	}
 
 	.page-row,
@@ -336,10 +364,6 @@
 			flex-direction: column;
 			margin-left: $timeColumnWidth + $baseline * 8 + $rowIndent;
 			row-gap: 4px;
-		}
-
-		.attributes-payload {
-			padding-left: $baseline * 8;
 		}
 	}
 
