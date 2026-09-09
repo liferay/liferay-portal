@@ -38,7 +38,7 @@ public class UserAccountDTOConverter
 
 	@Override
 	public String getContentType() {
-		return User.class.getSimpleName();
+		return UserAccount.class.getSimpleName();
 	}
 
 	@Override

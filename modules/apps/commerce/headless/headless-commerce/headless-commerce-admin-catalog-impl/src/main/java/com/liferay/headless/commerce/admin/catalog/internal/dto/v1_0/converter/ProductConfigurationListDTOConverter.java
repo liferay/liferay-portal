@@ -8,7 +8,6 @@ package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListService;
-import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfigurationList;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -32,7 +31,7 @@ public class ProductConfigurationListDTOConverter
 
 	@Override
 	public String getContentType() {
-		return ProductConfiguration.class.getSimpleName();
+		return ProductConfigurationList.class.getSimpleName();
 	}
 
 	@Override

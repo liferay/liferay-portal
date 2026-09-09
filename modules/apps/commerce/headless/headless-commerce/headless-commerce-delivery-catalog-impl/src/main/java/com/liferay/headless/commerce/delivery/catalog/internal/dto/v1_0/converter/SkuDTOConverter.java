@@ -45,7 +45,6 @@ import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Availability;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Price;
-import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ReplacementSku;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Sku;
@@ -94,7 +93,7 @@ public class SkuDTOConverter implements DTOConverter<CPInstance, Sku> {
 
 	@Override
 	public String getContentType() {
-		return Product.class.getSimpleName();
+		return Sku.class.getSimpleName();
 	}
 
 	@Override

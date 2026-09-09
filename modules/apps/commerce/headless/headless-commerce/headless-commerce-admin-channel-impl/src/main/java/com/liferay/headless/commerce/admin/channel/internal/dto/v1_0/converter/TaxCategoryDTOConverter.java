@@ -7,7 +7,6 @@ package com.liferay.headless.commerce.admin.channel.internal.dto.v1_0.converter;
 
 import com.liferay.commerce.product.model.CPTaxCategory;
 import com.liferay.commerce.product.service.CPTaxCategoryService;
-import com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.TaxCategory;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -31,7 +30,7 @@ public class TaxCategoryDTOConverter
 
 	@Override
 	public String getContentType() {
-		return Channel.class.getSimpleName();
+		return TaxCategory.class.getSimpleName();
 	}
 
 	@Override

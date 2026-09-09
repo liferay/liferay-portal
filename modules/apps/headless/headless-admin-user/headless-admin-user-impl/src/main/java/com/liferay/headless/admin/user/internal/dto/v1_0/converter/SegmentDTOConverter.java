@@ -38,7 +38,7 @@ public class SegmentDTOConverter
 
 	@Override
 	public String getContentType() {
-		return SegmentsEntry.class.getSimpleName();
+		return Segment.class.getSimpleName();
 	}
 
 	@Override

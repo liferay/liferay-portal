@@ -26,7 +26,7 @@ public class PricingAccountGroupDTOConverter
 
 	@Override
 	public String getContentType() {
-		return AccountGroup.class.getSimpleName();
+		return PricingAccountGroup.class.getSimpleName();
 	}
 
 	@Override

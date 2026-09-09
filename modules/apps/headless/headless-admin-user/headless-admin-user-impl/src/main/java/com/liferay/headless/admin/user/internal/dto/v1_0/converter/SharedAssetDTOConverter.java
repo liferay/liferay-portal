@@ -85,7 +85,7 @@ public class SharedAssetDTOConverter
 
 	@Override
 	public String getContentType() {
-		return SharingEntry.class.getSimpleName();
+		return SharedAsset.class.getSimpleName();
 	}
 
 	@Override

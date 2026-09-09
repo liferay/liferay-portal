@@ -36,7 +36,7 @@ public class DocumentMetadataSetDTOConverter
 
 	@Override
 	public String getContentType() {
-		return DDMStructure.class.getSimpleName();
+		return DocumentMetadataSet.class.getSimpleName();
 	}
 
 	@Override

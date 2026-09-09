@@ -33,7 +33,7 @@ public class DocumentShortcutDTOConverter
 
 	@Override
 	public String getContentType() {
-		return DLFileShortcut.class.getSimpleName();
+		return DocumentShortcut.class.getSimpleName();
 	}
 
 	@Override

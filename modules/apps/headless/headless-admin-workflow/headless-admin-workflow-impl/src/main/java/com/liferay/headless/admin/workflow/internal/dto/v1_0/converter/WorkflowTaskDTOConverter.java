@@ -52,7 +52,7 @@ public class WorkflowTaskDTOConverter
 
 	@Override
 	public String getContentType() {
-		return KaleoTaskInstanceToken.class.getSimpleName();
+		return WorkflowTask.class.getSimpleName();
 	}
 
 	@Override

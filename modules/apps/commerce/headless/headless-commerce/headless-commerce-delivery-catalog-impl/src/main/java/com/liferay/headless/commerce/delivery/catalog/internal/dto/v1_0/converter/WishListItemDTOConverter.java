@@ -17,7 +17,6 @@ import com.liferay.commerce.wish.list.model.CommerceWishListItem;
 import com.liferay.commerce.wish.list.service.CommerceWishListItemService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
-import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.WishList;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.WishListItem;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
@@ -45,7 +44,7 @@ public class WishListItemDTOConverter
 
 	@Override
 	public String getContentType() {
-		return WishList.class.getSimpleName();
+		return WishListItem.class.getSimpleName();
 	}
 
 	@Override

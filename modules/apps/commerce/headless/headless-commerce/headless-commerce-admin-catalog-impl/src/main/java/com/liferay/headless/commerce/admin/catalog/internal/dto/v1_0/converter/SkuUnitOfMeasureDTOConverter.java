@@ -40,7 +40,7 @@ public class SkuUnitOfMeasureDTOConverter
 
 	@Override
 	public String getContentType() {
-		return CPInstanceUnitOfMeasure.class.getSimpleName();
+		return SkuUnitOfMeasure.class.getSimpleName();
 	}
 
 	@Override

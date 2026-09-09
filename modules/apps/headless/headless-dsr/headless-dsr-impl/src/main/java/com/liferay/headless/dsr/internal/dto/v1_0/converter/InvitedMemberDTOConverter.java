@@ -35,7 +35,7 @@ public class InvitedMemberDTOConverter
 
 	@Override
 	public String getContentType() {
-		return Ticket.class.getSimpleName();
+		return InvitedMember.class.getSimpleName();
 	}
 
 	@Override
