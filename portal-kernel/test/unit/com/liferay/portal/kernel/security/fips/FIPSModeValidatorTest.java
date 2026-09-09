@@ -31,9 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,19 +44,20 @@ public class FIPSModeValidatorTest {
 
 	@Before
 	public void setUp() {
-		MockitoAnnotations.initMocks(this);
+		SecureXMLFactoryProviderUtil secureXMLFactoryProviderUtil =
+			new SecureXMLFactoryProviderUtil();
+
+		SecureXMLFactoryProvider secureXMLFactoryProvider = Mockito.mock(
+			SecureXMLFactoryProvider.class);
 
 		Mockito.when(
-			_secureXMLFactoryProvider.newDocumentBuilderFactory()
+			secureXMLFactoryProvider.newDocumentBuilderFactory()
 		).thenAnswer(
 			input -> DocumentBuilderFactory.newInstance()
 		);
 
-		SecureXMLFactoryProviderUtil secureXMLFactoryProviderUtil =
-			new SecureXMLFactoryProviderUtil();
-
 		secureXMLFactoryProviderUtil.setSecureXMLFactoryProvider(
-			_secureXMLFactoryProvider);
+			secureXMLFactoryProvider);
 	}
 
 	@Test
@@ -135,26 +134,6 @@ public class FIPSModeValidatorTest {
 	}
 
 	@Test
-	public void testIsNotAllowedProviderName() {
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				FIPSModeValidator.class, "_isNotAllowedProviderName",
-				new Class<?>[] {String.class}, "AmazonCorrettoCryptoProvider"));
-		Assert.assertFalse(
-			ReflectionTestUtil.invoke(
-				FIPSModeValidator.class, "_isNotAllowedProviderName",
-				new Class<?>[] {String.class}, "BCFIPS"));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				FIPSModeValidator.class, "_isNotAllowedProviderName",
-				new Class<?>[] {String.class}, RandomTestUtil.randomString()));
-		Assert.assertTrue(
-			ReflectionTestUtil.invoke(
-				FIPSModeValidator.class, "_isNotAllowedProviderName",
-				new Class<?>[] {String.class}, (Object)null));
-	}
-
-	@Test
 	public void testReadChannelPropertiesDocument() throws Exception {
 		Document document = ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_readChannelPropertiesDocument",
@@ -171,7 +150,7 @@ public class FIPSModeValidatorTest {
 		Element authElement = (Element)nodeList.item(0);
 
 		Assert.assertEquals(
-			FIPSModeTestUtil.AUTH_CLASS_NAME,
+			"org.jgroups.auth.X509Token",
 			authElement.getAttribute("auth_class"));
 
 		_assertSecurityException(
@@ -216,60 +195,60 @@ public class FIPSModeValidatorTest {
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
 			new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.2");
+			(Function<String, String>)key -> "TLSv1.2");
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
 			new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.2,");
+			(Function<String, String>)key -> "TLSv1.2,");
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
 			new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.2,TLSv1.3");
+			(Function<String, String>)key -> "TLSv1.2,TLSv1.3");
 		ReflectionTestUtil.invoke(
 			FIPSModeValidator.class, "_validateAllowedPropertyValues",
 			new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.3");
+			(Function<String, String>)key -> "TLSv1.3");
 
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "");
+			(Function<String, String>)key -> "");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> ",TLSv1.2");
+			(Function<String, String>)key -> ",TLSv1.2");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "SSLv3,TLSv1.3");
+			(Function<String, String>)key -> "SSLv3,TLSv1.3");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1");
+			(Function<String, String>)key -> "TLSv1");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.1");
+			(Function<String, String>)key -> "TLSv1.1");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.1,TLSv1.2");
+			(Function<String, String>)key -> "TLSv1.1,TLSv1.2");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.11");
+			(Function<String, String>)key -> "TLSv1.11");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "TLSv1.2,SSLv2Hello");
+			(Function<String, String>)key -> "TLSv1.2,SSLv2Hello");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> "tlsv1.2");
+			(Function<String, String>)key -> "tlsv1.2");
 		_assertSecurityException(
 			"FIPS mode requires the property \"jdk.tls.client.protocols\"",
 			"_validateAllowedPropertyValues", new Class<?>[] {Function.class},
-			(Function<String, String>)curKey -> null);
+			(Function<String, String>)key -> null);
 	}
 
 	@Test
@@ -281,8 +260,8 @@ public class FIPSModeValidatorTest {
 			RandomTestUtil.randomString());
 
 		_assertSecurityException(
-			"must authenticate cluster members with \"" +
-				FIPSModeTestUtil.AUTH_CLASS_NAME + "\"",
+			"must authenticate cluster members with " +
+				"\"org.jgroups.auth.X509Token\"",
 			"_validateClusterLinkChannelAuthElement",
 			new Class<?>[] {Element.class, String.class},
 			_getElement(
@@ -290,8 +269,8 @@ public class FIPSModeValidatorTest {
 				"AUTH"),
 			RandomTestUtil.randomString());
 		_assertSecurityException(
-			"must authenticate cluster members with \"" +
-				FIPSModeTestUtil.AUTH_CLASS_NAME + "\"",
+			"must authenticate cluster members with " +
+				"\"org.jgroups.auth.X509Token\"",
 			"_validateClusterLinkChannelAuthElement",
 			new Class<?>[] {Element.class, String.class},
 			_getElement(
@@ -444,8 +423,8 @@ public class FIPSModeValidatorTest {
 						"cluster-link-channel-properties.xml")));
 
 			_assertClusterLinkConfigurationSecurityException(
-				"must authenticate cluster members with \"" +
-					FIPSModeTestUtil.AUTH_CLASS_NAME + "\"",
+				"must authenticate cluster members with " +
+					"\"org.jgroups.auth.X509Token\"",
 				"cluster-link-channel-properties-auth-class-md5-token.xml",
 				PropsKeys.CLUSTER_LINK_CHANNEL_PROPERTIES_CONTROL);
 
@@ -485,22 +464,12 @@ public class FIPSModeValidatorTest {
 				_createProvider(RandomTestUtil.randomString())
 			});
 		_assertSecurityException(
+			"The first security provider must be an allowed FIPS provider",
+			"_validateFIPSProvider", new Class<?>[] {Provider[].class},
+			(Object)new Provider[] {_createProvider(null)});
+		_assertSecurityException(
 			"There are no security providers", "_validateFIPSProvider",
 			new Class<?>[] {Provider[].class}, (Object)new Provider[0]);
-	}
-
-	@Test
-	public void testValidateIVSize() {
-		ReflectionTestUtil.invoke(
-			FIPSModeValidator.class, "_validateIVSize",
-			new Class<?>[] {int.class}, 16);
-
-		_assertSecurityException(
-			"Initialization vector size 0 is not allowed in FIPS mode",
-			"_validateIVSize", new Class<?>[] {int.class}, 0);
-		_assertSecurityException(
-			"Initialization vector size 12 is not allowed in FIPS mode",
-			"_validateIVSize", new Class<?>[] {int.class}, 12);
 	}
 
 	@Test
@@ -690,27 +659,6 @@ public class FIPSModeValidatorTest {
 	}
 
 	@Test
-	public void testValidateTransformation() {
-		ReflectionTestUtil.invoke(
-			FIPSModeValidator.class, "_validateTransformation",
-			new Class<?>[] {String.class}, "AES/CBC/PKCS5Padding");
-
-		_assertSecurityException(
-			"is not allowed in FIPS mode", "_validateTransformation",
-			new Class<?>[] {String.class}, "AES");
-		_assertSecurityException(
-			"is not allowed in FIPS mode", "_validateTransformation",
-			new Class<?>[] {String.class}, "RSA");
-		_assertSecurityException(
-			"is not allowed in FIPS mode", "_validateTransformation",
-			new Class<?>[] {String.class},
-			"RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
-		_assertSecurityException(
-			"is not allowed in FIPS mode", "_validateTransformation",
-			new Class<?>[] {String.class}, (Object)null);
-	}
-
-	@Test
 	public void testValidateURL() {
 		FIPSModeValidator.validateURL(
 			"ldap://" + RandomTestUtil.randomString());
@@ -783,8 +731,5 @@ public class FIPSModeValidatorTest {
 
 		return (Element)nodeList.item(0);
 	}
-
-	@Mock
-	private SecureXMLFactoryProvider _secureXMLFactoryProvider;
 
 }

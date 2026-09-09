@@ -180,32 +180,12 @@ public class FIPSModeValidator {
 		return plaintextSecretProperties;
 	}
 
-	private static boolean _isNotAllowedProviderName(String name) {
-		if (Validator.isNull(name)) {
-			return true;
-		}
-
-		return !_allowedProviderNames.containsKey(name);
-	}
-
 	private static Document _readChannelPropertiesDocument(
 		String channelPropertiesLocation) {
-
-		String channelPropertiesXML;
 
 		try (InputStream inputStream = Files.newInputStream(
 				Paths.get(channelPropertiesLocation))) {
 
-			channelPropertiesXML = StringUtil.read(inputStream);
-		}
-		catch (IOException ioException) {
-			throw new SecurityException(
-				"Unable to read the cluster link channel properties \"" +
-					channelPropertiesLocation + "\" in FIPS mode",
-				ioException);
-		}
-
-		try {
 			DocumentBuilderFactory documentBuilderFactory =
 				SecureXMLFactoryProviderUtil.newDocumentBuilderFactory();
 
@@ -217,7 +197,14 @@ public class FIPSModeValidator {
 					new StringReader(StringPool.BLANK)));
 
 			return documentBuilder.parse(
-				new InputSource(new StringReader(channelPropertiesXML)));
+				new InputSource(
+					new StringReader(StringUtil.read(inputStream))));
+		}
+		catch (IOException ioException) {
+			throw new SecurityException(
+				"Unable to read the cluster link channel properties \"" +
+					channelPropertiesLocation + "\" in FIPS mode",
+				ioException);
 		}
 		catch (Exception exception) {
 			throw new SecurityException(
@@ -258,9 +245,9 @@ public class FIPSModeValidator {
 	private static void _validateClusterLinkChannelAuthElement(
 		Element authElement, String channelPropertiesLocation) {
 
-		String authClassName = authElement.getAttribute("auth_class");
+		String authClass = authElement.getAttribute("auth_class");
 
-		if (authClassName.equals(_CLUSTER_LINK_CHANNEL_AUTH_CLASS_NAME)) {
+		if (authClass.equals("org.jgroups.auth.X509Token")) {
 			return;
 		}
 
@@ -268,8 +255,8 @@ public class FIPSModeValidator {
 			StringBundler.concat(
 				"The cluster link channel properties \"",
 				channelPropertiesLocation,
-				"\" must authenticate cluster members with \"",
-				_CLUSTER_LINK_CHANNEL_AUTH_CLASS_NAME, "\" in FIPS mode"));
+				"\" must authenticate cluster members with ",
+				"\"org.jgroups.auth.X509Token\" in FIPS mode"));
 	}
 
 	private static void _validateClusterLinkChannelConfiguration(
@@ -312,7 +299,11 @@ public class FIPSModeValidator {
 
 		String symAlgorithm = symEncryptElement.getAttribute("sym_algorithm");
 
-		_validateTransformation(symAlgorithm);
+		if (!Objects.equals(symAlgorithm, "AES/CBC/PKCS5Padding")) {
+			throw new SecurityException(
+				"Transformation \"" + symAlgorithm +
+					"\" is not allowed in FIPS mode");
+		}
 
 		String[] symAlgorithmParts = StringUtil.split(
 			symAlgorithm, CharPool.SLASH);
@@ -322,14 +313,19 @@ public class FIPSModeValidator {
 			GetterUtil.getInteger(
 				symEncryptElement.getAttribute("sym_keylength")));
 
-		_validateIVSize(
-			GetterUtil.getInteger(
-				symEncryptElement.getAttribute("sym_iv_length")));
+		int symIVLength = GetterUtil.getInteger(
+			symEncryptElement.getAttribute("sym_iv_length"));
+
+		if (symIVLength != 16) {
+			throw new SecurityException(
+				"Initialization vector size " + symIVLength +
+					" is not allowed in FIPS mode");
+		}
 
 		String providerName = symEncryptElement.getAttribute("provider");
 
 		if (Validator.isNotNull(providerName) &&
-			_isNotAllowedProviderName(providerName)) {
+			!_allowedProviderNames.containsKey(providerName)) {
 
 			throw new SecurityException(
 				"Security provider \"" + providerName +
@@ -369,7 +365,9 @@ public class FIPSModeValidator {
 
 		String name = provider.getName();
 
-		if (_isNotAllowedProviderName(name)) {
+		if (Validator.isNull(name) ||
+			!_allowedProviderNames.containsKey(name)) {
+
 			throw new SecurityException(
 				"The first security provider must be an allowed FIPS provider");
 		}
@@ -456,16 +454,6 @@ public class FIPSModeValidator {
 			throw new SecurityException(
 				"FIPS provider integrity failed: " + message, causeThrowable);
 		}
-	}
-
-	private static void _validateIVSize(int ivSize) {
-		if (ivSize == 16) {
-			return;
-		}
-
-		throw new SecurityException(
-			"Initialization vector size " + ivSize +
-				" is not allowed in FIPS mode");
 	}
 
 	private static void _validatePasswordsEncryptionAlgorithm(
@@ -609,17 +597,6 @@ public class FIPSModeValidator {
 			}
 		}
 	}
-
-	private static void _validateTransformation(String transformation) {
-		if (!Objects.equals(transformation, "AES/CBC/PKCS5Padding")) {
-			throw new SecurityException(
-				"Transformation \"" + transformation +
-					"\" is not allowed in FIPS mode");
-		}
-	}
-
-	private static final String _CLUSTER_LINK_CHANNEL_AUTH_CLASS_NAME =
-		"org.jgroups.auth.X509Token";
 
 	private static final int _PASSWORDS_ENCRYPTION_ALGORITHM_KEY_SIZE_MIN = 112;
 

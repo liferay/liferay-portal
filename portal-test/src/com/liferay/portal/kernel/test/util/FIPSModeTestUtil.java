@@ -21,8 +21,6 @@ import org.mockito.Mockito;
  */
 public class FIPSModeTestUtil {
 
-	public static final String AUTH_CLASS_NAME = "org.jgroups.auth.X509Token";
-
 	public static <T> void assertAlgorithmSwitch(
 			String algorithm, Class<T> classToMock, String fipsAlgorithm,
 			UnsafeConsumer<String, Exception> unsafeConsumer,
