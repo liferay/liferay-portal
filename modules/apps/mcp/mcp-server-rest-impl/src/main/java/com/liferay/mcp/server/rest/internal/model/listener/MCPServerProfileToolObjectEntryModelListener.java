@@ -23,7 +23,11 @@ import jakarta.servlet.Servlet;
 
 import jakarta.validation.ValidationException;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -115,6 +119,8 @@ public class MCPServerProfileToolObjectEntryModelListener
 		String[] restrictFieldNames = StringUtil.split(
 			MapUtil.getString(objectEntry.getValues(), "restrictFields"));
 
+		Set<String> uniqueRestrictFieldNames = new HashSet<>();
+
 		for (String restrictFieldName : restrictFieldNames) {
 			if (restrictFieldName.isEmpty() ||
 				!Objects.equals(restrictFieldName, restrictFieldName.trim())) {
@@ -125,6 +131,26 @@ public class MCPServerProfileToolObjectEntryModelListener
 							"Unable to restrict field \"", restrictFieldName,
 							"\" because the name is blank or has surrounding ",
 							"whitespace")));
+			}
+
+			Matcher matcher = _restrictFieldNamePattern.matcher(
+				restrictFieldName);
+
+			if (!matcher.matches()) {
+				throw new ModelListenerException(
+					new ValidationException(
+						StringBundler.concat(
+							"Unable to restrict field \"", restrictFieldName,
+							"\" because the name is not a dotted path of ",
+							"letters, digits, and underscores")));
+			}
+
+			if (!uniqueRestrictFieldNames.add(restrictFieldName)) {
+				throw new ModelListenerException(
+					new ValidationException(
+						StringBundler.concat(
+							"Unable to restrict field \"", restrictFieldName,
+							"\" more than once")));
 			}
 
 			for (String ancestorFieldName : restrictFieldNames) {
@@ -142,6 +168,9 @@ public class MCPServerProfileToolObjectEntryModelListener
 			}
 		}
 	}
+
+	private static final Pattern _restrictFieldNamePattern = Pattern.compile(
+		"[A-Za-z0-9_]+(\\.[A-Za-z0-9_]+)*");
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
