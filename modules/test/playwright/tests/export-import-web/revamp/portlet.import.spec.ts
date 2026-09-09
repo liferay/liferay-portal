@@ -93,5 +93,11 @@ portletTest(
 			),
 			name: getRandomString(),
 		});
+
+		await page.goto('/web' + site.friendlyUrlPath + layout.friendlyURL);
+
+		await expect(
+			page.getByRole('link', {name: 'LPD-104237'})
+		).toBeVisible();
 	}
 );
