@@ -35,7 +35,11 @@ interface Props {
 	onZoom: (direction: -1 | 1) => void;
 	onZoomFit: () => void;
 	ratio: RatioPreset;
+
+	ratios: RatioPreset[];
+
 	saving: boolean;
+	showRotate: boolean;
 	zoom: number;
 }
 
@@ -52,7 +56,9 @@ export function BottomBar({
 	onZoom,
 	onZoomFit,
 	ratio,
+	ratios,
 	saving,
+	showRotate,
 	zoom,
 }: Props) {
 	const eid = useEditorId();
@@ -60,62 +66,76 @@ export function BottomBar({
 	return (
 		<div className="editor-bottom-bar">
 			<div className="editor-bar-first editor-bar-group">
-				<label
-					className="editor-ratio-label"
-					htmlFor={eid('crop-ratio-select')}
-				>
-					{Liferay.Language.get('ratio')}
-				</label>
+				{!!ratios.length && (
+					<>
+						<label
+							className="editor-ratio-label"
+							htmlFor={eid('crop-ratio-select')}
+						>
+							{Liferay.Language.get('ratio')}
+						</label>
 
-				<ClaySelectWithOption
-					className="editor-ratio-select"
-					id={eid('crop-ratio-select')}
-					onChange={(event) => {
-						dispatch({
-							ratio: event.target.value as RatioPreset,
-							type: 'set-ratio',
-						});
-					}}
-					options={RATIO_OPTIONS}
-					sizing="sm"
-					value={ratio}
-				/>
+						<ClaySelectWithOption
+							className="editor-ratio-select"
+							id={eid('crop-ratio-select')}
+							onChange={(event) => {
+								dispatch({
+									ratio: event.target.value as RatioPreset,
+									type: 'set-ratio',
+								});
+							}}
+							options={RATIO_OPTIONS.filter(({value}) =>
+								ratios.includes(value)
+							)}
+							sizing="sm"
+							value={ratio}
+						/>
+					</>
+				)}
 
-				<ClayButtonWithIcon
-					aria-label={Liferay.Language.get(
-						'rotate-90-degrees-clockwise'
-					)}
-					borderless
-					className="editor-bar-button"
-					displayType="secondary"
-					onClick={() => {
-						dispatch({type: 'rotate-90'});
-						onAnnounce(
-							Liferay.Language.get(
-								'the-image-was-rotated-90-degrees-clockwise'
-							)
-						);
-					}}
-					symbol="rotate"
-					title={Liferay.Language.get('rotate-90-degrees-clockwise')}
-				/>
+				{showRotate && (
+					<>
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get(
+								'rotate-90-degrees-clockwise'
+							)}
+							borderless
+							className="editor-bar-button"
+							displayType="secondary"
+							onClick={() => {
+								dispatch({type: 'rotate-90'});
+								onAnnounce(
+									Liferay.Language.get(
+										'the-image-was-rotated-90-degrees-clockwise'
+									)
+								);
+							}}
+							symbol="rotate"
+							title={Liferay.Language.get(
+								'rotate-90-degrees-clockwise'
+							)}
+						/>
 
-				<ClayButtonWithIcon
-					aria-label={Liferay.Language.get('flip-horizontally')}
-					borderless
-					className="editor-bar-button"
-					displayType="secondary"
-					onClick={() => {
-						dispatch({type: 'flip-horizontal'});
-						onAnnounce(
-							Liferay.Language.get(
-								'the-image-was-flipped-horizontally'
-							)
-						);
-					}}
-					symbol="flip-horizontal"
-					title={Liferay.Language.get('flip-horizontally')}
-				/>
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get(
+								'flip-horizontally'
+							)}
+							borderless
+							className="editor-bar-button"
+							displayType="secondary"
+							onClick={() => {
+								dispatch({type: 'flip-horizontal'});
+								onAnnounce(
+									Liferay.Language.get(
+										'the-image-was-flipped-horizontally'
+									)
+								);
+							}}
+							symbol="flip-horizontal"
+							title={Liferay.Language.get('flip-horizontally')}
+						/>
+					</>
+				)}
 
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('undo')}

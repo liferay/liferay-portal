@@ -23,6 +23,10 @@ export type EditorAction =
 	| {ratio: RatioPreset; type: 'set-ratio'}
 	| {type: 'undo'};
 
+export interface InitialStateOptions {
+	ratios?: RatioPreset[];
+}
+
 const HISTORY_LIMIT = 100;
 
 export function clampCrop(
@@ -221,27 +225,37 @@ export function editorReducer(
 
 export function initialEditState(
 	sourceWidth: number,
-	sourceHeight: number
+	sourceHeight: number,
+	options: InitialStateOptions = {}
 ): EditState {
-	return {
+	const ratio = initialRatio(options.ratios);
+
+	const state: EditState = {
 		angle: 0,
 		crop: {height: sourceHeight, width: sourceWidth, x: 0, y: 0},
 		flipHorizontal: false,
-		ratio: 'original',
+		ratio,
 		rotation: 0,
 		sourceHeight,
 		sourceWidth,
 	};
+
+	if (ratio !== 'original' && ratio !== 'custom') {
+		state.crop = centeredCrop(state, RATIO_VALUES[ratio]);
+	}
+
+	return state;
 }
 
 export function initialHistory(
 	sourceWidth: number,
-	sourceHeight: number
+	sourceHeight: number,
+	options: InitialStateOptions = {}
 ): EditorHistory {
 	return {
 		future: [],
 		past: [],
-		present: initialEditState(sourceWidth, sourceHeight),
+		present: initialEditState(sourceWidth, sourceHeight, options),
 	};
 }
 
@@ -321,4 +335,16 @@ function cropsEqual(a: CropRect, b: CropRect): boolean {
 		a.x === b.x &&
 		a.y === b.y
 	);
+}
+
+function initialRatio(allowed: RatioPreset[] | undefined): RatioPreset {
+	if (!allowed || !allowed.length || allowed.includes('original')) {
+		return 'original';
+	}
+
+	if (allowed.includes('custom')) {
+		return 'custom';
+	}
+
+	return allowed[0];
 }

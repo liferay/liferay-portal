@@ -6,6 +6,8 @@
 export {ImageEditor} from './ImageEditor';
 export type {EditorSaveResult, ImageEditorProps} from './ImageEditor';
 
+export type {EditorConfig} from './editorConfig';
+
 export {
 	ImageEditorLoadError,
 	disposeLoadedImage,

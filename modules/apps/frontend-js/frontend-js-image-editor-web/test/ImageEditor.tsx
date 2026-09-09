@@ -67,3 +67,37 @@ describe('the editing session is keyed to the image', () => {
 		expect(undo()).toBeEnabled();
 	});
 });
+
+describe('the host configuration', () => {
+	it('hides the crop tools when the host turns them off', () => {
+		render(
+			<ImageEditor
+				config={{crop: false}}
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		expect(screen.queryByRole('button', {name: 'crop-area'})).toBeNull();
+		expect(screen.queryByLabelText('ratio')).toBeNull();
+		expect(
+			screen.queryByRole('button', {name: 'rotate-90-degrees-clockwise'})
+		).toBeNull();
+	});
+
+	it('shows the crop tools by default', () => {
+		render(
+			<ImageEditor
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		expect(
+			screen.getByRole('button', {name: 'crop-area'})
+		).toBeInTheDocument();
+		expect(screen.getByLabelText('straighten')).toBeInTheDocument();
+	});
+});

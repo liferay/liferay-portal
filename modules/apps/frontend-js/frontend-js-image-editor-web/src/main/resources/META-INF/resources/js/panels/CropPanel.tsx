@@ -25,6 +25,7 @@ interface Props {
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
 	onAspectLockedChange: (locked: boolean) => void;
+	showStraighten: boolean;
 }
 
 type Field = 'height' | 'width' | 'x' | 'y';
@@ -44,6 +45,7 @@ export function CropPanel({
 	dispatch,
 	onAnnounce,
 	onAspectLockedChange,
+	showStraighten,
 }: Props) {
 	const eid = useEditorId();
 
@@ -248,102 +250,110 @@ export function CropPanel({
 				{renderField('height')}
 			</div>
 
-			<ClayForm.Group small>
-				<div className="editor-slider-row">
-					<label htmlFor={eid('crop-angle')}>
-						{Liferay.Language.get('straighten')}
-					</label>
+			{showStraighten && (
+				<ClayForm.Group small>
+					<div className="editor-slider-row">
+						<label htmlFor={eid('crop-angle')}>
+							{Liferay.Language.get('straighten')}
+						</label>
 
-					<span aria-hidden="true" className="editor-slider-value">
-						{sub(Liferay.Language.get('x-degrees'), angle)}
-					</span>
+						<span
+							aria-hidden="true"
+							className="editor-slider-value"
+						>
+							{sub(Liferay.Language.get('x-degrees'), angle)}
+						</span>
 
-					{angle !== 0 && (
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get(
-								'reset-the-straighten-angle'
-							)}
-							borderless
-							className="editor-slider-reset"
-							displayType="secondary"
-							onClick={() => {
-								dispatch({angle: 0, type: 'set-angle'});
-								onAnnounce(
-									sub(
-										Liferay.Language.get(
-											'straighten-set-to-x-degrees'
-										),
-										0
-									)
-								);
-							}}
-							size="xs"
-							symbol="restore"
-							title={Liferay.Language.get(
-								'reset-the-straighten-angle'
-							)}
-						/>
-					)}
-				</div>
+						{angle !== 0 && (
+							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get(
+									'reset-the-straighten-angle'
+								)}
+								borderless
+								className="editor-slider-reset"
+								displayType="secondary"
+								onClick={() => {
+									dispatch({angle: 0, type: 'set-angle'});
+									onAnnounce(
+										sub(
+											Liferay.Language.get(
+												'straighten-set-to-x-degrees'
+											),
+											0
+										)
+									);
+								}}
+								size="xs"
+								symbol="restore"
+								title={Liferay.Language.get(
+									'reset-the-straighten-angle'
+								)}
+							/>
+						)}
+					</div>
 
-				<ClaySlider
-					id={eid('crop-angle')}
-					max={45}
-					min={-45}
-					onBlur={commitAngle}
-					onChange={(next: number) => {
-						angleGestureRef.current = true;
+					<ClaySlider
+						id={eid('crop-angle')}
+						max={45}
+						min={-45}
+						onBlur={commitAngle}
+						onChange={(next: number) => {
+							angleGestureRef.current = true;
 
-						dispatch({
-							angle: next,
-							transient: true,
-							type: 'set-angle',
-						});
-					}}
-					onKeyDown={(event: React.KeyboardEvent) => {
+							dispatch({
+								angle: next,
+								transient: true,
+								type: 'set-angle',
+							});
+						}}
+						onKeyDown={(event: React.KeyboardEvent) => {
 
-						// Shift steps by 10, as everywhere else.
+							// Shift steps by 10, as everywhere else.
 
-						if (!event.shiftKey) {
-							return;
-						}
+							if (!event.shiftKey) {
+								return;
+							}
 
-						const delta =
-							event.key === 'ArrowRight' ||
-							event.key === 'ArrowUp'
-								? 10
-								: event.key === 'ArrowLeft' ||
-									  event.key === 'ArrowDown'
-									? -10
-									: 0;
+							const delta =
+								event.key === 'ArrowRight' ||
+								event.key === 'ArrowUp'
+									? 10
+									: event.key === 'ArrowLeft' ||
+										  event.key === 'ArrowDown'
+										? -10
+										: 0;
 
-						if (!delta) {
-							return;
-						}
+							if (!delta) {
+								return;
+							}
 
-						event.preventDefault();
+							event.preventDefault();
 
-						angleGestureRef.current = true;
+							angleGestureRef.current = true;
 
-						dispatch({
-							angle: Math.max(-45, Math.min(45, angle + delta)),
-							transient: true,
-							type: 'set-angle',
-						});
-					}}
-					onKeyUp={commitAngle}
-					onPointerCancel={() => {
-						if (angleGestureRef.current) {
-							angleGestureRef.current = false;
+							dispatch({
+								angle: Math.max(
+									-45,
+									Math.min(45, angle + delta)
+								),
+								transient: true,
+								type: 'set-angle',
+							});
+						}}
+						onKeyUp={commitAngle}
+						onPointerCancel={() => {
+							if (angleGestureRef.current) {
+								angleGestureRef.current = false;
 
-							dispatch({type: 'cancel-gesture'});
-						}
-					}}
-					onPointerUp={commitAngle}
-					showTooltip={false}
-					value={angle}
-				/>
-			</ClayForm.Group>
+								dispatch({type: 'cancel-gesture'});
+							}
+						}}
+						onPointerUp={commitAngle}
+						showTooltip={false}
+						value={angle}
+					/>
+				</ClayForm.Group>
+			)}
 		</EditorSection>
 	);
 }

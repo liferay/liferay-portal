@@ -6,6 +6,7 @@
 import {sub} from 'frontend-js-web';
 import React, {useReducer, useRef} from 'react';
 
+import {ResolvedEditorConfig} from '../editorConfig';
 import {LoadedImage} from '../imaging/loadImage';
 import {
 	editorReducer,
@@ -16,12 +17,15 @@ import {
 
 export function useEditorHistory(
 	image: LoadedImage,
+	enabled: ResolvedEditorConfig,
 	announce: (message: string) => void,
 
 	frozen?: () => boolean
 ) {
 	const [history, dispatch] = useReducer(editorReducer, undefined, () =>
-		initialHistory(image.width, image.height)
+		initialHistory(image.width, image.height, {
+			ratios: enabled.crop.ratios,
+		})
 	);
 
 	const undo = () => {

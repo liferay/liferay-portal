@@ -195,6 +195,8 @@ interface Props {
 	onAnnounce: (message: string) => void;
 	onCenterCrop: () => void;
 
+	showCrop: boolean;
+
 	showRecenter: boolean;
 
 	zoom: number;
@@ -207,6 +209,7 @@ export function CropMarquee({
 	dispatch,
 	onAnnounce,
 	onCenterCrop,
+	showCrop,
 	showRecenter,
 	zoom,
 }: Props) {
@@ -377,6 +380,10 @@ export function CropMarquee({
 	const hitRadius = 12 / zoom;
 	const visualRadius = 6 / zoom;
 	const strokeWidth = 2 / zoom;
+
+	if (!showCrop) {
+		return null;
+	}
 
 	const dimPath =
 		`M0 0H${bounds.width}V${bounds.height}H0Z` +

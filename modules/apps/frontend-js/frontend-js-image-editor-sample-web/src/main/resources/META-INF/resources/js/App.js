@@ -15,6 +15,38 @@ import React, {useEffect, useRef, useState} from 'react';
 
 const SAMPLE_URL = '/o/frontend-js-image-editor-sample-web/images/sample.jpg';
 
+/**
+ * `?crop=` turns the crop tools off, `?crop=rotate,straighten` picks the
+ * ones to keep and `?ratios=1:1,16:9` narrows the ratio presets, so every
+ * host configuration can be tried from the address bar.
+ */
+function configFromSearch(search) {
+	const params = new URLSearchParams(search);
+
+	const list = (value) =>
+		value === null
+			? undefined
+			: value
+					.split(',')
+					.map((item) => item.trim())
+					.filter(Boolean);
+
+	const crop = params.get('crop');
+
+	return {
+		crop:
+			crop === null
+				? undefined
+				: crop === ''
+					? false
+					: {
+							ratios: list(params.get('ratios')),
+							rotate: list(crop).includes('rotate'),
+							straighten: list(crop).includes('straighten'),
+						},
+	};
+}
+
 function demoSave({blob, fileName}) {
 	const url = URL.createObjectURL(blob);
 
@@ -42,6 +74,7 @@ function EditorModal({image, onClose}) {
 
 			<ClayModal.Body className="overflow-hidden p-0">
 				<ImageEditor
+					config={configFromSearch(window.location.search)}
 					image={image}
 					onClose={closeModal}
 					onSave={demoSave}

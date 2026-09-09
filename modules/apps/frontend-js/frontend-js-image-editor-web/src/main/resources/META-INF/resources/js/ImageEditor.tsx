@@ -7,7 +7,7 @@ import '../css/ImageEditor.scss';
 
 import {ClayIconSpriteContext} from '@clayui/icon';
 import {sub} from 'frontend-js-web';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {AnnouncerProvider, useAnnouncer} from './chrome/Announcer';
 import {BottomBar} from './chrome/BottomBar';
@@ -17,6 +17,7 @@ import {
 	EditorInstanceProvider,
 	nextEditorInstancePrefix,
 } from './chrome/instance';
+import {EditorConfig, resolveConfig} from './editorConfig';
 import {useEditorHistory} from './hooks/useEditorHistory';
 import {useSaveController} from './hooks/useSaveController';
 import {anchoredScroll} from './imaging/geometry';
@@ -38,6 +39,7 @@ export interface EditorSaveResult {
 }
 
 export interface ImageEditorProps {
+	config?: EditorConfig;
 	image: LoadedImage;
 	onClose: () => void;
 
@@ -50,6 +52,7 @@ export interface ImageEditorProps {
 }
 
 export function ImageEditor({
+	config,
 	image,
 	onClose,
 	onSave,
@@ -59,6 +62,7 @@ export function ImageEditor({
 		<ClayIconSpriteContext.Provider value={spritemap}>
 			<AnnouncerProvider>
 				<Editor
+					config={config}
 					image={image}
 					key={image.previewUrl}
 					onClose={onClose}
@@ -69,15 +73,22 @@ export function ImageEditor({
 	);
 }
 
-function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
+function Editor({
+	config,
+	image,
+	onClose,
+	onSave,
+}: Omit<ImageEditorProps, 'spritemap'>) {
 	const [instancePrefix] = useState(nextEditorInstancePrefix);
+
+	const enabled = useMemo(() => resolveConfig(config), [config]);
 
 	const announce = useAnnouncer();
 
 	const savingRef = useRef(false);
 
 	const {dispatch, editorRef, handleUndoShortcut, history, redo, undo} =
-		useEditorHistory(image, announce, () => savingRef.current);
+		useEditorHistory(image, enabled, announce, () => savingRef.current);
 
 	const state = history.present;
 
@@ -384,19 +395,23 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 						onZoom={zoomBy}
 						onZoomActual={zoomToActual}
 						onZoomFit={zoomToFit}
+						showCrop={enabled.crop.enabled}
 						showRecenter={!cropFramed}
 						state={state}
 						workspaceRef={handleWorkspaceRef}
 						zoom={zoom}
 					/>
 
-					<EditorSidebar
-						aspectLocked={aspectLocked}
-						dispatch={dispatch}
-						onAnnounce={announce}
-						onAspectLockedChange={setAspectLocked}
-						state={state}
-					/>
+					{enabled.crop.enabled && (
+						<EditorSidebar
+							aspectLocked={aspectLocked}
+							dispatch={dispatch}
+							onAnnounce={announce}
+							onAspectLockedChange={setAspectLocked}
+							showStraighten={enabled.crop.straighten}
+							state={state}
+						/>
+					)}
 				</div>
 
 				{saveError && (
@@ -423,7 +438,9 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 					onZoom={zoomBy}
 					onZoomFit={zoomToFit}
 					ratio={state.ratio}
+					ratios={enabled.crop.ratios}
 					saving={saving}
+					showRotate={enabled.crop.rotate}
 					zoom={zoom}
 				/>
 			</div>

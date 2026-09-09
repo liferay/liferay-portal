@@ -27,6 +27,7 @@ interface Props {
 	onZoom: (direction: -1 | 1) => void;
 	onZoomActual: () => void;
 	onZoomFit: () => void;
+	showCrop: boolean;
 	showRecenter: boolean;
 	state: EditState;
 	workspaceRef?: React.Ref<HTMLDivElement>;
@@ -45,6 +46,7 @@ export function Workspace({
 	onZoom,
 	onZoomActual,
 	onZoomFit,
+	showCrop,
 	showRecenter,
 	state,
 	workspaceRef,
@@ -147,6 +149,7 @@ export function Workspace({
 					dispatch={dispatch}
 					onAnnounce={onAnnounce}
 					onCenterCrop={onCenterCrop}
+					showCrop={showCrop}
 					showRecenter={showRecenter}
 					zoom={zoom}
 				/>

@@ -286,3 +286,22 @@ describe('set-angle', () => {
 		);
 	});
 });
+
+describe('initialHistory with allowed ratios', () => {
+	it('starts framed on the only allowed preset', () => {
+		const {present} = initialHistory(1000, 600, {ratios: ['1:1']});
+
+		expect(present.ratio).toBe('1:1');
+		expect(present.crop).toEqual({height: 600, width: 600, x: 200, y: 0});
+	});
+
+	it('prefers original, then custom, over a preset', () => {
+		expect(
+			initialHistory(1000, 600, {ratios: ['1:1', 'original']}).present
+				.ratio
+		).toBe('original');
+		expect(
+			initialHistory(1000, 600, {ratios: ['1:1', 'custom']}).present.ratio
+		).toBe('custom');
+	});
+});

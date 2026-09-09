@@ -17,6 +17,7 @@ interface Props {
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
 	onAspectLockedChange: (locked: boolean) => void;
+	showStraighten: boolean;
 	state: EditState;
 }
 
@@ -25,6 +26,7 @@ export function EditorSidebar({
 	dispatch,
 	onAnnounce,
 	onAspectLockedChange,
+	showStraighten,
 	state,
 }: Props) {
 	return (
@@ -40,6 +42,7 @@ export function EditorSidebar({
 				dispatch={dispatch}
 				onAnnounce={onAnnounce}
 				onAspectLockedChange={onAspectLockedChange}
+				showStraighten={showStraighten}
 			/>
 		</aside>
 	);

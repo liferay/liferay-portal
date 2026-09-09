@@ -11,6 +11,7 @@ import '@testing-library/jest-dom';
 
 import {BottomBar} from '../../src/main/resources/META-INF/resources/js/chrome/BottomBar';
 import {EditorInstanceProvider} from '../../src/main/resources/META-INF/resources/js/chrome/instance';
+import {RATIO_PRESETS} from '../../src/main/resources/META-INF/resources/js/editorConfig';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {CropPanel} from '../../src/main/resources/META-INF/resources/js/panels/CropPanel';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
@@ -18,7 +19,10 @@ import {
 	editorReducer,
 	initialHistory,
 } from '../../src/main/resources/META-INF/resources/js/state/editorReducer';
-import {rotatedSize} from '../../src/main/resources/META-INF/resources/js/state/types';
+import {
+	RatioPreset,
+	rotatedSize,
+} from '../../src/main/resources/META-INF/resources/js/state/types';
 
 const IMAGE: LoadedImage = {
 	blob: new Blob(),
@@ -52,6 +56,7 @@ function EditorHarness() {
 					onZoom={zoomBy}
 					onZoomActual={() => setZoom(1)}
 					onZoomFit={() => setZoom(0.5)}
+					showCrop
 					showRecenter
 					state={history.present}
 					zoom={zoom}
@@ -65,6 +70,7 @@ function EditorHarness() {
 					dispatch={dispatch}
 					onAnnounce={() => {}}
 					onAspectLockedChange={setAspectLocked}
+					showStraighten
 				/>
 
 				<BottomBar
@@ -80,7 +86,9 @@ function EditorHarness() {
 					onZoom={zoomBy}
 					onZoomFit={() => setZoom(0.5)}
 					ratio={history.present.ratio}
+					ratios={RATIO_PRESETS}
 					saving={false}
+					showRotate
 					zoom={zoom}
 				/>
 			</EditorInstanceProvider>
@@ -336,5 +344,56 @@ describe('Editor workspace composition', () => {
 		);
 
 		expect(imageGroup()).not.toHaveAttribute('clip-path');
+	});
+});
+
+describe('the controls agree with the state from the first render', () => {
+	const bar = (ratios: RatioPreset[]) => {
+		const history = initialHistory(IMAGE.width, IMAGE.height, {ratios});
+
+		render(
+			<ClayIconSpriteContext.Provider value="/icons.svg">
+				<EditorInstanceProvider value="aie-">
+					<BottomBar
+						canRedo={false}
+						canUndo={false}
+						dispatch={() => {}}
+						onAnnounce={() => {}}
+						onCancel={() => {}}
+						onRedo={() => {}}
+						onSave={() => {}}
+						onShowShortcuts={() => {}}
+						onUndo={() => {}}
+						onZoom={() => {}}
+						onZoomFit={() => {}}
+						ratio={history.present.ratio}
+						ratios={ratios}
+						saving={false}
+						showRotate
+						zoom={1}
+					/>
+				</EditorInstanceProvider>
+			</ClayIconSpriteContext.Provider>
+		);
+
+		return screen.getByLabelText('ratio') as HTMLSelectElement;
+	};
+
+	it('shows the forced ratio as the selected option', () => {
+		const select = bar(['1:1']);
+
+		expect(select.value).toBe('1:1');
+		expect(
+			Array.from(select.options).map((option) => option.value)
+		).toEqual(['1:1']);
+	});
+
+	it('starts a custom-plus-presets config on custom, never outside it', () => {
+		const select = bar(['custom', '16:9']);
+
+		expect(select.value).toBe('custom');
+		expect(
+			Array.from(select.options).map((option) => option.value)
+		).toEqual(['custom', '16:9']);
 	});
 });
