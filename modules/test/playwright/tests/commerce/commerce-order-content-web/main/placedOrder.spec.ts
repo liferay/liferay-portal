@@ -60,28 +60,25 @@ export const test = mergeTests(
 test(
 	'Placed orders widget configuration to display full addresses and phone number',
 	{tag: '@LPD-25831'},
-	async ({
-		apiHelpers,
-		page,
-		placedOrdersPage,
-		site,
-		widgetPagePage,
-	}) => {
+	async ({apiHelpers, page, placedOrdersPage, site, widgetPagePage}) => {
 		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
 			title: getRandomString(),
 		});
 
-		const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			name: getRandomString(),
-			siteGroupId: site.id,
-		});
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				name: getRandomString(),
+				siteGroupId: site.id,
+			});
 
-		const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
-		const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-			catalogId: catalog.id,
-		});
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
 
 		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
 			.getProduct(product.productId)
@@ -105,10 +102,11 @@ test(
 
 		const phoneNumber = '12345';
 
-		const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
-			account.id,
-			{phoneNumber, regionISOCode: 'AL'}
-		);
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber, regionISOCode: 'AL'}
+			);
 
 		await apiHelpers.headlessCommerceAdminOrder.postOrder({
 			accountId: account.id,
@@ -143,15 +141,15 @@ test(
 		await expect(placedOrdersPage.commerceBillingAddress).not.toContainText(
 			phoneNumber
 		);
-		await expect(placedOrdersPage.commerceShippingAddress).not.toContainText(
-			'United States'
-		);
-		await expect(placedOrdersPage.commerceShippingAddress).not.toContainText(
-			'Alabama'
-		);
-		await expect(placedOrdersPage.commerceShippingAddress).not.toContainText(
-			phoneNumber
-		);
+		await expect(
+			placedOrdersPage.commerceShippingAddress
+		).not.toContainText('United States');
+		await expect(
+			placedOrdersPage.commerceShippingAddress
+		).not.toContainText('Alabama');
+		await expect(
+			placedOrdersPage.commerceShippingAddress
+		).not.toContainText(phoneNumber);
 
 		await page.goto(`/web/${site.name}`);
 
@@ -698,9 +696,8 @@ test(
 			await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
 				'demo.unprivileged@liferay.com'
 			);
-		const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
-			account.id
-		);
+		const rolesResponse =
+			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
 
 		const buyerAccountRole = rolesResponse?.items?.filter((role) => {
 			return role.name === 'Buyer';
@@ -717,11 +714,12 @@ test(
 			regionISOCode: 'LA',
 		});
 
-		const product = await apiHelpers.headlessCommerceAdminCatalog.getProducts(
-			new URLSearchParams({
-				filter: `name eq 'U-Joint'`,
-			})
-		);
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({
+					filter: `name eq 'U-Joint'`,
+				})
+			);
 
 		const productId = product.items[0].productId;
 
@@ -764,13 +762,17 @@ test(
 
 		await commerceMiniCartPage.miniCartButton.click();
 
-		await expect(commerceMiniCartPage.miniCartItem('U-joint')).toBeVisible();
+		await expect(
+			commerceMiniCartPage.miniCartItem('U-joint')
+		).toBeVisible();
 
 		await commerceMiniCartPage.submitButton.click();
 
 		await checkoutPage.chooseShippingAddress({index: 1});
 
-		await expect(page.getByText('Standard Delivery (+$ 15.00)')).toBeVisible();
+		await expect(
+			page.getByText('Standard Delivery (+$ 15.00)')
+		).toBeVisible();
 
 		await checkoutPage.continueButton.click();
 
@@ -787,11 +789,15 @@ test(
 		try {
 			await commerceAdminOrderDetailsPage.reorderButton.click();
 
-			await expect(commerceAdminOrderDetailsPage.reorderButton).toBeHidden();
+			await expect(
+				commerceAdminOrderDetailsPage.reorderButton
+			).toBeHidden();
 
 			await commerceAdminOrderDetailsPage.checkoutButton.click();
 
-			await expect(page.getByRole('link', {name: 'U-joint'})).toBeVisible();
+			await expect(
+				page.getByRole('link', {name: 'U-joint'})
+			).toBeVisible();
 
 			await checkoutPage.chooseShippingAddress({index: 1});
 
@@ -847,7 +853,8 @@ test(
 			title: getRandomString(),
 		});
 
-		const userAccount = await apiHelpers.headlessAdminUser.postUserAccount();
+		const userAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
 
 		userData[userAccount.alternateName] = {
 			name: userAccount.givenName,
@@ -855,20 +862,23 @@ test(
 			surname: userAccount.familyName,
 		};
 
-		const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			siteGroupId: site.id,
-		});
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
 
 		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
 			channel.name,
 			'B2B'
 		);
 
-		const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
-		const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-			catalogId: catalog.id,
-		});
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
 
 		const account1 = await apiHelpers.headlessAdminUser.postAccount({
 			name: getRandomString(),
@@ -880,9 +890,8 @@ test(
 			[userAccount.emailAddress]
 		);
 
-		const rolesResponse1 = await apiHelpers.headlessAdminUser.getAccountRoles(
-			account1.id
-		);
+		const rolesResponse1 =
+			await apiHelpers.headlessAdminUser.getAccountRoles(account1.id);
 
 		const accountRoleBuyer1 = rolesResponse1?.items?.filter((role) => {
 			return role.name === 'Buyer';
@@ -918,10 +927,11 @@ test(
 
 		const phoneNumber = '12345';
 
-		const address1 = await apiHelpers.headlessCommerceAdminAccount.postAddress(
-			account1.id,
-			{phoneNumber, regionISOCode: 'AL'}
-		);
+		const address1 =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account1.id,
+				{phoneNumber, regionISOCode: 'AL'}
+			);
 
 		await apiHelpers.headlessCommerceAdminOrder.postOrder({
 			accountId: account1.id,
@@ -940,10 +950,11 @@ test(
 			shippingAddressId: address1.id,
 		});
 
-		const address2 = await apiHelpers.headlessCommerceAdminAccount.postAddress(
-			account2.id,
-			{phoneNumber, regionISOCode: 'AL'}
-		);
+		const address2 =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account2.id,
+				{phoneNumber, regionISOCode: 'AL'}
+			);
 
 		await apiHelpers.headlessCommerceAdminOrder.postOrder({
 			accountId: account2.id,
@@ -970,12 +981,17 @@ test(
 		await placedOrdersPage.searchInput.fill(account2.name);
 		await placedOrdersPage.searchButton.click();
 
-		await expect(placedOrdersPage.orderAccountName(account1.name)).toHaveCount(
-			0
-		);
 		await expect(
-			(await placedOrdersPage.searchTableRowByValue(6, account2.name, true))
-				.row
+			placedOrdersPage.orderAccountName(account1.name)
+		).toHaveCount(0);
+		await expect(
+			(
+				await placedOrdersPage.searchTableRowByValue(
+					6,
+					account2.name,
+					true
+				)
+			).row
 		).toBeVisible();
 	}
 );
@@ -1180,12 +1196,7 @@ test(
 test(
 	'Placed orders table displays correct fields',
 	{tag: '@LPD-33783'},
-	async ({
-		apiHelpers,
-		page,
-		placedOrdersPage,
-		site,
-	}) => {
+	async ({apiHelpers, page, placedOrdersPage, site}) => {
 		const layout = await apiHelpers.headlessDelivery.createSitePage({
 			pageDefinition: getPageDefinition([
 				getWidgetDefinition({
@@ -1198,9 +1209,10 @@ test(
 			title: getRandomString(),
 		});
 
-		const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			siteGroupId: site.id,
-		});
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
 
 		const account = await apiHelpers.headlessAdminUser.postAccount({
 			name: getRandomString(),
@@ -1269,9 +1281,10 @@ test(
 			title: getRandomString(),
 		});
 
-		const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			siteGroupId: site.id,
-		});
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
 
 		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
 			channel.name,
@@ -1289,11 +1302,13 @@ test(
 			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
 		);
 
-		const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
-		const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-			catalogId: catalog.id,
-		});
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+			});
 
 		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
 			.getProduct(product.productId)
@@ -1303,10 +1318,11 @@ test(
 
 		const sku = productSkus[0];
 
-		const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
-			account.id,
-			{phoneNumber: '12345', regionISOCode: 'AL'}
-		);
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber: '12345', regionISOCode: 'AL'}
+			);
 
 		const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
 			accountId: account.id,
@@ -1391,7 +1407,9 @@ test(
 		await systemSettingsPage.goToSystemSetting('Orders', 'Placed Orders');
 
 		try {
-			if (!(await page.getByLabel('Show Order Create Time').isChecked())) {
+			if (
+				!(await page.getByLabel('Show Order Create Time').isChecked())
+			) {
 				await page.getByLabel('Show Order Create Time').check();
 				await page.getByTestId('submitConfiguration').click();
 			}
@@ -1470,22 +1488,24 @@ test(
 					{phoneNumber: '12345', regionISOCode: 'AL'}
 				);
 
-			const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
-				accountId: account.id,
-				billingAddressId: address.id,
-				channelId: channel.id,
-				orderItems: [
-					{
-						decimalQuantity: 10,
-						quantity: 2,
-						skuId: sku.id,
-					},
-				],
-				orderStatus: '0',
-				paymentMethod: 'paypal',
-				paymentStatus: '0',
-				shippingAddressId: address.id,
-			});
+			const order = await apiHelpers.headlessCommerceAdminOrder.postOrder(
+				{
+					accountId: account.id,
+					billingAddressId: address.id,
+					channelId: channel.id,
+					orderItems: [
+						{
+							decimalQuantity: 10,
+							quantity: 2,
+							skuId: sku.id,
+						},
+					],
+					orderStatus: '0',
+					paymentMethod: 'paypal',
+					paymentStatus: '0',
+					shippingAddressId: address.id,
+				}
+			);
 
 			await performLogout(page);
 
@@ -1525,7 +1545,10 @@ test(
 
 			await performLogin(page, 'test');
 
-			await systemSettingsPage.goToSystemSetting('Orders', 'Placed Orders');
+			await systemSettingsPage.goToSystemSetting(
+				'Orders',
+				'Placed Orders'
+			);
 
 			await page.getByLabel('Show Order Create Time').uncheck();
 
@@ -1564,7 +1587,10 @@ test(
 
 			await performLogin(page, 'test');
 
-			await systemSettingsPage.goToSystemSetting('Orders', 'Placed Orders');
+			await systemSettingsPage.goToSystemSetting(
+				'Orders',
+				'Placed Orders'
+			);
 
 			await page.getByLabel('Show Order Create Time').check();
 
@@ -1585,7 +1611,8 @@ test(
 		page,
 		placedOrdersPage,
 	}) => {
-		const userAccount = await apiHelpers.headlessAdminUser.postUserAccount();
+		const userAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
 
 		userData[userAccount.alternateName] = {
 			name: userAccount.givenName,
@@ -1603,9 +1630,8 @@ test(
 			[userAccount.emailAddress]
 		);
 
-		const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
-			account.id
-		);
+		const rolesResponse =
+			await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
 
 		const accountRoleBuyer = rolesResponse?.items?.filter((role) => {
 			return role.name === 'Buyer';
@@ -1628,16 +1654,18 @@ test(
 			userAccount.id
 		);
 
-		const address = await apiHelpers.headlessCommerceAdminAccount.postAddress(
-			account.id,
-			{phoneNumber: '12345', regionISOCode: 'AL'}
-		);
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{phoneNumber: '12345', regionISOCode: 'AL'}
+			);
 
-		const product = await apiHelpers.headlessCommerceAdminCatalog.getProducts(
-			new URLSearchParams({
-				filter: `name eq 'U-Joint'`,
-			})
-		);
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({
+					filter: `name eq 'U-Joint'`,
+				})
+			);
 
 		const productId = product.items[0].productId;
 
@@ -1693,7 +1721,9 @@ test(
 		try {
 			await commerceAdminOrderDetailsPage.reorderButton.click();
 
-			await expect(commerceAdminOrderDetailsPage.reorderButton).toBeHidden();
+			await expect(
+				commerceAdminOrderDetailsPage.reorderButton
+			).toBeHidden();
 
 			await expect(
 				commerceAdminOrderDetailsPage.checkoutButton
@@ -1731,12 +1761,7 @@ test(
 test(
 	'Local date format',
 	{tag: '@LPD-41398'},
-	async ({
-		apiHelpers,
-		commerceInstanceSettingsPage,
-		page,
-		site,
-	}) => {
+	async ({apiHelpers, commerceInstanceSettingsPage, page, site}) => {
 		let user;
 
 		try {
@@ -1833,22 +1858,24 @@ test(
 					siteGroupId: site.id,
 				});
 
-			const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
-				accountId: account.id,
-				billingAddressId: address.id,
-				channelId: channel.id,
-				orderItems: [
-					{
-						decimalQuantity: 10,
-						quantity: 2,
-						skuId: sku.id,
-					},
-				],
-				orderStatus: '0',
-				paymentMethod: 'paypal',
-				paymentStatus: '0',
-				shippingAddressId: address.id,
-			});
+			const order = await apiHelpers.headlessCommerceAdminOrder.postOrder(
+				{
+					accountId: account.id,
+					billingAddressId: address.id,
+					channelId: channel.id,
+					orderItems: [
+						{
+							decimalQuantity: 10,
+							quantity: 2,
+							skuId: sku.id,
+						},
+					],
+					orderStatus: '0',
+					paymentMethod: 'paypal',
+					paymentStatus: '0',
+					shippingAddressId: address.id,
+				}
+			);
 
 			const siteRole =
 				await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
@@ -1891,7 +1918,9 @@ test(
 				)
 			).toBeVisible();
 
-			await page.getByRole('link', {name: 'Vissza a teljes oldalra'}).click();
+			await page
+				.getByRole('link', {name: 'Vissza a teljes oldalra'})
+				.click();
 
 			await page.goto(`de/web/${site.name}`);
 
