@@ -184,66 +184,6 @@ public class HashedFilesRegistryImpl implements HashedFilesRegistry {
 
 	}
 
-	private ServiceTrackerCustomizer<ServletContext, Void>
-		_createServiceTrackerCustomizer() {
-
-		return new ServiceTrackerCustomizer<>() {
-
-			@Override
-			public Void addingService(
-				ServiceReference<ServletContext> serviceReference) {
-
-				modifiedService(serviceReference, null);
-
-				return null;
-			}
-
-			@Override
-			public void modifiedService(
-				ServiceReference<ServletContext> serviceReference, Void v) {
-
-				ServletContext servletContext = _bundleContext.getService(
-					serviceReference);
-
-				try {
-					Map<String, String> hashedFileURIs = _getHashedFileURIs(
-						servletContext);
-
-					if (hashedFileURIs.isEmpty()) {
-						_dataBags.remove(servletContext.getContextPath());
-
-						return;
-					}
-
-					_dataBags.put(
-						servletContext.getContextPath(),
-						new DataBag(
-							hashedFileURIs, servletContext,
-							_getServletContextHash(hashedFileURIs)));
-				}
-				finally {
-					_bundleContext.ungetService(serviceReference);
-				}
-			}
-
-			@Override
-			public void removedService(
-				ServiceReference<ServletContext> serviceReference, Void v) {
-
-				ServletContext servletContext = _bundleContext.getService(
-					serviceReference);
-
-				try {
-					_dataBags.remove(servletContext.getContextPath());
-				}
-				finally {
-					_bundleContext.ungetService(serviceReference);
-				}
-			}
-
-		};
-	}
-
 	private Map<String, String> _getHashedFileURIs(
 		ServletContext servletContext) {
 
@@ -348,7 +288,64 @@ public class HashedFilesRegistryImpl implements HashedFilesRegistry {
 
 			_serviceTracker = new ServiceTracker<>(
 				_bundleContext, ServletContext.class,
-				_createServiceTrackerCustomizer());
+				new ServiceTrackerCustomizer<>() {
+
+					@Override
+					public Void addingService(
+						ServiceReference<ServletContext> serviceReference) {
+
+						modifiedService(serviceReference, null);
+
+						return null;
+					}
+
+					@Override
+					public void modifiedService(
+						ServiceReference<ServletContext> serviceReference,
+						Void v) {
+
+						ServletContext servletContext =
+							_bundleContext.getService(serviceReference);
+
+						try {
+							Map<String, String> hashedFileURIs =
+								_getHashedFileURIs(servletContext);
+
+							if (hashedFileURIs.isEmpty()) {
+								_dataBags.remove(
+									servletContext.getContextPath());
+
+								return;
+							}
+
+							_dataBags.put(
+								servletContext.getContextPath(),
+								new DataBag(
+									hashedFileURIs, servletContext,
+									_getServletContextHash(hashedFileURIs)));
+						}
+						finally {
+							_bundleContext.ungetService(serviceReference);
+						}
+					}
+
+					@Override
+					public void removedService(
+						ServiceReference<ServletContext> serviceReference,
+						Void v) {
+
+						ServletContext servletContext =
+							_bundleContext.getService(serviceReference);
+
+						try {
+							_dataBags.remove(servletContext.getContextPath());
+						}
+						finally {
+							_bundleContext.ungetService(serviceReference);
+						}
+					}
+
+				});
 
 			_serviceTracker.open();
 		}
