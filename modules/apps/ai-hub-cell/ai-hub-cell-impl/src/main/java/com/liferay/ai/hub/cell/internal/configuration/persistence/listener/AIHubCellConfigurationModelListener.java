@@ -109,6 +109,7 @@ public class AIHubCellConfigurationModelListener
 				company.getPortalURL(0), 0, null, "AI Hub Cell", null,
 				Arrays.asList(), false,
 				Arrays.asList(
+					"Liferay.Bulk.REST.everything.write",
 					"Liferay.Headless.Admin.Taxonomy.everything.read",
 					"Liferay.Headless.Admin.User.everything.read",
 					"Liferay.Headless.Batch.Engine.everything",
