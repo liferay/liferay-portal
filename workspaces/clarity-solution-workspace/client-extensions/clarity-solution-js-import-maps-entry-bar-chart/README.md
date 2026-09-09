@@ -1,4 +1,4 @@
-# Clarity Solution Bar Chart
+# Clarity Solution JS Import Maps Entry Bar Chart
 
 > **Pedagogical purpose of this module**
 >
@@ -59,4 +59,4 @@ yarn build      # production build → build/vite
 
 `yarn dev` above runs the element fully standalone against the stub described in the pedagogical note (no running Liferay portal needed). To instead run against a real Liferay instance and get hot reload while editing, deploy the client extension, start `yarn dev`, and let [client-extension.dev.yaml](client-extension.dev.yaml) proxy the module's URL to the local Vite dev server (`http://localhost:5173`).
 
-The build is packaged as a Liferay JS import map client extension (`jsImportMapsEntry`, bare specifier `clarity-solution-bar-chart`) by [client-extension.yaml](client-extension.yaml).
+The build is packaged as a Liferay JS import map client extension (`jsImportMapsEntry`, bare specifier `clarity-solution-js-import-maps-entry-bar-chart`) by [client-extension.yaml](client-extension.yaml).

@@ -1,4 +1,4 @@
-clarity-solution-bar-chart:
+clarity-solution-js-import-maps-entry-bar-chart:
     urls:
         -   http://localhost:5173/@vite/client
         -   http://localhost:5173/@vite/refresh.ts
