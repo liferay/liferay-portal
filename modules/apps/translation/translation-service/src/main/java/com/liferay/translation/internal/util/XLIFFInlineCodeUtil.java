@@ -207,12 +207,12 @@ public class XLIFFInlineCodeUtil {
 	private static TextFragment.TagType _getTagType(
 		HTMLInlineCodeToken.Type type) {
 
-		if (type == HTMLInlineCodeToken.Type.OPENING) {
-			return TextFragment.TagType.OPENING;
-		}
-
 		if (type == HTMLInlineCodeToken.Type.CLOSING) {
 			return TextFragment.TagType.CLOSING;
+		}
+
+		if (type == HTMLInlineCodeToken.Type.OPENING) {
+			return TextFragment.TagType.OPENING;
 		}
 
 		return TextFragment.TagType.PLACEHOLDER;
