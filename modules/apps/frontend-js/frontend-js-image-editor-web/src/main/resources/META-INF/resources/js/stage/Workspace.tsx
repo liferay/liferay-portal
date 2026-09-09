@@ -13,6 +13,8 @@ import {LoadedImage} from '../imaging/loadImage';
 
 interface Props {
 	image: LoadedImage;
+	onWorkspacePointerLeave?: () => void;
+	onWorkspacePointerMove?: (event: React.PointerEvent) => void;
 	onZoom: (direction: -1 | 1) => void;
 	onZoomActual: () => void;
 	onZoomFit: () => void;
@@ -22,6 +24,8 @@ interface Props {
 
 export function Workspace({
 	image,
+	onWorkspacePointerLeave,
+	onWorkspacePointerMove,
 	onZoom,
 	onZoomActual,
 	onZoomFit,
@@ -55,6 +59,8 @@ export function Workspace({
 			aria-label={t('image-workspace')}
 			className="editor-workspace"
 			onKeyDown={handleKeyDown}
+			onPointerLeave={onWorkspacePointerLeave}
+			onPointerMove={onWorkspacePointerMove}
 			ref={workspaceRef}
 			role="region"
 			tabIndex={0}

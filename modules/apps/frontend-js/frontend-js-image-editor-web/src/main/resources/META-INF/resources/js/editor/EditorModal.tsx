@@ -13,6 +13,7 @@ import {
 	nextEditorInstancePrefix,
 } from '../chrome/instance';
 import {t} from '../i18n';
+import {anchoredScroll} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
 import {Workspace} from '../stage/Workspace';
 
@@ -100,6 +101,34 @@ export default function EditorModal({image, onClose}: Props) {
 		[image]
 	);
 
+	const pointerRef = useRef<{x: number; y: number} | null>(null);
+
+	const handleWorkspacePointerMove = (event: React.PointerEvent) => {
+		const element = workspaceRef.current;
+
+		if (!element) {
+			return;
+		}
+
+		const rect = element.getBoundingClientRect();
+
+		pointerRef.current = {
+			x: event.clientX - rect.left,
+			y: event.clientY - rect.top,
+		};
+	};
+
+	const handleWorkspacePointerLeave = () => {
+		pointerRef.current = null;
+	};
+
+	const pendingAnchorRef = useRef<{
+		anchor: {x: number; y: number};
+		from: number;
+		scroll: {left: number; top: number};
+		zoom: number;
+	} | null>(null);
+
 	const announceZoom = (level: number) =>
 		announce(t('zoom-level', Math.round(level * 100)));
 
@@ -110,6 +139,32 @@ export default function EditorModal({image, onClose}: Props) {
 
 		if (next === zoom) {
 			return;
+		}
+
+		const element = workspaceRef.current;
+
+		if (element) {
+			const pointer = pointerRef.current;
+
+			const inside =
+				pointer &&
+				pointer.x >= 0 &&
+				pointer.y >= 0 &&
+				pointer.x <= element.clientWidth &&
+				pointer.y <= element.clientHeight;
+
+			pendingAnchorRef.current = {
+				anchor:
+					inside && pointer
+						? pointer
+						: {
+								x: element.clientWidth / 2,
+								y: element.clientHeight / 2,
+							},
+				from: zoom,
+				scroll: {left: element.scrollLeft, top: element.scrollTop},
+				zoom: next,
+			};
 		}
 
 		setZoom(next);
@@ -133,6 +188,26 @@ export default function EditorModal({image, onClose}: Props) {
 		announceZoom(next);
 	};
 
+	useEffect(() => {
+		const anchored = pendingAnchorRef.current;
+		const element = workspaceRef.current;
+
+		if (anchored && anchored.zoom === zoom && element) {
+			pendingAnchorRef.current = null;
+
+			const scroll = anchoredScroll({
+				anchor: anchored.anchor,
+				next: zoom,
+				padding: STAGE_PADDING,
+				scroll: anchored.scroll,
+				zoom: anchored.from,
+			});
+
+			element.scrollLeft = scroll.left;
+			element.scrollTop = scroll.top;
+		}
+	});
+
 	return (
 		<EditorInstanceProvider value={instancePrefix}>
 			<ClayModal
@@ -148,6 +223,10 @@ export default function EditorModal({image, onClose}: Props) {
 					<div className="editor-main">
 						<Workspace
 							image={image}
+							onWorkspacePointerLeave={
+								handleWorkspacePointerLeave
+							}
+							onWorkspacePointerMove={handleWorkspacePointerMove}
 							onZoom={zoomBy}
 							onZoomActual={zoomToActual}
 							onZoomFit={zoomToFit}
