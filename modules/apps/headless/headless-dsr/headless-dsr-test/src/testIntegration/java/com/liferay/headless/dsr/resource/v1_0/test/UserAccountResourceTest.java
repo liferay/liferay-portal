@@ -125,7 +125,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testDeleteRoomUserAccount() throws Exception {
 		super.testDeleteRoomUserAccount();
 
-		_testDeleteRoomUserAccountWithContentContributor();
+		_testDeleteRoomUserAccountWithDSRContentContributor();
 		_testDeleteRoomUserAccountWithMembershipExpirationDate();
 	}
 
@@ -141,7 +141,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	@Test
 	public void testPatchRoomUserAccount() throws Exception {
 		_testPatchRoomUserAccount();
-		_testPatchRoomUserAccountWithContentContributor();
+		_testPatchRoomUserAccountWithDSRContentContributor();
 		_testPatchRoomUserAccountWithDSRRoomCollaborator();
 		_testPatchRoomUserAccountWithPermission();
 		_testPatchRoomUserAccountWithoutRoleKey();
@@ -269,7 +269,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		).build();
 	}
 
-	private void _testDeleteRoomUserAccountWithContentContributor()
+	private void _testDeleteRoomUserAccountWithDSRContentContributor()
 		throws Exception {
 
 		String password = RandomTestUtil.randomString();
@@ -405,7 +405,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				}));
 	}
 
-	private void _testPatchRoomUserAccountWithContentContributor()
+	private void _testPatchRoomUserAccountWithDSRContentContributor()
 		throws Exception {
 
 		String password = RandomTestUtil.randomString();
