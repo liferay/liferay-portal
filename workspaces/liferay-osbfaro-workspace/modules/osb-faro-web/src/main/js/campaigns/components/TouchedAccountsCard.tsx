@@ -19,9 +19,9 @@ interface ITouchedAccountsCardProps {
 	groupId: string;
 }
 
-// Individuals Touched is a placeholder: the design shows the tab, but nothing
-// behind it is in scope yet, so `ClayTabs.Item` renders it disabled rather
-// than switching to an empty panel.
+// Individuals Touched is a placeholder: the tab is selectable, and nothing
+// behind it is in scope yet, so selecting it leaves the card empty until the
+// individuals table lands.
 
 const TABS = [
 	{
@@ -29,7 +29,6 @@ const TABS = [
 		title: Liferay.Language.get('accounts-touched'),
 	},
 	{
-		disabled: true,
 		tabId: 'individuals-touched',
 		title: Liferay.Language.get('individuals-touched'),
 	},
@@ -92,83 +91,83 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 				className="mb-3"
 				onActiveChange={(index) => setActiveIndex(Number(index))}
 			>
-				{TABS.map(({disabled, tabId, title}) => (
-					<ClayTabs.Item disabled={disabled} key={tabId}>
-						{title}
-					</ClayTabs.Item>
+				{TABS.map(({tabId, title}) => (
+					<ClayTabs.Item key={tabId}>{title}</ClayTabs.Item>
 				))}
 			</ClayTabs>
 
-			<FrontendDataSet
-				apiURL={`/o/faro/contacts/${groupId}/campaigns/${campaignId}/accounts?channelId=${channelId}`}
-				customDataRenderers={{
-					accountNameRenderer: ({
-						itemData,
-						value,
-					}: {
-						itemData: {id: string};
-						value: string;
-					}) =>
-						columns.nameAndLinkRenderer({
-							channelId,
-							groupId,
+			{TABS[activeIndex].tabId === 'accounts-touched' && (
+				<FrontendDataSet
+					apiURL={`/o/faro/contacts/${groupId}/campaigns/${campaignId}/accounts?channelId=${channelId}`}
+					customDataRenderers={{
+						accountNameRenderer: ({
 							itemData,
-							route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
 							value,
-						}),
+						}: {
+							itemData: {id: string};
+							value: string;
+						}) =>
+							columns.nameAndLinkRenderer({
+								channelId,
+								groupId,
+								itemData,
+								route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
+								value,
+							}),
 
-					// The endpoint sends the calculated fields as strings,
-					// and `toThousands` returns '' for anything `isNumber`
-					// rejects, so coerce before formatting. An account with no
-					// opportunity value renders an empty cell: the design
-					// carries a 0 in those cells, but at zero opacity, so a
-					// zero would be wrong.
+						// The endpoint sends the calculated fields as strings,
+						// and `toThousands` returns '' for anything `isNumber`
+						// rejects, so coerce before formatting. An account
+						// with no opportunity value renders an empty cell:
+						// the design carries a 0 in those cells, but at zero
+						// opacity, so a zero would be wrong.
 
-					amountRenderer: ({
-						value,
-					}: {
-						value?: number | string | null;
-					}) => {
-						const amount =
-							value === '' ||
-							value === null ||
-							value === undefined
-								? NaN
-								: Number(value);
+						amountRenderer: ({
+							value,
+						}: {
+							value?: number | string | null;
+						}) => {
+							const amount =
+								value === '' ||
+								value === null ||
+								value === undefined
+									? NaN
+									: Number(value);
 
-						return (
-							<div>
-								{Number.isFinite(amount)
-									? toThousands(amount)
-									: ''}
-							</div>
-						);
-					},
-					lifecycleStageRenderer: ({
-						value,
-					}: {
-						value: LifecycleStages;
-					}) =>
-						value &&
-						columns.cmsLabelRenderer({
-							displayType:
-								lifecycleStagesLabelMap[value].displayType,
-							label: lifecycleStagesLabelMap[value].label,
-						}),
-				}}
-				id="campaign-accounts-dataset"
-				pagination={pagination}
+							return (
+								<div>
+									{Number.isFinite(amount)
+										? toThousands(amount)
+										: ''}
+								</div>
+							);
+						},
+						lifecycleStageRenderer: ({
+							value,
+						}: {
+							value: LifecycleStages;
+						}) =>
+							value &&
+							columns.cmsLabelRenderer({
+								displayType:
+									lifecycleStagesLabelMap[value].displayType,
+								label: lifecycleStagesLabelMap[value].label,
+							}),
+					}}
+					id="campaign-accounts-dataset"
+					pagination={pagination}
 
-				// Same as the campaigns table: asah declares `search`, `filter`
-				// and `sort` on this endpoint and reads none of them, sorting by
-				// account id regardless. Offering either control would look
-				// functional and do nothing.
+					// Same as the campaigns table: asah declares `search`,
+					// `filter` and `sort` on this endpoint and reads none of
+					// them, sorting by account id regardless. Offering either
+					// control would look functional and do nothing.
 
-				showManagementBar={false}
-				showPagination
-				showSearch={false}
-				views={views}
-			/>
+					showManagementBar={false}
+					showPagination
+					showSearch={false}
+					views={views}
+				/>
+			)}
 		</Card>
 	);
 };
