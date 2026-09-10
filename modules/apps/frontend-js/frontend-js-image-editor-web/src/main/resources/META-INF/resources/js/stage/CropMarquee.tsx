@@ -492,6 +492,9 @@ export function CropMarquee({
 			{showRecenter &&
 				(crop.width < bounds.width || crop.height < bounds.height) && (
 					<g
+						aria-label={Liferay.Language.get(
+							'center-the-crop-in-the-view'
+						)}
 						className={classNames('crop-recenter', {
 							'crop-recenter-focused': recenterFocused,
 						})}

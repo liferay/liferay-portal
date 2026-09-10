@@ -256,14 +256,19 @@ describe('Editor workspace composition', () => {
 	it('offers the recenter control only once the crop is a selection', () => {
 		render(<EditorHarness />);
 
-		expect(document.querySelector('.crop-recenter')).toBeNull();
+		const recenter = () =>
+			screen.queryByRole('button', {
+				name: 'center-the-crop-in-the-view',
+			});
+
+		expect(recenter()).toBeNull();
 
 		const widthInput = screen.getByLabelText('width');
 
 		fireEvent.change(widthInput, {target: {value: '400'}});
 		fireEvent.keyDown(widthInput, {key: 'Enter'});
 
-		expect(document.querySelector('.crop-recenter')).toBeInTheDocument();
+		expect(recenter()).toBeInTheDocument();
 	});
 
 	it('keeps the proportions of a numeric edit while the aspect is locked', () => {
