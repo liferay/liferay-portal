@@ -1,0 +1,84 @@
+suite: Grafana data sources
+templates:
+    -   templates/aws/amp-datasource.yaml
+    -   templates/azure/amw-datasource.yaml
+    -   templates/gcp/gmp-datasource.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/aws/amp-datasource.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/azure/amw-datasource.yaml
+            -   matchRegex:
+                    path: data["amp-datasource.yaml"]
+                    pattern: 'type: "prometheus"'
+                template: templates/aws/amp-datasource.yaml
+        it: Keeps the core Prometheus data source on AWS
+        set:
+            aws.ampWorkspaceURL: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-00000000
+            aws.region: us-east-1
+            cloudProvider: aws
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/gcp/gmp-datasource.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/azure/amw-datasource.yaml
+            -   matchRegex:
+                    path: data["gmp-datasource.yaml"]
+                    pattern: 'type: "prometheus"'
+                template: templates/gcp/gmp-datasource.yaml
+        it: Keeps the core Prometheus data source on GCP
+        set:
+            cloudProvider: gcp
+    -   asserts:
+            -   notMatchRegex:
+                    path: data["amw-datasource.yaml"]
+                    pattern: 'clientId:'
+                template: templates/azure/amw-datasource.yaml
+            -   notMatchRegex:
+                    path: data["amw-datasource.yaml"]
+                    pattern: 'tenantId:'
+                template: templates/azure/amw-datasource.yaml
+        it: Leaves the workload identity client and tenant to the webhook
+        set:
+            azure.prometheusWorkspaceEndpoint: https://liferay-test-abcd.eastus.prometheus.monitor.azure.com
+            cloudProvider: azure
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/azure/amw-datasource.yaml
+            -   equal:
+                    path: metadata.labels["grafana_datasource"]
+                    value: "true"
+                template: templates/azure/amw-datasource.yaml
+            -   matchRegex:
+                    path: metadata.name
+                    pattern: '-amw-datasource$'
+                template: templates/azure/amw-datasource.yaml
+            -   matchRegex:
+                    path: data["amw-datasource.yaml"]
+                    pattern: 'azureCredentials:\s+authType: workloadidentity'
+                template: templates/azure/amw-datasource.yaml
+            -   matchRegex:
+                    path: data["amw-datasource.yaml"]
+                    pattern: 'type: "prometheus"'
+                template: templates/azure/amw-datasource.yaml
+            -   matchRegex:
+                    path: data["amw-datasource.yaml"]
+                    pattern: 'url: "https://liferay-test-abcd.eastus.prometheus.monitor.azure.com"'
+                template: templates/azure/amw-datasource.yaml
+        it: Queries the Azure Monitor workspace with Entra workload identity
+        set:
+            azure.prometheusWorkspaceEndpoint: https://liferay-test-abcd.eastus.prometheus.monitor.azure.com
+            cloudProvider: azure
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.prometheusWorkspaceEndpoint must be set when cloudProvider=azure
+                template: templates/azure/amw-datasource.yaml
+        it: Rejects Azure without a Prometheus workspace endpoint
+        set:
+            cloudProvider: azure

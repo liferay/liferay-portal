@@ -1,0 +1,3 @@
+azure:
+    prometheusWorkspaceEndpoint: https://liferay-example.eastus.prometheus.monitor.azure.com
+cloudProvider: azure

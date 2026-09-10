@@ -1,0 +1,29 @@
+suite: Grafana configuration
+templates:
+    -   charts/grafana/templates/configmap.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: data["grafana.ini"]
+                    pattern: 'azure_auth_enabled = true'
+            -   matchRegex:
+                    path: data["grafana.ini"]
+                    pattern: 'workload_identity_enabled = true'
+            -   matchRegex:
+                    path: data["grafana.ini"]
+                    pattern: 'workload_identity_token_file = /var/run/secrets/azure/tokens/azure-identity-token'
+        it: Enables Azure authentication so the plugin attaches a bearer token
+    -   asserts:
+            -   matchRegex:
+                    path: data["grafana.ini"]
+                    pattern: 'workload_identity_client_id = 11111111-1111-1111-1111-111111111111'
+            -   matchRegex:
+                    path: data["grafana.ini"]
+                    pattern: 'workload_identity_tenant_id = 22222222-2222-2222-2222-222222222222'
+        it: Forwards the workload identity to the out of process plugin
+        set:
+            grafana:
+                grafana.ini:
+                    azure:
+                        workload_identity_client_id: 11111111-1111-1111-1111-111111111111
+                        workload_identity_tenant_id: 22222222-2222-2222-2222-222222222222
