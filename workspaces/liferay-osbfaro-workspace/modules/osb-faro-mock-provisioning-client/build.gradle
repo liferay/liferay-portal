@@ -1,5 +1,5 @@
 dependencies {
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileOnly project(":modules:osb-faro-api")
 	compileOnly project(":modules:osb-faro-provisioning-client")

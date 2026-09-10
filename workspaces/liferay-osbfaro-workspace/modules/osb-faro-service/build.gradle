@@ -4,14 +4,14 @@ buildService {
 }
 
 dependencies {
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
 	compileOnly project(":modules:osb-faro-api")
 	compileOnly project(":modules:osb-faro-provisioning-client")
 	testImplementation group: "com.liferay", name: "jodd.util", version: "6.0.1.LIFERAY-PATCHED-2"
 	testImplementation group: "com.liferay", name: "org.apache.commons.configuration", version: "1.10.LIFERAY-PATCHED-2"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 
 	testImplementation(group: "easyconf", name: "easyconf", version: "0.9.5") {
 		exclude group: "struts"

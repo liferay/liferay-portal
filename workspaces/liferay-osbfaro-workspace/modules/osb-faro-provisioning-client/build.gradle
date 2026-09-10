@@ -1,6 +1,6 @@
 dependencies {
 	compileInclude group: "com.liferay.osb.koroneiki", name: "com.liferay.osb.koroneiki.rest.client", version: "latest.release"
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	compileOnly project(":modules:osb-faro-api")
 }

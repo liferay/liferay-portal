@@ -3,6 +3,6 @@ buildService {
 }
 
 dependencies {
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly project(":modules:osb-faro-contacts-api")
 }

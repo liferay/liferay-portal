@@ -19,7 +19,7 @@ dependencies {
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.9.JAKARTA-LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.9.JAKARTA-LIFERAY-PATCHED-1"
-	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "org.apache.commons", name: "commons-collections4", version: "4.5.0"
@@ -36,7 +36,7 @@ dependencies {
 	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.9.JAKARTA-LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
-	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 
 	testImplementation(group: "easyconf", name: "easyconf", version: "0.9.5") {
 		exclude group: "struts"

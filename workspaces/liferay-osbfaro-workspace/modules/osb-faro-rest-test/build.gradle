@@ -4,7 +4,7 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	testIntegrationImplementation group: "com.liferay", name: "com.liferay.arquillian.extension.junit.bridge", version: "1.0.21"
-	testIntegrationImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
+	testIntegrationImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	testIntegrationImplementation group: "junit", name: "junit", version: "4.13.1"
 	testIntegrationImplementation project(":modules:osb-faro-rest-api")
 	testIntegrationImplementation project(":modules:osb-faro-rest-client")
