@@ -1015,6 +1015,72 @@ test.describe('Profiles - Tools tab', () => {
 	);
 
 	test(
+		'Opens the Restrict Fields modal for a tool and closes it',
+		{tag: '@LPD-104967'},
+		async ({apiHelpers, profilesPage}) => {
+			const name = profileName();
+			const profile = await createProfile(apiHelpers, name);
+			await createProfileTool(
+				apiHelpers,
+				profile.externalReferenceCode,
+				'getToolSetsPage'
+			);
+
+			await profilesPage.gotoToolsTab(name);
+
+			await profilesPage.clickAction(
+				'getToolSetsPage',
+				'Restrict Fields'
+			);
+
+			await expect(
+				profilesPage.dialog.getByText(
+					'Restrict Fields: getToolSetsPage'
+				)
+			).toBeVisible();
+			await expect(
+				profilesPage.dialog.getByRole('button', {name: 'Save'})
+			).toBeVisible();
+
+			await profilesPage.dialog
+				.getByRole('button', {name: 'Cancel'})
+				.click();
+
+			await expect(profilesPage.dialog).toBeHidden();
+			await expect(profilesPage.row('getToolSetsPage')).toBeVisible();
+		}
+	);
+
+	test(
+		'Shows the item fields of a tool that returns a page',
+		{tag: '@LPD-104967'},
+		async ({apiHelpers, profilesPage}) => {
+			const name = profileName();
+			const profile = await createProfile(apiHelpers, name);
+			await createProfileTool(
+				apiHelpers,
+				profile.externalReferenceCode,
+				'getToolSetsPage'
+			);
+
+			await profilesPage.gotoToolsTab(name);
+
+			await profilesPage.clickAction(
+				'getToolSetsPage',
+				'Restrict Fields'
+			);
+
+			await expect(
+				profilesPage.fieldTreeItem('description')
+			).toBeVisible();
+			await expect(profilesPage.fieldTreeItem('name')).toBeVisible();
+
+			await expect(profilesPage.fieldTreeItem('items')).toBeHidden();
+			await expect(profilesPage.fieldTreeItem('totalCount')).toBeHidden();
+		}
+	);
+
+	test(
 		'Searches the tools table by tool name',
 		{tag: '@LPD-103214'},
 		async ({apiHelpers, profilesPage}) => {

@@ -94,6 +94,10 @@ export class ProfilesPage extends FDSTablePage {
 		return this.page.getByRole('link', {exact: true, name: 'Data Masks'});
 	}
 
+	fieldTreeItem(name: string): Locator {
+		return this.treeItem(name);
+	}
+
 	get formHeading(): Locator {
 		return this.page.locator('.control-menu-level-1-heading');
 	}
