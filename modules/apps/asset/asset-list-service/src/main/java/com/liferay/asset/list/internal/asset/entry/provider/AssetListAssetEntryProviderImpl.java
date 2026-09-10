@@ -248,9 +248,11 @@ public class AssetListAssetEntryProviderImpl
 			String filtersJSON = unicodeProperties.getProperty("filters");
 
 			if (Validator.isNotNull(filtersJSON)) {
+				JSONArray filtersJSONArray = null;
+
 				try {
-					assetEntryQuery.setAttribute(
-						"filters", _jsonFactory.createJSONArray(filtersJSON));
+					filtersJSONArray = _jsonFactory.createJSONArray(
+						filtersJSON);
 				}
 				catch (Exception exception) {
 					if (_log.isDebugEnabled()) {
@@ -258,6 +260,13 @@ public class AssetListAssetEntryProviderImpl
 							"Unable to parse filters: " + filtersJSON,
 							exception);
 					}
+				}
+
+				if (filtersJSONArray != null) {
+					assetEntryQuery.setAttribute("filters", filtersJSONArray);
+
+					_setAssetEntryQueryLegacyFilters(
+						assetEntryQuery, filtersJSONArray);
 				}
 			}
 		}
@@ -1020,6 +1029,74 @@ public class AssetListAssetEntryProviderImpl
 		}
 
 		return groupIds;
+	}
+
+	private void _setAssetEntryQueryLegacyFilters(
+		AssetEntryQuery assetEntryQuery, JSONArray filtersJSONArray) {
+
+		long[] groupIds = _getReferencedModelsGroupIds(
+			assetEntryQuery.getGroupIds());
+
+		for (String assetTagName :
+				AssetListFiltersUtil.getAssetTagNames(
+					true, true, filtersJSONArray)) {
+
+			assetEntryQuery.addAllTagIdsArray(
+				_assetTagLocalService.getTagIds(groupIds, assetTagName));
+		}
+
+		for (String assetTagName :
+				AssetListFiltersUtil.getAssetTagNames(
+					true, false, filtersJSONArray)) {
+
+			assetEntryQuery.addNotAllTagIdsArray(
+				_assetTagLocalService.getTagIds(groupIds, assetTagName));
+		}
+
+		assetEntryQuery.setAllCategoryIds(
+			ArrayUtil.append(
+				assetEntryQuery.getAllCategoryIds(),
+				_filterAssetCategoryIds(
+					AssetListFiltersUtil.getAssetCategoryIds(
+						true, true, filtersJSONArray))));
+		assetEntryQuery.setAllKeywords(
+			ArrayUtil.append(
+				assetEntryQuery.getAllKeywords(),
+				AssetListFiltersUtil.getKeywords(true, filtersJSONArray)));
+		assetEntryQuery.setAnyCategoryIds(
+			ArrayUtil.append(
+				assetEntryQuery.getAnyCategoryIds(),
+				_filterAssetCategoryIds(
+					AssetListFiltersUtil.getAssetCategoryIds(
+						false, true, filtersJSONArray))));
+		assetEntryQuery.setAnyTagIds(
+			ArrayUtil.append(
+				assetEntryQuery.getAnyTagIds(),
+				_assetTagLocalService.getTagIds(
+					groupIds,
+					AssetListFiltersUtil.getAssetTagNames(
+						false, true, filtersJSONArray))));
+		assetEntryQuery.setNotAllCategoryIds(
+			ArrayUtil.append(
+				assetEntryQuery.getNotAllCategoryIds(),
+				AssetListFiltersUtil.getAssetCategoryIds(
+					true, false, filtersJSONArray)));
+		assetEntryQuery.setNotAnyCategoryIds(
+			ArrayUtil.append(
+				assetEntryQuery.getNotAnyCategoryIds(),
+				AssetListFiltersUtil.getAssetCategoryIds(
+					false, false, filtersJSONArray)));
+		assetEntryQuery.setNotAnyKeywords(
+			ArrayUtil.append(
+				assetEntryQuery.getNotAnyKeywords(),
+				AssetListFiltersUtil.getKeywords(false, filtersJSONArray)));
+		assetEntryQuery.setNotAnyTagIds(
+			ArrayUtil.append(
+				assetEntryQuery.getNotAnyTagIds(),
+				_assetTagLocalService.getTagIds(
+					groupIds,
+					AssetListFiltersUtil.getAssetTagNames(
+						false, false, filtersJSONArray))));
 	}
 
 	private void _setCategoriesAndTagsAndKeywords(
