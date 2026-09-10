@@ -356,6 +356,27 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 	@Override
 	@Test
+	public void testGetAccountUserAccountsPage() throws Exception {
+		super.testGetAccountUserAccountsPage();
+
+		_setUpTestUserAccountResource();
+
+		HttpInvoker.HttpResponse httpResponse =
+			_regularUserAccountResource.getAccountUserAccountsPageHttpResponse(
+				RandomTestUtil.randomLong(), null, null, null, null);
+
+		Assert.assertEquals(404, httpResponse.getStatusCode());
+		Assert.assertEquals(
+			JSONUtil.put(
+				"status", "NOT_FOUND"
+			).toString(),
+			JSONFactoryUtil.createJSONObject(
+				httpResponse.getContent()
+			).toString());
+	}
+
+	@Override
+	@Test
 	public void testGetSiteAccountUserAccountSelected() throws Exception {
 		AccountEntry accountEntry1 = _addAccountEntry();
 		User user = UserTestUtil.addUser();

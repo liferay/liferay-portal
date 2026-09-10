@@ -5,11 +5,15 @@
 
 package com.liferay.portal.vulcan.jaxrs.exception.mapper;
 
+import com.liferay.portal.kernel.exception.NoSuchModelException;
+
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Providers;
 
 import java.util.List;
 
@@ -21,6 +25,18 @@ public abstract class BaseExceptionMapper<T extends Throwable>
 
 	@Override
 	public Response toResponse(T exception) {
+		NoSuchModelException noSuchModelException = _getNoSuchModelException(
+			exception);
+
+		if (noSuchModelException != null) {
+			ExceptionMapper<NoSuchModelException> exceptionMapper =
+				_providers.getExceptionMapper(
+					(Class<NoSuchModelException>)
+						noSuchModelException.getClass());
+
+			return exceptionMapper.toResponse(noSuchModelException);
+		}
+
 		Problem problem = getProblem(exception);
 
 		if (problem.getThrowable() == null) {
@@ -60,5 +76,26 @@ public abstract class BaseExceptionMapper<T extends Throwable>
 
 	@Context
 	protected HttpHeaders httpHeaders;
+
+	private NoSuchModelException _getNoSuchModelException(Throwable throwable) {
+		if (throwable instanceof WebApplicationException) {
+			return null;
+		}
+
+		throwable = throwable.getCause();
+
+		while (throwable != null) {
+			if (throwable instanceof NoSuchModelException) {
+				return (NoSuchModelException)throwable;
+			}
+
+			throwable = throwable.getCause();
+		}
+
+		return null;
+	}
+
+	@Context
+	private Providers _providers;
 
 }
