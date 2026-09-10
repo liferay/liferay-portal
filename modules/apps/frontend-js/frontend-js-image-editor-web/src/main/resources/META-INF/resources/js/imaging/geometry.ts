@@ -58,7 +58,7 @@ export function imageTransform(
 	return [mirror, quarter].filter(Boolean).join(' ') || undefined;
 }
 
-export function rotationTransform(
+function rotationTransform(
 	state: Pick<EditState, 'rotation' | 'sourceHeight' | 'sourceWidth'>
 ): string | undefined {
 	switch (state.rotation) {

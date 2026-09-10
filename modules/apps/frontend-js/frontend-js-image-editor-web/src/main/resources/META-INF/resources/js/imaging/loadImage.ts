@@ -7,7 +7,7 @@ export const MAX_IMAGE_BYTES = 25 * 1024 * 1024;
 
 export const MAX_IMAGE_PIXELS = 36_000_000;
 
-export const PREVIEW_MAX_SIZE = 2048;
+const PREVIEW_MAX_SIZE = 2048;
 
 export class ImageEditorLoadError extends Error {
 	readonly reason: ImageLoadErrorReason;

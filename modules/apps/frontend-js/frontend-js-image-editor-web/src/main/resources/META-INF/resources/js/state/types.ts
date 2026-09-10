@@ -16,12 +16,12 @@ export interface EditState {
 	sourceWidth: number;
 }
 
-export interface HistoryEntry {
+interface HistoryEntry {
 	label: string;
 	state: EditState;
 }
 
-export type Rotation = 0 | 90 | 180 | 270;
+type Rotation = 0 | 90 | 180 | 270;
 
 export function rotatedSize(state: EditState): {
 	height: number;

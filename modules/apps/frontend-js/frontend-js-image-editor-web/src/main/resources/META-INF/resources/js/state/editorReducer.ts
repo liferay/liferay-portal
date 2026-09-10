@@ -11,7 +11,7 @@ export type EditorAction =
 	| {type: 'rotate-90'}
 	| {type: 'undo'};
 
-export const HISTORY_LIMIT = 100;
+const HISTORY_LIMIT = 100;
 
 export function editorReducer(
 	history: EditorHistory,
