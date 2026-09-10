@@ -15,6 +15,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -28,58 +29,40 @@ public class LayoutPageTemplateDepotRolePermissionsContributor
 
 	@Override
 	public List<DepotRolePermission> getDepotRolePermissions() {
-		return List.of(
+		List<DepotRolePermission> depotRolePermissions = new ArrayList<>();
+
+		_addDepotRolePermissions(
+			depotRolePermissions,
+			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
+		_addDepotRolePermissions(
+			depotRolePermissions,
+			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
+		_addDepotRolePermissions(
+			depotRolePermissions, DepotRolesConstants.DESIGN_LIBRARY_OWNER);
+
+		return depotRolePermissions;
+	}
+
+	private void _addDepotRolePermissions(
+		List<DepotRolePermission> depotRolePermissions, String roleName) {
+
+		depotRolePermissions.add(
 			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				LayoutPageTemplateConstants.RESOURCE_NAME,
+				roleName, Layout.class.getName(), ActionKeys.UPDATE));
+		depotRolePermissions.add(
+			new DepotRolePermission(
+				roleName, LayoutPageTemplateCollection.class.getName(),
+				ActionKeys.DELETE, ActionKeys.UPDATE));
+		depotRolePermissions.add(
+			new DepotRolePermission(
+				roleName, LayoutPageTemplateEntry.class.getName(),
+				ActionKeys.DELETE, ActionKeys.UPDATE));
+		depotRolePermissions.add(
+			new DepotRolePermission(
+				roleName, LayoutPageTemplateConstants.RESOURCE_NAME,
 				LayoutPageTemplateActionKeys.
 					ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION,
-				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				LayoutPageTemplateCollection.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				LayoutPageTemplateEntry.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				Layout.class.getName(), ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				LayoutPageTemplateConstants.RESOURCE_NAME,
-				LayoutPageTemplateActionKeys.
-					ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION,
-				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				LayoutPageTemplateCollection.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				LayoutPageTemplateEntry.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				Layout.class.getName(), ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
-				LayoutPageTemplateConstants.RESOURCE_NAME,
-				LayoutPageTemplateActionKeys.
-					ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION,
-				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
-				LayoutPageTemplateCollection.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
-				LayoutPageTemplateEntry.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE),
-			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
-				Layout.class.getName(), ActionKeys.UPDATE));
+				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY));
 	}
 
 }
