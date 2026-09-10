@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.scheduler.SchedulerJobConfiguration;
 import com.liferay.portal.kernel.scheduler.TimeUnit;
 import com.liferay.portal.kernel.scheduler.TriggerConfiguration;
 import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.search.spi.reindexer.BulkReindexer;
 import com.liferay.segments.configuration.SegmentsConfiguration;
@@ -28,6 +27,7 @@ import com.liferay.segments.provider.SegmentsEntryProviderRegistry;
 import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsEntryRelLocalService;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -60,23 +60,33 @@ public class SegmentsEntryRelIndexerSchedulerJobConfiguration
 					dynamicQuery.add(activeProperty.eq(true));
 				});
 
-			Set<Long> classPKs = new HashSet<>();
+			Map<Long, Set<Long>> classPKsMap = new HashMap<>();
 
 			actionableDynamicQuery.setPerformActionMethod(
 				(SegmentsEntry segmentsEntry) -> _reindex(
-					classPKs, segmentsEntry));
+					classPKsMap, segmentsEntry));
 
 			actionableDynamicQuery.performActions();
 
-			if (_log.isDebugEnabled()) {
-				_log.debug("Start indexing " + classPKs.size() + " users");
-			}
+			for (Map.Entry<Long, Set<Long>> entry : classPKsMap.entrySet()) {
+				Set<Long> classPKs = entry.getValue();
+				long companyId = entry.getKey();
 
-			_bulkReindexer.reindex(CompanyThreadLocal.getCompanyId(), classPKs);
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							"Start indexing ", classPKs.size(),
+							" users of company ", companyId));
+				}
 
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					classPKs.size() + " users were indexed successfully");
+				_bulkReindexer.reindex(companyId, classPKs);
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(
+						StringBundler.concat(
+							classPKs.size(), " users of company ", companyId,
+							" were indexed successfully"));
+				}
 			}
 		};
 	}
@@ -101,7 +111,9 @@ public class SegmentsEntryRelIndexerSchedulerJobConfiguration
 			_segmentsEntryProviderRegistry, _segmentsEntryRelLocalService);
 	}
 
-	private void _reindex(Set<Long> classPKs, SegmentsEntry segmentsEntry) {
+	private void _reindex(
+		Map<Long, Set<Long>> classPKsMap, SegmentsEntry segmentsEntry) {
+
 		try {
 			Set<Long> newClassPKs = _indexerHelper.getNewClassPKs(
 				segmentsEntry.getSegmentsEntryId());
@@ -112,6 +124,9 @@ public class SegmentsEntryRelIndexerSchedulerJobConfiguration
 			Set<Long> indexableClassPKs = _indexerHelper.getIndexableClassPKs(
 				segmentsEntry.getCompanyId(), newClassPKs,
 				segmentsEntry.getSegmentsEntryId());
+
+			Set<Long> classPKs = classPKsMap.computeIfAbsent(
+				segmentsEntry.getCompanyId(), companyId -> new HashSet<>());
 
 			classPKs.addAll(indexableClassPKs);
 
