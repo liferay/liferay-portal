@@ -9,7 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.action.ImportTaskPostAction;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
-import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -52,10 +52,11 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 	private void _testRun(String externalReferenceCode) throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					externalReferenceCode, companyId);
+		com.liferay.object.model.ObjectDefinition
+			serviceBuilderObjectDefinition =
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						externalReferenceCode, companyId);
 
 		Role guestRole = _roleLocalService.getRole(
 			companyId, RoleConstants.GUEST);
@@ -63,19 +64,19 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 			companyId, RoleConstants.USER);
 
 		_resourcePermissionLocalService.removeResourcePermission(
-			companyId, objectDefinition.getClassName(),
+			companyId, serviceBuilderObjectDefinition.getClassName(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			guestRole.getRoleId(), ActionKeys.VIEW);
 		_resourcePermissionLocalService.removeResourcePermission(
-			companyId, objectDefinition.getClassName(),
+			companyId, serviceBuilderObjectDefinition.getClassName(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			userRole.getRoleId(), ActionKeys.VIEW);
 		_resourcePermissionLocalService.removeResourcePermission(
-			companyId, objectDefinition.getPortletId(),
+			companyId, serviceBuilderObjectDefinition.getPortletId(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			guestRole.getRoleId(), ActionKeys.VIEW);
 		_resourcePermissionLocalService.removeResourcePermission(
-			companyId, objectDefinition.getPortletId(),
+			companyId, serviceBuilderObjectDefinition.getPortletId(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			userRole.getRoleId(), ActionKeys.VIEW);
 
@@ -85,43 +86,41 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 
 		batchEngineImportTask.setCompanyId(companyId);
 
-		com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition
-			restObjectDefinition =
-				new com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition();
+		ObjectDefinition objectDefinition = new ObjectDefinition();
 
-		restObjectDefinition.setExternalReferenceCode(externalReferenceCode);
+		objectDefinition.setExternalReferenceCode(externalReferenceCode);
 
 		_importTaskPostAction.run(
-			batchEngineImportTask, null, null, null, restObjectDefinition);
+			batchEngineImportTask, null, null, null, objectDefinition);
 
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				companyId, objectDefinition.getClassName(),
+				companyId, serviceBuilderObjectDefinition.getClassName(),
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				guestRole.getRoleId(), ActionKeys.VIEW));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				companyId, objectDefinition.getClassName(),
+				companyId, serviceBuilderObjectDefinition.getClassName(),
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				userRole.getRoleId(), ActionKeys.VIEW));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				companyId, objectDefinition.getPortletId(),
+				companyId, serviceBuilderObjectDefinition.getPortletId(),
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				guestRole.getRoleId(), ActionKeys.ADD_TO_PAGE));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				companyId, objectDefinition.getPortletId(),
+				companyId, serviceBuilderObjectDefinition.getPortletId(),
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				guestRole.getRoleId(), ActionKeys.VIEW));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				companyId, objectDefinition.getPortletId(),
+				companyId, serviceBuilderObjectDefinition.getPortletId(),
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				userRole.getRoleId(), ActionKeys.ADD_TO_PAGE));
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
-				companyId, objectDefinition.getPortletId(),
+				companyId, serviceBuilderObjectDefinition.getPortletId(),
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				userRole.getRoleId(), ActionKeys.VIEW));
 	}
