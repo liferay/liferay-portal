@@ -140,10 +140,21 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 		Set<String> bundleSymbolicNames =
 			_upgradeExecutor.getBundleSymbolicNames();
 
-		StringBundler sb = new StringBundler(2 * bundleSymbolicNames.size());
+		Set<String> failedBundleSymbolicNames =
+			_upgradeExecutor.getFailedBundleSymbolicNames();
+
+		StringBundler sb = new StringBundler(4 * bundleSymbolicNames.size());
 
 		for (String bundleSymbolicName : bundleSymbolicNames) {
-			sb.append(list(bundleSymbolicName));
+			if (failedBundleSymbolicNames.contains(bundleSymbolicName)) {
+				sb.append("The upgrade of module ");
+				sb.append(bundleSymbolicName);
+				sb.append(" failed");
+			}
+			else {
+				sb.append(list(bundleSymbolicName));
+			}
+
 			sb.append(StringPool.NEW_LINE);
 		}
 
@@ -187,11 +198,20 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 		Set<String> upgradeThrewExceptionBundleSymbolicNames) {
 
 		while (true) {
+			Set<String> bundleSymbolicNames = new HashSet<>(
+				_upgradeExecutor.getBundleSymbolicNames());
+
+			Set<String> failedBundleSymbolicNames =
+				_upgradeExecutor.getFailedBundleSymbolicNames();
+
+			bundleSymbolicNames.removeAll(failedBundleSymbolicNames);
+
 			Set<String> upgradableBundleSymbolicNames =
 				ReleaseManagerUtil.getUpgradableBundleSymbolicNames(
-					_upgradeExecutor.getBundleSymbolicNames(),
-					_releaseLocalService, _upgradeExecutor);
+					bundleSymbolicNames, _releaseLocalService,
+					_upgradeExecutor);
 
+			upgradableBundleSymbolicNames.addAll(failedBundleSymbolicNames);
 			upgradableBundleSymbolicNames.removeAll(
 				upgradeThrewExceptionBundleSymbolicNames);
 
