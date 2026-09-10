@@ -732,6 +732,63 @@ public class PermissionCheckerTest {
 	}
 
 	@Test
+	public void testHasPermissionWithLiveGroup() throws Exception {
+		_user = UserTestUtil.addUser();
+
+		_role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.setRoleUsers(
+			_role.getRoleId(), new long[] {_user.getUserId()});
+
+		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
+			_user);
+
+		Group liveGroup = GroupTestUtil.addGroup();
+
+		_groups.add(liveGroup);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_user.getCompanyId(), Group.class.getName(),
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(liveGroup.getGroupId()), _role.getRoleId(),
+			new String[] {ActionKeys.UPDATE});
+
+		_group.setLiveGroupId(liveGroup.getGroupId());
+
+		Assert.assertTrue(
+			permissionChecker.hasPermission(
+				_group, Group.class.getName(),
+				String.valueOf(_group.getGroupId()), ActionKeys.UPDATE));
+	}
+
+	@Test
+	public void testHasPermissionWithMissingLiveGroup() throws Exception {
+		_user = UserTestUtil.addUser();
+
+		_role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.setRoleUsers(
+			_role.getRoleId(), new long[] {_user.getUserId()});
+
+		PermissionChecker permissionChecker = _permissionCheckerFactory.create(
+			_user);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_user.getCompanyId(), Group.class.getName(),
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			_role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+		_group.setLiveGroupId(RandomTestUtil.randomLong());
+
+		Assert.assertTrue(
+			permissionChecker.hasPermission(
+				_group, Group.class.getName(),
+				String.valueOf(_group.getGroupId()), ActionKeys.UPDATE));
+	}
+
+	@Test
 	public void testHasPermissionWithMissingResourcePermissions()
 		throws Exception {
 
