@@ -86,11 +86,9 @@ public abstract class BaseSegmentsEntryProvider
 				SegmentsEntryRel::getClassPK);
 		}
 
-		return TransformUtil.transformToLongArray(
-			userODataRetriever.getResults(
-				segmentsEntry.getCompanyId(), filterString,
-				LocaleUtil.getDefault(), start, end),
-			baseModel -> (Long)baseModel.getPrimaryKeyObj());
+		return userODataRetriever.getResultPrimaryKeys(
+			segmentsEntry.getCompanyId(), filterString, LocaleUtil.getDefault(),
+			start, end);
 	}
 
 	@Override
