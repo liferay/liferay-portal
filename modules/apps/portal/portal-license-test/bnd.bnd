@@ -8,6 +8,8 @@ Import-Package:\
 	\
 	!jdk.internal.misc.*,\
 	\
+	!net.bytebuddy.jar.asmjdkbridge,\
+	\
 	*
 -fixupmessages: Classes found in the wrong directory: ...;is:=ignore
 -includeresource:\
