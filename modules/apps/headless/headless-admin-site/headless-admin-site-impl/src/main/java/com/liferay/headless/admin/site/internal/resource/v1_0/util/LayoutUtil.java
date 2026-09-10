@@ -705,20 +705,28 @@ public class LayoutUtil {
 			return Collections.emptyMap();
 		}
 
-		User user = UserLocalServiceUtil.fetchUser(userId);
+		String lastImportUserName =
+			ExportImportThreadLocal.getLastImportUserName();
+		String lastImportUserUuid =
+			ExportImportThreadLocal.getLastImportUserUuid();
 
-		if (user == null) {
-			return HashMapBuilder.put(
-				"last-import-date", String.valueOf(System.currentTimeMillis())
-			).build();
+		if (Validator.isNull(lastImportUserName) ||
+			Validator.isNull(lastImportUserUuid)) {
+
+			User user = UserLocalServiceUtil.fetchUser(userId);
+
+			if (user != null) {
+				lastImportUserName = user.getFullName();
+				lastImportUserUuid = user.getUuid();
+			}
 		}
 
 		return HashMapBuilder.put(
 			"last-import-date", String.valueOf(System.currentTimeMillis())
 		).put(
-			"last-import-user-name", user::getFullName
+			"last-import-user-name", lastImportUserName
 		).put(
-			"last-import-user-uuid", user::getUuid
+			"last-import-user-uuid", lastImportUserUuid
 		).build();
 	}
 
