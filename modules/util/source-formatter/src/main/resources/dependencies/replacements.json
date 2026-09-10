@@ -5892,18 +5892,6 @@
 		"to": "updateStructure(StringPool.BLANK, param#0#, param#1#, param#6#.getScopeGroupId(), param#2#, DDMStructureLocalServiceUtil.getStructure(param#1#).getClassNameId(), DDMStructureLocalServiceUtil.getStructure(param#1#).getStructureKey(), param#3#, param#4#, param#5#, param#6#)"
 	},
 	{
-		"classNames": [
-			"Language",
-			"LanguageUtil"
-		],
-		"from": "get(PageContext paramName, String paramName)",
-		"hasMessage": true,
-		"issueKey": "LPD-70233",
-		"validExtensions": [
-			"java"
-		]
-	},
-	{
 		"from": "regex:(?<class>Language(?:Util)?)\\.(?<method>format|get)\\(pageContext,",
 		"issueKey": "LPD-70233",
 		"to": "${class}.${method}(request,",
@@ -6332,6 +6320,15 @@
 			"java",
 			"jsp"
 		]
+	},
+	{
+		"classNames": [
+			"Language",
+			"LanguageUtil"
+		],
+		"from": "get(PageContext paramName, String paramName)",
+		"hasMessage": true,
+		"issueKey": "LPD-105365"
 	},
 	{
 		"from": "regex:MultiVMPoolUtil\\s*.\\s*getPortalCache\\(\\s*(?<prefixMethodName>[\\s\\S]*?)\\)",
