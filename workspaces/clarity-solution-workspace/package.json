@@ -17,7 +17,7 @@
 			"client-extensions/clarity-solution-custom-element-distributors-map",
 			"client-extensions/clarity-solution-custom-element-distributors-table",
 			"client-extensions/clarity-solution-commerce-checkout-step",
-			"client-extensions/clarity-solution-js-import-maps-entry"
+			"client-extensions/clarity-solution-js-import-maps-entry-distributor-details-service"
 		]
 	}
 }
