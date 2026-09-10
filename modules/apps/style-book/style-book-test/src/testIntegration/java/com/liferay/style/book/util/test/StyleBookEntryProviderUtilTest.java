@@ -129,7 +129,7 @@ public class StyleBookEntryProviderUtilTest {
 
 		Group childGroup = GroupTestUtil.addGroup(parentGroup.getGroupId());
 
-		_groups.add(childGroup);
+		_groups.add(0, childGroup);
 
 		List<StyleBookEntry> styleBookEntries =
 			StyleBookEntryProviderUtil.getStyleBookEntries(
