@@ -133,10 +133,10 @@ public class CPDefinitionSystemObjectDefinitionManager
 	public Map<Serializable, String> getBaseModelExternalReferenceCodes(
 		Set<Serializable> primaryKeys) {
 
+		Map<Serializable, String> externalReferenceCodes = new HashMap<>();
+
 		Map<Serializable, CProduct> cProducts =
 			_cProductLocalService.fetchPersistedModels(primaryKeys);
-
-		Map<Serializable, String> externalReferenceCodes = new HashMap<>();
 
 		for (Serializable primaryKey : primaryKeys) {
 			CProduct cProduct = cProducts.get(primaryKey);

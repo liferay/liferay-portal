@@ -83,14 +83,14 @@ public interface SystemObjectDefinitionManager {
 	public default Map<Serializable, String> getBaseModelExternalReferenceCodes(
 		Set<Serializable> primaryKeys) {
 
+		Map<Serializable, String> externalReferenceCodes = new HashMap<>();
+
 		PersistedModelLocalService persistedModelLocalService =
 			PersistedModelLocalServiceRegistryUtil.
 				getPersistedModelLocalService(getModelClassName());
 
 		Map<Serializable, PersistedModel> persistedModels =
 			persistedModelLocalService.fetchPersistedModels(primaryKeys);
-
-		Map<Serializable, String> externalReferenceCodes = new HashMap<>();
 
 		for (Map.Entry<Serializable, PersistedModel> entry :
 				persistedModels.entrySet()) {
