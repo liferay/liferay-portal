@@ -686,9 +686,16 @@ definition {
 					key_fieldFieldLabel = ${webContentRichTextFieldLabel},
 					locator1 = "WCEditWebContent#SOURCE_BUTTON");
 
-				Type.typeCodeMirrorEditorNoError(
-					locator1 = "CKEditor#BODY_FIELD_SOURCE_ON",
-					value1 = ${webContentRichText});
+				if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_SOURCE_ON")) {
+					Type.typeCodeMirrorEditorNoError(
+						locator1 = "CKEditor#BODY_FIELD_SOURCE_ON",
+						value1 = ${webContentRichText});
+				}
+				else {
+					Type(
+						locator1 = "CKEditor#BODY_FIELD_SOURCE_TEXTAREA",
+						value1 = ${webContentRichText});
+				}
 
 				Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
 			}

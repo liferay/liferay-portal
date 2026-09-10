@@ -215,7 +215,7 @@
 </tr>
 <tr>
 	<td>SOURCE_BUTTON</td>
-	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div//a[contains(@class,'cke_button') and contains(@class,'source')]</td>
+	<td>//label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div//a[contains(@class,'cke_button') and contains(@class,'source')] | //label[normalize-space(text())='${key_fieldFieldLabel}']//following-sibling::div//button[contains(@class,'ck-source-editing-button')]</td>
 	<td></td>
 </tr>
 <tr>
