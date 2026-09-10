@@ -199,6 +199,15 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 		onCampaignPageChange: handleCampaignPageChange,
 	} = campaignTouches;
 
+	const individualUrls = useMemo(
+		() =>
+			buildTouchIndividualUrls(campaignTouches.days, {
+				channelId,
+				groupId,
+			}),
+		[campaignTouches.days, channelId, groupId]
+	);
+
 	const handleChangeSelection = (index: number | null) => {
 		resetPage();
 		onPointSelect(index ?? undefined);
@@ -253,10 +262,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 				/>
 			}
 			footerLabel={activityHistory?.length ? date : ''}
-			individualUrls={buildTouchIndividualUrls(campaignTouches.days, {
-				channelId,
-				groupId,
-			})}
+			individualUrls={individualUrls}
 			interval={interval}
 			noResultsRenderer={
 				<ActivityStreamNoResults

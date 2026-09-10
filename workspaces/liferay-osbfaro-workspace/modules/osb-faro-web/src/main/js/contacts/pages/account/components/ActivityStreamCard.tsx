@@ -213,6 +213,15 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 		onCampaignPageChange: handleCampaignPageChange,
 	} = campaignTouches;
 
+	const individualUrls = useMemo(
+		() =>
+			buildTouchIndividualUrls(campaignTouches.days, {
+				channelId,
+				groupId,
+			}),
+		[campaignTouches.days, channelId, groupId]
+	);
+
 	const handleQuerySubmit = (value: string) => {
 		setKeywords(value);
 		setSearchValue(value);
@@ -289,10 +298,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 				/>
 			}
 			footerLabel={dateRangeLabel}
-			individualUrls={buildTouchIndividualUrls(campaignTouches.days, {
-				channelId,
-				groupId,
-			})}
+			individualUrls={individualUrls}
 			interval={interval}
 			noResultsRenderer={
 				<ActivityStreamNoResults

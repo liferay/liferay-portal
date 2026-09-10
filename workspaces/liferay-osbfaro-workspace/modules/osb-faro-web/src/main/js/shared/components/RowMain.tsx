@@ -4,7 +4,7 @@ import {ClayButtonWithIcon} from '@clayui/button';
 
 const RowMain: FC<{
 	children: React.ReactNode;
-	expanded: boolean;
+	expanded?: boolean;
 	infoButton?: boolean;
 	onToggle: () => void;
 }> = ({children, expanded, infoButton, onToggle}) =>

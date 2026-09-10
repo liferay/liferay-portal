@@ -327,11 +327,7 @@ const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 				{expanded}
 			)}
 		>
-			<RowMain
-				expanded={expanded}
-				infoButton
-				onToggle={() => setExpanded(!expanded)}
-			>
+			<RowMain infoButton onToggle={() => setExpanded(!expanded)}>
 				<div className="row-content flex-fill">
 					<span className="title text-secondary">
 						{sub(Liferay.Language.get('session-x-x'), [
@@ -508,11 +504,7 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 				expanded,
 			})}
 		>
-			<RowMain
-				expanded={expanded}
-				infoButton
-				onToggle={() => setExpanded(!expanded)}
-			>
+			<RowMain infoButton onToggle={() => setExpanded(!expanded)}>
 				<div className="row-content flex-fill">
 					<div className="event-header">
 						<RowTime time={time} timeZoneId={timeZoneId} />

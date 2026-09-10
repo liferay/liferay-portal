@@ -4,7 +4,11 @@ import {DEFAULT_ACTIVITY_MAX} from 'shared/api/activities';
 import getEventDashboardUrl, {
 	EventDashboardContext,
 } from './getEventDashboardUrl';
-import {getCustomDateFormat} from 'shared/util/date';
+import {
+	DEFAULT_DATE_FORMAT,
+	formatUTCDate,
+	getCustomDateFormat,
+} from 'shared/util/date';
 import {getSafeDecodedURIComponent} from './util';
 import {AssetTypes, TimeIntervals} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
@@ -477,7 +481,7 @@ export const groupBy = <T,>(
 };
 
 export const toDayKey = (datetime: Date | string | number): string =>
-	moment.utc(datetime).format('YYYY-MM-DD');
+	formatUTCDate(datetime, DEFAULT_DATE_FORMAT);
 
 export const buildTouchIndividualUrls = (
 	campaignDays: Record<
@@ -556,8 +560,11 @@ export const mergeCampaignDays = (
 			};
 		});
 
-	return [...days, ...campaignOnlyDays].sort(
-		(a, b) => moment.utc(b.date).valueOf() - moment.utc(a.date).valueOf()
+	// Every date here is a UTC ISO string of the same fixed shape, so string
+	// order matches chronological order. ownsDay above already relies on that.
+
+	return [...days, ...campaignOnlyDays].sort((a, b) =>
+		b.date.localeCompare(a.date)
 	);
 };
 

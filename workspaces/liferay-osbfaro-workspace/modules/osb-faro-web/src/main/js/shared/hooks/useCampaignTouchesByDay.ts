@@ -19,6 +19,11 @@ export type CampaignDay = {
 
 export type CampaignDays = Record<string, CampaignDay>;
 
+// Shared so the empty result keeps one identity: a fresh {} on every range or
+// keyword change re-renders the card and re-runs the callers' day formatting.
+
+const EMPTY_DAYS: CampaignDays = {};
+
 type ICampaignTouchesVariables = Omit<
 	CampaignTouchesByDayVariables,
 	'date' | 'page' | 'size'
@@ -57,7 +62,7 @@ export const useCampaignTouchesByDay = (
 
 		setDays(
 			skip || CAMPAIGN_TOUCHES_QUERY_ENABLED
-				? {}
+				? EMPTY_DAYS
 				: mockCampaignTouchesByDay({rangeEnd})
 		);
 	}, [entityId, keywords, rangeEnd, rangeKey, rangeStart, skip]);

@@ -66,6 +66,7 @@
 			font-size: $fontSizeMedium;
 		}
 
+		.campaign-sticker,
 		.event-sticker,
 		.page-sticker {
 			background-color: $white;
@@ -166,14 +167,6 @@
 	.campaign-row {
 		> .row-main {
 			align-items: center;
-		}
-
-		.campaign-sticker {
-			background-color: $white;
-			height: $baseline * 4;
-			margin-bottom: -$baseline;
-			margin-top: -$baseline;
-			width: $baseline * 4;
 		}
 
 		.title {
