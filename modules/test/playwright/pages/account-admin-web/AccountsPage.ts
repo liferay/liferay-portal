@@ -131,14 +131,18 @@ export class AccountsPage {
 
 	async goto(forceReload = true) {
 		if (forceReload) {
-			this.globalMenuPage.goToHome();
+			await this.globalMenuPage.goToHome();
 		}
 
 		await this.globalMenuPage.goToControlPanel('Accounts');
 	}
 
-	async gotoAccountAdmin() {
-		await this.page.goto(`${PORTLET_URLS.accountAdmin}`);
+	async gotoAccountAdmin(doAsUserId?: string) {
+		await this.page.goto(
+			doAsUserId
+				? `${PORTLET_URLS.accountAdmin}&doAsUserId=${doAsUserId}`
+				: PORTLET_URLS.accountAdmin
+		);
 	}
 
 	async gotoAccountChannelDefaults(accountName: string) {

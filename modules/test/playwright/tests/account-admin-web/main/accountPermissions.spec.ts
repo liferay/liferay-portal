@@ -12,7 +12,9 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
 import {AccountOrganizationSelectorPage} from '../../../pages/account-admin-web/AccountOrganizationSelectorPage';
+import {AccountOrganizationsPage} from '../../../pages/account-admin-web/AccountOrganizationsPage';
 import {AccountsPage} from '../../../pages/account-admin-web/AccountsPage';
+import {getDoAsUserId} from '../../../utils/getDoAsUserId';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {nextPage, setItemsPerPage} from '../../../utils/pagination';
@@ -153,13 +155,6 @@ test.describe('Test for Organization Account visibility depending on Permissions
 							'com.liferay.portal.kernel.model.Organization',
 						scope: 1,
 					},
-					{
-						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
-						primaryKey: companyId,
-						resourceName:
-							'com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet',
-						scope: 1,
-					},
 				],
 				roleType: 'organization',
 			});
@@ -168,6 +163,26 @@ test.describe('Test for Organization Account visibility depending on Permissions
 				role.id,
 				user.id,
 				organization1.id
+			);
+
+			const controlPanelRole =
+				await apiHelpers.headlessAdminUser.postRole({
+					name: getRandomString(),
+					rolePermissions: [
+						{
+							actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+							primaryKey: companyId,
+							resourceName:
+								'com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet',
+							scope: 1,
+						},
+					],
+					roleType: 'regular',
+				});
+
+			await apiHelpers.headlessAdminUser.assignUserToRole(
+				controlPanelRole.externalReferenceCode,
+				user.id
 			);
 
 			const account = await apiHelpers.headlessAdminUser.postAccount();
@@ -191,14 +206,25 @@ test.describe('Test for Organization Account visibility depending on Permissions
 
 			const newPage = await pagePromise;
 			accountsPage = new AccountsPage(newPage);
+			accountOrganizationSelectorPage =
+				new AccountOrganizationSelectorPage(newPage);
 
-			await accountsPage.goto();
+			await accountsPage.gotoAccountAdmin(await getDoAsUserId(newPage));
 			await (
 				await accountsPage.accountsTable.cellLink(account.name)
 			).click();
 			await accountsPage.organizationsTab.click();
 			await accountsPage.accountsTable.newButton.click();
 
+			await expect(
+				accountOrganizationSelectorPage.organizationsTable.searchInput
+			).toBeEditable();
+			await expect(
+				accountOrganizationSelectorPage.frame.getByText(
+					organization1.name,
+					{exact: true}
+				)
+			).toBeVisible();
 			await expect(
 				accountOrganizationSelectorPage.frame.getByText(
 					organization2.name,
@@ -263,13 +289,6 @@ test.describe('Test for Organization Account visibility depending on Permissions
 							'com.liferay.portal.kernel.model.Organization',
 						scope: 1,
 					},
-					{
-						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
-						primaryKey: companyId,
-						resourceName:
-							'com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet',
-						scope: 1,
-					},
 				],
 				roleType: 'organization',
 			});
@@ -278,6 +297,26 @@ test.describe('Test for Organization Account visibility depending on Permissions
 				role.id,
 				user.id,
 				organization1.id
+			);
+
+			const controlPanelRole =
+				await apiHelpers.headlessAdminUser.postRole({
+					name: getRandomString(),
+					rolePermissions: [
+						{
+							actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+							primaryKey: companyId,
+							resourceName:
+								'com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet',
+							scope: 1,
+						},
+					],
+					roleType: 'regular',
+				});
+
+			await apiHelpers.headlessAdminUser.assignUserToRole(
+				controlPanelRole.externalReferenceCode,
+				user.id
 			);
 
 			const account = await apiHelpers.headlessAdminUser.postAccount();
@@ -304,7 +343,7 @@ test.describe('Test for Organization Account visibility depending on Permissions
 			accountOrganizationSelectorPage =
 				new AccountOrganizationSelectorPage(newPage);
 
-			await accountsPage.goto();
+			await accountsPage.gotoAccountAdmin(await getDoAsUserId(newPage));
 			await (
 				await accountsPage.accountsTable.cellLink(account.name)
 			).click();
@@ -373,13 +412,6 @@ test.describe('Test for Organization Account visibility depending on Permissions
 							'com.liferay.portal.kernel.model.Organization',
 						scope: 1,
 					},
-					{
-						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
-						primaryKey: companyId,
-						resourceName:
-							'com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet',
-						scope: 1,
-					},
 				],
 				roleType: 'organization',
 			});
@@ -388,6 +420,26 @@ test.describe('Test for Organization Account visibility depending on Permissions
 				role.id,
 				user.id,
 				organization1.id
+			);
+
+			const controlPanelRole =
+				await apiHelpers.headlessAdminUser.postRole({
+					name: getRandomString(),
+					rolePermissions: [
+						{
+							actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+							primaryKey: companyId,
+							resourceName:
+								'com_liferay_account_admin_web_internal_portlet_AccountEntriesAdminPortlet',
+							scope: 1,
+						},
+					],
+					roleType: 'regular',
+				});
+
+			await apiHelpers.headlessAdminUser.assignUserToRole(
+				controlPanelRole.externalReferenceCode,
+				user.id
 			);
 
 			const account = await apiHelpers.headlessAdminUser.postAccount();
@@ -412,12 +464,21 @@ test.describe('Test for Organization Account visibility depending on Permissions
 			const newPage = await pagePromise;
 			accountsPage = new AccountsPage(newPage);
 
-			await accountsPage.goto();
+			const accountOrganizationsPage = new AccountOrganizationsPage(
+				newPage
+			);
+
+			await accountsPage.gotoAccountAdmin(await getDoAsUserId(newPage));
 			await (
 				await accountsPage.accountsTable.cellLink(account.name)
 			).click();
 			await accountsPage.organizationsTab.click();
 
+			await expect(
+				accountOrganizationsPage.organizationsTable.cell(
+					organization1.name
+				)
+			).toBeVisible();
 			await expect(accountsPage.accountsTable.newButton).toHaveCount(0);
 		}
 	);
