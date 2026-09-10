@@ -8,6 +8,7 @@ package com.liferay.fragment.internal.renderer;
 import com.liferay.fragment.cache.FragmentEntryLinkCache;
 import com.liferay.fragment.configuration.FragmentJavaScriptConfiguration;
 import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
+import com.liferay.fragment.helper.FragmentEntryLinkHelper;
 import com.liferay.fragment.input.template.parser.FragmentEntryInputTemplateNodeContextHelper;
 import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.fragment.model.FragmentEntry;
@@ -161,24 +162,6 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		return fragmentEntryLink;
 	}
 
-	private String _getFragmentEntryName(FragmentEntryLink fragmentEntryLink) {
-		FragmentEntry fragmentEntry = fragmentEntryLink.fetchFragmentEntry();
-
-		if ((fragmentEntry == null) &&
-			Validator.isNotNull(fragmentEntryLink.getRendererKey())) {
-
-			fragmentEntry =
-				_fragmentCollectionContributorRegistry.getFragmentEntry(
-					fragmentEntryLink.getRendererKey());
-		}
-
-		if (fragmentEntry == null) {
-			return StringPool.BLANK;
-		}
-
-		return fragmentEntry.getName();
-	}
-
 	private JSONObject _getInputJSONObject(
 		FragmentEntryLink fragmentEntryLink,
 		FragmentRendererContext fragmentRendererContext,
@@ -187,8 +170,10 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		InputTemplateNode inputTemplateNode =
 			_fragmentEntryInputTemplateNodeContextHelper.toInputTemplateNode(
 				fragmentRendererContext.getAttributes(),
-				_getFragmentEntryName(fragmentEntryLink), fragmentEntryLink,
-				httpServletRequest, fragmentRendererContext.getInfoForm(),
+				_fragmentEntryLinkHelper.getFragmentEntryName(
+					fragmentEntryLink, fragmentRendererContext.getLocale()),
+				fragmentEntryLink, httpServletRequest,
+				fragmentRendererContext.getInfoForm(),
 				fragmentRendererContext.getLocale());
 
 		return inputTemplateNode.toJSONObject();
@@ -578,6 +563,9 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private FragmentEntryLinkCache _fragmentEntryLinkCache;
+
+	@Reference
+	private FragmentEntryLinkHelper _fragmentEntryLinkHelper;
 
 	@Reference
 	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
