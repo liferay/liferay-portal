@@ -129,7 +129,7 @@ See `gradle.properties` for active settings. Key property:
 #### `liferay.workspace.product`
 
 Pins the DXP version used for the bundle URL, Docker base image, and target platform.
-Current value: `dxp-2026.q1.5-lts`.
+Current value: `dxp-2026.q3.2`.
 
 ## Pull Requests
 
