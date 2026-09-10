@@ -175,9 +175,7 @@ public class AssetListTypePropertiesUtilTest {
 
 			boolean expectedSortable = true;
 
-			if (name.equals("externalReferenceCode") ||
-				name.equals(Field.REVIEW_DATE)) {
-
+			if (name.equals("externalReferenceCode")) {
 				expectedSortable = false;
 			}
 
