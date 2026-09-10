@@ -70,13 +70,15 @@ public class PostupgradeVerifyDatabaseStateTest
 		try {
 			_testVerifyColumns(
 				_getExpectedMessage(
-					"Missing columns were detected for " +
-						getNormalizedName("UserTracker"),
+					StringBundler.concat(
+						"Missing columns were detected for ",
+						getNormalizedName("UserTracker"), " table"),
 					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
 					getNormalizedName("companyId")),
 				_getExpectedMessage(
-					"Stale columns were detected for " +
-						getNormalizedName("UserTracker"),
+					StringBundler.concat(
+						"Stale columns were detected for ",
+						getNormalizedName("UserTracker"), " table"),
 					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
 					getNormalizedName("companyId_backup")));
 		}
@@ -93,7 +95,7 @@ public class PostupgradeVerifyDatabaseStateTest
 					StringBundler.concat(
 						"Column ", getNormalizedName("city"),
 						" is not defined as VARCHAR(75) null for ",
-						getNormalizedName("Address")),
+						getNormalizedName("Address"), " table"),
 					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME));
 		}
 		finally {
