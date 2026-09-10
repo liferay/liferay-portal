@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -58,8 +59,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -96,6 +100,40 @@ public class UserODataRetrieverTest {
 	public void setUp() throws Exception {
 		_group1 = _addGroup();
 		_group2 = _addGroup();
+	}
+
+	@Test
+	public void testGetUserPrimaryKeysWithMoreUsersThanElasticsearchMaxResultWindow()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"INDEX_SEARCH_LIMIT", _ELASTICSEARCH_MAX_RESULT_WINDOW)) {
+
+			String firstName = RandomTestUtil.randomString();
+
+			Set<Long> expectedUserIds = new HashSet<>();
+
+			for (int i = 0;
+				 i < _MORE_USERS_THAN_ELASTICSEARCH_MAX_RESULT_WINDOW; i++) {
+
+				User user = _addUser(firstName, _group1);
+
+				expectedUserIds.add(user.getUserId());
+			}
+
+			long[] primaryKeys = _oDataRetriever.getResultPrimaryKeys(
+				_group1.getCompanyId(),
+				String.format("(firstName eq '%s')", firstName),
+				LocaleUtil.getDefault(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				Arrays.toString(primaryKeys),
+				_MORE_USERS_THAN_ELASTICSEARCH_MAX_RESULT_WINDOW,
+				primaryKeys.length);
+			Assert.assertEquals(
+				expectedUserIds, SetUtil.fromArray(primaryKeys));
+		}
 	}
 
 	@Test
