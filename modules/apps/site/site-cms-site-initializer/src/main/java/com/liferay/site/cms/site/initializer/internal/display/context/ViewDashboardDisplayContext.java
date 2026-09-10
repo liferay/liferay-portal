@@ -27,10 +27,10 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -55,7 +55,6 @@ public class ViewDashboardDisplayContext {
 	public ViewDashboardDisplayContext(
 		AnalyticsSettingsManager analyticsSettingsManager,
 		DepotEntryLocalService depotEntryLocalService,
-		ModelResourcePermission<DepotEntry> depotEntryModelResourcePermission,
 		DepotEntryService depotEntryService, DLConfiguration dlConfiguration,
 		GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest,
@@ -66,7 +65,6 @@ public class ViewDashboardDisplayContext {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_depotEntryLocalService = depotEntryLocalService;
-		_depotEntryModelResourcePermission = depotEntryModelResourcePermission;
 		_depotEntryService = depotEntryService;
 		_dlConfiguration = dlConfiguration;
 		_groupLocalService = groupLocalService;
@@ -260,8 +258,9 @@ public class ViewDashboardDisplayContext {
 					_depotEntryLocalService.fetchGroupDepotEntry(groupId);
 
 				if ((depotEntry != null) &&
-					_depotEntryModelResourcePermission.contains(
-						_themeDisplay.getPermissionChecker(), depotEntry,
+					GroupPermissionUtil.contains(
+						_themeDisplay.getPermissionChecker(),
+						depotEntry.getGroupId(),
 						ActionKeys.VIEW_SITE_ADMINISTRATION)) {
 
 					return String.valueOf(depotEntry.getDepotEntryId());
@@ -296,8 +295,6 @@ public class ViewDashboardDisplayContext {
 
 	private final AnalyticsSettingsManager _analyticsSettingsManager;
 	private final DepotEntryLocalService _depotEntryLocalService;
-	private final ModelResourcePermission<DepotEntry>
-		_depotEntryModelResourcePermission;
 	private final DepotEntryService _depotEntryService;
 	private final DLConfiguration _dlConfiguration;
 	private final GroupLocalService _groupLocalService;
