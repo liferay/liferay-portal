@@ -142,6 +142,14 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 	}
 
 	@Override
+	@Test
+	public void testPutCurrencyByExternalReferenceCode() throws Exception {
+		super.testPutCurrencyByExternalReferenceCode();
+
+		_testPutCurrencyByExternalReferenceCodeWithPartialCurrency();
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {"active", "name", "symbol"};
 	}
@@ -157,6 +165,7 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 			{
 				active = Boolean.TRUE;
 				code = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				externalReferenceCode = RandomTestUtil.randomString();
 				formatPattern = LanguageUtils.getLanguageIdMap(
 					RandomTestUtil.randomLocaleStringMap());
 				id = RandomTestUtil.randomLong();
@@ -228,10 +237,18 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 		return _addCommerceCurrency(currency);
 	}
 
+	@Override
+	protected Currency testPutCurrencyByExternalReferenceCode_addCurrency()
+		throws Exception {
+
+		return _addCommerceCurrency(randomCurrency());
+	}
+
 	private Currency _addCommerceCurrency(Currency currency) throws Exception {
 		CommerceCurrency commerceCurrency =
 			_commerceCurrencyLocalService.addCommerceCurrency(
-				null, TestPropsValues.getUserId(), currency.getCode(),
+				currency.getExternalReferenceCode(),
+				TestPropsValues.getUserId(), currency.getCode(),
 				LanguageUtils.getLocalizedMap(currency.getName()),
 				currency.getSymbol(), currency.getRate(),
 				LanguageUtils.getLocalizedMap(currency.getFormatPattern()),
@@ -261,6 +278,33 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 				symbol = commerceCurrency.getSymbol();
 			}
 		};
+	}
+
+	private void _testPutCurrencyByExternalReferenceCodeWithPartialCurrency()
+		throws Exception {
+
+		Currency currency = _addCommerceCurrency(randomCurrency());
+
+		Currency putCurrency =
+			currencyResource.putCurrencyByExternalReferenceCode(
+				currency.getExternalReferenceCode(),
+				new Currency() {
+					{
+						code = currency.getCode();
+						externalReferenceCode = RandomTestUtil.randomString();
+						name = currency.getName();
+						rate = BigDecimal.ONE;
+					}
+				});
+
+		Assert.assertEquals(
+			currency.getExternalReferenceCode(),
+			putCurrency.getExternalReferenceCode());
+		Assert.assertEquals(
+			Integer.valueOf(2), putCurrency.getMaxFractionDigits());
+		Assert.assertEquals(
+			Integer.valueOf(2), putCurrency.getMinFractionDigits());
+		Assert.assertEquals(Double.valueOf(0), putCurrency.getPriority());
 	}
 
 	@Inject
