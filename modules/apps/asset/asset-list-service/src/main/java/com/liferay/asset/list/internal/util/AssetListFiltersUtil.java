@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
-import com.liferay.portal.kernel.search.MatchAllQuery;
 import com.liferay.portal.kernel.search.MatchQuery;
 import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.Query;
@@ -26,6 +25,7 @@ import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.search.filter.QueryFilter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -58,27 +58,22 @@ public class AssetListFiltersUtil {
 		}
 
 		BooleanFilter booleanFilter = new BooleanFilter();
-		BooleanQuery booleanQuery = new BooleanQuery();
-
-		boolean hasMustClause = false;
 
 		for (int i = 0; i < filtersJSONArray.length(); i++) {
 			JSONObject jsonObject = filtersJSONArray.getJSONObject(i);
 
+			BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.MUST;
+
+			if (_isNegatedOperator(
+					jsonObject.getString("operatorName", "contains"))) {
+
+				booleanClauseOccur = BooleanClauseOccur.MUST_NOT;
+			}
+
 			Filter filter = _toFilter(jsonObject);
 
-			boolean negatedOperator = _isNegatedOperator(
-				jsonObject.getString("operatorName", "contains"));
-
 			if (filter != null) {
-				if (negatedOperator) {
-					booleanFilter.add(filter, BooleanClauseOccur.MUST_NOT);
-				}
-				else {
-					booleanFilter.add(filter, BooleanClauseOccur.MUST);
-
-					hasMustClause = true;
-				}
+				booleanFilter.add(filter, booleanClauseOccur);
 
 				continue;
 			}
@@ -89,27 +84,16 @@ public class AssetListFiltersUtil {
 				continue;
 			}
 
-			if (negatedOperator) {
-				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
-			}
-			else {
-				booleanQuery.add(query, BooleanClauseOccur.MUST);
-
-				hasMustClause = true;
-			}
+			booleanFilter.add(new QueryFilter(query), booleanClauseOccur);
 		}
 
-		if (!booleanFilter.hasClauses() && !booleanQuery.hasClauses()) {
+		if (!booleanFilter.hasClauses()) {
 			return new BooleanClause[0];
 		}
 
-		if (!hasMustClause) {
-			booleanQuery.add(new MatchAllQuery(), BooleanClauseOccur.MUST);
-		}
+		BooleanQuery booleanQuery = new BooleanQuery();
 
-		if (booleanFilter.hasClauses()) {
-			booleanQuery.setPreBooleanFilter(booleanFilter);
-		}
+		booleanQuery.setPreBooleanFilter(booleanFilter);
 
 		return new BooleanClause[] {
 			new BooleanClause<>(booleanQuery, BooleanClauseOccur.MUST)
