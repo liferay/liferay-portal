@@ -6,14 +6,13 @@
 import ClayButton from '@clayui/button';
 import {TreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
-import ClayManagementToolbar, {
-	ClayResultsBar,
-} from '@clayui/management-toolbar';
+import ClayManagementToolbar from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
 import React, {useMemo, useState} from 'react';
 
 import AutoSearch from '../components/AutoSearch';
 import Highlight from '../components/Highlight';
+import SelectedItemsBar from '../components/SelectedItemsBar';
 import {postProfileDataMask} from '../services/postProfileDataMask';
 import {DataMask, DataMaskTreeItem} from '../types';
 import {
@@ -121,44 +120,20 @@ export default function AddDataMasksModal({
 			</ClayModal.Header>
 
 			<ClayModal.Body className="pt-0 px-0">
-				<ClayManagementToolbar>
-					<ClayManagementToolbar.Search
-						onSubmit={(event) => event.preventDefault()}
-					>
-						<AutoSearch onSearch={onSearch} query={query} />
-					</ClayManagementToolbar.Search>
-				</ClayManagementToolbar>
+				<div className="sticky-top">
+					<ClayManagementToolbar>
+						<ClayManagementToolbar.Search
+							onSubmit={(event) => event.preventDefault()}
+						>
+							<AutoSearch onSearch={onSearch} query={query} />
+						</ClayManagementToolbar.Search>
+					</ClayManagementToolbar>
 
-				{!!selectedExternalReferenceCodes.length && (
-					<ClayResultsBar>
-						<ClayResultsBar.Item expand>
-							<span
-								className="component-text text-truncate-inline"
-								role="status"
-							>
-								<span className="text-truncate">
-									{selectedExternalReferenceCodes.length}
-									&nbsp;
-									{selectedExternalReferenceCodes.length === 1
-										? Liferay.Language.get('item-selected')
-										: Liferay.Language.get(
-												'items-selected'
-											)}
-								</span>
-							</span>
-						</ClayResultsBar.Item>
-
-						<ClayResultsBar.Item>
-							<ClayButton
-								className="component-link tbar-link"
-								displayType="unstyled"
-								onClick={() => setSelectedKeys(new Set())}
-							>
-								{Liferay.Language.get('deselect-all')}
-							</ClayButton>
-						</ClayResultsBar.Item>
-					</ClayResultsBar>
-				)}
+					<SelectedItemsBar
+						count={selectedExternalReferenceCodes.length}
+						onDeselectAll={() => setSelectedKeys(new Set())}
+					/>
+				</div>
 
 				<div className="px-4 py-2">
 					{items.length ? (

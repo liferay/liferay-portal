@@ -7,10 +7,10 @@ import ClayButton from '@clayui/button';
 import {TreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import {ClayResultsBar} from '@clayui/management-toolbar';
 import ClayModal from '@clayui/modal';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
+import SelectedItemsBar from '../components/SelectedItemsBar';
 import {getProfileTools} from '../services/getProfileTools';
 import {getToolSetTools} from '../services/getToolSetTools';
 import {getToolSets} from '../services/getToolSets';
@@ -338,36 +338,10 @@ export default function AddToolsModal({
 
 			<ClayModal.Body className="pt-0 px-0">
 				<div className="sticky-top">
-					<ClayResultsBar>
-						<ClayResultsBar.Item expand>
-							<span
-								className="component-text text-truncate-inline"
-								role="status"
-							>
-								<span className="text-truncate">
-									{selectedTools.length}
-									&nbsp;
-									{selectedTools.length === 1
-										? Liferay.Language.get('item-selected')
-										: Liferay.Language.get(
-												'items-selected'
-											)}
-								</span>
-							</span>
-						</ClayResultsBar.Item>
-
-						{!!selectedTools.length && (
-							<ClayResultsBar.Item>
-								<ClayButton
-									className="component-link tbar-link"
-									displayType="unstyled"
-									onClick={() => setSelectedKeys(new Set())}
-								>
-									{Liferay.Language.get('deselect-all')}
-								</ClayButton>
-							</ClayResultsBar.Item>
-						)}
-					</ClayResultsBar>
+					<SelectedItemsBar
+						count={selectedTools.length}
+						onDeselectAll={() => setSelectedKeys(new Set())}
+					/>
 				</div>
 
 				<div className="px-4 py-2">

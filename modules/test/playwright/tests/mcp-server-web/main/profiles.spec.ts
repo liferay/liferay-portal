@@ -584,9 +584,9 @@ test.describe('Profiles - Data Masks tab', () => {
 
 			await profilesPage.deselectAllButton.click();
 
-			await expect(
-				profilesPage.dialog.getByText(/Items? Selected/)
-			).toBeHidden();
+			await expect(profilesPage.dialog.getByRole('status')).toHaveText(
+				'Nothing Selected'
+			);
 			await expect(
 				profilesPage.maskCheckbox(firstMaskName)
 			).not.toBeChecked();
@@ -959,7 +959,7 @@ test.describe('Profiles - Tools tab', () => {
 			await profilesPage.deselectAllButton.click();
 
 			await expect(profilesPage.dialog.getByRole('status')).toHaveText(
-				'0 Items Selected'
+				'Nothing Selected'
 			);
 			await expect(profilesPage.addToolsSubmitButton).toBeDisabled();
 		}
