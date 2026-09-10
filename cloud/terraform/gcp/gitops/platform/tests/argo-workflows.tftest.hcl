@@ -46,7 +46,7 @@ run "should_honor_a_custom_argo_workflows_namespace" {
 		argo_workflows_namespace="workflows"
 	}
 }
-run "should_honor_a_custom_observability_namespace" {
+run "should_honor_a_custom_observability_config" {
 	assert {
 		condition=[for o in yamldecode(helm_release.argo_workflows.values[0]).extraObjects : o if o.metadata.name == "argo-workflows-metrics-ingress"][0].spec.ingress[0].from[0].namespaceSelector.matchLabels["kubernetes.io/metadata.name"] == "custom-observability"
 		error_message="A custom observability_config.namespace must flow into argo-workflows-metrics-ingress"
