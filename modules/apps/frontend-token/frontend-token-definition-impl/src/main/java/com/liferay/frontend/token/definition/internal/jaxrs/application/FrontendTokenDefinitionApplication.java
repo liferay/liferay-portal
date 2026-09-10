@@ -80,7 +80,9 @@ public class FrontendTokenDefinitionApplication extends Application {
 			UploadServletRequest uploadServletRequest =
 				_portal.getUploadServletRequest(httpServletRequest);
 
-			return _getResponse(uploadServletRequest.getFile("file"), locale);
+			return _getResponse(
+				uploadServletRequest.getFile("file"),
+				uploadServletRequest.getFileName("file"), locale);
 		}
 		catch (IOException ioException) {
 			_log.error(ioException);
@@ -117,10 +119,10 @@ public class FrontendTokenDefinitionApplication extends Application {
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK);
 	}
 
-	private Response _getResponse(File file, Locale locale)
+	private Response _getResponse(File file, String fileName, Locale locale)
 		throws IOException, JSONException, JSONValidatorException {
 
-		if ((file == null) || !StringUtil.endsWith(file.getName(), ".json")) {
+		if ((file == null) || !StringUtil.endsWith(fileName, ".json")) {
 			return _getResponse(
 				_language.get(locale, "please-upload-a-json-file"),
 				Response.Status.BAD_REQUEST);

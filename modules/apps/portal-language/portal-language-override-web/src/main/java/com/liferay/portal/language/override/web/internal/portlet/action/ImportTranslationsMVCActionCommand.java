@@ -55,6 +55,7 @@ public class ImportTranslationsMVCActionCommand extends BaseMVCActionCommand {
 
 		_importTranslations(
 			actionRequest, uploadPortletRequest.getFile("file"),
+			uploadPortletRequest.getFileName("file"),
 			ParamUtil.getString(actionRequest, "languageId"));
 
 		if (!SessionErrors.isEmpty(actionRequest)) {
@@ -67,7 +68,8 @@ public class ImportTranslationsMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private void _importTranslations(
-		ActionRequest actionRequest, File file, String languageId) {
+		ActionRequest actionRequest, File file, String fileName,
+		String languageId) {
 
 		if ((file == null) || !file.exists()) {
 			SessionErrors.add(actionRequest, "fileEmpty");
@@ -75,9 +77,7 @@ public class ImportTranslationsMVCActionCommand extends BaseMVCActionCommand {
 			return;
 		}
 
-		if (!Objects.equals(
-				FileUtil.getExtension(file.getName()), "properties")) {
-
+		if (!Objects.equals(FileUtil.getExtension(fileName), "properties")) {
 			SessionErrors.add(actionRequest, "fileExtensionInvalid");
 
 			return;
