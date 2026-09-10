@@ -8,6 +8,8 @@ package com.liferay.portal.tools.service.builder.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
@@ -134,7 +136,7 @@ public class DateEntryTest {
 
 		Assert.assertEquals(results.toString(), 1, results.size());
 
-		_assertSQLDate(_midnightTime, results.get(0));
+		_assertSQLDate(DBManagerUtil.getDBType(), results.get(0));
 
 		_assertSQLDateRows(
 			_dateEntryLocalService.dslQuery(
@@ -382,7 +384,9 @@ public class DateEntryTest {
 	@Test
 	public void testSQLQuery() {
 		_assertTimestamp(_microsNanos, _getMaxSnapshotDateBySQLQuery(null));
-		_assertSQLDate(_midnightTime, _getMaxSnapshotDateBySQLQuery(Type.DATE));
+		_assertSQLDate(
+			DBManagerUtil.getDBType(),
+			_getMaxSnapshotDateBySQLQuery(Type.DATE));
 		_assertTimestamp(
 			_microsNanos, _getMaxSnapshotDateBySQLQuery(Type.TIMESTAMP));
 
@@ -482,6 +486,10 @@ public class DateEntryTest {
 		Assert.assertEquals(expectedTime, date.getTime());
 	}
 
+	private void _assertSQLDate(DBType dbType, Object object) {
+		_assertSQLDate(_getSQLDateTime(dbType), object);
+	}
+
 	private void _assertSQLDate(long expectedTime, Object object) {
 		Assert.assertEquals(java.sql.Date.class, object.getClass());
 
@@ -490,20 +498,24 @@ public class DateEntryTest {
 		Assert.assertEquals(expectedTime, date.getTime());
 	}
 
-	private void _assertSQLDateRow(long expectedDateEntryId, Object[] row) {
+	private void _assertSQLDateRow(
+		long expectedDateEntryId, long expectedTime, Object[] row) {
+
 		Number number = (Number)row[0];
 
 		Assert.assertEquals(expectedDateEntryId, number.longValue());
 
-		_assertSQLDate(_midnightTime, row[1]);
+		_assertSQLDate(expectedTime, row[1]);
 	}
 
 	private void _assertSQLDateRows(List<Object[]> rows) {
 		Assert.assertEquals(rows.toString(), 3, rows.size());
 
-		_assertSQLDateRow(_midnightDateEntryId, rows.get(0));
-		_assertSQLDateRow(_millisDateEntryId, rows.get(1));
-		_assertSQLDateRow(_microsDateEntryId, rows.get(2));
+		long expectedTime = _getSQLDateTime(DBManagerUtil.getDBType());
+
+		_assertSQLDateRow(_midnightDateEntryId, _midnightTime, rows.get(0));
+		_assertSQLDateRow(_millisDateEntryId, expectedTime, rows.get(1));
+		_assertSQLDateRow(_microsDateEntryId, expectedTime, rows.get(2));
 	}
 
 	private void _assertTimestamp(long expectedNanos, Object object) {
@@ -551,6 +563,18 @@ public class DateEntryTest {
 		Assert.assertEquals(results.toString(), 1, results.size());
 
 		return results.get(0);
+	}
+
+	private long _getSQLDateTime(DBType dbType) {
+		if ((dbType == DBType.DB2) || (dbType == DBType.ORACLE)) {
+			return _MILLIS_TIME - (_MILLIS_TIME % Time.SECOND);
+		}
+
+		if (dbType == DBType.MARIADB) {
+			return _MILLIS_TIME;
+		}
+
+		return _midnightTime;
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
