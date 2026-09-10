@@ -10,6 +10,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
 import React, {useEffect, useMemo, useState} from 'react';
 
+import SelectedItemsBar from '../../components/SelectedItemsBar';
 import {getTool} from '../../services/getTool';
 import {JSONSchema} from '../../types';
 import {openErrorToast} from '../../utils';
@@ -71,45 +72,64 @@ export default function RestrictFieldsModal({
 				)}
 			</ClayModal.Header>
 
-			<ClayModal.Body>
+			<ClayModal.Body className="pt-0 px-0">
 				{loading ? (
 					<div className="align-items-center d-flex justify-content-center py-4">
 						<ClayLoadingIndicator />
 					</div>
-				) : items.length ? (
-					<TreeView
-						className="bg-transparent"
-						defaultItems={items}
-						nestedKey="children"
-						onSelectionChange={setSelectedKeys}
-						selectedKeys={selectedKeys}
-						selectionMode="multiple-recursive"
-						showExpanderOnHover={false}
-					>
-						{(item: FieldTreeItem) => (
-							<TreeView.Item>
-								<TreeView.ItemStack expandOnClick={false}>
-									<ClayCheckbox checked />
+				) : (
+					<>
+						<div className="sticky-top">
+							<SelectedItemsBar
+								count={selectedKeys.size}
+								onDeselectAll={() => setSelectedKeys(new Set())}
+							/>
+						</div>
 
-									{item.name}
-								</TreeView.ItemStack>
-
-								<TreeView.Group items={item.children}>
-									{(child: FieldTreeItem) => (
+						<div className="px-4 py-2">
+							{items.length ? (
+								<TreeView
+									className="bg-transparent"
+									defaultItems={items}
+									nestedKey="children"
+									onSelectionChange={setSelectedKeys}
+									selectedKeys={selectedKeys}
+									selectionMode="multiple-recursive"
+									showExpanderOnHover={false}
+								>
+									{(item: FieldTreeItem) => (
 										<TreeView.Item>
-											<ClayCheckbox checked />
+											<TreeView.ItemStack
+												expandOnClick={false}
+											>
+												<ClayCheckbox checked />
 
-											{child.name}
+												{item.name}
+											</TreeView.ItemStack>
+
+											<TreeView.Group
+												items={item.children}
+											>
+												{(child: FieldTreeItem) => (
+													<TreeView.Item>
+														<ClayCheckbox checked />
+
+														{child.name}
+													</TreeView.Item>
+												)}
+											</TreeView.Group>
 										</TreeView.Item>
 									)}
-								</TreeView.Group>
-							</TreeView.Item>
-						)}
-					</TreeView>
-				) : (
-					<p className="text-secondary" role="status">
-						{Liferay.Language.get('no-fields-were-found')}
-					</p>
+								</TreeView>
+							) : (
+								<p className="text-secondary" role="status">
+									{Liferay.Language.get(
+										'no-fields-were-found'
+									)}
+								</p>
+							)}
+						</div>
+					</>
 				)}
 			</ClayModal.Body>
 
