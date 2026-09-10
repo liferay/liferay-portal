@@ -400,62 +400,26 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 			expectedAccountRoles, (List<AccountRole>)page3.getItems());
 	}
 
+	@Override
 	@Test
 	public void testGetAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPage()
 		throws Exception {
 
-		AccountRole accountRole = _addAccountAccountRole(_account);
-		UserAccount userAccount = _addAccountUserAccount(_account);
+		super.
+			testGetAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPage();
 
-		_accountRoleLocalService.associateUser(
-			_account.getId(), accountRole.getId(), userAccount.getId());
-
-		Page<AccountRole> page =
-			accountRoleResource.
-				getAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPage(
-					_account.getExternalReferenceCode(),
-					userAccount.getEmailAddress());
-
-		Assert.assertTrue(page.getTotalCount() > 0);
-
-		AccountRoleResource accountRoleResource = _getAccountRoleResource(
-			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
-
-		assertHttpResponseStatusCode(
-			404,
-			accountRoleResource.
-				getAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPageHttpResponse(
-					_account.getExternalReferenceCode(),
-					userAccount.getEmailAddress()));
+		_testGetAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPageWithPermission();
 	}
 
+	@Override
 	@Test
 	public void testGetAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPage()
 		throws Exception {
 
-		AccountRole accountRole = _addAccountAccountRole(_account);
-		UserAccount userAccount = _addAccountUserAccount(_account);
+		super.
+			testGetAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPage();
 
-		_accountRoleLocalService.associateUser(
-			_account.getId(), accountRole.getId(), userAccount.getId());
-
-		Page<AccountRole> page =
-			accountRoleResource.
-				getAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPage(
-					_account.getExternalReferenceCode(),
-					userAccount.getExternalReferenceCode());
-
-		Assert.assertTrue(page.getTotalCount() > 0);
-
-		AccountRoleResource accountRoleResource = _getAccountRoleResource(
-			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
-
-		assertHttpResponseStatusCode(
-			404,
-			accountRoleResource.
-				getAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPageHttpResponse(
-					_account.getExternalReferenceCode(),
-					userAccount.getExternalReferenceCode()));
+		_testGetAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPageWithPermission();
 	}
 
 	@Ignore
@@ -1361,6 +1325,62 @@ public class AccountRoleResourceTest extends BaseAccountRoleResourceTestCase {
 			404,
 			accountRoleResource.getAccountAccountRolesPageHttpResponse(
 				_account.getId(), null, null, Pagination.of(1, 100), null));
+	}
+
+	private void _testGetAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPageWithPermission()
+		throws Exception {
+
+		AccountRole accountRole = _addAccountAccountRole(_account);
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		_accountRoleLocalService.associateUser(
+			_account.getId(), accountRole.getId(), userAccount.getId());
+
+		Page<AccountRole> page =
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPage(
+					_account.getExternalReferenceCode(),
+					userAccount.getEmailAddress());
+
+		Assert.assertTrue(page.getTotalCount() > 0);
+
+		AccountRoleResource accountRoleResource = _getAccountRoleResource(
+			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
+
+		assertHttpResponseStatusCode(
+			404,
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByEmailAddressAccountRolesPageHttpResponse(
+					_account.getExternalReferenceCode(),
+					userAccount.getEmailAddress()));
+	}
+
+	private void _testGetAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPageWithPermission()
+		throws Exception {
+
+		AccountRole accountRole = _addAccountAccountRole(_account);
+		UserAccount userAccount = _addAccountUserAccount(_account);
+
+		_accountRoleLocalService.associateUser(
+			_account.getId(), accountRole.getId(), userAccount.getId());
+
+		Page<AccountRole> page =
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPage(
+					_account.getExternalReferenceCode(),
+					userAccount.getExternalReferenceCode());
+
+		Assert.assertTrue(page.getTotalCount() > 0);
+
+		AccountRoleResource accountRoleResource = _getAccountRoleResource(
+			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
+
+		assertHttpResponseStatusCode(
+			404,
+			accountRoleResource.
+				getAccountByExternalReferenceCodeUserAccountByExternalReferenceCodeAccountRolesPageHttpResponse(
+					_account.getExternalReferenceCode(),
+					userAccount.getExternalReferenceCode()));
 	}
 
 	private void _testPostAccountAccountRoleUserAccountAssociation()
