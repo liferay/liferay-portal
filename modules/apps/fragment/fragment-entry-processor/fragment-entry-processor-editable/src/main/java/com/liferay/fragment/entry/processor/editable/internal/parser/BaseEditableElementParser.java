@@ -9,7 +9,6 @@ import com.liferay.fragment.entry.processor.editable.parser.EditableElementParse
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import java.util.ResourceBundle;
@@ -42,10 +41,12 @@ public abstract class BaseEditableElementParser
 	}
 
 	protected void replaceContent(Element element, String value) {
-		if (value.indexOf(CharPool.LESS_THAN) == -1) {
+		if ((value.indexOf(CharPool.AMPERSAND) == -1) &&
+			(value.indexOf(CharPool.LESS_THAN) == -1)) {
+
 			element.empty();
 
-			element.appendText(HtmlUtil.unescape(value));
+			element.appendText(value);
 		}
 		else {
 			element.html(value);
