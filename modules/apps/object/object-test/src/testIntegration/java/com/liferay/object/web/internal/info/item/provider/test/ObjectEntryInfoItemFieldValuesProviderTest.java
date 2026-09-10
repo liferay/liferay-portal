@@ -590,8 +590,6 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 
-		// The row renders the related entry it carries, not a fresh fetch
-
 		ObjectEntry relatedObjectEntry =
 			_objectEntryLocalService.getObjectEntry(
 				parentObjectEntry.getObjectEntryId());
