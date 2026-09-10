@@ -133,8 +133,6 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 				httpServletRequest, assetEntry.getEntryId());
 		}
 
-		Locale locale = portal.getLocale(httpServletRequest);
-
 		Layout layout = getLayoutDisplayPageObjectProviderLayout(
 			groupId, friendlyURL, layoutDisplayPageObjectProvider,
 			layoutDisplayPageProvider);
@@ -157,6 +155,8 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 				infoItemFieldValuesProvider.getInfoItemFieldValues(
 					layoutDisplayPageObjectProvider.getDisplayObject());
 		}
+
+		Locale locale = portal.getLocale(httpServletRequest);
 
 		String description = _getMappedValue(
 			mappedDescription, infoItemFieldValues, locale);
