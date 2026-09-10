@@ -49,30 +49,26 @@ const changeTrackingPages = test.extend<{
 			catch {
 				throw new Error(`Could not checkout ctCollection`);
 			}
-			finally {
-
-				// Delete ctCollection
-
-				if (ctCollection && ctCollection.body) {
-					try {
-						await apiHelpers.headlessChangeTracking.deleteCTCollection(
-							ctCollection.body.id
-						);
-					}
-					catch (error) {
-						console.error('Error deleting CT Collection:', error);
-					}
-				}
-			}
 		},
 		{auto: true},
 	],
 });
 
-test.afterEach(async ({page}) => {
+changeTrackingPages.afterEach(async ({ctCollection, page}) => {
 	const apiHelpers = new ApiHelpers(page);
 
 	await apiHelpers.headlessChangeTracking.checkoutCTCollection(0);
+
+	if (ctCollection && ctCollection.body) {
+		try {
+			await apiHelpers.headlessChangeTracking.deleteCTCollection(
+				ctCollection.body.id
+			);
+		}
+		catch (error) {
+			console.error('Error deleting CT Collection:', error);
+		}
+	}
 });
 
 const changeTrackingPagesTest = mergeTests(loginTest(), changeTrackingPages);
