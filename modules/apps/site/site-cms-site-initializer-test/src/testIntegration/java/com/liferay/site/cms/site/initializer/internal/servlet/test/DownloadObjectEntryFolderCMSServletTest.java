@@ -12,12 +12,19 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
+import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -25,6 +32,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -36,6 +44,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -43,11 +52,14 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
@@ -60,8 +72,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -87,12 +101,15 @@ public class DownloadObjectEntryFolderCMSServletTest
 	@Test
 	public void testDownloadBulkAction() throws Exception {
 		_testDownloadBulkActionWithBulkActionItems();
+		_testDownloadBulkActionWithMultipleAttachmentObjectFields();
+		_testDownloadBulkActionWithObjectEntryDownloadPermission();
 		_testDownloadBulkActionWithSelectAll();
 	}
 
 	@Test
 	public void testDownloadFolder() throws Exception {
 		_testDownloadFolderEmpty();
+		_testDownloadFolderWithObjectEntryDownloadPermission();
 		_testDownloadFolderWithoutPermissions();
 		_testDownloadFolderWithPermissions();
 	}
@@ -132,6 +149,58 @@ public class DownloadObjectEntryFolderCMSServletTest
 			serviceContext);
 	}
 
+	private void _addObjectEntryDownloadPermissionEntries() throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", group.getCompanyId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setAttribute(
+			"friendlyUrlMap", new HashMap<String, String>());
+
+		_parentObjectEntryFolder = _addObjectEntryFolder(
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
+
+		_deniedObjectEntryFolder = _addObjectEntryFolder(
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
+
+		_allowedObjectEntry = _addObjectEntry(
+			objectDefinition.getObjectDefinitionId(),
+			_parentObjectEntryFolder.getObjectEntryFolderId(), serviceContext);
+
+		_deniedObjectEntry = _addObjectEntry(
+			objectDefinition.getObjectDefinitionId(),
+			_parentObjectEntryFolder.getObjectEntryFolderId(), serviceContext);
+
+		_user = UserTestUtil.addUser();
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleLocalServiceUtil.addUserRoles(
+			_user.getUserId(), new long[] {_role.getRoleId()});
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_deniedObjectEntry.getObjectEntryId()),
+			_role.getRoleId(), new String[] {ActionKeys.VIEW});
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectDefinition.getObjectDefinitionId(), "file");
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_allowedObjectEntry.getObjectEntryId()),
+			_role.getRoleId(),
+			new String[] {
+				ActionKeys.VIEW, objectField.getAttachmentDownloadActionKey()
+			});
+	}
+
 	private ObjectEntryFolder _addObjectEntryFolder(
 			long parentObjectEntryFolderId)
 		throws Exception {
@@ -141,6 +210,91 @@ public class DownloadObjectEntryFolderCMSServletTest
 			TestPropsValues.getUserId(), parentObjectEntryFolderId,
 			RandomTestUtil.randomString(), null, StringUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private FileEntry _addTempFileEntry(ObjectDefinition objectDefinition)
+		throws Exception {
+
+		return TempFileEntryUtil.addTempFileEntry(
+			TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
+			objectDefinition.getPortletId(),
+			TempFileEntryUtil.getTempFileName(
+				RandomTestUtil.randomString() + ".txt"),
+			FileUtil.createTempFile(RandomTestUtil.randomBytes()),
+			ContentTypes.APPLICATION_TEXT);
+	}
+
+	private void _assertObjectEntryDownloadPermissionZipContents(
+			MockHttpServletResponse mockHttpServletResponse)
+		throws Exception {
+
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_ZIP,
+			mockHttpServletResponse.getContentType());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+				new ByteArrayInputStream(
+					mockHttpServletResponse.getContentAsByteArray()))) {
+
+			List<String> zipEntryNames = zipReader.getEntries();
+
+			String allowedFileName = _getFileName(_allowedObjectEntry);
+			String deniedFileName = _getFileName(_deniedObjectEntry);
+
+			Assert.assertTrue(
+				ListUtil.exists(
+					zipEntryNames,
+					zipEntryName -> zipEntryName.endsWith(allowedFileName)));
+			Assert.assertFalse(
+				ListUtil.exists(
+					zipEntryNames,
+					zipEntryName -> zipEntryName.endsWith(deniedFileName)));
+		}
+	}
+
+	private ObjectField _createAttachmentObjectField(String name) {
+		return ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+			ObjectFieldConstants.DB_TYPE_LONG, false, false, null,
+			RandomTestUtil.randomString(), name,
+			Arrays.asList(
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_ACCEPTED_FILE_EXTENSIONS
+				).value(
+					"txt"
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_FILE_SOURCE
+				).value(
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+				).value(
+					"100"
+				).build()),
+			false);
+	}
+
+	private String _getFileName(ObjectEntry objectEntry) throws Exception {
+		return _getFileName(objectEntry, "file");
+	}
+
+	private String _getFileName(ObjectEntry objectEntry, String fieldName)
+		throws Exception {
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.getDLFileEntry(
+			GetterUtil.getLong(values.get(fieldName)));
+
+		return dlFileEntry.getFileName();
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
@@ -253,6 +407,161 @@ public class DownloadObjectEntryFolderCMSServletTest
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 	}
 
+	private void _testDownloadBulkActionWithMultipleAttachmentObjectFields()
+		throws Exception {
+
+		ObjectField firstObjectField = _createAttachmentObjectField(
+			"firstAttachment");
+		ObjectField secondObjectField = _createAttachmentObjectField(
+			"secondAttachment");
+
+		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+			Arrays.asList(firstObjectField, secondObjectField));
+
+		FileEntry firstFileEntry = _addTempFileEntry(_objectDefinition);
+		FileEntry secondFileEntry = _addTempFileEntry(_objectDefinition);
+
+		ObjectEntry objectEntry =
+			_objectEntryLocalService.addOrUpdateObjectEntry(
+				RandomTestUtil.randomString(), 0, TestPropsValues.getUserId(),
+				_objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					"firstAttachment", firstFileEntry.getFileEntryId()
+				).put(
+					"secondAttachment", secondFileEntry.getFileEntryId()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(
+				JSONUtil.put(
+					"bulkActionItems",
+					JSONUtil.put(
+						JSONUtil.put(
+							"classExternalReferenceCode",
+							objectEntry.getExternalReferenceCode()
+						).put(
+							"className", objectEntry.getModelClassName()
+						).put(
+							"classPK", objectEntry.getObjectEntryId()
+						).put(
+							"name", objectEntry.getTitleValue()
+						))
+				).put(
+					"selectionScope", JSONUtil.put("selectAll", false)
+				).put(
+					"type", "DownloadBulkAction"
+				).toString(
+				).getBytes(),
+				HttpMethods.POST, 0, TestPropsValues.getUser());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_ZIP,
+			mockHttpServletResponse.getContentType());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+				new ByteArrayInputStream(
+					mockHttpServletResponse.getContentAsByteArray()))) {
+
+			List<String> zipEntryNames = zipReader.getEntries();
+
+			Assert.assertEquals(
+				zipEntryNames.toString(), 1, zipEntryNames.size());
+
+			String firstFileName = _getFileName(objectEntry, "firstAttachment");
+			String secondFileName = _getFileName(
+				objectEntry, "secondAttachment");
+
+			Assert.assertTrue(
+				zipEntryNames.toString(),
+				ListUtil.exists(
+					zipEntryNames,
+					zipEntryName -> zipEntryName.endsWith(firstFileName)));
+			Assert.assertFalse(
+				zipEntryNames.toString(),
+				ListUtil.exists(
+					zipEntryNames,
+					zipEntryName -> zipEntryName.endsWith(secondFileName)));
+		}
+	}
+
+	private void _testDownloadBulkActionWithObjectEntryDownloadPermission()
+		throws Exception {
+
+		_addObjectEntryDownloadPermissionEntries();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			MockHttpServletRequest mockHttpServletRequest =
+				_getMockHttpServletRequest(
+					JSONUtil.put(
+						"bulkActionItems",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"classExternalReferenceCode",
+								_allowedObjectEntry.getExternalReferenceCode()
+							).put(
+								"className",
+								_allowedObjectEntry.getModelClassName()
+							).put(
+								"classPK",
+								_allowedObjectEntry.getObjectEntryId()
+							).put(
+								"name", _allowedObjectEntry.getTitleValue()
+							),
+							JSONUtil.put(
+								"classExternalReferenceCode",
+								_deniedObjectEntry.getExternalReferenceCode()
+							).put(
+								"className",
+								_deniedObjectEntry.getModelClassName()
+							).put(
+								"classPK", _deniedObjectEntry.getObjectEntryId()
+							).put(
+								"name", _deniedObjectEntry.getTitleValue()
+							),
+							JSONUtil.put(
+								"classExternalReferenceCode",
+								_deniedObjectEntryFolder.
+									getExternalReferenceCode()
+							).put(
+								"className",
+								_deniedObjectEntryFolder.getModelClassName()
+							).put(
+								"classPK",
+								_deniedObjectEntryFolder.
+									getObjectEntryFolderId()
+							).put(
+								"name", _deniedObjectEntryFolder.getName()
+							))
+					).put(
+						"selectionScope", JSONUtil.put("selectAll", false)
+					).put(
+						"type", "DownloadBulkAction"
+					).toString(
+					).getBytes(),
+					HttpMethods.POST, 0, _user);
+
+			MockHttpServletResponse mockHttpServletResponse =
+				new MockHttpServletResponse();
+
+			_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+			_assertObjectEntryDownloadPermissionZipContents(
+				mockHttpServletResponse);
+		}
+	}
+
 	private void _testDownloadBulkActionWithSelectAll() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -335,6 +644,35 @@ public class DownloadObjectEntryFolderCMSServletTest
 			mockHttpServletResponse.getContentType());
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+	}
+
+	private void _testDownloadFolderWithObjectEntryDownloadPermission()
+		throws Exception {
+
+		_addObjectEntryDownloadPermissionEntries();
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), ObjectEntryFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_parentObjectEntryFolder.getObjectEntryFolderId()),
+			_role.getRoleId(), new String[] {ActionKeys.VIEW});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			MockHttpServletRequest mockHttpServletRequest =
+				_getMockHttpServletRequest(
+					null, HttpMethods.GET,
+					_parentObjectEntryFolder.getObjectEntryFolderId(), _user);
+
+			MockHttpServletResponse mockHttpServletResponse =
+				new MockHttpServletResponse();
+
+			_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+			_assertObjectEntryDownloadPermissionZipContents(
+				mockHttpServletResponse);
+		}
 	}
 
 	private void _testDownloadFolderWithoutPermissions() throws Exception {
@@ -474,11 +812,19 @@ public class DownloadObjectEntryFolderCMSServletTest
 		}
 	}
 
+	private ObjectEntry _allowedObjectEntry;
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
+	private ObjectEntry _deniedObjectEntry;
+	private ObjectEntryFolder _deniedObjectEntryFolder;
+
 	@Inject
 	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@DeleteAfterTestRun
+	private ObjectDefinition _objectDefinition;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
@@ -490,15 +836,26 @@ public class DownloadObjectEntryFolderCMSServletTest
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject
+	private ObjectFieldLocalService _objectFieldLocalService;
+
+	private ObjectEntryFolder _parentObjectEntryFolder;
+
+	@Inject
 	private Portal _portal;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
+	@DeleteAfterTestRun
+	private Role _role;
+
 	@Inject(
 		filter = "osgi.http.whiteboard.servlet.name=com.liferay.site.cms.site.initializer.internal.servlet.DownloadObjectEntryFolderCMSServlet"
 	)
 	private Servlet _servlet;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	@Inject
 	private ZipReaderFactory _zipReaderFactory;
