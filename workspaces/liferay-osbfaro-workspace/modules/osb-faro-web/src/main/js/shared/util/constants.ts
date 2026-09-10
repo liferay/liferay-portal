@@ -280,6 +280,7 @@ export enum ProjectStates {
 }
 
 export enum RangeKeyTimeRanges {
+	AllTime = '-1',
 	CustomRange = 'CUSTOM',
 	Last180Days = '180',
 	Last24Hours = '0',

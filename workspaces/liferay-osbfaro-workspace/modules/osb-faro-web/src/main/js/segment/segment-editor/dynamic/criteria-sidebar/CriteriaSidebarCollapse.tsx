@@ -80,6 +80,24 @@ export const getDefaultValue = (property: Property): any => {
 					],
 				},
 			]);
+		case PropertyTypes.SearchTerm:
+			return createCustomValueMap([
+				{
+					key: 'criterionGroup',
+					value: [
+						{
+							operatorName: RelationalOperators.EQ,
+							propertyName: 'name',
+							value: name,
+						},
+						{
+							operatorName: RelationalOperators.EQ,
+							propertyName: 'searching',
+							value: 'true',
+						},
+					],
+				},
+			]);
 		case PropertyTypes.AccountDate:
 			return createCustomValueMap([
 				{

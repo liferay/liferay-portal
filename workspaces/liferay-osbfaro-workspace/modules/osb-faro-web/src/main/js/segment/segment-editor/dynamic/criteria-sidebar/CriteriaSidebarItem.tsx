@@ -33,6 +33,7 @@ const TYPE_ICON_MAP = {
 	[PropertyTypes.SessionUtmParameter]: 'text',
 	[PropertyTypes.Vocabulary]: 'text',
 	[PropertyTypes.Interest]: 'check',
+	[PropertyTypes.SearchTerm]: 'check',
 	[PropertyTypes.Tag]: 'text',
 	[PropertyTypes.Text]: 'text',
 };

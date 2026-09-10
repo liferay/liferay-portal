@@ -43,6 +43,15 @@ export const createInterestProperty = (name: string): Property =>
 		type: PropertyTypes.Interest,
 	});
 
+export const createSearchTermProperty = (name: string): Property =>
+	new Property({
+		entityName: Liferay.Language.get('individual'),
+		label: name,
+		name,
+		propertyKey: 'search-term',
+		type: PropertyTypes.SearchTerm,
+	});
+
 export const createVocabularyProperty = ({
 	id,
 	name,
@@ -483,6 +492,9 @@ export const findPropertyByCriterion = (
 	}
 	else if (operatorName === CustomFunctionOperators.InterestsFilter) {
 		return createInterestProperty(propertyName ?? '');
+	}
+	else if (operatorName === CustomFunctionOperators.SearchTermsFilter) {
+		return createSearchTermProperty(propertyName ?? '');
 	}
 	else if (INDIVIDUAL_PROPERTIES.find(({name}) => name === propertyName)) {
 		return INDIVIDUAL_PROPERTIES.find(({name}) => name === propertyName);

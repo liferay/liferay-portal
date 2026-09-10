@@ -110,6 +110,7 @@ export function maybeFormatValue(
 		case PropertyTypes.AccountText:
 		case PropertyTypes.Behavior:
 		case PropertyTypes.Interest:
+		case PropertyTypes.SearchTerm:
 		case PropertyTypes.SessionChannel:
 		case PropertyTypes.SessionGeolocation:
 		case PropertyTypes.SessionText:

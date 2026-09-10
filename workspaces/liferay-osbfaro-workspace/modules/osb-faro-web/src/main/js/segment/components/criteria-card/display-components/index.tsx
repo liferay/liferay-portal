@@ -5,6 +5,7 @@ import IndividualDisplay from './IndividualDisplay';
 import InterestDisplay from './InterestDisplay';
 import OrganizationDisplay from './OrganizationDisplay';
 import React from 'react';
+import SearchTermDisplay from './SearchTermDisplay';
 import SessionDisplay from './SessionDisplay';
 import {getRemoteCriterionTypeByPropertyKey} from 'segment/segment-editor/dynamic/criterion-types/registry';
 import {IDisplayComponentProps} from '../types';
@@ -15,6 +16,7 @@ const NON_REMOTE_DISPLAYS: Record<string, React.ComponentType<any>> = {
 	individual: IndividualDisplay,
 	interest: InterestDisplay,
 	organization: OrganizationDisplay,
+	'search-term': SearchTermDisplay,
 	session: SessionDisplay,
 	web: BehaviorDisplay,
 };

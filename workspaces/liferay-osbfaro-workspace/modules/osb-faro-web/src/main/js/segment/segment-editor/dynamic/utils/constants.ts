@@ -82,6 +82,7 @@ export enum CustomFunctionOperators {
 	EventsFilterByCount = 'events-filter-by-count',
 	InterestsFilter = 'interests-filter',
 	OrganizationsFilter = 'organizations-filter',
+	SearchTermsFilter = 'search-terms-filter',
 	SessionsFilter = 'sessions-filter',
 	TagsFilter = 'tags-filter',
 	VocabulariesFilter = 'vocabularies-filter',
@@ -145,6 +146,7 @@ export enum PropertyTypes {
 	OrganizationNumber = 'organization-number',
 	OrganizationSelectText = 'organization-select-text',
 	OrganizationText = 'organization-text',
+	SearchTerm = 'search-term',
 	SelectText = 'select-text',
 	SessionChannel = 'session-channel',
 	SessionDateTime = 'session-date-time',
@@ -170,6 +172,7 @@ export const CUSTOM_FUNCTION_OPERATOR_KEY_MAP = {
 	['events.filterByCount']: CustomFunctionOperators.EventsFilterByCount,
 	['interests.filter']: CustomFunctionOperators.InterestsFilter,
 	['organizations.filter']: CustomFunctionOperators.OrganizationsFilter,
+	['searchTerms.filter']: CustomFunctionOperators.SearchTermsFilter,
 	['sessions.filter']: CustomFunctionOperators.SessionsFilter,
 	['tag.filter']: CustomFunctionOperators.TagsFilter,
 	['vocabulary.filter']: CustomFunctionOperators.VocabulariesFilter,
@@ -328,6 +331,13 @@ export const SUPPORTED_OPERATORS_MAP = {
 			key: CustomFunctionOperators.InterestsFilter,
 			label: Liferay.Language.get('is').toLowerCase(),
 			name: CustomFunctionOperators.InterestsFilter,
+		},
+	],
+	[PropertyTypes.SearchTerm]: [
+		{
+			key: CustomFunctionOperators.SearchTermsFilter,
+			label: Liferay.Language.get('is').toLowerCase(),
+			name: CustomFunctionOperators.SearchTermsFilter,
 		},
 	],
 	[PropertyTypes.Number]: [
@@ -564,6 +574,7 @@ export const SUPPORTED_PROPERTY_TYPES_MAP = {
 		NotOperators.NotActivitiesFilterByCount,
 	],
 	[PropertyTypes.Interest]: [CustomFunctionOperators.InterestsFilter],
+	[PropertyTypes.SearchTerm]: [CustomFunctionOperators.SearchTermsFilter],
 	[PropertyTypes.Number]: [
 		RelationalOperators.EQ,
 		RelationalOperators.GE,
@@ -617,6 +628,17 @@ export const BOOLEAN_OPTIONS = [
 ];
 
 export const INTEREST_BOOLEAN_OPTIONS = [
+	{
+		label: Liferay.Language.get('is').toLowerCase(),
+		value: 'true',
+	},
+	{
+		label: Liferay.Language.get('is-not').toLowerCase(),
+		value: 'false',
+	},
+];
+
+export const SEARCH_TERM_BOOLEAN_OPTIONS = [
 	{
 		label: Liferay.Language.get('is').toLowerCase(),
 		value: 'true',

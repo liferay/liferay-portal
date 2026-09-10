@@ -5,6 +5,7 @@ export default gql`
 	query SearchTerms(
 		$accountId: String
 		$channelId: String
+		$keywords: String
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
@@ -15,6 +16,7 @@ export default gql`
 		searchTerms(
 			accountId: $accountId
 			channelId: $channelId
+			keywords: $keywords
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart

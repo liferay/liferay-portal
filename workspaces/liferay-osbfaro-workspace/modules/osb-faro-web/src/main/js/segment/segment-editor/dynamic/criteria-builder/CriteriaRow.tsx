@@ -22,6 +22,7 @@ import OrganizationSelectInput from '../inputs/OrganizationSelectInput';
 import OrganizationTextInput from '../inputs/OrganizationTextInput';
 import React from 'react';
 import RowActions from 'shared/components/RowActions';
+import SearchTermBooleanInput from '../inputs/SearchTermBooleanInput';
 import SessionInput from '../inputs/SessionInput';
 import StringInput from '../inputs/StringInput';
 import TagInput from '../inputs/TagInput';
@@ -469,6 +470,7 @@ class CriteriaRow extends React.Component<
 			[PropertyTypes.Duration]: DurationInput,
 			[PropertyTypes.Event]: EventInput,
 			[PropertyTypes.Interest]: InterestBooleanInput,
+			[PropertyTypes.SearchTerm]: SearchTermBooleanInput,
 			[PropertyTypes.Number]: NumberInput,
 			[PropertyTypes.OrganizationBoolean]: CustomBooleanInput,
 			[PropertyTypes.OrganizationNumber]: CustomNumberInput,

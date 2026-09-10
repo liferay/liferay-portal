@@ -175,6 +175,14 @@ const mapResultToProps = (
 				}),
 			individualCriteriaEnabled &&
 				new PropertyGroup({
+					label: Liferay.Language.get('search-terms'),
+					propertyKey: 'search-term',
+					propertySubgroups: List([
+						new PropertySubgroup({properties: List()}),
+					]),
+				}),
+			individualCriteriaEnabled &&
+				new PropertyGroup({
 					label: Liferay.Language.get('session'),
 					propertyKey: 'session',
 					propertySubgroups: List([

@@ -8,7 +8,7 @@ import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {ClayPaginationWithBasicItems} from '@clayui/pagination';
 import {extractRemoteCriterionEntries} from '../criterion-types/extract';
 import {FieldOwnerTypes, SegmentTypes} from 'shared/util/constants';
-import {getRemoteCriterionTypeByPropertyKey} from '../criterion-types/registry';
+import {getPaginatedSection} from './paginatedSections';
 import {List} from 'immutable';
 import {Option, Picker} from '@clayui/core';
 import {PaginationBar} from '@clayui/pagination-bar';
@@ -23,8 +23,9 @@ const EVENTS_PROPERTY_KEY = 'web';
 const PROPERTY_KEY_TO_GROUP: Record<string, string> = {
 	account: 'attributes',
 	individual: 'attributes',
-	interest: 'page-topics',
+	interest: 'intent-signals',
 	organization: 'attributes',
+	'search-term': 'intent-signals',
 	session: 'attributes',
 	tag: 'asset-categorization',
 	vocabulary: 'asset-categorization',
@@ -35,14 +36,14 @@ const GROUP_ORDER = [
 	'behavioral',
 	'attributes',
 	'asset-categorization',
-	'page-topics',
+	'intent-signals',
 ];
 
 const GROUP_LABELS: Record<string, string> = {
 	'asset-categorization': Liferay.Language.get('asset-categorization'),
 	attributes: Liferay.Language.get('attributes'),
 	behavioral: Liferay.Language.get('behavioral'),
-	'page-topics': Liferay.Language.get('page-topics'),
+	'intent-signals': Liferay.Language.get('intent-signals'),
 };
 
 interface IPickerGroup {
@@ -82,7 +83,7 @@ export default function CriteriaSidebar({
 	const {addProperty} = useContext(ReferencedObjectsContext);
 
 	const selectedRemoteCriterionType =
-		getRemoteCriterionTypeByPropertyKey(selectedPropertyKey);
+		getPaginatedSection(selectedPropertyKey);
 	const isRemoteSection = !!selectedRemoteCriterionType;
 	const remoteKeywords = isRemoteSection ? searchValue : '';
 
@@ -150,10 +151,7 @@ export default function CriteriaSidebar({
 		() =>
 			propertyGroupsIList
 				.map((group) => {
-					if (
-						!group ||
-						!getRemoteCriterionTypeByPropertyKey(group.propertyKey)
-					) {
+					if (!group || !getPaginatedSection(group.propertyKey)) {
 						return group as PropertyGroup;
 					}
 
