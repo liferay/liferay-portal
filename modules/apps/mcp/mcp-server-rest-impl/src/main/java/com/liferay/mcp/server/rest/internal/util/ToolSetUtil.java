@@ -70,7 +70,7 @@ public class ToolSetUtil {
 	}
 
 	public static String getToolKey(String toolSetName, String toolName) {
-		return toolSetName + StringPool.SPACE + toolName;
+		return toolSetName + StringPool.POUND + toolName;
 	}
 
 	public static Map<String, ?> getToolOutputSchema(
