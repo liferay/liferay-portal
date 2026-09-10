@@ -27,8 +27,14 @@ public class ExportImportConstants {
 
 	public static final String SECTION_KEY_OTHER = "category.other";
 
+	public static final String SECTION_KEY_PRODUCT_MANAGEMENT =
+		"category.commerce.product_management";
+
 	public static final String SECTION_KEY_SITE_BUILDER =
 		"category.site_administration.build";
+
+	public static final String SECTION_KEY_STORE_MANAGEMENT =
+		"category.commerce.store_management";
 
 	public static final String SECTION_KEY_USERS =
 		"category.control_panel.users";
