@@ -972,12 +972,10 @@ public class BundleSiteInitializer implements SiteInitializer {
 			"/site-initializer/fragments/group", serviceContext,
 			stringUtilReplaceValues);
 
-		for (Map.Entry<String, Group> entry :
-				_getAssetLibraryGroups(
-					"/site-initializer/fragments/asset-libraries",
-					serviceContext
-				).entrySet()) {
+		Map<String, Group> assetLibraryGroups = _getAssetLibraryGroups(
+			"/site-initializer/fragments/asset-libraries", serviceContext);
 
+		for (Map.Entry<String, Group> entry : assetLibraryGroups.entrySet()) {
 			Group assetLibraryGroup = entry.getValue();
 
 			_addFragmentEntries(
@@ -4991,12 +4989,10 @@ public class BundleSiteInitializer implements SiteInitializer {
 			serviceContext.getScopeGroupId(), "/site-initializer/style-books",
 			serviceContext);
 
-		for (Map.Entry<String, Group> entry :
-				_getAssetLibraryGroups(
-					"/site-initializer/style-books/asset-libraries",
-					serviceContext
-				).entrySet()) {
+		Map<String, Group> assetLibraryGroups = _getAssetLibraryGroups(
+			"/site-initializer/style-books/asset-libraries", serviceContext);
 
+		for (Map.Entry<String, Group> entry : assetLibraryGroups.entrySet()) {
 			Group assetLibraryGroup = entry.getValue();
 
 			_addStyleBookEntries(
