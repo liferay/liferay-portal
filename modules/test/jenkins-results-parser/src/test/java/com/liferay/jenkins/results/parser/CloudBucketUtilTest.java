@@ -43,24 +43,27 @@ public class CloudBucketUtilTest
 		Shell shell = mockShell();
 
 		String newS3ObjectPath = _randomS3ObjectPath();
-		String oldS3ObjectPath = _randomS3ObjectPath();
 
 		File newS3ObjectRefFile = _writeS3ObjectRefFile(
 			newS3ObjectPath, newS3ObjectPath);
-		File oldS3ObjectRefFile = _writeS3ObjectRefFile(
-			oldS3ObjectPath, oldS3ObjectPath);
 
 		newS3ObjectRefFile.setLastModified(
 			_getLastModified(_MAX_AGE_SECONDS - 60));
+
+		String oldS3ObjectPath = _randomS3ObjectPath();
+
+		File oldS3ObjectRefFile = _writeS3ObjectRefFile(
+			oldS3ObjectPath, oldS3ObjectPath);
+
 		oldS3ObjectRefFile.setLastModified(
 			_getLastModified(_MAX_AGE_SECONDS + 2));
 
 		CloudBucketUtil.deleteS3ObjectRefsOlderThan(_MAX_AGE_SECONDS);
 
-		Assert.assertFalse(
-			oldS3ObjectRefFile.getPath(), oldS3ObjectRefFile.exists());
 		Assert.assertTrue(
 			newS3ObjectRefFile.getPath(), newS3ObjectRefFile.exists());
+		Assert.assertFalse(
+			oldS3ObjectRefFile.getPath(), oldS3ObjectRefFile.exists());
 
 		Mockito.verifyNoInteractions(shell);
 	}
