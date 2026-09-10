@@ -1,14 +1,31 @@
 #!/bin/bash
 
 function assert_clean_upgrade_log {
+
+	# The upgrade writes to one of two logs, depending on how it ran. A tool
+	# upgrade (ant upgrade-legacy-database) runs in its own JVM and writes its own
+	# log. An at-boot upgrade (upgrade.database.auto.run=true) runs inside the
+	# portal JVM, so its errors land in the portal log alongside the rest of the
+	# boot. Prefer the tool log so tool-upgrade projects keep asserting exactly
+	# what they asserted before, and fall back to the portal log for at-boot
+	# projects, which otherwise have no upgrade log at all and would fail here
+	# before asserting anything.
+
 	local upgrade_log="${LIFERAY_HOME}/tools/portal-tools-db-upgrade-client/logs/upgrade.log"
 
 	if [ ! -f "${upgrade_log}" ]
 	then
-		echo "Unable to find upgrade log at ${upgrade_log}."
+		upgrade_log=$(ls -t "${LIFERAY_HOME}"/logs/liferay.*.log 2>/dev/null | head -1)
+	fi
+
+	if [ -z "${upgrade_log}" ] || [ ! -f "${upgrade_log}" ]
+	then
+		echo "Unable to find an upgrade log under ${LIFERAY_HOME}."
 
 		exit 1
 	fi
+
+	echo "Asserting a clean upgrade log: ${upgrade_log}"
 
 	local unclean_log_entries
 

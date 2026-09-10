@@ -24,6 +24,8 @@ function main {
 	echo "Upgrade source: portal.version=${PORTAL_VERSION} data.archive.type=${DATA_ARCHIVE_TYPE}"
 
 	default_set_up
+
+	assert_clean_upgrade_log
 }
 
 main "${@}"
