@@ -41,6 +41,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>ANY_PASSWORD</td>
+	<td>//input[@type='password'][contains(@name,'${key_text}') or contains(@title,'${key_text}')]</td>
+	<td></td>
+</tr>
+<tr>
 	<td>ANY_N</td>
 	<td>xpath=(//div[label[contains(.,'${key_text}')]]//input[not(contains(@type,'checkbox'))])[${key_indexNumber}]</td>
 	<td></td>

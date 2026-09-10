@@ -6,7 +6,7 @@ definition {
 
 		Type(
 			key_text = "apiKey",
-			locator1 = "TextArea#ANY",
+			locator1 = "TextInput#ANY_PASSWORD",
 			value1 = ${googleApiKey});
 
 		FormFields.enableCheckbox(fieldName = "enabled");
@@ -25,7 +25,7 @@ definition {
 
 		Type(
 			key_text = "apiKey",
-			locator1 = "TextArea#ANY",
+			locator1 = "TextInput#ANY_PASSWORD",
 			value1 = ${googleApiKey});
 
 		if (isSet(enableClassificationEndpoint)) {
