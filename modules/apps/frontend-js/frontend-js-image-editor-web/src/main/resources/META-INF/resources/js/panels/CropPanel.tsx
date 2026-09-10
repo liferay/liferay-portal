@@ -49,12 +49,7 @@ export function CropPanel({
 }: Props) {
 	const eid = useEditorId();
 
-	const [drafts, setDrafts] = useState<Record<Field, string>>({
-		height: String(crop.height),
-		width: String(crop.width),
-		x: String(crop.x),
-		y: String(crop.y),
-	});
+	const [drafts, setDrafts] = useState(() => cropToDrafts(crop));
 
 	const angleGestureRef = useRef(false);
 
@@ -73,12 +68,7 @@ export function CropPanel({
 	};
 
 	useEffect(() => {
-		setDrafts({
-			height: String(crop.height),
-			width: String(crop.width),
-			x: String(crop.x),
-			y: String(crop.y),
-		});
+		setDrafts(cropToDrafts(crop));
 	}, [crop]);
 
 	const commit = (field: Field) => {
@@ -108,12 +98,7 @@ export function CropPanel({
 
 		const next = clampCrop(requested, bounds);
 
-		setDrafts({
-			height: String(next.height),
-			width: String(next.width),
-			x: String(next.x),
-			y: String(next.y),
-		});
+		setDrafts(cropToDrafts(next));
 
 		const unchanged =
 			next.height === crop.height &&
@@ -164,12 +149,7 @@ export function CropPanel({
 
 		const next = clampCrop(requested, bounds);
 
-		setDrafts({
-			height: String(next.height),
-			width: String(next.width),
-			x: String(next.x),
-			y: String(next.y),
-		});
+		setDrafts(cropToDrafts(next));
 
 		dispatch({crop: next, transient: true, type: 'set-crop'});
 	};
@@ -356,4 +336,13 @@ export function CropPanel({
 			)}
 		</EditorSection>
 	);
+}
+
+function cropToDrafts(crop: CropRect): Record<Field, string> {
+	return {
+		height: String(crop.height),
+		width: String(crop.width),
+		x: String(crop.x),
+		y: String(crop.y),
+	};
 }
