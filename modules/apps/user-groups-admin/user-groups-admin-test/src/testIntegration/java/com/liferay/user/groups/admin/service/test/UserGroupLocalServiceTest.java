@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
@@ -213,6 +214,29 @@ public class UserGroupLocalServiceTest {
 	}
 
 	@Test
+	public void testClearUserUserGroups() throws Exception {
+		User user = UserTestUtil.addUser();
+		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();
+		UserGroup userGroup2 = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addUserUserGroups(
+			user.getUserId(),
+			new long[] {
+				userGroup1.getUserGroupId(), userGroup2.getUserGroupId()
+			});
+
+		_assertSearchUserGroupsCount(2, user);
+		_assertSearchUsersCount(1, userGroup1);
+		_assertSearchUsersCount(1, userGroup2);
+
+		_userGroupLocalService.clearUserUserGroups(user.getUserId());
+
+		_assertSearchUserGroupsCount(0, user);
+		_assertSearchUsersCount(0, userGroup1);
+		_assertSearchUsersCount(0, userGroup2);
+	}
+
+	@Test
 	public void testDatabaseSearchUserUserGroups() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -263,6 +287,62 @@ public class UserGroupLocalServiceTest {
 			systemEvent.getClassExternalReferenceCode());
 		Assert.assertEquals(
 			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
+	}
+
+	@Test
+	public void testDeleteUserUserGroup() throws Exception {
+		User user = UserTestUtil.addUser();
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addUserUserGroup(
+			user.getUserId(), userGroup.getUserGroupId());
+
+		_assertSearchUserGroupsCount(1, user);
+		_assertSearchUsersCount(1, userGroup);
+
+		_userGroupLocalService.deleteUserUserGroup(
+			user.getUserId(), userGroup.getUserGroupId());
+
+		_assertSearchUserGroupsCount(0, user);
+		_assertSearchUsersCount(0, userGroup);
+
+		_userGroupLocalService.addUserUserGroup(user.getUserId(), userGroup);
+
+		_assertSearchUserGroupsCount(1, user);
+		_assertSearchUsersCount(1, userGroup);
+
+		_userGroupLocalService.deleteUserUserGroup(user.getUserId(), userGroup);
+
+		_assertSearchUserGroupsCount(0, user);
+		_assertSearchUsersCount(0, userGroup);
+	}
+
+	@Test
+	public void testDeleteUserUserGroups() throws Exception {
+		User user = UserTestUtil.addUser();
+		UserGroup userGroup1 = UserGroupTestUtil.addUserGroup();
+		UserGroup userGroup2 = UserGroupTestUtil.addUserGroup();
+
+		_userGroupLocalService.addUserUserGroups(
+			user.getUserId(),
+			new long[] {
+				userGroup1.getUserGroupId(), userGroup2.getUserGroupId()
+			});
+
+		_assertSearchUserGroupsCount(2, user);
+
+		_userGroupLocalService.deleteUserUserGroups(
+			user.getUserId(), new long[] {userGroup1.getUserGroupId()});
+
+		_assertSearchUserGroupsCount(1, user);
+		_assertSearchUsersCount(0, userGroup1);
+		_assertSearchUsersCount(1, userGroup2);
+
+		_userGroupLocalService.deleteUserUserGroups(
+			user.getUserId(), ListUtil.fromArray(userGroup2));
+
+		_assertSearchUserGroupsCount(0, user);
+		_assertSearchUsersCount(0, userGroup2);
 	}
 
 	@Test
@@ -457,6 +537,34 @@ public class UserGroupLocalServiceTest {
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
+
+	private void _assertSearchUserGroupsCount(int expectedCount, User user)
+		throws Exception {
+
+		List<UserGroup> userGroups = _search(
+			null,
+			LinkedHashMapBuilder.<String, Object>put(
+				"userIds", new long[] {user.getUserId()}
+			).build());
+
+		Assert.assertEquals(
+			userGroups.toString(), expectedCount, userGroups.size());
+	}
+
+	private void _assertSearchUsersCount(int expectedCount, UserGroup userGroup)
+		throws Exception {
+
+		List<User> users = UsersAdminUtil.getUsers(
+			_userLocalService.search(
+				userGroup.getCompanyId(), null,
+				WorkflowConstants.STATUS_APPROVED,
+				LinkedHashMapBuilder.<String, Object>put(
+					"usersUserGroups", userGroup.getUserGroupId()
+				).build(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, (Sort[])null));
+
+		Assert.assertEquals(users.toString(), expectedCount, users.size());
+	}
 
 	private List<UserGroup> _search(
 			String keywords, LinkedHashMap<String, Object> params)
