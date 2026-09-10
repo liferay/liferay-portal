@@ -99,8 +99,13 @@ public class UserModelListenerTest {
 			_serviceRegistration.unregister();
 		}
 
+		UserTestUtil.setUser(
+			UserTestUtil.getAdminUser(_company.getCompanyId()));
+
 		_objectDefinitionLocalService.deleteCompanyObjectDefinitions(
 			_company.getCompanyId());
+
+		UserTestUtil.setUser(TestPropsValues.getUser());
 
 		_companyLocalService.deleteCompany(_company.getCompanyId());
 	}
