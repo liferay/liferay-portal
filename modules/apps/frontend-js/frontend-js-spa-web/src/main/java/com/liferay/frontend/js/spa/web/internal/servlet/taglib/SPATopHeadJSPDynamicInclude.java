@@ -110,9 +110,7 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		JSONObject configJSONObject = JSONUtil.put(
 			"cacheExpirationTime", spaConfiguration.cacheExpirationTime()
 		).put(
-			"clearScreensCache",
-			_isClearScreensCache(
-				httpServletRequest, httpServletRequest.getSession())
+			"clearScreensCache", _isClearScreensCache(httpServletRequest)
 		).put(
 			"debugEnabled", _log.isDebugEnabled()
 		).put(
@@ -376,7 +374,7 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 	}
 
 	private boolean _isClearScreensCache(
-		HttpServletRequest httpServletRequest, HttpSession httpSession) {
+		HttpServletRequest httpServletRequest) {
 
 		boolean singlePageApplicationClearCache = GetterUtil.getBoolean(
 			httpServletRequest.getAttribute(
@@ -389,6 +387,12 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		String portletId = httpServletRequest.getParameter("p_p_id");
 
 		if (Validator.isNull(portletId)) {
+			return false;
+		}
+
+		HttpSession httpSession = httpServletRequest.getSession(false);
+
+		if (httpSession == null) {
 			return false;
 		}
 
