@@ -41,21 +41,17 @@ public class CMSToolbarOmniSearchDynamicIncludeTest {
 
 	@Before
 	public void setUp() {
-		_requestDispatcher = Mockito.mock(RequestDispatcher.class);
-
-		_servletContext = Mockito.mock(ServletContext.class);
-
-		Mockito.when(
-			_servletContext.getRequestDispatcher("/cms_toolbar.jsp")
-		).thenReturn(
-			_requestDispatcher
-		);
-
 		_featureFlagManagerUtilMockedStatic.when(
 			() -> FeatureFlagManagerUtil.isEnabled(
 				Mockito.anyLong(), Mockito.eq("LPD-78171"))
 		).thenReturn(
 			true
+		);
+
+		Mockito.when(
+			_servletContext.getRequestDispatcher("/cms_toolbar.jsp")
+		).thenReturn(
+			_requestDispatcher
 		);
 	}
 
@@ -221,7 +217,8 @@ public class CMSToolbarOmniSearchDynamicIncludeTest {
 	private final MockedStatic<FeatureFlagManagerUtil>
 		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
 			FeatureFlagManagerUtil.class);
-	private RequestDispatcher _requestDispatcher;
-	private ServletContext _servletContext;
+	private RequestDispatcher _requestDispatcher = Mockito.mock(
+		RequestDispatcher.class);
+	private ServletContext _servletContext = Mockito.mock(ServletContext.class);
 
 }
