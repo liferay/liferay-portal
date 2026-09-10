@@ -9,15 +9,23 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.BooleanClause;
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.MatchAllQuery;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsEntryRelTable;
@@ -102,6 +110,19 @@ public class IndexerHelper {
 			serviceContext);
 	}
 
+	private BooleanQuery _getLastDocumentBooleanQuery(Document lastDocument) {
+		BooleanQuery booleanQuery = new BooleanQuery();
+
+		booleanQuery.add(new MatchAllQuery(), BooleanClauseOccur.MUST);
+		booleanQuery.add(
+			new TermRangeQuery(
+				Field.ENTRY_CLASS_PK, lastDocument.get(Field.ENTRY_CLASS_PK),
+				null, false, true),
+			BooleanClauseOccur.MUST);
+
+		return booleanQuery;
+	}
+
 	private Set<Long> _getOldDatabaseClassPKs(long segmentsEntryId) {
 		Iterable<Long> iterable = _segmentsEntryLocalService.dslQuery(
 			DSLQueryFactoryUtil.select(
@@ -119,22 +140,56 @@ public class IndexerHelper {
 	private Set<Long> _getOldIndexClassPKs(long companyId, long segmentsEntryId)
 		throws Exception {
 
+		Set<Long> classPKs = new HashSet<>();
+
+		int indexSearchLimit = GetterUtil.getInteger(
+			PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT));
+
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setAttribute(
 			"segmentsEntryIds", new long[] {segmentsEntryId});
 		searchContext.setCompanyId(companyId);
+		searchContext.setEnd(indexSearchLimit);
+		searchContext.setSorts(
+			new Sort(Field.ENTRY_CLASS_PK, Sort.LONG_TYPE, false));
+		searchContext.setStart(0);
 
-		Hits hits = _indexer.search(searchContext);
+		Document lastDocument = null;
 
-		Set<Long> classPKsSet = new HashSet<>();
+		while (true) {
+			if (lastDocument != null) {
+				searchContext.setBooleanClauses(
+					new BooleanClause[] {
+						new BooleanClause<>(
+							_getLastDocumentBooleanQuery(lastDocument),
+							BooleanClauseOccur.MUST)
+					});
+			}
 
-		for (Document document : hits.getDocs()) {
-			classPKsSet.add(
-				GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)));
+			Hits hits = _indexer.search(searchContext);
+
+			Document[] documents = hits.getDocs();
+
+			if (documents.length == 0) {
+				break;
+			}
+
+			int previousSize = classPKs.size();
+
+			for (Document document : documents) {
+				classPKs.add(
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)));
+			}
+
+			if (classPKs.size() == previousSize) {
+				break;
+			}
+
+			lastDocument = documents[documents.length - 1];
 		}
 
-		return classPKsSet;
+		return classPKs;
 	}
 
 	private final Indexer<User> _indexer;
