@@ -409,7 +409,7 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 								"Column ",
 								dbInspector.normalizeName(columnName),
 								" is not defined as ", columnType, " for ",
-								normalizedTableName),
+								normalizedTableName, " table"),
 							servletContextName));
 				}
 
@@ -425,8 +425,9 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 						_getMessage(
 							TransformUtil.transform(
 								missingColumnNames, dbInspector::normalizeName),
-							"Missing columns were detected for " +
-								normalizedTableName,
+							StringBundler.concat(
+								"Missing columns were detected for ",
+								normalizedTableName, " table"),
 							servletContextName));
 				}
 
@@ -442,8 +443,9 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 						_getMessage(
 							TransformUtil.transform(
 								staleColumnNames, dbInspector::normalizeName),
-							"Stale columns were detected for " +
-								normalizedTableName,
+							StringBundler.concat(
+								"Stale columns were detected for ",
+								normalizedTableName, " table"),
 							servletContextName));
 				}
 			},
