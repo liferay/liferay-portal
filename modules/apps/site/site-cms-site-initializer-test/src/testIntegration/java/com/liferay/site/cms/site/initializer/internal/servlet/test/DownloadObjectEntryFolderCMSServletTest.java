@@ -161,10 +161,10 @@ public class DownloadObjectEntryFolderCMSServletTest
 		serviceContext.setAttribute(
 			"friendlyUrlMap", new HashMap<String, String>());
 
-		_parentObjectEntryFolder = _addObjectEntryFolder(
+		_deniedObjectEntryFolder = _addObjectEntryFolder(
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
 
-		_deniedObjectEntryFolder = _addObjectEntryFolder(
+		_parentObjectEntryFolder = _addObjectEntryFolder(
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
 
 		_allowedObjectEntry = _addObjectEntry(
