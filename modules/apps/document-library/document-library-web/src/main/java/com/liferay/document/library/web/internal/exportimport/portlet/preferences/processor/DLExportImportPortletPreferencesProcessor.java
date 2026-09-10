@@ -404,9 +404,10 @@ public class DLExportImportPortletPreferencesProcessor
 			long sourceGroupId = portletDataContext.getSourceGroupId();
 
 			if (sourceGroupId != 0) {
-				Group group = _groupLocalService.getGroup(sourceGroupId);
+				Group group = _groupLocalService.fetchGroup(sourceGroupId);
 
-				if (Objects.equals(
+				if ((group != null) &&
+					Objects.equals(
 						group.getExternalReferenceCode(),
 						portletPreferences.getValue(
 							_PREFERENCE_KEY_SELECTED_GROUP_EXTERNAL_REFERENCE_CODE,
