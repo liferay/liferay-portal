@@ -424,6 +424,7 @@ aws:
     ampWorkspaceURL: ""
     region: ""
 azure:
+    prometheusWorkspaceEndpoint: ""
     remoteWrite:
         dataCollectionRuleId: ""
         metricsIngestionEndpoint: ""
@@ -484,7 +485,13 @@ grafana:
             max_age: 10d
             max_annotations_to_keep: 3000
         auth:
+            azure_auth_enabled: true
             sigv4_auth_enabled: true
+        azure:
+            workload_identity_client_id: ""
+            workload_identity_enabled: true
+            workload_identity_tenant_id: ""
+            workload_identity_token_file: /var/run/secrets/azure/tokens/azure-identity-token
         dashboards:
             default_home_dashboard_path: /tmp/dashboards/Liferay/central-hub.json
         feature_toggles:
@@ -513,6 +520,8 @@ grafana:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     podDisruptionBudget:
         maxUnavailable: 1
+    podLabels:
+        azure.workload.identity/use: "true"
     rbac:
         namespaced: true
     resources:
@@ -524,6 +533,7 @@ grafana:
             memory: 256Mi
     serviceAccount:
         annotations:
+            azure.workload.identity/client-id: ""
             eks.amazonaws.com/role-arn: ""
         automountServiceAccountToken: true
         name: grafana

@@ -1,0 +1,26 @@
+{{- if eq (include "observability.cloudProvider" .) "azure" -}}
+{{- $workspaceEndpoint := required "azure.prometheusWorkspaceEndpoint must be set when cloudProvider=azure" .Values.azure.prometheusWorkspaceEndpoint -}}
+apiVersion: v1
+data:
+    amw-datasource.yaml: |
+        apiVersion: 1
+        datasources:
+            -   editable: true
+                isDefault: true
+                jsonData:
+                    azureCredentials:
+                        authType: workloadidentity
+                    httpMethod: GET
+                    timeInterval: 30s
+                name: {{ .Values.datasource.name | quote }}
+                type: {{ .Values.datasource.type | quote }}
+                uid: {{ include "observability.datasourceUid" . | quote }}
+                url: {{ $workspaceEndpoint | quote }}
+kind: ConfigMap
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+        grafana_datasource: "true"
+    name: {{ printf "%s-amw-datasource" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+{{- end -}}
