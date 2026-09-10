@@ -39,7 +39,7 @@ components:
                     type: string
                 errorMessage:
                     description:
-                        The export process's error message when it did not end successfully.
+                        The export process's error message when it failed.
                     readOnly: true
                     type: string
                 id:
@@ -158,7 +158,7 @@ components:
                     type: string
                 errorMessage:
                     description:
-                        The import process's error message when it did not end successfully.
+                        The import process's error message when it failed.
                     readOnly: true
                     type: string
                 id:
@@ -413,7 +413,7 @@ components:
                     type: string
                 errorMessage:
                     description:
-                        The publish process's error message when it did not end successfully.
+                        The publish process's error message when it failed.
                     readOnly: true
                     type: string
                 id:
