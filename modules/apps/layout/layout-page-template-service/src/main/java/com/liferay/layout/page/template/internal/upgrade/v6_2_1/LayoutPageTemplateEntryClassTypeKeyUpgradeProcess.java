@@ -83,20 +83,20 @@ public class LayoutPageTemplateEntryClassTypeKeyUpgradeProcess
 			preparedStatement1.setInt(
 				2, LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE);
 
-			ResultSet resultSet = preparedStatement1.executeQuery();
+			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
+				while (resultSet.next()) {
+					preparedStatement2.setString(
+						1, resultSet.getString(classTypeKeyColumnName));
+					preparedStatement2.setLong(
+						2, resultSet.getLong("ctCollectionId"));
+					preparedStatement2.setLong(
+						3, resultSet.getLong("layoutPageTemplateEntryId"));
 
-			while (resultSet.next()) {
-				preparedStatement2.setString(
-					1, resultSet.getString(classTypeKeyColumnName));
-				preparedStatement2.setLong(
-					2, resultSet.getLong("ctCollectionId"));
-				preparedStatement2.setLong(
-					3, resultSet.getLong("layoutPageTemplateEntryId"));
+					preparedStatement2.addBatch();
+				}
 
-				preparedStatement2.addBatch();
+				preparedStatement2.executeBatch();
 			}
-
-			preparedStatement2.executeBatch();
 		}
 	}
 
