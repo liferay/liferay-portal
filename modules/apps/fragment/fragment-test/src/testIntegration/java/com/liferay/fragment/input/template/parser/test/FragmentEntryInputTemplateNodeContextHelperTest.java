@@ -74,6 +74,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -222,6 +223,46 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	@Test
+	public void testToInputTemplateNodeWithFileInfoFieldType()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new AttachmentObjectFieldBuilder(
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"myAttachment"
+					).objectFieldSettings(
+						Arrays.asList(
+							_createObjectFieldSetting(
+								ObjectFieldSettingConstants.
+									NAME_ACCEPTED_FILE_EXTENSIONS,
+								"png,txt"),
+							_createObjectFieldSetting(
+								ObjectFieldSettingConstants.NAME_FILE_SOURCE,
+								ObjectFieldSettingConstants.
+									VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA),
+							_createObjectFieldSetting(
+								ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE,
+								"100"))
+					).build()),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		Assert.assertNotNull(
+			_getPreviewURL(
+				_addDLFileEntry(
+					FileUtil.getBytes(
+						getClass(),
+						"/com/liferay/fragment/dependencies/liferay.png"),
+					"png"),
+				objectDefinition));
+		Assert.assertNull(_getPreviewURL(_addDLFileEntry(), objectDefinition));
 	}
 
 	@Test
@@ -690,15 +731,19 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 	}
 
 	private DLFileEntry _addDLFileEntry() throws Exception {
-		byte[] bytes = TestDataConstants.TEST_BYTE_ARRAY;
+		return _addDLFileEntry(TestDataConstants.TEST_BYTE_ARRAY, "txt");
+	}
+
+	private DLFileEntry _addDLFileEntry(byte[] bytes, String extension)
+		throws Exception {
 
 		InputStream inputStream = new ByteArrayInputStream(bytes);
 
 		return _dlFileEntryLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString() + ".txt",
-			MimeTypesUtil.getExtensionContentType("txt"),
+			RandomTestUtil.randomString() + StringPool.PERIOD + extension,
+			MimeTypesUtil.getExtensionContentType(extension),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			StringPool.BLANK, StringPool.BLANK,
 			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT, null,
@@ -959,6 +1004,29 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 		return httpServletRequest;
 	}
 
+	private String _getPreviewURL(
+			DLFileEntry dlFileEntry, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"myAttachment", dlFileEntry.getFileEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		InputTemplateNode inputTemplateNode = _toInputTemplateNode(
+			objectDefinition.getClassName(), "ObjectField_myAttachment",
+			LocaleUtil.US, objectEntry);
+
+		Map<String, Object> attributes = inputTemplateNode.getAttributes();
+
+		return (String)attributes.get("previewURL");
+	}
+
 	private ThemeDisplay _getThemeDisplay() throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -978,9 +1046,39 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 			Map<Locale, Object> valueI18nMap, Map<Locale, Object> values)
 		throws Exception {
 
+		for (Map.Entry<Locale, Object> entry : values.entrySet()) {
+			InputTemplateNode inputTemplateNode = _toInputTemplateNode(
+				className, inputFieldId, entry.getKey(), objectEntry);
+
+			Assert.assertEquals(
+				entry.getValue(), inputTemplateNode.getInputValue());
+
+			Map<String, String> actualValueI18nMap =
+				inputTemplateNode.getValueI18n();
+
+			Assert.assertEquals(
+				MapUtil.toString(actualValueI18nMap), valueI18nMap.size(),
+				actualValueI18nMap.size());
+
+			for (Map.Entry<Locale, Object> curEntry : valueI18nMap.entrySet()) {
+				Assert.assertEquals(
+					curEntry.getValue(),
+					actualValueI18nMap.get(
+						LocaleUtil.toLanguageId(curEntry.getKey())));
+			}
+		}
+	}
+
+	private InputTemplateNode _toInputTemplateNode(
+			String className, String inputFieldId, Locale locale,
+			ObjectEntry objectEntry)
+		throws Exception {
+
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
 		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		themeDisplay.setLocale(locale);
 
 		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
@@ -1008,40 +1106,14 @@ public class FragmentEntryInputTemplateNodeContextHelperTest {
 		try {
 			ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
-			for (Map.Entry<Locale, Object> entry : values.entrySet()) {
-				Locale locale = entry.getKey();
-
-				themeDisplay.setLocale(locale);
-
-				InputTemplateNode inputTemplateNode =
-					_fragmentEntryInputTemplateNodeContextHelper.
-						toInputTemplateNode(
-							Collections.emptyMap(), "Default",
-							_addInputFragmentEntryLink(inputFieldId),
-							httpServletRequest,
-							infoItemFormProvider.getInfoForm(
-								StringPool.BLANK, _group.getGroupId()),
-							locale);
-
-				Assert.assertEquals(
-					entry.getValue(), inputTemplateNode.getInputValue());
-
-				Map<String, String> actualValueI18nMap =
-					inputTemplateNode.getValueI18n();
-
-				Assert.assertEquals(
-					MapUtil.toString(actualValueI18nMap), valueI18nMap.size(),
-					actualValueI18nMap.size());
-
-				for (Map.Entry<Locale, Object> curEntry :
-						valueI18nMap.entrySet()) {
-
-					Assert.assertEquals(
-						curEntry.getValue(),
-						actualValueI18nMap.get(
-							LocaleUtil.toLanguageId(curEntry.getKey())));
-				}
-			}
+			return _fragmentEntryInputTemplateNodeContextHelper.
+				toInputTemplateNode(
+					Collections.emptyMap(), "Default",
+					_addInputFragmentEntryLink(inputFieldId),
+					httpServletRequest,
+					infoItemFormProvider.getInfoForm(
+						StringPool.BLANK, _group.getGroupId()),
+					locale);
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
