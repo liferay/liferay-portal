@@ -1,0 +1,8 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly project(":apps:layout:layout-api")
+	compileOnly project(":apps:segments:segments-api")
+	compileOnly project(":apps:site:site-staticexport-api")
+	compileOnly project(":core:petra:petra-string")
+}
