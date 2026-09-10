@@ -8,6 +8,7 @@ package com.liferay.mcp.server.rest.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.mcp.server.rest.client.dto.v1_0.Tool;
 import com.liferay.mcp.server.rest.client.http.HttpInvoker;
+import com.liferay.mcp.server.rest.client.resource.v1_0.ToolResource;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -28,6 +29,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -58,6 +61,21 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 
 		Assert.assertEquals("getToolSetsPage", tool.getName());
 		Assert.assertNotNull(tool.getInputSchema());
+		Assert.assertNull(tool.getOutputSchema());
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ToolResource nestedFieldsToolResource = ToolResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameter(
+			"nestedFields", "outputSchema"
+		).build();
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -66,7 +84,10 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 				"name", JSONUtil.put("type", "string")
 			).toString(),
 			JSONUtil.getValueAsString(
-				JSONFactoryUtil.createJSONObject(String.valueOf(tool)),
+				JSONFactoryUtil.createJSONObject(
+					String.valueOf(
+						nestedFieldsToolResource.getToolSetToolSetNameTool(
+							"mcp-server-v1.0", "getToolSetsPage"))),
 				"JSONObject/outputSchema", "JSONObject/properties",
 				"JSONObject/items", "JSONObject/items",
 				"JSONObject/properties"),
