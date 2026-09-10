@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -38,6 +39,8 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
+import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
+import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionLocalService;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
 
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -48,6 +51,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -223,8 +227,7 @@ public class WorkflowDefinitionResourceImpl
 			_workflowDefinitionManager.deployWorkflowDefinition(
 				content.getBytes(), contextCompany.getCompanyId(),
 				workflowDefinition.getExternalReferenceCode(),
-				_getGroupId(workflowDefinition.getGroupExternalReferenceCode()),
-				workflowDefinition.getName(),
+				_getGroupId(workflowDefinition), workflowDefinition.getName(),
 				GetterUtil.getString(
 					workflowDefinition.getScope(),
 					WorkflowDefinitionConstants.SCOPE_ALL),
@@ -243,8 +246,7 @@ public class WorkflowDefinitionResourceImpl
 			_workflowDefinitionManager.saveWorkflowDefinition(
 				content.getBytes(), contextCompany.getCompanyId(),
 				workflowDefinition.getExternalReferenceCode(),
-				_getGroupId(workflowDefinition.getGroupExternalReferenceCode()),
-				workflowDefinition.getName(),
+				_getGroupId(workflowDefinition), workflowDefinition.getName(),
 				GetterUtil.getString(
 					workflowDefinition.getScope(),
 					WorkflowDefinitionConstants.SCOPE_ALL),
@@ -274,13 +276,35 @@ public class WorkflowDefinitionResourceImpl
 		return postWorkflowDefinitionDeploy(workflowDefinition);
 	}
 
-	private long _getGroupId(String externalReferenceCode) throws Exception {
-		if (Validator.isNull(externalReferenceCode)) {
+	private long _getGroupId(WorkflowDefinition workflowDefinition)
+		throws Exception {
+
+		KaleoDefinition kaleoDefinition =
+			_kaleoDefinitionLocalService.fetchKaleoDefinition(
+				workflowDefinition.getName(),
+				new ServiceContext() {
+					{
+						setCompanyId(contextCompany.getCompanyId());
+					}
+				});
+
+		if ((kaleoDefinition != null) &&
+			Objects.equals(
+				kaleoDefinition.getScope(),
+				WorkflowDefinitionConstants.SCOPE_AI)) {
+
+			return kaleoDefinition.getGroupId();
+		}
+
+		String groupExternalReferenceCode =
+			workflowDefinition.getGroupExternalReferenceCode();
+
+		if (Validator.isNull(groupExternalReferenceCode)) {
 			return 0;
 		}
 
 		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, contextCompany.getCompanyId());
+			groupExternalReferenceCode, contextCompany.getCompanyId());
 
 		if (group == null) {
 			return 0;
@@ -440,6 +464,9 @@ public class WorkflowDefinitionResourceImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private KaleoDefinitionLocalService _kaleoDefinitionLocalService;
 
 	@Reference
 	private Language _language;

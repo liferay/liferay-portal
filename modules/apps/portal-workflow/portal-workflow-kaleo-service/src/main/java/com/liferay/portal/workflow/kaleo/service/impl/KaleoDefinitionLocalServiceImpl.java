@@ -394,8 +394,15 @@ public class KaleoDefinitionLocalServiceImpl
 			serviceContext.getScopeGroupId(), kaleoDefinition.getScope());
 
 		kaleoDefinition.setExternalReferenceCode(externalReferenceCode);
-		kaleoDefinition.setGroupId(
-			_staging.getLiveGroupId(serviceContext.getScopeGroupId()));
+
+		if (!Objects.equals(
+				kaleoDefinition.getScope(),
+				WorkflowDefinitionConstants.SCOPE_AI)) {
+
+			kaleoDefinition.setGroupId(
+				_staging.getLiveGroupId(serviceContext.getScopeGroupId()));
+		}
+
 		kaleoDefinition.setUserId(user.getUserId());
 		kaleoDefinition.setUserName(user.getFullName());
 		kaleoDefinition.setCreateDate(date);
