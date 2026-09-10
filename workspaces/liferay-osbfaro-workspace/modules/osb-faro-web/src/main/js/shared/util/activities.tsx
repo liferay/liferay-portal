@@ -567,7 +567,6 @@ export const mergeCampaignDays = (
 	// Every date here is a calendar date of the same fixed shape, so string
 	// order matches chronological order. ownsDay above already relies on that.
 
-
 	return [...days, ...campaignOnlyDays].sort((a, b) =>
 		b.date.localeCompare(a.date)
 	);
