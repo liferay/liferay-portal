@@ -7,6 +7,7 @@ package com.liferay.fragment.processor;
 
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
+import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
@@ -86,6 +87,11 @@ public class DefaultFragmentEntryProcessorContext
 	@Override
 	public InfoForm getInfoForm() {
 		return _infoForm;
+	}
+
+	@Override
+	public InputTemplateNode getInputTemplateNode() {
+		return _inputTemplateNode;
 	}
 
 	@Override
@@ -183,6 +189,10 @@ public class DefaultFragmentEntryProcessorContext
 		_infoForm = infoForm;
 	}
 
+	public void setInputTemplateNode(InputTemplateNode inputTemplateNode) {
+		_inputTemplateNode = inputTemplateNode;
+	}
+
 	public void setPreviewClassNameId(long previewClassNameId) {
 		_previewClassNameId = previewClassNameId;
 	}
@@ -212,6 +222,7 @@ public class DefaultFragmentEntryProcessorContext
 	private final HttpServletResponse _httpServletResponse;
 	private InfoForm _infoForm;
 	private InfoItemReference _infoItemReference;
+	private InputTemplateNode _inputTemplateNode;
 	private final Locale _locale;
 	private final String _mode;
 	private long _previewClassNameId;

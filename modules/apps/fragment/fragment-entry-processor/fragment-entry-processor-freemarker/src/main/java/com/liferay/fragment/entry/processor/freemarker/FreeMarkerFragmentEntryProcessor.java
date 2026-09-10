@@ -9,6 +9,7 @@ import com.liferay.fragment.entry.processor.freemarker.internal.configuration.Fr
 import com.liferay.fragment.exception.FragmentEntryContentException;
 import com.liferay.fragment.helper.FragmentEntryLinkHelper;
 import com.liferay.fragment.input.template.parser.FragmentEntryInputTemplateNodeContextHelper;
+import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.FragmentEntryProcessor;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
@@ -160,18 +161,25 @@ public class FreeMarkerFragmentEntryProcessor
 			).build());
 
 		if (fragmentEntryLink.isTypeInput()) {
-			template.put(
-				"input",
-				_fragmentEntryInputTemplateNodeContextHelper.
-					toInputTemplateNode(
-						fragmentEntryProcessorContext.getAttributes(),
-						_fragmentEntryLinkHelper.getFragmentEntryName(
+			InputTemplateNode inputTemplateNode =
+				fragmentEntryProcessorContext.getInputTemplateNode();
+
+			if (inputTemplateNode == null) {
+				inputTemplateNode =
+					_fragmentEntryInputTemplateNodeContextHelper.
+						toInputTemplateNode(
+							fragmentEntryProcessorContext.getAttributes(),
+							_fragmentEntryLinkHelper.getFragmentEntryName(
+								fragmentEntryLink,
+								fragmentEntryProcessorContext.getLocale()),
 							fragmentEntryLink,
-							fragmentEntryProcessorContext.getLocale()),
-						fragmentEntryLink,
-						fragmentEntryProcessorContext.getHttpServletRequest(),
-						fragmentEntryProcessorContext.getInfoForm(),
-						fragmentEntryProcessorContext.getLocale()));
+							fragmentEntryProcessorContext.
+								getHttpServletRequest(),
+							fragmentEntryProcessorContext.getInfoForm(),
+							fragmentEntryProcessorContext.getLocale());
+			}
+
+			template.put("input", inputTemplateNode);
 		}
 
 		template.prepareTaglib(

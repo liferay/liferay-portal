@@ -5,6 +5,7 @@
 
 package com.liferay.fragment.processor;
 
+import com.liferay.fragment.input.template.parser.InputTemplateNode;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -53,6 +54,10 @@ public interface FragmentEntryProcessorContext {
 	public HttpServletResponse getHttpServletResponse();
 
 	public InfoForm getInfoForm();
+
+	public default InputTemplateNode getInputTemplateNode() {
+		return null;
+	}
 
 	public Locale getLocale();
 

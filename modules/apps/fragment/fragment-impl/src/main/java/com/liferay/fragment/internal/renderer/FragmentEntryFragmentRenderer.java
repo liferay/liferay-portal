@@ -162,23 +162,6 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		return fragmentEntryLink;
 	}
 
-	private JSONObject _getInputJSONObject(
-		FragmentEntryLink fragmentEntryLink,
-		FragmentRendererContext fragmentRendererContext,
-		HttpServletRequest httpServletRequest) {
-
-		InputTemplateNode inputTemplateNode =
-			_fragmentEntryInputTemplateNodeContextHelper.toInputTemplateNode(
-				fragmentRendererContext.getAttributes(),
-				_fragmentEntryLinkHelper.getFragmentEntryName(
-					fragmentEntryLink, fragmentRendererContext.getLocale()),
-				fragmentEntryLink, httpServletRequest,
-				fragmentRendererContext.getInfoForm(),
-				fragmentRendererContext.getLocale());
-
-		return inputTemplateNode.toJSONObject();
-	}
-
 	private boolean _isCacheable(
 		FragmentEntryLink fragmentEntryLink,
 		FragmentRendererContext fragmentRendererContext) {
@@ -245,7 +228,8 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 	private String _renderFragmentEntry(
 		String configuration, String css,
 		FragmentRendererContext fragmentRendererContext, String html,
-		HttpServletRequest httpServletRequest, String nonce) {
+		HttpServletRequest httpServletRequest,
+		InputTemplateNode inputTemplateNode, String nonce) {
 
 		StringBundler sb = new StringBundler(35);
 
@@ -350,11 +334,7 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 		if (fragmentEntryLink.isTypeInput()) {
 			sb.append("; const input = ");
-			sb.append(
-				JSONUtil.toString(
-					_getInputJSONObject(
-						fragmentEntryLink, fragmentRendererContext,
-						httpServletRequest)));
+			sb.append(JSONUtil.toString(inputTemplateNode.toJSONObject()));
 			sb.append("; input.value = Liferay.Util.unescapeHTML(input.value ");
 			sb.append("?? ''); Object.keys(input.valueI18n).forEach(");
 			sb.append("function(key){ input.valueI18n[key] = Liferay.Util.");
@@ -442,6 +422,24 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 		defaultFragmentEntryProcessorContext.setSegmentsEntryIds(
 			fragmentRendererContext.getSegmentsEntryIds());
 
+		InputTemplateNode inputTemplateNode = null;
+
+		if (fragmentEntryLink.isTypeInput()) {
+			inputTemplateNode =
+				_fragmentEntryInputTemplateNodeContextHelper.
+					toInputTemplateNode(
+						fragmentRendererContext.getAttributes(),
+						_fragmentEntryLinkHelper.getFragmentEntryName(
+							fragmentEntryLink,
+							fragmentRendererContext.getLocale()),
+						fragmentEntryLink, httpServletRequest,
+						fragmentRendererContext.getInfoForm(),
+						fragmentRendererContext.getLocale());
+
+			defaultFragmentEntryProcessorContext.setInputTemplateNode(
+				inputTemplateNode);
+		}
+
 		String css = StringPool.BLANK;
 
 		if (Validator.isNotNull(fragmentEntryLink.getCss())) {
@@ -466,7 +464,8 @@ public class FragmentEntryFragmentRenderer implements FragmentRenderer {
 
 		content = _renderFragmentEntry(
 			_toConfiguration(fragmentEntryLink, fragmentRendererContext), css,
-			fragmentRendererContext, html, httpServletRequest, nonce);
+			fragmentRendererContext, html, httpServletRequest,
+			inputTemplateNode, nonce);
 
 		if (!cacheable) {
 			return content;
