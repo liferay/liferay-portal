@@ -1,0 +1,56 @@
+{
+	"#child-nodes": [
+		{
+			"#tag-name": "name",
+			"#value": "Workflow Definition"
+		},
+		{
+			"#tag-name": "version",
+			"#value": "1"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "start"
+				},
+				{
+					"#tag-name": "initial",
+					"#value": "true"
+				},
+				{
+					"#child-nodes": [
+						{
+							"#child-nodes": [
+								{
+									"#tag-name": "name",
+									"#value": "end"
+								},
+								{
+									"#tag-name": "target",
+									"#value": "end"
+								}
+							],
+							"#tag-name": "transition"
+						}
+					],
+					"#tag-name": "transitions"
+				}
+			],
+			"#tag-name": "state"
+		},
+		{
+			"#child-nodes": [
+				{
+					"#tag-name": "name",
+					"#value": "end"
+				}
+			],
+			"#tag-name": "state"
+		}
+	],
+	"#tag-name": "workflow-definition",
+	"xmlns": "urn:liferay.com:liferay-workflow_7.4.0",
+	"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+	"xsi:schemaLocation": "urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+}

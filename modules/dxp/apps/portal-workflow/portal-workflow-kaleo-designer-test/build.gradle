@@ -1,4 +1,7 @@
 dependencies {
+	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
+	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
