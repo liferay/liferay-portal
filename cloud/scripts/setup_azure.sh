@@ -210,6 +210,10 @@ function _get_observability_parameters {
 				value: ($platform_module_outputs.observability_identity_client_id.value // "")
 			},
 			{
+				name: "azure.prometheusWorkspaceEndpoint",
+				value: ($platform_module_outputs.prometheus_workspace_endpoint.value // "")
+			},
+			{
 				name: "azure.remoteWrite.dataCollectionRuleId",
 				value: ($platform_module_outputs.prometheus_data_collection_rule_id.value // "")
 			},
@@ -224,6 +228,18 @@ function _get_observability_parameters {
 			{
 				name: "cloudProvider",
 				value: "azure"
+			},
+			{
+				name: "grafana.grafana\\.ini.azure.workload_identity_client_id",
+				value: ($platform_module_outputs.observability_identity_client_id.value // "")
+			},
+			{
+				name: "grafana.grafana\\.ini.azure.workload_identity_tenant_id",
+				value: $tenant_id
+			},
+			{
+				name: "grafana.serviceAccount.annotations.azure\\.workload\\.identity/client-id",
+				value: ($platform_module_outputs.observability_identity_client_id.value // "")
 			}
 		]
 		| map(select(.value != ""))'
