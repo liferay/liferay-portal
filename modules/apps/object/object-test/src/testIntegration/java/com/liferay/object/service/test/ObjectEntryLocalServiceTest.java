@@ -6779,6 +6779,7 @@ public class ObjectEntryLocalServiceTest {
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);
+
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
