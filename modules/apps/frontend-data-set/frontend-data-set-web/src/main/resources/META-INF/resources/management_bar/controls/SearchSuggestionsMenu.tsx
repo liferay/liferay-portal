@@ -32,9 +32,6 @@ function SearchSuggestionsMenu({
 
 	const menuRef = useRef<HTMLDivElement>(null);
 
-	// The menu is mounted for as long as it is open, so the history is read
-	// once on the way in and kept in step with the API from there on
-
 	const [queries, setQueries] = useState(() => recentSearches.get(id));
 
 	// The menu is as wide as the search box, so it watches the box rather than

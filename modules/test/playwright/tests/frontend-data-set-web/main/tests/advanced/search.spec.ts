@@ -313,7 +313,7 @@ test('Search Bar is shown/hidden according to FDS configuration', async ({
 });
 
 test(
-	'Recent searches',
+	'Search suggestions',
 	{
 		tag: ['@LPD-89792'],
 	},
@@ -451,7 +451,7 @@ test(
 );
 
 test(
-	'Recent searches follow the search box',
+	'Search suggestions follow the search box',
 	{
 		tag: ['@LPD-89792'],
 	},

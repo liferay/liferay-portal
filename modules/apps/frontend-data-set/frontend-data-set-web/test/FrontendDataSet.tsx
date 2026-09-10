@@ -195,7 +195,7 @@ describe('FrontendDataSet', () => {
 		expect(new Set(identities).size).toBe(1);
 	});
 
-	describe('recent searches', () => {
+	describe('Search suggestions: recent searches', () => {
 		async function typeAndSettle(
 			requests: ReturnType<typeof mockPendingRequests>,
 			keystrokes: string,

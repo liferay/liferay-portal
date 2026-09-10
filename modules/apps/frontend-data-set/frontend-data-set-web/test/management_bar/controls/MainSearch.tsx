@@ -172,7 +172,7 @@ describe('MainSearch', () => {
 		expect(onSearch).toHaveBeenCalledWith({query: 'ab'});
 	});
 
-	describe('recent searches', () => {
+	describe('Search suggestions: recent searches', () => {
 		function storeQueries(queries: Array<string>, fdsName = FDS_NAME) {
 			queries.forEach((query) => recentSearches.add(fdsName, query));
 		}
