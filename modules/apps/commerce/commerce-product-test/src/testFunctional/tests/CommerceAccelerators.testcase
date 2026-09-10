@@ -671,7 +671,7 @@ definition {
 			layoutName = "Test Content Page Name",
 			type = "content");
 
-		ContentPagesNavigator.openEditContentPage(
+		CommerceNavigator.openEditContentPage(
 			pageName = "Test Content Page Name",
 			siteName = "Minium");
 
@@ -852,7 +852,7 @@ definition {
 			layoutName = "Test Content Page Name",
 			type = "content");
 
-		ContentPagesNavigator.openEditContentPage(
+		CommerceNavigator.openEditContentPage(
 			pageName = "Test Content Page Name",
 			siteName = "Minium");
 

@@ -211,7 +211,7 @@ definition {
 				layoutName = "Test Public Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
 				siteName = "Minium");
 
@@ -237,7 +237,7 @@ definition {
 				layoutName = "Test Private Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
 				siteName = "Minium");
@@ -384,7 +384,7 @@ definition {
 				layoutName = "Test Private Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
 				siteName = "Minium");
@@ -478,7 +478,7 @@ definition {
 				layoutName = "Test Public Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
 				siteName = "Minium");
 
@@ -491,7 +491,7 @@ definition {
 				layoutName = "Test Private Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
 				siteName = "Minium");
@@ -576,7 +576,7 @@ definition {
 				layoutName = "Test Public Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
 				siteName = "Minium");
 
@@ -589,7 +589,7 @@ definition {
 				layoutName = "Test Private Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
 				siteName = "Minium");
@@ -683,7 +683,7 @@ definition {
 				layoutName = "Test Public Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
 				siteName = "Minium");
 
@@ -769,7 +769,7 @@ definition {
 				layoutName = "Test Private Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Private Content Page",
 				privateLayout = "true",
 				siteName = "Minium");
@@ -874,7 +874,7 @@ definition {
 				layoutName = "Test Public Content Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Public Content Page",
 				siteName = "Minium");
 

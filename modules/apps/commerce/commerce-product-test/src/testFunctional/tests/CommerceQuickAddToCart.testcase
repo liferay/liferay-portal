@@ -928,7 +928,7 @@ definition {
 				layoutName = "Mini Cart",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Mini Cart",
 				siteName = "Minium");
 

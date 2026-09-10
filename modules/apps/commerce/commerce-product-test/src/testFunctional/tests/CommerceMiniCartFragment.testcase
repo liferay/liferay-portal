@@ -47,7 +47,7 @@ definition {
 				layoutName = "Test Mini Cart Fragment Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Mini Cart Fragment Page",
 				siteName = "Minium");
 
@@ -115,7 +115,7 @@ definition {
 				layoutName = "Test Mini Cart Fragment Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Mini Cart Fragment Page",
 				siteName = "Minium");
 
@@ -181,7 +181,7 @@ definition {
 				layoutName = "Test Mini Cart Fragment Page",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Test Mini Cart Fragment Page",
 				siteName = "Minium");
 

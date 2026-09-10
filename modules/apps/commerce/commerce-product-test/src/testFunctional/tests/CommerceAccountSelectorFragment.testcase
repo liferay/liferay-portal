@@ -87,7 +87,7 @@ definition {
 				layoutName = "Mini Cart",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Mini Cart",
 				siteName = "Minium");
 
@@ -200,7 +200,7 @@ definition {
 				layoutName = "Account Selector",
 				type = "content");
 
-			ContentPagesNavigator.openEditContentPage(
+			CommerceNavigator.openEditContentPage(
 				pageName = "Account Selector",
 				siteName = "Minium");
 
