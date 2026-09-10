@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.Servlet;
 
@@ -116,8 +117,14 @@ public class MCPServerProfileToolObjectEntryModelListener
 	private void _validateRestrictFields(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		String[] restrictFieldNames = StringUtil.split(
-			MapUtil.getString(objectEntry.getValues(), "restrictFields"));
+		String restrictFields = MapUtil.getString(
+			objectEntry.getValues(), "restrictFields");
+
+		if (Validator.isNull(restrictFields)) {
+			return;
+		}
+
+		String[] restrictFieldNames = StringUtil.split(restrictFields);
 
 		Set<String> uniqueRestrictFieldNames = new HashSet<>();
 
