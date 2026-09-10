@@ -58,14 +58,36 @@ public class ReflectionTestUtil {
 		}
 	}
 
+	public static Method getMethod(
+		Class<?> clazz, String methodName, Class<?>... parameterTypes) {
+
+		while (clazz != null) {
+			try {
+				Method method = clazz.getDeclaredMethod(
+					methodName, parameterTypes);
+
+				method.setAccessible(true);
+
+				return method;
+			}
+			catch (NoSuchMethodException noSuchMethodException) {
+				clazz = clazz.getSuperclass();
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		}
+
+		throw new RuntimeException(
+			new NoSuchMethodException("No method with name " + methodName));
+	}
+
 	public static <T> T invoke(
 			Class<?> clazz, String methodName, Class<?>[] parameterTypes,
 			Object... parameters)
 		throws Exception {
 
-		Method method = clazz.getDeclaredMethod(methodName, parameterTypes);
-
-		method.setAccessible(true);
+		Method method = getMethod(clazz, methodName, parameterTypes);
 
 		if (!Modifier.isStatic(method.getModifiers())) {
 			throw new RuntimeException("Method is not static " + methodName);
@@ -89,26 +111,15 @@ public class ReflectionTestUtil {
 		Object instance, String methodName, Class<?>[] parameterTypes,
 		Object... parameters) {
 
-		Class<?> clazz = instance.getClass();
+		Method method = getMethod(
+			instance.getClass(), methodName, parameterTypes);
 
-		while (clazz != null) {
-			try {
-				Method method = clazz.getDeclaredMethod(
-					methodName, parameterTypes);
-
-				method.setAccessible(true);
-
-				return (T)method.invoke(instance, parameters);
-			}
-			catch (NoSuchMethodException noSuchMethodException) {
-				clazz = clazz.getSuperclass();
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
+		try {
+			return (T)method.invoke(instance, parameters);
 		}
-
-		throw new RuntimeException("Unable to find method " + methodName);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
 	}
 
 	public static void setFieldValue(
