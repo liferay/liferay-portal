@@ -36,6 +36,12 @@ public class CloudBucketUtilTest
 			"cloud.ci.s3.bucket.object.refs.dir",
 			JenkinsResultsParserUtil.getCanonicalPath(
 				temporaryFolder.newFolder("s3-object-refs")));
+		buildProperties.setProperty(
+			"jenkins.tmp.dir",
+			JenkinsResultsParserUtil.combine(
+				JenkinsResultsParserUtil.getCanonicalPath(
+					temporaryFolder.getRoot()),
+				"/"));
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 	}
@@ -68,6 +74,62 @@ public class CloudBucketUtilTest
 			oldS3ObjectRefFile.getPath(), oldS3ObjectRefFile.exists());
 
 		Mockito.verifyNoInteractions(shell);
+	}
+
+	@Test
+	public void testDownloadS3File() throws Exception {
+		_enableChecksumValidation();
+
+		_testDownloadS3File(1, "build-database.json");
+		_testDownloadS3File(2, RandomTestUtil.randomString());
+	}
+
+	@Test
+	public void testExecuteAWSCommandsRetries() throws Exception {
+		Shell shell = mockShell();
+
+		Mockito.doReturn(
+			new Shell.ExecutionResult(1, "Unable to locate credentials", "")
+		).when(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(executionRequest, "aws s3 cp"))
+		);
+
+		try (MockedStatic<JenkinsResultsParserUtil> mockedStatic =
+				Mockito.mockStatic(
+					JenkinsResultsParserUtil.class, Mockito.CALLS_REAL_METHODS);
+			MockedStatic<NotificationUtil> notificationMockedStatic =
+				Mockito.mockStatic(NotificationUtil.class)) {
+
+			mockedStatic.when(
+				() -> JenkinsResultsParserUtil.sleep(Mockito.anyLong())
+			).thenAnswer(
+				invocation -> null
+			);
+
+			CloudBucketUtil.uploadS3File(
+				_randomS3ObjectPath(), temporaryFolder.newFile());
+
+			mockedStatic.verify(
+				() -> JenkinsResultsParserUtil.sleep(Mockito.anyLong()),
+				Mockito.times(3));
+
+			Mockito.verify(
+				shell, Mockito.times(4)
+			).doExecute(
+				Mockito.argThat(
+					executionRequest -> hasCommand(
+						executionRequest, "aws s3 cp"))
+			);
+
+			notificationMockedStatic.verify(
+				() -> NotificationUtil.sendSlackNotification(
+					Mockito.anyString(), Mockito.anyString(),
+					Mockito.anyString(), Mockito.anyString(),
+					Mockito.anyString()));
+		}
 	}
 
 	@Test
@@ -260,10 +322,67 @@ public class CloudBucketUtilTest
 				executionRequest -> hasCommand(
 					executionRequest, "aws s3 cp", targetS3ObjectPath))
 		);
+
+		_enableChecksumValidation();
+
+		_testUploadS3File(1, "build-database.json");
+		_testUploadS3File(2, RandomTestUtil.randomString());
+	}
+
+	@Test
+	public void testValidateChecksumFile() throws Exception {
+		_enableChecksumValidation();
+
+		Shell shell = mockShell();
+
+		setShellCommandOutput("sha512sum", shell, RandomTestUtil.randomSHA());
+
+		File destinationFile = temporaryFolder.newFile();
+
+		File destinationChecksumFile = new File(
+			destinationFile.getParentFile(),
+			destinationFile.getName() + ".sha512");
+
+		JenkinsResultsParserUtil.writeSHAFile(
+			destinationFile, destinationChecksumFile);
+
+		_validateChecksumFile(destinationFile, _randomS3ObjectPath());
+
+		Assert.assertTrue(
+			"Deleted a file whose checksum matched", destinationFile.exists());
+
+		JenkinsResultsParserUtil.write(
+			destinationChecksumFile, RandomTestUtil.randomSHA());
+
+		try {
+			_validateChecksumFile(destinationFile, _randomS3ObjectPath());
+
+			Assert.fail("Accepted a file whose checksum did not match");
+		}
+		catch (IOException ioException) {
+			String message = ioException.getMessage();
+
+			Assert.assertTrue(
+				message, message.contains(destinationFile.getName()));
+		}
+
+		Assert.assertFalse(
+			"Kept a file whose checksum did not match",
+			destinationFile.exists());
 	}
 
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
+
+	private void _enableChecksumValidation() throws Exception {
+		Properties buildProperties =
+			JenkinsResultsParserUtil.getBuildProperties();
+
+		buildProperties.setProperty(
+			"cloud.ci.s3.bucket.validate.checksum.enabled", "true");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+	}
 
 	private long _getLastModified(long ageSeconds) {
 		return System.currentTimeMillis() - (ageSeconds * 1000);
@@ -297,6 +416,21 @@ public class CloudBucketUtilTest
 				CloudBucketUtil.class, "_replaceS3ObjectPath",
 				new Class<?>[] {String.class}, s3ObjectPath);
 		}
+	}
+
+	private void _testDownloadS3File(int commandCount, String fileName)
+		throws Exception {
+
+		Shell shell = mockShell();
+
+		setShellCommandOutput("aws s3 cp", shell, "");
+
+		String s3ObjectPath = _randomS3ObjectPath();
+
+		CloudBucketUtil.downloadS3File(
+			new File(temporaryFolder.getRoot(), fileName), s3ObjectPath);
+
+		_verifyS3Copies(commandCount, s3ObjectPath, shell);
 	}
 
 	private void _testGetNewestS3ObjectLastModified(
@@ -355,6 +489,52 @@ public class CloudBucketUtilTest
 		catch (RuntimeException runtimeException) {
 			testEquals(expectedMessage, runtimeException.getMessage());
 		}
+	}
+
+	private void _testUploadS3File(int commandCount, String fileName)
+		throws Exception {
+
+		Shell shell = mockShell();
+
+		setShellCommandOutput("aws s3 cp", shell, "");
+		setShellCommandOutput("sha512sum", shell, RandomTestUtil.randomSHA());
+
+		String s3ObjectPath = _randomS3ObjectPath();
+
+		CloudBucketUtil.uploadS3File(
+			s3ObjectPath, temporaryFolder.newFile(fileName));
+
+		_verifyS3Copies(commandCount, s3ObjectPath, shell);
+	}
+
+	private void _validateChecksumFile(
+			File destinationFile, String s3SourcePath)
+		throws Exception {
+
+		ReflectionTestUtil.invoke(
+			CloudBucketUtil.class, "_validateChecksumFile",
+			new Class<?>[] {File.class, String.class}, destinationFile,
+			s3SourcePath);
+	}
+
+	private void _verifyS3Copies(
+			int commandCount, String s3ObjectPath, Shell shell)
+		throws Exception {
+
+		Mockito.verify(
+			shell, Mockito.times(commandCount)
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(executionRequest, "aws s3 cp"))
+		);
+
+		Mockito.verify(
+			shell, Mockito.times(commandCount - 1)
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(
+					executionRequest, "aws s3 cp", s3ObjectPath + ".sha512"))
+		);
 	}
 
 	private File _writeS3ObjectRefFile(
