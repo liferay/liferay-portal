@@ -127,10 +127,10 @@
 			"com_liferay_translation_web_internal_portlet_TranslationPortlet": false
 		},
 		"description_i18n": {
-			"en_US": "Test Design Library Description"
+			"en_US": "Test Design Library 1 Description"
 		},
 		"name_i18n": {
-			"en_US": "Test Design Library"
+			"en_US": "Test Design Library 1"
 		},
 		"type": "DesignLibrary"
 	},

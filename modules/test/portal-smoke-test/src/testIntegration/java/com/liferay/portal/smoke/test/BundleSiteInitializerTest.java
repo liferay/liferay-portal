@@ -492,11 +492,11 @@ public class BundleSiteInitializerTest {
 				logEntries.toString(),
 				_hasLogEntryMessage(
 					logEntries,
-					"Unable to get asset library Test Design Library"));
+					"Unable to get asset library Test Design Library 1"));
 
 			Assert.assertNull(
 				_groupLocalService.fetchGroup(
-					_serviceContext.getCompanyId(), "Test Design Library"));
+					_serviceContext.getCompanyId(), "Test Design Library 1"));
 		}
 		finally {
 			bundle1.uninstall();
@@ -1730,10 +1730,10 @@ public class BundleSiteInitializerTest {
 
 	private void _assertDepotEntryDesignAssets2() throws Exception {
 		Group group1 = _assertDesignLibraryAssets(
-			"Test Design Library", "test-design-library-fragment-entry",
-			"Test Design Library Fragment Entry",
-			"test-design-library-style-book",
-			"Test Design Library Style Book Entry");
+			"Test Design Library 1", "test-design-library-1-fragment-entry",
+			"Test Design Library 1 Fragment Entry",
+			"test-design-library-1-style-book",
+			"Test Design Library 1 Style Book Entry");
 		Group group2 = _assertDesignLibraryAssets(
 			"Test Design Library 2", "test-design-library-2-fragment-entry",
 			"Test Design Library 2 Fragment Entry",
@@ -1745,13 +1745,13 @@ public class BundleSiteInitializerTest {
 				group1.getGroupId(), "test-design-library-2-fragment-entry"));
 		Assert.assertNull(
 			_fragmentEntryLocalService.fetchFragmentEntry(
-				group2.getGroupId(), "test-design-library-fragment-entry"));
+				group2.getGroupId(), "test-design-library-1-fragment-entry"));
 		Assert.assertNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				group1.getGroupId(), "test-design-library-2-style-book"));
 		Assert.assertNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
-				group2.getGroupId(), "test-design-library-style-book"));
+				group2.getGroupId(), "test-design-library-1-style-book"));
 
 		List<DepotAppCustomization> depotAppCustomizations =
 			_depotAppCustomizationLocalService.getDepotAppCustomizations(
