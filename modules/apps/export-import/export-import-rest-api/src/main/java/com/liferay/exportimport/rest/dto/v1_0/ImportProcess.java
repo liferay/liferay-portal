@@ -223,7 +223,7 @@ public class ImportProcess implements Serializable {
 	private Supplier<Date> _dateModifiedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The import process's error message when it did not end successfully."
+		description = "The import process's error message when it failed."
 	)
 	public String getErrorMessage() {
 		if (_errorMessageSupplier != null) {
@@ -259,7 +259,7 @@ public class ImportProcess implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The import process's error message when it did not end successfully."
+		description = "The import process's error message when it failed."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String errorMessage;
@@ -640,4 +640,4 @@ public class ImportProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1006764800
+// LIFERAY-REST-BUILDER-HASH:-2120728774
