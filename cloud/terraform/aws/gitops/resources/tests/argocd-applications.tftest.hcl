@@ -190,14 +190,6 @@ run "should_pass_the_configured_operator_settings_to_the_provider_application" {
 		}
 	}
 }
-variables {
-	deployment_name="liferay-test"
-	infrastructure_helm_chart_version="0.4.9"
-	infrastructure_provider_helm_chart_version="0.3.12"
-	liferay_git_repo_url="https://github.com/example/liferay-gitops.git"
-	liferay_helm_chart_version="0.4.20"
-	region="us-east-1"
-}
 run "should_permit_the_observability_chart_when_observability_is_enabled" {
 	assert {
 		condition=contains(kubernetes_manifest.infrastructure_appproject.manifest.spec.sourceRepos, "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability")
@@ -253,4 +245,12 @@ run "should_scope_liferay_applicationset_helm_values_by_prefix" {
 		error_message="The liferay-aws chart must include prefix for liferay-default chart at gatewayName Helm parameter"
 	}
 	command=plan
+}
+variables {
+	deployment_name="liferay-test"
+	infrastructure_helm_chart_version="0.4.9"
+	infrastructure_provider_helm_chart_version="0.3.12"
+	liferay_git_repo_url="https://github.com/example/liferay-gitops.git"
+	liferay_helm_chart_version="0.4.20"
+	region="us-east-1"
 }
