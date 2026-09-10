@@ -134,6 +134,66 @@ public class DDMFieldAttributeUpgradeProcessTest {
 	}
 
 	@Test
+	public void testUpgradeProcessWithExistingFileEntryIdAttribute()
+		throws Exception {
+
+		_addDLFileEntry(StringUtil.randomId());
+
+		_addJournalArticle(
+			StringBundler.concat(
+				"<img data-fileentryid=\"0\" src=\"", _getPreviewURL(),
+				"\"/>"));
+
+		_runUpgrade();
+
+		JournalArticle journalArticle = _getJournalArticle();
+
+		_assertContains(journalArticle.getContent(), "data-fileentryid=\"0\"");
+		_assertNotContains(
+			journalArticle.getContent(),
+			"data-fileentryid=\"" + _dlFileEntry.getFileEntryId() + "\"");
+	}
+
+	@Test
+	public void testUpgradeProcessWithHTMLDocumentValue() throws Exception {
+		_addDLFileEntry(StringUtil.randomId());
+
+		_addJournalArticle(
+			StringBundler.concat(
+				"<html lang=\"en\"><head><title>",
+				RandomTestUtil.randomString(), "</title></head><body><img ",
+				"src=\"", _getPreviewURL(), "\"/></body></html>"));
+
+		_runUpgrade();
+
+		JournalArticle journalArticle = _getJournalArticle();
+
+		_assertContains(journalArticle.getContent(), "<html lang=\"en\">");
+		_assertContains(
+			journalArticle.getContent(),
+			"data-fileentryid=\"" + _dlFileEntry.getFileEntryId() + "\"");
+	}
+
+	@Test
+	public void testUpgradeProcessWithImgTagInsidePictureElement()
+		throws Exception {
+
+		_addDLFileEntry(StringUtil.randomId());
+
+		String pictureElement = StringBundler.concat(
+			"<picture><img src=\"", _getPreviewURL(), "\"/></picture>");
+
+		_addJournalArticle(pictureElement);
+
+		_runUpgrade();
+
+		JournalArticle journalArticle = _getJournalArticle();
+
+		_assertContains(journalArticle.getContent(), pictureElement);
+		_assertNotContains(journalArticle.getContent(), "data-fileentryid=");
+	}
+
+	@Test
 	public void testUpgradeProcessWithLegacyEscapedImageURL() throws Exception {
 		_addDLFileEntry("large file name.png");
 		_addJournalArticle(
@@ -153,6 +213,26 @@ public class DDMFieldAttributeUpgradeProcessTest {
 		_assertContains(
 			journalArticle.getContent(),
 			"data-fileentryid=\"" + _dlFileEntry.getFileEntryId() + "\"");
+	}
+
+	@Test
+	public void testUpgradeProcessWithMarkupOutsideImgTags() throws Exception {
+		_addDLFileEntry(StringUtil.randomId());
+
+		String externalImgTag = "<img src=\"http://example.com/image.png\"/>";
+		String paragraph = "<p>" + RandomTestUtil.randomString(100) + "</p>";
+
+		_addJournalArticle(
+			StringBundler.concat(
+				paragraph, externalImgTag, "<img src=\"", _getPreviewURL(),
+				"\"/>"));
+
+		_runUpgrade();
+
+		JournalArticle journalArticle = _getJournalArticle();
+
+		_assertContains(journalArticle.getContent(), externalImgTag);
+		_assertContains(journalArticle.getContent(), paragraph);
 	}
 
 	private void _addDLFileEntry(String sourceFileName) throws Exception {
@@ -206,6 +286,21 @@ public class DDMFieldAttributeUpgradeProcessTest {
 
 			unsafeConsumer.accept(ddmFieldAttribute);
 		}
+	}
+
+	private void _assertNotContains(String content, String fragment) {
+		Assert.assertFalse(content, content.contains(fragment));
+	}
+
+	private JournalArticle _getJournalArticle() throws Exception {
+		return _journalArticleLocalService.getJournalArticle(
+			_journalArticle.getId());
+	}
+
+	private String _getPreviewURL() throws Exception {
+		return DLURLHelperUtil.getPreviewURL(
+			new LiferayFileEntry(_dlFileEntry),
+			new LiferayFileVersion(_dlFileEntry.getFileVersion()), null, null);
 	}
 
 	private void _runUpgrade() throws Exception {
