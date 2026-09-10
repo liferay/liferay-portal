@@ -1,5 +1,6 @@
 enum URLConstants {
 	AccountActivitiesDocumentationLink = 'https://learn.liferay.com/w/liferay-data-platform/index',
+	AccountsDocumentationLink = 'https://learn.liferay.com/w/liferay-data-platform/accounts',
 	APIOverviewDocumentationLink = 'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/workspace-data/managing-api-access',
 	AssetsAppearsBlogsOnDocumentation = 'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/touchpoints/assets-analytics/blogs-analytics#asset-appears-on',
 	AssetsAppearsDocumentsAndMediaOnDocumentation = 'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/touchpoints/assets-analytics/documents-and-media-analytics#asset-appears-on',

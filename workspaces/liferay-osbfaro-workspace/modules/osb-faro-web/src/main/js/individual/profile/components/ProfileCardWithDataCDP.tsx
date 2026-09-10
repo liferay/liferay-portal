@@ -268,7 +268,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 								<>
 									<span>
 										{Liferay.Language.get(
-											'check-back-later-to-see-if-data-has-been-received-from-your-data-sources,-or-try-a-different-date-range'
+											'check-back-later-to-verify-if-data-has-been-received-from-your-data-sources,-or-you-can-try-a-different-date-range'
 										)}
 									</span>
 
@@ -295,7 +295,9 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 								</>
 							}
 							spacer
-							title={Liferay.Language.get('no-data-was-found')}
+							title={Liferay.Language.get(
+								'there-is-no-activity-on-the-selected-period'
+							)}
 						/>
 					}
 					onClearSearch={handleClearSearch}

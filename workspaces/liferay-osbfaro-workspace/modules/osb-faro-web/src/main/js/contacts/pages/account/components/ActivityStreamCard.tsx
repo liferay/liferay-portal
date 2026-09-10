@@ -12,6 +12,8 @@ import AccountUserSessionQuery, {
 } from 'shared/queries/AccountUserSessionQuery';
 import ActivityChartEmptyState from 'shared/components/ActivityChartEmptyState';
 import ActivityStreamCard from 'shared/components/ActivityStreamCard';
+import ClayIcon from '@clayui/icon';
+import ClayLink from '@clayui/link';
 import ActivityStreamNoResults from 'shared/components/ActivityStreamNoResults';
 import formatAccountSessions from '../utils/formatAccountSessions';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
@@ -300,11 +302,40 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					loading={sessionsMappedResults.loading}
 					noData={
 						<NoResultsDisplay
-							description={Liferay.Language.get(
-								'check-back-later-to-see-if-data-has-been-received-from-your-data-sources,-or-try-a-different-date-range'
-							)}
+							description={
+								<>
+									<span>
+										{Liferay.Language.get(
+											'check-back-later-to-verify-if-data-has-been-received-from-your-data-sources,-or-you-can-try-a-different-date-range'
+										)}
+									</span>
+
+									<ClayLink
+										className="d-block mb-3"
+										decoration="underline"
+										href={
+											URLConstants.AccountsDocumentationLink
+										}
+										key="DOCUMENTATION"
+										target="_blank"
+									>
+										{Liferay.Language.get(
+											'learn-more-about-accounts'
+										)}
+
+										<span className="inline-item inline-item-after">
+											<ClayIcon
+												fontSize={8}
+												symbol="shortcut"
+											/>
+										</span>
+									</ClayLink>
+								</>
+							}
 							spacer
-							title={Liferay.Language.get('no-data-was-found')}
+							title={Liferay.Language.get(
+								'there-is-no-activity-on-the-selected-period'
+							)}
 						/>
 					}
 					onClearSearch={handleClearSearch}
