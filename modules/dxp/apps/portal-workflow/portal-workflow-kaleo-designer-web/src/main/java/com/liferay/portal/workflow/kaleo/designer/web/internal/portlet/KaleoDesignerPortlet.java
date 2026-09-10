@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -51,6 +52,9 @@ import com.liferay.portal.workflow.kaleo.designer.web.constants.KaleoDesignerPor
 import com.liferay.portal.workflow.kaleo.designer.web.internal.constants.KaleoDesignerWebKeys;
 import com.liferay.portal.workflow.kaleo.designer.web.internal.portlet.display.context.KaleoDesignerDisplayContext;
 import com.liferay.portal.workflow.kaleo.exception.DuplicateKaleoDefinitionNameException;
+import com.liferay.portal.workflow.kaleo.exception.NoSuchDefinitionException;
+import com.liferay.portal.workflow.kaleo.exception.NoSuchDefinitionVersionException;
+import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.runtime.action.ActionExecutorManager;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionLocalService;
@@ -125,7 +129,14 @@ public class KaleoDesignerPortlet extends MVCPortlet {
 				_setKaleoDefinitionVersionRenderRequestAttribute(renderRequest);
 			}
 			catch (Exception exception) {
-				_log.error(exception);
+				if (isSessionErrorException(exception)) {
+					hideDefaultErrorMessage(renderRequest);
+
+					SessionErrors.add(renderRequest, exception.getClass());
+				}
+				else {
+					throw new PortletException(exception);
+				}
 			}
 		}
 
@@ -214,6 +225,28 @@ public class KaleoDesignerPortlet extends MVCPortlet {
 		if (!permissionChecker.isCompanyAdmin()) {
 			throw new PrincipalException.MustBeCompanyAdmin(
 				permissionChecker.getUserId());
+		}
+	}
+
+	@Override
+	protected void doDispatch(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		if (SessionErrors.contains(
+				renderRequest, NoSuchDefinitionException.class.getName()) ||
+			SessionErrors.contains(
+				renderRequest,
+				NoSuchDefinitionVersionException.class.getName()) ||
+			SessionErrors.contains(
+				renderRequest, PrincipalException.getNestedClasses())) {
+
+			hideDefaultErrorMessage(renderRequest);
+
+			include("/designer/error.jsp", renderRequest, renderResponse);
+		}
+		else {
+			super.doDispatch(renderRequest, renderResponse);
 		}
 	}
 
@@ -469,7 +502,7 @@ public class KaleoDesignerPortlet extends MVCPortlet {
 		if (Validator.isNull(draftVersion)) {
 			kaleoDefinitionVersion =
 				_kaleoDefinitionVersionLocalService.
-					fetchLatestKaleoDefinitionVersion(
+					getLatestKaleoDefinitionVersion(
 						themeDisplay.getCompanyId(), name);
 		}
 		else {
@@ -477,6 +510,10 @@ public class KaleoDesignerPortlet extends MVCPortlet {
 				_kaleoDefinitionVersionLocalService.getKaleoDefinitionVersion(
 					themeDisplay.getCompanyId(), name, draftVersion);
 		}
+
+		_kaleoDefinitionModelResourcePermission.check(
+			themeDisplay.getPermissionChecker(),
+			kaleoDefinitionVersion.getKaleoDefinition(), ActionKeys.VIEW);
 
 		renderRequest.setAttribute(
 			KaleoDesignerWebKeys.KALEO_DRAFT_DEFINITION,
@@ -497,6 +534,12 @@ public class KaleoDesignerPortlet extends MVCPortlet {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.workflow.kaleo.model.KaleoDefinition)"
+	)
+	private ModelResourcePermission<KaleoDefinition>
+		_kaleoDefinitionModelResourcePermission;
 
 	@Reference
 	private KaleoDefinitionVersionLocalService
