@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.Properties;
 
@@ -15,6 +16,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -109,6 +111,133 @@ public class CloudBucketUtilTest
 	}
 
 	@Test
+	public void testIsS3ObjectPathAvailable() throws Exception {
+		String s3ObjectPath = _randomS3ObjectPath();
+
+		_testIsS3ObjectPathAvailable(false, s3ObjectPath, "", s3ObjectPath);
+		_testIsS3ObjectPathAvailable(
+			true, s3ObjectPath, RandomTestUtil.randomString(), s3ObjectPath);
+
+		String targetS3ObjectPath = _randomS3ObjectPath();
+
+		_writeS3ObjectRefFile(s3ObjectPath, targetS3ObjectPath);
+
+		_testIsS3ObjectPathAvailable(
+			false, targetS3ObjectPath, "", s3ObjectPath);
+
+		Shell shell = mockShell();
+
+		testEquals(
+			false,
+			CloudBucketUtil.isS3ObjectPathAvailable(
+				RandomTestUtil.randomString()));
+
+		_writeS3ObjectRefFile(targetS3ObjectPath, s3ObjectPath);
+
+		testEquals(
+			false, CloudBucketUtil.isS3ObjectPathAvailable(s3ObjectPath));
+
+		Mockito.verifyNoInteractions(shell);
+	}
+
+	@Test
+	public void testReplaceS3ObjectPath() throws Exception {
+		String s3ObjectPath = _randomS3ObjectPath();
+
+		testEquals(s3ObjectPath, _replaceS3ObjectPath(s3ObjectPath));
+
+		_writeS3ObjectRefFile(s3ObjectPath, s3ObjectPath);
+
+		testEquals(s3ObjectPath, _replaceS3ObjectPath(s3ObjectPath));
+
+		String targetS3ObjectPath = _randomS3ObjectPath();
+
+		_writeS3ObjectRefFile(s3ObjectPath, targetS3ObjectPath);
+
+		testEquals(targetS3ObjectPath, _replaceS3ObjectPath(s3ObjectPath));
+
+		String middleS3ObjectPath = _randomS3ObjectPath();
+
+		_writeS3ObjectRefFile(middleS3ObjectPath, targetS3ObjectPath);
+		_writeS3ObjectRefFile(s3ObjectPath, middleS3ObjectPath);
+
+		testEquals(targetS3ObjectPath, _replaceS3ObjectPath(s3ObjectPath));
+	}
+
+	@Test
+	public void testReplaceS3ObjectPathFailure() throws Exception {
+		String s3ObjectPath = _randomS3ObjectPath();
+
+		File s3ObjectRefFile = _writeS3ObjectRefFile(s3ObjectPath, "");
+
+		_testReplaceS3ObjectPathFailure(
+			JenkinsResultsParserUtil.combine(
+				"Unable to resolve empty S3 object reference file ",
+				JenkinsResultsParserUtil.getCanonicalPath(s3ObjectRefFile)),
+			s3ObjectPath);
+
+		String s3ObjectRefFileContent = JenkinsResultsParserUtil.combine(
+			RandomTestUtil.randomString(), " ", _randomS3ObjectPath(), " ",
+			RandomTestUtil.randomString());
+
+		_writeS3ObjectRefFile(s3ObjectPath, s3ObjectRefFileContent);
+
+		_testReplaceS3ObjectPathFailure(
+			JenkinsResultsParserUtil.combine(
+				"Invalid S3 object path: ", s3ObjectRefFileContent, " in ",
+				JenkinsResultsParserUtil.getCanonicalPath(s3ObjectRefFile)),
+			s3ObjectPath);
+
+		String targetS3ObjectPath = _randomS3ObjectPath();
+
+		_writeS3ObjectRefFile(s3ObjectPath, targetS3ObjectPath);
+		_writeS3ObjectRefFile(targetS3ObjectPath, s3ObjectPath);
+
+		_testReplaceS3ObjectPathFailure(
+			JenkinsResultsParserUtil.combine(
+				"Unable to resolve circular S3 object reference ", s3ObjectPath,
+				" -> ", targetS3ObjectPath, " -> ", s3ObjectPath),
+			s3ObjectPath);
+	}
+
+	@Test
+	public void testReplaceS3ObjectPathRetries() throws Exception {
+		String s3ObjectPath = _randomS3ObjectPath();
+
+		_writeS3ObjectRefFile(s3ObjectPath, s3ObjectPath);
+
+		try (MockedStatic<JenkinsResultsParserUtil> mockedStatic =
+				Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			mockedStatic.when(
+				() -> JenkinsResultsParserUtil.read(Mockito.any(File.class))
+			).thenThrow(
+				new IOException()
+			).thenCallRealMethod();
+
+			mockedStatic.when(
+				() -> JenkinsResultsParserUtil.sleep(Mockito.anyLong())
+			).thenAnswer(
+				invocation -> null
+			);
+
+			String replaceS3ObjectPath = ReflectionTestUtil.invoke(
+				CloudBucketUtil.class, "_replaceS3ObjectPath",
+				new Class<?>[] {String.class}, s3ObjectPath);
+
+			mockedStatic.verify(
+				() -> JenkinsResultsParserUtil.read(Mockito.any(File.class)),
+				Mockito.times(2));
+			mockedStatic.verify(
+				() -> JenkinsResultsParserUtil.sleep(Mockito.anyLong()));
+
+			testEquals(s3ObjectPath, replaceS3ObjectPath);
+		}
+	}
+
+	@Test
 	public void testUploadS3File() throws Exception {
 		String s3ObjectPath = _randomS3ObjectPath();
 		String targetS3ObjectPath = _randomS3ObjectPath();
@@ -152,6 +281,24 @@ public class CloudBucketUtilTest
 			RandomTestUtil.randomString());
 	}
 
+	private String _replaceS3ObjectPath(String s3ObjectPath) throws Exception {
+		try (MockedStatic<JenkinsResultsParserUtil> mockedStatic =
+				Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			mockedStatic.when(
+				() -> JenkinsResultsParserUtil.sleep(Mockito.anyLong())
+			).thenAnswer(
+				invocation -> null
+			);
+
+			return ReflectionTestUtil.invoke(
+				CloudBucketUtil.class, "_replaceS3ObjectPath",
+				new Class<?>[] {String.class}, s3ObjectPath);
+		}
+	}
+
 	private void _testGetNewestS3ObjectLastModified(
 			long expected, String listObjectsOutput, String s3ObjectPath)
 		throws Exception {
@@ -173,6 +320,41 @@ public class CloudBucketUtilTest
 					executionRequest, "sort_by(Contents, &LastModified)[-1]",
 					s3ObjectPath.replaceFirst("s3://[^/]+/", "")))
 		);
+	}
+
+	private void _testIsS3ObjectPathAvailable(
+			boolean expected, String expectedS3ObjectPath,
+			String listS3FilesOutput, String s3ObjectPath)
+		throws Exception {
+
+		Shell shell = mockShell();
+
+		setShellCommandOutput("aws s3 ls", shell, listS3FilesOutput);
+
+		testEquals(
+			expected, CloudBucketUtil.isS3ObjectPathAvailable(s3ObjectPath));
+
+		Mockito.verify(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(
+					executionRequest, "aws s3 ls", expectedS3ObjectPath))
+		);
+	}
+
+	private void _testReplaceS3ObjectPathFailure(
+			String expectedMessage, String s3ObjectPath)
+		throws Exception {
+
+		try {
+			_replaceS3ObjectPath(s3ObjectPath);
+
+			Assert.fail(expectedMessage);
+		}
+		catch (RuntimeException runtimeException) {
+			testEquals(expectedMessage, runtimeException.getMessage());
+		}
 	}
 
 	private File _writeS3ObjectRefFile(
