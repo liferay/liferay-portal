@@ -43,8 +43,7 @@ public class KnowledgeBaseAttachmentResourceImpl
 	public void deleteKnowledgeBaseAttachment(Long knowledgeBaseAttachmentId)
 		throws Exception {
 
-		_portletFileRepository.deletePortletFileEntry(
-			knowledgeBaseAttachmentId);
+		_kbArticleService.deleteKBArticleAttachment(knowledgeBaseAttachmentId);
 	}
 
 	@Override
@@ -62,8 +61,7 @@ public class KnowledgeBaseAttachmentResourceImpl
 			kbArticle.getAttachmentsFileEntryByExternalReferenceCode(
 				externalReferenceCode);
 
-		_portletFileRepository.deletePortletFileEntry(
-			fileEntry.getFileEntryId());
+		_kbArticleService.deleteKBArticleAttachment(fileEntry.getFileEntryId());
 	}
 
 	@Override
@@ -95,7 +93,7 @@ public class KnowledgeBaseAttachmentResourceImpl
 		throws Exception {
 
 		return _toKnowledgeBaseAttachment(
-			_portletFileRepository.getPortletFileEntry(
+			_kbArticleService.getKBArticleAttachment(
 				knowledgeBaseAttachmentId));
 	}
 
