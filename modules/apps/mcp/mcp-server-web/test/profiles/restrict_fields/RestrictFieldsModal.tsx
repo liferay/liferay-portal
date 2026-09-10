@@ -116,6 +116,46 @@ describe('RestrictFieldsModal', () => {
 		expect(checkbox('id')).toBeChecked();
 	});
 
+	it('counts every checked field, descendants included', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal();
+
+		await findCheckbox('modifiedBy');
+
+		expect(screen.getByRole('status')).toHaveTextContent(
+			'nothing-selected'
+		);
+
+		await userEvent.click(checkbox('description'));
+
+		expect(screen.getByRole('status')).toHaveTextContent('1-item-selected');
+
+		await userEvent.click(checkbox('modifiedBy'));
+
+		expect(screen.getByRole('status')).toHaveTextContent(
+			'7-items-selected'
+		);
+	});
+
+	it('clears the selection with the deselect all action', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal();
+
+		await userEvent.click(await findCheckbox('description'));
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'deselect-all'})
+		);
+
+		expect(checkbox('description')).not.toBeChecked();
+		expect(screen.getByRole('status')).toHaveTextContent(
+			'nothing-selected'
+		);
+		expect(screen.queryByRole('button', {name: 'deselect-all'})).toBeNull();
+	});
+
 	it('disables save while the tool loads', async () => {
 		fetch.mockResponseOnce(() => new Promise(() => {}));
 
