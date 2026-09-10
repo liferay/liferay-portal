@@ -6,13 +6,10 @@
 package com.liferay.change.tracking.web.internal.application.list;
 
 import com.liferay.application.list.PanelAppNavigationItem;
+import com.liferay.application.list.test.util.BasePanelAppNavigationItemsTestCase;
 import com.liferay.change.tracking.configuration.helper.CTSettingsConfigurationHelper;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletURL;
@@ -32,7 +29,8 @@ import org.mockito.Mockito;
 /**
  * @author Mario Leandro
  */
-public class PublicationsPanelAppTest {
+public class PublicationsPanelAppNavigationItemsTest
+	extends BasePanelAppNavigationItemsTestCase {
 
 	@ClassRule
 	@Rule
@@ -40,36 +38,15 @@ public class PublicationsPanelAppTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
 		ReflectionTestUtil.setFieldValue(
 			_publicationsPanelApp, "_ctSettingsConfigurationHelper",
 			_ctSettingsConfigurationHelper);
 		ReflectionTestUtil.setFieldValue(
-			_publicationsPanelApp, "_language", _language);
-
-		Mockito.when(
-			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			_themeDisplay
-		);
-
-		Mockito.when(
-			_language.get(Mockito.eq(LocaleUtil.ENGLISH), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1)
-		);
-
-		Mockito.when(
-			_language.get(Mockito.eq(LocaleUtil.SPAIN), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1) + "-es"
-		);
-
-		Mockito.when(
-			_themeDisplay.getLocale()
-		).thenReturn(
-			LocaleUtil.SPAIN
-		);
+			_publicationsPanelApp, "_language", language);
 	}
 
 	@Test
@@ -82,7 +59,7 @@ public class PublicationsPanelAppTest {
 
 		List<PanelAppNavigationItem> panelAppNavigationItems =
 			_publicationsPanelApp.getPanelAppNavigationItems(
-				_httpServletRequest);
+				httpServletRequest);
 
 		Assert.assertFalse(
 			panelAppNavigationItems.toString(),
@@ -91,30 +68,18 @@ public class PublicationsPanelAppTest {
 		PanelAppNavigationItem panelAppNavigationItem =
 			panelAppNavigationItems.get(0);
 
-		Assert.assertEquals(
-			"ongoing", panelAppNavigationItem.getCanonicalName());
-		Assert.assertEquals("ongoing-es", panelAppNavigationItem.getLabel());
-
-		String href = panelAppNavigationItem.getHref();
-
-		Assert.assertTrue(
-			href,
-			href.contains(
-				"mvcRenderCommandName=/change_tracking/view_publications"));
+		assertCanonicalName("ongoing", panelAppNavigationItem);
+		assertParameterValue(
+			"/change_tracking/view_publications", panelAppNavigationItem,
+			"mvcRenderCommandName");
 
 		panelAppNavigationItem = panelAppNavigationItems.get(
 			panelAppNavigationItems.size() - 1);
 
-		Assert.assertEquals(
-			"history", panelAppNavigationItem.getCanonicalName());
-		Assert.assertEquals("history-es", panelAppNavigationItem.getLabel());
-
-		href = panelAppNavigationItem.getHref();
-
-		Assert.assertTrue(
-			href,
-			href.contains(
-				"mvcRenderCommandName=/change_tracking/view_history"));
+		assertCanonicalName("history", panelAppNavigationItem);
+		assertParameterValue(
+			"/change_tracking/view_history", panelAppNavigationItem,
+			"mvcRenderCommandName");
 	}
 
 	@Test
@@ -129,15 +94,12 @@ public class PublicationsPanelAppTest {
 
 		Assert.assertTrue(
 			_publicationsPanelApp.getPanelAppNavigationItems(
-				_httpServletRequest
+				httpServletRequest
 			).isEmpty());
 	}
 
 	private final CTSettingsConfigurationHelper _ctSettingsConfigurationHelper =
 		Mockito.mock(CTSettingsConfigurationHelper.class);
-	private final HttpServletRequest _httpServletRequest = Mockito.mock(
-		HttpServletRequest.class);
-	private final Language _language = Mockito.mock(Language.class);
 
 	private final PublicationsPanelApp _publicationsPanelApp =
 		new PublicationsPanelApp() {
@@ -152,7 +114,5 @@ public class PublicationsPanelAppTest {
 			private final PortletURL _portletURL = new MockLiferayPortletURL();
 
 		};
-
-	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 }

@@ -6,14 +6,11 @@
 package com.liferay.portal.search.admin.web.internal.application.list;
 
 import com.liferay.application.list.PanelAppNavigationItem;
-import com.liferay.portal.kernel.language.Language;
+import com.liferay.application.list.test.util.BasePanelAppNavigationItemsTestCase;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.index.IndexInformation;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -35,7 +32,8 @@ import org.mockito.Mockito;
 /**
  * @author Mario Leandro
  */
-public class SearchAdminPanelAppTest {
+public class SearchAdminPanelAppNavigationItemsTest
+	extends BasePanelAppNavigationItemsTestCase {
 
 	@ClassRule
 	@Rule
@@ -43,39 +41,18 @@ public class SearchAdminPanelAppTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
 		_originalIndexInformationSnapshot = ReflectionTestUtil.getFieldValue(
 			SearchAdminPanelApp.class, "_indexInformationSnapshot");
 
 		ReflectionTestUtil.setFieldValue(
-			_searchAdminPanelApp, "_language", _language);
+			_searchAdminPanelApp, "_language", language);
 
 		Mockito.when(
-			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			_themeDisplay
-		);
-
-		Mockito.when(
-			_language.get(Mockito.eq(LocaleUtil.ENGLISH), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1)
-		);
-
-		Mockito.when(
-			_language.get(Mockito.eq(LocaleUtil.SPAIN), Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> invocationOnMock.getArgument(1) + "-es"
-		);
-
-		Mockito.when(
-			_themeDisplay.getLocale()
-		).thenReturn(
-			LocaleUtil.SPAIN
-		);
-
-		Mockito.when(
-			_themeDisplay.getPermissionChecker()
+			themeDisplay.getPermissionChecker()
 		).thenReturn(
 			_permissionChecker
 		);
@@ -97,8 +74,7 @@ public class SearchAdminPanelAppTest {
 		);
 
 		List<PanelAppNavigationItem> panelAppNavigationItems =
-			_searchAdminPanelApp.getPanelAppNavigationItems(
-				_httpServletRequest);
+			_searchAdminPanelApp.getPanelAppNavigationItems(httpServletRequest);
 
 		Assert.assertEquals(
 			panelAppNavigationItems.toString(), 2,
@@ -107,25 +83,15 @@ public class SearchAdminPanelAppTest {
 		PanelAppNavigationItem panelAppNavigationItem =
 			panelAppNavigationItems.get(0);
 
-		Assert.assertEquals(
-			"connections", panelAppNavigationItem.getCanonicalName());
-		Assert.assertEquals(
-			"connections-es", panelAppNavigationItem.getLabel());
+		assertCanonicalName("connections", panelAppNavigationItem);
 
-		String href = panelAppNavigationItem.getHref();
-
-		Assert.assertTrue(href, href.contains("tabs1=connections"));
+		assertParameterValue("connections", panelAppNavigationItem, "tabs1");
 
 		panelAppNavigationItem = panelAppNavigationItems.get(1);
 
-		Assert.assertEquals(
-			"index-actions", panelAppNavigationItem.getCanonicalName());
-		Assert.assertEquals(
-			"index-actions-es", panelAppNavigationItem.getLabel());
+		assertCanonicalName("index-actions", panelAppNavigationItem);
 
-		href = panelAppNavigationItem.getHref();
-
-		Assert.assertTrue(href, href.contains("tabs1=index-actions"));
+		assertParameterValue("index-actions", panelAppNavigationItem, "tabs1");
 	}
 
 	@Test
@@ -152,8 +118,7 @@ public class SearchAdminPanelAppTest {
 			indexInformationSnapshot);
 
 		List<PanelAppNavigationItem> panelAppNavigationItems =
-			_searchAdminPanelApp.getPanelAppNavigationItems(
-				_httpServletRequest);
+			_searchAdminPanelApp.getPanelAppNavigationItems(httpServletRequest);
 
 		Assert.assertEquals(
 			panelAppNavigationItems.toString(), 3,
@@ -162,12 +127,9 @@ public class SearchAdminPanelAppTest {
 		PanelAppNavigationItem panelAppNavigationItem =
 			panelAppNavigationItems.get(2);
 
-		Assert.assertEquals(
-			"field-mappings", panelAppNavigationItem.getCanonicalName());
+		assertCanonicalName("field-mappings", panelAppNavigationItem);
 
-		String href = panelAppNavigationItem.getHref();
-
-		Assert.assertTrue(href, href.contains("tabs1=field-mappings"));
+		assertParameterValue("field-mappings", panelAppNavigationItem, "tabs1");
 	}
 
 	@Test
@@ -181,17 +143,13 @@ public class SearchAdminPanelAppTest {
 		);
 
 		List<PanelAppNavigationItem> panelAppNavigationItems =
-			_searchAdminPanelApp.getPanelAppNavigationItems(
-				_httpServletRequest);
+			_searchAdminPanelApp.getPanelAppNavigationItems(httpServletRequest);
 
 		Assert.assertTrue(
 			panelAppNavigationItems.toString(),
 			panelAppNavigationItems.isEmpty());
 	}
 
-	private final HttpServletRequest _httpServletRequest = Mockito.mock(
-		HttpServletRequest.class);
-	private final Language _language = Mockito.mock(Language.class);
 	private Snapshot<IndexInformation> _originalIndexInformationSnapshot;
 	private final PermissionChecker _permissionChecker = Mockito.mock(
 		PermissionChecker.class);
@@ -209,7 +167,5 @@ public class SearchAdminPanelAppTest {
 			private final PortletURL _portletURL = new MockLiferayPortletURL();
 
 		};
-
-	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 }

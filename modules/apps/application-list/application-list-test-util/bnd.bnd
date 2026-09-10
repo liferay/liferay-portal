@@ -1,0 +1,8 @@
+Bundle-Name: Liferay Application List Test Utilities
+Bundle-SymbolicName: com.liferay.application.list.test.util
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.application.list.test.util
+Import-Package:\
+	!org.mockito.*,\
+	\
+	*
