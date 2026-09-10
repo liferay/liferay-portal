@@ -71,10 +71,8 @@ public class KBArticleServiceTest {
 		_group = GroupTestUtil.addGroup();
 		_kbFolderClassNameId = ClassNameLocalServiceUtil.getClassNameId(
 			KBFolderConstants.getClassName());
-
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_group, TestPropsValues.getUserId());
-
 		_siteMemberUser = UserTestUtil.addUser(_group.getGroupId());
 		_testPortletId = "TEST_PORTLET_" + RandomTestUtil.randomString();
 		_user = UserTestUtil.addUser();
