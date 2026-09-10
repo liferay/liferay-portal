@@ -913,7 +913,6 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			HashMapBuilder.<String, Object>put(
 				"searchAsYouType", true
 			).build());
-
 		_mockSerializeSearchAsYouType(FDS_NAMES[1], Collections.emptyMap());
 
 		Assert.assertTrue(
@@ -933,7 +932,6 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			HashMapBuilder.<String, Object>put(
 				"searchSuggestionsEnabled", true
 			).build());
-
 		_mockSerializeSearchSuggestionsEnabled(
 			FDS_NAMES[1], Collections.emptyMap());
 
