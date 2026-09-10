@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,17 +26,29 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class MonitorRunner {
 
+	public static final int THREADS_MAXIMUM = 20;
+
 	public MonitorRunner() {
-		this(MonitorConfig.SECONDS_TIMEOUT_DEFAULT * 1000);
+		this(MonitorConfig.SECONDS_TIMEOUT_DEFAULT * 1000, THREADS_MAXIMUM);
 	}
 
 	public MonitorRunner(long defaultTimeoutMillis) {
+		this(defaultTimeoutMillis, THREADS_MAXIMUM);
+	}
+
+	public MonitorRunner(long defaultTimeoutMillis, int threadCount) {
 		if (defaultTimeoutMillis < 1) {
 			throw new IllegalArgumentException(
 				"Invalid default timeout: " + defaultTimeoutMillis);
 		}
 
+		if (threadCount < 1) {
+			throw new IllegalArgumentException(
+				"Invalid thread count: " + threadCount);
+		}
+
 		_defaultTimeoutMillis = defaultTimeoutMillis;
+		_threadCount = threadCount;
 	}
 
 	public Map<Monitor, MonitorResult> run(Collection<Monitor> monitors) {
@@ -45,37 +58,33 @@ public class MonitorRunner {
 			return monitorResultsMap;
 		}
 
-		ExecutorService executorService = _newExecutorService(monitors.size());
+		ExecutorService executorService = _newExecutorService(_threadCount);
 
 		try {
-			long startTimestamp = System.currentTimeMillis();
+			long startTimeoutMillis = _getStartTimeoutMillis(monitors);
 
-			Map<Monitor, Future<MonitorResult>> futuresMap =
+			long submitTimestamp = System.currentTimeMillis();
+
+			Map<MonitorTask, Future<MonitorResult>> futuresMap =
 				new LinkedHashMap<>();
 
-			for (final Monitor monitor : monitors) {
+			for (Monitor monitor : monitors) {
+				MonitorTask monitorTask = new MonitorTask(monitor);
+
 				futuresMap.put(
-					monitor,
-					executorService.submit(
-						new Callable<MonitorResult>() {
-
-							@Override
-							public MonitorResult call() {
-								return monitor.execute();
-							}
-
-						}));
+					monitorTask, executorService.submit(monitorTask));
 			}
 
-			for (Map.Entry<Monitor, Future<MonitorResult>> entry :
+			for (Map.Entry<MonitorTask, Future<MonitorResult>> entry :
 					futuresMap.entrySet()) {
 
-				Monitor monitor = entry.getKey();
+				MonitorTask monitorTask = entry.getKey();
 
 				monitorResultsMap.put(
-					monitor,
+					monitorTask.getMonitor(),
 					_resolveMonitorResult(
-						entry.getValue(), monitor, startTimestamp));
+						entry.getValue(), monitorTask, startTimeoutMillis,
+						submitTimestamp));
 			}
 		}
 		finally {
@@ -83,6 +92,42 @@ public class MonitorRunner {
 		}
 
 		return monitorResultsMap;
+	}
+
+	private long _getStartTimeoutMillis(Collection<Monitor> monitors) {
+		int monitorCount = monitors.size();
+
+		// No monitor waits for a thread at or below the cap, so submission time
+		// is start time and the submit baseline is already exact.
+
+		if (monitorCount <= _threadCount) {
+			return 0;
+		}
+
+		long maximumTimeoutMillis = 0;
+
+		for (Monitor monitor : monitors) {
+			long timeoutMillis = _getTimeoutMillis(monitor);
+
+			if (timeoutMillis > maximumTimeoutMillis) {
+				maximumTimeoutMillis = timeoutMillis;
+			}
+		}
+
+		int batchCount = ((monitorCount + _threadCount) - 1) / _threadCount;
+
+		// Every task releases its thread within its own timeout, so the last
+		// monitor starts no later than one timeout short of this. The extra
+		// batch is slack for the hand-off, since a bound equal to the last
+		// legal start races it and reports a healthy monitor as never started.
+
+		long startTimeoutMillis = batchCount * maximumTimeoutMillis;
+
+		if ((startTimeoutMillis / batchCount) != maximumTimeoutMillis) {
+			return Long.MAX_VALUE;
+		}
+
+		return startTimeoutMillis;
 	}
 
 	private long _getTimeoutMillis(Monitor monitor) {
@@ -126,18 +171,43 @@ public class MonitorRunner {
 	}
 
 	private MonitorResult _resolveMonitorResult(
-		Future<MonitorResult> future, Monitor monitor, long startTimestamp) {
+		Future<MonitorResult> future, MonitorTask monitorTask,
+		long startTimeoutMillis, long submitTimestamp) {
+
+		Monitor monitor = monitorTask.getMonitor();
 
 		long timeoutMillis = _getTimeoutMillis(monitor);
 
-		long remainingMillis =
-			startTimestamp + timeoutMillis - System.currentTimeMillis();
-
-		if (remainingMillis < 0) {
-			remainingMillis = 0;
-		}
-
 		try {
+			long baselineTimestamp = submitTimestamp;
+
+			if (startTimeoutMillis > 0) {
+				long elapsedMillis =
+					System.currentTimeMillis() - submitTimestamp;
+
+				if (!monitorTask.awaitStart(
+						startTimeoutMillis - elapsedMillis)) {
+
+					future.cancel(true);
+
+					return _newUnknownMonitorResult(
+						JenkinsResultsParserUtil.combine(
+							"Monitor ", monitor.getId(),
+							" did not start within ",
+							String.valueOf(startTimeoutMillis), " ms"));
+				}
+
+				baselineTimestamp = monitorTask.getStartTimestamp();
+			}
+
+			long remainingMillis =
+				(baselineTimestamp + timeoutMillis) -
+					System.currentTimeMillis();
+
+			if (remainingMillis < 0) {
+				remainingMillis = 0;
+			}
+
 			MonitorResult monitorResult = future.get(
 				remainingMillis, TimeUnit.MILLISECONDS);
 
@@ -179,5 +249,43 @@ public class MonitorRunner {
 	}
 
 	private final long _defaultTimeoutMillis;
+	private final int _threadCount;
+
+	private static class MonitorTask implements Callable<MonitorResult> {
+
+		public MonitorTask(Monitor monitor) {
+			_monitor = monitor;
+		}
+
+		public boolean awaitStart(long timeoutMillis)
+			throws InterruptedException {
+
+			return _startCountDownLatch.await(
+				timeoutMillis, TimeUnit.MILLISECONDS);
+		}
+
+		@Override
+		public MonitorResult call() {
+			_startTimestamp = System.currentTimeMillis();
+
+			_startCountDownLatch.countDown();
+
+			return _monitor.execute();
+		}
+
+		public Monitor getMonitor() {
+			return _monitor;
+		}
+
+		public long getStartTimestamp() {
+			return _startTimestamp;
+		}
+
+		private final Monitor _monitor;
+		private final CountDownLatch _startCountDownLatch = new CountDownLatch(
+			1);
+		private volatile long _startTimestamp;
+
+	}
 
 }
