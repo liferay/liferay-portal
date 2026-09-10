@@ -14,10 +14,6 @@ import React, {
 
 const AnnouncerContext = createContext<(_message: string) => void>(() => {});
 
-export function useAnnouncer() {
-	return useContext(AnnouncerContext);
-}
-
 export function AnnouncerProvider({children}: {children: React.ReactNode}) {
 	const [message, setMessage] = useState('');
 	const timeoutRef = useRef<number>();
@@ -47,4 +43,8 @@ export function AnnouncerProvider({children}: {children: React.ReactNode}) {
 			</div>
 		</AnnouncerContext.Provider>
 	);
+}
+
+export function useAnnouncer() {
+	return useContext(AnnouncerContext);
 }

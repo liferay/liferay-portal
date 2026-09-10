@@ -6,11 +6,11 @@
 export {ImageEditor} from './ImageEditor';
 export type {EditorSaveResult, ImageEditorProps} from './ImageEditor';
 
-export type {ImageLoadErrorReason, LoadedImage} from './imaging/loadImage';
 export {
 	ImageEditorLoadError,
 	disposeLoadedImage,
 	loadImage,
 } from './imaging/loadImage';
+export type {ImageLoadErrorReason, LoadedImage} from './imaging/loadImage';
 
 export type {EditState} from './state/types';

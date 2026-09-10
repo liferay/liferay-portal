@@ -10,29 +10,6 @@ import {EditState, rotatedSize} from '../state/types';
 import {imageTransform} from './geometry';
 import {LoadedImage} from './loadImage';
 
-function blobToDataURL(blob: Blob): Promise<string> {
-	return new Promise((resolve, reject) => {
-		const reader = new FileReader();
-
-		reader.onerror = () => reject(new Error('Could not read the image'));
-		reader.onload = () => resolve(reader.result as string);
-
-		reader.readAsDataURL(blob);
-	});
-}
-
-function loadIntoImage(src: string): Promise<HTMLImageElement> {
-	return new Promise((resolve, reject) => {
-		const image = new Image();
-
-		image.onerror = () =>
-			reject(new Error('Could not rasterize the edited image'));
-		image.onload = () => resolve(image);
-
-		image.src = src;
-	});
-}
-
 export async function exportEditedImage(
 	image: LoadedImage,
 	state: EditState
@@ -94,4 +71,27 @@ export async function exportEditedImage(
 		blob,
 		fileName: `${baseName}-edited.${type === 'image/png' ? 'png' : 'jpg'}`,
 	};
+}
+
+function blobToDataURL(blob: Blob): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+
+		reader.onerror = () => reject(new Error('Could not read the image'));
+		reader.onload = () => resolve(reader.result as string);
+
+		reader.readAsDataURL(blob);
+	});
+}
+
+function loadIntoImage(src: string): Promise<HTMLImageElement> {
+	return new Promise((resolve, reject) => {
+		const image = new Image();
+
+		image.onerror = () =>
+			reject(new Error('Could not rasterize the edited image'));
+		image.onload = () => resolve(image);
+
+		image.src = src;
+	});
 }

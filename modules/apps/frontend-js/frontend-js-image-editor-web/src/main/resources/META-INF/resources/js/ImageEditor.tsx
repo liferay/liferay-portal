@@ -24,37 +24,9 @@ import {Workspace} from './stage/Workspace';
 import {redoLabel, undoLabel} from './state/editorReducer';
 import {EditState, rotatedSize} from './state/types';
 
-const ZOOM_LEVELS = [0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.75, 1, 1.5, 2, 3];
-
 const STAGE_PADDING = 48;
 
-function fitZoom(
-	workspace: HTMLElement | null,
-	width: number,
-	height: number,
-	max = 1
-): number {
-	const availableWidth = workspace
-		? workspace.clientWidth - STAGE_PADDING
-		: Math.max(window.innerWidth - 360, 240);
-	const availableHeight = workspace
-		? workspace.clientHeight - STAGE_PADDING
-		: Math.max(window.innerHeight - 200, 240);
-
-	const fit = Math.min(availableWidth / width, availableHeight / height, max);
-
-	return Math.max(Math.floor(fit * 100) / 100, 0.01);
-}
-
-function stepZoom(zoom: number, direction: -1 | 1): number {
-	if (direction === 1) {
-		return ZOOM_LEVELS.find((level) => level > zoom + 1e-6) ?? zoom;
-	}
-
-	const smaller = ZOOM_LEVELS.filter((level) => level < zoom - 1e-6);
-
-	return smaller.length ? smaller[smaller.length - 1] : zoom;
-}
+const ZOOM_LEVELS = [0.05, 0.1, 0.15, 0.25, 0.35, 0.5, 0.75, 1, 1.5, 2, 3];
 
 export interface EditorSaveResult {
 	blob: Blob;
@@ -72,6 +44,26 @@ export interface ImageEditorProps {
 	) => Promise<void> | void;
 
 	spritemap: string;
+}
+
+export function ImageEditor({
+	image,
+	onClose,
+	onSave,
+	spritemap,
+}: ImageEditorProps) {
+	return (
+		<ClayIconSpriteContext.Provider value={spritemap}>
+			<AnnouncerProvider>
+				<Editor
+					image={image}
+					key={image.previewUrl}
+					onClose={onClose}
+					onSave={onSave}
+				/>
+			</AnnouncerProvider>
+		</ClayIconSpriteContext.Provider>
+	);
 }
 
 function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
@@ -339,22 +331,30 @@ function Editor({image, onClose, onSave}: Omit<ImageEditorProps, 'spritemap'>) {
 	);
 }
 
-export function ImageEditor({
-	image,
-	onClose,
-	onSave,
-	spritemap,
-}: ImageEditorProps) {
-	return (
-		<ClayIconSpriteContext.Provider value={spritemap}>
-			<AnnouncerProvider>
-				<Editor
-					image={image}
-					key={image.previewUrl}
-					onClose={onClose}
-					onSave={onSave}
-				/>
-			</AnnouncerProvider>
-		</ClayIconSpriteContext.Provider>
-	);
+function fitZoom(
+	workspace: HTMLElement | null,
+	width: number,
+	height: number,
+	max = 1
+): number {
+	const availableWidth = workspace
+		? workspace.clientWidth - STAGE_PADDING
+		: Math.max(window.innerWidth - 360, 240);
+	const availableHeight = workspace
+		? workspace.clientHeight - STAGE_PADDING
+		: Math.max(window.innerHeight - 200, 240);
+
+	const fit = Math.min(availableWidth / width, availableHeight / height, max);
+
+	return Math.max(Math.floor(fit * 100) / 100, 0.01);
+}
+
+function stepZoom(zoom: number, direction: -1 | 1): number {
+	if (direction === 1) {
+		return ZOOM_LEVELS.find((level) => level > zoom + 1e-6) ?? zoom;
+	}
+
+	const smaller = ZOOM_LEVELS.filter((level) => level < zoom - 1e-6);
+
+	return smaller.length ? smaller[smaller.length - 1] : zoom;
 }

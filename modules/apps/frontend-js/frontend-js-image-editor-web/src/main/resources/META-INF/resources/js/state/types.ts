@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export type Rotation = 0 | 90 | 180 | 270;
+export interface EditorHistory {
+	future: HistoryEntry[];
+	past: HistoryEntry[];
+	present: EditState;
+}
 
 export interface EditState {
 	flipHorizontal: boolean;
-
 	rotation: Rotation;
 	sourceHeight: number;
 	sourceWidth: number;
@@ -18,11 +21,7 @@ export interface HistoryEntry {
 	state: EditState;
 }
 
-export interface EditorHistory {
-	future: HistoryEntry[];
-	past: HistoryEntry[];
-	present: EditState;
-}
+export type Rotation = 0 | 90 | 180 | 270;
 
 export function rotatedSize(state: EditState): {
 	height: number;

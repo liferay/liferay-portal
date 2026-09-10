@@ -5,41 +5,6 @@
 
 import {EditState, rotatedSize} from '../state/types';
 
-export function rotationTransform(
-	state: Pick<EditState, 'rotation' | 'sourceHeight' | 'sourceWidth'>
-): string | undefined {
-	switch (state.rotation) {
-		case 90:
-			return `translate(${state.sourceHeight} 0) rotate(90)`;
-		case 180:
-			return `translate(${state.sourceWidth} ${state.sourceHeight}) rotate(180)`;
-		case 270:
-			return `translate(0 ${state.sourceWidth}) rotate(270)`;
-		default:
-			return undefined;
-	}
-}
-
-/**
- * The full transform placing the source image inside the stage: the
- * mirror, then the quarter turns. Shared by the preview and the export so
- * every projection stays aligned.
- */
-export function imageTransform(
-	state: Pick<
-		EditState,
-		'flipHorizontal' | 'rotation' | 'sourceHeight' | 'sourceWidth'
-	>
-): string | undefined {
-	const quarter = rotationTransform(state);
-
-	const mirror = state.flipHorizontal
-		? `translate(${rotatedSize(state as EditState).width} 0) scale(-1 1)`
-		: undefined;
-
-	return [mirror, quarter].filter(Boolean).join(' ') || undefined;
-}
-
 /**
  * Where the workspace has to be scrolled so that the point under `anchor`
  * stays under it after a zoom step.
@@ -71,4 +36,39 @@ export function anchoredScroll({
 		left: offset + point.x * next - anchor.x,
 		top: offset + point.y * next - anchor.y,
 	};
+}
+
+/**
+ * The full transform placing the source image inside the stage: the
+ * mirror, then the quarter turns. Shared by the preview and the export so
+ * every projection stays aligned.
+ */
+export function imageTransform(
+	state: Pick<
+		EditState,
+		'flipHorizontal' | 'rotation' | 'sourceHeight' | 'sourceWidth'
+	>
+): string | undefined {
+	const quarter = rotationTransform(state);
+
+	const mirror = state.flipHorizontal
+		? `translate(${rotatedSize(state as EditState).width} 0) scale(-1 1)`
+		: undefined;
+
+	return [mirror, quarter].filter(Boolean).join(' ') || undefined;
+}
+
+export function rotationTransform(
+	state: Pick<EditState, 'rotation' | 'sourceHeight' | 'sourceWidth'>
+): string | undefined {
+	switch (state.rotation) {
+		case 90:
+			return `translate(${state.sourceHeight} 0) rotate(90)`;
+		case 180:
+			return `translate(${state.sourceWidth} ${state.sourceHeight}) rotate(180)`;
+		case 270:
+			return `translate(0 ${state.sourceWidth}) rotate(270)`;
+		default:
+			return undefined;
+	}
 }

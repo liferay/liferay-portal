@@ -3,16 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export const PREVIEW_MAX_SIZE = 2048;
-
 export const MAX_IMAGE_BYTES = 25 * 1024 * 1024;
 
 export const MAX_IMAGE_PIXELS = 36_000_000;
 
-export type ImageLoadErrorReason =
-	| 'decode-failed'
-	| 'file-too-large'
-	| 'too-many-pixels';
+export const PREVIEW_MAX_SIZE = 2048;
 
 export class ImageEditorLoadError extends Error {
 	readonly reason: ImageLoadErrorReason;
@@ -25,39 +20,10 @@ export class ImageEditorLoadError extends Error {
 	}
 }
 
-async function decodeWithinLimits(blob: Blob): Promise<ImageBitmap> {
-	if (blob.size > MAX_IMAGE_BYTES) {
-		throw new ImageEditorLoadError(
-			'file-too-large',
-			`The file weighs ${blob.size} bytes and the editor accepts up to ${MAX_IMAGE_BYTES}`
-		);
-	}
-
-	let bitmap: ImageBitmap;
-
-	try {
-		bitmap = await createImageBitmap(blob);
-	}
-	catch (error) {
-		throw new ImageEditorLoadError(
-			'decode-failed',
-			error instanceof Error ? error.message : 'The image did not decode'
-		);
-	}
-
-	if (bitmap.width * bitmap.height > MAX_IMAGE_PIXELS) {
-		const {height, width} = bitmap;
-
-		bitmap.close();
-
-		throw new ImageEditorLoadError(
-			'too-many-pixels',
-			`The image measures ${width}x${height} and the editor accepts up to ${MAX_IMAGE_PIXELS} pixels`
-		);
-	}
-
-	return bitmap;
-}
+export type ImageLoadErrorReason =
+	| 'decode-failed'
+	| 'file-too-large'
+	| 'too-many-pixels';
 
 export interface LoadedImage {
 
@@ -79,6 +45,16 @@ export interface LoadedImage {
 
 	type: string;
 	width: number;
+}
+
+/**
+ * Releases the browser resources a successful `loadImage` handed over.
+ * The host owns the returned `LoadedImage`; call this once the image
+ * leaves the editor for good (close, replacement, unmount). Revoking an
+ * already-revoked URL is a no-op, so a defensive second call is safe.
+ */
+export function disposeLoadedImage(image: LoadedImage): void {
+	URL.revokeObjectURL(image.previewUrl);
 }
 
 /**
@@ -163,12 +139,36 @@ async function createPreviewUrl(
 	return URL.createObjectURL(previewBlob);
 }
 
-/**
- * Releases the browser resources a successful `loadImage` handed over.
- * The host owns the returned `LoadedImage`; call this once the image
- * leaves the editor for good (close, replacement, unmount). Revoking an
- * already-revoked URL is a no-op, so a defensive second call is safe.
- */
-export function disposeLoadedImage(image: LoadedImage): void {
-	URL.revokeObjectURL(image.previewUrl);
+async function decodeWithinLimits(blob: Blob): Promise<ImageBitmap> {
+	if (blob.size > MAX_IMAGE_BYTES) {
+		throw new ImageEditorLoadError(
+			'file-too-large',
+			`The file weighs ${blob.size} bytes and the editor accepts up to ${MAX_IMAGE_BYTES}`
+		);
+	}
+
+	let bitmap: ImageBitmap;
+
+	try {
+		bitmap = await createImageBitmap(blob);
+	}
+	catch (error) {
+		throw new ImageEditorLoadError(
+			'decode-failed',
+			error instanceof Error ? error.message : 'The image did not decode'
+		);
+	}
+
+	if (bitmap.width * bitmap.height > MAX_IMAGE_PIXELS) {
+		const {height, width} = bitmap;
+
+		bitmap.close();
+
+		throw new ImageEditorLoadError(
+			'too-many-pixels',
+			`The image measures ${width}x${height} and the editor accepts up to ${MAX_IMAGE_PIXELS} pixels`
+		);
+	}
+
+	return bitmap;
 }
