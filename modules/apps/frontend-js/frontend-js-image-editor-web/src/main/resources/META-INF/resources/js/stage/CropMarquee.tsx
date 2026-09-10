@@ -14,15 +14,6 @@ import {EditorAction} from '../state/editorReducer';
 import {CropRect} from '../state/types';
 import {FocusModality, FocusRing, matchesFocusVisible} from './FocusRing';
 
-type HandleDirection = 'e' | 'n' | 'ne' | 'nw' | 's' | 'se' | 'sw' | 'w';
-
-interface Edges {
-	bottom?: boolean;
-	left?: boolean;
-	right?: boolean;
-	top?: boolean;
-}
-
 const HANDLES: Array<{
 	direction: HandleDirection;
 	edges: Edges;
@@ -74,56 +65,30 @@ const CORNER_HANDLES = HANDLES.filter(({direction}) => direction.length === 2);
 
 const MOVE_EDGES: Edges = {};
 
-function handlePosition(
-	crop: CropRect,
-	direction: HandleDirection
-): {x: number; y: number} {
-	const x = direction.includes('w')
-		? crop.x
-		: direction.includes('e')
-			? crop.x + crop.width
-			: crop.x + crop.width / 2;
-
-	const y = direction.includes('n')
-		? crop.y
-		: direction.includes('s')
-			? crop.y + crop.height
-			: crop.y + crop.height / 2;
-
-	return {x, y};
+interface Edges {
+	bottom?: boolean;
+	left?: boolean;
+	right?: boolean;
+	top?: boolean;
 }
 
-function adjustCrop(
-	crop: CropRect,
-	edges: Edges,
-	dx: number,
-	dy: number
-): CropRect {
-	let {height, width, x, y} = crop;
+type HandleDirection = 'e' | 'n' | 'ne' | 'nw' | 's' | 'se' | 'sw' | 'w';
 
-	if (!edges.bottom && !edges.left && !edges.right && !edges.top) {
-		return {height, width, x: x + dx, y: y + dy};
-	}
+interface Props {
+	aspectLocked: boolean;
 
-	if (edges.left) {
-		x += dx;
-		width -= dx;
-	}
+	bounds: {height: number; width: number};
 
-	if (edges.right) {
-		width += dx;
-	}
+	crop: CropRect;
+	dispatch: (action: EditorAction) => void;
+	onAnnounce: (message: string) => void;
+	onCenterCrop: () => void;
 
-	if (edges.top) {
-		y += dy;
-		height -= dy;
-	}
+	showCrop: boolean;
 
-	if (edges.bottom) {
-		height += dy;
-	}
+	showRecenter: boolean;
 
-	return {height, width, x, y};
+	zoom: number;
 }
 
 export function applyResizeModifiers(
@@ -184,23 +149,6 @@ export function applyResizeModifiers(
 	}
 
 	return {height, width, x, y};
-}
-
-interface Props {
-	aspectLocked: boolean;
-
-	bounds: {height: number; width: number};
-
-	crop: CropRect;
-	dispatch: (action: EditorAction) => void;
-	onAnnounce: (message: string) => void;
-	onCenterCrop: () => void;
-
-	showCrop: boolean;
-
-	showRecenter: boolean;
-
-	zoom: number;
 }
 
 export function CropMarquee({
@@ -630,4 +578,56 @@ export function CropMarquee({
 			)}
 		</g>
 	);
+}
+
+function adjustCrop(
+	crop: CropRect,
+	edges: Edges,
+	dx: number,
+	dy: number
+): CropRect {
+	let {height, width, x, y} = crop;
+
+	if (!edges.bottom && !edges.left && !edges.right && !edges.top) {
+		return {height, width, x: x + dx, y: y + dy};
+	}
+
+	if (edges.left) {
+		x += dx;
+		width -= dx;
+	}
+
+	if (edges.right) {
+		width += dx;
+	}
+
+	if (edges.top) {
+		y += dy;
+		height -= dy;
+	}
+
+	if (edges.bottom) {
+		height += dy;
+	}
+
+	return {height, width, x, y};
+}
+
+function handlePosition(
+	crop: CropRect,
+	direction: HandleDirection
+): {x: number; y: number} {
+	const x = direction.includes('w')
+		? crop.x
+		: direction.includes('e')
+			? crop.x + crop.width
+			: crop.x + crop.width / 2;
+
+	const y = direction.includes('n')
+		? crop.y
+		: direction.includes('s')
+			? crop.y + crop.height
+			: crop.y + crop.height / 2;
+
+	return {x, y};
 }

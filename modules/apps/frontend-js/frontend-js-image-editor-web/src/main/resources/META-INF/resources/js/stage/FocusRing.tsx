@@ -12,15 +12,6 @@ interface Bounds {
 	y: number;
 }
 
-export function matchesFocusVisible(element: Element): boolean {
-	try {
-		return element.matches(':focus-visible');
-	}
-	catch {
-		return true;
-	}
-}
-
 export type FocusModality = 'keyboard' | 'pointer';
 
 interface Props {
@@ -128,4 +119,13 @@ export function FocusRing({
 			/>
 		</g>
 	);
+}
+
+export function matchesFocusVisible(element: Element): boolean {
+	try {
+		return element.matches(':focus-visible');
+	}
+	catch {
+		return true;
+	}
 }

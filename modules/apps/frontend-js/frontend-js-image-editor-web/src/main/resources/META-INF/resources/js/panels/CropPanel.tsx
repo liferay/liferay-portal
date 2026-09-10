@@ -14,6 +14,15 @@ import {useEditorId} from '../chrome/instance';
 import {EditorAction, clampCrop} from '../state/editorReducer';
 import {CropRect} from '../state/types';
 
+const FIELD_LABELS: Record<Field, string> = {
+	height: Liferay.Language.get('height'),
+	width: Liferay.Language.get('width'),
+	x: Liferay.Language.get('x-position'),
+	y: Liferay.Language.get('y-position'),
+};
+
+type Field = 'height' | 'width' | 'x' | 'y';
+
 interface Props {
 	angle: number;
 
@@ -27,15 +36,6 @@ interface Props {
 	onAspectLockedChange: (locked: boolean) => void;
 	showStraighten: boolean;
 }
-
-type Field = 'height' | 'width' | 'x' | 'y';
-
-const FIELD_LABELS: Record<Field, string> = {
-	height: Liferay.Language.get('height'),
-	width: Liferay.Language.get('width'),
-	x: Liferay.Language.get('x-position'),
-	y: Liferay.Language.get('y-position'),
-};
 
 export function CropPanel({
 	angle,

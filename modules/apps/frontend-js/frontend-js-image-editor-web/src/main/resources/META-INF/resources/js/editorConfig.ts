@@ -34,16 +34,6 @@ interface ResolvedEditorConfig {
 	};
 }
 
-function pick<T>(all: T[], wanted?: T[]): T[] {
-	if (!wanted) {
-		return all;
-	}
-
-	const set = new Set(wanted);
-
-	return all.filter((item) => set.has(item));
-}
-
 export function resolveConfig(config: EditorConfig = {}): ResolvedEditorConfig {
 	const crop = config.crop;
 
@@ -58,4 +48,14 @@ export function resolveConfig(config: EditorConfig = {}): ResolvedEditorConfig {
 						straighten: crop?.straighten ?? true,
 					},
 	};
+}
+
+function pick<T>(all: T[], wanted?: T[]): T[] {
+	if (!wanted) {
+		return all;
+	}
+
+	const set = new Set(wanted);
+
+	return all.filter((item) => set.has(item));
 }
