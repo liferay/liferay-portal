@@ -4965,8 +4965,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String fileName = url.getFile();
 
 			if (fileName.endsWith("/") ||
-				(!parentResourcePath.contains("/asset-libraries") &&
-				 _isAssetLibraryResourcePath(fileName))) {
+				(!parentResourcePath.contains("/asset-libraries/") &&
+				 fileName.contains("/asset-libraries/"))) {
 
 				continue;
 			}
@@ -6178,10 +6178,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 
 		_updateGroupSiteInitializerKey(groupId);
-	}
-
-	private boolean _isAssetLibraryResourcePath(String fileName) {
-		return fileName.contains("/asset-libraries/");
 	}
 
 	private void _publishObjectDefinitions(
