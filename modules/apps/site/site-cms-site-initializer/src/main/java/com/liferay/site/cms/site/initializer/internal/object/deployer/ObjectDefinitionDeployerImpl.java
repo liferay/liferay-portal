@@ -12,12 +12,17 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.site.cms.site.initializer.internal.security.permission.resource.CMSDefaultPermissionObjectEntryModelResourcePermission;
+import com.liferay.site.cms.site.initializer.util.SiteInitializerUtil;
+import com.liferay.site.initializer.SiteInitializer;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +43,10 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	@Override
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
+
+		if (objectDefinition.isCMS()) {
+			_initialize(objectDefinition.getCompanyId());
+		}
 
 		if (!Objects.equals(
 				objectDefinition.getExternalReferenceCode(),
@@ -75,6 +84,18 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		_bundleContext = bundleContext;
 	}
 
+	private void _initialize(long companyId) {
+		try {
+			SiteInitializerUtil.initialize(companyId, _siteInitializer);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ObjectDefinitionDeployerImpl.class);
+
 	private BundleContext _bundleContext;
 
 	@Reference
@@ -88,5 +109,10 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference(
+		target = "(site.initializer.key=com.liferay.site.initializer.cms)"
+	)
+	private SiteInitializer _siteInitializer;
 
 }
