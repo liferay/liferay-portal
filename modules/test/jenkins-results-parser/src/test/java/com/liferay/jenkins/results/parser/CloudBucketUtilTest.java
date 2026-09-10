@@ -47,7 +47,6 @@ public class CloudBucketUtilTest
 
 		File newS3ObjectRefFile = _writeS3ObjectRefFile(
 			newS3ObjectPath, newS3ObjectPath);
-
 		File oldS3ObjectRefFile = _writeS3ObjectRefFile(
 			oldS3ObjectPath, oldS3ObjectPath);
 
@@ -59,10 +58,9 @@ public class CloudBucketUtilTest
 		CloudBucketUtil.deleteS3ObjectRefsOlderThan(_MAX_AGE_SECONDS);
 
 		Assert.assertFalse(
-			"Kept a ref older than the threshold", oldS3ObjectRefFile.exists());
+			oldS3ObjectRefFile.getPath(), oldS3ObjectRefFile.exists());
 		Assert.assertTrue(
-			"Deleted a ref newer than the threshold",
-			newS3ObjectRefFile.exists());
+			newS3ObjectRefFile.getPath(), newS3ObjectRefFile.exists());
 
 		Mockito.verifyNoInteractions(shell);
 	}
@@ -77,28 +75,6 @@ public class CloudBucketUtilTest
 			Long.MIN_VALUE, "None", s3ObjectPath);
 		_testGetNewestS3ObjectLastModified(
 			Long.MIN_VALUE, RandomTestUtil.randomString(), s3ObjectPath);
-	}
-
-	@Test
-	public void testGetNewestS3ObjectLastModifiedSortsByLastModified()
-		throws Exception {
-
-		Shell shell = mockShell();
-
-		setShellCommandOutput("aws s3api list-objects-v2", shell, "None");
-
-		String s3ObjectPath = _randomS3ObjectPath();
-
-		CloudBucketUtil.getNewestS3ObjectLastModified(s3ObjectPath);
-
-		Mockito.verify(
-			shell
-		).doExecute(
-			Mockito.argThat(
-				executionRequest -> hasCommand(
-					executionRequest, "sort_by(Contents, &LastModified)[-1]",
-					s3ObjectPath.replaceFirst("s3://[^/]+/", "")))
-		);
 	}
 
 	@Test
@@ -130,7 +106,7 @@ public class CloudBucketUtilTest
 	}
 
 	@Test
-	public void testUploadS3FileCreatesRef() throws Exception {
+	public void testUploadS3File() throws Exception {
 		String s3ObjectPath = _randomS3ObjectPath();
 		String targetS3ObjectPath = _randomS3ObjectPath();
 
@@ -185,6 +161,15 @@ public class CloudBucketUtilTest
 		testEquals(
 			expected,
 			CloudBucketUtil.getNewestS3ObjectLastModified(s3ObjectPath));
+
+		Mockito.verify(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(
+					executionRequest, "sort_by(Contents, &LastModified)[-1]",
+					s3ObjectPath.replaceFirst("s3://[^/]+/", "")))
+		);
 	}
 
 	private File _writeS3ObjectRefFile(
