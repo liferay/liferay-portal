@@ -25,7 +25,7 @@ export interface EditorConfig {
 		  };
 }
 
-export interface ResolvedEditorConfig {
+interface ResolvedEditorConfig {
 	crop: {
 		enabled: boolean;
 		ratios: RatioPreset[];

@@ -88,7 +88,12 @@ function Editor({
 	const savingRef = useRef(false);
 
 	const {dispatch, editorRef, handleUndoShortcut, history, redo, undo} =
-		useEditorHistory(image, enabled, announce, () => savingRef.current);
+		useEditorHistory(
+			image,
+			enabled.crop.ratios,
+			announce,
+			() => savingRef.current
+		);
 
 	const state = history.present;
 
