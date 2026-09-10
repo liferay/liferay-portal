@@ -57,18 +57,27 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 				fetchObjectDefinitionByExternalReferenceCode(
 					externalReferenceCode, companyId);
 
-		for (String roleName : _ROLE_NAMES) {
-			Role role = _roleLocalService.getRole(companyId, roleName);
+		Role guestRole = _roleLocalService.getRole(
+			companyId, RoleConstants.GUEST);
+		Role userRole = _roleLocalService.getRole(
+			companyId, RoleConstants.USER);
 
-			_resourcePermissionLocalService.removeResourcePermission(
-				companyId, objectDefinition.getClassName(),
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				role.getRoleId(), ActionKeys.VIEW);
-			_resourcePermissionLocalService.removeResourcePermission(
-				companyId, objectDefinition.getPortletId(),
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				role.getRoleId(), ActionKeys.VIEW);
-		}
+		_resourcePermissionLocalService.removeResourcePermission(
+			companyId, objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			guestRole.getRoleId(), ActionKeys.VIEW);
+		_resourcePermissionLocalService.removeResourcePermission(
+			companyId, objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			userRole.getRoleId(), ActionKeys.VIEW);
+		_resourcePermissionLocalService.removeResourcePermission(
+			companyId, objectDefinition.getPortletId(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			guestRole.getRoleId(), ActionKeys.VIEW);
+		_resourcePermissionLocalService.removeResourcePermission(
+			companyId, objectDefinition.getPortletId(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			userRole.getRoleId(), ActionKeys.VIEW);
 
 		BatchEngineImportTask batchEngineImportTask =
 			_batchEngineImportTaskLocalService.createBatchEngineImportTask(
@@ -85,30 +94,37 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 		_importTaskPostAction.run(
 			batchEngineImportTask, null, null, null, restObjectDefinition);
 
-		for (String roleName : _ROLE_NAMES) {
-			Role role = _roleLocalService.getRole(companyId, roleName);
-
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					companyId, objectDefinition.getClassName(),
-					ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-					role.getRoleId(), ActionKeys.VIEW));
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					companyId, objectDefinition.getPortletId(),
-					ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-					role.getRoleId(), ActionKeys.ADD_TO_PAGE));
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					companyId, objectDefinition.getPortletId(),
-					ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-					role.getRoleId(), ActionKeys.VIEW));
-		}
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				guestRole.getRoleId(), ActionKeys.VIEW));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				userRole.getRoleId(), ActionKeys.VIEW));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, objectDefinition.getPortletId(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				guestRole.getRoleId(), ActionKeys.ADD_TO_PAGE));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, objectDefinition.getPortletId(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				guestRole.getRoleId(), ActionKeys.VIEW));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, objectDefinition.getPortletId(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				userRole.getRoleId(), ActionKeys.ADD_TO_PAGE));
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, objectDefinition.getPortletId(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				userRole.getRoleId(), ActionKeys.VIEW));
 	}
-
-	private static final String[] _ROLE_NAMES = {
-		RoleConstants.GUEST, RoleConstants.USER
-	};
 
 	@Inject
 	private BatchEngineImportTaskLocalService
