@@ -36,7 +36,9 @@ public class CommerceCurrencyUtil {
 				CommerceCurrencyLocalServiceUtil.fetchCommerceCurrency(
 					currencyId);
 
-			if (commerceCurrency != null) {
+			if ((commerceCurrency != null) &&
+				(companyId == commerceCurrency.getCompanyId())) {
+
 				return commerceCurrency;
 			}
 		}
