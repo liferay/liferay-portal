@@ -36,7 +36,9 @@ test(
 	async ({messageBoardsPage, page, site}) => {
 		await messageBoardsPage.goto(site.friendlyUrlPath);
 
-		await expect(messageBoardsPage.newThreadButton).toBeVisible();
+		await expect(
+			page.getByRole('button', {exact: true, name: 'New'})
+		).toBeVisible();
 
 		await expect(page.getByText('Deprecated')).toBeVisible();
 	}
