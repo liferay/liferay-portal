@@ -16,6 +16,14 @@ public class ExportImportThreadLocal {
 		return _exportImportConfigurationId.get();
 	}
 
+	public static String getLastImportUserName() {
+		return _lastImportUserName.get();
+	}
+
+	public static String getLastImportUserUuid() {
+		return _lastImportUserUuid.get();
+	}
+
 	public static boolean isDataDeletionImportInProcess() {
 		if (isLayoutDataDeletionImportInProcess() ||
 			isPortletDataDeletionImportInProcess()) {
@@ -115,6 +123,14 @@ public class ExportImportThreadLocal {
 		_initialLayoutStagingInProcess.set(initialLayoutStagingInProcess);
 	}
 
+	public static void setLastImportUserName(String lastImportUserName) {
+		_lastImportUserName.set(lastImportUserName);
+	}
+
+	public static void setLastImportUserUuid(String lastImportUserUuid) {
+		_lastImportUserUuid.set(lastImportUserUuid);
+	}
+
 	public static void setLayoutDataDeletionImportInProcess(
 		boolean layoutDataDeletionImportInProcess) {
 
@@ -187,6 +203,12 @@ public class ExportImportThreadLocal {
 		new CentralizedThreadLocal<>(
 			ExportImportThreadLocal.class + "._initialLayoutStagingInProcess",
 			() -> Boolean.FALSE);
+	private static final ThreadLocal<String> _lastImportUserName =
+		new CentralizedThreadLocal<>(
+			ExportImportThreadLocal.class + "._lastImportUserName", () -> null);
+	private static final ThreadLocal<String> _lastImportUserUuid =
+		new CentralizedThreadLocal<>(
+			ExportImportThreadLocal.class + "._lastImportUserUuid", () -> null);
 	private static final ThreadLocal<Boolean>
 		_layoutDataDeletionImportInProcess = new CentralizedThreadLocal<>(
 			ExportImportThreadLocal.class +
