@@ -210,13 +210,13 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 		Group liveGroup = StagingUtil.getLiveGroup(group);
 
-		if ((liveGroup != group) &&
-			primKey.equals(String.valueOf(group.getGroupId()))) {
+		if ((liveGroup != null) && (liveGroup != group)) {
+			if (primKey.equals(String.valueOf(group.getGroupId()))) {
+				primKey = String.valueOf(liveGroup.getGroupId());
+			}
 
-			primKey = String.valueOf(liveGroup.getGroupId());
+			group = liveGroup;
 		}
-
-		group = liveGroup;
 
 		long groupId = 0;
 
