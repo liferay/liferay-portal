@@ -4,6 +4,7 @@
  */
 
 import {ClayIconSpriteContext} from '@clayui/icon';
+import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 
@@ -405,9 +406,9 @@ export function CropMarquee({
 			</desc>
 
 			<g
-				className={
-					gesturing ? 'crop-grid crop-grid-visible' : 'crop-grid'
-				}
+				className={classNames('crop-grid', {
+					'crop-grid-visible': gesturing,
+				})}
 				pointerEvents="none"
 			>
 				{[1, 2].map((step) => (
@@ -491,11 +492,9 @@ export function CropMarquee({
 			{showRecenter &&
 				(crop.width < bounds.width || crop.height < bounds.height) && (
 					<g
-						className={
-							recenterFocused
-								? 'crop-recenter crop-recenter-focused'
-								: 'crop-recenter'
-						}
+						className={classNames('crop-recenter', {
+							'crop-recenter-focused': recenterFocused,
+						})}
 						onBlur={() => {
 							recenterHasFocusRef.current = false;
 
