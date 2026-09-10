@@ -10,6 +10,7 @@ import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
@@ -36,10 +37,6 @@ import java.sql.ResultSet;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 
 /**
  * @author Adolfo Pérez
@@ -253,53 +250,131 @@ public class DDMFieldAttributeUpgradeProcess extends UpgradeProcess {
 		return user.getGroup();
 	}
 
-	private Document _parseDocument(String html) {
-		Document document = Jsoup.parseBodyFragment(html);
-
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
-
-		outputSettings.prettyPrint(false);
-		outputSettings.syntax(Document.OutputSettings.Syntax.xml);
-
-		document.outputSettings(outputSettings);
-
-		return document;
-	}
-
 	private String _transform(long companyId, String html)
 		throws PortalException {
 
 		if ((html == null) || !html.contains("/documents/") ||
-			!html.contains("<img")) {
+			!html.contains(_OPEN_TAG_TOKEN_IMG)) {
 
 			return html;
 		}
 
-		Document document = _parseDocument(html);
+		StringBundler sb = new StringBundler();
 
-		for (Element imgElement : document.select("img:not(picture > img)")) {
-			if (!imgElement.hasAttr(
-					AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID)) {
+		int lastIndex = 0;
 
-				long fileEntryId = _getDLFileEntryId(
-					companyId, imgElement.attr("src"));
+		while (lastIndex < html.length()) {
+			int pictureStart = html.indexOf(_OPEN_TAG_TOKEN_PICTURE, lastIndex);
 
-				if (fileEntryId != 0) {
-					imgElement.attr(
-						AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
-						String.valueOf(fileEntryId));
-				}
+			if (pictureStart == -1) {
+				pictureStart = html.length();
 			}
+
+			_transformImgTags(companyId, html, lastIndex, pictureStart, sb);
+
+			if (pictureStart >= html.length()) {
+				lastIndex = pictureStart;
+
+				continue;
+			}
+
+			int pictureEnd = html.indexOf(
+				_CLOSE_TAG_TOKEN_PICTURE,
+				pictureStart + _OPEN_TAG_TOKEN_PICTURE.length());
+
+			if (pictureEnd == -1) {
+				pictureEnd = html.length();
+			}
+			else {
+				pictureEnd += _CLOSE_TAG_TOKEN_PICTURE.length();
+			}
+
+			sb.append(html.substring(pictureStart, pictureEnd));
+
+			lastIndex = pictureEnd;
 		}
 
-		if (html.contains("<html>") || html.contains("<head>")) {
-			return document.html();
-		}
-
-		Element body = document.body();
-
-		return body.html();
+		return sb.toString();
 	}
+
+	private String _transformImgTag(long companyId, String imgTag, String src)
+		throws PortalException {
+
+		if (imgTag.contains(
+				AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID)) {
+
+			return imgTag;
+		}
+
+		long fileEntryId = _getDLFileEntryId(companyId, src);
+
+		if (fileEntryId == 0) {
+			return imgTag;
+		}
+
+		return StringBundler.concat(
+			_OPEN_TAG_TOKEN_IMG, StringPool.SPACE,
+			AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID, "=\"",
+			fileEntryId, "\"", imgTag.substring(_OPEN_TAG_TOKEN_IMG.length()));
+	}
+
+	private void _transformImgTags(
+			long companyId, String html, int start, int end, StringBundler sb)
+		throws PortalException {
+
+		int lastIndex = start;
+
+		while (lastIndex < end) {
+			int imgStart = html.indexOf(_OPEN_TAG_TOKEN_IMG, lastIndex);
+
+			if ((imgStart == -1) || (imgStart > end)) {
+				sb.append(html.substring(lastIndex, end));
+
+				return;
+			}
+
+			sb.append(html.substring(lastIndex, imgStart));
+
+			int imgEnd = html.indexOf(CharPool.GREATER_THAN, imgStart) + 1;
+
+			if (imgEnd == 0) {
+				sb.append(html.substring(imgStart, end));
+
+				return;
+			}
+
+			int attributeListPos = imgStart + _OPEN_TAG_TOKEN_IMG.length();
+
+			int srcStart = html.indexOf(_ATTRIBUTE_TOKEN_SRC, attributeListPos);
+
+			if ((srcStart == -1) || (srcStart > imgEnd)) {
+				sb.append(html.substring(imgStart, imgEnd));
+
+				lastIndex = imgEnd;
+
+				continue;
+			}
+
+			int quotePos = srcStart + _ATTRIBUTE_TOKEN_SRC.length();
+
+			int srcEnd = html.indexOf(html.charAt(quotePos), quotePos + 1);
+
+			sb.append(
+				_transformImgTag(
+					companyId, html.substring(imgStart, imgEnd),
+					html.substring(quotePos + 1, srcEnd)));
+
+			lastIndex = imgEnd;
+		}
+	}
+
+	private static final String _ATTRIBUTE_TOKEN_SRC = "src=";
+
+	private static final String _CLOSE_TAG_TOKEN_PICTURE = "</picture>";
+
+	private static final String _OPEN_TAG_TOKEN_IMG = "<img";
+
+	private static final String _OPEN_TAG_TOKEN_PICTURE = "<picture";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDMFieldAttributeUpgradeProcess.class);
