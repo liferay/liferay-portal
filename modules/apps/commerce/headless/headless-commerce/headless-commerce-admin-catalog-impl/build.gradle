@@ -26,6 +26,7 @@ dependencies {
 	compileOnly project(":apps:commerce:headless:headless-commerce-core-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
 	compileOnly project(":apps:document-library:document-library-api")
+	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:headless:headless-common-spi")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:list-type:list-type-api")
