@@ -251,7 +251,7 @@ export default function UpperToolbar({
 					{
 						active,
 						content: xmlDefinition,
-						name,
+						name: scope === 'ai' ? definitionName : name,
 						title: definitionTitle,
 						title_i18n: definitionTitleTranslations,
 						version,
