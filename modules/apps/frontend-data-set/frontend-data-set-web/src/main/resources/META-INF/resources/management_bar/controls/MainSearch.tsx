@@ -10,21 +10,21 @@ import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import {SEARCH_AS_YOU_TYPE_DEBOUNCE_DELAY} from '../../constants';
-import RecentSearches from './RecentSearches';
+import SearchSuggestionsMenu from './SearchSuggestionsMenu';
 
 function MainSearch({onClear}: {onClear: () => void}) {
 	const {
 		apiURL,
 		appURL,
 		onSearch,
-
-		recentSearchesEnabled,
 		searchAsYouType,
 		searchParam,
+		searchSuggestionsEnabled,
 	} = useContext(FrontendDataSetContext);
 
 	const [inputValue, setInputValue] = useState(searchParam || '');
-	const [recentSearchesActive, setRecentSearchesActive] = useState(false);
+	const [searchSuggestionsActive, setSearchSuggestionsActive] =
+		useState(false);
 
 	const inputGroupItemRef = useRef<HTMLDivElement>(null);
 
@@ -57,12 +57,12 @@ function MainSearch({onClear}: {onClear: () => void}) {
 	// the focus fires no focus event, and it does hold it after a search or
 	// after Escape closed the dropdown
 
-	const openRecentSearches = () => {
-		if (!recentSearchesEnabled) {
+	const openSearchSuggestions = () => {
+		if (!searchSuggestionsEnabled) {
 			return;
 		}
 
-		setRecentSearchesActive(true);
+		setSearchSuggestionsActive(true);
 	};
 
 	return (
@@ -96,8 +96,8 @@ function MainSearch({onClear}: {onClear: () => void}) {
 							onSearch({query});
 						}
 					}}
-					onClick={openRecentSearches}
-					onFocus={openRecentSearches}
+					onClick={openSearchSuggestions}
+					onFocus={openSearchSuggestions}
 					onKeyDown={(event) => {
 						if (event.key !== 'Enter') {
 							return;
@@ -105,7 +105,7 @@ function MainSearch({onClear}: {onClear: () => void}) {
 
 						event.preventDefault();
 
-						setRecentSearchesActive(false);
+						setSearchSuggestionsActive(false);
 
 						doSearch(inputValue);
 					}}
@@ -122,7 +122,7 @@ function MainSearch({onClear}: {onClear: () => void}) {
 						onClick={(event) => {
 							event.preventDefault();
 
-							setRecentSearchesActive(false);
+							setSearchSuggestionsActive(false);
 
 							doSearch(inputValue);
 						}}
@@ -131,12 +131,12 @@ function MainSearch({onClear}: {onClear: () => void}) {
 					/>
 				</ClayInput.GroupInsetItem>
 
-				{recentSearchesActive && (
-					<RecentSearches
+				{searchSuggestionsActive && (
+					<SearchSuggestionsMenu
 						alignElementRef={inputGroupItemRef}
-						onActiveChange={setRecentSearchesActive}
+						onActiveChange={setSearchSuggestionsActive}
 						onQueryClick={(query) => {
-							setRecentSearchesActive(false);
+							setSearchSuggestionsActive(false);
 
 							setInputValue(query);
 

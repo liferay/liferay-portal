@@ -141,9 +141,8 @@ const FrontendDataSetContent = ({
 	overrideEmptyResultView,
 	pagination,
 	portletId,
-
-	recentSearchesEnabled = false,
 	searchAsYouType = false,
+	searchSuggestionsEnabled = false,
 	selectedItems: externalSelectedItems,
 	selectedItemsKey = 'id',
 	selectionType,
@@ -838,7 +837,7 @@ const FrontendDataSetContent = ({
 
 	const recordSearch = useCallback(
 		(totalCount: number) => {
-			if (!recentSearchesEnabled) {
+			if (!searchSuggestionsEnabled) {
 				return;
 			}
 
@@ -855,7 +854,7 @@ const FrontendDataSetContent = ({
 				recentSearches.remove(id, query);
 			}
 		},
-		[id, recentSearchesEnabled]
+		[id, searchSuggestionsEnabled]
 	);
 
 	const updateDataSetItems = useCallback(
@@ -2210,9 +2209,9 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
-				recentSearchesEnabled,
 				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
+				searchSuggestionsEnabled,
 				searching,
 				selectable,
 				selectedItems,

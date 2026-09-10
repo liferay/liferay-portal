@@ -128,7 +128,7 @@ test('Advanced FDS is accessible during search interactions', async ({
 	await test.step('Recent searches dropdown open', async () => {
 		await fdsSamplePage.managementToolbar.searchInput.click();
 
-		await fdsSamplePage.recentSearchEntry('Sample1').waitFor();
+		await fdsSamplePage.searchSuggestionEntry('Sample1').waitFor();
 
 		await checkAccessibility({
 			page,

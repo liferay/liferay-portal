@@ -53,11 +53,11 @@ const Settings = ({
 	const [hideManagementBarInEmptyState, setHideManagementBarInEmptyState] =
 		useState(dataSet.hideManagementBarInEmptyState ?? true);
 	const [loading, setLoading] = useState(true);
-	const [recentSearchesEnabled, setRecentSearchesEnabled] = useState(
-		dataSet.recentSearchesEnabled ?? false
-	);
 	const [searchAsYouType, setSearchAsYouType] = useState(
 		dataSet.searchAsYouType ?? false
+	);
+	const [searchSuggestionsEnabled, setSearchSuggestionsEnabled] = useState(
+		dataSet.searchSuggestionsEnabled ?? false
 	);
 	const [showSearch, setShowSearch] = useState(dataSet.showSearch ?? true);
 	const [visualizationModes, setVisualizationModes] = useState<
@@ -103,8 +103,8 @@ const Settings = ({
 		const body = {
 			defaultVisualizationMode,
 			hideManagementBarInEmptyState,
-			recentSearchesEnabled,
 			searchAsYouType,
+			searchSuggestionsEnabled,
 			showSearch,
 			snapshotsEnabled,
 		};
@@ -485,16 +485,16 @@ const Settings = ({
 					<ClayLayout.Row className="align-items-center justify-content-between">
 						<ClayLayout.Col size={9}>
 							<div>
-								<label htmlFor="recent-searches-toggle">
+								<label htmlFor="search-suggestions-toggle">
 									{Liferay.Language.get(
-										'enable-recent-searches'
+										'enable-search-suggestions'
 									)}
 								</label>
 							</div>
 
 							<div>
 								{Liferay.Language.get(
-									'enable-recent-searches-help'
+									'enable-search-suggestions-help'
 								)}
 							</div>
 						</ClayLayout.Col>
@@ -502,9 +502,9 @@ const Settings = ({
 						<ClayLayout.Col className="align-self-start" size={1}>
 							<ClayToggle
 								disabled={!showSearch}
-								id="recent-searches-toggle"
-								onToggle={setRecentSearchesEnabled}
-								toggled={recentSearchesEnabled}
+								id="search-suggestions-toggle"
+								onToggle={setSearchSuggestionsEnabled}
+								toggled={searchSuggestionsEnabled}
 							/>
 						</ClayLayout.Col>
 					</ClayLayout.Row>

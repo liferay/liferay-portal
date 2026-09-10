@@ -22,7 +22,7 @@ interface IProps {
 	value: string;
 }
 
-function RecentSearches({
+function SearchSuggestionsMenu({
 	alignElementRef,
 	onActiveChange,
 	onQueryClick,
@@ -84,7 +84,7 @@ function RecentSearches({
 		<ClayDropDown.Menu
 			active
 			alignElementRef={alignElementRef}
-			className="fds-recent-searches"
+			className="fds-search-suggestions"
 			onActiveChange={onActiveChange}
 			ref={menuRef}
 			style={{
@@ -100,13 +100,13 @@ function RecentSearches({
 			suppress={[menuRef, alignElementRef]}
 			triggerRef={alignElementRef}
 		>
-			<ClayDropDown.Caption className="fds-recent-searches-caption">
+			<ClayDropDown.Caption className="fds-search-suggestions-caption">
 				<span className="text-secondary text-uppercase">
 					{Liferay.Language.get('recent-searches')}
 				</span>
 
 				<ClayButton
-					className="fds-recent-searches-clear-all"
+					className="fds-search-suggestions-clear-all"
 					displayType="link"
 					onClick={() => setQueries(recentSearches.clear(id))}
 					small
@@ -118,7 +118,7 @@ function RecentSearches({
 			<ClayDropDown.ItemList>
 				{matchedQueries.map(({match, query}) => (
 					<li
-						className="fds-recent-searches-item"
+						className="fds-search-suggestions-item"
 						key={query}
 						role="presentation"
 					>
@@ -149,7 +149,7 @@ function RecentSearches({
 
 						<ClayButtonWithIcon
 							aria-label={Liferay.Language.get('clear-search')}
-							className="fds-recent-searches-item-remove"
+							className="fds-search-suggestions-item-remove"
 							displayType="unstyled"
 							onClick={() =>
 								setQueries(recentSearches.remove(id, query))
@@ -182,4 +182,4 @@ function _getMatch(query: string, value: string): IMatch | null {
 	return index === -1 ? null : {index, length: search.length};
 }
 
-export default RecentSearches;
+export default SearchSuggestionsMenu;

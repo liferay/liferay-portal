@@ -386,8 +386,8 @@ export interface IFrontendDataSetProps {
 		initialPageNumber?: number;
 	};
 	portletId?: string;
-	recentSearchesEnabled?: boolean;
 	searchAsYouType?: boolean;
+	searchSuggestionsEnabled?: boolean;
 	selectedItems?: any[];
 	selectedItemsKey?: string | undefined;
 	selectionType?: 'single' | 'multiple';

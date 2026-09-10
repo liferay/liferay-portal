@@ -323,7 +323,7 @@ test(
 		await test.step('The dropdown is not shown when nothing has been searched yet', async () => {
 			await searchInput.click();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 		});
 
 		await test.step('A query that returned results is listed when the empty input is focused', async () => {
@@ -336,7 +336,7 @@ test(
 			await searchInput.click();
 
 			await expect(
-				fdsSamplePage.recentSearchEntry('Sample55')
+				fdsSamplePage.searchSuggestionEntry('Sample55')
 			).toBeVisible();
 		});
 
@@ -349,7 +349,7 @@ test(
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
 				'Sample55',
 			]);
 		});
@@ -363,7 +363,7 @@ test(
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
 				'Sample12',
 				'Sample55',
 			]);
@@ -372,19 +372,21 @@ test(
 		await test.step('Typing keeps only the queries matching the input and emphasizes the match', async () => {
 			await searchInput.fill('sample5');
 
-			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
 				'Sample55',
 			]);
 
 			await expect(
-				fdsSamplePage.recentSearchEntry('Sample55').locator('strong')
+				fdsSamplePage
+					.searchSuggestionEntry('Sample55')
+					.locator('strong')
 			).toHaveText('Sample5');
 		});
 
 		await test.step('The dropdown is not shown when no stored query matches the input', async () => {
 			await searchInput.fill(getRandomString());
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 		});
 
 		await test.step('Clicking a query fills the input and searches for it', async () => {
@@ -392,12 +394,12 @@ test(
 
 			await searchInput.click();
 
-			await fdsSamplePage.recentSearchEntry('Sample55').click();
+			await fdsSamplePage.searchSuggestionEntry('Sample55').click();
 
 			await expect(searchInput).toHaveValue('Sample55');
 			await expect(page.getByText('1 Result Found for:')).toBeVisible();
 			await expect(fdsSamplePage.table.bodyRows).toHaveCount(1);
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 		});
 
 		await test.step('Removing a query leaves the rest of the list open', async () => {
@@ -405,11 +407,13 @@ test(
 
 			await searchInput.click();
 
-			await fdsSamplePage.recentSearchEntry('Sample55').hover();
+			await fdsSamplePage.searchSuggestionEntry('Sample55').hover();
 
-			await fdsSamplePage.recentSearchRemoveButton('Sample55').click();
+			await fdsSamplePage
+				.searchSuggestionRemoveButton('Sample55')
+				.click();
 
-			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
 				'Sample12',
 			]);
 		});
@@ -417,7 +421,7 @@ test(
 		await test.step('The dropdown closes when the user clicks outside the search bar', async () => {
 			await fdsSamplePage.table.container.click();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 		});
 
 		await test.step('The queries survive a page reload', async () => {
@@ -429,19 +433,19 @@ test(
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.recentSearches.entries).toHaveText([
+			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
 				'Sample12',
 			]);
 		});
 
 		await test.step('Clearing all removes every query', async () => {
-			await fdsSamplePage.recentSearches.clearAllButton.click();
+			await fdsSamplePage.searchSuggestions.clearAllButton.click();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 		});
 	}
 );
@@ -468,10 +472,10 @@ test(
 		await test.step('The dropdown opens as wide as the search box', async () => {
 			await searchInput.click();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeVisible();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeVisible();
 
 			const menuBoundingBox =
-				await fdsSamplePage.recentSearches.menu.boundingBox();
+				await fdsSamplePage.searchSuggestions.menu.boundingBox();
 			const searchBoxBoundingBox = await searchInput.boundingBox();
 
 			expect(menuBoundingBox!.width).toBeGreaterThanOrEqual(
@@ -481,13 +485,14 @@ test(
 
 		await test.step('The dropdown narrows with the search box', async () => {
 			const widthBefore =
-				(await fdsSamplePage.recentSearches.menu.boundingBox())!.width;
+				(await fdsSamplePage.searchSuggestions.menu.boundingBox())!
+					.width;
 
 			await page.setViewportSize({height: 800, width: 960});
 
 			await expect(async () => {
 				const menuBoundingBox =
-					await fdsSamplePage.recentSearches.menu.boundingBox();
+					await fdsSamplePage.searchSuggestions.menu.boundingBox();
 				const searchBoxBoundingBox = await searchInput.boundingBox();
 
 				expect(menuBoundingBox!.width).toBeLessThan(widthBefore);
@@ -502,7 +507,7 @@ test(
 
 			await expect(searchInput).toBeHidden();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 		});
 
 		await test.step('The dropdown opens on the search box that button reveals', async () => {
@@ -512,7 +517,7 @@ test(
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeVisible();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeVisible();
 		});
 
 		await test.step('The dropdown closes when the revealed search box is put away', async () => {
@@ -522,7 +527,7 @@ test(
 
 			await expect(searchInput).toBeHidden();
 
-			await expect(fdsSamplePage.recentSearches.menu).toBeHidden();
+			await expect(fdsSamplePage.searchSuggestions.menu).toBeHidden();
 		});
 	}
 );

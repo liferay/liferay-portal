@@ -59,12 +59,12 @@ export class FDSSamplePage {
 	readonly paginator: {
 		itemsPerPageSelector: Locator;
 	};
-	readonly recentSearches: {
+	readonly resubmitButton: Locator;
+	readonly searchSuggestions: {
 		clearAllButton: Locator;
 		entries: Locator;
 		menu: Locator;
 	};
-	readonly resubmitButton: Locator;
 	readonly sidePanel: Locator;
 	readonly sidePanelFrame: FrameLocator;
 	readonly selectAllCheckbox: Locator;
@@ -189,17 +189,19 @@ export class FDSSamplePage {
 			}),
 		};
 
-		const recentSearchesMenu = page.locator('.fds-recent-searches');
+		this.resubmitButton = page.getByRole('button', {name: 'Resubmit'});
 
-		this.recentSearches = {
-			clearAllButton: recentSearchesMenu.getByRole('button', {
+		const searchSuggestionsMenu = page.locator('.fds-search-suggestions');
+
+		this.searchSuggestions = {
+			clearAllButton: searchSuggestionsMenu.getByRole('button', {
 				name: 'Clear All',
 			}),
-			entries: recentSearchesMenu.locator('.fds-recent-searches-item'),
-			menu: recentSearchesMenu,
+			entries: searchSuggestionsMenu.locator(
+				'.fds-search-suggestions-item'
+			),
+			menu: searchSuggestionsMenu,
 		};
-
-		this.resubmitButton = page.getByRole('button', {name: 'Resubmit'});
 
 		this.selectAllCheckbox = page.getByText('Select All');
 
@@ -366,15 +368,15 @@ export class FDSSamplePage {
 			.filter({hasText: new RegExp(`^${label}:`)});
 	}
 
-	recentSearchEntry(query: string) {
-		return this.recentSearches.menu.getByRole('menuitem', {
+	searchSuggestionEntry(query: string) {
+		return this.searchSuggestions.menu.getByRole('menuitem', {
 			exact: true,
 			name: query,
 		});
 	}
 
-	recentSearchRemoveButton(query: string) {
-		return this.recentSearches.entries
+	searchSuggestionRemoveButton(query: string) {
+		return this.searchSuggestions.entries
 			.filter({
 				has: this.page.getByRole('menuitem', {
 					exact: true,

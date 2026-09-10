@@ -97,11 +97,11 @@ export interface IDataSet {
 	itemActionsOrder?: string;
 	label: string;
 	listOfItemsPerPage: string;
-	recentSearchesEnabled?: boolean;
 	restApplication: string;
 	restEndpoint: string;
 	restSchema: string;
 	searchAsYouType?: boolean;
+	searchSuggestionsEnabled?: boolean;
 	showSearch: boolean;
 	snapshotsEnabled: boolean;
 	sortsOrder?: string;

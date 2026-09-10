@@ -79,9 +79,9 @@ export interface IFrontendDataSetContext {
 	openModal: Function;
 	openSidePanel: Function;
 	portletId?: string;
-	recentSearchesEnabled: boolean;
 	searchAsYouType: boolean;
 	searchParam?: string;
+	searchSuggestionsEnabled: boolean;
 	searching: boolean;
 	selectable?: boolean;
 	selectedItems?: Array<any>;
@@ -130,8 +130,8 @@ const FrontendDataSetContext = React.createContext({
 	onSnapshotChange: () => {},
 	openModal: () => {},
 	openSidePanel: () => {},
-	recentSearchesEnabled: false,
 	searchAsYouType: false,
+	searchSuggestionsEnabled: false,
 	selectable: false,
 	selectedItems: [],
 	selectedItemsValue: [],

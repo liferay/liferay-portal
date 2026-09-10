@@ -206,23 +206,6 @@
 					"type": "String"
 				},
 				{
-					"DBType": "Boolean",
-					"businessType": "Boolean",
-					"defaultValue": false,
-					"externalReferenceCode": "RECENT_SEARCHES_ENABLED",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"label": {
-						"en_US": "Recent Searches Enabled"
-					},
-					"localized": false,
-					"name": "recentSearchesEnabled",
-					"required": false,
-					"state": false,
-					"system": true,
-					"type": "Boolean"
-				},
-				{
 					"DBType": "String",
 					"businessType": "Text",
 					"externalReferenceCode": "REST_APPLICATION",
@@ -279,6 +262,23 @@
 					},
 					"localized": false,
 					"name": "searchAsYouType",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "Boolean"
+				},
+				{
+					"DBType": "Boolean",
+					"businessType": "Boolean",
+					"defaultValue": false,
+					"externalReferenceCode": "SEARCH_SUGGESTIONS_ENABLED",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Search Suggestions Enabled"
+					},
+					"localized": false,
+					"name": "searchSuggestionsEnabled",
 					"required": false,
 					"state": false,
 					"system": true,

@@ -298,20 +298,6 @@ public class SystemFDSSerializer
 	}
 
 	@Override
-	public boolean serializeRecentSearchesEnabled(
-		String fdsName, HttpServletRequest httpServletRequest) {
-
-		SystemFDSEntry systemFDSEntry =
-			systemFDSEntryRegistry.getSystemFDSEntry(fdsName);
-
-		if (systemFDSEntry == null) {
-			return _systemFDSEntry.getRecentSearchesEnabled();
-		}
-
-		return systemFDSEntry.getRecentSearchesEnabled();
-	}
-
-	@Override
 	public boolean serializeSearchAsYouType(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
@@ -323,6 +309,20 @@ public class SystemFDSSerializer
 		}
 
 		return systemFDSEntry.getSearchAsYouType();
+	}
+
+	@Override
+	public boolean serializeSearchSuggestionsEnabled(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		SystemFDSEntry systemFDSEntry =
+			systemFDSEntryRegistry.getSystemFDSEntry(fdsName);
+
+		if (systemFDSEntry == null) {
+			return _systemFDSEntry.getSearchSuggestionsEnabled();
+		}
+
+		return systemFDSEntry.getSearchSuggestionsEnabled();
 	}
 
 	@Override
