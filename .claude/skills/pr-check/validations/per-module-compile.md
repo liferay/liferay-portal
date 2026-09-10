@@ -16,7 +16,7 @@ Both behavior-change and surface-only edits fire this validation — the build v
 
 ## Match
 
-`^modules/.+\.(java|js|jsx|mjs|cjs|ts|tsx|css|scss|sass|ftl|jsp|jspf|properties)$|^modules/.+/(bnd\.bnd|gradle\.properties|package-lock\.json|yarn\.lock|package\.json)$`
+`^modules/.+\.(java|js|jsx|mjs|cjs|ts|tsx|css|scss|sass|ftl|jsp|jspf)$|^modules/.+/src/main/.+\.properties$|^modules/.+/(bnd\.bnd|gradle\.properties|package-lock\.json|yarn\.lock|package\.json)$ &! ^modules/test/playwright/|(^|/)test\.properties$`
 
 ## Command
 
@@ -28,9 +28,9 @@ MERGE_BASE=$(git merge-base HEAD master)
 git diff --name-only "${MERGE_BASE}...HEAD" -- modules
 ```
 
-A module is in the deploy set when it has changed sources or resources: `*.java`, `*.{js,jsx,mjs,cjs,ts,tsx}`, frontend resources (`*.{css,scss,sass}`, `*.ftl`, `*.jsp`, `*.jspf`), lockfiles (`package-lock.json`, `yarn.lock`), module `*.properties`, or OSGi configuration (`bnd.bnd`, `gradle.properties`, `package.json` keys other than `test`).
+A module is in the deploy set when it has changed sources or resources: `*.java`, `*.{js,jsx,mjs,cjs,ts,tsx}`, frontend resources (`*.{css,scss,sass}`, `*.ftl`, `*.jsp`, `*.jspf`), lockfiles (`package-lock.json`, `yarn.lock`), a `*.properties` under `src/main`, or OSGi configuration (`bnd.bnd`, `gradle.properties`, `package.json` keys other than `test`).
 
-That list is the **Match** regex above restated, and the two have to stay in step. A module whose only change is a `.lfrbuild-*` marker is not in the deploy set, since the marker changes what the build configures rather than what the module contains, and [module-registration.md](module-registration.md) handles it.
+That list is the **Match** regex above restated, and the two have to stay in step. A `test.properties` is never in the set, even under `src/main`, since it configures CI test selection rather than the build. A module whose only change is a `.lfrbuild-*` marker is not in the deploy set, since the marker changes what the build configures rather than what the module contains, and [module-registration.md](module-registration.md) handles it.
 
 A changed file's module is its **nearest ancestor directory holding a `bnd.bnd`**. Do not use `build.gradle`, which app group directories also carry, so `modules/apps/questions/questions-web/package.json` would resolve to `modules/apps/questions`. Module depth is not fixed either, running three to five segments below `modules`, so never strip a set number of them.
 
@@ -109,7 +109,7 @@ Do not hand this to [javascript-unit-test.md](javascript-unit-test.md). Jest res
 
 Treat `UP-TO-DATE` on a changed module's own `compileJava` with the same suspicion. Gradle's cache has served a stale output in this repository before, so confirm the change reached the jar rather than reading the task line as proof.
 
-A deploy set that came out empty is a broken derivation rather than a pass, since this validation only fires when the diff changed a module source or resource in the first place; report that as a FAIL too. PASS when every module the diff changed reports `BUILD SUCCESSFUL`.
+When a changed path does not have a `bnd.bnd` ancestor, there was never a module to build, so report **NOT VERIFIED** naming those paths. When a changed path does sit inside a module and the set is still empty, the derivation is broken, so report that as a FAIL. PASS when every module the diff changed reports `BUILD SUCCESSFUL`.
 
 ## Checklist
 

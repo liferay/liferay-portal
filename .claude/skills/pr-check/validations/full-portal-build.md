@@ -6,6 +6,8 @@
 
 	A portal-core change of only `*.properties` files does not fire this validation. `ant all` gives no signal for them, and **Source Format** covers them instead.
 
+	A portal-core change of only `portal-web/test` files does not fire this validation either. That tree is the Poshi test suite rather than portal source, `ant all` builds none of it, and **Poshi Syntax** covers it instead.
+
 - OR [per-module-compile.md](per-module-compile.md) escalated to it, because the deploy set it derived is large enough that one full build is cheaper than deploying each module. Compare:
 
 	- **Full Portal Build cost** = 8 min (the `ant all` baseline).
@@ -16,7 +18,7 @@
 
 ## Match
 
-`^(portal-impl|portal-kernel|portal-test|portal-web|support-tomcat|util-bridges|util-java|util-slf4j|util-taglib)/ &! \.properties$`
+`^(portal-impl|portal-kernel|portal-test|portal-web|support-tomcat|util-bridges|util-java|util-slf4j|util-taglib)/ &! ^portal-web/test/|\.properties$`
 
 ## Command
 

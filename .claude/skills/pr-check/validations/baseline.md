@@ -2,13 +2,13 @@
 
 ## Trigger
 
-Always. The bnd baseline task diffs each exported API against the last release and fails on a missing, excessive, or insufficient `Bundle-Version` or `packageinfo` bump.
+Always, apart from a diff confined to the trees **Match** excludes, none of which can owe a version bump. `maven-executor` is the one module under `modules/test` the baseline task actually runs, so it stays selected. The bnd baseline task diffs each exported API against the last release and fails on a missing, excessive, or insufficient `Bundle-Version` or `packageinfo` bump.
 
 Do not narrow the run to the branch diff. The comparison target is resolved from Nexus on every run, so a module the branch never touched can start failing between one run and the next. Narrow the verdict instead, as **Command** sets out: only a module the branch changed can fail it. Otherwise one stale version on master fails every pull request at once, stopping the developer least able to judge whether the bump is right.
 
 ## Match
 
-`.`
+`. &! ^modules/test/jenkins-results-parser/|^modules/test/playwright/|^modules/test/poshi/|^portal-web/test/`
 
 ## Command
 

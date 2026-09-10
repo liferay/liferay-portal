@@ -12,11 +12,13 @@ Fires when one of these changed:
 
 ## Match
 
-`^modules/.+\.(js|jsx|mjs|cjs|ts|tsx)$|^modules/.+/(package\.json|package-lock\.json|yarn\.lock)$`
+`^modules/.+\.(js|jsx|mjs|cjs|ts|tsx)$|^modules/.+/(package\.json|package-lock\.json|yarn\.lock)$ &! ^modules/test/playwright/`
 
 ## Command
 
 Take the changed modules from the diff. A module qualifies when one of its changed paths is a `.js`, `.jsx`, `.mjs`, `.cjs`, `.ts`, or `.tsx` source, or its `package.json`, `package-lock.json`, or `yarn.lock`. The module is the nearest ancestor directory holding a `package.json`, and never `modules` itself, whose `package.json` is the workspace root rather than a module. Shared tooling that sits there belongs to [per-module-compile.md](per-module-compile.md), which builds it but runs no suite against it.
+
+`modules/test/playwright` is never one either. Its `test` script runs `playwright test` rather than Jest, so it has no Jest suite to judge.
 
 `modules/node-scripts.config.js` is the exception worth naming. Its `imports` map decides which package files every module's build exposes, so a change there can break the suites of modules the diff never touched while no rule above selects anything. When the diff changes it, run the suites of the modules whose entry in that map the diff altered.
 
