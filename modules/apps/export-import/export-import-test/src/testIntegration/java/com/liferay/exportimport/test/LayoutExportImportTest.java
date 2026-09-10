@@ -202,6 +202,47 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
+	public void testDeleteMissingLayoutsPrivate() throws Exception {
+		Layout layout1 = LayoutTestUtil.addTypePortletLayout(group, true);
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(group, true);
+
+		exportLayouts(
+			ExportImportHelperUtil.getLayoutIds(
+				_layoutLocalService.getLayouts(group.getGroupId(), true)),
+			getExportParameterMap(), false, true);
+
+		importLayouts(getImportParameterMap(), false, true);
+
+		Assert.assertEquals(
+			_layoutLocalService.getLayoutsCount(group, true),
+			_layoutLocalService.getLayoutsCount(importedGroup, true));
+
+		LayoutTestUtil.addTypePortletLayout(importedGroup, true);
+
+		Map<String, String[]> parameterMap = getImportParameterMap();
+
+		parameterMap.put(
+			PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS,
+			new String[] {Boolean.TRUE.toString()});
+
+		exportLayouts(
+			new long[] {layout1.getLayoutId()}, getExportParameterMap(), false,
+			true);
+
+		importLayouts(parameterMap, false, true);
+
+		Assert.assertEquals(
+			_layoutLocalService.getLayoutsCount(group, true),
+			_layoutLocalService.getLayoutsCount(importedGroup, true));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByUuidAndGroupId(
+				layout1.getUuid(), importedGroup.getGroupId(), true));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByUuidAndGroupId(
+				layout2.getUuid(), importedGroup.getGroupId(), true));
+	}
+
+	@Test
 	public void testDeleteMissingLayoutsSameGroupWithPromoteContentFeatureFlags()
 		throws Exception {
 
