@@ -637,9 +637,13 @@ definition {
 
 			Portlet.expandTree();
 
+			AssertElementPresent(
+				key_nodeName = ${webContentLinkToPage},
+				locator1 = "Treeview#NODE_UNSELECTED_TREEITEM");
+
 			Click(
 				key_nodeName = ${webContentLinkToPage},
-				locator1 = "Treeview#NODE_UNSELECTED");
+				locator1 = "Treeview#NODE_UNSELECTED_TREEITEM");
 
 			SelectFrameTop();
 		}
