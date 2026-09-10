@@ -22,6 +22,7 @@ export default function openRestrictFieldsModal({
 			<RestrictFieldsModal
 				onClose={closeModal}
 				toolName={itemData.toolName}
+				toolSetName={itemData.toolSetName}
 			/>
 		),
 		size: 'lg',

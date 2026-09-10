@@ -119,6 +119,22 @@ export type ProfileToolPayload = {
 	toolSetName: string;
 };
 
+export type JSONSchema = {
+	additionalProperties?: JSONSchema | boolean;
+	items?: JSONSchema;
+	properties?: Record<string, JSONSchema>;
+	readOnly?: boolean;
+	type?: string;
+	writeOnly?: boolean;
+};
+
+export type Tool = {
+	description?: string;
+	inputSchema?: JSONSchema;
+	name: string;
+	outputSchema?: JSONSchema;
+};
+
 export type ToolSet = {
 	description?: string;
 	name: string;
