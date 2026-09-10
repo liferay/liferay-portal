@@ -35,19 +35,6 @@ tests:
         set:
             cloudProvider: gcp
     -   asserts:
-            -   notMatchRegex:
-                    path: data["amw-datasource.yaml"]
-                    pattern: 'clientId:'
-                template: templates/azure/amw-datasource.yaml
-            -   notMatchRegex:
-                    path: data["amw-datasource.yaml"]
-                    pattern: 'tenantId:'
-                template: templates/azure/amw-datasource.yaml
-        it: Leaves the workload identity client and tenant to the webhook
-        set:
-            azure.prometheusWorkspaceEndpoint: https://liferay-test-abcd.eastus.prometheus.monitor.azure.com
-            cloudProvider: azure
-    -   asserts:
             -   hasDocuments:
                     count: 1
                 template: templates/azure/amw-datasource.yaml
@@ -70,6 +57,14 @@ tests:
             -   matchRegex:
                     path: data["amw-datasource.yaml"]
                     pattern: 'url: "https://liferay-test-abcd.eastus.prometheus.monitor.azure.com"'
+                template: templates/azure/amw-datasource.yaml
+            -   notMatchRegex:
+                    path: data["amw-datasource.yaml"]
+                    pattern: 'clientId:'
+                template: templates/azure/amw-datasource.yaml
+            -   notMatchRegex:
+                    path: data["amw-datasource.yaml"]
+                    pattern: 'tenantId:'
                 template: templates/azure/amw-datasource.yaml
         it: Queries the Azure Monitor workspace with Entra workload identity
         set:
