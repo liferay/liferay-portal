@@ -124,7 +124,6 @@ export default [
 	'@liferay/fragment-collection-filter-tags',
 	'@liferay/fragment-impl',
 	'@liferay/fragment-renderer-collection-filter-impl',
-	'@liferay/fragment-video-streaming',
 	'@liferay/friendly-url-taglib',
 	'@liferay/friendly-url-web',
 	'@liferay/frontend-css-cadmin-web',

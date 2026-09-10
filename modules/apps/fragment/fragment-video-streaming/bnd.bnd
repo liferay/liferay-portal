@@ -1,5 +1,0 @@
-Bundle-Name: Liferay Fragment Video Streaming
-Bundle-SymbolicName: com.liferay.fragment.video.streaming
-Bundle-Version: 1.0.22
-Web-ContextPath: /fragment-video-streaming
--dsannotations-options: inherit

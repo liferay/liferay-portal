@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '61f09e04b921e349556867b15b5a18a20516924b154fee96d2d6964a263d4018',
+	hash: '66e03a0a77fd73172db309bb2a59b183ced2ff83850c339a5a9a4750fef881e5',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -84,7 +84,6 @@ module.exports = {
 		'@liferay/fragment-collection-filter-tags': [],
 		'@liferay/fragment-impl': ['./api'],
 		'@liferay/fragment-renderer-collection-filter-impl': [],
-		'@liferay/fragment-video-streaming': [],
 		'@liferay/friendly-url-taglib': [],
 		'@liferay/friendly-url-web': [],
 		'@liferay/frontend-css-cadmin-web': [],
