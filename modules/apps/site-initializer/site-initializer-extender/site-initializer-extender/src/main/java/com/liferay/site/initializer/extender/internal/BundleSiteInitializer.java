@@ -5877,7 +5877,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				continue;
 			}
 
-			String resourcePath = parentResourcePath + StringPool.SLASH + path;
+			String resourcePath = parentResourcePath + "/" + path;
 
 			Enumeration<URL> enumeration = _siteBundle.findEntries(
 				resourcePath, StringPool.STAR, true);
