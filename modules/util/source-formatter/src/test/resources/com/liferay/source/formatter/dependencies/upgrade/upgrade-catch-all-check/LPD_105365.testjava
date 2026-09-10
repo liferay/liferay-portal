@@ -10,7 +10,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Regisson Aguiar
  */
-public class LPD_70233 {
+public class LPD_105365 {
 
 	public void method(PageContext pageContext, String key) {
 		LanguageUtil.get(null, key);
