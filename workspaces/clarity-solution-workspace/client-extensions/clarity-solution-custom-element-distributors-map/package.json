@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"@vis.gl/react-google-maps": "^1.5.5",
-		"clarity-solution-js-import-maps-entry": "*",
+		"clarity-solution-js-import-maps-entry-distributor-details-service": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},

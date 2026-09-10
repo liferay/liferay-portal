@@ -2,7 +2,7 @@
 	"dependencies": {
 		"@clayui/button": "^3.159.0",
 		"@clayui/table": "^3.159.0",
-		"clarity-solution-js-import-maps-entry": "*",
+		"clarity-solution-js-import-maps-entry-distributor-details-service": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
 	},
