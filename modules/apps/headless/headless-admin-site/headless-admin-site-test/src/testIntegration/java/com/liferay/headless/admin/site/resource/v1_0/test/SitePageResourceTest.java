@@ -2217,26 +2217,25 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		return draftFragmentOrWidgetInstanceExternalReferenceCodes;
 	}
 
-	private SafeCloseable _setExportImportThreadLocalWithSafeCloseable(
-		String fieldName, boolean value) {
+	private <T> SafeCloseable _setExportImportThreadLocalWithSafeCloseable(
+		String fieldName, T value) {
 
-		CentralizedThreadLocal<Boolean> originalCentralizedThreadLocal =
+		CentralizedThreadLocal<T> centralizedThreadLocal =
 			ReflectionTestUtil.getFieldValue(
 				ExportImportThreadLocal.class, fieldName);
 
-		Boolean originalValue = originalCentralizedThreadLocal.get();
+		T originalValue = centralizedThreadLocal.get();
 
-		originalCentralizedThreadLocal.set(value);
+		centralizedThreadLocal.set(value);
 
-		Supplier<Boolean> originalSupplier =
-			ReflectionTestUtil.getAndSetFieldValue(
-				originalCentralizedThreadLocal, "_supplier", () -> value);
+		Supplier<T> originalSupplier = ReflectionTestUtil.getAndSetFieldValue(
+			centralizedThreadLocal, "_supplier", () -> value);
 
 		return () -> {
-			originalCentralizedThreadLocal.set(originalValue);
+			centralizedThreadLocal.set(originalValue);
 
 			ReflectionTestUtil.setFieldValue(
-				originalCentralizedThreadLocal, "_supplier", originalSupplier);
+				centralizedThreadLocal, "_supplier", originalSupplier);
 		};
 	}
 
@@ -4851,6 +4850,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			serviceContext, SitePage.Type.WIDGET_PAGE);
 
 		_testPutSiteSitePageWithStagingImportByAnotherUser(serviceContext);
+		_testPutSiteSitePageWithStagingImportWithLastImportUser(serviceContext);
 	}
 
 	private void _testPutSiteSitePageWithStagingImport(
@@ -4965,6 +4965,49 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			layout.getTypeSettingsProperty("last-import-user-name"));
 		Assert.assertEquals(
 			user.getUuid(),
+			layout.getTypeSettingsProperty("last-import-user-uuid"));
+	}
+
+	private void _testPutSiteSitePageWithStagingImportWithLastImportUser(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		User lastImportUser = UserTestUtil.addCompanyAdminUser(testCompany);
+
+		SitePage sitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(serviceContext, SitePage.Type.CONTENT_PAGE));
+
+		SitePage randomSitePage = _getRandomSitePage(serviceContext, sitePage);
+
+		try (SafeCloseable safeCloseable1 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutImportInProcess", true);
+			SafeCloseable safeCloseable2 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutStagingInProcess", true);
+			SafeCloseable safeCloseable3 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_lastImportUserName", lastImportUser.getFullName());
+			SafeCloseable safeCloseable4 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_lastImportUserUuid", lastImportUser.getUuid())) {
+
+			sitePageResource.putSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				randomSitePage.getExternalReferenceCode(), false,
+				randomSitePage);
+		}
+
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			randomSitePage.getExternalReferenceCode(), testGroup.getGroupId());
+
+		Assert.assertEquals(TestPropsValues.getUserId(), layout.getUserId());
+		Assert.assertEquals(
+			lastImportUser.getFullName(),
+			layout.getTypeSettingsProperty("last-import-user-name"));
+		Assert.assertEquals(
+			lastImportUser.getUuid(),
 			layout.getTypeSettingsProperty("last-import-user-uuid"));
 	}
 
