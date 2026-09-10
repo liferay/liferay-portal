@@ -193,6 +193,14 @@ public class LayoutImportController implements ImportController {
 				portletDataContext = getPortletDataContext(
 					exportImportConfiguration, zipReader);
 
+				Map<String, String[]> parameterMap =
+					portletDataContext.getParameterMap();
+
+				ExportImportThreadLocal.setLastImportUserName(
+					MapUtil.getString(parameterMap, "lastImportUserName"));
+				ExportImportThreadLocal.setLastImportUserUuid(
+					MapUtil.getString(parameterMap, "lastImportUserUuid"));
+
 				_exportImportLifecycleManager.fireExportImportLifecycleEvent(
 					ExportImportLifecycleConstants.EVENT_LAYOUT_IMPORT_STARTED,
 					getProcessFlag(),
@@ -234,6 +242,10 @@ public class LayoutImportController implements ImportController {
 				throwable);
 
 			throw throwable;
+		}
+		finally {
+			ExportImportThreadLocal.setLastImportUserName(null);
+			ExportImportThreadLocal.setLastImportUserUuid(null);
 		}
 	}
 
