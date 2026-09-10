@@ -8,6 +8,8 @@ package com.liferay.fragment.internal.input.template.parser;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.kernel.processor.ImageProcessor;
+import com.liferay.document.library.kernel.processor.ImageProcessorUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.fragment.constants.FragmentConfigurationFieldDataType;
@@ -1145,7 +1147,13 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 		FileEntry fileEntry = _fetchFileEntry(GetterUtil.getLong(value));
 
-		if (fileEntry != null) {
+		if (fileEntry == null) {
+			return null;
+		}
+
+		ImageProcessor imageProcessor = ImageProcessorUtil.getImageProcessor();
+
+		if (imageProcessor.isImageSupported(fileEntry.getMimeType())) {
 			try {
 				return _dlURLHelper.getPreviewURL(
 					fileEntry, fileEntry.getFileVersion(),

@@ -82,7 +82,7 @@ function showDropzone(dropzoneContainerType) {
 function showPreview(fileOrUrl, fileName) {
 	hasSelectedFile = true;
 
-	if (!fileOrUrl) {
+	if (!fileOrUrl && !fileName) {
 		showDropzone(DROP_ZONE_CONTAINER_TYPE.DEFAULT);
 
 		return;
@@ -90,8 +90,10 @@ function showPreview(fileOrUrl, fileName) {
 
 	let imageURL = null;
 
-	if (fileOrUrl instanceof File && fileOrUrl.type?.startsWith('image/')) {
-		imageURL = URL.createObjectURL(fileOrUrl);
+	if (fileOrUrl instanceof File) {
+		if (fileOrUrl.type?.startsWith('image/')) {
+			imageURL = URL.createObjectURL(fileOrUrl);
+		}
 	}
 	else {
 		imageURL = fileOrUrl;
@@ -256,7 +258,7 @@ else {
 					translationInput.dataset.previewURL = value.previewURL;
 				});
 
-				if (input.attributes?.previewURL) {
+				if (input.attributes?.fileName) {
 					showPreview(
 						input.attributes.previewURL,
 						input.attributes.fileName
@@ -281,13 +283,14 @@ else {
 							inputElement.id
 						);
 
-						let previewURL = translationInput?.dataset?.previewURL;
-
 						const fileName =
 							translationInput?.dataset?.fileName || '';
 
-						if (previewURL) {
-							showPreview(previewURL, fileName);
+						if (fileName) {
+							showPreview(
+								translationInput?.dataset?.previewURL,
+								fileName
+							);
 						}
 						else {
 							const defaultInput = getTranslationInput({
@@ -299,9 +302,7 @@ else {
 								namespace: fragmentElementId,
 							});
 
-							previewURL = defaultInput?.dataset?.previewURL;
-
-							if (previewURL) {
+							if (defaultInput?.dataset?.fileName) {
 								showPreview(
 									defaultInput?.dataset?.previewURL,
 									defaultInput?.dataset?.fileName
@@ -353,10 +354,7 @@ else {
 							fileInput.id
 						);
 
-						const previewURL =
-							defaultTranslationInput?.dataset?.previewURL;
-
-						if (previewURL) {
+						if (defaultTranslationInput?.dataset?.fileName) {
 							showPreview(
 								defaultTranslationInput?.dataset?.previewURL,
 								defaultTranslationInput?.dataset?.fileName
@@ -403,7 +401,9 @@ else {
 
 						translationInput.files = dataTransfer.files;
 						translationInput.dataset.previewURL =
-							URL.createObjectURL(dataTransfer.files[0]);
+							value.type?.startsWith('image/')
+								? URL.createObjectURL(dataTransfer.files[0])
+								: '';
 						translationInput.dataset.fileName = title;
 					}
 
@@ -473,6 +473,7 @@ else {
 					});
 
 					translationInput.value = '';
+					translationInput.dataset.fileName = '';
 					translationInput.dataset.previewURL = '';
 
 					if (currentLanguageId === defaultLanguageId) {
@@ -488,7 +489,7 @@ else {
 							namespace: fragmentElementId,
 						});
 
-						if (defaultInput.dataset?.previewURL) {
+						if (defaultInput.dataset?.fileName) {
 							showPreview(
 								defaultInput.dataset?.previewURL,
 								defaultInput.dataset.fileName
@@ -510,7 +511,7 @@ else {
 				const unlocalizedFieldsState =
 					input.attributes.unlocalizedFieldsState;
 
-				if (input.attributes?.previewURL) {
+				if (input.attributes?.fileName) {
 					showPreview(
 						input.attributes.previewURL,
 						input.attributes.fileName
