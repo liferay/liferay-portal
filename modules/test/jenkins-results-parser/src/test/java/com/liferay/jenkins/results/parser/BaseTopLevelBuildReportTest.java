@@ -260,6 +260,11 @@ public class BaseTopLevelBuildReportTest
 
 		Assert.assertEquals(
 			5000L, baseTopLevelBuildReport.getTopLevelPassiveDuration());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
+
+		Assert.assertEquals(
+			0L, baseTopLevelBuildReport.getTopLevelPassiveDuration());
 	}
 
 	@Test
