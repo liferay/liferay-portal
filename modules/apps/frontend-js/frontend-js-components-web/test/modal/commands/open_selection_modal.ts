@@ -71,6 +71,21 @@ describe('openSelectionModal', () => {
 		expect(getModalProps().disableButtonsOnLoading).toBe(false);
 	});
 
+	it('does not select anything when the add button is clicked before the iframe opens', () => {
+		const onSelect = jest.fn();
+
+		openSelectionModal({
+			multiple: true,
+			onSelect,
+			title: 'Select Organization',
+			url: 'https://www.sample.url',
+		});
+
+		expect(getAddButtonOnClick()).not.toThrow();
+
+		expect(onSelect).not.toHaveBeenCalled();
+	});
+
 	it('selects the checked items when the add button is clicked after the iframe opens', async () => {
 		const onSelect = jest.fn();
 		const processClose = jest.fn();
