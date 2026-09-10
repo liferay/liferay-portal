@@ -9,6 +9,7 @@ import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.rest.dto.v1_0.CTEntry;
 import com.liferay.change.tracking.rest.dto.v1_0.Status;
 import com.liferay.change.tracking.spi.display.CTDisplayRendererRegistry;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.BaseModel;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -82,13 +84,34 @@ public class CTEntryDTOConverter
 		return indexer.getDocument(ctEntry);
 	}
 
-	private String _getLocalizedValue(Field field, Locale locale) {
-		if (field == null) {
-			return StringPool.BLANK;
+	private String _getLocalizedName(Locale locale, String name) {
+		return StringBundler.concat(
+			name, StringPool.UNDERLINE, LocaleUtil.toLanguageId(locale));
+	}
+
+	private String _getLocalizedValue(
+		Document document, Locale locale, String name) {
+
+		Field field = document.getField(name);
+
+		if ((field != null) && MapUtil.isNotEmpty(field.getLocalizedValues())) {
+			return MapUtil.getWithFallbackKey(
+				field.getLocalizedValues(), locale, LocaleUtil.getDefault());
 		}
 
-		return MapUtil.getWithFallbackKey(
-			field.getLocalizedValues(), locale, LocaleUtil.getDefault());
+		String value = document.get(_getLocalizedName(locale, name));
+
+		if (Validator.isNotNull(value)) {
+			return value;
+		}
+
+		value = document.get(_getLocalizedName(LocaleUtil.getDefault(), name));
+
+		if (Validator.isNotNull(value)) {
+			return value;
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private String _getStatusMessage(
@@ -220,15 +243,9 @@ public class CTEntryDTOConverter
 						return GetterUtil.getLong(document.get(Field.GROUP_ID));
 					});
 				setSiteName(
-					() -> {
-						if (document.hasField("groupName")) {
-							return _getLocalizedValue(
-								document.getField("groupName"),
-								dtoConverterContext.getLocale());
-						}
-
-						return StringPool.BLANK;
-					});
+					() -> _getLocalizedValue(
+						document, dtoConverterContext.getLocale(),
+						"groupName"));
 				setStatus(
 					() -> _toStatus(
 						dtoConverterContext.getLocale(), document,
@@ -242,12 +259,11 @@ public class CTEntryDTOConverter
 						dtoConverterContext.getHttpServletRequest()));
 				setTitle(
 					() -> _getLocalizedValue(
-						document.getField("title"),
-						dtoConverterContext.getLocale()));
+						document, dtoConverterContext.getLocale(),
+						Field.TITLE));
 				setTypeName(
 					() -> _getLocalizedValue(
-						document.getField("typeName"),
-						dtoConverterContext.getLocale()));
+						document, dtoConverterContext.getLocale(), "typeName"));
 			}
 		};
 	}
