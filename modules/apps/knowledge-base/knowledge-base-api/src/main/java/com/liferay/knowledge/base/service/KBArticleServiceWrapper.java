@@ -85,6 +85,13 @@ public class KBArticleServiceWrapper
 	}
 
 	@Override
+	public void deleteKBArticleAttachment(long fileEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_kbArticleService.deleteKBArticleAttachment(fileEntryId);
+	}
+
+	@Override
 	public void deleteKBArticles(long groupId, long[] resourcePrimKeys)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -222,6 +229,14 @@ public class KBArticleServiceWrapper
 
 		return _kbArticleService.getKBArticleAndAllDescendantKBArticles(
 			resourcePrimKey, status, orderByComparator);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.repository.model.FileEntry
+			getKBArticleAttachment(long fileEntryId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _kbArticleService.getKBArticleAttachment(fileEntryId);
 	}
 
 	@Override
@@ -517,4 +532,4 @@ public class KBArticleServiceWrapper
 	private KBArticleService _kbArticleService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1379065792
+// LIFERAY-SERVICE-BUILDER-HASH:211734032

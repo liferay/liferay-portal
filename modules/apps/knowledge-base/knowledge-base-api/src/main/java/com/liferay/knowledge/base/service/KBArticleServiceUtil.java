@@ -85,6 +85,12 @@ public class KBArticleServiceUtil {
 		return getService().deleteKBArticle(resourcePrimKey);
 	}
 
+	public static void deleteKBArticleAttachment(long fileEntryId)
+		throws PortalException {
+
+		getService().deleteKBArticleAttachment(fileEntryId);
+	}
+
 	public static void deleteKBArticles(long groupId, long[] resourcePrimKeys)
 		throws PortalException {
 
@@ -204,6 +210,13 @@ public class KBArticleServiceUtil {
 
 		return getService().getKBArticleAndAllDescendantKBArticles(
 			resourcePrimKey, status, orderByComparator);
+	}
+
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+			getKBArticleAttachment(long fileEntryId)
+		throws PortalException {
+
+		return getService().getKBArticleAttachment(fileEntryId);
 	}
 
 	public static String getKBArticleRSS(
@@ -457,4 +470,4 @@ public class KBArticleServiceUtil {
 		new Snapshot<>(KBArticleServiceUtil.class, KBArticleService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-526496934
+// LIFERAY-SERVICE-BUILDER-HASH:-656320330

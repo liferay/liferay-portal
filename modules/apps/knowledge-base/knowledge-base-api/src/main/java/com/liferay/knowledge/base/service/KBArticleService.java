@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.lock.Lock;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -77,6 +78,9 @@ public interface KBArticleService extends BaseService {
 		long groupId, String keywords, int status);
 
 	public KBArticle deleteKBArticle(long resourcePrimKey)
+		throws PortalException;
+
+	public void deleteKBArticleAttachment(long fileEntryId)
 		throws PortalException;
 
 	public void deleteKBArticles(long groupId, long[] resourcePrimKeys)
@@ -149,6 +153,10 @@ public interface KBArticleService extends BaseService {
 	public List<KBArticle> getKBArticleAndAllDescendantKBArticles(
 			long resourcePrimKey, int status,
 			OrderByComparator<KBArticle> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FileEntry getKBArticleAttachment(long fileEntryId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -287,4 +295,4 @@ public interface KBArticleService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:683623458
+// LIFERAY-SERVICE-BUILDER-HASH:-1809869297
