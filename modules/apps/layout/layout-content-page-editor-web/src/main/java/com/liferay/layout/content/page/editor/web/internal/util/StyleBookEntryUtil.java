@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 import com.liferay.style.book.util.StyleBookEntryProviderUtil;
@@ -157,9 +158,12 @@ public class StyleBookEntryUtil {
 
 		String name = frontendTokenJSONObject.getString("name");
 
-		JSONObject valueJSONObject = null;
+		JSONObject valueJSONObject =
+			frontendTokenValuesJSONObject.getJSONObject(
+				StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID +
+					StringPool.COLON + name);
 
-		if (Validator.isNotNull(themeId)) {
+		if ((valueJSONObject == null) && Validator.isNotNull(themeId)) {
 			valueJSONObject = frontendTokenValuesJSONObject.getJSONObject(
 				themeId + StringPool.COLON + name);
 		}
