@@ -1,0 +1,9 @@
+suite: Grafana deployment
+templates:
+    -   charts/grafana/templates/deployment.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.labels["azure.workload.identity/use"]
+                    value: "true"
+        it: Labels the pod so the Azure workload identity webhook injects a token
