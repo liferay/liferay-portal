@@ -170,6 +170,32 @@ public class AssetListAssetEntryProviderOrderByTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
 	@Test
+	public void testGetAssetEntriesInfoPageOrderedByCommonFieldReviewDate()
+		throws Exception {
+
+		long time = System.currentTimeMillis();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"reviewDate", new Date(time + (30 * Time.DAY))
+			).build());
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"reviewDate", new Date(time + (10 * Time.DAY))
+			).build());
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"reviewDate", new Date(time + (20 * Time.DAY))
+			).build());
+
+		_assertOrderedObjectEntries(
+			"reviewDate", "ASC", objectEntry2, objectEntry3, objectEntry1);
+		_assertOrderedObjectEntries(
+			"reviewDate", "DESC", objectEntry1, objectEntry3, objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
 	public void testGetAssetEntriesInfoPageOrderedByCommonFieldUserName()
 		throws Exception {
 
