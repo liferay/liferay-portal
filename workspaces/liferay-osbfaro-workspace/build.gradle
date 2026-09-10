@@ -1,19 +1,6 @@
 ext.faroEnvironmentName = System.getenv().get("FARO_ENVIRONMENT_NAME") ?: "local"
 ext.faroImageTag = project.findProperty("docker.image.tag") ?: "latest"
 
-// Pin service builder to the last version compatible with release.dxp.api:2026.q1.5.
-// Versions >= 1.0.530 generate CollectionPersistenceFinder which is not in that API.
-
-subprojects {
-	plugins.withId("com.liferay.portal.tools.service.builder") {
-		configurations.serviceBuilder {
-			resolutionStrategy {
-				force "com.liferay:com.liferay.portal.tools.service.builder:1.0.529"
-			}
-		}
-	}
-}
-
 configurations {
 	faroLoggingDependencies
 }
