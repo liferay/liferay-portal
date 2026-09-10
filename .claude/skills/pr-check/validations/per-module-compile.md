@@ -28,7 +28,7 @@ MERGE_BASE=$(git merge-base HEAD master)
 git diff --name-only "${MERGE_BASE}...HEAD" -- modules
 ```
 
-A module is in the deploy set when it has changed sources or resources: `*.java`, `*.{js,jsx,mjs,cjs,ts,tsx}`, frontend resources (`*.{css,scss,sass}`, `*.ftl`, `*.jsp`, `*.jspf`), lockfiles (`package-lock.json`, `yarn.lock`), a `*.properties` under `src/main`, or OSGi configuration (`bnd.bnd`, `gradle.properties`, `package.json` keys other than `test`).
+A module is in the deploy set when it has changed sources or resources: `*.java`, `*.{js,jsx,mjs,cjs,ts,tsx}`, frontend resources (`*.{css,scss,sass}`, `*.ftl`, `*.jsp`, `*.jspf`), lockfiles (`package-lock.json`, `yarn.lock`), `*.properties` files under `src/main`, or OSGi configuration (`bnd.bnd`, `gradle.properties`, `package.json` keys other than `test`).
 
 That list is the **Match** regex above restated, and the two have to stay in step. A `test.properties` is never in the set, even under `src/main`, since it configures CI test selection rather than the build. A module whose only change is a `.lfrbuild-*` marker is not in the deploy set, since the marker changes what the build configures rather than what the module contains, and [module-registration.md](module-registration.md) handles it.
 
@@ -109,7 +109,7 @@ Do not hand this to [javascript-unit-test.md](javascript-unit-test.md). Jest res
 
 Treat `UP-TO-DATE` on a changed module's own `compileJava` with the same suspicion. Gradle's cache has served a stale output in this repository before, so confirm the change reached the jar rather than reading the task line as proof.
 
-When a changed path does not have a `bnd.bnd` ancestor, there was never a module to build, so report **NOT VERIFIED** naming those paths. When a changed path does sit inside a module and the set is still empty, the derivation is broken, so report that as a FAIL. PASS when every module the diff changed reports `BUILD SUCCESSFUL`.
+When a changed path has no `bnd.bnd` ancestor, there is no module to build, so report **NOT VERIFIED** naming every such path. When a changed path does sit inside a module and the set is still empty, the derivation is broken, so report that as a FAIL. PASS when every module the diff changed reports `BUILD SUCCESSFUL`.
 
 ## Checklist
 
