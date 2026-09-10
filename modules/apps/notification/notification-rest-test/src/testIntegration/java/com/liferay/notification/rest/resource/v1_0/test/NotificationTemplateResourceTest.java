@@ -325,6 +325,7 @@ public class NotificationTemplateResourceTest
 		notificationTemplate.setSubject(
 			LocalizedMapUtil.getI18nMap(
 				RandomTestUtil.randomLocaleStringMap()));
+		notificationTemplate.setSystem(false);
 		notificationTemplate.setType(
 			NotificationConstants.TYPE_USER_NOTIFICATION);
 

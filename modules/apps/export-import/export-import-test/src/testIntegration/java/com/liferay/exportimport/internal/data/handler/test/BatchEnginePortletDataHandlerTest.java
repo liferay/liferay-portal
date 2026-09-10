@@ -1973,6 +1973,44 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
+	public void testExportImportNotificationTemplatesWithSystemDeletions()
+		throws Exception {
+
+		NotificationTemplate systemNotificationTemplate =
+			_addSystemNotificationTemplate();
+
+		String externalReferenceCode =
+			systemNotificationTemplate.getExternalReferenceCode();
+
+		_notificationTemplateLocalService.deleteNotificationTemplate(
+			systemNotificationTemplate);
+
+		File larFile = new ExportImportExecutor(
+		).withDeletions(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeNotificationTemplates(
+		).executeExport();
+
+		_registerNotificationTemplate(
+			_notificationTemplateLocalService.addAssigneeNotificationTemplate(
+				externalReferenceCode, TestPropsValues.getUserId(),
+				RandomTestUtil.randomString()));
+
+		new ExportImportExecutor(
+		).withDeletions(
+		).withGroupId(
+			_getCompanyGroupId()
+		).withIncludeNotificationTemplates(
+		).withLARFile(
+			larFile
+		).executeImport();
+
+		Assert.assertNotNull(_fetchNotificationTemplate(externalReferenceCode));
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
+	@Test
 	public void testExportImportNotificationTemplatesWithUserNotificationType()
 		throws Exception {
 
