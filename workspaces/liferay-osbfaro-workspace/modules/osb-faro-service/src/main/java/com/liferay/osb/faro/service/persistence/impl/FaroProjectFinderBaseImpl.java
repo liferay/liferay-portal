@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.service.persistence.impl;
 
+import com.liferay.osb.faro.exception.NoSuchFaroProjectException;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.persistence.FaroProjectPersistence;
 import com.liferay.osb.faro.service.persistence.impl.constants.OSBFaroPersistenceConstants;
@@ -27,7 +28,7 @@ import org.osgi.service.component.annotations.Reference;
  * @generated
  */
 public abstract class FaroProjectFinderBaseImpl
-	extends BasePersistenceImpl<FaroProject> {
+	extends BasePersistenceImpl<FaroProject, NoSuchFaroProjectException> {
 
 	public FaroProjectFinderBaseImpl() {
 		setModelClass(FaroProject.class);
@@ -77,4 +78,4 @@ public abstract class FaroProjectFinderBaseImpl
 		FaroProjectFinderBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2023848008
+// LIFERAY-SERVICE-BUILDER-HASH:-1730584031

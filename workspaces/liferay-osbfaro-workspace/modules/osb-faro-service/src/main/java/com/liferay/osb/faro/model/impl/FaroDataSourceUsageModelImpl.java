@@ -95,6 +95,8 @@ public class FaroDataSourceUsageModelImpl
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBFaro_FaroDataSourceUsage";
 
+	public static final String ENTITY_ALIAS = "faroDataSourceUsage";
+
 	public static final String ORDER_BY_JPQL =
 		" ORDER BY faroDataSourceUsage.faroDataSourceUsageId ASC";
 
@@ -981,4 +983,4 @@ public class FaroDataSourceUsageModelImpl
 	private FaroDataSourceUsage _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1539163982
+// LIFERAY-SERVICE-BUILDER-HASH:39211017

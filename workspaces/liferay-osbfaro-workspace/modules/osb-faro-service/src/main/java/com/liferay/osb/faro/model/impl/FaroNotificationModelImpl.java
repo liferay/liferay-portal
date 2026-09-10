@@ -92,6 +92,8 @@ public class FaroNotificationModelImpl
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBFaro_FaroNotification";
 
+	public static final String ENTITY_ALIAS = "faroNotification";
+
 	public static final String ORDER_BY_JPQL =
 		" ORDER BY faroNotification.faroNotificationId ASC";
 
@@ -1002,4 +1004,4 @@ public class FaroNotificationModelImpl
 	private FaroNotification _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:422517399
+// LIFERAY-SERVICE-BUILDER-HASH:-280455303

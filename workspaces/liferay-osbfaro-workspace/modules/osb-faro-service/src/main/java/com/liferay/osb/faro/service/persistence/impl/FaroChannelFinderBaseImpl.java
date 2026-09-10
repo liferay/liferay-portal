@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.service.persistence.impl;
 
+import com.liferay.osb.faro.exception.NoSuchFaroChannelException;
 import com.liferay.osb.faro.model.FaroChannel;
 import com.liferay.osb.faro.service.persistence.FaroChannelPersistence;
 import com.liferay.osb.faro.service.persistence.impl.constants.OSBFaroPersistenceConstants;
@@ -21,7 +22,7 @@ import org.osgi.service.component.annotations.Reference;
  * @generated
  */
 public abstract class FaroChannelFinderBaseImpl
-	extends BasePersistenceImpl<FaroChannel> {
+	extends BasePersistenceImpl<FaroChannel, NoSuchFaroChannelException> {
 
 	public FaroChannelFinderBaseImpl() {
 		setModelClass(FaroChannel.class);
@@ -57,4 +58,4 @@ public abstract class FaroChannelFinderBaseImpl
 	protected FaroChannelPersistence faroChannelPersistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1103880814
+// LIFERAY-SERVICE-BUILDER-HASH:-1168947703

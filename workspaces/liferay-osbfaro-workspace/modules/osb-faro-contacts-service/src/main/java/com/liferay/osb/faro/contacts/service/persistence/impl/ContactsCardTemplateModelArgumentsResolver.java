@@ -55,7 +55,7 @@ public class ContactsCardTemplateModelArgumentsResolver
 
 		if (!checkColumn || (columnBitmask == 0)) {
 			return _getValue(
-				contactsCardTemplateModelImpl, columnNames, original);
+				contactsCardTemplateModelImpl, finderPath, original);
 		}
 
 		Long finderPathColumnBitmask = _finderPathColumnBitmasksCache.get(
@@ -75,7 +75,7 @@ public class ContactsCardTemplateModelArgumentsResolver
 
 		if ((columnBitmask & finderPathColumnBitmask) != 0) {
 			return _getValue(
-				contactsCardTemplateModelImpl, columnNames, original);
+				contactsCardTemplateModelImpl, finderPath, original);
 		}
 
 		return null;
@@ -93,22 +93,27 @@ public class ContactsCardTemplateModelArgumentsResolver
 
 	private static Object[] _getValue(
 		ContactsCardTemplateModelImpl contactsCardTemplateModelImpl,
-		String[] columnNames, boolean original) {
+		FinderPath finderPath, boolean original) {
+
+		String[] columnNames = finderPath.getColumnNames();
 
 		Object[] arguments = new Object[columnNames.length];
 
 		for (int i = 0; i < arguments.length; i++) {
 			String columnName = columnNames[i];
 
+			Object value;
+
 			if (original) {
-				arguments[i] =
-					contactsCardTemplateModelImpl.getColumnOriginalValue(
-						columnName);
-			}
-			else {
-				arguments[i] = contactsCardTemplateModelImpl.getColumnValue(
+				value = contactsCardTemplateModelImpl.getColumnOriginalValue(
 					columnName);
 			}
+			else {
+				value = contactsCardTemplateModelImpl.getColumnValue(
+					columnName);
+			}
+
+			arguments[i] = finderPath.normalizeArgument(i, value);
 		}
 
 		return arguments;
@@ -118,4 +123,4 @@ public class ContactsCardTemplateModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2031525480
+// LIFERAY-SERVICE-BUILDER-HASH:-993398507

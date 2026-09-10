@@ -13,24 +13,17 @@ import com.liferay.osb.faro.contacts.model.impl.ContactsCardTemplateModelImpl;
 import com.liferay.osb.faro.contacts.service.persistence.ContactsCardTemplatePersistence;
 import com.liferay.osb.faro.contacts.service.persistence.ContactsCardTemplateUtil;
 import com.liferay.osb.faro.contacts.service.persistence.impl.constants.OSBFaroPersistenceConstants;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
-import com.liferay.portal.kernel.dao.orm.Query;
-import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
+import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -62,7 +55,8 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ContactsCardTemplatePersistence.class)
 public class ContactsCardTemplatePersistenceImpl
-	extends BasePersistenceImpl<ContactsCardTemplate>
+	extends BasePersistenceImpl
+		<ContactsCardTemplate, NoSuchContactsCardTemplateException>
 	implements ContactsCardTemplatePersistence {
 
 	/*
@@ -79,70 +73,15 @@ public class ContactsCardTemplatePersistenceImpl
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
 		FINDER_CLASS_NAME_ENTITY + ".List2";
 
-	private FinderPath _finderPathWithPaginationFindAll;
-	private FinderPath _finderPathWithoutPaginationFindAll;
-	private FinderPath _finderPathCountAll;
-	private FinderPath _finderPathWithPaginationFindByGroupId;
-	private FinderPath _finderPathWithoutPaginationFindByGroupId;
-	private FinderPath _finderPathCountByGroupId;
-
-	/**
-	 * Returns all the contacts card templates where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the matching contacts card templates
-	 */
-	@Override
-	public List<ContactsCardTemplate> findByGroupId(long groupId) {
-		return findByGroupId(
-			groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the contacts card templates where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ContactsCardTemplateModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of contacts card templates
-	 * @param end the upper bound of the range of contacts card templates (not inclusive)
-	 * @return the range of matching contacts card templates
-	 */
-	@Override
-	public List<ContactsCardTemplate> findByGroupId(
-		long groupId, int start, int end) {
-
-		return findByGroupId(groupId, start, end, null);
-	}
+	private CollectionPersistenceFinder
+		<ContactsCardTemplate, NoSuchContactsCardTemplateException>
+			_collectionPersistenceFinderByGroupId;
 
 	/**
 	 * Returns an ordered range of all the contacts card templates where groupId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ContactsCardTemplateModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of contacts card templates
-	 * @param end the upper bound of the range of contacts card templates (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching contacts card templates
-	 */
-	@Override
-	public List<ContactsCardTemplate> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<ContactsCardTemplate> orderByComparator) {
-
-		return findByGroupId(groupId, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the contacts card templates where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ContactsCardTemplateModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ContactsCardTemplateModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -158,93 +97,9 @@ public class ContactsCardTemplatePersistenceImpl
 		OrderByComparator<ContactsCardTemplate> orderByComparator,
 		boolean useFinderCache) {
 
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByGroupId;
-				finderArgs = new Object[] {groupId};
-			}
-		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByGroupId;
-			finderArgs = new Object[] {groupId, start, end, orderByComparator};
-		}
-
-		List<ContactsCardTemplate> list = null;
-
-		if (useFinderCache) {
-			list = (List<ContactsCardTemplate>)finderCache.getResult(
-				finderPath, finderArgs, this);
-
-			if ((list != null) && !list.isEmpty()) {
-				for (ContactsCardTemplate contactsCardTemplate : list) {
-					if (groupId != contactsCardTemplate.getGroupId()) {
-						list = null;
-
-						break;
-					}
-				}
-			}
-		}
-
-		if (list == null) {
-			StringBundler sb = null;
-
-			if (orderByComparator != null) {
-				sb = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
-			}
-			else {
-				sb = new StringBundler(3);
-			}
-
-			sb.append(_SQL_SELECT_CONTACTSCARDTEMPLATE_WHERE);
-
-			sb.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
-
-			if (orderByComparator != null) {
-				appendOrderByComparator(
-					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
-			}
-			else {
-				sb.append(ContactsCardTemplateModelImpl.ORDER_BY_JPQL);
-			}
-
-			String sql = sb.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(sql);
-
-				QueryPos queryPos = QueryPos.getInstance(query);
-
-				queryPos.add(groupId);
-
-				list = (List<ContactsCardTemplate>)QueryUtil.list(
-					query, getDialect(), start, end);
-
-				cacheResult(list);
-
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return list;
+		return _collectionPersistenceFinderByGroupId.find(
+			finderCache, new Object[] {groupId}, start, end, orderByComparator,
+			useFinderCache);
 	}
 
 	/**
@@ -261,23 +116,8 @@ public class ContactsCardTemplatePersistenceImpl
 			OrderByComparator<ContactsCardTemplate> orderByComparator)
 		throws NoSuchContactsCardTemplateException {
 
-		ContactsCardTemplate contactsCardTemplate = fetchByGroupId_First(
-			groupId, orderByComparator);
-
-		if (contactsCardTemplate != null) {
-			return contactsCardTemplate;
-		}
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(_NO_SUCH_ENTITY_WITH_KEY);
-
-		sb.append("groupId=");
-		sb.append(groupId);
-
-		sb.append("}");
-
-		throw new NoSuchContactsCardTemplateException(sb.toString());
+		return _collectionPersistenceFinderByGroupId.findFirst(
+			finderCache, new Object[] {groupId}, orderByComparator);
 	}
 
 	/**
@@ -292,14 +132,8 @@ public class ContactsCardTemplatePersistenceImpl
 		long groupId,
 		OrderByComparator<ContactsCardTemplate> orderByComparator) {
 
-		List<ContactsCardTemplate> list = findByGroupId(
-			groupId, 0, 1, orderByComparator);
-
-		if (!list.isEmpty()) {
-			return list.get(0);
-		}
-
-		return null;
+		return _collectionPersistenceFinderByGroupId.fetchFirst(
+			finderCache, new Object[] {groupId}, orderByComparator);
 	}
 
 	/**
@@ -309,12 +143,8 @@ public class ContactsCardTemplatePersistenceImpl
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
-		for (ContactsCardTemplate contactsCardTemplate :
-				findByGroupId(
-					groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-			remove(contactsCardTemplate);
-		}
+		_collectionPersistenceFinderByGroupId.remove(
+			finderCache, new Object[] {groupId});
 	}
 
 	/**
@@ -325,49 +155,9 @@ public class ContactsCardTemplatePersistenceImpl
 	 */
 	@Override
 	public int countByGroupId(long groupId) {
-		FinderPath finderPath = _finderPathCountByGroupId;
-
-		Object[] finderArgs = new Object[] {groupId};
-
-		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
-
-		if (count == null) {
-			StringBundler sb = new StringBundler(2);
-
-			sb.append(_SQL_COUNT_CONTACTSCARDTEMPLATE_WHERE);
-
-			sb.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
-
-			String sql = sb.toString();
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(sql);
-
-				QueryPos queryPos = QueryPos.getInstance(query);
-
-				queryPos.add(groupId);
-
-				count = (Long)query.uniqueResult();
-
-				finderCache.putResult(finderPath, finderArgs, count);
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
+		return _collectionPersistenceFinderByGroupId.count(
+			finderCache, new Object[] {groupId});
 	}
-
-	private static final String _FINDER_COLUMN_GROUPID_GROUPID_2 =
-		"contactsCardTemplate.groupId = ?";
 
 	public ContactsCardTemplatePersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
@@ -383,94 +173,6 @@ public class ContactsCardTemplatePersistenceImpl
 		setModelPKClass(long.class);
 
 		setTable(ContactsCardTemplateTable.INSTANCE);
-	}
-
-	/**
-	 * Caches the contacts card template in the entity cache if it is enabled.
-	 *
-	 * @param contactsCardTemplate the contacts card template
-	 */
-	@Override
-	public void cacheResult(ContactsCardTemplate contactsCardTemplate) {
-		entityCache.putResult(
-			ContactsCardTemplateImpl.class,
-			contactsCardTemplate.getPrimaryKey(), contactsCardTemplate);
-	}
-
-	private int _valueObjectFinderCacheListThreshold;
-
-	/**
-	 * Caches the contacts card templates in the entity cache if it is enabled.
-	 *
-	 * @param contactsCardTemplates the contacts card templates
-	 */
-	@Override
-	public void cacheResult(List<ContactsCardTemplate> contactsCardTemplates) {
-		if ((_valueObjectFinderCacheListThreshold == 0) ||
-			((_valueObjectFinderCacheListThreshold > 0) &&
-			 (contactsCardTemplates.size() >
-				 _valueObjectFinderCacheListThreshold))) {
-
-			return;
-		}
-
-		for (ContactsCardTemplate contactsCardTemplate :
-				contactsCardTemplates) {
-
-			if (entityCache.getResult(
-					ContactsCardTemplateImpl.class,
-					contactsCardTemplate.getPrimaryKey()) == null) {
-
-				cacheResult(contactsCardTemplate);
-			}
-		}
-	}
-
-	/**
-	 * Clears the cache for all contacts card templates.
-	 *
-	 * <p>
-	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
-	 * </p>
-	 */
-	@Override
-	public void clearCache() {
-		entityCache.clearCache(ContactsCardTemplateImpl.class);
-
-		finderCache.clearCache(ContactsCardTemplateImpl.class);
-	}
-
-	/**
-	 * Clears the cache for the contacts card template.
-	 *
-	 * <p>
-	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
-	 * </p>
-	 */
-	@Override
-	public void clearCache(ContactsCardTemplate contactsCardTemplate) {
-		entityCache.removeResult(
-			ContactsCardTemplateImpl.class, contactsCardTemplate);
-	}
-
-	@Override
-	public void clearCache(List<ContactsCardTemplate> contactsCardTemplates) {
-		for (ContactsCardTemplate contactsCardTemplate :
-				contactsCardTemplates) {
-
-			entityCache.removeResult(
-				ContactsCardTemplateImpl.class, contactsCardTemplate);
-		}
-	}
-
-	@Override
-	public void clearCache(Set<Serializable> primaryKeys) {
-		finderCache.clearCache(ContactsCardTemplateImpl.class);
-
-		for (Serializable primaryKey : primaryKeys) {
-			entityCache.removeResult(
-				ContactsCardTemplateImpl.class, primaryKey);
-		}
 	}
 
 	/**
@@ -504,48 +206,6 @@ public class ContactsCardTemplatePersistenceImpl
 		throws NoSuchContactsCardTemplateException {
 
 		return remove((Serializable)contactsCardTemplateId);
-	}
-
-	/**
-	 * Removes the contacts card template with the primary key from the database. Also notifies the appropriate model listeners.
-	 *
-	 * @param primaryKey the primary key of the contacts card template
-	 * @return the contacts card template that was removed
-	 * @throws NoSuchContactsCardTemplateException if a contacts card template with the primary key could not be found
-	 */
-	@Override
-	public ContactsCardTemplate remove(Serializable primaryKey)
-		throws NoSuchContactsCardTemplateException {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			ContactsCardTemplate contactsCardTemplate =
-				(ContactsCardTemplate)session.get(
-					ContactsCardTemplateImpl.class, primaryKey);
-
-			if (contactsCardTemplate == null) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
-				}
-
-				throw new NoSuchContactsCardTemplateException(
-					_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
-			}
-
-			return remove(contactsCardTemplate);
-		}
-		catch (NoSuchContactsCardTemplateException noSuchEntityException) {
-			throw noSuchEntityException;
-		}
-		catch (Exception exception) {
-			throw processException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
 	}
 
 	@Override
@@ -627,41 +287,13 @@ public class ContactsCardTemplatePersistenceImpl
 			closeSession(session);
 		}
 
-		entityCache.putResult(
-			ContactsCardTemplateImpl.class, contactsCardTemplateModelImpl,
-			false, true);
+		cacheUniqueFindersResult(contactsCardTemplate, false);
 
 		if (isNew) {
 			contactsCardTemplate.setNew(false);
 		}
 
 		contactsCardTemplate.resetOriginalValues();
-
-		return contactsCardTemplate;
-	}
-
-	/**
-	 * Returns the contacts card template with the primary key or throws a <code>com.liferay.portal.kernel.exception.NoSuchModelException</code> if it could not be found.
-	 *
-	 * @param primaryKey the primary key of the contacts card template
-	 * @return the contacts card template
-	 * @throws NoSuchContactsCardTemplateException if a contacts card template with the primary key could not be found
-	 */
-	@Override
-	public ContactsCardTemplate findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchContactsCardTemplateException {
-
-		ContactsCardTemplate contactsCardTemplate = fetchByPrimaryKey(
-			primaryKey);
-
-		if (contactsCardTemplate == null) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
-			}
-
-			throw new NoSuchContactsCardTemplateException(
-				_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
-		}
 
 		return contactsCardTemplate;
 	}
@@ -689,188 +321,6 @@ public class ContactsCardTemplatePersistenceImpl
 	@Override
 	public ContactsCardTemplate fetchByPrimaryKey(long contactsCardTemplateId) {
 		return fetchByPrimaryKey((Serializable)contactsCardTemplateId);
-	}
-
-	/**
-	 * Returns all the contacts card templates.
-	 *
-	 * @return the contacts card templates
-	 */
-	@Override
-	public List<ContactsCardTemplate> findAll() {
-		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the contacts card templates.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ContactsCardTemplateModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of contacts card templates
-	 * @param end the upper bound of the range of contacts card templates (not inclusive)
-	 * @return the range of contacts card templates
-	 */
-	@Override
-	public List<ContactsCardTemplate> findAll(int start, int end) {
-		return findAll(start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the contacts card templates.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ContactsCardTemplateModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of contacts card templates
-	 * @param end the upper bound of the range of contacts card templates (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of contacts card templates
-	 */
-	@Override
-	public List<ContactsCardTemplate> findAll(
-		int start, int end,
-		OrderByComparator<ContactsCardTemplate> orderByComparator) {
-
-		return findAll(start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the contacts card templates.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ContactsCardTemplateModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of contacts card templates
-	 * @param end the upper bound of the range of contacts card templates (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of contacts card templates
-	 */
-	@Override
-	public List<ContactsCardTemplate> findAll(
-		int start, int end,
-		OrderByComparator<ContactsCardTemplate> orderByComparator,
-		boolean useFinderCache) {
-
-		FinderPath finderPath = null;
-		Object[] finderArgs = null;
-
-		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindAll;
-				finderArgs = FINDER_ARGS_EMPTY;
-			}
-		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindAll;
-			finderArgs = new Object[] {start, end, orderByComparator};
-		}
-
-		List<ContactsCardTemplate> list = null;
-
-		if (useFinderCache) {
-			list = (List<ContactsCardTemplate>)finderCache.getResult(
-				finderPath, finderArgs, this);
-		}
-
-		if (list == null) {
-			StringBundler sb = null;
-			String sql = null;
-
-			if (orderByComparator != null) {
-				sb = new StringBundler(
-					2 + (orderByComparator.getOrderByFields().length * 2));
-
-				sb.append(_SQL_SELECT_CONTACTSCARDTEMPLATE);
-
-				appendOrderByComparator(
-					sb, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
-
-				sql = sb.toString();
-			}
-			else {
-				sql = _SQL_SELECT_CONTACTSCARDTEMPLATE;
-
-				sql = sql.concat(ContactsCardTemplateModelImpl.ORDER_BY_JPQL);
-			}
-
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(sql);
-
-				list = (List<ContactsCardTemplate>)QueryUtil.list(
-					query, getDialect(), start, end);
-
-				cacheResult(list);
-
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return list;
-	}
-
-	/**
-	 * Removes all the contacts card templates from the database.
-	 *
-	 */
-	@Override
-	public void removeAll() {
-		for (ContactsCardTemplate contactsCardTemplate : findAll()) {
-			remove(contactsCardTemplate);
-		}
-	}
-
-	/**
-	 * Returns the number of contacts card templates.
-	 *
-	 * @return the number of contacts card templates
-	 */
-	@Override
-	public int countAll() {
-		Long count = (Long)finderCache.getResult(
-			_finderPathCountAll, FINDER_ARGS_EMPTY, this);
-
-		if (count == null) {
-			Session session = null;
-
-			try {
-				session = openSession();
-
-				Query query = session.createQuery(
-					_SQL_COUNT_CONTACTSCARDTEMPLATE);
-
-				count = (Long)query.uniqueResult();
-
-				finderCache.putResult(
-					_finderPathCountAll, FINDER_ARGS_EMPTY, count);
-			}
-			catch (Exception exception) {
-				throw processException(exception);
-			}
-			finally {
-				closeSession(session);
-			}
-		}
-
-		return count.intValue();
 	}
 
 	@Override
@@ -903,38 +353,32 @@ public class ContactsCardTemplatePersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_valueObjectFinderCacheListThreshold = GetterUtil.getInteger(
-			PropsUtil.get(PropsKeys.VALUE_OBJECT_FINDER_CACHE_LIST_THRESHOLD));
-
-		_finderPathWithPaginationFindAll = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0],
-			new String[0], true);
-
-		_finderPathWithoutPaginationFindAll = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll", new String[0],
-			new String[0], true);
-
-		_finderPathCountAll = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
-			new String[0], new String[0], false);
-
-		_finderPathWithPaginationFindByGroupId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-			new String[] {
-				Long.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			},
-			new String[] {"groupId"}, true);
-
-		_finderPathWithoutPaginationFindByGroupId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-			new String[] {Long.class.getName()}, new String[] {"groupId"},
-			true);
-
-		_finderPathCountByGroupId = new FinderPath(
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-			new String[] {Long.class.getName()}, new String[] {"groupId"},
-			false);
+		_collectionPersistenceFinderByGroupId =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
+					new String[] {
+						Long.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"groupId"}, true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
+					new String[] {Long.class.getName()},
+					new String[] {"groupId"}, false),
+				_SQL_SELECT_CONTACTSCARDTEMPLATE_WHERE,
+				_SQL_COUNT_CONTACTSCARDTEMPLATE_WHERE,
+				ContactsCardTemplateModelImpl.ORDER_BY_JPQL,
+				_ENTITY_ALIAS_PREFIX, "", "", null,
+				new FinderColumn<>(
+					"contactsCardTemplate.", "groupId", FinderColumn.Type.LONG,
+					"=", true, true, ContactsCardTemplate::getGroupId));
 
 		ContactsCardTemplateUtil.setPersistence(this);
 	}
@@ -978,29 +422,17 @@ public class ContactsCardTemplatePersistenceImpl
 	@Reference
 	protected FinderCache finderCache;
 
+	private static final String _ENTITY_ALIAS_PREFIX =
+		ContactsCardTemplateModelImpl.ENTITY_ALIAS + ".";
+
 	private static final String _SQL_SELECT_CONTACTSCARDTEMPLATE =
 		"SELECT contactsCardTemplate FROM ContactsCardTemplate contactsCardTemplate";
 
 	private static final String _SQL_SELECT_CONTACTSCARDTEMPLATE_WHERE =
 		"SELECT contactsCardTemplate FROM ContactsCardTemplate contactsCardTemplate WHERE ";
 
-	private static final String _SQL_COUNT_CONTACTSCARDTEMPLATE =
-		"SELECT COUNT(contactsCardTemplate) FROM ContactsCardTemplate contactsCardTemplate";
-
 	private static final String _SQL_COUNT_CONTACTSCARDTEMPLATE_WHERE =
 		"SELECT COUNT(contactsCardTemplate) FROM ContactsCardTemplate contactsCardTemplate WHERE ";
-
-	private static final String _ORDER_BY_ENTITY_ALIAS =
-		"contactsCardTemplate.";
-
-	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
-		"No ContactsCardTemplate exists with the primary key ";
-
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No ContactsCardTemplate exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ContactsCardTemplatePersistenceImpl.class);
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"settings", "type"});
@@ -1011,4 +443,4 @@ public class ContactsCardTemplatePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:943673855
+// LIFERAY-SERVICE-BUILDER-HASH:-973543632

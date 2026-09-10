@@ -44,15 +44,6 @@ public interface FaroProjectUsagePersistence
 		throws NoSuchFaroProjectUsageException;
 
 	/**
-	 * Returns the faro project usage where faroProjectId = &#63; and usageTime = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param faroProjectId the faro project ID
-	 * @param usageTime the usage time
-	 * @return the matching faro project usage, or <code>null</code> if a matching faro project usage could not be found
-	 */
-	public FaroProjectUsage fetchByF_U(long faroProjectId, long usageTime);
-
-	/**
 	 * Returns the faro project usage where faroProjectId = &#63; and usageTime = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param faroProjectId the faro project ID
@@ -81,20 +72,6 @@ public interface FaroProjectUsagePersistence
 	 * @return the number of matching faro project usages
 	 */
 	public int countByF_U(long faroProjectId, long usageTime);
-
-	/**
-	 * Caches the faro project usage in the entity cache if it is enabled.
-	 *
-	 * @param faroProjectUsage the faro project usage
-	 */
-	public void cacheResult(FaroProjectUsage faroProjectUsage);
-
-	/**
-	 * Caches the faro project usages in the entity cache if it is enabled.
-	 *
-	 * @param faroProjectUsages the faro project usages
-	 */
-	public void cacheResult(java.util.List<FaroProjectUsage> faroProjectUsages);
 
 	/**
 	 * Creates a new faro project usage with the primary key. Does not add the faro project usage to the database.
@@ -135,72 +112,17 @@ public interface FaroProjectUsagePersistence
 	public FaroProjectUsage fetchByPrimaryKey(long faroProjectUsageId);
 
 	/**
-	 * Returns all the faro project usages.
+	 * Returns the faro project usage where faroProjectId = &#63; and usageTime = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
-	 * @return the faro project usages
+	 * @param faroProjectId the faro project ID
+	 * @param usageTime the usage time
+	 * @return the matching faro project usage, or <code>null</code> if a matching faro project usage could not be found
 	 */
-	public java.util.List<FaroProjectUsage> findAll();
+	public default FaroProjectUsage fetchByF_U(
+		long faroProjectId, long usageTime) {
 
-	/**
-	 * Returns a range of all the faro project usages.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectUsageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of faro project usages
-	 * @param end the upper bound of the range of faro project usages (not inclusive)
-	 * @return the range of faro project usages
-	 */
-	public java.util.List<FaroProjectUsage> findAll(int start, int end);
-
-	/**
-	 * Returns an ordered range of all the faro project usages.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectUsageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of faro project usages
-	 * @param end the upper bound of the range of faro project usages (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of faro project usages
-	 */
-	public java.util.List<FaroProjectUsage> findAll(
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<FaroProjectUsage>
-			orderByComparator);
-
-	/**
-	 * Returns an ordered range of all the faro project usages.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectUsageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of faro project usages
-	 * @param end the upper bound of the range of faro project usages (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of faro project usages
-	 */
-	public java.util.List<FaroProjectUsage> findAll(
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<FaroProjectUsage>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Removes all the faro project usages from the database.
-	 */
-	public void removeAll();
-
-	/**
-	 * Returns the number of faro project usages.
-	 *
-	 * @return the number of faro project usages
-	 */
-	public int countAll();
+		return fetchByF_U(faroProjectId, usageTime, true);
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1036626232
+// LIFERAY-SERVICE-BUILDER-HASH:2085247603

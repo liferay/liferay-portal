@@ -114,6 +114,8 @@ public class FaroProjectModelImpl
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBFaro_FaroProject";
 
+	public static final String ENTITY_ALIAS = "faroProject";
+
 	public static final String ORDER_BY_JPQL =
 		" ORDER BY faroProject.faroProjectId ASC";
 
@@ -1498,4 +1500,4 @@ public class FaroProjectModelImpl
 	private FaroProject _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-667493939
+// LIFERAY-SERVICE-BUILDER-HASH:1999638613

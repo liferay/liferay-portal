@@ -36,6 +36,20 @@ public class FaroProjectUtil {
 	 */
 
 	/**
+	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#cacheResult(List)
+	 */
+	public static void cacheResult(List<FaroProject> faroProjects) {
+		getPersistence().cacheResult(faroProjects);
+	}
+
+	/**
+	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#cacheResult(com.liferay.portal.kernel.model.BaseModel)
+	 */
+	public static void cacheResult(FaroProject faroProject) {
+		getPersistence().cacheResult(faroProject);
+	}
+
+	/**
 	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#clearCache()
 	 */
 	public static void clearCache() {
@@ -124,16 +138,6 @@ public class FaroProjectUtil {
 	}
 
 	/**
-	 * Returns the faro project where groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param groupId the group ID
-	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
-	 */
-	public static FaroProject fetchByGroupId(long groupId) {
-		return getPersistence().fetchByGroupId(groupId);
-	}
-
-	/**
 	 * Returns the faro project where groupId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param groupId the group ID
@@ -166,55 +170,6 @@ public class FaroProjectUtil {
 	 */
 	public static int countByGroupId(long groupId) {
 		return getPersistence().countByGroupId(groupId);
-	}
-
-	/**
-	 * Returns all the faro projects where userId = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @return the matching faro projects
-	 */
-	public static List<FaroProject> findByUserId(long userId) {
-		return getPersistence().findByUserId(userId);
-	}
-
-	/**
-	 * Returns a range of all the faro projects where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of faro projects
-	 * @param end the upper bound of the range of faro projects (not inclusive)
-	 * @return the range of matching faro projects
-	 */
-	public static List<FaroProject> findByUserId(
-		long userId, int start, int end) {
-
-		return getPersistence().findByUserId(userId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the faro projects where userId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param start the lower bound of the range of faro projects
-	 * @param end the upper bound of the range of faro projects (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching faro projects
-	 */
-	public static List<FaroProject> findByUserId(
-		long userId, int start, int end,
-		OrderByComparator<FaroProject> orderByComparator) {
-
-		return getPersistence().findByUserId(
-			userId, start, end, orderByComparator);
 	}
 
 	/**
@@ -301,16 +256,6 @@ public class FaroProjectUtil {
 	}
 
 	/**
-	 * Returns the faro project where corpProjectUuid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param corpProjectUuid the corp project uuid
-	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
-	 */
-	public static FaroProject fetchByCorpProjectUuid(String corpProjectUuid) {
-		return getPersistence().fetchByCorpProjectUuid(corpProjectUuid);
-	}
-
-	/**
 	 * Returns the faro project where corpProjectUuid = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param corpProjectUuid the corp project uuid
@@ -344,58 +289,6 @@ public class FaroProjectUtil {
 	 */
 	public static int countByCorpProjectUuid(String corpProjectUuid) {
 		return getPersistence().countByCorpProjectUuid(corpProjectUuid);
-	}
-
-	/**
-	 * Returns all the faro projects where serverLocation = &#63;.
-	 *
-	 * @param serverLocation the server location
-	 * @return the matching faro projects
-	 */
-	public static List<FaroProject> findByServerLocation(
-		String serverLocation) {
-
-		return getPersistence().findByServerLocation(serverLocation);
-	}
-
-	/**
-	 * Returns a range of all the faro projects where serverLocation = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
-	 * </p>
-	 *
-	 * @param serverLocation the server location
-	 * @param start the lower bound of the range of faro projects
-	 * @param end the upper bound of the range of faro projects (not inclusive)
-	 * @return the range of matching faro projects
-	 */
-	public static List<FaroProject> findByServerLocation(
-		String serverLocation, int start, int end) {
-
-		return getPersistence().findByServerLocation(
-			serverLocation, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the faro projects where serverLocation = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
-	 * </p>
-	 *
-	 * @param serverLocation the server location
-	 * @param start the lower bound of the range of faro projects
-	 * @param end the upper bound of the range of faro projects (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching faro projects
-	 */
-	public static List<FaroProject> findByServerLocation(
-		String serverLocation, int start, int end,
-		OrderByComparator<FaroProject> orderByComparator) {
-
-		return getPersistence().findByServerLocation(
-			serverLocation, start, end, orderByComparator);
 	}
 
 	/**
@@ -486,16 +379,6 @@ public class FaroProjectUtil {
 	}
 
 	/**
-	 * Returns the faro project where weDeployKey = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param weDeployKey the we deploy key
-	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
-	 */
-	public static FaroProject fetchByWeDeployKey(String weDeployKey) {
-		return getPersistence().fetchByWeDeployKey(weDeployKey);
-	}
-
-	/**
 	 * Returns the faro project where weDeployKey = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param weDeployKey the we deploy key
@@ -528,24 +411,6 @@ public class FaroProjectUtil {
 	 */
 	public static int countByWeDeployKey(String weDeployKey) {
 		return getPersistence().countByWeDeployKey(weDeployKey);
-	}
-
-	/**
-	 * Caches the faro project in the entity cache if it is enabled.
-	 *
-	 * @param faroProject the faro project
-	 */
-	public static void cacheResult(FaroProject faroProject) {
-		getPersistence().cacheResult(faroProject);
-	}
-
-	/**
-	 * Caches the faro projects in the entity cache if it is enabled.
-	 *
-	 * @param faroProjects the faro projects
-	 */
-	public static void cacheResult(List<FaroProject> faroProjects) {
-		getPersistence().cacheResult(faroProjects);
 	}
 
 	/**
@@ -599,82 +464,134 @@ public class FaroProjectUtil {
 	}
 
 	/**
-	 * Returns all the faro projects.
+	 * Returns the faro project where groupId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
-	 * @return the faro projects
+	 * @param groupId the group ID
+	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
 	 */
-	public static List<FaroProject> findAll() {
-		return getPersistence().findAll();
+	public static FaroProject fetchByGroupId(long groupId) {
+		return getPersistence().fetchByGroupId(groupId);
 	}
 
 	/**
-	 * Returns a range of all the faro projects.
+	 * Returns the faro project where corpProjectUuid = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param corpProjectUuid the corp project uuid
+	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
+	 */
+	public static FaroProject fetchByCorpProjectUuid(String corpProjectUuid) {
+		return getPersistence().fetchByCorpProjectUuid(corpProjectUuid);
+	}
+
+	/**
+	 * Returns the faro project where weDeployKey = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param weDeployKey the we deploy key
+	 * @return the matching faro project, or <code>null</code> if a matching faro project could not be found
+	 */
+	public static FaroProject fetchByWeDeployKey(String weDeployKey) {
+		return getPersistence().fetchByWeDeployKey(weDeployKey);
+	}
+
+	/**
+	 * Returns all the faro projects where userId = &#63;.
+	 *
+	 * @param userId the user ID
+	 * @return the matching faro projects
+	 */
+	public static List<FaroProject> findByUserId(long userId) {
+		return getPersistence().findByUserId(userId);
+	}
+
+	/**
+	 * Returns a range of all the faro projects where userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
 	 * </p>
 	 *
+	 * @param userId the user ID
 	 * @param start the lower bound of the range of faro projects
 	 * @param end the upper bound of the range of faro projects (not inclusive)
-	 * @return the range of faro projects
+	 * @return the range of matching faro projects
 	 */
-	public static List<FaroProject> findAll(int start, int end) {
-		return getPersistence().findAll(start, end);
+	public static List<FaroProject> findByUserId(
+		long userId, int start, int end) {
+
+		return getPersistence().findByUserId(userId, start, end);
 	}
 
 	/**
-	 * Returns an ordered range of all the faro projects.
+	 * Returns an ordered range of all the faro projects where userId = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
 	 * </p>
 	 *
+	 * @param userId the user ID
 	 * @param start the lower bound of the range of faro projects
 	 * @param end the upper bound of the range of faro projects (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of faro projects
+	 * @return the ordered range of matching faro projects
 	 */
-	public static List<FaroProject> findAll(
-		int start, int end, OrderByComparator<FaroProject> orderByComparator) {
+	public static List<FaroProject> findByUserId(
+		long userId, int start, int end,
+		OrderByComparator<FaroProject> orderByComparator) {
 
-		return getPersistence().findAll(start, end, orderByComparator);
+		return getPersistence().findByUserId(
+			userId, start, end, orderByComparator);
 	}
 
 	/**
-	 * Returns an ordered range of all the faro projects.
+	 * Returns all the faro projects where serverLocation = &#63;.
+	 *
+	 * @param serverLocation the server location
+	 * @return the matching faro projects
+	 */
+	public static List<FaroProject> findByServerLocation(
+		String serverLocation) {
+
+		return getPersistence().findByServerLocation(serverLocation);
+	}
+
+	/**
+	 * Returns a range of all the faro projects where serverLocation = &#63;.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
 	 * </p>
 	 *
+	 * @param serverLocation the server location
+	 * @param start the lower bound of the range of faro projects
+	 * @param end the upper bound of the range of faro projects (not inclusive)
+	 * @return the range of matching faro projects
+	 */
+	public static List<FaroProject> findByServerLocation(
+		String serverLocation, int start, int end) {
+
+		return getPersistence().findByServerLocation(
+			serverLocation, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the faro projects where serverLocation = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroProjectModelImpl</code>.
+	 * </p>
+	 *
+	 * @param serverLocation the server location
 	 * @param start the lower bound of the range of faro projects
 	 * @param end the upper bound of the range of faro projects (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of faro projects
+	 * @return the ordered range of matching faro projects
 	 */
-	public static List<FaroProject> findAll(
-		int start, int end, OrderByComparator<FaroProject> orderByComparator,
-		boolean useFinderCache) {
+	public static List<FaroProject> findByServerLocation(
+		String serverLocation, int start, int end,
+		OrderByComparator<FaroProject> orderByComparator) {
 
-		return getPersistence().findAll(
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Removes all the faro projects from the database.
-	 */
-	public static void removeAll() {
-		getPersistence().removeAll();
-	}
-
-	/**
-	 * Returns the number of faro projects.
-	 *
-	 * @return the number of faro projects
-	 */
-	public static int countAll() {
-		return getPersistence().countAll();
+		return getPersistence().findByServerLocation(
+			serverLocation, start, end, orderByComparator);
 	}
 
 	public static FaroProjectPersistence getPersistence() {
@@ -688,4 +605,4 @@ public class FaroProjectUtil {
 	private static volatile FaroProjectPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1107374977
+// LIFERAY-SERVICE-BUILDER-HASH:-1585587381

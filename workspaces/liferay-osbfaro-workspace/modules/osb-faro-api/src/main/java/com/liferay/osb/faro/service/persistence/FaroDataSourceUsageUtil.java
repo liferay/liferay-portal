@@ -36,6 +36,22 @@ public class FaroDataSourceUsageUtil {
 	 */
 
 	/**
+	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#cacheResult(List)
+	 */
+	public static void cacheResult(
+		List<FaroDataSourceUsage> faroDataSourceUsages) {
+
+		getPersistence().cacheResult(faroDataSourceUsages);
+	}
+
+	/**
+	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#cacheResult(com.liferay.portal.kernel.model.BaseModel)
+	 */
+	public static void cacheResult(FaroDataSourceUsage faroDataSourceUsage) {
+		getPersistence().cacheResult(faroDataSourceUsage);
+	}
+
+	/**
 	 * @see com.liferay.portal.kernel.service.persistence.BasePersistence#clearCache()
 	 */
 	public static void clearCache() {
@@ -132,21 +148,6 @@ public class FaroDataSourceUsageUtil {
 	}
 
 	/**
-	 * Returns the faro data source usage where dataSourceId = &#63; and faroProjectId = &#63; and usageTime = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
-	 *
-	 * @param dataSourceId the data source ID
-	 * @param faroProjectId the faro project ID
-	 * @param usageTime the usage time
-	 * @return the matching faro data source usage, or <code>null</code> if a matching faro data source usage could not be found
-	 */
-	public static FaroDataSourceUsage fetchByF_D_U(
-		long dataSourceId, long faroProjectId, long usageTime) {
-
-		return getPersistence().fetchByF_D_U(
-			dataSourceId, faroProjectId, usageTime);
-	}
-
-	/**
 	 * Returns the faro data source usage where dataSourceId = &#63; and faroProjectId = &#63; and usageTime = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
 	 *
 	 * @param dataSourceId the data source ID
@@ -193,26 +194,6 @@ public class FaroDataSourceUsageUtil {
 
 		return getPersistence().countByF_D_U(
 			dataSourceId, faroProjectId, usageTime);
-	}
-
-	/**
-	 * Caches the faro data source usage in the entity cache if it is enabled.
-	 *
-	 * @param faroDataSourceUsage the faro data source usage
-	 */
-	public static void cacheResult(FaroDataSourceUsage faroDataSourceUsage) {
-		getPersistence().cacheResult(faroDataSourceUsage);
-	}
-
-	/**
-	 * Caches the faro data source usages in the entity cache if it is enabled.
-	 *
-	 * @param faroDataSourceUsages the faro data source usages
-	 */
-	public static void cacheResult(
-		List<FaroDataSourceUsage> faroDataSourceUsages) {
-
-		getPersistence().cacheResult(faroDataSourceUsages);
 	}
 
 	/**
@@ -273,84 +254,18 @@ public class FaroDataSourceUsageUtil {
 	}
 
 	/**
-	 * Returns all the faro data source usages.
+	 * Returns the faro data source usage where dataSourceId = &#63; and faroProjectId = &#63; and usageTime = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
 	 *
-	 * @return the faro data source usages
+	 * @param dataSourceId the data source ID
+	 * @param faroProjectId the faro project ID
+	 * @param usageTime the usage time
+	 * @return the matching faro data source usage, or <code>null</code> if a matching faro data source usage could not be found
 	 */
-	public static List<FaroDataSourceUsage> findAll() {
-		return getPersistence().findAll();
-	}
+	public static FaroDataSourceUsage fetchByF_D_U(
+		long dataSourceId, long faroProjectId, long usageTime) {
 
-	/**
-	 * Returns a range of all the faro data source usages.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroDataSourceUsageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of faro data source usages
-	 * @param end the upper bound of the range of faro data source usages (not inclusive)
-	 * @return the range of faro data source usages
-	 */
-	public static List<FaroDataSourceUsage> findAll(int start, int end) {
-		return getPersistence().findAll(start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the faro data source usages.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroDataSourceUsageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of faro data source usages
-	 * @param end the upper bound of the range of faro data source usages (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of faro data source usages
-	 */
-	public static List<FaroDataSourceUsage> findAll(
-		int start, int end,
-		OrderByComparator<FaroDataSourceUsage> orderByComparator) {
-
-		return getPersistence().findAll(start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the faro data source usages.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.osb.faro.model.impl.FaroDataSourceUsageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param start the lower bound of the range of faro data source usages
-	 * @param end the upper bound of the range of faro data source usages (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of faro data source usages
-	 */
-	public static List<FaroDataSourceUsage> findAll(
-		int start, int end,
-		OrderByComparator<FaroDataSourceUsage> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findAll(
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Removes all the faro data source usages from the database.
-	 */
-	public static void removeAll() {
-		getPersistence().removeAll();
-	}
-
-	/**
-	 * Returns the number of faro data source usages.
-	 *
-	 * @return the number of faro data source usages
-	 */
-	public static int countAll() {
-		return getPersistence().countAll();
+		return getPersistence().fetchByF_D_U(
+			dataSourceId, faroProjectId, usageTime);
 	}
 
 	public static FaroDataSourceUsagePersistence getPersistence() {
@@ -366,4 +281,4 @@ public class FaroDataSourceUsageUtil {
 	private static volatile FaroDataSourceUsagePersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:738474325
+// LIFERAY-SERVICE-BUILDER-HASH:2043893143

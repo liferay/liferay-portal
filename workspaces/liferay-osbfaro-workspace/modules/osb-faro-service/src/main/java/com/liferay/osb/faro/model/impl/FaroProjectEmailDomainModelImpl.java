@@ -82,6 +82,8 @@ public class FaroProjectEmailDomainModelImpl
 	public static final String TABLE_SQL_DROP =
 		"drop table OSBFaro_FaroProjectEmailDomain";
 
+	public static final String ENTITY_ALIAS = "faroProjectEmailDomain";
+
 	public static final String ORDER_BY_JPQL =
 		" ORDER BY faroProjectEmailDomain.faroProjectEmailDomainId ASC";
 
@@ -716,4 +718,4 @@ public class FaroProjectEmailDomainModelImpl
 	private FaroProjectEmailDomain _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1902815110
+// LIFERAY-SERVICE-BUILDER-HASH:752110578
