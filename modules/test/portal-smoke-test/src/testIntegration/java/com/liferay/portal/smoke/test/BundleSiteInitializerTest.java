@@ -486,8 +486,7 @@ public class BundleSiteInitializerTest {
 				logEntries.toString(),
 				_hasLogEntryMessage(
 					logEntries,
-					"Skipping design library because the feature flag " +
-						"LPD-57283 is disabled"));
+					"Skipping design library since LPD-57283 is disabled"));
 
 			Assert.assertFalse(
 				logEntries.toString(),
