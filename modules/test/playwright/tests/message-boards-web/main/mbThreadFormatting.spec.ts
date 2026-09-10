@@ -17,7 +17,10 @@ import getRandomString from '../../../utils/getRandomString';
 const test = mergeTests(
 	apiHelpersTest,
 	isolatedSiteTest,
-	featureFlagsTest({'LPD-11235': {enabled: true}}),
+	featureFlagsTest({
+		'LPD-11235': {enabled: true},
+		'LPD-105225': {enabled: true},
+	}),
 	loginTest(),
 	messageBoardsPagesTest
 );

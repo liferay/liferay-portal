@@ -5,11 +5,18 @@
 
 import {Page, expect, mergeTests} from '@playwright/test';
 
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 
-const test = mergeTests(loginTest(), searchAdminPageTest);
+const test = mergeTests(
+	featureFlagsTest({
+		'LPD-105225': {enabled: true},
+	}),
+	loginTest(),
+	searchAdminPageTest
+);
 
 async function viewUpgradedPortalContent(page: Page) {
 	await test.step('View web content after upgrade', async () => {

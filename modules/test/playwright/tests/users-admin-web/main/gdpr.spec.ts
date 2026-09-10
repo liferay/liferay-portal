@@ -32,6 +32,7 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-35013': {enabled: true},
+		'LPD-105225': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	loginTest({screenName: 'demo.company.admin'}),
@@ -45,6 +46,7 @@ export const testAdmin = mergeTests(
 	featureFlagsTest({
 		'LPD-11235': {enabled: true},
 		'LPD-35013': {enabled: true},
+		'LPD-105225': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	formsPagesTest,

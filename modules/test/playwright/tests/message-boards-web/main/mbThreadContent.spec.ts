@@ -8,6 +8,7 @@ import {createReadStream} from 'fs';
 import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
@@ -17,6 +18,9 @@ import {PORTLET_URLS} from '../../../utils/portletUrls';
 
 const test = mergeTests(
 	apiHelpersTest,
+	featureFlagsTest({
+		'LPD-105225': {enabled: true},
+	}),
 	isolatedSiteTest,
 	loginTest(),
 	messageBoardsPagesTest
