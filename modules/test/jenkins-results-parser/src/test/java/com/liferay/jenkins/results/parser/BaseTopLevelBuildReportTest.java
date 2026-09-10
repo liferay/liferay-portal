@@ -23,51 +23,6 @@ public class BaseTopLevelBuildReportTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testAccessorsWithBuildReport() {
-		String testSuiteName = RandomTestUtil.randomString();
-
-		BaseTopLevelBuildReport baseTopLevelBuildReport =
-			_newBaseTopLevelBuildReport(
-				new JSONObject(
-				).put(
-					"testSuiteName", testSuiteName
-				).put(
-					"totalActualDuration", 1000L
-				).put(
-					"totalCachedDuration", 2000L
-				).put(
-					"totalDuration", 3000L
-				));
-
-		Assert.assertEquals(
-			1000L, baseTopLevelBuildReport.getTotalActualDuration());
-		Assert.assertEquals(
-			2000L, baseTopLevelBuildReport.getTotalCachedDuration());
-		Assert.assertEquals(3000L, baseTopLevelBuildReport.getTotalDuration());
-		Assert.assertEquals(
-			testSuiteName, baseTopLevelBuildReport.getTestSuiteName());
-
-		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
-
-		Assert.assertEquals("", baseTopLevelBuildReport.getTestSuiteName());
-	}
-
-	@Test
-	public void testAccessorsWithoutBuildReport() {
-		BaseTopLevelBuildReport baseTopLevelBuildReport =
-			_newBaseTopLevelBuildReport(null);
-
-		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
-		Assert.assertNull(baseTopLevelBuildReport.getTestSuiteName());
-
-		Assert.assertEquals(
-			0L, baseTopLevelBuildReport.getTotalActualDuration());
-		Assert.assertEquals(
-			0L, baseTopLevelBuildReport.getTotalCachedDuration());
-		Assert.assertEquals(0L, baseTopLevelBuildReport.getTotalDuration());
-	}
-
-	@Test
 	public void testAddDownstreamBuildReport() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport();
@@ -142,6 +97,7 @@ public class BaseTopLevelBuildReportTest
 			).put(
 				"controller", new JSONObject()
 			));
+		_testGetControllerBuildReportNull(null);
 	}
 
 	@Test
@@ -178,6 +134,69 @@ public class BaseTopLevelBuildReportTest
 		Assert.assertSame(
 			cachedDownstreamBuildReport,
 			baseTopLevelBuildReport.getDownstreamBuildReport(axisName));
+	}
+
+	@Test
+	public void testGetTestSuiteName() {
+		String testSuiteName = RandomTestUtil.randomString();
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(
+				new JSONObject(
+				).put(
+					"testSuiteName", testSuiteName
+				));
+
+		Assert.assertEquals(
+			testSuiteName, baseTopLevelBuildReport.getTestSuiteName());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		Assert.assertEquals("", baseTopLevelBuildReport.getTestSuiteName());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
+
+		Assert.assertNull(baseTopLevelBuildReport.getTestSuiteName());
+	}
+
+	@Test
+	public void testGetTotalActualDuration() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(_newDurationsJSONObject());
+
+		Assert.assertEquals(
+			1000L, baseTopLevelBuildReport.getTotalActualDuration());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
+
+		Assert.assertEquals(
+			0L, baseTopLevelBuildReport.getTotalActualDuration());
+	}
+
+	@Test
+	public void testGetTotalCachedDuration() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(_newDurationsJSONObject());
+
+		Assert.assertEquals(
+			2000L, baseTopLevelBuildReport.getTotalCachedDuration());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
+
+		Assert.assertEquals(
+			0L, baseTopLevelBuildReport.getTotalCachedDuration());
+	}
+
+	@Test
+	public void testGetTotalDuration() {
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(_newDurationsJSONObject());
+
+		Assert.assertEquals(3000L, baseTopLevelBuildReport.getTotalDuration());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
+
+		Assert.assertEquals(0L, baseTopLevelBuildReport.getTotalDuration());
 	}
 
 	@Test
@@ -242,8 +261,6 @@ public class BaseTopLevelBuildReportTest
 		baseTopLevelBuildReport.initialize(new JSONObject());
 
 		_assertDownstreamBuildReports(baseTopLevelBuildReport, 0);
-
-		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
 	}
 
 	private List<DownstreamBuildReport> _assertDownstreamBuildReports(
@@ -303,6 +320,17 @@ public class BaseTopLevelBuildReportTest
 		).isBuildCached();
 
 		return downstreamBuildReport;
+	}
+
+	private JSONObject _newDurationsJSONObject() {
+		return new JSONObject(
+		).put(
+			"totalActualDuration", 1000L
+		).put(
+			"totalCachedDuration", 2000L
+		).put(
+			"totalDuration", 3000L
+		);
 	}
 
 	private void _testGetControllerBuildReportNull(
