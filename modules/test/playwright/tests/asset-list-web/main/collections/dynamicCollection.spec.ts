@@ -264,7 +264,7 @@ testWithEnhancedFiltering.describe(
 
 						await collectionsPage.openCollection(collectionName);
 
-						expect(await getOrderByColumn(1)).toBe('modifiedDate');
+						expect(await getOrderByColumn(1)).toBe('modified');
 						expect(await getOrderByColumn(2)).toBe('createDate');
 					}
 				);
