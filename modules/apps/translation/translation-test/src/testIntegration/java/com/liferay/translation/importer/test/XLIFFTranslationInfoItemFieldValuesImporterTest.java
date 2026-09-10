@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.translation.exception.XLIFFFileException;
@@ -64,16 +62,20 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 				"test-journal-article-122-iso-8859-encoding.xlf"));
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
 	@Test(expected = XLIFFFileException.MustBeValid.class)
 	public void testImportXLIFF12FailsFileInlineCodeWithoutOriginalData()
 		throws Exception {
 
-		_xliffTranslationInfoItemFieldValuesImporter.importInfoItemFieldValues(
-			_group.getGroupId(),
-			new InfoItemReference(JournalArticle.class.getName(), 122),
-			new ByteArrayInputStream(
-				_INLINE_CODES_NO_ORIGINAL_DATA_V12_XLIFF.getBytes()));
+		TranslationTestUtil.withHTMLInlineCodeProtectionEnabled(
+			() ->
+				_xliffTranslationInfoItemFieldValuesImporter.
+					importInfoItemFieldValues(
+						_group.getGroupId(),
+						new InfoItemReference(
+							JournalArticle.class.getName(), 122),
+						new ByteArrayInputStream(
+							_INLINE_CODES_NO_ORIGINAL_DATA_V12_XLIFF.
+								getBytes())));
 	}
 
 	@Test(expected = XLIFFFileException.MustHaveValidId.class)
@@ -177,16 +179,19 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 		Assert.assertFalse(infoFieldValues.isEmpty());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
 	@Test(expected = XLIFFFileException.MustBeValid.class)
 	public void testImportXLIFF20FailsFileInlineCodeWithoutOriginalData()
 		throws Exception {
 
-		_xliffTranslationInfoItemFieldValuesImporter.importInfoItemFieldValues(
-			_group.getGroupId(),
-			new InfoItemReference(JournalArticle.class.getName(), 122),
-			new ByteArrayInputStream(
-				_INLINE_CODES_NO_ORIGINAL_DATA_XLIFF.getBytes()));
+		TranslationTestUtil.withHTMLInlineCodeProtectionEnabled(
+			() ->
+				_xliffTranslationInfoItemFieldValuesImporter.
+					importInfoItemFieldValues(
+						_group.getGroupId(),
+						new InfoItemReference(
+							JournalArticle.class.getName(), 122),
+						new ByteArrayInputStream(
+							_INLINE_CODES_NO_ORIGINAL_DATA_XLIFF.getBytes())));
 	}
 
 	@Test(expected = XLIFFFileException.MustBeSupportedLanguage.class)
@@ -248,55 +253,62 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 			infoFieldValues.toString(), 1, infoFieldValues.size());
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
 	@Test
 	public void testImportXLIFF20IgnoresInlineCodeOnlyTarget()
 		throws Exception {
 
-		InfoItemFieldValues infoItemFieldValues =
-			_xliffTranslationInfoItemFieldValuesImporter.
-				importInfoItemFieldValues(
-					_group.getGroupId(),
-					new InfoItemReference(JournalArticle.class.getName(), 122),
-					new ByteArrayInputStream(
-						_INLINE_CODE_ONLY_TARGET_XLIFF.getBytes()));
+		TranslationTestUtil.withHTMLInlineCodeProtectionEnabled(
+			() -> {
+				InfoItemFieldValues infoItemFieldValues =
+					_xliffTranslationInfoItemFieldValuesImporter.
+						importInfoItemFieldValues(
+							_group.getGroupId(),
+							new InfoItemReference(
+								JournalArticle.class.getName(), 122),
+							new ByteArrayInputStream(
+								_INLINE_CODE_ONLY_TARGET_XLIFF.getBytes()));
 
-		Collection<InfoFieldValue<Object>> infoFieldValues =
-			infoItemFieldValues.getInfoFieldValues();
+				Collection<InfoFieldValue<Object>> infoFieldValues =
+					infoItemFieldValues.getInfoFieldValues();
 
-		Assert.assertEquals(
-			infoFieldValues.toString(), 0, infoFieldValues.size());
+				Assert.assertEquals(
+					infoFieldValues.toString(), 0, infoFieldValues.size());
+			});
 	}
 
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-102730"))
 	@Test
 	public void testImportXLIFF20PreservesInlineCodes() throws Exception {
-		InfoItemFieldValues infoItemFieldValues =
-			_xliffTranslationInfoItemFieldValuesImporter.
-				importInfoItemFieldValues(
-					_group.getGroupId(),
-					new InfoItemReference(JournalArticle.class.getName(), 122),
-					new ByteArrayInputStream(_INLINE_CODES_XLIFF.getBytes()));
+		TranslationTestUtil.withHTMLInlineCodeProtectionEnabled(
+			() -> {
+				InfoItemFieldValues infoItemFieldValues =
+					_xliffTranslationInfoItemFieldValuesImporter.
+						importInfoItemFieldValues(
+							_group.getGroupId(),
+							new InfoItemReference(
+								JournalArticle.class.getName(), 122),
+							new ByteArrayInputStream(
+								_INLINE_CODES_XLIFF.getBytes()));
 
-		Collection<InfoFieldValue<Object>> infoFieldValues =
-			infoItemFieldValues.getInfoFieldValues();
+				Collection<InfoFieldValue<Object>> infoFieldValues =
+					infoItemFieldValues.getInfoFieldValues();
 
-		Assert.assertEquals(
-			infoFieldValues.toString(), 2, infoFieldValues.size());
+				Assert.assertEquals(
+					infoFieldValues.toString(), 2, infoFieldValues.size());
 
-		InfoFieldValue<Object> contentInfoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("content");
+				InfoFieldValue<Object> contentInfoFieldValue =
+					infoItemFieldValues.getInfoFieldValue("content");
 
-		Assert.assertEquals(
-			"<p>Hola <b>mundo</b> &amp; mas</p>",
-			contentInfoFieldValue.getValue(LocaleUtil.SPAIN));
+				Assert.assertEquals(
+					"<p>Hola <b>mundo</b> &amp; mas</p>",
+					contentInfoFieldValue.getValue(LocaleUtil.SPAIN));
 
-		InfoFieldValue<Object> imageInfoFieldValue =
-			infoItemFieldValues.getInfoFieldValue("image");
+				InfoFieldValue<Object> imageInfoFieldValue =
+					infoItemFieldValues.getInfoFieldValue("image");
 
-		Assert.assertEquals(
-			"<img src=\"/images/logo.png\"/>",
-			imageInfoFieldValue.getValue(LocaleUtil.SPAIN));
+				Assert.assertEquals(
+					"<img src=\"/images/logo.png\"/>",
+					imageInfoFieldValue.getValue(LocaleUtil.SPAIN));
+			});
 	}
 
 	@Test
@@ -318,11 +330,10 @@ public class XLIFFTranslationInfoItemFieldValuesImporterTest {
 		Assert.assertFalse(infoFieldValues.isEmpty());
 	}
 
-	@FeatureFlags(
-		featureFlags = @FeatureFlag(enable = false, value = "LPD-102730")
-	)
 	@Test
-	public void testImportXLIFF20WithFeatureFlagDisabled() throws Exception {
+	public void testImportXLIFF20WithHTMLInlineCodeProtectionDisabled()
+		throws Exception {
+
 		_testImportXLIFF20WithInlineCodes();
 		_testImportXLIFF20WithInvalidInlineCodes();
 	}
