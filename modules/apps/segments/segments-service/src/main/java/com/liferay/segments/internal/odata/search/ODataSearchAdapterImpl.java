@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.search.HitsImpl;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.MatchAllQuery;
-import com.liferay.portal.kernel.search.ParseException;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
@@ -109,6 +108,8 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 			List<Long> primaryKeys = new ArrayList<>();
 
 			_search(
+				_getBooleanQuery(
+					filterString, entityModel, filterParser, locale),
 				documents -> {
 					for (Document document : documents) {
 						primaryKeys.add(
@@ -117,10 +118,7 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 					}
 				},
 				_indexerRegistry.getIndexer(className),
-				_createSearchContext(companyId),
-				_getBooleanQuery(
-					filterString, entityModel, filterParser, locale),
-				start, end);
+				_createSearchContext(companyId), start, end);
 
 			return ArrayUtil.toLongArray(primaryKeys);
 		}
@@ -138,8 +136,9 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 		List<Document> documentsList = new ArrayList<>();
 
 		_search(
+			booleanQuery,
 			documents -> Collections.addAll(documentsList, documents), indexer,
-			searchContext, booleanQuery, start, end);
+			searchContext, start, end);
 
 		Hits hits = new HitsImpl();
 
@@ -193,29 +192,28 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 		return booleanQuery;
 	}
 
-	private BooleanQuery _getLastDocumentBooleanQuery(
-			BooleanQuery booleanQuery, Document lastDocument, String sortField)
-		throws ParseException {
+	private BooleanQuery _getDocumentBooleanQuery(
+		BooleanQuery booleanQuery, Document document, String sortField) {
 
-		if (lastDocument == null) {
+		if (document == null) {
 			return booleanQuery;
 		}
 
-		if (!lastDocument.hasField(sortField)) {
+		if (!document.hasField(sortField)) {
 			throw new IllegalArgumentException(
 				"Missing " + sortField + " in the last document");
 		}
 
-		BooleanQuery lastDocumentBooleanQuery = new BooleanQuery();
+		BooleanQuery documentBooleanQuery = new BooleanQuery();
 
-		lastDocumentBooleanQuery.add(booleanQuery, BooleanClauseOccur.MUST);
+		documentBooleanQuery.add(booleanQuery, BooleanClauseOccur.MUST);
 
 		TermRangeQuery termRangeQuery = new TermRangeQuery(
-			sortField, lastDocument.get(sortField), null, false, true);
+			sortField, document.get(sortField), null, false, true);
 
-		lastDocumentBooleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
+		documentBooleanQuery.add(termRangeQuery, BooleanClauseOccur.MUST);
 
-		return lastDocumentBooleanQuery;
+		return documentBooleanQuery;
 	}
 
 	private com.liferay.portal.kernel.search.filter.Filter _getSearchFilter(
@@ -240,18 +238,17 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 	}
 
 	private void _search(
-			Consumer<Document[]> documentsConsumer, Indexer<?> indexer,
-			SearchContext searchContext, BooleanQuery booleanQuery, int start,
-			int end)
+			BooleanQuery booleanQuery, Consumer<Document[]> consumer,
+			Indexer<?> indexer, SearchContext searchContext, int start, int end)
 		throws PortalException {
 
 		if (end == QueryUtil.ALL_POS) {
 			end = Integer.MAX_VALUE;
 		}
 
+		Document document = null;
 		int indexSearchLimit = GetterUtil.getInteger(
 			PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT));
-		Document lastDocument = null;
 
 		Sort sort = new Sort(Field.ENTRY_CLASS_PK, Sort.LONG_TYPE, false);
 
@@ -265,8 +262,8 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 			searchContext.setBooleanClauses(
 				new BooleanClause[] {
 					_getBooleanClause(
-						_getLastDocumentBooleanQuery(
-							booleanQuery, lastDocument, sort.getFieldName()))
+						_getDocumentBooleanQuery(
+							booleanQuery, document, sort.getFieldName()))
 				});
 			searchContext.setEnd(Math.min(end, indexSearchLimit));
 			searchContext.setStart(Math.min(start, indexSearchLimit - 1));
@@ -280,17 +277,17 @@ public class ODataSearchAdapterImpl implements ODataSearchAdapter {
 			}
 
 			if (start < indexSearchLimit) {
-				documentsConsumer.accept(documents);
+				consumer.accept(documents);
 
 				if (end < indexSearchLimit) {
 					break;
 				}
 			}
 
-			lastDocument = documents[documents.length - 1];
+			document = documents[documents.length - 1];
 
-			start = Math.max(0, start - indexSearchLimit);
 			end = Math.max(0, end - indexSearchLimit);
+			start = Math.max(0, start - indexSearchLimit);
 		}
 	}
 

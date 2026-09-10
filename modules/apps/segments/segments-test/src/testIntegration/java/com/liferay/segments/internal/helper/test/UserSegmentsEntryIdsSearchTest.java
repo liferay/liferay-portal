@@ -101,8 +101,7 @@ public class UserSegmentsEntryIdsSearchTest {
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"INDEX_SEARCH_LIMIT", _INDEX_SEARCH_LIMIT)) {
 
-			Set<Long> expectedClassPKs = _addUsers(
-				_INDEX_SEARCH_LIMIT * 3);
+			Set<Long> expectedClassPKs = _addUsers(_INDEX_SEARCH_LIMIT * 3);
 
 			_invokeMessageListener();
 
@@ -161,14 +160,14 @@ public class UserSegmentsEntryIdsSearchTest {
 		return searchContext;
 	}
 
-	private BooleanQuery _getLastDocumentBooleanQuery(Document lastDocument) {
+	private BooleanQuery _getDocumentBooleanQuery(Document document) {
 		BooleanQuery booleanQuery = new BooleanQuery();
 
 		booleanQuery.add(new MatchAllQuery(), BooleanClauseOccur.MUST);
 		booleanQuery.add(
 			new TermRangeQuery(
-				Field.ENTRY_CLASS_PK, lastDocument.get(Field.ENTRY_CLASS_PK),
-				null, false, true),
+				Field.ENTRY_CLASS_PK, document.get(Field.ENTRY_CLASS_PK), null,
+				false, true),
 			BooleanClauseOccur.MUST);
 
 		return booleanQuery;
@@ -188,14 +187,14 @@ public class UserSegmentsEntryIdsSearchTest {
 
 		SearchContext searchContext = _createSearchContext();
 
-		Document lastDocument = null;
+		Document document = null;
 
 		while (true) {
-			if (lastDocument != null) {
+			if (document != null) {
 				searchContext.setBooleanClauses(
 					new BooleanClause[] {
 						new BooleanClause<>(
-							_getLastDocumentBooleanQuery(lastDocument),
+							_getDocumentBooleanQuery(document),
 							BooleanClauseOccur.MUST)
 					});
 			}
@@ -208,15 +207,15 @@ public class UserSegmentsEntryIdsSearchTest {
 				break;
 			}
 
-			int previousSize = classPKs.size();
+			int size = classPKs.size();
 
 			classPKs.addAll(_toClassPKs(documents));
 
-			if (classPKs.size() == previousSize) {
+			if (classPKs.size() == size) {
 				break;
 			}
 
-			lastDocument = documents[documents.length - 1];
+			document = documents[documents.length - 1];
 		}
 
 		return classPKs;

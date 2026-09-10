@@ -110,14 +110,14 @@ public class IndexerHelper {
 			serviceContext);
 	}
 
-	private BooleanQuery _getLastDocumentBooleanQuery(Document lastDocument) {
+	private BooleanQuery _getDocumentBooleanQuery(Document document) {
 		BooleanQuery booleanQuery = new BooleanQuery();
 
 		booleanQuery.add(new MatchAllQuery(), BooleanClauseOccur.MUST);
 		booleanQuery.add(
 			new TermRangeQuery(
-				Field.ENTRY_CLASS_PK, lastDocument.get(Field.ENTRY_CLASS_PK),
-				null, false, true),
+				Field.ENTRY_CLASS_PK, document.get(Field.ENTRY_CLASS_PK), null,
+				false, true),
 			BooleanClauseOccur.MUST);
 
 		return booleanQuery;
@@ -155,14 +155,14 @@ public class IndexerHelper {
 			new Sort(Field.ENTRY_CLASS_PK, Sort.LONG_TYPE, false));
 		searchContext.setStart(0);
 
-		Document lastDocument = null;
+		Document document = null;
 
 		while (true) {
-			if (lastDocument != null) {
+			if (document != null) {
 				searchContext.setBooleanClauses(
 					new BooleanClause[] {
 						new BooleanClause<>(
-							_getLastDocumentBooleanQuery(lastDocument),
+							_getDocumentBooleanQuery(document),
 							BooleanClauseOccur.MUST)
 					});
 			}
@@ -175,18 +175,18 @@ public class IndexerHelper {
 				break;
 			}
 
-			int previousSize = classPKs.size();
+			int size = classPKs.size();
 
-			for (Document document : documents) {
+			for (Document curDocument : documents) {
 				classPKs.add(
-					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)));
+					GetterUtil.getLong(curDocument.get(Field.ENTRY_CLASS_PK)));
 			}
 
-			if (classPKs.size() == previousSize) {
+			if (classPKs.size() == size) {
 				break;
 			}
 
-			lastDocument = documents[documents.length - 1];
+			document = documents[documents.length - 1];
 		}
 
 		return classPKs;
