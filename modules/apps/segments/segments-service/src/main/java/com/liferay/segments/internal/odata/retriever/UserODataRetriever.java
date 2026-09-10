@@ -36,6 +36,18 @@ import org.osgi.service.component.annotations.Reference;
 public class UserODataRetriever implements ODataRetriever<User> {
 
 	@Override
+	public long[] getResultPrimaryKeys(
+			long companyId, String filterString, Locale locale, int start,
+			int end)
+		throws PortalException {
+
+		return _oDataSearchAdapter.searchPrimaryKeys(
+			companyId, _filterParserProvider.provide(_entityModel),
+			filterString, User.class.getName(), _entityModel, locale,
+			Field.USER_ID, start, end);
+	}
+
+	@Override
 	public List<User> getResults(
 			long companyId, String filterString, Locale locale, int start,
 			int end)
