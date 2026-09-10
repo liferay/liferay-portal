@@ -438,9 +438,7 @@ public class OpenAPIUtilTest {
 	}
 
 	private Map<String, ?> _getOutputSchema(String toolName) {
-		Tool tool = OpenAPIUtil.getTool(true, _openAPIJSONObject, toolName);
-
-		return tool.getOutputSchema();
+		return OpenAPIUtil.getOutputSchema(_openAPIJSONObject, toolName);
 	}
 
 	private String _read(String fileName) throws Exception {

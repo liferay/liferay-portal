@@ -81,6 +81,16 @@ public class ToolSetUtil {
 			toolName);
 	}
 
+	public static Map<String, ?> getToolOutputSchema(
+		HttpServletRequest httpServletRequest, String toolName,
+		String toolSetName) {
+
+		return OpenAPIUtil.getOutputSchema(
+			_getOpenAPIJSONObject(
+				httpServletRequest, _getOpenAPIBrief(toolSetName)),
+			toolName);
+	}
+
 	public static Page<ToolSet> getToolSetsPage() {
 		Map<String, OpenAPIBrief> openAPIBriefs = _getOpenAPIBriefs();
 

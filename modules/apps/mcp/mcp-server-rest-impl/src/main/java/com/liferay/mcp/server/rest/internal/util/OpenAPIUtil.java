@@ -53,6 +53,15 @@ import org.apache.http.util.EntityUtils;
  */
 public class OpenAPIUtil {
 
+	public static Map<String, ?> getOutputSchema(
+		JSONObject openAPIJSONObject, String toolName) {
+
+		Operation operation = _getOperation(openAPIJSONObject, toolName);
+
+		return _getOutputSchema(
+			openAPIJSONObject, operation._operationJSONObject);
+	}
+
 	public static VulcanRequestForwarder.Request getRequest(
 			String basePath, Map<String, String> headers,
 			JSONObject inputJSONObject, JSONObject openAPIJSONObject,
@@ -168,10 +177,6 @@ public class OpenAPIUtil {
 						operation._pathParametersJSONArray));
 
 				setName(() -> toolName);
-
-				setOutputSchema(
-					() -> _getOutputSchema(
-						openAPIJSONObject, operation._operationJSONObject));
 			}
 		};
 	}
