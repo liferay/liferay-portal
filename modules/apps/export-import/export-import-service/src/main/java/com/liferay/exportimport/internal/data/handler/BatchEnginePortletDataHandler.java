@@ -28,7 +28,6 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerControl;
-import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.object.constants.ObjectPortletKeys;
@@ -39,7 +38,6 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -47,22 +45,17 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.systemevent.SystemEventExtraDataContributor;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -82,7 +75,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
@@ -108,7 +100,6 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 		ClassNameLocalService classNameLocalService,
 		ExportImportHelper exportImportHelper,
 		GroupLocalService groupLocalService,
-		LayoutLocalService layoutLocalService,
 		StagingGroupHelper stagingGroupHelper) {
 
 		_batchEngineExportTaskExecutor = batchEngineExportTaskExecutor;
@@ -119,7 +110,6 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 		_classNameLocalService = classNameLocalService;
 		_exportImportHelper = exportImportHelper;
 		_groupLocalService = groupLocalService;
-		_layoutLocalService = layoutLocalService;
 		_stagingGroupHelper = stagingGroupHelper;
 	}
 
@@ -632,27 +622,6 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 					"Unable to import batch data: " +
 						batchEngineImportTask.getErrorMessage());
 			}
-
-			if (Objects.equals(
-					Layout.class.getName(),
-					exportImportDescriptor.getModelClassName()) &&
-				!portletDataContext.isPrivateLayout() &&
-				MapUtil.getBoolean(
-					portletDataContext.getParameterMap(),
-					PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS, false)) {
-
-				try {
-					_deleteMissingLayouts(portletDataContext, registration);
-				}
-				catch (Exception exception) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							"Unable to delete missing layouts after batch " +
-								"import",
-							exception);
-					}
-				}
-			}
 		}
 
 		return portletPreferences;
@@ -749,76 +718,6 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 		TransactionConfig.Factory.create(
 			Propagation.REQUIRES_NEW, new Class<?>[] {Exception.class});
 
-	private void _deleteMissingLayouts(
-			PortletDataContext portletDataContext, Registration registration)
-		throws Exception {
-
-		Set<String> exportedLayoutERCs = _getExportedLayoutERCs(
-			portletDataContext, registration);
-
-		if (exportedLayoutERCs.isEmpty()) {
-			return;
-		}
-
-		Map<Long, Long> layoutPlids =
-			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-				Layout.class);
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		if (serviceContext == null) {
-			serviceContext = new ServiceContext();
-		}
-
-		for (Layout layout :
-				_layoutLocalService.getLayouts(
-					portletDataContext.getGroupId(),
-					portletDataContext.isPrivateLayout())) {
-
-			String layoutERC = layout.getExternalReferenceCode();
-
-			if ((layoutERC == null) || layoutERC.isEmpty() ||
-				exportedLayoutERCs.contains(layoutERC) ||
-				layoutPlids.containsValue(layout.getPlid())) {
-
-				continue;
-			}
-
-			layout = _layoutLocalService.fetchLayout(layout.getPlid());
-
-			if (layout == null) {
-				continue;
-			}
-
-			try {
-				long sourceGroupId = portletDataContext.getSourceGroupId();
-				long targetGroupId = portletDataContext.getGroupId();
-
-				if (sourceGroupId != targetGroupId) {
-					Layout stagedLayout =
-						_layoutLocalService.fetchLayoutByUuidAndGroupId(
-							layout.getUuid(), sourceGroupId,
-							!layout.isPublicLayout());
-
-					if (stagedLayout != null) {
-						continue;
-					}
-				}
-
-				_layoutLocalService.deleteLayout(layout, serviceContext);
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to delete layout with external reference " +
-							"code " + layoutERC,
-						exception);
-				}
-			}
-		}
-	}
-
 	private BatchEngineExportTaskExecutor.Result _executeExportTask(
 		int maxItems, PortletDataContext portletDataContext,
 		Registration registration) {
@@ -902,55 +801,6 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 		return unsyncByteArrayOutputStream.toByteArray();
 	}
 
-	private Set<String> _getExportedLayoutERCs(
-			PortletDataContext portletDataContext, Registration registration)
-		throws Exception {
-
-		Set<String> exportedLayoutERCs = new HashSet<>();
-
-		String normalizedFileName = _normalize(
-			registration.getFileName(), portletDataContext.getSourceGroupId());
-
-		InputStream inputStream = portletDataContext.getZipEntryAsInputStream(
-			normalizedFileName);
-
-		if (inputStream == null) {
-			return exportedLayoutERCs;
-		}
-
-		try {
-			String jsonContent = StreamUtil.toString(inputStream);
-
-			if ((jsonContent == null) || jsonContent.isEmpty()) {
-				return exportedLayoutERCs;
-			}
-
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(jsonContent);
-
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-				if (jsonObject == null) {
-					continue;
-				}
-
-				String externalReferenceCode = jsonObject.getString(
-					"externalReferenceCode");
-
-				if ((externalReferenceCode != null) &&
-					!externalReferenceCode.isEmpty()) {
-
-					exportedLayoutERCs.add(externalReferenceCode);
-				}
-			}
-		}
-		finally {
-			StreamUtil.cleanUp(inputStream);
-		}
-
-		return exportedLayoutERCs;
-	}
-
 	private PortletDataHandlerControl _getPortletDataHandlerControl(
 		Registration registration) {
 
@@ -964,8 +814,9 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 	}
 
 	private Set<String> _getSharedClassNames() {
-		Set<String> classNames = new LinkedHashSet<>();
 		Set<String> sharedClassNames = new HashSet<>();
+
+		Set<String> classNames = new HashSet<>();
 
 		for (Registration registration : _registrations) {
 			ExportImportVulcanBatchEngineTaskItemDelegate.ExportImportDescriptor
@@ -1140,7 +991,6 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 	private final ClassNameLocalService _classNameLocalService;
 	private final ExportImportHelper _exportImportHelper;
 	private final GroupLocalService _groupLocalService;
-	private final LayoutLocalService _layoutLocalService;
 	private final List<Registration> _registrations = new ArrayList<>();
 	private ServiceRegistration<?> _serviceRegistration;
 	private final StagingGroupHelper _stagingGroupHelper;

@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetBranchLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ColorSchemeFactoryUtil;
@@ -101,7 +102,7 @@ public class StagedLayoutSetStagedModelDataHandler
 		throws Exception {
 
 		_exportClientExtensionEntryRels(portletDataContext, stagedLayoutSet);
-		_exportLayouts(portletDataContext);
+		_exportLayouts(portletDataContext, stagedLayoutSet);
 		_exportLogo(portletDataContext, stagedLayoutSet);
 		_exportTheme(portletDataContext, stagedLayoutSet);
 
@@ -227,15 +228,19 @@ public class StagedLayoutSetStagedModelDataHandler
 
 		List<Element> layoutElements = layoutsElement.elements();
 
+		Element stagedLayoutSetElement =
+			portletDataContext.getImportDataStagedModelElement(stagedLayoutSet);
+
+		// Delete missing layouts
+
+		_deleteMissingLayouts(portletDataContext, stagedLayoutSetElement);
+
 		// Remove layouts that were deleted from the layout set prototype
 
 		_checkLayoutSetPrototypeLayouts(portletDataContext);
 
 		_updateLayoutSetSettingsProperties(
 			portletDataContext, importedStagedLayoutSet);
-
-		Element stagedLayoutSetElement =
-			portletDataContext.getImportDataStagedModelElement(stagedLayoutSet);
 
 		_importFaviconFileEntry(
 			portletDataContext, stagedLayoutSet, stagedLayoutSetElement);
@@ -300,6 +305,63 @@ public class StagedLayoutSetStagedModelDataHandler
 
 			_layoutLocalService.deleteLayout(
 				layout, ServiceContextThreadLocal.getServiceContext());
+		}
+	}
+
+	private void _deleteMissingLayouts(
+		PortletDataContext portletDataContext, Element stagedLayoutSetElement) {
+
+		if (!MapUtil.getBoolean(
+				portletDataContext.getParameterMap(),
+				PortletDataHandlerKeys.DELETE_MISSING_LAYOUTS)) {
+
+			return;
+		}
+
+		Element layoutsElement = stagedLayoutSetElement.element("layouts");
+
+		if (layoutsElement == null) {
+			return;
+		}
+
+		Set<String> externalReferenceCodes = new HashSet<>();
+
+		for (Element layoutElement : layoutsElement.elements("layout")) {
+			externalReferenceCodes.add(
+				layoutElement.attributeValue("external-reference-code"));
+		}
+
+		ServiceContext serviceContext = GetterUtil.getObject(
+			ServiceContextThreadLocal.getServiceContext(), ServiceContext::new);
+
+		for (Layout layout :
+				_layoutLocalService.getLayouts(
+					portletDataContext.getGroupId(),
+					portletDataContext.isPrivateLayout())) {
+
+			if (externalReferenceCodes.contains(
+					layout.getExternalReferenceCode())) {
+
+				continue;
+			}
+
+			layout = _layoutLocalService.fetchLayout(layout.getPlid());
+
+			if (layout == null) {
+				continue;
+			}
+
+			try {
+				_layoutLocalService.deleteLayout(layout, serviceContext);
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Unable to delete layout with external reference " +
+							"code " + layout.getExternalReferenceCode(),
+						exception);
+				}
+			}
 		}
 	}
 
@@ -403,7 +465,9 @@ public class StagedLayoutSetStagedModelDataHandler
 			PortletDataContext.REFERENCE_TYPE_STRONG);
 	}
 
-	private void _exportLayouts(PortletDataContext portletDataContext) {
+	private void _exportLayouts(
+		PortletDataContext portletDataContext,
+		StagedLayoutSet stagedLayoutSet) {
 
 		// Force to always export layout deletions
 
@@ -413,6 +477,26 @@ public class StagedLayoutSetStagedModelDataHandler
 		// Force to always have a layout group element
 
 		portletDataContext.getExportDataGroupElement(Layout.class);
+
+		// Export the layout list to detect missing layouts during the import
+
+		Element stagedLayoutSetElement =
+			portletDataContext.getExportDataElement(stagedLayoutSet);
+
+		Element layoutsElement = stagedLayoutSetElement.addElement("layouts");
+
+		LayoutSet layoutSet = stagedLayoutSet.getLayoutSet();
+
+		for (Layout layout :
+				_layoutLocalService.getLayouts(
+					stagedLayoutSet.getGroupId(),
+					layoutSet.isPrivateLayout())) {
+
+			Element layoutElement = layoutsElement.addElement("layout");
+
+			layoutElement.addAttribute(
+				"external-reference-code", layout.getExternalReferenceCode());
+		}
 	}
 
 	private void _exportLogo(

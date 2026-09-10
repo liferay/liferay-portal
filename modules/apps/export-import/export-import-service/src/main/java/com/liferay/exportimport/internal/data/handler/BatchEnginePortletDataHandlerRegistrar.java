@@ -19,7 +19,6 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFacto
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -103,9 +102,6 @@ public class BatchEnginePortletDataHandlerRegistrar {
 	@Reference
 	private GroupLocalService _groupLocalService;
 
-	@Reference
-	private LayoutLocalService _layoutLocalService;
-
 	private final Map<String, ServiceRegistration<PortletDataHandler>>
 		_portletIdServiceRegistrations = new ConcurrentHashMap<>();
 	private final DCLSingleton
@@ -159,7 +155,7 @@ public class BatchEnginePortletDataHandlerRegistrar {
 						_batchEngineImportTaskService,
 						_changesetEntryLocalService, _classNameLocalService,
 						_exportImportHelper, _groupLocalService,
-						_layoutLocalService, _stagingGroupHelper);
+						_stagingGroupHelper);
 
 				batchEnginePortletDataHandler.setPortletId(
 					exportImportDescriptor.getPortletId());
