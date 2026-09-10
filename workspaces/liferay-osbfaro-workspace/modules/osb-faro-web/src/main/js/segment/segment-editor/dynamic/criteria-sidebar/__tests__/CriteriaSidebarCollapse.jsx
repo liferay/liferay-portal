@@ -312,6 +312,23 @@ describe('getDefaultValue', () => {
 		).toBe('true');
 	});
 
+	it('should return CustomValueMap with name and searching items for PropertyTypes.SearchTerm', () => {
+		const result = getDefaultValue(
+			new Property({name: 'shoes', type: PropertyTypes.SearchTerm})
+		);
+		const nameIdx = getIndexFromPropertyName(result, 'name');
+		const searchingIdx = getIndexFromPropertyName(result, 'searching');
+
+		expect(nameIdx).toBeGreaterThanOrEqual(0);
+		expect(searchingIdx).toBeGreaterThanOrEqual(0);
+		expect(
+			result.getIn(['criterionGroup', 'items', nameIdx, 'value'])
+		).toBe('shoes');
+		expect(
+			result.getIn(['criterionGroup', 'items', searchingIdx, 'value'])
+		).toBe('true');
+	});
+
 	it('should seed no asset type for PropertyTypes.Behavior', () => {
 		const result = getDefaultValue(
 			new Property({name: 'download', type: PropertyTypes.Behavior})

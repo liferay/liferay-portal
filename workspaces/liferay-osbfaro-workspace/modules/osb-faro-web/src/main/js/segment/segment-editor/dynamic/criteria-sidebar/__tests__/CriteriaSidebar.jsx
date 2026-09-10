@@ -1,13 +1,19 @@
 import * as data from 'test/data';
+import apolloClient from 'shared/apollo/client';
 import CriteriaSidebar from '../index';
 import React from 'react';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 import {List} from 'immutable';
 import {Property, PropertyGroup, PropertySubgroup} from 'shared/util/records';
 import {SegmentTypes} from 'shared/util/constants';
 import {useQuery} from '@apollo/client';
+
+jest.mock('shared/apollo/client', () => ({
+	__esModule: true,
+	default: {query: jest.fn()}
+}));
 
 const mockLiferayLanguage = key => {
 	const messages = {
@@ -206,5 +212,56 @@ describe('CriteriaSidebar', () => {
 		fireEvent.click(screen.getByText('Custom'));
 
 		expect(screen.getByText('Loyalty Tier')).toBeInTheDocument();
+	});
+
+	it('paginates the Search Terms section the same way Tags/Vocabularies do', async () => {
+		apolloClient.query.mockResolvedValueOnce({
+			data: {
+				searchTerms: {
+					compositions: [{count: 9, name: 'shoes'}],
+					totalCount: 30
+				}
+			}
+		});
+
+		const searchTermPropertyGroupList = new List([
+			new PropertyGroup({
+				label: 'Search Terms',
+				name: 'Search Terms',
+				propertyKey: 'search-term',
+				propertySubgroups: new List([
+					new PropertySubgroup({properties: new List()})
+				])
+			})
+		]);
+
+		render(
+			<DndProvider backend={HTML5Backend}>
+				<CriteriaSidebar
+					channelId='123'
+					groupId='12345'
+					propertyGroupsIList={searchTermPropertyGroupList}
+					type={SegmentTypes.Batch}
+				/>
+			</DndProvider>
+		);
+
+		await waitFor(() =>
+			expect(screen.getByText('shoes')).toBeInTheDocument()
+		);
+
+		expect(apolloClient.query).toHaveBeenCalledWith(
+			expect.objectContaining({
+				variables: expect.objectContaining({
+					channelId: '123',
+					size: 12,
+					start: 0
+				})
+			})
+		);
+
+		expect(
+			document.querySelector('.sidebar-pagination')
+		).toBeInTheDocument();
 	});
 });

@@ -733,6 +733,20 @@ describe('odata', () => {
 			testConversionToAndFrom(testQuery);
 		});
 
+		it('should be able to translate a query string with "searchTerms.filter" and searching true to map and back to string', () => {
+			const testQuery =
+				"(searchTerms.filter(filter='(name eq ''shoes'' and searching eq ''true'')'))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
+		it('should be able to translate a query string with "searchTerms.filter" and searching false to map and back to string', () => {
+			const testQuery =
+				"(searchTerms.filter(filter='(name eq ''shoes'' and searching eq ''false'')'))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
 		it('should be able to translate a query string with "activities.filter" to map and back to string', () => {
 			const testQuery =
 				"(activities.filter(filter='(activityKey eq ''Page#pageViewed#348853654381438580'')'))";

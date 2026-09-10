@@ -31,6 +31,12 @@ exports[`WithPropertyGroups should pass propertyGroups to the WrappedComponent 1
       </div>
     </div>
     <div>
+      Search Terms
+      <div>
+        Search Terms-0: 0
+      </div>
+    </div>
+    <div>
       Session
       <div>
         Session-0: 8

@@ -21,6 +21,7 @@ const {
 	AccountsFilter,
 	ActivitiesFilterByCount,
 	InterestsFilter,
+	SearchTermsFilter,
 	SessionsFilter,
 } = CustomFunctionOperators;
 const {And} = Conjunctions;
@@ -37,6 +38,19 @@ describe('utils', () => {
 			expect(property.label).toBe(name);
 			expect(property.propertyKey).toBe('interest');
 			expect(property.type).toBe('interest');
+		});
+	});
+
+	describe('createSearchTermProperty', () => {
+		it('should create a Search Term Property', () => {
+			const name = 'shoes';
+			const property = utils.createSearchTermProperty(name);
+
+			expect(property).toBeInstanceOf(Property);
+			expect(property.name).toBe(name);
+			expect(property.label).toBe(name);
+			expect(property.propertyKey).toBe('search-term');
+			expect(property.type).toBe('search-term');
 		});
 	});
 
@@ -558,6 +572,38 @@ describe('utils', () => {
 			expect(property.name).toBe('name');
 			expect(property.propertyKey).toBe('interest');
 			expect(property.type).toBe('interest');
+		});
+
+		it('should return the search term Property when provided with a search term Criterion', () => {
+			const criterion = data.generateCriterion({
+				operatorName: SearchTermsFilter,
+				propertyName: 'name',
+				value: fromJS({
+					criterionGroup: {
+						conjunctionName: And,
+						criteriaGroupId: 'group_0',
+						items: [
+							{
+								operatorName: EQ,
+								propertyName: 'name',
+								value: 'shoes',
+							},
+							{
+								operatorName: EQ,
+								propertyName: 'searching',
+								value: 'true',
+							},
+						],
+					},
+				}),
+			});
+
+			const property = utils.findPropertyByCriterion(criterion);
+
+			expect(property).toBeInstanceOf(Property);
+			expect(property.name).toBe('name');
+			expect(property.propertyKey).toBe('search-term');
+			expect(property.type).toBe('search-term');
 		});
 
 		it('should return the given name Property when provided with a given name Criterion', () => {

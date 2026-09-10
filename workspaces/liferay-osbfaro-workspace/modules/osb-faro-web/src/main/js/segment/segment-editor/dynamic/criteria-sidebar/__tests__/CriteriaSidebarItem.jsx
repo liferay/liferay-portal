@@ -83,5 +83,17 @@ describe('CriteriaSidebarItem', () => {
 			expect(criterion.valid).toEqual({customInput: false});
 			expect(validateSegmentInputs(criterion)).toBe(false);
 		});
+
+		it('should seed a Search Term criterion valid, since the term is already chosen on drop', () => {
+			const {criterion} = beginDrag({
+				defaultValue: {},
+				name: 'shoes',
+				property: {},
+				type: PropertyTypes.SearchTerm
+			});
+
+			expect(criterion.valid).toBe(true);
+			expect(validateSegmentInputs(criterion)).toBe(true);
+		});
 	});
 });
