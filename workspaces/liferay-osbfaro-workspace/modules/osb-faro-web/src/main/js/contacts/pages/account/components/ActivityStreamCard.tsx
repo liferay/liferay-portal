@@ -11,7 +11,6 @@ import AccountUserSessionQuery, {
 	AccountUserSessionVariables,
 } from 'shared/queries/AccountUserSessionQuery';
 import ActivityChartEmptyState from 'shared/components/ActivityChartEmptyState';
-import ActivitySectionEmptyState from 'shared/components/ActivitySectionEmptyState';
 import ActivityStreamCard from 'shared/components/ActivityStreamCard';
 import ActivityStreamNoResults from 'shared/components/ActivityStreamNoResults';
 import formatAccountSessions from '../utils/formatAccountSessions';
@@ -286,14 +285,6 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 					)}
 					title={Liferay.Language.get(
 						'there-is-no-data-for-account-activities'
-					)}
-				/>
-			}
-			emptyState={
-				<ActivitySectionEmptyState
-					linkHref={URLConstants.AccountsDocumentationLink}
-					linkLabel={Liferay.Language.get(
-						'learn-more-about-accounts'
 					)}
 				/>
 			}

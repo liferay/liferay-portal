@@ -45,7 +45,6 @@ interface IActivityStreamCardProps {
 	chartView?: ChartView;
 	delta: number;
 	emptyChartContent?: React.ReactNode;
-	emptyState?: React.ReactNode;
 	footerLabel: React.ReactNode;
 	individualUrls?: Record<string, string>;
 	interval: Interval;
@@ -87,7 +86,6 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	chartView,
 	delta,
 	emptyChartContent,
-	emptyState,
 	footerLabel,
 	individualUrls,
 	interval,
@@ -264,7 +262,6 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 							{...sessionsMappedResults}
 							campaignDays={campaignDays}
 							delta={delta}
-							emptyState={emptyState}
 							individualUrls={individualUrls}
 							initialExpanded={false}
 							noResultsRenderer={noResultsRenderer}

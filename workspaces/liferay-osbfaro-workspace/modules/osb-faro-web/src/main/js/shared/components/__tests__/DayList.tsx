@@ -95,11 +95,10 @@ describe('DayList', () => {
 		expect(screen.getByText('Ada Lovelace')).toBeInTheDocument();
 	});
 
-	it('gives every day both cards, whichever one holds the data', () => {
+	it('gives a day only the cards that hold something', () => {
 		render(
 			<DayList
 				campaignDays={buildCampaignDays('2026-07-16')}
-				emptyState={<div>{'Nothing here'}</div>}
 				items={[
 					buildDay('Jul 16', 3, 'Ada Lovelace', '2026-07-16'),
 					buildDay('Jul 15', 2, 'Grace Hopper', '2026-07-15'),
@@ -108,11 +107,11 @@ describe('DayList', () => {
 			/>
 		);
 
-		expect(screen.getAllByText(/day.level/i)).toHaveLength(2);
+		expect(screen.getAllByText(/day.level/i)).toHaveLength(1);
 		expect(screen.getAllByText(/timed.activity/i)).toHaveLength(2);
 	});
 
-	it('fills the two cards independently', () => {
+	it('keeps the day-level card when the day has no sessions', () => {
 		const campaignsOnly = buildDay(
 			'Jul 16',
 			3,
@@ -125,34 +124,32 @@ describe('DayList', () => {
 		render(
 			<DayList
 				campaignDays={buildCampaignDays('2026-07-16')}
-				emptyState={<div>{'Nothing here'}</div>}
 				items={[campaignsOnly]}
 				timeZoneId={TIME_ZONE_ID}
 			/>
 		);
 
 		expect(screen.getByText('Q3 Manufacturing ABM')).toBeInTheDocument();
-		expect(screen.getByText('Nothing here')).toBeInTheDocument();
+		expect(screen.queryByText(/timed.activity/i)).not.toBeInTheDocument();
 	});
 
-	it('shows the empty state on the day-level card when only sessions exist', () => {
+	it('leaves the day-level card out when only sessions exist', () => {
 		render(
 			<DayList
-				emptyState={<div>{'Nothing here'}</div>}
 				items={[buildDay('Jul 15', 2, 'Grace Hopper')]}
 				timeZoneId={TIME_ZONE_ID}
 			/>
 		);
 
 		expect(screen.getByText('Grace Hopper')).toBeInTheDocument();
-		expect(screen.getByText('Nothing here')).toBeInTheDocument();
+		expect(screen.queryByText(/day.level/i)).not.toBeInTheDocument();
+		expect(screen.getByText(/timed.activity/i)).toBeInTheDocument();
 	});
 
 	it('matches a day to its campaigns by day, not by instant', () => {
 		render(
 			<DayList
 				campaignDays={buildCampaignDays('2026-07-16')}
-				emptyState={<div>{'Nothing here'}</div>}
 				items={[
 					buildDay(
 						'Jul 16',
@@ -203,7 +200,6 @@ describe('DayList', () => {
 		render(
 			<DayList
 				campaignDays={buildCampaignDays('2026-07-16')}
-				emptyState={<div>{'Nothing here'}</div>}
 				items={[buildDay('Jul 16', 3, 'Ada Lovelace', '2026-07-16')]}
 				timeZoneId={TIME_ZONE_ID}
 			/>

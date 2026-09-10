@@ -9,7 +9,6 @@ import {TimelineDay, toDayKey} from 'shared/util/activities';
 
 type IDayListProps = {
 	campaignDays?: CampaignDays;
-	emptyState?: React.ReactNode;
 	individualUrls?: Record<string, string>;
 	initialExpanded?: boolean;
 	items?: TimelineDay[];
@@ -21,7 +20,6 @@ type IDayListProps = {
 
 const DayList: FC<IDayListProps> = ({
 	campaignDays = {},
-	emptyState,
 	individualUrls,
 	initialExpanded,
 	items = [],
@@ -42,11 +40,11 @@ const DayList: FC<IDayListProps> = ({
 						totalTouches={campaignDay?.touchesCount}
 					/>
 
-					{ENABLE_DAY_LEVEL_ACTIVITY && (
-						<ActivitySection
-							label={Liferay.Language.get('day-level')}
-						>
-							{campaignDay?.campaigns.length ? (
+					{ENABLE_DAY_LEVEL_ACTIVITY &&
+						!!campaignDay?.campaigns.length && (
+							<ActivitySection
+								label={Liferay.Language.get('day-level')}
+							>
 								<CampaignList
 									campaigns={campaignDay.campaigns}
 									individualUrls={individualUrls}
@@ -60,26 +58,21 @@ const DayList: FC<IDayListProps> = ({
 									selectedDelta={campaignDay.delta}
 									totalItems={campaignDay.campaignsCount}
 								/>
-							) : (
-								emptyState
-							)}
-						</ActivitySection>
-					)}
+							</ActivitySection>
+						)}
 
-					<ActivitySection
-						label={Liferay.Language.get('timed-activity')}
-					>
-						{dayItems.length ? (
+					{!!dayItems.length && (
+						<ActivitySection
+							label={Liferay.Language.get('timed-activity')}
+						>
 							<VerticalTimeline
 								initialExpanded={initialExpanded}
 								items={dayItems}
 								LDPEnabled={LDPEnabled}
 								timeZoneId={timeZoneId}
 							/>
-						) : (
-							emptyState
-						)}
-					</ActivitySection>
+						</ActivitySection>
+					)}
 				</div>
 			);
 		})}
