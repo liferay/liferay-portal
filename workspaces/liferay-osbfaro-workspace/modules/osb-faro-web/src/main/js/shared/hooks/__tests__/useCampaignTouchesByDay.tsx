@@ -9,15 +9,12 @@ import {useCampaignTouchesByDay} from '../useCampaignTouchesByDay';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/queries/CampaignTouchesByDayQuery', () => ({
-	__esModule: true,
-	...jest.requireActual('shared/queries/CampaignTouchesByDayQuery'),
-	CAMPAIGN_TOUCHES_QUERY_ENABLED: false,
+jest.mock('shared/util/feature-flags', () => ({
+	...jest.requireActual('shared/util/feature-flags'),
+	ENABLE_DAY_LEVEL_MOCK_DATA: true,
 }));
 
-const campaignTouchesByDayQuery = jest.requireMock(
-	'shared/queries/CampaignTouchesByDayQuery'
-);
+const featureFlags = jest.requireMock('shared/util/feature-flags');
 
 const VARIABLES = {
 	accountId: 'account-1',
@@ -60,10 +57,10 @@ const renderCampaignTouches = (mocks: unknown[] = [], skip = false) =>
 
 describe('useCampaignTouchesByDay', () => {
 	afterEach(() => {
-		campaignTouchesByDayQuery.CAMPAIGN_TOUCHES_QUERY_ENABLED = false;
+		featureFlags.ENABLE_DAY_LEVEL_MOCK_DATA = true;
 	});
 
-	describe('while the backend has no field to answer with', () => {
+	describe('while the mock data flag is on', () => {
 		it('serves placeholder days rather than asking', () => {
 			const {result} = renderCampaignTouches();
 
@@ -88,9 +85,9 @@ describe('useCampaignTouchesByDay', () => {
 		});
 	});
 
-	describe('once the backend answers', () => {
+	describe('once the mock data flag is off', () => {
 		beforeEach(() => {
-			campaignTouchesByDayQuery.CAMPAIGN_TOUCHES_QUERY_ENABLED = true;
+			featureFlags.ENABLE_DAY_LEVEL_MOCK_DATA = false;
 		});
 
 		it('keys each answered day by its day, holding the day totals', async () => {
