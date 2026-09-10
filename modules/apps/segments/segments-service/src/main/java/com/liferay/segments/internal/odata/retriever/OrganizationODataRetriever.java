@@ -37,6 +37,18 @@ public class OrganizationODataRetriever
 	implements ODataRetriever<Organization> {
 
 	@Override
+	public long[] getResultPrimaryKeys(
+			long companyId, String filterString, Locale locale, int start,
+			int end)
+		throws PortalException {
+
+		return _oDataSearchAdapter.searchPrimaryKeys(
+			companyId, _filterParserProvider.provide(_entityModel),
+			filterString, Organization.class.getName(), _entityModel, locale,
+			Field.ORGANIZATION_ID, start, end);
+	}
+
+	@Override
 	public List<Organization> getResults(
 			long companyId, String filterString, Locale locale, int start,
 			int end)
