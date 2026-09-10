@@ -21,6 +21,7 @@ import com.liferay.notification.rest.internal.odata.entity.v1_0.NotificationTemp
 import com.liferay.notification.rest.resource.v1_0.NotificationTemplateResource;
 import com.liferay.notification.service.NotificationRecipientSettingLocalService;
 import com.liferay.notification.service.NotificationTemplateAttachmentLocalService;
+import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.service.NotificationTemplateService;
 import com.liferay.notification.type.NotificationType;
 import com.liferay.notification.type.NotificationTypeServiceTracker;
@@ -86,6 +87,35 @@ public class NotificationTemplateResourceImpl
 	extends BaseNotificationTemplateResourceImpl
 	implements ExportImportVulcanBatchEngineTaskItemDelegate
 		<NotificationTemplate> {
+
+	@Override
+	public void delete(
+			Collection<NotificationTemplate> notificationTemplates,
+			Map<String, Serializable> parameters)
+		throws Exception {
+
+		List<NotificationTemplate> customNotificationTemplates =
+			new ArrayList<>();
+
+		for (NotificationTemplate notificationTemplate :
+				notificationTemplates) {
+
+			com.liferay.notification.model.NotificationTemplate
+				serviceBuilderNotificationTemplate =
+					_notificationTemplateLocalService.
+						fetchNotificationTemplateByExternalReferenceCode(
+							notificationTemplate.getExternalReferenceCode(),
+							contextCompany.getCompanyId());
+
+			if ((serviceBuilderNotificationTemplate == null) ||
+				!serviceBuilderNotificationTemplate.isSystem()) {
+
+				customNotificationTemplates.add(notificationTemplate);
+			}
+		}
+
+		super.delete(customNotificationTemplates, parameters);
+	}
 
 	@Override
 	public void deleteNotificationTemplate(Long notificationTemplateId)
@@ -657,6 +687,9 @@ public class NotificationTemplateResourceImpl
 	@Reference
 	private NotificationTemplateAttachmentLocalService
 		_notificationTemplateAttachmentLocalService;
+
+	@Reference
+	private NotificationTemplateLocalService _notificationTemplateLocalService;
 
 	@Reference
 	private NotificationTemplateService _notificationTemplateService;
