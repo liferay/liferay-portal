@@ -11,9 +11,13 @@ import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalSer
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
 import com.liferay.portal.kernel.exception.NoSuchBackgroundTaskException;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
@@ -22,6 +26,8 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import java.util.Locale;
 
 /**
  * @author Daniel Raposo
@@ -75,6 +81,28 @@ public class BackgroundTaskUtil {
 
 			throw new NoSuchBackgroundTaskException();
 		}
+	}
+
+	public static String getErrorMessage(
+		BackgroundTask backgroundTask, Locale locale) {
+
+		if (backgroundTask.getStatus() !=
+				BackgroundTaskConstants.STATUS_FAILED) {
+
+			return null;
+		}
+
+		String defaultErrorMessage = LanguageUtil.get(
+			locale, "an-unexpected-error-occurred");
+
+		JSONObject jsonObject = JSONFactoryUtil.safeCreateJSONObject(
+			backgroundTask.getStatusMessage(), true);
+
+		if (jsonObject == null) {
+			return defaultErrorMessage;
+		}
+
+		return jsonObject.getString("message", defaultErrorMessage);
 	}
 
 	public static String getName(BackgroundTask backgroundTask) {

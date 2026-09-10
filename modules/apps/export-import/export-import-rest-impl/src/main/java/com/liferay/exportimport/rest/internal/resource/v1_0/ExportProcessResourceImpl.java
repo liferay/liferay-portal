@@ -30,8 +30,6 @@ import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
@@ -292,12 +290,6 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			pagination.getEndPosition());
 	}
 
-	private String _getDefaultErrorMessage() {
-		return _language.get(
-			contextAcceptLanguage.getPreferredLocale(),
-			"an-unexpected-error-occurred");
-	}
-
 	private DynamicQuery _getDynamicQuery(
 		Long creatorId, long groupId, String portletId, String search,
 		Integer status) {
@@ -515,24 +507,9 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 				setDateCreated(backgroundTask::getCreateDate);
 				setDateModified(backgroundTask::getModifiedDate);
 				setErrorMessage(
-					() -> {
-						if (backgroundTask.getStatus() !=
-								BackgroundTaskConstants.STATUS_FAILED) {
-
-							return null;
-						}
-
-						JSONObject jsonObject =
-							_jsonFactory.safeCreateJSONObject(
-								backgroundTask.getStatusMessage(), true);
-
-						if (jsonObject == null) {
-							return _getDefaultErrorMessage();
-						}
-
-						return jsonObject.getString(
-							"message", _getDefaultErrorMessage());
-					});
+					() -> BackgroundTaskUtil.getErrorMessage(
+						backgroundTask,
+						contextAcceptLanguage.getPreferredLocale()));
 				setId(backgroundTask::getBackgroundTaskId);
 				setName(() -> BackgroundTaskUtil.getName(backgroundTask));
 				setStatus(
@@ -571,9 +548,6 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 	@Reference
 	private ExportImportLocalService _exportImportLocalService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;
