@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.util.RepositoryUtil;
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.display.context.util.SharingDropdownItemFactory;
 import com.liferay.sharing.display.context.util.SharingJavaScriptFactory;
@@ -107,6 +108,10 @@ public class SharingDLViewFileVersionDisplayContext
 
 	@Override
 	public boolean isSharingLinkVisible() throws PortalException {
+		if (RepositoryUtil.isExternalRepository(_fileEntry.getRepositoryId())) {
+			return false;
+		}
+
 		if (_sharingConfiguration.isEnabled() &&
 			_sharingPermission.containsSharePermission(
 				_themeDisplay.getPermissionChecker(),
