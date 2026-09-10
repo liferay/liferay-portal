@@ -61,18 +61,24 @@ public class CTEntryDTOConverterTest {
 	public void testToDTOFallsBackToIndexerDocument() throws Exception {
 		Document document = new DocumentImpl();
 
-		String ctCollectionName = RandomTestUtil.randomString();
-		String groupName = RandomTestUtil.randomString();
 		String title = RandomTestUtil.randomString();
-		String typeName = RandomTestUtil.randomString();
 
-		document.addKeyword(_CT_COLLECTION_NAME, ctCollectionName);
-		document.addLocalizedKeyword(
-			_GROUP_NAME, _getLocalizedValues(groupName), false, true);
-		document.addLocalizedText(
-			_TYPE_NAME, _getLocalizedValues(typeName), true);
 		document.addLocalizedText(
 			Field.TITLE, _getLocalizedValues(title), true);
+
+		String ctCollectionName = RandomTestUtil.randomString();
+
+		document.addKeyword("ctCollectionName", ctCollectionName);
+
+		String groupName = RandomTestUtil.randomString();
+
+		document.addLocalizedKeyword(
+			"groupName", _getLocalizedValues(groupName), false, true);
+
+		String typeName = RandomTestUtil.randomString();
+
+		document.addLocalizedText(
+			"typeName", _getLocalizedValues(typeName), true);
 
 		Mockito.when(
 			_indexer.getDocument(_serviceBuilderCTEntry)
@@ -98,20 +104,24 @@ public class CTEntryDTOConverterTest {
 
 	@Test
 	public void testToDTOUsesContextDocument() throws Exception {
-		Document document = new DocumentImpl();
-
-		String ctCollectionName = RandomTestUtil.randomString();
-		String groupName = RandomTestUtil.randomString();
-		String title = RandomTestUtil.randomString();
-
-		document.addKeyword(_CT_COLLECTION_NAME, ctCollectionName);
-		document.addKeyword(
-			_getLocalizedName(LocaleUtil.SPAIN, Field.TITLE), title);
-		document.addKeyword(
-			_getLocalizedName(LocaleUtil.US, _GROUP_NAME), groupName);
-
 		DefaultDTOConverterContext dtoConverterContext =
 			_getDTOConverterContext(LocaleUtil.SPAIN);
+
+		Document document = new DocumentImpl();
+
+		String title = RandomTestUtil.randomString();
+
+		document.addKeyword(
+			_getLocalizedName(LocaleUtil.SPAIN, Field.TITLE), title);
+
+		String ctCollectionName = RandomTestUtil.randomString();
+
+		document.addKeyword("ctCollectionName", ctCollectionName);
+
+		String groupName = RandomTestUtil.randomString();
+
+		document.addKeyword(
+			_getLocalizedName(LocaleUtil.US, "groupName"), groupName);
 
 		dtoConverterContext.setAttribute("document", document);
 
@@ -147,12 +157,6 @@ public class CTEntryDTOConverterTest {
 			LocaleUtil.US, value
 		).build();
 	}
-
-	private static final String _CT_COLLECTION_NAME = "ctCollectionName";
-
-	private static final String _GROUP_NAME = "groupName";
-
-	private static final String _TYPE_NAME = "typeName";
 
 	private final CTEntryDTOConverter _ctEntryDTOConverter =
 		new CTEntryDTOConverter();
