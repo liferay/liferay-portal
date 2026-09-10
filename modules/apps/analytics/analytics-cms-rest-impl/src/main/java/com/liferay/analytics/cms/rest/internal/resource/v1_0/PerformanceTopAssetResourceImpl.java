@@ -140,7 +140,7 @@ public class PerformanceTopAssetResourceImpl
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_http);
 
-		Page<PerformanceTopAsset> performanceTopAssetPage =
+		Page<PerformanceTopAsset> page =
 			analyticsCloudClient.getPerformanceTopAssetPage(
 				_analyticsSettingsManager.getAnalyticsConfiguration(
 					contextCompany.getCompanyId()),
@@ -155,14 +155,12 @@ public class PerformanceTopAssetResourceImpl
 
 			Map<String, ObjectDefinition> objectDefinitions = new HashMap<>();
 
-			for (PerformanceTopAsset performanceTopAsset :
-					performanceTopAssetPage.getItems()) {
-
+			for (PerformanceTopAsset performanceTopAsset : page.getItems()) {
 				_setEmbedded(groupIds, objectDefinitions, performanceTopAsset);
 			}
 		}
 
-		return performanceTopAssetPage;
+		return page;
 	}
 
 	private String _getFilterString() {
