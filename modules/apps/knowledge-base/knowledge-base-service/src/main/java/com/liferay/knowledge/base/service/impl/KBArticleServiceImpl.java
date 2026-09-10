@@ -5,6 +5,7 @@
 
 package com.liferay.knowledge.base.service.impl;
 
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.knowledge.base.constants.KBActionKeys;
 import com.liferay.knowledge.base.constants.KBConstants;
 import com.liferay.knowledge.base.constants.KBFolderConstants;
@@ -28,6 +29,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lock.Lock;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -36,6 +41,7 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlParser;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -139,6 +145,17 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			getPermissionChecker(), resourcePrimKey, KBActionKeys.DELETE);
 
 		return kbArticleLocalService.deleteKBArticle(resourcePrimKey);
+	}
+
+	@Override
+	public void deleteKBArticleAttachment(long fileEntryId)
+		throws PortalException {
+
+		_kbArticleModelResourcePermission.check(
+			getPermissionChecker(), _getFileEntryKBArticle(fileEntryId),
+			KBActionKeys.UPDATE);
+
+		_portletFileRepository.deletePortletFileEntry(fileEntryId);
 	}
 
 	@Override
@@ -392,6 +409,17 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		return _getAllDescendantKBArticles(
 			GroupConstants.DEFAULT_PARENT_GROUP_ID, resourcePrimKey, status,
 			orderByComparator, true);
+	}
+
+	@Override
+	public FileEntry getKBArticleAttachment(long fileEntryId)
+		throws PortalException {
+
+		_kbArticleModelResourcePermission.check(
+			getPermissionChecker(), _getFileEntryKBArticle(fileEntryId),
+			KBActionKeys.VIEW);
+
+		return _portletFileRepository.getPortletFileEntry(fileEntryId);
 	}
 
 	@Override
@@ -1144,6 +1172,44 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		return Collections.unmodifiableList(kbArticles);
 	}
 
+	private KBArticle _getFileEntryKBArticle(long fileEntryId)
+		throws PortalException {
+
+		FileEntry fileEntry = _portletFileRepository.getPortletFileEntry(
+			fileEntryId);
+
+		Folder folder = fileEntry.getFolder();
+
+		if (folder == null) {
+			throw new NoSuchFileEntryException(
+				"No file entry exists with file entry ID " + fileEntryId);
+		}
+
+		KBArticle kbArticle = kbArticleLocalService.fetchLatestKBArticle(
+			GetterUtil.getLong(folder.getName()), WorkflowConstants.STATUS_ANY);
+
+		if ((kbArticle == null) || !_isAttachmentsFolder(folder, kbArticle)) {
+			throw new NoSuchFileEntryException(
+				"No file entry exists with file entry ID " + fileEntryId);
+		}
+
+		return kbArticle;
+	}
+
+	private boolean _isAttachmentsFolder(Folder folder, KBArticle kbArticle) {
+		Repository repository = _portletFileRepository.fetchPortletRepository(
+			kbArticle.getGroupId(), KBConstants.SERVICE_NAME);
+
+		if ((repository != null) &&
+			(repository.getRepositoryId() == folder.getRepositoryId()) &&
+			(repository.getDlFolderId() == folder.getParentFolderId())) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private static final int _INTERVAL = 200;
 
 	@Reference(
@@ -1170,6 +1236,9 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private PortletFileRepository _portletFileRepository;
 
 	@Reference
 	private RSSExporter _rssExporter;
