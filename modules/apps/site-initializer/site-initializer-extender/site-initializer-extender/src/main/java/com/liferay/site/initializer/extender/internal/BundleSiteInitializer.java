@@ -2206,48 +2206,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 				}
 			}
 
-			Map<String, Boolean> depotAppCustomizationMap =
-				Collections.emptyMap();
-
-			JSONObject depotAppCustomizationJSONObject =
-				jsonObject.getJSONObject("depotAppCustomization");
-
-			if (depotAppCustomizationJSONObject != null) {
-				depotAppCustomizationMap = HashMapBuilder.put(
-					PortletKeys.ASSET_LIST,
-					GetterUtil.getBoolean(
-						depotAppCustomizationJSONObject.getBoolean(
-							PortletKeys.ASSET_LIST),
-						true)
-				).put(
-					PortletKeys.DOCUMENT_LIBRARY_ADMIN,
-					GetterUtil.getBoolean(
-						depotAppCustomizationJSONObject.getBoolean(
-							PortletKeys.DOCUMENT_LIBRARY_ADMIN),
-						true)
-				).put(
-					PortletKeys.JOURNAL,
-					GetterUtil.getBoolean(
-						depotAppCustomizationJSONObject.getBoolean(
-							PortletKeys.JOURNAL),
-						true)
-				).put(
-					PortletKeys.TRANSLATION,
-					GetterUtil.getBoolean(
-						depotAppCustomizationJSONObject.getBoolean(
-							PortletKeys.TRANSLATION),
-						true)
-				).build();
-			}
-
 			_depotEntryLocalService.updateDepotEntry(
 				(group != null) ? group.getClassPK() :
 					depotEntry.getDepotEntryId(),
 				SiteInitializerUtil.toMap(jsonObject.getString("name_i18n")),
 				SiteInitializerUtil.toMap(
 					jsonObject.getString("description_i18n")),
-				depotAppCustomizationMap, null, unicodeProperties,
-				serviceContext);
+				_getDepotAppCustomizationMap(jsonObject), null,
+				unicodeProperties, serviceContext);
 
 			Group scopeGroup = serviceContext.getScopeGroup();
 
@@ -5937,6 +5903,42 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 
 		return map;
+	}
+
+	private Map<String, Boolean> _getDepotAppCustomizationMap(
+		JSONObject jsonObject) {
+
+		JSONObject depotAppCustomizationJSONObject = jsonObject.getJSONObject(
+			"depotAppCustomization");
+
+		if (depotAppCustomizationJSONObject == null) {
+			return Collections.emptyMap();
+		}
+
+		return HashMapBuilder.put(
+			PortletKeys.ASSET_LIST,
+			GetterUtil.getBoolean(
+				depotAppCustomizationJSONObject.getBoolean(
+					PortletKeys.ASSET_LIST),
+				true)
+		).put(
+			PortletKeys.DOCUMENT_LIBRARY_ADMIN,
+			GetterUtil.getBoolean(
+				depotAppCustomizationJSONObject.getBoolean(
+					PortletKeys.DOCUMENT_LIBRARY_ADMIN),
+				true)
+		).put(
+			PortletKeys.JOURNAL,
+			GetterUtil.getBoolean(
+				depotAppCustomizationJSONObject.getBoolean(PortletKeys.JOURNAL),
+				true)
+		).put(
+			PortletKeys.TRANSLATION,
+			GetterUtil.getBoolean(
+				depotAppCustomizationJSONObject.getBoolean(
+					PortletKeys.TRANSLATION),
+				true)
+		).build();
 	}
 
 	private int _getDepotEntryType(String assetLibraryTypeString) {
