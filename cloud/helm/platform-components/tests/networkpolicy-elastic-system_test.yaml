@@ -6,16 +6,6 @@ templates:
     -   templates/networkpolicy-elastic-system.yaml
 tests:
     -   asserts:
-            -   hasDocuments:
-                    count: 2
-        it: Renders exactly the webhook ingress allow and the namespace-wide default-deny
-    -   asserts:
-            -   hasDocuments:
-                    count: 0
-        it: Omits both NetworkPolicies when the ECK operator is disabled
-        set:
-            operatorApplications.eckOperator.enabled: false
-    -   asserts:
             -   equal:
                     path: metadata.namespace
                     value: elastic-system
@@ -41,16 +31,6 @@ tests:
         it: Allows only the GKE control plane to reach the operator's webhook port
     -   asserts:
             -   equal:
-                    path: spec.ingress[0].from[0].ipBlock.cidr
-                    value: 10.1.2.0/28
-        documentSelector:
-            path: metadata.name
-            value: elastic-operator-webhook-ingress
-        it: Honors a custom masterIpv4CidrBlock
-        set:
-            operatorApplications.eckOperator.masterIpv4CidrBlock: 10.1.2.0/28
-    -   asserts:
-            -   equal:
                     path: metadata.namespace
                     value: elastic-system
             -   equal:
@@ -62,3 +42,23 @@ tests:
             path: metadata.name
             value: default-deny-ingress
         it: Denies every other ingress by default, namespace-wide
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[0].from[0].ipBlock.cidr
+                    value: 10.1.2.0/28
+        documentSelector:
+            path: metadata.name
+            value: elastic-operator-webhook-ingress
+        it: Honors a custom masterIpv4CidrBlock
+        set:
+            operatorApplications.eckOperator.masterIpv4CidrBlock: 10.1.2.0/28
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits both NetworkPolicies when the ECK operator is disabled
+        set:
+            operatorApplications.eckOperator.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+        it: Renders exactly the webhook ingress allow and the namespace-wide default-deny
