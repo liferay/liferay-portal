@@ -177,6 +177,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 								channelId,
 								groupId,
 								rangeSelectors,
+								timeZoneId,
 							}
 						),
 						campaignTouches.days,
@@ -186,6 +187,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 								page * delta >=
 								(eventsByUserSessions?.totalPageGroupsMetric
 									?.value ?? 0),
+							timeZoneId,
 						}
 					),
 					total:
@@ -204,6 +206,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			channelId,
 			groupId,
 			rangeSelectors,
+			timeZoneId,
 		]
 	);
 

@@ -41,6 +41,7 @@ export interface EventDashboardContext {
 	groupId?: string;
 	isWebhook?: boolean;
 	rangeSelectors?: RangeSelectors;
+	timeZoneId?: string;
 }
 
 const getProperty = (

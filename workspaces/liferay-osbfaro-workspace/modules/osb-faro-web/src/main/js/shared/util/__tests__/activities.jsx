@@ -696,13 +696,25 @@ describe('activities', () => {
 			expect(days[0].header.totalEvents).toBeUndefined();
 		});
 
-		it('anchors an added day to UTC, so its header cannot drift a day', () => {
+		it('keys an added day by its calendar date, so its header cannot drift', () => {
 			const [day] = mergeCampaignDays([], {
 				'2026-07-16': campaignDay
 			});
 
-			expect(day.date).toBe('2026-07-16T00:00:00Z');
+			expect(day.date).toBe('2026-07-16');
 			expect(day.header.title).toBe(formatGroupingTime(day.date));
+		});
+
+		it('titles an added day in the project time zone it was given', () => {
+			const [day] = mergeCampaignDays(
+				[],
+				{'2026-07-16': campaignDay},
+				{timeZoneId: 'Asia/Tokyo'}
+			);
+
+			expect(day.header.title).toBe(
+				formatGroupingTime('2026-07-16', 'Asia/Tokyo')
+			);
 		});
 
 		it('does not repeat a day the sessions already cover', () => {

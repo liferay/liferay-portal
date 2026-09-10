@@ -165,6 +165,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 								channelId,
 								groupId,
 								rangeSelectors,
+								timeZoneId,
 							}
 						),
 						campaignTouches.days,
@@ -174,6 +175,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 								page * delta >=
 								(eventsByUserSessions?.totalPageGroupsMetric
 									?.value ?? 0),
+							timeZoneId,
 						}
 					),
 					total:
@@ -190,6 +192,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 			page,
 			groupId,
 			rangeSelectors,
+			timeZoneId,
 		]
 	);
 

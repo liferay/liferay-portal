@@ -98,28 +98,32 @@ export const formatAccountSessions = (
 	sessions: AccountUserSession[] = [],
 	context: EventDashboardContext = {}
 ): TimelineDay[] =>
-	groupSessionsByDay(sessions).map(({date, daySessions, header}) => {
-		const items: (VerticalTimelineIndividual | VerticalTimelineSession)[] =
-			[];
+	groupSessionsByDay(sessions, context.timeZoneId).map(
+		({date, daySessions, header}) => {
+			const items: (
+				| VerticalTimelineIndividual
+				| VerticalTimelineSession
+			)[] = [];
 
-		const sessionsByIndividual = groupBy(
-			daySessions,
-			(session) =>
-				session.individualId ??
-				session.userId ??
-				session.userName ??
-				ANONYMOUS_KEY
-		);
-
-		sessionsByIndividual.forEach((individualSessions) => {
-			items.push(getIndividual(individualSessions[0], context));
-
-			individualSessions.forEach((session) =>
-				items.push(toSessionItem(session, context))
+			const sessionsByIndividual = groupBy(
+				daySessions,
+				(session) =>
+					session.individualId ??
+					session.userId ??
+					session.userName ??
+					ANONYMOUS_KEY
 			);
-		});
 
-		return {date, header, items};
-	});
+			sessionsByIndividual.forEach((individualSessions) => {
+				items.push(getIndividual(individualSessions[0], context));
+
+				individualSessions.forEach((session) =>
+					items.push(toSessionItem(session, context))
+				);
+			});
+
+			return {date, header, items};
+		}
+	);
 
 export default formatAccountSessions;
