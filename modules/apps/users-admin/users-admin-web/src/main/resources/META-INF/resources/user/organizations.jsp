@@ -155,12 +155,16 @@ currentURLObj.setParameter("historyKey", liferayPortletResponse.getNamespace() +
 			selectOrganizationLink.addEventListener('click', (event) => {
 				Liferay.Util.openSelectionModal({
 					multiple: true,
-					onSelect(data) {
-						if (data.value && data.value.length) {
+					onSelect(selection) {
+						const values = Array.isArray(selection)
+							? selection.map((selectedItem) => selectedItem.value)
+							: selection && selection.value;
+
+						if (values && values.length) {
 							document.<portlet:namespace />fm.<portlet:namespace />addOrganizationIds.value =
-								Array.from(data.value)
-									.map((selectedItem) => {
-										const organization = JSON.parse(selectedItem);
+								Array.from(values)
+									.map((value) => {
+										const organization = JSON.parse(value);
 
 										return organization.organizationId;
 									})

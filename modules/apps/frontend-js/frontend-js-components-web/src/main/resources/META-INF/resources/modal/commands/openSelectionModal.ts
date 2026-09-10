@@ -184,6 +184,7 @@ export default function openSelectionModal<
 				]
 			: undefined,
 		containerProps,
+		disableButtonsOnLoading: multiple,
 		height,
 		id: id || selectEventName,
 		iframeBodyCssClass,
