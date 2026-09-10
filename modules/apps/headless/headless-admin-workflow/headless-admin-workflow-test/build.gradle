@@ -7,6 +7,7 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:headless:headless-admin-workflow:headless-admin-workflow-api")
 	testIntegrationImplementation project(":apps:headless:headless-admin-workflow:headless-admin-workflow-client")
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")

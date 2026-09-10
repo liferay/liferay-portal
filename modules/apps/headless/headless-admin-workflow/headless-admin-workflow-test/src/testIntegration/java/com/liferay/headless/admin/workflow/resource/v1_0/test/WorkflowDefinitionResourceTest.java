@@ -5,6 +5,9 @@
 
 package com.liferay.headless.admin.workflow.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.workflow.client.dto.v1_0.Node;
 import com.liferay.headless.admin.workflow.client.dto.v1_0.Transition;
@@ -18,14 +21,19 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -254,6 +262,7 @@ public class WorkflowDefinitionResourceTest
 		assertEquals(randomWorkflowDefinition, postWorkflowDefinition);
 		assertValid(postWorkflowDefinition);
 
+		_testPostWorkflowDefinitionSaveWithScope();
 		_testPostWorkflowDefinitionSaveWithSystem();
 	}
 
@@ -518,6 +527,23 @@ public class WorkflowDefinitionResourceTest
 			TestPropsValues.getUserId(), workflowDefinitionVersion);
 	}
 
+	private String _getGroupExternalReferenceCode() throws Exception {
+		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString() + "@liferay.com", null,
+			RandomTestUtil.randomString(),
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
+
+		Group group = _groupLocalService.getGroup(
+			accountEntry.getAccountEntryGroupId());
+
+		return group.getExternalReferenceCode();
+	}
+
 	private JSONObject _getWorkflowDefinitionJSONObject(String fileName)
 		throws Exception {
 
@@ -537,6 +563,36 @@ public class WorkflowDefinitionResourceTest
 			workflowDefinitionJSONObject.toString(),
 			"headless-admin-workflow/v1.0/workflow-definitions",
 			Http.Method.POST);
+	}
+
+	private void _testPostWorkflowDefinitionSaveWithScope() throws Exception {
+		WorkflowDefinition randomWorkflowDefinition =
+			randomWorkflowDefinition();
+
+		String groupExternalReferenceCode = _getGroupExternalReferenceCode();
+
+		randomWorkflowDefinition.setGroupExternalReferenceCode(
+			groupExternalReferenceCode);
+
+		randomWorkflowDefinition.setScope(WorkflowDefinitionConstants.SCOPE_AI);
+
+		WorkflowDefinition workflowDefinition =
+			testPostWorkflowDefinitionSave_addWorkflowDefinition(
+				randomWorkflowDefinition);
+
+		workflowDefinition.setGroupExternalReferenceCode(
+			_getGroupExternalReferenceCode());
+
+		workflowDefinition =
+			workflowDefinitionResource.postWorkflowDefinitionSave(
+				workflowDefinition);
+
+		_workflowDefinitions.put(
+			workflowDefinition.getName(), workflowDefinition);
+
+		Assert.assertEquals(
+			groupExternalReferenceCode,
+			workflowDefinition.getGroupExternalReferenceCode());
 	}
 
 	private void _testPostWorkflowDefinitionSaveWithSystem() throws Exception {
@@ -570,6 +626,12 @@ public class WorkflowDefinitionResourceTest
 
 	@Inject
 	private static WorkflowDefinitionManager _workflowDefinitionManager;
+
+	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private final Map<String, WorkflowDefinition> _workflowDefinitions =
 		new HashMap<>();

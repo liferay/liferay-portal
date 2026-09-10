@@ -146,11 +146,11 @@ public class KaleoDefinitionLocalServiceTest
 
 		// Group ID as 0
 
-		AccountEntry accountEntry = _addAccountEntry();
+		AccountEntry accountEntry1 = _addAccountEntry();
 
-		serviceContext.setScopeGroupId(accountEntry.getAccountEntryGroupId());
+		serviceContext.setScopeGroupId(accountEntry1.getAccountEntryGroupId());
 
-		KaleoDefinition kaleoDefinition = addKaleoDefinition(
+		KaleoDefinition kaleoDefinition1 = addKaleoDefinition(
 			WorkflowDefinitionConstants.SCOPE_AI);
 
 		serviceContext.setScopeGroupId(0);
@@ -158,14 +158,20 @@ public class KaleoDefinitionLocalServiceTest
 		AssertUtils.assertFailure(
 			KaleoDefinitionGroupIdException.class,
 			"Invalid group ID 0 for scope AI",
-			() -> updateKaleoDefinition(kaleoDefinition));
+			() -> updateKaleoDefinition(kaleoDefinition1));
 
 		// Group ID as account entry group ID
 
-		serviceContext.setScopeGroupId(accountEntry.getAccountEntryGroupId());
+		AccountEntry accountEntry2 = _addAccountEntry();
 
-		Assert.assertNotNull(
-			addKaleoDefinition(WorkflowDefinitionConstants.SCOPE_AI));
+		serviceContext.setScopeGroupId(accountEntry2.getAccountEntryGroupId());
+
+		KaleoDefinition kaleoDefinition2 = updateKaleoDefinition(
+			kaleoDefinition1);
+
+		Assert.assertEquals(
+			accountEntry1.getAccountEntryGroupId(),
+			kaleoDefinition2.getGroupId());
 
 		// Group ID as nonaccount entry group ID
 
@@ -175,7 +181,7 @@ public class KaleoDefinitionLocalServiceTest
 			KaleoDefinitionGroupIdException.class,
 			"Invalid group ID " + TestPropsValues.getGroupId() +
 				" for scope AI",
-			() -> updateKaleoDefinition(kaleoDefinition));
+			() -> updateKaleoDefinition(kaleoDefinition2));
 	}
 
 	private void _testUpdateKaleoDefinitionWithSystem() throws Exception {
