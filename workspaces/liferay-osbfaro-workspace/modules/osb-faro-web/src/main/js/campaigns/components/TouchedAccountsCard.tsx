@@ -117,15 +117,33 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 							value,
 						}),
 
-					// An account with no opportunity value renders an empty
-					// cell. The design carries a 0 in those cells, but at zero
-					// opacity, so a zero would be wrong.
+					// The endpoint sends the calculated fields as strings,
+					// and `toThousands` returns '' for anything `isNumber`
+					// rejects, so coerce before formatting. An account with no
+					// opportunity value renders an empty cell: the design
+					// carries a 0 in those cells, but at zero opacity, so a
+					// zero would be wrong.
 
-					amountRenderer: ({value}: {value?: number}) => (
-						<div>
-							{value === undefined ? '' : toThousands(value)}
-						</div>
-					),
+					amountRenderer: ({
+						value,
+					}: {
+						value?: number | string | null;
+					}) => {
+						const amount =
+							value === '' ||
+							value === null ||
+							value === undefined
+								? NaN
+								: Number(value);
+
+						return (
+							<div>
+								{Number.isFinite(amount)
+									? toThousands(amount)
+									: ''}
+							</div>
+						);
+					},
 					lifecycleStageRenderer: ({
 						value,
 					}: {

@@ -138,9 +138,17 @@ describe('TouchedAccountsCard', () => {
 	it('should abbreviate an amount and leave a missing one blank', () => {
 		renderCard();
 
-		const amount = (value?: number) =>
+		const amount = (value?: number | string | null) =>
 			render(lastFDSProps.customDataRenderers.amountRenderer({value}))
 				.container.textContent;
+
+		// The endpoint sends these as strings, which is what the cell
+		// actually receives. `toThousands` returns '' for a string, so a
+		// renderer that formats the raw value empties every populated cell.
+
+		expect(amount('18500000')).toBe('18.5M');
+		expect(amount('950000')).toBe('950K');
+		expect(amount('0')).toBe('0');
 
 		expect(amount(18500000)).toBe('18.5M');
 		expect(amount(950000)).toBe('950K');
@@ -149,6 +157,8 @@ describe('TouchedAccountsCard', () => {
 		// account with no opportunity value shows nothing rather than a zero.
 
 		expect(amount(undefined)).toBe('');
+		expect(amount(null)).toBe('');
+		expect(amount('')).toBe('');
 	});
 
 	it('should leave the empty result to the data set default', () => {
