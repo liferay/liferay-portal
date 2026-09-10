@@ -11,6 +11,7 @@ import com.liferay.headless.admin.workflow.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -214,6 +215,12 @@ public class WorkflowTaskTransitionsSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -246,4 +253,4 @@ public class WorkflowTaskTransitionsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:284366098
+// LIFERAY-REST-BUILDER-HASH:-1113771734

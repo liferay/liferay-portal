@@ -10,6 +10,7 @@ import com.liferay.object.admin.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -71,14 +72,7 @@ public class ObjectValidationRuleSettingSerDes {
 
 			sb.append("\"value\": ");
 
-			if (objectValidationRuleSetting.getValue() instanceof String) {
-				sb.append("\"");
-				sb.append((String)objectValidationRuleSetting.getValue());
-				sb.append("\"");
-			}
-			else {
-				sb.append(objectValidationRuleSetting.getValue());
-			}
+			sb.append(_toJSON(objectValidationRuleSetting.getValue()));
 		}
 
 		sb.append("}");
@@ -214,6 +208,12 @@ public class ObjectValidationRuleSettingSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -246,4 +246,4 @@ public class ObjectValidationRuleSettingSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2021116602
+// LIFERAY-REST-BUILDER-HASH:1410428086

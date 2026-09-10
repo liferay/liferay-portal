@@ -195,28 +195,7 @@ public class Mapping implements Serializable {
 
 			sb.append("\"itemReference\": ");
 
-			if (itemReference instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)itemReference));
-			}
-			else if (itemReference instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)itemReference));
-			}
-			else if (itemReference instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])itemReference)));
-			}
-			else if (itemReference instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)itemReference));
-				sb.append("\"");
-			}
-			else {
-				sb.append(itemReference);
-			}
+			sb.append(_toJSON(itemReference));
 		}
 
 		sb.append("}");
@@ -245,6 +224,27 @@ public class Mapping implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -320,4 +320,4 @@ public class Mapping implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:424758273
+// LIFERAY-REST-BUILDER-HASH:679601437

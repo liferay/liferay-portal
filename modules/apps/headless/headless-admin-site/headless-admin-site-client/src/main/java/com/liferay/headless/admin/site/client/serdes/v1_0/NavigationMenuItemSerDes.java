@@ -13,6 +13,7 @@ import jakarta.annotation.Generated;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -224,17 +225,8 @@ public class NavigationMenuItemSerDes {
 
 			sb.append("\"navigationMenuItemSettings\": ");
 
-			if (navigationMenuItem.getNavigationMenuItemSettings() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)navigationMenuItem.getNavigationMenuItemSettings());
-				sb.append("\"");
-			}
-			else {
-				sb.append(navigationMenuItem.getNavigationMenuItemSettings());
-			}
+			sb.append(
+				_toJSON(navigationMenuItem.getNavigationMenuItemSettings()));
 		}
 
 		if (navigationMenuItem.getNavigationMenuItems() != null) {
@@ -719,6 +711,12 @@ public class NavigationMenuItemSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -751,4 +749,4 @@ public class NavigationMenuItemSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:56188502
+// LIFERAY-REST-BUILDER-HASH:983813568

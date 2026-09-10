@@ -198,26 +198,7 @@ public class CompareRuns implements Serializable {
 
 			sb.append("\"values\": ");
 
-			if (values instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)values));
-			}
-			else if (values instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)values));
-			}
-			else if (values instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])values)));
-			}
-			else if (values instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)values));
-				sb.append("\"");
-			}
-			else {
-				sb.append(values);
-			}
+			sb.append(_toJSON(values));
 		}
 
 		sb.append("}");
@@ -246,6 +227,27 @@ public class CompareRuns implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -321,4 +323,4 @@ public class CompareRuns implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1569934542
+// LIFERAY-REST-BUILDER-HASH:541218168

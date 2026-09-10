@@ -580,29 +580,7 @@ public class ScheduledPublishProcess implements Serializable {
 
 			sb.append("\"publishParameters\": ");
 
-			if (publishParameters instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)publishParameters));
-			}
-			else if (publishParameters instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject(
-						(Map<?, ?>)publishParameters));
-			}
-			else if (publishParameters instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])publishParameters)));
-			}
-			else if (publishParameters instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)publishParameters));
-				sb.append("\"");
-			}
-			else {
-				sb.append(publishParameters);
-			}
+			sb.append(_toJSON(publishParameters));
 		}
 
 		Date scheduleEndDate = getScheduleEndDate();
@@ -663,6 +641,27 @@ public class ScheduledPublishProcess implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -738,4 +737,4 @@ public class ScheduledPublishProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1075655950
+// LIFERAY-REST-BUILDER-HASH:1661460060

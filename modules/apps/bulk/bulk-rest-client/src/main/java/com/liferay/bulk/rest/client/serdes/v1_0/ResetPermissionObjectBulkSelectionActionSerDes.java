@@ -11,6 +11,7 @@ import com.liferay.bulk.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -293,6 +294,12 @@ public class ResetPermissionObjectBulkSelectionActionSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -325,4 +332,4 @@ public class ResetPermissionObjectBulkSelectionActionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-346822552
+// LIFERAY-REST-BUILDER-HASH:1635627126

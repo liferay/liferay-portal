@@ -11,6 +11,7 @@ import com.liferay.portal.workflow.metrics.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -214,6 +215,12 @@ public class StartNodeKeysSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -246,4 +253,4 @@ public class StartNodeKeysSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:418767956
+// LIFERAY-REST-BUILDER-HASH:1923314740

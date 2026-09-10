@@ -10,6 +10,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -151,14 +152,7 @@ public class ClauseSerDes {
 
 			sb.append("\"query\": ");
 
-			if (clause.getQuery() instanceof String) {
-				sb.append("\"");
-				sb.append((String)clause.getQuery());
-				sb.append("\"");
-			}
-			else {
-				sb.append(clause.getQuery());
-			}
+			sb.append(_toJSON(clause.getQuery()));
 		}
 
 		if (clause.getType() != null) {
@@ -448,6 +442,12 @@ public class ClauseSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -480,4 +480,4 @@ public class ClauseSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1901858264
+// LIFERAY-REST-BUILDER-HASH:1334428314

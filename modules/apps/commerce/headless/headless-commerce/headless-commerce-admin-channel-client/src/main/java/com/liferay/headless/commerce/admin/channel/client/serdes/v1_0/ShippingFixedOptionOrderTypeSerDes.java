@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.admin.channel.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -385,6 +386,12 @@ public class ShippingFixedOptionOrderTypeSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -417,4 +424,4 @@ public class ShippingFixedOptionOrderTypeSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-981722659
+// LIFERAY-REST-BUILDER-HASH:1200264761

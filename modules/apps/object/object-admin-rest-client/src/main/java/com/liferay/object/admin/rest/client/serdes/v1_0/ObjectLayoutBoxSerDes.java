@@ -11,6 +11,7 @@ import com.liferay.object.admin.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -328,6 +329,12 @@ public class ObjectLayoutBoxSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -360,4 +367,4 @@ public class ObjectLayoutBoxSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1300181127
+// LIFERAY-REST-BUILDER-HASH:-80938645

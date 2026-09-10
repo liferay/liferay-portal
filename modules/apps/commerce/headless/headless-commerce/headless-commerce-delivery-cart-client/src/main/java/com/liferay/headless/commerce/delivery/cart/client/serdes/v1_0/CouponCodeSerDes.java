@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.delivery.cart.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -167,6 +168,12 @@ public class CouponCodeSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -199,4 +206,4 @@ public class CouponCodeSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-943744250
+// LIFERAY-REST-BUILDER-HASH:-623668274

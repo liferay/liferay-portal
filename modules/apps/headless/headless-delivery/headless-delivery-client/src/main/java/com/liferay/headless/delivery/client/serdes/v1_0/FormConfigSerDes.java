@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -51,14 +52,7 @@ public class FormConfigSerDes {
 
 			sb.append("\"formReference\": ");
 
-			if (formConfig.getFormReference() instanceof String) {
-				sb.append("\"");
-				sb.append((String)formConfig.getFormReference());
-				sb.append("\"");
-			}
-			else {
-				sb.append(formConfig.getFormReference());
-			}
+			sb.append(_toJSON(formConfig.getFormReference()));
 		}
 
 		if (formConfig.getFormSuccessSubmissionResult() != null) {
@@ -68,14 +62,7 @@ public class FormConfigSerDes {
 
 			sb.append("\"formSuccessSubmissionResult\": ");
 
-			if (formConfig.getFormSuccessSubmissionResult() instanceof String) {
-				sb.append("\"");
-				sb.append((String)formConfig.getFormSuccessSubmissionResult());
-				sb.append("\"");
-			}
-			else {
-				sb.append(formConfig.getFormSuccessSubmissionResult());
-			}
+			sb.append(_toJSON(formConfig.getFormSuccessSubmissionResult()));
 		}
 
 		if (formConfig.getFormType() != null) {
@@ -299,6 +286,12 @@ public class FormConfigSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -331,4 +324,4 @@ public class FormConfigSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1402650196
+// LIFERAY-REST-BUILDER-HASH:-1253217464

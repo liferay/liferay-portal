@@ -45,6 +45,8 @@
 	export {MultipartTestEntity} from './models/MultipartTestEntity';
 	export {NestedArrayItemsTestEntity} from './models/NestedArrayItemsTestEntity';
 	export {NestedTestEntity} from './models/NestedTestEntity';
+	export {ObjectArrayPropertyTestEntity} from './models/ObjectArrayPropertyTestEntity';
+	export {OneOfPropertyTestEntity} from './models/OneOfPropertyTestEntity';
 	export {PageAssetLibraryTestEntity} from './models/PageAssetLibraryTestEntity';
 	export {PageBatchTestEntity} from './models/PageBatchTestEntity';
 	export {PageCompanyTestEntity} from './models/PageCompanyTestEntity';

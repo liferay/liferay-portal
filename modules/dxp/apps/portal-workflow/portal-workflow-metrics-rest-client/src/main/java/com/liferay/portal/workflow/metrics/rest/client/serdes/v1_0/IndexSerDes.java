@@ -10,6 +10,7 @@ import com.liferay.portal.workflow.metrics.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -223,6 +224,12 @@ public class IndexSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -255,4 +262,4 @@ public class IndexSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1257373082
+// LIFERAY-REST-BUILDER-HASH:450542052

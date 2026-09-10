@@ -521,25 +521,7 @@ public class TypeOptions implements Serializable {
 
 			sb.append("\"max\": ");
 
-			if (max instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)max));
-			}
-			else if (max instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)max));
-			}
-			else if (max instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])max)));
-			}
-			else if (max instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)max));
-				sb.append("\"");
-			}
-			else {
-				sb.append(max);
-			}
+			sb.append(_toJSON(max));
 		}
 
 		Object min = getMin();
@@ -551,25 +533,7 @@ public class TypeOptions implements Serializable {
 
 			sb.append("\"min\": ");
 
-			if (min instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)min));
-			}
-			else if (min instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)min));
-			}
-			else if (min instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])min)));
-			}
-			else if (min instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)min));
-				sb.append("\"");
-			}
-			else {
-				sb.append(min);
-			}
+			sb.append(_toJSON(min));
 		}
 
 		Boolean nullable = getNullable();
@@ -627,25 +591,7 @@ public class TypeOptions implements Serializable {
 
 			sb.append("\"step\": ");
 
-			if (step instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)step));
-			}
-			else if (step instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)step));
-			}
-			else if (step instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])step)));
-			}
-			else if (step instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)step));
-				sb.append("\"");
-			}
-			else {
-				sb.append(step);
-			}
+			sb.append(_toJSON(step));
 		}
 
 		String unit = getUnit();
@@ -706,6 +652,27 @@ public class TypeOptions implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -781,4 +748,4 @@ public class TypeOptions implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1800513748
+// LIFERAY-REST-BUILDER-HASH:-1029768598

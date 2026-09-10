@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -228,6 +229,12 @@ public class FragmentMappedValueItemContextReferenceSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -260,4 +267,4 @@ public class FragmentMappedValueItemContextReferenceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-633366240
+// LIFERAY-REST-BUILDER-HASH:220893664

@@ -10,6 +10,7 @@ import com.liferay.object.admin.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -818,6 +819,12 @@ public class ObjectRelationshipSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -850,4 +857,4 @@ public class ObjectRelationshipSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:937882394
+// LIFERAY-REST-BUILDER-HASH:500474718

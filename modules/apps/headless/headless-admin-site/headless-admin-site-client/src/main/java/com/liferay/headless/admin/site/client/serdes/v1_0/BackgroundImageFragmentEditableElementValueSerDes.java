@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -235,6 +236,12 @@ public class BackgroundImageFragmentEditableElementValueSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -267,4 +274,4 @@ public class BackgroundImageFragmentEditableElementValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1778078982
+// LIFERAY-REST-BUILDER-HASH:1201674968

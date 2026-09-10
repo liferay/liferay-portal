@@ -173,26 +173,7 @@ public class MarginAndPaddingConfig implements Serializable {
 
 			sb.append("\"margin\": ");
 
-			if (margin instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)margin));
-			}
-			else if (margin instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)margin));
-			}
-			else if (margin instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])margin)));
-			}
-			else if (margin instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)margin));
-				sb.append("\"");
-			}
-			else {
-				sb.append(margin);
-			}
+			sb.append(_toJSON(margin));
 		}
 
 		Object padding = getPadding();
@@ -204,26 +185,7 @@ public class MarginAndPaddingConfig implements Serializable {
 
 			sb.append("\"padding\": ");
 
-			if (padding instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)padding));
-			}
-			else if (padding instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)padding));
-			}
-			else if (padding instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])padding)));
-			}
-			else if (padding instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)padding));
-				sb.append("\"");
-			}
-			else {
-				sb.append(padding);
-			}
+			sb.append(_toJSON(padding));
 		}
 
 		sb.append("}");
@@ -252,6 +214,27 @@ public class MarginAndPaddingConfig implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -327,4 +310,4 @@ public class MarginAndPaddingConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1185459071
+// LIFERAY-REST-BUILDER-HASH:629378968

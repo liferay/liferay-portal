@@ -11,6 +11,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -291,6 +292,12 @@ public class FragmentImageSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -323,4 +330,4 @@ public class FragmentImageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1938237042
+// LIFERAY-REST-BUILDER-HASH:2032464196

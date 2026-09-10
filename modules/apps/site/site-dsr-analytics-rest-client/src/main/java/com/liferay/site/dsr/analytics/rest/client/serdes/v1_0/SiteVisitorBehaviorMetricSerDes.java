@@ -10,6 +10,7 @@ import com.liferay.site.dsr.analytics.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -266,6 +267,12 @@ public class SiteVisitorBehaviorMetricSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -298,4 +305,4 @@ public class SiteVisitorBehaviorMetricSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:18617334
+// LIFERAY-REST-BUILDER-HASH:598123110

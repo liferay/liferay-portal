@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -172,6 +173,12 @@ public class UtilityPageSettingsSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -204,4 +211,4 @@ public class UtilityPageSettingsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1054433127
+// LIFERAY-REST-BUILDER-HASH:1171371495

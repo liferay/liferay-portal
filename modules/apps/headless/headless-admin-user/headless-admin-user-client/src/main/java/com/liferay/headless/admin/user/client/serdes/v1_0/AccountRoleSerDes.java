@@ -10,6 +10,7 @@ import com.liferay.headless.admin.user.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -370,6 +371,12 @@ public class AccountRoleSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -402,4 +409,4 @@ public class AccountRoleSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-750186238
+// LIFERAY-REST-BUILDER-HASH:1771054636

@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.admin.account.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -166,6 +167,12 @@ public class Body_1SerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -198,4 +205,4 @@ public class Body_1SerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-618779964
+// LIFERAY-REST-BUILDER-HASH:118623878

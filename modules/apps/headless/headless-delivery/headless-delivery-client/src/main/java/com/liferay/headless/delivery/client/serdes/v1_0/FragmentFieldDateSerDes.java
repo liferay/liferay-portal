@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -53,14 +54,7 @@ public class FragmentFieldDateSerDes {
 
 			sb.append("\"date\": ");
 
-			if (fragmentFieldDate.getDate() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentFieldDate.getDate());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentFieldDate.getDate());
-			}
+			sb.append(_toJSON(fragmentFieldDate.getDate()));
 		}
 
 		if (fragmentFieldDate.getDateFormat() != null) {
@@ -70,14 +64,7 @@ public class FragmentFieldDateSerDes {
 
 			sb.append("\"dateFormat\": ");
 
-			if (fragmentFieldDate.getDateFormat() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentFieldDate.getDateFormat());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentFieldDate.getDateFormat());
-			}
+			sb.append(_toJSON(fragmentFieldDate.getDateFormat()));
 		}
 
 		sb.append("}");
@@ -210,6 +197,12 @@ public class FragmentFieldDateSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -242,4 +235,4 @@ public class FragmentFieldDateSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1748703657
+// LIFERAY-REST-BUILDER-HASH:-793305027

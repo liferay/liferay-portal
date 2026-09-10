@@ -10,6 +10,7 @@ import com.liferay.scim.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -166,6 +167,12 @@ public class ChangePasswordSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -198,4 +205,4 @@ public class ChangePasswordSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:6427820
+// LIFERAY-REST-BUILDER-HASH:-1288511626

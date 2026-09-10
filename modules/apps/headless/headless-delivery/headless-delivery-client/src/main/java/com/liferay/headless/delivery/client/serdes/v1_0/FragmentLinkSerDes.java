@@ -11,6 +11,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -54,14 +55,7 @@ public class FragmentLinkSerDes {
 
 			sb.append("\"href\": ");
 
-			if (fragmentLink.getHref() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentLink.getHref());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentLink.getHref());
-			}
+			sb.append(_toJSON(fragmentLink.getHref()));
 		}
 
 		if (fragmentLink.getTarget() != null) {
@@ -256,6 +250,12 @@ public class FragmentLinkSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -288,4 +288,4 @@ public class FragmentLinkSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1254008538
+// LIFERAY-REST-BUILDER-HASH:-1816406540

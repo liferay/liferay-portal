@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -199,6 +200,12 @@ public class NoneActionInteractionSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -231,4 +238,4 @@ public class NoneActionInteractionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:488411243
+// LIFERAY-REST-BUILDER-HASH:1485380195

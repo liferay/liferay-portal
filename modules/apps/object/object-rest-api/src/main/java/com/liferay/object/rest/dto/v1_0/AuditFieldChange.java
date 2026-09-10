@@ -226,27 +226,7 @@ public class AuditFieldChange implements Serializable {
 
 			sb.append("\"newValue\": ");
 
-			if (newValue instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)newValue));
-			}
-			else if (newValue instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)newValue));
-			}
-			else if (newValue instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])newValue)));
-			}
-			else if (newValue instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)newValue));
-				sb.append("\"");
-			}
-			else {
-				sb.append(newValue);
-			}
+			sb.append(_toJSON(newValue));
 		}
 
 		Object oldValue = getOldValue();
@@ -258,27 +238,7 @@ public class AuditFieldChange implements Serializable {
 
 			sb.append("\"oldValue\": ");
 
-			if (oldValue instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)oldValue));
-			}
-			else if (oldValue instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)oldValue));
-			}
-			else if (oldValue instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])oldValue)));
-			}
-			else if (oldValue instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)oldValue));
-				sb.append("\"");
-			}
-			else {
-				sb.append(oldValue);
-			}
+			sb.append(_toJSON(oldValue));
 		}
 
 		sb.append("}");
@@ -307,6 +267,27 @@ public class AuditFieldChange implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -382,4 +363,4 @@ public class AuditFieldChange implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:565254382
+// LIFERAY-REST-BUILDER-HASH:1647929557

@@ -275,28 +275,7 @@ public class FragmentImage implements Serializable {
 
 			sb.append("\"description\": ");
 
-			if (description instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)description));
-			}
-			else if (description instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)description));
-			}
-			else if (description instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])description)));
-			}
-			else if (description instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)description));
-				sb.append("\"");
-			}
-			else {
-				sb.append(description);
-			}
+			sb.append(_toJSON(description));
 		}
 
 		FragmentImageClassPKReference fragmentImageClassPKReference =
@@ -321,26 +300,7 @@ public class FragmentImage implements Serializable {
 
 			sb.append("\"title\": ");
 
-			if (title instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)title));
-			}
-			else if (title instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)title));
-			}
-			else if (title instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])title)));
-			}
-			else if (title instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)title));
-				sb.append("\"");
-			}
-			else {
-				sb.append(title);
-			}
+			sb.append(_toJSON(title));
 		}
 
 		Object url = getUrl();
@@ -352,25 +312,7 @@ public class FragmentImage implements Serializable {
 
 			sb.append("\"url\": ");
 
-			if (url instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)url));
-			}
-			else if (url instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)url));
-			}
-			else if (url instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])url)));
-			}
-			else if (url instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)url));
-				sb.append("\"");
-			}
-			else {
-				sb.append(url);
-			}
+			sb.append(_toJSON(url));
 		}
 
 		sb.append("}");
@@ -399,6 +341,27 @@ public class FragmentImage implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -474,4 +437,4 @@ public class FragmentImage implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-997055793
+// LIFERAY-REST-BUILDER-HASH:1891560665

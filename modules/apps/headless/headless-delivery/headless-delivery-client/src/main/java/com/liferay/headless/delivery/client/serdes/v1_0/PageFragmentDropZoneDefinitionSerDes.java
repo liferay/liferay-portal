@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -183,6 +184,12 @@ public class PageFragmentDropZoneDefinitionSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -215,4 +222,4 @@ public class PageFragmentDropZoneDefinitionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1465164179
+// LIFERAY-REST-BUILDER-HASH:2047515887

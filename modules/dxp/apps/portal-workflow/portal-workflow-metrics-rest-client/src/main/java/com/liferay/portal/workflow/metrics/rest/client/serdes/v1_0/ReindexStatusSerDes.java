@@ -10,6 +10,7 @@ import com.liferay.portal.workflow.metrics.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -198,6 +199,12 @@ public class ReindexStatusSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -230,4 +237,4 @@ public class ReindexStatusSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1124222877
+// LIFERAY-REST-BUILDER-HASH:-1171807677

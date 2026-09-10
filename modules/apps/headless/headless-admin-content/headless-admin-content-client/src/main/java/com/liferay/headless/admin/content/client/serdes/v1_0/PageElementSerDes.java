@@ -10,6 +10,7 @@ import com.liferay.headless.admin.content.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -53,14 +54,7 @@ public class PageElementSerDes {
 
 			sb.append("\"definition\": ");
 
-			if (pageElement.getDefinition() instanceof String) {
-				sb.append("\"");
-				sb.append((String)pageElement.getDefinition());
-				sb.append("\"");
-			}
-			else {
-				sb.append(pageElement.getDefinition());
-			}
+			sb.append(_toJSON(pageElement.getDefinition()));
 		}
 
 		if (pageElement.getId() != null) {
@@ -277,6 +271,12 @@ public class PageElementSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -309,4 +309,4 @@ public class PageElementSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1369046627
+// LIFERAY-REST-BUILDER-HASH:238684867

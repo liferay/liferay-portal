@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.admin.channel.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -208,6 +209,12 @@ public class DefaultProductDisplayPageSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -240,4 +247,4 @@ public class DefaultProductDisplayPageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:60110319
+// LIFERAY-REST-BUILDER-HASH:1769325371

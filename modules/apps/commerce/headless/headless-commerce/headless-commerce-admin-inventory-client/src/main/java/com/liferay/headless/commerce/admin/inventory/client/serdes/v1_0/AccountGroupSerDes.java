@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.admin.inventory.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -196,6 +197,12 @@ public class AccountGroupSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -228,4 +235,4 @@ public class AccountGroupSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1458511170
+// LIFERAY-REST-BUILDER-HASH:-1216059966

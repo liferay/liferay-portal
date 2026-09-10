@@ -10,6 +10,7 @@ import com.liferay.portal.search.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -51,14 +52,7 @@ public class SuggestionSerDes {
 
 			sb.append("\"attributes\": ");
 
-			if (suggestion.getAttributes() instanceof String) {
-				sb.append("\"");
-				sb.append((String)suggestion.getAttributes());
-				sb.append("\"");
-			}
-			else {
-				sb.append(suggestion.getAttributes());
-			}
+			sb.append(_toJSON(suggestion.getAttributes()));
 		}
 
 		if (suggestion.getScore() != null) {
@@ -225,6 +219,12 @@ public class SuggestionSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -257,4 +257,4 @@ public class SuggestionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1029341790
+// LIFERAY-REST-BUILDER-HASH:-421657510

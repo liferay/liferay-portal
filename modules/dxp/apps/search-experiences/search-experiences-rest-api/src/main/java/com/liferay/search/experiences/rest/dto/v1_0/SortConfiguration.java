@@ -129,26 +129,7 @@ public class SortConfiguration implements Serializable {
 
 			sb.append("\"sorts\": ");
 
-			if (sorts instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)sorts));
-			}
-			else if (sorts instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)sorts));
-			}
-			else if (sorts instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])sorts)));
-			}
-			else if (sorts instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)sorts));
-				sb.append("\"");
-			}
-			else {
-				sb.append(sorts);
-			}
+			sb.append(_toJSON(sorts));
 		}
 
 		sb.append("}");
@@ -177,6 +158,27 @@ public class SortConfiguration implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -252,4 +254,4 @@ public class SortConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1388126503
+// LIFERAY-REST-BUILDER-HASH:1970090041

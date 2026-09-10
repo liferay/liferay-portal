@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -53,18 +54,8 @@ public class TaxonomyCategoryBriefSerDes {
 
 			sb.append("\"embeddedTaxonomyCategory\": ");
 
-			if (taxonomyCategoryBrief.getEmbeddedTaxonomyCategory() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)
-						taxonomyCategoryBrief.getEmbeddedTaxonomyCategory());
-				sb.append("\"");
-			}
-			else {
-				sb.append(taxonomyCategoryBrief.getEmbeddedTaxonomyCategory());
-			}
+			sb.append(
+				_toJSON(taxonomyCategoryBrief.getEmbeddedTaxonomyCategory()));
 		}
 
 		if (taxonomyCategoryBrief.getTaxonomyCategoryId() != null) {
@@ -326,6 +317,12 @@ public class TaxonomyCategoryBriefSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -358,4 +355,4 @@ public class TaxonomyCategoryBriefSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1570971895
+// LIFERAY-REST-BUILDER-HASH:1712204589

@@ -624,27 +624,7 @@ public class SearchResult implements Serializable {
 
 			sb.append("\"embedded\": ");
 
-			if (embedded instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)embedded));
-			}
-			else if (embedded instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)embedded));
-			}
-			else if (embedded instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])embedded)));
-			}
-			else if (embedded instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)embedded));
-				sb.append("\"");
-			}
-			else {
-				sb.append(embedded);
-			}
+			sb.append(_toJSON(embedded));
 		}
 
 		String entryClassName = getEntryClassName();
@@ -735,6 +715,27 @@ public class SearchResult implements Serializable {
 		return clazz.isArray();
 	}
 
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
+	}
+
 	private static String _toJSON(Map<String, ?> map) {
 		StringBuilder sb = new StringBuilder("{");
 
@@ -808,4 +809,4 @@ public class SearchResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1133214251
+// LIFERAY-REST-BUILDER-HASH:844253193

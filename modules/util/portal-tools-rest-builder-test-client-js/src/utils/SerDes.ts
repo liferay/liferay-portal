@@ -22,6 +22,8 @@
 	import {MultipartTestEntity} from '../models/MultipartTestEntity';
 	import {NestedArrayItemsTestEntity} from '../models/NestedArrayItemsTestEntity';
 	import {NestedTestEntity} from '../models/NestedTestEntity';
+	import {ObjectArrayPropertyTestEntity} from '../models/ObjectArrayPropertyTestEntity';
+	import {OneOfPropertyTestEntity} from '../models/OneOfPropertyTestEntity';
 	import {PageAssetLibraryTestEntity} from '../models/PageAssetLibraryTestEntity';
 	import {PageBatchTestEntity} from '../models/PageBatchTestEntity';
 	import {PageCompanyTestEntity} from '../models/PageCompanyTestEntity';
@@ -100,6 +102,8 @@ const typeMap: {[index: string]: any} = {
 	MultipartTestEntity,
 	NestedArrayItemsTestEntity,
 	NestedTestEntity,
+	ObjectArrayPropertyTestEntity,
+	OneOfPropertyTestEntity,
 	PageAssetLibraryTestEntity,
 	PageBatchTestEntity,
 	PageCompanyTestEntity,

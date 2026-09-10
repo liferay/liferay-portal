@@ -213,28 +213,7 @@ public class BorderStylesConfig implements Serializable {
 
 			sb.append("\"borderColor\": ");
 
-			if (borderColor instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)borderColor));
-			}
-			else if (borderColor instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)borderColor));
-			}
-			else if (borderColor instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])borderColor)));
-			}
-			else if (borderColor instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)borderColor));
-				sb.append("\"");
-			}
-			else {
-				sb.append(borderColor);
-			}
+			sb.append(_toJSON(borderColor));
 		}
 
 		Object borderStyle = getBorderStyle();
@@ -246,28 +225,7 @@ public class BorderStylesConfig implements Serializable {
 
 			sb.append("\"borderStyle\": ");
 
-			if (borderStyle instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)borderStyle));
-			}
-			else if (borderStyle instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)borderStyle));
-			}
-			else if (borderStyle instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])borderStyle)));
-			}
-			else if (borderStyle instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)borderStyle));
-				sb.append("\"");
-			}
-			else {
-				sb.append(borderStyle);
-			}
+			sb.append(_toJSON(borderStyle));
 		}
 
 		Object borderWidth = getBorderWidth();
@@ -279,28 +237,7 @@ public class BorderStylesConfig implements Serializable {
 
 			sb.append("\"borderWidth\": ");
 
-			if (borderWidth instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)borderWidth));
-			}
-			else if (borderWidth instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)borderWidth));
-			}
-			else if (borderWidth instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])borderWidth)));
-			}
-			else if (borderWidth instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)borderWidth));
-				sb.append("\"");
-			}
-			else {
-				sb.append(borderWidth);
-			}
+			sb.append(_toJSON(borderWidth));
 		}
 
 		sb.append("}");
@@ -329,6 +266,27 @@ public class BorderStylesConfig implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -404,4 +362,4 @@ public class BorderStylesConfig implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2027689706
+// LIFERAY-REST-BUILDER-HASH:1231329004

@@ -13,6 +13,7 @@ import jakarta.annotation.Generated;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -128,14 +129,7 @@ public class SearchResultSerDes {
 
 			sb.append("\"embedded\": ");
 
-			if (searchResult.getEmbedded() instanceof String) {
-				sb.append("\"");
-				sb.append((String)searchResult.getEmbedded());
-				sb.append("\"");
-			}
-			else {
-				sb.append(searchResult.getEmbedded());
-			}
+			sb.append(_toJSON(searchResult.getEmbedded()));
 		}
 
 		if (searchResult.getEntryClassName() != null) {
@@ -453,6 +447,12 @@ public class SearchResultSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -485,4 +485,4 @@ public class SearchResultSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:159395730
+// LIFERAY-REST-BUILDER-HASH:193323428

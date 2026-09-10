@@ -10,6 +10,7 @@ import com.liferay.osb.testray.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -73,14 +74,7 @@ public class CompareRunsSerDes {
 
 			sb.append("\"values\": ");
 
-			if (compareRuns.getValues() instanceof String) {
-				sb.append("\"");
-				sb.append((String)compareRuns.getValues());
-				sb.append("\"");
-			}
-			else {
-				sb.append(compareRuns.getValues());
-			}
+			sb.append(_toJSON(compareRuns.getValues()));
 		}
 
 		sb.append("}");
@@ -210,6 +204,12 @@ public class CompareRunsSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -242,4 +242,4 @@ public class CompareRunsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1739759291
+// LIFERAY-REST-BUILDER-HASH:-561723341

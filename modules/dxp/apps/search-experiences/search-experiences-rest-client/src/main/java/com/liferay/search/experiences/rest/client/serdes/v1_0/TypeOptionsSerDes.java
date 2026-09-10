@@ -11,6 +11,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -78,14 +79,7 @@ public class TypeOptionsSerDes {
 
 			sb.append("\"max\": ");
 
-			if (typeOptions.getMax() instanceof String) {
-				sb.append("\"");
-				sb.append((String)typeOptions.getMax());
-				sb.append("\"");
-			}
-			else {
-				sb.append(typeOptions.getMax());
-			}
+			sb.append(_toJSON(typeOptions.getMax()));
 		}
 
 		if (typeOptions.getMin() != null) {
@@ -95,14 +89,7 @@ public class TypeOptionsSerDes {
 
 			sb.append("\"min\": ");
 
-			if (typeOptions.getMin() instanceof String) {
-				sb.append("\"");
-				sb.append((String)typeOptions.getMin());
-				sb.append("\"");
-			}
-			else {
-				sb.append(typeOptions.getMin());
-			}
+			sb.append(_toJSON(typeOptions.getMin()));
 		}
 
 		if (typeOptions.getNullable() != null) {
@@ -152,14 +139,7 @@ public class TypeOptionsSerDes {
 
 			sb.append("\"step\": ");
 
-			if (typeOptions.getStep() instanceof String) {
-				sb.append("\"");
-				sb.append((String)typeOptions.getStep());
-				sb.append("\"");
-			}
-			else {
-				sb.append(typeOptions.getStep());
-			}
+			sb.append(_toJSON(typeOptions.getStep()));
 		}
 
 		if (typeOptions.getUnit() != null) {
@@ -446,6 +426,12 @@ public class TypeOptionsSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -478,4 +464,4 @@ public class TypeOptionsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1140840971
+// LIFERAY-REST-BUILDER-HASH:215229353

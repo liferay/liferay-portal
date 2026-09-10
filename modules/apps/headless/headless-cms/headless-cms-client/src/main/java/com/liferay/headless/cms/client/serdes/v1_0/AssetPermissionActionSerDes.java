@@ -11,6 +11,7 @@ import com.liferay.headless.cms.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -225,6 +226,12 @@ public class AssetPermissionActionSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -257,4 +264,4 @@ public class AssetPermissionActionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1945015141
+// LIFERAY-REST-BUILDER-HASH:306874999

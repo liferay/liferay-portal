@@ -179,25 +179,7 @@ public class FragmentFieldDate implements Serializable {
 
 			sb.append("\"date\": ");
 
-			if (date instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)date));
-			}
-			else if (date instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)date));
-			}
-			else if (date instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])date)));
-			}
-			else if (date instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)date));
-				sb.append("\"");
-			}
-			else {
-				sb.append(date);
-			}
+			sb.append(_toJSON(date));
 		}
 
 		Object dateFormat = getDateFormat();
@@ -209,27 +191,7 @@ public class FragmentFieldDate implements Serializable {
 
 			sb.append("\"dateFormat\": ");
 
-			if (dateFormat instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)dateFormat));
-			}
-			else if (dateFormat instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)dateFormat));
-			}
-			else if (dateFormat instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])dateFormat)));
-			}
-			else if (dateFormat instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)dateFormat));
-				sb.append("\"");
-			}
-			else {
-				sb.append(dateFormat);
-			}
+			sb.append(_toJSON(dateFormat));
 		}
 
 		sb.append("}");
@@ -258,6 +220,27 @@ public class FragmentFieldDate implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -333,4 +316,4 @@ public class FragmentFieldDate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:370671099
+// LIFERAY-REST-BUILDER-HASH:980073092

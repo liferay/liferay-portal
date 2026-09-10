@@ -10,6 +10,7 @@ import com.liferay.object.admin.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -87,14 +88,7 @@ public class ObjectFieldSettingSerDes {
 
 			sb.append("\"value\": ");
 
-			if (objectFieldSetting.getValue() instanceof String) {
-				sb.append("\"");
-				sb.append((String)objectFieldSetting.getValue());
-				sb.append("\"");
-			}
-			else {
-				sb.append(objectFieldSetting.getValue());
-			}
+			sb.append(_toJSON(objectFieldSetting.getValue()));
 		}
 
 		sb.append("}");
@@ -258,6 +252,12 @@ public class ObjectFieldSettingSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -290,4 +290,4 @@ public class ObjectFieldSettingSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1586978624
+// LIFERAY-REST-BUILDER-HASH:95458190

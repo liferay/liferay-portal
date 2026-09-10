@@ -10,6 +10,7 @@ import com.liferay.scim.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -162,6 +163,12 @@ public class PatchSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -194,4 +201,4 @@ public class PatchSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:166308231
+// LIFERAY-REST-BUILDER-HASH:497676827

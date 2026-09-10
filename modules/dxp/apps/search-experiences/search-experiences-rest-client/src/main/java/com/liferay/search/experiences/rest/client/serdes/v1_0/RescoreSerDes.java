@@ -10,6 +10,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -51,14 +52,7 @@ public class RescoreSerDes {
 
 			sb.append("\"query\": ");
 
-			if (rescore.getQuery() instanceof String) {
-				sb.append("\"");
-				sb.append((String)rescore.getQuery());
-				sb.append("\"");
-			}
-			else {
-				sb.append(rescore.getQuery());
-			}
+			sb.append(_toJSON(rescore.getQuery()));
 		}
 
 		if (rescore.getQueryWeight() != null) {
@@ -68,14 +62,7 @@ public class RescoreSerDes {
 
 			sb.append("\"queryWeight\": ");
 
-			if (rescore.getQueryWeight() instanceof String) {
-				sb.append("\"");
-				sb.append((String)rescore.getQueryWeight());
-				sb.append("\"");
-			}
-			else {
-				sb.append(rescore.getQueryWeight());
-			}
+			sb.append(_toJSON(rescore.getQueryWeight()));
 		}
 
 		if (rescore.getRescoreQueryWeight() != null) {
@@ -85,14 +72,7 @@ public class RescoreSerDes {
 
 			sb.append("\"rescoreQueryWeight\": ");
 
-			if (rescore.getRescoreQueryWeight() instanceof String) {
-				sb.append("\"");
-				sb.append((String)rescore.getRescoreQueryWeight());
-				sb.append("\"");
-			}
-			else {
-				sb.append(rescore.getRescoreQueryWeight());
-			}
+			sb.append(_toJSON(rescore.getRescoreQueryWeight()));
 		}
 
 		if (rescore.getScoreMode() != null) {
@@ -116,14 +96,7 @@ public class RescoreSerDes {
 
 			sb.append("\"windowSize\": ");
 
-			if (rescore.getWindowSize() instanceof String) {
-				sb.append("\"");
-				sb.append((String)rescore.getWindowSize());
-				sb.append("\"");
-			}
-			else {
-				sb.append(rescore.getWindowSize());
-			}
+			sb.append(_toJSON(rescore.getWindowSize()));
 		}
 
 		sb.append("}");
@@ -300,6 +273,12 @@ public class RescoreSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -332,4 +311,4 @@ public class RescoreSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:52604978
+// LIFERAY-REST-BUILDER-HASH:757644924

@@ -10,6 +10,7 @@ import com.liferay.headless.dsr.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -281,6 +282,12 @@ public class RoomSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -313,4 +320,4 @@ public class RoomSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:712251575
+// LIFERAY-REST-BUILDER-HASH:-1096556557

@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -53,14 +54,7 @@ public class FragmentImageSerDes {
 
 			sb.append("\"description\": ");
 
-			if (fragmentImage.getDescription() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentImage.getDescription());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentImage.getDescription());
-			}
+			sb.append(_toJSON(fragmentImage.getDescription()));
 		}
 
 		if (fragmentImage.getFragmentImageClassPKReference() != null) {
@@ -82,14 +76,7 @@ public class FragmentImageSerDes {
 
 			sb.append("\"title\": ");
 
-			if (fragmentImage.getTitle() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentImage.getTitle());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentImage.getTitle());
-			}
+			sb.append(_toJSON(fragmentImage.getTitle()));
 		}
 
 		if (fragmentImage.getUrl() != null) {
@@ -99,14 +86,7 @@ public class FragmentImageSerDes {
 
 			sb.append("\"url\": ");
 
-			if (fragmentImage.getUrl() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentImage.getUrl());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentImage.getUrl());
-			}
+			sb.append(_toJSON(fragmentImage.getUrl()));
 		}
 
 		sb.append("}");
@@ -274,6 +254,12 @@ public class FragmentImageSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -306,4 +292,4 @@ public class FragmentImageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1869810345
+// LIFERAY-REST-BUILDER-HASH:867080409

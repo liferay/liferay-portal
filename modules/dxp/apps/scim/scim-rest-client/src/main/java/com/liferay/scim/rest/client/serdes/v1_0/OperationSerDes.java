@@ -10,6 +10,7 @@ import com.liferay.scim.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -79,14 +80,7 @@ public class OperationSerDes {
 
 			sb.append("\"value\": ");
 
-			if (operation.getValue() instanceof String) {
-				sb.append("\"");
-				sb.append((String)operation.getValue());
-				sb.append("\"");
-			}
-			else {
-				sb.append(operation.getValue());
-			}
+			sb.append(_toJSON(operation.getValue()));
 		}
 
 		sb.append("}");
@@ -227,6 +221,12 @@ public class OperationSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -259,4 +259,4 @@ public class OperationSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1498398718
+// LIFERAY-REST-BUILDER-HASH:-488309884

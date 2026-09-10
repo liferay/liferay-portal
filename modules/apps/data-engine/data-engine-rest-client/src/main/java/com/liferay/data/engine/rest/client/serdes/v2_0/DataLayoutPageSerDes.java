@@ -11,6 +11,7 @@ import com.liferay.data.engine.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -246,6 +247,12 @@ public class DataLayoutPageSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -278,4 +285,4 @@ public class DataLayoutPageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-968416552
+// LIFERAY-REST-BUILDER-HASH:-654809914

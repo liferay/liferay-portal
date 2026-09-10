@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -53,14 +54,7 @@ public class MarginAndPaddingConfigSerDes {
 
 			sb.append("\"margin\": ");
 
-			if (marginAndPaddingConfig.getMargin() instanceof String) {
-				sb.append("\"");
-				sb.append((String)marginAndPaddingConfig.getMargin());
-				sb.append("\"");
-			}
-			else {
-				sb.append(marginAndPaddingConfig.getMargin());
-			}
+			sb.append(_toJSON(marginAndPaddingConfig.getMargin()));
 		}
 
 		if (marginAndPaddingConfig.getPadding() != null) {
@@ -70,14 +64,7 @@ public class MarginAndPaddingConfigSerDes {
 
 			sb.append("\"padding\": ");
 
-			if (marginAndPaddingConfig.getPadding() instanceof String) {
-				sb.append("\"");
-				sb.append((String)marginAndPaddingConfig.getPadding());
-				sb.append("\"");
-			}
-			else {
-				sb.append(marginAndPaddingConfig.getPadding());
-			}
+			sb.append(_toJSON(marginAndPaddingConfig.getPadding()));
 		}
 
 		sb.append("}");
@@ -211,6 +198,12 @@ public class MarginAndPaddingConfigSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -243,4 +236,4 @@ public class MarginAndPaddingConfigSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1333571826
+// LIFERAY-REST-BUILDER-HASH:661657678

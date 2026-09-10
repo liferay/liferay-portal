@@ -10,6 +10,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -65,14 +66,7 @@ public class RangeSerDes {
 
 			sb.append("\"gt\": ");
 
-			if (range.getGt() instanceof String) {
-				sb.append("\"");
-				sb.append((String)range.getGt());
-				sb.append("\"");
-			}
-			else {
-				sb.append(range.getGt());
-			}
+			sb.append(_toJSON(range.getGt()));
 		}
 
 		if (range.getGte() != null) {
@@ -82,14 +76,7 @@ public class RangeSerDes {
 
 			sb.append("\"gte\": ");
 
-			if (range.getGte() instanceof String) {
-				sb.append("\"");
-				sb.append((String)range.getGte());
-				sb.append("\"");
-			}
-			else {
-				sb.append(range.getGte());
-			}
+			sb.append(_toJSON(range.getGte()));
 		}
 
 		if (range.getLt() != null) {
@@ -99,14 +86,7 @@ public class RangeSerDes {
 
 			sb.append("\"lt\": ");
 
-			if (range.getLt() instanceof String) {
-				sb.append("\"");
-				sb.append((String)range.getLt());
-				sb.append("\"");
-			}
-			else {
-				sb.append(range.getLt());
-			}
+			sb.append(_toJSON(range.getLt()));
 		}
 
 		if (range.getLte() != null) {
@@ -116,14 +96,7 @@ public class RangeSerDes {
 
 			sb.append("\"lte\": ");
 
-			if (range.getLte() instanceof String) {
-				sb.append("\"");
-				sb.append((String)range.getLte());
-				sb.append("\"");
-			}
-			else {
-				sb.append(range.getLte());
-			}
+			sb.append(_toJSON(range.getLte()));
 		}
 
 		if (range.getParameterName() != null) {
@@ -323,6 +296,12 @@ public class RangeSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -355,4 +334,4 @@ public class RangeSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1284783785
+// LIFERAY-REST-BUILDER-HASH:-110757399

@@ -16,6 +16,7 @@ import jakarta.annotation.Generated;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -598,6 +599,12 @@ public class ObjectViewSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -630,4 +637,4 @@ public class ObjectViewSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:318560225
+// LIFERAY-REST-BUILDER-HASH:312109603

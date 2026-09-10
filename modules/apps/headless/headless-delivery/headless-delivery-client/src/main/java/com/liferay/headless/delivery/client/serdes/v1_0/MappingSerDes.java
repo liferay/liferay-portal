@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -65,14 +66,7 @@ public class MappingSerDes {
 
 			sb.append("\"itemReference\": ");
 
-			if (mapping.getItemReference() instanceof String) {
-				sb.append("\"");
-				sb.append((String)mapping.getItemReference());
-				sb.append("\"");
-			}
-			else {
-				sb.append(mapping.getItemReference());
-			}
+			sb.append(_toJSON(mapping.getItemReference()));
 		}
 
 		sb.append("}");
@@ -199,6 +193,12 @@ public class MappingSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -231,4 +231,4 @@ public class MappingSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-531120267
+// LIFERAY-REST-BUILDER-HASH:-855341781

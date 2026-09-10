@@ -10,6 +10,7 @@ import com.liferay.headless.object.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -301,6 +302,12 @@ public class ParentObjectEntryFolderBriefSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -333,4 +340,4 @@ public class ParentObjectEntryFolderBriefSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-243082089
+// LIFERAY-REST-BUILDER-HASH:76908405

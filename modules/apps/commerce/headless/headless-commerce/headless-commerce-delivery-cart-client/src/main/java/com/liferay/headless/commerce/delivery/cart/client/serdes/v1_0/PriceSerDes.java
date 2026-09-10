@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.delivery.cart.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -595,6 +596,12 @@ public class PriceSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -627,4 +634,4 @@ public class PriceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-586843617
+// LIFERAY-REST-BUILDER-HASH:-856957369

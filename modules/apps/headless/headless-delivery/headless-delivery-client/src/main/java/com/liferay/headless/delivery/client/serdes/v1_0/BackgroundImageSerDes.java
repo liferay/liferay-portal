@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -53,14 +54,7 @@ public class BackgroundImageSerDes {
 
 			sb.append("\"description\": ");
 
-			if (backgroundImage.getDescription() instanceof String) {
-				sb.append("\"");
-				sb.append((String)backgroundImage.getDescription());
-				sb.append("\"");
-			}
-			else {
-				sb.append(backgroundImage.getDescription());
-			}
+			sb.append(_toJSON(backgroundImage.getDescription()));
 		}
 
 		if (backgroundImage.getTitle() != null) {
@@ -70,14 +64,7 @@ public class BackgroundImageSerDes {
 
 			sb.append("\"title\": ");
 
-			if (backgroundImage.getTitle() instanceof String) {
-				sb.append("\"");
-				sb.append((String)backgroundImage.getTitle());
-				sb.append("\"");
-			}
-			else {
-				sb.append(backgroundImage.getTitle());
-			}
+			sb.append(_toJSON(backgroundImage.getTitle()));
 		}
 
 		if (backgroundImage.getUrl() != null) {
@@ -87,14 +74,7 @@ public class BackgroundImageSerDes {
 
 			sb.append("\"url\": ");
 
-			if (backgroundImage.getUrl() instanceof String) {
-				sb.append("\"");
-				sb.append((String)backgroundImage.getUrl());
-				sb.append("\"");
-			}
-			else {
-				sb.append(backgroundImage.getUrl());
-			}
+			sb.append(_toJSON(backgroundImage.getUrl()));
 		}
 
 		sb.append("}");
@@ -240,6 +220,12 @@ public class BackgroundImageSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -272,4 +258,4 @@ public class BackgroundImageSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1718531552
+// LIFERAY-REST-BUILDER-HASH:-112105196

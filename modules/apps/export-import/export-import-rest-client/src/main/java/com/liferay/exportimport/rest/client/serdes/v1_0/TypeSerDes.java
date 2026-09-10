@@ -10,6 +10,7 @@ import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -191,6 +192,12 @@ public class TypeSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -223,4 +230,4 @@ public class TypeSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-97734971
+// LIFERAY-REST-BUILDER-HASH:-1840467865

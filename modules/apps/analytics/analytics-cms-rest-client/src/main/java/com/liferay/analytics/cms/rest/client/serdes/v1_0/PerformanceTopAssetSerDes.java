@@ -10,6 +10,7 @@ import com.liferay.analytics.cms.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -77,14 +78,7 @@ public class PerformanceTopAssetSerDes {
 
 			sb.append("\"embedded\": ");
 
-			if (performanceTopAsset.getEmbedded() instanceof String) {
-				sb.append("\"");
-				sb.append((String)performanceTopAsset.getEmbedded());
-				sb.append("\"");
-			}
-			else {
-				sb.append(performanceTopAsset.getEmbedded());
-			}
+			sb.append(_toJSON(performanceTopAsset.getEmbedded()));
 		}
 
 		if (performanceTopAsset.getEngagement() != null) {
@@ -439,6 +433,12 @@ public class PerformanceTopAssetSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -471,4 +471,4 @@ public class PerformanceTopAssetSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:289929672
+// LIFERAY-REST-BUILDER-HASH:528532048

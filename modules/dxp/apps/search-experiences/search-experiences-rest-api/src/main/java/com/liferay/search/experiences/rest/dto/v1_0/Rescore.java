@@ -296,26 +296,7 @@ public class Rescore implements Serializable {
 
 			sb.append("\"query\": ");
 
-			if (query instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)query));
-			}
-			else if (query instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)query));
-			}
-			else if (query instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])query)));
-			}
-			else if (query instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)query));
-				sb.append("\"");
-			}
-			else {
-				sb.append(query);
-			}
+			sb.append(_toJSON(query));
 		}
 
 		Object queryWeight = getQueryWeight();
@@ -327,28 +308,7 @@ public class Rescore implements Serializable {
 
 			sb.append("\"queryWeight\": ");
 
-			if (queryWeight instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)queryWeight));
-			}
-			else if (queryWeight instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)queryWeight));
-			}
-			else if (queryWeight instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])queryWeight)));
-			}
-			else if (queryWeight instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)queryWeight));
-				sb.append("\"");
-			}
-			else {
-				sb.append(queryWeight);
-			}
+			sb.append(_toJSON(queryWeight));
 		}
 
 		Object rescoreQueryWeight = getRescoreQueryWeight();
@@ -360,29 +320,7 @@ public class Rescore implements Serializable {
 
 			sb.append("\"rescoreQueryWeight\": ");
 
-			if (rescoreQueryWeight instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)rescoreQueryWeight));
-			}
-			else if (rescoreQueryWeight instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject(
-						(Map<?, ?>)rescoreQueryWeight));
-			}
-			else if (rescoreQueryWeight instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])rescoreQueryWeight)));
-			}
-			else if (rescoreQueryWeight instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)rescoreQueryWeight));
-				sb.append("\"");
-			}
-			else {
-				sb.append(rescoreQueryWeight);
-			}
+			sb.append(_toJSON(rescoreQueryWeight));
 		}
 
 		String scoreMode = getScoreMode();
@@ -410,27 +348,7 @@ public class Rescore implements Serializable {
 
 			sb.append("\"windowSize\": ");
 
-			if (windowSize instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)windowSize));
-			}
-			else if (windowSize instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)windowSize));
-			}
-			else if (windowSize instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])windowSize)));
-			}
-			else if (windowSize instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)windowSize));
-				sb.append("\"");
-			}
-			else {
-				sb.append(windowSize);
-			}
+			sb.append(_toJSON(windowSize));
 		}
 
 		sb.append("}");
@@ -459,6 +377,27 @@ public class Rescore implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -534,4 +473,4 @@ public class Rescore implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1526226383
+// LIFERAY-REST-BUILDER-HASH:-1599902148

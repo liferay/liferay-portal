@@ -139,29 +139,7 @@ public class FriendlyUrlHistory implements Serializable {
 
 			sb.append("\"friendlyUrlPath_i18n\": ");
 
-			if (friendlyUrlPath_i18n instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)friendlyUrlPath_i18n));
-			}
-			else if (friendlyUrlPath_i18n instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject(
-						(Map<?, ?>)friendlyUrlPath_i18n));
-			}
-			else if (friendlyUrlPath_i18n instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])friendlyUrlPath_i18n)));
-			}
-			else if (friendlyUrlPath_i18n instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)friendlyUrlPath_i18n));
-				sb.append("\"");
-			}
-			else {
-				sb.append(friendlyUrlPath_i18n);
-			}
+			sb.append(_toJSON(friendlyUrlPath_i18n));
 		}
 
 		sb.append("}");
@@ -190,6 +168,27 @@ public class FriendlyUrlHistory implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -265,4 +264,4 @@ public class FriendlyUrlHistory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1373801908
+// LIFERAY-REST-BUILDER-HASH:-1720733290

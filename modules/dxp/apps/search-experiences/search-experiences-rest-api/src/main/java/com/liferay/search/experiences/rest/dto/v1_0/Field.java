@@ -455,28 +455,7 @@ public class Field implements Serializable {
 
 			sb.append("\"defaultValue\": ");
 
-			if (defaultValue instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)defaultValue));
-			}
-			else if (defaultValue instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)defaultValue));
-			}
-			else if (defaultValue instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])defaultValue)));
-			}
-			else if (defaultValue instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)defaultValue));
-				sb.append("\"");
-			}
-			else {
-				sb.append(defaultValue);
-			}
+			sb.append(_toJSON(defaultValue));
 		}
 
 		FieldMapping[] fieldMappings = getFieldMappings();
@@ -637,6 +616,27 @@ public class Field implements Serializable {
 		return clazz.isArray();
 	}
 
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
+	}
+
 	private static String _toJSON(Map<String, ?> map) {
 		StringBuilder sb = new StringBuilder("{");
 
@@ -710,4 +710,4 @@ public class Field implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-610185075
+// LIFERAY-REST-BUILDER-HASH:1759532523

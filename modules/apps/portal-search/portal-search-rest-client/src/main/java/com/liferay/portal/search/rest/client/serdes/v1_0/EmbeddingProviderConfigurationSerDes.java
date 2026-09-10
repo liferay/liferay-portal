@@ -10,6 +10,7 @@ import com.liferay.portal.search.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -57,17 +58,7 @@ public class EmbeddingProviderConfigurationSerDes {
 
 			sb.append("\"attributes\": ");
 
-			if (embeddingProviderConfiguration.getAttributes() instanceof
-					String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)embeddingProviderConfiguration.getAttributes());
-				sb.append("\"");
-			}
-			else {
-				sb.append(embeddingProviderConfiguration.getAttributes());
-			}
+			sb.append(_toJSON(embeddingProviderConfiguration.getAttributes()));
 		}
 
 		if (embeddingProviderConfiguration.getEmbeddingVectorDimensions() !=
@@ -353,6 +344,12 @@ public class EmbeddingProviderConfigurationSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -385,4 +382,4 @@ public class EmbeddingProviderConfigurationSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:665985592
+// LIFERAY-REST-BUILDER-HASH:-727033780

@@ -10,6 +10,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -65,14 +66,7 @@ public class ContainsSerDes {
 
 			sb.append("\"value\": ");
 
-			if (contains.getValue() instanceof String) {
-				sb.append("\"");
-				sb.append((String)contains.getValue());
-				sb.append("\"");
-			}
-			else {
-				sb.append(contains.getValue());
-			}
+			sb.append(_toJSON(contains.getValue()));
 		}
 
 		sb.append("}");
@@ -199,6 +193,12 @@ public class ContainsSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -231,4 +231,4 @@ public class ContainsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2100605486
+// LIFERAY-REST-BUILDER-HASH:1640603422

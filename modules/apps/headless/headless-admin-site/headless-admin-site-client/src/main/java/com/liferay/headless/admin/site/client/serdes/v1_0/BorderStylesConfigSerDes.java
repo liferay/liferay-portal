@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -53,14 +54,7 @@ public class BorderStylesConfigSerDes {
 
 			sb.append("\"borderColor\": ");
 
-			if (borderStylesConfig.getBorderColor() instanceof String) {
-				sb.append("\"");
-				sb.append((String)borderStylesConfig.getBorderColor());
-				sb.append("\"");
-			}
-			else {
-				sb.append(borderStylesConfig.getBorderColor());
-			}
+			sb.append(_toJSON(borderStylesConfig.getBorderColor()));
 		}
 
 		if (borderStylesConfig.getBorderStyle() != null) {
@@ -70,14 +64,7 @@ public class BorderStylesConfigSerDes {
 
 			sb.append("\"borderStyle\": ");
 
-			if (borderStylesConfig.getBorderStyle() instanceof String) {
-				sb.append("\"");
-				sb.append((String)borderStylesConfig.getBorderStyle());
-				sb.append("\"");
-			}
-			else {
-				sb.append(borderStylesConfig.getBorderStyle());
-			}
+			sb.append(_toJSON(borderStylesConfig.getBorderStyle()));
 		}
 
 		if (borderStylesConfig.getBorderWidth() != null) {
@@ -87,14 +74,7 @@ public class BorderStylesConfigSerDes {
 
 			sb.append("\"borderWidth\": ");
 
-			if (borderStylesConfig.getBorderWidth() instanceof String) {
-				sb.append("\"");
-				sb.append((String)borderStylesConfig.getBorderWidth());
-				sb.append("\"");
-			}
-			else {
-				sb.append(borderStylesConfig.getBorderWidth());
-			}
+			sb.append(_toJSON(borderStylesConfig.getBorderWidth()));
 		}
 
 		sb.append("}");
@@ -248,6 +228,12 @@ public class BorderStylesConfigSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -280,4 +266,4 @@ public class BorderStylesConfigSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1184237089
+// LIFERAY-REST-BUILDER-HASH:-776603479

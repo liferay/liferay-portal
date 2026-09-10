@@ -13,6 +13,7 @@ import jakarta.annotation.Generated;
 
 import java.math.BigDecimal;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -411,6 +412,12 @@ public class SkuUnitOfMeasureSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -443,4 +450,4 @@ public class SkuUnitOfMeasureSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-719199125
+// LIFERAY-REST-BUILDER-HASH:1588610361

@@ -12,6 +12,7 @@ import com.liferay.batch.planner.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -596,6 +597,12 @@ public class PlanSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -628,4 +635,4 @@ public class PlanSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1145226401
+// LIFERAY-REST-BUILDER-HASH:-1833876319

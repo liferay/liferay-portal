@@ -10,6 +10,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -67,14 +68,7 @@ public class FragmentFieldSerDes {
 
 			sb.append("\"value\": ");
 
-			if (fragmentField.getValue() instanceof String) {
-				sb.append("\"");
-				sb.append((String)fragmentField.getValue());
-				sb.append("\"");
-			}
-			else {
-				sb.append(fragmentField.getValue());
-			}
+			sb.append(_toJSON(fragmentField.getValue()));
 		}
 
 		sb.append("}");
@@ -202,6 +196,12 @@ public class FragmentFieldSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -234,4 +234,4 @@ public class FragmentFieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1359910529
+// LIFERAY-REST-BUILDER-HASH:-1498016949

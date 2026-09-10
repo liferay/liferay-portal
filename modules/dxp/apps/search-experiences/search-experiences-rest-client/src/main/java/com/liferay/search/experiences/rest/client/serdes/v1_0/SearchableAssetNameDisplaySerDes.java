@@ -10,6 +10,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -240,6 +241,12 @@ public class SearchableAssetNameDisplaySerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -272,4 +279,4 @@ public class SearchableAssetNameDisplaySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:92395085
+// LIFERAY-REST-BUILDER-HASH:-1275923813

@@ -12,6 +12,7 @@ import jakarta.annotation.Generated;
 
 import java.math.BigDecimal;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -257,6 +258,12 @@ public class SettingsSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -289,4 +296,4 @@ public class SettingsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1709274876
+// LIFERAY-REST-BUILDER-HASH:396879148

@@ -10,6 +10,7 @@ import com.liferay.headless.portal.instances.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -345,6 +346,12 @@ public class PortalInstanceSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -377,4 +384,4 @@ public class PortalInstanceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1493873890
+// LIFERAY-REST-BUILDER-HASH:-604642996

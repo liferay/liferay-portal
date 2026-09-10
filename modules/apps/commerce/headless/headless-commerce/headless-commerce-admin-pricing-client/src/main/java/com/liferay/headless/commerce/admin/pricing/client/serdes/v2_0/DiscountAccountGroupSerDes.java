@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.admin.pricing.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -374,6 +375,12 @@ public class DiscountAccountGroupSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -406,4 +413,4 @@ public class DiscountAccountGroupSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1023946464
+// LIFERAY-REST-BUILDER-HASH:-1193239254

@@ -10,6 +10,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -166,6 +167,12 @@ public class ExistsSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -198,4 +205,4 @@ public class ExistsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1186855673
+// LIFERAY-REST-BUILDER-HASH:1019625513

@@ -11,6 +11,7 @@ import com.liferay.headless.delivery.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -202,6 +203,12 @@ public class FragmentSettingsAllowedSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -234,4 +241,4 @@ public class FragmentSettingsAllowedSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1675348347
+// LIFERAY-REST-BUILDER-HASH:1188557205

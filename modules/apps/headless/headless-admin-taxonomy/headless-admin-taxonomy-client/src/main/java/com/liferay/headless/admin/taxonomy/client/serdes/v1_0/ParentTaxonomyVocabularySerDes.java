@@ -10,6 +10,7 @@ import com.liferay.headless.admin.taxonomy.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -263,6 +264,12 @@ public class ParentTaxonomyVocabularySerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -295,4 +302,4 @@ public class ParentTaxonomyVocabularySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:571167574
+// LIFERAY-REST-BUILDER-HASH:818505608

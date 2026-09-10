@@ -10,6 +10,7 @@ import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -247,6 +248,12 @@ public class ChoiceSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -279,4 +286,4 @@ public class ChoiceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1549071689
+// LIFERAY-REST-BUILDER-HASH:1836669961

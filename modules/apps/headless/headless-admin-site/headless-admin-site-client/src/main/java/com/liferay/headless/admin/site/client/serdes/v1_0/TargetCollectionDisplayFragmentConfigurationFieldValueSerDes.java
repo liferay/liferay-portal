@@ -10,6 +10,7 @@ import com.liferay.headless.admin.site.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -98,22 +99,10 @@ public class TargetCollectionDisplayFragmentConfigurationFieldValueSerDes {
 
 			sb.append("\"value_i18n\": ");
 
-			if (
+			sb.append(
+				_toJSON(
 					targetCollectionDisplayFragmentConfigurationFieldValue.
-						getValue_i18n() instanceof String) {
-
-				sb.append("\"");
-				sb.append(
-					(String)
-						targetCollectionDisplayFragmentConfigurationFieldValue.
-							getValue_i18n());
-				sb.append("\"");
-			}
-			else {
-				sb.append(
-					targetCollectionDisplayFragmentConfigurationFieldValue.
-						getValue_i18n());
-			}
+						getValue_i18n()));
 		}
 
 		if (targetCollectionDisplayFragmentConfigurationFieldValue.getType() !=
@@ -309,6 +298,12 @@ public class TargetCollectionDisplayFragmentConfigurationFieldValueSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -341,4 +336,4 @@ public class TargetCollectionDisplayFragmentConfigurationFieldValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1547419961
+// LIFERAY-REST-BUILDER-HASH:-2092249845

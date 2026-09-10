@@ -10,6 +10,7 @@ import com.liferay.portal.tools.rest.builder.test.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -83,14 +84,7 @@ public class BatchTestEntitySerDes {
 
 			sb.append("\"embeddedNestedField\": ");
 
-			if (batchTestEntity.getEmbeddedNestedField() instanceof String) {
-				sb.append("\"");
-				sb.append((String)batchTestEntity.getEmbeddedNestedField());
-				sb.append("\"");
-			}
-			else {
-				sb.append(batchTestEntity.getEmbeddedNestedField());
-			}
+			sb.append(_toJSON(batchTestEntity.getEmbeddedNestedField()));
 		}
 
 		if (batchTestEntity.getExternalReferenceCode() != null) {
@@ -450,6 +444,12 @@ public class BatchTestEntitySerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -482,4 +482,4 @@ public class BatchTestEntitySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:282030032
+// LIFERAY-REST-BUILDER-HASH:-1041956236

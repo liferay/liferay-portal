@@ -10,6 +10,7 @@ import com.liferay.segments.asah.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -200,6 +201,12 @@ public class ExperimentVariantSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -232,4 +239,4 @@ public class ExperimentVariantSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1663350836
+// LIFERAY-REST-BUILDER-HASH:1878141856

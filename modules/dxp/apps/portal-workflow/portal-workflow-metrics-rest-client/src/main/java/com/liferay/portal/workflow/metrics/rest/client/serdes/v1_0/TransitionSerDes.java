@@ -10,6 +10,7 @@ import com.liferay.portal.workflow.metrics.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -196,6 +197,12 @@ public class TransitionSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -228,4 +235,4 @@ public class TransitionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-138708094
+// LIFERAY-REST-BUILDER-HASH:1540592878

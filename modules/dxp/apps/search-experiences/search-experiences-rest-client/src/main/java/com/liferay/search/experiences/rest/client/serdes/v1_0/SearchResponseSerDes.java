@@ -10,6 +10,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -93,14 +94,7 @@ public class SearchResponseSerDes {
 
 			sb.append("\"request\": ");
 
-			if (searchResponse.getRequest() instanceof String) {
-				sb.append("\"");
-				sb.append((String)searchResponse.getRequest());
-				sb.append("\"");
-			}
-			else {
-				sb.append(searchResponse.getRequest());
-			}
+			sb.append(_toJSON(searchResponse.getRequest()));
 		}
 
 		if (searchResponse.getRequestString() != null) {
@@ -124,14 +118,7 @@ public class SearchResponseSerDes {
 
 			sb.append("\"response\": ");
 
-			if (searchResponse.getResponse() instanceof String) {
-				sb.append("\"");
-				sb.append((String)searchResponse.getResponse());
-				sb.append("\"");
-			}
-			else {
-				sb.append(searchResponse.getResponse());
-			}
+			sb.append(_toJSON(searchResponse.getResponse()));
 		}
 
 		if (searchResponse.getResponseString() != null) {
@@ -412,6 +399,12 @@ public class SearchResponseSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -444,4 +437,4 @@ public class SearchResponseSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:363075481
+// LIFERAY-REST-BUILDER-HASH:-1831708129

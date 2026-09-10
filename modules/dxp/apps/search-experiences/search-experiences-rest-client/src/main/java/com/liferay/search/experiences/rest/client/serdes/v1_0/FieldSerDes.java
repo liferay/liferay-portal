@@ -11,6 +11,7 @@ import com.liferay.search.experiences.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -52,14 +53,7 @@ public class FieldSerDes {
 
 			sb.append("\"defaultValue\": ");
 
-			if (field.getDefaultValue() instanceof String) {
-				sb.append("\"");
-				sb.append((String)field.getDefaultValue());
-				sb.append("\"");
-			}
-			else {
-				sb.append(field.getDefaultValue());
-			}
+			sb.append(_toJSON(field.getDefaultValue()));
 		}
 
 		if (field.getFieldMappings() != null) {
@@ -419,6 +413,12 @@ public class FieldSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -451,4 +451,4 @@ public class FieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-236727823
+// LIFERAY-REST-BUILDER-HASH:1910871115

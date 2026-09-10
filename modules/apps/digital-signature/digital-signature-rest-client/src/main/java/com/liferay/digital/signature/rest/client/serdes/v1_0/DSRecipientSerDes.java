@@ -10,6 +10,7 @@ import com.liferay.digital.signature.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -123,14 +124,7 @@ public class DSRecipientSerDes {
 
 			sb.append("\"tabs\": ");
 
-			if (dsRecipient.getTabs() instanceof String) {
-				sb.append("\"");
-				sb.append((String)dsRecipient.getTabs());
-				sb.append("\"");
-			}
-			else {
-				sb.append(dsRecipient.getTabs());
-			}
+			sb.append(_toJSON(dsRecipient.getTabs()));
 		}
 
 		sb.append("}");
@@ -321,6 +315,12 @@ public class DSRecipientSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -353,4 +353,4 @@ public class DSRecipientSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:418314749
+// LIFERAY-REST-BUILDER-HASH:1876996395

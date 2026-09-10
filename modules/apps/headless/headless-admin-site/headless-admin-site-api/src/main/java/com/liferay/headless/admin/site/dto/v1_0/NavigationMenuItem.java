@@ -996,29 +996,7 @@ public class NavigationMenuItem implements Serializable {
 
 			sb.append("\"navigationMenuItemSettings\": ");
 
-			if (navigationMenuItemSettings instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)navigationMenuItemSettings));
-			}
-			else if (navigationMenuItemSettings instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject(
-						(Map<?, ?>)navigationMenuItemSettings));
-			}
-			else if (navigationMenuItemSettings instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])navigationMenuItemSettings)));
-			}
-			else if (navigationMenuItemSettings instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)navigationMenuItemSettings));
-				sb.append("\"");
-			}
-			else {
-				sb.append(navigationMenuItemSettings);
-			}
+			sb.append(_toJSON(navigationMenuItemSettings));
 		}
 
 		NavigationMenuItem[] navigationMenuItems = getNavigationMenuItems();
@@ -1111,6 +1089,27 @@ public class NavigationMenuItem implements Serializable {
 		return clazz.isArray();
 	}
 
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
+	}
+
 	private static String _toJSON(Map<String, ?> map) {
 		StringBuilder sb = new StringBuilder("{");
 
@@ -1184,4 +1183,4 @@ public class NavigationMenuItem implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:424613016
+// LIFERAY-REST-BUILDER-HASH:503707980

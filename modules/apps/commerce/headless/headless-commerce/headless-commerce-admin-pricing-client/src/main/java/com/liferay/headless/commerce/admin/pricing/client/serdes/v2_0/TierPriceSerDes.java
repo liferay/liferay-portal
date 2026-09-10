@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -699,6 +700,12 @@ public class TierPriceSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -731,4 +738,4 @@ public class TierPriceSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1292042425
+// LIFERAY-REST-BUILDER-HASH:1042755931

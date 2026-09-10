@@ -14,6 +14,7 @@ import com.liferay.headless.admin.user.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -564,6 +565,12 @@ public class UserAccountContactInformationSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -596,4 +603,4 @@ public class UserAccountContactInformationSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-449951601
+// LIFERAY-REST-BUILDER-HASH:64190563

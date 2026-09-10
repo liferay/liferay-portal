@@ -666,26 +666,7 @@ public class Settings implements Serializable {
 
 			sb.append("\"favIcon\": ");
 
-			if (favIcon instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)favIcon));
-			}
-			else if (favIcon instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)favIcon));
-			}
-			else if (favIcon instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])favIcon)));
-			}
-			else if (favIcon instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)favIcon));
-				sb.append("\"");
-			}
-			else {
-				sb.append(favIcon);
-			}
+			sb.append(_toJSON(favIcon));
 		}
 
 		ClientExtension[] globalCSSClientExtensions =
@@ -811,28 +792,7 @@ public class Settings implements Serializable {
 
 			sb.append("\"themeSettings\": ");
 
-			if (themeSettings instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						(Collection<?>)themeSettings));
-			}
-			else if (themeSettings instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)themeSettings));
-			}
-			else if (themeSettings instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])themeSettings)));
-			}
-			else if (themeSettings instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)themeSettings));
-				sb.append("\"");
-			}
-			else {
-				sb.append(themeSettings);
-			}
+			sb.append(_toJSON(themeSettings));
 		}
 
 		ClientExtension themeSpritemapClientExtension =
@@ -874,6 +834,27 @@ public class Settings implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -949,4 +930,4 @@ public class Settings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-22701585
+// LIFERAY-REST-BUILDER-HASH:-1030858582

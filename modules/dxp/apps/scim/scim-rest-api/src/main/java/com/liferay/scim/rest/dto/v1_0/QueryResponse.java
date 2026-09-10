@@ -268,27 +268,7 @@ public class QueryResponse implements Serializable {
 
 			sb.append("\"Resources\": ");
 
-			if (Resources instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)Resources));
-			}
-			else if (Resources instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)Resources));
-			}
-			else if (Resources instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])Resources)));
-			}
-			else if (Resources instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)Resources));
-				sb.append("\"");
-			}
-			else {
-				sb.append(Resources);
-			}
+			sb.append(_toJSON(Resources));
 		}
 
 		Integer itemsPerPage = getItemsPerPage();
@@ -353,6 +333,27 @@ public class QueryResponse implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -428,4 +429,4 @@ public class QueryResponse implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1626288060
+// LIFERAY-REST-BUILDER-HASH:1103990736

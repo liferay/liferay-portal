@@ -10,6 +10,7 @@ import com.liferay.analytics.settings.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -221,6 +222,12 @@ public class ContactUserGroupSerDes {
 			return "null";
 		}
 
+		if (value instanceof Collection) {
+			Collection<?> collection = (Collection<?>)value;
+
+			return _toJSON(collection.toArray());
+		}
+
 		if (value instanceof Map) {
 			return _toJSON((Map)value);
 		}
@@ -253,4 +260,4 @@ public class ContactUserGroupSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-915163214
+// LIFERAY-REST-BUILDER-HASH:-792005946

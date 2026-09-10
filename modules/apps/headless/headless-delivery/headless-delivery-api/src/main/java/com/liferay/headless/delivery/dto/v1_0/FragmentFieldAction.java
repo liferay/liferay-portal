@@ -276,26 +276,7 @@ public class FragmentFieldAction implements Serializable {
 
 			sb.append("\"action\": ");
 
-			if (action instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)action));
-			}
-			else if (action instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)action));
-			}
-			else if (action instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])action)));
-			}
-			else if (action instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)action));
-				sb.append("\"");
-			}
-			else {
-				sb.append(action);
-			}
+			sb.append(_toJSON(action));
 		}
 
 		ActionExecutionResult onError = getOnError();
@@ -331,25 +312,7 @@ public class FragmentFieldAction implements Serializable {
 
 			sb.append("\"text\": ");
 
-			if (text instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)text));
-			}
-			else if (text instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)text));
-			}
-			else if (text instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])text)));
-			}
-			else if (text instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)text));
-				sb.append("\"");
-			}
-			else {
-				sb.append(text);
-			}
+			sb.append(_toJSON(text));
 		}
 
 		sb.append("}");
@@ -378,6 +341,27 @@ public class FragmentFieldAction implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -453,4 +437,4 @@ public class FragmentFieldAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:518743182
+// LIFERAY-REST-BUILDER-HASH:1292059517

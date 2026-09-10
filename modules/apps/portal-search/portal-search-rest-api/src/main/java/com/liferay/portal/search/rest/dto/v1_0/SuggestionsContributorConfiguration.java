@@ -255,27 +255,7 @@ public class SuggestionsContributorConfiguration implements Serializable {
 
 			sb.append("\"attributes\": ");
 
-			if (attributes instanceof Collection) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray((Collection<?>)attributes));
-			}
-			else if (attributes instanceof Map) {
-				sb.append(
-					JSONFactoryUtil.createJSONObject((Map<?, ?>)attributes));
-			}
-			else if (attributes instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])attributes)));
-			}
-			else if (attributes instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)attributes));
-				sb.append("\"");
-			}
-			else {
-				sb.append(attributes);
-			}
+			sb.append(_toJSON(attributes));
 		}
 
 		String contributorName = getContributorName();
@@ -348,6 +328,27 @@ public class SuggestionsContributorConfiguration implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -423,4 +424,4 @@ public class SuggestionsContributorConfiguration implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1685085447
+// LIFERAY-REST-BUILDER-HASH:-1867972009

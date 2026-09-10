@@ -345,25 +345,7 @@ public class Range implements Serializable {
 
 			sb.append("\"gt\": ");
 
-			if (gt instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)gt));
-			}
-			else if (gt instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)gt));
-			}
-			else if (gt instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])gt)));
-			}
-			else if (gt instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)gt));
-				sb.append("\"");
-			}
-			else {
-				sb.append(gt);
-			}
+			sb.append(_toJSON(gt));
 		}
 
 		Object gte = getGte();
@@ -375,25 +357,7 @@ public class Range implements Serializable {
 
 			sb.append("\"gte\": ");
 
-			if (gte instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)gte));
-			}
-			else if (gte instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)gte));
-			}
-			else if (gte instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])gte)));
-			}
-			else if (gte instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)gte));
-				sb.append("\"");
-			}
-			else {
-				sb.append(gte);
-			}
+			sb.append(_toJSON(gte));
 		}
 
 		Object lt = getLt();
@@ -405,25 +369,7 @@ public class Range implements Serializable {
 
 			sb.append("\"lt\": ");
 
-			if (lt instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)lt));
-			}
-			else if (lt instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)lt));
-			}
-			else if (lt instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])lt)));
-			}
-			else if (lt instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)lt));
-				sb.append("\"");
-			}
-			else {
-				sb.append(lt);
-			}
+			sb.append(_toJSON(lt));
 		}
 
 		Object lte = getLte();
@@ -435,25 +381,7 @@ public class Range implements Serializable {
 
 			sb.append("\"lte\": ");
 
-			if (lte instanceof Collection) {
-				sb.append(JSONFactoryUtil.createJSONArray((Collection<?>)lte));
-			}
-			else if (lte instanceof Map) {
-				sb.append(JSONFactoryUtil.createJSONObject((Map<?, ?>)lte));
-			}
-			else if (lte instanceof Object[]) {
-				sb.append(
-					JSONFactoryUtil.createJSONArray(
-						Arrays.asList((Object[])lte)));
-			}
-			else if (lte instanceof String) {
-				sb.append("\"");
-				sb.append(_escape((String)lte));
-				sb.append("\"");
-			}
-			else {
-				sb.append(lte);
-			}
+			sb.append(_toJSON(lte));
 		}
 
 		String parameterName = getParameterName();
@@ -498,6 +426,27 @@ public class Range implements Serializable {
 		Class<?> clazz = value.getClass();
 
 		return clazz.isArray();
+	}
+
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
 	}
 
 	private static String _toJSON(Map<String, ?> map) {
@@ -573,4 +522,4 @@ public class Range implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:982867013
+// LIFERAY-REST-BUILDER-HASH:768203044
