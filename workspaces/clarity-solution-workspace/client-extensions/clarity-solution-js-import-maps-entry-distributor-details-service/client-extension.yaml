@@ -4,13 +4,5 @@ assemble:
 clarity-solution-js-import-maps-entry-distributor-details-service:
     bareSpecifier: clarity-solution-js-import-maps-entry-distributor-details-service
     name: Clarity Solution JS Import Maps Entry Distributor Details Service
-    oAuthApplicationHeadlessServer: clarity-solution-js-import-maps-entry-distributor-details-service-oahs
     type: jsImportMapsEntry
     url: /index.js
-clarity-solution-js-import-maps-entry-distributor-details-service-oahs:
-    .serviceAddress: localhost:8080
-    .serviceScheme: http
-    name: Clarity Solution JS Import Maps Entry Distributor Details Service OAuth Application Headless Server
-    scopes:
-        -   C_DistributorLocation.everything
-    type: oAuthApplicationHeadlessServer
