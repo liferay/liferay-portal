@@ -6,6 +6,9 @@
 package com.liferay.cookies.internal.batch.engine.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.batch.engine.action.ImportTaskPostAction;
+import com.liferay.batch.engine.model.BatchEngineImportTask;
+import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -15,6 +18,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -56,6 +60,34 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 		for (String roleName : _ROLE_NAMES) {
 			Role role = _roleLocalService.getRole(companyId, roleName);
 
+			_resourcePermissionLocalService.removeResourcePermission(
+				companyId, objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				role.getRoleId(), ActionKeys.VIEW);
+			_resourcePermissionLocalService.removeResourcePermission(
+				companyId, objectDefinition.getPortletId(),
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				role.getRoleId(), ActionKeys.VIEW);
+		}
+
+		BatchEngineImportTask batchEngineImportTask =
+			_batchEngineImportTaskLocalService.createBatchEngineImportTask(
+				RandomTestUtil.randomLong());
+
+		batchEngineImportTask.setCompanyId(companyId);
+
+		com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition
+			restObjectDefinition =
+				new com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition();
+
+		restObjectDefinition.setExternalReferenceCode(externalReferenceCode);
+
+		_importTaskPostAction.run(
+			batchEngineImportTask, null, null, null, restObjectDefinition);
+
+		for (String roleName : _ROLE_NAMES) {
+			Role role = _roleLocalService.getRole(companyId, roleName);
+
 			Assert.assertTrue(
 				_resourcePermissionLocalService.hasResourcePermission(
 					companyId, objectDefinition.getClassName(),
@@ -77,6 +109,15 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 	private static final String[] _ROLE_NAMES = {
 		RoleConstants.GUEST, RoleConstants.USER
 	};
+
+	@Inject
+	private BatchEngineImportTaskLocalService
+		_batchEngineImportTaskLocalService;
+
+	@Inject(
+		filter = "component.name=com.liferay.cookies.internal.batch.engine.action.CookieEntryObjectDefinitionImportTaskPostAction"
+	)
+	private ImportTaskPostAction _importTaskPostAction;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
