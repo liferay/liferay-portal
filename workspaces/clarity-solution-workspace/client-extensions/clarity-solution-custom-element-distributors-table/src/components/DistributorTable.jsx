@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ClayTable from '@clayui/table';
 import ClayButton from '@clayui/button';
-import { getDistributors } from 'clarity-solution-js-import-maps-entry';
+import { getDistributors } from 'clarity-solution-js-import-maps-entry-distributor-details-service';
 import gold from '../resources/gold.png';
 import bronze from '../resources/bronze.png';
 import silver from '../resources/silver.png';

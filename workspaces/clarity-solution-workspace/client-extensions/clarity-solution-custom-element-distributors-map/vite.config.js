@@ -11,7 +11,7 @@ export default defineConfig({
 		outDir: 'build/vite',
 		rollupOptions: {
 			external: [
-				'clarity-solution-js-import-maps-entry',
+				'clarity-solution-js-import-maps-entry-distributor-details-service',
 				'react',
 				'react-dom',
 			],
