@@ -86,6 +86,10 @@ public interface CurrencyResource {
 	public Response postCurrencyBatch(String callbackURL, Object object)
 		throws Exception;
 
+	public Currency putCurrencyByExternalReferenceCode(
+			String externalReferenceCode, Currency currency)
+		throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}
@@ -182,4 +186,4 @@ public interface CurrencyResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1463154472
+// LIFERAY-REST-BUILDER-HASH:329621982

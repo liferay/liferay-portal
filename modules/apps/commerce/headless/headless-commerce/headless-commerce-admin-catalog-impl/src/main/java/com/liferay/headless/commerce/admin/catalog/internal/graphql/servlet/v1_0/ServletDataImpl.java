@@ -485,6 +485,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							CurrencyResourceImpl.class, "postCurrencyBatch"));
 					put(
+						"mutation#updateCurrencyByExternalReferenceCode",
+						new ObjectValuePair<>(
+							CurrencyResourceImpl.class,
+							"putCurrencyByExternalReferenceCode"));
+					put(
 						"mutation#patchDiagram",
 						new ObjectValuePair<>(
 							DiagramResourceImpl.class, "patchDiagram"));
@@ -2335,4 +2340,4 @@ public class ServletDataImpl implements ServletData {
 		_skuVirtualSettingsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1349823697
+// LIFERAY-REST-BUILDER-HASH:953118730

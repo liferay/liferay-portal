@@ -1435,6 +1435,59 @@ public abstract class BaseCurrencyResourceTestCase {
 	}
 
 	@Test
+	public void testPutCurrencyByExternalReferenceCode() throws Exception {
+		Currency postCurrency =
+			testPutCurrencyByExternalReferenceCode_addCurrency();
+
+		Currency randomCurrency = randomCurrency();
+
+		Currency putCurrency =
+			currencyResource.putCurrencyByExternalReferenceCode(
+				postCurrency.getExternalReferenceCode(), randomCurrency);
+
+		assertEquals(randomCurrency, putCurrency);
+		assertValid(putCurrency);
+
+		Currency getCurrency =
+			currencyResource.getCurrencyByExternalReferenceCode(
+				putCurrency.getExternalReferenceCode());
+
+		assertEquals(randomCurrency, getCurrency);
+		assertValid(getCurrency);
+
+		Currency newCurrency =
+			testPutCurrencyByExternalReferenceCode_createCurrency();
+
+		putCurrency = currencyResource.putCurrencyByExternalReferenceCode(
+			newCurrency.getExternalReferenceCode(), newCurrency);
+
+		assertEquals(newCurrency, putCurrency);
+		assertValid(putCurrency);
+
+		getCurrency = currencyResource.getCurrencyByExternalReferenceCode(
+			putCurrency.getExternalReferenceCode());
+
+		assertEquals(newCurrency, getCurrency);
+
+		Assert.assertEquals(
+			newCurrency.getExternalReferenceCode(),
+			putCurrency.getExternalReferenceCode());
+	}
+
+	protected Currency testPutCurrencyByExternalReferenceCode_addCurrency()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Currency testPutCurrencyByExternalReferenceCode_createCurrency()
+		throws Exception {
+
+		return randomCurrency();
+	}
+
+	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		Currency currency1 = testBatchEngineDeleteImportTask_addCurrency();
 
@@ -2696,4 +2749,4 @@ public abstract class BaseCurrencyResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2014737205
+// LIFERAY-REST-BUILDER-HASH:-1330327905

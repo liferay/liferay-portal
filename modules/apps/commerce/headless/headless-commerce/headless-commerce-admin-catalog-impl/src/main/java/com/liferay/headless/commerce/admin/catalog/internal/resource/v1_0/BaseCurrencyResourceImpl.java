@@ -12,6 +12,7 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -380,7 +381,64 @@ public abstract class BaseCurrencyResourceImpl
 			Currency currency)
 		throws Exception {
 
-		return new Currency();
+		Currency existingCurrency = getCurrencyByExternalReferenceCode(
+			externalReferenceCode);
+
+		if (currency.getActive() != null) {
+			existingCurrency.setActive(currency.getActive());
+		}
+
+		if (currency.getCode() != null) {
+			existingCurrency.setCode(currency.getCode());
+		}
+
+		if (currency.getExternalReferenceCode() != null) {
+			existingCurrency.setExternalReferenceCode(
+				currency.getExternalReferenceCode());
+		}
+
+		if (currency.getFormatPattern() != null) {
+			existingCurrency.setFormatPattern(currency.getFormatPattern());
+		}
+
+		if (currency.getMaxFractionDigits() != null) {
+			existingCurrency.setMaxFractionDigits(
+				currency.getMaxFractionDigits());
+		}
+
+		if (currency.getMinFractionDigits() != null) {
+			existingCurrency.setMinFractionDigits(
+				currency.getMinFractionDigits());
+		}
+
+		if (currency.getName() != null) {
+			existingCurrency.setName(currency.getName());
+		}
+
+		if (currency.getPrimary() != null) {
+			existingCurrency.setPrimary(currency.getPrimary());
+		}
+
+		if (currency.getPriority() != null) {
+			existingCurrency.setPriority(currency.getPriority());
+		}
+
+		if (currency.getRate() != null) {
+			existingCurrency.setRate(currency.getRate());
+		}
+
+		if (currency.getRoundingMode() != null) {
+			existingCurrency.setRoundingMode(currency.getRoundingMode());
+		}
+
+		if (currency.getSymbol() != null) {
+			existingCurrency.setSymbol(currency.getSymbol());
+		}
+
+		preparePatch(currency, existingCurrency);
+
+		return putCurrencyByExternalReferenceCode(
+			externalReferenceCode, existingCurrency);
 	}
 
 	/**
@@ -529,6 +587,44 @@ public abstract class BaseCurrencyResourceImpl
 		).build();
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "code": ___, "externalReferenceCode": ___, "formatPattern": ___, "id": ___, "maxFractionDigits": ___, "minFractionDigits": ___, "name": ___, "primary": ___, "priority": ___, "rate": ___, "roundingMode": ___, "symbol": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates or replaces the commerce currency identified by external reference code. Creates a new currency when the external reference code is unknown, otherwise replaces the existing one, so every omitted field falls back to its default rather than to the stored value. Side effects -- Reindexes the currency."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode", required = true
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Currency")}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
+		"/currencies/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
+	@Override
+	public Currency putCurrencyByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode,
+			Currency currency)
+		throws Exception {
+
+		return new Currency();
+	}
+
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
@@ -544,6 +640,42 @@ public abstract class BaseCurrencyResourceImpl
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
 			currencyUnsafeFunction = currency -> postCurrency(currency);
+		}
+
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				currencyUnsafeFunction = currency -> {
+					Currency getCurrency = null;
+					Currency persistedCurrency = null;
+
+					try {
+						getCurrency = getCurrencyByExternalReferenceCode(
+							currency.getExternalReferenceCode());
+
+						persistedCurrency = patchCurrency(
+							getCurrency.getId(), currency);
+					}
+					catch (NoSuchModelException noSuchModelException) {
+						persistedCurrency = postCurrency(currency);
+					}
+
+					return persistedCurrency;
+				};
+			}
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				currencyUnsafeFunction = currency -> {
+					Currency persistedCurrency = null;
+
+					persistedCurrency = putCurrencyByExternalReferenceCode(
+						currency.getExternalReferenceCode(), currency);
+
+					return persistedCurrency;
+				};
+			}
 		}
 
 		if (currencyUnsafeFunction == null) {
@@ -617,7 +749,7 @@ public abstract class BaseCurrencyResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray("INSERT", "UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -938,6 +1070,9 @@ public abstract class BaseCurrencyResourceImpl
 
 		return addAction(
 			actionName, siteId, methodName, null, permissionName, siteId);
+	}
+
+	protected void preparePatch(Currency currency, Currency existingCurrency) {
 	}
 
 	protected <T, R, E extends Throwable> List<R> transform(
@@ -1285,4 +1420,4 @@ public abstract class BaseCurrencyResourceImpl
 		LogFactoryUtil.getLog(BaseCurrencyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:257759221
+// LIFERAY-REST-BUILDER-HASH:1737179950

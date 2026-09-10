@@ -962,6 +962,22 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Creates or replaces the commerce currency identified by external reference code. Creates a new currency when the external reference code is unknown, otherwise replaces the existing one, so every omitted field falls back to its default rather than to the stored value. Side effects -- Reindexes the currency."
+	)
+	public Currency updateCurrencyByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("currency") Currency currency)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_currencyResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			currencyResource ->
+				currencyResource.putCurrencyByExternalReferenceCode(
+					externalReferenceCode, currency));
+	}
+
+	@GraphQLField(
 		description = "Partially updates the diagram setting identified by diagramId. Returns 404 when `diagramId` is not found. Side effects -- Updates the diagram's image attachment and may replace the linked DL file entry."
 	)
 	public Diagram patchDiagram(
@@ -4849,4 +4865,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:745278027
+// LIFERAY-REST-BUILDER-HASH:-1001693787
