@@ -13,7 +13,7 @@ tests:
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: data["amp-datasource.yaml"]
-                    pattern: 'type: "prometheus"'
+                    pattern: "type: \"prometheus\""
                 template: templates/aws/amp-datasource.yaml
         it: Keeps the core Prometheus data source on AWS
         set:
@@ -29,7 +29,7 @@ tests:
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: data["gmp-datasource.yaml"]
-                    pattern: 'type: "prometheus"'
+                    pattern: "type: \"prometheus\""
                 template: templates/gcp/gmp-datasource.yaml
         it: Keeps the core Prometheus data source on GCP
         set:
@@ -44,27 +44,27 @@ tests:
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: metadata.name
-                    pattern: '-amw-datasource$'
+                    pattern: -amw-datasource$
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: data["amw-datasource.yaml"]
-                    pattern: 'azureCredentials:\s+authType: workloadidentity'
+                    pattern: "azureCredentials:\\s+authType: workloadidentity"
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: data["amw-datasource.yaml"]
-                    pattern: 'type: "prometheus"'
+                    pattern: "type: \"prometheus\""
                 template: templates/azure/amw-datasource.yaml
             -   matchRegex:
                     path: data["amw-datasource.yaml"]
-                    pattern: 'url: "https://liferay-test-abcd.eastus.prometheus.monitor.azure.com"'
+                    pattern: "url: \"https://liferay-test-abcd.eastus.prometheus.monitor.azure.com\""
                 template: templates/azure/amw-datasource.yaml
             -   notMatchRegex:
                     path: data["amw-datasource.yaml"]
-                    pattern: 'clientId:'
+                    pattern: "clientId:"
                 template: templates/azure/amw-datasource.yaml
             -   notMatchRegex:
                     path: data["amw-datasource.yaml"]
-                    pattern: 'tenantId:'
+                    pattern: "tenantId:"
                 template: templates/azure/amw-datasource.yaml
         it: Queries the Azure Monitor workspace with Entra workload identity
         set:
