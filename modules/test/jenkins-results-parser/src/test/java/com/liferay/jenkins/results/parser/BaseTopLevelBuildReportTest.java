@@ -10,7 +10,6 @@ import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
 import java.net.URL;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -29,7 +28,10 @@ public class BaseTopLevelBuildReportTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Before
-	public void setUpTestrayCloudBucket() {
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
 		ReflectionTestUtil.setFieldValue(
 			TestrayCloudBucket.class, "_hasGoogleApplicationCredentials", null);
 	}
@@ -117,8 +119,6 @@ public class BaseTopLevelBuildReportTest
 
 	@Test
 	public void testGetBuildReportTestrayCloudObject() {
-		mockEnvironment(Collections.<String, String>emptyMap());
-
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport();
 
