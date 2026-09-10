@@ -17,12 +17,15 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.io.Serializable;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -66,11 +69,6 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 		_assertRestrictFieldsFailure(
 			"actions.get.method,actions", "actions.get.method");
 
-		// Fields outside of the restricted subtree
-
-		_addMCPServerProfileToolObjectEntry(
-			"actions,actionsCount,creator.id,description");
-
 		// Blank names and surrounding whitespace never reach Vulcan intact
 
 		_assertBlankRestrictFieldFailure("actions,,description", "");
@@ -100,10 +98,38 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 			() -> _addMCPServerProfileToolObjectEntry(
 				"actions,description,actions"));
 
-		// Relationship alias keys are valid names
+		// Fields outside of the restricted subtree
 
 		_addMCPServerProfileToolObjectEntry(
-			"r_universityStudents_c_university.budget,name_i18n");
+			"actions,actionsCount,creator.id,description");
+
+		// The same tool twice in one profile, whatever it restricts
+
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			StringBundler.concat(
+				"jakarta.validation.ValidationException: Unable to add tool ",
+				"\"getMCPServerProfilesPage\" from tool set ",
+				"\"mcp-server-profiles\" to MCP server profile \"",
+				_mcpServerProfileExternalReferenceCode, "\" more than once"),
+			() -> _addMCPServerProfileToolObjectEntry("description"));
+
+		// The same tool in another profile
+
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
+			mcpServerProfileObjectEntry.getExternalReferenceCode(), null,
+			"getMCPServerProfilesPage", "mcp-server-profiles");
+
+		// Relationship alias keys are valid names
+
+		MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
+			_mcpServerProfileExternalReferenceCode,
+			"r_universityStudents_c_university.budget,name_i18n",
+			"postMCPServerProfile", "mcp-server-profiles");
 	}
 
 	@Test
@@ -128,6 +154,33 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 				_objectEntryLocalService.getValues(
 					mcpServerProfileToolObjectEntry.getObjectEntryId()),
 				"restrictFields"));
+
+		// Renaming a tool into one the profile already has
+
+		ObjectEntry postMCPServerProfileToolObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
+				_mcpServerProfileExternalReferenceCode, null,
+				"postMCPServerProfile", "mcp-server-profiles");
+
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			StringBundler.concat(
+				"jakarta.validation.ValidationException: Unable to add tool ",
+				"\"getMCPServerProfilesPage\" from tool set ",
+				"\"mcp-server-profiles\" to MCP server profile \"",
+				_mcpServerProfileExternalReferenceCode, "\" more than once"),
+			() -> MCPServerTestUtil.updateMCPServerProfileToolObjectEntry(
+				postMCPServerProfileToolObjectEntry,
+				HashMapBuilder.<String, Serializable>put(
+					"toolName", "getMCPServerProfilesPage"
+				).build()));
+
+		Assert.assertEquals(
+			"postMCPServerProfile",
+			MapUtil.getString(
+				_objectEntryLocalService.getValues(
+					postMCPServerProfileToolObjectEntry.getObjectEntryId()),
+				"toolName"));
 	}
 
 	@Test

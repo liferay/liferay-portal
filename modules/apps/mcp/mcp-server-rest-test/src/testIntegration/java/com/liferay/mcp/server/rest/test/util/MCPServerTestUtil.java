@@ -389,8 +389,9 @@ public class MCPServerTestUtil {
 			});
 	}
 
-	public static void updateMCPServerProfileToolRestrictFields(
-			ObjectEntry mcpServerProfileToolObjectEntry, String restrictFields)
+	public static void updateMCPServerProfileToolObjectEntry(
+			ObjectEntry mcpServerProfileToolObjectEntry,
+			Map<String, Serializable> values)
 		throws Exception {
 
 		ObjectEntryLocalServiceUtil.updateObjectEntry(
@@ -398,10 +399,21 @@ public class MCPServerTestUtil {
 			mcpServerProfileToolObjectEntry.getObjectEntryId(), 0,
 			HashMapBuilder.<String, Serializable>putAll(
 				mcpServerProfileToolObjectEntry.getValues()
-			).put(
-				"restrictFields", restrictFields
+			).putAll(
+				values
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
+	}
+
+	public static void updateMCPServerProfileToolRestrictFields(
+			ObjectEntry mcpServerProfileToolObjectEntry, String restrictFields)
+		throws Exception {
+
+		updateMCPServerProfileToolObjectEntry(
+			mcpServerProfileToolObjectEntry,
+			HashMapBuilder.<String, Serializable>put(
+				"restrictFields", restrictFields
+			).build());
 	}
 
 	private static ObjectEntry _fetchObjectEntry(
