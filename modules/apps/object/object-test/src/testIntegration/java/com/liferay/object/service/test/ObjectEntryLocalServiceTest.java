@@ -97,6 +97,7 @@ import com.liferay.object.field.builder.PrecisionDecimalObjectFieldBuilder;
 import com.liferay.object.field.builder.RichTextObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
+import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
@@ -6726,6 +6727,55 @@ public class ObjectEntryLocalServiceTest {
 			objectEntries.get(1),
 			loadedObjectEntry.getRelatedObjectEntry(
 				relationshipObjectField.getName()));
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			objectRelationship);
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
+	public void testLoadValuesWithRelatedSystemObjectEntries()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.emptyList());
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService,
+				_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+					TestPropsValues.getCompanyId(), User.class.getName()),
+				objectDefinition);
+
+		ObjectField relationshipObjectField =
+			_objectFieldLocalService.fetchObjectField(
+				objectRelationship.getObjectFieldId2());
+
+		Map<String, Serializable> values =
+			HashMapBuilder.<String, Serializable>put(
+				relationshipObjectField.getName(), TestPropsValues.getUserId()
+			).build();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(), values);
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			0, objectDefinition.getObjectDefinitionId(), values);
+
+		User user = TestPropsValues.getUser();
+
+		Map<String, Serializable> objectEntryValues =
+			_objectEntryLocalService.getValues(objectEntry1);
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			objectEntryValues.get(
+				ObjectFieldSettingUtil.getValue(
+					ObjectFieldSettingConstants.
+						NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
+					relationshipObjectField)));
+
+		_assertLoadValues(objectDefinition, objectEntry1, objectEntry2);
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);
