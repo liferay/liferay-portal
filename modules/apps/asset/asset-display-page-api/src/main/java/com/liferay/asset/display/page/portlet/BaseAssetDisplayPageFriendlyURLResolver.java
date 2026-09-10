@@ -209,20 +209,23 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			groupId, friendlyURL, layoutDisplayPageObjectProvider,
 			layoutDisplayPageProvider);
 
-		String originalFriendlyURL = _getOriginalFriendlyURL(friendlyURL);
-
-		String localizedFriendlyURL = originalFriendlyURL;
+		if (!useOriginalFriendlyURL()) {
+			return new LayoutFriendlyURLComposite(layout, friendlyURL, false);
+		}
 
 		String urlTitle = layoutDisplayPageObjectProvider.getURLTitle(
 			getLocale(requestContext));
 
-		if (useOriginalFriendlyURL() && Validator.isNotNull(urlTitle)) {
-			localizedFriendlyURL = getURLSeparator() + urlTitle;
-		}
+		if (Validator.isNotNull(urlTitle)) {
+			String localizedFriendlyURL = getURLSeparator() + urlTitle;
 
-		if (!isSameFriendlyURL(originalFriendlyURL, localizedFriendlyURL)) {
-			return new LayoutFriendlyURLComposite(
-				layout, localizedFriendlyURL, true);
+			if (!isSameFriendlyURL(
+					_getOriginalFriendlyURL(friendlyURL),
+					localizedFriendlyURL)) {
+
+				return new LayoutFriendlyURLComposite(
+					layout, localizedFriendlyURL, true);
+			}
 		}
 
 		return new LayoutFriendlyURLComposite(layout, friendlyURL, false);
