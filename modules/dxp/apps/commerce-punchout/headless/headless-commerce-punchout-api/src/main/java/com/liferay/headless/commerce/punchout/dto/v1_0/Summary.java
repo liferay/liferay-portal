@@ -795,27 +795,6 @@ public class Summary implements Serializable {
 		return clazz.isArray();
 	}
 
-	private static String _toJSON(Object value) {
-		if (value instanceof Collection) {
-			return String.valueOf(
-				JSONFactoryUtil.createJSONArray((Collection<?>)value));
-		}
-		else if (value instanceof Map) {
-			return String.valueOf(
-				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
-		}
-		else if (value instanceof Object[]) {
-			return String.valueOf(
-				JSONFactoryUtil.createJSONArray(
-					Arrays.asList((Object[])value)));
-		}
-		else if (value instanceof String) {
-			return StringBundler.concat("\"", _escape(value), "\"");
-		}
-
-		return String.valueOf(value);
-	}
-
 	private static String _toJSON(Map<String, ?> map) {
 		StringBuilder sb = new StringBuilder("{");
 
@@ -881,6 +860,27 @@ public class Summary implements Serializable {
 		return sb.toString();
 	}
 
+	private static String _toJSON(Object value) {
+		if (value instanceof Collection) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray((Collection<?>)value));
+		}
+		else if (value instanceof Map) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONObject((Map<?, ?>)value));
+		}
+		else if (value instanceof Object[]) {
+			return String.valueOf(
+				JSONFactoryUtil.createJSONArray(
+					Arrays.asList((Object[])value)));
+		}
+		else if (value instanceof String) {
+			return StringBundler.concat("\"", _escape(value), "\"");
+		}
+
+		return String.valueOf(value);
+	}
+
 	private static final String[][] _JSON_ESCAPE_STRINGS = {
 		{"\\", "\"", "\b", "\f", "\n", "\r", "\t"},
 		{"\\\\", "\\\"", "\\b", "\\f", "\\n", "\\r", "\\t"}
@@ -889,4 +889,4 @@ public class Summary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1288622477
+// LIFERAY-REST-BUILDER-HASH:1573707025
