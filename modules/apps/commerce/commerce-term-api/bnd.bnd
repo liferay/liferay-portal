@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Term API
 Bundle-SymbolicName: com.liferay.commerce.term.api
-Bundle-Version: 10.0.1
+Bundle-Version: 10.1.0
 Export-Package:\
 	com.liferay.commerce.term.configuration,\
 	com.liferay.commerce.term.constants,\
