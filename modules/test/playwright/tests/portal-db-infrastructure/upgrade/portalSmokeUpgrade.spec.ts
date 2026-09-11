@@ -8,6 +8,7 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 
 const test = mergeTests(
@@ -36,23 +37,42 @@ async function viewUpgradedPortalContent(page: Page) {
 
 		await page.getByRole('link', {name: 'Document1'}).click();
 
-		await page.locator('a[href*=infoPanel]').click();
-
-		await expect(page.locator('.sidebar-body .username')).toHaveText(
-			'Test Test'
-		);
-
-		await expect(page.locator('.sidebar-header .label-item')).toHaveText(
-			'Version 1.0'
-		);
-
-		await expect(
-			page.locator('.sidebar-header .workflow-status')
-		).toHaveText('Approved');
-
 		const downloadButton = page
 			.locator('.sidebar-section')
 			.getByRole('link', {name: 'Download'});
+
+		// The info panel does not always render on the first click, and its
+		// contents attach to the DOM either way, so the Download link can be
+		// present but hidden — getByRole does not match a hidden element, which is
+		// why only the title assertion below fails. Measured on a live 6.1.30
+		// upgrade: hidden after one click, visible after a re-expand.
+		// DMDocument.expandInfo guards its own click the same way. The 5s timeout
+		// gives the first click room on a freshly upgraded portal.
+
+		await clickAndExpectToBeVisible({
+			target: downloadButton,
+			timeout: 5000,
+			trigger: page.locator('a[href*=infoPanel]'),
+		});
+
+		// Assert visibility before text on each of these. toHaveText waits for
+		// attachment rather than visibility, so all three pass against a panel
+		// that never opened -- they were satisfiable by the very state this step
+		// exists to detect. Gating above fixes the order; asserting here fixes
+		// the assertions, so they keep their meaning if the block ever moves.
+
+		const username = page.locator('.sidebar-body .username');
+		const version = page.locator('.sidebar-header .label-item');
+		const workflowStatus = page.locator('.sidebar-header .workflow-status');
+
+		await expect(username).toBeVisible();
+		await expect(username).toHaveText('Test Test');
+
+		await expect(version).toBeVisible();
+		await expect(version).toHaveText('Version 1.0');
+
+		await expect(workflowStatus).toBeVisible();
+		await expect(workflowStatus).toHaveText('Approved');
 
 		await expect(downloadButton).toHaveAttribute(
 			'title',
@@ -126,7 +146,7 @@ async function viewUpgradedPortalContent(page: Page) {
 test.describe.serial('View portal smoke upgrade', () => {
 	test(
 		'Can view upgraded portal content as admin',
-		{tag: '@LPD-96642'},
+		{tag: ['@LPD-96642', '@LPD-104520']},
 		async ({page, searchAdminPage}) => {
 			await test.step('Reindex all search indexes', async () => {
 				await searchAdminPage.goto();
@@ -153,7 +173,7 @@ test.describe.serial('View portal smoke upgrade', () => {
 
 	test(
 		'Can view upgraded portal content as the archive user',
-		{tag: '@LPD-96642'},
+		{tag: ['@LPD-96642', '@LPD-104520']},
 		async ({page}) => {
 			await performLogout(page);
 
