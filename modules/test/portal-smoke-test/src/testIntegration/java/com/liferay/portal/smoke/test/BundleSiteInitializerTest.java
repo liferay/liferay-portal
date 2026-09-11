@@ -1729,8 +1729,11 @@ public class BundleSiteInitializerTest {
 	}
 
 	private void _assertDesignLibraryDepotEntries2() throws Exception {
-		Group group1 = _assertDesignLibraryDepotEntry("Test Design Library 1");
-		Group group2 = _assertDesignLibraryDepotEntry("Test Design Library 2");
+		Group group1 = _getDesignLibraryGroup("Test Design Library 1");
+		Group group2 = _getDesignLibraryGroup("Test Design Library 2");
+
+		_assertDesignLibraryDepotEntryType(group1);
+		_assertDesignLibraryDepotEntryType(group2);
 
 		_assertDesignLibraryFragmentEntry(
 			group1, "test-design-library-1-fragment-entry",
@@ -1768,21 +1771,14 @@ public class BundleSiteInitializerTest {
 			depotAppCustomizations.isEmpty());
 	}
 
-	private Group _assertDesignLibraryDepotEntry(String designLibraryName)
+	private void _assertDesignLibraryDepotEntryType(Group group)
 		throws Exception {
-
-		Group group = _groupLocalService.fetchGroup(
-			_serviceContext.getCompanyId(), designLibraryName);
-
-		Assert.assertNotNull(group);
 
 		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
 			group.getClassPK());
 
 		Assert.assertEquals(
 			DepotConstants.TYPE_DESIGN_LIBRARY, depotEntry.getType());
-
-		return group;
 	}
 
 	private void _assertDesignLibraryFragmentEntry(
@@ -4795,6 +4791,11 @@ public class BundleSiteInitializerTest {
 		bundle.start();
 
 		return bundle;
+	}
+
+	private Group _getDesignLibraryGroup(String designLibraryName) {
+		return _groupLocalService.fetchGroup(
+			_serviceContext.getCompanyId(), designLibraryName);
 	}
 
 	private Configuration _getFactoryConfiguration(
