@@ -51,15 +51,15 @@ public class BaseMonitorTest extends com.liferay.jenkins.results.parser.Test {
 		BaseMonitor baseMonitor = _newBaseMonitor(60);
 
 		testEquals(
-			true,
-			baseMonitor.getBooleanValue(
-				"parameter", true, "expected.green",
-				Collections.<String, String>emptyMap()));
-		testEquals(
 			false,
 			baseMonitor.getBooleanValue(
 				"parameter", true, "expected.green",
 				Collections.singletonMap("expected.green", "false")));
+		testEquals(
+			true,
+			baseMonitor.getBooleanValue(
+				"parameter", true, "expected.green",
+				Collections.<String, String>emptyMap()));
 
 		try {
 			baseMonitor.getBooleanValue(

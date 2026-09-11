@@ -49,10 +49,10 @@ public class UpstreamJobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
 			"Controller job " + _CONTROLLER_JOB_NAME + " has never run",
 			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test
@@ -138,10 +138,11 @@ public class UpstreamJobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
 		testEquals(
 			"The upstream testsuite for branch master is OK",
 			monitorResult.getMessage());
+
+		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
 
 		Map<String, String> metrics = monitorResult.getMetrics();
 
