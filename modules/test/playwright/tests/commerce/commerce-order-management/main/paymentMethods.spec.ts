@@ -16,7 +16,11 @@ import {
 	performLoginViaApi,
 	performUserSwitch,
 } from '../../../../utils/performLogin';
-import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
+import {
+	configureOperationsManagerUserForSite,
+	createAccountWithBuyerUser,
+	miniumSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	accountsPagesTest,
@@ -468,5 +472,136 @@ test(
 			checkoutPage.paymentMethodRadio(paymentMethodKey)
 		).toBeVisible();
 		await expect(checkoutPage.paymentMethodRadio('PayPal')).toBeVisible();
+	}
+);
+
+test(
+	'Users without the manage payment methods permission cannot edit the payment method of an order',
+	{tag: ['@LPD-104219']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		page,
+	}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: 'Commerce Account ' + getRandomString(),
+			type: 'business',
+		});
+
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id,
+				{
+					city: 'Test City',
+					countryISOCode: 'US',
+					defaultBilling: true,
+					defaultShipping: true,
+					name: 'Test Address',
+					regionISOCode: 'CA',
+					street1: 'Test Street',
+					zip: '12345',
+				}
+			);
+
+		await commerceAdminChannelsPage.goto();
+
+		await (
+			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+		).click();
+
+		await commerceAdminChannelDetailsPage.activatePaymentMethod(
+			'Money Order',
+			'Money Order'
+		);
+		await commerceAdminChannelDetailsPage.activateChannelConfiguration(
+			'PayPal',
+			'Payment Methods'
+		);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'U-Joint'
+			);
+
+		const order = await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			billingAddressId: address.id,
+			channelId: channel.id,
+			orderItems: [{quantity: 1, skuId: String(product.skus[0].id)}],
+			orderStatus: '1',
+			paymentMethod: 'money-order',
+			paymentStatus: '2',
+			shippingAddressId: address.id,
+		});
+
+		await commerceAdminOrdersPage.goto();
+
+		await (
+			await commerceAdminOrdersPage.tableRowLink({
+				colIndex: 1,
+				rowValue: order.id,
+			})
+		).click();
+
+		await (
+			await commerceAdminOrderDetailsPage.orderDetailsTab('Payments')
+		).click();
+
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodName
+		).toContainText('Money Order');
+		await expect(
+			await commerceAdminOrderDetailsPage.editEntryActionLink(
+				'Payment Method',
+				'Edit'
+			)
+		).toBeVisible();
+
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
+		const operationsManagerUser =
+			await configureOperationsManagerUserForSite(
+				account,
+				apiHelpers,
+				companyId,
+				site,
+				[]
+			);
+
+		await performUserSwitch(page, operationsManagerUser.alternateName);
+
+		await commerceAdminOrdersPage.goto();
+
+		await (
+			await commerceAdminOrdersPage.tableRowLink({
+				colIndex: 1,
+				rowValue: order.id,
+			})
+		).click();
+
+		await (
+			await commerceAdminOrderDetailsPage.orderDetailsTab('Payments')
+		).click();
+
+		await expect(
+			commerceAdminOrderDetailsPage.paymentMethodName
+		).toContainText('Money Order');
+		await expect(
+			await commerceAdminOrderDetailsPage.editEntryActionLink(
+				'Payment Method',
+				'Edit'
+			)
+		).toHaveCount(0);
+		await expect(
+			await commerceAdminOrderDetailsPage.editEntryActionLink(
+				'Payment Status',
+				'Edit'
+			)
+		).toBeVisible();
 	}
 );
