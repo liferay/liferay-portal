@@ -13,6 +13,7 @@ type TOrder = {
 	channelId?: number;
 	createDate?: string;
 	currencyCode?: string;
+	deliveryTermId?: number;
 	externalReferenceCode?: string;
 	id?: number;
 	name?: string;
@@ -23,6 +24,7 @@ type TOrder = {
 	paymentMethod?: string;
 	paymentStatus?: string;
 	paymentStatusInfo?: number;
+	paymentTermId?: number;
 	shippingAddressId?: string;
 	shippingAmount?: number;
 	shippingMethod?: string;
