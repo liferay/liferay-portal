@@ -68,7 +68,7 @@ tests:
     -   asserts:
             -   notMatchRegex:
                     path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
-                    pattern: if \[ ! -f /temp/tomcat/conf/server\.xml \]
+                    pattern: ! -f /temp/tomcat/conf/server\.xml
         documentSelector:
             path: kind
             skipEmptyTemplates: true

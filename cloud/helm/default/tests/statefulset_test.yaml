@@ -2,6 +2,7 @@ suite: StatefulSet
 templates:
     -   templates/configmap.yaml
     -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
     -   templates/workloads.yaml
 tests:
     -   asserts:

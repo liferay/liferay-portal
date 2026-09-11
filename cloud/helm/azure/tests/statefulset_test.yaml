@@ -1,5 +1,8 @@
 suite: StatefulSet
 templates:
+    -   charts/liferay-default/templates/configmap.yaml
+    -   charts/liferay-default/templates/liferay-init-scripts-cm.yaml
+    -   charts/liferay-default/templates/liferay-network-cm.yaml
     -   charts/liferay-default/templates/workloads.yaml
 tests:
     -   asserts:
