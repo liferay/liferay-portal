@@ -15,9 +15,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.struts.LastPath;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -98,40 +100,48 @@ public class VirtualHostFilter extends BasePortalFilter {
 			String friendlyURL)
 		throws Exception {
 
-		if (friendlyURL.startsWith(_PATH_DOCUMENTS) &&
-			WebServerServlet.hasFiles(httpServletRequest)) {
+		if (!friendlyURL.startsWith(_PATH_DOCUMENTS)) {
+			return false;
+		}
 
-			String path = HttpComponentsUtil.fixPath(
-				httpServletRequest.getPathInfo());
+		String path = HttpComponentsUtil.fixPath(
+			httpServletRequest.getPathInfo());
 
-			String[] pathArray = StringUtil.split(path, CharPool.SLASH);
+		String[] pathArray = StringUtil.split(path, CharPool.SLASH);
 
-			if (pathArray.length == 0) {
-				PortalUtil.sendError(
-					new NoSuchLayoutException(), httpServletRequest,
-					httpServletResponse);
+		// LPD-105342
+
+		if (!_isFileEntryPathArray(pathArray) &&
+			!WebServerServlet.hasFiles(httpServletRequest)) {
+
+			return false;
+		}
+
+		if (pathArray.length == 0) {
+			PortalUtil.sendError(
+				new NoSuchLayoutException(), httpServletRequest,
+				httpServletResponse);
+
+			return true;
+		}
+		else if (pathArray.length == 2) {
+			try {
+				LayoutLocalServiceUtil.getFriendlyURLLayout(
+					groupId, false, friendlyURL);
+			}
+			catch (NoSuchLayoutException noSuchLayoutException) {
+
+				// LPS-52675
+
+				if (_log.isDebugEnabled()) {
+					_log.debug(noSuchLayoutException);
+				}
 
 				return true;
 			}
-			else if (pathArray.length == 2) {
-				try {
-					LayoutLocalServiceUtil.getFriendlyURLLayout(
-						groupId, false, friendlyURL);
-				}
-				catch (NoSuchLayoutException noSuchLayoutException) {
-
-					// LPS-52675
-
-					if (_log.isDebugEnabled()) {
-						_log.debug(noSuchLayoutException);
-					}
-
-					return true;
-				}
-			}
-			else {
-				return true;
-			}
+		}
+		else {
+			return true;
 		}
 
 		return false;
@@ -493,10 +503,29 @@ public class VirtualHostFilter extends BasePortalFilter {
 		return languageId;
 	}
 
+	private boolean _isFileEntryPathArray(String[] pathArray) {
+		if (pathArray.length == 0) {
+			return false;
+		}
+
+		if (Validator.isNumber(pathArray[0]) ||
+			ArrayUtil.contains(_PATHS_FILE_ENTRY, pathArray[0])) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private static final String _PATH_DOCUMENTS = "/documents/";
 
 	private static final String _PATH_MODULE_SLASH =
 		Portal.PATH_MODULE + StringPool.SLASH;
+
+	private static final String[] _PATHS_FILE_ENTRY = {
+		FriendlyURLResolverConstants.URL_SEPARATOR_Y_FILE_ENTRY,
+		WebServerServlet.PATH_PORTLET_FILE_ENTRY
+	};
 
 	private static final String _PRIVATE_GROUP_SERVLET_MAPPING =
 		PropsValues.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING;
