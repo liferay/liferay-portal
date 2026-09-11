@@ -68,8 +68,7 @@
 
 		.campaign-sticker,
 		.event-sticker,
-		.page-sticker,
-		.session-sticker {
+		.page-sticker {
 			background-color: $white;
 			height: $baseline * 4;
 			margin-bottom: -$baseline;
@@ -189,16 +188,15 @@
 		}
 	}
 
-	// A campaign row and a session row are each a single line — sticker, title,
-	// labels and the count pill — so they are vertically centered together
-	// instead of the default top alignment other rows use for their taller,
-	// multi-line content, and their titles sit the same distance from the
-	// sticker so the two kinds of count line up down the stream.
+	.device-icon {
+		.icon-root {
+			font-size: $fontSizeMedium;
+		}
+	}
 
-	.campaign-row,
-	.session-row {
+	.campaign-row {
 		> .row-main {
-			align-items: center !important;
+			align-items: center;
 		}
 
 		.title {
@@ -275,6 +273,16 @@
 		}
 	}
 
+	.session-row {
+		// The session row is a single line — title, labels and the angle icon all
+		// belong on the same line, so they're vertically centered together
+		// instead of the default top alignment other rows use for their taller,
+		// multi-line content.
+		> .row-main {
+			align-items: center !important;
+		}
+	}
+
 	.page-row,
 	.event-row {
 		.row-content {
@@ -323,9 +331,9 @@
 	}
 
 	// The event row follows the same layout as the page row: time, sticker and
-	// title share one line, with the sticker in the same column as the page's,
-	// and the details stack below, indented one step past the title so the
-	// event reads as belonging to the page above it.
+	// title share one line, and the details stack below the title. The sticker
+	// stays in the page sticker's column while the title and details step one
+	// indent in, so the event reads as belonging to the page above it.
 
 	.event-row {
 		.event-header {
@@ -335,6 +343,7 @@
 
 			.title {
 				flex: 0 1 auto;
+				margin-left: $rowIndent;
 				min-width: 0;
 			}
 		}

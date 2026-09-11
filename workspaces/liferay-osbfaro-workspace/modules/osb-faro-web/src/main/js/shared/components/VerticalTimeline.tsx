@@ -108,7 +108,7 @@ const DeviceIcon: FC<{browserName?: string; device?: string}> = ({
 			title={[title, browserName].filter(Boolean).join('\n')}
 		>
 			<ClayIcon
-				className="row-icon icon-root text-secondary"
+				className="icon-root text-secondary"
 				{...otherIconAttributes}
 			/>
 		</span>
@@ -369,12 +369,11 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 };
 
 /**
- * A session. Its device sits on the sticker and its event count closes the
- * row, the same shape as a campaign row, so the two kinds of count line up
- * down the stream. Expanding it reveals its raw attributes (browser, device,
- * screen size…) — the pages visited during the session are not gated behind
- * that expand; they always render below, so the stream reads as a list of
- * visited pages without an extra click.
+ * A session. Its details read device, data source, then event count, so the
+ * count closes the row in the same column as a campaign row's touch count. Expanding it reveals its
+ * raw attributes (browser, device, screen size…) — the pages visited during the
+ * session are not gated behind that expand; they always render below, so the
+ * stream reads as a list of visited pages without an extra click.
  */
 const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 	LDPEnabled,
@@ -419,25 +418,25 @@ const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 			)}
 		>
 			<RowMain infoButton onToggle={() => setExpanded(!expanded)}>
-				<ClaySticker className="session-sticker flex-shrink-0">
-					<DeviceIcon browserName={browserName} device={device} />
-				</ClaySticker>
-
-				<span className="title text-secondary">
-					{sub(Liferay.Language.get('session-x-x'), [
-						time
-							? formatDateToTimeZone(
-									time,
-									TIME_FORMAT,
-									timeZoneId
-								)
-							: '',
-						getEndLabel(),
-					])}
-				</span>
+				<div className="row-content flex-fill">
+					<span className="title text-secondary">
+						{sub(Liferay.Language.get('session-x-x'), [
+							time
+								? formatDateToTimeZone(
+										time,
+										TIME_FORMAT,
+										timeZoneId
+									)
+								: '',
+							getEndLabel(),
+						])}
+					</span>
+				</div>
 
 				<div className="row-details ml-auto pl-3 d-flex align-items-center">
 					{becameKnown && <BecameKnownLabel />}
+
+					<DeviceIcon browserName={browserName} device={device} />
 
 					{LDPEnabled && (
 						<DataSourceLabel

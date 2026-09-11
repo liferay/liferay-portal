@@ -158,25 +158,19 @@ describe('VerticalTimeline', () => {
 			).toBeInTheDocument();
 		});
 
-		it('shows its device on a sticker ahead of the title', () => {
+		it('reads device, data source, then event count across its details', () => {
 			const {container} = renderTimeline({items: [SESSION_ITEM]});
 
-			const sticker = container.querySelector(
-				'.session-row .session-sticker'
+			const details = Array.from(
+				container.querySelector('.session-row .row-details').children
 			);
 
-			expect(sticker.querySelector('.device-icon')).toBeInTheDocument();
-			expect(sticker.nextElementSibling).toHaveClass('title');
-		});
-
-		it('closes its details with the event count, as a campaign row does', () => {
-			const {container} = renderTimeline({items: [SESSION_ITEM]});
-
-			const details = container.querySelector('.session-row .row-details');
-
-			expect(details.lastElementChild).toHaveClass('event-count-pill');
-			expect(details.lastElementChild).toHaveTextContent('2');
-			expect(details.querySelector('.device-icon')).toBeNull();
+			expect(details.map((detail) => detail.className)).toEqual([
+				expect.stringContaining('device-icon'),
+				expect.stringContaining('data-source-label'),
+				expect.stringContaining('event-count-pill')
+			]);
+			expect(details[2]).toHaveTextContent('2');
 		});
 
 		it('shows "in progress" when the session has no end time', () => {
