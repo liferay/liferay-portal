@@ -48,9 +48,14 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutBranch;
+import com.liferay.portal.kernel.model.LayoutRevision;
+import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutSetBranchConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutRevisionLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetBranchLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
@@ -68,6 +73,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -506,6 +512,33 @@ public class StagingImplTest {
 	@Test
 	public void testLocalStagingWithLayoutVersioningJournal() throws Exception {
 		enableLocalStagingWithContent(true, true);
+	}
+
+	@Test
+	public void testLocalStagingWithLayoutVersioningLastImportSettings()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		enableLocalStaging(true);
+
+		Group stagingGroup = _group.getStagingGroup();
+
+		LayoutSetBranch layoutSetBranch =
+			LayoutSetBranchLocalServiceUtil.getMasterLayoutSetBranch(
+				stagingGroup.getGroupId(), false);
+
+		_testLocalStagingWithLayoutVersioningLastImportSettings(
+			layout, layoutSetBranch);
+
+		_testLocalStagingWithLayoutVersioningLastImportSettings(
+			layout,
+			LayoutSetBranchLocalServiceUtil.addLayoutSetBranch(
+				TestPropsValues.getUserId(), stagingGroup.getGroupId(), false,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				false, layoutSetBranch.getLayoutSetBranchId(),
+				ServiceContextTestUtil.getServiceContext(
+					stagingGroup.getGroupId())));
 	}
 
 	@Test
@@ -1084,6 +1117,82 @@ public class StagingImplTest {
 			"staged", Boolean.TRUE.toString());
 		typeSettingsUnicodeProperties.setProperty(
 			"stagedRemotely", Boolean.TRUE.toString());
+	}
+
+	private void _testLocalStagingWithLayoutVersioningLastImportSettings(
+			Layout layout, LayoutSetBranch layoutSetBranch)
+		throws Exception {
+
+		Group stagingGroup = _group.getStagingGroup();
+
+		Layout stagingLayout =
+			LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
+				layout.getExternalReferenceCode(), stagingGroup.getGroupId());
+
+		LayoutRevision layoutRevision =
+			LayoutRevisionLocalServiceUtil.fetchLatestLayoutRevision(
+				layoutSetBranch.getLayoutSetBranchId(),
+				stagingLayout.getPlid());
+
+		Map<String, String[]> parameterMap =
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap();
+
+		parameterMap.put(
+			Constants.CMD, new String[] {Constants.PUBLISH_TO_LIVE});
+		parameterMap.put(
+			"layoutSetBranchId",
+			new String[] {
+				String.valueOf(layoutSetBranch.getLayoutSetBranchId())
+			});
+		parameterMap.put(
+			"layoutSetBranchName", new String[] {layoutSetBranch.getName()});
+
+		StagingUtil.publishLayouts(
+			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			_group.getGroupId(), false, parameterMap);
+
+		Layout liveLayout = LayoutLocalServiceUtil.getLayout(layout.getPlid());
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			liveLayout.getTypeSettingsProperties();
+
+		long lastImportDate = GetterUtil.getLong(
+			typeSettingsUnicodeProperties.getProperty("last-import-date"));
+
+		Assert.assertTrue(lastImportDate > 0);
+
+		LayoutBranch layoutBranch = layoutRevision.getLayoutBranch();
+
+		Assert.assertEquals(
+			String.valueOf(layoutRevision.getLayoutBranchId()),
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-branch-id"));
+		Assert.assertEquals(
+			layoutBranch.getName(),
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-branch-name"));
+		Assert.assertEquals(
+			String.valueOf(layoutRevision.getLayoutRevisionId()),
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-revision-id"));
+		Assert.assertEquals(
+			String.valueOf(layoutSetBranch.getLayoutSetBranchId()),
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-set-branch-id"));
+		Assert.assertEquals(
+			layoutSetBranch.getName(),
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-set-branch-name"));
+
+		User user = TestPropsValues.getUser();
+
+		Assert.assertEquals(
+			user.getFullName(),
+			typeSettingsUnicodeProperties.getProperty("last-import-user-name"));
+		Assert.assertEquals(
+			user.getUuid(),
+			typeSettingsUnicodeProperties.getProperty("last-import-user-uuid"));
 	}
 
 	private static final Locale[] _locales = {
