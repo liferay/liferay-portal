@@ -16,11 +16,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>FACET_DEFAULT_LABEL</td>
-	<td>//span[@class='custom-control-label-text' and contains(text(), '${key_facetLabel}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PRODUCT_PUBLISHER_ADD_REMOVE_FILTER_BUTTON</td>
 	<td>//div[contains(@class,'panel-body')]//button[contains(@class,'${key_button}')]</td>
 	<td></td>
@@ -31,23 +26,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>TAG_FACET_CLOUD_LAYOUT</td>
-	<td>//ul[contains(@class,'tag-cloud')]//button[contains(.,'${tagName}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>TAG_FACET_COMPACT_LAYOUT</td>
-	<td>//ul[contains(@class,'list-unstyled')]//button[contains(.,'${tagName}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>TAG_FACET_LABEL_LAYOUT</td>
 	<td>//span[@class='label-item label-item-expand' and contains(text(), '${tagName}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MAX_TERMS_ERROR_MESSAGE</td>
-	<td>//div[@class='lfr-form-content']//div[@role='alert' and normalize-space(text()='${errorMessage}')]</td>
 	<td></td>
 </tr>
 </tbody>

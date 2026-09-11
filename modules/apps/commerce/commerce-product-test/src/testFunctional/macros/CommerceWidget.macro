@@ -74,68 +74,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertOptionFacetsCount(expectedLabels = null, stringToMatch = null) {
-		var optionName = ${optionName};
-
-		var javaScriptCountElement = '''
-
-		const stringToMatch = "${optionName}";
-
-		return document.querySelectorAll(`[data-qa-id='${stringToMatch}'] li`).length.toString();
-
-		''';
-
-		var count = selenium.getEval(${javaScriptCountElement});
-
-		return ${count};
-
-		echo("THE NUMBER OF FACETED LABELS IS ${count}");
-
-		if (${count} != ${expectedLabels}) {
-			fail("Labels number is not correct");
-		}
-	}
-
-	@summary = "Default summary"
 	macro assertOrganizationManagementWigetTitlePresent(key_nodeName = null) {
 		AssertElementPresent(
 			key_nodeName = ${key_nodeName},
 			locator1 = "CommerceOrganizationManagementWidget#NODE_TITLE");
-	}
-
-	@summary = "Default summary"
-	macro assertSpecificationPanel2FacetsCount(expectedLabels = null, stringToMatch = null) {
-		var specificationGroup = ${specificationGroup};
-
-		var javaScriptCountElement = '''
-
-		const stringToMatch = "${specificationGroup}";
-
-		return document.querySelectorAll(`[data-qa-id='${stringToMatch}'] li`).length.toString();
-
-		''';
-
-		var count = selenium.getEval(${javaScriptCountElement});
-
-		return ${count};
-
-		echo("THE NUMBER OF FACETED LABELS IS ${count}");
-
-		while ((${count} != ${expectedLabels}) && (maxIterations = "10")) {
-			CommerceProducts.openProductsAdmin();
-
-			Navigator.openWithAppendToBaseURL(urlAppend = "web/minium/catalog");
-
-			var count = selenium.getEval(${javaScriptCountElement});
-
-			return ${count};
-
-			echo("AFTER THE REFRESH THE NUMBER OF FACETED LABELS IS ${count}");
-		}
-
-		if (${count} != ${expectedLabels}) {
-			fail("Labels number is not correct");
-		}
 	}
 
 	@summary = "Default summary"
