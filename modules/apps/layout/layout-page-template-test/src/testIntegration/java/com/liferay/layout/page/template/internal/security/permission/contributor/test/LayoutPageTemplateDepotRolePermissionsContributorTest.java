@@ -71,7 +71,7 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
 	@TestInfo("LPD-104558")
-	public void testManageLayoutPageTemplatesWithDesignLibraryMember()
+	public void testGetDepotRolePermissionsWithDesignLibraryMember()
 		throws Exception {
 
 		Group group = _addDesignLibraryGroup();
@@ -131,7 +131,7 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
 	@TestInfo("LPD-104558")
-	public void testManageLayoutPageTemplatesWithDesignLibraryRoles()
+	public void testGetDepotRolePermissionsWithDesignLibraryRoles()
 		throws Exception {
 
 		Group group = _addDesignLibraryGroup();
