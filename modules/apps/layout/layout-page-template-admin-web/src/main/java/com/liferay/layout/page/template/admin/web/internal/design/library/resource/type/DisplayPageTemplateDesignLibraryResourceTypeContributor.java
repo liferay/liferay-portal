@@ -14,6 +14,7 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 
@@ -94,7 +95,8 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 	public boolean hasViewPermission(
 		PermissionChecker permissionChecker, DepotEntry depotEntry) {
 
-		return hasAddPermission(permissionChecker, depotEntry);
+		return _portletResourcePermission.contains(
+			permissionChecker, depotEntry.getGroupId(), ActionKeys.VIEW);
 	}
 
 	@Reference(
