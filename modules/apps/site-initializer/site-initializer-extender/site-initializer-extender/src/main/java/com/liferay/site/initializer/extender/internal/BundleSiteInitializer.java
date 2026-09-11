@@ -972,14 +972,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 			"/site-initializer/fragments/group", serviceContext,
 			stringUtilReplaceValues);
 
-		Map<String, Group> assetLibraryGroups = _getAssetLibraryGroups(
+		Map<String, Group> designLibraryGroups = _getDesignLibraryGroups(
 			"/site-initializer/fragments/asset-libraries", serviceContext);
 
-		for (Map.Entry<String, Group> entry : assetLibraryGroups.entrySet()) {
-			Group assetLibraryGroup = entry.getValue();
+		for (Map.Entry<String, Group> entry : designLibraryGroups.entrySet()) {
+			Group designLibraryGroup = entry.getValue();
 
 			_addFragmentEntries(
-				_siteBundle, assetLibraryGroup.getGroupId(), entry.getKey(),
+				_siteBundle, designLibraryGroup.getGroupId(), entry.getKey(),
 				serviceContext, stringUtilReplaceValues);
 		}
 
@@ -4954,14 +4954,15 @@ public class BundleSiteInitializer implements SiteInitializer {
 			serviceContext.getScopeGroupId(), "/site-initializer/style-books",
 			serviceContext);
 
-		Map<String, Group> assetLibraryGroups = _getAssetLibraryGroups(
+		Map<String, Group> designLibraryGroups = _getDesignLibraryGroups(
 			"/site-initializer/style-books/asset-libraries", serviceContext);
 
-		for (Map.Entry<String, Group> entry : assetLibraryGroups.entrySet()) {
-			Group assetLibraryGroup = entry.getValue();
+		for (Map.Entry<String, Group> entry : designLibraryGroups.entrySet()) {
+			Group designLibraryGroup = entry.getValue();
 
 			_addStyleBookEntries(
-				assetLibraryGroup.getGroupId(), entry.getKey(), serviceContext);
+				designLibraryGroup.getGroupId(), entry.getKey(),
+				serviceContext);
 		}
 	}
 
@@ -5785,80 +5786,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 		return ArrayUtil.toLongArray(assetCategoryIds);
 	}
 
-	private Map<String, Group> _getAssetLibraryGroups(
-			String parentResourcePath, ServiceContext serviceContext)
-		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				serviceContext.getCompanyId(), "LPD-57283")) {
-
-			return Collections.emptyMap();
-		}
-
-		String json = SiteInitializerUtil.read(
-			parentResourcePath + "/asset-libraries.json", _servletContext);
-
-		if (json == null) {
-			return Collections.emptyMap();
-		}
-
-		Map<String, Group> groups = new LinkedHashMap<>();
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-			String assetLibraryName = jsonObject.getString("assetLibraryName");
-
-			Group group = _groupLocalService.fetchGroup(
-				serviceContext.getCompanyId(), assetLibraryName);
-
-			if (group == null) {
-				_log.error("Unable to get asset library " + assetLibraryName);
-
-				continue;
-			}
-
-			DepotEntry depotEntry = _depotEntryLocalService.fetchDepotEntry(
-				group.getClassPK());
-
-			if ((depotEntry == null) ||
-				(depotEntry.getType() != DepotConstants.TYPE_DESIGN_LIBRARY)) {
-
-				_log.error(
-					"Asset library " + assetLibraryName +
-						" is not a design library");
-
-				continue;
-			}
-
-			String path = jsonObject.getString("path");
-
-			if (Validator.isNull(path)) {
-				_log.error(
-					"Asset library " + assetLibraryName + " has no path");
-
-				continue;
-			}
-
-			String resourcePath = parentResourcePath + "/" + path;
-
-			Enumeration<URL> enumeration = _siteBundle.findEntries(
-				resourcePath, StringPool.STAR, true);
-
-			if (enumeration == null) {
-				_log.error("Unable to get design assets in " + resourcePath);
-
-				continue;
-			}
-
-			groups.put(resourcePath, group);
-		}
-
-		return groups;
-	}
-
 	private String _getAssetRendererFactoryName(String assetEntryType) {
 		AssetRendererFactory<?> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
@@ -5960,6 +5887,80 @@ public class BundleSiteInitializer implements SiteInitializer {
 		throw new IllegalArgumentException(
 			"Asset library type " + assetLibraryTypeString +
 				" must be \"AssetLibrary\", \"DesignLibrary\", or \"Space\"");
+	}
+
+	private Map<String, Group> _getDesignLibraryGroups(
+			String parentResourcePath, ServiceContext serviceContext)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				serviceContext.getCompanyId(), "LPD-57283")) {
+
+			return Collections.emptyMap();
+		}
+
+		String json = SiteInitializerUtil.read(
+			parentResourcePath + "/asset-libraries.json", _servletContext);
+
+		if (json == null) {
+			return Collections.emptyMap();
+		}
+
+		Map<String, Group> groups = new LinkedHashMap<>();
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			String assetLibraryName = jsonObject.getString("assetLibraryName");
+
+			Group group = _groupLocalService.fetchGroup(
+				serviceContext.getCompanyId(), assetLibraryName);
+
+			if (group == null) {
+				_log.error("Unable to get asset library " + assetLibraryName);
+
+				continue;
+			}
+
+			DepotEntry depotEntry = _depotEntryLocalService.fetchDepotEntry(
+				group.getClassPK());
+
+			if ((depotEntry == null) ||
+				(depotEntry.getType() != DepotConstants.TYPE_DESIGN_LIBRARY)) {
+
+				_log.error(
+					"Asset library " + assetLibraryName +
+						" is not a design library");
+
+				continue;
+			}
+
+			String path = jsonObject.getString("path");
+
+			if (Validator.isNull(path)) {
+				_log.error(
+					"Asset library " + assetLibraryName + " has no path");
+
+				continue;
+			}
+
+			String resourcePath = parentResourcePath + "/" + path;
+
+			Enumeration<URL> enumeration = _siteBundle.findEntries(
+				resourcePath, StringPool.STAR, true);
+
+			if (enumeration == null) {
+				_log.error("Unable to get bundle entries in " + resourcePath);
+
+				continue;
+			}
+
+			groups.put(resourcePath, group);
+		}
+
+		return groups;
 	}
 
 	private Serializable _getExpandoAttributeValue(JSONObject jsonObject)
