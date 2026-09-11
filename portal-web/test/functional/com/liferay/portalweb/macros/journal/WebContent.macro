@@ -1233,18 +1233,26 @@ definition {
 
 				Portlet.expandTree();
 
+				AssertElementPresent(
+					key_nodeName = ${pageName},
+					locator1 = "Treeview#NODE_UNSELECTED_TREEITEM");
+
 				Click(
 					key_nodeName = ${pageName},
-					locator1 = "Treeview#NODE_UNSELECTED");
+					locator1 = "Treeview#NODE_UNSELECTED_TREEITEM");
 			}
 			else if (${pageType} == "Pages") {
 				Navigator.gotoNavItem(navItem = "Pages");
 
 				Portlet.expandTree();
 
+				AssertElementPresent(
+					key_nodeName = ${pageName},
+					locator1 = "Treeview#NODE_UNSELECTED_TREEITEM");
+
 				Click(
 					key_nodeName = ${pageName},
-					locator1 = "Treeview#NODE_UNSELECTED");
+					locator1 = "Treeview#NODE_UNSELECTED_TREEITEM");
 			}
 			else {
 				if (IsElementNotPresent(key_navItem = ${pageType}, locator1 = "NavBar#NAV_ITEM_LINK")) {
