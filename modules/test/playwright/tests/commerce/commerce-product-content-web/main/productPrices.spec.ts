@@ -117,7 +117,7 @@ test('LPD-29583 Check discount on products with UOM', async ({
 
 	await expect(
 		await productDetailsPage.priceField(
-			'$ 50.00',
+			'$ 10.00 / Pallet',
 			productDetailsPage.priceContainer
 		)
 	).toBeVisible();
@@ -296,7 +296,7 @@ test('LPD-35633 Check discount on products with minOrderQuantity greater than 1'
 
 	await expect(
 		await productDetailsPage.priceField(
-			'$ 10.00',
+			'$ 100.00 / Box',
 			productDetailsPage.priceContainer
 		)
 	).toBeVisible();
