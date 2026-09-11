@@ -5,7 +5,11 @@
 
 package com.liferay.portal.security.sso.openid.connect.internal.util;
 
+import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
@@ -38,6 +42,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
@@ -200,6 +205,84 @@ public class OpenIdConnectTokenRequestUtilTest {
 		}
 		catch (OpenIdConnectServiceException.TokenException tokenException) {
 			Assert.assertNotNull(tokenException);
+		}
+	}
+
+	@Test
+	public void testRequestWithDisallowedIDTokenJWSAlgorithm()
+		throws Exception {
+
+		OIDCClientMetadata oidcClientMetadata = Mockito.mock(
+			OIDCClientMetadata.class);
+
+		String algorithmName = "HS256";
+
+		Mockito.when(
+			oidcClientMetadata.getIDTokenJWSAlg()
+		).thenReturn(
+			new JWSAlgorithm(algorithmName)
+		);
+
+		Mockito.when(
+			_oidcClientInformation.getOIDCMetadata()
+		).thenReturn(
+			oidcClientMetadata
+		);
+
+		String tokenIssuer = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_oidcProviderMetadata.getIssuer()
+		).thenReturn(
+			new Issuer(tokenIssuer)
+		);
+
+		try (MockedStatic<FIPSAuditUtil> fipsAuditUtilMockedStatic =
+				Mockito.mockStatic(FIPSAuditUtil.class);
+			MockedStatic<FIPSModeValidator> fipsModeValidatorMockedStatic =
+				Mockito.mockStatic(FIPSModeValidator.class)) {
+
+			String message = RandomTestUtil.randomString();
+
+			fipsModeValidatorMockedStatic.when(
+				() -> FIPSModeValidator.validateJWSAlgorithm(algorithmName)
+			).thenThrow(
+				new SecurityException(message)
+			);
+
+			OpenIdConnectServiceException.TokenException tokenException =
+				Assert.assertThrows(
+					OpenIdConnectServiceException.TokenException.class,
+					() -> OpenIdConnectTokenRequestUtil.request(
+						_oidcClientInformation, _oidcProviderMetadata,
+						_refreshToken, 1000, _TOKEN_REQUEST_PARAMETERS));
+
+			Assert.assertEquals(message, tokenException.getMessage());
+
+			fipsModeValidatorMockedStatic.verify(
+				() -> FIPSModeValidator.validateJWSAlgorithm(algorithmName));
+
+			ArgumentCaptor<FIPSAuditEvent> argumentCaptor =
+				ArgumentCaptor.forClass(FIPSAuditEvent.class);
+
+			fipsAuditUtilMockedStatic.verify(
+				() -> FIPSAuditUtil.write(argumentCaptor.capture()));
+
+			FIPSAuditEvent fipsAuditEvent = argumentCaptor.getValue();
+
+			Assert.assertEquals(
+				"federation-token-rejected", fipsAuditEvent.getEventType());
+			Assert.assertEquals(
+				HashMapBuilder.<String, Object>put(
+					"receiving-endpoint", "backchannel"
+				).put(
+					"rejected-value", algorithmName
+				).put(
+					"token-issuer", tokenIssuer
+				).put(
+					"token-type", "OIDC"
+				).build(),
+				fipsAuditEvent.getFields());
 		}
 	}
 

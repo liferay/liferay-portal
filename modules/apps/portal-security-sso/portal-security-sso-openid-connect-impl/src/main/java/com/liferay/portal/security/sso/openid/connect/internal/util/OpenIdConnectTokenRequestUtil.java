@@ -8,6 +8,9 @@ package com.liferay.portal.security.sso.openid.connect.internal.util;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEventFactory;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
 import com.liferay.portal.security.sso.openid.connect.OpenIdConnectServiceException;
 
 import com.nimbusds.jose.JOSEException;
@@ -26,6 +29,7 @@ import com.nimbusds.oauth2.sdk.auth.ClientSecretBasic;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.id.ClientID;
+import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.oauth2.sdk.pkce.CodeVerifier;
 import com.nimbusds.oauth2.sdk.token.RefreshToken;
 import com.nimbusds.oauth2.sdk.util.JSONObjectUtils;
@@ -178,23 +182,48 @@ public class OpenIdConnectTokenRequestUtil {
 			OIDCProviderMetadata oidcProviderMetadata, OIDCTokens oidcTokens)
 		throws OpenIdConnectServiceException.TokenException {
 
+		JWSAlgorithm jwsAlgorithm = oidcClientMetadata.getIDTokenJWSAlg();
+
+		String algorithmName = null;
+
+		if (jwsAlgorithm != null) {
+			algorithmName = jwsAlgorithm.getName();
+		}
+
+		try {
+			FIPSModeValidator.validateJWSAlgorithm(algorithmName);
+		}
+		catch (SecurityException securityException) {
+			String tokenIssuer = null;
+
+			Issuer issuer = oidcProviderMetadata.getIssuer();
+
+			if (issuer != null) {
+				tokenIssuer = issuer.getValue();
+			}
+
+			FIPSAuditUtil.write(
+				FIPSAuditEventFactory.createFederationTokenRejected(
+					"backchannel", algorithmName, tokenIssuer, "OIDC"));
+
+			throw new OpenIdConnectServiceException.TokenException(
+				securityException.getMessage(), securityException);
+		}
+
 		IDTokenValidator idTokenValidator = null;
 
-		if (JWSAlgorithm.Family.HMAC_SHA.contains(
-				oidcClientMetadata.getIDTokenJWSAlg())) {
-
+		if (JWSAlgorithm.Family.HMAC_SHA.contains(jwsAlgorithm)) {
 			idTokenValidator = new IDTokenValidator(
-				oidcProviderMetadata.getIssuer(), clientID,
-				oidcClientMetadata.getIDTokenJWSAlg(), clientSecret);
+				oidcProviderMetadata.getIssuer(), clientID, jwsAlgorithm,
+				clientSecret);
 		}
 		else {
 			URI uri = oidcProviderMetadata.getJWKSetURI();
 
 			try {
 				idTokenValidator = new IDTokenValidator(
-					oidcProviderMetadata.getIssuer(), clientID,
-					oidcClientMetadata.getIDTokenJWSAlg(), uri.toURL(),
-					new DefaultResourceRetriever(1000, 1000));
+					oidcProviderMetadata.getIssuer(), clientID, jwsAlgorithm,
+					uri.toURL(), new DefaultResourceRetriever(1000, 1000));
 			}
 			catch (MalformedURLException malformedURLException) {
 				throw new OpenIdConnectServiceException.TokenException(
