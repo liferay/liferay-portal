@@ -6,9 +6,12 @@
 package com.liferay.layout.content.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.fragment.contributor.FragmentCollectionContributorRegistry;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.service.FragmentCollectionLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.layout.content.exception.LayoutContentVersionExternalReferenceCodeException;
 import com.liferay.layout.content.exception.LayoutContentVersionNameException;
 import com.liferay.layout.content.exception.RequiredLayoutContentVersionException;
@@ -53,6 +56,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.spring.aop.AopInvocationHandler;
@@ -129,7 +133,10 @@ public class LayoutContentVersionLocalServiceTest {
 		Map<SegmentsExperience, JSONObject> segmentsExperienceJSONObjectsMap =
 			_getRandomSegmentsExperienceLocalizedContentMap();
 
-		_addFragmentEntryLinksToLayout(segmentsExperienceJSONObjectsMap);
+		FragmentEntry fragmentEntry = _addFragmentEntry();
+
+		_addFragmentEntryLinksToLayout(
+			fragmentEntry, segmentsExperienceJSONObjectsMap);
 
 		String data = RandomTestUtil.randomString();
 
@@ -148,7 +155,8 @@ public class LayoutContentVersionLocalServiceTest {
 			draftLayoutContentVersion.getStatus());
 
 		_assertLayoutContentVersionPreviews(
-			draftLayoutContentVersion, segmentsExperienceJSONObjectsMap);
+			fragmentEntry.getCss(), draftLayoutContentVersion,
+			segmentsExperienceJSONObjectsMap);
 
 		try (SafeCloseable safeCloseable =
 				_swapLayoutPreviewRendererWithSafeCloseable()) {
@@ -330,17 +338,35 @@ public class LayoutContentVersionLocalServiceTest {
 				layoutContentVersion.getLayoutContentVersionId(), null));
 	}
 
+	private FragmentEntry _addFragmentEntry() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionLocalService.addFragmentCollection(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(), null, serviceContext);
+
+		return _fragmentEntryLocalService.addFragmentEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			fragmentCollection.getFragmentCollectionId(), null,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			"<h1 data-lfr-editable-id=\"element-text\" " +
+				"data-lfr-editable-type=\"text\">Heading Example</h1>",
+			null, false, null, null, 0, false, false,
+			FragmentConstants.TYPE_COMPONENT, null,
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
+	}
+
 	private void _addFragmentEntryLinksToLayout(
+			FragmentEntry fragmentEntry,
 			Map<SegmentsExperience, JSONObject>
 				segmentsExperienceJSONObjectsMap)
 		throws Exception {
 
 		JSONObject defaultValueJSONObject = JSONUtil.put(
 			"defaultValue", "Heading Example");
-
-		FragmentEntry fragmentEntry =
-			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-heading");
 
 		for (Map.Entry<SegmentsExperience, JSONObject> entry :
 				segmentsExperienceJSONObjectsMap.entrySet()) {
@@ -356,8 +382,10 @@ public class LayoutContentVersionLocalServiceTest {
 						JSONUtil.merge(
 							entry.getValue(), defaultValueJSONObject))
 				).toString(),
-				_CSS, fragmentEntry.getConfiguration(),
-				fragmentEntry.getExternalReferenceCode(), null,
+				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
+				fragmentEntry.getExternalReferenceCode(),
+				ScopeUtil.getItemScopeExternalReferenceCode(
+					fragmentEntry.getGroupId(), _draftLayout.getGroupId()),
 				fragmentEntry.getHtml(), fragmentEntry.getJs(), _draftLayout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
 				null, 0, segmentsExperience.getSegmentsExperienceId());
@@ -427,7 +455,7 @@ public class LayoutContentVersionLocalServiceTest {
 	}
 
 	private void _assertLayoutContentVersionPreviews(
-			LayoutContentVersion layoutContentVersion,
+			String css, LayoutContentVersion layoutContentVersion,
 			Map<SegmentsExperience, JSONObject>
 				segmentsExperienceJSONObjectsMap)
 		throws Exception {
@@ -449,7 +477,7 @@ public class LayoutContentVersionLocalServiceTest {
 				String html = layoutContentVersionPreview.getHtml();
 
 				Assert.assertTrue(html, html.contains("/company_logo"));
-				Assert.assertTrue(html, html.contains(_CSS));
+				Assert.assertTrue(html, html.contains(css));
 				Assert.assertTrue(
 					html, html.contains("/o/layout-common-styles/main.css"));
 				Assert.assertFalse(html, html.contains("\"signInURL\":\"\""));
@@ -679,16 +707,16 @@ public class LayoutContentVersionLocalServiceTest {
 				WorkflowConstants.STATUS_DRAFT));
 	}
 
-	private static final String _CSS = ".component-heading {color: red;}";
-
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
 	private Layout _draftLayout;
 
 	@Inject
-	private FragmentCollectionContributorRegistry
-		_fragmentCollectionContributorRegistry;
+	private FragmentCollectionLocalService _fragmentCollectionLocalService;
+
+	@Inject
+	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
