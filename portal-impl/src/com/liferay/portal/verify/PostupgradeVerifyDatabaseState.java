@@ -339,21 +339,17 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			Map<String, List<String>> warnMessagesMap)
 		throws Exception {
 
-		Map<String, List<String>> columnDefinitionsMap =
-			_columnDefinitionsMapDCLSingleton.getSingleton(
-				PostupgradeVerifyDatabaseState::_getColumnDefinitionsMap);
-
+		Map<String, List<String>> errorColumnMessagesMap =
+			new ConcurrentSkipListMap<>();
 		Map<String, String> tablesServletContextNames =
 			_tablesServletContextNamesDCLSingleton.getSingleton(
 				DBResourceUtil::getTablesServletContextNames);
-
-		Map<String, List<String>> errorColumnMessagesMap =
-			new ConcurrentSkipListMap<>();
 		Map<String, List<String>> warnColumnMessagesMap =
 			new ConcurrentSkipListMap<>();
 
 		processConcurrently(
-			columnDefinitionsMap,
+			_columnDefinitionsMapDCLSingleton.getSingleton(
+				PostupgradeVerifyDatabaseState::_getColumnDefinitionsMap),
 			entry -> {
 				String tableName = entry.getKey();
 
