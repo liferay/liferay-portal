@@ -122,7 +122,7 @@ public class LayoutContentVersionLocalServiceTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-103233", "LPD-103846", "LPD-104550"})
+	@TestInfo({"LPD-103233", "LPD-103846", "LPD-104550", "LPD-104976"})
 	public void testAddLayoutContentVersion() throws Exception {
 		_addSegmentsExperiences(2);
 
@@ -356,7 +356,7 @@ public class LayoutContentVersionLocalServiceTest {
 						JSONUtil.merge(
 							entry.getValue(), defaultValueJSONObject))
 				).toString(),
-				fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
+				_CSS, fragmentEntry.getConfiguration(),
 				fragmentEntry.getExternalReferenceCode(), null,
 				fragmentEntry.getHtml(), fragmentEntry.getJs(), _draftLayout,
 				fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(),
@@ -449,6 +449,9 @@ public class LayoutContentVersionLocalServiceTest {
 				String html = layoutContentVersionPreview.getHtml();
 
 				Assert.assertTrue(html, html.contains("/company_logo"));
+				Assert.assertTrue(html, html.contains(_CSS));
+				Assert.assertTrue(
+					html, html.contains("/o/layout-common-styles/main.css"));
 				Assert.assertFalse(html, html.contains("\"signInURL\":\"\""));
 				Assert.assertTrue(
 					html, html.contains(jsonObject.getString(languageId)));
@@ -675,6 +678,8 @@ public class LayoutContentVersionLocalServiceTest {
 				RandomTestUtil.randomLocaleStringMap(), plid,
 				WorkflowConstants.STATUS_DRAFT));
 	}
+
+	private static final String _CSS = ".component-heading {color: red;}";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
