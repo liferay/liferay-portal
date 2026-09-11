@@ -1728,16 +1728,22 @@ public class BundleSiteInitializerTest {
 			).getEnabled());
 	}
 
-	private void _assertDepotEntryDesignAssets2() throws Exception {
-		Group group1 = _assertDesignLibraryAssets(
-			"Test Design Library 1", "test-design-library-1-fragment-entry",
-			"Test Design Library 1 Fragment Entry",
-			"test-design-library-1-style-book",
+	private void _assertDesignLibraryDepotEntries2() throws Exception {
+		Group group1 = _assertDesignLibraryDepotEntry("Test Design Library 1");
+		Group group2 = _assertDesignLibraryDepotEntry("Test Design Library 2");
+
+		_assertDesignLibraryFragmentEntry(
+			group1, "test-design-library-1-fragment-entry",
+			"Test Design Library 1 Fragment Entry");
+		_assertDesignLibraryFragmentEntry(
+			group2, "test-design-library-2-fragment-entry",
+			"Test Design Library 2 Fragment Entry");
+
+		_assertDesignLibraryStyleBookEntry(
+			group1, "test-design-library-1-style-book",
 			"Test Design Library 1 Style Book Entry");
-		Group group2 = _assertDesignLibraryAssets(
-			"Test Design Library 2", "test-design-library-2-fragment-entry",
-			"Test Design Library 2 Fragment Entry",
-			"test-design-library-2-style-book",
+		_assertDesignLibraryStyleBookEntry(
+			group2, "test-design-library-2-style-book",
 			"Test Design Library 2 Style Book Entry");
 
 		Assert.assertNull(
@@ -1762,14 +1768,11 @@ public class BundleSiteInitializerTest {
 			depotAppCustomizations.isEmpty());
 	}
 
-	private Group _assertDesignLibraryAssets(
-			String assetLibraryName, String fragmentEntryKey,
-			String fragmentEntryName, String styleBookEntryKey,
-			String styleBookEntryName)
+	private Group _assertDesignLibraryDepotEntry(String designLibraryName)
 		throws Exception {
 
 		Group group = _groupLocalService.fetchGroup(
-			_serviceContext.getCompanyId(), assetLibraryName);
+			_serviceContext.getCompanyId(), designLibraryName);
 
 		Assert.assertNotNull(group);
 
@@ -1778,6 +1781,12 @@ public class BundleSiteInitializerTest {
 
 		Assert.assertEquals(
 			DepotConstants.TYPE_DESIGN_LIBRARY, depotEntry.getType());
+
+		return group;
+	}
+
+	private void _assertDesignLibraryFragmentEntry(
+		Group group, String fragmentEntryKey, String fragmentEntryName) {
 
 		FragmentEntry fragmentEntry =
 			_fragmentEntryLocalService.fetchFragmentEntry(
@@ -1789,6 +1798,10 @@ public class BundleSiteInitializerTest {
 		Assert.assertNull(
 			_fragmentEntryLocalService.fetchFragmentEntry(
 				_group.getGroupId(), fragmentEntryKey));
+	}
+
+	private void _assertDesignLibraryStyleBookEntry(
+		Group group, String styleBookEntryKey, String styleBookEntryName) {
 
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryLocalService.fetchStyleBookEntry(
@@ -1800,8 +1813,6 @@ public class BundleSiteInitializerTest {
 		Assert.assertNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				_group.getGroupId(), styleBookEntryKey));
-
-		return group;
 	}
 
 	private void _assertDLFileEntry1() throws Exception {
@@ -4904,7 +4915,7 @@ public class BundleSiteInitializerTest {
 		_assertDataDefinition2();
 		_assertDDMTemplate2();
 		_assertDepotEntries2();
-		_assertDepotEntryDesignAssets2();
+		_assertDesignLibraryDepotEntries2();
 		_assertDLFileEntry2();
 		_assertExpandoColumns2();
 		_assertExpandoValues2();
