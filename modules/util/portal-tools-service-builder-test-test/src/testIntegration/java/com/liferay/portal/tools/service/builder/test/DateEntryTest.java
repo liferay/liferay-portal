@@ -383,21 +383,21 @@ public class DateEntryTest {
 
 	@Test
 	public void testSQLQuery() {
-		_assertTimestamp(_microsNanos, _getMaxSnapshotDateBySQLQuery(null));
 		_assertSQLDate(
 			DBManagerUtil.getDBType(),
 			_getMaxSnapshotDateBySQLQuery(Type.DATE));
 		_assertTimestamp(
 			_microsNanos, _getMaxSnapshotDateBySQLQuery(Type.TIMESTAMP));
+		_assertTimestamp(_microsNanos, _getMaxSnapshotDateBySQLQuery(null));
 
-		_assertTimestampRows(
-			_dateEntryLocalService.getDateEntriesBySQLQuery(_COMPANY_ID, null));
 		_assertSQLDateRows(
 			_dateEntryLocalService.getDateEntriesBySQLQuery(
 				_COMPANY_ID, Type.DATE));
 		_assertTimestampRows(
 			_dateEntryLocalService.getDateEntriesBySQLQuery(
 				_COMPANY_ID, Type.TIMESTAMP));
+		_assertTimestampRows(
+			_dateEntryLocalService.getDateEntriesBySQLQuery(_COMPANY_ID, null));
 	}
 
 	@Test
