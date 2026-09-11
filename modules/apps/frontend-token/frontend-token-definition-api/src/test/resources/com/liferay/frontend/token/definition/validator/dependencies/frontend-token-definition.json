@@ -3,11 +3,11 @@
 		{
 			"frontendTokenSets": [
 				{
-					"description": "The Grays of the Color System",
+					"description": "This token set groups the gray colors of the color system.",
 					"frontendTokens": [
 						{
 							"defaultValue": "#FFF",
-							"description": "The White Color",
+							"description": "This token represents the white color of the color system.",
 							"editorType": "ColorPicker",
 							"label": "white",
 							"mappings": [
