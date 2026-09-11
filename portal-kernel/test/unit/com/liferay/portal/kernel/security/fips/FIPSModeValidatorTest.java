@@ -466,6 +466,46 @@ public class FIPSModeValidatorTest {
 	}
 
 	@Test
+	public void testValidateJWSAlgorithm() {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", false)) {
+
+			FIPSModeValidator.validateJWSAlgorithm("HS256");
+			FIPSModeValidator.validateJWSAlgorithm(null);
+		}
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			FIPSModeValidator.validateJWSAlgorithm("ES256");
+			FIPSModeValidator.validateJWSAlgorithm("ES384");
+			FIPSModeValidator.validateJWSAlgorithm("ES512");
+			FIPSModeValidator.validateJWSAlgorithm("EdDSA");
+			FIPSModeValidator.validateJWSAlgorithm("PS256");
+			FIPSModeValidator.validateJWSAlgorithm("PS384");
+			FIPSModeValidator.validateJWSAlgorithm("PS512");
+			FIPSModeValidator.validateJWSAlgorithm("RS256");
+			FIPSModeValidator.validateJWSAlgorithm("RS384");
+			FIPSModeValidator.validateJWSAlgorithm("RS512");
+
+			_assertJWSAlgorithmNotAllowed(StringPool.BLANK);
+			_assertJWSAlgorithmNotAllowed("ES256K");
+			_assertJWSAlgorithmNotAllowed("HS1");
+			_assertJWSAlgorithmNotAllowed("HS256");
+			_assertJWSAlgorithmNotAllowed("HS384");
+			_assertJWSAlgorithmNotAllowed("HS512");
+			_assertJWSAlgorithmNotAllowed("RS1");
+			_assertJWSAlgorithmNotAllowed("RSA1_5");
+			_assertJWSAlgorithmNotAllowed("garbage");
+			_assertJWSAlgorithmNotAllowed("none");
+			_assertJWSAlgorithmNotAllowed("rs256");
+			_assertJWSAlgorithmNotAllowed(null);
+		}
+	}
+
+	@Test
 	public void testValidateKey() {
 		FIPSModeValidator.validateKey("DES", 64);
 
@@ -690,6 +730,12 @@ public class FIPSModeValidatorTest {
 		_assertSecurityException(
 			expectedMessage, "_validateClusterLinkConfiguration",
 			new Class<?>[0]);
+	}
+
+	private void _assertJWSAlgorithmNotAllowed(String algorithm) {
+		FIPSModeTestUtil.assertSecurityException(
+			"is not allowed in FIPS mode",
+			() -> FIPSModeValidator.validateJWSAlgorithm(algorithm));
 	}
 
 	private void _assertSecurityException(

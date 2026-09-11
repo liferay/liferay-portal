@@ -129,6 +129,18 @@ public class FIPSModeValidator {
 		}
 	}
 
+	public static void validateJWSAlgorithm(String algorithm) {
+		if (!PropsValues.FIPS_ENABLED) {
+			return;
+		}
+
+		if ((algorithm == null) || !_allowedJWSAlgorithms.contains(algorithm)) {
+			throw new SecurityException(
+				"JWS algorithm \"" + algorithm +
+					"\" is not allowed in FIPS mode");
+		}
+	}
+
 	public static void validateKey(String algorithm, int keySize) {
 		if (!PropsValues.FIPS_ENABLED) {
 			return;
@@ -606,6 +618,9 @@ public class FIPSModeValidator {
 		"AES", "HmacSHA256", "HmacSHA384", "HmacSHA512", "PBKDF2WithHmacSHA256",
 		"PBKDF2WithHmacSHA384", "PBKDF2WithHmacSHA512", "SHA-256", "SHA-384",
 		"SHA-512");
+	private static final Set<String> _allowedJWSAlgorithms = Set.of(
+		"ES256", "ES384", "ES512", "EdDSA", "PS256", "PS384", "PS512", "RS256",
+		"RS384", "RS512");
 	private static final Map<String, List<String>> _allowedProviderNames =
 		Map.of(
 			"AmazonCorrettoCryptoProvider",
