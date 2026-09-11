@@ -272,7 +272,7 @@ definition {
 			key_vocabularyName = ${vocabularyName},
 			locator1 = "AssetCategorization#CATEGORY_SELECT");
 
-		IFrame.selectCategoryFrame();
+		AssertVisible(locator1 = "Modal#BODY");
 
 		AssertElementNotPresent(locator1 = "Button#PLUS");
 	}
