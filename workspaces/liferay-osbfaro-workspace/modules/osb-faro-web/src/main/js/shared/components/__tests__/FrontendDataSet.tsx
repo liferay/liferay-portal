@@ -108,7 +108,7 @@ describe('useSnapshots', () => {
 		expect(result.current).toBeNull();
 	});
 
-	it('should return saved views as a flat list of snapshots', async () => {
+	it('should return saved views as a single group of snapshots', async () => {
 		mockFetch([
 			{
 				externalReferenceCode: 'erc-1',
@@ -124,9 +124,14 @@ describe('useSnapshots', () => {
 		await waitFor(() =>
 			expect(result.current).toEqual([
 				{
-					configuration: '{"filters":[]}',
-					erc: 'erc-1',
-					label: 'My View',
+					headerVisible: false,
+					items: [
+						{
+							configuration: '{"filters":[]}',
+							erc: 'erc-1',
+							label: 'My View',
+						},
+					],
 				},
 			])
 		);

@@ -158,11 +158,9 @@ export const columns = {
 export function useSnapshots(fdsName: string, enabled = true) {
 	const fetchSnapshots = enabled && Liferay.FeatureFlags['LPS-164563'];
 
-	const [snapshots, setSnapshots] = useState<Array<{
-		configuration: string;
-		erc: string;
-		label: string;
-	}> | null>(fetchSnapshots ? null : []);
+	const [snapshots, setSnapshots] = useState<
+		IFrontendDataSetProps['snapshots'] | null
+	>(fetchSnapshots ? null : []);
 
 	useEffect(() => {
 		if (!fetchSnapshots) {
@@ -175,7 +173,16 @@ export function useSnapshots(fdsName: string, enabled = true) {
 		)
 			.then((res) => res.json())
 			.then((data) => {
-				const formattedSnapshots = data.items.map(
+
+				// The data set takes snapshots grouped, not flat: every entry
+				// is a group carrying its own `items`, and the single group
+				// whose header is hidden holds the user's own views. All this
+				// endpoint returns belongs there, so wrap it in one hidden
+				// group. Handing over a flat list makes the data set read
+				// `items` off a snapshot and throw while it builds its initial
+				// state, which takes the whole screen down.
+
+				const items = data.items.map(
 					(item: {
 						externalReferenceCode: any;
 						label: any;
@@ -187,7 +194,9 @@ export function useSnapshots(fdsName: string, enabled = true) {
 					})
 				);
 
-				setSnapshots(formattedSnapshots);
+				setSnapshots(
+					items.length ? [{headerVisible: false, items}] : []
+				);
 			})
 			.catch((error) => {
 
@@ -232,9 +241,7 @@ const FrontendDataSet = ({
 				<BaseFrontendDataSet
 					{...props}
 					configInURLBehavior={configInURLBehavior}
-					snapshots={
-						snapshots as unknown as IFrontendDataSetProps['snapshots']
-					}
+					snapshots={snapshots}
 					snapshotsEnabled={snapshotsEnabled}
 				/>
 			</Suspense>
