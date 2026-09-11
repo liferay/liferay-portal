@@ -3,7 +3,7 @@
 		"auto_approve": false,
 		"parallelism": 10,
 		"provider": "gcp",
-		"version": "2.0.0"
+		"version": "2.0.1"
 	},
 	"variables": {
 		"deployment_name": "liferay-gcp-test",
