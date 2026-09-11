@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -138,18 +139,14 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			httpServletRequest.setAttribute(
 				WebKeys.THEME_DISPLAY, themeDisplay);
 
-			if (segmentsExperienceId != GetterUtil.getLong(
-					httpServletRequest.getParameter("segmentsExperienceId"))) {
+			DynamicServletRequest dynamicServletRequest =
+				new DynamicServletRequest(httpServletRequest);
 
-				DynamicServletRequest dynamicServletRequest =
-					new DynamicServletRequest(httpServletRequest);
+			dynamicServletRequest.setParameter("p_l_mode", Constants.PREVIEW);
+			dynamicServletRequest.setParameter(
+				"segmentsExperienceId", String.valueOf(segmentsExperienceId));
 
-				dynamicServletRequest.setParameter(
-					"segmentsExperienceId",
-					String.valueOf(segmentsExperienceId));
-
-				httpServletRequest = dynamicServletRequest;
-			}
+			httpServletRequest = dynamicServletRequest;
 
 			layout.includeLayoutContent(
 				httpServletRequest, themeDisplay.getResponse());
