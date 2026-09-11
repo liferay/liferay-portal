@@ -171,6 +171,9 @@ const ActivitiesChart: React.FC<
 
 	const yAxisWidth = getYAxisWidth(history, 'totalEvents');
 
+	const formatTick = (value: number | string) =>
+		formatXAxisDate(value, rangeSelectors.rangeKey, interval, dateKeysIMap);
+
 	return (
 		<ResponsiveContainer height={height}>
 			<ComposedChart
@@ -211,16 +214,10 @@ const ActivitiesChart: React.FC<
 					axisLine={{stroke: AXIS.borderStroke}}
 					dataKey="intervalInitDate"
 					domain={['dataMin', 'dataMax']}
-					interval="preserveStart"
+					interval="preserveStartEnd"
 					padding={{left: X_AXIS_PADDING, right: X_AXIS_PADDING}}
-					tick={getAxisTickText('x', (value) =>
-						formatXAxisDate(
-							value,
-							rangeSelectors.rangeKey,
-							interval,
-							dateKeysIMap
-						)
-					)}
+					tick={getAxisTickText('x', formatTick)}
+					tickFormatter={formatTick}
 					tickLine={false}
 					tickMargin={12}
 					ticks={intervals.filter((v): v is number => v !== null)}
