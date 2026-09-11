@@ -24,7 +24,7 @@ import org.junit.runner.RunWith;
  * @author Jürgen Kappler
  */
 @RunWith(Arquillian.class)
-public class SharepointCompanyRepositoryDefinerTest {
+public class SystemSharepointRepositoryDefinerTest {
 
 	@ClassRule
 	@Rule
@@ -38,8 +38,6 @@ public class SharepointCompanyRepositoryDefinerTest {
 		String pid = ConfigurationTestUtil.createFactoryConfiguration(
 			_FACTORY_PID,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"companyId", TestPropsValues.getCompanyId()
-			).put(
 				"name", name
 			).build());
 
@@ -47,7 +45,7 @@ public class SharepointCompanyRepositoryDefinerTest {
 			Assert.assertTrue(
 				_hasExternalRepositoryClassName(
 					TestPropsValues.getCompanyId(), name));
-			Assert.assertFalse(
+			Assert.assertTrue(
 				_hasExternalRepositoryClassName(
 					RandomTestUtil.randomLong(), name));
 		}
@@ -73,6 +71,6 @@ public class SharepointCompanyRepositoryDefinerTest {
 
 	private static final String _FACTORY_PID =
 		"com.liferay.sharepoint.rest.repository.internal.configuration." +
-			"SharepointRepositoryConfiguration.scoped";
+			"SharepointRepositoryConfiguration";
 
 }

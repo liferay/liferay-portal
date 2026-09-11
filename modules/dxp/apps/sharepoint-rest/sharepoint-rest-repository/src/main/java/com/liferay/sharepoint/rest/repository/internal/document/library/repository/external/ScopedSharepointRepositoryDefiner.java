@@ -14,10 +14,10 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
  * @author Jürgen Kappler
  */
 @Component(
-	configurationPid = "com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration",
+	configurationPid = "com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration.scoped",
 	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	service = RepositoryDefiner.class
 )
-public class SharepointSystemRepositoryDefiner
+public class ScopedSharepointRepositoryDefiner
 	extends BaseSharepointRepositoryDefiner {
 }
