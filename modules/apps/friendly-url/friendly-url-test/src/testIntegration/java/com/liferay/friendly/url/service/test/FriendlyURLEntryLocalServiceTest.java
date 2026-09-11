@@ -633,6 +633,27 @@ public class FriendlyURLEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetUniqueUrlTitleResolvesConflictsAcrossLanguages()
+		throws Exception {
+
+		long classNameId = _classNameLocalService.getClassNameId(User.class);
+		String urlTitle = "existing-url-title";
+
+		_friendlyURLEntryLocalService.addFriendlyURLEntry(
+			_group.getGroupId(), classNameId, TestPropsValues.getUserId(),
+			HashMapBuilder.put(
+				_language.getLanguageId(LocaleUtil.BRAZIL), urlTitle
+			).build(),
+			_getServiceContext());
+
+		Assert.assertEquals(
+			"existing-url-title-1",
+			_friendlyURLEntryLocalService.getUniqueUrlTitle(
+				_group.getGroupId(), classNameId, _user.getUserId(), urlTitle,
+				_language.getLanguageId(LocaleUtil.getDefault())));
+	}
+
+	@Test
 	@TestInfo("LPD-90910")
 	public void testGetUniqueUrlTitleReturnsSameTitleAcrossDifferentParentClassPK()
 		throws Exception {
