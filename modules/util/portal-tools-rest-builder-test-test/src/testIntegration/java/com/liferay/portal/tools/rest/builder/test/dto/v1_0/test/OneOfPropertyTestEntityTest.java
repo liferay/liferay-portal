@@ -36,18 +36,18 @@ public class OneOfPropertyTestEntityTest {
 
 	@Test
 	public void testToJSON() throws Exception {
-		_testToJSON(_ARRAY, _ARRAY_JSON);
 		_testToJSON(Arrays.asList(_ARRAY), _ARRAY_JSON);
-		_testToJSON(_map, _MAP_JSON);
+		_testToJSON(_ARRAY, _ARRAY_JSON);
 		_testToJSON(_STRING, _STRING_JSON);
+		_testToJSON(_map, _MAP_JSON);
 	}
 
 	@Test
 	public void testToString() throws Exception {
-		_testToString(_ARRAY, _ARRAY_JSON);
 		_testToString(Arrays.asList(_ARRAY), _ARRAY_JSON);
-		_testToString(_map, _MAP_JSON);
+		_testToString(_ARRAY, _ARRAY_JSON);
 		_testToString(_STRING, _STRING_JSON);
+		_testToString(_map, _MAP_JSON);
 	}
 
 	private void _testToJSON(Object oneOfProperty, String expectedJSON)
