@@ -216,34 +216,31 @@ test(
 		};
 
 		for (const eligibility of eligibilities) {
-			await test.step(
-				`${eligibility.label} cannot be selected twice in one session`,
-				async () => {
-					await eligibility.radio.check();
+			await test.step(`${eligibility.label} cannot be selected twice in one session`, async () => {
+				await eligibility.radio.check();
 
-					await searchEligibility(
-						eligibility.placeholder,
-						eligibility.searchTerm,
+				await searchEligibility(
+					eligibility.placeholder,
+					eligibility.searchTerm,
+					eligibility.entryName
+				);
+
+				await commerceAdminPriceListDetailsPage
+					.eligibilityRowSelectButton(eligibility.entryName)
+					.click();
+
+				await commerceAdminPriceListDetailsPage
+					.eligibilityFindInput(eligibility.placeholder)
+					.fill(eligibility.searchTerm);
+
+				await expect(
+					commerceAdminPriceListDetailsPage.eligibilityRowSelectButton(
 						eligibility.entryName
-					);
+					)
+				).toBeDisabled();
 
-					await commerceAdminPriceListDetailsPage
-						.eligibilityRowSelectButton(eligibility.entryName)
-						.click();
-
-					await commerceAdminPriceListDetailsPage
-						.eligibilityFindInput(eligibility.placeholder)
-						.fill(eligibility.searchTerm);
-
-					await expect(
-						commerceAdminPriceListDetailsPage.eligibilityRowSelectButton(
-							eligibility.entryName
-						)
-					).toBeDisabled();
-
-					await page.keyboard.press('Escape');
-				}
-			);
+				await page.keyboard.press('Escape');
+			});
 		}
 
 		const guardedEligibilities = eligibilities.filter(
@@ -251,30 +248,27 @@ test(
 		);
 
 		for (const eligibility of guardedEligibilities) {
-			await test.step(
-				`Server rejects a duplicate ${eligibility.label.toLowerCase()} once the selection is cleared`,
-				async () => {
-					await gotoEligibilityTab();
+			await test.step(`Server rejects a duplicate ${eligibility.label.toLowerCase()} once the selection is cleared`, async () => {
+				await gotoEligibilityTab();
 
-					await eligibility.radio.check();
+				await eligibility.radio.check();
 
-					await searchEligibility(
-						eligibility.placeholder,
-						eligibility.searchTerm,
-						eligibility.entryName
-					);
+				await searchEligibility(
+					eligibility.placeholder,
+					eligibility.searchTerm,
+					eligibility.entryName
+				);
 
-					await commerceAdminPriceListDetailsPage
-						.eligibilityRowSelectButton(eligibility.entryName)
-						.click();
+				await commerceAdminPriceListDetailsPage
+					.eligibilityRowSelectButton(eligibility.entryName)
+					.click();
 
-					await expect(
-						commerceAdminPriceListDetailsPage.errorAlert(
-							eligibility.errorMessage
-						)
-					).toBeVisible();
-				}
-			);
+				await expect(
+					commerceAdminPriceListDetailsPage.errorAlert(
+						eligibility.errorMessage
+					)
+				).toBeVisible();
+			});
 		}
 	}
 );
