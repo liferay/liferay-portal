@@ -10,6 +10,7 @@ import React from 'react';
 import {EditorSection} from '../chrome/EditorSection';
 import {CommitSlider} from '../chrome/fields';
 import {useEditorId} from '../chrome/instance';
+import {AdjustmentKey} from '../editorConfig';
 import {EditorAction} from '../state/editorReducer';
 import {Adjustments} from '../state/types';
 
@@ -25,19 +26,27 @@ interface Props {
 	adjustments: Adjustments;
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
+	sliders: AdjustmentKey[];
 }
 
-export function AdjustPanel({adjustments, dispatch, onAnnounce}: Props) {
+export function AdjustPanel({
+	adjustments,
+	dispatch,
+	onAnnounce,
+	sliders,
+}: Props) {
 	const eid = useEditorId();
 
-	const hasAdjustments = SLIDERS.some(({key}) => adjustments[key] !== 0);
+	const shown = SLIDERS.filter(({key}) => sliders.includes(key));
+
+	const hasAdjustments = shown.some(({key}) => adjustments[key] !== 0);
 
 	return (
 		<EditorSection
 			title={Liferay.Language.get('adjustments')}
 			titleId={eid('adjust-panel-title')}
 		>
-			{SLIDERS.map(({key, label}) => {
+			{shown.map(({key, label}) => {
 				const value = adjustments[key];
 
 				return (
@@ -129,7 +138,7 @@ export function AdjustPanel({adjustments, dispatch, onAnnounce}: Props) {
 									document
 										.getElementById(
 											eid(
-												`adjust-${SLIDERS[SLIDERS.length - 1].key}`
+												`adjust-${shown[shown.length - 1].key}`
 											)
 										)
 										?.focus(),

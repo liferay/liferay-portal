@@ -6,11 +6,27 @@
 import '@testing-library/jest-dom';
 
 import {
+	ADJUSTMENT_KEYS,
 	RATIO_PRESETS,
 	resolveConfig,
 } from '../src/main/resources/META-INF/resources/js/editorConfig';
 
 describe('resolveConfig', () => {
+	it('exposes every adjustment slider by default', () => {
+		expect(resolveConfig().adjustments).toEqual(ADJUSTMENT_KEYS);
+	});
+
+	it('switches the adjustment sliders off with false', () => {
+		expect(resolveConfig({adjustments: false}).adjustments).toEqual([]);
+	});
+
+	it('narrows the adjustment sliders to a subset in slider order', () => {
+		expect(
+			resolveConfig({adjustments: {sliders: ['shadows', 'contrast']}})
+				.adjustments
+		).toEqual(['contrast', 'shadows']);
+	});
+
 	it('exposes everything by default', () => {
 		expect(resolveConfig().crop).toEqual({
 			enabled: true,

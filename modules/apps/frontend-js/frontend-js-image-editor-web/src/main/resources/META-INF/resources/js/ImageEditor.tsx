@@ -407,15 +407,18 @@ function Editor({
 						zoom={zoom}
 					/>
 
-					<EditorSidebar
-						aspectLocked={aspectLocked}
-						dispatch={dispatch}
-						onAnnounce={announce}
-						onAspectLockedChange={setAspectLocked}
-						showCrop={enabled.crop.enabled}
-						showStraighten={enabled.crop.straighten}
-						state={state}
-					/>
+					{(enabled.crop.enabled || !!enabled.adjustments.length) && (
+						<EditorSidebar
+							aspectLocked={aspectLocked}
+							dispatch={dispatch}
+							onAnnounce={announce}
+							onAspectLockedChange={setAspectLocked}
+							showCrop={enabled.crop.enabled}
+							showStraighten={enabled.crop.straighten}
+							sliders={enabled.adjustments}
+							state={state}
+						/>
+					)}
 				</div>
 
 				{saveError && (

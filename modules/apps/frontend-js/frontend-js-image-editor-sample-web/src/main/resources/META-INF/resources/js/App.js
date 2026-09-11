@@ -17,8 +17,10 @@ const SAMPLE_URL = '/o/frontend-js-image-editor-sample-web/images/sample.jpg';
 
 /**
  * `?crop=` turns the crop tools off, `?crop=rotate,straighten` picks the
- * ones to keep and `?ratios=1:1,16:9` narrows the ratio presets, so every
- * host configuration can be tried from the address bar.
+ * ones to keep and `?ratios=1:1,16:9` narrows the ratio presets.
+ * `?adjustments=` turns the adjustment sliders off and
+ * `?adjustments=brightness,contrast` picks the ones to keep, so every host
+ * configuration can be tried from the address bar.
  */
 function configFromSearch(search) {
 	const params = new URLSearchParams(search);
@@ -31,9 +33,16 @@ function configFromSearch(search) {
 					.map((item) => item.trim())
 					.filter(Boolean);
 
+	const adjustments = params.get('adjustments');
 	const crop = params.get('crop');
 
 	return {
+		adjustments:
+			adjustments === null
+				? undefined
+				: adjustments === ''
+					? false
+					: {sliders: list(adjustments)},
 		crop:
 			crop === null
 				? undefined

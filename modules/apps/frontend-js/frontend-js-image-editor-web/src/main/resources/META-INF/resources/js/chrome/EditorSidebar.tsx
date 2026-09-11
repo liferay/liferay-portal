@@ -7,6 +7,7 @@ import '../../css/Panels.scss';
 
 import React from 'react';
 
+import {AdjustmentKey} from '../editorConfig';
 import {AdjustPanel} from '../panels/AdjustPanel';
 import {CropPanel} from '../panels/CropPanel';
 import {EditorAction} from '../state/editorReducer';
@@ -20,6 +21,7 @@ interface Props {
 	onAspectLockedChange: (locked: boolean) => void;
 	showCrop: boolean;
 	showStraighten: boolean;
+	sliders: AdjustmentKey[];
 	state: EditState;
 }
 
@@ -30,6 +32,7 @@ export function EditorSidebar({
 	onAspectLockedChange,
 	showCrop,
 	showStraighten,
+	sliders,
 	state,
 }: Props) {
 	return (
@@ -50,11 +53,14 @@ export function EditorSidebar({
 				/>
 			)}
 
-			<AdjustPanel
-				adjustments={state.adjustments}
-				dispatch={dispatch}
-				onAnnounce={onAnnounce}
-			/>
+			{!!sliders.length && (
+				<AdjustPanel
+					adjustments={state.adjustments}
+					dispatch={dispatch}
+					onAnnounce={onAnnounce}
+					sliders={sliders}
+				/>
+			)}
 		</aside>
 	);
 }
