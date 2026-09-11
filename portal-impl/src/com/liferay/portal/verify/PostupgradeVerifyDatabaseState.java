@@ -221,12 +221,17 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
 
 		for (Bundle bundle : bundleContext.getBundles()) {
-			if (BundleUtil.isLiferayRequireSchemaVersionBundle(bundle) ||
-				BundleUtil.isLiferayServiceBundle(bundle)) {
+			String symbolicName = bundle.getSymbolicName();
 
-				columnDefinitionsMap.putAll(
-					DBResourceUtil.getModuleColumnDefinitionsMap(bundle));
+			if (!symbolicName.startsWith("com.liferay") ||
+				(!BundleUtil.isLiferayRequireSchemaVersionBundle(bundle) &&
+				 !BundleUtil.isLiferayServiceBundle(bundle))) {
+
+				continue;
 			}
+
+			columnDefinitionsMap.putAll(
+				DBResourceUtil.getModuleColumnDefinitionsMap(bundle));
 		}
 
 		return columnDefinitionsMap;
