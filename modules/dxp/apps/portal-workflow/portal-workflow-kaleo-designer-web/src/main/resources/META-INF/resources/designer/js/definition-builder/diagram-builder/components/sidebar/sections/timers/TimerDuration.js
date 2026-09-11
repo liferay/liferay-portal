@@ -4,11 +4,11 @@
  */
 
 import {ClayToggle} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 
 import SidebarPanel from '../../SidebarPanel';
+import HelpIcon from '../shared-components/HelpIcon';
 import TimerFields from './TimerFields';
 
 const TimerDuration = ({
@@ -60,17 +60,12 @@ const TimerDuration = ({
 					toggled={recurrence}
 				/>
 
-				<span
+				<HelpIcon
 					className="ml-2"
-					title={Liferay.Language.get(
+					message={Liferay.Language.get(
 						'repeat-the-action-at-a-given-duration-until-the-workflow-task-is-completed'
 					)}
-				>
-					<ClayIcon
-						className="text-muted"
-						symbol="question-circle-full"
-					/>
-				</span>
+				/>
 			</div>
 
 			{recurrence && (

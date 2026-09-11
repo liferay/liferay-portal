@@ -4,13 +4,13 @@
  */
 
 import ClayForm, {ClayInput, ClaySelect} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect} from 'react';
 
 import {DefinitionBuilderContext} from '../../../../../DefinitionBuilderContext';
 import {filterScriptOption} from '../../../../util/filterScriptOption';
 import {sortElements} from '../utils';
+import HelpIcon from './HelpIcon';
 
 const BaseActionsInfo = ({
 	actionTypes,
@@ -290,17 +290,12 @@ const BaseActionsInfo = ({
 					{Liferay.Language.get('priority')}
 				</label>
 
-				<span
+				<HelpIcon
 					className="ml-1"
-					title={Liferay.Language.get(
+					message={Liferay.Language.get(
 						'lower-numbers-represent-higher-priority'
 					)}
-				>
-					<ClayIcon
-						className="text-muted"
-						symbol="question-circle-full"
-					/>
-				</span>
+				/>
 
 				<ClayInput
 					aria-label="Select"

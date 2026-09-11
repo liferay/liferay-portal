@@ -4,10 +4,10 @@
  */
 
 import ClayForm, {ClaySelect} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import React, {useContext, useEffect} from 'react';
 
 import {DefinitionBuilderContext} from '../../../../../../DefinitionBuilderContext';
+import HelpIcon from '../../shared-components/HelpIcon';
 
 const options = [
 	{
@@ -72,15 +72,12 @@ const SelectReassignment = ({
 			<label htmlFor="reassignment-type">
 				{Liferay.Language.get('reassignment-type')}
 
-				<span
+				<HelpIcon
 					className="ml-2"
-					title={Liferay.Language.get('select-the-reassignment-type')}
-				>
-					<ClayIcon
-						className="text-muted"
-						symbol="question-circle-full"
-					/>
-				</span>
+					message={Liferay.Language.get(
+						'select-the-reassignment-type'
+					)}
+				/>
 			</label>
 
 			<ClaySelect

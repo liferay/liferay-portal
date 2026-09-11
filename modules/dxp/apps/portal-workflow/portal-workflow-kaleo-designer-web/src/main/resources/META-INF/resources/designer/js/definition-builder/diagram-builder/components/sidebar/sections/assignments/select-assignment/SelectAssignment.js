@@ -4,12 +4,12 @@
  */
 
 import ClayForm, {ClaySelect} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import React, {useContext} from 'react';
 
 import {DefinitionBuilderContext} from '../../../../../../DefinitionBuilderContext';
 import {DisabledGroovyScriptAlert} from '../../../../shared-components/DisabledGroovyScriptAlert';
 import SidebarPanel from '../../../SidebarPanel';
+import HelpIcon from '../../shared-components/HelpIcon';
 
 const options = [
 	{
@@ -77,17 +77,12 @@ const SelectAssignment = ({section, setSection, setSections}) => {
 					<label htmlFor="assignment-type">
 						{Liferay.Language.get('assignment-type')}
 
-						<span
+						<HelpIcon
 							className="ml-2"
-							title={Liferay.Language.get(
+							message={Liferay.Language.get(
 								'select-the-assignment-type'
 							)}
-						>
-							<ClayIcon
-								className="text-muted"
-								symbol="question-circle-full"
-							/>
-						</span>
+						/>
 					</label>
 
 					<ClaySelect

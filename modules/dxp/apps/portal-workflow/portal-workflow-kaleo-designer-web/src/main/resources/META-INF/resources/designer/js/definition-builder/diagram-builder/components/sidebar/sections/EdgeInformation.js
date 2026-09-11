@@ -5,7 +5,6 @@
 
 import ClayAlert from '@clayui/alert';
 import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import PropTypes from 'prop-types';
 import React, {useContext, useEffect, useState} from 'react';
 import {isEdge} from 'react-flow-renderer';
@@ -15,6 +14,7 @@ import {defaultLanguageId} from '../../../../constants';
 import {DiagramBuilderContext} from '../../../DiagramBuilderContext';
 import SidebarPanel from '../SidebarPanel';
 import {isTransitionNameDuplicated} from '../utils';
+import HelpIcon from './shared-components/HelpIcon';
 import {checkLabelErrors, getUpdatedLabelItem} from './utils';
 
 export default function EdgeInformation({errors, setErrors}) {
@@ -100,12 +100,9 @@ export default function EdgeInformation({errors, setErrors}) {
 
 						<span className="ml-1 mr-1 text-warning">*</span>
 
-						<span title={Liferay.Language.get('label-name')}>
-							<ClayIcon
-								className="text-muted"
-								symbol="question-circle-full"
-							/>
-						</span>
+						<HelpIcon
+							message={Liferay.Language.get('label-name')}
+						/>
 					</label>
 
 					<ClayInput
@@ -159,16 +156,11 @@ export default function EdgeInformation({errors, setErrors}) {
 
 						<span className="ml-1 mr-1 text-warning">*</span>
 
-						<span
-							title={Liferay.Language.get(
+						<HelpIcon
+							message={Liferay.Language.get(
 								'name-is-the-transition-identifier'
 							)}
-						>
-							<ClayIcon
-								className="text-muted"
-								symbol="question-circle-full"
-							/>
-						</span>
+						/>
 					</label>
 
 					<ClayInput
