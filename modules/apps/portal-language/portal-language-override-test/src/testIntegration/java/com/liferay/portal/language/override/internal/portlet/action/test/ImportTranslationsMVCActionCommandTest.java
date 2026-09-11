@@ -64,7 +64,7 @@ public class ImportTranslationsMVCActionCommandTest {
 		sb.append(StringPool.EQUAL);
 		sb.append(value2);
 
-		File file = FileUtil.createTempFile("properties");
+		File file = FileUtil.createTempFile(_TEMP_FILE_EXTENSION);
 
 		FileUtil.write(file, sb.toString());
 
@@ -76,10 +76,8 @@ public class ImportTranslationsMVCActionCommandTest {
 			_ploEntryLocalService.fetchPLOEntry(
 				TestPropsValues.getCompanyId(), key2, _LANGUAGE_ID));
 
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_importTranslations",
-			new Class<?>[] {ActionRequest.class, File.class, String.class},
-			new MockLiferayPortletActionRequest(), file, _LANGUAGE_ID);
+		_importTranslations(
+			new MockLiferayPortletActionRequest(), file, _FILE_NAME);
 
 		_assertLanguageKey(value1, key1);
 		_assertLanguageKey(value2, key2);
@@ -87,17 +85,14 @@ public class ImportTranslationsMVCActionCommandTest {
 
 	@Test
 	public void testImportTranslationsWithEmptyFile() throws Exception {
-		File file = FileUtil.createTempFile("properties");
+		File file = FileUtil.createTempFile(_TEMP_FILE_EXTENSION);
 
 		FileUtil.write(file, StringPool.BLANK);
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_importTranslations",
-			new Class<?>[] {ActionRequest.class, File.class, String.class},
-			mockLiferayPortletActionRequest, file, _LANGUAGE_ID);
+		_importTranslations(mockLiferayPortletActionRequest, file, _FILE_NAME);
 
 		Assert.assertTrue(
 			SessionErrors.contains(
@@ -108,17 +103,16 @@ public class ImportTranslationsMVCActionCommandTest {
 	public void testImportTranslationsWithInvalidFileExtension()
 		throws Exception {
 
-		File file = FileUtil.createTempFile();
+		File file = FileUtil.createTempFile(_TEMP_FILE_EXTENSION);
 
 		FileUtil.write(file, RandomTestUtil.randomString());
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_importTranslations",
-			new Class<?>[] {ActionRequest.class, File.class, String.class},
-			mockLiferayPortletActionRequest, file, _LANGUAGE_ID);
+		_importTranslations(
+			mockLiferayPortletActionRequest, file,
+			RandomTestUtil.randomString() + ".txt");
 
 		Assert.assertTrue(
 			SessionErrors.contains(
@@ -135,7 +129,22 @@ public class ImportTranslationsMVCActionCommandTest {
 		Assert.assertEquals(expectedValue, ploEntry.getValue());
 	}
 
+	private void _importTranslations(
+		ActionRequest actionRequest, File file, String fileName) {
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_importTranslations",
+			new Class<?>[] {
+				ActionRequest.class, File.class, String.class, String.class
+			},
+			actionRequest, file, fileName, _LANGUAGE_ID);
+	}
+
+	private static final String _FILE_NAME = "Language.properties";
+
 	private static final String _LANGUAGE_ID = "en_US";
+
+	private static final String _TEMP_FILE_EXTENSION = "tmp";
 
 	@Inject(
 		filter = "mvc.command.name=/portal_language_override/import_translations"

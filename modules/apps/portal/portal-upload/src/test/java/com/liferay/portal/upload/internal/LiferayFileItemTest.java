@@ -5,6 +5,8 @@
 
 package com.liferay.portal.upload.internal;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -13,6 +15,7 @@ import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -57,8 +60,10 @@ public class LiferayFileItemTest {
 			}
 		);
 
+		_tempDir = FileUtil.createTempFolder();
+
 		_liferayFileItemFactory = new LiferayFileItemFactory(
-			FileUtil.createTempFolder(), 0, "UTF-8");
+			_tempDir, 0, "UTF-8");
 	}
 
 	@AfterClass
@@ -77,6 +82,27 @@ public class LiferayFileItemTest {
 		Assert.assertEquals(fieldName, liferayFileItem.getFieldName());
 		Assert.assertEquals(fileName, liferayFileItem.getFullFileName());
 		Assert.assertFalse(liferayFileItem.isFormField());
+	}
+
+	@Test
+	public void testDelete() throws Exception {
+		LiferayFileItem liferayFileItem = _liferayFileItemFactory.createItem(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), false,
+			RandomTestUtil.randomString() + ".txt");
+
+		liferayFileItem.getOutputStream();
+
+		File tempFile = liferayFileItem.getTempFile();
+
+		FileUtil.write(tempFile, RandomTestUtil.randomString());
+
+		Assert.assertTrue(tempFile.getAbsolutePath(), tempFile.exists());
+
+		liferayFileItem.delete();
+
+		Assert.assertFalse(tempFile.getAbsolutePath(), tempFile.exists());
+
+		Assert.assertNotEquals(tempFile, liferayFileItem.getTempFile());
 	}
 
 	@Test
@@ -124,6 +150,25 @@ public class LiferayFileItemTest {
 	}
 
 	@Test
+	public void testGetTempFileIgnoresFileNameExtension() {
+		LiferayFileItem liferayFileItem = _liferayFileItemFactory.createItem(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), false,
+			StringBundler.concat(
+				RandomTestUtil.randomString(), StringPool.PERIOD,
+				RandomTestUtil.randomString(), "/../../",
+				RandomTestUtil.randomString()));
+
+		File tempFile = liferayFileItem.getTempFile();
+
+		Assert.assertEquals(_tempDir, tempFile.getParentFile());
+
+		String name = tempFile.getName();
+
+		Assert.assertTrue(name, name.startsWith("upload_"));
+		Assert.assertTrue(name, name.endsWith(".tmp"));
+	}
+
+	@Test
 	public void testSetStringRequiresCharacterEncoding() throws Exception {
 		LiferayFileItem liferayFileItem = _liferayFileItemFactory.createItem(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), false,
@@ -150,5 +195,6 @@ public class LiferayFileItemTest {
 	private static LiferayFileItemFactory _liferayFileItemFactory;
 	private static final MockedStatic<MimeTypesUtil>
 		_mimeTypesUtilMockedStatic = Mockito.mockStatic(MimeTypesUtil.class);
+	private static File _tempDir;
 
 }

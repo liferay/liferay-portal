@@ -19,4 +19,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-memory")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.github.everit-org.json-schema", name: "org.everit.json.schema", version: "1.11.1"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.core", version: "3.6.12.JAKARTA-LIFERAY-PATCHED-1"
+	testImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.12.JAKARTA-LIFERAY-PATCHED-1"
 }
