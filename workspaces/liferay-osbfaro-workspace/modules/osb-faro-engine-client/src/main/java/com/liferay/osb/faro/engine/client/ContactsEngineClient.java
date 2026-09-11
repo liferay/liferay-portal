@@ -304,9 +304,10 @@ public interface ContactsEngineClient {
 		String assetType, int cur, int delta, List<OrderByField> orderByFields);
 
 	public Results<AssetSummary> getAssetSummaries(
-		FaroProject faroProject, long channelId, String filterString,
-		String keywords, String objectType, String rangeEnd, int rangeKey,
-		String rangeStart, String selectedMetric, int cur, int delta,
+		FaroProject faroProject, String accountId, long channelId,
+		String filterString, String individualId, String keywords,
+		String objectType, String rangeEnd, int rangeKey, String rangeStart,
+		String segmentId, String selectedMetric, int cur, int delta,
 		String sortString);
 
 	public Results<AssetSummaryCategory> getAssetSummaryCategories(
@@ -321,8 +322,9 @@ public interface ContactsEngineClient {
 		String rangeStart, String sort, int cur, int delta);
 
 	public Results<AssetSummaryMimeType> getAssetSummaryMimeTypes(
-		FaroProject faroProject, long channelId, String rangeEnd, int rangeKey,
-		String rangeStart, int cur, int delta);
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String rangeEnd, int rangeKey, String rangeStart,
+		int cur, int delta);
 
 	public Results<AssetSummaryTag> getAssetSummaryTags(
 		FaroProject faroProject, String accountId, long channelId,
@@ -331,13 +333,14 @@ public interface ContactsEngineClient {
 		int delta);
 
 	public Results<AssetSummaryType> getAssetSummaryTypes(
-		FaroProject faroProject, long channelId, String rangeEnd, int rangeKey,
-		String rangeStart, int cur, int delta);
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String rangeEnd, int rangeKey, String rangeStart,
+		int cur, int delta);
 
 	public Results<AssetSummaryVocabulary> getAssetSummaryVocabularies(
-		FaroProject faroProject, long channelId, String keywords,
-		String rangeEnd, int rangeKey, String rangeStart, String sort, int cur,
-		int delta);
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String keywords, String rangeEnd, int rangeKey,
+		String rangeStart, String sort, int cur, int delta);
 
 	public DataSource getAvailableTokenDataSource(FaroProject faroProject);
 

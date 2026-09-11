@@ -33,7 +33,9 @@ public class AssetSummaryVocabularyFaroController extends BaseFaroController {
 	public FaroFDSResultsDisplay<AssetSummaryVocabulary>
 			getAssetSummaryVocabulariesFaroFDSResultsDisplay(
 				@PathParam("groupId") long groupId,
+				@QueryParam("accountId") String accountId,
 				@QueryParam("channelId") long channelId,
+				@QueryParam("individualId") String individualId,
 				@QueryParam("keywords") String keywords,
 				@QueryParam("page") int page,
 				@DefaultValue("20") @QueryParam("pageSize") int pageSize,
@@ -47,8 +49,8 @@ public class AssetSummaryVocabularyFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getAssetSummaryVocabularies(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, keywords, rangeEnd, rangeKey, rangeStart, sortString,
-				page, pageSize),
+				accountId, channelId, individualId, keywords, rangeEnd,
+				rangeKey, rangeStart, sortString, page, pageSize),
 			AssetSummaryVocabularyDisplay::new, page, pageSize);
 	}
 

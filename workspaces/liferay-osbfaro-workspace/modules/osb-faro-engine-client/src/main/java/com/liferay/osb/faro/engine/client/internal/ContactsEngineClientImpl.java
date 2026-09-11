@@ -1364,18 +1364,27 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<AssetSummary> getAssetSummaries(
-		FaroProject faroProject, long channelId, String filterString,
-		String keywords, String objectType, String rangeEnd, int rangeKey,
-		String rangeStart, String selectedMetric, int cur, int delta,
+		FaroProject faroProject, String accountId, long channelId,
+		String filterString, String individualId, String keywords,
+		String objectType, String rangeEnd, int rangeKey, String rangeStart,
+		String segmentId, String selectedMetric, int cur, int delta,
 		String sortString) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
 
+		if (Validator.isNotNull(accountId)) {
+			uriVariables.put("accountIds", Arrays.asList(accountId));
+		}
+
 		uriVariables.put("channelId", channelId);
 
 		if (Validator.isNotNull(filterString)) {
 			uriVariables.put("filter", filterString);
+		}
+
+		if (Validator.isNotNull(individualId)) {
+			uriVariables.put("individualIds", Arrays.asList(individualId));
 		}
 
 		uriVariables.put("keywords", keywords);
@@ -1390,6 +1399,10 @@ public class ContactsEngineClientImpl
 		}
 		else {
 			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(segmentId)) {
+			uriVariables.put("segmentIds", Arrays.asList(segmentId));
 		}
 
 		if (Validator.isNotNull(selectedMetric)) {
@@ -1519,13 +1532,22 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<AssetSummaryMimeType> getAssetSummaryMimeTypes(
-		FaroProject faroProject, long channelId, String rangeEnd, int rangeKey,
-		String rangeStart, int cur, int delta) {
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String rangeEnd, int rangeKey, String rangeStart,
+		int cur, int delta) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
 
+		if (Validator.isNotNull(accountId)) {
+			uriVariables.put("accountIds", Arrays.asList(accountId));
+		}
+
 		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(individualId)) {
+			uriVariables.put("individualIds", Arrays.asList(individualId));
+		}
 
 		if ((rangeEnd != null) && (rangeStart != null)) {
 			uriVariables.put("rangeEnd", rangeEnd);
@@ -1600,13 +1622,22 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<AssetSummaryType> getAssetSummaryTypes(
-		FaroProject faroProject, long channelId, String rangeEnd, int rangeKey,
-		String rangeStart, int cur, int delta) {
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String rangeEnd, int rangeKey, String rangeStart,
+		int cur, int delta) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
 
+		if (Validator.isNotNull(accountId)) {
+			uriVariables.put("accountIds", Arrays.asList(accountId));
+		}
+
 		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(individualId)) {
+			uriVariables.put("individualIds", Arrays.asList(individualId));
+		}
 
 		if ((rangeEnd != null) && (rangeStart != null)) {
 			uriVariables.put("rangeEnd", rangeEnd);
@@ -1628,14 +1659,22 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<AssetSummaryVocabulary> getAssetSummaryVocabularies(
-		FaroProject faroProject, long channelId, String keywords,
-		String rangeEnd, int rangeKey, String rangeStart, String sort, int cur,
-		int delta) {
+		FaroProject faroProject, String accountId, long channelId,
+		String individualId, String keywords, String rangeEnd, int rangeKey,
+		String rangeStart, String sort, int cur, int delta) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
 
+		if (Validator.isNotNull(accountId)) {
+			uriVariables.put("accountIds", Arrays.asList(accountId));
+		}
+
 		uriVariables.put("channelId", channelId);
+
+		if (Validator.isNotNull(individualId)) {
+			uriVariables.put("individualIds", Arrays.asList(individualId));
+		}
 
 		if (Validator.isNotNull(keywords)) {
 			uriVariables.put("keywords", keywords);

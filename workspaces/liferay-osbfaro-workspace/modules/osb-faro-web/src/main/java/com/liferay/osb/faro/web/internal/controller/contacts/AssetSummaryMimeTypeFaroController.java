@@ -32,7 +32,9 @@ public class AssetSummaryMimeTypeFaroController extends BaseFaroController {
 	public FaroFDSResultsDisplay<AssetSummaryMimeType>
 			getAssetSummaryMimeTypesFaroFDSResultsDisplay(
 				@PathParam("groupId") long groupId,
+				@QueryParam("accountId") String accountId,
 				@QueryParam("channelId") long channelId,
+				@QueryParam("individualId") String individualId,
 				@QueryParam("page") int page,
 				@DefaultValue("20") @QueryParam("pageSize") int pageSize,
 				@QueryParam("rangeEnd") String rangeEnd,
@@ -43,7 +45,8 @@ public class AssetSummaryMimeTypeFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getAssetSummaryMimeTypes(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, rangeEnd, rangeKey, rangeStart, page, pageSize),
+				accountId, channelId, individualId, rangeEnd, rangeKey,
+				rangeStart, page, pageSize),
 			AssetSummaryMimeTypeDisplay::new, page, pageSize);
 	}
 
