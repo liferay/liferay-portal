@@ -124,12 +124,15 @@ export function Item<T extends Record<string, any>>({
 		setTabIndex(isInitialTabStop || isCurrentTabStop ? 0 : -1);
 	}, [firstKey, focusedElement, keyValue]);
 
+	const {'aria-describedby': ariaDescribedby, ...navItemProps} = otherProps;
+
 	return (
-		<Nav.Item role="none" {...otherProps}>
+		<Nav.Item role="none" {...navItemProps}>
 			<Nav.Link
 				active={active}
 				aria-controls={items ? ariaControlsId : undefined}
 				aria-current={active ? ariaCurrent ?? undefined : undefined}
+				aria-describedby={ariaDescribedby}
 				aria-expanded={items ? isExpanded : undefined}
 				className={menubarAction ? 'menubar-action-1' : ''}
 				collapsed={!isExpanded}

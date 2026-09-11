@@ -115,6 +115,31 @@ describe('VerticalNav basic rendering', () => {
 		});
 	});
 
+	describe('VerticalNav.Item aria-describedby', () => {
+		it('sets the description on the link rather than on the list item', () => {
+			const {getByRole} = render(
+				<>
+					<span id="zoneLabel">System</span>
+
+					<VerticalNav aria-label="vertical navbar">
+						<VerticalNav.Item
+							aria-describedby="zoneLabel"
+							href="#settings"
+							key="settings"
+						>
+							System Settings
+						</VerticalNav.Item>
+					</VerticalNav>
+				</>
+			);
+
+			const link = getByRole('menuitem');
+
+			expect(link).toHaveAttribute('aria-describedby', 'zoneLabel');
+			expect(link.closest('li')).not.toHaveAttribute('aria-describedby');
+		});
+	});
+
 	describe('keyboard arrows indicator', () => {
 		it('does not render the indicator by default', () => {
 			renderStaticWithProps();
