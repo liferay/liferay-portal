@@ -12,7 +12,12 @@
 	bottom: 16px;
 	height: 40px;
 	position: fixed;
-	right: 16px;
+
+	// Offset by the chatbot toggle's own width and gutter so the two buttons
+	// sit side by side instead of stacked. See `external-scripts.js`, which
+	// pins the chatbot toggle to the corner at a matching 40px.
+
+	right: 64px;
 	width: 40px;
 	z-index: $helpWidgetZIndex;
 

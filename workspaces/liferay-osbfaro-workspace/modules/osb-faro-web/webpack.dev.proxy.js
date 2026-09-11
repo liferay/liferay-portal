@@ -49,6 +49,21 @@ function createOnProxyReq(cookie, target) {
 	};
 }
 
+// The AI Hub serving the chatbot widget is a different host from the upstream
+// portal, so the widget's own `fetch` for its configuration is cross-origin and
+// the AI Hub sends back no `Access-Control-Allow-Origin`. Routing that call
+// through the dev server makes it same-origin, which is the only reason this
+// rule exists: it is a local development convenience with no counterpart in a
+// deployed environment, where the widget talks to the AI Hub directly.
+
+// Set-Cookie has to be dropped. The AI Hub is a second Liferay, and letting its
+// JSESSIONID through would overwrite the session the dev server already holds
+// for the upstream portal and sign the developer out.
+
+function onAIHubProxyRes(proxyRes) {
+	delete proxyRes.headers['set-cookie'];
+}
+
 function createOnProxyRes(target) {
 	return async function onProxyRes(proxyRes, req, res) {
 		const proxyOrigin = `http://${req.headers.host}`;
@@ -138,4 +153,4 @@ function createOnProxyRes(target) {
 	};
 }
 
-module.exports = {createOnProxyReq, createOnProxyRes};
+module.exports = {createOnProxyReq, createOnProxyRes, onAIHubProxyRes};

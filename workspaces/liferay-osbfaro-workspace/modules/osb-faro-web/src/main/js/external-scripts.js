@@ -1,31 +1,53 @@
 /**
- * A list of external scripts to be appended to the page. Each script
- * can also specify the attributes it needs. For example, the zendesk
- * widget requires that its script tag has a certain id attribute.
+ * Appends the external scripts and stylesheets the app pulls from third
+ * parties. Each descriptor can also specify the attributes its script needs.
+ * For example, the AI Hub chatbot widget requires that its script tag carry the
+ * chatbot it should open.
  *
- * Also, note that webpack will actually evaluate the boolean expressions
- * below at build time and remove any cases that can never be reached
- * (dead-code elim). This means we don't have to worry about the development
- * scripts being present in our production bundle. To keep this working, make
- * sure that we only do comparisons to string or number literals.
+ * One module per third party owns its own descriptors, so this file holds only
+ * the machinery that puts them on the page. Those modules decide whether they
+ * contribute anything at all, which is how an entry stays out of an environment
+ * it does not belong in.
  */
 
-import {Pendo} from 'shared/util/pendo';
+import {
+	AI_HUB_CHATBOT_LINKS,
+	AI_HUB_CHATBOT_SCRIPTS,
+	styleAIHubChatbot,
+} from 'shared/util/ai-hub-chatbot';
+import {PENDO_SCRIPTS} from 'shared/util/pendo-script';
 
-const pendo = new Pendo();
+const links = [...AI_HUB_CHATBOT_LINKS];
 
-const scripts = [
+const scripts = [...PENDO_SCRIPTS, ...AI_HUB_CHATBOT_SCRIPTS];
 
-	/* Pendo */
-	{
-		innerHTML: pendo.script,
-	},
-];
+function getNonce() {
+	return Liferay.CSP?.nonce;
+}
+
+/**
+ * Runtime logic for adding external stylesheets to the page.
+ */
+function appendLink(options) {
+	const link = document.createElement('link');
+
+	for (const [name, value] of Object.entries(options)) {
+		link[name] = value;
+	}
+
+	const nonce = getNonce();
+
+	if (nonce) {
+		link.setAttribute('nonce', nonce);
+	}
+
+	document.head.appendChild(link);
+}
 
 /**
  * Runtime logic for adding external scripts to the page.
  */
-function appendScript(options) {
+function appendScript({attributes = {}, ...options}) {
 	const script = document.createElement('script');
 
 	if (options.src) {
@@ -36,11 +58,25 @@ function appendScript(options) {
 		script[name] = value;
 	}
 
-	if (Liferay.CSP?.nonce) {
-		script.setAttribute('nonce', Liferay.CSP.nonce);
+	// Loaders that read their configuration back with `getAttribute` need real
+	// HTML attributes, which a plain property assignment does not create for
+	// non-standard names such as `ai-hub-url`.
+
+	for (const [name, value] of Object.entries(attributes)) {
+		script.setAttribute(name, value);
+	}
+
+	const nonce = getNonce();
+
+	if (nonce) {
+		script.setAttribute('nonce', nonce);
 	}
 
 	document.body.appendChild(script);
 }
 
-scripts.filter(({innerHTML, src}) => src || innerHTML).forEach(appendScript);
+links.forEach(appendLink);
+
+scripts.forEach(appendScript);
+
+styleAIHubChatbot();

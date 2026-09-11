@@ -66,11 +66,11 @@ export class Pendo {
 
 	/**
 	 * Appends the agent loader on demand. On the page load where the user
-	 * accepts tracking, external-scripts.js already skipped the loader (no
-	 * consent existed when the page was rendered), so it must be injected
-	 * here for tracking to start without a reload. Outside production
-	 * external-scripts.js always appends the inert stub, so a defined `pendo`
-	 * is also what keeps this method from running there.
+	 * accepts tracking, the loader was already skipped (no consent existed
+	 * when the page was rendered), so it must be injected here for tracking to
+	 * start without a reload. Outside production the inert stub is always
+	 * appended, so a defined `pendo` is also what keeps this method from
+	 * running there. See `pendo-script.ts` for what gets appended.
 	 */
 	private injectAgent() {
 		if (typeof pendo !== 'undefined') {
@@ -96,7 +96,7 @@ export class Pendo {
 
 			// Before the user accepts tracking the page must not request
 			// anything from pendo.io, not even the agent script: an empty
-			// entry is filtered out by external-scripts.js.
+			// snippet keeps `pendo-script.ts` from adding one.
 
 			if (this.getUserConsent() !== TrackingConsentValues.Accepted) {
 				return '';
