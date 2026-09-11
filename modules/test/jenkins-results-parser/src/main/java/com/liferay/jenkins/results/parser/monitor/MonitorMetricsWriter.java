@@ -62,11 +62,28 @@ public class MonitorMetricsWriter {
 		prometheusTextFormatWriter.write(
 			byteArrayOutputStream,
 			MetricSnapshots.of(
-				_newHeartbeatTimestampSnapshot(),
+				_newDurationSnapshot(), _newHeartbeatTimestampSnapshot(),
 				_newLastRunTimestampSnapshot(), _newStatusSnapshot()),
 			EscapingScheme.DEFAULT);
 
 		return byteArrayOutputStream.toString("UTF-8");
+	}
+
+	private double _getDurationSeconds(Monitor monitor) {
+		MonitorResult monitorResult =
+			_monitorResultStore.getLatestMonitorResult(monitor.getId());
+
+		if (monitorResult == null) {
+			return 0;
+		}
+
+		long durationMillis = monitorResult.getDurationMillis();
+
+		if (durationMillis < 0) {
+			return 0;
+		}
+
+		return durationMillis / 1000.0;
 	}
 
 	private Labels _getLabels(Monitor monitor) {
@@ -117,6 +134,23 @@ public class MonitorMetricsWriter {
 		}
 
 		return status.getSeverityRank();
+	}
+
+	private GaugeSnapshot _newDurationSnapshot() {
+		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
+
+		for (Monitor monitor : _monitors) {
+			gaugeSnapshotBuilder.dataPoint(
+				_newGaugeDataPointSnapshot(
+					monitor, _getDurationSeconds(monitor)));
+		}
+
+		gaugeSnapshotBuilder.help(
+			"Seconds the last monitor run took, 0 if never run or not " +
+				"measured");
+		gaugeSnapshotBuilder.name("monitor_duration_seconds");
+
+		return gaugeSnapshotBuilder.build();
 	}
 
 	private GaugeSnapshot.GaugeDataPointSnapshot _newGaugeDataPointSnapshot(

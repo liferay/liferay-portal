@@ -58,8 +58,9 @@ public class MonitorEngine {
 			MonitorResult monitorResult = entry.getValue();
 
 			monitorResult = new MonitorResult(
-				monitorResult.getMessage(), monitorResult.getMetrics(),
-				monitorResult.getStatus(), currentTimeMillis);
+				monitorResult.getDurationMillis(), monitorResult.getMessage(),
+				monitorResult.getMetrics(), monitorResult.getStatus(),
+				currentTimeMillis);
 
 			entry.setValue(monitorResult);
 

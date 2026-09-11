@@ -15,14 +15,28 @@ import java.util.Map;
  */
 public class MonitorResult {
 
-	public MonitorResult(
-		String message, Map<String, String> metrics, Status status,
-		long timestamp) {
+	public static final long DURATION_MILLIS_UNMEASURED = -1;
 
+	public MonitorResult(
+		long durationMillis, String message, Map<String, String> metrics,
+		Status status, long timestamp) {
+
+		_durationMillis = durationMillis;
 		_message = message;
 		_metrics = _newUnmodifiableMap(metrics);
 		_status = status;
 		_timestamp = timestamp;
+	}
+
+	public MonitorResult(
+		String message, Map<String, String> metrics, Status status,
+		long timestamp) {
+
+		this(DURATION_MILLIS_UNMEASURED, message, metrics, status, timestamp);
+	}
+
+	public long getDurationMillis() {
+		return _durationMillis;
 	}
 
 	public String getMessage() {
@@ -81,6 +95,7 @@ public class MonitorResult {
 		return Collections.unmodifiableMap(new LinkedHashMap<>(map));
 	}
 
+	private final long _durationMillis;
 	private final String _message;
 	private final Map<String, String> _metrics;
 	private final Status _status;

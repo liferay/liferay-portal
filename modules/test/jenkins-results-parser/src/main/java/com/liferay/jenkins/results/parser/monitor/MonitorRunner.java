@@ -164,9 +164,11 @@ public class MonitorRunner {
 			});
 	}
 
-	private MonitorResult _newUnknownMonitorResult(String message) {
+	private MonitorResult _newUnknownMonitorResult(
+		long durationMillis, String message) {
+
 		return new MonitorResult(
-			message, null, MonitorResult.Status.UNKNOWN,
+			durationMillis, message, null, MonitorResult.Status.UNKNOWN,
 			JenkinsResultsParserUtil.getCurrentTimeMillis());
 	}
 
@@ -191,6 +193,7 @@ public class MonitorRunner {
 					future.cancel(true);
 
 					return _newUnknownMonitorResult(
+						MonitorResult.DURATION_MILLIS_UNMEASURED,
 						JenkinsResultsParserUtil.combine(
 							"Monitor ", monitor.getId(),
 							" did not start within ",
@@ -211,18 +214,25 @@ public class MonitorRunner {
 			MonitorResult monitorResult = future.get(
 				remainingMillis, TimeUnit.MILLISECONDS);
 
+			long durationMillis = monitorTask.getDurationMillis();
+
 			if (monitorResult == null) {
 				return _newUnknownMonitorResult(
+					durationMillis,
 					JenkinsResultsParserUtil.combine(
 						"Monitor ", monitor.getId(), " returned no result"));
 			}
 
-			return monitorResult;
+			return new MonitorResult(
+				durationMillis, monitorResult.getMessage(),
+				monitorResult.getMetrics(), monitorResult.getStatus(),
+				monitorResult.getTimestamp());
 		}
 		catch (ExecutionException executionException) {
 			Throwable throwable = executionException.getCause();
 
 			return _newUnknownMonitorResult(
+				monitorTask.getDurationMillis(),
 				JenkinsResultsParserUtil.combine(
 					"Monitor ", monitor.getId(), " failed: ",
 					JenkinsResultsParserUtil.getMessage(throwable)));
@@ -235,6 +245,7 @@ public class MonitorRunner {
 			future.cancel(true);
 
 			return _newUnknownMonitorResult(
+				MonitorResult.DURATION_MILLIS_UNMEASURED,
 				JenkinsResultsParserUtil.combine(
 					"Monitor ", monitor.getId(), " was interrupted"));
 		}
@@ -242,6 +253,7 @@ public class MonitorRunner {
 			future.cancel(true);
 
 			return _newUnknownMonitorResult(
+				monitorTask.getElapsedMillis(),
 				JenkinsResultsParserUtil.combine(
 					"Monitor ", monitor.getId(), " timed out after ",
 					String.valueOf(timeoutMillis), " ms"));
@@ -266,11 +278,36 @@ public class MonitorRunner {
 
 		@Override
 		public MonitorResult call() {
+			_startNanoTime = System.nanoTime();
 			_startTimestamp = System.currentTimeMillis();
 
 			_startCountDownLatch.countDown();
 
-			return _monitor.execute();
+			try {
+				return _monitor.execute();
+			}
+			finally {
+				_endNanoTime = System.nanoTime();
+
+				_completed = true;
+			}
+		}
+
+		public long getDurationMillis() {
+			if (!_completed) {
+				return MonitorResult.DURATION_MILLIS_UNMEASURED;
+			}
+
+			return TimeUnit.NANOSECONDS.toMillis(_endNanoTime - _startNanoTime);
+		}
+
+		public long getElapsedMillis() {
+			if (_startTimestamp == 0) {
+				return MonitorResult.DURATION_MILLIS_UNMEASURED;
+			}
+
+			return TimeUnit.NANOSECONDS.toMillis(
+				System.nanoTime() - _startNanoTime);
 		}
 
 		public Monitor getMonitor() {
@@ -281,9 +318,12 @@ public class MonitorRunner {
 			return _startTimestamp;
 		}
 
+		private volatile boolean _completed;
+		private volatile long _endNanoTime;
 		private final Monitor _monitor;
 		private final CountDownLatch _startCountDownLatch = new CountDownLatch(
 			1);
+		private volatile long _startNanoTime;
 		private volatile long _startTimestamp;
 
 	}
