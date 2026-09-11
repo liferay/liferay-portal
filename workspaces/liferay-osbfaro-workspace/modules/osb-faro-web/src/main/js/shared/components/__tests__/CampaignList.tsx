@@ -105,8 +105,8 @@ describe('CampaignList', () => {
 
 	it('links each campaign it was given a route for', () => {
 		renderList({
-			campaignUrls: {c0: '/campaigns/c0'},
 			campaigns: buildCampaigns(2),
+			campaignUrls: {c0: '/campaigns/c0'},
 			totalItems: 2,
 		});
 

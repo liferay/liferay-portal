@@ -67,7 +67,9 @@ describe('CampaignRow', () => {
 	it('leaves the campaign name plain when no url is known', () => {
 		renderRow();
 
-		expect(screen.getByText('Q3 Manufacturing ABM').closest('a')).toBeNull();
+		expect(
+			screen.getByText('Q3 Manufacturing ABM').closest('a')
+		).toBeNull();
 	});
 
 	it('counts the campaign touch total, not the rows it was handed', () => {

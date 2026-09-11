@@ -426,7 +426,11 @@ const SessionRow: FC<IRowProps<VerticalTimelineSession>> = ({
 				<span className="title text-secondary">
 					{sub(Liferay.Language.get('session-x-x'), [
 						time
-							? formatDateToTimeZone(time, TIME_FORMAT, timeZoneId)
+							? formatDateToTimeZone(
+									time,
+									TIME_FORMAT,
+									timeZoneId
+								)
 							: '',
 						getEndLabel(),
 					])}
