@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 
 import '@testing-library/jest-dom';
 import React from 'react';
@@ -47,5 +47,28 @@ describe('NodeInformationBaseSection component', () => {
 		expect(
 			document.getElementById('workflowDefinitionBaseNodeDescription')
 		).toBeInTheDocument();
+	});
+
+	it('renders focusable help icons for the label and node name fields', () => {
+		render(
+			<NodeInformationBaseSection
+				elements={mockElements}
+				errors={mockErrors}
+				selectedItem={mockSelectedItem}
+				selectedItemNewId=""
+				selectedLanguageId=""
+				setErrors={mockSetErrors}
+				setSelectedItem={mockSetSelectedItem}
+				setSelectedItemNewId={mockSetSelectedItemNewId}
+			/>
+		);
+
+		expect(screen.getByRole('img', {name: 'label-name'})).toHaveAttribute(
+			'tabindex',
+			'0'
+		);
+		expect(
+			screen.getByRole('img', {name: 'name-is-the-node-identifier'})
+		).toHaveAttribute('tabindex', '0');
 	});
 });

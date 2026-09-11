@@ -4,10 +4,10 @@
  */
 
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import {defaultLanguageId} from '../../../../constants';
+import HelpIcon from './shared-components/HelpIcon';
 import {checkIdErrors, checkLabelErrors, getUpdatedLabelItem} from './utils';
 
 import type {Elements, Node} from 'react-flow-renderer';
@@ -43,12 +43,7 @@ export function NodeInformationBaseSection({
 
 					<span className="ml-1 mr-1 text-warning">*</span>
 
-					<span title={Liferay.Language.get('label-name')}>
-						<ClayIcon
-							className="text-muted"
-							symbol="question-circle-full"
-						/>
-					</span>
+					<HelpIcon message={Liferay.Language.get('label-name')} />
 				</label>
 
 				<ClayInput
@@ -101,16 +96,11 @@ export function NodeInformationBaseSection({
 
 					<span className="ml-1 mr-1 text-warning">*</span>
 
-					<span
-						title={Liferay.Language.get(
+					<HelpIcon
+						message={Liferay.Language.get(
 							'name-is-the-node-identifier'
 						)}
-					>
-						<ClayIcon
-							className="text-muted"
-							symbol="question-circle-full"
-						/>
-					</span>
+					/>
 				</label>
 
 				<ClayInput
