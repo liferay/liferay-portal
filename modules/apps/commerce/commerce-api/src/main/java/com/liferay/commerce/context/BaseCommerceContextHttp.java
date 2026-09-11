@@ -99,9 +99,13 @@ public class BaseCommerceContextHttp implements CommerceContext {
 
 	@Override
 	public AccountEntry getAccountEntry() throws PortalException {
+		if (_accountEntry != null) {
+			return _accountEntry;
+		}
+
 		CommerceChannel commerceChannel = _fetchCommerceChannel();
 
-		if ((commerceChannel == null) || (_accountEntry != null)) {
+		if (commerceChannel == null) {
 			return _accountEntry;
 		}
 
