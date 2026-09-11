@@ -156,18 +156,48 @@ test(
 			type: 'promotion',
 		});
 
-		await commerceAdminPromotionsPage.goto();
+		const gotoEligibilityTab = async () => {
+			await commerceAdminPromotionsPage.goto();
 
-		await (
-			await commerceAdminPromotionsPage.tableRowLink({
-				colIndex: 0,
-				rowValue: promotionName,
-			})
-		).click();
+			await (
+				await commerceAdminPromotionsPage.tableRowLink({
+					colIndex: 0,
+					rowValue: promotionName,
+				})
+			).click();
 
-		await commerceAdminPriceListDetailsPage.eligibilityTab.click();
+			await commerceAdminPriceListDetailsPage.eligibilityTab.click();
+		};
 
-		const addThenAssertDisabled = async (
+		await gotoEligibilityTab();
+
+		const eligibilities = [
+			{
+				entryName: channel.name,
+				errorMessage: 'The channel relation already exists.',
+				label: 'Channel',
+				placeholder: 'Find a Channel',
+				radio: commerceAdminPriceListDetailsPage.specificChannelsRadio,
+				searchTerm: channel.name,
+			},
+			{
+				entryName: accountName,
+				label: 'Account',
+				placeholder: 'Find an Account',
+				radio: commerceAdminPriceListDetailsPage.specificAccountsRadio,
+				searchTerm: `Run${randomString}`,
+			},
+			{
+				entryName: orderType.name.en_US,
+				errorMessage: 'The order type relation already exists.',
+				label: 'Order type',
+				placeholder: 'Find an Order Type',
+				radio: commerceAdminPriceListDetailsPage.specificOrderTypesRadio,
+				searchTerm: `Run${randomString}`,
+			},
+		];
+
+		const searchEligibility = async (
 			placeholder: string,
 			searchTerm: string,
 			entryName: string
@@ -183,52 +213,68 @@ test(
 					)
 				).toBeEnabled({timeout: 2000});
 			}).toPass({timeout: 30000});
-
-			await commerceAdminPriceListDetailsPage
-				.eligibilityRowSelectButton(entryName)
-				.click();
-
-			await commerceAdminPriceListDetailsPage
-				.eligibilityFindInput(placeholder)
-				.fill(searchTerm);
-
-			await expect(
-				commerceAdminPriceListDetailsPage.eligibilityRowSelectButton(
-					entryName
-				)
-			).toBeDisabled();
-
-			await page.keyboard.press('Escape');
 		};
 
-		await test.step('Channel cannot be linked twice', async () => {
-			await commerceAdminPriceListDetailsPage.specificChannelsRadio.check();
+		for (const eligibility of eligibilities) {
+			await test.step(
+				`${eligibility.label} cannot be selected twice in one session`,
+				async () => {
+					await eligibility.radio.check();
 
-			await addThenAssertDisabled(
-				'Find a Channel',
-				channel.name,
-				channel.name
+					await searchEligibility(
+						eligibility.placeholder,
+						eligibility.searchTerm,
+						eligibility.entryName
+					);
+
+					await commerceAdminPriceListDetailsPage
+						.eligibilityRowSelectButton(eligibility.entryName)
+						.click();
+
+					await commerceAdminPriceListDetailsPage
+						.eligibilityFindInput(eligibility.placeholder)
+						.fill(eligibility.searchTerm);
+
+					await expect(
+						commerceAdminPriceListDetailsPage.eligibilityRowSelectButton(
+							eligibility.entryName
+						)
+					).toBeDisabled();
+
+					await page.keyboard.press('Escape');
+				}
 			);
-		});
+		}
 
-		await test.step('Account cannot be linked twice', async () => {
-			await commerceAdminPriceListDetailsPage.specificAccountsRadio.check();
+		const guardedEligibilities = eligibilities.filter(
+			({errorMessage}) => errorMessage
+		);
 
-			await addThenAssertDisabled(
-				'Find an Account',
-				`Run${randomString}`,
-				accountName
+		for (const eligibility of guardedEligibilities) {
+			await test.step(
+				`Server rejects a duplicate ${eligibility.label.toLowerCase()} once the selection is cleared`,
+				async () => {
+					await gotoEligibilityTab();
+
+					await eligibility.radio.check();
+
+					await searchEligibility(
+						eligibility.placeholder,
+						eligibility.searchTerm,
+						eligibility.entryName
+					);
+
+					await commerceAdminPriceListDetailsPage
+						.eligibilityRowSelectButton(eligibility.entryName)
+						.click();
+
+					await expect(
+						commerceAdminPriceListDetailsPage.errorAlert(
+							eligibility.errorMessage
+						)
+					).toBeVisible();
+				}
 			);
-		});
-
-		await test.step('Order type cannot be linked twice', async () => {
-			await commerceAdminPriceListDetailsPage.specificOrderTypesRadio.check();
-
-			await addThenAssertDisabled(
-				'Find an Order Type',
-				`Run${randomString}`,
-				orderType.name.en_US
-			);
-		});
+		}
 	}
 );
