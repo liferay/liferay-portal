@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.search.filter.QueryFilter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.test.AssertUtils;
@@ -217,26 +218,26 @@ public class AssetListFiltersUtilTest {
 	public void testFilterQueriesWithCommonFields() {
 		_assertTermRangeQuery(
 			Field.CREATE_DATE, false, false, "20260115235959", null,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"gt", Field.CREATE_DATE, "2026-01-15")));
 		_assertTermRangeQuery(
 			Field.MODIFIED_DATE, true, true, "20260115000000", "20260120235959",
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"between", Field.MODIFIED_DATE,
 					JSONUtil.putAll("2026-01-15", "2026-01-20"))));
 		_assertTermRangeQuery(
 			Field.MODIFIED_DATE, true, true, "20260115000000", "20260115235959",
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"eq", Field.MODIFIED_DATE, "2026-01-15")));
 		_assertTermRangeQuery(
 			Field.MODIFIED_DATE, true, true, "20260115000000", "20260115235959",
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_getCommonFieldFilterJSONObject(
 					"not-eq", Field.MODIFIED_DATE, "2026-01-15")));
@@ -245,7 +246,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermRangeQuery(
 			Field.PRIORITY, false, false, priority, null,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"gt", Field.PRIORITY, priority)));
@@ -254,13 +255,13 @@ public class AssetListFiltersUtilTest {
 
 		_assertMatchQuery(
 			"localized_title_en_US", title,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"contains", Field.TITLE, title)));
 		_assertMatchQuery(
 			"localized_title_en_US", title,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject("eq", Field.TITLE, title)));
 
@@ -268,14 +269,14 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			Field.USER_NAME, StringUtil.toLowerCase(userName),
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"eq", Field.USER_NAME, userName)));
 		_assertWildcardQuery(
 			Field.USER_NAME,
 			StringBundler.concat("*", StringUtil.toLowerCase(userName), "*"),
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_getCommonFieldFilterJSONObject(
 					"not-contains", Field.USER_NAME, userName)));
@@ -284,7 +285,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"viewCount", viewCount,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject("eq", "viewCount", viewCount)));
 
@@ -533,12 +534,12 @@ public class AssetListFiltersUtilTest {
 
 		_assertStringQuery(
 			keyword,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getKeywordsFilterJSONObject("contains", keyword)));
 		_assertStringQuery(
 			keyword,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_getKeywordsFilterJSONObject("not-contains", keyword)));
 
@@ -561,13 +562,13 @@ public class AssetListFiltersUtilTest {
 
 		_assertStringQuery(
 			StringPool.QUOTE + keywordPhrase + StringPool.QUOTE,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getKeywordsFilterJSONObject("contains", keywordPhrase)));
 
 		_assertStringQuery(
 			StringPool.QUOTE + keywordPhrase + StringPool.QUOTE,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_getKeywordsFilterJSONObject("not-contains", keywordPhrase)));
 	}
@@ -897,7 +898,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertAllTermsQuery(
 			"localized_title_en_US",
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"contains", Field.TITLE, title
@@ -907,7 +908,7 @@ public class AssetListFiltersUtilTest {
 			term1, term2);
 		_assertMatchQuery(
 			"localized_title_en_US", title,
-			_assertCommonFieldQuery(
+			_assertFilterQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"contains", Field.TITLE, title
@@ -990,7 +991,7 @@ public class AssetListFiltersUtilTest {
 		return filterBooleanClause.getClause();
 	}
 
-	private Query _assertCommonFieldQuery(
+	private Query _assertFilterQuery(
 		BooleanClauseOccur expectedBooleanClauseOccur,
 		JSONObject filterJSONObject) {
 
@@ -1010,20 +1011,44 @@ public class AssetListFiltersUtilTest {
 		BooleanQuery filtersBooleanQuery =
 			(BooleanQuery)filtersBooleanClause.getClause();
 
-		List<BooleanClause<Query>> filterBooleanClauses =
-			filtersBooleanQuery.clauses();
+		Assert.assertFalse(
+			filtersBooleanQuery.toString(), filtersBooleanQuery.hasClauses());
 
-		BooleanClause<Query> filterBooleanClause = filterBooleanClauses.get(0);
+		BooleanFilter preBooleanFilter =
+			filtersBooleanQuery.getPreBooleanFilter();
+
+		Assert.assertNotNull(preBooleanFilter);
+
+		List<BooleanClause<Filter>> filterBooleanClauses =
+			preBooleanFilter.getMustBooleanClauses();
+
+		if (expectedBooleanClauseOccur == BooleanClauseOccur.MUST_NOT) {
+			Assert.assertTrue(
+				preBooleanFilter.toString(),
+				preBooleanFilter.getMustBooleanClauses(
+				).isEmpty());
+
+			filterBooleanClauses = preBooleanFilter.getMustNotBooleanClauses();
+		}
+		else {
+			Assert.assertTrue(
+				preBooleanFilter.toString(),
+				preBooleanFilter.getMustNotBooleanClauses(
+				).isEmpty());
+		}
 
 		Assert.assertEquals(
-			expectedBooleanClauseOccur,
-			filterBooleanClause.getBooleanClauseOccur());
+			filterBooleanClauses.toString(), 1, filterBooleanClauses.size());
 
-		Query query = filterBooleanClause.getClause();
+		BooleanClause<Filter> filterBooleanClause = filterBooleanClauses.get(0);
 
-		Assert.assertFalse(query.toString(), query instanceof NestedQuery);
+		Filter filter = filterBooleanClause.getClause();
 
-		return query;
+		Assert.assertTrue(filter.toString(), filter instanceof QueryFilter);
+
+		QueryFilter queryFilter = (QueryFilter)filter;
+
+		return queryFilter.getQuery();
 	}
 
 	private void _assertMatchQuery(
@@ -1056,32 +1081,12 @@ public class AssetListFiltersUtilTest {
 		BooleanClauseOccur expectedBooleanClauseOccur,
 		JSONObject filterJSONObject, String propertyName) {
 
-		BooleanClause[] booleanClauses =
-			AssetListFiltersUtil.getFiltersBooleanClauses(
-				_COMPANY_ID, JSONUtil.putAll(filterJSONObject), LocaleUtil.US);
+		Query query = _assertFilterQuery(
+			expectedBooleanClauseOccur, filterJSONObject);
 
-		Assert.assertEquals(
-			Arrays.toString(booleanClauses), 1, booleanClauses.length);
+		Assert.assertTrue(query.toString(), query instanceof NestedQuery);
 
-		BooleanClause<?> filtersBooleanClause = booleanClauses[0];
-
-		Assert.assertEquals(
-			BooleanClauseOccur.MUST,
-			filtersBooleanClause.getBooleanClauseOccur());
-
-		BooleanQuery filtersBooleanQuery =
-			(BooleanQuery)filtersBooleanClause.getClause();
-
-		List<BooleanClause<Query>> filterBooleanClauses =
-			filtersBooleanQuery.clauses();
-
-		BooleanClause<Query> filterBooleanClause = filterBooleanClauses.get(0);
-
-		Assert.assertEquals(
-			expectedBooleanClauseOccur,
-			filterBooleanClause.getBooleanClauseOccur());
-
-		NestedQuery nestedQuery = (NestedQuery)filterBooleanClause.getClause();
+		NestedQuery nestedQuery = (NestedQuery)query;
 
 		Assert.assertEquals("nestedFieldArray", nestedQuery.getPath());
 
