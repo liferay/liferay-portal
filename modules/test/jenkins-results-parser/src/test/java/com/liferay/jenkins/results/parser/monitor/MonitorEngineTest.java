@@ -13,6 +13,7 @@ import java.io.PrintStream;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -241,6 +242,48 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 			monitorEngine.runCycle();
 
 		testEquals(1, monitorResultsMap.size());
+	}
+
+	@Test(timeout = 10000)
+	public void testRunCycleKeepsDurationMillis() {
+		MonitorResultStore monitorResultStore = new MonitorResultStore();
+
+		TestMonitor testMonitor = new TestMonitor(
+			_newMonitorConfig(RandomTestUtil.randomString(), 10, 0)) {
+
+			@Override
+			public MonitorResult execute() {
+				try {
+					Thread.sleep(200);
+				}
+				catch (InterruptedException interruptedException) {
+					throw new RuntimeException(interruptedException);
+				}
+
+				return super.execute();
+			}
+
+		};
+
+		MonitorEngine monitorEngine = new MonitorEngine(
+			monitorResultStore,
+			Collections.<Monitor>singletonList(testMonitor));
+
+		Map<Monitor, MonitorResult> monitorResultsMap =
+			monitorEngine.runCycle();
+
+		MonitorResult monitorResult = monitorResultsMap.get(testMonitor);
+
+		Assert.assertTrue(
+			String.valueOf(monitorResult.getDurationMillis()),
+			monitorResult.getDurationMillis() >= 200);
+
+		monitorResult = monitorResultStore.getLatestMonitorResult(
+			testMonitor.getId());
+
+		Assert.assertTrue(
+			String.valueOf(monitorResult.getDurationMillis()),
+			monitorResult.getDurationMillis() >= 200);
 	}
 
 	@Test

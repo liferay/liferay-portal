@@ -71,6 +71,15 @@ public class MonitorMetricsWriterTest
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(
+				"# HELP monitor_duration_seconds Seconds the last monitor run ",
+				"took, 0 if never run or not measured\n",
+				"# TYPE monitor_duration_seconds gauge\n",
+				"monitor_duration_seconds{monitor=\"disk\",",
+				"severity=\"high\",type=\"resource-threshold\"} 0.0\n",
+				"monitor_duration_seconds{monitor=\"queue\",",
+				"severity=\"medium\",type=\"job-health\"} 0.0\n",
+				"monitor_duration_seconds{monitor=\"testray\",",
+				"severity=\"low\",type=\"external-status\"} 0.0\n",
 				"# HELP monitor_heartbeat_timestamp_seconds Unix timestamp of ",
 				"the last metrics write\n",
 				"# TYPE monitor_heartbeat_timestamp_seconds gauge\n",
@@ -94,6 +103,35 @@ public class MonitorMetricsWriterTest
 				"monitor_status{monitor=\"testray\",severity=\"low\",",
 				"type=\"external-status\"} 1.0\n"),
 			read(metricsFile));
+	}
+
+	@Test
+	public void testWriteDurationSeconds() throws Exception {
+		MonitorResultStore monitorResultStore = new MonitorResultStore();
+
+		monitorResultStore.store(
+			"disk",
+			_newMonitorResult(
+				250, MonitorResult.Status.OK, RandomTestUtil.randomLong()));
+
+		File metricsFile = new File(
+			temporaryFolder.getRoot(), RandomTestUtil.randomString());
+
+		_write(
+			metricsFile, monitorResultStore,
+			Arrays.<Monitor>asList(
+				new TestMonitor(
+					_newMonitorConfig(
+						"disk", MonitorConfig.Severity.HIGH,
+						"resource-threshold"))));
+
+		String content = read(metricsFile);
+
+		Assert.assertTrue(
+			content,
+			content.contains(
+				"monitor_duration_seconds{monitor=\"disk\",severity=\"high\"," +
+					"type=\"resource-threshold\"} 0.25\n"));
 	}
 
 	@Test
@@ -271,6 +309,14 @@ public class MonitorMetricsWriterTest
 		return new MonitorConfig(
 			id, RandomTestUtil.randomLong(), null, severity, null,
 			RandomTestUtil.randomLong(), type);
+	}
+
+	private MonitorResult _newMonitorResult(
+		long durationMillis, MonitorResult.Status status, long timestamp) {
+
+		return new MonitorResult(
+			durationMillis, RandomTestUtil.randomString(), null, status,
+			timestamp);
 	}
 
 	private MonitorResult _newMonitorResult(

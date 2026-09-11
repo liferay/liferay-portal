@@ -110,6 +110,72 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test(timeout = 5000)
+	public void testRunDurationMillis() {
+		MonitorRunner monitorRunner = new MonitorRunner(5000);
+
+		TestMonitor testMonitor = _newSleepingTestMonitor(
+			200, _newMonitorConfig(RandomTestUtil.randomString()));
+
+		Map<Monitor, MonitorResult> monitorResultsMap = monitorRunner.run(
+			Collections.<Monitor>singletonList(testMonitor));
+
+		MonitorResult monitorResult = monitorResultsMap.get(testMonitor);
+
+		Assert.assertTrue(
+			String.valueOf(monitorResult.getDurationMillis()),
+			monitorResult.getDurationMillis() >= 200);
+		Assert.assertTrue(
+			String.valueOf(monitorResult.getDurationMillis()),
+			monitorResult.getDurationMillis() < 5000);
+	}
+
+	@Test(timeout = 5000)
+	public void testRunDurationMillisBehindSlowMonitor() {
+		MonitorRunner monitorRunner = new MonitorRunner(5000);
+
+		TestMonitor slowTestMonitor = _newSleepingTestMonitor(
+			600, _newMonitorConfig(RandomTestUtil.randomString()));
+		TestMonitor fastTestMonitor = new TestMonitor(
+			_newMonitorConfig(RandomTestUtil.randomString()));
+
+		Map<Monitor, MonitorResult> monitorResultsMap = monitorRunner.run(
+			Arrays.<Monitor>asList(slowTestMonitor, fastTestMonitor));
+
+		MonitorResult monitorResult = monitorResultsMap.get(fastTestMonitor);
+
+		Assert.assertTrue(
+			String.valueOf(monitorResult.getDurationMillis()),
+			monitorResult.getDurationMillis() < 300);
+
+		monitorResult = monitorResultsMap.get(slowTestMonitor);
+
+		Assert.assertTrue(
+			String.valueOf(monitorResult.getDurationMillis()),
+			monitorResult.getDurationMillis() >= 600);
+	}
+
+	@Test(timeout = 5000)
+	public void testRunDurationMillisOnTimeout() {
+		MonitorRunner monitorRunner = new MonitorRunner(300);
+
+		TestMonitor shortTimeoutTestMonitor = new HangingTestMonitor(
+			null, _newMonitorConfig(RandomTestUtil.randomString()));
+		TestMonitor longTimeoutTestMonitor = new HangingTestMonitor(
+			null, _newMonitorConfig(RandomTestUtil.randomString(), 1));
+
+		Map<Monitor, MonitorResult> monitorResultsMap = monitorRunner.run(
+			Arrays.<Monitor>asList(
+				longTimeoutTestMonitor, shortTimeoutTestMonitor));
+
+		MonitorResult monitorResult = monitorResultsMap.get(
+			shortTimeoutTestMonitor);
+
+		Assert.assertTrue(
+			String.valueOf(monitorResult.getDurationMillis()),
+			monitorResult.getDurationMillis() >= 600);
+	}
+
+	@Test(timeout = 5000)
 	public void testRunEmpty() {
 		MonitorRunner monitorRunner = new MonitorRunner();
 
@@ -329,6 +395,9 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 			testEquals(
 				"Monitor a did not start within 600 ms",
 				monitorResult.getMessage());
+			testEquals(
+				MonitorResult.DURATION_MILLIS_UNMEASURED,
+				monitorResult.getDurationMillis());
 			testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 		}
 		finally {
