@@ -102,6 +102,11 @@ public interface FriendlyURLEntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public FriendlyURLEntryLocalization addFriendlyURLEntryLocalization(
+			FriendlyURLEntry friendlyURLEntry, String languageId,
+			String urlTitle)
+		throws PortalException;
+
 	/**
 	 * Creates a new friendly url entry with the primary key. Does not add the friendly url entry to the database.
 	 *
@@ -525,4 +530,4 @@ public interface FriendlyURLEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1021384353
+// LIFERAY-SERVICE-BUILDER-HASH:-550593190

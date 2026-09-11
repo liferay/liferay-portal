@@ -88,6 +88,10 @@ public interface CountryLocalService
 			boolean zipRequired, ServiceContext serviceContext)
 		throws PortalException;
 
+	public CountryLocalization addCountryLocalization(
+			Country country, String languageId, String title)
+		throws PortalException;
+
 	/**
 	 * Creates a new country with the primary key. Does not add the country to the database.
 	 *
@@ -431,4 +435,4 @@ public interface CountryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2003063802
+// LIFERAY-SERVICE-BUILDER-HASH:987180304

@@ -74,6 +74,18 @@ public class CommerceTermEntryLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.term.model.CTermEntryLocalization
+			addCTermEntryLocalization(
+				com.liferay.commerce.term.model.CommerceTermEntry
+					commerceTermEntry,
+				String languageId, String description, String label)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceTermEntryLocalService.addCTermEntryLocalization(
+			commerceTermEntry, languageId, description, label);
+	}
+
+	@Override
 	public void checkCommerceTermEntries()
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -631,4 +643,4 @@ public class CommerceTermEntryLocalServiceWrapper
 	private CommerceTermEntryLocalService _commerceTermEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1400640575
+// LIFERAY-SERVICE-BUILDER-HASH:-2145785400

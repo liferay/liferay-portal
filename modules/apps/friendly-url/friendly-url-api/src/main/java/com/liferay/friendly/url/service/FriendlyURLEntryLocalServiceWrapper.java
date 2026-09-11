@@ -95,6 +95,17 @@ public class FriendlyURLEntryLocalServiceWrapper
 			groupId, classNameId, classPK, urlTitle, serviceContext);
 	}
 
+	@Override
+	public com.liferay.friendly.url.model.FriendlyURLEntryLocalization
+			addFriendlyURLEntryLocalization(
+				FriendlyURLEntry friendlyURLEntry, String languageId,
+				String urlTitle)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _friendlyURLEntryLocalService.addFriendlyURLEntryLocalization(
+			friendlyURLEntry, languageId, urlTitle);
+	}
+
 	/**
 	 * Creates a new friendly url entry with the primary key. Does not add the friendly url entry to the database.
 	 *
@@ -838,4 +849,4 @@ public class FriendlyURLEntryLocalServiceWrapper
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:89411744
+// LIFERAY-SERVICE-BUILDER-HASH:1715614355

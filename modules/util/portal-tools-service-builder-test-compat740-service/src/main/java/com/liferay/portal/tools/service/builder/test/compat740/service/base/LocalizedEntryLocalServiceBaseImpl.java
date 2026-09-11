@@ -380,6 +380,19 @@ public abstract class LocalizedEntryLocalServiceBaseImpl
 	}
 
 	@Override
+	public LocalizedEntryLocalization addLocalizedEntryLocalization(
+			LocalizedEntry localizedEntry, String languageId, String title,
+			String content)
+		throws PortalException {
+
+		localizedEntry = localizedEntryPersistence.findByPrimaryKey(
+			localizedEntry.getPrimaryKey());
+
+		return _updateLocalizedEntryLocalization(
+			localizedEntry, null, languageId, title, content);
+	}
+
+	@Override
 	public LocalizedEntryLocalization fetchLocalizedEntryLocalization(
 		long localizedEntryId, String languageId) {
 
@@ -625,4 +638,4 @@ public abstract class LocalizedEntryLocalServiceBaseImpl
 		LocalizedEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2131819832
+// LIFERAY-SERVICE-BUILDER-HASH:-168384492

@@ -489,6 +489,16 @@ public abstract class CountryLocalServiceBaseImpl
 	}
 
 	@Override
+	public CountryLocalization addCountryLocalization(
+			Country country, String languageId, String title)
+		throws PortalException {
+
+		country = countryPersistence.findByPrimaryKey(country.getPrimaryKey());
+
+		return _updateCountryLocalization(country, null, languageId, title);
+	}
+
+	@Override
 	public CountryLocalization fetchCountryLocalization(
 		long countryId, String languageId) {
 
@@ -796,4 +806,4 @@ public abstract class CountryLocalServiceBaseImpl
 		CountryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-617478071
+// LIFERAY-SERVICE-BUILDER-HASH:-586058939

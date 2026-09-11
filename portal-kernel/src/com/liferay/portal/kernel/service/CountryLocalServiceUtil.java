@@ -64,6 +64,14 @@ public class CountryLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static com.liferay.portal.kernel.model.CountryLocalization
+			addCountryLocalization(
+				Country country, String languageId, String title)
+		throws PortalException {
+
+		return getService().addCountryLocalization(country, languageId, title);
+	}
+
 	/**
 	 * Creates a new country with the primary key. Does not add the country to the database.
 	 *
@@ -518,4 +526,4 @@ public class CountryLocalServiceUtil {
 	private static volatile CountryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:429553285
+// LIFERAY-SERVICE-BUILDER-HASH:1629884040

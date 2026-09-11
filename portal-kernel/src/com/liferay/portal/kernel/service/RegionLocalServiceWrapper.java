@@ -55,6 +55,16 @@ public class RegionLocalServiceWrapper
 			regionCode, serviceContext);
 	}
 
+	@Override
+	public com.liferay.portal.kernel.model.RegionLocalization
+			addRegionLocalization(
+				Region region, String languageId, String title)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _regionLocalService.addRegionLocalization(
+			region, languageId, title);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -556,4 +566,4 @@ public class RegionLocalServiceWrapper
 	private RegionLocalService _regionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:185711684
+// LIFERAY-SERVICE-BUILDER-HASH:-896386275

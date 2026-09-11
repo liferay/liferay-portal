@@ -62,6 +62,14 @@ public class RegionLocalServiceUtil {
 			regionCode, serviceContext);
 	}
 
+	public static com.liferay.portal.kernel.model.RegionLocalization
+			addRegionLocalization(
+				Region region, String languageId, String title)
+		throws PortalException {
+
+		return getService().addRegionLocalization(region, languageId, title);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -475,4 +483,4 @@ public class RegionLocalServiceUtil {
 	private static volatile RegionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-710628756
+// LIFERAY-SERVICE-BUILDER-HASH:-1916021605

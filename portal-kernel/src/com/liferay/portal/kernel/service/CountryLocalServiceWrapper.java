@@ -57,6 +57,16 @@ public class CountryLocalServiceWrapper
 			serviceContext);
 	}
 
+	@Override
+	public com.liferay.portal.kernel.model.CountryLocalization
+			addCountryLocalization(
+				Country country, String languageId, String title)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _countryLocalService.addCountryLocalization(
+			country, languageId, title);
+	}
+
 	/**
 	 * Creates a new country with the primary key. Does not add the country to the database.
 	 *
@@ -608,4 +618,4 @@ public class CountryLocalServiceWrapper
 	private CountryLocalService _countryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1975640055
+// LIFERAY-SERVICE-BUILDER-HASH:668921470

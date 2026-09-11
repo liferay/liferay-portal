@@ -104,6 +104,19 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.product.model.CPDefinitionLocalization
+			addCPDefinitionLocalization(
+				CPDefinition cpDefinition, String languageId,
+				String description, String metaDescription, String metaKeywords,
+				String metaTitle, String name, String shortDescription)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionLocalService.addCPDefinitionLocalization(
+			cpDefinition, languageId, description, metaDescription,
+			metaKeywords, metaTitle, name, shortDescription);
+	}
+
+	@Override
 	public CPDefinition addOrUpdateCPDefinition(
 			String externalReferenceCode, long userId, long groupId,
 			long cpDefinitionId, long cpTaxCategoryId,
@@ -1162,4 +1175,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-628781409
+// LIFERAY-SERVICE-BUILDER-HASH:-1804334423

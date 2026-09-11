@@ -592,6 +592,21 @@ public abstract class CPDefinitionLocalServiceBaseImpl
 	}
 
 	@Override
+	public CPDefinitionLocalization addCPDefinitionLocalization(
+			CPDefinition cpDefinition, String languageId, String description,
+			String metaDescription, String metaKeywords, String metaTitle,
+			String name, String shortDescription)
+		throws PortalException {
+
+		cpDefinition = cpDefinitionPersistence.findByPrimaryKey(
+			cpDefinition.getPrimaryKey());
+
+		return _updateCPDefinitionLocalization(
+			cpDefinition, null, languageId, description, metaDescription,
+			metaKeywords, metaTitle, name, shortDescription);
+	}
+
+	@Override
 	public CPDefinitionLocalization fetchCPDefinitionLocalization(
 		long CPDefinitionId, String languageId) {
 
@@ -943,4 +958,4 @@ public abstract class CPDefinitionLocalServiceBaseImpl
 		CPDefinitionLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-333298322
+// LIFERAY-SERVICE-BUILDER-HASH:-1907837699

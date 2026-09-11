@@ -559,6 +559,19 @@ public abstract class CommerceTermEntryLocalServiceBaseImpl
 	}
 
 	@Override
+	public CTermEntryLocalization addCTermEntryLocalization(
+			CommerceTermEntry commerceTermEntry, String languageId,
+			String description, String label)
+		throws PortalException {
+
+		commerceTermEntry = commerceTermEntryPersistence.findByPrimaryKey(
+			commerceTermEntry.getPrimaryKey());
+
+		return _updateCTermEntryLocalization(
+			commerceTermEntry, null, languageId, description, label);
+	}
+
+	@Override
 	public CTermEntryLocalization fetchCTermEntryLocalization(
 		long commerceTermEntryId, String languageId) {
 
@@ -810,4 +823,4 @@ public abstract class CommerceTermEntryLocalServiceBaseImpl
 		CommerceTermEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1031751550
+// LIFERAY-SERVICE-BUILDER-HASH:270300484

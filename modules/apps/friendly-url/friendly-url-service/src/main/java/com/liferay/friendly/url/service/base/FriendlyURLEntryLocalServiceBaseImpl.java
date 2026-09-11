@@ -556,6 +556,19 @@ public abstract class FriendlyURLEntryLocalServiceBaseImpl
 	}
 
 	@Override
+	public FriendlyURLEntryLocalization addFriendlyURLEntryLocalization(
+			FriendlyURLEntry friendlyURLEntry, String languageId,
+			String urlTitle)
+		throws PortalException {
+
+		friendlyURLEntry = friendlyURLEntryPersistence.findByPrimaryKey(
+			friendlyURLEntry.getPrimaryKey());
+
+		return _updateFriendlyURLEntryLocalization(
+			friendlyURLEntry, null, languageId, urlTitle);
+	}
+
+	@Override
 	public FriendlyURLEntryLocalization fetchFriendlyURLEntryLocalization(
 		long friendlyURLEntryId, String languageId) {
 
@@ -838,4 +851,4 @@ public abstract class FriendlyURLEntryLocalServiceBaseImpl
 		FriendlyURLEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1423515914
+// LIFERAY-SERVICE-BUILDER-HASH:-1197516012

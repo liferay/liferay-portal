@@ -49,6 +49,18 @@ public class LocalizedEntryLocalServiceWrapper
 		return _localizedEntryLocalService.addLocalizedEntry(localizedEntry);
 	}
 
+	@Override
+	public com.liferay.portal.tools.service.builder.test.compat740.model.
+		LocalizedEntryLocalization addLocalizedEntryLocalization(
+				com.liferay.portal.tools.service.builder.test.compat740.model.
+					LocalizedEntry localizedEntry,
+				String languageId, String title, String content)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _localizedEntryLocalService.addLocalizedEntryLocalization(
+			localizedEntry, languageId, title, content);
+	}
+
 	/**
 	 * Creates a new localized entry with the primary key. Does not add the localized entry to the database.
 	 *
@@ -414,4 +426,4 @@ public class LocalizedEntryLocalServiceWrapper
 	private LocalizedEntryLocalService _localizedEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:533575112
+// LIFERAY-SERVICE-BUILDER-HASH:-61685433

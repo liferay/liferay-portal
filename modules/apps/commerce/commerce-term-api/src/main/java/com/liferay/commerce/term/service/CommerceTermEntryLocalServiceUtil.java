@@ -75,6 +75,16 @@ public class CommerceTermEntryLocalServiceUtil {
 			serviceContext);
 	}
 
+	public static com.liferay.commerce.term.model.CTermEntryLocalization
+			addCTermEntryLocalization(
+				CommerceTermEntry commerceTermEntry, String languageId,
+				String description, String label)
+		throws PortalException {
+
+		return getService().addCTermEntryLocalization(
+			commerceTermEntry, languageId, description, label);
+	}
+
 	public static void checkCommerceTermEntries() throws PortalException {
 		getService().checkCommerceTermEntries();
 	}
@@ -534,4 +544,4 @@ public class CommerceTermEntryLocalServiceUtil {
 			CommerceTermEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1961197734
+// LIFERAY-SERVICE-BUILDER-HASH:-965785376

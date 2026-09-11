@@ -485,6 +485,16 @@ public abstract class RegionLocalServiceBaseImpl
 	}
 
 	@Override
+	public RegionLocalization addRegionLocalization(
+			Region region, String languageId, String title)
+		throws PortalException {
+
+		region = regionPersistence.findByPrimaryKey(region.getPrimaryKey());
+
+		return _updateRegionLocalization(region, null, languageId, title);
+	}
+
+	@Override
 	public RegionLocalization fetchRegionLocalization(
 		long regionId, String languageId) {
 
@@ -790,4 +800,4 @@ public abstract class RegionLocalServiceBaseImpl
 		RegionLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1748132497
+// LIFERAY-SERVICE-BUILDER-HASH:833686909

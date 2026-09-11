@@ -88,6 +88,10 @@ public interface RegionLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public RegionLocalization addRegionLocalization(
+			Region region, String languageId, String title)
+		throws PortalException;
+
 	/**
 	 * @throws PortalException
 	 */
@@ -405,4 +409,4 @@ public interface RegionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-751349059
+// LIFERAY-SERVICE-BUILDER-HASH:-402038845

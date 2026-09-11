@@ -92,6 +92,11 @@ public interface CommerceTermEntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public CTermEntryLocalization addCTermEntryLocalization(
+			CommerceTermEntry commerceTermEntry, String languageId,
+			String description, String label)
+		throws PortalException;
+
 	public void checkCommerceTermEntries() throws PortalException;
 
 	/**
@@ -412,4 +417,4 @@ public interface CommerceTermEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-718948372
+// LIFERAY-SERVICE-BUILDER-HASH:1818086450
