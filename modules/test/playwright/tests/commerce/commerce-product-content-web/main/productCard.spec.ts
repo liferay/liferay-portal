@@ -8,20 +8,29 @@ import {expect, mergeTests} from '@playwright/test';
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTemplatesPagesTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {usersAndOrganizationsPagesTest} from '../../../../fixtures/usersAndOrganizationsPagesTest';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
 	performLoginViaApi,
 	performLogout,
+	performUserSwitch,
 } from '../../../../utils/performLogin';
-import {classicCommerceSetUp, miniumSetUp} from '../../utils/commerce';
+import {
+	classicCommerceSetUp,
+	createAccountWithBuyerUser,
+	miniumSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
 	commercePagesTest,
 	dataApiHelpersTest,
+	displayPageTemplatesPagesTest,
 	loginTest(),
+	pageEditorPagesTest,
 	usersAndOrganizationsPagesTest
 );
 
@@ -558,3 +567,230 @@ test('COMMERCE-6193. As a buyer, I want the first selectable quantity of a produ
 		);
 	}
 });
+
+test(
+	'COMMERCE-11198. Can configure the product card fragment to show only the selected fields',
+	{tag: ['@LPD-104219']},
+	async ({
+		apiHelpers,
+		commerceThemeMiniumCatalogPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+	}) => {
+		test.setTimeout(300000);
+
+		const productName = 'U-Joint';
+		const productPrice = '$ 24.00';
+		const productSku = 'MIN55861';
+
+		const {site} = await miniumSetUp(apiHelpers);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const displayPageTemplateName = getRandomString();
+
+		await test.step('Create a default product display page template with the product card fragment', async () => {
+			const className =
+				await apiHelpers.jsonWebServicesClassName.fetchClassName(
+					'com.liferay.commerce.product.model.CPDefinition'
+				);
+
+			const displayPageTemplate =
+				await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+					{
+						classNameId: className.classNameId,
+						groupId: String(site.id),
+						name: displayPageTemplateName,
+					}
+				);
+
+			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+				{
+					layoutPageTemplateEntryId:
+						displayPageTemplate.layoutPageTemplateEntryId,
+				}
+			);
+
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			await pageEditorPage.addFragment('Product', 'Product Card');
+		});
+
+		const configureProductCardFragment = async (
+			fields: {[label: string]: boolean},
+			publish: boolean = true
+		) => {
+			const fragmentId =
+				await pageEditorPage.getFragmentId('Product Card');
+
+			for (const [label, value] of Object.entries(fields)) {
+				await pageEditorPage.changeFragmentConfiguration({
+					fieldLabel: `Show ${label}`,
+					fragmentId,
+					tab: 'General',
+					value,
+				});
+			}
+
+			if (publish) {
+				await displayPageTemplatesPage.publishTemplate();
+			}
+		};
+
+		const openProductCardFragmentAsBuyer = async () => {
+			await performUserSwitch(page, buyerUser.alternateName);
+
+			await page.goto(`/web${site.friendlyUrlPath}/p/u-joint`);
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragment
+			).toBeVisible();
+
+			return commerceThemeMiniumCatalogPage.productCardFragment;
+		};
+
+		await test.step('Show every field except the availability label and the image', async () => {
+			await configureProductCardFragment({
+				'Add to Cart Button': true,
+				'Add to Wish List Button': true,
+				'Availability Label': false,
+				'Compare Checkbox': true,
+				'Image': false,
+				'Name': true,
+				'Price': true,
+				'SKU': true,
+			});
+		});
+
+		await test.step('Verify the buyer only sees the selected fields', async () => {
+			const productCard = await openProductCardFragmentAsBuyer();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentAddToCartButton(
+					productCard
+				)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(productCard)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentAddToWishListButton(
+					productCard
+				)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentCompareCheckbox(
+					productCard
+				)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentName(
+					productCard,
+					productName
+				)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentPrice(
+					productCard,
+					productPrice
+				)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentSku(
+					productCard,
+					productSku
+				)
+			).toBeVisible();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentAvailabilityLabel(
+					productCard
+				)
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentImage(
+					productCard
+				)
+			).toHaveCount(0);
+		});
+
+		await test.step('Show only the availability label and the image', async () => {
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+			await displayPageTemplatesPage.editTemplate(
+				displayPageTemplateName
+			);
+
+			await configureProductCardFragment({
+				'Add to Cart Button': false,
+				'Add to Wish List Button': false,
+				'Availability Label': true,
+				'Compare Checkbox': false,
+				'Image': true,
+				'Name': false,
+				'Price': false,
+				'SKU': false,
+			});
+		});
+
+		await test.step('Verify the buyer only sees the availability label and the image', async () => {
+			const productCard = await openProductCardFragmentAsBuyer();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentAvailabilityLabel(
+					productCard
+				)
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentImage(
+					productCard
+				)
+			).toBeVisible();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentAddToCartButton(
+					productCard
+				)
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(productCard)
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentAddToWishListButton(
+					productCard
+				)
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentCompareCheckbox(
+					productCard
+				)
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentName(
+					productCard,
+					productName
+				)
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentPrice(
+					productCard,
+					productPrice
+				)
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardFragmentSku(
+					productCard,
+					productSku
+				)
+			).toHaveCount(0);
+		});
+	}
+);

@@ -86,37 +86,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureProductCardFragment(fragmentName = null, checkList = null, uncheckList = null) {
-		if (!(isSet(index))) {
-			var index = 1;
-		}
-
-		PageEditor.clickConfigurableField(
-			fragmentName = ${fragmentName},
-			index = ${index});
-
-		PageEditor.gotoTab(tabName = "Browser");
-
-		Navigator.gotoNavTab(navTab = "General");
-
-		if (isSet(checkList)) {
-			for (var element : list ${checkList}) {
-				Check.checkToggleSwitch(
-					key_toggleSwitchLabel = "Show ${element}",
-					locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-			}
-		}
-
-		if (isSet(uncheckList)) {
-			for (var element : list ${uncheckList}) {
-				Uncheck.uncheckToggleSwitch(
-					key_toggleSwitchLabel = "Show ${element}",
-					locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-			}
-		}
-	}
-
-	@summary = "Default summary"
 	macro editCollectionDisplay(deviceType = null, listItemStyle = null, infoListProviderName = null, depotName = null, fragmentName = null, columnNumber = null, styleDisplay = null, assetListName = null, infoItemRelatedListProviderName = null) {
 		if (!(isSet(index))) {
 			var index = 1;
