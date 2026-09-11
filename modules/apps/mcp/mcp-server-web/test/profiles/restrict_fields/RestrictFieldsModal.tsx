@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen} from '@testing-library/react';
+// eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
+import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
+import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
@@ -14,16 +16,30 @@ import RestrictFieldsModal from '../../../src/main/resources/META-INF/resources/
 import {mockPageTool} from '../../mocks/mockPageTool';
 import {mockTool} from '../../mocks/mockTool';
 
-function renderModal(onClose = jest.fn()) {
-	render(
+const profileTool = {
+	externalReferenceCode: 'PROFILE_TOOL_ERC',
+	toolName: 'getMCPServerPrompt',
+	toolSetName: 'mcp-server-prompts',
+};
+
+function renderModal({
+	onClose = jest.fn(),
+	onSaved = jest.fn(),
+	restrictFields,
+}: {
+	onClose?: jest.Mock;
+	onSaved?: jest.Mock;
+	restrictFields?: string;
+} = {}) {
+	const {container} = render(
 		<RestrictFieldsModal
 			onClose={onClose}
-			toolName="getMCPServerPrompt"
-			toolSetName="mcp-server-prompts"
+			onSaved={onSaved}
+			profileTool={{...profileTool, restrictFields}}
 		/>
 	);
 
-	return onClose;
+	return {container, onClose, onSaved};
 }
 
 function checkbox(name: string) {
@@ -39,6 +55,10 @@ function expand(name: string) {
 }
 
 describe('RestrictFieldsModal', () => {
+	beforeAll(() => {
+		Liferay.Util.escapeHTML = jest.fn((value: string) => value);
+	});
+
 	beforeEach(() => {
 		jest.clearAllMocks();
 	});
@@ -180,15 +200,128 @@ describe('RestrictFieldsModal', () => {
 		expect(screen.getByRole('button', {name: 'save'})).toBeDisabled();
 	});
 
+	it('closes with an error toast when the tool cannot be loaded', async () => {
+		fetch.mockResponseOnce(JSON.stringify({title: 'Tool not found'}), {
+			status: 404,
+		});
+
+		const {onClose} = renderModal();
+
+		await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+
+		expect(await screen.findByText('Tool not found')).toBeVisible();
+	});
+
+	it('stays open with an error toast when saving is rejected', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		const {onClose, onSaved} = renderModal();
+
+		await userEvent.click(await findCheckbox('description'));
+
+		fetch.mockResponseOnce(
+			JSON.stringify({title: 'Unable to restrict field "description"'}),
+			{status: 400}
+		);
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		expect(
+			await screen.findByText('Unable to restrict field "description"')
+		).toBeVisible();
+		expect(onSaved).not.toHaveBeenCalled();
+		expect(onClose).not.toHaveBeenCalled();
+		expect(screen.getByRole('button', {name: 'save'})).toBeEnabled();
+	});
+
+	it('has no accessibility violations', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		const {container} = renderModal({
+			restrictFields: 'modifiedBy.userGroupBriefs',
+		});
+
+		await findCheckbox('modifiedBy');
+
+		await checkAccessibility({
+			bestPractices: true,
+			context: container,
+		});
+	});
+
 	it('closes when cancel is clicked', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
-		const onClose = renderModal();
+		const {onClose} = renderModal();
 
 		await findCheckbox('modifiedBy');
 
 		await userEvent.click(screen.getByRole('button', {name: 'cancel'}));
 
 		expect(onClose).toHaveBeenCalledTimes(1);
+	});
+
+	it('preselects the restricted fields of the profile tool with their descendants', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal({restrictFields: 'description,modifiedBy.userGroupBriefs'});
+
+		expect(await findCheckbox('description')).toBeChecked();
+		expect(checkbox('modifiedBy')).toBePartiallyChecked();
+		expect(screen.getByRole('status')).toHaveTextContent(
+			'4-items-selected'
+		);
+		expect(checkbox('userGroupBriefs')).toBeChecked();
+		expect(
+			screen.getAllByRole('checkbox', {name: 'id'})[0]
+		).not.toBeChecked();
+	});
+
+	it('saves the top-most checked fields on the profile tool', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		const {onClose, onSaved} = renderModal();
+
+		await userEvent.click(await findCheckbox('modifiedBy'));
+		await userEvent.click(checkbox('description'));
+
+		fetch.mockResponseOnce(JSON.stringify({}));
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() => expect(onClose).toHaveBeenCalledTimes(1));
+
+		expect(fetch).toHaveBeenLastCalledWith(
+			'/o/mcp/server-profile-tools/by-external-reference-code/PROFILE_TOOL_ERC',
+			expect.objectContaining({
+				body: JSON.stringify({
+					restrictFields: 'description,modifiedBy',
+				}),
+				method: 'PATCH',
+			})
+		);
+		expect(onSaved).toHaveBeenCalledTimes(1);
+	});
+
+	it('saves the item field names of a page tool', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockPageTool));
+
+		renderModal();
+
+		await userEvent.click(await findCheckbox('description'));
+
+		fetch.mockResponseOnce(JSON.stringify({}));
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() =>
+			expect(fetch).toHaveBeenLastCalledWith(
+				'/o/mcp/server-profile-tools/by-external-reference-code/PROFILE_TOOL_ERC',
+				expect.objectContaining({
+					body: JSON.stringify({restrictFields: 'description'}),
+					method: 'PATCH',
+				})
+			)
+		);
 	});
 });

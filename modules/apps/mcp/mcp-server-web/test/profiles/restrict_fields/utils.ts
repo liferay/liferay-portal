@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {buildFieldTree} from '../../../src/main/resources/META-INF/resources/js/profiles/restrict_fields/utils';
+import {
+	buildFieldTree,
+	getSelectedKeys,
+	toRestrictFields,
+} from '../../../src/main/resources/META-INF/resources/js/profiles/restrict_fields/utils';
 import {mockPageTool} from '../../mocks/mockPageTool';
 import {mockTool} from '../../mocks/mockTool';
 
@@ -84,6 +88,57 @@ describe('restrict fields utils', () => {
 
 		it('returns no fields when the tool has no output schema', () => {
 			expect(buildFieldTree(undefined)).toEqual([]);
+		});
+	});
+
+	describe('toRestrictFields', () => {
+		it('stores a selected parent instead of its descendants', () => {
+			expect(
+				toRestrictFields(
+					tree,
+					new Set(['modifiedBy', 'modifiedBy.id', 'modifiedBy.name'])
+				)
+			).toBe('modifiedBy');
+		});
+
+		it('joins selected leaves whose parent is not selected with commas', () => {
+			expect(
+				toRestrictFields(
+					tree,
+					new Set(['description', 'taxonomyCategoryBriefs.scope.key'])
+				)
+			).toBe('description,taxonomyCategoryBriefs.scope.key');
+		});
+
+		it('stores an empty string when nothing is selected', () => {
+			expect(toRestrictFields(tree, new Set())).toBe('');
+		});
+	});
+
+	describe('getSelectedKeys', () => {
+		it('selects each restricted field with its whole subtree', () => {
+			expect([
+				...getSelectedKeys(
+					tree,
+					'description,modifiedBy.userGroupBriefs'
+				),
+			]).toEqual([
+				'description',
+				'modifiedBy.userGroupBriefs',
+				'modifiedBy.userGroupBriefs.id',
+				'modifiedBy.userGroupBriefs.name',
+			]);
+		});
+
+		it('ignores restricted fields missing from the tree', () => {
+			expect([...getSelectedKeys(tree, 'name,removedField')]).toEqual([
+				'name',
+			]);
+		});
+
+		it('selects nothing when the profile tool has no restricted fields', () => {
+			expect(getSelectedKeys(tree, undefined).size).toBe(0);
+			expect(getSelectedKeys(tree, '').size).toBe(0);
 		});
 	});
 });

@@ -40,7 +40,11 @@ function createDataMask(
 }
 
 function createProfileTool(toolSetName: string, toolName: string): ProfileTool {
-	return {toolName, toolSetName};
+	return {
+		externalReferenceCode: `${toolSetName}.${toolName}`,
+		toolName,
+		toolSetName,
+	};
 }
 
 function createTools(toolNames: string[]) {
