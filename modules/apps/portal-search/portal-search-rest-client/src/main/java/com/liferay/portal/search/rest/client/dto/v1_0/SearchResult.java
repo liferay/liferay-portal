@@ -236,6 +236,25 @@ public class SearchResult implements Cloneable, Serializable {
 
 	protected String title;
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public void setType(UnsafeSupplier<String, Exception> typeUnsafeSupplier) {
+		try {
+			type = typeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String type;
+
 	@Override
 	public SearchResult clone() throws CloneNotSupportedException {
 		return (SearchResult)super.clone();
@@ -268,4 +287,4 @@ public class SearchResult implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1071752244
+// LIFERAY-REST-BUILDER-HASH:-385934349

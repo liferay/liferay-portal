@@ -179,6 +179,7 @@ public abstract class BaseSearchResultResourceTestCase {
 		searchResult.setEntryClassName(regex);
 		searchResult.setItemURL(regex);
 		searchResult.setTitle(regex);
+		searchResult.setType(regex);
 
 		String json = SearchResultSerDes.toJSON(searchResult);
 
@@ -190,6 +191,7 @@ public abstract class BaseSearchResultResourceTestCase {
 		Assert.assertEquals(regex, searchResult.getEntryClassName());
 		Assert.assertEquals(regex, searchResult.getItemURL());
 		Assert.assertEquals(regex, searchResult.getTitle());
+		Assert.assertEquals(regex, searchResult.getType());
 	}
 
 	@Test
@@ -690,6 +692,14 @@ public abstract class BaseSearchResultResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("type", additionalAssertFieldName)) {
+				if (searchResult.getType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -910,6 +920,16 @@ public abstract class BaseSearchResultResourceTestCase {
 			if (Objects.equals("title", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						searchResult1.getTitle(), searchResult2.getTitle())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("type", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						searchResult1.getType(), searchResult2.getType())) {
 
 					return false;
 				}
@@ -1310,6 +1330,52 @@ public abstract class BaseSearchResultResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("type")) {
+			Object object = searchResult.getType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1366,6 +1432,7 @@ public abstract class BaseSearchResultResourceTestCase {
 					RandomTestUtil.randomString());
 				itemURL = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				type = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
 	}
@@ -1590,4 +1657,4 @@ public abstract class BaseSearchResultResourceTestCase {
 		_searchResultResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:775790197
+// LIFERAY-REST-BUILDER-HASH:158237187

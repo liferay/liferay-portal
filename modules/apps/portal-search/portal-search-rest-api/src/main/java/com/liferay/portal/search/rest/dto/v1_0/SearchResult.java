@@ -509,6 +509,49 @@ public class SearchResult implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _titleSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Type of the item for entities whose entry class name covers more than one type, for example the page template kinds of LayoutPageTemplateEntry. The value belongs to the entity that indexed it, so it is only meaningful against the entry class name that produced it, and it is always a string even where the underlying type is numeric, such as '1' for a display page template and 'content' for a page. Entities that index no type omit the property."
+	)
+	public String getType() {
+		if (_typeSupplier != null) {
+			type = _typeSupplier.get();
+
+			_typeSupplier = null;
+		}
+
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+
+		_typeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setType(UnsafeSupplier<String, Exception> typeUnsafeSupplier) {
+		_typeSupplier = () -> {
+			try {
+				return typeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Type of the item for entities whose entry class name covers more than one type, for example the page template kinds of LayoutPageTemplateEntry. The value belongs to the entity that indexed it, so it is only meaningful against the entry class name that produced it, and it is always a string even where the underlying type is numeric, such as '1' for a display page template and 'content' for a page. Entities that index no type omit the property."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String type;
+
+	@JsonIgnore
+	private Supplier<String> _typeSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -687,6 +730,22 @@ public class SearchResult implements Serializable {
 			sb.append("\"");
 		}
 
+		String type = getType();
+
+		if (type != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"type\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(type));
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -809,4 +868,4 @@ public class SearchResult implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-588384601
+// LIFERAY-REST-BUILDER-HASH:-1549033407
