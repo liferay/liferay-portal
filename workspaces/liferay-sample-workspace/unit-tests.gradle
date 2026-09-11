@@ -32,6 +32,7 @@ gradle.allprojects {
 		}
 
 		tasks.withType(Test).configureEach {
+
 			// portal-impl must precede release.dxp.api so its portal.properties wins
 
 			ArtifactView portalImplArtifactView = configurations.testRuntimeClasspath.incoming.artifactView {
