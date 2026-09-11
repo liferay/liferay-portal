@@ -1,0 +1,88 @@
+suite: Session Replication
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: sed '/<Manager/d' /opt/liferay/tomcat/conf/context\.xml > /temp/tomcat/conf/context\.xml
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Strips the Manager element that would otherwise suppress the cluster manager
+    -   asserts:
+            -   contains:
+                    content:
+                        mountPath: /opt/liferay/tomcat/conf/context.xml
+                        name: liferay-persistent-volume
+                        subPath: tomcat/conf/context.xml
+                    path: spec.template.spec.containers[0].volumeMounts
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Serves the generated context.xml to the portal container
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: autoBind="0"
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: port="4100"
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Pins the Tribes receiver to a fixed port so every node agrees on one
+    -   asserts:
+            -   contains:
+                    content:
+                        containerPort: 4100
+                        name: session
+                        protocol: TCP
+                    path: spec.template.spec.containers[0].ports
+            -   contains:
+                    content:
+                        containerPort: 7801
+                        name: cluster-tx
+                        protocol: TCP
+                    path: spec.template.spec.containers[0].ports
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Declares both replication ports so the NetworkPolicy can name them
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: org\.apache\.catalina\.ha\.level=INFO
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Raises the cluster log level so membership is observable
+    -   asserts:
+            -   notMatchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: if \[ ! -f /temp/tomcat/conf/server\.xml \]
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Regenerates the Tomcat configuration on every start so upgrades reach existing volumes
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: com\.liferay\.support\.tomcat\.session\.LiferayDeltaManager
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: DNSMembershipProvider
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Configures the Liferay cluster manager with DNS based membership

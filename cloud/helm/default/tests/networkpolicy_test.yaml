@@ -1,0 +1,103 @@
+suite: NetworkPolicy
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Omits the NetworkPolicy by default
+    -   asserts:
+            -   contains:
+                    content:
+                        port: cluster
+                        protocol: TCP
+                    path: spec.ingress[0].ports
+            -   contains:
+                    content:
+                        port: cluster-tx
+                        protocol: TCP
+                    path: spec.ingress[0].ports
+            -   contains:
+                    content:
+                        port: http
+                        protocol: TCP
+                    path: spec.ingress[0].ports
+            -   contains:
+                    content:
+                        port: session
+                        protocol: TCP
+                    path: spec.ingress[0].ports
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Permits both replication ports between sibling pods
+        set:
+            networkPolicy.enabled: true
+    -   asserts:
+            -   contains:
+                    content: Egress
+                    path: spec.policyTypes
+            -   contains:
+                    content: Ingress
+                    path: spec.policyTypes
+            -   lengthEqual:
+                    count: 2
+                    path: spec.egress
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Restricts egress so a wrapper chart can extend it
+        set:
+            networkPolicy.enabled: true
+    -   asserts:
+            -   lengthEqual:
+                    count: 3
+                    path: spec.egress
+            -   contains:
+                    content:
+                        ports:
+                            -   port: 5432
+                                protocol: TCP
+                        to:
+                            -   ipBlock:
+                                    cidr: 10.0.0.0/8
+                    path: spec.egress
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Appends extra egress rules supplied by a wrapper chart
+        set:
+            networkPolicy.enabled: true
+            networkPolicy.extraEgress:
+                -   ports:
+                        -   port: 5432
+                            protocol: TCP
+                    to:
+                        -   ipBlock:
+                                cidr: 10.0.0.0/8
+    -   asserts:
+            -   lengthEqual:
+                    count: 2
+                    path: spec.ingress
+            -   equal:
+                    path: spec.ingress[0].ports[0].port
+                    value: http
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Permits gateway ingress on the HTTP port when networking is enabled
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            networkPolicy.enabled: true
