@@ -2889,6 +2889,54 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testAddObjectEntryWithLocaleVariantAndLocalizedValues()
+		throws Exception {
+
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales(
+			TestPropsValues.getCompanyId());
+		Locale caLocale = new Locale("ca", "ES", "VALENCIA");
+		Locale defaultLocale = LocaleUtil.getDefault();
+
+		CompanyTestUtil.resetCompanyLocales(
+			TestPropsValues.getCompanyId(),
+			new HashSet<>(Arrays.asList(LocaleUtil.US, caLocale)),
+			LocaleUtil.US);
+
+		ObjectField objectField = new TextObjectFieldBuilder(
+		).labelMap(
+			RandomTestUtil.randomLocaleStringMap()
+		).localized(
+			true
+		).name(
+			"a" + RandomTestUtil.randomString()
+		).build();
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField));
+
+		Map<String, Serializable> localizedValues = Collections.singletonMap(
+			objectField.getI18nObjectFieldName(),
+			HashMapBuilder.put(
+				LocaleUtil.toLanguageId(LocaleUtil.US),
+				RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.toLanguageId(caLocale), RandomTestUtil.randomString()
+			).build());
+
+		_assertObjectEntryLocalizedValues(
+			localizedValues,
+			_addObjectEntry(
+				0, objectDefinition.getObjectDefinitionId(), localizedValues),
+			objectField);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		CompanyTestUtil.resetCompanyLocales(
+			TestPropsValues.getCompanyId(), availableLocales, defaultLocale);
+	}
+
+	@Test
 	public void testAddObjectEntryWithLocalizedAttachmentObjectField()
 		throws Exception {
 
