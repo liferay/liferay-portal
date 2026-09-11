@@ -51,30 +51,12 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 		Iterator<DepotRolePermission> iterator =
 			depotRolePermissions.iterator();
 
-		for (String roleName :
-				List.of(
-					DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-					DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-					DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
-
-			_assertDepotRolePermission(
-				iterator.next(), roleName, Layout.class.getName(),
-				ActionKeys.UPDATE);
-			_assertDepotRolePermission(
-				iterator.next(), roleName,
-				LayoutPageTemplateCollection.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE);
-			_assertDepotRolePermission(
-				iterator.next(), roleName,
-				LayoutPageTemplateEntry.class.getName(), ActionKeys.DELETE,
-				ActionKeys.UPDATE);
-			_assertDepotRolePermission(
-				iterator.next(), roleName,
-				LayoutPageTemplateConstants.RESOURCE_NAME,
-				LayoutPageTemplateActionKeys.
-					ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION,
-				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
-		}
+		_assertDepotRolePermissions(
+			iterator, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
+		_assertDepotRolePermissions(
+			iterator, DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
+		_assertDepotRolePermissions(
+			iterator, DepotRolesConstants.DESIGN_LIBRARY_OWNER);
 	}
 
 	private void _assertDepotRolePermission(
@@ -86,6 +68,26 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 			resourceName, depotRolePermission.getResourceName());
 		Assert.assertArrayEquals(
 			actionKeys, depotRolePermission.getActionKeys());
+	}
+
+	private void _assertDepotRolePermissions(
+		Iterator<DepotRolePermission> iterator, String roleName) {
+
+		_assertDepotRolePermission(
+			iterator.next(), roleName, Layout.class.getName(),
+			ActionKeys.UPDATE);
+		_assertDepotRolePermission(
+			iterator.next(), roleName,
+			LayoutPageTemplateCollection.class.getName(), ActionKeys.DELETE,
+			ActionKeys.UPDATE);
+		_assertDepotRolePermission(
+			iterator.next(), roleName, LayoutPageTemplateEntry.class.getName(),
+			ActionKeys.DELETE, ActionKeys.UPDATE);
+		_assertDepotRolePermission(
+			iterator.next(), roleName,
+			LayoutPageTemplateConstants.RESOURCE_NAME,
+			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION,
+			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
 	}
 
 }

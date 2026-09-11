@@ -42,8 +42,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -143,75 +141,15 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		try {
-			for (String roleName :
-					List.of(
-						DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-						DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-						DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
-
-				User ownerUser = UserTestUtil.addGroupUser(group, roleName);
-
-				LayoutPageTemplateEntry layoutPageTemplateEntry =
-					_addLayoutPageTemplateEntry(
-						group, ownerUser, serviceContext);
-
-				User nonownerUser = UserTestUtil.addGroupUser(group, roleName);
-
-				try (ContextUserReplace contextUserReplace =
-						new ContextUserReplace(nonownerUser)) {
-
-					LayoutPageTemplateStructure layoutPageTemplateStructure =
-						_layoutPageTemplateStructureService.
-							updateLayoutPageTemplateStructureData(
-								group.getGroupId(),
-								layoutPageTemplateEntry.getPlid(),
-								SegmentsExperienceConstants.ID_DEFAULT, _DATA);
-
-					Assert.assertEquals(
-						_DATA,
-						layoutPageTemplateStructure.getData(
-							SegmentsExperienceConstants.ID_DEFAULT));
-
-					long layoutPageTemplateCollectionId =
-						layoutPageTemplateEntry.
-							getLayoutPageTemplateCollectionId();
-					String layoutPageTemplateCollectionName =
-						RandomTestUtil.randomString();
-
-					LayoutPageTemplateCollection layoutPageTemplateCollection =
-						_layoutPageTemplateCollectionService.
-							updateLayoutPageTemplateCollection(
-								layoutPageTemplateCollectionId,
-								layoutPageTemplateCollectionName);
-
-					Assert.assertEquals(
-						layoutPageTemplateCollectionName,
-						layoutPageTemplateCollection.getName());
-
-					String layoutPageTemplateEntryName =
-						RandomTestUtil.randomString();
-
-					layoutPageTemplateEntry =
-						_layoutPageTemplateEntryService.
-							updateLayoutPageTemplateEntry(
-								layoutPageTemplateEntry.
-									getLayoutPageTemplateEntryId(),
-								layoutPageTemplateEntryName);
-
-					Assert.assertEquals(
-						layoutPageTemplateEntryName,
-						layoutPageTemplateEntry.getName());
-
-					_layoutPageTemplateEntryService.
-						deleteLayoutPageTemplateEntry(
-							layoutPageTemplateEntry.
-								getLayoutPageTemplateEntryId());
-
-					_layoutPageTemplateCollectionService.
-						deleteLayoutPageTemplateCollection(
-							layoutPageTemplateCollectionId);
-				}
-			}
+			_assertManageLayoutPageTemplates(
+				group, serviceContext,
+				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
+			_assertManageLayoutPageTemplates(
+				group, serviceContext,
+				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
+			_assertManageLayoutPageTemplates(
+				group, serviceContext,
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER);
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
@@ -252,6 +190,65 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 				null, RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.BASIC, 0,
 				WorkflowConstants.STATUS_APPROVED, serviceContext);
+		}
+	}
+
+	private void _assertManageLayoutPageTemplates(
+			Group group, ServiceContext serviceContext, String roleName)
+		throws Exception {
+
+		User ownerUser = UserTestUtil.addGroupUser(group, roleName);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(group, ownerUser, serviceContext);
+
+		User nonownerUser = UserTestUtil.addGroupUser(group, roleName);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				nonownerUser)) {
+
+			LayoutPageTemplateStructure layoutPageTemplateStructure =
+				_layoutPageTemplateStructureService.
+					updateLayoutPageTemplateStructureData(
+						group.getGroupId(), layoutPageTemplateEntry.getPlid(),
+						SegmentsExperienceConstants.ID_DEFAULT, _DATA);
+
+			Assert.assertEquals(
+				_DATA,
+				layoutPageTemplateStructure.getData(
+					SegmentsExperienceConstants.ID_DEFAULT));
+
+			long layoutPageTemplateCollectionId =
+				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId();
+			String layoutPageTemplateCollectionName =
+				RandomTestUtil.randomString();
+
+			LayoutPageTemplateCollection layoutPageTemplateCollection =
+				_layoutPageTemplateCollectionService.
+					updateLayoutPageTemplateCollection(
+						layoutPageTemplateCollectionId,
+						layoutPageTemplateCollectionName);
+
+			Assert.assertEquals(
+				layoutPageTemplateCollectionName,
+				layoutPageTemplateCollection.getName());
+
+			String layoutPageTemplateEntryName = RandomTestUtil.randomString();
+
+			layoutPageTemplateEntry =
+				_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+					layoutPageTemplateEntryName);
+
+			Assert.assertEquals(
+				layoutPageTemplateEntryName, layoutPageTemplateEntry.getName());
+
+			_layoutPageTemplateEntryService.deleteLayoutPageTemplateEntry(
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+			_layoutPageTemplateCollectionService.
+				deleteLayoutPageTemplateCollection(
+					layoutPageTemplateCollectionId);
 		}
 	}
 
