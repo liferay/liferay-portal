@@ -17,6 +17,9 @@
 {{- if and (eq $cloud "azure") (not $azureRemoteWrite.tenantId) -}}
 {{- fail "azure.remoteWrite.tenantId is required when cloudProvider is azure" -}}
 {{- end -}}
+{{- if and (eq $cloud "azure") (not .Values.azure.subscriptionId) -}}
+{{- fail "azure.subscriptionId is required when cloudProvider is azure" -}}
+{{- end -}}
 {{- if and (eq $cloud "gcp") (not .Values.gcp.projectId) -}}
 {{- fail "gcp.projectId is required when cloudProvider is gcp" -}}
 {{- end -}}
@@ -73,6 +76,34 @@ prometheus.remote_write "default" {
         {{- end }}
         url = {{ $remoteWrite.url | quote }}
     }
+}
+{{- end }}
+
+{{- if eq $cloud "azure" }}
+{{- $azurePostgreSQL := .Values.alloy.scrape.azurePostgreSQL }}
+prometheus.exporter.azure "postgresql" {
+    included_resource_tags = ["environment-id", "project-id"]
+    metric_aggregations = ["average"]
+    metrics = {{ $azurePostgreSQL.metrics | toJson }}
+    resource_type = "Microsoft.DBforPostgreSQL/flexibleServers"
+    subscriptions = [{{ .Values.azure.subscriptionId | quote }}]
+}
+
+discovery.relabel "azure_postgresql" {
+    rule {
+        replacement = "azure-postgresql"
+        target_label = "job"
+    }
+    targets = prometheus.exporter.azure.postgresql.targets
+}
+
+prometheus.scrape "azure_postgresql" {
+    clustering {
+        enabled = true
+    }
+    forward_to = [prometheus.remote_write.default.receiver]
+    scrape_interval = {{ $azurePostgreSQL.scrapeInterval | quote }}
+    targets = discovery.relabel.azure_postgresql.output
 }
 {{- end }}
 

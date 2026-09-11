@@ -348,6 +348,14 @@ alloy:
         headers: {}
         url: ""
     scrape:
+        azurePostgreSQL:
+            metrics:
+                -   cpu_percent
+                -   is_db_alive
+                -   memory_percent
+                -   storage_free
+                -   storage_used
+            scrapeInterval: 1m
         cadvisor:
             enabled: true
             path: /metrics/cadvisor
@@ -429,6 +437,7 @@ azure:
         dataCollectionRuleId: ""
         metricsIngestionEndpoint: ""
         tenantId: ""
+    subscriptionId: ""
 centralHub:
     argoWorkflowsURL: ""
     argocdURL: ""

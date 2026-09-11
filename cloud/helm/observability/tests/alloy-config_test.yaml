@@ -3,6 +3,15 @@ templates:
     -   templates/alloy/config.yaml
 tests:
     -   asserts:
+            -   notMatchRegex:
+                    path: data["config.alloy"]
+                    pattern: prometheus.exporter.azure
+        it: Omits the Azure PostgreSQL exporter when the cloud provider is not Azure
+        set:
+            alloy.enabled: true
+            aws.ampWorkspaceURL: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-00000000-0000-0000-0000-000000000000
+            cloudProvider: aws
+    -   asserts:
             -   hasDocuments:
                     count: 0
         it: Omits the alloy configuration when alloy is disabled on Azure
@@ -23,6 +32,7 @@ tests:
             alloy.enabled: true
             azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
             azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
     -   asserts:
             -   failedTemplate:
@@ -31,6 +41,17 @@ tests:
         set:
             alloy.enabled: true
             azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
+            azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.subscriptionId is required when cloudProvider is azure
+        it: Rejects Azure without a subscription ID
+        set:
+            alloy.enabled: true
+            azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
+            azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
             azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
     -   asserts:
@@ -41,6 +62,25 @@ tests:
             alloy.enabled: true
             azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
             azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: prometheus.exporter.azure "postgresql" \{\s+included_resource_tags = \["environment-id", "project-id"\]\s+metric_aggregations = \["average"\]\s+metrics = \["cpu_percent","is_db_alive","memory_percent","storage_free","storage_used"\]\s+resource_type = "Microsoft.DBforPostgreSQL/flexibleServers"\s+subscriptions = \["00000000-0000-0000-0000-000000000000"\]
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: discovery.relabel "azure_postgresql" \{\s+rule \{\s+replacement = "azure-postgresql"\s+target_label = "job"\s+\}\s+targets = prometheus.exporter.azure.postgresql.targets
+            -   matchRegex:
+                    path: data["config.alloy"]
+                    pattern: prometheus.scrape "azure_postgresql" \{\s+clustering \{\s+enabled = true\s+\}\s+forward_to = \[prometheus.remote_write.default.receiver\]\s+scrape_interval = "1m"\s+targets = discovery.relabel.azure_postgresql.output
+        it: Renders the Azure PostgreSQL exporter with a clustered scrape
+        set:
+            alloy.enabled: true
+            azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
+            azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
+            azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
     -   asserts:
             -   matchRegex:
@@ -55,6 +95,7 @@ tests:
             azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
             azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com
             azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
     -   asserts:
             -   matchRegex:
@@ -66,4 +107,5 @@ tests:
             azure.remoteWrite.dataCollectionRuleId: dcr-00000000000000000000000000000000
             azure.remoteWrite.metricsIngestionEndpoint: https://liferay-test-dce.eastus-1.metrics.ingest.monitor.azure.com/
             azure.remoteWrite.tenantId: 00000000-0000-0000-0000-000000000000
+            azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure

@@ -85,6 +85,12 @@ resource "azurerm_role_assignment" "observability_monitoring_metrics_publisher" 
 	role_definition_name="Monitoring Metrics Publisher"
 	scope=azurerm_monitor_data_collection_rule.main[0].id
 }
+resource "azurerm_role_assignment" "observability_monitoring_reader" {
+	count=var.observability_config.enabled ? 1 : 0
+	principal_id=azurerm_user_assigned_identity.observability[0].principal_id
+	role_definition_name="Monitoring Reader"
+	scope=data.azurerm_resource_group.liferay.id
+}
 resource "azurerm_user_assigned_identity" "crossplane_data" {
 	location=data.azurerm_resource_group.liferay.location
 	name="${var.deployment_name}-crossplane-data"

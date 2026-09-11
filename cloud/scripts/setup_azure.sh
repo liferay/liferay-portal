@@ -226,6 +226,10 @@ function _get_observability_parameters {
 				value: $tenant_id
 			},
 			{
+				name: "azure.subscriptionId",
+				value: ($platform_module_outputs.deployment_context.value.subscriptionId // "")
+			},
+			{
 				name: "cloudProvider",
 				value: "azure"
 			},

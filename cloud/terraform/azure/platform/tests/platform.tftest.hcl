@@ -284,6 +284,22 @@ run "should_grant_monitoring_metrics_publisher_on_the_data_collection_rule" {
 		}
 	}
 }
+run "should_grant_monitoring_reader_on_the_resource_group" {
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_reader[0].role_definition_name == "Monitoring Reader"
+		error_message="The observability identity must be granted the Monitoring Reader role to read Azure Monitor metrics for the databases"
+	}
+	assert {
+		condition=azurerm_role_assignment.observability_monitoring_reader[0].scope == data.azurerm_resource_group.liferay.id
+		error_message="The Monitoring Reader grant must be scoped to the resource group"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
 run "should_honor_a_custom_keda_service_account" {
 	assert {
 		condition=azurerm_federated_identity_credential.keda[0].subject == "system:serviceaccount:keda:keda-operator-custom"
@@ -378,7 +394,7 @@ run "should_not_create_observability_identity_by_default" {
 		error_message="No observability identity or federated credential must be created when observability is disabled"
 	}
 	assert {
-		condition=length(azurerm_role_assignment.observability_monitoring_data_reader) == 0 && length(azurerm_role_assignment.observability_monitoring_metrics_publisher) == 0
+		condition=length(azurerm_role_assignment.observability_monitoring_data_reader) == 0 && length(azurerm_role_assignment.observability_monitoring_metrics_publisher) == 0 && length(azurerm_role_assignment.observability_monitoring_reader) == 0
 		error_message="No monitoring grant must be created when observability is disabled"
 	}
 	assert {
