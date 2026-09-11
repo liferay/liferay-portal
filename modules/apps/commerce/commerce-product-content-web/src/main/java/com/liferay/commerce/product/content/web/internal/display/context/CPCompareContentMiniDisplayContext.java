@@ -80,7 +80,7 @@ public class CPCompareContentMiniDisplayContext {
 			(CommerceContext)httpServletRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
-		if (commerceContext != null) {
+		if (hasCommerceChannel()) {
 			accountEntry = commerceContext.getAccountEntry();
 		}
 

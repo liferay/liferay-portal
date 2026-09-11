@@ -124,6 +124,10 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 		try {
 			CommerceContext commerceContext = CommerceContextThreadLocal.get();
 
+			if (commerceContext == null) {
+				return null;
+			}
+
 			CommerceMoney unitPriceCommerceMoney =
 				_commerceProductPriceCalculation.getUnitPrice(
 					cpInstance.getCPInstanceId(), BigDecimal.ONE,
@@ -145,6 +149,10 @@ public class CPInstanceHelperImpl implements CPInstanceHelper {
 	public BigDecimal fetchCPInstanceUnitPromoPrice(CPInstance cpInstance) {
 		try {
 			CommerceContext commerceContext = CommerceContextThreadLocal.get();
+
+			if (commerceContext == null) {
+				return null;
+			}
 
 			CommerceMoney unitPromoPriceCommerceMoney =
 				_commerceProductPriceCalculation.getPromoPrice(
