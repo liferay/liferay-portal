@@ -353,15 +353,6 @@ definition {
 		}
 	}
 
-	@description = "[Please Update]"
-	@ignore = "Test Stub"
-	@priority = 4
-	test ReplacementLoopIsPrevented {
-
-		// TODO COMMERCE-8164 ReplacementLoopIsPrevented pending implementation
-
-	}
-
 	@description = "Verify a product can be set as discontinued"
 	@priority = 3
 	test SetProductAsDiscontinued {
