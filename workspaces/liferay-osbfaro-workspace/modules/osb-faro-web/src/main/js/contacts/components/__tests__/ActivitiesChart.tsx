@@ -23,6 +23,15 @@ const history = [
 	{intervalInitDate: 1717286400000, totalEvents: 5, totalSessions: 4},
 ];
 
+const weeklyHistory = [
+	{intervalInitDate: 1717200000000, totalEvents: 3, totalSessions: 2},
+	{intervalInitDate: 1717804800000, totalEvents: 5, totalSessions: 4},
+];
+
+const CHARACTER_WIDTH = 7;
+
+const originalGetBoundingClientRect = Element.prototype.getBoundingClientRect;
+
 const renderChart = (props = {}) =>
 	render(
 		<ActivitiesChart
@@ -40,6 +49,28 @@ const renderChart = (props = {}) =>
 	);
 
 describe('ActivitiesChart', () => {
+	beforeAll(() => {
+		Element.prototype.getBoundingClientRect = function (this: Element) {
+			const width = (this.textContent ?? '').length * CHARACTER_WIDTH;
+
+			return {
+				bottom: 16,
+				height: 16,
+				left: 0,
+				right: width,
+				toJSON: () => ({}),
+				top: 0,
+				width,
+				x: 0,
+				y: 0,
+			} as DOMRect;
+		};
+	});
+
+	afterAll(() => {
+		Element.prototype.getBoundingClientRect = originalGetBoundingClientRect;
+	});
+
 	it('does not crash when the selected point index is out of bounds for the current history', () => {
 		expect(() =>
 			renderChart({selectedPoint: history.length + 5})
@@ -98,4 +129,28 @@ describe('ActivitiesChart', () => {
 		});
 	});
 
+	it('keeps the label of a tick that sits at the very end of the axis', () => {
+		const {container} = renderChart();
+
+		const ticks = container.querySelectorAll(
+			'.recharts-xAxis .recharts-cartesian-axis-tick text'
+		);
+
+		expect(ticks).toHaveLength(1);
+		expect(ticks[0]).toHaveTextContent('Jun 2');
+	});
+
+	it('renders the label of the last week, whose date range is wide enough to run past the end of the axis', () => {
+		const {container} = renderChart({
+			history: weeklyHistory,
+			interval: 'W',
+		});
+
+		const ticks = container.querySelectorAll(
+			'.recharts-xAxis .recharts-cartesian-axis-tick text'
+		);
+
+		expect(ticks).toHaveLength(2);
+		expect(ticks[1]).toHaveTextContent('Jun 8 - 14');
+	});
 });
