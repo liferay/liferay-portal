@@ -8,6 +8,9 @@ package com.liferay.portal.kernel.db;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -88,6 +91,54 @@ public class DBResourceUtilTest {
 				"column1 LONG default 0 not null", "column2 LONG not null",
 				"column3 NUMERIC(13,4) null"),
 			moduleColumnDefinitionsMap.get("TestTable2"));
+	}
+
+	@Test
+	public void testGetModuleColumnDefinitionsMapWithUnparsableTablesSQL()
+		throws Exception {
+
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		URL url = Mockito.mock(URL.class);
+
+		String sql = StringBundler.concat(
+			"create table TestTable1 (]]></tables-sql><indexes-sql><![CDATA[",
+			"create index IX_TEST on TestTable1 (column1);]]>",
+			"create table TestTable2 (column1 LONG not null primary key);");
+
+		Mockito.when(
+			url.openStream()
+		).thenReturn(
+			new ByteArrayInputStream(sql.getBytes())
+		);
+
+		Mockito.when(
+			bundle.getResource(ArgumentMatchers.anyString())
+		).thenReturn(
+			url
+		);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				DBResourceUtil.class.getName(), LoggerTestUtil.WARN)) {
+
+			Map<String, List<String>> moduleColumnDefinitionsMap =
+				DBResourceUtil.getModuleColumnDefinitionsMap(bundle);
+
+			Assert.assertEquals(
+				Arrays.asList("column1 LONG not null"),
+				moduleColumnDefinitionsMap.get("TestTable2"));
+			Assert.assertNull(moduleColumnDefinitionsMap.get("TestTable1"));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to parse the column definitions of [TestTable1]",
+				logEntry.getMessage());
+		}
 	}
 
 	@Test
