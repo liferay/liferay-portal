@@ -149,6 +149,17 @@
 		<!-- Other fields -->
 
 		<column name="name" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_CN" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_N" return-type="CompoundPKEntry" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="name" />
+		</finder>
 	</entity>
 	<entity cache-enabled="true" local-service="true" name="DataLimitEntry" remote-service="false">
 
