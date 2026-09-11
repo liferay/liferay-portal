@@ -135,6 +135,10 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: nestedFields
+                    schema:
+                        type: string
             responses:
                 200:
                     content:
