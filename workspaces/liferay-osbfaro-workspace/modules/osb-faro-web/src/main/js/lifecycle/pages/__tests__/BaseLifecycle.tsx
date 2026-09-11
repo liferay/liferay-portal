@@ -1,6 +1,7 @@
 import * as API from 'shared/api';
 import BaseLifecycle from '../BaseLifecycle';
 import mockStore from 'test/mock-store';
+import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {ChannelContext} from 'shared/context/channel';
@@ -142,6 +143,8 @@ const LocationProbe = () => (
 const renderPage = (initialEntries = ['/workspace/23/123/lifecycles']) =>
 	render(
 		<Provider store={store}>
+			<ModalRenderer />
+
 			<ChannelContext.Provider value={mockChannelContext() as any}>
 				<MemoryRouter initialEntries={initialEntries}>
 					<BaseLifecycle />
@@ -362,12 +365,17 @@ describe('BaseLifecycle', () => {
 		});
 	});
 
+	const openActionsMenu = () =>
+		fireEvent.click(screen.getByRole('button', {name: 'Menu'}));
+
 	describe('the Lifecycle Configuration action', () => {
 		it('navigates to the edit route when clicked by an admin', () => {
 			renderPage();
 
+			openActionsMenu();
+
 			fireEvent.click(
-				screen.getByRole('button', {name: 'Lifecycle Configuration'})
+				screen.getByRole('menuitem', {name: 'Lifecycle Configuration'})
 			);
 
 			expect(screen.getByTestId('location')).toHaveTextContent(
@@ -384,9 +392,37 @@ describe('BaseLifecycle', () => {
 
 			renderPage();
 
+			openActionsMenu();
+
+			expect(screen.queryByText('Lifecycle Configuration')).toBeNull();
+		});
+	});
+
+	describe('the Manage Notifications action', () => {
+		it('opens the manage notifications modal when clicked', () => {
+			renderPage();
+
+			openActionsMenu();
+
+			fireEvent.click(
+				screen.getByRole('menuitem', {name: 'Manage Notifications'})
+			);
+
 			expect(
-				screen.queryByRole('button', {name: 'Lifecycle Configuration'})
-			).toBeNull();
+				screen.getByText('Manage Lifecycle Notifications')
+			).toBeInTheDocument();
+		});
+
+		it('is available for non-admins', () => {
+			mockedUseCurrentUser.mockReturnValue({isAdmin: () => false});
+
+			renderPage();
+
+			openActionsMenu();
+
+			expect(
+				screen.getByRole('menuitem', {name: 'Manage Notifications'})
+			).toBeInTheDocument();
 		});
 	});
 

@@ -1,17 +1,18 @@
 import * as API from 'shared/api';
 import DataSourcesProvider from 'shared/context/dataSources';
 import mockStore from 'test/mock-store';
+import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {mockSegment} from 'test/data';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
-import {SegmentProfileRoutes} from '../ProfileRoutes';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
+import SegmentProfileRoutes from '../ProfileRoutes';
 
 jest.unmock('react-dom');
 
@@ -44,6 +45,8 @@ const ENTITY_ROUTE = `${Routes.CONTACTS_SEGMENT}/*`;
 const renderProfileRoutes = () =>
 	render(
 		<Provider store={mockStore()}>
+			<ModalRenderer />
+
 			<MemoryRouter initialEntries={[ENTITY_URL]}>
 				<ChannelContext.Provider value={mockChannelContext()}>
 					<DataSourcesProvider groupId='23'>
@@ -115,5 +118,21 @@ describe('SegmentProfileRoutes', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(screen.getByText('ERC: my-erc')).toBeTruthy();
+	});
+
+	it('opens the manage notifications modal from the actions menu', async () => {
+		const {container} = renderProfileRoutes();
+
+		await waitForLoadingToBeRemoved(container);
+
+		fireEvent.click(screen.getByRole('button', {name: 'Menu'}));
+
+		fireEvent.click(
+			screen.getByRole('menuitem', {name: 'Manage Notifications'})
+		);
+
+		expect(
+			screen.getByText('Manage Segment Notifications')
+		).toBeInTheDocument();
 	});
 });

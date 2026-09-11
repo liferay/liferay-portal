@@ -3,7 +3,7 @@ import DataSourcesProvider from 'shared/context/dataSources';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {mockSegment} from 'test/data';
 import {Provider} from 'react-redux';
@@ -120,11 +120,15 @@ describe('AccountProfile', () => {
 	});
 
 	it('should link to the segment editor', () => {
-		const {container} = renderAccountProfile();
+		renderAccountProfile();
+
+		fireEvent.click(screen.getByRole('button', {name: 'Menu'}));
 
 		expect(
-			container.querySelector('a[href$="/segments/0/edit"]')
-		).toBeTruthy();
+			screen
+				.getByRole('menuitem', {name: 'Edit Segment'})
+				.getAttribute('href')
+		).toMatch(/\/segments\/0\/edit$/);
 	});
 
 	it('should list the accounts matching the segment', () => {
@@ -150,8 +154,10 @@ describe('AccountProfile', () => {
 	it('should offer the segment membership as a CSV download', () => {
 		renderAccountProfile();
 
+		fireEvent.click(screen.getByRole('button', {name: 'Menu'}));
+
 		expect(
-			screen.getByRole('button', {name: 'Download Reports'})
+			screen.getByRole('menuitem', {name: 'Download CSV'})
 		).toBeTruthy();
 	});
 
