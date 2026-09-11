@@ -41,6 +41,54 @@ public class CMPObjectDefinitionDeployerImplTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testDeployWhenObjectDefinitionIsCMP() {
+		CMPObjectDefinitionDeployerImpl cmpObjectDefinitionDeployerImpl =
+			new CMPObjectDefinitionDeployerImpl();
+
+		SiteInitializer cmpSiteInitializer = Mockito.mock(
+			SiteInitializer.class);
+		SiteInitializer cmsSiteInitializer = Mockito.mock(
+			SiteInitializer.class);
+
+		ReflectionTestUtil.setFieldValue(
+			cmpObjectDefinitionDeployerImpl, "_cmpSiteInitializer",
+			cmpSiteInitializer);
+		ReflectionTestUtil.setFieldValue(
+			cmpObjectDefinitionDeployerImpl, "_cmsSiteInitializer",
+			cmsSiteInitializer);
+
+		long companyId = RandomTestUtil.randomLong();
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.isCMP()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			objectDefinition.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		try (MockedStatic<SiteInitializerUtil> siteInitializerUtilMockedStatic =
+				Mockito.mockStatic(SiteInitializerUtil.class)) {
+
+			List<ServiceRegistration<?>> serviceRegistrations =
+				cmpObjectDefinitionDeployerImpl.deploy(objectDefinition);
+
+			Assert.assertTrue(serviceRegistrations.isEmpty());
+
+			siteInitializerUtilMockedStatic.verify(
+				() -> SiteInitializerUtil.initialize(
+					cmpSiteInitializer, cmsSiteInitializer, companyId));
+		}
+	}
+
+	@Test
 	public void testDeployWhenObjectDefinitionIsCMS() {
 		CMPObjectDefinitionDeployerImpl cmpObjectDefinitionDeployerImpl =
 			new CMPObjectDefinitionDeployerImpl();
