@@ -134,6 +134,16 @@ public class DTOConverterRegistryTest {
 				dtoConverter,
 				_dtoConverterRegistry.getDTOConverter(dtoClassName));
 		}
+
+		try (AutoCloseable autoCloseable1 = _registerDTOConverter(
+				null, dtoClassName, new TestDTOConverter(), null);
+			AutoCloseable autoCloseable2 = _registerDefaultDTOConverter(
+				dtoClassName, dtoConverter, null)) {
+
+			Assert.assertSame(
+				dtoConverter,
+				_dtoConverterRegistry.getDTOConverter(dtoClassName));
+		}
 	}
 
 	@Test
@@ -149,6 +159,17 @@ public class DTOConverterRegistryTest {
 			AutoCloseable autoCloseable2 =
 				_registerDTOConverterWithServiceRanking(
 					dtoClassName, new TestDTOConverter(), Integer.MAX_VALUE)) {
+
+			Assert.assertSame(
+				dtoConverter,
+				_dtoConverterRegistry.getDTOConverter(dtoClassName));
+		}
+
+		try (AutoCloseable autoCloseable1 =
+				_registerDTOConverterWithServiceRanking(
+					dtoClassName, new TestDTOConverter(), Integer.MAX_VALUE);
+			AutoCloseable autoCloseable2 = _registerDefaultDTOConverter(
+				dtoClassName, dtoConverter, null)) {
 
 			Assert.assertSame(
 				dtoConverter,
