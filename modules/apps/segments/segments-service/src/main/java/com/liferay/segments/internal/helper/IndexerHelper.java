@@ -142,20 +142,22 @@ public class IndexerHelper {
 
 		Set<Long> classPKs = new HashSet<>();
 
-		int indexSearchLimit = GetterUtil.getInteger(
-			PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT));
+		Document document = null;
 
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setAttribute(
 			"segmentsEntryIds", new long[] {segmentsEntryId});
 		searchContext.setCompanyId(companyId);
+
+		int indexSearchLimit = GetterUtil.getInteger(
+			PropsUtil.get(PropsKeys.INDEX_SEARCH_LIMIT));
+
 		searchContext.setEnd(indexSearchLimit);
+
 		searchContext.setSorts(
 			new Sort(Field.ENTRY_CLASS_PK, Sort.LONG_TYPE, false));
 		searchContext.setStart(0);
-
-		Document document = null;
 
 		while (true) {
 			if (document != null) {

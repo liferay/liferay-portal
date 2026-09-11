@@ -110,9 +110,9 @@ public class UserODataRetrieverTest {
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"INDEX_SEARCH_LIMIT", _ELASTICSEARCH_MAX_RESULT_WINDOW)) {
 
-			String firstName = RandomTestUtil.randomString();
-
 			Set<Long> expectedUserIds = new HashSet<>();
+
+			String firstName = RandomTestUtil.randomString();
 
 			for (int i = 0;
 				 i < _MORE_USERS_THAN_ELASTICSEARCH_MAX_RESULT_WINDOW; i++) {
