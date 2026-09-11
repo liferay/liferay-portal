@@ -210,8 +210,17 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 		FilterBuilder filterBuilder = new FilterBuilder();
 
 		filterBuilder.addFilter(
+			"segmentCategory", FilterConstants.COMPARISON_OPERATOR_EQUALS,
+			"INDIVIDUAL");
+		filterBuilder.addFilter(
 			"status", FilterConstants.COMPARISON_OPERATOR_EQUALS,
 			IndividualSegment.Status.ACTIVE.name());
+		filterBuilder.addFilter(
+			"type", FilterConstants.COMPARISON_OPERATOR_EQUALS,
+			IndividualSegment.Type.BATCH.name(), false);
+		filterBuilder.addFilter(
+			"type", FilterConstants.COMPARISON_OPERATOR_EQUALS,
+			IndividualSegment.Type.REAL_TIME.name(), false);
 
 		try {
 			AnalyticsConfiguration analyticsConfiguration =

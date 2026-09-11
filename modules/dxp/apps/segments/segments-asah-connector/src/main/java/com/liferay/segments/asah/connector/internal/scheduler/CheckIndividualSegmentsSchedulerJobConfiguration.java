@@ -118,7 +118,7 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 					individualSegment.getExternalReferenceCode(),
 					individualSegment.getId(), nameMap, Collections.emptyMap(),
 					true, null, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
-					serviceContext);
+					individualSegment.getSegmentType(), serviceContext);
 
 				return;
 			}
@@ -126,7 +126,8 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 			_segmentsEntryLocalService.updateSegmentsEntry(
 				individualSegment.getExternalReferenceCode(),
 				segmentsEntry.getSegmentsEntryId(), individualSegment.getId(),
-				nameMap, null, true, null, serviceContext);
+				nameMap, null, true, null, individualSegment.getSegmentType(),
+				serviceContext);
 		}
 		catch (PortalException portalException) {
 			_log.error(
@@ -328,8 +329,8 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 
 		List<SegmentsEntry> segmentsEntries =
 			_segmentsEntryLocalService.getSegmentsEntriesBySource(
-				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND, 0, _DELTA,
-				null);
+				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND, _TYPES, 0,
+				_DELTA, null);
 
 		if (individualSegmentResults.getTotal() > 0) {
 			segmentsEntries = ListUtil.filter(
@@ -446,6 +447,10 @@ public class CheckIndividualSegmentsSchedulerJobConfiguration
 	}
 
 	private static final int _DELTA = 100;
+
+	private static final String[] _TYPES = {
+		SegmentsEntryConstants.TYPE_BATCH, SegmentsEntryConstants.TYPE_REAL_TIME
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CheckIndividualSegmentsSchedulerJobConfiguration.class);

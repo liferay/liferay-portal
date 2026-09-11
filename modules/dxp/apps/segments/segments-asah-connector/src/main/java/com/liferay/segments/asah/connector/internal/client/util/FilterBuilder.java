@@ -23,6 +23,12 @@ public class FilterBuilder {
 		_addFilter(fieldName, operator, value, true);
 	}
 
+	public void addFilter(
+		String fieldName, String operator, Object value, boolean required) {
+
+		_addFilter(fieldName, operator, value, required);
+	}
+
 	public void addNullFilter(String fieldName, String operator) {
 		_requiredFilters.add(FilterUtil.getNullFilter(fieldName, operator));
 	}
