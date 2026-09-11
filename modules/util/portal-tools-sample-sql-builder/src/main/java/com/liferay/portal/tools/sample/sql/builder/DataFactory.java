@@ -4669,6 +4669,16 @@ public class DataFactory {
 		return friendlyURLEntryModel;
 	}
 
+	public FriendlyURLEntryModel newFriendlyURLEntryModel(
+		ObjectDefinitionModel objectDefinitionModel,
+		ObjectEntryModel objectEntryModel) {
+
+		return newFriendlyURLEntryModel(
+			_globalGroupId,
+			getClassNameId(objectDefinitionModel.getClassName()),
+			objectEntryModel.getObjectEntryId());
+	}
+
 	public GroupModel newGlobalGroupModel() {
 		_globalGroupId = _counter.get();
 
@@ -5759,7 +5769,7 @@ public class DataFactory {
 
 		String uuid = SequentialUUID.generate();
 
-		return newObjectDefinitionModel(
+		ObjectDefinitionModel objectDefinitionModel = newObjectDefinitionModel(
 			objectDefinitionId, objectFolderId, 0, className,
 			StringBundler.concat("O_", _companyId, StringPool.UNDERLINE, name),
 			true, false, true, label, true, name,
@@ -5767,6 +5777,11 @@ public class DataFactory {
 			"c_" + StringUtil.toLowerCase(name) + "_",
 			"c_" + StringUtil.toLowerCase(name), label, true, false, uuid,
 			uuid);
+
+		objectDefinitionModel.setFriendlyURLSeparator(
+			_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(name));
+
+		return objectDefinitionModel;
 	}
 
 	public List<ObjectDefinitionModel> newObjectDefinitionModels(

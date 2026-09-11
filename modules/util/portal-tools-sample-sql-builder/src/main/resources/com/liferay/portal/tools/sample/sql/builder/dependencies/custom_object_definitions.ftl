@@ -39,6 +39,14 @@ ${dataFactory.getExtensionDynamicObjectDefinitionTableCreateSQL(objectDefinition
 
 	${dataFactory.toInsertSQL(objectEntryModel)}
 
+	<#assign friendlyURLEntryModel = dataFactory.newFriendlyURLEntryModel(objectDefinitionModel, objectEntryModel) />
+
+	${dataFactory.toInsertSQL(friendlyURLEntryModel)}
+
+	${dataFactory.toInsertSQL(dataFactory.newFriendlyURLEntryLocalizationModel(friendlyURLEntryModel, objectEntryModel.getExternalReferenceCode()))}
+
+	${dataFactory.toInsertSQL(dataFactory.newFriendlyURLEntryMapping(friendlyURLEntryModel))}
+
 	<@insertAssetEntry _entry = objectEntryModel />
 
 	<#list dataFactory.generateDynamicSQLs(objectDefinitionModel.getDBTableName(), dlFileEntryModel.getFileEntryId(), objectEntryModel.getObjectEntryId(), objectFieldModels, relatedTicketObjectEntryId, objectEntryModel.getUserId()) as dynamicSQL>
