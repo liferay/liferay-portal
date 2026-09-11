@@ -50,6 +50,17 @@ public class LiferayFileItem extends DiskFileItem implements FileItem {
 	}
 
 	@Override
+	public void delete() {
+		super.delete();
+
+		if (_tempFile != null) {
+			_tempFile.delete();
+
+			_tempFile = null;
+		}
+	}
+
+	@Override
 	public String getContentType() {
 		try {
 			return MimeTypesUtil.getContentType(

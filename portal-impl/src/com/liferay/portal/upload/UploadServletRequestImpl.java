@@ -116,6 +116,8 @@ public class UploadServletRequestImpl
 						httpServletRequest.setAttribute(
 							WebKeys.UPLOAD_EXCEPTION, uploadException);
 
+						fileItem.delete();
+
 						continue;
 					}
 
@@ -143,6 +145,8 @@ public class UploadServletRequestImpl
 					}
 
 					values.add(fileItem.getString());
+
+					fileItem.delete();
 
 					continue;
 				}
