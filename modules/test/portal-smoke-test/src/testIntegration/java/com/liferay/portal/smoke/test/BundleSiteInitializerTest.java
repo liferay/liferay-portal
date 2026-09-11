@@ -492,7 +492,7 @@ public class BundleSiteInitializerTest {
 				logEntries.toString(),
 				_hasLogEntryMessage(
 					logEntries,
-					"Unable to get asset library Test Design Library 1"));
+					"Unable to get design library Test Design Library 1"));
 
 			Assert.assertNull(
 				_groupLocalService.fetchGroup(
