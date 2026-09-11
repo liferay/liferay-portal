@@ -63,6 +63,7 @@ public class SegmentsEntryModelDocumentContributor
 				SegmentsEntryRole::getRoleId));
 		document.addKeyword(
 			"source", StringUtil.toLowerCase(segmentsEntry.getSource()));
+		document.addKeyword("type", segmentsEntry.getType());
 	}
 
 	private Locale _getSiteDefaultLocale(long groupId) {
