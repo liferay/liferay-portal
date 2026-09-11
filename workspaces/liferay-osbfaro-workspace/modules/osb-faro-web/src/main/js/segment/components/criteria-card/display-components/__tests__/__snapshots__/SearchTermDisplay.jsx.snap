@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SearchTermDisplay renders 1`] = `
+<div>
+  Individual
+  <span>
+    is
+  </span>
+  <span>
+    searching
+  </span>
+  <b>
+    "shoes"
+  </b>
+</div>
+`;
