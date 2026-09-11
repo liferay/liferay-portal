@@ -135,6 +135,27 @@ describe('VerticalTimeline', () => {
 			).toBeInTheDocument();
 		});
 
+		it('shows its device on a sticker ahead of the title', () => {
+			const {container} = renderTimeline({items: [SESSION_ITEM]});
+
+			const sticker = container.querySelector(
+				'.session-row .session-sticker'
+			);
+
+			expect(sticker.querySelector('.device-icon')).toBeInTheDocument();
+			expect(sticker.nextElementSibling).toHaveClass('title');
+		});
+
+		it('closes its details with the event count, as a campaign row does', () => {
+			const {container} = renderTimeline({items: [SESSION_ITEM]});
+
+			const details = container.querySelector('.session-row .row-details');
+
+			expect(details.lastElementChild).toHaveClass('event-count-pill');
+			expect(details.lastElementChild).toHaveTextContent('2');
+			expect(details.querySelector('.device-icon')).toBeNull();
+		});
+
 		it('shows "in progress" when the session has no end time', () => {
 			renderTimeline({items: [{...SESSION_ITEM, endTime: undefined}]});
 
