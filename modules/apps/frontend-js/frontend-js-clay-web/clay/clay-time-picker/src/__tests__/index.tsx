@@ -158,7 +158,7 @@ describe('IncrementalInteractions', () => {
 			expect(containerResetEl.style.pointerEvents).toBe('auto');
 		});
 
-		it('sets the values ​​to the default when clicking on the reset action', () => {
+		it('sets the values to the default when clicking on the reset action', () => {
 			const {getByTestId} = render(<TimePickerWithState use12Hours />);
 
 			const formControlEl = getByTestId('formControl');
