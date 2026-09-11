@@ -36,10 +36,10 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 		_controllerJobName = getRequiredParameter(
 			"controller.job.name", parameters);
 		_portalRepositoryName = _getParameter(
-			_PORTAL_REPOSITORY_NAME_DEFAULT, parameters,
-			"portal.repository.name");
+			_PORTAL_REPOSITORY_NAME_DEFAULT, "portal.repository.name",
+			parameters);
 		_portalUsername = _getParameter(
-			_PORTAL_USERNAME_DEFAULT, parameters, "portal.username");
+			_PORTAL_USERNAME_DEFAULT, "portal.username", parameters);
 
 		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
 			getRequiredParameter("master.name", parameters));
@@ -58,10 +58,10 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 	@Override
 	public MonitorResult execute() {
+		JSONArray buildsJSONArray = null;
+
 		long currentTimeMillis =
 			JenkinsResultsParserUtil.getCurrentTimeMillis();
-
-		JSONArray buildsJSONArray = null;
 
 		try {
 			buildsJSONArray = _getBuildsJSONArray();
@@ -310,7 +310,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 	}
 
 	private String _getParameter(
-		String defaultValue, Map<String, String> parameters, String name) {
+		String defaultValue, String name, Map<String, String> parameters) {
 
 		String value = parameters.get(name);
 
