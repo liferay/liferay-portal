@@ -61,13 +61,14 @@ export default gql`
 			items {
 				campaignId
 				campaignName
-				dataSourceType
+				origin
 				touches {
 					individualId
 					individualName
 					jobTitle
 					status
 				}
+				touchesCount
 			}
 			touchesCount
 		}

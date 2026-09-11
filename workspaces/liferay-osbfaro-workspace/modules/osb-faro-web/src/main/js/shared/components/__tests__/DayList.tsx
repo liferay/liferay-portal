@@ -34,7 +34,7 @@ const buildDay = (
 const CAMPAIGN = {
 	campaignId: 'c1',
 	campaignName: 'Q3 Manufacturing ABM',
-	dataSourceType: 'salesforce',
+	origin: 'SALESFORCE',
 	touches: [
 		{
 			individualId: null,
@@ -43,6 +43,7 @@ const CAMPAIGN = {
 			status: 'Registered',
 		},
 	],
+	touchesCount: 1,
 };
 
 const buildCampaignDays = (date: string) => ({

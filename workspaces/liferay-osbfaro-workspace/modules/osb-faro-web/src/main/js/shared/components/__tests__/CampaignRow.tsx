@@ -1,13 +1,14 @@
 import CampaignRow from '../CampaignRow';
 import React from 'react';
+import {CampaignTouch} from 'shared/util/activities';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 
 jest.unmock('react-dom');
 
-const CAMPAIGN = {
+const CAMPAIGN: CampaignTouch = {
 	campaignId: 'c3',
 	campaignName: 'Q3 Manufacturing ABM',
-	dataSourceType: 'salesforce',
+	origin: 'SALESFORCE',
 	touches: [
 		{
 			individualId: 'ind-1',
@@ -22,6 +23,7 @@ const CAMPAIGN = {
 			status: 'Attended',
 		},
 	],
+	touchesCount: 5,
 };
 
 const expand = (container: HTMLElement) =>
@@ -46,11 +48,11 @@ describe('CampaignRow', () => {
 		expect(screen.getByText(/salesforce/i)).toBeInTheDocument();
 	});
 
-	it('counts the touches it holds, as responses rather than events', () => {
+	it('counts the campaign touch total, not the rows it was handed', () => {
 		const {container} = renderRow();
 
 		expect(container.querySelector('.event-count-pill')).toHaveTextContent(
-			'2'
+			'5'
 		);
 		expect(
 			container.querySelector('.event-count-pill .lexicon-icon-comments')
@@ -81,6 +83,20 @@ describe('CampaignRow', () => {
 		expect(screen.getByText('VP of Operations')).toBeInTheDocument();
 		expect(screen.getByText('Registered')).toBeInTheDocument();
 		expect(screen.getByText('Attended')).toBeInTheDocument();
+	});
+
+	it('leaves the status label out while a touch has none', () => {
+		const {container} = renderRow({
+			...CAMPAIGN,
+			touches: [{...CAMPAIGN.touches[0], status: null}],
+		});
+
+		expand(container);
+
+		expect(container.querySelector('.touch-row')).toBeInTheDocument();
+		expect(
+			container.querySelector('.touch-status')
+		).not.toBeInTheDocument();
 	});
 
 	it('omits the job title line when there is none', () => {

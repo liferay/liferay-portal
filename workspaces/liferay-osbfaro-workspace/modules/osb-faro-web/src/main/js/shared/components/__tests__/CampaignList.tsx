@@ -14,7 +14,7 @@ const buildCampaigns = (total: number) =>
 	Array.from({length: total}, (unused, index) => ({
 		campaignId: `c${index}`,
 		campaignName: `Campaign ${index}`,
-		dataSourceType: 'salesforce',
+		origin: 'SALESFORCE',
 		touches: [
 			{
 				individualId: null as string | null,
@@ -23,6 +23,7 @@ const buildCampaigns = (total: number) =>
 				status: 'Attended',
 			},
 		],
+		touchesCount: 1,
 	}));
 
 const renderList = (props = {}) =>

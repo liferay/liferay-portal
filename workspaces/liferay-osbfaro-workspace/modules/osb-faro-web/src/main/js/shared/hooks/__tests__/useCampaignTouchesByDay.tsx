@@ -30,7 +30,7 @@ const VARIABLES = {
 const buildTouch = (campaignId: string) => ({
 	campaignId,
 	campaignName: 'Q3 Manufacturing ABM',
-	dataSourceType: 'salesforce',
+	origin: 'SALESFORCE',
 	touches: [
 		{
 			individualId: null,
@@ -39,6 +39,7 @@ const buildTouch = (campaignId: string) => ({
 			status: 'Registered',
 		},
 	],
+	touchesCount: 1,
 });
 
 const buildRequest = (variables: Record<string, unknown>, days: unknown[]) => ({

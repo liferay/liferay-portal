@@ -45,12 +45,17 @@ const CAMPAIGN_NAMES = [
 ];
 
 const buildCampaigns = (dayKey: string, total: number): CampaignTouch[] =>
-	Array.from({length: total}, (unused, index) => ({
-		campaignId: `${dayKey}-${index}`,
-		campaignName: CAMPAIGN_NAMES[index % CAMPAIGN_NAMES.length],
-		dataSourceType: 'salesforce',
-		touches: MEMBERS.slice(0, (index % MEMBERS.length) + 1),
-	}));
+	Array.from({length: total}, (unused, index) => {
+		const touches = MEMBERS.slice(0, (index % MEMBERS.length) + 1);
+
+		return {
+			campaignId: `${dayKey}-${index}`,
+			campaignName: CAMPAIGN_NAMES[index % CAMPAIGN_NAMES.length],
+			origin: 'SALESFORCE',
+			touches,
+			touchesCount: touches.length,
+		};
+	});
 
 const buildDay = (
 	dayKey: string,
@@ -66,7 +71,7 @@ const buildDay = (
 		delta,
 		page,
 		touchesCount: campaigns.reduce(
-			(total, {touches}) => total + touches.length,
+			(total, {touchesCount}) => total + touchesCount,
 			0
 		),
 	};

@@ -126,14 +126,15 @@ export type CampaignTouchMember = {
 	individualId: string | null;
 	individualName: string;
 	jobTitle: string | null;
-	status: string;
+	status: string | null;
 };
 
 export type CampaignTouch = {
 	campaignId: string;
 	campaignName: string;
-	dataSourceType: string;
+	origin: string;
 	touches: CampaignTouchMember[];
+	touchesCount: number;
 };
 
 export type TimelineDay = {
