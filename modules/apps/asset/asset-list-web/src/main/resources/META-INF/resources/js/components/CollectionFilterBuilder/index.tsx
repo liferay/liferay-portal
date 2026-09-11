@@ -189,22 +189,11 @@ export default function CollectionFilterBuilder({
 
 	useEffect(() => {
 
-		// An item type that uses the asset filter builder instead displays none
-		// of this, and the type settings are merged rather than replaced on save,
-		// so drop everything and let the empty value clear what was stored.
-		// Otherwise keep the conditions the new item type can still offer rather
-		// than making the user build them again.
+		// Keep the conditions the new item type can still offer rather than
+		// making the user build them again.
 
-		const handleFilterVisibilityChange = ({
-			showCollection,
-		}: {
-			showCollection: boolean;
-		}) =>
+		const handleSourceChange = () =>
 			setConditions((conditions) => {
-				if (!showCollection) {
-					return createEmptyConditions();
-				}
-
 				const keptConditions = conditions.filter(
 					(condition) => !isTypeSpecificCondition(condition)
 				);
@@ -214,16 +203,10 @@ export default function CollectionFilterBuilder({
 					: createEmptyConditions();
 			});
 
-		Liferay.on(
-			`${namespace}filterVisibilityChange`,
-			handleFilterVisibilityChange
-		);
+		Liferay.on(`${namespace}sourceChange`, handleSourceChange);
 
 		return () => {
-			Liferay.detach(
-				`${namespace}filterVisibilityChange`,
-				handleFilterVisibilityChange
-			);
+			Liferay.detach(`${namespace}sourceChange`, handleSourceChange);
 		};
 	}, [namespace]);
 

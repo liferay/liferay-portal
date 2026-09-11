@@ -46,7 +46,7 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 				}
 			%>
 
-				<aui:option data-object="<%= objectDefinition != null %>" label="<%= label %>" selected="<%= (classNameIds.length == 1) && (classNameId == classNameIds[0]) %>" value="<%= classNameId %>" />
+				<aui:option label="<%= label %>" selected="<%= (classNameIds.length == 1) && (classNameId == classNameIds[0]) %>" value="<%= classNameId %>" />
 
 			<%
 			}
