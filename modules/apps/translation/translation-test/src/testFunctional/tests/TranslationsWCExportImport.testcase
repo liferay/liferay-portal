@@ -401,17 +401,9 @@ definition {
 
 		Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
 
-		if (IsElementPresent(locator1 = "ProcessBuilderKaleoDesignerReact#SOURCE_EDITOR")) {
-			AssertTextEquals.assertPartialText(
-				locator1 = "ProcessBuilderKaleoDesignerReact#SOURCE_EDITOR",
-				value1 = "bpt");
-		}
-		else {
-			TestUtils.assertPartialAttributeValue(
-				attribute = "value",
-				element = "//div[contains(@class,'ck-source-editing-area')]//textarea",
-				value = "bpt");
-		}
+		AssertTextEquals.assertPartialText(
+			locator1 = "ProcessBuilderKaleoDesignerReact#SOURCE_EDITOR",
+			value1 = "bpt");
 	}
 
 	@description = "This ensures that the translation files can be imported from a zip."

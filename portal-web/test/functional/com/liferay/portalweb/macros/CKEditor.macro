@@ -92,8 +92,17 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addSourceContent(content = null) {
-		Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
+	macro addSourceContent(content = null, fieldLabel = null) {
+		if (isSet(fieldLabel)) {
+			Click(
+				key_fieldFieldLabel = ${fieldLabel},
+				locator1 = "WCEditWebContent#SOURCE_BUTTON");
+		}
+		else {
+			Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
+		}
+
+		WaitForVisible(locator1 = "CKEditor#BODY_FIELD_SOURCE_EITHER_EDITOR");
 
 		if (IsElementPresent(locator1 = "CKEditor#BODY_FIELD_SOURCE_ON")) {
 			Type.typeCodeMirrorEditorNoError(

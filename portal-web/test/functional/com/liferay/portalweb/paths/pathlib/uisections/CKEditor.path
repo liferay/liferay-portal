@@ -46,6 +46,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>BODY_FIELD_SOURCE_TEXTAREA</td>
+	<td>//div[contains(@class,'ck-source-editing-area')]//textarea</td>
+	<td></td>
+</tr>
+<tr>
+	<td>BODY_FIELD_SOURCE_EITHER_EDITOR</td>
+	<td>//div[contains(@class,'cke_contents')]/div[contains(@class,'CodeMirror cm-s-default')] | //div[contains(@class,'ck-source-editing-area')]//textarea</td>
+	<td></td>
+</tr>
+<tr>
 	<td>BODY_FIELD_IFRAME</td>
 	<td>//*[contains(@id,'cke')]/iframe</td>
 	<td></td>
@@ -297,11 +307,6 @@
 <tr>
 	<td>TOOLBAR_SOURCE_BUTTON_2</td>
 	<td>//div[contains(@class,'cke_2')]//a[contains(@class,'cke_button') and contains(@class,'source')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>BODY_FIELD_SOURCE_TEXTAREA</td>
-	<td>//div[contains(@class,'ck-source-editing-area')]//textarea</td>
 	<td></td>
 </tr>
 <tr>

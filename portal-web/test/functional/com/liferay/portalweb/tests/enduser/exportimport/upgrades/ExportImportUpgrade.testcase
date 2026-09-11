@@ -427,7 +427,7 @@ definition {
 
 			var portalURL = PropsUtil.get("portal.url");
 
-			ExportImport.addSourceContent(content = '''<p><a href="${portalURL}/dl/XYZ123">${portalURL}/dl/XYZ123</a></p>''');
+			CKEditor.addSourceContent(content = '''<p><a href="${portalURL}/dl/XYZ123">${portalURL}/dl/XYZ123</a></p>''');
 
 			WebContent.publishWithPermissions();
 		}

@@ -1,17 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro addSourceContent(content = null) {
-		Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
-
-		Type.typeCodeMirrorEditorNoError(
-			locator1 = "CKEditor#BODY_FIELD_SOURCE_ON",
-			value1 = ${content});
-
-		Click(locator1 = "CKEditor#TOOLBAR_SOURCE_BUTTON");
-	}
-
-	@summary = "Default summary"
 	macro configureURLPattern(errorMessage = null, multipleURL = null, urlPattern = null) {
 		Type(
 			locator1 = "ExportImport#URL_PATTERN",
