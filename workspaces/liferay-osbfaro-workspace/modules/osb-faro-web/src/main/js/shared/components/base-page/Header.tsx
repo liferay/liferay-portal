@@ -7,6 +7,7 @@ import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
+import ClayToolbar from '@clayui/toolbar';
 import getCN from 'classnames';
 import Label from 'shared/components/Label';
 import NotificationAlertList, {
@@ -81,13 +82,20 @@ const NavBar: React.FC<INavBarProps> = ({
 
 interface Action extends React.HTMLAttributes<HTMLElement> {
 	deprecated?: boolean;
-	disabled: boolean;
+	disabled?: boolean;
 	label: string;
-	href: string;
+	href?: string;
 	icon?: {
 		symbol: string;
 	};
 	external?: boolean;
+
+	/**
+	 * Wraps the rendered dropdown item, so an action can drive its own
+	 * trigger-and-modal component (e.g. a download action that opens a
+	 * confirmation modal) instead of a plain click handler.
+	 */
+	renderItem?: (item: React.ReactElement) => React.ReactElement;
 }
 
 interface IPageActionsProps {
@@ -96,6 +104,34 @@ interface IPageActionsProps {
 	disabled?: boolean;
 	label?: string;
 }
+
+const renderActionItems = (actions: Action[]) =>
+	actions.map(({deprecated, icon, label, renderItem, ...props}) => {
+		const item = (
+			<ClayDropDown.Item {...props}>
+				{icon && (
+					<ClayIcon className="icon-root mr-2" symbol={icon.symbol} />
+				)}
+
+				{label}
+
+				{deprecated && (
+					<ClayBadge
+						className="ml-1"
+						displayType="warning"
+						label={Liferay.Language.get('deprecated').toUpperCase()}
+						translucent
+					/>
+				)}
+			</ClayDropDown.Item>
+		);
+
+		return (
+			<React.Fragment key={label}>
+				{renderItem ? renderItem(item) : item}
+			</React.Fragment>
+		);
+	});
 
 const PageActions: React.FC<IPageActionsProps> = ({
 	actions = [],
@@ -132,11 +168,16 @@ const PageActions: React.FC<IPageActionsProps> = ({
 		{actions.length > actionsDisplayLimit && (
 			<ClayDropDown
 				alignmentPosition={Align.BottomRight}
+				closeOnClick
 				trigger={
 					<ClayButton
-						aria-label={label && Liferay.Language.get('menu')}
+						aria-label={
+							label ? undefined : Liferay.Language.get('menu')
+						}
+						borderless={!label}
 						disabled={disabled}
-						displayType={label.length ? 'primary' : 'unstyled'}
+						displayType={label.length ? 'primary' : 'secondary'}
+						size={label ? undefined : 'sm'}
 					>
 						{label ? (
 							<>
@@ -156,25 +197,51 @@ const PageActions: React.FC<IPageActionsProps> = ({
 					</ClayButton>
 				}
 			>
-				{actions.map(({deprecated, label, ...props}) => (
-					<ClayDropDown.Item key={label} {...props}>
-						{label}
-
-						{deprecated && (
-							<ClayBadge
-								className="ml-1"
-								displayType="warning"
-								label={Liferay.Language.get(
-									'deprecated'
-								).toUpperCase()}
-								translucent
-							/>
-						)}
-					</ClayDropDown.Item>
-				))}
+				{renderActionItems(actions)}
 			</ClayDropDown>
 		)}
 	</>
+);
+
+interface IPageActionsToolbarProps {
+	actions?: Action[];
+	disabled?: boolean;
+}
+
+/**
+ * Renders the page actions behind a toolbar action button, so the actions
+ * sit in the same toolbar chrome the rest of the product uses while still
+ * collapsing into a single trigger next to the page title.
+ */
+const PageActionsToolbar: React.FC<IPageActionsToolbarProps> = ({
+	actions = [],
+	disabled = false,
+}) => (
+	<ClayToolbar className="page-actions-toolbar">
+		<ClayToolbar.Nav>
+			<ClayToolbar.Item>
+				<ClayDropDown
+					alignmentPosition={Align.BottomRight}
+					closeOnClick
+					trigger={
+						<ClayButton
+							aria-label={Liferay.Language.get('menu')}
+							className="component-action"
+							disabled={disabled}
+							displayType="unstyled"
+						>
+							<ClayIcon
+								className="icon-root"
+								symbol="ellipsis-v"
+							/>
+						</ClayButton>
+					}
+				>
+					{renderActionItems(actions)}
+				</ClayDropDown>
+			</ClayToolbar.Item>
+		</ClayToolbar.Nav>
+	</ClayToolbar>
 );
 
 const Section: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
@@ -273,6 +340,7 @@ interface IHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 const Header: React.FC<IHeaderProps> & {
 	NavBar: typeof NavBar;
 	PageActions: typeof PageActions;
+	PageActionsToolbar: typeof PageActionsToolbar;
 	Actions: typeof Actions;
 	Section: typeof Section;
 	TitleSection: typeof TitleSection;
@@ -325,9 +393,10 @@ const Header: React.FC<IHeaderProps> & {
 Header.Actions = Actions;
 Header.NavBar = NavBar;
 Header.PageActions = PageActions;
+Header.PageActionsToolbar = PageActionsToolbar;
 Header.Section = Section;
 Header.TitleSection = TitleSection;
 
 export default Header;
 
-export {NavBar, PageActions, Section, TitleSection};
+export {NavBar, PageActions, PageActionsToolbar, Section, TitleSection};

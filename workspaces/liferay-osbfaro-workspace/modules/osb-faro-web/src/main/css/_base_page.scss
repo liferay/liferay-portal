@@ -80,6 +80,17 @@
 				margin-bottom: 0;
 			}
 
+			.page-actions-toolbar {
+				background-color: transparent;
+				border: 0;
+				min-height: 0;
+				padding: 0;
+
+				.tbar-item {
+					padding: 0;
+				}
+			}
+
 			.subtitle,
 			.subtitle a {
 				color: $secondary;
@@ -87,7 +98,7 @@
 			}
 
 			.title {
-				font-size: 28px;
+				font-size: 2rem;
 				font-weight: $fontWeightBold;
 				line-height: 40px;
 				margin: 0 16px 0 0;

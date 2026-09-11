@@ -26,10 +26,9 @@ import {
 	useSelectionContext,
 	withSelectionProvider,
 } from 'shared/context/selection';
-import {addAlert} from 'shared/actions/alerts';
-import {Alert, FilterByType} from 'shared/types';
 import {ALERT_CONFIG_MAP, AlertTypes} from 'shared/components/Alert';
 import {close, modalTypes, open} from 'shared/actions/modals';
+import {FilterByType} from 'shared/types';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {createOrderIOMap} from 'shared/util/pagination';
@@ -72,6 +71,7 @@ import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -100,7 +100,7 @@ function fetchDisabledSegments(
 	});
 }
 
-const connector = connect(null, {addAlert, close, open});
+const connector = connect(null, {close, open});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -207,7 +207,6 @@ const ORDER_BY_OPTIONS = [
 ];
 
 export const List: React.FC<IListProps> = ({
-	addAlert,
 	channelId,
 	close,
 	groupId,
@@ -217,6 +216,7 @@ export const List: React.FC<IListProps> = ({
 	const currentUser = useCurrentUser();
 	const LDPEnabled = useLDPEnabled({groupId});
 	const {selectedChannel} = useChannelContext();
+	const deleteSegments = useDeleteSegments(groupId);
 	const _tableRef = useRef<HTMLDivElement & SearchableEntityTable>();
 
 	const {selectedItems, selectionDispatch} = useSelectionContext();
@@ -364,79 +364,25 @@ export const List: React.FC<IListProps> = ({
 		items: unknown[];
 		name?: string;
 	}) => {
-		const isMultiple = ids.length > 1;
+		deleteSegments({
+			ids,
+			name,
+			onSuccess: () => {
+				_tableRef?.current?.reload();
 
-		const MODAL_MESSAGES = {
-			confirmation: isMultiple
-				? Liferay.Language.get(
-						'are-you-sure-you-want-to-delete-the-selected-segments'
-					)
-				: Liferay.Language.get(
-						'are-you-sure-you-want-to-delete-this-segment'
-					),
-			subtitle: isMultiple
-				? Liferay.Language.get(
-						'you-will-lose-all-data-related-to-these-segments.-you-will-not-be-able-to-undo-this-operation'
-					)
-				: Liferay.Language.get(
-						'you-will-lose-all-data-related-to-this-segment.-you-will-not-be-able-to-undo-this-operation'
-					),
-			title: isMultiple
-				? Liferay.Language.get('delete-segments')
-				: sub(Liferay.Language.get('deleting-x'), [name]),
-		};
+				if (items.length === 1 && page !== 1) {
+					history.push(
+						setUriQueryValue(
+							window.location.href,
+							'page',
+							Number(page) - 1
+						)
+					);
+				}
+				selectionDispatch?.({type: ActionTypes.ClearAll});
 
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: (
-				<div>
-					<div className="h4 text-secondary">
-						{MODAL_MESSAGES.confirmation}
-					</div>
-
-					<p>{MODAL_MESSAGES.subtitle}</p>
-				</div>
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: () =>
-				API.individualSegment
-					.delete({
-						groupId,
-						ids,
-					})
-					.then(() => {
-						_tableRef?.current?.reload();
-
-						addAlert({
-							alertType: Alert.Types.Success,
-							message: Liferay.Language.get(
-								'the-segment-has-been-deleted'
-							),
-						});
-
-						if (items.length === 1 && page !== 1) {
-							history.push(
-								setUriQueryValue(
-									window.location.href,
-									'page',
-									Number(page) - 1
-								)
-							);
-						}
-						selectionDispatch?.({type: ActionTypes.ClearAll});
-
-						refetch?.();
-					})
-					.catch(() => {
-						addAlert({
-							alertType: Alert.Types.Error,
-							message: Liferay.Language.get('error'),
-						});
-					}),
-			submitButtonDisplay: 'warning',
-			submitMessage: Liferay.Language.get('delete'),
-			title: MODAL_MESSAGES.title,
-			titleIcon: 'warning-full',
+				refetch?.();
+			},
 		});
 	};
 
@@ -467,6 +413,14 @@ export const List: React.FC<IListProps> = ({
 				}),
 				iconSymbol: 'pencil',
 				label: Liferay.Language.get('edit'),
+			},
+			{
+				iconSymbol: 'bell-on',
+				label: Liferay.Language.get('manage-notifications'),
+				onClick: () =>
+					open(modalTypes.MANAGE_SEGMENT_NOTIFICATIONS_MODAL, {
+						onClose: close,
+					}),
 			},
 			{
 				className: 'text-danger',

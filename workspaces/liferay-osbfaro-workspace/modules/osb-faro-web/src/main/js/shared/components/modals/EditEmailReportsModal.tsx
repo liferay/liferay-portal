@@ -3,7 +3,12 @@ import Form from 'shared/components/form';
 import Loading, {Align} from 'shared/components/Loading';
 import Modal from '../modal';
 import React from 'react';
-import {Frequency, Report} from 'settings/channels/components/EmailReports';
+import {
+	Frequency,
+	FREQUENCIES,
+	FREQUENCY_KEYS,
+	Report,
+} from 'settings/channels/components/EmailReports';
 import {Modal as ModalTypes} from 'shared/types';
 
 interface IEditEmailReportsModalProps
@@ -12,12 +17,6 @@ interface IEditEmailReportsModalProps
 	onSave: (report: Report) => void;
 	report: Report | null;
 }
-
-const FREQUENCIES: {[key: string]: string} = {
-	[Frequency.Daily]: Liferay.Language.get('daily'),
-	[Frequency.Weekly]: Liferay.Language.get('weekly'),
-	[Frequency.Monthly]: Liferay.Language.get('monthly'),
-};
 
 const EditEmailReportsModal: React.FC<IEditEmailReportsModalProps> = ({
 	onCancel,
@@ -67,16 +66,14 @@ const EditEmailReportsModal: React.FC<IEditEmailReportsModalProps> = ({
 									label={Liferay.Language.get('frequency')}
 									name="frequency"
 								>
-									{Object.keys(FREQUENCIES).map(
-										(frequency) => (
-											<Form.Select.Item
-												key={frequency}
-												value={frequency}
-											>
-												{FREQUENCIES[frequency]}
-											</Form.Select.Item>
-										)
-									)}
+									{FREQUENCY_KEYS.map((frequency) => (
+										<Form.Select.Item
+											key={frequency}
+											value={frequency}
+										>
+											{FREQUENCIES[frequency]}
+										</Form.Select.Item>
+									))}
 								</Form.Select>
 							</Form.GroupItem>
 						</Form.Group>

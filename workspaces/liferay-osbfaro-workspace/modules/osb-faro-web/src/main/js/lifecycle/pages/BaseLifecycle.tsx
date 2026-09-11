@@ -4,7 +4,6 @@ import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet
 import BasePage from 'shared/components/base-page';
 import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
 import ClayLink from '@clayui/link';
-import {ClayButtonWithIcon} from '@clayui/button';
 import FilterPicker from '../components/FilterPicker';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
@@ -18,6 +17,8 @@ import {
 	IAccountMetric,
 } from 'contacts/pages/account/utils/types';
 import {ChannelContext} from 'shared/context/channel';
+import {close, modalTypes, open} from 'shared/actions/modals';
+import {connect, ConnectedProps} from 'react-redux';
 import {
 	LifecycleContextProvider,
 	useLifecycle,
@@ -159,7 +160,11 @@ const LifecycleAccounts = () => {
 	);
 };
 
-const BaseLifecycle = () => {
+const connector = connect(null, {close, open});
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+const BaseLifecycle: React.FC<PropsFromRedux> = ({close, open}) => {
 	const currentUser = useCurrentUser();
 	const {selectedChannel} = useContext(ChannelContext);
 
@@ -298,31 +303,46 @@ const BaseLifecycle = () => {
 						<BasePage.Header.TitleSection
 							className="mb-3"
 							title={title}
-						/>
-
-						{hasLifecycles && authorized && (
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get(
-									'lifecycle-configuration'
-								)}
-								borderless
-								data-tooltip-align="top"
-								displayType="secondary"
-								onClick={() =>
-									history.push(
-										toRoute(Routes.LIFECYCLE_EDIT, {
-											channelId,
-											groupId,
-											lifecycleId,
-										})
-									)
-								}
-								symbol="cog"
-								title={Liferay.Language.get(
-									'lifecycle-configuration'
-								)}
-							/>
-						)}
+						>
+							{hasLifecycles && (
+								<BasePage.Header.PageActionsToolbar
+									actions={[
+										...(authorized
+											? [
+													{
+														icon: {symbol: 'cog'},
+														label: Liferay.Language.get(
+															'lifecycle-configuration'
+														),
+														onClick: () =>
+															history.push(
+																toRoute(
+																	Routes.LIFECYCLE_EDIT,
+																	{
+																		channelId,
+																		groupId,
+																		lifecycleId,
+																	}
+																)
+															),
+													},
+												]
+											: []),
+										{
+											icon: {symbol: 'bell-on'},
+											label: Liferay.Language.get(
+												'manage-notifications'
+											),
+											onClick: () =>
+												open(
+													modalTypes.MANAGE_LIFECYCLE_NOTIFICATIONS_MODAL,
+													{onClose: close}
+												),
+										},
+									]}
+								/>
+							)}
+						</BasePage.Header.TitleSection>
 					</BasePage.Row>
 				</BasePage.Header>
 				{hasContent && (
@@ -364,4 +384,4 @@ const BaseLifecycle = () => {
 	);
 };
 
-export default BaseLifecycle;
+export default connector(BaseLifecycle);

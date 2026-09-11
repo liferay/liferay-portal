@@ -22,6 +22,14 @@ export type Report = {
 	frequency: Frequency.Daily | Frequency.Monthly | Frequency.Weekly;
 };
 
+export const FREQUENCIES: {[key: string]: string} = {
+	[Frequency.Daily]: Liferay.Language.get('daily'),
+	[Frequency.Weekly]: Liferay.Language.get('weekly'),
+	[Frequency.Monthly]: Liferay.Language.get('monthly'),
+};
+
+export const FREQUENCY_KEYS = Object.keys(FREQUENCIES);
+
 interface IEmailReportsProps
 	extends React.HTMLAttributes<HTMLElement>,
 		PropsFromRedux {
