@@ -244,15 +244,7 @@ public class DisplayPageTemplateResourceImpl
 					layoutPageTemplateCollection.
 						getLayoutPageTemplateCollectionId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-				layoutPageTemplateEntry ->
-					_displayPageTemplateDTOConverter.toDTO(
-						DTOConverterContextUtil.getDTOConverterContext(
-							contextAcceptLanguage, _dtoConverterRegistry,
-							contextHttpServletRequest,
-							layoutPageTemplateEntry.
-								getLayoutPageTemplateEntryId(),
-							contextUriInfo, contextUser),
-						layoutPageTemplateEntry)));
+				this::_toDisplayPageTemplate));
 	}
 
 	@Override
@@ -531,12 +523,7 @@ public class DisplayPageTemplateResourceImpl
 						displayPageTemplate.getMarkedAsDefault()));
 		}
 
-		return _displayPageTemplateDTOConverter.toDTO(
-			DTOConverterContextUtil.getDTOConverterContext(
-				contextAcceptLanguage, _dtoConverterRegistry,
-				contextHttpServletRequest,
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				contextUriInfo, contextUser),
+		return _toDisplayPageTemplate(
 			_layoutPageTemplateEntryService.updateLayoutPageTemplateEntry(
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
 				displayPageTemplate.getName()));
@@ -666,13 +653,7 @@ public class DisplayPageTemplateResourceImpl
 					displayPageTemplate.getPageSpecifications()),
 				serviceContext);
 
-		return _displayPageTemplateDTOConverter.toDTO(
-			DTOConverterContextUtil.getDTOConverterContext(
-				contextAcceptLanguage, _dtoConverterRegistry,
-				contextHttpServletRequest,
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-				contextUriInfo, contextUser),
-			layoutPageTemplateEntry);
+		return _toDisplayPageTemplate(layoutPageTemplateEntry);
 	}
 
 	private long _getClassNameId(String contentTypeClassName) {
