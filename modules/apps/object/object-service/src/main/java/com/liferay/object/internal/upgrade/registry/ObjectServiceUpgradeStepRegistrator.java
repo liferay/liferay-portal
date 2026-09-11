@@ -785,6 +785,11 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.7.0", "13.8.0",
 			new LayoutPageTemplateEntryClassNameIdUpgradeProcess(
 				_companyLocalService));
+
+		registry.register(
+			"13.8.0", "13.8.1",
+			new com.liferay.object.internal.upgrade.v13_8_1.
+				SchemaUpgradeProcess());
 	}
 
 	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {
