@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
@@ -45,7 +44,6 @@ import com.liferay.portal.url.builder.AbsolutePortalURLBuilderFactory;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -56,7 +54,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -110,7 +107,10 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		JSONObject configJSONObject = JSONUtil.put(
 			"cacheExpirationTime", spaConfiguration.cacheExpirationTime()
 		).put(
-			"clearScreensCache", _isClearScreensCache(httpServletRequest)
+			"clearScreensCache",
+			GetterUtil.getBoolean(
+				httpServletRequest.getAttribute(
+					WebKeys.SINGLE_PAGE_APPLICATION_CLEAR_CACHE))
 		).put(
 			"debugEnabled", _log.isDebugEnabled()
 		).put(
@@ -371,42 +371,6 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 		}
 
 		return spaConfiguration;
-	}
-
-	private boolean _isClearScreensCache(
-		HttpServletRequest httpServletRequest) {
-
-		boolean singlePageApplicationClearCache = GetterUtil.getBoolean(
-			httpServletRequest.getAttribute(
-				WebKeys.SINGLE_PAGE_APPLICATION_CLEAR_CACHE));
-
-		if (singlePageApplicationClearCache) {
-			return true;
-		}
-
-		String portletId = httpServletRequest.getParameter("p_p_id");
-
-		if (Validator.isNull(portletId)) {
-			return false;
-		}
-
-		HttpSession httpSession = httpServletRequest.getSession(false);
-
-		if (httpSession == null) {
-			return false;
-		}
-
-		String singlePageApplicationLastPortletId =
-			(String)httpSession.getAttribute(
-				WebKeys.SINGLE_PAGE_APPLICATION_LAST_PORTLET_ID);
-
-		if (Validator.isNotNull(singlePageApplicationLastPortletId) &&
-			!Objects.equals(portletId, singlePageApplicationLastPortletId)) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private static final String[] _SPA_DEFAULT_EXCLUDED_PATHS = {
