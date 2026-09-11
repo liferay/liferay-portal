@@ -1256,7 +1256,44 @@ import org.osgi.service.component.annotations.Reference;
 			localizedEntity = entity.localizedEntity
 			localizedEntityColumns = entity.localizedEntityColumns
 			pkEntityColumn = entity.PKEntityColumns?first
+
+			entityVariableName = entity.variableName
 		/>
+
+		<#if entity.versionEntity??>
+			<#assign entityVariableName = "draft" + entity.name />
+		</#if>
+
+		@Override
+		public ${localizedEntity.name} add${localizedEntity.name}(
+			${entity.name} ${entityVariableName}, String languageId,
+			<#list localizedEntityColumns as entityColumn>
+				String ${entityColumn.name}
+
+				<#if entityColumn?has_next>
+					,
+				</#if>
+			</#list>
+			) throws PortalException {
+
+			${entityVariableName} = ${entity.variableName}Persistence.findByPrimaryKey(${entityVariableName}.getPrimaryKey());
+
+			<#if entity.versionEntity??>
+				if (${entityVariableName}.isHead()) {
+					throw new IllegalArgumentException("Can only update draft entries " + ${entityVariableName}.getPrimaryKey());
+				}
+			</#if>
+
+			return _update${localizedEntity.name}(${entityVariableName}, null, languageId,
+				<#list localizedEntityColumns as entityColumn>
+					${entityColumn.name}
+
+					<#if entityColumn?has_next>
+						,
+					</#if>
+				</#list>
+			);
+		}
 
 		@Override
 		public ${localizedEntity.name} fetch${localizedEntity.name}(${entity.PKClassName} ${entity.PKVariableName}, String languageId) {
@@ -1272,12 +1309,6 @@ import org.osgi.service.component.annotations.Reference;
 		public List<${localizedEntity.name}> get${localizedEntity.pluralName}(${entity.PKClassName} ${entity.PKVariableName}) {
 			return ${localizedEntity.variableName}Persistence.findBy${pkEntityColumn.methodName}(${entity.PKVariableName});
 		}
-
-		<#assign entityVariableName = entity.variableName />
-
-		<#if entity.versionEntity??>
-			<#assign entityVariableName = "draft" + entity.name />
-		</#if>
 
 		@Override
 		public ${localizedEntity.name} update${localizedEntity.name}(
