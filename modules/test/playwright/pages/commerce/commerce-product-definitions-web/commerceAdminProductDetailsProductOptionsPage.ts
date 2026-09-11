@@ -25,6 +25,7 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	readonly optionValueSkuDropdownItem: (label: string) => Locator;
 	readonly optionValueSkuDropdownItems: Locator;
 	readonly optionValueSkuInput: Locator;
+	readonly page: Page;
 	readonly visibleSidePanels: Locator;
 
 	constructor(page: Page) {
@@ -95,11 +96,12 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		this.optionValueSkuInput = this.optionValueSidePanelFrame.locator(
 			'#autocomplete-root input[type="text"]'
 		);
+		this.page = page;
 		this.visibleSidePanels = page.locator(sidePanel);
 	}
 
 	async closeOption() {
-		await this.optionSidePanelCancelButton.click();
+		await this.page.keyboard.press('Escape');
 
 		await expect(this.visibleSidePanels).toHaveCount(0);
 	}
