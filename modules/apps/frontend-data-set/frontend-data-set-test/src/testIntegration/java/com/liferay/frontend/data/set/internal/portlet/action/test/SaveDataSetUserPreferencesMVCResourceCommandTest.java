@@ -17,11 +17,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.PortletServlet;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
@@ -43,6 +43,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
+
+import jakarta.portlet.ResourceResponse;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -119,36 +123,149 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testBadRequestIsReturnedForBlankFDSName() throws Exception {
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_BAD_REQUEST,
+			_serveResource(
+				_user, _dataSetSnapshotObjectEntry, StringPool.BLANK));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
+	}
+
+	@Test
+	public void testBadRequestIsReturnedForBlankPreferences() throws Exception {
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_BAD_REQUEST,
+			_serveResource(_user, StringPool.BLANK, _fdsName));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
+	}
+
+	@Test
+	public void testBadRequestIsReturnedForMalformedPreferences()
+		throws Exception {
+
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_BAD_REQUEST,
+			_serveResource(_user, RandomTestUtil.randomString(), _fdsName));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
+	}
+
+	@Test
+	public void testBadRequestIsReturnedForMissingPreferences()
+		throws Exception {
+
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_BAD_REQUEST,
+			_serveResource(_user, (String)null, _fdsName));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
+	}
+
+	@Test
+	public void testBadRequestIsReturnedForNullPreferences() throws Exception {
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_BAD_REQUEST,
+			_serveResource(_user, StringPool.NULL, _fdsName));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
+	}
+
+	@Test
+	public void testForbiddenIsReturnedForGuestUser() throws Exception {
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_FORBIDDEN,
+			_serveResource(
+				_userLocalService.getGuestUser(TestPropsValues.getCompanyId()),
+				_dataSetSnapshotObjectEntry, _fdsName));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
+	}
+
+	@Test
+	public void testForbiddenIsReturnedForNonowners() throws Exception {
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
+			_fdsName, TestPropsValues.getUserId());
+
+		TestMockLiferayResourceResponse testMockLiferayResourceResponse =
+			_serveResource(_user, objectEntry, _fdsName);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_FORBIDDEN, testMockLiferayResourceResponse);
+
+		JSONObject jsonObject = _getResponseJSONObject(
+			testMockLiferayResourceResponse);
+
+		Assert.assertEquals(
+			StringPool.BLANK,
+			jsonObject.getString("initialDataSetSnapshotERC"));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
+	}
+
+	@Test
 	public void testInitialDataSetSnapshotERCIsCleared() throws Exception {
 
 		// empty JSON object
 
 		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
-			_serveResource(
-				_user, _dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-				_fdsName),
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
 			_user);
 
-		_assertKeyIsNotSaved(
+		_assertNotSaved(
 			_serveResource(_user, JSONFactoryUtil.createJSONObject(), _fdsName),
 			"initialDataSetSnapshotERC");
 
-		// null value. Needs creating JSONObject from string representation
+		// null value
 
 		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
-			_serveResource(
-				_user, _dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-				_fdsName),
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
 			_user);
 
-		_assertKeyIsNotSaved(
+		_assertNotSaved(
 			_serveResource(
-				_user,
-				JSONFactoryUtil.createJSONObject(
-					"{\"initialDataSetSnapshotERC\": null}"),
-				_fdsName),
+				_user, "{\"initialDataSetSnapshotERC\": null}", _fdsName),
 			"initialDataSetSnapshotERC");
 	}
 
@@ -163,10 +280,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 
 		_assertInitialDataSetSnapshotERCIsSaved(
 			dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
-			_serveResource(
-				_user, dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-				_fdsName),
-			_user);
+			_serveResource(_user, dataSetSnapshotObjectEntry, _fdsName), _user);
 
 		_objectEntryLocalService.deleteObjectEntry(
 			dataSetSnapshotObjectEntry.getObjectEntryId());
@@ -176,9 +290,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	public void testInitialDataSetSnapshotERCIsUpdated() throws Exception {
 		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
-			_serveResource(
-				_user, _dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-				_fdsName),
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
 			_user);
 
 		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
@@ -186,32 +298,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 
 		_assertInitialDataSetSnapshotERCIsSaved(
 			objectEntry.getExternalReferenceCode(), _fdsName,
-			_serveResource(
-				_user, objectEntry.getExternalReferenceCode(), _fdsName),
-			_user);
-
-		_objectEntryLocalService.deleteObjectEntry(
-			objectEntry.getObjectEntryId());
-	}
-
-	@Test
-	public void testPrincipalExceptionIsThrownForNonowners() throws Exception {
-		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
-			_fdsName, TestPropsValues.getUserId());
-
-		try {
-			_serveResource(
-				_user, objectEntry.getExternalReferenceCode(), _fdsName);
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			Assert.assertTrue(_hasCause(exception, PrincipalException.class));
-		}
-
-		Assert.assertNull(
-			_fetchDataSetUserPreferencesObjectEntry(
-				_getDataSetUserPreferencesObjectEntryERC(_fdsName, _user)));
+			_serveResource(_user, objectEntry, _fdsName), _user);
 
 		_objectEntryLocalService.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
@@ -221,21 +308,22 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	public void testUnknownKeyIsNotSaved() throws Exception {
 		String unknownKey = StringPool.AT + RandomTestUtil.randomString();
 
-		JSONObject jsonObject = _serveResource(
-			_user,
-			JSONUtil.put(
-				unknownKey, RandomTestUtil.randomString()
-			).put(
-				"initialDataSetSnapshotERC",
-				_dataSetSnapshotObjectEntry.getExternalReferenceCode()
-			),
-			_fdsName);
+		TestMockLiferayResourceResponse testMockLiferayResourceResponse =
+			_serveResource(
+				_user,
+				JSONUtil.put(
+					unknownKey, RandomTestUtil.randomString()
+				).put(
+					"initialDataSetSnapshotERC",
+					_dataSetSnapshotObjectEntry.getExternalReferenceCode()
+				),
+				_fdsName);
 
 		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
-			jsonObject, _user);
+			testMockLiferayResourceResponse, _user);
 
-		_assertKeyIsNotSaved(jsonObject, unknownKey);
+		_assertNotSaved(testMockLiferayResourceResponse, unknownKey);
 	}
 
 	private ObjectEntry _addDataSetSnapshotObjectEntry(
@@ -254,33 +342,74 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 				TestPropsValues.getGroupId(), userId));
 	}
 
+	private void _assertInitialDataSetSnapshotERCIsNotUpdated()
+		throws Exception {
+
+		JSONObject dataSetUserPreferencesJSONObject =
+			_getDataSetUserPreferencesJSONObject(
+				_getDataSetUserPreferencesObjectEntryERC(_fdsName, _user));
+
+		Assert.assertEquals(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(),
+			dataSetUserPreferencesJSONObject.getString(
+				"initialDataSetSnapshotERC"));
+	}
+
 	private void _assertInitialDataSetSnapshotERCIsSaved(
-			String externalReferenceCode, String fdsName, JSONObject jsonObject,
+			String externalReferenceCode, String fdsName,
+			TestMockLiferayResourceResponse testMockLiferayResourceResponse,
 			User user)
 		throws Exception {
+
+		_assertStatusCode(
+			HttpServletResponse.SC_OK, testMockLiferayResourceResponse);
+
+		JSONObject jsonObject = _getResponseJSONObject(
+			testMockLiferayResourceResponse);
 
 		Assert.assertEquals(
 			externalReferenceCode,
 			jsonObject.getString("initialDataSetSnapshotERC"));
 
-		JSONObject preferencesJSONObject = _getPreferencesJSONObject(
-			_getDataSetUserPreferencesObjectEntryERC(fdsName, user));
+		JSONObject dataSetUserPreferencesJSONObject =
+			_getDataSetUserPreferencesJSONObject(
+				_getDataSetUserPreferencesObjectEntryERC(fdsName, user));
 
 		Assert.assertEquals(
 			externalReferenceCode,
-			preferencesJSONObject.getString("initialDataSetSnapshotERC"));
+			dataSetUserPreferencesJSONObject.getString(
+				"initialDataSetSnapshotERC"));
 	}
 
-	private void _assertKeyIsNotSaved(JSONObject jsonObject, String key)
+	private void _assertNotSaved(
+			TestMockLiferayResourceResponse testMockLiferayResourceResponse,
+			String key)
 		throws Exception {
+
+		_assertStatusCode(
+			HttpServletResponse.SC_OK, testMockLiferayResourceResponse);
+
+		JSONObject jsonObject = _getResponseJSONObject(
+			testMockLiferayResourceResponse);
 
 		Assert.assertEquals(StringPool.BLANK, jsonObject.getString(key));
 
-		JSONObject preferencesJSONObject = _getPreferencesJSONObject(
-			_getDataSetUserPreferencesObjectEntryERC(_fdsName, _user));
+		JSONObject dataSetUserPreferencesJSONObject =
+			_getDataSetUserPreferencesJSONObject(
+				_getDataSetUserPreferencesObjectEntryERC(_fdsName, _user));
 
 		Assert.assertEquals(
-			StringPool.BLANK, preferencesJSONObject.getString(key));
+			StringPool.BLANK, dataSetUserPreferencesJSONObject.getString(key));
+	}
+
+	private void _assertStatusCode(
+		int statusCode,
+		TestMockLiferayResourceResponse testMockLiferayResourceResponse) {
+
+		Assert.assertEquals(
+			String.valueOf(statusCode),
+			testMockLiferayResourceResponse.getProperty(
+				ResourceResponse.HTTP_STATUS_CODE));
 	}
 
 	private ObjectEntry _fetchDataSetUserPreferencesObjectEntry(
@@ -291,13 +420,8 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 			_dataSetUserPreferencesObjectDefinition.getObjectDefinitionId());
 	}
 
-	private String _getDataSetUserPreferencesObjectEntryERC(
-		String fdsName, User user) {
-
-		return user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
-	}
-
-	private JSONObject _getPreferencesJSONObject(String externalReferenceCode)
+	private JSONObject _getDataSetUserPreferencesJSONObject(
+			String externalReferenceCode)
 		throws Exception {
 
 		ObjectEntry objectEntry = _fetchDataSetUserPreferencesObjectEntry(
@@ -311,20 +435,47 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 			GetterUtil.getString(values.get("preferences")));
 	}
 
-	private boolean _hasCause(Throwable throwable, Class<?> clazz) {
-		while (throwable != null) {
-			if (clazz.isInstance(throwable)) {
-				return true;
-			}
+	private String _getDataSetUserPreferencesObjectEntryERC(
+		String fdsName, User user) {
 
-			throwable = throwable.getCause();
-		}
-
-		return false;
+		return user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
 	}
 
-	private JSONObject _serveResource(
-			User user, JSONObject preferencesJSONObject, String fdsName)
+	private JSONObject _getResponseJSONObject(
+			TestMockLiferayResourceResponse testMockLiferayResourceResponse)
+		throws Exception {
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			(ByteArrayOutputStream)
+				testMockLiferayResourceResponse.getPortletOutputStream();
+
+		return JSONFactoryUtil.createJSONObject(
+			byteArrayOutputStream.toString());
+	}
+
+	private TestMockLiferayResourceResponse _serveResource(
+			User user, JSONObject dataSetUserPreferencesJSONObject,
+			String fdsName)
+		throws Exception {
+
+		return _serveResource(
+			user, dataSetUserPreferencesJSONObject.toString(), fdsName);
+	}
+
+	private TestMockLiferayResourceResponse _serveResource(
+			User user, ObjectEntry dataSetSnapshotObjectEntry, String fdsName)
+		throws Exception {
+
+		return _serveResource(
+			user,
+			JSONUtil.put(
+				"initialDataSetSnapshotERC",
+				dataSetSnapshotObjectEntry.getExternalReferenceCode()),
+			fdsName);
+	}
+
+	private TestMockLiferayResourceResponse _serveResource(
+			User user, String preferences, String fdsName)
 		throws Exception {
 
 		_externalReferenceCodes.add(
@@ -346,14 +497,16 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setParameter("fdsName", fdsName);
-		mockHttpServletRequest.setParameter(
-			"preferences", preferencesJSONObject.toString());
+
+		if (preferences != null) {
+			mockHttpServletRequest.setParameter("preferences", preferences);
+		}
 
 		mockLiferayResourceRequest.setAttribute(
 			PortletServlet.PORTLET_SERVLET_REQUEST, mockHttpServletRequest);
 
-		MockLiferayResourceResponse mockLiferayResourceResponse =
-			new MockLiferayResourceResponse();
+		TestMockLiferayResourceResponse testMockLiferayResourceResponse =
+			new TestMockLiferayResourceResponse();
 
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(user);
@@ -362,26 +515,10 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 				user, permissionChecker)) {
 
 			_mvcResourceCommand.serveResource(
-				mockLiferayResourceRequest, mockLiferayResourceResponse);
+				mockLiferayResourceRequest, testMockLiferayResourceResponse);
 
-			ByteArrayOutputStream byteArrayOutputStream =
-				(ByteArrayOutputStream)
-					mockLiferayResourceResponse.getPortletOutputStream();
-
-			return JSONFactoryUtil.createJSONObject(
-				byteArrayOutputStream.toString());
+			return testMockLiferayResourceResponse;
 		}
-	}
-
-	private JSONObject _serveResource(
-			User user, String initialDataSetSnapshotERC, String fdsName)
-		throws Exception {
-
-		return _serveResource(
-			user,
-			JSONUtil.put(
-				"initialDataSetSnapshotERC", initialDataSetSnapshotERC),
-			fdsName);
 	}
 
 	private void _shareDataSetSnapshot(
@@ -430,5 +567,28 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	private static class TestMockLiferayResourceResponse
+		extends MockLiferayResourceResponse {
+
+		@Override
+		public String getProperty(String name) {
+			return _properties.get(name);
+		}
+
+		@Override
+		public void setProperty(String name, String value) {
+			_properties.put(name, value);
+		}
+
+		private final Map<String, String> _properties = HashMapBuilder.put(
+			ResourceResponse.HTTP_STATUS_CODE,
+			String.valueOf(HttpServletResponse.SC_OK)
+		).build();
+
+	}
 
 }

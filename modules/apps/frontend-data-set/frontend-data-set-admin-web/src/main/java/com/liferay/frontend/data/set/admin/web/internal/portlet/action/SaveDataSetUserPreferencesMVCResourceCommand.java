@@ -13,8 +13,11 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCResourceCommand;
@@ -35,7 +38,9 @@ import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import org.osgi.service.component.annotations.Component;
@@ -65,30 +70,88 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 		User user = themeDisplay.getUser();
 
 		if (user.isGuestUser()) {
+			_writeEmptyResponse(
+				new PrincipalException(), resourceRequest, resourceResponse,
+				HttpServletResponse.SC_FORBIDDEN);
+
 			return;
 		}
-
-		JSONObject preferencesJSONObject = _jsonFactory.createJSONObject();
-
-		long companyId = themeDisplay.getCompanyId();
 
 		HttpServletRequest httpServletRequest =
 			_portal.getOriginalServletRequest(
 				_portal.getHttpServletRequest(resourceRequest));
 
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			ParamUtil.getString(httpServletRequest, "preferences"));
-
-		_checkInitialDataSetSnapshotERC(
-			companyId, jsonObject.getString("initialDataSetSnapshotERC"),
-			preferencesJSONObject, user);
-
 		String fdsName = ParamUtil.getString(httpServletRequest, "fdsName");
+
+		if (Validator.isNull(fdsName)) {
+			_writeEmptyResponse(
+				new NullPointerException(), resourceRequest, resourceResponse,
+				HttpServletResponse.SC_BAD_REQUEST);
+
+			return;
+		}
+
+		String preferences = ParamUtil.getString(
+			httpServletRequest, "preferences");
+
+		if (Validator.isNull(preferences)) {
+			_writeEmptyResponse(
+				new NullPointerException(), resourceRequest, resourceResponse,
+				HttpServletResponse.SC_BAD_REQUEST);
+
+			return;
+		}
+
+		JSONObject jsonObject;
+
+		try {
+			jsonObject = _jsonFactory.createJSONObject(preferences);
+		}
+		catch (JSONException jsonException) {
+			_writeEmptyResponse(
+				jsonException, resourceRequest, resourceResponse,
+				HttpServletResponse.SC_BAD_REQUEST);
+
+			return;
+		}
+
+		long companyId = themeDisplay.getCompanyId();
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_USER_PREFERENCES", companyId);
+
+		if (objectDefinition == null) {
+			_writeEmptyResponse(
+				new NullPointerException(), resourceRequest, resourceResponse,
+				HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+			return;
+		}
+
+		JSONObject dataSetUserPreferencesJSONObject =
+			_jsonFactory.createJSONObject();
+
+		try {
+			_checkInitialDataSetSnapshotERC(
+				companyId, dataSetUserPreferencesJSONObject,
+				jsonObject.getString("initialDataSetSnapshotERC"), user);
+		}
+		catch (PrincipalException principalException) {
+			_writeEmptyResponse(
+				principalException, resourceRequest, resourceResponse,
+				HttpServletResponse.SC_FORBIDDEN);
+
+			return;
+		}
+		catch (JSONException jsonException) {
+			_writeEmptyResponse(
+				jsonException, resourceRequest, resourceResponse,
+				HttpServletResponse.SC_BAD_REQUEST);
+
+			return;
+		}
 
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -99,17 +162,18 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 			user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			HashMapBuilder.<String, Serializable>put(
-				"preferences", preferencesJSONObject.toString()
+				"preferences", dataSetUserPreferencesJSONObject.toString()
 			).build(),
 			serviceContext);
 
 		JSONPortletResponseUtil.writeJSON(
-			resourceRequest, resourceResponse, preferencesJSONObject);
+			resourceRequest, resourceResponse,
+			dataSetUserPreferencesJSONObject);
 	}
 
 	private void _checkInitialDataSetSnapshotERC(
-			long companyId, String initialDataSetSnapshotERC,
-			JSONObject preferencesJSONObject, User user)
+			long companyId, JSONObject dataSetUserPreferencesJSONObject,
+			String initialDataSetSnapshotERC, User user)
 		throws Exception {
 
 		if (Validator.isNull(initialDataSetSnapshotERC)) {
@@ -144,9 +208,28 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 						initialDataSetSnapshotERC);
 		}
 
-		preferencesJSONObject.put(
+		dataSetUserPreferencesJSONObject.put(
 			"initialDataSetSnapshotERC", initialDataSetSnapshotERC);
 	}
+
+	private void _writeEmptyResponse(
+			Exception exception, ResourceRequest resourceRequest,
+			ResourceResponse resourceResponse, int statusCode)
+		throws IOException {
+
+		if (_log.isWarnEnabled()) {
+			_log.warn(exception);
+		}
+
+		resourceResponse.setProperty(
+			ResourceResponse.HTTP_STATUS_CODE, String.valueOf(statusCode));
+
+		JSONPortletResponseUtil.writeJSON(
+			resourceRequest, resourceResponse, _jsonFactory.createJSONObject());
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		SaveDataSetUserPreferencesMVCResourceCommand.class);
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
