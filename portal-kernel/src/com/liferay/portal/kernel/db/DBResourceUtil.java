@@ -435,6 +435,18 @@ public class DBResourceUtil {
 			columnDefinitionsMap.put(matcher.group(1), columnDefinitions);
 		}
 
+		if (_log.isWarnEnabled()) {
+			Set<String> unparsedTableNames = parseCreateTableSQL(sql);
+
+			unparsedTableNames.removeAll(columnDefinitionsMap.keySet());
+
+			if (!unparsedTableNames.isEmpty()) {
+				_log.warn(
+					"Unable to parse the column definitions of " +
+						unparsedTableNames);
+			}
+		}
+
 		return columnDefinitionsMap;
 	}
 
@@ -483,7 +495,7 @@ public class DBResourceUtil {
 	private static final Pattern _createTableColumnsPattern = Pattern.compile(
 		"create table (\\S+) \\(([^;<]*)\\);");
 	private static final Pattern _createTablePattern = Pattern.compile(
-		"create table (\\S*) \\(");
+		"create table (\\S+) \\(");
 	private static final Pattern _inlinedPrimaryKeyPattern = Pattern.compile(
 		"create table\\s+(\\w+)\\s*\\([^;]*?(\\w+)\\s+\\w+(?:\\([^)]*\\))?" +
 			"(?:\\s+\\w+)*\\s+primary key\\b",
