@@ -74,6 +74,11 @@ public interface LocalizedEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public LocalizedEntry addLocalizedEntry(LocalizedEntry localizedEntry);
 
+	public LocalizedEntryLocalization addLocalizedEntryLocalization(
+			LocalizedEntry localizedEntry, String languageId, String title,
+			String content)
+		throws PortalException;
+
 	/**
 	 * Creates a new localized entry with the primary key. Does not add the localized entry to the database.
 	 *
@@ -290,4 +295,4 @@ public interface LocalizedEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:606289772
+// LIFERAY-SERVICE-BUILDER-HASH:-1448690497

@@ -91,6 +91,11 @@ public interface LVEntryLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public LVEntry addLVEntry(LVEntry lvEntry);
 
+	public LVEntryLocalization addLVEntryLocalization(
+			LVEntry draftLVEntry, String languageId, String title,
+			String content)
+		throws PortalException;
+
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public LVEntry checkout(LVEntry publishedLVEntry, int version)
@@ -435,4 +440,4 @@ public interface LVEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1816798054
+// LIFERAY-SERVICE-BUILDER-HASH:429589222

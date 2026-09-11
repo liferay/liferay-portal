@@ -558,6 +558,25 @@ public abstract class LVEntryLocalServiceBaseImpl
 	}
 
 	@Override
+	public LVEntryLocalization addLVEntryLocalization(
+			LVEntry draftLVEntry, String languageId, String title,
+			String content)
+		throws PortalException {
+
+		draftLVEntry = lvEntryPersistence.findByPrimaryKey(
+			draftLVEntry.getPrimaryKey());
+
+		if (draftLVEntry.isHead()) {
+			throw new IllegalArgumentException(
+				"Can only update draft entries " +
+					draftLVEntry.getPrimaryKey());
+		}
+
+		return _updateLVEntryLocalization(
+			draftLVEntry, null, languageId, title, content);
+	}
+
+	@Override
 	public LVEntryLocalization fetchLVEntryLocalization(
 		long lvEntryId, String languageId) {
 
@@ -1514,4 +1533,4 @@ public abstract class LVEntryLocalServiceBaseImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1540283516
+// LIFERAY-SERVICE-BUILDER-HASH:-1420983648

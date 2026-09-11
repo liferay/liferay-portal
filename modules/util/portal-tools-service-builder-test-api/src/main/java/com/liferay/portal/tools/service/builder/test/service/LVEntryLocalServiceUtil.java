@@ -78,6 +78,17 @@ public class LVEntryLocalServiceUtil {
 		return getService().addLVEntry(lvEntry);
 	}
 
+	public static
+		com.liferay.portal.tools.service.builder.test.model.LVEntryLocalization
+				addLVEntryLocalization(
+					LVEntry draftLVEntry, String languageId, String title,
+					String content)
+			throws PortalException {
+
+		return getService().addLVEntryLocalization(
+			draftLVEntry, languageId, title, content);
+	}
+
 	public static LVEntry checkout(LVEntry publishedLVEntry, int version)
 		throws PortalException {
 
@@ -574,4 +585,4 @@ public class LVEntryLocalServiceUtil {
 	private static volatile LVEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:972932743
+// LIFERAY-SERVICE-BUILDER-HASH:32172927

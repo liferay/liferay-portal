@@ -82,6 +82,19 @@ public class LVEntryLocalServiceWrapper
 	}
 
 	@Override
+	public
+		com.liferay.portal.tools.service.builder.test.model.LVEntryLocalization
+				addLVEntryLocalization(
+					com.liferay.portal.tools.service.builder.test.model.LVEntry
+						draftLVEntry,
+					String languageId, String title, String content)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _lvEntryLocalService.addLVEntryLocalization(
+			draftLVEntry, languageId, title, content);
+	}
+
+	@Override
 	public com.liferay.portal.tools.service.builder.test.model.LVEntry checkout(
 			com.liferay.portal.tools.service.builder.test.model.LVEntry
 				publishedLVEntry,
@@ -730,4 +743,4 @@ public class LVEntryLocalServiceWrapper
 	private LVEntryLocalService _lvEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-343039805
+// LIFERAY-SERVICE-BUILDER-HASH:1361996429
