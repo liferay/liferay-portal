@@ -18,4 +18,6 @@ buildscript {
 
 apply plugin: "com.liferay.workspace"
 
+apply from: "unit-tests.gradle"
+
 include "poshi"
