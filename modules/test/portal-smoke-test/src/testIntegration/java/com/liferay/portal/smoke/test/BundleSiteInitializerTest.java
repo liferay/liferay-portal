@@ -487,7 +487,6 @@ public class BundleSiteInitializerTest {
 				_hasLogEntryMessage(
 					logEntries,
 					"Skipping design library since LPD-57283 is disabled"));
-
 			Assert.assertFalse(
 				logEntries.toString(),
 				_hasLogEntryMessage(
@@ -1730,9 +1729,11 @@ public class BundleSiteInitializerTest {
 
 	private void _assertDesignLibraryDepotEntries2() throws Exception {
 		Group group1 = _getDesignLibraryGroup("Test Design Library 1");
-		Group group2 = _getDesignLibraryGroup("Test Design Library 2");
 
 		_assertDesignLibraryDepotEntryType(group1);
+
+		Group group2 = _getDesignLibraryGroup("Test Design Library 2");
+
 		_assertDesignLibraryDepotEntryType(group2);
 
 		_assertDesignLibraryFragmentEntry(
@@ -1741,7 +1742,6 @@ public class BundleSiteInitializerTest {
 		_assertDesignLibraryFragmentEntry(
 			group2, "test-design-library-2-fragment-entry",
 			"Test Design Library 2 Fragment Entry");
-
 		_assertDesignLibraryStyleBookEntry(
 			group1, "test-design-library-1-style-book",
 			"Test Design Library 1 Style Book Entry");
@@ -1803,7 +1803,6 @@ public class BundleSiteInitializerTest {
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				group.getGroupId(), styleBookEntryKey);
 
-		Assert.assertNotNull(styleBookEntry);
 		Assert.assertEquals(styleBookEntryName, styleBookEntry.getName());
 
 		Assert.assertNull(
