@@ -14,7 +14,6 @@ import com.liferay.info.item.InfoItemReference;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.xml.Document;
@@ -22,6 +21,7 @@ import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
 import com.liferay.translation.info.field.TranslationInfoFieldChecker;
+import com.liferay.translation.internal.configuration.TranslationCompanyConfigurationUtil;
 import com.liferay.translation.internal.util.XLIFFExporterUtil;
 import com.liferay.translation.internal.util.XLIFFInlineCodeUtil;
 
@@ -284,8 +284,9 @@ public class XLIFF20InfoFormTranslationExporter
 	private boolean _hasProtectedHTMLInfoField(
 		Map<String, List<InfoFieldValue<Object>>> infoFieldValuesMap) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-102730")) {
+		if (!TranslationCompanyConfigurationUtil.
+				isHTMLInlineCodeProtectionEnabled(
+					CompanyThreadLocal.getCompanyId())) {
 
 			return false;
 		}

@@ -10,9 +10,9 @@ import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.HTMLInfoFieldType;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.translation.internal.configuration.TranslationCompanyConfigurationUtil;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -65,8 +65,9 @@ public class XLIFFExporterUtil {
 	}
 
 	public static boolean isProtectedHTMLInfoField(InfoField<?> infoField) {
-		if (FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-102730") &&
+		if (TranslationCompanyConfigurationUtil.
+				isHTMLInlineCodeProtectionEnabled(
+					CompanyThreadLocal.getCompanyId()) &&
 			Objects.equals(
 				infoField.getInfoFieldType(), HTMLInfoFieldType.INSTANCE)) {
 

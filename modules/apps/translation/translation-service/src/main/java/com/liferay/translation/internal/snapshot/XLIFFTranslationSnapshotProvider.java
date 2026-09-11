@@ -20,7 +20,6 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -35,6 +34,7 @@ import com.liferay.portal.kernel.xml.SAXReaderUtil;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.translation.exception.XLIFFFileException;
+import com.liferay.translation.internal.configuration.TranslationCompanyConfigurationUtil;
 import com.liferay.translation.internal.util.XLIFFLocaleIdUtil;
 import com.liferay.translation.snapshot.TranslationSnapshot;
 import com.liferay.translation.snapshot.TranslationSnapshotProvider;
@@ -182,8 +182,9 @@ public class XLIFFTranslationSnapshotProvider
 
 		_validateXLIFFStartSubdocument(infoItemReference, startSubDocument);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-102730")) {
+		if (TranslationCompanyConfigurationUtil.
+				isHTMLInlineCodeProtectionEnabled(
+					CompanyThreadLocal.getCompanyId())) {
 
 			_validateInlineCodes(events);
 		}
@@ -212,8 +213,9 @@ public class XLIFFTranslationSnapshotProvider
 
 		_validateXLIFFFile(groupId, infoItemReference, xliffDocument);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-102730")) {
+		if (TranslationCompanyConfigurationUtil.
+				isHTMLInlineCodeProtectionEnabled(
+					CompanyThreadLocal.getCompanyId())) {
 
 			_validateInlineCodes(xliffDocument);
 		}
