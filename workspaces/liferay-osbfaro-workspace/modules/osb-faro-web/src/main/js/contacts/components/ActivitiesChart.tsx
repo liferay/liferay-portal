@@ -39,6 +39,10 @@ import {toLocale} from 'shared/util/numbers';
 
 const {stark: CHART_BLUE} = CHART_COLOR_NAMES;
 
+const X_AXIS_PADDING = 20;
+
+const MAX_BAR_WIDTH = X_AXIS_PADDING * 2;
+
 interface IChartProps<T> extends React.HTMLAttributes<HTMLElement> {
 	alwaysShowSelectedTooltip: boolean;
 	chartView?: ChartView;
@@ -208,7 +212,7 @@ const ActivitiesChart: React.FC<
 					dataKey="intervalInitDate"
 					domain={['dataMin', 'dataMax']}
 					interval="preserveStart"
-					padding={{left: 20, right: 20}}
+					padding={{left: X_AXIS_PADDING, right: X_AXIS_PADDING}}
 					tick={getAxisTickText('x', (value) =>
 						formatXAxisDate(
 							value,
@@ -310,6 +314,7 @@ const ActivitiesChart: React.FC<
 						animationDuration={ANIMATION_DURATION.bar}
 						dataKey="totalEvents"
 						fill={CHART_BLUE}
+						maxBarSize={MAX_BAR_WIDTH}
 						onMouseEnter={(e, index) => setHoverIndex(index)}
 						onMouseLeave={() => setHoverIndex(-1)}
 					>
