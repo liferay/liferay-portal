@@ -6,7 +6,9 @@
 export const DEFAULT_ADJUSTMENTS: Adjustments = {
 	brightness: 0,
 	contrast: 0,
+	highlights: 0,
 	saturation: 0,
+	shadows: 0,
 };
 
 export const MIN_CROP_SIZE = 16;
@@ -25,7 +27,9 @@ export const RATIO_VALUES: Record<
 export interface Adjustments {
 	brightness: number;
 	contrast: number;
+	highlights: number;
 	saturation: number;
+	shadows: number;
 }
 
 export interface CropRect {

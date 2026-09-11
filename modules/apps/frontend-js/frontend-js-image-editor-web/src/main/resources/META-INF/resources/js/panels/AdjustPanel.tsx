@@ -16,6 +16,8 @@ const SLIDERS: Array<{key: keyof Adjustments; label: string}> = [
 	{key: 'brightness', label: Liferay.Language.get('brightness')},
 	{key: 'contrast', label: Liferay.Language.get('contrast')},
 	{key: 'saturation', label: Liferay.Language.get('saturation')},
+	{key: 'shadows', label: Liferay.Language.get('shadows')},
+	{key: 'highlights', label: Liferay.Language.get('highlights')},
 ];
 
 interface Props {

@@ -49,4 +49,15 @@ describe('FilterDefs', () => {
 	it('maps saturation to a saturate matrix', () => {
 		expect(markup({saturation: -100})).toContain('values="0"');
 	});
+
+	it('renders a tone curve table only when shadows or highlights are set', () => {
+		expect(markup({})).not.toContain('tableValues');
+		expect(markup({shadows: 50})).toContain('tableValues');
+		expect(markup({highlights: 50})).toContain('tableValues');
+	});
+
+	it('lifts the blacks with positive shadows and clamps at zero', () => {
+		expect(markup({shadows: 100})).toContain('tableValues="0.3500');
+		expect(markup({shadows: -100})).toContain('tableValues="0.0000');
+	});
 });
