@@ -71,12 +71,12 @@ public class StaticSiteExporterTest {
 		StaticSiteExportLayout staticSiteExportLayout =
 			staticSiteExportLayouts.get(0);
 
-		Assert.assertEquals(layout.getPlid(), staticSiteExportLayout.getPlid());
 		Assert.assertEquals(LocaleUtil.US, staticSiteExportLayout.getLocale());
 		Assert.assertEquals(
 			StringUtil.removeFirst(layout.getFriendlyURL(), StringPool.SLASH) +
 				".html",
 			staticSiteExportLayout.getPath());
+		Assert.assertEquals(layout.getPlid(), staticSiteExportLayout.getPlid());
 		Assert.assertThat(
 			staticSiteExportLayout.getHTML(),
 			CoreMatchers.containsString(layout.getName(LocaleUtil.US)));

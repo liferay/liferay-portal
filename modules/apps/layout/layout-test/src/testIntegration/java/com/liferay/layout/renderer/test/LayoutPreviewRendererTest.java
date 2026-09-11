@@ -94,11 +94,9 @@ public class LayoutPreviewRendererTest {
 			CoreMatchers.not(
 				CoreMatchers.containsString(
 					siblingFragmentEntryLink.getHtml())));
-
 		Assert.assertThat(html, CoreMatchers.containsString("signed-out"));
 		Assert.assertThat(
 			html, CoreMatchers.not(CoreMatchers.containsString("signed-in")));
-
 		Assert.assertThat(
 			html, CoreMatchers.containsString("/image/company_logo"));
 
