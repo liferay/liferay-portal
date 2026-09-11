@@ -5,12 +5,19 @@
 
 import '@testing-library/jest-dom';
 import {configure} from '@testing-library/dom';
-import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {fetch} from 'frontend-js-web';
 import React from 'react';
 
 import {SideNavigation} from '../src/main/resources/META-INF/resources/js';
+import {SideNavigationItem} from '../src/main/resources/META-INF/resources/js/types/SideNavigation';
 
 jest.mock('frontend-js-web', () => ({
 	...(jest.requireActual('frontend-js-web') as any),
@@ -39,7 +46,7 @@ const NAVIGATION_ITEMS = {
 	],
 };
 
-const ITEMS = [
+const ITEMS: Array<SideNavigationItem> = [
 	{
 		id: 'content',
 		items: [
@@ -75,7 +82,26 @@ const ITEMS = [
 	},
 ];
 
-const renderComponent = ({expandedKeys = ['content', 'workflow']} = {}) =>
+const [CONTENT_ITEM, WORKFLOW_ITEM] = ITEMS;
+
+const ITEMS_WITH_SCOPES: Array<SideNavigationItem> = [
+	{href: 'homeHref', id: 'home', label: 'Home'},
+	{id: 'system', label: 'System', scope: 'system', scopeMarker: true},
+	{...CONTENT_ITEM, scope: 'system'},
+	{
+		id: 'instance',
+		label: 'Instance: Liferay',
+		scope: 'instance',
+		scopeMarker: true,
+	},
+	{...WORKFLOW_ITEM, scope: 'instance'},
+];
+
+const renderComponent = ({
+	expandedKeys = ['content', 'workflow'],
+	items = ITEMS,
+	selectedPortletId = 'assets',
+} = {}) =>
 	render(
 		<SideNavigation
 			canonicalName="sideNavigationCanonicalName"
@@ -84,10 +110,10 @@ const renderComponent = ({expandedKeys = ['content', 'workflow']} = {}) =>
 			colorSchemeSessionKey="colorSchemeSessionKey"
 			expandedKeys={expandedKeys}
 			expandedKeysSessionKey="expandedKeysSessionKey"
-			items={ITEMS}
+			items={items}
 			label="Applications"
 			navigationItemsURL="navigationItemsURL"
-			selectedPortletId="assets"
+			selectedPortletId={selectedPortletId}
 			siteAdministrationItemSelectedEventName="siteAdministrationItemSelectedEventName"
 			siteAdministrationItemSelectorUrl="siteAdministrationItemSelectorUrl"
 			visible
@@ -177,6 +203,76 @@ describe('SideNavigation', () => {
 		expect(screen.getByText('Metrics')).not.toHaveClass('active');
 	});
 
+	it('keeps a scope item out of the menu', () => {
+		renderComponent({items: ITEMS_WITH_SCOPES});
+
+		const scopeItems = screen.getAllByTestId('sideNavigationScopeItem');
+
+		expect(scopeItems).toHaveLength(2);
+
+		scopeItems.forEach((scopeItem) => {
+			expect(scopeItem).not.toHaveAttribute('tabindex');
+			expect(
+				within(scopeItem).queryByRole('menuitem')
+			).not.toBeInTheDocument();
+		});
+	});
+
+	it('tints an item with the scope it carries', () => {
+		renderComponent({items: ITEMS_WITH_SCOPES});
+
+		expect(screen.getByText('Content').parentElement).toHaveClass(
+			'side-navigation-scope-zone-system'
+		);
+
+		expect(screen.getByText('Workflow').parentElement).toHaveClass(
+			'side-navigation-scope-zone-instance'
+		);
+	});
+
+	it('leaves an item without a scope untinted', () => {
+		renderComponent({items: ITEMS_WITH_SCOPES});
+
+		const homeItem = screen.getByText('Home').parentElement;
+
+		expect(homeItem).not.toHaveClass('side-navigation-scope-zone-instance');
+		expect(homeItem).not.toHaveClass('side-navigation-scope-zone-system');
+	});
+
+	it('describes an item by the scope item of its zone', () => {
+		renderComponent({items: ITEMS_WITH_SCOPES});
+
+		expect(screen.getByText('Content')).toHaveAccessibleDescription(
+			'System'
+		);
+
+		expect(screen.getByText('Workflow')).toHaveAccessibleDescription(
+			'Instance: Liferay'
+		);
+	});
+
+	it('leaves an item without a scope undescribed', () => {
+		renderComponent({items: ITEMS_WITH_SCOPES});
+
+		expect(screen.getByText('Home')).not.toHaveAttribute(
+			'aria-describedby'
+		);
+	});
+
+	it('does not make a scope item the keyboard entry point', () => {
+		renderComponent({
+			items: ITEMS_WITH_SCOPES,
+			selectedPortletId: 'notInTheMenu',
+		});
+
+		const tabbable = screen
+			.getAllByRole('menuitem')
+			.filter((item) => item.getAttribute('tabindex') !== '-1');
+
+		expect(tabbable).toHaveLength(1);
+		expect(tabbable[0]).toHaveTextContent('Home');
+	});
+
 	it('shows only the navigation items from the expanded keys', () => {
 		renderComponent({expandedKeys: ['workflow']});
 
@@ -252,6 +348,38 @@ describe('SideNavigation', () => {
 
 		expect(screen.getByText('Assets')).toBeInTheDocument();
 		expect(screen.queryByText('Categories')).not.toBeInTheDocument();
+	});
+
+	it('does not return a scope item as a filter result', async () => {
+		renderComponent({items: ITEMS_WITH_SCOPES});
+
+		await userEvent.type(
+			screen.getByTestId('sideNavigationSearchInput'),
+			'system'
+		);
+
+		await waitFor(() =>
+			expect(screen.queryByText('System')).not.toBeInTheDocument()
+		);
+
+		expect(screen.getByText('no-matching-items')).toBeInTheDocument();
+	});
+
+	it('stops describing an item while the filter hides the scope items', async () => {
+		renderComponent({items: ITEMS_WITH_SCOPES});
+
+		await userEvent.type(
+			screen.getByTestId('sideNavigationSearchInput'),
+			'content'
+		);
+
+		await waitFor(() =>
+			expect(screen.queryByText('Workflow')).not.toBeInTheDocument()
+		);
+
+		expect(screen.getByText('Content')).not.toHaveAttribute(
+			'aria-describedby'
+		);
 	});
 
 	it('clears the query with the clear button and restores the tree', async () => {

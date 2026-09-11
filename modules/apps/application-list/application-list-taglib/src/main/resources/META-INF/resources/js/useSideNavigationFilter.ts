@@ -71,6 +71,10 @@ export function filterItemsByQuery(
 	}
 
 	return items.reduce<Required<SideNavigationFilter>>((result, item) => {
+		if (item.scopeMarker && item.scope) {
+			return result;
+		}
+
 		const labelMatches = item.label.toLowerCase().includes(query);
 
 		if (item.items && item.items.length) {

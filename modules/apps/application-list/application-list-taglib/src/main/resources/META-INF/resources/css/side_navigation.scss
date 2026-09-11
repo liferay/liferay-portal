@@ -82,6 +82,37 @@
 		}
 	}
 
+	.side-navigation-scope-item {
+		align-items: center;
+		display: flex;
+		padding: 0.8125rem 1rem;
+
+		.label {
+			border-color: transparent;
+			margin: 0;
+		}
+	}
+
+	.side-navigation-scope-item-instance .label {
+		background-color: $blue-l5;
+		color: $blue-d2;
+	}
+
+	.side-navigation-scope-item-system .label {
+		background-color: $pink-l5;
+		color: $pink-d2;
+	}
+
+	.side-navigation-scope-zone-instance {
+		--menubar-primary-nav-link-active-class-background-color: #{$blue-l5};
+		--menubar-primary-nav-link-active-class-highlight-background-color: #{$blue-d1};
+	}
+
+	.side-navigation-scope-zone-system {
+		--menubar-primary-nav-link-active-class-background-color: #{$pink-l5};
+		--menubar-primary-nav-link-active-class-highlight-background-color: #{$pink-d1};
+	}
+
 	.side-navigation-section-item > .nav-link {
 		align-items: flex-start;
 		display: flex;
