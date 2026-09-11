@@ -1,7 +1,7 @@
 import ActivitiesChart from '../ActivitiesChart';
 import React from 'react';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {render} from '@testing-library/react';
+import {render, waitFor} from '@testing-library/react';
 
 jest.unmock('react-dom');
 
@@ -68,4 +68,34 @@ describe('ActivitiesChart', () => {
 		expect(container.querySelector('.recharts-bar')).toBeNull();
 		expect(container.querySelector('.recharts-line-dots')).toBeNull();
 	});
+
+	it('keeps every bar inside the plot area when the history is sparse enough to widen the bars', async () => {
+		const {container} = renderChart();
+
+		await waitFor(() =>
+			expect(
+				container.querySelector('.recharts-bar-rectangle path')
+			).toBeInTheDocument()
+		);
+
+		const axisLine = container.querySelector(
+			'.recharts-xAxis .recharts-cartesian-axis-line'
+		)!;
+
+		const plotStart = Number(axisLine.getAttribute('x1'));
+		const plotEnd = Number(axisLine.getAttribute('x2'));
+
+		const bars = container.querySelectorAll('.recharts-bar-rectangle path');
+
+		expect(bars).toHaveLength(history.length);
+
+		bars.forEach((bar) => {
+			const barStart = Number(bar.getAttribute('x'));
+			const barWidth = Number(bar.getAttribute('width'));
+
+			expect(barStart).toBeGreaterThanOrEqual(plotStart - 1);
+			expect(barStart + barWidth).toBeLessThanOrEqual(plotEnd + 1);
+		});
+	});
+
 });
