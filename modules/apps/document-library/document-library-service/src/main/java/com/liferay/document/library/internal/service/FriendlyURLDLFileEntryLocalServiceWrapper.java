@@ -16,7 +16,6 @@ import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -24,7 +23,6 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
@@ -118,8 +116,7 @@ public class FriendlyURLDLFileEntryLocalServiceWrapper
 		String uniqueUrlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
 			dlFileEntry.getGroupId(),
 			_classNameLocalService.getClassNameId(FileEntry.class),
-			dlFileEntry.getFileEntryId(), urlTitle,
-			_language.getLanguageId(LocaleUtil.getSiteDefault()));
+			dlFileEntry.getFileEntryId(), urlTitle);
 
 		_friendlyURLEntryLocalService.addFriendlyURLEntry(
 			dlFileEntry.getGroupId(),
@@ -198,8 +195,5 @@ public class FriendlyURLDLFileEntryLocalServiceWrapper
 
 	@Reference
 	private FriendlyURLNormalizer _friendlyURLNormalizer;
-
-	@Reference
-	private Language _language;
 
 }

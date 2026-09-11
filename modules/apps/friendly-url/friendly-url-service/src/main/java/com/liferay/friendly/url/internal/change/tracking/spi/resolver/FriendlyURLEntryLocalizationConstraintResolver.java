@@ -101,8 +101,7 @@ public class FriendlyURLEntryLocalizationConstraintResolver
 				friendlyURLEntryLocalization.getClassNameId(),
 				friendlyURLEntryLocalization.getParentClassPK(),
 				friendlyURLEntryLocalization.getClassPK(),
-				friendlyURLEntryLocalization.getUrlTitle(),
-				friendlyURLEntryLocalization.getLanguageId()));
+				friendlyURLEntryLocalization.getUrlTitle()));
 
 		friendlyURLEntryLocalization.setUrlTitle(uniqueUrlTitle);
 

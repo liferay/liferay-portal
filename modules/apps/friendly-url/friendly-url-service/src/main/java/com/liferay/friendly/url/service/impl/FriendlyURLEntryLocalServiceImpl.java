@@ -452,7 +452,7 @@ public class FriendlyURLEntryLocalServiceImpl
 	@Override
 	public String getUniqueUrlTitle(
 		long groupId, long classNameId, long parentClassPK, long classPK,
-		String urlTitle, String languageId) {
+		String urlTitle) {
 
 		if (urlTitle.startsWith(StringPool.SLASH)) {
 			urlTitle = urlTitle.replaceAll("^/+", StringPool.SLASH);
@@ -488,14 +488,13 @@ public class FriendlyURLEntryLocalServiceImpl
 
 	@Override
 	public String getUniqueUrlTitle(
-		long groupId, long classNameId, long classPK, String urlTitle,
-		String languageId) {
+		long groupId, long classNameId, long classPK, String urlTitle) {
 
 		return getUniqueUrlTitle(
 			groupId, classNameId,
 			FriendlyURLEntryConstants.
 				FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-			classPK, urlTitle, languageId);
+			classPK, urlTitle);
 	}
 
 	@Override
@@ -513,7 +512,7 @@ public class FriendlyURLEntryLocalServiceImpl
 					languageId,
 					friendlyURLEntryLocalService.getUniqueUrlTitle(
 						groupId, classNameId, parentClassPK, classPK,
-						entry.getValue(), languageId));
+						entry.getValue()));
 			}
 		}
 

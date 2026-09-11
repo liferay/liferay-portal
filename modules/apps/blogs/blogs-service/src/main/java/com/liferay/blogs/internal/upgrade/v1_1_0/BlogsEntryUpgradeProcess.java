@@ -58,7 +58,7 @@ public class BlogsEntryUpgradeProcess extends UpgradeProcess {
 
 				if (existingFriendlyURLEntry != null) {
 					urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
-						groupId, classNameId, classPK, urlTitle, null);
+						groupId, classNameId, classPK, urlTitle);
 				}
 
 				urlTitle = _getUniqueUrlTitle(classPK, groupId, urlTitle);
@@ -98,7 +98,7 @@ public class BlogsEntryUpgradeProcess extends UpgradeProcess {
 
 		return _friendlyURLEntryLocalService.getUniqueUrlTitle(
 			groupId, _classNameLocalService.getClassNameId(BlogsEntry.class),
-			entryId, urlTitle, null);
+			entryId, urlTitle);
 	}
 
 	private final ClassNameLocalService _classNameLocalService;

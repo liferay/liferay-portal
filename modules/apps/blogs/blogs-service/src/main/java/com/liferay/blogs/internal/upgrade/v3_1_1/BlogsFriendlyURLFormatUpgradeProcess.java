@@ -55,7 +55,6 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 			while (resultSet.next()) {
 				long classPK = resultSet.getLong("classPK");
 				long groupId = resultSet.getLong("groupId");
-				String languageId = resultSet.getString("languageId");
 
 				String urlTitle = resultSet.getString("urlTitle");
 
@@ -66,7 +65,7 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 				}
 
 				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
-					groupId, classNameId, classPK, urlTitle, languageId);
+					groupId, classNameId, classPK, urlTitle);
 
 				if (StringUtil.equals(originalUrlTitle, urlTitle)) {
 					continue;
@@ -77,8 +76,8 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 					updatePreparedStatement, urlTitle);
 
 				_updateFriendlyURLEntry(
-					resultSet.getLong("friendlyURLEntryId"), languageId,
-					urlTitle);
+					resultSet.getLong("friendlyURLEntryId"),
+					resultSet.getString("languageId"), urlTitle);
 			}
 
 			updatePreparedStatement.executeBatch();

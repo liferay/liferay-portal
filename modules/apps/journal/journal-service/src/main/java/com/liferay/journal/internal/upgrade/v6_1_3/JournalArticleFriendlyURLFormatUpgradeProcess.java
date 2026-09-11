@@ -59,7 +59,6 @@ public class JournalArticleFriendlyURLFormatUpgradeProcess
 			while (resultSet1.next()) {
 				long classPK = resultSet1.getLong("classPK");
 				long groupId = resultSet1.getLong("groupId");
-				String languageId = resultSet1.getString("languageId");
 
 				String urlTitle = resultSet1.getString("urlTitle");
 
@@ -70,7 +69,7 @@ public class JournalArticleFriendlyURLFormatUpgradeProcess
 				}
 
 				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
-					groupId, classNameId, classPK, urlTitle, languageId);
+					groupId, classNameId, classPK, urlTitle);
 
 				if (StringUtil.equals(urlTitle, originalUrlTitle)) {
 					continue;
@@ -81,6 +80,8 @@ public class JournalArticleFriendlyURLFormatUpgradeProcess
 				ResultSet resultSet2 = preparedStatement2.executeQuery();
 
 				if (resultSet2.next()) {
+					String languageId = resultSet1.getString("languageId");
+
 					String defaultLanguageId = resultSet2.getString(
 						"defaultLanguageId");
 

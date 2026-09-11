@@ -613,7 +613,7 @@ public class FriendlyURLEntryLocalServiceTest {
 			_friendlyURLEntryLocalService.getUniqueUrlTitle(
 				_group.getGroupId(),
 				_classNameLocalService.getClassNameId(User.class),
-				TestPropsValues.getUserId(), urlTitle, null));
+				TestPropsValues.getUserId(), urlTitle));
 	}
 
 	@Test
@@ -628,8 +628,7 @@ public class FriendlyURLEntryLocalServiceTest {
 		Assert.assertEquals(
 			"existing-url-title-1",
 			_friendlyURLEntryLocalService.getUniqueUrlTitle(
-				_group.getGroupId(), classNameId, _user.getUserId(), urlTitle,
-				null));
+				_group.getGroupId(), classNameId, _user.getUserId(), urlTitle));
 	}
 
 	@Test
@@ -649,8 +648,7 @@ public class FriendlyURLEntryLocalServiceTest {
 		Assert.assertEquals(
 			"existing-url-title-1",
 			_friendlyURLEntryLocalService.getUniqueUrlTitle(
-				_group.getGroupId(), classNameId, _user.getUserId(), urlTitle,
-				_language.getLanguageId(LocaleUtil.getDefault())));
+				_group.getGroupId(), classNameId, _user.getUserId(), urlTitle));
 	}
 
 	@Test
@@ -675,8 +673,7 @@ public class FriendlyURLEntryLocalServiceTest {
 			_group.getGroupId(), classNameId,
 			FriendlyURLEntryConstants.
 				FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-			_assetCategory.getCategoryId(), urlTitle,
-			_language.getLanguageId(LocaleUtil.getDefault()));
+			_assetCategory.getCategoryId(), urlTitle);
 
 		Assert.assertEquals(urlTitle, uniqueUrlTitle);
 	}
@@ -692,7 +689,7 @@ public class FriendlyURLEntryLocalServiceTest {
 
 		String uniqueUrlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
 			_group.getGroupId(), classNameId, TestPropsValues.getUserId(),
-			urlTitle, null);
+			urlTitle);
 
 		Assert.assertEquals(urlTitle, uniqueUrlTitle);
 	}
@@ -708,7 +705,7 @@ public class FriendlyURLEntryLocalServiceTest {
 
 		String uniqueUrlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
 			_group.getGroupId(), classNameId, TestPropsValues.getUserId(),
-			urlTitle, null);
+			urlTitle);
 
 		Assert.assertEquals(maxLength, uniqueUrlTitle.length());
 	}
@@ -728,7 +725,7 @@ public class FriendlyURLEntryLocalServiceTest {
 
 		String uniqueUrlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
 			_group.getGroupId(), classNameId, TestPropsValues.getUserId(),
-			urlTitle, null);
+			urlTitle);
 
 		Assert.assertEquals(maxLength - 1, uniqueUrlTitle.length());
 	}

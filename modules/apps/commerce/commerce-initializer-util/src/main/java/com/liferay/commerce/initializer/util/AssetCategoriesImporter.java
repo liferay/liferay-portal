@@ -311,7 +311,7 @@ public class AssetCategoriesImporter {
 				companyGroup.getGroupId(),
 				_portal.getClassNameId(AssetCategory.class),
 				_getParentClassPK(assetCategory), assetCategory.getCategoryId(),
-				titleEntry.getValue(), null);
+				titleEntry.getValue());
 
 			urlTitleMap.put(
 				LocaleUtil.toLanguageId(titleEntry.getKey()), urlTitle);

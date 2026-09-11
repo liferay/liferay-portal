@@ -1258,7 +1258,7 @@ public class TaxonomyCategoryResourceImpl
 				languageId,
 				_friendlyURLEntryLocalService.getUniqueUrlTitle(
 					assetCategory.getGroupId(), classNameId, parentClassPK,
-					assetCategory.getCategoryId(), urlTitle, languageId));
+					assetCategory.getCategoryId(), urlTitle));
 		}
 
 		_friendlyURLEntryLocalService.addFriendlyURLEntry(

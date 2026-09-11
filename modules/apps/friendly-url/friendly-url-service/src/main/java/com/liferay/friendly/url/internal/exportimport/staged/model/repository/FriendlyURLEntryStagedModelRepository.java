@@ -142,7 +142,7 @@ public class FriendlyURLEntryStagedModelRepository
 					friendlyURLEntry.getClassNameId(),
 					friendlyURLEntry.getParentClassPK(),
 					friendlyURLEntry.getClassPK(),
-					friendlyURLEntryLocalization.getUrlTitle(), null));
+					friendlyURLEntryLocalization.getUrlTitle()));
 
 			_friendlyURLEntryLocalService.updateFriendlyURLLocalization(
 				friendlyURLEntryLocalization);
@@ -205,7 +205,7 @@ public class FriendlyURLEntryStagedModelRepository
 					friendlyURLEntry.getGroupId(),
 					friendlyURLEntry.getClassNameId(),
 					friendlyURLEntry.getParentClassPK(),
-					friendlyURLEntry.getClassPK(), urlTitle, null);
+					friendlyURLEntry.getClassPK(), urlTitle);
 			}
 
 			languageIdLocalizationMap.put(

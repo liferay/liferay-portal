@@ -103,8 +103,7 @@ public class AssetCategoryFriendlyURLModelListener
 					_friendlyURLEntryLocalService.getUniqueUrlTitle(
 						assetCategory.getGroupId(), classNameId, parentClassPK,
 						assetCategory.getCategoryId(),
-						friendlyURLEntryLocalization.getUrlTitle(),
-						friendlyURLEntryLocalization.getLanguageId()));
+						friendlyURLEntryLocalization.getUrlTitle()));
 			}
 
 			_friendlyURLEntryLocalService.updateFriendlyURLEntry(

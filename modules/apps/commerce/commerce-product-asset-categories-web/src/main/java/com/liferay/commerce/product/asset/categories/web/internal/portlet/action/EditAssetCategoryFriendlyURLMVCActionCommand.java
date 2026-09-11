@@ -98,7 +98,7 @@ public class EditAssetCategoryFriendlyURLMVCActionCommand
 				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
 					assetCategory.getGroupId(), classNameId,
 					_getParentClassPK(assetCategory),
-					assetCategory.getCategoryId(), urlTitle, null);
+					assetCategory.getCategoryId(), urlTitle);
 
 				newUrlTitleMap.put(LocaleUtil.toLanguageId(locale), urlTitle);
 			}

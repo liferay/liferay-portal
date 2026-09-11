@@ -2854,7 +2854,7 @@ public class ObjectEntryLocalServiceImpl
 				entry.getKey(),
 				_friendlyURLEntryLocalService.getUniqueUrlTitle(
 					groupId, classNameId, objectEntry.getObjectEntryId(),
-					friendlyURL, entry.getKey()));
+					friendlyURL));
 		}
 
 		urlTitleMap.computeIfAbsent(
@@ -5888,8 +5888,7 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		return _friendlyURLEntryLocalService.getUniqueUrlTitle(
-			groupId, classNameId, objectEntry.getObjectEntryId(), urlTitle,
-			languageId);
+			groupId, classNameId, objectEntry.getObjectEntryId(), urlTitle);
 	}
 
 	/**

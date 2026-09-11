@@ -3346,7 +3346,7 @@ public class CPDefinitionLocalServiceImpl
 				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
 					companyGroup.getGroupId(),
 					_classNameLocalService.getClassNameId(CProduct.class),
-					cpDefinition.getCProductId(), titleEntry.getValue(), null);
+					cpDefinition.getCProductId(), titleEntry.getValue());
 
 				newURLTitleMap.put(titleEntry.getKey(), urlTitle);
 			}

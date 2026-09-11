@@ -1886,7 +1886,7 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		return _friendlyURLEntryLocalService.getUniqueUrlTitle(
 			entry.getGroupId(),
 			_classNameLocalService.getClassNameId(BlogsEntry.class),
-			entry.getEntryId(), urlTitle, null);
+			entry.getEntryId(), urlTitle);
 	}
 
 	private String _getURLTitle(long entryId) {
