@@ -67,7 +67,7 @@
 </tr>
 <tr>
 	<td>NODE_UNSELECTED</td>
-	<td>//div[contains(@class,'card-type-directory') and not(contains(@class,'selected'))]/div[contains(@class,'card-horizontal')]//span[contains(.,'${key_nodeName}')] | //div[contains(@role,'treeitem') and not(contains(@class,'active'))]//*[contains(@class,'component-text') or contains(@class,'flex-grow')][normalize-space(text())='${key_nodeName}'] | //*[contains(@class,'treeview-item') and (not(@aria-selected) or @aria-selected='false')][.//text()[normalize-space()='${key_nodeName}']]</td>
+	<td>//div[contains(@class,'card-type-directory') and not(contains(@class,'selected'))]/div[contains(@class,'card-horizontal')]//span[contains(.,'${key_nodeName}')] | //div[contains(@role,'treeitem') and not(contains(@class,'active'))]//*[contains(@class,'component-text') or contains(@class,'flex-grow')][normalize-space(text())='${key_nodeName}'] | //*[contains(@class,'treeview-item') and (not(@aria-selected) or @aria-selected='false')][./*[contains(@class,'treeview-link')]//text()[normalize-space()='${key_nodeName}']]</td>
 	<td></td>
 </tr>
 <tr>
