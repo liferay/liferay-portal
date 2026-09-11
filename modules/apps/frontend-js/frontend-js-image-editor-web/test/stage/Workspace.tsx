@@ -13,6 +13,7 @@ import {BottomBar} from '../../src/main/resources/META-INF/resources/js/chrome/B
 import {EditorInstanceProvider} from '../../src/main/resources/META-INF/resources/js/chrome/instance';
 import {RATIO_PRESETS} from '../../src/main/resources/META-INF/resources/js/editorConfig';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
+import {AdjustPanel} from '../../src/main/resources/META-INF/resources/js/panels/AdjustPanel';
 import {CropPanel} from '../../src/main/resources/META-INF/resources/js/panels/CropPanel';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
@@ -73,6 +74,12 @@ function EditorHarness() {
 					showStraighten
 				/>
 
+				<AdjustPanel
+					adjustments={history.present.adjustments}
+					dispatch={dispatch}
+					onAnnounce={() => {}}
+				/>
+
 				<BottomBar
 					canRedo={!!history.future.length}
 					canUndo={!!history.past.length}
@@ -108,6 +115,36 @@ describe('Editor workspace composition', () => {
 		expect(workspace).toHaveAccessibleDescription(
 			'scrollable-view-of-the-image-use-the-zoom-buttons-or-plus-and-minus-keys-to-zoom-tab-to-reach-the-crop-area-and-its-handles'
 		);
+	});
+
+	it('applies the color pipeline when an adjustment slider commits', () => {
+		const {container} = render(<EditorHarness />);
+
+		expect(container.querySelector('image')).not.toHaveAttribute('filter');
+
+		const slider = screen.getByLabelText('brightness');
+
+		fireEvent.change(slider, {target: {value: '40'}});
+		fireEvent.keyUp(slider, {key: 'ArrowRight'});
+
+		expect(container.querySelector('image')).toHaveAttribute(
+			'filter',
+			'url(#aie-preview-filter)'
+		);
+		expect(
+			container.querySelector('#aie-preview-filter feFuncR')
+		).toHaveAttribute('slope', '1.4');
+	});
+
+	it('steps an adjustment slider by 10 with shift plus arrows', () => {
+		render(<EditorHarness />);
+
+		const slider = screen.getByLabelText('brightness');
+
+		fireEvent.keyDown(slider, {key: 'ArrowRight', shiftKey: true});
+		fireEvent.keyUp(slider, {key: 'ArrowRight', shiftKey: true});
+
+		expect(screen.getByText('10')).toBeInTheDocument();
 	});
 
 	it('scales the stage with the zoom', () => {

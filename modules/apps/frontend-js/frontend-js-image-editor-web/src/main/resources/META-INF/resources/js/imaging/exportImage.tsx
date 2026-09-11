@@ -7,6 +7,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 
 import {EditState} from '../state/types';
+import {FilterDefs, isIdentityFilter} from './FilterDefs';
 import {imageTransform} from './geometry';
 import {LoadedImage} from './loadImage';
 
@@ -25,8 +26,20 @@ export async function exportEditedImage(
 			width={crop.width}
 			xmlns="http://www.w3.org/2000/svg"
 		>
+			<defs>
+				<FilterDefs
+					adjustments={state.adjustments}
+					id="export-filter"
+				/>
+			</defs>
+
 			<g transform={imageTransform(state)}>
 				<image
+					filter={
+						isIdentityFilter(state.adjustments)
+							? undefined
+							: 'url(#export-filter)'
+					}
 					height={state.sourceHeight}
 					href={dataUrl}
 					width={state.sourceWidth}

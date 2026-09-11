@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export const DEFAULT_ADJUSTMENTS: Adjustments = {
+	brightness: 0,
+	contrast: 0,
+	saturation: 0,
+};
+
 export const MIN_CROP_SIZE = 16;
 
 export const RATIO_VALUES: Record<
@@ -15,6 +21,12 @@ export const RATIO_VALUES: Record<
 	'9:16': 9 / 16,
 	'16:9': 16 / 9,
 };
+
+export interface Adjustments {
+	brightness: number;
+	contrast: number;
+	saturation: number;
+}
 
 export interface CropRect {
 	height: number;
@@ -33,6 +45,8 @@ export interface EditorHistory {
 }
 
 export interface EditState {
+	adjustments: Adjustments;
+
 	angle: number;
 	crop: CropRect;
 

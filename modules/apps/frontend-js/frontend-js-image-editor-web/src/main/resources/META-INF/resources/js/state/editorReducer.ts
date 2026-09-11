@@ -4,7 +4,9 @@
  */
 
 import {
+	Adjustments,
 	CropRect,
+	DEFAULT_ADJUSTMENTS,
 	EditState,
 	EditorHistory,
 	MIN_CROP_SIZE,
@@ -18,6 +20,12 @@ export type EditorAction =
 	| {type: 'flip-horizontal'}
 	| {type: 'redo'}
 	| {type: 'rotate-90'}
+	| {
+			key: keyof Adjustments;
+			transient?: boolean;
+			type: 'set-adjustment';
+			value: number;
+	  }
 	| {angle: number; transient?: boolean; type: 'set-angle'}
 	| {crop: CropRect; transient?: boolean; type: 'set-crop'}
 	| {ratio: RatioPreset; type: 'set-ratio'}
@@ -54,6 +62,29 @@ export function editorReducer(
 	const {present} = history;
 
 	switch (action.type) {
+		case 'set-adjustment': {
+			if (
+				!action.transient &&
+				!history.pendingBase &&
+				present.adjustments[action.key] === action.value
+			) {
+				return history;
+			}
+
+			return applyEdit(
+				history,
+				{
+					...present,
+					adjustments: {
+						...present.adjustments,
+						[action.key]: action.value,
+					},
+				},
+				Liferay.Language.get('adjustments'),
+				action.transient
+			);
+		}
+
 		case 'set-angle': {
 			if (
 				!action.transient &&
@@ -231,6 +262,7 @@ export function initialEditState(
 	const ratio = initialRatio(options.ratios);
 
 	const state: EditState = {
+		adjustments: {...DEFAULT_ADJUSTMENTS},
 		angle: 0,
 		crop: {height: sourceHeight, width: sourceWidth, x: 0, y: 0},
 		flipHorizontal: false,
