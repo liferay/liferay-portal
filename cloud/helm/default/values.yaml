@@ -170,6 +170,11 @@ customInitContainers:
 
                             cat /opt/liferay/tomcat/conf/server.xml | sed '/<!--.*-->/d' | sed '/<!--/,/-->/d' > /temp/tomcat/conf/server.xml
 
+                            {{- with .tomcat.maxThreads }}
+
+                            sed --in-place 's/maxThreads="[0-9]*"/maxThreads="{{ . }}"/' /temp/tomcat/conf/server.xml
+                            {{- end }}
+
                             IFS='' read -r -d '' SERVER_XML_CLUSTER <<EOF
                             <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
                                 <Manager className="com.liferay.support.tomcat.session.LiferayDeltaManager" />
@@ -507,6 +512,8 @@ startupProbe:
     periodSeconds: 10
     timeoutSeconds: 5
 tolerations: []
+tomcat:
+    maxThreads: ""
 updateStrategy:
     type: RollingUpdate
 volumeClaimTemplates:
