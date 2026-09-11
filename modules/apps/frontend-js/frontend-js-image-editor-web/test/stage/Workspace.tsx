@@ -136,6 +136,21 @@ describe('Editor workspace composition', () => {
 		).toHaveAttribute('slope', '1.4');
 	});
 
+	it('clears the color pipeline when the adjustments are reset', () => {
+		const {container} = render(<EditorHarness />);
+
+		const slider = screen.getByLabelText('brightness');
+
+		fireEvent.change(slider, {target: {value: '40'}});
+		fireEvent.keyUp(slider, {key: 'ArrowRight'});
+
+		expect(container.querySelector('image')).toHaveAttribute('filter');
+
+		fireEvent.click(screen.getByRole('button', {name: 'reset-all'}));
+
+		expect(container.querySelector('image')).not.toHaveAttribute('filter');
+	});
+
 	it('steps an adjustment slider by 10 with shift plus arrows', () => {
 		render(<EditorHarness />);
 

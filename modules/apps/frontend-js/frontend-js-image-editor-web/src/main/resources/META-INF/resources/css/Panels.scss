@@ -43,6 +43,12 @@
 	padding: 0 0 1rem;
 }
 
+.image-editor .editor-panel-actions {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 0.25rem;
+}
+
 .image-editor .editor-panel-title {
 	font-size: 0.8125rem;
 	font-weight: 600;

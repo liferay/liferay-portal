@@ -19,6 +19,7 @@ export type EditorAction =
 	| {type: 'cancel-gesture'}
 	| {type: 'flip-horizontal'}
 	| {type: 'redo'}
+	| {type: 'reset-adjustments'}
 	| {type: 'rotate-90'}
 	| {
 			key: keyof Adjustments;
@@ -82,6 +83,14 @@ export function editorReducer(
 				},
 				Liferay.Language.get('adjustments'),
 				action.transient
+			);
+		}
+
+		case 'reset-adjustments': {
+			return applyEdit(
+				history,
+				{...present, adjustments: {...DEFAULT_ADJUSTMENTS}},
+				Liferay.Language.get('adjustments')
 			);
 		}
 
