@@ -20,6 +20,7 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	readonly optionValueQuantityInput: Locator;
 	readonly optionValueRow: (optionValueName: string) => Locator;
 	readonly optionValueSaveButton: Locator;
+	readonly optionValueSidePanel: Locator;
 	readonly optionValueSidePanelCloseButton: Locator;
 	readonly optionValueSidePanelFrame: FrameLocator;
 	readonly optionValueSkuDropdownItem: (label: string) => Locator;
@@ -83,8 +84,10 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 				name: 'Save',
 			}
 		);
+		this.optionValueSidePanel =
+			this.optionSidePanelFrame.locator('.fds-side-panel');
 		this.optionValueSidePanelCloseButton =
-			this.optionSidePanelFrame.locator('.side-panel-iframe-close');
+			this.optionValueSidePanelFrame.locator('.side-panel-iframe-close');
 		this.optionValueSkuDropdownItem = (label: string) =>
 			this.optionValueSidePanelFrame
 				.locator('.autocomplete-dropdown-menu')
@@ -107,9 +110,11 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	}
 
 	async closeOptionValue() {
-		await this.optionValueSidePanelCloseButton.click();
+		if (await this.optionValueSidePanel.isVisible()) {
+			await this.optionValueSidePanelCloseButton.click();
+		}
 
-		await expect(this.optionValueSkuInput).toBeHidden();
+		await expect(this.optionValueSidePanel).toBeHidden();
 	}
 
 	async editOptionValue(
