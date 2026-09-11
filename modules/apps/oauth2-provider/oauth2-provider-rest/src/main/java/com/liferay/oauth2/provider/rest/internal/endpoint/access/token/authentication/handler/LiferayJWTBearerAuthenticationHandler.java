@@ -6,9 +6,14 @@
 package com.liferay.oauth2.provider.rest.internal.endpoint.access.token.authentication.handler;
 
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2HttpRequestUtil;
 import com.liferay.oauth2.provider.util.OAuth2JWKValidatorUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEventFactory;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
+import com.liferay.portal.kernel.security.fips.FIPSModeValidator;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -43,7 +48,6 @@ import org.apache.cxf.rs.security.oauth2.grants.jwt.JwtBearerAuthHandler;
 import org.apache.cxf.rs.security.oauth2.provider.ClientRegistrationProvider;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
-import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
 /**
  * @author Arthur Chan
@@ -62,8 +66,8 @@ public class LiferayJWTBearerAuthenticationHandler
 
 		Message message = JAXRSUtils.getCurrentMessage();
 
-		HttpServletRequest httpServletRequest = (HttpServletRequest)message.get(
-			AbstractHTTPDestination.HTTP_REQUEST);
+		HttpServletRequest httpServletRequest =
+			OAuth2HttpRequestUtil.getHttpServletRequest(message);
 
 		if (!_isUsingJWTAssertionForClientAuthentication(httpServletRequest)) {
 			return;
@@ -117,8 +121,22 @@ public class LiferayJWTBearerAuthenticationHandler
 		String tokenEndpointAuthMethod = client.getTokenEndpointAuthMethod();
 
 		try {
-			OAuth2JWKValidatorUtil.validateJWSAlgorithm(
-				(String)jwtToken.getJwsHeader(JoseConstants.HEADER_ALGORITHM));
+			String algorithm = GetterUtil.getString(
+				jwtToken.getJwsHeader(JoseConstants.HEADER_ALGORITHM), null);
+
+			try {
+				FIPSModeValidator.validateJWSAlgorithm(algorithm);
+			}
+			catch (SecurityException securityException) {
+				FIPSAuditUtil.write(
+					FIPSAuditEventFactory.createFederationTokenRejected(
+						OAuth2HttpRequestUtil.getRequestURI(), algorithm,
+						GetterUtil.getString(
+							jwtToken.getClaim(JwtConstants.CLAIM_ISSUER), null),
+						"JWT"));
+
+				throw securityException;
+			}
 
 			if (tokenEndpointAuthMethod.equals("client_secret_jwt")) {
 				String clientSecret = client.getClientSecret();

@@ -14,6 +14,7 @@ import com.liferay.oauth2.provider.rest.internal.constants.OAuth2ProviderRESTWeb
 import com.liferay.oauth2.provider.rest.internal.endpoint.constants.OAuth2ProviderRESTEndpointConstants;
 import com.liferay.oauth2.provider.rest.internal.endpoint.util.DynamicRegistrationUtil;
 import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2ErrorUtil;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2HttpRequestUtil;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.petra.string.StringBundler;
@@ -67,13 +68,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.cxf.jaxrs.utils.ExceptionUtils;
-import org.apache.cxf.jaxrs.utils.JAXRSUtils;
-import org.apache.cxf.message.Message;
 import org.apache.cxf.rs.security.jose.jws.JwsJwtCompactConsumer;
 import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
 import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
-import org.apache.cxf.transport.http.AbstractHTTPDestination;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -104,10 +102,8 @@ public class DynamicRegistrationServiceContainerRequestFilter
 			return;
 		}
 
-		Message message = JAXRSUtils.getCurrentMessage();
-
-		HttpServletRequest httpServletRequest = (HttpServletRequest)message.get(
-			AbstractHTTPDestination.HTTP_REQUEST);
+		HttpServletRequest httpServletRequest =
+			OAuth2HttpRequestUtil.getHttpServletRequest();
 
 		long companyId = _portal.getCompanyId(httpServletRequest);
 
