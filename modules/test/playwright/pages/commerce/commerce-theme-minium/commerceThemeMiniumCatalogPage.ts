@@ -51,6 +51,32 @@ export class CommerceThemeMiniumCatalogPage {
 	) => Locator;
 	readonly productCardAddToCartButton: (productName: string) => Locator;
 	readonly productCardAddToWishListButton: (productName: string) => Locator;
+	readonly productCardFragment: Locator;
+	readonly productCardFragmentAddToCartButton: (
+		targetLocator: Locator
+	) => Locator;
+	readonly productCardFragmentAddToWishListButton: (
+		targetLocator: Locator
+	) => Locator;
+	readonly productCardFragmentAvailabilityLabel: (
+		targetLocator: Locator
+	) => Locator;
+	readonly productCardFragmentCompareCheckbox: (
+		targetLocator: Locator
+	) => Locator;
+	readonly productCardFragmentImage: (targetLocator: Locator) => Locator;
+	readonly productCardFragmentName: (
+		targetLocator: Locator,
+		productName: string
+	) => Locator;
+	readonly productCardFragmentPrice: (
+		targetLocator: Locator,
+		productPrice: string
+	) => Locator;
+	readonly productCardFragmentSku: (
+		targetLocator: Locator,
+		productSku: string
+	) => Locator;
 	readonly productLink: (productName: string) => Locator;
 
 	constructor(page: Page) {
@@ -163,6 +189,42 @@ export class CommerceThemeMiniumCatalogPage {
 				exact: true,
 				name: 'Add to List',
 			});
+		this.productCardFragment = page.locator('.cp-renderer .product-card');
+		this.productCardFragmentAddToCartButton = (targetLocator: Locator) =>
+			targetLocator.getByRole('button', {
+				exact: true,
+				name: 'Add to Cart',
+			});
+		this.productCardFragmentAddToWishListButton = (
+			targetLocator: Locator
+		) => targetLocator.locator('.add-to-wish-list');
+		this.productCardFragmentAvailabilityLabel = (targetLocator: Locator) =>
+			targetLocator.locator('[class*="availability-label"]');
+		this.productCardFragmentCompareCheckbox = (targetLocator: Locator) =>
+			targetLocator.locator('.compare-checkbox');
+		this.productCardFragmentImage = (targetLocator: Locator) =>
+			targetLocator.locator('img.product-card-picture');
+		this.productCardFragmentName = (
+			targetLocator: Locator,
+			productName: string
+		) =>
+			targetLocator
+				.locator('.card-title')
+				.getByText(productName, {exact: true});
+		this.productCardFragmentPrice = (
+			targetLocator: Locator,
+			productPrice: string
+		) =>
+			targetLocator
+				.locator('.card-text')
+				.getByText(productPrice, {exact: true});
+		this.productCardFragmentSku = (
+			targetLocator: Locator,
+			productSku: string
+		) =>
+			targetLocator
+				.locator('.card-subtitle')
+				.getByText(productSku, {exact: true});
 		this.productLink = (productName: string) =>
 			this.page.getByRole('link', {
 				exact: true,
