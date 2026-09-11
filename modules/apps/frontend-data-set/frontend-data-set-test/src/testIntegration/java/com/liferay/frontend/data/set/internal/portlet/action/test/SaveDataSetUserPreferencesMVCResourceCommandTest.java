@@ -119,32 +119,31 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testInitialDataSetSnapshotERCPreferenceIsCleared()
-		throws Exception {
+	public void testInitialDataSetSnapshotERCIsCleared() throws Exception {
 
-		// empty preferences JSON object
+		// empty JSON object
 
-		_assertInitialDataSetSnapshotERCPreferenceIsSaved(
+		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
 			_serveResource(
 				_user, _dataSetSnapshotObjectEntry.getExternalReferenceCode(),
 				_fdsName),
 			_user);
 
-		_assertPreferenceIsNotSaved(
+		_assertKeyIsNotSaved(
 			_serveResource(_user, JSONFactoryUtil.createJSONObject(), _fdsName),
 			"initialDataSetSnapshotERC");
 
-		// null preference. Needs creating JSONObject from string representation
+		// null value. Needs creating JSONObject from string representation
 
-		_assertInitialDataSetSnapshotERCPreferenceIsSaved(
+		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
 			_serveResource(
 				_user, _dataSetSnapshotObjectEntry.getExternalReferenceCode(),
 				_fdsName),
 			_user);
 
-		_assertPreferenceIsNotSaved(
+		_assertKeyIsNotSaved(
 			_serveResource(
 				_user,
 				JSONFactoryUtil.createJSONObject(
@@ -154,7 +153,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testInitialDataSetSnapshotERCPreferenceIsSavedForSharedSnapshot()
+	public void testInitialDataSetSnapshotERCIsSavedForSharedSnapshot()
 		throws Exception {
 
 		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
@@ -162,7 +161,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 
 		_shareDataSetSnapshot(dataSetSnapshotObjectEntry, _user.getUserId());
 
-		_assertInitialDataSetSnapshotERCPreferenceIsSaved(
+		_assertInitialDataSetSnapshotERCIsSaved(
 			dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
 			_serveResource(
 				_user, dataSetSnapshotObjectEntry.getExternalReferenceCode(),
@@ -174,10 +173,8 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testInitialDataSetSnapshotERCPreferenceIsUpdated()
-		throws Exception {
-
-		_assertInitialDataSetSnapshotERCPreferenceIsSaved(
+	public void testInitialDataSetSnapshotERCIsUpdated() throws Exception {
+		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
 			_serveResource(
 				_user, _dataSetSnapshotObjectEntry.getExternalReferenceCode(),
@@ -187,7 +184,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 		ObjectEntry objectEntry = _addDataSetSnapshotObjectEntry(
 			_fdsName, _user.getUserId());
 
-		_assertInitialDataSetSnapshotERCPreferenceIsSaved(
+		_assertInitialDataSetSnapshotERCIsSaved(
 			objectEntry.getExternalReferenceCode(), _fdsName,
 			_serveResource(
 				_user, objectEntry.getExternalReferenceCode(), _fdsName),
@@ -221,24 +218,24 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testUnknownPreferenceIsNotSaved() throws Exception {
+	public void testUnknownKeyIsNotSaved() throws Exception {
+		String unknownKey = StringPool.AT + RandomTestUtil.randomString();
+
 		JSONObject jsonObject = _serveResource(
 			_user,
 			JSONUtil.put(
-				"favoriteSnapshotERCs",
-				JSONUtil.putAll(
-					_dataSetSnapshotObjectEntry.getExternalReferenceCode())
+				unknownKey, RandomTestUtil.randomString()
 			).put(
 				"initialDataSetSnapshotERC",
 				_dataSetSnapshotObjectEntry.getExternalReferenceCode()
 			),
 			_fdsName);
 
-		_assertInitialDataSetSnapshotERCPreferenceIsSaved(
+		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
 			jsonObject, _user);
 
-		_assertPreferenceIsNotSaved(jsonObject, "favoriteSnapshotERCs");
+		_assertKeyIsNotSaved(jsonObject, unknownKey);
 	}
 
 	private ObjectEntry _addDataSetSnapshotObjectEntry(
@@ -257,7 +254,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 				TestPropsValues.getGroupId(), userId));
 	}
 
-	private void _assertInitialDataSetSnapshotERCPreferenceIsSaved(
+	private void _assertInitialDataSetSnapshotERCIsSaved(
 			String externalReferenceCode, String fdsName, JSONObject jsonObject,
 			User user)
 		throws Exception {
@@ -274,7 +271,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 			preferencesJSONObject.getString("initialDataSetSnapshotERC"));
 	}
 
-	private void _assertPreferenceIsNotSaved(JSONObject jsonObject, String key)
+	private void _assertKeyIsNotSaved(JSONObject jsonObject, String key)
 		throws Exception {
 
 		Assert.assertEquals(StringPool.BLANK, jsonObject.getString(key));
