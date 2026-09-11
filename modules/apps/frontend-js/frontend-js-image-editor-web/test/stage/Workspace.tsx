@@ -155,6 +155,16 @@ describe('Editor workspace composition', () => {
 		expect(container.querySelector('image')).not.toHaveAttribute('filter');
 	});
 
+	it('lays the adjustment sliders out in the configured order', () => {
+		render(<EditorHarness />);
+
+		const labels = [...document.querySelectorAll('label')]
+			.map((label) => label.textContent)
+			.filter((label) => ADJUSTMENT_KEYS.includes(label as never));
+
+		expect(labels).toEqual(ADJUSTMENT_KEYS);
+	});
+
 	it('steps an adjustment slider by 10 with shift plus arrows', () => {
 		render(<EditorHarness />);
 

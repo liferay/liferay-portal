@@ -14,13 +14,13 @@ import {AdjustmentKey} from '../editorConfig';
 import {EditorAction} from '../state/editorReducer';
 import {Adjustments} from '../state/types';
 
-const SLIDERS: Array<{key: keyof Adjustments; label: string}> = [
-	{key: 'brightness', label: Liferay.Language.get('brightness')},
-	{key: 'contrast', label: Liferay.Language.get('contrast')},
-	{key: 'saturation', label: Liferay.Language.get('saturation')},
-	{key: 'shadows', label: Liferay.Language.get('shadows')},
-	{key: 'highlights', label: Liferay.Language.get('highlights')},
-];
+const SLIDER_LABELS: Record<AdjustmentKey, string> = {
+	brightness: Liferay.Language.get('brightness'),
+	contrast: Liferay.Language.get('contrast'),
+	highlights: Liferay.Language.get('highlights'),
+	saturation: Liferay.Language.get('saturation'),
+	shadows: Liferay.Language.get('shadows'),
+};
 
 interface Props {
 	adjustments: Adjustments;
@@ -37,16 +37,16 @@ export function AdjustPanel({
 }: Props) {
 	const eid = useEditorId();
 
-	const shown = SLIDERS.filter(({key}) => sliders.includes(key));
-
-	const hasAdjustments = shown.some(({key}) => adjustments[key] !== 0);
+	const hasAdjustments = sliders.some((key) => adjustments[key] !== 0);
 
 	return (
 		<EditorSection
 			title={Liferay.Language.get('adjustments')}
 			titleId={eid('adjust-panel-title')}
 		>
-			{shown.map(({key, label}) => {
+			{sliders.map((key) => {
+				const label = SLIDER_LABELS[key];
+				const resetLabel = sub(Liferay.Language.get('reset-x'), label);
 				const value = adjustments[key];
 
 				return (
@@ -85,10 +85,7 @@ export function AdjustPanel({
 						valueLabel={String(value)}
 					>
 						<ClayButtonWithIcon
-							aria-label={sub(
-								Liferay.Language.get('reset-x'),
-								label
-							)}
+							aria-label={resetLabel}
 							borderless
 							className="editor-slider-reset"
 							disabled={value === 0}
@@ -110,7 +107,7 @@ export function AdjustPanel({
 							}}
 							size="xs"
 							symbol="restore"
-							title={sub(Liferay.Language.get('reset-x'), label)}
+							title={resetLabel}
 						/>
 					</CommitSlider>
 				);
@@ -138,7 +135,7 @@ export function AdjustPanel({
 									document
 										.getElementById(
 											eid(
-												`adjust-${shown[shown.length - 1].key}`
+												`adjust-${sliders[sliders.length - 1]}`
 											)
 										)
 										?.focus(),
