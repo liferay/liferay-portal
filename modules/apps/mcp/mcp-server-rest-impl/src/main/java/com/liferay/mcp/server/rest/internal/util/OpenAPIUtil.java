@@ -58,8 +58,22 @@ public class OpenAPIUtil {
 
 		Operation operation = _getOperation(openAPIJSONObject, toolName);
 
-		return _getOutputSchema(
-			openAPIJSONObject, operation._operationJSONObject);
+		JSONObject responseSchemaJSONObject = _getResponseSchemaJSONObject(
+			operation._operationJSONObject);
+
+		if (responseSchemaJSONObject == null) {
+			return null;
+		}
+
+		Object schemaObject = _getSchemaObject(
+			"writeOnly", openAPIJSONObject, responseSchemaJSONObject,
+			new HashSet<>());
+
+		if (!(schemaObject instanceof Map)) {
+			return null;
+		}
+
+		return (Map<String, Object>)schemaObject;
 	}
 
 	public static VulcanRequestForwarder.Request getRequest(
@@ -875,27 +889,6 @@ public class OpenAPIUtil {
 
 		throw new IllegalArgumentException(
 			"OpenAPI document has no tool with name \"" + toolName + "\"");
-	}
-
-	private static Map<String, Object> _getOutputSchema(
-		JSONObject openAPIJSONObject, JSONObject operationJSONObject) {
-
-		JSONObject responseSchemaJSONObject = _getResponseSchemaJSONObject(
-			operationJSONObject);
-
-		if (responseSchemaJSONObject == null) {
-			return null;
-		}
-
-		Object schemaObject = _getSchemaObject(
-			"writeOnly", openAPIJSONObject, responseSchemaJSONObject,
-			new HashSet<>());
-
-		if (!(schemaObject instanceof Map)) {
-			return null;
-		}
-
-		return (Map<String, Object>)schemaObject;
 	}
 
 	private static Map<String, Object> _getParameterSchemaMap(
