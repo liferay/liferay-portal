@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.exception.UserPasswordException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -71,6 +72,7 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -78,6 +80,7 @@ import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerB
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
@@ -93,6 +96,7 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -118,6 +122,7 @@ import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.ldap.test.util.configuration.LDAPAuthConfigurationProviderTemporarySwapper;
 import com.liferay.portal.service.impl.UserLocalServiceImpl;
 import com.liferay.portal.spring.aop.AopInvocationHandler;
+import com.liferay.portal.test.mail.MailMessage;
 import com.liferay.portal.test.mail.MailServiceTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -127,12 +132,20 @@ import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
 import java.io.Serializable;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -398,6 +411,37 @@ public class UserLocalServiceTest {
 
 			_assertUserHasPasswordPolicy(false, _addUser(false, "Liferay123"));
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-105501")
+	public void testAddUserWithUserLanguageId() throws Exception {
+		int initialInboxSize = MailServiceTestUtil.getInboxSize();
+
+		_user = _addUser(LocaleUtil.FRANCE);
+
+		Assert.assertEquals(
+			initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+		Assert.assertTrue(
+			MailServiceTestUtil.lastMailMessageContains(
+				"/portal/update_password?"));
+		Assert.assertTrue(
+			MailServiceTestUtil.lastMailMessageContains(
+				"doAsUserLanguageId=fr_FR"));
+		Assert.assertFalse(
+			MailServiceTestUtil.lastMailMessageContains("&languageId="));
+		Assert.assertFalse(
+			MailServiceTestUtil.lastMailMessageContains("?languageId="));
+
+		MailMessage mailMessage = MailServiceTestUtil.getLastMailMessage();
+
+		String content = _postURL(_getPasswordSetupURL(mailMessage.getBody()));
+
+		Assert.assertTrue(content, content.contains(" lang=\"fr-FR\""));
+		Assert.assertTrue(
+			content,
+			content.contains(
+				LanguageUtil.get(LocaleUtil.FRANCE, "change-password")));
 	}
 
 	@Test
@@ -1383,6 +1427,38 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-105501")
+	public void testSendPasswordWithUserLanguageId() throws Exception {
+		_user = UserTestUtil.addUser(
+			TestPropsValues.getGroupId(), LocaleUtil.FRANCE);
+
+		try (SafeCloseable safeCloseable =
+				_updateSecuritySendPasswordResetLinkWithSafeCloseable(
+					TestPropsValues.getCompanyId(), true)) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext();
+
+			serviceContext.setPathMain(_portal.getPathMain());
+
+			int initialInboxSize = MailServiceTestUtil.getInboxSize();
+
+			_userLocalService.sendPassword(
+				TestPropsValues.getCompanyId(), _user.getEmailAddress(), null,
+				null, null, null, serviceContext);
+
+			Assert.assertEquals(
+				initialInboxSize + 1, MailServiceTestUtil.getInboxSize());
+			Assert.assertTrue(
+				MailServiceTestUtil.lastMailMessageContains(
+					"/portal/update_password?"));
+			Assert.assertTrue(
+				MailServiceTestUtil.lastMailMessageContains(
+					"doAsUserLanguageId=fr_FR"));
+		}
+	}
+
+	@Test
 	public void testSetRoleUsers() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -1950,6 +2026,27 @@ public class UserLocalServiceTest {
 			new long[] {TestPropsValues.getGroupId()}, serviceContext);
 	}
 
+	private User _addUser(Locale locale) throws Exception {
+		String screenName = RandomTestUtil.randomString(
+			NumericStringRandomizerBumper.INSTANCE,
+			UniqueStringRandomizerBumper.INSTANCE);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setPathMain(_portal.getPathMain());
+
+		return _userLocalService.addUser(
+			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(), true,
+			null, null, false, screenName,
+			RandomTestUtil.randomString() + RandomTestUtil.nextLong() +
+				"@liferay.com",
+			locale, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), 0, 0,
+			true, Calendar.JANUARY, 1, 1970, null, UserConstants.TYPE_REGULAR,
+			null, null, null, null, true, serviceContext);
+	}
+
 	private long[] _addUsers(int numberOfUsers) throws Exception {
 		long[] userIds = new long[numberOfUsers];
 
@@ -2006,6 +2103,36 @@ public class UserLocalServiceTest {
 		Assert.assertEquals(ldapUser ? 1 : -1, user.getLdapServerId());
 		Assert.assertTrue(user.isPasswordReset());
 		Assert.assertNotNull(user.getPasswordPolicy());
+	}
+
+	private String _getPasswordSetupURL(String body) {
+		Matcher matcher = _passwordSetupURLPattern.matcher(body);
+
+		if (!matcher.find()) {
+			throw new IllegalStateException(
+				"Unable to find a password setup URL in " + body);
+		}
+
+		return matcher.group();
+	}
+
+	private String _postURL(String urlString) throws Exception {
+		int index = urlString.indexOf(CharPool.QUESTION);
+
+		HttpResponse<String> httpResponse = _httpClient.send(
+			HttpRequest.newBuilder(
+			).uri(
+				URI.create(urlString.substring(0, index))
+			).header(
+				HttpHeaders.CONTENT_TYPE,
+				ContentTypes.APPLICATION_X_WWW_FORM_URLENCODED
+			).POST(
+				HttpRequest.BodyPublishers.ofString(
+					urlString.substring(index + 1))
+			).build(),
+			HttpResponse.BodyHandlers.ofString());
+
+		return httpResponse.body();
 	}
 
 	private List<Long> _search(UserGroup userGroup) {
@@ -2273,8 +2400,9 @@ public class UserLocalServiceTest {
 	}
 
 	private void _testVerifyEmailAddress(boolean expired) throws Exception {
-		try (SafeCloseable safeCloseable = _updateSecurityWithSafeCloseable(
-				TestPropsValues.getCompanyId(), true)) {
+		try (SafeCloseable safeCloseable =
+				_updateSecurityStrangersVerifyWithSafeCloseable(
+					TestPropsValues.getCompanyId(), true)) {
 
 			User user = _userLocalService.addUserWithWorkflow(
 				0, TestPropsValues.getCompanyId(), false, "test", "test", false,
@@ -2377,7 +2505,29 @@ public class UserLocalServiceTest {
 		};
 	}
 
-	private SafeCloseable _updateSecurityWithSafeCloseable(
+	private SafeCloseable _updateSecuritySendPasswordResetLinkWithSafeCloseable(
+			long companyId, boolean sendPasswordResetLink)
+		throws Exception {
+
+		Company company = _companyLocalService.getCompany(companyId);
+
+		boolean originalSendPasswordResetLink =
+			company.isSendPasswordResetLink();
+
+		_companyLocalService.updateSecurity(
+			companyId, company.getAuthType(), company.isAutoLogin(),
+			sendPasswordResetLink, company.isStrangers(),
+			company.isStrangersWithMx(), company.isStrangersVerify(),
+			company.isSiteLogo());
+
+		return () -> _companyLocalService.updateSecurity(
+			companyId, company.getAuthType(), company.isAutoLogin(),
+			originalSendPasswordResetLink, company.isStrangers(),
+			company.isStrangersWithMx(), company.isStrangersVerify(),
+			company.isSiteLogo());
+	}
+
+	private SafeCloseable _updateSecurityStrangersVerifyWithSafeCloseable(
 			long companyId, boolean strangersVerify)
 		throws Exception {
 
@@ -2398,6 +2548,8 @@ public class UserLocalServiceTest {
 	}
 
 	private static String _originalName;
+	private static final Pattern _passwordSetupURLPattern = Pattern.compile(
+		"https?://[^\\s<]*/portal/update_password\\?[^\\s<]*");
 
 	@Inject
 	private AnnouncementsDeliveryLocalService
@@ -2416,6 +2568,8 @@ public class UserLocalServiceTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	private final HttpClient _httpClient = HttpClient.newHttpClient();
 
 	@Inject
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
@@ -2439,6 +2593,9 @@ public class UserLocalServiceTest {
 
 	@Inject
 	private TicketLocalService _ticketLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	@Inject
 	private UserGroupLocalService _userGroupLocalService;
