@@ -2566,6 +2566,43 @@ rerun your task.
 		</trycatch>
 	</target>
 
+	<target name="gradle-execute-workspaces-js-unit">
+		<local name="test.task.name" />
+		<local name="workspace.dir" />
+
+		<antelope:stringutil property="test.task.name" string="${test.task}">
+			<antelope:replace regex="\:" replacement="." />
+		</antelope:stringutil>
+
+		<property location="${dir}" name="workspace.dir" />
+
+		<chmod
+			file="${workspace.dir}/gradlew"
+			perm="a+x"
+		/>
+
+		<trycatch property="exception.message">
+			<try>
+				<lstopwatch action="start" name="test.execution.duration${test.task.name}" />
+
+				<exec dir="${workspace.dir}" executable="./gradlew" failonerror="true">
+					<arg if:set="env.JENKINS_HOME" value="--max-workers=4" />
+					<arg if:set="env.JENKINS_HOME" value="--no-daemon" />
+					<arg value="--stacktrace" />
+					<arg line="${gradle.jvm.args}" />
+					<arg value="${test.task}" />
+					<env key="GIT_DISCOVERY_ACROSS_FILESYSTEM" value="1" />
+				</exec>
+			</try>
+			<catch>
+				<fail>${exception.message}</fail>
+			</catch>
+			<finally>
+				<lstopwatch action="total" name="test.execution.duration${test.task.name}" />
+			</finally>
+		</trycatch>
+	</target>
+
 	<target name="print-properties">
 		<echoproperties />
 	</target>

@@ -4512,6 +4512,67 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="run-workspaces-js-unit-test">
+		<attribute name="test.class.group" />
+		<attribute default="" name="test.gradle.args" />
+
+		<sequential>
+			<beanshell>
+				<![CDATA[
+					import com.liferay.jenkins.results.parser.AntUtil;
+
+					import java.io.File;
+
+					import java.util.HashMap;
+					import java.util.Map;
+
+					File projectDir = new File(project.getProperty("project.dir"));
+
+					int failureCount = 0;
+
+					String testClassGroup = "@{test.class.group}";
+
+					for (String testTaskName : testClassGroup.split("\\s+")) {
+						testTaskName = testTaskName.trim();
+
+						if (testTaskName.isEmpty()) {
+							continue;
+						}
+
+						int index = testTaskName.indexOf(":");
+
+						if (index == -1) {
+							System.out.println("Unable to find a workspace directory in " + testTaskName);
+
+							continue;
+						}
+
+						Map parameters = new HashMap();
+
+						parameters.put("dir", testTaskName.substring(0, index));
+						parameters.put("gradle.jvm.args", "@{test.gradle.args}");
+						parameters.put("test.task", testTaskName.substring(index));
+
+						System.out.println("Executing Gradle task: " + testTaskName);
+
+						try {
+							AntUtil.callTarget(projectDir, "build-common.xml", "gradle-execute-workspaces-js-unit", parameters);
+						}
+						catch (Exception exception) {
+							System.out.println("Unable to run Gradle task " + testTaskName);
+
+							exception.printStackTrace();
+
+							failureCount++;
+						}
+					}
+
+					project.setProperty("js.unit.failure.count", String.valueOf(failureCount));
+				]]>
+			</beanshell>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="run-workspaces-junit-test">
 		<attribute default="" name="test.junit.args" />
 		<attribute default="" name="test.task.group" />
@@ -10833,6 +10894,51 @@ junit.jvm.override.version=21</echo>
 		<antcall target="workspaces-compile">
 			<param name="batch.jdk.version" value="11" />
 		</antcall>
+	</target>
+
+	<target name="workspaces-js-unit">
+		<run-batch-test>
+			<test-action>
+				<lstopwatch action="start" name="test.execution.duration" />
+
+				<run-workspaces-js-unit-test test.class.group="${modules.test.class.group}" test.gradle.args="--continue" />
+
+				<lstopwatch action="total" name="test.execution.duration" />
+
+				<replace>
+					<fileset
+						dir="workspaces"
+						includes="**/TEST-frontend-js.xml"
+					/>
+					<fileset
+						dir="${liferay.portal.private.dir}/workspaces"
+						erroronmissingdir="false"
+						includes="**/TEST-frontend-js.xml"
+					/>
+					<replacefilter>
+						<replacetoken><![CDATA[<testsuites>]]></replacetoken>
+						<replacevalue><![CDATA[]]></replacevalue>
+					</replacefilter>
+					<replacefilter>
+						<replacetoken><![CDATA[</testsuites>]]></replacetoken>
+						<replacevalue><![CDATA[]]></replacevalue>
+					</replacefilter>
+				</replace>
+
+				<if>
+					<not>
+						<equals arg1="${js.unit.failure.count}" arg2="0" />
+					</not>
+					<then>
+						<fail message="${js.unit.failure.count} JS unit tests failed." />
+					</then>
+				</if>
+			</test-action>
+
+			<test-set-up>
+				<setup-test-environment />
+			</test-set-up>
+		</run-batch-test>
 	</target>
 
 	<target name="workspaces-unit">

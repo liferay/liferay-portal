@@ -12596,6 +12596,35 @@ send_user $expect_out(buffer)]]></echo>
 			</then>
 		</if>
 
+		<if>
+			<available file="${liferay.portal.private.dir}/workspaces" type="dir" />
+			<then>
+				<mkdir dir="workspaces-private/test-results" />
+
+				<copy
+					todir="workspaces-private/test-results"
+				>
+					<fileset
+						casesensitive="yes"
+						dir="${liferay.portal.private.dir}/workspaces"
+					>
+						<exclude name="**/.git/**" />
+						<exclude name="**/.gradle/**" />
+						<exclude name="**/bin/**" />
+						<exclude name="**/build/**" />
+						<exclude name="**/classes/**" />
+						<exclude name="**/dist/**" />
+						<exclude name="**/node_modules/**" />
+						<exclude name="**/src/**" />
+						<exclude name="**/test-classes/**" />
+						<exclude name="**/test-coverage/**" />
+						<exclude name="**/tmp/**" />
+						<include name="**/TEST-*.xml" />
+					</fileset>
+				</copy>
+			</then>
+		</if>
+
 		<path id="junit.reports.paths">
 			<multirootfileset erroronmissingdir="false">
 				<basedir file="asah-integration/test-results" />
@@ -12612,7 +12641,8 @@ send_user $expect_out(buffer)]]></echo>
 				<basedir file="${liferay.faces.bridge.impl.dir}/test/integration" />
 				<basedir file="${liferay.faces.portal.dir}/test/integration" />
 				<basedir file="${test.workspace.dir}" />
-				<basedir file="workspaces/test-results" />
+				<basedir file="workspaces" />
+				<basedir file="workspaces-private/test-results" />
 				<exclude name="**/.git/**" />
 				<exclude name="**/.gradle/**" />
 				<exclude name="**/bin/**" />
