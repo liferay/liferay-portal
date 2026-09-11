@@ -298,23 +298,4 @@ definition {
 		}
 	}
 
-	@summary = "Default summary"
-	macro removeRegularRolePermission(roleTitle = null, permission = null) {
-		CommerceNavigator.gotoExactEntry(entryName = ${roleTitle});
-
-		Navigator.gotoNavTab(navTab = "Define Permissions");
-
-		ClickNoError(
-			key_resourceAction = ${permission},
-			locator1 = "CommercePermissions#REMOVE_PERMISSION");
-
-		AssertConfirm(value1 = "Are you sure you want to remove this permission?");
-
-		AssertElementNotPresent(
-			key_resourceAction = ${permission},
-			locator1 = "CommercePermissions#REMOVE_PERMISSION");
-
-		Click(locator1 = "CommerceNavigation#BACK");
-	}
-
 }
