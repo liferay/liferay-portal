@@ -45,12 +45,14 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.ClassName;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -69,6 +71,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
@@ -182,8 +185,29 @@ public class DisplayPageTemplateResourceImpl
 
 	@Override
 	public DisplayPageTemplate getItem(Long id) throws Exception {
-		return _toDisplayPageTemplate(
-			_layoutPageTemplateEntryService.fetchLayoutPageTemplateEntry(id));
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntry(id);
+
+		if (!Objects.equals(
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
+				layoutPageTemplateEntry.getType())) {
+
+			throw new NotFoundException(
+				"The display page template type does not match the display " +
+					"page type");
+		}
+
+		Group group = _groupLocalService.getGroup(
+			layoutPageTemplateEntry.getGroupId());
+
+		if (group.isDepot()) {
+			EnabledUtil.checkDesignLibrariesEnabled(contextCompany);
+		}
+		else {
+			EnabledUtil.checkEnabled(contextCompany);
+		}
+
+		return _toDisplayPageTemplate(layoutPageTemplateEntry);
 	}
 
 	@Override
@@ -822,10 +846,6 @@ public class DisplayPageTemplateResourceImpl
 			LayoutPageTemplateEntry layoutPageTemplateEntry)
 		throws Exception {
 
-		if (layoutPageTemplateEntry == null) {
-			return null;
-		}
-
 		return _displayPageTemplateDTOConverter.toDTO(
 			DTOConverterContextUtil.getDTOConverterContext(
 				contextAcceptLanguage, _dtoConverterRegistry,
@@ -855,6 +875,9 @@ public class DisplayPageTemplateResourceImpl
 
 	@Reference
 	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;

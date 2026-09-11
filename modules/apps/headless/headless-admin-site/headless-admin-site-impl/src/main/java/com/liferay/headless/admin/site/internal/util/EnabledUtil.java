@@ -28,6 +28,11 @@ public class EnabledUtil {
 			company.getCompanyId(), "LPD-76864");
 	}
 
+	public static void checkDesignLibrariesEnabled(Company company) {
+		FeatureFlagManagerUtil.checkEnabled(
+			company.getCompanyId(), "LPD-57283");
+	}
+
 	public static void checkEnabled(Company company) {
 		checkEnabled(company, false);
 	}
