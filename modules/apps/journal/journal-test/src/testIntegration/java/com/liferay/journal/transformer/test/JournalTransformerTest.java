@@ -453,25 +453,16 @@ public class JournalTransformerTest {
 			DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 				_group.getGroupId(), JournalArticle.class.getName());
 
-			DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-				_group.getGroupId(), ddmStructure.getStructureId(),
-				_portal.getClassNameId(JournalArticle.class),
-				TemplateConstants.LANG_TYPE_FTL,
+			DDMTemplate ddmTemplate = _addDDMTemplate(
+				ddmStructure,
 				new String(
 					FileUtil.getBytes(
 						getClass(),
 						"dependencies" +
-							"/random_namespace_asset_publisher_template.ftl")),
-				LocaleUtil.US);
+							"/random_namespace_asset_publisher_template.ftl")));
 
-			JournalArticle journalArticle =
-				JournalTestUtil.addArticleWithXMLContent(
-					_group.getGroupId(),
-					JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-					JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
-					DDMStructureTestUtil.getSampleStructuredContent(),
-					ddmStructure.getStructureKey(),
-					ddmTemplate.getTemplateKey(), LocaleUtil.US);
+			JournalArticle journalArticle = _addJournalArticle(
+				ddmStructure, ddmTemplate);
 
 			ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -530,16 +521,9 @@ public class JournalTransformerTest {
 				null, false, ddmTemplate.getScript(), themeDisplay,
 				Constants.VIEW);
 
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"Article " + journalArticle.getArticleId() +
-					" cannot include itself",
-				logEntry.getMessage());
+			_assertRecursionGuardLogEntry(
+				journalArticle.getArticleId(), ddmTemplate.getTemplateKey(),
+				logCapture);
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(
@@ -590,6 +574,13 @@ public class JournalTransformerTest {
 					_serviceTrackerList.toList(),
 					TransformerListener::isEnabled),
 				null, false, "@@company_id@@", null, Constants.VIEW));
+	}
+
+	@Test
+	public void testTransformRecursionGuard() throws Exception {
+		_testTransformSameArticleWithDefaultDDMTemplate();
+		_testTransformSameArticleWithDifferentDDMTemplate();
+		_testTransformSameArticleWithSameDDMTemplateIndirectly();
 	}
 
 	@Test
@@ -691,6 +682,45 @@ public class JournalTransformerTest {
 			_transformerListener, "_patterns", patterns);
 		ReflectionTestUtil.setFieldValue(
 			_transformerListener, "_replacements", replacements);
+	}
+
+	private DDMTemplate _addDDMTemplate(
+			DDMStructure ddmStructure, String script)
+		throws Exception {
+
+		return DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), ddmStructure.getStructureId(),
+			_portal.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_FTL, script, LocaleUtil.US);
+	}
+
+	private JournalArticle _addJournalArticle(
+			DDMStructure ddmStructure, DDMTemplate ddmTemplate)
+		throws Exception {
+
+		return JournalTestUtil.addArticleWithXMLContent(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+			DDMStructureTestUtil.getSampleStructuredContent(),
+			ddmStructure.getStructureKey(), ddmTemplate.getTemplateKey(),
+			LocaleUtil.US);
+	}
+
+	private void _assertRecursionGuardLogEntry(
+		String articleId, String ddmTemplateKey, LogCapture logCapture) {
+
+		List<LogEntry> logEntries = logCapture.getLogEntries();
+
+		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+		LogEntry logEntry = logEntries.get(0);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"Article ", articleId,
+				" cannot include itself with DDM template ", ddmTemplateKey),
+			logEntry.getMessage());
 	}
 
 	private void _assertReservedVariable(
@@ -1007,6 +1037,106 @@ public class JournalTransformerTest {
 
 	private void _testCreateTemplateNodeTextDDMFormFieldWithPlaintext() {
 		_testCreateTemplateNodeTextDDMFormField(RandomTestUtil.randomString());
+	}
+
+	private void _testTransformSameArticleWithDefaultDDMTemplate()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.journal.internal.transformer.JournalTransformer",
+				LoggerTestUtil.WARN)) {
+
+			Assert.assertEquals(
+				"DEFAULT:",
+				_transform(
+					_journalArticle, null,
+					StringBundler.concat(
+						"DEFAULT:${journalContent.getContent(groupId, ",
+						".vars[\"reserved-article-id\"].data, \"view\", ",
+						"\"en_US\")}")));
+
+			_assertRecursionGuardLogEntry(
+				_journalArticle.getArticleId(), "DEFAULT_TEMPLATE", logCapture);
+		}
+	}
+
+	private void _testTransformSameArticleWithDifferentDDMTemplate()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		DDMTemplate sectionDDMTemplate = _addDDMTemplate(
+			ddmStructure, "SECTION:${name.getData()}");
+
+		DDMTemplate mainDDMTemplate = _addDDMTemplate(
+			ddmStructure,
+			StringBundler.concat(
+				"MAIN:${journalContent.getContent(groupId, ",
+				".vars[\"reserved-article-id\"].data, \"",
+				sectionDDMTemplate.getTemplateKey(),
+				"\", \"view\", \"en_US\", null, null)}"));
+
+		JournalArticle journalArticle = _addJournalArticle(
+			ddmStructure, mainDDMTemplate);
+
+		Assert.assertEquals(
+			"MAIN:SECTION:title",
+			_transform(
+				journalArticle, mainDDMTemplate, mainDDMTemplate.getScript()));
+	}
+
+	private void _testTransformSameArticleWithSameDDMTemplateIndirectly()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.journal.internal.transformer.JournalTransformer",
+				LoggerTestUtil.WARN)) {
+
+			DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+				_group.getGroupId(), JournalArticle.class.getName());
+
+			DDMTemplate innerDDMTemplate = _addDDMTemplate(
+				ddmStructure,
+				StringBundler.concat(
+					"INNER:${journalContent.getContent(groupId, ",
+					".vars[\"reserved-article-id\"].data, \"view\", ",
+					"\"en_US\")}"));
+
+			DDMTemplate outerDDMTemplate = _addDDMTemplate(
+				ddmStructure,
+				StringBundler.concat(
+					"OUTER:${journalContent.getContent(groupId, ",
+					".vars[\"reserved-article-id\"].data, \"",
+					innerDDMTemplate.getTemplateKey(),
+					"\", \"view\", \"en_US\", null, null)}"));
+
+			JournalArticle journalArticle = _addJournalArticle(
+				ddmStructure, outerDDMTemplate);
+
+			Assert.assertEquals(
+				"OUTER:INNER:",
+				_transform(
+					journalArticle, outerDDMTemplate,
+					outerDDMTemplate.getScript()));
+
+			_assertRecursionGuardLogEntry(
+				journalArticle.getArticleId(),
+				outerDDMTemplate.getTemplateKey(), logCapture);
+		}
+	}
+
+	private String _transform(
+			JournalArticle article, DDMTemplate ddmTemplate, String script)
+		throws Exception {
+
+		return (String)_transformMethod.invoke(
+			_journalTransformer, article, ddmTemplate, _journalHelper,
+			LocaleUtil.toLanguageId(LocaleUtil.US),
+			_layoutDisplayPageProviderRegistry,
+			ListUtil.filter(
+				_serviceTrackerList.toList(), TransformerListener::isEnabled),
+			null, false, script, null, Constants.VIEW);
 	}
 
 	private static Object _journalTransformer;
