@@ -26,6 +26,7 @@ import {getSessionsDateRange} from 'shared/util/activityDateRange';
 import {Interval, RangeSelectors} from 'shared/types';
 import {
 	mapEventMetricToActivityHistory,
+	buildCampaignUrls,
 	buildTouchIndividualUrls,
 	mergeCampaignDays,
 } from 'shared/util/activities';
@@ -226,6 +227,11 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 		[campaignTouches.days, channelId, groupId]
 	);
 
+	const campaignUrls = useMemo(
+		() => buildCampaignUrls(campaignTouches.days, {channelId, groupId}),
+		[campaignTouches.days, channelId, groupId]
+	);
+
 	const handleQuerySubmit = (value: string) => {
 		setKeywords(value);
 		setSearchValue(value);
@@ -254,6 +260,7 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 		<ActivityStreamCard
 			activityHistory={activityHistory}
 			campaignDays={campaignTouches.days}
+			campaignUrls={campaignUrls}
 			chartError={error}
 			chartLoading={loading}
 			chartTooltipRenderRows={({

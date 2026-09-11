@@ -58,9 +58,11 @@ const TouchRow: FC<{
 
 const CampaignRow: FC<{
 	campaign: CampaignTouch;
+	campaignUrl?: string;
 	individualUrls?: Record<string, string>;
 }> = ({
 	campaign: {campaignName, origin, touches, touchesCount},
+	campaignUrl,
 	individualUrls = {},
 }) => {
 	const [expanded, setExpanded] = useState<boolean>(false);
@@ -86,7 +88,13 @@ const CampaignRow: FC<{
 					/>
 				</ClaySticker>
 
-				<span className="title text-dark">{campaignName}</span>
+				{campaignUrl ? (
+					<ClayLink className="title text-dark" href={campaignUrl}>
+						{campaignName}
+					</ClayLink>
+				) : (
+					<span className="title text-dark">{campaignName}</span>
+				)}
 
 				<div className="row-details ml-auto pl-3 d-flex align-items-center">
 					<ClayLabel

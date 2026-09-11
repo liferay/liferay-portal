@@ -521,6 +521,30 @@ export const buildTouchIndividualUrls = (
 	);
 };
 
+export const buildCampaignUrls = (
+	campaignDays: Record<string, {campaigns: Array<{campaignId: string}>}> = {},
+	{channelId, groupId}: EventDashboardContext = {}
+): Record<string, string> => {
+	if (!channelId || !groupId) {
+		return {};
+	}
+
+	return Object.values(campaignDays).reduce<Record<string, string>>(
+		(urls, {campaigns}) => {
+			campaigns.forEach(({campaignId}) => {
+				urls[campaignId] = toRoute(Routes.CAMPAIGNS_DETAIL, {
+					channelId,
+					groupId,
+					id: campaignId,
+				});
+			});
+
+			return urls;
+		},
+		{}
+	);
+};
+
 export const mergeCampaignDays = (
 	days: TimelineDay[],
 	campaignDays: Record<string, {campaigns: unknown[]}> = {},

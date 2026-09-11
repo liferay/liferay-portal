@@ -1,6 +1,7 @@
 import * as data from 'test/data';
 import {
 	buildLegendItems,
+	buildCampaignUrls,
 	buildTouchIndividualUrls,
 	formatEvents,
 	formatGroupingTime,
@@ -789,6 +790,33 @@ describe('activities', () => {
 			const sessionDays = [buildDay('2026-07-16T10:00:00Z')];
 
 			expect(mergeCampaignDays(sessionDays)).toEqual(sessionDays);
+		});
+	});
+
+	describe('buildCampaignUrls', () => {
+		const campaignDays = {
+			'2026-07-16': {campaigns: [{campaignId: 'c1'}, {campaignId: 'c2'}]},
+			'2026-07-15': {campaigns: [{campaignId: 'c1'}]}
+		};
+
+		it('links every campaign to its page, once per campaign', () => {
+			expect(
+				buildCampaignUrls(campaignDays, {channelId: '456', groupId: '23'})
+			).toEqual({
+				c1: '/workspace/23/456/campaigns/c1',
+				c2: '/workspace/23/456/campaigns/c2'
+			});
+		});
+
+		it('links nothing without a channel and a group', () => {
+			expect(buildCampaignUrls(campaignDays, {})).toEqual({});
+			expect(buildCampaignUrls(campaignDays, {groupId: '23'})).toEqual({});
+		});
+
+		it('links nothing when there are no days', () => {
+			expect(
+				buildCampaignUrls(undefined, {channelId: '456', groupId: '23'})
+			).toEqual({});
 		});
 	});
 

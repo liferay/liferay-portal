@@ -22,6 +22,7 @@ import {fetchPolicyDefinition} from 'shared/util/graphql';
 import {
 	formatSessions,
 	mapEventMetricToActivityHistory,
+	buildCampaignUrls,
 	buildTouchIndividualUrls,
 	mergeCampaignDays,
 } from 'shared/util/activities';
@@ -210,6 +211,11 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 		[campaignTouches.days, channelId, groupId]
 	);
 
+	const campaignUrls = useMemo(
+		() => buildCampaignUrls(campaignTouches.days, {channelId, groupId}),
+		[campaignTouches.days, channelId, groupId]
+	);
+
 	const handleChangeSelection = (index: number | null) => {
 		resetPage();
 		onPointSelect(index ?? undefined);
@@ -241,6 +247,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 		<ActivityStreamCard
 			activityHistory={activityHistory}
 			campaignDays={campaignTouches.days}
+			campaignUrls={campaignUrls}
 			chartError={error}
 			chartLoading={loading}
 			delta={delta}

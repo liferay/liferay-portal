@@ -31,10 +31,18 @@ const expand = (container: HTMLElement) =>
 		container.querySelector('.campaign-row .row-main') as Element
 	);
 
-const renderRow = (campaign = CAMPAIGN, individualUrls = {}) =>
+const renderRow = (
+	campaign = CAMPAIGN,
+	individualUrls = {},
+	campaignUrl?: string
+) =>
 	render(
 		<ul>
-			<CampaignRow campaign={campaign} individualUrls={individualUrls} />
+			<CampaignRow
+				campaign={campaign}
+				campaignUrl={campaignUrl}
+				individualUrls={individualUrls}
+			/>
 		</ul>
 	);
 
@@ -46,6 +54,20 @@ describe('CampaignRow', () => {
 
 		expect(screen.getByText('Q3 Manufacturing ABM')).toBeInTheDocument();
 		expect(screen.getByText(/salesforce/i)).toBeInTheDocument();
+	});
+
+	it('links the campaign to its page when a url is known', () => {
+		renderRow(CAMPAIGN, {}, '/campaigns/c3');
+
+		expect(
+			screen.getByText('Q3 Manufacturing ABM').closest('a')
+		).toHaveAttribute('href', '/campaigns/c3');
+	});
+
+	it('leaves the campaign name plain when no url is known', () => {
+		renderRow();
+
+		expect(screen.getByText('Q3 Manufacturing ABM').closest('a')).toBeNull();
 	});
 
 	it('counts the campaign touch total, not the rows it was handed', () => {

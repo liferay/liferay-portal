@@ -37,6 +37,7 @@ export interface TrendSummary {
 interface IActivityStreamCardProps {
 	activityHistory: ActivityHistoryPoint[];
 	campaignDays?: CampaignDays;
+	campaignUrls?: Record<string, string>;
 	chartError?: unknown;
 	chartLoading: boolean;
 	chartTooltipRenderRows?: (
@@ -80,6 +81,7 @@ interface IActivityStreamCardProps {
 const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	activityHistory,
 	campaignDays,
+	campaignUrls,
 	chartError,
 	chartLoading,
 	chartTooltipRenderRows,
@@ -261,6 +263,7 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 						<PaginatedDayList
 							{...sessionsMappedResults}
 							campaignDays={campaignDays}
+							campaignUrls={campaignUrls}
 							delta={delta}
 							individualUrls={individualUrls}
 							initialExpanded={false}

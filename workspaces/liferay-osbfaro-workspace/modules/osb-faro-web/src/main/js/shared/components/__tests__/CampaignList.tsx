@@ -103,6 +103,20 @@ describe('CampaignList', () => {
 		);
 	});
 
+	it('links each campaign it was given a route for', () => {
+		renderList({
+			campaignUrls: {c0: '/campaigns/c0'},
+			campaigns: buildCampaigns(2),
+			totalItems: 2,
+		});
+
+		expect(screen.getByText('Campaign 0').closest('a')).toHaveAttribute(
+			'href',
+			'/campaigns/c0'
+		);
+		expect(screen.getByText('Campaign 1').closest('a')).toBeNull();
+	});
+
 	it('leaves the pager out when a day holds no campaigns', () => {
 		const {container} = renderList({campaigns: [], totalItems: 0});
 
