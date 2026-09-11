@@ -66,8 +66,8 @@ public class LayoutPageTemplateEntryVerifyProcessTest
 	@Test
 	@TestInfo({"LPD-81587", "LPD-103532"})
 	public void testUpdateClassTypeKey() throws Exception {
-		_testUpdateClassTypeKey(null);
 		_testUpdateClassTypeKey(StringPool.BLANK);
+		_testUpdateClassTypeKey(null);
 	}
 
 	@Override
