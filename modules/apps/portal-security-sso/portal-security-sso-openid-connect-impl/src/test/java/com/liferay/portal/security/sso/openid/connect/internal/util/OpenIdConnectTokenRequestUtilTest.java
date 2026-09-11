@@ -215,7 +215,7 @@ public class OpenIdConnectTokenRequestUtilTest {
 		OIDCClientMetadata oidcClientMetadata = Mockito.mock(
 			OIDCClientMetadata.class);
 
-		String algorithmName = "HS256";
+		String algorithmName = RandomTestUtil.randomString();
 
 		Mockito.when(
 			oidcClientMetadata.getIDTokenJWSAlg()

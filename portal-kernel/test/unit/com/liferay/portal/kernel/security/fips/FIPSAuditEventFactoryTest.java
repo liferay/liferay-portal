@@ -19,7 +19,7 @@ public class FIPSAuditEventFactoryTest {
 
 	@Test
 	public void testCreateFederationTokenRejected() {
-		String receivingEndpoint = "/o/" + RandomTestUtil.randomString();
+		String receivingEndpoint = RandomTestUtil.randomString();
 		String rejectedValue = RandomTestUtil.randomString();
 		String tokenIssuer = RandomTestUtil.randomString();
 		String tokenType = RandomTestUtil.randomString();

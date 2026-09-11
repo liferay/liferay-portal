@@ -751,7 +751,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		Assert.assertTrue(samlSsoRequestContext.isNewSession());
 	}
 
-	@Test(expected = MessageHandlerException.class)
+	@Test
 	public void testDecodeAuthnRequestVerifiesSignature() throws Exception {
 		SamlSpIdpConnection samlSpIdpConnection = new SamlSpIdpConnectionImpl();
 
@@ -770,22 +770,23 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		cachingChainingMetadataResolver.addMetadataResolver(
 			new MockMetadataResolver(false));
 
-		MockHttpServletRequest mockHttpServletRequest =
+		MockHttpServletRequest loginMockHttpServletRequest =
 			getMockHttpServletRequest(LOGIN_URL);
 
-		mockHttpServletRequest.setAttribute(
+		loginMockHttpServletRequest.setAttribute(
 			SamlWebKeys.SAML_SP_IDP_CONNECTION, samlSpIdpConnection);
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
 		_webSsoProfileImpl.doSendAuthnRequest(
-			mockHttpServletRequest, mockHttpServletResponse, RELAY_STATE);
+			loginMockHttpServletRequest, mockHttpServletResponse, RELAY_STATE);
 
 		prepareIdentityProvider(IDP_ENTITY_ID);
 
-		mockHttpServletRequest = getMockHttpServletRequest(
-			mockHttpServletResponse.getRedirectedUrl());
+		MockHttpServletRequest mockHttpServletRequest =
+			getMockHttpServletRequest(
+				mockHttpServletResponse.getRedirectedUrl());
 
 		Mockito.when(
 			samlProviderConfiguration.authnRequestSignatureRequired()
@@ -793,8 +794,10 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			true
 		);
 
-		_webSsoProfileImpl.decodeAuthnRequest(
-			mockHttpServletRequest, new MockHttpServletResponse());
+		Assert.assertThrows(
+			MessageHandlerException.class,
+			() -> _webSsoProfileImpl.decodeAuthnRequest(
+				mockHttpServletRequest, new MockHttpServletResponse()));
 	}
 
 	@Test
@@ -870,11 +873,13 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		Assert.assertTrue(content.contains("SAMLResponse"));
 	}
 
-	@Test(expected = SignatureException.class)
+	@Test
 	public void testVerifyAssertionSignatureInvalidSignature()
 		throws Exception {
 
-		_testVerifyAssertionSignature(UNKNOWN_ENTITY_ID);
+		Assert.assertThrows(
+			SignatureException.class,
+			() -> _testVerifyAssertionSignature(UNKNOWN_ENTITY_ID));
 	}
 
 	@Test
@@ -930,7 +935,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			_webSsoProfileImpl.getSignatureTrustEngine());
 	}
 
-	@Test(expected = SignatureException.class)
+	@Test
 	public void testVerifyAssertionSignatureNoSignatureRequired()
 		throws Exception {
 
@@ -961,9 +966,11 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 
 		samlPeerEntityContext.setEntityId(IDP_ENTITY_ID);
 
-		_webSsoProfileImpl.verifyAssertionSignature(
-			mockHttpServletRequest, messageContext, null,
-			_webSsoProfileImpl.getSignatureTrustEngine());
+		Assert.assertThrows(
+			SignatureException.class,
+			() -> _webSsoProfileImpl.verifyAssertionSignature(
+				mockHttpServletRequest, messageContext, null,
+				_webSsoProfileImpl.getSignatureTrustEngine()));
 	}
 
 	@Test
@@ -981,7 +988,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 						SignatureConstants.ALGO_ID_DIGEST_SHA256));
 
 				_assertFederationTokenRejected(
-					fipsAuditUtilMockedStatic, _ACS_REQUEST_URI,
+					fipsAuditUtilMockedStatic, "/c/portal/saml/acs",
 					SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1,
 					IDP_ENTITY_ID);
 			}
@@ -996,7 +1003,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 						SignatureConstants.ALGO_ID_DIGEST_SHA1));
 
 				_assertFederationTokenRejected(
-					fipsAuditUtilMockedStatic, _ACS_REQUEST_URI,
+					fipsAuditUtilMockedStatic, "/c/portal/saml/acs",
 					SignatureConstants.ALGO_ID_DIGEST_SHA1, IDP_ENTITY_ID);
 			}
 		}
@@ -1040,7 +1047,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			audienceRestrictions, messageContext);
 	}
 
-	@Test(expected = AudienceException.class)
+	@Test
 	public void testVerifyAudienceRestrictionsDeny() throws Exception {
 		List<AudienceRestriction> audienceRestrictions = new ArrayList<>();
 
@@ -1049,14 +1056,16 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 
 		audienceRestrictions.add(audienceRestriction);
 
-		_webSsoProfileImpl.verifyAudienceRestrictions(
-			audienceRestrictions,
-			_webSsoProfileImpl.getMessageContext(
-				getMockHttpServletRequest(ACS_URL),
-				new MockHttpServletResponse()));
+		Assert.assertThrows(
+			AudienceException.class,
+			() -> _webSsoProfileImpl.verifyAudienceRestrictions(
+				audienceRestrictions,
+				_webSsoProfileImpl.getMessageContext(
+					getMockHttpServletRequest(ACS_URL),
+					new MockHttpServletResponse())));
 	}
 
-	@Test(expected = AssertionException.class)
+	@Test
 	public void testVerifyConditionNotOnBefore() throws Exception {
 		prepareIdentityProvider(IDP_ENTITY_ID);
 
@@ -1085,10 +1094,13 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 				getMockHttpServletRequest(ACS_URL),
 				new MockHttpServletResponse());
 
-		_webSsoProfileImpl.verifyConditions(spMessageContext, conditions);
+		Assert.assertThrows(
+			AssertionException.class,
+			() -> _webSsoProfileImpl.verifyConditions(
+				spMessageContext, conditions));
 	}
 
-	@Test(expected = ExpiredException.class)
+	@Test
 	public void testVerifyConditionNotOnOrAfter() throws Exception {
 		prepareIdentityProvider(IDP_ENTITY_ID);
 
@@ -1117,7 +1129,10 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 				getMockHttpServletRequest(ACS_URL),
 				new MockHttpServletResponse());
 
-		_webSsoProfileImpl.verifyConditions(spMessageContext, conditions);
+		Assert.assertThrows(
+			ExpiredException.class,
+			() -> _webSsoProfileImpl.verifyConditions(
+				spMessageContext, conditions));
 	}
 
 	@Test
@@ -1162,7 +1177,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		_webSsoProfileImpl.verifyDestination(messageContext, ACS_URL);
 	}
 
-	@Test(expected = DestinationException.class)
+	@Test
 	public void testVerifyDestinationDeny() throws Exception {
 		MessageContext<?> messageContext = _webSsoProfileImpl.getMessageContext(
 			getMockHttpServletRequest(ACS_URL), new MockHttpServletResponse());
@@ -1172,8 +1187,10 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 
 		samlBindingContext.setBindingUri(SAMLConstants.SAML2_POST_BINDING_URI);
 
-		_webSsoProfileImpl.verifyDestination(
-			messageContext, "http://www.fail.com/c/portal/saml/acs");
+		Assert.assertThrows(
+			DestinationException.class,
+			() -> _webSsoProfileImpl.verifyDestination(
+				messageContext, "http://www.fail.com/c/portal/saml/acs"));
 	}
 
 	@Test
@@ -1185,14 +1202,16 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		Assert.assertNull(_webSsoProfileImpl.verifyInResponseTo(response));
 	}
 
-	@Test(expected = InResponseToException.class)
+	@Test
 	public void testVerifyInResponseToNoAuthnRequest() throws Exception {
 		Response response = OpenSamlUtil.buildResponse();
 
 		response.setInResponseTo("responseto");
 		response.setIssuer(OpenSamlUtil.buildIssuer(IDP_ENTITY_ID));
 
-		_webSsoProfileImpl.verifyInResponseTo(response);
+		Assert.assertThrows(
+			InResponseToException.class,
+			() -> _webSsoProfileImpl.verifyInResponseTo(response));
 	}
 
 	@Test
@@ -1226,7 +1245,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			RELAY_STATE, _webSsoProfileImpl.verifyInResponseTo(response));
 	}
 
-	@Test(expected = IssuerException.class)
+	@Test
 	public void testVerifyIssuerInvalidFormat() throws Exception {
 		MessageContext<?> messageContext = _webSsoProfileImpl.getMessageContext(
 			getMockHttpServletRequest(ACS_URL), new MockHttpServletResponse());
@@ -1240,10 +1259,12 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 
 		issuer.setFormat(NameIDType.UNSPECIFIED);
 
-		_webSsoProfileImpl.verifyIssuer(messageContext, issuer);
+		Assert.assertThrows(
+			IssuerException.class,
+			() -> _webSsoProfileImpl.verifyIssuer(messageContext, issuer));
 	}
 
-	@Test(expected = IssuerException.class)
+	@Test
 	public void testVerifyIssuerInvalidIssuer() throws Exception {
 		MessageContext<?> messageContext = _webSsoProfileImpl.getMessageContext(
 			getMockHttpServletRequest(ACS_URL), new MockHttpServletResponse());
@@ -1253,8 +1274,10 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 
 		samlPeerEntityContext.setEntityId(IDP_ENTITY_ID);
 
-		_webSsoProfileImpl.verifyIssuer(
-			messageContext, OpenSamlUtil.buildIssuer(UNKNOWN_ENTITY_ID));
+		Assert.assertThrows(
+			IssuerException.class,
+			() -> _webSsoProfileImpl.verifyIssuer(
+				messageContext, OpenSamlUtil.buildIssuer(UNKNOWN_ENTITY_ID)));
 	}
 
 	@Test
@@ -1323,7 +1346,7 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		_webSsoProfileImpl.verifyReplay(spMessageContext, assertion);
 	}
 
-	@Test(expected = ExpiredException.class)
+	@Test
 	public void testVerifySubjectExpired() throws Exception {
 		MessageContext<?> messageContext = _webSsoProfileImpl.getMessageContext(
 			getMockHttpServletRequest(ACS_URL), new MockHttpServletResponse());
@@ -1341,15 +1364,17 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		NameID nameID = OpenSamlUtil.buildNameId(
 			NameIDType.UNSPECIFIED, "test");
 
-		DateTime issueDate = new DateTime(DateTimeZone.UTC);
+		DateTime dateTime = new DateTime(DateTimeZone.UTC);
 
-		issueDate = issueDate.minusYears(1);
+		DateTime issueDate = dateTime.minusYears(1);
 
-		_webSsoProfileImpl.verifySubject(
-			messageContext, getSubject(messageContext, nameID, issueDate));
+		Assert.assertThrows(
+			ExpiredException.class,
+			() -> _webSsoProfileImpl.verifySubject(
+				messageContext, getSubject(messageContext, nameID, issueDate)));
 	}
 
-	@Test(expected = SubjectException.class)
+	@Test
 	public void testVerifySubjectNoBearerSubjectConfirmation()
 		throws Exception {
 
@@ -1380,7 +1405,9 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 		subjectConfirmation.setMethod(
 			SubjectConfirmation.METHOD_SENDER_VOUCHES);
 
-		_webSsoProfileImpl.verifySubject(messageContext, subject);
+		Assert.assertThrows(
+			SubjectException.class,
+			() -> _webSsoProfileImpl.verifySubject(messageContext, subject));
 	}
 
 	@Test
@@ -1701,8 +1728,6 @@ public class WebSsoProfileIntegrationTest extends BaseSamlTestCase {
 			mockHttpServletRequest, messageContext, assertion.getSignature(),
 			_webSsoProfileImpl.getSignatureTrustEngine());
 	}
-
-	private static final String _ACS_REQUEST_URI = "/c/portal/saml/acs";
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
