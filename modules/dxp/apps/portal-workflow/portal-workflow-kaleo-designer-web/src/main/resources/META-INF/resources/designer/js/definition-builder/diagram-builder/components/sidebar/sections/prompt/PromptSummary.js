@@ -32,10 +32,12 @@ const PromptSummary = () => {
 					type="text"
 					value={selectedItem?.data.prompt ?? ''}
 				/>
+			</ClayForm.Group>
 
-				<InputOutputVariables />
+			<InputOutputVariables />
 
-				<label className="mt-4" htmlFor="userMessage">
+			<ClayForm.Group>
+				<label htmlFor="userMessage">
 					{Liferay.Language.get('user-message')}
 				</label>
 
