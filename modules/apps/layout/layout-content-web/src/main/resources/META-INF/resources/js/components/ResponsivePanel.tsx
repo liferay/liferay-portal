@@ -43,7 +43,7 @@ export default function ResponsivePanel({
 				</SidePanel.Header>
 
 				<SearchForm
-					className="mb-0 mt-4 px-3"
+					className="cadmin mb-0 mt-4 px-3"
 					onChange={onSearch}
 					size="sm"
 				/>
