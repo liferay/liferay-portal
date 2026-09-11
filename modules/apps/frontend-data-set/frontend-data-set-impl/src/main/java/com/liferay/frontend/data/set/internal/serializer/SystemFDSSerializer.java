@@ -35,8 +35,6 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -343,16 +341,9 @@ public class SystemFDSSerializer
 	public JSONArray serializeSnapshots(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
-		try {
-			return serializeSnapshots(
-				fdsName, httpServletRequest, _objectDefinitionLocalService,
-				_objectEntryManagerRegistry);
-		}
-		catch (Exception exception) {
-			_log.error("Unable to serialize snapshots", exception);
-
-			return JSONUtil.putAll();
-		}
+		return serializeSnapshots(
+			fdsName, httpServletRequest, _objectDefinitionLocalService,
+			_objectEntryManagerRegistry);
 	}
 
 	@Override
@@ -386,15 +377,8 @@ public class SystemFDSSerializer
 	public JSONObject serializeUserPreferences(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
-		try {
-			return serializeUserPreferences(
-				fdsName, httpServletRequest, _objectDefinitionLocalService);
-		}
-		catch (Exception exception) {
-			_log.error("Unable to serialize user preferences", exception);
-
-			return null;
-		}
+		return serializeUserPreferences(
+			fdsName, httpServletRequest, _objectDefinitionLocalService);
 	}
 
 	@Override
@@ -532,9 +516,6 @@ public class SystemFDSSerializer
 			jsonArray.put(jsonObject);
 		}
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		SystemFDSSerializer.class);
 
 	private static final SystemFDSEntry _systemFDSEntry = new SystemFDSEntry() {
 

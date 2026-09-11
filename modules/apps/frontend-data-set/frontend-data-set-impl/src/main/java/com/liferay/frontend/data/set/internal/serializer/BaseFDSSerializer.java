@@ -19,7 +19,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -65,14 +64,13 @@ public abstract class BaseFDSSerializer {
 	}
 
 	protected JSONArray serializeSnapshots(
-			String fdsName, HttpServletRequest httpServletRequest,
-			ObjectDefinitionLocalService objectDefinitionLocalService,
-			ObjectEntryManagerRegistry objectEntryManagerRegistry)
-		throws Exception {
-
-		ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(true);
+		String fdsName, HttpServletRequest httpServletRequest,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectEntryManagerRegistry objectEntryManagerRegistry) {
 
 		try {
+			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(true);
+
 			List<ObjectEntry> ownedObjectEntries = new ArrayList<>();
 			List<ObjectEntry> sharedObjectEntries = new ArrayList<>();
 
@@ -152,56 +150,51 @@ public abstract class BaseFDSSerializer {
 	}
 
 	protected JSONObject serializeUserPreferences(
-			String fdsName, HttpServletRequest httpServletRequest,
-			ObjectDefinitionLocalService objectDefinitionLocalService)
-		throws Exception {
-
-		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_USER_PREFERENCES",
-					portal.getCompanyId(httpServletRequest));
-
-		if (objectDefinition == null) {
-			return null;
-		}
-
-		User user = portal.getUser(httpServletRequest);
-
-		if (user == null) {
-			return null;
-		}
-
-		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
-			objectEntryLocalService.fetchObjectEntry(
-				user.getExternalReferenceCode() + StringPool.UNDERLINE +
-					fdsName,
-				0, objectDefinition.getObjectDefinitionId());
-
-		if (serviceBuilderObjectEntry == null) {
-			return null;
-		}
-
-		String preferences = GetterUtil.getString(
-			serviceBuilderObjectEntry.getValues(
-			).get(
-				"preferences"
-			));
-
-		if (Validator.isNull(preferences)) {
-			return null;
-		}
+		String fdsName, HttpServletRequest httpServletRequest,
+		ObjectDefinitionLocalService objectDefinitionLocalService) {
 
 		try {
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_DATA_SET_USER_PREFERENCES",
+						portal.getCompanyId(httpServletRequest));
+
+			if (objectDefinition == null) {
+				return null;
+			}
+
+			User user = portal.getUser(httpServletRequest);
+
+			if (user == null) {
+				return null;
+			}
+
+			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+				objectEntryLocalService.fetchObjectEntry(
+					user.getExternalReferenceCode() + StringPool.UNDERLINE +
+						fdsName,
+					0, objectDefinition.getObjectDefinitionId());
+
+			if (serviceBuilderObjectEntry == null) {
+				return null;
+			}
+
+			String preferences = GetterUtil.getString(
+				serviceBuilderObjectEntry.getValues(
+				).get(
+					"preferences"
+				));
+
+			if (Validator.isNull(preferences)) {
+				return null;
+			}
+
 			return jsonFactory.createJSONObject(preferences);
 		}
-		catch (JSONException jsonException) {
+		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"Unable to parse the preferences of user ",
-						user.getUserId(), " for data set ", fdsName),
-					jsonException);
+				_log.warn("Unable to serialize user preferences", exception);
 			}
 
 			return null;

@@ -520,16 +520,9 @@ public class CustomFDSSerializer
 	public JSONArray serializeSnapshots(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
-		try {
-			return serializeSnapshots(
-				fdsName, httpServletRequest, _objectDefinitionLocalService,
-				_objectEntryManagerRegistry);
-		}
-		catch (Exception exception) {
-			_log.error("Unable to serialize snapshots", exception);
-
-			return _jsonFactory.createJSONArray();
-		}
+		return serializeSnapshots(
+			fdsName, httpServletRequest, _objectDefinitionLocalService,
+			_objectEntryManagerRegistry);
 	}
 
 	@Override
@@ -616,15 +609,8 @@ public class CustomFDSSerializer
 	public JSONObject serializeUserPreferences(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
-		try {
-			return serializeUserPreferences(
-				fdsName, httpServletRequest, _objectDefinitionLocalService);
-		}
-		catch (Exception exception) {
-			_log.error("Unable to serialize user preferences", exception);
-
-			return null;
-		}
+		return serializeUserPreferences(
+			fdsName, httpServletRequest, _objectDefinitionLocalService);
 	}
 
 	@Override
