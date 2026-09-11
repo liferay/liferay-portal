@@ -106,6 +106,23 @@ public class SegmentsTestUtil {
 			true, criteria, source, serviceContext);
 	}
 
+	public static SegmentsEntry addSegmentsEntry(
+			String segmentsEntryKey, String name, String description,
+			String criteria, String source, String type,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return SegmentsEntryLocalServiceUtil.addSegmentsEntry(
+			null, segmentsEntryKey,
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), name
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), description
+			).build(),
+			true, criteria, source, type, serviceContext);
+	}
+
 	public static SegmentsExperience addSegmentsExperience(
 			long groupId, long plid)
 		throws PortalException {

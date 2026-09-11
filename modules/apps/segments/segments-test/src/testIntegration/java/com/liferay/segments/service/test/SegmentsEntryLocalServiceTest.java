@@ -183,6 +183,25 @@ public class SegmentsEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testAddSegmentsEntryWithType() throws Exception {
+		SegmentsEntry segmentsEntry = _addAsahSegmentsEntry(null);
+
+		Assert.assertEquals(
+			SegmentsEntryConstants.TYPE_BATCH, segmentsEntry.getType());
+
+		segmentsEntry = SegmentsTestUtil.addSegmentsEntry(_group.getGroupId());
+
+		Assert.assertEquals(
+			SegmentsEntryConstants.TYPE_DEFAULT, segmentsEntry.getType());
+
+		segmentsEntry = _addAsahSegmentsEntry(
+			SegmentsEntryConstants.TYPE_REAL_TIME);
+
+		Assert.assertEquals(
+			SegmentsEntryConstants.TYPE_REAL_TIME, segmentsEntry.getType());
+	}
+
+	@Test
 	public void testDeleteSegmentsEntries() throws PortalException {
 		int count = 5;
 
@@ -239,6 +258,81 @@ public class SegmentsEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetSegmentsEntriesBySourceWithType() throws Exception {
+		String[] sources = {SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND};
+
+		int batchCount = _segmentsEntryLocalService.getSegmentsEntriesCount(
+			_group.getGroupId(), sources);
+		int realTimeCount = _segmentsEntryLocalService.getSegmentsEntriesCount(
+			_group.getGroupId(), sources,
+			SegmentsEntryConstants.TYPE_REAL_TIME);
+
+		SegmentsEntry batchSegmentsEntry = _addAsahSegmentsEntry(
+			SegmentsEntryConstants.TYPE_BATCH);
+		SegmentsEntry defaultSegmentsEntry = _addAsahSegmentsEntry(
+			SegmentsEntryConstants.TYPE_DEFAULT);
+		SegmentsEntry realTimeSegmentsEntry = _addAsahSegmentsEntry(
+			SegmentsEntryConstants.TYPE_REAL_TIME);
+
+		List<SegmentsEntry> segmentsEntries =
+			_segmentsEntryLocalService.getSegmentsEntries(
+				_group.getGroupId(), sources, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertTrue(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(batchSegmentsEntry));
+		Assert.assertTrue(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(defaultSegmentsEntry));
+		Assert.assertFalse(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(realTimeSegmentsEntry));
+
+		Assert.assertEquals(
+			batchCount + 2,
+			_segmentsEntryLocalService.getSegmentsEntriesCount(
+				_group.getGroupId(), sources));
+
+		segmentsEntries = _segmentsEntryLocalService.getSegmentsEntries(
+			_group.getGroupId(), sources, SegmentsEntryConstants.TYPE_REAL_TIME,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		Assert.assertFalse(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(batchSegmentsEntry));
+		Assert.assertTrue(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(realTimeSegmentsEntry));
+
+		Assert.assertEquals(
+			realTimeCount + 1,
+			_segmentsEntryLocalService.getSegmentsEntriesCount(
+				_group.getGroupId(), sources,
+				SegmentsEntryConstants.TYPE_REAL_TIME));
+	}
+
+	@Test
+	public void testGetSegmentsEntriesByType() throws Exception {
+		SegmentsEntry batchSegmentsEntry = _addAsahSegmentsEntry(
+			SegmentsEntryConstants.TYPE_BATCH);
+		SegmentsEntry realTimeSegmentsEntry = _addAsahSegmentsEntry(
+			SegmentsEntryConstants.TYPE_REAL_TIME);
+
+		List<SegmentsEntry> segmentsEntries =
+			_segmentsEntryLocalService.getSegmentsEntriesByType(
+				SegmentsEntryConstants.TYPE_REAL_TIME, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
+		Assert.assertFalse(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(batchSegmentsEntry));
+		Assert.assertTrue(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(realTimeSegmentsEntry));
+	}
+
+	@Test
 	public void testSearchSegmentsEntries() throws PortalException {
 		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
 			_group.getGroupId());
@@ -255,6 +349,34 @@ public class SegmentsEntryLocalServiceTest {
 		Assert.assertEquals(
 			segmentsEntries.toString(), 1, segmentsEntries.size());
 		Assert.assertEquals(segmentsEntry, segmentsEntries.get(0));
+	}
+
+	@Test
+	public void testSearchSegmentsEntriesExcludesRealTimeType()
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		SegmentsEntry batchSegmentsEntry = _addAsahSegmentsEntry(
+			name, SegmentsEntryConstants.TYPE_BATCH);
+		SegmentsEntry realTimeSegmentsEntry = _addAsahSegmentsEntry(
+			name, SegmentsEntryConstants.TYPE_REAL_TIME);
+
+		BaseModelSearchResult<SegmentsEntry> baseModelSearchResult =
+			_segmentsEntryLocalService.searchSegmentsEntries(
+				batchSegmentsEntry.getCompanyId(), _group.getGroupId(), name,
+				new LinkedHashMap<>(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
+
+		List<SegmentsEntry> segmentsEntries =
+			baseModelSearchResult.getBaseModels();
+
+		Assert.assertTrue(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(batchSegmentsEntry));
+		Assert.assertFalse(
+			segmentsEntries.toString(),
+			segmentsEntries.contains(realTimeSegmentsEntry));
 	}
 
 	@Test
@@ -487,6 +609,20 @@ public class SegmentsEntryLocalServiceTest {
 		_testUpdateSegmentsEntryWithExistingKey();
 		_testUpdateSegmentsEntryWithOutdatedReferredSource();
 		_testUpdateSegmentsEntryWithReferredSource();
+	}
+
+	private SegmentsEntry _addAsahSegmentsEntry(String type) throws Exception {
+		return _addAsahSegmentsEntry(RandomTestUtil.randomString(), type);
+	}
+
+	private SegmentsEntry _addAsahSegmentsEntry(String name, String type)
+		throws Exception {
+
+		return SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), name, RandomTestUtil.randomString(),
+			CriteriaSerializer.serialize(new Criteria()),
+			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND, type,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private SegmentsExperiment _addSegmentsExperiment(

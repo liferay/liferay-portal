@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.exception.NestableRuntimeException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.MockHttp;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -26,6 +27,9 @@ import com.liferay.segments.asah.connector.internal.client.model.Results;
 import com.liferay.segments.asah.connector.internal.client.model.Topic;
 import com.liferay.segments.asah.connector.internal.client.util.OrderByField;
 
+import java.net.HttpURLConnection;
+import java.net.URLDecoder;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -35,6 +39,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /**
@@ -349,6 +354,59 @@ public class AsahFaroBackendClientImplTest {
 
 		Assert.assertEquals("1234567", individualSegment.getId());
 		Assert.assertEquals("Test segment", individualSegment.getName());
+	}
+
+	@Test
+	public void testGetIndividualSegmentResultsFilter() throws Exception {
+		Http http = Mockito.mock(Http.class);
+
+		Mockito.when(
+			http.URLtoString(Mockito.any(Http.Options.class))
+		).thenAnswer(
+			invocation -> {
+				Http.Options httpOptions = invocation.getArgument(
+					0, Http.Options.class);
+
+				Http.Response response = new Http.Response();
+
+				response.setResponseCode(HttpURLConnection.HTTP_OK);
+
+				httpOptions.setResponse(response);
+
+				return JSONUtil.put(
+					"page", JSONUtil.put("totalElements", 0)
+				).toString();
+			}
+		);
+
+		AsahFaroBackendClient asahFaroBackendClient =
+			new AsahFaroBackendClientImpl(_analyticsSettingsManager, http);
+
+		asahFaroBackendClient.getIndividualSegmentResults(
+			RandomTestUtil.randomLong(), 1, 100,
+			Collections.singletonList(OrderByField.desc("dateModified")));
+
+		ArgumentCaptor<Http.Options> argumentCaptor = ArgumentCaptor.forClass(
+			Http.Options.class);
+
+		Mockito.verify(
+			http
+		).URLtoString(
+			argumentCaptor.capture()
+		);
+
+		Http.Options httpOptions = argumentCaptor.getValue();
+
+		String location = URLDecoder.decode(
+			httpOptions.getLocation(), StringPool.UTF8);
+
+		Assert.assertTrue(
+			location,
+			location.contains(
+				"(segmentCategory eq 'INDIVIDUAL' and status eq 'ACTIVE')"));
+		Assert.assertTrue(
+			location,
+			location.contains("(type eq 'BATCH' or type eq 'REAL_TIME')"));
 	}
 
 	@Test
