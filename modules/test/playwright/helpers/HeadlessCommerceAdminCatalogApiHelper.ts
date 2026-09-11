@@ -48,17 +48,20 @@ type TCurrency = {
 
 export type TDiagram = {
 	attachmentBase64: TAttachmentBase64;
+	color?: string;
+	radius?: number;
+	type?: string;
 };
 
 export type TPin = {
 	id?: number;
 	mappedProduct: {
-		productId: number;
-		quantity: number;
+		productId?: number;
+		quantity?: number;
 		sequence: string;
-		sku: string;
-		skuId: number;
-		type?: number;
+		sku?: string;
+		skuId?: number;
+		type?: 'diagram' | 'external' | 'sku';
 	};
 	positionX?: number;
 	positionY?: number;

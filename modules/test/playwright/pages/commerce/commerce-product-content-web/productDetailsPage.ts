@@ -13,6 +13,12 @@ export class ProductDetailsPage {
 	readonly attachmentItem: (title: string) => Promise<Locator>;
 	readonly attachmentItems: Locator;
 	readonly diagramPin: (pinSequence: string) => Promise<Locator>;
+	readonly diagramTooltip: Locator;
+	readonly diagramTooltipExternalName: (name: string) => Locator;
+	readonly diagramTooltipQuantity: Locator;
+	readonly diagramTooltipSubtitleLink: (name: string) => Locator;
+	readonly diagramTooltipTitleLink: (name: string) => Locator;
+	readonly diagramTooltipViewLink: Locator;
 	readonly downloadAttachmentLink: Locator;
 	readonly downloadSampleField: (
 		downloadSampleText: string
@@ -25,6 +31,14 @@ export class ProductDetailsPage {
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly mappedProductAddToCartButton: Locator;
 	readonly mappedProductCheckbox: Locator;
+	readonly mappedProductCheckboxFor: (
+		sku: string,
+		productName: string
+	) => Locator;
+	readonly mappedProductRow: (value: string) => Locator;
+	readonly mappedProductRowAt: (index: number) => Locator;
+	readonly mappedProductSelectAllCheckbox: Locator;
+	readonly mappedProductsTable: Locator;
 	readonly mpnField: (mpn: string) => Promise<Locator>;
 	readonly nameField: (name: string) => Promise<Locator>;
 	readonly optionSelector: (optionName: string) => Locator;
@@ -39,6 +53,7 @@ export class ProductDetailsPage {
 	) => Promise<Locator>;
 	readonly productNameHeading: (productName: string) => Promise<Locator>;
 	readonly productOptionUploadFormFeedback: Locator;
+	readonly productTitle: (productName: string) => Locator;
 	readonly promoPriceField: (
 		promoPrice: string,
 		container?: Locator | Page
@@ -83,6 +98,23 @@ export class ProductDetailsPage {
 				.locator("[class='pin-node-text']")
 				.filter({hasText: pinSequence});
 		};
+		this.diagramTooltip = page.locator('.diagram-tooltip');
+		this.diagramTooltipExternalName = (name: string) =>
+			this.diagramTooltip.locator('.h4').filter({hasText: name});
+		this.diagramTooltipQuantity =
+			this.diagramTooltip.getByText('Quantity:');
+		this.diagramTooltipSubtitleLink = (name: string) =>
+			this.diagramTooltip
+				.locator('.component-subtitle')
+				.getByRole('link', {exact: true, name});
+		this.diagramTooltipTitleLink = (name: string) =>
+			this.diagramTooltip
+				.locator('.component-title')
+				.getByRole('link', {exact: true, name});
+		this.diagramTooltipViewLink = this.diagramTooltip.getByRole('link', {
+			exact: true,
+			name: 'View',
+		});
 		this.downloadAttachmentLink = page.getByRole('link', {
 			exact: true,
 			name: 'Download',
@@ -104,6 +136,18 @@ export class ProductDetailsPage {
 			name: 'Add Selected Product(s) to',
 		});
 		this.mappedProductCheckbox = page.getByLabel('Select SKU');
+		this.mappedProductCheckboxFor = (sku: string, productName: string) =>
+			page.getByLabel(`Select SKU ${sku}, ${productName}`, {exact: true});
+		this.mappedProductRow = (value: string) =>
+			page
+				.locator('.shop-by-diagram-table tbody tr')
+				.filter({hasText: value});
+		this.mappedProductRowAt = (index: number) =>
+			page.locator('.shop-by-diagram-table tbody tr').nth(index);
+		this.mappedProductSelectAllCheckbox = page.locator(
+			'.shop-by-diagram-table thead input[type="checkbox"]'
+		);
+		this.mappedProductsTable = page.locator('.shop-by-diagram-table');
 		this.mpnField = async (mpn: string) => {
 			return page.getByText(mpn, {exact: true});
 		};
@@ -128,6 +172,10 @@ export class ProductDetailsPage {
 		this.productOptionUploadFormFeedback = page.locator(
 			'.product-option-upload'
 		);
+		this.productTitle = (productName: string) =>
+			page
+				.locator('.portlet-content .component-title')
+				.filter({hasText: productName});
 		this.promoPriceField = async (
 			promoPrice: string,
 			container = this.page
