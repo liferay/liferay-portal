@@ -11,15 +11,10 @@ import {FilterDefs, isIdentityFilter} from './FilterDefs';
 import {imageTransform} from './geometry';
 import {LoadedImage} from './loadImage';
 
-export async function exportEditedImage(
-	image: LoadedImage,
-	state: EditState
-): Promise<{blob: Blob; fileName: string}> {
-	const dataUrl = await blobToDataURL(image.blob);
-
+export function editedImageMarkup(state: EditState, dataUrl: string): string {
 	const {crop} = state;
 
-	const markup = renderToStaticMarkup(
+	return renderToStaticMarkup(
 		<svg
 			height={crop.height}
 			viewBox={`${crop.x} ${crop.y} ${crop.width} ${crop.height}`}
@@ -47,6 +42,17 @@ export async function exportEditedImage(
 			</g>
 		</svg>
 	);
+}
+
+export async function exportEditedImage(
+	image: LoadedImage,
+	state: EditState
+): Promise<{blob: Blob; fileName: string}> {
+	const dataUrl = await blobToDataURL(image.blob);
+
+	const {crop} = state;
+
+	const markup = editedImageMarkup(state, dataUrl);
 
 	const rendered = await loadIntoImage(
 		`data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`
