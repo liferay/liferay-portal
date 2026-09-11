@@ -104,6 +104,20 @@ public class SegmentsEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		return addSegmentsEntry(
+			externalReferenceCode, segmentsEntryKey, nameMap, descriptionMap,
+			active, criteria, source, null, serviceContext);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public SegmentsEntry addSegmentsEntry(
+			String externalReferenceCode, String segmentsEntryKey,
+			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
+			boolean active, String criteria, String source, String type,
+			ServiceContext serviceContext)
+		throws PortalException {
+
 		// Segments entry
 
 		User user = _userLocalService.getUser(serviceContext.getUserId());
@@ -143,6 +157,8 @@ public class SegmentsEntryLocalServiceImpl
 
 		segmentsEntry.setActive(_isActive(active, source));
 		segmentsEntry.setSource(source);
+
+		segmentsEntry.setType(_getType(source, type));
 
 		segmentsEntry = segmentsEntryPersistence.update(segmentsEntry);
 
@@ -338,9 +354,20 @@ public class SegmentsEntryLocalServiceImpl
 		long groupId, String[] sources, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
-		return segmentsEntryPersistence.findByG_SRC(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources, start,
-			end, orderByComparator);
+		return segmentsEntryPersistence.findByG_SRC_NotT(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			SegmentsEntryConstants.TYPE_REAL_TIME, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public List<SegmentsEntry> getSegmentsEntries(
+		long groupId, String[] sources, String type, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return segmentsEntryPersistence.findByG_SRC_T(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			new String[] {type}, start, end, orderByComparator);
 	}
 
 	@Override
@@ -364,8 +391,18 @@ public class SegmentsEntryLocalServiceImpl
 		long companyId, String source, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
-		return segmentsEntryPersistence.findByC_SRC(
-			companyId, source, start, end, orderByComparator);
+		return segmentsEntryPersistence.findByC_SRC_NotT(
+			companyId, source, SegmentsEntryConstants.TYPE_REAL_TIME, start,
+			end, orderByComparator);
+	}
+
+	@Override
+	public List<SegmentsEntry> getSegmentsEntriesBySource(
+		long companyId, String source, String type, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return segmentsEntryPersistence.findByC_SRC_T(
+			companyId, source, type, start, end, orderByComparator);
 	}
 
 	@Override
@@ -373,8 +410,36 @@ public class SegmentsEntryLocalServiceImpl
 		String source, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
-		return segmentsEntryPersistence.findBySource(
-			source, start, end, orderByComparator);
+		return segmentsEntryPersistence.findBySRC_NotT(
+			source, SegmentsEntryConstants.TYPE_REAL_TIME, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public List<SegmentsEntry> getSegmentsEntriesBySource(
+		String source, String type, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return segmentsEntryPersistence.findBySRC_T(
+			source, type, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<SegmentsEntry> getSegmentsEntriesBySource(
+		String source, String[] types, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return segmentsEntryPersistence.findBySRC_T(
+			new String[] {source}, types, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<SegmentsEntry> getSegmentsEntriesByType(
+		String type, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return segmentsEntryPersistence.findByType(
+			type, start, end, orderByComparator);
 	}
 
 	@Override
@@ -385,8 +450,18 @@ public class SegmentsEntryLocalServiceImpl
 
 	@Override
 	public int getSegmentsEntriesCount(long groupId, String[] sources) {
-		return segmentsEntryPersistence.countByG_SRC(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources);
+		return segmentsEntryPersistence.countByG_SRC_NotT(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			SegmentsEntryConstants.TYPE_REAL_TIME);
+	}
+
+	@Override
+	public int getSegmentsEntriesCount(
+		long groupId, String[] sources, String type) {
+
+		return segmentsEntryPersistence.countByG_SRC_T(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			new String[] {type});
 	}
 
 	@Override
@@ -433,6 +508,20 @@ public class SegmentsEntryLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		return updateSegmentsEntry(
+			externalReferenceCode, segmentsEntryId, segmentsEntryKey, nameMap,
+			descriptionMap, active, criteria, null, serviceContext);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public SegmentsEntry updateSegmentsEntry(
+			String externalReferenceCode, long segmentsEntryId,
+			String segmentsEntryKey, Map<Locale, String> nameMap,
+			Map<Locale, String> descriptionMap, boolean active, String criteria,
+			String type, ServiceContext serviceContext)
+		throws PortalException {
+
 		// Segments entry
 
 		SegmentsEntry segmentsEntry = segmentsEntryPersistence.findByPrimaryKey(
@@ -459,6 +548,10 @@ public class SegmentsEntryLocalServiceImpl
 
 		segmentsEntry.setActive(_isActive(active, source));
 		segmentsEntry.setSource(source);
+
+		if (Validator.isNotNull(type)) {
+			segmentsEntry.setType(type);
+		}
 
 		segmentsEntry = segmentsEntryPersistence.update(segmentsEntry);
 
@@ -487,6 +580,10 @@ public class SegmentsEntryLocalServiceImpl
 			).build();
 
 		params.put("keywords", keywords);
+
+		params.putIfAbsent(
+			"excludedTypes",
+			new String[] {SegmentsEntryConstants.TYPE_REAL_TIME});
 
 		attributes.put("params", params);
 
@@ -581,6 +678,18 @@ public class SegmentsEntryLocalServiceImpl
 		}
 
 		return source;
+	}
+
+	private String _getType(String source, String type) {
+		if (Validator.isNotNull(type)) {
+			return type;
+		}
+
+		if (SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(source)) {
+			return SegmentsEntryConstants.TYPE_BATCH;
+		}
+
+		return SegmentsEntryConstants.TYPE_DEFAULT;
 	}
 
 	private boolean _isActive(boolean active, String source) {

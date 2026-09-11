@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.segments.constants.SegmentsActionKeys;
 import com.liferay.segments.constants.SegmentsConstants;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.service.base.SegmentsEntryServiceBaseImpl;
 
@@ -132,9 +133,20 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 		long groupId, String[] sources, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
-		return segmentsEntryPersistence.findByG_SRC(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources, start,
-			end, orderByComparator);
+		return segmentsEntryPersistence.findByG_SRC_NotT(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			SegmentsEntryConstants.TYPE_REAL_TIME, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public List<SegmentsEntry> getSegmentsEntries(
+		long groupId, String[] sources, String type, int start, int end,
+		OrderByComparator<SegmentsEntry> orderByComparator) {
+
+		return segmentsEntryPersistence.findByG_SRC_T(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			new String[] {type}, start, end, orderByComparator);
 	}
 
 	@Override
@@ -145,8 +157,18 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 
 	@Override
 	public int getSegmentsEntriesCount(long groupId, String[] sources) {
-		return segmentsEntryPersistence.filterCountByG_SRC(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources);
+		return segmentsEntryPersistence.filterCountByG_SRC_NotT(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			SegmentsEntryConstants.TYPE_REAL_TIME);
+	}
+
+	@Override
+	public int getSegmentsEntriesCount(
+		long groupId, String[] sources, String type) {
+
+		return segmentsEntryPersistence.filterCountByG_SRC_T(
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
+			new String[] {type});
 	}
 
 	@Override
