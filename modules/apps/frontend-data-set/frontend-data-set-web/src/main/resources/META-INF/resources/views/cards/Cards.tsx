@@ -48,6 +48,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 		const {
 			executeAsyncItemAction,
 			highlightItems,
+			id,
 			infoPanelOpen,
 			itemsActions,
 			loadData,
@@ -55,6 +56,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 			onInfoPanelToggleButtonClick,
 			openModal,
 			openSidePanel,
+			searchSuggestionsEnabled,
 			selectable,
 			selectedItemsKey,
 			selectedItemsValue,
@@ -163,9 +165,11 @@ const Card = forwardRef<HTMLDivElement, any>(
 							: null,
 						onClick: (event: Event) => {
 							handleActionClick({
+								accessibleNameField,
 								action,
 								event,
 								executeAsyncItemAction,
+								fdsName: id,
 								highlightItems,
 								infoPanelOpen,
 								itemData: item,
@@ -177,6 +181,7 @@ const Card = forwardRef<HTMLDivElement, any>(
 								onItemSelectionChange,
 								openModal,
 								openSidePanel,
+								searchSuggestionsEnabled,
 								toggleItemInlineEdit,
 							});
 						},

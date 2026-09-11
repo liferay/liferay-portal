@@ -16,6 +16,7 @@ import findAction from '../utils/actionItems/findAction';
 import formatActionURL from '../utils/actionItems/formatActionURL';
 import {openPermissionsModal} from '../utils/modals/openPermissionsModal';
 import {EItemActionsType, IItemsActions} from '../utils/types';
+import {useRecordVisit} from '../utils/useRecordVisit';
 import DefaultContent from './DefaultRenderer';
 
 interface IActionLinkRendererProps {
@@ -56,6 +57,8 @@ function ActionLinkRenderer({
 		selectedItemsKey,
 		selectedItemsValue,
 	} = useContext(FrontendDataSetContext);
+
+	const recordVisit = useRecordVisit();
 
 	if (!actions || !actions.length) {
 		return hasValue(value) ? <DefaultContent value={value} /> : null;
@@ -139,6 +142,10 @@ function ActionLinkRenderer({
 
 				currentAction?.onClick({itemData});
 			}
+
+			if (!event.defaultPrevented) {
+				recordItemVisit();
+			}
 		};
 
 		if (currentAction?.data?.confirmationMessage) {
@@ -154,6 +161,15 @@ function ActionLinkRenderer({
 		else {
 			doAction();
 		}
+	}
+
+	function recordItemVisit() {
+		recordVisit(itemData, {
+			href: formattedHref,
+			label: showValue
+				? String(value)
+				: currentAction?.accessibleName || currentAction?.label,
+		});
 	}
 
 	function isNotALink() {
@@ -191,12 +207,16 @@ function ActionLinkRenderer({
 										message: confirmMessage,
 										onConfirm: (isConfirmed) => {
 											if (formattedHref && isConfirmed) {
+												recordItemVisit();
+
 												navigate(formattedHref);
 											}
 										},
 									});
 								}
 								else {
+									recordItemVisit();
+
 									event.stopPropagation();
 								}
 							}

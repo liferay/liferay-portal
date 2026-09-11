@@ -36,6 +36,7 @@ function Actions({
 		allItemsSelectedActive,
 		executeAsyncItemAction,
 		highlightItems,
+		id,
 		infoPanelOpen,
 		inlineEditingSettings,
 		loadData,
@@ -43,6 +44,7 @@ function Actions({
 		onInfoPanelToggleButtonClick,
 		openModal,
 		openSidePanel,
+		searchSuggestionsEnabled,
 		selectable,
 		selectedItemsKey,
 		selectedItemsValue,
@@ -51,7 +53,7 @@ function Actions({
 
 	const [
 		{
-			activeView: {quickActionsEnabled},
+			activeView: {quickActionsEnabled, schema},
 		},
 	]: any = useContext(ViewsContext);
 
@@ -98,10 +100,12 @@ function Actions({
 		event: any;
 	}) => {
 		handleActionClick({
+			accessibleNameField: schema?.accessibleNameField,
 			action,
 			closeMenu,
 			event,
 			executeAsyncItemAction,
+			fdsName: id,
 			highlightItems,
 			infoPanelOpen,
 			isItemSelected,
@@ -114,6 +118,7 @@ function Actions({
 			onItemSelectionChange,
 			openModal,
 			openSidePanel,
+			searchSuggestionsEnabled,
 			setLoading,
 			toggleItemInlineEdit,
 		});

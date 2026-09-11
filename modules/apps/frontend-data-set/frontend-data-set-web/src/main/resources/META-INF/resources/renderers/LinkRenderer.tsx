@@ -8,9 +8,11 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import {useRecordVisit} from '../utils/useRecordVisit';
 import DefaultContent from './DefaultRenderer';
 
 interface ILinkRendererProps {
+	itemData?: any;
 	options?: {
 		decoration?: React.ComponentProps<typeof ClayLink>['decoration'];
 		displayType?: React.ComponentProps<typeof ClayLink>['displayType'];
@@ -21,7 +23,9 @@ interface ILinkRendererProps {
 	};
 }
 
-function LinkRenderer({options, value}: ILinkRendererProps) {
+function LinkRenderer({itemData, options, value}: ILinkRendererProps) {
+	const recordVisit = useRecordVisit();
+
 	return (
 		<div
 			className={classNames({'table-list-title': !options?.displayType})}
@@ -30,6 +34,12 @@ function LinkRenderer({options, value}: ILinkRendererProps) {
 				decoration={options?.decoration}
 				displayType={options?.displayType}
 				href={value?.href}
+				onClick={() =>
+					recordVisit(itemData, {
+						href: value?.href,
+						label: value?.label,
+					})
+				}
 			>
 				<DefaultContent value={value?.label} />
 			</ClayLink>

@@ -9,18 +9,21 @@ import {navigate} from 'frontend-js-web';
 import {openPermissionsModal} from '../modals/openPermissionsModal';
 import {openWorkflowTransitionModal} from '../modals/openWorkflowTransitionModal';
 import {resolveModalSize} from '../modals/resolveModalSize';
+import {recordVisit} from '../recordVisit';
 import {IItemsActions} from '../types';
 import {ACTION_ITEM_TARGETS} from './constants';
 import formatActionURL from './formatActionURL';
 
-const {INFO_PANEL, MODAL_PERMISSIONS, MODAL_WORKFLOW_TRANSITION} =
+const {BLANK, INFO_PANEL, LINK, MODAL_PERMISSIONS, MODAL_WORKFLOW_TRANSITION} =
 	ACTION_ITEM_TARGETS;
 
 const handleActionClick = ({
+	accessibleNameField,
 	action,
 	closeMenu,
 	event,
 	executeAsyncItemAction,
+	fdsName,
 	highlightItems,
 	infoPanelOpen,
 	isItemSelected,
@@ -33,13 +36,16 @@ const handleActionClick = ({
 	onItemSelectionChange,
 	openModal,
 	openSidePanel,
+	searchSuggestionsEnabled,
 	setLoading,
 	toggleItemInlineEdit,
 }: {
+	accessibleNameField?: string;
 	action: IItemsActions;
 	closeMenu?: any;
 	event: Event;
 	executeAsyncItemAction: Function;
+	fdsName: string;
 	highlightItems: Function;
 	infoPanelOpen?: boolean;
 	isItemSelected?: boolean;
@@ -52,6 +58,7 @@ const handleActionClick = ({
 	onItemSelectionChange?: Function;
 	openModal: Function;
 	openSidePanel: Function;
+	searchSuggestionsEnabled: boolean;
 	setLoading?: Function;
 	toggleItemInlineEdit: Function;
 }) => {
@@ -152,7 +159,18 @@ const handleActionClick = ({
 			onActionDropdownItemClick(exposedProps);
 		}
 
-		if (target === 'link' && defaultPrevented) {
+		if (!target || target === BLANK || target === LINK) {
+			recordVisit({
+				accessibleNameField,
+				fdsName,
+				href: url,
+				itemData,
+				label: action.label,
+				searchSuggestionsEnabled,
+			});
+		}
+
+		if (target === LINK && defaultPrevented) {
 			navigate(url);
 		}
 	};
@@ -160,7 +178,7 @@ const handleActionClick = ({
 	if (confirmationMessage) {
 		let defaultPrevented = false;
 
-		if (target === 'link') {
+		if (target === LINK) {
 			event.preventDefault();
 
 			defaultPrevented = true;

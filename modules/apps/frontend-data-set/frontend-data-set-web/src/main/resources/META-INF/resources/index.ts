@@ -74,4 +74,6 @@ export {
 	TOnFileDrop,
 	TSort,
 } from './utils/types';
+
+export {useRecordVisit as useFDSRecordVisit} from './utils/useRecordVisit';
 export {Card} from './views/cards/Cards';
