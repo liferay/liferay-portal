@@ -282,9 +282,6 @@ public class BundleSiteInitializerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), true, "LPD-57283");
-
 		_group = GroupTestUtil.addGroup();
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
@@ -366,6 +363,9 @@ public class BundleSiteInitializerTest {
 	)
 	@Test
 	public void testInitializeFromBundle() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
 		Bundle bundle1 = _getBundle(
 			"/com.liferay.site.initializer.extender.test.bundle.1.jar");
 		Bundle bundle2 = _getBundle(
@@ -508,6 +508,9 @@ public class BundleSiteInitializerTest {
 	)
 	@Test
 	public void testInitializeFromFile() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
 		File tempDir1 = _getTempDir(
 			"/com.liferay.site.initializer.extender.test.bundle.1.jar");
 		File tempDir2 = _getTempDir(
