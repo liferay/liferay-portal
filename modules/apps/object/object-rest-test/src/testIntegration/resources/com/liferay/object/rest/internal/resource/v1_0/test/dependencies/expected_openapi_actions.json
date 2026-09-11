@@ -3934,6 +3934,7 @@
 						"description": "The required language ID of the source text (e.g., \"en_US\").",
 						"in": "query",
 						"name": "sourceLanguageId",
+						"required": true,
 						"schema": {
 							"type": "string"
 						}
@@ -3942,6 +3943,7 @@
 						"description": "A required list of language IDs for the target translations (e.g., \"es_ES\", \"fr_FR\").",
 						"in": "query",
 						"name": "targetLanguageIds",
+						"required": true,
 						"schema": {
 							"type": "string"
 						}
@@ -4036,6 +4038,7 @@
 						"description": "The required language ID for the target translation (e.g., \"en_US\").",
 						"in": "query",
 						"name": "targetLanguageId",
+						"required": true,
 						"schema": {
 							"type": "string"
 						}
