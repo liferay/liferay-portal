@@ -16,7 +16,7 @@ function main {
 
 	default_set_up
 
-	assert_clean_upgrade_log
+	assert_clean_upgrade_log boot
 }
 
 main "${@}"

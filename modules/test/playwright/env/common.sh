@@ -1,21 +1,26 @@
 #!/bin/bash
 
 function assert_clean_upgrade_log {
+	local upgrade_source=${1:-tool}
 
 	# The upgrade writes to one of two logs, depending on how it ran. A tool
 	# upgrade (ant upgrade-legacy-database) runs in its own JVM and writes its own
 	# log. An at boot upgrade (upgrade.database.auto.run=true) runs inside the
 	# portal JVM, so its errors land in the portal log alongside the rest of the
-	# boot. Prefer the tool log so tool upgrade projects keep asserting exactly
-	# what they asserted before, and fall back to the portal log for at boot
-	# projects, which otherwise have no upgrade log at all and would fail here
-	# before asserting anything.
+	# boot. The caller says which, because the bundle is shared: the projects run
+	# one after another against one ${LIFERAY_HOME}, rebuild-legacy-database
+	# clears data but not tools, so a tool log left by an earlier project is still
+	# on disk when a later at boot project runs. Choosing by file existence would
+	# make every at boot project assert the previous project's log instead of its
+	# own boot.
 
-	local upgrade_log="${LIFERAY_HOME}/tools/portal-tools-db-upgrade-client/logs/upgrade.log"
+	local upgrade_log
 
-	if [ ! -f "${upgrade_log}" ]
+	if [[ ${upgrade_source} == boot ]]
 	then
 		upgrade_log=$(ls --sort=time "${LIFERAY_HOME}"/logs/liferay.*.log 2>/dev/null | head --lines=1)
+	else
+		upgrade_log="${LIFERAY_HOME}/tools/portal-tools-db-upgrade-client/logs/upgrade.log"
 	fi
 
 	if [[ -z ${upgrade_log} ]] || [[ ! -f ${upgrade_log} ]]
