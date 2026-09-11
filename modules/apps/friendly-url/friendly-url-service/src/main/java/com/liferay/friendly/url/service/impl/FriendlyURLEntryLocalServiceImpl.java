@@ -469,14 +469,9 @@ public class FriendlyURLEntryLocalServiceImpl
 
 		String prefix = curUrlTitle;
 
-		if (Validator.isNull(languageId)) {
-			languageId = LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault());
-		}
-
 		for (int i = 1;
 			 _hasFriendlyURLEntryWithUrlTitle(
-				 groupId, classNameId, parentClassPK, classPK, curUrlTitle,
-				 languageId);
+				 groupId, classNameId, parentClassPK, classPK, curUrlTitle);
 			 i++) {
 
 			String suffix = StringPool.DASH + i;
@@ -855,27 +850,15 @@ public class FriendlyURLEntryLocalServiceImpl
 
 	private boolean _hasFriendlyURLEntryWithUrlTitle(
 		long groupId, long classNameId, long parentClassPK, long notClassPK,
-		String urlTitle, String languageId) {
+		String urlTitle) {
 
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
-			friendlyURLEntryLocalizationPersistence.fetchByG_C_P_L_U(
-				groupId, classNameId, parentClassPK, languageId, urlTitle);
+		for (FriendlyURLEntryLocalization friendlyURLEntryLocalization :
+				friendlyURLEntryLocalizationPersistence.findByG_C_P_U(
+					groupId, classNameId, parentClassPK, urlTitle)) {
 
-		if ((friendlyURLEntryLocalization != null) &&
-			(friendlyURLEntryLocalization.getClassPK() != notClassPK)) {
-
-			return true;
-		}
-
-		friendlyURLEntryLocalization =
-			friendlyURLEntryLocalizationPersistence.fetchByG_C_P_NotL_U_First(
-				groupId, classNameId, parentClassPK, languageId, urlTitle,
-				null);
-
-		if ((friendlyURLEntryLocalization != null) &&
-			(friendlyURLEntryLocalization.getClassPK() != notClassPK)) {
-
-			return true;
+			if (friendlyURLEntryLocalization.getClassPK() != notClassPK) {
+				return true;
+			}
 		}
 
 		return false;
