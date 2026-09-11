@@ -292,6 +292,13 @@ public class LiferayJWTBearerGrantHandler extends BaseAccessTokenGrantHandler {
 			}
 		}
 
+		@Override
+		protected void validateSubject(Client client, String subject) {
+			if (subject == null) {
+				throw new OAuthServiceException(OAuthConstants.INVALID_GRANT);
+			}
+		}
+
 		private UserSubject _createUserSubject(
 			long companyId, String issuer, String subject) {
 
