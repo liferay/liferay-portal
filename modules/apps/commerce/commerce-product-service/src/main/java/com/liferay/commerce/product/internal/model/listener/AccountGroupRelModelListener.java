@@ -8,7 +8,6 @@ package com.liferay.commerce.product.internal.model.listener;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -23,7 +22,19 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ModelListener.class)
 public class AccountGroupRelModelListener
-	extends BaseModelListener<AccountGroupRel> {
+	extends BaseCPDefinitionSitemapModelListener<AccountGroupRel> {
+
+	@Override
+	public void onAfterCreate(AccountGroupRel accountGroupRel)
+		throws ModelListenerException {
+
+		if (accountGroupRel.getClassNameId() ==
+				_classNameLocalService.getClassNameId(
+					CPDefinition.class.getName())) {
+
+			addSiteSitemapRegenerationEntry(accountGroupRel.getCompanyId());
+		}
+	}
 
 	@Override
 	public void onAfterRemove(AccountGroupRel accountGroupRel)
@@ -32,6 +43,8 @@ public class AccountGroupRelModelListener
 		if (accountGroupRel.getClassNameId() ==
 				_classNameLocalService.getClassNameId(
 					CPDefinition.class.getName())) {
+
+			addSiteSitemapRegenerationEntry(accountGroupRel.getCompanyId());
 
 			_reindexCPDefinition(accountGroupRel.getClassPK());
 		}
