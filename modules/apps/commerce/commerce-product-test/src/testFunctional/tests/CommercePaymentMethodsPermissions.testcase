@@ -135,6 +135,8 @@ definition {
 				permissionDefinitionKey = "INLINE_PERMISSIONS_PERMISSIONS_CHECKBOX",
 				roleTitles = "Discount Manager");
 
+			CommercePermissions.searchRolePG(roleTitle = "Operations Manager");
+
 			Role.viewPermissionPG(
 				permissionDefinitionKey = "INLINE_PERMISSIONS_PERMISSIONS_CHECKBOX",
 				permissionFlagged = "true",
@@ -271,6 +273,8 @@ definition {
 		}
 
 		task ("And on PayPal payment method, assert that Power User does not have View permission") {
+			CommercePermissions.searchRolePG(roleTitle = "Power User");
+
 			Role.viewPermissionPG(
 				permissionDefinitionKey = "INLINE_PERMISSIONS_VIEW_CHECKBOX",
 				permissionFlagged = "false",
@@ -385,6 +389,8 @@ definition {
 		}
 
 		task ("And on PayPal payment method, assert that Operations Manager does not have View permission") {
+			CommercePermissions.searchRolePG(roleTitle = "Operations Manager");
+
 			Role.viewPermissionPG(
 				permissionDefinitionKey = "INLINE_PERMISSIONS_VIEW_CHECKBOX",
 				permissionFlagged = "false",
