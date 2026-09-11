@@ -53,6 +53,10 @@ public class FIPSLog4jUtil {
 			return Level.ERROR;
 		}
 
+		if (severity == FIPSAuditEvent.Severity.WARNING) {
+			return Level.WARN;
+		}
+
 		return Level.INFO;
 	}
 

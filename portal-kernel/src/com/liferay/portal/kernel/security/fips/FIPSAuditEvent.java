@@ -46,7 +46,7 @@ public class FIPSAuditEvent {
 
 	public enum Severity {
 
-		CRITICAL, INFO
+		CRITICAL, INFO, WARNING
 
 	}
 
