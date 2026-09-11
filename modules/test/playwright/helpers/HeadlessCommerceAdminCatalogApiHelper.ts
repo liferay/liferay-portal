@@ -580,12 +580,14 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		fieldType: string = 'select',
 		key: string = 'key-' + getRandomInt(),
 		name: string = 'Option' + getRandomInt(),
-		priority: number = getRandomInt()
+		priority: number = getRandomInt(),
+		facetable: boolean = false
 	) {
 		const postOption = await this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/options`,
 			{
 				data: {
+					facetable,
 					fieldType,
 					key,
 					name: {

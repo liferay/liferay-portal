@@ -7,6 +7,25 @@ import {Locator, Page} from '@playwright/test';
 
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
 
+export type FacetWidget = 'Option Facet' | 'Specification Facet';
+
+const DISPLAY_TEMPLATE_TERM_SELECTORS = {
+	'Cloud Layout':
+		'ul.tag-cloud span.facet-value button.facet-term[data-term-id="%s"]',
+	'Compact Layout':
+		'ul.list-unstyled li.facet-value button.facet-term[data-term-id="%s"]',
+	'Label Layout':
+		'div.label-container button.facet-term[data-term-id="%s"] span.label-item-expand',
+};
+
+export type FacetConfiguration = {
+	displayFrequencies?: boolean;
+	displayTemplate?: string;
+	frequencyThreshold?: number;
+	maxEntities?: number;
+	maxTerms?: number;
+};
+
 export class SpecificationFacetsPage {
 	readonly addSearchOptionsLabel: Locator;
 	readonly addOptionFacetLabel: Locator;
@@ -14,10 +33,16 @@ export class SpecificationFacetsPage {
 	readonly addWidgetButton: Locator;
 	readonly configurationMenuItem: Locator;
 	readonly configurationSaveButton: Locator;
+	readonly displayFrequenciesCheckbox: Locator;
 	readonly displayTemplateSelect: Locator;
 	readonly frequencyThresholdInput: Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
+	readonly maxOptionsInput: Locator;
+	readonly maxSpecificationsInput: Locator;
+	readonly maxTermsInput: Locator;
 	readonly optionFacetConfigurationEditButton: Locator;
+	readonly optionFacetPortlet: Locator;
+	readonly specificationFacetPortlet: Locator;
 	readonly page: Page;
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;
@@ -25,6 +50,9 @@ export class SpecificationFacetsPage {
 	readonly searchFormInput: Locator;
 	readonly searchOptionsAllowEmptySearchesInput: Locator;
 	readonly searchOptionsConfigurationEditButton: Locator;
+	readonly searchBarDestinationInput: Locator;
+	readonly searchBarPortlet: Locator;
+	readonly searchBarScopeSelect: Locator;
 	readonly searchOptionsConfigurationSaveButton: Locator;
 	readonly selectSpecificationFacetPageInput: Locator;
 	readonly specificationFacetConfigurationEditButton: Locator;
@@ -51,6 +79,9 @@ export class SpecificationFacetsPage {
 		this.configurationSaveButton = page
 			.frameLocator('iframe[id="modalIframe"]')
 			.getByRole('button', {name: 'Save'});
+		this.displayFrequenciesCheckbox = page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByLabel('Display Frequencies');
 		this.displayTemplateSelect = page
 			.frameLocator('iframe[id="modalIframe"]')
 			.getByLabel('Display Template');
@@ -58,9 +89,23 @@ export class SpecificationFacetsPage {
 			.frameLocator('iframe[id="modalIframe"]')
 			.getByLabel('Frequency Threshold');
 		this.layoutsPage = new CommerceLayoutsPage(page);
-		this.optionFacetConfigurationEditButton = page
-			.locator('//section[contains(@id, "CPOptionFacetsPortlet")]')
-			.getByLabel('Options');
+		this.maxOptionsInput = page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByLabel('Max Options');
+		this.maxSpecificationsInput = page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByLabel('Max Specifications');
+		this.maxTermsInput = page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByLabel('Max Terms');
+		this.optionFacetPortlet = page.locator(
+			'//section[contains(@id, "CPOptionFacetsPortlet")]'
+		);
+		this.specificationFacetPortlet = page.locator(
+			'//section[contains(@id, "CPSpecificationOptionFacetsPortlet")]'
+		);
+		this.optionFacetConfigurationEditButton =
+			this.optionFacetPortlet.getByLabel('Options');
 		this.page = page;
 		this.pageLabel = page
 			.getByTestId('layoutHref')
@@ -84,14 +129,20 @@ export class SpecificationFacetsPage {
 			.frameLocator('#modalIframe')
 			.getByTestId('searchOptionsFooter')
 			.getByRole('button', {exact: true, name: 'Save'});
+		this.searchBarDestinationInput = page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByLabel('Destination Page');
+		this.searchBarPortlet = page.locator(
+			'//section[contains(@id, "SearchBarPortlet")]'
+		);
+		this.searchBarScopeSelect = page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByLabel('Scope', {exact: true});
 		this.selectSpecificationFacetPageInput = page
 			.getByTestId('selectLayout')
 			.getByLabel('Select Specification Facet Page');
-		this.specificationFacetConfigurationEditButton = page
-			.locator(
-				'//section[contains(@id, "CPSpecificationOptionFacetsPortlet")]'
-			)
-			.getByLabel('Options');
+		this.specificationFacetConfigurationEditButton =
+			this.specificationFacetPortlet.getByLabel('Options');
 		this.specificationFacetOrderSpecificationInput = page
 			.frameLocator('iframe[id="modalIframe"]')
 			.getByLabel('Order Specifications By');
@@ -122,6 +173,28 @@ export class SpecificationFacetsPage {
 		await this.addSpecificationFacetWidget();
 	}
 
+	async configureSearchBar({
+		destination,
+		scope,
+	}: {
+		destination?: string;
+		scope?: string;
+	}) {
+		await this.searchBarPortlet.getByLabel('Options').click();
+		await this.configurationMenuItem.click();
+		await this.searchBarScopeSelect.waitFor({state: 'visible'});
+
+		if (scope !== undefined) {
+			await this.searchBarScopeSelect.selectOption(scope);
+		}
+
+		if (destination !== undefined) {
+			await this.searchBarDestinationInput.fill(destination);
+		}
+
+		await this.saveConfiguration();
+	}
+
 	async configureSearchOptions() {
 		await this.searchOptionsConfigurationEditButton.click();
 		await this.searchOptionsAllowEmptySearchesInput.waitFor({
@@ -149,6 +222,114 @@ export class SpecificationFacetsPage {
 		});
 		await this.frequencyThresholdInput.fill(value);
 		await this.configurationSaveButton.click();
+	}
+
+	facetPortlet(widget: FacetWidget) {
+		return widget === 'Option Facet'
+			? this.optionFacetPortlet
+			: this.specificationFacetPortlet;
+	}
+
+	facetPanelTitles(widget: FacetWidget) {
+		return this.facetPortlet(widget).locator('.panel-title');
+	}
+
+	facetPanel(widget: FacetWidget, facetName: string) {
+		return this.facetPortlet(widget).locator('.panel-title', {
+			hasText: facetName,
+		});
+	}
+
+	facetTerms(widget: FacetWidget, facetName: string) {
+		return this.facetPortlet(widget)
+			.getByTestId(facetName)
+			.locator('li.facet-value');
+	}
+
+	facetTermFrequencies(widget: FacetWidget) {
+		return this.facetPortlet(widget).locator('.term-count');
+	}
+
+	facetTermsByDisplayTemplate(
+		widget: FacetWidget,
+		displayTemplate: string,
+		term: string
+	) {
+		return this.facetPortlet(widget).locator(
+			DISPLAY_TEMPLATE_TERM_SELECTORS[displayTemplate].replace('%s', term)
+		);
+	}
+
+	configurationErrorMessage(message: string) {
+		return this.page
+			.frameLocator('iframe[id="modalIframe"]')
+			.getByText(message);
+	}
+
+	maxEntitiesInput(widget: FacetWidget) {
+		return widget === 'Option Facet'
+			? this.maxOptionsInput
+			: this.maxSpecificationsInput;
+	}
+
+	async openFacetConfiguration(widget: FacetWidget) {
+		await this.facetPortlet(widget).getByLabel('Options').click();
+		await this.configurationMenuItem.click();
+		await this.displayTemplateSelect.waitFor({state: 'visible'});
+	}
+
+	async updateFacetConfiguration(
+		widget: FacetWidget,
+		configuration: FacetConfiguration
+	) {
+		await this.openFacetConfiguration(widget);
+
+		const {
+			displayFrequencies,
+			displayTemplate,
+			frequencyThreshold,
+			maxEntities,
+			maxTerms,
+		} = configuration;
+
+		if (displayTemplate !== undefined) {
+			await this.displayTemplateSelect.click();
+			await this.page
+				.frameLocator('iframe[id="modalIframe"]')
+				.getByRole('option', {name: displayTemplate})
+				.click();
+		}
+
+		if (maxEntities !== undefined) {
+			await this.maxEntitiesInput(widget).fill(String(maxEntities));
+		}
+
+		if (maxTerms !== undefined) {
+			await this.maxTermsInput.fill(String(maxTerms));
+		}
+
+		if (frequencyThreshold !== undefined) {
+			await this.frequencyThresholdInput.fill(String(frequencyThreshold));
+		}
+
+		if (displayFrequencies === false) {
+			await this.displayFrequenciesCheckbox.uncheck();
+		}
+
+		await this.saveConfiguration();
+	}
+
+	async saveConfiguration() {
+		await Promise.all([
+			this.page.waitForResponse((response) =>
+				response.url().includes('PortletConfigurationPortlet')
+			),
+			this.configurationSaveButton.click(),
+		]);
+	}
+
+	async closeFacetConfiguration() {
+		await this.page.reload();
 	}
 
 	async configureSpecificationFacetOrdering(value: string) {
