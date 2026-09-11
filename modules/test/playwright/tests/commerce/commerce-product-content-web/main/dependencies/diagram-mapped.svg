@@ -1,0 +1,16 @@
+<svg data-name="Layer 1" id="Layer_1" viewBox="0 0 1280 1024" xmlns="http://www.w3.org/2000/svg">
+	<title>sbd</title>
+	<rect height="1023.75" style="fill:#fff" width="1279.75" x="0.13" y="0.13" />
+	<path d="M1279.75.25v1023.5H.25V.25h1279.5M1280,0H0V1024H1280V0Z" />
+	<path d="M803.27,330A18.75,18.75,0,0,1,822,348.73V675.27A18.75,18.75,0,0,1,803.27,694H476.73A18.75,18.75,0,0,1,458,675.27V348.73A18.75,18.75,0,0,1,476.73,330H803.27m0-1H476.73A19.74,19.74,0,0,0,457,348.73V675.27A19.74,19.74,0,0,0,476.73,695H803.27A19.74,19.74,0,0,0,823,675.27V348.73A19.74,19.74,0,0,0,803.27,329Z" />
+	<line style="fill:none;stroke:#000;stroke-miterlimit:10" x1="841.5" x2="917.5" y1="309.5" y2="233.5" />
+	<line style="fill:none;stroke:#000;stroke-miterlimit:10" x1="361.5" x2="437.5" y1="789.5" y2="713.5" />
+	<line style="fill:none;stroke:#000;stroke-miterlimit:10" x1="437.5" x2="362.31" y1="309.04" y2="233.85" />
+	<line style="fill:none;stroke:#000;stroke-miterlimit:10" x1="918.31" x2="841.96" y1="789.85" y2="713.5" />
+	<g id="Livello_Testi">
+		<text transform="translate(331.92 221.37)" style="font-size:20.848243713378906px;font-family:Arial">32</text>
+		<text transform="translate(928.92 221.37)" style="font-size:20.848243713378906px;font-family:Arial">1</text>
+		<text transform="translate(928.92 808.37)" style="font-size:20.848243713378906px;font-family:Arial">32</text>
+		<text transform="translate(338.92 808.37)" style="font-size:20.848243713378906px;font-family:Arial">2</text>
+	</g>
+</svg>

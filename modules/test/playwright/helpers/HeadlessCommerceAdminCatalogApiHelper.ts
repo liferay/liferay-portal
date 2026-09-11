@@ -355,6 +355,12 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
+	async getPins(productId: number) {
+		return this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}/pins`
+		);
+	}
+
 	async getProduct(productId: number) {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}?nestedFields=skus`

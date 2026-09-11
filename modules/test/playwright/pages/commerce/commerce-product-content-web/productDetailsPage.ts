@@ -13,9 +13,13 @@ export class ProductDetailsPage {
 	readonly attachmentItem: (title: string) => Promise<Locator>;
 	readonly attachmentItems: Locator;
 	readonly diagramPin: (pinSequence: string) => Promise<Locator>;
+	readonly breadcrumb: Locator;
+	readonly breadcrumbLink: (name: string) => Locator;
+	readonly diagramSvgPin: (sequence: string) => Locator;
 	readonly diagramTooltip: Locator;
 	readonly diagramTooltipExternalName: (name: string) => Locator;
 	readonly diagramTooltipQuantity: Locator;
+	readonly diagramTooltipReplacementAlert: (text: string) => Locator;
 	readonly diagramTooltipSubtitleLink: (name: string) => Locator;
 	readonly diagramTooltipTitleLink: (name: string) => Locator;
 	readonly diagramTooltipViewLink: Locator;
@@ -52,7 +56,11 @@ export class ProductDetailsPage {
 		container?: Locator | Page
 	) => Promise<Locator>;
 	readonly productNameHeading: (productName: string) => Promise<Locator>;
+	readonly productDetail: Locator;
+	readonly productDetailAddToCartButton: Locator;
+	readonly productDetailQuantitySelector: Locator;
 	readonly productOptionUploadFormFeedback: Locator;
+	readonly relatedDiagramLink: (name: string) => Locator;
 	readonly productTitle: (productName: string) => Locator;
 	readonly promoPriceField: (
 		promoPrice: string,
@@ -98,11 +106,20 @@ export class ProductDetailsPage {
 				.locator("[class='pin-node-text']")
 				.filter({hasText: pinSequence});
 		};
+		this.breadcrumb = page.getByLabel('Breadcrumb');
+		this.breadcrumbLink = (name: string) =>
+			this.breadcrumb.getByRole('link', {name});
+		this.diagramSvgPin = (sequence: string) =>
+			page
+				.locator('text.pin')
+				.filter({hasText: new RegExp(`^${sequence}$`)});
 		this.diagramTooltip = page.locator('.diagram-tooltip');
 		this.diagramTooltipExternalName = (name: string) =>
 			this.diagramTooltip.locator('.h4').filter({hasText: name});
 		this.diagramTooltipQuantity =
 			this.diagramTooltip.getByText('Quantity:');
+		this.diagramTooltipReplacementAlert = (text: string) =>
+			this.diagramTooltip.getByText(text);
 		this.diagramTooltipSubtitleLink = (name: string) =>
 			this.diagramTooltip
 				.locator('.component-subtitle')
@@ -169,9 +186,22 @@ export class ProductDetailsPage {
 		this.productNameHeading = async (productName) => {
 			return page.getByRole('heading', {name: productName});
 		};
+		this.productDetail = page.locator('.product-detail').first();
+		this.productDetailAddToCartButton = this.productDetail.getByRole(
+			'button',
+			{name: 'Add to Cart'}
+		);
+		this.productDetailQuantitySelector = this.productDetail.getByRole(
+			'spinbutton',
+			{name: 'Quantity Selector'}
+		);
 		this.productOptionUploadFormFeedback = page.locator(
 			'.product-option-upload'
 		);
+		this.relatedDiagramLink = (name: string) =>
+			page
+				.locator('[class*="product-publisher"] p a')
+				.filter({hasText: name});
 		this.productTitle = (productName: string) =>
 			page
 				.locator('.portlet-content .component-title')

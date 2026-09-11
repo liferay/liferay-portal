@@ -18,7 +18,9 @@ export class CommerceAdminProductPage extends CommerceDNDTablePage {
 	readonly creationMenuNewButton: Locator;
 	readonly deleteMenuItem: Locator;
 	readonly managementToolbarItemLink: (productName: string) => Locator;
+	readonly errorAlert: Locator;
 	readonly productRowActionsButton: (productName: string) => Locator;
+	readonly productsTableRow: (productName: string) => Locator;
 	readonly managementToolbarSearchInput: Locator;
 	readonly modalAddButton: Locator;
 	readonly modalBody: Locator;
@@ -76,6 +78,9 @@ export class CommerceAdminProductPage extends CommerceDNDTablePage {
 		});
 		this.managementToolbarItemLink = (productName: string) =>
 			page.getByRole('link', {exact: true, name: productName});
+		this.errorAlert = page.locator('.alert-danger');
+		this.productsTableRow = (productName: string) =>
+			page.getByRole('row').filter({hasText: productName});
 		this.productRowActionsButton = (productName: string) =>
 			page
 				.getByRole('row')
