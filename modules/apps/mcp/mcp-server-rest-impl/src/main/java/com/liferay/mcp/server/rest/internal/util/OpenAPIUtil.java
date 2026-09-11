@@ -65,15 +65,9 @@ public class OpenAPIUtil {
 			return null;
 		}
 
-		Object schemaObject = _getSchemaObject(
+		return (Map<String, Object>)_getSchemaObject(
 			"writeOnly", openAPIJSONObject, responseSchemaJSONObject,
 			new HashSet<>());
-
-		if (!(schemaObject instanceof Map)) {
-			return null;
-		}
-
-		return (Map<String, Object>)schemaObject;
 	}
 
 	public static VulcanRequestForwarder.Request getRequest(
