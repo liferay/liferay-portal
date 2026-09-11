@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration;
 import com.liferay.sharepoint.rest.repository.internal.document.library.repository.authorization.capability.SharepointRepositoryAuthorizationCapability;
 import com.liferay.sharepoint.rest.repository.internal.document.library.repository.authorization.oauth2.util.SharepointRepositoryTokenBrokerFactoryUtil;
+import com.liferay.sharepoint.rest.repository.internal.util.SharepointRepositoryClassNameUtil;
 
 import java.util.Locale;
 import java.util.Map;
@@ -49,8 +50,8 @@ public abstract class BaseSharepointRepositoryDefiner
 
 	@Override
 	public String getClassName() {
-		return SharepointExtRepository.class.getName() +
-			_sharepointRepositoryConfiguration.name();
+		return SharepointRepositoryClassNameUtil.getClassName(
+			_sharepointRepositoryConfiguration.name());
 	}
 
 	@Override
