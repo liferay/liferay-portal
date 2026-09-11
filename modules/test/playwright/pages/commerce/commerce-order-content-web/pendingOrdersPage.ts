@@ -20,6 +20,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly editMenuItem: Locator;
 	readonly errorMessageCloseButton: Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
+	readonly orderActionsButton: Locator;
 	readonly orderCell: (orderId: string) => Locator;
 	readonly orderColumn: (rowIndex: number, rowColumn: number) => Locator;
 	readonly orderItemActionsButton: Locator;
@@ -38,6 +39,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly pageLabel: Locator;
 	readonly pageTitle: Locator;
 	readonly panelList: Locator;
+	readonly printMenuItem: Locator;
 	readonly questionsAndAnswersLink: Locator;
 	readonly questionAndAnswersText: Locator;
 	readonly rejectButton: Locator;
@@ -73,6 +75,10 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 			name: 'Close',
 		});
 		this.layoutsPage = new CommerceLayoutsPage(page);
+		this.orderActionsButton = page.getByRole('button', {
+			exact: true,
+			name: 'Actions',
+		});
 		this.orderCell = (orderId) => page.getByRole('cell', {name: orderId});
 		this.orderColumn = (rowIndex, colIndex) =>
 			page.getByRole('row').nth(rowIndex).locator('td').nth(colIndex);
@@ -139,6 +145,10 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 		this.panelList = page
 			.getByTestId('specificationFacetPanel')
 			.getByRole('button');
+		this.printMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Print',
+		});
 		this.questionsAndAnswersLink = page.getByRole('link', {
 			name: 'Questions and Answers',
 		});

@@ -584,16 +584,17 @@ test(
 
 		await pendingOrdersPage.viewButton.click();
 
-		await pendingOrdersPage.orderItemActionsButton.click();
+		await expect(async () => {
+			await pendingOrdersPage.orderActionsButton.click();
 
-		await page
-			.locator(
-				"//div[contains(@class, 'dropdown')]/a[contains(@class, 'action') and contains(@class, 'btn-primary')]"
-			)
-			.click();
-		await page.getByRole('menuitem', {name: 'Print'}).click();
+			await expect(pendingOrdersPage.printMenuItem).toBeVisible({
+				timeout: 500,
+			});
+		}).toPass({timeout: 5000});
 
 		const downloadPromise = page.waitForEvent('download');
+
+		await pendingOrdersPage.printMenuItem.click();
 
 		const download = await downloadPromise;
 		expect(download.suggestedFilename()).toEqual(
