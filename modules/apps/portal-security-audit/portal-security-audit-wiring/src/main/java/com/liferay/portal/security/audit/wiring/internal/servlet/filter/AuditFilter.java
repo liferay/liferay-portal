@@ -85,9 +85,16 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 
 		String userEmailAddress = StringPool.BLANK;
 
-		HttpSession httpSession = httpServletRequest.getSession();
+		HttpSession httpSession = httpServletRequest.getSession(false);
 
-		Long userId = (Long)httpSession.getAttribute(WebKeys.USER_ID);
+		Long userId = null;
+		String auditSessionId = null;
+
+		if (httpSession != null) {
+			userId = (Long)httpSession.getAttribute(WebKeys.USER_ID);
+			auditSessionId = (String)httpSession.getAttribute(
+				WebKeys.AUDIT_SESSION_ID);
+		}
 
 		String userLogin = StringPool.BLANK;
 
@@ -116,8 +123,7 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 			httpServletRequest.getServerName());
 		auditRequestThreadLocal.setServerPort(
 			httpServletRequest.getServerPort());
-		auditRequestThreadLocal.setSessionID(
-			(String)httpSession.getAttribute(WebKeys.AUDIT_SESSION_ID));
+		auditRequestThreadLocal.setSessionID(auditSessionId);
 
 		long companyId = CompanyThreadLocal.getCompanyId();
 
