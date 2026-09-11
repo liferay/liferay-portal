@@ -217,8 +217,9 @@ public class CMSToolbarOmniSearchDynamicIncludeTest {
 	private final MockedStatic<FeatureFlagManagerUtil>
 		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
 			FeatureFlagManagerUtil.class);
-	private RequestDispatcher _requestDispatcher = Mockito.mock(
+	private final RequestDispatcher _requestDispatcher = Mockito.mock(
 		RequestDispatcher.class);
-	private ServletContext _servletContext = Mockito.mock(ServletContext.class);
+	private final ServletContext _servletContext = Mockito.mock(
+		ServletContext.class);
 
 }
