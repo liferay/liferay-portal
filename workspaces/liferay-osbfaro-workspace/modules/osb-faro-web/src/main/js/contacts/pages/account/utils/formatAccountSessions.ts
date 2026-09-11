@@ -18,10 +18,10 @@ const ANONYMOUS_KEY = '__anonymous__';
  * Resolves the individual shown ahead of their sessions. A session that
  * carries an `individualId` is a known individual (the user icon); one
  * without is anonymous (the anonymize icon). An anonymous session always
- * displays the generic "Anonymous User" label — never the tracked
- * `userName`, which would otherwise read as if the visitor were identified —
- * and its raw id goes on a second line, since the anonymous label carries no
- * information on its own. Either way the name links to the profile page — by
+ * carries the generic "Anonymous User" label — never the tracked `userName`,
+ * which would otherwise read as if the visitor were identified — and its raw
+ * id, which the row heads with, since the anonymous label carries no
+ * information on its own. Either way the row links to the profile page — by
  * `individualId` when present, otherwise by `userId` — as long as one of the
  * two ids is available.
  */

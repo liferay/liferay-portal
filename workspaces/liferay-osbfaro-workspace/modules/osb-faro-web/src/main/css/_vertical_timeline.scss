@@ -260,8 +260,9 @@
 			min-width: 0;
 		}
 
-		.individual-name {
+		.individual-title {
 			color: $main;
+			word-break: break-all;
 
 			&:focus,
 			&:hover {
@@ -269,14 +270,8 @@
 			}
 		}
 
-		.individual-id {
+		.individual-subtitle {
 			color: $secondary;
-			word-break: break-all;
-
-			&:focus,
-			&:hover {
-				color: $secondary;
-			}
 		}
 	}
 

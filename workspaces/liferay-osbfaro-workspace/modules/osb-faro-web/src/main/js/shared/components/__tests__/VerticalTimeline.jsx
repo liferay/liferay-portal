@@ -53,8 +53,8 @@ describe('VerticalTimeline', () => {
 			expect(screen.getByText('Ada Lovelace').closest('a')).toBeNull();
 		});
 
-		it('shows the raw id on its own line for an anonymous individual', () => {
-			renderTimeline({
+		it('heads an anonymous individual with their id and labels them beneath it', () => {
+			const {container} = renderTimeline({
 				items: [
 					{
 						...INDIVIDUAL_ITEM,
@@ -66,8 +66,31 @@ describe('VerticalTimeline', () => {
 				]
 			});
 
-			expect(screen.getByText('Anonymous User')).toBeInTheDocument();
-			expect(screen.getByText('e484348e-anon')).toBeInTheDocument();
+			expect(
+				container.querySelector('.individual-title')
+			).toHaveTextContent('e484348e-anon');
+			expect(
+				container.querySelector('.individual-subtitle')
+			).toHaveTextContent('Anonymous User');
+		});
+
+		it('falls back to the label alone for an anonymous individual with no id', () => {
+			const {container} = renderTimeline({
+				items: [
+					{
+						individual: true,
+						individualName: 'Anonymous User',
+						isAnonymous: true
+					}
+				]
+			});
+
+			expect(
+				container.querySelector('.individual-title')
+			).toHaveTextContent('Anonymous User');
+			expect(
+				container.querySelector('.individual-subtitle')
+			).not.toBeInTheDocument();
 		});
 
 		it('links an anonymous individual by their id, not by the generic label', () => {
