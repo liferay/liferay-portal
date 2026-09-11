@@ -1,0 +1,58 @@
+gradle.allprojects {
+	if (!Boolean.parseBoolean(String.valueOf(findProperty("liferay.workspace.use.test.boms")))) {
+		return
+	}
+
+	pluginManager.withPlugin("com.liferay.osgi.plugin") {
+		configurations {
+			implementationInclude {
+				canBeConsumed = false
+				canBeResolved = false
+			}
+
+			compileInclude.extendsFrom(implementationInclude)
+			testImplementation.extendsFrom(implementationInclude)
+		}
+
+		dependencies {
+			testImplementation group: "com.liferay", name: "org.apache.commons.configuration"
+			testImplementation group: "com.liferay", name: "org.apache.commons.logging"
+			testImplementation group: "com.liferay", name: "org.jabsorb"
+			testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test"
+			testImplementation group: "commons-lang", name: "commons-lang"
+			testImplementation group: "junit", name: "junit"
+			testImplementation group: "org.apache.logging.log4j", name: "log4j-api"
+			testImplementation group: "org.apache.logging.log4j", name: "log4j-core"
+			testImplementation group: "org.jodd", name: "jodd-json"
+			testImplementation group: "org.json", name: "json"
+			testImplementation group: "org.mockito", name: "mockito-core"
+			testImplementation group: "org.slf4j", name: "slf4j-api"
+			testImplementation group: "org.springframework", name: "spring-core"
+			testRuntimeOnly group: "com.liferay.portal", name: "com.liferay.portal.impl"
+		}
+
+		tasks.withType(Test).configureEach {
+			// portal-impl must precede release.dxp.api so its portal.properties wins
+
+			ArtifactView portalImplArtifactView = configurations.testRuntimeClasspath.incoming.artifactView {
+				componentFilter {
+					if (it instanceof ModuleComponentIdentifier) {
+						return it.module == "com.liferay.portal.impl"
+					}
+
+					return false
+				}
+			}
+
+			classpath = portalImplArtifactView.files + classpath
+
+			jvmArgs("--add-opens", "java.base/java.lang=ALL-UNNAMED");
+			jvmArgs("--add-opens", "java.base/java.lang.invoke=ALL-UNNAMED");
+			jvmArgs("--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED");
+			jvmArgs("--add-opens", "java.base/java.net=ALL-UNNAMED");
+			jvmArgs("--add-opens", "java.base/sun.net.www.protocol.http=ALL-UNNAMED");
+			jvmArgs("--add-opens", "java.base/sun.util.calendar=ALL-UNNAMED");
+			jvmArgs("--add-opens", "jdk.zipfs/jdk.nio.zipfs=ALL-UNNAMED");
+		}
+	}
+}
