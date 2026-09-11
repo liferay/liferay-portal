@@ -1092,6 +1092,91 @@ test('COMMERCE-12370. As a buyer I can add to cart a SKU with single UOM', async
 });
 
 test(
+	'As a buyer I can quick add to cart the purchasable SKU UOM with the highest priority',
+	{tag: ['@COMMERCE-12368', '@LPD-105593']},
+	async ({
+		apiHelpers,
+		commerceMiniCartPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+	}) => {
+		const {site} = await miniumSetUp(apiHelpers);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const product = (
+			await apiHelpers.headlessCommerceAdminCatalog.getProducts(
+				new URLSearchParams({
+					filter: `name eq 'Abs Sensor'`,
+					nestedFields: 'skus',
+				})
+			)
+		).items[0];
+
+		const productName = product.name['en_US'];
+		const sku = product.skus[0];
+
+		for (const [index, active] of [false, true, true].entries()) {
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					active,
+					basePrice: 25,
+					key: `uom${index + 1}`,
+					name: {en_US: `UOM${index + 1}`},
+					priority: index + 1,
+				}
+			);
+		}
+
+		await performLogout(page);
+		await performLogin(page, buyerUser.alternateName);
+
+		await page.goto(`/web/${site.name}`, {waitUntil: 'networkidle'});
+
+		try {
+			await commerceMiniCartPage.quickAddToCart(sku.sku);
+
+			await expect(
+				commerceMiniCartPage.miniCartItem(productName)
+			).toBeVisible();
+			await expect(
+				commerceMiniCartPage.miniCartSku(sku.sku)
+			).toBeVisible();
+			await expect(
+				commerceMiniCartPage.miniCartItemUnitOfMeasure(productName)
+			).toHaveText('uom2');
+			await expect(
+				commerceThemeMiniumCatalogPage.quantitySelector(
+					commerceMiniCartPage.miniCartItem(productName)
+				)
+			).toHaveValue('1');
+			await expect(
+				commerceMiniCartPage.miniCartItemPrice(/25\.00/, productName)
+			).toBeVisible();
+			await expect(
+				commerceMiniCartPage.miniCartSummaryItem('Quantity')
+			).toHaveText('1');
+			await expect(
+				commerceMiniCartPage.miniCartSummaryItem('Subtotal')
+			).toHaveText('$ 25.00');
+			await expect(commerceMiniCartPage.miniCartTotalPrice).toHaveText(
+				'$ 25.00'
+			);
+		}
+		finally {
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage();
+
+			apiHelpers.data.push({id: orders.items[0].id, type: 'order'});
+		}
+	}
+);
+
+test(
 	'Mini cart shows the Price on Application labels for a SKU with a UOM marked as price on application',
 	{tag: ['@LPD-92604']},
 	async ({

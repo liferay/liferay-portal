@@ -22,9 +22,11 @@ export class CommerceMiniCartPage {
 	readonly miniCartItemsContainer: Locator;
 	readonly miniCartItemPrice: (text: RegExp, productName?: string) => Locator;
 	readonly miniCartItemReplacementLabel: (productName: string) => Locator;
+	readonly miniCartItemUnitOfMeasure: (productName: string) => Locator;
 	readonly miniCartReplacementInfoMessage: Locator;
 	readonly miniCartSaveButton: Locator;
 	readonly miniCartSku: (skuName: string) => Locator;
+	readonly miniCartSummaryItem: (label: string) => Locator;
 	readonly miniCartTotalPrice: Locator;
 	readonly miniCartUnitOfMeasureSelector: Locator;
 	readonly page: Page;
@@ -97,6 +99,10 @@ export class CommerceMiniCartPage {
 			this.miniCartItem(productName).getByText('Replacement', {
 				exact: true,
 			});
+		this.miniCartItemUnitOfMeasure = (productName: string) =>
+			this.miniCartItem(productName).locator(
+				'.mini-cart-item-quantity .ml-2'
+			);
 		this.miniCartReplacementInfoMessage = page.getByText(
 			'There are replacement products in your cart.'
 		);
@@ -108,6 +114,11 @@ export class CommerceMiniCartPage {
 			});
 		this.miniCartSku = (skuName: string) =>
 			this.miniCartItemsContainer.getByText(skuName, {exact: true});
+		this.miniCartSummaryItem = (label: string) =>
+			page
+				.locator('.summary-table > div')
+				.filter({hasText: new RegExp(`^${label}$`)})
+				.locator('xpath=following-sibling::div[1]');
 		this.miniCartTotalPrice = page.locator(
 			`xpath=//div[text()='Total']/../following-sibling::div/div`
 		);
