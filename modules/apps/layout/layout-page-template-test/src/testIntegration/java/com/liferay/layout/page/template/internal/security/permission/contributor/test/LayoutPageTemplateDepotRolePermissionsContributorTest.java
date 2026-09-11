@@ -91,11 +91,9 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 			Assert.assertThrows(
 				PrincipalException.MustHavePermission.class,
 				() ->
-					_layoutPageTemplateStructureService.
-						updateLayoutPageTemplateStructureData(
-							group.getGroupId(),
-							layoutPageTemplateEntry.getPlid(),
-							SegmentsExperienceConstants.ID_DEFAULT, _DATA));
+					_layoutPageTemplateCollectionService.
+						deleteLayoutPageTemplateCollection(
+							layoutPageTemplateCollectionId));
 			Assert.assertThrows(
 				PrincipalException.MustHavePermission.class,
 				() ->
@@ -103,6 +101,14 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 						updateLayoutPageTemplateCollection(
 							layoutPageTemplateCollectionId,
 							RandomTestUtil.randomString()));
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_layoutPageTemplateEntryService.
+						deleteLayoutPageTemplateEntry(
+							layoutPageTemplateEntry.
+								getLayoutPageTemplateEntryId()));
 			Assert.assertThrows(
 				PrincipalException.MustHavePermission.class,
 				() ->
@@ -114,16 +120,11 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 			Assert.assertThrows(
 				PrincipalException.MustHavePermission.class,
 				() ->
-					_layoutPageTemplateEntryService.
-						deleteLayoutPageTemplateEntry(
-							layoutPageTemplateEntry.
-								getLayoutPageTemplateEntryId()));
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() ->
-					_layoutPageTemplateCollectionService.
-						deleteLayoutPageTemplateCollection(
-							layoutPageTemplateCollectionId));
+					_layoutPageTemplateStructureService.
+						updateLayoutPageTemplateStructureData(
+							group.getGroupId(),
+							layoutPageTemplateEntry.getPlid(),
+							SegmentsExperienceConstants.ID_DEFAULT, _DATA));
 		}
 	}
 
