@@ -18,8 +18,8 @@ const HEADER_KEY = 'header';
  * the parameter's name.
  */
 const NESTED_KEYS = {
+	acquisitionProperties: 'utm',
 	properties: 'attributes',
-	utmProperties: 'utm',
 } as const;
 
 export type PayloadTableRow = {

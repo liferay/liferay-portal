@@ -51,8 +51,8 @@ describe('formatPayloadTables', () => {
 	it('lays the utm properties out in a table of their own', () => {
 		expect(
 			formatPayloadTables({
+				acquisitionProperties: {utm_medium: 'email'},
 				eventId: 'pageViewed',
-				utmProperties: {utm_medium: 'email'},
 			})
 		).toEqual([
 			{
@@ -83,7 +83,7 @@ describe('formatPayloadTables', () => {
 
 	it('omits the utm table when the utm properties are empty', () => {
 		expect(
-			formatPayloadTables({eventId: 'pageViewed', utmProperties: {}})
+			formatPayloadTables({acquisitionProperties: {}, eventId: 'pageViewed'})
 		).toHaveLength(1);
 	});
 

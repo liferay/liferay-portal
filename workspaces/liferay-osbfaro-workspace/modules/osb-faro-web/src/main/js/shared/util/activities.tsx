@@ -255,6 +255,7 @@ export const formatEvents = (
 
 	return events.map((event) => {
 		const {
+			acquisitionProperties,
 			applicationId,
 			assetTitle,
 			canonicalUrl,
@@ -266,7 +267,6 @@ export const formatEvents = (
 			name,
 			pageTitle,
 			properties,
-			utmProperties,
 		} = event;
 
 		const campaign = getEventCampaign(event);
@@ -281,8 +281,8 @@ export const formatEvents = (
 				...(properties?.length && {
 					properties: toAttributeMap(properties),
 				}),
-				...(utmProperties?.length && {
-					utmProperties: toAttributeMap(utmProperties),
+				...(acquisitionProperties?.length && {
+					acquisitionProperties: toAttributeMap(acquisitionProperties),
 				}),
 			},
 			...(campaign && {campaign}),

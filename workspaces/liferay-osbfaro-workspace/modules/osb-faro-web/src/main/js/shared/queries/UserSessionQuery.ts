@@ -2,6 +2,7 @@ import {gql} from '@apollo/client';
 import {SessionEntityTypes} from 'shared/util/constants';
 
 export interface UserSessionEvent {
+	acquisitionProperties: Array<{name: string; value: string}>;
 	applicationId: string;
 	assetTitle: string;
 	campaignId: string | null;
@@ -19,7 +20,6 @@ export interface UserSessionEvent {
 	properties: Array<{name: string; value: string}>;
 	referrer: string;
 	url: string;
-	utmProperties: Array<{name: string; value: string}>;
 }
 
 export interface UserSession {
@@ -94,6 +94,10 @@ export default gql`
 					devicePixelRatio
 					deviceType
 					events {
+						acquisitionProperties {
+							name
+							value
+						}
 						applicationId
 						assetTitle
 						campaignId
@@ -115,10 +119,6 @@ export default gql`
 						}
 						referrer
 						url
-						utmProperties {
-							name
-							value
-						}
 					}
 					languageId
 					screenHeight
