@@ -44,10 +44,10 @@ const HTTPEndpoint = () => {
 						/>
 					))}
 				</ClaySelect>
+			</ClayForm.Group>
 
-				<label className="mt-4" htmlFor="url">
-					{Liferay.Language.get('url')}
-				</label>
+			<ClayForm.Group>
+				<label htmlFor="url">{Liferay.Language.get('url')}</label>
 
 				<ClayInput
 					id="url"
