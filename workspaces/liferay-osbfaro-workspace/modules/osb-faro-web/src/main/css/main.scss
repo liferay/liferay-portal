@@ -5,6 +5,32 @@
 :root {
 	@include clay-css($cadmin-c-root);
 
+	// Portal modules embedded in Faro (Frontend Data Set, Management Toolbar,
+	// portal search) are compiled against Clay's unprefixed custom properties,
+	// which only the Atlas root emits. Faro emits the cadmin root instead, so
+	// alias the unprefixed names those modules read onto their cadmin
+	// counterparts. Without this, every var() falls back to the initial value:
+	// a longhand such as border-color resolves to currentColor and a shorthand
+	// such as border is dropped entirely.
+
+	--danger: var(--cadmin-danger);
+	--danger-l1: var(--cadmin-danger-l1);
+	--font-weight-normal: 400;
+	--gray-100: var(--cadmin-gray-100);
+	--gray-200: var(--cadmin-gray-200);
+	--gray-300: var(--cadmin-gray-300);
+	--gray-900: var(--cadmin-gray-900);
+	--info: var(--cadmin-info);
+	--info-l2: var(--cadmin-info-l2);
+	--light: var(--cadmin-light);
+	--light-l1: var(--cadmin-light-l1);
+	--primary: var(--cadmin-primary);
+	--primary-l2: var(--cadmin-primary-l2);
+	--primary-l3: var(--cadmin-primary-l3);
+	--secondary: var(--cadmin-secondary);
+	--secondary-l2: var(--cadmin-secondary-l2);
+	--white: var(--cadmin-white);
+
 	color-scheme: light;
 }
 
