@@ -63,12 +63,18 @@ Skip this block if MCP is not supported in your DXP version.
 
   **Security note**: this is for local development only. BasicAuth sends credentials in every request. For production, use OAuth2 with `OAuth2HeaderAuthVerifier` instead. Never enable BasicAuth on `/o/*` in production.
 
-- **Instance and admin properties (dev only)**: `configs/local/portal-ext.properties` already ships `company.security.update.password.required=false`, `passwords.default.policy.change.required=false`, `terms.of.use.required=false`, and `users.reminder.queries.enabled=false`, and `company.default.time.zone=UTC`, `company.default.web.id=liferay.com`, and `default.admin.email.address.prefix=test` are already the portal defaults. Confirm those are present rather than adding a second copy of each, and add the lines that are missing:
+- **Instance and admin properties (dev only)**: a new workspace ships `configs/local/portal-ext.properties` with nothing but commented-out JDBC lines, so add every line below rather than assuming any of them is already there:
 
   ```
   admin.email.from.address=test@liferay.com
   admin.email.from.name=Test Test
+  company.default.time.zone=UTC
+  company.default.web.id=liferay.com
+  default.admin.email.address.prefix=test
+  passwords.default.policy.change.required=false
   setup.wizard.enabled=false
+  terms.of.use.required=false
+  users.reminder.queries.enabled=false
   ```
 
   `setup.wizard.enabled=false`, `terms.of.use.required=false`, and `passwords.default.policy.change.required=false` remove the setup wizard, the Terms of Use screen, and the forced password change, and `users.reminder.queries.enabled=false` disables the password recovery security question prompt that otherwise follows that password change. `default.admin.email.address.prefix` and `company.default.web.id` combine into the admin login — `test` plus `liferay.com` is what makes the documented `test@liferay.com` / `test` credentials work. `admin.email.from.address` and `admin.email.from.name` set the sender on portal notifications. `company.default.time.zone=UTC` keeps portal timestamps aligned with the UTC timestamps in `catalina.out`, which otherwise disagree with the local shell and make log correlation misleading.
@@ -77,7 +83,7 @@ Skip this block if MCP is not supported in your DXP version.
 
 - **Configuration sync — before the first start**: copy the local config into the bundle: `cp configs/local/portal-ext.properties bundles/portal-ext.properties`. (This copy is destructive — see `skills/deploy-and-verify/SKILL.md` for the diff before sync rule.)
 
-  `configs/local/portal-ext.properties` already ships the properties that skip the manual first login, but they only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
+  The properties above are what skip the manual first login, but they only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
 
 - **Free port 8080 first**: every Liferay workspace defaults to 8080, so another workspace left running holds it. Run `ss -ltnp | grep ':8080 '` and **wait for the result before launching** — do not batch the check with the start command. If the port is taken, stop that instance with its own `bundles/tomcat*/bin/shutdown.sh` or move this workspace to another port. A bind conflict is easy to misread: Tomcat still logs `Server startup in [N] milliseconds` even though the connector never came up, so the boot looks fine while every request is served by the *other* instance and its separate database — which surfaces as inexplicable login or data failures. Treat `Address already in use` in `catalina.out` as a failed boot regardless of the startup line, and confirm the listening pid belongs to this bundle.
 
