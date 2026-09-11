@@ -327,18 +327,16 @@
 		}
 	}
 
-	// The event row follows the same layout as the page row: time and title
-	// share one line, and the details stack below, indented to align with the
-	// title.
+	// The event row follows the same layout as the page row: time, sticker and
+	// title share one line, with the sticker in the same column as the page's,
+	// and the details stack below, indented one step past the title so the
+	// event reads as belonging to the page above it.
 
 	.event-row {
 		.event-header {
 			align-items: center;
 			display: flex;
 			gap: $baseline * 2;
-			.event-sticker {
-				margin-left: $rowIndent;
-			}
 
 			.title {
 				flex: 0 1 auto;
