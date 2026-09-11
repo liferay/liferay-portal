@@ -1,0 +1,5 @@
+dependencies {
+	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
