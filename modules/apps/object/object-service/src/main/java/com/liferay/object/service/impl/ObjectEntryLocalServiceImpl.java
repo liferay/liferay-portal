@@ -7257,6 +7257,58 @@ public class ObjectEntryLocalServiceImpl
 			parentObjectEntry.getRootObjectEntryId());
 	}
 
+	private boolean _shouldAddFriendlyURLEntry(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+		ObjectEntry originalObjectEntry, Map<String, Serializable> values) {
+
+		if (objectDefinition.isEnableFriendlyURLCustomization() ||
+			!Objects.equals(
+				objectEntry.getDefaultLanguageId(),
+				originalObjectEntry.getDefaultLanguageId()) ||
+			!Objects.equals(
+				objectEntry.getExternalReferenceCode(),
+				originalObjectEntry.getExternalReferenceCode())) {
+
+			return true;
+		}
+
+		if (objectDefinition.getTitleObjectFieldId() > 0) {
+			ObjectField objectField = _objectFieldPersistence.fetchByPrimaryKey(
+				objectDefinition.getTitleObjectFieldId());
+
+			if (!Objects.equals(
+					ObjectEntryValuesUtil.getValue(
+						objectEntry.getDefaultLanguageId(), objectField,
+						HashMapBuilder.<String, Object>putAll(
+							values
+						).putAll(
+							objectEntry.getModelAttributes()
+						).build()),
+					ObjectEntryValuesUtil.getValue(
+						originalObjectEntry.getDefaultLanguageId(), objectField,
+						HashMapBuilder.<String, Object>putAll(
+							originalObjectEntry.getValues()
+						).putAll(
+							originalObjectEntry.getModelAttributes()
+						).build()))) {
+
+				return true;
+			}
+		}
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
+				_classNameLocalService.getClassNameId(
+					objectDefinition.getClassName()),
+				objectEntry.getObjectEntryId());
+
+		if (friendlyURLEntry == null) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _startWorkflowInstance(
 			long userId, ObjectEntry objectEntry, ServiceContext serviceContext,
 			boolean skipModelListener)
@@ -7644,8 +7696,12 @@ public class ObjectEntryLocalServiceImpl
 			return objectEntry;
 		}
 
-		_addFriendlyURLEntry(
-			objectDefinition, objectEntry, serviceContext, values);
+		if (_shouldAddFriendlyURLEntry(
+				objectDefinition, objectEntry, originalObjectEntry, values)) {
+
+			_addFriendlyURLEntry(
+				objectDefinition, objectEntry, serviceContext, values);
+		}
 
 		_addOrUpdateComments(
 			objectEntry.getGroupId(), userId, objectDefinition, objectEntry,
