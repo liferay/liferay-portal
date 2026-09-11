@@ -2150,6 +2150,7 @@ public class DefaultObjectEntryManagerImpl
 		return ServiceContextUtil.createServiceContext(
 			objectDefinition.getCompanyId(),
 			objectDefinition.isEnableCategorization(),
+			objectDefinition.isEnableFriendlyURLCustomization(),
 			getGroupId(objectDefinition, scopeKey),
 			dtoConverterContext.getLocale(), modelPermissions, objectEntry,
 			objectEntryComments, dtoConverterContext.getUserId());

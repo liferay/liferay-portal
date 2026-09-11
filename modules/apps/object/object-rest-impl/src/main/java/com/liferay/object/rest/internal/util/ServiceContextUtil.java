@@ -73,21 +73,24 @@ public class ServiceContextUtil {
 	}
 
 	public static ServiceContext createServiceContext(
-			long companyId, boolean enableCategorization, long groupId,
-			Locale locale, ModelPermissions modelPermissions,
-			ObjectEntry objectEntry,
+			long companyId, boolean enableCategorization,
+			boolean enableFriendlyURLCustomization, long groupId, Locale locale,
+			ModelPermissions modelPermissions, ObjectEntry objectEntry,
 			List<ObjectEntryComment> objectEntryComments, long userId)
 		throws PortalException {
 
 		ServiceContext serviceContext = createServiceContext(
 			companyId, enableCategorization, groupId, objectEntry, userId);
 
-		serviceContext.setAttribute(
-			"friendlyUrlMap",
-			(Serializable)LocalizedMapUtil.populateI18nMap(
-				LocaleUtil.toLanguageId(locale),
-				objectEntry.getFriendlyUrlPath_i18n(),
-				objectEntry.getFriendlyUrlPath()));
+		if (enableFriendlyURLCustomization) {
+			serviceContext.setAttribute(
+				"friendlyUrlMap",
+				(Serializable)LocalizedMapUtil.populateI18nMap(
+					LocaleUtil.toLanguageId(locale),
+					objectEntry.getFriendlyUrlPath_i18n(),
+					objectEntry.getFriendlyUrlPath()));
+		}
+
 		serviceContext.setAttribute(
 			"objectEntryComments", (Serializable)objectEntryComments);
 		serviceContext.setCompanyId(companyId);
