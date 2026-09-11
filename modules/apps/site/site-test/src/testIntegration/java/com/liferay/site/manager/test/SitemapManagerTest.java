@@ -1761,6 +1761,43 @@ public class SitemapManagerTest {
 	}
 
 	@Test
+	public void testSitemapIndexExcludesUnpublishedLayout() throws Exception {
+		Layout publishedLayout = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		Layout unpublishedLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"xmlSitemapIndexEnabled", true
+						).build())) {
+
+			String xml = _sitemapManager.getSitemap(
+				_group.getGroupId(), false, _themeDisplay);
+
+			Document document = _saxReader.read(xml);
+
+			Element rootElement = document.getRootElement();
+
+			List<Element> elements = rootElement.elements();
+
+			Assert.assertNotNull(
+				xml,
+				_getLocElement(
+					elements, _buildLayoutSitemapURL(publishedLayout)));
+			Assert.assertNull(
+				xml,
+				_getLocElement(
+					elements, _buildLayoutSitemapURL(unpublishedLayout)));
+		}
+	}
+
+	@Test
 	public void testSitemapURLsWithLayoutFriendlyURLPublicServletMappingDisabled()
 		throws Exception {
 
