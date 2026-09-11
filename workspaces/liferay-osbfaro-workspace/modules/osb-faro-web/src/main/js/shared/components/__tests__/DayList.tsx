@@ -4,13 +4,6 @@ import {cleanup, render, screen} from '@testing-library/react';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/util/feature-flags', () => ({
-	...jest.requireActual('shared/util/feature-flags'),
-	ENABLE_DAY_LEVEL_ACTIVITY: true,
-}));
-
-const featureFlags = jest.requireMock('shared/util/feature-flags');
-
 const TIME_ZONE_ID = 'UTC';
 
 const buildDay = (
@@ -58,10 +51,6 @@ const buildCampaignDays = (date: string) => ({
 
 describe('DayList', () => {
 	afterEach(cleanup);
-
-	beforeEach(() => {
-		featureFlags.ENABLE_DAY_LEVEL_ACTIVITY = true;
-	});
 
 	it('renders a date header per day, most recent first', () => {
 		const {container} = render(
@@ -193,24 +182,6 @@ describe('DayList', () => {
 		expect(
 			container.querySelectorAll('.date-header .event-count-pill')
 		).toHaveLength(1);
-	});
-
-	it('leaves the day-level card out while the feature is off', () => {
-		featureFlags.ENABLE_DAY_LEVEL_ACTIVITY = false;
-
-		render(
-			<DayList
-				campaignDays={buildCampaignDays('2026-07-16')}
-				items={[buildDay('Jul 16', 3, 'Ada Lovelace', '2026-07-16')]}
-				timeZoneId={TIME_ZONE_ID}
-			/>
-		);
-
-		expect(screen.queryByText(/day.level/i)).not.toBeInTheDocument();
-		expect(screen.getByText(/timed.activity/i)).toBeInTheDocument();
-		expect(
-			screen.queryByText('Q3 Manufacturing ABM')
-		).not.toBeInTheDocument();
 	});
 
 	it('renders nothing when there are no days', () => {

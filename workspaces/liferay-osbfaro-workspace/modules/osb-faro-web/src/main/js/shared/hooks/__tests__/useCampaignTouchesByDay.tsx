@@ -9,13 +9,6 @@ import {useCampaignTouchesByDay} from '../useCampaignTouchesByDay';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/util/feature-flags', () => ({
-	...jest.requireActual('shared/util/feature-flags'),
-	ENABLE_DAY_LEVEL_MOCK_DATA: true,
-}));
-
-const featureFlags = jest.requireMock('shared/util/feature-flags');
-
 const VARIABLES = {
 	accountId: 'account-1',
 	channelId: 'channel-1',
@@ -57,120 +50,91 @@ const renderCampaignTouches = (mocks: unknown[] = [], skip = false) =>
 	});
 
 describe('useCampaignTouchesByDay', () => {
-	afterEach(() => {
-		featureFlags.ENABLE_DAY_LEVEL_MOCK_DATA = true;
+	it('holds nothing while the caller skips it', () => {
+		const {result} = renderCampaignTouches([], true);
+
+		expect(result.current.days).toEqual({});
 	});
 
-	describe('while the mock data flag is on', () => {
-		it('serves placeholder days rather than asking', () => {
-			const {result} = renderCampaignTouches();
-
-			expect(Object.keys(result.current.days).length).toBeGreaterThan(0);
-			expect(result.current.error).toBeUndefined();
-		});
-
-		it('answers a day pager from the placeholder itself', () => {
-			const {result} = renderCampaignTouches();
-
-			const [dayKey] = Object.keys(result.current.days);
-
-			act(() => result.current.onCampaignPageChange(dayKey, 2));
-
-			expect(result.current.days[dayKey].page).toBe(2);
-		});
-
-		it('holds nothing while the caller skips it', () => {
-			const {result} = renderCampaignTouches([], true);
-
-			expect(result.current.days).toEqual({});
-		});
-	});
-
-	describe('once the mock data flag is off', () => {
-		beforeEach(() => {
-			featureFlags.ENABLE_DAY_LEVEL_MOCK_DATA = false;
-		});
-
-		it('keys each answered day by its day, holding the day totals', async () => {
-			const {result} = renderCampaignTouches([
-				buildRequest(
+	it('keys each answered day by its day, holding the day totals', async () => {
+		const {result} = renderCampaignTouches([
+			buildRequest(
+				{
+					...VARIABLES,
+					date: null,
+					page: 0,
+					size: CAMPAIGNS_PER_PAGE,
+				},
+				[
 					{
-						...VARIABLES,
-						date: null,
-						page: 0,
-						size: CAMPAIGNS_PER_PAGE,
-					},
-					[
-						{
-							campaignsCount: 9,
-							date: '2026-07-16',
-							items: [buildTouch('c1')],
-							touchesCount: 12,
-						},
-					]
-				),
-			]);
-
-			await waitFor(() =>
-				expect(result.current.days['2026-07-16']).toBeDefined()
-			);
-
-			expect(result.current.days['2026-07-16']).toMatchObject({
-				campaignsCount: 9,
-				page: 1,
-				touchesCount: 12,
-			});
-		});
-
-		it('replaces a single day when its own pager moves', async () => {
-			const {result} = renderCampaignTouches([
-				buildRequest(
-					{
-						...VARIABLES,
-						date: null,
-						page: 0,
-						size: CAMPAIGNS_PER_PAGE,
-					},
-					[
-						{
-							campaignsCount: 9,
-							date: '2026-07-16',
-							items: [buildTouch('c1')],
-							touchesCount: 12,
-						},
-					]
-				),
-				buildRequest(
-					{
-						...VARIABLES,
+						campaignsCount: 9,
 						date: '2026-07-16',
-						page: 1,
-						size: CAMPAIGNS_PER_PAGE,
+						items: [buildTouch('c1')],
+						touchesCount: 12,
 					},
-					[
-						{
-							campaignsCount: 9,
-							date: '2026-07-16',
-							items: [buildTouch('c9')],
-							touchesCount: 12,
-						},
-					]
-				),
-			]);
+				]
+			),
+		]);
 
-			await waitFor(() =>
-				expect(result.current.days['2026-07-16']).toBeDefined()
-			);
+		await waitFor(() =>
+			expect(result.current.days['2026-07-16']).toBeDefined()
+		);
 
-			act(() => result.current.onCampaignPageChange('2026-07-16', 2));
-
-			await waitFor(() =>
-				expect(result.current.days['2026-07-16'].page).toBe(2)
-			);
-
-			expect(
-				result.current.days['2026-07-16'].campaigns[0].campaignId
-			).toBe('c9');
+		expect(result.current.days['2026-07-16']).toMatchObject({
+			campaignsCount: 9,
+			page: 1,
+			touchesCount: 12,
 		});
+	});
+
+	it('replaces a single day when its own pager moves', async () => {
+		const {result} = renderCampaignTouches([
+			buildRequest(
+				{
+					...VARIABLES,
+					date: null,
+					page: 0,
+					size: CAMPAIGNS_PER_PAGE,
+				},
+				[
+					{
+						campaignsCount: 9,
+						date: '2026-07-16',
+						items: [buildTouch('c1')],
+						touchesCount: 12,
+					},
+				]
+			),
+			buildRequest(
+				{
+					...VARIABLES,
+					date: '2026-07-16',
+					page: 1,
+					size: CAMPAIGNS_PER_PAGE,
+				},
+				[
+					{
+						campaignsCount: 9,
+						date: '2026-07-16',
+						items: [buildTouch('c9')],
+						touchesCount: 12,
+					},
+				]
+			),
+		]);
+
+		await waitFor(() =>
+			expect(result.current.days['2026-07-16']).toBeDefined()
+		);
+
+		act(() => result.current.onCampaignPageChange('2026-07-16', 2));
+
+		await waitFor(() =>
+			expect(result.current.days['2026-07-16'].page).toBe(2)
+		);
+
+		expect(result.current.days['2026-07-16'].campaigns[0].campaignId).toBe(
+			'c9'
+		);
 	});
 });

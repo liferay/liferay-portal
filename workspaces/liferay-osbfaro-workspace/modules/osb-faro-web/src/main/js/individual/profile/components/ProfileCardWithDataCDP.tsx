@@ -31,7 +31,6 @@ import {getSessionsDateRange} from 'shared/util/activityDateRange';
 import {Individual} from 'shared/util/records';
 import {Interval, RangeSelectors} from 'shared/types';
 import {mapListResultsToProps} from 'shared/util/mappers';
-import {ENABLE_DAY_LEVEL_ACTIVITY} from 'shared/util/feature-flags';
 import {SessionEntityTypes} from 'shared/util/constants';
 import {useParams} from 'react-router-dom';
 import {useCampaignTouchesByDay} from 'shared/hooks/useCampaignTouchesByDay';
@@ -117,21 +116,18 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 		}
 	);
 
-	const campaignTouches = useCampaignTouchesByDay(
-		{
-			channelId,
-			entityId,
-			entityType: SessionEntityTypes.Individual,
-			keywords: query,
-			...getSessionsDateRange({
-				activityHistory,
-				interval,
-				rangeSelectors,
-				selectedPoint,
-			}),
-		},
-		{skip: !ENABLE_DAY_LEVEL_ACTIVITY}
-	);
+	const campaignTouches = useCampaignTouchesByDay({
+		channelId,
+		entityId,
+		entityType: SessionEntityTypes.Individual,
+		keywords: query,
+		...getSessionsDateRange({
+			activityHistory,
+			interval,
+			rangeSelectors,
+			selectedPoint,
+		}),
+	});
 
 	const sessionsResponse = useQuery<UserSessionData, UserSessionVariables>(
 		UserSessionQuery,

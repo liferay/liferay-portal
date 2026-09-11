@@ -18,8 +18,6 @@ export const FEATURE_FLAGS_STORAGE_KEY = 'faro:feature-flags';
 export type FeatureFlagKey =
 	| 'ENABLE_ASSET_CARD'
 	| 'ENABLE_BLOCKLIST_KEYWORDS'
-	| 'ENABLE_DAY_LEVEL_ACTIVITY'
-	| 'ENABLE_DAY_LEVEL_MOCK_DATA'
 	| 'ENABLE_DELETE_DATA_SOURCE_BUTTON'
 	| 'ENABLE_FORM_ABANDONMENT';
 
@@ -31,8 +29,6 @@ export interface FeatureFlagDefinition {
 export const FEATURE_FLAGS: FeatureFlagDefinition[] = [
 	{defaultValue: false, key: 'ENABLE_ASSET_CARD'},
 	{defaultValue: false, key: 'ENABLE_BLOCKLIST_KEYWORDS'},
-	{defaultValue: false, key: 'ENABLE_DAY_LEVEL_ACTIVITY'},
-	{defaultValue: false, key: 'ENABLE_DAY_LEVEL_MOCK_DATA'},
 	{defaultValue: true, key: 'ENABLE_DELETE_DATA_SOURCE_BUTTON'},
 	{defaultValue: false, key: 'ENABLE_FORM_ABANDONMENT'},
 ];
@@ -97,14 +93,6 @@ export const ENABLE_ASSET_CARD = isFeatureFlagEnabled('ENABLE_ASSET_CARD');
 
 export const ENABLE_BLOCKLIST_KEYWORDS = isFeatureFlagEnabled(
 	'ENABLE_BLOCKLIST_KEYWORDS'
-);
-
-export const ENABLE_DAY_LEVEL_ACTIVITY = isFeatureFlagEnabled(
-	'ENABLE_DAY_LEVEL_ACTIVITY'
-);
-
-export const ENABLE_DAY_LEVEL_MOCK_DATA = isFeatureFlagEnabled(
-	'ENABLE_DAY_LEVEL_MOCK_DATA'
 );
 
 export const ENABLE_DELETE_DATA_SOURCE_BUTTON = isFeatureFlagEnabled(
