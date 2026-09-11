@@ -199,9 +199,10 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 			new MonitorResultStore(),
 			Arrays.<Monitor>asList(failingTestMonitor, testMonitor));
 
+		PrintStream printStream = System.out;
+
 		ByteArrayOutputStream byteArrayOutputStream =
 			new ByteArrayOutputStream();
-		PrintStream printStream = System.out;
 
 		System.setOut(new PrintStream(byteArrayOutputStream, true));
 
