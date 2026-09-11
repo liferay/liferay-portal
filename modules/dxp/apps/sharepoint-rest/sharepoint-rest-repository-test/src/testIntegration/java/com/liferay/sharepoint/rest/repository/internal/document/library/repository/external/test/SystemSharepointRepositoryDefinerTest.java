@@ -44,10 +44,10 @@ public class SystemSharepointRepositoryDefinerTest {
 		try {
 			Assert.assertTrue(
 				_hasExternalRepositoryClassName(
-					TestPropsValues.getCompanyId(), name));
+					RandomTestUtil.randomLong(), name));
 			Assert.assertTrue(
 				_hasExternalRepositoryClassName(
-					RandomTestUtil.randomLong(), name));
+					TestPropsValues.getCompanyId(), name));
 		}
 		finally {
 			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);

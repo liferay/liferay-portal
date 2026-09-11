@@ -44,12 +44,12 @@ public class ScopedSharepointRepositoryDefinerTest {
 			).build());
 
 		try {
-			Assert.assertTrue(
-				_hasExternalRepositoryClassName(
-					TestPropsValues.getCompanyId(), name));
 			Assert.assertFalse(
 				_hasExternalRepositoryClassName(
 					RandomTestUtil.randomLong(), name));
+			Assert.assertTrue(
+				_hasExternalRepositoryClassName(
+					TestPropsValues.getCompanyId(), name));
 		}
 		finally {
 			ConfigurationTestUtil.deleteFactoryConfiguration(pid, _FACTORY_PID);
