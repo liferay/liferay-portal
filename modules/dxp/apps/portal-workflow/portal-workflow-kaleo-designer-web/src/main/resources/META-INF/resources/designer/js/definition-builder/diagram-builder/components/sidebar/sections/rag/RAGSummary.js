@@ -49,7 +49,6 @@ const RAGSummary = () => {
 		>
 			<ClayForm.Group>
 				<ClayInput
-					className="mt-2"
 					component="textarea"
 					onChange={onRAGChanges()}
 					placeholder='{"contentRetriever": {"key": "liferay", "blueprintExternalReferenceCode": "BLUEPRINT_EXTERNAL_REFERENCE_CODE"}}'

@@ -47,7 +47,6 @@ const ToolsSummary = () => {
 		<SidebarPanel panelTitle={Liferay.Language.get('tools')}>
 			<ClayForm.Group>
 				<ClayInput
-					className="mt-2"
 					component="textarea"
 					onChange={onToolsChanges()}
 					placeholder='[{"externalReferenceCode":"L_LIFERAY_AI_HUB_MCP_SERVER"}]'
