@@ -481,7 +481,7 @@ public class DBResourceUtil {
 		"create table\\s+(\\w+)\\s*\\((?:[^;]*?)?primary key\\s*\\(([^)]+)\\)",
 		Pattern.DOTALL);
 	private static final Pattern _createTableColumnsPattern = Pattern.compile(
-		"create table (\\S+) \\(([^;]*)\\);");
+		"create table (\\S+) \\(([^;<]*)\\);");
 	private static final Pattern _createTablePattern = Pattern.compile(
 		"create table (\\S*) \\(");
 	private static final Pattern _inlinedPrimaryKeyPattern = Pattern.compile(
