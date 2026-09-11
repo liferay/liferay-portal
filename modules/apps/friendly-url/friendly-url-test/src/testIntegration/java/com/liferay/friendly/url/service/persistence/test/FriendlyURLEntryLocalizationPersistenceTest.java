@@ -256,18 +256,6 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C_P_NotL_U() throws Exception {
-		_persistence.countByG_C_P_NotL_U(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), "", "");
-
-		_persistence.countByG_C_P_NotL_U(0L, 0L, 0L, "null", "null");
-
-		_persistence.countByG_C_P_NotL_U(
-			0L, 0L, 0L, (String)null, (String)null);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		FriendlyURLEntryLocalization newFriendlyURLEntryLocalization =
 			addFriendlyURLEntryLocalization();
@@ -662,4 +650,4 @@ public class FriendlyURLEntryLocalizationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-582172179
+// LIFERAY-SERVICE-BUILDER-HASH:1378018812

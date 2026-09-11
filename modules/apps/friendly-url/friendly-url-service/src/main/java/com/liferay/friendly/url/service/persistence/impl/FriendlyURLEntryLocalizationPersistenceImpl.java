@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -89,7 +88,7 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 	 * Returns an ordered range of all the friendly url entry localizations where friendlyURLEntryId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
 	 * </p>
 	 *
 	 * @param friendlyURLEntryId the friendly url entry ID
@@ -248,7 +247,7 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and urlTitle = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -347,7 +346,7 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and urlTitle = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -461,7 +460,7 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 	 * Returns an ordered range of all the friendly url entry localizations where companyId = &#63; and classNameId = &#63; and urlTitle = &#63; and ctCollectionId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
 	 * </p>
 	 *
 	 * @param companyId the company ID
@@ -578,7 +577,7 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and classPK = &#63; and languageId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
 	 * </p>
 	 *
 	 * @param groupId the group ID
@@ -775,213 +774,6 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 		String urlTitle) {
 
 		return _uniquePersistenceFinderByG_C_P_L_U.count(
-			finderCache,
-			new Object[] {
-				groupId, classNameId, parentClassPK, languageId, urlTitle
-			});
-	}
-
-	private CollectionPersistenceFinder
-		<FriendlyURLEntryLocalization,
-		 NoSuchFriendlyURLEntryLocalizationException>
-			_collectionPersistenceFinderByG_C_P_NotL_U;
-
-	/**
-	 * Returns all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 * @return the matching friendly url entry localizations
-	 */
-	@Override
-	public List<FriendlyURLEntryLocalization> findByG_C_P_NotL_U(
-		long groupId, long classNameId, long parentClassPK, String languageId,
-		String urlTitle) {
-
-		return findByG_C_P_NotL_U(
-			groupId, classNameId, parentClassPK, languageId, urlTitle,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 * @param start the lower bound of the range of friendly url entry localizations
-	 * @param end the upper bound of the range of friendly url entry localizations (not inclusive)
-	 * @return the range of matching friendly url entry localizations
-	 */
-	@Override
-	public List<FriendlyURLEntryLocalization> findByG_C_P_NotL_U(
-		long groupId, long classNameId, long parentClassPK, String languageId,
-		String urlTitle, int start, int end) {
-
-		return findByG_C_P_NotL_U(
-			groupId, classNameId, parentClassPK, languageId, urlTitle, start,
-			end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 * @param start the lower bound of the range of friendly url entry localizations
-	 * @param end the upper bound of the range of friendly url entry localizations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching friendly url entry localizations
-	 */
-	@Override
-	public List<FriendlyURLEntryLocalization> findByG_C_P_NotL_U(
-		long groupId, long classNameId, long parentClassPK, String languageId,
-		String urlTitle, int start, int end,
-		OrderByComparator<FriendlyURLEntryLocalization> orderByComparator) {
-
-		return findByG_C_P_NotL_U(
-			groupId, classNameId, parentClassPK, languageId, urlTitle, start,
-			end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>FriendlyURLEntryLocalizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 * @param start the lower bound of the range of friendly url entry localizations
-	 * @param end the upper bound of the range of friendly url entry localizations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching friendly url entry localizations
-	 */
-	@Override
-	public List<FriendlyURLEntryLocalization> findByG_C_P_NotL_U(
-		long groupId, long classNameId, long parentClassPK, String languageId,
-		String urlTitle, int start, int end,
-		OrderByComparator<FriendlyURLEntryLocalization> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_C_P_NotL_U.find(
-			finderCache,
-			new Object[] {
-				groupId, classNameId, parentClassPK, languageId, urlTitle
-			},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first friendly url entry localization in the ordered set where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching friendly url entry localization
-	 * @throws NoSuchFriendlyURLEntryLocalizationException if a matching friendly url entry localization could not be found
-	 */
-	@Override
-	public FriendlyURLEntryLocalization findByG_C_P_NotL_U_First(
-			long groupId, long classNameId, long parentClassPK,
-			String languageId, String urlTitle,
-			OrderByComparator<FriendlyURLEntryLocalization> orderByComparator)
-		throws NoSuchFriendlyURLEntryLocalizationException {
-
-		return _collectionPersistenceFinderByG_C_P_NotL_U.findFirst(
-			finderCache,
-			new Object[] {
-				groupId, classNameId, parentClassPK, languageId, urlTitle
-			},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first friendly url entry localization in the ordered set where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching friendly url entry localization, or <code>null</code> if a matching friendly url entry localization could not be found
-	 */
-	@Override
-	public FriendlyURLEntryLocalization fetchByG_C_P_NotL_U_First(
-		long groupId, long classNameId, long parentClassPK, String languageId,
-		String urlTitle,
-		OrderByComparator<FriendlyURLEntryLocalization> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_C_P_NotL_U.fetchFirst(
-			finderCache,
-			new Object[] {
-				groupId, classNameId, parentClassPK, languageId, urlTitle
-			},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 */
-	@Override
-	public void removeByG_C_P_NotL_U(
-		long groupId, long classNameId, long parentClassPK, String languageId,
-		String urlTitle) {
-
-		_collectionPersistenceFinderByG_C_P_NotL_U.remove(
-			finderCache,
-			new Object[] {
-				groupId, classNameId, parentClassPK, languageId, urlTitle
-			});
-	}
-
-	/**
-	 * Returns the number of friendly url entry localizations where groupId = &#63; and classNameId = &#63; and parentClassPK = &#63; and languageId &ne; &#63; and urlTitle = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param parentClassPK the parent class pk
-	 * @param languageId the language ID
-	 * @param urlTitle the url title
-	 * @return the number of matching friendly url entry localizations
-	 */
-	@Override
-	public int countByG_C_P_NotL_U(
-		long groupId, long classNameId, long parentClassPK, String languageId,
-		String urlTitle) {
-
-		return _collectionPersistenceFinderByG_C_P_NotL_U.count(
 			finderCache,
 			new Object[] {
 				groupId, classNameId, parentClassPK, languageId, urlTitle
@@ -1569,63 +1361,6 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 				FinderColumn.Type.STRING, "=", true, true,
 				FriendlyURLEntryLocalization::getUrlTitle));
 
-		_collectionPersistenceFinderByG_C_P_NotL_U =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByG_C_P_NotL_U",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), String.class.getName(),
-						String.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {
-						"groupId", "classNameId", "parentClassPK", "languageId",
-						"urlTitle"
-					},
-					true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"countByG_C_P_NotL_U",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), String.class.getName(),
-						String.class.getName()
-					},
-					new String[] {
-						"groupId", "classNameId", "parentClassPK", "languageId",
-						"urlTitle"
-					},
-					false),
-				_SQL_SELECT_FRIENDLYURLENTRYLOCALIZATION_WHERE,
-				_SQL_COUNT_FRIENDLYURLENTRYLOCALIZATION_WHERE,
-				FriendlyURLEntryLocalizationModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"friendlyURLEntryLocalization.", "groupId",
-					FinderColumn.Type.LONG, "=", true, true,
-					FriendlyURLEntryLocalization::getGroupId),
-				new FinderColumn<>(
-					"friendlyURLEntryLocalization.", "classNameId",
-					FinderColumn.Type.LONG, "=", true, true,
-					FriendlyURLEntryLocalization::getClassNameId),
-				new FinderColumn<>(
-					"friendlyURLEntryLocalization.", "parentClassPK",
-					FinderColumn.Type.LONG, "=", true, true,
-					FriendlyURLEntryLocalization::getParentClassPK),
-				new FinderColumn<>(
-					"friendlyURLEntryLocalization.", "languageId",
-					FinderColumn.Type.STRING, "!=", true, true,
-					FriendlyURLEntryLocalization::getLanguageId),
-				new FinderColumn<>(
-					"friendlyURLEntryLocalization.", "urlTitle",
-					FinderColumn.Type.STRING, "=", true, true,
-					FriendlyURLEntryLocalization::getUrlTitle));
-
 		FriendlyURLEntryLocalizationUtil.setPersistence(this);
 	}
 
@@ -1690,4 +1425,4 @@ public class FriendlyURLEntryLocalizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1381039834
+// LIFERAY-SERVICE-BUILDER-HASH:837338650
