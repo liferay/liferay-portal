@@ -68,26 +68,27 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 			return;
 		}
 
-		HttpServletRequest httpServletRequest =
-			_portal.getOriginalServletRequest(
-				_portal.getHttpServletRequest(resourceRequest));
-
 		JSONObject preferencesJSONObject = _jsonFactory.createJSONObject();
 
 		long companyId = themeDisplay.getCompanyId();
 
-		JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
+		HttpServletRequest httpServletRequest =
+			_portal.getOriginalServletRequest(
+				_portal.getHttpServletRequest(resourceRequest));
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			ParamUtil.getString(httpServletRequest, "preferences"));
 
 		_checkInitialDataSetSnapshotERC(
-			companyId, payloadJSONObject, preferencesJSONObject, user);
+			companyId, jsonObject.getString("initialDataSetSnapshotERC"),
+			preferencesJSONObject, user);
+
+		String fdsName = ParamUtil.getString(httpServletRequest, "fdsName");
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_USER_PREFERENCES", companyId);
-
-		String fdsName = ParamUtil.getString(httpServletRequest, "fdsName");
 
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -107,12 +108,9 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 	}
 
 	private void _checkInitialDataSetSnapshotERC(
-			long companyId, JSONObject payloadJSONObject,
+			long companyId, String initialDataSetSnapshotERC,
 			JSONObject preferencesJSONObject, User user)
 		throws Exception {
-
-		String initialDataSetSnapshotERC = payloadJSONObject.getString(
-			"initialDataSetSnapshotERC");
 
 		if (Validator.isNull(initialDataSetSnapshotERC)) {
 			return;
