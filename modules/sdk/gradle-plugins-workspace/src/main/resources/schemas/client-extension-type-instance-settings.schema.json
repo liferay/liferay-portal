@@ -5013,6 +5013,24 @@
 		},
 		{
 			"properties": {
+				"htmlInlineCodeProtectionEnabled": {
+					"default": false,
+					"description": "When enabled, translation XLIFF exports protect the markup of HTML fields with XLIFF inline code elements, so machine translation services and translation tools can distinguish markup from translatable text and return it unchanged.",
+					"title": "Protect HTML Field Markup with XLIFF Inline Codes",
+					"type": "boolean"
+				},
+				"pid": {
+					"const": "com.liferay.translation.internal.configuration.TranslationCompanyConfiguration",
+					"title": "Translation"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Translation"
+		},
+		{
+			"properties": {
 				"accessKey": {
 					"default": "",
 					"title": "Access Key",
@@ -5331,6 +5349,7 @@
 				"com.liferay.site.internal.configuration.SitemapCompanyConfiguration",
 				"com.liferay.social.activity.internal.configuration.SocialActivityCompanyConfiguration",
 				"com.liferay.staging.configuration.StagingConfiguration",
+				"com.liferay.translation.internal.configuration.TranslationCompanyConfiguration",
 				"com.liferay.translation.translator.aws.internal.configuration.AWSTranslatorConfiguration",
 				"com.liferay.translation.translator.azure.internal.configuration.AzureTranslatorConfiguration",
 				"com.liferay.translation.translator.deepl.internal.configuration.DeepLTranslatorConfiguration",
