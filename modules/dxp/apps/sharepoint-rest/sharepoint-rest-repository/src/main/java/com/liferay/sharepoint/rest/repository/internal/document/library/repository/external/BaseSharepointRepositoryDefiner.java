@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -39,19 +39,13 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Adolfo Pérez
  */
-@Component(
-	configurationPid = "com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration",
-	configurationPolicy = ConfigurationPolicy.REQUIRE,
-	service = RepositoryDefiner.class
-)
-public class SharepointRepositoryDefiner implements RepositoryDefiner {
+public abstract class BaseSharepointRepositoryDefiner
+	implements RepositoryDefiner {
 
 	@Override
 	public String getClassName() {
@@ -73,7 +67,7 @@ public class SharepointRepositoryDefiner implements RepositoryDefiner {
 
 	@Override
 	public String getRepositoryTypeLabel(Locale locale) {
-		String label = _language.get(locale, "sharepoint");
+		String label = language.get(locale, "sharepoint");
 
 		return String.format(
 			"%s (%s)", label, _sharepointRepositoryConfiguration.name());
@@ -90,7 +84,7 @@ public class SharepointRepositoryDefiner implements RepositoryDefiner {
 
 		capabilityRegistry.addSupportedCapability(
 			ProcessorCapability.class,
-			_portalCapabilityLocator.getProcessorCapability(
+			portalCapabilityLocator.getProcessorCapability(
 				capabilityRegistry.getTarget(),
 				ProcessorCapability.ResourceGenerationStrategy.
 					ALWAYS_GENERATE));
@@ -98,7 +92,7 @@ public class SharepointRepositoryDefiner implements RepositoryDefiner {
 		capabilityRegistry.addExportedCapability(
 			AuthorizationCapability.class,
 			new SharepointRepositoryAuthorizationCapability(
-				_tokenStore, _sharepointRepositoryConfiguration,
+				tokenStore, _sharepointRepositoryConfiguration,
 				SharepointRepositoryTokenBrokerFactoryUtil.create(
 					_sharepointRepositoryConfiguration)));
 	}
@@ -125,37 +119,37 @@ public class SharepointRepositoryDefiner implements RepositoryDefiner {
 	}
 
 	@Reference
-	private AssetEntryLocalService _assetEntryLocalService;
+	protected AssetEntryLocalService assetEntryLocalService;
 
 	@Reference
-	private CompanyLocalService _companyLocalService;
+	protected CompanyLocalService companyLocalService;
 
 	@Reference
-	private DLAppHelperLocalService _dlAppHelperLocalService;
+	protected DLAppHelperLocalService dlAppHelperLocalService;
 
 	@Reference
-	private DLFolderLocalService _dlFolderLocalService;
+	protected DLFolderLocalService dlFolderLocalService;
 
 	@Reference
-	private Language _language;
+	protected Language language;
 
 	@Reference
-	private PortalCapabilityLocator _portalCapabilityLocator;
+	protected PortalCapabilityLocator portalCapabilityLocator;
 
 	@Reference
-	private RepositoryEntryLocalService _repositoryEntryLocalService;
+	protected RepositoryEntryLocalService repositoryEntryLocalService;
 
 	@Reference
-	private RepositoryLocalService _repositoryLocalService;
+	protected RepositoryLocalService repositoryLocalService;
+
+	@Reference
+	protected TokenStore tokenStore;
+
+	@Reference
+	protected UserLocalService userLocalService;
 
 	private SharepointRepositoryConfiguration
 		_sharepointRepositoryConfiguration;
-
-	@Reference
-	private TokenStore _tokenStore;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 	private class SharepointRepositoryFactory implements RepositoryFactory {
 
@@ -190,30 +184,30 @@ public class SharepointRepositoryDefiner implements RepositoryDefiner {
 				new SharepointExtRepositoryAdapter(
 					new SharepointCachingExtRepository(
 						new SharepointExtRepository(
-							_tokenStore, _sharepointRepositoryConfiguration)));
+							tokenStore, _sharepointRepositoryConfiguration)));
 
 			sharepointExtRepositoryAdapter.setAssetEntryLocalService(
-				_assetEntryLocalService);
+				assetEntryLocalService);
 
 			com.liferay.portal.kernel.model.Repository repository =
-				_repositoryLocalService.getRepository(repositoryId);
+				repositoryLocalService.getRepository(repositoryId);
 
 			sharepointExtRepositoryAdapter.setCompanyId(
 				repository.getCompanyId());
 
 			sharepointExtRepositoryAdapter.setCompanyLocalService(
-				_companyLocalService);
+				companyLocalService);
 			sharepointExtRepositoryAdapter.setDLAppHelperLocalService(
-				_dlAppHelperLocalService);
+				dlAppHelperLocalService);
 			sharepointExtRepositoryAdapter.setDLFolderLocalService(
-				_dlFolderLocalService);
+				dlFolderLocalService);
 			sharepointExtRepositoryAdapter.setGroupId(repository.getGroupId());
 			sharepointExtRepositoryAdapter.setRepositoryId(
 				repository.getRepositoryId());
 			sharepointExtRepositoryAdapter.setRepositoryEntryLocalService(
-				_repositoryEntryLocalService);
+				repositoryEntryLocalService);
 			sharepointExtRepositoryAdapter.setUserLocalService(
-				_userLocalService);
+				userLocalService);
 			sharepointExtRepositoryAdapter.setTypeSettingsProperties(
 				repository.getTypeSettingsProperties());
 

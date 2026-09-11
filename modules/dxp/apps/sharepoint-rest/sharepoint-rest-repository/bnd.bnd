@@ -10,3 +10,4 @@ Import-Package:\
 	\
 	*
 Liferay-Releng-Module-Group-Title: Sharepoint
+-dsannotations-options: inherit
