@@ -29,7 +29,9 @@ export class CommerceAdminPriceListDetailsPage extends CommerceDNDTablePage {
 	readonly eligibilityRowSelectButton: (entryName: string) => Locator;
 	readonly eligibilityTab: Locator;
 	readonly entriesTab: Locator;
+	readonly errorAlert: (text: string) => Locator;
 	readonly findSkuInput: Locator;
+	readonly itemFinderRows: Locator;
 	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly parentAutocomplete: Locator;
@@ -125,7 +127,10 @@ export class CommerceAdminPriceListDetailsPage extends CommerceDNDTablePage {
 			name: 'Eligibility',
 		});
 		this.entriesTab = page.getByRole('link', {name: 'Entries'});
+		this.errorAlert = (text: string) =>
+			page.locator('.alert-danger', {hasText: text});
 		this.findSkuInput = page.getByPlaceholder('Find a SKU');
+		this.itemFinderRows = page.locator('.add-or-create tbody tr');
 		this.nameInput = page.locator('input[name$="_name"]').first();
 		this.page = page;
 		this.parentAutocomplete = page
