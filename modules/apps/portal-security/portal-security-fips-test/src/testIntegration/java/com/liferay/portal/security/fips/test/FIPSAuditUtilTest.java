@@ -11,6 +11,8 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.security.fips.FIPSApplicationState;
+import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
 import com.liferay.portal.kernel.security.fips.FIPSAuditEvent;
 import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -104,6 +106,12 @@ public class FIPSAuditUtilTest {
 		JSONObject fieldsJSONObject = jsonObject.getJSONObject("fields");
 
 		Assert.assertEquals(reason, fieldsJSONObject.getString("reason"));
+
+		FIPSApplicationState fipsApplicationState =
+			FIPSApplicationStateMachineUtil.getFIPSApplicationState();
+
+		Assert.assertEquals(
+			fipsApplicationState.name(), jsonObject.getString("fips-state"));
 
 		Provider provider = Security.getProviders()[0];
 
