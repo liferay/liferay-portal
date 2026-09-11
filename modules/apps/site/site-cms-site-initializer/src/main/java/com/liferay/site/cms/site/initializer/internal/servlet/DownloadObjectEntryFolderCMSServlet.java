@@ -268,7 +268,7 @@ public class DownloadObjectEntryFolderCMSServlet extends BaseCMSServlet {
 		if (StringUtil.equalsIgnoreCase(
 				className, ObjectEntryFolder.class.getName())) {
 
-			ObjectEntryFolder objectEntryFolder;
+			ObjectEntryFolder objectEntryFolder = null;
 
 			try {
 				objectEntryFolder =
@@ -299,15 +299,14 @@ public class DownloadObjectEntryFolderCMSServlet extends BaseCMSServlet {
 			PermissionChecker permissionChecker, ZipWriter zipWriter)
 		throws IOException, PortalException {
 
+		ObjectField attachmentObjectField = null;
+		long fileEntryId = 0;
 		Map<String, Serializable> values = objectEntry.getValues();
 
 		List<ObjectField> attachmentObjectFields =
 			_objectFieldLocalService.getObjectFieldsByBusinessType(
 				objectEntry.getObjectDefinitionId(),
 				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
-
-		ObjectField attachmentObjectField = null;
-		long fileEntryId = 0;
 
 		for (ObjectField objectField : attachmentObjectFields) {
 			long candidateFileEntryId = GetterUtil.getLong(
