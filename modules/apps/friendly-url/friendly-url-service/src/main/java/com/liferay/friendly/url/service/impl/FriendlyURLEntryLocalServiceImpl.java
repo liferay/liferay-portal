@@ -341,34 +341,20 @@ public class FriendlyURLEntryLocalServiceImpl
 	public FriendlyURLEntry fetchFriendlyURLEntry(
 		long groupId, long classNameId, long parentClassPK, String urlTitle) {
 
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
-			friendlyURLEntryLocalizationPersistence.fetchByG_C_P_U_First(
+		return _fetchFriendlyURLEntry(
+			friendlyURLEntryLocalizationPersistence.findByG_C_P_U(
 				groupId, classNameId, parentClassPK,
-				_friendlyURLNormalizer.normalizeWithEncoding(urlTitle), null);
-
-		if (friendlyURLEntryLocalization == null) {
-			return null;
-		}
-
-		return friendlyURLEntryPersistence.fetchByPrimaryKey(
-			friendlyURLEntryLocalization.getFriendlyURLEntryId());
+				_friendlyURLNormalizer.normalizeWithEncoding(urlTitle)));
 	}
 
 	@Override
 	public FriendlyURLEntry fetchFriendlyURLEntry(
 		long groupId, long classNameId, String urlTitle) {
 
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
-			friendlyURLEntryLocalizationPersistence.fetchByG_C_U_First(
+		return _fetchFriendlyURLEntry(
+			friendlyURLEntryLocalizationPersistence.findByG_C_U(
 				groupId, classNameId,
-				_friendlyURLNormalizer.normalizeWithEncoding(urlTitle), null);
-
-		if (friendlyURLEntryLocalization == null) {
-			return null;
-		}
-
-		return friendlyURLEntryPersistence.fetchByPrimaryKey(
-			friendlyURLEntryLocalization.getFriendlyURLEntryId());
+				_friendlyURLNormalizer.normalizeWithEncoding(urlTitle)));
 	}
 
 	@Override
@@ -812,6 +798,20 @@ public class FriendlyURLEntryLocalServiceImpl
 		_deleteAssetEntry(
 			FriendlyURLEntry.class.getName(),
 			friendlyURLEntry.getFriendlyURLEntryId());
+	}
+
+	private FriendlyURLEntry _fetchFriendlyURLEntry(
+		List<FriendlyURLEntryLocalization> friendlyURLEntryLocalizations) {
+
+		if (friendlyURLEntryLocalizations.isEmpty()) {
+			return null;
+		}
+
+		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+			friendlyURLEntryLocalizations.get(0);
+
+		return friendlyURLEntryPersistence.fetchByPrimaryKey(
+			friendlyURLEntryLocalization.getFriendlyURLEntryId());
 	}
 
 	private String _getURLEncodedSubstring(
