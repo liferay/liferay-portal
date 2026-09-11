@@ -43,9 +43,7 @@ public class AssetEntrySAPEntryUpgradeProcessTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testUpgradeQualifiesAssetEntryDefaultSignature()
-		throws Exception {
-
+	public void testUpgrade() throws Exception {
 		Company company = CompanyTestUtil.addCompany();
 
 		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
