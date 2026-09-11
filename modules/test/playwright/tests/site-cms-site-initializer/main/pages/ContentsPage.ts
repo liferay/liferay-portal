@@ -39,6 +39,12 @@ type Field =
 	| {
 			label: string;
 			nth?: number;
+			type: 'Date';
+			value: string;
+	  }
+	| {
+			label: string;
+			nth?: number;
 			type: 'Picklist';
 			value: string;
 	  };
@@ -231,11 +237,12 @@ export class ContentsPage {
 
 	async fillData(fields: Field[]) {
 		for (const field of fields) {
-			const element = this.page
-				.getByLabel(field.label)
-				.nth(field.nth || 0);
+			const element =
+				'type' in field && field.type === 'Date'
+					? this.getDateInput(field.label, field.nth)
+					: this.page.getByLabel(field.label).nth(field.nth || 0);
 
-			if (!('type' in field)) {
+			if (!('type' in field) || field.type === 'Date') {
 				await element.fill(field.value);
 			}
 			else if (field.type === 'Rich Text') {
@@ -255,6 +262,13 @@ export class ContentsPage {
 				});
 			}
 		}
+	}
+
+	getDateInput(label: string, nth: number = 0) {
+		return this.page
+			.getByLabel(label)
+			.and(this.page.getByRole('textbox'))
+			.nth(nth);
 	}
 
 	async navigateTo(folderName: string) {

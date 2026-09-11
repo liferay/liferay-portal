@@ -192,7 +192,7 @@ test(
 		await contentsPage.fillData([
 			{label: 'Title', value: contentTitle},
 			{label: 'Long Text', value: 'This is a fruit'},
-			{label: 'Date', value: '2025-08-08'},
+			{label: 'Date', type: 'Date', value: '08/08/2025'},
 			{label: 'Boolean', type: 'Checkbox', value: true},
 			{label: 'Picklist', type: 'Picklist', value: 'Banana'},
 		]);
@@ -213,7 +213,7 @@ test(
 		await expect(page.getByLabel('Long Text').first()).toHaveAttribute(
 			'readonly'
 		);
-		await expect(page.getByLabel('Date').first()).toHaveAttribute(
+		await expect(contentsPage.getDateInput('Date')).toHaveAttribute(
 			'readonly'
 		);
 		await expect(page.getByLabel('Boolean').first()).toHaveAttribute(
@@ -229,7 +229,7 @@ test(
 		await expect(page.getByLabel('Long Text').nth(1)).not.toHaveAttribute(
 			'readonly'
 		);
-		await expect(page.getByLabel('Date').nth(1)).not.toHaveAttribute(
+		await expect(contentsPage.getDateInput('Date', 1)).not.toHaveAttribute(
 			'readonly'
 		);
 		await expect(page.getByLabel('Boolean').nth(1)).not.toHaveAttribute(
@@ -258,7 +258,7 @@ test(
 		await contentsPage.fillData([
 			{label: 'Title', nth: 1, value: spanishTitle},
 			{label: 'Long Text', nth: 1, value: 'This is a vegetable'},
-			{label: 'Date', nth: 1, value: '2025-08-15'},
+			{label: 'Date', nth: 1, type: 'Date', value: '08/15/2025'},
 			{label: 'Boolean', nth: 1, type: 'Checkbox', value: false},
 			{label: 'Picklist', nth: 1, type: 'Picklist', value: 'Apple'},
 		]);
@@ -274,7 +274,9 @@ test(
 			'This is a fruit'
 		);
 
-		await expect(page.getByLabel('Date').first()).toHaveValue('2025-08-08');
+		await expect(contentsPage.getDateInput('Date')).toHaveValue(
+			'08/08/2025'
+		);
 
 		await expect(page.getByLabel('Picklist').first()).toHaveValue('Banana');
 
@@ -324,7 +326,7 @@ async function createSampleStructureContent(
 	await contentsPage.fillData([
 		{label: 'Title', value: contentTitle},
 		{label: 'Long Text', value: 'This is a fruit'},
-		{label: 'Date', value: '2026-08-08'},
+		{label: 'Date', type: 'Date', value: '08/08/2026'},
 		{label: 'Boolean', type: 'Checkbox', value: true},
 		{label: 'Picklist', type: 'Picklist', value: 'Banana'},
 	]);
@@ -362,7 +364,7 @@ test(
 		await contentsPage.fillData([
 			{label: 'Title', nth: 1, value: `Spanish ${contentTitle}`},
 			{label: 'Long Text', nth: 1, value: 'Esto es una fruta'},
-			{label: 'Date', nth: 1, value: '2026-08-15'},
+			{label: 'Date', nth: 1, type: 'Date', value: '08/15/2026'},
 			{label: 'Boolean', nth: 1, type: 'Checkbox', value: false},
 			{label: 'Picklist', nth: 1, type: 'Picklist', value: 'Apple'},
 		]);
