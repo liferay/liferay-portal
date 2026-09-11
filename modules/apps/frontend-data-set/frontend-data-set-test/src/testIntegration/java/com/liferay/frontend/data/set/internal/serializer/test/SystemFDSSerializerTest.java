@@ -75,29 +75,30 @@ public class SystemFDSSerializerTest {
 	public void setUp() throws Exception {
 		FrontendDataSetTestUtil.initialize(SystemFDSSerializerTest.class);
 
-		_memberUser = UserTestUtil.addUser();
-		_otherUser = UserTestUtil.addUser();
-		_userGroup = UserGroupTestUtil.addUserGroup();
-
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_SNAPSHOT", TestPropsValues.getCompanyId());
 
-		_objectEntry = _addObjectEntry(_FDS_NAME, _LABEL, objectDefinition);
+		_dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
+			_FDS_NAME, _LABEL, objectDefinition);
+
+		_memberUser = UserTestUtil.addUser();
+
+		_userGroup = UserGroupTestUtil.addUserGroup();
+
+		_userLocalService.addUserGroupUser(
+			_userGroup.getUserGroupId(), _memberUser.getUserId());
 
 		_sharingEntry = _sharingEntryLocalService.addSharingEntry(
 			null, TestPropsValues.getUserId(), 0, _userGroup.getUserGroupId(),
 			0,
 			_classNameLocalService.getClassNameId(
 				objectDefinition.getClassName()),
-			_objectEntry.getObjectEntryId(), 0, true,
+			_dataSetSnapshotObjectEntry.getObjectEntryId(), 0, true,
 			Arrays.asList(SharingEntryAction.VIEW), null,
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
-
-		_userLocalService.addUserGroupUser(
-			_userGroup.getUserGroupId(), _memberUser.getUserId());
 	}
 
 	@Test
@@ -106,15 +107,18 @@ public class SystemFDSSerializerTest {
 			_FDS_NAME, _getHttpServletRequest(_memberUser.getUserId()));
 
 		JSONObject itemJSONObject = _getItemJSONObject(
-			jsonArray, _objectEntry.getObjectEntryId());
+			jsonArray, _dataSetSnapshotObjectEntry.getObjectEntryId());
 
 		Assert.assertEquals(_LABEL, itemJSONObject.getString("label"));
 
+		_nonmemberUser = UserTestUtil.addUser();
+
 		jsonArray = _fdsSerializer.serializeSnapshots(
-			_FDS_NAME, _getHttpServletRequest(_otherUser.getUserId()));
+			_FDS_NAME, _getHttpServletRequest(_nonmemberUser.getUserId()));
 
 		Assert.assertNull(
-			_getItemJSONObject(jsonArray, _objectEntry.getObjectEntryId()));
+			_getItemJSONObject(
+				jsonArray, _dataSetSnapshotObjectEntry.getObjectEntryId()));
 	}
 
 	@Test
@@ -132,7 +136,7 @@ public class SystemFDSSerializerTest {
 					"L_DATA_SET_USER_PREFERENCES",
 					TestPropsValues.getCompanyId());
 
-		// malformed preferences
+		// malformed JSON object
 
 		_dataSetUserPreferencesObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
@@ -152,7 +156,7 @@ public class SystemFDSSerializerTest {
 			_fdsSerializer.serializeUserPreferences(
 				_FDS_NAME, httpServletRequest));
 
-		// valid preferences
+		// valid JSON object
 
 		_dataSetUserPreferencesObjectEntry =
 			_objectEntryLocalService.updateObjectEntry(
@@ -164,7 +168,7 @@ public class SystemFDSSerializerTest {
 					"preferences",
 					JSONUtil.put(
 						"initialDataSetSnapshotERC",
-						_objectEntry.getExternalReferenceCode()
+						_dataSetSnapshotObjectEntry.getExternalReferenceCode()
 					).toString()
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
@@ -173,7 +177,7 @@ public class SystemFDSSerializerTest {
 		JSONAssert.assertEquals(
 			JSONUtil.put(
 				"initialDataSetSnapshotERC",
-				_objectEntry.getExternalReferenceCode()
+				_dataSetSnapshotObjectEntry.getExternalReferenceCode()
 			).toString(),
 			_fdsSerializer.serializeUserPreferences(
 				_FDS_NAME, httpServletRequest
@@ -181,7 +185,7 @@ public class SystemFDSSerializerTest {
 			JSONCompareMode.STRICT);
 	}
 
-	private ObjectEntry _addObjectEntry(
+	private ObjectEntry _addDataSetSnapshotObjectEntry(
 			String fdsName, String label, ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -245,6 +249,9 @@ public class SystemFDSSerializerTest {
 	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
+	private ObjectEntry _dataSetSnapshotObjectEntry;
+
+	@DeleteAfterTestRun
 	private ObjectEntry _dataSetUserPreferencesObjectEntry;
 
 	@Inject(filter = "frontend.data.set.serializer.type=system")
@@ -253,17 +260,14 @@ public class SystemFDSSerializerTest {
 	@DeleteAfterTestRun
 	private User _memberUser;
 
+	@DeleteAfterTestRun
+	private User _nonmemberUser;
+
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-	@DeleteAfterTestRun
-	private ObjectEntry _objectEntry;
-
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@DeleteAfterTestRun
-	private User _otherUser;
 
 	@DeleteAfterTestRun
 	private SharingEntry _sharingEntry;
