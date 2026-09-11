@@ -5176,9 +5176,12 @@ public class PortalImpl implements Portal {
 			String remoteUser = httpServletRequest.getRemoteUser();
 
 			if ((remoteUser == null) && !PropsValues.PORTAL_JAAS_ENABLE) {
-				HttpSession httpSession = httpServletRequest.getSession();
+				HttpSession httpSession = httpServletRequest.getSession(false);
 
-				remoteUser = (String)httpSession.getAttribute("j_remoteuser");
+				if (httpSession != null) {
+					remoteUser = (String)httpSession.getAttribute(
+						"j_remoteuser");
+				}
 			}
 
 			if (remoteUser == null) {
@@ -5293,14 +5296,16 @@ public class PortalImpl implements Portal {
 			}
 		}
 
-		HttpSession httpSession = httpServletRequest.getSession();
+		HttpSession httpSession = httpServletRequest.getSession(false);
 
-		userIdObj = (Long)httpSession.getAttribute(WebKeys.USER_ID);
+		if (httpSession != null) {
+			userIdObj = (Long)httpSession.getAttribute(WebKeys.USER_ID);
 
-		if (userIdObj != null) {
-			httpServletRequest.setAttribute(WebKeys.USER_ID, userIdObj);
+			if (userIdObj != null) {
+				httpServletRequest.setAttribute(WebKeys.USER_ID, userIdObj);
 
-			return userIdObj.longValue();
+				return userIdObj.longValue();
+			}
 		}
 
 		return 0;
@@ -5753,10 +5758,6 @@ public class PortalImpl implements Portal {
 		}
 
 		HttpSession httpSession = httpServletRequest.getSession();
-
-		if (httpSession == null) {
-			return httpServletRequest.isSecure();
-		}
 
 		Boolean httpsInitial = (Boolean)httpSession.getAttribute(
 			WebKeys.HTTPS_INITIAL);
