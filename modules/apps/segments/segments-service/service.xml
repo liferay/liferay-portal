@@ -30,6 +30,7 @@
 		<column name="active" type="boolean" />
 		<column name="criteria" type="String" />
 		<column name="source" type="String" />
+		<column name="type" type="String" />
 		<column name="lastPublishDate" type="Date" />
 
 		<!-- Order -->
@@ -52,6 +53,9 @@
 		<finder name="Source" return-type="Collection">
 			<finder-column name="source" />
 		</finder>
+		<finder name="Type" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="type" />
+		</finder>
 		<finder name="G_S" return-type="SegmentsEntry" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="segmentsEntryKey" />
@@ -68,10 +72,38 @@
 			<finder-column name="companyId" />
 			<finder-column arrayable-operator="OR" name="source" />
 		</finder>
+		<finder name="SRC_T" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="source" />
+			<finder-column arrayable-operator="OR" name="type" />
+		</finder>
+		<finder name="SRC_NotT" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="source" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
 		<finder name="G_A_SRC" return-type="Collection">
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="active" />
 			<finder-column arrayable-operator="OR" name="source" />
+		</finder>
+		<finder name="G_SRC_T" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column arrayable-operator="OR" name="source" />
+			<finder-column arrayable-operator="OR" name="type" />
+		</finder>
+		<finder name="G_SRC_NotT" return-type="Collection">
+			<finder-column arrayable-operator="OR" name="groupId" />
+			<finder-column arrayable-operator="OR" name="source" />
+			<finder-column comparator="!=" name="type" />
+		</finder>
+		<finder name="C_SRC_T" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column arrayable-operator="OR" name="source" />
+			<finder-column arrayable-operator="OR" name="type" />
+		</finder>
+		<finder name="C_SRC_NotT" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column arrayable-operator="OR" name="source" />
+			<finder-column comparator="!=" name="type" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="SegmentsEntryRel" remote-service="true">
