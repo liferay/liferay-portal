@@ -65,6 +65,7 @@ export class FDSSamplePage {
 		menu: Locator;
 		recentSearchEntries: Locator;
 		recentlyVisitedEntries: Locator;
+		sectionHeadings: Locator;
 	};
 	readonly sidePanel: Locator;
 	readonly sidePanelFrame: FrameLocator;
@@ -204,6 +205,9 @@ export class FDSSamplePage {
 			),
 			recentlyVisitedEntries: searchSuggestionsMenu.locator(
 				'.fds-search-suggestions-visited-item'
+			),
+			sectionHeadings: searchSuggestionsMenu.locator(
+				'.dropdown-subheader'
 			),
 		};
 
@@ -373,10 +377,13 @@ export class FDSSamplePage {
 	}
 
 	recentSearchEntry(query: string) {
-		return this.searchSuggestions.menu.getByRole('menuitem', {
-			exact: true,
-			name: query,
-		});
+		return this.searchSuggestions.recentSearchEntries.getByRole(
+			'menuitem',
+			{
+				exact: true,
+				name: query,
+			}
+		);
 	}
 
 	recentSearchRemoveButton(query: string) {
@@ -388,6 +395,27 @@ export class FDSSamplePage {
 				}),
 			})
 			.getByRole('menuitem', {name: 'Clear Search'});
+	}
+
+	recentlyVisitedEntry(label: string) {
+		return this.searchSuggestions.recentlyVisitedEntries.getByRole(
+			'menuitem',
+			{
+				exact: true,
+				name: label,
+			}
+		);
+	}
+
+	recentlyVisitedRemoveButton(label: string) {
+		return this.searchSuggestions.recentlyVisitedEntries
+			.filter({
+				has: this.page.getByRole('menuitem', {
+					exact: true,
+					name: label,
+				}),
+			})
+			.getByRole('menuitem', {name: 'Remove'});
 	}
 
 	async search(value: string) {
