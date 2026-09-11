@@ -63,7 +63,7 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 
 	@Override
 	public String getIcon() {
-		return "page-template";
+		return "page";
 	}
 
 	@Override
