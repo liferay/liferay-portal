@@ -60,17 +60,20 @@ public class CookieEntryObjectDefinitionImportTaskPostActionTest {
 
 		Role guestRole = _roleLocalService.getRole(
 			companyId, RoleConstants.GUEST);
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			companyId, serviceBuilderObjectDefinition.getClassName(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			guestRole.getRoleId(), ActionKeys.VIEW);
+
 		Role userRole = _roleLocalService.getRole(
 			companyId, RoleConstants.USER);
 
 		_resourcePermissionLocalService.removeResourcePermission(
 			companyId, serviceBuilderObjectDefinition.getClassName(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-			guestRole.getRoleId(), ActionKeys.VIEW);
-		_resourcePermissionLocalService.removeResourcePermission(
-			companyId, serviceBuilderObjectDefinition.getClassName(),
-			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			userRole.getRoleId(), ActionKeys.VIEW);
+
 		_resourcePermissionLocalService.removeResourcePermission(
 			companyId, serviceBuilderObjectDefinition.getPortletId(),
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
