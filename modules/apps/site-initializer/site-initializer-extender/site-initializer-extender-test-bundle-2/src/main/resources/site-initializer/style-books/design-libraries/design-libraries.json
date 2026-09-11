@@ -1,0 +1,10 @@
+[
+	{
+		"designLibraryName": "Test Design Library 1",
+		"path": "design-library-1"
+	},
+	{
+		"designLibraryName": "Test Design Library 2",
+		"path": "design-library-2"
+	}
+]

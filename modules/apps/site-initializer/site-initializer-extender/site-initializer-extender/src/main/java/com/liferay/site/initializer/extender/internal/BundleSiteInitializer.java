@@ -973,7 +973,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			stringUtilReplaceValues);
 
 		Map<String, Group> designLibraryGroups = _getDesignLibraryGroups(
-			"/site-initializer/fragments/asset-libraries", serviceContext);
+			"/site-initializer/fragments/design-libraries", serviceContext);
 
 		for (Map.Entry<String, Group> entry : designLibraryGroups.entrySet()) {
 			Group designLibraryGroup = entry.getValue();
@@ -4930,8 +4930,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 			String fileName = url.getFile();
 
 			if (fileName.endsWith("/") ||
-				(!parentResourcePath.contains("/asset-libraries/") &&
-				 fileName.contains("/asset-libraries/"))) {
+				(!parentResourcePath.contains("/design-libraries/") &&
+				 fileName.contains("/design-libraries/"))) {
 
 				continue;
 			}
@@ -4955,7 +4955,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			serviceContext);
 
 		Map<String, Group> designLibraryGroups = _getDesignLibraryGroups(
-			"/site-initializer/style-books/asset-libraries", serviceContext);
+			"/site-initializer/style-books/design-libraries", serviceContext);
 
 		for (Map.Entry<String, Group> entry : designLibraryGroups.entrySet()) {
 			Group designLibraryGroup = entry.getValue();
@@ -5900,7 +5900,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 
 		String json = SiteInitializerUtil.read(
-			parentResourcePath + "/asset-libraries.json", _servletContext);
+			parentResourcePath + "/design-libraries.json", _servletContext);
 
 		if (json == null) {
 			return Collections.emptyMap();
@@ -5913,13 +5913,14 @@ public class BundleSiteInitializer implements SiteInitializer {
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-			String assetLibraryName = jsonObject.getString("assetLibraryName");
+			String designLibraryName = jsonObject.getString(
+				"designLibraryName");
 
 			Group group = _groupLocalService.fetchGroup(
-				serviceContext.getCompanyId(), assetLibraryName);
+				serviceContext.getCompanyId(), designLibraryName);
 
 			if (group == null) {
-				_log.error("Unable to get asset library " + assetLibraryName);
+				_log.error("Unable to get design library " + designLibraryName);
 
 				continue;
 			}
@@ -5931,8 +5932,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				(depotEntry.getType() != DepotConstants.TYPE_DESIGN_LIBRARY)) {
 
 				_log.error(
-					"Asset library " + assetLibraryName +
-						" is not a design library");
+					"Group " + designLibraryName + " is not a design library");
 
 				continue;
 			}
@@ -5941,7 +5941,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			if (Validator.isNull(path)) {
 				_log.error(
-					"Asset library " + assetLibraryName + " has no path");
+					"Design library " + designLibraryName + " has no path");
 
 				continue;
 			}
