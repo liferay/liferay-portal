@@ -13,8 +13,11 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.fips.FIPSAuditEventFactory;
+import com.liferay.portal.kernel.security.fips.FIPSAuditUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.constants.SamlWebKeys;
 import com.liferay.saml.opensaml.integration.internal.binding.SamlBinding;
@@ -60,11 +63,13 @@ import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.decoder.servlet.HttpServletRequestMessageDecoder;
 import org.opensaml.messaging.encoder.servlet.HttpServletResponseMessageEncoder;
 import org.opensaml.messaging.handler.MessageHandler;
+import org.opensaml.messaging.handler.MessageHandlerException;
 import org.opensaml.messaging.handler.impl.BasicMessageHandlerChain;
 import org.opensaml.messaging.handler.impl.CheckMandatoryAuthentication;
 import org.opensaml.messaging.handler.impl.CheckMandatoryIssuer;
 import org.opensaml.messaging.handler.impl.HTTPRequestValidationHandler;
 import org.opensaml.saml.common.SAMLObject;
+import org.opensaml.saml.common.SignableSAMLObject;
 import org.opensaml.saml.common.binding.security.impl.SAMLOutboundProtocolMessageSigningHandler;
 import org.opensaml.saml.common.binding.security.impl.SAMLProtocolMessageXMLSignatureSecurityHandler;
 import org.opensaml.saml.common.messaging.context.SAMLBindingContext;
@@ -95,14 +100,18 @@ import org.opensaml.xmlsec.DecryptionConfiguration;
 import org.opensaml.xmlsec.SecurityConfigurationSupport;
 import org.opensaml.xmlsec.SignatureValidationConfiguration;
 import org.opensaml.xmlsec.SignatureValidationParameters;
+import org.opensaml.xmlsec.algorithm.AlgorithmSupport;
 import org.opensaml.xmlsec.config.DefaultSecurityConfigurationBootstrap;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
 import org.opensaml.xmlsec.criterion.SignatureValidationConfigurationCriterion;
 import org.opensaml.xmlsec.impl.BasicSignatureValidationParametersResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xmlsec.signature.Signature;
+import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 import org.opensaml.xmlsec.signature.support.impl.ChainingSignatureTrustEngine;
 import org.opensaml.xmlsec.signature.support.impl.ExplicitKeySignatureTrustEngine;
+import org.opensaml.xmlsec.signature.support.impl.SignatureAlgorithmValidator;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Reference;
@@ -232,27 +241,33 @@ public abstract class BaseProfile {
 			inboundMessageContext.getSubcontext(
 				SecurityParametersContext.class, true);
 
-		BasicSignatureValidationParametersResolver
-			basicSignatureValidationParametersResolver =
-				new BasicSignatureValidationParametersResolver();
-
-		SignatureValidationParameters signatureValidationParameters =
-			basicSignatureValidationParametersResolver.resolveSingle(
-				new CriteriaSet(
-					new SignatureValidationConfigurationCriterion(
-						ConfigurationServiceBootstrapUtil.get(
-							SignatureValidationConfiguration.class))));
-
-		signatureValidationParameters.setSignatureTrustEngine(
-			getSignatureTrustEngine());
-
 		securityParametersContext.setSignatureValidationParameters(
-			signatureValidationParameters);
+			getSignatureValidationParameters());
 
 		inboundMessageContext.addSubcontext(
 			messageContext.getSubcontext(SAMLProtocolContext.class));
 
-		messageHandler.invoke(inboundMessageContext);
+		try {
+			messageHandler.invoke(inboundMessageContext);
+		}
+		catch (MessageHandlerException messageHandlerException) {
+			SAMLObject samlObject = inboundMessageContext.getMessage();
+
+			Signature signature = null;
+
+			if (samlObject instanceof SignableSAMLObject) {
+				SignableSAMLObject signableSAMLObject =
+					(SignableSAMLObject)samlObject;
+
+				signature = signableSAMLObject.getSignature();
+			}
+
+			writeFederationTokenRejected(
+				httpServletRequest, signature,
+				samlPeerEntityContext.getEntityId());
+
+			throw messageHandlerException;
+		}
 
 		messageContext.removeSubcontext(SAMLPeerEntityContext.class);
 
@@ -638,6 +653,26 @@ public abstract class BaseProfile {
 			this::_createChainingSignatureTrustEngine);
 	}
 
+	protected SignatureValidationParameters getSignatureValidationParameters()
+		throws ResolverException, SamlException {
+
+		BasicSignatureValidationParametersResolver
+			basicSignatureValidationParametersResolver =
+				new BasicSignatureValidationParametersResolver();
+
+		SignatureValidationParameters signatureValidationParameters =
+			basicSignatureValidationParametersResolver.resolveSingle(
+				new CriteriaSet(
+					new SignatureValidationConfigurationCriterion(
+						ConfigurationServiceBootstrapUtil.get(
+							SignatureValidationConfiguration.class))));
+
+		signatureValidationParameters.setSignatureTrustEngine(
+			getSignatureTrustEngine());
+
+		return signatureValidationParameters;
+	}
+
 	protected Credential getSigningCredential() throws SamlException {
 		try {
 			String entityId = localEntityManager.getLocalEntityId();
@@ -653,6 +688,35 @@ public abstract class BaseProfile {
 		}
 		catch (ResolverException resolverException) {
 			throw new SamlException(resolverException);
+		}
+	}
+
+	protected void writeFederationTokenRejected(
+		HttpServletRequest httpServletRequest, Signature signature,
+		String tokenIssuer) {
+
+		if (!PropsValues.FIPS_ENABLED) {
+			return;
+		}
+
+		try {
+			String rejectedValue = _getRejectedValue(
+				httpServletRequest, signature);
+
+			if (rejectedValue == null) {
+				return;
+			}
+
+			FIPSAuditUtil.write(
+				FIPSAuditEventFactory.createFederationTokenRejected(
+					httpServletRequest.getRequestURI(), rejectedValue,
+					tokenIssuer, "SAML"));
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to write the rejected federation token FIPS audit " +
+					"event",
+				exception);
 		}
 	}
 
@@ -774,6 +838,49 @@ public abstract class BaseProfile {
 		return predicateRoleDescriptorResolver;
 	}
 
+	private String _getRejectedValue(
+			HttpServletRequest httpServletRequest, Signature signature)
+		throws ResolverException, SamlException {
+
+		SignatureValidationParameters signatureValidationParameters =
+			getSignatureValidationParameters();
+
+		if (signature == null) {
+			String signatureAlgorithm = httpServletRequest.getParameter(
+				"SigAlg");
+
+			if ((signatureAlgorithm == null) ||
+				AlgorithmSupport.validateAlgorithmURI(
+					signatureAlgorithm,
+					signatureValidationParameters.getWhitelistedAlgorithms(),
+					signatureValidationParameters.getBlacklistedAlgorithms())) {
+
+				return null;
+			}
+
+			return signatureAlgorithm;
+		}
+
+		RejectedValueSignatureAlgorithmValidator
+			rejectedValueSignatureAlgorithmValidator =
+				new RejectedValueSignatureAlgorithmValidator(
+					signatureValidationParameters);
+
+		try {
+			rejectedValueSignatureAlgorithmValidator.validate(signature);
+
+			return null;
+		}
+		catch (SignatureException signatureException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(signatureException);
+			}
+
+			return rejectedValueSignatureAlgorithmValidator.
+				_rejectedAlgorithmURI;
+		}
+	}
+
 	private MessageHandler<?> _getSecurityMessageHandler(
 		HttpServletRequest httpServletRequest, String communicationProfileId,
 		boolean requireSignature) {
@@ -870,5 +977,32 @@ public abstract class BaseProfile {
 		_metadataCredentialResolverDCLSingleton = new DCLSingleton<>();
 	private final DCLSingleton<PredicateRoleDescriptorResolver>
 		_predicateRoleDescriptorResolverDCLSingleton = new DCLSingleton<>();
+
+	private static class RejectedValueSignatureAlgorithmValidator
+		extends SignatureAlgorithmValidator {
+
+		@Override
+		protected void validateAlgorithmURI(String algorithmURI)
+			throws SignatureException {
+
+			try {
+				super.validateAlgorithmURI(algorithmURI);
+			}
+			catch (SignatureException signatureException) {
+				_rejectedAlgorithmURI = algorithmURI;
+
+				throw signatureException;
+			}
+		}
+
+		private RejectedValueSignatureAlgorithmValidator(
+			SignatureValidationParameters signatureValidationParameters) {
+
+			super(signatureValidationParameters);
+		}
+
+		private String _rejectedAlgorithmURI;
+
+	}
 
 }

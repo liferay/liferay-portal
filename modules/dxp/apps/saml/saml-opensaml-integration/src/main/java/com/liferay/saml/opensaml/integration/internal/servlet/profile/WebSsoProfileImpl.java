@@ -159,6 +159,7 @@ import org.opensaml.xmlsec.impl.BasicDecryptionParametersResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
+import org.opensaml.xmlsec.signature.support.SignatureValidationParametersCriterion;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -703,7 +704,8 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 	}
 
 	protected void verifyAssertionSignature(
-			Signature signature, MessageContext<?> messageContext,
+			HttpServletRequest httpServletRequest,
+			MessageContext<?> messageContext, Signature signature,
 			TrustEngine<Signature> trustEngine)
 		throws PortalException {
 
@@ -717,7 +719,8 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			(SPSSODescriptor)samlSelfMetadataContext.getRoleDescriptor();
 
 		if (signature != null) {
-			_verifySignature(messageContext, signature, trustEngine);
+			_verifySignature(
+				httpServletRequest, messageContext, signature, trustEngine);
 		}
 		else if (spSSODescriptor.getWantAssertionsSigned()) {
 			throw new SignatureException("SAML assertion is not signed");
@@ -1228,7 +1231,8 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 		for (Assertion curAssertion : assertions) {
 			try {
 				_verifyAssertion(
-					curAssertion, messageContext, signatureTrustEngine);
+					curAssertion, httpServletRequest, messageContext,
+					signatureTrustEngine);
 			}
 			catch (SamlException samlException) {
 				if (_log.isDebugEnabled()) {
@@ -2308,19 +2312,22 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 	}
 
 	private void _verifyAssertion(
-			Assertion assertion, MessageContext<?> messageContext,
+			Assertion assertion, HttpServletRequest httpServletRequest,
+			MessageContext<?> messageContext,
 			TrustEngine<Signature> trustEngine)
 		throws PortalException {
 
 		verifyReplay(messageContext, assertion);
 		verifyIssuer(messageContext, assertion.getIssuer());
 		verifyAssertionSignature(
-			assertion.getSignature(), messageContext, trustEngine);
+			httpServletRequest, messageContext, assertion.getSignature(),
+			trustEngine);
 		verifyConditions(messageContext, assertion.getConditions());
 		verifySubject(messageContext, assertion.getSubject());
 	}
 
 	private void _verifySignature(
+			HttpServletRequest httpServletRequest,
 			MessageContext<?> messageContext, Signature signature,
 			TrustEngine<Signature> trustEngine)
 		throws PortalException {
@@ -2338,9 +2345,16 @@ public class WebSsoProfileImpl extends BaseProfile implements WebSsoProfile {
 			criteriaSet.add(
 				new EntityRoleCriterion(IDPSSODescriptor.DEFAULT_ELEMENT_NAME));
 			criteriaSet.add(new ProtocolCriterion(SAMLConstants.SAML20P_NS));
+			criteriaSet.add(
+				new SignatureValidationParametersCriterion(
+					getSignatureValidationParameters()));
 			criteriaSet.add(new UsageCriterion(UsageType.SIGNING));
 
 			if (!trustEngine.validate(signature, criteriaSet)) {
+				writeFederationTokenRejected(
+					httpServletRequest, signature,
+					samlPeerEntityContext.getEntityId());
+
 				throw new SignatureException("Unable validate signature trust");
 			}
 		}
