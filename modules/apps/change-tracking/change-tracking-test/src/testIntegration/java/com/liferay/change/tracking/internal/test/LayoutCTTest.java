@@ -991,8 +991,6 @@ public class LayoutCTTest {
 		Layout productionLayout = _layoutLocalService.fetchLayout(
 			layout.getPlid());
 
-		Assert.assertNotNull(productionLayout);
-
 		Assert.assertTrue(
 			DateUtil.equals(modifiedDate, productionLayout.getModifiedDate()));
 	}
