@@ -81,15 +81,16 @@ public class OAuthClientAdminPanelAppTest {
 			"oauth-clients", "oauth-client-as-local-metadata",
 			"oauth-client-pr-local-metadata"
 		};
+
+		Assert.assertEquals(
+			panelAppNavigationItems.toString(), expectedCanonicalNames.length,
+			panelAppNavigationItems.size());
+
 		String[] expectedMVCRenderCommandNames = {
 			"/oauth_client_admin/view_oauth_client_entries",
 			"/oauth_client_admin/view_oauth_client_as_local_metadata",
 			"/oauth_client_admin/view_oauth_client_pr_local_metadata"
 		};
-
-		Assert.assertEquals(
-			panelAppNavigationItems.toString(), expectedCanonicalNames.length,
-			panelAppNavigationItems.size());
 
 		for (int i = 0; i < expectedCanonicalNames.length; i++) {
 			PanelAppNavigationItem panelAppNavigationItem =
