@@ -5,11 +5,11 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClaySlider from '@clayui/slider';
 import {sub} from 'frontend-js-web';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {EditorSection} from '../chrome/EditorSection';
+import {CommitSlider} from '../chrome/fields';
 import {useEditorId} from '../chrome/instance';
 import {EditorAction, clampCrop} from '../state/editorReducer';
 import {CropRect} from '../state/types';
@@ -50,22 +50,6 @@ export function CropPanel({
 	const eid = useEditorId();
 
 	const [drafts, setDrafts] = useState(() => cropToDrafts(crop));
-
-	const angleGestureRef = useRef(false);
-
-	const commitAngle = () => {
-		if (!angleGestureRef.current) {
-			return;
-		}
-
-		angleGestureRef.current = false;
-
-		dispatch({angle, type: 'set-angle'});
-
-		onAnnounce(
-			sub(Liferay.Language.get('straighten-set-to-x-degrees'), angle)
-		);
-	};
 
 	useEffect(() => {
 		setDrafts(cropToDrafts(crop));
@@ -231,108 +215,62 @@ export function CropPanel({
 			</div>
 
 			{showStraighten && (
-				<ClayForm.Group small>
-					<div className="editor-slider-row">
-						<label htmlFor={eid('crop-angle')}>
-							{Liferay.Language.get('straighten')}
-						</label>
+				<CommitSlider
+					id={eid('crop-angle')}
+					label={Liferay.Language.get('straighten')}
+					max={45}
+					min={-45}
+					onCancel={() => dispatch({type: 'cancel-gesture'})}
+					onCommit={(next) => {
+						dispatch({angle: next, type: 'set-angle'});
 
-						<span
-							aria-hidden="true"
-							className="editor-slider-value"
-						>
-							{sub(Liferay.Language.get('x-degrees'), angle)}
-						</span>
-
-						{angle !== 0 && (
-							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get(
-									'reset-the-straighten-angle'
-								)}
-								borderless
-								className="editor-slider-reset"
-								displayType="secondary"
-								onClick={() => {
-									dispatch({angle: 0, type: 'set-angle'});
-									onAnnounce(
-										sub(
-											Liferay.Language.get(
-												'straighten-set-to-x-degrees'
-											),
-											0
-										)
-									);
-								}}
-								size="xs"
-								symbol="restore"
-								title={Liferay.Language.get(
-									'reset-the-straighten-angle'
-								)}
-							/>
-						)}
-					</div>
-
-					<ClaySlider
-						id={eid('crop-angle')}
-						max={45}
-						min={-45}
-						onBlur={commitAngle}
-						onChange={(next: number) => {
-							angleGestureRef.current = true;
-
-							dispatch({
-								angle: next,
-								transient: true,
-								type: 'set-angle',
-							});
-						}}
-						onKeyDown={(event: React.KeyboardEvent) => {
-
-							// Shift steps by 10, as everywhere else.
-
-							if (!event.shiftKey) {
-								return;
-							}
-
-							const delta =
-								event.key === 'ArrowRight' ||
-								event.key === 'ArrowUp'
-									? 10
-									: event.key === 'ArrowLeft' ||
-										  event.key === 'ArrowDown'
-										? -10
-										: 0;
-
-							if (!delta) {
-								return;
-							}
-
-							event.preventDefault();
-
-							angleGestureRef.current = true;
-
-							dispatch({
-								angle: Math.max(
-									-45,
-									Math.min(45, angle + delta)
+						onAnnounce(
+							sub(
+								Liferay.Language.get(
+									'straighten-set-to-x-degrees'
 								),
-								transient: true,
-								type: 'set-angle',
-							});
-						}}
-						onKeyUp={commitAngle}
-						onPointerCancel={() => {
-							if (angleGestureRef.current) {
-								angleGestureRef.current = false;
-
-								dispatch({type: 'cancel-gesture'});
-							}
-						}}
-						onPointerUp={commitAngle}
-						showTooltip={false}
-						value={angle}
-					/>
-				</ClayForm.Group>
+								next
+							)
+						);
+					}}
+					onPreview={(next) =>
+						dispatch({
+							angle: next,
+							transient: true,
+							type: 'set-angle',
+						})
+					}
+					shiftStep={10}
+					value={angle}
+					valueLabel={sub(Liferay.Language.get('x-degrees'), angle)}
+				>
+					{angle !== 0 && (
+						<ClayButtonWithIcon
+							aria-label={Liferay.Language.get(
+								'reset-the-straighten-angle'
+							)}
+							borderless
+							className="editor-slider-reset"
+							displayType="secondary"
+							onClick={() => {
+								dispatch({angle: 0, type: 'set-angle'});
+								onAnnounce(
+									sub(
+										Liferay.Language.get(
+											'straighten-set-to-x-degrees'
+										),
+										0
+									)
+								);
+							}}
+							size="xs"
+							symbol="restore"
+							title={Liferay.Language.get(
+								'reset-the-straighten-angle'
+							)}
+						/>
+					)}
+				</CommitSlider>
 			)}
 		</EditorSection>
 	);
