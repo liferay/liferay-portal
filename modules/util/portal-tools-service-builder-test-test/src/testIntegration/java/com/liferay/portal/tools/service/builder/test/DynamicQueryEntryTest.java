@@ -26,11 +26,17 @@ import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.TransactionalTestRule;
+import com.liferay.portal.tools.service.builder.test.model.CompoundPKEntry;
 import com.liferay.portal.tools.service.builder.test.model.DynamicQueryEntry;
 import com.liferay.portal.tools.service.builder.test.service.DynamicQueryEntryLocalService;
+import com.liferay.portal.tools.service.builder.test.service.persistence.CompoundPKEntryPK;
+import com.liferay.portal.tools.service.builder.test.service.persistence.CompoundPKEntryPersistence;
+import com.liferay.portal.tools.service.builder.test.service.persistence.CompoundPKEntryUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +60,11 @@ public class DynamicQueryEntryTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			new TransactionalTestRule(
+				Propagation.REQUIRED,
+				"com.liferay.portal.tools.service.builder.test.service"));
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
@@ -452,6 +462,39 @@ public class DynamicQueryEntryTest {
 	public void testDynamicQueryWithAlias() {
 		_testDynamicQueryWithAlias(null);
 		_testDynamicQueryWithAlias(RandomTestUtil.randomString());
+	}
+
+	@Test
+	public void testDynamicQueryWithAttributePath() {
+		CompoundPKEntryPersistence compoundPKEntryPersistence =
+			CompoundPKEntryUtil.getPersistence();
+
+		CompoundPKEntry compoundPKEntry = compoundPKEntryPersistence.create(
+			new CompoundPKEntryPK(
+				RandomTestUtil.nextLong(), RandomTestUtil.nextLong()));
+
+		compoundPKEntry = compoundPKEntryPersistence.update(compoundPKEntry);
+
+		try {
+			Class<?> clazz = compoundPKEntryPersistence.getClass();
+
+			DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+				CompoundPKEntry.class, clazz.getClassLoader());
+
+			dynamicQuery.add(
+				RestrictionsFactoryUtil.eq(
+					"primaryKey.classNameId",
+					compoundPKEntry.getClassNameId()));
+
+			List<CompoundPKEntry> compoundPKEntries =
+				compoundPKEntryPersistence.findWithDynamicQuery(dynamicQuery);
+
+			Assert.assertEquals(
+				Arrays.asList(compoundPKEntry), compoundPKEntries);
+		}
+		finally {
+			compoundPKEntryPersistence.remove(compoundPKEntry);
+		}
 	}
 
 	@Test
