@@ -4,17 +4,6 @@ input[type='search']::-webkit-search-cancel-button:hover {
 }
 
 .fds-search-suggestions {
-	.fds-search-suggestions-caption {
-		align-items: center;
-		display: flex;
-		justify-content: space-between;
-	}
-
-	.fds-search-suggestions-clear-all {
-		padding-bottom: 0;
-		padding-top: 0;
-	}
-
 	.fds-search-suggestions-item {
 		align-items: center;
 		display: flex;

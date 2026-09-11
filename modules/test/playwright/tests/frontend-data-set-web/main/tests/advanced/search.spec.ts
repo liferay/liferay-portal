@@ -336,7 +336,7 @@ test(
 			await searchInput.click();
 
 			await expect(
-				fdsSamplePage.searchSuggestionEntry('Sample55')
+				fdsSamplePage.recentSearchEntry('Sample55')
 			).toBeVisible();
 		});
 
@@ -349,9 +349,9 @@ test(
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
-				'Sample55',
-			]);
+			await expect(
+				fdsSamplePage.searchSuggestions.recentSearchEntries
+			).toHaveText(['Sample55']);
 		});
 
 		await test.step('The most recent query is listed first', async () => {
@@ -363,23 +363,20 @@ test(
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
-				'Sample12',
-				'Sample55',
-			]);
+			await expect(
+				fdsSamplePage.searchSuggestions.recentSearchEntries
+			).toHaveText(['Sample12', 'Sample55']);
 		});
 
 		await test.step('Typing keeps only the queries matching the input and emphasizes the match', async () => {
 			await searchInput.fill('sample5');
 
-			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
-				'Sample55',
-			]);
+			await expect(
+				fdsSamplePage.searchSuggestions.recentSearchEntries
+			).toHaveText(['Sample55']);
 
 			await expect(
-				fdsSamplePage
-					.searchSuggestionEntry('Sample55')
-					.locator('strong')
+				fdsSamplePage.recentSearchEntry('Sample55').locator('strong')
 			).toHaveText('Sample5');
 		});
 
@@ -394,7 +391,7 @@ test(
 
 			await searchInput.click();
 
-			await fdsSamplePage.searchSuggestionEntry('Sample55').click();
+			await fdsSamplePage.recentSearchEntry('Sample55').click();
 
 			await expect(searchInput).toHaveValue('Sample55');
 			await expect(page.getByText('1 Result Found for:')).toBeVisible();
@@ -407,15 +404,13 @@ test(
 
 			await searchInput.click();
 
-			await fdsSamplePage.searchSuggestionEntry('Sample55').hover();
+			await fdsSamplePage.recentSearchEntry('Sample55').hover();
 
-			await fdsSamplePage
-				.searchSuggestionRemoveButton('Sample55')
-				.click();
+			await fdsSamplePage.recentSearchRemoveButton('Sample55').click();
 
-			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
-				'Sample12',
-			]);
+			await expect(
+				fdsSamplePage.searchSuggestions.recentSearchEntries
+			).toHaveText(['Sample12']);
 		});
 
 		await test.step('The dropdown closes when the user clicks outside the search bar', async () => {
@@ -433,9 +428,9 @@ test(
 
 			await searchInput.click();
 
-			await expect(fdsSamplePage.searchSuggestions.entries).toHaveText([
-				'Sample12',
-			]);
+			await expect(
+				fdsSamplePage.searchSuggestions.recentSearchEntries
+			).toHaveText(['Sample12']);
 		});
 
 		await test.step('Clearing all removes every query', async () => {
@@ -485,8 +480,7 @@ test(
 
 		await test.step('The dropdown narrows with the search box', async () => {
 			const widthBefore =
-				(await fdsSamplePage.searchSuggestions.menu.boundingBox())!
-					.width;
+				(await fdsSamplePage.searchSuggestions.menu.boundingBox())!.width;
 
 			await page.setViewportSize({height: 800, width: 960});
 

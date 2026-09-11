@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {ClayButtonWithIcon} from '@clayui/button';
 import ClayDropDown from '@clayui/drop-down';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
 import recentSearches from '../../utils/recentSearches';
+import recentlyVisited, {
+	IRecentlyVisitedItem,
+} from '../../utils/recentlyVisited';
 
 interface IMatch {
 	index: number;
@@ -19,6 +22,7 @@ interface IProps {
 	alignElementRef: React.RefObject<HTMLElement>;
 	onActiveChange: (active: boolean) => void;
 	onQueryClick: (query: string) => void;
+	onVisitedItemClick: () => void;
 	value: string;
 }
 
@@ -26,6 +30,7 @@ function SearchSuggestionsMenu({
 	alignElementRef,
 	onActiveChange,
 	onQueryClick,
+	onVisitedItemClick,
 	value,
 }: IProps) {
 	const {id} = useContext(FrontendDataSetContext);
@@ -33,6 +38,9 @@ function SearchSuggestionsMenu({
 	const menuRef = useRef<HTMLDivElement>(null);
 
 	const [queries, setQueries] = useState(() => recentSearches.get(id));
+	const [visitedItems, setVisitedItems] = useState(() =>
+		recentlyVisited.get(id)
+	);
 
 	// The menu is as wide as the search box, so it watches the box rather than
 	// the viewport: the box also reports no width once the management bar hides
@@ -69,11 +77,20 @@ function SearchSuggestionsMenu({
 		.map((query) => ({match: _getMatch(query, value), query}))
 		.filter(({match}) => !!match) as Array<{match: IMatch; query: string}>;
 
+	const matchedVisitedItems = visitedItems
+		.map((visitedItem) => ({
+			...visitedItem,
+			match: _getMatch(visitedItem.label, value),
+		}))
+		.filter(({match}) => !!match) as Array<
+		IRecentlyVisitedItem & {match: IMatch}
+	>;
+
 	// Clay keeps the menu's markup in the page once it is mounted, so it is
-	// rendered only while a query matches and leaves nothing for a screen
+	// rendered only while something matches and leaves nothing for a screen
 	// reader otherwise
 
-	if (!matchedQueries.length) {
+	if (!matchedQueries.length && !matchedVisitedItems.length) {
 		return null;
 	}
 
@@ -97,84 +114,164 @@ function SearchSuggestionsMenu({
 			suppress={[menuRef, alignElementRef]}
 			triggerRef={alignElementRef}
 		>
-			<ClayDropDown.Caption className="fds-search-suggestions-caption">
-				<span className="text-secondary text-uppercase">
-					{Liferay.Language.get('recent-searches')}
-				</span>
-
-				<ClayButton
-					className="fds-search-suggestions-clear-all"
-					displayType="link"
-					onClick={() => setQueries(recentSearches.clear(id))}
-					small
-				>
-					{Liferay.Language.get('clear-all')}
-				</ClayButton>
-			</ClayDropDown.Caption>
-
-			<ClayDropDown.ItemList>
-				{matchedQueries.map(({match, query}) => (
-					<li
-						className="fds-search-suggestions-item"
-						key={query}
-						role="presentation"
+			<ul className="list-unstyled" role="menu">
+				{!!matchedQueries.length && (
+					<ClayDropDown.Group
+						header={Liferay.Language.get('recent-searches')}
 					>
-						<button
-							aria-label={query}
-							className="dropdown-item"
-							onClick={() => onQueryClick(query)}
-							role="menuitem"
-							type="button"
-						>
-							{match.length ? (
-								<>
-									{query.slice(0, match.index)}
+						{matchedQueries.map(({match, query}) => (
+							<Entry
+								className="fds-search-suggestions-query-item"
+								key={query}
+								label={query}
+								match={match}
+								onClick={() => onQueryClick(query)}
+								onRemove={() =>
+									setQueries(recentSearches.remove(id, query))
+								}
+								removeTitle={Liferay.Language.get(
+									'clear-search'
+								)}
+							/>
+						))}
+					</ClayDropDown.Group>
+				)}
 
-									<strong>
-										{query.slice(
-											match.index,
-											match.index + match.length
-										)}
-									</strong>
+				{!!matchedVisitedItems.length && (
+					<ClayDropDown.Group
+						header={Liferay.Language.get('recently-visited')}
+					>
+						{matchedVisitedItems.map(({href, label, match}) => (
+							<Entry
+								className="fds-search-suggestions-visited-item"
+								href={href}
+								key={href}
+								label={label}
+								match={match}
+								onClick={onVisitedItemClick}
+								onRemove={() =>
+									setVisitedItems(
+										recentlyVisited.remove(id, href)
+									)
+								}
+								removeTitle={Liferay.Language.get('remove')}
+							/>
+						))}
+					</ClayDropDown.Group>
+				)}
 
-									{query.slice(match.index + match.length)}
-								</>
-							) : (
-								query
-							)}
-						</button>
+				<ClayDropDown.Divider />
 
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get('clear-search')}
-							className="fds-search-suggestions-item-remove"
-							displayType="unstyled"
-							onClick={() =>
-								setQueries(recentSearches.remove(id, query))
-							}
-							role="menuitem"
-							size="sm"
-							symbol="times-small"
-							title={Liferay.Language.get('clear-search')}
-						/>
-					</li>
-				))}
-			</ClayDropDown.ItemList>
+				<li
+					className="fds-search-suggestions-clear-all"
+					role="presentation"
+				>
+					<button
+						className="dropdown-item"
+						onClick={() => {
+							setQueries(recentSearches.clear(id));
+							setVisitedItems(recentlyVisited.clear(id));
+						}}
+						role="menuitem"
+						type="button"
+					>
+						{Liferay.Language.get('clear-all')}
+					</button>
+				</li>
+			</ul>
 		</ClayDropDown.Menu>
 	);
 }
 
 /**
- * Returns the range of a stored query the input matches, or null when it does
- * not. An empty input matches every query with an empty range.
+ * A stored query fills the search box, so it is a button, while a visited item
+ * takes the user somewhere and is a link, which also lets them open it in
+ * another tab the way they would open the row it came from.
  */
-function _getMatch(query: string, value: string): IMatch | null {
+function Entry({
+	className,
+	href,
+	label,
+	match,
+	onClick,
+	onRemove,
+	removeTitle,
+}: {
+	className: string;
+	href?: string;
+	label: string;
+	match: IMatch;
+	onClick: () => void;
+	onRemove: () => void;
+	removeTitle: string;
+}) {
+	const content = match.length ? (
+		<>
+			{label.slice(0, match.index)}
+
+			<strong>
+				{label.slice(match.index, match.index + match.length)}
+			</strong>
+
+			{label.slice(match.index + match.length)}
+		</>
+	) : (
+		label
+	);
+
+	return (
+		<li
+			className={`fds-search-suggestions-item ${className}`}
+			role="presentation"
+		>
+			{href ? (
+				<a
+					aria-label={label}
+					className="dropdown-item"
+					href={href}
+					onClick={onClick}
+					role="menuitem"
+				>
+					{content}
+				</a>
+			) : (
+				<button
+					aria-label={label}
+					className="dropdown-item"
+					onClick={onClick}
+					role="menuitem"
+					type="button"
+				>
+					{content}
+				</button>
+			)}
+
+			<ClayButtonWithIcon
+				aria-label={removeTitle}
+				className="fds-search-suggestions-item-remove"
+				displayType="unstyled"
+				onClick={onRemove}
+				role="menuitem"
+				size="sm"
+				symbol="times-small"
+				title={removeTitle}
+			/>
+		</li>
+	);
+}
+
+/**
+ * Returns the range of a stored label the input matches, or null when it does
+ * not. An empty input matches every label with an empty range.
+ */
+function _getMatch(label: string, value: string): IMatch | null {
 	const search = value.trim().toLowerCase();
 
 	if (!search) {
 		return {index: 0, length: 0};
 	}
 
-	const index = query.toLowerCase().indexOf(search);
+	const index = label.toLowerCase().indexOf(search);
 
 	return index === -1 ? null : {index, length: search.length};
 }

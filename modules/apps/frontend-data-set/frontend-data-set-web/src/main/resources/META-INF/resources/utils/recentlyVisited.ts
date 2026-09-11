@@ -32,15 +32,15 @@ function add(
 	fdsName: string,
 	{href, label}: Partial<IRecentlyVisitedItem> = {},
 	{maxEntries = DEFAULT_MAX_ENTRIES}: {maxEntries?: number} = {}
-): void {
+): IRecentlyVisitedItem[] {
 	const visitedHref = _getText(href);
 	const visitedLabel = _getText(label);
 
 	if (!visitedHref || !visitedLabel) {
-		return;
+		return get(fdsName);
 	}
 
-	_setRecentlyVisitedItems(
+	return _setRecentlyVisitedItems(
 		fdsName,
 		[
 			{href: visitedHref, label: visitedLabel},
@@ -53,12 +53,15 @@ function add(
 }
 
 /**
- * Removes every stored item for a Data Set.
+ * Removes every stored item for a Data Set and returns the items stored
+ * afterwards.
  *
  * @param fdsName Name of the Data Set
  */
-function clear(fdsName: string): void {
+function clear(fdsName: string): IRecentlyVisitedItem[] {
 	functionalStorage.remove(_getStorageKey(fdsName));
+
+	return get(fdsName);
 }
 
 /**
@@ -94,8 +97,8 @@ function get(fdsName: string): IRecentlyVisitedItem[] {
  * @param fdsName Name of the Data Set
  * @param href URL of the item to remove
  */
-function remove(fdsName: string, href: string): void {
-	_setRecentlyVisitedItems(
+function remove(fdsName: string, href: string): IRecentlyVisitedItem[] {
+	return _setRecentlyVisitedItems(
 		fdsName,
 		get(fdsName).filter(
 			(recentlyVisitedItem) => recentlyVisitedItem.href !== href
@@ -127,11 +130,17 @@ function _isRecentlyVisitedItem(value: unknown): value is IRecentlyVisitedItem {
 	return typeof href === 'string' && typeof label === 'string';
 }
 
+// The items are read back rather than returned as written, so a write that
+// browser storage rejects cannot leave the caller showing a history the Data
+// Set does not have
+
 function _setRecentlyVisitedItems(
 	fdsName: string,
 	recentlyVisitedItems: IRecentlyVisitedItem[]
-): void {
+): IRecentlyVisitedItem[] {
 	functionalStorage.set(_getStorageKey(fdsName), recentlyVisitedItems);
+
+	return get(fdsName);
 }
 
 export default {

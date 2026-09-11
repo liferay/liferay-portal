@@ -12,6 +12,7 @@ import '@testing-library/jest-dom';
 import FrontendDataSetContext from '../../../src/main/resources/META-INF/resources/FrontendDataSetContext';
 import MainSearch from '../../../src/main/resources/META-INF/resources/management_bar/controls/MainSearch';
 import recentSearches from '../../../src/main/resources/META-INF/resources/utils/recentSearches';
+import recentlyVisited from '../../../src/main/resources/META-INF/resources/utils/recentlyVisited';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -58,6 +59,8 @@ describe('MainSearch', () => {
 
 		recentSearches.clear(FDS_NAME);
 		recentSearches.clear(OTHER_FDS_NAME);
+		recentlyVisited.clear(FDS_NAME);
+		recentlyVisited.clear(OTHER_FDS_NAME);
 
 		onClear = jest.fn();
 		onSearch = jest.fn();
@@ -312,7 +315,7 @@ describe('MainSearch', () => {
 			const input = renderMainSearch({searchSuggestionsEnabled: true});
 
 			await user.click(input);
-			await user.click(screen.getByRole('button', {name: 'clear-all'}));
+			await user.click(screen.getByRole('menuitem', {name: 'clear-all'}));
 
 			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 			expect(recentSearches.get(FDS_NAME)).toEqual([]);
@@ -330,6 +333,157 @@ describe('MainSearch', () => {
 			await user.click(document.body);
 
 			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+	});
+
+	describe('Search suggestions: recently visited', () => {
+		const NIKE = {href: '/products/1', label: 'Nike Air Force One'};
+		const VANS = {href: '/products/2', label: 'Vans Half Cab'};
+
+		function storeVisitedItems(
+			visitedItems: Array<{href: string; label: string}>,
+			fdsName = FDS_NAME
+		) {
+			visitedItems.forEach((visitedItem) =>
+				recentlyVisited.add(fdsName, visitedItem)
+			);
+		}
+
+		it('lists the stored items when the empty input is focused', async () => {
+			storeVisitedItems([VANS, NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+
+			expect(screen.getByText('recently-visited')).toBeInTheDocument();
+
+			expect(
+				screen
+					.getAllByRole('menuitem', {name: /Nike|Vans/})
+					.map((menuItem) => menuItem.textContent)
+			).toEqual([NIKE.label, VANS.label]);
+		});
+
+		it('lists nothing when the Data Set does not ask for recent searches', async () => {
+			storeVisitedItems([NIKE]);
+
+			const input = renderMainSearch();
+
+			await user.click(input);
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+
+		it('leaves out the items stored for another Data Set', async () => {
+			storeVisitedItems([NIKE]);
+			storeVisitedItems([VANS], OTHER_FDS_NAME);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+
+			expect(
+				screen.getByRole('menuitem', {name: NIKE.label})
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('menuitem', {name: VANS.label})
+			).not.toBeInTheDocument();
+		});
+
+		it('links an item to the content it was visited at', async () => {
+			storeVisitedItems([NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+
+			const entry = screen.getByRole('menuitem', {name: NIKE.label});
+
+			expect(entry).toHaveAttribute('href', NIKE.href);
+
+			await user.click(entry);
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		});
+
+		it('keeps only the stored items matching what the user typed', async () => {
+			storeVisitedItems([VANS, NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.type(input, 'nik');
+
+			expect(
+				screen.getByRole('menuitem', {name: NIKE.label})
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('menuitem', {name: VANS.label})
+			).not.toBeInTheDocument();
+		});
+
+		it('removes a single item without closing the list', async () => {
+			storeVisitedItems([VANS, NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+			await user.click(
+				screen.getAllByRole('menuitem', {name: 'remove'})[0]
+			);
+
+			expect(
+				screen.queryByRole('menuitem', {name: NIKE.label})
+			).not.toBeInTheDocument();
+			expect(
+				screen.getByRole('menuitem', {name: VANS.label})
+			).toBeInTheDocument();
+			expect(recentlyVisited.get(FDS_NAME)).toEqual([VANS]);
+		});
+
+		it('names each section after the heading above it', async () => {
+			recentSearches.add(FDS_NAME, 'nike');
+			storeVisitedItems([NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+
+			expect(
+				screen.getByRole('group', {name: 'recent-searches'})
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole('group', {name: 'recently-visited'})
+			).toBeInTheDocument();
+		});
+
+		it('lists the visited items below the recent searches', async () => {
+			recentSearches.add(FDS_NAME, 'nike');
+			storeVisitedItems([NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+
+			expect(
+				screen
+					.getAllByText(/^recent(-searches|ly-visited)$/)
+					.map((subheader) => subheader.textContent)
+			).toEqual(['recent-searches', 'recently-visited']);
+		});
+
+		it('removes the queries and the items at once', async () => {
+			recentSearches.add(FDS_NAME, 'nike');
+			storeVisitedItems([NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+			await user.click(screen.getByRole('menuitem', {name: 'clear-all'}));
+
+			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+			expect(recentSearches.get(FDS_NAME)).toEqual([]);
+			expect(recentlyVisited.get(FDS_NAME)).toEqual([]);
 		});
 	});
 });

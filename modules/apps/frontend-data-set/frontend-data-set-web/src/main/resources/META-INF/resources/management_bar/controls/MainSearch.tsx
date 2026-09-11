@@ -25,6 +25,8 @@ function MainSearch({onClear}: {onClear: () => void}) {
 	const [inputValue, setInputValue] = useState(searchParam || '');
 	const [searchSuggestionsActive, setSearchSuggestionsActive] =
 		useState(false);
+	const [searchSuggestionsOpenCount, setSearchSuggestionsOpenCount] =
+		useState(0);
 
 	const inputGroupItemRef = useRef<HTMLDivElement>(null);
 
@@ -61,6 +63,13 @@ function MainSearch({onClear}: {onClear: () => void}) {
 		if (!searchSuggestionsEnabled) {
 			return;
 		}
+
+		// The menu reads the history as it mounts, so counting the requests to
+		// open it buys each one a mount of its own and a reading of its own. The
+		// box is clickable while the menu is already open, and an item visited in
+		// between has to show up when it is.
+
+		setSearchSuggestionsOpenCount((count) => count + 1);
 
 		setSearchSuggestionsActive(true);
 	};
@@ -134,6 +143,7 @@ function MainSearch({onClear}: {onClear: () => void}) {
 				{searchSuggestionsActive && (
 					<SearchSuggestionsMenu
 						alignElementRef={inputGroupItemRef}
+						key={searchSuggestionsOpenCount}
 						onActiveChange={setSearchSuggestionsActive}
 						onQueryClick={(query) => {
 							setSearchSuggestionsActive(false);
@@ -142,6 +152,9 @@ function MainSearch({onClear}: {onClear: () => void}) {
 
 							doSearch(query);
 						}}
+						onVisitedItemClick={() =>
+							setSearchSuggestionsActive(false)
+						}
 						value={inputValue}
 					/>
 				)}
