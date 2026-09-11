@@ -50,16 +50,16 @@ public class ReindexWorkflowMetricsIndexerTest
 			kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId();
 
 		_assertInstanceReindexPopulatesDocuments(
-			kaleoDefinitionId, kaleoTaskInstanceTokenId,
-			IndexReindexer.ExecutionMode.FULL);
+			IndexReindexer.ExecutionMode.FULL, kaleoDefinitionId,
+			kaleoTaskInstanceTokenId);
 		_assertInstanceReindexPopulatesDocuments(
-			kaleoDefinitionId, kaleoTaskInstanceTokenId,
-			IndexReindexer.ExecutionMode.SYNC);
+			IndexReindexer.ExecutionMode.SYNC, kaleoDefinitionId,
+			kaleoTaskInstanceTokenId);
 
 		_assertTaskReindexPopulatesTemplates(
-			kaleoDefinitionId, IndexReindexer.ExecutionMode.FULL);
+			IndexReindexer.ExecutionMode.FULL, kaleoDefinitionId);
 		_assertTaskReindexPopulatesTemplates(
-			kaleoDefinitionId, IndexReindexer.ExecutionMode.SYNC);
+			IndexReindexer.ExecutionMode.SYNC, kaleoDefinitionId);
 	}
 
 	@Test
@@ -69,8 +69,8 @@ public class ReindexWorkflowMetricsIndexerTest
 	}
 
 	private void _assertInstanceReindexPopulatesDocuments(
-			long kaleoDefinitionId, long kaleoTaskInstanceTokenId,
-			IndexReindexer.ExecutionMode executionMode)
+			IndexReindexer.ExecutionMode executionMode, long kaleoDefinitionId,
+			long kaleoTaskInstanceTokenId)
 		throws Exception {
 
 		long companyId = TestPropsValues.getCompanyId();
@@ -81,10 +81,10 @@ public class ReindexWorkflowMetricsIndexerTest
 		Query instanceTemplateQuery = _getTemplateQuery(
 			"instanceId", kaleoDefinitionId);
 
-		long instanceTemplateCount = _getCount(
+		long instanceTemplatesCount = _getCount(
 			instanceIndexName, instanceTemplateQuery);
 
-		Assert.assertTrue(instanceTemplateCount > 0);
+		Assert.assertTrue(instanceTemplatesCount > 0);
 
 		String taskIndexName = _getIndexName(
 			companyId, WorkflowMetricsIndexNameConstants.SUFFIX_TASK);
@@ -92,9 +92,9 @@ public class ReindexWorkflowMetricsIndexerTest
 		Query taskTemplateQuery = _getTemplateQuery(
 			"taskId", kaleoDefinitionId);
 
-		long taskTemplateCount = _getCount(taskIndexName, taskTemplateQuery);
+		long taskTemplatesCount = _getCount(taskIndexName, taskTemplateQuery);
 
-		Assert.assertTrue(taskTemplateCount > 0);
+		Assert.assertTrue(taskTemplatesCount > 0);
 
 		_deleteDocuments(instanceIndexName, instanceTemplateQuery);
 
@@ -109,18 +109,14 @@ public class ReindexWorkflowMetricsIndexerTest
 		Assert.assertEquals(0, _getCount(instanceIndexName, tasksQuery));
 		Assert.assertEquals(0, _getCount(taskIndexName, taskTemplateQuery));
 
-		_reindex(companyId, "instance", executionMode);
+		_reindex(companyId, executionMode, "instance");
 
 		Assert.assertEquals(
-			executionMode + " reindex must populate instance's templates",
-			instanceTemplateCount,
+			instanceTemplatesCount,
 			_getCount(instanceIndexName, instanceTemplateQuery));
 		Assert.assertEquals(
-			executionMode + " reindex must populate task's templates",
-			taskTemplateCount, _getCount(taskIndexName, taskTemplateQuery));
-		Assert.assertEquals(
-			executionMode + " reindex must populate tasks", 1,
-			_getCount(instanceIndexName, tasksQuery));
+			taskTemplatesCount, _getCount(taskIndexName, taskTemplateQuery));
+		Assert.assertEquals(1, _getCount(instanceIndexName, tasksQuery));
 	}
 
 	private void _assertReindexRemovesOrphanDocument(
@@ -137,7 +133,7 @@ public class ReindexWorkflowMetricsIndexerTest
 		Assert.assertEquals(
 			1, _getCount(processIndexName, _getProcessQuery(companyId)));
 
-		_reindex(companyId, "process", executionMode);
+		_reindex(companyId, executionMode, "process");
 
 		Assert.assertEquals(
 			executionMode + " reindex must remove orphan documents", 0,
@@ -145,7 +141,7 @@ public class ReindexWorkflowMetricsIndexerTest
 	}
 
 	private void _assertTaskReindexPopulatesTemplates(
-			long kaleoDefinitionId, IndexReindexer.ExecutionMode executionMode)
+			IndexReindexer.ExecutionMode executionMode, long kaleoDefinitionId)
 		throws Exception {
 
 		long companyId = TestPropsValues.getCompanyId();
@@ -156,19 +152,19 @@ public class ReindexWorkflowMetricsIndexerTest
 		Query taskTemplateQuery = _getTemplateQuery(
 			"taskId", kaleoDefinitionId);
 
-		long taskTemplateCount = _getCount(taskIndexName, taskTemplateQuery);
+		long taskTemplatesCount = _getCount(taskIndexName, taskTemplateQuery);
 
-		Assert.assertTrue(taskTemplateCount > 0);
+		Assert.assertTrue(taskTemplatesCount > 0);
 
 		_deleteDocuments(taskIndexName, taskTemplateQuery);
 
 		Assert.assertEquals(0, _getCount(taskIndexName, taskTemplateQuery));
 
-		_reindex(companyId, "task", executionMode);
+		_reindex(companyId, executionMode, "task");
 
 		Assert.assertEquals(
 			executionMode + " reindex must populate task's templates",
-			taskTemplateCount, _getCount(taskIndexName, taskTemplateQuery));
+			taskTemplatesCount, _getCount(taskIndexName, taskTemplateQuery));
 	}
 
 	private void _deleteDocuments(String indexName, Query query) {
@@ -247,8 +243,8 @@ public class ReindexWorkflowMetricsIndexerTest
 	}
 
 	private void _reindex(
-			long companyId, String indexEntityName,
-			IndexReindexer.ExecutionMode executionMode)
+			long companyId, IndexReindexer.ExecutionMode executionMode,
+			String indexEntityName)
 		throws Exception {
 
 		if (executionMode == IndexReindexer.ExecutionMode.SYNC) {
