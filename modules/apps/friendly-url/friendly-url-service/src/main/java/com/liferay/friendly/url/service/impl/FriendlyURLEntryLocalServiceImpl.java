@@ -135,7 +135,7 @@ public class FriendlyURLEntryLocalServiceImpl
 		friendlyURLEntry = friendlyURLEntryPersistence.update(friendlyURLEntry);
 
 		_updateFriendlyURLEntryLocalizations(
-			friendlyURLEntry, classNameId, parentClassPK,
+			friendlyURLEntry, classNameId, parentClassPK, true,
 			_merge(urlTitleMap, existingUrlTitleMap));
 
 		// Asset
@@ -569,7 +569,7 @@ public class FriendlyURLEntryLocalServiceImpl
 		friendlyURLEntry = friendlyURLEntryPersistence.update(friendlyURLEntry);
 
 		_updateFriendlyURLEntryLocalizations(
-			friendlyURLEntry, classNameId, parentClassPK, urlTitleMap);
+			friendlyURLEntry, classNameId, parentClassPK, false, urlTitleMap);
 
 		// Asset
 
@@ -947,7 +947,8 @@ public class FriendlyURLEntryLocalServiceImpl
 
 	private void _updateFriendlyURLEntryLocalizations(
 			FriendlyURLEntry friendlyURLEntry, long classNameId,
-			long parentClassPK, Map<String, String> urlTitleMap)
+			long parentClassPK, boolean newFriendlyURLEntry,
+			Map<String, String> urlTitleMap)
 		throws PortalException {
 
 		urlTitleMap = _sortUrlTitleMap(
@@ -980,6 +981,10 @@ public class FriendlyURLEntryLocalServiceImpl
 						updateFriendlyURLLocalization(
 							existingFriendlyURLEntryLocalization);
 					}
+				}
+				else if (newFriendlyURLEntry) {
+					addFriendlyURLEntryLocalization(
+						friendlyURLEntry, entry.getKey(), normalizedUrlTitle);
 				}
 				else {
 					updateFriendlyURLEntryLocalization(
