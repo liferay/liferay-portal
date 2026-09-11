@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.security.SecureRandomUtil;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -84,12 +85,10 @@ public class AnalyticsCloudBearerTokenProvider implements BearerTokenProvider {
 			Objects.equals(
 				oAuth2Application.getExternalReferenceCode(), "AI-HUB-CELL")) {
 
-			return _EXPIRATION_AI_HUB_CELL_IN_SECONDS;
+			return TimeUnit.DAYS.toSeconds(30);
 		}
 
 		return AccessTokenExpiresInUtil.getExpiresIn();
 	}
-
-	private static final long _EXPIRATION_AI_HUB_CELL_IN_SECONDS = 2592000L;
 
 }

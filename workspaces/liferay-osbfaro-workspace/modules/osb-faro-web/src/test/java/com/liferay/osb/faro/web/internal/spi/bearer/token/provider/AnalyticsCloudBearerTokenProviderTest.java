@@ -8,6 +8,9 @@ package com.liferay.osb.faro.web.internal.spi.bearer.token.provider;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.rest.spi.bearer.token.provider.BearerTokenProvider;
 import com.liferay.osb.faro.web.internal.util.AccessTokenExpiresInUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -55,7 +58,7 @@ public class AnalyticsCloudBearerTokenProviderTest {
 	@Test
 	public void testOnBeforeCreate() {
 		BearerTokenProvider.AccessToken accessToken = _createAccessToken(
-			"SOME-OTHER-APPLICATION");
+			RandomTestUtil.randomString());
 
 		_analyticsCloudBearerTokenProvider.onBeforeCreate(accessToken);
 
@@ -65,12 +68,12 @@ public class AnalyticsCloudBearerTokenProviderTest {
 	@Test
 	public void testOnBeforeCreateWithApplicationAIHubCell() {
 		BearerTokenProvider.AccessToken accessToken = _createAccessToken(
-			"AI-HUB-CELL");
+			_AI_HUB_CELL_EXTERNAL_REFERENCE_CODE);
 
 		_analyticsCloudBearerTokenProvider.onBeforeCreate(accessToken);
 
 		Assert.assertEquals(
-			_EXPIRATION_AI_HUB_CELL_IN_SECONDS, accessToken.getExpiresIn());
+			_AI_HUB_CELL_EXPIRATION_IN_SECONDS, accessToken.getExpiresIn());
 		Assert.assertTrue(
 			_analyticsCloudBearerTokenProvider.isValid(accessToken));
 	}
@@ -80,18 +83,18 @@ public class AnalyticsCloudBearerTokenProviderTest {
 		AccessTokenExpiresInUtil.setExpiresIn(_HOUR_IN_SECONDS);
 
 		BearerTokenProvider.AccessToken accessToken = _createAccessToken(
-			"SOME-OTHER-APPLICATION");
+			RandomTestUtil.randomString());
 
 		_analyticsCloudBearerTokenProvider.onBeforeCreate(accessToken);
 
 		Assert.assertEquals(_HOUR_IN_SECONDS, accessToken.getExpiresIn());
 
-		accessToken = _createAccessToken("AI-HUB-CELL");
+		accessToken = _createAccessToken(_AI_HUB_CELL_EXTERNAL_REFERENCE_CODE);
 
 		_analyticsCloudBearerTokenProvider.onBeforeCreate(accessToken);
 
 		Assert.assertEquals(
-			_EXPIRATION_AI_HUB_CELL_IN_SECONDS, accessToken.getExpiresIn());
+			_AI_HUB_CELL_EXPIRATION_IN_SECONDS, accessToken.getExpiresIn());
 	}
 
 	private BearerTokenProvider.AccessToken _createAccessToken(
@@ -115,8 +118,13 @@ public class AnalyticsCloudBearerTokenProviderTest {
 		return System.currentTimeMillis() / 1000;
 	}
 
-	private static final long _EXPIRATION_AI_HUB_CELL_IN_SECONDS = 2592000L;
-	private static final long _HOUR_IN_SECONDS = 3600L;
+	private static final long _AI_HUB_CELL_EXPIRATION_IN_SECONDS =
+		TimeUnit.DAYS.toSeconds(30);
+
+	private static final String _AI_HUB_CELL_EXTERNAL_REFERENCE_CODE =
+		"AI-HUB-CELL";
+
+	private static final long _HOUR_IN_SECONDS = TimeUnit.HOURS.toSeconds(1);
 
 	private final AnalyticsCloudBearerTokenProvider
 		_analyticsCloudBearerTokenProvider =
