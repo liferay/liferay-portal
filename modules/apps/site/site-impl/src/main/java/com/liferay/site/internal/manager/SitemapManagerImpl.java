@@ -7,7 +7,6 @@ package com.liferay.site.internal.manager;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
@@ -84,6 +83,7 @@ import com.liferay.site.internal.constants.SitemapDestinationNames;
 import com.liferay.site.internal.scheduler.XMLSitemapRegenerationSchedulerJobConfiguration;
 import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.provider.SitemapURLProvider;
+import com.liferay.site.provider.helper.SitemapURLProviderHelper;
 import com.liferay.site.service.SiteSitemapRegenerationEntryLocalService;
 import com.liferay.site.storage.helper.SitemapStorageHelper;
 
@@ -1615,19 +1615,10 @@ public class SitemapManagerImpl implements SitemapManager {
 				entry.getKey());
 
 			for (Layout layout : layouts) {
-				if (layout.isSystem() && !layout.isTypeAssetDisplay()) {
-					continue;
-				}
-
-				UnicodeProperties typeSettingsUnicodeProperties =
-					layout.getTypeSettingsProperties();
-
-				boolean sitemapInclude = GetterUtil.getBoolean(
-					typeSettingsUnicodeProperties.getProperty(
-						LayoutTypePortletConstants.SITEMAP_INCLUDE),
-					true);
-
-				if (!sitemapInclude || (permissionChecker == null) ||
+				if ((layout.isSystem() && !layout.isTypeAssetDisplay()) ||
+					_sitemapURLProviderHelper.isExcludeLayoutFromSitemap(
+						layout) ||
+					(permissionChecker == null) ||
 					!_layoutModelResourcePermission.contains(
 						permissionChecker, layout, ActionKeys.VIEW)) {
 
@@ -1768,6 +1759,9 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Reference
 	private SitemapStorageHelper _sitemapStorageHelper;
+
+	@Reference
+	private SitemapURLProviderHelper _sitemapURLProviderHelper;
 
 	@Reference
 	private SiteSitemapRegenerationEntryLocalService
