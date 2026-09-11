@@ -498,7 +498,11 @@ spec:
             ports:
                 -   port: cluster
                     protocol: TCP
+                -   port: cluster-tx
+                    protocol: TCP
                 -   port: http
+                    protocol: TCP
+                -   port: session
                     protocol: TCP
         {{- with .statefulset.networkPolicy.extraIngress }}
         {{- toYaml . | nindent 8 }}

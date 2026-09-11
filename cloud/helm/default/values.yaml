@@ -160,36 +160,45 @@ customInitContainers:
                                 cp --force --recursive --verbose /opt/liferay/osgi/marketplace/. /temp/osgi/marketplace
                             fi
 
-                            if [ ! -f /temp/tomcat/conf/server.xml ]
-                            then
-                                mkdir --parents /temp/tomcat/conf
+                            mkdir --parents /temp/tomcat/conf
 
-                                cp /opt/liferay/tomcat/conf/logging.properties /temp/tomcat/conf/logging.properties
+                            # Tomcat assigns the <Manager> declared here to every web application. A
+                            # context that already has a manager never receives the <Cluster> manager,
+                            # which silently disables session replication.
 
-                                echo -e "\norg.apache.catalina.tribes.membership.cloud.level=SEVERE" >> /temp/tomcat/conf/logging.properties
+                            sed '/<Manager/d' /opt/liferay/tomcat/conf/context.xml > /temp/tomcat/conf/context.xml
 
-                                cat /opt/liferay/tomcat/conf/server.xml | sed '/<!--.*-->/d' | sed '/<!--/,/-->/d' > /temp/tomcat/conf/server.xml
+                            cp /opt/liferay/tomcat/conf/logging.properties /temp/tomcat/conf/logging.properties
 
-                                IFS='' read -r -d '' SERVER_XML_CLUSTER <<EOF
-                                <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
-                                    <Manager className="com.liferay.support.tomcat.session.LiferayDeltaManager" />
-                                    <Channel className="org.apache.catalina.tribes.group.GroupChannel">
-                                        <Membership
-                                            className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"
-                                            membershipProviderClassName="org.apache.catalina.tribes.membership.cloud.DNSMembershipProvider"
+                            echo -e "\norg.apache.catalina.ha.level=INFO\norg.apache.catalina.tribes.membership.cloud.level=SEVERE" >> /temp/tomcat/conf/logging.properties
+
+                            cat /opt/liferay/tomcat/conf/server.xml | sed '/<!--.*-->/d' | sed '/<!--/,/-->/d' > /temp/tomcat/conf/server.xml
+
+                            IFS='' read -r -d '' SERVER_XML_CLUSTER <<EOF
+                            <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster">
+                                <Manager className="com.liferay.support.tomcat.session.LiferayDeltaManager" />
+                                <Channel className="org.apache.catalina.tribes.group.GroupChannel">
+                                    <Membership
+                                        className="org.apache.catalina.tribes.membership.cloud.CloudMembershipService"
+                                        membershipProviderClassName="org.apache.catalina.tribes.membership.cloud.DNSMembershipProvider"
+                                    />
+                                    <Receiver
+                                        address="auto"
+                                        autoBind="0"
+                                        className="org.apache.catalina.tribes.transport.nio.NioReceiver"
+                                        port="4100"
+                                    />
+                                    <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
+                                        <Transport
+                                            className="org.apache.catalina.tribes.transport.nio.PooledParallelSender"
+                                            timeout="300000"
                                         />
-                                        <Sender className="org.apache.catalina.tribes.transport.ReplicationTransmitter">
-                                            <Transport
-                                                className="org.apache.catalina.tribes.transport.nio.PooledParallelSender"
-                                                timeout="300000"
-                                            />
-                                        </Sender>
-                                    </Channel>
-                                </Cluster>
+                                    </Sender>
+                                </Channel>
+                            </Cluster>
                             EOF
 
-                                sed --in-place '/<Engine/r'<(echo "${SERVER_XML_CLUSTER}") /temp/tomcat/conf/server.xml
-                            fi
+                            sed --in-place '/<Engine/r'<(echo "${SERVER_XML_CLUSTER}") /temp/tomcat/conf/server.xml
 
                             if [ -d /opt/liferay/deploy ] && [ -z "$(ls --all /temp/liferay/deploy/*license* 2>/dev/null)" ]
                             then
@@ -442,8 +451,14 @@ ports:
     -   containerPort: 4000
         name: glowroot
         protocol: TCP
+    -   containerPort: 4100
+        name: session
+        protocol: TCP
     -   containerPort: 7800
         name: cluster
+        protocol: TCP
+    -   containerPort: 7801
+        name: cluster-tx
         protocol: TCP
     -   containerPort: 8000
         name: debug
@@ -551,6 +566,9 @@ volumeMounts:
     -   mountPath: /opt/liferay/routes
         name: liferay-persistent-volume
         subPath: liferay/routes
+    -   mountPath: /opt/liferay/tomcat/conf/context.xml
+        name: liferay-persistent-volume
+        subPath: tomcat/conf/context.xml
     -   mountPath: /opt/liferay/tomcat/conf/logging.properties
         name: liferay-persistent-volume
         subPath: tomcat/conf/logging.properties
