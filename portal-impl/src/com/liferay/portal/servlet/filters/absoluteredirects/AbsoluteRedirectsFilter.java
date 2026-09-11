@@ -48,18 +48,20 @@ public class AbsoluteRedirectsFilter
 		PortalUtil.getCurrentCompleteURL(httpServletRequest);
 		PortalUtil.getCurrentURL(httpServletRequest);
 
-		HttpSession httpSession = httpServletRequest.getSession();
+		HttpSession httpSession = httpServletRequest.getSession(false);
 
-		Boolean httpsInitial = (Boolean)httpSession.getAttribute(
-			WebKeys.HTTPS_INITIAL);
+		if (httpSession != null) {
+			Boolean httpsInitial = (Boolean)httpSession.getAttribute(
+				WebKeys.HTTPS_INITIAL);
 
-		if (httpsInitial == null) {
-			httpsInitial = Boolean.valueOf(httpServletRequest.isSecure());
+			if (httpsInitial == null) {
+				httpsInitial = Boolean.valueOf(httpServletRequest.isSecure());
 
-			httpSession.setAttribute(WebKeys.HTTPS_INITIAL, httpsInitial);
+				httpSession.setAttribute(WebKeys.HTTPS_INITIAL, httpsInitial);
 
-			if (_log.isDebugEnabled()) {
-				_log.debug("Setting httpsInitial to " + httpsInitial);
+				if (_log.isDebugEnabled()) {
+					_log.debug("Setting httpsInitial to " + httpsInitial);
+				}
 			}
 		}
 
