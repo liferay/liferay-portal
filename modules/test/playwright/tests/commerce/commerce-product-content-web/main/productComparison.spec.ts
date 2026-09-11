@@ -35,6 +35,10 @@ test(
 	'CPContentHelper is available in product comparison widget templates',
 	{tag: '@LPD-46669'},
 	async ({apiHelpers, page, site, templatesPage}) => {
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
 		await templatesPage.gotoWidgetTemplates(site.friendlyUrlPath);
 
 		const productComparisonBarWidgetTemplateName = getRandomString();
@@ -109,10 +113,6 @@ test(
 			]),
 			siteId: site.id,
 			title: getRandomString(),
-		});
-
-		await apiHelpers.headlessCommerceAdminChannel.postChannel({
-			siteGroupId: site.id,
 		});
 
 		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
