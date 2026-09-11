@@ -53,6 +53,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -678,7 +679,7 @@ public class FriendlyURLEntryLocalServiceImpl
 		}
 
 		FriendlyURLEntryLocalization existingFriendlyURLEntryLocalization =
-			friendlyURLEntryLocalizationPersistence.fetchByG_C_P_L_U(
+			_fetchFriendlyURLEntryLocalization(
 				groupId, classNameId, parentClassPK, languageId,
 				normalizedUrlTitle);
 
@@ -806,6 +807,24 @@ public class FriendlyURLEntryLocalServiceImpl
 
 		return friendlyURLEntryPersistence.fetchByPrimaryKey(
 			friendlyURLEntryLocalization.getFriendlyURLEntryId());
+	}
+
+	private FriendlyURLEntryLocalization _fetchFriendlyURLEntryLocalization(
+		long groupId, long classNameId, long parentClassPK, String languageId,
+		String urlTitle) {
+
+		for (FriendlyURLEntryLocalization friendlyURLEntryLocalization :
+				friendlyURLEntryLocalizationPersistence.findByG_C_P_U(
+					groupId, classNameId, parentClassPK, urlTitle)) {
+
+			if (Objects.equals(
+					languageId, friendlyURLEntryLocalization.getLanguageId())) {
+
+				return friendlyURLEntryLocalization;
+			}
+		}
+
+		return null;
 	}
 
 	private String _getURLEncodedSubstring(
@@ -966,11 +985,9 @@ public class FriendlyURLEntryLocalServiceImpl
 			if (Validator.isNotNull(normalizedUrlTitle)) {
 				FriendlyURLEntryLocalization
 					existingFriendlyURLEntryLocalization =
-						friendlyURLEntryLocalizationPersistence.
-							fetchByG_C_P_L_U(
-								friendlyURLEntry.getGroupId(), classNameId,
-								parentClassPK, entry.getKey(),
-								normalizedUrlTitle);
+						_fetchFriendlyURLEntryLocalization(
+							friendlyURLEntry.getGroupId(), classNameId,
+							parentClassPK, entry.getKey(), normalizedUrlTitle);
 
 				if (existingFriendlyURLEntryLocalization != null) {
 					String existingUrlTitle =
