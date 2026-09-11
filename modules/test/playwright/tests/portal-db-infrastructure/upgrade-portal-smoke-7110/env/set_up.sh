@@ -12,16 +12,7 @@ PORTAL_VERSION="7.1.10"
 function main {
 	set -ex
 
-	cd "${_PORTAL_PROJECT_DIR}"
-
-	ant -f build-test.xml \
-		-Ddata.archive.type="${DATA_ARCHIVE_TYPE}" \
-		-Dkeep.cached.app.server.data=true \
-		-Dportal.version="${PORTAL_VERSION}" \
-		-Dskip.get.testcase.database.properties=true \
-		rebuild-legacy-database
-
-	echo "Upgrade source: portal.version=${PORTAL_VERSION} data.archive.type=${DATA_ARCHIVE_TYPE}"
+	rebuild_legacy_database "${DATA_ARCHIVE_TYPE}" "${PORTAL_VERSION}"
 
 	default_set_up
 

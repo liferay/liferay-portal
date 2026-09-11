@@ -4,10 +4,10 @@ function assert_clean_upgrade_log {
 
 	# The upgrade writes to one of two logs, depending on how it ran. A tool
 	# upgrade (ant upgrade-legacy-database) runs in its own JVM and writes its own
-	# log. An at-boot upgrade (upgrade.database.auto.run=true) runs inside the
+	# log. An at boot upgrade (upgrade.database.auto.run=true) runs inside the
 	# portal JVM, so its errors land in the portal log alongside the rest of the
-	# boot. Prefer the tool log so tool-upgrade projects keep asserting exactly
-	# what they asserted before, and fall back to the portal log for at-boot
+	# boot. Prefer the tool log so tool upgrade projects keep asserting exactly
+	# what they asserted before, and fall back to the portal log for at boot
 	# projects, which otherwise have no upgrade log at all and would fail here
 	# before asserting anything.
 
@@ -15,10 +15,10 @@ function assert_clean_upgrade_log {
 
 	if [ ! -f "${upgrade_log}" ]
 	then
-		upgrade_log=$(ls -t "${LIFERAY_HOME}"/logs/liferay.*.log 2>/dev/null | head -1)
+		upgrade_log=$(ls --sort=time "${LIFERAY_HOME}"/logs/liferay.*.log 2>/dev/null | head --lines=1)
 	fi
 
-	if [ -z "${upgrade_log}" ] || [ ! -f "${upgrade_log}" ]
+	if [[ -z ${upgrade_log} ]] || [[ ! -f ${upgrade_log} ]]
 	then
 		echo "Unable to find an upgrade log under ${LIFERAY_HOME}."
 
@@ -40,13 +40,14 @@ function assert_clean_upgrade_log {
 	if [[ ${upgrade_log} == *"/logs/liferay."* ]]
 	then
 		local boot_line
-		boot_line=$(grep -n "Started web bundles" "${upgrade_log}" | tail -1 | cut -d: -f1)
 
-		if [ -n "${boot_line}" ]
+		boot_line=$(grep --line-number "Started web bundles" "${upgrade_log}" | tail --lines=1 | cut --delimiter=: --fields=1)
+
+		if [[ -n ${boot_line} ]]
 		then
 			scoped_log=$(mktemp)
 
-			tail -n "+${boot_line}" "${upgrade_log}" > "${scoped_log}"
+			tail --lines="+${boot_line}" "${upgrade_log}" > "${scoped_log}"
 
 			echo "Scoped to the current boot, from line ${boot_line}"
 		fi
@@ -602,6 +603,20 @@ function prepare_additional_bundles {
 			ant -f build-test.xml rebuild-database-playwright
 		fi
 	done
+}
+
+function rebuild_legacy_database {
+	local data_archive_type=${1}
+	local portal_version=${2}
+
+	cd "${_PORTAL_PROJECT_DIR}"
+
+	ant -f build-test.xml \
+		-Ddata.archive.type="${data_archive_type}" \
+		-Dkeep.cached.app.server.data=true \
+		-Dportal.version="${portal_version}" \
+		-Dskip.get.testcase.database.properties=true \
+		rebuild-legacy-database
 }
 
 function set_variables {
