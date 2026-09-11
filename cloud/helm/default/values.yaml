@@ -416,7 +416,11 @@ network:
     hostnames: []
     perHostnameRoutes: false
     securityPolicyAuthorizationSpec: {}
-    sessionPersistence: {}
+    sessionPersistence:
+        cookieConfig:
+            lifetimeType: Session
+        sessionName: LIFERAY_SESSION
+        type: Cookie
     timeouts: {}
 networkPolicy:
     allowGatewayIngress: true

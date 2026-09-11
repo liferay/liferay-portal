@@ -6,40 +6,6 @@ templates:
     -   templates/workloads.yaml
 tests:
     -   asserts:
-            -   notExists:
-                    path: spec.rules[0].sessionPersistence
-        documentSelector:
-            path: metadata.name
-            skipEmptyTemplates: true
-            value: liferay-default-httproute
-        it: Omits session persistence unless it is configured
-        set:
-            network.enabled: true
-            network.gatewayName: test-gateway
-    -   asserts:
-            -   equal:
-                    path: spec.rules[0].sessionPersistence.sessionName
-                    value: LIFERAY_SESSION
-            -   equal:
-                    path: spec.rules[0].sessionPersistence.type
-                    value: Cookie
-            -   equal:
-                    path: spec.rules[0].sessionPersistence.cookieConfig.lifetimeType
-                    value: Session
-        documentSelector:
-            path: metadata.name
-            skipEmptyTemplates: true
-            value: liferay-default-httproute
-        it: Applies session persistence to the route that carries the backend
-        set:
-            network.enabled: true
-            network.gatewayName: test-gateway
-            network.sessionPersistence:
-                cookieConfig:
-                    lifetimeType: Session
-                sessionName: LIFERAY_SESSION
-                type: Cookie
-    -   asserts:
             -   equal:
                     path: spec.rules[0].sessionPersistence.sessionName
                     value: LIFERAY_SESSION
@@ -59,6 +25,60 @@ tests:
                 sessionName: LIFERAY_SESSION
                 type: Cookie
     -   asserts:
+            -   equal:
+                    path: spec.rules[0].sessionPersistence.cookieConfig.lifetimeType
+                    value: Session
+            -   equal:
+                    path: spec.rules[0].sessionPersistence.sessionName
+                    value: LIFERAY_SESSION
+            -   equal:
+                    path: spec.rules[0].sessionPersistence.type
+                    value: Cookie
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Applies session persistence to the route that carries the backend
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.sessionPersistence:
+                cookieConfig:
+                    lifetimeType: Session
+                sessionName: LIFERAY_SESSION
+                type: Cookie
+    -   asserts:
+            -   notExists:
+                    path: spec.rules[0].sessionPersistence
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Can be turned off by emptying the value
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.sessionPersistence: null
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].sessionPersistence
+                    value:
+                        cookieConfig:
+                            lifetimeType: Session
+                        sessionName: LIFERAY_SESSION
+                        type: Cookie
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute-a-example-com
+        it: Carries the default onto a per hostname route without being asked
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.hostnames:
+                -   a.example.com
+            network.perHostnameRoutes: true
+    -   asserts:
             -   notExists:
                     path: spec.rules[0].sessionPersistence
         documentSelector:
@@ -71,6 +91,19 @@ tests:
             network.endpointRef: https
             network.forceHttpsRedirect: true
             network.gatewayName: test-gateway
-            network.sessionPersistence:
-                sessionName: LIFERAY_SESSION
-                type: Cookie
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].sessionPersistence
+                    value:
+                        cookieConfig:
+                            lifetimeType: Session
+                        sessionName: LIFERAY_SESSION
+                        type: Cookie
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Persists sessions to one pod by default
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
