@@ -3353,14 +3353,18 @@ public class StagingImpl implements Staging {
 		String lastImportUserName = MapUtil.getString(
 			parameterMap, "lastImportUserName");
 
-		typeSettingsUnicodeProperties.setProperty(
-			"last-import-user-name", lastImportUserName);
+		if (Validator.isNotNull(lastImportUserName)) {
+			typeSettingsUnicodeProperties.setProperty(
+				"last-import-user-name", lastImportUserName);
+		}
 
 		String lastImportUserUuid = MapUtil.getString(
 			parameterMap, "lastImportUserUuid");
 
-		typeSettingsUnicodeProperties.setProperty(
-			"last-import-user-uuid", lastImportUserUuid);
+		if (Validator.isNotNull(lastImportUserUuid)) {
+			typeSettingsUnicodeProperties.setProperty(
+				"last-import-user-uuid", lastImportUserUuid);
+		}
 
 		String layoutBranchId = GetterUtil.getString(
 			layoutElement.attributeValue("layout-branch-id"));

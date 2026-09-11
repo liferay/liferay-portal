@@ -22,6 +22,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.lar.ThemeExporter;
 import com.liferay.exportimport.lar.ThemeImporter;
 import com.liferay.exportimport.staged.model.repository.StagedModelRepository;
@@ -35,6 +36,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Image;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutBranch;
+import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
@@ -158,6 +161,8 @@ public class StagedLayoutSetStagedModelDataHandler
 
 		_exportFaviconFileEntry(
 			portletDataContext, stagedLayoutSet, stagedLayoutSetElement);
+		_exportLayoutRevisions(
+			portletDataContext, stagedLayoutSet, stagedLayoutSetElement);
 
 		if (ExportImportThreadLocal.isStagingInProcess() &&
 			updateLastPublishDate) {
@@ -244,6 +249,7 @@ public class StagedLayoutSetStagedModelDataHandler
 
 		_importFaviconFileEntry(
 			portletDataContext, stagedLayoutSet, stagedLayoutSetElement);
+		_importLayoutRevisions(portletDataContext, stagedLayoutSetElement);
 
 		// Page priorities
 
@@ -463,6 +469,67 @@ public class StagedLayoutSetStagedModelDataHandler
 		StagedModelDataHandlerUtil.exportReferenceStagedModel(
 			portletDataContext, stagedLayoutSet, faviconFileEntry,
 			PortletDataContext.REFERENCE_TYPE_STRONG);
+	}
+
+	private void _exportLayoutRevisions(
+			PortletDataContext portletDataContext,
+			StagedLayoutSet stagedLayoutSet, Element stagedLayoutSetElement)
+		throws Exception {
+
+		if (!ExportImportThreadLocal.isStagingInProcess()) {
+			return;
+		}
+
+		Group group = _groupLocalService.fetchGroup(
+			stagedLayoutSet.getGroupId());
+
+		LayoutSet layoutSet = stagedLayoutSet.getLayoutSet();
+
+		if ((group == null) ||
+			!LayoutStagingUtil.isBranchingLayoutSet(
+				group, layoutSet.isPrivateLayout())) {
+
+			return;
+		}
+
+		long[] layoutIds = portletDataContext.getLayoutIds();
+
+		for (Layout layout :
+				_layoutLocalService.getLayouts(
+					stagedLayoutSet.getGroupId(),
+					layoutSet.isPrivateLayout())) {
+
+			if ((layoutIds != null) &&
+				!ArrayUtil.contains(layoutIds, layout.getLayoutId())) {
+
+				continue;
+			}
+
+			LayoutRevision layoutRevision = LayoutStagingUtil.getLayoutRevision(
+				layout);
+
+			if (layoutRevision == null) {
+				continue;
+			}
+
+			Element layoutRevisionElement = stagedLayoutSetElement.addElement(
+				"layout-revision");
+
+			layoutRevisionElement.addAttribute(
+				"external-reference-code", layout.getExternalReferenceCode());
+			layoutRevisionElement.addAttribute(
+				"layout-branch-id",
+				String.valueOf(layoutRevision.getLayoutBranchId()));
+
+			LayoutBranch layoutBranch = layoutRevision.getLayoutBranch();
+
+			layoutRevisionElement.addAttribute(
+				"layout-branch-name", layoutBranch.getName());
+
+			layoutRevisionElement.addAttribute(
+				"layout-revision-id",
+				String.valueOf(layoutRevision.getLayoutRevisionId()));
+		}
 	}
 
 	private void _exportLayouts(
@@ -687,6 +754,35 @@ public class StagedLayoutSetStagedModelDataHandler
 		existingLayoutSet.setFaviconFileEntryId(faviconFileEntryId);
 
 		_layoutSetLocalService.updateLayoutSet(existingLayoutSet);
+	}
+
+	private void _importLayoutRevisions(
+			PortletDataContext portletDataContext,
+			Element stagedLayoutSetElement)
+		throws Exception {
+
+		if (!ExportImportThreadLocal.isStagingInProcess()) {
+			return;
+		}
+
+		for (Element layoutRevisionElement :
+				stagedLayoutSetElement.elements("layout-revision")) {
+
+			Layout layout =
+				_layoutLocalService.fetchLayoutByExternalReferenceCode(
+					layoutRevisionElement.attributeValue(
+						"external-reference-code"),
+					portletDataContext.getScopeGroupId());
+
+			if (layout == null) {
+				continue;
+			}
+
+			_staging.updateLastImportSettings(
+				layoutRevisionElement, layout, portletDataContext);
+
+			_layoutLocalService.updateLayout(layout);
+		}
 	}
 
 	private void _importLogo(PortletDataContext portletDataContext) {
@@ -1062,6 +1158,9 @@ public class StagedLayoutSetStagedModelDataHandler
 	)
 	private StagedModelRepository<StagedLayoutSet>
 		_stagedLayoutSetStagedModelRepository;
+
+	@Reference
+	private Staging _staging;
 
 	@Reference
 	private ThemeExporter _themeExporter;
