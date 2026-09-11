@@ -341,7 +341,6 @@ public class FIPSModeValidator {
 		_validateAllowedPropertyValues(
 			new String[] {"PKCS12"}, PropsKeys.CLUSTER_LINK_AUTH_KEYSTORE_TYPE,
 			PropsUtil.get(PropsKeys.CLUSTER_LINK_AUTH_KEYSTORE_TYPE));
-
 		_validateClusterLinkChannelConfiguration(
 			GetterUtil.getString(
 				PropsUtil.get(
