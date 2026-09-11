@@ -5,8 +5,9 @@ import React from 'react';
 import {cleanup, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
-import {List} from 'immutable';
+import {List, Map} from 'immutable';
 import {Property, PropertyGroup, PropertySubgroup} from 'shared/util/records';
+import {ReferencedObjectsContext} from '../../context/referencedObjects';
 import {SegmentTypes} from 'shared/util/constants';
 import {useQuery} from '@apollo/client';
 
@@ -263,5 +264,52 @@ describe('CriteriaSidebar', () => {
 		expect(
 			document.querySelector('.sidebar-pagination')
 		).toBeInTheDocument();
+	});
+
+	it('registers each fetched property as a referenced object', async () => {
+		apolloClient.query.mockResolvedValueOnce({
+			data: {
+				searchTerms: {
+					compositions: [{count: 9, name: 'shoes'}],
+					totalCount: 30
+				}
+			}
+		});
+
+		const addProperty = jest.fn();
+
+		const searchTermPropertyGroupList = new List([
+			new PropertyGroup({
+				label: 'Search Terms',
+				name: 'Search Terms',
+				propertyKey: 'search-term',
+				propertySubgroups: new List([
+					new PropertySubgroup({properties: new List()})
+				])
+			})
+		]);
+
+		render(
+			<DndProvider backend={HTML5Backend}>
+				<ReferencedObjectsContext.Provider
+					value={{
+						addProperty,
+						referencedEntities: Map(),
+						referencedProperties: Map()
+					}}
+				>
+					<CriteriaSidebar
+						channelId='123'
+						groupId='12345'
+						propertyGroupsIList={searchTermPropertyGroupList}
+						type={SegmentTypes.Batch}
+					/>
+				</ReferencedObjectsContext.Provider>
+			</DndProvider>
+		);
+
+		await waitFor(() => expect(addProperty).toHaveBeenCalled());
+
+		expect(addProperty.mock.calls[0][0].name).toBe('shoes');
 	});
 });

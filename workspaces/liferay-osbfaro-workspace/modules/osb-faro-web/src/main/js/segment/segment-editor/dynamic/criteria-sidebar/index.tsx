@@ -5,16 +5,16 @@ import CriteriaSidebarSearchBar from './CriteriaSidebarSearchBar';
 import EventsCriteriaTabs from './EventsCriteriaTabs';
 import Loading from 'shared/components/Loading';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {ClayPaginationWithBasicItems} from '@clayui/pagination';
+import SidebarPagination from './SidebarPagination';
 import {extractRemoteCriterionEntries} from '../criterion-types/extract';
 import {FieldOwnerTypes, SegmentTypes} from 'shared/util/constants';
 import {getPaginatedSection} from './paginatedSections';
 import {List} from 'immutable';
 import {Option, Picker} from '@clayui/core';
-import {PaginationBar} from '@clayui/pagination-bar';
 import {Property, PropertyGroup, PropertySubgroup} from 'shared/util/records';
 import {ReferencedObjectsContext} from '../context/referencedObjects';
 import {translateQueryToCriteria} from '../utils/odata';
+import {usePaginatedProperties} from './usePaginatedProperties';
 
 const REMOTE_PAGE_SIZE = 12;
 
@@ -71,21 +71,30 @@ export default function CriteriaSidebar({
 		string | null
 	>(() => propertyGroupsIList.first()?.propertyKey ?? null);
 
-	const [remoteQuery, setRemoteQuery] = useState<{
-		keywords: string;
-		page: number;
-	}>({keywords: '', page: 1});
-	const [remoteItems, setRemoteItems] = useState<List<Property>>(List());
-	const [remoteLoading, setRemoteLoading] = useState(false);
-
-	const [remoteTotalCount, setRemoteTotalCount] = useState(0);
-
 	const {addProperty} = useContext(ReferencedObjectsContext);
 
 	const selectedRemoteCriterionType =
 		getPaginatedSection(selectedPropertyKey);
 	const isRemoteSection = !!selectedRemoteCriterionType;
-	const remoteKeywords = isRemoteSection ? searchValue : '';
+
+	const {
+		items: remoteItems,
+		loading: remoteLoading,
+		page: remotePage,
+		setPage: setRemotePage,
+		totalPages: remoteTotalPages,
+	} = usePaginatedProperties({
+		channelId,
+		enabled: type === SegmentTypes.Batch,
+		groupId,
+		keywords: searchValue,
+		pageSize: REMOTE_PAGE_SIZE,
+		source: selectedRemoteCriterionType,
+	});
+
+	useEffect(() => {
+		remoteItems.forEach((property) => property && addProperty?.(property));
+	}, [remoteItems]);
 
 	useEffect(() => {
 		if (type !== SegmentTypes.Batch || !criteriaString || !addProperty) {
@@ -98,54 +107,6 @@ export default function CriteriaSidebar({
 			addProperty(criterionType.createProperty({id, name}));
 		});
 	}, []);
-
-	useEffect(() => {
-		setRemoteQuery((q) =>
-			q.keywords === remoteKeywords
-				? q
-				: {keywords: remoteKeywords, page: 1}
-		);
-	}, [remoteKeywords]);
-
-	useEffect(() => {
-		setRemoteItems(List());
-		setRemoteTotalCount(0);
-		setRemoteQuery((q) => (q.page === 1 ? q : {...q, page: 1}));
-	}, [selectedPropertyKey]);
-
-	useEffect(() => {
-		if (type !== SegmentTypes.Batch || !selectedRemoteCriterionType) {
-			return;
-		}
-
-		setRemoteLoading(true);
-
-		selectedRemoteCriterionType
-			.api({
-				channelId,
-				groupId,
-				keywords: remoteQuery.keywords,
-				page: remoteQuery.page,
-				pageSize: REMOTE_PAGE_SIZE,
-			})
-			.then((result) => {
-				const properties: List<Property> = List(
-					(result.items ?? []).map(
-						selectedRemoteCriterionType.createProperty
-					)
-				);
-
-				setRemoteItems(properties);
-				setRemoteTotalCount(result.totalCount ?? 0);
-
-				if (addProperty) {
-					properties.forEach(
-						(property) => property && addProperty(property)
-					);
-				}
-			})
-			.finally(() => setRemoteLoading(false));
-	}, [channelId, groupId, type, selectedRemoteCriterionType, remoteQuery]);
 
 	const effectivePropertyGroupsIList = useMemo(
 		() =>
@@ -220,7 +181,9 @@ export default function CriteriaSidebar({
 		if (isEventsSection) {
 			return (
 				<EventsCriteriaTabs
+					channelId={channelId}
 					defaultEvents={defaultEvents}
+					groupId={groupId}
 					searchValue={searchValue}
 				/>
 			);
@@ -295,18 +258,12 @@ export default function CriteriaSidebar({
 
 			<div className="sidebar-collapse">{renderCriteria()}</div>
 
-			{isRemoteSection && remoteTotalCount > 0 && (
-				<PaginationBar className="justify-content-center sidebar-pagination">
-					<ClayPaginationWithBasicItems
-						active={remoteQuery.page}
-						onActiveChange={(page) =>
-							setRemoteQuery((q) => ({...q, page}))
-						}
-						totalPages={Math.ceil(
-							remoteTotalCount / REMOTE_PAGE_SIZE
-						)}
-					/>
-				</PaginationBar>
+			{isRemoteSection && (
+				<SidebarPagination
+					activePage={remotePage}
+					onPageChange={setRemotePage}
+					totalPages={remoteTotalPages}
+				/>
 			)}
 		</div>
 	);

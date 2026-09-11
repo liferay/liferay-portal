@@ -1,3 +1,4 @@
+import client from 'shared/apollo/client';
 import EventsCriteriaTabs from '../EventsCriteriaTabs';
 import React from 'react';
 import {
@@ -12,13 +13,12 @@ import {HTML5Backend} from 'react-dnd-html5-backend';
 import {List} from 'immutable';
 import {Property} from 'shared/util/records';
 import {PropertyTypes} from '../../utils/constants';
-import {useQuery} from '@apollo/client';
 
 jest.unmock('react-dom');
 
-jest.mock('@apollo/client', () => ({
-	...jest.requireActual('@apollo/client'),
-	useQuery: jest.fn()
+jest.mock('shared/apollo/client', () => ({
+	__esModule: true,
+	default: {query: jest.fn()}
 }));
 
 const mockLiferayLanguage = key => {
@@ -65,15 +65,16 @@ const customEventsResult = (count, total = count) => ({
 			})),
 			total
 		}
-	},
-	loading: false
+	}
 });
 
 const renderTabs = (props = {}) =>
 	render(
 		<DndProvider backend={HTML5Backend}>
 			<EventsCriteriaTabs
+				channelId='123'
 				defaultEvents={defaultEvents}
+				groupId='456'
 				searchValue=''
 				{...props}
 			/>
@@ -81,14 +82,14 @@ const renderTabs = (props = {}) =>
 	);
 
 const lastQueryVariables = () => {
-	const calls = useQuery.mock.calls;
+	const calls = client.query.mock.calls;
 
-	return calls[calls.length - 1][1].variables;
+	return calls[calls.length - 1][0].variables;
 };
 
 describe('EventsCriteriaTabs', () => {
 	beforeEach(() => {
-		useQuery.mockReturnValue(customEventsResult(3));
+		client.query.mockResolvedValue(customEventsResult(3));
 	});
 
 	afterEach(() => {
@@ -114,12 +115,12 @@ describe('EventsCriteriaTabs', () => {
 		expect(screen.queryByText('Custom Event 1')).not.toBeInTheDocument();
 	});
 
-	it('lists the backend custom events when the Custom tab is selected', () => {
+	it('lists the backend custom events when the Custom tab is selected', async () => {
 		renderTabs();
 
 		fireEvent.click(screen.getByText('Custom'));
 
-		expect(screen.getByText('Custom Event 1')).toBeInTheDocument();
+		expect(await screen.findByText('Custom Event 1')).toBeInTheDocument();
 		expect(screen.getByText('Custom Event 3')).toBeInTheDocument();
 
 		expect(screen.queryByText('Viewed Page')).not.toBeInTheDocument();
@@ -138,51 +139,67 @@ describe('EventsCriteriaTabs', () => {
 		).toBeInTheDocument();
 	});
 
-	it('requests custom events from the backend with eventType Custom, page 0 and size 10', () => {
+	it('does not query the backend until the Custom tab is selected', () => {
 		renderTabs();
 
-		expect(lastQueryVariables()).toMatchObject({
-			eventType: 'CUSTOM',
-			page: 0,
-			size: 10
-		});
+		expect(client.query).not.toHaveBeenCalled();
 	});
 
-	it('paginates custom events through the backend when the total exceeds the page size', () => {
-		useQuery.mockReturnValue(customEventsResult(10, 25));
+	it('requests custom events from the backend with eventType Custom, page 0 and size 10', async () => {
+		renderTabs();
+
+		fireEvent.click(screen.getByText('Custom'));
+
+		await waitFor(() =>
+			expect(lastQueryVariables()).toMatchObject({
+				eventType: 'CUSTOM',
+				page: 0,
+				size: 10
+			})
+		);
+	});
+
+	it('paginates custom events through the backend when the total exceeds the page size', async () => {
+		client.query.mockResolvedValue(customEventsResult(10, 25));
 
 		renderTabs();
 
 		fireEvent.click(screen.getByText('Custom'));
-		fireEvent.click(screen.getByText('2'));
 
-		expect(lastQueryVariables().page).toBe(1);
+		fireEvent.click(await screen.findByText('2'));
+
+		await waitFor(() => expect(lastQueryVariables().page).toBe(1));
 	});
 
-	it('does not render pagination when the total fits in a single page', () => {
-		useQuery.mockReturnValue(customEventsResult(3, 3));
+	it('does not render pagination when the total fits in a single page', async () => {
+		client.query.mockResolvedValue(customEventsResult(3, 3));
 
 		renderTabs();
 
 		fireEvent.click(screen.getByText('Custom'));
+
+		expect(await screen.findByText('Custom Event 1')).toBeInTheDocument();
 
 		expect(screen.queryByText('2')).not.toBeInTheDocument();
 	});
 
 	it('passes the search keyword to the backend query and resets to the first page', async () => {
-		useQuery.mockReturnValue(customEventsResult(10, 25));
+		client.query.mockResolvedValue(customEventsResult(10, 25));
 
 		const {rerender} = renderTabs();
 
 		fireEvent.click(screen.getByText('Custom'));
-		fireEvent.click(screen.getByText('2'));
 
-		expect(lastQueryVariables().page).toBe(1);
+		fireEvent.click(await screen.findByText('2'));
+
+		await waitFor(() => expect(lastQueryVariables().page).toBe(1));
 
 		rerender(
 			<DndProvider backend={HTML5Backend}>
 				<EventsCriteriaTabs
+					channelId='123'
 					defaultEvents={defaultEvents}
+					groupId='456'
 					searchValue='checkout'
 				/>
 			</DndProvider>
@@ -203,17 +220,21 @@ describe('EventsCriteriaTabs', () => {
 		expect(screen.queryByText('Submitted Form')).not.toBeInTheDocument();
 	});
 
-	it('shows the no-entries empty state when there are no custom events', () => {
-		useQuery.mockReturnValue(customEventsResult(0, 0));
+	it('shows the no-entries empty state when there are no custom events', async () => {
+		client.query.mockResolvedValue(customEventsResult(0, 0));
 
 		const {container} = renderTabs();
 
 		fireEvent.click(screen.getByText('Custom'));
 
 		expect(
+			await screen.findByText('no-custom-events-yet')
+		).toBeInTheDocument();
+
+		expect(
 			container.querySelectorAll('[data-testid^="criteria-item-"]')
 		).toHaveLength(0);
-		expect(screen.getByText('no-custom-events-yet')).toBeInTheDocument();
+
 		expect(
 			screen.getByText('learn-more-about-events').closest('a')
 		).toHaveAttribute(
@@ -223,7 +244,7 @@ describe('EventsCriteriaTabs', () => {
 	});
 
 	it('shows an empty state when a search yields no custom events', async () => {
-		useQuery.mockReturnValue(customEventsResult(0, 0));
+		client.query.mockResolvedValue(customEventsResult(0, 0));
 
 		renderTabs({searchValue: 'nothing-matches'});
 

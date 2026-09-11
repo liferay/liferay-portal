@@ -1,12 +1,9 @@
 import client from 'shared/apollo/client';
 import SearchTermsQuery from 'shared/queries/SearchTermsQuery';
 import {createSearchTermProperty} from '../utils/utils';
+import {PaginatedSource} from '../criterion-types/RemoteCriterionType';
 import {Property} from 'shared/util/records';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {
-	RemoteCriterionSearchParams,
-	RemoteCriterionSearchResult,
-} from '../criterion-types/RemoteCriterionType';
 
 /**
  * Gives the Search Terms sidebar section the same paginated,
@@ -26,13 +23,8 @@ import {
  * exists to fail quietly (empty page) rather than to bridge a gap in
  * production. Once the backend ships it, this needs no change at all.
  */
-export const searchTermPagination = {
-	api: async ({
-		channelId,
-		keywords,
-		page = 1,
-		pageSize = 0,
-	}: RemoteCriterionSearchParams): Promise<RemoteCriterionSearchResult> => {
+export const searchTermPagination: PaginatedSource = {
+	api: async ({channelId, keywords, page, pageSize}) => {
 		const {data} = await client
 			.query({
 				query: SearchTermsQuery,
@@ -55,6 +47,5 @@ export const searchTermPagination = {
 		};
 	},
 
-	createProperty: ({name}: {id: string; name: string}): Property =>
-		createSearchTermProperty(name),
+	createProperty: ({name}): Property => createSearchTermProperty(name),
 };

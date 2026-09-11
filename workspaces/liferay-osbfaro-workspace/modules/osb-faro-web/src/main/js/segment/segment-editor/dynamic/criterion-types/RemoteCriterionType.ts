@@ -4,26 +4,33 @@ import {IDisplayComponentProps} from 'segment/components/criteria-card/types';
 import {ISegmentEditorCustomInputBase} from '../utils/types';
 import {Property} from 'shared/util/records';
 
-export interface RemoteCriterionSearchParams {
+export interface PaginatedSourceParams {
 	channelId: string;
 	groupId: string;
 	keywords?: string;
-	page?: number;
-	pageSize?: number;
+	page: number;
+	pageSize: number;
 }
 
-export interface RemoteCriterionSearchResult {
-	items: Array<{id: string; name: string}>;
+export interface PaginatedSourceResult<T> {
+	items: T[];
 	totalCount: number;
 }
 
-export interface RemoteCriterionType {
+/**
+ * One page-at-a-time list behind a sidebar section. Implemented by the
+ * remote criterion types below and by the sections that only need paging
+ * (see `criteria-sidebar/paginatedSections.ts`).
+ */
+export interface PaginatedSource<T = {id: string; name: string}> {
+	api: (params: PaginatedSourceParams) => Promise<PaginatedSourceResult<T>>;
+	createProperty: (item: T) => Property;
+}
+
+export interface RemoteCriterionType
+	extends PaginatedSource<{id: string; name: string}> {
 	DisplayComponent: ComponentType<IDisplayComponentProps>;
 	InputComponent: ComponentType<ISegmentEditorCustomInputBase>;
-	api: (
-		params: RemoteCriterionSearchParams
-	) => Promise<RemoteCriterionSearchResult>;
-	createProperty: (data: {id: string; name: string}) => Property;
 	idProperty: string;
 	nameProperty: string;
 	negativeOperator: NotOperators;
