@@ -7,8 +7,8 @@ import {expect, mergeTests} from '@playwright/test';
 import {createReadStream} from 'fs';
 import path from 'path';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
@@ -18,7 +18,7 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 
 export const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	changeTrackingPagesTest,
 	featureFlagsTest({
 		'LPD-20183': {enabled: true},

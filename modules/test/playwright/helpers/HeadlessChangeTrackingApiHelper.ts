@@ -6,7 +6,7 @@
 import {CTCollectionAPI} from '@liferay/change-tracking-rest-client-js';
 
 import getRandomString from '../utils/getRandomString';
-import {ApiHelpers} from './ApiHelpers';
+import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
 export class HeadlessChangeTrackingApiHelper {
 	readonly apiHelpers: ApiHelpers;
@@ -37,7 +37,20 @@ export class HeadlessChangeTrackingApiHelper {
 		const ctCollectionAPIClient =
 			await this.apiHelpers.buildRestClient(CTCollectionAPI);
 
-		return await ctCollectionAPIClient.postCTCollection(requestBody);
+		const ctCollection =
+			await ctCollectionAPIClient.postCTCollection(requestBody);
+
+		if (
+			this.apiHelpers instanceof DataApiHelpers &&
+			ctCollection?.body?.id
+		) {
+			this.apiHelpers.data.push({
+				id: ctCollection.body.id,
+				type: 'ctCollection',
+			});
+		}
+
+		return ctCollection;
 	}
 
 	async deleteCTCollection(ctCollectionId: number) {

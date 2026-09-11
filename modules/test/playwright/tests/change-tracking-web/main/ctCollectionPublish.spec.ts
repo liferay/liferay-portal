@@ -5,8 +5,8 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
@@ -20,7 +20,7 @@ import {blogsPagesTest} from '../../blogs-web/main/fixtures/blogsPagesTest';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 
 export const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	blogsPagesTest,
 	changeTrackingPagesTest,
 	globalMenuPagesTest,

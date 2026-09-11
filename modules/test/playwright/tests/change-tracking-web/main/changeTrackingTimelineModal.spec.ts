@@ -6,8 +6,8 @@
 import {Page, expect, mergeTests} from '@playwright/test';
 import moment from 'moment';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
@@ -15,7 +15,7 @@ import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest
 import {JournalPage} from '../../journal-web/main/pages/JournalPage';
 
 export const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	changeTrackingPagesTest,
 	journalPagesTest
 );

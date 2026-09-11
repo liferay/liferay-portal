@@ -5,8 +5,8 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import getRandomString from '../../../utils/getRandomString';
@@ -15,7 +15,7 @@ import {featureFlagPagesTest} from '../../feature-flag-web/main/fixtures/feature
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
 
 export const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	changeTrackingPagesTest,
 	featureFlagPagesTest,
 	journalPagesTest,

@@ -5,14 +5,14 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {changeTrackingPagesTest} from '../../../fixtures/changeTrackingPagesTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
 
 export const test = mergeTests(
-	apiHelpersTest,
+	dataApiHelpersTest,
 	changeTrackingPagesTest,
 	isolatedSiteTest
 );
