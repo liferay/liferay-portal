@@ -22,7 +22,7 @@ import org.osgi.service.component.annotations.Component;
 		"com.liferay.portlet.private-request-attributes=false",
 		"com.liferay.portlet.private-session-attributes=false",
 		"com.liferay.portlet.use-default-template=true",
-		"jakarta.portlet.display-name=Countries Management",
+		"jakarta.portlet.display-name=Countries",
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
 		"jakarta.portlet.init-param.view-template=/view.jsp",

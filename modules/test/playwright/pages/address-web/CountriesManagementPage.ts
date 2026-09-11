@@ -60,6 +60,6 @@ export class CountriesManagementPage {
 	}
 
 	async goto() {
-		await this.globalMenuPage.goToControlPanel('Countries Management');
+		await this.globalMenuPage.goToControlPanel('Countries');
 	}
 }

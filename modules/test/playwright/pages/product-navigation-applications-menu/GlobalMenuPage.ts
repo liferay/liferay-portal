@@ -37,7 +37,7 @@ type ControlPanelMenuItem =
 	| 'API Builder'
 	| 'Audit'
 	| 'Components'
-	| 'Countries Management'
+	| 'Countries'
 	| 'Custom Fields'
 	| 'Data Sets'
 	| 'Gogo Shell'
