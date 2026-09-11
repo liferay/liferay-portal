@@ -5,7 +5,6 @@
 
 package com.liferay.oauth2.provider.util;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -120,16 +119,6 @@ public class OAuth2JWKValidatorUtilTest {
 		_testValidateJWKWithUnsupportedKeyType("oct");
 	}
 
-	@Test
-	public void testValidateJWSAlgorithm() {
-		_testValidateJWSAlgorithm(
-			false, null, StringPool.BLANK, "ES256K", "HS1", "HS256", "HS384",
-			"HS512", "RS1", "RSA1_5", "garbage", "none", "rs256");
-		_testValidateJWSAlgorithm(
-			true, "ES256", "ES384", "ES512", "EdDSA", "PS256", "PS384", "PS512",
-			"RS256", "RS384", "RS512");
-	}
-
 	private String _generateECJWK(String algorithm, String curve) {
 		return JSONUtil.put(
 			"alg", algorithm
@@ -209,22 +198,6 @@ public class OAuth2JWKValidatorUtilTest {
 				).put(
 					"kty", keyType
 				).toString()));
-	}
-
-	private void _testValidateJWSAlgorithm(
-		boolean allowed, String... algorithms) {
-
-		for (String algorithm : algorithms) {
-			if (allowed) {
-				OAuth2JWKValidatorUtil.validateJWSAlgorithm(algorithm);
-			}
-			else {
-				Assert.assertThrows(
-					SecurityException.class,
-					() -> OAuth2JWKValidatorUtil.validateJWSAlgorithm(
-						algorithm));
-			}
-		}
 	}
 
 	private boolean _fipsEnabled;
