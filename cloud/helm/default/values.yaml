@@ -416,6 +416,7 @@ network:
     hostnames: []
     perHostnameRoutes: false
     securityPolicyAuthorizationSpec: {}
+    sessionPersistence: {}
     timeouts: {}
 networkPolicy:
     allowGatewayIngress: true

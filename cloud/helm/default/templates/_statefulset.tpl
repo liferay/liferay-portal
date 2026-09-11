@@ -302,6 +302,10 @@ spec:
                 -   path:
                         type: PathPrefix
                         value: /
+            {{- with $ctx.statefulset.network.sessionPersistence }}
+            sessionPersistence:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
             {{- with $ctx.statefulset.network.timeouts }}
             timeouts:
                 backendRequest: {{ .backendRequest }}
@@ -343,6 +347,10 @@ spec:
                 -   path:
                         type: PathPrefix
                         value: /
+            {{- with .statefulset.network.sessionPersistence }}
+            sessionPersistence:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
             {{- with .statefulset.network.timeouts }}
             timeouts:
                 backendRequest: {{ .backendRequest }}
