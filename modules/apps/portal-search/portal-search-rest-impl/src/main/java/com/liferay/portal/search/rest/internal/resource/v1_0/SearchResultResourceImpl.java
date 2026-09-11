@@ -375,7 +375,8 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 					_localization.getLocalizedName(
 						com.liferay.portal.kernel.search.Field.DESCRIPTION,
 						contextAcceptLanguage.getPreferredLanguageId()),
-					com.liferay.portal.kernel.search.Field.MODIFIED_DATE
+					com.liferay.portal.kernel.search.Field.MODIFIED_DATE,
+					com.liferay.portal.kernel.search.Field.TYPE
 				}
 			).from(
 				pagination.getStartPosition()
@@ -588,6 +589,21 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 		}
 	}
 
+	private void _setType(
+		Document document, List<String> fields, SearchResult searchResult) {
+
+		if (!_isEmptyOrContains(fields, "type")) {
+			return;
+		}
+
+		String type = document.getString(
+			com.liferay.portal.kernel.search.Field.TYPE);
+
+		if (type != null) {
+			searchResult.setType(() -> type);
+		}
+	}
+
 	private Object _toAggregations(
 		Map<String, AggregationResult> aggregationResultsMap) {
 
@@ -661,6 +677,7 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 			_setDateModified(document, fields, searchResult);
 			_setDateReview(document, fields, searchResult);
 			_setScore(fields, searchHit, searchResult);
+			_setType(document, fields, searchResult);
 
 			searchResults.add(searchResult);
 		}
