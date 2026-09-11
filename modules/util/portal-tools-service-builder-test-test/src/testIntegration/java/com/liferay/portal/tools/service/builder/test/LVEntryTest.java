@@ -46,6 +46,36 @@ public class LVEntryTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
+	public void testAddLVEntryLocalization() throws Exception {
+		LVEntry draftLVEntry = _versionService.create();
+
+		draftLVEntry = _versionService.updateDraft(draftLVEntry);
+
+		LVEntryLocalization lvEntryLocalization =
+			_lvEntryLocalService.addLVEntryLocalization(
+				draftLVEntry, _LANGUAGE_ID_1, _TITLE_1, _CONTENT_1);
+
+		Assert.assertEquals(
+			lvEntryLocalization,
+			_lvEntryLocalService.fetchLVEntryLocalization(
+				draftLVEntry.getPrimaryKey(), _LANGUAGE_ID_1));
+
+		_lvEntry = _versionService.publishDraft(draftLVEntry);
+
+		try {
+			_lvEntryLocalService.addLVEntryLocalization(
+				_lvEntry, _LANGUAGE_ID_2, _TITLE_2, _CONTENT_2);
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				"Can only update draft entries " + _lvEntry.getPrimaryKey(),
+				illegalArgumentException.getMessage());
+		}
+	}
+
+	@Test
 	public void testCheckout() throws Exception {
 		LVEntry draftLVEntry = _versionService.create();
 
