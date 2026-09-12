@@ -68,12 +68,12 @@ public class AnalyticsCloudBearerTokenProviderTest {
 	@Test
 	public void testOnBeforeCreateWithApplicationAIHubCell() {
 		BearerTokenProvider.AccessToken accessToken = _createAccessToken(
-			_AI_HUB_CELL_EXTERNAL_REFERENCE_CODE);
+			_EXTERNAL_REFERENCE_CODE_AI_HUB_CELL);
 
 		_analyticsCloudBearerTokenProvider.onBeforeCreate(accessToken);
 
 		Assert.assertEquals(
-			_AI_HUB_CELL_EXPIRATION_IN_SECONDS, accessToken.getExpiresIn());
+			_EXPIRATION_AI_HUB_CELL_IN_SECONDS, accessToken.getExpiresIn());
 		Assert.assertTrue(
 			_analyticsCloudBearerTokenProvider.isValid(accessToken));
 	}
@@ -89,12 +89,12 @@ public class AnalyticsCloudBearerTokenProviderTest {
 
 		Assert.assertEquals(_HOUR_IN_SECONDS, accessToken.getExpiresIn());
 
-		accessToken = _createAccessToken(_AI_HUB_CELL_EXTERNAL_REFERENCE_CODE);
+		accessToken = _createAccessToken(_EXTERNAL_REFERENCE_CODE_AI_HUB_CELL);
 
 		_analyticsCloudBearerTokenProvider.onBeforeCreate(accessToken);
 
 		Assert.assertEquals(
-			_AI_HUB_CELL_EXPIRATION_IN_SECONDS, accessToken.getExpiresIn());
+			_EXPIRATION_AI_HUB_CELL_IN_SECONDS, accessToken.getExpiresIn());
 	}
 
 	private BearerTokenProvider.AccessToken _createAccessToken(
@@ -118,10 +118,10 @@ public class AnalyticsCloudBearerTokenProviderTest {
 		return System.currentTimeMillis() / 1000;
 	}
 
-	private static final long _AI_HUB_CELL_EXPIRATION_IN_SECONDS =
+	private static final long _EXPIRATION_AI_HUB_CELL_IN_SECONDS =
 		TimeUnit.DAYS.toSeconds(30);
 
-	private static final String _AI_HUB_CELL_EXTERNAL_REFERENCE_CODE =
+	private static final String _EXTERNAL_REFERENCE_CODE_AI_HUB_CELL =
 		"AI-HUB-CELL";
 
 	private static final long _HOUR_IN_SECONDS = TimeUnit.HOURS.toSeconds(1);
