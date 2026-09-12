@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.util.Validator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -30,6 +32,30 @@ public class StaticSiteExportResourceHarvester {
 
 	public StaticSiteExportResourceHarvester(JSONFactory jsonFactory) {
 		_jsonFactory = jsonFactory;
+	}
+
+	public Set<String> harvestCSS(String css, String cssURL) {
+		Set<String> urls = new LinkedHashSet<>();
+
+		Matcher matcher = _cssURLPattern.matcher(css);
+
+		while (matcher.find()) {
+			String url = matcher.group(1);
+
+			if (url == null) {
+				url = matcher.group(2);
+			}
+
+			url = _unquote(url);
+
+			if (url.startsWith(StringPool.POUND)) {
+				continue;
+			}
+
+			_addURL(urls, _resolve(url, cssURL));
+		}
+
+		return urls;
 	}
 
 	public Set<String> harvestHTML(String html) {
@@ -114,6 +140,59 @@ public class StaticSiteExportResourceHarvester {
 		}
 	}
 
+	private String _resolve(String url, String baseURL) {
+		if (Validator.isNull(url) || url.startsWith(StringPool.SLASH) ||
+			url.startsWith("data:") || url.startsWith("http")) {
+
+			return url;
+		}
+
+		int index = baseURL.lastIndexOf(CharPool.SLASH);
+
+		if (index == -1) {
+			return url;
+		}
+
+		String path = baseURL.substring(0, index + 1);
+
+		while (url.startsWith("../")) {
+			url = url.substring(3);
+
+			path = path.substring(0, path.length() - 1);
+
+			int lastIndex = path.lastIndexOf(CharPool.SLASH);
+
+			if (lastIndex == -1) {
+				break;
+			}
+
+			path = path.substring(0, lastIndex + 1);
+		}
+
+		if (url.startsWith("./")) {
+			url = url.substring(2);
+		}
+
+		return path + url;
+	}
+
+	private String _unquote(String url) {
+		if (Validator.isNull(url)) {
+			return url;
+		}
+
+		url = StringUtil.unquote(StringUtil.trim(url));
+
+		while (!url.isEmpty() &&
+			   ((url.charAt(0) == CharPool.QUOTE) ||
+				(url.charAt(0) == CharPool.APOSTROPHE))) {
+
+			url = url.substring(1);
+		}
+
+		return url;
+	}
+
 	private static final String[] _ATTRIBUTE_NAMES = {
 		"href", "poster", "src", "xlink:href"
 	};
@@ -124,6 +203,9 @@ public class StaticSiteExportResourceHarvester {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		StaticSiteExportResourceHarvester.class);
+
+	private static final Pattern _cssURLPattern = Pattern.compile(
+		"url\\(([^)]+)\\)|@import\\s+[\"']([^\"']+)[\"']");
 
 	private final JSONFactory _jsonFactory;
 
