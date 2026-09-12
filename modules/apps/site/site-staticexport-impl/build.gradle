@@ -1,5 +1,6 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "org.jsoup", name: "jsoup", version: "1.23.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:segments:segments-api")
