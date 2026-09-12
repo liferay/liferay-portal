@@ -901,6 +901,10 @@ public class FriendlyURLEntryLocalServiceImpl
 	private Map<String, String> _sortUrlTitleMap(
 		long groupId, Map<String, String> urlTitleMap) {
 
+		if (urlTitleMap.size() <= 1) {
+			return urlTitleMap;
+		}
+
 		Map<String, String> sortedUrlTitleMap = new LinkedHashMap<>();
 
 		for (Locale locale : _language.getAvailableLocales(groupId)) {
