@@ -440,6 +440,11 @@ public class AssetCategoryLocalServiceImpl
 	}
 
 	@Override
+	public int getCompanyCategoriesCount(long companyId) {
+		return assetCategoryPersistence.countByCompanyId(companyId);
+	}
+
+	@Override
 	public List<AssetCategory> getDescendantCategories(AssetCategory category) {
 		return assetCategoryPersistence.findByG_LikeT_V(
 			category.getGroupId(), category.getTreePath() + "%",
