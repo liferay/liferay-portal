@@ -1153,15 +1153,13 @@ definition {
 			entryContent = "Blogs Entry Content",
 			entryTitle = "Blogs Entry Title");
 
-		BlogsEntry.addRelatedAsset(
+		RelatedAssets.selectAsset(
 			assetTitle = "WC WebContent Title",
-			assetType = "Basic Web Content",
-			depotName = "Test Depot Name");
+			scopeAssetType = "Blogs Entry");
 
-		BlogsEntry.addRelatedAsset(
+		RelatedAssets.selectAsset(
 			assetTitle = "Document_1.doc",
-			assetType = "Basic Document",
-			depotName = "Test Depot Name");
+			scopeAssetType = "Blogs Entry");
 
 		Button.clickPublish();
 

@@ -186,49 +186,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addRelatedAsset(depotName = null, assetTitle = null, assetType = null) {
-		Blogs.expandPanel(panel = "Related Assets");
-
-		AssertClick(
-			locator1 = "AssetRelatedAssets#RELATED_ASSETS_SELECT",
-			value1 = "Select");
-
-		var key_assetType = ${assetType};
-
-		MenuItem.click(menuItem = ${assetType});
-
-		var key_assetTitle = ${assetTitle};
-
-		SelectFrame(value1 = "relative=top");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		if (isSet(depotName)) {
-			AssertClick(
-				key_breadcrumbName = "Sites and Libraries",
-				locator1 = "Breadcrumb#BREADCRUMB_ENTRY",
-				value1 = "Sites and Libraries");
-
-			AssertClick(
-				key_groupTab = "Asset Library",
-				locator1 = "ItemSelector#NAVIGATION_GROUP_TAB",
-				value1 = "Asset Library");
-
-			LexiconCard.clickCard(card = ${depotName});
-		}
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "table");
-
-		Click(
-			key_assetTitle = ${assetTitle},
-			locator1 = "AssetRelatedAssets#ASSET_TABLE_CHECKBOX");
-
-		SelectFrame(value1 = "relative=top");
-
-		Button.clickDone();
-	}
-
-	@summary = "Default summary"
 	macro addSmallImage(navTab = null, depotName = null, uploadFileName = null, imageFileName = null) {
 		Blogs.expandPanel(panel = "Configuration");
 
