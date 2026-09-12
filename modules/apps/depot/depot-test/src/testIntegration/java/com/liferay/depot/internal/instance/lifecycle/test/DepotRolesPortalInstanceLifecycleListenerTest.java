@@ -141,44 +141,12 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
 			List.of(ActionKeys.MANAGE_TAG));
 
-		for (String name :
-				List.of(
-					DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-					DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-					DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
-
-			_assertResourcePermissions(
-				companyId, Layout.class.getName(),
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				name, List.of(ActionKeys.UPDATE));
-			_assertResourcePermissions(
-				companyId, "com.liferay.fragment",
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				name, List.of("MANAGE_FRAGMENT_ENTRIES"));
-			_assertResourcePermissions(
-				companyId, "com.liferay.layout.page.template",
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				name,
-				List.of(
-					"ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION",
-					"ADD_LAYOUT_PAGE_TEMPLATE_ENTRY"));
-			_assertResourcePermissions(
-				companyId,
-				"com.liferay.layout.page.template.model." +
-					"LayoutPageTemplateCollection",
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				name, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
-			_assertResourcePermissions(
-				companyId,
-				"com.liferay.layout.page.template.model." +
-					"LayoutPageTemplateEntry",
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				name, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
-			_assertResourcePermissions(
-				companyId, "com.liferay.style.book",
-				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-				name, List.of("MANAGE_STYLE_BOOK_ENTRIES"));
-		}
+		_assertDesignLibraryResourcePermissions(
+			companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
+		_assertDesignLibraryResourcePermissions(
+			companyId, DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
+		_assertDesignLibraryResourcePermissions(
+			companyId, DepotRolesConstants.DESIGN_LIBRARY_OWNER);
 
 		Role administratorRole = _roleLocalService.getRole(
 			companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
@@ -192,6 +160,41 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 				String.valueOf(role.getRoleId()), administratorRole.getName(),
 				List.of(ActionKeys.VIEW));
 		}
+	}
+
+	private void _assertDesignLibraryResourcePermissions(
+			long companyId, String roleName)
+		throws Exception {
+
+		_assertResourcePermissions(
+			companyId, Layout.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(companyId), roleName, List.of(ActionKeys.UPDATE));
+		_assertResourcePermissions(
+			companyId, "com.liferay.fragment", ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(companyId), roleName,
+			List.of("MANAGE_FRAGMENT_ENTRIES"));
+		_assertResourcePermissions(
+			companyId, "com.liferay.layout.page.template",
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			roleName,
+			List.of(
+				"ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION",
+				"ADD_LAYOUT_PAGE_TEMPLATE_ENTRY"));
+		_assertResourcePermissions(
+			companyId,
+			"com.liferay.layout.page.template.model." +
+				"LayoutPageTemplateCollection",
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			roleName, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
+		_assertResourcePermissions(
+			companyId,
+			"com.liferay.layout.page.template.model.LayoutPageTemplateEntry",
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			roleName, List.of(ActionKeys.DELETE, ActionKeys.UPDATE));
+		_assertResourcePermissions(
+			companyId, "com.liferay.style.book",
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			roleName, List.of("MANAGE_STYLE_BOOK_ENTRIES"));
 	}
 
 	private void _assertResourcePermissions(
