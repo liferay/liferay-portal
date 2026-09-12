@@ -37,7 +37,7 @@ public class UpstreamJobHealthMonitorTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		mockEnvironment(Collections.<String, String>emptyMap());
+		mockEnvironment(Collections.emptyMap());
 
 		JenkinsMasterTestUtil.getJenkinsMaster(
 			_MASTER_NAME, "http://" + _MASTER_NAME);

@@ -33,8 +33,6 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 		Map<String, String> parameters = monitorConfig.getParameters();
 
 		_branch = getRequiredParameter("branch", parameters);
-		_controllerJobName = getRequiredParameter(
-			"controller.job.name", parameters);
 		_portalRepositoryName = _getParameter(
 			_PORTAL_REPOSITORY_NAME_DEFAULT, "portal.repository.name",
 			parameters);
@@ -43,6 +41,9 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 
 		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
 			getRequiredParameter("master.name", parameters));
+
+		_controllerJobName = getRequiredParameter(
+			"controller.job.name", parameters);
 
 		_controllerJobURL = JenkinsResultsParserUtil.combine(
 			jenkinsMaster.getURL(), "/job/", _controllerJobName);
