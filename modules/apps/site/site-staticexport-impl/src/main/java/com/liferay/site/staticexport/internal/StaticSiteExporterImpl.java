@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
+import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -37,10 +38,14 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.File;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -136,24 +141,29 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	}
 
 	private List<StaticSiteExportResource> _fetchStaticSiteExportResources(
-		HttpServletRequest httpServletRequest,
-		List<StaticSiteExportLayout> staticSiteExportLayouts,
-		StaticSiteExportReportImpl staticSiteExportReportImpl) {
+			HttpServletRequest httpServletRequest,
+			List<StaticSiteExportLayout> staticSiteExportLayouts,
+			StaticSiteExportReportImpl staticSiteExportReportImpl)
+		throws Exception {
 
 		List<StaticSiteExportResource> staticSiteExportResources =
 			new ArrayList<>();
 
-		Set<String> urls = new LinkedHashSet<>();
-
 		StaticSiteExportResourceHarvester staticSiteExportResourceHarvester =
 			new StaticSiteExportResourceHarvester(_jsonFactory);
+
+		Map<String, String> importMapPrefixes = new LinkedHashMap<>();
+		Deque<String> urls = new ArrayDeque<>();
 
 		for (StaticSiteExportLayout staticSiteExportLayout :
 				staticSiteExportLayouts) {
 
-			urls.addAll(
-				staticSiteExportResourceHarvester.harvestHTML(
-					staticSiteExportLayout.getHTML()));
+			String html = staticSiteExportLayout.getHTML();
+
+			importMapPrefixes.putAll(
+				staticSiteExportResourceHarvester.harvestImportMapPrefixes(
+					html));
+			urls.addAll(staticSiteExportResourceHarvester.harvestHTML(html));
 		}
 
 		StaticSiteExportResourceFetcher staticSiteExportResourceFetcher =
@@ -163,7 +173,15 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				ServletContextPool.get(_portal.getServletContextName()),
 				new StaticSiteExportBundleResourceResolver(_bundleContext));
 
-		for (String url : urls) {
+		Set<String> visitedURLs = new HashSet<>();
+
+		while (!urls.isEmpty()) {
+			String url = urls.removeFirst();
+
+			if (!visitedURLs.add(url)) {
+				continue;
+			}
+
 			File file = null;
 
 			try {
@@ -189,6 +207,17 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 			staticSiteExportResources.add(
 				new StaticSiteExportResourceImpl(file, url));
+
+			if (_isStylesheetURL(url)) {
+				urls.addAll(
+					staticSiteExportResourceHarvester.harvestCSS(
+						FileUtil.read(file), url));
+			}
+			else if (_isScriptURL(url)) {
+				urls.addAll(
+					staticSiteExportResourceHarvester.harvestJS(
+						importMapPrefixes, FileUtil.read(file), url));
+			}
 		}
 
 		return staticSiteExportResources;
@@ -224,6 +253,22 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 		return StringBundler.concat(
 			LocaleUtil.toLanguageId(locale), StringPool.SLASH, path, ".html");
+	}
+
+	private boolean _isScriptURL(String url) {
+		if (url.endsWith(".js") || url.contains(".js?")) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isStylesheetURL(String url) {
+		if (url.endsWith(".css") || url.contains(".css?")) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
