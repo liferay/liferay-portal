@@ -16,7 +16,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -52,7 +54,7 @@ public class StaticSiteExportResourceHarvester {
 				continue;
 			}
 
-			_addURL(urls, _resolve(url, cssURL));
+			_addURL(_resolve(cssURL, url), urls);
 		}
 
 		return urls;
@@ -87,30 +89,79 @@ public class StaticSiteExportResourceHarvester {
 		return urls;
 	}
 
-	private void _addImportMapURLs(String importMap, Set<String> urls) {
-		JSONObject importsJSONObject = null;
+	public Map<String, String> harvestImportMapPrefixes(String html) {
+		Map<String, String> prefixes = new LinkedHashMap<>();
 
-		try {
-			JSONObject jsonObject = _jsonFactory.createJSONObject(importMap);
+		Document document = Jsoup.parse(html);
 
-			importsJSONObject = jsonObject.getJSONObject("imports");
-		}
-		catch (JSONException jsonException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
+		for (Element element : document.select("script[type=importmap]")) {
+			for (Map.Entry<String, String> entry :
+					_getImports(
+						element.data()
+					).entrySet()) {
+
+				String specifier = entry.getKey();
+				String url = entry.getValue();
+
+				if (specifier.endsWith(StringPool.SLASH) &&
+					url.endsWith(StringPool.SLASH)) {
+
+					prefixes.put(specifier, url);
+				}
 			}
-
-			return;
 		}
 
-		if (importsJSONObject == null) {
-			return;
+		return prefixes;
+	}
+
+	public Set<String> harvestJS(
+		Map<String, String> importMapPrefixes, String js, String jsURL) {
+
+		Set<String> urls = new LinkedHashSet<>();
+
+		Matcher matcher = _jsModulePathPattern.matcher(js);
+
+		while (matcher.find()) {
+			_addURL(StringPool.SLASH + matcher.group(1), urls);
 		}
 
-		Iterator<String> iterator = importsJSONObject.keys();
+		String strippedJS = _blockCommentPattern.matcher(
+			js
+		).replaceAll(
+			StringPool.BLANK
+		);
 
-		while (iterator.hasNext()) {
-			String url = importsJSONObject.getString(iterator.next());
+		matcher = _jsRelativeModulePathPattern.matcher(strippedJS);
+
+		while (matcher.find()) {
+			_addURL(_resolve(jsURL, matcher.group(1)), urls);
+		}
+
+		matcher = _jsRelativeStylesheetPathPattern.matcher(strippedJS);
+
+		while (matcher.find()) {
+			_addURL(_resolve(jsURL, matcher.group(1)), urls);
+		}
+
+		for (Map.Entry<String, String> entry : importMapPrefixes.entrySet()) {
+			Pattern pattern = Pattern.compile(
+				"[\"'`]" + Pattern.quote(entry.getKey()) + "([-/.\\w]+)[\"'`]");
+
+			matcher = pattern.matcher(js);
+
+			while (matcher.find()) {
+				_addURL(entry.getValue() + matcher.group(1), urls);
+			}
+		}
+
+		return urls;
+	}
+
+	private void _addImportMapURLs(String importMap, Set<String> urls) {
+		for (String url :
+				_getImports(
+					importMap
+				).values()) {
 
 			if (!url.endsWith(StringPool.SLASH)) {
 				_addURL(url, urls);
@@ -140,7 +191,40 @@ public class StaticSiteExportResourceHarvester {
 		}
 	}
 
-	private String _resolve(String url, String baseURL) {
+	private Map<String, String> _getImports(String importMap) {
+		Map<String, String> imports = new LinkedHashMap<>();
+
+		JSONObject importsJSONObject = null;
+
+		try {
+			JSONObject jsonObject = _jsonFactory.createJSONObject(importMap);
+
+			importsJSONObject = jsonObject.getJSONObject("imports");
+		}
+		catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
+
+			return imports;
+		}
+
+		if (importsJSONObject == null) {
+			return imports;
+		}
+
+		Iterator<String> iterator = importsJSONObject.keys();
+
+		while (iterator.hasNext()) {
+			String specifier = iterator.next();
+
+			imports.put(specifier, importsJSONObject.getString(specifier));
+		}
+
+		return imports;
+	}
+
+	private String _resolve(String baseURL, String url) {
 		if (Validator.isNull(url) || url.startsWith(StringPool.SLASH) ||
 			url.startsWith("data:") || url.startsWith("http")) {
 
@@ -197,6 +281,9 @@ public class StaticSiteExportResourceHarvester {
 		"href", "poster", "src", "xlink:href"
 	};
 
+	private static final String _RESOURCE_EXTENSIONS =
+		"css|gif|ico|jpeg|jpg|js|json|png|svg|webp|woff|woff2";
+
 	private static final String[] _RESOURCE_PREFIXES = {
 		"/combo", "/documents/", "/image/", "/o/", "/webserver/"
 	};
@@ -204,8 +291,18 @@ public class StaticSiteExportResourceHarvester {
 	private static final Log _log = LogFactoryUtil.getLog(
 		StaticSiteExportResourceHarvester.class);
 
+	private static final Pattern _blockCommentPattern = Pattern.compile(
+		"/\\*.*?\\*/", Pattern.DOTALL);
 	private static final Pattern _cssURLPattern = Pattern.compile(
 		"url\\(([^)]+)\\)|@import\\s+[\"']([^\"']+)[\"']");
+	private static final Pattern _jsModulePathPattern = Pattern.compile(
+		"[\"'`](?:\\$\\{[^}]*\\})?/?(o/[-@$/.\\w()]+\\.(?:" +
+			_RESOURCE_EXTENSIONS + "))[\"'`]");
+	private static final Pattern _jsRelativeModulePathPattern = Pattern.compile(
+		"(?:from|import)\\s*\\(?\\s*[\"'`](\\.{1,2}/[-@$/.\\w()]+" +
+			"\\.(?:css|js))[\"'`]");
+	private static final Pattern _jsRelativeStylesheetPathPattern =
+		Pattern.compile("[\"'](\\.{1,2}/[-@$/.\\w()]+\\.css)[\"']");
 
 	private final JSONFactory _jsonFactory;
 
