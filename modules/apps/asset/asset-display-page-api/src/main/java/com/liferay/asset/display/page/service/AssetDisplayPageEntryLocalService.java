@@ -310,6 +310,9 @@ public interface AssetDisplayPageEntryLocalService
 	public int getAssetDisplayPageEntriesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getAssetDisplayPageEntriesCount(long groupId, long classNameId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getAssetDisplayPageEntriesCount(
 		long classNameId, long classTypeId, long layoutPageTemplateEntryId,
 		boolean defaultTemplate);
@@ -400,4 +403,4 @@ public interface AssetDisplayPageEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1674851509
+// LIFERAY-SERVICE-BUILDER-HASH:707038117

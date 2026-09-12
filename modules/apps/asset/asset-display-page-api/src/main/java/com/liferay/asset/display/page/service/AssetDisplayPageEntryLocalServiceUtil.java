@@ -358,6 +358,13 @@ public class AssetDisplayPageEntryLocalServiceUtil {
 	}
 
 	public static int getAssetDisplayPageEntriesCount(
+		long groupId, long classNameId) {
+
+		return getService().getAssetDisplayPageEntriesCount(
+			groupId, classNameId);
+	}
+
+	public static int getAssetDisplayPageEntriesCount(
 		long classNameId, long classTypeId, long layoutPageTemplateEntryId,
 		boolean defaultTemplate) {
 
@@ -473,4 +480,4 @@ public class AssetDisplayPageEntryLocalServiceUtil {
 			AssetDisplayPageEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1933622741
+// LIFERAY-SERVICE-BUILDER-HASH:-712392838

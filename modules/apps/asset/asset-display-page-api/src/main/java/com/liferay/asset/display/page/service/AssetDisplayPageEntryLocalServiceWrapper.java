@@ -404,6 +404,12 @@ public class AssetDisplayPageEntryLocalServiceWrapper
 	}
 
 	@Override
+	public int getAssetDisplayPageEntriesCount(long groupId, long classNameId) {
+		return _assetDisplayPageEntryLocalService.
+			getAssetDisplayPageEntriesCount(groupId, classNameId);
+	}
+
+	@Override
 	public int getAssetDisplayPageEntriesCount(
 		long classNameId, long classTypeId, long layoutPageTemplateEntryId,
 		boolean defaultTemplate) {
@@ -565,4 +571,4 @@ public class AssetDisplayPageEntryLocalServiceWrapper
 		_assetDisplayPageEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-741153119
+// LIFERAY-SERVICE-BUILDER-HASH:-217983123
