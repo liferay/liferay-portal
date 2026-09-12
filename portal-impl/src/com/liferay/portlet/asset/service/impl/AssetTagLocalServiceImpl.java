@@ -545,7 +545,9 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 		AssetEntry entry = assetEntryPersistence.fetchByC_C(
 			classNameId, classPK);
 
-		if (entry == null) {
+		if ((entry == null) ||
+			(assetTagPersistence.countByCompanyId(entry.getCompanyId()) == 0)) {
+
 			return Collections.emptyList();
 		}
 

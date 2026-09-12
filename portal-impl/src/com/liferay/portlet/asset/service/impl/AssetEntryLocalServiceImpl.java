@@ -823,7 +823,9 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 
 		// Tags
 
-		if ((tagNames != null) && ((entry != null) || (tagNames.length > 0))) {
+		if ((tagNames != null) &&
+			((tagNames.length > 0) || _hasAssetTags(entry))) {
+
 			Group siteGroup = _getAssetTagSiteGroup(groupId, serviceContext);
 
 			List<AssetTag> tags = _assetTagLocalService.checkTags(
@@ -1507,6 +1509,21 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 
 		return _groupPersistence.findByPrimaryKey(
 			PortalUtil.getSiteGroupId(scopeGroupId));
+	}
+
+	private boolean _hasAssetTags(AssetEntry entry) {
+		if (entry == null) {
+			return false;
+		}
+
+		int companyTagsCount = _assetTagLocalService.getCompanyTagsCount(
+			entry.getCompanyId());
+
+		if (companyTagsCount > 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _hasScoreSort(SearchContext searchContext) {
