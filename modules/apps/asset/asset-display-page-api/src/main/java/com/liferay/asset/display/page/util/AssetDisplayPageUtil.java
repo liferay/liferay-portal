@@ -149,6 +149,14 @@ public class AssetDisplayPageUtil {
 		LayoutPageTemplateEntry defaultLayoutPageTemplateEntry,
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider) {
 
+		int assetDisplayPageEntriesCount =
+			AssetDisplayPageEntryLocalServiceUtil.
+				getAssetDisplayPageEntriesCount(groupId, classNameId);
+
+		if (assetDisplayPageEntriesCount == 0) {
+			return defaultLayoutPageTemplateEntry;
+		}
+
 		AssetDisplayPageEntry assetDisplayPageEntry =
 			AssetDisplayPageEntryLocalServiceUtil.fetchAssetDisplayPageEntry(
 				groupId, classNameId, classPK);
