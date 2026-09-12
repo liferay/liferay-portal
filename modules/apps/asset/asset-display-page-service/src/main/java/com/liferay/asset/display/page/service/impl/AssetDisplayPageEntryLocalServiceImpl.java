@@ -212,6 +212,12 @@ public class AssetDisplayPageEntryLocalServiceImpl
 	}
 
 	@Override
+	public int getAssetDisplayPageEntriesCount(long groupId, long classNameId) {
+		return assetDisplayPageEntryPersistence.countByG_CN(
+			groupId, classNameId);
+	}
+
+	@Override
 	public int getAssetDisplayPageEntriesCount(
 		long classNameId, long classTypeId, long layoutPageTemplateEntryId,
 		boolean defaultTemplate) {
