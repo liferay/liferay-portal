@@ -63,7 +63,7 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
 	@TestInfo("LPD-104558")
-	public void testAddCompany() throws Exception {
+	public void testPortalInstanceRegistered() throws Exception {
 		long companyId = _company.getCompanyId();
 
 		_assertRole(
