@@ -484,6 +484,14 @@ public class AttachmentObjectFieldBusinessType
 	}
 
 	private Object _getFileEntryId(Object value) throws PortalException {
+		if (value instanceof FileEntry fileEntry) {
+			long fileEntryId = GetterUtil.getLong(fileEntry.getId());
+
+			if (fileEntryId > 0) {
+				return fileEntryId;
+			}
+		}
+
 		long fileEntryId = GetterUtil.getLong(value);
 
 		if (fileEntryId > 0) {
