@@ -568,7 +568,7 @@ public abstract class LVEntryLocalServiceBaseImpl
 
 		if (draftLVEntry.isHead()) {
 			throw new IllegalArgumentException(
-				"Can only update draft entries " +
+				"Unable to add a localization to published LVEntry " +
 					draftLVEntry.getPrimaryKey());
 		}
 
@@ -1533,4 +1533,4 @@ public abstract class LVEntryLocalServiceBaseImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1420983648
+// LIFERAY-SERVICE-BUILDER-HASH:771529980
