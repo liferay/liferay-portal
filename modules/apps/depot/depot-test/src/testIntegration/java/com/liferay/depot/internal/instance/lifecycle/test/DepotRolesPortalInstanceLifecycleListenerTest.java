@@ -126,6 +126,11 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			administratorResourceActions);
 
 		_assertResourcePermissions(
+			companyId, DepotEntry.class.getName(),
+			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+			DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
+			List.of(ActionKeys.VIEW));
+		_assertResourcePermissions(
 			companyId, "com.liferay.asset.tags",
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
@@ -135,11 +140,6 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
 			List.of(ActionKeys.MANAGE_TAG));
-		_assertResourcePermissions(
-			companyId, DepotEntry.class.getName(),
-			ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
-			DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
-			List.of(ActionKeys.VIEW));
 
 		for (String name :
 				List.of(
