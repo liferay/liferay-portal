@@ -505,6 +505,16 @@ public class AssetTagLocalServiceUtil {
 	}
 
 	/**
+	 * Returns the number of asset tags in the company.
+	 *
+	 * @param companyId the primary key of the company
+	 * @return the number of asset tags in the company
+	 */
+	public static int getCompanyTagsCount(long companyId) {
+		return getService().getCompanyTagsCount(companyId);
+	}
+
+	/**
 	 * Returns the asset tags of the asset entry.
 	 *
 	 * @param entryId the primary key of the asset entry
@@ -891,4 +901,4 @@ public class AssetTagLocalServiceUtil {
 	private static volatile AssetTagLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-62798395
+// LIFERAY-SERVICE-BUILDER-HASH:1617078009

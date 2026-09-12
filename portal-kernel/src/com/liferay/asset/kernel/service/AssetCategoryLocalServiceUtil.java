@@ -489,6 +489,10 @@ public class AssetCategoryLocalServiceUtil {
 		return getService().getChildCategoriesCount(parentCategoryId);
 	}
 
+	public static int getCompanyCategoriesCount(long companyId) {
+		return getService().getCompanyCategoriesCount(companyId);
+	}
+
 	public static List<AssetCategory> getDescendantCategories(
 		AssetCategory category) {
 
@@ -713,4 +717,4 @@ public class AssetCategoryLocalServiceUtil {
 	private static volatile AssetCategoryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-583019191
+// LIFERAY-SERVICE-BUILDER-HASH:911809162

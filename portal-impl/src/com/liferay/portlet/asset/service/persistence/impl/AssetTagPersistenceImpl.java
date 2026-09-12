@@ -459,6 +459,90 @@ public class AssetTagPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<AssetTag, NoSuchTagException>
+		_collectionPersistenceFinderByCompanyId;
+
+	/**
+	 * Returns an ordered range of all the asset tags where companyId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>AssetTagModelImpl</code>.
+	 * </p>
+	 *
+	 * @param companyId the company ID
+	 * @param start the lower bound of the range of asset tags
+	 * @param end the upper bound of the range of asset tags (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching asset tags
+	 */
+	@Override
+	public List<AssetTag> findByCompanyId(
+		long companyId, int start, int end,
+		OrderByComparator<AssetTag> orderByComparator, boolean useFinderCache) {
+
+		return _collectionPersistenceFinderByCompanyId.find(
+			FinderCacheUtil.getFinderCache(), new Object[] {companyId}, start,
+			end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first asset tag in the ordered set where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching asset tag
+	 * @throws NoSuchTagException if a matching asset tag could not be found
+	 */
+	@Override
+	public AssetTag findByCompanyId_First(
+			long companyId, OrderByComparator<AssetTag> orderByComparator)
+		throws NoSuchTagException {
+
+		return _collectionPersistenceFinderByCompanyId.findFirst(
+			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
+			orderByComparator);
+	}
+
+	/**
+	 * Returns the first asset tag in the ordered set where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching asset tag, or <code>null</code> if a matching asset tag could not be found
+	 */
+	@Override
+	public AssetTag fetchByCompanyId_First(
+		long companyId, OrderByComparator<AssetTag> orderByComparator) {
+
+		return _collectionPersistenceFinderByCompanyId.fetchFirst(
+			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
+			orderByComparator);
+	}
+
+	/**
+	 * Removes all the asset tags where companyId = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 */
+	@Override
+	public void removeByCompanyId(long companyId) {
+		_collectionPersistenceFinderByCompanyId.remove(
+			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
+	}
+
+	/**
+	 * Returns the number of asset tags where companyId = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @return the number of matching asset tags
+	 */
+	@Override
+	public int countByCompanyId(long companyId) {
+		return _collectionPersistenceFinderByCompanyId.count(
+			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
+	}
+
+	private CollectionPersistenceFinder<AssetTag, NoSuchTagException>
 		_collectionPersistenceFinderByName;
 
 	/**
@@ -1775,6 +1859,32 @@ public class AssetTagPersistenceImpl
 					"assetTag.", "groupId", FinderColumn.Type.LONG, "=", false,
 					true, true, AssetTag::getGroupId));
 
+		_collectionPersistenceFinderByCompanyId =
+			new CollectionPersistenceFinder<>(
+				this,
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
+					new String[] {
+						Long.class.getName(), Integer.class.getName(),
+						Integer.class.getName(),
+						OrderByComparator.class.getName()
+					},
+					new String[] {"companyId"}, true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"findByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, true),
+				new FinderPath(
+					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
+					"countByCompanyId", new String[] {Long.class.getName()},
+					new String[] {"companyId"}, false),
+				_SQL_SELECT_ASSETTAG_WHERE, _SQL_COUNT_ASSETTAG_WHERE,
+				AssetTagModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
+				null,
+				new FinderColumn<>(
+					"assetTag.", "companyId", FinderColumn.Type.LONG, "=", true,
+					true, AssetTag::getCompanyId));
+
 		_collectionPersistenceFinderByName = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1905,4 +2015,4 @@ public class AssetTagPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-604181840
+// LIFERAY-SERVICE-BUILDER-HASH:1425955552

@@ -441,6 +441,15 @@ public interface AssetTagLocalService
 	public int getAssetTagsCount();
 
 	/**
+	 * Returns the number of asset tags in the company.
+	 *
+	 * @param companyId the primary key of the company
+	 * @return the number of asset tags in the company
+	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCompanyTagsCount(long companyId);
+
+	/**
 	 * Returns the asset tags of the asset entry.
 	 *
 	 * @param entryId the primary key of the asset entry
@@ -761,4 +770,4 @@ public interface AssetTagLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1520589449
+// LIFERAY-SERVICE-BUILDER-HASH:1103982328

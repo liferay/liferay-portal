@@ -237,6 +237,13 @@ public class AssetTagPersistenceTest {
 	}
 
 	@Test
+	public void testCountByCompanyId() throws Exception {
+		_persistence.countByCompanyId(RandomTestUtil.nextLong());
+
+		_persistence.countByCompanyId(0L);
+	}
+
+	@Test
 	public void testCountByName() throws Exception {
 		_persistence.countByName("");
 
@@ -632,4 +639,4 @@ public class AssetTagPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1663578181
+// LIFERAY-SERVICE-BUILDER-HASH:-1795859303

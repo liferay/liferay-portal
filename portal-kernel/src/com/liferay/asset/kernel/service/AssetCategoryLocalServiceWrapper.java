@@ -560,6 +560,11 @@ public class AssetCategoryLocalServiceWrapper
 	}
 
 	@Override
+	public int getCompanyCategoriesCount(long companyId) {
+		return _assetCategoryLocalService.getCompanyCategoriesCount(companyId);
+	}
+
+	@Override
 	public java.util.List<AssetCategory> getDescendantCategories(
 		AssetCategory category) {
 
@@ -843,4 +848,4 @@ public class AssetCategoryLocalServiceWrapper
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:605567399
+// LIFERAY-SERVICE-BUILDER-HASH:1370009460

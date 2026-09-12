@@ -408,6 +408,9 @@ public interface AssetCategoryLocalService
 	public int getChildCategoriesCount(long parentCategoryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCompanyCategoriesCount(long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AssetCategory> getDescendantCategories(AssetCategory category);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -557,4 +560,4 @@ public interface AssetCategoryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1228879460
+// LIFERAY-SERVICE-BUILDER-HASH:-394759707
