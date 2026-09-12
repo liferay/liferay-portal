@@ -617,19 +617,18 @@ public class FriendlyURLEntryLocalServiceWrapper
 	@Override
 	public String getUniqueUrlTitle(
 		long groupId, long classNameId, long parentClassPK, long classPK,
-		String urlTitle, String languageId) {
+		String urlTitle) {
 
 		return _friendlyURLEntryLocalService.getUniqueUrlTitle(
-			groupId, classNameId, parentClassPK, classPK, urlTitle, languageId);
+			groupId, classNameId, parentClassPK, classPK, urlTitle);
 	}
 
 	@Override
 	public String getUniqueUrlTitle(
-		long groupId, long classNameId, long classPK, String urlTitle,
-		String languageId) {
+		long groupId, long classNameId, long classPK, String urlTitle) {
 
 		return _friendlyURLEntryLocalService.getUniqueUrlTitle(
-			groupId, classNameId, classPK, urlTitle, languageId);
+			groupId, classNameId, classPK, urlTitle);
 	}
 
 	@Override
@@ -849,4 +848,4 @@ public class FriendlyURLEntryLocalServiceWrapper
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1715614355
+// LIFERAY-SERVICE-BUILDER-HASH:7069645

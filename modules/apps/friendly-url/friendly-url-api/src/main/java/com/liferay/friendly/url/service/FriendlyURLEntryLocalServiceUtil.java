@@ -551,18 +551,17 @@ public class FriendlyURLEntryLocalServiceUtil {
 
 	public static String getUniqueUrlTitle(
 		long groupId, long classNameId, long parentClassPK, long classPK,
-		String urlTitle, String languageId) {
+		String urlTitle) {
 
 		return getService().getUniqueUrlTitle(
-			groupId, classNameId, parentClassPK, classPK, urlTitle, languageId);
+			groupId, classNameId, parentClassPK, classPK, urlTitle);
 	}
 
 	public static String getUniqueUrlTitle(
-		long groupId, long classNameId, long classPK, String urlTitle,
-		String languageId) {
+		long groupId, long classNameId, long classPK, String urlTitle) {
 
 		return getService().getUniqueUrlTitle(
-			groupId, classNameId, classPK, urlTitle, languageId);
+			groupId, classNameId, classPK, urlTitle);
 	}
 
 	public static Map<String, String> getUniqueUrlTitleMap(
@@ -734,4 +733,4 @@ public class FriendlyURLEntryLocalServiceUtil {
 			FriendlyURLEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-556093448
+// LIFERAY-SERVICE-BUILDER-HASH:-1769455778

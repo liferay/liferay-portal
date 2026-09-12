@@ -419,12 +419,11 @@ public interface FriendlyURLEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getUniqueUrlTitle(
 		long groupId, long classNameId, long parentClassPK, long classPK,
-		String urlTitle, String languageId);
+		String urlTitle);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getUniqueUrlTitle(
-		long groupId, long classNameId, long classPK, String urlTitle,
-		String languageId);
+		long groupId, long classNameId, long classPK, String urlTitle);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Map<String, String> getUniqueUrlTitleMap(
@@ -530,4 +529,4 @@ public interface FriendlyURLEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-550593190
+// LIFERAY-SERVICE-BUILDER-HASH:-134776500
