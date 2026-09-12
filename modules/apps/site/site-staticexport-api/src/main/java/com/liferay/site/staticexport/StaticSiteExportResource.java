@@ -5,7 +5,7 @@
 
 package com.liferay.site.staticexport;
 
-import java.util.List;
+import java.io.File;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -13,13 +13,10 @@ import org.osgi.annotation.versioning.ProviderType;
  * @author Víctor Galán
  */
 @ProviderType
-public interface StaticSiteExport extends AutoCloseable {
+public interface StaticSiteExportResource {
 
-	@Override
-	public void close();
+	public File getFile();
 
-	public List<StaticSiteExportLayout> getStaticSiteExportLayouts();
-
-	public List<StaticSiteExportResource> getStaticSiteExportResources();
+	public String getURL();
 
 }
