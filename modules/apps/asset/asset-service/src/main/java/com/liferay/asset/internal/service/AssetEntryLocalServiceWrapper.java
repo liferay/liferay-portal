@@ -111,7 +111,7 @@ public class AssetEntryLocalServiceWrapper
 			serviceContext);
 
 		if ((categoryIds != null) &&
-			(!entry.isNew() || (categoryIds.length > 0))) {
+			((categoryIds.length > 0) || _hasAssetCategoryRels(entry))) {
 
 			categoryIds = _assetCategoryLocalService.getViewableCategoryIds(
 				className, classPK, categoryIds);
@@ -128,6 +128,22 @@ public class AssetEntryLocalServiceWrapper
 		}
 
 		return entry;
+	}
+
+	private boolean _hasAssetCategoryRels(AssetEntry entry) {
+		if (entry.isNew()) {
+			return false;
+		}
+
+		int companyCategoriesCount =
+			_assetCategoryLocalService.getCompanyCategoriesCount(
+				entry.getCompanyId());
+
+		if (companyCategoriesCount > 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Reference

@@ -61,7 +61,9 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 		AssetEntry entry = _assetEntryLocalService.fetchEntry(
 			classNameId, classPK);
 
-		if (entry == null) {
+		if ((entry == null) ||
+			(getCompanyCategoriesCount(entry.getCompanyId()) == 0)) {
+
 			return Collections.emptyList();
 		}
 
