@@ -10905,25 +10905,25 @@ junit.jvm.override.version=21</echo>
 
 				<lstopwatch action="total" name="test.execution.duration" />
 
-				<replace>
-					<fileset
-						dir="workspaces"
-						includes="**/TEST-frontend-js.xml"
-					/>
-					<fileset
-						dir="${liferay.portal.private.dir}/workspaces"
-						erroronmissingdir="false"
-						includes="**/TEST-frontend-js.xml"
-					/>
-					<replacefilter>
-						<replacetoken><![CDATA[<testsuites>]]></replacetoken>
-						<replacevalue><![CDATA[]]></replacevalue>
-					</replacefilter>
-					<replacefilter>
-						<replacetoken><![CDATA[</testsuites>]]></replacetoken>
-						<replacevalue><![CDATA[]]></replacevalue>
-					</replacefilter>
-				</replace>
+				<for param="test.results.file">
+					<path>
+						<fileset
+							dir="workspaces"
+							erroronmissingdir="false"
+							excludes="**/node_modules/**"
+							includes="**/TEST-frontend-js.xml"
+						/>
+						<fileset
+							dir="${liferay.portal.private.dir}/workspaces"
+							erroronmissingdir="false"
+							excludes="**/node_modules/**"
+							includes="**/TEST-frontend-js.xml"
+						/>
+					</path>
+					<sequential>
+						<split-testsuites-junit-report test.suites.report.filepath="@{test.results.file}" />
+					</sequential>
+				</for>
 
 				<if>
 					<not>
