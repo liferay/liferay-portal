@@ -492,11 +492,11 @@ public class LayoutContentVersionLocalServiceTest {
 
 				String html = layoutContentVersionPreview.getHtml();
 
+				Assert.assertFalse(html, html.contains("\"signInURL\":\"\""));
 				Assert.assertTrue(html, html.contains("/company_logo"));
-				Assert.assertTrue(html, html.contains(css));
 				Assert.assertTrue(
 					html, html.contains("/o/layout-common-styles/main.css"));
-				Assert.assertFalse(html, html.contains("\"signInURL\":\"\""));
+				Assert.assertTrue(html, html.contains(css));
 				Assert.assertTrue(
 					html, html.contains(jsonObject.getString(languageId)));
 			}
