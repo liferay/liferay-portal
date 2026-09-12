@@ -62,6 +62,18 @@ public class OpenIdConnectSessionLocalServiceTest {
 			openIdConnectSession2,
 			_openIdConnectSessionLocalService.getOpenIdConnectSession(
 				userId2, issuer));
+
+		String maxLengthIssuer = RandomTestUtil.randomString(255);
+
+		long userId3 = RandomTestUtil.randomLong();
+
+		OpenIdConnectSession openIdConnectSession3 = _addOpenIdConnectSession(
+			companyId, maxLengthIssuer, null, userId3);
+
+		Assert.assertEquals(
+			openIdConnectSession3,
+			_openIdConnectSessionLocalService.getOpenIdConnectSession(
+				userId3, maxLengthIssuer));
 	}
 
 	@Test

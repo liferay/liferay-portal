@@ -39,7 +39,7 @@ public class OpenIdConnectUserLocalServiceTest {
 
 	@Test
 	public void testAddOpenIdConnectUser() throws Exception {
-		OpenIdConnectUser openIdConnectUser =
+		OpenIdConnectUser openIdConnectUser1 =
 			_openIdConnectUserLocalService.addOpenIdConnectUser(
 				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString());
@@ -47,8 +47,8 @@ public class OpenIdConnectUserLocalServiceTest {
 		_assertPortalException(
 			DuplicateOpenIdConnectUserException.class,
 			() -> _openIdConnectUserLocalService.addOpenIdConnectUser(
-				TestPropsValues.getUserId(), openIdConnectUser.getIssuer(),
-				openIdConnectUser.getSubject()));
+				TestPropsValues.getUserId(), openIdConnectUser1.getIssuer(),
+				openIdConnectUser1.getSubject()));
 
 		_assertPortalException(
 			OpenIdConnectUserIssuerException.class,
@@ -60,6 +60,19 @@ public class OpenIdConnectUserLocalServiceTest {
 			() -> _openIdConnectUserLocalService.addOpenIdConnectUser(
 				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				StringPool.BLANK));
+
+		String maxLengthIssuer = RandomTestUtil.randomString(255);
+
+		OpenIdConnectUser openIdConnectUser2 =
+			_openIdConnectUserLocalService.addOpenIdConnectUser(
+				TestPropsValues.getUserId(), maxLengthIssuer,
+				RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			openIdConnectUser2,
+			_openIdConnectUserLocalService.fetchOpenIdConnectUser(
+				openIdConnectUser2.getCompanyId(), maxLengthIssuer,
+				openIdConnectUser2.getSubject()));
 	}
 
 	@Test
