@@ -1600,6 +1600,42 @@ app.server.type=@{app.server.type}]]></echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="report-js-unit-test-results">
+		<attribute name="failure.count" />
+
+		<element implicit="true" name="test.results.resources" />
+
+		<sequential>
+			<local name="js.unit.test.results.count" />
+
+			<resourcecount property="js.unit.test.results.count">
+				<union>
+					<test.results.resources />
+				</union>
+			</resourcecount>
+
+			<if>
+				<and>
+					<not>
+						<equals arg1="@{failure.count}" arg2="0" />
+					</not>
+					<equals arg1="${js.unit.test.results.count}" arg2="0" />
+				</and>
+				<then>
+					<fail message="@{failure.count} JS unit test tasks failed without writing a test result." />
+				</then>
+				<elseif>
+					<not>
+						<equals arg1="@{failure.count}" arg2="0" />
+					</not>
+					<then>
+						<echo>@{failure.count} JS unit test tasks failed. See the test results.</echo>
+					</then>
+				</elseif>
+			</if>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="run-archived-module-smoke">
 		<attribute name="database.type" />
 		<attribute name="database.version" />
@@ -8747,14 +8783,13 @@ information. Make sure to commit in all format-javadoc results.
 					</replacefilter>
 				</replace>
 
-				<if>
-					<not>
-						<equals arg1="${js.unit.failure.count}" arg2="0" />
-					</not>
-					<then>
-						<fail message="${js.unit.failure.count} JS unit tests failed." />
-					</then>
-				</if>
+				<report-js-unit-test-results failure.count="${js.unit.failure.count}">
+					<fileset
+						dir="modules"
+						excludes="**/node_modules/**"
+						includes="**/TEST-frontend-js*.xml"
+					/>
+				</report-js-unit-test-results>
 			</test-action>
 
 			<test-set-up>
@@ -10966,14 +11001,19 @@ junit.jvm.override.version=21</echo>
 					</sequential>
 				</for>
 
-				<if>
-					<not>
-						<equals arg1="${js.unit.failure.count}" arg2="0" />
-					</not>
-					<then>
-						<fail message="${js.unit.failure.count} JS unit tests failed." />
-					</then>
-				</if>
+				<report-js-unit-test-results failure.count="${js.unit.failure.count}">
+					<fileset
+						dir="workspaces"
+						excludes="**/node_modules/**"
+						includes="**/TEST-frontend-js*.xml"
+					/>
+					<fileset
+						dir="${liferay.portal.private.dir}/workspaces"
+						erroronmissingdir="false"
+						excludes="**/node_modules/**"
+						includes="**/TEST-frontend-js*.xml"
+					/>
+				</report-js-unit-test-results>
 			</test-action>
 
 			<test-set-up>
