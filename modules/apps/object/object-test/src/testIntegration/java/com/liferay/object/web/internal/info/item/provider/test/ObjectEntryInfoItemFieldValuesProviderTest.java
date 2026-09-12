@@ -9,8 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.info.field.InfoFieldValue;
@@ -364,6 +366,68 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 
 			Assert.assertNotNull(
 				downloadURLInfoFieldValue.getValue(LocaleUtil.US));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@Test
+	public void testObjectEntryInfoItemFieldValuesProviderWithAttachmentObjectFieldWithoutFileVersion()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "test.png",
+			ContentTypes.IMAGE_PNG, DLTestUtil.getImageBytes("png"), null, null,
+			null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			_childObjectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"attachmentObjectFieldName", fileEntry.getFileEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.getDLFileEntry(
+			fileEntry.getFileEntryId());
+
+		dlFileEntry.setVersion(RandomTestUtil.randomString());
+
+		_dlFileEntryLocalService.updateDLFileEntry(dlFileEntry);
+
+		_pushServiceContext(_getThemeDisplay(StringPool.BLANK, "UTC"));
+
+		try {
+			InfoItemFieldValuesProvider<ObjectEntry>
+				infoItemFieldValuesProvider =
+					_infoItemServiceRegistry.getFirstInfoItemService(
+						InfoItemFieldValuesProvider.class,
+						_childObjectDefinition.getClassName());
+
+			InfoItemFieldValues infoItemFieldValues =
+				infoItemFieldValuesProvider.getInfoItemFieldValues(objectEntry);
+
+			ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+				_childObjectDefinition.getObjectDefinitionId(),
+				"attachmentObjectFieldName");
+
+			InfoFieldValue<Object> fileNameInfoFieldValue =
+				infoItemFieldValues.getInfoFieldValue(
+					objectField.getObjectFieldId() + "#fileName");
+
+			Assert.assertEquals(
+				fileEntry.getFileName(), fileNameInfoFieldValue.getValue());
+
+			InfoFieldValue<Object> downloadURLInfoFieldValue =
+				infoItemFieldValues.getInfoFieldValue(
+					objectField.getObjectFieldId() + "#downloadURL");
+
+			Assert.assertNull(downloadURLInfoFieldValue.getValue());
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();
@@ -895,6 +959,9 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 	@Inject
 	private DLURLHelper _dlURLHelper;
