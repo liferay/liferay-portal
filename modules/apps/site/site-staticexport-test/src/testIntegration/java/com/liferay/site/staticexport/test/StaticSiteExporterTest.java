@@ -8,6 +8,7 @@ package com.liferay.site.staticexport.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -199,6 +200,7 @@ public class StaticSiteExporterTest {
 
 		boolean bundleResource = false;
 		boolean generatedResource = false;
+		boolean referencedByResource = false;
 		boolean stylesheet = false;
 
 		for (StaticSiteExportResource staticSiteExportResource :
@@ -223,11 +225,25 @@ public class StaticSiteExporterTest {
 			if (url.contains(".css")) {
 				stylesheet = true;
 			}
+
+			String html = staticSiteExportLayout.getHTML();
+
+			int index = url.indexOf(CharPool.QUESTION);
+
+			if (index != -1) {
+				url = url.substring(0, index);
+			}
+
+			if (!html.contains(url)) {
+				referencedByResource = true;
+			}
 		}
 
 		Assert.assertTrue(staticSiteExportResources.toString(), bundleResource);
 		Assert.assertTrue(
 			staticSiteExportResources.toString(), generatedResource);
+		Assert.assertTrue(
+			staticSiteExportResources.toString(), referencedByResource);
 		Assert.assertTrue(staticSiteExportResources.toString(), stylesheet);
 
 		StaticSiteExportReport staticSiteExportReport =
