@@ -20,7 +20,10 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.staticexport.StaticSiteExport;
 import com.liferay.site.staticexport.StaticSiteExportLayout;
+import com.liferay.site.staticexport.StaticSiteExportResource;
 import com.liferay.site.staticexport.StaticSiteExporter;
+
+import java.io.File;
 
 import java.util.List;
 import java.util.Set;
@@ -58,8 +61,31 @@ public class StaticSiteExporterTest {
 
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
-		StaticSiteExport staticSiteExport = _staticSiteExporter.export(
-			_group.getGroupId(), Set.of(LocaleUtil.US));
+		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
+				_group.getGroupId(), Set.of(LocaleUtil.US))) {
+
+			_assertStaticSiteExport(layout, staticSiteExport);
+		}
+	}
+
+	@Test
+	public void testExportWithUnpublishedLayout() throws Exception {
+		LayoutTestUtil.addTypeContentLayout(_group);
+
+		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
+				_group.getGroupId(), Set.of(LocaleUtil.US))) {
+
+			List<StaticSiteExportLayout> staticSiteExportLayouts =
+				staticSiteExport.getStaticSiteExportLayouts();
+
+			Assert.assertTrue(
+				staticSiteExportLayouts.toString(),
+				staticSiteExportLayouts.isEmpty());
+		}
+	}
+
+	private void _assertStaticSiteExport(
+		Layout layout, StaticSiteExport staticSiteExport) {
 
 		List<StaticSiteExportLayout> staticSiteExportLayouts =
 			staticSiteExport.getStaticSiteExportLayouts();
@@ -80,21 +106,31 @@ public class StaticSiteExporterTest {
 		Assert.assertThat(
 			staticSiteExportLayout.getHTML(),
 			CoreMatchers.containsString(layout.getName(LocaleUtil.US)));
-	}
 
-	@Test
-	public void testExportWithUnpublishedLayout() throws Exception {
-		LayoutTestUtil.addTypeContentLayout(_group);
+		List<StaticSiteExportResource> staticSiteExportResources =
+			staticSiteExport.getStaticSiteExportResources();
 
-		StaticSiteExport staticSiteExport = _staticSiteExporter.export(
-			_group.getGroupId(), Set.of(LocaleUtil.US));
+		Assert.assertFalse(staticSiteExportResources.isEmpty());
 
-		List<StaticSiteExportLayout> staticSiteExportLayouts =
-			staticSiteExport.getStaticSiteExportLayouts();
+		boolean stylesheet = false;
 
-		Assert.assertTrue(
-			staticSiteExportLayouts.toString(),
-			staticSiteExportLayouts.isEmpty());
+		for (StaticSiteExportResource staticSiteExportResource :
+				staticSiteExportResources) {
+
+			String url = staticSiteExportResource.getURL();
+
+			Assert.assertTrue(url, url.startsWith(StringPool.SLASH));
+
+			File file = staticSiteExportResource.getFile();
+
+			Assert.assertTrue(url, file.length() > 0);
+
+			if (url.contains(".css")) {
+				stylesheet = true;
+			}
+		}
+
+		Assert.assertTrue(staticSiteExportResources.toString(), stylesheet);
 	}
 
 	private Group _group;
