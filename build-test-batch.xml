@@ -638,6 +638,41 @@ mariadb.executable=${mariadb.executable}]]></echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="format-js-unit-test-results">
+		<attribute name="portal.dir" />
+		<attribute name="test.dir" />
+
+		<sequential>
+			<local name="test.batch.report.type" />
+
+			<propertycopy from="test.batch.report.type[${test.batch.name}]" name="test.batch.report.type" silent="true" />
+
+			<if>
+				<equals arg1="${test.batch.report.type}" arg2="test-file" />
+				<then>
+					<for param="test.results.file">
+						<path>
+							<fileset
+								dir="@{portal.dir}/@{test.dir}"
+								erroronmissingdir="false"
+								excludes="**/node_modules/**"
+								includes="**/TEST-frontend-js.xml"
+							/>
+						</path>
+						<sequential>
+							<beanshell>
+								<![CDATA[
+									import com.liferay.jenkins.results.parser.test.clazz.file.TestClassFileUtil;
+
+									TestClassFileUtil.formatTestResultsFile(new File("@{portal.dir}"), new File("@{test.results.file}"));
+								]]>
+							</beanshell>
+						</sequential>
+					</for>
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
 	<macrodef name="get-console-log-failure-message">
 		<attribute name="console.log" />
 
@@ -8696,6 +8731,8 @@ information. Make sure to commit in all format-javadoc results.
 					</sequential>
 				</for>
 
+				<format-js-unit-test-results portal.dir="${project.dir}" test.dir="modules" />
+
 				<replace
 					dir="modules"
 					includes="**/TEST-frontend-js.xml"
@@ -10904,6 +10941,10 @@ junit.jvm.override.version=21</echo>
 				<run-workspaces-js-unit-test test.class.group="${modules.test.class.group}" test.gradle.args="--continue" />
 
 				<lstopwatch action="total" name="test.execution.duration" />
+
+				<format-js-unit-test-results portal.dir="${project.dir}" test.dir="workspaces" />
+
+				<format-js-unit-test-results portal.dir="${liferay.portal.private.dir}" test.dir="workspaces" />
 
 				<for param="test.results.file">
 					<path>
