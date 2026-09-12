@@ -1280,7 +1280,7 @@ import org.osgi.service.component.annotations.Reference;
 
 			<#if entity.versionEntity??>
 				if (${entityVariableName}.isHead()) {
-					throw new IllegalArgumentException("Can only update draft entries " + ${entityVariableName}.getPrimaryKey());
+					throw new IllegalArgumentException("Unable to add a localization to published ${entity.name} " + ${entityVariableName}.getPrimaryKey());
 				}
 			</#if>
 

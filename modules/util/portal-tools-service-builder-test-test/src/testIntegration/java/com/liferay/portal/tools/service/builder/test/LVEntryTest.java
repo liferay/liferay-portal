@@ -70,7 +70,8 @@ public class LVEntryTest {
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 			Assert.assertEquals(
-				"Can only update draft entries " + _lvEntry.getPrimaryKey(),
+				"Unable to add a localization to published LVEntry " +
+					_lvEntry.getPrimaryKey(),
 				illegalArgumentException.getMessage());
 		}
 	}
