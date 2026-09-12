@@ -71,100 +71,17 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
 	@TestInfo("LPD-104558")
-	public void testGetDepotRolePermissionsWithDesignLibraryMember()
-		throws Exception {
-
-		Group group = _addDesignLibraryGroup();
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				group.getGroupId(), LayoutPageTemplateEntryTypeConstants.BASIC,
-				WorkflowConstants.STATUS_APPROVED);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				UserTestUtil.addGroupUser(
-					group, DepotRolesConstants.DESIGN_LIBRARY_MEMBER))) {
-
-			long layoutPageTemplateCollectionId =
-				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId();
-
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() ->
-					_layoutPageTemplateCollectionService.
-						deleteLayoutPageTemplateCollection(
-							layoutPageTemplateCollectionId));
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() ->
-					_layoutPageTemplateCollectionService.
-						updateLayoutPageTemplateCollection(
-							layoutPageTemplateCollectionId,
-							RandomTestUtil.randomString()));
-
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() ->
-					_layoutPageTemplateEntryService.
-						deleteLayoutPageTemplateEntry(
-							layoutPageTemplateEntry.
-								getLayoutPageTemplateEntryId()));
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() ->
-					_layoutPageTemplateEntryService.
-						updateLayoutPageTemplateEntry(
-							layoutPageTemplateEntry.
-								getLayoutPageTemplateEntryId(),
-							RandomTestUtil.randomString()));
-			Assert.assertThrows(
-				PrincipalException.MustHavePermission.class,
-				() ->
-					_layoutPageTemplateStructureService.
-						updateLayoutPageTemplateStructureData(
-							group.getGroupId(),
-							layoutPageTemplateEntry.getPlid(),
-							SegmentsExperienceConstants.ID_DEFAULT, _DATA));
-		}
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
-	@Test
-	@TestInfo("LPD-104558")
-	public void testGetDepotRolePermissionsWithDesignLibraryRoles()
-		throws Exception {
-
-		Group group = _addDesignLibraryGroup();
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(group.getGroupId());
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-		try {
-			_assertManageLayoutPageTemplates(
-				group, serviceContext,
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
-			_assertManageLayoutPageTemplates(
-				group, serviceContext,
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
-			_assertManageLayoutPageTemplates(
-				group, serviceContext,
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER);
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
-	}
-
-	private Group _addDesignLibraryGroup() throws Exception {
+	public void testGetDepotRolePermissions() throws Exception {
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(),
 			DepotConstants.TYPE_DESIGN_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
-		return depotEntry.getGroup();
+		Group group = depotEntry.getGroup();
+
+		_testGetDepotRolePermissionsWithDesignLibraryMember(group);
+		_testGetDepotRolePermissionsWithDesignLibraryRoles(group);
 	}
 
 	private LayoutPageTemplateEntry _addLayoutPageTemplateEntry(
@@ -250,6 +167,86 @@ public class LayoutPageTemplateDepotRolePermissionsContributorTest {
 			_layoutPageTemplateCollectionService.
 				deleteLayoutPageTemplateCollection(
 					layoutPageTemplateCollectionId);
+		}
+	}
+
+	private void _testGetDepotRolePermissionsWithDesignLibraryMember(
+			Group group)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				group.getGroupId(), LayoutPageTemplateEntryTypeConstants.BASIC,
+				WorkflowConstants.STATUS_APPROVED);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(
+					group, DepotRolesConstants.DESIGN_LIBRARY_MEMBER))) {
+
+			long layoutPageTemplateCollectionId =
+				layoutPageTemplateEntry.getLayoutPageTemplateCollectionId();
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_layoutPageTemplateCollectionService.
+						deleteLayoutPageTemplateCollection(
+							layoutPageTemplateCollectionId));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_layoutPageTemplateCollectionService.
+						updateLayoutPageTemplateCollection(
+							layoutPageTemplateCollectionId,
+							RandomTestUtil.randomString()));
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_layoutPageTemplateEntryService.
+						deleteLayoutPageTemplateEntry(
+							layoutPageTemplateEntry.
+								getLayoutPageTemplateEntryId()));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_layoutPageTemplateEntryService.
+						updateLayoutPageTemplateEntry(
+							layoutPageTemplateEntry.
+								getLayoutPageTemplateEntryId(),
+							RandomTestUtil.randomString()));
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() ->
+					_layoutPageTemplateStructureService.
+						updateLayoutPageTemplateStructureData(
+							group.getGroupId(),
+							layoutPageTemplateEntry.getPlid(),
+							SegmentsExperienceConstants.ID_DEFAULT, _DATA));
+		}
+	}
+
+	private void _testGetDepotRolePermissionsWithDesignLibraryRoles(Group group)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			_assertManageLayoutPageTemplates(
+				group, serviceContext,
+				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
+			_assertManageLayoutPageTemplates(
+				group, serviceContext,
+				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER);
+			_assertManageLayoutPageTemplates(
+				group, serviceContext,
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
