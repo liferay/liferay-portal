@@ -17,6 +17,8 @@ public interface StaticSiteExportResource {
 
 	public File getFile();
 
+	public String getPath();
+
 	public String getURL();
 
 }

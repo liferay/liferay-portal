@@ -206,7 +206,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 			}
 
 			staticSiteExportResources.add(
-				new StaticSiteExportResourceImpl(file, url));
+				new StaticSiteExportResourceImpl(
+					file, StaticSiteExportResourcePathUtil.getPath(url), url));
 
 			if (_isStylesheetURL(url)) {
 				urls.addAll(

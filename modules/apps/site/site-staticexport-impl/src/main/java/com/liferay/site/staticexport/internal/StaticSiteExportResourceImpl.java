@@ -14,8 +14,9 @@ import java.io.File;
  */
 public class StaticSiteExportResourceImpl implements StaticSiteExportResource {
 
-	public StaticSiteExportResourceImpl(File file, String url) {
+	public StaticSiteExportResourceImpl(File file, String path, String url) {
 		_file = file;
+		_path = path;
 		_url = url;
 	}
 
@@ -25,11 +26,17 @@ public class StaticSiteExportResourceImpl implements StaticSiteExportResource {
 	}
 
 	@Override
+	public String getPath() {
+		return _path;
+	}
+
+	@Override
 	public String getURL() {
 		return _url;
 	}
 
 	private final File _file;
+	private final String _path;
 	private final String _url;
 
 }
