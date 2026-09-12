@@ -90,7 +90,7 @@ public class OpenIdConnectSessionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table OpenIdConnectSession (mvccVersion LONG default 0 not null,openIdConnectSessionId LONG not null primary key,companyId LONG,userId LONG,modifiedDate DATE null,accessToken TEXT null,accessTokenExpirationDate DATE null,authServerWellKnownURI VARCHAR(256) null,clientId VARCHAR(256) null,idToken TEXT null,issuer VARCHAR(75) null,refreshToken VARCHAR(2000) null,sessionId VARCHAR(75) null)";
+		"create table OpenIdConnectSession (mvccVersion LONG default 0 not null,openIdConnectSessionId LONG not null primary key,companyId LONG,userId LONG,modifiedDate DATE null,accessToken TEXT null,accessTokenExpirationDate DATE null,authServerWellKnownURI VARCHAR(256) null,clientId VARCHAR(256) null,idToken TEXT null,issuer VARCHAR(255) null,refreshToken VARCHAR(2000) null,sessionId VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table OpenIdConnectSession";
@@ -1125,4 +1125,4 @@ public class OpenIdConnectSessionModelImpl
 	private OpenIdConnectSession _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1697693477
+// LIFERAY-SERVICE-BUILDER-HASH:-1200084773
