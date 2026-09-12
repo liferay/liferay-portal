@@ -516,13 +516,25 @@ public class BundleSiteInitializerTest {
 		File tempDir2 = _getTempDir(
 			"/com.liferay.site.initializer.extender.test.bundle.2.jar");
 
-		try {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.site.initializer.extender.internal." +
+					"BundleSiteInitializer",
+				LoggerTestUtil.ERROR)) {
+
 			_test1(
 				_siteInitializerFactory.create(
 					new File(tempDir1, "site-initializer"), null));
 			_test2(
 				_siteInitializerFactory.create(
 					new File(tempDir2, "site-initializer"), null));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(
+				logEntries.toString(),
+				_hasLogEntryMessage(
+					logEntries,
+					"Design library Test Design Library 1 has no path"));
 		}
 		finally {
 			FileUtil.deltree(tempDir1);
