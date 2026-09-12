@@ -813,29 +813,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addRelatedAssetPG(assetTitle = null, assetType = null) {
-		Panel.expandPanel(panel = "Related Assets");
-
-		var key_assetType = ${assetType};
-
-		AssertClick(
-			locator1 = "AssetRelatedAssets#RELATED_ASSETS_SELECT",
-			value1 = "Select");
-
-		MenuItem.click(menuItem = ${assetType});
-
-		var key_assetTitle = ${assetTitle};
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		AssertClick.assertPartialTextClickAt(
-			locator1 = "AssetRelatedAssets#ASSET_TABLE_CHOOSE",
-			value1 = ${assetType});
-
-		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
 	macro addWithWorkflowCP(dmDocumentTitle = null, dmDocumentFile = null, dmDocumentTypeName = null, dmDocumentDescription = null) {
 		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = ${dmDocumentTypeName});
 

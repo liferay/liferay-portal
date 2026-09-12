@@ -1,23 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro gotoBookmarksSelectionPG(assetType = null) {
-		Portlet.clickPortletPlusIconPG(portletName = "Bookmarks");
-
-		MenuItem.click(menuItem = "Bookmark");
-
-		Panel.expandPanel(panel = "Related Assets");
-
-		AssertClick(
-			locator1 = "AssetRelatedAssets#RELATED_ASSETS_SELECT",
-			value1 = "Select");
-
-		var key_assetType = ${assetType};
-
-		MenuItem.click(menuItem = ${assetType});
-	}
-
-	@summary = "Default summary"
 	macro removeAsset() {
 		Panel.expandPanel(panel = "Related Assets");
 
