@@ -235,15 +235,15 @@ public class JenkinsResultsParserUtilTest
 
 	@Test
 	public void testGetMessage() {
+		testEquals(
+			"java.io.IOException",
+			JenkinsResultsParserUtil.getMessage(new IOException()));
+
 		String message = RandomTestUtil.randomString();
 
 		testEquals(
 			message,
 			JenkinsResultsParserUtil.getMessage(new IOException(message)));
-
-		testEquals(
-			"java.io.IOException",
-			JenkinsResultsParserUtil.getMessage(new IOException()));
 	}
 
 	@Test

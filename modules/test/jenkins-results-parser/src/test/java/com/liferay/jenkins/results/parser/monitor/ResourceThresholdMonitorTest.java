@@ -237,12 +237,11 @@ public class ResourceThresholdMonitorTest
 
 	@Test
 	public void testExecuteReadFailure() throws Exception {
-		String failureMessage = RandomTestUtil.randomString();
-
-		_testExecuteReadFailure(
-			failureMessage, new IOException(failureMessage));
-
 		_testExecuteReadFailure("java.io.IOException", new IOException());
+
+		String message = RandomTestUtil.randomString();
+
+		_testExecuteReadFailure(message, new IOException(message));
 	}
 
 	@Test
