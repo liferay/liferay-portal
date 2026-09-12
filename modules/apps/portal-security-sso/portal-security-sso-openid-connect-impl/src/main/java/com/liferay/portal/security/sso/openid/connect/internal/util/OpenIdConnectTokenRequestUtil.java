@@ -184,14 +184,14 @@ public class OpenIdConnectTokenRequestUtil {
 
 		JWSAlgorithm jwsAlgorithm = oidcClientMetadata.getIDTokenJWSAlg();
 
-		String algorithmName = null;
+		String algorithm = null;
 
 		if (jwsAlgorithm != null) {
-			algorithmName = jwsAlgorithm.getName();
+			algorithm = jwsAlgorithm.getName();
 		}
 
 		try {
-			FIPSModeValidator.validateJWSAlgorithm(algorithmName);
+			FIPSModeValidator.validateJWSAlgorithm(algorithm);
 		}
 		catch (SecurityException securityException) {
 			String tokenIssuer = null;
@@ -204,7 +204,7 @@ public class OpenIdConnectTokenRequestUtil {
 
 			FIPSAuditUtil.write(
 				FIPSAuditEventFactory.createFederationTokenRejected(
-					"backchannel", algorithmName, tokenIssuer, "OIDC"));
+					"backchannel", algorithm, tokenIssuer, "OIDC"));
 
 			throw new OpenIdConnectServiceException.TokenException(
 				securityException.getMessage(), securityException);

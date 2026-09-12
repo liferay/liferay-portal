@@ -209,18 +209,18 @@ public class OpenIdConnectTokenRequestUtilTest {
 	}
 
 	@Test
-	public void testRequestWithDisallowedIDTokenJWSAlgorithm()
+	public void testRequestWithNotAllowedIDTokenJWSAlgorithm()
 		throws Exception {
 
 		OIDCClientMetadata oidcClientMetadata = Mockito.mock(
 			OIDCClientMetadata.class);
 
-		String algorithmName = RandomTestUtil.randomString();
+		String algorithm = RandomTestUtil.randomString();
 
 		Mockito.when(
 			oidcClientMetadata.getIDTokenJWSAlg()
 		).thenReturn(
-			new JWSAlgorithm(algorithmName)
+			new JWSAlgorithm(algorithm)
 		);
 
 		Mockito.when(
@@ -245,7 +245,7 @@ public class OpenIdConnectTokenRequestUtilTest {
 			String message = RandomTestUtil.randomString();
 
 			fipsModeValidatorMockedStatic.when(
-				() -> FIPSModeValidator.validateJWSAlgorithm(algorithmName)
+				() -> FIPSModeValidator.validateJWSAlgorithm(algorithm)
 			).thenThrow(
 				new SecurityException(message)
 			);
@@ -260,7 +260,7 @@ public class OpenIdConnectTokenRequestUtilTest {
 			Assert.assertEquals(message, tokenException.getMessage());
 
 			fipsModeValidatorMockedStatic.verify(
-				() -> FIPSModeValidator.validateJWSAlgorithm(algorithmName));
+				() -> FIPSModeValidator.validateJWSAlgorithm(algorithm));
 
 			ArgumentCaptor<FIPSAuditEvent> argumentCaptor =
 				ArgumentCaptor.forClass(FIPSAuditEvent.class);
@@ -276,7 +276,7 @@ public class OpenIdConnectTokenRequestUtilTest {
 				HashMapBuilder.<String, Object>put(
 					"receiving-endpoint", "backchannel"
 				).put(
-					"rejected-value", algorithmName
+					"rejected-value", algorithm
 				).put(
 					"token-issuer", tokenIssuer
 				).put(
