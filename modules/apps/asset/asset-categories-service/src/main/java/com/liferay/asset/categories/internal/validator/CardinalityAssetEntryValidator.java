@@ -141,9 +141,9 @@ public class CardinalityAssetEntryValidator implements AssetEntryValidator {
 
 		Group group = _groupLocalService.getGroup(groupId);
 
-		if (Validator.isNotNull(
-				_assetEntryLocalService.fetchEntry(className, classPK)) &&
-			group.isDepot()) {
+		if (group.isDepot() &&
+			Validator.isNotNull(
+				_assetEntryLocalService.fetchEntry(className, classPK))) {
 
 			return true;
 		}
