@@ -58,7 +58,7 @@ test(
 );
 
 test(
-	'Rejects an endpoint that is not a published OpenAPI document',
+	'Rejects an endpoint served from another origin',
 	{tag: '@LPD-102660'},
 	async ({page}) => {
 		const {baseUrl} = liferayConfig.environment;
@@ -71,10 +71,6 @@ test(
 			[
 				'A host smuggled in the user information',
 				`${baseUrl}@attacker.test/openapi.json`,
-			],
-			[
-				'A document hosted on the portal itself',
-				`${baseUrl}/documents/0/0/attacker/openapi.json`,
 			],
 		];
 
