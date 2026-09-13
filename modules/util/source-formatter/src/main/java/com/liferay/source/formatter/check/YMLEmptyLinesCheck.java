@@ -37,7 +37,11 @@ public class YMLEmptyLinesCheck extends BaseFileCheck {
 
 			while ((line = unsyncBufferedReader.readLine()) != null) {
 				if (line.startsWith("{{- define ") && (sb.index() > 0)) {
-					sb.append("\n");
+					String s = sb.toString();
+
+					if (!s.endsWith("\n\n")) {
+						sb.append("\n");
+					}
 				}
 
 				if (insideBlockStyle) {
@@ -57,12 +61,16 @@ public class YMLEmptyLinesCheck extends BaseFileCheck {
 					continue;
 				}
 
-				if (Validator.isBlank(line) && (previousLine != null) &&
-					!previousLine.startsWith("#")) {
+				if (Validator.isBlank(line) && (previousLine != null)) {
+					String trimmedPreviousLine = previousLine.trim();
 
-					previousLine = line;
+					if (!trimmedPreviousLine.startsWith("#") &&
+						!trimmedPreviousLine.startsWith("{{-")) {
 
-					continue;
+						previousLine = line;
+
+						continue;
+					}
 				}
 
 				sb.append(line);

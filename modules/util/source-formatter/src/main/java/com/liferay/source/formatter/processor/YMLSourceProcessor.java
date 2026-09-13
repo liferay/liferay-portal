@@ -135,7 +135,7 @@ public class YMLSourceProcessor extends BaseSourceProcessor {
 	}
 
 	private static final String[] _INCLUDES = {
-		"**/templates/*.tpl", "**/*.yaml", "**/*.yml"
+		"**/*.gotmpl", "**/templates/*.tpl", "**/*.yaml", "**/*.yml"
 	};
 
 	private static final Pattern _dashPattern1 = Pattern.compile("( *- +)(.+)");
