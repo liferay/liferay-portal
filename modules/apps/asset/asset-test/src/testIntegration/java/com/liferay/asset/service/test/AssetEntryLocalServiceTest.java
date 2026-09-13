@@ -15,6 +15,7 @@ import com.liferay.asset.link.service.AssetLinkLocalService;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -25,14 +26,21 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -153,6 +161,47 @@ public class AssetEntryLocalServiceTest {
 
 		Assert.assertNotNull(
 			_assetTagLocalService.fetchTag(group.getGroupId(), "tag"));
+	}
+
+	@Test
+	public void testUpdateEntryIssuesNoSelect() throws Exception {
+		AssetEntry assetEntry = _addAssetEntryWithClassUUID(
+			TestPropsValues.getGroupId());
+
+		CacheRegistryUtil.clear();
+
+		_assetEntryLocalService.getEntry(
+			assetEntry.getClassName(), assetEntry.getClassPK());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"org.hibernate.SQL", LoggerTestUtil.DEBUG)) {
+
+			_assetEntryLocalService.updateEntry(
+				TestPropsValues.getUserId(), assetEntry.getGroupId(), null,
+				null, assetEntry.getClassName(), assetEntry.getClassPK(),
+				assetEntry.getClassUuid(), assetEntry.getClassTypeId(), null,
+				null, true, true, null, null, null, null,
+				assetEntry.getMimeType(), RandomTestUtil.randomString(),
+				assetEntry.getDescription(), assetEntry.getSummary(),
+				assetEntry.getUrl(), assetEntry.getLayoutUuid(),
+				assetEntry.getHeight(), assetEntry.getWidth(),
+				assetEntry.getPriority(),
+				ServiceContextTestUtil.getServiceContext());
+
+			List<String> selectSQLs = new ArrayList<>();
+
+			for (LogEntry logEntry : logCapture.getLogEntries()) {
+				String message = logEntry.getMessage();
+
+				if (message.startsWith("select") &&
+					message.contains("AssetEntry")) {
+
+					selectSQLs.add(message);
+				}
+			}
+
+			Assert.assertTrue(selectSQLs.toString(), selectSQLs.isEmpty());
+		}
 	}
 
 	private AssetEntry _addAssetEntryWithClassUUID(long groupId) {
