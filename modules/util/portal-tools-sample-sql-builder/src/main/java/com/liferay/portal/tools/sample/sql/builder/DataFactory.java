@@ -1266,7 +1266,9 @@ public class DataFactory {
 			groupId = _globalGroupId;
 		}
 
-		return newAssetEntryModel(
+		String title = String.valueOf(objectEntryModel.getObjectEntryId());
+
+		AssetEntryModel assetEntryModel = newAssetEntryModel(
 			groupId, objectEntryModel.getCreateDate(),
 			objectEntryModel.getModifiedDate(),
 			getClassNameId(
@@ -1275,7 +1277,14 @@ public class DataFactory {
 						objectEntryModel.getObjectDefinitionId()),
 			objectEntryModel.getObjectEntryId(), objectEntryModel.getUuid(), 0,
 			true, objectEntryModel.isApproved(), ContentTypes.TEXT_PLAIN,
-			String.valueOf(objectEntryModel.getObjectEntryId()));
+			title);
+
+		assetEntryModel.setStartDate(null);
+		assetEntryModel.setEndDate(null);
+		assetEntryModel.setExpirationDate(null);
+		assetEntryModel.setDescription(title);
+
+		return assetEntryModel;
 	}
 
 	public AssetEntryModel newAssetEntryModel(Tuple tuple) {
