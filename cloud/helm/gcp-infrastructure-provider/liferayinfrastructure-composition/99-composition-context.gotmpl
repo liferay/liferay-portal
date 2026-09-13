@@ -8,10 +8,6 @@ spec:
     forProvider:
         manifest:
             apiVersion: v1
-            kind: ConfigMap
-            metadata:
-                name: composition-context
-                namespace: {{ $namespace }}
             data:
                 variables: |
                     backup: {{ $backup | toJson }}
@@ -44,4 +40,8 @@ spec:
                     searchSecretName: {{ $searchSecretName | toJson }}
                     storage: {{ $storage | toJson }}
                     uidHash: {{ $uidHash | toJson }}
+            kind: ConfigMap
+            metadata:
+                name: composition-context
+                namespace: {{ $namespace }}
     managementPolicies: {{ $managementPolicies }}
