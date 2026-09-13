@@ -335,6 +335,11 @@ public class AssetVocabularyLocalServiceImpl
 	}
 
 	@Override
+	public int getCompanyVocabulariesCount(long companyId) {
+		return assetVocabularyPersistence.countByCompanyId(companyId);
+	}
+
+	@Override
 	public List<AssetVocabulary> getGroupsVocabularies(long[] groupIds) {
 		return getGroupsVocabularies(groupIds, null);
 	}
