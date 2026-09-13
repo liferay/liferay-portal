@@ -66,6 +66,14 @@ public class SharingEntryObjectEntryLocalServiceWrapper
 			return objectEntry;
 		}
 
+		int companySharingEntriesCount =
+			_sharingEntryLocalService.getCompanySharingEntriesCount(
+				objectEntry.getCompanyId(), className.getClassNameId());
+
+		if (companySharingEntriesCount == 0) {
+			return objectEntry;
+		}
+
 		List<SharingEntry> sharingEntryList =
 			_sharingEntryLocalService.getSharingEntries(
 				className.getClassNameId(), objectEntry.getObjectEntryId());
