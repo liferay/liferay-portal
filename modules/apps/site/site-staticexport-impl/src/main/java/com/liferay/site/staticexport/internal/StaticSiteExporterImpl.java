@@ -63,16 +63,21 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
 					_companyLocalService.getCompany(group.getCompanyId()))) {
 
+			StaticSiteExportReportImpl staticSiteExportReportImpl =
+				new StaticSiteExportReportImpl();
+
 			List<StaticSiteExportLayout> staticSiteExportLayouts =
-				_exportStaticSiteExportLayouts(groupId, locales);
+				_exportStaticSiteExportLayouts(
+					groupId, locales, staticSiteExportReportImpl);
 
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
 			return new StaticSiteExportImpl(
-				staticSiteExportLayouts,
+				staticSiteExportLayouts, staticSiteExportReportImpl,
 				_fetchStaticSiteExportResources(
-					serviceContext.getRequest(), staticSiteExportLayouts));
+					serviceContext.getRequest(), staticSiteExportLayouts,
+					staticSiteExportReportImpl));
 		}
 		catch (PortalException portalException) {
 			throw portalException;
@@ -83,8 +88,9 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	}
 
 	private List<StaticSiteExportLayout> _exportStaticSiteExportLayouts(
-			long groupId, Set<Locale> locales)
-		throws Exception {
+			long groupId, Set<Locale> locales,
+			StaticSiteExportReportImpl staticSiteExportReportImpl)
+		throws PortalException {
 
 		List<StaticSiteExportLayout> staticSiteExportLayouts =
 			new ArrayList<>();
@@ -97,15 +103,25 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 					fetchDefaultSegmentsExperienceId(layout.getPlid());
 
 			for (Locale locale : locales) {
-				staticSiteExportLayouts.add(
-					new StaticSiteExportLayoutImpl(
-						_layoutPreviewRenderer.render(
-							layout, locale, segmentsExperienceId),
-						locale,
-						_getPath(
-							layout.getFriendlyURL(locale), locale,
-							siteDefaultLocale),
-						layout.getPlid()));
+				String friendlyURL = layout.getFriendlyURL(locale);
+
+				try {
+					staticSiteExportLayouts.add(
+						new StaticSiteExportLayoutImpl(
+							_layoutPreviewRenderer.render(
+								layout, locale, segmentsExperienceId),
+							locale,
+							_getPath(friendlyURL, locale, siteDefaultLocale),
+							layout.getPlid()));
+				}
+				catch (Exception exception) {
+					if (_log.isWarnEnabled()) {
+						_log.warn("Unable to render " + friendlyURL, exception);
+					}
+
+					staticSiteExportReportImpl.addLayoutFailure(
+						exception.getMessage(), friendlyURL);
+				}
 			}
 		}
 
@@ -114,7 +130,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 	private List<StaticSiteExportResource> _fetchStaticSiteExportResources(
 		HttpServletRequest httpServletRequest,
-		List<StaticSiteExportLayout> staticSiteExportLayouts) {
+		List<StaticSiteExportLayout> staticSiteExportLayouts,
+		StaticSiteExportReportImpl staticSiteExportReportImpl) {
 
 		List<StaticSiteExportResource> staticSiteExportResources =
 			new ArrayList<>();
@@ -147,9 +164,17 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				if (_log.isDebugEnabled()) {
 					_log.debug("Unable to fetch " + url, exception);
 				}
+
+				staticSiteExportReportImpl.addResourceFailure(
+					exception.getMessage(), url);
+
+				continue;
 			}
 
 			if (file == null) {
+				staticSiteExportReportImpl.addResourceFailure(
+					"No servlet serves the resource", url);
+
 				continue;
 			}
 
