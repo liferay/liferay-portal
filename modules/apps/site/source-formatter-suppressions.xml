@@ -7,6 +7,7 @@
 	</checkstyle>
 	<source-check>
 		<suppress checks="IllegalImportsCheck" files="site-staticexport-impl/src/main/java/com/liferay/site/staticexport/internal/StaticSiteExportResourceHarvester\.java" />
+		<suppress checks="IllegalImportsCheck" files="site-staticexport-impl/src/main/java/com/liferay/site/staticexport/internal/StaticSiteExportURLRewriter\.java" />
 		<suppress checks="JavaUpgradeVersionCheck" files="site-cms-site-initializer/src/main/java/com/liferay/site/cms/site/initializer/internal/upgrade/registry/SiteCMSSiteInitializerUpgradeStepRegistrator\.java" />
 	</source-check>
 </suppressions>
