@@ -218,8 +218,8 @@ XMLToggleFileCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project,
 XMLWhitespaceCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Finds missing and unnecessary whitespace in `.xml` files. |
 XMLWorkflowDefinitionFileNameCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Checks the file name of workflow definition files. |
 XMLWorkflowDefinitionFileStylingCheck | .action, .function, .jelly, .jrxml, .macro, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Applies rules to enforce consistency in code style in `*workflow-definition.xml` files. |
-YMLDefinitionOrderCheck | .tpl, .yaml, or .yml | Sorts definitions alphabetically in `.yml` files. |
-YMLEmptyLinesCheck | .tpl, .yaml, or .yml | Finds missing and unnecessary empty lines. |
-YMLIndentationCheck | .tpl, .yaml, or .yml | Finds incorrect indentation in YAML files. |
-YMLStylingCheck | .tpl, .yaml, or .yml | Applies rules to enforce consistency in code style. |
-YMLWhitespaceCheck | .tpl, .yaml, or .yml | Finds missing and unnecessary whitespace in `.yml` files. |
+YMLDefinitionOrderCheck | .gotmpl, .tpl, .yaml, or .yml | Sorts definitions alphabetically in `.yml` files. |
+YMLEmptyLinesCheck | .gotmpl, .tpl, .yaml, or .yml | Finds missing and unnecessary empty lines. |
+YMLIndentationCheck | .gotmpl, .tpl, .yaml, or .yml | Finds incorrect indentation in YAML files. |
+YMLStylingCheck | .gotmpl, .tpl, .yaml, or .yml | Applies rules to enforce consistency in code style. |
+YMLWhitespaceCheck | .gotmpl, .tpl, .yaml, or .yml | Finds missing and unnecessary whitespace in `.yml` files. |
