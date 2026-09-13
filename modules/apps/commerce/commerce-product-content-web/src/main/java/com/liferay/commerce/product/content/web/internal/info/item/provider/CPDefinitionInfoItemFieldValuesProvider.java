@@ -73,7 +73,7 @@ public class CPDefinitionInfoItemFieldValuesProvider
 				_getCPDefinitionInfoFieldValues(cpDefinition)
 			).infoFieldValues(
 				_assetEntryInfoItemFieldSetProvider.getInfoFieldValues(
-					CPDefinition.class.getName(),
+					cpDefinition.getCompanyId(), CPDefinition.class.getName(),
 					cpDefinition.getCPDefinitionId())
 			).infoFieldValues(
 				_expandoInfoItemFieldSetProvider.getInfoFieldValues(

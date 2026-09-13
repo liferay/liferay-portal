@@ -256,6 +256,7 @@ public class ObjectEntryInfoItemFieldValuesProvider
 			try {
 				objectEntryFieldValues.addAll(
 					_assetEntryInfoItemFieldSetProvider.getInfoFieldValues(
+						objectEntry.getCompanyId(),
 						_objectDefinition.getClassName(),
 						objectEntry.getObjectEntryId()));
 			}

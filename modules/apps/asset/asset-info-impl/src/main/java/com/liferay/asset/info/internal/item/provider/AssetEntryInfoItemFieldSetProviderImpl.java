@@ -14,6 +14,8 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
 import com.liferay.info.exception.NoSuchInfoItemException;
@@ -22,7 +24,9 @@ import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.CategoriesInfoFieldType;
 import com.liferay.info.field.type.TagsInfoFieldType;
+import com.liferay.info.item.field.reader.InfoItemFieldReader;
 import com.liferay.info.item.field.reader.InfoItemFieldReaderFieldSetProvider;
+import com.liferay.info.item.field.reader.InfoItemFieldReaderRegistry;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.type.KeyLocalizedLabelPair;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -137,8 +141,15 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 
 	@Override
 	public List<InfoFieldValue<Object>> getInfoFieldValues(
-			String itemClassName, long itemClassPK)
+			long companyId, String itemClassName, long itemClassPK)
 		throws NoSuchInfoItemException {
+
+		if (!_hasAssetEntryInfoFieldValues(companyId)) {
+			return ListUtil.fromArray(
+				new InfoFieldValue<>(
+					_categoriesInfoField, Collections.emptyList()),
+				new InfoFieldValue<>(_tagsInfoField, Collections.emptyList()));
+		}
 
 		AssetRendererFactory<?> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
@@ -342,8 +353,41 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 			assetTags, assetTag -> assetTag.getName());
 	}
 
+	private boolean _hasAssetEntryInfoFieldValues(long companyId) {
+		int count = _assetVocabularyLocalService.getCompanyVocabulariesCount(
+			companyId);
+
+		if (count > 0) {
+			return true;
+		}
+
+		count = _assetCategoryLocalService.getCompanyCategoriesCount(companyId);
+
+		if (count > 0) {
+			return true;
+		}
+
+		count = _assetTagLocalService.getCompanyTagsCount(companyId);
+
+		if (count > 0) {
+			return true;
+		}
+
+		List<InfoItemFieldReader> infoItemFieldReaders =
+			_infoItemFieldReaderRegistry.getInfoItemFieldReaders(
+				AssetEntry.class.getName());
+
+		return !infoItemFieldReaders.isEmpty();
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		AssetEntryInfoItemFieldSetProviderImpl.class);
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetTagLocalService _assetTagLocalService;
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
@@ -365,6 +409,9 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 	@Reference
 	private InfoItemFieldReaderFieldSetProvider
 		_infoItemFieldReaderFieldSetProvider;
+
+	@Reference
+	private InfoItemFieldReaderRegistry _infoItemFieldReaderRegistry;
 
 	@Reference
 	private SiteConnectedGroupGroupProvider _siteConnectedGroupGroupProvider;

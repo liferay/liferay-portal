@@ -80,6 +80,7 @@ public class JournalArticleInfoItemFieldValuesProvider
 				_getJournalArticleInfoFieldValues(journalArticle)
 			).infoFieldValues(
 				_assetEntryInfoItemFieldSetProvider.getInfoFieldValues(
+					journalArticle.getCompanyId(),
 					JournalArticle.class.getName(),
 					journalArticle.getResourcePrimKey())
 			).infoFieldValues(

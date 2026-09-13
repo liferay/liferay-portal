@@ -174,7 +174,7 @@ public class CPDefinitionInfoItemFieldValuesProviderTest {
 	private void _setUpMocks() throws Exception {
 		Mockito.when(
 			_assetEntryInfoItemFieldSetProvider.getInfoFieldValues(
-				Mockito.anyString(), Mockito.anyLong())
+				Mockito.anyLong(), Mockito.anyString(), Mockito.anyLong())
 		).thenReturn(
 			new ArrayList<>()
 		);

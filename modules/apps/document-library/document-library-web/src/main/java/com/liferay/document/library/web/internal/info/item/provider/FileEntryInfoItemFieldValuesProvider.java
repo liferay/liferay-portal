@@ -103,7 +103,8 @@ public class FileEntryInfoItemFieldValuesProvider
 			DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
 
 			return _assetEntryInfoItemFieldSetProvider.getInfoFieldValues(
-				DLFileEntry.class.getName(), dlFileEntry.getFileEntryId());
+				dlFileEntry.getCompanyId(), DLFileEntry.class.getName(),
+				dlFileEntry.getFileEntryId());
 		}
 
 		return Collections.emptyList();

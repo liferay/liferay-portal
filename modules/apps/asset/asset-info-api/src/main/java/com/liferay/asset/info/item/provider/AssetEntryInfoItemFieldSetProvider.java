@@ -32,7 +32,7 @@ public interface AssetEntryInfoItemFieldSetProvider {
 		AssetEntry assetEntry);
 
 	public List<InfoFieldValue<Object>> getInfoFieldValues(
-			String itemClassName, long itemClassPK)
+			long companyId, String itemClassName, long itemClassPK)
 		throws NoSuchInfoItemException;
 
 }

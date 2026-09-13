@@ -55,7 +55,8 @@ public class BlogsEntryInfoItemFieldValuesProvider
 				_getBlogsEntryInfoFieldValues(blogsEntry)
 			).infoFieldValues(
 				_assetEntryInfoItemFieldSetProvider.getInfoFieldValues(
-					BlogsEntry.class.getName(), blogsEntry.getEntryId())
+					blogsEntry.getCompanyId(), BlogsEntry.class.getName(),
+					blogsEntry.getEntryId())
 			).infoFieldValues(
 				_displayPageInfoItemFieldSetProvider.getInfoFieldValues(
 					new InfoItemReference(
