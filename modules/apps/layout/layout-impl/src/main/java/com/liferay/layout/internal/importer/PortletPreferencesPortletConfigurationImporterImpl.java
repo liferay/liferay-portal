@@ -5,7 +5,12 @@
 
 package com.liferay.layout.internal.importer;
 
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.kernel.lar.PortletDataException;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorRegistryUtil;
 import com.liferay.layout.importer.PortletPreferencesPortletConfigurationImporter;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
@@ -76,6 +81,9 @@ public class PortletPreferencesPortletConfigurationImporterImpl
 			}
 		}
 
+		_processImportPortletPreferences(
+			layout.getCompanyId(), portletId, portletPreferences);
+
 		String portletPreferencesXML = PortletPreferencesFactoryUtil.toXML(
 			portletPreferences);
 
@@ -97,6 +105,33 @@ public class PortletPreferencesPortletConfigurationImporterImpl
 				PortletKeys.PREFS_OWNER_ID_DEFAULT,
 				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid(),
 				portletId, portletPreferencesXML);
+		}
+	}
+
+	private void _processImportPortletPreferences(
+		long companyId, String portletId,
+		PortletPreferences portletPreferences) {
+
+		if (!ExportImportThreadLocal.isStagingInProcess()) {
+			return;
+		}
+
+		ExportImportPortletPreferencesProcessor
+			exportImportPortletPreferencesProcessor =
+				ExportImportPortletPreferencesProcessorRegistryUtil.
+					getExportImportPortletPreferencesProcessor(
+						PortletIdCodec.decodePortletName(portletId));
+
+		if (exportImportPortletPreferencesProcessor == null) {
+			return;
+		}
+
+		try {
+			exportImportPortletPreferencesProcessor.
+				processImportPortletPreferences(companyId, portletPreferences);
+		}
+		catch (PortletDataException portletDataException) {
+			ReflectionUtil.throwException(portletDataException);
 		}
 	}
 
