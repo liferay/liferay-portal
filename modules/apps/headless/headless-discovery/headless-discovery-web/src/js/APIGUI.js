@@ -26,7 +26,6 @@ const APIGUI = () => {
 	const [active, setActive] = useState(false);
 	const [endpoints, setEndpoints] = useState([]);
 	const [endpoint, setEndpoint] = useState(urlParams.get('endpoint'));
-	const [globalEndpoint, setGlobalEndpoint] = useState('');
 	const [showHeaders, setShowHeaders] = useState(false);
 	const [showGraphQL, setShowGraphQL] = useState(false);
 	const [headers, setHeaders] = useState([{key: '', value: ''}]);
@@ -44,22 +43,11 @@ const APIGUI = () => {
 
 	useEffect(() => {
 		apiFetch(contextPath + '/o/openapi', 'get', {}).then((response) => {
-			const urls = Object.values(response).flat();
-
-			const [firstURL] = urls;
-
-			setOrigin(new URL(firstURL).origin);
-
-			// The aggregated document of every published application is served
-			// by the discovery application itself, which does not list it.
-
-			setGlobalEndpoint(
-				firstURL.substring(0, firstURL.indexOf('/o/')) +
-					'/o/openapi/openapi.json'
-			);
-
+			setOrigin(new URL(Object.values(response)[0][0]).origin);
 			setEndpoints(
-				urls.map((url) => url.replace('openapi.yaml', 'openapi.json'))
+				Object.keys(response)
+					.flatMap((key) => response[key])
+					.map((url) => url.replace('openapi.yaml', 'openapi.json'))
 			);
 		});
 	}, [contextPath]);
@@ -334,9 +322,7 @@ const APIGUI = () => {
 					<ClayLayout.Row className="vh-100">
 						<GraphiQL fetcher={graphQLFetcher} />
 					</ClayLayout.Row>
-				) : endpoint &&
-				  endpoint !== globalEndpoint &&
-				  !endpoints.includes(endpoint) ? (
+				) : endpoint && !endpoint.startsWith(origin + '/') ? (
 					<ClayAlert className="mt-4" displayType="danger">
 						Forbidden access.
 					</ClayAlert>
