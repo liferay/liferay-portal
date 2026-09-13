@@ -372,6 +372,9 @@ public interface AssetVocabularyLocalService
 	public List<AssetVocabulary> getCompanyVocabularies(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCompanyVocabulariesCount(long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -504,4 +507,4 @@ public interface AssetVocabularyLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1639692435
+// LIFERAY-SERVICE-BUILDER-HASH:2098662806

@@ -491,6 +491,12 @@ public class AssetVocabularyLocalServiceWrapper
 	}
 
 	@Override
+	public int getCompanyVocabulariesCount(long companyId) {
+		return _assetVocabularyLocalService.getCompanyVocabulariesCount(
+			companyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -744,4 +750,4 @@ public class AssetVocabularyLocalServiceWrapper
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1961859064
+// LIFERAY-SERVICE-BUILDER-HASH:1848149171

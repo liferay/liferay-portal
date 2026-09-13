@@ -434,6 +434,10 @@ public class AssetVocabularyLocalServiceUtil {
 		return getService().getCompanyVocabularies(companyId);
 	}
 
+	public static int getCompanyVocabulariesCount(long companyId) {
+		return getService().getCompanyVocabulariesCount(companyId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -624,4 +628,4 @@ public class AssetVocabularyLocalServiceUtil {
 	private static volatile AssetVocabularyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-236408834
+// LIFERAY-SERVICE-BUILDER-HASH:1362016759
