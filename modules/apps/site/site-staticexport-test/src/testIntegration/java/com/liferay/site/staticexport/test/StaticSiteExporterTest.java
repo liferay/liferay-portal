@@ -113,6 +113,7 @@ public class StaticSiteExporterTest {
 
 		Assert.assertFalse(staticSiteExportResources.isEmpty());
 
+		boolean bundleResource = false;
 		boolean stylesheet = false;
 
 		for (StaticSiteExportResource staticSiteExportResource :
@@ -126,11 +127,16 @@ public class StaticSiteExporterTest {
 
 			Assert.assertTrue(url, file.length() > 0);
 
+			if (url.contains("/__liferay__/")) {
+				bundleResource = true;
+			}
+
 			if (url.contains(".css")) {
 				stylesheet = true;
 			}
 		}
 
+		Assert.assertTrue(staticSiteExportResources.toString(), bundleResource);
 		Assert.assertTrue(staticSiteExportResources.toString(), stylesheet);
 
 		StaticSiteExportReport staticSiteExportReport =
@@ -145,18 +151,15 @@ public class StaticSiteExporterTest {
 				staticSiteExportReport.getResourceFailures()) {
 
 			Assert.assertNotNull(failure.getMessage());
-			Assert.assertTrue(
-				failure.getURL(),
-				failure.getURL(
-				).startsWith(
-					StringPool.SLASH
-				));
+
+			String url = failure.getURL();
+
+			Assert.assertTrue(url, url.startsWith(StringPool.SLASH));
 
 			for (StaticSiteExportResource staticSiteExportResource :
 					staticSiteExportResources) {
 
-				Assert.assertNotEquals(
-					failure.getURL(), staticSiteExportResource.getURL());
+				Assert.assertNotEquals(url, staticSiteExportResource.getURL());
 			}
 		}
 	}
