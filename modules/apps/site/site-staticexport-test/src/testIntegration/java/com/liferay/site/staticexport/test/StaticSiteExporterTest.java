@@ -8,7 +8,7 @@ package com.liferay.site.staticexport.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -111,8 +111,7 @@ public class StaticSiteExporterTest {
 				Assert.assertThat(
 					html,
 					CoreMatchers.containsString(
-						"/o/layout-common-styles/main.css?plid=" +
-							staticSiteExportLayout.getPlid()));
+						"/o/layout-common-styles/main."));
 			}
 
 			boolean image = false;
@@ -192,6 +191,12 @@ public class StaticSiteExporterTest {
 		Assert.assertThat(
 			staticSiteExportLayout.getHTML(),
 			CoreMatchers.containsString(layout.getName(LocaleUtil.US)));
+		Assert.assertThat(
+			staticSiteExportLayout.getHTML(),
+			CoreMatchers.containsString(
+				StringBundler.concat(
+					"href=\"/", staticSiteExportLayout.getPath(),
+					"\" rel=\"canonical\"")));
 
 		List<StaticSiteExportResource> staticSiteExportResources =
 			staticSiteExport.getStaticSiteExportResources();
@@ -205,6 +210,11 @@ public class StaticSiteExporterTest {
 
 		for (StaticSiteExportResource staticSiteExportResource :
 				staticSiteExportResources) {
+
+			String path = staticSiteExportResource.getPath();
+
+			Assert.assertFalse(path, path.startsWith(StringPool.SLASH));
+			Assert.assertFalse(path, path.contains(StringPool.QUESTION));
 
 			String url = staticSiteExportResource.getURL();
 
@@ -222,20 +232,16 @@ public class StaticSiteExporterTest {
 				generatedResource = true;
 			}
 
-			if (url.contains(".css")) {
-				stylesheet = true;
-			}
-
 			String html = staticSiteExportLayout.getHTML();
 
-			int index = url.indexOf(CharPool.QUESTION);
+			if (!html.contains(StringPool.SLASH + path)) {
+				referencedByResource = true;
 
-			if (index != -1) {
-				url = url.substring(0, index);
+				continue;
 			}
 
-			if (!html.contains(url)) {
-				referencedByResource = true;
+			if (url.contains(".css")) {
+				stylesheet = true;
 			}
 		}
 
