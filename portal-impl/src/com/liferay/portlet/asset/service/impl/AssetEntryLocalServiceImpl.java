@@ -905,6 +905,8 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		}
 		else {
 			entry = assetEntryPersistence.findByPrimaryKey(entryId);
+
+			assetEntryPersistence.reassociateIfAbsent(entry);
 		}
 
 		entry.setGroupId(groupId);
