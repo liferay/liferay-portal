@@ -17,7 +17,7 @@ export default function SelectedItemsBar({
 	onDeselectAll,
 }: SelectedItemsBarProps) {
 	return (
-		<ClayResultsBar>
+		<ClayResultsBar role="none">
 			<ClayResultsBar.Item expand>
 				<span
 					className="component-text text-truncate-inline"

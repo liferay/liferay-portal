@@ -8,7 +8,7 @@ import {TreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import SelectedItemsBar from '../../components/SelectedItemsBar';
 import {getTool} from '../../services/getTool';
@@ -43,6 +43,16 @@ export default function RestrictFieldsModal({
 	const [saving, setSaving] = useState(false);
 	const [selectedKeys, setSelectedKeys] = useState<Set<React.Key>>(new Set());
 	const [treeVersion, setTreeVersion] = useState(0);
+
+	const treeRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (treeVersion) {
+			treeRef.current
+				?.querySelector<HTMLElement>('[role="treeitem"]')
+				?.focus();
+		}
+	}, [treeVersion]);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -127,7 +137,7 @@ export default function RestrictFieldsModal({
 							/>
 						</div>
 
-						<div className="px-4 py-2">
+						<div className="px-4 py-2" ref={treeRef}>
 							{items.length ? (
 								<TreeView
 									className="bg-transparent"
