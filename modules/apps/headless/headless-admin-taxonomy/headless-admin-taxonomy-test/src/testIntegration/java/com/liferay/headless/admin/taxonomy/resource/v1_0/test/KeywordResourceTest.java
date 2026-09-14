@@ -601,27 +601,18 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 	@Override
 	@Test
 	public void testPutKeyword() throws Exception {
+		super.testPutKeyword();
+
 		Group originalTestGroup = testGroup;
 
 		testGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
-		super.testPutKeyword();
-
-		Keyword keyword = _postKeywordWithAssetLibraries(
-			_randomSpaceAssetLibrary());
-
-		Keyword randomKeyword = randomKeyword();
-
-		randomKeyword.setAssetLibraries(
-			new AssetLibrary[] {_randomSpaceAssetLibrary()});
-
-		Keyword putKeyword = keywordResource.putKeyword(
-			keyword.getId(), randomKeyword);
-
-		assertEquals(randomKeyword, putKeyword);
+		_testPutKeywordWithAssetLibraries();
 
 		testGroup = originalTestGroup;
+
+		_testPutKeywordWithoutAssetLibraryManageTagPermission();
 	}
 
 	@Override
@@ -871,6 +862,91 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Assert.assertEquals(originalTotalCount + 1, page.getTotalCount());
 	}
 
+	private void _testPutKeywordWithAssetLibraries() throws Exception {
+		Keyword keyword = _postKeywordWithAssetLibraries(
+			_randomSpaceAssetLibrary());
+
+		Keyword randomKeyword = randomKeyword();
+
+		randomKeyword.setAssetLibraries(
+			new AssetLibrary[] {_randomSpaceAssetLibrary()});
+
+		Keyword putKeyword = keywordResource.putKeyword(
+			keyword.getId(), randomKeyword);
+
+		assertEquals(randomKeyword, putKeyword);
+	}
+
+	private void _testPutKeywordWithoutAssetLibraryManageTagPermission()
+		throws Exception {
+
+		DepotEntry space = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(), null,
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+		DepotEntry otherSpace = _depotEntryLocalService.addDepotEntry(
+			RandomTestUtil.randomLocaleStringMap(), null,
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		Group spaceGroup = space.getGroup();
+
+		_spaceContentReviewerUser = UserTestUtil.addUser();
+
+		_userLocalService.updatePassword(
+			_spaceContentReviewerUser.getUserId(), "test", "test", false, true);
+
+		_groupLocalService.addUserGroup(
+			_spaceContentReviewerUser.getUserId(), spaceGroup);
+
+		Role contentReviewerRole = _roleLocalService.getRole(
+			testCompany.getCompanyId(),
+			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			_spaceContentReviewerUser.getUserId(), spaceGroup.getGroupId(),
+			new long[] {contentReviewerRole.getRoleId()});
+
+		KeywordResource spaceContentReviewerKeywordResource =
+			KeywordResource.builder(
+			).authentication(
+				_spaceContentReviewerUser.getEmailAddress(), "test"
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		Keyword keyword =
+			spaceContentReviewerKeywordResource.postAssetLibraryKeyword(
+				space.getDepotEntryId(), randomKeyword());
+
+		Keyword randomKeyword = randomKeyword();
+
+		randomKeyword.setAssetLibraries(
+			new AssetLibrary[] {
+				_toAssetLibrary(spaceGroup),
+				_toAssetLibrary(otherSpace.getGroup())
+			});
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> spaceContentReviewerKeywordResource.putKeyword(
+				keyword.getId(), randomKeyword));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("FORBIDDEN", problem.getStatus());
+
+		List<AssetTagGroupRel> assetTagGroupRels =
+			_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
+				keyword.getId());
+
+		Assert.assertTrue(
+			assetTagGroupRels.toString(), assetTagGroupRels.isEmpty());
+	}
+
 	private void _testPutSiteKeywordByExternalReferenceCodeDuplicateName()
 		throws Exception {
 
@@ -905,6 +981,15 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Assert.assertEquals(
 			externalReferenceCode, putKeyword.getExternalReferenceCode());
 		assertValid(putKeyword);
+	}
+
+	private AssetLibrary _toAssetLibrary(Group group) {
+		return new AssetLibrary() {
+			{
+				id = group.getGroupId();
+				scopeKey = group.getGroupKey();
+			}
+		};
 	}
 
 	@Inject
