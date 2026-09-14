@@ -116,6 +116,9 @@
 				</role>
 			</roles>
 		</assignments>
+		<labels>
+			<label language-id="en_US">Task 1</label>
+		</labels>
 		<transitions>
 			<transition>
 				<name>join</name>
