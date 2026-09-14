@@ -5,6 +5,7 @@
 
 package com.liferay.layout.admin.web.internal.portlet.action;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.handler.LayoutExceptionRequestHandlerUtil;
 import com.liferay.layout.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
@@ -18,6 +19,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
@@ -120,6 +122,18 @@ public class AddContentLayoutMVCActionCommand
 					LayoutPageTemplateEntryPermission.check(
 						themeDisplay.getPermissionChecker(),
 						layoutPageTemplateEntryId, ActionKeys.VIEW);
+
+					if ((layoutPageTemplateEntry != null) &&
+						(layoutPageTemplateEntry.getGroupId() != groupId) &&
+						!DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+							themeDisplay.getCompanyId(),
+							layoutPageTemplateEntry.getGroupId(), groupId)) {
+
+						throw new PrincipalException.MustHavePermission(
+							themeDisplay.getPermissionChecker(),
+							LayoutPageTemplateEntry.class.getName(),
+							layoutPageTemplateEntryId, ActionKeys.VIEW);
+					}
 				}
 
 				String masterLayoutPageTemplateEntryERC = null;

@@ -6,10 +6,9 @@
 package com.liferay.layout.admin.web.internal.portlet.action;
 
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
+import com.liferay.layout.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
-import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
-import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -67,7 +66,8 @@ public class GetLayoutPageTemplateEntryListMVCResourceCommand
 
 		for (LayoutPageTemplateEntry layoutPageTemplateEntry :
 				_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
-					_getGroupId(layoutPageTemplateCollectionId, themeDisplay),
+					LayoutPageTemplatePortletUtil.getGroupId(
+						layoutPageTemplateCollectionId, themeDisplay),
 					layoutPageTemplateCollectionId,
 					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS)) {
@@ -123,33 +123,11 @@ public class GetLayoutPageTemplateEntryListMVCResourceCommand
 			resourceRequest, resourceResponse, jsonArray);
 	}
 
-	private long _getGroupId(
-		long layoutPageTemplateCollectionId, ThemeDisplay themeDisplay) {
-
-		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			_layoutPageTemplateCollectionLocalService.
-				fetchLayoutPageTemplateCollection(
-					layoutPageTemplateCollectionId);
-
-		if ((layoutPageTemplateCollection == null) ||
-			(layoutPageTemplateCollection.getGroupId() ==
-				themeDisplay.getScopeGroupId())) {
-
-			return themeDisplay.getScopeGroupId();
-		}
-
-		return layoutPageTemplateCollection.getGroupId();
-	}
-
 	@Reference
 	private JSONFactory _jsonFactory;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
-
-	@Reference
-	private LayoutPageTemplateCollectionLocalService
-		_layoutPageTemplateCollectionLocalService;
 
 	@Reference
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;

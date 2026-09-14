@@ -124,6 +124,23 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 				WorkflowConstants.STATUS_APPROVED);
 	}
 
+	public LayoutPageTemplateCollection getLayoutPageTemplateCollection()
+		throws PortalException {
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			LayoutPageTemplateCollectionLocalServiceUtil.
+				fetchLayoutPageTemplateCollection(
+					getLayoutPageTemplateCollectionId());
+
+		if ((layoutPageTemplateCollection == null) ||
+			(layoutPageTemplateCollection.getGroupId() != _getGroupId())) {
+
+			return null;
+		}
+
+		return layoutPageTemplateCollection;
+	}
+
 	public long getLayoutPageTemplateCollectionId() {
 		if (_layoutPageTemplateCollectionId != null) {
 			return _layoutPageTemplateCollectionId;
@@ -136,7 +153,8 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 	}
 
 	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		int start, int end) {
+			int start, int end)
+		throws PortalException {
 
 		if (!_isWidgetPageFeatureFlagEnabled()) {
 			return LayoutPageTemplateEntryServiceUtil.
@@ -151,7 +169,7 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 			WorkflowConstants.STATUS_APPROVED, start, end);
 	}
 
-	public int getLayoutPageTemplateEntriesCount() {
+	public int getLayoutPageTemplateEntriesCount() throws PortalException {
 		if (!_isWidgetPageFeatureFlagEnabled()) {
 			return LayoutPageTemplateEntryServiceUtil.
 				getLayoutPageTemplateEntriesCountByType(
@@ -390,26 +408,13 @@ public class SelectLayoutPageTemplateEntryDisplayContext {
 		return false;
 	}
 
-	private long _getGroupId() {
+	private long _getGroupId() throws PortalException {
 		if (_groupId != null) {
 			return _groupId;
 		}
 
-		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			LayoutPageTemplateCollectionLocalServiceUtil.
-				fetchLayoutPageTemplateCollection(
-					getLayoutPageTemplateCollectionId());
-
-		if ((layoutPageTemplateCollection == null) ||
-			(layoutPageTemplateCollection.getGroupId() ==
-				_themeDisplay.getScopeGroupId())) {
-
-			_groupId = _themeDisplay.getScopeGroupId();
-
-			return _groupId;
-		}
-
-		_groupId = layoutPageTemplateCollection.getGroupId();
+		_groupId = LayoutPageTemplatePortletUtil.getGroupId(
+			getLayoutPageTemplateCollectionId(), _themeDisplay);
 
 		return _groupId;
 	}

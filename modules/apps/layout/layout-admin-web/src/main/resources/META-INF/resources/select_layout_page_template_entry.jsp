@@ -20,7 +20,7 @@ SelectLayoutPageTemplateEntryDisplayContext selectLayoutPageTemplateEntryDisplay
 
 Group designLibraryGroup = selectLayoutPageTemplateEntryDisplayContext.getDesignLibraryGroup();
 
-LayoutPageTemplateCollection layoutPageTemplateCollection = LayoutPageTemplateCollectionLocalServiceUtil.fetchLayoutPageTemplateCollection(selectLayoutPageTemplateEntryDisplayContext.getLayoutPageTemplateCollectionId());
+LayoutPageTemplateCollection layoutPageTemplateCollection = selectLayoutPageTemplateEntryDisplayContext.getLayoutPageTemplateCollection();
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(backURL);
