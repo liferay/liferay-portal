@@ -15,4 +15,15 @@
 		</field>
 		<field name="name" type="String" />
 	</model>
+	<model name="com.liferay.audiences.model.AudiencesEntryGroupRel">
+		<field name="mvccVersion" type="long" />
+		<field name="audiencesEntryGroupRelId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="audienceEntryERC" type="String" />
+		<field name="groupERC" type="String" />
+	</model>
 </model-hints>
