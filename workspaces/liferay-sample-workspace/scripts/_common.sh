@@ -17,6 +17,18 @@ function docker_compose {
 
 	compose_files=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose.yaml")
 
+	# Named overrides, e.g. LIFERAY_COMPOSE_OVERRIDES=integration-test selects
+	# docker-compose-integration-test.yaml. Separate several with commas.
+
+	local overrides=${LIFERAY_COMPOSE_OVERRIDES:-}
+
+	local override
+
+	for override in ${overrides//,/ }
+	do
+		compose_files+=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-${override}.yaml")
+	done
+
 	if [[ -f "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-env.yaml" ]]
 	then
 		compose_files+=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-env.yaml")
