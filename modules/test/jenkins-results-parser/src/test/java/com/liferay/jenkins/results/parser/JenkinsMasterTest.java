@@ -166,8 +166,10 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		String sshCommand = _getSSHCommand(executionRequest);
 
+		Assert.assertFalse(sshCommand, sshCommand.contains("ConnectTimeout"));
+
 		Assert.assertTrue(
-			sshCommand, sshCommand.contains("-o ConnectTimeout=1 "));
+			sshCommand, sshCommand.contains("-o NumberOfPasswordPrompts=0"));
 	}
 
 	@Test
