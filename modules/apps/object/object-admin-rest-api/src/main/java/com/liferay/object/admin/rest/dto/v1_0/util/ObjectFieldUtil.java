@@ -32,6 +32,8 @@ public class ObjectFieldUtil {
 				com.liferay.object.field.setting.util.ObjectFieldSettingUtil.
 					getDefaultValue(null, objectField, null))
 		).put(
+			"description", objectField.getDescriptionMap()
+		).put(
 			"externalReferenceCode", objectField.getExternalReferenceCode()
 		).put(
 			"id", Long.valueOf(objectField.getObjectFieldId())

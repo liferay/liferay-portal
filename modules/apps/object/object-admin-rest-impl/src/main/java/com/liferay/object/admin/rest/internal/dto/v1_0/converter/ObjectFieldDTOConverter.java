@@ -83,6 +83,9 @@ public class ObjectFieldDTOConverter
 						com.liferay.object.field.setting.util.
 							ObjectFieldSettingUtil.getDefaultValue(
 								null, objectField, null)));
+				setDescription(
+					() -> LocalizedMapUtil.getLanguageIdMap(
+						objectField.getDescriptionMap()));
 				setExternalReferenceCode(objectField::getExternalReferenceCode);
 				setId(objectField::getObjectFieldId);
 				setIndexed(objectField::isIndexed);

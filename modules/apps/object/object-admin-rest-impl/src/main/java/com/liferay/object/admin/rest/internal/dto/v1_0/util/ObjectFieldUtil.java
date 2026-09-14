@@ -244,6 +244,9 @@ public class ObjectFieldUtil {
 			getDBType(
 				objectField.getDBTypeAsString(),
 				objectField.getTypeAsString()));
+		serviceBuilderObjectField.setDescriptionMap(
+			LocalizedMapUtil.populateLocalizedMap(
+				objectField.getDescription()));
 		serviceBuilderObjectField.setIndexed(
 			GetterUtil.getBoolean(objectField.getIndexed()));
 		serviceBuilderObjectField.setIndexedAsKeyword(

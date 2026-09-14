@@ -221,6 +221,10 @@ components:
                 defaultValue:
                     deprecated: true
                     type: string
+                description:
+                    additionalProperties:
+                        type: string
+                    type: object
                 externalReferenceCode:
                     type: string
                 id:
