@@ -7,6 +7,10 @@ import React from 'react';
 
 import {Adjustments} from '../state/types';
 
+const TONE_CURVE_STEPS = 16;
+
+const TONE_CURVE_STRENGTH = 0.35;
+
 interface Props {
 	adjustments: Adjustments;
 	id: string;
@@ -17,12 +21,10 @@ export function FilterDefs({adjustments, id}: Props) {
 	const contrastSlope = 1 + adjustments.contrast / 100;
 	const contrastIntercept = 0.5 * (1 - contrastSlope);
 	const saturation = 1 + adjustments.saturation / 100;
-	const hasToneCurve =
-		adjustments.shadows !== 0 || adjustments.highlights !== 0;
-	const toneTable = toneCurveTable(
-		adjustments.shadows,
-		adjustments.highlights
-	);
+	const toneTable =
+		adjustments.shadows !== 0 || adjustments.highlights !== 0
+			? toneCurveTable(adjustments.shadows, adjustments.highlights)
+			: undefined;
 
 	return (
 		<filter colorInterpolationFilters="sRGB" id={id}>
@@ -56,7 +58,7 @@ export function FilterDefs({adjustments, id}: Props) {
 
 			<feColorMatrix type="saturate" values={String(saturation)} />
 
-			{hasToneCurve && (
+			{toneTable && (
 				<feComponentTransfer>
 					<feFuncR tableValues={toneTable} type="table" />
 
@@ -76,13 +78,13 @@ export function isIdentityFilter(adjustments: Adjustments): boolean {
 function toneCurveTable(shadows: number, highlights: number): string {
 	const samples: string[] = [];
 
-	for (let i = 0; i <= 16; i++) {
-		const input = i / 16;
+	for (let i = 0; i <= TONE_CURVE_STEPS; i++) {
+		const input = i / TONE_CURVE_STEPS;
 
 		const output =
 			input +
-			0.35 * (shadows / 100) * (1 - input) ** 2 +
-			0.35 * (highlights / 100) * input ** 2;
+			TONE_CURVE_STRENGTH * (shadows / 100) * (1 - input) ** 2 +
+			TONE_CURVE_STRENGTH * (highlights / 100) * input ** 2;
 
 		samples.push(Math.min(1, Math.max(0, output)).toFixed(4));
 	}
