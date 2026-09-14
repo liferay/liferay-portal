@@ -155,6 +155,23 @@ describe('Editor workspace composition', () => {
 		expect(container.querySelector('image')).not.toHaveAttribute('filter');
 	});
 
+	it('reverts a cancelled adjustment gesture without a history entry', () => {
+		const {container} = render(<EditorHarness />);
+
+		const slider = screen.getByLabelText('brightness');
+
+		fireEvent.change(slider, {target: {value: '40'}});
+
+		expect(slider).toHaveValue('40');
+		expect(container.querySelector('image')).toHaveAttribute('filter');
+
+		fireEvent.pointerCancel(slider);
+
+		expect(slider).toHaveValue('0');
+		expect(container.querySelector('image')).not.toHaveAttribute('filter');
+		expect(screen.getByRole('button', {name: 'undo'})).toBeDisabled();
+	});
+
 	it('lays the adjustment sliders out in the configured order', () => {
 		render(<EditorHarness />);
 
