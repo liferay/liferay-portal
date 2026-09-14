@@ -168,6 +168,7 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 						completed = false;
 						label = "Task 1";
 						name = "task1";
+						workflowDefinitionName = _workflowDefinition.getName();
 						workflowDefinitionTitle =
 							_workflowDefinition.getTitle();
 					}
@@ -177,6 +178,7 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 						completed = false;
 						label = "task2";
 						name = "task2";
+						workflowDefinitionName = _workflowDefinition.getName();
 						workflowDefinitionTitle =
 							_workflowDefinition.getTitle();
 					}
@@ -186,6 +188,7 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 						completed = false;
 						label = "task3";
 						name = "task3";
+						workflowDefinitionName = _workflowDefinition.getName();
 						workflowDefinitionTitle =
 							_workflowDefinition.getTitle();
 					}
@@ -851,6 +854,7 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 						completed = false;
 						label = "Task 1";
 						name = "task1";
+						workflowDefinitionName = _workflowDefinition.getName();
 						workflowDefinitionTitle =
 							_workflowDefinition.getTitle();
 					}
@@ -860,6 +864,7 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 						completed = false;
 						label = "task2";
 						name = "task2";
+						workflowDefinitionName = _workflowDefinition.getName();
 						workflowDefinitionTitle =
 							_workflowDefinition.getTitle();
 					}
@@ -869,6 +874,7 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 						completed = true;
 						label = "task3";
 						name = "task3";
+						workflowDefinitionName = _workflowDefinition.getName();
 						workflowDefinitionTitle =
 							_workflowDefinition.getTitle();
 					}
@@ -939,7 +945,8 @@ public class WorkflowTaskResourceTest extends BaseWorkflowTaskResourceTestCase {
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
 		return new String[] {
-			"completed", "label", "name", "workflowDefinitionTitle"
+			"completed", "label", "name", "workflowDefinitionName",
+			"workflowDefinitionTitle"
 		};
 	}
 
