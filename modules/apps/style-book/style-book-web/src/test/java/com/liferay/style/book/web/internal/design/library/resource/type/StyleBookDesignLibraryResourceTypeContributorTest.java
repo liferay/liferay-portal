@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.fragment.web.internal.design.library;
+package com.liferay.style.book.web.internal.design.library.resource.type;
 
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.style.book.constants.StyleBookActionKeys;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 /**
  * @author Thiago Buarque
  */
-public class FragmentDesignLibraryResourceTypeContributorTest {
+public class StyleBookDesignLibraryResourceTypeContributorTest {
 
 	@ClassRule
 	@Rule
@@ -40,41 +40,41 @@ public class FragmentDesignLibraryResourceTypeContributorTest {
 		);
 
 		ReflectionTestUtil.setFieldValue(
-			_fragmentDesignLibraryResourceTypeContributor,
+			_styleBookDesignLibraryResourceTypeContributor,
 			"_portletResourcePermission", _portletResourcePermission);
 	}
 
 	@Test
 	public void testHasAddPermission() {
 		Assert.assertFalse(
-			_fragmentDesignLibraryResourceTypeContributor.hasAddPermission(
+			_styleBookDesignLibraryResourceTypeContributor.hasAddPermission(
 				_permissionChecker, _depotEntry));
 
-		_setUpManageFragmentEntriesPermission();
+		_setUpManageStyleBookEntriesPermission();
 
 		Assert.assertTrue(
-			_fragmentDesignLibraryResourceTypeContributor.hasAddPermission(
+			_styleBookDesignLibraryResourceTypeContributor.hasAddPermission(
 				_permissionChecker, _depotEntry));
 	}
 
 	@Test
 	public void testHasViewPermission() {
 		Assert.assertFalse(
-			_fragmentDesignLibraryResourceTypeContributor.hasViewPermission(
+			_styleBookDesignLibraryResourceTypeContributor.hasViewPermission(
 				_permissionChecker, _depotEntry));
 
-		_setUpManageFragmentEntriesPermission();
+		_setUpManageStyleBookEntriesPermission();
 
 		Assert.assertTrue(
-			_fragmentDesignLibraryResourceTypeContributor.hasViewPermission(
+			_styleBookDesignLibraryResourceTypeContributor.hasViewPermission(
 				_permissionChecker, _depotEntry));
 	}
 
-	private void _setUpManageFragmentEntriesPermission() {
+	private void _setUpManageStyleBookEntriesPermission() {
 		Mockito.when(
 			_portletResourcePermission.contains(
 				_permissionChecker, _GROUP_ID,
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)
 		).thenReturn(
 			true
 		);
@@ -83,12 +83,12 @@ public class FragmentDesignLibraryResourceTypeContributorTest {
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
 
 	private final DepotEntry _depotEntry = Mockito.mock(DepotEntry.class);
-	private final FragmentDesignLibraryResourceTypeContributor
-		_fragmentDesignLibraryResourceTypeContributor =
-			new FragmentDesignLibraryResourceTypeContributor();
 	private final PermissionChecker _permissionChecker = Mockito.mock(
 		PermissionChecker.class);
 	private final PortletResourcePermission _portletResourcePermission =
 		Mockito.mock(PortletResourcePermission.class);
+	private final StyleBookDesignLibraryResourceTypeContributor
+		_styleBookDesignLibraryResourceTypeContributor =
+			new StyleBookDesignLibraryResourceTypeContributor();
 
 }
