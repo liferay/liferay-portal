@@ -85,7 +85,6 @@ public class SecretResolverTest {
 		Assert.assertEquals(identifier, keyReference.getIdentifier());
 		Assert.assertEquals(_SECRET_PROVIDER_ID, keyReference.getProviderId());
 		Assert.assertEquals(KeyReference.Type.SECRET, keyReference.getType());
-
 		Assert.assertEquals(
 			value,
 			_secretResolver.resolve(
@@ -123,7 +122,8 @@ public class SecretResolverTest {
 		"com.liferay.portal.security.key.internal.profile.configuration." +
 			"KeyManagerCustomProfileConfiguration";
 
-	private static final String _SECRET_PROVIDER_ID = "test-key-secret";
+	private static final String _SECRET_PROVIDER_ID =
+		RandomTestUtil.randomString();
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();

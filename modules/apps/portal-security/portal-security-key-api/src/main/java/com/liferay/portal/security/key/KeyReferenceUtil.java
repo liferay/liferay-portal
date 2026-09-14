@@ -62,8 +62,8 @@ public class KeyReferenceUtil {
 			return null;
 		}
 
-		String keyReferencePrefix = null;
-		KeyReference.Type type = null;
+		String keyReferencePrefix;
+		KeyReference.Type type;
 
 		if (keyReferenceString.startsWith(_KEY_REFERENCE_PREFIX_CRYPTO)) {
 			keyReferencePrefix = _KEY_REFERENCE_PREFIX_CRYPTO;
@@ -73,8 +73,7 @@ public class KeyReferenceUtil {
 			keyReferencePrefix = _KEY_REFERENCE_PREFIX_SECRET;
 			type = KeyReference.Type.SECRET;
 		}
-
-		if (keyReferencePrefix == null) {
+		else {
 			return null;
 		}
 

@@ -43,6 +43,7 @@ public class SecretResolverUtilTest {
 	@Test
 	public void testResolve() {
 		long companyId = RandomTestUtil.randomLong();
+		String resolvedValue = RandomTestUtil.randomString();
 		String value = RandomTestUtil.randomString();
 
 		_setUpSecretResolverSnapshot(
@@ -50,11 +51,11 @@ public class SecretResolverUtilTest {
 				Assert.assertEquals(companyId, secretResolverCompanyId);
 				Assert.assertSame(value, secretResolverValue);
 
-				return _RESOLVED_VALUE;
+				return resolvedValue;
 			});
 
 		Assert.assertSame(
-			_RESOLVED_VALUE, SecretResolverUtil.resolve(companyId, value));
+			resolvedValue, SecretResolverUtil.resolve(companyId, value));
 	}
 
 	@Test
@@ -80,8 +81,6 @@ public class SecretResolverUtilTest {
 
 			});
 	}
-
-	private static final String _RESOLVED_VALUE = "resolved";
 
 	private Snapshot<SecretResolver> _secretResolverSnapshot;
 

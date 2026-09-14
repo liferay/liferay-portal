@@ -57,13 +57,23 @@ public class SecretResolverImplTest {
 	}
 
 	@Test
+	public void testGetKey() {
+		long companyId = RandomTestUtil.randomLong();
+		String keyReferenceString = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			companyId + StringPool.POUND + keyReferenceString,
+			SecretResolverImpl.getKey(companyId, keyReferenceString));
+	}
+
+	@Test
 	public void testResolve() throws Exception {
 		_assertResolve(RandomTestUtil.randomString());
 		_assertResolve(StringPool.STAR);
 	}
 
 	@Test
-	public void testResolveCryptoKeyReference() throws Exception {
+	public void testResolveWhenKeyReferenceIsCrypto() throws Exception {
 		Assert.assertThrows(
 			SecretException.class,
 			() -> _secretResolverImpl.resolve(
@@ -73,7 +83,7 @@ public class SecretResolverImplTest {
 	}
 
 	@Test
-	public void testResolveInvalidKeyReference() throws Exception {
+	public void testResolveWhenKeyReferenceIsInvalid() throws Exception {
 		Assert.assertThrows(
 			SecretException.class,
 			() -> _secretResolverImpl.resolve(

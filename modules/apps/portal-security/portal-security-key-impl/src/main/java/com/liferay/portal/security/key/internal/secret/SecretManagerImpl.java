@@ -176,13 +176,13 @@ public class SecretManagerImpl implements SecretManager {
 
 			secretProvider.putSecret(companyId, secret);
 
-			KeyReference resolvedKeyReference = new KeyReference(
+			keyReference = new KeyReference(
 				keyReference.getIdentifier(), secretProviderId,
 				KeyReference.Type.SECRET);
 
-			_removeCachedSecret(companyId, resolvedKeyReference);
+			_removeCachedSecret(companyId, keyReference);
 
-			return resolvedKeyReference;
+			return keyReference;
 		}
 		catch (SecretException secretException) {
 			if (_log.isWarnEnabled()) {
