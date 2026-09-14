@@ -349,19 +349,12 @@ export function parseNotifications(node) {
 			}
 		}
 
-		if (
-			item['role-type'] ||
-			(item['recipients'] &&
-				item['recipients'][0]?.['roles']?.['role-type'])
-		) {
-			const autoCreate =
-				item['auto-create'] ||
-				item['recipients'][0]['roles']['auto-create'];
-			const roleName =
-				item['role-name'] || item['recipients'][0]['roles']['name'];
-			const roleType =
-				item['role-type'] ||
-				item['recipients'][0]['roles']['role-type'];
+		const roles = item['recipients']?.[0]?.['roles'];
+
+		if (item['role-type'] || roles?.['role-type']) {
+			const autoCreate = item['auto-create'] || roles?.['auto-create'];
+			const roleName = item['role-name'] || roles?.['name'];
+			const roleType = item['role-type'] || roles?.['role-type'];
 
 			if (receptionType) {
 				notifications.recipients[index].push({
