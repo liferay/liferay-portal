@@ -7,9 +7,11 @@ package com.liferay.portal.security.audit.router.internal.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -20,10 +22,13 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
+import com.liferay.portal.security.audit.storage.model.AuditEvent;
 import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -54,6 +59,52 @@ public class PersistentAuditMessageProcessorTest {
 	public static void tearDownClass() throws Exception {
 		CompanyLocalServiceUtil.deleteCompany(_company1.getCompanyId());
 		CompanyLocalServiceUtil.deleteCompany(_company2.getCompanyId());
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testProcessCorrelationIdPersistsAfterClear() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						_company1.getCompanyId(),
+						PersistentAuditMessageProcessorConfiguration.class.
+							getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"bufferSize", 2
+						).put(
+							"flushInterval", _FLUSH_INTERVAL
+						).build())) {
+
+			String correlationId = RandomTestUtil.randomString();
+			String eventType1 = _createEventType();
+			String eventType2 = _createEventType();
+
+			AuditRequestThreadLocal auditRequestThreadLocal =
+				AuditRequestThreadLocal.getAuditThreadLocal();
+
+			auditRequestThreadLocal.setCorrelationId(correlationId);
+
+			_route(_company1.getCompanyId(), eventType1);
+
+			auditRequestThreadLocal.setCorrelationId(null);
+
+			Assert.assertEquals(
+				0, _getAuditEventsCount(_company1.getCompanyId(), eventType1));
+
+			_route(_company1.getCompanyId(), eventType2);
+
+			AuditEvent auditEvent1 = _getAuditEvent(
+				_company1.getCompanyId(), eventType1);
+			AuditEvent auditEvent2 = _getAuditEvent(
+				_company1.getCompanyId(), eventType2);
+
+			Assert.assertEquals(correlationId, auditEvent1.getCorrelationId());
+			Assert.assertEquals(
+				StringPool.BLANK, auditEvent2.getCorrelationId());
+
+			AuditRequestThreadLocal.removeAuditThreadLocal();
+		}
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -273,6 +324,19 @@ public class PersistentAuditMessageProcessorTest {
 
 	private String _createEventType() {
 		return StringUtil.toUpperCase(RandomTestUtil.randomString());
+	}
+
+	private AuditEvent _getAuditEvent(long companyId, String eventType) {
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
+
+			List<AuditEvent> auditEvents =
+				_auditEventLocalService.getAuditEvents(
+					companyId, 0, 0, null, null, null, null, null, null, null,
+					null, null, eventType, null, 0, null, false, 0, 1);
+
+			return auditEvents.get(0);
+		}
 	}
 
 	private int _getAuditEventsCount(long companyId, String eventType) {
