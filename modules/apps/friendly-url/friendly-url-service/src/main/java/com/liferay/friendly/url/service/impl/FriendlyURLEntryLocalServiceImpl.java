@@ -83,6 +83,8 @@ public class FriendlyURLEntryLocalServiceImpl
 			_friendlyURLEntryMappingPersistence.fetchByC_C(
 				classNameId, classPK);
 
+		Map<String, String> existingUrlTitleMap = Collections.emptyMap();
+
 		if (friendlyURLEntryMapping == null) {
 			long friendlyURLMappingId = counterLocalService.increment();
 
@@ -93,27 +95,27 @@ public class FriendlyURLEntryLocalServiceImpl
 			friendlyURLEntryMapping.setClassNameId(classNameId);
 			friendlyURLEntryMapping.setClassPK(classPK);
 		}
+		else {
+			existingUrlTitleMap = _getURLTitleMap(friendlyURLEntryMapping);
 
-		Map<String, String> existingUrlTitleMap = _getURLTitleMap(
-			friendlyURLEntryMapping);
+			FriendlyURLEntry friendlyURLEntry =
+				friendlyURLEntryPersistence.fetchByPrimaryKey(
+					friendlyURLEntryMapping.getFriendlyURLEntryId());
 
-		FriendlyURLEntry friendlyURLEntry =
-			friendlyURLEntryPersistence.fetchByPrimaryKey(
-				friendlyURLEntryMapping.getFriendlyURLEntryId());
+			if ((friendlyURLEntry != null) &&
+				_containsAllURLTitles(existingUrlTitleMap, urlTitleMap)) {
 
-		if ((friendlyURLEntry != null) &&
-			_containsAllURLTitles(existingUrlTitleMap, urlTitleMap)) {
+				_updateAssetEntry(friendlyURLEntry, serviceContext);
 
-			_updateAssetEntry(friendlyURLEntry, serviceContext);
-
-			return friendlyURLEntry;
+				return friendlyURLEntry;
+			}
 		}
 
 		Group group = _groupLocalService.getGroup(groupId);
 
 		long friendlyURLEntryId = counterLocalService.increment();
 
-		friendlyURLEntry = friendlyURLEntryPersistence.create(
+		FriendlyURLEntry friendlyURLEntry = friendlyURLEntryPersistence.create(
 			friendlyURLEntryId);
 
 		friendlyURLEntry.setUuid(serviceContext.getUuid());
