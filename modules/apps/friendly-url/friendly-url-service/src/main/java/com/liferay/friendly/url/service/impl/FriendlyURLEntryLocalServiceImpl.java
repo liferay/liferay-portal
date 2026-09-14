@@ -79,9 +79,13 @@ public class FriendlyURLEntryLocalServiceImpl
 
 		_validateAssetCategories(urlTitleMap, serviceContext);
 
-		FriendlyURLEntryMapping friendlyURLEntryMapping =
-			_friendlyURLEntryMappingPersistence.fetchByC_C(
-				classNameId, classPK);
+		FriendlyURLEntryMapping friendlyURLEntryMapping = null;
+
+		if (!serviceContext.isStrictAdd()) {
+			friendlyURLEntryMapping =
+				_friendlyURLEntryMappingPersistence.fetchByC_C(
+					classNameId, classPK);
+		}
 
 		Map<String, String> existingUrlTitleMap = Collections.emptyMap();
 
