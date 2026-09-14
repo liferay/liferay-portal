@@ -272,6 +272,39 @@ describe('MainSearch', () => {
 			expect(screen.queryByRole('menu')).not.toBeInTheDocument();
 		});
 
+		it('fills the input and searches for the clicked query when search as you type is enabled', async () => {
+			storeQueries(['nike']);
+
+			const input = renderMainSearch({
+				searchAsYouType: true,
+				searchSuggestionsEnabled: true,
+			});
+
+			await user.click(input);
+			await user.click(screen.getByRole('menuitem', {name: 'nike'}));
+
+			expect(input).toHaveValue('nike');
+			expect(onSearch).toHaveBeenCalledTimes(1);
+			expect(onSearch).toHaveBeenCalledWith({query: 'nike'});
+		});
+
+		it('drops the query being typed when a suggestion is clicked', async () => {
+			storeQueries(['nike']);
+
+			const input = renderMainSearch({
+				searchAsYouType: true,
+				searchSuggestionsEnabled: true,
+			});
+
+			await user.type(input, 'ni');
+			await user.click(screen.getByRole('menuitem', {name: 'nike'}));
+
+			elapse(DEBOUNCE_DELAY);
+
+			expect(onSearch).toHaveBeenCalledTimes(1);
+			expect(onSearch).toHaveBeenCalledWith({query: 'nike'});
+		});
+
 		it('opens the list again when the already focused input is clicked', async () => {
 			storeQueries(['nike']);
 

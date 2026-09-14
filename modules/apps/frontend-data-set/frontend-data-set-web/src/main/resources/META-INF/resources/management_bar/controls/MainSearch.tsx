@@ -55,6 +55,12 @@ function MainSearch({onClear}: {onClear: () => void}) {
 		onSearch({query});
 	};
 
+	const doSuggestedSearch = (query: string) => {
+		cancelDebounce(debouncedSearch);
+
+		onSearch({query});
+	};
+
 	// Clicking counts as well as focusing, because an input that already holds
 	// the focus fires no focus event, and it does hold it after a search or
 	// after Escape closed the dropdown
@@ -145,7 +151,7 @@ function MainSearch({onClear}: {onClear: () => void}) {
 
 							setInputValue(query);
 
-							doSearch(query);
+							doSuggestedSearch(query);
 						}}
 						onVisitedItemClick={() =>
 							setSearchSuggestionsActive(false)
