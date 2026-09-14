@@ -16,7 +16,12 @@ import {patchProfileTool} from '../../services/patchProfileTool';
 import {ProfileTool} from '../../types';
 import {openErrorToast, openSuccessToast} from '../../utils';
 import {FieldTreeItem} from './types';
-import {buildFieldTree, getSelectedKeys, toRestrictFields} from './utils';
+import {
+	buildFieldTree,
+	getExpandedKeys,
+	getSelectedKeys,
+	toRestrictFields,
+} from './utils';
 
 interface RestrictFieldsModalProps {
 	onClose: () => void;
@@ -32,10 +37,12 @@ export default function RestrictFieldsModal({
 	const {externalReferenceCode, restrictFields, toolName, toolSetName} =
 		profileTool;
 
+	const [expandedKeys, setExpandedKeys] = useState<Set<React.Key>>(new Set());
 	const [items, setItems] = useState<FieldTreeItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [selectedKeys, setSelectedKeys] = useState<Set<React.Key>>(new Set());
+	const [treeVersion, setTreeVersion] = useState(0);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -55,6 +62,7 @@ export default function RestrictFieldsModal({
 
 			const tree = buildFieldTree(data?.outputSchema);
 
+			setExpandedKeys(getExpandedKeys(restrictFields));
 			setItems(tree);
 			setSelectedKeys(getSelectedKeys(tree, restrictFields));
 
@@ -65,6 +73,12 @@ export default function RestrictFieldsModal({
 			isMounted = false;
 		};
 	}, [onClose, restrictFields, toolName, toolSetName]);
+
+	const deselectAll = () => {
+		setSelectedKeys(new Set());
+
+		setTreeVersion((previousVersion) => previousVersion + 1);
+	};
 
 	const save = async () => {
 		setSaving(true);
@@ -109,7 +123,7 @@ export default function RestrictFieldsModal({
 						<div className="sticky-top">
 							<SelectedItemsBar
 								count={selectedKeys.size}
-								onDeselectAll={() => setSelectedKeys(new Set())}
+								onDeselectAll={deselectAll}
 							/>
 						</div>
 
@@ -118,7 +132,10 @@ export default function RestrictFieldsModal({
 								<TreeView
 									className="bg-transparent"
 									defaultItems={items}
+									expandedKeys={expandedKeys}
+									key={treeVersion}
 									nestedKey="children"
+									onExpandedChange={setExpandedKeys}
 									onSelectionChange={setSelectedKeys}
 									selectedKeys={selectedKeys}
 									selectionMode="multiple-recursive"

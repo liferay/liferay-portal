@@ -29,6 +29,36 @@ export function buildFieldTree(
 	);
 }
 
+export function getExpandedKeys(restrictFields: string | undefined): Set<Key> {
+	return new Set(
+		fromRestrictFields(restrictFields).flatMap((restrictedFieldName) => {
+			const parts = restrictedFieldName.split('.');
+
+			return parts
+				.slice(0, -1)
+				.map((_, index) => parts.slice(0, index + 1).join('.'));
+		})
+	);
+}
+
+export function getSelectedKeys(
+	tree: FieldTreeItem[],
+	restrictFields: string | undefined
+): Set<Key> {
+	return new Set(
+		getSelectedFieldIds(tree, new Set(fromRestrictFields(restrictFields)))
+	);
+}
+
+export function toRestrictFields(
+	tree: FieldTreeItem[],
+	selectedKeys: Set<Key>
+): string {
+	return getRestrictedFieldIds(tree, selectedKeys).join(
+		RESTRICT_FIELDS_SEPARATOR
+	);
+}
+
 function buildFieldTreeItems(
 	schema: JSONSchema | undefined,
 	parentPath = ''
@@ -57,24 +87,6 @@ function buildFieldTreeItems(
 
 			return children.length ? {children, id, name} : {id, name};
 		});
-}
-
-export function getSelectedKeys(
-	tree: FieldTreeItem[],
-	restrictFields: string | undefined
-): Set<Key> {
-	return new Set(
-		getSelectedFieldIds(tree, new Set(fromRestrictFields(restrictFields)))
-	);
-}
-
-export function toRestrictFields(
-	tree: FieldTreeItem[],
-	selectedKeys: Set<Key>
-): string {
-	return getRestrictedFieldIds(tree, selectedKeys).join(
-		RESTRICT_FIELDS_SEPARATOR
-	);
 }
 
 function fromRestrictFields(restrictFields: string | undefined): string[] {
