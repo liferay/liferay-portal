@@ -13,6 +13,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.extension.EntityExtensionHandler;
 import com.liferay.portal.vulcan.extension.EntityExtensionThreadLocal;
 
+import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.core.MediaType;
@@ -59,12 +60,72 @@ public class EntityExtensionContainerResponseFilterTest {
 
 	@Test
 	public void testFilter() throws Exception {
+		_testFilter(null, false);
+	}
+
+	@Test
+	public void testFilterWithNoContextResolver() throws Exception {
+		Mockito.when(
+			_containerResponseContext.getMediaType()
+		).thenReturn(
+			MediaType.APPLICATION_JSON_TYPE
+		);
+
+		Mockito.when(
+			_providers.getContextResolver(
+				Mockito.any(Class.class), Mockito.any(MediaType.class))
+		).thenReturn(
+			null
+		);
+
+		EntityExtensionThreadLocal.setExtendedProperties(
+			Collections.singletonMap(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
+
+		_entityExtensionContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		Mockito.verify(
+			_containerResponseContext
+		).getMediaType();
+
+		Mockito.verifyNoMoreInteractions(_entityExtensionHandler);
+
+		Mockito.verify(
+			_providers
+		).getContextResolver(
+			EntityExtensionHandler.class, MediaType.APPLICATION_JSON_TYPE
+		);
+	}
+
+	@Test
+	public void testFilterWithNoExtendedProperties() throws Exception {
+		_entityExtensionContainerResponseFilter.filter(
+			_containerRequestContext, _containerResponseContext);
+
+		Mockito.verifyNoMoreInteractions(_entityExtensionHandler);
+	}
+
+	@Test
+	public void testFilterWithPatchMethod() throws Exception {
+		_testFilter(HttpMethod.PATCH, true);
+	}
+
+	private void _testFilter(String method, boolean partialUpdate)
+		throws Exception {
+
 		Long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			_company.getCompanyId()
 		).thenReturn(
 			companyId
+		);
+
+		Mockito.when(
+			_containerRequestContext.getMethod()
+		).thenReturn(
+			method
 		);
 
 		Mockito.when(
@@ -147,7 +208,7 @@ public class EntityExtensionContainerResponseFilterTest {
 		Mockito.verify(
 			_entityExtensionHandler
 		).setExtendedProperties(
-			companyId, userId, _TEST_ENTITY, extendedProperties, false
+			companyId, userId, _TEST_ENTITY, extendedProperties, partialUpdate
 		);
 
 		Mockito.verifyNoMoreInteractions(_entityExtensionHandler);
@@ -157,49 +218,6 @@ public class EntityExtensionContainerResponseFilterTest {
 		).getContextResolver(
 			EntityExtensionHandler.class, MediaType.APPLICATION_JSON_TYPE
 		);
-	}
-
-	@Test
-	public void testFilterWithNoContextResolver() throws Exception {
-		Mockito.when(
-			_containerResponseContext.getMediaType()
-		).thenReturn(
-			MediaType.APPLICATION_JSON_TYPE
-		);
-
-		Mockito.when(
-			_providers.getContextResolver(
-				Mockito.any(Class.class), Mockito.any(MediaType.class))
-		).thenReturn(
-			null
-		);
-
-		EntityExtensionThreadLocal.setExtendedProperties(
-			Collections.singletonMap(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
-
-		_entityExtensionContainerResponseFilter.filter(
-			_containerRequestContext, _containerResponseContext);
-
-		Mockito.verify(
-			_containerResponseContext
-		).getMediaType();
-
-		Mockito.verifyNoMoreInteractions(_entityExtensionHandler);
-
-		Mockito.verify(
-			_providers
-		).getContextResolver(
-			EntityExtensionHandler.class, MediaType.APPLICATION_JSON_TYPE
-		);
-	}
-
-	@Test
-	public void testFilterWithNoExtendedProperties() throws Exception {
-		_entityExtensionContainerResponseFilter.filter(
-			_containerRequestContext, _containerResponseContext);
-
-		Mockito.verifyNoMoreInteractions(_entityExtensionHandler);
 	}
 
 	private static final TestEntity _TEST_ENTITY = new TestEntity();
