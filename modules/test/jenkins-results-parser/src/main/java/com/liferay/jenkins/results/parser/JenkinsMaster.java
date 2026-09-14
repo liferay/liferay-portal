@@ -208,7 +208,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public String executeBashCommand(String command) {
-		return _executeBashCommand(command, _SSH_COMMAND_TIMEOUT, _SSH_OPTIONS);
+		return _executeBashCommand(
+			command, _SSH_COMMAND_TIMEOUT,
+			_getSSHOptions(_SSH_CONNECT_TIMEOUT_SECONDS));
 	}
 
 	public String executeBashCommand(String command, long timeout) {
@@ -216,7 +218,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			throw new IllegalArgumentException("Invalid timeout: " + timeout);
 		}
 
-		return _executeBashCommand(command, timeout, _getSSHOptions(timeout));
+		return _executeBashCommand(
+			command, timeout, _getSSHOptions(timeout / 2000));
 	}
 
 	public List<JenkinsUser.APIToken> getAPITokens(String jenkinsUserName) {
@@ -1659,7 +1662,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		String sourceFilePath, String targetFilePath) {
 
 		String scpCommand = JenkinsResultsParserUtil.combine(
-			"scp ", _SSH_OPTIONS, " ", sourceFilePath, " ", targetFilePath);
+			"scp ", _getSSHOptions(_SSH_CONNECT_TIMEOUT_SECONDS), " ",
+			sourceFilePath, " ", targetFilePath);
 
 		Process process = null;
 
@@ -1887,12 +1891,14 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return recentBatchSizesTotal;
 	}
 
-	private String _getSSHOptions(long timeout) {
-		long connectTimeout = Math.max(1, timeout / 2000);
+	private String _getSSHOptions(long connectTimeoutSeconds) {
+		if (connectTimeoutSeconds <= 0) {
+			return _SSH_OPTIONS_BASE;
+		}
 
 		return JenkinsResultsParserUtil.combine(
-			"-o ConnectTimeout=", String.valueOf(connectTimeout),
-			" -o NumberOfPasswordPrompts=0");
+			"-o ConnectTimeout=", String.valueOf(connectTimeoutSeconds), " ",
+			_SSH_OPTIONS_BASE);
 	}
 
 	private int _getUsableNodesCount(String labelExpression) {
@@ -2048,8 +2054,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	private static final long _SSH_COMMAND_TIMEOUT = 1000 * 60 * 5;
 
-	private static final String _SSH_OPTIONS =
-		"-o ConnectTimeout=60 -o NumberOfPasswordPrompts=0";
+	private static final long _SSH_CONNECT_TIMEOUT_SECONDS = 60;
+
+	private static final String _SSH_OPTIONS_BASE =
+		"-o NumberOfPasswordPrompts=0";
 
 	private static final String _SSH_USER_NAME = "root";
 
