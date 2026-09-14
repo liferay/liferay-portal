@@ -5,8 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.util;
 
-import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -41,19 +39,6 @@ public class SiteInitializerUtil {
 	public static void initialize(
 			long companyId, SiteInitializer siteInitializer)
 		throws PortalException {
-
-		for (String externalReferenceCode :
-				_CONTENT_TYPE_EXTERNAL_REFERENCE_CODES) {
-
-			ObjectDefinition objectDefinition =
-				ObjectDefinitionLocalServiceUtil.
-					fetchObjectDefinitionByExternalReferenceCode(
-						externalReferenceCode, companyId);
-
-			if (objectDefinition == null) {
-				return;
-			}
-		}
 
 		Group group = GroupLocalServiceUtil.getGroup(
 			companyId, GroupConstants.CMS);
@@ -136,10 +121,5 @@ public class SiteInitializerUtil {
 
 		return adminUsers.get(0);
 	}
-
-	private static final String[] _CONTENT_TYPE_EXTERNAL_REFERENCE_CODES = {
-		"L_CMS_BASIC_DOCUMENT", "L_CMS_BASIC_WEB_CONTENT", "L_CMS_BLOG",
-		"L_CMS_EXTERNAL_VIDEO"
-	};
 
 }
