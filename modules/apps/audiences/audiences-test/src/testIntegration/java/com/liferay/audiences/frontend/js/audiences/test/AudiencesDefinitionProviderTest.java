@@ -9,20 +9,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.model.AudiencesEntryGroupRel;
+import com.liferay.audiences.service.AudiencesEntryGroupRelLocalService;
 import com.liferay.audiences.service.AudiencesEntryLocalService;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.frontend.js.audiences.AudiencesDefinition;
 import com.liferay.frontend.js.audiences.AudiencesDefinitionProvider;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.Objects;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -110,6 +121,97 @@ public class AudiencesDefinitionProviderTest {
 			objectMapper.readTree(content));
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-85746"))
+	@Test
+	@TestInfo("LPD-105673")
+	public void testGetAudiencesDefinitionWithScope() throws Exception {
+		AudiencesEntry audiencesEntry1 =
+			_audiencesEntryLocalService.addAudiencesEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
+				RandomTestUtil.randomString());
+
+		AudiencesEntry audiencesEntry2 =
+			_audiencesEntryLocalService.addAudiencesEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
+				RandomTestUtil.randomString());
+
+		Group group1 = GroupTestUtil.addGroup();
+		Group group2 = GroupTestUtil.addGroup();
+
+		_addAudiencesEntryGroupRel(audiencesEntry1, group1);
+		_addAudiencesEntryGroupRel(audiencesEntry1, group2);
+
+		audiencesEntry1 = _audiencesEntryLocalService.updateAudiencesEntry(
+			audiencesEntry1);
+
+		JSONObject jsonObject1 = _getAudienceJSONObject(audiencesEntry1);
+
+		JSONArray scopeJSONArray = jsonObject1.getJSONArray("scope");
+
+		Assert.assertEquals(
+			scopeJSONArray.toString(), 2, scopeJSONArray.length());
+
+		Set<Long> groupIds = JSONUtil.toLongSet(scopeJSONArray);
+
+		Assert.assertTrue(
+			groupIds.toString(), groupIds.contains(group1.getGroupId()));
+		Assert.assertTrue(
+			groupIds.toString(), groupIds.contains(group2.getGroupId()));
+
+		JSONObject jsonObject2 = _getAudienceJSONObject(audiencesEntry2);
+
+		Assert.assertFalse(jsonObject2.toString(), jsonObject2.has("scope"));
+	}
+
+	private AudiencesEntryGroupRel _addAudiencesEntryGroupRel(
+			AudiencesEntry audiencesEntry, Group group)
+		throws Exception {
+
+		AudiencesEntryGroupRel audiencesEntryGroupRel =
+			_audiencesEntryGroupRelLocalService.createAudiencesEntryGroupRel(
+				_counterLocalService.increment());
+
+		audiencesEntryGroupRel.setCompanyId(audiencesEntry.getCompanyId());
+		audiencesEntryGroupRel.setUserId(TestPropsValues.getUserId());
+		audiencesEntryGroupRel.setAudienceEntryERC(
+			audiencesEntry.getExternalReferenceCode());
+		audiencesEntryGroupRel.setGroupERC(group.getExternalReferenceCode());
+
+		return _audiencesEntryGroupRelLocalService.addAudiencesEntryGroupRel(
+			audiencesEntryGroupRel);
+	}
+
+	private JSONObject _getAudienceJSONObject(AudiencesEntry audiencesEntry)
+		throws Exception {
+
+		AudiencesDefinition audiencesDefinition =
+			_audiencesDefinitionProvider.getAudiencesDefinition(
+				TestPropsValues.getCompanyId());
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			audiencesDefinition.getContent());
+
+		JSONArray jsonArray = jsonObject.getJSONArray("audiences");
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject audienceJSONObject = jsonArray.getJSONObject(i);
+
+			if (Objects.equals(
+					audiencesEntry.getExternalReferenceCode(),
+					audienceJSONObject.getString("id"))) {
+
+				return audienceJSONObject;
+			}
+		}
+
+		throw new AssertionError(
+			StringBundler.concat(
+				"Audience ", audiencesEntry.getExternalReferenceCode(),
+				" is absent from ", jsonObject));
+	}
+
 	private String _getCriteriaJSON(String attribute) {
 		return JSONUtil.put(
 			"conjunction", "AND"
@@ -139,6 +241,13 @@ public class AudiencesDefinitionProviderTest {
 	private AudiencesDefinitionProvider _audiencesDefinitionProvider;
 
 	@Inject
+	private AudiencesEntryGroupRelLocalService
+		_audiencesEntryGroupRelLocalService;
+
+	@Inject
 	private AudiencesEntryLocalService _audiencesEntryLocalService;
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 }
