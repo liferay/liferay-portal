@@ -790,6 +790,11 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.8.0", "13.8.1",
 			new com.liferay.object.internal.upgrade.v13_8_1.
 				SchemaUpgradeProcess());
+
+		registry.register(
+			"13.8.1", "13.9.0",
+			UpgradeProcessFactory.addColumns(
+				"ObjectField", "description STRING null"));
 	}
 
 	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {
