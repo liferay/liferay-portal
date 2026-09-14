@@ -285,6 +285,20 @@ describe('RestrictFieldsModal', () => {
 		expect(onClose).toHaveBeenCalledTimes(1);
 	});
 
+	it('moves the focus to the first field when deselect all removes its button', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal();
+
+		await userEvent.click(await findCheckbox('description'));
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'deselect-all'})
+		);
+
+		expect(screen.getAllByRole('treeitem')[0]).toHaveFocus();
+	});
+
 	it('preselects the restricted fields of the profile tool with their descendants', async () => {
 		fetch.mockResponseOnce(JSON.stringify(mockTool));
 
