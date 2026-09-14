@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ReleaseLocalServiceUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.util.TreeMapBuilder;
 import java.sql.ResultSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -172,6 +174,8 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			databaseTableNames, dbInspector, errorMessagesMap, warnMessagesMap);
 		_verifyIndexes(
 			databaseTableNames, dbInspector, errorMessagesMap, warnMessagesMap);
+
+		_verifyPrimaryKeys(databaseTableNames, dbInspector, errorMessagesMap);
 
 		Set<String> servletContextNames = new TreeSet<>(
 			errorMessagesMap.keySet());
@@ -659,6 +663,86 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			warnMessagesMap, warnIndexMessagesMap, tablesServletContextNames);
 	}
 
+	private void _verifyPrimaryKeys(
+			Set<String> databaseTableNames, DBInspector dbInspector,
+			Map<String, List<String>> errorMessagesMap)
+		throws Exception {
+
+		Map<String, List<String>> errorPrimaryKeyMessagesMap =
+			new ConcurrentSkipListMap<>();
+		Map<String, String> tablesServletContextNames =
+			_tablesServletContextNamesDCLSingleton.getSingleton(
+				DBResourceUtil::getTablesServletContextNames);
+
+		processConcurrently(
+			_primaryKeyColumnNamesMapDCLSingleton.getSingleton(
+				() -> _getDefinitionsMap(
+					DBResourceUtil::getModuleTablesPrimaryKeyColumnNames,
+					DBResourceUtil.getPortalTablesPrimaryKeyColumnNames())),
+			entry -> {
+				String tableName = entry.getKey();
+
+				String servletContextName = tablesServletContextNames.get(
+					tableName);
+
+				if ((servletContextName == null) ||
+					!databaseTableNames.contains(tableName)) {
+
+					return;
+				}
+
+				String[] databasePrimaryKeyColumnNames =
+					getPrimaryKeyColumnNames(connection, tableName);
+				List<String> expectedPrimaryKeyColumnNames =
+					TransformUtil.transform(
+						Arrays.asList(entry.getValue()),
+						dbInspector::normalizeName);
+				String normalizedTableName = dbInspector.normalizeName(
+					tableName);
+
+				if (ArrayUtil.isEmpty(databasePrimaryKeyColumnNames)) {
+					List<String> messages =
+						errorPrimaryKeyMessagesMap.computeIfAbsent(
+							tableName, key -> new ArrayList<>());
+
+					messages.add(
+						_getMessage(
+							StringBundler.concat(
+								"Missing primary key was detected for ",
+								normalizedTableName, " table: ",
+								expectedPrimaryKeyColumnNames),
+							servletContextName));
+
+					return;
+				}
+
+				if (ArrayUtil.equalsIgnoreCase(
+						databasePrimaryKeyColumnNames, entry.getValue())) {
+
+					return;
+				}
+
+				List<String> messages =
+					errorPrimaryKeyMessagesMap.computeIfAbsent(
+						tableName, key -> new ArrayList<>());
+
+				messages.add(
+					_getMessage(
+						StringBundler.concat(
+							"Primary key ",
+							Arrays.toString(databasePrimaryKeyColumnNames),
+							" is not defined as ",
+							expectedPrimaryKeyColumnNames, " for ",
+							normalizedTableName, " table"),
+						servletContextName));
+			},
+			null);
+
+		_addTableMessages(
+			errorMessagesMap, errorPrimaryKeyMessagesMap,
+			tablesServletContextNames);
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		PostupgradeVerifyDatabaseState.class);
 
@@ -670,6 +754,8 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			new DCLSingleton<>();
 	private final DCLSingleton<Map<String, List<IndexMetadata>>>
 		_indexMetadatasMapDCLSingleton = new DCLSingleton<>();
+	private final DCLSingleton<Map<String, String[]>>
+		_primaryKeyColumnNamesMapDCLSingleton = new DCLSingleton<>();
 	private final DCLSingleton<Map<String, String>>
 		_tablesServletContextNamesDCLSingleton = new DCLSingleton<>();
 	private final List<String> _warnMessages = new ArrayList<>();
