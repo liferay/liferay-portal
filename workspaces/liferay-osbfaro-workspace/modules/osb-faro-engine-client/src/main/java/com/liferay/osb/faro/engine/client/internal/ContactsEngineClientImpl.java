@@ -1080,7 +1080,7 @@ public class ContactsEngineClientImpl
 		uriVariables.put("channelId", channelId);
 
 		PagedModel<?, AcquisitionParameter> pagedModel = get(
-			faroProject, Rels.SESSION_ACQUISITION_PARAMETERS,
+			faroProject, Rels.SESSION_ACQUISITION_PROPERTIES,
 			new ParameterizedTypeReference
 				<EntityModelPagedModel<AcquisitionParameter>>() {
 			},
