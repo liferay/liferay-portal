@@ -720,7 +720,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editShippingMethod(shippingOptionSettingsWarehouse = null, shippingOptionSettingsPriceUnitWeight = null, shippingOptionSettingsRegion = null, shippingOptionSettingsWeightFrom = null, trackingURL = null, shippingMethod = null, configureShippingOption = null, description = null, active = null, priority = null, shippingOptionSettingsZip = null, shippingOptionSettingsCountry = null, shippingOptionSettingsWeightTo = null, name = null, shippingOptionSettingsFixedPrice = null, shippingOptions = null, shippingOptionSettingsSubtotal = null) {
+	macro editShippingMethod(shippingOptionSettingsPriceUnitWeight = null, shippingOptionSettingsRegion = null, shippingOptionSettingsWeightFrom = null, trackingURL = null, shippingMethod = null, configureShippingOption = null, description = null, active = null, priority = null, shippingOptionSettingsZip = null, shippingOptionSettingsCountry = null, shippingOptionSettingsWeightTo = null, name = null, shippingOptionSettingsFixedPrice = null, shippingOptions = null, shippingOptionSettingsSubtotal = null) {
 		CommerceEntry.clickTableEntryEditButton(
 			entryName = ${shippingMethod},
 			table = "Shipping Methods");
@@ -771,8 +771,6 @@ definition {
 			}
 
 			if (isSet(configureShippingOption) && (${configureShippingOption} == "true")) {
-				CommerceEntry.gotoMenuTab(menuTab = "Shipping Option Settings");
-
 				for (var shippingOption : list ${shippingOptions}) {
 					CommerceEntry.addShippingOptionSettingsVariableRate(
 						country = ${shippingOptionSettingsCountry},
@@ -781,10 +779,15 @@ definition {
 						region = ${shippingOptionSettingsRegion},
 						shippingOption = ${shippingOption},
 						subtotal = ${shippingOptionSettingsSubtotal},
-						warehouse = ${shippingOptionSettingsWarehouse},
 						weightFrom = ${shippingOptionSettingsWeightFrom},
 						weightTo = ${shippingOptionSettingsWeightTo},
 						zip = ${shippingOptionSettingsZip});
+
+					Click(locator1 = "Icon#CLOSE");
+
+					SelectFrame.selectFrameTop();
+
+					SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 				}
 			}
 		}

@@ -632,7 +632,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addShippingOptionSettingsVariableRate(zip = null, country = null, subtotal = null, warehouse = null, region = null, shippingOption = null) {
+	macro addShippingOptionSettingsVariableRate(zip = null, country = null, subtotal = null, region = null, shippingOption = null) {
 		Variables.assertDefined(parameterList = ${shippingOption});
 
 		if (!(isSet(fixedPrice))) {
@@ -651,21 +651,11 @@ definition {
 			var weightTo = 100;
 		}
 
+		CommerceEntry.gotoShippingOptionSettings(shippingOption = ${shippingOption});
+
 		Click(locator1 = "Button#PLUS");
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Select(
-			key_fieldLabel = "Shipping Option",
-			locator1 = "Select#GENERIC_SELECT_FIELD",
-			value1 = ${shippingOption});
-
-		if (isSet(warehouse)) {
-			Select(
-				key_fieldLabel = "Warehouse",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = ${warehouse});
-		}
 
 		if (isSet(country)) {
 			Select(
@@ -721,9 +711,7 @@ definition {
 
 		Click(locator1 = "Icon#CLOSE");
 
-		SelectFrame.selectFrameTop();
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+		SelectFrameParent();
 	}
 
 	@summary = "Default summary"
@@ -1535,6 +1523,19 @@ definition {
 			key_nestedMenu = ${nestedMenu},
 			locator1 = "CommerceEntry#NESTED_MENU",
 			value1 = ${nestedMenu});
+	}
+
+	@summary = "Open the Shipping Option Settings tab of a shipping option from the shipping method's Shipping Options tab"
+	macro gotoShippingOptionSettings(shippingOption = null) {
+		CommerceNavigator.gotoEntry(entryName = ${shippingOption});
+
+		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
+
+		Click(
+			key_panel = "Details",
+			locator1 = "Panel#PANEL_COLLAPSED");
+
+		CommerceEntry.gotoMenuTab(menuTab = "Shipping Option Settings");
 	}
 
 	@summary = "Default summary"

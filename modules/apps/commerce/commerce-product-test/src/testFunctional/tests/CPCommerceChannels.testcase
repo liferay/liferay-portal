@@ -261,8 +261,6 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-		CommerceEntry.gotoMenuTab(menuTab = "Shipping Option Settings");
-
 		CommerceEntry.addShippingOptionSettingsVariableRate(
 			country = "Italy",
 			fixedPrice = 1,
@@ -270,12 +268,13 @@ definition {
 			region = "Roma",
 			shippingOption = "Standard",
 			subtotal = 1,
-			warehouse = "Italy",
 			weightFrom = 1,
 			weightTo = 1,
 			zip = 0100);
 
-		Alert.viewSuccessMessage();
+		AssertElementPresent(
+			key_entryName = "Standard",
+			locator1 = "CommerceNavigation#ENTRY_NAME");
 	}
 
 	@description = "This is a test for COMMERCE-6110. AddShippingOptionVariableRate"
@@ -1902,8 +1901,6 @@ definition {
 
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
-		CommerceEntry.gotoMenuTab(menuTab = "Shipping Option Settings");
-
 		CommerceEntry.addShippingOptionSettingsVariableRate(
 			country = "Italy",
 			fixedPrice = 1,
@@ -1911,7 +1908,6 @@ definition {
 			region = "Roma",
 			shippingOption = "Standard",
 			subtotal = 1,
-			warehouse = "Italy",
 			weightFrom = 1,
 			weightTo = 1,
 			zip = 0100);
