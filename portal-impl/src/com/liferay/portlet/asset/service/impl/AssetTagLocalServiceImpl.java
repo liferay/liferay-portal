@@ -279,12 +279,6 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 		return null;
 	}
 
-	/**
-	 * Returns the number of asset tags in the company.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @return the number of asset tags in the company
-	 */
 	@Override
 	public int getCompanyTagsCount(long companyId) {
 		return assetTagPersistence.countByCompanyId(companyId);
