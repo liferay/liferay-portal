@@ -65,7 +65,7 @@ function countSearchRequests(page: Page) {
 
 test(
 	'Searches once for a burst of keystrokes when search as you type is enabled',
-	{tag: '@LPD-89786'},
+	{tag: ['@LPD-104887', '@LPD-89786']},
 	async ({dataSetFragmentPage, dataSetManagerApiHelpers, layout, page}) => {
 		await test.step('Enable search as you type', async () => {
 			await dataSetManagerApiHelpers.updateDataSet({
@@ -91,13 +91,21 @@ test(
 
 		await test.step('Only the final keyword is requested', async () => {
 			await expect.poll(() => searches).toEqual(['abc']);
+
+			await expect(dataSetFragmentPage.emptyStateTitle).toBeVisible();
+		});
+
+		await test.step('Clearing the box brings the results back', async () => {
+			await dataSetFragmentPage.searchInput.clear();
+
+			await expect(dataSetFragmentPage.table.bodyRows).toHaveCount(1);
 		});
 	}
 );
 
 test(
 	'Searches only on Enter when search as you type is disabled',
-	{tag: '@LPD-89786'},
+	{tag: ['@LPD-104887', '@LPD-89786']},
 	async ({dataSetFragmentPage, layout, page}) => {
 		await test.step('Configure Data Set in the page', async () => {
 			await dataSetFragmentPage.configureDataSetFragment({
@@ -122,6 +130,22 @@ test(
 			await dataSetFragmentPage.searchInput.press('Enter');
 
 			await expect.poll(() => searches).toEqual(['abc']);
+
+			await expect(dataSetFragmentPage.emptyStateTitle).toBeVisible();
+		});
+
+		await test.step('Clearing the box alone leaves the results filtered', async () => {
+			await dataSetFragmentPage.searchInput.clear();
+
+			await page.waitForTimeout(1000);
+
+			await expect(dataSetFragmentPage.emptyStateTitle).toBeVisible();
+		});
+
+		await test.step('Enter on the empty box brings the results back', async () => {
+			await dataSetFragmentPage.searchInput.press('Enter');
+
+			await expect(dataSetFragmentPage.table.bodyRows).toHaveCount(1);
 		});
 	}
 );
