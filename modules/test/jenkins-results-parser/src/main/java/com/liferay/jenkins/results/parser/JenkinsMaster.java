@@ -212,6 +212,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public String executeBashCommand(String command, long timeout) {
+		if (timeout <= 0) {
+			throw new IllegalArgumentException("Invalid timeout: " + timeout);
+		}
+
 		return _executeBashCommand(command, timeout, _getSSHOptions(timeout));
 	}
 
