@@ -171,6 +171,35 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testExecuteBashCommandTimeoutNotPositive() throws Exception {
+		Shell shell = mockShell();
+
+		String command = "cat " + RandomTestUtil.randomString();
+
+		setShellCommandOutput(command, shell, RandomTestUtil.randomString());
+
+		for (long timeout : new long[] {0, -1, Long.MIN_VALUE}) {
+			try {
+				_jenkinsMaster.executeBashCommand(command, timeout);
+
+				Assert.fail(String.valueOf(timeout));
+			}
+			catch (IllegalArgumentException illegalArgumentException) {
+				String message = illegalArgumentException.getMessage();
+
+				Assert.assertTrue(
+					message, message.contains("Invalid timeout: " + timeout));
+			}
+		}
+
+		Mockito.verify(
+			shell, Mockito.never()
+		).doExecute(
+			Mockito.any(Shell.ExecutionRequest.class)
+		);
+	}
+
+	@Test
 	public void testGetAvailableSlavesCount() {
 		int availableSlavesCount = _jenkinsMaster.getAvailableSlavesCount(null);
 
