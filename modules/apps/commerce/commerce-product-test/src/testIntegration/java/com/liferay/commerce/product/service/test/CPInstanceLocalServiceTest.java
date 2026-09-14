@@ -694,36 +694,9 @@ public class CPInstanceLocalServiceTest {
 				cpDefinition.getCPDefinitionId()));
 	}
 
-	@Test(expected = CPInstanceReplacementCPInstanceUuidException.class)
-	public void testUpdateCPInstanceReplacementCPInstanceLoop()
-		throws Exception {
-
-		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
-			_commerceCatalog.getGroupId());
-		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
-			_commerceCatalog.getGroupId());
-		CPInstance cpInstance3 = CPTestUtil.addCPInstanceFromCatalog(
-			_commerceCatalog.getGroupId());
-
-		_updateReplacementCPInstance(cpInstance1, cpInstance2);
-		_updateReplacementCPInstance(cpInstance2, cpInstance3);
-
-		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
-
-		Calendar calendar = CalendarFactoryUtil.getCalendar();
-
-		_cpInstanceLocalService.updateCPInstance(
-			cpInstance3.getExternalReferenceCode(),
-			cpInstance3.getCPInstanceId(), cpInstance3.getSku(), null, null,
-			false, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
-			BigDecimal.ZERO, false, calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
-			calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-			0, 0, 0, 0, 0, true, false, false, 0, null, null, 0, false, 0, null,
-			null, 0, null, true, cpInstance1.getCPInstanceUuid(),
-			cpDefinition1.getCProductId(), calendar.get(Calendar.MONTH),
-			calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
-			ServiceContextTestUtil.getServiceContext(cpInstance3.getGroupId()));
+	@Test
+	public void testUpdateCPInstance() throws Exception {
+		_testUpdateCPInstanceReplacementCPInstanceLoop();
 	}
 
 	@Rule
@@ -826,19 +799,63 @@ public class CPInstanceLocalServiceTest {
 		}
 	}
 
-	private void _updateReplacementCPInstance(
-			CPInstance cpInstance, CPInstance replacementCPInstance)
+	private void _testUpdateCPInstanceReplacementCPInstanceLoop()
 		throws Exception {
 
-		CPDefinition replacementCPDefinition =
-			replacementCPInstance.getCPDefinition();
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
 
-		cpInstance.setReplacementCPInstanceUuid(
-			replacementCPInstance.getCPInstanceUuid());
-		cpInstance.setReplacementCProductId(
-			replacementCPDefinition.getCProductId());
+		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
 
-		_cpInstanceLocalService.updateCPInstance(cpInstance);
+		CPDefinition cpDefinition2 = cpInstance2.getCPDefinition();
+
+		cpInstance1.setReplacementCPInstanceUuid(
+			cpInstance2.getCPInstanceUuid());
+
+		cpInstance1.setReplacementCProductId(cpDefinition2.getCProductId());
+
+		cpInstance1 = _cpInstanceLocalService.updateCPInstance(cpInstance1);
+
+		CPInstance cpInstance3 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition3 = cpInstance3.getCPDefinition();
+
+		cpInstance2.setReplacementCPInstanceUuid(
+			cpInstance3.getCPInstanceUuid());
+
+		cpInstance2.setReplacementCProductId(cpDefinition3.getCProductId());
+
+		_cpInstanceLocalService.updateCPInstance(cpInstance2);
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
+
+		try {
+			_cpInstanceLocalService.updateCPInstance(
+				cpInstance3.getExternalReferenceCode(),
+				cpInstance3.getCPInstanceId(), cpInstance3.getSku(), null, null,
+				false, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
+				BigDecimal.ZERO, false, calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, false,
+				false, 0, null, null, 0, false, 0, null, null, 0, null, true,
+				cpInstance1.getCPInstanceUuid(), cpDefinition1.getCProductId(),
+				calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
+				calendar.get(Calendar.YEAR),
+				ServiceContextTestUtil.getServiceContext(
+					cpInstance3.getGroupId()));
+
+			Assert.fail();
+		}
+		catch (CPInstanceReplacementCPInstanceUuidException
+					cpInstanceReplacementCPInstanceUuidException) {
+
+			Assert.assertNotNull(cpInstanceReplacementCPInstanceUuidException);
+		}
 	}
 
 	private static Company _company;
