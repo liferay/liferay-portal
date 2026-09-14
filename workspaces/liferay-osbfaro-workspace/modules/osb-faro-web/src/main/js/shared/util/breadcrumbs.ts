@@ -116,41 +116,6 @@ export const getAssets = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
 	label: Liferay.Language.get('assets'),
 });
 
-export const getBlogs = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
-	href: toRoute(Routes.ASSETS_BLOGS, {channelId, groupId}),
-	label: Liferay.Language.get('blogs'),
-});
-
-export const getDocumentsAndMedia = ({
-	channelId,
-	groupId,
-}: IBasicSidebarRouteArgs) => ({
-	href: toRoute(Routes.ASSETS_DOCUMENTS_AND_MEDIA, {
-		channelId,
-		groupId,
-	}),
-	label: Liferay.Language.get('documents-and-media'),
-});
-
-export const getForms = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
-	href: toRoute(Routes.ASSETS_FORMS, {
-		channelId,
-		groupId,
-	}),
-	label: Liferay.Language.get('forms'),
-});
-
-export const getWebContent = ({
-	channelId,
-	groupId,
-}: IBasicSidebarRouteArgs) => ({
-	href: toRoute(Routes.ASSETS_WEB_CONTENT, {
-		channelId,
-		groupId,
-	}),
-	label: Liferay.Language.get('web-content'),
-});
-
 /**
  * Settings
  */

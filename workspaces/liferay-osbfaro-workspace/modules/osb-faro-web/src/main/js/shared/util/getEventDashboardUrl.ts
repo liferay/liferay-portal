@@ -1,35 +1,29 @@
 import {AssetTypes} from 'shared/util/constants';
+import {getAssetDescriptorByRESTType} from 'assets/descriptors';
 import {RangeSelectors} from 'shared/types';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {UserSessionEvent} from 'shared/queries/UserSessionQuery';
 
 /**
- * Maps an event's `applicationId` to the asset dashboard route, the trailing
- * `:type` segment value, and the event property that holds the asset id (which
- * varies by asset type — e.g. `articleId` for web content, `formId` for forms).
+ * Maps an event's `applicationId` to the trailing `:type` segment value and the
+ * event property that holds the asset id (which varies by asset type — e.g.
+ * `articleId` for web content, `formId` for forms).
  */
-const ASSET_APPLICATIONS: Record<
-	string,
-	{idProperty: string; route: string; type: string}
-> = {
+const ASSET_APPLICATIONS: Record<string, {idProperty: string; type: string}> = {
 	[AssetTypes.Blog]: {
 		idProperty: 'entryId',
-		route: Routes.ASSETS_BLOGS_OVERVIEW,
 		type: 'blog',
 	},
 	[AssetTypes.Document]: {
 		idProperty: 'fileEntryId',
-		route: Routes.ASSETS_DOCUMENTS_AND_MEDIA_OVERVIEW,
 		type: 'document',
 	},
 	[AssetTypes.Form]: {
 		idProperty: 'formId',
-		route: Routes.ASSETS_FORMS_OVERVIEW,
 		type: 'form',
 	},
 	[AssetTypes.WebContent]: {
 		idProperty: 'articleId',
-		route: Routes.ASSETS_WEB_CONTENT_OVERVIEW,
 		type: 'webContent',
 	},
 };
@@ -125,8 +119,9 @@ export const getEventDashboardUrl = (
 
 		const title = event.assetTitle || event.pageTitle;
 
-		return link(assetApplication.route, {
+		return link(Routes.ASSETS_DASHBOARD_OVERVIEW, {
 			assetId,
+			assetType: getAssetDescriptorByRESTType(assetApplication.type).slug,
 			channelId,
 			groupId,
 			touchpoint: 'Any',
@@ -145,8 +140,9 @@ export const getEventDashboardUrl = (
 
 		const title = event.assetTitle || event.pageTitle;
 
-		return link(Routes.ASSETS_OBJECT_ENTRY_OVERVIEW, {
+		return link(Routes.ASSETS_DASHBOARD_OVERVIEW, {
 			assetId,
+			assetType: 'object-entry',
 			channelId,
 			groupId,
 			touchpoint: 'Any',

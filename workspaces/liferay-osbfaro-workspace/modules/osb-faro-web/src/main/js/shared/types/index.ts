@@ -115,6 +115,12 @@ export interface RESTParams {
 export type Router = {
 	params: {
 		assetId?: string;
+
+		/**
+		 * The asset dashboard slug — `blogs`, `web-content`, and so on.
+		 */
+		assetType?: string;
+
 		channelId?: string;
 		groupId?: string;
 		id?: string;

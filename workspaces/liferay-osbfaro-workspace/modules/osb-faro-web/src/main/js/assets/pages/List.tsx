@@ -20,6 +20,7 @@ import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
 import {
 	removeUriQueryParam,
+	Routes,
 	setUriQueryValues,
 	toRoute,
 } from 'shared/util/router';
@@ -57,7 +58,7 @@ const getAssetURL = ({
 }) => {
 	const assetTitle = value || itemData.assetTitle || itemData.id;
 
-	const {routes} = getAssetDescriptorByRESTType(itemData.assetType);
+	const {slug} = getAssetDescriptorByRESTType(itemData.assetType);
 
 	const queryParams = new URLSearchParams(rangeSelectorParams);
 
@@ -77,8 +78,9 @@ const getAssetURL = ({
 		queryParams.set('segmentName', segmentName);
 	}
 
-	return `${toRoute(routes.overview, {
+	return `${toRoute(Routes.ASSETS_DASHBOARD_OVERVIEW, {
 		assetId: itemData.id,
+		assetType: slug,
 		channelId,
 		groupId,
 		touchpoint: 'Any',

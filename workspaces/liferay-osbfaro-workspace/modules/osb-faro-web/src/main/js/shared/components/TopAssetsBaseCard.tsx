@@ -16,6 +16,7 @@ import GroupByPicker, {
 import React, {useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import {AssetObjectTypes} from 'shared/util/constants';
+import {getAssetDescriptorByRESTType} from 'assets/descriptors';
 import {getMimeType} from 'assets/components/mime-type';
 import {getSafeRangeSelectors} from 'shared/util/util';
 import {ITopAsset, TopAssetMetric} from 'shared/api/assets';
@@ -41,17 +42,6 @@ const TAB_GROUP_BY_METRICS: Record<(typeof TABS)[number], GroupByMetric[]> = {
 		GroupByMetric.VIEWS,
 	],
 };
-
-const ASSET_ROUTE_MAP = {
-	blog: Routes.ASSETS_BLOGS_OVERVIEW,
-	document: Routes.ASSETS_DOCUMENTS_AND_MEDIA_OVERVIEW,
-	form: Routes.ASSETS_FORMS_OVERVIEW,
-	webContent: Routes.ASSETS_WEB_CONTENT_OVERVIEW,
-} as const;
-
-const getAssetRoute = (assetType?: string) =>
-	ASSET_ROUTE_MAP[assetType as keyof typeof ASSET_ROUTE_MAP] ??
-	Routes.ASSETS_OBJECT_ENTRY_OVERVIEW;
 
 export interface ITopAssetsRequestVariables extends SafeRangeSelectors {
 	channelId: string;
@@ -139,8 +129,11 @@ const TopAssetsTabContent: React.FC<ITopAssetsTabContentProps> = ({
 
 							const href = setUriQueryValues(
 								routeQueries,
-								toRoute(getAssetRoute(asset.assetType), {
+								toRoute(Routes.ASSETS_DASHBOARD_OVERVIEW, {
 									assetId: asset.id,
+									assetType: getAssetDescriptorByRESTType(
+										asset.assetType
+									).slug,
 									channelId,
 									groupId,
 									touchpoint: 'overview',

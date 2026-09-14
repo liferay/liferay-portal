@@ -24,22 +24,17 @@ export interface AssetDescriptor {
 
 	graphQLType: Name;
 	restType?: string;
-	routes: {
-		accounts: string;
-		knownIndividuals: string;
-		overview: string;
-	};
+
+	/**
+	 * The `:assetType` segment of the dashboard route, and the one piece of
+	 * the URL that tells the asset types apart.
+	 */
 	slug: string;
 }
 
 const OBJECT_ENTRY_DESCRIPTOR: AssetDescriptor = {
 	assetType: AssetTypes.ObjectEntry,
 	graphQLType: Name.ObjectEntry,
-	routes: {
-		accounts: Routes.ASSETS_OBJECT_ENTRY_ACCOUNTS,
-		knownIndividuals: Routes.ASSETS_OBJECT_ENTRY_KNOWN_INDIVIDUALS,
-		overview: Routes.ASSETS_OBJECT_ENTRY_OVERVIEW,
-	},
 	slug: 'object-entry',
 };
 
@@ -49,11 +44,6 @@ export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 		csvType: CSVType.Individual,
 		graphQLType: Name.Blog,
 		restType: 'blog',
-		routes: {
-			accounts: Routes.ASSETS_BLOGS_ACCOUNTS,
-			knownIndividuals: Routes.ASSETS_BLOGS_KNOWN_INDIVIDUALS,
-			overview: Routes.ASSETS_BLOGS_OVERVIEW,
-		},
 		slug: 'blogs',
 	},
 	{
@@ -61,12 +51,6 @@ export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 		csvType: CSVType.Individual,
 		graphQLType: Name.Document,
 		restType: 'document',
-		routes: {
-			accounts: Routes.ASSETS_DOCUMENTS_AND_MEDIA_ACCOUNTS,
-			knownIndividuals:
-				Routes.ASSETS_DOCUMENTS_AND_MEDIA_KNOWN_INDIVIDUALS,
-			overview: Routes.ASSETS_DOCUMENTS_AND_MEDIA_OVERVIEW,
-		},
 		slug: 'documents-and-media',
 	},
 	{
@@ -74,11 +58,6 @@ export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 		csvType: CSVType.Individual,
 		graphQLType: Name.Form,
 		restType: 'form',
-		routes: {
-			accounts: Routes.ASSETS_FORMS_ACCOUNTS,
-			knownIndividuals: Routes.ASSETS_FORMS_KNOWN_INDIVIDUALS,
-			overview: Routes.ASSETS_FORMS_OVERVIEW,
-		},
 		slug: 'forms',
 	},
 	{
@@ -86,11 +65,6 @@ export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 		csvType: CSVType.Individual,
 		graphQLType: Name.Journal,
 		restType: 'webContent',
-		routes: {
-			accounts: Routes.ASSETS_WEB_CONTENT_ACCOUNTS,
-			knownIndividuals: Routes.ASSETS_WEB_CONTENT_KNOWN_INDIVIDUALS,
-			overview: Routes.ASSETS_WEB_CONTENT_OVERVIEW,
-		},
 		slug: 'web-content',
 	},
 	OBJECT_ENTRY_DESCRIPTOR,
@@ -128,9 +102,12 @@ export const toAssetOverviewRoute = (
 	routeParams: {[key: string]: any},
 	query: {[key: string]: any}
 ) => {
-	const {routes, slug} = getAssetDescriptorByGraphQLType(graphQLType);
+	const {slug} = getAssetDescriptorByGraphQLType(graphQLType);
 
-	const route = toRoute(routes.overview, {...routeParams, assetType: slug});
+	const route = toRoute(Routes.ASSETS_DASHBOARD_OVERVIEW, {
+		...routeParams,
+		assetType: slug,
+	});
 
 	return !isEmpty(query) ? setUriQueryValues(query, route) : route;
 };

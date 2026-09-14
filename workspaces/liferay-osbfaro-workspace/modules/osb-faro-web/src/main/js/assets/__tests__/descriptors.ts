@@ -19,15 +19,40 @@ describe('ASSET_DESCRIPTORS', () => {
 		]);
 	});
 
-	it('should give every descriptor the three dashboard routes', () => {
-		ASSET_DESCRIPTORS.forEach(({assetType, graphQLType, routes, slug}) => {
+	it('should give every descriptor a known asset and graphQL type', () => {
+		ASSET_DESCRIPTORS.forEach(({assetType, graphQLType}) => {
 			expect(Object.values(AssetTypes)).toContain(assetType);
 			expect(Object.values(Name)).toContain(graphQLType);
-
-			expect(routes.accounts).toContain(`/assets/${slug}/`);
-			expect(routes.knownIndividuals).toContain(`/assets/${slug}/`);
-			expect(routes.overview).toContain(`/assets/${slug}/`);
 		});
+	});
+
+	// The five dashboards used to have a route branch each. One dynamic route
+	// serves them all now, and the slug is what keeps the URLs unchanged.
+
+	it('should build the same URLs the per type routes used to', () => {
+		const routeParams = {
+			assetId: 123,
+			channelId: 456,
+			groupId: 789,
+			title: 'Foo',
+			touchpoint: 'Any',
+		};
+
+		expect(toAssetOverviewRoute('blog', routeParams, {})).toBe(
+			'/workspace/789/456/assets/blogs/123/page/Any/Foo'
+		);
+		expect(toAssetOverviewRoute('document', routeParams, {})).toBe(
+			'/workspace/789/456/assets/documents-and-media/123/page/Any/Foo'
+		);
+		expect(toAssetOverviewRoute('form', routeParams, {})).toBe(
+			'/workspace/789/456/assets/forms/123/page/Any/Foo'
+		);
+		expect(toAssetOverviewRoute('journal', routeParams, {})).toBe(
+			'/workspace/789/456/assets/web-content/123/page/Any/Foo'
+		);
+		expect(toAssetOverviewRoute('objectEntry', routeParams, {})).toBe(
+			'/workspace/789/456/assets/object-entry/123/page/Any/Foo'
+		);
 	});
 
 	it('should not reuse a graphQL or REST type across descriptors', () => {

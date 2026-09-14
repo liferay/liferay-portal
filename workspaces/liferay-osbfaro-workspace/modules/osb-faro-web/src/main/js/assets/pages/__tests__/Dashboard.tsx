@@ -89,6 +89,7 @@ const renderDashboard = (tabId?: string, slug = 'blogs') =>
 						{
 							params: {
 								assetId: 'asset-1',
+								assetType: slug,
 								channelId: '1',
 								groupId: '2',
 								tabId,
@@ -99,7 +100,6 @@ const renderDashboard = (tabId?: string, slug = 'blogs') =>
 							query: {},
 						} as any
 					}
-					slug={slug}
 				/>
 			</MemoryRouter>
 		</Provider>
@@ -152,5 +152,15 @@ describe('AssetDashboard', () => {
 		renderDashboard('known-individuals', 'object-entry');
 
 		expect(screen.queryByTestId('download-csv')).toBeNull();
+	});
+
+	// One route matches any `:assetType`, so a slug naming no dashboard has to
+	// be turned away here rather than rendering an empty shell.
+
+	it('shows the error page for a slug that names no asset type', () => {
+		renderDashboard(undefined, 'banana');
+
+		expect(screen.queryByTestId('account-dropdown')).toBeNull();
+		expect(screen.queryByTestId('download-pdf')).toBeNull();
 	});
 });

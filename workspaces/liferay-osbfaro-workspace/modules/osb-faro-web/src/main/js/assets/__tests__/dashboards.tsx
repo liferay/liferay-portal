@@ -1,10 +1,6 @@
-import Blog from 'assets/blog/pages';
-import DocumentAndMedia from 'assets/document-and-media/pages';
-import Form from 'assets/form/pages';
+import AssetDashboard from 'assets/pages/Dashboard';
 import mockStore from 'test/mock-store';
-import ObjectEntry from 'assets/object-entry/pages';
 import React from 'react';
-import WebContent from 'assets/web-content/pages';
 
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
@@ -97,47 +93,33 @@ jest.mock('shared/hooks/useLDPEnabled', () => ({
  */
 
 const DASHBOARDS = [
-	{
-		assetType: 'blog',
-		Component: Blog,
-		label: 'Blog',
-		name: 'Blog',
-		slug: 'blog',
-	},
+	{assetType: 'blog', label: 'Blog', name: 'Blog', slug: 'blogs'},
 	{
 		assetType: 'document',
-		Component: DocumentAndMedia,
 		label: 'Document',
 		name: 'DocumentAndMedia',
-		slug: 'document',
+		slug: 'documents-and-media',
 	},
-	{
-		assetType: 'form',
-		Component: Form,
-		label: 'Form',
-		name: 'Form',
-		slug: 'form',
-	},
+	{assetType: 'form', label: 'Form', name: 'Form', slug: 'forms'},
 	{
 		assetType: 'objectEntry',
-		Component: ObjectEntry,
 		label: 'Object Entry',
 		name: 'ObjectEntry',
 		slug: 'object-entry',
 	},
 	{
 		assetType: 'journal',
-		Component: WebContent,
 		label: 'Web Content',
 		name: 'WebContent',
 		slug: 'web-content',
 	},
 ];
 
-describe.each(DASHBOARDS)('$name', ({Component, assetType, label, slug}) => {
+describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 	const router = {
 		params: {
 			assetId: '123',
+			assetType: slug,
 			channelId: '456',
 			groupId: '789',
 			title: `${label} Title`,
@@ -151,7 +133,7 @@ describe.each(DASHBOARDS)('$name', ({Component, assetType, label, slug}) => {
 		render(
 			<Provider store={mockStore()}>
 				<MemoryRouter initialEntries={initialEntries}>
-					<Component className="" router={router as any} />
+					<AssetDashboard className="" router={router as any} />
 				</MemoryRouter>
 			</Provider>
 		);

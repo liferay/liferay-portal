@@ -4,6 +4,7 @@ import BasePage from 'shared/components/base-page';
 import BundleRouter from 'route-middleware/BundleRouter';
 import DownloadCSVReport from 'shared/components/download-report/DownloadCSVReport';
 import DownloadPDFReport from 'shared/components/download-report/DownloadPDFReport';
+import ErrorPage from 'shared/pages/ErrorPage';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useState} from 'react';
@@ -12,6 +13,7 @@ import {getAssetDescriptorBySlug} from 'assets/descriptors';
 import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {pickBy} from 'lodash';
 import {Router} from 'shared/types';
+import {Routes} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
@@ -41,11 +43,11 @@ const KNOWN_INDIVIDUALS_TAB_ID = 'known-individuals';
 const AssetDashboard: React.FC<{
 	className: string;
 	router: Router;
-	slug: string;
-}> = ({className, router, slug}) => {
+}> = ({className, router}) => {
 	const {
 		params: {
 			assetId,
+			assetType: slug = '',
 			channelId = '',
 			groupId = '',
 			tabId,
@@ -55,7 +57,7 @@ const AssetDashboard: React.FC<{
 		},
 	} = router;
 
-	const {csvType, graphQLType, routes} = getAssetDescriptorBySlug(slug)!;
+	const descriptor = getAssetDescriptorBySlug(slug);
 
 	const LDPEnabled = useLDPEnabled({groupId});
 
@@ -63,21 +65,21 @@ const AssetDashboard: React.FC<{
 		{
 			exact: true,
 			label: Liferay.Language.get('overview'),
-			route: routes.overview,
+			route: Routes.ASSETS_DASHBOARD_OVERVIEW,
 		},
 		...(LDPEnabled
 			? [
 					{
 						exact: true,
 						label: Liferay.Language.get('visitors'),
-						route: routes.accounts,
+						route: Routes.ASSETS_DASHBOARD_ACCOUNTS,
 					},
 				]
 			: [
 					{
 						exact: true,
 						label: Liferay.Language.get('known-individuals'),
-						route: routes.knownIndividuals,
+						route: Routes.ASSETS_DASHBOARD_KNOWN_INDIVIDUALS,
 					},
 				]),
 	];
@@ -96,6 +98,15 @@ const AssetDashboard: React.FC<{
 	const rangeSelectorsFromQuery = useQueryRangeSelectors();
 
 	const {selectedChannel} = useChannelContext();
+
+	// The route matches any `:assetType`, so a URL naming a type that has no
+	// dashboard reaches here rather than falling through to the catch all.
+
+	if (!descriptor) {
+		return <ErrorPage />;
+	}
+
+	const {csvType, graphQLType} = descriptor;
 
 	return (
 		<BasePage
@@ -126,6 +137,7 @@ const AssetDashboard: React.FC<{
 					items={NAV_ITEMS}
 					routeParams={{
 						assetId,
+						assetType: slug,
 						channelId,
 						groupId,
 						title,

@@ -189,26 +189,8 @@ const NewAssetsList = lazy(() =>
 	import(/* webpackChunkName: "NewAssetsList" */ 'assets/pages/List')
 );
 
-const Blog = lazy(() =>
-	import(/* webpackChunkName: "Blog" */ 'assets/blog/pages')
-);
-
-const DocumentAndMedia = lazy(() =>
-	import(
-		/* webpackChunkName: "DocumentAndMedia" */ 'assets/document-and-media/pages'
-	)
-);
-
-const Form = lazy(() =>
-	import(/* webpackChunkName: "Form" */ 'assets/form/pages')
-);
-
-const WebContent = lazy(() =>
-	import(/* webpackChunkName: "WebContent" */ 'assets/web-content/pages')
-);
-
-const ObjectEntry = lazy(() =>
-	import(/* webpackChunkName: "ObjectEntry" */ 'assets/object-entry/pages')
+const AssetDashboard = lazy(() =>
+	import(/* webpackChunkName: "AssetDashboard" */ 'assets/pages/Dashboard')
 );
 
 const AppSidebarRoutes = ({LDPEnabled, currentUser, groupId}) => {
@@ -352,51 +334,11 @@ const AppSidebarRoutes = ({LDPEnabled, currentUser, groupId}) => {
 							<Route
 								element={
 									<BundleRouter
-										data={Blog}
+										data={AssetDashboard}
 										destructured={false}
 									/>
 								}
-								path=":channelId?/assets/blogs/:assetId/:tabId/:touchpoint/:title?/:type?"
-							/>
-
-							<Route
-								element={
-									<BundleRouter
-										data={DocumentAndMedia}
-										destructured={false}
-									/>
-								}
-								path=":channelId?/assets/documents-and-media/:assetId/:tabId/:touchpoint/:title?/:type?"
-							/>
-
-							<Route
-								element={
-									<BundleRouter
-										data={Form}
-										destructured={false}
-									/>
-								}
-								path=":channelId?/assets/forms/:assetId/:tabId/:touchpoint/:title?/:type?"
-							/>
-
-							<Route
-								element={
-									<BundleRouter
-										data={WebContent}
-										destructured={false}
-									/>
-								}
-								path=":channelId?/assets/web-content/:assetId/:tabId/:touchpoint/:title?/:type?"
-							/>
-
-							<Route
-								element={
-									<BundleRouter
-										data={ObjectEntry}
-										destructured={false}
-									/>
-								}
-								path=":channelId?/assets/object-entry/:assetId/:tabId/:touchpoint/:title?/:type?"
+								path=":channelId?/assets/:assetType/:assetId/:tabId/:touchpoint/:title?/:type?"
 							/>
 
 							<Route
