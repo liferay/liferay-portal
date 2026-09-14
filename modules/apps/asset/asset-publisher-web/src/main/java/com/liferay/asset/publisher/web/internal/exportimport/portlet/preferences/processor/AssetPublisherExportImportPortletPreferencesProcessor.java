@@ -43,6 +43,7 @@ import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortle
 import com.liferay.exportimport.portlet.preferences.processor.base.BaseExportImportPortletPreferencesProcessor;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -141,9 +142,13 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 					portletPreferences);
 
 			_updateExportClassTypeIds(companyId, portletPreferences);
-			_updateExportPortletPreferencesClassPKs(
-				companyId, portletPreferences, "assetVocabularyId",
-				AssetVocabulary.class.getName());
+			exportImportPortletPreferencesProcessorHelper.
+				updateExportPortletPreferencesClassPKs(
+					companyId, portletPreferences, "assetVocabularyId",
+					AssetVocabulary.class.getName(),
+					primaryKey -> _getExportReferenceValue(
+						companyId, AssetVocabulary.class.getName(),
+						GetterUtil.getLong(primaryKey)));
 			_updateExportCategoryQueryValues(companyId, portletPreferences);
 		}
 		catch (Exception exception) {
@@ -206,9 +211,12 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		try {
 			_updateImportClassTypeIds(companyId, portletPreferences);
-			_updateImportPortletPreferencesClassPKs(
-				companyId, portletPreferences, "assetVocabularyId",
-				AssetVocabulary.class);
+			exportImportPortletPreferencesProcessorHelper.
+				updateImportPortletPreferencesClassPKs(
+					companyId, portletPreferences, "assetVocabularyId",
+					portletPreferencesOldValue -> _getImportReferenceValue(
+						companyId, AssetVocabulary.class.getName(),
+						portletPreferencesOldValue));
 			_updateImportCategoryQueryValues(companyId, portletPreferences);
 		}
 		catch (Exception exception) {
@@ -536,6 +544,10 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	@Reference
 	protected StagingGroupHelper stagingGroupHelper;
 
+	private String _escapePound(String value) {
+		return StringUtil.replace(value, CharPool.POUND, "%23");
+	}
+
 	private void _exportAssetObjects(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
@@ -686,8 +698,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	}
 
 	private String _getExportReferenceValue(
-			long companyId, String className, long primaryKeyLong)
-		throws Exception {
+		long companyId, String className, long primaryKeyLong) {
 
 		String uuid = null;
 		long groupId = 0L;
@@ -733,14 +744,16 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			return null;
 		}
 
-		String groupExternalReferenceCode =
+		String groupExternalReferenceCode = _escapePound(
 			exportImportPortletPreferencesProcessorHelper.
 				getGroupExportPortletPreferencesExternalReferenceCode(
-					companyId, group.getExternalReferenceCode());
+					companyId, group.getExternalReferenceCode()));
 
 		if (Validator.isNotNull(structureKey)) {
 			return StringUtil.merge(
-				new Object[] {uuid, groupExternalReferenceCode, structureKey},
+				new Object[] {
+					uuid, groupExternalReferenceCode, _escapePound(structureKey)
+				},
 				StringPool.POUND);
 		}
 
@@ -878,8 +891,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	}
 
 	private Long _getImportReferenceValue(
-			long companyId, String className, String portletPreferencesOldValue)
-		throws Exception {
+		long companyId, String className, String portletPreferencesOldValue) {
 
 		if (Validator.isNumber(portletPreferencesOldValue)) {
 			return GetterUtil.getLong(portletPreferencesOldValue);
@@ -893,7 +905,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		}
 
 		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
-			oldValues[1], companyId);
+			_unescapePound(oldValues[1]), companyId);
 
 		if (group == null) {
 			return null;
@@ -928,7 +940,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			if ((ddmStructure == null) && (oldValues.length > 2)) {
 				ddmStructure = ddmStructureLocalService.fetchStructure(
 					groupId, portal.getClassNameId(JournalArticle.class),
-					oldValues[2], true);
+					_unescapePound(oldValues[2]), true);
 			}
 
 			if (ddmStructure != null) {
@@ -1044,6 +1056,10 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		portletPreferences.setValues(name, values);
 	}
 
+	private String _unescapePound(String value) {
+		return StringUtil.replace(value, "%23", StringPool.POUND);
+	}
+
 	private void _updateExportCategoryQueryValues(
 			long companyId, PortletPreferences portletPreferences)
 		throws Exception {
@@ -1061,10 +1077,14 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 				continue;
 			}
 
-			_updateExportPortletPreferencesClassPKs(
-				companyId, portletPreferences,
-				"queryValues" + name.substring(9),
-				AssetCategory.class.getName());
+			exportImportPortletPreferencesProcessorHelper.
+				updateExportPortletPreferencesClassPKs(
+					companyId, portletPreferences,
+					"queryValues" + name.substring(9),
+					AssetCategory.class.getName(),
+					primaryKey -> _getExportReferenceValue(
+						companyId, AssetCategory.class.getName(),
+						GetterUtil.getLong(primaryKey)));
 		}
 	}
 
@@ -1115,10 +1135,14 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			long companyId, PortletPreferences portletPreferences)
 		throws Exception {
 
-		_updateExportPortletPreferencesClassPKs(
-			companyId, portletPreferences,
-			"classTypeIdsJournalArticleAssetRendererFactory",
-			DDMStructure.class.getName());
+		exportImportPortletPreferencesProcessorHelper.
+			updateExportPortletPreferencesClassPKs(
+				companyId, portletPreferences,
+				"classTypeIdsJournalArticleAssetRendererFactory",
+				DDMStructure.class.getName(),
+				primaryKey -> _getExportReferenceValue(
+					companyId, DDMStructure.class.getName(),
+					GetterUtil.getLong(primaryKey)));
 
 		long anyAssetType = GetterUtil.getLong(
 			portletPreferences.getValue("anyAssetType", null));
@@ -1128,9 +1152,13 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 				portal.getClassName(anyAssetType),
 				JournalArticle.class.getName())) {
 
-			_updateExportPortletPreferencesClassPKs(
-				companyId, portletPreferences, "classTypeIds",
-				DDMStructure.class.getName());
+			exportImportPortletPreferencesProcessorHelper.
+				updateExportPortletPreferencesClassPKs(
+					companyId, portletPreferences, "classTypeIds",
+					DDMStructure.class.getName(),
+					primaryKey -> _getExportReferenceValue(
+						companyId, DDMStructure.class.getName(),
+						GetterUtil.getLong(primaryKey)));
 		}
 	}
 
@@ -1424,44 +1452,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		return portletPreferences;
 	}
 
-	private void _updateExportPortletPreferencesClassPKs(
-			long companyId, PortletPreferences portletPreferences, String key,
-			String className)
-		throws Exception {
-
-		String[] oldValues = portletPreferences.getValues(key, null);
-
-		if (oldValues == null) {
-			return;
-		}
-
-		String[] newValues = new String[oldValues.length];
-
-		for (int i = 0; i < oldValues.length; i++) {
-			String newValue = oldValues[i];
-
-			for (String primaryKey : StringUtil.split(oldValues[i])) {
-				if (!Validator.isNumber(primaryKey)) {
-					break;
-				}
-
-				String newPreferencesValue = _getExportReferenceValue(
-					companyId, className, GetterUtil.getLong(primaryKey));
-
-				if (Validator.isNull(newPreferencesValue)) {
-					continue;
-				}
-
-				newValue = StringUtil.replace(
-					newValue, primaryKey, newPreferencesValue);
-			}
-
-			newValues[i] = newValue;
-		}
-
-		portletPreferences.setValues(key, newValues);
-	}
-
 	private void _updateExportScopeIds(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences, String key, long plid)
@@ -1508,9 +1498,13 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 				continue;
 			}
 
-			_updateImportPortletPreferencesClassPKs(
-				companyId, portletPreferences,
-				"queryValues" + name.substring(9), AssetCategory.class);
+			exportImportPortletPreferencesProcessorHelper.
+				updateImportPortletPreferencesClassPKs(
+					companyId, portletPreferences,
+					"queryValues" + name.substring(9),
+					portletPreferencesOldValue -> _getImportReferenceValue(
+						companyId, AssetCategory.class.getName(),
+						portletPreferencesOldValue));
 		}
 	}
 
@@ -1558,13 +1552,20 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			long companyId, PortletPreferences portletPreferences)
 		throws Exception {
 
-		_updateImportPortletPreferencesClassPKs(
-			companyId, portletPreferences,
-			"classTypeIdsJournalArticleAssetRendererFactory",
-			DDMStructure.class);
+		exportImportPortletPreferencesProcessorHelper.
+			updateImportPortletPreferencesClassPKs(
+				companyId, portletPreferences,
+				"classTypeIdsJournalArticleAssetRendererFactory",
+				portletPreferencesOldValue -> _getImportReferenceValue(
+					companyId, DDMStructure.class.getName(),
+					portletPreferencesOldValue));
 
-		_updateImportPortletPreferencesClassPKs(
-			companyId, portletPreferences, "classTypeIds", DDMStructure.class);
+		exportImportPortletPreferencesProcessorHelper.
+			updateImportPortletPreferencesClassPKs(
+				companyId, portletPreferences, "classTypeIds",
+				portletPreferencesOldValue -> _getImportReferenceValue(
+					companyId, DDMStructure.class.getName(),
+					portletPreferencesOldValue));
 	}
 
 	private void _updateImportOrderByColumnClassPKs(
@@ -1691,45 +1692,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			portletDataContext, "notifiedAssetEntryIds", portletPreferences);
 
 		return portletPreferences;
-	}
-
-	private void _updateImportPortletPreferencesClassPKs(
-			long companyId, PortletPreferences portletPreferences, String key,
-			Class<?> clazz)
-		throws Exception {
-
-		String[] oldValues = portletPreferences.getValues(key, null);
-
-		if (oldValues == null) {
-			return;
-		}
-
-		String className = clazz.getName();
-
-		String[] newValues = new String[oldValues.length];
-
-		for (int i = 0; i < oldValues.length; i++) {
-			String newValue = oldValues[i];
-
-			for (String portletPreferencesOldValue :
-					StringUtil.split(oldValues[i])) {
-
-				Long newPrimaryKey = _getImportReferenceValue(
-					companyId, className, portletPreferencesOldValue);
-
-				if (Validator.isNull(newPrimaryKey)) {
-					continue;
-				}
-
-				newValue = StringUtil.replace(
-					newValue, portletPreferencesOldValue,
-					newPrimaryKey.toString());
-			}
-
-			newValues[i] = newValue;
-		}
-
-		portletPreferences.setValues(key, newValues);
 	}
 
 	private void _updateImportScopeIds(
