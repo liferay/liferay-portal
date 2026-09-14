@@ -20,6 +20,7 @@ import com.liferay.object.rest.context.path.RESTContextPathResolverRegistry;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
@@ -102,6 +103,32 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributor
 				return GetterUtil.getString(
 					localizedValue.getString(
 						ddmFormFieldRenderingContext.getLocale()));
+			}
+		).put(
+			"selectedOptionLabel",
+			() -> {
+				if (objectDefinition == null) {
+					return StringPool.BLANK;
+				}
+
+				long primaryKey = GetterUtil.getLong(
+					ddmFormFieldRenderingContext.getValue());
+
+				if (primaryKey == 0) {
+					return StringPool.BLANK;
+				}
+
+				try {
+					return _objectEntryLocalService.getTitleValue(
+						objectDefinition.getObjectDefinitionId(), primaryKey);
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+
+					return StringPool.BLANK;
+				}
 			}
 		).put(
 			"value",
@@ -301,6 +328,9 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributor
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
