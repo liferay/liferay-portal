@@ -8,7 +8,7 @@ import {TreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayResultsBar} from '@clayui/management-toolbar';
-import ClayModal, {useModal} from '@clayui/modal';
+import ClayModal from '@clayui/modal';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {getProfileTools} from '../services/getProfileTools';
@@ -56,8 +56,6 @@ export default function AddToolsModal({
 	const toolsCacheRef = useRef<Record<string, Promise<ToolSummary[] | null>>>(
 		{}
 	);
-
-	const {observer} = useModal({onClose});
 
 	const assignedToolIds = useMemo(
 		() => getAssignedToolIds(profileTools),
@@ -331,7 +329,7 @@ export default function AddToolsModal({
 	};
 
 	return (
-		<ClayModal className="modal-height-full" observer={observer} size="lg">
+		<>
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
@@ -372,7 +370,7 @@ export default function AddToolsModal({
 					</ClayResultsBar>
 				</div>
 
-				<div className="cadmin container-fluid container-fluid-max-xl px-4 py-2">
+				<div className="px-4 py-2">
 					{loading ? (
 						<div className="align-items-center d-flex justify-content-center py-4">
 							<ClayLoadingIndicator />
@@ -568,6 +566,6 @@ export default function AddToolsModal({
 					</ClayButton.Group>
 				}
 			/>
-		</ClayModal>
+		</>
 	);
 }

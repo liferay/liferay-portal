@@ -4,6 +4,7 @@
  */
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
+import {openModal} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
 import OrderableTable from '../components/OrderableTable';
@@ -26,7 +27,6 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 	const [rowToRemove, setRowToRemove] = useState<ProfileDataMaskRow | null>(
 		null
 	);
-	const [showAddModal, setShowAddModal] = useState(false);
 
 	const loadRows = useCallback(async () => {
 		const [associationsResult, dataMasksResult] = await Promise.all([
@@ -135,6 +135,33 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 		setRows(orderedRows);
 	};
 
+	const openAddDataMasksModal = () =>
+		openModal({
+			contentComponent: ({closeModal}: {closeModal: () => void}) => (
+				<AddDataMasksModal
+					dataMasks={dataMasks.filter(
+						(mask) =>
+							!rows.some(
+								(row) =>
+									row.dataMaskExternalReferenceCode ===
+									mask.externalReferenceCode
+							)
+					)}
+					nextExecutionOrder={
+						rows.reduce(
+							(maxExecutionOrder, row) =>
+								Math.max(maxExecutionOrder, row.executionOrder),
+							0
+						) + 1
+					}
+					onAdded={loadRows}
+					onClose={closeModal}
+					profileExternalReferenceCode={profileERC}
+				/>
+			),
+			size: 'lg',
+		});
+
 	if (loading) {
 		return (
 			<div className="align-items-center d-flex justify-content-center mt-4">
@@ -157,7 +184,7 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 				creationMenuItems={[
 					{
 						label: Liferay.Language.get('add-masks'),
-						onClick: () => setShowAddModal(true),
+						onClick: openAddDataMasksModal,
 					},
 				]}
 				creationMenuLabel={Liferay.Language.get('add-masks')}
@@ -183,29 +210,6 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 					onClose={() => setRowToRemove(null)}
 					onRemoved={loadRows}
 					row={rowToRemove}
-				/>
-			)}
-
-			{showAddModal && (
-				<AddDataMasksModal
-					dataMasks={dataMasks.filter(
-						(mask) =>
-							!rows.some(
-								(row) =>
-									row.dataMaskExternalReferenceCode ===
-									mask.externalReferenceCode
-							)
-					)}
-					nextExecutionOrder={
-						rows.reduce(
-							(maxExecutionOrder, row) =>
-								Math.max(maxExecutionOrder, row.executionOrder),
-							0
-						) + 1
-					}
-					onAdded={loadRows}
-					onClose={() => setShowAddModal(false)}
-					profileExternalReferenceCode={profileERC}
 				/>
 			)}
 		</div>
