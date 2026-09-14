@@ -6,6 +6,7 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
+	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:headless:headless-portal-instances:headless-portal-instances-api")
 	testIntegrationImplementation project(":apps:headless:headless-portal-instances:headless-portal-instances-client")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
