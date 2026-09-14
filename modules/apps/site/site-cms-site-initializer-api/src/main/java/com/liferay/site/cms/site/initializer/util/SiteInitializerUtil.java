@@ -7,10 +7,7 @@ package com.liferay.site.cms.site.initializer.util;
 
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -54,15 +51,6 @@ public class SiteInitializerUtil {
 						externalReferenceCode, companyId);
 
 			if (objectDefinition == null) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						StringBundler.concat(
-							"Company ", companyId,
-							" is missing the CMS object definition ",
-							externalReferenceCode,
-							", so the CMS site initialization is deferred"));
-				}
-
 				return;
 			}
 		}
@@ -153,8 +141,5 @@ public class SiteInitializerUtil {
 		"L_CMS_BASIC_DOCUMENT", "L_CMS_BASIC_WEB_CONTENT", "L_CMS_BLOG",
 		"L_CMS_EXTERNAL_VIDEO"
 	};
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		SiteInitializerUtil.class);
 
 }
