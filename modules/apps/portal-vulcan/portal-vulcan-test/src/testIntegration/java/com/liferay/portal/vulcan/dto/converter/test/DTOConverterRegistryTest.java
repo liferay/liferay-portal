@@ -122,7 +122,6 @@ public class DTOConverterRegistryTest {
 	@Test
 	public void testGetDTOConverterWithDefaultProperty() throws Exception {
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter = new TestDTOConverter();
 
 		try (AutoCloseable autoCloseable1 = _registerDefaultDTOConverter(
@@ -151,7 +150,6 @@ public class DTOConverterRegistryTest {
 		throws Exception {
 
 		String dtoClassName = RandomTestUtil.randomString();
-
 		DTOConverter<?, ?> dtoConverter = new TestDTOConverter();
 
 		try (AutoCloseable autoCloseable1 = _registerDefaultDTOConverter(
