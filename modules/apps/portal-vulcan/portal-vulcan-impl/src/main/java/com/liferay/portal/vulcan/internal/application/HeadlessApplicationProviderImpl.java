@@ -112,6 +112,33 @@ public class HeadlessApplicationProviderImpl
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		_companyIdsServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundleContext, null,
+				"(&(objectClass=jakarta.ws.rs.core.Application)(companyId=*))",
+				new PropertyServiceReferenceMapper<>(Constants.SERVICE_ID),
+				new ServiceTrackerCustomizer<>() {
+
+					@Override
+					public ServiceReference<?> addingService(
+						ServiceReference<Object> serviceReference) {
+
+						return serviceReference;
+					}
+
+					@Override
+					public void modifiedService(
+						ServiceReference<Object> serviceReference,
+						ServiceReference<?> trackedServiceReference) {
+					}
+
+					@Override
+					public void removedService(
+						ServiceReference<Object> serviceReference,
+						ServiceReference<?> trackedServiceReference) {
+					}
+
+				});
 		_jaxrsServiceRuntimeServiceTracker = ServiceTrackerFactory.open(
 			bundleContext, JaxrsServiceRuntime.class,
 			new ServiceTrackerCustomizer<>() {
@@ -144,35 +171,6 @@ public class HeadlessApplicationProviderImpl
 				}
 
 			});
-
-		_companyIdsServiceTrackerMap =
-			ServiceTrackerMapFactory.openSingleValueMap(
-				bundleContext, null,
-				"(&(objectClass=jakarta.ws.rs.core.Application)(companyId=*))",
-				new PropertyServiceReferenceMapper<>(Constants.SERVICE_ID),
-				new ServiceTrackerCustomizer<>() {
-
-					@Override
-					public ServiceReference<?> addingService(
-						ServiceReference<Object> serviceReference) {
-
-						return serviceReference;
-					}
-
-					@Override
-					public void modifiedService(
-						ServiceReference<Object> serviceReference,
-						ServiceReference<?> trackedServiceReference) {
-					}
-
-					@Override
-					public void removedService(
-						ServiceReference<Object> serviceReference,
-						ServiceReference<?> trackedServiceReference) {
-					}
-
-				});
-
 		_openAPIResourceServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundleContext, null, "(openapi.resource=true)",
@@ -183,8 +181,8 @@ public class HeadlessApplicationProviderImpl
 
 	@Deactivate
 	protected void deactivate() {
-		_jaxrsServiceRuntimeServiceTracker.close();
 		_companyIdsServiceTrackerMap.close();
+		_jaxrsServiceRuntimeServiceTracker.close();
 		_openAPIResourceServiceTrackerMap.close();
 	}
 
