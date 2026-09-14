@@ -7637,8 +7637,6 @@ public class ObjectEntryLocalServiceImpl
 				true, objectDefinition, _objectFieldLocalService),
 			objectEntryId, partialUpdate, values);
 
-		objectEntryPersistence.clearCache(SetUtil.fromArray(objectEntryId));
-
 		objectEntry = objectEntryPersistence.findByPrimaryKey(objectEntryId);
 
 		_setExternalReferenceCode(objectEntry, values);
