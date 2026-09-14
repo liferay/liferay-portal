@@ -10,6 +10,10 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
+import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTProcessLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
 import com.liferay.exportimport.kernel.background.task.constants.LayoutSetPrototypeBackgroundTaskConstants;
@@ -37,6 +41,7 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
@@ -44,6 +49,7 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskResult;
 import com.liferay.portal.kernel.backgroundtask.BaseBackgroundTaskExecutor;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.backgroundtask.display.BackgroundTaskDisplay;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.LayoutParentLayoutIdException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -709,6 +715,87 @@ public class LayoutSetPrototypePropagationTest
 		Assert.assertEquals(
 			initialCount,
 			_layoutLocalService.getLayoutsCount(group.getGroupId(), false));
+	}
+
+	@FeatureFlag("LPD-104837")
+	@Test
+	@TestInfo("LPD-105505")
+	public void testLayoutSetPrototypePropagationWithPublicationsEnabled()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CTSettingsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			long userId = TestPropsValues.getUserId();
+
+			int initialCount = _layoutLocalService.getLayoutsCount(
+				group.getGroupId(), false);
+
+			LayoutTestUtil.addTypePortletLayout(_layoutSetPrototypeGroup, true);
+
+			_ctCollection = _ctCollectionLocalService.addCTCollection(
+				null, TestPropsValues.getCompanyId(), userId, 0,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+			long timestamp = System.currentTimeMillis();
+
+			try (SafeCloseable safeCloseable =
+					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+						_ctCollection.getCtCollectionId())) {
+
+				propagateChanges(false, _layoutSetPrototype);
+
+				_assertNotification("successful", timestamp, userId);
+
+				Assert.assertEquals(
+					initialCount + 1,
+					_layoutLocalService.getLayoutsCount(
+						group.getGroupId(), false));
+			}
+
+			Assert.assertEquals(
+				initialCount,
+				_layoutLocalService.getLayoutsCount(group.getGroupId(), false));
+
+			_ctProcessLocalService.addCTProcess(
+				userId, _ctCollection.getCtCollectionId());
+
+			Assert.assertEquals(
+				initialCount + 1,
+				_layoutLocalService.getLayoutsCount(group.getGroupId(), false));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-105505")
+	public void testLayoutSetPrototypePropagationWithPublicationsEnabledAndFeatureFlagDisabled()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CTSettingsConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			propagateChanges(false, _layoutSetPrototype);
+
+			Assert.fail();
+		}
+		catch (IllegalStateException illegalStateException) {
+			Assert.assertEquals(
+				"The site template merge cannot start while publications is " +
+					"enabled",
+				illegalStateException.getMessage());
+		}
 	}
 
 	@Test
@@ -1772,6 +1859,15 @@ public class LayoutSetPrototypePropagationTest
 
 	@Inject
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
+
+	@DeleteAfterTestRun
+	private CTCollection _ctCollection;
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private CTProcessLocalService _ctProcessLocalService;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
