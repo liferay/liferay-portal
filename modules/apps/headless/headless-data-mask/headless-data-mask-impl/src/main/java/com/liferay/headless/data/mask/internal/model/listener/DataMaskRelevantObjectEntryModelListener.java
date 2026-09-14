@@ -64,7 +64,8 @@ public class DataMaskRelevantObjectEntryModelListener
 
 		if (_isSystem(objectEntry)) {
 			throw new ModelListenerException(
-				"Unable to create system data masks");
+				new UnsupportedOperationException(
+					"Unable to create system data masks"));
 		}
 
 		_validate(objectEntry);
@@ -82,7 +83,8 @@ public class DataMaskRelevantObjectEntryModelListener
 
 		if (_isSystem(objectEntry)) {
 			throw new ModelListenerException(
-				"Unable to delete system data masks");
+				new UnsupportedOperationException(
+					"Unable to delete system data masks"));
 		}
 	}
 
@@ -97,12 +99,14 @@ public class DataMaskRelevantObjectEntryModelListener
 
 		if (_isSystem(originalObjectEntry)) {
 			throw new ModelListenerException(
-				"Unable to update system data masks");
+				new UnsupportedOperationException(
+					"Unable to update system data masks"));
 		}
 
 		if (_isSystem(objectEntry)) {
 			throw new ModelListenerException(
-				"Unable to convert data mask to system data mask");
+				new UnsupportedOperationException(
+					"Unable to convert data mask to system data mask"));
 		}
 
 		_validate(objectEntry);
