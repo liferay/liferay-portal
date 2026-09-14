@@ -365,14 +365,12 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			_regularUserAccountResource.getAccountUserAccountsPageHttpResponse(
 				RandomTestUtil.randomLong(), null, null, null, null);
 
-		Assert.assertEquals(
-			Response.Status.NOT_FOUND.getStatusCode(),
-			httpResponse.getStatusCode());
+		Assert.assertEquals(404, httpResponse.getStatusCode());
 		Assert.assertEquals(
 			JSONUtil.put(
 				"status", "NOT_FOUND"
 			).toString(),
-			_jsonFactory.createJSONObject(
+			JSONFactoryUtil.createJSONObject(
 				httpResponse.getContent()
 			).toString());
 	}
