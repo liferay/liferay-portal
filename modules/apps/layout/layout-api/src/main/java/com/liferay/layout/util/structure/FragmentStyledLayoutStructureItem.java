@@ -60,9 +60,8 @@ public class FragmentStyledLayoutStructureItem
 	public String getFragmentEntryLinkCssClass(
 		FragmentEntryLink fragmentEntryLink) {
 
-		return _normalizeCssClass(
-			LAYOUT_STRUCTURE_ITEM_CSS_CLASS_PREFIX +
-				_getFragmentEntryLinkIdentifier(fragmentEntryLink));
+		return LAYOUT_STRUCTURE_ITEM_CSS_CLASS_PREFIX +
+			_getFragmentEntryLinkIdentifier(fragmentEntryLink);
 	}
 
 	public long getFragmentEntryLinkId() {
@@ -137,7 +136,7 @@ public class FragmentStyledLayoutStructureItem
 		String rendererKey = fragmentEntryLink.getRendererKey();
 
 		if (Validator.isNotNull(rendererKey)) {
-			return rendererKey;
+			return _normalizeCssClass(rendererKey);
 		}
 
 		String portletId = null;
@@ -149,13 +148,14 @@ public class FragmentStyledLayoutStructureItem
 		}
 
 		if (Validator.isNotNull(portletId)) {
-			return PortletIdCodec.decodePortletName(portletId);
+			return _normalizeCssClass(
+				PortletIdCodec.decodePortletName(portletId));
 		}
 
 		FragmentEntry fragmentEntry = fragmentEntryLink.fetchFragmentEntry();
 
 		if (fragmentEntry != null) {
-			return fragmentEntry.getFragmentEntryKey();
+			return _normalizeCssClass(fragmentEntry.getFragmentEntryKey());
 		}
 
 		return StringPool.BLANK;
