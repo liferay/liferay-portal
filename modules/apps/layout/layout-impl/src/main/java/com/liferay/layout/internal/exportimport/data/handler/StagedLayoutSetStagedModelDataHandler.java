@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.data.handler.base.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportHelper;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportProcessCallbackRegistry;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
@@ -494,14 +495,17 @@ public class StagedLayoutSetStagedModelDataHandler
 
 		long[] layoutIds = portletDataContext.getLayoutIds();
 
-		for (Layout layout :
-				_layoutLocalService.getLayouts(
-					stagedLayoutSet.getGroupId(),
-					layoutSet.isPrivateLayout())) {
+		if (layoutIds == null) {
+			layoutIds = _exportImportHelper.getAllLayoutIds(
+				stagedLayoutSet.getGroupId(), layoutSet.isPrivateLayout());
+		}
 
-			if ((layoutIds != null) &&
-				!ArrayUtil.contains(layoutIds, layout.getLayoutId())) {
+		for (long layoutId : layoutIds) {
+			Layout layout = _layoutLocalService.fetchLayout(
+				stagedLayoutSet.getGroupId(), layoutSet.isPrivateLayout(),
+				layoutId);
 
+			if (layout == null) {
 				continue;
 			}
 
@@ -1124,6 +1128,9 @@ public class StagedLayoutSetStagedModelDataHandler
 	@Reference(target = "(content.processor.type=DLReferences)")
 	private ExportImportContentProcessor<String>
 		_dlReferencesExportImportContentProcessor;
+
+	@Reference
+	private ExportImportHelper _exportImportHelper;
 
 	@Reference
 	private ExportImportProcessCallbackRegistry
