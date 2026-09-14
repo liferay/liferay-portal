@@ -1755,20 +1755,15 @@ public class ObjectEntryLocalServiceImpl
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
-		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
-
-		List<Object[]> rows = _list(
-			DSLQueryFactoryUtil.select(
-				_EXPRESSIONS
-			).from(
-				ObjectEntryTable.INSTANCE
-			).where(
-				ObjectEntryTable.INSTANCE.objectEntryId.eq(
-					objectEntry.getObjectEntryId())
-			),
-			objectFieldBag, _EXPRESSIONS);
-
-		return _getValues(objectFieldBag, rows.get(0), _EXPRESSIONS);
+		return _getValues(
+			objectDefinition.getObjectFieldBag(),
+			new Object[] {
+				objectEntry.getObjectEntryId(), objectEntry.getUserName(),
+				_getValue(objectEntry.getCreateDate(), Types.TIMESTAMP),
+				_getValue(objectEntry.getModifiedDate(), Types.TIMESTAMP),
+				objectEntry.getExternalReferenceCode(), objectEntry.getStatus()
+			},
+			_EXPRESSIONS);
 	}
 
 	@Override
