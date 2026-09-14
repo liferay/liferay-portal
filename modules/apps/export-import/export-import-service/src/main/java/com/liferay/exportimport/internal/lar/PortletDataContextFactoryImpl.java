@@ -200,15 +200,9 @@ public class PortletDataContextFactoryImpl
 			parameterMap = HashMapBuilder.put(
 				ExportImportDateUtil.RANGE, new String[] {range}
 			).build();
-
-			if (ExportImportDateUtil.isRangeDateRange(parameterMap) ||
-				ExportImportDateUtil.isRangeFromLastPublishDate(parameterMap) ||
-				ExportImportDateUtil.isRangeLast(parameterMap)) {
-
-				portletDataContext.setEndDate(endDate);
-			}
 		}
 
+		portletDataContext.setEndDate(endDate);
 		portletDataContext.setParameterMap(parameterMap);
 		portletDataContext.setStartDate(startDate);
 
