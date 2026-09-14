@@ -5,6 +5,8 @@
 
 import React from 'react';
 
+import {Carousel} from './Carousel';
+
 interface Props<T extends string> {
 	idPrefix: string;
 
@@ -31,7 +33,7 @@ export function PresetGallery<T extends string>({
 		<fieldset>
 			<legend className="sr-only">{legend}</legend>
 
-			<div className="editor-preset-grid">
+			<Carousel className="editor-preset-grid" itemCount={items.length}>
 				{items.map((item) => {
 					const name = label(item);
 
@@ -65,7 +67,7 @@ export function PresetGallery<T extends string>({
 						</div>
 					);
 				})}
-			</div>
+			</Carousel>
 		</fieldset>
 	);
 }
