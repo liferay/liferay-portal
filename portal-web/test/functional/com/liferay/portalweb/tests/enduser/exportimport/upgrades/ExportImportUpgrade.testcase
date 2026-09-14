@@ -24,12 +24,10 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.1.10.3";
 
-		task ("Navigate to Export portlet") {
-			LAR.openExportAdmin(siteScopeName = "guest");
-		}
-
-		task ("Relaunch export process") {
-			LAR.relaunchCurrentAndPreviousProcess(larFileName = "Public Pages");
+		task ("Relaunch the export process") {
+			HeadlessExportImport.relaunchExportProcess(
+				exportProcessName = "Public Pages",
+				siteName = "Guest");
 		}
 	}
 
@@ -40,12 +38,10 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.2.10.1";
 
-		task ("Navigate to Export portlet") {
-			LAR.openExportAdmin(siteScopeName = "guest");
-		}
-
-		task ("Relaunch export process") {
-			LAR.relaunchCurrentAndPreviousProcess(larFileName = "Public Pages");
+		task ("Relaunch the export process") {
+			HeadlessExportImport.relaunchExportProcess(
+				exportProcessName = "Public Pages",
+				siteName = "Guest");
 		}
 	}
 
@@ -56,12 +52,10 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.3.10.1";
 
-		task ("Navigate to Export portlet") {
-			LAR.openExportAdmin(siteScopeName = "guest");
-		}
-
-		task ("Relaunch export process") {
-			LAR.relaunchCurrentAndPreviousProcess(larFileName = "Public Pages");
+		task ("Relaunch the export process") {
+			HeadlessExportImport.relaunchExportProcess(
+				exportProcessName = "Public Pages",
+				siteName = "Guest");
 		}
 	}
 
@@ -72,12 +66,10 @@ definition {
 		property database.types = "db2,mariadb,mysql,oracle,postgresql";
 		property portal.version = "7.0.10.16";
 
-		task ("Navigate to Export portlet") {
-			LAR.openExportAdmin(siteScopeName = "guest");
-		}
-
-		task ("Relaunch export process") {
-			LAR.relaunchCurrentAndPreviousProcess(larFileName = "Public Pages");
+		task ("Relaunch the export process") {
+			HeadlessExportImport.relaunchExportProcess(
+				exportProcessName = "Public Pages",
+				siteName = "Guest");
 		}
 	}
 

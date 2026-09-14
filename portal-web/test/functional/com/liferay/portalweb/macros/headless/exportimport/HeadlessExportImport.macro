@@ -1,0 +1,31 @@
+definition {
+
+	@summary = "Default summary"
+	macro relaunchExportProcess(exportProcessName = null, siteName = null) {
+		Variables.assertDefined(parameterList = "${exportProcessName},${siteName}");
+
+		var siteExternalReferenceCode = HeadlessSiteAPI._getSiteExternalReferenceCode(siteName = ${siteName});
+
+		var exportProcessId = HeadlessExportImportAPI._getExportProcessId(
+			exportProcessName = ${exportProcessName},
+			siteExternalReferenceCode = ${siteExternalReferenceCode});
+
+		var relaunchedExportProcessId = HeadlessExportImportAPI._postExportProcessRelaunch(exportProcessId = ${exportProcessId});
+
+		var statusCode = HeadlessExportImportAPI._getExportProcessStatusCode(exportProcessId = ${relaunchedExportProcessId});
+
+		while (((${statusCode} == 0) || (${statusCode} == 1) || (${statusCode} == 4)) && (maxIterations = "180")) {
+
+			// The relaunched export process runs as a background task, so its status has to be polled. See LPD-105678.
+
+			Pause(value1 = 1000);
+
+			var statusCode = HeadlessExportImportAPI._getExportProcessStatusCode(exportProcessId = ${relaunchedExportProcessId});
+		}
+
+		if (${statusCode} != 3) {
+			fail("FAIL. The relaunched export process ended with the status code ${statusCode}.");
+		}
+	}
+
+}

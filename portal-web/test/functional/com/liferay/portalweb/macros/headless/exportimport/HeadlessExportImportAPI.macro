@@ -1,0 +1,66 @@
+definition {
+
+	@summary = "Default summary"
+	macro _getExportProcessId(exportProcessName = null, siteExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${exportProcessName},${siteExternalReferenceCode}");
+
+		var portalURL = JSONCompany.getPortalURL();
+		var search = URLUtil.encodeUTF8(${exportProcessName});
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/export-processes?search=${search} \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json
+		''';
+
+		var exportProcessId = JSONCurlUtil.get(${curl}, "$.items[?(@['name'] == '${exportProcessName}')]['id']");
+
+		if (${exportProcessId} == "") {
+			fail("FAIL. Unable to find the export process ${exportProcessName}.");
+		}
+
+		return ${exportProcessId};
+	}
+
+	@summary = "Default summary"
+	macro _getExportProcessStatusCode(exportProcessId = null) {
+		Variables.assertDefined(parameterList = ${exportProcessId});
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/export-processes/${exportProcessId} \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json
+		''';
+
+		var statusCode = JSONCurlUtil.get(${curl}, "$.status.code");
+
+		return ${statusCode};
+	}
+
+	@summary = "Default summary"
+	macro _postExportProcessRelaunch(exportProcessId = null) {
+		Variables.assertDefined(parameterList = ${exportProcessId});
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/export-processes/${exportProcessId}/relaunch \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json \
+				-H Content-Type: application/json
+		''';
+
+		var relaunchedExportProcessId = JSONCurlUtil.post(${curl}, "$.id");
+
+		return ${relaunchedExportProcessId};
+	}
+
+}

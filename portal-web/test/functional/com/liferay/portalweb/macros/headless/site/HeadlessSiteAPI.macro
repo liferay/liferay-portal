@@ -43,4 +43,22 @@ definition {
 		return ${siteId};
 	}
 
+	@summary = "Default summary"
+	macro _getSiteExternalReferenceCode(siteName = null) {
+		var groupId = JSONGroupSetter.setGroupId(groupName = ${siteName});
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/headless-site/v1.0/sites/${groupId} \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json
+		''';
+
+		var siteExternalReferenceCode = JSONCurlUtil.get(${curl}, "$.externalReferenceCode");
+
+		return ${siteExternalReferenceCode};
+	}
+
 }
