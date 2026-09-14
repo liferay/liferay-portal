@@ -207,6 +207,20 @@ public class Test {
 		return read(new File(dir, fileName));
 	}
 
+	protected void setShellCommandExitValue(
+			String command, Shell shell, int exitValue)
+		throws Exception {
+
+		Mockito.doReturn(
+			new Shell.ExecutionResult(exitValue, "", "")
+		).when(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(executionRequest, command))
+		);
+	}
+
 	protected void setShellCommandOutput(
 			String command, Shell shell, String standardOut)
 		throws Exception {

@@ -12,6 +12,7 @@ import java.io.PrintStream;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /**
@@ -55,6 +57,117 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		super.tearDown();
 
 		JenkinsMaster.maxRecentBatchAge = 120 * 1000;
+	}
+
+	@Test
+	public void testExecuteBashCommand() throws Exception {
+		Shell shell = mockShell();
+
+		String command = "cat " + RandomTestUtil.randomString();
+
+		setShellCommandOutput(command, shell, RandomTestUtil.randomString());
+
+		_jenkinsMaster.executeBashCommand(command);
+
+		Shell.ExecutionRequest executionRequest = _getExecutionRequest(shell);
+
+		Assert.assertEquals(1000 * 60 * 5, executionRequest.getTimeout());
+
+		String sshCommand = _getSSHCommand(executionRequest);
+
+		Assert.assertTrue(
+			sshCommand, sshCommand.contains("-o ConnectTimeout=60 "));
+	}
+
+	@Test
+	public void testExecuteBashCommandNonzeroExitValue() throws Exception {
+		Shell shell = mockShell();
+
+		String command = "cat " + RandomTestUtil.randomString();
+
+		setShellCommandExitValue(command, shell, 255);
+
+		try {
+			_jenkinsMaster.executeBashCommand(command, 20000);
+
+			Assert.fail();
+		}
+		catch (RuntimeException runtimeException) {
+			String message = runtimeException.getMessage();
+
+			Assert.assertTrue(message, message.contains("test-9-1"));
+		}
+	}
+
+	@Test
+	public void testExecuteBashCommandTimedOut() throws Exception {
+		Shell shell = mockShell();
+
+		String command = "cat " + RandomTestUtil.randomString();
+
+		Mockito.doThrow(
+			new TimeoutException()
+		).when(
+			shell
+		).doExecute(
+			Mockito.argThat(
+				executionRequest -> hasCommand(executionRequest, command))
+		);
+
+		try {
+			_jenkinsMaster.executeBashCommand(command, 20000);
+
+			Assert.fail();
+		}
+		catch (RuntimeException runtimeException) {
+			Throwable throwable = runtimeException.getCause();
+
+			Assert.assertTrue(
+				String.valueOf(throwable),
+				throwable instanceof TimeoutException);
+		}
+	}
+
+	@Test
+	public void testExecuteBashCommandTimeout() throws Exception {
+		Shell shell = mockShell();
+
+		String command = "cat " + RandomTestUtil.randomString();
+
+		setShellCommandOutput(command, shell, RandomTestUtil.randomString());
+
+		_jenkinsMaster.executeBashCommand(command, 20000);
+
+		Shell.ExecutionRequest executionRequest = _getExecutionRequest(shell);
+
+		Assert.assertEquals(20000, executionRequest.getTimeout());
+
+		String sshCommand = _getSSHCommand(executionRequest);
+
+		Assert.assertTrue(
+			sshCommand, sshCommand.contains("-o ConnectTimeout=10 "));
+	}
+
+	@Test
+	public void testExecuteBashCommandTimeoutBelowTwoSeconds()
+		throws Exception {
+
+		Shell shell = mockShell();
+
+		String command = "cat " + RandomTestUtil.randomString();
+
+		setShellCommandOutput(command, shell, RandomTestUtil.randomString());
+
+		_jenkinsMaster.executeBashCommand(command, 500);
+
+		Shell.ExecutionRequest executionRequest = _getExecutionRequest(shell);
+
+		Assert.assertEquals(500, executionRequest.getTimeout());
+
+		String sshCommand = _getSSHCommand(executionRequest);
+
+		Assert.assertTrue(
+			sshCommand, sshCommand.contains("-o ConnectTimeout=1 "));
 	}
 
 	@Test
@@ -228,6 +341,21 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertEquals(runningBuilds.toString(), 3, runningBuilds.size());
 	}
 
+	private Shell.ExecutionRequest _getExecutionRequest(Shell shell)
+		throws Exception {
+
+		ArgumentCaptor<Shell.ExecutionRequest> argumentCaptor =
+			ArgumentCaptor.forClass(Shell.ExecutionRequest.class);
+
+		Mockito.verify(
+			shell
+		).doExecute(
+			argumentCaptor.capture()
+		);
+
+		return argumentCaptor.getValue();
+	}
+
 	private JenkinsMaster.RunningBuild _getRunningBuild(
 		String buildURL, List<JenkinsMaster.RunningBuild> runningBuilds) {
 
@@ -266,6 +394,10 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 					_BUILD_URL_OFFLINE_NODE, RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString(), false,
 					RandomTestUtil.randomLong())));
+	}
+
+	private String _getSSHCommand(Shell.ExecutionRequest executionRequest) {
+		return executionRequest.getCommands()[0];
 	}
 
 	private void _setUpMaster(

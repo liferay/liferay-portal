@@ -236,6 +236,28 @@ public class ResourceThresholdMonitorTest
 	}
 
 	@Test
+	public void testExecuteRAMUnreachable() throws Exception {
+		setShellCommandExitValue("cat /proc/meminfo", mockShell(), 255);
+
+		String masterName = MonitorTestUtil.newJenkinsMasterName();
+
+		Properties monitorProperties = _newMonitorProperties(masterName, "ram");
+
+		monitorProperties.setProperty("monitor[a].threshold[warn]", "50");
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+
+		String message = monitorResult.getMessage();
+
+		Assert.assertTrue(
+			message,
+			message.contains(
+				"Unable to read the RAM metric for " + masterName));
+	}
+
+	@Test
 	public void testExecuteReadFailure() throws Exception {
 		_testExecuteReadFailure("java.io.IOException", new IOException());
 

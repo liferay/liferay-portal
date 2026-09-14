@@ -145,8 +145,8 @@ public class MasterResourceReaderTest
 			MasterResourceReader.getInstance(masterName);
 
 		testSame(
-			masterResourceReader.getMemoryInfo(),
-			masterResourceReader.getMemoryInfo());
+			masterResourceReader.getMemoryInfo(_MILLIS_TIMEOUT),
+			masterResourceReader.getMemoryInfo(_MILLIS_TIMEOUT));
 	}
 
 	@Test
@@ -162,7 +162,8 @@ public class MasterResourceReaderTest
 		MasterResourceReader masterResourceReader =
 			MasterResourceReader.getInstance(masterName);
 
-		testEquals(memoryInfo, masterResourceReader.getMemoryInfo());
+		testEquals(
+			memoryInfo, masterResourceReader.getMemoryInfo(_MILLIS_TIMEOUT));
 	}
 
 	@Test
