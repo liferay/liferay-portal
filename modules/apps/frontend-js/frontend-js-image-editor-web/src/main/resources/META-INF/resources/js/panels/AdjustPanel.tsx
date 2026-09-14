@@ -48,6 +48,14 @@ export function AdjustPanel({
 				const resetLabel = sub(Liferay.Language.get('reset-x'), label);
 				const value = adjustments[key];
 
+				const commitValue = (next: number) => {
+					dispatch({key, type: 'set-adjustment', value: next});
+
+					onAnnounce(
+						sub(Liferay.Language.get('x-set-to-x'), label, next)
+					);
+				};
+
 				return (
 					<CommitSlider
 						id={eid(`adjust-${key}`)}
@@ -56,21 +64,7 @@ export function AdjustPanel({
 						max={100}
 						min={-100}
 						onCancel={() => dispatch({type: 'cancel-gesture'})}
-						onCommit={(next) => {
-							dispatch({
-								key,
-								type: 'set-adjustment',
-								value: next,
-							});
-
-							onAnnounce(
-								sub(
-									Liferay.Language.get('x-set-to-x'),
-									label,
-									next
-								)
-							);
-						}}
+						onCommit={commitValue}
 						onPreview={(next) =>
 							dispatch({
 								key,
@@ -89,21 +83,7 @@ export function AdjustPanel({
 							className="editor-slider-reset"
 							disabled={value === 0}
 							displayType="secondary"
-							onClick={() => {
-								dispatch({
-									key,
-									type: 'set-adjustment',
-									value: 0,
-								});
-
-								onAnnounce(
-									sub(
-										Liferay.Language.get('x-set-to-x'),
-										label,
-										0
-									)
-								);
-							}}
+							onClick={() => commitValue(0)}
 							size="xs"
 							symbol="restore"
 							title={resetLabel}
