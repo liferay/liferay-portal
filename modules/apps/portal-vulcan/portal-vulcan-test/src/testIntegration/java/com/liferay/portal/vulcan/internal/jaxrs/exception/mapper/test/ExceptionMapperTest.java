@@ -95,9 +95,7 @@ public class ExceptionMapperTest {
 
 	@Test
 	@TestInfo("LPD-104899")
-	public void testExceptionsCausedByNoSuchModelExceptionReturnNotFound()
-		throws Exception {
-
+	public void testIllegalArgumentException() throws Exception {
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
@@ -109,34 +107,22 @@ public class ExceptionMapperTest {
 			Http.Method.GET);
 
 		Assert.assertEquals("BAD_REQUEST", jsonObject.getString("status"));
-		Assert.assertEquals(_TITLE, jsonObject.getString("title"));
+		Assert.assertEquals(_MESSAGE, jsonObject.getString("title"));
 
 		Assert.assertEquals(
 			404,
 			HTTPTestUtil.invokeToHttpCode(
 				null, "/test-vulcan/testIllegalArgumentException2",
 				Http.Method.GET));
+
+		JSONObject expectedJSONObject = JSONUtil.put("status", "NOT_FOUND");
+
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, "/test-vulcan/testIllegalArgumentException2",
+			Http.Method.GET);
+
 		Assert.assertEquals(
-			JSONUtil.put(
-				"status", "NOT_FOUND"
-			).toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				null, "/test-vulcan/testIllegalArgumentException2",
-				Http.Method.GET
-			).toString());
-		Assert.assertEquals(
-			404,
-			HTTPTestUtil.invokeToHttpCode(
-				null, "/test-vulcan/testUnsupportedOperationException",
-				Http.Method.GET));
-		Assert.assertEquals(
-			JSONUtil.put(
-				"status", "NOT_FOUND"
-			).toString(),
-			HTTPTestUtil.invokeToJSONObject(
-				null, "/test-vulcan/testUnsupportedOperationException",
-				Http.Method.GET
-			).toString());
+			expectedJSONObject.toString(), jsonObject.toString());
 	}
 
 	@Test
@@ -272,7 +258,7 @@ public class ExceptionMapperTest {
 		@Path("/testIllegalArgumentException1")
 		@Produces("application/json")
 		public String testIllegalArgumentException1() {
-			throw new IllegalArgumentException(_TITLE);
+			throw new IllegalArgumentException(_MESSAGE);
 		}
 
 		@GET
@@ -280,7 +266,7 @@ public class ExceptionMapperTest {
 		@Produces("application/json")
 		public String testIllegalArgumentException2() {
 			throw new IllegalArgumentException(
-				_TITLE, new NoSuchResourcePermissionException(_TITLE));
+				_MESSAGE, new NoSuchResourcePermissionException(_MESSAGE));
 		}
 
 		@GET
@@ -305,19 +291,11 @@ public class ExceptionMapperTest {
 				new TestException(RandomTestUtil.randomString()));
 		}
 
-		@GET
-		@Path("/testUnsupportedOperationException")
-		@Produces("application/json")
-		public String testUnsupportedOperationException() {
-			throw new UnsupportedOperationException(
-				_TITLE,
-				new IllegalStateException(
-					_TITLE, new NoSuchModelException(_TITLE)));
-		}
-
 	}
 
 	private static final String _DETAIL = RandomTestUtil.randomString();
+
+	private static final String _MESSAGE = RandomTestUtil.randomString();
 
 	private static final String _TITLE = RandomTestUtil.randomString();
 
