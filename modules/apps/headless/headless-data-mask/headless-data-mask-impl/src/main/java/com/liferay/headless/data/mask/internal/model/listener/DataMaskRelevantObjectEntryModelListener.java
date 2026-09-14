@@ -7,6 +7,7 @@ package com.liferay.headless.data.mask.internal.model.listener;
 
 import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.headless.data.mask.internal.engine.RedactUtil;
+import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.petra.string.StringBundler;
@@ -149,9 +150,12 @@ public class DataMaskRelevantObjectEntryModelListener
 		}
 		catch (PatternSyntaxException patternSyntaxException) {
 			throw new ModelListenerException(
-				StringBundler.concat(
-					"Invalid \"", name, "\": ",
-					patternSyntaxException.getMessage()));
+				new ObjectEntryValuesException.InvalidObjectField(
+					null,
+					StringBundler.concat(
+						"Invalid \"", name, "\": ",
+						patternSyntaxException.getMessage()),
+					"patterns-must-be-valid-regular-expressions"));
 		}
 	}
 
