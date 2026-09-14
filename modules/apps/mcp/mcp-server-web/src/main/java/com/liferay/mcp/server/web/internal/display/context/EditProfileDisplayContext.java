@@ -56,7 +56,7 @@ public class EditProfileDisplayContext {
 	public String getAPIURL() {
 		String apiURL = HttpComponentsUtil.addParameter(
 			"/o/mcp/server-profile-tools", "fields",
-			"externalReferenceCode,toolName,toolSetName");
+			"externalReferenceCode,restrictFields,toolName,toolSetName");
 
 		return HttpComponentsUtil.addParameter(
 			apiURL, "filter",

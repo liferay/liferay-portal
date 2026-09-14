@@ -101,9 +101,10 @@ export type ProfilePayload = {
 };
 
 export type ProfileTool = {
-	externalReferenceCode?: string;
+	externalReferenceCode: string;
 	id?: number;
 	r_mcpServerProfileToTools_l_mcpServerProfileId?: number;
+	restrictFields?: string;
 	toolName: string;
 	toolSetName: string;
 };

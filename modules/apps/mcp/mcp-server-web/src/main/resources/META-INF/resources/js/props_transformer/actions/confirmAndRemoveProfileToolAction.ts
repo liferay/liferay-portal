@@ -15,10 +15,6 @@ export default function confirmAndRemoveProfileToolAction({
 }: ProfileToolActionContext) {
 	const {externalReferenceCode, toolName} = itemData;
 
-	if (!externalReferenceCode) {
-		return;
-	}
-
 	openModal({
 		bodyHTML: `
 			<p>

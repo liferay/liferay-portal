@@ -8,28 +8,33 @@ import {TreeView} from '@clayui/core';
 import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal from '@clayui/modal';
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import SelectedItemsBar from '../../components/SelectedItemsBar';
 import {getTool} from '../../services/getTool';
-import {JSONSchema} from '../../types';
-import {openErrorToast} from '../../utils';
+import {patchProfileTool} from '../../services/patchProfileTool';
+import {ProfileTool} from '../../types';
+import {openErrorToast, openSuccessToast} from '../../utils';
 import {FieldTreeItem} from './types';
-import {buildFieldTree} from './utils';
+import {buildFieldTree, getSelectedKeys, toRestrictFields} from './utils';
 
 interface RestrictFieldsModalProps {
 	onClose: () => void;
-	toolName: string;
-	toolSetName: string;
+	onSaved: () => void;
+	profileTool: ProfileTool;
 }
 
 export default function RestrictFieldsModal({
 	onClose,
-	toolName,
-	toolSetName,
+	onSaved,
+	profileTool,
 }: RestrictFieldsModalProps) {
+	const {externalReferenceCode, restrictFields, toolName, toolSetName} =
+		profileTool;
+
+	const [items, setItems] = useState<FieldTreeItem[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [outputSchema, setOutputSchema] = useState<JSONSchema>();
+	const [saving, setSaving] = useState(false);
 	const [selectedKeys, setSelectedKeys] = useState<Set<React.Key>>(new Set());
 
 	useEffect(() => {
@@ -48,7 +53,10 @@ export default function RestrictFieldsModal({
 				return;
 			}
 
-			setOutputSchema(data?.outputSchema);
+			const tree = buildFieldTree(data?.outputSchema);
+
+			setItems(tree);
+			setSelectedKeys(getSelectedKeys(tree, restrictFields));
 
 			setLoading(false);
 		});
@@ -56,9 +64,28 @@ export default function RestrictFieldsModal({
 		return () => {
 			isMounted = false;
 		};
-	}, [onClose, toolName, toolSetName]);
+	}, [onClose, restrictFields, toolName, toolSetName]);
 
-	const items = useMemo(() => buildFieldTree(outputSchema), [outputSchema]);
+	const save = async () => {
+		setSaving(true);
+
+		const {error} = await patchProfileTool(externalReferenceCode, {
+			restrictFields: toRestrictFields(items, selectedKeys),
+		});
+
+		setSaving(false);
+
+		if (error) {
+			openErrorToast(error);
+
+			return;
+		}
+
+		openSuccessToast(Liferay.Language.get('successfully-saved'));
+
+		onSaved();
+		onClose();
+	};
 
 	return (
 		<>
@@ -74,7 +101,7 @@ export default function RestrictFieldsModal({
 
 			<ClayModal.Body className="pt-0 px-0">
 				{loading ? (
-					<div className="align-items-center d-flex justify-content-center py-4">
+					<div className="align-items-center d-flex h-100 justify-content-center">
 						<ClayLoadingIndicator />
 					</div>
 				) : (
@@ -141,9 +168,9 @@ export default function RestrictFieldsModal({
 						</ClayButton>
 
 						<ClayButton
-							disabled={loading || !items.length}
+							disabled={loading || saving || !items.length}
 							displayType="primary"
-							onClick={onClose}
+							onClick={save}
 						>
 							{Liferay.Language.get('save')}
 						</ClayButton>

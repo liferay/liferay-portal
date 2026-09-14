@@ -7,22 +7,19 @@ import {openModal} from 'frontend-js-components-web';
 import React from 'react';
 
 import RestrictFieldsModal from '../../profiles/restrict_fields/RestrictFieldsModal';
-import {ProfileTool} from '../../types';
-
-interface OpenRestrictFieldsModalProps {
-	itemData: ProfileTool;
-}
+import {ProfileToolActionContext} from '../../types';
 
 export default function openRestrictFieldsModal({
 	itemData,
-}: OpenRestrictFieldsModalProps) {
+	loadData,
+}: ProfileToolActionContext) {
 	openModal({
 		className: 'modal-height-full',
 		contentComponent: ({closeModal}: {closeModal: () => void}) => (
 			<RestrictFieldsModal
 				onClose={closeModal}
-				toolName={itemData.toolName}
-				toolSetName={itemData.toolSetName}
+				onSaved={loadData}
+				profileTool={itemData}
 			/>
 		),
 		size: 'lg',

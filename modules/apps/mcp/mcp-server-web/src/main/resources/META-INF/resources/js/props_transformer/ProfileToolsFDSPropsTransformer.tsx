@@ -53,7 +53,7 @@ export default function ProfileToolsFDSPropsTransformer({
 				confirmAndRemoveProfileToolAction({itemData, loadData});
 			}
 			else if (action?.data?.id === 'restrict-fields') {
-				openRestrictFieldsModal({itemData});
+				openRestrictFieldsModal({itemData, loadData});
 			}
 		},
 	};
