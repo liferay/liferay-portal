@@ -61,11 +61,10 @@ public class AssetEntryImpl extends AssetEntryBaseImpl {
 
 	@Override
 	public List<AssetCategory> getCategories() {
-		int companyCategoriesCount =
-			AssetCategoryLocalServiceUtil.getCompanyCategoriesCount(
-				getCompanyId());
+		int count = AssetCategoryLocalServiceUtil.getCompanyCategoriesCount(
+			getCompanyId());
 
-		if (companyCategoriesCount == 0) {
+		if (count == 0) {
 			return Collections.emptyList();
 		}
 

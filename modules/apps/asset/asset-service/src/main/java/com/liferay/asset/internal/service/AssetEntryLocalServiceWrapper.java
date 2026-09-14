@@ -135,11 +135,10 @@ public class AssetEntryLocalServiceWrapper
 			return false;
 		}
 
-		int companyCategoriesCount =
-			_assetCategoryLocalService.getCompanyCategoriesCount(
-				entry.getCompanyId());
+		int count = _assetCategoryLocalService.getCompanyCategoriesCount(
+			entry.getCompanyId());
 
-		if (companyCategoriesCount > 0) {
+		if (count > 0) {
 			return true;
 		}
 

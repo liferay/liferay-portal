@@ -1516,10 +1516,10 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 			return false;
 		}
 
-		int companyTagsCount = _assetTagLocalService.getCompanyTagsCount(
+		int count = _assetTagLocalService.getCompanyTagsCount(
 			entry.getCompanyId());
 
-		if (companyTagsCount > 0) {
+		if (count > 0) {
 			return true;
 		}
 
