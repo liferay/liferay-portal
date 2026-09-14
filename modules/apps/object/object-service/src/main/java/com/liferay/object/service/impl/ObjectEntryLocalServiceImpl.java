@@ -7301,17 +7301,10 @@ public class ObjectEntryLocalServiceImpl
 			}
 		}
 
-		FriendlyURLEntry friendlyURLEntry =
-			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
-				_classNameLocalService.getClassNameId(
-					objectDefinition.getClassName()),
-				objectEntry.getObjectEntryId());
-
-		if (friendlyURLEntry == null) {
-			return true;
-		}
-
-		return false;
+		return !_friendlyURLEntryLocalService.hasMainFriendlyURLEntry(
+			_classNameLocalService.getClassNameId(
+				objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
 	}
 
 	private void _startWorkflowInstance(

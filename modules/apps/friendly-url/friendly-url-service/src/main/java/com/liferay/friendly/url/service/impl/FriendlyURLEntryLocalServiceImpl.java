@@ -527,6 +527,19 @@ public class FriendlyURLEntryLocalServiceImpl
 	}
 
 	@Override
+	public boolean hasMainFriendlyURLEntry(long classNameId, long classPK) {
+		FriendlyURLEntryMapping friendlyURLEntryMapping =
+			_friendlyURLEntryMappingPersistence.fetchByC_C(
+				classNameId, classPK);
+
+		if (friendlyURLEntryMapping == null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public void setMainFriendlyURLEntry(FriendlyURLEntry friendlyURLEntry) {
 		FriendlyURLEntryMapping friendlyURLEntryMapping =
 			_friendlyURLEntryMappingPersistence.fetchByC_C(
