@@ -35,6 +35,12 @@ const TOTAL_ENTRIES = 100;
 
 const PRELOADED_COLOR_ENTRIES = 75;
 
+// How long a data set whose address carries state a consumer left waits
+// before giving up on the connection that was going to take it, matching
+// RESTORE_TIMEOUT in useRestoredConnectionState.
+
+const RESTORE_GIVE_UP = 10000;
+
 const test = mergeTests(
 	apiHelpersTest,
 	fdsSamplePageTest,
@@ -140,8 +146,21 @@ for (const spaConfiguration of spaConfigurations) {
 			return customElement.getByRole('checkbox', {name});
 		}
 
+		// The button that opens a filter panel is named for the filter, and
+		// takes a count once anything in it is selected: "Color" becomes
+		// "Color (1)". The button that removes the chip is named for the
+		// filter as well, as "Remove the Color filter". So a bare name matches
+		// two buttons as soon as the filter is applied, and an exact one
+		// matches neither.
+
+		function getFilterPanelButton({name}: {name: string}) {
+			return customElement.getByRole('button', {
+				name: new RegExp(`^${name}( \\(\\d+\\))?$`),
+			});
+		}
+
 		async function expandFilterPanel({name}: {name: string}) {
-			const panelButton = customElement.getByRole('button', {name});
+			const panelButton = getFilterPanelButton({name});
 
 			await panelButton.click();
 
@@ -219,7 +238,7 @@ for (const spaConfiguration of spaConfigurations) {
 					await test.step('The client extension becomes ready and offers a panel per declared filter', async () => {
 						for (const name of ['Color', 'Size', 'Status']) {
 							await expect(
-								customElement.getByRole('button', {name})
+								getFilterPanelButton({name})
 							).toBeEnabled();
 						}
 					});
@@ -255,7 +274,7 @@ for (const spaConfiguration of spaConfigurations) {
 
 					await test.step('The client extension owns the filtering to begin with', async () => {
 						await expect(
-							customElement.getByRole('button', {name: 'Color'})
+							getFilterPanelButton({name: 'Color'})
 						).toBeEnabled();
 
 						await expect(
@@ -311,7 +330,7 @@ for (const spaConfiguration of spaConfigurations) {
 					await goToDelegatedFiltersTab({fdsSamplePage, page});
 
 					await expect(
-						customElement.getByRole('button', {name: 'Color'})
+						getFilterPanelButton({name: 'Color'})
 					).toBeEnabled();
 
 					await test.step('Picking one option of a multiple selection filter narrows the data set', async () => {
@@ -449,7 +468,7 @@ for (const spaConfiguration of spaConfigurations) {
 					await goToDelegatedFiltersTab({fdsSamplePage, page});
 
 					await expect(
-						customElement.getByRole('button', {name: 'Color'})
+						getFilterPanelButton({name: 'Color'})
 					).toBeEnabled();
 
 					await test.step('Filter by a color and a size', async () => {
@@ -586,7 +605,7 @@ for (const spaConfiguration of spaConfigurations) {
 					await goToDelegatedFiltersTab({fdsSamplePage, page});
 
 					await expect(
-						customElement.getByRole('button', {name: 'Color'})
+						getFilterPanelButton({name: 'Color'})
 					).toBeEnabled();
 
 					const unfilteredURL = page.url();
@@ -674,7 +693,7 @@ for (const spaConfiguration of spaConfigurations) {
 					await goToDelegatedFiltersTab({fdsSamplePage, page});
 
 					await expect(
-						customElement.getByRole('button', {name: 'Color'})
+						getFilterPanelButton({name: 'Color'})
 					).toBeEnabled();
 
 					await getFilterOptionCheckbox({name: 'Blue'}).check();
@@ -743,33 +762,24 @@ for (const spaConfiguration of spaConfigurations) {
 			// page afresh, both records go with it, and there is nothing left
 			// to outlive anything.
 			//
-			// Left as fixme because coming back does not yet work, and what is
-			// wrong is not settled. Coming back two ways behaves two ways, and
-			// only the first is what this test does.
-			//
-			// Coming back by a link, as here, the element draws its panels twice
-			// over within the one element and neither set of controls is enabled,
-			// while the data set puts its own filter UI back up and filters by
-			// the Color filter it declares. The doubling points at
-			// connectedCallback mounting a second React root into markup Liferay
-			// restored from its own cache.
-			//
-			// Coming back by the browser's back button, followed by hand, the
-			// element draws one set of panels and works. What is wrong there is
-			// that the data set holds its first request for the whole of
-			// RESTORE_TIMEOUT before filtering by what the element restores, so
-			// the user waits ten seconds on an empty data set. The data set stops
-			// waiting either when the owner takes its key out of what is offered
-			// or when that timeout runs out, and both of the early ways out sit
-			// behind an offer having been made at all, which the state of a data
-			// set coming back this way may never carry.
+			// Coming back is also the way round that the data set is slowest to
+			// notice it may request. It waits while the address carries state a
+			// consumer left, and it stops waiting either when the owner takes
+			// its key out of what is offered or when it gives up. Arriving to an
+			// atom the last visit left behind, the connection is listening
+			// before the offer is even made and takes its key in the same turn,
+			// so the data set is told it offered rather than left to catch the
+			// offer going past. Missing it once cost the whole of that give-up,
+			// which is why the wait below is measured rather than merely waited
+			// out: a data set that takes as long as the give-up is a data set
+			// that learnt nothing from the offer.
 			//
 			// Neither navigation reloads the page and the address returned to is
 			// exactly the one the filters were left at: both are asserted below,
 			// and both passed.
 
 			if (spaConfiguration.spa) {
-				test.fixme(
+				test(
 					'A client extension that leaves the page without reloading it gives the filtering back',
 					{
 						tag: ['@LPD-96001'],
@@ -786,7 +796,7 @@ for (const spaConfiguration of spaConfigurations) {
 						await goToDelegatedFiltersTab({fdsSamplePage, page});
 
 						await expect(
-							customElement.getByRole('button', {name: 'Color'})
+							getFilterPanelButton({name: 'Color'})
 						).toBeEnabled();
 
 						await test.step('Filter, so that there is a claim and filters to leave behind', async () => {
@@ -858,12 +868,32 @@ for (const spaConfiguration of spaConfigurations) {
 							);
 						});
 
+						// Not a threshold picked for comfort: it is the give-up
+						// itself, which starts only once the page is back, so a
+						// data set that fell back on it cannot come in under
+						// this however fast everything else was. One that
+						// learnt the offer was taken has no reason to be near
+						// it.
+
+						const cameBackAt = Date.now();
+
 						await test.step('Come back to the data set by a link to where it was left', async () => {
 							await goByLink(filteredURL, 'dataSetPageLink');
 
 							await expect(page).toHaveURL(filteredURL);
 
 							await waitForFDS({page});
+
+							await expectTotalEntries({page, total: 25});
+						});
+
+						await test.step('The data set requested without waiting out its give-up', async () => {
+							const cameBackIn = Date.now() - cameBackAt;
+
+							expect(
+								cameBackIn,
+								`coming back took ${cameBackIn}ms of the ${RESTORE_GIVE_UP}ms give-up`
+							).toBeLessThan(RESTORE_GIVE_UP);
 						});
 
 						await test.step('Neither navigation reloaded the page', async () => {
@@ -881,20 +911,27 @@ for (const spaConfiguration of spaConfigurations) {
 
 						await test.step('The element is granted the filtering again rather than refused', async () => {
 							await expect(
-								customElement.getByRole('button', {
-									name: 'Color',
-								})
+								getFilterPanelButton({name: 'Color'})
 							).toBeEnabled();
 
-							await getFilterOptionCheckbox({
-								name: 'Blue',
-							}).check();
-
-							await expectTotalEntries({page, total: 25});
+							await expect(
+								getFilterOptionCheckbox({name: 'Blue'})
+							).toBeChecked();
 
 							await expect(
 								fdsSamplePage.managementToolbar.filterButton
 							).toBeHidden();
+						});
+
+						await test.step('And filters as it did before', async () => {
+							await getFilterOptionCheckbox({
+								name: 'Blue',
+							}).uncheck();
+
+							await expectTotalEntries({
+								page,
+								total: TOTAL_ENTRIES,
+							});
 						});
 					}
 				);
