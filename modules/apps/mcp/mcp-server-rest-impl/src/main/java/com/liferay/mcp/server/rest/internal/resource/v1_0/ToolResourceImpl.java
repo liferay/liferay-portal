@@ -31,8 +31,8 @@ public class ToolResourceImpl extends BaseToolResourceImpl {
 
 	@NestedField(parentClass = Tool.class, value = "outputSchema")
 	public Map<String, ?> getToolOutputSchema(
-		@PathParam("toolSetName") String toolSetName,
-		@PathParam("toolName") String toolName) {
+		@PathParam("toolName") String toolName,
+		@PathParam("toolSetName") String toolSetName) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-63311")) {
