@@ -72,12 +72,6 @@ public class UserNotificationManagerUtil {
 		return _getUserNotificationDefinitions(false);
 	}
 
-	public static Map<String, Map<String, UserNotificationHandler>>
-		getUserNotificationHandlers() {
-
-		return Collections.unmodifiableMap(_userNotificationHandlers);
-	}
-
 	public static boolean hasPermission(
 			long classPK, String portletId, String selector, User user)
 		throws PortalException {
@@ -97,6 +91,19 @@ public class UserNotificationManagerUtil {
 		}
 
 		return userNotificationHandler.hasPermission(classPK, user);
+	}
+
+	public static boolean hasUserNotificationHandler(
+		String portletId, String selector) {
+
+		Map<String, UserNotificationHandler> userNotificationHandlers =
+			_userNotificationHandlers.get(selector);
+
+		if (userNotificationHandlers == null) {
+			return false;
+		}
+
+		return userNotificationHandlers.containsKey(portletId);
 	}
 
 	public static UserNotificationFeedEntry interpret(
