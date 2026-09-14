@@ -634,7 +634,7 @@
 												"expr": "avg by (database_id, data_plane, state) (\n  last_over_time(\n    liferay:db_instance_state{environment_id=\"$environment\"}[${__interval}]\n  ) > 0\n)",
 												"format": "time_series",
 												"instant": false,
-												"legendFormat": "{{database_id}} {{data_plane}} - {{state}}",
+												"legendFormat": "{{database_id}} - {{state}}",
 												"range": true
 											},
 											"version": "v0"

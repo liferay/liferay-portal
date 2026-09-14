@@ -36,7 +36,7 @@ alerting:
                                     "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                        "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                        "database_id", "$1", "dbinstance_identifier", "(.+)")
                 )
             record: liferay:db_cpu_reserved_cores
         db-cpu-reserved-cores-gcp:
@@ -49,7 +49,7 @@ alerting:
                                 cloudsql_googleapis_com:database_cpu_reserved_cores,
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_cpu_reserved_cores
         db-cpu-used-cores-aws:
@@ -66,7 +66,7 @@ alerting:
                                     "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                        "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                        "database_id", "$1", "dbinstance_identifier", "(.+)")
                 )
             record: liferay:db_cpu_used_cores
         db-cpu-used-cores-gcp:
@@ -79,7 +79,7 @@ alerting:
                                 rate(cloudsql_googleapis_com:database_cpu_usage_time[5m]),
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_cpu_used_cores
         db-cpu-utilization-percent-aws:
@@ -96,7 +96,7 @@ alerting:
                                         "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                     "project_id", "$1", "tag_ProjectId", "(.+)"),
                                 "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                            "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$"),
+                            "database_id", "$1", "dbinstance_identifier", "(.+)"),
                         "engine", "$1", "dimension_EngineName", "(.+)")
                 )
             record: liferay:db_cpu_utilization_percent
@@ -114,7 +114,7 @@ alerting:
                                     "environment_id", "liferay-$1", "environment_id", "(.+)"),
                                 "project_id", "$1", "tag_project_id", "(.+)"),
                             "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
-                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                        "database_id", "$1", "resourcename", "(.+)")
                 )
             record: liferay:db_cpu_utilization_percent
         db-cpu-utilization-percent-gcp:
@@ -127,7 +127,7 @@ alerting:
                                 cloudsql_googleapis_com:database_cpu_utilization * 100,
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_cpu_utilization_percent
         db-disk-total-bytes-aws:
@@ -143,7 +143,7 @@ alerting:
                                     "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                        "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                        "database_id", "$1", "dbinstance_identifier", "(.+)")
                 )
             record: liferay:db_disk_total_bytes
         db-disk-total-bytes-azure:
@@ -161,7 +161,7 @@ alerting:
                                     "environment_id", "liferay-$1", "environment_id", "(.+)"),
                                 "project_id", "$1", "tag_project_id", "(.+)"),
                             "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
-                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                        "database_id", "$1", "resourcename", "(.+)")
                 )
             record: liferay:db_disk_total_bytes
         db-disk-total-bytes-gcp:
@@ -174,7 +174,7 @@ alerting:
                                 cloudsql_googleapis_com:database_disk_quota,
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_disk_total_bytes
         db-disk-used-bytes-aws:
@@ -191,7 +191,7 @@ alerting:
                                     "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                        "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                        "database_id", "$1", "dbinstance_identifier", "(.+)")
                 )
             record: liferay:db_disk_used_bytes
         db-disk-used-bytes-azure:
@@ -208,7 +208,7 @@ alerting:
                                     "environment_id", "liferay-$1", "environment_id", "(.+)"),
                                 "project_id", "$1", "tag_project_id", "(.+)"),
                             "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
-                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                        "database_id", "$1", "resourcename", "(.+)")
                 )
             record: liferay:db_disk_used_bytes
         db-disk-used-bytes-gcp:
@@ -221,7 +221,7 @@ alerting:
                                 cloudsql_googleapis_com:database_disk_bytes_used,
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_disk_used_bytes
         db-instance-state-aws:
@@ -237,7 +237,7 @@ alerting:
                                     "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                        "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                        "database_id", "$1", "dbinstance_identifier", "(.+)")
                 )
             record: liferay:db_instance_state
         db-instance-state-azure:
@@ -254,7 +254,7 @@ alerting:
                                     "environment_id", "liferay-$1", "environment_id", "(.+)"),
                                 "project_id", "$1", "tag_project_id", "(.+)"),
                             "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
-                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                        "database_id", "$1", "resourcename", "(.+)")
                 )
             record: liferay:db_instance_state
         db-instance-state-gcp:
@@ -267,7 +267,7 @@ alerting:
                                 last_over_time(cloudsql_googleapis_com:database_instance_state[5m]) > 0,
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_instance_state
         db-memory-total-bytes-aws:
@@ -282,7 +282,7 @@ alerting:
                                     "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                        "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                        "database_id", "$1", "dbinstance_identifier", "(.+)")
                 )
             record: liferay:db_memory_total_bytes
         db-memory-total-bytes-gcp:
@@ -295,7 +295,7 @@ alerting:
                                 cloudsql_googleapis_com:database_memory_quota,
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_memory_total_bytes
         db-memory-used-bytes-aws:
@@ -312,7 +312,7 @@ alerting:
                                     "environment_id", "$1", "tag_EnvironmentId", "(.+)"),
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
-                        "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                        "database_id", "$1", "dbinstance_identifier", "(.+)")
                 )
             record: liferay:db_memory_used_bytes
         db-memory-used-bytes-gcp:
@@ -325,7 +325,7 @@ alerting:
                                 cloudsql_googleapis_com:database_memory_usage,
                                 "environment_id", "liferay-$1", "database_id", "[^:]*:(.+)-infra-db-instance-(?:blue|green)$"),
                             "data_plane", "$1", "database_id", ".*-(blue|green)$"),
-                        "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
+                        "database_id", "$1", "database_id", "[^:]*:(.+)")
                 )
             record: liferay:db_memory_used_bytes
         db-memory-utilization-percent-azure:
@@ -342,7 +342,7 @@ alerting:
                                     "environment_id", "liferay-$1", "environment_id", "(.+)"),
                                 "project_id", "$1", "tag_project_id", "(.+)"),
                             "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
-                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                        "database_id", "$1", "resourcename", "(.+)")
                 )
             record: liferay:db_memory_utilization_percent
         rds-memory-bytes-aws:
