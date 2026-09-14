@@ -78,6 +78,9 @@ tests:
                     count: 7
                     path: spec.forProvider.rule
             -   equal:
+                    path: spec.forProvider.rule[0].enabled
+                    value: true
+            -   equal:
                     path: spec.forProvider.rule[0].record
                     value: liferay:container_cpu_limit_utilization:ratio
             -   equal:
@@ -95,6 +98,9 @@ tests:
             -   equal:
                     path: spec.forProvider.rule[5].record
                     value: liferay:db_instance_state
+            -   equal:
+                    path: spec.forProvider.rule[6].enabled
+                    value: true
             -   equal:
                     path: spec.forProvider.rule[6].record
                     value: liferay:db_memory_utilization_percent

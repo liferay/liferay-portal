@@ -26,7 +26,8 @@ spec:
         resourceGroupName: {{ $resourceGroupName | quote }}
         rule:
             {{- range $matchedRules }}
-            -   expression: |
+            -   enabled: true
+                expression: |
                     {{- .expr | nindent 20 }}
                 record: {{ .record | quote }}
             {{- end }}
