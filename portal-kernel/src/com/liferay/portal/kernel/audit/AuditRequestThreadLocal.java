@@ -36,6 +36,10 @@ public class AuditRequestThreadLocal {
 		return _clientIP;
 	}
 
+	public String getCorrelationId() {
+		return _correlationId;
+	}
+
 	public String getQueryString() {
 		return _queryString;
 	}
@@ -84,6 +88,10 @@ public class AuditRequestThreadLocal {
 		_clientIP = clientIP;
 	}
 
+	public void setCorrelationId(String correlationId) {
+		_correlationId = correlationId;
+	}
+
 	public void setQueryString(String queryString) {
 		_queryString = queryString;
 	}
@@ -130,6 +138,7 @@ public class AuditRequestThreadLocal {
 
 	private String _clientHost;
 	private String _clientIP;
+	private String _correlationId;
 	private String _queryString;
 	private String _realUserEmailAddress;
 	private long _realUserId;
