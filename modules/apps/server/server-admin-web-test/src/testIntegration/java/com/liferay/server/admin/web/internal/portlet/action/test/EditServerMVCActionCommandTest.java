@@ -21,6 +21,9 @@ import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporaryS
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.captcha.CaptchaTextException;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -45,6 +48,8 @@ import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.service.PortletPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
@@ -62,11 +67,19 @@ import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.ProxyFactory;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
+
+import jakarta.portlet.ActionRequest;
+
+import java.sql.Connection;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -398,6 +411,59 @@ public class EditServerMVCActionCommandTest {
 		}
 	}
 
+	@Test
+	public void testVerifyDatabaseState() throws Exception {
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_verifyDatabaseState();
+
+		Assert.assertTrue(
+			SessionErrors.isEmpty(mockLiferayPortletActionRequest));
+		Assert.assertTrue(
+			SessionMessages.contains(
+				mockLiferayPortletActionRequest, "verifyDatabaseState"));
+
+		_alterColumnName("companyId_backup LONG", "companyId", "UserTracker");
+
+		try {
+			mockLiferayPortletActionRequest = _verifyDatabaseState();
+
+			Assert.assertEquals(
+				_getMessages(PostupgradeVerifyDatabaseState::getErrorMessages),
+				SessionErrors.get(
+					mockLiferayPortletActionRequest,
+					"verifyDatabaseStateErrors"));
+			Assert.assertEquals(
+				_getMessages(PostupgradeVerifyDatabaseState::getWarnMessages),
+				SessionMessages.get(
+					mockLiferayPortletActionRequest,
+					"verifyDatabaseStateWarnings"));
+			Assert.assertFalse(
+				SessionMessages.contains(
+					mockLiferayPortletActionRequest, "verifyDatabaseState"));
+		}
+		finally {
+			_alterColumnName(
+				"companyId LONG", "companyId_backup", "UserTracker");
+		}
+
+		_alterColumnType("city", "VARCHAR(100)", "Address");
+
+		try {
+			mockLiferayPortletActionRequest = _verifyDatabaseState();
+
+			Assert.assertEquals(
+				_getMessages(PostupgradeVerifyDatabaseState::getWarnMessages),
+				SessionMessages.get(
+					mockLiferayPortletActionRequest,
+					"verifyDatabaseStateWarnings"));
+			Assert.assertTrue(
+				SessionErrors.isEmpty(mockLiferayPortletActionRequest));
+		}
+		finally {
+			_alterColumnType("city", "VARCHAR(75)", "Address");
+		}
+	}
+
 	private String _addJournalContentPortletToLayout(Layout layout)
 		throws Exception {
 
@@ -425,6 +491,29 @@ public class EditServerMVCActionCommandTest {
 			null, StringPool.BLANK);
 	}
 
+	private void _alterColumnName(
+			String columnDefinition, String columnName, String tableName)
+		throws Exception {
+
+		DB db = DBManagerUtil.getDB();
+
+		try (Connection connection = DataAccess.getConnection()) {
+			db.alterColumnName(
+				connection, tableName, columnName, columnDefinition);
+		}
+	}
+
+	private void _alterColumnType(
+			String columnName, String columnType, String tableName)
+		throws Exception {
+
+		DB db = DBManagerUtil.getDB();
+
+		try (Connection connection = DataAccess.getConnection()) {
+			db.alterColumnType(connection, tableName, columnName, columnType);
+		}
+	}
+
 	private LayoutRevision _getLayoutRevision() throws Exception {
 		LayoutSetBranch layoutSetBranch =
 			_layoutSetBranchLocalService.addLayoutSetBranch(
@@ -439,6 +528,23 @@ public class EditServerMVCActionCommandTest {
 		return _layoutRevisionLocalService.getLayoutRevision(
 			layoutSetBranch.getLayoutSetBranchId(),
 			layoutBranch.getLayoutBranchId(), _layout.getPlid());
+	}
+
+	private List<String> _getMessages(
+			Function<PostupgradeVerifyDatabaseState, List<String>> function)
+		throws Exception {
+
+		PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
+			new PostupgradeVerifyDatabaseState();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				PostupgradeVerifyDatabaseState.class.getName(),
+				LoggerTestUtil.ERROR)) {
+
+			postupgradeVerifyDatabaseState.verify();
+		}
+
+		return function.apply(postupgradeVerifyDatabaseState);
 	}
 
 	private void _testProcessAction(
@@ -531,6 +637,23 @@ public class EditServerMVCActionCommandTest {
 		}
 	}
 
+	private MockLiferayPortletActionRequest _verifyDatabaseState() {
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				PostupgradeVerifyDatabaseState.class.getName(),
+				LoggerTestUtil.ERROR)) {
+
+			ReflectionTestUtil.invoke(
+				_mvcActionCommand, "_verifyDatabaseState",
+				new Class<?>[] {ActionRequest.class},
+				mockLiferayPortletActionRequest);
+		}
+
+		return mockLiferayPortletActionRequest;
+	}
+
 	private static final String[] _COMMANDS = {
 		"addLogLevel", "cacheDb", "cacheMulti", "cacheServlet", "cacheSingle",
 		"cleanUpAddToPagePermissions",
@@ -540,7 +663,7 @@ public class EditServerMVCActionCommandTest {
 		"dlGenerateOpenOfficePreviews", "dlGeneratePDFPreviews",
 		"dlGenerateVideoPreviews", "gc", "runScript", "shutdown", "threadDump",
 		"updateExternalServices", "updateLogLevels", "updatePortalProperties",
-		"updatePortalProperties"
+		"updatePortalProperties", "verifyDatabaseState"
 	};
 
 	@Inject
