@@ -11,6 +11,7 @@ import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {sitesPageTest} from '../../../fixtures/sitesPageTest';
+import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {ChangeTrackingPage} from '../../../pages/change-tracking-web/ChangeTrackingPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
@@ -46,6 +47,28 @@ const testWithPublications = mergeTests(
 	sitesAdminPagesTest,
 	sitesPageTest
 );
+
+/**
+ * Checks the layouts of the site through the layout service instead of the
+ * site pages endpoint, which is search based and does not see the pages
+ * imported into a Publication until it is published.
+ */
+async function hasSitePage(
+	apiHelpers: ApiHelpers,
+	pageName: string,
+	siteExternalReferenceCode: string
+) {
+	const site = await apiHelpers.headlessAdminSite.getSite(
+		siteExternalReferenceCode
+	);
+
+	const layouts = await apiHelpers.jsonWebServicesLayout.getLayouts(
+		Number(site.id),
+		false
+	);
+
+	return layouts.some((layout) => layout.nameCurrentValue === pageName);
+}
 
 test(
 	'Execute Site Template Sync action is hidden for inactive Site Templates',
@@ -223,14 +246,11 @@ test(
 		// The new page propagates to the linked Site
 
 		await expect(async () => {
-			const sitePages = await apiHelpers.headlessAdminSite.getPages(
-				externalReferenceCode,
-				'pageSize=100&privateLayout=false'
-			);
-
 			expect(
-				sitePages.items.some(
-					(item) => item.name_i18n['en-US'] === newPageName
+				await hasSitePage(
+					apiHelpers,
+					newPageName,
+					externalReferenceCode
 				)
 			).toBeTruthy();
 		}).toPass();
@@ -279,10 +299,6 @@ testWithPublications(
 
 		apiHelpers.data.push({id: externalReferenceCode, type: 'site'});
 
-		const site = await apiHelpers.headlessAdminSite.getSite(
-			externalReferenceCode
-		);
-
 		// Add a new page to the Site Template
 
 		const layoutSetPrototypeGroup =
@@ -319,32 +335,23 @@ testWithPublications(
 				siteTemplateName
 			);
 
-			// The new page is in the Publication but not in production. The
-			// layouts are read through the layout service because the site
-			// pages endpoint is search based and the pages imported into a
-			// Publication are not indexed until it is published
-
-			let layouts = await apiHelpers.jsonWebServicesLayout.getLayouts(
-				Number(site.id),
-				false
-			);
+			// The new page is in the Publication but not in production
 
 			expect(
-				layouts.some(
-					(layout) => layout.nameCurrentValue === newPageName
+				await hasSitePage(
+					apiHelpers,
+					newPageName,
+					externalReferenceCode
 				)
 			).toBeTruthy();
 
 			await changeTrackingPage.workOnProduction();
 
-			layouts = await apiHelpers.jsonWebServicesLayout.getLayouts(
-				Number(site.id),
-				false
-			);
-
 			expect(
-				layouts.some(
-					(layout) => layout.nameCurrentValue === newPageName
+				await hasSitePage(
+					apiHelpers,
+					newPageName,
+					externalReferenceCode
 				)
 			).toBeFalsy();
 
@@ -355,14 +362,11 @@ testWithPublications(
 			);
 
 			await expect(async () => {
-				layouts = await apiHelpers.jsonWebServicesLayout.getLayouts(
-					Number(site.id),
-					false
-				);
-
 				expect(
-					layouts.some(
-						(layout) => layout.nameCurrentValue === newPageName
+					await hasSitePage(
+						apiHelpers,
+						newPageName,
+						externalReferenceCode
 					)
 				).toBeTruthy();
 			}).toPass();
