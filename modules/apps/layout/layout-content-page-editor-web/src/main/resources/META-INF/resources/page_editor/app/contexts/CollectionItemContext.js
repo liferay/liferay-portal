@@ -156,11 +156,12 @@ const useGetContent = (
 					itemExternalReferenceCode,
 				},
 
-				(content) => {
+				({content, editableTypes}) => {
 					dispatch(
 						updateFragmentEntryLinkContent({
 							collectionItemId,
 							content,
+							editableTypes,
 							fragmentEntryLinkId,
 						})
 					);

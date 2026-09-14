@@ -313,12 +313,16 @@ export default {
 			segmentsExperienceId,
 		};
 
-		return serviceFetch<[{content: string; fragmentEntryLinkId: string}]>(
-			config.renderFragmentEntriesURL,
-			{
-				body,
-			}
-		);
+		return serviceFetch<
+			Array<
+				Pick<
+					FragmentEntryLink,
+					'content' | 'editableTypes' | 'fragmentEntryLinkId'
+				>
+			>
+		>(config.renderFragmentEntriesURL, {
+			body,
+		});
 	},
 
 	swapFragment({

@@ -397,6 +397,8 @@ export default function fragmentEntryLinksReducer(
 					...fragmentEntryLinks[action.fragmentEntryLinkId],
 					collectionContent,
 					content: action.content,
+					editableTypes:
+						action.editableTypes || fragmentEntryLink.editableTypes,
 				},
 			};
 		}
