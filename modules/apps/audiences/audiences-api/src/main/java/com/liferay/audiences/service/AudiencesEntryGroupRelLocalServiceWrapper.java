@@ -299,6 +299,16 @@ public class AudiencesEntryGroupRelLocalServiceWrapper
 			start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.audiences.model.AudiencesEntryGroupRel>
+		getAudiencesEntryGroupRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC) {
+
+		return _audiencesEntryGroupRelLocalService.
+			getAudiencesEntryGroupRelsByAudienceEntryERC(
+				companyId, audienceEntryERC);
+	}
+
 	/**
 	 * Returns the number of audiences entry group rels.
 	 *
@@ -382,4 +392,4 @@ public class AudiencesEntryGroupRelLocalServiceWrapper
 		_audiencesEntryGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:970620157
+// LIFERAY-SERVICE-BUILDER-HASH:-1909105853

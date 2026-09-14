@@ -232,6 +232,11 @@ public interface AudiencesEntryGroupRelLocalService
 	public List<AudiencesEntryGroupRel> getAudiencesEntryGroupRels(
 		int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<AudiencesEntryGroupRel>
+		getAudiencesEntryGroupRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC);
+
 	/**
 	 * Returns the number of audiences entry group rels.
 	 *
@@ -273,4 +278,4 @@ public interface AudiencesEntryGroupRelLocalService
 		AudiencesEntryGroupRel audiencesEntryGroupRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:624482262
+// LIFERAY-SERVICE-BUILDER-HASH:1700074687
