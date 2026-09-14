@@ -1,6 +1,5 @@
 import AssetAppearsOnResolver from './AssetAppearsOnResolver';
 import CustomAssetsListResolver from './CustomAssetsListResolver';
-import DocumentsAndMediaListResolver from './DocumentsAndMediaListResolver';
 import DocumentsAndMediaMetricsResolver from './DocumentsAndMediaMetricsResolver';
 import EventAnalysisListResolver from './EventAnalysisListResolver';
 import EventsByUserSessionsResolver from './EventsByUserSessionsResolver';
@@ -26,7 +25,6 @@ export const resolvers = {
 	assetPages: AssetAppearsOnResolver,
 	dashboards: CustomAssetsListResolver,
 	document: DocumentsAndMediaMetricsResolver,
-	documents: DocumentsAndMediaListResolver,
 	eventAnalysisList: EventAnalysisListResolver,
 	eventsByUserSessions: EventsByUserSessionsResolver,
 	experiment: ExperimentResolver,
