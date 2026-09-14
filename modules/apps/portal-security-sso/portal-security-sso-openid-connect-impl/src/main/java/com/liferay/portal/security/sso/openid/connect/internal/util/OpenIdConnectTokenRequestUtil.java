@@ -182,9 +182,9 @@ public class OpenIdConnectTokenRequestUtil {
 			OIDCProviderMetadata oidcProviderMetadata, OIDCTokens oidcTokens)
 		throws OpenIdConnectServiceException.TokenException {
 
-		JWSAlgorithm jwsAlgorithm = oidcClientMetadata.getIDTokenJWSAlg();
-
 		String algorithm = null;
+
+		JWSAlgorithm jwsAlgorithm = oidcClientMetadata.getIDTokenJWSAlg();
 
 		if (jwsAlgorithm != null) {
 			algorithm = jwsAlgorithm.getName();
