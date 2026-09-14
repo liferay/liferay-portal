@@ -12,7 +12,7 @@
 <tbody>
 <tr>
 	<td>NODE_CHECKBOX</td>
-	<td>//*[contains(@class,'component-text') or contains(@class,'flex-grow')][normalize-space(text())='${key_nodeName}']/ancestor::div[contains(@class,'treeview')]//input[@type='checkbox'] | //*[contains(@class,'treeview-item')][.//text()[normalize-space()='${key_nodeName}']]//input[@type='checkbox']</td>
+	<td>//*[contains(@class,'component-text') or contains(@class,'flex-grow')][normalize-space(text())='${key_nodeName}']/ancestor::div[contains(@class,'treeview')]//input[@type='checkbox'] | //*[contains(@class,'treeview-item')][./*[contains(@class,'treeview-link')]//text()[normalize-space()='${key_nodeName}']]//input[@type='checkbox']</td>
 	<td></td>
 </tr>
 <tr>
