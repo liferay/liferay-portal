@@ -10,6 +10,7 @@ import com.liferay.audiences.exception.AudiencesEntryJSONAttributeException;
 import com.liferay.audiences.exception.AudiencesEntryJSONException;
 import com.liferay.audiences.exception.AudiencesEntryNameException;
 import com.liferay.audiences.model.AudiencesEntry;
+import com.liferay.audiences.service.AudiencesEntryGroupRelLocalService;
 import com.liferay.audiences.service.base.AudiencesEntryLocalServiceBaseImpl;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
@@ -22,6 +23,8 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.search.Indexable;
+import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
@@ -64,6 +67,17 @@ public class AudiencesEntryLocalServiceImpl
 		audiencesEntry.setName(name);
 
 		return audiencesEntryPersistence.update(audiencesEntry);
+	}
+
+	@Indexable(type = IndexableType.DELETE)
+	@Override
+	public AudiencesEntry deleteAudiencesEntry(AudiencesEntry audiencesEntry) {
+		_audiencesEntryGroupRelLocalService.
+			deleteAudiencesEntryGroupRelsByAudienceEntryERC(
+				audiencesEntry.getCompanyId(),
+				audiencesEntry.getExternalReferenceCode());
+
+		return audiencesEntryPersistence.remove(audiencesEntry);
 	}
 
 	@Override
@@ -198,6 +212,10 @@ public class AudiencesEntryLocalServiceImpl
 
 	@Reference
 	private AudiencesCriteriaProvider _audiencesCriteriaProvider;
+
+	@Reference
+	private AudiencesEntryGroupRelLocalService
+		_audiencesEntryGroupRelLocalService;
 
 	@Reference
 	private CustomSQL _customSQL;

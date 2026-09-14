@@ -19,4 +19,20 @@ import org.osgi.service.component.annotations.Component;
 )
 public class AudiencesEntryGroupRelLocalServiceImpl
 	extends AudiencesEntryGroupRelLocalServiceBaseImpl {
+
+	@Override
+	public void deleteAudiencesEntryGroupRelsByAudienceEntryERC(
+		long companyId, String audienceEntryERC) {
+
+		audiencesEntryGroupRelPersistence.removeByC_AEERC(
+			companyId, audienceEntryERC);
+	}
+
+	@Override
+	public void deleteAudiencesEntryGroupRelsByGroupERC(
+		long companyId, String groupERC) {
+
+		audiencesEntryGroupRelPersistence.removeByC_GERC(companyId, groupERC);
+	}
+
 }
