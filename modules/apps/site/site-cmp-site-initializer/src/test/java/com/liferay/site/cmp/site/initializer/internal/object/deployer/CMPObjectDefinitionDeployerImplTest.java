@@ -47,33 +47,31 @@ public class CMPObjectDefinitionDeployerImplTest {
 
 		SiteInitializer cmpSiteInitializer = Mockito.mock(
 			SiteInitializer.class);
-
-		ReflectionTestUtil.setFieldValue(
-			cmpObjectDefinitionDeployerImpl, "_cmpSiteInitializer",
-			cmpSiteInitializer);
-
 		SiteInitializer cmsSiteInitializer = Mockito.mock(
 			SiteInitializer.class);
 
 		ReflectionTestUtil.setFieldValue(
+			cmpObjectDefinitionDeployerImpl, "_cmpSiteInitializer",
+			cmpSiteInitializer);
+		ReflectionTestUtil.setFieldValue(
 			cmpObjectDefinitionDeployerImpl, "_cmsSiteInitializer",
 			cmsSiteInitializer);
 
-		ObjectDefinition objectDefinition = Mockito.mock(
-			ObjectDefinition.class);
-
 		long companyId = RandomTestUtil.randomLong();
 
-		Mockito.when(
-			objectDefinition.getCompanyId()
-		).thenReturn(
-			companyId
-		);
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
 
 		Mockito.when(
 			objectDefinition.isCMP()
 		).thenReturn(
 			true
+		);
+
+		Mockito.when(
+			objectDefinition.getCompanyId()
+		).thenReturn(
+			companyId
 		);
 
 		try (MockedStatic<SiteInitializerUtil> siteInitializerUtilMockedStatic =
@@ -95,24 +93,20 @@ public class CMPObjectDefinitionDeployerImplTest {
 		CMPObjectDefinitionDeployerImpl cmpObjectDefinitionDeployerImpl =
 			new CMPObjectDefinitionDeployerImpl();
 
-		ReflectionTestUtil.setFieldValue(
-			cmpObjectDefinitionDeployerImpl, "_bundleContext",
-			Mockito.mock(BundleContext.class));
-
 		SiteInitializer cmpSiteInitializer = Mockito.mock(
+			SiteInitializer.class);
+		SiteInitializer cmsSiteInitializer = Mockito.mock(
 			SiteInitializer.class);
 
 		ReflectionTestUtil.setFieldValue(
 			cmpObjectDefinitionDeployerImpl, "_cmpSiteInitializer",
 			cmpSiteInitializer);
-
-		SiteInitializer cmsSiteInitializer = Mockito.mock(
-			SiteInitializer.class);
-
 		ReflectionTestUtil.setFieldValue(
 			cmpObjectDefinitionDeployerImpl, "_cmsSiteInitializer",
 			cmsSiteInitializer);
-
+		ReflectionTestUtil.setFieldValue(
+			cmpObjectDefinitionDeployerImpl, "_bundleContext",
+			Mockito.mock(BundleContext.class));
 		ReflectionTestUtil.setFieldValue(
 			cmpObjectDefinitionDeployerImpl, "_filterFactory",
 			Mockito.mock(FilterFactory.class));

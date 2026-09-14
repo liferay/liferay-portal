@@ -38,14 +38,16 @@ public class SiteInitializerUtilTest {
 	public void testInitializeDefersWhenContentTypeObjectDefinitionMissing()
 		throws Exception {
 
+		long companyId = RandomTestUtil.randomLong();
+
+		SiteInitializer siteInitializer = Mockito.mock(SiteInitializer.class);
+
 		try (MockedStatic<ObjectDefinitionLocalServiceUtil>
 				objectDefinitionLocalServiceUtilMockedStatic =
 					Mockito.mockStatic(ObjectDefinitionLocalServiceUtil.class);
 			MockedStatic<GroupLocalServiceUtil>
 				groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
 					GroupLocalServiceUtil.class)) {
-
-			long companyId = RandomTestUtil.randomLong();
 
 			objectDefinitionLocalServiceUtilMockedStatic.when(
 				() ->
@@ -55,9 +57,6 @@ public class SiteInitializerUtilTest {
 			).thenReturn(
 				null
 			);
-
-			SiteInitializer siteInitializer = Mockito.mock(
-				SiteInitializer.class);
 
 			SiteInitializerUtil.initialize(companyId, siteInitializer);
 
@@ -74,6 +73,10 @@ public class SiteInitializerUtilTest {
 	public void testInitializeProceedsWhenContentTypeObjectDefinitionsExist()
 		throws Exception {
 
+		long companyId = RandomTestUtil.randomLong();
+
+		SiteInitializer siteInitializer = Mockito.mock(SiteInitializer.class);
+
 		try (MockedStatic<ObjectDefinitionLocalServiceUtil>
 				objectDefinitionLocalServiceUtilMockedStatic =
 					Mockito.mockStatic(ObjectDefinitionLocalServiceUtil.class);
@@ -86,8 +89,6 @@ public class SiteInitializerUtilTest {
 			MockedStatic<LayoutLocalServiceUtil>
 				layoutLocalServiceUtilMockedStatic = Mockito.mockStatic(
 					LayoutLocalServiceUtil.class)) {
-
-			long companyId = RandomTestUtil.randomLong();
 
 			objectDefinitionLocalServiceUtilMockedStatic.when(
 				() ->
@@ -121,9 +122,6 @@ public class SiteInitializerUtilTest {
 			).thenReturn(
 				Mockito.mock(Layout.class)
 			);
-
-			SiteInitializer siteInitializer = Mockito.mock(
-				SiteInitializer.class);
 
 			SiteInitializerUtil.initialize(companyId, siteInitializer);
 

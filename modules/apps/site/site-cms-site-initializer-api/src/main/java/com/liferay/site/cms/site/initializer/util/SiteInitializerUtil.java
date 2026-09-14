@@ -46,7 +46,7 @@ public class SiteInitializerUtil {
 		throws PortalException {
 
 		for (String externalReferenceCode :
-				_EXTERNAL_REFERENCE_CODES) {
+				_CONTENT_TYPE_EXTERNAL_REFERENCE_CODES) {
 
 			ObjectDefinition objectDefinition =
 				ObjectDefinitionLocalServiceUtil.
@@ -147,9 +147,9 @@ public class SiteInitializerUtil {
 		}
 
 		return adminUsers.get(0);
-	}A
+	}
 
-	private static final String[] _EXTERNAL_REFERENCE_CODES = {
+	private static final String[] _CONTENT_TYPE_EXTERNAL_REFERENCE_CODES = {
 		"L_CMS_BASIC_DOCUMENT", "L_CMS_BASIC_WEB_CONTENT", "L_CMS_BLOG",
 		"L_CMS_EXTERNAL_VIDEO"
 	};
