@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.db;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.db.IndexMetadata;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -148,6 +149,39 @@ public class DBResourceUtilTest {
 	}
 
 	@Test
+	public void testGetModuleTablesIndexMetadatas() throws Exception {
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		Mockito.when(
+			bundle.getResource(ArgumentMatchers.anyString())
+		).thenReturn(
+			null
+		);
+
+		Map<String, List<IndexMetadata>> moduleTablesIndexMetadatas =
+			DBResourceUtil.getModuleTablesIndexMetadatas(bundle);
+
+		Assert.assertTrue(moduleTablesIndexMetadatas.isEmpty());
+
+		URL url = Mockito.mock(URL.class);
+
+		Mockito.when(
+			url.openStream()
+		).thenReturn(
+			new ByteArrayInputStream(_INDEXES_SQL.getBytes())
+		);
+
+		Mockito.when(
+			bundle.getResource(ArgumentMatchers.anyString())
+		).thenReturn(
+			url
+		);
+
+		_assertTablesIndexMetadatas(
+			DBResourceUtil.getModuleTablesIndexMetadatas(bundle));
+	}
+
+	@Test
 	public void testGetModuleTablesPrimaryKeyColumnNamesWithNullTablesSQL()
 		throws Exception {
 
@@ -238,6 +272,24 @@ public class DBResourceUtilTest {
 	}
 
 	@Test
+	public void testGetPortalTablesIndexMetadatas() throws Exception {
+		try (MockedStatic<StringUtil> stringUtilMockedStatic =
+				Mockito.mockStatic(
+					StringUtil.class, Mockito.CALLS_REAL_METHODS)) {
+
+			stringUtilMockedStatic.when(
+				() -> StringUtil.read(
+					Mockito.nullable(Class.class), Mockito.anyString())
+			).thenReturn(
+				_INDEXES_SQL
+			);
+
+			_assertTablesIndexMetadatas(
+				DBResourceUtil.getPortalTablesIndexMetadatas());
+		}
+	}
+
+	@Test
 	public void testGetPortalTablesPrimaryKeyColumnNames() throws Exception {
 		try (MockedStatic<StringUtil> stringUtilMockedStatic =
 				Mockito.mockStatic(
@@ -271,6 +323,40 @@ public class DBResourceUtilTest {
 		Set<String> tableNames = DBResourceUtil.parseCreateTableSQL(null);
 
 		Assert.assertTrue(tableNames.isEmpty());
+	}
+
+	private void _assertIndexMetadata(
+		String[] expectedColumnNames, String expectedIndexName,
+		boolean expectedUnique, IndexMetadata indexMetadata) {
+
+		Assert.assertArrayEquals(
+			expectedColumnNames, indexMetadata.getColumnNames());
+		Assert.assertEquals(expectedIndexName, indexMetadata.getIndexName());
+		Assert.assertEquals(expectedUnique, indexMetadata.isUnique());
+	}
+
+	private void _assertTablesIndexMetadatas(
+		Map<String, List<IndexMetadata>> tablesIndexMetadatas) {
+
+		List<IndexMetadata> indexMetadatas = tablesIndexMetadatas.get(
+			"TestTable1");
+
+		Assert.assertEquals(
+			indexMetadatas.toString(), 2, indexMetadatas.size());
+
+		_assertIndexMetadata(
+			new String[] {"column1"}, "IX_TEST1", false, indexMetadatas.get(0));
+		_assertIndexMetadata(
+			new String[] {"column2", "column3"}, "IX_TEST2", true,
+			indexMetadatas.get(1));
+
+		indexMetadatas = tablesIndexMetadatas.get("TestTable2");
+
+		Assert.assertEquals(
+			indexMetadatas.toString(), 1, indexMetadatas.size());
+
+		_assertIndexMetadata(
+			new String[] {"column1"}, "IX_TEST3", false, indexMetadatas.get(0));
 	}
 
 	private InputStream _getSQLFileInputStream(String lineSeparator) {
@@ -307,5 +393,11 @@ public class DBResourceUtilTest {
 		Assert.assertTrue(
 			!moduleIndexesSQL.contains(StringPool.RETURN_NEW_LINE));
 	}
+
+	private static final String _INDEXES_SQL = StringBundler.concat(
+		"create index IX_TEST1 on TestTable1 (column1);\n",
+		"create unique index IX_TEST2 on TestTable1 (column2, ",
+		"column3[$COLUMN_LENGTH:75$]);\n\n",
+		"create index IX_TEST3 on TestTable2 (column1);");
 
 }
