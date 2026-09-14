@@ -884,12 +884,13 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 			RandomTestUtil.randomLocaleStringMap(), null,
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		Group spaceGroup = space.getGroup();
+
 		DepotEntry otherSpace = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(), null,
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
-
-		Group spaceGroup = space.getGroup();
 
 		_spaceContentReviewerUser = UserTestUtil.addUser();
 
