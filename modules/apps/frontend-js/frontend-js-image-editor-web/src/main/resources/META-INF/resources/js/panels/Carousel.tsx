@@ -4,6 +4,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import classNames from 'classnames';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
@@ -92,7 +93,7 @@ export function Carousel({
 
 			<div
 				{...trackProps}
-				className={`editor-carousel-track ${className}`}
+				className={classNames('editor-carousel-track', className)}
 				onScroll={updateScroll}
 				ref={trackRef}
 			>
