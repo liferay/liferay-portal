@@ -437,10 +437,18 @@ export class FDSConnection {
 
 		const remaining = this.withoutOwnKey(fdsState.connectionState);
 
+		// The state read back is deeply readonly, which maps a value the data
+		// set keeps without reading to Readonly<unknown>, and nothing unknown
+		// satisfies that. Saying so here is the whole of it: what a consumer
+		// asks to have remembered is opaque going in and coming out.
+
 		const connectionStates =
 			connectionState === undefined
 				? remaining
-				: {...remaining, [this.appId!]: connectionState};
+				: {
+						...remaining,
+						[this.appId!]: connectionState as Readonly<unknown>,
+					};
 
 		if (connectionStates) {
 			fdsState.connectionState = connectionStates;
