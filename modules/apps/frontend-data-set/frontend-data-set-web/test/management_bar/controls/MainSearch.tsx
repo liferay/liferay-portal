@@ -141,7 +141,7 @@ describe('MainSearch', () => {
 		expect(onSearch).toHaveBeenCalledWith({query: 'abc'});
 	});
 
-	it('drops the pending search when the input is cleared', async () => {
+	it('searches for the empty query when the input is cleared', async () => {
 		const input = renderMainSearch({searchAsYouType: true});
 
 		await user.type(input, 'abc');
@@ -150,7 +150,31 @@ describe('MainSearch', () => {
 		elapse(DEBOUNCE_DELAY);
 
 		expect(onClear).toHaveBeenCalled();
-		expect(onSearch).not.toHaveBeenCalled();
+		expect(onSearch).toHaveBeenCalledTimes(1);
+		expect(onSearch).toHaveBeenCalledWith({query: ''});
+	});
+
+	it('does not search when the input is cleared and search as you type is disabled', async () => {
+		const input = renderMainSearch();
+
+		await user.type(input, 'abc{Enter}');
+		await user.clear(input);
+
+		elapse(DEBOUNCE_DELAY);
+
+		expect(onSearch).toHaveBeenCalledTimes(1);
+		expect(onSearch).toHaveBeenCalledWith({query: 'abc'});
+	});
+
+	it('searches for the empty query on Enter when the input is cleared', async () => {
+		const input = renderMainSearch();
+
+		await user.type(input, 'abc{Enter}');
+		await user.clear(input);
+		await user.type(input, '{Enter}');
+
+		expect(onSearch).toHaveBeenCalledTimes(2);
+		expect(onSearch).toHaveBeenLastCalledWith({query: ''});
 	});
 
 	it('searches on every keystroke when the items are filtered client side', async () => {
@@ -160,6 +184,11 @@ describe('MainSearch', () => {
 
 		expect(onSearch).toHaveBeenCalledTimes(2);
 		expect(onSearch).toHaveBeenLastCalledWith({query: 'ab'});
+
+		await user.clear(input);
+
+		expect(onSearch).toHaveBeenCalledTimes(3);
+		expect(onSearch).toHaveBeenLastCalledWith({query: ''});
 	});
 
 	it('searches client side items on Enter when search as you type is disabled', async () => {

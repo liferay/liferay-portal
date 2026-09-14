@@ -94,12 +94,7 @@ function MainSearch({onClear}: {onClear: () => void}) {
 						}
 
 						if (uncontrolledItems) {
-							if (query) {
-								debouncedSearch(query);
-							}
-							else {
-								cancelDebounce(debouncedSearch);
-							}
+							debouncedSearch(query);
 						}
 						else {
 							onSearch({query});
