@@ -47,7 +47,6 @@ public class PluginsAdminPanelAppNavigationItemsTest
 		List<PanelAppNavigationItem> panelAppNavigationItems =
 			_pluginsAdminPanelApp.getPanelAppNavigationItems(
 				httpServletRequest);
-
 		String[] expectedTabs2Names = {
 			"portlets", "themes", "layout-templates"
 		};

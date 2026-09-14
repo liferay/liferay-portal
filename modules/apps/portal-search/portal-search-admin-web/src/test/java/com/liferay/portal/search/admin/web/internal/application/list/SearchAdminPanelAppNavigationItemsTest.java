@@ -84,13 +84,11 @@ public class SearchAdminPanelAppNavigationItemsTest
 			panelAppNavigationItems.get(0);
 
 		assertCanonicalName("connections", panelAppNavigationItem);
-
 		assertParameterValue("connections", panelAppNavigationItem, "tabs1");
 
 		panelAppNavigationItem = panelAppNavigationItems.get(1);
 
 		assertCanonicalName("index-actions", panelAppNavigationItem);
-
 		assertParameterValue("index-actions", panelAppNavigationItem, "tabs1");
 	}
 
@@ -128,7 +126,6 @@ public class SearchAdminPanelAppNavigationItemsTest
 			panelAppNavigationItems.get(2);
 
 		assertCanonicalName("field-mappings", panelAppNavigationItem);
-
 		assertParameterValue("field-mappings", panelAppNavigationItem, "tabs1");
 	}
 

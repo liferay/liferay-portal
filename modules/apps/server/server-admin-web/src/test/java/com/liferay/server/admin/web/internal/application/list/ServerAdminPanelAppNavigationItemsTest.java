@@ -46,7 +46,6 @@ public class ServerAdminPanelAppNavigationItemsTest
 	public void testGetPanelAppNavigationItems() throws Exception {
 		List<PanelAppNavigationItem> panelAppNavigationItems =
 			_serverAdminPanelApp.getPanelAppNavigationItems(httpServletRequest);
-
 		String[] expectedTabs1Names = {
 			"resources", "log-levels", "properties", "database-migration",
 			"document-migration", "external-services", "friendly-urls",

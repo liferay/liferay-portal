@@ -47,7 +47,6 @@ public class OAuthClientAdminPanelAppNavigationItemsTest
 		List<PanelAppNavigationItem> panelAppNavigationItems =
 			_oAuthClientAdminPanelApp.getPanelAppNavigationItems(
 				httpServletRequest);
-
 		String[] expectedNavigations = {
 			"oauth-clients", "oauth-client-as-local-metadata",
 			"oauth-client-pr-local-metadata"

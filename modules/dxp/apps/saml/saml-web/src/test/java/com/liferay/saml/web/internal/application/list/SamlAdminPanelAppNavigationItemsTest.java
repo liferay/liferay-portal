@@ -59,7 +59,6 @@ public class SamlAdminPanelAppNavigationItemsTest
 
 		List<PanelAppNavigationItem> panelAppNavigationItems =
 			_samlAdminPanelApp.getPanelAppNavigationItems(httpServletRequest);
-
 		String[] expectedTabs1Names = {
 			"general", "identity-provider", "service-provider-connections",
 			"service-provider", "identity-provider-connections"
@@ -85,7 +84,6 @@ public class SamlAdminPanelAppNavigationItemsTest
 
 		List<PanelAppNavigationItem> panelAppNavigationItems =
 			_samlAdminPanelApp.getPanelAppNavigationItems(httpServletRequest);
-
 		String[] expectedTabs1Names = {
 			"general", "identity-provider", "service-provider-connections"
 		};
@@ -110,7 +108,6 @@ public class SamlAdminPanelAppNavigationItemsTest
 
 		List<PanelAppNavigationItem> panelAppNavigationItems =
 			_samlAdminPanelApp.getPanelAppNavigationItems(httpServletRequest);
-
 		String[] expectedTabs1Names = {
 			"general", "service-provider", "identity-provider-connections"
 		};
