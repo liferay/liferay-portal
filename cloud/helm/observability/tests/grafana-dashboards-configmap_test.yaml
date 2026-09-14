@@ -40,6 +40,9 @@ tests:
                     pattern: "\"variable\": \"cloud\""
             -   matchRegex:
                     path: data["databases.json"]
+                    pattern: "\"options\": \"/\\.\\*RUNNING/i\""
+            -   matchRegex:
+                    path: data["databases.json"]
                     pattern: liferay:db_cpu_reserved_cores\{environment_id=
             -   matchRegex:
                     path: data["databases.json"]

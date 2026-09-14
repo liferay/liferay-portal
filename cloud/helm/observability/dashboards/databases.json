@@ -696,7 +696,7 @@
 									{
 										"matcher": {
 											"id": "byRegexp",
-											"options": "/.*RUNNING/"
+											"options": "/.*RUNNING/i"
 										},
 										"properties": [
 											{
@@ -711,7 +711,7 @@
 									{
 										"matcher": {
 											"id": "byRegexp",
-											"options": "/.*FAILED/"
+											"options": "/.*FAILED/i"
 										},
 										"properties": [
 											{
@@ -726,7 +726,7 @@
 									{
 										"matcher": {
 											"id": "byRegexp",
-											"options": "/.*MAINTENANCE/"
+											"options": "/.*MAINTENANCE/i"
 										},
 										"properties": [
 											{
@@ -741,7 +741,7 @@
 									{
 										"matcher": {
 											"id": "byRegexp",
-											"options": "/.*PENDING_CREATE/"
+											"options": "/.*PENDING_CREATE/i"
 										},
 										"properties": [
 											{
@@ -756,7 +756,7 @@
 									{
 										"matcher": {
 											"id": "byRegexp",
-											"options": "/.*RUNNABLE/"
+											"options": "/.*RUNNABLE/i"
 										},
 										"properties": [
 											{
@@ -771,7 +771,7 @@
 									{
 										"matcher": {
 											"id": "byRegexp",
-											"options": "/.*SUSPENDED/"
+											"options": "/.*SUSPENDED/i"
 										},
 										"properties": [
 											{
