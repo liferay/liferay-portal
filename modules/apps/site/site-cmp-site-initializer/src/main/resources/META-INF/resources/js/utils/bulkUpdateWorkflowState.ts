@@ -15,6 +15,14 @@ function compareWorkflowGroups(
 	firstWorkflowGroup: WorkflowGroup,
 	secondWorkflowGroup: WorkflowGroup
 ) {
+	const titleOrder = firstWorkflowGroup.workflowDefinitionTitle.localeCompare(
+		secondWorkflowGroup.workflowDefinitionTitle
+	);
+
+	if (titleOrder) {
+		return titleOrder;
+	}
+
 	const nameOrder = firstWorkflowGroup.workflowDefinitionName.localeCompare(
 		secondWorkflowGroup.workflowDefinitionName
 	);

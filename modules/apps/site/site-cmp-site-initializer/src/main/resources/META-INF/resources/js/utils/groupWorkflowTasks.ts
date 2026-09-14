@@ -23,6 +23,7 @@ export interface WorkflowGroup {
 	stepGroups: StepGroup[];
 	taskCount: number;
 	workflowDefinitionName: string;
+	workflowDefinitionTitle: string;
 	workflowDefinitionVersion: string;
 }
 
@@ -47,8 +48,13 @@ export function groupWorkflowTasks(
 	const workflowGroups = new Map<string, WorkflowGroup>();
 
 	(items || []).forEach((item) => {
-		const {label, name, workflowDefinitionName, workflowDefinitionVersion} =
-			item.embedded;
+		const {
+			label,
+			name,
+			workflowDefinitionName,
+			workflowDefinitionTitle,
+			workflowDefinitionVersion,
+		} = item.embedded;
 
 		const key = `${workflowDefinitionName}\0${workflowDefinitionVersion}`;
 
@@ -59,6 +65,8 @@ export function groupWorkflowTasks(
 				stepGroups: [],
 				taskCount: 0,
 				workflowDefinitionName,
+				workflowDefinitionTitle:
+					workflowDefinitionTitle || workflowDefinitionName,
 				workflowDefinitionVersion,
 			};
 

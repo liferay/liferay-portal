@@ -133,8 +133,7 @@ export default function WorkflowTasksFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: ({itemData}) =>
-						itemData.embedded?.title ?? itemData.embedded?.name,
+					component: ({itemData}) => itemData.embedded?.label,
 					name: 'taskTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,

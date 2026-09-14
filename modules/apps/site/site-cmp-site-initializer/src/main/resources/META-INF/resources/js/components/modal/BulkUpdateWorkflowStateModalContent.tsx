@@ -111,8 +111,11 @@ export default function BulkUpdateWorkflowStateModalContent({
 				)}
 
 				{workflowGroups.map((workflowGroup) => {
-					const {workflowDefinitionName, workflowDefinitionVersion} =
-						workflowGroup;
+					const {
+						workflowDefinitionName,
+						workflowDefinitionTitle,
+						workflowDefinitionVersion,
+					} = workflowGroup;
 
 					const workflowKey = getWorkflowKey(workflowGroup);
 					const workflowTaskIds = getWorkflowTaskIds(workflowGroup);
@@ -133,8 +136,8 @@ export default function BulkUpdateWorkflowStateModalContent({
 						workflowDefinitionVersion
 					);
 					const workflowLabel = hasMultipleVersions
-						? `${workflowDefinitionName} ${versionLabel}`
-						: workflowDefinitionName;
+						? `${workflowDefinitionTitle} ${versionLabel}`
+						: workflowDefinitionTitle;
 
 					return (
 						<div
@@ -160,7 +163,7 @@ export default function BulkUpdateWorkflowStateModalContent({
 								/>
 
 								<span className="lfr-cmp__bulk-update-state-workflow-name">
-									{workflowDefinitionName}
+									{workflowDefinitionTitle}
 								</span>
 
 								{hasMultipleVersions && (
@@ -187,7 +190,7 @@ export default function BulkUpdateWorkflowStateModalContent({
 												? 'expand-x'
 												: 'collapse-x'
 										),
-										workflowDefinitionName
+										workflowDefinitionTitle
 									)}
 									className="lfr-cmp__bulk-update-state-workflow-toggle"
 									displayType="unstyled"

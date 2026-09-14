@@ -205,6 +205,7 @@ export interface WorkflowTaskItemData {
 		};
 		workflowDefinitionId: number;
 		workflowDefinitionName: string;
+		workflowDefinitionTitle?: string;
 		workflowDefinitionVersion: string;
 		workflowInstanceId: number;
 	};
