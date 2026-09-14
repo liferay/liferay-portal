@@ -97,6 +97,26 @@ tests:
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   equal:
+                    path: spec.template.spec.syncPolicy.managedNamespaceMetadata.labels
+                    value:
+                        licensing.liferay.com/environment: "true"
+                        liferay.com/observable: "true"
+                        pod-security.kubernetes.io/enforce: restricted
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.syncPolicy.managedNamespaceMetadata.labels
+                    value:
+                        licensing.liferay.com/environment: "true"
+                        liferay.com/observable: "true"
+                        pod-security.kubernetes.io/enforce: restricted
+                template: templates/applicationset-liferay.yaml
+        it: Labels the environment namespace identically from the infrastructure and Liferay ApplicationSets
+        set:
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+    -   asserts:
+            -   equal:
                     path: spec.template.spec.sources[0].helm.valueFiles
                     value:
                         -   $values/liferay/projects/{{path[2]}}/base/infrastructure.yaml

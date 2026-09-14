@@ -29,6 +29,12 @@ instrumentation.opentelemetry.io/inject-python: "false"
 sidecar.opentelemetry.io/inject: "false"
 {{- end -}}
 
+{{- define "liferay-platform.environmentNamespaceLabels" -}}
+licensing.liferay.com/environment: "true"
+liferay.com/observable: "true"
+pod-security.kubernetes.io/enforce: restricted
+{{- end -}}
+
 {{- define "liferay-platform.infrastructureRepositoryRevision" -}}
 {{- .Values.gitops.infrastructureRepository.revision | default .Values.gitops.repository.revision -}}
 {{- end -}}
