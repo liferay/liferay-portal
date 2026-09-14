@@ -7,6 +7,7 @@ package com.liferay.portal.security.key.internal.secret;
 
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -49,6 +50,8 @@ public class SecretManagerImplTest {
 		ReflectionTestUtil.setFieldValue(
 			_secretManagerImpl, "_keyManagerProfileRegistry",
 			_keyManagerProfileRegistry);
+		ReflectionTestUtil.setFieldValue(
+			_secretManagerImpl, "_portalCache", _portalCache);
 		ReflectionTestUtil.setFieldValue(
 			_secretManagerImpl, "_serviceTrackerMap", _serviceTrackerMap);
 	}
@@ -334,6 +337,9 @@ public class SecretManagerImplTest {
 
 	@Mock
 	private KeyManagerProfileRegistry _keyManagerProfileRegistry;
+
+	@Mock
+	private PortalCache<String, String> _portalCache;
 
 	private final SecretManagerImpl _secretManagerImpl =
 		new SecretManagerImpl();

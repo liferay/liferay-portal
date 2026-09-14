@@ -11,11 +11,15 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.key.KeyReference;
+import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
 import com.liferay.portal.security.key.secret.exception.SecretException;
@@ -56,6 +60,8 @@ public class SecretManagerImpl implements SecretManager {
 
 			secretProvider.deleteSecret(
 				companyId, keyReference.getIdentifier());
+
+			_removeCachedSecret(companyId, keyReference);
 		}
 		catch (SecretException secretException) {
 			if (_log.isWarnEnabled()) {
@@ -170,9 +176,13 @@ public class SecretManagerImpl implements SecretManager {
 
 			secretProvider.putSecret(companyId, secret);
 
-			return new KeyReference(
+			KeyReference resolvedKeyReference = new KeyReference(
 				keyReference.getIdentifier(), secretProviderId,
 				KeyReference.Type.SECRET);
+
+			_removeCachedSecret(companyId, resolvedKeyReference);
+
+			return resolvedKeyReference;
 		}
 		catch (SecretException secretException) {
 			if (_log.isWarnEnabled()) {
@@ -185,6 +195,10 @@ public class SecretManagerImpl implements SecretManager {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
+		_portalCache = PortalCacheHelperUtil.getPortalCache(
+			PortalCacheManagerNames.SINGLE_VM,
+			SecretResolverImpl.PORTAL_CACHE_NAME);
+
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundleContext, SecretProvider.class, "(secret.provider.id=*)",
 			new PropertyServiceReferenceMapper<>("secret.provider.id"));
@@ -274,6 +288,15 @@ public class SecretManagerImpl implements SecretManager {
 		return secretProviderId;
 	}
 
+	private void _removeCachedSecret(
+		long companyId, KeyReference keyReference) {
+
+		_portalCache.remove(
+			SecretResolverImpl.getKey(
+				companyId,
+				KeyReferenceUtil.toKeyReferenceString(keyReference)));
+	}
+
 	private List<KeyReference> _toKeyReferences(
 		List<String> secretIdentifiers, String secretProviderId) {
 
@@ -289,6 +312,7 @@ public class SecretManagerImpl implements SecretManager {
 	@Reference
 	private KeyManagerProfileRegistry _keyManagerProfileRegistry;
 
+	private PortalCache<String, String> _portalCache;
 	private ServiceTrackerMap<String, List<SecretProvider>> _serviceTrackerMap;
 
 }
