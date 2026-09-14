@@ -9,6 +9,8 @@ import com.liferay.headless.admin.user.dto.v1_0.Role;
 import com.liferay.headless.admin.user.dto.v1_0.RolePermission;
 import com.liferay.headless.admin.user.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.user.internal.dto.v1_0.util.PermissionUtil;
+import com.liferay.headless.admin.user.internal.util.v1_0.ObjectDefinitionResourceNameUtil;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ResourceAction;
@@ -197,7 +199,12 @@ public class RoleDTOConverter
 						return resourceName;
 					});
 				setPrimaryKey(resourcePermission::getPrimKey);
-				setResourceName(resourcePermission::getName);
+				setResourceName(
+					() ->
+						ObjectDefinitionResourceNameUtil.
+							toExternalReferenceCodeResourceName(
+								resourcePermission.getName(),
+								_objectDefinitionLocalService));
 				setRoleId(resourcePermission::getRoleId);
 				setScope(() -> (long)resourcePermission.getScope());
 			}
@@ -206,6 +213,9 @@ public class RoleDTOConverter
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private PermissionService _permissionService;

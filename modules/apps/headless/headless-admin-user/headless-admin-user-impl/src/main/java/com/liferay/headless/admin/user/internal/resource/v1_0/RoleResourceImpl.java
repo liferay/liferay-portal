@@ -6,15 +6,25 @@
 package com.liferay.headless.admin.user.internal.resource.v1_0;
 
 import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
+import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.user.dto.v1_0.Role;
 import com.liferay.headless.admin.user.dto.v1_0.RolePermission;
 import com.liferay.headless.admin.user.internal.odata.entity.v1_0.RoleEntityModel;
+import com.liferay.headless.admin.user.internal.util.v1_0.ObjectDefinitionResourceNameUtil;
 import com.liferay.headless.admin.user.internal.util.v1_0.ResourcePermissionUtil;
 import com.liferay.headless.admin.user.resource.v1_0.RoleResource;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.NoSuchResourceActionException;
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
 import com.liferay.portal.kernel.exception.RoleAssignmentException;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -33,7 +43,9 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -50,6 +62,7 @@ import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributo
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -180,7 +193,7 @@ public class RoleResourceImpl
 
 			@Override
 			public String getLabelLanguageKey() {
-				return "roles";
+				return _LABEL_LANGUAGE_KEY;
 			}
 
 			@Override
@@ -525,6 +538,8 @@ public class RoleResourceImpl
 			return;
 		}
 
+		List<String> unresolvedPermissionNames = new ArrayList<>();
+
 		for (RolePermission rolePermission : role.getRolePermissions()) {
 			int scope = Math.toIntExact(rolePermission.getScope());
 
@@ -538,12 +553,59 @@ public class RoleResourceImpl
 				primKey = String.valueOf(contextCompany.getCompanyId());
 			}
 
+			String resourceName =
+				ObjectDefinitionResourceNameUtil.
+					toObjectDefinitionIdResourceName(
+						rolePermission.getResourceName(),
+						contextCompany.getCompanyId(),
+						_objectDefinitionLocalService);
+
 			for (String actionId : rolePermission.getActionIds()) {
-				_resourcePermissionService.addResourcePermission(
-					contextUser.getGroupId(), contextCompany.getCompanyId(),
-					rolePermission.getResourceName(), scope, primKey,
-					serviceBuilderRole.getRoleId(), actionId);
+				try {
+					_resourcePermissionService.addResourcePermission(
+						contextUser.getGroupId(), contextCompany.getCompanyId(),
+						resourceName, scope, primKey,
+						serviceBuilderRole.getRoleId(), actionId);
+				}
+				catch (NoSuchResourceActionException
+							noSuchResourceActionException) {
+
+					if (!ExportImportThreadLocal.isImportInProcess()) {
+						throw noSuchResourceActionException;
+					}
+
+					if (_log.isWarnEnabled()) {
+						_log.warn(noSuchResourceActionException);
+					}
+
+					unresolvedPermissionNames.add(
+						StringBundler.concat(
+							rolePermission.getResourceName(), StringPool.POUND,
+							actionId));
+				}
 			}
+		}
+
+		if (!unresolvedPermissionNames.isEmpty()) {
+			_exportImportReportEntryLocalService.
+				getOrAddExportImportReportEntry(
+					0, contextCompany.getCompanyId(),
+					serviceBuilderRole.getExternalReferenceCode(),
+					_portal.getClassNameId(
+						com.liferay.portal.kernel.model.Role.class),
+					serviceBuilderRole.getRoleId(),
+					GetterUtil.getLong(
+						ExportImportThreadLocal.
+							getExportImportConfigurationId()),
+					ExportImportReportEntryConstants.TYPE_WARNING,
+					_language.format(
+						LocaleUtil.US,
+						"the-following-permissions-were-not-imported-because-" +
+							"their-resources-do-not-exist-x",
+						StringUtil.merge(
+							unresolvedPermissionNames,
+							StringPool.COMMA_AND_SPACE)),
+					null, _LABEL_LANGUAGE_KEY);
 		}
 	}
 
@@ -635,13 +697,31 @@ public class RoleResourceImpl
 			_roleTypeContributorProvider);
 	}
 
+	private static final String _LABEL_LANGUAGE_KEY = "roles";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		RoleResourceImpl.class);
+
 	private static final EntityModel _entityModel = new RoleEntityModel();
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
 
 	@Reference
+	private ExportImportReportEntryLocalService
+		_exportImportReportEntryLocalService;
+
+	@Reference
+	private Language _language;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
 	private OrganizationService _organizationService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private ResourcePermissionService _resourcePermissionService;
