@@ -362,6 +362,29 @@ public class WorkflowTask implements Cloneable, Serializable {
 
 	protected String workflowDefinitionName;
 
+	public String getWorkflowDefinitionTitle() {
+		return workflowDefinitionTitle;
+	}
+
+	public void setWorkflowDefinitionTitle(String workflowDefinitionTitle) {
+		this.workflowDefinitionTitle = workflowDefinitionTitle;
+	}
+
+	public void setWorkflowDefinitionTitle(
+		UnsafeSupplier<String, Exception>
+			workflowDefinitionTitleUnsafeSupplier) {
+
+		try {
+			workflowDefinitionTitle =
+				workflowDefinitionTitleUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String workflowDefinitionTitle;
+
 	public String getWorkflowDefinitionVersion() {
 		return workflowDefinitionVersion;
 	}
@@ -459,4 +482,4 @@ public class WorkflowTask implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-458072351
+// LIFERAY-REST-BUILDER-HASH:-727829056

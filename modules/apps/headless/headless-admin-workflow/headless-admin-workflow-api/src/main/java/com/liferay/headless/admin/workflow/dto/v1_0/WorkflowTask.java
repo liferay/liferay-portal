@@ -747,6 +747,52 @@ public class WorkflowTask implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _workflowDefinitionNameSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The localized title of the task's workflow definition."
+	)
+	public String getWorkflowDefinitionTitle() {
+		if (_workflowDefinitionTitleSupplier != null) {
+			workflowDefinitionTitle = _workflowDefinitionTitleSupplier.get();
+
+			_workflowDefinitionTitleSupplier = null;
+		}
+
+		return workflowDefinitionTitle;
+	}
+
+	public void setWorkflowDefinitionTitle(String workflowDefinitionTitle) {
+		this.workflowDefinitionTitle = workflowDefinitionTitle;
+
+		_workflowDefinitionTitleSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setWorkflowDefinitionTitle(
+		UnsafeSupplier<String, Exception>
+			workflowDefinitionTitleUnsafeSupplier) {
+
+		_workflowDefinitionTitleSupplier = () -> {
+			try {
+				return workflowDefinitionTitleUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The localized title of the task's workflow definition."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String workflowDefinitionTitle;
+
+	@JsonIgnore
+	private Supplier<String> _workflowDefinitionTitleSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getWorkflowDefinitionVersion() {
 		if (_workflowDefinitionVersionSupplier != null) {
@@ -1133,6 +1179,22 @@ public class WorkflowTask implements Serializable {
 			sb.append("\"");
 		}
 
+		String workflowDefinitionTitle = getWorkflowDefinitionTitle();
+
+		if (workflowDefinitionTitle != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"workflowDefinitionTitle\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(workflowDefinitionTitle));
+
+			sb.append("\"");
+		}
+
 		String workflowDefinitionVersion = getWorkflowDefinitionVersion();
 
 		if (workflowDefinitionVersion != null) {
@@ -1305,4 +1367,4 @@ public class WorkflowTask implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:523729478
+// LIFERAY-REST-BUILDER-HASH:840321123
