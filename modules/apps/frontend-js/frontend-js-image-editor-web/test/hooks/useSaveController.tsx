@@ -23,6 +23,7 @@ const IMAGE: LoadedImage = {
 	fileName: 'test.jpg',
 	height: 800,
 	previewUrl: 'test.jpg',
+	thumbUrl: 'thumb.jpg',
 	type: 'image/jpeg',
 	width: 1200,
 };

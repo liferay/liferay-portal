@@ -79,6 +79,20 @@ describe('editorReducer', () => {
 		expect(state.present.adjustments.shadows).toBe(-20);
 	});
 
+	it('applies a filter preset as one undoable step', () => {
+		let state = editorReducer(history(), {
+			filter: 'sepia',
+			type: 'set-filter',
+		});
+
+		expect(state.present.filter).toBe('sepia');
+		expect(undoLabel(state)).toBe('filter');
+
+		state = editorReducer(state, {type: 'undo'});
+
+		expect(state.present.filter).toBe('none');
+	});
+
 	it('swaps dimensions on rotation', () => {
 		const next = editorReducer(history(), {type: 'rotate-90'});
 

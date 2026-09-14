@@ -55,6 +55,7 @@ export interface EditState {
 
 	angle: number;
 	crop: CropRect;
+	filter: FilterPreset;
 
 	flipHorizontal: boolean;
 
@@ -63,6 +64,28 @@ export interface EditState {
 	sourceHeight: number;
 	sourceWidth: number;
 }
+
+export type FilterPreset =
+	| 'bleach'
+	| 'cool'
+	| 'crossprocess'
+	| 'cyanotype'
+	| 'fade'
+	| 'grayscale'
+	| 'invert'
+	| 'matte'
+	| 'noir'
+	| 'none'
+	| 'polaroid'
+	| 'posterize'
+	| 'sepia'
+	| 'solarize'
+	| 'splittone'
+	| 'tealorange'
+	| 'technicolor'
+	| 'vintage'
+	| 'vivid'
+	| 'warm';
 
 interface HistoryEntry {
 	label: string;

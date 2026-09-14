@@ -16,6 +16,7 @@ const image = (previewUrl: string): LoadedImage => ({
 	fileName: 'a.jpg',
 	height: 800,
 	previewUrl,
+	thumbUrl: 'thumb.jpg',
 	type: 'image/jpeg',
 	width: 1200,
 });

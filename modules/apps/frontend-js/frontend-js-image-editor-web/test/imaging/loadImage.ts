@@ -85,6 +85,7 @@ describe('the preview URL ownership', () => {
 		const image = await loadImage(new Blob(['x']), 'small.jpg');
 
 		expect(image.previewUrl).toBe('blob:preview');
+		expect(typeof image.thumbUrl).toBe('string');
 		expect(revokeObjectURL).not.toHaveBeenCalled();
 
 		disposeLoadedImage(image);

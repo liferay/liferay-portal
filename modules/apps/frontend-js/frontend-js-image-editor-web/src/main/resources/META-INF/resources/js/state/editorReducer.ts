@@ -9,6 +9,7 @@ import {
 	DEFAULT_ADJUSTMENTS,
 	EditState,
 	EditorHistory,
+	FilterPreset,
 	MIN_CROP_SIZE,
 	RATIO_VALUES,
 	RatioPreset,
@@ -29,6 +30,7 @@ export type EditorAction =
 	  }
 	| {angle: number; transient?: boolean; type: 'set-angle'}
 	| {crop: CropRect; transient?: boolean; type: 'set-crop'}
+	| {filter: FilterPreset; type: 'set-filter'}
 	| {ratio: RatioPreset; type: 'set-ratio'}
 	| {type: 'undo'};
 
@@ -133,6 +135,14 @@ export function editorReducer(
 				},
 				Liferay.Language.get('crop'),
 				action.transient
+			);
+		}
+
+		case 'set-filter': {
+			return applyEdit(
+				history,
+				{...present, filter: action.filter},
+				Liferay.Language.get('filter')
 			);
 		}
 
@@ -274,6 +284,7 @@ export function initialEditState(
 		adjustments: {...DEFAULT_ADJUSTMENTS},
 		angle: 0,
 		crop: {height: sourceHeight, width: sourceWidth, x: 0, y: 0},
+		filter: 'none',
 		flipHorizontal: false,
 		ratio,
 		rotation: 0,

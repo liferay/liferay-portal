@@ -15,9 +15,11 @@ import {
 	ADJUSTMENT_KEYS,
 	RATIO_PRESETS,
 } from '../../src/main/resources/META-INF/resources/js/editorConfig';
+import {FILTER_PRESETS} from '../../src/main/resources/META-INF/resources/js/imaging/FilterDefs';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {AdjustPanel} from '../../src/main/resources/META-INF/resources/js/panels/AdjustPanel';
 import {CropPanel} from '../../src/main/resources/META-INF/resources/js/panels/CropPanel';
+import {FilterGallery} from '../../src/main/resources/META-INF/resources/js/panels/FilterGallery';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
 	editorReducer,
@@ -33,6 +35,7 @@ const IMAGE: LoadedImage = {
 	fileName: 'test.jpg',
 	height: 800,
 	previewUrl: 'test.jpg',
+	thumbUrl: 'thumb.jpg',
 	type: 'image/jpeg',
 	width: 1200,
 };
@@ -82,6 +85,14 @@ function EditorHarness() {
 					dispatch={dispatch}
 					onAnnounce={() => {}}
 					sliders={ADJUSTMENT_KEYS}
+				/>
+
+				<FilterGallery
+					dispatch={dispatch}
+					filter={history.present.filter}
+					image={IMAGE}
+					onAnnounce={() => {}}
+					presets={FILTER_PRESETS}
 				/>
 
 				<BottomBar
@@ -190,6 +201,25 @@ describe('Editor workspace composition', () => {
 		expect(slider).toHaveValue('0');
 		expect(container.querySelector('image')).not.toHaveAttribute('filter');
 		expect(screen.getByRole('button', {name: 'undo'})).toBeDisabled();
+	});
+
+	it('applies a preset picked from the filter gallery', () => {
+		const {container} = render(<EditorHarness />);
+
+		expect(container.querySelector('image')).not.toHaveAttribute('filter');
+
+		fireEvent.click(screen.getByLabelText('sepia'));
+
+		expect(screen.getByLabelText('sepia')).toBeChecked();
+		expect(container.querySelector('.editor-stage image')).toHaveAttribute(
+			'filter',
+			'url(#aie-preview-filter)'
+		);
+		expect(
+			container.querySelector(
+				'#aie-preview-filter feColorMatrix[type="matrix"]'
+			)
+		).not.toBeNull();
 	});
 
 	it('lays the adjustment sliders out in the configured order', () => {

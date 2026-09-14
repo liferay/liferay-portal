@@ -43,6 +43,13 @@ export interface LoadedImage {
 	 */
 	previewUrl: string;
 
+	/**
+	 * Tiny copy used by the filter gallery: running a colour pipeline per
+	 * preset over the full preview bitmap would mean dozens of filtered
+	 * draws of a multi-megapixel image just to paint 64x40 cards.
+	 */
+	thumbUrl: string;
+
 	type: string;
 	width: number;
 }
@@ -82,6 +89,7 @@ export async function loadImage(
 			fileName,
 			height: bitmap.height,
 			previewUrl,
+			thumbUrl: downsampleToDataURL(bitmap, 160, 'image/jpeg'),
 			type: blob.type || 'image/jpeg',
 			width: bitmap.width,
 		};
@@ -96,6 +104,29 @@ export async function loadImage(
 	finally {
 		bitmap.close();
 	}
+}
+
+function downsampleToDataURL(
+	bitmap: ImageBitmap,
+	longestSide: number,
+	type = 'image/png'
+): string {
+	const scale = longestSide / Math.max(bitmap.width, bitmap.height);
+
+	const canvas = document.createElement('canvas');
+
+	canvas.width = Math.max(Math.round(bitmap.width * scale), 1);
+	canvas.height = Math.max(Math.round(bitmap.height * scale), 1);
+
+	const context = canvas.getContext('2d');
+
+	if (!context) {
+		return '';
+	}
+
+	context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+	return canvas.toDataURL(type, 0.8);
 }
 
 async function createPreviewUrl(

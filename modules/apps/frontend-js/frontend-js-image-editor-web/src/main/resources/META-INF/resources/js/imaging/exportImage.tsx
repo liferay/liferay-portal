@@ -24,6 +24,7 @@ export function editedImageMarkup(state: EditState, dataUrl: string): string {
 			<defs>
 				<FilterDefs
 					adjustments={state.adjustments}
+					filter={state.filter}
 					id="export-filter"
 				/>
 			</defs>
@@ -31,7 +32,7 @@ export function editedImageMarkup(state: EditState, dataUrl: string): string {
 			<g transform={imageTransform(state)}>
 				<image
 					filter={
-						isIdentityFilter(state.adjustments)
+						isIdentityFilter(state.adjustments, state.filter)
 							? undefined
 							: 'url(#export-filter)'
 					}

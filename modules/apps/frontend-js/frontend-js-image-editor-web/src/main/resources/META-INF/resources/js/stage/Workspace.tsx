@@ -125,6 +125,7 @@ export function Workspace({
 
 					<FilterDefs
 						adjustments={state.adjustments}
+						filter={state.filter}
 						id={eid('preview-filter')}
 					/>
 				</defs>
@@ -141,7 +142,10 @@ export function Workspace({
 					<g transform={imageTransform(state)}>
 						<image
 							filter={
-								isIdentityFilter(state.adjustments)
+								isIdentityFilter(
+									state.adjustments,
+									state.filter
+								)
 									? undefined
 									: `url(#${eid('preview-filter')})`
 							}
