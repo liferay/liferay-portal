@@ -218,9 +218,12 @@ test(
 					path.join(__dirname, '/dependencies/', fileName)
 				);
 
-				await commerceLayoutsPage.expectImportCsvPreviewRow(productName, {
-					importStatus: 'The product is no longer available',
-				});
+				await commerceLayoutsPage.expectImportCsvPreviewRow(
+					productName,
+					{
+						importStatus: 'The product is no longer available',
+					}
+				);
 
 				await commerceLayoutsPage.closeFrameButton.click();
 

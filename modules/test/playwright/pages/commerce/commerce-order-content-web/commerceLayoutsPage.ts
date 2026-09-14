@@ -210,15 +210,16 @@ export class CommerceLayoutsPage {
 			name: 'Cancel',
 		});
 		this.iconLock = page.locator('.lexicon-icon-lock');
-		this.importCsvFrame = page.frameLocator('iframe[title="Import from CSV"]');
+		this.importCsvFrame = page.frameLocator(
+			'iframe[title="Import from CSV"]'
+		);
 		this.downloadCsvTemplateButton = this.importCsvFrame.getByRole(
 			'button',
 			{name: 'Download Template'}
 		);
 		this.importCsvErrorAlert = this.importCsvFrame.locator('.alert-danger');
-		this.importCsvFileInput = this.importCsvFrame.locator(
-			'input[type="file"]'
-		);
+		this.importCsvFileInput =
+			this.importCsvFrame.locator('input[type="file"]');
 		this.importCsvPreviewRow = (productName: string) =>
 			this.importCsvFrame
 				.locator('tbody tr')
