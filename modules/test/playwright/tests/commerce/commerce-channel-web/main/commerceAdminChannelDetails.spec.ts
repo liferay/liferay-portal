@@ -108,6 +108,35 @@ test('LPD-13490 Manage channel country visibility from channel page', async ({
 	).toBeVisible();
 });
 
+test(
+	'Requested Delivery Date at Checkout is available and disabled by default',
+	{tag: ['@COMMERCE-9323', '@LPD-105600']},
+	async ({apiHelpers, commerceAdminChannelDetailsPage, page, site}) => {
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await page.goto('/');
+
+		await commerceAdminChannelDetailsPage.goto();
+
+		await commerceAdminChannelDetailsPage
+			.channelNameLink(channel.name)
+			.click();
+
+		await expect(
+			commerceAdminChannelDetailsPage.requestedDeliveryDateAtCheckoutToggle
+		).toBeVisible();
+		await expect(
+			commerceAdminChannelDetailsPage.requestedDeliveryDateAtCheckoutToggle
+		).toBeEnabled();
+		await expect(
+			commerceAdminChannelDetailsPage.requestedDeliveryDateAtCheckoutToggle
+		).not.toBeChecked();
+	}
+);
+
 test('LPD-30466 Verify users without edit permission cannot click on channel name link', async ({
 	apiHelpers,
 	commerceAdminChannelDetailsPage,

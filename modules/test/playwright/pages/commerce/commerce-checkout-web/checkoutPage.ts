@@ -67,11 +67,16 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	) => Promise<{column: Locator; row: Locator}>;
 	readonly page: Page;
 	readonly paymentMethodRadio: (name: string) => Locator;
+	readonly paymentMethodRadios: Locator;
 	readonly paymentTermLink: (label: string) => Locator;
 	readonly paymentTermOption: (label: string) => Locator;
 	readonly phoneNumberInput: Locator;
 	readonly previousButton: Locator;
 	readonly regionInput: Locator;
+	readonly requestedDeliveryDateDayInput: Locator;
+	readonly requestedDeliveryDateInput: Locator;
+	readonly requestedDeliveryDateMonthInput: Locator;
+	readonly requestedDeliveryDateYearInput: Locator;
 	readonly saveButton: Locator;
 	readonly shippingAddressSelect: Locator;
 	readonly shippingCost: Locator;
@@ -194,6 +199,9 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.page = page;
 		this.paymentMethodRadio = (name: string) =>
 			page.getByRole('radio', {name});
+		this.paymentMethodRadios = page.locator(
+			'input[name$="commercePaymentMethodKey"]'
+		);
 		this.paymentTermLink = (label: string) =>
 			page.getByRole('link', {name: label});
 		this.paymentTermOption = (label: string) => page.getByLabel(label);
@@ -202,6 +210,18 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		});
 		this.previousButton = page.getByRole('button', {name: 'Previous'});
 		this.regionInput = page.getByTitle('Region');
+		this.requestedDeliveryDateInput = page.locator(
+			'input[id$="_requestedDeliveryDate"]'
+		);
+		this.requestedDeliveryDateDayInput = page.locator(
+			'input[id$="_requestedDeliveryDateDay"]'
+		);
+		this.requestedDeliveryDateMonthInput = page.locator(
+			'input[id$="_requestedDeliveryDateMonth"]'
+		);
+		this.requestedDeliveryDateYearInput = page.locator(
+			'input[id$="_requestedDeliveryDateYear"]'
+		);
 		this.commerceShippingAddress = page.getByTestId(
 			'commerceShippingAddress'
 		);
@@ -332,6 +352,28 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		await this.continueButton.click();
 
 		await expect(this.orderConfirmationContainer).toBeVisible();
+	}
+
+	async setRequestedDeliveryDate(date: Date) {
+		const day = date.getDate();
+		const month = date.getMonth();
+		const year = date.getFullYear();
+
+		await this.requestedDeliveryDateInput.click();
+		await this.requestedDeliveryDateInput.pressSequentially(
+			`${String(month + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${year}`
+		);
+		await this.requestedDeliveryDateInput.press('Enter');
+
+		await expect(this.requestedDeliveryDateDayInput).toHaveValue(
+			String(day)
+		);
+		await expect(this.requestedDeliveryDateMonthInput).toHaveValue(
+			String(month)
+		);
+		await expect(this.requestedDeliveryDateYearInput).toHaveValue(
+			String(year)
+		);
 	}
 
 	async performCheckoutUntilStep(stopAt: string) {

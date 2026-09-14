@@ -278,16 +278,47 @@ export class CommerceAdminChannelsPage {
 			await (await this.channelsTableRowLink(channelName)).click();
 		}
 
-		await this.page
-			.getByRole('link', {exact: true, name: shippingMethodName})
-			.click();
+		const shippingMethodLink = this.page.getByRole('link', {
+			exact: true,
+			name: shippingMethodName,
+		});
+
+		await expect(async () => {
+			if (await this.shippingMethodActiveField.isHidden()) {
+				await shippingMethodLink.click({timeout: 5000});
+			}
+
+			await expect(this.shippingMethodActiveField).toBeVisible({
+				timeout: 5000,
+			});
+		}).toPass({timeout: 30000});
+
 		await this.shippingMethodActiveField.check();
+
+		await expect(this.shippingMethodActiveField).toBeChecked({
+			timeout: 5000,
+		});
+
 		await this.shippingMethodSaveButton.click();
-		await this.shippingMethodOptionsLink.click();
+
+		await expect(async () => {
+			if (await this.shippingMethodOptionsAddButton.isHidden()) {
+				await this.shippingMethodOptionsLink.click({timeout: 5000});
+			}
+
+			await expect(this.shippingMethodOptionsAddButton).toBeVisible({
+				timeout: 5000,
+			});
+		}).toPass({timeout: 30000});
 
 		let shippingPrice = 10;
 
 		await this.shippingMethodOptionsAddButton.click();
+
+		await expect(this.shippingOptionNameField).toBeVisible({
+			timeout: 15000,
+		});
+
 		for (const shippingOption of shippingOptions) {
 			await this.shippingOptionNameField.fill(shippingOption);
 			if (amount) {

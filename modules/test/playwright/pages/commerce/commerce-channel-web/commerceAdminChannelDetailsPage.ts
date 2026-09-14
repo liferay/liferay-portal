@@ -72,12 +72,14 @@ export class CommerceAdminChannelDetailsPage {
 	readonly linkSupplierSelect: Locator;
 	readonly linkTab: (tabName: string) => Locator;
 	readonly maxOpenOrderAccountInput: Locator;
+	readonly ordersPanel: Locator;
 	readonly page: Page;
 	readonly placeHolderTerm: (
 		isNestedFrame: boolean,
 		tableName: string,
 		text: string
 	) => Promise<Locator>;
+	readonly requestedDeliveryDateAtCheckoutToggle: Locator;
 	readonly saveButton: Locator;
 	readonly searchedEntry: (name: string) => Locator;
 	readonly selectButton: (
@@ -325,6 +327,11 @@ export class CommerceAdminChannelDetailsPage {
 		this.maxOpenOrderAccountInput = page.getByLabel(
 			'Maximum Number of Open Orders per Account'
 		);
+		this.ordersPanel = page
+			.locator('.card')
+			.filter({has: page.locator('.card-header', {hasText: 'Orders'})});
+		this.requestedDeliveryDateAtCheckoutToggle =
+			this.ordersPanel.getByLabel('Requested Delivery Date at Checkout');
 		this.saveButton = page.getByRole('link', {name: 'Save'});
 		this.searchedEntry = (name) => {
 			return page.getByRole('menuitem', {name: new RegExp(name)});
@@ -534,6 +541,30 @@ export class CommerceAdminChannelDetailsPage {
 		await (await this.frameSaveButton(false, tableName)).click();
 		await waitForAlert(await this.sidePanelFrame(tableName));
 		await (await this.closeSidePanelFrame(false, tableName)).click();
+	}
+
+	async activateChannelEntry(name: string) {
+		await expect(async () => {
+			if (await this.isActive.isHidden()) {
+				await (
+					await this.generalCommerceAdminChannelTableLink(name)
+				).click({timeout: 5000});
+			}
+
+			await expect(this.isActive).toBeVisible({timeout: 5000});
+		}).toPass({timeout: 30000});
+
+		await this.isActive.setChecked(true);
+
+		await expect(this.isActive).toBeChecked({timeout: 5000});
+
+		await this.sidePanelSaveButton.click();
+
+		await waitForAlert(this.sidePanelFrameLocator);
+
+		await this.sidePanelCloseButton.click();
+
+		await expect(this.isActive).toBeHidden({timeout: 15000});
 	}
 
 	async activatePaymentMethod(name: string, description: string) {

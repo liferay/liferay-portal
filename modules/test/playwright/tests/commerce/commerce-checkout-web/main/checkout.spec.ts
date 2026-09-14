@@ -18,12 +18,14 @@ import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {productMenuPageTest} from '../../../../fixtures/productMenuPageTest';
 import {systemSettingsPageTest} from '../../../../fixtures/systemSettingsPageTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {liferayConfig} from '../../../../liferay.config';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
 	performLogout,
+	userData,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
@@ -1100,7 +1102,7 @@ test(
 
 			apiHelpers.data.push({id: product1.id, type: 'product'});
 
-			await commerceAdminProductDetailsPage.publishLink.click();
+			await commerceAdminProductDetailsPage.publish();
 
 			await waitForAlert(page);
 
@@ -1144,15 +1146,7 @@ test(
 				)
 			).toBeHidden();
 
-			await commerceAdminProductDetailsPage.publishLink.click();
-
-			await page.waitForLoadState('domcontentloaded');
-
-			await waitForAlert(
-				page,
-				'Success:Your request completed successfully.',
-				{autoClose: false}
-			);
+			await commerceAdminProductDetailsPage.publish();
 
 			await commerceAdminProductDetailsSkusPage
 				.skusTableRowLink(sku1)
@@ -1202,6 +1196,7 @@ test(
 		let shippingOption2;
 		let sku1;
 		let sku2;
+		let user;
 
 		await test.step('Create a Catalog', async () => {
 			catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog(
@@ -1265,25 +1260,12 @@ test(
 
 			apiHelpers.data.push({id: channel.id, type: 'channel'});
 
-			await (
-				await commerceAdminChannelDetailsPage.generalCommerceAdminChannelTableLink(
-					'Money Order'
-				)
-			).click();
-			await commerceAdminChannelDetailsPage.isActive.click();
-			await commerceAdminChannelDetailsPage.sidePanelSaveButton.click();
-
-			await waitForAlert(commerceAdminChannelsPage.sidePanelFrameLocator);
-
-			await (
-				await commerceAdminChannelDetailsPage.generalCommerceAdminChannelTableLink(
-					'PayPal'
-				)
-			).click();
-			await commerceAdminChannelDetailsPage.isActive.click();
-			await commerceAdminChannelDetailsPage.sidePanelSaveButton.click();
-
-			await waitForAlert(commerceAdminChannelsPage.sidePanelFrameLocator);
+			await commerceAdminChannelDetailsPage.activateChannelEntry(
+				'Money Order'
+			);
+			await commerceAdminChannelDetailsPage.activateChannelEntry(
+				'PayPal'
+			);
 
 			shippingOption1 = getRandomString();
 			shippingOption2 = getRandomString();
@@ -1303,10 +1285,13 @@ test(
 				type: 'business',
 			});
 
-			const user =
-				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					'demo.unprivileged@liferay.com'
-				);
+			user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			userData[user.alternateName] = {
+				name: user.givenName,
+				password: 'test',
+				surname: user.familyName,
+			};
 
 			const rolesResponse =
 				await apiHelpers.headlessAdminUser.getAccountRoles(account.id);
@@ -1437,7 +1422,7 @@ test(
 			await performLogout(page);
 			await performLoginViaApi({
 				page,
-				screenName: 'demo.unprivileged',
+				screenName: user.alternateName,
 			});
 
 			await page.goto(
@@ -1471,9 +1456,18 @@ test(
 		});
 
 		await test.step('Add to cart one product from the product publisher and one product from the product details', async () => {
+			const addProduct2ToCartResponse = page.waitForResponse(
+				(response) =>
+					response.url().includes('commerce-delivery-cart') &&
+					response.request().method() === 'POST'
+			);
+
 			await productPublisherPage
 				.productCardAddToCartButton(product2.name.en_US)
 				.click();
+
+			await addProduct2ToCartResponse;
+
 			await (
 				await productPublisherPage.productLink(product1.name.en_US)
 			).click();
@@ -1496,7 +1490,17 @@ test(
 		});
 
 		await test.step('Open the Mini cart and assert that two product are visible and submit', async () => {
-			await commerceMiniCartPage.miniCartButton.click();
+			await expect(async () => {
+				if (await commerceMiniCartPage.miniCartButtonClose.isHidden()) {
+					await commerceMiniCartPage.miniCartButton.click({
+						timeout: 5000,
+					});
+				}
+
+				await expect(
+					commerceMiniCartPage.miniCartButtonClose
+				).toBeVisible({timeout: 5000});
+			}).toPass({timeout: 30000});
 
 			await expect(
 				commerceMiniCartPage.miniCartItem(product2.name.en_US)
@@ -1537,12 +1541,13 @@ test(
 			await checkoutPage.continueButton.click();
 
 			await expect(page.getByText('Money Order')).toBeVisible();
-			await expect(
-				page.locator(
-					'[id="_com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet_commercePaymentMethodKey_1"]'
-				)
-			).toBeChecked();
 			await expect(page.getByText('PayPal')).toBeVisible();
+			await expect(checkoutPage.paymentMethodRadios).toHaveCount(2);
+			await expect(
+				checkoutPage.paymentMethodRadios.first()
+			).toBeChecked();
+
+			await checkoutPage.paymentMethodRadio('Money Order').check();
 
 			await checkoutPage.continueButton.click();
 
@@ -2316,10 +2321,13 @@ test(
 				],
 			});
 
-			user =
-				await apiHelpers.headlessAdminUser.getUserAccountByEmailAddress(
-					'demo.unprivileged@liferay.com'
-				);
+			user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			userData[user.alternateName] = {
+				name: user.givenName,
+				password: 'test',
+				surname: user.familyName,
+			};
 
 			await apiHelpers.headlessAdminUser.assignUserToRole(
 				role.externalReferenceCode,
@@ -2579,16 +2587,136 @@ test(
 			defaultShipping: true,
 		});
 
-		for (const validationMode of ['disabled', 'allow-all']) {
-			await commerceAdminChannelDetailsPage.setValidationModeAsAdmin(
-				channel.name,
-				validationMode
+		try {
+			for (const validationMode of ['disabled', 'allow-all']) {
+				await commerceAdminChannelDetailsPage.setValidationModeAsAdmin(
+					channel.name,
+					validationMode
+				);
+
+				await checkoutPage.checkoutAsBuyer(
+					site.name,
+					buyerUser.alternateName
+				);
+			}
+		}
+		finally {
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+					`channelId eq ${channel.id}`
+				);
+
+			for (const order of orders?.items || []) {
+				apiHelpers.data.push({id: order.id, type: 'order'});
+			}
+		}
+	}
+);
+
+test(
+	'A buyer can set a requested delivery date during checkout',
+	{tag: ['@COMMERCE-9324', '@LPD-105600']},
+	async ({
+		apiHelpers,
+		backendPage,
+		checkoutPage,
+		commerceAdminChannelDetailsPage,
+		page,
+	}) => {
+		test.setTimeout(600000);
+
+		const {channel, site} = await miniumSetUp(apiHelpers);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
+			countryISOCode: 'US',
+			defaultBilling: true,
+			defaultShipping: true,
+		});
+
+		await test.step('Enable the requested delivery date on the channel', async () => {
+			await commerceAdminChannelDetailsPage.goto();
+
+			await commerceAdminChannelDetailsPage
+				.channelNameLink(channel.name)
+				.click();
+
+			await expect(
+				commerceAdminChannelDetailsPage.requestedDeliveryDateAtCheckoutToggle
+			).not.toBeChecked();
+
+			await commerceAdminChannelDetailsPage.requestedDeliveryDateAtCheckoutToggle.setChecked(
+				true
 			);
 
-			await checkoutPage.checkoutAsBuyer(
-				site.name,
-				buyerUser.alternateName
+			await commerceAdminChannelDetailsPage.saveButton.click();
+
+			await waitForAlert(page);
+		});
+
+		await test.step('Check out as the buyer', async () => {
+			await performLogout(page);
+			await performLoginViaApi({
+				page,
+				screenName: buyerUser.alternateName,
+			});
+
+			await page.goto(`/web/${site.name}/catalog`);
+
+			await checkoutPage.commerceThemeMiniumCatalogPage.addToCart(
+				'Mount'
 			);
-		}
+
+			await checkoutPage.commerceMiniCartPage.miniCartButton.click();
+			await checkoutPage.commerceMiniCartPage.submitButton.click();
+
+			await checkoutPage.performCheckoutUntilStep('Order Summary');
+		});
+
+		await test.step('Set the requested delivery date and place the order', async () => {
+			const requestedDeliveryDate = new Date();
+
+			requestedDeliveryDate.setDate(requestedDeliveryDate.getDate() + 3);
+
+			await checkoutPage.setRequestedDeliveryDate(requestedDeliveryDate);
+
+			await checkoutPage.continueButton.click();
+
+			await expect(checkoutPage.orderConfirmationContainer).toBeVisible();
+			await expect(checkoutPage.orderSuccessMessage).toBeVisible();
+
+			const adminApiHelpers = new DataApiHelpers(backendPage);
+
+			let order: {id: number; requestedDeliveryDate: string};
+
+			await expect(async () => {
+				const orders =
+					await adminApiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+						`channelId eq ${channel.id}`
+					);
+
+				expect(orders.items).toHaveLength(1);
+
+				order = orders.items[0];
+			}).toPass({timeout: 30000});
+
+			apiHelpers.data.push({id: order.id, type: 'order'});
+
+			const persistedDeliveryDate = new Date(order.requestedDeliveryDate);
+
+			expect(persistedDeliveryDate.getFullYear()).toBe(
+				requestedDeliveryDate.getFullYear()
+			);
+			expect(persistedDeliveryDate.getMonth()).toBe(
+				requestedDeliveryDate.getMonth()
+			);
+			expect(persistedDeliveryDate.getDate()).toBe(
+				requestedDeliveryDate.getDate()
+			);
+		});
 	}
 );

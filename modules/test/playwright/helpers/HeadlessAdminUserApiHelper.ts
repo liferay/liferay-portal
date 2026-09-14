@@ -234,6 +234,23 @@ export class HeadlessAdminUserApiHelper {
 		);
 	}
 
+	async deleteAccountValidatorResults(accountId: number) {
+		const filter = encodeURIComponent(
+			`r_accountToAccountValidatorResults_accountEntryId eq '${accountId}'`
+		);
+
+		const accountValidatorResults = await this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}account/validator-results?filter=${filter}&pageSize=100`
+		);
+
+		for (const accountValidatorResult of accountValidatorResults?.items ||
+			[]) {
+			await this.apiHelpers.delete(
+				`${this.apiHelpers.baseUrl}account/validator-results/${accountValidatorResult.id}`
+			);
+		}
+	}
+
 	async deleteOrganization(organizationId: string) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/organizations/${organizationId}`
