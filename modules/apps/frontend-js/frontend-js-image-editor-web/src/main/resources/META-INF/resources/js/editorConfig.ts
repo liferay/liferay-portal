@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FILTER_PRESETS} from './imaging/FilterDefs';
 import {AdjustmentKey, FilterPreset, RatioPreset} from './state/types';
 
 export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
@@ -12,6 +11,29 @@ export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
 	'saturation',
 	'shadows',
 	'highlights',
+];
+
+export const FILTER_PRESETS: FilterPreset[] = [
+	'none',
+	'grayscale',
+	'noir',
+	'sepia',
+	'cyanotype',
+	'vintage',
+	'fade',
+	'matte',
+	'warm',
+	'cool',
+	'splittone',
+	'crossprocess',
+	'tealorange',
+	'vivid',
+	'technicolor',
+	'polaroid',
+	'bleach',
+	'posterize',
+	'solarize',
+	'invert',
 ];
 
 export const RATIO_PRESETS: RatioPreset[] = [

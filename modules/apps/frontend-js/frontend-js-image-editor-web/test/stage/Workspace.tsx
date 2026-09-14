@@ -13,9 +13,9 @@ import {BottomBar} from '../../src/main/resources/META-INF/resources/js/chrome/B
 import {EditorInstanceProvider} from '../../src/main/resources/META-INF/resources/js/chrome/instance';
 import {
 	ADJUSTMENT_KEYS,
+	FILTER_PRESETS,
 	RATIO_PRESETS,
 } from '../../src/main/resources/META-INF/resources/js/editorConfig';
-import {FILTER_PRESETS} from '../../src/main/resources/META-INF/resources/js/imaging/FilterDefs';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {AdjustPanel} from '../../src/main/resources/META-INF/resources/js/panels/AdjustPanel';
 import {CropPanel} from '../../src/main/resources/META-INF/resources/js/panels/CropPanel';

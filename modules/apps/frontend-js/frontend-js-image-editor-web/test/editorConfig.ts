@@ -7,10 +7,10 @@ import '@testing-library/jest-dom';
 
 import {
 	ADJUSTMENT_KEYS,
+	FILTER_PRESETS,
 	RATIO_PRESETS,
 	resolveConfig,
 } from '../src/main/resources/META-INF/resources/js/editorConfig';
-import {FILTER_PRESETS} from '../src/main/resources/META-INF/resources/js/imaging/FilterDefs';
 
 describe('resolveConfig', () => {
 	it('exposes every adjustment slider by default', () => {

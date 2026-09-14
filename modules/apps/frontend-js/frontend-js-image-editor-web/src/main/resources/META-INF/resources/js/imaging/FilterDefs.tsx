@@ -7,29 +7,6 @@ import React from 'react';
 
 import {Adjustments, FilterPreset} from '../state/types';
 
-export const FILTER_PRESETS: FilterPreset[] = [
-	'none',
-	'grayscale',
-	'noir',
-	'sepia',
-	'cyanotype',
-	'vintage',
-	'fade',
-	'matte',
-	'warm',
-	'cool',
-	'splittone',
-	'crossprocess',
-	'tealorange',
-	'vivid',
-	'technicolor',
-	'polaroid',
-	'bleach',
-	'posterize',
-	'solarize',
-	'invert',
-];
-
 const FILTER_RECIPES: Record<FilterPreset, FilterRecipe> = {
 	bleach: {
 		curve: curve(0, 1.05, 0.72),

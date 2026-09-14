@@ -8,8 +8,8 @@ import {renderToStaticMarkup} from 'react-dom/server';
 
 import '@testing-library/jest-dom';
 
+import {FILTER_PRESETS} from '../../src/main/resources/META-INF/resources/js/editorConfig';
 import {
-	FILTER_PRESETS,
 	FilterDefs,
 	isIdentityFilter,
 } from '../../src/main/resources/META-INF/resources/js/imaging/FilterDefs';
