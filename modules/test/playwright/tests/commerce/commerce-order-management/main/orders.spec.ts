@@ -1830,7 +1830,6 @@ test(
 				'Edit'
 			)
 		).toBeVisible();
-
 		await expect(
 			await commerceAdminOrderDetailsPage.editEntryActionLink(
 				'Delivery Terms Edit',
@@ -1838,8 +1837,7 @@ test(
 			)
 		).toBeVisible();
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: 'test'});
+		await performUserSwitch(page, 'test');
 
 		await apiHelpers.jsonWebServicesResourcePermissionApiHelper.removeResourcePermission(
 			'MANAGE_COMMERCE_ORDER_PAYMENT_TERMS',
@@ -1868,7 +1866,6 @@ test(
 				'Edit'
 			)
 		).toHaveCount(0);
-
 		await expect(
 			await commerceAdminOrderDetailsPage.editEntryActionLink(
 				'Delivery Terms Edit',

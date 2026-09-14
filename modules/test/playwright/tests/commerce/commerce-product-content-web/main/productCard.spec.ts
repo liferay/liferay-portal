@@ -569,8 +569,8 @@ test('COMMERCE-6193. As a buyer, I want the first selectable quantity of a produ
 });
 
 test(
-	'COMMERCE-11198. Can configure the product card fragment to show only the selected fields',
-	{tag: ['@LPD-104219']},
+	'Can configure the product card fragment to show only the selected fields',
+	{tag: ['@COMMERCE-11198', '@LPD-104219']},
 	async ({
 		apiHelpers,
 		commerceThemeMiniumCatalogPage,
@@ -708,7 +708,6 @@ test(
 					productSku
 				)
 			).toBeVisible();
-
 			await expect(
 				commerceThemeMiniumCatalogPage.productCardFragmentAvailabilityLabel(
 					productCard
@@ -754,7 +753,6 @@ test(
 					productCard
 				)
 			).toBeVisible();
-
 			await expect(
 				commerceThemeMiniumCatalogPage.productCardFragmentAddToCartButton(
 					productCard
