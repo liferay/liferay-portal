@@ -5,8 +5,11 @@
 
 package com.liferay.audiences.service.impl;
 
+import com.liferay.audiences.model.AudiencesEntryGroupRel;
 import com.liferay.audiences.service.base.AudiencesEntryGroupRelLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -33,6 +36,15 @@ public class AudiencesEntryGroupRelLocalServiceImpl
 		long companyId, String groupERC) {
 
 		audiencesEntryGroupRelPersistence.removeByC_GERC(companyId, groupERC);
+	}
+
+	@Override
+	public List<AudiencesEntryGroupRel>
+		getAudiencesEntryGroupRelsByAudienceEntryERC(
+			long companyId, String audienceEntryERC) {
+
+		return audiencesEntryGroupRelPersistence.findByC_AEERC(
+			companyId, audienceEntryERC);
 	}
 
 }
