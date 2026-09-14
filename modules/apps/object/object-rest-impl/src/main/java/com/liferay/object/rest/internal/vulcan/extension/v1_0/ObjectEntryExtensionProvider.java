@@ -15,6 +15,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.internal.util.ObjectEntryValuesUtil;
+import com.liferay.object.rest.internal.util.ObjectFieldDescriptionUtil;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.log.Log;
@@ -151,6 +152,9 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 				_objectFieldLocalService.getObjectFields(
 					objectDefinition.getObjectDefinitionId(), false)) {
 
+			String description = ObjectFieldDescriptionUtil.getDescription(
+				objectDefinition, objectField);
+
 			ObjectFieldBusinessType objectFieldBusinessType =
 				_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
 					objectField.getBusinessType());
@@ -163,7 +167,7 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 					objectField.getName(),
 					new PropertyDefinition(
 						SetUtil.fromArray(ListEntry.class, String.class), null,
-						ListEntry.class.getSimpleName(), null,
+						ListEntry.class.getSimpleName(), description,
 						objectField.getName(),
 						objectFieldBusinessType.getPropertyType(),
 						new DefaultPropertyValidator(),
@@ -173,7 +177,7 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 				extendedPropertyDefinitions.put(
 					objectField.getName(),
 					new PropertyDefinition(
-						null, objectField.getName(),
+						description, objectField.getName(),
 						objectFieldBusinessType.getPropertyType(),
 						objectField.isRequired()));
 			}
@@ -191,7 +195,7 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 				extendedPropertyDefinitions.put(
 					objectRelationshipERCObjectFieldName,
 					new PropertyDefinition(
-						null, objectRelationshipERCObjectFieldName,
+						description, objectRelationshipERCObjectFieldName,
 						PropertyDefinition.PropertyType.TEXT,
 						objectField.isRequired()));
 			}
@@ -204,7 +208,7 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 				objectField.getI18nObjectFieldName(),
 				new PropertyDefinition(
 					Collections.singleton(Map.class), null, Map.class.getName(),
-					null, objectField.getI18nObjectFieldName(),
+					description, objectField.getI18nObjectFieldName(),
 					PropertyDefinition.PropertyType.SINGLE_ELEMENT,
 					new DefaultPropertyValidator(), objectField.isRequired()));
 		}

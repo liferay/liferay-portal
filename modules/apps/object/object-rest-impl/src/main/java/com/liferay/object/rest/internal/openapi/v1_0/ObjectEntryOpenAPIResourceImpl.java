@@ -38,11 +38,11 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.openapi.DTOProperty;
 import com.liferay.portal.vulcan.openapi.OpenAPISchemaFilter;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
+import com.liferay.portal.vulcan.util.OpenAPISchemaUtil;
 import com.liferay.portal.vulcan.util.OpenAPIUtil;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Schema;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -144,7 +144,7 @@ public class ObjectEntryOpenAPIResourceImpl
 					MapUtil.getString(relationshipNames, propertyName, null),
 					propertySchema.getDescription(), propertyName,
 					GetterUtil.getBoolean(propertySchema.getReadOnly()),
-					_getRef(propertySchema),
+					OpenAPISchemaUtil.getReference(propertySchema),
 					requiredPropertySchemaNames.contains(propertyName),
 					propertySchema.getType(),
 					OpenAPIUtil.getBatchUnsupportedFormats(
@@ -483,18 +483,6 @@ public class ObjectEntryOpenAPIResourceImpl
 			).build());
 
 		return openAPISchemaFilter;
-	}
-
-	private String _getRef(Schema schema) {
-		if (schema instanceof ArraySchema) {
-			ArraySchema arraySchema = (ArraySchema)schema;
-
-			Schema itemsSchema = arraySchema.getItems();
-
-			return itemsSchema.get$ref();
-		}
-
-		return schema.get$ref();
 	}
 
 	private List<String> _getRequiredPropertySchemaNames(Schema schema) {
