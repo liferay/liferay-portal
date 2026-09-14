@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -37,12 +38,14 @@ import com.liferay.portal.verify.VerifyException;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.Assume;
@@ -62,6 +65,47 @@ public class PostupgradeVerifyDatabaseStateTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testGetErrorMessages() throws Exception {
+		alterColumnName("UserTracker", "companyId", "companyId_backup LONG");
+
+		try {
+			_testGetMessages(
+				_getExpectedMessage(
+					StringBundler.concat(
+						"Missing columns were detected for ",
+						getNormalizedName("UserTracker"), " table"),
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME,
+					getNormalizedName("companyId")),
+				PostupgradeVerifyDatabaseState::getErrorMessages,
+				LoggerTestUtil.ERROR);
+		}
+		finally {
+			alterColumnName(
+				"UserTracker", "companyId_backup", "companyId LONG");
+		}
+	}
+
+	@Test
+	public void testGetWarnMessages() throws Exception {
+		alterColumnType("Address", "city", "VARCHAR(100)");
+
+		try {
+			_testGetMessages(
+				_getExpectedMessage(
+					StringBundler.concat(
+						"Column ", getNormalizedName("city"),
+						" is not defined as VARCHAR(75) null for ",
+						getNormalizedName("Address"), " table"),
+					ReleaseConstants.DEFAULT_SERVLET_CONTEXT_NAME),
+				PostupgradeVerifyDatabaseState::getWarnMessages,
+				LoggerTestUtil.WARN);
+		}
+		finally {
+			alterColumnType("Address", "city", "VARCHAR(75)");
+		}
+	}
 
 	@Test
 	public void testVerifyPostupgradeColumns() throws Exception {
@@ -378,6 +422,38 @@ public class PostupgradeVerifyDatabaseStateTest
 		}
 
 		return messages.toString();
+	}
+
+	private void _testGetMessages(
+			String expectedMessage,
+			Function<PostupgradeVerifyDatabaseState, List<String>> function,
+			String priority)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				PostupgradeVerifyDatabaseState.class.getName(),
+				LoggerTestUtil.WARN)) {
+
+			PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
+				new PostupgradeVerifyDatabaseState();
+
+			postupgradeVerifyDatabaseState.verify();
+
+			List<String> logMessages = new ArrayList<>();
+
+			for (LogEntry logEntry : logCapture.getLogEntries()) {
+				if (priority.equals(logEntry.getPriority())) {
+					logMessages.add(logEntry.getMessage());
+				}
+			}
+
+			List<String> messages = function.apply(
+				postupgradeVerifyDatabaseState);
+
+			Assert.assertEquals(logMessages, messages);
+			Assert.assertTrue(
+				messages.toString(), messages.contains(expectedMessage));
+		}
 	}
 
 	private void _testVerifyColumns(String... expectedMessages)
