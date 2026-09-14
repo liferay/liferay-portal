@@ -6643,6 +6643,16 @@
 	},
 	{
 		"classNames": [
+			"AddressLocalService",
+			"AddressLocalServiceUtil",
+			"AddressLocalServiceWrapper"
+		],
+		"from": "addAddress(String paramName, long paramName, String paramName, long paramName, String paramName, String paramName, String paramName, String paramName, String paramName, String paramName, String paramName, long paramName, long paramName, long paramName, boolean paramName, boolean paramName, String paramName, ServiceContext paramName)",
+		"issueKey": "LPS-193462",
+		"to": "addAddress(param#0#, param#1#, param#2#, param#3#, param#12#, param#13#, param#11#, param#9#, param#5#, param#14#, param#4#, param#15#, param#6#, param#7#, param#8#, null, param#10#, param#16#, param#17#)"
+	},
+	{
+		"classNames": [
 			"AddressService",
 			"AddressServiceUtil",
 			"AddressServiceWrapper"
@@ -6653,6 +6663,16 @@
 			"com.liferay.portal.kernel.service.ServiceContextThreadLocal"
 		],
 		"to": "addAddress(null, param#0#, param#1#, param#8#, param#9#, param#7#, param#5#, null, param#10#, null, param#11#, param#2#, param#3#, param#4#, null, param#6#, null, ServiceContextThreadLocal.getServiceContext())"
+	},
+	{
+		"classNames": [
+			"AddressService",
+			"AddressServiceUtil",
+			"AddressServiceWrapper"
+		],
+		"from": "addAddress(String paramName, String paramName, long paramName, String paramName, String paramName, String paramName, String paramName, String paramName, String paramName, String paramName, long paramName, long paramName, long paramName, boolean paramName, boolean paramName, String paramName, ServiceContext paramName)",
+		"issueKey": "LPS-193462",
+		"to": "addAddress(param#0#, param#1#, param#2#, param#11#, param#12#, param#10#, param#8#, param#4#, param#13#, param#3#, param#14#, param#5#, param#6#, param#7#, null, param#9#, param#15#, param#16#)"
 	},
 	{
 		"classNames": [
