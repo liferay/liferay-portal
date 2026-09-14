@@ -2527,12 +2527,14 @@ public class ObjectEntryLocalServiceImpl
 			(originalObjectEntry.isScheduled() &&
 			 (status == WorkflowConstants.STATUS_APPROVED))) {
 
-			int count = _objectEntryVersionPersistence.countByObjectEntryId(
-				objectEntry.getObjectEntryId());
+			if (objectDefinition.isEnableObjectEntryVersioning()) {
+				int count = _objectEntryVersionPersistence.countByObjectEntryId(
+					objectEntry.getObjectEntryId());
 
-			if (count > 0) {
-				_updateLatestObjectEntryVersion(
-					userId, objectDefinition, objectEntry);
+				if (count > 0) {
+					_updateLatestObjectEntryVersion(
+						userId, objectDefinition, objectEntry);
+				}
 			}
 		}
 		else if (!skipStatusChangeSideEffects && !objectEntry.isInTrash() &&
