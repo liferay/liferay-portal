@@ -13,16 +13,11 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.site.cmp.site.initializer.internal.search.spi.model.index.contributor.CMPObjectEntryModelDocumentContributor;
-import com.liferay.site.cmp.site.initializer.internal.util.SiteInitializerUtil;
-import com.liferay.site.initializer.SiteInitializer;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,8 +43,6 @@ public class CMPObjectDefinitionDeployerImpl
 			return Collections.emptyList();
 		}
 
-		_initialize(objectDefinition.getCompanyId());
-
 		return ListUtil.fromArray(
 			_bundleContext.registerService(
 				(Class<ModelDocumentContributor<?>>)
@@ -68,30 +61,7 @@ public class CMPObjectDefinitionDeployerImpl
 		_bundleContext = bundleContext;
 	}
 
-	private void _initialize(long companyId) {
-		try {
-			SiteInitializerUtil.initialize(
-				_cmpSiteInitializer, _cmsSiteInitializer, companyId);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		CMPObjectDefinitionDeployerImpl.class);
-
 	private BundleContext _bundleContext;
-
-	@Reference(
-		target = "(site.initializer.key=com.liferay.site.initializer.cmp)"
-	)
-	private SiteInitializer _cmpSiteInitializer;
-
-	@Reference(
-		target = "(site.initializer.key=com.liferay.site.initializer.cms)"
-	)
-	private SiteInitializer _cmsSiteInitializer;
 
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
