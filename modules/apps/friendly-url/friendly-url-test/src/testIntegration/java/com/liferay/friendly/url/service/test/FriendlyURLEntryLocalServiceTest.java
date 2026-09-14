@@ -763,6 +763,23 @@ public class FriendlyURLEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testHasMainFriendlyURLEntry() throws Exception {
+		long classNameId = _classNameLocalService.getClassNameId(User.class);
+
+		Assert.assertFalse(
+			_friendlyURLEntryLocalService.hasMainFriendlyURLEntry(
+				classNameId, TestPropsValues.getUserId()));
+
+		_friendlyURLEntryLocalService.addFriendlyURLEntry(
+			_group.getGroupId(), classNameId, TestPropsValues.getUserId(),
+			_getRandomURLTitle(), _getServiceContext());
+
+		Assert.assertTrue(
+			_friendlyURLEntryLocalService.hasMainFriendlyURLEntry(
+				classNameId, TestPropsValues.getUserId()));
+	}
+
+	@Test
 	public void testValidateAllowsDuplicatesInDifferentLanguagesForDifferentClassPK()
 		throws Exception {
 
