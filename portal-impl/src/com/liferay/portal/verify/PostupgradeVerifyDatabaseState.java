@@ -46,6 +46,14 @@ import org.osgi.framework.BundleContext;
  */
 public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 
+	public List<String> getErrorMessages() {
+		return _errorMessages;
+	}
+
+	public List<String> getWarnMessages() {
+		return _warnMessages;
+	}
+
 	@Override
 	protected void doVerify() throws Exception {
 		Map<String, String> tablesServletContextNames =
@@ -65,9 +73,12 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 							companyId));
 				}
 				catch (PortalException portalException) {
-					_log.error(
-						"Unable to get table names for company " + companyId,
-						portalException);
+					String message =
+						"Unable to get table names for company " + companyId;
+
+					_errorMessages.add(message);
+
+					_log.error(message, portalException);
 				}
 			});
 
@@ -168,27 +179,33 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 				if ((release != null) &&
 					(release.getState() != ReleaseConstants.STATE_GOOD)) {
 
-					_log.error(
-						StringBundler.concat(
-							"Module ", servletContextName,
-							" has release state ",
-							_getReleaseStateLabel(release.getState()),
-							", schema version ", release.getSchemaVersion()));
+					String message = StringBundler.concat(
+						"Module ", servletContextName, " has release state ",
+						_getReleaseStateLabel(release.getState()),
+						", schema version ", release.getSchemaVersion());
+
+					_errorMessages.add(message);
+
+					_log.error(message);
 				}
 			}
 
-			for (String message :
-					errorMessagesMap.getOrDefault(
-						servletContextName, Collections.emptyList())) {
+			List<String> errorMessages = errorMessagesMap.getOrDefault(
+				servletContextName, Collections.emptyList());
 
+			_errorMessages.addAll(errorMessages);
+
+			for (String message : errorMessages) {
 				_log.error(message);
 			}
 
-			if (_log.isWarnEnabled()) {
-				for (String message :
-						warnMessagesMap.getOrDefault(
-							servletContextName, Collections.emptyList())) {
+			List<String> warnMessages = warnMessagesMap.getOrDefault(
+				servletContextName, Collections.emptyList());
 
+			_warnMessages.addAll(warnMessages);
+
+			if (_log.isWarnEnabled()) {
+				for (String message : warnMessages) {
 					_log.warn(message);
 				}
 			}
@@ -469,5 +486,8 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			new DCLSingleton<>();
 	private static final DCLSingleton<Map<String, String>>
 		_tablesServletContextNamesDCLSingleton = new DCLSingleton<>();
+
+	private final List<String> _errorMessages = new ArrayList<>();
+	private final List<String> _warnMessages = new ArrayList<>();
 
 }
