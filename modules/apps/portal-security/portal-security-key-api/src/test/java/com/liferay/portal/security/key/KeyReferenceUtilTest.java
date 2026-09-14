@@ -37,7 +37,7 @@ public class KeyReferenceUtilTest {
 	}
 
 	@Test
-	public void testIsValidKeyReferenceWithInvalidKeyReference() {
+	public void testIsParsableKeyReferenceWithInvalidKeyReference() {
 		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference(null));
 		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference(""));
 		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference("abc"));
