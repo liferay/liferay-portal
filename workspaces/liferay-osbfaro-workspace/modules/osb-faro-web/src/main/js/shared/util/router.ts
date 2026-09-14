@@ -1,6 +1,6 @@
 import Constants, {DataSourceTypes, EntityTypes} from '../util/constants';
 import {compile} from 'shared/util/path-to-regexp';
-import {invert, isEmpty, isString, memoize} from 'lodash';
+import {invert, isString, memoize} from 'lodash';
 import {matchPath} from 'react-router-dom';
 
 function createURL(href: string): URL {
@@ -445,37 +445,6 @@ const PROVIDER_ROUTE_TO_TYPE_MAP = {
 
 const TYPE_TO_ROUTE_MAP = {
 	...invert(ROUTE_TO_TYPE_MAP),
-};
-
-export const assetTypePaths = {
-	blog: Routes.ASSETS_BLOGS_OVERVIEW,
-	document: Routes.ASSETS_DOCUMENTS_AND_MEDIA_OVERVIEW,
-	form: Routes.ASSETS_FORMS_OVERVIEW,
-	journal: Routes.ASSETS_WEB_CONTENT_OVERVIEW,
-};
-
-export const toAssetOverviewRoute = (
-	assetType: string,
-	routeParams: {[key: string]: any},
-	query: {[key: string]: any}
-) => {
-	const assetTypePath =
-		assetTypePaths[assetType as keyof typeof assetTypePaths] ??
-		Routes.ASSETS_OBJECT_ENTRY_OVERVIEW;
-
-	let route = '';
-
-	if (assetType === 'blog') {
-		route = toRoute(assetTypePath, {
-			...routeParams,
-			assetType: 'blogs',
-		});
-	}
-	else {
-		route = toRoute(assetTypePath, routeParams);
-	}
-
-	return !isEmpty(query) ? setUriQueryValues(query, route) : route;
 };
 
 export function getType(routeName: keyof typeof ROUTE_TO_TYPE_MAP) {

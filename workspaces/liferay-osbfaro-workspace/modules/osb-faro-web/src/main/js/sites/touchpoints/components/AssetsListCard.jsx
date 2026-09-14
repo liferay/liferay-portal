@@ -5,7 +5,7 @@ import TextTruncate from 'shared/components/TextTruncate';
 import {Link} from 'react-router-dom';
 import {pickBy} from 'lodash';
 import {PropTypes} from 'prop-types';
-import {toAssetOverviewRoute} from 'shared/util/router';
+import {toAssetOverviewRoute} from 'assets/descriptors';
 
 const CLASSNAME = 'analytics-assets-list';
 
