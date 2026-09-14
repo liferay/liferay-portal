@@ -95,12 +95,12 @@ public class MonitorRunner {
 	}
 
 	private long _getStartTimeoutMillis(Collection<Monitor> monitors) {
-		int monitorCount = monitors.size();
+		int monitorsCount = monitors.size();
 
 		// No monitor waits for a thread at or below the cap, so submission time
 		// is start time and the submit baseline is already exact.
 
-		if (monitorCount <= _threadCount) {
+		if (monitorsCount <= _threadCount) {
 			return 0;
 		}
 
@@ -114,16 +114,16 @@ public class MonitorRunner {
 			}
 		}
 
-		int batchCount = ((monitorCount + _threadCount) - 1) / _threadCount;
+		int batchesCount = ((monitorsCount + _threadCount) - 1) / _threadCount;
 
 		// Every task releases its thread within its own timeout, so the last
 		// monitor starts no later than one timeout short of this. The extra
 		// batch is slack for the hand-off, since a bound equal to the last
 		// legal start races it and reports a healthy monitor as never started.
 
-		long startTimeoutMillis = batchCount * maximumTimeoutMillis;
+		long startTimeoutMillis = batchesCount * maximumTimeoutMillis;
 
-		if ((startTimeoutMillis / batchCount) != maximumTimeoutMillis) {
+		if ((startTimeoutMillis / batchesCount) != maximumTimeoutMillis) {
 			return Long.MAX_VALUE;
 		}
 
