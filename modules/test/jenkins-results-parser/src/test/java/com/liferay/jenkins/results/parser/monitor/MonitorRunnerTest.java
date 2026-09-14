@@ -274,35 +274,33 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 	public void testRunInterruptedWhileQueued() {
 		MonitorRunner monitorRunner = new MonitorRunner(1000, 2);
 
-		List<Monitor> monitors = new ArrayList<>();
-
-		for (int i = 0; i < 3; i++) {
-			monitors.add(
-				new TestMonitor(
-					_newMonitorConfig(RandomTestUtil.randomString())));
-		}
+		TestMonitor testMonitor1 = new TestMonitor(_newMonitorConfig("a"));
+		TestMonitor testMonitor2 = new TestMonitor(_newMonitorConfig("b"));
+		TestMonitor testMonitor3 = new TestMonitor(_newMonitorConfig("c"));
 
 		Thread thread = Thread.currentThread();
 
 		thread.interrupt();
 
 		Map<Monitor, MonitorResult> monitorResultsMap = monitorRunner.run(
-			monitors);
+			Arrays.<Monitor>asList(testMonitor1, testMonitor2, testMonitor3));
 
 		Assert.assertTrue(Thread.interrupted());
 
-		for (Map.Entry<Monitor, MonitorResult> entry :
-				monitorResultsMap.entrySet()) {
+		MonitorResult monitorResult = monitorResultsMap.get(testMonitor1);
 
-			Monitor monitor = entry.getKey();
+		testEquals("Monitor a was interrupted", monitorResult.getMessage());
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 
-			MonitorResult monitorResult = entry.getValue();
+		monitorResult = monitorResultsMap.get(testMonitor2);
 
-			testEquals(
-				"Monitor " + monitor.getId() + " was interrupted",
-				monitorResult.getMessage());
-			testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
-		}
+		testEquals("Monitor b was interrupted", monitorResult.getMessage());
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+
+		monitorResult = monitorResultsMap.get(testMonitor3);
+
+		testEquals("Monitor c was interrupted", monitorResult.getMessage());
+		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
 	}
 
 	@Test(timeout = 5000)
@@ -365,7 +363,12 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 
 		List<Monitor> monitors = new ArrayList<>();
 
-		for (int i = 0; i < MonitorRunner.THREADS_MAXIMUM; i++) {
+		BlockingTestMonitor blockingTestMonitor = new BlockingTestMonitor(
+			releaseCountDownLatch, startCountDownLatch, _newMonitorConfig("b"));
+
+		monitors.add(blockingTestMonitor);
+
+		for (int i = 1; i < MonitorRunner.THREADS_MAXIMUM; i++) {
 			monitors.add(
 				new BlockingTestMonitor(
 					releaseCountDownLatch, startCountDownLatch,
@@ -382,13 +385,11 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 
 			testEquals(0L, startCountDownLatch.getCount());
 
-			Monitor blockedMonitor = monitors.get(0);
-
-			MonitorResult monitorResult = monitorResultsMap.get(blockedMonitor);
+			MonitorResult monitorResult = monitorResultsMap.get(
+				blockingTestMonitor);
 
 			testEquals(
-				"Monitor " + blockedMonitor.getId() + " timed out after 300 ms",
-				monitorResult.getMessage());
+				"Monitor b timed out after 300 ms", monitorResult.getMessage());
 
 			monitorResult = monitorResultsMap.get(testMonitor);
 
