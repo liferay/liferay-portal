@@ -74,7 +74,51 @@ public class AuthVerifierPipeline {
 		List<AuthVerifierConfiguration> authVerifierConfigurations,
 		String contextPath) {
 
-		_buildURLPatternMapper(authVerifierConfigurations, contextPath);
+		Map<String, List<AuthVerifierConfiguration>>
+			excludeAuthVerifierConfigurationsMap = new HashMap<>();
+		Map<String, List<AuthVerifierConfiguration>>
+			includeAuthVerifierConfigurationsMap = new HashMap<>();
+
+		for (AuthVerifierConfiguration authVerifierConfiguration :
+				authVerifierConfigurations) {
+
+			Properties properties = authVerifierConfiguration.getProperties();
+
+			String[] urlsExcludes = StringUtil.split(
+				properties.getProperty("urls.excludes"));
+
+			for (String urlsExclude : urlsExcludes) {
+				urlsExclude = contextPath + _fixLegacyURLPattern(urlsExclude);
+
+				List<AuthVerifierConfiguration>
+					excludeAuthVerifierConfigurations =
+						excludeAuthVerifierConfigurationsMap.computeIfAbsent(
+							urlsExclude, key -> new ArrayList<>());
+
+				excludeAuthVerifierConfigurations.add(
+					authVerifierConfiguration);
+			}
+
+			String[] urlsIncludes = StringUtil.split(
+				properties.getProperty("urls.includes"));
+
+			for (String urlsInclude : urlsIncludes) {
+				urlsInclude = contextPath + _fixLegacyURLPattern(urlsInclude);
+
+				List<AuthVerifierConfiguration>
+					includeAuthVerifierConfigurations =
+						includeAuthVerifierConfigurationsMap.computeIfAbsent(
+							urlsInclude, key -> new ArrayList<>());
+
+				includeAuthVerifierConfigurations.add(
+					authVerifierConfiguration);
+			}
+		}
+
+		_excludeURLPatternMapper = URLPatternMapperFactory.create(
+			excludeAuthVerifierConfigurationsMap);
+		_includeURLPatternMapper = URLPatternMapperFactory.create(
+			includeAuthVerifierConfigurationsMap);
 	}
 
 	public AuthVerifierResult verifyRequest(
@@ -123,57 +167,6 @@ public class AuthVerifierPipeline {
 		return authVerifierConfigurations;
 	}
 
-	private void _buildURLPatternMapper(
-		List<AuthVerifierConfiguration> authVerifierConfigurations,
-		String contextPath) {
-
-		Map<String, List<AuthVerifierConfiguration>>
-			excludeAuthVerifierConfigurationsMap = new HashMap<>();
-		Map<String, List<AuthVerifierConfiguration>>
-			includeAuthVerifierConfigurationsMap = new HashMap<>();
-
-		for (AuthVerifierConfiguration authVerifierConfiguration :
-				authVerifierConfigurations) {
-
-			Properties properties = authVerifierConfiguration.getProperties();
-
-			String[] urlsExcludes = StringUtil.split(
-				properties.getProperty("urls.excludes"));
-
-			for (String urlsExclude : urlsExcludes) {
-				urlsExclude = contextPath + _fixLegacyURLPattern(urlsExclude);
-
-				List<AuthVerifierConfiguration>
-					excludeAuthVerifierConfigurations =
-						excludeAuthVerifierConfigurationsMap.computeIfAbsent(
-							urlsExclude, key -> new ArrayList<>());
-
-				excludeAuthVerifierConfigurations.add(
-					authVerifierConfiguration);
-			}
-
-			String[] urlsIncludes = StringUtil.split(
-				properties.getProperty("urls.includes"));
-
-			for (String urlsInclude : urlsIncludes) {
-				urlsInclude = contextPath + _fixLegacyURLPattern(urlsInclude);
-
-				List<AuthVerifierConfiguration>
-					includeAuthVerifierConfigurations =
-						includeAuthVerifierConfigurationsMap.computeIfAbsent(
-							urlsInclude, key -> new ArrayList<>());
-
-				includeAuthVerifierConfigurations.add(
-					authVerifierConfiguration);
-			}
-		}
-
-		_excludeURLPatternMapper = URLPatternMapperFactory.create(
-			excludeAuthVerifierConfigurationsMap);
-		_includeURLPatternMapper = URLPatternMapperFactory.create(
-			includeAuthVerifierConfigurationsMap);
-	}
-
 	private AuthVerifierResult _createGuestVerificationResult(
 			AccessControlContext accessControlContext)
 		throws PortalException {
@@ -215,9 +208,9 @@ public class AuthVerifierPipeline {
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuthVerifierPipeline.class);
 
-	private URLPatternMapper<List<AuthVerifierConfiguration>>
+	private final URLPatternMapper<List<AuthVerifierConfiguration>>
 		_excludeURLPatternMapper;
-	private URLPatternMapper<List<AuthVerifierConfiguration>>
+	private final URLPatternMapper<List<AuthVerifierConfiguration>>
 		_includeURLPatternMapper;
 
 	private static class AuthVerifierConfigurationConsumer
