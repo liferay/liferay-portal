@@ -387,9 +387,18 @@ const FrontendDataSetContent = ({
 	const {connectionFilters, connectionState, filteringOwnerAppId} =
 		globalFDSState as IConnectedFDSState;
 
+	// Whether the data set has put what the URL carries on offer. It is set
+	// where the offer is written rather than worked out from the state
+	// afterwards: a connection already listening takes the offer in the same
+	// turn it lands, so a render may never see one in place. Only the side
+	// making the offer can say for certain that it made one.
+
+	const [connectionStateOffered, setConnectionStateOffered] = useState(false);
+
 	const {getConnectionState, restored: connectionStateRestored} =
 		useRestoredConnectionState({
 			configInURLBehavior,
+			connectionStateOffered,
 			filteringOwnerAppId,
 			id,
 			onGiveUp: () => {
@@ -992,6 +1001,10 @@ const FrontendDataSetContent = ({
 		else {
 			setFilterClientExtensionsLoaded(true);
 
+			if (restoredConnectionState !== undefined) {
+				setConnectionStateOffered(true);
+			}
+
 			setGlobalFDSState({
 				...globalFDSState,
 				filters: preloadFilters(initialFilters),
@@ -1080,6 +1093,10 @@ const FrontendDataSetContent = ({
 
 							return filter;
 						}) || [];
+
+					if (restoredConnectionState !== undefined) {
+						setConnectionStateOffered(true);
+					}
 
 					setGlobalFDSState({
 						...globalFDSState,
@@ -1323,6 +1340,10 @@ const FrontendDataSetContent = ({
 
 		if (activeFilters || searchParam) {
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+
+			if (restoredConnectionState !== undefined) {
+				setConnectionStateOffered(true);
+			}
 
 			setGlobalFDSState({
 				...unfrozenGlobalFDSState,

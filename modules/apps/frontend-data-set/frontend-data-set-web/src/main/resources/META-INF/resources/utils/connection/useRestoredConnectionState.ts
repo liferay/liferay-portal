@@ -32,12 +32,14 @@ const RESTORE_TIMEOUT = 10000;
  */
 export function useRestoredConnectionState({
 	configInURLBehavior,
+	connectionStateOffered,
 	filteringOwnerAppId,
 	id,
 	onGiveUp,
 	restoredConnectionState,
 }: {
 	configInURLBehavior: EConfigInURLBehavior;
+	connectionStateOffered: boolean;
 	filteringOwnerAppId: string | undefined;
 	id: string;
 	onGiveUp: () => void;
@@ -72,7 +74,6 @@ export function useRestoredConnectionState({
 		() => getConnectionState() === undefined
 	);
 
-	const restoreOfferedRef = useRef(false);
 	const onGiveUpRef = useRef(onGiveUp);
 
 	// What is offered is filed under the app id of the connection that left
@@ -112,16 +113,20 @@ export function useRestoredConnectionState({
 			return;
 		}
 
-		// Nothing can be read into a restore that has not been offered yet:
-		// it looks exactly like one that has happened, and a data set that
-		// has offered nothing so far would say the same thing.
-
-		if (restoredConnectionState !== undefined) {
-			restoreOfferedRef.current = true;
-		}
+		// Nothing can be read into a restore that has not been offered yet: it
+		// looks exactly like one that has happened, and a data set that has
+		// offered nothing so far would say the same thing.
+		//
+		// Which of the two it is comes from the data set saying it has
+		// offered, rather than from this having caught the offer on its way
+		// past. An offer is taken by whichever connection it was filed for,
+		// and a connection that is already listening when the offer lands
+		// takes it in the same turn, leaving nothing for the render after to
+		// see. Watching for it would mean the data set waiting out the
+		// timeout over an offer it made itself and that was answered at once.
 
 		const restoreOffered =
-			restoreOfferedRef.current || restoredConnectionState !== undefined;
+			connectionStateOffered || restoredConnectionState !== undefined;
 
 		if (restoreOffered && !ownerRestorePending) {
 			if (ownerRestoreExpected || restoredConnectionState === undefined) {
@@ -167,6 +172,7 @@ export function useRestoredConnectionState({
 
 		return () => clearTimeout(timeoutId);
 	}, [
+		connectionStateOffered,
 		filteringOwnerAppId,
 		ownerRestoreExpected,
 		ownerRestorePending,

@@ -55,11 +55,13 @@ describe('useRestoredConnectionState', () => {
 	const renderRestore = () =>
 		renderHook(
 			(props: {
+				connectionStateOffered: boolean;
 				filteringOwnerAppId: string | undefined;
 				restoredConnectionState: unknown;
 			}) =>
 				useRestoredConnectionState({
 					configInURLBehavior: EConfigInURLBehavior.PUSH,
+					connectionStateOffered: props.connectionStateOffered,
 					filteringOwnerAppId: props.filteringOwnerAppId,
 					id: FDS_ID,
 					onGiveUp,
@@ -67,6 +69,7 @@ describe('useRestoredConnectionState', () => {
 				}),
 			{
 				initialProps: {
+					connectionStateOffered: false,
 					filteringOwnerAppId: undefined as string | undefined,
 					restoredConnectionState: undefined as unknown,
 				},
@@ -98,6 +101,7 @@ describe('useRestoredConnectionState', () => {
 		expect(result.current.restored).toBe(false);
 
 		rerender({
+			connectionStateOffered: true,
 			filteringOwnerAppId: undefined,
 			restoredConnectionState: OTHER_APP_STATE,
 		});
@@ -110,6 +114,7 @@ describe('useRestoredConnectionState', () => {
 		const {rerender, result} = renderRestore();
 
 		rerender({
+			connectionStateOffered: true,
 			filteringOwnerAppId: OTHER_APP_ID,
 			restoredConnectionState: OTHER_APP_STATE,
 		});
@@ -124,6 +129,7 @@ describe('useRestoredConnectionState', () => {
 		const {rerender, result} = renderRestore();
 
 		rerender({
+			connectionStateOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
 			restoredConnectionState: OWNER_APP_STATE,
 		});
@@ -131,6 +137,7 @@ describe('useRestoredConnectionState', () => {
 		expect(result.current.restored).toBe(false);
 
 		rerender({
+			connectionStateOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
 			restoredConnectionState: undefined,
 		});
@@ -151,6 +158,7 @@ describe('useRestoredConnectionState', () => {
 		const {rerender, result} = renderRestore();
 
 		rerender({
+			connectionStateOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
 			restoredConnectionState: BOTH_APPS_STATE,
 		});
@@ -158,8 +166,34 @@ describe('useRestoredConnectionState', () => {
 		expect(result.current.restored).toBe(false);
 
 		rerender({
+			connectionStateOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
 			restoredConnectionState: OTHER_APP_STATE,
+		});
+
+		await waitFor(() => expect(result.current.restored).toBe(true));
+
+		expect(onGiveUp).not.toHaveBeenCalled();
+	});
+
+	// A connection that is already listening when the offer lands takes its
+	// key in the same turn, so the offer is never in place for a render to
+	// see: what is read before it is made and what is read after it is taken
+	// are the same nothing. Only the data set having said it offered tells
+	// the two apart, which is what a page Liferay swaps in underneath rather
+	// than loads depends on, since the connection is there first.
+
+	it('has been taken when the offer was made and taken between renders', async () => {
+		putConnectionStateInURL(OWNER_APP_STATE);
+
+		const {rerender, result} = renderRestore();
+
+		expect(result.current.restored).toBe(false);
+
+		rerender({
+			connectionStateOffered: true,
+			filteringOwnerAppId: OWNER_APP_ID,
+			restoredConnectionState: undefined,
 		});
 
 		await waitFor(() => expect(result.current.restored).toBe(true));
@@ -174,6 +208,7 @@ describe('useRestoredConnectionState', () => {
 		const {rerender, result} = renderRestore();
 
 		rerender({
+			connectionStateOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
 			restoredConnectionState: OTHER_APP_STATE,
 		});
