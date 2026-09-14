@@ -1,4 +1,5 @@
 import {AssetTypes} from 'shared/util/constants';
+import {CSVType} from 'shared/components/download-report/utils';
 import {isEmpty} from 'lodash';
 import {Name} from 'shared/components/audience-report/types';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
@@ -15,6 +16,12 @@ import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
  */
 export interface AssetDescriptor {
 	assetType: AssetTypes;
+
+	/**
+	 * Object entries are the one asset type with no known individuals export.
+	 */
+	csvType?: CSVType;
+
 	graphQLType: Name;
 	restType?: string;
 	routes: {
@@ -39,6 +46,7 @@ const OBJECT_ENTRY_DESCRIPTOR: AssetDescriptor = {
 export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 	{
 		assetType: AssetTypes.Blog,
+		csvType: CSVType.Individual,
 		graphQLType: Name.Blog,
 		restType: 'blog',
 		routes: {
@@ -50,6 +58,7 @@ export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 	},
 	{
 		assetType: AssetTypes.Document,
+		csvType: CSVType.Individual,
 		graphQLType: Name.Document,
 		restType: 'document',
 		routes: {
@@ -62,6 +71,7 @@ export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 	},
 	{
 		assetType: AssetTypes.Form,
+		csvType: CSVType.Individual,
 		graphQLType: Name.Form,
 		restType: 'form',
 		routes: {
@@ -73,6 +83,7 @@ export const ASSET_DESCRIPTORS: AssetDescriptor[] = [
 	},
 	{
 		assetType: AssetTypes.Journal,
+		csvType: CSVType.Individual,
 		graphQLType: Name.Journal,
 		restType: 'webContent',
 		routes: {

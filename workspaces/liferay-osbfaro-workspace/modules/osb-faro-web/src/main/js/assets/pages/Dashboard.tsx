@@ -1,0 +1,240 @@
+import * as breadcrumbs from 'shared/util/breadcrumbs';
+import AccountDropdown from 'shared/components/AccountDropdown';
+import BasePage from 'shared/components/base-page';
+import BundleRouter from 'route-middleware/BundleRouter';
+import DownloadCSVReport from 'shared/components/download-report/DownloadCSVReport';
+import DownloadPDFReport from 'shared/components/download-report/DownloadPDFReport';
+import getCN from 'classnames';
+import Loading from 'shared/components/Loading';
+import React, {lazy, Suspense, useState} from 'react';
+import SegmentDropdown from 'shared/components/SegmentDropdown';
+import {getAssetDescriptorBySlug} from 'assets/descriptors';
+import {getSafeDecodedURIComponent} from 'shared/util/util';
+import {pickBy} from 'lodash';
+import {Router} from 'shared/types';
+import {sub} from 'shared/util/lang';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
+import {useChannelContext} from 'shared/context/channel';
+import {useDataSources} from 'shared/context/dataSources';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
+import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
+
+const Accounts = lazy(
+	() => import(/* webpackChunkName: "AssetAccounts" */ './Accounts')
+);
+const KnownIndividuals = lazy(
+	() =>
+		import(
+
+			/* webpackChunkName: "AssetKnownIndividuals" */ './KnownIndividuals'
+		)
+);
+const Overview = lazy(
+	() => import(/* webpackChunkName: "AssetOverview" */ './Overview')
+);
+
+const ACCOUNTS_TAB_ID = 'accounts';
+
+const KNOWN_INDIVIDUALS_TAB_ID = 'known-individuals';
+
+const AssetDashboard: React.FC<{
+	className: string;
+	router: Router;
+	slug: string;
+}> = ({className, router, slug}) => {
+	const {
+		params: {
+			assetId,
+			channelId = '',
+			groupId = '',
+			tabId,
+			title = '',
+			touchpoint,
+			type = '',
+		},
+	} = router;
+
+	const {csvType, graphQLType, routes} = getAssetDescriptorBySlug(slug)!;
+
+	const LDPEnabled = useLDPEnabled({groupId});
+
+	const NAV_ITEMS = [
+		{
+			exact: true,
+			label: Liferay.Language.get('overview'),
+			route: routes.overview,
+		},
+		...(LDPEnabled
+			? [
+					{
+						exact: true,
+						label: Liferay.Language.get('visitors'),
+						route: routes.accounts,
+					},
+				]
+			: [
+					{
+						exact: true,
+						label: Liferay.Language.get('known-individuals'),
+						route: routes.knownIndividuals,
+					},
+				]),
+	];
+
+	const [filters] = useState({});
+
+	const {accountId, accountName, setAccount} = useAccountFilter();
+
+	const {segmentId, segmentName, setSegment} = useSegmentFilter();
+
+	const dataSourceStates = useDataSources();
+
+	const decodedTitle = getSafeDecodedURIComponent(title);
+	const decodedType = getSafeDecodedURIComponent(type);
+
+	const rangeSelectorsFromQuery = useQueryRangeSelectors();
+
+	const {selectedChannel} = useChannelContext();
+
+	return (
+		<BasePage
+			className={getCN(className)}
+			documentTitle={Liferay.Language.get('assets')}
+		>
+			<BasePage.Header
+				breadcrumbs={[
+					breadcrumbs.getHome({
+						channelId,
+						groupId,
+						label: selectedChannel?.name,
+					}),
+					breadcrumbs.getAssets({channelId, groupId}),
+					breadcrumbs.getEntityName({label: decodedTitle}),
+				]}
+				groupId={groupId}
+			>
+				{type && (
+					<BasePage.Header.TitleSection
+						label
+						subtitle={decodedType}
+						title={decodedTitle}
+					/>
+				)}
+
+				<BasePage.Header.NavBar
+					items={NAV_ITEMS}
+					routeParams={{
+						assetId,
+						channelId,
+						groupId,
+						title,
+						touchpoint,
+						type,
+					}}
+					routeQueries={pickBy({
+						...rangeSelectorsFromQuery,
+						accountId,
+						accountName,
+						segmentId,
+						segmentName,
+					})}
+				/>
+			</BasePage.Header>
+
+			{tabId !== ACCOUNTS_TAB_ID &&
+				tabId !== KNOWN_INDIVIDUALS_TAB_ID && (
+					<BasePage.SubHeader>
+						{LDPEnabled && (
+							<AccountDropdown
+								assetType={graphQLType}
+								className="mr-3"
+								initialAccountId={accountId}
+								initialAccountName={accountName}
+								onFilterChange={setAccount}
+							/>
+						)}
+
+						{LDPEnabled && (
+							<SegmentDropdown
+								initialSegmentId={segmentId}
+								initialSegmentName={segmentName}
+								onFilterChange={setSegment}
+							/>
+						)}
+
+						<div className="d-flex justify-content-end w-100">
+							<DownloadPDFReport
+								disabled={!!dataSourceStates.empty}
+								subtitle={selectedChannel?.name}
+								title={
+									sub(Liferay.Language.get('x-dashboard'), [
+										decodedTitle,
+									]) as string
+								}
+							/>
+						</div>
+					</BasePage.SubHeader>
+				)}
+
+			{tabId === ACCOUNTS_TAB_ID && (
+				<BasePage.SubHeader>
+					<SegmentDropdown
+						initialSegmentId={segmentId}
+						initialSegmentName={segmentName}
+						onFilterChange={setSegment}
+					/>
+				</BasePage.SubHeader>
+			)}
+
+			{tabId === KNOWN_INDIVIDUALS_TAB_ID && csvType && (
+				<BasePage.SubHeader>
+					<div className="d-flex justify-content-end w-100">
+						<DownloadCSVReport
+							assetId={assetId}
+							assetType={graphQLType}
+							disabled={!!dataSourceStates.empty}
+							type={csvType}
+							typeLang={Liferay.Language.get('known-individuals')}
+						/>
+					</div>
+				</BasePage.SubHeader>
+			)}
+
+			<BasePage.Context.Provider
+				value={{
+					accountId,
+					filters,
+					router,
+					segmentId,
+				}}
+			>
+				<BasePage.Body>
+					<Suspense fallback={<Loading />}>
+						{tabId === KNOWN_INDIVIDUALS_TAB_ID ? (
+							<BundleRouter
+								componentProps={{graphQLType}}
+								data={KnownIndividuals}
+								destructured={false}
+							/>
+						) : tabId === ACCOUNTS_TAB_ID ? (
+							<BundleRouter
+								componentProps={{graphQLType}}
+								data={Accounts}
+								destructured={false}
+							/>
+						) : (
+							<BundleRouter
+								componentProps={{slug}}
+								data={Overview}
+								destructured={false}
+							/>
+						)}
+					</Suspense>
+				</BasePage.Body>
+			</BasePage.Context.Provider>
+		</BasePage>
+	);
+};
+
+export default AssetDashboard;

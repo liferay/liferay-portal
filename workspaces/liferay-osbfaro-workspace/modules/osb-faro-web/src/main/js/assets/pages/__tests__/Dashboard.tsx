@@ -1,7 +1,6 @@
-import Blog from '../index';
+import AssetDashboard from '../Dashboard';
 import mockStore from 'test/mock-store';
 import React from 'react';
-import {getMatchedRoute, Routes} from 'shared/util/router';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
@@ -11,12 +10,14 @@ jest.unmock('react-dom');
 
 jest.mock('shared/components/download-report/DownloadCSVReport', () => ({
 	__esModule: true,
-	default: () => null,
+	default: ({assetType}: {assetType?: string}) => (
+		<div data-asset-type={assetType} data-testid="download-csv" />
+	),
 }));
 
 jest.mock('shared/components/download-report/DownloadPDFReport', () => ({
 	__esModule: true,
-	default: () => null,
+	default: () => <div data-testid="download-pdf" />,
 }));
 
 jest.mock('shared/components/Loading', () => ({
@@ -78,45 +79,54 @@ jest.mock('shared/hooks/useLDPEnabled', () => ({
 	useLDPEnabled: jest.fn(),
 }));
 
-jest.mock('shared/util/router', () => {
-	const actual = jest.requireActual('shared/util/router');
+const renderDashboard = (tabId?: string, slug = 'blogs') =>
+	render(
+		<Provider store={mockStore()}>
+			<MemoryRouter>
+				<AssetDashboard
+					className=""
+					router={
+						{
+							params: {
+								assetId: 'asset-1',
+								channelId: '1',
+								groupId: '2',
+								tabId,
+								title: 'my blog',
+								touchpoint: 'http://example.com/web/site/blog',
+								type: 'Blog',
+							},
+							query: {},
+						} as any
+					}
+					slug={slug}
+				/>
+			</MemoryRouter>
+		</Provider>
+	);
 
-	return {
-		...actual,
-		getMatchedRoute: jest.fn(() => actual.Routes.ASSETS_BLOGS_OVERVIEW),
-	};
-});
-
-const ROUTER = {
-	className: '',
-	params: {
-		assetId: 'asset-1',
-		channelId: '1',
-		groupId: '2',
-		title: 'my blog',
-		touchpoint: 'http://example.com/web/site/blog',
-		type: 'Blog',
-	},
-	query: {},
-};
-
-describe('Blog', () => {
+describe('AssetDashboard', () => {
 	beforeEach(() => {
 		(useLDPEnabled as jest.Mock).mockReturnValue(true);
 	});
 
-	it('shows an unscoped segment filter on the accounts route', () => {
-		(getMatchedRoute as jest.Mock).mockReturnValue(
-			Routes.ASSETS_BLOGS_ACCOUNTS
-		);
+	// The sub headers used to be chosen by comparing the matched route against
+	// a per asset type constant. They key off the tab instead, so that one
+	// dynamic route can serve every asset type.
 
-		render(
-			<Provider store={mockStore()}>
-				<MemoryRouter>
-					<Blog className="" router={ROUTER as any} />
-				</MemoryRouter>
-			</Provider>
-		);
+	it('shows the overview sub header when no tab is selected', () => {
+		renderDashboard();
+
+		expect(screen.getByTestId('account-dropdown')).toBeInTheDocument();
+		expect(screen.getByTestId('download-pdf')).toBeInTheDocument();
+		expect(screen.queryByTestId('download-csv')).toBeNull();
+	});
+
+	it('shows an unscoped segment filter on the accounts tab', () => {
+		renderDashboard('accounts');
+
+		expect(screen.queryByTestId('account-dropdown')).toBeNull();
+		expect(screen.queryByTestId('download-pdf')).toBeNull();
 
 		expect(screen.getByTestId('segment-dropdown')).not.toHaveAttribute(
 			'data-asset-id'
@@ -124,5 +134,23 @@ describe('Blog', () => {
 		expect(screen.getByTestId('segment-dropdown')).not.toHaveAttribute(
 			'data-asset-type'
 		);
+	});
+
+	it('offers the CSV export on the known individuals tab', () => {
+		renderDashboard('known-individuals');
+
+		expect(screen.getByTestId('download-csv')).toHaveAttribute(
+			'data-asset-type',
+			'blog'
+		);
+		expect(screen.queryByTestId('download-pdf')).toBeNull();
+	});
+
+	// Object entries are the one asset type with no known individuals export.
+
+	it('offers no CSV export for object entries', () => {
+		renderDashboard('known-individuals', 'object-entry');
+
+		expect(screen.queryByTestId('download-csv')).toBeNull();
 	});
 });
