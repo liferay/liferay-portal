@@ -121,17 +121,6 @@ export const getBlogs = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
 	label: Liferay.Language.get('blogs'),
 });
 
-export const getCustomContent = ({
-	channelId,
-	groupId,
-}: IBasicSidebarRouteArgs) => ({
-	href: toRoute(Routes.ASSETS_CUSTOM, {
-		channelId,
-		groupId,
-	}),
-	label: Liferay.Language.get('custom'),
-});
-
 export const getDocumentsAndMedia = ({
 	channelId,
 	groupId,

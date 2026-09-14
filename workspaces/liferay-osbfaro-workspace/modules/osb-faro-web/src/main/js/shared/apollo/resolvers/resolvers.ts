@@ -1,5 +1,4 @@
 import AssetAppearsOnResolver from './AssetAppearsOnResolver';
-import CustomAssetsListResolver from './CustomAssetsListResolver';
 import DocumentsAndMediaMetricsResolver from './DocumentsAndMediaMetricsResolver';
 import EventAnalysisListResolver from './EventAnalysisListResolver';
 import EventsByUserSessionsResolver from './EventsByUserSessionsResolver';
@@ -23,7 +22,6 @@ import PagePathResolver from './PagePathResolver';
 
 export const resolvers = {
 	assetPages: AssetAppearsOnResolver,
-	dashboards: CustomAssetsListResolver,
 	document: DocumentsAndMediaMetricsResolver,
 	eventAnalysisList: EventAnalysisListResolver,
 	eventsByUserSessions: EventsByUserSessionsResolver,

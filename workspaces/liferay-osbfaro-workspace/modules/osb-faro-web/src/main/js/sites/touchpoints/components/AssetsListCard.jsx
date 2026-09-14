@@ -59,8 +59,7 @@ class AssetsListCard extends React.Component {
 			{
 				...params,
 				assetId,
-				title,
-				...(assetType === 'custom' ? {id: assetId} : false)
+				title
 			},
 			pickBy({
 				...query,

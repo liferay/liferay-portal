@@ -193,12 +193,6 @@ const Blog = lazy(() =>
 	import(/* webpackChunkName: "Blog" */ 'assets/blog/pages')
 );
 
-const CustomAssetsDashboard = lazy(() =>
-	import(
-		/* webpackChunkName: "CustomAssetsDashboard" */ 'assets/custom-asset/pages/Dashboard'
-	)
-);
-
 const DocumentAndMedia = lazy(() =>
 	import(
 		/* webpackChunkName: "DocumentAndMedia" */ 'assets/document-and-media/pages'
@@ -363,16 +357,6 @@ const AppSidebarRoutes = ({LDPEnabled, currentUser, groupId}) => {
 									/>
 								}
 								path=":channelId?/assets/blogs/:assetId/:tabId/:touchpoint/:title?/:type?"
-							/>
-
-							<Route
-								element={
-									<BundleRouter
-										data={CustomAssetsDashboard}
-										destructured={false}
-									/>
-								}
-								path=":channelId?/assets/custom/:id/page/:touchpoint/:title?/:type?"
 							/>
 
 							<Route

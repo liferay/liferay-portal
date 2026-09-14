@@ -15,6 +15,7 @@ import {
 	setUriFilterValues,
 	setUriQueryValue,
 	setUriQueryValues,
+	toAssetOverviewRoute,
 	toRoute,
 } from '../router';
 import {DataSourceTypes, EntityTypes} from '../constants';
@@ -168,6 +169,32 @@ describe('toRoute', () => {
 		expect(
 			toRoute(Routes.CONTACTS_ENTITY, {groupId, id, type: SEGMENTS})
 		).toBe(`/workspace/${groupId}/contacts/${SEGMENTS}/${id}`);
+	});
+});
+
+describe('toAssetOverviewRoute', () => {
+	const routeParams = {
+		assetId: 123,
+		channelId: 456,
+		groupId: 789,
+		title: 'Foo',
+		touchpoint: 'Any',
+	};
+
+	it('should create a url for a mapped asset type', () => {
+		expect(toAssetOverviewRoute('journal', routeParams, {})).toBe(
+			'/workspace/789/456/assets/web-content/123/page/Any/Foo'
+		);
+	});
+
+	it('should fall back to the object entry route for an unmapped asset type', () => {
+		expect(toAssetOverviewRoute('custom', routeParams, {})).toBe(
+			'/workspace/789/456/assets/object-entry/123/page/Any/Foo'
+		);
+
+		expect(toAssetOverviewRoute('objectEntry', routeParams, {})).toBe(
+			'/workspace/789/456/assets/object-entry/123/page/Any/Foo'
+		);
 	});
 });
 

@@ -96,13 +96,6 @@ export const Routes = buildRoutes({
 												'/:assetId/:tabId/:touchpoint/:title?/:type?',
 										},
 									},
-									ASSETS_CUSTOM: {
-										path: '/custom',
-										routes: {
-											ASSETS_CUSTOM_DASHBOARD:
-												'/:id/page/:touchpoint/:title?/:type?',
-										},
-									},
 									ASSETS_DOCUMENTS_AND_MEDIA: {
 										path: '/documents-and-media',
 										routes: {
@@ -456,27 +449,30 @@ const TYPE_TO_ROUTE_MAP = {
 
 export const assetTypePaths = {
 	blog: Routes.ASSETS_BLOGS_OVERVIEW,
-	custom: Routes.ASSETS_CUSTOM_DASHBOARD,
 	document: Routes.ASSETS_DOCUMENTS_AND_MEDIA_OVERVIEW,
 	form: Routes.ASSETS_FORMS_OVERVIEW,
 	journal: Routes.ASSETS_WEB_CONTENT_OVERVIEW,
 };
 
 export const toAssetOverviewRoute = (
-	assetType: keyof typeof assetTypePaths,
+	assetType: string,
 	routeParams: {[key: string]: any},
 	query: {[key: string]: any}
 ) => {
+	const assetTypePath =
+		assetTypePaths[assetType as keyof typeof assetTypePaths] ??
+		Routes.ASSETS_OBJECT_ENTRY_OVERVIEW;
+
 	let route = '';
 
 	if (assetType === 'blog') {
-		route = toRoute(assetTypePaths[assetType], {
+		route = toRoute(assetTypePath, {
 			...routeParams,
 			assetType: 'blogs',
 		});
 	}
 	else {
-		route = toRoute(assetTypePaths[assetType], routeParams);
+		route = toRoute(assetTypePath, routeParams);
 	}
 
 	return !isEmpty(query) ? setUriQueryValues(query, route) : route;

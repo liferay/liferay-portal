@@ -53,9 +53,6 @@ interface IMetricChartProps extends Partial<ICommonMetricProps> {
 	chartHeight?: number;
 	compareToPrevious: boolean;
 	data: any;
-
-	// @deprecated. It is used only on CustomAsset
-
 	onCompareToPreviousChange?: (compareToPrevious: boolean) => void;
 }
 
