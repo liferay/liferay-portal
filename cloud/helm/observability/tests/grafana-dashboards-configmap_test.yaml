@@ -43,6 +43,12 @@ tests:
                     pattern: "\"options\": \"/\\.\\*RUNNING/i\""
             -   matchRegex:
                     path: data["databases.json"]
+                    pattern: "\"title\": \"CPU Utilization\""
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: "\"title\": \"Memory Utilization\""
+            -   matchRegex:
+                    path: data["databases.json"]
                     pattern: liferay:db_cpu_reserved_cores\{environment_id=
             -   matchRegex:
                     path: data["databases.json"]

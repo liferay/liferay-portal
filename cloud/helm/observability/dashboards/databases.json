@@ -634,7 +634,7 @@
 												"expr": "avg by (database_id, data_plane, state) (\n  last_over_time(\n    liferay:db_instance_state{environment_id=\"$environment\"}[${__interval}]\n  ) > 0\n)",
 												"format": "time_series",
 												"instant": false,
-												"legendFormat": "{{db_name}} - {{state}}",
+												"legendFormat": "{{database_id}} {{data_plane}} - {{state}}",
 												"range": true
 											},
 											"version": "v0"
@@ -869,7 +869,7 @@
 					"id": 7,
 					"links": [
 					],
-					"title": "CPU Usage",
+					"title": "CPU Utilization",
 					"transparent": true,
 					"vizConfig": {
 						"group": "timeseries",
@@ -996,7 +996,7 @@
 					"id": 8,
 					"links": [
 					],
-					"title": "Memory Usage",
+					"title": "Memory Utilization",
 					"transparent": true,
 					"vizConfig": {
 						"group": "timeseries",
