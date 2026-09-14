@@ -396,18 +396,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro setDeliveryDate(displayDateMonth = null, displayDateYear = null, displayDateDay = null) {
-		var displayDate = "${displayDateMonth}/${displayDateDay}/${displayDateYear}";
-
-		Type(
-			key_fieldName = "mm/dd/yyyy",
-			locator1 = "CommerceAccelerators#CHECKOUT_GENERIC_TEXT_INPUT",
-			value1 = ${displayDate});
-
-		Click(locator1 = "Button#CONTINUE");
-	}
-
-	@summary = "Default summary"
 	macro setStandardShippingOption() {
 		Click(
 			key_radioOption = "Standard",
