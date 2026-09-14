@@ -32,6 +32,7 @@ import com.liferay.portal.vulcan.openapi.OpenAPIContext;
 import com.liferay.portal.vulcan.openapi.OpenAPISchemaFilter;
 import com.liferay.portal.vulcan.openapi.contributor.OpenAPIContributor;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
+import com.liferay.portal.vulcan.util.OpenAPISchemaUtil;
 import com.liferay.portal.vulcan.util.UriInfoUtil;
 
 import io.swagger.v3.core.converter.AnnotatedType;
@@ -508,6 +509,14 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 			Schema additionalPropertiesSchema = (Schema)additionalProperties;
 
 			_updateSchemaReferences(additionalPropertiesSchema, schemaPrefix);
+		}
+
+		List<Schema> allOfSchemas = schema.getAllOf();
+
+		if (ListUtil.isNotEmpty(allOfSchemas)) {
+			for (Schema allOfSchema : allOfSchemas) {
+				_updateSchemaReferences(allOfSchema, schemaPrefix);
+			}
 		}
 
 		if (schema instanceof ArraySchema) {
@@ -1082,6 +1091,14 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 
 					_replaceReference(entry, propertySchema);
 
+					List<Schema> allOfSchemas = propertySchema.getAllOf();
+
+					if (ListUtil.isNotEmpty(allOfSchemas)) {
+						for (Schema allOfSchema : allOfSchemas) {
+							_replaceReference(entry, allOfSchema);
+						}
+					}
+
 					if (propertySchema instanceof ArraySchema) {
 						ArraySchema arraySchema = (ArraySchema)propertySchema;
 
@@ -1193,9 +1210,10 @@ public class OpenAPIResourceImpl implements OpenAPIResource {
 						if (StringUtil.equals(
 								childDTOProperty.getType(), "Object")) {
 
-							schema.set$ref(
+							OpenAPISchemaUtil.setReference(
 								"#/components/schemas/" +
-									childDTOProperty.getName());
+									childDTOProperty.getName(),
+								schema);
 						}
 						else {
 							schema.addProperties(

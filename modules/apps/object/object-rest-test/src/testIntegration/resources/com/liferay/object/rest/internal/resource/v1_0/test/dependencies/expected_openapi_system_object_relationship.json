@@ -106,7 +106,13 @@
 						"type": "array"
 					},
 					"relationMTo1": {
-						"$ref": "#/components/schemas/Object1"
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/Object1"
+							}
+						],
+						"description": "Information about the object relationship relationMTo1 can be embedded with \"nestedFields\".",
+						"type": "object"
 					},
 					"relationMToM": {
 						"description": "Information about the object relationship relationMToM can be embedded with \"nestedFields\".",
