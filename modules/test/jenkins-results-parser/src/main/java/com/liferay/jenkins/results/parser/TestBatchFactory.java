@@ -31,6 +31,7 @@ public class TestBatchFactory {
 					 batchName.startsWith("modules-integration") ||
 					 batchName.startsWith("modules-unit") ||
 					 batchName.startsWith("unit") ||
+					 batchName.startsWith("workspaces-integration") ||
 					 batchName.startsWith("workspaces-unit")) {
 
 				testBatch = new JunitPortalTestBatch(

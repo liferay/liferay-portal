@@ -82,6 +82,10 @@ public class WorkspacesModulesJUnitTestClass extends ModulesJUnitTestClass {
 
 		String batchName = batchTestClassGroup.getBatchName();
 
+		if (batchName.startsWith("workspaces-integration")) {
+			return "testIntegration";
+		}
+
 		if (batchName.startsWith("workspaces-unit")) {
 			return "test";
 		}

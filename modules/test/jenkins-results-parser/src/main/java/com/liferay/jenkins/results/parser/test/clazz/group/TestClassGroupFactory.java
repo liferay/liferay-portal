@@ -569,19 +569,9 @@ public class TestClassGroupFactory {
 							batchName, portalTestClassJob);
 				}
 			}
-			else if (batchName.startsWith("workspaces-js-unit")) {
-				if (jsonObject != null) {
-					batchTestClassGroup =
-						new WorkspacesJSUnitModulesBatchTestClassGroup(
-							jsonObject, portalTestClassJob);
-				}
-				else {
-					batchTestClassGroup =
-						new WorkspacesJSUnitModulesBatchTestClassGroup(
-							batchName, portalTestClassJob);
-				}
-			}
-			else if (batchName.startsWith("workspaces-unit")) {
+			else if (batchName.startsWith("workspaces-integration") ||
+					 batchName.startsWith("workspaces-unit")) {
+
 				if (jsonObject != null) {
 					batchTestClassGroup =
 						new WorkspacesModulesJUnitBatchTestClassGroup(
@@ -596,6 +586,18 @@ public class TestClassGroupFactory {
 				else {
 					batchTestClassGroup =
 						new WorkspacesModulesJUnitBatchTestClassGroup(
+							batchName, portalTestClassJob);
+				}
+			}
+			else if (batchName.startsWith("workspaces-js-unit")) {
+				if (jsonObject != null) {
+					batchTestClassGroup =
+						new WorkspacesJSUnitModulesBatchTestClassGroup(
+							jsonObject, portalTestClassJob);
+				}
+				else {
+					batchTestClassGroup =
+						new WorkspacesJSUnitModulesBatchTestClassGroup(
 							batchName, portalTestClassJob);
 				}
 			}

@@ -105,6 +105,7 @@ public class BuildFactory {
 				}
 				else if (jobVariant.startsWith("modules-integration") ||
 						 jobVariant.startsWith("modules-unit") ||
+						 jobVariant.startsWith("workspaces-integration") ||
 						 jobVariant.startsWith("workspaces-unit")) {
 
 					return new ModulesJUnitDownstreamBuild(

@@ -27,6 +27,7 @@ public class TestReportFactory {
 			batchName.startsWith("modules-integration") ||
 			batchName.startsWith("modules-unit") ||
 			batchName.startsWith("unit") ||
+			batchName.startsWith("workspaces-integration") ||
 			batchName.startsWith("workspaces-unit")) {
 
 			return new JUnitTestReport(downstreamBuildReport, jsonObject);
