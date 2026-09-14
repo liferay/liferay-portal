@@ -16,20 +16,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addWishList(wishListName = null) {
-		Click(locator1 = "CommerceEntry#PLUS_BUTTON");
-
-		Click(locator1 = "Button#EDIT");
-
-		Type(
-			key_fieldLabel = "Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${wishListName});
-
-		Button.clickSave();
-	}
-
-	@summary = "Default summary"
 	macro assertWishListProduct(wishListName = null, productName = null) {
 		AssertElementPresent(
 			locator1 = "CommerceEntry#WISH_LIST_NAME",
