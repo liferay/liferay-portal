@@ -108,6 +108,17 @@ const AssetDashboard: React.FC<{
 
 	const {csvType, graphQLType} = descriptor;
 
+	// The date range and the account and segment filters travel in the URL, so
+	// both the tab links and the breadcrumb back to the list carry them on.
+
+	const routeQueries = pickBy({
+		...rangeSelectorsFromQuery,
+		accountId,
+		accountName,
+		segmentId,
+		segmentName,
+	});
+
 	return (
 		<BasePage
 			className={getCN(className)}
@@ -120,7 +131,11 @@ const AssetDashboard: React.FC<{
 						groupId,
 						label: selectedChannel?.name,
 					}),
-					breadcrumbs.getAssets({channelId, groupId}),
+					breadcrumbs.getAssets({
+						channelId,
+						groupId,
+						query: routeQueries,
+					}),
 					breadcrumbs.getEntityName({label: decodedTitle}),
 				]}
 				groupId={groupId}
@@ -144,13 +159,7 @@ const AssetDashboard: React.FC<{
 						touchpoint,
 						type,
 					}}
-					routeQueries={pickBy({
-						...rangeSelectorsFromQuery,
-						accountId,
-						accountName,
-						segmentId,
-						segmentName,
-					})}
+					routeQueries={routeQueries}
 				/>
 			</BasePage.Header>
 

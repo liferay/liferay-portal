@@ -265,6 +265,53 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		expect(href).toContain('rangeKey=30');
 	});
 
+	// Opening an asset from the list carries the list's date range, account and
+	// segment in the URL. The breadcrumb has to hand them back, or it returns
+	// the reader to a list reset to its defaults.
+
+	it('carries the date range back through the assets breadcrumb', () => {
+		(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+		renderDashboard();
+
+		const href = screen
+			.getByText('Assets')
+			.closest('a')
+			?.getAttribute('href');
+
+		expect(href).toContain('rangeKey=30');
+	});
+
+	it('carries the account and segment back through the assets breadcrumb', () => {
+		(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+		renderDashboard([
+			'/?accountId=100&accountName=Account+100&segmentId=200&segmentName=Segment+200',
+		]);
+
+		const href = screen
+			.getByText('Assets')
+			.closest('a')
+			?.getAttribute('href');
+
+		expect(href).toContain('accountId=100');
+		expect(href).toContain('segmentId=200');
+	});
+
+	it('leaves the assets breadcrumb clean when nothing is selected', () => {
+		(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+		renderDashboard();
+
+		const href = screen
+			.getByText('Assets')
+			.closest('a')
+			?.getAttribute('href');
+
+		expect(href).not.toContain('accountId');
+		expect(href).not.toContain('segmentId');
+	});
+
 	it('carries the segment filter over to the tab links', () => {
 		(useLDPEnabled as jest.Mock).mockReturnValue(true);
 

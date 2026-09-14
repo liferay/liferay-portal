@@ -1,4 +1,10 @@
-import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
+import {
+	ACCOUNTS,
+	Routes,
+	SEGMENTS,
+	setUriQueryValues,
+	toRoute,
+} from 'shared/util/router';
 
 type IBasicRouteArgs = {
 	groupId: string;
@@ -111,8 +117,22 @@ export const getTests = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
 /**
  * Assets
  */
-export const getAssets = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
-	href: toRoute(Routes.ASSETS, {channelId, groupId}),
+
+/**
+ * The asset list keeps its date range, account and segment in the URL, and
+ * hands them to the dashboard when a row is opened. Passing them back through
+ * `query` is what makes the breadcrumb return to the list the reader left,
+ * rather than to a list reset to its defaults.
+ */
+export const getAssets = ({
+	channelId,
+	groupId,
+	query = {},
+}: IBasicSidebarRouteArgs & {query?: {[key: string]: unknown}}) => ({
+	href: setUriQueryValues(
+		query,
+		toRoute(Routes.ASSETS, {channelId, groupId})
+	),
 	label: Liferay.Language.get('assets'),
 });
 
