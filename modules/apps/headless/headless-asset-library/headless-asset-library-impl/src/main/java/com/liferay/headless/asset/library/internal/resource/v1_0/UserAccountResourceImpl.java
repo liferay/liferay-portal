@@ -149,7 +149,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		Group group = _groupService.fetchGroupByExternalReferenceCode(
 			externalReferenceCode, contextCompany.getCompanyId());
 
-		if (group == null) {
+		if ((group == null) || !group.isDepot()) {
 			throw new NoSuchGroupException(
 				"No group exists with external reference code " +
 					externalReferenceCode);
