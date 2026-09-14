@@ -11,6 +11,7 @@ import com.liferay.asset.link.constants.AssetLinkConstants;
 import com.liferay.asset.link.model.AssetLink;
 import com.liferay.asset.link.service.AssetLinkLocalService;
 import com.liferay.diff.DiffHtml;
+import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
@@ -83,6 +84,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -90,6 +92,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.IndexWriterHelper;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
@@ -1673,6 +1676,8 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 			KBArticle oldKBArticle = getLatestKBArticle(
 				resourcePrimKey, WorkflowConstants.STATUS_ANY);
 
+			_validateRemoveFileEntryIds(oldKBArticle, removeFileEntryIds);
+
 			int oldVersion = oldKBArticle.getVersion();
 
 			KBArticle kbArticle = null;
@@ -2647,6 +2652,26 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 			});
 	}
 
+	private boolean _isKBArticleAttachment(
+		FileEntry fileEntry, KBArticle kbArticle) {
+
+		Repository repository = _portletFileRepository.fetchPortletRepository(
+			kbArticle.getGroupId(), KBConstants.SERVICE_NAME);
+
+		Folder folder = fileEntry.getFolder();
+
+		if ((repository != null) && (folder != null) &&
+			(repository.getRepositoryId() == folder.getRepositoryId()) &&
+			(repository.getDlFolderId() == folder.getParentFolderId()) &&
+			(kbArticle.getResourcePrimKey() == GetterUtil.getLong(
+				folder.getName()))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _moveDependentKBArticleToTrash(
 			KBArticle kbArticle, long trashEntryId)
 		throws PortalException {
@@ -3089,6 +3114,37 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 		if (priority <= 0) {
 			throw new KBArticlePriorityException(
 				"Invalid priority " + priority);
+		}
+	}
+
+	private void _validateRemoveFileEntryIds(
+			KBArticle kbArticle, long[] removeFileEntryIds)
+		throws PortalException {
+
+		if (ArrayUtil.isEmpty(removeFileEntryIds)) {
+			return;
+		}
+
+		for (long removeFileEntryId : removeFileEntryIds) {
+			FileEntry fileEntry = null;
+
+			try {
+				fileEntry = _portletFileRepository.getPortletFileEntry(
+					removeFileEntryId);
+			}
+			catch (NoSuchFileEntryException noSuchFileEntryException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(noSuchFileEntryException);
+				}
+
+				continue;
+			}
+
+			if (!_isKBArticleAttachment(fileEntry, kbArticle)) {
+				throw new NoSuchFileEntryException(
+					"No file entry exists with file entry ID " +
+						removeFileEntryId);
+			}
 		}
 	}
 
