@@ -11,10 +11,7 @@ import com.liferay.object.entry.util.ObjectEntryPayloadUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
 import com.liferay.portal.kernel.messaging.Destination;
 import com.liferay.portal.kernel.messaging.DestinationConfiguration;
@@ -68,40 +65,29 @@ public class ObjectActionUserLoginTriggerMessageListener
 	@Override
 	protected void doReceive(Message message) throws Exception {
 		long companyId = message.getLong("companyId");
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
-				companyId, User.class.getName());
-
-		if (objectDefinition == null) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					StringBundler.concat(
-						"Object definition is null for class name ",
-						User.class.getName(), "and company ", companyId));
-			}
-
-			return;
-		}
-
-		User user = _userLocalService.getUser(message.getLong("userId"));
+		long userId = message.getLong("userId");
 
 		_objectActionEngine.executeObjectActions(
-			objectDefinition.getClassName(), message.getLong("companyId"),
+			User.class.getName(), companyId,
 			ObjectActionTriggerConstants.KEY_ON_AFTER_LOGIN,
-			() -> ObjectEntryPayloadUtil.getPayloadJSONObject(
-				user, _dtoConverterRegistry, _jsonFactory,
-				ObjectActionTriggerConstants.KEY_ON_AFTER_LOGIN,
-				objectDefinition, null,
-				_systemObjectDefinitionManagerRegistry.
-					getSystemObjectDefinitionManager(
-						objectDefinition.getName()),
-				user.getUserId()),
-			user.getUserId());
-	}
+			() -> {
+				ObjectDefinition objectDefinition =
+					_objectDefinitionLocalService.
+						getObjectDefinitionByClassName(
+							companyId, User.class.getName());
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		ObjectActionUserLoginTriggerMessageListener.class);
+				return ObjectEntryPayloadUtil.getPayloadJSONObject(
+					_userLocalService.getUser(userId), _dtoConverterRegistry,
+					_jsonFactory,
+					ObjectActionTriggerConstants.KEY_ON_AFTER_LOGIN,
+					objectDefinition, null,
+					_systemObjectDefinitionManagerRegistry.
+						getSystemObjectDefinitionManager(
+							objectDefinition.getName()),
+					userId);
+			},
+			userId);
+	}
 
 	@Reference
 	private DestinationFactory _destinationFactory;
