@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.PropsValues;
 import java.io.File;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -213,6 +212,16 @@ public class KnowledgeBaseAttachmentResourceTest
 	}
 
 	@Override
+	@Test
+	public void testPostKnowledgeBaseArticleKnowledgeBaseAttachment()
+		throws Exception {
+
+		super.testPostKnowledgeBaseArticleKnowledgeBaseAttachment();
+
+		_testPostKnowledgeBaseArticleKnowledgeBaseAttachmentWithoutUpdatePermission();
+	}
+
+	@Override
 	protected void assertValid(
 			KnowledgeBaseAttachment knowledgeBaseAttachment,
 			Map<String, File> multipartFiles)
@@ -282,15 +291,6 @@ public class KnowledgeBaseAttachmentResourceTest
 		throws Exception {
 
 		return _kbArticle.getExternalReferenceCode();
-	}
-
-	@Override
-	protected Map<String, Map<String, String>>
-			testGetKnowledgeBaseArticleKnowledgeBaseAttachmentsPage_getExpectedActions(
-				Long knowledgeBaseArticleId)
-		throws Exception {
-
-		return Collections.emptyMap();
 	}
 
 	@Override
@@ -413,15 +413,18 @@ public class KnowledgeBaseAttachmentResourceTest
 			_addKBArticle(serviceContext, TestPropsValues.getUserId()));
 	}
 
-	private KnowledgeBaseAttachmentResource
-			_getUserWithoutPermissionsKnowledgeBaseAttachmentResource()
-		throws Exception {
+	private KBArticle _addSiteKBArticle() throws Exception {
+		ServiceContext serviceContext = new ServiceContext();
 
-		String password = RandomTestUtil.randomString();
+		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAddGuestPermissions(false);
+		serviceContext.setScopeGroupId(testGroup.getGroupId());
 
-		User user = UserTestUtil.addUser(testCompany, password);
+		return _addKBArticle(serviceContext, TestPropsValues.getUserId());
+	}
 
-		_users.add(user);
+	private KnowledgeBaseAttachmentResource _getKnowledgeBaseAttachmentResource(
+		User user, String password) {
 
 		return KnowledgeBaseAttachmentResource.builder(
 		).authentication(
@@ -432,6 +435,35 @@ public class KnowledgeBaseAttachmentResourceTest
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	private KnowledgeBaseAttachmentResource
+			_getSiteMemberKnowledgeBaseAttachmentResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_users.add(user);
+
+		UserLocalServiceUtil.addGroupUsers(
+			testGroup.getGroupId(), new long[] {user.getUserId()});
+
+		return _getKnowledgeBaseAttachmentResource(user, password);
+	}
+
+	private KnowledgeBaseAttachmentResource
+			_getUserWithoutPermissionsKnowledgeBaseAttachmentResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		_users.add(user);
+
+		return _getKnowledgeBaseAttachmentResource(user, password);
 	}
 
 	private String _read(String url) throws Exception {
@@ -445,6 +477,29 @@ public class KnowledgeBaseAttachmentResourceTest
 		HttpInvoker.HttpResponse httpResponse = httpInvoker.invoke();
 
 		return httpResponse.getContent();
+	}
+
+	private void _testPostKnowledgeBaseArticleKnowledgeBaseAttachmentWithoutUpdatePermission()
+		throws Exception {
+
+		KBArticle siteKBArticle = _addSiteKBArticle();
+
+		KnowledgeBaseAttachmentResource
+			siteMemberKnowledgeBaseAttachmentResource =
+				_getSiteMemberKnowledgeBaseAttachmentResource();
+
+		assertHttpResponseStatusCode(
+			200,
+			siteMemberKnowledgeBaseAttachmentResource.
+				getKnowledgeBaseArticleKnowledgeBaseAttachmentsPageHttpResponse(
+					siteKBArticle.getResourcePrimKey()));
+
+		assertHttpResponseStatusCode(
+			403,
+			siteMemberKnowledgeBaseAttachmentResource.
+				postKnowledgeBaseArticleKnowledgeBaseAttachmentHttpResponse(
+					siteKBArticle.getResourcePrimKey(),
+					randomKnowledgeBaseAttachment(), getMultipartFiles()));
 	}
 
 	private KBArticle _kbArticle;
