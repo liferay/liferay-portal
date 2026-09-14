@@ -1,10 +1,11 @@
+{{- $cloudProvider := .Values.cloudProvider -}}
 {{- $datasourceUid := include "observability.datasourceUid" . -}}
 {{- $folder := .Values.dashboards.folder -}}
 {{- $items := deepCopy .Values.dashboards.items -}}
 {{- $namespace := include "observability.namespace" . -}}
 {{- $esNamespaceSuffix := "" -}}
 {{- $nsLabel := "namespace" -}}
-{{- if eq .Values.cloudProvider "gcp" -}}
+{{- if eq $cloudProvider "gcp" -}}
 {{- $esNamespaceSuffix = "-elasticsearch" -}}
 {{- $nsLabel = "exported_namespace" -}}
 {{- end -}}
@@ -12,7 +13,7 @@
 {{- with .Values.aws -}}
 {{- $region = (.region | default "") -}}
 {{- end -}}
-{{- if eq .Values.cloudProvider "aws" -}}
+{{- if eq $cloudProvider "aws" -}}
 {{- if hasKey $items "backups" -}}
 {{- $_ := set (index $items "backups") "file" "dashboards/backups-aws.json" -}}
 {{- end -}}
@@ -55,11 +56,11 @@
 {{- if not $raw -}}
 {{- fail (printf "Dashboard file %s not found in chart" $entry.file) -}}
 {{- end -}}
-{{- $rendered := $raw | replace "${CLOUD_PROVIDER}" $.Values.cloudProvider | replace "${DS_PROMETHEUS}" $datasourceUid | replace "${ES_NAMESPACE_SUFFIX}" $esNamespaceSuffix | replace "${NS_LABEL}" $nsLabel | replace "${region}" $region -}}
+{{- $rendered := $raw | replace "${CLOUD_PROVIDER}" $cloudProvider | replace "${DS_PROMETHEUS}" $datasourceUid | replace "${ES_NAMESPACE_SUFFIX}" $esNamespaceSuffix | replace "${NS_LABEL}" $nsLabel | replace "${region}" $region -}}
 {{- if hasKey $dashboardHeaders $key -}}
 {{- $rendered = $rendered | replace "\"${HEADER_HTML}\"" (tpl ($.Files.Get "dashboards/html/dashboard-header.html") (index $dashboardHeaders $key) | toJson) -}}
 {{- end -}}
-{{- if and (eq $key "backups") (eq $.Values.cloudProvider "aws") -}}
+{{- if and (eq $key "backups") (eq $cloudProvider "aws") -}}
 {{- $rendered = $rendered | replace "\"${AWS_BACKUP_HTML}\"" (tpl ($.Files.Get "dashboards/html/aws-backup.html") (dict "region" $region) | toJson) -}}
 {{- end -}}
 {{- if eq $key "central-hub" -}}
