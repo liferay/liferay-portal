@@ -100,65 +100,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _deleteCommerceSkuUom(productSKU = null, uomKey = null) {
-		Variables.assertDefined(parameterList = "${productSKU},${uomKey}");
-
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		var skuUomId = CommerceJSONSKUsAPI._getCommerceSkuUomIdByKey(
-			productSKU = ${productSKU},
-			uomKey = ${uomKey});
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/sku-unit-of-measures/${skuUomId} \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-		''';
-
-		JSONCurlUtil.delete(${curl});
-	}
-
-	@summary = "Default summary"
-	macro _getCommerceSkuUomIdByKey(productSKU = null, uomKey = null) {
-		Variables.assertDefined(parameterList = "${productSKU},${uomKey}");
-
-		var responseBody = CommerceJSONSKUsAPI._getCommerceSkuUomsBySKU(productSKU = ${productSKU});
-
-		var skuUomId = JSONUtil.getWithJSONPath(${responseBody}, "$.items[?(@.key == '${uomKey}')].['id']]");
-
-		return ${skuUomId};
-	}
-
-	@summary = "Default summary"
-	macro _getCommerceSkuUomsBySKU(productSKU = null) {
-		Variables.assertDefined(parameterList = ${productSKU});
-
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		var skuId = CommerceJSONProductsAPI._getSKUId(productSKU = ${productSKU});
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/skus/${skuId}/sku-unit-of-measures \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-		''';
-
-		var responseBody = JSONCurlUtil.get(${curl});
-
-		return ${responseBody};
-	}
-
-	@summary = "Default summary"
 	macro _getCommerceUOMCountBySKUId(productSKU = null) {
 		Variables.assertDefined(parameterList = ${productSKU});
 
