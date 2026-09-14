@@ -4102,9 +4102,7 @@ public class DefaultObjectEntryManagerImpl
 			serviceBuilderObjectEntry, skipCheckRootDescendantNode);
 
 		validateReadOnlyObjectFields(
-			serviceBuilderObjectEntry.getExternalReferenceCode(),
-			serviceBuilderObjectEntry.getGroupId(), objectDefinition,
-			objectEntry);
+			objectDefinition, objectEntry, serviceBuilderObjectEntry);
 
 		String scopeKey = String.valueOf(
 			serviceBuilderObjectEntry.getGroupId());
@@ -4172,12 +4170,16 @@ public class DefaultObjectEntryManagerImpl
 				externalReferenceCode, groupId,
 				objectDefinition.getObjectDefinitionId());
 
-		if (serviceBuilderObjectEntry != null) {
-			_checkObjectEntryStatus(serviceBuilderObjectEntry);
+		if (serviceBuilderObjectEntry == null) {
+			validateReadOnlyObjectFields(
+				externalReferenceCode, groupId, objectDefinition, objectEntry);
 		}
+		else {
+			_checkObjectEntryStatus(serviceBuilderObjectEntry);
 
-		validateReadOnlyObjectFields(
-			externalReferenceCode, groupId, objectDefinition, objectEntry);
+			validateReadOnlyObjectFields(
+				objectDefinition, objectEntry, serviceBuilderObjectEntry);
+		}
 
 		ServiceContext serviceContext = _createServiceContext(
 			dtoConverterContext, objectDefinition, objectEntry, scopeKey);

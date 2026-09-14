@@ -322,35 +322,51 @@ public abstract class BaseObjectEntryManager {
 	}
 
 	protected void validateReadOnlyObjectFields(
-			String externalReferenceCode, long groupId,
 			ObjectDefinition objectDefinition,
-			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry)
+			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry,
+			ObjectEntry serviceBuilderObjectEntry)
 		throws Exception {
 
-		Map<String, Object> values = new HashMap<>();
-
-		if (externalReferenceCode != null) {
-			ObjectEntry serviceBuilderObjectEntry =
-				objectEntryLocalService.fetchObjectEntry(
-					externalReferenceCode, groupId,
-					objectDefinition.getObjectDefinitionId());
-
-			if (serviceBuilderObjectEntry == null) {
-				return;
-			}
-
-			values.putAll(
-				objectEntryLocalService.getSystemValues(
-					serviceBuilderObjectEntry));
-			values.putAll(
-				objectEntryLocalService.getValues(serviceBuilderObjectEntry));
-		}
+		Map<String, Object> values = HashMapBuilder.<String, Object>putAll(
+			objectEntryLocalService.getSystemValues(serviceBuilderObjectEntry)
+		).putAll(
+			objectEntryLocalService.getValues(serviceBuilderObjectEntry)
+		).build();
 
 		ObjectFieldUtil.validateReadOnlyObjectFields(
 			ddmExpressionFactory, values,
 			objectFieldLocalService.getObjectFields(
 				objectDefinition.getObjectDefinitionId()),
 			objectEntry.getProperties());
+	}
+
+	protected void validateReadOnlyObjectFields(
+			String externalReferenceCode, long groupId,
+			ObjectDefinition objectDefinition,
+			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry)
+		throws Exception {
+
+		if (externalReferenceCode == null) {
+			ObjectFieldUtil.validateReadOnlyObjectFields(
+				ddmExpressionFactory, new HashMap<>(),
+				objectFieldLocalService.getObjectFields(
+					objectDefinition.getObjectDefinitionId()),
+				objectEntry.getProperties());
+
+			return;
+		}
+
+		ObjectEntry serviceBuilderObjectEntry =
+			objectEntryLocalService.fetchObjectEntry(
+				externalReferenceCode, groupId,
+				objectDefinition.getObjectDefinitionId());
+
+		if (serviceBuilderObjectEntry == null) {
+			return;
+		}
+
+		validateReadOnlyObjectFields(
+			objectDefinition, objectEntry, serviceBuilderObjectEntry);
 	}
 
 	@Reference
