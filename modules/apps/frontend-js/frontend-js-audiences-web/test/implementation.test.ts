@@ -38,6 +38,26 @@ describe('implementation', () => {
 		audiences.clear();
 	});
 
+	describe('runDetection', () => {
+		it('detects every audience when filterAudiences is absent', async () => {
+			mockAudiencesDefinition(['a', 'b', 'c']);
+
+			await audiences.runDetection(DEFINITION_URL);
+
+			expect([...audiences.get()].sort()).toEqual(['a', 'b', 'c']);
+		});
+
+		it('detects only the audiences accepted by filterAudiences', async () => {
+			mockAudiencesDefinition(['a', 'b', 'c']);
+
+			await audiences.runDetection(DEFINITION_URL, {
+				filterAudiences: (audience) => audience.id !== 'b',
+			});
+
+			expect([...audiences.get()].sort()).toEqual(['a', 'c']);
+		});
+	});
+
 	describe('runHandlers', () => {
 		it('runs every registered handler exactly once', async () => {
 			mockAudiencesDefinition(['a', 'b', 'c']);

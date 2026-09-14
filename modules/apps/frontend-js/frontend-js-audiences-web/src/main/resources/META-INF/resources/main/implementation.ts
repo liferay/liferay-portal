@@ -64,13 +64,17 @@ export async function runDetection(
 			signal
 		);
 
-		for (let i = 0; i < audiencesDefinition.audiences.length; i++) {
-			audiencePriorities.set(audiencesDefinition.audiences[i].id, i);
+		const audiences = options?.filterAudiences
+			? audiencesDefinition.audiences.filter(options.filterAudiences)
+			: audiencesDefinition.audiences;
+
+		for (let i = 0; i < audiences.length; i++) {
+			audiencePriorities.set(audiences[i].id, i);
 		}
 
 		// Run the detection and update detected audiences
 
-		const detection = new Detection(audiencesDefinition);
+		const detection = new Detection({...audiencesDefinition, audiences});
 
 		const matches: AudienceId[] = [];
 

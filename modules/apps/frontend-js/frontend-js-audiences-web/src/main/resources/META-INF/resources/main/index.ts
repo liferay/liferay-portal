@@ -83,6 +83,7 @@ export interface Handler {
 }
 
 export interface RunDetectionOptions {
+	filterAudiences?: (audience: Audience) => boolean;
 	timeout?: number;
 }
 
@@ -98,6 +99,10 @@ export interface AudiencesAPI {
 	 *
 	 * This method clears all previously defined audiences before running the
 	 * detection.
+	 *
+	 * When `options.filterAudiences` is given, only the audiences it accepts
+	 * take part in the detection, and the rest are ignored as if they were
+	 * absent from the definition.
 	 *
 	 * This method tries to do its best but it never rejects, just logs the
 	 * errors/timeouts.

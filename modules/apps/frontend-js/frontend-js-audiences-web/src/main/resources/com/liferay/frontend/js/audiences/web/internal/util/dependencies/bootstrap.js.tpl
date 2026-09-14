@@ -39,6 +39,9 @@ async function runAudiences() {
 	variations.register();
 
 	await audiences.runDetection(DEFINITION_URL, {
+		filterAudiences: (audience) =>
+			!audience.scope?.length ||
+			audience.scope.includes(Liferay.ThemeDisplay.getSiteGroupId()),
 		timeout: [$DETECTION_TIMEOUT$],
 	});
 
