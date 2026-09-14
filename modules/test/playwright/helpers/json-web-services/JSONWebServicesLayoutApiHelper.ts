@@ -163,6 +163,25 @@ export class JSONWebServicesLayoutApiHelper {
 		);
 	}
 
+	async getLayouts(
+		groupId: number,
+		privateLayout: boolean
+	): Promise<Layout[]> {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('groupId', String(groupId));
+		urlSearchParams.append('privateLayout', String(privateLayout));
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/get-layouts`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
 	async getLayoutsCount(
 		groupId: number,
 		privateLayout: boolean
