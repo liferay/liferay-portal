@@ -59,7 +59,7 @@ public class MCPProfileToolUpgradeProcess extends UpgradeProcess {
 				null, objectDefinition.getUserId(), 0,
 				objectDefinition.getObjectDefinitionId(),
 				ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT, null, null,
-				ObjectFieldConstants.DB_TYPE_CLOB, true, false, "en_US",
+				ObjectFieldConstants.DB_TYPE_CLOB, null, true, false, "en_US",
 				Collections.singletonMap(LocaleUtil.US, "Restrict Fields"),
 				false, "restrictFields", ObjectFieldConstants.READ_ONLY_FALSE,
 				null, false, false, Collections.emptyList());

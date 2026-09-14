@@ -1142,7 +1142,7 @@ public class ObjectValidationRuleLocalServiceTest {
 		return _objectFieldLocalService.addSystemObjectField(
 			null, TestPropsValues.getUserId(), 0L, objectDefinitionId,
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT, null, null,
-			ObjectFieldConstants.DB_TYPE_STRING, false, true, "",
+			ObjectFieldConstants.DB_TYPE_STRING, null, false, true, "",
 			LocalizedMapUtil.getLocalizedMap(name), false, name,
 			ObjectFieldConstants.READ_ONLY_FALSE, null, false, false,
 			Collections.emptyList());

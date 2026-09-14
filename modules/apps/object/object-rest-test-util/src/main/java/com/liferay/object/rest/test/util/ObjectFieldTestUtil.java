@@ -31,8 +31,8 @@ public class ObjectFieldTestUtil {
 			objectField.getExternalReferenceCode(), TestPropsValues.getUserId(),
 			objectField.getListTypeDefinitionId(),
 			objectField.getObjectDefinitionId(), objectField.getBusinessType(),
-			objectField.getDBType(), objectField.isIndexed(),
-			objectField.isIndexedAsKeyword(),
+			objectField.getDBType(), objectField.getDescriptionMap(),
+			objectField.isIndexed(), objectField.isIndexedAsKeyword(),
 			objectField.getIndexedLanguageId(), objectField.getLabelMap(),
 			objectField.isLocalized(), objectField.getName(),
 			objectField.getReadOnly(),
@@ -64,7 +64,7 @@ public class ObjectFieldTestUtil {
 
 		return ObjectFieldLocalServiceUtil.addCustomObjectField(
 			null, userId, 0, objectDefinition.getObjectDefinitionId(),
-			businessType, dbType, false, true, "",
+			businessType, dbType, null, false, true, "",
 			LocalizedMapUtil.getLocalizedMap(objectFieldName), false,
 			objectFieldName, ObjectFieldConstants.READ_ONLY_FALSE, null, false,
 			false, objectFieldSettings);

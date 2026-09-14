@@ -3230,8 +3230,8 @@ public class ObjectFieldLocalServiceTest {
 			objectField.getExternalReferenceCode(), TestPropsValues.getUserId(),
 			objectField.getListTypeDefinitionId(),
 			objectField.getObjectDefinitionId(), objectField.getBusinessType(),
-			objectField.getDBType(), objectField.isIndexed(),
-			objectField.isIndexedAsKeyword(),
+			objectField.getDBType(), objectField.getDescriptionMap(),
+			objectField.isIndexed(), objectField.isIndexedAsKeyword(),
 			objectField.getIndexedLanguageId(), objectField.getLabelMap(),
 			objectField.isLocalized(), objectField.getName(),
 			objectField.getReadOnly(),
@@ -3257,8 +3257,8 @@ public class ObjectFieldLocalServiceTest {
 			objectField.getObjectFieldId(), TestPropsValues.getUserId(),
 			objectField.getListTypeDefinitionId(),
 			objectField.getObjectDefinitionId(), objectField.getBusinessType(),
-			objectField.getDBType(), objectField.isIndexed(),
-			objectField.isIndexedAsKeyword(),
+			objectField.getDBType(), objectField.getDescriptionMap(),
+			objectField.isIndexed(), objectField.isIndexedAsKeyword(),
 			objectField.getIndexedLanguageId(), objectField.getLabelMap(),
 			objectField.isLocalized(), objectField.getName(),
 			objectField.getReadOnly(),
@@ -3278,7 +3278,7 @@ public class ObjectFieldLocalServiceTest {
 		return _objectFieldLocalService.addOrUpdateSystemObjectField(
 			externalReferenceCode, TestPropsValues.getUserId(), 0L,
 			objectDefinitionId, businessType, dbColumnName, dbTableName, dbType,
-			indexed, indexedAsKeyword, "", labelMap, localized, name,
+			null, indexed, indexedAsKeyword, "", labelMap, localized, name,
 			ObjectFieldConstants.READ_ONLY_FALSE, null, required, false,
 			Collections.emptyList());
 	}
@@ -3401,7 +3401,7 @@ public class ObjectFieldLocalServiceTest {
 		return _objectFieldLocalService.addSystemObjectField(
 			null, TestPropsValues.getUserId(), 0L, objectDefinitionId,
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT, null, null,
-			ObjectFieldConstants.DB_TYPE_STRING, false, true, "",
+			ObjectFieldConstants.DB_TYPE_STRING, null, false, true, "",
 			LocalizedMapUtil.getLocalizedMap(name), false, name,
 			ObjectFieldConstants.READ_ONLY_FALSE, null, false, false,
 			objectFieldSettings);
@@ -3976,8 +3976,8 @@ public class ObjectFieldLocalServiceTest {
 			objectField.getObjectFieldId(), TestPropsValues.getUserId(),
 			objectField.getListTypeDefinitionId(),
 			objectField.getObjectDefinitionId(), objectField.getBusinessType(),
-			objectField.getDBType(), objectField.isIndexed(),
-			objectField.isIndexedAsKeyword(),
+			objectField.getDBType(), objectField.getDescriptionMap(),
+			objectField.isIndexed(), objectField.isIndexedAsKeyword(),
 			objectField.getIndexedLanguageId(), objectField.getLabelMap(),
 			objectField.isLocalized(), objectField.getName(), readOnly,
 			readOnlyConditionExpression, objectField.isRequired(),

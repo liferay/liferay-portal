@@ -1062,6 +1062,7 @@ public class ObjectRelationshipLocalServiceImpl
 				existingObjectField.getDBColumnName(),
 				existingObjectField.getDBTableName(),
 				existingObjectField.getDBType(),
+				existingObjectField.getDescriptionMap(),
 				existingObjectField.isIndexed(),
 				existingObjectField.isIndexedAsKeyword(),
 				existingObjectField.getIndexedLanguageId(),

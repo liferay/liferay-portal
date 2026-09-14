@@ -57,7 +57,7 @@ public class CMSBulkActionTaskTaskResultUpgradeProcess extends UpgradeProcess {
 				"TASK_RESULT", objectDefinition.getUserId(), 0,
 				objectDefinition.getObjectDefinitionId(),
 				ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT, null, null,
-				ObjectFieldConstants.DB_TYPE_CLOB, false, false, null,
+				ObjectFieldConstants.DB_TYPE_CLOB, null, false, false, null,
 				HashMapBuilder.put(
 					LocaleUtil.US, "Task Result"
 				).build(),

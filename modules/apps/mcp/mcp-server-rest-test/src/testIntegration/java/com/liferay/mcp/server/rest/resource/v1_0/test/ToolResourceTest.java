@@ -104,7 +104,7 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 			null, TestPropsValues.getUserId(), 0,
 			objectDefinition.getObjectDefinitionId(),
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
+			ObjectFieldConstants.DB_TYPE_STRING, null, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(name), false, name, null, null,
 			false, false, Collections.emptyList());
 
@@ -269,7 +269,7 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 		_objectFieldLocalService.addCustomObjectField(
 			null, userId, 0, objectDefinition.getObjectDefinitionId(),
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
+			ObjectFieldConstants.DB_TYPE_STRING, null, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(objectFieldName), false,
 			objectFieldName, null, null, false, false, Collections.emptyList());
 

@@ -277,7 +277,7 @@ public class MCPProfileUpgradeProcess extends UpgradeProcess {
 				listTypeDefinition.getListTypeDefinitionId(),
 				objectDefinition.getObjectDefinitionId(),
 				ObjectFieldConstants.BUSINESS_TYPE_PICKLIST, null, null,
-				ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
+				ObjectFieldConstants.DB_TYPE_STRING, null, true, false, null,
 				Collections.singletonMap(LocaleUtil.US, "Status"), false,
 				"profileStatus", ObjectFieldConstants.READ_ONLY_FALSE, null,
 				true, false,
