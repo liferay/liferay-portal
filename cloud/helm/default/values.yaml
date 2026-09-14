@@ -162,10 +162,6 @@ customInitContainers:
 
                             mkdir --parents /temp/tomcat/conf
 
-                            # Tomcat assigns the <Manager> declared here to every web application. A
-                            # context that already has a manager never receives the <Cluster> manager,
-                            # which silently disables session replication.
-
                             sed '/<Manager/d' /opt/liferay/tomcat/conf/context.xml > /temp/tomcat/conf/context.xml
 
                             cp /opt/liferay/tomcat/conf/logging.properties /temp/tomcat/conf/logging.properties

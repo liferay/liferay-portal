@@ -6,6 +6,33 @@ templates:
     -   templates/workloads.yaml
 tests:
     -   asserts:
+            -   lengthEqual:
+                    count: 3
+                    path: spec.egress
+            -   contains:
+                    content:
+                        ports:
+                            -   port: 5432
+                                protocol: TCP
+                        to:
+                            -   ipBlock:
+                                    cidr: 10.0.0.0/8
+                    path: spec.egress
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Appends extra egress rules supplied by a wrapper chart
+        set:
+            networkPolicy.enabled: true
+            networkPolicy.extraEgress:
+                -   ports:
+                        -   port: 5432
+                            protocol: TCP
+                    to:
+                        -   ipBlock:
+                                cidr: 10.0.0.0/8
+    -   asserts:
             -   hasDocuments:
                     count: 0
         documentSelector:
@@ -42,6 +69,22 @@ tests:
         set:
             networkPolicy.enabled: true
     -   asserts:
+            -   lengthEqual:
+                    count: 2
+                    path: spec.ingress
+            -   equal:
+                    path: spec.ingress[0].ports[0].port
+                    value: http
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Permits gateway ingress on the HTTP port when networking is enabled
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            networkPolicy.enabled: true
+    -   asserts:
             -   contains:
                     content: Egress
                     path: spec.policyTypes
@@ -57,47 +100,4 @@ tests:
             value: NetworkPolicy
         it: Restricts egress so a wrapper chart can extend it
         set:
-            networkPolicy.enabled: true
-    -   asserts:
-            -   lengthEqual:
-                    count: 3
-                    path: spec.egress
-            -   contains:
-                    content:
-                        ports:
-                            -   port: 5432
-                                protocol: TCP
-                        to:
-                            -   ipBlock:
-                                    cidr: 10.0.0.0/8
-                    path: spec.egress
-        documentSelector:
-            path: kind
-            skipEmptyTemplates: true
-            value: NetworkPolicy
-        it: Appends extra egress rules supplied by a wrapper chart
-        set:
-            networkPolicy.enabled: true
-            networkPolicy.extraEgress:
-                -   ports:
-                        -   port: 5432
-                            protocol: TCP
-                    to:
-                        -   ipBlock:
-                                cidr: 10.0.0.0/8
-    -   asserts:
-            -   lengthEqual:
-                    count: 2
-                    path: spec.ingress
-            -   equal:
-                    path: spec.ingress[0].ports[0].port
-                    value: http
-        documentSelector:
-            path: kind
-            skipEmptyTemplates: true
-            value: NetworkPolicy
-        it: Permits gateway ingress on the HTTP port when networking is enabled
-        set:
-            network.enabled: true
-            network.gatewayName: test-gateway
             networkPolicy.enabled: true
