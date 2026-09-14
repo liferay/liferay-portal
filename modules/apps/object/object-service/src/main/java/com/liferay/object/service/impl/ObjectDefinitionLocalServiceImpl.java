@@ -1129,8 +1129,32 @@ public class ObjectDefinitionLocalServiceImpl
 					ServiceReference<ObjectDefinitionDeployer>
 						serviceReference) {
 
-					return _addingObjectDefinitionDeployer(
-						_bundleContext.getService(serviceReference));
+					ObjectDefinitionDeployer objectDefinitionDeployer =
+						_bundleContext.getService(serviceReference);
+
+					Map<String, List<ServiceRegistration<?>>>
+						serviceRegistrationsMap = new ConcurrentHashMap<>();
+
+					_companyLocalService.forEachCompanyId(
+						companyId -> {
+							List<ObjectDefinition> objectDefinitions =
+								objectDefinitionLocalService.
+									getObjectDefinitions(
+										companyId,
+										WorkflowConstants.STATUS_APPROVED);
+
+							serviceRegistrationsMap.putAll(
+								objectDefinitionDeployer.deploy(
+									companyId,
+									ListUtil.filter(
+										objectDefinitions,
+										ObjectDefinition::isActive)));
+						});
+
+					_activeServiceRegistrationsMaps.put(
+						objectDefinitionDeployer, serviceRegistrationsMap);
+
+					return objectDefinitionDeployer;
 				}
 
 				@Override
@@ -1430,32 +1454,6 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		super.runSQL(sql);
-	}
-
-	private ObjectDefinitionDeployer _addingObjectDefinitionDeployer(
-		ObjectDefinitionDeployer objectDefinitionDeployer) {
-
-		Map<String, List<ServiceRegistration<?>>> serviceRegistrationsMap =
-			new ConcurrentHashMap<>();
-
-		_companyLocalService.forEachCompanyId(
-			companyId -> {
-				List<ObjectDefinition> objectDefinitions =
-					objectDefinitionLocalService.getObjectDefinitions(
-						companyId, WorkflowConstants.STATUS_APPROVED);
-
-				serviceRegistrationsMap.putAll(
-					objectDefinitionDeployer.deploy(
-						companyId,
-						ListUtil.filter(
-							objectDefinitions,
-							objectDefinition -> objectDefinition.isActive())));
-			});
-
-		_activeServiceRegistrationsMaps.put(
-			objectDefinitionDeployer, serviceRegistrationsMap);
-
-		return objectDefinitionDeployer;
 	}
 
 	private ObjectDefinition _addObjectDefinition(
