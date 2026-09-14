@@ -147,7 +147,7 @@ public class SiteInitializerUtil {
 		}
 
 		return adminUsers.get(0);
-	}A
+	}
 
 	private static final String[] _EXTERNAL_REFERENCE_CODES = {
 		"L_CMS_BASIC_DOCUMENT", "L_CMS_BASIC_WEB_CONTENT", "L_CMS_BLOG",
