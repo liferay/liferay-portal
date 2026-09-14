@@ -402,36 +402,32 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 
 		_pushServiceContext(_getThemeDisplay(StringPool.BLANK, "UTC"));
 
-		try {
-			InfoItemFieldValuesProvider<ObjectEntry>
-				infoItemFieldValuesProvider =
-					_infoItemServiceRegistry.getFirstInfoItemService(
-						InfoItemFieldValuesProvider.class,
-						_childObjectDefinition.getClassName());
+		InfoItemFieldValuesProvider<ObjectEntry> infoItemFieldValuesProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFieldValuesProvider.class,
+				_childObjectDefinition.getClassName());
 
-			InfoItemFieldValues infoItemFieldValues =
-				infoItemFieldValuesProvider.getInfoItemFieldValues(objectEntry);
+		InfoItemFieldValues infoItemFieldValues =
+			infoItemFieldValuesProvider.getInfoItemFieldValues(objectEntry);
 
-			ObjectField objectField = _objectFieldLocalService.fetchObjectField(
-				_childObjectDefinition.getObjectDefinitionId(),
-				"attachmentObjectFieldName");
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			_childObjectDefinition.getObjectDefinitionId(),
+			"attachmentObjectFieldName");
 
-			InfoFieldValue<Object> fileNameInfoFieldValue =
-				infoItemFieldValues.getInfoFieldValue(
-					objectField.getObjectFieldId() + "#fileName");
+		InfoFieldValue<Object> fileNameInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue(
+				objectField.getObjectFieldId() + "#fileName");
 
-			Assert.assertEquals(
-				fileEntry.getFileName(), fileNameInfoFieldValue.getValue());
+		Assert.assertEquals(
+			fileEntry.getFileName(), fileNameInfoFieldValue.getValue());
 
-			InfoFieldValue<Object> downloadURLInfoFieldValue =
-				infoItemFieldValues.getInfoFieldValue(
-					objectField.getObjectFieldId() + "#downloadURL");
+		InfoFieldValue<Object> downloadURLInfoFieldValue =
+			infoItemFieldValues.getInfoFieldValue(
+				objectField.getObjectFieldId() + "#downloadURL");
 
-			Assert.assertNull(downloadURLInfoFieldValue.getValue());
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
+		Assert.assertNull(downloadURLInfoFieldValue.getValue());
+
+		ServiceContextThreadLocal.popServiceContext();
 	}
 
 	@Test
