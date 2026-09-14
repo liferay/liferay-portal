@@ -60,6 +60,8 @@ public class ObjectFieldTable extends BaseTable<ObjectFieldTable> {
 		"dbTableName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<ObjectFieldTable, String> dbType = createColumn(
 		"dbType", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<ObjectFieldTable, String> description = createColumn(
+		"description", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<ObjectFieldTable, Boolean> indexed = createColumn(
 		"indexed", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
 	public final Column<ObjectFieldTable, Boolean> indexedAsKeyword =
@@ -98,4 +100,4 @@ public class ObjectFieldTable extends BaseTable<ObjectFieldTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-168406844
+// LIFERAY-SERVICE-BUILDER-HASH:-644191869

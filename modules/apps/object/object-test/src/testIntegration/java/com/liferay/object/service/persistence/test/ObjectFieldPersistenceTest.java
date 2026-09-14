@@ -139,6 +139,8 @@ public class ObjectFieldPersistenceTest {
 
 		newObjectField.setDBType(RandomTestUtil.randomString());
 
+		newObjectField.setDescription(RandomTestUtil.randomString());
+
 		newObjectField.setIndexed(RandomTestUtil.randomBoolean());
 
 		newObjectField.setIndexedAsKeyword(RandomTestUtil.randomBoolean());
@@ -211,6 +213,9 @@ public class ObjectFieldPersistenceTest {
 			newObjectField.getDBTableName());
 		Assert.assertEquals(
 			existingObjectField.getDBType(), newObjectField.getDBType());
+		Assert.assertEquals(
+			existingObjectField.getDescription(),
+			newObjectField.getDescription());
 		Assert.assertEquals(
 			existingObjectField.isIndexed(), newObjectField.isIndexed());
 		Assert.assertEquals(
@@ -418,11 +423,11 @@ public class ObjectFieldPersistenceTest {
 			true, "userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "listTypeDefinitionId", true,
 			"objectDefinitionId", true, "businessType", true, "dbColumnName",
-			true, "dbTableName", true, "dbType", true, "indexed", true,
-			"indexedAsKeyword", true, "indexedLanguageId", true, "label", true,
-			"localized", true, "name", true, "readOnly", true,
-			"relationshipType", true, "required", true, "state", true, "system",
-			true);
+			true, "dbTableName", true, "dbType", true, "description", true,
+			"indexed", true, "indexedAsKeyword", true, "indexedLanguageId",
+			true, "label", true, "localized", true, "name", true, "readOnly",
+			true, "relationshipType", true, "required", true, "state", true,
+			"system", true);
 	}
 
 	@Test
@@ -744,6 +749,8 @@ public class ObjectFieldPersistenceTest {
 
 		objectField.setDBType(RandomTestUtil.randomString());
 
+		objectField.setDescription(RandomTestUtil.randomString());
+
 		objectField.setIndexed(RandomTestUtil.randomBoolean());
 
 		objectField.setIndexedAsKeyword(RandomTestUtil.randomBoolean());
@@ -779,4 +786,4 @@ public class ObjectFieldPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:235938735
+// LIFERAY-SERVICE-BUILDER-HASH:-158404808
