@@ -13,6 +13,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.client.http.HttpInvoker;
@@ -104,6 +107,17 @@ public abstract class BasePortalInstanceResourceTestCase {
 			testCompany.getCompanyId());
 
 		portalInstanceResource = PortalInstanceResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		importTaskResource = ImportTaskResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -212,6 +226,47 @@ public abstract class BasePortalInstanceResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testDeletePortalInstanceBatch() throws Exception {
+		PortalInstance portalInstance1 =
+			testDeletePortalInstanceBatch_addPortalInstance();
+
+		testDeletePortalInstanceBatch_deletePortalInstance(
+			202, null, portalInstance1.getPortalInstanceId());
+
+		assertHttpResponseStatusCode(
+			404,
+			portalInstanceResource.getPortalInstanceHttpResponse(
+				portalInstance1.getPortalInstanceId()));
+	}
+
+	protected PortalInstance testDeletePortalInstanceBatch_addPortalInstance()
+		throws Exception {
+
+		return testDeletePortalInstance_addPortalInstance();
+	}
+
+	protected void testDeletePortalInstanceBatch_deletePortalInstance(
+			int expectedStatusCode, String externalReferenceCode, String id)
+		throws Exception {
+
+		HttpInvoker.HttpResponse httpResponse =
+			portalInstanceResource.deletePortalInstanceBatchHttpResponse(
+				null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"portalInstanceId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
 	}
 
 	@Test
@@ -417,6 +472,62 @@ public abstract class BasePortalInstanceResourceTestCase {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testBatchEngineDeleteImportTask() throws Exception {
+		PortalInstance portalInstance1 =
+			testBatchEngineDeleteImportTask_addPortalInstance();
+
+		testBatchEngineDeleteImportTask_deletePortalInstance(
+			200, null, portalInstance1.getPortalInstanceId());
+
+		assertHttpResponseStatusCode(
+			404,
+			portalInstanceResource.getPortalInstanceHttpResponse(
+				portalInstance1.getPortalInstanceId()));
+	}
+
+	protected PortalInstance testBatchEngineDeleteImportTask_addPortalInstance()
+		throws Exception {
+
+		return testDeletePortalInstance_addPortalInstance();
+	}
+
+	protected void testBatchEngineDeleteImportTask_deletePortalInstance(
+			int expectedStatusCode, String externalReferenceCode, String id,
+			String... parameters)
+		throws Exception {
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).parameters(
+			parameters
+		).build();
+
+		HttpResponse httpResponse =
+			importTaskResource.deleteImportTaskHttpResponse(
+				"com.liferay.headless.portal.instances.dto.v1_0.PortalInstance",
+				null, null, null, null,
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", () -> externalReferenceCode
+					).put(
+						"portalInstanceId", () -> id
+					)));
+
+		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
+
+		if (expectedStatusCode == 200) {
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+		}
 	}
 
 	@Test
@@ -1238,7 +1349,30 @@ public abstract class BasePortalInstanceResourceTestCase {
 		};
 	}
 
+	protected final JSONObject waitForFinish(
+			String expectedExecuteStatus, JSONObject jsonObject)
+		throws Exception {
+
+		while (true) {
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			ImportTask.ExecuteStatus executeStatus =
+				importTask.getExecuteStatus();
+
+			if (StringUtil.equals(executeStatus.getValue(), "COMPLETED") ||
+				StringUtil.equals(executeStatus.getValue(), "FAILED")) {
+
+				Assert.assertEquals(
+					expectedExecuteStatus, executeStatus.getValue());
+
+				return jsonObject;
+			}
+		}
+	}
+
 	protected PortalInstanceResource portalInstanceResource;
+	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
@@ -1449,4 +1583,4 @@ public abstract class BasePortalInstanceResourceTestCase {
 			PortalInstanceResource _portalInstanceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:890027372
+// LIFERAY-REST-BUILDER-HASH:-249143342

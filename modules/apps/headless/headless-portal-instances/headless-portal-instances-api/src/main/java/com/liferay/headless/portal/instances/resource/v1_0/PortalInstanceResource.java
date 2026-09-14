@@ -17,6 +17,8 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.annotation.Generated;
@@ -24,6 +26,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collections;
@@ -47,6 +50,9 @@ public interface PortalInstanceResource {
 
 	public void deletePortalInstance(String portalInstanceId) throws Exception;
 
+	public Response deletePortalInstanceBatch(String callbackURL, Object object)
+		throws Exception;
+
 	public PortalInstance getPortalInstance(String portalInstanceId)
 		throws Exception;
 
@@ -60,6 +66,9 @@ public interface PortalInstanceResource {
 	public PortalInstance postPortalInstance(PortalInstance portalInstance)
 		throws Exception;
 
+	public Response postPortalInstanceBatch(String callbackURL, Object object)
+		throws Exception;
+
 	public PortalInstance postPortalInstanceCopy(
 			String portalInstanceId, PortalInstanceCopy portalInstanceCopy)
 		throws Exception;
@@ -70,6 +79,11 @@ public interface PortalInstanceResource {
 
 	public PortalInstance postPortalInstanceImport(
 			PortalInstanceImport portalInstanceImport)
+		throws Exception;
+
+	public Response postPortalInstancesPageExportBatch(
+			Boolean skipDefault, String callbackURL, String contentType,
+			String fieldNames)
 		throws Exception;
 
 	public void putPortalInstanceActivate(String portalInstanceId)
@@ -117,6 +131,14 @@ public interface PortalInstanceResource {
 	public void setRoleLocalService(RoleLocalService roleLocalService);
 
 	public void setSortParserProvider(SortParserProvider sortParserProvider);
+
+	public void setVulcanBatchEngineExportTaskResource(
+		VulcanBatchEngineExportTaskResource
+			vulcanBatchEngineExportTaskResource);
+
+	public void setVulcanBatchEngineImportTaskResource(
+		VulcanBatchEngineImportTaskResource
+			vulcanBatchEngineImportTaskResource);
 
 	public default com.liferay.portal.kernel.search.filter.Filter toFilter(
 		String filterString) {
@@ -166,4 +188,4 @@ public interface PortalInstanceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1827424030
+// LIFERAY-REST-BUILDER-HASH:-1959017012
