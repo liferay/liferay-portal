@@ -19,6 +19,8 @@ public interface SearchCapabilities {
 
 	public boolean isConcurrentModeSupported();
 
+	public boolean isMCPToolSearchSupported();
+
 	public boolean isResultRankingsSupported();
 
 	public boolean isSearchExperiencesSupported();

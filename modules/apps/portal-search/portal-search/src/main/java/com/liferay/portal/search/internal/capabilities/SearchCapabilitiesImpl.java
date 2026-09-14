@@ -35,6 +35,11 @@ public class SearchCapabilitiesImpl implements SearchCapabilities {
 	}
 
 	@Override
+	public boolean isMCPToolSearchSupported() {
+		return !_isSearchEngineSolr();
+	}
+
+	@Override
 	public boolean isResultRankingsSupported() {
 		return !_isSearchEngineSolr();
 	}
