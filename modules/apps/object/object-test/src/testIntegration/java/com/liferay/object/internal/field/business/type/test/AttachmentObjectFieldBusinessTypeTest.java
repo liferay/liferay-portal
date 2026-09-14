@@ -50,8 +50,7 @@ public class AttachmentObjectFieldBusinessTypeTest {
 				setId(() -> fileEntryId);
 				setMetadata(
 					() -> {
-						throw new AssertionError(
-							"The metadata of the attachment was resolved");
+						throw new AssertionError();
 					});
 			}
 		};
