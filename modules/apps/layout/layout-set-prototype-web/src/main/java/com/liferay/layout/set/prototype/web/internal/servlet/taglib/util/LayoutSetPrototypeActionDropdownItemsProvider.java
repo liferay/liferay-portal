@@ -208,14 +208,18 @@ public class LayoutSetPrototypeActionDropdownItemsProvider {
 					_layoutSetPrototype.getLayoutSetPrototypeId()
 				).buildString());
 
-			CTSettingsConfigurationHelper ctSettingsConfigurationHelper =
-				_ctSettingsConfigurationHelperSnapshot.get();
+			if (!FeatureFlagManagerUtil.isEnabled(
+					_themeDisplay.getCompanyId(), "LPD-104837")) {
 
-			dropdownItem.putData(
-				"publicationsEnabled",
-				String.valueOf(
-					ctSettingsConfigurationHelper.isEnabled(
-						_themeDisplay.getCompanyId())));
+				CTSettingsConfigurationHelper ctSettingsConfigurationHelper =
+					_ctSettingsConfigurationHelperSnapshot.get();
+
+				dropdownItem.putData(
+					"publicationsEnabled",
+					String.valueOf(
+						ctSettingsConfigurationHelper.isEnabled(
+							_themeDisplay.getCompanyId())));
+			}
 
 			dropdownItem.setIcon("reload");
 			dropdownItem.setLabel(

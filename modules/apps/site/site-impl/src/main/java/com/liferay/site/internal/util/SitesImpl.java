@@ -588,16 +588,20 @@ public class SitesImpl implements Sites {
 					"import, or staging process is in progress");
 		}
 
-		CTSettingsConfigurationHelper ctSettingsConfigurationHelper =
-			_ctSettingsConfigurationHelperSnapshot.get();
+		if (!FeatureFlagManagerUtil.isEnabled(
+				layoutSetPrototype.getCompanyId(), "LPD-104837")) {
 
-		if ((ctSettingsConfigurationHelper != null) &&
-			ctSettingsConfigurationHelper.isEnabled(
-				layoutSetPrototype.getCompanyId())) {
+			CTSettingsConfigurationHelper ctSettingsConfigurationHelper =
+				_ctSettingsConfigurationHelperSnapshot.get();
 
-			throw new IllegalStateException(
-				"The site template merge cannot start while publications is " +
-					"enabled");
+			if ((ctSettingsConfigurationHelper != null) &&
+				ctSettingsConfigurationHelper.isEnabled(
+					layoutSetPrototype.getCompanyId())) {
+
+				throw new IllegalStateException(
+					"The site template merge cannot start while publications " +
+						"is enabled");
+			}
 		}
 
 		List<LayoutSet> mergeableLayoutSets = new ArrayList<>();
