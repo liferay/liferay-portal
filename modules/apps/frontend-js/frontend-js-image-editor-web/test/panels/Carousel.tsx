@@ -101,4 +101,29 @@ describe('Carousel', () => {
 		expect(arrows[0]).toBeEnabled();
 		expect(arrows[1]).toBeDisabled();
 	});
+
+	it('jumps instead of gliding when the account prefers reduced motion', () => {
+		document.body.classList.add('c-prefers-reduced-motion');
+
+		try {
+			const {container, track} = renderCarousel();
+
+			track.style.overflowX = 'auto';
+			layOut(track, {clientWidth: 200, scrollLeft: 0, scrollWidth: 600});
+			track.scrollBy = jest.fn();
+
+			fireEvent.scroll(track);
+			fireEvent.click(
+				container.querySelectorAll('.editor-carousel-arrow')[1]
+			);
+
+			expect(track.scrollBy).toHaveBeenCalledWith({
+				behavior: 'auto',
+				left: 160,
+			});
+		}
+		finally {
+			document.body.classList.remove('c-prefers-reduced-motion');
+		}
+	});
 });

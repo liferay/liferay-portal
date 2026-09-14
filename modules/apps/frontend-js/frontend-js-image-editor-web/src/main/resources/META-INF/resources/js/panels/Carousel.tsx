@@ -69,7 +69,7 @@ export function Carousel({
 		const element = trackRef.current;
 
 		element?.scrollBy({
-			behavior: 'smooth',
+			behavior: prefersReducedMotion() ? 'auto' : 'smooth',
 			left: direction * element.clientWidth * 0.8,
 		});
 	};
@@ -115,5 +115,13 @@ export function Carousel({
 				/>
 			)}
 		</div>
+	);
+}
+
+function prefersReducedMotion(): boolean {
+	return (
+		document.body.classList.contains('c-prefers-reduced-motion') ||
+		(!!window.matchMedia &&
+			window.matchMedia('(prefers-reduced-motion: reduce)').matches)
 	);
 }
