@@ -113,6 +113,8 @@ import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
 import com.liferay.portal.security.membershippolicy.UserGroupMembershipPolicyFactoryUtil;
 import com.liferay.portal.util.MaintenanceUtil;
 import com.liferay.portal.util.ShutdownUtil;
+import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
+import com.liferay.portal.verify.VerifyException;
 import com.liferay.server.admin.web.internal.constants.ImageMagickResourceLimitConstants;
 import com.liferay.server.admin.web.internal.scripting.util.ServerScriptingUtil;
 
@@ -290,6 +292,9 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 		}
 		else if (cmd.equals("updatePortalProperties")) {
 			_updatePortalProperties(actionRequest);
+		}
+		else if (cmd.equals("verifyDatabaseState")) {
+			_verifyDatabaseState(actionRequest);
 		}
 		else if (cmd.equals("verifyMembershipPolicies")) {
 			_verifyMembershipPolicies();
@@ -880,6 +885,45 @@ public class EditServerMVCActionCommand extends BaseMVCActionCommand {
 	private void _updatePortalProperties(Map<String, String> portalProperties) {
 		for (Map.Entry<String, String> entry : portalProperties.entrySet()) {
 			PropsUtil.set(entry.getKey(), entry.getValue());
+		}
+	}
+
+	private void _verifyDatabaseState(ActionRequest actionRequest) {
+		PostupgradeVerifyDatabaseState postupgradeVerifyDatabaseState =
+			new PostupgradeVerifyDatabaseState();
+
+		try {
+			postupgradeVerifyDatabaseState.verify();
+		}
+		catch (VerifyException verifyException) {
+			SessionErrors.add(
+				actionRequest, VerifyException.class.getName(),
+				verifyException);
+
+			return;
+		}
+
+		hideDefaultSuccessMessage(actionRequest);
+
+		List<String> errorMessages =
+			postupgradeVerifyDatabaseState.getErrorMessages();
+		List<String> warnMessages =
+			postupgradeVerifyDatabaseState.getWarnMessages();
+
+		if (errorMessages.isEmpty() && warnMessages.isEmpty()) {
+			SessionMessages.add(actionRequest, "verifyDatabaseState");
+
+			return;
+		}
+
+		if (!errorMessages.isEmpty()) {
+			SessionErrors.add(
+				actionRequest, "verifyDatabaseStateErrors", errorMessages);
+		}
+
+		if (!warnMessages.isEmpty()) {
+			SessionMessages.add(
+				actionRequest, "verifyDatabaseStateWarnings", warnMessages);
 		}
 	}
 

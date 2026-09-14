@@ -137,6 +137,11 @@ public class ServerDisplayContext {
 			return "video-file-preview-and-thumbnail-regeneration-has-" +
 				"started-successfully-and-will-continue-in-the-background";
 		}
+		else if (SessionMessages.contains(
+					_renderRequest, "verifyDatabaseState")) {
+
+			return "the-database-state-was-verified-successfully";
+		}
 
 		return StringPool.BLANK;
 	}
