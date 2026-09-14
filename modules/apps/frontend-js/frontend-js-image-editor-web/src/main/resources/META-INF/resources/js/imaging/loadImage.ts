@@ -9,6 +9,8 @@ export const MAX_IMAGE_PIXELS = 36_000_000;
 
 const PREVIEW_MAX_SIZE = 2048;
 
+const THUMB_MAX_SIZE = 160;
+
 export class ImageEditorLoadError extends Error {
 	readonly reason: ImageLoadErrorReason;
 
@@ -89,7 +91,7 @@ export async function loadImage(
 			fileName,
 			height: bitmap.height,
 			previewUrl,
-			thumbUrl: downsampleToDataURL(bitmap, 160, 'image/jpeg'),
+			thumbUrl: downsampleToDataURL(bitmap, THUMB_MAX_SIZE, 'image/jpeg'),
 			type: blob.type || 'image/jpeg',
 			width: bitmap.width,
 		};
