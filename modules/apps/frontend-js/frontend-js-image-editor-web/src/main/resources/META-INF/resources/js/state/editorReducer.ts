@@ -4,7 +4,7 @@
  */
 
 import {
-	Adjustments,
+	AdjustmentKey,
 	CropRect,
 	DEFAULT_ADJUSTMENTS,
 	EditState,
@@ -22,7 +22,7 @@ export type EditorAction =
 	| {type: 'reset-adjustments'}
 	| {type: 'rotate-90'}
 	| {
-			key: keyof Adjustments;
+			key: AdjustmentKey;
 			transient?: boolean;
 			type: 'set-adjustment';
 			value: number;

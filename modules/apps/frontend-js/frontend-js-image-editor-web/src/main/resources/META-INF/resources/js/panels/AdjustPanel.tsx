@@ -10,9 +10,8 @@ import React from 'react';
 import {EditorSection} from '../chrome/EditorSection';
 import {CommitSlider} from '../chrome/fields';
 import {useEditorId} from '../chrome/instance';
-import {AdjustmentKey} from '../editorConfig';
 import {EditorAction} from '../state/editorReducer';
-import {Adjustments} from '../state/types';
+import {AdjustmentKey, Adjustments} from '../state/types';
 
 const SLIDER_LABELS: Record<AdjustmentKey, string> = {
 	brightness: Liferay.Language.get('brightness'),

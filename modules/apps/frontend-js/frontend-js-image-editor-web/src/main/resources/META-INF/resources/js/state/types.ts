@@ -24,6 +24,8 @@ export const RATIO_VALUES: Record<
 	'16:9': 16 / 9,
 };
 
+export type AdjustmentKey = keyof Adjustments;
+
 export interface Adjustments {
 	brightness: number;
 	contrast: number;

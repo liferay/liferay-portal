@@ -7,11 +7,10 @@ import '../../css/Panels.scss';
 
 import React from 'react';
 
-import {AdjustmentKey} from '../editorConfig';
 import {AdjustPanel} from '../panels/AdjustPanel';
 import {CropPanel} from '../panels/CropPanel';
 import {EditorAction} from '../state/editorReducer';
-import {EditState, rotatedSize} from '../state/types';
+import {AdjustmentKey, EditState, rotatedSize} from '../state/types';
 
 interface Props {
 	aspectLocked: boolean;

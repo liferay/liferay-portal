@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Adjustments, RatioPreset} from './state/types';
+import {AdjustmentKey, RatioPreset} from './state/types';
 
 export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
 	'brightness',
@@ -22,8 +22,6 @@ export const RATIO_PRESETS: RatioPreset[] = [
 	'3:4',
 	'9:16',
 ];
-
-export type AdjustmentKey = keyof Adjustments;
 
 export interface EditorConfig {
 	adjustments?: false | {sliders?: AdjustmentKey[]};
