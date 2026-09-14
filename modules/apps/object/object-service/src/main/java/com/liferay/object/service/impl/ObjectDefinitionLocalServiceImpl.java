@@ -1121,88 +1121,7 @@ public class ObjectDefinitionLocalServiceImpl
 
 		_objectDefinitionDeployerServiceTracker = new ServiceTracker<>(
 			_bundleContext, ObjectDefinitionDeployer.class,
-			new ServiceTrackerCustomizer
-				<ObjectDefinitionDeployer, ObjectDefinitionDeployer>() {
-
-				@Override
-				public ObjectDefinitionDeployer addingService(
-					ServiceReference<ObjectDefinitionDeployer>
-						serviceReference) {
-
-					ObjectDefinitionDeployer objectDefinitionDeployer =
-						_bundleContext.getService(serviceReference);
-
-					Map<String, List<ServiceRegistration<?>>>
-						serviceRegistrationsMap = new ConcurrentHashMap<>();
-
-					_companyLocalService.forEachCompanyId(
-						companyId -> {
-							List<ObjectDefinition> objectDefinitions =
-								objectDefinitionLocalService.
-									getObjectDefinitions(
-										companyId,
-										WorkflowConstants.STATUS_APPROVED);
-
-							serviceRegistrationsMap.putAll(
-								objectDefinitionDeployer.deploy(
-									companyId,
-									ListUtil.filter(
-										objectDefinitions,
-										ObjectDefinition::isActive)));
-						});
-
-					_activeServiceRegistrationsMaps.put(
-						objectDefinitionDeployer, serviceRegistrationsMap);
-
-					return objectDefinitionDeployer;
-				}
-
-				@Override
-				public void modifiedService(
-					ServiceReference<ObjectDefinitionDeployer> serviceReference,
-					ObjectDefinitionDeployer objectDefinitionDeployer) {
-				}
-
-				@Override
-				public void removedService(
-					ServiceReference<ObjectDefinitionDeployer> serviceReference,
-					ObjectDefinitionDeployer objectDefinitionDeployer) {
-
-					_companyLocalService.forEachCompanyId(
-						companyId -> {
-							for (ObjectDefinition objectDefinition :
-									objectDefinitionLocalService.
-										getObjectDefinitions(
-											companyId,
-											WorkflowConstants.
-												STATUS_APPROVED)) {
-
-								if (objectDefinition.isActive()) {
-									objectDefinitionDeployer.undeploy(
-										objectDefinition);
-								}
-							}
-						});
-
-					Map<String, List<ServiceRegistration<?>>>
-						serviceRegistrationsMap =
-							_activeServiceRegistrationsMaps.remove(
-								objectDefinitionDeployer);
-
-					for (List<ServiceRegistration<?>> serviceRegistrations :
-							serviceRegistrationsMap.values()) {
-
-						for (ServiceRegistration<?> serviceRegistration :
-								serviceRegistrations) {
-
-							serviceRegistration.unregister();
-						}
-					}
-
-					_bundleContext.ungetService(serviceReference);
-				}
-
-			});
+			new ObjectDefinitionDeployerServiceTrackerCustomizer());
 
 		DependencyManagerSyncUtil.registerSyncCallable(
 			() -> {
@@ -4307,5 +4226,81 @@ public class ObjectDefinitionLocalServiceImpl
 
 	@Reference(target = "(model.pre.filter.contributor.id=WorkflowStatus)")
 	private ModelPreFilterContributor _workflowStatusModelPreFilterContributor;
+
+	private class ObjectDefinitionDeployerServiceTrackerCustomizer
+		implements ServiceTrackerCustomizer
+			<ObjectDefinitionDeployer, ObjectDefinitionDeployer> {
+
+		@Override
+		public ObjectDefinitionDeployer addingService(
+			ServiceReference<ObjectDefinitionDeployer> serviceReference) {
+
+			ObjectDefinitionDeployer objectDefinitionDeployer =
+				_bundleContext.getService(serviceReference);
+
+			Map<String, List<ServiceRegistration<?>>> serviceRegistrationsMap =
+				new ConcurrentHashMap<>();
+
+			_companyLocalService.forEachCompanyId(
+				companyId -> {
+					List<ObjectDefinition> objectDefinitions =
+						objectDefinitionLocalService.getObjectDefinitions(
+							companyId, WorkflowConstants.STATUS_APPROVED);
+
+					serviceRegistrationsMap.putAll(
+						objectDefinitionDeployer.deploy(
+							companyId,
+							ListUtil.filter(
+								objectDefinitions,
+								ObjectDefinition::isActive)));
+				});
+
+			_activeServiceRegistrationsMaps.put(
+				objectDefinitionDeployer, serviceRegistrationsMap);
+
+			return objectDefinitionDeployer;
+		}
+
+		@Override
+		public void modifiedService(
+			ServiceReference<ObjectDefinitionDeployer> serviceReference,
+			ObjectDefinitionDeployer objectDefinitionDeployer) {
+		}
+
+		@Override
+		public void removedService(
+			ServiceReference<ObjectDefinitionDeployer> serviceReference,
+			ObjectDefinitionDeployer objectDefinitionDeployer) {
+
+			_companyLocalService.forEachCompanyId(
+				companyId -> {
+					for (ObjectDefinition objectDefinition :
+							objectDefinitionLocalService.getObjectDefinitions(
+								companyId, WorkflowConstants.STATUS_APPROVED)) {
+
+						if (objectDefinition.isActive()) {
+							objectDefinitionDeployer.undeploy(objectDefinition);
+						}
+					}
+				});
+
+			Map<String, List<ServiceRegistration<?>>> serviceRegistrationsMap =
+				_activeServiceRegistrationsMaps.remove(
+					objectDefinitionDeployer);
+
+			for (List<ServiceRegistration<?>> serviceRegistrations :
+					serviceRegistrationsMap.values()) {
+
+				for (ServiceRegistration<?> serviceRegistration :
+						serviceRegistrations) {
+
+					serviceRegistration.unregister();
+				}
+			}
+
+			_bundleContext.ungetService(serviceReference);
+		}
+
+	}
 
 }
