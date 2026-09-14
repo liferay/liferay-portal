@@ -4,7 +4,7 @@
  */
 
 import {ClayIconSpriteContext} from '@clayui/icon';
-import {fireEvent, render, screen} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React, {useReducer, useState} from 'react';
 
 import '@testing-library/jest-dom';
@@ -153,6 +153,26 @@ describe('Editor workspace composition', () => {
 		fireEvent.click(screen.getByRole('button', {name: 'reset-all'}));
 
 		expect(container.querySelector('image')).not.toHaveAttribute('filter');
+	});
+
+	it('hands the focus to the last slider when the reset control disappears', async () => {
+		render(<EditorHarness />);
+
+		const slider = screen.getByLabelText('brightness');
+
+		fireEvent.change(slider, {target: {value: '40'}});
+		fireEvent.keyUp(slider, {key: 'ArrowRight'});
+
+		const resetAll = screen.getByRole('button', {name: 'reset-all'});
+
+		resetAll.focus();
+		fireEvent.click(resetAll);
+
+		expect(resetAll).not.toBeInTheDocument();
+
+		await waitFor(() =>
+			expect(screen.getByLabelText('highlights')).toHaveFocus()
+		);
 	});
 
 	it('reverts a cancelled adjustment gesture without a history entry', () => {
