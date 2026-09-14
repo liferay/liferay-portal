@@ -127,6 +127,28 @@ public class ObjectField implements Cloneable, Serializable {
 
 	protected String defaultValue;
 
+	public Map<String, String> getDescription() {
+		return description;
+	}
+
+	public void setDescription(Map<String, String> description) {
+		this.description = description;
+	}
+
+	public void setDescription(
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
+
+		try {
+			description = descriptionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, String> description;
+
 	public String getExternalReferenceCode() {
 		return externalReferenceCode;
 	}
@@ -819,4 +841,4 @@ public class ObjectField implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:528363235
+// LIFERAY-REST-BUILDER-HASH:422582682

@@ -2274,6 +2274,14 @@ public abstract class BaseObjectFieldResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (objectField.getDescription() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
@@ -2617,6 +2625,17 @@ public abstract class BaseObjectFieldResourceTestCase {
 				if (!Objects.deepEquals(
 						objectField1.getDefaultValue(),
 						objectField2.getDefaultValue())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)objectField1.getDescription(),
+						(Map)objectField2.getDescription())) {
 
 					return false;
 				}
@@ -3039,6 +3058,11 @@ public abstract class BaseObjectFieldResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("description")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("externalReferenceCode")) {
@@ -3776,4 +3800,4 @@ public abstract class BaseObjectFieldResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1782045654
+// LIFERAY-REST-BUILDER-HASH:-924957627

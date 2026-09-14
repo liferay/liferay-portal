@@ -96,6 +96,16 @@ public class ObjectFieldSerDes {
 			sb.append("\"");
 		}
 
+		if (objectField.getDescription() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"description\": ");
+
+			sb.append(_toJSON(objectField.getDescription()));
+		}
+
 		if (objectField.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -408,6 +418,14 @@ public class ObjectFieldSerDes {
 				"defaultValue", String.valueOf(objectField.getDefaultValue()));
 		}
 
+		if (objectField.getDescription() == null) {
+			map.put("description", null);
+		}
+		else {
+			map.put(
+				"description", String.valueOf(objectField.getDescription()));
+		}
+
 		if (objectField.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
@@ -608,6 +626,9 @@ public class ObjectFieldSerDes {
 			else if (Objects.equals(jsonParserFieldName, "defaultValue")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "description")) {
+				return true;
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
@@ -720,6 +741,12 @@ public class ObjectFieldSerDes {
 			else if (Objects.equals(jsonParserFieldName, "defaultValue")) {
 				if (jsonParserFieldValue != null) {
 					objectField.setDefaultValue((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "description")) {
+				if (jsonParserFieldValue != null) {
+					objectField.setDescription(
+						(Map<String, String>)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -959,4 +986,4 @@ public class ObjectFieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:936043995
+// LIFERAY-REST-BUILDER-HASH:-954382079

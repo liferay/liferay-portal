@@ -15,6 +15,7 @@
 			"actions"?: {[key: string]: {[key: string]: string;};};
 			"businessType"?: 'Aggregation' | 'Assignee' | 'Attachment' | 'AutoIncrement' | 'Boolean' | 'Date' | 'DateTime' | 'Decimal' | 'EmailAddress' | 'Encrypted' | 'Formula' | 'Integer' | 'LongInteger' | 'LongText' | 'MultiselectPicklist' | 'PhoneNumber' | 'Picklist' | 'PrecisionDecimal' | 'Relationship' | 'RichText' | 'Text';
 			"defaultValue"?: string;
+			"description"?: {[key: string]: string;};
 			"externalReferenceCode"?: string;
 			"id"?: number;
 			"indexed"?: boolean;
@@ -63,6 +64,11 @@
 			baseName: "defaultValue",
 			name: "defaultValue",
 			type: "string",
+		},
+		{
+			baseName: "description",
+			name: "description",
+			type: "{[key: string]: string;}",
 		},
 		{
 			baseName: "externalReferenceCode",
