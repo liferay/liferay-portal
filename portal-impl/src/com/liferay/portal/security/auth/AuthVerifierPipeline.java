@@ -66,8 +66,10 @@ public class AuthVerifierPipeline {
 	}
 
 	public static AuthVerifierPipeline getPortalAuthVerifierPipeline() {
-		return PortalAuthVerifierPipelineHolder.
-			_getPortalAuthVerifierPipeline();
+		return _portalAuthVerifierPipelineDCLSingleton.getSingleton(
+			() -> new AuthVerifierPipeline(
+				new ArrayList<>(_authVerifierConfigurations),
+				PortalContextLoaderListener.getPortalServletContextPath()));
 	}
 
 	public AuthVerifierPipeline(
@@ -207,6 +209,65 @@ public class AuthVerifierPipeline {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuthVerifierPipeline.class);
+
+	private static final List<AuthVerifierConfiguration>
+		_authVerifierConfigurations = new CopyOnWriteArrayList<>();
+	private static final DCLSingleton<AuthVerifierPipeline>
+		_portalAuthVerifierPipelineDCLSingleton = new DCLSingleton<>();
+
+	static {
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		ServiceTracker<AuthVerifierConfiguration, AuthVerifierConfiguration>
+			serviceTracker = new ServiceTracker<>(
+				bundleContext, AuthVerifierConfiguration.class,
+				new ServiceTrackerCustomizer
+					<AuthVerifierConfiguration, AuthVerifierConfiguration>() {
+
+					@Override
+					public AuthVerifierConfiguration addingService(
+						ServiceReference<AuthVerifierConfiguration>
+							serviceReference) {
+
+						AuthVerifierConfiguration authVerifierConfiguration =
+							bundleContext.getService(serviceReference);
+
+						if (authVerifierConfiguration != null) {
+							_authVerifierConfigurations.add(
+								authVerifierConfiguration);
+
+							_portalAuthVerifierPipelineDCLSingleton.destroy(
+								null);
+						}
+
+						return authVerifierConfiguration;
+					}
+
+					@Override
+					public void modifiedService(
+						ServiceReference<AuthVerifierConfiguration>
+							serviceReference,
+						AuthVerifierConfiguration authVerifierConfiguration) {
+					}
+
+					@Override
+					public void removedService(
+						ServiceReference<AuthVerifierConfiguration>
+							serviceReference,
+						AuthVerifierConfiguration authVerifierConfiguration) {
+
+						_authVerifierConfigurations.remove(
+							authVerifierConfiguration);
+
+						_portalAuthVerifierPipelineDCLSingleton.destroy(null);
+
+						bundleContext.ungetService(serviceReference);
+					}
+
+				});
+
+		serviceTracker.open();
+	}
 
 	private final URLPatternMapper<List<AuthVerifierConfiguration>>
 		_excludeURLPatternMapper;
@@ -433,81 +494,6 @@ public class AuthVerifierPipeline {
 		private final URLPatternMapper<List<AuthVerifierConfiguration>>
 			_excludeURLPatternMapper;
 		private final String _requestURI;
-
-	}
-
-	private static class PortalAuthVerifierPipelineHolder {
-
-		private static AuthVerifierPipeline _getPortalAuthVerifierPipeline() {
-			return _portalAuthVerifierPipelineDCLSingleton.getSingleton(
-				() -> new AuthVerifierPipeline(
-					new ArrayList<>(_authVerifierConfigurations),
-					PortalContextLoaderListener.getPortalServletContextPath()));
-		}
-
-		private static final List<AuthVerifierConfiguration>
-			_authVerifierConfigurations = new CopyOnWriteArrayList<>();
-		private static final DCLSingleton<AuthVerifierPipeline>
-			_portalAuthVerifierPipelineDCLSingleton = new DCLSingleton<>();
-
-		static {
-			BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-			ServiceTracker<AuthVerifierConfiguration, AuthVerifierConfiguration>
-				serviceTracker = new ServiceTracker<>(
-					bundleContext, AuthVerifierConfiguration.class,
-					new ServiceTrackerCustomizer
-						<AuthVerifierConfiguration,
-						 AuthVerifierConfiguration>() {
-
-						@Override
-						public AuthVerifierConfiguration addingService(
-							ServiceReference<AuthVerifierConfiguration>
-								serviceReference) {
-
-							AuthVerifierConfiguration
-								authVerifierConfiguration =
-									bundleContext.getService(serviceReference);
-
-							if (authVerifierConfiguration != null) {
-								_authVerifierConfigurations.add(
-									authVerifierConfiguration);
-
-								_portalAuthVerifierPipelineDCLSingleton.destroy(
-									null);
-							}
-
-							return authVerifierConfiguration;
-						}
-
-						@Override
-						public void modifiedService(
-							ServiceReference<AuthVerifierConfiguration>
-								serviceReference,
-							AuthVerifierConfiguration
-								authVerifierConfiguration) {
-						}
-
-						@Override
-						public void removedService(
-							ServiceReference<AuthVerifierConfiguration>
-								serviceReference,
-							AuthVerifierConfiguration
-								authVerifierConfiguration) {
-
-							_authVerifierConfigurations.remove(
-								authVerifierConfiguration);
-
-							_portalAuthVerifierPipelineDCLSingleton.destroy(
-								null);
-
-							bundleContext.ungetService(serviceReference);
-						}
-
-					});
-
-			serviceTracker.open();
-		}
 
 	}
 
