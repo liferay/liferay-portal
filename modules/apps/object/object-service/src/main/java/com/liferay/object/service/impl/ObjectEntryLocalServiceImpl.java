@@ -1404,8 +1404,12 @@ public class ObjectEntryLocalServiceImpl
 		long groupId, long objectDefinitionId, int status) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			return objectEntryPersistence.countByG_ODI_NotS(
+			int count = objectEntryPersistence.countByG_ODI(
+				groupId, objectDefinitionId);
+			int trashCount = objectEntryPersistence.countByG_ODI_S(
 				groupId, objectDefinitionId, WorkflowConstants.STATUS_IN_TRASH);
+
+			return count - trashCount;
 		}
 
 		return objectEntryPersistence.countByG_ODI_S(
