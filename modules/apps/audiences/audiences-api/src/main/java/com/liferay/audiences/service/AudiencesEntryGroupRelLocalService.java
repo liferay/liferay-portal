@@ -113,6 +113,12 @@ public interface AudiencesEntryGroupRelLocalService
 			long audiencesEntryGroupRelId)
 		throws PortalException;
 
+	public void deleteAudiencesEntryGroupRelsByAudienceEntryERC(
+		long companyId, String audienceEntryERC);
+
+	public void deleteAudiencesEntryGroupRelsByGroupERC(
+		long companyId, String groupERC);
+
 	/**
 	 * @throws PortalException
 	 */
@@ -267,4 +273,4 @@ public interface AudiencesEntryGroupRelLocalService
 		AudiencesEntryGroupRel audiencesEntryGroupRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:956437426
+// LIFERAY-SERVICE-BUILDER-HASH:624482262

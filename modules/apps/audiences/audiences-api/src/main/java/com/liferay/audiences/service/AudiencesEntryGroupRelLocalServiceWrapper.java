@@ -116,6 +116,23 @@ public class AudiencesEntryGroupRelLocalServiceWrapper
 			audiencesEntryGroupRelId);
 	}
 
+	@Override
+	public void deleteAudiencesEntryGroupRelsByAudienceEntryERC(
+		long companyId, String audienceEntryERC) {
+
+		_audiencesEntryGroupRelLocalService.
+			deleteAudiencesEntryGroupRelsByAudienceEntryERC(
+				companyId, audienceEntryERC);
+	}
+
+	@Override
+	public void deleteAudiencesEntryGroupRelsByGroupERC(
+		long companyId, String groupERC) {
+
+		_audiencesEntryGroupRelLocalService.
+			deleteAudiencesEntryGroupRelsByGroupERC(companyId, groupERC);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -365,4 +382,4 @@ public class AudiencesEntryGroupRelLocalServiceWrapper
 		_audiencesEntryGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1089861851
+// LIFERAY-SERVICE-BUILDER-HASH:970620157

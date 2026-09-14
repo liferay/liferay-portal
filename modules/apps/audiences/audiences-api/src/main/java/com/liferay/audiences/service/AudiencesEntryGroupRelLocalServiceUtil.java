@@ -112,6 +112,20 @@ public class AudiencesEntryGroupRelLocalServiceUtil {
 			audiencesEntryGroupRelId);
 	}
 
+	public static void deleteAudiencesEntryGroupRelsByAudienceEntryERC(
+		long companyId, String audienceEntryERC) {
+
+		getService().deleteAudiencesEntryGroupRelsByAudienceEntryERC(
+			companyId, audienceEntryERC);
+	}
+
+	public static void deleteAudiencesEntryGroupRelsByGroupERC(
+		long companyId, String groupERC) {
+
+		getService().deleteAudiencesEntryGroupRelsByGroupERC(
+			companyId, groupERC);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -312,4 +326,4 @@ public class AudiencesEntryGroupRelLocalServiceUtil {
 			AudiencesEntryGroupRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-620655345
+// LIFERAY-SERVICE-BUILDER-HASH:-83071795
