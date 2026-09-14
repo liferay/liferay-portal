@@ -50,12 +50,25 @@ const ResizableColumn = ({
 				resizeInfoRef.current &&
 				resizeInfoRef.current.instanceId === instanceId
 			) {
+				const row = rowRef.current;
+
+				if (!row) {
+					return;
+				}
+
+				const rowRect = row.getBoundingClientRect();
+
+				// The grid lays columns out from the right edge in
+				// right-to-left languages, so measure the pointer offset
+				// from that edge to get the same column index.
+
+				const offset =
+					document.dir === 'rtl'
+						? rowRect.right - event.clientX
+						: event.clientX - rowRect.left;
+
 				let column = Math.floor(
-					((event.clientX -
-						rowRef.current?.getBoundingClientRect().left) *
-						(MAX_COLUMNS * 10)) /
-						rowRef.current?.clientWidth /
-						10
+					(offset * (MAX_COLUMNS * 10)) / row.clientWidth / 10
 				);
 
 				if (column > MAX_COLUMNS - 1) {
