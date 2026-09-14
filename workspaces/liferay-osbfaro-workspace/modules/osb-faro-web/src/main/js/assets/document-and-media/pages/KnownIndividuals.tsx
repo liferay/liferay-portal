@@ -1,8 +1,10 @@
-import KnownIndividualsListCard from '../hocs/KnownIndividualsListCard';
 import React from 'react';
+import {getKnownIndividualsListCard} from 'assets/hocs/KnownIndividualsListCard';
 import {Router} from 'shared/types';
 
-const DocumentsAndMediaKnownIndividualsPage: React.FC<{
+const KnownIndividualsListCard = getKnownIndividualsListCard('document');
+
+const KnownIndividuals: React.FC<{
 	router: Router;
 }> = ({router}) => (
 	<div className="row">
@@ -12,4 +14,4 @@ const DocumentsAndMediaKnownIndividualsPage: React.FC<{
 	</div>
 );
 
-export default DocumentsAndMediaKnownIndividualsPage;
+export default KnownIndividuals;

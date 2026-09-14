@@ -1,14 +1,15 @@
-import VisitorsListCard from '../hocs/VisitorsListCard';
 import React from 'react';
-import {AssetTypes} from 'shared/util/constants';
+import {getVisitorsListCard} from 'assets/hocs/VisitorsListCard';
 import {Router} from 'shared/types';
+
+const VisitorsListCard = getVisitorsListCard('objectEntry');
 
 const Accounts: React.FC<{
 	router: Router;
 }> = ({router}) => (
 	<div className="row">
 		<div className="col-sm-12">
-			<VisitorsListCard router={router} type={AssetTypes.ObjectEntry} />
+			<VisitorsListCard router={router} />
 		</div>
 	</div>
 );

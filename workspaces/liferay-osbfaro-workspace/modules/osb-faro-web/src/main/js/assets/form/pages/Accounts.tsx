@@ -1,6 +1,8 @@
-import VisitorsListCard from '../hocs/VisitorsListCard';
 import React from 'react';
+import {getVisitorsListCard} from 'assets/hocs/VisitorsListCard';
 import {Router} from 'shared/types';
+
+const VisitorsListCard = getVisitorsListCard('form');
 
 const Accounts: React.FC<{
 	router: Router;

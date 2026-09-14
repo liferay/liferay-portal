@@ -1,8 +1,12 @@
-import KnownIndividualsListCard from '../hocs/KnownIndividualsListCard';
 import React from 'react';
+import {getKnownIndividualsListCard} from 'assets/hocs/KnownIndividualsListCard';
 import {Router} from 'shared/types';
 
-const KnownIndividuals: React.FC<{router: Router}> = ({router}) => (
+const KnownIndividualsListCard = getKnownIndividualsListCard('journal');
+
+const KnownIndividuals: React.FC<{
+	router: Router;
+}> = ({router}) => (
 	<div className="row">
 		<div className="col-sm-12">
 			<KnownIndividualsListCard router={router} />

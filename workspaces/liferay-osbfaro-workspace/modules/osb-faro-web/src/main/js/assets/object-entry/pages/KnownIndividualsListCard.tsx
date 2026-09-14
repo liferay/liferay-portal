@@ -1,17 +1,15 @@
-import KnownIndividualsListCard from '../hocs/KnownIndividualsListCard';
 import React from 'react';
-import {AssetTypes} from 'shared/util/constants';
+import {getKnownIndividualsListCard} from 'assets/hocs/KnownIndividualsListCard';
 import {Router} from 'shared/types';
+
+const KnownIndividualsListCard = getKnownIndividualsListCard('objectEntry');
 
 const KnownIndividuals: React.FC<{
 	router: Router;
 }> = ({router}) => (
 	<div className="row">
 		<div className="col-sm-12">
-			<KnownIndividualsListCard
-				router={router}
-				type={AssetTypes.ObjectEntry}
-			/>
+			<KnownIndividualsListCard router={router} />
 		</div>
 	</div>
 );

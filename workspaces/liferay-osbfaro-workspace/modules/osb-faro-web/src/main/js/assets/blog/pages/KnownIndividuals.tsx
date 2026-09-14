@@ -1,6 +1,8 @@
-import KnownIndividualsListCard from '../hocs/KnownIndividualsListCard';
 import React from 'react';
+import {getKnownIndividualsListCard} from 'assets/hocs/KnownIndividualsListCard';
 import {Router} from 'shared/types';
+
+const KnownIndividualsListCard = getKnownIndividualsListCard('blog');
 
 const KnownIndividuals: React.FC<{
 	router: Router;
