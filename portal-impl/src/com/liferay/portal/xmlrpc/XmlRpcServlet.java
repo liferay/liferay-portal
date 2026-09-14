@@ -116,7 +116,8 @@ public class XmlRpcServlet extends HttpServlet {
 			long companyId, String token, String methodName, Object[] arguments)
 		throws XmlRpcException {
 
-		Method method = _getMethod(token, methodName);
+		Method method = _serviceTrackerMap.getService(
+			_getRegistryKey(token, methodName));
 
 		if (method == null) {
 			return XmlRpcUtil.createFault(
@@ -135,11 +136,6 @@ public class XmlRpcServlet extends HttpServlet {
 
 	private static String _getRegistryKey(String token, String methodName) {
 		return token + StringPool.POUND + methodName;
-	}
-
-	private Method _getMethod(String token, String methodName) {
-		return _serviceTrackerMap.getService(
-			_getRegistryKey(token, methodName));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(XmlRpcServlet.class);

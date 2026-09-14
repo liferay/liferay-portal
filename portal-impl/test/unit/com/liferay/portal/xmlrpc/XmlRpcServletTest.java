@@ -5,10 +5,11 @@
 
 package com.liferay.portal.xmlrpc;
 
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.xmlrpc.Method;
+import com.liferay.portal.kernel.xmlrpc.Response;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Objects;
@@ -32,16 +33,27 @@ public class XmlRpcServletTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testNoReturn() throws Exception {
+	public void testInvokeMethod() throws Exception {
+		Response response = XmlRpcUtil.createSuccess(
+			RandomTestUtil.randomString());
+
 		Method xmlRpcMethod = (Method)ProxyUtil.newProxyInstance(
 			Method.class.getClassLoader(), new Class<?>[] {Method.class},
 			(proxy, method, args) -> {
-				if (Objects.equals(method.getName(), "getToken")) {
-					return _TOKEN;
+				if (Objects.equals(method.getName(), "execute")) {
+					return response;
 				}
 
 				if (Objects.equals(method.getName(), "getMethodName")) {
 					return _METHOD_NAME;
+				}
+
+				if (Objects.equals(method.getName(), "getToken")) {
+					return _TOKEN;
+				}
+
+				if (Objects.equals(method.getName(), "setArguments")) {
+					return true;
 				}
 
 				return null;
@@ -55,15 +67,11 @@ public class XmlRpcServletTest {
 		try {
 			XmlRpcServlet xmlRpcServlet = new XmlRpcServlet();
 
-			java.lang.reflect.Method getMethod =
-				ReflectionUtil.getDeclaredMethod(
-					XmlRpcServlet.class, "_getMethod", String.class,
-					String.class);
-
-			Method actualMethod = (Method)getMethod.invoke(
-				xmlRpcServlet, _TOKEN, _METHOD_NAME);
-
-			Assert.assertSame(xmlRpcMethod, actualMethod);
+			Assert.assertSame(
+				response,
+				xmlRpcServlet.invokeMethod(
+					RandomTestUtil.randomLong(), _TOKEN, _METHOD_NAME,
+					new Object[0]));
 		}
 		finally {
 			serviceRegistration.unregister();
