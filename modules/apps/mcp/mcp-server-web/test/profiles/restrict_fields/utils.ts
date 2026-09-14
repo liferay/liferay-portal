@@ -5,6 +5,7 @@
 
 import {
 	buildFieldTree,
+	getExpandedKeys,
 	getSelectedKeys,
 	toRestrictFields,
 } from '../../../src/main/resources/META-INF/resources/js/profiles/restrict_fields/utils';
@@ -112,6 +113,24 @@ describe('restrict fields utils', () => {
 
 		it('stores an empty string when nothing is selected', () => {
 			expect(toRestrictFields(tree, new Set())).toBe('');
+		});
+	});
+
+	describe('getExpandedKeys', () => {
+		it('expands every ancestor of a restricted field but not the field', () => {
+			expect([
+				...getExpandedKeys(
+					'description,modifiedBy.userGroupBriefs.name,promptStatus.key'
+				),
+			]).toEqual([
+				'modifiedBy',
+				'modifiedBy.userGroupBriefs',
+				'promptStatus',
+			]);
+		});
+
+		it('expands nothing without restricted fields', () => {
+			expect(getExpandedKeys(undefined).size).toBe(0);
 		});
 	});
 

@@ -176,6 +176,30 @@ describe('RestrictFieldsModal', () => {
 		expect(screen.queryByRole('button', {name: 'deselect-all'})).toBeNull();
 	});
 
+	it('clears nested indeterminate parents with the deselect all action', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal();
+
+		await userEvent.click(await findCheckbox('modifiedBy'));
+
+		await expand('modifiedBy');
+		await expand('userGroupBriefs');
+
+		await userEvent.click(screen.getAllByRole('checkbox', {name: 'id'})[1]);
+
+		expect(checkbox('modifiedBy')).toBePartiallyChecked();
+		expect(checkbox('userGroupBriefs')).toBePartiallyChecked();
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'deselect-all'})
+		);
+
+		expect(checkbox('modifiedBy')).not.toBePartiallyChecked();
+		expect(checkbox('modifiedBy')).not.toBeChecked();
+		expect(checkbox('userGroupBriefs')).not.toBePartiallyChecked();
+	});
+
 	it('disables save while the tool loads', async () => {
 		fetch.mockResponseOnce(() => new Promise(() => {}));
 
@@ -272,9 +296,18 @@ describe('RestrictFieldsModal', () => {
 			'4-items-selected'
 		);
 		expect(checkbox('userGroupBriefs')).toBeChecked();
-		expect(
-			screen.getAllByRole('checkbox', {name: 'id'})[0]
-		).not.toBeChecked();
+		expect(checkbox('id')).not.toBeChecked();
+		expect(screen.queryByRole('checkbox', {name: 'key'})).toBeNull();
+	});
+
+	it('keeps the preselected parents indeterminate after the first click', async () => {
+		fetch.mockResponseOnce(JSON.stringify(mockTool));
+
+		renderModal({restrictFields: 'modifiedBy.userGroupBriefs'});
+
+		await userEvent.click(await findCheckbox('description'));
+
+		expect(checkbox('modifiedBy')).toBePartiallyChecked();
 	});
 
 	it('saves the top-most checked fields on the profile tool', async () => {
