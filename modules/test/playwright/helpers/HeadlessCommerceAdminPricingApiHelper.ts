@@ -58,6 +58,7 @@ type TDiscountSku = {
 };
 
 class TPriceEntry {
+	bulkPricing?: boolean;
 	discountDiscovery?: boolean;
 	discountLevel1?: number;
 	discountLevel2?: number;
@@ -79,6 +80,15 @@ class TPriceList {
 	name: string;
 	priority?: number;
 	type: string;
+}
+
+class TTierPrice {
+	active?: boolean;
+	id?: number;
+	minimumQuantity: number;
+	price: number;
+	priceEntryId?: number;
+	unitOfMeasureKey?: string;
 }
 
 export class HeadlessCommerceAdminPricingApiHelper {
@@ -116,6 +126,12 @@ export class HeadlessCommerceAdminPricingApiHelper {
 	async deletePriceModifier(priceModifierId: number) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/price-modifiers/${priceModifierId}`
+		);
+	}
+
+	async deleteTierPrice(tierPriceId: number) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/tier-prices/${tierPriceId}`
 		);
 	}
 
@@ -211,6 +227,13 @@ export class HeadlessCommerceAdminPricingApiHelper {
 		return this.apiHelpers.patch(
 			`${this.apiHelpers.baseUrl}${this.basePath}/price-entries/${priceEntryId}`,
 			priceEntry
+		);
+	}
+
+	async patchTierPrice(tierPriceId: number, tierPrice: Partial<TTierPrice>) {
+		return this.apiHelpers.patch(
+			`${this.apiHelpers.baseUrl}${this.basePath}/tier-prices/${tierPriceId}`,
+			tierPrice
 		);
 	}
 
@@ -401,5 +424,33 @@ export class HeadlessCommerceAdminPricingApiHelper {
 				failOnStatusCode: true,
 			}
 		);
+	}
+
+	async postTierPrice(
+		priceEntryId: number,
+		tierPrice: TTierPrice,
+		{failOnStatusCode = true}: {failOnStatusCode?: boolean} = {}
+	) {
+		const postTierPrice = await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/price-entries/${priceEntryId}/tier-prices`,
+			{
+				data: {
+					active: true,
+					priceEntryId,
+					unitOfMeasureKey: '',
+					...tierPrice,
+				},
+				failOnStatusCode,
+			}
+		);
+
+		if (this.apiHelpers instanceof DataApiHelpers && postTierPrice?.id) {
+			this.apiHelpers.data.push({
+				id: postTierPrice.id,
+				type: 'tierPrice',
+			});
+		}
+
+		return postTierPrice;
 	}
 }

@@ -821,6 +821,11 @@ export class DataApiHelpers extends ApiHelpers {
 				else if (item.type === 'terms') {
 					await this.headlessCommerceAdminOrder.deleteTerms(item.id);
 				}
+				else if (item.type === 'tierPrice') {
+					await this.headlessCommerceAdminPricing.deleteTierPrice(
+						item.id
+					);
+				}
 				else if (item.type === 'userAccount') {
 					await this.headlessAdminUser.deleteUserAccount(item.id);
 				}

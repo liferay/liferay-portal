@@ -86,7 +86,13 @@ export class ProductDetailsPage {
 	) => Promise<Locator>;
 	readonly skuField: (sku: string) => Promise<Locator>;
 	readonly unitOfMeasureSelect: Locator;
+	readonly unitOfMeasureSelectedOption: Locator;
 	readonly uomCombobox: Locator;
+	readonly uomPriceTable: Locator;
+	readonly uomPriceTableColumnHeader: (columnName: string) => Locator;
+	readonly uomPriceTableRow: (rowIndex: number) => Locator;
+	readonly uomPriceTableRowCells: (rowIndex: number) => Locator;
+	readonly uomPriceTableRows: Locator;
 	readonly uomTable: (uomTableCell: string) => Promise<Locator>;
 	readonly viewButton: Locator;
 
@@ -255,7 +261,19 @@ export class ProductDetailsPage {
 		this.unitOfMeasureSelect = page.locator(
 			'select.unit-of-measure-selector'
 		);
+		this.unitOfMeasureSelectedOption =
+			this.unitOfMeasureSelect.locator('option:checked');
 		this.uomCombobox = page.getByRole('combobox', {exact: true});
+		this.uomPriceTable = page.locator('.tier-price-table table');
+		this.uomPriceTableColumnHeader = (columnName: string) =>
+			this.uomPriceTable
+				.locator('thead')
+				.getByText(columnName, {exact: true});
+		this.uomPriceTableRow = (rowIndex: number) =>
+			this.uomPriceTableRows.nth(rowIndex);
+		this.uomPriceTableRowCells = (rowIndex: number) =>
+			this.uomPriceTableRow(rowIndex).locator('td');
+		this.uomPriceTableRows = this.uomPriceTable.locator('tbody tr');
 		this.uomTable = async (cellValue: string) => {
 			return page.getByRole('cell', {name: cellValue});
 		};
