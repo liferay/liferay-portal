@@ -79,10 +79,9 @@ public class KnowledgeBaseAttachmentResourceImpl
 			HashMapBuilder.<String, Map<String, String>>put(
 				"createBatch",
 				addAction(
-					KBActionKeys.ADD_KB_ARTICLE, kbArticle.getResourcePrimKey(),
+					KBActionKeys.UPDATE, kbArticle.getResourcePrimKey(),
 					"postKnowledgeBaseArticleKnowledgeBaseAttachmentBatch",
-					kbArticle.getUserId(), KBConstants.RESOURCE_NAME_ADMIN,
-					kbArticle.getGroupId())
+					_kbArticleModelResourcePermission)
 			).build(),
 			transform(
 				kbArticle.getAttachmentsFileEntries(),
