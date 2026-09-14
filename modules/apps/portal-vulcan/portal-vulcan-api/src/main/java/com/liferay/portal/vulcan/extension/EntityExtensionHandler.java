@@ -92,6 +92,15 @@ public class EntityExtensionHandler {
 			Map<String, Serializable> extendedProperties)
 		throws Exception {
 
+		setExtendedProperties(
+			companyId, userId, entity, extendedProperties, false);
+	}
+
+	public void setExtendedProperties(
+			long companyId, long userId, Object entity,
+			Map<String, Serializable> extendedProperties, boolean partialUpdate)
+		throws Exception {
+
 		for (ExtensionProvider extensionProvider : _extensionProviders) {
 			Map<String, PropertyDefinition> extendedPropertyDefinitions =
 				extensionProvider.getExtendedPropertyDefinitions(
@@ -115,7 +124,7 @@ public class EntityExtensionHandler {
 
 			extensionProvider.setExtendedProperties(
 				companyId, userId, _className, entity,
-				extensionProviderExtendedProperties);
+				extensionProviderExtendedProperties, partialUpdate);
 		}
 	}
 

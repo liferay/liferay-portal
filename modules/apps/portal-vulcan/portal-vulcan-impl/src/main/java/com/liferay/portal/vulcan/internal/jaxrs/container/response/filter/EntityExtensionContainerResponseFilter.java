@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.vulcan.extension.EntityExtensionHandler;
 import com.liferay.portal.vulcan.extension.EntityExtensionThreadLocal;
 
+import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Carlos Correa
@@ -70,7 +72,9 @@ public class EntityExtensionContainerResponseFilter
 		try {
 			entityExtensionHandler.setExtendedProperties(
 				_company.getCompanyId(), _user.getUserId(),
-				containerResponseContext.getEntity(), extendedProperties);
+				containerResponseContext.getEntity(), extendedProperties,
+				Objects.equals(
+					containerRequestContext.getMethod(), HttpMethod.PATCH));
 		}
 		catch (Exception exception) {
 			throw new IOException(exception);

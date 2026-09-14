@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.extension.ExtensionProvider;
@@ -190,6 +191,16 @@ public class ObjectRelationshipExtensionProvider
 			Map<String, Serializable> extendedProperties)
 		throws Exception {
 
+		setExtendedProperties(
+			companyId, userId, className, entity, extendedProperties, false);
+	}
+
+	@Override
+	public void setExtendedProperties(
+			long companyId, long userId, String className, Object entity,
+			Map<String, Serializable> extendedProperties, boolean partialUpdate)
+		throws Exception {
+
 		ObjectDefinition objectDefinition = fetchObjectDefinition(
 			companyId, className);
 
@@ -242,13 +253,12 @@ public class ObjectRelationshipExtensionProvider
 				relatedObjectDefinition, userId);
 
 			for (ObjectEntry nestedObjectEntry : nestedObjectEntries) {
-				nestedObjectEntry = objectEntryManager.updateObjectEntry(
+				nestedObjectEntry = _updateNestedObjectEntry(
 					objectDefinition.getCompanyId(),
 					_getDefaultDTOConverterContext(
 						objectDefinition, primaryKey, null, userId),
-					nestedObjectEntry.getExternalReferenceCode(),
-					relatedObjectDefinition, nestedObjectEntry,
-					relatedObjectDefinition.getScope());
+					nestedObjectEntry, objectEntryManager, partialUpdate,
+					relatedObjectDefinition);
 
 				_relateNestedObjectEntry(
 					objectDefinition, objectRelationship, primaryKey,
@@ -358,6 +368,41 @@ public class ObjectRelationshipExtensionProvider
 		_objectRelationshipService.addObjectRelationshipMappingTableValues(
 			objectRelationship.getObjectRelationshipId(), primaryKey1,
 			primaryKey2, serviceContext);
+	}
+
+	private ObjectEntry _updateNestedObjectEntry(
+			long companyId, DTOConverterContext dtoConverterContext,
+			ObjectEntry nestedObjectEntry,
+			ObjectEntryManager objectEntryManager, boolean partialUpdate,
+			ObjectDefinition relatedObjectDefinition)
+		throws Exception {
+
+		String externalReferenceCode =
+			nestedObjectEntry.getExternalReferenceCode();
+		ObjectEntry existingNestedObjectEntry = null;
+		String scopeKey = relatedObjectDefinition.getScope();
+
+		if (partialUpdate &&
+			(objectEntryManager instanceof DefaultObjectEntryManager)) {
+
+			DefaultObjectEntryManager defaultObjectEntryManager =
+				DefaultObjectEntryManagerProvider.provide(objectEntryManager);
+
+			existingNestedObjectEntry =
+				defaultObjectEntryManager.fetchObjectEntry(
+					dtoConverterContext, externalReferenceCode,
+					relatedObjectDefinition, scopeKey);
+		}
+
+		if (existingNestedObjectEntry == null) {
+			return objectEntryManager.updateObjectEntry(
+				companyId, dtoConverterContext, externalReferenceCode,
+				relatedObjectDefinition, nestedObjectEntry, scopeKey);
+		}
+
+		return objectEntryManager.partialUpdateObjectEntry(
+			companyId, dtoConverterContext, externalReferenceCode,
+			relatedObjectDefinition, nestedObjectEntry, scopeKey);
 	}
 
 	@Reference

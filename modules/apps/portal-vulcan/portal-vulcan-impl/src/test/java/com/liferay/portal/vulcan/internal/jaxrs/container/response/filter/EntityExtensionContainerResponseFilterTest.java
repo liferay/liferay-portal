@@ -96,7 +96,7 @@ public class EntityExtensionContainerResponseFilterTest {
 			_entityExtensionHandler
 		).setExtendedProperties(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.any(),
-			Mockito.anyMap()
+			Mockito.anyMap(), Mockito.anyBoolean()
 		);
 
 		Mockito.when(
@@ -147,7 +147,7 @@ public class EntityExtensionContainerResponseFilterTest {
 		Mockito.verify(
 			_entityExtensionHandler
 		).setExtendedProperties(
-			companyId, userId, _TEST_ENTITY, extendedProperties
+			companyId, userId, _TEST_ENTITY, extendedProperties, false
 		);
 
 		Mockito.verifyNoMoreInteractions(_entityExtensionHandler);

@@ -5,14 +5,13 @@
 
 package com.liferay.portal.vulcan.internal.batch.engine.action;
 
-import com.liferay.batch.engine.BatchEngineTaskOperation;
 import com.liferay.batch.engine.action.ItemReaderPostAction;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.extension.EntityExtensionHandler;
 import com.liferay.portal.vulcan.extension.ExtensionProviderRegistry;
 import com.liferay.portal.vulcan.extension.util.ExtensionUtil;
+import com.liferay.portal.vulcan.internal.batch.engine.util.BatchEngineImportTaskUtil;
 
 import java.io.Serializable;
 
@@ -51,37 +50,9 @@ public class EntityExtensionItemReaderPostAction
 
 		entityExtensionHandler.validate(
 			batchEngineImportTask.getCompanyId(), extendedProperties,
-			_isPartialUpdate(batchEngineImportTask));
+			BatchEngineImportTaskUtil.isPartialUpdate(batchEngineImportTask));
 
 		ExtensionUtil.setExtendedProperties(item, extendedProperties);
-	}
-
-	private boolean _isPartialUpdate(
-		BatchEngineImportTask batchEngineImportTask) {
-
-		BatchEngineTaskOperation batchEngineTaskOperation =
-			BatchEngineTaskOperation.valueOf(
-				batchEngineImportTask.getOperation());
-
-		String createStrategy = batchEngineImportTask.getParameterValue(
-			"createStrategy");
-		String updateStrategy = batchEngineImportTask.getParameterValue(
-			"updateStrategy");
-
-		if ((batchEngineTaskOperation == BatchEngineTaskOperation.CREATE) &&
-			StringUtil.equals(createStrategy, "UPSERT") &&
-			StringUtil.equals(updateStrategy, "PARTIAL_UPDATE")) {
-
-			return true;
-		}
-
-		if ((batchEngineTaskOperation == BatchEngineTaskOperation.UPDATE) &&
-			StringUtil.equals(updateStrategy, "PARTIAL_UPDATE")) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	@Reference

@@ -254,7 +254,8 @@ public class EntityExtensionHandlerTest {
 		).setExtendedProperties(
 			Mockito.eq(_COMPANY_ID), Mockito.eq(_USER_ID),
 			Mockito.eq(_CLASS_NAME), Mockito.eq(_OBJECT),
-			Mockito.eq(Collections.singletonMap(propertyName1, propertyValue1))
+			Mockito.eq(Collections.singletonMap(propertyName1, propertyValue1)),
+			Mockito.eq(false)
 		);
 
 		Mockito.verify(
@@ -262,7 +263,8 @@ public class EntityExtensionHandlerTest {
 		).setExtendedProperties(
 			Mockito.eq(_COMPANY_ID), Mockito.eq(_USER_ID),
 			Mockito.eq(_CLASS_NAME), Mockito.eq(_OBJECT),
-			Mockito.eq(Collections.singletonMap(propertyName2, propertyValue2))
+			Mockito.eq(Collections.singletonMap(propertyName2, propertyValue2)),
+			Mockito.eq(false)
 		);
 	}
 

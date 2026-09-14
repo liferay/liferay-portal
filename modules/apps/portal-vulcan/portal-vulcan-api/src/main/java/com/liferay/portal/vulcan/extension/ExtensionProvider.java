@@ -33,4 +33,13 @@ public interface ExtensionProvider {
 			Map<String, Serializable> extendedProperties)
 		throws Exception;
 
+	public default void setExtendedProperties(
+			long companyId, long userId, String className, Object entity,
+			Map<String, Serializable> extendedProperties, boolean partialUpdate)
+		throws Exception {
+
+		setExtendedProperties(
+			companyId, userId, className, entity, extendedProperties);
+	}
+
 }
