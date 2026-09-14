@@ -430,6 +430,9 @@ public interface FriendlyURLEntryLocalService
 		long groupId, long classNameId, long parentClassPK, long classPK,
 		Map<Locale, String> titleMap);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public boolean hasMainFriendlyURLEntry(long classNameId, long classPK);
+
 	public void setMainFriendlyURLEntry(FriendlyURLEntry friendlyURLEntry);
 
 	/**
@@ -529,4 +532,4 @@ public interface FriendlyURLEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-134776500
+// LIFERAY-SERVICE-BUILDER-HASH:-945327983

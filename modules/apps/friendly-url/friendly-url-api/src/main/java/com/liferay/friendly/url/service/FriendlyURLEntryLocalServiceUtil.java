@@ -572,6 +572,12 @@ public class FriendlyURLEntryLocalServiceUtil {
 			groupId, classNameId, parentClassPK, classPK, titleMap);
 	}
 
+	public static boolean hasMainFriendlyURLEntry(
+		long classNameId, long classPK) {
+
+		return getService().hasMainFriendlyURLEntry(classNameId, classPK);
+	}
+
 	public static void setMainFriendlyURLEntry(
 		FriendlyURLEntry friendlyURLEntry) {
 
@@ -733,4 +739,4 @@ public class FriendlyURLEntryLocalServiceUtil {
 			FriendlyURLEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1769455778
+// LIFERAY-SERVICE-BUILDER-HASH:-563294042

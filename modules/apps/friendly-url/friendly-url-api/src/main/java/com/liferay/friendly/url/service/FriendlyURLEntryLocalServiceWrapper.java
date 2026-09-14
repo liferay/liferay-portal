@@ -641,6 +641,12 @@ public class FriendlyURLEntryLocalServiceWrapper
 	}
 
 	@Override
+	public boolean hasMainFriendlyURLEntry(long classNameId, long classPK) {
+		return _friendlyURLEntryLocalService.hasMainFriendlyURLEntry(
+			classNameId, classPK);
+	}
+
+	@Override
 	public void setMainFriendlyURLEntry(FriendlyURLEntry friendlyURLEntry) {
 		_friendlyURLEntryLocalService.setMainFriendlyURLEntry(friendlyURLEntry);
 	}
@@ -848,4 +854,4 @@ public class FriendlyURLEntryLocalServiceWrapper
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:7069645
+// LIFERAY-SERVICE-BUILDER-HASH:1842909151
