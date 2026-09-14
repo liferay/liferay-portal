@@ -5,6 +5,9 @@
 
 package com.liferay.layout.admin.web.internal.display.context;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.IconItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.helper.LayoutActionsHelper;
@@ -29,6 +32,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -41,6 +45,7 @@ import jakarta.portlet.PortletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -184,12 +189,14 @@ public class LayoutsAdminDisplayContextTest {
 		long layoutPageTemplateCollectionId1 = RandomTestUtil.randomLong();
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection1 =
-			_getLayoutPageTemplateCollection(layoutPageTemplateCollectionId1);
+			_getLayoutPageTemplateCollection(
+				layoutPageTemplateCollectionId1, RandomTestUtil.randomString());
 
 		long layoutPageTemplateCollectionId2 = RandomTestUtil.randomLong();
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection2 =
-			_getLayoutPageTemplateCollection(layoutPageTemplateCollectionId2);
+			_getLayoutPageTemplateCollection(
+				layoutPageTemplateCollectionId2, RandomTestUtil.randomString());
 
 		try (MockedStatic<LayoutPageTemplateCollectionServiceUtil>
 				layoutPageTemplateCollectionServiceUtilMockedStatic =
@@ -241,6 +248,174 @@ public class LayoutsAdminDisplayContextTest {
 				3, true, layoutsAdminDisplayContext, false);
 			_testGetVerticalNavItemList(
 				4, true, layoutsAdminDisplayContext, true);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-105565")
+	public void testGetVerticalNavItemListWithDesignLibraryGroup()
+		throws Exception {
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_group.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		LayoutsAdminDisplayContext layoutsAdminDisplayContext =
+			_getLayoutsAdminDisplayContext();
+
+		long designLibraryGroupId = RandomTestUtil.randomLong();
+
+		Group designLibraryGroup = Mockito.mock(Group.class);
+
+		String descriptiveName = RandomTestUtil.randomString();
+
+		Mockito.when(
+			designLibraryGroup.getDescriptiveName(LocaleUtil.US)
+		).thenReturn(
+			descriptiveName
+		);
+
+		Mockito.when(
+			designLibraryGroup.getGroupId()
+		).thenReturn(
+			designLibraryGroupId
+		);
+
+		Mockito.when(
+			designLibraryGroup.isDepot()
+		).thenReturn(
+			true
+		);
+
+		_groupLocalServiceUtilMockedStatic.when(
+			() -> GroupLocalServiceUtil.getGroup(designLibraryGroupId)
+		).thenReturn(
+			designLibraryGroup
+		);
+
+		String title = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_language.format(
+				Mockito.any(HttpServletRequest.class),
+				Mockito.eq("page-template-set-from-x-design-library"),
+				Mockito.eq(descriptiveName))
+		).thenReturn(
+			title
+		);
+
+		String name = RandomTestUtil.randomString();
+
+		long layoutPageTemplateCollectionId1 = RandomTestUtil.randomLong();
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection1 =
+			_getLayoutPageTemplateCollection(
+				layoutPageTemplateCollectionId1, name);
+
+		long layoutPageTemplateCollectionId2 = RandomTestUtil.randomLong();
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection2 =
+			_getLayoutPageTemplateCollection(
+				layoutPageTemplateCollectionId2, name);
+
+		String designLibraryHref = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			designLibraryHref
+		).when(
+			layoutsAdminDisplayContext
+		).getSelectLayoutPageTemplateEntryURL(
+			Mockito.eq(layoutPageTemplateCollectionId2), Mockito.anyLong(),
+			Mockito.anyBoolean()
+		);
+
+		try (MockedStatic<DesignLibraryUtil> designLibraryUtilMockedStatic =
+				Mockito.mockStatic(DesignLibraryUtil.class);
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class);
+			MockedStatic<LayoutPageTemplateCollectionServiceUtil>
+				layoutPageTemplateCollectionServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						LayoutPageTemplateCollectionServiceUtil.class);
+			MockedStatic<LayoutPageTemplateEntryServiceUtil>
+				layoutPageTemplateEntryServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						LayoutPageTemplateEntryServiceUtil.class)) {
+
+			designLibraryUtilMockedStatic.when(
+				() -> DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
+					Mockito.anyLong(), Mockito.eq(groupId))
+			).thenReturn(
+				new long[] {designLibraryGroupId}
+			);
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-76864"))
+			).thenReturn(
+				true
+			);
+
+			layoutPageTemplateCollectionServiceUtilMockedStatic.when(
+				() ->
+					LayoutPageTemplateCollectionServiceUtil.
+						getLayoutPageTemplateCollections(
+							Mockito.eq(groupId), Mockito.anyInt())
+			).thenReturn(
+				Collections.singletonList(layoutPageTemplateCollection1)
+			);
+
+			layoutPageTemplateCollectionServiceUtilMockedStatic.when(
+				() ->
+					LayoutPageTemplateCollectionServiceUtil.
+						getLayoutPageTemplateCollections(
+							Mockito.eq(designLibraryGroupId), Mockito.anyInt())
+			).thenReturn(
+				Collections.singletonList(layoutPageTemplateCollection2)
+			);
+
+			layoutPageTemplateEntryServiceUtilMockedStatic.when(
+				() ->
+					LayoutPageTemplateEntryServiceUtil.
+						getLayoutPageTemplateEntriesCount(
+							Mockito.anyLong(), Mockito.anyLong(),
+							Mockito.anyInt())
+			).thenReturn(
+				1
+			);
+
+			VerticalNavItemList verticalNavItemList =
+				layoutsAdminDisplayContext.getVerticalNavItemList(
+					Mockito.mock(
+						SelectLayoutPageTemplateEntryDisplayContext.class));
+
+			Assert.assertEquals(
+				verticalNavItemList.toString(), 3, verticalNavItemList.size());
+
+			VerticalNavItem verticalNavItem1 = verticalNavItemList.get(1);
+
+			Assert.assertNull(verticalNavItem1.get("icons"));
+			Assert.assertEquals(
+				String.valueOf(layoutPageTemplateCollectionId1),
+				verticalNavItem1.get("id"));
+			Assert.assertEquals(name, verticalNavItem1.get("label"));
+
+			VerticalNavItem verticalNavItem2 = verticalNavItemList.get(2);
+
+			Assert.assertEquals(
+				Collections.singletonList(IconItem.of("books", title)),
+				verticalNavItem2.get("icons"));
+			Assert.assertEquals(
+				designLibraryHref, verticalNavItem2.get("href"));
+			Assert.assertEquals(
+				String.valueOf(layoutPageTemplateCollectionId2),
+				verticalNavItem2.get("id"));
+			Assert.assertEquals(name, verticalNavItem2.get("label"));
 		}
 	}
 
@@ -328,7 +503,7 @@ public class LayoutsAdminDisplayContextTest {
 	}
 
 	private LayoutPageTemplateCollection _getLayoutPageTemplateCollection(
-		long layoutPageTemplateCollectionId) {
+		long layoutPageTemplateCollectionId, String name) {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
 			Mockito.mock(LayoutPageTemplateCollection.class);
@@ -342,15 +517,35 @@ public class LayoutsAdminDisplayContextTest {
 		Mockito.when(
 			layoutPageTemplateCollection.getName()
 		).thenReturn(
-			RandomTestUtil.randomString()
+			name
 		);
 
 		return layoutPageTemplateCollection;
 	}
 
 	private LayoutsAdminDisplayContext _getLayoutsAdminDisplayContext() {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.doReturn(
+			LocaleUtil.US
+		).when(
+			themeDisplay
+		).getLocale();
+
+		Mockito.doReturn(
+			_group
+		).when(
+			themeDisplay
+		).getScopeGroup();
+
+		Mockito.doReturn(
+			_group.getGroupId()
+		).when(
+			themeDisplay
+		).getScopeGroupId();
+
 		_liferayPortletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, Mockito.mock(ThemeDisplay.class));
+			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		LayoutsAdminDisplayContext layoutsAdminDisplayContext = Mockito.spy(
 			new LayoutsAdminDisplayContext(
@@ -385,17 +580,17 @@ public class LayoutsAdminDisplayContextTest {
 	private void _setUpLanguageUtil() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
-		Language language = Mockito.mock(Language.class);
+		_language = Mockito.mock(Language.class);
 
 		Mockito.when(
-			language.get(
+			_language.get(
 				Mockito.any(HttpServletRequest.class), Mockito.anyString())
 		).thenAnswer(
 			(Answer<String>)invocationOnMock -> invocationOnMock.getArgument(
 				1, String.class)
 		);
 
-		languageUtil.setLanguage(language);
+		languageUtil.setLanguage(_language);
 	}
 
 	private void _setUpPortalUtil() {
@@ -436,9 +631,10 @@ public class LayoutsAdminDisplayContextTest {
 	}
 
 	private void _testGetVerticalNavItemList(
-		int expectedVerticalNavItemsCount, boolean featureFlagEnabled,
-		LayoutsAdminDisplayContext layoutsAdminDisplayContext,
-		boolean showGlobalTemplates) {
+			int expectedVerticalNavItemsCount, boolean featureFlagEnabled,
+			LayoutsAdminDisplayContext layoutsAdminDisplayContext,
+			boolean showGlobalTemplates)
+		throws Exception {
 
 		SelectLayoutPageTemplateEntryDisplayContext
 			selectLayoutPageTemplateEntryDisplayContext = Mockito.mock(
@@ -476,6 +672,7 @@ public class LayoutsAdminDisplayContextTest {
 		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			GroupLocalServiceUtil.class);
 
+	private Language _language;
 	private LayoutActionsHelper _layoutActionsHelper;
 	private LayoutsAdminDisplayContext _layoutsAdminDisplayContext;
 	private LiferayPortletRequest _liferayPortletRequest;

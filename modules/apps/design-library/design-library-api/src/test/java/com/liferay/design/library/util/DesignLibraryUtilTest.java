@@ -8,9 +8,15 @@ package com.liferay.design.library.util;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -23,6 +29,7 @@ import org.mockito.Mockito;
 
 /**
  * @author Lourdes Fernández Besada
+ * @author Georgel Pop
  */
 public class DesignLibraryUtilTest {
 
@@ -34,6 +41,52 @@ public class DesignLibraryUtilTest {
 	@After
 	public void tearDown() {
 		_depotEntryLocalServiceUtilMockedStatic.close();
+		_featureFlagManagerUtilMockedStatic.close();
+	}
+
+	@Test
+	@TestInfo("LPD-105565")
+	public void testGetConnectedDesignLibraryGroupIds() throws Exception {
+		long companyId = RandomTestUtil.randomLong();
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")
+		).thenReturn(
+			false
+		);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Assert.assertArrayEquals(
+			new long[0],
+			DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
+				companyId, groupId));
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")
+		).thenReturn(
+			true
+		);
+
+		long designLibraryGroupId1 = RandomTestUtil.randomLong();
+		long designLibraryGroupId2 = RandomTestUtil.randomLong();
+
+		List<DepotEntry> depotEntries = Arrays.asList(
+			_getDepotEntry(designLibraryGroupId1),
+			_getDepotEntry(designLibraryGroupId2));
+
+		_depotEntryLocalServiceUtilMockedStatic.when(
+			() -> DepotEntryLocalServiceUtil.getGroupConnectedDepotEntries(
+				groupId, DepotConstants.TYPE_DESIGN_LIBRARY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS)
+		).thenReturn(
+			depotEntries
+		);
+
+		Assert.assertArrayEquals(
+			new long[] {designLibraryGroupId1, designLibraryGroupId2},
+			DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
+				companyId, groupId));
 	}
 
 	@Test
@@ -134,8 +187,23 @@ public class DesignLibraryUtilTest {
 		Assert.assertTrue(DesignLibraryUtil.isDesignLibraryScope(groupId));
 	}
 
+	private DepotEntry _getDepotEntry(long groupId) {
+		DepotEntry depotEntry = Mockito.mock(DepotEntry.class);
+
+		Mockito.when(
+			depotEntry.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		return depotEntry;
+	}
+
 	private final MockedStatic<DepotEntryLocalServiceUtil>
 		_depotEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			DepotEntryLocalServiceUtil.class);
+	private final MockedStatic<FeatureFlagManagerUtil>
+		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+			FeatureFlagManagerUtil.class);
 
 }
