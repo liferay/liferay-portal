@@ -92,6 +92,9 @@ public class ObjectEntryExtensionProviderTest {
 				TestPropsValues.getUserId()
 			).objectDefinitionId(
 				objectDefinition.getObjectDefinitionId()
+			).descriptionMap(
+				Collections.singletonMap(
+					LocaleUtil.US, _OBJECT_FIELD_DESCRIPTION)
 			).indexed(
 				RandomTestUtil.randomBoolean()
 			).indexedAsKeyword(
@@ -192,20 +195,21 @@ public class ObjectEntryExtensionProviderTest {
 				TestPropsValues.getCompanyId(), UserAccount.class.getName());
 
 		_assertPropertyDefinition(
-			null, "boolean", PropertyDefinition.PropertyType.BOOLEAN, false,
+			null, _OBJECT_FIELD_DESCRIPTION, "boolean",
+			PropertyDefinition.PropertyType.BOOLEAN, false,
 			extendedPropertyDefinitions.get("boolean"));
 		_assertPropertyDefinition(
-			null, "date", PropertyDefinition.PropertyType.DATE_TIME, true,
+			null, null, "date", PropertyDefinition.PropertyType.DATE_TIME, true,
 			extendedPropertyDefinitions.get("date"));
 		_assertPropertyDefinition(
-			null, "decimal", PropertyDefinition.PropertyType.DOUBLE, false,
-			extendedPropertyDefinitions.get("decimal"));
+			null, null, "decimal", PropertyDefinition.PropertyType.DOUBLE,
+			false, extendedPropertyDefinitions.get("decimal"));
 		_assertPropertyDefinition(
-			ListEntry.class.getSimpleName(), "multiselectPicklist",
+			ListEntry.class.getSimpleName(), null, "multiselectPicklist",
 			PropertyDefinition.PropertyType.MULTIPLE_ELEMENT, false,
 			extendedPropertyDefinitions.get("multiselectPicklist"));
 		_assertPropertyDefinition(
-			null, "precisionDecimal",
+			null, null, "precisionDecimal",
 			PropertyDefinition.PropertyType.BIG_DECIMAL, true,
 			extendedPropertyDefinitions.get("precisionDecimal"));
 	}
@@ -259,13 +263,17 @@ public class ObjectEntryExtensionProviderTest {
 	}
 
 	private void _assertPropertyDefinition(
-		String expectedPropertyClassName, String expectedPropertyName,
+		String expectedPropertyClassName, String expectedPropertyDescription,
+		String expectedPropertyName,
 		PropertyDefinition.PropertyType expectedPropertyType,
 		boolean expectedRequired, PropertyDefinition propertyDefinition) {
 
 		Assert.assertEquals(
 			expectedPropertyClassName,
 			propertyDefinition.getPropertyClassName());
+		Assert.assertEquals(
+			expectedPropertyDescription,
+			propertyDefinition.getPropertyDescription());
 		Assert.assertEquals(
 			expectedPropertyName, propertyDefinition.getPropertyName());
 		Assert.assertEquals(
@@ -431,6 +439,9 @@ public class ObjectEntryExtensionProviderTest {
 		RandomTestUtil.randomString();
 
 	private static final String _LIST_TYPE_ENTRY_KEY_2 =
+		RandomTestUtil.randomString();
+
+	private static final String _OBJECT_FIELD_DESCRIPTION =
 		RandomTestUtil.randomString();
 
 	@Inject

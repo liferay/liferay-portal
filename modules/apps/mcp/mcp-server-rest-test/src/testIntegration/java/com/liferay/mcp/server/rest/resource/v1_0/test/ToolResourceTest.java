@@ -39,6 +39,8 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -123,7 +125,8 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 		String objectFieldName = "a" + RandomTestUtil.randomString(8);
 
 		ObjectDefinition companyObjectDefinition = _publishObjectDefinition(
-			objectDefinitionName, objectFieldName, TestPropsValues.getUserId());
+			null, objectDefinitionName, objectFieldName,
+			TestPropsValues.getUserId());
 
 		Company company = CompanyTestUtil.addCompany();
 
@@ -132,7 +135,7 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 		String otherObjectFieldName = "a" + RandomTestUtil.randomString(8);
 
 		_publishObjectDefinition(
-			objectDefinitionName, otherObjectFieldName, user.getUserId());
+			null, objectDefinitionName, otherObjectFieldName, user.getUserId());
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -170,6 +173,8 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 					"JSONObject/body", "JSONObject/properties"),
 				false)
 		);
+
+		_testGetToolSetToolSetNameToolWithObjectFieldDescription();
 	}
 
 	@Override
@@ -260,7 +265,8 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 	}
 
 	private ObjectDefinition _publishObjectDefinition(
-			String name, String objectFieldName, long userId)
+			Map<Locale, String> descriptionMap, String name,
+			String objectFieldName, long userId)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -269,12 +275,40 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 		_objectFieldLocalService.addCustomObjectField(
 			null, userId, 0, objectDefinition.getObjectDefinitionId(),
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, null, false, false, null,
-			LocalizedMapUtil.getLocalizedMap(objectFieldName), false,
+			ObjectFieldConstants.DB_TYPE_STRING, descriptionMap, false, false,
+			null, LocalizedMapUtil.getLocalizedMap(objectFieldName), false,
 			objectFieldName, null, null, false, false, Collections.emptyList());
 
 		return _objectDefinitionLocalService.publishCustomObjectDefinition(
 			userId, objectDefinition.getObjectDefinitionId());
+	}
+
+	private void _testGetToolSetToolSetNameToolWithObjectFieldDescription()
+		throws Exception {
+
+		String objectFieldDescription = RandomTestUtil.randomString();
+		String objectFieldName = "a" + RandomTestUtil.randomString(8);
+
+		ObjectDefinition objectDefinition = _publishObjectDefinition(
+			Collections.singletonMap(LocaleUtil.US, objectFieldDescription),
+			ObjectDefinitionTestUtil.getRandomName(), objectFieldName,
+			TestPropsValues.getUserId());
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				objectFieldName,
+				JSONUtil.put(
+					"description", objectFieldDescription
+				).put(
+					"type", "string"
+				)
+			).toString(),
+			JSONUtil.getValueAsString(
+				JSONFactoryUtil.createJSONObject(
+					String.valueOf(_getTool(objectDefinition))),
+				"JSONObject/inputSchema", "JSONObject/properties",
+				"JSONObject/body", "JSONObject/properties"),
+			false);
 	}
 
 	@Inject

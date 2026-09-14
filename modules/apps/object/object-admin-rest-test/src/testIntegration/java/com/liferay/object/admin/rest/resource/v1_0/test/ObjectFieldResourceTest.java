@@ -15,15 +15,18 @@ import com.liferay.object.constants.ObjectFieldSettingConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -363,13 +366,22 @@ public class ObjectFieldResourceTest extends BaseObjectFieldResourceTestCase {
 	}
 
 	@Override
+	@Test
+	public void testPutObjectField() throws Exception {
+		super.testPutObjectField();
+
+		_testPutObjectFieldDescription(Collections.emptyMap());
+		_testPutObjectFieldDescription(null);
+	}
+
+	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"label", "state"};
+		return new String[] {"description", "label", "state"};
 	}
 
 	@Override
 	protected String[] getIgnoredEntityFieldNames() {
-		return new String[] {"label"};
+		return new String[] {"description", "label"};
 	}
 
 	@Override
@@ -379,6 +391,9 @@ public class ObjectFieldResourceTest extends BaseObjectFieldResourceTestCase {
 		objectField.setBusinessType(ObjectField.BusinessType.create("Text"));
 		objectField.setDBType(ObjectField.DBType.create("String"));
 		objectField.setDefaultValue(StringPool.BLANK);
+		objectField.setDescription(
+			Collections.singletonMap(
+				LocaleUtil.US.toString(), RandomTestUtil.randomString()));
 		objectField.setIndexedAsKeyword(false);
 		objectField.setLabel(
 			Collections.singletonMap(
@@ -528,6 +543,31 @@ public class ObjectFieldResourceTest extends BaseObjectFieldResourceTestCase {
 		assertEquals(randomObjectField, patchObjectField);
 
 		Assert.assertEquals(unique, patchObjectField.getUnique());
+	}
+
+	private void _testPutObjectFieldDescription(
+			Map<String, String> descriptionMap)
+		throws Exception {
+
+		ObjectField objectField = randomObjectField();
+
+		String description = RandomTestUtil.randomString();
+
+		objectField.setDescription(
+			Collections.singletonMap(LocaleUtil.US.toString(), description));
+
+		objectField = objectFieldResource.postObjectDefinitionObjectField(
+			_objectDefinition.getObjectDefinitionId(), objectField);
+
+		objectField.setDescription(descriptionMap);
+
+		objectField = objectFieldResource.putObjectField(
+			objectField.getId(), objectField);
+
+		Assert.assertEquals(
+			description,
+			MapUtil.getString(
+				objectField.getDescription(), LocaleUtil.US.toString()));
 	}
 
 	private ObjectDefinition _objectDefinition;
