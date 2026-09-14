@@ -44,12 +44,6 @@ public class CMPObjectDefinitionDeployerImpl
 	public List<ServiceRegistration<?>> deploy(
 		ObjectDefinition objectDefinition) {
 
-		if (objectDefinition.isCMP()) {
-			_initialize(objectDefinition.getCompanyId());
-
-			return Collections.emptyList();
-		}
-
 		if (!objectDefinition.isCMS()) {
 			return Collections.emptyList();
 		}
