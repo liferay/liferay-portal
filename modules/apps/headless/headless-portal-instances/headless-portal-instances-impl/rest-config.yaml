@@ -8,7 +8,7 @@ author: Alberto Chaparro
 clientDir: ../headless-portal-instances-client/src/main/java
 compatibilityVersion: 16
 forcePredictableOperationId: true
-generateBatch: false
+generateBatch: true
 generateGraphQL: false
 javaEEPackage: jakarta
 testDir: ../headless-portal-instances-test/src/testIntegration/java

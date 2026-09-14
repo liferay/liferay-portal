@@ -158,7 +158,7 @@ paths:
             tags: ["PortalInstance"]
         post:
             description:
-                Adds a new portal instance
+                Adds a new portal instance. Through /portal-instances/batch the same operation runs asynchronously; poll the returned import task and, when it is COMPLETED, GET /portal-instances/{portalInstanceId} returns each created instance.
             operationId: postPortalInstance
             requestBody:
                 content:
@@ -209,7 +209,7 @@ paths:
     /portal-instances/{portalInstanceId}:
         delete:
             description:
-                Removes the portal instance
+                Removes the portal instance. Through DELETE /portal-instances/batch the same operation runs asynchronously; poll the returned import task.
             operationId: deletePortalInstance
             parameters:
                 -   in: path
