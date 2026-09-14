@@ -11,10 +11,10 @@ import '@testing-library/jest-dom';
 
 import {Carousel} from '../../src/main/resources/META-INF/resources/js/panels/Carousel';
 
-function renderCarousel() {
-	const result = render(
+function tree(itemCount: number) {
+	return (
 		<ClayIconSpriteContext.Provider value="/icons.svg">
-			<Carousel className="grid" itemCount={3}>
+			<Carousel className="grid" itemCount={itemCount}>
 				<span>one</span>
 
 				<span>two</span>
@@ -23,12 +23,25 @@ function renderCarousel() {
 			</Carousel>
 		</ClayIconSpriteContext.Provider>
 	);
+}
+
+function renderCarousel() {
+	const result = render(tree(3));
 
 	const track = result.container.querySelector(
 		'.editor-carousel-track'
 	) as HTMLDivElement;
 
-	return {...result, track};
+	// Layout happens outside jsdom: lay the track out by hand and let the
+	// carousel measure it again the way a content change would.
+
+	const measureAs = (layout: Record<string, number>) => {
+		track.style.overflowX = 'auto';
+		layOut(track, layout);
+		result.rerender(tree(4));
+	};
+
+	return {...result, measureAs, track};
 }
 
 function layOut(
@@ -60,12 +73,9 @@ describe('Carousel', () => {
 	});
 
 	it('offers the arrows once the track overflows, pointer only', () => {
-		const {container, track} = renderCarousel();
+		const {container, measureAs} = renderCarousel();
 
-		track.style.overflowX = 'auto';
-		layOut(track, {clientWidth: 200, scrollLeft: 0, scrollWidth: 600});
-
-		fireEvent.scroll(track);
+		measureAs({clientWidth: 200, scrollLeft: 0, scrollWidth: 600});
 
 		const arrows = container.querySelectorAll('.editor-carousel-arrow');
 
@@ -77,13 +87,11 @@ describe('Carousel', () => {
 	});
 
 	it('scrolls by most of a page and flips the arrows at the end', () => {
-		const {container, track} = renderCarousel();
+		const {container, measureAs, track} = renderCarousel();
 
-		track.style.overflowX = 'auto';
-		layOut(track, {clientWidth: 200, scrollLeft: 0, scrollWidth: 600});
+		measureAs({clientWidth: 200, scrollLeft: 0, scrollWidth: 600});
 		track.scrollBy = jest.fn();
 
-		fireEvent.scroll(track);
 		fireEvent.click(
 			container.querySelectorAll('.editor-carousel-arrow')[1]
 		);
@@ -106,13 +114,11 @@ describe('Carousel', () => {
 		document.body.classList.add('c-prefers-reduced-motion');
 
 		try {
-			const {container, track} = renderCarousel();
+			const {container, measureAs, track} = renderCarousel();
 
-			track.style.overflowX = 'auto';
-			layOut(track, {clientWidth: 200, scrollLeft: 0, scrollWidth: 600});
+			measureAs({clientWidth: 200, scrollLeft: 0, scrollWidth: 600});
 			track.scrollBy = jest.fn();
 
-			fireEvent.scroll(track);
 			fireEvent.click(
 				container.querySelectorAll('.editor-carousel-arrow')[1]
 			);

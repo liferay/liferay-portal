@@ -21,6 +21,7 @@ export function Carousel({
 	itemCount,
 	...trackProps
 }: Props) {
+	const scrollableRef = useRef(false);
 	const trackRef = useRef<HTMLDivElement>(null);
 
 	const [scroll, setScroll] = useState({
@@ -37,7 +38,7 @@ export function Carousel({
 		}
 
 		const overflows =
-			getComputedStyle(element).overflowX === 'auto' &&
+			scrollableRef.current &&
 			element.scrollWidth > element.clientWidth + 4;
 
 		const left = element.scrollLeft > 4;
@@ -53,17 +54,28 @@ export function Carousel({
 		);
 	}, []);
 
-	useEffect(() => {
-		updateScroll();
+	const measure = useCallback(() => {
+		const element = trackRef.current;
 
-		const observer = new ResizeObserver(updateScroll);
+		if (element) {
+			scrollableRef.current =
+				getComputedStyle(element).overflowX === 'auto';
+		}
+
+		updateScroll();
+	}, [updateScroll]);
+
+	useEffect(() => {
+		measure();
+
+		const observer = new ResizeObserver(measure);
 
 		if (trackRef.current) {
 			observer.observe(trackRef.current);
 		}
 
 		return () => observer.disconnect();
-	}, [itemCount, updateScroll]);
+	}, [itemCount, measure]);
 
 	const scrollByPage = (direction: -1 | 1) => {
 		const element = trackRef.current;
