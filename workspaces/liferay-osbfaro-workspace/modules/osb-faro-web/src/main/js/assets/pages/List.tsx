@@ -248,13 +248,19 @@ const List = () => {
 
 	const fdsQueryRef = useRef({filter: '', query: ''});
 
-	let rangeSelectorParams = `rangeKey=${rangeSelectors.rangeKey}`;
+	const customRange =
+		rangeSelectors.rangeKey === RangeKeyTimeRanges.CustomRange;
 
-	if (rangeSelectors.rangeKey === RangeKeyTimeRanges.CustomRange) {
-		rangeSelectorParams =
-			`rangeEnd=${rangeSelectors.rangeEnd}` +
-			`&rangeStart=${rangeSelectors.rangeStart}`;
-	}
+	const rangeSelectorParams = customRange
+		? `rangeEnd=${rangeSelectors.rangeEnd}&rangeStart=${rangeSelectors.rangeStart}`
+		: `rangeKey=${rangeSelectors.rangeKey}`;
+
+	// Links keep the key too: without it `useQueryRangeSelectors` reads no
+	// range at all and falls back to the default.
+
+	const linkRangeSelectorParams = customRange
+		? `rangeKey=${RangeKeyTimeRanges.CustomRange}&${rangeSelectorParams}`
+		: rangeSelectorParams;
 
 	const filters = useMemo(
 		() => [
@@ -483,7 +489,7 @@ const List = () => {
 								accountName,
 								channelId: channelId!,
 								groupId: groupId!,
-								rangeSelectorParams,
+								rangeSelectorParams: linkRangeSelectorParams,
 								segmentId,
 								segmentName,
 							}),
@@ -545,7 +551,8 @@ const List = () => {
 											channelId: channelId!,
 											groupId: groupId!,
 											itemData,
-											rangeSelectorParams,
+											rangeSelectorParams:
+												linkRangeSelectorParams,
 											segmentId,
 											segmentName,
 										})

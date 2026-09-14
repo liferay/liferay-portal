@@ -6,6 +6,7 @@ import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
 import {render, screen} from '@testing-library/react';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
+import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
 jest.unmock('react-dom');
 
@@ -80,7 +81,7 @@ jest.mock('shared/context/dataSources', () => ({
 }));
 
 jest.mock('shared/hooks/useQueryRangeSelectors', () => ({
-	useQueryRangeSelectors: () => ({rangeKey: '30'}),
+	useQueryRangeSelectors: jest.fn(),
 }));
 
 jest.mock('shared/hooks/useLDPEnabled', () => ({
@@ -137,6 +138,12 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 				</MemoryRouter>
 			</Provider>
 		);
+
+	beforeEach(() => {
+		(useQueryRangeSelectors as jest.Mock).mockReturnValue({
+			rangeKey: '30',
+		});
+	});
 
 	it('shows the account filter on the overview route for LDP workspaces', () => {
 		(useLDPEnabled as jest.Mock).mockReturnValue(true);
@@ -265,10 +272,6 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 		expect(href).toContain('rangeKey=30');
 	});
 
-	// Opening an asset from the list carries the list's date range, account and
-	// segment in the URL. The breadcrumb has to hand them back, or it returns
-	// the reader to a list reset to its defaults.
-
 	it('carries the date range back through the assets breadcrumb', () => {
 		(useLDPEnabled as jest.Mock).mockReturnValue(true);
 
@@ -280,6 +283,29 @@ describe.each(DASHBOARDS)('$name', ({assetType, label, slug}) => {
 			?.getAttribute('href');
 
 		expect(href).toContain('rangeKey=30');
+	});
+
+	// All three parts have to come back; without the key the list ignores them.
+
+	it('carries a custom range back through the assets breadcrumb', () => {
+		(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+		(useQueryRangeSelectors as jest.Mock).mockReturnValue({
+			rangeEnd: '2026-05-28',
+			rangeKey: 'CUSTOM',
+			rangeStart: '2026-02-17',
+		});
+
+		renderDashboard();
+
+		const href = screen
+			.getByText('Assets')
+			.closest('a')
+			?.getAttribute('href');
+
+		expect(href).toContain('rangeKey=CUSTOM');
+		expect(href).toContain('rangeEnd=2026-05-28');
+		expect(href).toContain('rangeStart=2026-02-17');
 	});
 
 	it('carries the account and segment back through the assets breadcrumb', () => {

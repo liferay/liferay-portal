@@ -119,10 +119,8 @@ export const getTests = ({channelId, groupId}: IBasicSidebarRouteArgs) => ({
  */
 
 /**
- * The asset list keeps its date range, account and segment in the URL, and
- * hands them to the dashboard when a row is opened. Passing them back through
- * `query` is what makes the breadcrumb return to the list the reader left,
- * rather than to a list reset to its defaults.
+ * `query` carries the list's date range, account and segment back, so the
+ * breadcrumb returns to the list as it was left.
  */
 export const getAssets = ({
 	channelId,

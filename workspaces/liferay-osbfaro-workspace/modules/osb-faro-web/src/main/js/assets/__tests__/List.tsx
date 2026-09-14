@@ -142,6 +142,21 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 				</button>
 
 				<button
+					data-testid="trigger-view-asset"
+					onClick={() =>
+						itemsActions?.[1]?.onClick?.({
+							itemData: {
+								assetTitle: 'Test Asset Title',
+								assetType: 'blog',
+								id: 'asset-id-1',
+							},
+						})
+					}
+				>
+					{'View Asset'}
+				</button>
+
+				<button
 					data-testid="trigger-info-panel-with-items"
 					onClick={() =>
 						itemsActions?.[0]?.onClick?.({
@@ -536,6 +551,34 @@ describe('List', () => {
 			expect(apiURL).toContain('rangeKey=7');
 			expect(apiURL).not.toContain('rangeEnd=');
 			expect(apiURL).not.toContain('rangeStart=');
+		});
+
+		// The endpoints want a custom range without its key; links need it.
+
+		it('should keep the range key on the asset link for a custom range', () => {
+			renderList({
+				queryString:
+					'?rangeKey=CUSTOM&rangeStart=2024-01-01&rangeEnd=2024-03-01',
+			});
+
+			fireEvent.click(screen.getByTestId('trigger-view-asset'));
+
+			const pushedPath: string = mockHistoryPush.mock.calls[0][0];
+
+			expect(pushedPath).toContain('rangeKey=CUSTOM');
+			expect(pushedPath).toContain('rangeEnd=2024-03-01');
+			expect(pushedPath).toContain('rangeStart=2024-01-01');
+		});
+
+		it('should put only the range key on the asset link for a preset range', () => {
+			renderList({queryString: '?rangeKey=7'});
+
+			fireEvent.click(screen.getByTestId('trigger-view-asset'));
+
+			const pushedPath: string = mockHistoryPush.mock.calls[0][0];
+
+			expect(pushedPath).toContain('rangeKey=7');
+			expect(pushedPath).not.toContain('rangeStart=');
 		});
 	});
 

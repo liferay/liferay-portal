@@ -205,6 +205,11 @@ exports[`List rendering should match the snapshot 1`] = `
             Open Info Panel No Title
           </button>
           <button
+            data-testid="trigger-view-asset"
+          >
+            View Asset
+          </button>
+          <button
             data-testid="trigger-info-panel-with-items"
           >
             Open Info Panel With Items

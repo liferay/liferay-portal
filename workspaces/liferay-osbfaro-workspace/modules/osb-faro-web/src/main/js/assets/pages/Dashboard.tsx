@@ -108,8 +108,7 @@ const AssetDashboard: React.FC<{
 
 	const {csvType, graphQLType} = descriptor;
 
-	// The date range and the account and segment filters travel in the URL, so
-	// both the tab links and the breadcrumb back to the list carry them on.
+	// Shared by the tab links and the breadcrumb back to the list.
 
 	const routeQueries = pickBy({
 		...rangeSelectorsFromQuery,
