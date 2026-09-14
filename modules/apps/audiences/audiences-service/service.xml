@@ -38,6 +38,41 @@
 			<finder-column case-sensitive="false" comparator="LIKE" name="name" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="AudiencesEntryGroupRel" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="audiencesEntryGroupRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="audienceEntryERC" type="String" />
+		<column name="groupERC" type="String" />
+
+		<!-- Finder methods -->
+
+		<finder name="C_AEERC" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="audienceEntryERC" />
+		</finder>
+		<finder name="C_GERC" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="groupERC" />
+		</finder>
+		<finder name="C_AEERC_GERC" return-type="AudiencesEntryGroupRel" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="audienceEntryERC" />
+			<finder-column name="groupERC" />
+		</finder>
+	</entity>
 	<exceptions>
 		<exception>AudiencesEntryJSON</exception>
 		<exception>AudiencesEntryJSONAttribute</exception>
