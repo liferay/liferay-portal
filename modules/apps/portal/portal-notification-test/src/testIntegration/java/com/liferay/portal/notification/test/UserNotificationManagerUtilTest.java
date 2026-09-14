@@ -17,8 +17,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.util.Map;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -100,22 +98,10 @@ public class UserNotificationManagerUtilTest {
 	}
 
 	@Test
-	public void testGetUserNotificationHandlers() {
-		Map<String, Map<String, UserNotificationHandler>>
-			userNotificationHandlersMap =
-				UserNotificationManagerUtil.getUserNotificationHandlers();
-
-		Assert.assertNotNull(userNotificationHandlersMap);
-
-		Map<String, UserNotificationHandler> userNotificationHandlers =
-			userNotificationHandlersMap.get(_SELECTOR);
-
-		Assert.assertNotNull(userNotificationHandlers);
-
-		UserNotificationHandler userNotificationHandler =
-			userNotificationHandlers.get(_PORTLET_ID);
-
-		Assert.assertSame(_userNotificationHandler, userNotificationHandler);
+	public void testHasUserNotificationHandler() {
+		Assert.assertTrue(
+			UserNotificationManagerUtil.hasUserNotificationHandler(
+				_PORTLET_ID, _SELECTOR));
 	}
 
 	@Test
