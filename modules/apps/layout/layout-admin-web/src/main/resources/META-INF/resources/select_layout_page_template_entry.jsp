@@ -38,9 +38,11 @@ renderResponse.setTitle(LanguageUtil.get(request, "select-template"));
 				<liferay-ui:message key="page-template-sets" />
 			</div>
 
-			<clay:vertical-nav
-				verticalNavItems="<%= layoutsAdminDisplayContext.getVerticalNavItemList(selectLayoutPageTemplateEntryDisplayContext) %>"
-			/>
+			<div class="page-template-sets-vertical-nav">
+				<clay:vertical-nav
+					verticalNavItems="<%= layoutsAdminDisplayContext.getVerticalNavItemList(selectLayoutPageTemplateEntryDisplayContext) %>"
+				/>
+			</div>
 		</clay:col>
 
 		<clay:col
