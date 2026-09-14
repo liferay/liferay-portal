@@ -751,17 +751,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro relaunchCurrentAndPreviousProcess(larFileName = null) {
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Relaunch",
-			rowEntry = ${larFileName});
-
-		AssertTextEquals(
-			locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS_1",
-			value1 = "Successful");
-	}
-
-	@summary = "Default summary"
 	macro saveExportTemplateCP(exportTemplateName = null, exportTemplateDescription = null) {
 		Button.clickSave();
 
