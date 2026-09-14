@@ -163,6 +163,15 @@ public class KBArticleServiceTest {
 		Assert.assertEquals(kbArticles.toString(), 1, kbArticles.size());
 	}
 
+	@Test
+	public void testUpdateKBArticle() throws Exception {
+		_testUpdateKBArticle();
+		_testUpdateKBArticleWithFileEntryInDifferentKBArticle();
+		_testUpdateKBArticleWithFileEntryInDifferentRepository();
+		_testUpdateKBArticleWithFileEntryInRootFolder();
+		_testUpdateKBArticleWithNonexistentFileEntry();
+	}
+
 	private FileEntry _addAttachment(
 			boolean addGroupPermissions, boolean addGuestPermissions)
 		throws Exception {
@@ -177,16 +186,18 @@ public class KBArticleServiceTest {
 		return _addAttachment(serviceContext);
 	}
 
-	private FileEntry _addAttachment(ServiceContext serviceContext)
-		throws Exception {
-
-		KBArticle kbArticle = _addKbArticle(new Date(), serviceContext);
-
+	private FileEntry _addAttachment(KBArticle kbArticle) throws Exception {
 		return _kbArticleLocalService.addAttachment(
 			TestPropsValues.getUserId(), kbArticle.getResourcePrimKey(),
 			RandomTestUtil.randomString() + ".txt",
 			new ByteArrayInputStream(TestDataConstants.TEST_BYTE_ARRAY),
 			ContentTypes.TEXT_PLAIN);
+	}
+
+	private FileEntry _addAttachment(ServiceContext serviceContext)
+		throws Exception {
+
+		return _addAttachment(_addKbArticle(new Date(), serviceContext));
 	}
 
 	private FileEntry _addFileEntry(long folderId) throws Exception {
@@ -355,6 +366,100 @@ public class KBArticleServiceTest {
 				() -> _kbArticleService.getKBArticleAttachment(
 					fileEntry.getFileEntryId()));
 		}
+	}
+
+	private void _testUpdateKBArticle() throws Exception {
+		KBArticle kbArticle = _addKbArticle(new Date());
+
+		FileEntry fileEntry = _addAttachment(kbArticle);
+
+		_updateKBArticle(kbArticle, new long[] {fileEntry.getFileEntryId()});
+
+		Assert.assertNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry.getFileEntryId()));
+	}
+
+	private void _testUpdateKBArticleWithFileEntryInDifferentKBArticle()
+		throws Exception {
+
+		KBArticle kbArticle = _addKbArticle(new Date());
+
+		FileEntry fileEntry = _addAttachment(_addKbArticle(new Date()));
+
+		Assert.assertThrows(
+			NoSuchFileEntryException.class,
+			() -> _updateKBArticle(
+				kbArticle, new long[] {fileEntry.getFileEntryId()}));
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry.getFileEntryId()));
+	}
+
+	private void _testUpdateKBArticleWithFileEntryInDifferentRepository()
+		throws Exception {
+
+		KBArticle kbArticle = _addKbArticle(new Date());
+
+		Folder folder = _addFolder(
+			String.valueOf(kbArticle.getResourcePrimKey()));
+
+		FileEntry fileEntry = _addFileEntry(folder.getFolderId());
+
+		Assert.assertThrows(
+			NoSuchFileEntryException.class,
+			() -> _updateKBArticle(
+				kbArticle, new long[] {fileEntry.getFileEntryId()}));
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry.getFileEntryId()));
+	}
+
+	private void _testUpdateKBArticleWithFileEntryInRootFolder()
+		throws Exception {
+
+		KBArticle kbArticle = _addKbArticle(new Date());
+
+		FileEntry fileEntry = _addFileEntry(
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Assert.assertThrows(
+			NoSuchFileEntryException.class,
+			() -> _updateKBArticle(
+				kbArticle, new long[] {fileEntry.getFileEntryId()}));
+
+		Assert.assertNotNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry.getFileEntryId()));
+	}
+
+	private void _testUpdateKBArticleWithNonexistentFileEntry()
+		throws Exception {
+
+		KBArticle kbArticle = _addKbArticle(new Date());
+
+		FileEntry fileEntry1 = _addAttachment(kbArticle);
+		FileEntry fileEntry2 = _addAttachment(kbArticle);
+
+		_updateKBArticle(kbArticle, new long[] {fileEntry1.getFileEntryId()});
+
+		_updateKBArticle(
+			kbArticle,
+			new long[] {
+				fileEntry1.getFileEntryId(), fileEntry2.getFileEntryId()
+			});
+
+		Assert.assertNull(
+			_dlAppLocalService.fetchFileEntry(fileEntry2.getFileEntryId()));
+	}
+
+	private void _updateKBArticle(
+			KBArticle kbArticle, long[] removeFileEntryIds)
+		throws Exception {
+
+		_kbArticleService.updateKBArticle(
+			kbArticle.getResourcePrimKey(), kbArticle.getTitle(),
+			kbArticle.getContent(), kbArticle.getDescription(), null, null,
+			kbArticle.getDisplayDate(), null, null, null, removeFileEntryIds,
+			_serviceContext);
 	}
 
 	@Inject
