@@ -298,6 +298,38 @@ public class FriendlyURLEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testAddFriendlyURLEntryWithStrictAdd() throws Exception {
+		long classNameId = _classNameLocalService.getClassNameId(User.class);
+		long classPK = RandomTestUtil.nextLong();
+		String languageId = _language.getLanguageId(LocaleUtil.US);
+		String urlTitle = _getRandomURLTitle();
+
+		ServiceContext serviceContext = _getServiceContext();
+
+		serviceContext.setStrictAdd(true);
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.addFriendlyURLEntry(
+				_group.getGroupId(), classNameId,
+				FriendlyURLEntryConstants.
+					FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
+				classPK, languageId,
+				Collections.singletonMap(languageId, urlTitle), serviceContext);
+
+		Assert.assertEquals(
+			friendlyURLEntry,
+			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
+				classNameId, classPK));
+
+		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+			_friendlyURLEntryLocalService.getFriendlyURLEntryLocalization(
+				friendlyURLEntry.getFriendlyURLEntryId(), languageId);
+
+		Assert.assertEquals(
+			urlTitle, friendlyURLEntryLocalization.getUrlTitle());
+	}
+
+	@Test
 	public void testAddUnlocalizedFriendlyURLEntryWithLocalizedAssetCategories()
 		throws Exception {
 
