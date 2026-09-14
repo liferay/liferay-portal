@@ -44,8 +44,9 @@ public class ObjectFieldServiceHttp {
 	public static com.liferay.object.model.ObjectField addCustomObjectField(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
 			long listTypeDefinitionId, long objectDefinitionId,
-			String businessType, String dbType, boolean indexed,
-			boolean indexedAsKeyword, String indexedLanguageId,
+			String businessType, String dbType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
 			java.util.Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -60,10 +61,10 @@ public class ObjectFieldServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, listTypeDefinitionId,
-				objectDefinitionId, businessType, dbType, indexed,
-				indexedAsKeyword, indexedLanguageId, labelMap, localized, name,
-				readOnly, readOnlyConditionExpression, required, state,
-				objectFieldSettings);
+				objectDefinitionId, businessType, dbType, descriptionMap,
+				indexed, indexedAsKeyword, indexedLanguageId, labelMap,
+				localized, name, readOnly, readOnlyConditionExpression,
+				required, state, objectFieldSettings);
 
 			Object returnObj = null;
 
@@ -173,8 +174,9 @@ public class ObjectFieldServiceHttp {
 	public static com.liferay.object.model.ObjectField updateObjectField(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
 			long objectFieldId, long listTypeDefinitionId, String businessType,
-			String dbType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId,
+			String dbType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
 			java.util.Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -189,10 +191,10 @@ public class ObjectFieldServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, objectFieldId,
-				listTypeDefinitionId, businessType, dbType, indexed,
-				indexedAsKeyword, indexedLanguageId, labelMap, localized, name,
-				readOnly, readOnlyConditionExpression, required, state,
-				objectFieldSettings);
+				listTypeDefinitionId, businessType, dbType, descriptionMap,
+				indexed, indexedAsKeyword, indexedLanguageId, labelMap,
+				localized, name, readOnly, readOnlyConditionExpression,
+				required, state, objectFieldSettings);
 
 			Object returnObj = null;
 
@@ -228,9 +230,9 @@ public class ObjectFieldServiceHttp {
 	private static final Class<?>[] _addCustomObjectFieldParameterTypes0 =
 		new Class[] {
 			String.class, long.class, long.class, String.class, String.class,
-			boolean.class, boolean.class, String.class, java.util.Map.class,
-			boolean.class, String.class, String.class, String.class,
-			boolean.class, boolean.class, java.util.List.class
+			java.util.Map.class, boolean.class, boolean.class, String.class,
+			java.util.Map.class, boolean.class, String.class, String.class,
+			String.class, boolean.class, boolean.class, java.util.List.class
 		};
 	private static final Class<?>[] _deleteObjectFieldParameterTypes1 =
 		new Class[] {long.class};
@@ -239,10 +241,10 @@ public class ObjectFieldServiceHttp {
 	private static final Class<?>[] _updateObjectFieldParameterTypes3 =
 		new Class[] {
 			String.class, long.class, long.class, String.class, String.class,
-			boolean.class, boolean.class, String.class, java.util.Map.class,
-			boolean.class, String.class, String.class, String.class,
-			boolean.class, boolean.class, java.util.List.class
+			java.util.Map.class, boolean.class, boolean.class, String.class,
+			java.util.Map.class, boolean.class, String.class, String.class,
+			String.class, boolean.class, boolean.class, java.util.List.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1228718403
+// LIFERAY-SERVICE-BUILDER-HASH:718157227

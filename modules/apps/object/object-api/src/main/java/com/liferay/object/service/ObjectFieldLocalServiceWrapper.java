@@ -33,8 +33,9 @@ public class ObjectFieldLocalServiceWrapper
 	public com.liferay.object.model.ObjectField addCustomObjectField(
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
-			String businessType, String dbType, boolean indexed,
-			boolean indexedAsKeyword, String indexedLanguageId,
+			String businessType, String dbType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
 			java.util.Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -44,9 +45,10 @@ public class ObjectFieldLocalServiceWrapper
 
 		return _objectFieldLocalService.addCustomObjectField(
 			externalReferenceCode, userId, listTypeDefinitionId,
-			objectDefinitionId, businessType, dbType, indexed, indexedAsKeyword,
-			indexedLanguageId, labelMap, localized, name, readOnly,
-			readOnlyConditionExpression, required, state, objectFieldSettings);
+			objectDefinitionId, businessType, dbType, descriptionMap, indexed,
+			indexedAsKeyword, indexedLanguageId, labelMap, localized, name,
+			readOnly, readOnlyConditionExpression, required, state,
+			objectFieldSettings);
 	}
 
 	/**
@@ -70,8 +72,9 @@ public class ObjectFieldLocalServiceWrapper
 	public com.liferay.object.model.ObjectField addOrUpdateCustomObjectField(
 			String externalReferenceCode, long objectFieldId, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
-			String businessType, String dbType, boolean indexed,
-			boolean indexedAsKeyword, String indexedLanguageId,
+			String businessType, String dbType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
 			java.util.Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -81,9 +84,10 @@ public class ObjectFieldLocalServiceWrapper
 
 		return _objectFieldLocalService.addOrUpdateCustomObjectField(
 			externalReferenceCode, objectFieldId, userId, listTypeDefinitionId,
-			objectDefinitionId, businessType, dbType, indexed, indexedAsKeyword,
-			indexedLanguageId, labelMap, localized, name, readOnly,
-			readOnlyConditionExpression, required, state, objectFieldSettings);
+			objectDefinitionId, businessType, dbType, descriptionMap, indexed,
+			indexedAsKeyword, indexedLanguageId, labelMap, localized, name,
+			readOnly, readOnlyConditionExpression, required, state,
+			objectFieldSettings);
 	}
 
 	@Override
@@ -99,8 +103,9 @@ public class ObjectFieldLocalServiceWrapper
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
 			String businessType, String dbColumnName, String dbTableName,
-			String dbType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId,
+			String dbType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
 			java.util.Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -111,9 +116,9 @@ public class ObjectFieldLocalServiceWrapper
 		return _objectFieldLocalService.addOrUpdateSystemObjectField(
 			externalReferenceCode, userId, listTypeDefinitionId,
 			objectDefinitionId, businessType, dbColumnName, dbTableName, dbType,
-			indexed, indexedAsKeyword, indexedLanguageId, labelMap, localized,
-			name, readOnly, readOnlyConditionExpression, required, state,
-			objectFieldSettings);
+			descriptionMap, indexed, indexedAsKeyword, indexedLanguageId,
+			labelMap, localized, name, readOnly, readOnlyConditionExpression,
+			required, state, objectFieldSettings);
 	}
 
 	@Override
@@ -121,8 +126,9 @@ public class ObjectFieldLocalServiceWrapper
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
 			String businessType, String dbColumnName, String dbTableName,
-			String dbType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId,
+			String dbType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
 			java.util.Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -133,9 +139,9 @@ public class ObjectFieldLocalServiceWrapper
 		return _objectFieldLocalService.addSystemObjectField(
 			externalReferenceCode, userId, listTypeDefinitionId,
 			objectDefinitionId, businessType, dbColumnName, dbTableName, dbType,
-			indexed, indexedAsKeyword, indexedLanguageId, labelMap, localized,
-			name, readOnly, readOnlyConditionExpression, required, state,
-			objectFieldSettings);
+			descriptionMap, indexed, indexedAsKeyword, indexedLanguageId,
+			labelMap, localized, name, readOnly, readOnlyConditionExpression,
+			required, state, objectFieldSettings);
 	}
 
 	/**
@@ -660,8 +666,9 @@ public class ObjectFieldLocalServiceWrapper
 			String externalReferenceCode, long objectFieldId, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
 			String businessType, String dbColumnName, String dbTableName,
-			String dbType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId,
+			String dbType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
 			java.util.Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state, boolean system,
@@ -672,9 +679,9 @@ public class ObjectFieldLocalServiceWrapper
 		return _objectFieldLocalService.updateObjectField(
 			externalReferenceCode, objectFieldId, userId, listTypeDefinitionId,
 			objectDefinitionId, businessType, dbColumnName, dbTableName, dbType,
-			indexed, indexedAsKeyword, indexedLanguageId, labelMap, localized,
-			name, readOnly, readOnlyConditionExpression, required, state,
-			system, objectFieldSettings);
+			descriptionMap, indexed, indexedAsKeyword, indexedLanguageId,
+			labelMap, localized, name, readOnly, readOnlyConditionExpression,
+			required, state, system, objectFieldSettings);
 	}
 
 	@Override
@@ -744,4 +751,4 @@ public class ObjectFieldLocalServiceWrapper
 	private ObjectFieldLocalService _objectFieldLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-411128897
+// LIFERAY-SERVICE-BUILDER-HASH:623631034

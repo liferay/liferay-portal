@@ -34,7 +34,8 @@ public class ObjectFieldServiceUtil {
 	public static ObjectField addCustomObjectField(
 			String externalReferenceCode, long listTypeDefinitionId,
 			long objectDefinitionId, String businessType, String dbType,
-			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+			Map<java.util.Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -44,9 +45,9 @@ public class ObjectFieldServiceUtil {
 
 		return getService().addCustomObjectField(
 			externalReferenceCode, listTypeDefinitionId, objectDefinitionId,
-			businessType, dbType, indexed, indexedAsKeyword, indexedLanguageId,
-			labelMap, localized, name, readOnly, readOnlyConditionExpression,
-			required, state, objectFieldSettings);
+			businessType, dbType, descriptionMap, indexed, indexedAsKeyword,
+			indexedLanguageId, labelMap, localized, name, readOnly,
+			readOnlyConditionExpression, required, state, objectFieldSettings);
 	}
 
 	public static ObjectField deleteObjectField(long objectFieldId)
@@ -73,7 +74,8 @@ public class ObjectFieldServiceUtil {
 	public static ObjectField updateObjectField(
 			String externalReferenceCode, long objectFieldId,
 			long listTypeDefinitionId, String businessType, String dbType,
-			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+			Map<java.util.Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<java.util.Locale, String> labelMap, boolean localized,
 			String name, String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -83,9 +85,9 @@ public class ObjectFieldServiceUtil {
 
 		return getService().updateObjectField(
 			externalReferenceCode, objectFieldId, listTypeDefinitionId,
-			businessType, dbType, indexed, indexedAsKeyword, indexedLanguageId,
-			labelMap, localized, name, readOnly, readOnlyConditionExpression,
-			required, state, objectFieldSettings);
+			businessType, dbType, descriptionMap, indexed, indexedAsKeyword,
+			indexedLanguageId, labelMap, localized, name, readOnly,
+			readOnlyConditionExpression, required, state, objectFieldSettings);
 	}
 
 	public static ObjectFieldService getService() {
@@ -96,4 +98,4 @@ public class ObjectFieldServiceUtil {
 		new Snapshot<>(ObjectFieldServiceUtil.class, ObjectFieldService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-480066158
+// LIFERAY-SERVICE-BUILDER-HASH:1699148342

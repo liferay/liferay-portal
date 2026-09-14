@@ -65,7 +65,8 @@ public interface ObjectFieldLocalService
 	public ObjectField addCustomObjectField(
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
-			String businessType, String dbType, boolean indexed,
+			String businessType, String dbType,
+			Map<Locale, String> descriptionMap, boolean indexed,
 			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<Locale, String> labelMap, boolean localized, String name,
 			String readOnly, String readOnlyConditionExpression,
@@ -90,7 +91,8 @@ public interface ObjectFieldLocalService
 	public ObjectField addOrUpdateCustomObjectField(
 			String externalReferenceCode, long objectFieldId, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
-			String businessType, String dbType, boolean indexed,
+			String businessType, String dbType,
+			Map<Locale, String> descriptionMap, boolean indexed,
 			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<Locale, String> labelMap, boolean localized, String name,
 			String readOnly, String readOnlyConditionExpression,
@@ -106,10 +108,11 @@ public interface ObjectFieldLocalService
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
 			String businessType, String dbColumnName, String dbTableName,
-			String dbType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId, Map<Locale, String> labelMap,
-			boolean localized, String name, String readOnly,
-			String readOnlyConditionExpression, boolean required, boolean state,
+			String dbType, Map<Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
+			Map<Locale, String> labelMap, boolean localized, String name,
+			String readOnly, String readOnlyConditionExpression,
+			boolean required, boolean state,
 			List<ObjectFieldSetting> objectFieldSettings)
 		throws PortalException;
 
@@ -118,10 +121,11 @@ public interface ObjectFieldLocalService
 			String externalReferenceCode, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
 			String businessType, String dbColumnName, String dbTableName,
-			String dbType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId, Map<Locale, String> labelMap,
-			boolean localized, String name, String readOnly,
-			String readOnlyConditionExpression, boolean required, boolean state,
+			String dbType, Map<Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
+			Map<Locale, String> labelMap, boolean localized, String name,
+			String readOnly, String readOnlyConditionExpression,
+			boolean required, boolean state,
 			List<ObjectFieldSetting> objectFieldSettings)
 		throws PortalException;
 
@@ -443,11 +447,12 @@ public interface ObjectFieldLocalService
 			String externalReferenceCode, long objectFieldId, long userId,
 			long listTypeDefinitionId, long objectDefinitionId,
 			String businessType, String dbColumnName, String dbTableName,
-			String dbType, boolean indexed, boolean indexedAsKeyword,
-			String indexedLanguageId, Map<Locale, String> labelMap,
-			boolean localized, String name, String readOnly,
-			String readOnlyConditionExpression, boolean required, boolean state,
-			boolean system, List<ObjectFieldSetting> objectFieldSettings)
+			String dbType, Map<Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
+			Map<Locale, String> labelMap, boolean localized, String name,
+			String readOnly, String readOnlyConditionExpression,
+			boolean required, boolean state, boolean system,
+			List<ObjectFieldSetting> objectFieldSettings)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -473,4 +478,4 @@ public interface ObjectFieldLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1663696635
+// LIFERAY-SERVICE-BUILDER-HASH:-1452526639

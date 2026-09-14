@@ -48,7 +48,8 @@ public interface ObjectFieldService extends BaseService {
 	public ObjectField addCustomObjectField(
 			String externalReferenceCode, long listTypeDefinitionId,
 			long objectDefinitionId, String businessType, String dbType,
-			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+			Map<Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<Locale, String> labelMap, boolean localized, String name,
 			String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -71,7 +72,8 @@ public interface ObjectFieldService extends BaseService {
 	public ObjectField updateObjectField(
 			String externalReferenceCode, long objectFieldId,
 			long listTypeDefinitionId, String businessType, String dbType,
-			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+			Map<Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<Locale, String> labelMap, boolean localized, String name,
 			String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -79,4 +81,4 @@ public interface ObjectFieldService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1437601822
+// LIFERAY-SERVICE-BUILDER-HASH:849419468
