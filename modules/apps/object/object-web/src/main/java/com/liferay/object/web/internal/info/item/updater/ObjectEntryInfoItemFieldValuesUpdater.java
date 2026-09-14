@@ -212,15 +212,27 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 					});
 			}
 
-			ObjectEntry updatedObjectEntry = ObjectEntryUtil.toObjectEntry(
-				_objectDefinition,
-				objectEntryManager.updateObjectEntry(
-					objectEntry.getCompanyId(),
-					new DefaultDTOConverterContext(
-						false, null, null, null, null, themeDisplay.getLocale(),
-						null, themeDisplay.getUser()),
+			DTOConverterContext updateDTOConverterContext =
+				new DefaultDTOConverterContext(
+					false, null, null, null, null, themeDisplay.getLocale(),
+					null, themeDisplay.getUser());
+
+			if (objectEntryManager instanceof
+					DefaultObjectEntryManager defaultObjectEntryManager) {
+
+				dtoObjectEntry = defaultObjectEntryManager.updateObjectEntry(
+					updateDTOConverterContext, _objectDefinition,
+					dtoObjectEntry, scopeKey, objectEntry);
+			}
+			else {
+				dtoObjectEntry = objectEntryManager.updateObjectEntry(
+					objectEntry.getCompanyId(), updateDTOConverterContext,
 					dtoObjectEntry.getExternalReferenceCode(),
-					_objectDefinition, dtoObjectEntry, scopeKey));
+					_objectDefinition, dtoObjectEntry, scopeKey);
+			}
+
+			ObjectEntry updatedObjectEntry = ObjectEntryUtil.toObjectEntry(
+				_objectDefinition, dtoObjectEntry);
 
 			_relateMainObjectEntry(
 				infoItemFieldValues, _objectDefinition, updatedObjectEntry,
