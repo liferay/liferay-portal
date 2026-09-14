@@ -101,6 +101,20 @@
 	grid-template-columns: 1fr 1fr;
 }
 
+.image-editor input.editor-color-input.form-control {
+	min-width: 2.5rem;
+	padding: 0;
+	width: 2.5rem;
+}
+
+.image-editor input.editor-color-input.form-control-sm {
+	height: 1.9375rem;
+}
+
+.image-editor input.editor-color-input.editor-color-fill.form-control {
+	width: 100%;
+}
+
 .image-editor .editor-aspect-lock {
 	align-self: flex-end;
 	margin-bottom: 0.625rem;

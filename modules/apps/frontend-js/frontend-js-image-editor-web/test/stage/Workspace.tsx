@@ -262,6 +262,30 @@ describe('Editor workspace composition', () => {
 		).toHaveAttribute('stroke-width', '80');
 	});
 
+	it('recolors the frame while the picker moves and commits it once', () => {
+		const {container} = render(<EditorHarness />);
+
+		fireEvent.click(screen.getByLabelText('mat'));
+
+		const frame = () =>
+			container.querySelector('.editor-stage .editor-frame rect');
+
+		expect(frame()).toHaveAttribute('stroke', '#ffffff');
+
+		const picker = screen.getByLabelText('frame-color');
+
+		fireEvent.change(picker, {target: {value: '#ff0000'}});
+
+		expect(frame()).toHaveAttribute('stroke', '#ff0000');
+
+		fireEvent.blur(picker);
+
+		fireEvent.click(screen.getByRole('button', {name: 'undo'}));
+
+		expect(frame()).toHaveAttribute('stroke', '#ffffff');
+		expect(screen.getByLabelText('mat')).toBeChecked();
+	});
+
 	it('lays the adjustment sliders out in the configured order', () => {
 		render(<EditorHarness />);
 

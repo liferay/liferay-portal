@@ -7,7 +7,7 @@ import {sub} from 'frontend-js-web';
 import React, {memo} from 'react';
 
 import {EditorSection} from '../chrome/EditorSection';
-import {CommitSlider} from '../chrome/fields';
+import {ColorField, CommitSlider} from '../chrome/fields';
 import {useEditorId} from '../chrome/instance';
 import {FrameShape} from '../imaging/frameShapes';
 import {LoadedImage} from '../imaging/loadImage';
@@ -93,44 +93,68 @@ function FramePanelCards({dispatch, frame, image, onAnnounce, presets}: Props) {
 			 * and "None" is not a frame with a thin white border.
 			 */}
 
-			{frame.kind !== 'none' &&
-				SLIDERS.map(({key, label, max}) => (
-					<CommitSlider
-						id={eid(`frame-${key}`)}
-						key={key}
-						label={label}
-						max={max}
-						min={0}
-						onCancel={() => dispatch({type: 'cancel-gesture'})}
-						onCommit={(value) => {
-							dispatch({
-								frame: {[key]: value},
-								type: 'set-frame',
-							});
+			{frame.kind !== 'none' && (
+				<>
+					<ColorField
+						fill
+						id={eid('frame-color')}
+						label={Liferay.Language.get('frame-color')}
+						onCommit={(color) => {
+							dispatch({frame: {color}, type: 'set-frame'});
 
-							onAnnounce(
-								sub(
-									Liferay.Language.get('x-set-to-x-percent'),
-									label,
-									value
-								)
-							);
+							onAnnounce(Liferay.Language.get('frame-color-set'));
 						}}
-						onPreview={(value) =>
+						onPreview={(color) =>
 							dispatch({
-								frame: {[key]: value},
+								frame: {color},
 								transient: true,
 								type: 'set-frame',
 							})
 						}
-						shiftStep={5}
-						value={frame[key]}
-						valueLabel={sub(
-							Liferay.Language.get('x-percent'),
-							frame[key]
-						)}
+						value={frame.color}
 					/>
-				))}
+
+					{SLIDERS.map(({key, label, max}) => (
+						<CommitSlider
+							id={eid(`frame-${key}`)}
+							key={key}
+							label={label}
+							max={max}
+							min={0}
+							onCancel={() => dispatch({type: 'cancel-gesture'})}
+							onCommit={(value) => {
+								dispatch({
+									frame: {[key]: value},
+									type: 'set-frame',
+								});
+
+								onAnnounce(
+									sub(
+										Liferay.Language.get(
+											'x-set-to-x-percent'
+										),
+										label,
+										value
+									)
+								);
+							}}
+							onPreview={(value) =>
+								dispatch({
+									frame: {[key]: value},
+									transient: true,
+									type: 'set-frame',
+								})
+							}
+							shiftStep={5}
+							value={frame[key]}
+							valueLabel={sub(
+								Liferay.Language.get('x-percent'),
+								frame[key]
+							)}
+						/>
+					))}
+				</>
+			)}
 		</EditorSection>
 	);
 }

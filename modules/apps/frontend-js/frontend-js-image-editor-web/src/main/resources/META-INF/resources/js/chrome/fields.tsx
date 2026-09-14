@@ -7,10 +7,57 @@ import ClayForm from '@clayui/form';
 import ClaySlider from '@clayui/slider';
 import React, {useRef} from 'react';
 
-interface Props {
-	children?: React.ReactNode;
+interface FieldProps {
 	id: string;
 	label: string;
+}
+
+export function ColorField({
+	fill,
+	id,
+	label,
+	onCommit,
+	onPreview,
+	value,
+}: FieldProps & {
+	fill?: boolean;
+
+	onCommit: (value: string) => void;
+	onPreview: (value: string) => void;
+	value: string;
+}) {
+	const draggingRef = useRef(false);
+
+	return (
+		<ClayForm.Group small>
+			<label htmlFor={id}>{label}</label>
+
+			<input
+				className={`editor-color-input form-control form-control-sm${
+					fill ? ' editor-color-fill' : ''
+				}`}
+				id={id}
+				onBlur={() => {
+					if (draggingRef.current) {
+						draggingRef.current = false;
+
+						onCommit(value);
+					}
+				}}
+				onChange={(event) => {
+					draggingRef.current = true;
+
+					onPreview(event.target.value);
+				}}
+				type="color"
+				value={value}
+			/>
+		</ClayForm.Group>
+	);
+}
+
+interface Props extends FieldProps {
+	children?: React.ReactNode;
 	max: number;
 	min: number;
 	onCancel?: () => void;
