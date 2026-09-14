@@ -59,7 +59,13 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			_displayPageTemplateDesignLibraryResourceTypeContributor.
 				hasAddPermission(_permissionChecker, _depotEntry));
 
-		_setUpAddLayoutPageTemplateEntryPermission();
+		Mockito.when(
+			_portletResourcePermission.contains(
+				_permissionChecker, _GROUP_ID,
+				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY)
+		).thenReturn(
+			true
+		);
 
 		Assert.assertTrue(
 			_displayPageTemplateDesignLibraryResourceTypeContributor.
@@ -72,30 +78,16 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			_displayPageTemplateDesignLibraryResourceTypeContributor.
 				hasViewPermission(_permissionChecker, _depotEntry));
 
-		_setUpViewPermission();
-
-		Assert.assertTrue(
-			_displayPageTemplateDesignLibraryResourceTypeContributor.
-				hasViewPermission(_permissionChecker, _depotEntry));
-	}
-
-	private void _setUpAddLayoutPageTemplateEntryPermission() {
-		Mockito.when(
-			_portletResourcePermission.contains(
-				_permissionChecker, _GROUP_ID,
-				LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY)
-		).thenReturn(
-			true
-		);
-	}
-
-	private void _setUpViewPermission() {
 		Mockito.when(
 			_portletResourcePermission.contains(
 				_permissionChecker, _GROUP_ID, ActionKeys.VIEW)
 		).thenReturn(
 			true
 		);
+
+		Assert.assertTrue(
+			_displayPageTemplateDesignLibraryResourceTypeContributor.
+				hasViewPermission(_permissionChecker, _depotEntry));
 	}
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
