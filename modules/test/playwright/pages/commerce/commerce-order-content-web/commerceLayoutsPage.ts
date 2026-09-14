@@ -42,6 +42,11 @@ export class CommerceLayoutsPage {
 	readonly fragmentsAndWidgetsTab: Locator;
 	readonly fragmentMenuItem: (itemName: string) => Locator;
 	readonly iconLock: Locator;
+	readonly importCsvErrorAlert: Locator;
+	readonly importCsvFileInput: Locator;
+	readonly importCsvFrame: FrameLocator;
+	readonly importCsvPreviewRow: (productName: string) => Locator;
+	readonly importCsvSubmitButton: Locator;
 	readonly infoBoxButton: (label: string) => Locator;
 	readonly infoBoxCancelButton: Locator;
 	readonly infoBoxDeletePurchaseOrderDocumentButton: Locator;
@@ -205,9 +210,23 @@ export class CommerceLayoutsPage {
 			name: 'Cancel',
 		});
 		this.iconLock = page.locator('.lexicon-icon-lock');
-		this.downloadCsvTemplateButton = page
-			.frameLocator('iframe[title="Import from CSV"]')
-			.getByRole('button', {name: 'Download Template'});
+		this.importCsvFrame = page.frameLocator('iframe[title="Import from CSV"]');
+		this.downloadCsvTemplateButton = this.importCsvFrame.getByRole(
+			'button',
+			{name: 'Download Template'}
+		);
+		this.importCsvErrorAlert = this.importCsvFrame.locator('.alert-danger');
+		this.importCsvFileInput = this.importCsvFrame.locator(
+			'input[type="file"]'
+		);
+		this.importCsvPreviewRow = (productName: string) =>
+			this.importCsvFrame
+				.locator('tbody tr')
+				.filter({hasText: productName});
+		this.importCsvSubmitButton = this.importCsvFrame.getByRole('button', {
+			exact: true,
+			name: 'Import',
+		});
 		this.infoBoxDeletePurchaseOrderDocumentButton = page.getByTestId(
 			'purchaseOrderDocument-infoBoxDeleteButton'
 		);
@@ -460,6 +479,53 @@ export class CommerceLayoutsPage {
 		await expect(this.orderActionsButton('Submit')).toHaveCount(
 			submitCount
 		);
+	}
+
+	async importCsvFile(
+		file: {buffer: Buffer; mimeType: string; name: string} | string
+	) {
+		await this.importCsvFileInput.setInputFiles(file);
+
+		await this.importCsvSubmitButton.click();
+	}
+
+	async expectImportCsvPreviewRow(
+		productName: string,
+		{
+			importStatus,
+			quantity,
+			sku,
+			totalPrice,
+			unitPrice,
+		}: {
+			importStatus?: string;
+			quantity?: number;
+			sku?: string;
+			totalPrice?: string;
+			unitPrice?: string;
+		}
+	) {
+		const cells = this.importCsvPreviewRow(productName).locator('td');
+
+		if (sku !== undefined) {
+			await expect(cells.nth(2)).toHaveText(sku);
+		}
+
+		if (unitPrice !== undefined) {
+			await expect(cells.nth(4)).toContainText(unitPrice);
+		}
+
+		if (quantity !== undefined) {
+			await expect(cells.nth(5)).toHaveText(String(quantity));
+		}
+
+		if (totalPrice !== undefined) {
+			await expect(cells.nth(6)).toContainText(totalPrice);
+		}
+
+		if (importStatus !== undefined) {
+			await expect(cells.nth(7)).toContainText(importStatus);
+		}
 	}
 
 	async goto() {

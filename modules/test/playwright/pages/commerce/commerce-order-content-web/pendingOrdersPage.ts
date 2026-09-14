@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {
@@ -19,6 +19,8 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly doneButton: Locator;
 	readonly editMenuItem: Locator;
 	readonly errorMessageCloseButton: Locator;
+	readonly importFromCSVMenuItem: Locator;
+	readonly importerTypeMenuButton: Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly orderActionsButton: Locator;
 	readonly orderCell: (orderId: string) => Locator;
@@ -74,6 +76,11 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 			exact: true,
 			name: 'Close',
 		});
+		this.importFromCSVMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Import from CSV',
+		});
+		this.importerTypeMenuButton = page.locator('.thumb-menu');
 		this.layoutsPage = new CommerceLayoutsPage(page);
 		this.orderActionsButton = page.getByRole('button', {
 			exact: true,
@@ -159,6 +166,29 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.skuLink = (sku) => page.getByRole('link', {name: sku});
 		this.viewButton = page.getByLabel('View');
+	}
+
+	async gotoOrder(siteFriendlyUrlPath: string, orderId: number) {
+		const portletId =
+			'com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet';
+
+		await this.page.goto(
+			`/web${siteFriendlyUrlPath}/pending-orders?p_p_id=${portletId}` +
+				'&p_p_lifecycle=0' +
+				`&_${portletId}_mvcRenderCommandName=` +
+				'%2Fcommerce_open_order_content%2Fedit_commerce_order' +
+				`&_${portletId}_commerceOrderId=${orderId}`
+		);
+
+		await expect(this.orderId).toHaveText(String(orderId));
+	}
+
+	async openImportFromCSV() {
+		await this.importerTypeMenuButton.click();
+
+		await this.importFromCSVMenuItem.click();
+
+		await expect(this.layoutsPage.importCsvFileInput).toBeVisible();
 	}
 
 	async addPendingOrdersWidget() {
