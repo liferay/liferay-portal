@@ -1,9 +1,16 @@
+import AssetMetricCard from 'assets/components/AssetMetricCard';
 import AudienceReportCard from 'shared/components/audience-report/AudienceReportBaseCard';
 import DevicesCard from 'assets/form/hocs/DevicesCard';
 import FormAbandonmentCard from 'assets/form/hocs/FormAbandonmentCard';
-import FormMetricCard from 'assets/form/components/FormMetricCard';
 import LocationsCard from 'assets/form/hocs/LocationsCard';
 import React from 'react';
+import URLConstants from 'shared/util/url-constants';
+import {
+	AbandonmentsMetric,
+	CompletionTimeMetric,
+	SubmissionsMetric,
+	ViewsMetric,
+} from 'shared/components/metric-card/metrics';
 import {
 	Accessor,
 	AssetAppearsOnCard,
@@ -19,9 +26,17 @@ const Overview = () => (
 	<>
 		<div className="row">
 			<div className="col-sm-12">
-				<FormMetricCard
+				<AssetMetricCard
+					documentationURL={URLConstants.VisitorBehaviorFormsLink}
 					label={Liferay.Language.get('visitors-behavior')}
 					legacyDropdownRangeKey={false}
+					metrics={[
+						SubmissionsMetric,
+						ViewsMetric,
+						AbandonmentsMetric,
+						CompletionTimeMetric,
+					]}
+					name="form"
 				/>
 			</div>
 		</div>

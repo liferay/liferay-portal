@@ -1,8 +1,9 @@
+import AssetMetricCard from 'assets/components/AssetMetricCard';
 import AudienceReportCard from 'shared/components/audience-report/AudienceReportBaseCard';
-import BlogMetricCard from 'assets/blog/components/BlogMetricCard';
 import DevicesCard from 'assets/blog/hocs/DevicesCard';
 import LocationsCard from 'assets/blog/hocs/LocationsCard';
 import React from 'react';
+import URLConstants from 'shared/util/url-constants';
 import {
 	Accessor,
 	AssetAppearsOnCard,
@@ -10,6 +11,12 @@ import {
 	EmptyStateText,
 } from 'assets/components/AssetAppearsOnCard';
 import {AssetTypes} from 'shared/util/constants';
+import {
+	CommentsMetric,
+	RatingsMetric,
+	ReadingTimeMetric,
+	ViewsMetric,
+} from 'shared/components/metric-card/metrics';
 import {MetricName} from 'shared/types/MetricName';
 import {Name} from 'shared/components/audience-report/types';
 
@@ -17,8 +24,16 @@ const Overview = () => (
 	<>
 		<div className="row">
 			<div className="col-sm-12">
-				<BlogMetricCard
+				<AssetMetricCard
+					documentationURL={URLConstants.VisitorBehaviorBlogsLink}
 					label={Liferay.Language.get('visitors-behavior')}
+					metrics={[
+						ViewsMetric,
+						ReadingTimeMetric,
+						CommentsMetric,
+						RatingsMetric,
+					]}
+					name="blog"
 				/>
 			</div>
 		</div>

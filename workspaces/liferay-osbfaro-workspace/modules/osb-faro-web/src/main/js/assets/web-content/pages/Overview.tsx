@@ -1,8 +1,10 @@
+import AssetMetricCard from 'assets/components/AssetMetricCard';
 import AudienceReportCard from 'shared/components/audience-report/AudienceReportBaseCard';
 import DevicesCard from 'assets/web-content/hocs/DevicesCard';
 import LocationsCard from 'assets/web-content/hocs/LocationsCard';
 import React from 'react';
-import WebContentMetricCard from 'assets/web-content/components/WebContentMetricCard';
+import URLConstants from 'shared/util/url-constants';
+import {ViewsMetric} from 'shared/components/metric-card/metrics';
 import {
 	Accessor,
 	AssetAppearsOnCard,
@@ -17,8 +19,13 @@ const Overview = () => (
 	<>
 		<div className="row">
 			<div className="col-sm-12">
-				<WebContentMetricCard
+				<AssetMetricCard
+					documentationURL={
+						URLConstants.VisitorBehaviorWebContentLink
+					}
 					label={Liferay.Language.get('visitors-behavior')}
+					metrics={[ViewsMetric]}
+					name="journal"
 				/>
 			</div>
 		</div>

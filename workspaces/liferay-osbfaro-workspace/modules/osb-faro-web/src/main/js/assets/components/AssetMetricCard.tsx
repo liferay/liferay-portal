@@ -9,17 +9,35 @@ import {
 	AssetTabsQuery,
 } from 'shared/components/metric-card/queries';
 import {ICommonVariables} from 'shared/types';
-import {Metric, ViewsMetric} from 'shared/components/metric-card/metrics';
+import {Metric} from 'shared/components/metric-card/metrics';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {useAssetVariables} from 'shared/components/metric-card/hooks';
 
-const NAME = 'journal';
+export interface IAssetMetricCardProps extends IGenericMetricBaseCardProps {
+	documentationURL: URLConstants;
+	metrics: Metric[];
+	name: string;
 
-const WebContentMetricCard: React.FC<IGenericMetricBaseCardProps> = (props) => {
+	/**
+	 * Object entries are the one asset type whose metric query is scoped by an
+	 * explicit `type`; the other four leave it off.
+	 */
+	variableType?: string;
+}
+
+const AssetMetricCard: React.FC<IAssetMetricCardProps> = ({
+	documentationURL,
+	metrics,
+	name,
+	variableType,
+	...props
+}) => {
 	const variables = (commonVariables: ICommonVariables) =>
-		useAssetVariables(commonVariables);
-
-	const metrics: Metric[] = [ViewsMetric];
+		useAssetVariables(
+			variableType
+				? {...commonVariables, type: variableType}
+				: commonVariables
+		);
 
 	return (
 		<MetricBaseCard
@@ -33,7 +51,7 @@ const WebContentMetricCard: React.FC<IGenericMetricBaseCardProps> = (props) => {
 					</span>
 
 					<ClayLink
-						href={URLConstants.VisitorBehaviorWebContentLink}
+						href={documentationURL}
 						key="DOCUMENTATION"
 						target="_blank"
 					>
@@ -46,9 +64,9 @@ const WebContentMetricCard: React.FC<IGenericMetricBaseCardProps> = (props) => {
 			emptyTitle={Liferay.Language.get('no-visitors-data-was-found')}
 			metrics={metrics}
 			queries={{
-				MetricQuery: AssetMetricQuery(NAME),
-				name: NAME,
-				TabsQuery: AssetTabsQuery(metrics, NAME),
+				MetricQuery: AssetMetricQuery(name),
+				name,
+				TabsQuery: AssetTabsQuery(metrics, name),
 			}}
 			reportContainer={ReportContainer.VisitorsBehaviorCard}
 			variables={variables}
@@ -56,4 +74,4 @@ const WebContentMetricCard: React.FC<IGenericMetricBaseCardProps> = (props) => {
 	);
 };
 
-export default WebContentMetricCard;
+export default AssetMetricCard;
