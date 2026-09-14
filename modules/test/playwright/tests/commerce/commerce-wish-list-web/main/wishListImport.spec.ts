@@ -960,3 +960,114 @@ test(
 		}).toPass({timeout: 30000});
 	}
 );
+
+test(
+	'A wish list item that does not resolve to a SKU cannot be imported',
+	{tag: ['@LPD-105666']},
+	async ({
+		apiHelpers,
+		commerceThemeMiniumCatalogPage,
+		orderImportPage,
+		page,
+		pendingOrdersPage,
+	}) => {
+		const productName = `multi-sku-${getRandomString()}`;
+
+		const option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+			'select',
+			`size-${getRandomString()}`
+		);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId,
+				name: {en_US: productName},
+				productOptions: [
+					{
+						fieldType: 'select',
+						key: option.key,
+						name: {en_US: 'Size'},
+						optionId: option.id,
+						priceType: 'static',
+						priority: 1,
+						productOptionValues: [
+							{key: 'small', name: {en_US: 'Small'}, priority: 1},
+							{key: 'large', name: {en_US: 'Large'}, priority: 2},
+						],
+						skuContributor: true,
+					},
+				],
+				skus: ['small', 'large'].map((value) => ({
+					cost: 24,
+					price: 24,
+					published: true,
+					purchasable: true,
+					sku: `SKU-${value}-${productName}`,
+					skuOptions: [{key: option.key, value}],
+				})),
+			});
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{accountId: account.id},
+			channel.id
+		);
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await page.goto(`/web${site.friendlyUrlPath}/catalog`);
+
+		await expect(async () => {
+			await commerceThemeMiniumCatalogPage.catalogSearch.fill(
+				productName
+			);
+
+			await commerceThemeMiniumCatalogPage.catalogSearch.press('Enter');
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardAddToWishListButton(
+					productName
+				)
+			).toBeVisible({timeout: 5000});
+		}).toPass({timeout: 30000});
+
+		const wishListItemResponse = page.waitForResponse((response) =>
+			response.url().includes('/o/commerce-ui/wish-list-item')
+		);
+
+		await commerceThemeMiniumCatalogPage
+			.productCardAddToWishListButton(productName)
+			.click();
+
+		await wishListItemResponse;
+
+		await page.goto(`/web${site.friendlyUrlPath}/pending-orders`);
+
+		await pendingOrdersPage.orderRowLink(cart.id).click();
+
+		await orderImportPage.openImportModal();
+
+		await orderImportPage.selectSource('Default');
+
+		await expect(async () => {
+			expect(
+				await orderImportPage.previewRowCells(product.name.en_US)
+			).toMatchObject({
+				'IMPORT STATUS': 'The product is no longer available.',
+				'QUANTITY': '1',
+				'SKU': '',
+			});
+		}).toPass({timeout: 30000});
+
+		await orderImportPage.importButton().click();
+
+		await expect(orderImportPage.notImportedRowsAlert(1)).toBeVisible();
+		await expect(
+			pendingOrdersPage.orderItemsTable.getByText(product.name.en_US)
+		).toHaveCount(0);
+	}
+);

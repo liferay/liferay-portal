@@ -50,6 +50,7 @@ export class CommerceThemeMiniumCatalogPage {
 		productPrice: string
 	) => Locator;
 	readonly productCardAddToCartButton: (productName: string) => Locator;
+	readonly productCardAddToWishListButton: (productName: string) => Locator;
 	readonly productLink: (productName: string) => Locator;
 
 	constructor(page: Page) {
@@ -156,6 +157,11 @@ export class CommerceThemeMiniumCatalogPage {
 			this.productCard(productName).getByRole('button', {
 				exact: true,
 				name: 'Add to Cart',
+			});
+		this.productCardAddToWishListButton = (productName: string) =>
+			this.productCard(productName).getByRole('button', {
+				exact: true,
+				name: 'Add to List',
 			});
 		this.productLink = (productName: string) =>
 			this.page.getByRole('link', {
