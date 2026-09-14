@@ -35,6 +35,7 @@ function createItem({
 	label = 'Review',
 	name = 'review',
 	workflowDefinitionName = 'Single Approver',
+	workflowDefinitionTitle,
 	workflowDefinitionVersion = '1',
 }: {
 	actions?: Record<string, any>;
@@ -43,6 +44,7 @@ function createItem({
 	label?: string;
 	name?: string;
 	workflowDefinitionName?: string;
+	workflowDefinitionTitle?: string;
 	workflowDefinitionVersion?: string;
 } = {}): WorkflowTaskItemData {
 	const person = {
@@ -75,6 +77,7 @@ function createItem({
 			},
 			workflowDefinitionId: 35827,
 			workflowDefinitionName,
+			workflowDefinitionTitle,
 			workflowDefinitionVersion,
 			workflowInstanceId: id + 2000,
 		},
@@ -139,6 +142,12 @@ describe('groupWorkflowTasks', () => {
 		expect(groups[0].taskCount).toBe(3);
 	});
 
+	it('falls back to the workflow name when the title is missing', () => {
+		const [group] = groupWorkflowTasks([createItem()]);
+
+		expect(group.workflowDefinitionTitle).toBe('Single Approver');
+	});
+
 	it('groups the tasks of one workflow by their current step', () => {
 		const groups = groupWorkflowTasks([
 			createItem({id: 1}),
@@ -173,6 +182,17 @@ describe('groupWorkflowTasks', () => {
 			['Single Approver', '1'],
 			['Single Approver', '3'],
 		]);
+	});
+
+	it('labels the group with the workflow title', () => {
+		const [group] = groupWorkflowTasks([
+			createItem({
+				workflowDefinitionName: 'b2cdcffb-8922-2e8f-480e-9f2578287ea6',
+				workflowDefinitionTitle: 'Blog Review',
+			}),
+		]);
+
+		expect(group.workflowDefinitionTitle).toBe('Blog Review');
 	});
 
 	it('preserves the order the rows arrived in', () => {

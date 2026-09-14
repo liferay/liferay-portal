@@ -212,6 +212,25 @@ describe('WorkflowTasksFDSPropsTransformer', () => {
 		);
 	});
 
+	it('renders the step label in the task column', () => {
+		const result = WorkflowTasksFDSPropsTransformer(baseProps as any);
+
+		const {component} = (result.customRenderers as any).tableCell.find(
+			(renderer: any) => renderer.name === 'taskTableCellRenderer'
+		);
+
+		expect(
+			component({
+				itemData: {
+					embedded: {
+						label: 'Review',
+						name: 'dbed613a-7d6c-4114-8f92-4b70da8a4730',
+					},
+				},
+			})
+		).toBe('Review');
+	});
+
 	it('resolves the workflow task url for the rows of the update state modal', async () => {
 		const result = WorkflowTasksFDSPropsTransformer({
 			...baseProps,

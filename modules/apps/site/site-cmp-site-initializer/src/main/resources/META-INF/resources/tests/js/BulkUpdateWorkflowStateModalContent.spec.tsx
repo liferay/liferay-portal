@@ -81,12 +81,14 @@ function task({
 	step = 'review',
 	transitions = ['approve', 'reject'],
 	workflowDefinitionName = 'Workflow A',
+	workflowDefinitionTitle = workflowDefinitionName,
 	workflowDefinitionVersion = '1',
 }: {
 	assetTitle: string;
 	step?: string;
 	transitions?: string[];
 	workflowDefinitionName?: string;
+	workflowDefinitionTitle?: string;
 	workflowDefinitionVersion?: string;
 }) {
 	return {
@@ -107,6 +109,7 @@ function task({
 			name: step,
 			objectReviewed: {assetTitle},
 			workflowDefinitionName,
+			workflowDefinitionTitle,
 			workflowDefinitionVersion,
 		},
 	};
@@ -231,7 +234,24 @@ describe('BulkUpdateWorkflowStateModalContent', () => {
 		);
 	});
 
-	it('sorts the groups by workflow name and then by version', () => {
+	it('shows the workflow title instead of its internal name', () => {
+		renderModal([
+			task({
+				assetTitle: 'One',
+				workflowDefinitionName: 'b2cdcffb-8922-2e8f-480e-9f2578287ea6',
+				workflowDefinitionTitle: 'Blog Review',
+			}),
+		]);
+
+		expect(
+			screen.getByRole('group', {name: 'Blog Review'})
+		).toBeInTheDocument();
+		expect(
+			screen.queryByText('b2cdcffb-8922-2e8f-480e-9f2578287ea6')
+		).not.toBeInTheDocument();
+	});
+
+	it('sorts the groups by workflow title and then by version', () => {
 		renderModal([
 			task({
 				assetTitle: 'A2',
