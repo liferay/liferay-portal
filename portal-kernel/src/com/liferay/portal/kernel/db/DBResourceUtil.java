@@ -10,6 +10,8 @@ import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFacto
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.IndexMetadata;
+import com.liferay.portal.kernel.dao.db.IndexMetadataFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -18,6 +20,7 @@ import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -139,6 +142,12 @@ public class DBResourceUtil {
 		return _getModuleTableNames();
 	}
 
+	public static Map<String, List<IndexMetadata>>
+		getModuleTablesIndexMetadatas(Bundle bundle) {
+
+		return _parseIndexMetadatas(getModuleIndexesSQL(bundle));
+	}
+
 	public static Map<String, String[]> getModuleTablesPrimaryKeyColumnNames(
 		Bundle bundle) {
 
@@ -208,6 +217,12 @@ public class DBResourceUtil {
 				() -> parseCreateTableSQL(getPortalTablesSQL())));
 
 		return portalTableNames;
+	}
+
+	public static Map<String, List<IndexMetadata>>
+		getPortalTablesIndexMetadatas() {
+
+		return _parseIndexMetadatas(getPortalIndexesSQL());
 	}
 
 	public static Map<String, String[]> getPortalTablesPrimaryKeyColumnNames() {
@@ -448,6 +463,33 @@ public class DBResourceUtil {
 		}
 
 		return columnDefinitionsMap;
+	}
+
+	private static Map<String, List<IndexMetadata>> _parseIndexMetadatas(
+		String sql) {
+
+		Map<String, List<IndexMetadata>> indexMetadatasMap = new HashMap<>();
+
+		if (sql == null) {
+			return indexMetadatasMap;
+		}
+
+		for (String line : StringUtil.splitLines(sql)) {
+			if (Validator.isNull(line)) {
+				continue;
+			}
+
+			IndexMetadata indexMetadata =
+				IndexMetadataFactoryUtil.createIndexMetadata(line);
+
+			List<IndexMetadata> indexMetadatas =
+				indexMetadatasMap.computeIfAbsent(
+					indexMetadata.getTableName(), key -> new ArrayList<>());
+
+			indexMetadatas.add(indexMetadata);
+		}
+
+		return indexMetadatasMap;
 	}
 
 	private static String _read(Bundle bundle, String path) {
