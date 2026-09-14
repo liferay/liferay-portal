@@ -5,13 +5,7 @@ gradle.allprojects {
 
 	pluginManager.withPlugin("com.liferay.osgi.plugin") {
 		configurations {
-			implementationInclude {
-				canBeConsumed = false
-				canBeResolved = false
-			}
-
-			compileInclude.extendsFrom(implementationInclude)
-			testImplementation.extendsFrom(implementationInclude)
+			testImplementation.extendsFrom(compileInclude)
 		}
 
 		dependencies {
