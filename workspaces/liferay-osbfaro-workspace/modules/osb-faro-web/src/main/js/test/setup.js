@@ -12,7 +12,6 @@ import {TextDecoder, TextEncoder} from 'util';
 console.error = jest.fn(); // eslint-disable-line no-console
 console.warn = jest.fn(); // eslint-disable-line no-console
 
-jest.mock('shared/util/svg');
 jest.mock('shared/api');
 jest.mock('shared/components/DocumentTitle');
 jest.mock('react-dom');
