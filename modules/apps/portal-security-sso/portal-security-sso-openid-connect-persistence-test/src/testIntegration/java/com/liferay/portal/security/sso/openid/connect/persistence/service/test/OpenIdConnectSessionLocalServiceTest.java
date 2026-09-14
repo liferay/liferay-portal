@@ -64,7 +64,6 @@ public class OpenIdConnectSessionLocalServiceTest {
 				userId2, issuer));
 
 		String maxLengthIssuer = RandomTestUtil.randomString(255);
-
 		long userId3 = RandomTestUtil.randomLong();
 
 		OpenIdConnectSession openIdConnectSession3 = _addOpenIdConnectSession(
