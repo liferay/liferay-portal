@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBu
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.PrefsPropsTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -280,11 +281,14 @@ public class ForgotPasswordMVCActionCommandTest {
 					HashMapDictionaryBuilder.<String, Object>put(
 						"sendPasswordCaptchaEnabled", false
 					).build());
-			SafeCloseable safeCloseable =
+			SafeCloseable safeCloseable1 =
 				PrefsPropsTestUtil.swapWithSafeCloseable(
 					_user.getCompanyId(),
 					PropsKeys.USERS_REMINDER_QUERIES_ENABLED,
-					Boolean.FALSE.toString())) {
+					Boolean.FALSE.toString());
+			SafeCloseable safeCloseable2 =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"LOGIN_SECURE_FORGOT_PASSWORD", true)) {
 
 			_mvcActionCommand.processAction(
 				_getMockLiferayPortletActionRequest(emailAddress),
