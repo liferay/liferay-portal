@@ -10,6 +10,7 @@ import {
 	RATIO_PRESETS,
 	resolveConfig,
 } from '../src/main/resources/META-INF/resources/js/editorConfig';
+import {FILTER_PRESETS} from '../src/main/resources/META-INF/resources/js/imaging/FilterDefs';
 
 describe('resolveConfig', () => {
 	it('exposes every adjustment slider by default', () => {
@@ -25,6 +26,20 @@ describe('resolveConfig', () => {
 			resolveConfig({adjustments: {sliders: ['shadows', 'contrast']}})
 				.adjustments
 		).toEqual(['contrast', 'shadows']);
+	});
+
+	it('exposes every filter preset by default', () => {
+		expect(resolveConfig().filters).toEqual(FILTER_PRESETS);
+	});
+
+	it('switches the filter gallery off with false', () => {
+		expect(resolveConfig({filters: false}).filters).toEqual([]);
+	});
+
+	it('narrows the filter presets to a subset in gallery order', () => {
+		expect(
+			resolveConfig({filters: {presets: ['sepia', 'none']}}).filters
+		).toEqual(['none', 'sepia']);
 	});
 
 	it('exposes everything by default', () => {

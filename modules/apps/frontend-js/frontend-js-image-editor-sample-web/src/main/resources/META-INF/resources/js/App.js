@@ -19,8 +19,9 @@ const SAMPLE_URL = '/o/frontend-js-image-editor-sample-web/images/sample.jpg';
  * `?crop=` turns the crop tools off, `?crop=rotate,straighten` picks the
  * ones to keep and `?ratios=1:1,16:9` narrows the ratio presets.
  * `?adjustments=` turns the adjustment sliders off and
- * `?adjustments=brightness,contrast` picks the ones to keep, so every host
- * configuration can be tried from the address bar.
+ * `?adjustments=brightness,contrast` picks the ones to keep. `?filters=`
+ * turns the filter gallery off and `?filters=sepia,noir` narrows the
+ * presets, so every host configuration can be tried from the address bar.
  */
 function configFromSearch(search) {
 	const params = new URLSearchParams(search);
@@ -35,6 +36,7 @@ function configFromSearch(search) {
 
 	const adjustments = params.get('adjustments');
 	const crop = params.get('crop');
+	const filters = params.get('filters');
 
 	return {
 		adjustments:
@@ -53,6 +55,12 @@ function configFromSearch(search) {
 							rotate: list(crop).includes('rotate'),
 							straighten: list(crop).includes('straighten'),
 						},
+		filters:
+			filters === null
+				? undefined
+				: filters === ''
+					? false
+					: {presets: list(filters)},
 	};
 }
 
