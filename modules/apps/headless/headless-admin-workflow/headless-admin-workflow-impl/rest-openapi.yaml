@@ -524,6 +524,11 @@ components:
                         The name of the task's workflow definition.
                     readOnly: true
                     type: string
+                workflowDefinitionTitle:
+                    description:
+                        The localized title of the task's workflow definition.
+                    readOnly: true
+                    type: string
                 workflowDefinitionVersion:
                     readOnly: true
                     type: string
