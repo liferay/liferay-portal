@@ -254,22 +254,6 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		return columnDefinitionsMap;
 	}
 
-	private void _addColumnMessages(
-		Map<String, List<String>> columnMessagesMap,
-		Map<String, List<String>> messagesMap,
-		Map<String, String> tablesServletContextNames) {
-
-		for (Map.Entry<String, List<String>> entry :
-				columnMessagesMap.entrySet()) {
-
-			List<String> messages = messagesMap.computeIfAbsent(
-				tablesServletContextNames.get(entry.getKey()),
-				key -> new ArrayList<>());
-
-			messages.addAll(entry.getValue());
-		}
-	}
-
 	private void _addMessages(
 		Map<String, List<String>> messagesMap, Collection<String> names,
 		String prefix, Map<String, String> servletContextNames) {
@@ -286,6 +270,22 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 
 			messages.add(
 				_getMessage(entry.getValue(), prefix, servletContextName));
+		}
+	}
+
+	private void _addTableMessages(
+		Map<String, List<String>> messagesMap,
+		Map<String, List<String>> tableMessagesMap,
+		Map<String, String> tablesServletContextNames) {
+
+		for (Map.Entry<String, List<String>> entry :
+				tableMessagesMap.entrySet()) {
+
+			List<String> messages = messagesMap.computeIfAbsent(
+				tablesServletContextNames.get(entry.getKey()),
+				key -> new ArrayList<>());
+
+			messages.addAll(entry.getValue());
 		}
 	}
 
@@ -469,11 +469,11 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 			},
 			null);
 
-		_addColumnMessages(
-			errorColumnMessagesMap, errorMessagesMap,
+		_addTableMessages(
+			errorMessagesMap, errorColumnMessagesMap,
 			tablesServletContextNames);
-		_addColumnMessages(
-			warnColumnMessagesMap, warnMessagesMap, tablesServletContextNames);
+		_addTableMessages(
+			warnMessagesMap, warnColumnMessagesMap, tablesServletContextNames);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
