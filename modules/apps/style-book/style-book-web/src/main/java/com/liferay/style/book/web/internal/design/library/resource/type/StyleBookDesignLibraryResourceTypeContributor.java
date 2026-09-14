@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.style.book.web.internal.design.library;
+package com.liferay.style.book.web.internal.design.library.resource.type;
 
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.design.library.resource.type.DesignLibraryResourceCreationItem;
