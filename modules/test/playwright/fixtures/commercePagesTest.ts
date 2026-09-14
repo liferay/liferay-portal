@@ -25,6 +25,7 @@ import {CommerceAdminInventoryItemPage} from '../pages/commerce/commerce-invento
 import {CommerceAdminInventoryPage} from '../pages/commerce/commerce-inventory-web/commerceAdminInventoryPage';
 import {CommerceLayoutsPage} from '../pages/commerce/commerce-order-content-web/commerceLayoutsPage';
 import {OrderDetailsPage} from '../pages/commerce/commerce-order-content-web/orderDetailsPage';
+import {OrderImportPage} from '../pages/commerce/commerce-order-content-web/orderImportPage';
 import {PendingOrdersPage} from '../pages/commerce/commerce-order-content-web/pendingOrdersPage';
 import {PlacedOrderPage} from '../pages/commerce/commerce-order-content-web/placedOrderPage';
 import {PlacedOrdersPage} from '../pages/commerce/commerce-order-content-web/placedOrdersPage';
@@ -148,6 +149,7 @@ const commercePagesTest = test.extend<{
 	commerceWishListPage: CommerceWishListPage;
 	offlinePaymentMethodsSystemSettingPage: OfflinePaymentMethodsSystemSettingPage;
 	orderDetailsPage: OrderDetailsPage;
+	orderImportPage: OrderImportPage;
 	organizationManagementPage: OrganizationManagementPage;
 	pendingOrdersPage: PendingOrdersPage;
 	placedOrderPage: PlacedOrderPage;
@@ -358,6 +360,9 @@ const commercePagesTest = test.extend<{
 	},
 	orderDetailsPage: async ({page}, use) => {
 		await use(new OrderDetailsPage(page));
+	},
+	orderImportPage: async ({page}, use) => {
+		await use(new OrderImportPage(page));
 	},
 	organizationManagementPage: async ({page}, use) => {
 		await use(new OrganizationManagementPage(page));

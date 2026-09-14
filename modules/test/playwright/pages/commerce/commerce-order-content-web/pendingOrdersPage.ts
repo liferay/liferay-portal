@@ -35,6 +35,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 		strictEqual?: boolean
 	) => Promise<{column: Locator; row: Locator}>;
 	readonly orderItemsTableRowLink: (productName: string) => Promise<Locator>;
+	readonly orderRowLink: (orderId: number | string) => Locator;
 	readonly orderType: Locator;
 	readonly orderId: Locator;
 	readonly page: Page;
@@ -132,6 +133,10 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 				`Cannot locate order item row with productName ${productName}`
 			);
 		};
+		this.orderRowLink = (orderId: number | string) =>
+			page
+				.locator('.table-list-title')
+				.getByRole('link', {name: String(orderId)});
 		this.orderType = page
 			.locator('dl')
 			.filter({hasText: 'Order Type'})

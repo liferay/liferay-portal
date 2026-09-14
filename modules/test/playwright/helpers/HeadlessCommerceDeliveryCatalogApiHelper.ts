@@ -71,7 +71,7 @@ export class HeadlessCommerceDeliveryCatalogApiHelper {
 			`${this.apiHelpers.baseUrl}${this.basePath}/channels/${channelId}/wishlists?nestedFields=wishListItems&wishListItems.accountId=${accountId}&accountId=${accountId}`,
 			{
 				data: {
-					defaultWishList: true,
+					defaultWishList: wishList.defaultWishList ?? true,
 					name: wishList.name,
 					wishListItems: wishList.wishListItems,
 				},
@@ -86,5 +86,16 @@ export class HeadlessCommerceDeliveryCatalogApiHelper {
 		}
 
 		return postWishList;
+	}
+
+	async postWishListItem(
+		wishListId: number,
+		wishListItem: TWishListItem,
+		accountId: number
+	): Promise<TWishListItem> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/wishlists/${wishListId}/wishlist-items?accountId=${accountId}`,
+			{data: wishListItem}
+		);
 	}
 }
