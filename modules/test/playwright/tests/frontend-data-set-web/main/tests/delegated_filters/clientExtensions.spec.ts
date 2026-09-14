@@ -16,28 +16,11 @@ import {waitForFDS} from '../../../../../utils/waitFor';
 import {waitForSPAToBeLoaded} from '../../../../../utils/waitForSPAToBeLoaded';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 
-// The Delegated Filters data set declares Color, Size, and Status, shows no
-// filter UI once a client extension takes the filtering over, and pages the
-// 100 sample entries ten at a time. The entries are seeded in a fixed cycle,
-// which is what makes the totals below predictable: the color rotates over
-// four values, so a quarter of the entries are Blue and entry 1 is a Green
-// one, and the size rotates over six.
-
 const ITEMS_PER_PAGE = 10;
 
 const TOTAL_ENTRIES = 100;
 
-// The Color filter the data set declares arrives preloaded with Blue, Green,
-// and Yellow selected, which leaves out the quarter of the entries that are
-// Red. Nothing reaches the request while a client extension owns the
-// filtering, so this total is what the data set shows only while it filters
-// for itself.
-
 const PRELOADED_COLOR_ENTRIES = 75;
-
-// How long a data set whose address carries state a consumer left waits
-// before giving up on the connection that was going to take it, matching
-// RESTORE_TIMEOUT in useRestoredConnectionState.
 
 const RESTORE_GIVE_UP = 10000;
 
@@ -56,16 +39,6 @@ const test = mergeTests(
 let customElement: Locator;
 let customElements: Locator;
 let fdsPageUrl: string;
-
-// Whether the browser loads a page or Liferay swaps it in underneath is not
-// something this contract should be able to tell apart, and it is the sort of
-// difference that only shows up in a test that navigates. Every test below
-// therefore runs twice, once each way.
-//
-// The connection keeps who owns the filtering of a data set in the module
-// itself, which a single page application navigation does not reload, so the
-// two runs genuinely differ: with the SPA on, what one test leaves behind is
-// still there for the next navigation to trip over.
 
 const spaConfigurations = [
 	{
@@ -145,13 +118,6 @@ for (const spaConfiguration of spaConfigurations) {
 		function getFilterOptionCheckbox({name}: {name: string}) {
 			return customElement.getByRole('checkbox', {name});
 		}
-
-		// The button that opens a filter panel is named for the filter, and
-		// takes a count once anything in it is selected: "Color" becomes
-		// "Color (1)". The button that removes the chip is named for the
-		// filter as well, as "Remove the Color filter". So a bare name matches
-		// two buttons as soon as the filter is applied, and an exact one
-		// matches neither.
 
 		function getFilterPanelButton({name}: {name: string}) {
 			return customElement.getByRole('button', {
@@ -583,19 +549,6 @@ for (const spaConfiguration of spaConfigurations) {
 				}
 			);
 
-			// Going back and forward between an address that filters and one that does
-			// not. What the client extension draws has to move with the address, since
-			// its filter UI is put back from what the address carries rather than from
-			// whatever the element last knew: an address carrying nothing has to leave
-			// it showing nothing, which is the one direction applying a filter never
-			// reaches.
-			//
-			// Both entries are visited outright before the buttons are used, so that
-			// each is one entry of the history whatever the data set does to the
-			// address as it filters: the first filter of a visit replaces the entry it
-			// was applied on rather than adding one, which would otherwise leave the
-			// unfiltered address nowhere in the history to go back to.
-
 			test(
 				'Going back and forward moves the data set between what each address filters by',
 				{
@@ -649,10 +602,6 @@ for (const spaConfiguration of spaConfigurations) {
 							customElement.getByText('Color: Blue')
 						).toBeHidden();
 
-						// The chips and the button that clears them are drawn only
-						// while something is applied, so their absence is the element
-						// having put its own filter UI back to nothing.
-
 						await expect(
 							customElement.getByRole('button', {
 								name: 'Clear all',
@@ -678,12 +627,6 @@ for (const spaConfiguration of spaConfigurations) {
 				}
 			);
 
-			// A link outlives the page it was taken from, and the widget that wrote it
-			// may have been swapped for another since. What the address carries is then
-			// filed under an app that is nowhere on the page, and nobody is coming for
-			// it: the data set has to notice as much and get on with it, rather than
-			// hold its first request until it gives up waiting.
-
 			test(
 				'A link naming an app that is not on the page leaves the data set filtering nothing',
 				{
@@ -699,10 +642,6 @@ for (const spaConfiguration of spaConfigurations) {
 					await getFilterOptionCheckbox({name: 'Blue'}).check();
 
 					await expectTotalEntries({page, total: 25});
-
-					// The same address, with what it carries filed under an app that
-					// never connects. The element on the page answers to
-					// "sampleCustomElement8", so it is offered nothing of its own.
 
 					const foreignURL = page
 						.url()
@@ -745,39 +684,6 @@ for (const spaConfiguration of spaConfigurations) {
 				}
 			);
 
-			// Leaving the page by a single page application navigation is the
-			// one way a client extension goes without the browser throwing its
-			// page away, and the connection has to hand the filtering back on
-			// its own account then. Both records of who owns the filtering
-			// outlive such a navigation, since neither the module nor the atom
-			// registry is reloaded: the owners the connection keeps by data set
-			// name, and the filteringOwnerAppId it writes into the state of the
-			// data set for everyone else to read. A connection that left
-			// quietly would leave both standing over a data set nobody can
-			// reach any more, and coming back would be refused by the claim it
-			// made itself. Liferay says it is leaving through beforeNavigate,
-			// which is where the connection disconnects.
-			//
-			// Only declared with the SPA on. With it off the browser loads the
-			// page afresh, both records go with it, and there is nothing left
-			// to outlive anything.
-			//
-			// Coming back is also the way round that the data set is slowest to
-			// notice it may request. It waits while the address carries state a
-			// consumer left, and it stops waiting either when the owner takes
-			// its key out of what is offered or when it gives up. Arriving to an
-			// atom the last visit left behind, the connection is listening
-			// before the offer is even made and takes its key in the same turn,
-			// so the data set is told it offered rather than left to catch the
-			// offer going past. Missing it once cost the whole of that give-up,
-			// which is why the wait below is measured rather than merely waited
-			// out: a data set that takes as long as the give-up is a data set
-			// that learnt nothing from the offer.
-			//
-			// Neither navigation reloads the page and the address returned to is
-			// exactly the one the filters were left at: both are asserted below,
-			// and both passed.
-
 			if (spaConfiguration.spa) {
 				test(
 					'A client extension that leaves the page without reloading it gives the filtering back',
@@ -809,34 +715,11 @@ for (const spaConfiguration of spaConfigurations) {
 
 						const filteredURL = page.url();
 
-						// Nothing on the window survives a page load, so this
-						// is what tells a navigation Liferay handled from one
-						// the browser did. Without it the test would pass on a
-						// full load, which is precisely the case it is not
-						// about.
-
 						await page.evaluate(() => {
 							(
 								window as Window & {spaMarker?: boolean}
 							).spaMarker = true;
 						});
-
-						// A page made through the API is not in the site
-						// navigation, so the links a user would have followed
-						// are put on the page here. What the test needs of them
-						// is only that they are ordinary internal links:
-						// Liferay intercepts the click on one exactly as it
-						// does on any other, which is the navigation this is
-						// about.
-						//
-						// Coming back is a second such link rather than the
-						// back button, so that the address returned to is the
-						// one the filters were left at. What the history holds
-						// is not this test's subject, and it does not hold what
-						// it looks like it should: selecting the tab is an
-						// entry of its own, and the first filter of a visit
-						// replaces the entry it was applied on rather than
-						// adding one.
 
 						const goByLink = async (href: string, id: string) => {
 							await page.evaluate(
@@ -867,13 +750,6 @@ for (const spaConfiguration of spaConfigurations) {
 								new RegExp(otherPage.friendlyUrlPath)
 							);
 						});
-
-						// Not a threshold picked for comfort: it is the give-up
-						// itself, which starts only once the page is back, so a
-						// data set that fell back on it cannot come in under
-						// this however fast everything else was. One that
-						// learnt the offer was taken has no reason to be near
-						// it.
 
 						const cameBackAt = Date.now();
 
@@ -937,18 +813,6 @@ for (const spaConfiguration of spaConfigurations) {
 				);
 			}
 		});
-
-		// A data set has one filtering owner, and two instances of the same client
-		// extension on a page are the plainest way to ask it for two. The element is
-		// instanceable, so this needs no second client extension: the widget goes on
-		// the page twice, and only the instance that connects first is granted the
-		// filtering.
-		//
-		// Which instance that is follows the order the page mounts them in, and the
-		// contract says not to rely on it, so nothing below names an instance by
-		// position. The refused one is told through a status that is not "ready", and
-		// the element enables its controls only once ready, so the two are told apart
-		// by which one has controls that work.
 
 		const BLUE_ENTRIES = 25;
 

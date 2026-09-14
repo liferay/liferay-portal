@@ -18,9 +18,6 @@ import Atom = Liferay.State.Atom;
 
 const DEFAULT_TIMEOUT = 10000;
 
-// What a connection owns when it does not say: the search, which is what
-// every connection has always driven through its state change callback.
-
 const DEFAULT_OWNERSHIP: ReadonlyArray<FDSConnectionOwnership> = ['search'];
 
 interface Subscriptions {
@@ -122,14 +119,6 @@ export class FDSConnection {
 				// initialize consumer's state
 
 				if (this.ownsFiltering()) {
-
-					// The browser's back and forward buttons move a data set
-					// between filters the same way they move it between
-					// searches, and the data set offers each one it lands on
-					// here. Subscribed before what is on offer is handed
-					// over, so that an offer made while it is being handed
-					// over is not missed.
-
 					this.subscriptions.restoredConnectionState =
 						Liferay.State.subscribe(
 							this.selectors.restoredConnectionState,
@@ -139,14 +128,6 @@ export class FDSConnection {
 					const restoredConnectionState = Liferay.State.read(
 						this.selectors.restoredConnectionState
 					);
-
-					// Handed over as it is, an offer that holds no key of
-					// this connection included: a consumer told nothing at
-					// all cannot tell an address that filters nothing from
-					// one it has not been offered yet. What
-					// handleRestoredConnectionState guards is the changes
-					// that follow, where a key of another connection is none
-					// of this one's business.
 
 					if (restoredConnectionState !== undefined) {
 						this.restoreConnectionState(restoredConnectionState);
@@ -204,17 +185,6 @@ export class FDSConnection {
 	 * passed. The filters the data set declares never reach the request while
 	 * this connection owns the filtering: the consumer owns the whole filter
 	 * expression.
-	 *
-	 * Only a connection that was granted the filtering may filter, so that a
-	 * data set has one filtering owner and shows a filter UI only when that
-	 * owner is itself. Asking for it with `owns: ['filters']` is not enough:
-	 * an `appId` is needed to own it, and another connection may already
-	 * have. A connection refused the filtering settles at the `refused`
-	 * status, and this call does nothing for it.
-	 *
-	 * Whatever the consumer passes as `connectionState` is kept in the page
-	 * URL for as long as these filters reach the request, and comes back
-	 * through the `restore` state change callback on the next visit.
 	 */
 	setFilters = (
 		filters: Array<FDSConnectionFilter>,
@@ -248,12 +218,6 @@ export class FDSConnection {
 		);
 	};
 
-	/**
-	 * Drops the filters this connection applies, so that the data set filters
-	 * nothing: a shortcut for `setFilters([])`. The filtering stays taken
-	 * over, so the filters the data set declares do not come back and its
-	 * filter UI stays hidden.
-	 */
 	clearFilters = (): void => {
 		this.setFilters([]);
 	};
@@ -262,11 +226,6 @@ export class FDSConnection {
 		if (this.disconnected) {
 			return;
 		}
-
-		// Hand the filtering back on the way out, so that a data set left
-		// without a consumer applies the filters it declares again and offers
-		// the UI for them. A connection that never owned the filtering has
-		// nothing to hand back.
 
 		if (this.ownsFiltering() && this.isReady) {
 			this.releaseFiltering();
@@ -318,12 +277,6 @@ export class FDSConnection {
 		Liferay.State.write(this.atom, fdsState);
 	}
 
-	/**
-	 * The given slice without this connection's key, or nothing at all once
-	 * no other key is left. Both the state a connection leaves behind and the
-	 * state it is offered are keyed by `appId`, so neither may be dropped
-	 * whole: a key is only ever this connection's to take.
-	 */
 	private withoutOwnKey<T extends object>(
 		keyedByAppId: T | null | undefined
 	): T | undefined {
@@ -366,10 +319,6 @@ export class FDSConnection {
 
 		const fdsState = {...Liferay.State.read(this.atom)};
 
-		// The filters go whole, so that the ones the data set declares reach
-		// the request again, and the claim goes with them: a claim left behind
-		// would keep the filtering from every consumer that connects later.
-
 		delete fdsState.connectionFilters;
 		delete fdsState.filteringOwnerAppId;
 
@@ -385,15 +334,6 @@ export class FDSConnection {
 		Liferay.State.write(this.atom, fdsState);
 	}
 
-	/**
-	 * Grants the filtering of the data set to this connection, unless a
-	 * reason to refuse it comes first, so that a data set never has two
-	 * filtering owners. A connection that is refused settles at the
-	 * `refused` status and every filter call it makes is ignored.
-	 *
-	 * Reading the claim and taking it happen without an await in between, so
-	 * a second connection cannot come upon the data set between the two.
-	 */
 	private acquireFilteringOwnership(): void {
 		if (!this.requestedOwnership.includes('filters')) {
 			return;
@@ -421,19 +361,9 @@ export class FDSConnection {
 
 		FDSConnection.filteringOwners.set(this.fdsName, this);
 
-		// Said in the state of the data set as well, since the data set is
-		// the side that keeps what this connection remembers in the URL and
-		// offers it back: what it holds is filed under an app id, and this is
-		// how it knows which one to expect a connection for. Another copy of
-		// this module on the page reads it for the same reason it cannot read
-		// the owners this one keeps.
-
 		const fdsState = {...Liferay.State.read(this.atom)};
 
 		fdsState.filteringOwnerAppId = this.appId;
-
-		// Any filters left in the state were applied by a connection that is
-		// no longer the owner, and this one has not said what it filters by.
 
 		delete fdsState.connectionFilters;
 
@@ -453,18 +383,6 @@ export class FDSConnection {
 		);
 	}
 
-	/**
-	 * Whether the filtering of this data set is already owned by a
-	 * connection other than this one, whether of this page or of another
-	 * copy of this module on it.
-	 *
-	 * A connection whose element has left the document is not one of them. A
-	 * client extension is a custom element, and one taken off the page
-	 * without disconnecting would otherwise leave a claim that outlives it
-	 * and locks the data set out until the next reload. Its element leaving
-	 * is the only account of that anyone gets, so the claim is handed back
-	 * here the way disconnecting would have handed it back.
-	 */
 	private isFilteringOwnedByAnotherConnection(): boolean {
 		const owner = FDSConnection.filteringOwners.get(this.fdsName);
 
@@ -483,11 +401,6 @@ export class FDSConnection {
 
 			owner.disconnect();
 		}
-
-		// Another copy of this module on the page keeps its own owners, out of
-		// reach of this one, so what says the filtering is owned then is the
-		// claim its owner left in the state of the data set. A claim of that
-		// copy can only be respected here, never reclaimed.
 
 		return Liferay.State.read(this.atom).filteringOwnerAppId !== undefined;
 	}
@@ -521,13 +434,6 @@ export class FDSConnection {
 		connectionState?: unknown
 	): void {
 		const fdsState = {...Liferay.State.read(this.atom), connectionFilters};
-
-		// The state of the data set holds one key per connection and the URL
-		// is written from the whole map, so the only key this connection may
-		// write is its own. Remembering nothing takes that key out and leaves
-		// every other one where it was, rather than emptying the map: what
-		// another connection asked to have remembered is not this one's to
-		// drop, and a URL is shared by everything on the page.
 
 		const remaining = this.withoutOwnKey(fdsState.connectionState);
 

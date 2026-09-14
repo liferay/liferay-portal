@@ -9,10 +9,6 @@ import {EViewsActionTypes} from '../../views/viewsReducer';
 import {EConfigInURLBehavior, EConfigInURLKeys} from '../types';
 import useConfigInURL from '../useConfigInURL';
 
-// How long a data set whose URL carries state a consumer left waits for the
-// connection that owns it, matched to the timeout a connection itself waits
-// for the data set with, so that neither side gives up first.
-
 const RESTORE_TIMEOUT = 10000;
 
 /**
@@ -48,11 +44,6 @@ export function useRestoredConnectionState({
 	getConnectionState: () => unknown;
 	restored: boolean;
 } {
-
-	// The data set cannot check a value it cannot read, so it checks only
-	// that the URL held one at all. Whether the value still makes sense is
-	// the consumer's to judge, and the consumer is the only side that can.
-
 	const [getConnectionState] = useConfigInURL({
 		configInURLBehavior,
 		configReader: (connectionState: unknown) => connectionState,
@@ -63,35 +54,17 @@ export function useRestoredConnectionState({
 		},
 	});
 
-	// A URL carrying state a consumer left is a promise that a connection is
-	// coming to claim it, and the data set has nothing to request until it
-	// does: asking now would fetch data the URL already says is filtered, and
-	// asking again afterwards would show the user those results first. This
-	// waits for the connection the same way the data set already waits for
-	// the client extensions its filters and cells are drawn with.
-
 	const [restored, setRestored] = useState(
 		() => getConnectionState() === undefined
 	);
 
 	const onGiveUpRef = useRef(onGiveUp);
 
-	// What is offered is filed under the app id of the connection that left
-	// it, and a connection deletes its own key as soon as it has been handed
-	// what was under it. The key of the owner is therefore what this waits
-	// on, rather than the whole of what is offered: keys of other apps
-	// outlive the one restore that was ever going to happen.
-
 	const ownerRestorePending =
 		filteringOwnerAppId !== undefined &&
 		typeof restoredConnectionState === 'object' &&
 		restoredConnectionState !== null &&
 		filteringOwnerAppId in restoredConnectionState;
-
-	// Whether a restore for the owner was ever coming, which the address
-	// still says: the data set does not write the URL until this wait is
-	// over. It is what tells a restore that has happened from one that was
-	// never going to, since what is offered looks the same either way.
 
 	const urlConnectionState = getConnectionState();
 
@@ -113,43 +86,17 @@ export function useRestoredConnectionState({
 			return;
 		}
 
-		// Nothing can be read into a restore that has not been offered yet: it
-		// looks exactly like one that has happened, and a data set that has
-		// offered nothing so far would say the same thing.
-		//
-		// Which of the two it is comes from the data set saying it has
-		// offered, rather than from this having caught the offer on its way
-		// past. An offer is taken by whichever connection it was filed for,
-		// and a connection that is already listening when the offer lands
-		// takes it in the same turn, leaving nothing for the render after to
-		// see. Watching for it would mean the data set waiting out the
-		// timeout over an offer it made itself and that was answered at once.
-
 		const restoreOffered =
 			connectionStateOffered || restoredConnectionState !== undefined;
 
 		if (restoreOffered && !ownerRestorePending) {
 			if (ownerRestoreExpected || restoredConnectionState === undefined) {
-
-				// The key of the owner is gone from what the address says
-				// held it, which is the owner having been handed it. Nothing
-				// left on offer at all says as much, whether or not this has
-				// seen who the owner is.
-				//
-				// Keys of other apps stay on offer for whatever connects
-				// later: they were never this wait's to take, nor to drop.
-
 				setRestored(true);
 
 				return;
 			}
 
 			if (filteringOwnerAppId !== undefined) {
-
-				// The connection that owns the filtering is the only one the
-				// offer would ever be handed to, and the address holds no key
-				// of it: nobody is coming for what is left.
-
 				onGiveUpRef.current();
 
 				setRestored(true);
@@ -157,12 +104,6 @@ export function useRestoredConnectionState({
 				return;
 			}
 		}
-
-		// Nothing guarantees the consumer is still on the page: its widget
-		// may have been removed while the link was in someone's inbox. Give
-		// up on what the URL carries rather than leave the data set waiting
-		// on a consumer that will never connect, and let it filter and offer
-		// its own UI as it does without any consumer at all.
 
 		const timeoutId = setTimeout(() => {
 			onGiveUpRef.current();

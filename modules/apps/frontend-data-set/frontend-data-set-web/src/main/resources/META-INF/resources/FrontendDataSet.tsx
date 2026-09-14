@@ -387,12 +387,6 @@ const FrontendDataSetContent = ({
 	const {connectionFilters, connectionState, filteringOwnerAppId} =
 		globalFDSState as IConnectedFDSState;
 
-	// Whether the data set has put what the URL carries on offer. It is set
-	// where the offer is written rather than worked out from the state
-	// afterwards: a connection already listening takes the offer in the same
-	// turn it lands, so a render may never see one in place. Only the side
-	// making the offer can say for certain that it made one.
-
 	const [connectionStateOffered, setConnectionStateOffered] = useState(false);
 
 	const {getConnectionState, restored: connectionStateRestored} =
@@ -411,18 +405,6 @@ const FrontendDataSetContent = ({
 			},
 			restoredConnectionState: globalFDSState.restoredConnectionState,
 		});
-
-	// A consumer that owns the filtering provides the filter UI itself: a
-	// dropdown and chips for filters that no longer reach the request would
-	// not tell the truth. The filters the data set declares stay in its
-	// state, so the consumer can read them and decide which ones to obey,
-	// and they come back the moment the connection releases the filtering.
-	//
-	// What says so is the claim of the owner rather than the filters it
-	// applied, since it may own the filtering and filter by nothing. A data
-	// set still waiting for a connection to restore what the address carries
-	// counts as much: a dropdown put up for that moment is one taken away
-	// again as soon as the consumer connects.
 
 	const filteringDelegated =
 		Boolean(filteringOwnerAppId) || !connectionStateRestored;
@@ -1326,10 +1308,6 @@ const FrontendDataSetContent = ({
 				}
 			});
 		}
-
-		// What the popped URL says a previous visit left, offered to the
-		// connection that owns the filtering the same way a fresh visit
-		// offers it.
 
 		const urlConnectionState = getConnectionState();
 
