@@ -38,23 +38,15 @@ public class KeyReferenceUtilTest {
 
 	@Test
 	public void testIsParsableKeyReference() {
-		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference(null));
 		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference(""));
-		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference("abc"));
-		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference("${}"));
 		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef}"));
+			KeyReferenceUtil.isParsableKeyReference(
+				"${SecretRef:provider:identifier}"));
 		Assert.assertFalse(
 			KeyReferenceUtil.isParsableKeyReference("${secretRef:"));
 		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef:}"));
-		Assert.assertFalse(
 			KeyReferenceUtil.isParsableKeyReference(
 				"${secretRef::identifier}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef:provider}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef:provider:}"));
 		Assert.assertFalse(
 			KeyReferenceUtil.isParsableKeyReference(
 				"${secretRef:provider:   }"));
@@ -68,11 +60,19 @@ public class KeyReferenceUtilTest {
 			KeyReferenceUtil.isParsableKeyReference(
 				"${secretRef:provider:null}"));
 		Assert.assertFalse(
+			KeyReferenceUtil.isParsableKeyReference("${secretRef:provider:}"));
+		Assert.assertFalse(
+			KeyReferenceUtil.isParsableKeyReference("${secretRef:provider}"));
+		Assert.assertFalse(
 			KeyReferenceUtil.isParsableKeyReference(
 				"${secretRef:pro}vider:identifier}"));
 		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
-				"${SecretRef:provider:identifier}"));
+			KeyReferenceUtil.isParsableKeyReference("${secretRef:}"));
+		Assert.assertFalse(
+			KeyReferenceUtil.isParsableKeyReference("${secretRef}"));
+		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference("${}"));
+		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference("abc"));
+		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference(null));
 		Assert.assertTrue(
 			KeyReferenceUtil.isParsableKeyReference(
 				"${keyRef:provider:identifier}"));
@@ -116,34 +116,17 @@ public class KeyReferenceUtilTest {
 	public void testToKeyReferenceWithInvalidKeyReference() {
 		Assert.assertThrows(
 			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference(null));
-		Assert.assertThrows(
-			IllegalArgumentException.class,
 			() -> KeyReferenceUtil.toKeyReference(""));
 		Assert.assertThrows(
 			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference("abc"));
-		Assert.assertThrows(
-			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference("${}"));
-		Assert.assertThrows(
-			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference("${secretRef}"));
+			() -> KeyReferenceUtil.toKeyReference(
+				"${SecretRef:provider:identifier}"));
 		Assert.assertThrows(
 			IllegalArgumentException.class,
 			() -> KeyReferenceUtil.toKeyReference("${secretRef:"));
 		Assert.assertThrows(
 			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference("${secretRef:}"));
-		Assert.assertThrows(
-			IllegalArgumentException.class,
 			() -> KeyReferenceUtil.toKeyReference("${secretRef::identifier}"));
-		Assert.assertThrows(
-			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference("${secretRef:provider}"));
-		Assert.assertThrows(
-			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference("${secretRef:provider:}"));
 		Assert.assertThrows(
 			IllegalArgumentException.class,
 			() -> KeyReferenceUtil.toKeyReference("${secretRef:provider:   }"));
@@ -161,12 +144,29 @@ public class KeyReferenceUtilTest {
 				"${secretRef:provider:null}"));
 		Assert.assertThrows(
 			IllegalArgumentException.class,
+			() -> KeyReferenceUtil.toKeyReference("${secretRef:provider:}"));
+		Assert.assertThrows(
+			IllegalArgumentException.class,
+			() -> KeyReferenceUtil.toKeyReference("${secretRef:provider}"));
+		Assert.assertThrows(
+			IllegalArgumentException.class,
 			() -> KeyReferenceUtil.toKeyReference(
 				"${secretRef:pro}vider:identifier}"));
 		Assert.assertThrows(
 			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference(
-				"${SecretRef:provider:identifier}"));
+			() -> KeyReferenceUtil.toKeyReference("${secretRef:}"));
+		Assert.assertThrows(
+			IllegalArgumentException.class,
+			() -> KeyReferenceUtil.toKeyReference("${secretRef}"));
+		Assert.assertThrows(
+			IllegalArgumentException.class,
+			() -> KeyReferenceUtil.toKeyReference("${}"));
+		Assert.assertThrows(
+			IllegalArgumentException.class,
+			() -> KeyReferenceUtil.toKeyReference("abc"));
+		Assert.assertThrows(
+			IllegalArgumentException.class,
+			() -> KeyReferenceUtil.toKeyReference(null));
 	}
 
 	private void _assertKeyReference(
