@@ -6,14 +6,17 @@
 package com.liferay.object.dynamic.data.mapping.form.field.type.internal.object.relationship;
 
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
+import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.dynamic.data.mapping.test.util.BaseDDMFormFieldTemplateContextContributorTestCase;
 import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectDDMFormFieldTypeConstants;
+import com.liferay.object.exception.NoSuchObjectEntryException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.context.path.RESTContextPathResolver;
 import com.liferay.object.rest.context.path.RESTContextPathResolverRegistry;
 import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.string.StringBundler;
@@ -116,6 +119,9 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 			"_objectDefinitionLocalService", objectDefinitionLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_objectRelationshipDDMFormFieldTemplateContextContributor,
+			"_objectEntryLocalService", _objectEntryLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_objectRelationshipDDMFormFieldTemplateContextContributor,
 			"_objectScopeProviderRegistry", objectScopeProviderRegistry);
 		ReflectionTestUtil.setFieldValue(
 			_objectRelationshipDDMFormFieldTemplateContextContributor,
@@ -128,6 +134,36 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 			_objectRelationshipDDMFormFieldTemplateContextContributor,
 			"_systemObjectDefinitionManagerRegistry",
 			_systemObjectDefinitionManagerRegistry);
+	}
+
+	@Test
+	public void testGetParametersSelectedOptionLabel() throws Exception {
+		Assert.assertEquals(
+			StringPool.BLANK, _getSelectedOptionLabel(StringPool.BLANK));
+		Assert.assertEquals(StringPool.BLANK, _getSelectedOptionLabel("0"));
+
+		String titleValue = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_objectEntryLocalService.getTitleValue(
+				Mockito.anyLong(), Mockito.eq(_PRIMARY_KEY))
+		).thenReturn(
+			titleValue
+		);
+
+		Assert.assertEquals(
+			titleValue, _getSelectedOptionLabel(String.valueOf(_PRIMARY_KEY)));
+
+		Mockito.when(
+			_objectEntryLocalService.getTitleValue(
+				Mockito.anyLong(), Mockito.eq(_PRIMARY_KEY))
+		).thenThrow(
+			new NoSuchObjectEntryException()
+		);
+
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_getSelectedOptionLabel(String.valueOf(_PRIMARY_KEY)));
 	}
 
 	@Test
@@ -168,7 +204,21 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 			"apiURL");
 	}
 
+	private String _getSelectedOptionLabel(String value) {
+		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
+			createDDMFormFieldRenderingContext();
+
+		ddmFormFieldRenderingContext.setValue(value);
+
+		return MapUtil.getString(
+			_objectRelationshipDDMFormFieldTemplateContextContributor.
+				getParameters(_ddmFormField, ddmFormFieldRenderingContext),
+			"selectedOptionLabel");
+	}
+
 	private static final String _PORTAL_URL = RandomTestUtil.randomString();
+
+	private static final long _PRIMARY_KEY = RandomTestUtil.randomLong();
 
 	private static final String _REST_CONTEXT_PATH =
 		RandomTestUtil.randomString();
@@ -176,6 +226,8 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 	private final DDMFormField _ddmFormField = new DDMFormField(
 		RandomTestUtil.randomString(),
 		ObjectDDMFormFieldTypeConstants.OBJECT_RELATIONSHIP);
+	private final ObjectEntryLocalService _objectEntryLocalService =
+		Mockito.mock(ObjectEntryLocalService.class);
 	private final ObjectRelationshipDDMFormFieldTemplateContextContributor
 		_objectRelationshipDDMFormFieldTemplateContextContributor =
 			new ObjectRelationshipDDMFormFieldTemplateContextContributor();

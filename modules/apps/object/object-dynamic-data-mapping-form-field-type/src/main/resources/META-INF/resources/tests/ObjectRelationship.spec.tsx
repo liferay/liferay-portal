@@ -36,42 +36,15 @@ const DEFAULT_PROPS = {
 	onChange: () => {},
 };
 
+const SCOPED_API_URL = 'http://localhost:8080/o/c/objs/scopes/1';
+
 describe('fetchData', () => {
-	it('appends the query string after the id when fetching a selected value by id', async () => {
-		(fetch as jest.Mock)
-			.mockResolvedValueOnce({
-				json: () => Promise.resolve({items: []}),
-			})
-			.mockResolvedValueOnce({
-				json: () => Promise.resolve({id: 123}),
-			});
-
-		render(
-			<ObjectRelationship
-				{...DEFAULT_PROPS}
-				apiURL={`${API_URL}?flatten=true`}
-				value="123"
-			/>
-		);
-
-		await waitFor(() =>
-			expect(fetch).toHaveBeenCalledWith(
-				`${API_URL}/123?flatten=true`,
-				expect.anything()
-			)
-		);
-	});
-
-	it('clears the value when the fetched item matches neither valueKey nor id', async () => {
+	it('clears the value when nothing resolves the selected option', async () => {
 		const onChange = jest.fn();
 
-		(fetch as jest.Mock)
-			.mockResolvedValueOnce({
-				json: () => Promise.resolve({items: []}),
-			})
-			.mockResolvedValueOnce({
-				json: () => Promise.resolve({id: 39013, productId: 39013}),
-			});
+		(fetch as jest.Mock).mockResolvedValueOnce({
+			json: () => Promise.resolve({items: []}),
+		});
 
 		render(
 			<ObjectRelationship
@@ -172,16 +145,13 @@ describe('fetchData', () => {
 		);
 	});
 
-	it('keeps the value when the fetched item matches on valueKey instead of id', async () => {
+	it('keeps the value when a list item matches on valueKey instead of id', async () => {
 		const onChange = jest.fn();
 
-		(fetch as jest.Mock)
-			.mockResolvedValueOnce({
-				json: () => Promise.resolve({items: []}),
-			})
-			.mockResolvedValueOnce({
-				json: () => Promise.resolve({id: 39013, productId: 39014}),
-			});
+		(fetch as jest.Mock).mockResolvedValueOnce({
+			json: () =>
+				Promise.resolve({items: [{id: 39013, productId: 39014}]}),
+		});
 
 		const {container} = render(
 			<ObjectRelationship
@@ -200,6 +170,85 @@ describe('fetchData', () => {
 		);
 
 		expect(onChange).not.toHaveBeenCalled();
+	});
+
+	it('keeps the value when the selected option label resolves it outside the first page', async () => {
+		const onChange = jest.fn();
+
+		(fetch as jest.Mock).mockResolvedValue({
+			json: () => Promise.resolve({items: []}),
+		});
+
+		const {container, getByRole} = render(
+			<ObjectRelationship
+				{...DEFAULT_PROPS}
+				apiURL={SCOPED_API_URL}
+				onChange={onChange}
+				selectedOptionLabel="Org A"
+				value="1"
+			/>
+		);
+
+		await waitFor(() => expect(getByRole('textbox')).toHaveValue('Org A'));
+
+		expect(container.querySelector('input[type="hidden"]')).toHaveValue(
+			'1'
+		);
+		expect(onChange).not.toHaveBeenCalled();
+	});
+
+	it('replaces the selected option label when an option is chosen', async () => {
+		const onChange = jest.fn();
+
+		(fetch as jest.Mock).mockResolvedValue({
+			json: () => Promise.resolve({items: [{id: 2, label: 'Org B'}]}),
+		});
+
+		const {container, getByRole} = render(
+			<ObjectRelationship
+				{...DEFAULT_PROPS}
+				apiURL={API_URL}
+				onChange={onChange}
+				selectedOptionLabel="Org A"
+				value="1"
+			/>
+		);
+
+		await waitFor(() => expect(getByRole('textbox')).toHaveValue('Org A'));
+
+		fireEvent.focus(getByRole('textbox'));
+		fireEvent.click(getByRole('menuitem'));
+
+		expect(getByRole('textbox')).toHaveValue('Org B');
+		expect(container.querySelector('input[type="hidden"]')).toHaveValue(
+			'2'
+		);
+		expect(onChange).toHaveBeenCalledWith({target: {value: '2'}});
+	});
+
+	it('replaces the selected option label with the typed search term', async () => {
+		const onChange = jest.fn();
+
+		(fetch as jest.Mock).mockResolvedValue({
+			json: () => Promise.resolve({items: []}),
+		});
+
+		const {getByRole} = render(
+			<ObjectRelationship
+				{...DEFAULT_PROPS}
+				apiURL={API_URL}
+				onChange={onChange}
+				selectedOptionLabel="Org A"
+				value="1"
+			/>
+		);
+
+		await waitFor(() => expect(getByRole('textbox')).toHaveValue('Org A'));
+
+		fireEvent.change(getByRole('textbox'), {target: {value: 'Org'}});
+
+		expect(getByRole('textbox')).toHaveValue('Org');
+		expect(onChange).toHaveBeenCalledWith({target: {value: null}});
 	});
 });
 
