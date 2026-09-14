@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
@@ -87,6 +88,41 @@ public class DesignLibraryUtilTest {
 			new long[] {designLibraryGroupId1, designLibraryGroupId2},
 			DesignLibraryUtil.getConnectedDesignLibraryGroupIds(
 				companyId, groupId));
+	}
+
+	@Test
+	@TestInfo("LPD-105566")
+	public void testIsConnectedDesignLibraryGroupId() throws Exception {
+		long companyId = RandomTestUtil.randomLong();
+
+		_featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(companyId, "LPD-57283")
+		).thenReturn(
+			true
+		);
+
+		long designLibraryGroupId = RandomTestUtil.randomLong();
+
+		List<DepotEntry> depotEntries = Collections.singletonList(
+			_getDepotEntry(designLibraryGroupId));
+
+		long groupId = RandomTestUtil.randomLong();
+
+		_depotEntryLocalServiceUtilMockedStatic.when(
+			() -> DepotEntryLocalServiceUtil.getGroupConnectedDepotEntries(
+				groupId, DepotConstants.TYPE_DESIGN_LIBRARY, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS)
+		).thenReturn(
+			depotEntries
+		);
+
+		Assert.assertTrue(
+			DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+				companyId, designLibraryGroupId, groupId));
+
+		Assert.assertFalse(
+			DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+				companyId, RandomTestUtil.randomLong(), groupId));
 	}
 
 	@Test

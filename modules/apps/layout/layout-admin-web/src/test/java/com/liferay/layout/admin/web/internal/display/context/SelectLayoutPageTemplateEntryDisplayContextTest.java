@@ -5,10 +5,15 @@
 
 package com.liferay.layout.admin.web.internal.display.context;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -19,6 +24,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -40,8 +46,24 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@AfterClass
+	public static void tearDownClass() {
+		_layoutPageTemplateCollectionLocalServiceUtilMockedStatic.close();
+	}
+
 	@Before
 	public void setUp() {
+		_layoutPageTemplateCollection = Mockito.mock(
+			LayoutPageTemplateCollection.class);
+
+		_layoutPageTemplateCollectionLocalServiceUtilMockedStatic.when(
+			() ->
+				LayoutPageTemplateCollectionLocalServiceUtil.
+					fetchLayoutPageTemplateCollection(Mockito.anyLong())
+		).thenReturn(
+			_layoutPageTemplateCollection
+		);
+
 		_mockHttpServletRequest = new MockHttpServletRequest();
 
 		_mockHttpServletRequest.setAttribute(
@@ -49,8 +71,59 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 	}
 
 	@Test
+	@TestInfo("LPD-105566")
+	public void testGetDesignLibraryGroup() throws Exception {
+		try (MockedStatic<DesignLibraryUtil> designLibraryUtilMockedStatic =
+				Mockito.mockStatic(DesignLibraryUtil.class);
+			MockedStatic<GroupLocalServiceUtil>
+				groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					GroupLocalServiceUtil.class)) {
+
+			long designLibraryGroupId = RandomTestUtil.randomLong();
+
+			designLibraryUtilMockedStatic.when(
+				() -> DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+					Mockito.anyLong(), Mockito.eq(designLibraryGroupId),
+					Mockito.anyLong())
+			).thenReturn(
+				true
+			);
+
+			Group group = Mockito.mock(Group.class);
+
+			groupLocalServiceUtilMockedStatic.when(
+				() -> GroupLocalServiceUtil.getGroup(designLibraryGroupId)
+			).thenReturn(
+				group
+			);
+
+			SelectLayoutPageTemplateEntryDisplayContext
+				selectLayoutPageTemplateEntryDisplayContext =
+					_getSelectLayoutPageTemplateEntryDisplayContext();
+
+			Assert.assertNull(
+				selectLayoutPageTemplateEntryDisplayContext.
+					getDesignLibraryGroup());
+
+			Mockito.when(
+				_layoutPageTemplateCollection.getGroupId()
+			).thenReturn(
+				designLibraryGroupId
+			);
+
+			selectLayoutPageTemplateEntryDisplayContext =
+				_getSelectLayoutPageTemplateEntryDisplayContext();
+
+			Assert.assertSame(
+				group,
+				selectLayoutPageTemplateEntryDisplayContext.
+					getDesignLibraryGroup());
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-89086")
-	public void testGetLayoutPageTemplateEntries() {
+	public void testGetLayoutPageTemplateEntries() throws Exception {
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			Collections.singletonList(
 				Mockito.mock(LayoutPageTemplateEntry.class));
@@ -59,8 +132,7 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 				Mockito.mock(LayoutPageTemplateEntry.class));
 		SelectLayoutPageTemplateEntryDisplayContext
 			selectLayoutPageTemplateEntryDisplayContext =
-				new SelectLayoutPageTemplateEntryDisplayContext(
-					_mockHttpServletRequest, null);
+				_getSelectLayoutPageTemplateEntryDisplayContext();
 
 		try (MockedStatic<LayoutPageTemplateEntryServiceUtil>
 				layoutPageTemplateEntryServiceUtilMockedStatic =
@@ -121,13 +193,12 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 
 	@Test
 	@TestInfo("LPD-89086")
-	public void testGetLayoutPageTemplateEntriesCount() {
+	public void testGetLayoutPageTemplateEntriesCount() throws Exception {
 		int count = RandomTestUtil.randomInt();
 		int countByType = RandomTestUtil.randomInt();
 		SelectLayoutPageTemplateEntryDisplayContext
 			selectLayoutPageTemplateEntryDisplayContext =
-				new SelectLayoutPageTemplateEntryDisplayContext(
-					_mockHttpServletRequest, null);
+				_getSelectLayoutPageTemplateEntryDisplayContext();
 
 		try (MockedStatic<LayoutPageTemplateEntryServiceUtil>
 				layoutPageTemplateEntryServiceUtilMockedStatic =
@@ -184,6 +255,100 @@ public class SelectLayoutPageTemplateEntryDisplayContextTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-105566")
+	public void testGetLayoutPageTemplateEntriesWithDesignLibraryGroup()
+		throws Exception {
+
+		long designLibraryGroupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_layoutPageTemplateCollection.getGroupId()
+		).thenReturn(
+			designLibraryGroupId
+		);
+
+		try (MockedStatic<DesignLibraryUtil> designLibraryUtilMockedStatic =
+				Mockito.mockStatic(DesignLibraryUtil.class);
+			MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class);
+			MockedStatic<LayoutPageTemplateEntryServiceUtil>
+				layoutPageTemplateEntryServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						LayoutPageTemplateEntryServiceUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-76864"))
+			).thenReturn(
+				true
+			);
+
+			designLibraryUtilMockedStatic.when(
+				() -> DesignLibraryUtil.isConnectedDesignLibraryGroupId(
+					Mockito.anyLong(), Mockito.eq(designLibraryGroupId),
+					Mockito.anyLong())
+			).thenReturn(
+				true
+			);
+
+			int count = RandomTestUtil.randomInt();
+
+			layoutPageTemplateEntryServiceUtilMockedStatic.when(
+				() ->
+					LayoutPageTemplateEntryServiceUtil.
+						getLayoutPageTemplateEntriesCount(
+							Mockito.eq(designLibraryGroupId), Mockito.anyLong(),
+							Mockito.eq(WorkflowConstants.STATUS_APPROVED))
+			).thenReturn(
+				count
+			);
+
+			List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
+				Collections.singletonList(
+					Mockito.mock(LayoutPageTemplateEntry.class));
+
+			layoutPageTemplateEntryServiceUtilMockedStatic.when(
+				() ->
+					LayoutPageTemplateEntryServiceUtil.
+						getLayoutPageTemplateEntries(
+							Mockito.eq(designLibraryGroupId), Mockito.anyLong(),
+							Mockito.eq(WorkflowConstants.STATUS_APPROVED),
+							Mockito.anyInt(), Mockito.anyInt())
+			).thenReturn(
+				layoutPageTemplateEntries
+			);
+
+			SelectLayoutPageTemplateEntryDisplayContext
+				selectLayoutPageTemplateEntryDisplayContext =
+					_getSelectLayoutPageTemplateEntryDisplayContext();
+
+			Assert.assertEquals(
+				count,
+				selectLayoutPageTemplateEntryDisplayContext.
+					getLayoutPageTemplateEntriesCount());
+			Assert.assertSame(
+				layoutPageTemplateEntries,
+				selectLayoutPageTemplateEntryDisplayContext.
+					getLayoutPageTemplateEntries(0, 10));
+		}
+	}
+
+	private SelectLayoutPageTemplateEntryDisplayContext
+		_getSelectLayoutPageTemplateEntryDisplayContext() {
+
+		return new SelectLayoutPageTemplateEntryDisplayContext(
+			_mockHttpServletRequest, null);
+	}
+
+	private static final MockedStatic
+		<LayoutPageTemplateCollectionLocalServiceUtil>
+			_layoutPageTemplateCollectionLocalServiceUtilMockedStatic =
+				Mockito.mockStatic(
+					LayoutPageTemplateCollectionLocalServiceUtil.class);
+
+	private LayoutPageTemplateCollection _layoutPageTemplateCollection;
 	private MockHttpServletRequest _mockHttpServletRequest;
 
 }
