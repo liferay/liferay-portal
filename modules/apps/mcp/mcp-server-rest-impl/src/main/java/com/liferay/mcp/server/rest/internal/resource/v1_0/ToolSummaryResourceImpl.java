@@ -28,11 +28,8 @@ public class ToolSummaryResourceImpl extends BaseToolSummaryResourceImpl {
 			String toolSetName)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-63311")) {
-
-			throw new UnsupportedOperationException();
-		}
+		FeatureFlagManagerUtil.checkEnabled(
+			contextCompany.getCompanyId(), "LPD-63311");
 
 		return ToolSetUtil.getToolSummariesPage(
 			contextHttpServletRequest, toolSetName);
