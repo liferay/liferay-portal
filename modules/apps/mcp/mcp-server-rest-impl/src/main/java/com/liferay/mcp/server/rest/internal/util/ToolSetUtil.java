@@ -73,7 +73,8 @@ public class ToolSetUtil {
 
 		return OpenAPIUtil.getOutputSchema(
 			_getOpenAPIJSONObject(
-				httpServletRequest, _getOpenAPIBrief(toolSetName)),
+				httpServletRequest, _getOpenAPIDocument(toolSetName),
+				toolSetName),
 			toolName);
 	}
 
