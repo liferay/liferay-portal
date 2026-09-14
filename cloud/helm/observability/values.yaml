@@ -100,6 +100,23 @@ alerting:
                         "engine", "$1", "dimension_EngineName", "(.+)")
                 )
             record: liferay:db_cpu_utilization_percent
+        db-cpu-utilization-percent-azure:
+            cloudProvider: azure
+            expr: |
+                sum by (environment_id, project_id, database_id, data_plane) (
+                    label_replace(
+                        label_replace(
+                            label_replace(
+                                label_replace(
+                                    label_join(
+                                        azure_microsoft_dbforpostgresql_flexibleservers_cpu_percent_average_percent{job="azure-postgresql"},
+                                        "environment_id", "-", "tag_project_id", "tag_environment_id"),
+                                    "environment_id", "liferay-$1", "environment_id", "(.+)"),
+                                "project_id", "$1", "tag_project_id", "(.+)"),
+                            "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
+                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                )
+            record: liferay:db_cpu_utilization_percent
         db-cpu-utilization-percent-gcp:
             cloudProvider: gcp
             expr: |
@@ -127,6 +144,24 @@ alerting:
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
                         "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                )
+            record: liferay:db_disk_total_bytes
+        db-disk-total-bytes-azure:
+            cloudProvider: azure
+            expr: |
+                sum by (environment_id, project_id, database_id, data_plane) (
+                    label_replace(
+                        label_replace(
+                            label_replace(
+                                label_replace(
+                                    label_join(
+                                        (azure_microsoft_dbforpostgresql_flexibleservers_storage_used_average_bytes{job="azure-postgresql"}
+                                         + azure_microsoft_dbforpostgresql_flexibleservers_storage_free_average_bytes{job="azure-postgresql"}),
+                                        "environment_id", "-", "tag_project_id", "tag_environment_id"),
+                                    "environment_id", "liferay-$1", "environment_id", "(.+)"),
+                                "project_id", "$1", "tag_project_id", "(.+)"),
+                            "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
+                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
                 )
             record: liferay:db_disk_total_bytes
         db-disk-total-bytes-gcp:
@@ -159,6 +194,23 @@ alerting:
                         "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
                 )
             record: liferay:db_disk_used_bytes
+        db-disk-used-bytes-azure:
+            cloudProvider: azure
+            expr: |
+                sum by (environment_id, project_id, database_id, data_plane) (
+                    label_replace(
+                        label_replace(
+                            label_replace(
+                                label_replace(
+                                    label_join(
+                                        azure_microsoft_dbforpostgresql_flexibleservers_storage_used_average_bytes{job="azure-postgresql"},
+                                        "environment_id", "-", "tag_project_id", "tag_environment_id"),
+                                    "environment_id", "liferay-$1", "environment_id", "(.+)"),
+                                "project_id", "$1", "tag_project_id", "(.+)"),
+                            "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
+                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                )
+            record: liferay:db_disk_used_bytes
         db-disk-used-bytes-gcp:
             cloudProvider: gcp
             expr: |
@@ -186,6 +238,23 @@ alerting:
                                 "project_id", "$1", "tag_ProjectId", "(.+)"),
                             "data_plane", "$1", "dbinstance_identifier", ".*-database-(blue|green)$"),
                         "database_id", "$1", "dbinstance_identifier", "(.+?)-database-(?:blue|green)$")
+                )
+            record: liferay:db_instance_state
+        db-instance-state-azure:
+            cloudProvider: azure
+            expr: |
+                sum by (environment_id, project_id, database_id, data_plane, state) (
+                    label_replace(
+                        label_replace(
+                            label_replace(
+                                label_replace(
+                                    label_join(
+                                        label_replace(azure_microsoft_dbforpostgresql_flexibleservers_is_db_alive_average_count{job="azure-postgresql"} == 1, "state", "RUNNING", "resourcename", ".*"),
+                                        "environment_id", "-", "tag_project_id", "tag_environment_id"),
+                                    "environment_id", "liferay-$1", "environment_id", "(.+)"),
+                                "project_id", "$1", "tag_project_id", "(.+)"),
+                            "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
+                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
                 )
             record: liferay:db_instance_state
         db-instance-state-gcp:
@@ -259,6 +328,23 @@ alerting:
                         "database_id", "$1", "database_id", "[^:]*:(.+)-(?:blue|green)$")
                 )
             record: liferay:db_memory_used_bytes
+        db-memory-utilization-percent-azure:
+            cloudProvider: azure
+            expr: |
+                sum by (environment_id, project_id, database_id, data_plane) (
+                    label_replace(
+                        label_replace(
+                            label_replace(
+                                label_replace(
+                                    label_join(
+                                        azure_microsoft_dbforpostgresql_flexibleservers_memory_percent_average_percent{job="azure-postgresql"},
+                                        "environment_id", "-", "tag_project_id", "tag_environment_id"),
+                                    "environment_id", "liferay-$1", "environment_id", "(.+)"),
+                                "project_id", "$1", "tag_project_id", "(.+)"),
+                            "data_plane", "$1", "resourcename", ".*-(blue|green)$"),
+                        "database_id", "$1", "resourcename", "(.+)-(?:blue|green)$")
+                )
+            record: liferay:db_memory_utilization_percent
         rds-memory-bytes-aws:
             cloudProvider: aws
             expr: |
@@ -432,11 +518,14 @@ aws:
     ampWorkspaceURL: ""
     region: ""
 azure:
+    location: ""
     prometheusWorkspaceEndpoint: ""
+    prometheusWorkspaceId: ""
     remoteWrite:
         dataCollectionRuleId: ""
         metricsIngestionEndpoint: ""
         tenantId: ""
+    resourceGroupName: ""
     subscriptionId: ""
 centralHub:
     argoWorkflowsURL: ""

@@ -1,0 +1,55 @@
+suite: Grafana dashboards
+templates:
+    -   templates/grafana/dashboards-configmap.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: "\"query\": \"aws\""
+            -   notMatchRegex:
+                    path: data["databases.json"]
+                    pattern: \$\{CLOUD_PROVIDER\}
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-databases
+        it: Injects the cloud provider into the databases dashboard constant when the cloud provider is AWS
+        set:
+            cloudProvider: aws
+    -   asserts:
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: "\"query\": \"azure\""
+            -   notMatchRegex:
+                    path: data["databases.json"]
+                    pattern: \$\{CLOUD_PROVIDER\}
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-databases
+        it: Injects the cloud provider into the databases dashboard constant when the cloud provider is Azure
+        set:
+            cloudProvider: azure
+    -   asserts:
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: "\"apiVersion\": \"dashboard.grafana.app/v2beta1\""
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: "\"kind\": \"ConditionalRenderingVariable\""
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: "\"variable\": \"cloud\""
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: liferay:db_cpu_reserved_cores\{environment_id=
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: liferay:db_cpu_utilization_percent\{environment_id=
+            -   matchRegex:
+                    path: data["databases.json"]
+                    pattern: liferay:db_memory_utilization_percent\{environment_id=
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-databases
+        it: Renders the databases dashboard as a v2 resource carrying both the capacity and the utilization panels
+        set:
+            cloudProvider: gcp

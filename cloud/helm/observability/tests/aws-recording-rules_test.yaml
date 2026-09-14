@@ -1,0 +1,15 @@
+suite: AWS recording rules
+templates:
+    -   templates/aws/recording-rules.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: spec.configuration
+                    pattern: liferay:db_cpu_utilization_percent
+            -   notMatchRegex:
+                    path: spec.configuration
+                    pattern: azure_microsoft_dbforpostgresql|liferay:db_memory_utilization_percent
+        it: Excludes the Azure database rules from the AMP rule group
+        set:
+            aws.ampWorkspaceID: ws-00000000-0000-0000-0000-000000000000
+            cloudProvider: aws

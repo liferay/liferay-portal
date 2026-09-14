@@ -234,6 +234,10 @@ run "should_disable_ingestion_by_default" {
 		condition=output.prometheus_data_collection_rule_id == "" && output.prometheus_metrics_ingestion_endpoint == ""
 		error_message="Remote write outputs must be empty when observability is disabled"
 	}
+	assert {
+		condition=output.prometheus_workspace_id == ""
+		error_message="The workspace ID output must be empty when observability is disabled"
+	}
 	command=plan
 }
 run "should_expose_remote_write_outputs_when_enabled" {
@@ -244,6 +248,18 @@ run "should_expose_remote_write_outputs_when_enabled" {
 	assert {
 		condition=output.prometheus_data_collection_rule_id == "dcr-00000000000000000000000000000000"
 		error_message="The data collection rule output must expose the immutable ID that the remote write URL embeds"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
+run "should_expose_the_workspace_id_when_enabled" {
+	assert {
+		condition=output.prometheus_workspace_id == "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw"
+		error_message="The workspace ID output must expose the Azure Monitor workspace that the Prometheus rule group targets"
 	}
 	command=plan
 	variables {

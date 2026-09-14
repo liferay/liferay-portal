@@ -1,0 +1,19 @@
+suite: GCP recording rules
+templates:
+    -   templates/gcp/recording-rules.yaml
+tests:
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        record: liferay:db_cpu_utilization_percent
+                    path: spec.groups[0].rules
+            -   notContains:
+                    any: true
+                    content:
+                        record: liferay:db_memory_utilization_percent
+                    path: spec.groups[0].rules
+        it: Excludes the Azure database rules from the GMP global rules
+        set:
+            cloudProvider: gcp
+            gcp.projectId: liferay-test

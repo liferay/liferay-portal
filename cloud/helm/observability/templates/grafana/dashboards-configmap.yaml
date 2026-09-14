@@ -55,7 +55,7 @@
 {{- if not $raw -}}
 {{- fail (printf "Dashboard file %s not found in chart" $entry.file) -}}
 {{- end -}}
-{{- $rendered := $raw | replace "${DS_PROMETHEUS}" $datasourceUid | replace "${ES_NAMESPACE_SUFFIX}" $esNamespaceSuffix | replace "${NS_LABEL}" $nsLabel | replace "${region}" $region -}}
+{{- $rendered := $raw | replace "${CLOUD_PROVIDER}" $.Values.cloudProvider | replace "${DS_PROMETHEUS}" $datasourceUid | replace "${ES_NAMESPACE_SUFFIX}" $esNamespaceSuffix | replace "${NS_LABEL}" $nsLabel | replace "${region}" $region -}}
 {{- if hasKey $dashboardHeaders $key -}}
 {{- $rendered = $rendered | replace "\"${HEADER_HTML}\"" (tpl ($.Files.Get "dashboards/html/dashboard-header.html") (index $dashboardHeaders $key) | toJson) -}}
 {{- end -}}

@@ -1,4 +1,5 @@
 {{- $runtimeConfigs := list
+    (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-alertsmanagement-config" "provider" "provider-azure-alertsmanagement" "serviceAccountName" "crossplane-data")
     (dict "clientIdKey" "crossplaneIamClientId" "name" "azure-authorization-config" "provider" "provider-azure-authorization" "serviceAccountName" "crossplane-iam")
     (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-dataprotection-config" "provider" "provider-azure-dataprotection" "serviceAccountName" "crossplane-data")
     (dict "clientIdKey" "crossplaneDataClientId" "name" "azure-dbforpostgresql-config" "provider" "provider-azure-dbforpostgresql" "serviceAccountName" "crossplane-data")

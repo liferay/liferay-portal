@@ -1,742 +1,1338 @@
 {
-	"annotations": {
-		"list": [
-			{
-				"builtIn": 1,
-				"datasource": {
-					"type": "grafana",
-					"uid": "-- Grafana --"
-				},
-				"enable": true,
-				"hide": true,
-				"iconColor": "rgba(0, 211, 255, 1)",
-				"name": "Annotations & Alerts",
-				"type": "dashboard"
-			}
-		]
+	"apiVersion": "dashboard.grafana.app/v2beta1",
+	"kind": "Dashboard",
+	"metadata": {
+		"name": "databases"
 	},
-	"editable": true,
-	"fiscalYearStartMonth": 0,
-	"graphTooltip": 0,
-	"links": [
-	],
-	"panels": [
-		{
-			"fieldConfig": {
-				"defaults": {
-				},
-				"overrides": [
-				]
-			},
-			"gridPos": {
-				"h": 5,
-				"w": 24,
-				"x": 0,
-				"y": 0
-			},
-			"id": 2,
-			"options": {
-				"code": {
-					"language": "plaintext",
-					"showLineNumbers": false,
-					"showMiniMap": false
-				},
-				"content": "${HEADER_HTML}",
-				"mode": "html"
-			},
-			"pluginVersion": "12.4.2",
-			"title": "",
-			"transparent": true,
-			"type": "text"
-		},
-		{
-			"datasource": {
-				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
-			},
-			"fieldConfig": {
-				"defaults": {
-					"color": {
-						"fixedColor": "#334155",
-						"mode": "fixed"
+	"spec": {
+		"annotations": [
+			{
+				"kind": "AnnotationQuery",
+				"spec": {
+					"builtIn": true,
+					"enable": true,
+					"hide": true,
+					"iconColor": "rgba(0, 211, 255, 1)",
+					"legacyOptions": {
+						"type": "dashboard"
 					},
-					"custom": {
-						"axisPlacement": "auto",
-						"fillOpacity": 70,
-						"hideFrom": {
-							"legend": false,
-							"tooltip": false,
-							"viz": false
+					"name": "Annotations & Alerts",
+					"query": {
+						"datasource": {
+							"name": "-- Grafana --"
 						},
-						"insertNulls": false,
-						"lineWidth": 0,
-						"spanNulls": false
-					},
-					"mappings": [
-					],
-					"thresholds": {
-						"mode": "absolute",
-						"steps": [
-							{
-								"color": "green",
-								"value": 0
-							},
-							{
-								"color": "red",
-								"value": 80
-							}
-						]
+						"group": "grafana",
+						"kind": "DataQuery",
+						"spec": {
+						},
+						"version": "v0"
 					}
-				},
-				"overrides": [
-					{
-						"matcher": {
-							"id": "byRegexp",
-							"options": "/.*RUNNING/"
-						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "blue",
-									"mode": "fixed"
-								}
-							}
-						]
+				}
+			}
+		],
+		"cursorSync": "Off",
+		"editable": true,
+		"elements": {
+			"panel-2": {
+				"kind": "Panel",
+				"spec": {
+					"data": {
+						"kind": "QueryGroup",
+						"spec": {
+							"queries": [
+							],
+							"queryOptions": {
+							},
+							"transformations": [
+							]
+						}
 					},
-					{
-						"matcher": {
-							"id": "byRegexp",
-							"options": "/.*FAILED/"
-						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "red",
-									"mode": "fixed"
-								}
+					"description": "",
+					"id": 2,
+					"links": [
+					],
+					"title": "",
+					"transparent": true,
+					"vizConfig": {
+						"group": "text",
+						"kind": "VizConfig",
+						"spec": {
+							"fieldConfig": {
+								"defaults": {
+								},
+								"overrides": [
+								]
+							},
+							"options": {
+								"code": {
+									"language": "plaintext",
+									"showLineNumbers": false,
+									"showMiniMap": false
+								},
+								"content": "${HEADER_HTML}",
+								"mode": "html"
 							}
-						]
-					},
-					{
-						"matcher": {
-							"id": "byRegexp",
-							"options": "/.*MAINTENANCE/"
 						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "purple",
-									"mode": "fixed"
-								}
-							}
-						]
-					},
-					{
-						"matcher": {
-							"id": "byRegexp",
-							"options": "/.*PENDING_CREATE/"
-						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "#f57b00",
-									"mode": "fixed"
-								}
-							}
-						]
-					},
-					{
-						"matcher": {
-							"id": "byRegexp",
-							"options": "/.*RUNNABLE/"
-						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "yellow",
-									"mode": "fixed"
-								}
-							}
-						]
-					},
-					{
-						"matcher": {
-							"id": "byRegexp",
-							"options": "/.*SUSPENDED/"
-						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "#64748b",
-									"mode": "fixed"
-								}
-							}
-						]
-					},
-					{
-						"matcher": {
-							"id": "byName",
-							"options": "Value"
-						},
-						"properties": [
-							{
-								"id": "mappings",
-								"value": [
-									{
-										"options": {
-											"1": {
-												"index": 0,
-												"text": "⠀"
-											}
+						"version": "12.4.2"
+					}
+				}
+			},
+			"panel-3": {
+				"kind": "Panel",
+				"spec": {
+					"data": {
+						"kind": "QueryGroup",
+						"spec": {
+							"queries": [
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"exemplar": false,
+												"expr": "avg(\n  avg_over_time(\n    liferay:db_memory_total_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"format": "time_series",
+												"instant": false,
+												"legendFormat": "Capacity",
+												"range": true
+											},
+											"version": "v0"
 										},
-										"type": "value"
+										"refId": "capacity"
+									}
+								},
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_memory_used_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"instant": false,
+												"legendFormat": "__auto",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "usage"
+									}
+								}
+							],
+							"queryOptions": {
+								"interval": "1m"
+							},
+							"transformations": [
+							]
+						}
+					},
+					"description": "",
+					"id": 3,
+					"links": [
+					],
+					"title": "Memory Usage",
+					"transparent": true,
+					"vizConfig": {
+						"group": "timeseries",
+						"kind": "VizConfig",
+						"spec": {
+							"fieldConfig": {
+								"defaults": {
+									"color": {
+										"mode": "palette-classic"
+									},
+									"custom": {
+										"axisBorderShow": false,
+										"axisCenteredZero": false,
+										"axisColorMode": "text",
+										"axisLabel": "",
+										"axisPlacement": "auto",
+										"barAlignment": 0,
+										"barWidthFactor": 0.6,
+										"drawStyle": "line",
+										"fillOpacity": 15,
+										"gradientMode": "none",
+										"hideFrom": {
+											"legend": false,
+											"tooltip": false,
+											"viz": false
+										},
+										"insertNulls": false,
+										"lineInterpolation": "linear",
+										"lineWidth": 1,
+										"pointSize": 5,
+										"scaleDistribution": {
+											"type": "linear"
+										},
+										"showPoints": "never",
+										"showValues": false,
+										"spanNulls": false,
+										"stacking": {
+											"group": "A",
+											"mode": "none"
+										},
+										"thresholdsStyle": {
+											"mode": "off"
+										}
+									},
+									"thresholds": {
+										"mode": "absolute",
+										"steps": [
+											{
+												"color": "green",
+												"value": 0
+											},
+											{
+												"color": "red",
+												"value": 80
+											}
+										]
+									},
+									"unit": "decbytes"
+								},
+								"overrides": [
+									{
+										"matcher": {
+											"id": "byName",
+											"options": "Capacity"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "red",
+													"mode": "fixed"
+												}
+											},
+											{
+												"id": "custom.lineStyle",
+												"value": {
+													"dash": [
+														10,
+														10
+													],
+													"fill": "dash"
+												}
+											},
+											{
+												"id": "custom.fillOpacity",
+												"value": 1
+											}
+										]
 									}
 								]
+							},
+							"options": {
+								"legend": {
+									"calcs": [
+										"mean",
+										"max"
+									],
+									"displayMode": "table",
+									"placement": "right",
+									"showLegend": true
+								},
+								"tooltip": {
+									"hideZeros": false,
+									"mode": "single",
+									"sort": "none"
+								}
 							}
-						]
+						},
+						"version": "12.4.2"
 					}
-				]
-			},
-			"gridPos": {
-				"h": 12,
-				"w": 12,
-				"x": 0,
-				"y": 5
-			},
-			"id": 6,
-			"interval": "1m",
-			"options": {
-				"alignValue": "left",
-				"legend": {
-					"displayMode": "list",
-					"placement": "bottom",
-					"showLegend": false
-				},
-				"mergeValues": true,
-				"rowHeight": 0.6,
-				"showValue": "never",
-				"tooltip": {
-					"hideZeros": false,
-					"mode": "single",
-					"sort": "none"
 				}
 			},
-			"pluginVersion": "12.4.2",
-			"targets": [
-				{
-					"editorMode": "code",
-					"exemplar": false,
-					"expr": "avg by (database_id, data_plane, state) (\n  last_over_time(\n    liferay:db_instance_state{environment_id=\"$environment\"}[${__interval}]\n  ) > 0\n)",
-					"format": "time_series",
-					"instant": false,
-					"legendFormat": "{{db_name}} - {{state}}",
-					"range": true,
-					"refId": "A"
-				}
-			],
-			"title": "Database Status",
-			"transparent": true,
-			"type": "state-timeline"
-		},
-		{
-			"datasource": {
-				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
-			},
-			"fieldConfig": {
-				"defaults": {
-					"color": {
-						"mode": "palette-classic"
-					},
-					"custom": {
-						"axisBorderShow": false,
-						"axisCenteredZero": false,
-						"axisColorMode": "text",
-						"axisLabel": "",
-						"axisPlacement": "auto",
-						"barAlignment": 0,
-						"barWidthFactor": 0.6,
-						"drawStyle": "line",
-						"fillOpacity": 15,
-						"gradientMode": "none",
-						"hideFrom": {
-							"legend": false,
-							"tooltip": false,
-							"viz": false
-						},
-						"insertNulls": false,
-						"lineInterpolation": "linear",
-						"lineWidth": 1,
-						"pointSize": 5,
-						"scaleDistribution": {
-							"type": "linear"
-						},
-						"showPoints": "never",
-						"showValues": false,
-						"spanNulls": false,
-						"stacking": {
-							"group": "A",
-							"mode": "none"
-						},
-						"thresholdsStyle": {
-							"mode": "off"
+			"panel-4": {
+				"kind": "Panel",
+				"spec": {
+					"data": {
+						"kind": "QueryGroup",
+						"spec": {
+							"queries": [
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"exemplar": false,
+												"expr": "avg(\n  avg_over_time(\n    liferay:db_disk_total_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"format": "time_series",
+												"instant": false,
+												"legendFormat": "Capacity",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "capacity"
+									}
+								},
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_disk_used_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"instant": false,
+												"legendFormat": "__auto",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "usage"
+									}
+								}
+							],
+							"queryOptions": {
+								"interval": "1m"
+							},
+							"transformations": [
+							]
 						}
 					},
-					"mappings": [
+					"description": "",
+					"id": 4,
+					"links": [
 					],
-					"thresholds": {
-						"mode": "absolute",
-						"steps": [
-							{
-								"color": "green",
-								"value": 0
+					"title": "Disk Usage",
+					"transparent": true,
+					"vizConfig": {
+						"group": "timeseries",
+						"kind": "VizConfig",
+						"spec": {
+							"fieldConfig": {
+								"defaults": {
+									"color": {
+										"mode": "palette-classic"
+									},
+									"custom": {
+										"axisBorderShow": false,
+										"axisCenteredZero": false,
+										"axisColorMode": "text",
+										"axisLabel": "",
+										"axisPlacement": "auto",
+										"barAlignment": 0,
+										"barWidthFactor": 0.6,
+										"drawStyle": "line",
+										"fillOpacity": 15,
+										"gradientMode": "none",
+										"hideFrom": {
+											"legend": false,
+											"tooltip": false,
+											"viz": false
+										},
+										"insertNulls": false,
+										"lineInterpolation": "linear",
+										"lineWidth": 1,
+										"pointSize": 5,
+										"scaleDistribution": {
+											"type": "linear"
+										},
+										"showPoints": "never",
+										"showValues": false,
+										"spanNulls": false,
+										"stacking": {
+											"group": "A",
+											"mode": "none"
+										},
+										"thresholdsStyle": {
+											"mode": "off"
+										}
+									},
+									"thresholds": {
+										"mode": "absolute",
+										"steps": [
+											{
+												"color": "green",
+												"value": 0
+											},
+											{
+												"color": "red",
+												"value": 80
+											}
+										]
+									},
+									"unit": "decbytes"
+								},
+								"overrides": [
+									{
+										"matcher": {
+											"id": "byName",
+											"options": "Capacity"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "red",
+													"mode": "fixed"
+												}
+											},
+											{
+												"id": "custom.lineStyle",
+												"value": {
+													"dash": [
+														10,
+														10
+													],
+													"fill": "dash"
+												}
+											},
+											{
+												"id": "custom.fillOpacity",
+												"value": 1
+											}
+										]
+									}
+								]
 							},
-							{
-								"color": "red",
-								"value": 80
-							}
-						]
-					},
-					"unit": "decbytes"
-				},
-				"overrides": [
-					{
-						"matcher": {
-							"id": "byName",
-							"options": "Capacity"
-						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "red",
-									"mode": "fixed"
-								}
-							},
-							{
-								"id": "custom.lineStyle",
-								"value": {
-									"dash": [
-										10,
-										10
+							"options": {
+								"legend": {
+									"calcs": [
+										"mean",
+										"max"
 									],
-									"fill": "dash"
+									"displayMode": "table",
+									"placement": "right",
+									"showLegend": true
+								},
+								"tooltip": {
+									"hideZeros": false,
+									"mode": "single",
+									"sort": "none"
 								}
-							},
-							{
-								"id": "custom.fillOpacity",
-								"value": 1
 							}
-						]
+						},
+						"version": "12.4.2"
 					}
-				]
-			},
-			"gridPos": {
-				"h": 12,
-				"w": 12,
-				"x": 12,
-				"y": 5
-			},
-			"id": 4,
-			"interval": "1m",
-			"options": {
-				"legend": {
-					"calcs": [
-						"mean",
-						"max"
-					],
-					"displayMode": "table",
-					"placement": "right",
-					"showLegend": true
-				},
-				"tooltip": {
-					"hideZeros": false,
-					"mode": "single",
-					"sort": "none"
 				}
 			},
-			"pluginVersion": "12.4.2",
-			"targets": [
-				{
-					"editorMode": "code",
-					"exemplar": false,
-					"expr": "avg(\n  avg_over_time(\n    liferay:db_disk_total_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
-					"format": "time_series",
-					"instant": false,
-					"legendFormat": "Capacity",
-					"range": true,
-					"refId": "capacity"
-				},
-				{
-					"datasource": {
-						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
-					},
-					"editorMode": "code",
-					"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_disk_used_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
-					"instant": false,
-					"legendFormat": "__auto",
-					"range": true,
-					"refId": "usage"
-				}
-			],
-			"title": "Disk Usage",
-			"transparent": true,
-			"type": "timeseries"
-		},
-		{
-			"datasource": {
-				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
-			},
-			"fieldConfig": {
-				"defaults": {
-					"color": {
-						"mode": "palette-classic"
-					},
-					"custom": {
-						"axisBorderShow": false,
-						"axisCenteredZero": false,
-						"axisColorMode": "text",
-						"axisLabel": "",
-						"axisPlacement": "auto",
-						"barAlignment": 0,
-						"barWidthFactor": 0.6,
-						"drawStyle": "line",
-						"fillOpacity": 15,
-						"gradientMode": "none",
-						"hideFrom": {
-							"legend": false,
-							"tooltip": false,
-							"viz": false
-						},
-						"insertNulls": false,
-						"lineInterpolation": "linear",
-						"lineWidth": 1,
-						"pointSize": 5,
-						"scaleDistribution": {
-							"type": "linear"
-						},
-						"showPoints": "never",
-						"showValues": false,
-						"spanNulls": false,
-						"stacking": {
-							"group": "A",
-							"mode": "none"
-						},
-						"thresholdsStyle": {
-							"mode": "off"
+			"panel-5": {
+				"kind": "Panel",
+				"spec": {
+					"data": {
+						"kind": "QueryGroup",
+						"spec": {
+							"queries": [
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"exemplar": false,
+												"expr": "avg(\n  avg_over_time(\n    liferay:db_cpu_reserved_cores{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"format": "time_series",
+												"instant": false,
+												"legendFormat": "Capacity",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "capacity"
+									}
+								},
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_cpu_used_cores{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"instant": false,
+												"legendFormat": "__auto",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "usage"
+									}
+								}
+							],
+							"queryOptions": {
+								"interval": "1m"
+							},
+							"transformations": [
+							]
 						}
 					},
-					"mappings": [
+					"description": "",
+					"id": 5,
+					"links": [
 					],
-					"thresholds": {
-						"mode": "absolute",
-						"steps": [
-							{
-								"color": "green",
-								"value": 0
+					"title": "CPU Usage",
+					"transparent": true,
+					"vizConfig": {
+						"group": "timeseries",
+						"kind": "VizConfig",
+						"spec": {
+							"fieldConfig": {
+								"defaults": {
+									"color": {
+										"mode": "palette-classic"
+									},
+									"custom": {
+										"axisBorderShow": false,
+										"axisCenteredZero": false,
+										"axisColorMode": "text",
+										"axisLabel": "",
+										"axisPlacement": "auto",
+										"barAlignment": 0,
+										"barWidthFactor": 0.6,
+										"drawStyle": "line",
+										"fillOpacity": 15,
+										"gradientMode": "none",
+										"hideFrom": {
+											"legend": false,
+											"tooltip": false,
+											"viz": false
+										},
+										"insertNulls": false,
+										"lineInterpolation": "linear",
+										"lineWidth": 1,
+										"pointSize": 5,
+										"scaleDistribution": {
+											"type": "linear"
+										},
+										"showPoints": "never",
+										"showValues": false,
+										"spanNulls": false,
+										"stacking": {
+											"group": "A",
+											"mode": "none"
+										},
+										"thresholdsStyle": {
+											"mode": "off"
+										}
+									},
+									"thresholds": {
+										"mode": "absolute",
+										"steps": [
+											{
+												"color": "green",
+												"value": 0
+											},
+											{
+												"color": "red",
+												"value": 80
+											}
+										]
+									},
+									"unit": "vCPUs"
+								},
+								"overrides": [
+									{
+										"matcher": {
+											"id": "byName",
+											"options": "Capacity"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "red",
+													"mode": "fixed"
+												}
+											},
+											{
+												"id": "custom.lineStyle",
+												"value": {
+													"dash": [
+														10,
+														10
+													],
+													"fill": "dash"
+												}
+											},
+											{
+												"id": "custom.fillOpacity",
+												"value": 1
+											}
+										]
+									}
+								]
 							},
-							{
-								"color": "red",
-								"value": 80
-							}
-						]
-					},
-					"unit": "decbytes"
-				},
-				"overrides": [
-					{
-						"matcher": {
-							"id": "byName",
-							"options": "Capacity"
-						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "red",
-									"mode": "fixed"
-								}
-							},
-							{
-								"id": "custom.lineStyle",
-								"value": {
-									"dash": [
-										10,
-										10
+							"options": {
+								"legend": {
+									"calcs": [
+										"mean",
+										"max"
 									],
-									"fill": "dash"
+									"displayMode": "table",
+									"placement": "right",
+									"showLegend": true
+								},
+								"tooltip": {
+									"hideZeros": false,
+									"mode": "single",
+									"sort": "none"
 								}
-							},
-							{
-								"id": "custom.fillOpacity",
-								"value": 1
 							}
-						]
+						},
+						"version": "12.4.2"
 					}
-				]
-			},
-			"gridPos": {
-				"h": 12,
-				"w": 12,
-				"x": 0,
-				"y": 17
-			},
-			"id": 3,
-			"interval": "1m",
-			"options": {
-				"legend": {
-					"calcs": [
-						"mean",
-						"max"
-					],
-					"displayMode": "table",
-					"placement": "right",
-					"showLegend": true
-				},
-				"tooltip": {
-					"hideZeros": false,
-					"mode": "single",
-					"sort": "none"
 				}
 			},
-			"pluginVersion": "12.4.2",
-			"targets": [
-				{
-					"editorMode": "code",
-					"exemplar": false,
-					"expr": "avg(\n  avg_over_time(\n    liferay:db_memory_total_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
-					"format": "time_series",
-					"instant": false,
-					"legendFormat": "Capacity",
-					"range": true,
-					"refId": "capacity"
-				},
-				{
-					"datasource": {
-						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
-					},
-					"editorMode": "code",
-					"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_memory_used_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
-					"instant": false,
-					"legendFormat": "__auto",
-					"range": true,
-					"refId": "usage"
-				}
-			],
-			"title": "Memory Usage",
-			"transparent": true,
-			"type": "timeseries"
-		},
-		{
-			"datasource": {
-				"type": "prometheus",
-				"uid": "${DS_PROMETHEUS}"
-			},
-			"fieldConfig": {
-				"defaults": {
-					"color": {
-						"mode": "palette-classic"
-					},
-					"custom": {
-						"axisBorderShow": false,
-						"axisCenteredZero": false,
-						"axisColorMode": "text",
-						"axisLabel": "",
-						"axisPlacement": "auto",
-						"barAlignment": 0,
-						"barWidthFactor": 0.6,
-						"drawStyle": "line",
-						"fillOpacity": 15,
-						"gradientMode": "none",
-						"hideFrom": {
-							"legend": false,
-							"tooltip": false,
-							"viz": false
-						},
-						"insertNulls": false,
-						"lineInterpolation": "linear",
-						"lineWidth": 1,
-						"pointSize": 5,
-						"scaleDistribution": {
-							"type": "linear"
-						},
-						"showPoints": "never",
-						"showValues": false,
-						"spanNulls": false,
-						"stacking": {
-							"group": "A",
-							"mode": "none"
-						},
-						"thresholdsStyle": {
-							"mode": "off"
+			"panel-6": {
+				"kind": "Panel",
+				"spec": {
+					"data": {
+						"kind": "QueryGroup",
+						"spec": {
+							"queries": [
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"exemplar": false,
+												"expr": "avg by (database_id, data_plane, state) (\n  last_over_time(\n    liferay:db_instance_state{environment_id=\"$environment\"}[${__interval}]\n  ) > 0\n)",
+												"format": "time_series",
+												"instant": false,
+												"legendFormat": "{{db_name}} - {{state}}",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "A"
+									}
+								}
+							],
+							"queryOptions": {
+								"interval": "1m"
+							},
+							"transformations": [
+							]
 						}
 					},
-					"mappings": [
+					"description": "",
+					"id": 6,
+					"links": [
 					],
-					"thresholds": {
-						"mode": "absolute",
-						"steps": [
-							{
-								"color": "green",
-								"value": 0
+					"title": "Database Status",
+					"transparent": true,
+					"vizConfig": {
+						"group": "state-timeline",
+						"kind": "VizConfig",
+						"spec": {
+							"fieldConfig": {
+								"defaults": {
+									"color": {
+										"fixedColor": "#334155",
+										"mode": "fixed"
+									},
+									"custom": {
+										"axisPlacement": "auto",
+										"fillOpacity": 70,
+										"hideFrom": {
+											"legend": false,
+											"tooltip": false,
+											"viz": false
+										},
+										"insertNulls": false,
+										"lineWidth": 0,
+										"spanNulls": false
+									},
+									"thresholds": {
+										"mode": "absolute",
+										"steps": [
+											{
+												"color": "green",
+												"value": 0
+											},
+											{
+												"color": "red",
+												"value": 80
+											}
+										]
+									}
+								},
+								"overrides": [
+									{
+										"matcher": {
+											"id": "byRegexp",
+											"options": "/.*RUNNING/"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "blue",
+													"mode": "fixed"
+												}
+											}
+										]
+									},
+									{
+										"matcher": {
+											"id": "byRegexp",
+											"options": "/.*FAILED/"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "red",
+													"mode": "fixed"
+												}
+											}
+										]
+									},
+									{
+										"matcher": {
+											"id": "byRegexp",
+											"options": "/.*MAINTENANCE/"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "purple",
+													"mode": "fixed"
+												}
+											}
+										]
+									},
+									{
+										"matcher": {
+											"id": "byRegexp",
+											"options": "/.*PENDING_CREATE/"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "#f57b00",
+													"mode": "fixed"
+												}
+											}
+										]
+									},
+									{
+										"matcher": {
+											"id": "byRegexp",
+											"options": "/.*RUNNABLE/"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "yellow",
+													"mode": "fixed"
+												}
+											}
+										]
+									},
+									{
+										"matcher": {
+											"id": "byRegexp",
+											"options": "/.*SUSPENDED/"
+										},
+										"properties": [
+											{
+												"id": "color",
+												"value": {
+													"fixedColor": "#64748b",
+													"mode": "fixed"
+												}
+											}
+										]
+									},
+									{
+										"matcher": {
+											"id": "byName",
+											"options": "Value"
+										},
+										"properties": [
+											{
+												"id": "mappings",
+												"value": [
+													{
+														"options": {
+															"1": {
+																"index": 0,
+																"text": "⠀"
+															}
+														},
+														"type": "value"
+													}
+												]
+											}
+										]
+									}
+								]
 							},
-							{
-								"color": "red",
-								"value": 80
+							"options": {
+								"alignValue": "left",
+								"legend": {
+									"displayMode": "list",
+									"placement": "bottom",
+									"showLegend": false
+								},
+								"mergeValues": true,
+								"rowHeight": 0.6,
+								"showValue": "never",
+								"tooltip": {
+									"hideZeros": false,
+									"mode": "single",
+									"sort": "none"
+								}
 							}
-						]
-					},
-					"unit": "vCPUs"
-				},
-				"overrides": [
-					{
-						"matcher": {
-							"id": "byName",
-							"options": "Capacity"
 						},
-						"properties": [
-							{
-								"id": "color",
-								"value": {
-									"fixedColor": "red",
-									"mode": "fixed"
+						"version": "12.4.2"
+					}
+				}
+			},
+			"panel-7": {
+				"kind": "Panel",
+				"spec": {
+					"data": {
+						"kind": "QueryGroup",
+						"spec": {
+							"queries": [
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_cpu_utilization_percent{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"instant": false,
+												"legendFormat": "__auto",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "usage"
+									}
 								}
+							],
+							"queryOptions": {
+								"interval": "1m"
 							},
-							{
-								"id": "custom.lineStyle",
-								"value": {
-									"dash": [
-										10,
-										10
+							"transformations": [
+							]
+						}
+					},
+					"description": "",
+					"id": 7,
+					"links": [
+					],
+					"title": "CPU Usage",
+					"transparent": true,
+					"vizConfig": {
+						"group": "timeseries",
+						"kind": "VizConfig",
+						"spec": {
+							"fieldConfig": {
+								"defaults": {
+									"color": {
+										"mode": "palette-classic"
+									},
+									"custom": {
+										"axisBorderShow": false,
+										"axisCenteredZero": false,
+										"axisColorMode": "text",
+										"axisLabel": "",
+										"axisPlacement": "auto",
+										"barAlignment": 0,
+										"barWidthFactor": 0.6,
+										"drawStyle": "line",
+										"fillOpacity": 15,
+										"gradientMode": "none",
+										"hideFrom": {
+											"legend": false,
+											"tooltip": false,
+											"viz": false
+										},
+										"insertNulls": false,
+										"lineInterpolation": "linear",
+										"lineWidth": 1,
+										"pointSize": 5,
+										"scaleDistribution": {
+											"type": "linear"
+										},
+										"showPoints": "never",
+										"showValues": false,
+										"spanNulls": false,
+										"stacking": {
+											"group": "A",
+											"mode": "none"
+										},
+										"thresholdsStyle": {
+											"mode": "off"
+										}
+									},
+									"max": 100,
+									"min": 0,
+									"thresholds": {
+										"mode": "absolute",
+										"steps": [
+											{
+												"color": "green",
+												"value": 0
+											},
+											{
+												"color": "red",
+												"value": 80
+											}
+										]
+									},
+									"unit": "percent"
+								},
+								"overrides": [
+								]
+							},
+							"options": {
+								"legend": {
+									"calcs": [
+										"mean",
+										"max"
 									],
-									"fill": "dash"
+									"displayMode": "table",
+									"placement": "right",
+									"showLegend": true
+								},
+								"tooltip": {
+									"hideZeros": false,
+									"mode": "single",
+									"sort": "none"
+								}
+							}
+						},
+						"version": "12.4.2"
+					}
+				}
+			},
+			"panel-8": {
+				"kind": "Panel",
+				"spec": {
+					"data": {
+						"kind": "QueryGroup",
+						"spec": {
+							"queries": [
+								{
+									"kind": "PanelQuery",
+									"spec": {
+										"hidden": false,
+										"query": {
+											"datasource": {
+												"name": "${DS_PROMETHEUS}"
+											},
+											"group": "prometheus",
+											"kind": "DataQuery",
+											"spec": {
+												"editorMode": "code",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_memory_utilization_percent{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"instant": false,
+												"legendFormat": "__auto",
+												"range": true
+											},
+											"version": "v0"
+										},
+										"refId": "usage"
+									}
+								}
+							],
+							"queryOptions": {
+								"interval": "1m"
+							},
+							"transformations": [
+							]
+						}
+					},
+					"description": "",
+					"id": 8,
+					"links": [
+					],
+					"title": "Memory Usage",
+					"transparent": true,
+					"vizConfig": {
+						"group": "timeseries",
+						"kind": "VizConfig",
+						"spec": {
+							"fieldConfig": {
+								"defaults": {
+									"color": {
+										"mode": "palette-classic"
+									},
+									"custom": {
+										"axisBorderShow": false,
+										"axisCenteredZero": false,
+										"axisColorMode": "text",
+										"axisLabel": "",
+										"axisPlacement": "auto",
+										"barAlignment": 0,
+										"barWidthFactor": 0.6,
+										"drawStyle": "line",
+										"fillOpacity": 15,
+										"gradientMode": "none",
+										"hideFrom": {
+											"legend": false,
+											"tooltip": false,
+											"viz": false
+										},
+										"insertNulls": false,
+										"lineInterpolation": "linear",
+										"lineWidth": 1,
+										"pointSize": 5,
+										"scaleDistribution": {
+											"type": "linear"
+										},
+										"showPoints": "never",
+										"showValues": false,
+										"spanNulls": false,
+										"stacking": {
+											"group": "A",
+											"mode": "none"
+										},
+										"thresholdsStyle": {
+											"mode": "off"
+										}
+									},
+									"max": 100,
+									"min": 0,
+									"thresholds": {
+										"mode": "absolute",
+										"steps": [
+											{
+												"color": "green",
+												"value": 0
+											},
+											{
+												"color": "red",
+												"value": 80
+											}
+										]
+									},
+									"unit": "percent"
+								},
+								"overrides": [
+								]
+							},
+							"options": {
+								"legend": {
+									"calcs": [
+										"mean",
+										"max"
+									],
+									"displayMode": "table",
+									"placement": "right",
+									"showLegend": true
+								},
+								"tooltip": {
+									"hideZeros": false,
+									"mode": "single",
+									"sort": "none"
+								}
+							}
+						},
+						"version": "12.4.2"
+					}
+				}
+			}
+		},
+		"layout": {
+			"kind": "RowsLayout",
+			"spec": {
+				"rows": [
+					{
+						"kind": "RowsLayoutRow",
+						"spec": {
+							"hideHeader": true,
+							"layout": {
+								"kind": "GridLayout",
+								"spec": {
+									"items": [
+										{
+											"kind": "GridLayoutItem",
+											"spec": {
+												"element": {
+													"kind": "ElementReference",
+													"name": "panel-2"
+												},
+												"height": 5,
+												"width": 24,
+												"x": 0,
+												"y": 0
+											}
+										},
+										{
+											"kind": "GridLayoutItem",
+											"spec": {
+												"element": {
+													"kind": "ElementReference",
+													"name": "panel-6"
+												},
+												"height": 12,
+												"width": 12,
+												"x": 0,
+												"y": 5
+											}
+										},
+										{
+											"kind": "GridLayoutItem",
+											"spec": {
+												"element": {
+													"kind": "ElementReference",
+													"name": "panel-4"
+												},
+												"height": 12,
+												"width": 12,
+												"x": 12,
+												"y": 5
+											}
+										}
+									]
 								}
 							},
-							{
-								"id": "custom.fillOpacity",
-								"value": 1
-							}
-						]
+							"title": "Database Health"
+						}
+					},
+					{
+						"kind": "RowsLayoutRow",
+						"spec": {
+							"conditionalRendering": {
+								"kind": "ConditionalRenderingGroup",
+								"spec": {
+									"condition": "and",
+									"items": [
+										{
+											"kind": "ConditionalRenderingVariable",
+											"spec": {
+												"operator": "equals",
+												"value": "azure",
+												"variable": "cloud"
+											}
+										}
+									],
+									"visibility": "hide"
+								}
+							},
+							"hideHeader": true,
+							"layout": {
+								"kind": "GridLayout",
+								"spec": {
+									"items": [
+										{
+											"kind": "GridLayoutItem",
+											"spec": {
+												"element": {
+													"kind": "ElementReference",
+													"name": "panel-3"
+												},
+												"height": 12,
+												"width": 12,
+												"x": 0,
+												"y": 0
+											}
+										},
+										{
+											"kind": "GridLayoutItem",
+											"spec": {
+												"element": {
+													"kind": "ElementReference",
+													"name": "panel-5"
+												},
+												"height": 12,
+												"width": 12,
+												"x": 12,
+												"y": 0
+											}
+										}
+									]
+								}
+							},
+							"title": "Instance Capacity"
+						}
+					},
+					{
+						"kind": "RowsLayoutRow",
+						"spec": {
+							"conditionalRendering": {
+								"kind": "ConditionalRenderingGroup",
+								"spec": {
+									"condition": "and",
+									"items": [
+										{
+											"kind": "ConditionalRenderingVariable",
+											"spec": {
+												"operator": "notEquals",
+												"value": "azure",
+												"variable": "cloud"
+											}
+										}
+									],
+									"visibility": "hide"
+								}
+							},
+							"hideHeader": true,
+							"layout": {
+								"kind": "GridLayout",
+								"spec": {
+									"items": [
+										{
+											"kind": "GridLayoutItem",
+											"spec": {
+												"element": {
+													"kind": "ElementReference",
+													"name": "panel-8"
+												},
+												"height": 12,
+												"width": 12,
+												"x": 0,
+												"y": 0
+											}
+										},
+										{
+											"kind": "GridLayoutItem",
+											"spec": {
+												"element": {
+													"kind": "ElementReference",
+													"name": "panel-7"
+												},
+												"height": 12,
+												"width": 12,
+												"x": 12,
+												"y": 0
+											}
+										}
+									]
+								}
+							},
+							"title": "Utilization"
+						}
 					}
 				]
-			},
-			"gridPos": {
-				"h": 12,
-				"w": 12,
-				"x": 12,
-				"y": 17
-			},
-			"id": 5,
-			"interval": "1m",
-			"options": {
-				"legend": {
-					"calcs": [
-						"mean",
-						"max"
-					],
-					"displayMode": "table",
-					"placement": "right",
-					"showLegend": true
-				},
-				"tooltip": {
-					"hideZeros": false,
-					"mode": "single",
-					"sort": "none"
-				}
-			},
-			"pluginVersion": "12.4.2",
-			"targets": [
-				{
-					"editorMode": "code",
-					"exemplar": false,
-					"expr": "avg(\n  avg_over_time(\n    liferay:db_cpu_reserved_cores{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
-					"format": "time_series",
-					"instant": false,
-					"legendFormat": "Capacity",
-					"range": true,
-					"refId": "capacity"
-				},
-				{
-					"datasource": {
-						"type": "prometheus",
-						"uid": "${DS_PROMETHEUS}"
-					},
-					"editorMode": "code",
-					"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_cpu_used_cores{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
-					"instant": false,
-					"legendFormat": "__auto",
-					"range": true,
-					"refId": "usage"
-				}
+			}
+		},
+		"links": [
+		],
+		"liveNow": false,
+		"preload": false,
+		"tags": [
+			"Databases",
+			"Liferay"
+		],
+		"timeSettings": {
+			"autoRefresh": "",
+			"autoRefreshIntervals": [
+				"1m",
+				"5m",
+				"15m",
+				"30m",
+				"1h",
+				"2h",
+				"1d"
 			],
-			"title": "CPU Usage",
-			"transparent": true,
-			"type": "timeseries"
-		}
-	],
-	"preload": false,
-	"schemaVersion": 42,
-	"tags": [
-		"Databases",
-		"Liferay"
-	],
-	"templating": {
-		"list": [
+			"fiscalYearStartMonth": 0,
+			"from": "now-1h",
+			"hideTimepicker": false,
+			"timezone": "browser",
+			"to": "now"
+		},
+		"title": "Databases",
+		"variables": [
 			{
-				"allowCustomValue": false,
-				"current": {
-					"text": "",
-					"value": ""
-				},
-				"datasource": {
-					"type": "prometheus",
-					"uid": "${DS_PROMETHEUS}"
-				},
-				"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
-				"label": "Environment",
-				"name": "environment",
-				"options": [
-				],
-				"query": {
-					"qryType": 1,
-					"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
-					"refId": "PrometheusVariableQueryEditor-VariableQuery"
-				},
-				"refresh": 1,
-				"regex": "/(?<value>.*-(?<text>.*))/",
-				"regexApplyTo": "value",
-				"sort": 1,
-				"type": "query"
+				"kind": "QueryVariable",
+				"spec": {
+					"allowCustomValue": false,
+					"current": {
+						"text": "",
+						"value": ""
+					},
+					"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+					"hide": "dontHide",
+					"includeAll": false,
+					"label": "Environment",
+					"multi": false,
+					"name": "environment",
+					"options": [
+					],
+					"query": {
+						"datasource": {
+							"name": "${DS_PROMETHEUS}"
+						},
+						"group": "prometheus",
+						"kind": "DataQuery",
+						"spec": {
+							"qryType": 1,
+							"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+							"refId": "PrometheusVariableQueryEditor-VariableQuery"
+						},
+						"version": "v0"
+					},
+					"refresh": "onDashboardLoad",
+					"regex": "/(?<value>.*-(?<text>.*))/",
+					"regexApplyTo": "value",
+					"skipUrlSync": false,
+					"sort": "alphabeticalAsc"
+				}
+			},
+			{
+				"kind": "ConstantVariable",
+				"spec": {
+					"current": {
+						"text": "${CLOUD_PROVIDER}",
+						"value": "${CLOUD_PROVIDER}"
+					},
+					"hide": "hideVariable",
+					"name": "cloud",
+					"query": "${CLOUD_PROVIDER}",
+					"skipUrlSync": true
+				}
 			}
 		]
-	},
-	"time": {
-		"from": "now-1h",
-		"to": "now"
-	},
-	"timepicker": {
-		"refresh_intervals": [
-			"1m",
-			"5m",
-			"15m",
-			"30m",
-			"1h",
-			"2h",
-			"1d"
-		]
-	},
-	"timezone": "browser",
-	"title": "Databases",
-	"uid": "databases",
-	"version": 1,
-	"weekStart": ""
+	}
 }

@@ -210,8 +210,16 @@ function _get_observability_parameters {
 				value: ($platform_module_outputs.observability_identity_client_id.value // "")
 			},
 			{
+				name: "azure.location",
+				value: ($platform_module_outputs.deployment_context.value.region // "")
+			},
+			{
 				name: "azure.prometheusWorkspaceEndpoint",
 				value: ($platform_module_outputs.prometheus_workspace_endpoint.value // "")
+			},
+			{
+				name: "azure.prometheusWorkspaceId",
+				value: ($platform_module_outputs.prometheus_workspace_id.value // "")
 			},
 			{
 				name: "azure.remoteWrite.dataCollectionRuleId",
@@ -224,6 +232,10 @@ function _get_observability_parameters {
 			{
 				name: "azure.remoteWrite.tenantId",
 				value: $tenant_id
+			},
+			{
+				name: "azure.resourceGroupName",
+				value: ($platform_module_outputs.deployment_context.value.resourceGroupName // "")
 			},
 			{
 				name: "azure.subscriptionId",

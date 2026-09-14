@@ -2,12 +2,12 @@
 {{- $cloud := include "observability.cloudProvider" . -}}
 {{- $interval := .Values.alerting.interval | default "1m" -}}
 {{- $matchedRules := list -}}
-{{- range $key, $rule := .Values.alerting.recordingRules -}}
+{{- range $rule := .Values.alerting.recordingRules -}}
 {{- if or (not $rule.cloudProvider) (eq $rule.cloudProvider $cloud) -}}
-{{- $matchedRules = append $matchedRules (dict "expr" $rule.expr "record" $rule.record) -}}
+{{- $matchedRules = append $matchedRules $rule -}}
 {{- end -}}
 {{- end -}}
-{{- if gt (len $matchedRules) 0 -}}
+{{- if $matchedRules -}}
 apiVersion: prometheusservice.services.k8s.aws/v1alpha1
 kind: RuleGroupsNamespace
 metadata:

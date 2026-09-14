@@ -14,24 +14,32 @@ tests:
                 enabled: false
     -   asserts:
             -   hasDocuments:
-                    count: 8
+                    count: 9
             -   documentIndex: 0
+                equal:
+                    path: spec.package
+                    value: xpkg.upbound.io/upbound/provider-azure-alertsmanagement:v2.7.0
+            -   documentIndex: 0
+                equal:
+                    path: spec.runtimeConfigRef.name
+                    value: azure-alertsmanagement-config
+            -   documentIndex: 1
                 equal:
                     path: spec.package
                     value: xpkg.upbound.io/upbound/provider-azure-authorization:v2.7.0
-            -   documentIndex: 0
+            -   documentIndex: 1
                 equal:
                     path: spec.runtimeConfigRef.name
                     value: azure-authorization-config
-            -   documentIndex: 1
+            -   documentIndex: 2
                 equal:
                     path: spec.package
                     value: xpkg.upbound.io/upbound/provider-azure-dataprotection:v2.7.0
-            -   documentIndex: 1
+            -   documentIndex: 2
                 equal:
                     path: spec.runtimeConfigRef.name
                     value: azure-dataprotection-config
-            -   documentIndex: 7
+            -   documentIndex: 8
                 equal:
                     path: metadata.name
                     value: provider-family-azure

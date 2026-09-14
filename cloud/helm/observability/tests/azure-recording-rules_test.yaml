@@ -1,0 +1,115 @@
+suite: Azure recording rules
+templates:
+    -   templates/azure/recording-rules.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   isAPIVersion:
+                    of: alertsmanagement.azure.m.upbound.io/v1beta1
+            -   isKind:
+                    of: MonitorAlertPrometheusRuleGroup
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-options"]
+                    value: SkipDryRunOnMissingResource=true
+            -   equal:
+                    path: spec.forProvider.interval
+                    value: PT1M
+            -   equal:
+                    path: spec.forProvider.location
+                    value: eastus2
+            -   equal:
+                    path: spec.forProvider.resourceGroupName
+                    value: liferay-test
+            -   equal:
+                    path: spec.forProvider.ruleGroupEnabled
+                    value: true
+            -   equal:
+                    path: spec.forProvider.scopes
+                    value:
+                        -   /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw
+            -   equal:
+                    path: spec.providerConfigRef.kind
+                    value: ClusterProviderConfig
+            -   equal:
+                    path: spec.providerConfigRef.name
+                    value: default
+        it: Binds the rule group to the workspace through the default cluster provider config
+        set:
+            azure.location: eastus2
+            azure.prometheusWorkspaceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw
+            azure.resourceGroupName: liferay-test
+            cloudProvider: azure
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the rule group when the cloud provider is not Azure
+        set:
+            azure.location: eastus2
+            azure.prometheusWorkspaceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw
+            azure.resourceGroupName: liferay-test
+            cloudProvider: aws
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.location must be set when cloudProvider=azure
+        it: Rejects Azure without a location
+        set:
+            azure.prometheusWorkspaceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw
+            azure.resourceGroupName: liferay-test
+            cloudProvider: azure
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.resourceGroupName must be set when cloudProvider=azure
+        it: Rejects Azure without a resource group name
+        set:
+            azure.location: eastus2
+            azure.prometheusWorkspaceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw
+            cloudProvider: azure
+    -   asserts:
+            -   failedTemplate:
+                    errorPattern: azure.prometheusWorkspaceId must be set when cloudProvider=azure
+        it: Rejects Azure without a workspace ID
+        set:
+            azure.location: eastus2
+            azure.resourceGroupName: liferay-test
+            cloudProvider: azure
+    -   asserts:
+            -   lengthEqual:
+                    count: 7
+                    path: spec.forProvider.rule
+            -   equal:
+                    path: spec.forProvider.rule[0].record
+                    value: liferay:container_cpu_limit_utilization:ratio
+            -   equal:
+                    path: spec.forProvider.rule[1].record
+                    value: liferay:container_memory_limit_utilization:ratio
+            -   equal:
+                    path: spec.forProvider.rule[2].record
+                    value: liferay:db_cpu_utilization_percent
+            -   equal:
+                    path: spec.forProvider.rule[3].record
+                    value: liferay:db_disk_total_bytes
+            -   equal:
+                    path: spec.forProvider.rule[4].record
+                    value: liferay:db_disk_used_bytes
+            -   equal:
+                    path: spec.forProvider.rule[5].record
+                    value: liferay:db_instance_state
+            -   equal:
+                    path: spec.forProvider.rule[6].record
+                    value: liferay:db_memory_utilization_percent
+            -   matchRegex:
+                    path: spec.forProvider.rule[2].expression
+                    pattern: label_join\(\s+azure_microsoft_dbforpostgresql_flexibleservers_cpu_percent_average_percent\{job="azure-postgresql"\},\s+"environment_id", "-", "tag_project_id", "tag_environment_id"\),\s+"environment_id", "liferay-\$1", "environment_id", "\(\.\+\)"\)
+            -   matchRegex:
+                    path: spec.forProvider.rule[5].expression
+                    pattern: is_db_alive_average_count\{job="azure-postgresql"\} == 1, "state", "RUNNING", "resourcename", "\.\*"\)
+            -   notMatchRegex:
+                    path: spec.forProvider.rule[3].expression
+                    pattern: cloudsql_googleapis_com|rds_
+        it: Renders the Azure database rules beside the cloud agnostic rules and excludes the AWS and GCP rules
+        set:
+            azure.location: eastus2
+            azure.prometheusWorkspaceId: /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw
+            azure.resourceGroupName: liferay-test
+            cloudProvider: azure
