@@ -53,6 +53,14 @@ public class ObjectFieldBuilder {
 		return this;
 	}
 
+	public ObjectFieldBuilder descriptionMap(
+		Map<Locale, String> descriptionMap) {
+
+		objectField.setDescriptionMap(descriptionMap);
+
+		return this;
+	}
+
 	public ObjectFieldBuilder externalReferenceCode(
 		String externalReferenceCode) {
 

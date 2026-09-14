@@ -41,7 +41,8 @@ public class ObjectFieldServiceImpl extends ObjectFieldServiceBaseImpl {
 	public ObjectField addCustomObjectField(
 			String externalReferenceCode, long listTypeDefinitionId,
 			long objectDefinitionId, String businessType, String dbType,
-			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+			Map<Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<Locale, String> labelMap, boolean localized, String name,
 			String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -64,9 +65,10 @@ public class ObjectFieldServiceImpl extends ObjectFieldServiceBaseImpl {
 
 		return objectFieldLocalService.addCustomObjectField(
 			externalReferenceCode, getUserId(), listTypeDefinitionId,
-			objectDefinitionId, businessType, dbType, indexed, indexedAsKeyword,
-			indexedLanguageId, labelMap, localized, name, readOnly,
-			readOnlyConditionExpression, required, state, objectFieldSettings);
+			objectDefinitionId, businessType, dbType, descriptionMap, indexed,
+			indexedAsKeyword, indexedLanguageId, labelMap, localized, name,
+			readOnly, readOnlyConditionExpression, required, state,
+			objectFieldSettings);
 	}
 
 	@Override
@@ -99,7 +101,8 @@ public class ObjectFieldServiceImpl extends ObjectFieldServiceBaseImpl {
 	public ObjectField updateObjectField(
 			String externalReferenceCode, long objectFieldId,
 			long listTypeDefinitionId, String businessType, String dbType,
-			boolean indexed, boolean indexedAsKeyword, String indexedLanguageId,
+			Map<Locale, String> descriptionMap, boolean indexed,
+			boolean indexedAsKeyword, String indexedLanguageId,
 			Map<Locale, String> labelMap, boolean localized, String name,
 			String readOnly, String readOnlyConditionExpression,
 			boolean required, boolean state,
@@ -117,9 +120,9 @@ public class ObjectFieldServiceImpl extends ObjectFieldServiceBaseImpl {
 			externalReferenceCode, objectFieldId, getUserId(),
 			listTypeDefinitionId, objectField.getObjectDefinitionId(),
 			businessType, objectField.getDBColumnName(),
-			objectField.getDBTableName(), dbType, indexed, indexedAsKeyword,
-			indexedLanguageId, labelMap, localized, name, readOnly,
-			readOnlyConditionExpression, required, state,
+			objectField.getDBTableName(), dbType, descriptionMap, indexed,
+			indexedAsKeyword, indexedLanguageId, labelMap, localized, name,
+			readOnly, readOnlyConditionExpression, required, state,
 			objectField.isSystem(), objectFieldSettings);
 	}
 
