@@ -224,7 +224,8 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 		MasterResourceReader masterResourceReader =
 			MasterResourceReader.getInstance(_masterName);
 
-		String memoryInfo = masterResourceReader.getMemoryInfo();
+		String memoryInfo = masterResourceReader.getMemoryInfo(
+			getAttemptTimeoutMillis(0));
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(memoryInfo)) {
 			return null;

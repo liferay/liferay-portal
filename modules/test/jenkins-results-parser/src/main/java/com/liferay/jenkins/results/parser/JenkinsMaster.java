@@ -208,44 +208,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public String executeBashCommand(String command) {
-		String sshCommand = JenkinsResultsParserUtil.combine(
-			"ssh ", _SSH_OPTIONS, " ", _SSH_USER_NAME, "@", getName(), " \"",
-			command, "\"");
+		return _executeBashCommand(command, _SSH_COMMAND_TIMEOUT, _SSH_OPTIONS);
+	}
 
-		Process process = null;
-
-		try {
-			if (_isRunningOnJenkinsMaster()) {
-				process = JenkinsResultsParserUtil.executeBashCommands(
-					new File("."), true, false, _SSH_COMMAND_TIMEOUT, command);
-			}
-			else {
-				process = JenkinsResultsParserUtil.executeBashCommands(
-					new File("."), true, false, _SSH_COMMAND_TIMEOUT,
-					sshCommand);
-			}
-		}
-		catch (IOException | TimeoutException exception) {
-			throw new RuntimeException(
-				"Unable to execute command " + sshCommand, exception);
-		}
-
-		if (process.exitValue() != 0) {
-			throw new RuntimeException(
-				JenkinsResultsParserUtil.combine(
-					"Unable to execute command ", command, " on ", getName()));
-		}
-
-		try {
-			String output = JenkinsResultsParserUtil.readInputStream(
-				process.getInputStream());
-
-			return output.replace("Finished executing Bash commands.", "");
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(
-				"Unable to read output of command " + sshCommand, ioException);
-		}
+	public String executeBashCommand(String command, long timeout) {
+		return _executeBashCommand(command, timeout, _getSSHOptions(timeout));
 	}
 
 	public List<JenkinsUser.APIToken> getAPITokens(String jenkinsUserName) {
@@ -1642,6 +1609,48 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 	}
 
+	private String _executeBashCommand(
+		String command, long timeout, String sshOptions) {
+
+		String sshCommand = JenkinsResultsParserUtil.combine(
+			"ssh ", sshOptions, " ", _SSH_USER_NAME, "@", getName(), " \"",
+			command, "\"");
+
+		Process process = null;
+
+		try {
+			if (_isRunningOnJenkinsMaster()) {
+				process = JenkinsResultsParserUtil.executeBashCommands(
+					new File("."), true, false, timeout, command);
+			}
+			else {
+				process = JenkinsResultsParserUtil.executeBashCommands(
+					new File("."), true, false, timeout, sshCommand);
+			}
+		}
+		catch (IOException | TimeoutException exception) {
+			throw new RuntimeException(
+				"Unable to execute command " + sshCommand, exception);
+		}
+
+		if (process.exitValue() != 0) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to execute command ", command, " on ", getName()));
+		}
+
+		try {
+			String output = JenkinsResultsParserUtil.readInputStream(
+				process.getInputStream());
+
+			return output.replace("Finished executing Bash commands.", "");
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to read output of command " + sshCommand, ioException);
+		}
+	}
+
 	private void _executeSCPCommand(
 		String sourceFilePath, String targetFilePath) {
 
@@ -1872,6 +1881,14 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		return recentBatchSizesTotal;
+	}
+
+	private String _getSSHOptions(long timeout) {
+		long connectTimeout = Math.max(1, timeout / 2000);
+
+		return JenkinsResultsParserUtil.combine(
+			"-o ConnectTimeout=", String.valueOf(connectTimeout),
+			" -o NumberOfPasswordPrompts=0");
 	}
 
 	private int _getUsableNodesCount(String labelExpression) {
