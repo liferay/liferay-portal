@@ -342,6 +342,32 @@ public class Dom4JUtil {
 		}
 	}
 
+	public static void removeWhitespaceTextNodes(Element element) {
+		List<Node> nodes = element.content();
+
+		for (int i = nodes.size() - 1; i >= 0; i--) {
+			Node node = nodes.get(i);
+
+			if (node instanceof Element) {
+				removeWhitespaceTextNodes((Element)node);
+
+				continue;
+			}
+
+			if (!(node instanceof Text)) {
+				continue;
+			}
+
+			String text = node.getText();
+
+			text = text.trim();
+
+			if (text.isEmpty()) {
+				nodes.remove(i);
+			}
+		}
+	}
+
 	public static void replace(
 		Element element, boolean cascade, String replacementText,
 		String targetText) {
