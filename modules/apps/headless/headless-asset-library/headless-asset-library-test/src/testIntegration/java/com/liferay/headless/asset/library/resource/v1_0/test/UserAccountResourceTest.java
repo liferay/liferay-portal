@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -147,6 +148,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_testPutAssetLibraryUserAccountWithAssignMembersAndViewPermission();
 		_testPutAssetLibraryUserAccountWithoutAssignMembersPermission();
+		_testPutAssetLibraryUserAccountWithSiteExternalReferenceCode();
 	}
 
 	@Override
@@ -463,6 +465,18 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 					putAssetLibraryUserAccount(
 						testDepotEntryGroup.getExternalReferenceCode(),
 						userAccount.getExternalReferenceCode()));
+	}
+
+	private void _testPutAssetLibraryUserAccountWithSiteExternalReferenceCode()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		assertHttpResponseStatusCode(
+			404,
+			userAccountResource.putAssetLibraryUserAccountHttpResponse(
+				group.getExternalReferenceCode(),
+				_testUser.getExternalReferenceCode()));
 	}
 
 	@Inject

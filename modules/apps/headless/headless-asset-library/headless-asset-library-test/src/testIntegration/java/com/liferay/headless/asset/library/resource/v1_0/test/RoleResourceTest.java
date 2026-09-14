@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.service.UserGroupRoleService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -114,6 +115,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		_testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermissionAndAdministratorRole();
 		_testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermission();
 		_testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermissionAndWithoutRoleViewPermission();
+		_testPutAssetLibraryUserAccountRolesPageWithSiteExternalReferenceCode();
 	}
 
 	@Override
@@ -561,6 +563,19 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 					testDepotEntryGroup.getExternalReferenceCode(),
 					user.getExternalReferenceCode(),
 					_toRoles(assetLibraryContentReviewerServiceBuilderRole)));
+	}
+
+	private void _testPutAssetLibraryUserAccountRolesPageWithSiteExternalReferenceCode()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+		User user = TestPropsValues.getUser();
+
+		assertHttpResponseStatusCode(
+			404,
+			roleResource.putAssetLibraryUserAccountRolesPageHttpResponse(
+				group.getExternalReferenceCode(),
+				user.getExternalReferenceCode(), new Role[0]));
 	}
 
 	private void _testPutRolesPage(

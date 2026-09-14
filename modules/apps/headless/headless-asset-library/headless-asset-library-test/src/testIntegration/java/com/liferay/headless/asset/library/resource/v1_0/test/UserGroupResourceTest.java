@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -98,6 +99,14 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 		Assert.assertEquals(
 			adminUserUserGroupPage.getTotalCount(),
 			userUserGroupPage.getTotalCount());
+	}
+
+	@Override
+	@Test
+	public void testPutAssetLibraryUserGroup() throws Exception {
+		super.testPutAssetLibraryUserGroup();
+
+		_testPutAssetLibraryUserGroupWithSiteExternalReferenceCode();
 	}
 
 	@Override
@@ -205,6 +214,18 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 				name = userGroup.getName();
 			}
 		};
+	}
+
+	private void _testPutAssetLibraryUserGroupWithSiteExternalReferenceCode()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		assertHttpResponseStatusCode(
+			404,
+			userGroupResource.putAssetLibraryUserGroupHttpResponse(
+				group.getExternalReferenceCode(),
+				_testUserGroup.getExternalReferenceCode()));
 	}
 
 	private UserGroup _testUserGroup;
