@@ -83,7 +83,10 @@ describe('formatPayloadTables', () => {
 
 	it('omits the utm table when the utm properties are empty', () => {
 		expect(
-			formatPayloadTables({acquisitionProperties: {}, eventId: 'pageViewed'})
+			formatPayloadTables({
+				acquisitionProperties: {},
+				eventId: 'pageViewed',
+			})
 		).toHaveLength(1);
 	});
 

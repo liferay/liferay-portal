@@ -282,7 +282,9 @@ export const formatEvents = (
 					properties: toAttributeMap(properties),
 				}),
 				...(acquisitionProperties?.length && {
-					acquisitionProperties: toAttributeMap(acquisitionProperties),
+					acquisitionProperties: toAttributeMap(
+						acquisitionProperties
+					),
 				}),
 			},
 			...(campaign && {campaign}),
