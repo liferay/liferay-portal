@@ -685,6 +685,7 @@ public class BaseTopLevelBuildReportTest
 
 		Assert.assertEquals(
 			uniqueFailureReports.toString(), 1, uniqueFailureReports.size());
+		Assert.assertNotSame(distinctFailureReports, uniqueFailureReports);
 		Assert.assertTrue(uniqueFailureReports.contains(expectedFailureReport));
 
 		Assert.assertSame(
