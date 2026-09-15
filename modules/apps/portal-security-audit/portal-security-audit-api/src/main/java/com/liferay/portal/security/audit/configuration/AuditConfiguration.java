@@ -36,4 +36,9 @@ public interface AuditConfiguration {
 	@Meta.AD(deflt = "true", name = "enabled", required = false)
 	public boolean enabled();
 
+	@Meta.AD(
+		deflt = "true", name = "pseudonymization-enabled", required = false
+	)
+	public boolean pseudonymizationEnabled();
+
 }
