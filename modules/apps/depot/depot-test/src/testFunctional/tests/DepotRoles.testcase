@@ -175,7 +175,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "Message#EMPTY_DEPOT_ROLE",
-			value1 = "This user is not assigned any asset library roles.");
+			value1 = "This user is not assigned any asset library or space roles.");
 
 		Role.openRolesAdmin();
 
@@ -619,7 +619,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "Message#EMPTY_DEPOT_ROLE",
-			value1 = "This user is not assigned any asset library roles.");
+			value1 = "This user is not assigned any asset library or space roles.");
 
 		AssertClick(
 			key_roleType = "DepotRole",
@@ -630,7 +630,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "Message#EMPTY_INFO_TAGLIB",
-			value1 = "No asset libraries were found.");
+			value1 = "No asset libraries or spaces were found.");
 
 		User.openUsersAdmin();
 
