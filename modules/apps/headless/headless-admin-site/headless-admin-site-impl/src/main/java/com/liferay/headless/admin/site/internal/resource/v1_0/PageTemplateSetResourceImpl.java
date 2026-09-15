@@ -41,6 +41,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.Collections;
@@ -204,7 +205,8 @@ public class PageTemplateSetResourceImpl
 			(layoutPageTemplateCollection.getType() !=
 				LayoutPageTemplateCollectionTypeConstants.BASIC)) {
 
-			return null;
+			throw new NotFoundException(
+				"No page template set exists with ID " + id);
 		}
 
 		Group group = _groupLocalService.getGroup(
