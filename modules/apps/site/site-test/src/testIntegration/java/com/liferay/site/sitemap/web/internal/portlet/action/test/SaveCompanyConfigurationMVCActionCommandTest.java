@@ -114,6 +114,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_originalIncludeCategories =
 			_sitemapConfigurationManager.includeCategoriesCompanyEnabled(
 				_company.getCompanyId());
+		_originalIncludeCommerceProducts =
+			_sitemapConfigurationManager.includeCommerceProductsCompanyEnabled(
+				_company.getCompanyId());
 		_originalIncludePages =
 			_sitemapConfigurationManager.includePagesCompanyEnabled(
 				_company.getCompanyId());
@@ -137,9 +140,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			_originalCachedGenerationEnabled, _company.getCompanyId(),
 			ArrayUtil.toArray(_originalCompanySitemapGroupIds),
 			ArrayUtil.toArray(_originalCompanySitemapObjectDefinitionIds),
-			_originalIncludeCategories, _originalIncludePages,
-			_originalIncludeWebContent, _originalXMLSitemapIndexEnabled,
-			_originalXMLSitemapIndexMode);
+			_originalIncludeCategories, _originalIncludeCommerceProducts,
+			_originalIncludePages, _originalIncludeWebContent,
+			_originalXMLSitemapIndexEnabled, _originalXMLSitemapIndexMode);
 
 		PrincipalThreadLocal.setName(_originalName);
 	}
@@ -155,7 +158,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	public void testSaveCompanyConfiguration() throws Exception {
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0], new long[0], true, true,
-			true, true, _adminUser);
+			true, true, true, _adminUser);
 	}
 
 	@Test
@@ -211,8 +214,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		_assertSaveCompanyConfiguration(
 			new long[] {group.getGroupId()}, new long[0],
-			new long[] {group.getGroupId()}, new long[0], true, true, false,
-			true, _adminUser);
+			new long[] {group.getGroupId()}, new long[0], true, true, true,
+			false, true, _adminUser);
 	}
 
 	@Test
@@ -229,7 +232,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_assertSaveCompanyConfiguration(
 			new long[] {group.getGroupId()}, new long[0],
 			new long[] {guestGroup.getGroupId(), group.getGroupId()},
-			new long[0], true, true, false, true, _adminUser);
+			new long[0], true, true, true, false, true, _adminUser);
 	}
 
 	@Test
@@ -243,7 +246,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_assertSaveCompanyConfiguration(
 			new long[] {group.getGroupId()}, new long[0],
 			new long[] {RandomTestUtil.randomLong(), group.getGroupId()},
-			new long[0], true, true, false, true, _adminUser);
+			new long[0], true, true, true, false, true, _adminUser);
 	}
 
 	@Test
@@ -256,7 +259,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[] {objectDefinition.getObjectDefinitionId()},
 			new long[0], new long[] {objectDefinition.getObjectDefinitionId()},
-			true, true, false, true, _adminUser);
+			true, true, true, false, true, _adminUser);
 	}
 
 	@Test
@@ -274,7 +277,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0],
 			new long[] {objectDefinition.getObjectDefinitionId()}, true, true,
-			false, true, _adminUser);
+			true, false, true, _adminUser);
 	}
 
 	@Test
@@ -283,8 +286,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0],
-			new long[] {RandomTestUtil.randomLong()}, true, true, false, true,
-			_adminUser);
+			new long[] {RandomTestUtil.randomLong()}, true, true, true, false,
+			true, _adminUser);
 	}
 
 	@Test
@@ -297,7 +300,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0],
 			new long[] {objectDefinition.getObjectDefinitionId()}, true, true,
-			false, true, _adminUser);
+			true, false, true, _adminUser);
 	}
 
 	@Test
@@ -306,7 +309,16 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0], new long[0], false, true,
-			true, true, _adminUser);
+			true, true, true, _adminUser);
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationDisablingIncludeCommerceProducts()
+		throws Exception {
+
+		_assertSaveCompanyConfiguration(
+			new long[0], new long[0], new long[0], new long[0], true, false,
+			true, true, true, _adminUser);
 	}
 
 	@Test
@@ -314,8 +326,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		throws Exception {
 
 		_assertSaveCompanyConfiguration(
-			new long[0], new long[0], new long[0], new long[0], true, false,
-			true, true, _adminUser);
+			new long[0], new long[0], new long[0], new long[0], true, true,
+			false, true, true, _adminUser);
 	}
 
 	@Test
@@ -324,7 +336,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0], new long[0], true, true,
-			false, true, _adminUser);
+			true, false, true, _adminUser);
 	}
 
 	@Test
@@ -333,7 +345,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0], new long[0], true, true,
-			true, false, _adminUser);
+			true, true, false, _adminUser);
 	}
 
 	@Test
@@ -349,7 +361,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		try {
 			_assertSaveCompanyConfiguration(
 				new long[0], new long[0], new long[0], new long[0], true, true,
-				true, true, UserTestUtil.addGroupAdminUser(group));
+				true, true, true, UserTestUtil.addGroupAdminUser(group));
 		}
 		catch (PortletException portletException) {
 			portletExceptionThrown = true;
@@ -449,8 +461,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	private void _assertCompanyConfiguration(
 			long[] companySitemapGroupIds,
 			long[] companySitemapObjectDefinitionIds, boolean includeCategories,
-			boolean includePages, boolean includeWebContent,
-			boolean xmlSitemapIndexEnabled)
+			boolean includeCommerceProducts, boolean includePages,
+			boolean includeWebContent, boolean xmlSitemapIndexEnabled)
 		throws Exception {
 
 		Dictionary<String, Object> properties =
@@ -467,6 +479,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			includeCategories,
 			GetterUtil.getBoolean(properties.get("includeCategories")));
 		Assert.assertEquals(
+			includeCommerceProducts,
+			GetterUtil.getBoolean(properties.get("includeCommerceProducts")));
+		Assert.assertEquals(
 			includePages,
 			GetterUtil.getBoolean(properties.get("includePages")));
 		Assert.assertEquals(
@@ -480,15 +495,16 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	private void _assertSaveCompanyConfiguration(
 			long[] expectedGroupIds, long[] expectedObjectDefinitionIds,
 			long[] groupIds, long[] objectDefinitionIds,
-			boolean includeCategories, boolean includePages,
-			boolean includeWebContent, boolean xmlSitemapIndexEnabled,
-			User user)
+			boolean includeCategories, boolean includeCommerceProducts,
+			boolean includePages, boolean includeWebContent,
+			boolean xmlSitemapIndexEnabled, User user)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			_getMockLiferayPortletActionRequest(
-				groupIds, objectDefinitionIds, includeCategories, includePages,
-				includeWebContent, xmlSitemapIndexEnabled, user);
+				groupIds, objectDefinitionIds, includeCategories,
+				includeCommerceProducts, includePages, includeWebContent,
+				xmlSitemapIndexEnabled, user);
 
 		Assert.assertFalse(
 			SessionMessages.contains(
@@ -504,7 +520,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 		_assertCompanyConfiguration(
 			expectedGroupIds, expectedObjectDefinitionIds, includeCategories,
-			includePages, includeWebContent, xmlSitemapIndexEnabled);
+			includeCommerceProducts, includePages, includeWebContent,
+			xmlSitemapIndexEnabled);
 	}
 
 	private void _assertSaveCompanyConfigurationRegeneration(
@@ -588,6 +605,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			"cachedGenerationEnabled", String.valueOf(cachedGenerationEnabled));
 		mockLiferayPortletActionRequest.addParameter(
 			"includeCategories", "true");
+		mockLiferayPortletActionRequest.addParameter(
+			"includeCommerceProducts", "true");
 		mockLiferayPortletActionRequest.addParameter("includePages", "true");
 		mockLiferayPortletActionRequest.addParameter(
 			"includeWebContent", "true");
@@ -608,9 +627,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
 			long[] groupIds, long[] objectDefinitionIds,
-			boolean includeCategories, boolean includePages,
-			boolean includeWebContent, boolean xmlSitemapIndexEnabled,
-			User user)
+			boolean includeCategories, boolean includeCommerceProducts,
+			boolean includePages, boolean includeWebContent,
+			boolean xmlSitemapIndexEnabled, User user)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -623,6 +642,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			StringUtil.merge(groupIds, StringPool.COMMA));
 		mockLiferayPortletActionRequest.addParameter(
 			"includeCategories", String.valueOf(includeCategories));
+		mockLiferayPortletActionRequest.addParameter(
+			"includeCommerceProducts", String.valueOf(includeCommerceProducts));
 		mockLiferayPortletActionRequest.addParameter(
 			"includePages", String.valueOf(includePages));
 		mockLiferayPortletActionRequest.addParameter(
@@ -708,6 +729,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	private static Long[] _originalCompanySitemapGroupIds;
 	private static Long[] _originalCompanySitemapObjectDefinitionIds;
 	private static boolean _originalIncludeCategories;
+	private static boolean _originalIncludeCommerceProducts;
 	private static boolean _originalIncludePages;
 	private static boolean _originalIncludeWebContent;
 	private static String _originalName;

@@ -1,0 +1,26 @@
+[
+	{
+		"layoutTemplateId": "1_column",
+		"name": "Product Detail",
+		"portlets": [
+			{
+				"layoutColumnId": "column-1",
+				"layoutColumnPos": 0,
+				"portletName": "com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet"
+			}
+		],
+		"privateLayout": false
+	},
+	{
+		"layoutTemplateId": "1_column",
+		"name": "Product Detail Alternate",
+		"portlets": [
+			{
+				"layoutColumnId": "column-1",
+				"layoutColumnPos": 0,
+				"portletName": "com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet"
+			}
+		],
+		"privateLayout": false
+	}
+]

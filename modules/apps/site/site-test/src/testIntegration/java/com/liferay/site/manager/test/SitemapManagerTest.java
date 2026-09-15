@@ -17,6 +17,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
@@ -145,6 +146,8 @@ public class SitemapManagerTest {
 	public static void setUpClass() throws Exception {
 		_assetCategoryClassNameId = PortalUtil.getClassNameId(
 			AssetCategory.class);
+		_cpDefinitionClassNameId = PortalUtil.getClassNameId(
+			CPDefinition.class);
 		_journalArticleClassNameId = PortalUtil.getClassNameId(
 			JournalArticle.class);
 		_layoutClassNameId = PortalUtil.getClassNameId(Layout.class);
@@ -1702,7 +1705,9 @@ public class SitemapManagerTest {
 				_sitemapManager.getAssetTypeKeys();
 
 			for (Map.Entry<Long, String> entry : assetTypeKeys.entrySet()) {
-				if (entry.getKey() == _objectEntryClassNameId) {
+				if ((entry.getKey() == _cpDefinitionClassNameId) ||
+					(entry.getKey() == _objectEntryClassNameId)) {
+
 					continue;
 				}
 
@@ -2834,6 +2839,7 @@ public class SitemapManagerTest {
 	private static long _assetCategoryClassNameId;
 	private static CompanyConfigurationTemporarySwapper
 		_companyConfigurationTemporarySwapper;
+	private static long _cpDefinitionClassNameId;
 	private static long _journalArticleClassNameId;
 	private static long _layoutClassNameId;
 	private static long _objectEntryClassNameId;
