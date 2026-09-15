@@ -74,15 +74,10 @@ public class ProductionReadinessMVCResourceCommandTest {
 
 	@Test
 	public void testServeResource() throws Exception {
-		MockLiferayResourceRequest mockLiferayResourceRequest =
-			_getMockLiferayResourceRequest(HttpMethods.POST);
-
-		mockLiferayResourceRequest.setParameter(
-			"p_auth", _getSessionCSRFToken(mockLiferayResourceRequest));
-
 		MockLiferayResourceResponse mockLiferayResourceResponse =
 			_serveResource(
-				mockLiferayResourceRequest, _ignoreRuleMVCResourceCommand);
+				_getMockLiferayResourceRequest(HttpMethods.POST),
+				_ignoreRuleMVCResourceCommand);
 
 		Assert.assertNull(
 			mockLiferayResourceResponse.getProperty(
@@ -93,18 +88,12 @@ public class ProductionReadinessMVCResourceCommandTest {
 
 	@Test
 	public void testServeResourceWithBlockedRequest() throws Exception {
-		MockLiferayResourceRequest mockLiferayResourceRequest =
-			_getMockLiferayResourceRequest(HttpMethods.GET);
-
-		mockLiferayResourceRequest.setParameter(
-			"p_auth", _getSessionCSRFToken(mockLiferayResourceRequest));
-
 		_testServeResourceWithBlockedRequest(
-			mockLiferayResourceRequest,
+			_getMockLiferayResourceRequest(HttpMethods.GET),
 			HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 
-		mockLiferayResourceRequest = _getMockLiferayResourceRequest(
-			HttpMethods.POST);
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			_getMockLiferayResourceRequest(HttpMethods.POST);
 
 		mockLiferayResourceRequest.setParameter(
 			"p_auth", RandomTestUtil.randomString());
@@ -112,17 +101,25 @@ public class ProductionReadinessMVCResourceCommandTest {
 		_testServeResourceWithBlockedRequest(
 			mockLiferayResourceRequest, HttpServletResponse.SC_FORBIDDEN);
 
+		mockLiferayResourceRequest = _getMockLiferayResourceRequest(
+			HttpMethods.POST);
+
+		mockLiferayResourceRequest.setParameter("p_auth", StringPool.BLANK);
+
 		_testServeResourceWithBlockedRequest(
-			_getMockLiferayResourceRequest(HttpMethods.POST),
-			HttpServletResponse.SC_FORBIDDEN);
+			mockLiferayResourceRequest, HttpServletResponse.SC_FORBIDDEN);
 	}
 
 	@Test
 	public void testServeResourceWithoutCSRFProtection() throws Exception {
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			_getMockLiferayResourceRequest(HttpMethods.GET);
+
+		mockLiferayResourceRequest.setParameter("p_auth", StringPool.BLANK);
+
 		MockLiferayResourceResponse mockLiferayResourceResponse =
 			_serveResource(
-				_getMockLiferayResourceRequest(HttpMethods.GET),
-				_getResultsMVCResourceCommand);
+				mockLiferayResourceRequest, _getResultsMVCResourceCommand);
 
 		Assert.assertNull(
 			mockLiferayResourceResponse.getProperty(
@@ -154,18 +151,13 @@ public class ProductionReadinessMVCResourceCommandTest {
 		mockLiferayResourceRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 		mockLiferayResourceRequest.setMethod(method);
+		mockLiferayResourceRequest.setParameter(
+			"p_auth",
+			AuthTokenUtil.getToken(
+				mockLiferayResourceRequest.getHttpServletRequest()));
 		mockLiferayResourceRequest.setParameter("ruleKey", _ruleKey);
 
-		_getSessionCSRFToken(mockLiferayResourceRequest);
-
 		return mockLiferayResourceRequest;
-	}
-
-	private String _getSessionCSRFToken(
-		MockLiferayResourceRequest mockLiferayResourceRequest) {
-
-		return AuthTokenUtil.getToken(
-			mockLiferayResourceRequest.getHttpServletRequest());
 	}
 
 	private ThemeDisplay _getThemeDisplay() throws Exception {
@@ -187,7 +179,7 @@ public class ProductionReadinessMVCResourceCommandTest {
 		throws Exception {
 
 		MockLiferayResourceResponse mockLiferayResourceResponse =
-			new PropertyRecordingMockLiferayResourceResponse();
+			new TestMockLiferayResourceResponse();
 
 		mvcResourceCommand.serveResource(
 			mockLiferayResourceRequest, mockLiferayResourceResponse);
@@ -231,7 +223,7 @@ public class ProductionReadinessMVCResourceCommandTest {
 
 	private String _ruleKey;
 
-	private static class PropertyRecordingMockLiferayResourceResponse
+	private static class TestMockLiferayResourceResponse
 		extends MockLiferayResourceResponse {
 
 		@Override

@@ -78,14 +78,8 @@ public class ForceReconsentMVCResourceCommandTest {
 
 	@Test
 	public void testServeResource() throws Exception {
-		MockLiferayResourceRequest mockLiferayResourceRequest =
-			_getMockLiferayResourceRequest(HttpMethods.POST);
-
-		mockLiferayResourceRequest.setParameter(
-			"p_auth", _getSessionCSRFToken(mockLiferayResourceRequest));
-
 		MockLiferayResourceResponse mockLiferayResourceResponse =
-			_serveResource(mockLiferayResourceRequest);
+			_serveResource(_getMockLiferayResourceRequest(HttpMethods.POST));
 
 		Assert.assertNull(
 			mockLiferayResourceResponse.getProperty(
@@ -96,18 +90,12 @@ public class ForceReconsentMVCResourceCommandTest {
 
 	@Test
 	public void testServeResourceWithBlockedRequest() throws Exception {
-		MockLiferayResourceRequest mockLiferayResourceRequest =
-			_getMockLiferayResourceRequest(HttpMethods.GET);
-
-		mockLiferayResourceRequest.setParameter(
-			"p_auth", _getSessionCSRFToken(mockLiferayResourceRequest));
-
 		_testServeResourceWithBlockedRequest(
-			mockLiferayResourceRequest,
+			_getMockLiferayResourceRequest(HttpMethods.GET),
 			HttpServletResponse.SC_METHOD_NOT_ALLOWED);
 
-		mockLiferayResourceRequest = _getMockLiferayResourceRequest(
-			HttpMethods.POST);
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			_getMockLiferayResourceRequest(HttpMethods.POST);
 
 		mockLiferayResourceRequest.setParameter(
 			"p_auth", RandomTestUtil.randomString());
@@ -115,9 +103,13 @@ public class ForceReconsentMVCResourceCommandTest {
 		_testServeResourceWithBlockedRequest(
 			mockLiferayResourceRequest, HttpServletResponse.SC_FORBIDDEN);
 
+		mockLiferayResourceRequest = _getMockLiferayResourceRequest(
+			HttpMethods.POST);
+
+		mockLiferayResourceRequest.setParameter("p_auth", StringPool.BLANK);
+
 		_testServeResourceWithBlockedRequest(
-			_getMockLiferayResourceRequest(HttpMethods.POST),
-			HttpServletResponse.SC_FORBIDDEN);
+			mockLiferayResourceRequest, HttpServletResponse.SC_FORBIDDEN);
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayResourceRequest(
@@ -133,9 +125,11 @@ public class ForceReconsentMVCResourceCommandTest {
 			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 		mockLiferayResourceRequest.setMethod(method);
 		mockLiferayResourceRequest.setParameter(
+			"p_auth",
+			AuthTokenUtil.getToken(
+				mockLiferayResourceRequest.getHttpServletRequest()));
+		mockLiferayResourceRequest.setParameter(
 			"scope", ExtendedObjectClassDefinition.Scope.SYSTEM.getValue());
-
-		_getSessionCSRFToken(mockLiferayResourceRequest);
 
 		return mockLiferayResourceRequest;
 	}
@@ -152,13 +146,6 @@ public class ForceReconsentMVCResourceCommandTest {
 		}
 
 		return GetterUtil.getLong(properties.get("modifiedDate"));
-	}
-
-	private String _getSessionCSRFToken(
-		MockLiferayResourceRequest mockLiferayResourceRequest) {
-
-		return AuthTokenUtil.getToken(
-			mockLiferayResourceRequest.getHttpServletRequest());
 	}
 
 	private ThemeDisplay _getThemeDisplay() throws Exception {
@@ -179,7 +166,7 @@ public class ForceReconsentMVCResourceCommandTest {
 		throws Exception {
 
 		MockLiferayResourceResponse mockLiferayResourceResponse =
-			new PropertyRecordingMockLiferayResourceResponse();
+			new TestMockLiferayResourceResponse();
 
 		_mvcResourceCommand.serveResource(
 			mockLiferayResourceRequest, mockLiferayResourceResponse);
@@ -213,7 +200,7 @@ public class ForceReconsentMVCResourceCommandTest {
 	@Inject(filter = "mvc.command.name=/cookies_banner/force_reconsent")
 	private MVCResourceCommand _mvcResourceCommand;
 
-	private static class PropertyRecordingMockLiferayResourceResponse
+	private static class TestMockLiferayResourceResponse
 		extends MockLiferayResourceResponse {
 
 		@Override
