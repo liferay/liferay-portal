@@ -17,7 +17,7 @@ import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.Assignee;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
-import com.liferay.object.rest.internal.util.ObjectFieldDescriptionUtil;
+import com.liferay.object.rest.internal.util.ObjectDefinitionUtil;
 import com.liferay.object.rest.internal.vulcan.openapi.contributor.util.OpenAPIContributorUtil;
 import com.liferay.object.rest.openapi.v1_0.ObjectEntryOpenAPIResource;
 import com.liferay.object.rest.openapi.v1_0.ObjectEntryOpenAPIResourceProvider;
@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.openapi.OpenAPIContext;
 import com.liferay.portal.vulcan.resource.OpenAPIResource;
@@ -112,6 +113,9 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 
 		Schema objectDefinitionSchema = schemas.get(
 			_objectDefinition.getShortName());
+
+		objectDefinitionSchema.setDescription(
+			ObjectDefinitionUtil.getDescription(_objectDefinition));
 
 		Map<String, Schema> objectDefinitionSchemaProperties =
 			objectDefinitionSchema.getProperties();
@@ -418,6 +422,12 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 				put(
 					new Operation() {
 						{
+							if (Validator.isNotNull(
+									objectAction.getDescription())) {
+
+								description(objectAction.getDescription());
+							}
+
 							operationId(
 								StringBundler.concat(
 									"put", _objectDefinition.getShortName(),
@@ -837,7 +847,7 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 
 			entry.setValue(
 				OpenAPISchemaUtil.setDescription(
-					ObjectFieldDescriptionUtil.getDescription(
+					ObjectDefinitionUtil.getDescription(
 						_objectDefinition, objectField),
 					entry.getValue()));
 		}

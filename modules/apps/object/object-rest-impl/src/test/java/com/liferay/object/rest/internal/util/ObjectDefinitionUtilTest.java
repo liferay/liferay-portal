@@ -9,8 +9,9 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.portal.util.LocalizationImpl;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,8 +23,9 @@ import org.mockito.Mockito;
 
 /**
  * @author Nathaly Gomes
+ * @author Nícolas Moura
  */
-public class ObjectFieldDescriptionUtilTest {
+public class ObjectDefinitionUtilTest {
 
 	@ClassRule
 	@Rule
@@ -32,6 +34,10 @@ public class ObjectFieldDescriptionUtilTest {
 
 	@Before
 	public void setUp() {
+		LocalizationUtil localizationUtil = new LocalizationUtil();
+
+		localizationUtil.setLocalization(new LocalizationImpl());
+
 		Mockito.when(
 			_objectDefinition.getDefaultLanguageId()
 		).thenReturn(
@@ -45,7 +51,7 @@ public class ObjectFieldDescriptionUtilTest {
 		// No description
 
 		Assert.assertNull(
-			ObjectFieldDescriptionUtil.getDescription(
+			ObjectDefinitionUtil.getDescription(
 				_objectDefinition, _objectField));
 
 		Mockito.when(
@@ -55,13 +61,13 @@ public class ObjectFieldDescriptionUtilTest {
 		);
 
 		Mockito.when(
-			_objectField.getDescription(LocaleUtil.US, false)
+			_objectField.getDescription(_ENGLISH_LANGUAGE_ID, false)
 		).thenReturn(
 			StringPool.BLANK
 		);
 
 		Assert.assertNull(
-			ObjectFieldDescriptionUtil.getDescription(
+			ObjectDefinitionUtil.getDescription(
 				_objectDefinition, _objectField));
 
 		// With English translation
@@ -75,14 +81,14 @@ public class ObjectFieldDescriptionUtilTest {
 		);
 
 		Mockito.when(
-			_objectField.getDescription(LocaleUtil.US, false)
+			_objectField.getDescription(_ENGLISH_LANGUAGE_ID, false)
 		).thenReturn(
 			description
 		);
 
 		Assert.assertEquals(
 			description,
-			ObjectFieldDescriptionUtil.getDescription(
+			ObjectDefinitionUtil.getDescription(
 				_objectDefinition, _objectField));
 
 		// Without English translation
@@ -94,18 +100,20 @@ public class ObjectFieldDescriptionUtilTest {
 		);
 
 		Mockito.when(
-			_objectField.getDescription(LocaleUtil.US, false)
+			_objectField.getDescription(_ENGLISH_LANGUAGE_ID, false)
 		).thenReturn(
 			StringPool.BLANK
 		);
 
 		Assert.assertEquals(
 			description,
-			ObjectFieldDescriptionUtil.getDescription(
+			ObjectDefinitionUtil.getDescription(
 				_objectDefinition, _objectField));
 	}
 
 	private static final String _DEFAULT_LANGUAGE_ID = "pt_BR";
+
+	private static final String _ENGLISH_LANGUAGE_ID = "en_US";
 
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);

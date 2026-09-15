@@ -14,8 +14,8 @@ import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
+import com.liferay.object.rest.internal.util.ObjectDefinitionUtil;
 import com.liferay.object.rest.internal.util.ObjectEntryValuesUtil;
-import com.liferay.object.rest.internal.util.ObjectFieldDescriptionUtil;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.log.Log;
@@ -152,7 +152,7 @@ public class ObjectEntryExtensionProvider extends BaseObjectExtensionProvider {
 				_objectFieldLocalService.getObjectFields(
 					objectDefinition.getObjectDefinitionId(), false)) {
 
-			String description = ObjectFieldDescriptionUtil.getDescription(
+			String description = ObjectDefinitionUtil.getDescription(
 				objectDefinition, objectField);
 
 			ObjectFieldBusinessType objectFieldBusinessType =
