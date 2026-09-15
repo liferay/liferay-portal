@@ -2,7 +2,6 @@
 
 <WikiAdminPortletDataHandler group-id="20125" self-path="/group/20125/portlet/com_liferay_wiki_web_portlet_WikiAdminPortlet/20125/portlet-data.xml">
 	<WikiNode>
-		<staged-model asset-entry-priority="0.0" group-id="20125" path="/group/20125/com.liferay.wiki.model.WikiNode/39369.xml" user-uuid="07a52957-fad9-7720-a4f2-62bbdf82c212" uuid="794f50ee-0611-8f99-f3b9-7c470b69899a" />
 		<staged-model asset-entry-priority="0.0" group-id="20125" path="/group/20125/com.liferay.wiki.model.WikiNode/39403.xml" user-uuid="90f88e50-b0c1-b73a-95e3-b7b9b25718c8" uuid="d0acff55-9628-d282-2b2d-1482b550cc64" />
 		<staged-model asset-entry-priority="0.0" group-id="20125" path="/group/20125/com.liferay.wiki.model.WikiNode/39404.xml" user-uuid="90f88e50-b0c1-b73a-95e3-b7b9b25718c8" uuid="c624efae-d0d3-8466-563f-16dca722e41c" />
 		<staged-model asset-entry-priority="0.0" group-id="20125" path="/group/20125/com.liferay.wiki.model.WikiNode/39405.xml" user-uuid="90f88e50-b0c1-b73a-95e3-b7b9b25718c8" uuid="1e1de6de-85e8-5d0e-e35e-002c4776846f" />
@@ -11,11 +10,6 @@
 		<staged-model asset-entry-priority="0.0" group-id="20125" path="/group/20125/com.liferay.wiki.model.WikiNode/39408.xml" user-uuid="90f88e50-b0c1-b73a-95e3-b7b9b25718c8" uuid="5c04a4c6-5228-2e6e-a7ff-2d7db0ec0506" />
 	</WikiNode>
 	<WikiPage>
-		<staged-model asset-entry-priority="0.0" group-id="20125" page-resource-uuid="6fe08848-397b-8196-2fff-4884013bcb99" path="/group/20125/com.liferay.wiki.model.WikiPage/39370.xml" user-uuid="07a52957-fad9-7720-a4f2-62bbdf82c212" uuid="04a1fbaa-327f-244d-fd7c-c3fbeb4b5539">
-			<references>
-				<reference class-name="com.liferay.wiki.model.WikiNode" class-pk="39369" company-id="20101" group-id="20125" group-key="Guest" live-group-id="20125" missing="false" type="parent" uuid="794f50ee-0611-8f99-f3b9-7c470b69899a" />
-			</references>
-		</staged-model>
 		<staged-model asset-entry-priority="0.0" group-id="20125" page-resource-uuid="54515f9b-85c6-52ef-1378-514b4033a1c4" path="/group/20125/com.liferay.wiki.model.WikiPage/39409.xml" user-uuid="90f88e50-b0c1-b73a-95e3-b7b9b25718c8" uuid="09fb3085-d6f7-5a59-fb85-ebafb170030a">
 			<references>
 				<reference class-name="com.liferay.wiki.model.WikiNode" class-pk="39403" company-id="20101" group-id="20125" group-key="Guest" live-group-id="20125" missing="false" type="parent" uuid="d0acff55-9628-d282-2b2d-1482b550cc64" />
