@@ -111,6 +111,10 @@ describe('MapBase', () => {
 	});
 
 	describe('constructor()', () => {
+		afterEach(() => {
+			delete navigator.geolocation;
+		});
+
 		it('calls _initializeMap as a fallback', () => {
 			jest.spyOn(MapImpl.prototype, '_initializeMap');
 
@@ -121,6 +125,20 @@ describe('MapBase', () => {
 				lng: 0,
 			});
 			expect(mapImpl.zoom).toBe(2);
+		});
+
+		it('requests the browser geolocation with a timeout', () => {
+			const getCurrentPosition = jest.fn();
+
+			navigator.geolocation = {getCurrentPosition};
+
+			new MapImpl();
+
+			expect(getCurrentPosition).toHaveBeenCalledWith(
+				expect.any(Function),
+				expect.any(Function),
+				{timeout: 10000}
+			);
 		});
 	});
 
