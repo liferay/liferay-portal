@@ -134,6 +134,7 @@ if (!process.env.CI) {
 		async ({classicPage}) => {
 			const emailEditingButtons = [
 				{name: 'Insert merge field'},
+				{name: 'Insert table layout'},
 				{name: 'Insert template'},
 				{name: 'Merge fields preview'},
 				{exact: true, name: 'Preview with Inline Styles'},
@@ -144,6 +145,59 @@ if (!process.env.CI) {
 					classicPage.toolbar.container.getByRole('button', options)
 				).toBeVisible();
 			}
+		}
+	);
+
+	test(
+		'The layout table plugin is loaded alongside the standard table plugin',
+		{tag: '@LPD-95092'},
+		async ({classicPage, page}) => {
+			await expect(classicPage.editable).toBeVisible();
+
+			const loadedPlugins = await page.evaluate(() => {
+				const editorElement = Array.from(
+					document.querySelectorAll('.lfr-ck *')
+				).find((element) => (element as any).ckeditorInstance);
+
+				const editor = (editorElement as any)?.ckeditorInstance;
+
+				return {
+					table: editor?.plugins.has('Table') ?? false,
+					tableLayout: editor?.plugins.has('TableLayout') ?? false,
+				};
+			});
+
+			expect(loadedPlugins).toEqual({
+				table: true,
+				tableLayout: true,
+			});
+		}
+	);
+
+	test(
+		'A layout table is exported as a plain table element for email clients',
+		{tag: '@LPD-95092'},
+		async ({classicPage, page}) => {
+			await expect(classicPage.editable).toBeVisible();
+
+			const data = await page.evaluate(() => {
+				const editorElement = Array.from(
+					document.querySelectorAll('.lfr-ck *')
+				).find((element) => (element as any).ckeditorInstance);
+
+				const editor = (editorElement as any)?.ckeditorInstance;
+
+				editor.execute('insertTableLayout', {columns: 2, rows: 2});
+
+				return editor.getData();
+			});
+
+			// Email clients do not render the <figure> wrapper CKEditor uses
+			// for standard tables, so the layout table plugin's plain output
+			// must serialize a bare <table> instead.
+
+			expect(data).not.toContain('<figure');
+			expect(data).toContain('<table');
 		}
 	);
 }

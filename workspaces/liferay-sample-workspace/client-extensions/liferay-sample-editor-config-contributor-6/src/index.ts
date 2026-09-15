@@ -9,7 +9,7 @@ import {ExportInlineStyles} from '@ckeditor/ckeditor5-export-inline-styles/dist/
 import {EmptyBlock} from '@ckeditor/ckeditor5-html-support/dist/index.js';
 import {Mention} from '@ckeditor/ckeditor5-mention/dist/index.js';
 import {MergeFields} from '@ckeditor/ckeditor5-merge-fields/dist/index.js';
-import {Table} from '@ckeditor/ckeditor5-table/dist/index.js';
+import {Table, TableLayout} from '@ckeditor/ckeditor5-table/dist/index.js';
 import {Template} from '@ckeditor/ckeditor5-template/dist/index.js';
 import {ButtonView} from '@ckeditor/ckeditor5-ui/dist/index.js';
 import {
@@ -102,6 +102,7 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 	const extraPlugins = [
 		...(config.extraPlugins ?? []),
 		Table,
+		TableLayout,
 		EmptyBlock,
 		EmailConfigurationHelper,
 		Mention,
@@ -115,6 +116,7 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 		...existingItems,
 		'|',
 		'insertTable',
+		'insertTableLayout',
 		'insertMergeField',
 		'previewMergeFields',
 		'insertTemplate',
