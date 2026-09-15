@@ -5,6 +5,10 @@
 
 package com.liferay.portal.search.elasticsearch8.internal;
 
+import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.DocumentImpl;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.HitsImpl;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
@@ -14,6 +18,7 @@ import com.liferay.portal.search.elasticsearch8.constants.ElasticsearchSearchCon
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationWrapper;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
 import com.liferay.portal.search.engine.adapter.search.SearchSearchRequest;
+import com.liferay.portal.search.engine.adapter.search.SearchSearchResponse;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.internal.legacy.searcher.SearchRequestBuilderFactoryImpl;
 import com.liferay.portal.search.internal.legacy.searcher.SearchResponseBuilderFactoryImpl;
@@ -22,6 +27,8 @@ import com.liferay.portal.search.searcher.SearchRequest;
 import com.liferay.portal.search.test.util.indexing.DocumentFixture;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Arrays;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,6 +36,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /**
@@ -98,6 +106,12 @@ public class ElasticsearchIndexSearcherTest {
 	}
 
 	@Test
+	public void testSearchPastLastPage() {
+		_testSearchPastLastPage();
+		_testSearchPastLastPageWithoutFallback();
+	}
+
+	@Test
 	public void testSearchPastMaxResultWindow() {
 		int maxResultWindow = 10000;
 
@@ -140,6 +154,60 @@ public class ElasticsearchIndexSearcherTest {
 	@Test
 	public void testTrackTotalHitsLimitZero() {
 		_assertTrackTotalHitsLimit(0, 0);
+	}
+
+	private void _assertSearchPastLastPage(
+		Boolean fallbackToLastPage, int expectedDocumentsLength,
+		int expectedSearchCount, int expectedStart) {
+
+		Mockito.clearInvocations(_searchEngineAdapter);
+
+		Mockito.when(
+			_elasticsearchConfigurationWrapper.indexMaxResultWindow()
+		).thenReturn(
+			10000
+		);
+
+		Mockito.when(
+			_searchEngineAdapter.execute(Mockito.any(SearchSearchRequest.class))
+		).thenReturn(
+			_createSearchSearchResponse(),
+			_createSearchSearchResponse(new DocumentImpl())
+		);
+
+		SearchContext searchContext = new SearchContext();
+
+		if (fallbackToLastPage != null) {
+			searchContext.setAttribute(
+				SearchContextAttributes.ATTRIBUTE_KEY_FALLBACK_TO_LAST_PAGE,
+				fallbackToLastPage);
+		}
+
+		searchContext.setEnd(80);
+		searchContext.setStart(60);
+
+		Hits hits = _elasticsearchIndexSearcher.search(
+			searchContext, Mockito.mock(Query.class));
+
+		Document[] documents = hits.getDocs();
+
+		Assert.assertEquals(
+			Arrays.toString(documents), expectedDocumentsLength,
+			documents.length);
+
+		ArgumentCaptor<SearchSearchRequest> argumentCaptor =
+			ArgumentCaptor.forClass(SearchSearchRequest.class);
+
+		Mockito.verify(
+			_searchEngineAdapter, Mockito.times(expectedSearchCount)
+		).execute(
+			argumentCaptor.capture()
+		);
+
+		SearchSearchRequest searchSearchRequest = argumentCaptor.getValue();
+
+		Assert.assertEquals(
+			Integer.valueOf(expectedStart), searchSearchRequest.getStart());
 	}
 
 	private void _assertTrackTotalHitsLimit(
@@ -210,6 +278,29 @@ public class ElasticsearchIndexSearcherTest {
 		);
 
 		return indexNameBuilder;
+	}
+
+	private SearchSearchResponse _createSearchSearchResponse(
+		Document... documents) {
+
+		SearchSearchResponse searchSearchResponse = new SearchSearchResponse();
+
+		Hits hits = new HitsImpl();
+
+		hits.setDocs(documents);
+		hits.setLength(50);
+
+		searchSearchResponse.setHits(hits);
+
+		return searchSearchResponse;
+	}
+
+	private void _testSearchPastLastPage() {
+		_assertSearchPastLastPage(null, 1, 2, 40);
+	}
+
+	private void _testSearchPastLastPageWithoutFallback() {
+		_assertSearchPastLastPage(Boolean.FALSE, 0, 1, 60);
 	}
 
 	private final DocumentFixture _documentFixture = new DocumentFixture();
