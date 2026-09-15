@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -164,6 +165,35 @@ public class CPOptionCategoryServiceImpl
 			ActionKeys.VIEW);
 
 		return cpOptionCategory;
+	}
+
+	@Override
+	public CPOptionCategory getOrAddEmptyCPOptionCategory(
+			String externalReferenceCode)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CPOptionCategory cpOptionCategory =
+			cpOptionCategoryService.
+				fetchCPOptionCategoryByExternalReferenceCode(
+					externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (cpOptionCategory != null) {
+			return cpOptionCategory;
+		}
+
+		PortletResourcePermission portletResourcePermission =
+			_cpOptionCategoryModelResourcePermission.
+				getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			permissionChecker, null,
+			CPActionKeys.ADD_COMMERCE_PRODUCT_OPTION_CATEGORY);
+
+		return cpOptionCategoryLocalService.getOrAddEmptyCPOptionCategory(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId());
 	}
 
 	@Override
