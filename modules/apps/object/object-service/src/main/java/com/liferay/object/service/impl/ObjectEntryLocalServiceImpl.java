@@ -7193,11 +7193,16 @@ public class ObjectEntryLocalServiceImpl
 					externalReferenceCode = objectEntry.getUuid();
 				}
 
-				_validateExternalReferenceCode(
-					externalReferenceCode, objectEntry.getGroupId(),
-					objectEntry.getCompanyId(),
-					objectEntry.getObjectDefinitionId(),
-					objectEntry.getObjectEntryId());
+				if (!Objects.equals(
+						externalReferenceCode,
+						objectEntry.getExternalReferenceCode())) {
+
+					_validateExternalReferenceCode(
+						externalReferenceCode, objectEntry.getGroupId(),
+						objectEntry.getCompanyId(),
+						objectEntry.getObjectDefinitionId(),
+						objectEntry.getObjectEntryId());
+				}
 
 				objectEntry.setExternalReferenceCode(externalReferenceCode);
 			}
