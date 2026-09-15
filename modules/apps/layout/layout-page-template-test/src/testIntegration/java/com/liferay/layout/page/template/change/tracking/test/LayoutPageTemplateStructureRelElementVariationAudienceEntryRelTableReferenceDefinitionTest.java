@@ -56,7 +56,7 @@ public class
 
 		_audiencesEntry = _audiencesEntryLocalService.addAudiencesEntry(
 			null, TestPropsValues.getUserId(), StringPool.BLANK,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null);
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
 
@@ -67,7 +67,7 @@ public class
 		_variationAudiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
 				null, TestPropsValues.getUserId(), StringPool.BLANK,
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null);
 
 		_layoutPageTemplateStructureRelElementVariation =
 			_layoutPageTemplateStructureRelElementVariationLocalService.

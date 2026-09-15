@@ -6,6 +6,7 @@
 package com.liferay.audiences.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.audiences.exception.AudiencesEntryGroupERCException;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.model.AudiencesEntryGroupRel;
 import com.liferay.audiences.service.AudiencesEntryGroupRelLocalService;
@@ -13,15 +14,20 @@ import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -45,7 +51,7 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 	public void setUp() throws Exception {
 		_audiencesEntry = _audiencesEntryLocalService.addAudiencesEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			StringPool.BLANK, RandomTestUtil.randomString());
+			StringPool.BLANK, RandomTestUtil.randomString(), null);
 	}
 
 	@Test
@@ -61,6 +67,56 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 		_audiencesEntryLocalService.deleteAudiencesEntry(_audiencesEntry);
 
 		Assert.assertEquals(0, _getAudiencesEntryGroupRelsCount());
+	}
+
+	@Test
+	@TestInfo("LPD-105673")
+	public void testUpdateAudiencesEntryWithGroupERCs() throws Exception {
+		Group group1 = GroupTestUtil.addGroup();
+		Group group2 = GroupTestUtil.addGroup();
+		Group group3 = GroupTestUtil.addGroup();
+
+		_updateAudiencesEntry(
+			group1.getExternalReferenceCode(),
+			group2.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				group1.getExternalReferenceCode(),
+				group2.getExternalReferenceCode()),
+			_getGroupERCs());
+
+		_updateAudiencesEntry(
+			group2.getExternalReferenceCode(),
+			group3.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				group2.getExternalReferenceCode(),
+				group3.getExternalReferenceCode()),
+			_getGroupERCs());
+
+		_updateAudiencesEntry();
+
+		Assert.assertEquals(Collections.emptySet(), _getGroupERCs());
+	}
+
+	@Test
+	@TestInfo("LPD-105673")
+	public void testUpdateAudiencesException() throws Exception {
+		Assert.assertThrows(
+			AudiencesEntryGroupERCException.class,
+			() -> _updateAudiencesEntry(RandomTestUtil.randomString()));
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		Assert.assertThrows(
+			AudiencesEntryGroupERCException.class,
+			() -> _updateAudiencesEntry(
+				companyGroup.getExternalReferenceCode()));
+
+		Assert.assertEquals(Collections.emptySet(), _getGroupERCs());
 	}
 
 	private AudiencesEntryGroupRel _addAudiencesEntryGroupRel(Group group)
@@ -94,6 +150,25 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 		return audiencesEntryGroupRels.size();
 	}
 
+	private Set<String> _getGroupERCs() {
+		Set<String> groupERCs = new HashSet<>();
+
+		for (AudiencesEntryGroupRel audiencesEntryGroupRel :
+				_getAudiencesEntryGroupRels()) {
+
+			groupERCs.add(audiencesEntryGroupRel.getGroupERC());
+		}
+
+		return groupERCs;
+	}
+
+	private void _updateAudiencesEntry(String... groupERCs) throws Exception {
+		_audiencesEntry = _audiencesEntryLocalService.updateAudiencesEntry(
+			_audiencesEntry.getExternalReferenceCode(),
+			TestPropsValues.getUserId(), _audiencesEntry.getAudiencesEntryId(),
+			_audiencesEntry.getJSON(), _audiencesEntry.getName(), groupERCs);
+	}
+
 	private AudiencesEntry _audiencesEntry;
 
 	@Inject
@@ -105,5 +180,8 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 
 	@Inject
 	private CounterLocalService _counterLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 }

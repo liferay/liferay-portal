@@ -74,6 +74,7 @@
 		</finder>
 	</entity>
 	<exceptions>
+		<exception>AudiencesEntryGroupERC</exception>
 		<exception>AudiencesEntryJSON</exception>
 		<exception>AudiencesEntryJSONAttribute</exception>
 		<exception>AudiencesEntryName</exception>

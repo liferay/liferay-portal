@@ -136,7 +136,7 @@ public class UpdateAudiencesEntryMVCActionCommandTest {
 		AudiencesEntry audiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				json, RandomTestUtil.randomString());
+				json, RandomTestUtil.randomString(), null);
 
 		JSONObject jsonObject = _processAction(
 			audiencesEntry.getAudiencesEntryId(),

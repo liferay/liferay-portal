@@ -48,7 +48,7 @@ public class AudiencesEntryServiceTest {
 	public void setUp() throws Exception {
 		_audiencesEntry = _audiencesEntryLocalService.addAudiencesEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			StringPool.BLANK, RandomTestUtil.randomString());
+			StringPool.BLANK, RandomTestUtil.randomString(), null);
 		_user = UserTestUtil.addCompanyAdminUser(CompanyTestUtil.addCompany());
 
 		UserTestUtil.setUser(TestPropsValues.getUser());
@@ -170,7 +170,7 @@ public class AudiencesEntryServiceTest {
 			Assert.assertThrows(
 				NoSuchAudiencesEntryException.class,
 				() -> _audiencesEntryService.updateAudiencesEntry(
-					audiencesEntryId, externalReferenceCode, json, name));
+					audiencesEntryId, externalReferenceCode, json, name, null));
 		}
 
 		AudiencesEntry audiencesEntry =
@@ -182,7 +182,7 @@ public class AudiencesEntryServiceTest {
 			TestPropsValues.getUserId(), audiencesEntry.getUserId());
 
 		audiencesEntry = _audiencesEntryService.updateAudiencesEntry(
-			audiencesEntryId, externalReferenceCode, json, name);
+			audiencesEntryId, externalReferenceCode, json, name, null);
 
 		Assert.assertEquals(name, audiencesEntry.getName());
 	}

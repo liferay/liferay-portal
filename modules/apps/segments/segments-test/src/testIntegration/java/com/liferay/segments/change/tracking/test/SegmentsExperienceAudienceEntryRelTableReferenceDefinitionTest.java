@@ -54,7 +54,7 @@ public class SegmentsExperienceAudienceEntryRelTableReferenceDefinitionTest
 
 		_audiencesEntry = _audiencesEntryLocalService.addAudiencesEntry(
 			null, TestPropsValues.getUserId(), StringPool.BLANK,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null);
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(group);
 

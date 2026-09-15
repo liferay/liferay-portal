@@ -54,7 +54,7 @@ public class
 
 		_audiencesEntry = _audiencesEntryLocalService.addAudiencesEntry(
 			null, TestPropsValues.getUserId(), StringPool.BLANK,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null);
 
 		_layout = LayoutTestUtil.addTypeContentLayout(group);
 

@@ -47,7 +47,8 @@ public class AudiencesEntryLocalServiceImpl
 
 	@Override
 	public AudiencesEntry addAudiencesEntry(
-			String externalReferenceCode, long userId, String json, String name)
+			String externalReferenceCode, long userId, String json, String name,
+			String[] groupERCs)
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
@@ -66,7 +67,12 @@ public class AudiencesEntryLocalServiceImpl
 		audiencesEntry.setJSON(json);
 		audiencesEntry.setName(name);
 
-		return audiencesEntryPersistence.update(audiencesEntry);
+		audiencesEntry = audiencesEntryPersistence.update(audiencesEntry);
+
+		_audiencesEntryGroupRelLocalService.addAudiencesEntryGroupRels(
+			userId, audiencesEntry.getExternalReferenceCode(), groupERCs);
+
+		return audiencesEntry;
 	}
 
 	@Indexable(type = IndexableType.DELETE)
@@ -126,7 +132,7 @@ public class AudiencesEntryLocalServiceImpl
 	@Override
 	public AudiencesEntry updateAudiencesEntry(
 			String externalReferenceCode, long userId, long audiencesEntryId,
-			String json, String name)
+			String json, String name, String[] groupERCs)
 		throws PortalException {
 
 		AudiencesEntry audiencesEntry =
@@ -144,7 +150,12 @@ public class AudiencesEntryLocalServiceImpl
 		audiencesEntry.setJSON(json);
 		audiencesEntry.setName(name);
 
-		return audiencesEntryPersistence.update(audiencesEntry);
+		audiencesEntry = audiencesEntryPersistence.update(audiencesEntry);
+
+		_audiencesEntryGroupRelLocalService.updateAudiencesEntryGroupRels(
+			userId, audiencesEntry.getExternalReferenceCode(), groupERCs);
+
+		return audiencesEntry;
 	}
 
 	private void _validate(long companyId, String json, String name)

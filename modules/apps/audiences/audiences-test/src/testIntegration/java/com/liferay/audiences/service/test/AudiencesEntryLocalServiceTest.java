@@ -120,7 +120,7 @@ public class AudiencesEntryLocalServiceTest {
 		AudiencesEntry audiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
 				null, TestPropsValues.getUserId(), StringPool.BLANK,
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null);
 
 		long audiencesEntryId = audiencesEntry.getAudiencesEntryId();
 
@@ -144,7 +144,7 @@ public class AudiencesEntryLocalServiceTest {
 		audiencesEntry = _audiencesEntryLocalService.updateAudiencesEntry(
 			externalReferenceCode, _user.getUserId(),
 			audiencesEntry.getAudiencesEntryId(), audiencesEntry.getJSON(),
-			name);
+			name, null);
 
 		Assert.assertEquals(
 			externalReferenceCode, audiencesEntry.getExternalReferenceCode());
@@ -160,7 +160,7 @@ public class AudiencesEntryLocalServiceTest {
 				updatedAudiencesEntry.getExternalReferenceCode(),
 				TestPropsValues.getUserId(),
 				updatedAudiencesEntry.getAudiencesEntryId(),
-				updatedAudiencesEntry.getJSON(), StringPool.BLANK));
+				updatedAudiencesEntry.getJSON(), StringPool.BLANK, null));
 		AssertUtils.assertFailure(
 			AudiencesEntryJSONException.class,
 			"/conjunction: INVALID is not a valid enum value",
@@ -173,7 +173,7 @@ public class AudiencesEntryLocalServiceTest {
 				).put(
 					"rules", JSONUtil.putAll()
 				).toString(),
-				updatedAudiencesEntry.getName()));
+				updatedAudiencesEntry.getName(), null));
 
 		audiencesEntry = _addAudiencesEntry(
 			null, StringPool.BLANK, RandomTestUtil.randomString());
@@ -189,7 +189,7 @@ public class AudiencesEntryLocalServiceTest {
 			() -> _audiencesEntryLocalService.updateAudiencesEntry(
 				externalReferenceCode, TestPropsValues.getUserId(),
 				audiencesEntryId, StringPool.BLANK,
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString(), null));
 	}
 
 	private AudiencesEntry _addAudiencesEntry(
@@ -198,7 +198,8 @@ public class AudiencesEntryLocalServiceTest {
 
 		AudiencesEntry audiencesEntry =
 			_audiencesEntryLocalService.addAudiencesEntry(
-				externalReferenceCode, TestPropsValues.getUserId(), json, name);
+				externalReferenceCode, TestPropsValues.getUserId(), json, name,
+				null);
 
 		_audiencesEntries.add(audiencesEntry);
 

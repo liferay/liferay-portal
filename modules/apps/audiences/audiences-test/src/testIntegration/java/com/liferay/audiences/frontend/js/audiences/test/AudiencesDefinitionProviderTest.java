@@ -59,7 +59,7 @@ public class AudiencesDefinitionProviderTest {
 			_audiencesEntryLocalService.addAudiencesEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null);
 
 		AudiencesDefinition audiencesDefinition =
 			_audiencesDefinitionProvider.getAudiencesDefinition(
@@ -90,7 +90,7 @@ public class AudiencesDefinitionProviderTest {
 			_audiencesEntryLocalService.addAudiencesEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null);
 
 		unregisteredAudiencesEntry.setJSON(
 			JSONUtil.put(
@@ -129,13 +129,13 @@ public class AudiencesDefinitionProviderTest {
 			_audiencesEntryLocalService.addAudiencesEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null);
 
 		AudiencesEntry audiencesEntry2 =
 			_audiencesEntryLocalService.addAudiencesEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null);
 
 		Group group1 = GroupTestUtil.addGroup();
 		Group group2 = GroupTestUtil.addGroup();

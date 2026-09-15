@@ -56,17 +56,20 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "audiencesEntryId");
 		String externalReferenceCode = ParamUtil.getString(
 			actionRequest, "externalReferenceCode");
+		String[] groupERCs = ParamUtil.getStringValues(
+			actionRequest, "groupERCs");
 		String json = ParamUtil.getString(actionRequest, "json");
 		String name = ParamUtil.getString(actionRequest, "name");
 
 		try {
 			if (audiencesEntryId <= 0) {
 				_audiencesEntryService.addAudiencesEntry(
-					externalReferenceCode, json, name);
+					externalReferenceCode, json, name, groupERCs);
 			}
 			else {
 				_audiencesEntryService.updateAudiencesEntry(
-					audiencesEntryId, externalReferenceCode, json, name);
+					audiencesEntryId, externalReferenceCode, json, name,
+					groupERCs);
 			}
 
 			MultiSessionMessages.add(
