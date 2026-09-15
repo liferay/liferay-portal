@@ -3650,6 +3650,11 @@
 				"pid": {
 					"const": "com.liferay.portal.security.audit.configuration.AuditConfiguration",
 					"title": "Audit"
+				},
+				"pseudonymizationEnabled": {
+					"default": true,
+					"title": "Pseudonymization Enabled",
+					"type": "boolean"
 				}
 			},
 			"required": [
