@@ -27,6 +27,9 @@ public interface Rels {
 	public static final String ACCOUNT_LIFECYCLE_STAGE_RULES =
 		"account-lifecycle-stage-rules";
 
+	public static final String ACCOUNT_LIFECYCLE_STAGE_TRANSITIONS =
+		"account-lifecycle-stage-transitions";
+
 	public static final String ACCOUNT_LIFECYCLE_STAGES =
 		"account-lifecycle-stages";
 

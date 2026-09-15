@@ -11,6 +11,7 @@ import com.liferay.osb.faro.engine.client.model.AccountDetails;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageMetric;
+import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageTransition;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
 import com.liferay.osb.faro.engine.client.model.AccountName;
@@ -230,6 +231,15 @@ public interface ContactsEngineClient {
 	public List<AccountLifecycleStageMetric> getAccountLifecycleStageMetrics(
 			FaroProject faroProject, String country, String id, String industry,
 			Long segmentId)
+		throws FaroEngineClientException;
+
+	public Results<AccountLifecycleStageTransition>
+			getAccountLifecycleStageTransitions(
+				FaroProject faroProject, String country,
+				String fromLifecycleStage, String id, String industry,
+				String rangeEnd, Integer rangeKey, String rangeStart,
+				Long segmentId, String toLifecycleStage, int cur, int delta,
+				List<OrderByField> orderByFields)
 		throws FaroEngineClientException;
 
 	public AccountLifecycleStatus getAccountLifecycleStatus(

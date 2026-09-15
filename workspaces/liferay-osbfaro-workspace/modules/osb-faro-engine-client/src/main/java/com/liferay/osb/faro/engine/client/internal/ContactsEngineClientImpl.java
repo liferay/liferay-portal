@@ -20,6 +20,7 @@ import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageRule;
+import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageTransition;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
 import com.liferay.osb.faro.engine.client.model.AccountName;
@@ -882,6 +883,63 @@ public class ContactsEngineClientImpl
 				<List<AccountLifecycleStageMetric>>() {
 			},
 			uriVariables);
+	}
+
+	@Override
+	public Results<AccountLifecycleStageTransition>
+			getAccountLifecycleStageTransitions(
+				FaroProject faroProject, String country,
+				String fromLifecycleStage, String id, String industry,
+				String rangeEnd, Integer rangeKey, String rangeStart,
+				Long segmentId, String toLifecycleStage, int cur, int delta,
+				List<OrderByField> orderByFields)
+		throws FaroEngineClientException {
+
+		Map<String, Object> uriVariables = getUriVariables(
+			faroProject, cur, delta, orderByFields);
+
+		if (Validator.isNotNull(country)) {
+			uriVariables.put("country", country);
+		}
+
+		if (Validator.isNotNull(fromLifecycleStage)) {
+			uriVariables.put("fromLifecycleStage", fromLifecycleStage);
+		}
+
+		uriVariables.put("id", id);
+
+		if (Validator.isNotNull(industry)) {
+			uriVariables.put("industry", industry);
+		}
+
+		if (Validator.isNotNull(rangeEnd)) {
+			uriVariables.put("rangeEnd", rangeEnd);
+		}
+
+		if (rangeKey != null) {
+			uriVariables.put("rangeKey", rangeKey);
+		}
+
+		if (Validator.isNotNull(rangeStart)) {
+			uriVariables.put("rangeStart", rangeStart);
+		}
+
+		if (Validator.isNotNull(segmentId)) {
+			uriVariables.put("segmentId", segmentId);
+		}
+
+		if (Validator.isNotNull(toLifecycleStage)) {
+			uriVariables.put("toLifecycleStage", toLifecycleStage);
+		}
+
+		PagedModel<?, AccountLifecycleStageTransition> pagedModel = get(
+			faroProject, Rels.ACCOUNT_LIFECYCLE_STAGE_TRANSITIONS,
+			new ParameterizedTypeReference
+				<EntityModelPagedModel<AccountLifecycleStageTransition>>() {
+			},
+			uriVariables);
+
+		return pagedModel.getResults();
 	}
 
 	@Override
