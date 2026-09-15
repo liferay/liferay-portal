@@ -53,7 +53,7 @@ public abstract class BaseToolResourceImpl implements ToolResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "The tool-set name returned by `getToolSetsPage`.",
+				description = "The tool set name returned by `getToolSetsPage`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "toolSetName", required = true
 			),
@@ -102,7 +102,7 @@ public abstract class BaseToolResourceImpl implements ToolResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "The tool-set name returned by `getToolSetsPage`.",
+				description = "The tool set name returned by `getToolSetsPage`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "toolSetName", required = true
 			),
@@ -583,4 +583,4 @@ public abstract class BaseToolResourceImpl implements ToolResource {
 		LogFactoryUtil.getLog(BaseToolResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-371263648
+// LIFERAY-REST-BUILDER-HASH:873540736

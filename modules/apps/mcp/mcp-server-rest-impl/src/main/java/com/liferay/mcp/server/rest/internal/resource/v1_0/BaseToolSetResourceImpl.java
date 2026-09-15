@@ -49,7 +49,7 @@ public abstract class BaseToolSetResourceImpl implements ToolSetResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/mcp-server/v1.0/tool-sets'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Use this whenever you do not know which tool-set can fulfill the user's request — it is the first thing to try. Returns every tool-set exposed by Liferay, each with a curated description. Pick the tool-set whose description matches the user's intent and pass its `name` to `getToolSetToolSetNameToolSummariesPage` to see what tools it offers."
+		description = "Use this whenever you do not know which tool set can fulfill the user's request — it is the first thing to try. Returns every tool set exposed by Liferay, each with a curated description. Pick the tool set whose description matches the user's intent and pass its `name` to `getToolSetToolSetNameToolSummariesPage` to see what tools it offers."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "ToolSet")}
@@ -507,4 +507,4 @@ public abstract class BaseToolSetResourceImpl implements ToolSetResource {
 		LogFactoryUtil.getLog(BaseToolSetResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1998184160
+// LIFERAY-REST-BUILDER-HASH:308363251

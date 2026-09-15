@@ -55,7 +55,7 @@ public class ToolSet implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Curated, one-sentence description of what this tool-set can do, suitable for routing a natural-language request."
+		description = "Curated, one-sentence description of what this tool set can do, suitable for routing a natural-language request."
 	)
 	public String getDescription() {
 		if (_descriptionSupplier != null) {
@@ -91,7 +91,7 @@ public class ToolSet implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Curated, one-sentence description of what this tool-set can do, suitable for routing a natural-language request."
+		description = "Curated, one-sentence description of what this tool set can do, suitable for routing a natural-language request."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String description;
@@ -100,7 +100,7 @@ public class ToolSet implements Serializable {
 	private Supplier<String> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Stable identifier of the tool-set. Pass this verbatim as `toolSetName` in subsequent calls."
+		description = "Stable identifier of the tool set. Pass this verbatim as `toolSetName` in subsequent calls."
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -134,7 +134,7 @@ public class ToolSet implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Stable identifier of the tool-set. Pass this verbatim as `toolSetName` in subsequent calls."
+		description = "Stable identifier of the tool set. Pass this verbatim as `toolSetName` in subsequent calls."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -324,4 +324,4 @@ public class ToolSet implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2031892361
+// LIFERAY-REST-BUILDER-HASH:1040726647

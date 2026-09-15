@@ -39,11 +39,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A summary of a tool exposed by a tool-set.",
+	description = "A summary of a tool exposed by a tool set.",
 	value = "ToolSummary"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A summary of a tool exposed by a tool-set.",
+	description = "A summary of a tool exposed by a tool set.",
 	requiredProperties = {"name"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -104,7 +104,7 @@ public class ToolSummary implements Serializable {
 	private Supplier<String> _descriptionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Stable identifier of the tool within its tool-set. Pass this verbatim as `toolName` in subsequent calls."
+		description = "Stable identifier of the tool within its tool set. Pass this verbatim as `toolName` in subsequent calls."
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -138,7 +138,7 @@ public class ToolSummary implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Stable identifier of the tool within its tool-set. Pass this verbatim as `toolName` in subsequent calls."
+		description = "Stable identifier of the tool within its tool set. Pass this verbatim as `toolName` in subsequent calls."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
@@ -328,4 +328,4 @@ public class ToolSummary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1354923991
+// LIFERAY-REST-BUILDER-HASH:63731531
