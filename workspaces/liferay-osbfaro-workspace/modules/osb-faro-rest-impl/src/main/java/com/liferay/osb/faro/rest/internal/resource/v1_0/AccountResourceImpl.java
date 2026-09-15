@@ -45,8 +45,9 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 
 	@Override
 	public Page<Account> getWorkspaceGroupChannelAccountsPage(
-			Long groupId, String channelId, String search,
-			Pagination pagination, Sort[] sorts)
+			Long groupId, String channelId, String rangeEnd, String rangeKey,
+			String rangeStart, String search, Pagination pagination,
+			Sort[] sorts)
 		throws Exception {
 
 		Results<com.liferay.osb.faro.engine.client.model.Account> results =
