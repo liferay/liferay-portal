@@ -415,39 +415,68 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 			try {
 				Supplier<Object> downloadURLSupplier = null;
-				Object fileNameInfoFieldValue = null;
+				Supplier<Object> fileNameInfoFieldValue = null;
 				Supplier<Object> fileURLSupplier = null;
-				Object mimeTypeInfoFieldValue = null;
+				Supplier<Object> mimeTypeInfoFieldValue = null;
 				Supplier<Object> previewURLSupplier = null;
-				Object sizeInfoFieldValue = null;
+				Supplier<Object> sizeInfoFieldValue = null;
 
-				if (infoFieldValue instanceof Long) {
-					Long fileEntryId = (Long)infoFieldValue;
-
-					FileEntry fileEntry = dlAppLocalService.getFileEntry(
-						GetterUtil.getLong(fileEntryId));
-
-					downloadURLSupplier = _toSupplier(
-						() -> _getAttachmentDownloadURL(
-							dlURLHelper, fileEntry, objectDefinition,
-							objectEntryService, objectField,
-							serviceBuilderObjectEntry, themeDisplay));
-					fileNameInfoFieldValue = fileEntry.getFileName();
-
-					String mimeType = fileEntry.getMimeType();
-
-					mimeTypeInfoFieldValue = mimeType;
+				if (infoFieldValue instanceof Long fileEntryId) {
+					UnsafeSupplierValue<FileEntry, Exception>
+						fileEntryUnsafeSupplierValue =
+							new UnsafeSupplierValue<>(
+								() -> dlAppLocalService.getFileEntry(
+									fileEntryId));
 
 					Supplier<Object> webImageSupplier = _toSupplier(
 						() -> _getWebImage(
-							dlURLHelper, fileEntry, themeDisplay));
+							dlURLHelper,
+							fileEntryUnsafeSupplierValue.getValue(),
+							themeDisplay));
 
-					if (mimeType.startsWith("image")) {
-						fileURLSupplier = webImageSupplier;
-					}
+					downloadURLSupplier = _toSupplier(
+						() -> _getAttachmentDownloadURL(
+							dlURLHelper,
+							fileEntryUnsafeSupplierValue.getValue(),
+							objectDefinition, objectEntryService, objectField,
+							serviceBuilderObjectEntry, themeDisplay));
+					fileNameInfoFieldValue = _toSupplier(
+						() -> {
+							FileEntry fileEntry =
+								fileEntryUnsafeSupplierValue.getValue();
+
+							return fileEntry.getFileName();
+						});
+					fileURLSupplier = _toSupplier(
+						() -> {
+							FileEntry fileEntry =
+								fileEntryUnsafeSupplierValue.getValue();
+
+							String mimeType = fileEntry.getMimeType();
+
+							if (!mimeType.startsWith("image")) {
+								return null;
+							}
+
+							return webImageSupplier.get();
+						});
+					mimeTypeInfoFieldValue = _toSupplier(
+						() -> {
+							FileEntry fileEntry =
+								fileEntryUnsafeSupplierValue.getValue();
+
+							return fileEntry.getMimeType();
+						});
 
 					previewURLSupplier = webImageSupplier;
-					sizeInfoFieldValue = fileEntry.getSize();
+
+					sizeInfoFieldValue = _toSupplier(
+						() -> {
+							FileEntry fileEntry =
+								fileEntryUnsafeSupplierValue.getValue();
+
+							return fileEntry.getSize();
+						});
 				}
 				else if (infoFieldValue instanceof InfoLocalizedValue) {
 					Map<Locale, FileEntry> fileEntries = new LinkedHashMap<>();
@@ -497,8 +526,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 							dlURLHelper, fileEntries, objectDefinition,
 							objectEntryService, objectField,
 							serviceBuilderObjectEntry, themeDisplay));
-					fileNameInfoFieldValue =
-						fileNameInfoFieldValueBuilder.build();
+					fileNameInfoFieldValue = _toSupplier(
+						fileNameInfoFieldValueBuilder::build);
 
 					if (!imageFileEntries.isEmpty()) {
 						fileURLSupplier = _toSupplier(
@@ -506,12 +535,13 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 								dlURLHelper, imageFileEntries, themeDisplay));
 					}
 
-					mimeTypeInfoFieldValue =
-						mimeTypeInfoFieldValueBuilder.build();
+					mimeTypeInfoFieldValue = _toSupplier(
+						mimeTypeInfoFieldValueBuilder::build);
 					previewURLSupplier = _toSupplier(
 						() -> _getWebImageInfoLocalizedValue(
 							dlURLHelper, fileEntries, themeDisplay));
-					sizeInfoFieldValue = sizeInfoFieldValueBuilder.build();
+					sizeInfoFieldValue = _toSupplier(
+						sizeInfoFieldValueBuilder::build);
 				}
 
 				if (fileURLSupplier != null) {
