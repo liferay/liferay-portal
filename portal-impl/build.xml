@@ -836,7 +836,7 @@
 
 				<property name="source.formatter.result" value="-1" />
 
-				<fail message=".${line.separator}Unable to run Source Formatter under Java ${java.specification.version}. It loads classes${line.separator}compiled for a newer Java version. Set JAVA_HOME to a JDK 17 or 21 and run this${line.separator}target again.${line.separator}${line.separator}This is a toolchain failure, not a formatting violation.">
+				<fail message=".${line.separator}Source Formatter exited with a toolchain failure, reported above. This is not${line.separator}a formatting violation.">
 					<condition>
 						<equals arg1="${source.formatter.result}" arg2="2" />
 					</condition>
