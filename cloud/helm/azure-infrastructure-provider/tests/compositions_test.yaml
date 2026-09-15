@@ -525,6 +525,16 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "blobProperties:\\s+changeFeedEnabled: true"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "versioningEnabled:"
+        it: Retains the change feed and versions that vaulted backup replication requires
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "\\$backupRetentionDays := max 7 \\(min 35 \\(int \\(\\$backup.retentionDays \\| default 30\\)\\)\\)"
             -   documentIndex: 0
                 matchRegex:
