@@ -7605,6 +7605,8 @@ public class ObjectEntryLocalServiceImpl
 		ObjectEntry objectEntry = objectEntryPersistence.findByPrimaryKey(
 			objectEntryId);
 
+		objectEntryPersistence.reassociateIfAbsent(objectEntry);
+
 		_validateObjectEntryFolderId(
 			objectEntry.getGroupId(), objectEntryFolderId);
 
@@ -7622,16 +7624,16 @@ public class ObjectEntryLocalServiceImpl
 			objectEntry.getGroupId(), objectDefinition, userId, values);
 
 		Map<ObjectField, Set<DLFileEntry>> dlFileEntriesMap = new HashMap<>();
+		List<ObjectField> objectFields =
+			_objectFieldPersistence.findByObjectDefinitionId(
+				objectDefinition.getObjectDefinitionId());
 
 		_validateValues(
 			objectEntry.getDefaultLanguageId(), dlFileEntriesMap,
 			objectEntry.getValues(), objectEntry.getGroupId(),
 			user.isGuestUser(), objectDefinition,
-			objectEntry.getObjectEntryId(),
-			_objectFieldPersistence.findByObjectDefinitionId(
-				objectDefinition.getObjectDefinitionId()),
-			partialUpdate, serviceContext, objectEntry.getStatus(), userId,
-			null, values);
+			objectEntry.getObjectEntryId(), objectFields, partialUpdate,
+			serviceContext, objectEntry.getStatus(), userId, null, values);
 
 		_addDLFileEntries(
 			dlFileEntriesMap, objectEntry.getGroupId(), objectDefinition,
@@ -7647,23 +7649,52 @@ public class ObjectEntryLocalServiceImpl
 
 		Map<String, Serializable> transientValues = objectEntry.getValues();
 
+		Map<String, Serializable> insertedValues = new HashMap<>();
+
+		for (Map.Entry<String, Serializable> entry :
+				transientValues.entrySet()) {
+
+			Serializable value = entry.getValue();
+
+			if (value instanceof Map<?, ?> map) {
+				value = new HashMap<>(map);
+			}
+
+			insertedValues.put(entry.getKey(), value);
+		}
+
+		for (ObjectField objectField : objectFields) {
+			if (objectField.isLocalized()) {
+				insertedValues.remove(objectField.getI18nObjectFieldName());
+				insertedValues.remove(objectField.getName());
+			}
+			else if (Objects.equals(
+						objectField.getRelationshipType(),
+						ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+
+				insertedValues.remove(
+					ObjectFieldSettingUtil.getValue(
+						ObjectFieldSettingConstants.
+							NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
+						objectField));
+			}
+		}
+
 		_deleteFromLocalizationTable(objectDefinition, objectEntryId);
 
 		_insertIntoLocalizationTable(
-			objectEntry.getDefaultLanguageId(), new HashMap<>(),
+			objectEntry.getDefaultLanguageId(), insertedValues,
 			objectDefinition, objectEntryId, transientValues, partialUpdate,
 			values);
 
-		_updateTable(
+		boolean staticValues = _updateTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
 				false, objectDefinition, _objectFieldLocalService),
-			new HashMap<>(), objectEntryId, partialUpdate, values);
-		_updateTable(
+			insertedValues, objectEntryId, partialUpdate, values);
+		boolean extensionStaticValues = _updateTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
 				true, objectDefinition, _objectFieldLocalService),
-			new HashMap<>(), objectEntryId, partialUpdate, values);
-
-		objectEntry = objectEntryPersistence.findByPrimaryKey(objectEntryId);
+			insertedValues, objectEntryId, partialUpdate, values);
 
 		_setExternalReferenceCode(objectEntry, values);
 
@@ -7695,6 +7726,17 @@ public class ObjectEntryLocalServiceImpl
 		objectEntry.setTransientValues(transientValues);
 
 		ObjectEntry originalObjectEntry = objectEntry.cloneWithOriginalValues();
+
+		originalObjectEntry.setValues(transientValues);
+
+		if (staticValues && extensionStaticValues) {
+			_addObjectRelationshipERCFieldValue(objectFields, insertedValues);
+
+			objectEntry.setValues(insertedValues);
+		}
+		else {
+			objectEntry.setValues(null);
+		}
 
 		try {
 			if (workflowAction == WorkflowConstants.ACTION_SAVE_DRAFT) {
