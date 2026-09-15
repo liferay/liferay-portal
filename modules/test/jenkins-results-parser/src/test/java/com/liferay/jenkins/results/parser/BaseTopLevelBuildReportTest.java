@@ -157,7 +157,6 @@ public class BaseTopLevelBuildReportTest
 	public void testGetDistinctFailureReports() {
 		FailureReport failureReport = Mockito.mock(FailureReport.class);
 		FailureReport similarFailureReport = Mockito.mock(FailureReport.class);
-		FailureReport uniqueFailureReport = Mockito.mock(FailureReport.class);
 
 		Mockito.doReturn(
 			true
@@ -174,6 +173,8 @@ public class BaseTopLevelBuildReportTest
 		).when(
 			baseTopLevelBuildReport
 		).getDistinctFailureReports();
+
+		FailureReport uniqueFailureReport = Mockito.mock(FailureReport.class);
 
 		Mockito.doReturn(
 			Arrays.asList(
@@ -632,11 +633,6 @@ public class BaseTopLevelBuildReportTest
 		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
 			BaseTopLevelBuildReport.class);
 
-		Mockito.doCallRealMethod(
-		).when(
-			baseTopLevelBuildReport
-		).getUniqueFailureReports();
-
 		Mockito.doReturn(
 			distinctFailureReports
 		).when(
@@ -648,6 +644,11 @@ public class BaseTopLevelBuildReportTest
 		).when(
 			baseTopLevelBuildReport
 		).getPreviousTopLevelBuildReport();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTopLevelBuildReport
+		).getUniqueFailureReports();
 
 		List<FailureReport> uniqueFailureReports =
 			baseTopLevelBuildReport.getUniqueFailureReports();
