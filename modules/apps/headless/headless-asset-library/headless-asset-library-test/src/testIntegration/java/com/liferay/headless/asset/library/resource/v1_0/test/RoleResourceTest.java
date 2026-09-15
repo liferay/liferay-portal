@@ -247,7 +247,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		return _userGroup.getExternalReferenceCode();
 	}
 
-	private void _assertProblem(
+	private void _assertProblemException(
 			String status, String title,
 			UnsafeRunnable<Exception> unsafeRunnable)
 		throws Exception {
@@ -657,8 +657,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 		_serviceBuilderRoles.add(serviceBuilderRole);
 
-		_assertProblem(
-			"BAD_REQUEST", "The role subtype is invalid",
+		_assertProblemException(
+			"BAD_REQUEST", "Please enter a valid subtype.",
 			() -> roleResource.putAssetLibraryUserAccountRolesPage(
 				group.getExternalReferenceCode(),
 				user.getExternalReferenceCode(), _toRoles(serviceBuilderRole)));
@@ -714,8 +714,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 		_serviceBuilderRoles.add(serviceBuilderRole);
 
-		_assertProblem(
-			"BAD_REQUEST", "The role subtype is invalid",
+		_assertProblemException(
+			"BAD_REQUEST", "Please enter a valid subtype.",
 			() -> roleResource.putAssetLibraryUserGroupRolesPage(
 				group.getExternalReferenceCode(),
 				_userGroup.getExternalReferenceCode(),
