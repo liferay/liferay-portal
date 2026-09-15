@@ -27,7 +27,7 @@ import ElementVariationsList from './ElementVariationsList';
 import ElementVariationsPreview, {
 	ElementVariationsPreviewRef,
 } from './ElementVariationsPreview';
-import {getFilteredVariations} from './elementVariationFilters';
+import {Filter, getFilteredVariations} from './elementVariationFilters';
 import {
 	LoadedElementVariation,
 	createElementVariation,
@@ -164,8 +164,6 @@ function ElementVariations({
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
 
-	const [searchOpen, setSearchOpen] = useState(false);
-
 	const screenLarge = useMediaQuery(LARGE_MEDIA_QUERY);
 
 	const open = sidebarOpen || screenLarge;
@@ -296,81 +294,21 @@ function ElementVariations({
 								}
 							/>
 
-							<div className="align-items-center border-bottom border-top d-flex justify-content-between px-3 py-2">
-								{searchOpen ? (
-									<ElementVariationSearch
-										onClose={() => setSearchOpen(false)}
-										onSearch={(searchTerm) =>
-											dispatch({
-												searchTerm,
-												type: 'SET_SEARCH_TERM',
-											})
-										}
-										searchTerm={searchTerm}
-									/>
-								) : (
-									<>
-										<ElementVariationFilterMenu
-											audiences={audiences}
-											filters={filters}
-											onAddFilter={(filter) =>
-												dispatch({
-													filter,
-													type: 'ADD_FILTER',
-												})
-											}
-											trigger={
-												<ClayButtonWithIcon
-													aria-label={Liferay.Language.get(
-														'filter'
-													)}
-													borderless
-													displayType="secondary"
-													size="sm"
-													symbol="filter"
-													title={Liferay.Language.get(
-														'filter'
-													)}
-												/>
-											}
-										/>
-
-										<div className="align-items-center d-flex">
-											<ClayButtonWithIcon
-												aria-label={Liferay.Language.get(
-													'search'
-												)}
-												borderless
-												className="mr-2"
-												displayType="secondary"
-												onClick={() =>
-													setSearchOpen(true)
-												}
-												size="sm"
-												symbol="search"
-												title={Liferay.Language.get(
-													'search'
-												)}
-											/>
-
-											<ClayButtonWithIcon
-												aria-label={Liferay.Language.get(
-													'new-variation'
-												)}
-												displayType="primary"
-												onClick={
-													createElementVariationDraft
-												}
-												size="sm"
-												symbol="plus"
-												title={Liferay.Language.get(
-													'new-variation'
-												)}
-											/>
-										</div>
-									</>
-								)}
-							</div>
+							<Toolbar
+								audiences={audiences}
+								filters={filters}
+								onAddFilter={(filter) =>
+									dispatch({filter, type: 'ADD_FILTER'})
+								}
+								onCreate={createElementVariationDraft}
+								onSearch={(searchTerm) =>
+									dispatch({
+										searchTerm,
+										type: 'SET_SEARCH_TERM',
+									})
+								}
+								searchTerm={searchTerm}
+							/>
 
 							{Boolean(filters.length) || searchTerm ? (
 								<AppliedFilters
@@ -403,61 +341,16 @@ function ElementVariations({
 
 							<div className="pt-3">
 								{!audiences.length ? (
-									<ClayEmptyState
-										className="mb-0 px-3"
-										description={Liferay.Language.get(
-											'you-need-at-least-one-audience-to-build-element-variations'
-										)}
-										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
-										small
-										title={Liferay.Language.get(
-											'no-element-variations'
-										)}
-									>
-										<ClayLink
-											button
-											displayType="secondary"
-											href={createAudienceURL}
-											small
-											target="_blank"
-										>
-											<ClayIcon
-												className="mr-2"
-												symbol="shortcut"
-											/>
-
-											{Liferay.Language.get(
-												'create-new-audience'
-											)}
-										</ClayLink>
-									</ClayEmptyState>
+									<NoAudiencesState
+										createAudienceURL={createAudienceURL}
+									/>
 								) : (Boolean(filters.length) || searchTerm) &&
 								  !filteredElementVariations.length ? (
-									<ClayEmptyState
-										className="mb-0 px-3"
-										description={Liferay.Language.get(
-											'review-your-filters-and-try-again'
-										)}
-										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
-										small
-										title={Liferay.Language.get(
-											'no-results-found'
-										)}
-									>
-										<ClayButton
-											displayType="secondary"
-											onClick={() =>
-												dispatch({
-													type: 'CLEAR_FILTERS',
-												})
-											}
-											size="sm"
-										>
-											{Liferay.Language.get(
-												'clear-filters'
-											)}
-										</ClayButton>
-									</ClayEmptyState>
+									<NoResultsState
+										onClearFilters={() =>
+											dispatch({type: 'CLEAR_FILTERS'})
+										}
+									/>
 								) : experienceElementVariations.length ? (
 									<ElementVariationsList
 										audiences={audiences}
@@ -513,27 +406,9 @@ function ElementVariations({
 										}
 									/>
 								) : (
-									<ClayEmptyState
-										className="mb-0 px-3"
-										description={Liferay.Language.get(
-											'you-can-create-page-elements-variations-based-on-audiences'
-										)}
-										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
-										small
-										title={Liferay.Language.get(
-											'no-element-variations'
-										)}
-									>
-										<ClayButton
-											displayType="secondary"
-											onClick={
-												createElementVariationDraft
-											}
-											size="sm"
-										>
-											{Liferay.Language.get('new')}
-										</ClayButton>
-									</ClayEmptyState>
+									<NoVariationsState
+										onCreate={createElementVariationDraft}
+									/>
 								)}
 							</div>
 						</SidePanel.Body>
@@ -566,5 +441,145 @@ function ElementVariations({
 				}
 			/>
 		</div>
+	);
+}
+
+interface ToolbarProps {
+	audiences: Array<{label: string; value: string}>;
+	filters: Filter[];
+	onAddFilter: (filter: Filter) => void;
+	onCreate: () => void;
+	onSearch: (searchTerm: string) => void;
+	searchTerm: string;
+}
+
+function Toolbar({
+	audiences,
+	filters,
+	onAddFilter,
+	onCreate,
+	onSearch,
+	searchTerm,
+}: ToolbarProps) {
+	const [open, setOpen] = useState(false);
+
+	if (open) {
+		return (
+			<div className="align-items-center border-bottom border-top d-flex justify-content-between px-3 py-2">
+				<ElementVariationSearch
+					onClose={() => setOpen(false)}
+					onSearch={onSearch}
+					searchTerm={searchTerm}
+				/>
+			</div>
+		);
+	}
+
+	return (
+		<div className="align-items-center border-bottom border-top d-flex justify-content-between px-3 py-2">
+			<ElementVariationFilterMenu
+				audiences={audiences}
+				filters={filters}
+				onAddFilter={onAddFilter}
+				trigger={
+					<ClayButtonWithIcon
+						aria-label={Liferay.Language.get('filter')}
+						borderless
+						displayType="secondary"
+						size="sm"
+						symbol="filter"
+						title={Liferay.Language.get('filter')}
+					/>
+				}
+			/>
+
+			<div className="align-items-center d-flex">
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('search')}
+					borderless
+					className="mr-2"
+					displayType="secondary"
+					onClick={() => setOpen(true)}
+					size="sm"
+					symbol="search"
+					title={Liferay.Language.get('search')}
+				/>
+
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('new-variation')}
+					displayType="primary"
+					onClick={onCreate}
+					size="sm"
+					symbol="plus"
+					title={Liferay.Language.get('new-variation')}
+				/>
+			</div>
+		</div>
+	);
+}
+
+function NoAudiencesState({createAudienceURL}: {createAudienceURL: string}) {
+	return (
+		<ClayEmptyState
+			className="mb-0 px-3"
+			description={Liferay.Language.get(
+				'you-need-at-least-one-audience-to-build-element-variations'
+			)}
+			imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			small
+			title={Liferay.Language.get('no-element-variations')}
+		>
+			<ClayLink
+				button
+				displayType="secondary"
+				href={createAudienceURL}
+				small
+				target="_blank"
+			>
+				<ClayIcon className="mr-2" symbol="shortcut" />
+
+				{Liferay.Language.get('create-new-audience')}
+			</ClayLink>
+		</ClayEmptyState>
+	);
+}
+
+function NoResultsState({onClearFilters}: {onClearFilters: () => void}) {
+	return (
+		<ClayEmptyState
+			className="mb-0 px-3"
+			description={Liferay.Language.get(
+				'review-your-filters-and-try-again'
+			)}
+			imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+			small
+			title={Liferay.Language.get('no-results-found')}
+		>
+			<ClayButton
+				displayType="secondary"
+				onClick={onClearFilters}
+				size="sm"
+			>
+				{Liferay.Language.get('clear-filters')}
+			</ClayButton>
+		</ClayEmptyState>
+	);
+}
+
+function NoVariationsState({onCreate}: {onCreate: () => void}) {
+	return (
+		<ClayEmptyState
+			className="mb-0 px-3"
+			description={Liferay.Language.get(
+				'you-can-create-page-elements-variations-based-on-audiences'
+			)}
+			imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			small
+			title={Liferay.Language.get('no-element-variations')}
+		>
+			<ClayButton displayType="secondary" onClick={onCreate} size="sm">
+				{Liferay.Language.get('new')}
+			</ClayButton>
+		</ClayEmptyState>
 	);
 }
