@@ -35,3 +35,34 @@ AuditConfigurationDisplayContext auditConfigurationDisplayContext = (AuditConfig
 	<aui:option label="NDJSON" selected='<%= "NDJSON".equals(auditConfigurationDisplayContext.getFileSystemAuditMessageProcessorOutputFormat()) %>' value="NDJSON" />
 	<aui:option label="CSV" selected='<%= "CSV".equals(auditConfigurationDisplayContext.getFileSystemAuditMessageProcessorOutputFormat()) %>' value="CSV" />
 </aui:select>
+
+<aui:script>
+	(function () {
+		const form = document.getElementById('<portlet:namespace />fm');
+
+		const pseudonymizationEnabledCheckbox = document.getElementById(
+			'<portlet:namespace />pseudonymizationEnabled'
+		);
+
+		form.addEventListener('submit', (event) => {
+			if (
+				pseudonymizationEnabledCheckbox &&
+				!pseudonymizationEnabledCheckbox.checked &&
+				pseudonymizationEnabledCheckbox.defaultChecked
+			) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+
+				Liferay.Util.openConfirmModal({
+					message:
+						'<%= UnicodeLanguageUtil.get(request, "disable-pseudonymization-warning") %>',
+					onConfirm: (isConfirmed) => {
+						if (isConfirmed) {
+							submitForm(form);
+						}
+					},
+				});
+			}
+		});
+	})();
+</aui:script>
