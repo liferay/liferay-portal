@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -311,6 +312,11 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			boolean branchingPrivate, ServiceContext serviceContext)
 		throws PortalException {
 
+		if (branchingPrivate || branchingPublic) {
+			FeatureFlagManagerUtil.checkEnabled(
+				liveGroup.getCompanyId(), "LPD-105778");
+		}
+
 		if (liveGroup.isLayout()) {
 			enableLocalStaging(
 				userId, liveGroup.getParentGroup(), branchingPublic,
@@ -397,6 +403,11 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			String remotePathContext, boolean secureConnection,
 			long remoteGroupId, ServiceContext serviceContext)
 		throws PortalException {
+
+		if (branchingPrivate || branchingPublic) {
+			FeatureFlagManagerUtil.checkEnabled(
+				stagingGroup.getCompanyId(), "LPD-105778");
+		}
 
 		_groupLocalService.validateRemote(
 			stagingGroup.getGroupId(), remoteAddress, remotePort,

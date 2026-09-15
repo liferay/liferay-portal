@@ -8,6 +8,7 @@ package com.liferay.portal.service.impl;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
@@ -33,6 +34,9 @@ public class LayoutSetBranchServiceImpl extends LayoutSetBranchServiceBaseImpl {
 			String description, boolean master, long copyLayoutSetBranchId,
 			ServiceContext serviceContext)
 		throws PortalException {
+
+		FeatureFlagManagerUtil.checkEnabled(
+			serviceContext.getCompanyId(), "LPD-105778");
 
 		GroupPermissionUtil.check(
 			getPermissionChecker(), groupId, ActionKeys.ADD_LAYOUT_SET_BRANCH);
