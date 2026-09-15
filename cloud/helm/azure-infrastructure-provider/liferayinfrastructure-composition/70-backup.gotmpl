@@ -1,4 +1,12 @@
 {{- if $backup.enabled }}
+{{- $observedBackupDataPlanes := list -}}
+
+{{- range $dataPlane := list "blue" "green" -}}
+    {{- if hasKey $observedResources (printf "liferay-backup-instance-storage-%s" $dataPlane) -}}
+        {{- $observedBackupDataPlanes = append $observedBackupDataPlanes $dataPlane -}}
+    {{- end -}}
+{{- end }}
+
 {{- $anchorDates := dict "Friday" "2024-01-05" "Monday" "2024-01-01" "Saturday" "2024-01-06" "Sunday" "2024-01-07" "Thursday" "2024-01-04" "Tuesday" "2024-01-02" "Wednesday" "2024-01-03" -}}
 {{- $forceDestroy := $xr.spec.forceDestroy | default false -}}
 {{- $isWeekly := eq ($backup.frequency | default "Daily") "Weekly" -}}
@@ -148,7 +156,8 @@ spec:
 {{- end }}
 {{- range $dataPlane := $dataPlanes }}
 {{- $backupRoleId := dig (printf "liferay-backup-vault-storage-%s" $dataPlane) "resource" "status" "atProvider" "id" "" $observedResources }}
-{{- if $backupRoleId }}
+{{- $isDoclibRestoreTarget := and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
+{{- if and $backupRoleId (not $isDoclibRestoreTarget) }}
 apiVersion: dataprotection.azure.m.upbound.io/v1beta1
 kind: BackupInstanceBlobStorage
 metadata:
@@ -310,4 +319,32 @@ spec:
     providerConfigRef:
         kind: ClusterProviderConfig
         name: iam
+{{- range $dataPlane := list "blue" "green" }}
+{{- $isDoclibRestoreTarget := and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
+{{- if or (and (has $dataPlane $dataPlanes) (not $isDoclibRestoreTarget)) (has $dataPlane $observedBackupDataPlanes) }}
+---
+apiVersion: protection.crossplane.io/v1beta1
+kind: Usage
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: usage-storage-account-by-backup-instance-{{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-storage-account-by-backup-instance-{{ $dataPlane }}
+    namespace: {{ $namespace }}
+spec:
+    by:
+        apiVersion: dataprotection.azure.m.upbound.io/v1beta1
+        kind: BackupInstanceBlobStorage
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    of:
+        apiVersion: storage.azure.m.upbound.io/v1beta1
+        kind: Account
+        resourceSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+{{- end }}
+{{- end }}
 {{- end }}

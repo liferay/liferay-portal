@@ -9,6 +9,7 @@
 
 {{- range $i, $dataPlane := $dataPlanes }}
 {{- $databaseServerName := printf "%s-%s" $baseName $dataPlane }}
+{{- $isDatabaseRestoreTarget := and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
 {{- if $i }}
 ---
 {{- end }}
@@ -23,15 +24,19 @@ metadata:
     name: {{ $databaseServerName }}
 spec:
     forProvider:
+        {{- if not $isDatabaseRestoreTarget }}
         administratorLogin: liferay_database_admin
         administratorPasswordSecretRef:
             key: password
             name: database-admin-password
+        {{- end }}
         authentication:
             activeDirectoryAuthEnabled: true
             passwordAuthEnabled: true
             tenantId: {{ $env.tenantId }}
+        {{- if not $isDatabaseRestoreTarget }}
         autoGeneratePassword: true
+        {{- end }}
         autoGrowEnabled: true
         backupRetentionDays: {{ $backupRetentionDays }}
         {{- if $cmkEnabled }}
@@ -60,6 +65,15 @@ spec:
             {{- $backupTargetTags | toYaml | nindent 12 }}
             active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
         version: {{ $databaseSpec.version | default "16" | quote }}
+    {{- if $isDatabaseRestoreTarget }}
+    initProvider:
+        createMode: PointInTimeRestore
+        pointInTimeRestoreTimeInUtc: {{ $databaseSpec.restorePointInTime }}
+        sourceServerIdSelector:
+            matchControllerRef: true
+            matchLabels:
+                dataPlane: {{ $activeDataPlane }}
+    {{- end }}
     managementPolicies: {{ $managementPolicies }}
 ---
 apiVersion: dbforpostgresql.azure.m.upbound.io/v1beta1

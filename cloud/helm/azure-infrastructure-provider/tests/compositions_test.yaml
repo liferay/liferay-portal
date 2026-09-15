@@ -187,7 +187,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: \{\{- if \$backupRoleId \}\}
+                    pattern: \{\{- if and \$backupRoleId \(not \$isDoclibRestoreTarget\) \}\}
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -209,6 +209,16 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: \$isBackupRoleAssigned
         it: Holds each backup instance back until its own vault role assignment exists
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "if and \\$backupRoleId \\(not \\$isDoclibRestoreTarget\\)"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "if or \\(and \\(has \\$dataPlane \\$dataPlanes\\) \\(not \\$isDoclibRestoreTarget\\)\\) \\(has \\$dataPlane \\$observedBackupDataPlanes\\)"
+        it: Holds protection off the restore target until it is promoted
     -   asserts:
             -   equal:
                     path: spec.compositeTypeRef.apiVersion
@@ -321,6 +331,42 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: printf "%s-storage-policy-%s" \$backupVaultName \$backupScheduleHash
         it: Names each policy after its schedule so a schedule change rolls the policy
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- \\$isDatabaseRestoreTarget := and \\(eq \\$restorePhase \"provisioning\"\\) \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if not \\$isDatabaseRestoreTarget \\}\\}\\s+administratorLogin: liferay_database_admin\\s+administratorPasswordSecretRef:"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if not \\$isDatabaseRestoreTarget \\}\\}\\s+autoGeneratePassword: true"
+        it: Omits the administrator credentials from the restored plane
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: usage-storage-account-by-backup-instance-\\{\\{ \\$dataPlane \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "by:\\s+apiVersion: dataprotection.azure.m.upbound.io/v1beta1\\s+kind: BackupInstanceBlobStorage"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "of:\\s+apiVersion: storage.azure.m.upbound.io/v1beta1\\s+kind: Account"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: \$observedBackupDataPlanes = append \$observedBackupDataPlanes \$dataPlane
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "or \\(and \\(has \\$dataPlane \\$dataPlanes\\) \\(not \\$isDoclibRestoreTarget\\)\\) \\(has \\$dataPlane \\$observedBackupDataPlanes\\)"
+        it: Orders the storage account deletion behind its backup instance
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
@@ -461,6 +507,24 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$isDatabaseRestoreTarget \\}\\}\\s+initProvider:\\s+createMode: PointInTimeRestore"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "pointInTimeRestoreTimeInUtc: \\{\\{ \\$databaseSpec.restorePointInTime \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "sourceServerIdSelector:\\s+matchControllerRef: true\\s+matchLabels:\\s+dataPlane: \\{\\{ \\$activeDataPlane \\}\\}"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "sourceServerId: "
+        it: Restores the inactive plane to a point in time through initProvider
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "\\$backupRetentionDays := max 7 \\(min 35 \\(int \\(\\$backup.retentionDays \\| default 30\\)\\)\\)"
             -   documentIndex: 0
                 matchRegex:
@@ -501,3 +565,17 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\$isDoclibReady := and \\(ne \\$doclibConnectionString \"\"\\) \\$isDoclibContainerReady"
         it: Withholds the document library details until the container and its credential exist
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- \\$isDoclibRestoreTarget := and \\(eq \\$restorePhase \"provisioning\"\\) \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if not \\$isDoclibRestoreTarget \\}\\}\\s+---\\s+apiVersion: storage.azure.m.upbound.io/v1beta1\\s+kind: Container"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "writeConnectionSecretToRef:\\s+name: liferay-storage-\\{\\{ \\$dataPlane \\}\\}-credentials\\s+\\{\\{- if not \\$isDoclibRestoreTarget \\}\\}"
+        it: Withholds the restore target document library container so the restore can create it
