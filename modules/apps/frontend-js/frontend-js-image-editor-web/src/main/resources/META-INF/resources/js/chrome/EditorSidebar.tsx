@@ -7,10 +7,12 @@ import '../../css/Panels.scss';
 
 import React from 'react';
 
+import {FRAME_KINDS} from '../imaging/frameShapes';
 import {LoadedImage} from '../imaging/loadImage';
 import {AdjustPanel} from '../panels/AdjustPanel';
 import {CropPanel} from '../panels/CropPanel';
 import {FilterGallery} from '../panels/FilterGallery';
+import {FramePanel} from '../panels/FramePanel';
 import {EditorAction} from '../state/editorReducer';
 import {
 	AdjustmentKey,
@@ -81,6 +83,14 @@ export function EditorSidebar({
 					presets={presets}
 				/>
 			)}
+
+			<FramePanel
+				dispatch={dispatch}
+				frame={state.frame}
+				image={image}
+				onAnnounce={onAnnounce}
+				presets={FRAME_KINDS}
+			/>
 		</aside>
 	);
 }

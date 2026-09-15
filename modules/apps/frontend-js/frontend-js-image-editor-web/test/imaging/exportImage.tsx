@@ -7,15 +7,25 @@ import '@testing-library/jest-dom';
 
 import {editedImageMarkup} from '../../src/main/resources/META-INF/resources/js/imaging/exportImage';
 import {initialEditState} from '../../src/main/resources/META-INF/resources/js/state/editorReducer';
-import {Adjustments} from '../../src/main/resources/META-INF/resources/js/state/types';
+import {
+	Adjustments,
+	Frame,
+} from '../../src/main/resources/META-INF/resources/js/state/types';
 
 const DATA_URL = 'data:image/jpeg;base64,AAAA';
 
-function markup(adjustments: Partial<Adjustments> = {}) {
+function markup(
+	adjustments: Partial<Adjustments> = {},
+	frame: Partial<Frame> = {}
+) {
 	const state = initialEditState(1600, 1000);
 
 	return editedImageMarkup(
-		{...state, adjustments: {...state.adjustments, ...adjustments}},
+		{
+			...state,
+			adjustments: {...state.adjustments, ...adjustments},
+			frame: {...state.frame, ...frame},
+		},
 		DATA_URL
 	);
 }
@@ -35,5 +45,14 @@ describe('editedImageMarkup', () => {
 		expect(output).toContain('filter="url(#export-filter)"');
 		expect(output).toContain('id="export-filter"');
 		expect(output).toContain('slope="1.4"');
+	});
+
+	it('draws the frame over the exported picture', () => {
+		expect(markup()).not.toContain('editor-frame');
+
+		const output = markup({}, {kind: 'mat'});
+
+		expect(output).toContain('class="editor-frame"');
+		expect(output).toContain('stroke-width="40"');
 	});
 });

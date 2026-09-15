@@ -16,10 +16,12 @@ import {
 	FILTER_PRESETS,
 	RATIO_PRESETS,
 } from '../../src/main/resources/META-INF/resources/js/editorConfig';
+import {FRAME_KINDS} from '../../src/main/resources/META-INF/resources/js/imaging/frameShapes';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {AdjustPanel} from '../../src/main/resources/META-INF/resources/js/panels/AdjustPanel';
 import {CropPanel} from '../../src/main/resources/META-INF/resources/js/panels/CropPanel';
 import {FilterGallery} from '../../src/main/resources/META-INF/resources/js/panels/FilterGallery';
+import {FramePanel} from '../../src/main/resources/META-INF/resources/js/panels/FramePanel';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
 	editorReducer,
@@ -93,6 +95,14 @@ function EditorHarness() {
 					image={IMAGE}
 					onAnnounce={() => {}}
 					presets={FILTER_PRESETS}
+				/>
+
+				<FramePanel
+					dispatch={dispatch}
+					frame={history.present.frame}
+					image={IMAGE}
+					onAnnounce={() => {}}
+					presets={FRAME_KINDS}
 				/>
 
 				<BottomBar
@@ -220,6 +230,36 @@ describe('Editor workspace composition', () => {
 				'#aie-preview-filter feColorMatrix[type="matrix"]'
 			)
 		).not.toBeNull();
+	});
+
+	it('draws the picked frame over the crop area and sizes it from there', () => {
+		const {container} = render(<EditorHarness />);
+
+		expect(
+			container.querySelector('.editor-stage .editor-frame')
+		).toBeNull();
+		expect(screen.queryByLabelText('frame-size')).toBeNull();
+
+		fireEvent.click(screen.getByLabelText('mat'));
+
+		expect(screen.getByLabelText('mat')).toBeChecked();
+
+		const frame = container.querySelector(
+			'.editor-stage .editor-frame rect'
+		);
+
+		expect(frame).toHaveAttribute('stroke-width', '32');
+		expect(frame).toHaveAttribute('x', '16');
+		expect(frame).toHaveAttribute('width', '1168');
+
+		const size = screen.getByLabelText('frame-size');
+
+		fireEvent.change(size, {target: {value: '10'}});
+		fireEvent.keyUp(size, {key: 'ArrowRight'});
+
+		expect(
+			container.querySelector('.editor-stage .editor-frame rect')
+		).toHaveAttribute('stroke-width', '80');
 	});
 
 	it('lays the adjustment sliders out in the configured order', () => {

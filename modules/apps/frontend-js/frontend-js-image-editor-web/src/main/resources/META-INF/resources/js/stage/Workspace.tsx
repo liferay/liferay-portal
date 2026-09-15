@@ -9,6 +9,7 @@ import React from 'react';
 
 import {useEditorId} from '../chrome/instance';
 import {FilterDefs, isIdentityFilter} from '../imaging/FilterDefs';
+import {FrameShape} from '../imaging/frameShapes';
 import {imageTransform} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
 import {EditorAction} from '../state/editorReducer';
@@ -156,6 +157,8 @@ export function Workspace({
 						/>
 					</g>
 				</g>
+
+				<FrameShape crop={crop} frame={state.frame} />
 
 				<CropMarquee
 					aspectLocked={aspectLocked}

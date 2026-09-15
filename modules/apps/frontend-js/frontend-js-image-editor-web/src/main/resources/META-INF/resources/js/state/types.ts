@@ -11,6 +11,13 @@ export const DEFAULT_ADJUSTMENTS: Adjustments = {
 	shadows: 0,
 };
 
+export const DEFAULT_FRAME: Frame = {
+	color: '#ffffff',
+	kind: 'none',
+	offset: 0,
+	size: 4,
+};
+
 export const MIN_CROP_SIZE = 16;
 
 export const RATIO_VALUES: Record<
@@ -59,6 +66,8 @@ export interface EditState {
 
 	flipHorizontal: boolean;
 
+	frame: Frame;
+
 	ratio: RatioPreset;
 	rotation: Rotation;
 	sourceHeight: number;
@@ -86,6 +95,27 @@ export type FilterPreset =
 	| 'vintage'
 	| 'vivid'
 	| 'warm';
+
+export interface Frame {
+	color: string;
+	kind: FrameKind;
+
+	offset: number;
+
+	size: number;
+}
+
+export type FrameKind =
+	| 'bevel'
+	| 'corners'
+	| 'dashed'
+	| 'double'
+	| 'inset'
+	| 'line'
+	| 'mat'
+	| 'none'
+	| 'polaroid'
+	| 'ticks';
 
 interface HistoryEntry {
 	label: string;

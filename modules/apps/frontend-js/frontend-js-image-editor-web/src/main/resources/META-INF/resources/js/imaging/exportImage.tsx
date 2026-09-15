@@ -8,6 +8,7 @@ import {renderToStaticMarkup} from 'react-dom/server';
 
 import {EditState} from '../state/types';
 import {FilterDefs, isIdentityFilter} from './FilterDefs';
+import {FrameShape} from './frameShapes';
 import {imageTransform} from './geometry';
 import {LoadedImage} from './loadImage';
 
@@ -41,6 +42,8 @@ export function editedImageMarkup(state: EditState, dataUrl: string): string {
 					width={state.sourceWidth}
 				/>
 			</g>
+
+			<FrameShape crop={crop} frame={state.frame} />
 		</svg>
 	);
 }
