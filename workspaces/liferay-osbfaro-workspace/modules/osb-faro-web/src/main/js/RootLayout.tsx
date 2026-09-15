@@ -7,6 +7,7 @@ import {FaroEnv} from 'shared/util/constants';
 import {Outlet, useMatch} from 'react-router-dom';
 import {Pendo, TrackingConsentValues} from 'shared/util/pendo';
 import {Project} from 'shared/util/records';
+import {syncAIHubChatbot} from 'shared/util/ai-hub-chatbot';
 import {useFetchCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useSelector} from 'react-redux';
 
@@ -22,6 +23,12 @@ const RootLayout = () => {
 
 	const [trackingConsent, setTrackingConsent] =
 		useState<TrackingConsentValues | null>(null);
+
+	// The chatbot is provisioned per workspace, so it follows the route.
+
+	useEffect(() => {
+		syncAIHubChatbot(match?.params.groupId);
+	}, [match?.params.groupId]);
 
 	// The stored cookie decides whether Pendo may start. `trackingConsent` is
 	// not read here: it only re-runs the effect once the banner stores a
