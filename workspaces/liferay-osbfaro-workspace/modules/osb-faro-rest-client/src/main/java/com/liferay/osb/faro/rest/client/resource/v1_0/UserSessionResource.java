@@ -5,12 +5,12 @@
 
 package com.liferay.osb.faro.rest.client.resource.v1_0;
 
-import com.liferay.osb.faro.rest.client.dto.v1_0.IndividualSegment;
+import com.liferay.osb.faro.rest.client.dto.v1_0.UserSession;
 import com.liferay.osb.faro.rest.client.http.HttpInvoker;
 import com.liferay.osb.faro.rest.client.pagination.Page;
 import com.liferay.osb.faro.rest.client.pagination.Pagination;
 import com.liferay.osb.faro.rest.client.problem.Problem;
-import com.liferay.osb.faro.rest.client.serdes.v1_0.IndividualSegmentSerDes;
+import com.liferay.osb.faro.rest.client.serdes.v1_0.UserSessionSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -28,43 +28,36 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface IndividualSegmentResource {
+public interface UserSessionResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public Page<IndividualSegment>
-			getWorkspaceGroupChannelIndividualSegmentsPage(
-				Long groupId, String channelId, String name, String search,
-				String status, Pagination pagination)
+	public Page<UserSession> getWorkspaceGroupChannelAccountUserSessionsPage(
+			Long groupId, String channelId, String accountId, String rangeEnd,
+			String rangeKey, String rangeStart, String search,
+			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			getWorkspaceGroupChannelIndividualSegmentsPageHttpResponse(
-				Long groupId, String channelId, String name, String search,
-				String status, Pagination pagination)
+			getWorkspaceGroupChannelAccountUserSessionsPageHttpResponse(
+				Long groupId, String channelId, String accountId,
+				String rangeEnd, String rangeKey, String rangeStart,
+				String search, Pagination pagination)
 		throws Exception;
 
-	public Page<IndividualSegment>
-			getWorkspaceGroupIndividualIndividualSegmentsPage(
-				Long groupId, String individualId, String channelId,
-				String search, String status, Pagination pagination)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getWorkspaceGroupIndividualIndividualSegmentsPageHttpResponse(
-				Long groupId, String individualId, String channelId,
-				String search, String status, Pagination pagination)
-		throws Exception;
-
-	public IndividualSegment getWorkspaceGroupIndividualSegment(
-			Long groupId, String individualSegmentId)
+	public Page<UserSession> getWorkspaceGroupChannelIndividualUserSessionsPage(
+			Long groupId, String channelId, String individualId,
+			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			getWorkspaceGroupIndividualSegmentHttpResponse(
-				Long groupId, String individualSegmentId)
+			getWorkspaceGroupChannelIndividualUserSessionsPageHttpResponse(
+				Long groupId, String channelId, String individualId,
+				String rangeEnd, String rangeKey, String rangeStart,
+				String search, Pagination pagination)
 		throws Exception;
 
 	public static class Builder {
@@ -80,8 +73,8 @@ public interface IndividualSegmentResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public IndividualSegmentResource build() {
-			return new IndividualSegmentResourceImpl(this);
+		public UserSessionResource build() {
+			return new UserSessionResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -173,18 +166,19 @@ public interface IndividualSegmentResource {
 
 	}
 
-	public static class IndividualSegmentResourceImpl
-		implements IndividualSegmentResource {
+	public static class UserSessionResourceImpl implements UserSessionResource {
 
-		public Page<IndividualSegment>
-				getWorkspaceGroupChannelIndividualSegmentsPage(
-					Long groupId, String channelId, String name, String search,
-					String status, Pagination pagination)
+		public Page<UserSession>
+				getWorkspaceGroupChannelAccountUserSessionsPage(
+					Long groupId, String channelId, String accountId,
+					String rangeEnd, String rangeKey, String rangeStart,
+					String search, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getWorkspaceGroupChannelIndividualSegmentsPageHttpResponse(
-					groupId, channelId, name, search, status, pagination);
+				getWorkspaceGroupChannelAccountUserSessionsPageHttpResponse(
+					groupId, channelId, accountId, rangeEnd, rangeKey,
+					rangeStart, search, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -234,7 +228,7 @@ public interface IndividualSegmentResource {
 			}
 
 			try {
-				return Page.of(content, IndividualSegmentSerDes::toDTO);
+				return Page.of(content, UserSessionSerDes::toDTO);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -246,9 +240,10 @@ public interface IndividualSegmentResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getWorkspaceGroupChannelIndividualSegmentsPageHttpResponse(
-					Long groupId, String channelId, String name, String search,
-					String status, Pagination pagination)
+				getWorkspaceGroupChannelAccountUserSessionsPageHttpResponse(
+					Long groupId, String channelId, String accountId,
+					String rangeEnd, String rangeKey, String rangeStart,
+					String search, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -272,16 +267,20 @@ public interface IndividualSegmentResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (name != null) {
-				httpInvoker.parameter("name", String.valueOf(name));
+			if (rangeEnd != null) {
+				httpInvoker.parameter("rangeEnd", String.valueOf(rangeEnd));
+			}
+
+			if (rangeKey != null) {
+				httpInvoker.parameter("rangeKey", String.valueOf(rangeKey));
+			}
+
+			if (rangeStart != null) {
+				httpInvoker.parameter("rangeStart", String.valueOf(rangeStart));
 			}
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
-			}
-
-			if (status != null) {
-				httpInvoker.parameter("status", String.valueOf(status));
 			}
 
 			if (pagination != null) {
@@ -294,10 +293,11 @@ public interface IndividualSegmentResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individual-segments");
+						"/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/accounts/{accountId}/user-sessions");
 
 			httpInvoker.path("groupId", groupId);
 			httpInvoker.path("channelId", channelId);
+			httpInvoker.path("accountId", accountId);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -307,16 +307,17 @@ public interface IndividualSegmentResource {
 			return httpInvoker.invoke();
 		}
 
-		public Page<IndividualSegment>
-				getWorkspaceGroupIndividualIndividualSegmentsPage(
-					Long groupId, String individualId, String channelId,
-					String search, String status, Pagination pagination)
+		public Page<UserSession>
+				getWorkspaceGroupChannelIndividualUserSessionsPage(
+					Long groupId, String channelId, String individualId,
+					String rangeEnd, String rangeKey, String rangeStart,
+					String search, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getWorkspaceGroupIndividualIndividualSegmentsPageHttpResponse(
-					groupId, individualId, channelId, search, status,
-					pagination);
+				getWorkspaceGroupChannelIndividualUserSessionsPageHttpResponse(
+					groupId, channelId, individualId, rangeEnd, rangeKey,
+					rangeStart, search, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -366,7 +367,7 @@ public interface IndividualSegmentResource {
 			}
 
 			try {
-				return Page.of(content, IndividualSegmentSerDes::toDTO);
+				return Page.of(content, UserSessionSerDes::toDTO);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -378,9 +379,10 @@ public interface IndividualSegmentResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getWorkspaceGroupIndividualIndividualSegmentsPageHttpResponse(
-					Long groupId, String individualId, String channelId,
-					String search, String status, Pagination pagination)
+				getWorkspaceGroupChannelIndividualUserSessionsPageHttpResponse(
+					Long groupId, String channelId, String individualId,
+					String rangeEnd, String rangeKey, String rangeStart,
+					String search, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -404,16 +406,20 @@ public interface IndividualSegmentResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (channelId != null) {
-				httpInvoker.parameter("channelId", String.valueOf(channelId));
+			if (rangeEnd != null) {
+				httpInvoker.parameter("rangeEnd", String.valueOf(rangeEnd));
+			}
+
+			if (rangeKey != null) {
+				httpInvoker.parameter("rangeKey", String.valueOf(rangeKey));
+			}
+
+			if (rangeStart != null) {
+				httpInvoker.parameter("rangeStart", String.valueOf(rangeStart));
 			}
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
-			}
-
-			if (status != null) {
-				httpInvoker.parameter("status", String.valueOf(status));
 			}
 
 			if (pagination != null) {
@@ -426,9 +432,10 @@ public interface IndividualSegmentResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/faro-rest/v1.0/workspace/{groupId}/individuals/{individualId}/individual-segments");
+						"/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individuals/{individualId}/user-sessions");
 
 			httpInvoker.path("groupId", groupId);
+			httpInvoker.path("channelId", channelId);
 			httpInvoker.path("individualId", individualId);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
@@ -439,125 +446,16 @@ public interface IndividualSegmentResource {
 			return httpInvoker.invoke();
 		}
 
-		public IndividualSegment getWorkspaceGroupIndividualSegment(
-				Long groupId, String individualSegmentId)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				getWorkspaceGroupIndividualSegmentHttpResponse(
-					groupId, individualSegmentId);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return IndividualSegmentSerDes.toDTO(content);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse
-				getWorkspaceGroupIndividualSegmentHttpResponse(
-					Long groupId, String individualSegmentId)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/faro-rest/v1.0/workspace/{groupId}/individual-segments/{individualSegmentId}");
-
-			httpInvoker.path("groupId", groupId);
-			httpInvoker.path("individualSegmentId", individualSegmentId);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		private IndividualSegmentResourceImpl(Builder builder) {
+		private UserSessionResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			IndividualSegmentResource.class.getName());
+			UserSessionResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:535168336
+// LIFERAY-REST-BUILDER-HASH:-656731314

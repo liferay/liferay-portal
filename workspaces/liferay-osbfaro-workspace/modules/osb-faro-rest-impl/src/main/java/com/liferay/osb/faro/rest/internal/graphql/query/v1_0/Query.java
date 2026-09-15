@@ -9,21 +9,27 @@ import com.liferay.osb.faro.rest.dto.v1_0.Account;
 import com.liferay.osb.faro.rest.dto.v1_0.AssetSummaryMetric;
 import com.liferay.osb.faro.rest.dto.v1_0.Channel;
 import com.liferay.osb.faro.rest.dto.v1_0.Event;
+import com.liferay.osb.faro.rest.dto.v1_0.EventMetric;
 import com.liferay.osb.faro.rest.dto.v1_0.Individual;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegment;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegmentMembership;
+import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegmentMembershipChange;
 import com.liferay.osb.faro.rest.dto.v1_0.PageMetric;
 import com.liferay.osb.faro.rest.dto.v1_0.SearchTerm;
+import com.liferay.osb.faro.rest.dto.v1_0.UserSession;
 import com.liferay.osb.faro.rest.dto.v1_0.Workspace;
 import com.liferay.osb.faro.rest.resource.v1_0.AccountResource;
 import com.liferay.osb.faro.rest.resource.v1_0.AssetSummaryMetricResource;
 import com.liferay.osb.faro.rest.resource.v1_0.ChannelResource;
+import com.liferay.osb.faro.rest.resource.v1_0.EventMetricResource;
 import com.liferay.osb.faro.rest.resource.v1_0.EventResource;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualResource;
+import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentMembershipChangeResource;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentMembershipResource;
 import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentResource;
 import com.liferay.osb.faro.rest.resource.v1_0.PageMetricResource;
 import com.liferay.osb.faro.rest.resource.v1_0.SearchTermResource;
+import com.liferay.osb.faro.rest.resource.v1_0.UserSessionResource;
 import com.liferay.osb.faro.rest.resource.v1_0.WorkspaceResource;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
@@ -88,6 +94,14 @@ public class Query {
 			eventResourceComponentServiceObjects;
 	}
 
+	public static void setEventMetricResourceComponentServiceObjects(
+		ComponentServiceObjects<EventMetricResource>
+			eventMetricResourceComponentServiceObjects) {
+
+		_eventMetricResourceComponentServiceObjects =
+			eventMetricResourceComponentServiceObjects;
+	}
+
 	public static void setIndividualResourceComponentServiceObjects(
 		ComponentServiceObjects<IndividualResource>
 			individualResourceComponentServiceObjects) {
@@ -113,6 +127,15 @@ public class Query {
 			individualSegmentMembershipResourceComponentServiceObjects;
 	}
 
+	public static void
+		setIndividualSegmentMembershipChangeResourceComponentServiceObjects(
+			ComponentServiceObjects<IndividualSegmentMembershipChangeResource>
+				individualSegmentMembershipChangeResourceComponentServiceObjects) {
+
+		_individualSegmentMembershipChangeResourceComponentServiceObjects =
+			individualSegmentMembershipChangeResourceComponentServiceObjects;
+	}
+
 	public static void setPageMetricResourceComponentServiceObjects(
 		ComponentServiceObjects<PageMetricResource>
 			pageMetricResourceComponentServiceObjects) {
@@ -129,6 +152,14 @@ public class Query {
 			searchTermResourceComponentServiceObjects;
 	}
 
+	public static void setUserSessionResourceComponentServiceObjects(
+		ComponentServiceObjects<UserSessionResource>
+			userSessionResourceComponentServiceObjects) {
+
+		_userSessionResourceComponentServiceObjects =
+			userSessionResourceComponentServiceObjects;
+	}
+
 	public static void setWorkspaceResourceComponentServiceObjects(
 		ComponentServiceObjects<WorkspaceResource>
 			workspaceResourceComponentServiceObjects) {
@@ -140,7 +171,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupAccount(accountId: ___, groupId: ___){accountName, annualRevenue, country, dateModified, id, industry, lastActivityDate, lifecycleStage}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupAccount(accountId: ___, groupId: ___){accountName, accountType, activitiesCount, annualRevenue, country, dateModified, firstActivityDate, id, industry, lastActivityDate, lifecycleStage, numberOfEmployees, website}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetch a single account by id from an Analytics Cloud Workspace. Use this when you already have an account id. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
@@ -160,7 +191,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccounts(channelId: ___, groupId: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccounts(channelId: ___, groupId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Use this to browse or search accounts by name. To fetch a single account by id, use `getAccount`."
@@ -168,6 +199,9 @@ public class Query {
 	public AccountPage workspaceGroupChannelAccounts(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("channelId") String channelId,
+			@GraphQLName("rangeEnd") String rangeEnd,
+			@GraphQLName("rangeKey") String rangeKey,
+			@GraphQLName("rangeStart") String rangeStart,
 			@GraphQLName("search") String search,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page,
@@ -179,7 +213,8 @@ public class Query {
 			this::_populateResourceContext,
 			accountResource -> new AccountPage(
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, search, Pagination.of(page, pageSize),
+					groupId, channelId, rangeEnd, rangeKey, rangeStart, search,
+					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(accountResource, sortsString))));
 	}
 
@@ -287,18 +322,80 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividuals(accountId: ___, channelId: ___, groupId: ___, includeAnonymousUsers: ___, individualSegmentId: ___, interestName: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccountEventMetric(accountId: ___, channelId: ___, groupId: ___, interval: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){totalEvents, totalSessions}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, channel, segment, or interest. Use this for queries to find a person. To fetch a single individual by id, use `getWorkspaceGroupIndividual` instead."
+		description = "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+	)
+	public EventMetric workspaceGroupChannelAccountEventMetric(
+			@GraphQLName("groupId") Long groupId,
+			@GraphQLName("channelId") String channelId,
+			@GraphQLName("accountId") String accountId,
+			@GraphQLName("interval") String interval,
+			@GraphQLName("rangeEnd") String rangeEnd,
+			@GraphQLName("rangeKey") String rangeKey,
+			@GraphQLName("rangeStart") String rangeStart,
+			@GraphQLName("search") String search)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_eventMetricResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			eventMetricResource ->
+				eventMetricResource.getWorkspaceGroupChannelAccountEventMetric(
+					groupId, channelId, accountId, interval, rangeEnd, rangeKey,
+					rangeStart, search));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividualEventMetric(channelId: ___, groupId: ___, individualId: ___, interval: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){totalEvents, totalSessions}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+	)
+	public EventMetric workspaceGroupChannelIndividualEventMetric(
+			@GraphQLName("groupId") Long groupId,
+			@GraphQLName("channelId") String channelId,
+			@GraphQLName("individualId") String individualId,
+			@GraphQLName("interval") String interval,
+			@GraphQLName("rangeEnd") String rangeEnd,
+			@GraphQLName("rangeKey") String rangeKey,
+			@GraphQLName("rangeStart") String rangeStart,
+			@GraphQLName("search") String search)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_eventMetricResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			eventMetricResource ->
+				eventMetricResource.
+					getWorkspaceGroupChannelIndividualEventMetric(
+						groupId, channelId, individualId, interval, rangeEnd,
+						rangeKey, rangeStart, search));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividuals(accountId: ___, activityStatus: ___, channelId: ___, groupId: ___, includeAnonymousUsers: ___, individualSegmentId: ___, interestName: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, or date range, and searchable by name or email with `search`. To fetch a single individual by id, use `getWorkspaceGroupIndividual` instead."
 	)
 	public IndividualPage workspaceGroupChannelIndividuals(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("channelId") String channelId,
 			@GraphQLName("accountId") String accountId,
+			@GraphQLName("activityStatus") String activityStatus,
 			@GraphQLName("includeAnonymousUsers") Boolean includeAnonymousUsers,
 			@GraphQLName("individualSegmentId") String individualSegmentId,
 			@GraphQLName("interestName") String interestName,
+			@GraphQLName("rangeEnd") String rangeEnd,
+			@GraphQLName("rangeKey") String rangeKey,
+			@GraphQLName("rangeStart") String rangeStart,
+			@GraphQLName("search") String search,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page,
 			@GraphQLName("sort") String sortsString)
@@ -309,8 +406,9 @@ public class Query {
 			this::_populateResourceContext,
 			individualResource -> new IndividualPage(
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, accountId, includeAnonymousUsers,
-					individualSegmentId, interestName,
+					groupId, channelId, accountId, activityStatus,
+					includeAnonymousUsers, individualSegmentId, interestName,
+					rangeEnd, rangeKey, rangeStart, search,
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(individualResource, sortsString))));
 	}
@@ -318,7 +416,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividual(channelId: ___, groupId: ___, individualId: ___){accountName, activitiesCount, dateCreated, dateModified, demographics, firstActivityDate, id, lastActivityDate, lastSessionCountry, profileType}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividual(channelId: ___, groupId: ___, individualId: ___){accountName, activitiesCount, activityStatus, averageSessionDuration, dateCreated, dateModified, demographics, emailAddress, firstActivityDate, id, knownSinceDate, lastActivityDate, lastSessionCountry, name, profileType, sessionsCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an id. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
@@ -362,6 +460,34 @@ public class Query {
 				individualSegmentResource.
 					getWorkspaceGroupChannelIndividualSegmentsPage(
 						groupId, channelId, name, search, status,
+						Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividualIndividualSegments(channelId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, search: ___, status: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "List the individual segments a single individual belongs to, or formerly belonged to. Use this to check whether a person is already in a nurture or intent segment before recommending an action. To list all segments in a channel, use `getWorkspaceGroupChannelIndividualSegmentsPage`."
+	)
+	public IndividualSegmentPage workspaceGroupIndividualIndividualSegments(
+			@GraphQLName("groupId") Long groupId,
+			@GraphQLName("individualId") String individualId,
+			@GraphQLName("channelId") String channelId,
+			@GraphQLName("search") String search,
+			@GraphQLName("status") String status,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_individualSegmentResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			individualSegmentResource -> new IndividualSegmentPage(
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						groupId, individualId, channelId, search, status,
 						Pagination.of(page, pageSize))));
 	}
 
@@ -414,6 +540,43 @@ public class Query {
 							Pagination.of(page, pageSize),
 							_sortsBiFunction.apply(
 								individualSegmentMembershipResource,
+								sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividualSegmentMembershipChanges(groupId: ___, individualSegmentId: ___, operation: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "List the individuals who entered or left an individual segment over a date range, most recent change first, with each individual's name and email resolved. Use this to answer 'who has exited this segment recently'. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For the current membership list, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+	)
+	public IndividualSegmentMembershipChangePage
+			workspaceGroupIndividualSegmentMembershipChanges(
+				@GraphQLName("groupId") Long groupId,
+				@GraphQLName("individualSegmentId") String individualSegmentId,
+				@GraphQLName("operation") String operation,
+				@GraphQLName("rangeEnd") String rangeEnd,
+				@GraphQLName("rangeKey") String rangeKey,
+				@GraphQLName("rangeStart") String rangeStart,
+				@GraphQLName("search") String search,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page,
+				@GraphQLName("sort") String sortsString)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_individualSegmentMembershipChangeResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			individualSegmentMembershipChangeResource ->
+				new IndividualSegmentMembershipChangePage(
+					individualSegmentMembershipChangeResource.
+						getWorkspaceGroupIndividualSegmentMembershipChangesPage(
+							groupId, individualSegmentId, operation, rangeEnd,
+							rangeKey, rangeStart, search,
+							Pagination.of(page, pageSize),
+							_sortsBiFunction.apply(
+								individualSegmentMembershipChangeResource,
 								sortsString))));
 	}
 
@@ -473,6 +636,66 @@ public class Query {
 				searchTermResource.getWorkspaceGroupChannelSearchTermsPage(
 					groupId, channelId, rangeEnd, rangeKey, rangeStart,
 					Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccountUserSessions(accountId: ___, channelId: ___, groupId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+	)
+	public UserSessionPage workspaceGroupChannelAccountUserSessions(
+			@GraphQLName("groupId") Long groupId,
+			@GraphQLName("channelId") String channelId,
+			@GraphQLName("accountId") String accountId,
+			@GraphQLName("rangeEnd") String rangeEnd,
+			@GraphQLName("rangeKey") String rangeKey,
+			@GraphQLName("rangeStart") String rangeStart,
+			@GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_userSessionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			userSessionResource -> new UserSessionPage(
+				userSessionResource.
+					getWorkspaceGroupChannelAccountUserSessionsPage(
+						groupId, channelId, accountId, rangeEnd, rangeKey,
+						rangeStart, search, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividualUserSessions(channelId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+	)
+	public UserSessionPage workspaceGroupChannelIndividualUserSessions(
+			@GraphQLName("groupId") Long groupId,
+			@GraphQLName("channelId") String channelId,
+			@GraphQLName("individualId") String individualId,
+			@GraphQLName("rangeEnd") String rangeEnd,
+			@GraphQLName("rangeKey") String rangeKey,
+			@GraphQLName("rangeStart") String rangeStart,
+			@GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_userSessionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			userSessionResource -> new UserSessionPage(
+				userSessionResource.
+					getWorkspaceGroupChannelIndividualUserSessionsPage(
+						groupId, channelId, individualId, rangeEnd, rangeKey,
+						rangeStart, search, Pagination.of(page, pageSize))));
 	}
 
 	/**
@@ -623,6 +846,39 @@ public class Query {
 
 	}
 
+	@GraphQLName("EventMetricPage")
+	public class EventMetricPage {
+
+		public EventMetricPage(Page eventMetricPage) {
+			actions = eventMetricPage.getActions();
+
+			items = eventMetricPage.getItems();
+			lastPage = eventMetricPage.getLastPage();
+			page = eventMetricPage.getPage();
+			pageSize = eventMetricPage.getPageSize();
+			totalCount = eventMetricPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<EventMetric> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
 	@GraphQLName("IndividualPage")
 	public class IndividualPage {
 
@@ -724,6 +980,41 @@ public class Query {
 
 	}
 
+	@GraphQLName("IndividualSegmentMembershipChangePage")
+	public class IndividualSegmentMembershipChangePage {
+
+		public IndividualSegmentMembershipChangePage(
+			Page individualSegmentMembershipChangePage) {
+
+			actions = individualSegmentMembershipChangePage.getActions();
+
+			items = individualSegmentMembershipChangePage.getItems();
+			lastPage = individualSegmentMembershipChangePage.getLastPage();
+			page = individualSegmentMembershipChangePage.getPage();
+			pageSize = individualSegmentMembershipChangePage.getPageSize();
+			totalCount = individualSegmentMembershipChangePage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<IndividualSegmentMembershipChange> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
 	@GraphQLName("PageMetricPage")
 	public class PageMetricPage {
 
@@ -775,6 +1066,39 @@ public class Query {
 
 		@GraphQLField
 		protected java.util.Collection<SearchTerm> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
+	@GraphQLName("UserSessionPage")
+	public class UserSessionPage {
+
+		public UserSessionPage(Page userSessionPage) {
+			actions = userSessionPage.getActions();
+
+			items = userSessionPage.getItems();
+			lastPage = userSessionPage.getLastPage();
+			page = userSessionPage.getPage();
+			pageSize = userSessionPage.getPageSize();
+			totalCount = userSessionPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<UserSession> items;
 
 		@GraphQLField
 		protected long lastPage;
@@ -913,6 +1237,24 @@ public class Query {
 		eventResource.setRoleLocalService(_roleLocalService);
 	}
 
+	private void _populateResourceContext(
+			EventMetricResource eventMetricResource)
+		throws Exception {
+
+		eventMetricResource.setContextAcceptLanguage(_acceptLanguage);
+		eventMetricResource.setContextCompany(_company);
+		eventMetricResource.setContextHttpServletRequest(_httpServletRequest);
+		eventMetricResource.setContextHttpServletResponse(_httpServletResponse);
+		eventMetricResource.setContextUriInfo(_uriInfo);
+		eventMetricResource.setContextUser(_user);
+		eventMetricResource.setGroupLocalService(_groupLocalService);
+		eventMetricResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		eventMetricResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
+		eventMetricResource.setRoleLocalService(_roleLocalService);
+	}
+
 	private void _populateResourceContext(IndividualResource individualResource)
 		throws Exception {
 
@@ -974,6 +1316,30 @@ public class Query {
 			_roleLocalService);
 	}
 
+	private void _populateResourceContext(
+			IndividualSegmentMembershipChangeResource
+				individualSegmentMembershipChangeResource)
+		throws Exception {
+
+		individualSegmentMembershipChangeResource.setContextAcceptLanguage(
+			_acceptLanguage);
+		individualSegmentMembershipChangeResource.setContextCompany(_company);
+		individualSegmentMembershipChangeResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		individualSegmentMembershipChangeResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		individualSegmentMembershipChangeResource.setContextUriInfo(_uriInfo);
+		individualSegmentMembershipChangeResource.setContextUser(_user);
+		individualSegmentMembershipChangeResource.setGroupLocalService(
+			_groupLocalService);
+		individualSegmentMembershipChangeResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		individualSegmentMembershipChangeResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
+		individualSegmentMembershipChangeResource.setRoleLocalService(
+			_roleLocalService);
+	}
+
 	private void _populateResourceContext(PageMetricResource pageMetricResource)
 		throws Exception {
 
@@ -1008,6 +1374,24 @@ public class Query {
 		searchTermResource.setRoleLocalService(_roleLocalService);
 	}
 
+	private void _populateResourceContext(
+			UserSessionResource userSessionResource)
+		throws Exception {
+
+		userSessionResource.setContextAcceptLanguage(_acceptLanguage);
+		userSessionResource.setContextCompany(_company);
+		userSessionResource.setContextHttpServletRequest(_httpServletRequest);
+		userSessionResource.setContextHttpServletResponse(_httpServletResponse);
+		userSessionResource.setContextUriInfo(_uriInfo);
+		userSessionResource.setContextUser(_user);
+		userSessionResource.setGroupLocalService(_groupLocalService);
+		userSessionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		userSessionResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
+		userSessionResource.setRoleLocalService(_roleLocalService);
+	}
+
 	private void _populateResourceContext(WorkspaceResource workspaceResource)
 		throws Exception {
 
@@ -1033,16 +1417,23 @@ public class Query {
 		_channelResourceComponentServiceObjects;
 	private static ComponentServiceObjects<EventResource>
 		_eventResourceComponentServiceObjects;
+	private static ComponentServiceObjects<EventMetricResource>
+		_eventMetricResourceComponentServiceObjects;
 	private static ComponentServiceObjects<IndividualResource>
 		_individualResourceComponentServiceObjects;
 	private static ComponentServiceObjects<IndividualSegmentResource>
 		_individualSegmentResourceComponentServiceObjects;
 	private static ComponentServiceObjects<IndividualSegmentMembershipResource>
 		_individualSegmentMembershipResourceComponentServiceObjects;
+	private static ComponentServiceObjects
+		<IndividualSegmentMembershipChangeResource>
+			_individualSegmentMembershipChangeResourceComponentServiceObjects;
 	private static ComponentServiceObjects<PageMetricResource>
 		_pageMetricResourceComponentServiceObjects;
 	private static ComponentServiceObjects<SearchTermResource>
 		_searchTermResourceComponentServiceObjects;
+	private static ComponentServiceObjects<UserSessionResource>
+		_userSessionResourceComponentServiceObjects;
 	private static ComponentServiceObjects<WorkspaceResource>
 		_workspaceResourceComponentServiceObjects;
 
@@ -1063,4 +1454,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1907113082
+// LIFERAY-REST-BUILDER-HASH:-2076273549

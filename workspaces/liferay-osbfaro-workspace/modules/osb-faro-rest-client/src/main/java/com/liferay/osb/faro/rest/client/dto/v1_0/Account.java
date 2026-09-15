@@ -47,6 +47,48 @@ public class Account implements Cloneable, Serializable {
 
 	protected String accountName;
 
+	public String getAccountType() {
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+	}
+
+	public void setAccountType(
+		UnsafeSupplier<String, Exception> accountTypeUnsafeSupplier) {
+
+		try {
+			accountType = accountTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String accountType;
+
+	public Long getActivitiesCount() {
+		return activitiesCount;
+	}
+
+	public void setActivitiesCount(Long activitiesCount) {
+		this.activitiesCount = activitiesCount;
+	}
+
+	public void setActivitiesCount(
+		UnsafeSupplier<Long, Exception> activitiesCountUnsafeSupplier) {
+
+		try {
+			activitiesCount = activitiesCountUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long activitiesCount;
+
 	public Double getAnnualRevenue() {
 		return annualRevenue;
 	}
@@ -109,6 +151,27 @@ public class Account implements Cloneable, Serializable {
 	}
 
 	protected Date dateModified;
+
+	public Date getFirstActivityDate() {
+		return firstActivityDate;
+	}
+
+	public void setFirstActivityDate(Date firstActivityDate) {
+		this.firstActivityDate = firstActivityDate;
+	}
+
+	public void setFirstActivityDate(
+		UnsafeSupplier<Date, Exception> firstActivityDateUnsafeSupplier) {
+
+		try {
+			firstActivityDate = firstActivityDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date firstActivityDate;
 
 	public String getId() {
 		return id;
@@ -192,6 +255,48 @@ public class Account implements Cloneable, Serializable {
 
 	protected String lifecycleStage;
 
+	public Integer getNumberOfEmployees() {
+		return numberOfEmployees;
+	}
+
+	public void setNumberOfEmployees(Integer numberOfEmployees) {
+		this.numberOfEmployees = numberOfEmployees;
+	}
+
+	public void setNumberOfEmployees(
+		UnsafeSupplier<Integer, Exception> numberOfEmployeesUnsafeSupplier) {
+
+		try {
+			numberOfEmployees = numberOfEmployeesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer numberOfEmployees;
+
+	public String getWebsite() {
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+	}
+
+	public void setWebsite(
+		UnsafeSupplier<String, Exception> websiteUnsafeSupplier) {
+
+		try {
+			website = websiteUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String website;
+
 	@Override
 	public Account clone() throws CloneNotSupportedException {
 		return (Account)super.clone();
@@ -224,4 +329,4 @@ public class Account implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1099313577
+// LIFERAY-REST-BUILDER-HASH:1858872924

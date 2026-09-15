@@ -47,8 +47,8 @@ public interface AccountResource {
 		throws Exception;
 
 	public Page<Account> getWorkspaceGroupChannelAccountsPage(
-			Long groupId, String channelId, String search,
-			Pagination pagination,
+			Long groupId, String channelId, String rangeEnd, String rangeKey,
+			String rangeStart, String search, Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
@@ -140,4 +140,4 @@ public interface AccountResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:383235381
+// LIFERAY-REST-BUILDER-HASH:221929255

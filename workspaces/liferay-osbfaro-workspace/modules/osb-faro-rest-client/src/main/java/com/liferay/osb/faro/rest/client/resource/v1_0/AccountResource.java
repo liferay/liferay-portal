@@ -42,13 +42,15 @@ public interface AccountResource {
 		throws Exception;
 
 	public Page<Account> getWorkspaceGroupChannelAccountsPage(
-			Long groupId, String channelId, String search,
-			Pagination pagination, String sortString)
+			Long groupId, String channelId, String rangeEnd, String rangeKey,
+			String rangeStart, String search, Pagination pagination,
+			String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupChannelAccountsPageHttpResponse(
-				Long groupId, String channelId, String search,
+				Long groupId, String channelId, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
 				Pagination pagination, String sortString)
 		throws Exception;
 
@@ -267,13 +269,15 @@ public interface AccountResource {
 		}
 
 		public Page<Account> getWorkspaceGroupChannelAccountsPage(
-				Long groupId, String channelId, String search,
+				Long groupId, String channelId, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
 				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupChannelAccountsPageHttpResponse(
-					groupId, channelId, search, pagination, sortString);
+					groupId, channelId, rangeEnd, rangeKey, rangeStart, search,
+					pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -336,7 +340,8 @@ public interface AccountResource {
 
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupChannelAccountsPageHttpResponse(
-					Long groupId, String channelId, String search,
+					Long groupId, String channelId, String rangeEnd,
+					String rangeKey, String rangeStart, String search,
 					Pagination pagination, String sortString)
 			throws Exception {
 
@@ -360,6 +365,18 @@ public interface AccountResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (rangeEnd != null) {
+				httpInvoker.parameter("rangeEnd", String.valueOf(rangeEnd));
+			}
+
+			if (rangeKey != null) {
+				httpInvoker.parameter("rangeKey", String.valueOf(rangeKey));
+			}
+
+			if (rangeStart != null) {
+				httpInvoker.parameter("rangeStart", String.valueOf(rangeStart));
+			}
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
@@ -404,4 +421,4 @@ public interface AccountResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:224150624
+// LIFERAY-REST-BUILDER-HASH:-199871151

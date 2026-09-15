@@ -5,7 +5,7 @@
 
 package com.liferay.osb.faro.rest.resource.v1_0;
 
-import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegment;
+import com.liferay.osb.faro.rest.dto.v1_0.UserSession;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -41,22 +41,18 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface IndividualSegmentResource {
+public interface UserSessionResource {
 
-	public Page<IndividualSegment>
-			getWorkspaceGroupChannelIndividualSegmentsPage(
-				Long groupId, String channelId, String name, String search,
-				String status, Pagination pagination)
+	public Page<UserSession> getWorkspaceGroupChannelAccountUserSessionsPage(
+			Long groupId, String channelId, String accountId, String rangeEnd,
+			String rangeKey, String rangeStart, String search,
+			Pagination pagination)
 		throws Exception;
 
-	public Page<IndividualSegment>
-			getWorkspaceGroupIndividualIndividualSegmentsPage(
-				Long groupId, String individualId, String channelId,
-				String search, String status, Pagination pagination)
-		throws Exception;
-
-	public IndividualSegment getWorkspaceGroupIndividualSegment(
-			Long groupId, String individualSegmentId)
+	public Page<UserSession> getWorkspaceGroupChannelIndividualUserSessionsPage(
+			Long groupId, String channelId, String individualId,
+			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Pagination pagination)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -121,7 +117,7 @@ public interface IndividualSegmentResource {
 	@ProviderType
 	public interface Builder {
 
-		public IndividualSegmentResource build();
+		public UserSessionResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -147,4 +143,4 @@ public interface IndividualSegmentResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1907565182
+// LIFERAY-REST-BUILDER-HASH:-1913414387

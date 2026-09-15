@@ -45,8 +45,10 @@ public interface IndividualResource {
 
 	public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
 			Long groupId, String channelId, String accountId,
-			Boolean includeAnonymousUsers, String individualSegmentId,
-			String interestName, Pagination pagination,
+			String activityStatus, Boolean includeAnonymousUsers,
+			String individualSegmentId, String interestName, String rangeEnd,
+			String rangeKey, String rangeStart, String search,
+			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
@@ -142,4 +144,4 @@ public interface IndividualResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:207163693
+// LIFERAY-REST-BUILDER-HASH:-187450540

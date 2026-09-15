@@ -5,12 +5,12 @@
 
 package com.liferay.osb.faro.rest.client.resource.v1_0;
 
-import com.liferay.osb.faro.rest.client.dto.v1_0.Individual;
+import com.liferay.osb.faro.rest.client.dto.v1_0.IndividualSegmentMembershipChange;
 import com.liferay.osb.faro.rest.client.http.HttpInvoker;
 import com.liferay.osb.faro.rest.client.pagination.Page;
 import com.liferay.osb.faro.rest.client.pagination.Pagination;
 import com.liferay.osb.faro.rest.client.problem.Problem;
-import com.liferay.osb.faro.rest.client.serdes.v1_0.IndividualSerDes;
+import com.liferay.osb.faro.rest.client.serdes.v1_0.IndividualSegmentMembershipChangeSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -28,35 +28,24 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface IndividualResource {
+public interface IndividualSegmentMembershipChangeResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
-			Long groupId, String channelId, String accountId,
-			String activityStatus, Boolean includeAnonymousUsers,
-			String individualSegmentId, String interestName, String rangeEnd,
-			String rangeKey, String rangeStart, String search,
-			Pagination pagination, String sortString)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getWorkspaceGroupChannelIndividualsPageHttpResponse(
-				Long groupId, String channelId, String accountId,
-				String activityStatus, Boolean includeAnonymousUsers,
-				String individualSegmentId, String interestName,
+	public Page<IndividualSegmentMembershipChange>
+			getWorkspaceGroupIndividualSegmentMembershipChangesPage(
+				Long groupId, String individualSegmentId, String operation,
 				String rangeEnd, String rangeKey, String rangeStart,
 				String search, Pagination pagination, String sortString)
 		throws Exception;
 
-	public Individual getWorkspaceGroupIndividual(
-			Long groupId, String individualId, String channelId)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse getWorkspaceGroupIndividualHttpResponse(
-			Long groupId, String individualId, String channelId)
+	public HttpInvoker.HttpResponse
+			getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
+				Long groupId, String individualSegmentId, String operation,
+				String rangeEnd, String rangeKey, String rangeStart,
+				String search, Pagination pagination, String sortString)
 		throws Exception;
 
 	public static class Builder {
@@ -72,8 +61,8 @@ public interface IndividualResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public IndividualResource build() {
-			return new IndividualResourceImpl(this);
+		public IndividualSegmentMembershipChangeResource build() {
+			return new IndividualSegmentMembershipChangeResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -165,22 +154,20 @@ public interface IndividualResource {
 
 	}
 
-	public static class IndividualResourceImpl implements IndividualResource {
+	public static class IndividualSegmentMembershipChangeResourceImpl
+		implements IndividualSegmentMembershipChangeResource {
 
-		public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
-				Long groupId, String channelId, String accountId,
-				String activityStatus, Boolean includeAnonymousUsers,
-				String individualSegmentId, String interestName,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination, String sortString)
+		public Page<IndividualSegmentMembershipChange>
+				getWorkspaceGroupIndividualSegmentMembershipChangesPage(
+					Long groupId, String individualSegmentId, String operation,
+					String rangeEnd, String rangeKey, String rangeStart,
+					String search, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getWorkspaceGroupChannelIndividualsPageHttpResponse(
-					groupId, channelId, accountId, activityStatus,
-					includeAnonymousUsers, individualSegmentId, interestName,
-					rangeEnd, rangeKey, rangeStart, search, pagination,
-					sortString);
+				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
+					groupId, individualSegmentId, operation, rangeEnd, rangeKey,
+					rangeStart, search, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -230,7 +217,8 @@ public interface IndividualResource {
 			}
 
 			try {
-				return Page.of(content, IndividualSerDes::toDTO);
+				return Page.of(
+					content, IndividualSegmentMembershipChangeSerDes::toDTO);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -242,10 +230,8 @@ public interface IndividualResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getWorkspaceGroupChannelIndividualsPageHttpResponse(
-					Long groupId, String channelId, String accountId,
-					String activityStatus, Boolean includeAnonymousUsers,
-					String individualSegmentId, String interestName,
+				getWorkspaceGroupIndividualSegmentMembershipChangesPageHttpResponse(
+					Long groupId, String individualSegmentId, String operation,
 					String rangeEnd, String rangeKey, String rangeStart,
 					String search, Pagination pagination, String sortString)
 			throws Exception {
@@ -271,29 +257,8 @@ public interface IndividualResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			if (accountId != null) {
-				httpInvoker.parameter("accountId", String.valueOf(accountId));
-			}
-
-			if (activityStatus != null) {
-				httpInvoker.parameter(
-					"activityStatus", String.valueOf(activityStatus));
-			}
-
-			if (includeAnonymousUsers != null) {
-				httpInvoker.parameter(
-					"includeAnonymousUsers",
-					String.valueOf(includeAnonymousUsers));
-			}
-
-			if (individualSegmentId != null) {
-				httpInvoker.parameter(
-					"individualSegmentId", String.valueOf(individualSegmentId));
-			}
-
-			if (interestName != null) {
-				httpInvoker.parameter(
-					"interestName", String.valueOf(interestName));
+			if (operation != null) {
+				httpInvoker.parameter("operation", String.valueOf(operation));
 			}
 
 			if (rangeEnd != null) {
@@ -326,10 +291,10 @@ public interface IndividualResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individuals");
+						"/o/faro-rest/v1.0/workspace/{groupId}/individual-segments/{individualSegmentId}/membership-changes");
 
 			httpInvoker.path("groupId", groupId);
-			httpInvoker.path("channelId", channelId);
+			httpInvoker.path("individualSegmentId", individualSegmentId);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -339,128 +304,16 @@ public interface IndividualResource {
 			return httpInvoker.invoke();
 		}
 
-		public Individual getWorkspaceGroupIndividual(
-				Long groupId, String individualId, String channelId)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				getWorkspaceGroupIndividualHttpResponse(
-					groupId, individualId, channelId);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return IndividualSerDes.toDTO(content);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse getWorkspaceGroupIndividualHttpResponse(
-				Long groupId, String individualId, String channelId)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			if (channelId != null) {
-				httpInvoker.parameter("channelId", String.valueOf(channelId));
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/faro-rest/v1.0/workspace/{groupId}/individuals/{individualId}");
-
-			httpInvoker.path("groupId", groupId);
-			httpInvoker.path("individualId", individualId);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		private IndividualResourceImpl(Builder builder) {
+		private IndividualSegmentMembershipChangeResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			IndividualResource.class.getName());
+			IndividualSegmentMembershipChangeResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-872593037
+// LIFERAY-REST-BUILDER-HASH:1572279261

@@ -64,6 +64,30 @@ public class AccountSerDes {
 			sb.append("\"");
 		}
 
+		if (account.getAccountType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(account.getAccountType()));
+
+			sb.append("\"");
+		}
+
+		if (account.getActivitiesCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"activitiesCount\": ");
+
+			sb.append(account.getActivitiesCount());
+		}
+
 		if (account.getAnnualRevenue() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -99,6 +123,21 @@ public class AccountSerDes {
 
 			sb.append(
 				liferayToJSONDateFormat.format(account.getDateModified()));
+
+			sb.append("\"");
+		}
+
+		if (account.getFirstActivityDate() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"firstActivityDate\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(account.getFirstActivityDate()));
 
 			sb.append("\"");
 		}
@@ -160,6 +199,30 @@ public class AccountSerDes {
 			sb.append("\"");
 		}
 
+		if (account.getNumberOfEmployees() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfEmployees\": ");
+
+			sb.append(account.getNumberOfEmployees());
+		}
+
+		if (account.getWebsite() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"website\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(account.getWebsite()));
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -188,6 +251,22 @@ public class AccountSerDes {
 			map.put("accountName", String.valueOf(account.getAccountName()));
 		}
 
+		if (account.getAccountType() == null) {
+			map.put("accountType", null);
+		}
+		else {
+			map.put("accountType", String.valueOf(account.getAccountType()));
+		}
+
+		if (account.getActivitiesCount() == null) {
+			map.put("activitiesCount", null);
+		}
+		else {
+			map.put(
+				"activitiesCount",
+				String.valueOf(account.getActivitiesCount()));
+		}
+
 		if (account.getAnnualRevenue() == null) {
 			map.put("annualRevenue", null);
 		}
@@ -210,6 +289,15 @@ public class AccountSerDes {
 			map.put(
 				"dateModified",
 				liferayToJSONDateFormat.format(account.getDateModified()));
+		}
+
+		if (account.getFirstActivityDate() == null) {
+			map.put("firstActivityDate", null);
+		}
+		else {
+			map.put(
+				"firstActivityDate",
+				liferayToJSONDateFormat.format(account.getFirstActivityDate()));
 		}
 
 		if (account.getId() == null) {
@@ -243,6 +331,22 @@ public class AccountSerDes {
 				"lifecycleStage", String.valueOf(account.getLifecycleStage()));
 		}
 
+		if (account.getNumberOfEmployees() == null) {
+			map.put("numberOfEmployees", null);
+		}
+		else {
+			map.put(
+				"numberOfEmployees",
+				String.valueOf(account.getNumberOfEmployees()));
+		}
+
+		if (account.getWebsite() == null) {
+			map.put("website", null);
+		}
+		else {
+			map.put("website", String.valueOf(account.getWebsite()));
+		}
+
 		return map;
 	}
 
@@ -263,6 +367,12 @@ public class AccountSerDes {
 			if (Objects.equals(jsonParserFieldName, "accountName")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "activitiesCount")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "annualRevenue")) {
 				return false;
 			}
@@ -270,6 +380,9 @@ public class AccountSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "firstActivityDate")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -282,6 +395,12 @@ public class AccountSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "lifecycleStage")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "numberOfEmployees")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "website")) {
 				return false;
 			}
 
@@ -298,6 +417,17 @@ public class AccountSerDes {
 					account.setAccountName((String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
+				if (jsonParserFieldValue != null) {
+					account.setAccountType((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "activitiesCount")) {
+				if (jsonParserFieldValue != null) {
+					account.setActivitiesCount(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "annualRevenue")) {
 				if (jsonParserFieldValue != null) {
 					account.setAnnualRevenue(
@@ -312,6 +442,12 @@ public class AccountSerDes {
 			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
 				if (jsonParserFieldValue != null) {
 					account.setDateModified(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "firstActivityDate")) {
+				if (jsonParserFieldValue != null) {
+					account.setFirstActivityDate(
 						toDate((String)jsonParserFieldValue));
 				}
 			}
@@ -334,6 +470,17 @@ public class AccountSerDes {
 			else if (Objects.equals(jsonParserFieldName, "lifecycleStage")) {
 				if (jsonParserFieldValue != null) {
 					account.setLifecycleStage((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "numberOfEmployees")) {
+				if (jsonParserFieldValue != null) {
+					account.setNumberOfEmployees(
+						Integer.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "website")) {
+				if (jsonParserFieldValue != null) {
+					account.setWebsite((String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -417,4 +564,4 @@ public class AccountSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1461811637
+// LIFERAY-REST-BUILDER-HASH:1480950229

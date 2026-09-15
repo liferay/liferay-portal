@@ -93,15 +93,21 @@ public class OpenAPIResourceImpl {
 
 			add(EventResourceImpl.class);
 
+			add(EventMetricResourceImpl.class);
+
 			add(IndividualResourceImpl.class);
 
 			add(IndividualSegmentResourceImpl.class);
 
 			add(IndividualSegmentMembershipResourceImpl.class);
 
+			add(IndividualSegmentMembershipChangeResourceImpl.class);
+
 			add(PageMetricResourceImpl.class);
 
 			add(SearchTermResourceImpl.class);
+
+			add(UserSessionResourceImpl.class);
 
 			add(WorkspaceResourceImpl.class);
 
@@ -110,4 +116,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1664468973
+// LIFERAY-REST-BUILDER-HASH:1524209294
