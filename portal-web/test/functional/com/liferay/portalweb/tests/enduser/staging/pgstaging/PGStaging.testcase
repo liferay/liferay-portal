@@ -16,6 +16,10 @@ definition {
 			PagesAdmin.enableWidgetPages();
 		}
 
+		task ("Enable the Staging Page Variations deprecation feature flag") {
+			Staging.enablePageVariationsFeatureFlag();
+		}
+
 		task ("Enable dynamic and manual selection") {
 			AssetPublisherPortlet.enableDynamicAndManualSelection();
 		}

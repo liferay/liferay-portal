@@ -18,6 +18,10 @@ definition {
 			PagesAdmin.enableWidgetPages();
 		}
 
+		task ("Setup: Enable the Staging Page Variations deprecation feature flag") {
+			Staging.enablePageVariationsFeatureFlag();
+		}
+
 		task ("Setup: Add a group with the name Site Name") {
 			HeadlessSite.addSite(siteName = "Site Name");
 		}

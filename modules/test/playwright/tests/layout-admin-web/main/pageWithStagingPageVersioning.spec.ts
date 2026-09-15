@@ -20,6 +20,7 @@ import {stagingConfigurationPageTest} from '../../staging-configuration-web/main
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
+		'LPD-105778': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,

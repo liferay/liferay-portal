@@ -14,6 +14,10 @@ definition {
 		task ("Enable private pages") {
 			PagesAdmin.enablePrivatePages();
 		}
+
+		task ("Enable the Staging Page Variations deprecation feature flag") {
+			Staging.enablePageVariationsFeatureFlag();
+		}
 	}
 
 	tearDown {

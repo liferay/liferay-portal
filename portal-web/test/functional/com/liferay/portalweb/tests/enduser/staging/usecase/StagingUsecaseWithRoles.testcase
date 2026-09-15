@@ -16,6 +16,10 @@ definition {
 			PagesAdmin.enableWidgetPages();
 		}
 
+		task ("Enable the Staging Page Variations deprecation feature flag") {
+			Staging.enablePageVariationsFeatureFlag();
+		}
+
 		HeadlessSite.addSite(siteName = "Site Name");
 
 		JSONLayout.addPublicLayout(

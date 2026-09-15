@@ -857,6 +857,11 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro enablePageVariationsFeatureFlag() {
+		PagesAdmin.enableDeprecationFeatureFlag(featureFlagName = "Staging Page Variations");
+	}
+
+	@summary = "Default summary"
 	macro enablePublishTemplatesFeatureFlag() {
 		PortalSettings.gotoConfiguration(
 			configurationCategory = "Feature Flags",
