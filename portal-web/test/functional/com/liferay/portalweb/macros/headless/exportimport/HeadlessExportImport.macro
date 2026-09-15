@@ -1,6 +1,156 @@
 definition {
 
 	@summary = "Default summary"
+	macro _getPlid(layoutName = null, siteName = null) {
+		Variables.assertDefined(parameterList = ${siteName});
+
+		if (isSet(layoutName)) {
+			var plid = JSONLayout.getPlid(
+				groupName = ${siteName},
+				layoutName = ${layoutName});
+		}
+		else {
+			var groupId = JSONGroupSetter.setGroupId(
+				groupName = "Control Panel",
+				site = "false");
+
+			var plid = JSONLayoutAPI._getPlidByName(
+				groupId = ${groupId},
+				layoutName = "Control Panel",
+				privateLayout = "true");
+		}
+
+		return ${plid};
+	}
+
+	@summary = "Default summary"
+	macro _toRequestPortletDataHandlers(preview = null) {
+		Variables.assertDefined(parameterList = ${preview});
+
+		var requestPortletDataHandlers = "";
+		var portletDataHandlerNames = JSONUtil.getWithJSONPath(${preview}, "$..previewPortletDataHandlers[*].name");
+
+		for (var portletDataHandlerName : list ${portletDataHandlerNames}) {
+			var requestPortletDataHandlerControls = "";
+			var controlNames = JSONUtil.getWithJSONPath(${preview}, "$..previewPortletDataHandlers[?(@.name == '${portletDataHandlerName}')]..previewPortletDataHandlerControls[?(@.defaultState == true)].name");
+
+			if (${controlNames} != "") {
+				var controlNames = StringUtil.replace(${controlNames}, ",", "\"},{\"name\":\"");
+
+				var requestPortletDataHandlerControls = "{\"name\":\"${controlNames}\"}";
+			}
+
+			var requestPortletDataHandlers = ",{\"name\":\"${portletDataHandlerName}\",\"requestPortletDataHandlerControls\":[${requestPortletDataHandlerControls}]}${requestPortletDataHandlers}";
+		}
+
+		var requestPortletDataHandlers = StringUtil.regexReplaceAll(${requestPortletDataHandlers}, "^,", "");
+
+		return "[${requestPortletDataHandlers}]";
+	}
+
+	@summary = "Default summary"
+	macro _waitForProcess(processId = null, processType = null) {
+		Variables.assertDefined(parameterList = "${processId},${processType}");
+
+		var statusCode = HeadlessExportImportAPI._getProcessStatusCode(
+			processId = ${processId},
+			processType = ${processType});
+
+		while (((${statusCode} == 0) || (${statusCode} == 1) || (${statusCode} == 4)) && (maxIterations = "180")) {
+
+			// Export and import processes run as background tasks, so their status has to be polled. See LPD-105794.
+
+			Pause(value1 = 1000);
+
+			var statusCode = HeadlessExportImportAPI._getProcessStatusCode(
+				processId = ${processId},
+				processType = ${processType});
+		}
+
+		if (${statusCode} != 3) {
+			fail("FAIL. The ${processType} process ended with status code ${statusCode}.");
+		}
+	}
+
+	@summary = "Default summary"
+	macro exportPortlet(larFileName = null, layoutName = null, portletId = null, siteName = null) {
+		Variables.assertDefined(parameterList = "${larFileName},${portletId},${siteName}");
+
+		var plid = HeadlessExportImport._getPlid(
+			layoutName = ${layoutName},
+			siteName = ${siteName});
+		var siteExternalReferenceCode = HeadlessSiteAPI._getSiteExternalReferenceCode(siteName = ${siteName});
+
+		var exportPreview = HeadlessExportImportAPI._getExportPreview(
+			plid = ${plid},
+			portletId = ${portletId},
+			siteExternalReferenceCode = ${siteExternalReferenceCode});
+
+		var requestPortletDataHandlers = HeadlessExportImport._toRequestPortletDataHandlers(preview = ${exportPreview});
+
+		var exportProcessId = HeadlessExportImportAPI._postExportProcess(
+			exportProcessName = ${larFileName},
+			plid = ${plid},
+			portletId = ${portletId},
+			requestPortletDataHandlers = ${requestPortletDataHandlers},
+			siteExternalReferenceCode = ${siteExternalReferenceCode});
+
+		HeadlessExportImport._waitForProcess(
+			processId = ${exportProcessId},
+			processType = "export");
+
+		var downloadsDir = PropsUtil.get("output.dir.name");
+
+		HeadlessExportImportAPI._getExportProcessContent(
+			exportProcessId = ${exportProcessId},
+			filePath = "${downloadsDir}/${larFileName}");
+	}
+
+	@summary = "Default summary"
+	macro importPortlet(dataStrategy = null, larFileName = null, layoutName = null, portletId = null, siteName = null, uploadFrom = null) {
+		Variables.assertDefined(parameterList = "${larFileName},${portletId},${siteName}");
+
+		var downloadsDir = PropsUtil.get("output.dir.name");
+
+		var filePath = "${downloadsDir}/${larFileName}";
+
+		if (${uploadFrom} == "dependencies") {
+			var dependencyFilePath = TestCase.getDependenciesDirPath(fileName = ${larFileName});
+
+			ArchiveUtil.archive(${dependencyFilePath}, ${filePath});
+		}
+
+		if (!(isSet(dataStrategy))) {
+			var dataStrategy = "MIRROR";
+		}
+
+		var plid = HeadlessExportImport._getPlid(
+			layoutName = ${layoutName},
+			siteName = ${siteName});
+		var siteExternalReferenceCode = HeadlessSiteAPI._getSiteExternalReferenceCode(siteName = ${siteName});
+
+		var importPreview = HeadlessExportImportAPI._postImportPreview(
+			filePath = ${filePath},
+			plid = ${plid},
+			portletId = ${portletId},
+			siteExternalReferenceCode = ${siteExternalReferenceCode});
+
+		var requestPortletDataHandlers = HeadlessExportImport._toRequestPortletDataHandlers(preview = ${importPreview});
+
+		var importProcessId = HeadlessExportImportAPI._postImportProcess(
+			dataStrategy = ${dataStrategy},
+			importProcessName = ${larFileName},
+			plid = ${plid},
+			portletId = ${portletId},
+			requestPortletDataHandlers = ${requestPortletDataHandlers},
+			siteExternalReferenceCode = ${siteExternalReferenceCode});
+
+		HeadlessExportImport._waitForProcess(
+			processId = ${importProcessId},
+			processType = "import");
+	}
+
+	@summary = "Default summary"
 	macro relaunchExportProcess(exportProcessName = null, siteName = null) {
 		Variables.assertDefined(parameterList = "${exportProcessName},${siteName}");
 
@@ -12,20 +162,9 @@ definition {
 
 		var relaunchedExportProcessId = HeadlessExportImportAPI._postExportProcessRelaunch(exportProcessId = ${exportProcessId});
 
-		var statusCode = HeadlessExportImportAPI._getExportProcessStatusCode(exportProcessId = ${relaunchedExportProcessId});
-
-		while (((${statusCode} == 0) || (${statusCode} == 1) || (${statusCode} == 4)) && (maxIterations = "180")) {
-
-			// The relaunched export process runs as a background task, so its status has to be polled. See LPD-105678.
-
-			Pause(value1 = 1000);
-
-			var statusCode = HeadlessExportImportAPI._getExportProcessStatusCode(exportProcessId = ${relaunchedExportProcessId});
-		}
-
-		if (${statusCode} != 3) {
-			fail("FAIL. The relaunched export process ended with the status code ${statusCode}.");
-		}
+		HeadlessExportImport._waitForProcess(
+			processId = ${relaunchedExportProcessId},
+			processType = "export");
 	}
 
 }

@@ -1,6 +1,43 @@
 definition {
 
 	@summary = "Default summary"
+	macro _getExportPreview(plid = null, portletId = null, siteExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${plid},${portletId},${siteExternalReferenceCode}");
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/export-preview?plid=${plid}\&portletId=${portletId} \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json
+		''';
+
+		var exportPreview = JSONCurlUtil.get(${curl});
+
+		return ${exportPreview};
+	}
+
+	@summary = "Default summary"
+	macro _getExportProcessContent(exportProcessId = null, filePath = null) {
+		Variables.assertDefined(parameterList = "${exportProcessId},${filePath}");
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/export-processes/${exportProcessId}/content \
+				-u ${userEmailAddress}:${userPassword} \
+				--create-dirs \
+				-o ${filePath}
+		''';
+
+		JSONCurlUtil.get(${curl});
+	}
+
+	@summary = "Default summary"
 	macro _getExportProcessId(exportProcessName = null, siteExternalReferenceCode = null) {
 		Variables.assertDefined(parameterList = "${exportProcessName},${siteExternalReferenceCode}");
 
@@ -25,15 +62,15 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _getExportProcessStatusCode(exportProcessId = null) {
-		Variables.assertDefined(parameterList = ${exportProcessId});
+	macro _getProcessStatusCode(processId = null, processType = null) {
+		Variables.assertDefined(parameterList = "${processId},${processType}");
 
 		var portalURL = JSONCompany.getPortalURL();
 		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
 		var userPassword = JSONUtil2.getDefaultUserPassword();
 
 		var curl = '''
-			${portalURL}/o/export-import/v1.0/export-processes/${exportProcessId} \
+			${portalURL}/o/export-import/v1.0/${processType}-processes/${processId} \
 				-u ${userEmailAddress}:${userPassword} \
 				-H accept: application/json
 		''';
@@ -41,6 +78,33 @@ definition {
 		var statusCode = JSONCurlUtil.get(${curl}, "$.status.code");
 
 		return ${statusCode};
+	}
+
+	@summary = "Default summary"
+	macro _postExportProcess(exportProcessName = null, plid = null, portletId = null, requestPortletDataHandlers = null, siteExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${exportProcessName},${plid},${portletId},${requestPortletDataHandlers},${siteExternalReferenceCode}");
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/export-processes?plid=${plid}\&portletId=${portletId} \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json \
+				-H Content-Type: application/json \
+				-d {
+					"comments": true,
+					"dateRangeType": "ALL",
+					"name": "${exportProcessName}",
+					"ratings": true,
+					"requestPortletDataHandlers": ${requestPortletDataHandlers}
+				}
+		''';
+
+		var exportProcessId = JSONCurlUtil.post(${curl}, "$.id");
+
+		return ${exportProcessId};
 	}
 
 	@summary = "Default summary"
@@ -61,6 +125,53 @@ definition {
 		var relaunchedExportProcessId = JSONCurlUtil.post(${curl}, "$.id");
 
 		return ${relaunchedExportProcessId};
+	}
+
+	@summary = "Default summary"
+	macro _postImportPreview(filePath = null, plid = null, portletId = null, siteExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${filePath},${plid},${portletId},${siteExternalReferenceCode}");
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/import-preview?plid=${plid}\&portletId=${portletId} \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json \
+				-F file=@${filePath}
+		''';
+
+		var importPreview = JSONCurlUtil.post(${curl});
+
+		return ${importPreview};
+	}
+
+	@summary = "Default summary"
+	macro _postImportProcess(dataStrategy = null, importProcessName = null, plid = null, portletId = null, requestPortletDataHandlers = null, siteExternalReferenceCode = null) {
+		Variables.assertDefined(parameterList = "${dataStrategy},${importProcessName},${plid},${portletId},${requestPortletDataHandlers},${siteExternalReferenceCode}");
+
+		var portalURL = JSONCompany.getPortalURL();
+		var userEmailAddress = JSONUtil2.getDefaultUserEmail();
+		var userPassword = JSONUtil2.getDefaultUserPassword();
+
+		var curl = '''
+			${portalURL}/o/export-import/v1.0/sites/${siteExternalReferenceCode}/import-processes?plid=${plid}\&portletId=${portletId} \
+				-u ${userEmailAddress}:${userPassword} \
+				-H accept: application/json \
+				-H Content-Type: application/json \
+				-d {
+					"comments": true,
+					"dataStrategy": "${dataStrategy}",
+					"name": "${importProcessName}",
+					"ratings": true,
+					"requestPortletDataHandlers": ${requestPortletDataHandlers}
+				}
+		''';
+
+		var importProcessId = JSONCurlUtil.post(${curl}, "$.id");
+
+		return ${importProcessId};
 	}
 
 }
