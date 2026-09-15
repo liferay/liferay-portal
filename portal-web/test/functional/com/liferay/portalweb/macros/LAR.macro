@@ -391,17 +391,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addExportTemplateCP(exportTemplateName = null, exportTemplateDescription = null) {
-		LexiconEntry.gotoHeaderMenuItem(menuItem = "Export Templates");
-
-		LexiconEntry.gotoAdd();
-
-		PortletEntry.inputName(name = ${exportTemplateName});
-
-		PortletEntry.inputDescription(description = ${exportTemplateDescription});
-	}
-
-	@summary = "Default summary"
 	macro clickExportButton() {
 		AssertClick(
 			key_text = "Export",
@@ -465,64 +454,12 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editExportTemplateCP(exportTemplateDescriptionEdit = null, exportTemplateName = null, exportTemplateNameEdit = null) {
-		AssertClick(
-			key_columnName = "title",
-			key_tableEntry = ${exportTemplateName},
-			locator1 = "LexiconTable#TABLE_ENTRY_COLUMN_LINK",
-			value1 = ${exportTemplateName});
-
-		PortletEntry.inputName(name = ${exportTemplateNameEdit});
-
-		PortletEntry.inputDescription(description = ${exportTemplateDescriptionEdit});
-	}
-
-	@summary = "Default summary"
-	macro enableExportTemplatesFeatureFlag() {
-		PortalSettings.gotoConfiguration(
-			configurationCategory = "Feature Flags",
-			configurationName = "Deprecation",
-			configurationScope = "Virtual Instance Scope");
-
-		FeatureFlag.enableFeatureFlag(featureFlag = "LPD-96546");
-
-		Navigator.openURL();
-	}
-
-	@summary = "Default summary"
 	macro exportDDL(exportPermissions = null, larFileName = null) {
 		LAR._gotoExportImport();
 
 		LAR._export(
 			exportPermissions = ${exportPermissions},
 			larFileName = ${larFileName});
-	}
-
-	@summary = "Default summary"
-	macro exportExportTemplateCP(exportTemplateName = null, larFileName = null) {
-		LexiconEntry.gotoEllipsisMenuItem(menuItem = "Export");
-
-		if (isSet(larFileName)) {
-			Type(
-				inputFieldId = "ExportPortlet_name",
-				locator1 = "TextInput#INPUT_ID",
-				value1 = ${larFileName});
-		}
-
-		LAR.exportWithAssertionOnSuccess();
-
-		if (isSet(larFileName)) {
-			AssertTextEquals(
-				locator1 = "ExportImport#CURRENT_AND_PREVIOUS_NAME",
-				value1 = ${larFileName});
-		}
-		else {
-			AssertTextEquals(
-				locator1 = "ExportImport#CURRENT_AND_PREVIOUS_NAME",
-				value1 = ${exportTemplateName});
-		}
-
-		AssertElementPresent(locator1 = "Icon#EXPORT");
 	}
 
 	@summary = "Default summary"
@@ -692,13 +629,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro moveToTheRecycleBinExportTemplate() {
-		LexiconEntry.gotoEllipsisMenuItem(menuItem = "Delete");
-
-		VerifyElementPresent(locator1 = "Message#SUCCESS");
-	}
-
-	@summary = "Default summary"
 	macro openDepotExportAdmin(depotName = null) {
 		var baseURL = ${baseURL};
 		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
@@ -748,55 +678,6 @@ definition {
 		}
 
 		Open(value1 = "${baseURL}/group/${siteNameURL}/~/control_panel/manage?p_p_id=com_liferay_exportimport_web_portlet_ImportPortlet");
-	}
-
-	@summary = "Default summary"
-	macro saveExportTemplateCP(exportTemplateName = null, exportTemplateDescription = null) {
-		Button.clickSave();
-
-		AssertTextEquals(
-			key_columnName = "title",
-			key_tableEntry = ${exportTemplateName},
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = ${exportTemplateName});
-
-		AssertTextEquals(
-			key_columnName = "description",
-			key_tableEntry = ${exportTemplateDescription},
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = ${exportTemplateDescription});
-	}
-
-	@summary = "Default summary"
-	macro searchTemplate(exportTemplateName = null, exportTemplateDescription = null) {
-		Search.searchCP(searchTerm = ${exportTemplateName});
-
-		AssertTextEquals(
-			key_columnName = "title",
-			key_tableEntry = ${exportTemplateName},
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = ${exportTemplateName});
-
-		AssertTextEquals(
-			key_columnName = "description",
-			key_tableEntry = ${exportTemplateDescription},
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = ${exportTemplateDescription});
-	}
-
-	@summary = "Default summary"
-	macro viewExportTemplateCP(exportTemplateName = null, exportTemplateDescription = null) {
-		AssertTextEquals(
-			key_columnName = "title",
-			key_tableEntry = ${exportTemplateName},
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = ${exportTemplateName});
-
-		AssertTextEquals(
-			key_columnName = "description",
-			key_tableEntry = ${exportTemplateDescription},
-			locator1 = "LexiconTable#TABLE_ENTRY_INFO",
-			value1 = ${exportTemplateDescription});
 	}
 
 }

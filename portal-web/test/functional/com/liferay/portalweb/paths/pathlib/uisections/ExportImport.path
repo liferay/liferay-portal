@@ -49,11 +49,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CURRENT_AND_PREVIOUS_NAME</td>
-	<td>//div[contains(@data-qa-id,'rowItemContent')]//h2[normalize-space()]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>CURRENT_AND_PREVIOUS_STATUS</td>
 	<td>//tr[contains(.,'${key_larFileName}')]/td[2]//div[contains(@class,'h5')]</td>
 	<td></td>
