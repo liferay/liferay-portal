@@ -12,11 +12,7 @@ PORTAL_VERSION="7.4.13"
 function main {
 	set -ex
 
-	rebuild_legacy_database "${DATA_ARCHIVE_TYPE}" "${PORTAL_VERSION}"
-
-	default_set_up
-
-	assert_clean_upgrade_log boot
+	upgrade_legacy_database_set_up "${DATA_ARCHIVE_TYPE}" "${PORTAL_VERSION}"
 }
 
 main "${@}"
