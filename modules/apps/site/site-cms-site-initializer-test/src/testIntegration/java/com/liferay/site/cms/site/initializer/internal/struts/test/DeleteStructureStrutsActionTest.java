@@ -63,7 +63,7 @@ public class DeleteStructureStrutsActionTest {
 			null, TestPropsValues.getUserId(),
 			objectDefinition1.getObjectDefinitionId(),
 			objectDefinition2.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, true,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
@@ -75,7 +75,7 @@ public class DeleteStructureStrutsActionTest {
 			null, TestPropsValues.getUserId(),
 			objectDefinition2.getObjectDefinitionId(),
 			objectDefinition3.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, true,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
@@ -133,7 +133,7 @@ public class DeleteStructureStrutsActionTest {
 			null, TestPropsValues.getUserId(),
 			objectDefinition1.getObjectDefinitionId(),
 			objectDefinition2.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, true,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
@@ -145,7 +145,7 @@ public class DeleteStructureStrutsActionTest {
 			null, TestPropsValues.getUserId(),
 			objectDefinition2.getObjectDefinitionId(),
 			objectDefinition3.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, true,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);

@@ -71,7 +71,7 @@ public class AccountValidatorResultUpgradeProcessTest {
 			_objectRelationship.getExternalReferenceCode(),
 			_objectRelationship.getObjectRelationshipId(),
 			_objectRelationship.getParameterObjectFieldId(),
-			ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null,
 			_objectRelationship.isEdge(), _objectRelationship.getLabelMap(),
 			null);
 

@@ -73,7 +73,7 @@ public class APIPropertiesToAPIPropertiesUpgradeProcessTest
 			"L_API_PROPERTIES_TO_API_PROPERTIES", TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			objectDefinition.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), true,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY, null);

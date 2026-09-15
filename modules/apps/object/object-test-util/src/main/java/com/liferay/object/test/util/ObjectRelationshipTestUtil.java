@@ -55,7 +55,7 @@ public class ObjectRelationshipTestUtil {
 		return objectRelationshipLocalService.addObjectRelationship(
 			null, userId, objectDefinition1.getObjectDefinitionId(),
 			objectDefinition2.getObjectDefinitionId(), parameterObjectFieldId,
-			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, false,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
@@ -95,7 +95,8 @@ public class ObjectRelationshipTestUtil {
 		return objectRelationshipLocalService.addObjectRelationship(
 			null, TestPropsValues.getUserId(),
 			objectDefinition1.getObjectDefinitionId(),
-			objectDefinition2.getObjectDefinitionId(), 0, deletionType, false,
+			objectDefinition2.getObjectDefinitionId(), 0, deletionType, null,
+			false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			name, false, type, null);
 	}

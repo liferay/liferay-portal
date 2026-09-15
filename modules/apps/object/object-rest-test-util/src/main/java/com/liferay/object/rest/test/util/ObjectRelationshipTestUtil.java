@@ -15,6 +15,9 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
+import java.util.Locale;
+import java.util.Map;
+
 /**
  * @author Luis Miguel Barcos
  */
@@ -28,6 +31,21 @@ public class ObjectRelationshipTestUtil {
 		return addObjectRelationship(
 			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, objectDefinition,
 			relatedObjectDefinition, userId, type);
+	}
+
+	public static ObjectRelationship addObjectRelationship(
+			String deletionType, Map<Locale, String> descriptionMap,
+			ObjectDefinition objectDefinition,
+			ObjectDefinition relatedObjectDefinition, long userId, String name,
+			String type)
+		throws Exception {
+
+		return ObjectRelationshipLocalServiceUtil.addObjectRelationship(
+			null, userId, objectDefinition.getObjectDefinitionId(),
+			relatedObjectDefinition.getObjectDefinitionId(), 0, deletionType,
+			descriptionMap, false,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			name, false, type, null);
 	}
 
 	public static ObjectRelationship addObjectRelationship(
@@ -46,12 +64,9 @@ public class ObjectRelationshipTestUtil {
 			String type)
 		throws Exception {
 
-		return ObjectRelationshipLocalServiceUtil.addObjectRelationship(
-			null, userId, objectDefinition.getObjectDefinitionId(),
-			relatedObjectDefinition.getObjectDefinitionId(), 0, deletionType,
-			false,
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			name, false, type, null);
+		return addObjectRelationship(
+			deletionType, null, objectDefinition, relatedObjectDefinition,
+			userId, name, type);
 	}
 
 	public static void relateObjectEntries(
@@ -75,7 +90,8 @@ public class ObjectRelationshipTestUtil {
 		throws Exception {
 
 		return ObjectRelationshipLocalServiceUtil.updateObjectRelationship(
-			null, objectRelationshipId, 0, deletionType, false, null, null);
+			null, objectRelationshipId, 0, deletionType, null, false, null,
+			null);
 	}
 
 }

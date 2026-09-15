@@ -2752,7 +2752,7 @@ public class ObjectDefinitionTreeUtilTest {
 			_objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship.getExternalReferenceCode(),
 				objectRelationship.getObjectRelationshipId(), 0,
-				objectRelationship.getDeletionType(), false,
+				objectRelationship.getDeletionType(), null, false,
 				objectRelationship.getLabelMap(), null);
 
 		Assert.assertFalse(objectRelationship.isEdge());

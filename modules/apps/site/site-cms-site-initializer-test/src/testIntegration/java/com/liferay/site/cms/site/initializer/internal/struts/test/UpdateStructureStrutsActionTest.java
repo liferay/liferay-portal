@@ -83,7 +83,8 @@ public class UpdateStructureStrutsActionTest {
 					null, TestPropsValues.getUserId(),
 					serviceBuilderObjectDefinition1.getObjectDefinitionId(),
 					serviceBuilderObjectDefinition2.getObjectDefinitionId(), 0,
-					ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+					ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null,
+					true,
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					StringUtil.randomId(), false,
@@ -266,7 +267,7 @@ public class UpdateStructureStrutsActionTest {
 			externalReferenceCode, TestPropsValues.getUserId(),
 			_serviceBuilderObjectDefinition3.getObjectDefinitionId(),
 			_serviceBuilderObjectDefinition2.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE, false,
+			ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE, null, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			name, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 
@@ -450,7 +451,8 @@ public class UpdateStructureStrutsActionTest {
 					null, TestPropsValues.getUserId(),
 					serviceBuilderObjectDefinition1.getObjectDefinitionId(),
 					serviceBuilderObjectDefinition2.getObjectDefinitionId(), 0,
-					ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+					ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null,
+					true,
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					StringUtil.randomId(), false,
@@ -473,8 +475,9 @@ public class UpdateStructureStrutsActionTest {
 					serviceBuilderObjectRelationship.getObjectRelationshipId(),
 					serviceBuilderObjectRelationship.
 						getParameterObjectFieldId(),
-					serviceBuilderObjectRelationship.getDeletionType(), false,
-					serviceBuilderObjectRelationship.getLabelMap(), null);
+					serviceBuilderObjectRelationship.getDeletionType(), null,
+					false, serviceBuilderObjectRelationship.getLabelMap(),
+					null);
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			updatedServiceBuilderObjectRelationship);

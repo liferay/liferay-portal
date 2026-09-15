@@ -252,7 +252,8 @@ public class CMSObjectRelationshipEdgeUpgradeProcess extends UpgradeProcess {
 				currentObjectRelationship.getExternalReferenceCode(),
 				currentObjectRelationship.getObjectRelationshipId(),
 				currentObjectRelationship.getParameterObjectFieldId(),
-				currentObjectRelationship.getDeletionType(), true,
+				currentObjectRelationship.getDeletionType(),
+				currentObjectRelationship.getDescriptionMap(), true,
 				currentObjectRelationship.getLabelMap(), null);
 		}
 	}

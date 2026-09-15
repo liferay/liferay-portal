@@ -482,7 +482,7 @@ public class MCPProfileUpgradeProcess extends UpgradeProcess {
 				mcpServerProfileObjectDefinition.getUserId(),
 				mcpServerProfileObjectDefinition.getObjectDefinitionId(),
 				mcpServerProfileToolObjectDefinition.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, false,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
 				Collections.singletonMap(
 					LocaleUtil.US,
 					"MCP Server Profile to MCP Server Profile Tools"),

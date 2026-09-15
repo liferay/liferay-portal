@@ -241,7 +241,7 @@ public class ObjectRelationshipServiceTest {
 		return _objectRelationshipLocalService.addObjectRelationship(
 			null, user.getUserId(), _objectDefinition1.getObjectDefinitionId(),
 			_objectDefinition2.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
+			ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_MANY_TO_MANY, null);
@@ -264,7 +264,8 @@ public class ObjectRelationshipServiceTest {
 				_objectRelationshipService.addObjectRelationship(
 					null, _objectDefinition1.getObjectDefinitionId(),
 					_objectDefinition2.getObjectDefinitionId(), 0,
-					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
+					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null,
+					false,
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					StringUtil.randomId(), false,
@@ -291,7 +292,7 @@ public class ObjectRelationshipServiceTest {
 				null, TestPropsValues.getUserId(),
 				objectDefinition1.getObjectDefinitionId(),
 				objectDefinition2.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, false,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false, type, null);
 
@@ -442,7 +443,7 @@ public class ObjectRelationshipServiceTest {
 				_objectRelationshipService.updateObjectRelationship(
 					objectRelationship.getExternalReferenceCode(),
 					objectRelationship.getObjectRelationshipId(), 0,
-					objectRelationship.getDeletionType(), false,
+					objectRelationship.getDeletionType(), null, false,
 					LocalizedMapUtil.getLocalizedMap("Baker"), null);
 		}
 		finally {

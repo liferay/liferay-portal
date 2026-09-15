@@ -81,8 +81,8 @@ public class ObjectRelationshipTestUtil {
 		throws Exception {
 
 		return ObjectRelationshipLocalServiceUtil.updateObjectRelationship(
-			externalReferenceCode, objectRelationshipId, 0, deletionType, false,
-			labelMap, null);
+			externalReferenceCode, objectRelationshipId, 0, deletionType, null,
+			false, labelMap, null);
 	}
 
 }

@@ -359,6 +359,8 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 							serviceBuilderObjectRelationship.
 								getParameterObjectFieldId(),
 							serviceBuilderObjectRelationship.getDeletionType(),
+							serviceBuilderObjectRelationship.
+								getDescriptionMap(),
 							false,
 							serviceBuilderObjectRelationship.getLabelMap(),
 							null);

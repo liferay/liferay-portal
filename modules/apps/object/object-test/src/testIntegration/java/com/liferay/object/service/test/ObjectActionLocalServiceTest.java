@@ -1074,13 +1074,13 @@ public class ObjectActionLocalServiceTest {
 			_objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationshipA_AA.getExternalReferenceCode(),
 				objectRelationshipA_AA.getObjectRelationshipId(), 0,
-				objectRelationshipA_AA.getDeletionType(), false,
+				objectRelationshipA_AA.getDeletionType(), null, false,
 				objectRelationshipA_AA.getLabelMap(), null);
 
 			_objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationshipAA_AAA.getExternalReferenceCode(),
 				objectRelationshipAA_AAA.getObjectRelationshipId(), 0,
-				objectRelationshipAA_AAA.getDeletionType(), false,
+				objectRelationshipAA_AAA.getDeletionType(), null, false,
 				objectRelationshipAA_AAA.getLabelMap(), null);
 
 			_objectDefinitionLocalService.deleteObjectDefinition(

@@ -73,7 +73,8 @@ public class AccountEntryOrganizationRelModelListenerTest {
 						TestPropsValues.getCompanyId(), "AccountEntry"
 					).getObjectDefinitionId(),
 					objectDefinition.getObjectDefinitionId(), 0,
-					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
+					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null,
+					false,
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					StringUtil.randomId(), false,

@@ -130,7 +130,8 @@ public class DeleteStructureStrutsAction implements StrutsAction {
 				objectRelationship.getExternalReferenceCode(),
 				objectRelationship.getObjectRelationshipId(),
 				objectRelationship.getParameterObjectFieldId(),
-				objectRelationship.getDeletionType(), false,
+				objectRelationship.getDeletionType(),
+				objectRelationship.getDescriptionMap(), false,
 				objectRelationship.getLabelMap(), null);
 		}
 

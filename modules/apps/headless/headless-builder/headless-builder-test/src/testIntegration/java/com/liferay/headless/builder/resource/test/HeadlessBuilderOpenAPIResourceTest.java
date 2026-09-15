@@ -315,7 +315,7 @@ public class HeadlessBuilderOpenAPIResourceTest extends BaseTestCase {
 			null, TestPropsValues.getUserId(),
 			_objectDefinition1.getObjectDefinitionId(),
 			_objectDefinition2.getObjectDefinitionId(), 0,
-			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, false,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			relationshipName, false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);

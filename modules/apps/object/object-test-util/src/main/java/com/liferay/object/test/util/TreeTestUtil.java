@@ -119,7 +119,7 @@ public class TreeTestUtil {
 		return objectRelationshipLocalService.addObjectRelationship(
 			StringUtil.randomId(), TestPropsValues.getUserId(),
 			objectDefinition1Id, objectDefinition2Id, 0,
-			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+			ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, true,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			StringUtil.randomId(), false,
 			ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
@@ -135,7 +135,8 @@ public class TreeTestUtil {
 				objectRelationship.getExternalReferenceCode(),
 				objectRelationship.getObjectRelationshipId(),
 				objectRelationship.getParameterObjectFieldId(),
-				objectRelationship.getDeletionType(), true,
+				objectRelationship.getDeletionType(),
+				objectRelationship.getDescriptionMap(), true,
 				objectRelationship.getLabelMap(), null);
 		}
 	}
@@ -415,7 +416,8 @@ public class TreeTestUtil {
 				objectRelationship.getExternalReferenceCode(),
 				objectRelationship.getObjectRelationshipId(),
 				objectRelationship.getParameterObjectFieldId(),
-				objectRelationship.getDeletionType(), false,
+				objectRelationship.getDeletionType(),
+				objectRelationship.getDescriptionMap(), false,
 				objectRelationship.getLabelMap(), null);
 
 		Assert.assertFalse(objectRelationship.isEdge());

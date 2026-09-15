@@ -3267,8 +3267,8 @@ public class ObjectDefinitionLocalServiceTest {
 						TestPropsValues.getCompanyId(), "AccountEntry"
 					).getObjectDefinitionId(),
 					objectDefinition.getObjectDefinitionId(), 0,
-					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
-					RandomTestUtil.randomLocaleStringMap(),
+					ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null,
+					false, RandomTestUtil.randomLocaleStringMap(),
 					StringUtil.randomId(), false,
 					ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
 
@@ -3305,7 +3305,8 @@ public class ObjectDefinitionLocalServiceTest {
 					_addCustomObjectDefinition(
 						ObjectDefinitionTestUtil.getRandomName()
 					).getObjectDefinitionId(),
-					0, ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
+					0, ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null,
+					false,
 					LocalizedMapUtil.getLocalizedMap(
 						RandomTestUtil.randomString()),
 					StringUtil.randomId(), false,
@@ -5850,7 +5851,7 @@ public class ObjectDefinitionLocalServiceTest {
 				null, TestPropsValues.getUserId(),
 				objectDefinition1.getObjectDefinitionId(),
 				objectDefinition2.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, null, false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false,
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
