@@ -185,6 +185,11 @@ public class SaveAuditConfigurationMVCActionCommand
 			"enabled",
 			ParamUtil.getBoolean(
 				actionRequest, "enabled", auditConfiguration.enabled())
+		).put(
+			"pseudonymizationEnabled",
+			ParamUtil.getBoolean(
+				actionRequest, "pseudonymizationEnabled",
+				auditConfiguration.pseudonymizationEnabled())
 		).build();
 	}
 

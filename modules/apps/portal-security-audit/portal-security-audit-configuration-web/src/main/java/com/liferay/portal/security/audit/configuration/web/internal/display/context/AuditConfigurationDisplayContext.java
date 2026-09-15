@@ -91,6 +91,11 @@ public class AuditConfigurationDisplayContext {
 			"flushInterval");
 	}
 
+	public String getPseudonymizationEnabledHelpMessage() {
+		return _getHelpMessage(
+			AuditConfiguration.class, "pseudonymizationEnabled");
+	}
+
 	public boolean isEnabled() {
 		return _auditConfiguration.enabled();
 	}
@@ -151,6 +156,15 @@ public class AuditConfigurationDisplayContext {
 		return _isOverridden(
 			PersistentAuditMessageProcessorConfiguration.class,
 			"flushInterval");
+	}
+
+	public boolean isPseudonymizationEnabled() {
+		return _auditConfiguration.pseudonymizationEnabled();
+	}
+
+	public boolean isPseudonymizationEnabledOverridden() {
+		return _isOverridden(
+			AuditConfiguration.class, "pseudonymizationEnabled");
 	}
 
 	private String _getHelpMessage(Class<?> clazz, String key) {
