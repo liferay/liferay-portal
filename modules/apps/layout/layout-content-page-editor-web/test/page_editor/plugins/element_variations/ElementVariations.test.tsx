@@ -4,6 +4,10 @@
  */
 
 import '@testing-library/jest-dom';
+import {
+	hideProductMenuIfPresent,
+	useMediaQuery,
+} from '@liferay/layout-js-components-web';
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
@@ -12,6 +16,16 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import ElementVariations from '../../../../src/main/resources/META-INF/resources/page_editor/plugins/element_variations/ElementVariations';
+
+jest.mock('@liferay/layout-js-components-web', () => ({
+	...(jest.requireActual('@liferay/layout-js-components-web') as any),
+	hideProductMenuIfPresent: jest.fn(),
+	useMediaQuery: jest.fn(),
+}));
+
+const mockHideProductMenu = hideProductMenuIfPresent as jest.Mock;
+
+const mockUseMediaQuery = useMediaQuery as jest.Mock;
 
 type Props = React.ComponentProps<typeof ElementVariations>;
 
@@ -105,6 +119,66 @@ describe('ElementVariations', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+
+		mockUseMediaQuery.mockReturnValue(true);
+
+		mockHideProductMenu.mockImplementation(
+			({onHide}: {onHide: () => void}) => onHide()
+		);
+	});
+
+	it('does not show the open button on large screens', async () => {
+		renderElementVariations();
+
+		expect(
+			await screen.findByText('element-variations')
+		).toBeInTheDocument();
+
+		expect(
+			screen.queryByRole('button', {name: 'open-sidebar'})
+		).not.toBeInTheDocument();
+	});
+
+	it('reveals the open button after the sidebar is closed on small screens', async () => {
+		mockUseMediaQuery.mockReturnValue(false);
+
+		renderElementVariations();
+
+		expect(
+			screen.queryByRole('button', {name: 'open-sidebar'})
+		).not.toBeInTheDocument();
+
+		await userEvent.click(screen.getByRole('button', {name: 'close'}));
+
+		expect(
+			screen.getByRole('button', {name: 'open-sidebar'})
+		).toBeInTheDocument();
+	});
+
+	it('reopens the sidebar from the open button', async () => {
+		mockUseMediaQuery.mockReturnValue(false);
+
+		renderElementVariations();
+
+		await userEvent.click(screen.getByRole('button', {name: 'close'}));
+		await userEvent.click(
+			screen.getByRole('button', {name: 'open-sidebar'})
+		);
+
+		expect(
+			screen.queryByRole('button', {name: 'open-sidebar'})
+		).not.toBeInTheDocument();
+	});
+
+	it('leaves the sidebar closed until the product menu is hidden', async () => {
+		mockUseMediaQuery.mockReturnValue(false);
+		mockHideProductMenu.mockImplementation(() => {});
+
+		renderElementVariations();
+
+		expect(
+			screen.getByRole('button', {name: 'open-sidebar'})
+		).toBeInTheDocument();
 	});
 
 	it('has no accessibility violations when there are no element variations', async () => {

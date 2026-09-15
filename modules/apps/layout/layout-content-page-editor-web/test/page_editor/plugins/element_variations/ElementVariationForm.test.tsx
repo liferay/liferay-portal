@@ -4,6 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
+import {SidePanel} from '@clayui/core';
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
@@ -57,25 +58,31 @@ function renderForm(
 	const getForm = (
 		currentElementVariation: Partial<ElementVariationProp>
 	) => (
-		<ElementVariationForm
-			audiences={[]}
-			defaultLanguageId="en_US"
-			dispatch={jest.fn()}
-			editableElementOptions={EDITABLE_ELEMENT_OPTIONS}
-			elementVariation={{
-				...BASE_ELEMENT_VARIATION,
-				...currentElementVariation,
-			}}
-			elementVariations={[]}
-			languageId="en_US"
-			locales={LOCALES}
-			onCancel={jest.fn()}
-			onChange={onChange}
-			onLanguageIdChange={jest.fn()}
-			onReloadPreview={jest.fn()}
-			onSave={jest.fn()}
-			{...props}
-		/>
+		<SidePanel
+			containerRef={{current: document.body}}
+			onOpenChange={jest.fn()}
+			open
+		>
+			<ElementVariationForm
+				audiences={[]}
+				defaultLanguageId="en_US"
+				dispatch={jest.fn()}
+				editableElementOptions={EDITABLE_ELEMENT_OPTIONS}
+				elementVariation={{
+					...BASE_ELEMENT_VARIATION,
+					...currentElementVariation,
+				}}
+				elementVariations={[]}
+				languageId="en_US"
+				locales={LOCALES}
+				onCancel={jest.fn()}
+				onChange={onChange}
+				onLanguageIdChange={jest.fn()}
+				onReloadPreview={jest.fn()}
+				onSave={jest.fn()}
+				{...props}
+			/>
+		</SidePanel>
 	);
 
 	const {rerender, ...result} = render(getForm(elementVariation));
