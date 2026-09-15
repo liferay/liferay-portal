@@ -23,6 +23,13 @@ public interface TestPackage {
 
 	public JSONObject getPackageJSONObject();
 
+	public TestClassFile getTestClassFile(String classPath) throws IOException;
+
+	public List<TestClassFile> getTestClassFiles() throws IOException;
+
+	public List<TestClassFile> getTestClassFiles(String parentDirPath)
+		throws IOException;
+
 	public String getTestScript();
 
 }

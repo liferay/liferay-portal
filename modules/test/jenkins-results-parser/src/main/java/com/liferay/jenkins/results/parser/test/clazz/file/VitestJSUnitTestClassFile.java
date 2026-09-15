@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * @author Michael Hashimoto
  */
-public class VitestJSUnitTestClassFile extends BaseJSUnitTestClassFile {
+public class VitestJSUnitTestClassFile extends BaseTestClassFile {
 
 	protected VitestJSUnitTestClassFile(File file) throws IOException {
 		super(file);
