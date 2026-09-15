@@ -848,24 +848,6 @@ public class ObjectEntryDTOConverter
 							relatedObjectDefinition.getCompanyId(),
 							objectRelationship.getType());
 
-				long relatedObjectDefinitionGroupId = groupId;
-
-				if (Objects.equals(
-						relatedObjectDefinition.getScope(),
-						ObjectDefinitionConstants.SCOPE_COMPANY)) {
-
-					relatedObjectDefinitionGroupId = 0;
-				}
-
-				List<?> relatedModels =
-					objectRelatedModelsProvider.getRelatedModels(
-						relatedObjectDefinitionGroupId,
-						objectRelationship.getObjectRelationshipId(), null,
-						GetterUtil.getBoolean(
-							dtoConverterContext.getAttribute("preferApproved")),
-						primaryKey, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-						null);
-
 				if (relatedObjectDefinition.isUnmodifiableSystemObject()) {
 					SystemObjectDefinitionManager
 						systemObjectDefinitionManager =
@@ -874,7 +856,12 @@ public class ObjectEntryDTOConverter
 									relatedObjectDefinition.getName());
 
 					return () -> TransformUtil.transformToArray(
-						relatedModels,
+						_getRelatedModels(
+							dtoConverterContext,
+							_getRelatedObjectDefinitionGroupId(
+								groupId, relatedObjectDefinition),
+							objectRelatedModelsProvider, objectRelationship,
+							primaryKey),
 						relatedModel -> _toExtendedEntity(
 							(BaseModel<?>)relatedModel, dtoConverterContext,
 							relatedObjectDefinition,
@@ -883,7 +870,12 @@ public class ObjectEntryDTOConverter
 				}
 
 				return () -> TransformUtil.transformToArray(
-					relatedModels,
+					_getRelatedModels(
+						dtoConverterContext,
+						_getRelatedObjectDefinitionGroupId(
+							groupId, relatedObjectDefinition),
+						objectRelatedModelsProvider, objectRelationship,
+						primaryKey),
 					relatedModel -> {
 						com.liferay.object.model.ObjectEntry objectEntry =
 							(com.liferay.object.model.ObjectEntry)relatedModel;
@@ -929,6 +921,32 @@ public class ObjectEntryDTOConverter
 		}
 
 		return objectDefinition;
+	}
+
+	private List<?> _getRelatedModels(
+			DTOConverterContext dtoConverterContext, long groupId,
+			ObjectRelatedModelsProvider objectRelatedModelsProvider,
+			ObjectRelationship objectRelationship, long primaryKey)
+		throws Exception {
+
+		return objectRelatedModelsProvider.getRelatedModels(
+			groupId, objectRelationship.getObjectRelationshipId(), null,
+			GetterUtil.getBoolean(
+				dtoConverterContext.getAttribute("preferApproved")),
+			primaryKey, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	private long _getRelatedObjectDefinitionGroupId(
+		long groupId, ObjectDefinition relatedObjectDefinition) {
+
+		if (Objects.equals(
+				relatedObjectDefinition.getScope(),
+				ObjectDefinitionConstants.SCOPE_COMPANY)) {
+
+			return 0;
+		}
+
+		return groupId;
 	}
 
 	private String _getScopeKey(
