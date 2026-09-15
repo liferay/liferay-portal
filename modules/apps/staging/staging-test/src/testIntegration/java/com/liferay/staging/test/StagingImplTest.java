@@ -29,6 +29,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
@@ -54,9 +55,11 @@ import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutSetBranchConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutServiceUtil;
+import com.liferay.portal.kernel.service.LayoutSetBranchLocalService;
 import com.liferay.portal.kernel.service.LayoutSetBranchLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -80,6 +83,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -91,6 +95,7 @@ import com.liferay.portal.kernel.zip.ZipReader;
 import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -125,6 +130,7 @@ import org.junit.runner.RunWith;
  * @author Julio Camarero
  * @author Daniel Kocsis
  */
+@FeatureFlag("LPD-105778")
 @RunWith(Arquillian.class)
 @Sync(cleanTransaction = true)
 public class StagingImplTest {
@@ -538,6 +544,72 @@ public class StagingImplTest {
 				false, layoutSetBranch.getLayoutSetBranchId(),
 				ServiceContextTestUtil.getServiceContext(
 					stagingGroup.getGroupId())));
+	}
+
+	@Test
+	public void testLocalStagingWithLayoutVersioningLastImportSettingsWhenFeatureFlagDisabled()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		enableLocalStaging(true);
+
+		Group stagingGroup = _group.getStagingGroup();
+
+		LayoutSetBranch layoutSetBranch =
+			_layoutSetBranchLocalService.getMasterLayoutSetBranch(
+				stagingGroup.getGroupId(), false);
+
+		Map<String, String[]> parameterMap =
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap();
+
+		parameterMap.put(
+			Constants.CMD, new String[] {Constants.PUBLISH_TO_LIVE});
+		parameterMap.put(
+			"layoutSetBranchId",
+			new String[] {
+				String.valueOf(layoutSetBranch.getLayoutSetBranchId())
+			});
+		parameterMap.put(
+			"layoutSetBranchName", new String[] {layoutSetBranch.getName()});
+
+		PropsUtil.set("feature.flag.LPD-105778", "false");
+
+		try {
+			_staging.publishLayouts(
+				TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				_group.getGroupId(), false, parameterMap);
+		}
+		finally {
+			PropsUtil.set("feature.flag.LPD-105778", "true");
+		}
+
+		Layout liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			liveLayout.getTypeSettingsProperties();
+
+		long lastImportDate = GetterUtil.getLong(
+			typeSettingsUnicodeProperties.getProperty("last-import-date"));
+
+		Assert.assertTrue(lastImportDate > 0);
+
+		Assert.assertNull(
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-branch-id"));
+		Assert.assertNull(
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-branch-name"));
+		Assert.assertNull(
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-revision-id"));
+		Assert.assertNull(
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-set-branch-id"));
+		Assert.assertNull(
+			typeSettingsUnicodeProperties.getProperty(
+				"last-import-layout-set-branch-name"));
 	}
 
 	@Test
@@ -1210,11 +1282,20 @@ public class StagingImplTest {
 	@DeleteAfterTestRun
 	private Group _group;
 
+	@Inject
+	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutSetBranchLocalService _layoutSetBranchLocalService;
+
 	@DeleteAfterTestRun
 	private Group _remoteLiveGroup;
 
 	@DeleteAfterTestRun
 	private Group _remoteStagingGroup;
+
+	@Inject
+	private Staging _staging;
 
 	@Inject
 	private ZipReaderFactory _zipReaderFactory;

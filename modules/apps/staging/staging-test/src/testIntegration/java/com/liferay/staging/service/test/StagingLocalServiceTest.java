@@ -6,6 +6,7 @@
 package com.liferay.staging.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -16,6 +17,7 @@ import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalServiceUtil;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -31,6 +34,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -59,6 +63,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Roberto Díaz
  */
+@FeatureFlag("LPD-105778")
 @RunWith(Arquillian.class)
 public class StagingLocalServiceTest {
 
@@ -439,6 +444,63 @@ public class StagingLocalServiceTest {
 		}
 	}
 
+	@FeatureFlag(enable = false, value = "LPD-105778")
+	@Test
+	public void testEnableLocalStagingWhenFeatureFlagDisabled()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		try {
+			_stagingLocalService.enableLocalStaging(
+				_user.getUserId(), group, false, false, new ServiceContext());
+
+			group = _groupLocalService.getGroup(group.getGroupId());
+
+			Assert.assertTrue(group.hasStagingGroup());
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			Assert.assertFalse(
+				GetterUtil.getBoolean(
+					typeSettingsUnicodeProperties.getProperty(
+						"branchingPrivate")));
+			Assert.assertFalse(
+				GetterUtil.getBoolean(
+					typeSettingsUnicodeProperties.getProperty(
+						"branchingPublic")));
+		}
+		finally {
+			_groupLocalService.deleteGroup(group.getGroupId());
+		}
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-105778")
+	@Test
+	public void testEnableLocalStagingWithBranchingWhenFeatureFlagDisabled()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		try {
+			AssertUtils.assertFailure(
+				UnsupportedOperationException.class,
+				"Feature flag LPD-105778 is disabled for company " +
+					group.getCompanyId(),
+				() -> _stagingLocalService.enableLocalStaging(
+					_user.getUserId(), group, true, true,
+					new ServiceContext()));
+
+			Group liveGroup = _groupLocalService.getGroup(group.getGroupId());
+
+			Assert.assertFalse(liveGroup.hasStagingGroup());
+		}
+		finally {
+			_groupLocalService.deleteGroup(group.getGroupId());
+		}
+	}
+
 	@Test
 	public void testEnableLocalStagingWithParentGroup() throws Exception {
 		Group parentGroup = GroupTestUtil.addGroup();
@@ -638,10 +700,16 @@ public class StagingLocalServiceTest {
 	}
 
 	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private PortletLocalService _portletLocalService;
+
+	@Inject
+	private StagingLocalService _stagingLocalService;
 
 	@Inject
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
