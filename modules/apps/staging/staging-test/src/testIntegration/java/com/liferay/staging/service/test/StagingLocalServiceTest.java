@@ -7,7 +7,6 @@ package com.liferay.staging.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
-import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -18,11 +17,10 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.LayoutRevisionLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
-import com.liferay.portal.kernel.service.PortletPreferencesLocalServiceUtil;
+import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.AssertUtils;
@@ -90,7 +88,7 @@ public class StagingLocalServiceTest {
 		).build();
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, true, true, new ServiceContext());
 
 			Group stagingGroup = group.getStagingGroup();
@@ -140,7 +138,7 @@ public class StagingLocalServiceTest {
 				layoutNameMap.get(LocaleUtil.getSiteDefault()));
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 		}
 	}
 
@@ -165,7 +163,7 @@ public class StagingLocalServiceTest {
 		_layoutLocalService.updateLayout(layout);
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, true, true, new ServiceContext());
 
 			Group stagingGroup = group.getStagingGroup();
@@ -176,7 +174,7 @@ public class StagingLocalServiceTest {
 			Layout stagingLayout = stagingLayouts.get(0);
 
 			List<LayoutRevision> layoutRevisions =
-				LayoutRevisionLocalServiceUtil.getLayoutRevisions(
+				_layoutRevisionLocalService.getLayoutRevisions(
 					stagingLayout.getPlid());
 
 			LayoutRevision layoutRevision = layoutRevisions.get(0);
@@ -186,7 +184,7 @@ public class StagingLocalServiceTest {
 				layoutRevision.getPlid());
 
 			List<PortletPreferences> portletPreferences =
-				PortletPreferencesLocalServiceUtil.getPortletPreferences(
+				_portletPreferencesLocalService.getPortletPreferences(
 					layoutRevision.getPlid(), portletId);
 
 			Assert.assertFalse(
@@ -202,7 +200,7 @@ public class StagingLocalServiceTest {
 				new String[] {portletId}, removePortletIdsArray);
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 		}
 	}
 
@@ -229,7 +227,7 @@ public class StagingLocalServiceTest {
 		_layoutLocalService.updateLayout(layout);
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, true, true, new ServiceContext());
 
 			Group stagingGroup = group.getStagingGroup();
@@ -263,18 +261,18 @@ public class StagingLocalServiceTest {
 				stagingLayout, updatedUnicodeProperties.toString());
 
 			LayoutRevision lastLayoutRevision =
-				LayoutRevisionLocalServiceUtil.fetchLastLayoutRevision(
+				_layoutRevisionLocalService.fetchLastLayoutRevision(
 					stagingLayout.getPlid(), false);
 
 			List<PortletPreferences> portletPreferences =
-				PortletPreferencesLocalServiceUtil.getPortletPreferences(
+				_portletPreferencesLocalService.getPortletPreferences(
 					lastLayoutRevision.getLayoutRevisionId(), portletId);
 
 			Assert.assertTrue(
 				portletPreferences.toString(), portletPreferences.isEmpty());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 		}
 	}
 
@@ -301,7 +299,7 @@ public class StagingLocalServiceTest {
 		_layoutLocalService.updateLayout(layout);
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, true, true, new ServiceContext());
 
 			Group stagingGroup = group.getStagingGroup();
@@ -333,18 +331,18 @@ public class StagingLocalServiceTest {
 				stagingLayout, updatedUnicodeProperties.toString());
 
 			LayoutRevision lastLayoutRevision =
-				LayoutRevisionLocalServiceUtil.fetchLastLayoutRevision(
+				_layoutRevisionLocalService.fetchLastLayoutRevision(
 					stagingLayout.getPlid(), false);
 
 			List<PortletPreferences> portletPreferences =
-				PortletPreferencesLocalServiceUtil.getPortletPreferences(
+				_portletPreferencesLocalService.getPortletPreferences(
 					lastLayoutRevision.getLayoutRevisionId(), portletId);
 
 			Assert.assertFalse(
 				portletPreferences.toString(), portletPreferences.isEmpty());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 		}
 	}
 
@@ -353,17 +351,17 @@ public class StagingLocalServiceTest {
 		Group group = GroupTestUtil.addGroup();
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, false, false, new ServiceContext());
 
-			StagingLocalServiceUtil.disableStaging(group, new ServiceContext());
+			_stagingLocalService.disableStaging(group, new ServiceContext());
 
-			group = GroupLocalServiceUtil.getGroup(group.getGroupId());
+			group = _groupLocalService.getGroup(group.getGroupId());
 
 			Assert.assertFalse(group.hasStagingGroup());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 		}
 	}
 
@@ -374,22 +372,21 @@ public class StagingLocalServiceTest {
 		Group childGroup = GroupTestUtil.addGroup(parentGroup.getGroupId());
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), childGroup, false, false,
 				new ServiceContext());
 
-			StagingLocalServiceUtil.disableStaging(
+			_stagingLocalService.disableStaging(
 				childGroup, new ServiceContext());
 
-			childGroup = GroupLocalServiceUtil.getGroup(
-				childGroup.getGroupId());
+			childGroup = _groupLocalService.getGroup(childGroup.getGroupId());
 
 			Assert.assertFalse(childGroup.hasStagingGroup());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(childGroup.getGroupId());
+			_groupLocalService.deleteGroup(childGroup.getGroupId());
 
-			GroupLocalServiceUtil.deleteGroup(parentGroup.getGroupId());
+			_groupLocalService.deleteGroup(parentGroup.getGroupId());
 		}
 	}
 
@@ -400,19 +397,18 @@ public class StagingLocalServiceTest {
 		Group childGroup = GroupTestUtil.addGroup(parentGroup.getGroupId());
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), parentGroup, false, false,
 				new ServiceContext());
 
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), childGroup, false, false,
 				new ServiceContext());
 
-			StagingLocalServiceUtil.disableStaging(
+			_stagingLocalService.disableStaging(
 				parentGroup, new ServiceContext());
 
-			childGroup = GroupLocalServiceUtil.getGroup(
-				childGroup.getGroupId());
+			childGroup = _groupLocalService.getGroup(childGroup.getGroupId());
 
 			Group childGroupStagingGroup = childGroup.getStagingGroup();
 
@@ -421,9 +417,9 @@ public class StagingLocalServiceTest {
 				childGroup.getParentGroupId());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(childGroup.getGroupId());
+			_groupLocalService.deleteGroup(childGroup.getGroupId());
 
-			GroupLocalServiceUtil.deleteGroup(parentGroup.getGroupId());
+			_groupLocalService.deleteGroup(parentGroup.getGroupId());
 		}
 	}
 
@@ -432,15 +428,15 @@ public class StagingLocalServiceTest {
 		Group group = GroupTestUtil.addGroup();
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, false, false, new ServiceContext());
 
-			group = GroupLocalServiceUtil.getGroup(group.getGroupId());
+			group = _groupLocalService.getGroup(group.getGroupId());
 
 			Assert.assertTrue(group.hasStagingGroup());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 		}
 	}
 
@@ -508,10 +504,10 @@ public class StagingLocalServiceTest {
 		Group group = GroupTestUtil.addGroup(parentGroup.getGroupId());
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, false, false, new ServiceContext());
 
-			group = GroupLocalServiceUtil.getGroup(group.getGroupId());
+			group = _groupLocalService.getGroup(group.getGroupId());
 
 			Group groupStagingGroup = group.getStagingGroup();
 
@@ -522,9 +518,9 @@ public class StagingLocalServiceTest {
 				parentGroup.getGroupId(), groupStagingGroup.getParentGroupId());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 
-			GroupLocalServiceUtil.deleteGroup(parentGroup.getGroupId());
+			_groupLocalService.deleteGroup(parentGroup.getGroupId());
 		}
 	}
 
@@ -535,16 +531,15 @@ public class StagingLocalServiceTest {
 		Group childGroup = GroupTestUtil.addGroup(parentGroup.getGroupId());
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), childGroup, false, false,
 				new ServiceContext());
 
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), parentGroup, false, false,
 				new ServiceContext());
 
-			childGroup = GroupLocalServiceUtil.getGroup(
-				childGroup.getGroupId());
+			childGroup = _groupLocalService.getGroup(childGroup.getGroupId());
 
 			Group childGroupStagingGroup = childGroup.getStagingGroup();
 
@@ -556,9 +551,9 @@ public class StagingLocalServiceTest {
 				childGroupStagingGroup.getParentGroupId());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(childGroup.getGroupId());
+			_groupLocalService.deleteGroup(childGroup.getGroupId());
 
-			GroupLocalServiceUtil.deleteGroup(parentGroup.getGroupId());
+			_groupLocalService.deleteGroup(parentGroup.getGroupId());
 		}
 	}
 
@@ -569,16 +564,15 @@ public class StagingLocalServiceTest {
 		Group childGroup = GroupTestUtil.addGroup(parentGroup.getGroupId());
 
 		try {
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), parentGroup, false, false,
 				new ServiceContext());
 
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), childGroup, false, false,
 				new ServiceContext());
 
-			childGroup = GroupLocalServiceUtil.getGroup(
-				childGroup.getGroupId());
+			childGroup = _groupLocalService.getGroup(childGroup.getGroupId());
 
 			Group childGroupStagingGroup = childGroup.getStagingGroup();
 
@@ -590,9 +584,9 @@ public class StagingLocalServiceTest {
 				childGroupStagingGroup.getParentGroupId());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(childGroup.getGroupId());
+			_groupLocalService.deleteGroup(childGroup.getGroupId());
 
-			GroupLocalServiceUtil.deleteGroup(parentGroup.getGroupId());
+			_groupLocalService.deleteGroup(parentGroup.getGroupId());
 		}
 	}
 
@@ -624,7 +618,7 @@ public class StagingLocalServiceTest {
 
 			layout = _layoutLocalService.updateLayout(layout);
 
-			StagingLocalServiceUtil.enableLocalStaging(
+			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, true, false, new ServiceContext());
 
 			Group stagingGroup = group.getStagingGroup();
@@ -641,8 +635,8 @@ public class StagingLocalServiceTest {
 				stagingLayout.getStyleBookEntryScopeERC());
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
-			GroupLocalServiceUtil.deleteGroup(scopeGroup.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(scopeGroup.getGroupId());
 		}
 	}
 
@@ -666,7 +660,7 @@ public class StagingLocalServiceTest {
 						"BatchEngineImportTaskExecutorImpl",
 					LoggerTestUtil.ERROR)) {
 
-				StagingLocalServiceUtil.enableLocalStaging(
+				_stagingLocalService.enableLocalStaging(
 					_user.getUserId(), group, true, false,
 					new ServiceContext());
 
@@ -695,7 +689,7 @@ public class StagingLocalServiceTest {
 			Assert.assertNull(stagingLayout);
 		}
 		finally {
-			GroupLocalServiceUtil.deleteGroup(group.getGroupId());
+			_groupLocalService.deleteGroup(group.getGroupId());
 		}
 	}
 
@@ -706,7 +700,13 @@ public class StagingLocalServiceTest {
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
+	private LayoutRevisionLocalService _layoutRevisionLocalService;
+
+	@Inject
 	private PortletLocalService _portletLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	@Inject
 	private StagingLocalService _stagingLocalService;

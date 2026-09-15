@@ -10,10 +10,10 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
-import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
-import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.tags.constants.AssetTagsAdminPortletKeys;
 import com.liferay.changeset.model.ChangesetCollection;
 import com.liferay.changeset.service.ChangesetCollectionLocalService;
@@ -28,13 +28,12 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
-import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.kernel.staging.Staging;
-import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
-import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -56,12 +55,10 @@ import com.liferay.portal.kernel.model.LayoutSetBranchConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
-import com.liferay.portal.kernel.service.LayoutRevisionLocalServiceUtil;
-import com.liferay.portal.kernel.service.LayoutServiceUtil;
+import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.LayoutSetBranchLocalService;
-import com.liferay.portal.kernel.service.LayoutSetBranchLocalServiceUtil;
-import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.GroupUtil;
@@ -220,7 +217,7 @@ public class StagingImplTest {
 	public void testGetExceptionMessagesJSONObject() throws Exception {
 		Exception exception = new Exception(new ConnectException());
 
-		JSONObject jsonObject = StagingUtil.getExceptionMessagesJSONObject(
+		JSONObject jsonObject = _staging.getExceptionMessagesJSONObject(
 			LocaleUtil.getDefault(), exception, null);
 
 		Assert.assertEquals(
@@ -241,12 +238,12 @@ public class StagingImplTest {
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildFullPublishParameterMap();
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), _remoteStagingGroup.getGroupId(),
 			_remoteLiveGroup.getGroupId(), false, parameters);
 
 		Layout remoteLiveGroupLayout = _executeWithRemoteCredentials(
-			() -> StagingUtil.getRemoteLayout(
+			() -> _staging.getRemoteLayout(
 				TestPropsValues.getUserId(),
 				remoteStagingGroupLayout.getGroupId(),
 				remoteStagingGroupLayout.getPlid()));
@@ -269,7 +266,7 @@ public class StagingImplTest {
 			_remoteStagingGroup);
 
 		long remoteLiveGroupLayoutPlid = _executeWithRemoteCredentials(
-			() -> StagingUtil.getRemoteLayoutPlid(
+			() -> _staging.getRemoteLayoutPlid(
 				TestPropsValues.getUserId(),
 				remoteStagingGroupLayout.getGroupId(),
 				remoteStagingGroupLayout.getPlid()));
@@ -280,17 +277,17 @@ public class StagingImplTest {
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildFullPublishParameterMap();
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), _remoteStagingGroup.getGroupId(),
 			_remoteLiveGroup.getGroupId(), false, parameters);
 
 		remoteLiveGroupLayoutPlid = _executeWithRemoteCredentials(
-			() -> StagingUtil.getRemoteLayoutPlid(
+			() -> _staging.getRemoteLayoutPlid(
 				TestPropsValues.getUserId(),
 				remoteStagingGroupLayout.getGroupId(),
 				remoteStagingGroupLayout.getPlid()));
 
-		Layout remoteLiveGroupLayout = LayoutServiceUtil.fetchLayout(
+		Layout remoteLiveGroupLayout = _layoutService.fetchLayout(
 			_remoteLiveGroup.getGroupId(),
 			remoteStagingGroupLayout.isPrivateLayout(),
 			remoteStagingGroupLayout.getLayoutId());
@@ -310,7 +307,7 @@ public class StagingImplTest {
 
 		Assert.assertFalse(
 			_executeWithRemoteCredentials(
-				() -> StagingUtil.hasRemoteLayout(
+				() -> _staging.hasRemoteLayout(
 					TestPropsValues.getUserId(),
 					remoteStagingGroupLayout.getGroupId(),
 					remoteStagingGroupLayout.getPlid())));
@@ -319,13 +316,13 @@ public class StagingImplTest {
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildFullPublishParameterMap();
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), _remoteStagingGroup.getGroupId(),
 			_remoteLiveGroup.getGroupId(), false, parameters);
 
 		Assert.assertTrue(
 			_executeWithRemoteCredentials(
-				() -> StagingUtil.hasRemoteLayout(
+				() -> _staging.hasRemoteLayout(
 					TestPropsValues.getUserId(),
 					remoteStagingGroupLayout.getGroupId(),
 					remoteStagingGroupLayout.getPlid())));
@@ -396,7 +393,7 @@ public class StagingImplTest {
 
 		stagingAssetTag = _assetTagLocalService.updateAssetTag(stagingAssetTag);
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 			_group.getGroupId(), false, parameters);
 
@@ -441,7 +438,7 @@ public class StagingImplTest {
 				ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE, false, true,
 				UserIdStrategy.CURRENT_USER_ID);
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 			_group.getGroupId(), false, new long[] {layout.getLayoutId()},
 			RandomTestUtil.randomString(), parameters);
@@ -479,11 +476,11 @@ public class StagingImplTest {
 
 		Assert.assertNull(
 			ExportImportDateUtil.getLastPublishDate(
-				LayoutSetLocalServiceUtil.getLayoutSet(
+				_layoutSetLocalService.getLayoutSet(
 					_group.getGroupId(), false)));
 		Assert.assertNotNull(
 			ExportImportDateUtil.getLastPublishDate(
-				LayoutSetLocalServiceUtil.getLayoutSet(
+				_layoutSetLocalService.getLayoutSet(
 					stagingGroup.getGroupId(), false)));
 
 		PortletPreferences portletPreferences =
@@ -531,14 +528,14 @@ public class StagingImplTest {
 		Group stagingGroup = _group.getStagingGroup();
 
 		LayoutSetBranch layoutSetBranch =
-			LayoutSetBranchLocalServiceUtil.getMasterLayoutSetBranch(
+			_layoutSetBranchLocalService.getMasterLayoutSetBranch(
 				stagingGroup.getGroupId(), false);
 
 		_testLocalStagingWithLayoutVersioningLastImportSettings(
 			layout, layoutSetBranch);
 		_testLocalStagingWithLayoutVersioningLastImportSettings(
 			layout,
-			LayoutSetBranchLocalServiceUtil.addLayoutSetBranch(
+			_layoutSetBranchLocalService.addLayoutSetBranch(
 				TestPropsValues.getUserId(), stagingGroup.getGroupId(), false,
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				false, layoutSetBranch.getLayoutSetBranchId(),
@@ -682,11 +679,11 @@ public class StagingImplTest {
 			ServiceContextTestUtil.getServiceContext(groupId);
 
 		AssetVocabulary assetVocabulary =
-			AssetVocabularyLocalServiceUtil.addVocabulary(
+			_assetVocabularyLocalService.addVocabulary(
 				TestPropsValues.getUserId(), groupId, "TestVocabulary",
 				titleMap, descriptionMap, null, serviceContext);
 
-		return AssetCategoryLocalServiceUtil.addCategory(
+		return _assetCategoryLocalService.addCategory(
 			null, TestPropsValues.getUserId(), groupId, 0, titleMap,
 			descriptionMap, assetVocabulary.getVocabularyId(), false,
 			new String[0], serviceContext);
@@ -704,8 +701,7 @@ public class StagingImplTest {
 
 		Assert.assertEquals(
 			1,
-			JournalArticleLocalServiceUtil.getArticlesCount(
-				_group.getGroupId()));
+			_journalArticleLocalService.getArticlesCount(_group.getGroupId()));
 
 		Map<String, String[]> parameterMap =
 			ExportImportConfigurationParameterMapFactoryUtil.
@@ -813,11 +809,11 @@ public class StagingImplTest {
 		Group stagingGroup = _group.getStagingGroup();
 
 		Assert.assertNotNull(
-			LayoutSetBranchLocalServiceUtil.fetchLayoutSetBranch(
+			_layoutSetBranchLocalService.fetchLayoutSetBranch(
 				stagingGroup.getGroupId(), false,
 				LayoutSetBranchConstants.MASTER_BRANCH_NAME));
 		Assert.assertNotNull(
-			LayoutSetBranchLocalServiceUtil.fetchLayoutSetBranch(
+			_layoutSetBranchLocalService.fetchLayoutSetBranch(
 				stagingGroup.getGroupId(), true,
 				LayoutSetBranchConstants.MASTER_BRANCH_NAME));
 	}
@@ -826,10 +822,10 @@ public class StagingImplTest {
 			boolean branching, ServiceContext serviceContext)
 		throws Exception {
 
-		int initialLayoutsCount = LayoutLocalServiceUtil.getLayoutsCount(
+		int initialLayoutsCount = _layoutLocalService.getLayoutsCount(
 			_group, false);
 
-		StagingLocalServiceUtil.enableLocalStaging(
+		_stagingLocalService.enableLocalStaging(
 			TestPropsValues.getUserId(), _group, branching, branching,
 			serviceContext);
 
@@ -838,7 +834,7 @@ public class StagingImplTest {
 		Assert.assertNotNull(stagingGroup);
 		Assert.assertEquals(
 			initialLayoutsCount,
-			LayoutLocalServiceUtil.getLayoutsCount(stagingGroup, false));
+			_layoutLocalService.getLayoutsCount(stagingGroup, false));
 	}
 
 	protected void enableLocalStagingWithContent(
@@ -859,7 +855,7 @@ public class StagingImplTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		serviceContext.setAttribute(
-			StagingUtil.getStagedPortletId(JournalPortletKeys.JOURNAL),
+			_staging.getStagedPortletId(JournalPortletKeys.JOURNAL),
 			stageJournal);
 
 		Map<String, Serializable> attributes = serviceContext.getAttributes();
@@ -885,7 +881,7 @@ public class StagingImplTest {
 		// Update content in staging
 
 		JournalArticle stagingJournalArticle =
-			JournalArticleLocalServiceUtil.getArticleByUrlTitle(
+			_journalArticleLocalService.getArticleByUrlTitle(
 				stagingGroup.getGroupId(), journalArticle.getUrlTitle());
 
 		stagingJournalArticle = JournalTestUtil.updateArticle(
@@ -894,13 +890,13 @@ public class StagingImplTest {
 
 		// Publish to live
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 			_group.getGroupId(), false, parameters);
 
 		// Retrieve content from live after publishing
 
-		journalArticle = JournalArticleLocalServiceUtil.getArticle(
+		journalArticle = _journalArticleLocalService.getArticle(
 			_group.getGroupId(), journalArticle.getArticleId());
 
 		if (stageJournal) {
@@ -945,7 +941,7 @@ public class StagingImplTest {
 
 			UserTestUtil.setUser(TestPropsValues.getUser());
 
-			StagingLocalServiceUtil.enableRemoteStaging(
+			_stagingLocalService.enableRemoteStaging(
 				TestPropsValues.getUserId(), _remoteStagingGroup, branching,
 				branching, "localhost", PortalUtil.getPortalServerPort(false),
 				PortalUtil.getPathContext(), false,
@@ -970,11 +966,11 @@ public class StagingImplTest {
 						"branchingPublic")));
 
 			Assert.assertNotNull(
-				LayoutSetBranchLocalServiceUtil.fetchLayoutSetBranch(
+				_layoutSetBranchLocalService.fetchLayoutSetBranch(
 					_remoteStagingGroup.getGroupId(), false,
 					LayoutSetBranchConstants.MASTER_BRANCH_NAME));
 			Assert.assertNotNull(
-				LayoutSetBranchLocalServiceUtil.fetchLayoutSetBranch(
+				_layoutSetBranchLocalService.fetchLayoutSetBranch(
 					_remoteStagingGroup.getGroupId(), true,
 					LayoutSetBranchConstants.MASTER_BRANCH_NAME));
 		}
@@ -990,7 +986,7 @@ public class StagingImplTest {
 			titleMap.put(locale, name.concat(LocaleUtil.toLanguageId(locale)));
 		}
 
-		return AssetCategoryLocalServiceUtil.updateCategory(
+		return _assetCategoryLocalService.updateCategory(
 			category.getExternalReferenceCode(), TestPropsValues.getUserId(),
 			category.getCategoryId(), category.getParentCategoryId(), titleMap,
 			category.getDescriptionMap(), category.getVocabularyId(), null,
@@ -1012,7 +1008,7 @@ public class StagingImplTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		serviceContext.setAttribute(
-			StagingUtil.getStagedPortletId(JournalPortletKeys.JOURNAL),
+			_staging.getStagedPortletId(JournalPortletKeys.JOURNAL),
 			Boolean.TRUE);
 
 		Map<String, Serializable> attributes = serviceContext.getAttributes();
@@ -1038,7 +1034,7 @@ public class StagingImplTest {
 		// Update content in staging
 
 		JournalArticle stagingJournalArticle =
-			JournalArticleLocalServiceUtil.getArticleByUrlTitle(
+			_journalArticleLocalService.getArticleByUrlTitle(
 				stagingGroup.getGroupId(), journalArticle.getUrlTitle());
 
 		stagingJournalArticle = JournalTestUtil.updateArticle(
@@ -1052,26 +1048,26 @@ public class StagingImplTest {
 
 		// Publish to live
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 			_group.getGroupId(), false, parameters);
 
 		// Get content from live after publishing
 
-		journalArticle = JournalArticleLocalServiceUtil.getArticle(
+		journalArticle = _journalArticleLocalService.getArticle(
 			_group.getGroupId(), journalArticle.getArticleId());
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, journalArticle.getStatus());
 
 		JournalArticle oldJournalArticle =
-			JournalArticleLocalServiceUtil.getArticle(
+			_journalArticleLocalService.getArticle(
 				_group.getGroupId(), journalArticle.getArticleId(), version);
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_EXPIRED, oldJournalArticle.getStatus());
 
-		AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
 			journalArticle.getGroupId(),
 			journalArticle.getArticleResourceUuid());
 
@@ -1097,7 +1093,7 @@ public class StagingImplTest {
 			_setLiveGroupUnicodePropertiesIncorrectGroupId();
 
 			try {
-				StagingLocalServiceUtil.disableStaging(
+				_stagingLocalService.disableStaging(
 					_remoteLiveGroup,
 					ServiceContextTestUtil.getServiceContext(
 						_remoteStagingGroup.getGroupId()));
@@ -1141,7 +1137,7 @@ public class StagingImplTest {
 			UserTestUtil.setUser(TestPropsValues.getUser());
 
 			try {
-				StagingLocalServiceUtil.enableRemoteStaging(
+				_stagingLocalService.enableRemoteStaging(
 					TestPropsValues.getUserId(), _remoteStagingGroup, false,
 					false, "localhost", PortalUtil.getPortalServerPort(false),
 					PortalUtil.getPathContext(), false,
@@ -1197,11 +1193,11 @@ public class StagingImplTest {
 		Group stagingGroup = _group.getStagingGroup();
 
 		Layout stagingLayout =
-			LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
 				layout.getExternalReferenceCode(), stagingGroup.getGroupId());
 
 		LayoutRevision layoutRevision =
-			LayoutRevisionLocalServiceUtil.fetchLatestLayoutRevision(
+			_layoutRevisionLocalService.fetchLatestLayoutRevision(
 				layoutSetBranch.getLayoutSetBranchId(),
 				stagingLayout.getPlid());
 
@@ -1219,11 +1215,11 @@ public class StagingImplTest {
 		parameterMap.put(
 			"layoutSetBranchName", new String[] {layoutSetBranch.getName()});
 
-		StagingUtil.publishLayouts(
+		_staging.publishLayouts(
 			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
 			_group.getGroupId(), false, parameterMap);
 
-		Layout liveLayout = LayoutLocalServiceUtil.getLayout(layout.getPlid());
+		Layout liveLayout = _layoutLocalService.getLayout(layout.getPlid());
 
 		UnicodeProperties typeSettingsUnicodeProperties =
 			liveLayout.getTypeSettingsProperties();
@@ -1271,7 +1267,16 @@ public class StagingImplTest {
 	};
 
 	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
+
+	@Inject
 	private AssetTagLocalService _assetTagLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private ChangesetCollectionLocalService _changesetCollectionLocalService;
@@ -1283,10 +1288,22 @@ public class StagingImplTest {
 	private Group _group;
 
 	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
+
+	@Inject
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
+	private LayoutRevisionLocalService _layoutRevisionLocalService;
+
+	@Inject
+	private LayoutService _layoutService;
+
+	@Inject
 	private LayoutSetBranchLocalService _layoutSetBranchLocalService;
+
+	@Inject
+	private LayoutSetLocalService _layoutSetLocalService;
 
 	@DeleteAfterTestRun
 	private Group _remoteLiveGroup;
@@ -1296,6 +1313,9 @@ public class StagingImplTest {
 
 	@Inject
 	private Staging _staging;
+
+	@Inject
+	private StagingLocalService _stagingLocalService;
 
 	@Inject
 	private ZipReaderFactory _zipReaderFactory;
