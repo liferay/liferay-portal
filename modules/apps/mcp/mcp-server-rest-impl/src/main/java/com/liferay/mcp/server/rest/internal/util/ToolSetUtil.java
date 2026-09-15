@@ -69,7 +69,7 @@ public class ToolSetUtil {
 			toolName);
 	}
 
-	public static String getToolKey(String toolSetName, String toolName) {
+	public static String getToolKey(String toolName, String toolSetName) {
 		return toolSetName + StringPool.POUND + toolName;
 	}
 
@@ -336,7 +336,7 @@ public class ToolSetUtil {
 			return null;
 		}
 
-		return restrictFieldsMap.get(getToolKey(toolSetName, toolName));
+		return restrictFieldsMap.get(getToolKey(toolName, toolSetName));
 	}
 
 	private static final String _TOOL_SET_NAME = "mcp-server-v1.0";

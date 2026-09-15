@@ -440,8 +440,8 @@ public class MCPServerServlet extends HttpServlet {
 
 			restrictFieldsMap.put(
 				ToolSetUtil.getToolKey(
-					MapUtil.getString(values, "toolSetName"),
-					MapUtil.getString(values, "toolName")),
+					MapUtil.getString(values, "toolName"),
+					MapUtil.getString(values, "toolSetName")),
 				restrictFields);
 		}
 
