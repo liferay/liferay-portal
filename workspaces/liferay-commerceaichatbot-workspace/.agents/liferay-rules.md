@@ -100,6 +100,7 @@ Every skill lives under `skills/` and owns one workflow. Match the user's intent
 | Manage Commerce catalogs, products, SKUs, or B2B accounts | `commerce-catalogs` |
 | Deploy and operate a Liferay Cloud (LXC) project via `lcp` | `manage-cloud-project` |
 | Build an entire site experience from one prompt (orchestrator; calls the others) | `build-site` |
+| Author a new workspace skill from source code or a spec doc | `author-skill` |
 
 Site building is **site initializer first**: the `siteInitializer` CET tree is the single source of truth. Build by triggering the initializer, then iterate by editing the source tree and applying each change live (theme, objects, fragments) or by reprovisioning (pages). See `rules/site-initializer-format.md`.
 
