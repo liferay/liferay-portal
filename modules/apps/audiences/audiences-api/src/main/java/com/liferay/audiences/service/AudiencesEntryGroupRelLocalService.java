@@ -67,6 +67,14 @@ public interface AudiencesEntryGroupRelLocalService
 	public AudiencesEntryGroupRel addAudiencesEntryGroupRel(
 		AudiencesEntryGroupRel audiencesEntryGroupRel);
 
+	public AudiencesEntryGroupRel addAudiencesEntryGroupRel(
+			long userId, String audienceEntryERC, String groupERC)
+		throws PortalException;
+
+	public List<AudiencesEntryGroupRel> addAudiencesEntryGroupRels(
+			long userId, String audienceEntryERC, String[] groupERCs)
+		throws PortalException;
+
 	/**
 	 * Creates a new audiences entry group rel with the primary key. Does not add the audiences entry group rel to the database.
 	 *
@@ -277,5 +285,9 @@ public interface AudiencesEntryGroupRelLocalService
 	public AudiencesEntryGroupRel updateAudiencesEntryGroupRel(
 		AudiencesEntryGroupRel audiencesEntryGroupRel);
 
+	public List<AudiencesEntryGroupRel> updateAudiencesEntryGroupRels(
+			long userId, String audienceEntryERC, String[] groupERCs)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1700074687
+// LIFERAY-SERVICE-BUILDER-HASH:-229870918

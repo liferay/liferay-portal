@@ -53,6 +53,22 @@ public class AudiencesEntryGroupRelLocalServiceUtil {
 		return getService().addAudiencesEntryGroupRel(audiencesEntryGroupRel);
 	}
 
+	public static AudiencesEntryGroupRel addAudiencesEntryGroupRel(
+			long userId, String audienceEntryERC, String groupERC)
+		throws PortalException {
+
+		return getService().addAudiencesEntryGroupRel(
+			userId, audienceEntryERC, groupERC);
+	}
+
+	public static List<AudiencesEntryGroupRel> addAudiencesEntryGroupRels(
+			long userId, String audienceEntryERC, String[] groupERCs)
+		throws PortalException {
+
+		return getService().addAudiencesEntryGroupRels(
+			userId, audienceEntryERC, groupERCs);
+	}
+
 	/**
 	 * Creates a new audiences entry group rel with the primary key. Does not add the audiences entry group rel to the database.
 	 *
@@ -324,6 +340,14 @@ public class AudiencesEntryGroupRelLocalServiceUtil {
 			audiencesEntryGroupRel);
 	}
 
+	public static List<AudiencesEntryGroupRel> updateAudiencesEntryGroupRels(
+			long userId, String audienceEntryERC, String[] groupERCs)
+		throws PortalException {
+
+		return getService().updateAudiencesEntryGroupRels(
+			userId, audienceEntryERC, groupERCs);
+	}
+
 	public static AudiencesEntryGroupRelLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -334,4 +358,4 @@ public class AudiencesEntryGroupRelLocalServiceUtil {
 			AudiencesEntryGroupRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1956051770
+// LIFERAY-SERVICE-BUILDER-HASH:339327284

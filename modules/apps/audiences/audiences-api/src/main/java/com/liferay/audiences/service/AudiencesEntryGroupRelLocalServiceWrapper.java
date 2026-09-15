@@ -50,6 +50,26 @@ public class AudiencesEntryGroupRelLocalServiceWrapper
 			audiencesEntryGroupRel);
 	}
 
+	@Override
+	public com.liferay.audiences.model.AudiencesEntryGroupRel
+			addAudiencesEntryGroupRel(
+				long userId, String audienceEntryERC, String groupERC)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _audiencesEntryGroupRelLocalService.addAudiencesEntryGroupRel(
+			userId, audienceEntryERC, groupERC);
+	}
+
+	@Override
+	public java.util.List<com.liferay.audiences.model.AudiencesEntryGroupRel>
+			addAudiencesEntryGroupRels(
+				long userId, String audienceEntryERC, String[] groupERCs)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _audiencesEntryGroupRelLocalService.addAudiencesEntryGroupRels(
+			userId, audienceEntryERC, groupERCs);
+	}
+
 	/**
 	 * Creates a new audiences entry group rel with the primary key. Does not add the audiences entry group rel to the database.
 	 *
@@ -371,6 +391,16 @@ public class AudiencesEntryGroupRelLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<com.liferay.audiences.model.AudiencesEntryGroupRel>
+			updateAudiencesEntryGroupRels(
+				long userId, String audienceEntryERC, String[] groupERCs)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _audiencesEntryGroupRelLocalService.
+			updateAudiencesEntryGroupRels(userId, audienceEntryERC, groupERCs);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _audiencesEntryGroupRelLocalService.getBasePersistence();
 	}
@@ -392,4 +422,4 @@ public class AudiencesEntryGroupRelLocalServiceWrapper
 		_audiencesEntryGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1909105853
+// LIFERAY-SERVICE-BUILDER-HASH:1667716480

@@ -67,7 +67,8 @@ public interface AudiencesEntryLocalService
 	public AudiencesEntry addAudiencesEntry(AudiencesEntry audiencesEntry);
 
 	public AudiencesEntry addAudiencesEntry(
-			String externalReferenceCode, long userId, String json, String name)
+			String externalReferenceCode, long userId, String json, String name,
+			String[] groupERCs)
 		throws PortalException;
 
 	/**
@@ -290,8 +291,8 @@ public interface AudiencesEntryLocalService
 
 	public AudiencesEntry updateAudiencesEntry(
 			String externalReferenceCode, long userId, long audiencesEntryId,
-			String json, String name)
+			String json, String name, String[] groupERCs)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1761072411
+// LIFERAY-SERVICE-BUILDER-HASH:-683373145

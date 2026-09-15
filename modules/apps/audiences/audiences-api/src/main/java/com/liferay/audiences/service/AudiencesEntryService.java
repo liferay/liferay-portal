@@ -44,7 +44,8 @@ public interface AudiencesEntryService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.audiences.service.impl.AudiencesEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the audiences entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link AudiencesEntryServiceUtil} if injection and service tracking are not available.
 	 */
 	public AudiencesEntry addAudiencesEntry(
-			String externalReferenceCode, String json, String name)
+			String externalReferenceCode, String json, String name,
+			String[] groupERCs)
 		throws PortalException;
 
 	public AudiencesEntry deleteAudiencesEntry(long audiencesEntryId)
@@ -82,8 +83,8 @@ public interface AudiencesEntryService extends BaseService {
 
 	public AudiencesEntry updateAudiencesEntry(
 			long audiencesEntryId, String externalReferenceCode, String json,
-			String name)
+			String name, String[] groupERCs)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1154094722
+// LIFERAY-SERVICE-BUILDER-HASH:-635259894
