@@ -158,7 +158,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 		StaticSiteExportResourceFetcher staticSiteExportResourceFetcher =
 			new StaticSiteExportResourceFetcher(
-				httpServletRequest, new DummyHttpServletResponse(),
+				_bundleContext, httpServletRequest,
+				new DummyHttpServletResponse(),
 				ServletContextPool.get(_portal.getServletContextName()),
 				new StaticSiteExportBundleResourceResolver(_bundleContext));
 
