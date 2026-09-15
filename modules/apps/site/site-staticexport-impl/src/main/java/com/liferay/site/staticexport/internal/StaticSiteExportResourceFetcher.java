@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
@@ -70,7 +71,39 @@ public class StaticSiteExportResourceFetcher {
 			return file;
 		}
 
-		return _service(path, url);
+		file = _service(path, url);
+
+		if (file != null) {
+			return file;
+		}
+
+		return _filter(path, url);
+	}
+
+	private File _filter(String path, String url) throws Exception {
+		Collection<ServiceReference<Filter>> serviceReferences =
+			_bundleContext.getServiceReferences(
+				Filter.class, "(servlet-filter-name=Frontend Resource Filter)");
+
+		for (ServiceReference<Filter> serviceReference : serviceReferences) {
+			Filter filter = _bundleContext.getService(serviceReference);
+
+			try {
+				return _write(
+					new PathHttpServletRequestWrapper(
+						_getHttpServletRequest(url), path, false),
+					(httpServletRequest, httpServletResponse) ->
+						filter.doFilter(
+							httpServletRequest, httpServletResponse,
+							(servletRequest, servletResponse) -> {
+							}));
+			}
+			finally {
+				_bundleContext.ungetService(serviceReference);
+			}
+		}
+
+		return null;
 	}
 
 	private HttpServletRequest _getHttpServletRequest(String url) {
