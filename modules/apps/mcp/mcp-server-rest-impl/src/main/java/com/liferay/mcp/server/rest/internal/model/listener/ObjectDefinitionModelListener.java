@@ -22,20 +22,28 @@ public class ObjectDefinitionModelListener
 
 	@Override
 	public void onAfterCreate(ObjectDefinition objectDefinition) {
-		_mcpServerCacheManager.clearOpenAPIJSONObjectCache(
-			objectDefinition.getCompanyId());
+		_clearOpenAPIJSONObjectCache(objectDefinition);
 	}
 
 	@Override
 	public void onAfterRemove(ObjectDefinition objectDefinition) {
-		_mcpServerCacheManager.clearOpenAPIJSONObjectCache(
-			objectDefinition.getCompanyId());
+		_clearOpenAPIJSONObjectCache(objectDefinition);
 	}
 
 	@Override
 	public void onAfterUpdate(
 		ObjectDefinition originalObjectDefinition,
 		ObjectDefinition objectDefinition) {
+
+		_clearOpenAPIJSONObjectCache(objectDefinition);
+	}
+
+	private void _clearOpenAPIJSONObjectCache(
+		ObjectDefinition objectDefinition) {
+
+		if (!objectDefinition.isApproved()) {
+			return;
+		}
 
 		_mcpServerCacheManager.clearOpenAPIJSONObjectCache(
 			objectDefinition.getCompanyId());
