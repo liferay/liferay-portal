@@ -17,13 +17,16 @@ import React, {useEffect, useReducer, useRef, useState} from 'react';
 
 import {initializeConfig} from '../../app/config/index';
 import {Config} from '../../types/config';
+import AppliedFilters from './AppliedFilters';
 import AudiencePriority from './AudiencePriority';
+import ElementVariationFilterMenu from './ElementVariationFilterMenu';
 import ElementVariationForm from './ElementVariationForm';
 import ElementVariationService from './ElementVariationService';
 import ElementVariationsList from './ElementVariationsList';
 import ElementVariationsPreview, {
 	ElementVariationsPreviewRef,
 } from './ElementVariationsPreview';
+import {getFilteredVariations} from './elementVariationFilters';
 import {
 	LoadedElementVariation,
 	createElementVariation,
@@ -117,6 +120,7 @@ function ElementVariations({
 			editableElementOptions,
 			elementVariations,
 			experienceKey,
+			filters,
 			highlightedTargetElement,
 			languageId,
 		},
@@ -135,6 +139,11 @@ function ElementVariations({
 	const experienceElementVariations = elementVariations.filter(
 		(elementVariation) =>
 			elementVariation.segmentsExperienceERC === experienceKey
+	);
+
+	const filteredElementVariations = getFilteredVariations(
+		experienceElementVariations,
+		filters
 	);
 
 	const selectedExperience = experiences.find(
@@ -280,24 +289,66 @@ function ElementVariations({
 								}
 							/>
 
-							{experienceElementVariations.length ? (
-								<div className="d-flex justify-content-start m-3">
-									<ClayButton
-										className="w-100"
-										displayType="secondary"
-										onClick={createElementVariationDraft}
-									>
-										<ClayIcon
-											className="mr-2"
-											symbol="plus"
+							<div className="align-items-center border-bottom border-top d-flex justify-content-between px-3 py-2">
+								<ElementVariationFilterMenu
+									audiences={audiences}
+									filters={filters}
+									onAddFilter={(filter) =>
+										dispatch({filter, type: 'ADD_FILTER'})
+									}
+									trigger={
+										<ClayButtonWithIcon
+											aria-label={Liferay.Language.get(
+												'filter'
+											)}
+											borderless
+											displayType="secondary"
+											size="sm"
+											symbol="filter"
+											title={Liferay.Language.get(
+												'filter'
+											)}
 										/>
+									}
+								/>
 
-										{Liferay.Language.get('new-variation')}
-									</ClayButton>
-								</div>
+								<ClayButtonWithIcon
+									aria-label={Liferay.Language.get(
+										'new-variation'
+									)}
+									displayType="primary"
+									onClick={createElementVariationDraft}
+									size="sm"
+									symbol="plus"
+									title={Liferay.Language.get(
+										'new-variation'
+									)}
+								/>
+							</div>
+
+							{filters.length ? (
+								<AppliedFilters
+									audiences={audiences}
+									filters={filters}
+									onAddFilter={(filter) =>
+										dispatch({filter, type: 'ADD_FILTER'})
+									}
+									onClearFilters={() =>
+										dispatch({type: 'CLEAR_FILTERS'})
+									}
+									onDeleteFilter={(filterType) =>
+										dispatch({
+											filterType,
+											type: 'DELETE_FILTER',
+										})
+									}
+									resultsCount={
+										filteredElementVariations.length
+									}
+								/>
 							) : null}
 
-							<div className="border-top pt-3">
+							<div className="pt-3">
 								{!audiences.length ? (
 									<ClayEmptyState
 										className="mb-0 px-3"
@@ -327,6 +378,33 @@ function ElementVariations({
 											)}
 										</ClayLink>
 									</ClayEmptyState>
+								) : Boolean(filters.length) &&
+								  !filteredElementVariations.length ? (
+									<ClayEmptyState
+										className="mb-0 px-3"
+										description={Liferay.Language.get(
+											'review-your-filters-and-try-again'
+										)}
+										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+										small
+										title={Liferay.Language.get(
+											'no-results-found'
+										)}
+									>
+										<ClayButton
+											displayType="secondary"
+											onClick={() =>
+												dispatch({
+													type: 'CLEAR_FILTERS',
+												})
+											}
+											size="sm"
+										>
+											{Liferay.Language.get(
+												'clear-filters'
+											)}
+										</ClayButton>
+									</ClayEmptyState>
 								) : experienceElementVariations.length ? (
 									<ElementVariationsList
 										audiences={audiences}
@@ -334,7 +412,7 @@ function ElementVariations({
 											editableElementOptions
 										}
 										elementVariations={
-											experienceElementVariations
+											filteredElementVariations
 										}
 										onDeleteElementVariation={(
 											elementVariation
