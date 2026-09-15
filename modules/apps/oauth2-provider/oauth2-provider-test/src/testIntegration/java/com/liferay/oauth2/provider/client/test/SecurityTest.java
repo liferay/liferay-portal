@@ -406,22 +406,7 @@ public class SecurityTest extends BaseClientTestCase {
 					"from which the authorization page URL is extracted");
 		}
 
-		WebTarget webTarget = getWebTarget();
-
-		webTarget = webTarget.path(uri.getPath());
-
-		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
-			uri.getRawQuery());
-
-		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-			webTarget = webTarget.queryParam(
-				entry.getKey(), (Object[])entry.getValue());
-		}
-
-		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
-			webTarget);
-
-		return getBodyAsString(invocationBuilder.get());
+		return _getPageBodyString(invocationBuilderFunction, uri);
 	}
 
 	private String _getConnectedApplicationPageBodyString() throws Exception {
@@ -445,9 +430,50 @@ public class SecurityTest extends BaseClientTestCase {
 					new String[] {String.valueOf(_oAuth2AuthorizationId)}
 				).build()));
 
-		WebTarget webTarget = getWebTarget();
+		return _getPageBodyString(
+			getAuthenticatedInvocationBuilderFunction(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				null),
+			uri);
+	}
 
-		webTarget = webTarget.path(uri.getPath());
+	private String _getPageBodyString(
+		Function<WebTarget, Invocation.Builder> invocationBuilderFunction,
+		URI uri) {
+
+		WebTarget portalWebTarget = getWebTarget();
+
+		Response response = _getPageResponse(
+			invocationBuilderFunction, portalWebTarget, uri);
+
+		int count = 0;
+
+		while ((count < 3) &&
+			   (Response.Status.Family.familyOf(getStatus(response)) ==
+				   Response.Status.Family.REDIRECTION)) {
+
+			URI location = response.getLocation();
+
+			if (location == null) {
+				break;
+			}
+
+			response = _getPageResponse(
+				invocationBuilderFunction, portalWebTarget, location);
+
+			count++;
+		}
+
+		Assert.assertEquals(200, getStatus(response));
+
+		return getBodyAsString(response);
+	}
+
+	private Response _getPageResponse(
+		Function<WebTarget, Invocation.Builder> invocationBuilderFunction,
+		WebTarget portalWebTarget, URI uri) {
+
+		WebTarget webTarget = portalWebTarget.path(uri.getPath());
 
 		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
 			uri.getRawQuery());
@@ -457,15 +483,10 @@ public class SecurityTest extends BaseClientTestCase {
 				entry.getKey(), (Object[])entry.getValue());
 		}
 
-		Invocation.Builder invocationBuilder =
-			getAuthenticatedInvocationBuilderFunction(
-				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
-				null
-			).apply(
-				webTarget
-			);
+		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
+			webTarget);
 
-		return getBodyAsString(invocationBuilder.get());
+		return invocationBuilder.get();
 	}
 
 	private Response _getPublicClientResponse(
