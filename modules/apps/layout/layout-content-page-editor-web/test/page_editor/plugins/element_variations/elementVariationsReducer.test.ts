@@ -39,6 +39,7 @@ function buildState(properties: Partial<State> = {}): State {
 		filters: [],
 		highlightedTargetElement: null,
 		languageId: 'en_US',
+		searchTerm: '',
 		...properties,
 	};
 }
@@ -78,6 +79,7 @@ describe('elementVariationsReducer', () => {
 				filters: [],
 				highlightedTargetElement: null,
 				languageId: 'en_US',
+				searchTerm: '',
 			});
 		});
 
@@ -194,7 +196,7 @@ describe('elementVariationsReducer', () => {
 			]);
 		});
 
-		it('removes every filter on CLEAR_FILTERS', () => {
+		it('removes every filter and the search term on CLEAR_FILTERS', () => {
 			const state = reducer(
 				buildState({
 					filters: [
@@ -204,11 +206,22 @@ describe('elementVariationsReducer', () => {
 							values: ['audience-1'],
 						},
 					],
+					searchTerm: 'vip',
 				}),
 				{type: 'CLEAR_FILTERS'}
 			);
 
 			expect(state.filters).toEqual([]);
+			expect(state.searchTerm).toBe('');
+		});
+
+		it('sets the search term on SET_SEARCH_TERM', () => {
+			const state = reducer(buildState(), {
+				searchTerm: 'vip',
+				type: 'SET_SEARCH_TERM',
+			});
+
+			expect(state.searchTerm).toBe('vip');
 		});
 
 		it('sets the language on SET_LANGUAGE_ID', () => {

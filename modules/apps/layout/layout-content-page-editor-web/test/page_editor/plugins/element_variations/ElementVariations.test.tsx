@@ -288,6 +288,51 @@ describe('ElementVariations', () => {
 		).toBeInTheDocument();
 	});
 
+	it('filters the variations by the search term', async () => {
+		renderElementVariations({
+			elementVariations: [
+				ELEMENT_VARIATIONS[0],
+				{
+					...ELEMENT_VARIATIONS[0],
+					externalReferenceCode: 'element-variation-2',
+					name: 'Other Variation',
+				},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+		expect(screen.getByText('Other Variation')).toBeInTheDocument();
+
+		await userEvent.click(screen.getByRole('button', {name: 'search'}));
+
+		await userEvent.type(screen.getByRole('textbox'), 'Other{enter}');
+
+		expect(screen.queryByText('My Variation')).not.toBeInTheDocument();
+		expect(screen.getByText('Other Variation')).toBeInTheDocument();
+	});
+
+	it('removes the search from its chip', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await userEvent.click(screen.getByRole('button', {name: 'search'}));
+
+		await userEvent.type(screen.getByRole('textbox'), 'Missing{enter}');
+
+		expect(screen.queryByText('My Variation')).not.toBeInTheDocument();
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'clear-search'})
+		);
+
+		expect(screen.getByText('My Variation')).toBeInTheDocument();
+	});
+
 	it('does not show the open button on large screens', async () => {
 		renderElementVariations();
 

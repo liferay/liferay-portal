@@ -16,6 +16,26 @@ const AUDIENCES = [
 	{label: 'Audience B', value: 'audience-b'},
 ];
 
+const EDITABLE_ELEMENT_OPTIONS = [{label: 'Title', value: '.title'}];
+
+function filterVariations({
+	elementVariations,
+	filters = [],
+	searchTerm = '',
+}: {
+	elementVariations: ElementVariation[];
+	filters?: Filter[];
+	searchTerm?: string;
+}): ElementVariation[] {
+	return getFilteredVariations({
+		audiences: AUDIENCES,
+		editableElementOptions: EDITABLE_ELEMENT_OPTIONS,
+		elementVariations,
+		filters,
+		searchTerm,
+	});
+}
+
 function createVariation(
 	overrides: Partial<ElementVariation> = {}
 ): ElementVariation {
@@ -121,7 +141,7 @@ describe('elementVariationFilters', () => {
 		it('returns every variation when there are no filters', () => {
 			const elementVariations = [createVariation()];
 
-			expect(getFilteredVariations(elementVariations, [])).toEqual(
+			expect(filterVariations({elementVariations})).toEqual(
 				elementVariations
 			);
 		});
@@ -138,10 +158,16 @@ describe('elementVariationFilters', () => {
 			});
 
 			expect(
-				getFilteredVariations(
-					[matching, other],
-					[{exclude: false, type: 'audience', values: ['audience-a']}]
-				)
+				filterVariations({
+					elementVariations: [matching, other],
+					filters: [
+						{
+							exclude: false,
+							type: 'audience',
+							values: ['audience-a'],
+						},
+					],
+				})
 			).toEqual([matching]);
 		});
 
@@ -157,10 +183,16 @@ describe('elementVariationFilters', () => {
 			});
 
 			expect(
-				getFilteredVariations(
-					[matching, other],
-					[{exclude: true, type: 'audience', values: ['audience-a']}]
-				)
+				filterVariations({
+					elementVariations: [matching, other],
+					filters: [
+						{
+							exclude: true,
+							type: 'audience',
+							values: ['audience-a'],
+						},
+					],
+				})
 			).toEqual([other]);
 		});
 
@@ -169,10 +201,12 @@ describe('elementVariationFilters', () => {
 			const disabled = createVariation({active: false, key: 'disabled'});
 
 			expect(
-				getFilteredVariations(
-					[enabled, disabled],
-					[{exclude: false, type: 'status', values: ['disabled']}]
-				)
+				filterVariations({
+					elementVariations: [enabled, disabled],
+					filters: [
+						{exclude: false, type: 'status', values: ['disabled']},
+					],
+				})
 			).toEqual([disabled]);
 		});
 
@@ -190,16 +224,16 @@ describe('elementVariationFilters', () => {
 			const hidden = createVariation({hide: true, key: 'hidden'});
 
 			expect(
-				getFilteredVariations(
-					[html, javascript, hidden],
-					[
+				filterVariations({
+					elementVariations: [html, javascript, hidden],
+					filters: [
 						{
 							exclude: false,
 							type: 'type',
 							values: ['javascript', 'hide-element'],
 						},
-					]
-				)
+					],
+				})
 			).toEqual([javascript, hidden]);
 		});
 
@@ -207,9 +241,10 @@ describe('elementVariationFilters', () => {
 			const elementVariations = [createVariation({html: {en_US: ''}})];
 
 			expect(
-				getFilteredVariations(elementVariations, [
-					{exclude: false, type: 'type', values: ['html']},
-				])
+				filterVariations({
+					elementVariations,
+					filters: [{exclude: false, type: 'type', values: ['html']}],
+				})
 			).toEqual([]);
 		});
 
@@ -226,17 +261,85 @@ describe('elementVariationFilters', () => {
 			});
 
 			expect(
-				getFilteredVariations(
-					[matching, other],
-					[
+				filterVariations({
+					elementVariations: [matching, other],
+					filters: [
 						{
 							exclude: false,
 							type: 'audience',
 							values: ['audience-a'],
 						},
 						{exclude: false, type: 'status', values: ['enabled']},
-					]
-				)
+					],
+				})
+			).toEqual([matching]);
+		});
+
+		it('keeps the variations matching the search term in their name', () => {
+			const matching = createVariation({
+				key: 'matching',
+				name: 'VIP hero',
+			});
+
+			const other = createVariation({key: 'other', name: 'Footer'});
+
+			expect(
+				filterVariations({
+					elementVariations: [matching, other],
+					searchTerm: 'vip',
+				})
+			).toEqual([matching]);
+		});
+
+		it('searches the audience and target element labels', () => {
+			const byAudience = createVariation({
+				audienceEntryERCs: ['audience-a'],
+				key: 'byAudience',
+				name: 'One',
+			});
+
+			const byElement = createVariation({key: 'byElement', name: 'Two'});
+
+			expect(
+				filterVariations({
+					elementVariations: [byAudience, byElement],
+					searchTerm: 'audience a',
+				})
+			).toEqual([byAudience]);
+
+			expect(
+				filterVariations({
+					elementVariations: [byAudience, byElement],
+					searchTerm: 'title',
+				})
+			).toEqual([byAudience, byElement]);
+		});
+
+		it('requires both the filters and the search term to match', () => {
+			const matching = createVariation({
+				audienceEntryERCs: ['audience-a'],
+				key: 'matching',
+				name: 'VIP hero',
+			});
+
+			const other = createVariation({
+				audienceEntryERCs: ['audience-b'],
+				key: 'other',
+				name: 'VIP footer',
+			});
+
+			expect(
+				filterVariations({
+					elementVariations: [matching, other],
+					filters: [
+						{
+							exclude: false,
+							type: 'audience',
+							values: ['audience-a'],
+						},
+					],
+					searchTerm: 'vip',
+				})
 			).toEqual([matching]);
 		});
 	});
