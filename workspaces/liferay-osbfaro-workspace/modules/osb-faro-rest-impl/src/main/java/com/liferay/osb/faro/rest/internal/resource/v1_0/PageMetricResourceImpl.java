@@ -35,8 +35,9 @@ public class PageMetricResourceImpl extends BasePageMetricResourceImpl {
 
 	@Override
 	public Page<PageMetric> getWorkspaceGroupChannelPagesPage(
-			Long groupId, String channelId, String dataSourceId,
-			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Long groupId, String channelId, String accountId,
+			String dataSourceId, String individualId, String rangeEnd,
+			String rangeKey, String rangeStart, String search, String segmentId,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
@@ -50,9 +51,13 @@ public class PageMetricResourceImpl extends BasePageMetricResourceImpl {
 					_faroProjectLocalService.getFaroProjectByGroupId(groupId),
 					"getWorkspaceGroupChannelPagesPage",
 					HashMapBuilder.<String, Object>put(
+						"accountId", accountId
+					).put(
 						"channelId", channelId
 					).put(
 						"dataSourceId", dataSourceId
+					).put(
+						"individualId", individualId
 					).put(
 						"keywords", search
 					).put(
@@ -61,6 +66,8 @@ public class PageMetricResourceImpl extends BasePageMetricResourceImpl {
 						"rangeKey", TimeRange.getRangeKey(rangeKey)
 					).put(
 						"rangeStart", rangeStart
+					).put(
+						"segmentId", segmentId
 					).put(
 						"size", delta
 					).put(
