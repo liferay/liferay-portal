@@ -30,6 +30,7 @@ export interface State {
 	filters: Filter[];
 	highlightedTargetElement: string | null;
 	languageId: string;
+	searchTerm: string;
 }
 
 export type Action =
@@ -51,6 +52,7 @@ export type Action =
 			type: 'SET_HIGHLIGHTED_TARGET_ELEMENT';
 	  }
 	| {languageId: string; type: 'SET_LANGUAGE_ID'}
+	| {searchTerm: string; type: 'SET_SEARCH_TERM'}
 	| {active: boolean; key: string; type: 'UPDATE_ELEMENT_VARIATION'}
 	| {
 			properties: Partial<ElementVariation>;
@@ -120,6 +122,7 @@ export function createInitialState({
 		filters: [],
 		highlightedTargetElement: null,
 		languageId: defaultLanguageId,
+		searchTerm: '',
 	};
 }
 
@@ -137,7 +140,10 @@ export function reducer(state: State, action: Action): State {
 			};
 
 		case 'CLEAR_FILTERS':
-			return {...state, filters: []};
+			return {...state, filters: [], searchTerm: ''};
+
+		case 'SET_SEARCH_TERM':
+			return {...state, searchTerm: action.searchTerm};
 
 		case 'DELETE_FILTER':
 			return {
