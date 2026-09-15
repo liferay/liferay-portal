@@ -395,8 +395,6 @@ public class MCPProfileToolUpgradeProcessTest {
 
 		upgradeStep.upgrade();
 
-		// UpgradeExecutor clears the caches after a bundle's upgrade steps
-
 		CacheRegistryUtil.clear();
 	}
 
