@@ -100,17 +100,22 @@ public class PoshiSourceProcessor extends BaseSourceProcessor {
 
 		System.setOut(printStream);
 
-		PoshiElement poshiElement = (PoshiElement)PoshiNodeFactory.newPoshiNode(
-			content, FileUtil.getURL(file));
+		PoshiElement poshiElement = null;
 
-		System.out.flush();
+		try {
+			poshiElement = (PoshiElement)PoshiNodeFactory.newPoshiNode(
+				content, FileUtil.getURL(file));
+		}
+		finally {
+			System.out.flush();
 
-		FileOutputStream fileOutputStream = new FileOutputStream(
-			FileDescriptor.out);
+			FileOutputStream fileOutputStream = new FileOutputStream(
+				FileDescriptor.out);
 
-		printStream = new PrintStream(fileOutputStream);
+			printStream = new PrintStream(fileOutputStream);
 
-		System.setOut(printStream);
+			System.setOut(printStream);
+		}
 
 		PoshiScriptParserException.throwExceptions(
 			SourceUtil.getAbsolutePath(file));

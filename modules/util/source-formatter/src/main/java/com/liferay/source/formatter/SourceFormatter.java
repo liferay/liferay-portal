@@ -303,6 +303,23 @@ public class SourceFormatter {
 			sourceFormatter.format();
 		}
 		catch (Exception exception) {
+			UnsupportedClassVersionError unsupportedClassVersionError =
+				_getNestedUnsupportedClassVersionError(exception);
+
+			if (unsupportedClassVersionError != null) {
+				System.err.println(
+					"Unable to run Source Formatter under Java " +
+						System.getProperty("java.specification.version"));
+				System.err.println(
+					"It loads classes compiled for a newer Java version. Set " +
+						"JAVA_HOME to a JDK 17 or 21 and run again.");
+				System.err.println(
+					"This is a toolchain failure, not a formatting violation.");
+				System.err.println(unsupportedClassVersionError.getMessage());
+
+				System.exit(2);
+			}
+
 			if (exception instanceof GitException) {
 				System.out.println(exception.getMessage());
 			}
@@ -505,6 +522,24 @@ public class SourceFormatter {
 
 			if (throwable instanceof CheckstyleException) {
 				return (CheckstyleException)throwable;
+			}
+
+			throwable = throwable.getCause();
+		}
+	}
+
+	private static UnsupportedClassVersionError
+		_getNestedUnsupportedClassVersionError(Exception exception) {
+
+		Throwable throwable = exception;
+
+		while (true) {
+			if (throwable == null) {
+				return null;
+			}
+
+			if (throwable instanceof UnsupportedClassVersionError) {
+				return (UnsupportedClassVersionError)throwable;
 			}
 
 			throwable = throwable.getCause();
