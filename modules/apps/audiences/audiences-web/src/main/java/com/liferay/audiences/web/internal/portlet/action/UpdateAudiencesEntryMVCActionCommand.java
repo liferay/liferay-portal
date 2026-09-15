@@ -56,10 +56,10 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 			actionRequest, "audiencesEntryId");
 		String externalReferenceCode = ParamUtil.getString(
 			actionRequest, "externalReferenceCode");
-		String[] groupERCs = ParamUtil.getStringValues(
-			actionRequest, "groupERCs");
 		String json = ParamUtil.getString(actionRequest, "json");
 		String name = ParamUtil.getString(actionRequest, "name");
+		String[] groupERCs = ParamUtil.getStringValues(
+			actionRequest, "groupERCs");
 
 		try {
 			if (audiencesEntryId <= 0) {

@@ -131,16 +131,17 @@ public class AudiencesDefinitionProviderTest {
 				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
 				RandomTestUtil.randomString(), null);
 
+		Group group1 = GroupTestUtil.addGroup();
+
+		_addAudiencesEntryGroupRel(audiencesEntry1, group1);
+
 		AudiencesEntry audiencesEntry2 =
 			_audiencesEntryLocalService.addAudiencesEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
 				_getCriteriaJSON(_REGISTERED_CUSTOM_ATTRIBUTE),
 				RandomTestUtil.randomString(), null);
-
-		Group group1 = GroupTestUtil.addGroup();
 		Group group2 = GroupTestUtil.addGroup();
 
-		_addAudiencesEntryGroupRel(audiencesEntry1, group1);
 		_addAudiencesEntryGroupRel(audiencesEntry1, group2);
 
 		audiencesEntry1 = _audiencesEntryLocalService.updateAudiencesEntry(

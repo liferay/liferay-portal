@@ -74,7 +74,6 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 	public void testUpdateAudiencesEntryWithGroupERCs() throws Exception {
 		Group group1 = GroupTestUtil.addGroup();
 		Group group2 = GroupTestUtil.addGroup();
-		Group group3 = GroupTestUtil.addGroup();
 
 		_updateAudiencesEntry(
 			group1.getExternalReferenceCode(),
@@ -85,6 +84,8 @@ public class AudiencesEntryGroupRelLocalServiceTest {
 				group1.getExternalReferenceCode(),
 				group2.getExternalReferenceCode()),
 			_getGroupERCs());
+
+		Group group3 = GroupTestUtil.addGroup();
 
 		_updateAudiencesEntry(
 			group2.getExternalReferenceCode(),
