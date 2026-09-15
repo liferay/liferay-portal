@@ -1061,6 +1061,10 @@ definition {
 	test SelectRequiredCategoryInWidgetPageCreation {
 		property portal.acceptance = "true";
 
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		task ("Add a vocabulary with required for page") {
 			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 

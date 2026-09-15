@@ -344,6 +344,10 @@ definition {
 
 		Navigator.openURL(baseURL = "http://www.able.com:8080");
 
+		task ("Enable widget pages on the second portal instance") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			portlet = "Pages");

@@ -608,6 +608,10 @@ definition {
 	@priority = 4
 	@refactorneeded
 	test CannotDeleteEntryAsGuestByDefault {
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		ProductMenu.gotoPortlet(
 			category = "Site Builder",
 			portlet = "Pages");

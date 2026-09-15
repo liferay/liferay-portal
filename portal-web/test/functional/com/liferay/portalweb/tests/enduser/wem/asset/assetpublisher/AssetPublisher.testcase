@@ -418,6 +418,10 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		task ("Enable widget pages") {
+			PagesAdmin.enableWidgetPages();
+		}
+
 		task ("Uncheck Search with Index Configuration") {
 			APNavigator.openToConfigInSystemSettings(portlet = "Asset Publisher");
 
