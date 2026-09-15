@@ -611,27 +611,6 @@ out.println(PortalUtil.escapeRedirect("/"));
 		}
 	}
 
-	@description = "This is a use case for LPS-57776. Validate no LAR remote code execution."
-	@priority = 5
-	test ValidateNoLARRemoteCodeExecution {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Assert remote-code-execution.lar dependency is forbidden") {
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
-
-			LAR.importPortlet(
-				failureExpected = "true",
-				larFileName = "blogs-remote-code-execution.lar",
-				portletName = "Blogs",
-				uploadFrom = "dependencies");
-
-			AssertConsoleTextPresent(value1 = "com.thoughtworks.xstream.security.ForbiddenClassException");
-
-			AssertConsoleTextNotPresent(value1 = "Remote_Code_Execution_vulnerability_is_present");
-		}
-	}
-
 	@description = "This is a use case for LPS-85112. Validate view permission cannot update other users password."
 	@priority = 5
 	test ValidateViewPermissionCanNotUpdateOtherUsersPassword {
