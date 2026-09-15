@@ -839,6 +839,7 @@
 		<column name="parameterObjectFieldId" type="long" />
 		<column name="deletionType" type="String" />
 		<column method-name="DBTableName" name="dbTableName" type="String" />
+		<column localized="true" name="description" type="String" />
 		<column name="edge" type="boolean" />
 		<column localized="true" name="label" type="String" />
 		<column name="name" type="String" />

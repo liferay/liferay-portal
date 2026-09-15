@@ -6,6 +6,8 @@
 package com.liferay.object.model.impl;
 
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.LocalizationUtil;
 
 import java.util.Objects;
 import java.util.Set;
@@ -19,6 +21,18 @@ public class ObjectRelationshipImpl extends ObjectRelationshipBaseImpl {
 	@Override
 	public boolean compareType(String type) {
 		return type.equals(getType());
+	}
+
+	@Override
+	public String getDefaultLanguageId() {
+		String xml = getLabel();
+
+		if (xml == null) {
+			return "";
+		}
+
+		return LocalizationUtil.getDefaultLanguageId(
+			xml, LocaleUtil.getDefault());
 	}
 
 	@Override
