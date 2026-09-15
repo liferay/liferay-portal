@@ -17,9 +17,11 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
@@ -48,6 +50,8 @@ public class LayoutPageTemplatesAdminDisplayContext {
 			liferayPortletRequest);
 		_themeDisplay = (ThemeDisplay)liferayPortletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
+
+		_updatePortletDisplay();
 	}
 
 	public List<NavigationItem> getNavigationItems() {
@@ -146,6 +150,28 @@ public class LayoutPageTemplatesAdminDisplayContext {
 		}
 
 		return false;
+	}
+
+	private void _updatePortletDisplay() {
+		Group group = _themeDisplay.getScopeGroup();
+
+		if (!DesignLibraryUtil.isDesignLibraryScope(group)) {
+			return;
+		}
+
+		PortletDisplay portletDisplay = _themeDisplay.getPortletDisplay();
+
+		portletDisplay.setPortletDecoratorId("barebone");
+		portletDisplay.setShowBackIcon(true);
+
+		String backURL = ParamUtil.getString(_httpServletRequest, "backURL");
+
+		if (Validator.isNull(backURL)) {
+			backURL = DesignLibraryUtil.getDesignLibraryResourcesURL(
+				group, _httpServletRequest);
+		}
+
+		portletDisplay.setURLBack(backURL);
 	}
 
 	private final HttpServletRequest _httpServletRequest;
