@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
-import {Option, Picker} from '@clayui/core';
+import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
+import {Option, Picker, SidePanel} from '@clayui/core';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
+import {
+	hideProductMenuIfPresent,
+	useMediaQuery,
+} from '@liferay/layout-js-components-web';
 import {openToast, useId} from 'frontend-js-components-web';
-import React, {useReducer, useRef} from 'react';
+import React, {useEffect, useReducer, useRef, useState} from 'react';
 
 import {initializeConfig} from '../../app/config/index';
 import {Config} from '../../types/config';
@@ -28,6 +32,10 @@ import {
 } from './elementVariationsReducer';
 
 import './ElementVariations.scss';
+
+const LARGE_MEDIA_QUERY = '(min-width: 992px)';
+
+const SIDEBAR_WIDTH = 320;
 
 interface Props {
 	addElementVariationURL: string;
@@ -136,6 +144,20 @@ function ElementVariations({
 	const elementVariationsPreviewRef =
 		useRef<ElementVariationsPreviewRef>(null);
 
+	const wrapperRef = useRef<HTMLElement | null>(
+		document.getElementById('wrapper')
+	);
+
+	const [sidebarOpen, setSidebarOpen] = useState(false);
+
+	const screenLarge = useMediaQuery(LARGE_MEDIA_QUERY);
+
+	const open = sidebarOpen || screenLarge;
+
+	useEffect(() => {
+		hideProductMenuIfPresent({onHide: () => setSidebarOpen(true)});
+	}, []);
+
 	const createElementVariationDraft = () =>
 		dispatch({
 			draftElementVariation: createElementVariation(experienceKey),
@@ -144,257 +166,274 @@ function ElementVariations({
 
 	return (
 		<div className="d-flex element-variations flex-column">
-			<div className="d-flex element-variations__content flex-grow-1">
-				<div className="bg-white d-flex element-variations__sidebar flex-column flex-shrink-0">
-					{draftElementVariation ? (
-						<ElementVariationForm
-							audiences={audiences}
-							defaultLanguageId={defaultLanguageId}
-							dispatch={dispatch}
-							editableElementOptions={
-								editableElementOptions ?? []
-							}
-							elementVariation={draftElementVariation}
-							elementVariations={experienceElementVariations}
-							key={draftElementVariation.key}
-							languageId={languageId}
-							locales={locales}
-							onCancel={() =>
-								dispatch({
-									type: 'CANCEL_ELEMENT_VARIATION_DRAFT',
-								})
-							}
-							onChange={(properties) =>
-								dispatch({
-									properties,
-									type: 'UPDATE_ELEMENT_VARIATION_DRAFT',
-								})
-							}
-							onLanguageIdChange={(languageId) =>
-								dispatch({
-									languageId,
-									type: 'SET_LANGUAGE_ID',
-								})
-							}
-							onReloadPreview={() =>
-								elementVariationsPreviewRef.current?.reload()
-							}
-							onSave={() =>
-								ElementVariationService.addElementVariation({
-									addElementVariationURL,
-									elementVariation: draftElementVariation,
-									plid,
-								})
-									.then(() =>
+			<SidePanel
+				aria-label={Liferay.Language.get('element-variations')}
+				className="bg-white element-variations__sidebar overflow-hidden shadow-none"
+				closeOnEscape={!screenLarge}
+				containerRef={wrapperRef}
+				direction="left"
+				displayType="light"
+				onOpenChange={setSidebarOpen}
+				open={open}
+				panelWidth={SIDEBAR_WIDTH}
+				position="fixed"
+			>
+				{draftElementVariation ? (
+					<ElementVariationForm
+						audiences={audiences}
+						defaultLanguageId={defaultLanguageId}
+						dispatch={dispatch}
+						editableElementOptions={editableElementOptions ?? []}
+						elementVariation={draftElementVariation}
+						elementVariations={experienceElementVariations}
+						key={draftElementVariation.key}
+						languageId={languageId}
+						locales={locales}
+						onCancel={() =>
+							dispatch({
+								type: 'CANCEL_ELEMENT_VARIATION_DRAFT',
+							})
+						}
+						onChange={(properties) =>
+							dispatch({
+								properties,
+								type: 'UPDATE_ELEMENT_VARIATION_DRAFT',
+							})
+						}
+						onLanguageIdChange={(languageId) =>
+							dispatch({
+								languageId,
+								type: 'SET_LANGUAGE_ID',
+							})
+						}
+						onReloadPreview={() =>
+							elementVariationsPreviewRef.current?.reload()
+						}
+						onSave={() =>
+							ElementVariationService.addElementVariation({
+								addElementVariationURL,
+								elementVariation: draftElementVariation,
+								plid,
+							})
+								.then(() =>
+									dispatch({
+										type: 'SAVE_ELEMENT_VARIATION_DRAFT',
+									})
+								)
+								.catch(showErrorToast)
+						}
+					/>
+				) : (
+					<>
+						<SidePanel.Header
+							className="border-bottom flex-shrink-0 px-3 py-3"
+							closeButtonProps={{className: 'd-lg-none'}}
+							messages={{
+								closeAriaLabel: Liferay.Language.get('close'),
+							}}
+						>
+							<span className="font-weight-bold">
+								{Liferay.Language.get('element-variations')}
+							</span>
+						</SidePanel.Header>
+
+						<SidePanel.Body className="flex-grow-1 overflow-auto p-0">
+							<div className="p-3">
+								<label htmlFor={experienceId}>
+									{Liferay.Language.get('experience')}
+								</label>
+
+								<Picker
+									aria-label={Liferay.Language.get(
+										'experience'
+									)}
+									className="form-control-sm"
+									id={experienceId}
+									items={experiences}
+									onSelectionChange={(selection) =>
 										dispatch({
-											type: 'SAVE_ELEMENT_VARIATION_DRAFT',
+											experienceKey: String(selection),
+											type: 'SET_EXPERIENCE_KEY',
 										})
-									)
-									.catch(showErrorToast)
-							}
-						/>
-					) : (
-						<>
-							<div className="border-bottom flex-shrink-0 px-3 py-3">
-								<span className="font-weight-bold">
-									{Liferay.Language.get('element-variations')}
-								</span>
+									}
+									selectedKey={experienceKey}
+								>
+									{(item) => (
+										<Option
+											key={item.segmentsExperienceERC}
+										>
+											{item.label}
+										</Option>
+									)}
+								</Picker>
 							</div>
 
-							<div className="flex-grow-1 overflow-auto">
-								<div className="p-3">
-									<label htmlFor={experienceId}>
-										{Liferay.Language.get('experience')}
-									</label>
+							<AudiencePriority
+								audiences={getOrderedAudiences(
+									audiences,
+									selectedExperience?.audienceEntryERCs ?? []
+								)}
+								key={experienceKey}
+								segmentsExperienceERC={experienceKey}
+								updateAudiencesPriorityURL={
+									updateAudiencesPriorityURL
+								}
+							/>
 
-									<Picker
-										aria-label={Liferay.Language.get(
-											'experience'
+							{experienceElementVariations.length ? (
+								<div className="d-flex justify-content-start m-3">
+									<ClayButton
+										className="w-100"
+										displayType="secondary"
+										onClick={createElementVariationDraft}
+									>
+										<ClayIcon
+											className="mr-2"
+											symbol="plus"
+										/>
+
+										{Liferay.Language.get('new-variation')}
+									</ClayButton>
+								</div>
+							) : null}
+
+							<div className="border-top pt-3">
+								{!audiences.length ? (
+									<ClayEmptyState
+										className="mb-0 px-3"
+										description={Liferay.Language.get(
+											'you-need-at-least-one-audience-to-build-element-variations'
 										)}
-										className="form-control-sm"
-										id={experienceId}
-										items={experiences}
-										onSelectionChange={(selection) =>
+										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+										small
+										title={Liferay.Language.get(
+											'no-element-variations'
+										)}
+									>
+										<ClayLink
+											button
+											displayType="secondary"
+											href={createAudienceURL}
+											small
+											target="_blank"
+										>
+											<ClayIcon
+												className="mr-2"
+												symbol="shortcut"
+											/>
+
+											{Liferay.Language.get(
+												'create-new-audience'
+											)}
+										</ClayLink>
+									</ClayEmptyState>
+								) : experienceElementVariations.length ? (
+									<ElementVariationsList
+										audiences={audiences}
+										editableElementOptions={
+											editableElementOptions
+										}
+										elementVariations={
+											experienceElementVariations
+										}
+										onDeleteElementVariation={(
+											elementVariation
+										) =>
+											ElementVariationService.deleteElementVariation(
+												{
+													deleteElementVariationURL,
+													externalReferenceCode:
+														elementVariation.externalReferenceCode,
+												}
+											)
+												.then(() =>
+													dispatch({
+														key: elementVariation.key,
+														type: 'DELETE_ELEMENT_VARIATION',
+													})
+												)
+												.catch(showErrorToast)
+										}
+										onEditElementVariation={(key) =>
 											dispatch({
-												experienceKey:
-													String(selection),
-												type: 'SET_EXPERIENCE_KEY',
+												key,
+												type: 'EDIT_ELEMENT_VARIATION',
 											})
 										}
-										selectedKey={experienceKey}
-									>
-										{(item) => (
-											<Option
-												key={item.segmentsExperienceERC}
-											>
-												{item.label}
-											</Option>
+										onUpdateElementVariation={(
+											elementVariation
+										) =>
+											ElementVariationService.updateElementVariation(
+												{
+													active: !elementVariation.active,
+													externalReferenceCode:
+														elementVariation.externalReferenceCode,
+													updateElementVariationURL,
+												}
+											)
+												.then(() =>
+													dispatch({
+														active: !elementVariation.active,
+														key: elementVariation.key,
+														type: 'UPDATE_ELEMENT_VARIATION',
+													})
+												)
+												.catch(showErrorToast)
+										}
+									/>
+								) : (
+									<ClayEmptyState
+										className="mb-0 px-3"
+										description={Liferay.Language.get(
+											'you-can-create-page-elements-variations-based-on-audiences'
 										)}
-									</Picker>
-								</div>
-
-								<AudiencePriority
-									audiences={getOrderedAudiences(
-										audiences,
-										selectedExperience?.audienceEntryERCs ??
-											[]
-									)}
-									key={experienceKey}
-									segmentsExperienceERC={experienceKey}
-									updateAudiencesPriorityURL={
-										updateAudiencesPriorityURL
-									}
-								/>
-
-								{experienceElementVariations.length ? (
-									<div className="d-flex justify-content-start m-3">
+										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+										small
+										title={Liferay.Language.get(
+											'no-element-variations'
+										)}
+									>
 										<ClayButton
-											className="w-100"
 											displayType="secondary"
 											onClick={
 												createElementVariationDraft
 											}
+											size="sm"
 										>
-											<ClayIcon
-												className="mr-2"
-												symbol="plus"
-											/>
-
-											{Liferay.Language.get(
-												'new-variation'
-											)}
+											{Liferay.Language.get('new')}
 										</ClayButton>
-									</div>
-								) : null}
-
-								<div className="border-top pt-3">
-									{!audiences.length ? (
-										<ClayEmptyState
-											className="mb-0 px-3"
-											description={Liferay.Language.get(
-												'you-need-at-least-one-audience-to-build-element-variations'
-											)}
-											imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
-											small
-											title={Liferay.Language.get(
-												'no-element-variations'
-											)}
-										>
-											<ClayLink
-												button
-												displayType="secondary"
-												href={createAudienceURL}
-												small
-												target="_blank"
-											>
-												<ClayIcon
-													className="mr-2"
-													symbol="shortcut"
-												/>
-
-												{Liferay.Language.get(
-													'create-new-audience'
-												)}
-											</ClayLink>
-										</ClayEmptyState>
-									) : experienceElementVariations.length ? (
-										<ElementVariationsList
-											audiences={audiences}
-											editableElementOptions={
-												editableElementOptions
-											}
-											elementVariations={
-												experienceElementVariations
-											}
-											onDeleteElementVariation={(
-												elementVariation
-											) =>
-												ElementVariationService.deleteElementVariation(
-													{
-														deleteElementVariationURL,
-														externalReferenceCode:
-															elementVariation.externalReferenceCode,
-													}
-												)
-													.then(() =>
-														dispatch({
-															key: elementVariation.key,
-															type: 'DELETE_ELEMENT_VARIATION',
-														})
-													)
-													.catch(showErrorToast)
-											}
-											onEditElementVariation={(key) =>
-												dispatch({
-													key,
-													type: 'EDIT_ELEMENT_VARIATION',
-												})
-											}
-											onUpdateElementVariation={(
-												elementVariation
-											) =>
-												ElementVariationService.updateElementVariation(
-													{
-														active: !elementVariation.active,
-														externalReferenceCode:
-															elementVariation.externalReferenceCode,
-														updateElementVariationURL,
-													}
-												)
-													.then(() =>
-														dispatch({
-															active: !elementVariation.active,
-															key: elementVariation.key,
-															type: 'UPDATE_ELEMENT_VARIATION',
-														})
-													)
-													.catch(showErrorToast)
-											}
-										/>
-									) : (
-										<ClayEmptyState
-											className="mb-0 px-3"
-											description={Liferay.Language.get(
-												'you-can-create-page-elements-variations-based-on-audiences'
-											)}
-											imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
-											small
-											title={Liferay.Language.get(
-												'no-element-variations'
-											)}
-										>
-											<ClayButton
-												displayType="secondary"
-												onClick={
-													createElementVariationDraft
-												}
-												size="sm"
-											>
-												{Liferay.Language.get('new')}
-											</ClayButton>
-										</ClayEmptyState>
-									)}
-								</div>
+									</ClayEmptyState>
+								)}
 							</div>
-						</>
-					)}
-				</div>
+						</SidePanel.Body>
+					</>
+				)}
+			</SidePanel>
 
-				<ElementVariationsPreview
-					defaultLanguageId={defaultLanguageId}
-					dispatch={dispatch}
-					draftElementVariation={draftElementVariation}
-					highlightedTargetElement={highlightedTargetElement}
-					itemNames={itemNames}
-					languageId={languageId}
-					previewURL={previewURL}
-					ref={elementVariationsPreviewRef}
-					segmentsExperienceId={
-						selectedExperience?.segmentsExperienceId ??
-						selectedSegmentsExperienceId
-					}
+			{open ? null : (
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('open-sidebar')}
+					className="element-variations__sidebar-trigger position-fixed shadow-sm"
+					displayType="secondary"
+					onClick={() => setSidebarOpen(true)}
+					symbol="angle-double-right"
 				/>
-			</div>
+			)}
+
+			<ElementVariationsPreview
+				defaultLanguageId={defaultLanguageId}
+				dispatch={dispatch}
+				draftElementVariation={draftElementVariation}
+				highlightedTargetElement={highlightedTargetElement}
+				itemNames={itemNames}
+				languageId={languageId}
+				previewURL={previewURL}
+				ref={elementVariationsPreviewRef}
+				segmentsExperienceId={
+					selectedExperience?.segmentsExperienceId ??
+					selectedSegmentsExperienceId
+				}
+			/>
 		</div>
 	);
 }

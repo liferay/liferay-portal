@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton, {ClayButtonWithIcon} from '@clayui/button';
-import {LanguagePicker, Option, Picker} from '@clayui/core';
+import ClayButton from '@clayui/button';
+import {LanguagePicker, Option, Picker, SidePanel} from '@clayui/core';
 import ClayForm, {ClayCheckbox, ClayInput, ClayToggle} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayMultiSelect from '@clayui/multi-select';
@@ -107,56 +107,55 @@ export default function ElementVariationForm({
 
 	return (
 		<>
-			<div className="align-items-center border-bottom d-flex flex-shrink-0 px-3 py-3">
-				<ClayButtonWithIcon
-					aria-label={Liferay.Language.get('back')}
-					borderless
-					className="mr-2"
-					displayType="secondary"
-					onClick={onCancel}
-					size="sm"
-					symbol="angle-left"
-				/>
+			<SidePanel.Header
+				className="border-bottom flex-shrink-0 px-3 py-3"
+				messages={{
+					backAriaLabel: Liferay.Language.get('back'),
+					closeAriaLabel: Liferay.Language.get('close'),
+				}}
+				onBack={onCancel}
+			>
+				<div className="align-items-center d-flex">
+					<span className="font-weight-bold">
+						{editing
+							? sub(
+									Liferay.Language.get('edit-x'),
+									Liferay.Language.get('variation')
+								)
+							: sub(
+									Liferay.Language.get('new-x'),
+									Liferay.Language.get('variation')
+								)}
+					</span>
 
-				<span className="font-weight-bold">
-					{editing
-						? sub(
-								Liferay.Language.get('edit-x'),
-								Liferay.Language.get('variation')
-							)
-						: sub(
-								Liferay.Language.get('new-x'),
-								Liferay.Language.get('variation')
-							)}
-				</span>
-
-				<div className="ml-auto">
-					<LanguagePicker
-						defaultLocaleId={defaultLanguageId}
-						hideTriggerText
-						locales={locales}
-						messages={{
-							default: Liferay.Language.get('default'),
-							option: Liferay.Language.get('x-language-x'),
-							translated: Liferay.Language.get('translated'),
-							translating:
-								Liferay.Language.get('translating-x-x'),
-							trigger: Liferay.Language.get(
-								'select-a-language.-current-language-x'
-							),
-							untranslated:
-								Liferay.Language.get('not-translated'),
-						}}
-						onSelectedLocaleChange={(id) =>
-							onLanguageIdChange(String(id))
-						}
-						selectedLocaleId={languageId}
-						small
-					/>
+					<div className="ml-auto">
+						<LanguagePicker
+							defaultLocaleId={defaultLanguageId}
+							hideTriggerText
+							locales={locales}
+							messages={{
+								default: Liferay.Language.get('default'),
+								option: Liferay.Language.get('x-language-x'),
+								translated: Liferay.Language.get('translated'),
+								translating:
+									Liferay.Language.get('translating-x-x'),
+								trigger: Liferay.Language.get(
+									'select-a-language.-current-language-x'
+								),
+								untranslated:
+									Liferay.Language.get('not-translated'),
+							}}
+							onSelectedLocaleChange={(id) =>
+								onLanguageIdChange(String(id))
+							}
+							selectedLocaleId={languageId}
+							small
+						/>
+					</div>
 				</div>
-			</div>
+			</SidePanel.Header>
 
-			<div className="flex-grow-1 overflow-auto p-3">
+			<SidePanel.Body className="flex-grow-1 p-3">
 				<ClayForm.Group
 					className={errors.name ? 'has-error' : undefined}
 					small
@@ -433,9 +432,9 @@ export default function ElementVariationForm({
 						</ClayForm.Group>
 					</>
 				) : null}
-			</div>
+			</SidePanel.Body>
 
-			<div className="border-top d-flex flex-shrink-0 p-3">
+			<SidePanel.Footer className="border-top d-flex flex-shrink-0 p-3">
 				<ClayButton
 					borderless
 					displayType="secondary"
@@ -473,7 +472,7 @@ export default function ElementVariationForm({
 				>
 					{Liferay.Language.get('save')}
 				</ClayButton>
-			</div>
+			</SidePanel.Footer>
 		</>
 	);
 }

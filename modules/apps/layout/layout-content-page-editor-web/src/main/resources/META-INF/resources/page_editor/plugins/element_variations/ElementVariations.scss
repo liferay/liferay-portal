@@ -1,12 +1,11 @@
 @import 'functions/_global-functions';
+@import 'mixins/_breakpoints';
 @import 'variables/_globals';
+
+$element-variations-sidebar-width: 320px;
 
 .element-variations {
 	height: calc(100vh - var(--control-menu-container-height, 0px));
-
-	&__content {
-		min-height: 0;
-	}
 
 	&__default-language-value {
 		border-left: 2px solid $secondary;
@@ -22,8 +21,26 @@
 		color: $secondary-l0;
 	}
 
-	&__sidebar {
-		border-right: 0.5px solid $secondary;
-		width: 320px;
+	&__sidebar-trigger {
+		left: 1rem;
+		top: calc(var(--control-menu-container-height, 0px) + 1rem);
+		z-index: 100;
+	}
+}
+
+.c-slideout .element-variations__sidebar {
+	border-right: 0.5px solid $secondary;
+}
+
+#wrapper.c-slideout-container {
+	&.c-slideout-push-start {
+		@include media-breakpoint-up(lg) {
+			padding-left: $element-variations-sidebar-width;
+		}
+	}
+
+	&.c-slideout-transition-in,
+	&.c-slideout-transition-out {
+		transition: none;
 	}
 }
