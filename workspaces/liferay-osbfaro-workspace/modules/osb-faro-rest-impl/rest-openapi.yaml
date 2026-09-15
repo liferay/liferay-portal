@@ -795,7 +795,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/events":
         get:
             description:
-                "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
+                "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
             operationId: getWorkspaceGroupChannelEventsPage
             parameters:
                 -   in: path
@@ -815,10 +815,22 @@ paths:
                         type: string
                 -   in: query
                     description:
+                        "Identifier of an account. When set, narrow the events to those from the individuals in that account."
+                    name: accountId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
                         "If true, events from anonymous (browser-tracked) individuals are included. Defaults to false."
                     name: includeAnonymousUsers
                     schema:
                         type: boolean
+                -   in: query
+                    description:
+                        "Identifier of an individual. When set, narrow the events to those from that individual."
+                    name: individualId
+                    schema:
+                        type: string
                 -   in: query
                     description:
                         "Page number (starts at 1)."
@@ -855,6 +867,12 @@ paths:
                     description:
                         "Free-text keyword search across event fields. Empty or null returns all matching events."
                     name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Identifier of a segment. When set, narrow the events to those from the individuals in that segment."
+                    name: segmentId
                     schema:
                         type: string
             responses:
