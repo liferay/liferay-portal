@@ -49,6 +49,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.InlineSQLHelper;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -301,7 +302,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 				groupId, objectRelationshipId, primaryKey, related, reverse,
 				search, start, end);
 
-		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
+		if (!ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission() &&
+			!_inlineSQLHelper.isEnabled(groupId)) {
+
 			for (ObjectEntry objectEntry : objectEntries) {
 				objectEntryService.checkModelResourcePermission(
 					objectEntry.getObjectDefinitionId(),
@@ -1010,6 +1013,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private InlineSQLHelper _inlineSQLHelper;
 
 	@Reference
 	private JSONFactory _jsonFactory;
