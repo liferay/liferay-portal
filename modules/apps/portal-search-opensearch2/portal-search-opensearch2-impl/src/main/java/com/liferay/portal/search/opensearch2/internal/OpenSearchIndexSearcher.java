@@ -616,7 +616,13 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 
 			Document[] documents = hits.getDocs();
 
-			if ((documents.length != 0) || (start == 0)) {
+			if ((documents.length != 0) || (start == 0) ||
+				!GetterUtil.getBoolean(
+					searchContext.getAttribute(
+						SearchContextAttributes.
+							ATTRIBUTE_KEY_FALLBACK_TO_LAST_PAGE),
+					true)) {
+
 				break;
 			}
 
