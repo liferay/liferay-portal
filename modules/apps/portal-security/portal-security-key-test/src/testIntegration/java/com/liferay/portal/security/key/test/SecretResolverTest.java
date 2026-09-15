@@ -82,8 +82,8 @@ public class SecretResolverTest {
 
 		KeyReference keyReference = _putSecret(companyId, identifier, value);
 
-		Assert.assertEquals(identifier, keyReference.getIdentifier());
 		Assert.assertEquals(_SECRET_PROVIDER_ID, keyReference.getProviderId());
+		Assert.assertEquals(identifier, keyReference.getIdentifier());
 		Assert.assertEquals(KeyReference.Type.SECRET, keyReference.getType());
 		Assert.assertEquals(
 			value,
