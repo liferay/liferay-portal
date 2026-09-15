@@ -3710,7 +3710,7 @@ public class DefaultObjectEntryManagerImplTest
 				).build()));
 
 		long objectEntryId1 = _addAndAssertObjectEntryWithPicklistObjectField(
-			null, null, objectDefinition);
+			null, StringPool.BLANK, objectDefinition);
 		long objectEntryId2 = _addAndAssertObjectEntryWithPicklistObjectField(
 			StringPool.BLANK, StringPool.BLANK, objectDefinition);
 		long objectEntryId3 = _addAndAssertObjectEntryWithPicklistObjectField(

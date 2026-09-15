@@ -387,8 +387,8 @@ public class ObjectEntryLocalServiceImpl
 			defaultLanguageId, version, WorkflowConstants.STATUS_APPROVED);
 
 		_insertIntoLocalizationTable(
-			new HashMap<>(), objectDefinition, objectEntry.getObjectEntryId(),
-			null, false, values);
+			defaultLanguageId, new HashMap<>(), objectDefinition,
+			objectEntry.getObjectEntryId(), null, false, values);
 		_insertIntoTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
 				false, objectDefinition, _objectFieldLocalService),
@@ -469,8 +469,8 @@ public class ObjectEntryLocalServiceImpl
 		Map<String, Serializable> insertedValues = new HashMap<>();
 
 		_insertIntoLocalizationTable(
-			insertedValues, objectDefinition, objectEntryId, null, false,
-			values);
+			defaultLanguageId, insertedValues, objectDefinition, objectEntryId,
+			null, false, values);
 
 		boolean dynamicObjectDefinitionStaticValues = _insertIntoTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
@@ -663,8 +663,8 @@ public class ObjectEntryLocalServiceImpl
 			_deleteFromLocalizationTable(objectDefinition, primaryKey);
 
 			_insertIntoLocalizationTable(
-				new HashMap<>(), objectDefinition, primaryKey, existingValues,
-				true, values);
+				defaultLanguageId, new HashMap<>(), objectDefinition,
+				primaryKey, existingValues, true, values);
 
 			_updateTable(
 				dynamicObjectDefinitionTable, primaryKey, true, values);
@@ -682,8 +682,8 @@ public class ObjectEntryLocalServiceImpl
 				serviceContext, userId, values);
 
 			_insertIntoLocalizationTable(
-				new HashMap<>(), objectDefinition, primaryKey, null, false,
-				values);
+				defaultLanguageId, new HashMap<>(), objectDefinition,
+				primaryKey, null, false, values);
 
 			_insertIntoTable(
 				dynamicObjectDefinitionTable, new HashMap<>(), primaryKey,
@@ -6025,7 +6025,7 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private void _insertIntoLocalizationTable(
-			Map<String, Serializable> insertedValues,
+			String defaultLanguageId, Map<String, Serializable> insertedValues,
 			ObjectDefinition objectDefinition, long objectEntryId,
 			Map<String, Serializable> originalValues, boolean partialUpdate,
 			Map<String, Serializable> values)
@@ -6146,15 +6146,21 @@ public class ObjectEntryLocalServiceImpl
 						(Map<String, Serializable>)insertedValues.getOrDefault(
 							column.getName() + "i18n", new HashMap<>());
 
-					localizedValues.put(
-						languageId,
+					Serializable insertedLocalizedSerializable =
 						insertedLocalizedValue.get(
 							StringUtil.removeLast(
-								column.getName(), StringPool.UNDERLINE)));
+								column.getName(), StringPool.UNDERLINE));
+
+					if ((insertedLocalizedSerializable instanceof Long) ||
+						Validator.isNotNull(insertedLocalizedSerializable)) {
+
+						localizedValues.put(
+							languageId, insertedLocalizedSerializable);
+					}
 
 					_putLocalizedValues(
-						column.getName(), objectField.getDefaultLanguageId(),
-						localizedValues, insertedValues);
+						column.getName(), defaultLanguageId, localizedValues,
+						insertedValues);
 				}
 
 				preparedStatement.addBatch();
@@ -6982,10 +6988,15 @@ public class ObjectEntryLocalServiceImpl
 		else if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED)) {
 
+			String valueString = (String)value;
+
 			_setColumn(
 				columnNames, index, insertedValues, preparedStatement,
 				column.getSQLType(),
-				_encryptor.encrypt(_getKey(), (String)value));
+				_encryptor.encrypt(_getKey(), valueString));
+
+			_putInsertedValue(
+				insertedValues, columnNames.get(index - 1), valueString);
 		}
 		else if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
@@ -7067,8 +7078,14 @@ public class ObjectEntryLocalServiceImpl
 					index, new StringReader(valueString), valueString.length());
 			}
 
+			String trimmedValueString = StringPool.BLANK;
+
+			if (valueString != null) {
+				trimmedValueString = valueString.trim();
+			}
+
 			_putInsertedValue(
-				insertedValues, columnNames.get(index - 1), valueString);
+				insertedValues, columnNames.get(index - 1), trimmedValueString);
 		}
 		else if ((sqlType == Types.DATE) || (sqlType == Types.TIMESTAMP)) {
 			Timestamp timestamp = null;
@@ -7156,6 +7173,10 @@ public class ObjectEntryLocalServiceImpl
 			}
 
 			preparedStatement.setString(index, string);
+
+			if (string == null) {
+				string = StringPool.BLANK;
+			}
 
 			_putInsertedValue(
 				insertedValues, columnNames.get(index - 1), string);
@@ -7627,8 +7648,9 @@ public class ObjectEntryLocalServiceImpl
 		_deleteFromLocalizationTable(objectDefinition, objectEntryId);
 
 		_insertIntoLocalizationTable(
-			new HashMap<>(), objectDefinition, objectEntryId, transientValues,
-			partialUpdate, values);
+			objectEntry.getDefaultLanguageId(), new HashMap<>(),
+			objectDefinition, objectEntryId, transientValues, partialUpdate,
+			values);
 
 		_updateTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(

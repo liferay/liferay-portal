@@ -926,7 +926,7 @@ public class ObjectActionLocalServiceTest {
 				serviceContext);
 
 			_assertWebhookObjectAction(
-				null, "John", null,
+				null, "John", StringPool.BLANK,
 				ObjectActionTriggerConstants.KEY_ON_AFTER_ADD,
 				_objectDefinition, null, null, WorkflowConstants.STATUS_DRAFT);
 
