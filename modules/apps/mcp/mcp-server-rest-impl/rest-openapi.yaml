@@ -2,7 +2,7 @@ components:
     schemas:
         Tool:
             description:
-                A tool exposed by a tool-set, including its input and output schemas.
+                A tool exposed by a tool set, including its input and output schemas.
             properties:
                 description:
                     description:
@@ -15,7 +15,7 @@ components:
                     type: object
                 name:
                     description:
-                        Stable identifier of the tool within its tool-set.
+                        Stable identifier of the tool within its tool set.
                     type: string
                 outputSchema:
                     additionalProperties: true
@@ -31,18 +31,18 @@ components:
             properties:
                 description:
                     description:
-                        Curated, one-sentence description of what this tool-set can do, suitable for routing a natural-language request.
+                        Curated, one-sentence description of what this tool set can do, suitable for routing a natural-language request.
                     type: string
                 name:
                     description:
-                        Stable identifier of the tool-set. Pass this verbatim as `toolSetName` in subsequent calls.
+                        Stable identifier of the tool set. Pass this verbatim as `toolSetName` in subsequent calls.
                     type: string
             required:
                 -   name
             type: object
         ToolSummary:
             description:
-                A summary of a tool exposed by a tool-set.
+                A summary of a tool exposed by a tool set.
             properties:
                 description:
                     description:
@@ -50,14 +50,14 @@ components:
                     type: string
                 name:
                     description:
-                        Stable identifier of the tool within its tool-set. Pass this verbatim as `toolName` in subsequent calls.
+                        Stable identifier of the tool within its tool set. Pass this verbatim as `toolName` in subsequent calls.
                     type: string
             required:
                 -   name
             type: object
 info:
     description:
-        "Single entry point for an AI to discover, understand, and invoke any tool exposed by Liferay. When the user asks for something you do not already know how to do in Liferay, start with `getToolSetsPage` to find a tool-set matching their intent, then `getToolSetToolSetNameToolSummariesPage` to find the right tool in it, then `getToolSetToolSetNameTool` to fetch the tool's input schema, then `postToolSetToolSetNameToolInvoke` with an input map matching that schema to execute it. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.mcp.server.rest.client', and version '1.1.0'."
+        "Single entry point for an AI to discover, understand, and invoke any tool exposed by Liferay. When the user asks for something you do not already know how to do in Liferay, start with `getToolSetsPage` to find a tool set matching their intent, then `getToolSetToolSetNameToolSummariesPage` to find the right tool in it, then `getToolSetToolSetNameTool` to fetch the tool's input schema, then `postToolSetToolSetNameToolInvoke` with an input map matching that schema to execute it. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.mcp.server.rest.client', and version '1.1.0'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -68,7 +68,7 @@ paths:
     "/tool-sets":
         get:
             description:
-                Use this whenever you do not know which tool-set can fulfill the user's request — it is the first thing to try. Returns every tool-set exposed by Liferay, each with a curated description. Pick the tool-set whose description matches the user's intent and pass its `name` to `getToolSetToolSetNameToolSummariesPage` to see what tools it offers.
+                Use this whenever you do not know which tool set can fulfill the user's request — it is the first thing to try. Returns every tool set exposed by Liferay, each with a curated description. Pick the tool set whose description matches the user's intent and pass its `name` to `getToolSetToolSetNameToolSummariesPage` to see what tools it offers.
             operationId: getToolSetsPage
             responses:
                 200:
@@ -84,17 +84,17 @@ paths:
                                     $ref: "#/components/schemas/ToolSet"
                                 type: array
                     description:
-                        The available tool-sets.
+                        The available tool sets.
             tags: ["ToolSet"]
     "/tool-sets/{toolSetName}/tool-summaries":
         get:
             description:
-                Use this once you have identified a tool-set (via `getToolSetsPage`) and need to find which of its tools matches the user's request. Returns every tool in the tool-set, each with a `name` and a description. Pick the tool whose description matches the user's intent and pass its `name` to `getToolSetToolSetNameTool` to see its input schema.
+                Use this once you have identified a tool set (via `getToolSetsPage`) and need to find which of its tools matches the user's request. Returns every tool in the tool set, each with a `name` and a description. Pick the tool whose description matches the user's intent and pass its `name` to `getToolSetToolSetNameTool` to see its input schema.
             operationId: getToolSetToolSetNameToolSummariesPage
             parameters:
                 -   in: path
                     description:
-                        The tool-set name returned by `getToolSetsPage`.
+                        The tool set name returned by `getToolSetsPage`.
                     name: toolSetName
                     required: true
                     schema:
@@ -113,7 +113,7 @@ paths:
                                     $ref: "#/components/schemas/ToolSummary"
                                 type: array
                     description:
-                        The tools exposed by the tool-set.
+                        The tools exposed by the tool set.
             tags: ["ToolSummary"]
     "/tool-sets/{toolSetName}/tools/{toolName}":
         get:
@@ -123,7 +123,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        The tool-set name returned by `getToolSetsPage`.
+                        The tool set name returned by `getToolSetsPage`.
                     name: toolSetName
                     required: true
                     schema:
@@ -159,7 +159,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        The tool-set name returned by `getToolSetsPage`.
+                        The tool set name returned by `getToolSetsPage`.
                     name: toolSetName
                     required: true
                     schema:

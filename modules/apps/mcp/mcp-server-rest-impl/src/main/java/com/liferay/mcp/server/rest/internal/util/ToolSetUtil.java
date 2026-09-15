@@ -246,7 +246,7 @@ public class ToolSetUtil {
 
 		if (openAPIDocument == null) {
 			throw new IllegalArgumentException(
-				"No tool-set was found with name \"" + toolSetName + "\"");
+				"No tool set was found with name \"" + toolSetName + "\"");
 		}
 
 		return openAPIDocument;
@@ -308,7 +308,7 @@ public class ToolSetUtil {
 				if (Validator.isNull(content)) {
 					throw new IllegalStateException(
 						"Unable to read the OpenAPI document of the \"" +
-							toolSetName + "\" tool-set");
+							toolSetName + "\" tool set");
 				}
 
 				try {
