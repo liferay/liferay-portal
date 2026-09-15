@@ -46,26 +46,26 @@ const views = [
 					contentRenderer: 'accountNameRenderer',
 					fieldName: 'accountName',
 					label: Liferay.Language.get('name'),
-					sortable: false,
+					sortable: true,
 					truncate: true,
 				},
 				{
 					contentRenderer: 'lifecycleStageRenderer',
 					fieldName: 'lifecycleStage',
 					label: Liferay.Language.get('lifecycle-stage'),
-					sortable: false,
+					sortable: true,
 				},
 				{
 					contentRenderer: 'amountRenderer',
 					fieldName: 'salesforce/openPipelineAmount',
 					label: Liferay.Language.get('pipeline-value'),
-					sortable: false,
+					sortable: true,
 				},
 				{
 					contentRenderer: 'amountRenderer',
 					fieldName: 'salesforce/closedWonAmount',
 					label: Liferay.Language.get('closed-won'),
-					sortable: false,
+					sortable: true,
 				},
 			],
 		},
@@ -156,15 +156,16 @@ const TouchedAccountsCard: React.FC<ITouchedAccountsCardProps> = ({
 					}}
 					id="campaign-accounts-dataset"
 					pagination={pagination}
-
-					// Same as the campaigns table: asah declares `search`,
-					// `filter` and `sort` on this endpoint and reads none of
-					// them, sorting by account id regardless. Offering either
-					// control would look functional and do nothing.
-
-					showManagementBar={false}
 					showPagination
-					showSearch={false}
+					sorts={[
+						{
+							active: true,
+							default: true,
+							direction: 'asc',
+							key: 'accountName',
+							label: Liferay.Language.get('name'),
+						},
+					]}
 					views={views}
 				/>
 			)}
