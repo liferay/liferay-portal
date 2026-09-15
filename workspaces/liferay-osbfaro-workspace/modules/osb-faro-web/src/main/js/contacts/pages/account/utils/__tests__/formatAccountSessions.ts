@@ -380,4 +380,38 @@ describe('formatAccountSessions', () => {
 			experienceNames: ['Q3 Promo Experience'],
 		});
 	});
+
+	it('carries the acquisition parameters of a page view, which the expanded event renders as its UTM parameters table', () => {
+		const [session] = sessionsOf(
+			formatAccountSessions([
+				buildSession({
+					events: [
+						{
+							acquisitionProperties: [
+								{name: 'utm_medium', value: 'online-ad'},
+								{name: 'utm_source', value: 'google-net'},
+							],
+							applicationId: 'Page',
+							canonicalUrl: 'https://liferay.com/home',
+							createDate: '2026-07-16T10:00:00.000Z',
+							name: 'pageViewed',
+							pageGroupId: 'https://liferay.com/home',
+							pageTitle: 'Home',
+						},
+					],
+				}),
+			])
+		);
+
+		const [pageGroup] = session.nestedItems as {
+			nestedItems: {attributes: Record<string, unknown>}[];
+		}[];
+
+		expect(pageGroup.nestedItems[0].attributes).toMatchObject({
+			acquisitionProperties: {
+				utm_medium: 'online-ad',
+				utm_source: 'google-net',
+			},
+		});
+	});
 });

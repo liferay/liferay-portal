@@ -57,7 +57,11 @@ const toSessionItem = (
 	session: AccountUserSession,
 	context: EventDashboardContext
 ): VerticalTimelineSession => {
-	const events = (session.events ?? []) as unknown as UserSessionEvent[];
+
+	// Assigned rather than cast, so a field the account query stops selecting
+	// fails to compile here instead of silently emptying the timeline.
+
+	const events: UserSessionEvent[] = session.events ?? [];
 
 	return {
 		applicationId: events[0]?.applicationId ?? '',

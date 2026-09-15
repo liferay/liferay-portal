@@ -2,6 +2,7 @@ import {gql} from '@apollo/client';
 import {SessionEntityTypes} from 'shared/util/constants';
 
 export interface AccountUserSessionEvent {
+	acquisitionProperties: Array<{name: string; value: string}>;
 	applicationId: string;
 	assetTitle: string;
 	campaignId: string | null;
@@ -99,6 +100,10 @@ export default gql`
 					devicePixelRatio
 					deviceType
 					events {
+						acquisitionProperties {
+							name
+							value
+						}
 						applicationId
 						assetTitle
 						campaignId

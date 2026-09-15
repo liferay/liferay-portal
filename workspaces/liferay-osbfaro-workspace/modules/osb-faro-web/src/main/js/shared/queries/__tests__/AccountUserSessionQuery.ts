@@ -9,4 +9,8 @@ describe('AccountUserSessionQuery', () => {
 	it('should include includeWebhookEvents', () => {
 		expect(queryString).toContain('includeWebhookEvents: true');
 	});
+
+	it('should select acquisitionProperties, which the activity timeline expands into the UTM parameters table', () => {
+		expect(queryString).toContain('acquisitionProperties {');
+	});
 });
