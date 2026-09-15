@@ -36,18 +36,17 @@ function configFromSearch(search) {
 					.map((item) => item.trim())
 					.filter(Boolean);
 
-	const adjustments = params.get('adjustments');
+	const section = (value, key) =>
+		value === null
+			? undefined
+			: value === ''
+				? false
+				: {[key]: list(value)};
+
 	const crop = params.get('crop');
-	const filters = params.get('filters');
-	const frames = params.get('frames');
 
 	return {
-		adjustments:
-			adjustments === null
-				? undefined
-				: adjustments === ''
-					? false
-					: {sliders: list(adjustments)},
+		adjustments: section(params.get('adjustments'), 'sliders'),
 		crop:
 			crop === null
 				? undefined
@@ -58,18 +57,8 @@ function configFromSearch(search) {
 							rotate: list(crop).includes('rotate'),
 							straighten: list(crop).includes('straighten'),
 						},
-		filters:
-			filters === null
-				? undefined
-				: filters === ''
-					? false
-					: {presets: list(filters)},
-		frames:
-			frames === null
-				? undefined
-				: frames === ''
-					? false
-					: {presets: list(frames)},
+		filters: section(params.get('filters'), 'presets'),
+		frames: section(params.get('frames'), 'presets'),
 	};
 }
 
