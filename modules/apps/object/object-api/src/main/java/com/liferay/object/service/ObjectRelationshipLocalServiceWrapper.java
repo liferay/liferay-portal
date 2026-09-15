@@ -51,16 +51,17 @@ public class ObjectRelationshipLocalServiceWrapper
 	public com.liferay.object.model.ObjectRelationship addObjectRelationship(
 			String externalReferenceCode, long userId, long objectDefinitionId1,
 			long objectDefinitionId2, long parameterObjectFieldId,
-			String deletionType, boolean edge,
-			java.util.Map<java.util.Locale, String> labelMap, String name,
-			boolean system, String type,
+			String deletionType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean edge, java.util.Map<java.util.Locale, String> labelMap,
+			String name, boolean system, String type,
 			com.liferay.object.model.ObjectField objectField)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectRelationshipLocalService.addObjectRelationship(
 			externalReferenceCode, userId, objectDefinitionId1,
-			objectDefinitionId2, parameterObjectFieldId, deletionType, edge,
-			labelMap, name, system, type, objectField);
+			objectDefinitionId2, parameterObjectFieldId, deletionType,
+			descriptionMap, edge, labelMap, name, system, type, objectField);
 	}
 
 	@Override
@@ -684,14 +685,15 @@ public class ObjectRelationshipLocalServiceWrapper
 	@Override
 	public com.liferay.object.model.ObjectRelationship updateObjectRelationship(
 			String externalReferenceCode, long objectRelationshipId,
-			long parameterObjectFieldId, String deletionType, boolean edge,
-			java.util.Map<java.util.Locale, String> labelMap,
+			long parameterObjectFieldId, String deletionType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean edge, java.util.Map<java.util.Locale, String> labelMap,
 			com.liferay.object.model.ObjectField objectField)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectRelationshipLocalService.updateObjectRelationship(
 			externalReferenceCode, objectRelationshipId, parameterObjectFieldId,
-			deletionType, edge, labelMap, objectField);
+			deletionType, descriptionMap, edge, labelMap, objectField);
 	}
 
 	@Override
@@ -722,4 +724,4 @@ public class ObjectRelationshipLocalServiceWrapper
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2013795293
+// LIFERAY-SERVICE-BUILDER-HASH:1013129111

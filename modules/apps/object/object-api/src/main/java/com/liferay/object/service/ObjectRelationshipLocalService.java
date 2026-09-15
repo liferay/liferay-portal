@@ -80,8 +80,9 @@ public interface ObjectRelationshipLocalService
 	public ObjectRelationship addObjectRelationship(
 			String externalReferenceCode, long userId, long objectDefinitionId1,
 			long objectDefinitionId2, long parameterObjectFieldId,
-			String deletionType, boolean edge, Map<Locale, String> labelMap,
-			String name, boolean system, String type, ObjectField objectField)
+			String deletionType, Map<Locale, String> descriptionMap,
+			boolean edge, Map<Locale, String> labelMap, String name,
+			boolean system, String type, ObjectField objectField)
 		throws PortalException;
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -444,7 +445,8 @@ public interface ObjectRelationshipLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectRelationship updateObjectRelationship(
 			String externalReferenceCode, long objectRelationshipId,
-			long parameterObjectFieldId, String deletionType, boolean edge,
+			long parameterObjectFieldId, String deletionType,
+			Map<Locale, String> descriptionMap, boolean edge,
 			Map<Locale, String> labelMap, ObjectField objectField)
 		throws PortalException;
 
@@ -452,4 +454,4 @@ public interface ObjectRelationshipLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1847497507
+// LIFERAY-SERVICE-BUILDER-HASH:1669235983

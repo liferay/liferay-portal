@@ -34,15 +34,16 @@ public class ObjectRelationshipServiceUtil {
 	public static ObjectRelationship addObjectRelationship(
 			String externalReferenceCode, long objectDefinitionId1,
 			long objectDefinitionId2, long parameterObjectFieldId,
-			String deletionType, boolean edge,
-			Map<java.util.Locale, String> labelMap, String name, boolean system,
-			String type, com.liferay.object.model.ObjectField objectField)
+			String deletionType, Map<java.util.Locale, String> descriptionMap,
+			boolean edge, Map<java.util.Locale, String> labelMap, String name,
+			boolean system, String type,
+			com.liferay.object.model.ObjectField objectField)
 		throws PortalException {
 
 		return getService().addObjectRelationship(
 			externalReferenceCode, objectDefinitionId1, objectDefinitionId2,
-			parameterObjectFieldId, deletionType, edge, labelMap, name, system,
-			type, objectField);
+			parameterObjectFieldId, deletionType, descriptionMap, edge,
+			labelMap, name, system, type, objectField);
 	}
 
 	public static void addObjectRelationshipMappingTableValues(
@@ -104,14 +105,15 @@ public class ObjectRelationshipServiceUtil {
 
 	public static ObjectRelationship updateObjectRelationship(
 			String externalReferenceCode, long objectRelationshipId,
-			long parameterObjectFieldId, String deletionType, boolean edge,
+			long parameterObjectFieldId, String deletionType,
+			Map<java.util.Locale, String> descriptionMap, boolean edge,
 			Map<java.util.Locale, String> labelMap,
 			com.liferay.object.model.ObjectField objectField)
 		throws PortalException {
 
 		return getService().updateObjectRelationship(
 			externalReferenceCode, objectRelationshipId, parameterObjectFieldId,
-			deletionType, edge, labelMap, objectField);
+			deletionType, descriptionMap, edge, labelMap, objectField);
 	}
 
 	public static ObjectRelationshipService getService() {
@@ -124,4 +126,4 @@ public class ObjectRelationshipServiceUtil {
 			ObjectRelationshipService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1657021465
+// LIFERAY-SERVICE-BUILDER-HASH:-1776371229

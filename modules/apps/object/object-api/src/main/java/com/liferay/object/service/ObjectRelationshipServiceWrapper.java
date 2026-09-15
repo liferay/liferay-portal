@@ -32,16 +32,17 @@ public class ObjectRelationshipServiceWrapper
 	public com.liferay.object.model.ObjectRelationship addObjectRelationship(
 			String externalReferenceCode, long objectDefinitionId1,
 			long objectDefinitionId2, long parameterObjectFieldId,
-			String deletionType, boolean edge,
-			java.util.Map<java.util.Locale, String> labelMap, String name,
-			boolean system, String type,
+			String deletionType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean edge, java.util.Map<java.util.Locale, String> labelMap,
+			String name, boolean system, String type,
 			com.liferay.object.model.ObjectField objectField)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectRelationshipService.addObjectRelationship(
 			externalReferenceCode, objectDefinitionId1, objectDefinitionId2,
-			parameterObjectFieldId, deletionType, edge, labelMap, name, system,
-			type, objectField);
+			parameterObjectFieldId, deletionType, descriptionMap, edge,
+			labelMap, name, system, type, objectField);
 	}
 
 	@Override
@@ -115,14 +116,15 @@ public class ObjectRelationshipServiceWrapper
 	@Override
 	public com.liferay.object.model.ObjectRelationship updateObjectRelationship(
 			String externalReferenceCode, long objectRelationshipId,
-			long parameterObjectFieldId, String deletionType, boolean edge,
-			java.util.Map<java.util.Locale, String> labelMap,
+			long parameterObjectFieldId, String deletionType,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean edge, java.util.Map<java.util.Locale, String> labelMap,
 			com.liferay.object.model.ObjectField objectField)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectRelationshipService.updateObjectRelationship(
 			externalReferenceCode, objectRelationshipId, parameterObjectFieldId,
-			deletionType, edge, labelMap, objectField);
+			deletionType, descriptionMap, edge, labelMap, objectField);
 	}
 
 	@Override
@@ -140,4 +142,4 @@ public class ObjectRelationshipServiceWrapper
 	private ObjectRelationshipService _objectRelationshipService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:168388091
+// LIFERAY-SERVICE-BUILDER-HASH:-282406461
