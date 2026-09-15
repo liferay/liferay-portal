@@ -62,7 +62,7 @@ public class MonitorMetricsWriter {
 		prometheusTextFormatWriter.write(
 			byteArrayOutputStream,
 			MetricSnapshots.of(
-				_newDurationSnapshot(), _newHeartbeatTimestampSnapshot(),
+				_newDurationGaugeSnapshot(), _newHeartbeatTimestampSnapshot(),
 				_newLastRunTimestampSnapshot(), _newStatusSnapshot()),
 			EscapingScheme.DEFAULT);
 
@@ -136,7 +136,7 @@ public class MonitorMetricsWriter {
 		return status.getSeverityRank();
 	}
 
-	private GaugeSnapshot _newDurationSnapshot() {
+	private GaugeSnapshot _newDurationGaugeSnapshot() {
 		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
 
 		for (Monitor monitor : _monitors) {
