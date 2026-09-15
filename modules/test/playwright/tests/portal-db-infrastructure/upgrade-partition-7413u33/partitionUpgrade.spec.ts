@@ -153,9 +153,11 @@ async function viewUpgradedPartition({
 
 			await page.locator('a[href*=infoPanel]').click();
 
-			await expect(page.locator('.sidebar-header')).toContainText(
-				documentTitle
-			);
+			const sidebarHeader = page.locator('.sidebar-header');
+
+			await expect(sidebarHeader).toBeVisible();
+
+			await expect(sidebarHeader).toContainText(documentTitle);
 		});
 
 		await test.step(`View this partition's web content on ${virtualHostName}`, async () => {
