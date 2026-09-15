@@ -13,6 +13,7 @@
 	export class ObjectRelationship {
 			"actions"?: {[key: string]: {[key: string]: string;};};
 			"deletionType"?: 'cascade' | 'disassociate' | 'prevent';
+			"description"?: {[key: string]: string;};
 			"edge"?: boolean;
 			"externalReferenceCode"?: string;
 			"id"?: number;
@@ -49,6 +50,11 @@
 			baseName: "deletionType",
 			name: "deletionType",
 			type: "'cascade' | 'disassociate' | 'prevent'",
+		},
+		{
+			baseName: "description",
+			name: "description",
+			type: "{[key: string]: string;}",
 		},
 		{
 			baseName: "edge",

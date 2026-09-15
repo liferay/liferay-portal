@@ -77,6 +77,28 @@ public class ObjectRelationship implements Cloneable, Serializable {
 
 	protected DeletionType deletionType;
 
+	public Map<String, String> getDescription() {
+		return description;
+	}
+
+	public void setDescription(Map<String, String> description) {
+		this.description = description;
+	}
+
+	public void setDescription(
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
+
+		try {
+			description = descriptionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, String> description;
+
 	public Boolean getEdge() {
 		return edge;
 	}
@@ -594,4 +616,4 @@ public class ObjectRelationship implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1089496627
+// LIFERAY-REST-BUILDER-HASH:1987733478

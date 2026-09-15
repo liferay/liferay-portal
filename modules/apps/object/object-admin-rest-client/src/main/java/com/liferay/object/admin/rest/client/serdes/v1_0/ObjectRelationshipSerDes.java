@@ -69,6 +69,16 @@ public class ObjectRelationshipSerDes {
 			sb.append("\"");
 		}
 
+		if (objectRelationship.getDescription() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"description\": ");
+
+			sb.append(_toJSON(objectRelationship.getDescription()));
+		}
+
 		if (objectRelationship.getEdge() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -337,6 +347,15 @@ public class ObjectRelationshipSerDes {
 				String.valueOf(objectRelationship.getDeletionType()));
 		}
 
+		if (objectRelationship.getDescription() == null) {
+			map.put("description", null);
+		}
+		else {
+			map.put(
+				"description",
+				String.valueOf(objectRelationship.getDescription()));
+		}
+
 		if (objectRelationship.getEdge() == null) {
 			map.put("edge", null);
 		}
@@ -529,6 +548,9 @@ public class ObjectRelationshipSerDes {
 			else if (Objects.equals(jsonParserFieldName, "deletionType")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "description")) {
+				return true;
+			}
 			else if (Objects.equals(jsonParserFieldName, "edge")) {
 				return false;
 			}
@@ -630,6 +652,12 @@ public class ObjectRelationshipSerDes {
 					objectRelationship.setDeletionType(
 						ObjectRelationship.DeletionType.create(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "description")) {
+				if (jsonParserFieldValue != null) {
+					objectRelationship.setDescription(
+						(Map<String, String>)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "edge")) {
@@ -857,4 +885,4 @@ public class ObjectRelationshipSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:500474718
+// LIFERAY-REST-BUILDER-HASH:539837164
