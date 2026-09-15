@@ -92,6 +92,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -786,15 +787,11 @@ public class LayoutSetPrototypePropagationTest
 							"enabled", true
 						).build())) {
 
-			propagateChanges(false, _layoutSetPrototype);
-
-			Assert.fail();
-		}
-		catch (IllegalStateException illegalStateException) {
-			Assert.assertEquals(
+			AssertUtils.assertFailure(
+				IllegalStateException.class,
 				"The site template merge cannot start while publications is " +
 					"enabled",
-				illegalStateException.getMessage());
+				() -> propagateChanges(false, _layoutSetPrototype));
 		}
 	}
 
