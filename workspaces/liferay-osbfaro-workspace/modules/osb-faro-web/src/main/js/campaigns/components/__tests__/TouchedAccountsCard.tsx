@@ -78,7 +78,7 @@ describe('TouchedAccountsCard', () => {
 		);
 	});
 
-	it('should render the four columns the design shows, unsorted', () => {
+	it('should render the four columns the design shows, all sortable', () => {
 		renderCard();
 
 		expect(getFields().map(({label}: any) => label)).toEqual([
@@ -88,7 +88,21 @@ describe('TouchedAccountsCard', () => {
 			'Closed Won',
 		]);
 
-		expect(getFields().every(({sortable}: any) => !sortable)).toBe(true);
+		expect(getFields().every(({sortable}: any) => sortable)).toBe(true);
+	});
+
+	it('should sort by account name ascending by default', () => {
+		renderCard();
+
+		expect(lastFDSProps.sorts).toEqual([
+			{
+				active: true,
+				default: true,
+				direction: 'asc',
+				key: 'accountName',
+				label: 'Name',
+			},
+		]);
 	});
 
 	it('should point the data set at the campaign accounts endpoint', () => {
@@ -188,10 +202,10 @@ describe('TouchedAccountsCard', () => {
 		expect(lastFDSProps.emptyState).toBeUndefined();
 	});
 
-	it('should not offer a search box, nor the bar holding it', () => {
+	it('should offer a search box and the bar holding it', () => {
 		renderCard();
 
-		expect(lastFDSProps.showSearch).toBe(false);
-		expect(lastFDSProps.showManagementBar).toBe(false);
+		expect(lastFDSProps.showSearch).not.toBe(false);
+		expect(lastFDSProps.showManagementBar).not.toBe(false);
 	});
 });

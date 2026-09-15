@@ -69,10 +69,24 @@ describe('CampaignsDataSet', () => {
 		]);
 	});
 
-	it('should leave the columns unsortable while the endpoint ignores sort', () => {
+	it('should make every column sortable', () => {
 		renderDataSet();
 
-		expect(getFields().every(({sortable}: any) => !sortable)).toBe(true);
+		expect(getFields().every(({sortable}: any) => sortable)).toBe(true);
+	});
+
+	it('should sort by campaign name ascending by default', () => {
+		renderDataSet();
+
+		expect(lastFDSProps.sorts).toEqual([
+			{
+				active: true,
+				default: true,
+				direction: 'asc',
+				key: 'campaignName',
+				label: 'Campaign Name',
+			},
+		]);
 	});
 
 	it('should paginate', () => {
@@ -81,11 +95,11 @@ describe('CampaignsDataSet', () => {
 		expect(lastFDSProps.showPagination).toBe(true);
 	});
 
-	it('should not offer a search box, nor the bar holding it', () => {
+	it('should offer a search box and the bar holding it', () => {
 		renderDataSet();
 
-		expect(lastFDSProps.showSearch).toBe(false);
-		expect(lastFDSProps.showManagementBar).toBe(false);
+		expect(lastFDSProps.showSearch).not.toBe(false);
+		expect(lastFDSProps.showManagementBar).not.toBe(false);
 	});
 
 	it('should link the campaign name at its detail screen', () => {
