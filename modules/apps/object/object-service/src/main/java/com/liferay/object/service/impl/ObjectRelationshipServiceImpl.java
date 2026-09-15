@@ -47,8 +47,9 @@ public class ObjectRelationshipServiceImpl
 	public ObjectRelationship addObjectRelationship(
 			String externalReferenceCode, long objectDefinitionId1,
 			long objectDefinitionId2, long parameterObjectFieldId,
-			String deletionType, boolean edge, Map<Locale, String> labelMap,
-			String name, boolean system, String type, ObjectField objectField)
+			String deletionType, Map<Locale, String> descriptionMap,
+			boolean edge, Map<Locale, String> labelMap, String name,
+			boolean system, String type, ObjectField objectField)
 		throws PortalException {
 
 		ObjectDefinition objectDefinition =
@@ -60,8 +61,8 @@ public class ObjectRelationshipServiceImpl
 
 		return objectRelationshipLocalService.addObjectRelationship(
 			externalReferenceCode, getUserId(), objectDefinitionId1,
-			objectDefinitionId2, parameterObjectFieldId, deletionType, edge,
-			labelMap, name, system, type, objectField);
+			objectDefinitionId2, parameterObjectFieldId, deletionType,
+			descriptionMap, edge, labelMap, name, system, type, objectField);
 	}
 
 	@Override
@@ -175,7 +176,8 @@ public class ObjectRelationshipServiceImpl
 	@Override
 	public ObjectRelationship updateObjectRelationship(
 			String externalReferenceCode, long objectRelationshipId,
-			long parameterObjectFieldId, String deletionType, boolean edge,
+			long parameterObjectFieldId, String deletionType,
+			Map<Locale, String> descriptionMap, boolean edge,
 			Map<Locale, String> labelMap, ObjectField objectField)
 		throws PortalException {
 
@@ -189,7 +191,7 @@ public class ObjectRelationshipServiceImpl
 
 		return objectRelationshipLocalService.updateObjectRelationship(
 			externalReferenceCode, objectRelationshipId, parameterObjectFieldId,
-			deletionType, edge, labelMap, objectField);
+			deletionType, descriptionMap, edge, labelMap, objectField);
 	}
 
 	private void _checkModelResourcePermission(
