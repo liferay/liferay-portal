@@ -66,8 +66,10 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 			_contactsEngineClient.getAccounts(
 				faroProject, channelId,
 				_getLifecycleStageFilterString(faroProject, lifecycleStage),
-				search, FaroPaginationUtil.getCur(pagination),
-				FaroPaginationUtil.getDelta(pagination), null);
+				true, search, rangeEnd, TimeRange.getRangeKey(rangeKey),
+				rangeStart, null, FaroPaginationUtil.getCur(pagination),
+				FaroPaginationUtil.getDelta(pagination),
+				FaroPaginationUtil.toSortString(sorts));
 
 		return Page.of(
 			transform(

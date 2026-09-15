@@ -6,8 +6,11 @@ dependencies {
 	compileOnly project(":modules:osb-faro-api")
 	compileOnly project(":modules:osb-faro-engine-client")
 	compileOnly project(":modules:osb-faro-rest-api")
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation group: "org.apache.logging.log4j", name: "log4j-api", version: "2.20.0"
+	testImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
 	testImplementation project(":modules:osb-faro-engine-client")
 	testImplementation project(":modules:osb-faro-rest-api")
 }

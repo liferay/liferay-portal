@@ -6,6 +6,8 @@
 package com.liferay.osb.faro.rest.internal.dto.v1_0.util;
 
 import com.liferay.osb.faro.engine.client.util.OrderByField;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -71,6 +73,23 @@ public class FaroPaginationUtil {
 		}
 
 		return orderByFields;
+	}
+
+	public static String toSortString(Sort[] sorts) {
+		if (ArrayUtil.isEmpty(sorts)) {
+			return null;
+		}
+
+		Sort sort = sorts[0];
+
+		String fieldName = sort.getFieldName();
+
+		if (fieldName == null) {
+			return null;
+		}
+
+		return StringBundler.concat(
+			fieldName, StringPool.COLON, sort.isReverse() ? "desc" : "asc");
 	}
 
 	private static final int _DEFAULT_CUR = 1;
