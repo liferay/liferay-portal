@@ -114,6 +114,7 @@ public class StaticSiteExporterTest {
 		Assert.assertFalse(staticSiteExportResources.isEmpty());
 
 		boolean bundleResource = false;
+		boolean generatedResource = false;
 		boolean stylesheet = false;
 
 		for (StaticSiteExportResource staticSiteExportResource :
@@ -131,12 +132,18 @@ public class StaticSiteExporterTest {
 				bundleResource = true;
 			}
 
+			if (url.contains("/layout-common-styles/")) {
+				generatedResource = true;
+			}
+
 			if (url.contains(".css")) {
 				stylesheet = true;
 			}
 		}
 
 		Assert.assertTrue(staticSiteExportResources.toString(), bundleResource);
+		Assert.assertTrue(
+			staticSiteExportResources.toString(), generatedResource);
 		Assert.assertTrue(staticSiteExportResources.toString(), stylesheet);
 
 		StaticSiteExportReport staticSiteExportReport =
@@ -147,21 +154,11 @@ public class StaticSiteExporterTest {
 
 		Assert.assertTrue(layoutFailures.toString(), layoutFailures.isEmpty());
 
-		for (StaticSiteExportReport.Failure failure :
-				staticSiteExportReport.getResourceFailures()) {
+		List<StaticSiteExportReport.Failure> resourceFailures =
+			staticSiteExportReport.getResourceFailures();
 
-			Assert.assertNotNull(failure.getMessage());
-
-			String url = failure.getURL();
-
-			Assert.assertTrue(url, url.startsWith(StringPool.SLASH));
-
-			for (StaticSiteExportResource staticSiteExportResource :
-					staticSiteExportResources) {
-
-				Assert.assertNotEquals(url, staticSiteExportResource.getURL());
-			}
-		}
+		Assert.assertTrue(
+			resourceFailures.toString(), resourceFailures.isEmpty());
 	}
 
 	private Group _group;
