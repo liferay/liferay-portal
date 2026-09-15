@@ -7,8 +7,6 @@ package com.liferay.source.formatter.dependencies.upgrade;
 
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Kyle Miho
  */
@@ -42,6 +40,22 @@ public class LPS_193462 {
 	}
 
 	public void method(
+		String externalReferenceCode, long userId, String className,
+		long classPK, String name, String description, String street1,
+		String street2, String street3, String city, String zip, long regionId,
+		long countryId, long listTypeId, boolean mailing, boolean primary,
+		String phoneNumber, ServiceContext serviceContext) {
+
+		AddressLocalServiceUtil.addAddress(
+			"test123", userId, className, classPK, name, description, street1,
+			street2, street3, city, zip, regionId, countryId, listTypeId,
+			mailing, primary, phoneNumber, serviceContext);
+		AddressLocalServiceUtil.addAddress(externalReferenceCode, userId, className, classPK, countryId, listTypeId, regionId, city, description, mailing, name, primary, street1, street2, street3, null, zip, phoneNumber, serviceContext);
+		_addressLocalService.addAddress(externalReferenceCode, userId, className, classPK, countryId, listTypeId, regionId, city, description, mailing, name, primary, street1, street2, street3, null, zip, phoneNumber, serviceContext);
+		_addressLocalServiceWrapper.addAddress(externalReferenceCode, userId, className, classPK, countryId, listTypeId, regionId, city, description, mailing, name, primary, street1, street2, street3, null, zip, phoneNumber, serviceContext);
+	}
+
+	public void method(
 		String className, long classPK, String street1, String street2,
 		String street3, String city, String zip, long regionId, long countryId,
 		long typeId, boolean mailing, boolean primary) {
@@ -54,14 +68,25 @@ public class LPS_193462 {
 		_addressServiceWrapper.addAddress(null, className, classPK, countryId, typeId, regionId, city, null, mailing, null, primary, street1, street2, street3, null, zip, null, ServiceContextThreadLocal.getServiceContext());
 	}
 
-	@Reference
+	public void method(
+		String externalReferenceCode, String className, long classPK,
+		String name, String description, String street1, String street2,
+		String street3, String city, String zip, long regionId, long countryId,
+		long listTypeId, boolean mailing, boolean primary, String phoneNumber,
+		ServiceContext serviceContext) {
+
+		AddressServiceUtil.addAddress(
+			"test123", className, classPK, name, description, street1, street2,
+			street3, city, zip, regionId, countryId, listTypeId, mailing,
+			primary, phoneNumber, serviceContext);
+		AddressServiceUtil.addAddress(externalReferenceCode, className, classPK, countryId, listTypeId, regionId, city, description, mailing, name, primary, street1, street2, street3, null, zip, phoneNumber, serviceContext);
+		_addressService.addAddress(externalReferenceCode, className, classPK, countryId, listTypeId, regionId, city, description, mailing, name, primary, street1, street2, street3, null, zip, phoneNumber, serviceContext);
+		_addressServiceWrapper.addAddress(externalReferenceCode, className, classPK, countryId, listTypeId, regionId, city, description, mailing, name, primary, street1, street2, street3, null, zip, phoneNumber, serviceContext);
+	}
+
 	private AddressLocalService _addressLocalService;
-
 	private AddressLocalServiceWrapper _addressLocalServiceWrapper;
-
-	@Reference
 	private AddressService _addressService;
-
 	private AddressServiceWrapper _addressServiceWrapper;
 
 }
