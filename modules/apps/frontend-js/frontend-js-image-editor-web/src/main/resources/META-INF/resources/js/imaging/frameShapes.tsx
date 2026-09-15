@@ -5,20 +5,7 @@
 
 import React from 'react';
 
-import {CropRect, Frame, FrameKind} from '../state/types';
-
-export const FRAME_KINDS: FrameKind[] = [
-	'none',
-	'mat',
-	'bevel',
-	'line',
-	'double',
-	'dashed',
-	'ticks',
-	'corners',
-	'inset',
-	'polaroid',
-];
+import {CropRect, Frame} from '../state/types';
 
 function metrics(crop: CropRect, frame: Frame) {
 	const unit = Math.min(crop.width, crop.height) / 100;

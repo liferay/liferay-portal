@@ -8,10 +8,10 @@ import '@testing-library/jest-dom';
 import {
 	ADJUSTMENT_KEYS,
 	FILTER_PRESETS,
+	FRAME_KINDS,
 	RATIO_PRESETS,
 	resolveConfig,
 } from '../src/main/resources/META-INF/resources/js/editorConfig';
-import {FRAME_KINDS} from '../src/main/resources/META-INF/resources/js/imaging/frameShapes';
 
 describe('resolveConfig', () => {
 	it('exposes every adjustment slider by default', () => {

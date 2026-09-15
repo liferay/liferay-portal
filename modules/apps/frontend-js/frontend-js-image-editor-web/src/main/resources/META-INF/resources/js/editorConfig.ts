@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FRAME_KINDS} from './imaging/frameShapes';
 import {
 	AdjustmentKey,
 	FilterPreset,
@@ -40,6 +39,19 @@ export const FILTER_PRESETS: FilterPreset[] = [
 	'posterize',
 	'solarize',
 	'invert',
+];
+
+export const FRAME_KINDS: FrameKind[] = [
+	'none',
+	'mat',
+	'bevel',
+	'line',
+	'double',
+	'dashed',
+	'ticks',
+	'corners',
+	'inset',
+	'polaroid',
 ];
 
 export const RATIO_PRESETS: RatioPreset[] = [

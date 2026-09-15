@@ -14,9 +14,9 @@ import {EditorInstanceProvider} from '../../src/main/resources/META-INF/resource
 import {
 	ADJUSTMENT_KEYS,
 	FILTER_PRESETS,
+	FRAME_KINDS,
 	RATIO_PRESETS,
 } from '../../src/main/resources/META-INF/resources/js/editorConfig';
-import {FRAME_KINDS} from '../../src/main/resources/META-INF/resources/js/imaging/frameShapes';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {AdjustPanel} from '../../src/main/resources/META-INF/resources/js/panels/AdjustPanel';
 import {CropPanel} from '../../src/main/resources/META-INF/resources/js/panels/CropPanel';
