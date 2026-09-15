@@ -5,6 +5,7 @@
 
 import {v4 as uuidv4} from 'uuid';
 
+import {Filter, FilterType} from './elementVariationFilters';
 import {EditableElementOption} from './getEditableElementOptions';
 
 export interface ElementVariation {
@@ -26,6 +27,7 @@ export interface State {
 	editableElementOptions: EditableElementOption[] | null;
 	elementVariations: ElementVariation[];
 	experienceKey: string;
+	filters: Filter[];
 	highlightedTargetElement: string | null;
 	languageId: string;
 }
@@ -35,6 +37,8 @@ export type Action =
 			draftElementVariation: ElementVariation;
 			type: 'CREATE_ELEMENT_VARIATION_DRAFT';
 	  }
+	| {filter: Filter; type: 'ADD_FILTER'}
+	| {filterType: FilterType; type: 'DELETE_FILTER'}
 	| {key: string; type: 'DELETE_ELEMENT_VARIATION'}
 	| {key: string; type: 'EDIT_ELEMENT_VARIATION'}
 	| {
@@ -52,7 +56,12 @@ export type Action =
 			properties: Partial<ElementVariation>;
 			type: 'UPDATE_ELEMENT_VARIATION_DRAFT';
 	  }
-	| {type: 'CANCEL_ELEMENT_VARIATION_DRAFT' | 'SAVE_ELEMENT_VARIATION_DRAFT'};
+	| {
+			type:
+				| 'CANCEL_ELEMENT_VARIATION_DRAFT'
+				| 'CLEAR_FILTERS'
+				| 'SAVE_ELEMENT_VARIATION_DRAFT';
+	  };
 
 export function createElementVariation(
 	segmentsExperienceERC: string
@@ -108,6 +117,7 @@ export function createInitialState({
 			selectedExperience?.segmentsExperienceERC ??
 			experiences[0]?.segmentsExperienceERC ??
 			'',
+		filters: [],
 		highlightedTargetElement: null,
 		languageId: defaultLanguageId,
 	};
@@ -115,6 +125,28 @@ export function createInitialState({
 
 export function reducer(state: State, action: Action): State {
 	switch (action.type) {
+		case 'ADD_FILTER':
+			return {
+				...state,
+				filters: [
+					...state.filters.filter(
+						(filter) => filter.type !== action.filter.type
+					),
+					action.filter,
+				],
+			};
+
+		case 'CLEAR_FILTERS':
+			return {...state, filters: []};
+
+		case 'DELETE_FILTER':
+			return {
+				...state,
+				filters: state.filters.filter(
+					(filter) => filter.type !== action.filterType
+				),
+			};
+
 		case 'CANCEL_ELEMENT_VARIATION_DRAFT':
 			return {
 				...state,
