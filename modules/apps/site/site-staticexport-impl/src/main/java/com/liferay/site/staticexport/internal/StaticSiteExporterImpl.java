@@ -44,6 +44,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -85,6 +87,11 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		catch (Exception exception) {
 			throw new PortalException(exception);
 		}
+	}
+
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_bundleContext = bundleContext;
 	}
 
 	private List<StaticSiteExportLayout> _exportStaticSiteExportLayouts(
@@ -152,7 +159,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		StaticSiteExportResourceFetcher staticSiteExportResourceFetcher =
 			new StaticSiteExportResourceFetcher(
 				httpServletRequest, new DummyHttpServletResponse(),
-				ServletContextPool.get(_portal.getServletContextName()));
+				ServletContextPool.get(_portal.getServletContextName()),
+				new StaticSiteExportBundleResourceResolver(_bundleContext));
 
 		for (String url : urls) {
 			File file = null;
@@ -219,6 +227,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		StaticSiteExporterImpl.class);
+
+	private BundleContext _bundleContext;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;

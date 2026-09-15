@@ -31,16 +31,25 @@ public class StaticSiteExportResourceFetcher {
 
 	public StaticSiteExportResourceFetcher(
 		HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse,
-		ServletContext servletContext) {
+		HttpServletResponse httpServletResponse, ServletContext servletContext,
+		StaticSiteExportBundleResourceResolver
+			staticSiteExportBundleResourceResolver) {
 
 		_httpServletRequest = httpServletRequest;
 		_httpServletResponse = httpServletResponse;
 		_servletContext = servletContext;
+		_staticSiteExportBundleResourceResolver =
+			staticSiteExportBundleResourceResolver;
 	}
 
 	public File fetch(String url) throws Exception {
 		String path = HttpComponentsUtil.getPath(url);
+
+		File file = _staticSiteExportBundleResourceResolver.resolve(path);
+
+		if (file != null) {
+			return file;
+		}
 
 		ServletContext servletContext = _servletContext;
 
@@ -77,7 +86,7 @@ public class StaticSiteExportResourceFetcher {
 				httpServletRequest, queryString, false);
 		}
 
-		File file = FileUtil.createTempFile();
+		file = FileUtil.createTempFile();
 
 		try (OutputStream outputStream = new FileOutputStream(file)) {
 			requestDispatcher.include(
@@ -99,6 +108,8 @@ public class StaticSiteExportResourceFetcher {
 	private final HttpServletRequest _httpServletRequest;
 	private final HttpServletResponse _httpServletResponse;
 	private final ServletContext _servletContext;
+	private final StaticSiteExportBundleResourceResolver
+		_staticSiteExportBundleResourceResolver;
 
 	private static class PathHttpServletRequestWrapper
 		extends HttpServletRequestWrapper {
