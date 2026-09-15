@@ -1018,7 +1018,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/pages":
         get:
             description:
-                "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
+                "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
             operationId: getWorkspaceGroupChannelPagesPage
             parameters:
                 -   in: path
@@ -1038,8 +1038,20 @@ paths:
                         type: string
                 -   in: query
                     description:
+                        "Identifier of an account. When set, narrow the metrics to activity from the individuals in that account."
+                    name: accountId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
                         "Optional data source id to scope results to a single data source."
                     name: dataSourceId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Identifier of an individual. When set, narrow the metrics to activity from that individual."
+                    name: individualId
                     schema:
                         type: string
                 -   in: query
@@ -1078,6 +1090,12 @@ paths:
                     description:
                         "Free-text keyword search across page titles and URLs."
                     name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Identifier of a segment. When set, narrow the metrics to activity from the individuals in that segment."
+                    name: segmentId
                     schema:
                         type: string
                 -   in: query
