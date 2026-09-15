@@ -61,21 +61,6 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 	@Test
 	public void testOnBeforeCreate() throws Exception {
 
-		// Every level below a restricted ancestor
-
-		_assertRestrictFieldsFailure("actions,actions.get", "actions.get");
-		_assertRestrictFieldsFailure(
-			"actions,actions.get.method", "actions.get.method");
-		_assertRestrictFieldsFailure(
-			"actions.get.method,actions", "actions.get.method");
-
-		// Blank names and surrounding whitespace never reach Vulcan intact
-
-		_assertBlankRestrictFieldFailure("actions,,description", "");
-		_assertBlankRestrictFieldFailure(
-			"actions, description", " description");
-		_assertBlankRestrictFieldFailure("actions ,description", "actions ");
-
 		// A translator splitting on dots needs every segment to be a name
 
 		_assertMalformedRestrictFieldFailure(
@@ -89,6 +74,33 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 		_assertMalformedRestrictFieldFailure(
 			"actions;get,description", "actions;get");
 
+		// Blank names and surrounding whitespace never reach Vulcan intact
+
+		_assertBlankRestrictFieldFailure("actions,,description", "");
+		_assertBlankRestrictFieldFailure(
+			"actions, description", " description");
+		_assertBlankRestrictFieldFailure("actions ,description", "actions ");
+
+		// Every level below a restricted ancestor
+
+		_assertRestrictFieldsFailure("actions,actions.get", "actions.get");
+		_assertRestrictFieldsFailure(
+			"actions,actions.get.method", "actions.get.method");
+		_assertRestrictFieldsFailure(
+			"actions.get.method,actions", "actions.get.method");
+
+		// Fields outside of the restricted subtree
+
+		_addMCPServerProfileToolObjectEntry(
+			"actions,actionsCount,creator.id,description");
+
+		// Relationship alias keys are valid names
+
+		MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
+			_mcpServerProfileExternalReferenceCode,
+			"r_universityStudents_c_university.budget,name_i18n",
+			"postMCPServerProfile", "mcp-server-profiles");
+
 		// The same field twice is not a canonical value
 
 		AssertUtils.assertFailure(
@@ -97,22 +109,6 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 				"field \"actions\" more than once",
 			() -> _addMCPServerProfileToolObjectEntry(
 				"actions,description,actions"));
-
-		// Fields outside of the restricted subtree
-
-		_addMCPServerProfileToolObjectEntry(
-			"actions,actionsCount,creator.id,description");
-
-		// The same tool twice in one profile, whatever it restricts
-
-		AssertUtils.assertFailure(
-			ModelListenerException.class,
-			StringBundler.concat(
-				"jakarta.validation.ValidationException: Unable to add tool ",
-				"\"getMCPServerProfilesPage\" from tool set ",
-				"\"mcp-server-profiles\" to MCP server profile \"",
-				_mcpServerProfileExternalReferenceCode, "\" more than once"),
-			() -> _addMCPServerProfileToolObjectEntry("description"));
 
 		// The same tool in another profile
 
@@ -124,12 +120,16 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 			mcpServerProfileObjectEntry.getExternalReferenceCode(), null,
 			"getMCPServerProfilesPage", "mcp-server-profiles");
 
-		// Relationship alias keys are valid names
+		// The same tool twice in one profile, whatever it restricts
 
-		MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
-			_mcpServerProfileExternalReferenceCode,
-			"r_universityStudents_c_university.budget,name_i18n",
-			"postMCPServerProfile", "mcp-server-profiles");
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			StringBundler.concat(
+				"jakarta.validation.ValidationException: Unable to add tool ",
+				"\"getMCPServerProfilesPage\" from tool set ",
+				"\"mcp-server-profiles\" to MCP server profile \"",
+				_mcpServerProfileExternalReferenceCode, "\" more than once"),
+			() -> _addMCPServerProfileToolObjectEntry("description"));
 	}
 
 	@Test
