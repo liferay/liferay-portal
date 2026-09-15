@@ -18,8 +18,10 @@ import com.liferay.portal.kernel.model.LayoutBranch;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutBranchService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutBranchServiceUtil {
 
 	/*
@@ -71,4 +73,4 @@ public class LayoutBranchServiceUtil {
 	private static volatile LayoutBranchService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1757820789
+// LIFERAY-SERVICE-BUILDER-HASH:-1064885691

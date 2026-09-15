@@ -10,8 +10,10 @@ package com.liferay.portal.kernel.service;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutBranchService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutBranchServiceWrapper
 	implements LayoutBranchService, ServiceWrapper<LayoutBranchService> {
 
@@ -75,4 +77,4 @@ public class LayoutBranchServiceWrapper
 	private LayoutBranchService _layoutBranchService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-374372800
+// LIFERAY-SERVICE-BUILDER-HASH:1062426480

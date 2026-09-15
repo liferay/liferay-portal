@@ -25,8 +25,10 @@ import java.util.Set;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutBranchPersistence
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutBranchUtil {
 
 	/*
@@ -784,4 +786,4 @@ public class LayoutBranchUtil {
 	private static volatile LayoutBranchPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1956177069
+// LIFERAY-SERVICE-BUILDER-HASH:-185106051

@@ -18,8 +18,10 @@ import com.liferay.portal.kernel.service.LayoutBranchLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @see LayoutBranchImpl
  * @see LayoutBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public abstract class LayoutBranchBaseImpl
 	extends LayoutBranchModelImpl implements LayoutBranch {
 
@@ -39,4 +41,4 @@ public abstract class LayoutBranchBaseImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-37395395
+// LIFERAY-SERVICE-BUILDER-HASH:587733261

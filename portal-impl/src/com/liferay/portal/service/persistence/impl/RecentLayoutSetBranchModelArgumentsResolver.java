@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * The arguments resolver class for retrieving value from RecentLayoutSetBranch.
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
 @OSGiBeanProperties(
@@ -122,4 +123,4 @@ public class RecentLayoutSetBranchModelArgumentsResolver
 		new ConcurrentHashMap<>();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-963799947
+// LIFERAY-SERVICE-BUILDER-HASH:-1759084068

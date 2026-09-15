@@ -19,8 +19,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutBranchUtil
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ProviderType
 public interface LayoutBranchPersistence extends BasePersistence<LayoutBranch> {
 
@@ -618,4 +620,4 @@ public interface LayoutBranchPersistence extends BasePersistence<LayoutBranch> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-659076162
+// LIFERAY-SERVICE-BUILDER-HASH:386074766

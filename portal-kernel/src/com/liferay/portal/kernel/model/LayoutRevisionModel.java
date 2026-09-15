@@ -23,8 +23,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevision
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ProviderType
 public interface LayoutRevisionModel
 	extends BaseModel<LayoutRevision>, GroupedModel, LocalizedModel, MVCCModel,
@@ -1052,4 +1054,4 @@ public interface LayoutRevisionModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1198965559
+// LIFERAY-SERVICE-BUILDER-HASH:898194439

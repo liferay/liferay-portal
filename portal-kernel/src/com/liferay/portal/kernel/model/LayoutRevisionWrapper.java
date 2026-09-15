@@ -18,8 +18,10 @@ import java.util.Map;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevision
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutRevisionWrapper
 	extends BaseModelWrapper<LayoutRevision>
 	implements LayoutRevision, ModelWrapper<LayoutRevision> {
@@ -1780,4 +1782,4 @@ public class LayoutRevisionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-450767589
+// LIFERAY-SERVICE-BUILDER-HASH:-1190381589

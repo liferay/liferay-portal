@@ -18,8 +18,10 @@ import java.util.Map;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutSetBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutSetBranchWrapper
 	extends BaseModelWrapper<LayoutSetBranch>
 	implements LayoutSetBranch, ModelWrapper<LayoutSetBranch> {
@@ -715,4 +717,4 @@ public class LayoutSetBranchWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:248750019
+// LIFERAY-SERVICE-BUILDER-HASH:-39543053

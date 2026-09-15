@@ -22,8 +22,10 @@ import java.util.Date;
  * The cache model class for representing LayoutSetBranch in entity cache.
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutSetBranchCacheModel
 	implements CacheModel<LayoutSetBranch>, Externalizable, MVCCModel {
 
@@ -342,4 +344,4 @@ public class LayoutSetBranchCacheModel
 	public boolean layoutSetPrototypeLinkEnabled;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2143176102
+// LIFERAY-SERVICE-BUILDER-HASH:-262052746

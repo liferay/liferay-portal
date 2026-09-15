@@ -41,8 +41,10 @@ import java.util.Map;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class RecentLayoutSetBranchPersistenceImpl
 	extends BasePersistenceImpl
 		<RecentLayoutSetBranch, NoSuchRecentLayoutSetBranchException>
@@ -708,4 +710,4 @@ public class RecentLayoutSetBranchPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1259900893
+// LIFERAY-SERVICE-BUILDER-HASH:1283265395

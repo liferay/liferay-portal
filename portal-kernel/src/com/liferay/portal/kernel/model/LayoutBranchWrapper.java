@@ -17,8 +17,10 @@ import java.util.Map;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutBranchWrapper
 	extends BaseModelWrapper<LayoutBranch>
 	implements LayoutBranch, ModelWrapper<LayoutBranch> {
@@ -406,4 +408,4 @@ public class LayoutBranchWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-708160262
+// LIFERAY-SERVICE-BUILDER-HASH:1027429418

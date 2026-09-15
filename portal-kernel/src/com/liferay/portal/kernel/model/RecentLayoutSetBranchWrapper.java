@@ -17,8 +17,10 @@ import java.util.Map;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutSetBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class RecentLayoutSetBranchWrapper
 	extends BaseModelWrapper<RecentLayoutSetBranch>
 	implements ModelWrapper<RecentLayoutSetBranch>, RecentLayoutSetBranch {
@@ -293,4 +295,4 @@ public class RecentLayoutSetBranchWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:157807003
+// LIFERAY-SERVICE-BUILDER-HASH:-1438507925

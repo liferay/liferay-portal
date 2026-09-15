@@ -47,8 +47,10 @@ import java.util.function.Function;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutSetBranchImpl
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class RecentLayoutSetBranchModelImpl
 	extends BaseModelImpl<RecentLayoutSetBranch>
 	implements RecentLayoutSetBranchModel {
@@ -797,4 +799,4 @@ public class RecentLayoutSetBranchModelImpl
 	private RecentLayoutSetBranch _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1369876766
+// LIFERAY-SERVICE-BUILDER-HASH:-906053198

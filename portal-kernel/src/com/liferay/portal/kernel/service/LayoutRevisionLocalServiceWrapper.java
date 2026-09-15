@@ -12,8 +12,10 @@ import com.liferay.portal.kernel.service.persistence.BasePersistence;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionLocalService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutRevisionLocalServiceWrapper
 	implements LayoutRevisionLocalService,
 			   ServiceWrapper<LayoutRevisionLocalService> {
@@ -586,4 +588,4 @@ public class LayoutRevisionLocalServiceWrapper
 	private LayoutRevisionLocalService _layoutRevisionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1743254461
+// LIFERAY-SERVICE-BUILDER-HASH:1331129619

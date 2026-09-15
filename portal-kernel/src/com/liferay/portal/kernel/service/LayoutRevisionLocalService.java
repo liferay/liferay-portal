@@ -38,8 +38,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionLocalServiceUtil
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @OSGiBeanProperties(
 	property = {
 		"model.class.name=com.liferay.portal.kernel.model.LayoutRevision"
@@ -379,4 +381,4 @@ public interface LayoutRevisionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:752804316
+// LIFERAY-SERVICE-BUILDER-HASH:-476905312

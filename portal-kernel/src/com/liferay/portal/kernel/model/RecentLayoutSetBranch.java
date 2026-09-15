@@ -15,8 +15,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutSetBranchModel
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ImplementationClassName(
 	"com.liferay.portal.model.impl.RecentLayoutSetBranchImpl"
 )
@@ -51,4 +53,4 @@ public interface RecentLayoutSetBranch
 			};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:48959793
+// LIFERAY-SERVICE-BUILDER-HASH:-715234207

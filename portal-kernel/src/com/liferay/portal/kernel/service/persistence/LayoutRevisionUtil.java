@@ -25,8 +25,10 @@ import java.util.Set;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionPersistence
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutRevisionUtil {
 
 	/*
@@ -1974,4 +1976,4 @@ public class LayoutRevisionUtil {
 	private static volatile LayoutRevisionPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2069689786
+// LIFERAY-SERVICE-BUILDER-HASH:-1861992682

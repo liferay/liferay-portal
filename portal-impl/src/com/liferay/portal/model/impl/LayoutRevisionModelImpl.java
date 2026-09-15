@@ -57,8 +57,10 @@ import java.util.function.Function;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionImpl
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @JSON(strict = true)
 public class LayoutRevisionModelImpl
 	extends BaseModelImpl<LayoutRevision> implements LayoutRevisionModel {
@@ -2372,4 +2374,4 @@ public class LayoutRevisionModelImpl
 	private LayoutRevision _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1649651146
+// LIFERAY-SERVICE-BUILDER-HASH:733464934

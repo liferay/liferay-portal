@@ -32,8 +32,10 @@ import javax.sql.DataSource;
  *
  * @author Brian Wing Shun Chan
  * @see com.liferay.portal.service.impl.LayoutRevisionServiceImpl
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public abstract class LayoutRevisionServiceBaseImpl
 	extends BaseServiceImpl
 	implements IdentifiableOSGiService, LayoutRevisionService {
@@ -207,4 +209,4 @@ public abstract class LayoutRevisionServiceBaseImpl
 		LayoutRevisionServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1303793835
+// LIFERAY-SERVICE-BUILDER-HASH:-1150811515

@@ -36,8 +36,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutBranchLocalServiceUtil
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @OSGiBeanProperties(
 	property = {
 		"model.class.name=com.liferay.portal.kernel.model.RecentLayoutBranch"
@@ -280,4 +282,4 @@ public interface RecentLayoutBranchLocalService
 		RecentLayoutBranch recentLayoutBranch);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1570576710
+// LIFERAY-SERVICE-BUILDER-HASH:112124682

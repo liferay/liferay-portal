@@ -26,8 +26,10 @@ import java.util.List;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutSetBranchLocalService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutSetBranchLocalServiceUtil {
 
 	/*
@@ -409,4 +411,4 @@ public class LayoutSetBranchLocalServiceUtil {
 	private static volatile LayoutSetBranchLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1676756133
+// LIFERAY-SERVICE-BUILDER-HASH:825448309

@@ -19,8 +19,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutSetBranchUtil
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ProviderType
 public interface RecentLayoutSetBranchPersistence
 	extends BasePersistence<RecentLayoutSetBranch> {
@@ -472,4 +474,4 @@ public interface RecentLayoutSetBranchPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:792638657
+// LIFERAY-SERVICE-BUILDER-HASH:-1383382543

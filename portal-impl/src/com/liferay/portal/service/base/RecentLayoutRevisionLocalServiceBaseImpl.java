@@ -50,8 +50,10 @@ import javax.sql.DataSource;
  *
  * @author Brian Wing Shun Chan
  * @see com.liferay.portal.service.impl.RecentLayoutRevisionLocalServiceImpl
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public abstract class RecentLayoutRevisionLocalServiceBaseImpl
 	extends BaseLocalServiceImpl
 	implements IdentifiableOSGiService, RecentLayoutRevisionLocalService {
@@ -534,4 +536,4 @@ public abstract class RecentLayoutRevisionLocalServiceBaseImpl
 		RecentLayoutRevisionLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2016782259
+// LIFERAY-SERVICE-BUILDER-HASH:-860020509

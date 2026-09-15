@@ -16,8 +16,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutSetBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ProviderType
 public interface RecentLayoutSetBranchModel
 	extends BaseModel<RecentLayoutSetBranch>, MVCCModel, ShardedModel {
@@ -166,4 +168,4 @@ public interface RecentLayoutSetBranchModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1067131064
+// LIFERAY-SERVICE-BUILDER-HASH:1372443016

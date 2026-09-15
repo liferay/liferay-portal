@@ -22,9 +22,11 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutBranchServiceUtil
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
 @AccessControlled
+@Deprecated
 @JSONWebService
 @ProviderType
 @Transactional(
@@ -58,4 +60,4 @@ public interface LayoutBranchService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-155077998
+// LIFERAY-SERVICE-BUILDER-HASH:-2004880298

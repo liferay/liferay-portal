@@ -20,8 +20,10 @@ import java.util.List;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutSetBranchService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutSetBranchServiceUtil {
 
 	/*
@@ -98,4 +100,4 @@ public class LayoutSetBranchServiceUtil {
 	private static volatile LayoutSetBranchService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:133866713
+// LIFERAY-SERVICE-BUILDER-HASH:-136894551

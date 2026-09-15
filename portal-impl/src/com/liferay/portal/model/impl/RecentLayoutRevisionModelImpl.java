@@ -47,8 +47,10 @@ import java.util.function.Function;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutRevisionImpl
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class RecentLayoutRevisionModelImpl
 	extends BaseModelImpl<RecentLayoutRevision>
 	implements RecentLayoutRevisionModel {
@@ -839,4 +841,4 @@ public class RecentLayoutRevisionModelImpl
 	private RecentLayoutRevision _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-684598282
+// LIFERAY-SERVICE-BUILDER-HASH:-1264871130

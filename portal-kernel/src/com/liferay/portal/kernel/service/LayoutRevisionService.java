@@ -22,9 +22,11 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionServiceUtil
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
 @AccessControlled
+@Deprecated
 @JSONWebService
 @ProviderType
 @Transactional(
@@ -56,4 +58,4 @@ public interface LayoutRevisionService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:874630443
+// LIFERAY-SERVICE-BUILDER-HASH:1152236263

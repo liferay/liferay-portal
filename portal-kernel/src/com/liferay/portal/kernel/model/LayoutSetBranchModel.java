@@ -20,8 +20,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutSetBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ProviderType
 public interface LayoutSetBranchModel
 	extends BaseModel<LayoutSetBranch>, GroupedModel, MVCCModel, ShardedModel {
@@ -380,4 +382,4 @@ public interface LayoutSetBranchModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1873620889
+// LIFERAY-SERVICE-BUILDER-HASH:1316058935

@@ -20,8 +20,10 @@ import java.io.ObjectOutput;
  * The cache model class for representing RecentLayoutSetBranch in entity cache.
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class RecentLayoutSetBranchCacheModel
 	implements CacheModel<RecentLayoutSetBranch>, Externalizable, MVCCModel {
 
@@ -150,4 +152,4 @@ public class RecentLayoutSetBranchCacheModel
 	public long layoutSetId;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-700948213
+// LIFERAY-SERVICE-BUILDER-HASH:936098779

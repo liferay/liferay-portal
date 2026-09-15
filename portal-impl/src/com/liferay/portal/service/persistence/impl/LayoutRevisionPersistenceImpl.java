@@ -44,8 +44,10 @@ import java.util.Map;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutRevisionPersistenceImpl
 	extends BasePersistenceImpl<LayoutRevision, NoSuchLayoutRevisionException>
 	implements LayoutRevisionPersistence {
@@ -2031,4 +2033,4 @@ public class LayoutRevisionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1267992542
+// LIFERAY-SERVICE-BUILDER-HASH:-1323067694

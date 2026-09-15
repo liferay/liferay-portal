@@ -18,8 +18,10 @@ import com.liferay.portal.kernel.service.LayoutRevisionLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionImpl
  * @see LayoutRevision
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public abstract class LayoutRevisionBaseImpl
 	extends LayoutRevisionModelImpl implements LayoutRevision {
 
@@ -39,4 +41,4 @@ public abstract class LayoutRevisionBaseImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1555918653
+// LIFERAY-SERVICE-BUILDER-HASH:-1753841139

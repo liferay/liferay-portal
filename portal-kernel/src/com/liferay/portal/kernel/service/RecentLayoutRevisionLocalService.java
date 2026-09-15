@@ -36,8 +36,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutRevisionLocalServiceUtil
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @OSGiBeanProperties(
 	property = {
 		"model.class.name=com.liferay.portal.kernel.model.RecentLayoutRevision"
@@ -283,4 +285,4 @@ public interface RecentLayoutRevisionLocalService
 		RecentLayoutRevision recentLayoutRevision);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1498413937
+// LIFERAY-SERVICE-BUILDER-HASH:877363283

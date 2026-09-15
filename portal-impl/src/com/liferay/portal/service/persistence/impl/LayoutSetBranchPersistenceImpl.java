@@ -47,8 +47,10 @@ import java.util.Set;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutSetBranchPersistenceImpl
 	extends BasePersistenceImpl<LayoutSetBranch, NoSuchLayoutSetBranchException>
 	implements LayoutSetBranchPersistence {
@@ -914,4 +916,4 @@ public class LayoutSetBranchPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1751758748
+// LIFERAY-SERVICE-BUILDER-HASH:1068826188

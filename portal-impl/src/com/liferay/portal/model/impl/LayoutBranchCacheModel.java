@@ -20,8 +20,10 @@ import java.io.ObjectOutput;
  * The cache model class for representing LayoutBranch in entity cache.
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutBranchCacheModel
 	implements CacheModel<LayoutBranch>, Externalizable, MVCCModel {
 
@@ -211,4 +213,4 @@ public class LayoutBranchCacheModel
 	public boolean master;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-408608773
+// LIFERAY-SERVICE-BUILDER-HASH:-1164657973

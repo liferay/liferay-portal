@@ -10,8 +10,10 @@ package com.liferay.portal.kernel.service;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutSetBranchService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutSetBranchServiceWrapper
 	implements LayoutSetBranchService, ServiceWrapper<LayoutSetBranchService> {
 
@@ -109,4 +111,4 @@ public class LayoutSetBranchServiceWrapper
 	private LayoutSetBranchService _layoutSetBranchService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-587381287
+// LIFERAY-SERVICE-BUILDER-HASH:246094601

@@ -18,8 +18,10 @@ import com.liferay.portal.kernel.service.LayoutSetBranchLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @see LayoutSetBranchImpl
  * @see LayoutSetBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public abstract class LayoutSetBranchBaseImpl
 	extends LayoutSetBranchModelImpl implements LayoutSetBranch {
 
@@ -39,4 +41,4 @@ public abstract class LayoutSetBranchBaseImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-892014895
+// LIFERAY-SERVICE-BUILDER-HASH:617666465

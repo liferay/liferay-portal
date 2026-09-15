@@ -15,8 +15,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionModel
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ImplementationClassName("com.liferay.portal.model.impl.LayoutRevisionImpl")
 @ProviderType
 public interface LayoutRevision extends LayoutRevisionModel, PersistedModel {
@@ -105,4 +107,4 @@ public interface LayoutRevision extends LayoutRevisionModel, PersistedModel {
 			typeSettingsUnicodeProperties);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2101823749
+// LIFERAY-SERVICE-BUILDER-HASH:-343087573

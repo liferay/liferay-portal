@@ -48,8 +48,10 @@ import java.util.function.Function;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutSetBranchImpl
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @JSON(strict = true)
 public class LayoutSetBranchModelImpl
 	extends BaseModelImpl<LayoutSetBranch> implements LayoutSetBranchModel {
@@ -1307,4 +1309,4 @@ public class LayoutSetBranchModelImpl
 	private LayoutSetBranch _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-713039634
+// LIFERAY-SERVICE-BUILDER-HASH:-1853393378

@@ -20,8 +20,10 @@ import java.io.ObjectOutput;
  * The cache model class for representing RecentLayoutBranch in entity cache.
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class RecentLayoutBranchCacheModel
 	implements CacheModel<RecentLayoutBranch>, Externalizable, MVCCModel {
 
@@ -157,4 +159,4 @@ public class RecentLayoutBranchCacheModel
 	public long plid;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-686483985
+// LIFERAY-SERVICE-BUILDER-HASH:1898308895

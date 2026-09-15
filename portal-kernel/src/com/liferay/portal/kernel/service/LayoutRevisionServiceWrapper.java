@@ -10,8 +10,10 @@ package com.liferay.portal.kernel.service;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutRevisionService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutRevisionServiceWrapper
 	implements LayoutRevisionService, ServiceWrapper<LayoutRevisionService> {
 
@@ -68,4 +70,4 @@ public class LayoutRevisionServiceWrapper
 	private LayoutRevisionService _layoutRevisionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1461624
+// LIFERAY-SERVICE-BUILDER-HASH:-1664871768

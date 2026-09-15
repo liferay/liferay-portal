@@ -37,8 +37,10 @@ import com.liferay.portal.kernel.util.MethodKey;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class LayoutRevisionServiceHttp {
 
 	public static com.liferay.portal.kernel.model.LayoutRevision
@@ -107,4 +109,4 @@ public class LayoutRevisionServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1063065889
+// LIFERAY-SERVICE-BUILDER-HASH:83445233

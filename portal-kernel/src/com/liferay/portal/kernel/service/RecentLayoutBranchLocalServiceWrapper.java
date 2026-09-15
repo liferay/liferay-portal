@@ -12,8 +12,10 @@ import com.liferay.portal.kernel.service.persistence.BasePersistence;
  *
  * @author Brian Wing Shun Chan
  * @see RecentLayoutBranchLocalService
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public class RecentLayoutBranchLocalServiceWrapper
 	implements RecentLayoutBranchLocalService,
 			   ServiceWrapper<RecentLayoutBranchLocalService> {
@@ -389,4 +391,4 @@ public class RecentLayoutBranchLocalServiceWrapper
 	private RecentLayoutBranchLocalService _recentLayoutBranchLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1691548772
+// LIFERAY-SERVICE-BUILDER-HASH:-811876044

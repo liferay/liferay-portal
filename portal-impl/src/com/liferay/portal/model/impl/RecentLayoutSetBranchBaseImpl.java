@@ -18,8 +18,10 @@ import com.liferay.portal.kernel.service.RecentLayoutSetBranchLocalServiceUtil;
  * @author Brian Wing Shun Chan
  * @see RecentLayoutSetBranchImpl
  * @see RecentLayoutSetBranch
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 public abstract class RecentLayoutSetBranchBaseImpl
 	extends RecentLayoutSetBranchModelImpl implements RecentLayoutSetBranch {
 
@@ -41,4 +43,4 @@ public abstract class RecentLayoutSetBranchBaseImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1598829233
+// LIFERAY-SERVICE-BUILDER-HASH:1723780223

@@ -15,8 +15,10 @@ import org.osgi.annotation.versioning.ProviderType;
  *
  * @author Brian Wing Shun Chan
  * @see LayoutBranchModel
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  * @generated
  */
+@Deprecated
 @ImplementationClassName("com.liferay.portal.model.impl.LayoutBranchImpl")
 @ProviderType
 public interface LayoutBranch extends LayoutBranchModel, PersistedModel {
@@ -47,4 +49,4 @@ public interface LayoutBranch extends LayoutBranchModel, PersistedModel {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1887550161
+// LIFERAY-SERVICE-BUILDER-HASH:526839295
