@@ -90,7 +90,7 @@ public class OpenAPIUtil {
 
 		Queue<Map<String, Schema>> queue = new LinkedList<>();
 
-		queue.add(allExternalSchemas);
+		queue.add(new TreeMap<>(allExternalSchemas));
 
 		Map<String, Schema> map = null;
 
