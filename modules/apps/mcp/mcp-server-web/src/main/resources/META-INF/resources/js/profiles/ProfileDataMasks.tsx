@@ -148,7 +148,7 @@ export default function ProfileDataMasks({profileERC}: ProfileDataMasksProps) {
 			<OrderableTable
 				actions={[
 					{
-						icon: 'trash',
+						icon: 'times-circle',
 						label: Liferay.Language.get('remove'),
 						onClick: ({item}: {item: ProfileDataMaskRow}) =>
 							setRowToRemove(item),
