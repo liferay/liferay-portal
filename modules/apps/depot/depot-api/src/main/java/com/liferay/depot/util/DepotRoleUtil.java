@@ -122,6 +122,12 @@ public class DepotRoleUtil {
 	public static void validate(long groupId, long[] roleIds)
 		throws PortalException {
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-96750")) {
+
+			return;
+		}
+
 		String subtype = getSubtype(groupId);
 
 		if (Validator.isNull(subtype)) {
