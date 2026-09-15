@@ -172,7 +172,6 @@ import {config as osbFaroWebSettingsConfig} from './tests/osb-faro-web/settings/
 import {config as passwordPoliciesAdminWebFirstLoginConfig} from './tests/password-policies-admin-web/first-login/config';
 import {config as passwordPoliciesAdminWebConfig} from './tests/password-policies-admin-web/main/config';
 import {config as passwordPoliciesAdminWebSetupAdminConfig} from './tests/password-policies-admin-web/setup-admin/config';
-import {config as portalDbInfrastructureUpgradePartition7413u33Config} from './tests/portal-db-infrastructure/upgrade-partition-7413u33/config';
 import {config as portalDbInfrastructureUpgradePortal6130Config} from './tests/portal-db-infrastructure/upgrade-portal-6130/config';
 import {config as portalDbInfrastructureUpgradePortal621021Config} from './tests/portal-db-infrastructure/upgrade-portal-621021/config';
 import {config as portalDbInfrastructureUpgradePortal625Config} from './tests/portal-db-infrastructure/upgrade-portal-625/config';
@@ -182,6 +181,7 @@ import {config as portalDbInfrastructureUpgradePortal71103Config} from './tests/
 import {config as portalDbInfrastructureUpgradePortal7210Config} from './tests/portal-db-infrastructure/upgrade-portal-7210/config';
 import {config as portalDbInfrastructureUpgradePortal7310Config} from './tests/portal-db-infrastructure/upgrade-portal-7310/config';
 import {config as portalDbInfrastructureUpgradePortal7413Config} from './tests/portal-db-infrastructure/upgrade-portal-7413/config';
+import {config as portalDbInfrastructureUpgradePortalPartition7413u33Config} from './tests/portal-db-infrastructure/upgrade-portal-partition-7413u33/config';
 import {config as portalDefaultPermissionsWebConfig} from './tests/portal-default-permissions-web/main/config';
 import {config as portalImplMainConfig} from './tests/portal-impl/main/config';
 import {config as portalImplPortletConfig} from './tests/portal-impl/portlet/config';
@@ -443,7 +443,6 @@ export default defineConfig({
 		passwordPoliciesAdminWebConfig,
 		passwordPoliciesAdminWebFirstLoginConfig,
 		passwordPoliciesAdminWebSetupAdminConfig,
-		portalDbInfrastructureUpgradePartition7413u33Config,
 		portalDbInfrastructureUpgradePortal6130Config,
 		portalDbInfrastructureUpgradePortal621021Config,
 		portalDbInfrastructureUpgradePortal625Config,
@@ -453,6 +452,7 @@ export default defineConfig({
 		portalDbInfrastructureUpgradePortal7210Config,
 		portalDbInfrastructureUpgradePortal7310Config,
 		portalDbInfrastructureUpgradePortal7413Config,
+		portalDbInfrastructureUpgradePortalPartition7413u33Config,
 		portalDefaultPermissionsWebConfig,
 		portalImplMainConfig,
 		portalImplPortletConfig,

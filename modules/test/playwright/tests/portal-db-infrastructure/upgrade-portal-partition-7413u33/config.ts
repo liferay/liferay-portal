@@ -4,8 +4,8 @@
  */
 
 export const config = {
-	name: 'portal-db-infrastructure.upgrade-partition-7413u33',
-	testDir: 'tests/portal-db-infrastructure/upgrade-partition-7413u33',
+	name: 'portal-db-infrastructure.upgrade-portal-partition-7413u33',
+	testDir: 'tests/portal-db-infrastructure/upgrade-portal-partition-7413u33',
 	timeout: 480 * 1000,
 	use: {
 		testIdAttribute: 'data-qa-id',
