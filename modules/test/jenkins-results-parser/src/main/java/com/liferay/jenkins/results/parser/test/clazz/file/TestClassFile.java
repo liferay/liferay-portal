@@ -21,6 +21,9 @@ public interface TestClassFile {
 
 	public String getName();
 
+	public List<TestClassFileMethod> getTestClassFileMethods()
+		throws IOException;
+
 	public TestPackage getTestPackage();
 
 }
