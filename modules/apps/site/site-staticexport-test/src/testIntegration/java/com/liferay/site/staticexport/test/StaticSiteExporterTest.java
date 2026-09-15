@@ -20,6 +20,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.staticexport.StaticSiteExport;
 import com.liferay.site.staticexport.StaticSiteExportLayout;
+import com.liferay.site.staticexport.StaticSiteExportReport;
 import com.liferay.site.staticexport.StaticSiteExportResource;
 import com.liferay.site.staticexport.StaticSiteExporter;
 
@@ -131,6 +132,33 @@ public class StaticSiteExporterTest {
 		}
 
 		Assert.assertTrue(staticSiteExportResources.toString(), stylesheet);
+
+		StaticSiteExportReport staticSiteExportReport =
+			staticSiteExport.getStaticSiteExportReport();
+
+		List<StaticSiteExportReport.Failure> layoutFailures =
+			staticSiteExportReport.getLayoutFailures();
+
+		Assert.assertTrue(layoutFailures.toString(), layoutFailures.isEmpty());
+
+		for (StaticSiteExportReport.Failure failure :
+				staticSiteExportReport.getResourceFailures()) {
+
+			Assert.assertNotNull(failure.getMessage());
+			Assert.assertTrue(
+				failure.getURL(),
+				failure.getURL(
+				).startsWith(
+					StringPool.SLASH
+				));
+
+			for (StaticSiteExportResource staticSiteExportResource :
+					staticSiteExportResources) {
+
+				Assert.assertNotEquals(
+					failure.getURL(), staticSiteExportResource.getURL());
+			}
+		}
 	}
 
 	private Group _group;
