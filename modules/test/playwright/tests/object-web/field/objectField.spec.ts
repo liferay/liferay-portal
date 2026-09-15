@@ -2281,14 +2281,15 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 			await iframeLocator.getByLabel('LabelMandatory').clear();
 			await iframeLocator.getByLabel('LabelMandatory').fill(newLabel);
 
-			await objectFieldsPage.editFieldSaveButton.click();
+			const {navigation} =
+				await objectFieldsPage.saveObjectFieldReturningNavigation();
 
 			await waitForAlert(
 				page,
 				'The object field was updated successfully'
 			);
 
-			await page.reload();
+			await navigation;
 
 			await expect(page.getByText(newLabel)).toBeVisible();
 		}
