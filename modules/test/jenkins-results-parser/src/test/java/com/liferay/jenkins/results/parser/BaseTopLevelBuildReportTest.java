@@ -237,19 +237,7 @@ public class BaseTopLevelBuildReportTest
 	public void testGetFailureReports() {
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport(
-				new JSONObject(
-				).put(
-					"failureReports",
-					new JSONArray(
-					).put(
-						new JSONObject(
-						).put(
-							"message", RandomTestUtil.randomString()
-						)
-					)
-				).put(
-					"result", "FAILURE"
-				));
+				_newFailureReportsJSONObject("FAILURE"));
 
 		FailureReport cachedFailureReport = Mockito.mock(FailureReport.class);
 
@@ -288,6 +276,32 @@ public class BaseTopLevelBuildReportTest
 
 		Assert.assertSame(
 			failureReports, baseTopLevelBuildReport.getFailureReports());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(
+			_newFailureReportsJSONObject("SUCCESS"));
+
+		failureReports = baseTopLevelBuildReport.getFailureReports();
+
+		Assert.assertEquals(
+			failureReports.toString(), 0, failureReports.size());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
+
+		failureReports = baseTopLevelBuildReport.getFailureReports();
+
+		Assert.assertEquals(
+			failureReports.toString(), 0, failureReports.size());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(
+			new JSONObject(
+			).put(
+				"result", "FAILURE"
+			));
+
+		failureReports = baseTopLevelBuildReport.getFailureReports();
+
+		Assert.assertEquals(
+			failureReports.toString(), 0, failureReports.size());
 	}
 
 	@Test
@@ -586,6 +600,22 @@ public class BaseTopLevelBuildReportTest
 			"totalCachedDuration", 2000L
 		).put(
 			"totalDuration", 3000L
+		);
+	}
+
+	private JSONObject _newFailureReportsJSONObject(String result) {
+		return new JSONObject(
+		).put(
+			"failureReports",
+			new JSONArray(
+			).put(
+				new JSONObject(
+				).put(
+					"message", RandomTestUtil.randomString()
+				)
+			)
+		).put(
+			"result", result
 		);
 	}
 
