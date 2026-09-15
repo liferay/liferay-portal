@@ -40,39 +40,41 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 
 	return (
 		<div className="d-flex flex-column flex-grow-0 h-100">
-			<p className="h4 my-3">
-				{Liferay.Language.get('attributes-types')}
-			</p>
+			<div className="audience-builder-sidebar-header px-4">
+				<p className="h4 my-3">
+					{Liferay.Language.get('attributes-types')}
+				</p>
 
-			<ClayForm.Group>
-				<ClaySelectWithOption
-					aria-label={Liferay.Language.get('attributes-types')}
-					className="bg-white font-weight-semi-bold text-4"
-					onChange={(event) => {
-						setSelectedIndex(Number(event.target.value));
-						setQuery('');
-					}}
-					options={audiencesCriteriaTypes.map(
-						(audiencesCriteriaType, index) => ({
-							label: audiencesCriteriaType.label,
-							value: index,
-						})
-					)}
-					value={selectedIndex}
+				<ClayForm.Group>
+					<ClaySelectWithOption
+						aria-label={Liferay.Language.get('attributes-types')}
+						className="bg-white font-weight-semi-bold text-4"
+						onChange={(event) => {
+							setSelectedIndex(Number(event.target.value));
+							setQuery('');
+						}}
+						options={audiencesCriteriaTypes.map(
+							(audiencesCriteriaType, index) => ({
+								label: audiencesCriteriaType.label,
+								value: index,
+							})
+						)}
+						value={selectedIndex}
+					/>
+				</ClayForm.Group>
+
+				<SearchForm
+					className="mb-3"
+					label={Liferay.Language.get('search-attributes')}
+					onChange={setQuery}
 				/>
-			</ClayForm.Group>
-
-			<SearchForm
-				className="mb-3"
-				label={Liferay.Language.get('search-attributes')}
-				onChange={setQuery}
-			/>
+			</div>
 
 			{audiencesCriterias.length ? (
 				<div
 					aria-label={Liferay.Language.get('attributes')}
 					aria-orientation="vertical"
-					className="overflow-auto"
+					className="overflow-auto px-4 py-3"
 					role="menu"
 				>
 					{audiencesCriterias.map((audiencesCriteria, index) => (
@@ -89,6 +91,7 @@ export default function AttributesSidebar({audiencesCriteriaTypes}: IProps) {
 				</div>
 			) : (
 				<ClayEmptyState
+					className="px-4"
 					description={Liferay.Language.get(
 						'no-attributes-were-found'
 					)}
