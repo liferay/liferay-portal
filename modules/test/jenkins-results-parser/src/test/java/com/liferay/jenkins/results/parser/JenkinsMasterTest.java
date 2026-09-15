@@ -88,7 +88,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		setShellCommandExitValue(command, shell, 255);
 
 		try {
-			_jenkinsMaster.executeBashCommand(command, 20000);
+			_jenkinsMaster.executeBashCommand(command, _MILLIS_TIMEOUT);
 
 			Assert.fail();
 		}
@@ -115,7 +115,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		);
 
 		try {
-			_jenkinsMaster.executeBashCommand(command, 20000);
+			_jenkinsMaster.executeBashCommand(command, _MILLIS_TIMEOUT);
 
 			Assert.fail();
 		}
@@ -136,11 +136,11 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		setShellCommandOutput(command, shell, RandomTestUtil.randomString());
 
-		_jenkinsMaster.executeBashCommand(command, 20000);
+		_jenkinsMaster.executeBashCommand(command, _MILLIS_TIMEOUT);
 
 		Shell.ExecutionRequest executionRequest = _getExecutionRequest(shell);
 
-		Assert.assertEquals(20000, executionRequest.getTimeout());
+		Assert.assertEquals(_MILLIS_TIMEOUT, executionRequest.getTimeout());
 
 		String sshCommand = _getSSHCommand(executionRequest);
 
@@ -158,11 +158,13 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		setShellCommandOutput(command, shell, RandomTestUtil.randomString());
 
-		_jenkinsMaster.executeBashCommand(command, 500);
+		_jenkinsMaster.executeBashCommand(
+			command, _MILLIS_TIMEOUT_BELOW_TWO_SECONDS);
 
 		Shell.ExecutionRequest executionRequest = _getExecutionRequest(shell);
 
-		Assert.assertEquals(500, executionRequest.getTimeout());
+		Assert.assertEquals(
+			_MILLIS_TIMEOUT_BELOW_TWO_SECONDS, executionRequest.getTimeout());
 
 		String sshCommand = _getSSHCommand(executionRequest);
 
@@ -464,6 +466,10 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 	private static final long _LIKELY_STUCK_ESTIMATED_DURATION =
 		RandomTestUtil.randomLong();
+
+	private static final long _MILLIS_TIMEOUT = 20000;
+
+	private static final long _MILLIS_TIMEOUT_BELOW_TWO_SECONDS = 500;
 
 	private JenkinsMaster _jenkinsMaster;
 
