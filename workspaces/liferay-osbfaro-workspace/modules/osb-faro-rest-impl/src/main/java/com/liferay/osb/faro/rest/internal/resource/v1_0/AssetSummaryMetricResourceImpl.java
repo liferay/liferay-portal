@@ -14,11 +14,13 @@ import com.liferay.osb.faro.rest.resource.v1_0.AssetSummaryMetricResource;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -36,9 +38,10 @@ public class AssetSummaryMetricResourceImpl
 
 	@Override
 	public Page<AssetSummaryMetric> getWorkspaceGroupChannelAssetSummariesPage(
-			Long groupId, String channelId, String rangeEnd, String rangeKey,
-			String rangeStart, String search, Pagination pagination,
-			Sort[] sorts)
+			Long groupId, String channelId, String accountId,
+			String individualId, String rangeEnd, String rangeKey,
+			String rangeStart, String search, String segmentId,
+			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		int cur = FaroPaginationUtil.getCur(pagination);
@@ -51,7 +54,11 @@ public class AssetSummaryMetricResourceImpl
 					_faroProjectLocalService.getFaroProjectByGroupId(groupId),
 					"getWorkspaceGroupChannelAssetSummariesPage",
 					HashMapBuilder.<String, Object>put(
+						"accountIds", _toIds(accountId)
+					).put(
 						"channelId", channelId
+					).put(
+						"individualIds", _toIds(individualId)
 					).put(
 						"keywords", search
 					).put(
@@ -60,6 +67,8 @@ public class AssetSummaryMetricResourceImpl
 						"rangeKey", TimeRange.getRangeKey(rangeKey)
 					).put(
 						"rangeStart", rangeStart
+					).put(
+						"segmentIds", _toIds(segmentId)
 					).put(
 						"size", delta
 					).put(
@@ -95,6 +104,14 @@ public class AssetSummaryMetricResourceImpl
 						contextAcceptLanguage.getPreferredLocale()),
 					assetSummaryMetric)),
 			pagination, total);
+	}
+
+	private List<String> _toIds(String id) {
+		if (Validator.isNull(id)) {
+			return null;
+		}
+
+		return Collections.singletonList(id);
 	}
 
 	@Reference(

@@ -1,19 +1,25 @@
 query getWorkspaceGroupChannelAssetSummariesPage(
+	$accountIds: [String]
 	$channelId: String
+	$individualIds: [String]
 	$keywords: String
 	$rangeEnd: String
 	$rangeKey: Int
 	$rangeStart: String
+	$segmentIds: [String]
 	$size: Int!
 	$sort: Sort!
 	$start: Int!
 ) {
 	assetSummaryMetricBag: assetSummaries(
+		accountIds: $accountIds
 		channelId: $channelId
+		individualIds: $individualIds
 		keywords: $keywords
 		rangeEnd: $rangeEnd
 		rangeKey: $rangeKey
 		rangeStart: $rangeStart
+		segmentIds: $segmentIds
 		size: $size
 		sort: $sort
 		start: $start
