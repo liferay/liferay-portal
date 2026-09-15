@@ -155,15 +155,15 @@ public class BaseTopLevelBuildReportTest
 
 	@Test
 	public void testGetDistinctFailureReports() {
-		FailureReport failureReport = Mockito.mock(FailureReport.class);
-		FailureReport similarFailureReport = Mockito.mock(FailureReport.class);
+		FailureReport failureReport1 = Mockito.mock(FailureReport.class);
+		FailureReport failureReport2 = Mockito.mock(FailureReport.class);
 
 		Mockito.doReturn(
 			true
 		).when(
-			similarFailureReport
+			failureReport2
 		).isSimilar(
-			failureReport
+			failureReport1
 		);
 
 		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
@@ -174,11 +174,10 @@ public class BaseTopLevelBuildReportTest
 			baseTopLevelBuildReport
 		).getDistinctFailureReports();
 
-		FailureReport uniqueFailureReport = Mockito.mock(FailureReport.class);
+		FailureReport failureReport3 = Mockito.mock(FailureReport.class);
 
 		Mockito.doReturn(
-			Arrays.asList(
-				failureReport, similarFailureReport, uniqueFailureReport)
+			Arrays.asList(failureReport1, failureReport2, failureReport3)
 		).when(
 			baseTopLevelBuildReport
 		).getFailureReports();
@@ -189,8 +188,8 @@ public class BaseTopLevelBuildReportTest
 		Assert.assertEquals(
 			distinctFailureReports.toString(), 2,
 			distinctFailureReports.size());
-		Assert.assertTrue(distinctFailureReports.contains(failureReport));
-		Assert.assertTrue(distinctFailureReports.contains(uniqueFailureReport));
+		Assert.assertTrue(distinctFailureReports.contains(failureReport1));
+		Assert.assertTrue(distinctFailureReports.contains(failureReport3));
 
 		Assert.assertSame(
 			distinctFailureReports,
@@ -425,35 +424,34 @@ public class BaseTopLevelBuildReportTest
 
 	@Test
 	public void testGetUniqueFailureReports() {
-		FailureReport failureReport = Mockito.mock(FailureReport.class);
-		FailureReport previousFailureReport = Mockito.mock(FailureReport.class);
+		FailureReport failureReport1 = Mockito.mock(FailureReport.class);
+		FailureReport failureReport2 = Mockito.mock(FailureReport.class);
 
 		Mockito.doReturn(
 			true
 		).when(
-			failureReport
+			failureReport1
 		).isSimilar(
-			previousFailureReport
+			failureReport2
 		);
 
 		_testGetUniqueFailureReports(
-			Collections.singletonList(failureReport), failureReport, null);
+			Collections.singletonList(failureReport1), failureReport1, null);
 
 		TopLevelBuildReport previousTopLevelBuildReport = Mockito.mock(
 			TopLevelBuildReport.class);
 
 		Mockito.doReturn(
-			Collections.singletonList(previousFailureReport)
+			Collections.singletonList(failureReport2)
 		).when(
 			previousTopLevelBuildReport
 		).getDistinctFailureReports();
 
-		FailureReport unaffectedFailureReport = Mockito.mock(
-			FailureReport.class);
+		FailureReport failureReport3 = Mockito.mock(FailureReport.class);
 
 		_testGetUniqueFailureReports(
-			Arrays.asList(failureReport, unaffectedFailureReport),
-			unaffectedFailureReport, previousTopLevelBuildReport);
+			Arrays.asList(failureReport1, failureReport3), failureReport3,
+			previousTopLevelBuildReport);
 	}
 
 	@Test
