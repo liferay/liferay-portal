@@ -81,15 +81,15 @@ public class SourceFormatterTest {
 	public final TestRule testRule = TimeoutTestRule.INSTANCE;
 
 	private UnsupportedClassVersionError _getNestedUnsupportedClassVersionError(
-			Exception exception)
+			Throwable throwable)
 		throws Exception {
 
 		Method method = SourceFormatter.class.getDeclaredMethod(
-			"_getNestedUnsupportedClassVersionError", Exception.class);
+			"_getNestedUnsupportedClassVersionError", Throwable.class);
 
 		method.setAccessible(true);
 
-		return (UnsupportedClassVersionError)method.invoke(null, exception);
+		return (UnsupportedClassVersionError)method.invoke(null, throwable);
 	}
 
 }
