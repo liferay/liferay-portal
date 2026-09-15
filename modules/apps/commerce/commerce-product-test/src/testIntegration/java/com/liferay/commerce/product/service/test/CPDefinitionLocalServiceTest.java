@@ -832,9 +832,9 @@ public class CPDefinitionLocalServiceTest {
 
 		try {
 			_cpDefinitionLocalService.getOrAddEmptyCPDefinition(
-				externalReferenceCode, SimpleCPTypeConstants.NAME,
-				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-				_commerceCatalog.getGroupId());
+				externalReferenceCode, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), _commerceCatalog.getGroupId(),
+				SimpleCPTypeConstants.NAME);
 
 			Assert.fail();
 		}
@@ -848,9 +848,9 @@ public class CPDefinitionLocalServiceTest {
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
 
 			cpDefinition = _cpDefinitionLocalService.getOrAddEmptyCPDefinition(
-				externalReferenceCode, SimpleCPTypeConstants.NAME,
-				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-				_commerceCatalog.getGroupId());
+				externalReferenceCode, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), _commerceCatalog.getGroupId(),
+				SimpleCPTypeConstants.NAME);
 
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_EMPTY, cpDefinition.getStatus());
@@ -873,9 +873,9 @@ public class CPDefinitionLocalServiceTest {
 
 			CPDefinition resolvedCPDefinition =
 				_cpDefinitionLocalService.getOrAddEmptyCPDefinition(
-					externalReferenceCode, SimpleCPTypeConstants.NAME,
-					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-					_commerceCatalog.getGroupId());
+					externalReferenceCode, TestPropsValues.getCompanyId(),
+					TestPropsValues.getUserId(), _commerceCatalog.getGroupId(),
+					SimpleCPTypeConstants.NAME);
 
 			Assert.assertEquals(
 				cpDefinition.getCPDefinitionId(),

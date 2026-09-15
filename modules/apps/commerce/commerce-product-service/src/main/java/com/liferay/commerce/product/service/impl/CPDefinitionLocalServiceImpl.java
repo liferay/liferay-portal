@@ -2035,11 +2035,10 @@ public class CPDefinitionLocalServiceImpl
 		return cpDisplayLayout.getLayoutUuid();
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPDefinition getOrAddEmptyCPDefinition(
-			String externalReferenceCode, String productTypeName,
-			long companyId, long userId, long groupId)
+			String externalReferenceCode, long companyId, long userId,
+			long groupId, String productTypeName)
 		throws PortalException {
 
 		Calendar calendar = CalendarFactoryUtil.getCalendar();
