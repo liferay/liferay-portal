@@ -5,10 +5,15 @@
 
 package com.liferay.sharing.document.library.internal.display.context;
 
+import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.document.library.display.context.DLViewFileVersionDisplayContext;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -22,6 +27,9 @@ import com.liferay.sharing.service.SharingEntryLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -89,6 +97,62 @@ public class SharingDLViewFileVersionDisplayContextTest {
 	}
 
 	@Test
+	public void testGetActionDropdownItemsWithExternalRepository()
+		throws Exception {
+
+		_setUpExternalRepository(true);
+		_setUpSharePermission(true);
+		_setUpShowShareAction();
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic =
+					_getFeatureFlagManagerUtilMockedStatic()) {
+
+			SharingDLViewFileVersionDisplayContext
+				sharingDLViewFileVersionDisplayContext =
+					_createDisplayContext();
+
+			List<DropdownItem> dropdownItems =
+				sharingDLViewFileVersionDisplayContext.getActionDropdownItems();
+
+			Assert.assertTrue(dropdownItems.isEmpty());
+
+			Mockito.verifyNoInteractions(_sharingDropdownItemFactory);
+		}
+	}
+
+	@Test
+	public void testGetActionDropdownItemsWithoutExternalRepository()
+		throws Exception {
+
+		_setUpExternalRepository(false);
+		_setUpSharePermission(true);
+		_setUpShowShareAction();
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic =
+					_getFeatureFlagManagerUtilMockedStatic()) {
+
+			SharingDLViewFileVersionDisplayContext
+				sharingDLViewFileVersionDisplayContext =
+					_createDisplayContext();
+
+			List<DropdownItem> dropdownItems =
+				sharingDLViewFileVersionDisplayContext.getActionDropdownItems();
+
+			Assert.assertEquals(
+				dropdownItems.toString(), 1, dropdownItems.size());
+
+			Mockito.verify(
+				_sharingDropdownItemFactory
+			).createShareDropdownItem(
+				Mockito.anyString(), Mockito.anyLong(),
+				Mockito.any(HttpServletRequest.class)
+			);
+		}
+	}
+
+	@Test
 	public void testIsSharingLinkVisibleWithExternalRepository()
 		throws Exception {
 
@@ -123,13 +187,40 @@ public class SharingDLViewFileVersionDisplayContextTest {
 	private SharingDLViewFileVersionDisplayContext _createDisplayContext()
 		throws Exception {
 
+		DLViewFileVersionDisplayContext dlViewFileVersionDisplayContext =
+			Mockito.mock(DLViewFileVersionDisplayContext.class);
+
+		Mockito.when(
+			dlViewFileVersionDisplayContext.getActionDropdownItems()
+		).thenReturn(
+			new ArrayList<>()
+		);
+
 		return new SharingDLViewFileVersionDisplayContext(
-			null, _httpServletRequest, Mockito.mock(HttpServletResponse.class),
-			_fileEntry, Mockito.mock(FileVersion.class),
+			dlViewFileVersionDisplayContext, _httpServletRequest,
+			Mockito.mock(HttpServletResponse.class), _fileEntry,
+			Mockito.mock(FileVersion.class),
 			Mockito.mock(SharingEntryLocalService.class),
-			Mockito.mock(SharingDropdownItemFactory.class),
+			_sharingDropdownItemFactory,
 			Mockito.mock(SharingJavaScriptFactory.class), _sharingPermission,
 			_sharingConfiguration);
+	}
+
+	private MockedStatic<FeatureFlagManagerUtil>
+		_getFeatureFlagManagerUtilMockedStatic() {
+
+		MockedStatic<FeatureFlagManagerUtil>
+			featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+				FeatureFlagManagerUtil.class);
+
+		featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			false
+		);
+
+		return featureFlagManagerUtilMockedStatic;
 	}
 
 	private void _setUpExternalRepository(boolean externalRepository) {
@@ -158,6 +249,28 @@ public class SharingDLViewFileVersionDisplayContextTest {
 		);
 	}
 
+	private void _setUpShowShareAction() {
+		PortletDisplay portletDisplay = Mockito.mock(PortletDisplay.class);
+
+		Mockito.when(
+			portletDisplay.getPortletName()
+		).thenReturn(
+			DLPortletKeys.DOCUMENT_LIBRARY_ADMIN
+		);
+
+		Mockito.when(
+			_themeDisplay.getPortletDisplay()
+		).thenReturn(
+			portletDisplay
+		);
+
+		Mockito.when(
+			_themeDisplay.isSignedIn()
+		).thenReturn(
+			true
+		);
+	}
+
 	private static final MockedStatic<PortalUtil> _portalUtilMockedStatic =
 		Mockito.mockStatic(PortalUtil.class);
 	private static final MockedStatic<RepositoryUtil>
@@ -168,6 +281,8 @@ public class SharingDLViewFileVersionDisplayContextTest {
 		HttpServletRequest.class);
 	private final SharingConfiguration _sharingConfiguration = Mockito.mock(
 		SharingConfiguration.class);
+	private final SharingDropdownItemFactory _sharingDropdownItemFactory =
+		Mockito.mock(SharingDropdownItemFactory.class);
 	private final SharingPermission _sharingPermission = Mockito.mock(
 		SharingPermission.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
