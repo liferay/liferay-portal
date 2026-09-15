@@ -104,7 +104,31 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Storage Blob Data Contributor\\s+scope: [^\\n]+Microsoft.Storage/storageAccounts/\\{\\{ \\$storageAccountBase \\}\\}\\{\\{ trunc 1 \\$dataPlane \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: liferay-backup-restore-storage-\\{\\{ \\$dataPlane \\}\\}[\\s\\S]{0,900}?name: iam\\s+---\\s+apiVersion[\\s\\S]{0,300}?liferay-backup-restore-storage-reader"
         it: Grants the restore identity blob access on each plane storage account
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: liferay-backup-restore-database-\\{\\{ \\$dataPlane \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Reader\\s+scope: [^\\n]+Microsoft.DBforPostgreSQL/flexibleServers/"
+        it: Grants the restore identity read on each plane database server
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: liferay-backup-restore-storage-reader-\\{\\{ \\$dataPlane \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Reader\\s+scope: [^\\n]+Microsoft.Storage/storageAccounts/"
+        it: Grants the restore identity read on each plane storage account
     -   asserts:
             -   documentIndex: 0
                 matchRegex:

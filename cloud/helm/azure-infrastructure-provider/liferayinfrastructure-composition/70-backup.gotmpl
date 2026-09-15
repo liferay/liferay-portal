@@ -50,6 +50,26 @@ apiVersion: authorization.azure.m.upbound.io/v1beta1
 kind: RoleAssignment
 metadata:
     annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-database-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $backupRestoreIdentityName }}-database-{{ $dataPlane }}
+spec:
+    forProvider:
+        principalId: {{ $backupRestoreIdentityPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Reader
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DBforPostgreSQL/flexibleServers/{{ $baseName }}-{{ $dataPlane }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+---
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
+metadata:
+    annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-storage-{{ $dataPlane }}
     labels:
         {{- $tags | toYaml | nindent 8 }}
@@ -60,6 +80,26 @@ spec:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
         roleDefinitionName: Storage Blob Data Contributor
+        scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.Storage/storageAccounts/{{ $storageAccountBase }}{{ trunc 1 $dataPlane }}
+    managementPolicies: {{ $managementPolicies }}
+    providerConfigRef:
+        kind: ClusterProviderConfig
+        name: iam
+---
+apiVersion: authorization.azure.m.upbound.io/v1beta1
+kind: RoleAssignment
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-storage-reader-{{ $dataPlane }}
+    labels:
+        {{- $tags | toYaml | nindent 8 }}
+        dataPlane: {{ $dataPlane }}
+    name: {{ $backupRestoreIdentityName }}-storage-reader-{{ $dataPlane }}
+spec:
+    forProvider:
+        principalId: {{ $backupRestoreIdentityPrincipalId }}
+        principalType: ServicePrincipal
+        roleDefinitionName: Reader
         scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.Storage/storageAccounts/{{ $storageAccountBase }}{{ trunc 1 $dataPlane }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
