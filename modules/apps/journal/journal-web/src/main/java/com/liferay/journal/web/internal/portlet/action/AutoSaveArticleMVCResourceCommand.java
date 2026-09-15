@@ -55,7 +55,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ResourceRequest;
@@ -121,7 +120,7 @@ public class AutoSaveArticleMVCResourceCommand extends BaseMVCResourceCommand {
 			).put(
 				"friendlyURL",
 				() -> {
-					if (Validator.isNotNull(articleId)) {
+					if (journalArticle != null) {
 						return null;
 					}
 

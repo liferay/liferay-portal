@@ -250,13 +250,15 @@ journalEditArticleDisplayContext.setViewAttributes();
 									/>
 								</c:if>
 
-								<clay:button
-									data-actionname="<%= Constants.PUBLISH %>"
-									displayType="primary"
-									id='<%= liferayPortletResponse.getNamespace() + "publishButton" %>'
-									label="<%= journalEditArticleDisplayContext.getPublishButtonLabel() %>"
-									type="submit"
-								/>
+								<c:if test='<%= !(FeatureFlagManagerUtil.isEnabled("LPD-11228") && !JournalUtil.isEditDefaultValues(article)) %>'>
+									<clay:button
+										data-actionname="<%= Constants.PUBLISH %>"
+										displayType="primary"
+										id='<%= liferayPortletResponse.getNamespace() + "publishButton" %>'
+										label="<%= journalEditArticleDisplayContext.getPublishButtonLabel() %>"
+										type="submit"
+									/>
+								</c:if>
 
 								<c:if test="<%= !JournalUtil.isEditDefaultValues(article) %>">
 									<react:component

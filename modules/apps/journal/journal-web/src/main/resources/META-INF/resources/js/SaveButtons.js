@@ -189,7 +189,11 @@ export default function SaveButtons({
 				: '/journal/add_data_engine_default_values';
 		}
 		else {
-			actionInput.value = articleId
+			const articleIdInput = document.getElementById(
+				`${portletNamespace}articleId`
+			);
+
+			actionInput.value = articleIdInput.value
 				? '/journal/update_article'
 				: '/journal/add_article';
 		}
