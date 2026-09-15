@@ -1,7 +1,7 @@
 Bundle-Name: Liferay Data Engine Service
 Bundle-SymbolicName: com.liferay.data.engine.service
 Bundle-Version: 3.0.70
-Liferay-Require-SchemaVersion: 2.2.1
+Liferay-Require-SchemaVersion: 2.2.2
 Liferay-Service: true
 Web-ContextPath: /data-engine-service
 -dsannotations-options: inherit
