@@ -277,6 +277,7 @@ export default function ElementVariationForm({
 										audience.value
 									)
 								)}
+								key={elementVariation.targetElement}
 								onItemsChange={(
 									items: Array<{
 										label: string;
