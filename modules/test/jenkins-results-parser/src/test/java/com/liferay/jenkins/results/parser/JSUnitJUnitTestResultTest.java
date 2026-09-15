@@ -86,17 +86,17 @@ public class JSUnitJUnitTestResultTest
 	@Test
 	public void testGetTestTaskNameWorkspace() throws Exception {
 		testEquals(
-			"workspaces/liferay-osbfaro-workspace:modules:osb-faro-web:" +
-				"packageRunTest",
-			_getTestTaskName(
-				"workspaces/liferay-osbfaro-workspace/modules/osb-faro-web" +
-					"/src/main/js/assets/__tests__/dashboards.tsx"));
-		testEquals(
 			"workspaces/liferay-aihub-workspace:client-extensions:" +
 				"liferay-aihub-custom-element:packageRunTest",
 			_getTestTaskName(
 				"workspaces/liferay-aihub-workspace/client-extensions" +
 					"/liferay-aihub-custom-element/src/tests/api.spec.ts"));
+		testEquals(
+			"workspaces/liferay-osbfaro-workspace:modules:osb-faro-web:" +
+				"packageRunTest",
+			_getTestTaskName(
+				"workspaces/liferay-osbfaro-workspace/modules/osb-faro-web" +
+					"/src/main/js/assets/__tests__/dashboards.tsx"));
 	}
 
 	private JSUnitJUnitTestResult _getJSUnitJUnitTestResult(
