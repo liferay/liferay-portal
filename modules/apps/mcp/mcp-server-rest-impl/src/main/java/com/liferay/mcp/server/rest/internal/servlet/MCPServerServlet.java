@@ -213,6 +213,8 @@ public class MCPServerServlet extends HttpServlet {
 			).build()
 		).immediateExecution(
 			true
+		).instructions(
+			(String)values.get("instructions")
 		).prompts(
 			_getSyncPromptSpecifications(companyId)
 		).tools(
