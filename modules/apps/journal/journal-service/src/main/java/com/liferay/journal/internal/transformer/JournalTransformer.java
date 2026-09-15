@@ -129,8 +129,8 @@ public class JournalTransformer {
 				_log.warn(
 					StringBundler.concat(
 						"Article ", articleId,
-						" cannot include itself with DDM template ",
-						ddmTemplateKey));
+						" cannot include itself with dynamic data mapping ",
+						"template ", ddmTemplateKey));
 			}
 
 			return StringPool.BLANK;
@@ -576,7 +576,7 @@ public class JournalTransformer {
 
 	private String _getDDMTemplateKey(DDMTemplate ddmTemplate) {
 		if (ddmTemplate == null) {
-			return _DEFAULT_TEMPLATE_KEY;
+			return "DEFAULT_TEMPLATE";
 		}
 
 		return ddmTemplate.getTemplateKey();
@@ -1131,8 +1131,6 @@ public class JournalTransformer {
 
 		return output;
 	}
-
-	private static final String _DEFAULT_TEMPLATE_KEY = "DEFAULT_TEMPLATE";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		JournalTransformer.class);
