@@ -6311,6 +6311,21 @@ public class ObjectEntryLocalServiceImpl
 			}
 		}
 
+		Collection<Column<DynamicObjectDefinitionTable, ?>> columns =
+			dynamicObjectDefinitionTable.getColumns();
+
+		ObjectDefinition objectDefinition =
+			dynamicObjectDefinitionTable.getObjectDefinition();
+
+		if ((columns.size() == 1) &&
+			!objectDefinition.isUnmodifiableSystemObject() &&
+			Objects.equals(
+				dynamicObjectDefinitionTable.getTableName(),
+				objectDefinition.getExtensionDBTableName())) {
+
+			return staticValues;
+		}
+
 		sb.append(") values (?");
 
 		for (int i = 1; i < count; i++) {
