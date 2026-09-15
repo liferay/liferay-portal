@@ -32,9 +32,12 @@ public class JSUnitBatchBuildTestrayCaseResult
 
 	public JSUnitBatchBuildTestrayCaseResult(
 		AxisTestClassGroup axisTestClassGroup, TestClass testClass,
-		TestrayBuild testrayBuild, TopLevelBuildReport topLevelBuildReport) {
+		TestClassMethod testClassMethod, TestrayBuild testrayBuild,
+		TopLevelBuildReport topLevelBuildReport) {
 
 		super(axisTestClassGroup, testClass, testrayBuild, topLevelBuildReport);
+
+		_testClassMethod = testClassMethod;
 	}
 
 	@Override
@@ -137,6 +140,10 @@ public class JSUnitBatchBuildTestrayCaseResult
 
 	@Override
 	public String getName() {
+		if (_testClassMethod != null) {
+			return _testClassMethod.getName();
+		}
+
 		JSUnitModulesTestClass jsUnitModulesTestClass = getTestClass();
 
 		return jsUnitModulesTestClass.getTestTaskName();
@@ -208,7 +215,9 @@ public class JSUnitBatchBuildTestrayCaseResult
 
 		JSUnitModulesTestClass jsUnitModulesTestClass = getTestClass();
 
-		if (jsUnitModulesTestClass.isBuildCachingEnabled()) {
+		if ((_testClassMethod == null) &&
+			jsUnitModulesTestClass.isBuildCachingEnabled()) {
+
 			TestClassReport cachedTestClassReport =
 				jsUnitModulesTestClass.getCachedTestClassReport();
 
@@ -249,6 +258,7 @@ public class JSUnitBatchBuildTestrayCaseResult
 		return false;
 	}
 
+	private final TestClassMethod _testClassMethod;
 	private TestClassReport _testClassReport;
 
 }

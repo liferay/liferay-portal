@@ -293,11 +293,7 @@ public class JSUnitModulesBatchTestClassGroup
 
 		recordJobProperty(jobProperty);
 
-		if (!Objects.equals(jobPropertyValue, _REPORT_TYPE_TEST_FILE)) {
-			return false;
-		}
-
-		return true;
+		return Objects.equals(jobPropertyValue, _REPORT_TYPE_TEST_FILE);
 	}
 
 	private boolean _isTestGitrepoJSUnit() {
