@@ -2,7 +2,7 @@ import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
-import ClayIcon from '@clayui/icon';
+import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
 import ClayLink from '@clayui/link';
 import {ClayButtonWithIcon} from '@clayui/button';
 import FilterPicker from '../components/FilterPicker';
@@ -13,7 +13,6 @@ import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import OverviewSection from '../components/OverviewSection';
 import React, {useContext} from 'react';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
-import URLConstants from 'shared/util/url-constants';
 import {
 	AccountMetricType,
 	IAccountMetric,
@@ -32,58 +31,6 @@ import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
-
-const LifecycleEmptyState = ({
-	authorized,
-	description,
-	groupId,
-	title,
-}: {
-	authorized: boolean;
-	description: string;
-	groupId: string;
-	title: string;
-}) => (
-	<NoResultsDisplay
-		description={
-			<>
-				<p className="mb-2">{description}</p>
-
-				<ClayLink
-					className="d-block mb-3"
-					decoration="underline"
-					href={URLConstants.DataSourceConnection}
-					target="_blank"
-				>
-					{Liferay.Language.get('learn-more-about-data-sources')}
-
-					<span className="inline-item inline-item-after">
-						<ClayIcon fontSize={8} symbol="shortcut" />
-					</span>
-				</ClayLink>
-			</>
-		}
-		displayCard
-		icon={{
-			border: false,
-			size: Sizes.XXXLarge,
-			symbol: 'ac_satellite',
-		}}
-		spacer
-		title={title}
-	>
-		{authorized ? (
-			<ClayLink
-				button
-				className="button-root mt-1"
-				displayType="primary"
-				href={toRoute(Routes.SETTINGS_DATA_SOURCE_LIST, {groupId})}
-			>
-				{Liferay.Language.get('connect-data-source')}
-			</ClayLink>
-		) : undefined}
-	</NoResultsDisplay>
-);
 
 const ConfigureLifecycleEmptyState = ({
 	channelId,
@@ -270,7 +217,7 @@ const BaseLifecycle = () => {
 
 		if (noDataSources) {
 			return (
-				<LifecycleEmptyState
+				<DataSourceEmptyState
 					authorized={authorized}
 					description={
 						authorized
@@ -306,7 +253,7 @@ const BaseLifecycle = () => {
 
 		if (!totalAccounts) {
 			return (
-				<LifecycleEmptyState
+				<DataSourceEmptyState
 					authorized={authorized}
 					description={
 						authorized
