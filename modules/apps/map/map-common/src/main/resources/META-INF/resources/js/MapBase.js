@@ -173,7 +173,8 @@ class MapBase extends EventEmitter {
 				() => {
 					this.zoom = 2;
 					this._initializeLocation({lat: 0, lng: 0});
-				}
+				},
+				{timeout: 10000}
 			);
 		}
 		else {
