@@ -5,6 +5,7 @@
 
 package com.liferay.portal.security.key;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -38,7 +39,13 @@ public class KeyReferenceUtilTest {
 
 	@Test
 	public void testParseKeyReference() {
-		Assert.assertNull(KeyReferenceUtil.parseKeyReference(""));
+		Assert.assertNotNull(
+			KeyReferenceUtil.parseKeyReference(
+				"${keyRef:provider:identifier}"));
+		Assert.assertNotNull(
+			KeyReferenceUtil.parseKeyReference(
+				"${secretRef:provider:identifier}"));
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference(StringPool.BLANK));
 		Assert.assertNull(
 			KeyReferenceUtil.parseKeyReference(
 				"${SecretRef:provider:identifier}"));
@@ -67,12 +74,6 @@ public class KeyReferenceUtilTest {
 		Assert.assertNull(KeyReferenceUtil.parseKeyReference("${}"));
 		Assert.assertNull(KeyReferenceUtil.parseKeyReference("abc"));
 		Assert.assertNull(KeyReferenceUtil.parseKeyReference(null));
-		Assert.assertNotNull(
-			KeyReferenceUtil.parseKeyReference(
-				"${keyRef:provider:identifier}"));
-		Assert.assertNotNull(
-			KeyReferenceUtil.parseKeyReference(
-				"${secretRef:provider:identifier}"));
 	}
 
 	@Test
@@ -110,7 +111,7 @@ public class KeyReferenceUtilTest {
 	public void testToKeyReferenceWithInvalidKeyReference() {
 		Assert.assertThrows(
 			IllegalArgumentException.class,
-			() -> KeyReferenceUtil.toKeyReference(""));
+			() -> KeyReferenceUtil.toKeyReference(StringPool.BLANK));
 		Assert.assertThrows(
 			IllegalArgumentException.class,
 			() -> KeyReferenceUtil.toKeyReference(
