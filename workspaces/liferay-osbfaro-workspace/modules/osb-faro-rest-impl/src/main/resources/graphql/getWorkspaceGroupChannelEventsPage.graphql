@@ -1,21 +1,27 @@
 query getWorkspaceGroupChannelEventsPage(
+	$accountId: String
 	$channelId: String!
 	$includeAnonymousUsers: Boolean
+	$individualId: String
 	$keywords: String
 	$page: Int!
 	$rangeEnd: String
 	$rangeKey: Int
 	$rangeStart: String
+	$segmentId: String
 	$size: Int!
 ) {
 	eventBag: events(
+		accountId: $accountId
 		channelId: $channelId
 		includeAnonymousUsers: $includeAnonymousUsers
+		individualId: $individualId
 		keywords: $keywords
 		page: $page
 		rangeEnd: $rangeEnd
 		rangeKey: $rangeKey
 		rangeStart: $rangeStart
+		segmentId: $segmentId
 		size: $size
 	) {
 		events {

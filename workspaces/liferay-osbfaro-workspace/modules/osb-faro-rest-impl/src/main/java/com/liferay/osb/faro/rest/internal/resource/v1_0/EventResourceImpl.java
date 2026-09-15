@@ -34,8 +34,9 @@ public class EventResourceImpl extends BaseEventResourceImpl {
 
 	@Override
 	public Page<Event> getWorkspaceGroupChannelEventsPage(
-			Long groupId, String channelId, Boolean includeAnonymousUsers,
-			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Long groupId, String channelId, String accountId,
+			Boolean includeAnonymousUsers, String individualId, String rangeEnd,
+			String rangeKey, String rangeStart, String search, String segmentId,
 			Pagination pagination)
 		throws Exception {
 
@@ -46,9 +47,13 @@ public class EventResourceImpl extends BaseEventResourceImpl {
 					_faroProjectLocalService.getFaroProjectByGroupId(groupId),
 					"getWorkspaceGroupChannelEventsPage",
 					HashMapBuilder.<String, Object>put(
+						"accountId", accountId
+					).put(
 						"channelId", channelId
 					).put(
 						"includeAnonymousUsers", includeAnonymousUsers
+					).put(
+						"individualId", individualId
 					).put(
 						"keywords", search
 					).put(
@@ -60,6 +65,8 @@ public class EventResourceImpl extends BaseEventResourceImpl {
 						"rangeKey", TimeRange.getRangeKey(rangeKey)
 					).put(
 						"rangeStart", rangeStart
+					).put(
+						"segmentId", segmentId
 					).put(
 						"size", FaroPaginationUtil.getDelta(pagination)
 					).build());
