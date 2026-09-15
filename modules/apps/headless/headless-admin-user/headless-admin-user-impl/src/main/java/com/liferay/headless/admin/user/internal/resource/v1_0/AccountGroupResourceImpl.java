@@ -397,15 +397,18 @@ public class AccountGroupResourceImpl
 			long accountId, Pagination pagination)
 		throws Exception {
 
+		AccountEntry accountEntry = _accountEntryService.getAccountEntry(
+			accountId);
+
 		return Page.of(
 			transform(
 				_accountGroupService.getAccountGroupsByAccountEntryId(
-					accountId, pagination.getStartPosition(),
-					pagination.getEndPosition()),
+					accountEntry.getAccountEntryId(),
+					pagination.getStartPosition(), pagination.getEndPosition()),
 				accountGroup -> _toAccountGroup(accountGroup)),
 			pagination,
 			_accountGroupService.getAccountGroupsCountByAccountEntryId(
-				accountId));
+				accountEntry.getAccountEntryId()));
 	}
 
 	private DTOConverterContext _getDTOConverterContext(long accountGroupId) {
