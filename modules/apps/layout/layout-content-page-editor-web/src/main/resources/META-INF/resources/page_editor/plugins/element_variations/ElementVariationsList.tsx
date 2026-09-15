@@ -11,14 +11,9 @@ import ClayList from '@clayui/list';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
 
+import {hasValueInAnyLanguage} from './elementVariationFilters';
 import {ElementVariation} from './elementVariationsReducer';
 import {EditableElementOption} from './getEditableElementOptions';
-
-function hasValueInAnyLanguage(
-	localizedValue: Record<string, string>
-): boolean {
-	return Object.values(localizedValue).some(Boolean);
-}
 
 interface Props {
 	audiences: Array<{label: string; value: string}>;
