@@ -108,7 +108,7 @@ public class SharingDLViewFileVersionDisplayContext
 
 	@Override
 	public boolean isSharingLinkVisible() throws PortalException {
-		if (RepositoryUtil.isExternalRepository(_fileEntry.getRepositoryId())) {
+		if (_isExternalRepository()) {
 			return false;
 		}
 
@@ -127,6 +127,10 @@ public class SharingDLViewFileVersionDisplayContext
 	private List<DropdownItem> _addSharingDropdownItem(
 			List<DropdownItem> dropdownItems)
 		throws PortalException {
+
+		if (_isExternalRepository()) {
+			return dropdownItems;
+		}
 
 		int i = 0;
 
@@ -249,6 +253,11 @@ public class SharingDLViewFileVersionDisplayContext
 		}
 
 		return false;
+	}
+
+	private boolean _isExternalRepository() {
+		return RepositoryUtil.isExternalRepository(
+			_fileEntry.getRepositoryId());
 	}
 
 	private boolean _isSharingEnabled() throws PortalException {
