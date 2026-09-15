@@ -12,9 +12,11 @@ UnicodeProperties typeSettingsUnicodeProperties = (UnicodeProperties)request.get
 
 long lastImportDate = GetterUtil.getLong(typeSettingsUnicodeProperties.getProperty("last-import-date"));
 
+boolean featureFlagEnabled = FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-105778");
+
 String lastImportLayoutSetBranchName = null;
 
-long lastImportLayoutSetBranchId = GetterUtil.getLong(typeSettingsUnicodeProperties.getProperty("last-import-layout-set-branch-id"));
+long lastImportLayoutSetBranchId = featureFlagEnabled ? GetterUtil.getLong(typeSettingsUnicodeProperties.getProperty("last-import-layout-set-branch-id")) : 0;
 
 if (lastImportLayoutSetBranchId > 0) {
 	try {
@@ -26,7 +28,7 @@ if (lastImportLayoutSetBranchId > 0) {
 	}
 }
 
-if (Validator.isNull(lastImportLayoutSetBranchName)) {
+if (featureFlagEnabled && Validator.isNull(lastImportLayoutSetBranchName)) {
 	lastImportLayoutSetBranchName = typeSettingsUnicodeProperties.getProperty("last-import-layout-set-branch-name");
 }
 
@@ -38,7 +40,7 @@ String lastImportLayoutBranchName = null;
 
 List<LayoutRevision> layoutRevisions = new ArrayList<LayoutRevision>();
 
-long lastImportLayoutRevisionId = GetterUtil.getLong(typeSettingsUnicodeProperties.getProperty("last-import-layout-revision-id"));
+long lastImportLayoutRevisionId = featureFlagEnabled ? GetterUtil.getLong(typeSettingsUnicodeProperties.getProperty("last-import-layout-revision-id")) : 0;
 
 if (lastImportLayoutRevisionId > 0) {
 	try {
@@ -54,7 +56,7 @@ if (lastImportLayoutRevisionId > 0) {
 	}
 }
 
-if (Validator.isNull(lastImportLayoutBranchName)) {
+if (featureFlagEnabled && Validator.isNull(lastImportLayoutBranchName)) {
 	lastImportLayoutBranchName = typeSettingsUnicodeProperties.getProperty("last-import-layout-branch-name");
 }
 

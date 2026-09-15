@@ -6,7 +6,7 @@
 --%>
 
 <div class="<%= (liveGroup.isStaged() || (stagingType != StagingConstants.TYPE_NOT_STAGED)) ? StringPool.BLANK : "hide" %>" id="<portlet:namespace />stagedPortlets">
-	<c:if test="<%= GroupCapabilityUtil.isSupportsPages(liveGroup) && !liveGroup.isCompany() && !liveGroupRemoteStaging %>">
+	<c:if test='<%= FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-105778") && GroupCapabilityUtil.isSupportsPages(liveGroup) && !liveGroup.isCompany() && !liveGroupRemoteStaging %>'>
 		<div class="sheet-section">
 			<div class="sheet-subtitle">
 				<liferay-ui:message key="page-versioning" />
