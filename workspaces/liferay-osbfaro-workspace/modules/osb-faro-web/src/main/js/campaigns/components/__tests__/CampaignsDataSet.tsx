@@ -151,4 +151,28 @@ describe('CampaignsDataSet', () => {
 
 		expect(container).toHaveTextContent('0');
 	});
+
+	it('should tell the marketer that no campaigns were synced', () => {
+		renderDataSet();
+
+		expect(lastFDSProps.emptyState.title).toMatch(/no campaigns found/i);
+		expect(lastFDSProps.emptyState.description).toMatch(
+			/no campaigns were synced/i
+		);
+	});
+
+	it('should illustrate the empty state with the satellite', () => {
+		renderDataSet();
+
+		expect(lastFDSProps.emptyState.image).toBe('/states/satellite.svg');
+		expect(lastFDSProps.emptyState.imageReducedMotion).toBe(
+			'/states/satellite.svg'
+		);
+	});
+
+	it('should leave the search and filter empty states to the data set', () => {
+		renderDataSet();
+
+		expect(lastFDSProps.emptyState.filtered).toBeUndefined();
+	});
 });

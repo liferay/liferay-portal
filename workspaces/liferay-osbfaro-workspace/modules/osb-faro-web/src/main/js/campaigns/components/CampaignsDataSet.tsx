@@ -69,6 +69,14 @@ const CampaignsDataSet: React.FC<ICampaignsDataSetProps> = ({
 					}),
 				countRenderer: columns.countRenderer,
 			}}
+			emptyState={{
+				description: Liferay.Language.get(
+					'no-campaigns-were-synced-from-the-connected-data-sources'
+				),
+				image: '/states/satellite.svg',
+				imageReducedMotion: '/states/satellite.svg',
+				title: Liferay.Language.get('no-campaigns-found'),
+			}}
 			id="campaigns-list-dataset"
 			pagination={pagination}
 			showPagination
