@@ -82,6 +82,10 @@ components:
                     type: string
                 defaultLanguageId:
                     type: string
+                description:
+                    additionalProperties:
+                        type: string
+                    type: object
                 enableCategorization:
                     type: boolean
                 enableComments:

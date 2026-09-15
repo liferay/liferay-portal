@@ -162,6 +162,9 @@ public class ObjectDefinitionUtil {
 				setDefaultLanguageId(
 					() -> LocalizationUtil.getDefaultLanguageId(
 						serviceBuilderObjectDefinition.getLabel()));
+				setDescription(
+					() -> LocalizedMapUtil.getLanguageIdMap(
+						serviceBuilderObjectDefinition.getDescriptionMap()));
 				setEnableCategorization(
 					serviceBuilderObjectDefinition::isEnableCategorization);
 				setEnableComments(
