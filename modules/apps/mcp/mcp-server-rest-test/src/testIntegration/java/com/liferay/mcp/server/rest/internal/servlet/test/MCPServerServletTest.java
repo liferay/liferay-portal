@@ -210,6 +210,21 @@ public class MCPServerServletTest {
 			RandomTestUtil.randomString(), null, name, tools);
 	}
 
+	private void _assertAllowedQueryParameters(
+		Map<String, Object> arguments, McpSyncClient mcpSyncClient) {
+
+		McpSchema.CallToolResult callToolResult = mcpSyncClient.callTool(
+			new McpSchema.CallToolRequest(
+				"getMCPServerProfilesPage", arguments));
+
+		List<McpSchema.Content> contents = callToolResult.content();
+
+		McpSchema.TextContent textContent = (McpSchema.TextContent)contents.get(
+			0);
+
+		Assert.assertFalse(textContent.text(), callToolResult.isError());
+	}
+
 	private void _assertInvalidTokenChallenge(
 		Http.Response response, String description) {
 
@@ -225,6 +240,23 @@ public class MCPServerServletTest {
 			wwwAuthenticate,
 			wwwAuthenticate.contains(
 				"error_description=\"" + description + "\""));
+	}
+
+	private void _assertRestrictedQueryParameters(
+		Map<String, Object> arguments, String expectedMessage,
+		McpSyncClient mcpSyncClient) {
+
+		McpSchema.CallToolResult callToolResult = mcpSyncClient.callTool(
+			new McpSchema.CallToolRequest(
+				"getMCPServerProfilesPage", arguments));
+
+		List<McpSchema.Content> contents = callToolResult.content();
+
+		McpSchema.TextContent textContent = (McpSchema.TextContent)contents.get(
+			0);
+
+		Assert.assertTrue(textContent.text(), callToolResult.isError());
+		Assert.assertEquals(expectedMessage, textContent.text());
 	}
 
 	private void _assertTool(
@@ -1020,6 +1052,45 @@ public class MCPServerServletTest {
 
 		Assert.assertEquals(profileName, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("description"));
+
+		_assertRestrictedQueryParameters(
+			HashMapBuilder.<String, Object>put(
+				"filter", "creator/givenName eq 'Test'"
+			).build(),
+			"Parameter \"filter\" references a restricted field",
+			mcpSyncClient);
+		_assertRestrictedQueryParameters(
+			HashMapBuilder.<String, Object>put(
+				"filter", "description eq 'Test'"
+			).build(),
+			"Parameter \"filter\" references a restricted field",
+			mcpSyncClient);
+		_assertRestrictedQueryParameters(
+			HashMapBuilder.<String, Object>put(
+				"sort", "description:asc"
+			).build(),
+			"Parameter \"sort\" references a restricted field", mcpSyncClient);
+		_assertRestrictedQueryParameters(
+			HashMapBuilder.<String, Object>put(
+				"sort", "name:asc, description:desc"
+			).build(),
+			"Parameter \"sort\" references a restricted field", mcpSyncClient);
+
+		itemJSONObject = _getMCPServerProfileItemJSONObject(
+			HashMapBuilder.<String, Object>put(
+				"filter", "name eq '" + profileName + "'"
+			).put(
+				"pageSize", "100"
+			).build(),
+			mcpSyncClient, profileName);
+
+		Assert.assertEquals(profileName, itemJSONObject.getString("name"));
+
+		_assertAllowedQueryParameters(
+			HashMapBuilder.<String, Object>put(
+				"filter", "name eq 'description'"
+			).build(),
+			mcpSyncClient);
 
 		String entryName = RandomTestUtil.randomString();
 
