@@ -74,11 +74,27 @@ public class MasterResourceReader {
 	}
 
 	public String getMemoryInfo() {
-		return _getMemoryInfo(null);
+		return getMemoryInfo(-1);
 	}
 
 	public String getMemoryInfo(int timeoutMillis) {
-		return _getMemoryInfo(timeoutMillis);
+		synchronized (_memoryInfoLock) {
+			if (_memoryInfo == null) {
+				JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
+					_masterName);
+
+				if (timeoutMillis < 0) {
+					_memoryInfo = jenkinsMaster.executeBashCommand(
+						"cat /proc/meminfo");
+				}
+				else {
+					_memoryInfo = jenkinsMaster.executeBashCommand(
+						"cat /proc/meminfo", timeoutMillis);
+				}
+			}
+
+			return _memoryInfo;
+		}
 	}
 
 	public PrometheusScrape getPrometheusScrape(int timeoutMillis)
@@ -99,26 +115,6 @@ public class MasterResourceReader {
 
 	private MasterResourceReader(String masterName) {
 		_masterName = masterName;
-	}
-
-	private String _getMemoryInfo(Integer timeoutMillis) {
-		synchronized (_memoryInfoLock) {
-			if (_memoryInfo == null) {
-				JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
-					_masterName);
-
-				if (timeoutMillis == null) {
-					_memoryInfo = jenkinsMaster.executeBashCommand(
-						"cat /proc/meminfo");
-				}
-				else {
-					_memoryInfo = jenkinsMaster.executeBashCommand(
-						"cat /proc/meminfo", timeoutMillis);
-				}
-			}
-
-			return _memoryInfo;
-		}
 	}
 
 	private String _getURL(String path) {
