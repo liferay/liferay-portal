@@ -10,7 +10,7 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
-import {exportImportPagesTest} from '../../../export-import-web/main/fixtures/exportImportPagesTest';
+import {exportImportPagesTest} from '../../../export-import-web/revamp/fixtures/exportImportPagesTest';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
 const test = mergeTests(
@@ -18,7 +18,7 @@ const test = mergeTests(
 	dataApiHelpersTest,
 	exportImportPagesTest,
 	featureFlagsTest({
-		'LPD-57655': {enabled: false},
+		'LPD-57655': {enabled: true},
 	}),
 	loginTest()
 );
@@ -26,7 +26,13 @@ const test = mergeTests(
 test(
 	'System folders L_CONTENTS and L_FILES are excluded from export results in a new CMS Space',
 	{tag: '@LPD-83026'},
-	async ({apiHelpers, exportImportPage, homePage, page}) => {
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		homePage,
+		page,
+	}) => {
 		const spaceName = `Space ${getRandomString()}`;
 
 		const assetLibrary =
@@ -62,10 +68,11 @@ test(
 			trigger: page.getByRole('button', {name: 'More Actions'}),
 		});
 
-		await exportImportPage.newExportButton.click();
+		await exportImportPage.clickNew();
 
-		await expect(
-			page.getByText('Object Entry Folders 1 Items')
-		).toBeVisible();
+		const exportableItems =
+			await exportImportDataSelectionPage.getExportableItems();
+
+		expect(exportableItems.get('Object Entry Folders')).toBe(1);
 	}
 );

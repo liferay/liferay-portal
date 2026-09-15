@@ -17,6 +17,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {getTempDir} from '../../../utils/temp';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {exportImportPagesTest} from '../../export-import-web/revamp/fixtures/exportImportPagesTest';
 import postSingleApproverCopy from '../../portal-workflow-kaleo-designer-web/main/utils/postSingleApproverCopy';
 import {structureBuilderPagesTest} from '../structure-builder/fixtures/structureBuilderPagesTest';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
@@ -26,6 +27,17 @@ const test = mergeTests(
 	structureBuilderPagesTest,
 	dataApiHelpersTest,
 	loginTest()
+);
+
+const testWithExportImport = mergeTests(
+	cmsPagesTest,
+	dataApiHelpersTest,
+	exportImportPagesTest,
+	featureFlagsTest({
+		'LPD-57655': {enabled: true},
+	}),
+	loginTest(),
+	structureBuilderPagesTest
 );
 
 const testWithModalExportImport = mergeTests(
@@ -460,21 +472,21 @@ test(
 	}
 );
 
-testWithModalExportImport(
-	'Export and Import Content Structures actions open the export modal from the breadcrumb',
+testWithExportImport(
+	'Export and Import Content Structures actions open the export and import views from the breadcrumb',
 	{tag: '@LPD-78381'},
-	async ({page, structuresPage}) => {
-		await structuresPage.openMenuItem('Export');
+	async ({exportImportPage, page, structuresPage}) => {
+		await structuresPage.openMenuItem('Export Content Structures');
 
-		await expect(page.locator('.modal-title')).toHaveText(
-			'Export Content Structures'
-		);
+		await expect(page).toHaveURL(/view_export\.jsp/);
 
-		await structuresPage.openMenuItem('Import');
+		await expect(exportImportPage.newButton).toBeVisible();
 
-		await expect(page.locator('.modal-title')).toHaveText(
-			'Import Content Structures'
-		);
+		await structuresPage.openMenuItem('Import Content Structures');
+
+		await expect(page).toHaveURL(/view_import\.jsp/);
+
+		await expect(exportImportPage.newButton).toBeVisible();
 	}
 );
 
@@ -553,25 +565,27 @@ testWithModalExportImport(
 	}
 );
 
-testWithModalExportImport(
+testWithExportImport(
 	'Export Content Structures list includes only object definitions from CMS folders',
 	{tag: '@LPD-78381'},
-	async ({apiHelpers, page, structuresPage}) => {
-		const contentCountBadge = page
-			.getByRole('dialog', {name: 'Export Content Structures'})
-			.frameLocator('iframe')
-			.locator(
-				'label[for="_com_liferay_exportimport_web_portlet_ExportImportPortlet_PORTLET_DATA_com_liferay_object_web_internal_object_definitions_portlet_ObjectDefinitionsPortlet"] .badge-info'
-			);
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		structuresPage,
+	}) => {
+		const getObjectDefinitionsCount = async () => {
+			await structuresPage.openMenuItem('Export Content Structures');
 
-		await structuresPage.openMenuItem('Export');
+			await exportImportPage.clickNew();
 
-		await contentCountBadge.waitFor({state: 'visible'});
+			const exportableItems =
+				await exportImportDataSelectionPage.getExportableItems();
 
-		const initialCount = parseInt(
-			(await contentCountBadge.textContent()) ?? '0',
-			10
-		);
+			return exportableItems.get('Object Definitions') ?? 0;
+		};
+
+		const initialCount = await getObjectDefinitionsCount();
 
 		const objectDefinition1 =
 			await apiHelpers.objectAdmin.postRandomObjectDefinition({
@@ -595,9 +609,7 @@ testWithModalExportImport(
 			type: 'objectDefinition',
 		});
 
-		await structuresPage.openMenuItem('Export');
-
-		await expect(contentCountBadge).toHaveText(String(initialCount + 1));
+		expect(await getObjectDefinitionsCount()).toBe(initialCount + 1);
 	}
 );
 
