@@ -360,8 +360,8 @@ public class DatabaseTableAndColumnCaseDataCleanupPreupgradeProcessTest
 
 		serviceComponent.setData(
 			StringBundler.concat(
-				"<![CDATA[create table ", testTableName, " (	 \n",
-				testColumnName, " LONG"));
+				"<![CDATA[create table ", testTableName, " (\n\t",
+				testColumnName, " LONG\n);]]>"));
 
 		_serviceComponentLocalService.addServiceComponent(serviceComponent);
 
