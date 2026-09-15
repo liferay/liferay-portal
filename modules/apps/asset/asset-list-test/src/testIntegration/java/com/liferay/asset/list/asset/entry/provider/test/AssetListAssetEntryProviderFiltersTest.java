@@ -808,6 +808,31 @@ public class AssetListAssetEntryProviderFiltersTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
 	@Test
+	public void testGetAssetEntriesInfoPageWithTextContainsAllFilters()
+		throws Exception {
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, "the car is red"
+			).build());
+
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, "the car is blue"
+			).build());
+
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_TEXT, "red car"
+				).put(
+					"quantifier", "all"
+				)),
+			objectEntry1);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
 	public void testGetAssetEntriesInfoPageWithTextContainsFilters()
 		throws Exception {
 
