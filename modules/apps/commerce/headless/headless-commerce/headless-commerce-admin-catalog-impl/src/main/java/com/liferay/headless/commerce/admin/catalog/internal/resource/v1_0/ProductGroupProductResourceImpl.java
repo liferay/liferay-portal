@@ -5,12 +5,15 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.pricing.exception.NoSuchPricingClassException;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelService;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductGroupProduct;
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductGroupProductUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductGroupProductResource;
@@ -121,9 +124,10 @@ public class ProductGroupProductResourceImpl
 		CommercePricingClassCPDefinitionRel
 			commercePricingClassCPDefinitionRel =
 				ProductGroupProductUtil.addCommercePricingClassCPDefinitionRel(
-					_cProductLocalService,
+					_cProductLocalService, _commerceCatalogService,
+					_commerceCurrencyService, commercePricingClass,
 					_commercePricingClassCPDefinitionRelService,
-					productGroupProduct, commercePricingClass,
+					_cpDefinitionService, productGroupProduct,
 					_serviceContextHelper);
 
 		return _toProductGroupProduct(
@@ -139,10 +143,11 @@ public class ProductGroupProductResourceImpl
 		CommercePricingClassCPDefinitionRel
 			commercePricingClassCPDefinitionRel =
 				ProductGroupProductUtil.addCommercePricingClassCPDefinitionRel(
-					_cProductLocalService,
-					_commercePricingClassCPDefinitionRelService,
-					productGroupProduct,
+					_cProductLocalService, _commerceCatalogService,
+					_commerceCurrencyService,
 					_commercePricingClassService.getCommercePricingClass(id),
+					_commercePricingClassCPDefinitionRelService,
+					_cpDefinitionService, productGroupProduct,
 					_serviceContextHelper);
 
 		return _toProductGroupProduct(
@@ -176,11 +181,20 @@ public class ProductGroupProductResourceImpl
 	private CProductLocalService _cProductLocalService;
 
 	@Reference
+	private CommerceCatalogService _commerceCatalogService;
+
+	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
+
+	@Reference
 	private CommercePricingClassCPDefinitionRelService
 		_commercePricingClassCPDefinitionRelService;
 
 	@Reference
 	private CommercePricingClassService _commercePricingClassService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductGroupProductDTOConverter)"

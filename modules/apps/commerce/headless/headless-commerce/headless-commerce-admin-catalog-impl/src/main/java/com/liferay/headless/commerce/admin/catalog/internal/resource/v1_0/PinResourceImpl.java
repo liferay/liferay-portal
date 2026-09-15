@@ -197,16 +197,9 @@ public class PinResourceImpl extends BasePinResourceImpl {
 				skuId = cpInstance.getCPInstanceId();
 			}
 
-			long productId = GetterUtil.getLong(mappedProduct.getProductId());
-
-			CPDefinition cpDefinition =
-				ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
-					mappedProduct.getProductExternalReferenceCode(),
-					contextCompany.getCompanyId(), _cpDefinitionService);
-
-			if (cpDefinition != null) {
-				productId = cpDefinition.getCProductId();
-			}
+			long productId = MappedProductUtil.getCProductId(
+				contextCompany.getCompanyId(), _cpDefinitionService, groupId,
+				mappedProduct);
 
 			ServiceContext serviceContext =
 				_serviceContextHelper.getServiceContext(groupId);

@@ -7,8 +7,10 @@ package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 /**
@@ -58,6 +60,24 @@ public class ProductUtil {
 		}
 
 		return cpDefinition;
+	}
+
+	public static CPDefinition getCPDefinitionByCProductExternalReferenceCode(
+			long companyId, CPDefinitionService cpDefinitionService,
+			String externalReferenceCode, long groupId, String productTypeName)
+		throws PortalException {
+
+		CPDefinition cpDefinition =
+			fetchCPDefinitionByCProductExternalReferenceCode(
+				externalReferenceCode, companyId, cpDefinitionService);
+
+		if (cpDefinition != null) {
+			return cpDefinition;
+		}
+
+		return cpDefinitionService.getOrAddEmptyCPDefinition(
+			externalReferenceCode, groupId,
+			GetterUtil.getString(productTypeName, SimpleCPTypeConstants.NAME));
 	}
 
 	public static boolean isTaxExempt(

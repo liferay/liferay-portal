@@ -5,12 +5,18 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelService;
-import com.liferay.commerce.product.exception.NoSuchCProductException;
+import com.liferay.commerce.product.exception.NoSuchCatalogException;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductGroupProduct;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -25,41 +31,86 @@ public class ProductGroupProductUtil {
 	public static CommercePricingClassCPDefinitionRel
 			addCommercePricingClassCPDefinitionRel(
 				CProductLocalService cProductLocalService,
+				CommerceCatalogService commerceCatalogService,
+				CommerceCurrencyService commerceCurrencyService,
+				CommercePricingClass commercePricingClass,
 				CommercePricingClassCPDefinitionRelService
 					commercePricingClassCPDefinitionRelService,
+				CPDefinitionService cpDefinitionService,
 				ProductGroupProduct productGroupProduct,
-				CommercePricingClass commercePricingClass,
 				ServiceContextHelper serviceContextHelper)
 		throws PortalException {
 
 		ServiceContext serviceContext =
 			serviceContextHelper.getServiceContext();
 
-		CProduct cProduct;
-
-		if (Validator.isNull(
-				productGroupProduct.getProductExternalReferenceCode())) {
-
-			cProduct = cProductLocalService.getCProduct(
-				productGroupProduct.getProductId());
-		}
-		else {
-			cProduct =
-				cProductLocalService.fetchCProductByExternalReferenceCode(
-					productGroupProduct.getProductExternalReferenceCode(),
-					serviceContext.getCompanyId());
-
-			if (cProduct == null) {
-				throw new NoSuchCProductException(
-					"Unable to find product with external reference code " +
-						productGroupProduct.getProductExternalReferenceCode());
-			}
-		}
-
 		return commercePricingClassCPDefinitionRelService.
 			addCommercePricingClassCPDefinitionRel(
 				commercePricingClass.getCommercePricingClassId(),
-				cProduct.getPublishedCPDefinitionId(), serviceContext);
+				getCPDefinitionId(
+					cProductLocalService, commerceCatalogService,
+					commerceCurrencyService, cpDefinitionService,
+					productGroupProduct, serviceContext),
+				serviceContext);
+	}
+
+	public static long getCPDefinitionId(
+			CProductLocalService cProductLocalService,
+			CommerceCatalogService commerceCatalogService,
+			CommerceCurrencyService commerceCurrencyService,
+			CPDefinitionService cpDefinitionService,
+			ProductGroupProduct productGroupProduct,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		String productExternalReferenceCode =
+			productGroupProduct.getProductExternalReferenceCode();
+
+		if (Validator.isNull(productExternalReferenceCode)) {
+			CProduct cProduct = cProductLocalService.getCProduct(
+				productGroupProduct.getProductId());
+
+			return cProduct.getPublishedCPDefinitionId();
+		}
+
+		CProduct cProduct =
+			cProductLocalService.fetchCProductByExternalReferenceCode(
+				productExternalReferenceCode, serviceContext.getCompanyId());
+
+		if (cProduct != null) {
+			return cProduct.getPublishedCPDefinitionId();
+		}
+
+		String catalogExternalReferenceCode =
+			productGroupProduct.getCatalogExternalReferenceCode();
+
+		if (Validator.isNull(catalogExternalReferenceCode)) {
+			throw new NoSuchCatalogException(
+				"Unable to find catalog with external reference code " +
+					catalogExternalReferenceCode);
+		}
+
+		CommerceCatalog commerceCatalog =
+			commerceCatalogService.fetchCommerceCatalogByExternalReferenceCode(
+				catalogExternalReferenceCode, serviceContext.getCompanyId());
+
+		if (commerceCatalog == null) {
+			CommerceCurrency commerceCurrency =
+				commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+					catalogExternalReferenceCode, null);
+
+			commerceCatalog =
+				commerceCatalogService.getOrAddEmptyCommerceCatalog(
+					catalogExternalReferenceCode, commerceCurrency.getCode());
+		}
+
+		CPDefinition cpDefinition =
+			ProductUtil.getCPDefinitionByCProductExternalReferenceCode(
+				serviceContext.getCompanyId(), cpDefinitionService,
+				productExternalReferenceCode, commerceCatalog.getGroupId(),
+				productGroupProduct.getProductType());
+
+		return cpDefinition.getCPDefinitionId();
 	}
 
 }

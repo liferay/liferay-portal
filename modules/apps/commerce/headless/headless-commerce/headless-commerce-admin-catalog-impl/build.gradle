@@ -21,6 +21,7 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-pricing-api")
 	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:commerce:commerce-product-type-grouped-api")
+	compileOnly project(":apps:commerce:commerce-product-type-simple")
 	compileOnly project(":apps:commerce:commerce-product-type-virtual-api")
 	compileOnly project(":apps:commerce:commerce-shop-by-diagram-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce-core-api")

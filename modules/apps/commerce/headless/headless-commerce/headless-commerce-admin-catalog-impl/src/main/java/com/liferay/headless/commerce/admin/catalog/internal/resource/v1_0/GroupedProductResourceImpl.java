@@ -6,6 +6,7 @@
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
+import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.type.grouped.model.CPDefinitionGroupedEntry;
@@ -155,13 +156,14 @@ public class GroupedProductResourceImpl extends BaseGroupedProductResourceImpl {
 
 		CPDefinition entryCPDefinition = null;
 
-		if (Validator.isNotNull(
-				groupedProduct.getEntryProductExternalReferenceCode())) {
+		String entryProductExternalReferenceCode =
+			groupedProduct.getEntryProductExternalReferenceCode();
 
+		if (Validator.isNotNull(entryProductExternalReferenceCode)) {
 			entryCPDefinition =
 				_cpDefinitionService.
 					fetchCPDefinitionByCProductExternalReferenceCode(
-						groupedProduct.getEntryProductExternalReferenceCode(),
+						entryProductExternalReferenceCode,
 						contextCompany.getCompanyId(), false);
 		}
 
@@ -172,9 +174,18 @@ public class GroupedProductResourceImpl extends BaseGroupedProductResourceImpl {
 		}
 
 		if (entryCPDefinition == null) {
-			throw new NoSuchCPDefinitionException(
-				"Unable to find entry product with ID " +
-					groupedProduct.getEntryProductId());
+			if (Validator.isNull(entryProductExternalReferenceCode)) {
+				throw new NoSuchCProductException(
+					"Unable to find entry product with external reference " +
+						"code " + entryProductExternalReferenceCode);
+			}
+
+			entryCPDefinition =
+				ProductUtil.getCPDefinitionByCProductExternalReferenceCode(
+					contextCompany.getCompanyId(), _cpDefinitionService,
+					entryProductExternalReferenceCode,
+					cpDefinition.getGroupId(),
+					groupedProduct.getEntryProductType());
 		}
 
 		return _cpDefinitionGroupedEntryService.addCPDefinitionGroupedEntry(
