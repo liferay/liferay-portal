@@ -103,6 +103,8 @@ public abstract class BaseTestResult implements TestResult {
 		).put(
 			"status", getStatus()
 		).put(
+			"testClassName", getClassName()
+		).put(
 			"testTaskName", getTestTaskName()
 		);
 

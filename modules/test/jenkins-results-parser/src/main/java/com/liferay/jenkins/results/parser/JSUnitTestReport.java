@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.util.Objects;
+
 import org.json.JSONObject;
 
 /**
@@ -14,6 +16,12 @@ public class JSUnitTestReport extends BaseTestReport {
 
 	@Override
 	public String getTestClassName() {
+		String testClassName = super.getTestClassName();
+
+		if (!Objects.equals(testClassName, getTestName())) {
+			return testClassName;
+		}
+
 		return getTestTaskName();
 	}
 
@@ -36,6 +44,12 @@ public class JSUnitTestReport extends BaseTestReport {
 
 	@Override
 	public String getTestTaskName() {
+		String testTaskName = super.getTestTaskName();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(testTaskName)) {
+			return testTaskName;
+		}
+
 		String testName = super.getTestName();
 
 		int x = testName.indexOf(".modules.");
