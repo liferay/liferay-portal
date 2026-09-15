@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.util.ActionUtil;
 
 import jakarta.ws.rs.BadRequestException;
 
@@ -113,10 +114,9 @@ public class MessageBoardAttachmentResourceImpl
 			HashMapBuilder.<String, Map<String, String>>put(
 				"createBatch",
 				addAction(
-					ActionKeys.VIEW, mbMessage.getMessageId(),
+					ActionKeys.UPDATE, mbMessage.getMessageId(),
 					"postMessageBoardMessageMessageBoardAttachmentBatch",
-					mbMessage.getUserId(), MBConstants.RESOURCE_NAME,
-					mbMessage.getGroupId())
+					_mbMessageModelResourcePermission)
 			).build(),
 			mbMessage);
 	}
@@ -136,11 +136,11 @@ public class MessageBoardAttachmentResourceImpl
 		return _getMessageBoardAttachmentsPage(
 			HashMapBuilder.<String, Map<String, String>>put(
 				"createBatch",
-				addAction(
-					ActionKeys.ADD_MESSAGE, mbThread.getThreadId(),
+				ActionUtil.addAction(
+					ActionKeys.UPDATE, getClass(), mbMessage.getMessageId(),
 					"postMessageBoardThreadMessageBoardAttachmentBatch",
-					mbThread.getUserId(), MBConstants.RESOURCE_NAME,
-					mbThread.getGroupId())
+					_mbMessageModelResourcePermission, mbThread.getThreadId(),
+					contextUriInfo)
 			).build(),
 			mbMessage);
 	}
