@@ -41,29 +41,29 @@ public class SPATopHeadJSPDynamicIncludeTest {
 	@TestInfo("LPD-104833")
 	public void testInclude() throws Exception {
 
-		// The clear cache request attribute is set
+		// The clear cache request attribute is not set
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.SINGLE_PAGE_APPLICATION_CLEAR_CACHE, Boolean.TRUE);
 
 		String json = _include(mockHttpServletRequest);
 
 		Assert.assertNull(mockHttpServletRequest.getSession(false));
 
-		Assert.assertTrue(json, json.contains("\"clearScreensCache\":true"));
+		Assert.assertTrue(json, json.contains("\"clearScreensCache\":false"));
 
-		// The clear cache request attribute is not set
+		// The clear cache request attribute is set
 
 		mockHttpServletRequest = new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.SINGLE_PAGE_APPLICATION_CLEAR_CACHE, Boolean.TRUE);
 
 		json = _include(mockHttpServletRequest);
 
 		Assert.assertNull(mockHttpServletRequest.getSession(false));
 
-		Assert.assertTrue(json, json.contains("\"clearScreensCache\":false"));
+		Assert.assertTrue(json, json.contains("\"clearScreensCache\":true"));
 	}
 
 	private String _include(MockHttpServletRequest mockHttpServletRequest)
