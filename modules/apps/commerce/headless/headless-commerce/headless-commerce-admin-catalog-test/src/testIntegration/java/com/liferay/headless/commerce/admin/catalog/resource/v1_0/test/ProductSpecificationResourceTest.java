@@ -14,13 +14,18 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
+import com.liferay.commerce.product.service.CPOptionCategoryLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 
@@ -106,6 +111,8 @@ public class ProductSpecificationResourceTest
 		super.testPostProductIdProductSpecification();
 
 		_testPostProductIdProductSpecificationProductVersioning();
+		_testPostProductIdProductSpecificationWithLazyReferencingDisabled();
+		_testPostProductIdProductSpecificationWithLazyReferencingEnabled();
 	}
 
 	@Override
@@ -288,6 +295,18 @@ public class ProductSpecificationResourceTest
 			_cpDefinition.getCProductId(), productSpecification);
 	}
 
+	private ProductSpecification
+		_randomProductSpecificationWithEmptyOptionCategory() {
+
+		ProductSpecification productSpecification =
+			randomProductSpecification();
+
+		productSpecification.setOptionCategoryExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+
+		return productSpecification;
+	}
+
 	private void _testPostProductIdProductSpecificationProductVersioning()
 		throws Exception {
 
@@ -397,6 +416,59 @@ public class ProductSpecificationResourceTest
 		}
 	}
 
+	private void _testPostProductIdProductSpecificationWithLazyReferencingDisabled()
+		throws Exception {
+
+		ProductSpecification productSpecification =
+			_randomProductSpecificationWithEmptyOptionCategory();
+
+		ProductSpecification postProductSpecification =
+			productSpecificationResource.postProductIdProductSpecification(
+				_cpDefinition.getCProductId(), productSpecification);
+
+		Assert.assertEquals(
+			0,
+			GetterUtil.get(postProductSpecification.getOptionCategoryId(), 0));
+
+		Assert.assertNull(
+			_cpOptionCategoryLocalService.
+				fetchCPOptionCategoryByExternalReferenceCode(
+					productSpecification.
+						getOptionCategoryExternalReferenceCode(),
+					testCompany.getCompanyId()));
+	}
+
+	private void _testPostProductIdProductSpecificationWithLazyReferencingEnabled()
+		throws Exception {
+
+		ProductSpecification postProductSpecification = null;
+
+		ProductSpecification productSpecification =
+			_randomProductSpecificationWithEmptyOptionCategory();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			postProductSpecification =
+				productSpecificationResource.postProductIdProductSpecification(
+					_cpDefinition.getCProductId(), productSpecification);
+		}
+
+		CPOptionCategory cpOptionCategory =
+			_cpOptionCategoryLocalService.
+				getCPOptionCategoryByExternalReferenceCode(
+					productSpecification.
+						getOptionCategoryExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, cpOptionCategory.getStatus());
+		Assert.assertEquals(
+			cpOptionCategory.getCPOptionCategoryId(),
+			GetterUtil.getLong(postProductSpecification.getOptionCategoryId()));
+	}
+
 	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
 
@@ -412,6 +484,9 @@ public class ProductSpecificationResourceTest
 
 	@DeleteAfterTestRun
 	private CPOptionCategory _cpOptionCategory;
+
+	@Inject
+	private CPOptionCategoryLocalService _cpOptionCategoryLocalService;
 
 	@DeleteAfterTestRun
 	private CPSpecificationOption _cpSpecificationOption;

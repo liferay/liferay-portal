@@ -14,10 +14,14 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
+import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
+import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -140,6 +144,8 @@ public class ProductOptionResourceTest
 		assertValid(postProductOption);
 
 		_testPostProductIdProductOptionsPageProductVersioning();
+		_testPostProductIdProductOptionsPageWithLazyReferencingDisabled();
+		_testPostProductIdProductOptionsPageWithLazyReferencingEnabled();
 		_testPostProductIdProductOptionsPageWithOptionExternalReferenceCode();
 	}
 
@@ -271,6 +277,18 @@ public class ProductOptionResourceTest
 		}
 
 		return null;
+	}
+
+	private ProductOption _randomProductOptionWithEmptyOption()
+		throws Exception {
+
+		ProductOption productOption = randomProductOption();
+
+		productOption.setOptionExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		productOption.setOptionId(0L);
+
+		return productOption;
 	}
 
 	private void _testPatchProductOptionWithOptionExternalReferenceCode()
@@ -450,6 +468,59 @@ public class ProductOptionResourceTest
 		}
 	}
 
+	private void _testPostProductIdProductOptionsPageWithLazyReferencingDisabled()
+		throws Exception {
+
+		try {
+			productOptionResource.postProductIdProductOptionsPage(
+				_cProduct.getCProductId(),
+				new ProductOption[] {_randomProductOptionWithEmptyOption()});
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testPostProductIdProductOptionsPageWithLazyReferencingEnabled()
+		throws Exception {
+
+		Page<ProductOption> productOptionPage = null;
+
+		ProductOption productOption = _randomProductOptionWithEmptyOption();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			productOptionPage =
+				productOptionResource.postProductIdProductOptionsPage(
+					_cProduct.getCProductId(),
+					new ProductOption[] {productOption});
+		}
+
+		CPOption cpOption =
+			_cpOptionLocalService.getCPOptionByExternalReferenceCode(
+				productOption.getOptionExternalReferenceCode(),
+				testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, cpOption.getStatus());
+
+		ProductOption postProductOption = _getLastProductOption(
+			productOptionPage.getItems());
+
+		Assert.assertEquals(
+			cpOption.getCPOptionId(),
+			GetterUtil.getLong(postProductOption.getOptionId()));
+		Assert.assertEquals(
+			productOption.getOptionExternalReferenceCode(),
+			postProductOption.getOptionExternalReferenceCode());
+	}
+
 	private void _testPostProductIdProductOptionsPageWithOptionExternalReferenceCode()
 		throws Exception {
 
@@ -492,6 +563,10 @@ public class ProductOptionResourceTest
 	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
 
 	private CPInstance _cpInstance;
+
+	@Inject
+	private CPOptionLocalService _cpOptionLocalService;
+
 	private final Map<Long, ProductOption> _productOptions = new HashMap<>();
 
 }

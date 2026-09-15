@@ -24,6 +24,7 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
@@ -49,6 +50,7 @@ import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -390,6 +392,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductProductShippingConfigurationFromProductConfiguration();
 		_testPostProductProductTaxConfigurationFromProductConfiguration();
 		_testPostProductVirtual();
+		_testPostProductWithLazyReferencingDisabled();
+		_testPostProductWithLazyReferencingEnabled();
 		_testPostProductWithProductAccountGroupExternalReferenceCode();
 		_testPostProductWithProductChannelExternalReferenceCode();
 		_testPostProductWithTermsOfUseJournalArticleExternalReferenceCode();
@@ -565,6 +569,18 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 					}
 				}
 			});
+
+		return product;
+	}
+
+	private Product _randomProductWithEmptyCatalog() throws Exception {
+		Product product = randomProduct();
+
+		product.setCatalogCurrencyCode(
+			_commerceCatalog.getCommerceCurrencyCode());
+		product.setCatalogExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		product.setCatalogId((Long)null);
 
 		return product;
 	}
@@ -1206,6 +1222,49 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			productVirtualSettingsFileEntries[0];
 
 		Assert.assertNotNull(productVirtualSettingsFileEntry.getSrc());
+	}
+
+	private void _testPostProductWithLazyReferencingDisabled()
+		throws Exception {
+
+		try {
+			productResource.postProduct(_randomProductWithEmptyCatalog());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testPostProductWithLazyReferencingEnabled() throws Exception {
+		Product product = _randomProductWithEmptyCatalog();
+
+		Product postProduct = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			postProduct = productResource.postProduct(product);
+		}
+
+		CommerceCatalog commerceCatalog =
+			CommerceCatalogLocalServiceUtil.
+				getCommerceCatalogByExternalReferenceCode(
+					product.getCatalogExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
+		Assert.assertEquals(
+			(Long)commerceCatalog.getCommerceCatalogId(),
+			postProduct.getCatalogId());
+		Assert.assertEquals(
+			product.getCatalogCurrencyCode(),
+			commerceCatalog.getCommerceCurrencyCode());
 	}
 
 	private void _testPostProductWithProductAccountGroupExternalReferenceCode()
