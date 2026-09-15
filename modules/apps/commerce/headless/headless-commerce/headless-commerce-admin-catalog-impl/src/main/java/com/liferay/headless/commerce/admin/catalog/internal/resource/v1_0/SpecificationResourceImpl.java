@@ -20,6 +20,7 @@ import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionService;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -352,22 +353,33 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 				optionCategoryId);
 		}
 
-		if (cpOptionCategory == null) {
-			String externalReferenceCode = GetterUtil.getString(
-				optionCategory.getExternalReferenceCode());
-
-			if (Validator.isNotNull(externalReferenceCode)) {
-				cpOptionCategory =
-					_cpOptionCategoryService.
-						fetchCPOptionCategoryByExternalReferenceCode(
-							externalReferenceCode,
-							contextCompany.getCompanyId());
-			}
+		if (cpOptionCategory != null) {
+			return cpOptionCategory.getCPOptionCategoryId();
 		}
 
-		if (cpOptionCategory == null) {
+		String externalReferenceCode = GetterUtil.getString(
+			optionCategory.getExternalReferenceCode());
+
+		if (Validator.isNull(externalReferenceCode)) {
 			return 0;
 		}
+
+		cpOptionCategory =
+			_cpOptionCategoryService.
+				fetchCPOptionCategoryByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		if (cpOptionCategory != null) {
+			return cpOptionCategory.getCPOptionCategoryId();
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return 0;
+		}
+
+		cpOptionCategory =
+			_cpOptionCategoryService.getOrAddEmptyCPOptionCategory(
+				externalReferenceCode);
 
 		return cpOptionCategory.getCPOptionCategoryId();
 	}
