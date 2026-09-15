@@ -37,47 +37,41 @@ public class KeyReferenceUtilTest {
 	}
 
 	@Test
-	public void testIsParsableKeyReference() {
-		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference(""));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
+	public void testParseKeyReference() {
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference(""));
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference(
 				"${SecretRef:provider:identifier}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef:"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
-				"${secretRef::identifier}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
-				"${secretRef:provider:   }"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference("${secretRef:"));
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference("${secretRef::identifier}"));
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference("${secretRef:provider:   }"));
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference(
 				"${secretRef:provider:identifier"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference(
 				"${secretRef:provider:identifier}trailing"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
-				"${secretRef:provider:null}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef:provider:}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef:provider}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference(
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference("${secretRef:provider:null}"));
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference("${secretRef:provider:}"));
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference("${secretRef:provider}"));
+		Assert.assertNull(
+			KeyReferenceUtil.parseKeyReference(
 				"${secretRef:pro}vider:identifier}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef:}"));
-		Assert.assertFalse(
-			KeyReferenceUtil.isParsableKeyReference("${secretRef}"));
-		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference("${}"));
-		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference("abc"));
-		Assert.assertFalse(KeyReferenceUtil.isParsableKeyReference(null));
-		Assert.assertTrue(
-			KeyReferenceUtil.isParsableKeyReference(
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference("${secretRef:}"));
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference("${secretRef}"));
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference("${}"));
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference("abc"));
+		Assert.assertNull(KeyReferenceUtil.parseKeyReference(null));
+		Assert.assertNotNull(
+			KeyReferenceUtil.parseKeyReference(
 				"${keyRef:provider:identifier}"));
-		Assert.assertTrue(
-			KeyReferenceUtil.isParsableKeyReference(
+		Assert.assertNotNull(
+			KeyReferenceUtil.parseKeyReference(
 				"${secretRef:provider:identifier}"));
 	}
 
@@ -173,11 +167,7 @@ public class KeyReferenceUtilTest {
 		String identifier, String keyReferenceString, String providerId,
 		KeyReference.Type type) {
 
-		Assert.assertTrue(
-			keyReferenceString,
-			KeyReferenceUtil.isParsableKeyReference(keyReferenceString));
-
-		KeyReference keyReference = KeyReferenceUtil.toKeyReference(
+		KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
 			keyReferenceString);
 
 		Assert.assertEquals(identifier, keyReference.getIdentifier());

@@ -27,37 +27,7 @@ public class KeyReferenceUtil {
 		return false;
 	}
 
-	public static boolean isParsableKeyReference(String keyReferenceString) {
-		if (_parse(keyReferenceString) != null) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public static KeyReference toKeyReference(String keyReferenceString) {
-		KeyReference keyReference = _parse(keyReferenceString);
-
-		if (keyReference == null) {
-			throw new IllegalArgumentException("Invalid key reference");
-		}
-
-		return keyReference;
-	}
-
-	public static String toKeyReferenceString(KeyReference keyReference) {
-		String prefix = _KEY_REFERENCE_PREFIX_SECRET;
-
-		if (keyReference.getType() == KeyReference.Type.CRYPTO) {
-			prefix = _KEY_REFERENCE_PREFIX_CRYPTO;
-		}
-
-		return StringBundler.concat(
-			prefix, keyReference.getProviderId(), StringPool.COLON,
-			keyReference.getIdentifier(), StringPool.CLOSE_CURLY_BRACE);
-	}
-
-	private static KeyReference _parse(String keyReferenceString) {
+	public static KeyReference parseKeyReference(String keyReferenceString) {
 		if (keyReferenceString == null) {
 			return null;
 		}
@@ -110,6 +80,28 @@ public class KeyReferenceUtil {
 		}
 
 		return new KeyReference(identifier, providerId, type);
+	}
+
+	public static KeyReference toKeyReference(String keyReferenceString) {
+		KeyReference keyReference = parseKeyReference(keyReferenceString);
+
+		if (keyReference == null) {
+			throw new IllegalArgumentException("Invalid key reference");
+		}
+
+		return keyReference;
+	}
+
+	public static String toKeyReferenceString(KeyReference keyReference) {
+		String prefix = _KEY_REFERENCE_PREFIX_SECRET;
+
+		if (keyReference.getType() == KeyReference.Type.CRYPTO) {
+			prefix = _KEY_REFERENCE_PREFIX_CRYPTO;
+		}
+
+		return StringBundler.concat(
+			prefix, keyReference.getProviderId(), StringPool.COLON,
+			keyReference.getIdentifier(), StringPool.CLOSE_CURLY_BRACE);
 	}
 
 	private static final String _KEY_REFERENCE_PREFIX_CRYPTO = "${keyRef:";

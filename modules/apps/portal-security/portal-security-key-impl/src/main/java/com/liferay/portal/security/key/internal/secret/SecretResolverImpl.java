@@ -44,11 +44,12 @@ public class SecretResolverImpl implements SecretResolver {
 		}
 
 		try {
-			if (!KeyReferenceUtil.isParsableKeyReference(value)) {
+			KeyReference keyReference = KeyReferenceUtil.parseKeyReference(
+				value);
+
+			if (keyReference == null) {
 				throw new SecretException("Unable to parse the key reference");
 			}
-
-			KeyReference keyReference = KeyReferenceUtil.toKeyReference(value);
 
 			if (keyReference.getType() != KeyReference.Type.SECRET) {
 				throw new SecretException(
