@@ -2181,6 +2181,10 @@ public class ObjectEntryLocalServiceTest {
 						"listTypeEntryKeyRequired", "listTypeEntryKey1"
 					).build());
 
+				Map<String, Serializable> values = objectEntry.getValues();
+
+				Assert.assertEquals("test", values.get("encrypted"));
+
 				_assertCount(1);
 
 				Assert.assertEquals(
@@ -4082,6 +4086,66 @@ public class ObjectEntryLocalServiceTest {
 				objectDefinition1.getName(), objectDefinition2.getName()
 			},
 			_objectEntryLocalService, _objectRelationshipLocalService);
+	}
+
+	@Test
+	public void testAddObjectEntryWithValuesMatchingSelect() throws Exception {
+		ObjectField objectField = ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, "Localized Text",
+			"localizedText");
+
+		objectField.setLocalized(true);
+
+		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
+			Arrays.asList(
+				objectField,
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT,
+					ObjectFieldConstants.DB_TYPE_CLOB, "Long Text", "longText"),
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Text", "text")));
+
+		try {
+			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				LocaleUtil.toLanguageId(LocaleUtil.SPAIN),
+				HashMapBuilder.<String, Serializable>put(
+					"localizedText_i18n",
+					(Serializable)HashMapBuilder.<String, Serializable>put(
+						LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+						StringPool.BLANK
+					).put(
+						LocaleUtil.toLanguageId(LocaleUtil.SPAIN), "Habil"
+					).put(
+						LocaleUtil.toLanguageId(LocaleUtil.US), "Able"
+					).build()
+				).put(
+					"longText", "  Baker  "
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Map<String, Serializable> values = objectEntry.getValues();
+
+			Assert.assertEquals("Habil", values.get("localizedText"));
+			Assert.assertEquals(
+				HashMapBuilder.<String, Serializable>put(
+					LocaleUtil.toLanguageId(LocaleUtil.SPAIN), "Habil"
+				).put(
+					LocaleUtil.toLanguageId(LocaleUtil.US), "Able"
+				).build(),
+				values.get("localizedText_i18n"));
+			Assert.assertEquals("Baker", values.get("longText"));
+			Assert.assertEquals(StringPool.BLANK, values.get("text"));
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
 	}
 
 	@Test
