@@ -56,6 +56,12 @@ public class BaseTestReport implements TestReport {
 
 	@Override
 	public String getTestClassName() {
+		String testClassName = _jsonObject.optString("testClassName");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(testClassName)) {
+			return testClassName;
+		}
+
 		return getTestName();
 	}
 

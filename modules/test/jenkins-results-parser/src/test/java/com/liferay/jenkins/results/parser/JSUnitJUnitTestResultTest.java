@@ -18,6 +18,34 @@ public class JSUnitJUnitTestResultTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testGetClassName() {
+		testEquals(
+			":apps:portal-search:portal-search-web:packageRunTest",
+			_getJSUnitJUnitTestResult(
+				"liferay-portal.modules.apps.portal-search.portal-search-" +
+					"web.test.js.index",
+				"a b"
+			).getClassName());
+
+		testEquals(
+			"modules/apps/portal-search/portal-search-web/test/js/index.js",
+			_getJSUnitJUnitTestResult(
+				"modules/apps/portal-search/portal-search-web/test/js/index.js",
+				"a > b"
+			).getClassName());
+	}
+
+	@Test
+	public void testGetTestNameTestClassFile() {
+		testEquals(
+			"a > b",
+			_getJSUnitJUnitTestResult(
+				"modules/apps/portal-search/portal-search-web/test/js/index.js",
+				"a > b"
+			).getTestName());
+	}
+
+	@Test
 	public void testGetTestTaskName() {
 		testEquals(
 			":apps:frontend-js:frontend-js-clay-web:packageRunTest",
@@ -36,8 +64,45 @@ public class JSUnitJUnitTestResultTest
 					"web.test.js.index"));
 	}
 
-	private String _getTestTaskName(String className) {
-		JSUnitJUnitTestResult jsUnitJUnitTestResult = new JSUnitJUnitTestResult(
+	@Test
+	public void testGetTestTaskNameTestClassFile() {
+		testEquals(
+			":apps:frontend-js:frontend-js-clay-web:packageRunTest",
+			_getTestTaskName(
+				"modules/apps/frontend-js/frontend-js-clay-web/clay" +
+					"/clay-button/src/__tests__/index.tsx"));
+		testEquals(
+			":apps:frontend-js:frontend-js-web:packageRunTest",
+			_getTestTaskName(
+				"modules/apps/frontend-js/frontend-js-web/src/__tests__" +
+					"/index.js"));
+		testEquals(
+			":apps:portal-search:portal-search-web:packageRunTest",
+			_getTestTaskName(
+				"modules/apps/portal-search/portal-search-web/test/js" +
+					"/index.js"));
+	}
+
+	@Test
+	public void testGetTestTaskNameWorkspace() throws Exception {
+		testEquals(
+			"workspaces/liferay-osbfaro-workspace:modules:osb-faro-web:" +
+				"packageRunTest",
+			_getTestTaskName(
+				"workspaces/liferay-osbfaro-workspace/modules/osb-faro-web" +
+					"/src/main/js/assets/__tests__/dashboards.tsx"));
+		testEquals(
+			"workspaces/liferay-aihub-workspace:client-extensions:" +
+				"liferay-aihub-custom-element:packageRunTest",
+			_getTestTaskName(
+				"workspaces/liferay-aihub-workspace/client-extensions" +
+					"/liferay-aihub-custom-element/src/tests/api.spec.ts"));
+	}
+
+	private JSUnitJUnitTestResult _getJSUnitJUnitTestResult(
+		String className, String name) {
+
+		return new JSUnitJUnitTestResult(
 			Mockito.mock(Build.class),
 			new JSONObject(
 			).put(
@@ -45,10 +110,15 @@ public class JSUnitJUnitTestResultTest
 			).put(
 				"duration", RandomTestUtil.randomDouble()
 			).put(
-				"name", RandomTestUtil.randomString()
+				"name", name
 			).put(
 				"status", RandomTestUtil.randomString()
 			));
+	}
+
+	private String _getTestTaskName(String className) {
+		JSUnitJUnitTestResult jsUnitJUnitTestResult = _getJSUnitJUnitTestResult(
+			className, RandomTestUtil.randomString());
 
 		return jsUnitJUnitTestResult.getTestTaskName();
 	}
