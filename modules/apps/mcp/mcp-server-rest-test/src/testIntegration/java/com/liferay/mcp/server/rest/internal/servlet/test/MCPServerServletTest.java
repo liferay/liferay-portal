@@ -1255,8 +1255,6 @@ public class MCPServerServletTest {
 		Assert.assertEquals(entryName, postItemJSONObject.getString("name"));
 		Assert.assertFalse(postItemJSONObject.has("description"));
 
-		// Restricting a compound node hides its whole subtree
-
 		MCPServerTestUtil.updateMCPServerProfileToolRestrictFields(
 			getMCPServerProfileToolObjectEntry, "creator,description");
 
@@ -1272,8 +1270,6 @@ public class MCPServerServletTest {
 
 		Assert.assertEquals(profileName, itemJSONObject.getString("name"));
 		Assert.assertFalse(itemJSONObject.has("creator"));
-
-		// Lifting the restrictions exposes the fields again
 
 		MCPServerTestUtil.updateMCPServerProfileToolRestrictFields(
 			getMCPServerProfileToolObjectEntry, null);

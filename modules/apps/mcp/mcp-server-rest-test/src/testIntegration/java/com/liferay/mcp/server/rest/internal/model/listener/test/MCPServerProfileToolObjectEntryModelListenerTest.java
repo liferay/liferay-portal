@@ -155,8 +155,6 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 					mcpServerProfileToolObjectEntry.getObjectEntryId()),
 				"restrictFields"));
 
-		// Renaming a tool into one the profile already has
-
 		ObjectEntry postMCPServerProfileToolObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
 				_mcpServerProfileExternalReferenceCode, null,
@@ -198,8 +196,6 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 				).toString(),
 				"mcp/server-profile-tools/" + objectEntryId,
 				Http.Method.PATCH));
-
-		// Removing a restriction re-exposes the field
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(

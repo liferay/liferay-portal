@@ -140,9 +140,6 @@ public class MCPProfileToolUpgradeProcessTest {
 
 		_assertUpgrade(mcpServerProfileToolObjectEntry, objectDefinition);
 
-		// The batch provisioning of the current bundle must accept the field
-		// the upgrade added
-
 		_processBatchEngineUnits(_getMCPServerRestImplBundle());
 
 		_assertUpgrade(mcpServerProfileToolObjectEntry, objectDefinition);
