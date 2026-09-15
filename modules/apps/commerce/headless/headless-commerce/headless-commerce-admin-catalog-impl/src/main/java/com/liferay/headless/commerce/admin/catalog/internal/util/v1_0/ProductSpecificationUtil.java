@@ -14,9 +14,11 @@ import com.liferay.commerce.product.service.CPSpecificationOptionService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Alessio Antonio Rendina
@@ -119,13 +121,13 @@ public class ProductSpecificationUtil {
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		String externalReferenceCode = GetterUtil.getString(
+			productSpecification.getOptionCategoryExternalReferenceCode());
+
 		CPOptionCategory cpOptionCategory =
 			cpOptionCategoryService.
 				fetchCPOptionCategoryByExternalReferenceCode(
-					GetterUtil.getString(
-						productSpecification.
-							getOptionCategoryExternalReferenceCode()),
-					serviceContext.getCompanyId());
+					externalReferenceCode, serviceContext.getCompanyId());
 
 		if (cpOptionCategory != null) {
 			return cpOptionCategory.getCPOptionCategoryId();
@@ -135,6 +137,16 @@ public class ProductSpecificationUtil {
 			GetterUtil.getLong(productSpecification.getOptionCategoryId()));
 
 		if (cpOptionCategory != null) {
+			return cpOptionCategory.getCPOptionCategoryId();
+		}
+
+		if (Validator.isNotNull(externalReferenceCode) &&
+			LazyReferencingThreadLocal.isEnabled()) {
+
+			cpOptionCategory =
+				cpOptionCategoryService.getOrAddEmptyCPOptionCategory(
+					externalReferenceCode);
+
 			return cpOptionCategory.getCPOptionCategoryId();
 		}
 

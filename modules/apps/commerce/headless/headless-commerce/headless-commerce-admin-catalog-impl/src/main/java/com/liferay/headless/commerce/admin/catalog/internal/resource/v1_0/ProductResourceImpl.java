@@ -44,6 +44,7 @@ import com.liferay.commerce.product.service.CPSpecificationOptionService;
 import com.liferay.commerce.product.service.CPTaxCategoryService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.product.type.CPType;
@@ -614,10 +615,8 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		}
 		else if (product.getCatalogExternalReferenceCode() != null) {
 			commerceCatalog =
-				_commerceCatalogLocalService.
-					getCommerceCatalogByExternalReferenceCode(
-						product.getCatalogExternalReferenceCode(),
-						contextCompany.getCompanyId());
+				_commerceCatalogService.getOrAddEmptyCommerceCatalog(
+					product.getCatalogExternalReferenceCode());
 		}
 
 		if (commerceCatalog == null) {
@@ -1876,6 +1875,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Reference
+	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
 	private CommerceChannelRelService _commerceChannelRelService;
