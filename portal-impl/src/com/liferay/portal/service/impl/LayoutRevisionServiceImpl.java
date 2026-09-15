@@ -18,7 +18,9 @@ import com.liferay.portal.service.base.LayoutRevisionServiceBaseImpl;
 /**
  * @author Raymond Augé
  * @author Julio Camarero
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 
 	@Override

@@ -122,6 +122,10 @@ public class StagingUtil {
 		staging.deleteLastImportSettings(liveGroup, privateLayout);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void deleteRecentLayoutRevisionId(
 		HttpServletRequest httpServletRequest, long layoutSetBranchId,
 		long plid) {
@@ -132,6 +136,10 @@ public class StagingUtil {
 			httpServletRequest, layoutSetBranchId, plid);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void deleteRecentLayoutRevisionId(
 		long userId, long layoutSetBranchId, long plid) {
 
@@ -182,6 +190,10 @@ public class StagingUtil {
 		return staging.getPermissionStagingGroup(group);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static long getRecentLayoutRevisionId(
 			HttpServletRequest httpServletRequest, long layoutSetBranchId,
 			long plid)
@@ -193,6 +205,10 @@ public class StagingUtil {
 			httpServletRequest, layoutSetBranchId, plid);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static long getRecentLayoutRevisionId(
 			User user, long layoutSetBranchId, long plid)
 		throws PortalException {
@@ -202,6 +218,10 @@ public class StagingUtil {
 		return staging.getRecentLayoutRevisionId(user, layoutSetBranchId, plid);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static long getRecentLayoutSetBranchId(
 		HttpServletRequest httpServletRequest, long layoutSetId) {
 
@@ -211,6 +231,10 @@ public class StagingUtil {
 			httpServletRequest, layoutSetId);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static long getRecentLayoutSetBranchId(User user, long layoutSetId) {
 		Staging staging = _getStaging();
 
@@ -298,6 +322,10 @@ public class StagingUtil {
 		return staging.hasRemoteLayout(userId, stagingGroupId, plid);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static boolean hasWorkflowTask(
 			long userId, LayoutRevision layoutRevision)
 		throws PortalException {
@@ -321,12 +349,20 @@ public class StagingUtil {
 		return staging.isGroupAccessible(groupId, fromGroupId);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static boolean isIncomplete(Layout layout) {
 		Staging staging = _getStaging();
 
 		return staging.isIncomplete(layout);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static boolean isIncomplete(Layout layout, long layoutSetBranchId) {
 		Staging staging = _getStaging();
 
@@ -516,6 +552,10 @@ public class StagingUtil {
 		staging.schedulePublishToRemote(portletRequest);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void setRecentLayoutBranchId(
 			HttpServletRequest httpServletRequest, long layoutSetBranchId,
 			long plid, long layoutBranchId)
@@ -527,6 +567,10 @@ public class StagingUtil {
 			httpServletRequest, layoutSetBranchId, plid, layoutBranchId);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void setRecentLayoutBranchId(
 			User user, long layoutSetBranchId, long plid, long layoutBranchId)
 		throws PortalException {
@@ -537,6 +581,10 @@ public class StagingUtil {
 			user, layoutSetBranchId, plid, layoutBranchId);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void setRecentLayoutRevisionId(
 			HttpServletRequest httpServletRequest, long layoutSetBranchId,
 			long plid, long layoutRevisionId)
@@ -548,6 +596,10 @@ public class StagingUtil {
 			httpServletRequest, layoutSetBranchId, plid, layoutRevisionId);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void setRecentLayoutRevisionId(
 			User user, long layoutSetBranchId, long plid, long layoutRevisionId)
 		throws PortalException {
@@ -558,6 +610,10 @@ public class StagingUtil {
 			user, layoutSetBranchId, plid, layoutRevisionId);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void setRecentLayoutSetBranchId(
 			HttpServletRequest httpServletRequest, long layoutSetId,
 			long layoutSetBranchId)
@@ -569,6 +625,10 @@ public class StagingUtil {
 			httpServletRequest, layoutSetId, layoutSetBranchId);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void setRecentLayoutSetBranchId(
 			User user, long layoutSetId, long layoutSetBranchId)
 		throws PortalException {
@@ -629,6 +689,10 @@ public class StagingUtil {
 		staging.unschedulePublishToRemote(portletRequest);
 	}
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public static void updateLastImportSettings(
 			Element layoutElement, Layout layout,
 			PortletDataContext portletDataContext)

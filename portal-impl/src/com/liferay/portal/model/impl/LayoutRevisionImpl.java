@@ -47,7 +47,9 @@ import java.util.Locale;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutRevisionImpl extends LayoutRevisionBaseImpl {
 
 	@Override

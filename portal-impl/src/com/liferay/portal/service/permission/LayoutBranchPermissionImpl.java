@@ -14,7 +14,9 @@ import com.liferay.portal.kernel.service.permission.LayoutBranchPermission;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutBranchPermissionImpl implements LayoutBranchPermission {
 
 	@Override

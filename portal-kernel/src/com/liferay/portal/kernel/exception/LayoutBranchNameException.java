@@ -7,7 +7,9 @@ package com.liferay.portal.kernel.exception;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutBranchNameException extends PortalException {
 
 	public static final int DUPLICATE = 1;

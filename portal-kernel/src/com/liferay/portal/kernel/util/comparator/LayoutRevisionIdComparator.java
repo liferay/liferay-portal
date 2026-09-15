@@ -10,7 +10,9 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 
 /**
  * @author Raymond Augé
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutRevisionIdComparator
 	extends OrderByComparator<LayoutRevision> {
 

@@ -25,7 +25,9 @@ import java.util.List;
 /**
  * @author Raymond Augé
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutSetBranchServiceImpl extends LayoutSetBranchServiceBaseImpl {
 
 	@Override

@@ -74,10 +74,18 @@ public interface Staging {
 	public void deleteLastImportSettings(Group liveGroup, boolean privateLayout)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void deleteRecentLayoutRevisionId(
 		HttpServletRequest httpServletRequest, long layoutSetBranchId,
 		long plid);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void deleteRecentLayoutRevisionId(
 		long userId, long layoutSetBranchId, long plid);
 
@@ -96,18 +104,34 @@ public interface Staging {
 
 	public Group getPermissionStagingGroup(Group group);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public long getRecentLayoutRevisionId(
 			HttpServletRequest httpServletRequest, long layoutSetBranchId,
 			long plid)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public long getRecentLayoutRevisionId(
 			User user, long layoutSetBranchId, long plid)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public long getRecentLayoutSetBranchId(
 		HttpServletRequest httpServletRequest, long layoutSetId);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public long getRecentLayoutSetBranchId(User user, long layoutSetId);
 
 	public Layout getRemoteLayout(long userId, long stagingGroupId, long plid)
@@ -138,6 +162,10 @@ public interface Staging {
 	public boolean hasRemoteLayout(long userId, long stagingGroupId, long plid)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public boolean hasWorkflowTask(long userId, LayoutRevision layoutRevision)
 		throws PortalException;
 
@@ -146,8 +174,16 @@ public interface Staging {
 	public boolean isGroupAccessible(long groupId, long fromGroupId)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public boolean isIncomplete(Layout layout);
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public boolean isIncomplete(Layout layout, long layoutSetBranchId);
 
 	public boolean isRemoteLayoutHasPortletId(
@@ -225,29 +261,53 @@ public interface Staging {
 	public void schedulePublishToRemote(PortletRequest portletRequest)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void setRecentLayoutBranchId(
 			HttpServletRequest httpServletRequest, long layoutSetBranchId,
 			long plid, long layoutBranchId)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void setRecentLayoutBranchId(
 			User user, long layoutSetBranchId, long plid, long layoutBranchId)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void setRecentLayoutRevisionId(
 			HttpServletRequest httpServletRequest, long layoutSetBranchId,
 			long plid, long layoutRevisionId)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void setRecentLayoutRevisionId(
 			User user, long layoutSetBranchId, long plid, long layoutRevisionId)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void setRecentLayoutSetBranchId(
 			HttpServletRequest httpServletRequest, long layoutSetId,
 			long layoutSetBranchId)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void setRecentLayoutSetBranchId(
 			User user, long layoutSetId, long layoutSetBranchId)
 		throws PortalException;
@@ -272,6 +332,10 @@ public interface Staging {
 	public void unschedulePublishToRemote(PortletRequest portletRequest)
 		throws PortalException;
 
+	/**
+	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
+	 */
+	@Deprecated
 	public void updateLastImportSettings(
 			Element layoutElement, Layout layout,
 			PortletDataContext portletDataContext)

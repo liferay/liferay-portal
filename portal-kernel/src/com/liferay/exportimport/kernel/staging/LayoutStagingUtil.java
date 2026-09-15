@@ -17,7 +17,9 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 
 /**
  * @author Raymond Augé
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutStagingUtil {
 
 	public static LayoutRevision getLayoutRevision(Layout layout) {

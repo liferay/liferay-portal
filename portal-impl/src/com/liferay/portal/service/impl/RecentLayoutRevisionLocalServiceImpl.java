@@ -15,7 +15,9 @@ import com.liferay.portal.service.base.RecentLayoutRevisionLocalServiceBaseImpl;
 /**
  * @author Brian Wing Shun Chan
  * @author Preston Crary
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class RecentLayoutRevisionLocalServiceImpl
 	extends RecentLayoutRevisionLocalServiceBaseImpl {
 

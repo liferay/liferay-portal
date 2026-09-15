@@ -37,8 +37,10 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Raymond Augé
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
 @Component(service = LayoutStaging.class)
+@Deprecated
 public class LayoutStagingImpl implements LayoutStaging {
 
 	@Override

@@ -9,7 +9,9 @@ package com.liferay.portal.kernel.model;
  * <a href="RevisionConstants.java.html"><b><i>View Source</i></b></a>
  *
  * @author Raymond Augé
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutRevisionConstants {
 
 	public static final long DEFAULT_PARENT_LAYOUT_REVISION_ID = 0;

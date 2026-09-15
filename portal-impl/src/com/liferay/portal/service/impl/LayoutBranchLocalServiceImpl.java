@@ -35,8 +35,10 @@ import java.util.List;
 
 /**
  * @author Julio Camarero
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
 @CTAware
+@Deprecated
 public class LayoutBranchLocalServiceImpl
 	extends LayoutBranchLocalServiceBaseImpl {
 

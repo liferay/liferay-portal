@@ -28,7 +28,9 @@ import java.util.function.Function;
 /**
  * @author Julio Camarero
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutSetStagingHandler
 	implements InvocationHandler, Serializable {
 

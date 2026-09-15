@@ -11,7 +11,9 @@ import com.liferay.petra.string.StringPool;
  * <a href="BranchConstants.java.html"><b><i>View Source</i></b></a>
  *
  * @author Julio Camarero
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutBranchConstants {
 
 	public static final String MASTER_BRANCH_DESCRIPTION = StringPool.BLANK;

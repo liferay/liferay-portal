@@ -9,7 +9,9 @@ package com.liferay.portal.kernel.model;
  * <a href="BranchConstants.java.html"><b><i>View Source</i></b></a>
  *
  * @author Raymond Augé
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class LayoutSetBranchConstants {
 
 	public static final long ALL_BRANCHES = 0;

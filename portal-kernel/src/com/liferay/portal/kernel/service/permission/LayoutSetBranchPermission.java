@@ -12,7 +12,9 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 /**
  * @author Charles May
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public interface LayoutSetBranchPermission {
 
 	public void check(

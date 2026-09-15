@@ -7,6 +7,8 @@ package com.liferay.portal.model.impl;
 
 /**
  * @author Brian Wing Shun Chan
+ * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
  */
+@Deprecated
 public class RecentLayoutSetBranchImpl extends RecentLayoutSetBranchBaseImpl {
 }
