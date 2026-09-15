@@ -81,6 +81,23 @@ public class ObjectDefinitionTestUtil {
 			new ServiceContext());
 	}
 
+	public static ObjectDefinition addCustomObjectDefinition(
+			Map<Locale, String> descriptionMap)
+		throws Exception {
+
+		return ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
+			null, TestPropsValues.getUserId(), 0, null, descriptionMap, true,
+			false, true, false, true, false, false, false, false,
+			FriendlyURLResolverConstants.URL_SEPARATOR_Y_OBJECT_ENTRY,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			getRandomName(), null, null,
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+			true, ObjectDefinitionConstants.SCOPE_COMPANY,
+			ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
+			Collections.emptyList(), Collections.emptyList(),
+			Collections.emptyList(), new ServiceContext());
+	}
+
 	public static ObjectDefinition addCustomObjectDefinition(String name)
 		throws Exception {
 

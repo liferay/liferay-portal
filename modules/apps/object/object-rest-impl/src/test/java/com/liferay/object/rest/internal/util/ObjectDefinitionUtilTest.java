@@ -46,7 +46,69 @@ public class ObjectDefinitionUtilTest {
 	}
 
 	@Test
-	public void testGetDescription() {
+	public void testGetDescriptionWithObjectDefinition() {
+
+		// No description
+
+		Assert.assertNull(
+			ObjectDefinitionUtil.getDescription(_objectDefinition));
+
+		Mockito.when(
+			_objectDefinition.getDescription(_DEFAULT_LANGUAGE_ID, false)
+		).thenReturn(
+			StringPool.BLANK
+		);
+
+		Mockito.when(
+			_objectDefinition.getDescription(_ENGLISH_LANGUAGE_ID, false)
+		).thenReturn(
+			StringPool.BLANK
+		);
+
+		Assert.assertNull(
+			ObjectDefinitionUtil.getDescription(_objectDefinition));
+
+		// With English translation
+
+		String description = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_objectDefinition.getDescription(_DEFAULT_LANGUAGE_ID, false)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			_objectDefinition.getDescription(_ENGLISH_LANGUAGE_ID, false)
+		).thenReturn(
+			description
+		);
+
+		Assert.assertEquals(
+			description,
+			ObjectDefinitionUtil.getDescription(_objectDefinition));
+
+		// Without English translation
+
+		Mockito.when(
+			_objectDefinition.getDescription(_DEFAULT_LANGUAGE_ID, false)
+		).thenReturn(
+			description
+		);
+
+		Mockito.when(
+			_objectDefinition.getDescription(_ENGLISH_LANGUAGE_ID, false)
+		).thenReturn(
+			StringPool.BLANK
+		);
+
+		Assert.assertEquals(
+			description,
+			ObjectDefinitionUtil.getDescription(_objectDefinition));
+	}
+
+	@Test
+	public void testGetDescriptionWithObjectField() {
 
 		// No description
 

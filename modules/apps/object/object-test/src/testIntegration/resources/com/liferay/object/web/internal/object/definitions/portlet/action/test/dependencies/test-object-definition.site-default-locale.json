@@ -1,5 +1,9 @@
 {
 	"defaultLanguageId": "en_US",
+	"description": {
+		"en_US": "Esta é a descrição da definição de objeto.",
+		"pt_BR": "Esta é a descrição da definição de objeto."
+	},
 	"label": {
 		"en_US": "Definição de Objeto Teste",
 		"pt_BR": "Definição de Objeto Teste"

@@ -822,6 +822,30 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testAddCustomObjectDefinitionWithDescription()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				HashMapBuilder.put(
+					LocaleUtil.GERMANY,
+					"Dies ist die Beschreibung der Objektdefinition."
+				).put(
+					LocaleUtil.US,
+					"This is the description of an object definition."
+				).build());
+
+		Assert.assertEquals(
+			"Dies ist die Beschreibung der Objektdefinition.",
+			objectDefinition.getDescription(LocaleUtil.GERMANY));
+		Assert.assertEquals(
+			"This is the description of an object definition.",
+			objectDefinition.getDescription(LocaleUtil.US));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testAddCustomObjectDefinitionWithRegisteredPortletId()
 		throws Exception {
 
@@ -4153,6 +4177,14 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateCustomObjectDefinitionDescriptionMap()
+		throws Exception {
+
+		_testUpdateCustomObjectDefinitionDescriptionMap(Collections.emptyMap());
+		_testUpdateCustomObjectDefinitionDescriptionMap(null);
+	}
+
+	@Test
 	public void testUpdateExternalReferenceCode() throws Exception {
 		ObjectDefinition customObjectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
@@ -5773,6 +5805,28 @@ public class ObjectDefinitionLocalServiceTest {
 		Assert.assertFalse(iterator.hasNext());
 	}
 
+	private void _testUpdateCustomObjectDefinitionDescriptionMap(
+			Map<Locale, String> descriptionMap)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(
+				HashMapBuilder.put(
+					LocaleUtil.US,
+					"This is the description of an object definition."
+				).build());
+
+		objectDefinition = _updateCustomObjectDefinition(
+			objectDefinition.getClassName(), objectDefinition,
+			Collections.emptyList(), descriptionMap);
+
+		Assert.assertEquals(
+			"This is the description of an object definition.",
+			objectDefinition.getDescription(LocaleUtil.US));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
 	private void
 			_testUpdateCustomObjectDefinitionThrowsObjectFieldRelationshipTypeException(
 				ObjectDefinition objectDefinition1)
@@ -5989,6 +6043,16 @@ public class ObjectDefinitionLocalServiceTest {
 			List<ObjectDefinitionSetting> objectDefinitionSettings)
 		throws Exception {
 
+		return _updateCustomObjectDefinition(
+			className, objectDefinition, objectDefinitionSettings, null);
+	}
+
+	private ObjectDefinition _updateCustomObjectDefinition(
+			String className, ObjectDefinition objectDefinition,
+			List<ObjectDefinitionSetting> objectDefinitionSettings,
+			Map<Locale, String> descriptionMap)
+		throws Exception {
+
 		return _objectDefinitionLocalService.updateCustomObjectDefinition(
 			objectDefinition.getExternalReferenceCode(),
 			objectDefinition.getObjectDefinitionId(),
@@ -5997,7 +6061,7 @@ public class ObjectDefinitionLocalServiceTest {
 			objectDefinition.getObjectFolderId(),
 			objectDefinition.getTitleObjectFieldId(),
 			objectDefinition.isAccountEntryRestricted(),
-			objectDefinition.isActive(), className, null,
+			objectDefinition.isActive(), className, descriptionMap,
 			objectDefinition.isEnableCategorization(),
 			objectDefinition.isEnableComments(),
 			objectDefinition.isEnableFormContainer(),

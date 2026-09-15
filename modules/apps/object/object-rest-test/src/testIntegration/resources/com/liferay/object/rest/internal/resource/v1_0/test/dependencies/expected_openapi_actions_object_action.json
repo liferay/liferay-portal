@@ -2685,6 +2685,7 @@
 		},
 		"/by-external-reference-code/{externalReferenceCode}/object-actions/objectAction": {
 			"put": {
+				"description": "This is the description of an object action.",
 				"operationId": "putObject1ObjectAction",
 				"parameters": [
 					{
@@ -3857,6 +3858,7 @@
 		},
 		"/{object1Id}/object-actions/objectAction": {
 			"put": {
+				"description": "This is the description of an object action.",
 				"operationId": "putObject1ObjectAction",
 				"parameters": [
 					{
