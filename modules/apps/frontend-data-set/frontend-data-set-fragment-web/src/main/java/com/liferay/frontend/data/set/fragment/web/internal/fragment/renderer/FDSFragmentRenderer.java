@@ -131,6 +131,15 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			FragmentEntryLink fragmentEntryLink =
 				fragmentRendererContext.getFragmentEntryLink();
 
+			ObjectDefinition dataSetObjectDefinition =
+				_dataSetObjectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_DATA_SET", fragmentEntryLink.getCompanyId());
+
+			if (fragmentRendererContext.isEditMode()) {
+				_writeClassName(dataSetObjectDefinition, fragmentEntryLink);
+			}
+
 			JSONObject configurationJSONObject = getConfigurationJSONObject(
 				fragmentRendererContext);
 
@@ -147,11 +156,6 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 
 			if (Validator.isNotNull(externalReferenceCode)) {
 				try {
-					ObjectDefinition dataSetObjectDefinition =
-						_dataSetObjectDefinitionLocalService.
-							fetchObjectDefinitionByExternalReferenceCode(
-								"L_DATA_SET", fragmentEntryLink.getCompanyId());
-
 					DefaultObjectEntryManager defaultObjectEntryManager =
 						DefaultObjectEntryManagerProvider.provide(
 							_dataSetObjectEntryManagerRegistry.
@@ -345,6 +349,36 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 		}
 
 		return tokenNames;
+	}
+
+	private JSONObject _getConfigurationValuesJSONObject(
+		FragmentEntryLink fragmentEntryLink) {
+
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
+
+		if (editableValuesJSONObject == null) {
+			editableValuesJSONObject = _jsonFactory.createJSONObject();
+
+			fragmentEntryLink.setEditableValues(
+				editableValuesJSONObject.toString());
+		}
+
+		JSONObject configurationValuesJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
+
+		if (configurationValuesJSONObject == null) {
+			configurationValuesJSONObject = _jsonFactory.createJSONObject();
+
+			editableValuesJSONObject.put(
+				FragmentEntryProcessorConstants.
+					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+				configurationValuesJSONObject);
+		}
+
+		return configurationValuesJSONObject;
 	}
 
 	private String _getExternalReferenceCode(InfoItemDetails infoItemDetails) {
@@ -607,29 +641,8 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 		String externalReferenceCode, FragmentEntryLink fragmentEntryLink,
 		HttpServletRequest httpServletRequest) {
 
-		JSONObject editableValuesJSONObject =
-			fragmentEntryLink.getEditableValuesJSONObject();
-
-		if (editableValuesJSONObject == null) {
-			editableValuesJSONObject = _jsonFactory.createJSONObject();
-
-			fragmentEntryLink.setEditableValues(
-				editableValuesJSONObject.toString());
-		}
-
-		JSONObject configurationJSONObject =
-			editableValuesJSONObject.getJSONObject(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR);
-
-		if (configurationJSONObject == null) {
-			configurationJSONObject = _jsonFactory.createJSONObject();
-
-			editableValuesJSONObject.put(
-				FragmentEntryProcessorConstants.
-					KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
-				configurationJSONObject);
-		}
+		JSONObject configurationValuesJSONObject =
+			_getConfigurationValuesJSONObject(fragmentEntryLink);
 
 		try {
 			JSONArray jsonArray = JSONUtil.toJSONArray(
@@ -637,7 +650,7 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 					externalReferenceCode, httpServletRequest),
 				autoResolvedTokenName -> autoResolvedTokenName);
 
-			configurationJSONObject.put(
+			configurationValuesJSONObject.put(
 				"autoResolvedTokenNames", jsonArray.toString());
 		}
 		catch (Exception exception) {
@@ -646,6 +659,35 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 					"Unable to write auto resolved token names", exception);
 			}
 		}
+	}
+
+	private void _writeClassName(
+		ObjectDefinition dataSetObjectDefinition,
+		FragmentEntryLink fragmentEntryLink) {
+
+		if (dataSetObjectDefinition == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"L_DATA_SET object definition was not found for company " +
+						fragmentEntryLink.getCompanyId());
+			}
+
+			return;
+		}
+
+		JSONObject configurationValuesJSONObject =
+			_getConfigurationValuesJSONObject(fragmentEntryLink);
+
+		JSONObject jsonObject = configurationValuesJSONObject.getJSONObject(
+			"itemSelector");
+
+		if (jsonObject == null) {
+			jsonObject = _jsonFactory.createJSONObject();
+
+			configurationValuesJSONObject.put("itemSelector", jsonObject);
+		}
+
+		jsonObject.put("className", dataSetObjectDefinition.getClassName());
 	}
 
 	private void _writeDestroyPreviousComponentScript(

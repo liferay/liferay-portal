@@ -17,7 +17,7 @@ import React from 'react';
 
 interface IProps {
 	onChange: (dataSet: Partial<IDataSet>) => void;
-	value: IDataSet;
+	value: Partial<IDataSet>;
 }
 
 const FDS_VIEWS = [
@@ -122,20 +122,11 @@ export default function DataSetSelector({onChange, value}: IProps) {
 								},
 								itemTypeLabel: dataSetLabel,
 								items: value.externalReferenceCode
-									? [value]
+									? [value as IDataSet]
 									: [],
 								onItemsChange: (items: IDataSet[]) => {
 									if (items && !!items.length) {
-										onChange({
-											additionalAPIURLParameters:
-												items[0]
-													.additionalAPIURLParameters,
-											externalReferenceCode:
-												items[0].externalReferenceCode,
-											id: items[0].id,
-											label: items[0].label,
-											restEndpoint: items[0].restEndpoint,
-										});
+										onChange(items[0]);
 									}
 								},
 							});
