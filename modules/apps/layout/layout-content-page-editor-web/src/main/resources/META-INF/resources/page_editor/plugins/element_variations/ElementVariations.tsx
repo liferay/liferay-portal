@@ -21,6 +21,7 @@ import AppliedFilters from './AppliedFilters';
 import AudiencePriority from './AudiencePriority';
 import ElementVariationFilterMenu from './ElementVariationFilterMenu';
 import ElementVariationForm from './ElementVariationForm';
+import ElementVariationSearch from './ElementVariationSearch';
 import ElementVariationService from './ElementVariationService';
 import ElementVariationsList from './ElementVariationsList';
 import ElementVariationsPreview, {
@@ -123,6 +124,7 @@ function ElementVariations({
 			filters,
 			highlightedTargetElement,
 			languageId,
+			searchTerm,
 		},
 		dispatch,
 	] = useReducer(
@@ -141,10 +143,13 @@ function ElementVariations({
 			elementVariation.segmentsExperienceERC === experienceKey
 	);
 
-	const filteredElementVariations = getFilteredVariations(
-		experienceElementVariations,
-		filters
-	);
+	const filteredElementVariations = getFilteredVariations({
+		audiences,
+		editableElementOptions: editableElementOptions ?? [],
+		elementVariations: experienceElementVariations,
+		filters,
+		searchTerm,
+	});
 
 	const selectedExperience = experiences.find(
 		(experience) => experience.segmentsExperienceERC === experienceKey
@@ -158,6 +163,8 @@ function ElementVariations({
 	);
 
 	const [sidebarOpen, setSidebarOpen] = useState(false);
+
+	const [searchOpen, setSearchOpen] = useState(false);
 
 	const screenLarge = useMediaQuery(LARGE_MEDIA_QUERY);
 
@@ -290,43 +297,82 @@ function ElementVariations({
 							/>
 
 							<div className="align-items-center border-bottom border-top d-flex justify-content-between px-3 py-2">
-								<ElementVariationFilterMenu
-									audiences={audiences}
-									filters={filters}
-									onAddFilter={(filter) =>
-										dispatch({filter, type: 'ADD_FILTER'})
-									}
-									trigger={
-										<ClayButtonWithIcon
-											aria-label={Liferay.Language.get(
-												'filter'
-											)}
-											borderless
-											displayType="secondary"
-											size="sm"
-											symbol="filter"
-											title={Liferay.Language.get(
-												'filter'
-											)}
+								{searchOpen ? (
+									<ElementVariationSearch
+										onClose={() => setSearchOpen(false)}
+										onSearch={(searchTerm) =>
+											dispatch({
+												searchTerm,
+												type: 'SET_SEARCH_TERM',
+											})
+										}
+										searchTerm={searchTerm}
+									/>
+								) : (
+									<>
+										<ElementVariationFilterMenu
+											audiences={audiences}
+											filters={filters}
+											onAddFilter={(filter) =>
+												dispatch({
+													filter,
+													type: 'ADD_FILTER',
+												})
+											}
+											trigger={
+												<ClayButtonWithIcon
+													aria-label={Liferay.Language.get(
+														'filter'
+													)}
+													borderless
+													displayType="secondary"
+													size="sm"
+													symbol="filter"
+													title={Liferay.Language.get(
+														'filter'
+													)}
+												/>
+											}
 										/>
-									}
-								/>
 
-								<ClayButtonWithIcon
-									aria-label={Liferay.Language.get(
-										'new-variation'
-									)}
-									displayType="primary"
-									onClick={createElementVariationDraft}
-									size="sm"
-									symbol="plus"
-									title={Liferay.Language.get(
-										'new-variation'
-									)}
-								/>
+										<div className="align-items-center d-flex">
+											<ClayButtonWithIcon
+												aria-label={Liferay.Language.get(
+													'search'
+												)}
+												borderless
+												className="mr-2"
+												displayType="secondary"
+												onClick={() =>
+													setSearchOpen(true)
+												}
+												size="sm"
+												symbol="search"
+												title={Liferay.Language.get(
+													'search'
+												)}
+											/>
+
+											<ClayButtonWithIcon
+												aria-label={Liferay.Language.get(
+													'new-variation'
+												)}
+												displayType="primary"
+												onClick={
+													createElementVariationDraft
+												}
+												size="sm"
+												symbol="plus"
+												title={Liferay.Language.get(
+													'new-variation'
+												)}
+											/>
+										</div>
+									</>
+								)}
 							</div>
 
-							{filters.length ? (
+							{Boolean(filters.length) || searchTerm ? (
 								<AppliedFilters
 									audiences={audiences}
 									filters={filters}
@@ -335,6 +381,12 @@ function ElementVariations({
 									}
 									onClearFilters={() =>
 										dispatch({type: 'CLEAR_FILTERS'})
+									}
+									onClearSearch={() =>
+										dispatch({
+											searchTerm: '',
+											type: 'SET_SEARCH_TERM',
+										})
 									}
 									onDeleteFilter={(filterType) =>
 										dispatch({
@@ -345,6 +397,7 @@ function ElementVariations({
 									resultsCount={
 										filteredElementVariations.length
 									}
+									searchTerm={searchTerm}
 								/>
 							) : null}
 
@@ -378,7 +431,7 @@ function ElementVariations({
 											)}
 										</ClayLink>
 									</ClayEmptyState>
-								) : Boolean(filters.length) &&
+								) : (Boolean(filters.length) || searchTerm) &&
 								  !filteredElementVariations.length ? (
 									<ClayEmptyState
 										className="mb-0 px-3"
