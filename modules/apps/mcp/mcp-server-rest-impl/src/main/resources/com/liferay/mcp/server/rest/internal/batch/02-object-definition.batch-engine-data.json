@@ -39,6 +39,22 @@
 					"type": "String"
 				},
 				{
+					"DBType": "Clob",
+					"businessType": "LongText",
+					"defaultValue": "null",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Instructions"
+					},
+					"name": "instructions",
+					"required": false,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
 					"DBType": "String",
 					"businessType": "Text",
 					"defaultValue": "null",
