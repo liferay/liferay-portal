@@ -9,6 +9,17 @@ components:
                         "Name of the account."
                     readOnly: true
                     type: string
+                accountType:
+                    description:
+                        "Account classification supplied by the data source (e.g. 'Customer', 'Partner')."
+                    readOnly: true
+                    type: string
+                activitiesCount:
+                    description:
+                        "Total number of tracked activities attributed to individuals associated with this account, over the account's whole history. Not a windowed count."
+                    format: int64
+                    readOnly: true
+                    type: integer
                 annualRevenue:
                     description:
                         "Annual revenue of the account."
@@ -23,6 +34,12 @@ components:
                 dateModified:
                     description:
                         "Last time the account record was modified within Analytics Cloud."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                firstActivityDate:
+                    description:
+                        "Date of the earliest tracked activity from any individual associated with this account."
                     format: date-time
                     readOnly: true
                     type: string
@@ -45,6 +62,16 @@ components:
                 lifecycleStage:
                     description:
                         "Sales/marketing lifecycle stage of the account (e.g. 'Prospect', 'Customer')."
+                    readOnly: true
+                    type: string
+                numberOfEmployees:
+                    description:
+                        "Number of employees reported for the account."
+                    readOnly: true
+                    type: integer
+                website:
+                    description:
+                        "Website of the account."
                     readOnly: true
                     type: string
             type: object
@@ -195,7 +222,7 @@ components:
             type: object
         Event:
             description:
-                "A single tracked analytics event captured — page views, custom events, form submissions, etc. Each event carries free-form `attributes` (a name-value map of contextual properties) plus any matching page metadata. Use `getWorkspaceGroupChannelEventsPage` to retrieve a list of analytics events."
+                "A single tracked analytics event captured — page views, custom events, form submissions, etc. Each event carries free-form `attributes` (a name value map of contextual properties) plus any matching page metadata. Use `getWorkspaceGroupChannelEventsPage` to retrieve a list of analytics events."
             properties:
                 applicationId:
                     description:
@@ -261,6 +288,31 @@ components:
                     readOnly: true
                     type: string
             type: object
+        EventMetric:
+            description:
+                "Event and session totals for a single account or individual over the selected date range, each with the previous period's total, a trend, and a time series bucketed by the requested interval. Use `getWorkspaceGroupChannelAccountEventMetric` or `getWorkspaceGroupChannelIndividualEventMetric` to retrieve it."
+            properties:
+                totalEvents:
+                    $ref: "#/components/schemas/Metric"
+                totalSessions:
+                    $ref: "#/components/schemas/Metric"
+            type: object
+        HistogramBucket:
+            description:
+                "One bucket of a metric's time series."
+            properties:
+                key:
+                    description:
+                        "Start of the bucket, as an ISO-8601 date-time."
+                    readOnly: true
+                    type: string
+                value:
+                    description:
+                        "Metric value inside the bucket."
+                    format: double
+                    readOnly: true
+                    type: number
+            type: object
         Individual:
             description:
                 "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser-tracked only)."
@@ -273,6 +325,17 @@ components:
                 activitiesCount:
                     description:
                         "Total number of tracked activities attributed to this individual."
+                    format: int64
+                    readOnly: true
+                    type: integer
+                activityStatus:
+                    description:
+                        "Engagement classification computed by Analytics Cloud from the individual's recent activity. The set of values is defined by the analytics engine."
+                    readOnly: true
+                    type: string
+                averageSessionDuration:
+                    description:
+                        "Average duration of the individual's sessions, in milliseconds."
                     format: int64
                     readOnly: true
                     type: integer
@@ -297,6 +360,11 @@ components:
                         "Per-category demographic attributes attached to this Individual. The map key is the demographic category (e.g. 'profile', 'address', 'employment'), and each value is a list of attribute records. Use `IndividualDemographicField.fieldType` to interpret each `value`."
                     readOnly: true
                     type: object
+                emailAddress:
+                    description:
+                        "Email address of a known individual, taken from the 'email' demographic attribute. Null for anonymous individuals or when no data source supplies one."
+                    readOnly: true
+                    type: string
                 firstActivityDate:
                     description:
                         "Date of the earliest tracked activity for this individual."
@@ -306,6 +374,12 @@ components:
                 id:
                     description:
                         "Individual ID. Use this with `getWorkspaceGroupIndividual` to fetch a single individual."
+                    readOnly: true
+                    type: string
+                knownSinceDate:
+                    description:
+                        "Date the individual stopped being anonymous and became known."
+                    format: date-time
                     readOnly: true
                     type: string
                 lastActivityDate:
@@ -319,12 +393,23 @@ components:
                         "Country detected for the individual's most recent session."
                     readOnly: true
                     type: string
+                name:
+                    description:
+                        "Display name of a known individual, built from the 'givenName' and 'familyName' demographic attributes. Null when neither is available."
+                    readOnly: true
+                    type: string
                 profileType:
                     description:
                         "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser-tracked only."
                     enum: [ANONYMOUS, KNOWN]
                     readOnly: true
                     type: string
+                sessionsCount:
+                    description:
+                        "Total number of sessions attributed to this individual over their whole history. Not a windowed count."
+                    format: int64
+                    readOnly: true
+                    type: integer
             type: object
         IndividualDemographicField:
             description:
@@ -475,6 +560,88 @@ components:
                     readOnly: true
                     type: string
             type: object
+        IndividualSegmentMembershipChange:
+            description:
+                "A single change to an individual segment's membership: one individual entering or leaving the segment on a given date, with the individual's name and email resolved. Use `getWorkspaceGroupIndividualSegmentMembershipChangesPage` to list changes for a segment over a date range."
+            properties:
+                dateChanged:
+                    description:
+                        "When the change happened."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateFirst:
+                    description:
+                        "When the individual first entered the segment."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        "ID of the change record."
+                    readOnly: true
+                    type: string
+                individualEmail:
+                    description:
+                        "Email address of the individual whose membership changed."
+                    readOnly: true
+                    type: string
+                individualId:
+                    description:
+                        "ID of the individual whose membership changed. Use with `getWorkspaceGroupIndividual` to fetch the individual."
+                    readOnly: true
+                    type: string
+                individualName:
+                    description:
+                        "Display name of the individual whose membership changed."
+                    readOnly: true
+                    type: string
+                individualSegmentId:
+                    description:
+                        "ID of the segment this change belongs to."
+                    readOnly: true
+                    type: string
+                operation:
+                    description:
+                        "Kind of change. ADDED when the individual entered the segment; the analytics engine defines the value used when an individual leaves."
+                    readOnly: true
+                    type: string
+            type: object
+        Metric:
+            description:
+                "A single aggregated metric over the selected date range, compared to the previous range of the same length, with a time series bucketed by the requested interval."
+            properties:
+                histogramBuckets:
+                    description:
+                        "Time series of the metric across the selected date range, one bucket per interval."
+                    items:
+                        $ref: "#/components/schemas/HistogramBucket"
+                    readOnly: true
+                    type: array
+                previousValue:
+                    description:
+                        "Total over the previous date range of the same length."
+                    format: double
+                    readOnly: true
+                    type: number
+                trendClassification:
+                    description:
+                        "Direction of the change from the previous range (e.g. POSITIVE, NEGATIVE, NEUTRAL). The set of values is defined by the analytics engine."
+                    readOnly: true
+                    type: string
+                trendPercentage:
+                    description:
+                        "Percentage change from the previous date range."
+                    format: double
+                    readOnly: true
+                    type: number
+                value:
+                    description:
+                        "Total over the selected date range."
+                    format: double
+                    readOnly: true
+                    type: number
+            type: object
         PageMetric:
             description:
                 "Analytics metrics for a single tracked page over the selected date range. Use `getWorkspaceGroupChannelPagesPage` to list these metrics for a site."
@@ -578,6 +745,45 @@ components:
                     readOnly: true
                     type: string
             type: object
+        UserSession:
+            description:
+                "A single browsing session by one individual, with the events recorded during it. Use `getWorkspaceGroupChannelAccountUserSessionsPage` or `getWorkspaceGroupChannelIndividualUserSessionsPage` to list the sessions of an account's individuals or of one individual."
+            properties:
+                becameKnown:
+                    description:
+                        "True if the individual became known during this session."
+                    readOnly: true
+                    type: boolean
+                browserName:
+                    description:
+                        "Browser used during the session."
+                    readOnly: true
+                    type: string
+                completeDate:
+                    description:
+                        "When the session ended."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                createDate:
+                    description:
+                        "When the session started."
+                    format: date-time
+                    readOnly: true
+                    type: string
+                deviceType:
+                    description:
+                        "Device type used during the session (e.g. 'Desktop', 'Smartphone')."
+                    readOnly: true
+                    type: string
+                events:
+                    description:
+                        "Events recorded during the session, oldest first."
+                    items:
+                        $ref: "#/components/schemas/Event"
+                    readOnly: true
+                    type: array
+            type: object
         Workspace:
             description:
                 "An Analytics Cloud workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`."
@@ -608,7 +814,7 @@ paths:
     "/workspace/{groupId}/account-lifecycles/{accountLifecycleId}/stage-transitions":
         get:
             description:
-                "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are matched case-insensitively against the stage type (e.g. PIPELINE or 'at risk') or the stage description. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+                "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are matched case-insensitively against the stage type (e.g. PIPELINE or 'at risk') or the stage description. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
             operationId: getWorkspaceGroupAccountLifecycleStageTransitionsPage
             parameters:
                 -   in: path
@@ -665,7 +871,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Date-range preset. Use one of the listed enum values (e.g. LAST_90_DAYS). Defaults to LAST_90_DAYS. When both rangeStart and rangeEnd are set, they take precedence over rangeKey."
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_90_DAYS). Defaults to LAST_90_DAYS. When both rangeStart and rangeEnd are set, they take precedence over rangeKey."
                     example: LAST_90_DAYS
                     name: rangeKey
                     schema:
@@ -845,13 +1051,33 @@ paths:
                         type: integer
                 -   in: query
                     description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
                         "Free-text keyword search across account name and related fields. Empty or null returns all matching assets."
                     name: search
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Sort expression `column:asc|desc`. Defaults to `accountName:asc` when omitted. Separate with commas for multiple column sort."
+                        "Sort expression `column:asc|desc`. Defaults to `accountName:asc` when omitted. Sortable columns include accountName, activitiesCount, annualRevenue, and lastActivityDate. Separate with commas for multiple column sort."
                     example: accountName:asc
                     name: sort
                     schema:
@@ -870,10 +1096,162 @@ paths:
                                     $ref: "#/components/schemas/Account"
                                 type: array
             tags: ["Account"]
+    "/workspace/{groupId}/channels/{channelId}/accounts/{accountId}/event-metrics":
+        get:
+            description:
+                "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+            operationId: getWorkspaceGroupChannelAccountEventMetric
+            parameters:
+                -   in: path
+                    description:
+                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "Identifier of the channel whose events should be counted should be returned."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    description:
+                        "ID of the account whose individuals' events should be counted."
+                    name: accountId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Histogram bucket size for the metrics' time series. DAY when omitted."
+                    example: MONTH
+                    name: interval
+                    schema:
+                        enum: [DAY, MONTH, WEEK]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Free-text keyword search across event fields. Empty or null counts all events."
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/EventMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/EventMetric"
+            tags: ["EventMetric"]
+    "/workspace/{groupId}/channels/{channelId}/accounts/{accountId}/user-sessions":
+        get:
+            description:
+                "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+            operationId: getWorkspaceGroupChannelAccountUserSessionsPage
+            parameters:
+                -   in: path
+                    description:
+                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "Identifier of the channel whose sessions should be listed should be returned."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    description:
+                        "ID of the account whose individuals' sessions should be listed."
+                    name: accountId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size."
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Free-text keyword search across event fields. Empty or null returns all sessions."
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UserSession"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UserSession"
+                                type: array
+            tags: ["UserSession"]
     "/workspace/{groupId}/channels/{channelId}/asset-summaries":
         get:
             description:
-                "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`."
+                "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`."
             operationId: getWorkspaceGroupChannelAssetSummariesPage
             parameters:
                 -   in: path
@@ -923,7 +1301,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Date-range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -971,7 +1349,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/events":
         get:
             description:
-                "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
+                "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
             operationId: getWorkspaceGroupChannelEventsPage
             parameters:
                 -   in: path
@@ -1027,7 +1405,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Date-range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1134,7 +1512,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individuals":
         get:
             description:
-                "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, channel, segment, or interest. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
+                "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, or date range, and searchable by name or email with `search`. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
             operationId: getWorkspaceGroupChannelIndividualsPage
             parameters:
                 -   in: path
@@ -1156,6 +1534,12 @@ paths:
                     description:
                         "Optional account ID to restrict results to individuals associated with an account."
                     name: accountId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Optional engagement classification to restrict results to individuals with that activity status. The set of values is defined by the analytics engine."
+                    name: activityStatus
                     schema:
                         type: string
                 -   in: query
@@ -1190,6 +1574,32 @@ paths:
                         type: integer
                 -   in: query
                     description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Free-text search across individual name, email, and related fields. Empty or null returns all individuals."
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
                         "Sort expression `column:asc|desc`."
                     example: lastActivityDate:desc
                     name: sort
@@ -1209,10 +1619,162 @@ paths:
                                     $ref: "#/components/schemas/Individual"
                                 type: array
             tags: ["Individual"]
+    "/workspace/{groupId}/channels/{channelId}/individuals/{individualId}/event-metrics":
+        get:
+            description:
+                "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+            operationId: getWorkspaceGroupChannelIndividualEventMetric
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel whose events should be counted should be returned."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    description:
+                        "ID of the individual whose events should be counted."
+                    name: individualId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Histogram bucket size for the metrics' time series. DAY when omitted."
+                    example: MONTH
+                    name: interval
+                    schema:
+                        enum: [DAY, MONTH, WEEK]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Free-text keyword search across event fields. Empty or null counts all events."
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/EventMetric"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/EventMetric"
+            tags: ["EventMetric"]
+    "/workspace/{groupId}/channels/{channelId}/individuals/{individualId}/user-sessions":
+        get:
+            description:
+                "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+            operationId: getWorkspaceGroupChannelIndividualUserSessionsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the channel whose sessions should be listed should be returned."
+                    name: channelId
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    description:
+                        "ID of the individual whose sessions should be listed."
+                    name: individualId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size."
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Free-text keyword search across event fields. Empty or null returns all sessions."
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UserSession"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UserSession"
+                                type: array
+            tags: ["UserSession"]
     "/workspace/{groupId}/channels/{channelId}/pages":
         get:
             description:
-                "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
+                "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
             operationId: getWorkspaceGroupChannelPagesPage
             parameters:
                 -   in: path
@@ -1268,7 +1830,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Date-range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1316,7 +1878,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/search-terms":
         get:
             description:
-                "List search terms used on pages tracked by the Analytics Cloud workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'most searched words' style queries."
+                "List search terms used on pages tracked by the Analytics Cloud workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'most searched words' style queries."
             operationId: getWorkspaceGroupChannelSearchTermsPage
             parameters:
                 -   in: path
@@ -1354,7 +1916,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Date-range preset. Use one of the listed enum values. Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1411,6 +1973,92 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/IndividualSegment"
             tags: ["IndividualSegment"]
+    "/workspace/{groupId}/individual-segments/{individualSegmentId}/membership-changes":
+        get:
+            description:
+                "List the individuals who entered or left an individual segment over a date range, most recent change first, with each individual's name and email resolved. Use this to answer 'who has exited this segment recently'. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For the current membership list, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+            operationId: getWorkspaceGroupIndividualSegmentMembershipChangesPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the individual segment whose membership changes should be listed."
+                    name: individualSegmentId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Optional change kind to keep. ADDED keeps only individuals entering the segment; the analytics engine defines the value for individuals leaving."
+                    name: operation
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size."
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                    example: LAST_30_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Free-text search across the individual's name and email."
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Sort expression `column:asc|desc`. Defaults to `dateChanged:desc` when omitted."
+                    example: dateChanged:desc
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/IndividualSegmentMembershipChange"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/IndividualSegmentMembershipChange"
+                                type: array
+            tags: ["IndividualSegmentMembershipChange"]
     "/workspace/{groupId}/individual-segments/{individualSegmentId}/memberships":
         get:
             description:
@@ -1502,6 +2150,72 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Individual"
             tags: ["Individual"]
+    "/workspace/{groupId}/individuals/{individualId}/individual-segments":
+        get:
+            description:
+                "List the individual segments a single individual belongs to, or formerly belonged to. Use this to check whether a person is already in a nurture or intent segment before recommending an action. To list all segments in a channel, use `getWorkspaceGroupChannelIndividualSegmentsPage`."
+            operationId: getWorkspaceGroupIndividualIndividualSegmentsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the individual whose segments should be listed."
+                    name: individualId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Optional channel ID to scope the lookup to a single channel."
+                    name: channelId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size."
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Free-text search across segment name and related fields."
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Filter by segment operational status."
+                    name: status
+                    schema:
+                        enum: [ACTIVE, INACTIVE]
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/IndividualSegment"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/IndividualSegment"
+                                type: array
+            tags: ["IndividualSegment"]
     "/workspaces":
         get:
             description:
