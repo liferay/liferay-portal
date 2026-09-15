@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import java.util.Date;
 
@@ -22,12 +23,9 @@ public class DateRangeUtil {
 			TimeRange timeRange = TimeRange.valueOf(rangeKey);
 
 			if (timeRange == TimeRange.YESTERDAY) {
-				return _toDate(
-					LocalDate.now(
-						ZoneOffset.UTC
-					).minusDays(
-						1
-					));
+				LocalDate localDate = LocalDate.now(ZoneOffset.UTC);
+
+				return _toDate(localDate.minusDays(1));
 			}
 
 			return _toDate(LocalDate.now(ZoneOffset.UTC));
@@ -40,12 +38,10 @@ public class DateRangeUtil {
 		if (Validator.isNotNull(rangeKey)) {
 			TimeRange timeRange = TimeRange.valueOf(rangeKey);
 
+			LocalDate localDate = LocalDate.now(ZoneOffset.UTC);
+
 			return _toDate(
-				LocalDate.now(
-					ZoneOffset.UTC
-				).minusDays(
-					Math.max(1, timeRange.getRangeKey())
-				));
+				localDate.minusDays(Math.max(1, timeRange.getRangeKey())));
 		}
 
 		return _parse(rangeStart);
@@ -60,10 +56,9 @@ public class DateRangeUtil {
 	}
 
 	private static Date _toDate(LocalDate localDate) {
-		return Date.from(
-			localDate.atStartOfDay(
-				ZoneOffset.UTC
-			).toInstant());
+		ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneOffset.UTC);
+
+		return Date.from(zonedDateTime.toInstant());
 	}
 
 }
