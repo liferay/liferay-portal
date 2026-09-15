@@ -938,8 +938,6 @@ public class JournalTransformer {
 
 		// Transform
 
-		String templateKey = _getDDMTemplateKey(ddmTemplate);
-
 		long companyId = article.getCompanyId();
 		long companyGroupId = 0;
 		long articleGroupId = article.getGroupId();
@@ -963,7 +961,8 @@ public class JournalTransformer {
 
 		Template template = _getTemplate(
 			_getTemplateId(
-				templateKey, companyId, companyGroupId, articleGroupId),
+				_getDDMTemplateKey(ddmTemplate), companyId, companyGroupId,
+				articleGroupId),
 			script);
 
 		PortletRequest originalPortletRequest = null;
