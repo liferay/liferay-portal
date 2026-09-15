@@ -13,9 +13,12 @@ import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
+import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.RelatedProduct;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -26,6 +29,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.List;
@@ -73,6 +77,8 @@ public class RelatedProductResourceTest
 	public void testPostProductIdRelatedProduct() throws Exception {
 		super.testPostProductIdRelatedProduct();
 
+		_testPostProductIdRelatedProductWithLazyReferencingDisabled();
+		_testPostProductIdRelatedProductWithLazyReferencingEnabled();
 		_testPostRelatedProductsBatch();
 	}
 
@@ -206,6 +212,70 @@ public class RelatedProductResourceTest
 
 		return relatedProductResource.postProductIdRelatedProduct(
 			_cpDefinition1.getCProductId(), relatedProduct);
+	}
+
+	private RelatedProduct _randomRelatedProductWithEmptyProduct() {
+		return new RelatedProduct() {
+			{
+				priority = 0.0;
+				productExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				productId = 0L;
+				productType = SimpleCPTypeConstants.NAME;
+				type = "related";
+			}
+		};
+	}
+
+	private void _testPostProductIdRelatedProductWithLazyReferencingDisabled()
+		throws Exception {
+
+		try {
+			relatedProductResource.postProductIdRelatedProduct(
+				_cpDefinition1.getCProductId(),
+				_randomRelatedProductWithEmptyProduct());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testPostProductIdRelatedProductWithLazyReferencingEnabled()
+		throws Exception {
+
+		RelatedProduct postRelatedProduct = null;
+
+		RelatedProduct relatedProduct = _randomRelatedProductWithEmptyProduct();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
+					true)) {
+
+			postRelatedProduct =
+				relatedProductResource.postProductIdRelatedProduct(
+					_cpDefinition1.getCProductId(), relatedProduct);
+		}
+
+		CPDefinition cpDefinition =
+			_cpDefinitionLocalService.
+				getCPDefinitionByCProductExternalReferenceCode(
+					relatedProduct.getProductExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, cpDefinition.getStatus());
+		Assert.assertEquals(
+			_commerceCatalog.getGroupId(), cpDefinition.getGroupId());
+		Assert.assertEquals(
+			(Long)cpDefinition.getCProductId(),
+			postRelatedProduct.getProductId());
+
+		Assert.assertEquals(
+			SimpleCPTypeConstants.NAME, postRelatedProduct.getProductType());
 	}
 
 	private void _testPostRelatedProductsBatch() throws Exception {
