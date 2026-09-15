@@ -229,7 +229,7 @@ export default function AudienceBuilder({
 						/>
 
 						<div className="audience-builder-content d-flex">
-							<div className="audience-builder-sidebar border-right d-flex flex-column flex-shrink-0 px-4">
+							<div className="audience-builder-sidebar d-flex flex-column flex-shrink-0">
 								<AttributesSidebar
 									audiencesCriteriaTypes={
 										audiencesCriteriaTypes
@@ -354,7 +354,7 @@ function AudienceBuilderToolbar({
 	saving,
 }: AudienceBuilderToolbarProps) {
 	return (
-		<ClayToolbar>
+		<ClayToolbar className="audience-builder-toolbar">
 			<ClayLayout.ContainerFluid size={false}>
 				<ClayToolbar.Nav>
 					<ClayToolbar.Item>
