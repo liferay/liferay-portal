@@ -7,7 +7,6 @@ import '../../css/Panels.scss';
 
 import React from 'react';
 
-import {FRAME_KINDS} from '../imaging/frameShapes';
 import {LoadedImage} from '../imaging/loadImage';
 import {AdjustPanel} from '../panels/AdjustPanel';
 import {CropPanel} from '../panels/CropPanel';
@@ -18,6 +17,7 @@ import {
 	AdjustmentKey,
 	EditState,
 	FilterPreset,
+	FrameKind,
 	rotatedSize,
 } from '../state/types';
 
@@ -25,6 +25,7 @@ interface Props {
 	aspectLocked: boolean;
 
 	dispatch: (action: EditorAction) => void;
+	frames: FrameKind[];
 	image: LoadedImage;
 	onAnnounce: (message: string) => void;
 	onAspectLockedChange: (locked: boolean) => void;
@@ -38,6 +39,7 @@ interface Props {
 export function EditorSidebar({
 	aspectLocked,
 	dispatch,
+	frames,
 	image,
 	onAnnounce,
 	onAspectLockedChange,
@@ -84,13 +86,15 @@ export function EditorSidebar({
 				/>
 			)}
 
-			<FramePanel
-				dispatch={dispatch}
-				frame={state.frame}
-				image={image}
-				onAnnounce={onAnnounce}
-				presets={FRAME_KINDS}
-			/>
+			{!!frames.length && (
+				<FramePanel
+					dispatch={dispatch}
+					frame={state.frame}
+					image={image}
+					onAnnounce={onAnnounce}
+					presets={frames}
+				/>
+			)}
 		</aside>
 	);
 }

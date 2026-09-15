@@ -21,7 +21,9 @@ const SAMPLE_URL = '/o/frontend-js-image-editor-sample-web/images/sample.jpg';
  * `?adjustments=` turns the adjustment sliders off and
  * `?adjustments=brightness,contrast` picks the ones to keep. `?filters=`
  * turns the filter gallery off and `?filters=sepia,noir` narrows the
- * presets, so every host configuration can be tried from the address bar.
+ * presets. `?frames=` turns the frame gallery off and `?frames=mat,line`
+ * narrows the kinds, so every host configuration can be tried from the
+ * address bar.
  */
 function configFromSearch(search) {
 	const params = new URLSearchParams(search);
@@ -37,6 +39,7 @@ function configFromSearch(search) {
 	const adjustments = params.get('adjustments');
 	const crop = params.get('crop');
 	const filters = params.get('filters');
+	const frames = params.get('frames');
 
 	return {
 		adjustments:
@@ -61,6 +64,12 @@ function configFromSearch(search) {
 				: filters === ''
 					? false
 					: {presets: list(filters)},
+		frames:
+			frames === null
+				? undefined
+				: frames === ''
+					? false
+					: {presets: list(frames)},
 	};
 }
 

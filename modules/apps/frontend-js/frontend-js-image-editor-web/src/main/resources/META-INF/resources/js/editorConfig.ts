@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {AdjustmentKey, FilterPreset, RatioPreset} from './state/types';
+import {FRAME_KINDS} from './imaging/frameShapes';
+import {
+	AdjustmentKey,
+	FilterPreset,
+	FrameKind,
+	RatioPreset,
+} from './state/types';
 
 export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
 	'brightness',
@@ -58,6 +64,8 @@ export interface EditorConfig {
 		  };
 
 	filters?: false | {presets?: FilterPreset[]};
+
+	frames?: false | {presets?: FrameKind[]};
 }
 
 interface ResolvedEditorConfig {
@@ -69,6 +77,7 @@ interface ResolvedEditorConfig {
 		straighten: boolean;
 	};
 	filters: FilterPreset[];
+	frames: FrameKind[];
 }
 
 export function resolveConfig(config: EditorConfig = {}): ResolvedEditorConfig {
@@ -92,6 +101,10 @@ export function resolveConfig(config: EditorConfig = {}): ResolvedEditorConfig {
 			config.filters === false
 				? []
 				: pick(FILTER_PRESETS, config.filters?.presets),
+		frames:
+			config.frames === false
+				? []
+				: pick(FRAME_KINDS, config.frames?.presets),
 	};
 }
 

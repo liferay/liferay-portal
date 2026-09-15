@@ -11,6 +11,7 @@ import {
 	RATIO_PRESETS,
 	resolveConfig,
 } from '../src/main/resources/META-INF/resources/js/editorConfig';
+import {FRAME_KINDS} from '../src/main/resources/META-INF/resources/js/imaging/frameShapes';
 
 describe('resolveConfig', () => {
 	it('exposes every adjustment slider by default', () => {
@@ -40,6 +41,20 @@ describe('resolveConfig', () => {
 		expect(
 			resolveConfig({filters: {presets: ['sepia', 'none']}}).filters
 		).toEqual(['none', 'sepia']);
+	});
+
+	it('exposes every frame kind by default', () => {
+		expect(resolveConfig().frames).toEqual(FRAME_KINDS);
+	});
+
+	it('switches the frame gallery off with false', () => {
+		expect(resolveConfig({frames: false}).frames).toEqual([]);
+	});
+
+	it('narrows the frame kinds to a subset in gallery order', () => {
+		expect(
+			resolveConfig({frames: {presets: ['line', 'none']}}).frames
+		).toEqual(['none', 'line']);
 	});
 
 	it('exposes everything by default', () => {
