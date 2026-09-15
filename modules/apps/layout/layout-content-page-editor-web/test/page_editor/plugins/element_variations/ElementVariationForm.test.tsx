@@ -33,6 +33,11 @@ const EDITABLE_ELEMENT_OPTIONS = [
 	{label: 'Body (body)', value: '.body'},
 ];
 
+const AUDIENCES = [
+	{label: 'First audience', value: 'audience-1'},
+	{label: 'Second audience', value: 'audience-2'},
+];
+
 const LOCALES = [{id: 'en_US', label: 'English', symbol: 'en-us'}];
 
 const TRANSLATING_PROPS = {
@@ -49,33 +54,55 @@ function renderForm(
 ) {
 	const onChange = jest.fn();
 
+	const getForm = (
+		currentElementVariation: Partial<ElementVariationProp>
+	) => (
+		<ElementVariationForm
+			audiences={[]}
+			defaultLanguageId="en_US"
+			dispatch={jest.fn()}
+			editableElementOptions={EDITABLE_ELEMENT_OPTIONS}
+			elementVariation={{
+				...BASE_ELEMENT_VARIATION,
+				...currentElementVariation,
+			}}
+			elementVariations={[]}
+			languageId="en_US"
+			locales={LOCALES}
+			onCancel={jest.fn()}
+			onChange={onChange}
+			onLanguageIdChange={jest.fn()}
+			onReloadPreview={jest.fn()}
+			onSave={jest.fn()}
+			{...props}
+		/>
+	);
+
+	const {rerender, ...result} = render(getForm(elementVariation));
+
 	return {
+		...result,
 		onChange,
-		...render(
-			<ElementVariationForm
-				audiences={[]}
-				defaultLanguageId="en_US"
-				dispatch={jest.fn()}
-				editableElementOptions={EDITABLE_ELEMENT_OPTIONS}
-				elementVariation={{
-					...BASE_ELEMENT_VARIATION,
-					...elementVariation,
-				}}
-				elementVariations={[]}
-				languageId="en_US"
-				locales={LOCALES}
-				onCancel={jest.fn()}
-				onChange={onChange}
-				onLanguageIdChange={jest.fn()}
-				onReloadPreview={jest.fn()}
-				onSave={jest.fn()}
-				{...props}
-			/>
-		),
+		rerender: (nextElementVariation: Partial<ElementVariationProp>) =>
+			rerender(getForm(nextElementVariation)),
 	};
 }
 
 describe('ElementVariationForm', () => {
+	const {ResizeObserver: ResizeObserverOriginal} = window;
+
+	beforeAll(() => {
+		window.ResizeObserver = jest.fn().mockImplementation(() => ({
+			disconnect: jest.fn(),
+			observe: jest.fn(),
+			unobserve: jest.fn(),
+		}));
+	});
+
+	afterAll(() => {
+		window.ResizeObserver = ResizeObserverOriginal;
+	});
+
 	beforeEach(() => {
 		jest.clearAllMocks();
 	});
@@ -274,6 +301,37 @@ describe('ElementVariationForm', () => {
 			screen.queryByText('this-field-is-required')
 		).not.toBeInTheDocument();
 		expect(onSave).toHaveBeenCalledTimes(1);
+	});
+
+	it('updates the available audiences when the page element changes', async () => {
+		const {rerender} = renderForm(
+			{targetElement: '.title'},
+			{
+				audiences: AUDIENCES,
+				elementVariations: [
+					{
+						...BASE_ELEMENT_VARIATION,
+						audienceEntryERCs: ['audience-1'],
+						externalReferenceCode: 'erc',
+						key: 'variation-2',
+						segmentsExperienceERC: 'experience',
+						targetElement: '.body',
+					},
+				],
+			}
+		);
+
+		await userEvent.click(screen.getByLabelText('audience'));
+
+		expect(screen.getByText('First audience')).toBeInTheDocument();
+		expect(screen.getByText('Second audience')).toBeInTheDocument();
+
+		rerender({audienceEntryERCs: [], targetElement: '.body'});
+
+		await userEvent.click(screen.getByLabelText('audience'));
+
+		expect(screen.queryByText('First audience')).not.toBeInTheDocument();
+		expect(screen.getByText('Second audience')).toBeInTheDocument();
 	});
 
 	it('has no accessibility violations', async () => {
