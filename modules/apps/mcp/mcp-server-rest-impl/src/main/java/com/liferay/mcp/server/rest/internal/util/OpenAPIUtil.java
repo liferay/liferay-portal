@@ -24,6 +24,8 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.odata.sort.InvalidSortException;
 import com.liferay.portal.vulcan.http.VulcanRequestForwarder;
 
 import java.nio.charset.StandardCharsets;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -41,6 +44,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -80,6 +85,8 @@ public class OpenAPIUtil {
 		String contentType;
 
 		Operation operation = _getOperation(openAPIJSONObject, toolName);
+
+		_validateQueryParameters(inputJSONObject, operation, restrictFields);
 
 		if (_isMultipartRequest(operation._operationJSONObject)) {
 			HttpEntity httpEntity = _getMultipartHttpEntity(
@@ -585,6 +592,18 @@ public class OpenAPIUtil {
 			Arrays.asList(StringUtil.split((String)value)));
 	}
 
+	private static Set<String> _getFilterFieldPaths(String filter) {
+		Set<String> fieldPaths = new LinkedHashSet<>();
+
+		Matcher matcher = _fieldPathPattern.matcher(_getMaskedFilter(filter));
+
+		while (matcher.find()) {
+			fieldPaths.add(matcher.group());
+		}
+
+		return fieldPaths;
+	}
+
 	private static Map<String, Object> _getInputSchema(
 		boolean injectVulcanParameters, String method,
 		JSONObject openAPIJSONObject, JSONObject operationJSONObject,
@@ -685,6 +704,23 @@ public class OpenAPIUtil {
 		).build();
 	}
 
+	private static String _getMaskedFilter(String filter) {
+		char[] chars = filter.toCharArray();
+		boolean quoted = false;
+
+		for (int i = 0; i < chars.length; i++) {
+			if (chars[i] == CharPool.APOSTROPHE) {
+				quoted = !quoted;
+				chars[i] = CharPool.SPACE;
+			}
+			else if (quoted) {
+				chars[i] = CharPool.SPACE;
+			}
+		}
+
+		return new String(chars);
+	}
+
 	private static HttpEntity _getMultipartHttpEntity(
 		JSONObject inputJSONObject, JSONObject openAPIJSONObject,
 		Operation operation) {
@@ -766,6 +802,10 @@ public class OpenAPIUtil {
 		}
 
 		return multipartEntityBuilder.build();
+	}
+
+	private static String _getNormalizedFieldPath(String fieldPath) {
+		return StringUtil.replace(fieldPath, CharPool.SLASH, CharPool.PERIOD);
 	}
 
 	private static Map<String, Object> _getOneOfSchemaMap(
@@ -990,6 +1030,18 @@ public class OpenAPIUtil {
 		}
 
 		return path;
+	}
+
+	private static Set<String> _getQueryFieldPaths(String name, Object value) {
+		if (Objects.equals(name, "filter")) {
+			return _getFilterFieldPaths(String.valueOf(value));
+		}
+
+		if (Objects.equals(name, "sort")) {
+			return _getSortFieldPaths(String.valueOf(value));
+		}
+
+		return Collections.emptySet();
 	}
 
 	private static String _getQueryString(
@@ -1245,6 +1297,26 @@ public class OpenAPIUtil {
 		return value;
 	}
 
+	private static Set<String> _getSortFieldPaths(String sort) {
+		Set<String> fieldPaths = new LinkedHashSet<>();
+
+		for (String string : StringUtil.split(sort)) {
+			int index = string.indexOf(CharPool.COLON);
+
+			if (index >= 0) {
+				string = string.substring(0, index);
+			}
+
+			string = string.trim();
+
+			if (!string.isEmpty()) {
+				fieldPaths.add(string);
+			}
+		}
+
+		return fieldPaths;
+	}
+
 	private static boolean _isBinary(Map<String, Object> schemaMap) {
 		if (schemaMap == null) {
 			return false;
@@ -1267,6 +1339,60 @@ public class OpenAPIUtil {
 		return contentJSONObject.has("multipart/form-data");
 	}
 
+	private static boolean _isRestrictedFieldPath(
+		String fieldPath, String[] restrictFieldNames) {
+
+		String normalizedFieldPath = _getNormalizedFieldPath(fieldPath);
+
+		for (String restrictFieldName : restrictFieldNames) {
+			if (normalizedFieldPath.equals(restrictFieldName) ||
+				normalizedFieldPath.startsWith(
+					restrictFieldName + StringPool.PERIOD)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static void _validateQueryParameters(
+		JSONObject inputJSONObject, Operation operation,
+		String restrictFields) {
+
+		if (Validator.isNull(restrictFields)) {
+			return;
+		}
+
+		Map<String, Object> parameterSchemaObjects = _getParameterSchemaObjects(
+			"query", inputJSONObject, operation);
+
+		String[] restrictFieldNames = StringUtil.split(restrictFields);
+
+		for (Map.Entry<String, Object> entry :
+				parameterSchemaObjects.entrySet()) {
+
+			String name = entry.getKey();
+
+			for (String fieldPath :
+					_getQueryFieldPaths(name, entry.getValue())) {
+
+				if (!_isRestrictedFieldPath(fieldPath, restrictFieldNames)) {
+					continue;
+				}
+
+				String message = StringBundler.concat(
+					"Parameter \"", name, "\" references a restricted field");
+
+				if (Objects.equals(name, "filter")) {
+					throw new InvalidFilterException(message);
+				}
+
+				throw new InvalidSortException(message);
+			}
+		}
+	}
+
 	private static final String _DESCRIPTION_FIELDS =
 		"Fields to include in the response. Pass only the fields the user " +
 			"actually needs.";
@@ -1277,6 +1403,8 @@ public class OpenAPIUtil {
 
 	private static final Set<String> _excludedSchemaKeys = Set.of(
 		"actions", "example", "exclusiveMaximum", "exclusiveMinimum", "xml");
+	private static final Pattern _fieldPathPattern = Pattern.compile(
+		"[A-Za-z_][A-Za-z0-9_]*(?:[./][A-Za-z_][A-Za-z0-9_]*)*");
 
 	private static class Operation {
 

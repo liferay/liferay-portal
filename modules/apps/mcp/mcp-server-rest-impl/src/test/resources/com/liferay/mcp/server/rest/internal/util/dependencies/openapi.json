@@ -272,6 +272,14 @@
 						"schema": {
 							"type": "integer"
 						}
+					},
+					{
+						"description": "This is the description",
+						"in": "query",
+						"name": "sort",
+						"schema": {
+							"type": "string"
+						}
 					}
 				],
 				"responses": {

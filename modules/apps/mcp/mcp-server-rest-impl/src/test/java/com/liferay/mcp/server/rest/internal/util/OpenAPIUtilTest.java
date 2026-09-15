@@ -18,6 +18,8 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.odata.sort.InvalidSortException;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.http.VulcanRequestForwarder;
 
@@ -87,6 +89,24 @@ public class OpenAPIUtilTest {
 			JSONUtil.put("filter", "name eq 'John Doe'"), "getItems");
 		_testGetRequest(
 			null, null, "GET",
+			"/v1.0/items?filter=object1%2Fboolean+eq+true&restrictFields=" +
+				"actions%2Cobject1.string",
+			JSONUtil.put("filter", "object1/boolean eq true"), "object1.string",
+			"getItems");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/items?filter=string+eq+%27boolean%27%27s%27&" +
+				"restrictFields=actions%2Cboolean",
+			JSONUtil.put("filter", "string eq 'boolean''s'"), "boolean",
+			"getItems");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/items?filter=string+eq+%27phoneNumber%27&restrictFields=" +
+				"actions%2CphoneNumber",
+			JSONUtil.put("filter", "string eq 'phoneNumber'"), "phoneNumber",
+			"getItems");
+		_testGetRequest(
+			null, null, "GET",
 			"/v1.0/items?page=1&pageSize=20&fields=name&restrictFields=actions",
 			JSONUtil.put(
 				"fields", "name"
@@ -112,6 +132,14 @@ public class OpenAPIUtilTest {
 			null, null, "GET",
 			"/v1.0/items?restrictFields=actions%2Cname%2Cparent.name",
 			JSONFactoryUtil.createJSONObject(), "name,parent.name", "getItems");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/items?sort=boolean%3Aasc&restrictFields=actions%2Cstring",
+			JSONUtil.put("sort", "boolean:asc"), "string", "getItems");
+		_testGetRequest(
+			null, null, "GET",
+			"/v1.0/items?sort=string%3Aasc&restrictFields=actions",
+			JSONUtil.put("sort", "string:asc"), "getItems");
 		_testGetRequest(
 			JSONUtil.put(
 				"name", "Test"
@@ -153,6 +181,45 @@ public class OpenAPIUtilTest {
 				"itemId", "123"
 			),
 			"name", "putItem");
+
+		_testGetRequestFailure(
+			InvalidFilterException.class,
+			"Parameter \"filter\" references a restricted field",
+			JSONUtil.put("filter", "object1.string eq 'Test'"),
+			"object1.string", "getItems");
+		_testGetRequestFailure(
+			InvalidFilterException.class,
+			"Parameter \"filter\" references a restricted field",
+			JSONUtil.put("filter", "object1/object2/boolean eq true"),
+			"object1", "getItems");
+		_testGetRequestFailure(
+			InvalidFilterException.class,
+			"Parameter \"filter\" references a restricted field",
+			JSONUtil.put("filter", "object1/string eq 'Test'"),
+			"object1.string", "getItems");
+		_testGetRequestFailure(
+			InvalidFilterException.class,
+			"Parameter \"filter\" references a restricted field",
+			JSONUtil.put("filter", "string eq 'Test'"), "string", "getItems");
+		_testGetRequestFailure(
+			InvalidFilterException.class,
+			"Parameter \"filter\" references a restricted field",
+			JSONUtil.put("filter", "string eq 'Test' and boolean eq true"),
+			"string,boolean", "getItems");
+		_testGetRequestFailure(
+			InvalidSortException.class,
+			"Parameter \"sort\" references a restricted field",
+			JSONUtil.put("sort", "boolean:asc, string :desc"), "string",
+			"getItems");
+		_testGetRequestFailure(
+			InvalidSortException.class,
+			"Parameter \"sort\" references a restricted field",
+			JSONUtil.put("sort", "boolean:asc,string:desc"), "string",
+			"getItems");
+		_testGetRequestFailure(
+			InvalidSortException.class,
+			"Parameter \"sort\" references a restricted field",
+			JSONUtil.put("sort", "object1/string"), "object1", "getItems");
 
 		String fileContent = RandomTestUtil.randomString();
 		String fileName = RandomTestUtil.randomString();
@@ -532,6 +599,18 @@ public class OpenAPIUtilTest {
 
 		Assert.assertEquals(expectedMethod, request.getMethod());
 		Assert.assertEquals(expectedPathWithQuery, request.getPath());
+	}
+
+	private void _testGetRequestFailure(
+		Class<? extends Exception> expectedExceptionClass,
+		String expectedMessage, JSONObject inputJSONObject,
+		String restrictFields, String toolName) {
+
+		AssertUtils.assertFailure(
+			expectedExceptionClass, expectedMessage,
+			() -> OpenAPIUtil.getRequest(
+				StringPool.BLANK, null, inputJSONObject, _openAPIJSONObject,
+				restrictFields, toolName, null));
 	}
 
 	private void _testGetTool(

@@ -18,6 +18,10 @@
 		"pageSize": {
 			"description": "This is the description",
 			"type": "integer"
+		},
+		"sort": {
+			"description": "This is the description",
+			"type": "string"
 		}
 	},
 	"required": [
