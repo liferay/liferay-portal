@@ -105,13 +105,9 @@ public abstract class BaseBuildReport implements BuildReport {
 	public List<FailureReport> getFailureReports() {
 		List<FailureReport> failureReports = new ArrayList<>();
 
-		if (!isFailing()) {
-			return failureReports;
-		}
-
 		JSONObject buildReportJSONObject = getBuildReportJSONObject();
 
-		if (buildReportJSONObject == null) {
+		if ((buildReportJSONObject == null) || !isFailing()) {
 			return failureReports;
 		}
 
