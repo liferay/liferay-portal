@@ -102,7 +102,8 @@ public class DataMaskObjectEntryModelListenerTest {
 				"\\d{4}", RandomTestUtil.randomString(), "[REDACTED]");
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =

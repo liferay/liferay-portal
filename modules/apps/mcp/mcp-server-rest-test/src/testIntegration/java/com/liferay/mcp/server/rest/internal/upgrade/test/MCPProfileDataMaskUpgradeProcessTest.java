@@ -56,7 +56,8 @@ public class MCPProfileDataMaskUpgradeProcessTest {
 	public void testUpgrade() throws Exception {
 		_mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		String mcpServerProfileExternalReferenceCode =

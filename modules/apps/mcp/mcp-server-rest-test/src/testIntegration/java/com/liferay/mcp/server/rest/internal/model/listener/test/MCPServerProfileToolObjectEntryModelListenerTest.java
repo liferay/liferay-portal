@@ -52,7 +52,8 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString());
 
 		_mcpServerProfileExternalReferenceCode =
 			mcpServerProfileObjectEntry.getExternalReferenceCode();
@@ -114,7 +115,8 @@ public class MCPServerProfileToolObjectEntryModelListenerTest {
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString());
 
 		MCPServerTestUtil.addMCPServerProfileToolObjectEntry(
 			mcpServerProfileObjectEntry.getExternalReferenceCode(), null,

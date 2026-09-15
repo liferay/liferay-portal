@@ -51,7 +51,8 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =
@@ -86,7 +87,8 @@ public class MCPServerProfileDataMaskObjectEntryModelListenerTest {
 			MCPServerTestUtil.fetchDataMaskObjectEntry("Email Address");
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		ObjectEntry mcpServerProfileDataMaskObjectEntry =

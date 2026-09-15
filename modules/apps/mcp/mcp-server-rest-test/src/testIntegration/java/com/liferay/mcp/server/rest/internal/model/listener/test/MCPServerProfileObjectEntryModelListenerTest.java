@@ -67,7 +67,8 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 
 		mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		List<ObjectEntry> mcpServerProfileDataMaskObjectEntries =
@@ -97,7 +98,8 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 	public void testOnBeforeRemove() throws Exception {
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(),
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		String mcpServerProfileObjectEntryExternalReferenceCode =
