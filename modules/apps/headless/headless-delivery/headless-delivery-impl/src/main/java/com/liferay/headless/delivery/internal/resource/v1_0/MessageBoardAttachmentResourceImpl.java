@@ -71,6 +71,10 @@ public class MessageBoardAttachmentResourceImpl
 			_mbMessageService.getMBMessageByExternalReferenceCode(
 				messageBoardMessageExternalReferenceCode, siteId);
 
+		_mbMessageModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), mbMessage,
+			ActionKeys.UPDATE);
+
 		FileEntry fileEntry =
 			mbMessage.getAttachmentsFileEntryByExternalReferenceCode(
 				externalReferenceCode, siteId);
@@ -183,14 +187,18 @@ public class MessageBoardAttachmentResourceImpl
 			Long messageBoardMessageId, MultipartBody multipartBody)
 		throws Exception {
 
+		MBMessage mbMessage = _mbMessageService.getMessage(
+			messageBoardMessageId);
+
+		_mbMessageModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), mbMessage,
+			ActionKeys.UPDATE);
+
 		BinaryFile binaryFile = multipartBody.getBinaryFile("file");
 
 		if (binaryFile == null) {
 			throw new BadRequestException("No file found in body");
 		}
-
-		MBMessage mbMessage = _mbMessageService.getMessage(
-			messageBoardMessageId);
 
 		Folder folder = mbMessage.addAttachmentsFolder();
 
