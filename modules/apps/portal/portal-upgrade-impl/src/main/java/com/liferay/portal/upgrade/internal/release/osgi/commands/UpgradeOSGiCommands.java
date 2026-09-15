@@ -140,10 +140,10 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 		Set<String> bundleSymbolicNames =
 			_upgradeExecutor.getBundleSymbolicNames();
 
+		StringBundler sb = new StringBundler(4 * bundleSymbolicNames.size());
+
 		Set<String> failedBundleSymbolicNames =
 			_upgradeExecutor.getFailedBundleSymbolicNames();
-
-		StringBundler sb = new StringBundler(4 * bundleSymbolicNames.size());
 
 		for (String bundleSymbolicName : bundleSymbolicNames) {
 			if (failedBundleSymbolicNames.contains(bundleSymbolicName)) {
