@@ -69,7 +69,7 @@ public class ObjectRelationshipCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -101,6 +101,8 @@ public class ObjectRelationshipCacheModel
 		sb.append(deletionType);
 		sb.append(", dbTableName=");
 		sb.append(dbTableName);
+		sb.append(", description=");
+		sb.append(description);
 		sb.append(", edge=");
 		sb.append(edge);
 		sb.append(", label=");
@@ -185,6 +187,13 @@ public class ObjectRelationshipCacheModel
 			objectRelationshipImpl.setDBTableName(dbTableName);
 		}
 
+		if (description == null) {
+			objectRelationshipImpl.setDescription("");
+		}
+		else {
+			objectRelationshipImpl.setDescription(description);
+		}
+
 		objectRelationshipImpl.setEdge(edge);
 
 		if (label == null) {
@@ -240,6 +249,7 @@ public class ObjectRelationshipCacheModel
 		parameterObjectFieldId = objectInput.readLong();
 		deletionType = objectInput.readUTF();
 		dbTableName = objectInput.readUTF();
+		description = objectInput.readUTF();
 
 		edge = objectInput.readBoolean();
 		label = objectInput.readUTF();
@@ -307,6 +317,13 @@ public class ObjectRelationshipCacheModel
 			objectOutput.writeUTF(dbTableName);
 		}
 
+		if (description == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(description);
+		}
+
 		objectOutput.writeBoolean(edge);
 
 		if (label == null) {
@@ -350,6 +367,7 @@ public class ObjectRelationshipCacheModel
 	public long parameterObjectFieldId;
 	public String deletionType;
 	public String dbTableName;
+	public String description;
 	public boolean edge;
 	public String label;
 	public String name;
@@ -358,4 +376,4 @@ public class ObjectRelationshipCacheModel
 	public String type;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:225164513
+// LIFERAY-SERVICE-BUILDER-HASH:1461971225

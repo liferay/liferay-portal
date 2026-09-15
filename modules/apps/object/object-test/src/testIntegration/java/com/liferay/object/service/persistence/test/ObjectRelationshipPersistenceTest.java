@@ -142,6 +142,8 @@ public class ObjectRelationshipPersistenceTest {
 
 		newObjectRelationship.setDBTableName(RandomTestUtil.randomString());
 
+		newObjectRelationship.setDescription(RandomTestUtil.randomString());
+
 		newObjectRelationship.setEdge(RandomTestUtil.randomBoolean());
 
 		newObjectRelationship.setLabel(RandomTestUtil.randomString());
@@ -208,6 +210,9 @@ public class ObjectRelationshipPersistenceTest {
 		Assert.assertEquals(
 			existingObjectRelationship.getDBTableName(),
 			newObjectRelationship.getDBTableName());
+		Assert.assertEquals(
+			existingObjectRelationship.getDescription(),
+			newObjectRelationship.getDescription());
 		Assert.assertEquals(
 			existingObjectRelationship.isEdge(),
 			newObjectRelationship.isEdge());
@@ -450,8 +455,8 @@ public class ObjectRelationshipPersistenceTest {
 			true, "modifiedDate", true, "objectDefinitionId1", true,
 			"objectDefinitionId2", true, "objectFieldId2", true,
 			"parameterObjectFieldId", true, "deletionType", true, "dbTableName",
-			true, "edge", true, "label", true, "name", true, "reverse", true,
-			"system", true, "type", true);
+			true, "description", true, "edge", true, "label", true, "name",
+			true, "reverse", true, "system", true, "type", true);
 	}
 
 	@Test
@@ -822,6 +827,8 @@ public class ObjectRelationshipPersistenceTest {
 
 		objectRelationship.setDBTableName(RandomTestUtil.randomString());
 
+		objectRelationship.setDescription(RandomTestUtil.randomString());
+
 		objectRelationship.setEdge(RandomTestUtil.randomBoolean());
 
 		objectRelationship.setLabel(RandomTestUtil.randomString());
@@ -845,4 +852,4 @@ public class ObjectRelationshipPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1030218519
+// LIFERAY-SERVICE-BUILDER-HASH:-585141576

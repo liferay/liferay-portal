@@ -349,6 +349,7 @@
 		<field name="parameterObjectFieldId" type="long" />
 		<field name="deletionType" type="String" />
 		<field name="DBTableName" type="String" />
+		<field localized="true" name="description" type="String" />
 		<field name="edge" type="boolean" />
 		<field localized="true" name="label" type="String" />
 		<field name="name" type="String" />

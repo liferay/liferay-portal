@@ -81,9 +81,10 @@ public class ObjectRelationshipModelImpl
 		{"objectDefinitionId2", Types.BIGINT}, {"objectFieldId2", Types.BIGINT},
 		{"parameterObjectFieldId", Types.BIGINT},
 		{"deletionType", Types.VARCHAR}, {"dbTableName", Types.VARCHAR},
-		{"edge", Types.BOOLEAN}, {"label", Types.VARCHAR},
-		{"name", Types.VARCHAR}, {"reverse", Types.BOOLEAN},
-		{"system_", Types.BOOLEAN}, {"type_", Types.VARCHAR}
+		{"description", Types.VARCHAR}, {"edge", Types.BOOLEAN},
+		{"label", Types.VARCHAR}, {"name", Types.VARCHAR},
+		{"reverse", Types.BOOLEAN}, {"system_", Types.BOOLEAN},
+		{"type_", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -105,6 +106,7 @@ public class ObjectRelationshipModelImpl
 		TABLE_COLUMNS_MAP.put("parameterObjectFieldId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("deletionType", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("dbTableName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("edge", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("label", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
@@ -114,7 +116,7 @@ public class ObjectRelationshipModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ObjectRelationship (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectRelationshipId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,objectDefinitionId1 LONG,objectDefinitionId2 LONG,objectFieldId2 LONG,parameterObjectFieldId LONG,deletionType VARCHAR(75) null,dbTableName VARCHAR(75) null,edge BOOLEAN,label STRING null,name VARCHAR(75) null,reverse BOOLEAN,system_ BOOLEAN,type_ VARCHAR(75) null)";
+		"create table ObjectRelationship (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectRelationshipId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,objectDefinitionId1 LONG,objectDefinitionId2 LONG,objectFieldId2 LONG,parameterObjectFieldId LONG,deletionType VARCHAR(75) null,dbTableName VARCHAR(75) null,description STRING null,edge BOOLEAN,label STRING null,name VARCHAR(75) null,reverse BOOLEAN,system_ BOOLEAN,type_ VARCHAR(75) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table ObjectRelationship";
 
@@ -367,6 +369,8 @@ public class ObjectRelationshipModelImpl
 				"deletionType", ObjectRelationship::getDeletionType);
 			attributeGetterFunctions.put(
 				"dbTableName", ObjectRelationship::getDBTableName);
+			attributeGetterFunctions.put(
+				"description", ObjectRelationship::getDescription);
 			attributeGetterFunctions.put("edge", ObjectRelationship::getEdge);
 			attributeGetterFunctions.put("label", ObjectRelationship::getLabel);
 			attributeGetterFunctions.put("name", ObjectRelationship::getName);
@@ -453,6 +457,10 @@ public class ObjectRelationshipModelImpl
 				"dbTableName",
 				(BiConsumer<ObjectRelationship, String>)
 					ObjectRelationship::setDBTableName);
+			attributeSetterBiConsumers.put(
+				"description",
+				(BiConsumer<ObjectRelationship, String>)
+					ObjectRelationship::setDescription);
 			attributeSetterBiConsumers.put(
 				"edge",
 				(BiConsumer<ObjectRelationship, Boolean>)
@@ -853,6 +861,118 @@ public class ObjectRelationshipModelImpl
 
 	@JSON
 	@Override
+	public String getDescription() {
+		if (_description == null) {
+			return "";
+		}
+		else {
+			return _description;
+		}
+	}
+
+	@Override
+	public String getDescription(Locale locale) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId);
+	}
+
+	@Override
+	public String getDescription(Locale locale, boolean useDefault) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId, useDefault);
+	}
+
+	@Override
+	public String getDescription(String languageId) {
+		return LocalizationUtil.getLocalization(getDescription(), languageId);
+	}
+
+	@Override
+	public String getDescription(String languageId, boolean useDefault) {
+		return LocalizationUtil.getLocalization(
+			getDescription(), languageId, useDefault);
+	}
+
+	@Override
+	public String getDescriptionCurrentLanguageId() {
+		return _descriptionCurrentLanguageId;
+	}
+
+	@JSON
+	@Override
+	public String getDescriptionCurrentValue() {
+		Locale locale = getLocale(_descriptionCurrentLanguageId);
+
+		return getDescription(locale);
+	}
+
+	@Override
+	public Map<Locale, String> getDescriptionMap() {
+		return LocalizationUtil.getLocalizationMap(getDescription());
+	}
+
+	@Override
+	public void setDescription(String description) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_description = description;
+	}
+
+	@Override
+	public void setDescription(String description, Locale locale) {
+		setDescription(description, locale, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescription(
+		String description, Locale locale, Locale defaultLocale) {
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
+
+		if (Validator.isNotNull(description)) {
+			setDescription(
+				LocalizationUtil.updateLocalization(
+					getDescription(), "Description", description, languageId,
+					defaultLanguageId));
+		}
+		else {
+			setDescription(
+				LocalizationUtil.removeLocalization(
+					getDescription(), "Description", languageId));
+		}
+	}
+
+	@Override
+	public void setDescriptionCurrentLanguageId(String languageId) {
+		_descriptionCurrentLanguageId = languageId;
+	}
+
+	@Override
+	public void setDescriptionMap(Map<Locale, String> descriptionMap) {
+		setDescriptionMap(descriptionMap, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescriptionMap(
+		Map<Locale, String> descriptionMap, Locale defaultLocale) {
+
+		if (descriptionMap == null) {
+			return;
+		}
+
+		setDescription(
+			LocalizationUtil.updateLocalization(
+				descriptionMap, getDescription(), "Description",
+				LocaleUtil.toLanguageId(defaultLocale)));
+	}
+
+	@JSON
+	@Override
 	public boolean getEdge() {
 		return _edge;
 	}
@@ -1149,6 +1269,17 @@ public class ObjectRelationshipModelImpl
 	public String[] getAvailableLanguageIds() {
 		Set<String> availableLanguageIds = new TreeSet<String>();
 
+		Map<Locale, String> descriptionMap = getDescriptionMap();
+
+		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
+			Locale locale = entry.getKey();
+			String value = entry.getValue();
+
+			if (Validator.isNotNull(value)) {
+				availableLanguageIds.add(LocaleUtil.toLanguageId(locale));
+			}
+		}
+
 		Map<Locale, String> labelMap = getLabelMap();
 
 		for (Map.Entry<Locale, String> entry : labelMap.entrySet()) {
@@ -1166,7 +1297,7 @@ public class ObjectRelationshipModelImpl
 
 	@Override
 	public String getDefaultLanguageId() {
-		String xml = getLabel();
+		String xml = getDescription();
 
 		if (xml == null) {
 			return "";
@@ -1200,6 +1331,17 @@ public class ObjectRelationshipModelImpl
 		Locale defaultLocale = LocaleUtil.getDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
+
+		String description = getDescription(defaultLocale);
+
+		if (Validator.isNull(description)) {
+			setDescription(
+				getDescription(modelDefaultLanguageId), defaultLocale);
+		}
+		else {
+			setDescription(
+				getDescription(defaultLocale), defaultLocale, defaultLocale);
+		}
 
 		String label = getLabel(defaultLocale);
 
@@ -1249,6 +1391,7 @@ public class ObjectRelationshipModelImpl
 			getParameterObjectFieldId());
 		objectRelationshipImpl.setDeletionType(getDeletionType());
 		objectRelationshipImpl.setDBTableName(getDBTableName());
+		objectRelationshipImpl.setDescription(getDescription());
 		objectRelationshipImpl.setEdge(isEdge());
 		objectRelationshipImpl.setLabel(getLabel());
 		objectRelationshipImpl.setName(getName());
@@ -1296,6 +1439,8 @@ public class ObjectRelationshipModelImpl
 			this.<String>getColumnOriginalValue("deletionType"));
 		objectRelationshipImpl.setDBTableName(
 			this.<String>getColumnOriginalValue("dbTableName"));
+		objectRelationshipImpl.setDescription(
+			this.<String>getColumnOriginalValue("description"));
 		objectRelationshipImpl.setEdge(
 			this.<Boolean>getColumnOriginalValue("edge"));
 		objectRelationshipImpl.setLabel(
@@ -1468,6 +1613,14 @@ public class ObjectRelationshipModelImpl
 			objectRelationshipCacheModel.dbTableName = null;
 		}
 
+		objectRelationshipCacheModel.description = getDescription();
+
+		String description = objectRelationshipCacheModel.description;
+
+		if ((description != null) && (description.length() == 0)) {
+			objectRelationshipCacheModel.description = null;
+		}
+
 		objectRelationshipCacheModel.edge = isEdge();
 
 		objectRelationshipCacheModel.label = getLabel();
@@ -1576,6 +1729,8 @@ public class ObjectRelationshipModelImpl
 	private long _parameterObjectFieldId;
 	private String _deletionType;
 	private String _dbTableName;
+	private String _description;
+	private String _descriptionCurrentLanguageId;
 	private boolean _edge;
 	private String _label;
 	private String _labelCurrentLanguageId;
@@ -1632,6 +1787,7 @@ public class ObjectRelationshipModelImpl
 			"parameterObjectFieldId", _parameterObjectFieldId);
 		_columnOriginalValues.put("deletionType", _deletionType);
 		_columnOriginalValues.put("dbTableName", _dbTableName);
+		_columnOriginalValues.put("description", _description);
 		_columnOriginalValues.put("edge", _edge);
 		_columnOriginalValues.put("label", _label);
 		_columnOriginalValues.put("name", _name);
@@ -1693,17 +1849,19 @@ public class ObjectRelationshipModelImpl
 
 		columnBitmasks.put("dbTableName", 16384L);
 
-		columnBitmasks.put("edge", 32768L);
+		columnBitmasks.put("description", 32768L);
 
-		columnBitmasks.put("label", 65536L);
+		columnBitmasks.put("edge", 65536L);
 
-		columnBitmasks.put("name", 131072L);
+		columnBitmasks.put("label", 131072L);
 
-		columnBitmasks.put("reverse", 262144L);
+		columnBitmasks.put("name", 262144L);
 
-		columnBitmasks.put("system_", 524288L);
+		columnBitmasks.put("reverse", 524288L);
 
-		columnBitmasks.put("type_", 1048576L);
+		columnBitmasks.put("system_", 1048576L);
+
+		columnBitmasks.put("type_", 2097152L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1712,4 +1870,4 @@ public class ObjectRelationshipModelImpl
 	private ObjectRelationship _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2089503976
+// LIFERAY-SERVICE-BUILDER-HASH:-948387582

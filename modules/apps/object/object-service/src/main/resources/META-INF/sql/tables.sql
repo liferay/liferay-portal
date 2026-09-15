@@ -330,6 +330,7 @@ create table ObjectRelationship (
 	parameterObjectFieldId LONG,
 	deletionType VARCHAR(75) null,
 	dbTableName VARCHAR(75) null,
+	description STRING null,
 	edge BOOLEAN,
 	label STRING null,
 	name VARCHAR(75) null,
