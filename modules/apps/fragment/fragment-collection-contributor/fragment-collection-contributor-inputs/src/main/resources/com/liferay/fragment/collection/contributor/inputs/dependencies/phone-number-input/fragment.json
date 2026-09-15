@@ -3,7 +3,7 @@
 	"fragmentEntryKey": "phone-number-input",
 	"icon": "phone",
 	"name": "phone-number",
-	"thumbnail": "text.svg",
+	"thumbnail": "phone_number.svg",
 	"type": "input",
 	"typeOptions": {
 		"fieldTypes": [
