@@ -179,13 +179,6 @@ export default function ({
 
 		const configurationNamespacePrefix = `_${configurationNamespace}_`;
 
-		const getConfigurationToggleSwitches = () =>
-			Array.from(
-				configurationIframeWindow?.document.querySelectorAll(
-					`#${configurationNamespacePrefix}cookiesBannerConfigurationForm [data-cookie-key]`
-				) || []
-			);
-
 		const isConfigurationStoreConsentChecked = () =>
 			configurationIframeWindow?.document.getElementById(
 				`${configurationNamespacePrefix}storeConsent`
@@ -255,25 +248,27 @@ export default function ({
 							const storeConsent =
 								isConfigurationStoreConsentChecked();
 
-							getConfigurationToggleSwitches().forEach(
-								(toggleSwitch) => {
-									let renewalPeriod = consentRenewalPeriod;
-									let timeUnit = consentRenewalPeriodTimeUnit;
+							Array.from(
+								configurationIframeWindow?.document.querySelectorAll(
+									`#${configurationNamespacePrefix}cookiesBannerConfigurationForm [data-cookie-key]`
+								) || []
+							).forEach((toggleSwitch) => {
+								let renewalPeriod = consentRenewalPeriod;
+								let timeUnit = consentRenewalPeriodTimeUnit;
 
-									if (!toggleSwitch.checked) {
-										renewalPeriod = dissentRenewalPeriod;
-										timeUnit = dissentRenewalPeriodTimeUnit;
-									}
-
-									setCookie(
-										renewalPeriod,
-										toggleSwitch.dataset.cookieKey,
-										storeConsent,
-										timeUnit,
-										toggleSwitch.checked ? 'true' : 'false'
-									);
+								if (!toggleSwitch.checked) {
+									renewalPeriod = dissentRenewalPeriod;
+									timeUnit = dissentRenewalPeriodTimeUnit;
 								}
-							);
+
+								setCookie(
+									renewalPeriod,
+									toggleSwitch.dataset.cookieKey,
+									storeConsent,
+									timeUnit,
+									toggleSwitch.checked ? 'true' : 'false'
+								);
+							});
 
 							requiredConsentCookieTypeNames.forEach(
 								(requiredConsentCookieTypeName) => {
