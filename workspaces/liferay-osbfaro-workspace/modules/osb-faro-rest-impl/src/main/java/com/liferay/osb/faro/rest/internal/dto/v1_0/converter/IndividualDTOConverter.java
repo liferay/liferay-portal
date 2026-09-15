@@ -8,7 +8,12 @@ package com.liferay.osb.faro.rest.internal.dto.v1_0.converter;
 import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.rest.dto.v1_0.Individual;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualDemographicField;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
@@ -49,20 +54,67 @@ public class IndividualDTOConverter
 			{
 				setAccountName(individual::getAccountName);
 				setActivitiesCount(individual::getActivitiesCount);
+				setActivityStatus(individual::getActivityStatus);
+				setAverageSessionDuration(
+					individual::getAverageSessionDuration);
 				setDateCreated(individual::getDateCreated);
 				setDateModified(individual::getDateModified);
 				setDemographics(
 					() -> _toIndividualDemographicFieldsMap(
 						individual.getDemographics(), dtoConverterContext));
+				setEmailAddress(
+					() -> _getDemographicValue(individual, "email"));
 				setFirstActivityDate(individual::getFirstActivityDate);
 				setId(individual::getId);
+				setKnownSinceDate(individual::getKnownSinceDate);
 				setLastActivityDate(individual::getLastActivityDate);
 				setLastSessionCountry(individual::getLastSessionCountry);
+				setName(() -> _getName(individual));
 				setProfileType(
 					() -> ProfileType.create(
 						StringUtil.toUpperCase(individual.getProfileType())));
+				setSessionsCount(individual::getSessionsCount);
 			}
 		};
+	}
+
+	private String _getDemographicValue(
+		com.liferay.osb.faro.engine.client.model.Individual individual,
+		String name) {
+
+		Map<String, List<Field>> demographics = individual.getDemographics();
+
+		if (demographics == null) {
+			return null;
+		}
+
+		List<Field> fields = demographics.get(name);
+
+		if (ListUtil.isEmpty(fields)) {
+			return null;
+		}
+
+		Field field = fields.get(0);
+
+		return field.getValue();
+	}
+
+	private String _getName(
+		com.liferay.osb.faro.engine.client.model.Individual individual) {
+
+		String name = StringUtil.trim(
+			StringBundler.concat(
+				GetterUtil.getString(
+					_getDemographicValue(individual, "givenName")),
+				StringPool.SPACE,
+				GetterUtil.getString(
+					_getDemographicValue(individual, "familyName"))));
+
+		if (Validator.isBlank(name)) {
+			return null;
+		}
+
+		return name;
 	}
 
 	private Map<String, List<IndividualDemographicField>>

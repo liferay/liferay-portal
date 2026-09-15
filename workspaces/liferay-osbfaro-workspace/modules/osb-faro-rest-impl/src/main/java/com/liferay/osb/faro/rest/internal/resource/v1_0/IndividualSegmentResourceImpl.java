@@ -60,6 +60,34 @@ public class IndividualSegmentResourceImpl
 	}
 
 	@Override
+	public Page<IndividualSegment>
+			getWorkspaceGroupIndividualIndividualSegmentsPage(
+				Long groupId, String individualId, String channelId,
+				String search, String status, Pagination pagination)
+		throws Exception {
+
+		FaroProject faroProject =
+			_faroProjectLocalService.getFaroProjectByGroupId(groupId);
+
+		Results<com.liferay.osb.faro.engine.client.model.IndividualSegment>
+			results = _contactsEngineClient.getIndividualIndividualSegments(
+				faroProject, channelId, individualId, search, status,
+				FaroPaginationUtil.getCur(pagination),
+				FaroPaginationUtil.getDelta(pagination), null);
+
+		return Page.of(
+			transform(
+				results.getItems(),
+				individualSegment -> _individualSegmentDTOConverter.toDTO(
+					new FaroDTOConverterContext(
+						contextAcceptLanguage.isAcceptAllLanguages(),
+						individualSegment.getId(),
+						contextAcceptLanguage.getPreferredLocale()),
+					individualSegment)),
+			pagination, results.getTotal());
+	}
+
+	@Override
 	public IndividualSegment getWorkspaceGroupIndividualSegment(
 			Long groupId, String individualSegmentId)
 		throws Exception {
