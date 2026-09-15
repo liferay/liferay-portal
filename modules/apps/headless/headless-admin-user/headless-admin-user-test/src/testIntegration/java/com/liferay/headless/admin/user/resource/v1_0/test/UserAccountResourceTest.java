@@ -753,6 +753,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				"((status eq 0) or (status eq 5))"),
 			userAccount1, userAccount2, userAccount3, userAccount6);
 
+		_testGetUserAccountsPagePastLastPage();
 		_testGetUserAccountsPageWithBirthDateFilter();
 		_testGetUserAccountsPageWithCustomFields();
 		_testGetUserAccountsPageWithSortCustomField();
@@ -2658,6 +2659,26 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		if (expectedUserAccounts.length > 0) {
 			assertValid(page);
 		}
+	}
+
+	private void _testGetUserAccountsPagePastLastPage() throws Exception {
+		UserAccount userAccount1 = testGetUserAccountsPage_addUserAccount(
+			randomUserAccount());
+		UserAccount userAccount2 = testGetUserAccountsPage_addUserAccount(
+			randomUserAccount());
+
+		Page<UserAccount> page = userAccountResource.getUserAccountsPage(
+			null,
+			String.format(
+				"id in ('%s','%s')", userAccount1.getId(),
+				userAccount2.getId()),
+			Pagination.of(3, 1), null);
+
+		Assert.assertEquals(2, page.getLastPage());
+		Assert.assertEquals(2, page.getTotalCount());
+
+		Assert.assertEquals(
+			Collections.emptyList(), (List<UserAccount>)page.getItems());
 	}
 
 	private void _testGetUserAccountsPageWithBirthDateFilter()
