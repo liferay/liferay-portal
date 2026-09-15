@@ -697,7 +697,7 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/asset-summaries":
         get:
             description:
-                "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`."
+                "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`."
             operationId: getWorkspaceGroupChannelAssetSummariesPage
             parameters:
                 -   in: path
@@ -713,6 +713,18 @@ paths:
                         "Identifier of the channel whose search terms should be listed."
                     name: channelId
                     required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Identifier of an account. When set, narrow the metrics to activity from the individuals in that account."
+                    name: accountId
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Identifier of an individual. When set, narrow the metrics to activity from that individual."
+                    name: individualId
                     schema:
                         type: string
                 -   in: query
@@ -751,6 +763,12 @@ paths:
                     description:
                         "Free-text keyword search across asset titles. Empty or null returns all matching assets."
                     name: search
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Identifier of a segment. When set, narrow the metrics to activity from the individuals in that segment."
+                    name: segmentId
                     schema:
                         type: string
                 -   in: query
