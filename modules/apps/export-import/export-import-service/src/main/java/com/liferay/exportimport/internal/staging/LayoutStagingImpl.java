@@ -9,6 +9,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.staging.LayoutStaging;
 import com.liferay.exportimport.kernel.staging.LayoutStagingUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -110,6 +111,12 @@ public class LayoutStagingImpl implements LayoutStaging {
 
 	@Override
 	public boolean isBranchingLayoutSet(Group group, boolean privateLayout) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				group.getCompanyId(), "LPD-105778")) {
+
+			return false;
+		}
+
 		boolean isStagingGroup = false;
 
 		if (group.isStagingGroup() && !group.isStagedRemotely()) {
