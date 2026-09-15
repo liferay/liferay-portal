@@ -11,6 +11,7 @@ import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelS
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductGroupProduct;
 import com.liferay.petra.string.StringPool;
@@ -67,6 +68,17 @@ public class ProductGroupProductDTOConverter
 
 		return new ProductGroupProduct() {
 			{
+				setCatalogExternalReferenceCode(
+					() -> {
+						CommerceCatalog commerceCatalog =
+							cpDefinition.getCommerceCatalog();
+
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getExternalReferenceCode();
+					});
 				setId(
 					commercePricingClassCPDefinitionRel::
 						getCommercePricingClassCPDefinitionRelId);
@@ -78,6 +90,7 @@ public class ProductGroupProductDTOConverter
 					commercePricingClass::getCommercePricingClassId);
 				setProductId(cProduct::getCProductId);
 				setProductName(() -> cpDefinition.getName(languageId));
+				setProductType(cpDefinition::getProductTypeName);
 				setSku(() -> _getSku(cpDefinition, locale));
 			}
 		};

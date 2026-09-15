@@ -84,6 +84,14 @@ public class MappedProductDTOConverter
 						return LanguageUtils.getLanguageIdMap(
 							cpDefinition.getNameMap());
 					});
+				setProductType(
+					() -> {
+						if (cpDefinition == null) {
+							return null;
+						}
+
+						return cpDefinition.getProductTypeName();
+					});
 				setQuantity(csDiagramEntry::getQuantity);
 				setSequence(csDiagramEntry::getSequence);
 				setSku(csDiagramEntry::getSku);

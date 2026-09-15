@@ -1095,6 +1095,11 @@ components:
                         hu_HU: Product Name HU
                     readOnly: true
                     type: object
+                entryProductType:
+                    description:
+                        Product type of the child product named by `entryProductExternalReferenceCode`. The type cannot be defaulted because it cannot be changed after a product is created, so it must travel with the reference whenever the child product is imported after its parent.
+                    example: simple
+                    type: string
                 id:
                     description:
                         Primary key of the bundle membership entry; read-only.
@@ -1296,6 +1301,11 @@ components:
                         hu_HU: Product Name HU
                     readOnly: true
                     type: object
+                productType:
+                    description:
+                        Product type of the referenced product named by `productExternalReferenceCode`. The type cannot be defaulted because it cannot be changed after a product is created, so it must travel with the reference whenever the referenced product is imported after the parent product.
+                    example: simple
+                    type: string
                 quantity:
                     description:
                         Quantity of the mapped product or SKU implied by selecting this pin.
@@ -2537,6 +2547,11 @@ components:
             description:
                 Membership entry that links a product to a product group; admin catalog write view used to add or remove products from a product group.
             properties:
+                catalogExternalReferenceCode:
+                    description:
+                        External reference code of the catalog hosting the linked product. A product group belongs to no catalog, so the catalog must travel with the reference to give the product a home whenever it is imported after the product group.
+                    example: exampleERC
+                    type: string
                 id:
                     description:
                         Primary key of the membership row.
@@ -2573,6 +2588,11 @@ components:
                         Display name of the linked product in the requested locale; read-only.
                     example: Hand Saw
                     readOnly: true
+                    type: string
+                productType:
+                    description:
+                        Product type of the linked product named by `productExternalReferenceCode`. The type cannot be defaulted because it cannot be changed after a product is created, so it must travel with the reference whenever the product is imported after the product group.
+                    example: simple
                     type: string
                 sku:
                     description:
@@ -3222,6 +3242,11 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                productType:
+                    description:
+                        Product type of the target product named by `productExternalReferenceCode`. The type cannot be defaulted because it cannot be changed after a product is created, so it must travel with the reference whenever the target product is imported after its source.
+                    example: simple
+                    type: string
                 type:
                     description:
                         Link type token; required on create; also accepted as a query parameter to filter the related-products listing.

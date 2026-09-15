@@ -62,6 +62,7 @@ public class GroupedProductDTOConverter
 				setEntryProductName(
 					() -> LanguageUtils.getLanguageIdMap(
 						entryCPDefinition.getNameMap()));
+				setEntryProductType(entryCPDefinition::getProductTypeName);
 				setId(cpDefinitionGroupedEntry::getCPDefinitionGroupedEntryId);
 				setPriority(cpDefinitionGroupedEntry::getPriority);
 				setProductExternalReferenceCode(
