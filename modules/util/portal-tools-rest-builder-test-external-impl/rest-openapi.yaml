@@ -32,6 +32,11 @@ components:
                         -   ExternalChildTestEntity2
                     type: string
             type: object
+        ExternalTestEntity2:
+            properties:
+                externalReferenceCode:
+                    type: string
+            type: object
 info:
     description:
         "A REST API referenced from another OpenAPI document to test external schema referencing."
