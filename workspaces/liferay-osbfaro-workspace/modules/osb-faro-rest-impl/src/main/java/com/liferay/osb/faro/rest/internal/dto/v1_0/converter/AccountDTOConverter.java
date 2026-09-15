@@ -42,9 +42,12 @@ public class AccountDTOConverter
 		return new Account() {
 			{
 				setAccountName(account::getAccountName);
+				setAccountType(account::getAccountType);
+				setActivitiesCount(account::getActivitiesCount);
 				setAnnualRevenue(account::getAnnualRevenue);
 				setCountry(account::getCountry);
 				setDateModified(account::getModifiedDate);
+				setFirstActivityDate(account::getFirstActivityDate);
 				setId(account::getId);
 				setIndustry(account::getIndustry);
 				setLastActivityDate(account::getLastActivityDate);
@@ -65,6 +68,8 @@ public class AccountDTOConverter
 
 						return lifecycleStage.getStageType();
 					});
+				setNumberOfEmployees(account::getNumberOfEmployees);
+				setWebsite(account::getWebsite);
 			}
 		};
 	}

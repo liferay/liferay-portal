@@ -53,8 +53,11 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		Results<com.liferay.osb.faro.engine.client.model.Account> results =
 			_contactsEngineClient.getAccounts(
 				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, null, search, FaroPaginationUtil.getCur(pagination),
-				FaroPaginationUtil.getDelta(pagination), null);
+				channelId, null, true, search, rangeEnd,
+				TimeRange.getRangeKey(rangeKey), rangeStart, null,
+				FaroPaginationUtil.getCur(pagination),
+				FaroPaginationUtil.getDelta(pagination),
+				FaroPaginationUtil.toSortString(sorts));
 
 		return Page.of(
 			transform(
