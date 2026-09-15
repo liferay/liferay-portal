@@ -683,4 +683,4 @@ public interface KBArticleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1160268392
+// LIFERAY-SERVICE-BUILDER-HASH:-892859866
