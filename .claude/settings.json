@@ -1,7 +1,8 @@
 {
 	"attribution": {
 		"commit": "",
-		"pr": ""
+		"pr": "",
+		"sessionUrl": false
 	},
 	"hooks": {
 		"WorktreeCreate": [
