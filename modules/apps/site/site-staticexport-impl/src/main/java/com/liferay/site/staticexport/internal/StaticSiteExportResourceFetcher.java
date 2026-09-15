@@ -126,16 +126,18 @@ public class StaticSiteExportResourceFetcher {
 			int slashIndex = path.indexOf(
 				CharPool.SLASH, _MODULE_PATH_PREFIX.length());
 
-			if (slashIndex != -1) {
-				ServletContext moduleServletContext = ServletContextPool.get(
-					path.substring(_MODULE_PATH_PREFIX.length(), slashIndex));
-
-				if (moduleServletContext != null) {
-					servletContext = moduleServletContext;
-
-					path = path.substring(slashIndex);
-				}
+			if (slashIndex == -1) {
+				return null;
 			}
+
+			servletContext = ServletContextPool.get(
+				path.substring(_MODULE_PATH_PREFIX.length(), slashIndex));
+
+			path = path.substring(slashIndex);
+		}
+
+		if (servletContext == null) {
+			return null;
 		}
 
 		RequestDispatcher requestDispatcher =
