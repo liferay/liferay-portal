@@ -90,8 +90,7 @@ public abstract class BaseTestPackage implements TestPackage {
 
 				@Override
 				public FileVisitResult visitFile(
-						Path filePath, BasicFileAttributes basicFileAttributes)
-					throws IOException {
+					Path filePath, BasicFileAttributes basicFileAttributes) {
 
 					File file = filePath.toFile();
 
