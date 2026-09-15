@@ -356,6 +356,38 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 	@Override
 	@Test
+	public void testGetAccountUserAccountsPage() throws Exception {
+		super.testGetAccountUserAccountsPage();
+
+		_setUpTestUserAccountResource();
+
+		long accountId = RandomTestUtil.randomLong();
+
+		HttpInvoker.HttpResponse httpResponse1 =
+			_regularUserAccountResource.getAccountUserAccountsPageHttpResponse(
+				accountId, null, null, null, null);
+
+		Assert.assertEquals(
+			Response.Status.NOT_FOUND.getStatusCode(),
+			httpResponse1.getStatusCode());
+
+		String content = httpResponse1.getContent();
+
+		Assert.assertFalse(content.contains(String.valueOf(accountId)));
+
+		AccountEntry accountEntry = _addAccountEntry();
+
+		HttpInvoker.HttpResponse httpResponse2 =
+			_regularUserAccountResource.getAccountUserAccountsPageHttpResponse(
+				accountEntry.getAccountEntryId(), null, null, null, null);
+
+		Assert.assertEquals(
+			Response.Status.NOT_FOUND.getStatusCode(),
+			httpResponse2.getStatusCode());
+	}
+
+	@Override
+	@Test
 	public void testGetSiteAccountUserAccountSelected() throws Exception {
 		AccountEntry accountEntry1 = _addAccountEntry();
 		User user = UserTestUtil.addUser();
