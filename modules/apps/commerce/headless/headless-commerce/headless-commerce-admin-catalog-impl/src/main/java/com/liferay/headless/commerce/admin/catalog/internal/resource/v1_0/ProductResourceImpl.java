@@ -25,6 +25,7 @@ import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelS
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
+import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
@@ -71,6 +72,8 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
 import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Diagram;
@@ -184,10 +187,13 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/product.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = ProductResource.class
 )
 @CTAware
-public class ProductResourceImpl extends BaseProductResourceImpl {
+public class ProductResourceImpl
+	extends BaseProductResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<Product> {
 
 	@Override
 	public void create(
@@ -378,6 +384,54 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				_portal.getClassNameId(CPDefinition.class.getName()),
 				contextCompany.getCompanyId(), _expandoColumnLocalService,
 				_expandoTableLocalService));
+	}
+
+	@Override
+	public ExportImportDescriptor<CPDefinition> getExportImportDescriptor() {
+		return new ExportImportDescriptor<>() {
+
+			@Override
+			public String getKey() {
+				return ProductResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "products";
+			}
+
+			@Override
+			public Class<CPDefinition> getModelClass() {
+				return CPDefinition.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of(
+					"attachments", "diagram", "images", "mappedProducts",
+					"pins", "productAccountGroups", "productChannels",
+					"productConfiguration", "productGroups", "productOptions",
+					"productSpecifications", "productVirtualSettings",
+					"relatedProducts", "shippingConfiguration", "skus",
+					"subscriptionConfiguration", "taxConfiguration");
+			}
+
+			@Override
+			public String getPortletId() {
+				return CPPortletKeys.CP_DEFINITIONS;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_PRODUCT_MANAGEMENT;
+			}
+
+		};
 	}
 
 	@Override
