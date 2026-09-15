@@ -108,12 +108,64 @@ function getVariationValues(
 	return values;
 }
 
-export function getFilteredVariations(
-	elementVariations: ElementVariation[],
-	filters: Filter[]
-): ElementVariation[] {
-	return elementVariations.filter((elementVariation) =>
-		filters.every((filter) => {
+function getVariationText({
+	audiences,
+	editableElementOptions,
+	elementVariation,
+}: {
+	audiences: Option[];
+	editableElementOptions: Option[];
+	elementVariation: ElementVariation;
+}): string {
+	const elementLabel =
+		editableElementOptions.find(
+			(option) => option.value === elementVariation.targetElement
+		)?.label ?? elementVariation.targetElement;
+
+	const audienceLabels = elementVariation.audienceEntryERCs.map(
+		(audienceEntryERC) =>
+			audiences.find((audience) => audience.value === audienceEntryERC)
+				?.label
+	);
+
+	const typeOptions = getFilterOptions('type', audiences);
+
+	const typeLabels = getVariationValues('type', elementVariation).map(
+		(value) => typeOptions.find((option) => option.value === value)?.label
+	);
+
+	const statusLabel = elementVariation.active
+		? ''
+		: Liferay.Language.get('disabled');
+
+	const labels = [
+		elementVariation.name,
+		elementLabel,
+		...audienceLabels,
+		...typeLabels,
+		statusLabel,
+	];
+
+	return labels.filter(Boolean).join(' ').toLowerCase();
+}
+
+export function getFilteredVariations({
+	audiences,
+	editableElementOptions,
+	elementVariations,
+	filters,
+	searchTerm,
+}: {
+	audiences: Option[];
+	editableElementOptions: Option[];
+	elementVariations: ElementVariation[];
+	filters: Filter[];
+	searchTerm: string;
+}): ElementVariation[] {
+	const term = searchTerm.trim().toLowerCase();
+
+	return elementVariations.filter((elementVariation) => {
+		const matchesFilters = filters.every((filter) => {
 			const values = getVariationValues(filter.type, elementVariation);
 
 			const matches = filter.values.some((value) =>
@@ -121,6 +173,16 @@ export function getFilteredVariations(
 			);
 
 			return filter.exclude ? !matches : matches;
-		})
-	);
+		});
+
+		if (!matchesFilters || !term) {
+			return matchesFilters;
+		}
+
+		return getVariationText({
+			audiences,
+			editableElementOptions,
+			elementVariation,
+		}).includes(term);
+	});
 }
