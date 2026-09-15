@@ -12,6 +12,9 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
+import com.liferay.portal.kernel.audit.AuditMessage;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -41,6 +44,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
@@ -51,7 +55,9 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import jakarta.portlet.PortletException;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -63,6 +69,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
@@ -108,6 +118,15 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 	@FeatureFlag("LPD-6417")
 	@Test
+	public void testProcessActionRoutesAuditMessage() throws Exception {
+		_testProcessActionRoutesAuditMessage(
+			ExtendedObjectClassDefinition.Scope.COMPANY);
+		_testProcessActionRoutesAuditMessage(
+			ExtendedObjectClassDefinition.Scope.SYSTEM);
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
 	public void testProcessActionWithCompanyScope() throws Exception {
 		_processAction(ExtendedObjectClassDefinition.Scope.COMPANY);
 
@@ -116,6 +135,7 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				AuditConfiguration.class, TestPropsValues.getCompanyId());
 
 		Assert.assertFalse(auditConfiguration.enabled());
+		Assert.assertFalse(auditConfiguration.pseudonymizationEnabled());
 
 		_assertFileSystemAuditMessageProcessorConfiguration(
 			_configurationProvider.getCompanyConfiguration(
@@ -261,6 +281,7 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				AuditConfiguration.class);
 
 		Assert.assertFalse(auditConfiguration.enabled());
+		Assert.assertFalse(auditConfiguration.pseudonymizationEnabled());
 
 		_assertFileSystemAuditMessageProcessorConfiguration(
 			_configurationProvider.getSystemConfiguration(
@@ -411,6 +432,36 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		}
 	}
 
+	private MockLiferayPortletActionRequest
+			_createMockLiferayPortletActionRequest(
+				ExtendedObjectClassDefinition.Scope scope)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_CONFIG,
+			ProxyUtil.newProxyInstance(
+				LiferayPortletConfig.class.getClassLoader(),
+				new Class<?>[] {LiferayPortletConfig.class},
+				(proxy, method, args) -> {
+					if (Objects.equals(method.getName(), "getPortletId")) {
+						return _getPortletId(scope);
+					}
+
+					return null;
+				}));
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.PORTLET_ID, _getPortletId(scope));
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay());
+		mockLiferayPortletActionRequest.setPortletSession(
+			new MockPortletSession());
+
+		return mockLiferayPortletActionRequest;
+	}
+
 	private String _getFilterString(
 			Class<?> clazz, ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
@@ -468,6 +519,7 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		themeDisplay.setPlid(_layout.getPlid());
 		themeDisplay.setScopeGroupId(_group.getGroupId());
 		themeDisplay.setSiteGroupId(_group.getGroupId());
+		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
 	}
@@ -486,25 +538,11 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
+			_createMockLiferayPortletActionRequest(scope);
 
-		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_CONFIG,
-			ProxyUtil.newProxyInstance(
-				LiferayPortletConfig.class.getClassLoader(),
-				new Class<?>[] {LiferayPortletConfig.class},
-				(proxy, method, args) -> {
-					if (Objects.equals(method.getName(), "getPortletId")) {
-						return _getPortletId(scope);
-					}
-
-					return null;
-				}));
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.PORTLET_ID, _getPortletId(scope));
-		mockLiferayPortletActionRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _getThemeDisplay());
 		mockLiferayPortletActionRequest.setParameter("enabled", "false");
+		mockLiferayPortletActionRequest.setParameter(
+			"pseudonymizationEnabled", "false");
 
 		if (auditMessageMaxQueueSize != null) {
 			mockLiferayPortletActionRequest.setParameter(
@@ -534,9 +572,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				"persistentAuditMessageProcessorFlushInterval",
 				String.valueOf(_FLUSH_INTERVAL));
 		}
-
-		mockLiferayPortletActionRequest.setPortletSession(
-			new MockPortletSession());
 
 		_mvcActionCommand.processAction(
 			mockLiferayPortletActionRequest,
@@ -590,6 +625,71 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		_configurationProvider.saveCompanyConfiguration(
 			AuditConfiguration.class, TestPropsValues.getCompanyId(),
 			properties);
+	}
+
+	private void _testProcessActionRoutesAuditMessage(
+			ExtendedObjectClassDefinition.Scope scope)
+		throws Exception {
+
+		Bundle bundle = FrameworkUtil.getBundle(getClass());
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		List<AuditMessage> auditMessages = new ArrayList<>();
+
+		ServiceRegistration<AuditMessageProcessor> serviceRegistration =
+			bundleContext.registerService(
+				AuditMessageProcessor.class, auditMessages::add,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"eventTypes", "*"
+				).build());
+
+		try {
+			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+				_createMockLiferayPortletActionRequest(scope);
+
+			mockLiferayPortletActionRequest.setParameter(
+				"pseudonymizationEnabled", "false");
+
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				new MockLiferayPortletActionResponse());
+
+			AuditMessage auditMessage = null;
+
+			for (AuditMessage curAuditMessage : auditMessages) {
+				if (Objects.equals(
+						curAuditMessage.getEventType(),
+						"AUDIT_CONFIG_CHANGE")) {
+
+					auditMessage = curAuditMessage;
+
+					break;
+				}
+			}
+
+			Assert.assertEquals(
+				AuditConfiguration.class.getName(),
+				auditMessage.getClassName());
+
+			JSONObject additionalInfoJSONObject =
+				auditMessage.getAdditionalInfo();
+
+			JSONArray attributesJSONArray =
+				additionalInfoJSONObject.getJSONArray("attributes");
+
+			JSONObject attributeJSONObject = attributesJSONArray.getJSONObject(
+				0);
+
+			Assert.assertEquals(
+				"pseudonymizationEnabled",
+				attributeJSONObject.getString("name"));
+			Assert.assertFalse(attributeJSONObject.getBoolean("newValue"));
+			Assert.assertTrue(attributeJSONObject.getBoolean("oldValue"));
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
 	}
 
 	private void _testProcessActionWhenDatabaseProcessorIsOverridden(

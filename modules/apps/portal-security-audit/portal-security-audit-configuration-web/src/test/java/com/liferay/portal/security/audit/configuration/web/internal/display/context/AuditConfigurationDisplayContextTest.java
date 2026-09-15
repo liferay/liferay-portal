@@ -71,6 +71,10 @@ public class AuditConfigurationDisplayContextTest {
 				getPersistentAuditMessageProcessorFlushIntervalHelpMessage,
 			PersistentAuditMessageProcessorConfiguration.class,
 			"flushInterval");
+		_testGetHelpMessage(
+			AuditConfigurationDisplayContext::
+				getPseudonymizationEnabledHelpMessage,
+			AuditConfiguration.class, "pseudonymizationEnabled");
 	}
 
 	@Test
@@ -109,6 +113,10 @@ public class AuditConfigurationDisplayContextTest {
 				isPersistentAuditMessageProcessorFlushIntervalOverridden,
 			PersistentAuditMessageProcessorConfiguration.class,
 			"flushInterval");
+		_testIsOverridden(
+			AuditConfigurationDisplayContext::
+				isPseudonymizationEnabledOverridden,
+			AuditConfiguration.class, "pseudonymizationEnabled");
 	}
 
 	private AuditConfigurationDisplayContext _createDisplayContext() {
