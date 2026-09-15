@@ -798,9 +798,9 @@
 					classname="com.liferay.source.formatter.SourceFormatter"
 					classpathref="source.formatter.classpath"
 					dir="${source.formatter.dir}"
-					failonerror="true"
 					fork="true"
 					newenvironment="true"
+					resultproperty="source.formatter.result"
 				>
 					<jvmarg if:true="${jvm.debug}" value="${jpda.settings}" />
 					<jvmarg value="-Dfile.encoding=UTF-8" />
@@ -833,6 +833,20 @@
 					<arg value="use.ci.github.access.token=${use.ci.github.access.token}" />
 					<arg value="validate.commit.messages=${validate.commit.messages}" />
 				</java>
+
+				<fail message=".${line.separator}Unable to run Source Formatter under Java ${java.specification.version}. It loads classes${line.separator}compiled for a newer Java version. Set JAVA_HOME to a JDK 17 or 21 and run this${line.separator}target again.${line.separator}${line.separator}This is a toolchain failure, not a formatting violation.">
+					<condition>
+						<equals arg1="${source.formatter.result}" arg2="2" />
+					</condition>
+				</fail>
+
+				<fail message="Java returned: ${source.formatter.result}">
+					<condition>
+						<not>
+							<equals arg1="${source.formatter.result}" arg2="0" />
+						</not>
+					</condition>
+				</fail>
 
 				<delete file="ServiceBuilder.temp" />
 
