@@ -380,10 +380,10 @@ public class CloudBucketUtil {
 		}
 
 		try {
-			String listS3Files = listS3Files(
+			String s3FilesOutput = listS3Files(
 				_replaceS3ObjectPath(s3ObjectPath), true);
 
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(listS3Files.trim())) {
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(s3FilesOutput.trim())) {
 				return true;
 			}
 		}

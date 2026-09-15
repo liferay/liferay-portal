@@ -223,7 +223,7 @@ public class CloudBucketUtilTest
 				invocation -> null
 			);
 
-			String replaceS3ObjectPath = ReflectionTestUtil.invoke(
+			String actualS3ObjectPath = ReflectionTestUtil.invoke(
 				CloudBucketUtil.class, "_replaceS3ObjectPath",
 				new Class<?>[] {String.class}, s3ObjectPath);
 
@@ -233,7 +233,7 @@ public class CloudBucketUtilTest
 			mockedStatic.verify(
 				() -> JenkinsResultsParserUtil.sleep(Mockito.anyLong()));
 
-			testEquals(s3ObjectPath, replaceS3ObjectPath);
+			testEquals(s3ObjectPath, actualS3ObjectPath);
 		}
 	}
 
@@ -300,13 +300,13 @@ public class CloudBucketUtilTest
 	}
 
 	private void _testGetNewestS3ObjectLastModified(
-			long expected, String listObjectsOutput, String s3ObjectPath)
+			long expected, String objectsOutput, String s3ObjectPath)
 		throws Exception {
 
 		Shell shell = mockShell();
 
 		setShellCommandOutput(
-			"aws s3api list-objects-v2", shell, listObjectsOutput);
+			"aws s3api list-objects-v2", shell, objectsOutput);
 
 		testEquals(
 			expected,
@@ -323,13 +323,13 @@ public class CloudBucketUtilTest
 	}
 
 	private void _testIsS3ObjectPathAvailable(
-			boolean expected, String expectedS3ObjectPath,
-			String listS3FilesOutput, String s3ObjectPath)
+			boolean expected, String expectedS3ObjectPath, String s3FilesOutput,
+			String s3ObjectPath)
 		throws Exception {
 
 		Shell shell = mockShell();
 
-		setShellCommandOutput("aws s3 ls", shell, listS3FilesOutput);
+		setShellCommandOutput("aws s3 ls", shell, s3FilesOutput);
 
 		testEquals(
 			expected, CloudBucketUtil.isS3ObjectPathAvailable(s3ObjectPath));
