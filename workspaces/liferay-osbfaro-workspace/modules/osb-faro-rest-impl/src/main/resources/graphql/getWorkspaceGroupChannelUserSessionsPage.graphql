@@ -1,0 +1,53 @@
+query getWorkspaceGroupChannelUserSessionsPage(
+	$accountId: String
+	$channelId: String!
+	$entityId: String!
+	$entityType: EntityType!
+	$keywords: String
+	$page: Int!
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+	$size: Int!
+) {
+	userSessionBag: eventsByUserSessions(
+		accountId: $accountId
+		channelId: $channelId
+		entityId: $entityId
+		entityType: $entityType
+		includeWebhookEvents: true
+		keywords: $keywords
+		page: $page
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+		size: $size
+	) {
+		totalEvents
+		userSessions {
+			... on UserSession {
+				becameKnown
+				browserName
+				completeDate
+				createDate
+				deviceType
+				events {
+					applicationId
+					assetTitle
+					canonicalUrl
+					createDate
+					name
+					pageDescription
+					pageKeywords
+					pageTitle
+					properties {
+						name
+						value
+					}
+					referrer
+					url
+				}
+			}
+		}
+	}
+}

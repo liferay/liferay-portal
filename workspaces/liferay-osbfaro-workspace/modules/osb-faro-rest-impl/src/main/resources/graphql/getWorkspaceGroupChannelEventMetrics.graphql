@@ -1,0 +1,48 @@
+query getWorkspaceGroupChannelEventMetrics(
+	$accountId: String
+	$channelId: String!
+	$entityId: String!
+	$entityType: EntityType!
+	$interval: String!
+	$keywords: String
+	$rangeEnd: String
+	$rangeKey: Int
+	$rangeStart: String
+) {
+	eventMetric(
+		accountId: $accountId
+		channelId: $channelId
+		entityId: $entityId
+		entityType: $entityType
+		includeWebhookEvents: true
+		interval: $interval
+		keywords: $keywords
+		rangeEnd: $rangeEnd
+		rangeKey: $rangeKey
+		rangeStart: $rangeStart
+	) {
+		totalEventsMetric {
+			...metricFragment
+		}
+		totalSessionsMetric {
+			...metricFragment
+		}
+	}
+}
+
+fragment metricFragment on Metric {
+	histogram {
+		metrics {
+			key
+			value
+			valueKey
+		}
+		total
+	}
+	previousValue
+	trend {
+		percentage
+		trendClassification
+	}
+	value
+}
