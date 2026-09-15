@@ -11,13 +11,18 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.initializer.SiteInitializer;
+import com.liferay.site.initializer.SiteInitializerRegistry;
 import com.liferay.site.staticexport.StaticSiteExport;
 import com.liferay.site.staticexport.StaticSiteExportLayout;
 import com.liferay.site.staticexport.StaticSiteExportReport;
@@ -66,6 +71,85 @@ public class StaticSiteExporterTest {
 				_group.getGroupId(), Set.of(LocaleUtil.US))) {
 
 			_assertStaticSiteExport(layout, staticSiteExport);
+		}
+	}
+
+	@Test
+	public void testExportWithSiteInitializer() throws Exception {
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		try {
+			SiteInitializer siteInitializer =
+				_siteInitializerRegistry.getSiteInitializer(
+					"com.liferay.site.initializer.welcome");
+
+			siteInitializer.initialize(_group.getGroupId());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+
+		try (StaticSiteExport staticSiteExport = _staticSiteExporter.export(
+				_group.getGroupId(), Set.of(LocaleUtil.US))) {
+
+			List<StaticSiteExportLayout> staticSiteExportLayouts =
+				staticSiteExport.getStaticSiteExportLayouts();
+
+			Assert.assertEquals(
+				staticSiteExportLayouts.toString(),
+				_layoutLocalService.getLayoutsCount(_group.getGroupId(), false),
+				staticSiteExportLayouts.size());
+
+			for (StaticSiteExportLayout staticSiteExportLayout :
+					staticSiteExportLayouts) {
+
+				String html = staticSiteExportLayout.getHTML();
+
+				Assert.assertThat(html, CoreMatchers.containsString("</html>"));
+				Assert.assertThat(
+					html,
+					CoreMatchers.containsString(
+						"/o/layout-common-styles/main.css?plid=" +
+							staticSiteExportLayout.getPlid()));
+			}
+
+			boolean image = false;
+
+			for (StaticSiteExportResource staticSiteExportResource :
+					staticSiteExport.getStaticSiteExportResources()) {
+
+				String url = staticSiteExportResource.getURL();
+
+				if (url.startsWith("/documents/") ||
+					url.startsWith("/o/adaptive-media/")) {
+
+					image = true;
+				}
+
+				File file = staticSiteExportResource.getFile();
+
+				Assert.assertTrue(url, file.length() > 0);
+			}
+
+			Assert.assertTrue(
+				String.valueOf(staticSiteExport.getStaticSiteExportResources()),
+				image);
+
+			StaticSiteExportReport staticSiteExportReport =
+				staticSiteExport.getStaticSiteExportReport();
+
+			List<StaticSiteExportReport.Failure> layoutFailures =
+				staticSiteExportReport.getLayoutFailures();
+
+			Assert.assertTrue(
+				layoutFailures.toString(), layoutFailures.isEmpty());
+
+			List<StaticSiteExportReport.Failure> resourceFailures =
+				staticSiteExportReport.getResourceFailures();
+
+			Assert.assertTrue(
+				resourceFailures.toString(), resourceFailures.isEmpty());
 		}
 	}
 
@@ -162,6 +246,12 @@ public class StaticSiteExporterTest {
 	}
 
 	private Group _group;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private SiteInitializerRegistry _siteInitializerRegistry;
 
 	@Inject
 	private StaticSiteExporter _staticSiteExporter;
