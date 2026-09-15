@@ -11,9 +11,8 @@ export enum TrackingConsentValues {
 export class Pendo {
 
 	/**
-	 * Returns the stored tracking consent decision, or `null` when the user
-	 * has not made a decision yet. Uses the same cookie name as the DXP
-	 * tracking script so the consent model stays consistent across products.
+	 * Returns the stored consent decision, or `null` when there is none. Reads
+	 * the cookie the DXP tracking script uses, so the two agree.
 	 */
 	getUserConsent(): TrackingConsentValues | null {
 		return (
