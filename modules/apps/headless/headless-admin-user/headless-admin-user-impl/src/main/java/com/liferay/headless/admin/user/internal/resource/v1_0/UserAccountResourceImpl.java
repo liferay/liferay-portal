@@ -286,6 +286,9 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		AccountEntry accountEntry = _accountEntryService.getAccountEntry(
+			accountId);
+
 		Map<String, Map<String, String>> actions = _getModelActions(
 			Collections.unmodifiableMap(
 				HashMapBuilder.put(
@@ -321,7 +324,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 						"getAccountUserAccountsPage"
 					}
 				).build()),
-			accountId, _accountEntryModelResourcePermission);
+			accountEntry.getAccountEntryId(),
+			_accountEntryModelResourcePermission);
 
 		return SearchUtil.search(
 			actions,
@@ -331,7 +335,8 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 				booleanFilter.add(
 					new TermFilter(
-						"accountEntryIds", String.valueOf(accountId)),
+						"accountEntryIds",
+						String.valueOf(accountEntry.getAccountEntryId())),
 					BooleanClauseOccur.MUST);
 			},
 			filter, User.class.getName(), search, pagination,
