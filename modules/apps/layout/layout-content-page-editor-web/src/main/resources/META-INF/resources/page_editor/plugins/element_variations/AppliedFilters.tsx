@@ -22,8 +22,10 @@ interface Props {
 	filters: Filter[];
 	onAddFilter: (filter: Filter) => void;
 	onClearFilters: () => void;
+	onClearSearch: () => void;
 	onDeleteFilter: (filterType: FilterType) => void;
 	resultsCount: number;
+	searchTerm: string;
 }
 
 export default function AppliedFilters({
@@ -31,8 +33,10 @@ export default function AppliedFilters({
 	filters,
 	onAddFilter,
 	onClearFilters,
+	onClearSearch,
 	onDeleteFilter,
 	resultsCount,
+	searchTerm,
 }: Props) {
 	return (
 		<div className="border-bottom px-3 py-2 text-3 text-secondary">
@@ -56,6 +60,13 @@ export default function AppliedFilters({
 			</div>
 
 			<div className="c-gapy-2 d-flex flex-wrap mt-2">
+				{searchTerm ? (
+					<AppliedSearch
+						onClearSearch={onClearSearch}
+						searchTerm={searchTerm}
+					/>
+				) : null}
+
 				{filters.map((filter) => (
 					<AppliedFilter
 						audiences={audiences}
@@ -68,6 +79,40 @@ export default function AppliedFilters({
 				))}
 			</div>
 		</div>
+	);
+}
+
+interface AppliedSearchProps {
+	onClearSearch: () => void;
+	searchTerm: string;
+}
+
+function AppliedSearch({onClearSearch, searchTerm}: AppliedSearchProps) {
+	return (
+		<span
+			className="label label-dismissible label-lg label-secondary p-2"
+			role="group"
+		>
+			<ClayLabel.ItemExpand>
+				<span className="text-break text-secondary text-weight-normal text-wrap">
+					{`${Liferay.Language.get('search-colon')} `}
+
+					<strong>{searchTerm}</strong>
+				</span>
+			</ClayLabel.ItemExpand>
+
+			<ClayLabel.ItemAfter>
+				<button
+					aria-label={Liferay.Language.get('clear-search')}
+					className="close"
+					onClick={onClearSearch}
+					title={Liferay.Language.get('clear-search')}
+					type="button"
+				>
+					<ClayIcon symbol="times-small" />
+				</button>
+			</ClayLabel.ItemAfter>
+		</span>
 	);
 }
 
@@ -92,7 +137,7 @@ function AppliedFilter({
 
 	return (
 		<span
-			className="flex-grow-1 label label-dismissible label-lg label-secondary p-2"
+			className="label label-dismissible label-lg label-secondary p-2"
 			role="group"
 		>
 			<ClayLabel.ItemExpand>
