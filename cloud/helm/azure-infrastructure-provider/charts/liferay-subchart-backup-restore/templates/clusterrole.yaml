@@ -27,6 +27,11 @@ rules:
         verbs:
             -   get
             -   list
+    -   apiGroups: ["dbforpostgresql.azure.m.upbound.io"]
+        resources: ["flexibleservers"]
+        verbs:
+            -   get
+            -   list
     -   apiGroups: ["liferay.com"]
         resources: ["liferayinfrastructures"]
         verbs:

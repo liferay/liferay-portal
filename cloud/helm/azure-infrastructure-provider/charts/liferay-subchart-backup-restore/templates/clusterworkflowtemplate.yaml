@@ -1,0 +1,822 @@
+{{- $azureCli := printf "%s:%s" .Values.images.azureCli.repository .Values.images.azureCli.tag -}}
+{{- $helmKubectl := printf "%s:%s" .Values.images.helmKubectl.repository .Values.images.helmKubectl.tag -}}
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+    labels:
+        component: backup-restore-platform
+    name: backup-restore-cluster-workflow-template
+spec:
+    arguments:
+        parameters:
+            -   name: recovery-point-id
+    entrypoint: main
+    onExit: reset-restore-phase
+    podGC:
+        {{- .Values.argo.workflowSpec.podGC | toYaml | nindent 8 }}
+    podMetadata:
+        labels:
+            azure.workload.identity/use: "true"
+    serviceAccountName: backup-restore-service-account
+    templates:
+        -   inputs:
+                parameters:
+                    -   name: liferay-infrastructure-name
+                    -   name: restore-phase
+                    -   default: "null"
+                        name: restore-point-in-time
+                    -   name: target-active-data-plane
+            name: apply-infrastructure
+            outputs:
+                parameters:
+                    -   name: generation
+                        valueFrom:
+                            jsonPath: "{.metadata.generation}"
+            resource:
+                action: patch
+                flags:
+                    -   --field-manager=liferay-backup-restore
+                manifest: |-
+                    apiVersion: liferay.com/v1alpha1
+                    kind: LiferayInfrastructure
+                    metadata:
+                        name: {{ "{{" }}inputs.parameters.liferay-infrastructure-name}}
+                        namespace: {{ "{{" }}workflow.namespace}}
+                    spec:
+                        database:
+                            restorePointInTime: {{ "{{" }}inputs.parameters.restore-point-in-time}}
+                        restorePhase: {{ "{{" }}inputs.parameters.restore-phase}}
+                        targetActiveDataPlane: {{ "{{" }}inputs.parameters.target-active-data-plane}}
+                mergeStrategy: merge
+        -   inputs:
+                parameters:
+                    -   name: liferay-infrastructure-name
+                    -   name: restore-phase
+                    -   default: "null"
+                        name: restore-point-in-time
+                    -   name: target-active-data-plane
+            name: apply-wait-infrastructure
+            steps:
+                -   -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}inputs.parameters.liferay-infrastructure-name}}"
+                                -   name: restore-phase
+                                    value: "{{ "{{" }}inputs.parameters.restore-phase}}"
+                                -   name: restore-point-in-time
+                                    value: "{{ "{{" }}inputs.parameters.restore-point-in-time}}"
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}inputs.parameters.target-active-data-plane}}"
+                        name: apply-infrastructure
+                        template: apply-infrastructure
+                -   -   arguments:
+                            parameters:
+                                -   name: expected-generation
+                                    value: "{{ "{{" }}steps.apply-infrastructure.outputs.parameters.generation}}"
+                        name: wait-for-infrastructure
+                        template: wait-for-infrastructure
+        -   inputs:
+                parameters:
+                    -   name: liferay-infrastructure-name
+                    -   name: target-active-data-plane
+            name: clean-up-infrastructure
+            steps:
+                -   -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}inputs.parameters.liferay-infrastructure-name}}"
+                                -   name: restore-phase
+                                    value: none
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}inputs.parameters.target-active-data-plane}}"
+                        name: apply-wait-infrastructure
+                        template: apply-wait-infrastructure
+        -   activeDeadlineSeconds: {{ .Values.azureBackupService.restoreWaitTimeoutSeconds }}
+            inputs:
+                parameters:
+                    -   name: storage-account-name
+            name: delete-target-container
+            retryStrategy:
+                backoff:
+                    duration: 30s
+                    factor: 2
+                    maxDuration: 20m
+                limit: 5
+                retryPolicy: OnFailure
+            script:
+                command: [sh]
+                env:
+                    -   name: AZURE_CONFIG_DIR
+                        value: /tmp/azure
+                    -   name: AZURE_EXTENSION_DIR
+                        value: /tmp/azure-extensions
+                image: "{{ $azureCli }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    az extension add \
+                        --name dataprotection \
+                        --version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
+                        --yes >/dev/null
+
+                    az login \
+                        --federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
+                        --service-principal \
+                        --tenant "${AZURE_TENANT_ID}" \
+                        --username "${AZURE_CLIENT_ID}" >/dev/null
+
+                    storage_account_name="{{ "{{" }}inputs.parameters.storage-account-name}}"
+
+                    az storage container delete \
+                        --account-name "${storage_account_name}" \
+                        --auth-mode login \
+                        --name document-library >/dev/null
+
+                    timeout=$(($(date +%s) + 300))
+
+                    while [ $(date +%s) -lt ${timeout} ]
+                    do
+                        exists=$( \
+                            az storage container exists \
+                                --account-name "${storage_account_name}" \
+                                --auth-mode login \
+                                --name document-library \
+                                --output tsv \
+                                --query exists \
+                                | tr "[:upper:]" "[:lower:]")
+
+                        if [ "${exists}" = "false" ]
+                        then
+                            echo "The document-library container was deleted from ${storage_account_name}."
+
+                            exit 0
+                        fi
+
+                        sleep 10
+                    done
+
+                    echo "The document-library container in ${storage_account_name} was not deleted before the timeout." >&2
+
+                    exit 1
+        -   name: get-current-infrastructure-state
+            outputs:
+                parameters:
+                    -   name: backup-vault-name
+                        valueFrom:
+                            path: /tmp/backup-vault-name.txt
+                    -   name: data-active
+                        valueFrom:
+                            path: /tmp/data-plane-active.txt
+                    -   name: data-inactive
+                        valueFrom:
+                            path: /tmp/data-plane-inactive.txt
+                    -   name: database-server-name-active
+                        valueFrom:
+                            path: /tmp/database-server-name-active.txt
+                    -   name: liferay-infrastructure-name
+                        valueFrom:
+                            path: /tmp/liferay-infrastructure-name.txt
+                    -   name: liferay-workload-name
+                        valueFrom:
+                            path: /tmp/liferay-workload-name.txt
+                    -   name: resource-group-name
+                        valueFrom:
+                            path: /tmp/resource-group-name.txt
+                    -   name: storage-account-id-active
+                        valueFrom:
+                            path: /tmp/storage-account-id-active.txt
+            script:
+                command: [sh]
+                image: "{{ $helmKubectl }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    liferay_infrastructure_json=$( \
+                        kubectl get liferayinfrastructure \
+                            --output json \
+                            | jq ".items[0]")
+
+                    restore_phase=$(echo "${liferay_infrastructure_json}" | jq --raw-output ".spec.restorePhase")
+
+                    if [ "${restore_phase}" = "promoting" ] || [ "${restore_phase}" = "provisioning" ]
+                    then
+                        echo "The LiferayInfrastructure spec.restorePhase is set to ${restore_phase}. A restore is in progress." >&2
+
+                        exit 1
+                    fi
+
+                    echo "${liferay_infrastructure_json}" | jq --raw-output ".metadata.name" > /tmp/liferay-infrastructure-name.txt
+
+                    data_plane_active=$(echo "${liferay_infrastructure_json}" | jq --raw-output ".spec.targetActiveDataPlane // \"blue\"")
+
+                    echo "${data_plane_active}" > /tmp/data-plane-active.txt
+
+                    if [ "${data_plane_active}" = "blue" ]
+                    then
+                        echo "green" > /tmp/data-plane-inactive.txt
+                    else
+                        echo "blue" > /tmp/data-plane-inactive.txt
+                    fi
+
+                    kubectl get backupvaults.dataprotection.azure.m.upbound.io \
+                        --output jsonpath="{.items[0].metadata.name}" \
+                        > /tmp/backup-vault-name.txt
+
+                    kubectl get flexibleservers.dbforpostgresql.azure.m.upbound.io \
+                        --output jsonpath="{.items[0].metadata.name}" \
+                        --selector "dataPlane=${data_plane_active}" \
+                        > /tmp/database-server-name-active.txt
+
+                    kubectl get flexibleservers.dbforpostgresql.azure.m.upbound.io \
+                        --output jsonpath="{.items[0].spec.forProvider.resourceGroupName}" \
+                        --selector "dataPlane=${data_plane_active}" \
+                        > /tmp/resource-group-name.txt
+
+                    kubectl get statefulset \
+                        --output jsonpath="{.items[0].metadata.name}" \
+                        --selector "component=liferay" \
+                        > /tmp/liferay-workload-name.txt
+
+                    kubectl get accounts.storage.azure.m.upbound.io \
+                        --output jsonpath="{.items[0].status.atProvider.id}" \
+                        --selector "dataPlane=${data_plane_active}" \
+                        > /tmp/storage-account-id-active.txt
+        -   activeDeadlineSeconds: {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}
+            inputs:
+                parameters:
+                    -   name: data-inactive
+            name: get-inactive-storage-account
+            outputs:
+                parameters:
+                    -   name: storage-account-id
+                        valueFrom:
+                            path: /tmp/storage-account-id-inactive.txt
+                    -   name: storage-account-location
+                        valueFrom:
+                            path: /tmp/storage-account-location.txt
+                    -   name: storage-account-name
+                        valueFrom:
+                            path: /tmp/storage-account-name-inactive.txt
+            script:
+                command: [sh]
+                image: "{{ $helmKubectl }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    data_plane_inactive="{{ "{{" }}inputs.parameters.data-inactive}}"
+
+                    timeout=$(($(date +%s) + {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}))
+
+                    while [ $(date +%s) -lt ${timeout} ]
+                    do
+                        ready=$( \
+                            kubectl get accounts.storage.azure.m.upbound.io \
+                                --output jsonpath="{.items[0].status.conditions[?(@.type=='Ready')].status}" \
+                                --selector "dataPlane=${data_plane_inactive}" 2>/dev/null || echo "")
+
+                        if [ "${ready}" = "True" ]
+                        then
+                            break
+                        fi
+
+                        echo "The ${data_plane_inactive} storage account is not ready yet."
+
+                        sleep 15
+                    done
+
+                    if [ "${ready}" != "True" ]
+                    then
+                        echo "The ${data_plane_inactive} storage account did not become ready before the timeout." >&2
+
+                        exit 1
+                    fi
+
+                    kubectl get accounts.storage.azure.m.upbound.io \
+                        --output jsonpath="{.items[0].status.atProvider.id}" \
+                        --selector "dataPlane=${data_plane_inactive}" \
+                        > /tmp/storage-account-id-inactive.txt
+
+                    kubectl get accounts.storage.azure.m.upbound.io \
+                        --output jsonpath="{.items[0].metadata.name}" \
+                        --selector "dataPlane=${data_plane_inactive}" \
+                        > /tmp/storage-account-name-inactive.txt
+
+                    kubectl get accounts.storage.azure.m.upbound.io \
+                        --output jsonpath="{.items[0].spec.forProvider.location}" \
+                        --selector "dataPlane=${data_plane_inactive}" \
+                        > /tmp/storage-account-location.txt
+        -   activeDeadlineSeconds: {{ .Values.azureBackupService.restoreWaitTimeoutSeconds }}
+            inputs:
+                parameters:
+                    -   name: backup-vault-name
+                    -   name: database-server-name
+                    -   name: resource-group-name
+                    -   name: storage-account-id
+            name: get-recovery-point-time
+            outputs:
+                parameters:
+                    -   name: backup-instance-name
+                        valueFrom:
+                            path: /tmp/backup-instance-name.txt
+                    -   name: recovery-point-time
+                        valueFrom:
+                            path: /tmp/recovery-point-time.txt
+            script:
+                command: [sh]
+                env:
+                    -   name: AZURE_CONFIG_DIR
+                        value: /tmp/azure
+                    -   name: AZURE_EXTENSION_DIR
+                        value: /tmp/azure-extensions
+                image: "{{ $azureCli }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    az extension add \
+                        --name dataprotection \
+                        --version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
+                        --yes >/dev/null
+
+                    az login \
+                        --federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
+                        --service-principal \
+                        --tenant "${AZURE_TENANT_ID}" \
+                        --username "${AZURE_CLIENT_ID}" >/dev/null
+
+                    backup_vault_name="{{ "{{" }}inputs.parameters.backup-vault-name}}"
+                    resource_group_name="{{ "{{" }}inputs.parameters.resource-group-name}}"
+                    storage_account_id="{{ "{{" }}inputs.parameters.storage-account-id}}"
+
+                    backup_instance_name=$( \
+                        az dataprotection backup-instance list \
+                            --output tsv \
+                            --query "[?properties.dataSourceInfo.resourceID=='${storage_account_id}'].name | [0]" \
+                            --resource-group "${resource_group_name}" \
+                            --vault-name "${backup_vault_name}")
+
+                    if [ -z "${backup_instance_name}" ]
+                    then
+                        echo "No backup instance protects the storage account ${storage_account_id}." >&2
+
+                        exit 1
+                    fi
+
+                    echo "${backup_instance_name}" > /tmp/backup-instance-name.txt
+
+                    recovery_point_time=$( \
+                        az dataprotection recovery-point show \
+                            --backup-instance-name "${backup_instance_name}" \
+                            --output tsv \
+                            --query properties.recoveryPointTime \
+                            --recovery-point-id "{{ "{{" }}workflow.parameters.recovery-point-id}}" \
+                            --resource-group "${resource_group_name}" \
+                            --vault-name "${backup_vault_name}")
+
+                    if [ -z "${recovery_point_time}" ]
+                    then
+                        echo "The recovery point {{ "{{" }}workflow.parameters.recovery-point-id}} has no recovery point time." >&2
+
+                        exit 1
+                    fi
+
+                    earliest_restore_date=$( \
+                        az postgres flexible-server show \
+                            --name "{{ "{{" }}inputs.parameters.database-server-name}}" \
+                            --output tsv \
+                            --query backup.earliestRestoreDate \
+                            --resource-group "${resource_group_name}")
+
+                    if [ -z "${earliest_restore_date}" ]
+                    then
+                        echo "The server {{ "{{" }}inputs.parameters.database-server-name}} reports no earliest restore date, so its point in time window has not opened yet." >&2
+
+                        exit 1
+                    fi
+
+                    recovery_point_second=$(echo "${recovery_point_time}" | cut --characters=1-19)
+                    earliest_restore_second=$(echo "${earliest_restore_date}" | cut --characters=1-19)
+
+                    if [ "$(printf "%s\n%s\n" "${earliest_restore_second}" "${recovery_point_second}" | sort | head -1)" != "${earliest_restore_second}" ]
+                    then
+                        echo "The recovery point time ${recovery_point_time} falls before the earliest restore date ${earliest_restore_date}, so the database cannot be paired with it." >&2
+
+                        exit 1
+                    fi
+
+                    echo "${recovery_point_time}" > /tmp/recovery-point-time.txt
+        -   container:
+                args:
+                    -   rollout
+                    -   restart
+                    -   statefulset
+                    -   "{{ "{{" }}inputs.parameters.liferay-workload-name}}"
+                command: [kubectl]
+                image: "{{ $helmKubectl }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+            inputs:
+                parameters:
+                    -   name: liferay-workload-name
+            name: kubectl-rollout-restart
+        -   container:
+                args:
+                    -   rollout
+                    -   status
+                    -   statefulset
+                    -   "{{ "{{" }}inputs.parameters.liferay-workload-name}}"
+                    -   --timeout={{ .Values.liferayWorkload.rolloutTimeout }}
+                command: [kubectl]
+                image: "{{ $helmKubectl }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+            inputs:
+                parameters:
+                    -   name: liferay-workload-name
+            name: kubectl-rollout-status
+        -   dag:
+                tasks:
+                    -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-infrastructure-name}}"
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-inactive}}"
+                        depends: restart-liferay
+                        name: clean-up-infrastructure
+                        template: clean-up-infrastructure
+                    -   name: get-current-infrastructure-state
+                        template: get-current-infrastructure-state
+                    -   arguments:
+                            parameters:
+                                -   name: backup-vault-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.backup-vault-name}}"
+                                -   name: database-server-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.database-server-name-active}}"
+                                -   name: resource-group-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.resource-group-name}}"
+                                -   name: storage-account-id
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.storage-account-id-active}}"
+                        depends: get-current-infrastructure-state
+                        name: get-recovery-point-time
+                        template: get-recovery-point-time
+                    -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-infrastructure-name}}"
+                                -   name: restore-phase
+                                    value: promoting
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-inactive}}"
+                        depends: restore-document-library && wait-for-database
+                        name: promote-inactive-data-plane
+                        template: apply-wait-infrastructure
+                    -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-infrastructure-name}}"
+                                -   name: restore-phase
+                                    value: provisioning
+                                -   name: restore-point-in-time
+                                    value: "{{ "{{" }}tasks.get-recovery-point-time.outputs.parameters.recovery-point-time}}"
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-inactive}}"
+                        depends: get-recovery-point-time
+                        name: provision-inactive-data-plane
+                        template: apply-infrastructure
+                    -   arguments:
+                            parameters:
+                                -   name: liferay-workload-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-workload-name}}"
+                        depends: promote-inactive-data-plane
+                        name: restart-liferay
+                        template: restart-liferay
+                    -   arguments:
+                            parameters:
+                                -   name: backup-instance-name
+                                    value: "{{ "{{" }}tasks.get-recovery-point-time.outputs.parameters.backup-instance-name}}"
+                                -   name: backup-vault-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.backup-vault-name}}"
+                                -   name: data-inactive
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-inactive}}"
+                                -   name: resource-group-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.resource-group-name}}"
+                        depends: provision-inactive-data-plane
+                        name: restore-document-library
+                        template: restore-document-library
+                    -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-infrastructure-name}}"
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-active}}"
+                        depends: "(!provision-inactive-data-plane.Omitted && !provision-inactive-data-plane.Skipped || !restore-document-library.Omitted && !restore-document-library.Skipped || !wait-for-database.Omitted && !wait-for-database.Skipped) && !promote-inactive-data-plane.Succeeded"
+                        name: roll-back-infrastructure
+                        template: clean-up-infrastructure
+                    -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-infrastructure-name}}"
+                                -   name: liferay-workload-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-workload-name}}"
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-active}}"
+                        depends: "promote-inactive-data-plane.Succeeded && !restart-liferay.Succeeded"
+                        name: roll-back-restart
+                        template: roll-back-restart
+                    -   arguments:
+                            parameters:
+                                -   name: expected-generation
+                                    value: "{{ "{{" }}tasks.provision-inactive-data-plane.outputs.parameters.generation}}"
+                        depends: provision-inactive-data-plane
+                        name: wait-for-database
+                        template: wait-for-infrastructure
+            name: main
+        -   name: reset-restore-phase
+            script:
+                command: [sh]
+                image: "{{ $helmKubectl }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    liferay_infrastructure_name=$( \
+                        kubectl get liferayinfrastructure \
+                            --output jsonpath="{.items[0].metadata.name}" 2>/dev/null || echo "")
+
+                    if [ -z "${liferay_infrastructure_name}" ]
+                    then
+                        echo "No LiferayInfrastructure was found in the workflow namespace. The restore phase reset was skipped."
+
+                        exit 0
+                    fi
+
+                    kubectl patch liferayinfrastructure \
+                        "${liferay_infrastructure_name}" \
+                        --field-manager=liferay-backup-restore \
+                        --patch '{"spec":{"restorePhase":"none"}}' \
+                        --type merge
+        -   inputs:
+                parameters:
+                    -   name: liferay-workload-name
+            name: restart-liferay
+            steps:
+                -   -   arguments:
+                            parameters:
+                                -   name: liferay-workload-name
+                                    value: "{{ "{{" }}inputs.parameters.liferay-workload-name}}"
+                        name: kubectl-rollout-restart
+                        template: kubectl-rollout-restart
+                -   -   arguments:
+                            parameters:
+                                -   name: liferay-workload-name
+                                    value: "{{ "{{" }}inputs.parameters.liferay-workload-name}}"
+                        name: kubectl-rollout-status
+                        template: kubectl-rollout-status
+        -   inputs:
+                parameters:
+                    -   name: backup-instance-name
+                    -   name: backup-vault-name
+                    -   name: data-inactive
+                    -   name: resource-group-name
+            name: restore-document-library
+            steps:
+                -   -   arguments:
+                            parameters:
+                                -   name: data-inactive
+                                    value: "{{ "{{" }}inputs.parameters.data-inactive}}"
+                        name: get-inactive-storage-account
+                        template: get-inactive-storage-account
+                -   -   arguments:
+                            parameters:
+                                -   name: storage-account-name
+                                    value: "{{ "{{" }}steps.get-inactive-storage-account.outputs.parameters.storage-account-name}}"
+                        name: delete-target-container
+                        template: delete-target-container
+                -   -   arguments:
+                            parameters:
+                                -   name: backup-instance-name
+                                    value: "{{ "{{" }}inputs.parameters.backup-instance-name}}"
+                                -   name: backup-vault-name
+                                    value: "{{ "{{" }}inputs.parameters.backup-vault-name}}"
+                                -   name: resource-group-name
+                                    value: "{{ "{{" }}inputs.parameters.resource-group-name}}"
+                                -   name: storage-account-id
+                                    value: "{{ "{{" }}steps.get-inactive-storage-account.outputs.parameters.storage-account-id}}"
+                                -   name: storage-account-location
+                                    value: "{{ "{{" }}steps.get-inactive-storage-account.outputs.parameters.storage-account-location}}"
+                        name: restore-document-library-blob
+                        template: restore-document-library-blob
+        -   activeDeadlineSeconds: {{ .Values.azureBackupService.restoreWaitTimeoutSeconds }}
+            inputs:
+                parameters:
+                    -   name: backup-instance-name
+                    -   name: backup-vault-name
+                    -   name: resource-group-name
+                    -   name: storage-account-id
+                    -   name: storage-account-location
+            name: restore-document-library-blob
+            script:
+                command: [sh]
+                env:
+                    -   name: AZURE_CONFIG_DIR
+                        value: /tmp/azure
+                    -   name: AZURE_EXTENSION_DIR
+                        value: /tmp/azure-extensions
+                image: "{{ $azureCli }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    az extension add \
+                        --name dataprotection \
+                        --version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
+                        --yes >/dev/null
+
+                    az login \
+                        --federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
+                        --service-principal \
+                        --tenant "${AZURE_TENANT_ID}" \
+                        --username "${AZURE_CLIENT_ID}" >/dev/null
+
+                    backup_instance_name="{{ "{{" }}inputs.parameters.backup-instance-name}}"
+                    backup_vault_name="{{ "{{" }}inputs.parameters.backup-vault-name}}"
+                    resource_group_name="{{ "{{" }}inputs.parameters.resource-group-name}}"
+
+                    az dataprotection backup-instance restore initialize-for-data-recovery \
+                        --datasource-type AzureBlob \
+                        --recovery-point-id "{{ "{{" }}workflow.parameters.recovery-point-id}}" \
+                        --restore-location "{{ "{{" }}inputs.parameters.storage-account-location}}" \
+                        --source-datastore VaultStore \
+                        --target-resource-id "{{ "{{" }}inputs.parameters.storage-account-id}}" \
+                        > /tmp/restore-request.json
+
+                    triggered_at=$(date -u +%Y-%m-%dT%H:%M:%S)
+
+                    az dataprotection backup-instance restore trigger \
+                        --backup-instance-name "${backup_instance_name}" \
+                        --no-wait \
+                        --output none \
+                        --resource-group "${resource_group_name}" \
+                        --restore-request-object @/tmp/restore-request.json \
+                        --vault-name "${backup_vault_name}"
+
+                    job_id=""
+
+                    discovery_timeout=$(($(date +%s) + 300))
+
+                    while [ $(date +%s) -lt ${discovery_timeout} ]
+                    do
+                        candidate_id=$( \
+                            az dataprotection job list \
+                                --output tsv \
+                                --query "reverse(sort_by([?properties.operationCategory=='Restore'], &properties.startTime))[0].name" \
+                                --resource-group "${resource_group_name}" \
+                                --vault-name "${backup_vault_name}")
+
+                        candidate_started=$( \
+                            az dataprotection job list \
+                                --output tsv \
+                                --query "reverse(sort_by([?properties.operationCategory=='Restore'], &properties.startTime))[0].properties.startTime" \
+                                --resource-group "${resource_group_name}" \
+                                --vault-name "${backup_vault_name}" \
+                                | cut --characters=1-19)
+
+                        if [ -n "${candidate_id}" ] && [ "$(printf "%s\n%s\n" "${triggered_at}" "${candidate_started}" | sort | head -1)" = "${triggered_at}" ]
+                        then
+                            job_id="${candidate_id}"
+
+                            break
+                        fi
+
+                        sleep 10
+                    done
+
+                    if [ -z "${job_id}" ]
+                    then
+                        echo "No restore job for ${backup_instance_name} appeared after ${triggered_at}." >&2
+
+                        exit 1
+                    fi
+
+                    echo "The restore job ${job_id} was started."
+
+                    timeout=$(($(date +%s) + {{ .Values.azureBackupService.restoreWaitTimeoutSeconds }}))
+
+                    while [ $(date +%s) -lt ${timeout} ]
+                    do
+                        status=$( \
+                            az dataprotection job show \
+                                --job-id "${job_id}" \
+                                --output tsv \
+                                --query properties.status \
+                                --resource-group "${resource_group_name}" \
+                                --vault-name "${backup_vault_name}")
+
+                        if [ "${status}" = "Completed" ] || [ "${status}" = "CompletedWithWarnings" ]
+                        then
+                            echo "The restore job ${job_id} finished with status \"${status}\"."
+
+                            exit 0
+                        elif [ "${status}" = "Failed" ] || [ "${status}" = "Cancelled" ]
+                        then
+                            echo "The restore job ${job_id} finished with status \"${status}\"." >&2
+
+                            exit 1
+                        fi
+
+                        echo "The current restore job status is \"${status}\"."
+
+                        sleep 30
+                    done
+
+                    echo "The restore job ${job_id} did not complete before the timeout." >&2
+
+                    exit 1
+        -   inputs:
+                parameters:
+                    -   name: liferay-infrastructure-name
+                    -   name: liferay-workload-name
+                    -   name: target-active-data-plane
+            name: roll-back-restart
+            steps:
+                -   -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}inputs.parameters.liferay-infrastructure-name}}"
+                                -   name: restore-phase
+                                    value: promoting
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}inputs.parameters.target-active-data-plane}}"
+                        name: apply-wait-infrastructure
+                        template: apply-wait-infrastructure
+                -   -   arguments:
+                            parameters:
+                                -   name: liferay-workload-name
+                                    value: "{{ "{{" }}inputs.parameters.liferay-workload-name}}"
+                        name: restart-liferay
+                        template: restart-liferay
+                -   -   arguments:
+                            parameters:
+                                -   name: liferay-infrastructure-name
+                                    value: "{{ "{{" }}inputs.parameters.liferay-infrastructure-name}}"
+                                -   name: target-active-data-plane
+                                    value: "{{ "{{" }}inputs.parameters.target-active-data-plane}}"
+                        name: clean-up-infrastructure
+                        template: clean-up-infrastructure
+        -   activeDeadlineSeconds: {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}
+            inputs:
+                parameters:
+                    -   name: expected-generation
+            name: wait-for-infrastructure
+            script:
+                command: [sh]
+                image: "{{ $helmKubectl }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    expected_generation="{{ "{{" }}inputs.parameters.expected-generation}}"
+
+                    timeout=$(($(date +%s) + {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}))
+
+                    while [ $(date +%s) -lt ${timeout} ]
+                    do
+                        ready_condition=$( \
+                            kubectl get liferayinfrastructure \
+                                --output jsonpath="{.items[0].status.conditions[?(@.type==\"Ready\")]}" 2>/dev/null || echo "{}")
+
+                        observed_generation=$(echo "${ready_condition}" | jq --raw-output ".observedGeneration // 0")
+
+                        status=$(echo "${ready_condition}" | jq --raw-output ".status // \"False\"")
+
+                        if [ "${observed_generation}" -ge "${expected_generation}" ] && [ "${status}" = "True" ]
+                        then
+                            exit 0
+                        fi
+
+                        sleep 30
+                    done
+
+                    echo "The system timed out waiting for the LiferayInfrastructure to be ready." >&2
+
+                    exit 1
+    ttlStrategy:
+        {{- .Values.argo.workflowSpec.ttlStrategy | toYaml | nindent 8 }}

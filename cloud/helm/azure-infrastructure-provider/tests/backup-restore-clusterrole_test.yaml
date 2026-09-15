@@ -31,6 +31,9 @@ tests:
                         -   apiGroups: ["dataprotection.azure.m.upbound.io"]
                             resources: ["backupinstanceblobstorages", "backupvaults"]
                             verbs: ["get", "list"]
+                        -   apiGroups: ["dbforpostgresql.azure.m.upbound.io"]
+                            resources: ["flexibleservers"]
+                            verbs: ["get", "list"]
                         -   apiGroups: ["liferay.com"]
                             resources: ["liferayinfrastructures"]
                             verbs: ["get", "list", "patch", "watch"]
@@ -47,11 +50,6 @@ tests:
             -   notContains:
                     any: true
                     content:
-                        apiGroups: ["dbforpostgresql.azure.m.upbound.io"]
-                    path: rules
-            -   notContains:
-                    any: true
-                    content:
                         resources: ["secrets"]
                     path: rules
-        it: Grants no access to a cloud specific composite, the Flexible Server, or secrets
+        it: Grants no access to a cloud specific composite or secrets
