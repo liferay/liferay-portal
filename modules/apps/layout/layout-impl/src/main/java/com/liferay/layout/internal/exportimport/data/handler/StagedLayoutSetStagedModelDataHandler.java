@@ -32,6 +32,7 @@ import com.liferay.layout.set.model.adapter.StagedLayoutSet;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -477,7 +478,10 @@ public class StagedLayoutSetStagedModelDataHandler
 			StagedLayoutSet stagedLayoutSet, Element stagedLayoutSetElement)
 		throws Exception {
 
-		if (!ExportImportThreadLocal.isStagingInProcess()) {
+		if (!ExportImportThreadLocal.isStagingInProcess() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				portletDataContext.getCompanyId(), "LPD-105778")) {
+
 			return;
 		}
 
@@ -765,7 +769,10 @@ public class StagedLayoutSetStagedModelDataHandler
 			Element stagedLayoutSetElement)
 		throws Exception {
 
-		if (!ExportImportThreadLocal.isStagingInProcess()) {
+		if (!ExportImportThreadLocal.isStagingInProcess() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				portletDataContext.getCompanyId(), "LPD-105778")) {
+
 			return;
 		}
 
