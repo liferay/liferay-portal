@@ -476,6 +476,10 @@ components:
                 deletionType:
                     enum: [cascade, disassociate, prevent]
                     type: string
+                description:
+                    additionalProperties:
+                        type: string
+                    type: object
                 edge:
                     type: boolean
                 externalReferenceCode:

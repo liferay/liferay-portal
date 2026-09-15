@@ -185,6 +185,8 @@ public class ObjectRelationshipResourceImpl
 				objectDefinition2.getObjectDefinitionId(),
 				objectRelationship.getParameterObjectFieldId(),
 				objectRelationship.getDeletionTypeAsString(),
+				LocalizedMapUtil.populateLocalizedMap(
+					objectRelationship.getDescription()),
 				GetterUtil.getBoolean(objectRelationship.getEdge()),
 				LocalizedMapUtil.populateLocalizedMap(
 					objectRelationship.getLabel()),
@@ -217,6 +219,8 @@ public class ObjectRelationshipResourceImpl
 				GetterUtil.getLong(
 					objectRelationship.getParameterObjectFieldId()),
 				objectRelationship.getDeletionTypeAsString(),
+				LocalizedMapUtil.populateLocalizedMap(
+					objectRelationship.getDescription()),
 				GetterUtil.getBoolean(objectRelationship.getEdge()),
 				LocalizedMapUtil.populateLocalizedMap(
 					objectRelationship.getLabel()),
@@ -264,6 +268,8 @@ public class ObjectRelationshipResourceImpl
 				GetterUtil.getLong(
 					objectRelationship.getParameterObjectFieldId()),
 				objectRelationship.getDeletionTypeAsString(),
+				LocalizedMapUtil.populateLocalizedMap(
+					objectRelationship.getDescription()),
 				GetterUtil.getBoolean(objectRelationship.getEdge()),
 				LocalizedMapUtil.populateLocalizedMap(
 					objectRelationship.getLabel()),

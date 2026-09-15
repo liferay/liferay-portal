@@ -65,6 +65,9 @@ public class ObjectRelationshipDTOConverter
 				setDeletionType(
 					() -> ObjectRelationship.DeletionType.create(
 						serviceBuilderObjectRelationship.getDeletionType()));
+				setDescription(
+					() -> LocalizedMapUtil.getLanguageIdMap(
+						serviceBuilderObjectRelationship.getDescriptionMap()));
 				setEdge(serviceBuilderObjectRelationship::isEdge);
 				setExternalReferenceCode(
 					() ->
