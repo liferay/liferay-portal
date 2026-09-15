@@ -92,7 +92,8 @@ public class MCPServerTestUtil {
 	}
 
 	public static ObjectEntry addMCPServerProfileObjectEntry(
-			String description, String name, String... tools)
+			String description, String instructions, String name,
+			String... tools)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -109,6 +110,8 @@ public class MCPServerTestUtil {
 				null,
 				HashMapBuilder.<String, Serializable>put(
 					"description", description
+				).put(
+					"instructions", instructions
 				).put(
 					"name", name
 				).put(
