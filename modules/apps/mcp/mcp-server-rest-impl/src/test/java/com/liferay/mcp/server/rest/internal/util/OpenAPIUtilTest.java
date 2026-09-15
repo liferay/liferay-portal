@@ -306,8 +306,6 @@ public class OpenAPIUtilTest {
 			"PUT /v1.0/items/{itemId}", "put_test_v1.0_items_itemId.json",
 			"putItem");
 
-		// Restricted fields
-
 		Tool tool = OpenAPIUtil.getTool(
 			true, _openAPIJSONObject, "boolean,object1.name", "getItems");
 
