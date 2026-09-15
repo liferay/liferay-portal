@@ -11,6 +11,7 @@ import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.rest.internal.util.ObjectDefinitionUtil;
 import com.liferay.object.rest.internal.util.ServiceContextUtil;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
@@ -22,7 +23,6 @@ import com.liferay.object.scope.ObjectScopeProvider;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectRelationshipService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -173,10 +173,8 @@ public class ObjectRelationshipExtensionProvider
 					Collections.singleton(ObjectEntry.class), null,
 					StringUtil.removeFirst(
 						relatedObjectDefinition.getName(), "C_"),
-					StringBundler.concat(
-						"Information about the object relationship ",
-						objectRelationship.getName(),
-						" can be embedded with \"nestedFields\"."),
+					ObjectDefinitionUtil.getDescription(
+						objectDefinition, objectRelationship),
 					objectRelationship.getName(),
 					_getPropertyType(objectDefinition, objectRelationship),
 					new DefaultPropertyValidator(), false));
