@@ -8,6 +8,7 @@
 		<suppress checks="IllegalImportsCheck" files="layout-utility-page/layout-utility-page-status/src/main/java/com/liferay/layout/utility/page/status/internal/struts/StatusStrutsAction.java" />
 		<suppress checks="IllegalImportsCheck" files="layout-utility-page/layout-utility-page-terms-of-use/src/main/java/com/liferay/layout/utility/page/terms/of/use/internal/struts/TermsOfUseStrutsAction.java" />
 		<suppress checks="MethodNamingCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/util/LayoutServiceContextHelperImpl\.java" />
+		<suppress checks="PersistenceCallCheck" files="layout-test/src/testIntegration/java/com/liferay/layout/service/persistence/test/LayoutFinderTest\.java" />
 		<suppress checks="VariableDeclarationAsUsedCheck" files="layout-impl/src/main/java/com/liferay/layout/internal/struts/UpdateLayoutStrutsAction\.java" />
 	</checkstyle>
 	<source-check>
