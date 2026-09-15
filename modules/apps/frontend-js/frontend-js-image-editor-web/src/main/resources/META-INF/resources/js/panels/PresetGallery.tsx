@@ -7,6 +7,8 @@ import React from 'react';
 
 import {Carousel} from './Carousel';
 
+export const PRESET_THUMB_BOX = {height: 48, width: 72, x: 0, y: 0};
+
 interface Props<T extends string> {
 	idPrefix: string;
 
@@ -69,5 +71,33 @@ export function PresetGallery<T extends string>({
 				})}
 			</Carousel>
 		</fieldset>
+	);
+}
+
+interface ThumbProps {
+	children?: React.ReactNode;
+	filter?: string;
+	thumbUrl: string;
+}
+
+export function PresetThumb({children, filter, thumbUrl}: ThumbProps) {
+	return (
+		<svg
+			aria-hidden="true"
+			className="editor-preset-thumb"
+			height={PRESET_THUMB_BOX.height}
+			viewBox={`0 0 ${PRESET_THUMB_BOX.width} ${PRESET_THUMB_BOX.height}`}
+			width={PRESET_THUMB_BOX.width}
+		>
+			<image
+				filter={filter}
+				height={PRESET_THUMB_BOX.height}
+				href={thumbUrl}
+				preserveAspectRatio="xMidYMid slice"
+				width={PRESET_THUMB_BOX.width}
+			/>
+
+			{children}
+		</svg>
 	);
 }

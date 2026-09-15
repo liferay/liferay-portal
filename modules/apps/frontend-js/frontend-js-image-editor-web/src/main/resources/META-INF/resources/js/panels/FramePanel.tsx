@@ -13,9 +13,7 @@ import {FrameShape} from '../imaging/frameShapes';
 import {LoadedImage} from '../imaging/loadImage';
 import {EditorAction} from '../state/editorReducer';
 import {Frame, FrameKind} from '../state/types';
-import {PresetGallery} from './PresetGallery';
-
-const CARD = {height: 48, width: 72, x: 0, y: 0};
+import {PRESET_THUMB_BOX, PresetGallery, PresetThumb} from './PresetGallery';
 
 const FRAME_LABELS: Record<FrameKind, string> = {
 	bevel: Liferay.Language.get('bevel'),
@@ -68,22 +66,12 @@ function FramePanelCards({dispatch, frame, image, onAnnounce, presets}: Props) {
 					);
 				}}
 				preview={(kind) => (
-					<svg
-						aria-hidden="true"
-						className="editor-preset-thumb"
-						height={CARD.height}
-						viewBox={`0 0 ${CARD.width} ${CARD.height}`}
-						width={CARD.width}
-					>
-						<image
-							height={CARD.height}
-							href={image.thumbUrl}
-							preserveAspectRatio="xMidYMid slice"
-							width={CARD.width}
+					<PresetThumb thumbUrl={image.thumbUrl}>
+						<FrameShape
+							crop={PRESET_THUMB_BOX}
+							frame={{...frame, kind}}
 						/>
-
-						<FrameShape crop={CARD} frame={{...frame, kind}} />
-					</svg>
+					</PresetThumb>
 				)}
 				selected={frame.kind}
 			/>
