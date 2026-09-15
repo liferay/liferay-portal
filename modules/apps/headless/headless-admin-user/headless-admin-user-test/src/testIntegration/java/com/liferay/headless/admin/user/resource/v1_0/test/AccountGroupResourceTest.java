@@ -100,6 +100,17 @@ public class AccountGroupResourceTest extends BaseAccountGroupResourceTestCase {
 
 	@Override
 	@Test
+	public void testGetAccountAccountGroupsPage() throws Exception {
+		super.testGetAccountAccountGroupsPage();
+
+		assertHttpResponseStatusCode(
+			404,
+			accountGroupResource.getAccountAccountGroupsPageHttpResponse(
+				RandomTestUtil.randomLong(), null));
+	}
+
+	@Override
+	@Test
 	public void testGetAccountGroup() throws Exception {
 		super.testGetAccountGroup();
 
