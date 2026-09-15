@@ -16,6 +16,15 @@ import java.io.IOException;
 public abstract class BaseTestClassFile implements TestClassFile {
 
 	@Override
+	public String getContent() throws IOException {
+		if (_content == null) {
+			_content = JenkinsResultsParserUtil.read(_file);
+		}
+
+		return _content;
+	}
+
+	@Override
 	public File getFile() {
 		return _file;
 	}
@@ -26,23 +35,22 @@ public abstract class BaseTestClassFile implements TestClassFile {
 	}
 
 	@Override
+	public TestPackage getTestPackage() {
+		return _testPackage;
+	}
+
+	@Override
 	public String toString() {
 		return JenkinsResultsParserUtil.getCanonicalPath(_file);
 	}
 
-	protected BaseTestClassFile(File file) throws IOException {
+	protected BaseTestClassFile(File file, TestPackage testPackage) {
 		_file = file;
-	}
-
-	protected String getContent() throws IOException {
-		if (_content == null) {
-			_content = JenkinsResultsParserUtil.read(_file);
-		}
-
-		return _content;
+		_testPackage = testPackage;
 	}
 
 	private String _content;
 	private final File _file;
+	private final TestPackage _testPackage;
 
 }

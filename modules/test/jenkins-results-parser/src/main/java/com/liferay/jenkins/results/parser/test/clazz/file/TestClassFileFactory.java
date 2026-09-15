@@ -8,7 +8,6 @@ package com.liferay.jenkins.results.parser.test.clazz.file;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.io.File;
-import java.io.IOException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,12 +18,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TestClassFileFactory {
 
 	public static TestClassFile newTestClassFile(
-			File file, TestPackage testPackage)
-		throws IOException {
+		File file, TestPackage testPackage) {
 
-		if ((file == null) || !file.isFile() || (testPackage == null) ||
-			!isTestClassFile(file)) {
-
+		if ((file == null) || !file.isFile() || (testPackage == null)) {
 			return null;
 		}
 
@@ -36,11 +32,8 @@ public class TestClassFileFactory {
 			return testClassFile;
 		}
 
-		if (testPackage instanceof JestTestPackage) {
-			testClassFile = new JestJSUnitTestClassFile(file);
-		}
-		else if (testPackage instanceof VitestTestPackage) {
-			testClassFile = new VitestJSUnitTestClassFile(file);
+		if (isTestClassFile(file)) {
+			testClassFile = new JSTestClassFile(file, testPackage);
 		}
 
 		if (testClassFile == null) {

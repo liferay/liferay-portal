@@ -6,14 +6,21 @@
 package com.liferay.jenkins.results.parser.test.clazz.file;
 
 import java.io.File;
+import java.io.IOException;
+
+import java.util.List;
 
 /**
  * @author Michael Hashimoto
  */
 public interface TestClassFile {
 
+	public String getContent() throws IOException;
+
 	public File getFile();
 
 	public String getName();
+
+	public TestPackage getTestPackage();
 
 }
