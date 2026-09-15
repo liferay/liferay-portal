@@ -7,6 +7,7 @@ package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 
 import java.util.Date;
 
@@ -65,10 +66,9 @@ public class DateRangeUtilTest {
 	}
 
 	private Date _toDate(LocalDate localDate) {
-		return Date.from(
-			localDate.atStartOfDay(
-				ZoneOffset.UTC
-			).toInstant());
+		ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneOffset.UTC);
+
+		return Date.from(zonedDateTime.toInstant());
 	}
 
 }

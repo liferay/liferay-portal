@@ -79,7 +79,7 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 					).put(
 						"entityId", entityId
 					).put(
-						"entityType", _ENTITY_TYPE_INDIVIDUAL
+						"entityType", "INDIVIDUAL"
 					).put(
 						"keywords", search
 					).put(
@@ -121,8 +121,6 @@ public class UserSessionResourceImpl extends BaseUserSessionResourceImpl {
 
 		return Page.of(userSessions, pagination, totalCount);
 	}
-
-	private static final String _ENTITY_TYPE_INDIVIDUAL = "INDIVIDUAL";
 
 	@Reference
 	private FaroGraphQLClient _faroGraphQLClient;

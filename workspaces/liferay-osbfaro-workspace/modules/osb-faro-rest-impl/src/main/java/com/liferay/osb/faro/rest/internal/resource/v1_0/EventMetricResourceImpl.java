@@ -69,7 +69,7 @@ public class EventMetricResourceImpl extends BaseEventMetricResourceImpl {
 					).put(
 						"entityId", entityId
 					).put(
-						"entityType", _ENTITY_TYPE_INDIVIDUAL
+						"entityType", "INDIVIDUAL"
 					).put(
 						"interval", Interval.getGraphQLInterval(interval)
 					).put(
@@ -88,8 +88,6 @@ public class EventMetricResourceImpl extends BaseEventMetricResourceImpl {
 				contextAcceptLanguage.getPreferredLocale()),
 			getWorkspaceGroupChannelEventMetricsResponse.getEventMetric());
 	}
-
-	private static final String _ENTITY_TYPE_INDIVIDUAL = "INDIVIDUAL";
 
 	@Reference(
 		target = "(component.name=com.liferay.osb.faro.rest.internal.dto.v1_0.converter.EventMetricDTOConverter)"

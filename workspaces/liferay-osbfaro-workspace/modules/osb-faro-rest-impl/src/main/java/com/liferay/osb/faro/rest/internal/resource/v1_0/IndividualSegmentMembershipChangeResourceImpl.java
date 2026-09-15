@@ -72,9 +72,6 @@ public class IndividualSegmentMembershipChangeResourceImpl
 				IndividualSegmentMembershipChange>
 					individualSegmentMembershipChanges = results.getItems();
 
-		// The engine has no operation filter, so the filter is applied to the
-		// page that came back; the total keeps the engine's count
-
 		if (Validator.isNotNull(operation)) {
 			individualSegmentMembershipChanges = ListUtil.filter(
 				individualSegmentMembershipChanges,
