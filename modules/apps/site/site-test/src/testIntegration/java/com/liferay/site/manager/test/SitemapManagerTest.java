@@ -1765,7 +1765,6 @@ public class SitemapManagerTest {
 		Layout publishedLayout = LayoutTestUtil.addTypeContentPublishedLayout(
 			_group, RandomTestUtil.randomString(),
 			WorkflowConstants.STATUS_APPROVED);
-
 		Layout unpublishedLayout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		try (CompanyConfigurationTemporarySwapper
