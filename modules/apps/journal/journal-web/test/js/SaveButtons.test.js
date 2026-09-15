@@ -30,6 +30,7 @@ const renderComponent = (props = DEFAULT_PROPS) => {
 			<div className="article-content-content" />
 			<input id={`${props.portletNamespace}workflowAction`} />
 			<input id={`${props.portletNamespace}jakarta-portlet-action`} />
+			<input id={`${props.portletNamespace}articleId`} />
 			<SaveButtons {...props} />
 		</>
 	);
@@ -332,5 +333,55 @@ describe('SaveButtons', () => {
 				'confirm-the-web-content-visibility-before-saving-as-draft'
 			)
 		).not.toBeInTheDocument();
+	});
+
+	it('routes to update_article from the hidden articleId field, even when its own articleId state never learned the ID', async () => {
+		const lock = {
+			isLocked: jest.fn(() => false),
+			lock: jest.fn(),
+			unlock: jest.fn(),
+		};
+
+		global.Liferay.componentReady = jest.fn((componentId) => {
+			if (componentId === `${DEFAULT_PROPS.portletNamespace}publishing`) {
+				return Promise.resolve(lock);
+			}
+
+			return Promise.resolve({
+				reactComponentRef: {
+					current: {
+						getFields: () => [{valid: true}],
+						validate: jest.fn().mockResolvedValue([null, true]),
+					},
+				},
+			});
+		});
+
+		renderComponent({
+			...DEFAULT_PROPS,
+			articleId: null,
+		});
+
+		const articleIdInput = document.getElementById(
+			`${DEFAULT_PROPS.portletNamespace}articleId`
+		);
+
+		// Simulates autosave having already created the draft under a
+		// custom ID: the hidden field is updated, but SaveButtons' own
+		// `articleId` state never learns about it, because
+		// `asyncFormSubmission` only fires when the ID was still unknown
+		// at the time autosave completed.
+
+		articleIdInput.value = 'test123456';
+
+		userEvent.click(screen.getByText('publish'));
+
+		await waitFor(() => {
+			expect(
+				document.getElementById(
+					`${DEFAULT_PROPS.portletNamespace}jakarta-portlet-action`
+				)
+			).toHaveValue('/journal/update_article');
+		});
 	});
 });

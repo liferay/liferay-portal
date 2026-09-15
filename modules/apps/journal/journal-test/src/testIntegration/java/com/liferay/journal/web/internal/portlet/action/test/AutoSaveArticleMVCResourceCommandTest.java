@@ -200,6 +200,25 @@ public class AutoSaveArticleMVCResourceCommandTest {
 			jsonObject.getString("errorMessage"));
 	}
 
+	@Test
+	public void testServeResourceWithManualArticleId() throws Exception {
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			_getMockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.setParameter(
+			"articleId", "manualarticleid1");
+		mockLiferayResourceRequest.setParameter(
+			"autoArticleId", StringPool.FALSE);
+
+		JSONObject jsonObject = _serveResource(mockLiferayResourceRequest);
+
+		Assert.assertTrue(jsonObject.getBoolean("success"));
+		Assert.assertEquals(
+			StringUtil.toUpperCase("manualarticleid1"),
+			jsonObject.getString("articleId"));
+		Assert.assertNotNull(jsonObject.getString("friendlyURL"));
+	}
+
 	private MockMultipartHttpServletRequest
 		_createMockMultipartHttpServletRequest() {
 
