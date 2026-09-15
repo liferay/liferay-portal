@@ -2,7 +2,6 @@
 definition {
 
 	property ci.retries.disabled = "true";
-	property custom.properties = "feature.flag.LPD-57655=false";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Categories";
@@ -646,15 +645,17 @@ definition {
 		}
 
 		task ("Export the vocabularies") {
-			Category.openCategoriesAdmin(siteURLKey = "site-name-2");
-
-			LAR.exportPortlet(larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar");
+			HeadlessExportImport.exportPortlet(
+				larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar",
+				portletId = "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
+				siteName = "Site Name 2");
 		}
 
 		task ("Import the vocabularies to another site") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			LAR.importPortlet(larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar");
+			HeadlessExportImport.importPortlet(
+				larFileName = "Moon-Rocks-Unit-Category-Hierarchy.lar",
+				portletId = "com_liferay_asset_categories_admin_web_portlet_AssetCategoriesAdminPortlet",
+				siteName = "Test Site Name");
 		}
 	}
 

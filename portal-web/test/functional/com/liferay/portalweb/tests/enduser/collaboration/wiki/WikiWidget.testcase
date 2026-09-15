@@ -2,7 +2,7 @@
 definition {
 
 	property browser.chrome.version = "139.0";
-	property custom.properties = "feature.flag.LPD-35013=false${line.separator}feature.flag.LPD-57655=false";
+	property custom.properties = "feature.flag.LPD-35013=false";
 	property osgi.modules.includes = "wiki";
 	property portal.release = "false";
 	property portal.upstream = "true";
@@ -81,11 +81,11 @@ definition {
 			layoutName = "Research Projects",
 			widgetName = "Wiki");
 
-		WikiNavigator.openWikiAdmin(siteURLKey = "guest");
-
-		LAR.importPortlet(
+		HeadlessExportImport.importPortlet(
+			dataStrategy = "MIRROR_OVERWRITE",
 			larFileName = "research-projects-update-node.lar",
-			mirrorWithOverwriting = "true",
+			portletId = "com_liferay_wiki_web_portlet_WikiAdminPortlet",
+			siteName = "Guest",
 			uploadFrom = "dependencies");
 
 		WikiNavigator.openToWikiPage(

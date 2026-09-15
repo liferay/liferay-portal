@@ -2,7 +2,6 @@
 definition {
 
 	property browser.chrome.version = "139.0";
-	property custom.properties = "feature.flag.LPD-57655=false";
 	property portal.release = "true";
 	property portal.upstream = "true";
 	property testray.main.component.name = "Documents and Media";
@@ -310,17 +309,19 @@ definition {
 			videoShortcutTitle = "DM Video Title In Site",
 			viewInternalVideoPreview = "true");
 
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "Site Name");
-
-		LAR.exportPortlet(larFileName = "Blog_portlet.lar");
+		HeadlessExportImport.exportPortlet(
+			larFileName = "Blog_portlet.lar",
+			portletId = "com_liferay_blogs_web_portlet_BlogsAdminPortlet",
+			siteName = "Site Name");
 
 		JSONGroup.deleteGroupByName(groupName = "Site Name");
 
 		HeadlessSite.addSite(siteName = "Site Name");
 
-		BlogsNavigator.openBlogsAdmin(siteURLKey = "Site Name");
-
-		LAR.importPortlet(larFileName = "Blog_portlet.lar");
+		HeadlessExportImport.importPortlet(
+			larFileName = "Blog_portlet.lar",
+			portletId = "com_liferay_blogs_web_portlet_BlogsAdminPortlet",
+			siteName = "Site Name");
 
 		BlogsNavigator.openBlogsAdmin(siteURLKey = "Site Name");
 
@@ -369,17 +370,19 @@ definition {
 			videoShortcutTitle = "DM Video Title In Depot",
 			viewInternalVideoPreview = "true");
 
-		KBAdmin.openKBAdmin(siteURLKey = "Site Name");
-
-		LAR.exportPortlet(larFileName = "KB_portlet.lar");
+		HeadlessExportImport.exportPortlet(
+			larFileName = "KB_portlet.lar",
+			portletId = "com_liferay_knowledge_base_web_portlet_AdminPortlet",
+			siteName = "Site Name");
 
 		JSONGroup.deleteGroupByName(groupName = "Site Name");
 
 		HeadlessSite.addSite(siteName = "Site Name");
 
-		KBAdmin.openKBAdmin(siteURLKey = "Site Name");
-
-		LAR.importPortlet(larFileName = "KB_portlet.lar");
+		HeadlessExportImport.importPortlet(
+			larFileName = "KB_portlet.lar",
+			portletId = "com_liferay_knowledge_base_web_portlet_AdminPortlet",
+			siteName = "Site Name");
 
 		KBAdmin.openKBAdmin(siteURLKey = "Site Name");
 

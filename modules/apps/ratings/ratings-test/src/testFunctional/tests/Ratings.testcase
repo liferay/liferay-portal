@@ -129,11 +129,11 @@ definition {
 
 		Staging.deactivateStagingCP(siteName = "Site Name");
 
-		Navigator.gotoSitePage(
-			pageName = "Staging Blogs Page",
+		HeadlessExportImport.exportPortlet(
+			larFileName = "Export.Blogs.With.Comment.Rate.portlet.lar",
+			layoutName = "Staging Blogs Page",
+			portletId = "com_liferay_blogs_web_portlet_BlogsPortlet",
 			siteName = "Site Name");
-
-		LAR.exportPortlet(larFileName = "Export.Blogs.With.Comment.Rate.portlet.lar");
 
 		HeadlessSite.addSite(siteName = "Second Site");
 
@@ -147,9 +147,11 @@ definition {
 			layoutName = "Blogs Page",
 			widgetName = "Blogs");
 
-		Navigator.openSiteURL(siteName = "Second Site");
-
-		LAR.importPortlet(larFileName = "Export.Blogs.With.Comment.Rate.portlet.lar");
+		HeadlessExportImport.importPortlet(
+			larFileName = "Export.Blogs.With.Comment.Rate.portlet.lar",
+			layoutName = "Blogs Page",
+			portletId = "com_liferay_blogs_web_portlet_BlogsPortlet",
+			siteName = "Second Site");
 
 		BlogsNavigator.openToBlogEntry(
 			entryTitle = "Blogs Entry Title",
@@ -214,11 +216,11 @@ definition {
 
 		Staging.deactivateStagingCP(siteName = "Site Name");
 
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
+		HeadlessExportImport.exportPortlet(
+			larFileName = "Wiki.portlet.lar",
+			layoutName = "Staging Test Page",
+			portletId = "com_liferay_wiki_web_portlet_WikiPortlet",
 			siteName = "Site Name");
-
-		LAR.exportPortlet(larFileName = "Wiki.portlet.lar");
 
 		HeadlessSite.addSite(siteName = "Second Site");
 
@@ -232,9 +234,11 @@ definition {
 			layoutName = "Wiki Page",
 			widgetName = "Wiki");
 
-		Navigator.openSiteURL(siteName = "Second Site");
-
-		LAR.importPortlet(larFileName = "Wiki.portlet.lar");
+		HeadlessExportImport.importPortlet(
+			larFileName = "Wiki.portlet.lar",
+			layoutName = "Wiki Page",
+			portletId = "com_liferay_wiki_web_portlet_WikiPortlet",
+			siteName = "Second Site");
 
 		WikiNavigator.openToWikiPage(
 			layoutURLKey = "wiki-page",
