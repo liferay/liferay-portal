@@ -32,6 +32,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.odata.sort.InvalidSortException;
 
 import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.server.McpServer;
@@ -289,23 +291,21 @@ public class MCPServerServlet extends HttpServlet {
 				).build();
 			}
 
-			return McpSchema.CallToolResult.builder(
-			).addTextContent(
+			return _getErrorCallToolResult(
 				StringBundler.concat(
-					"Status code: ", responseCode, ", Content:\n", content)
-			).isError(
-				true
-			).build();
+					"Status code: ", responseCode, ", Content:\n", content));
+		}
+		catch (InvalidFilterException | InvalidSortException exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return _getErrorCallToolResult(exception.getMessage());
 		}
 		catch (Exception exception) {
 			_log.error(exception);
 
-			return McpSchema.CallToolResult.builder(
-			).addTextContent(
-				exception.getMessage()
-			).isError(
-				true
-			).build();
+			return _getErrorCallToolResult(exception.getMessage());
 		}
 	}
 
@@ -344,6 +344,15 @@ public class MCPServerServlet extends HttpServlet {
 				new Sort[] {new Sort("executionOrder", Sort.INT_TYPE, false)}),
 			values -> MapUtil.getString(
 				values, "dataMaskExternalReferenceCode"));
+	}
+
+	private McpSchema.CallToolResult _getErrorCallToolResult(String content) {
+		return McpSchema.CallToolResult.builder(
+		).addTextContent(
+			content
+		).isError(
+			true
+		).build();
 	}
 
 	private String _getMCPServerProfileName(
