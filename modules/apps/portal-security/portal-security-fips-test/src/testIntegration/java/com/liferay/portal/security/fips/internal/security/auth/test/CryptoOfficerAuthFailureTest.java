@@ -6,11 +6,8 @@
 package com.liferay.portal.security.fips.internal.security.auth.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Role;
@@ -21,29 +18,22 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.security.fips.test.util.FIPSAuditTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import java.time.LocalDate;
-import java.time.ZoneOffset;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -52,6 +42,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Manuele Castro
+ * @author Jorge García Jiménez
  */
 @RunWith(Arquillian.class)
 public class CryptoOfficerAuthFailureTest {
@@ -75,108 +66,104 @@ public class CryptoOfficerAuthFailureTest {
 
 			_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
 
-			User cryptoOfficerUser = _addUser(true);
-			User user = _addUser(false);
-
-			for (int i = 0; i < 3; i++) {
-				_authenticateWithWrongPassword(cryptoOfficerUser);
-			}
-
-			List<JSONObject> cryptoOfficerJSONObjects =
-				_getAuthAttemptFailureJSONObjects(cryptoOfficerUser);
-
-			Assert.assertEquals(
-				cryptoOfficerJSONObjects.toString(), 3,
-				cryptoOfficerJSONObjects.size());
-
-			for (int i = 0; i < cryptoOfficerJSONObjects.size(); i++) {
-				JSONObject jsonObject = cryptoOfficerJSONObjects.get(i);
-
-				Assert.assertEquals(
-					"WARNING", jsonObject.getString("severity"));
-
-				JSONObject fieldsJSONObject = jsonObject.getJSONObject(
-					"fields");
-
-				Assert.assertEquals(
-					String.valueOf(cryptoOfficerUser.getUserId()),
-					fieldsJSONObject.getString("attempted-user-id"));
-				Assert.assertEquals(
-					"local",
-					fieldsJSONObject.getString("authentication-method"));
-				Assert.assertEquals(
-					"bad-credential",
-					fieldsJSONObject.getString("failure-reason"));
-				Assert.assertEquals(
-					i + 1,
-					fieldsJSONObject.getInt("consecutive-failure-count"));
-			}
-
-			_authenticateWithWrongPassword(user);
-
-			Assert.assertTrue(
-				_getAuthAttemptFailureJSONObjects(
-					user
-				).isEmpty());
-
-			_userLocalService.updateLockoutByEmailAddress(
-				_company.getCompanyId(), cryptoOfficerUser.getEmailAddress(),
-				true);
-
-			_authenticateWithWrongPassword(cryptoOfficerUser);
-
-			List<JSONObject> updatedJSONObjects =
-				_getAuthAttemptFailureJSONObjects(cryptoOfficerUser);
-
-			JSONObject lastJSONObject = updatedJSONObjects.get(
-				updatedJSONObjects.size() - 1);
-
-			Assert.assertEquals(
-				"locked",
-				lastJSONObject.getJSONObject(
-					"fields"
-				).getString(
-					"failure-reason"
-				));
+			_testOnFailureByEmailAddress();
+			_testOnFailureByEmailAddressWhenLockedOut();
+			_testOnFailureByEmailAddressWithoutCryptoOfficerRole();
 		}
 	}
 
-	private User _addUser(boolean cryptoOfficer) throws Exception {
-		User user = UserTestUtil.addUser(_company);
+	@Test
+	public void testOnFailureByScreenName() throws Exception {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
 
-		if (cryptoOfficer) {
-			Role role = _roleLocalService.fetchRole(
-				_company.getCompanyId(), RoleConstants.CRYPTO_OFFICER);
+			_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
 
-			_roleLocalService.addUserRoles(
-				user.getUserId(), new long[] {role.getRoleId()});
+			User user = _addCryptoOfficerUser();
+
+			_authenticateByScreenName(user);
+
+			List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(
+				user);
+
+			Assert.assertEquals(jsonObjects.toString(), 1, jsonObjects.size());
 		}
+	}
+
+	@Test
+	public void testOnFailureByUserId() throws Exception {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
+
+			User user = _addCryptoOfficerUser();
+
+			_authenticateByUserId(user);
+
+			List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(
+				user);
+
+			Assert.assertEquals(jsonObjects.toString(), 1, jsonObjects.size());
+		}
+	}
+
+	private User _addCryptoOfficerUser() throws Exception {
+		User user = _addUser();
+
+		Role role = _roleLocalService.fetchRole(
+			_company.getCompanyId(), RoleConstants.CRYPTO_OFFICER);
+
+		_roleLocalService.addUserRoles(
+			user.getUserId(), new long[] {role.getRoleId()});
 
 		return user;
 	}
 
-	private void _authenticateWithWrongPassword(User user) throws Exception {
-		Map<String, String[]> headerMap = Collections.emptyMap();
-		Map<String, String[]> parameterMap = Collections.emptyMap();
+	private User _addUser() throws Exception {
+		User user = UserTestUtil.addUser(_company);
 
-		int authResult = _userLocalService.authenticateByEmailAddress(
-			_company.getCompanyId(), user.getEmailAddress(),
-			RandomTestUtil.randomString(), headerMap, parameterMap, null);
+		_users.add(user);
 
-		Assert.assertEquals(Authenticator.FAILURE, authResult);
+		return user;
+	}
+
+	private void _authenticateByEmailAddress(User user) throws Exception {
+		Assert.assertEquals(
+			Authenticator.FAILURE,
+			_userLocalService.authenticateByEmailAddress(
+				_company.getCompanyId(), user.getEmailAddress(),
+				RandomTestUtil.randomString(), Collections.emptyMap(),
+				Collections.emptyMap(), null));
+	}
+
+	private void _authenticateByScreenName(User user) throws Exception {
+		Assert.assertEquals(
+			Authenticator.FAILURE,
+			_userLocalService.authenticateByScreenName(
+				_company.getCompanyId(), user.getScreenName(),
+				RandomTestUtil.randomString(), Collections.emptyMap(),
+				Collections.emptyMap(), null));
+	}
+
+	private void _authenticateByUserId(User user) throws Exception {
+		Assert.assertEquals(
+			Authenticator.FAILURE,
+			_userLocalService.authenticateByUserId(
+				_company.getCompanyId(), user.getUserId(),
+				RandomTestUtil.randomString(), Collections.emptyMap(),
+				Collections.emptyMap(), null));
 	}
 
 	private List<JSONObject> _getAuthAttemptFailureJSONObjects(User user)
 		throws Exception {
 
-		List<JSONObject> jsonObjects = TransformUtil.unsafeTransform(
-			Files.readAllLines(_getFIPSAuditLogPath()),
-			JSONFactoryUtil::createJSONObject);
-
 		String userId = String.valueOf(user.getUserId());
 
 		return ListUtil.filter(
-			jsonObjects,
+			FIPSAuditTestUtil.getJSONObjects(),
 			jsonObject -> {
 				if (!Objects.equals(
 						jsonObject.getString("event-type"),
@@ -193,12 +180,67 @@ public class CryptoOfficerAuthFailureTest {
 			});
 	}
 
-	private Path _getFIPSAuditLogPath() {
-		LocalDate localDate = LocalDate.now(ZoneOffset.UTC);
+	private void _testOnFailureByEmailAddress() throws Exception {
+		User user = _addCryptoOfficerUser();
 
-		return Paths.get(
-			PropsValues.LIFERAY_HOME, "logs",
-			StringBundler.concat("fips-audit.", localDate, ".ndjson"));
+		for (int i = 0; i < 3; i++) {
+			_authenticateByEmailAddress(user);
+		}
+
+		List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(user);
+
+		Assert.assertEquals(jsonObjects.toString(), 3, jsonObjects.size());
+
+		for (int i = 0; i < jsonObjects.size(); i++) {
+			JSONObject jsonObject = jsonObjects.get(i);
+
+			Assert.assertEquals("WARNING", jsonObject.getString("severity"));
+
+			JSONObject fieldsJSONObject = jsonObject.getJSONObject("fields");
+
+			Assert.assertEquals(
+				String.valueOf(user.getUserId()),
+				fieldsJSONObject.getString("attempted-user-id"));
+			Assert.assertEquals(
+				"local", fieldsJSONObject.getString("authentication-method"));
+			Assert.assertEquals(
+				i + 1, fieldsJSONObject.getInt("consecutive-failure-count"));
+			Assert.assertEquals(
+				"bad-credential", fieldsJSONObject.getString("failure-reason"));
+		}
+	}
+
+	private void _testOnFailureByEmailAddressWhenLockedOut() throws Exception {
+		User user = _addCryptoOfficerUser();
+
+		_userLocalService.updateLockoutByEmailAddress(
+			_company.getCompanyId(), user.getEmailAddress(), true);
+
+		_authenticateByEmailAddress(user);
+
+		List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(user);
+
+		Assert.assertEquals(jsonObjects.toString(), 1, jsonObjects.size());
+
+		JSONObject jsonObject = jsonObjects.get(0);
+
+		JSONObject fieldsJSONObject = jsonObject.getJSONObject("fields");
+
+		Assert.assertEquals(
+			"locked", fieldsJSONObject.getString("failure-reason"));
+	}
+
+	private void _testOnFailureByEmailAddressWithoutCryptoOfficerRole()
+		throws Exception {
+
+		User user = _addUser();
+
+		_authenticateByEmailAddress(user);
+
+		Assert.assertTrue(
+			_getAuthAttemptFailureJSONObjects(
+				user
+			).isEmpty());
 	}
 
 	private Company _company;
@@ -216,5 +258,8 @@ public class CryptoOfficerAuthFailureTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
 
 }
