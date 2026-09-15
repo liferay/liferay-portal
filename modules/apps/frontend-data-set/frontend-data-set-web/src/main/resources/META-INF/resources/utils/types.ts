@@ -9,7 +9,7 @@ import React from 'react';
 
 import {IInlineNotificationComponent} from '../inline_notification/InlineNotification';
 import {EEntityFieldType} from '../management_bar/controls/filters/utils/types';
-import {ISnapshots, IUserPreferences} from '../views/ViewsContext';
+import {ISnapshots, IUserConfiguration} from '../views/ViewsContext';
 
 export declare function FrontendDataSet({
 	actionParameterName,
@@ -386,7 +386,7 @@ export interface IFrontendDataSetProps {
 		initialPageNumber?: number;
 	};
 	portletId?: string;
-	saveDataSetUserPreferencesURL?: string;
+	saveDataSetUserConfigurationURL?: string;
 	searchAsYouType?: boolean;
 	searchSuggestionsEnabled?: boolean;
 	selectedItems?: any[];
@@ -405,7 +405,7 @@ export interface IFrontendDataSetProps {
 	sorts?: TSort[];
 	style?: 'default' | 'fluid' | 'stacked';
 	uniformActionsDisplay?: boolean;
-	userPreferences?: IUserPreferences | null;
+	userConfiguration?: IUserConfiguration | null;
 	views: IView[];
 	viewsTitle?: string;
 }

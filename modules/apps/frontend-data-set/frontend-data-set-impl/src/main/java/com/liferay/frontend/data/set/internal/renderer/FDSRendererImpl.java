@@ -249,7 +249,7 @@ public class FDSRendererImpl implements FDSRenderer {
 						return paginationJSONObject;
 					}
 				).put(
-					"saveDataSetUserPreferencesURL",
+					"saveDataSetUserConfigurationURL",
 					() -> {
 						ResourceURL resourceURL =
 							(ResourceURL)_portal.getControlPanelPortletURL(
@@ -259,7 +259,7 @@ public class FDSRendererImpl implements FDSRenderer {
 
 						resourceURL.setResourceID(
 							"/frontend_data_set_admin" +
-								"/save_data_set_user_preferences");
+								"/save_data_set_user_configuration");
 
 						return resourceURL.toString();
 					}
@@ -320,8 +320,8 @@ public class FDSRendererImpl implements FDSRenderer {
 						return fdsSortItems;
 					}
 				).put(
-					"userPreferences",
-					() -> fdsSerializer.serializeUserPreferences(
+					"userConfiguration",
+					() -> fdsSerializer.serializeUserConfiguration(
 						fdsName, httpServletRequest)
 				).put(
 					"views",

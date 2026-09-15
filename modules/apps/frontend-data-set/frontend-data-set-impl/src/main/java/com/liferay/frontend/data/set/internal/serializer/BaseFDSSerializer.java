@@ -149,7 +149,7 @@ public abstract class BaseFDSSerializer {
 		}
 	}
 
-	protected JSONObject serializeUserPreferences(
+	protected JSONObject serializeUserConfiguration(
 		String fdsName, HttpServletRequest httpServletRequest,
 		ObjectDefinitionLocalService objectDefinitionLocalService) {
 
@@ -157,7 +157,7 @@ public abstract class BaseFDSSerializer {
 			ObjectDefinition objectDefinition =
 				objectDefinitionLocalService.
 					fetchObjectDefinitionByExternalReferenceCode(
-						"L_DATA_SET_USER_PREFERENCES",
+						"L_DATA_SET_USER_CONFIGURATION",
 						portal.getCompanyId(httpServletRequest));
 
 			if (objectDefinition == null) {
@@ -180,21 +180,21 @@ public abstract class BaseFDSSerializer {
 				return null;
 			}
 
-			String preferences = GetterUtil.getString(
+			String configuration = GetterUtil.getString(
 				serviceBuilderObjectEntry.getValues(
 				).get(
-					"preferences"
+					"configuration"
 				));
 
-			if (Validator.isNull(preferences)) {
+			if (Validator.isNull(configuration)) {
 				return null;
 			}
 
-			return jsonFactory.createJSONObject(preferences);
+			return jsonFactory.createJSONObject(configuration);
 		}
 		catch (Exception exception) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to serialize user preferences", exception);
+				_log.warn("Unable to serialize user configuration", exception);
 			}
 
 			return null;

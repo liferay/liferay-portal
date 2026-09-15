@@ -16,7 +16,7 @@ import {
 	TRenderer,
 	TSort,
 } from './utils/types';
-import {IUserPreferences} from './views/ViewsContext';
+import {IUserConfiguration} from './views/ViewsContext';
 
 export interface IFrontendDataSetContext {
 	actionParameterName?: string | null;
@@ -80,7 +80,7 @@ export interface IFrontendDataSetContext {
 	openModal: Function;
 	openSidePanel: Function;
 	portletId?: string;
-	saveDataSetUserPreferencesURL?: string;
+	saveDataSetUserConfigurationURL?: string;
 	searchAsYouType: boolean;
 	searchParam?: string;
 	searchSuggestionsEnabled: boolean;
@@ -109,7 +109,9 @@ export interface IFrontendDataSetContext {
 	}: IDataSetData) => void;
 	updateFilters: IConfigInURLUpdaterThunk<EConfigInURLKeys.ACTIVE_FILTERS>;
 	updateItem: Function;
-	updateUserPreferences: (preferences: IUserPreferences) => Promise<void>;
+	updateUserConfiguration: (
+		configuration: IUserConfiguration
+	) => Promise<void>;
 	updateView: IConfigInURLUpdaterThunk<EConfigInURLKeys.VIEW_NAME>;
 	updateVisibleFields: IConfigInURLUpdaterThunk<EConfigInURLKeys.VISIBLE_FIELDS>;
 }

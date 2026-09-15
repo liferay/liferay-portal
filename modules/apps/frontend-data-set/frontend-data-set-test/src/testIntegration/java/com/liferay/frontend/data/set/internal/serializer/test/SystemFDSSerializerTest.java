@@ -123,23 +123,23 @@ public class SystemFDSSerializerTest {
 	}
 
 	@Test
-	public void testSerializeUserPreferences() throws Exception {
+	public void testSerializeUserConfiguration() throws Exception {
 		HttpServletRequest httpServletRequest = _getHttpServletRequest(
 			_memberUser.getUserId());
 
 		Assert.assertNull(
-			_fdsSerializer.serializeUserPreferences(
+			_fdsSerializer.serializeUserConfiguration(
 				_FDS_NAME, httpServletRequest));
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_USER_PREFERENCES",
+					"L_DATA_SET_USER_CONFIGURATION",
 					TestPropsValues.getCompanyId());
 
-		// malformed JSON object
+		// malformed configuration
 
-		_dataSetUserPreferencesObjectEntry =
+		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
 				_memberUser.getExternalReferenceCode() + StringPool.UNDERLINE +
 					_FDS_NAME,
@@ -148,18 +148,18 @@ public class SystemFDSSerializerTest {
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
-					"preferences", "{\"initialDataSetSnapshotERC\": "
+					"configuration", "{\"initialDataSetSnapshotERC\": "
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId(), _memberUser.getUserId()));
 
 		Assert.assertNull(
-			_fdsSerializer.serializeUserPreferences(
+			_fdsSerializer.serializeUserConfiguration(
 				_FDS_NAME, httpServletRequest));
 
-		// unknown key in JSON object
+		// unknown key in configuration
 
-		_dataSetUserPreferencesObjectEntry =
+		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
 				_memberUser.getExternalReferenceCode() + StringPool.UNDERLINE +
 					_FDS_NAME,
@@ -168,7 +168,7 @@ public class SystemFDSSerializerTest {
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
-					"preferences",
+					"configuration",
 					StringBundler.concat(
 						"{\"", StringPool.AT + RandomTestUtil.randomString(),
 						": ", RandomTestUtil.randomString())
@@ -177,19 +177,19 @@ public class SystemFDSSerializerTest {
 					TestPropsValues.getGroupId(), _memberUser.getUserId()));
 
 		Assert.assertNull(
-			_fdsSerializer.serializeUserPreferences(
+			_fdsSerializer.serializeUserConfiguration(
 				_FDS_NAME, httpServletRequest));
 
-		// valid JSON object
+		// valid configuration
 
-		_dataSetUserPreferencesObjectEntry =
+		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.updateObjectEntry(
 				_memberUser.getUserId(),
-				_dataSetUserPreferencesObjectEntry.getObjectEntryId(),
+				_dataSetUserConfigurationObjectEntry.getObjectEntryId(),
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
-					"preferences",
+					"configuration",
 					JSONUtil.put(
 						"initialDataSetSnapshotERC",
 						_dataSetSnapshotObjectEntry.getExternalReferenceCode()
@@ -203,7 +203,7 @@ public class SystemFDSSerializerTest {
 				"initialDataSetSnapshotERC",
 				_dataSetSnapshotObjectEntry.getExternalReferenceCode()
 			).toString(),
-			_fdsSerializer.serializeUserPreferences(
+			_fdsSerializer.serializeUserConfiguration(
 				_FDS_NAME, httpServletRequest
 			).toString(),
 			JSONCompareMode.STRICT);
@@ -276,7 +276,7 @@ public class SystemFDSSerializerTest {
 	private ObjectEntry _dataSetSnapshotObjectEntry;
 
 	@DeleteAfterTestRun
-	private ObjectEntry _dataSetUserPreferencesObjectEntry;
+	private ObjectEntry _dataSetUserConfigurationObjectEntry;
 
 	@Inject(filter = "frontend.data.set.serializer.type=system")
 	private FDSSerializer _fdsSerializer;

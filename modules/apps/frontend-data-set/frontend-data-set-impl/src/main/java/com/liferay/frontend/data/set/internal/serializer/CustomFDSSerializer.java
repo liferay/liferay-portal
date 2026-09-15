@@ -606,10 +606,10 @@ public class CustomFDSSerializer
 	}
 
 	@Override
-	public JSONObject serializeUserPreferences(
+	public JSONObject serializeUserConfiguration(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
-		return serializeUserPreferences(
+		return serializeUserConfiguration(
 			fdsName, httpServletRequest, _objectDefinitionLocalService);
 	}
 

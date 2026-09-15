@@ -101,7 +101,7 @@ import useConfigInURL, {useUpdateConfig} from './utils/useConfigInURL';
 import ViewsContext, {
 	ISnapshot,
 	ISnapshots,
-	IUserPreferences,
+	IUserConfiguration,
 } from './views/ViewsContext';
 import getViewComponent from './views/getViewComponent';
 import viewsReducer, {EViewsActionTypes} from './views/viewsReducer';
@@ -157,7 +157,7 @@ const FrontendDataSetContent = ({
 	overrideEmptyResultView,
 	pagination,
 	portletId,
-	saveDataSetUserPreferencesURL,
+	saveDataSetUserConfigurationURL,
 	searchAsYouType = false,
 	searchSuggestionsEnabled = false,
 	selectedItems: externalSelectedItems,
@@ -176,7 +176,7 @@ const FrontendDataSetContent = ({
 	sorts: sortsProp = [],
 	style = 'default',
 	uniformActionsDisplay,
-	userPreferences = null,
+	userConfiguration = null,
 	views,
 }: IFrontendDataSetProps) => {
 	const {fileDropSettings} = useContext(DnDContext);
@@ -681,13 +681,13 @@ const FrontendDataSetContent = ({
 			snapshots: parsedSnapshots,
 			snapshotsEnabled,
 			sorts,
-			userPreferences: userPreferences ?? null,
+			userConfiguration: userConfiguration ?? null,
 			views,
 			visibleFieldNames: initialVisibleFieldNames,
 		};
 
 		const initialDataSetSnapshotERC =
-			userPreferences?.initialDataSetSnapshotERC;
+			userConfiguration?.initialDataSetSnapshotERC;
 
 		if (
 			initialDataSetSnapshotERC &&
@@ -2075,15 +2075,15 @@ const FrontendDataSetContent = ({
 		}
 	};
 
-	const updateUserPreferences = (preferences: IUserPreferences) => {
-		if (!saveDataSetUserPreferencesURL) {
+	const updateUserConfiguration = (configuration: IUserConfiguration) => {
+		if (!saveDataSetUserConfigurationURL) {
 			return Promise.reject(new Error());
 		}
 
-		return fetch(saveDataSetUserPreferencesURL, {
+		return fetch(saveDataSetUserConfigurationURL, {
 			body: new URLSearchParams({
+				configuration: JSON.stringify(configuration),
 				fdsName: id,
-				preferences: JSON.stringify(preferences),
 			}),
 			method: 'POST',
 		})
@@ -2098,10 +2098,10 @@ const FrontendDataSetContent = ({
 
 				return response.json();
 			})
-			.then((nextUserPreferences) => {
+			.then((nextUserConfiguration) => {
 				viewsDispatch({
-					type: EViewsActionTypes.UPDATE_USER_PREFERENCES,
-					value: {userPreferences: nextUserPreferences},
+					type: EViewsActionTypes.UPDATE_USER_CONFIGURATION,
+					value: {userConfiguration: nextUserConfiguration},
 				});
 			});
 	};
@@ -2117,7 +2117,7 @@ const FrontendDataSetContent = ({
 
 	useEffect(() => {
 		const initialDataSetSnapshotERC =
-			userPreferences?.initialDataSetSnapshotERC;
+			userConfiguration?.initialDataSetSnapshotERC;
 
 		if (
 			initialDataSetSnapshotERCAppliedRef.current ||
@@ -2144,7 +2144,7 @@ const FrontendDataSetContent = ({
 			snapshots: viewsState.snapshots,
 			value: initialDataSetSnapshotERC,
 		});
-	}, [globalFDSStateInitialized, userPreferences, viewsState]);
+	}, [globalFDSStateInitialized, userConfiguration, viewsState]);
 
 	function toggleItemInlineEdit(itemKey: any) {
 		setItemsChanges(({[itemKey]: foundItem, ...itemsChanges}) => {
@@ -2413,7 +2413,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
-				saveDataSetUserPreferencesURL,
+				saveDataSetUserConfigurationURL,
 				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searchSuggestionsEnabled,
@@ -2436,7 +2436,7 @@ const FrontendDataSetContent = ({
 				updateDataSetItems,
 				updateFilters,
 				updateItem,
-				updateUserPreferences,
+				updateUserConfiguration,
 				updateView,
 				updateVisibleFields,
 			}}

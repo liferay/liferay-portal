@@ -196,7 +196,7 @@ const SnapshotsControls = () => {
 		namespace,
 		onSnapshotChange,
 		portletId,
-		updateUserPreferences,
+		updateUserConfiguration,
 	} = useContext(FrontendDataSetContext);
 
 	const {appliedCustomConfigs} = globalFDSState as IConnectedFDSState;
@@ -210,7 +210,7 @@ const SnapshotsControls = () => {
 			snapshotUpdated,
 			snapshots,
 			sorts,
-			userPreferences,
+			userConfiguration,
 			visibleFieldNames,
 		},
 		viewsDispatch,
@@ -520,8 +520,8 @@ const SnapshotsControls = () => {
 			return;
 		}
 
-		updateUserPreferences({
-			...userPreferences,
+		updateUserConfiguration({
+			...userConfiguration,
 			initialDataSetSnapshotERC: activeSnapshot.erc,
 		})
 			.then(() => {
@@ -682,7 +682,7 @@ const SnapshotsControls = () => {
 												{snapshot.label}
 
 												{snapshot.erc ===
-													userPreferences?.initialDataSetSnapshotERC && (
+													userConfiguration?.initialDataSetSnapshotERC && (
 													<ClayLabel
 														aria-hidden="true"
 														className="ml-2"
@@ -750,7 +750,7 @@ const SnapshotsControls = () => {
 
 						{activeSnapshotERC &&
 							activeSnapshotERC !==
-								userPreferences?.initialDataSetSnapshotERC && (
+								userConfiguration?.initialDataSetSnapshotERC && (
 								<ClayDropDown.Item
 									onClick={() => {
 										setInitialDataSetSnapshotERC();

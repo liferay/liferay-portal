@@ -52,11 +52,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + FDSAdminPortletKeys.FDS_ADMIN,
-		"mvc.command.name=/frontend_data_set_admin/save_data_set_user_preferences"
+		"mvc.command.name=/frontend_data_set_admin/save_data_set_user_configuration"
 	},
 	service = MVCResourceCommand.class
 )
-public class SaveDataSetUserPreferencesMVCResourceCommand
+public class SaveDataSetUserConfigurationMVCResourceCommand
 	extends BaseTransactionalMVCResourceCommand {
 
 	@Override
@@ -91,10 +91,10 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 			return;
 		}
 
-		String preferences = ParamUtil.getString(
-			httpServletRequest, "preferences");
+		String configuration = ParamUtil.getString(
+			httpServletRequest, "configuration");
 
-		if (Validator.isNull(preferences)) {
+		if (Validator.isNull(configuration)) {
 			_writeEmptyResponse(
 				new NullPointerException(), resourceRequest, resourceResponse,
 				HttpServletResponse.SC_BAD_REQUEST);
@@ -105,7 +105,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 		JSONObject jsonObject;
 
 		try {
-			jsonObject = _jsonFactory.createJSONObject(preferences);
+			jsonObject = _jsonFactory.createJSONObject(configuration);
 		}
 		catch (JSONException jsonException) {
 			_writeEmptyResponse(
@@ -120,7 +120,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_USER_PREFERENCES", companyId);
+					"L_DATA_SET_USER_CONFIGURATION", companyId);
 
 		if (objectDefinition == null) {
 			_writeEmptyResponse(
@@ -130,12 +130,12 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 			return;
 		}
 
-		JSONObject dataSetUserPreferencesJSONObject =
+		JSONObject dataSetUserConfigurationJSONObject =
 			_jsonFactory.createJSONObject();
 
 		try {
 			_checkInitialDataSetSnapshotERC(
-				companyId, dataSetUserPreferencesJSONObject,
+				companyId, dataSetUserConfigurationJSONObject,
 				jsonObject.getString("initialDataSetSnapshotERC"), user);
 		}
 		catch (PrincipalException principalException) {
@@ -162,17 +162,17 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 			user.getUserId(), objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			HashMapBuilder.<String, Serializable>put(
-				"preferences", dataSetUserPreferencesJSONObject.toString()
+				"configuration", dataSetUserConfigurationJSONObject.toString()
 			).build(),
 			serviceContext);
 
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
-			dataSetUserPreferencesJSONObject);
+			dataSetUserConfigurationJSONObject);
 	}
 
 	private void _checkInitialDataSetSnapshotERC(
-			long companyId, JSONObject dataSetUserPreferencesJSONObject,
+			long companyId, JSONObject dataSetUserConfigurationJSONObject,
 			String initialDataSetSnapshotERC, User user)
 		throws Exception {
 
@@ -208,7 +208,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 						initialDataSetSnapshotERC);
 		}
 
-		dataSetUserPreferencesJSONObject.put(
+		dataSetUserConfigurationJSONObject.put(
 			"initialDataSetSnapshotERC", initialDataSetSnapshotERC);
 	}
 
@@ -229,7 +229,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommand
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		SaveDataSetUserPreferencesMVCResourceCommand.class);
+		SaveDataSetUserConfigurationMVCResourceCommand.class);
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;

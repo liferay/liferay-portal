@@ -251,7 +251,7 @@ public class ObjectDefinitionUtil {
 		).put(
 			"DataSetTableSection", "/data-set-admin/table-sections"
 		).put(
-			"DataSetUserPreferences", "/data-set-admin/user-preferences"
+			"DataSetUserConfiguration", "/data-set-admin/user-configurations"
 		).put(
 			"DSRRoom", "/digital-sales-room/rooms"
 		).put(

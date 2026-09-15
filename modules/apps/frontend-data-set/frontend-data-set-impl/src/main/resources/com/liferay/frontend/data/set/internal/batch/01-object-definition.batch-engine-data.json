@@ -1795,24 +1795,24 @@
 		},
 		{
 			"className": "com.liferay.object.model.ObjectDefinition#U1P7",
-			"externalReferenceCode": "L_DATA_SET_USER_PREFERENCES",
+			"externalReferenceCode": "L_DATA_SET_USER_CONFIGURATION",
 			"label": {
-				"en_US": "Data Set User Preferences"
+				"en_US": "Data Set User Configuration"
 			},
 			"modifiable": true,
-			"name": "DataSetUserPreferences",
+			"name": "DataSetUserConfiguration",
 			"objectFields": [
 				{
 					"DBType": "Clob",
 					"businessType": "LongText",
-					"externalReferenceCode": "PREFERENCES",
+					"externalReferenceCode": "CONFIGURATION",
 					"indexed": true,
 					"indexedAsKeyword": false,
 					"label": {
-						"en_US": "Preferences"
+						"en_US": "Configuration"
 					},
 					"localized": false,
-					"name": "preferences",
+					"name": "configuration",
 					"required": false,
 					"state": false,
 					"system": true,
@@ -1821,7 +1821,7 @@
 			],
 			"panelCategoryKey": "",
 			"pluralLabel": {
-				"en_US": "Data Set User Preferences"
+				"en_US": "Data Set User Configurations"
 			},
 			"portlet": false,
 			"scope": "company",

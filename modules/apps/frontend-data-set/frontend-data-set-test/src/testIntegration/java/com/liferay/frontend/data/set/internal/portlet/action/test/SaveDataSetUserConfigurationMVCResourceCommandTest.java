@@ -74,7 +74,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 	featureFlags = {@FeatureFlag("LPD-34594"), @FeatureFlag("LPS-164563")}
 )
 @RunWith(Arquillian.class)
-public class SaveDataSetUserPreferencesMVCResourceCommandTest {
+public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 
 	@ClassRule
 	@Rule
@@ -86,17 +86,17 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	@Before
 	public void setUp() throws Exception {
 		FrontendDataSetTestUtil.initialize(
-			SaveDataSetUserPreferencesMVCResourceCommandTest.class);
+			SaveDataSetUserConfigurationMVCResourceCommandTest.class);
 
 		_dataSetSnapshotObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_SNAPSHOT", TestPropsValues.getCompanyId());
 
-		_dataSetUserPreferencesObjectDefinition =
+		_dataSetUserConfigurationObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_USER_PREFERENCES",
+					"L_DATA_SET_USER_CONFIGURATION",
 					TestPropsValues.getCompanyId());
 
 		_fdsName = RandomTestUtil.randomString();
@@ -110,7 +110,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	@After
 	public void tearDown() throws Exception {
 		for (String externalReferenceCode : _externalReferenceCodes) {
-			ObjectEntry objectEntry = _fetchDataSetUserPreferencesObjectEntry(
+			ObjectEntry objectEntry = _fetchDataSetUserConfigurationObjectEntry(
 				externalReferenceCode);
 
 			if (objectEntry != null) {
@@ -120,6 +120,22 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 		}
 
 		_externalReferenceCodes.clear();
+	}
+
+	@Test
+	public void testBadRequestIsReturnedForBlankConfiguration()
+		throws Exception {
+
+		_assertInitialDataSetSnapshotERCIsSaved(
+			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
+			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
+			_user);
+
+		_assertStatusCode(
+			HttpServletResponse.SC_BAD_REQUEST,
+			_serveResource(_user, StringPool.BLANK, _fdsName));
+
+		_assertInitialDataSetSnapshotERCIsNotUpdated();
 	}
 
 	@Test
@@ -138,21 +154,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testBadRequestIsReturnedForBlankPreferences() throws Exception {
-		_assertInitialDataSetSnapshotERCIsSaved(
-			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
-			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
-			_user);
-
-		_assertStatusCode(
-			HttpServletResponse.SC_BAD_REQUEST,
-			_serveResource(_user, StringPool.BLANK, _fdsName));
-
-		_assertInitialDataSetSnapshotERCIsNotUpdated();
-	}
-
-	@Test
-	public void testBadRequestIsReturnedForMalformedPreferences()
+	public void testBadRequestIsReturnedForMalformedConfiguration()
 		throws Exception {
 
 		_assertInitialDataSetSnapshotERCIsSaved(
@@ -168,7 +170,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testBadRequestIsReturnedForMissingPreferences()
+	public void testBadRequestIsReturnedForMissingConfiguration()
 		throws Exception {
 
 		_assertInitialDataSetSnapshotERCIsSaved(
@@ -184,7 +186,9 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	@Test
-	public void testBadRequestIsReturnedForNullPreferences() throws Exception {
+	public void testBadRequestIsReturnedForNullConfiguration()
+		throws Exception {
+
 		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
 			_serveResource(_user, _dataSetSnapshotObjectEntry, _fdsName),
@@ -245,7 +249,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	@Test
 	public void testInitialDataSetSnapshotERCIsCleared() throws Exception {
 
-		// empty JSON object
+		// empty configuration
 
 		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
@@ -256,7 +260,7 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 			_serveResource(_user, JSONFactoryUtil.createJSONObject(), _fdsName),
 			"initialDataSetSnapshotERC");
 
-		// null value
+		// null value in configuration
 
 		_assertInitialDataSetSnapshotERCIsSaved(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(), _fdsName,
@@ -345,13 +349,13 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	private void _assertInitialDataSetSnapshotERCIsNotUpdated()
 		throws Exception {
 
-		JSONObject dataSetUserPreferencesJSONObject =
-			_getDataSetUserPreferencesJSONObject(
-				_getDataSetUserPreferencesObjectEntryERC(_fdsName, _user));
+		JSONObject dataSetUserConfigurationJSONObject =
+			_getDataSetUserConfigurationJSONObject(
+				_getDataSetUserConfigurationObjectEntryERC(_fdsName, _user));
 
 		Assert.assertEquals(
 			_dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-			dataSetUserPreferencesJSONObject.getString(
+			dataSetUserConfigurationJSONObject.getString(
 				"initialDataSetSnapshotERC"));
 	}
 
@@ -371,13 +375,13 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 			externalReferenceCode,
 			jsonObject.getString("initialDataSetSnapshotERC"));
 
-		JSONObject dataSetUserPreferencesJSONObject =
-			_getDataSetUserPreferencesJSONObject(
-				_getDataSetUserPreferencesObjectEntryERC(fdsName, user));
+		JSONObject dataSetUserConfigurationJSONObject =
+			_getDataSetUserConfigurationJSONObject(
+				_getDataSetUserConfigurationObjectEntryERC(fdsName, user));
 
 		Assert.assertEquals(
 			externalReferenceCode,
-			dataSetUserPreferencesJSONObject.getString(
+			dataSetUserConfigurationJSONObject.getString(
 				"initialDataSetSnapshotERC"));
 	}
 
@@ -394,12 +398,13 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 
 		Assert.assertEquals(StringPool.BLANK, jsonObject.getString(key));
 
-		JSONObject dataSetUserPreferencesJSONObject =
-			_getDataSetUserPreferencesJSONObject(
-				_getDataSetUserPreferencesObjectEntryERC(_fdsName, _user));
+		JSONObject dataSetUserConfigurationJSONObject =
+			_getDataSetUserConfigurationJSONObject(
+				_getDataSetUserConfigurationObjectEntryERC(_fdsName, _user));
 
 		Assert.assertEquals(
-			StringPool.BLANK, dataSetUserPreferencesJSONObject.getString(key));
+			StringPool.BLANK,
+			dataSetUserConfigurationJSONObject.getString(key));
 	}
 
 	private void _assertStatusCode(
@@ -412,19 +417,19 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 				ResourceResponse.HTTP_STATUS_CODE));
 	}
 
-	private ObjectEntry _fetchDataSetUserPreferencesObjectEntry(
+	private ObjectEntry _fetchDataSetUserConfigurationObjectEntry(
 		String externalReferenceCode) {
 
 		return _objectEntryLocalService.fetchObjectEntry(
 			externalReferenceCode, 0,
-			_dataSetUserPreferencesObjectDefinition.getObjectDefinitionId());
+			_dataSetUserConfigurationObjectDefinition.getObjectDefinitionId());
 	}
 
-	private JSONObject _getDataSetUserPreferencesJSONObject(
+	private JSONObject _getDataSetUserConfigurationJSONObject(
 			String externalReferenceCode)
 		throws Exception {
 
-		ObjectEntry objectEntry = _fetchDataSetUserPreferencesObjectEntry(
+		ObjectEntry objectEntry = _fetchDataSetUserConfigurationObjectEntry(
 			externalReferenceCode);
 
 		Assert.assertNotNull(objectEntry);
@@ -432,10 +437,10 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 		Map<String, Serializable> values = objectEntry.getValues();
 
 		return JSONFactoryUtil.createJSONObject(
-			GetterUtil.getString(values.get("preferences")));
+			GetterUtil.getString(values.get("configuration")));
 	}
 
-	private String _getDataSetUserPreferencesObjectEntryERC(
+	private String _getDataSetUserConfigurationObjectEntryERC(
 		String fdsName, User user) {
 
 		return user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
@@ -454,12 +459,12 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	private TestMockLiferayResourceResponse _serveResource(
-			User user, JSONObject dataSetUserPreferencesJSONObject,
+			User user, JSONObject dataSetUserConfigurationJSONObject,
 			String fdsName)
 		throws Exception {
 
 		return _serveResource(
-			user, dataSetUserPreferencesJSONObject.toString(), fdsName);
+			user, dataSetUserConfigurationJSONObject.toString(), fdsName);
 	}
 
 	private TestMockLiferayResourceResponse _serveResource(
@@ -475,11 +480,11 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	}
 
 	private TestMockLiferayResourceResponse _serveResource(
-			User user, String preferences, String fdsName)
+			User user, String configuration, String fdsName)
 		throws Exception {
 
 		_externalReferenceCodes.add(
-			_getDataSetUserPreferencesObjectEntryERC(fdsName, user));
+			_getDataSetUserConfigurationObjectEntryERC(fdsName, user));
 
 		MockLiferayResourceRequest mockLiferayResourceRequest =
 			new MockLiferayResourceRequest();
@@ -498,8 +503,8 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 
 		mockHttpServletRequest.setParameter("fdsName", fdsName);
 
-		if (preferences != null) {
-			mockHttpServletRequest.setParameter("preferences", preferences);
+		if (configuration != null) {
+			mockHttpServletRequest.setParameter("configuration", configuration);
 		}
 
 		mockLiferayResourceRequest.setAttribute(
@@ -547,12 +552,12 @@ public class SaveDataSetUserPreferencesMVCResourceCommandTest {
 	@DeleteAfterTestRun
 	private ObjectEntry _dataSetSnapshotObjectEntry;
 
-	private ObjectDefinition _dataSetUserPreferencesObjectDefinition;
+	private ObjectDefinition _dataSetUserConfigurationObjectDefinition;
 	private final Set<String> _externalReferenceCodes = new LinkedHashSet<>();
 	private String _fdsName;
 
 	@Inject(
-		filter = "mvc.command.name=/frontend_data_set_admin/save_data_set_user_preferences"
+		filter = "mvc.command.name=/frontend_data_set_admin/save_data_set_user_configuration"
 	)
 	private MVCResourceCommand _mvcResourceCommand;
 
