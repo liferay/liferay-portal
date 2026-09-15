@@ -108,12 +108,12 @@
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK_INPUT</td>
-	<td>//form[contains(@class,'ck-link-form')]//div[contains(@class,'ck-labeled-field-view')][.//label[contains(text(),'Link URL')]]//input[contains(@class,'ck-input')]</td>
+	<td>//form[contains(@class,'ck-link-form')]//div[contains(@class,'ck-labeled-field-view')][.//label[contains(text(),'Link URL')]]//input[contains(@class,'ck-input')] | //div[contains(@class,'ae-container-input')]//input[contains(@class,'ae-input')]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>TEXT_FORMATTING_LINK_INPUT_CONFIRM</td>
-	<td>//form[contains(@class,'ck-link-form')]//button[@type='submit']</td>
+	<td>//form[contains(@class,'ck-link-form')]//button[@type='submit'] | //button[contains(@aria-label,'Confirm')]</td>
 	<td></td>
 </tr>
 <tr>
