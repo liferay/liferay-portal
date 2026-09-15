@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.search.aggregation.AggregationResult;
+import com.liferay.portal.search.constants.SearchContextAttributes;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
 import com.liferay.portal.vulcan.aggregation.Facet;
@@ -145,6 +146,12 @@ public class SearchUtil {
 
 	public static class SearchContext
 		extends com.liferay.portal.kernel.search.SearchContext {
+
+		public SearchContext() {
+			setAttribute(
+				SearchContextAttributes.ATTRIBUTE_KEY_FALLBACK_TO_LAST_PAGE,
+				Boolean.FALSE);
+		}
 
 		@Override
 		public void addFacet(
