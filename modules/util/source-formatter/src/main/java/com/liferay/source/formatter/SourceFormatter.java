@@ -73,6 +73,7 @@ import com.liferay.source.formatter.util.DebugUtil;
 import com.liferay.source.formatter.util.FileUtil;
 import com.liferay.source.formatter.util.JIRAUtil;
 import com.liferay.source.formatter.util.SourceFormatterUtil;
+import com.liferay.source.formatter.util.ThrowableUtil;
 
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
@@ -304,7 +305,8 @@ public class SourceFormatter {
 		}
 		catch (Throwable throwable) {
 			UnsupportedClassVersionError unsupportedClassVersionError =
-				_getNestedUnsupportedClassVersionError(throwable);
+				ThrowableUtil.getNestedThrowable(
+					throwable, UnsupportedClassVersionError.class);
 
 			if (unsupportedClassVersionError != null) {
 				System.err.println(
@@ -312,7 +314,7 @@ public class SourceFormatter {
 						System.getProperty("java.specification.version"));
 				System.err.println(
 					"It loads classes compiled for a newer Java version. Set " +
-						"JAVA_HOME to a JDK 17 or 21 and run again.");
+						"JAVA_HOME to a newer JDK and run again.");
 				System.err.println(
 					"This is a toolchain failure, not a formatting violation.");
 				System.err.println(unsupportedClassVersionError.toString());
@@ -325,7 +327,8 @@ public class SourceFormatter {
 			}
 			else {
 				CheckstyleException checkstyleException =
-					_getNestedCheckstyleException(throwable);
+					ThrowableUtil.getNestedThrowable(
+						throwable, CheckstyleException.class);
 
 				if (checkstyleException != null) {
 					checkstyleException.printStackTrace();
@@ -508,38 +511,6 @@ public class SourceFormatter {
 
 	public List<SourceMismatchException> getSourceMismatchExceptions() {
 		return _sourceMismatchExceptions;
-	}
-
-	private static CheckstyleException _getNestedCheckstyleException(
-		Throwable throwable) {
-
-		Throwable curThrowable = throwable;
-
-		for (int i = 0; (curThrowable != null) && (i < _MAX_CAUSE_DEPTH); i++) {
-			if (curThrowable instanceof CheckstyleException) {
-				return (CheckstyleException)curThrowable;
-			}
-
-			curThrowable = curThrowable.getCause();
-		}
-
-		return null;
-	}
-
-	private static UnsupportedClassVersionError
-		_getNestedUnsupportedClassVersionError(Throwable throwable) {
-
-		Throwable curThrowable = throwable;
-
-		for (int i = 0; (curThrowable != null) && (i < _MAX_CAUSE_DEPTH); i++) {
-			if (curThrowable instanceof UnsupportedClassVersionError) {
-				return (UnsupportedClassVersionError)curThrowable;
-			}
-
-			curThrowable = curThrowable.getCause();
-		}
-
-		return null;
 	}
 
 	private Set<String> _addDependentFileName(
@@ -1472,8 +1443,6 @@ public class SourceFormatter {
 			}
 		}
 	}
-
-	private static final int _MAX_CAUSE_DEPTH = 100;
 
 	private static final String _PROPERTIES_FILE_NAME =
 		"source-formatter.properties";
