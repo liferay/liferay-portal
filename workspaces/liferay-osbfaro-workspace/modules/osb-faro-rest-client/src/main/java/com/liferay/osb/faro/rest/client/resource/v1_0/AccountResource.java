@@ -42,14 +42,14 @@ public interface AccountResource {
 		throws Exception;
 
 	public Page<Account> getWorkspaceGroupChannelAccountsPage(
-			Long groupId, String channelId, String search,
-			Pagination pagination, String sortString)
+			Long groupId, String channelId, String lifecycleStage,
+			String search, Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupChannelAccountsPageHttpResponse(
-				Long groupId, String channelId, String search,
-				Pagination pagination, String sortString)
+				Long groupId, String channelId, String lifecycleStage,
+				String search, Pagination pagination, String sortString)
 		throws Exception;
 
 	public static class Builder {
@@ -267,13 +267,14 @@ public interface AccountResource {
 		}
 
 		public Page<Account> getWorkspaceGroupChannelAccountsPage(
-				Long groupId, String channelId, String search,
-				Pagination pagination, String sortString)
+				Long groupId, String channelId, String lifecycleStage,
+				String search, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupChannelAccountsPageHttpResponse(
-					groupId, channelId, search, pagination, sortString);
+					groupId, channelId, lifecycleStage, search, pagination,
+					sortString);
 
 			String content = httpResponse.getContent();
 
@@ -336,8 +337,8 @@ public interface AccountResource {
 
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupChannelAccountsPageHttpResponse(
-					Long groupId, String channelId, String search,
-					Pagination pagination, String sortString)
+					Long groupId, String channelId, String lifecycleStage,
+					String search, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -360,6 +361,11 @@ public interface AccountResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (lifecycleStage != null) {
+				httpInvoker.parameter(
+					"lifecycleStage", String.valueOf(lifecycleStage));
+			}
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
@@ -404,4 +410,4 @@ public interface AccountResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:224150624
+// LIFERAY-REST-BUILDER-HASH:-2011398787

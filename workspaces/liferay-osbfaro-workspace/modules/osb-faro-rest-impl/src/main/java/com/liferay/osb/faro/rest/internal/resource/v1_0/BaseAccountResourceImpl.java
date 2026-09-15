@@ -97,7 +97,7 @@ public abstract class BaseAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/accounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Use this to browse or search accounts by name. To fetch a single account by id, use `getAccount`."
+		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by id, use `getAccount`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -110,6 +110,12 @@ public abstract class BaseAccountResourceImpl
 				description = "Identifier of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the workspace's account lifecycle. The name is resolved to the stage identifier that backs the filter, so pass the name, not the identifier.",
+				example = "AT_RISK",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "lifecycleStage"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Page number (starts at 1).",
@@ -150,6 +156,9 @@ public abstract class BaseAccountResourceImpl
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("channelId")
 			String channelId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("lifecycleStage")
+			String lifecycleStage,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -613,4 +622,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1738539301
+// LIFERAY-REST-BUILDER-HASH:1031633444
