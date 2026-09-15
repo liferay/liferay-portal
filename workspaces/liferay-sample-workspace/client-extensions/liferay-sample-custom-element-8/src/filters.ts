@@ -137,15 +137,15 @@ export function toggleOption(
 }
 
 /**
- * The filter state the data set restored, less anything this element cannot
- * draw.
+ * The filter state the data set offers back, less anything this element
+ * cannot draw.
  */
-export function getValidFilterState(connectionState: unknown): FilterState {
-	if (!connectionState || typeof connectionState !== 'object') {
+export function getValidFilterState(customConfig: unknown): FilterState {
+	if (!customConfig || typeof customConfig !== 'object') {
 		return EMPTY_FILTER_STATE;
 	}
 
-	const {expression, selections} = connectionState as Record<string, unknown>;
+	const {expression, selections} = customConfig as Record<string, unknown>;
 
 	if (typeof expression === 'string') {
 		return {expression, manual: true, selections: {}};
@@ -184,7 +184,7 @@ export function getValidFilterState(connectionState: unknown): FilterState {
 	return {expression: '', manual: false, selections: validSelections};
 }
 
-export function getConnectionState(filterState: FilterState): unknown {
+export function getCustomConfig(filterState: FilterState): unknown {
 	return filterState.manual
 		? {expression: filterState.expression}
 		: {selections: filterState.selections};

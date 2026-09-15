@@ -7,7 +7,7 @@ import JsonURL from '@jsonurl/jsonurl';
 import {renderHook, waitFor} from '@testing-library/react';
 
 import {getConfigParamName} from '../../../src/main/resources/META-INF/resources/utils/configInURL';
-import {useRestoredConnectionState} from '../../../src/main/resources/META-INF/resources/utils/connection/useRestoredConnectionState';
+import {useOfferedCustomConfigs} from '../../../src/main/resources/META-INF/resources/utils/connection/useOfferedCustomConfigs';
 import {
 	EConfigInURLBehavior,
 	EConfigInURLKeys,
@@ -23,28 +23,28 @@ const OWNER_APP_ID = 'sampleCustomElement';
 // it, so this is an address written by an app other than the one that owns
 // the filtering below.
 
-const OTHER_APP_STATE = {[OTHER_APP_ID]: {selections: {size: ['Big']}}};
+const OTHER_APP_CONFIGS = {[OTHER_APP_ID]: {selections: {size: ['Big']}}};
 
-// An address that carries state for both, which is what a page holding a
+// An address that carries configs for both, which is what a page holding a
 // second consumer leaves behind.
 
-const BOTH_APPS_STATE = {
-	...OTHER_APP_STATE,
+const BOTH_APPS_CONFIGS = {
+	...OTHER_APP_CONFIGS,
 	[OWNER_APP_ID]: {selections: {color: ['Blue']}},
 };
 
-const OWNER_APP_STATE = {[OWNER_APP_ID]: {selections: {color: ['Blue']}}};
+const OWNER_APP_CONFIGS = {[OWNER_APP_ID]: {selections: {color: ['Blue']}}};
 
-describe('useRestoredConnectionState', () => {
+describe('useOfferedCustomConfigs', () => {
 	let onGiveUp: jest.Mock;
 
-	const putConnectionStateInURL = (connectionState: unknown) => {
+	const putCustomConfigsInURL = (customConfigs: unknown) => {
 		const searchParams = new URLSearchParams();
 
 		searchParams.set(
 			getConfigParamName(FDS_ID),
 			JsonURL.stringify(
-				{[EConfigInURLKeys.CONNECTION_STATE]: connectionState},
+				{[EConfigInURLKeys.CUSTOM_CONFIGS]: customConfigs},
 				{AQF: true, noEmptyComposite: true}
 			) as string
 		);
@@ -52,26 +52,26 @@ describe('useRestoredConnectionState', () => {
 		window.history.replaceState({}, '', `?${searchParams}`);
 	};
 
-	const renderRestore = () =>
+	const renderOfferedCustomConfigs = () =>
 		renderHook(
 			(props: {
-				connectionStateOffered: boolean;
+				customConfigsOffered: boolean;
 				filteringOwnerAppId: string | undefined;
-				restoredConnectionState: unknown;
+				offeredCustomConfigs: unknown;
 			}) =>
-				useRestoredConnectionState({
+				useOfferedCustomConfigs({
 					configInURLBehavior: EConfigInURLBehavior.PUSH,
-					connectionStateOffered: props.connectionStateOffered,
+					customConfigsOffered: props.customConfigsOffered,
 					filteringOwnerAppId: props.filteringOwnerAppId,
 					id: FDS_ID,
+					offeredCustomConfigs: props.offeredCustomConfigs,
 					onGiveUp,
-					restoredConnectionState: props.restoredConnectionState,
 				}),
 			{
 				initialProps: {
-					connectionStateOffered: false,
+					customConfigsOffered: false,
 					filteringOwnerAppId: undefined as string | undefined,
-					restoredConnectionState: undefined as unknown,
+					offeredCustomConfigs: undefined as unknown,
 				},
 			}
 		);
@@ -79,70 +79,70 @@ describe('useRestoredConnectionState', () => {
 	beforeEach(() => {
 		onGiveUp = jest.fn();
 
-		putConnectionStateInURL(OTHER_APP_STATE);
+		putCustomConfigsInURL(OTHER_APP_CONFIGS);
 	});
 
 	afterEach(() => {
 		window.history.replaceState({}, '', '?');
 	});
 
-	it('has nothing to wait for when the URL carries no state a connection left', () => {
+	it('has nothing to wait for when the URL carries no config a connection left', () => {
 		window.history.replaceState({}, '', '?');
 
-		expect(renderRestore().result.current.restored).toBe(true);
+		expect(renderOfferedCustomConfigs().result.current.settled).toBe(true);
 	});
 
 	// The data set holds its first request for as long as this waits, so
 	// waiting on an offer nobody will take is a data set nobody can use.
 
 	it('waits while no connection owns the filtering, since the one that will may still be loading', () => {
-		const {rerender, result} = renderRestore();
+		const {rerender, result} = renderOfferedCustomConfigs();
 
-		expect(result.current.restored).toBe(false);
+		expect(result.current.settled).toBe(false);
 
 		rerender({
-			connectionStateOffered: true,
+			customConfigsOffered: true,
 			filteringOwnerAppId: undefined,
-			restoredConnectionState: OTHER_APP_STATE,
+			offeredCustomConfigs: OTHER_APP_CONFIGS,
 		});
 
-		expect(result.current.restored).toBe(false);
+		expect(result.current.settled).toBe(false);
 		expect(onGiveUp).not.toHaveBeenCalled();
 	});
 
 	it('waits while what is offered holds a key for the connection that owns the filtering', () => {
-		const {rerender, result} = renderRestore();
+		const {rerender, result} = renderOfferedCustomConfigs();
 
 		rerender({
-			connectionStateOffered: true,
+			customConfigsOffered: true,
 			filteringOwnerAppId: OTHER_APP_ID,
-			restoredConnectionState: OTHER_APP_STATE,
+			offeredCustomConfigs: OTHER_APP_CONFIGS,
 		});
 
-		expect(result.current.restored).toBe(false);
+		expect(result.current.settled).toBe(false);
 		expect(onGiveUp).not.toHaveBeenCalled();
 	});
 
 	it('has been taken once nothing is left on offer', async () => {
-		putConnectionStateInURL(OWNER_APP_STATE);
+		putCustomConfigsInURL(OWNER_APP_CONFIGS);
 
-		const {rerender, result} = renderRestore();
-
-		rerender({
-			connectionStateOffered: true,
-			filteringOwnerAppId: OWNER_APP_ID,
-			restoredConnectionState: OWNER_APP_STATE,
-		});
-
-		expect(result.current.restored).toBe(false);
+		const {rerender, result} = renderOfferedCustomConfigs();
 
 		rerender({
-			connectionStateOffered: true,
+			customConfigsOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
-			restoredConnectionState: undefined,
+			offeredCustomConfigs: OWNER_APP_CONFIGS,
 		});
 
-		await waitFor(() => expect(result.current.restored).toBe(true));
+		expect(result.current.settled).toBe(false);
+
+		rerender({
+			customConfigsOffered: true,
+			filteringOwnerAppId: OWNER_APP_ID,
+			offeredCustomConfigs: undefined,
+		});
+
+		await waitFor(() => expect(result.current.settled).toBe(true));
 
 		expect(onGiveUp).not.toHaveBeenCalled();
 	});
@@ -153,25 +153,25 @@ describe('useRestoredConnectionState', () => {
 	// data set does not write until the wait is over.
 
 	it('has been taken once the key of the owner is gone, though keys of other apps are still on offer', async () => {
-		putConnectionStateInURL(BOTH_APPS_STATE);
+		putCustomConfigsInURL(BOTH_APPS_CONFIGS);
 
-		const {rerender, result} = renderRestore();
-
-		rerender({
-			connectionStateOffered: true,
-			filteringOwnerAppId: OWNER_APP_ID,
-			restoredConnectionState: BOTH_APPS_STATE,
-		});
-
-		expect(result.current.restored).toBe(false);
+		const {rerender, result} = renderOfferedCustomConfigs();
 
 		rerender({
-			connectionStateOffered: true,
+			customConfigsOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
-			restoredConnectionState: OTHER_APP_STATE,
+			offeredCustomConfigs: BOTH_APPS_CONFIGS,
 		});
 
-		await waitFor(() => expect(result.current.restored).toBe(true));
+		expect(result.current.settled).toBe(false);
+
+		rerender({
+			customConfigsOffered: true,
+			filteringOwnerAppId: OWNER_APP_ID,
+			offeredCustomConfigs: OTHER_APP_CONFIGS,
+		});
+
+		await waitFor(() => expect(result.current.settled).toBe(true));
 
 		expect(onGiveUp).not.toHaveBeenCalled();
 	});
@@ -184,19 +184,19 @@ describe('useRestoredConnectionState', () => {
 	// than loads depends on, since the connection is there first.
 
 	it('has been taken when the offer was made and taken between renders', async () => {
-		putConnectionStateInURL(OWNER_APP_STATE);
+		putCustomConfigsInURL(OWNER_APP_CONFIGS);
 
-		const {rerender, result} = renderRestore();
+		const {rerender, result} = renderOfferedCustomConfigs();
 
-		expect(result.current.restored).toBe(false);
+		expect(result.current.settled).toBe(false);
 
 		rerender({
-			connectionStateOffered: true,
+			customConfigsOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
-			restoredConnectionState: undefined,
+			offeredCustomConfigs: undefined,
 		});
 
-		await waitFor(() => expect(result.current.restored).toBe(true));
+		await waitFor(() => expect(result.current.settled).toBe(true));
 
 		expect(onGiveUp).not.toHaveBeenCalled();
 	});
@@ -205,15 +205,15 @@ describe('useRestoredConnectionState', () => {
 	// only one the data set offers what the URL carries to.
 
 	it('gives up as soon as the connection that owns the filtering finds no key of its own', async () => {
-		const {rerender, result} = renderRestore();
+		const {rerender, result} = renderOfferedCustomConfigs();
 
 		rerender({
-			connectionStateOffered: true,
+			customConfigsOffered: true,
 			filteringOwnerAppId: OWNER_APP_ID,
-			restoredConnectionState: OTHER_APP_STATE,
+			offeredCustomConfigs: OTHER_APP_CONFIGS,
 		});
 
-		await waitFor(() => expect(result.current.restored).toBe(true));
+		await waitFor(() => expect(result.current.settled).toBe(true));
 
 		expect(onGiveUp).toHaveBeenCalled();
 	});

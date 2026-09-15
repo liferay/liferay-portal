@@ -9,7 +9,7 @@ import {EViewsActionTypes} from '../../views/viewsReducer';
 import {EConfigInURLBehavior, EConfigInURLKeys} from '../types';
 import useConfigInURL from '../useConfigInURL';
 
-const RESTORE_TIMEOUT = 10000;
+const APPLY_TIMEOUT = 10000;
 
 /**
  * Keeping in the page URL whatever a connection asked the data set to
@@ -22,57 +22,58 @@ const RESTORE_TIMEOUT = 10000;
  * keeping — or with the consumer, which is the only side that can turn it
  * back into a request.
  *
- * Returns the value the URL carries, for the data set to offer, and whether
- * the offer has been taken. Until it has, the data set has nothing worth
- * requesting.
+ * Returns the custom configs the URL carries, for the data set to offer,
+ * and whether the wait for them is settled: applied by the connection that
+ * owns the filtering, or given up on. Until it is, the data set has nothing
+ * worth requesting.
  */
-export function useRestoredConnectionState({
+export function useOfferedCustomConfigs({
 	configInURLBehavior,
-	connectionStateOffered,
+	customConfigsOffered,
 	filteringOwnerAppId,
 	id,
+	offeredCustomConfigs,
 	onGiveUp,
-	restoredConnectionState,
 }: {
 	configInURLBehavior: EConfigInURLBehavior;
-	connectionStateOffered: boolean;
+	customConfigsOffered: boolean;
 	filteringOwnerAppId: string | undefined;
 	id: string;
+	offeredCustomConfigs: unknown;
 	onGiveUp: () => void;
-	restoredConnectionState: unknown;
 }): {
-	getConnectionState: () => unknown;
-	restored: boolean;
+	getCustomConfigs: () => unknown;
+	settled: boolean;
 } {
-	const [getConnectionState] = useConfigInURL({
+	const [getCustomConfigs] = useConfigInURL({
 		configInURLBehavior,
-		configReader: (connectionState: unknown) => connectionState,
+		configReader: (customConfigs: unknown) => customConfigs,
 		id,
 		stateDispatcher: {
-			key: EConfigInURLKeys.CONNECTION_STATE,
+			key: EConfigInURLKeys.CUSTOM_CONFIGS,
 			type: EViewsActionTypes.NOOP,
 		},
 	});
 
-	const [restored, setRestored] = useState(
-		() => getConnectionState() === undefined
+	const [settled, setSettled] = useState(
+		() => getCustomConfigs() === undefined
 	);
 
 	const onGiveUpRef = useRef(onGiveUp);
 
-	const ownerRestorePending =
+	const filteringOwnerAppIdInAtom =
 		filteringOwnerAppId !== undefined &&
-		typeof restoredConnectionState === 'object' &&
-		restoredConnectionState !== null &&
-		filteringOwnerAppId in restoredConnectionState;
+		typeof offeredCustomConfigs === 'object' &&
+		offeredCustomConfigs !== null &&
+		filteringOwnerAppId in offeredCustomConfigs;
 
-	const urlConnectionState = getConnectionState();
+	const customConfigs = getCustomConfigs();
 
-	const ownerRestoreExpected =
+	const filteringOwnerAppIdInURL =
 		filteringOwnerAppId !== undefined &&
-		typeof urlConnectionState === 'object' &&
-		urlConnectionState !== null &&
-		filteringOwnerAppId in urlConnectionState;
+		typeof customConfigs === 'object' &&
+		customConfigs !== null &&
+		filteringOwnerAppId in customConfigs;
 
 	// Kept in a ref, and out of the dependencies below, so that giving up
 	// stays a single timeout rather than one restarted by every render.
@@ -82,16 +83,19 @@ export function useRestoredConnectionState({
 	});
 
 	useEffect(() => {
-		if (restored) {
+		if (settled) {
 			return;
 		}
 
-		const restoreOffered =
-			connectionStateOffered || restoredConnectionState !== undefined;
+		const everOffered =
+			customConfigsOffered || offeredCustomConfigs !== undefined;
 
-		if (restoreOffered && !ownerRestorePending) {
-			if (ownerRestoreExpected || restoredConnectionState === undefined) {
-				setRestored(true);
+		if (everOffered && !filteringOwnerAppIdInAtom) {
+			if (
+				filteringOwnerAppIdInURL ||
+				offeredCustomConfigs === undefined
+			) {
+				setSettled(true);
 
 				return;
 			}
@@ -99,7 +103,7 @@ export function useRestoredConnectionState({
 			if (filteringOwnerAppId !== undefined) {
 				onGiveUpRef.current();
 
-				setRestored(true);
+				setSettled(true);
 
 				return;
 			}
@@ -108,18 +112,18 @@ export function useRestoredConnectionState({
 		const timeoutId = setTimeout(() => {
 			onGiveUpRef.current();
 
-			setRestored(true);
-		}, RESTORE_TIMEOUT);
+			setSettled(true);
+		}, APPLY_TIMEOUT);
 
 		return () => clearTimeout(timeoutId);
 	}, [
-		connectionStateOffered,
+		customConfigsOffered,
 		filteringOwnerAppId,
-		ownerRestoreExpected,
-		ownerRestorePending,
-		restored,
-		restoredConnectionState,
+		offeredCustomConfigs,
+		filteringOwnerAppIdInAtom,
+		filteringOwnerAppIdInURL,
+		settled,
 	]);
 
-	return {getConnectionState, restored};
+	return {getCustomConfigs, settled};
 }

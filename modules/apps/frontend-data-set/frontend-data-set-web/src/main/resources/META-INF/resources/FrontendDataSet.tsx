@@ -57,7 +57,7 @@ import SidePanel from './side_panel/SidePanel';
 import filterCreationActions from './utils/actionItems/filterCreationActions';
 import {readConfigFromURL} from './utils/configInURL';
 import {IConnectedFDSState} from './utils/connection/types';
-import {useRestoredConnectionState} from './utils/connection/useRestoredConnectionState';
+import {useOfferedCustomConfigs} from './utils/connection/useOfferedCustomConfigs';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
@@ -384,30 +384,30 @@ const FrontendDataSetContent = ({
 	const [globalFDSState, setGlobalFDSState] =
 		useLiferayState<IFDSState>(memoizedAtom);
 
-	const {connectionFilters, connectionState, filteringOwnerAppId} =
+	const {appliedCustomConfigs, connectionFilters, filteringOwnerAppId} =
 		globalFDSState as IConnectedFDSState;
 
-	const [connectionStateOffered, setConnectionStateOffered] = useState(false);
+	const [customConfigsOffered, setCustomConfigsOffered] = useState(false);
 
-	const {getConnectionState, restored: connectionStateRestored} =
-		useRestoredConnectionState({
+	const {getCustomConfigs, settled: customConfigsSettled} =
+		useOfferedCustomConfigs({
 			configInURLBehavior,
-			connectionStateOffered,
+			customConfigsOffered,
 			filteringOwnerAppId,
 			id,
+			offeredCustomConfigs: globalFDSState.offeredCustomConfigs,
 			onGiveUp: () => {
 				const unfrozenGlobalFDSState: IFDSState =
 					deepClone(globalFDSState);
 
-				delete unfrozenGlobalFDSState.restoredConnectionState;
+				delete unfrozenGlobalFDSState.offeredCustomConfigs;
 
 				setGlobalFDSState(unfrozenGlobalFDSState);
 			},
-			restoredConnectionState: globalFDSState.restoredConnectionState,
 		});
 
 	const filteringDelegated =
-		Boolean(filteringOwnerAppId) || !connectionStateRestored;
+		Boolean(filteringOwnerAppId) || !customConfigsSettled;
 
 	const [globalFDSStateInitialized, setGlobalFDSStateInitialized] =
 		useState(false);
@@ -767,7 +767,7 @@ const FrontendDataSetContent = ({
 	useEffect(() => {
 		if (
 			globalFDSStateInitialized ||
-			!connectionStateRestored ||
+			!customConfigsSettled ||
 			!filterClientExtensionsLoaded ||
 			!cellClientExtensionsLoaded
 		) {
@@ -777,7 +777,7 @@ const FrontendDataSetContent = ({
 		setGlobalFDSStateInitialized(true);
 	}, [
 		cellClientExtensionsLoaded,
-		connectionStateRestored,
+		customConfigsSettled,
 		filterClientExtensionsLoaded,
 		globalFDSStateInitialized,
 	]);
@@ -827,14 +827,15 @@ const FrontendDataSetContent = ({
 			connectionFilters?.some(({odataFilterString}) => odataFilterString)
 		);
 
-		const shouldUpdateConnectionState =
+		const shouldUpdateCustomConfigs =
 			filteringOwnerAppId &&
 			(filteredByConnection ||
-				configInURL?.[EConfigInURLKeys.CONNECTION_STATE] !== undefined);
+				configInURL?.[EConfigInURLKeys.CUSTOM_CONFIGS] !== undefined);
 
-		if (shouldUpdateConnectionState) {
-			updateConfig[EConfigInURLKeys.CONNECTION_STATE] =
-				filteredByConnection ? connectionState : undefined;
+		if (shouldUpdateCustomConfigs) {
+			updateConfig[EConfigInURLKeys.CUSTOM_CONFIGS] = filteredByConnection
+				? appliedCustomConfigs
+				: undefined;
 		}
 
 		if (shouldUpdateSearch) {
@@ -856,8 +857,8 @@ const FrontendDataSetContent = ({
 			});
 		}
 	}, [
+		appliedCustomConfigs,
 		connectionFilters,
-		connectionState,
 		filteringOwnerAppId,
 		globalFDSState,
 		globalFDSStateInitialized,
@@ -931,7 +932,7 @@ const FrontendDataSetContent = ({
 
 		const searchParam = getSearchParam();
 
-		const restoredConnectionState = getConnectionState();
+		const offeredCustomConfigs = getCustomConfigs();
 
 		const preloadFilters = (
 			filters: Array<IBaseFilterState> | undefined
@@ -983,14 +984,14 @@ const FrontendDataSetContent = ({
 		else {
 			setFilterClientExtensionsLoaded(true);
 
-			if (restoredConnectionState !== undefined) {
-				setConnectionStateOffered(true);
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
 			}
 
 			setGlobalFDSState({
 				...globalFDSState,
 				filters: preloadFilters(initialFilters),
-				restoredConnectionState,
+				offeredCustomConfigs,
 				search: {query: searchParam ?? ''},
 			});
 		}
@@ -1076,14 +1077,14 @@ const FrontendDataSetContent = ({
 							return filter;
 						}) || [];
 
-					if (restoredConnectionState !== undefined) {
-						setConnectionStateOffered(true);
+					if (offeredCustomConfigs !== undefined) {
+						setCustomConfigsOffered(true);
 					}
 
 					setGlobalFDSState({
 						...globalFDSState,
 						filters: preloadFilters(newFilters),
-						restoredConnectionState,
+						offeredCustomConfigs,
 						search: {query: searchParam ?? ''},
 					});
 
@@ -1130,7 +1131,7 @@ const FrontendDataSetContent = ({
 		cellClientExtensionsLoading,
 		filterClientExtensionsLoaded,
 		filterClientExtensionsLoading,
-		getConnectionState,
+		getCustomConfigs,
 		getSearchParam,
 		globalFDSState,
 		globalFDSStateInitialized,
@@ -1309,18 +1310,18 @@ const FrontendDataSetContent = ({
 			});
 		}
 
-		const urlConnectionState = getConnectionState();
+		const customConfigsInURL = getCustomConfigs();
 
-		const restoredConnectionState =
-			filteringOwnerAppId || urlConnectionState !== undefined
-				? urlConnectionState ?? null
+		const offeredCustomConfigs =
+			filteringOwnerAppId || customConfigsInURL !== undefined
+				? customConfigsInURL ?? null
 				: undefined;
 
 		if (activeFilters || searchParam) {
 			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-			if (restoredConnectionState !== undefined) {
-				setConnectionStateOffered(true);
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
 			}
 
 			setGlobalFDSState({
@@ -1329,7 +1330,7 @@ const FrontendDataSetContent = ({
 					newFilters: activeFilters,
 					oldFilters: unfrozenGlobalFDSState.filters,
 				}),
-				restoredConnectionState,
+				offeredCustomConfigs,
 				search: {
 					query: searchParam ?? '',
 				},
@@ -1389,7 +1390,7 @@ const FrontendDataSetContent = ({
 	}, [
 		filteringOwnerAppId,
 		getActiveSorts,
-		getConnectionState,
+		getCustomConfigs,
 		getDelta,
 		getFilters,
 		getPageNumber,

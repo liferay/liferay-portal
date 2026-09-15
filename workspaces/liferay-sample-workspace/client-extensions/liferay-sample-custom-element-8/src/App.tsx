@@ -34,7 +34,7 @@ import {
 	FilterDefinition,
 	FilterState,
 	Selections,
-	getConnectionState,
+	getCustomConfig,
 	getFilters,
 	getValidFilterState,
 	toggleOption,
@@ -56,7 +56,7 @@ function App({fdsName}: AppProps) {
 
 		fdsConnectionRef.current?.setFilters(
 			getFilters(filterState),
-			getConnectionState(filterState)
+			getCustomConfig(filterState)
 		);
 	};
 
@@ -64,8 +64,8 @@ function App({fdsName}: AppProps) {
 		fdsConnectionRef.current = new FDSConnection(
 			fdsName,
 			{
-				restore: (connectionState: unknown) =>
-					applyFilterState(getValidFilterState(connectionState)),
+				apply: (customConfig: unknown) =>
+					applyFilterState(getValidFilterState(customConfig)),
 				search: () => {},
 			},
 			(fdsConnectionInfo: FDSConnectionInfo) => {
@@ -84,7 +84,7 @@ function App({fdsName}: AppProps) {
 
 	// The applied expression is what a link carries; the input is where the
 	// next one is typed. The two part company while the user types and meet
-	// again whenever an expression is applied or restored.
+	// again whenever an expression is applied.
 
 	useEffect(() => {
 		setTypedExpression(filterState.expression);

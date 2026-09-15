@@ -21,15 +21,19 @@ const DEFAULT_TIMEOUT = 10000;
 const DEFAULT_OWNERSHIP: ReadonlyArray<FDSConnectionOwnership> = ['search'];
 
 interface Subscriptions {
-	restoredConnectionState?: {dispose: () => void};
+	offeredCustomConfigs?: {dispose: () => void};
 	search: {dispose: () => void};
 }
 
-type RestoredConnectionState = Readonly<Record<string, unknown>> | null;
+type FDSConnectionCustomConfig = unknown;
+
+type FDSConnectionCustomConfigs = Readonly<
+	Record<string, FDSConnectionCustomConfig>
+> | null;
 
 interface Selectors {
-	restoredConnectionState: Liferay.State.Selector<
-		RestoredConnectionState | undefined
+	offeredCustomConfigs: Liferay.State.Selector<
+		FDSConnectionCustomConfigs | undefined
 	>;
 	search: Liferay.State.Selector<string>;
 }
@@ -49,6 +53,7 @@ export class FDSConnection {
 	private static filteringOwners = new Map<string, FDSConnection>();
 	private static instanceCount = 0;
 
+	private apply?: (customConfig: FDSConnectionCustomConfig) => void;
 	private appId?: string;
 	private atom!: Atom<FDSState>;
 	private disconnected = false;
@@ -61,7 +66,6 @@ export class FDSConnection {
 		fdsConnectionInfo: FDSConnectionInfo
 	) => void;
 	private requestedOwnership: ReadonlyArray<FDSConnectionOwnership>;
-	private restore?: (connectionState: unknown) => void;
 	private selectors!: Selectors;
 	private subscriptions!: Subscriptions;
 
@@ -73,12 +77,12 @@ export class FDSConnection {
 		) => void,
 		options: FDSConnectionOptions = {}
 	) {
+		this.apply = fdsStateChangeCallback.apply;
 		this.appId = options.appId;
 		this.element = options.element;
 		this.fdsName = fdsName;
 		this.onFDSConnectionInfoChange = onFDSConnectionInfoChange;
 		this.requestedOwnership = options.owns ?? DEFAULT_OWNERSHIP;
-		this.restore = fdsStateChangeCallback.restore;
 		this.notifyStatus('connecting');
 
 		getFDSAtom(fdsName, {timeout: options.timeout ?? DEFAULT_TIMEOUT})
@@ -90,9 +94,9 @@ export class FDSConnection {
 				this.atom = atom;
 
 				this.selectors = {
-					restoredConnectionState: getOrCreateSelector(
-						`${atom.key}_restoredConnectionState`,
-						(get) => get(atom).restoredConnectionState
+					offeredCustomConfigs: getOrCreateSelector(
+						`${atom.key}_offeredCustomConfigs`,
+						(get) => get(atom).offeredCustomConfigs
 					),
 					search: getOrCreateSelector(
 						`${atom.key}_searchQuery`,
@@ -111,26 +115,26 @@ export class FDSConnection {
 					),
 				};
 
-				// Before the restore below, since a refused connection must
-				// not consume what the URL left for the owner.
+				// Before applying below, since a refused connection must not
+				// consume what the URL left for the owner.
 
 				this.acquireFilteringOwnership();
 
 				// initialize consumer's state
 
 				if (this.ownsFiltering()) {
-					this.subscriptions.restoredConnectionState =
+					this.subscriptions.offeredCustomConfigs =
 						Liferay.State.subscribe(
-							this.selectors.restoredConnectionState,
-							this.handleRestoredConnectionState
+							this.selectors.offeredCustomConfigs,
+							this.handleOfferedCustomConfigs
 						);
 
-					const restoredConnectionState = Liferay.State.read(
-						this.selectors.restoredConnectionState
+					const offeredCustomConfigs = Liferay.State.read(
+						this.selectors.offeredCustomConfigs
 					);
 
-					if (restoredConnectionState !== undefined) {
-						this.restoreConnectionState(restoredConnectionState);
+					if (offeredCustomConfigs !== undefined) {
+						this.applyOwnCustomConfig(offeredCustomConfigs);
 					}
 				}
 
@@ -188,7 +192,7 @@ export class FDSConnection {
 	 */
 	setFilters = (
 		filters: Array<FDSConnectionFilter>,
-		connectionState?: unknown
+		customConfig?: FDSConnectionCustomConfig
 	): void => {
 		if (!this.isReady) {
 			return;
@@ -214,7 +218,7 @@ export class FDSConnection {
 
 		this.writeConnectionFilters(
 			filters.map(({id, odataFilterString}) => ({id, odataFilterString})),
-			connectionState
+			customConfig
 		);
 	};
 
@@ -231,7 +235,7 @@ export class FDSConnection {
 			this.releaseFiltering();
 		}
 
-		this.subscriptions?.restoredConnectionState?.dispose();
+		this.subscriptions?.offeredCustomConfigs?.dispose();
 		this.subscriptions?.search?.dispose();
 		this.disconnected = true;
 		this.isReady = false;
@@ -239,39 +243,39 @@ export class FDSConnection {
 		this.notifyStatus('disconnected');
 	};
 
-	private restoreConnectionState(
-		restoredConnectionState: RestoredConnectionState
+	private applyOwnCustomConfig(
+		offeredCustomConfigs: FDSConnectionCustomConfigs
 	): void {
-		const connectionState =
-			restoredConnectionState === null
+		const customConfig =
+			offeredCustomConfigs === null
 				? null
-				: restoredConnectionState[this.appId!] ?? null;
+				: offeredCustomConfigs[this.appId!] ?? null;
 
-		if (this.restore) {
-			this.restore(connectionState);
+		if (this.apply) {
+			this.apply(customConfig);
 		}
-		else if (connectionState !== null) {
+		else if (customConfig !== null) {
 			this.warn(
-				'Dropped the filters restored for ' +
+				'Dropped the custom config offered for ' +
 					this.fdsName +
-					': connect with a restore state change callback to put' +
-					' them back'
+					': connect with an apply state change callback to put' +
+					' its filters back'
 			);
 		}
 
-		this.dropRestoredConnectionState();
+		this.dropOwnOfferedCustomConfig();
 	}
 
-	private dropRestoredConnectionState(): void {
+	private dropOwnOfferedCustomConfig(): void {
 		const fdsState = {...Liferay.State.read(this.atom)};
 
-		const remaining = this.withoutOwnKey(fdsState.restoredConnectionState);
+		const remaining = this.withoutOwnKey(fdsState.offeredCustomConfigs);
 
 		if (remaining) {
-			fdsState.restoredConnectionState = remaining;
+			fdsState.offeredCustomConfigs = remaining;
 		}
 		else {
-			delete fdsState.restoredConnectionState;
+			delete fdsState.offeredCustomConfigs;
 		}
 
 		Liferay.State.write(this.atom, fdsState);
@@ -293,25 +297,25 @@ export class FDSConnection {
 		return Object.keys(remaining).length ? (remaining as T) : undefined;
 	}
 
-	private handleRestoredConnectionState = (
-		restoredConnectionState: RestoredConnectionState | undefined
+	private handleOfferedCustomConfigs = (
+		offeredCustomConfigs: FDSConnectionCustomConfigs | undefined
 	): void => {
 
 		// Dropping it above sets this to nothing, which comes back here:
 		// there is no consumer left to tell.
 
-		if (restoredConnectionState === undefined) {
+		if (offeredCustomConfigs === undefined) {
 			return;
 		}
 
 		if (
-			restoredConnectionState !== null &&
-			!(this.appId! in restoredConnectionState)
+			offeredCustomConfigs !== null &&
+			!(this.appId! in offeredCustomConfigs)
 		) {
 			return;
 		}
 
-		this.restoreConnectionState(restoredConnectionState);
+		this.applyOwnCustomConfig(offeredCustomConfigs);
 	};
 
 	private releaseFiltering(): void {
@@ -322,13 +326,13 @@ export class FDSConnection {
 		delete fdsState.connectionFilters;
 		delete fdsState.filteringOwnerAppId;
 
-		const remaining = this.withoutOwnKey(fdsState.connectionState);
+		const remaining = this.withoutOwnKey(fdsState.appliedCustomConfigs);
 
 		if (remaining) {
-			fdsState.connectionState = remaining;
+			fdsState.appliedCustomConfigs = remaining;
 		}
 		else {
-			delete fdsState.connectionState;
+			delete fdsState.appliedCustomConfigs;
 		}
 
 		Liferay.State.write(this.atom, fdsState);
@@ -431,30 +435,30 @@ export class FDSConnection {
 
 	private writeConnectionFilters(
 		connectionFilters: Array<FDSConnectionFilter>,
-		connectionState?: unknown
+		customConfig?: FDSConnectionCustomConfig
 	): void {
 		const fdsState = {...Liferay.State.read(this.atom), connectionFilters};
 
-		const remaining = this.withoutOwnKey(fdsState.connectionState);
+		const remaining = this.withoutOwnKey(fdsState.appliedCustomConfigs);
 
 		// The state read back is deeply readonly, which maps a value the data
 		// set keeps without reading to Readonly<unknown>, and nothing unknown
 		// satisfies that. Saying so here is the whole of it: what a consumer
 		// asks to have remembered is opaque going in and coming out.
 
-		const connectionStates =
-			connectionState === undefined
+		const customConfigs =
+			customConfig === undefined
 				? remaining
 				: {
 						...remaining,
-						[this.appId!]: connectionState as Readonly<unknown>,
+						[this.appId!]: customConfig as Readonly<unknown>,
 					};
 
-		if (connectionStates) {
-			fdsState.connectionState = connectionStates;
+		if (customConfigs) {
+			fdsState.appliedCustomConfigs = customConfigs;
 		}
 		else {
-			delete fdsState.connectionState;
+			delete fdsState.appliedCustomConfigs;
 		}
 
 		Liferay.State.write(this.atom, fdsState);

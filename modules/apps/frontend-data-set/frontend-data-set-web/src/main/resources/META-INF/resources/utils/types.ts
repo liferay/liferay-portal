@@ -499,7 +499,7 @@ export {
 export enum EConfigInURLKeys {
 	ACTIVE_FILTERS = 'filters',
 	ACTIVE_SORTS = 'sorts',
-	CONNECTION_STATE = 'cs',
+	CUSTOM_CONFIGS = 'cc',
 	DELTA = 'delta',
 	PAGE_NUMBER = 'page',
 	SEARCH_PARAM = 'q',
@@ -510,7 +510,7 @@ export enum EConfigInURLKeys {
 export interface IConfigInURL {
 	[EConfigInURLKeys.ACTIVE_FILTERS]: Array<any>;
 	[EConfigInURLKeys.ACTIVE_SORTS]: Array<TSort>;
-	[EConfigInURLKeys.CONNECTION_STATE]: unknown;
+	[EConfigInURLKeys.CUSTOM_CONFIGS]: unknown;
 	[EConfigInURLKeys.DELTA]: number;
 	[EConfigInURLKeys.PAGE_NUMBER]: number;
 	[EConfigInURLKeys.SEARCH_PARAM]: string;
@@ -590,7 +590,7 @@ interface ISelectionFilterState extends IBaseFilterState {
 
 interface IFDSState {
 	filters: Array<IBaseFilterState>;
-	restoredConnectionState?: unknown;
+	offeredCustomConfigs?: unknown;
 	search: ISearch;
 }
 

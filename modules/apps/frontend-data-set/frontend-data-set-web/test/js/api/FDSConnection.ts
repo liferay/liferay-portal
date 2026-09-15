@@ -38,18 +38,18 @@ const CONNECTION_ID = 'sampleCustomElement';
 
 const OTHER_CONNECTION_ID = 'otherCustomElement';
 
-const RESTORED_STATE = {selections: {color: ['Blue', 'Green']}};
+const CUSTOM_CONFIG = {selections: {color: ['Blue', 'Green']}};
 
 // What the URL holds is keyed by connection, and what a consumer is handed
 // back is only its own slice.
 
-const RESTORED_STATE_MAP = {[CONNECTION_ID]: RESTORED_STATE};
+const CUSTOM_CONFIGS = {[CONNECTION_ID]: CUSTOM_CONFIG};
 
 describe('FDSConnection filters', () => {
 	let atom: Liferay.State.Atom<FDSState>;
 	let connection: FDSConnection;
 	let connections: Array<FDSConnection>;
-	let onRestore: jest.Mock;
+	let onApply: jest.Mock;
 	let onSearch: jest.Mock;
 	let onStatus: jest.Mock;
 	let openToast: jest.Mock;
@@ -63,21 +63,21 @@ describe('FDSConnection filters', () => {
 	const readState = (fdsAtom: Liferay.State.Atom<FDSState> = atom) =>
 		State.read(fdsAtom as never) as unknown as FDSState;
 
-	const offerRestoredConnectionState = (
-		restoredConnectionState: Record<string, unknown> | null
+	const offerCustomConfigs = (
+		offeredCustomConfigs: Record<string, unknown> | null
 	) =>
 		State.write(
 			atom as never,
 			{
 				...readState(),
-				restoredConnectionState,
+				offeredCustomConfigs,
 			} as never
 		);
 
 	const connect = async (
 		options: FDSConnectionOptions = {},
 		fdsStateChangeCallback: FDSStateChangeCallback = {
-			restore: onRestore,
+			apply: onApply,
 			search: onSearch,
 		},
 		onFDSConnectionInfoChange: jest.Mock = onStatus,
@@ -110,17 +110,17 @@ describe('FDSConnection filters', () => {
 	const connectSecondOwningFilters = async (
 		settledStatus: FDSConnectionStatus = 'refused'
 	) => {
-		const onSecondRestore = jest.fn();
+		const onSecondApply = jest.fn();
 		const onSecondStatus = jest.fn();
 
 		const secondConnection = await connect(
 			{appId: OTHER_CONNECTION_ID, owns: ['filters', 'search']},
-			{restore: onSecondRestore, search: onSearch},
+			{apply: onSecondApply, search: onSearch},
 			onSecondStatus,
 			settledStatus
 		);
 
-		return {onSecondRestore, onSecondStatus, secondConnection};
+		return {onSecondApply, onSecondStatus, secondConnection};
 	};
 
 	beforeEach(() => {
@@ -131,7 +131,7 @@ describe('FDSConnection filters', () => {
 		atom = createFDSAtom(FDS_NAME);
 
 		connections = [];
-		onRestore = jest.fn();
+		onApply = jest.fn();
 		onSearch = jest.fn();
 		onStatus = jest.fn();
 		openToast = jest.fn();
@@ -249,14 +249,14 @@ describe('FDSConnection filters', () => {
 		connection.disconnect();
 
 		expect(readState().connectionFilters).toBeUndefined();
-		expect(readState().connectionState).toBeUndefined();
+		expect(readState().appliedCustomConfigs).toBeUndefined();
 	});
 
 	// Only one consumer can own the filtering today, so no second key can be
 	// in play for it to leave behind. Seeding one keeps releasing honest for
-	// the day it can, and matches what taking a restored key already does.
+	// the day it can, and matches what taking an offered key already does.
 
-	it('takes only its own state out when a consumer that owned the filtering disconnects', async () => {
+	it('takes only its own config out when a consumer that owned the filtering disconnects', async () => {
 		await connectOwningFilters();
 
 		connection.setFilters(
@@ -264,23 +264,23 @@ describe('FDSConnection filters', () => {
 			{selections: {color: ['Blue']}}
 		);
 
-		const otherConnectionState = {selections: {size: ['Big']}};
+		const otherCustomConfig = {selections: {size: ['Big']}};
 
 		State.write(
 			atom as never,
 			{
 				...readState(),
-				connectionState: {
-					...readState().connectionState,
-					[OTHER_CONNECTION_ID]: otherConnectionState,
+				appliedCustomConfigs: {
+					...readState().appliedCustomConfigs,
+					[OTHER_CONNECTION_ID]: otherCustomConfig,
 				},
 			} as never
 		);
 
 		connection.disconnect();
 
-		expect(readState().connectionState).toEqual({
-			[OTHER_CONNECTION_ID]: otherConnectionState,
+		expect(readState().appliedCustomConfigs).toEqual({
+			[OTHER_CONNECTION_ID]: otherCustomConfig,
 		});
 	});
 
@@ -304,7 +304,7 @@ describe('FDSConnection filters', () => {
 		expect(readState().connectionFilters).toBeUndefined();
 	});
 
-	it('keeps the state a consumer asks it to remember under the id of its connection, so the data set can put it in the URL', async () => {
+	it('keeps the config a consumer asks it to remember under the id of its connection, so the data set can put it in the URL', async () => {
 		await connectOwningFilters();
 
 		connection.setFilters(
@@ -312,12 +312,12 @@ describe('FDSConnection filters', () => {
 			{selections: {color: ['Blue']}}
 		);
 
-		expect(readState().connectionState).toEqual({
+		expect(readState().appliedCustomConfigs).toEqual({
 			[CONNECTION_ID]: {selections: {color: ['Blue']}},
 		});
 	});
 
-	it('filters without remembering anything when the consumer passes no state', async () => {
+	it('filters without remembering anything when the consumer passes no config', async () => {
 		await connectOwningFilters();
 
 		connection.setFilters([
@@ -328,23 +328,25 @@ describe('FDSConnection filters', () => {
 			{id: 'color', odataFilterString: "color in ('Blue')"},
 		]);
 
-		expect(readState().connectionState).toBeUndefined();
+		expect(readState().appliedCustomConfigs).toBeUndefined();
 	});
 
 	// The state of the data set holds one key per connection and the data set
 	// writes the URL from the whole map, so what another connection asked to
 	// have remembered survives this one filtering.
 
-	it('keeps the state of other connections when a consumer remembers its own', async () => {
+	it('keeps the configs of other connections when a consumer remembers its own', async () => {
 		await connectOwningFilters();
 
-		const otherConnectionState = {selections: {size: ['Big']}};
+		const otherCustomConfig = {selections: {size: ['Big']}};
 
 		State.write(
 			atom as never,
 			{
 				...readState(),
-				connectionState: {[OTHER_CONNECTION_ID]: otherConnectionState},
+				appliedCustomConfigs: {
+					[OTHER_CONNECTION_ID]: otherCustomConfig,
+				},
 			} as never
 		);
 
@@ -353,16 +355,16 @@ describe('FDSConnection filters', () => {
 			{selections: {color: ['Blue']}}
 		);
 
-		expect(readState().connectionState).toEqual({
+		expect(readState().appliedCustomConfigs).toEqual({
 			[CONNECTION_ID]: {selections: {color: ['Blue']}},
-			[OTHER_CONNECTION_ID]: otherConnectionState,
+			[OTHER_CONNECTION_ID]: otherCustomConfig,
 		});
 	});
 
-	it('takes only its own state out when a consumer filters without remembering anything', async () => {
+	it('takes only its own config out when a consumer filters without remembering anything', async () => {
 		await connectOwningFilters();
 
-		const otherConnectionState = {selections: {size: ['Big']}};
+		const otherCustomConfig = {selections: {size: ['Big']}};
 
 		connection.setFilters(
 			[{id: 'color', odataFilterString: "color in ('Blue')"}],
@@ -373,9 +375,9 @@ describe('FDSConnection filters', () => {
 			atom as never,
 			{
 				...readState(),
-				connectionState: {
-					...readState().connectionState,
-					[OTHER_CONNECTION_ID]: otherConnectionState,
+				appliedCustomConfigs: {
+					...readState().appliedCustomConfigs,
+					[OTHER_CONNECTION_ID]: otherCustomConfig,
 				},
 			} as never
 		);
@@ -384,31 +386,31 @@ describe('FDSConnection filters', () => {
 			{id: 'color', odataFilterString: "color in ('Green')"},
 		]);
 
-		expect(readState().connectionState).toEqual({
-			[OTHER_CONNECTION_ID]: otherConnectionState,
+		expect(readState().appliedCustomConfigs).toEqual({
+			[OTHER_CONNECTION_ID]: otherCustomConfig,
 		});
 	});
 
-	it('hands the state the data set restored to the consumer', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+	it('hands the config the data set offers to the consumer', async () => {
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await connectOwningFilters();
 
-		expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE);
+		expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG);
 	});
 
-	it('stops offering the restored state once the consumer has it', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+	it('stops offering the config once the consumer has it', async () => {
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await connectOwningFilters();
 
-		expect(readState().restoredConnectionState).toBeUndefined();
+		expect(readState().offeredCustomConfigs).toBeUndefined();
 	});
 
-	it('takes the filtering over with what the consumer restores, not with nothing', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+	it('takes the filtering over with what the consumer applies, not with nothing', async () => {
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
-		onRestore = jest.fn(() =>
+		onApply = jest.fn(() =>
 			connection.setFilters(
 				[
 					{
@@ -416,7 +418,7 @@ describe('FDSConnection filters', () => {
 						odataFilterString: "color in ('Blue', 'Green')",
 					},
 				],
-				RESTORED_STATE
+				CUSTOM_CONFIG
 			)
 		);
 
@@ -427,41 +429,41 @@ describe('FDSConnection filters', () => {
 		]);
 	});
 
-	it('hands over state the data set restores after the connection is ready', async () => {
+	it('hands over a config the data set offers after the connection is ready', async () => {
 		await connectOwningFilters();
 
-		onRestore.mockClear();
+		onApply.mockClear();
 
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await waitFor(() =>
-			expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE)
+			expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG)
 		);
 
-		expect(readState().restoredConnectionState).toBeUndefined();
+		expect(readState().offeredCustomConfigs).toBeUndefined();
 	});
 
-	it('hands over an empty restore, so that going back to an unfiltered address clears the filter UI', async () => {
+	it('hands over an empty config, so that going back to an unfiltered address clears the filter UI', async () => {
 		await connectOwningFilters();
 
-		onRestore.mockClear();
+		onApply.mockClear();
 
-		offerRestoredConnectionState(null);
+		offerCustomConfigs(null);
 
-		await waitFor(() => expect(onRestore).toHaveBeenCalledWith(null));
+		await waitFor(() => expect(onApply).toHaveBeenCalledWith(null));
 	});
 
-	it('leaves the restored state alone for a consumer that only owns the search', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+	it('leaves the offered config alone for a consumer that only owns the search', async () => {
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await connect({owns: ['search']});
 
-		expect(onRestore).not.toHaveBeenCalled();
-		expect(readState().restoredConnectionState).toEqual(RESTORED_STATE_MAP);
+		expect(onApply).not.toHaveBeenCalled();
+		expect(readState().offeredCustomConfigs).toEqual(CUSTOM_CONFIGS);
 	});
 
-	it('warns and drops the restored state when the consumer cannot take it', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+	it('warns and drops the offered config when the consumer cannot take it', async () => {
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await connect(
 			{appId: CONNECTION_ID, owns: ['filters']},
@@ -472,10 +474,10 @@ describe('FDSConnection filters', () => {
 			expect.anything(),
 			expect.anything(),
 			expect.anything(),
-			expect.stringContaining('Dropped the filters restored for')
+			expect.stringContaining('Dropped the custom config offered for')
 		);
 
-		expect(readState().restoredConnectionState).toBeUndefined();
+		expect(readState().offeredCustomConfigs).toBeUndefined();
 	});
 
 	it('refuses the filtering to a second consumer that asks for it', async () => {
@@ -611,73 +613,73 @@ describe('FDSConnection filters', () => {
 		expect(readState().filteringOwnerAppId).toBe(CONNECTION_ID);
 	});
 
-	it('leaves the state the data set restores to the consumer that owns the filtering', async () => {
+	it('leaves the config the data set offers to the consumer that owns the filtering', async () => {
 		await connectOwningFilters();
 
-		const {onSecondRestore} = await connectSecondOwningFilters();
+		const {onSecondApply} = await connectSecondOwningFilters();
 
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await waitFor(() =>
-			expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE)
+			expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG)
 		);
 
-		expect(onSecondRestore).not.toHaveBeenCalled();
+		expect(onSecondApply).not.toHaveBeenCalled();
 	});
 
-	it('leaves the state the URL carries to the consumer that owns the filtering', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+	it('leaves the config the URL carries to the consumer that owns the filtering', async () => {
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await connectOwningFilters();
 
-		const {onSecondRestore} = await connectSecondOwningFilters();
+		const {onSecondApply} = await connectSecondOwningFilters();
 
-		expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE);
-		expect(onSecondRestore).not.toHaveBeenCalled();
+		expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG);
+		expect(onSecondApply).not.toHaveBeenCalled();
 	});
 
 	it('hands a consumer its own slice of what the URL carries', async () => {
-		offerRestoredConnectionState({
-			[CONNECTION_ID]: RESTORED_STATE,
+		offerCustomConfigs({
+			[CONNECTION_ID]: CUSTOM_CONFIG,
 			[OTHER_CONNECTION_ID]: {selections: {size: ['Big']}},
 		});
 
 		await connectOwningFilters();
 
-		expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE);
+		expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG);
 	});
 
 	it('leaves the keys of other connections on offer when it takes its own', async () => {
-		const otherConnectionState = {selections: {size: ['Big']}};
+		const otherCustomConfig = {selections: {size: ['Big']}};
 
-		offerRestoredConnectionState({
-			[CONNECTION_ID]: RESTORED_STATE,
-			[OTHER_CONNECTION_ID]: otherConnectionState,
+		offerCustomConfigs({
+			[CONNECTION_ID]: CUSTOM_CONFIG,
+			[OTHER_CONNECTION_ID]: otherCustomConfig,
 		});
 
 		await connectOwningFilters();
 
-		expect(onRestore).toHaveBeenCalledWith(RESTORED_STATE);
+		expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG);
 
-		expect(readState().restoredConnectionState).toEqual({
-			[OTHER_CONNECTION_ID]: otherConnectionState,
+		expect(readState().offeredCustomConfigs).toEqual({
+			[OTHER_CONNECTION_ID]: otherCustomConfig,
 		});
 	});
 
 	it('stops offering anything once the last key has been taken', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await connectOwningFilters();
 
-		expect(readState().restoredConnectionState).toBeUndefined();
+		expect(readState().offeredCustomConfigs).toBeUndefined();
 	});
 
 	it('says nothing to a consumer when what is left on offer holds no key of its own', async () => {
 		await connectOwningFilters();
 
-		onRestore.mockClear();
+		onApply.mockClear();
 
-		offerRestoredConnectionState({
+		offerCustomConfigs({
 			[OTHER_CONNECTION_ID]: {selections: {size: ['Big']}},
 		});
 
@@ -686,21 +688,21 @@ describe('FDSConnection filters', () => {
 
 		await waitFor(() => expect(onSearch).toHaveBeenCalled());
 
-		expect(onRestore).not.toHaveBeenCalled();
+		expect(onApply).not.toHaveBeenCalled();
 
-		expect(readState().restoredConnectionState).toEqual({
+		expect(readState().offeredCustomConfigs).toEqual({
 			[OTHER_CONNECTION_ID]: {selections: {size: ['Big']}},
 		});
 	});
 
-	it('hands over an empty restore when the URL carries nothing for this connection', async () => {
-		offerRestoredConnectionState({
+	it('hands over an empty config when the URL carries nothing for this connection', async () => {
+		offerCustomConfigs({
 			[OTHER_CONNECTION_ID]: {selections: {size: ['Big']}},
 		});
 
 		await connectOwningFilters();
 
-		expect(onRestore).toHaveBeenCalledWith(null);
+		expect(onApply).toHaveBeenCalledWith(null);
 	});
 
 	it('refuses the filtering to a consumer that connects without an appId', async () => {
@@ -727,8 +729,8 @@ describe('FDSConnection filters', () => {
 		);
 	});
 
-	it('leaves the state the URL carries alone for a consumer refused for want of an appId', async () => {
-		offerRestoredConnectionState(RESTORED_STATE_MAP);
+	it('leaves the config the URL carries alone for a consumer refused for want of an appId', async () => {
+		offerCustomConfigs(CUSTOM_CONFIGS);
 
 		await connect(
 			{owns: ['filters', 'search']},
@@ -737,8 +739,8 @@ describe('FDSConnection filters', () => {
 			'refused'
 		);
 
-		expect(onRestore).not.toHaveBeenCalled();
-		expect(readState().restoredConnectionState).toEqual(RESTORED_STATE_MAP);
+		expect(onApply).not.toHaveBeenCalled();
+		expect(readState().offeredCustomConfigs).toEqual(CUSTOM_CONFIGS);
 	});
 
 	it('grants the filtering to a consumer that connects once the owner is gone', async () => {

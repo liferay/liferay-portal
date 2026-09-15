@@ -24,6 +24,19 @@ import type {FDSConnectionFilter} from '@liferay/js-api/data-set';
 export interface IConnectedFDSState extends IFDSState {
 
 	/**
+	 * Whatever the consumer asked to have remembered, which the data set
+	 * keeps in the URL and never reads, filed by the connection under its own
+	 * app id. One config per connection, so that what comes back on the next
+	 * visit is what was given rather than a set of parts to reassemble.
+	 *
+	 * The data set stores and hands back the whole map without looking in it,
+	 * which is why the keying is the connection's business alone: today one
+	 * consumer owns the filtering and one key is in play, and a URL written
+	 * now still says what it says once several consumers can share it.
+	 */
+	appliedCustomConfigs?: Readonly<Record<string, unknown>>;
+
+	/**
 	 * Absent while no connection drives the filtering, which is the case
 	 * for every data set that has no external consumer. Once present, it
 	 * supersedes `filters` as the only contribution to the request, and the
@@ -32,25 +45,12 @@ export interface IConnectedFDSState extends IFDSState {
 	connectionFilters?: ReadonlyArray<FDSConnectionFilter>;
 
 	/**
-	 * Whatever the consumer asked to have remembered, which the data set
-	 * keeps in the URL and never reads, filed by the connection under its own
-	 * app id. One value per connection, so that what comes back on the next
-	 * visit is what was given rather than a set of parts to reassemble.
-	 *
-	 * The data set stores and hands back the whole map without looking in it,
-	 * which is why the keying is the connection's business alone: today one
-	 * consumer owns the filtering and one key is in play, and a URL written
-	 * now still says what it says once several consumers can share it.
-	 */
-	connectionState?: Readonly<Record<string, unknown>>;
-
-	/**
 	 * The app id of the connection that owns the filtering, written by the
 	 * connection as it takes the filtering over and absent while no
 	 * connection drives it.
 	 *
-	 * The data set is the side that keeps `connectionState` in the URL and
-	 * offers it back on the next visit, and it is filed under the app id of
+	 * The data set is the side that keeps `appliedCustomConfigs` in the URL
+	 * and offers them back on the next visit, each filed under the app id of
 	 * the connection that left it. This is how the data set knows whose that
 	 * is: which key of what the URL carries a connection is going to claim,
 	 * and whether anyone is coming for it at all.
