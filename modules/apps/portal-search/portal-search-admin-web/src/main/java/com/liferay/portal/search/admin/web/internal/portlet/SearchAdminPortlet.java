@@ -167,6 +167,7 @@ public class SearchAdminPortlet extends MVCPortlet {
 
 			indexActionsDisplayContextBuilder.setIndexReindexerClassNamesMap(
 				indexReindexerClassNamesMap);
+
 			indexActionsDisplayContextBuilder.setStatsInformationFactory(
 				_statsInformationFactorySnapshot.get());
 
