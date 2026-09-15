@@ -286,8 +286,8 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 					_getExternalUniqueId(
 						layoutPageTemplateEntry.getExternalReferenceCode())
 				).labelInfoLocalizedValue(
-					InfoLocalizedValue.singleValue(
-						layoutPageTemplateEntry.getName())
+					_getLabelInfoLocalizedValue(
+						layoutPageTemplateEntry, scopeGroupId)
 				).build());
 		}
 
@@ -380,6 +380,26 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private InfoLocalizedValue<String> _getLabelInfoLocalizedValue(
+		LayoutPageTemplateEntry layoutPageTemplateEntry, long scopeGroupId) {
+
+		if (layoutPageTemplateEntry.getGroupId() != scopeGroupId) {
+			Group group = _groupLocalService.fetchGroup(
+				layoutPageTemplateEntry.getGroupId());
+
+			if ((group != null) && group.isDepot()) {
+				return new FunctionInfoLocalizedValue<>(
+					locale -> StringBundler.concat(
+						layoutPageTemplateEntry.getName(), StringPool.SPACE,
+						StringPool.OPEN_PARENTHESIS, group.getName(locale),
+						StringPool.CLOSE_PARENTHESIS));
+			}
+		}
+
+		return InfoLocalizedValue.singleValue(
+			layoutPageTemplateEntry.getName());
 	}
 
 	private String _getUniqueId(String id) {
