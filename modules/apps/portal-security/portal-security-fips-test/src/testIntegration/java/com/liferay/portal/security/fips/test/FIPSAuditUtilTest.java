@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationState;
 import com.liferay.portal.kernel.security.fips.FIPSApplicationStateMachineUtil;
@@ -21,6 +20,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.fips.test.util.FIPSAuditTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.nio.charset.StandardCharsets;
@@ -34,7 +34,6 @@ import java.security.Provider;
 import java.security.Security;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -86,7 +85,7 @@ public class FIPSAuditUtilTest {
 
 		FIPSAuditUtil.write(fipsAuditEvent);
 
-		List<JSONObject> jsonObjects = _getJSONObjects();
+		List<JSONObject> jsonObjects = FIPSAuditTestUtil.getJSONObjects();
 
 		JSONObject jsonObject = _getJSONObject(eventType, jsonObjects);
 
@@ -152,7 +151,7 @@ public class FIPSAuditUtilTest {
 			IllegalArgumentException.class,
 			() -> FIPSAuditUtil.write(fipsAuditEvent));
 
-		for (JSONObject jsonObject : _getJSONObjects()) {
+		for (JSONObject jsonObject : FIPSAuditTestUtil.getJSONObjects()) {
 			Assert.assertNotEquals(
 				eventType, jsonObject.getString("event-type"));
 		}
@@ -281,7 +280,7 @@ public class FIPSAuditUtilTest {
 			new FIPSAuditEvent(
 				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
-		Path path = _getFIPSAuditLogPath();
+		Path path = FIPSAuditTestUtil.getLogPath();
 
 		FileSystem fileSystem = path.getFileSystem();
 
@@ -356,16 +355,8 @@ public class FIPSAuditUtilTest {
 		}
 	}
 
-	private Path _getFIPSAuditLogPath() {
-		LocalDate localDate = LocalDate.now(ZoneOffset.UTC);
-
-		return Paths.get(
-			PropsValues.LIFERAY_HOME, "logs",
-			StringBundler.concat("fips-audit.", localDate, ".ndjson"));
-	}
-
 	private JSONObject _getJSONObject(String eventType) throws Exception {
-		return _getJSONObject(eventType, _getJSONObjects());
+		return _getJSONObject(eventType, FIPSAuditTestUtil.getJSONObjects());
 	}
 
 	private JSONObject _getJSONObject(
@@ -382,14 +373,8 @@ public class FIPSAuditUtilTest {
 		return eventTypeJSONObjects.get(0);
 	}
 
-	private List<JSONObject> _getJSONObjects() throws Exception {
-		return TransformUtil.unsafeTransform(
-			Files.readAllLines(_getFIPSAuditLogPath()),
-			JSONFactoryUtil::createJSONObject);
-	}
-
 	private long _getLastEventSequence() throws Exception {
-		List<JSONObject> jsonObjects = _getJSONObjects();
+		List<JSONObject> jsonObjects = FIPSAuditTestUtil.getJSONObjects();
 
 		JSONObject jsonObject = jsonObjects.get(jsonObjects.size() - 1);
 
