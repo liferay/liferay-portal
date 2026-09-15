@@ -41,15 +41,9 @@ export class ElementVariationsPage {
 		this.javaScriptInput = page.getByLabel('JavaScript', {exact: true});
 		this.languageSelector = page.getByLabel('Select a language');
 		this.nameInput = page.getByLabel('Name');
-		this.newVariationButton = page
-			.getByRole('button', {
-				name: 'New Variation',
-			})
-			.or(
-				page.getByRole('button', {
-					name: 'New',
-				})
-			);
+		this.newVariationButton = page.getByRole('button', {
+			name: 'New Variation',
+		});
 		this.page = page;
 		this.pageElementPicker = page.getByLabel('Page Element');
 		this.preview = page.frameLocator('iframe[title="Element Variations"]');

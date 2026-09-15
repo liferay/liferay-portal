@@ -102,6 +102,13 @@ function loadPreview() {
 	fireEvent.load(iframe);
 }
 
+async function addAudienceFilter(audienceLabel: string) {
+	await userEvent.click(screen.getByRole('button', {name: 'filter'}));
+	await userEvent.click(screen.getByText('audience'));
+	await userEvent.click(screen.getByLabelText(audienceLabel));
+	await userEvent.click(screen.getByText('add-filter'));
+}
+
 describe('ElementVariations', () => {
 	const {ResizeObserver: ResizeObserverOriginal} = window;
 
@@ -125,6 +132,160 @@ describe('ElementVariations', () => {
 		mockHideProductMenu.mockImplementation(
 			({onHide}: {onHide: () => void}) => onHide()
 		);
+	});
+
+	it('filters the variations by audience', async () => {
+		renderElementVariations({
+			elementVariations: [
+				ELEMENT_VARIATIONS[0],
+				{
+					...ELEMENT_VARIATIONS[0],
+					audienceEntryERCs: ['audience-2'],
+					externalReferenceCode: 'element-variation-2',
+					name: 'Other Variation',
+				},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+		expect(screen.getByText('Other Variation')).toBeInTheDocument();
+
+		await addAudienceFilter('Loyal Customers');
+
+		expect(screen.getByText('My Variation')).toBeInTheDocument();
+		expect(screen.queryByText('Other Variation')).not.toBeInTheDocument();
+	});
+
+	it('excludes the selected audiences when the exclude toggle is on', async () => {
+		renderElementVariations({
+			elementVariations: [
+				ELEMENT_VARIATIONS[0],
+				{
+					...ELEMENT_VARIATIONS[0],
+					audienceEntryERCs: ['audience-2'],
+					externalReferenceCode: 'element-variation-2',
+					name: 'Other Variation',
+				},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await userEvent.click(screen.getByRole('button', {name: 'filter'}));
+		await userEvent.click(screen.getByText('audience'));
+		await userEvent.click(screen.getByLabelText('exclude'));
+		await userEvent.click(screen.getByLabelText('Loyal Customers'));
+		await userEvent.click(screen.getByText('add-filter'));
+
+		expect(screen.queryByText('My Variation')).not.toBeInTheDocument();
+		expect(screen.getByText('Other Variation')).toBeInTheDocument();
+	});
+
+	it('shows the no results empty state and clears the filters', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await addAudienceFilter('New Visitors');
+
+		expect(screen.getByText('no-results-found')).toBeInTheDocument();
+		expect(screen.queryByText('My Variation')).not.toBeInTheDocument();
+
+		await userEvent.click(screen.getByText('clear-filters'));
+
+		expect(screen.getByText('My Variation')).toBeInTheDocument();
+		expect(screen.queryByText('no-results-found')).not.toBeInTheDocument();
+	});
+
+	it('removes a filter from its chip', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await addAudienceFilter('New Visitors');
+
+		expect(screen.queryByText('My Variation')).not.toBeInTheDocument();
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'remove-filter'})
+		);
+
+		expect(screen.getByText('My Variation')).toBeInTheDocument();
+	});
+
+	it('keeps a single filter per type', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await addAudienceFilter('Loyal Customers');
+		await addAudienceFilter('New Visitors');
+
+		expect(
+			screen.getAllByRole('button', {name: 'remove-filter'})
+		).toHaveLength(1);
+	});
+
+	it('edits an existing filter from its chip', async () => {
+		renderElementVariations({
+			elementVariations: [
+				ELEMENT_VARIATIONS[0],
+				{
+					...ELEMENT_VARIATIONS[0],
+					audienceEntryERCs: ['audience-2'],
+					externalReferenceCode: 'element-variation-2',
+					name: 'Other Variation',
+				},
+			],
+		});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		await addAudienceFilter('Loyal Customers');
+
+		expect(screen.queryByText('Other Variation')).not.toBeInTheDocument();
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'audience: Loyal Customers'})
+		);
+
+		expect(screen.getByLabelText('Loyal Customers')).toBeChecked();
+
+		await userEvent.click(screen.getByLabelText('New Visitors'));
+		await userEvent.click(screen.getByText('add-filter'));
+
+		expect(screen.getByText('My Variation')).toBeInTheDocument();
+		expect(screen.getByText('Other Variation')).toBeInTheDocument();
+	});
+
+	it('does not show the results bar until a filter is added', async () => {
+		renderElementVariations({elementVariations: ELEMENT_VARIATIONS});
+
+		loadPreview();
+
+		expect(await screen.findByText('My Variation')).toBeInTheDocument();
+
+		expect(
+			screen.queryByRole('button', {name: 'remove-filter'})
+		).not.toBeInTheDocument();
+
+		await addAudienceFilter('Loyal Customers');
+
+		expect(
+			screen.getByRole('button', {name: 'remove-filter'})
+		).toBeInTheDocument();
 	});
 
 	it('does not show the open button on large screens', async () => {
