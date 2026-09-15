@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 /**
  * @author Mariano Álvaro Sáiz
  */
-public class AssetEntrySAPEntryUpgradeProcess extends UpgradeProcess {
+public class SAPEntryUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
