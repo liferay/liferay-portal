@@ -289,25 +289,16 @@ test(
 		await test.step('Verify both cookies remain accepted', async () => {
 			await openConsentPanelFromFloatingIcon(page);
 
-			const actualCookies = await page.context().cookies();
-
-			for (const cookieKey of [
+			await expectCookieAccepted(
+				configurationFrame,
 				functionalCookieKey,
+				page
+			);
+			await expectCookieAccepted(
+				configurationFrame,
 				performanceCookieKey,
-			]) {
-				await expect(
-					configurationFrame.locator(
-						`[data-cookie-key="${cookieKey}"]`
-					)
-				).toBeChecked();
-
-				const actualCookie = actualCookies.find(
-					(actualCookie) => actualCookie.name === cookieKey
-				);
-
-				expect(actualCookie).toBeDefined();
-				expect(actualCookie.value).toEqual('true');
-			}
+				page
+			);
 		});
 	}
 );
@@ -855,6 +846,23 @@ async function checkConsentPanelToggle(
 		.click();
 
 	await expect(toggleSwitch).toBeChecked();
+}
+
+async function expectCookieAccepted(
+	configurationFrame: FrameLocator,
+	cookieKey: string,
+	page: Page
+) {
+	await expect(
+		configurationFrame.locator(`[data-cookie-key="${cookieKey}"]`)
+	).toBeChecked();
+
+	const actualCookie = (await page.context().cookies()).find(
+		(cookie) => cookie.name === cookieKey
+	);
+
+	expect(actualCookie).toBeDefined();
+	expect(actualCookie.value).toEqual('true');
 }
 
 async function expectCookieConsentPanelButtons(locator: Locator) {
