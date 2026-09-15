@@ -67,13 +67,13 @@ public class JSUnitJUnitTestResult extends JUnitTestResult {
 				return workspaceTestTaskName;
 			}
 
-			return _getTestTaskName(testClassFilePath, "/");
+			return _getTestTaskName("/", testClassFilePath);
 		}
 
 		return _getTestTaskName(
+			".",
 			JenkinsResultsParserUtil.combine(
-				super.getClassName(), ".", super.getTestName()),
-			".");
+				super.getClassName(), ".", super.getTestName()));
 	}
 
 	protected JSUnitJUnitTestResult(Build build, JSONObject caseJSONObject) {
@@ -90,7 +90,7 @@ public class JSUnitJUnitTestResult extends JUnitTestResult {
 		return className;
 	}
 
-	private String _getTestTaskName(String testTaskName, String separator) {
+	private String _getTestTaskName(String separator, String testTaskName) {
 		String modulesDirPath = "modules" + separator;
 
 		int x = testTaskName.indexOf(separator + modulesDirPath);

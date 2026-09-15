@@ -53,6 +53,17 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 	}
 
 	@Override
+	public JSONObject getJSONObject() {
+		JSONObject jsonObject = super.getJSONObject();
+
+		if (_testClassFileReported) {
+			jsonObject.put("test_class_file_reported", _testClassFileReported);
+		}
+
+		return jsonObject;
+	}
+
+	@Override
 	public String getName() {
 		return getTestTaskName();
 	}
@@ -71,6 +82,14 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 			".*/modules(/.+)", "$1");
 
 		return testTaskName.replaceAll("/", ":") + ":" + getTaskName();
+	}
+
+	public boolean isTestClassFileReported() {
+		return _testClassFileReported;
+	}
+
+	public void setTestClassFileReported(boolean testClassFileReported) {
+		_testClassFileReported = testClassFileReported;
 	}
 
 	protected JSUnitModulesTestClass(
@@ -133,6 +152,9 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 		else {
 			_testrayMainComponentName = null;
 		}
+
+		_testClassFileReported = jsonObject.optBoolean(
+			"test_class_file_reported");
 	}
 
 	@Override
@@ -153,6 +175,7 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 	private DownstreamBuildReport _cachedDownstreamBuildReport;
 	private TestClassReport _cachedTestClassReport;
 	private boolean _cachedTestClassReportSearched;
+	private boolean _testClassFileReported;
 	private final File _testPropertiesFile;
 	private final String _testrayMainComponentName;
 
