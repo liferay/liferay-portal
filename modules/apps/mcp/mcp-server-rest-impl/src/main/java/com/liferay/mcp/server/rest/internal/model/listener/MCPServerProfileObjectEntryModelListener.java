@@ -5,8 +5,8 @@
 
 package com.liferay.mcp.server.rest.internal.model.listener;
 
+import com.liferay.mcp.server.rest.internal.cache.MCPServerCacheManager;
 import com.liferay.mcp.server.rest.internal.constants.MCPServerConstants;
-import com.liferay.mcp.server.rest.internal.servlet.MCPServerServlet;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -23,8 +23,6 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
-
-import jakarta.servlet.Servlet;
 
 import java.io.Serializable;
 
@@ -51,8 +49,7 @@ public class MCPServerProfileObjectEntryModelListener
 	public void onAfterCreate(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_invalidateServlet(
-			objectEntry, MapUtil.getString(objectEntry.getValues(), "name"));
+		_clearServletCache(objectEntry);
 
 		_addMCPServerProfileDataMasks(objectEntry);
 	}
@@ -61,8 +58,7 @@ public class MCPServerProfileObjectEntryModelListener
 	public void onAfterRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_invalidateServlet(
-			objectEntry, MapUtil.getString(objectEntry.getValues(), "name"));
+		_clearServletCache(objectEntry);
 	}
 
 	@Override
@@ -70,9 +66,7 @@ public class MCPServerProfileObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		_invalidateServlet(
-			objectEntry,
-			MapUtil.getString(originalObjectEntry.getValues(), "name"));
+		_clearServletCache(originalObjectEntry);
 	}
 
 	@Override
@@ -211,26 +205,22 @@ public class MCPServerProfileObjectEntryModelListener
 		}
 	}
 
-	private void _invalidateServlet(
-		ObjectEntry objectEntry, String profileName) {
-
-		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
-
-		mcpServerServlet.invalidate(objectEntry.getCompanyId(), profileName);
+	private void _clearServletCache(ObjectEntry objectEntry) {
+		_mcpServerCacheManager.clearServletCache(
+			objectEntry.getCompanyId(),
+			MapUtil.getString(objectEntry.getValues(), "name"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		MCPServerProfileObjectEntryModelListener.class);
 
 	@Reference
+	private MCPServerCacheManager _mcpServerCacheManager;
+
+	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference(
-		target = "(osgi.http.whiteboard.servlet.name=com.liferay.mcp.server.rest.internal.servlet.MCPServerServlet)"
-	)
-	private Servlet _servlet;
 
 }

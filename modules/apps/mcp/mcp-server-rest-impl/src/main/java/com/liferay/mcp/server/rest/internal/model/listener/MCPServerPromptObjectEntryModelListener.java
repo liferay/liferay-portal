@@ -5,14 +5,12 @@
 
 package com.liferay.mcp.server.rest.internal.model.listener;
 
+import com.liferay.mcp.server.rest.internal.cache.MCPServerCacheManager;
 import com.liferay.mcp.server.rest.internal.constants.MCPServerConstants;
-import com.liferay.mcp.server.rest.internal.servlet.MCPServerServlet;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.listener.RelevantObjectEntryModelListener;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.model.BaseModelListener;
-
-import jakarta.servlet.Servlet;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,18 +32,14 @@ public class MCPServerPromptObjectEntryModelListener
 	public void onAfterCreate(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
-
-		mcpServerServlet.invalidateAll(objectEntry.getCompanyId());
+		_mcpServerCacheManager.clearServletCache(objectEntry.getCompanyId());
 	}
 
 	@Override
 	public void onAfterRemove(ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
-
-		mcpServerServlet.invalidateAll(objectEntry.getCompanyId());
+		_mcpServerCacheManager.clearServletCache(objectEntry.getCompanyId());
 	}
 
 	@Override
@@ -53,14 +47,10 @@ public class MCPServerPromptObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
-
-		mcpServerServlet.invalidateAll(objectEntry.getCompanyId());
+		_mcpServerCacheManager.clearServletCache(objectEntry.getCompanyId());
 	}
 
-	@Reference(
-		target = "(osgi.http.whiteboard.servlet.name=com.liferay.mcp.server.rest.internal.servlet.MCPServerServlet)"
-	)
-	private Servlet _servlet;
+	@Reference
+	private MCPServerCacheManager _mcpServerCacheManager;
 
 }
