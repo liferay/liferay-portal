@@ -35,15 +35,17 @@ public interface AssetSummaryMetricResource {
 	}
 
 	public Page<AssetSummaryMetric> getWorkspaceGroupChannelAssetSummariesPage(
-			Long groupId, String channelId, String rangeEnd, String rangeKey,
-			String rangeStart, String search, Pagination pagination,
-			String sortString)
+			Long groupId, String channelId, String accountId,
+			String individualId, String rangeEnd, String rangeKey,
+			String rangeStart, String search, String segmentId,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupChannelAssetSummariesPageHttpResponse(
-				Long groupId, String channelId, String rangeEnd,
-				String rangeKey, String rangeStart, String search,
+				Long groupId, String channelId, String accountId,
+				String individualId, String rangeEnd, String rangeKey,
+				String rangeStart, String search, String segmentId,
 				Pagination pagination, String sortString)
 		throws Exception;
 
@@ -158,15 +160,17 @@ public interface AssetSummaryMetricResource {
 
 		public Page<AssetSummaryMetric>
 				getWorkspaceGroupChannelAssetSummariesPage(
-					Long groupId, String channelId, String rangeEnd,
-					String rangeKey, String rangeStart, String search,
+					Long groupId, String channelId, String accountId,
+					String individualId, String rangeEnd, String rangeKey,
+					String rangeStart, String search, String segmentId,
 					Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupChannelAssetSummariesPageHttpResponse(
-					groupId, channelId, rangeEnd, rangeKey, rangeStart, search,
-					pagination, sortString);
+					groupId, channelId, accountId, individualId, rangeEnd,
+					rangeKey, rangeStart, search, segmentId, pagination,
+					sortString);
 
 			String content = httpResponse.getContent();
 
@@ -229,8 +233,9 @@ public interface AssetSummaryMetricResource {
 
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupChannelAssetSummariesPageHttpResponse(
-					Long groupId, String channelId, String rangeEnd,
-					String rangeKey, String rangeStart, String search,
+					Long groupId, String channelId, String accountId,
+					String individualId, String rangeEnd, String rangeKey,
+					String rangeStart, String search, String segmentId,
 					Pagination pagination, String sortString)
 			throws Exception {
 
@@ -255,6 +260,15 @@ public interface AssetSummaryMetricResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
+			if (accountId != null) {
+				httpInvoker.parameter("accountId", String.valueOf(accountId));
+			}
+
+			if (individualId != null) {
+				httpInvoker.parameter(
+					"individualId", String.valueOf(individualId));
+			}
+
 			if (rangeEnd != null) {
 				httpInvoker.parameter("rangeEnd", String.valueOf(rangeEnd));
 			}
@@ -269,6 +283,10 @@ public interface AssetSummaryMetricResource {
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (segmentId != null) {
+				httpInvoker.parameter("segmentId", String.valueOf(segmentId));
 			}
 
 			if (pagination != null) {
@@ -310,4 +328,4 @@ public interface AssetSummaryMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1855853979
+// LIFERAY-REST-BUILDER-HASH:1134867568

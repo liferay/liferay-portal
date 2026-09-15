@@ -44,8 +44,9 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface EventResource {
 
 	public Page<Event> getWorkspaceGroupChannelEventsPage(
-			Long groupId, String channelId, Boolean includeAnonymousUsers,
-			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Long groupId, String channelId, String accountId,
+			Boolean includeAnonymousUsers, String individualId, String rangeEnd,
+			String rangeKey, String rangeStart, String search, String segmentId,
 			Pagination pagination)
 		throws Exception;
 
@@ -137,4 +138,4 @@ public interface EventResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-195686954
+// LIFERAY-REST-BUILDER-HASH:-367231247

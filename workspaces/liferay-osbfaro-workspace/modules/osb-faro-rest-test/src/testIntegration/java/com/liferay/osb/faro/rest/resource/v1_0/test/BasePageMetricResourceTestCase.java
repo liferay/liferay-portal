@@ -199,8 +199,9 @@ public abstract class BasePageMetricResourceTestCase {
 			pageMetricResource.getWorkspaceGroupChannelPagesPage(
 				groupId, channelId, RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), null, Pagination.of(1, 10),
-				null);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -212,7 +213,8 @@ public abstract class BasePageMetricResourceTestCase {
 
 			page = pageMetricResource.getWorkspaceGroupChannelPagesPage(
 				irrelevantGroupId, irrelevantChannelId, null, null, null, null,
-				null, Pagination.of(1, (int)totalCount + 1), null);
+				null, null, null, null, Pagination.of(1, (int)totalCount + 1),
+				null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -233,7 +235,7 @@ public abstract class BasePageMetricResourceTestCase {
 				groupId, channelId, randomPageMetric());
 
 		page = pageMetricResource.getWorkspaceGroupChannelPagesPage(
-			groupId, channelId, null, null, null, null, null,
+			groupId, channelId, null, null, null, null, null, null, null, null,
 			Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -265,7 +267,8 @@ public abstract class BasePageMetricResourceTestCase {
 
 		Page<PageMetric> pageMetricsPage =
 			pageMetricResource.getWorkspaceGroupChannelPagesPage(
-				groupId, channelId, null, null, null, null, null, null, null);
+				groupId, channelId, null, null, null, null, null, null, null,
+				null, null, null);
 
 		int totalCount = GetterUtil.getInteger(pageMetricsPage.getTotalCount());
 
@@ -288,7 +291,8 @@ public abstract class BasePageMetricResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<PageMetric> page1 =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -300,7 +304,8 @@ public abstract class BasePageMetricResourceTestCase {
 
 			Page<PageMetric> page2 =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -310,7 +315,8 @@ public abstract class BasePageMetricResourceTestCase {
 
 			Page<PageMetric> page3 =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -321,8 +327,8 @@ public abstract class BasePageMetricResourceTestCase {
 		else {
 			Page<PageMetric> page1 =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(1, totalCount + 2), null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(1, totalCount + 2), null);
 
 			List<PageMetric> pageMetrics1 = (List<PageMetric>)page1.getItems();
 
@@ -331,8 +337,8 @@ public abstract class BasePageMetricResourceTestCase {
 
 			Page<PageMetric> page2 =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(2, totalCount + 2), null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -343,8 +349,8 @@ public abstract class BasePageMetricResourceTestCase {
 
 			Page<PageMetric> page3 =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(1, (int)totalCount + 3), null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(pageMetric1, (List<PageMetric>)page3.getItems());
 			assertContains(pageMetric2, (List<PageMetric>)page3.getItems());
@@ -474,13 +480,14 @@ public abstract class BasePageMetricResourceTestCase {
 
 		Page<PageMetric> page =
 			pageMetricResource.getWorkspaceGroupChannelPagesPage(
-				groupId, channelId, null, null, null, null, null, null, null);
+				groupId, channelId, null, null, null, null, null, null, null,
+				null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<PageMetric> ascPage =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(1, (int)page.getTotalCount() + 1),
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
 			assertContains(pageMetric1, (List<PageMetric>)ascPage.getItems());
@@ -488,8 +495,8 @@ public abstract class BasePageMetricResourceTestCase {
 
 			Page<PageMetric> descPage =
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(1, (int)page.getTotalCount() + 1),
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
 			assertContains(pageMetric2, (List<PageMetric>)descPage.getItems());
@@ -1586,4 +1593,4 @@ public abstract class BasePageMetricResourceTestCase {
 		_pageMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1431787590
+// LIFERAY-REST-BUILDER-HASH:-1468395375

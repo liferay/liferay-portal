@@ -210,9 +210,10 @@ public abstract class BaseEventResourceTestCase {
 			testGetWorkspaceGroupChannelEventsPage_getIrrelevantChannelId();
 
 		Page<Event> page = eventResource.getWorkspaceGroupChannelEventsPage(
-			groupId, channelId, null, RandomTestUtil.randomString(),
+			groupId, channelId, RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
-			Pagination.of(1, 10));
+			RandomTestUtil.randomString(), Pagination.of(1, 10));
 
 		long totalCount = page.getTotalCount();
 
@@ -224,7 +225,7 @@ public abstract class BaseEventResourceTestCase {
 
 			page = eventResource.getWorkspaceGroupChannelEventsPage(
 				irrelevantGroupId, irrelevantChannelId, null, null, null, null,
-				null, Pagination.of(1, (int)totalCount + 1));
+				null, null, null, null, Pagination.of(1, (int)totalCount + 1));
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -242,7 +243,7 @@ public abstract class BaseEventResourceTestCase {
 			groupId, channelId, randomEvent());
 
 		page = eventResource.getWorkspaceGroupChannelEventsPage(
-			groupId, channelId, null, null, null, null, null,
+			groupId, channelId, null, null, null, null, null, null, null, null,
 			Pagination.of(1, 10));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -275,7 +276,8 @@ public abstract class BaseEventResourceTestCase {
 
 		Page<Event> eventsPage =
 			eventResource.getWorkspaceGroupChannelEventsPage(
-				groupId, channelId, null, null, null, null, null, null);
+				groupId, channelId, null, null, null, null, null, null, null,
+				null, null);
 
 		int totalCount = GetterUtil.getInteger(eventsPage.getTotalCount());
 
@@ -295,7 +297,8 @@ public abstract class BaseEventResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<Event> page1 =
 				eventResource.getWorkspaceGroupChannelEventsPage(
-					groupId, channelId, null, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -306,7 +309,8 @@ public abstract class BaseEventResourceTestCase {
 
 			Page<Event> page2 =
 				eventResource.getWorkspaceGroupChannelEventsPage(
-					groupId, channelId, null, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -315,7 +319,8 @@ public abstract class BaseEventResourceTestCase {
 
 			Page<Event> page3 =
 				eventResource.getWorkspaceGroupChannelEventsPage(
-					groupId, channelId, null, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit));
@@ -325,8 +330,8 @@ public abstract class BaseEventResourceTestCase {
 		else {
 			Page<Event> page1 =
 				eventResource.getWorkspaceGroupChannelEventsPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(1, totalCount + 2));
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(1, totalCount + 2));
 
 			List<Event> events1 = (List<Event>)page1.getItems();
 
@@ -335,8 +340,8 @@ public abstract class BaseEventResourceTestCase {
 
 			Page<Event> page2 =
 				eventResource.getWorkspaceGroupChannelEventsPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(2, totalCount + 2));
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(2, totalCount + 2));
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -346,8 +351,8 @@ public abstract class BaseEventResourceTestCase {
 
 			Page<Event> page3 =
 				eventResource.getWorkspaceGroupChannelEventsPage(
-					groupId, channelId, null, null, null, null, null,
-					Pagination.of(1, (int)totalCount + 3));
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, Pagination.of(1, (int)totalCount + 3));
 
 			assertContains(event1, (List<Event>)page3.getItems());
 			assertContains(event2, (List<Event>)page3.getItems());
@@ -1675,4 +1680,4 @@ public abstract class BaseEventResourceTestCase {
 		_eventResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:840749797
+// LIFERAY-REST-BUILDER-HASH:1846481436

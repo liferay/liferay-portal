@@ -50,7 +50,7 @@ public abstract class BaseEventResourceImpl implements EventResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/events'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
+		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -65,9 +65,19 @@ public abstract class BaseEventResourceImpl implements EventResource {
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of an account. When set, narrow the events to those from the individuals in that account.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "accountId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				description = "If true, events from anonymous (browser-tracked) individuals are included. Defaults to false.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "includeAnonymousUsers"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of an individual. When set, narrow the events to those from that individual.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "individualId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Page number (starts at 1).",
@@ -99,6 +109,11 @@ public abstract class BaseEventResourceImpl implements EventResource {
 				description = "Free-text keyword search across event fields. Empty or null returns all matching events.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a segment. When set, narrow the events to those from the individuals in that segment.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "segmentId"
 			)
 		}
 	)
@@ -119,8 +134,14 @@ public abstract class BaseEventResourceImpl implements EventResource {
 			@jakarta.ws.rs.PathParam("channelId")
 			String channelId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("accountId")
+			String accountId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("includeAnonymousUsers")
 			Boolean includeAnonymousUsers,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("individualId")
+			String individualId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("rangeEnd")
 			String rangeEnd,
@@ -133,6 +154,9 @@ public abstract class BaseEventResourceImpl implements EventResource {
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("segmentId")
+			String segmentId,
 			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
@@ -584,4 +608,4 @@ public abstract class BaseEventResourceImpl implements EventResource {
 		LogFactoryUtil.getLog(BaseEventResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-325784651
+// LIFERAY-REST-BUILDER-HASH:2084904575

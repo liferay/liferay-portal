@@ -203,8 +203,10 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 				getWorkspaceGroupChannelAssetSummariesPage(
 					groupId, channelId, RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString(), null, Pagination.of(1, 10),
-					null);
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), null,
+					RandomTestUtil.randomString(), Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -218,8 +220,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
 						irrelevantGroupId, irrelevantChannelId, null, null,
-						null, null, Pagination.of(1, (int)totalCount + 1),
-						null);
+						null, null, null, null, null,
+						Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -243,8 +245,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 		page =
 			assetSummaryMetricResource.
 				getWorkspaceGroupChannelAssetSummariesPage(
-					groupId, channelId, null, null, null, null,
-					Pagination.of(1, 10), null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -280,7 +282,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 		Page<AssetSummaryMetric> assetSummaryMetricsPage =
 			assetSummaryMetricResource.
 				getWorkspaceGroupChannelAssetSummariesPage(
-					groupId, channelId, null, null, null, null, null, null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			assetSummaryMetricsPage.getTotalCount());
@@ -305,7 +308,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			Page<AssetSummaryMetric> page1 =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
+						groupId, channelId, null, null, null, null, null, null,
+						null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -320,7 +324,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			Page<AssetSummaryMetric> page2 =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
+						groupId, channelId, null, null, null, null, null, null,
+						null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -333,7 +338,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			Page<AssetSummaryMetric> page3 =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
+						groupId, channelId, null, null, null, null, null, null,
+						null,
 						Pagination.of(
 							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 							pageSizeLimit),
@@ -347,8 +353,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			Page<AssetSummaryMetric> page1 =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
-						Pagination.of(1, totalCount + 2), null);
+						groupId, channelId, null, null, null, null, null, null,
+						null, Pagination.of(1, totalCount + 2), null);
 
 			List<AssetSummaryMetric> assetSummaryMetrics1 =
 				(List<AssetSummaryMetric>)page1.getItems();
@@ -360,8 +366,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			Page<AssetSummaryMetric> page2 =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
-						Pagination.of(2, totalCount + 2), null);
+						groupId, channelId, null, null, null, null, null, null,
+						null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -375,8 +381,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			Page<AssetSummaryMetric> page3 =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
-						Pagination.of(1, (int)totalCount + 3), null);
+						groupId, channelId, null, null, null, null, null, null,
+						null, Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
 				assetSummaryMetric1,
@@ -521,14 +527,15 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 		Page<AssetSummaryMetric> page =
 			assetSummaryMetricResource.
 				getWorkspaceGroupChannelAssetSummariesPage(
-					groupId, channelId, null, null, null, null, null, null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<AssetSummaryMetric> ascPage =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
-						Pagination.of(1, (int)page.getTotalCount() + 1),
+						groupId, channelId, null, null, null, null, null, null,
+						null, Pagination.of(1, (int)page.getTotalCount() + 1),
 						entityField.getName() + ":asc");
 
 			assertContains(
@@ -541,8 +548,8 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 			Page<AssetSummaryMetric> descPage =
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, null, null, null, null,
-						Pagination.of(1, (int)page.getTotalCount() + 1),
+						groupId, channelId, null, null, null, null, null, null,
+						null, Pagination.of(1, (int)page.getTotalCount() + 1),
 						entityField.getName() + ":desc");
 
 			assertContains(
@@ -1575,4 +1582,4 @@ public abstract class BaseAssetSummaryMetricResourceTestCase {
 		_assetSummaryMetricResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2088177729
+// LIFERAY-REST-BUILDER-HASH:1609249094

@@ -54,7 +54,7 @@ public abstract class BasePageMetricResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/pages'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
+		description = "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -69,9 +69,19 @@ public abstract class BasePageMetricResourceImpl
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of an account. When set, narrow the metrics to activity from the individuals in that account.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "accountId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Optional data source id to scope results to a single data source.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "dataSourceId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of an individual. When set, narrow the metrics to activity from that individual.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "individualId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Page number (starts at 1).",
@@ -105,6 +115,11 @@ public abstract class BasePageMetricResourceImpl
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Identifier of a segment. When set, narrow the metrics to activity from the individuals in that segment.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "segmentId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Sort expression `column:asc|desc`. Defaults to `viewsMetric:desc`. Common columns: viewsMetric, visitorsMetric, bounceMetric, avgTimeOnPageMetric.",
 				example = "viewsMetric:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
@@ -129,8 +144,14 @@ public abstract class BasePageMetricResourceImpl
 			@jakarta.ws.rs.PathParam("channelId")
 			String channelId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("accountId")
+			String accountId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("dataSourceId")
 			String dataSourceId,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("individualId")
+			String individualId,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("rangeEnd")
 			String rangeEnd,
@@ -143,6 +164,9 @@ public abstract class BasePageMetricResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("segmentId")
+			String segmentId,
 			@jakarta.ws.rs.core.Context Pagination pagination,
 			@jakarta.ws.rs.core.Context com.liferay.portal.kernel.search.Sort[]
 				sorts)
@@ -603,4 +627,4 @@ public abstract class BasePageMetricResourceImpl
 		LogFactoryUtil.getLog(BasePageMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:346168057
+// LIFERAY-REST-BUILDER-HASH:183163115

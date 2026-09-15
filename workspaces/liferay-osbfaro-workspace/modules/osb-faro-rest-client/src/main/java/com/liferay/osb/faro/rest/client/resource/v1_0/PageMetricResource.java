@@ -35,16 +35,18 @@ public interface PageMetricResource {
 	}
 
 	public Page<PageMetric> getWorkspaceGroupChannelPagesPage(
-			Long groupId, String channelId, String dataSourceId,
-			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Long groupId, String channelId, String accountId,
+			String dataSourceId, String individualId, String rangeEnd,
+			String rangeKey, String rangeStart, String search, String segmentId,
 			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupChannelPagesPageHttpResponse(
-				Long groupId, String channelId, String dataSourceId,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination, String sortString)
+				Long groupId, String channelId, String accountId,
+				String dataSourceId, String individualId, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
+				String segmentId, Pagination pagination, String sortString)
 		throws Exception;
 
 	public static class Builder {
@@ -156,15 +158,17 @@ public interface PageMetricResource {
 	public static class PageMetricResourceImpl implements PageMetricResource {
 
 		public Page<PageMetric> getWorkspaceGroupChannelPagesPage(
-				Long groupId, String channelId, String dataSourceId,
-				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination, String sortString)
+				Long groupId, String channelId, String accountId,
+				String dataSourceId, String individualId, String rangeEnd,
+				String rangeKey, String rangeStart, String search,
+				String segmentId, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupChannelPagesPageHttpResponse(
-					groupId, channelId, dataSourceId, rangeEnd, rangeKey,
-					rangeStart, search, pagination, sortString);
+					groupId, channelId, accountId, dataSourceId, individualId,
+					rangeEnd, rangeKey, rangeStart, search, segmentId,
+					pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -227,9 +231,10 @@ public interface PageMetricResource {
 
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupChannelPagesPageHttpResponse(
-					Long groupId, String channelId, String dataSourceId,
-					String rangeEnd, String rangeKey, String rangeStart,
-					String search, Pagination pagination, String sortString)
+					Long groupId, String channelId, String accountId,
+					String dataSourceId, String individualId, String rangeEnd,
+					String rangeKey, String rangeStart, String search,
+					String segmentId, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -253,9 +258,18 @@ public interface PageMetricResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
+			if (accountId != null) {
+				httpInvoker.parameter("accountId", String.valueOf(accountId));
+			}
+
 			if (dataSourceId != null) {
 				httpInvoker.parameter(
 					"dataSourceId", String.valueOf(dataSourceId));
+			}
+
+			if (individualId != null) {
+				httpInvoker.parameter(
+					"individualId", String.valueOf(individualId));
 			}
 
 			if (rangeEnd != null) {
@@ -272,6 +286,10 @@ public interface PageMetricResource {
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (segmentId != null) {
+				httpInvoker.parameter("segmentId", String.valueOf(segmentId));
 			}
 
 			if (pagination != null) {
@@ -313,4 +331,4 @@ public interface PageMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1105983242
+// LIFERAY-REST-BUILDER-HASH:703234349

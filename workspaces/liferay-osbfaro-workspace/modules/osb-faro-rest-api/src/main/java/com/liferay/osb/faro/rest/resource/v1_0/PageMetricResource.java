@@ -44,8 +44,9 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface PageMetricResource {
 
 	public Page<PageMetric> getWorkspaceGroupChannelPagesPage(
-			Long groupId, String channelId, String dataSourceId,
-			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Long groupId, String channelId, String accountId,
+			String dataSourceId, String individualId, String rangeEnd,
+			String rangeKey, String rangeStart, String search, String segmentId,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
@@ -138,4 +139,4 @@ public interface PageMetricResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-800169304
+// LIFERAY-REST-BUILDER-HASH:22928821

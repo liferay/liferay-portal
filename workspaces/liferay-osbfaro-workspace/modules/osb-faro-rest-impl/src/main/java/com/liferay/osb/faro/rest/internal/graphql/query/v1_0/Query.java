@@ -186,18 +186,21 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAssetSummaries(channelId: ___, groupId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAssetSummaries(accountId: ___, channelId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, segmentId: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`."
+		description = "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`."
 	)
 	public AssetSummaryMetricPage workspaceGroupChannelAssetSummaries(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("channelId") String channelId,
+			@GraphQLName("accountId") String accountId,
+			@GraphQLName("individualId") String individualId,
 			@GraphQLName("rangeEnd") String rangeEnd,
 			@GraphQLName("rangeKey") String rangeKey,
 			@GraphQLName("rangeStart") String rangeStart,
 			@GraphQLName("search") String search,
+			@GraphQLName("segmentId") String segmentId,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page,
 			@GraphQLName("sort") String sortsString)
@@ -209,8 +212,9 @@ public class Query {
 			assetSummaryMetricResource -> new AssetSummaryMetricPage(
 				assetSummaryMetricResource.
 					getWorkspaceGroupChannelAssetSummariesPage(
-						groupId, channelId, rangeEnd, rangeKey, rangeStart,
-						search, Pagination.of(page, pageSize),
+						groupId, channelId, accountId, individualId, rangeEnd,
+						rangeKey, rangeStart, search, segmentId,
+						Pagination.of(page, pageSize),
 						_sortsBiFunction.apply(
 							assetSummaryMetricResource, sortsString))));
 	}
@@ -257,19 +261,22 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelEvents(channelId: ___, groupId: ___, includeAnonymousUsers: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelEvents(accountId: ___, channelId: ___, groupId: ___, includeAnonymousUsers: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, segmentId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
+		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
 	)
 	public EventPage workspaceGroupChannelEvents(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("channelId") String channelId,
+			@GraphQLName("accountId") String accountId,
 			@GraphQLName("includeAnonymousUsers") Boolean includeAnonymousUsers,
+			@GraphQLName("individualId") String individualId,
 			@GraphQLName("rangeEnd") String rangeEnd,
 			@GraphQLName("rangeKey") String rangeKey,
 			@GraphQLName("rangeStart") String rangeStart,
 			@GraphQLName("search") String search,
+			@GraphQLName("segmentId") String segmentId,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page)
 		throws Exception {
@@ -279,9 +286,9 @@ public class Query {
 			this::_populateResourceContext,
 			eventResource -> new EventPage(
 				eventResource.getWorkspaceGroupChannelEventsPage(
-					groupId, channelId, includeAnonymousUsers, rangeEnd,
-					rangeKey, rangeStart, search,
-					Pagination.of(page, pageSize))));
+					groupId, channelId, accountId, includeAnonymousUsers,
+					individualId, rangeEnd, rangeKey, rangeStart, search,
+					segmentId, Pagination.of(page, pageSize))));
 	}
 
 	/**
@@ -420,19 +427,22 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelPages(channelId: ___, dataSourceId: ___, groupId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelPages(accountId: ___, channelId: ___, dataSourceId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, segmentId: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
+		description = "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
 	)
 	public PageMetricPage workspaceGroupChannelPages(
 			@GraphQLName("groupId") Long groupId,
 			@GraphQLName("channelId") String channelId,
+			@GraphQLName("accountId") String accountId,
 			@GraphQLName("dataSourceId") String dataSourceId,
+			@GraphQLName("individualId") String individualId,
 			@GraphQLName("rangeEnd") String rangeEnd,
 			@GraphQLName("rangeKey") String rangeKey,
 			@GraphQLName("rangeStart") String rangeStart,
 			@GraphQLName("search") String search,
+			@GraphQLName("segmentId") String segmentId,
 			@GraphQLName("pageSize") int pageSize,
 			@GraphQLName("page") int page,
 			@GraphQLName("sort") String sortsString)
@@ -443,8 +453,9 @@ public class Query {
 			this::_populateResourceContext,
 			pageMetricResource -> new PageMetricPage(
 				pageMetricResource.getWorkspaceGroupChannelPagesPage(
-					groupId, channelId, dataSourceId, rangeEnd, rangeKey,
-					rangeStart, search, Pagination.of(page, pageSize),
+					groupId, channelId, accountId, dataSourceId, individualId,
+					rangeEnd, rangeKey, rangeStart, search, segmentId,
+					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(pageMetricResource, sortsString))));
 	}
 
@@ -1063,4 +1074,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1907113082
+// LIFERAY-REST-BUILDER-HASH:681818712

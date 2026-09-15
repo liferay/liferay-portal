@@ -35,16 +35,18 @@ public interface EventResource {
 	}
 
 	public Page<Event> getWorkspaceGroupChannelEventsPage(
-			Long groupId, String channelId, Boolean includeAnonymousUsers,
-			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Long groupId, String channelId, String accountId,
+			Boolean includeAnonymousUsers, String individualId, String rangeEnd,
+			String rangeKey, String rangeStart, String search, String segmentId,
 			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupChannelEventsPageHttpResponse(
-				Long groupId, String channelId, Boolean includeAnonymousUsers,
+				Long groupId, String channelId, String accountId,
+				Boolean includeAnonymousUsers, String individualId,
 				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination)
+				String search, String segmentId, Pagination pagination)
 		throws Exception;
 
 	public static class Builder {
@@ -156,15 +158,17 @@ public interface EventResource {
 	public static class EventResourceImpl implements EventResource {
 
 		public Page<Event> getWorkspaceGroupChannelEventsPage(
-				Long groupId, String channelId, Boolean includeAnonymousUsers,
+				Long groupId, String channelId, String accountId,
+				Boolean includeAnonymousUsers, String individualId,
 				String rangeEnd, String rangeKey, String rangeStart,
-				String search, Pagination pagination)
+				String search, String segmentId, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupChannelEventsPageHttpResponse(
-					groupId, channelId, includeAnonymousUsers, rangeEnd,
-					rangeKey, rangeStart, search, pagination);
+					groupId, channelId, accountId, includeAnonymousUsers,
+					individualId, rangeEnd, rangeKey, rangeStart, search,
+					segmentId, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -227,10 +231,10 @@ public interface EventResource {
 
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupChannelEventsPageHttpResponse(
-					Long groupId, String channelId,
-					Boolean includeAnonymousUsers, String rangeEnd,
-					String rangeKey, String rangeStart, String search,
-					Pagination pagination)
+					Long groupId, String channelId, String accountId,
+					Boolean includeAnonymousUsers, String individualId,
+					String rangeEnd, String rangeKey, String rangeStart,
+					String search, String segmentId, Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -254,10 +258,19 @@ public interface EventResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
+			if (accountId != null) {
+				httpInvoker.parameter("accountId", String.valueOf(accountId));
+			}
+
 			if (includeAnonymousUsers != null) {
 				httpInvoker.parameter(
 					"includeAnonymousUsers",
 					String.valueOf(includeAnonymousUsers));
+			}
+
+			if (individualId != null) {
+				httpInvoker.parameter(
+					"individualId", String.valueOf(individualId));
 			}
 
 			if (rangeEnd != null) {
@@ -274,6 +287,10 @@ public interface EventResource {
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (segmentId != null) {
+				httpInvoker.parameter("segmentId", String.valueOf(segmentId));
 			}
 
 			if (pagination != null) {
@@ -311,4 +328,4 @@ public interface EventResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2027624707
+// LIFERAY-REST-BUILDER-HASH:1654513400
