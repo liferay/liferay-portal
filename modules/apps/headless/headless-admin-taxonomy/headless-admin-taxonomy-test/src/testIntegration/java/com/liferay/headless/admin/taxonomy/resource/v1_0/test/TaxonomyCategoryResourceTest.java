@@ -2281,8 +2281,8 @@ public class TaxonomyCategoryResourceTest
 		Map<String, String> map = _toMap(
 			putTaxonomyCategory.getTaxonomyCategoryProperties());
 
-		Assert.assertEquals(propertyValue, map.get(propertyKey));
 		Assert.assertNull(map.get(deletedPropertyKey));
+		Assert.assertEquals(propertyValue, map.get(propertyKey));
 		Assert.assertEquals(map.toString(), 1, map.size());
 	}
 
