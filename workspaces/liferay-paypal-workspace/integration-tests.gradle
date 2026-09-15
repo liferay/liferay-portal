@@ -1,0 +1,65 @@
+Provider<String> propertyProvider = providers.gradleProperty("integration.test.target")
+
+String integrationTestTarget = propertyProvider.getOrElse("container")
+
+if (!["bundle", "container"].contains(integrationTestTarget)) {
+	throw new GradleException("Property integration.test.target must be one of \"container\" or \"bundle\", not \"${integrationTestTarget}\"")
+}
+
+gradle.allprojects {
+	pluginManager.withPlugin("com.liferay.test.integration") {
+		dependencies {
+			testIntegrationImplementation group: "com.liferay", name: "com.liferay.arquillian.extension.junit.bridge"
+			testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.test"
+			testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.test.integration"
+			testIntegrationImplementation group: "com.liferay.portal", name: "release.dxp.api"
+			testIntegrationImplementation group: "junit", name: "junit"
+			testModules group: "com.liferay", name: "com.liferay.arquillian.extension.junit.bridge.connector"
+			testModules group: "com.liferay.portal", name: "com.liferay.portal.test"
+			testModules group: "com.liferay.portal", name: "com.liferay.portal.test.integration"
+		}
+
+		if (project.name.endsWith("-test")) {
+			deploy.enabled = false
+		}
+
+		if (integrationTestTarget == "bundle") {
+			liferay {
+				appServers {
+					tomcat {
+						FileTree serverXMLFileTree = fileTree(gradle.liferayWorkspace.homeDir) {
+							include "tomcat*/conf/server.xml"
+						}
+
+						if (!serverXMLFileTree.isEmpty()) {
+							dir = {
+								serverXMLFileTree.singleFile.parentFile.parentFile
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if (integrationTestTarget == "container") {
+			copyTestModules.enabled = false
+			setUpTestableTomcat.enabled = false
+			startTestableTomcat.enabled = false
+			stopTestableTomcat.enabled = false
+		}
+	}
+}
+
+gradle.projectsEvaluated {
+	gradle.rootProject.subprojects.each {
+		Project project ->
+
+		pluginManager.withPlugin("com.liferay.test.integration") {
+			configurations.testModules.dependencies.each {
+				Dependency dependency ->
+
+				project.rootProject.dependencies.add("providedModules", dependency.copy())
+			}
+		}
+	}
+}

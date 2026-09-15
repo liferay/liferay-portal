@@ -1,8 +1,4 @@
 gradle.allprojects {
-	if (!Boolean.parseBoolean(String.valueOf(findProperty("liferay.workspace.use.test.boms")))) {
-		return
-	}
-
 	pluginManager.withPlugin("com.liferay.osgi.plugin") {
 		configurations {
 			testImplementation.extendsFrom(compileInclude)

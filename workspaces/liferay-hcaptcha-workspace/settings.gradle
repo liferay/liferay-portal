@@ -18,6 +18,9 @@ buildscript {
 
 apply plugin: "com.liferay.workspace"
 
-apply from: "unit-tests.gradle"
+if (providers.gradleProperty("liferay.workspace.use.test.boms").map(Boolean::parseBoolean).getOrElse(false)) {
+	apply from: "integration-tests.gradle"
+	apply from: "unit-tests.gradle"
+}
 
 include "poshi"
