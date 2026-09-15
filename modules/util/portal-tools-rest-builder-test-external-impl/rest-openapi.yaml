@@ -1,11 +1,36 @@
 components:
     schemas:
+        ExternalChildTestEntity1:
+            allOf:
+                -   $ref: "#/components/schemas/ExternalTestEntity1"
+                -   properties:
+                        externalProperty:
+                            type: string
+            type: object
+        ExternalChildTestEntity2:
+            allOf:
+                -   $ref: "#/components/schemas/ExternalTestEntity1"
+                -   $ref: "#/components/schemas/ExternalScopedTestEntity"
+            type: object
         ExternalScopedTestEntity:
             properties:
                 externalReferenceCode:
                     type: string
                 scope:
                     type: scope
+            type: object
+        ExternalTestEntity1:
+            discriminator:
+                mapping:
+                    ExternalChildTestEntity1: "#/components/schemas/ExternalChildTestEntity1"
+                    ExternalChildTestEntity2: "#/components/schemas/ExternalChildTestEntity2"
+                propertyName: type
+            properties:
+                type:
+                    enum:
+                        -   ExternalChildTestEntity1
+                        -   ExternalChildTestEntity2
+                    type: string
             type: object
 info:
     description:

@@ -274,6 +274,8 @@ components:
             properties:
                 externalScopedTestEntity:
                     $ref: ../portal-tools-rest-builder-test-external-impl/rest-openapi.yaml#ExternalScopedTestEntity
+                externalTestEntity1:
+                    $ref: ../portal-tools-rest-builder-test-external-impl/rest-openapi.yaml#ExternalTestEntity1
             type: object
         Schema:
             properties:
