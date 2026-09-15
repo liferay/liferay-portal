@@ -96,6 +96,7 @@
 		<column name="active" type="boolean" />
 		<column name="className" type="String" />
 		<column method-name="DBTableName" name="dbTableName" type="String" />
+		<column localized="true" name="description" type="String" />
 		<column name="enableCategorization" type="boolean" />
 		<column name="enableComments" type="boolean" />
 		<column name="enableFormContainer" type="boolean" />
