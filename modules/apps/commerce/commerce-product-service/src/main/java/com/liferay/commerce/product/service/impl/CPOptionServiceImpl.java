@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -148,6 +149,31 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 			getPermissionChecker(), cpOptionId, ActionKeys.VIEW);
 
 		return cpOptionPersistence.findByPrimaryKey(cpOptionId);
+	}
+
+	@Override
+	public CPOption getOrAddEmptyCPOption(String externalReferenceCode)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CPOption cpOption =
+			cpOptionService.fetchCPOptionByExternalReferenceCode(
+				externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (cpOption != null) {
+			return cpOption;
+		}
+
+		PortletResourcePermission portletResourcePermission =
+			_cpOptionModelResourcePermission.getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			permissionChecker, null, CPActionKeys.ADD_COMMERCE_PRODUCT_OPTION);
+
+		return cpOptionLocalService.getOrAddEmptyCPOption(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId());
 	}
 
 	@Override
