@@ -21,10 +21,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * Ranked below the login module's own <code>auth.failure</code> handler so
- * that the failed login attempt is already counted by the time the audit
- * event reads it.
- *
  * @author Manuele Castro
  */
 @Component(
@@ -63,10 +59,6 @@ public class CryptoOfficerAuthFailure implements AuthFailure {
 		if ((user == null) || !FIPSUtil.hasCryptoOfficerRole(user)) {
 			return;
 		}
-
-		// Emitting the event is a side effect only. Letting an exception
-		// escape would abort the remaining authentication failure handling,
-		// which is what locks the account out after too many attempts.
 
 		try {
 			String failureReason = "bad-credential";

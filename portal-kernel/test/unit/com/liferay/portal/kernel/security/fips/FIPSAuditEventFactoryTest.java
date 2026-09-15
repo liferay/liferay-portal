@@ -36,14 +36,14 @@ public class FIPSAuditEventFactoryTest {
 			FIPSAuditEvent.Severity.WARNING, fipsAuditEvent.getSeverity());
 
 		_assertFields(
-			fipsAuditEvent, attemptedUserId, authenticationMethod, clientIP,
-			consecutiveFailureCount, failureReason);
+			attemptedUserId, authenticationMethod, clientIP,
+			consecutiveFailureCount, failureReason, fipsAuditEvent);
 
 		_assertFields(
-			FIPSAuditEventFactory.createAuthAttemptFailure(
-				null, null, null, 0, null),
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0,
-			StringPool.BLANK);
+			StringPool.BLANK,
+			FIPSAuditEventFactory.createAuthAttemptFailure(
+				null, null, null, 0, null));
 	}
 
 	@Test
@@ -74,26 +74,6 @@ public class FIPSAuditEventFactoryTest {
 	}
 
 	private void _assertFields(
-		FIPSAuditEvent fipsAuditEvent, String attemptedUserId,
-		String authenticationMethod, String clientIP,
-		int consecutiveFailureCount, String failureReason) {
-
-		Assert.assertEquals(
-			HashMapBuilder.<String, Object>put(
-				"attempted-user-id", attemptedUserId
-			).put(
-				"authentication-method", authenticationMethod
-			).put(
-				"client-ip", clientIP
-			).put(
-				"consecutive-failure-count", consecutiveFailureCount
-			).put(
-				"failure-reason", failureReason
-			).build(),
-			fipsAuditEvent.getFields());
-	}
-
-	private void _assertFields(
 		FIPSAuditEvent fipsAuditEvent, String receivingEndpoint,
 		String rejectedValue, String tokenIssuer, String tokenType) {
 
@@ -106,6 +86,26 @@ public class FIPSAuditEventFactoryTest {
 				"token-issuer", tokenIssuer
 			).put(
 				"token-type", tokenType
+			).build(),
+			fipsAuditEvent.getFields());
+	}
+
+	private void _assertFields(
+		String attemptedUserId, String authenticationMethod, String clientIP,
+		int consecutiveFailureCount, String failureReason,
+		FIPSAuditEvent fipsAuditEvent) {
+
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"attempted-user-id", attemptedUserId
+			).put(
+				"authentication-method", authenticationMethod
+			).put(
+				"client-ip", clientIP
+			).put(
+				"consecutive-failure-count", consecutiveFailureCount
+			).put(
+				"failure-reason", failureReason
 			).build(),
 			fipsAuditEvent.getFields());
 	}

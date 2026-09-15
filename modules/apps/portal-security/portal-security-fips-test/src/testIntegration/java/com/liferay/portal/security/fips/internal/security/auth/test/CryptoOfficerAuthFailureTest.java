@@ -82,7 +82,7 @@ public class CryptoOfficerAuthFailureTest {
 
 			User user = _addCryptoOfficerUser();
 
-			_authenticateByScreenName(user);
+			_assertFailureByScreenName(user);
 
 			List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(
 				user);
@@ -101,7 +101,7 @@ public class CryptoOfficerAuthFailureTest {
 
 			User user = _addCryptoOfficerUser();
 
-			_authenticateByUserId(user);
+			_assertFailureByUserId(user);
 
 			List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(
 				user);
@@ -130,7 +130,7 @@ public class CryptoOfficerAuthFailureTest {
 		return user;
 	}
 
-	private void _authenticateByEmailAddress(User user) throws Exception {
+	private void _assertFailureByEmailAddress(User user) throws Exception {
 		Assert.assertEquals(
 			Authenticator.FAILURE,
 			_userLocalService.authenticateByEmailAddress(
@@ -139,7 +139,7 @@ public class CryptoOfficerAuthFailureTest {
 				Collections.emptyMap(), null));
 	}
 
-	private void _authenticateByScreenName(User user) throws Exception {
+	private void _assertFailureByScreenName(User user) throws Exception {
 		Assert.assertEquals(
 			Authenticator.FAILURE,
 			_userLocalService.authenticateByScreenName(
@@ -148,7 +148,7 @@ public class CryptoOfficerAuthFailureTest {
 				Collections.emptyMap(), null));
 	}
 
-	private void _authenticateByUserId(User user) throws Exception {
+	private void _assertFailureByUserId(User user) throws Exception {
 		Assert.assertEquals(
 			Authenticator.FAILURE,
 			_userLocalService.authenticateByUserId(
@@ -176,7 +176,7 @@ public class CryptoOfficerAuthFailureTest {
 					"fields");
 
 				return Objects.equals(
-					userId, fieldsJSONObject.getString("attempted-user-id"));
+					fieldsJSONObject.getString("attempted-user-id"), userId);
 			});
 	}
 
@@ -184,7 +184,7 @@ public class CryptoOfficerAuthFailureTest {
 		User user = _addCryptoOfficerUser();
 
 		for (int i = 0; i < 3; i++) {
-			_authenticateByEmailAddress(user);
+			_assertFailureByEmailAddress(user);
 		}
 
 		List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(user);
@@ -216,7 +216,7 @@ public class CryptoOfficerAuthFailureTest {
 		_userLocalService.updateLockoutByEmailAddress(
 			_company.getCompanyId(), user.getEmailAddress(), true);
 
-		_authenticateByEmailAddress(user);
+		_assertFailureByEmailAddress(user);
 
 		List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(user);
 
@@ -235,12 +235,11 @@ public class CryptoOfficerAuthFailureTest {
 
 		User user = _addUser();
 
-		_authenticateByEmailAddress(user);
+		_assertFailureByEmailAddress(user);
 
-		Assert.assertTrue(
-			_getAuthAttemptFailureJSONObjects(
-				user
-			).isEmpty());
+		List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(user);
+
+		Assert.assertTrue(jsonObjects.toString(), jsonObjects.isEmpty());
 	}
 
 	private Company _company;
