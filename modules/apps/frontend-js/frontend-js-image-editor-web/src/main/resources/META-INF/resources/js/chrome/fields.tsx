@@ -5,6 +5,7 @@
 
 import ClayForm from '@clayui/form';
 import ClaySlider from '@clayui/slider';
+import classNames from 'classnames';
 import React, {useRef} from 'react';
 
 interface FieldProps {
@@ -33,9 +34,10 @@ export function ColorField({
 			<label htmlFor={id}>{label}</label>
 
 			<input
-				className={`editor-color-input form-control form-control-sm${
-					fill ? ' editor-color-fill' : ''
-				}`}
+				className={classNames(
+					'editor-color-input form-control form-control-sm',
+					{'editor-color-fill': fill}
+				)}
 				id={id}
 				onBlur={() => {
 					if (draggingRef.current) {
