@@ -54,8 +54,8 @@ public class ObjectEntriesPanelAppTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				true, true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, true, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null,
 				"site_administration.content",
@@ -92,8 +92,8 @@ public class ObjectEntriesPanelAppTest {
 
 		objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				true, true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, true, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null,
 				"site_administration.content",

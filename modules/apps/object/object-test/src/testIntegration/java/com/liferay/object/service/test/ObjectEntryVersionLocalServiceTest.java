@@ -97,8 +97,8 @@ public class ObjectEntryVersionLocalServiceTest {
 	public static void setUpClass() throws Exception {
 		_objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				false, true, true, false, false, true, null,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, true, true, false, false, true, null,
 				RandomTestUtil.randomLocaleStringMap(),
 				"A" + StringUtil.randomString(), null, null,
 				RandomTestUtil.randomLocaleStringMap(), true,

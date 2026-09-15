@@ -73,8 +73,8 @@ public abstract class BaseDisplayContextTestCase {
 
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), objectFolderId, null, true,
-				enableComments, true, false, true, enableObjectEntryDraft,
+				null, TestPropsValues.getUserId(), objectFolderId, null, null,
+				true, enableComments, true, false, true, enableObjectEntryDraft,
 				false, false, false, null,
 				Collections.singletonMap(
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
@@ -106,7 +106,7 @@ public abstract class BaseDisplayContextTestCase {
 			objectDefinition.getObjectFolderId(),
 			objectDefinition.getTitleObjectFieldId(),
 			objectDefinition.isAccountEntryRestricted(), active,
-			objectDefinition.getClassName(),
+			objectDefinition.getClassName(), null,
 			objectDefinition.isEnableCategorization(),
 			objectDefinition.isEnableComments(),
 			objectDefinition.isEnableFormContainer(),

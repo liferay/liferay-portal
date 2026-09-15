@@ -240,8 +240,8 @@ public class MoveBulkSelectionActionTest {
 	private ObjectDefinition _publishDepotObjectDefinition() throws Exception {
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				false, true, false, false, false, false,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, true, false, false, false, false,
 				FriendlyURLResolverConstants.URL_SEPARATOR_Y_OBJECT_ENTRY,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"Test" + RandomTestUtil.randomString(), null, null,

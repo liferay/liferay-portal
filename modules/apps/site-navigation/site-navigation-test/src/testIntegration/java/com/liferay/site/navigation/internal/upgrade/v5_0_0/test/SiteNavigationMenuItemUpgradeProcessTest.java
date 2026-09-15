@@ -299,8 +299,8 @@ public class SiteNavigationMenuItemUpgradeProcessTest {
 	public void testUpgradeWithCompanyScopedObjectEntry() throws Exception {
 		ObjectDefinition companyScopedObjectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				false, true, false, false, false, false,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, true, false, false, false, false,
 				RandomTestUtil.randomString(),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"TestObject", null, null,
@@ -580,8 +580,8 @@ public class SiteNavigationMenuItemUpgradeProcessTest {
 	public void testUpgradeWithSiteScopedObjectEntry() throws Exception {
 		ObjectDefinition siteScopedObjectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				false, true, false, false, false, false,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, true, false, false, false, false,
 				RandomTestUtil.randomString(),
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"Test", null, null,

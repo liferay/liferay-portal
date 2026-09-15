@@ -203,8 +203,8 @@ public class ObjectEntrySingleFormVariationInfoCollectionProviderTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				false, enableIndexSearch, false, false, false,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, enableIndexSearch, false, false, false,
 				enableObjectEntryVersioning, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,

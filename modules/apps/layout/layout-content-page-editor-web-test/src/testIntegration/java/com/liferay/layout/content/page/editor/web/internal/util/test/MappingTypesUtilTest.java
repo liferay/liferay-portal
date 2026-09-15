@@ -96,7 +96,7 @@ public class MappingTypesUtilTest {
 		throws Exception {
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			null, TestPropsValues.getUserId(), objectFolderId, null, true,
+			null, TestPropsValues.getUserId(), objectFolderId, null, null, true,
 			false, true, false, true, false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionTestUtil.getRandomName(), null, null,

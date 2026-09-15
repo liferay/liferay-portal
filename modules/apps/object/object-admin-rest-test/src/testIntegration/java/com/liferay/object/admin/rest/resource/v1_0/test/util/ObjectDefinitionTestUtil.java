@@ -37,7 +37,7 @@ public class ObjectDefinitionTestUtil {
 				getRandomName();
 
 		return ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-			null, TestPropsValues.getUserId(), objectFolderId, null, true,
+			null, TestPropsValues.getUserId(), objectFolderId, null, null, true,
 			false, true, false, true, false, false, false, false, null,
 			LocalizedMapUtil.getLocalizedMap(value), value, null, null,
 			LocalizedMapUtil.getLocalizedMap(value), true,
@@ -59,10 +59,11 @@ public class ObjectDefinitionTestUtil {
 			TestPropsValues.getUserId(), 0,
 			com.liferay.object.test.util.ObjectDefinitionTestUtil.
 				getUniqueRandomClassName(),
-			null, true, false, true, false, false, false, false, false, false,
-			false, null, LocalizedMapUtil.getLocalizedMap(value), true, "Test",
-			null, null, null, null, LocalizedMapUtil.getLocalizedMap(value),
-			true, ObjectDefinitionConstants.SCOPE_COMPANY, null, 1, 0,
+			null, null, true, false, true, false, false, false, false, false,
+			false, false, null, LocalizedMapUtil.getLocalizedMap(value), true,
+			"Test", null, null, null, null,
+			LocalizedMapUtil.getLocalizedMap(value), true,
+			ObjectDefinitionConstants.SCOPE_COMPANY, null, 1, 0,
 			Collections.emptyList(), Collections.emptyList(),
 			Collections.emptyList());
 	}

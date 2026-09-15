@@ -100,8 +100,8 @@ public class AssetDisplayPageUtilTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				false, true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, true, false, false, false, false, null,
 				RandomTestUtil.randomLocaleStringMap(),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				RandomTestUtil.randomLocaleStringMap(), true,
@@ -226,8 +226,8 @@ public class AssetDisplayPageUtilTest {
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, true, false, true,
-				false, true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, null, true, false,
+				true, false, true, false, false, false, false, null,
 				RandomTestUtil.randomLocaleStringMap(),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				RandomTestUtil.randomLocaleStringMap(), true,

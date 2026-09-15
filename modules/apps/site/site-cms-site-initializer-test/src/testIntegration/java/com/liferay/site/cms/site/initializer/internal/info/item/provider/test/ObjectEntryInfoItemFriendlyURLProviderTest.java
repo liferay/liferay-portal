@@ -89,9 +89,9 @@ public class ObjectEntryInfoItemFriendlyURLProviderTest {
 			_objectDefinitionLocalService.addSystemObjectDefinition(
 				null, TestPropsValues.getUserId(),
 				objectFolder.getObjectFolderId(),
-				ObjectDefinitionTestUtil.getUniqueRandomClassName(), null, true,
-				false, true, false, true, false, false, false, false, false,
-				null,
+				ObjectDefinitionTestUtil.getUniqueRandomClassName(), null, null,
+				true, false, true, false, true, false, false, false, false,
+				false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				true, "Test", null, null, null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

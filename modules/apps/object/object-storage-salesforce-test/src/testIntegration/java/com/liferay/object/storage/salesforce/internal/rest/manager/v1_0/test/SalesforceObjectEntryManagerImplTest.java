@@ -163,8 +163,8 @@ public class SalesforceObjectEntryManagerImplTest
 
 		_objectDefinition =
 			objectDefinitionLocalService.addCustomObjectDefinition(
-				null, adminUser.getUserId(), 0, null, false, false, true, false,
-				true, false, false, false, false, null,
+				null, adminUser.getUserId(), 0, null, null, false, false, true,
+				false, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap("Ticket"), "Ticket", null,
 				null, LocalizedMapUtil.getLocalizedMap("Tickets"), true,
 				ObjectDefinitionConstants.SCOPE_COMPANY,

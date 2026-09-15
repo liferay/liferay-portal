@@ -5027,7 +5027,7 @@ public class ObjectEntryLocalServiceTest {
 			_objectDefinition.getDescriptionObjectFieldId(), 0,
 			_objectDefinition.getTitleObjectFieldId(),
 			_objectDefinition.isAccountEntryRestricted(), false,
-			_objectDefinition.getClassName(),
+			_objectDefinition.getClassName(), null,
 			_objectDefinition.isEnableCategorization(),
 			_objectDefinition.isEnableComments(),
 			_objectDefinition.isEnableFormContainer(),

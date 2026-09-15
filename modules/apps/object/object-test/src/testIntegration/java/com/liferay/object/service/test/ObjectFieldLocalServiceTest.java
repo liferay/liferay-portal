@@ -307,8 +307,8 @@ public class ObjectFieldLocalServiceTest {
 			"Salesforce storage type does not support aggregation and " +
 				"attachment business types",
 			() -> _objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, false, false, true,
-				false, true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, null, false, false,
+				true, false, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -351,8 +351,8 @@ public class ObjectFieldLocalServiceTest {
 			"Salesforce storage type does not support aggregation and " +
 				"attachment business types",
 			() -> _objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, false, false, true,
-				false, true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, null, false, false,
+				true, false, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -3146,7 +3146,7 @@ public class ObjectFieldLocalServiceTest {
 				}
 
 				_objectDefinitionLocalService.addCustomObjectDefinition(
-					null, TestPropsValues.getUserId(), 0, null,
+					null, TestPropsValues.getUserId(), 0, null, null,
 					enableCategorization, false, true, false, true, false,
 					false, false, false, null,
 					LocalizedMapUtil.getLocalizedMap(
@@ -3856,8 +3856,8 @@ public class ObjectFieldLocalServiceTest {
 
 		objectDefinition1 =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
-				null, TestPropsValues.getUserId(), 0, null, false, false, true,
-				false, true, false, false, false, false, null,
+				null, TestPropsValues.getUserId(), 0, null, null, false, false,
+				true, false, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				"Test", null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),

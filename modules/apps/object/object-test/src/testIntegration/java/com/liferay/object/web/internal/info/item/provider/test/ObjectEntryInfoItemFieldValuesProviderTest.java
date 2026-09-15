@@ -714,7 +714,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		throws Exception {
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
-			null, TestPropsValues.getUserId(), 0, null, true, false, true,
+			null, TestPropsValues.getUserId(), 0, null, null, true, false, true,
 			false, true, false, false, false, enableObjectEntryVersioning, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionTestUtil.getRandomName(), null, null,

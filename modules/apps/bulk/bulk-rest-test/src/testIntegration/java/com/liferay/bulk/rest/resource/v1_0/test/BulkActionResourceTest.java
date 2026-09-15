@@ -1616,7 +1616,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
 				null, TestPropsValues.getUserId(),
-				objectFolder.getObjectFolderId(), null, true, false, true,
+				objectFolder.getObjectFolderId(), null, null, true, false, true,
 				false, true, false, false, false, false, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionTestUtil.getRandomName(), null, null,

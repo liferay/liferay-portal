@@ -486,8 +486,8 @@ public class ObjectDefinitionServiceTest {
 
 			ObjectDefinition objectDefinition =
 				_objectDefinitionService.addCustomObjectDefinition(
-					null, objectFolderId, null, true, false, true, false, true,
-					false, false, false, false, null,
+					null, objectFolderId, null, null, true, false, true, false,
+					true, false, false, false, false, null,
 					RandomTestUtil.randomLocaleStringMap(),
 					ObjectDefinitionTestUtil.getRandomName(), null, null,
 					RandomTestUtil.randomLocaleStringMap(), true, scope,
@@ -565,7 +565,7 @@ public class ObjectDefinitionServiceTest {
 
 			_objectDefinitionService.addSystemObjectDefinition(
 				RandomTestUtil.randomString(), user.getUserId(), objectFolderId,
-				ObjectDefinitionTestUtil.getUniqueRandomClassName(), true,
+				ObjectDefinitionTestUtil.getUniqueRandomClassName(), null, true,
 				false, true, false, true, false, false, false, false, false,
 				null, RandomTestUtil.randomLocaleStringMap(),
 				ObjectDefinitionTestUtil.
@@ -628,8 +628,8 @@ public class ObjectDefinitionServiceTest {
 			_objectDefinitionService.updateCustomObjectDefinition(
 				null, objectDefinition.getObjectDefinitionId(), 0, 0,
 				objectFolderId, 0, false, objectDefinition.isActive(), null,
-				true, false, true, false, true, false, false, false, false,
-				false, null, RandomTestUtil.randomLocaleStringMap(),
+				null, true, false, true, false, true, false, false, false,
+				false, false, null, RandomTestUtil.randomLocaleStringMap(),
 				ObjectDefinitionTestUtil.getRandomName(), null, null, false,
 				RandomTestUtil.randomLocaleStringMap(),
 				objectDefinition.getScope(), objectDefinition.getStatus(),

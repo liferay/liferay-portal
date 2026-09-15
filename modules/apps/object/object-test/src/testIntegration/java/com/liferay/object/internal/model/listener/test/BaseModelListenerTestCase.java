@@ -96,8 +96,8 @@ public abstract class BaseModelListenerTestCase {
 		objectDefinition2 =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
 				null, companyAdminUser.getUserId(), 0,
-				objectDefinition1.getClassName(), true, false, true, false,
-				true, false, true, true, true, null,
+				objectDefinition1.getClassName(), null, true, false, true,
+				false, true, false, true, true, true, null,
 				RandomTestUtil.randomLocaleStringMap(),
 				objectDefinition1.getShortName(), null, null,
 				RandomTestUtil.randomLocaleStringMap(), true,
