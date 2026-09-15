@@ -795,6 +795,11 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.8.1", "13.9.0",
 			UpgradeProcessFactory.addColumns(
 				"ObjectField", "description STRING null"));
+
+		registry.register(
+			"13.9.0", "13.10.0",
+			UpgradeProcessFactory.addColumns(
+				"ObjectDefinition", "description STRING null"));
 	}
 
 	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {
