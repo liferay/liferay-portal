@@ -1,4 +1,4 @@
-# Checks for .tpl, .yaml, or .yml
+# Checks for .gotmpl, .tpl, .yaml, or .yml
 
 Check | Category | Description
 ----- | -------- | -----------
