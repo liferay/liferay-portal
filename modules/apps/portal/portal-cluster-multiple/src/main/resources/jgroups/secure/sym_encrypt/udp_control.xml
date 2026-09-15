@@ -4,23 +4,23 @@
 	xsi:schemaLocation="urn:org:jgroups http://www.jgroups.org/schema/jgroups-4.1.xsd"
 >
 	<UDP
-		bind_addr="${cluster.link.bind.addr[&quot;cluster-link-udp&quot;]}"
-		mcast_addr="${multicast.group.address[&quot;cluster-link-udp&quot;]}"
-		mcast_port="${multicast.group.port[&quot;cluster-link-udp&quot;]}"
+		bind_addr="${cluster.link.bind.addr[&quot;cluster-link-control&quot;]}"
+		mcast_addr="${multicast.group.address[&quot;cluster-link-control&quot;]}"
+		mcast_port="${multicast.group.port[&quot;cluster-link-control&quot;]}"
 	/>
 	<!--ip_ttl="4"
-	tos="8"
-	ucast_recv_buf_size="5M"
-	ucast_send_buf_size="5M"
-	mcast_recv_buf_size="5M"
-	mcast_send_buf_size="5M"
-	max_bundle_size="64K"
-	enable_diagnostics="true"
-	thread_naming_pattern="cl"
+			tos="8"
+			ucast_recv_buf_size="5M"
+			ucast_send_buf_size="5M"
+			mcast_recv_buf_size="5M"
+			mcast_send_buf_size="5M"
+			max_bundle_size="64K"
+			enable_diagnostics="true"
+			thread_naming_pattern="cl"
 
-	thread_pool.min_threads="0"
-	thread_pool.max_threads="20"
-	thread_pool.keep_alive_time="30000"/>-->
+			thread_pool.min_threads="0"
+			thread_pool.max_threads="20"
+			thread_pool.keep_alive_time="30000"/>-->
 	<PING />
 	<MERGE3
 		max_interval="30000"
@@ -30,15 +30,11 @@
 	<FD_ALL />
 	<VERIFY_SUSPECT timeout="1500" />
 	<!--<BARRIER />-->
-	<ASYM_ENCRYPT
-		asym_algorithm="RSA"
-		asym_keylength="512"
-		change_key_on_coord_leave="false"
-		change_key_on_leave="false"
+	<SYM_ENCRYPT
 		sym_algorithm="AES/CBC/PKCS5Padding"
 		sym_iv_length="16"
-		sym_keylength="128"
 	/>
+	<SERIALIZE />
 	<pbcast.NAKACK2 xmit_interval="500"
 					xmit_table_num_rows="100"
 					xmit_table_msgs_per_row="2000"
@@ -55,11 +51,6 @@
 	<pbcast.STABLE desired_avg_gossip="50000"
 				   max_bytes="4M"
 				   stability_delay="1000" />
-	<AUTH
-		auth_class="org.jgroups.auth.MD5Token"
-		auth_value="${cluster.link.auth.value}"
-		token_hash="MD5"
-	/>
 	<pbcast.GMS join_timeout="2000" print_local_addr="true" view_bundling="true" />
 	<UFC
 		max_credits="2M"

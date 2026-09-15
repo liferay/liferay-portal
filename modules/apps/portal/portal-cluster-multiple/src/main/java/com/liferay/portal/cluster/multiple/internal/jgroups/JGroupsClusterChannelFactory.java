@@ -19,6 +19,7 @@ import com.liferay.portal.cluster.multiple.internal.ClusterReceiver;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -34,11 +35,17 @@ import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutorService;
 
+import javax.crypto.spec.SecretKeySpec;
+
 import org.jgroups.conf.ConfiguratorFactory;
+import org.jgroups.conf.ProtocolConfiguration;
 import org.jgroups.conf.ProtocolStackConfigurator;
+import org.jgroups.protocols.SYM_ENCRYPT;
+import org.jgroups.stack.Protocol;
 
 /**
  * @author Tina Tian
@@ -68,8 +75,8 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 		try {
 			return new JGroupsClusterChannel(
 				executorService, channleLogicName,
-				_parseChannelProperties(channelPropertiesLocation), clusterName,
-				clusterReceiver, _bindInetAddress,
+				_parseChannelProperties(channelPropertiesLocation, clusterName),
+				clusterName, clusterReceiver, _bindInetAddress,
 				_clusterExecutorConfiguration, _classLoaders);
 		}
 		catch (Exception exception) {
@@ -195,22 +202,8 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 	}
 
 	private ProtocolStackConfigurator _parseChannelProperties(
-			String channelPropertiesLocation)
+			String channelPropertiesLocation, String clusterName)
 		throws Exception {
-
-		if (channelPropertiesLocation.startsWith("jgroups/secure/md5/") &&
-			_log.isWarnEnabled() && _defaultMD5Warning) {
-
-			_log.warn(
-				StringBundler.concat(
-					"Clustering authentication is using MD5 default ",
-					"implementation. Please note that this implementation is ",
-					"not secure enough to be used in production. Refer to the ",
-					"documentation for details on configuring secure JGroups ",
-					"connections."));
-
-			_defaultMD5Warning = false;
-		}
 
 		try (InputStream inputStream = _getInputStream(
 				channelPropertiesLocation)) {
@@ -281,9 +274,32 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 				configXML = sb.toString();
 			}
 
-			return ConfiguratorFactory.getStackConfigurator(
-				new UnsyncByteArrayInputStream(
-					configXML.getBytes(StringPool.UTF8)));
+			ProtocolStackConfigurator protocolStackConfigurator =
+				ConfiguratorFactory.getStackConfigurator(
+					new UnsyncByteArrayInputStream(
+						configXML.getBytes(StringPool.UTF8)));
+
+			if (channelPropertiesLocation.startsWith(
+					"jgroups/secure/sym_encrypt/")) {
+
+				if (_log.isWarnEnabled() && _defaultSymEncryptWarning) {
+					_log.warn(
+						StringBundler.concat(
+							"Clustering authentication is using SYM_ENCRYPT ",
+							"default implementation. Please note that this ",
+							"implementation is not secure enough to be used ",
+							"in production. Refer to the documentation for ",
+							"details on configuring secure JGroups ",
+							"connections."));
+
+					_defaultSymEncryptWarning = false;
+				}
+
+				return new SymEncryptProtocolStackConfigurator(
+					clusterName, protocolStackConfigurator);
+			}
+
+			return protocolStackConfigurator;
 		}
 	}
 
@@ -300,8 +316,8 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 	private static final Log _log = LogFactoryUtil.getLog(
 		JGroupsClusterChannelFactory.class);
 
-	private static boolean _defaultMD5Warning = true;
 	private static boolean _defaultSecretWarning = true;
+	private static boolean _defaultSymEncryptWarning = true;
 
 	private InetAddress _bindInetAddress;
 	private NetworkInterface _bindNetworkInterface;
@@ -309,5 +325,45 @@ public class JGroupsClusterChannelFactory implements ClusterChannelFactory {
 		new ConcurrentReferenceKeyHashMap<>(
 			FinalizeManager.WEAK_REFERENCE_FACTORY);
 	private volatile ClusterExecutorConfiguration _clusterExecutorConfiguration;
+
+	private static class SymEncryptProtocolStackConfigurator
+		implements ProtocolStackConfigurator {
+
+		@Override
+		public void afterCreation(Protocol protocol) {
+			if (!(protocol instanceof SYM_ENCRYPT symEncrypt) ||
+				(symEncrypt.keystoreName() != null)) {
+
+				return;
+			}
+
+			symEncrypt.setSecretKey(
+				new SecretKeySpec(
+					DigesterUtil.digestRaw(DigesterUtil.SHA_256, _clusterName),
+					"AES"));
+		}
+
+		@Override
+		public List<ProtocolConfiguration> getProtocolStack() {
+			return _protocolStackConfigurator.getProtocolStack();
+		}
+
+		@Override
+		public String getProtocolStackString() {
+			return _protocolStackConfigurator.getProtocolStackString();
+		}
+
+		private SymEncryptProtocolStackConfigurator(
+			String clusterName,
+			ProtocolStackConfigurator protocolStackConfigurator) {
+
+			_clusterName = clusterName;
+			_protocolStackConfigurator = protocolStackConfigurator;
+		}
+
+		private final String _clusterName;
+		private final ProtocolStackConfigurator _protocolStackConfigurator;
+
+	}
 
 }
