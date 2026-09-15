@@ -2193,6 +2193,22 @@ public class ObjectEntryLocalServiceTest {
 						_objectEntryLocalService.getValues(
 							objectEntry.getObjectEntryId()),
 						"encrypted"));
+
+				objectEntry = _objectEntryLocalService.updateObjectEntry(
+					TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+					objectEntry.getObjectEntryFolderId(),
+					HashMapBuilder.<String, Serializable>put(
+						"emailAddressRequired", "athanasius@liferay.com"
+					).put(
+						"encrypted", "Baker"
+					).put(
+						"listTypeEntryKeyRequired", "listTypeEntryKey1"
+					).build(),
+					ServiceContextTestUtil.getServiceContext());
+
+				Assert.assertEquals(
+					"Baker",
+					MapUtil.getString(objectEntry.getValues(), "encrypted"));
 			});
 
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
@@ -2305,7 +2321,7 @@ public class ObjectEntryLocalServiceTest {
 
 				Assert.assertEquals(
 					_encryptor.encrypt(
-						new SecretKeySpec(Base64.decode(key), "AES"), "test"),
+						new SecretKeySpec(Base64.decode(key), "AES"), "Baker"),
 					resultSet.getString(objectField.getDBColumnName()));
 			}
 		}
@@ -2477,6 +2493,25 @@ public class ObjectEntryLocalServiceTest {
 			MapUtil.getDouble(
 				_objectEntryLocalService.getValues(objectEntry),
 				objectField5.getName()),
+			0);
+
+		Double updatedRandomDouble = RandomTestUtil.randomDouble();
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", "athanasius@liferay.com"
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).put(
+				"weight", updatedRandomDouble
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertEquals(
+			updatedRandomDouble + 10,
+			MapUtil.getDouble(objectEntry.getValues(), objectField2.getName()),
 			0);
 
 		_objectFieldLocalService.deleteObjectField(objectField1);
@@ -6720,6 +6755,24 @@ public class ObjectEntryLocalServiceTest {
 
 		_assertLoadValues(objectDefinition, objectEntry1, objectEntry2);
 
+		objectEntry1 = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry1.getObjectEntryId(),
+			objectEntry1.getObjectEntryFolderId(),
+			Collections.<String, Serializable>singletonMap(
+				"localizedText_i18n",
+				(Serializable)Collections.singletonMap(
+					LocaleUtil.toLanguageId(LocaleUtil.US), "Charlie")),
+			ServiceContextTestUtil.getServiceContext());
+
+		Map<String, Serializable> values = objectEntry1.getValues();
+
+		Assert.assertEquals(
+			"Charlie", MapUtil.getString(values, "localizedText"));
+		Assert.assertEquals(
+			Collections.singletonMap(
+				LocaleUtil.toLanguageId(LocaleUtil.US), "Charlie"),
+			values.get("localizedText_i18n"));
+
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
@@ -8716,6 +8769,52 @@ public class ObjectEntryLocalServiceTest {
 			_objectValidationRuleLocalService.deleteObjectValidationRule(
 				objectValidationRule);
 		}
+	}
+
+	@Test
+	public void testUpdateObjectEntryWithoutReloading() throws Exception {
+		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
+			Collections.singletonList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Name", "name")));
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			Collections.<String, Serializable>singletonMap("name", "Peter"),
+			ServiceContextTestUtil.getServiceContext());
+
+		FinderCacheUtil.clearDSLQueryCache(objectDefinition.getDBTableName());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"org.hibernate.SQL", LoggerTestUtil.DEBUG)) {
+
+			objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				Collections.<String, Serializable>singletonMap("name", "Paul"),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.assertEquals(
+				"Paul", MapUtil.getString(objectEntry.getValues(), "name"));
+
+			int count = 0;
+
+			for (LogEntry logEntry : logCapture.getLogEntries()) {
+				String message = logEntry.getMessage();
+
+				if (message.startsWith("select") &&
+					message.contains(objectDefinition.getDBTableName())) {
+
+					count++;
+				}
+			}
+
+			Assert.assertEquals(
+				String.valueOf(logCapture.getLogEntries()), 1, count);
+		}
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
