@@ -4,7 +4,7 @@
  */
 
 export const config = {
-	name: 'portal-db-infrastructure.upgrade',
+	name: 'portal-db-infrastructure.upgrade-portal-625',
 	testDir: 'tests/portal-db-infrastructure/upgrade',
 	timeout: 480 * 1000,
 	use: {
