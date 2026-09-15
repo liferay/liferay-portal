@@ -1,0 +1,236 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.jenkins.results.parser.test.clazz.file;
+
+import com.liferay.jenkins.results.parser.Dom4JUtil;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.RandomTestUtil;
+
+import java.io.File;
+
+import java.util.List;
+import java.util.Objects;
+
+import org.dom4j.Document;
+import org.dom4j.Element;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+/**
+ * @author Michael Hashimoto
+ */
+public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
+
+	@Test
+	public void testFormatTestResultsFileDynamic() throws Exception {
+		File projectDir = createProjectDir("node-scripts test");
+
+		write("it(`a ${b}`, () => {});", projectDir, _TEST_DIR_PATH + "/a.js");
+
+		Element testCaseElement = _format(
+			_getTestSuite("a", _getTestCase(_CLASS_NAME, "a value")),
+			projectDir);
+
+		testEquals("a value", testCaseElement.attributeValue("name"));
+
+		testEquals(
+			_PROJECT_PATH + "/" + _TEST_DIR_PATH + "/a.js",
+			testCaseElement.attributeValue("classname"));
+	}
+
+	@Test
+	public void testFormatTestResultsFileDynamicName() throws Exception {
+		File projectDir = createProjectDir("node-scripts test");
+
+		write(
+			"it('100%s complete', () => {});", projectDir,
+			_TEST_DIR_PATH + "/a.js");
+
+		Element testCaseElement = _format(
+			_getTestSuite("a", _getTestCase(_CLASS_NAME, "100abc complete")),
+			projectDir);
+
+		testEquals("100abc complete", testCaseElement.attributeValue("name"));
+
+		testEquals(
+			_PROJECT_PATH + "/" + _TEST_DIR_PATH + "/a.js",
+			testCaseElement.attributeValue("classname"));
+	}
+
+	@Test
+	public void testFormatTestResultsFileExactMatch() throws Exception {
+		_testFormatTestResultsFileExactMatch("a.js", "b.js");
+		_testFormatTestResultsFileExactMatch("z.js", "b.js");
+	}
+
+	@Test
+	public void testFormatTestResultsFileJest() throws Exception {
+		File projectDir = createProjectDir("node-scripts test");
+
+		write(
+			"describe('a', () => {it('b', () => {});});", projectDir,
+			_TEST_DIR_PATH + "/a.js");
+
+		Element testCaseElement = _format(
+			_getTestSuite("a", _getTestCase(_CLASS_NAME, "a b")), projectDir);
+
+		testEquals("a > b", testCaseElement.attributeValue("name"));
+
+		testEquals(
+			_PROJECT_PATH + "/" + _TEST_DIR_PATH + "/a.js",
+			testCaseElement.attributeValue("classname"));
+	}
+
+	@Test
+	public void testFormatTestResultsFileMissing() throws Exception {
+		File projectDir = createProjectDir("node-scripts test");
+
+		File testResultsFile = new File(projectDir, "TEST-frontend-js.xml");
+
+		TestClassFileUtil.formatTestResultsFile(
+			projectDir.getParentFile(), testResultsFile);
+
+		Assert.assertFalse(testResultsFile.exists());
+	}
+
+	@Test
+	public void testFormatTestResultsFileNoMatch() throws Exception {
+		File projectDir = createProjectDir("node-scripts test");
+
+		write("it('b', () => {});", projectDir, _TEST_DIR_PATH + "/a.js");
+
+		String name = RandomTestUtil.randomString();
+
+		Element testCaseElement = _format(
+			_getTestSuite("a", _getTestCase(_CLASS_NAME, name)), projectDir);
+
+		testEquals(_CLASS_NAME, testCaseElement.attributeValue("classname"));
+		testEquals(name, testCaseElement.attributeValue("name"));
+	}
+
+	@Test
+	public void testFormatTestResultsFileUnchanged() throws Exception {
+		File projectDir = createProjectDir("node-scripts test");
+
+		write(
+			"describe('a', () => {it('b', () => {});});", projectDir,
+			_TEST_DIR_PATH + "/a.js");
+
+		File testResultsFile = _createTestResultsFile(
+			_getTestSuite("a", _getTestCase(_CLASS_NAME, "a b")), projectDir);
+
+		File portalDir = projectDir.getParentFile();
+
+		TestClassFileUtil.formatTestResultsFile(portalDir, testResultsFile);
+
+		String content = JenkinsResultsParserUtil.read(testResultsFile);
+
+		TestClassFileUtil.formatTestResultsFile(portalDir, testResultsFile);
+
+		testEquals(content, JenkinsResultsParserUtil.read(testResultsFile));
+	}
+
+	@Test
+	public void testFormatTestResultsFileVitest() throws Exception {
+		File projectDir = createProjectDir("vitest run");
+
+		write(
+			"describe('a', () => {it('b', () => {});});", projectDir,
+			"src/tests/api.spec.ts");
+
+		Element testCaseElement = _format(
+			JenkinsResultsParserUtil.combine(
+				"<testsuites name=\"vitest tests\">",
+				_getTestSuite(
+					"src/tests/api.spec.ts",
+					_getTestCase("src/tests/api.spec.ts", "a > b")),
+				"</testsuites>"),
+			projectDir);
+
+		testEquals("a > b", testCaseElement.attributeValue("name"));
+		testEquals(
+			_PROJECT_PATH + "/src/tests/api.spec.ts",
+			testCaseElement.attributeValue("classname"));
+	}
+
+	private File _createTestResultsFile(String content, File projectDir)
+		throws Exception {
+
+		write(content, projectDir, "TEST-frontend-js.xml");
+
+		return new File(projectDir, "TEST-frontend-js.xml");
+	}
+
+	private Element _format(String content, File projectDir) throws Exception {
+		File testResultsFile = _createTestResultsFile(content, projectDir);
+
+		TestClassFileUtil.formatTestResultsFile(
+			projectDir.getParentFile(), testResultsFile);
+
+		Document document = Dom4JUtil.parse(
+			JenkinsResultsParserUtil.read(testResultsFile));
+
+		Element rootElement = document.getRootElement();
+
+		Element testSuiteElement = rootElement;
+
+		if (!Objects.equals(testSuiteElement.getName(), "testsuite")) {
+			List<Element> testSuiteElements = rootElement.elements("testsuite");
+
+			testSuiteElement = testSuiteElements.get(0);
+		}
+
+		testEquals(_PROJECT_PATH, testSuiteElement.attributeValue("package"));
+
+		List<Element> testCaseElements = testSuiteElement.elements("testcase");
+
+		return testCaseElements.get(0);
+	}
+
+	private String _getTestCase(String className, String name) {
+		return JenkinsResultsParserUtil.combine(
+			"<testcase classname=\"", className, "\" name=\"", name,
+			"\" time=\"1\" />");
+	}
+
+	private String _getTestSuite(String name, String testCases) {
+		return JenkinsResultsParserUtil.combine(
+			"<testsuite name=\"", name, "\" tests=\"1\">", testCases,
+			"</testsuite>");
+	}
+
+	private void _testFormatTestResultsFileExactMatch(
+			String dynamicName, String exactName)
+		throws Exception {
+
+		File projectDir = createProjectDir("node-scripts test");
+
+		write(
+			"it(`c ${d}`, () => {});", projectDir,
+			_TEST_DIR_PATH + "/" + dynamicName);
+		write(
+			"it('c a', () => {});", projectDir,
+			_TEST_DIR_PATH + "/" + exactName);
+
+		Element testCaseElement = _format(
+			_getTestSuite("c", _getTestCase(_CLASS_NAME, "c a")), projectDir);
+
+		testEquals("c a", testCaseElement.attributeValue("name"));
+
+		testEquals(
+			_PROJECT_PATH + "/" + _TEST_DIR_PATH + "/" + exactName,
+			testCaseElement.attributeValue("classname"));
+	}
+
+	private static final String _CLASS_NAME =
+		TestClassFileUtilTest._PROJECT_PATH + ".test.js";
+
+	private static final String _PROJECT_PATH = "project";
+
+	private static final String _TEST_DIR_PATH = "test/js";
+
+}
