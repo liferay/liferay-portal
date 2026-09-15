@@ -177,6 +177,7 @@ public class MCPServerServletTest {
 
 				_testServiceWithDataMasks(authorization);
 				_testServiceWithInactiveProfile(authorization);
+				_testServiceWithInstructions(authorization);
 				_testServiceWithModifiedProfile(authorization);
 				_testServiceWithNoContentResponse(authorization);
 				_testServiceWithProfile(authorization);
@@ -206,7 +207,7 @@ public class MCPServerServletTest {
 		throws Exception {
 
 		return MCPServerTestUtil.addMCPServerProfileObjectEntry(
-			RandomTestUtil.randomString(), name, tools);
+			RandomTestUtil.randomString(), null, name, tools);
 	}
 
 	private void _assertInvalidTokenChallenge(
@@ -579,6 +580,20 @@ public class MCPServerServletTest {
 				"JSONObject/items", "JSONArray/enum"));
 	}
 
+	private String _getInstructions(String authorization, String name) {
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+
+		try {
+			McpSchema.InitializeResult initializeResult =
+				mcpSyncClient.initialize();
+
+			return initializeResult.instructions();
+		}
+		finally {
+			mcpSyncClient.closeGracefully();
+		}
+	}
+
 	private JSONObject _getMCPServerProfileItemJSONObject(
 			Map<String, Object> arguments, McpSyncClient mcpSyncClient,
 			String profileName)
@@ -686,7 +701,7 @@ public class MCPServerServletTest {
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				_TEST_EMAIL_ADDRESS, profileName,
+				_TEST_EMAIL_ADDRESS, null, profileName,
 				"mcp-server-profiles getMCPServerProfilesPage");
 
 		McpSyncClient mcpSyncClient = _getMcpSyncClient(
@@ -754,6 +769,28 @@ public class MCPServerServletTest {
 		_updateMCPServerProfileStatus(objectEntry, "active");
 
 		Assert.assertEquals(200, _getResponseCode(authorization, name));
+	}
+
+	private void _testServiceWithInstructions(String authorization)
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		_addObjectEntry(name, "mcp-server-profiles getMCPServerProfilesPage");
+
+		Assert.assertEquals(
+			StringPool.BLANK, _getInstructions(authorization, name));
+
+		String instructions = RandomTestUtil.randomString();
+
+		name = RandomTestUtil.randomString();
+
+		MCPServerTestUtil.addMCPServerProfileObjectEntry(
+			RandomTestUtil.randomString(), instructions, name,
+			"mcp-server-profiles getMCPServerProfilesPage");
+
+		Assert.assertEquals(
+			instructions, _getInstructions(authorization, name));
 	}
 
 	private void _testServiceWithModifiedProfile(String authorization)
@@ -1177,7 +1214,7 @@ public class MCPServerServletTest {
 
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
-				description, profileName);
+				description, null, profileName);
 
 		String mcpServerProfileExternalReferenceCode =
 			mcpServerProfileObjectEntry.getExternalReferenceCode();
