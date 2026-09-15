@@ -14,7 +14,6 @@
 						"x-parent-map": "properties"
 					},
 					"relation1ToM": {
-						"description": "Information about the relationship relation1ToM can be embedded with \"nestedFields\".",
 						"type": "object"
 					},
 					"relation1ToMERC": {
@@ -23,14 +22,12 @@
 						"x-parent-map": "properties"
 					},
 					"relationMTo1": {
-						"description": "Information about the relationship relationMTo1 can be embedded with \"nestedFields\".",
 						"items": {
 							"type": "object"
 						},
 						"type": "array"
 					},
 					"relationMToM": {
-						"description": "Information about the relationship relationMToM can be embedded with \"nestedFields\".",
 						"items": {
 							"type": "object"
 						},
@@ -99,23 +96,15 @@
 						"type": "integer"
 					},
 					"relation1ToM": {
-						"description": "Information about the object relationship relation1ToM can be embedded with \"nestedFields\".",
 						"items": {
 							"$ref": "#/components/schemas/Object1"
 						},
 						"type": "array"
 					},
 					"relationMTo1": {
-						"allOf": [
-							{
-								"$ref": "#/components/schemas/Object1"
-							}
-						],
-						"description": "Information about the object relationship relationMTo1 can be embedded with \"nestedFields\".",
-						"type": "object"
+						"$ref": "#/components/schemas/Object1"
 					},
 					"relationMToM": {
-						"description": "Information about the object relationship relationMToM can be embedded with \"nestedFields\".",
 						"items": {
 							"$ref": "#/components/schemas/Object1"
 						},

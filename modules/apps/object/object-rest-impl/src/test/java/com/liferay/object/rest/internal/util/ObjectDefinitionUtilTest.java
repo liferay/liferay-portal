@@ -7,6 +7,7 @@ package com.liferay.object.rest.internal.util;
 
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
@@ -173,6 +174,72 @@ public class ObjectDefinitionUtilTest {
 				_objectDefinition, _objectField));
 	}
 
+	@Test
+	public void testGetDescriptionWithObjectRelationship() {
+
+		// No description
+
+		Assert.assertNull(
+			ObjectDefinitionUtil.getDescription(
+				_objectDefinition, _objectRelationship));
+
+		Mockito.when(
+			_objectRelationship.getDescription(_DEFAULT_LANGUAGE_ID, false)
+		).thenReturn(
+			StringPool.BLANK
+		);
+
+		Mockito.when(
+			_objectRelationship.getDescription(_ENGLISH_LANGUAGE_ID, false)
+		).thenReturn(
+			StringPool.BLANK
+		);
+
+		Assert.assertNull(
+			ObjectDefinitionUtil.getDescription(
+				_objectDefinition, _objectRelationship));
+
+		// With English translation
+
+		String description = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_objectRelationship.getDescription(_DEFAULT_LANGUAGE_ID, false)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			_objectRelationship.getDescription(_ENGLISH_LANGUAGE_ID, false)
+		).thenReturn(
+			description
+		);
+
+		Assert.assertEquals(
+			description,
+			ObjectDefinitionUtil.getDescription(
+				_objectDefinition, _objectRelationship));
+
+		// Without English translation
+
+		Mockito.when(
+			_objectRelationship.getDescription(_DEFAULT_LANGUAGE_ID, false)
+		).thenReturn(
+			description
+		);
+
+		Mockito.when(
+			_objectRelationship.getDescription(_ENGLISH_LANGUAGE_ID, false)
+		).thenReturn(
+			StringPool.BLANK
+		);
+
+		Assert.assertEquals(
+			description,
+			ObjectDefinitionUtil.getDescription(
+				_objectDefinition, _objectRelationship));
+	}
+
 	private static final String _DEFAULT_LANGUAGE_ID = "pt_BR";
 
 	private static final String _ENGLISH_LANGUAGE_ID = "en_US";
@@ -180,5 +247,7 @@ public class ObjectDefinitionUtilTest {
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);
 	private final ObjectField _objectField = Mockito.mock(ObjectField.class);
+	private final ObjectRelationship _objectRelationship = Mockito.mock(
+		ObjectRelationship.class);
 
 }

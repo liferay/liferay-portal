@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
@@ -132,12 +133,32 @@ public class ObjectRelationshipExtensionProviderTest {
 		PropertyDefinition propertyDefinition = extendedPropertyDefinitions.get(
 			_objectRelationship.getName());
 
+		Assert.assertNull(propertyDefinition.getPropertyDescription());
 		Assert.assertEquals(
 			_objectRelationship.getName(),
 			propertyDefinition.getPropertyName());
 		Assert.assertEquals(
 			PropertyDefinition.PropertyType.MULTIPLE_ELEMENT,
 			propertyDefinition.getPropertyType());
+
+		String description = RandomTestUtil.randomString();
+
+		_objectRelationship.setDescriptionMap(
+			Collections.singletonMap(LocaleUtil.US, description));
+
+		_objectRelationship =
+			ObjectRelationshipLocalServiceUtil.updateObjectRelationship(
+				_objectRelationship);
+
+		extendedPropertyDefinitions =
+			_extensionProvider.getExtendedPropertyDefinitions(
+				TestPropsValues.getCompanyId(), UserAccount.class.getName());
+
+		propertyDefinition = extendedPropertyDefinitions.get(
+			_objectRelationship.getName());
+
+		Assert.assertEquals(
+			description, propertyDefinition.getPropertyDescription());
 	}
 
 	@Test

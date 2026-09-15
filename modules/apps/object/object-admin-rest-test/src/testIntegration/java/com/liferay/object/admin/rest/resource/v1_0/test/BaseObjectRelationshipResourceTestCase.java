@@ -2452,6 +2452,14 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (objectRelationship.getDescription() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("edge", additionalAssertFieldName)) {
 				if (objectRelationship.getEdge() == null) {
 					valid = false;
@@ -2766,6 +2774,17 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 				if (!Objects.deepEquals(
 						objectRelationship1.getDeletionType(),
 						objectRelationship2.getDeletionType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)objectRelationship1.getDescription(),
+						(Map)objectRelationship2.getDescription())) {
 
 					return false;
 				}
@@ -3124,6 +3143,11 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 		}
 
 		if (entityFieldName.equals("deletionType")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("description")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}

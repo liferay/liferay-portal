@@ -84,6 +84,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.workflow.WorkflowInstanceManager;
@@ -101,6 +102,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1044,6 +1046,9 @@ public class ObjectRelationshipLocalServiceTest {
 			objectRelationship1.getDeletionType(),
 			reverseObjectRelationship.getDeletionType());
 		Assert.assertEquals(
+			objectRelationship1.getDescriptionMap(),
+			reverseObjectRelationship.getDescriptionMap());
+		Assert.assertEquals(
 			objectRelationship1.getLabelMap(),
 			reverseObjectRelationship.getLabelMap());
 
@@ -1224,6 +1229,18 @@ public class ObjectRelationshipLocalServiceTest {
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			systemObjectRelationship);
+	}
+
+	@Test
+	public void testUpdateObjectRelationshipDescriptionMap() throws Exception {
+		_testUpdateObjectRelationshipDescriptionMap(
+			Collections.emptyMap(), true);
+		_testUpdateObjectRelationshipDescriptionMap(
+			HashMapBuilder.put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build(),
+			false);
+		_testUpdateObjectRelationshipDescriptionMap(null, true);
 	}
 
 	@Test
@@ -1982,6 +1999,65 @@ public class ObjectRelationshipLocalServiceTest {
 				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null));
 
 		_addObjectRelationshipSystemObjectDefinition();
+	}
+
+	private void _testUpdateObjectRelationshipDescriptionMap(
+			Map<Locale, String> descriptionMap, boolean updateObjectField)
+		throws Exception {
+
+		String description = RandomTestUtil.randomString();
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				HashMapBuilder.put(
+					LocaleUtil.US, description
+				).build(),
+				false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		Assert.assertEquals(
+			description, objectField.getDescription(LocaleUtil.US));
+
+		ObjectField newObjectField = null;
+
+		if (updateObjectField) {
+			newObjectField = new TextObjectFieldBuilder(
+			).labelMap(
+				objectField.getLabelMap()
+			).name(
+				objectField.getName()
+			).build();
+		}
+
+		objectRelationship =
+			_objectRelationshipLocalService.updateObjectRelationship(
+				objectRelationship.getExternalReferenceCode(),
+				objectRelationship.getObjectRelationshipId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT,
+				descriptionMap, false, objectRelationship.getLabelMap(),
+				newObjectField);
+
+		if (MapUtil.isNotEmpty(descriptionMap)) {
+			description = descriptionMap.get(LocaleUtil.US);
+		}
+
+		Assert.assertEquals(
+			description, objectRelationship.getDescription(LocaleUtil.US));
+
+		objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		Assert.assertEquals(
+			description, objectField.getDescription(LocaleUtil.US));
 	}
 
 	@Inject

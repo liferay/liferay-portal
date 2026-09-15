@@ -226,15 +226,16 @@ public class ObjectDefinitionTestUtil {
 	public static ObjectDefinition publishObjectDefinition(
 			boolean enableObjectEntryDraft,
 			boolean enableObjectEntrySubscription,
-			boolean enableObjectEntryVersioning, String name,
+			boolean enableObjectEntryVersioning,
+			Map<Locale, String> descriptionMap, String name,
 			List<ObjectField> objectFields, long objectFolderId, String scope,
 			long userId)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.addCustomObjectDefinition(
-				null, userId, objectFolderId, null, null, true, false, true,
-				false, true, enableObjectEntryDraft, false,
+				null, userId, objectFolderId, null, descriptionMap, true, false,
+				true, false, true, enableObjectEntryDraft, false,
 				enableObjectEntrySubscription, enableObjectEntryVersioning,
 				null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
@@ -246,6 +247,20 @@ public class ObjectDefinitionTestUtil {
 
 		return ObjectDefinitionLocalServiceUtil.publishCustomObjectDefinition(
 			userId, objectDefinition.getObjectDefinitionId());
+	}
+
+	public static ObjectDefinition publishObjectDefinition(
+			boolean enableObjectEntryDraft,
+			boolean enableObjectEntrySubscription,
+			boolean enableObjectEntryVersioning, String name,
+			List<ObjectField> objectFields, long objectFolderId, String scope,
+			long userId)
+		throws Exception {
+
+		return publishObjectDefinition(
+			enableObjectEntryDraft, enableObjectEntrySubscription,
+			enableObjectEntryVersioning, null, name, objectFields,
+			objectFolderId, scope, userId);
 	}
 
 	public static ObjectDefinition publishObjectDefinition(
@@ -305,6 +320,16 @@ public class ObjectDefinitionTestUtil {
 
 		return publishObjectDefinition(
 			getRandomName(), objectFields, scope, userId);
+	}
+
+	public static ObjectDefinition publishObjectDefinition(
+			Map<Locale, String> descriptionMap, String name,
+			List<ObjectField> objectFields, String scope)
+		throws Exception {
+
+		return publishObjectDefinition(
+			false, false, false, descriptionMap, name, objectFields, 0, scope,
+			TestPropsValues.getUserId());
 	}
 
 	public static ObjectDefinition publishObjectDefinition(
