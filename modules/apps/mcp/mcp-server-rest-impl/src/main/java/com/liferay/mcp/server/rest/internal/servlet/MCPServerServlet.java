@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.mcp.server.rest.dto.v1_0.Tool;
 import com.liferay.mcp.server.rest.internal.constants.MCPServerConstants;
+import com.liferay.mcp.server.rest.internal.util.MCPServerProfileUtil;
 import com.liferay.mcp.server.rest.internal.util.ToolSetUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -24,9 +25,12 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.servlet.ServletResponseUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -128,6 +132,15 @@ public class MCPServerServlet extends HttpServlet {
 
 		if (mcpServerProfileObjectEntry == null) {
 			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+			return;
+		}
+
+		if (!MCPServerProfileUtil.isActive(mcpServerProfileObjectEntry)) {
+			_sendInactiveMCPServerProfileError(
+				httpServletResponse,
+				MapUtil.getString(
+					mcpServerProfileObjectEntry.getValues(), "name"));
 
 			return;
 		}
@@ -403,9 +416,7 @@ public class MCPServerServlet extends HttpServlet {
 
 			Map<String, Serializable> values = objectEntry.getValues();
 
-			if (mcpServerProfileName.equals(values.get("name")) &&
-				Objects.equals(values.get("profileStatus"), "active")) {
-
+			if (mcpServerProfileName.equals(values.get("name"))) {
 				return objectEntry;
 			}
 		}
@@ -543,6 +554,26 @@ public class MCPServerServlet extends HttpServlet {
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
+	}
+
+	private void _sendInactiveMCPServerProfileError(
+			HttpServletResponse httpServletResponse,
+			String mcpServerProfileName)
+		throws IOException {
+
+		httpServletResponse.setCharacterEncoding(StringPool.UTF8);
+		httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
+		httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+		ServletResponseUtil.write(
+			httpServletResponse,
+			JSONUtil.put(
+				"error",
+				StringBundler.concat(
+					"MCP server profile \"", mcpServerProfileName,
+					"\" is inactive. Activate it in the MCP Server control ",
+					"panel to make its tools available.")
+			).toString());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
