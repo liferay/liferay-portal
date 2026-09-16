@@ -3,6 +3,32 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export function pointsBounds(points: number[]): {
+	height: number;
+	width: number;
+	x: number;
+	y: number;
+} {
+	let maxX = -Infinity;
+	let maxY = -Infinity;
+	let minX = Infinity;
+	let minY = Infinity;
+
+	for (let index = 0; index < points.length; index += 2) {
+		maxX = Math.max(maxX, points[index]);
+		maxY = Math.max(maxY, points[index + 1]);
+		minX = Math.min(minX, points[index]);
+		minY = Math.min(minY, points[index + 1]);
+	}
+
+	return {
+		height: maxY - minY,
+		width: maxX - minX,
+		x: minX,
+		y: minY,
+	};
+}
+
 export function pointsToPath(
 	points: number[],
 	smooth: boolean,
@@ -71,6 +97,66 @@ export function pointsToPath(
  * wobble the same way on the stage, on the export and on every re-render,
  * so the wobble is a function of a stored seed, never of the clock.
  */
+export function simplifyPoints(points: number[], epsilon: number): number[] {
+	const count = points.length / 2;
+
+	if (count <= 2) {
+		return [...points];
+	}
+
+	const keep = new Array(count).fill(false);
+
+	keep[0] = true;
+	keep[count - 1] = true;
+
+	const stack: Array<[number, number]> = [[0, count - 1]];
+
+	while (stack.length) {
+		const [first, last] = stack.pop()!;
+
+		const firstX = points[first * 2];
+		const firstY = points[first * 2 + 1];
+		const lastX = points[last * 2];
+		const lastY = points[last * 2 + 1];
+
+		const runX = lastX - firstX;
+		const runY = lastY - firstY;
+		const length = Math.hypot(runX, runY) || 1;
+
+		let farthest = 0;
+		let farthestIndex = -1;
+
+		for (let index = first + 1; index < last; index++) {
+			const distance =
+				Math.abs(
+					runX * (firstY - points[index * 2 + 1]) -
+						runY * (firstX - points[index * 2])
+				) / length;
+
+			if (distance > farthest) {
+				farthest = distance;
+				farthestIndex = index;
+			}
+		}
+
+		if (farthest > epsilon && farthestIndex > 0) {
+			keep[farthestIndex] = true;
+
+			stack.push([first, farthestIndex], [farthestIndex, last]);
+		}
+	}
+
+	const kept: number[] = [];
+
+	for (let index = 0; index < count; index++) {
+		if (keep[index]) {
+			kept.push(points[index * 2], points[index * 2 + 1]);
+		}
+	}
+
+	return kept;
+}
+
 export function seededRandom(seed: number): () => number {
 	let state = seed >>> 0;
 

@@ -28,6 +28,7 @@ import {
 } from '../../src/main/resources/META-INF/resources/js/editorConfig';
 import {useOverlaySelection} from '../../src/main/resources/META-INF/resources/js/hooks/useOverlaySelection';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
+import {DrawResult} from '../../src/main/resources/META-INF/resources/js/stage/DrawSurface';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
 	editorReducer,
@@ -60,13 +61,46 @@ const CAPTION: Overlay = {
 };
 
 function AnnotationHarness({
+	onAnnounce = () => {},
 	start = () => initialHistory(IMAGE.width, IMAGE.height),
 	tools = ANNOTATE_TOOLS,
 }: {
+	onAnnounce?: (message: string) => void;
 	start?: () => EditorHistory;
 	tools?: AnnotateTool[];
 }) {
 	const [history, dispatch] = useReducer(editorReducer, undefined, start);
+
+	const [drawing, setDrawing] = useState<null | {guided: boolean}>(null);
+
+	const finishDrawing = (result: DrawResult | null) => {
+		setDrawing(null);
+
+		if (!result) {
+			return;
+		}
+
+		const xs = result.points.filter((_, index) => index % 2 === 0);
+		const ys = result.points.filter((_, index) => index % 2 === 1);
+		const minX = Math.min(...xs);
+		const minY = Math.min(...ys);
+
+		dispatch({
+			overlay: {
+				color: '#0b5fff',
+				id: `stroke-${history.present.overlays.length + 1}`,
+				kind: 'stroke',
+				points: result.points.map((value, index) =>
+					index % 2 === 0 ? value - minX : value - minY
+				),
+				smooth: result.smooth,
+				width: 3,
+				x: minX,
+				y: minY,
+			},
+			type: 'add-overlay',
+		});
+	};
 
 	const {
 		layerProportional,
@@ -85,9 +119,11 @@ function AnnotationHarness({
 				<Workspace
 					aspectLocked={false}
 					dispatch={dispatch}
+					drawing={Boolean(drawing)}
+					guidedDrawing={drawing?.guided}
 					image={IMAGE}
 					multiSelectedIds={multiSelectedIds}
-					onAnnounce={() => {}}
+					onAnnounce={onAnnounce}
 					onCenterCrop={() => {}}
 					onCopyOverlay={(id) =>
 						setClipboard(
@@ -96,6 +132,7 @@ function AnnotationHarness({
 							) ?? null
 						)
 					}
+					onFinishDrawing={finishDrawing}
 					onMultiSelectToggle={toggleMultiSelect}
 					onPasteOverlay={() => {
 						if (clipboard) {
@@ -126,6 +163,9 @@ function AnnotationHarness({
 					area={history.present.crop}
 					dispatch={dispatch}
 					onAnnounce={() => {}}
+					onStartDrawing={(via) =>
+						setDrawing({guided: via === 'keyboard'})
+					}
 					tools={tools}
 				/>
 
@@ -1234,6 +1274,162 @@ describe('groups and the clipboard', () => {
 		expect(shapes).toHaveLength(2);
 		expect(Number(shapes[1].getAttribute('x'))).toBe(
 			Number(shapes[0].getAttribute('x')) + 16
+		);
+	});
+});
+
+describe('drawing', () => {
+	const press = (
+		target: Element,
+		key: string,
+		times = 1,
+		shiftKey = false
+	) => {
+		for (let index = 0; index < times; index++) {
+			fireEvent.keyDown(target, {key, shiftKey});
+		}
+	};
+
+	const startDrawing = async (detail: number) => {
+		fireEvent.click(screen.getByRole('button', {name: 'draw'}), {detail});
+
+		const surface = screen.getByRole('application', {
+			name: 'drawing-area',
+		});
+
+		await waitFor(() => expect(surface).toHaveFocus());
+
+		return surface;
+	};
+
+	const stroke = (container: HTMLElement) =>
+		container.querySelector(
+			'.editor-workspace path[stroke="#0b5fff"][transform]'
+		) as SVGPathElement;
+
+	it('draws a guided line with the keyboard alone', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		const surface = await startDrawing(0);
+
+		press(surface, 'ArrowRight', 4, true);
+		press(surface, 'Enter');
+		press(surface, 'ArrowDown', 3, true);
+		press(surface, 'Enter');
+
+		expect(
+			screen.queryByRole('application', {name: 'drawing-area'})
+		).toBeNull();
+
+		expect(
+			within(
+				document.querySelector('.editor-layer-list') as HTMLElement
+			).getByText('stroke')
+		).toBeInTheDocument();
+
+		expect(stroke(container)).toHaveAttribute(
+			'transform',
+			'translate(600 400)'
+		);
+		expect(stroke(container).getAttribute('d')).toMatch(/^M0 0 C/);
+
+		expect(screen.getByLabelText('thickness')).toBeInTheDocument();
+		expect(screen.getByLabelText('line-style')).toHaveValue('smooth');
+		expect(screen.queryByLabelText('width')).toBeNull();
+	});
+
+	it('refuses to set a line with no length', async () => {
+		const announce = jest.fn();
+
+		render(<AnnotationHarness onAnnounce={announce} />);
+
+		const surface = await startDrawing(0);
+
+		press(surface, 'Enter');
+
+		expect(announce).toHaveBeenLastCalledWith(
+			'move-the-end-away-from-the-start-first'
+		);
+		expect(surface).toBeInTheDocument();
+	});
+
+	it('steps back from the bend', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		const surface = await startDrawing(0);
+
+		press(surface, 'ArrowRight', 2, true);
+		press(surface, 'Enter');
+		press(surface, 'Backspace');
+		press(surface, 'ArrowRight', 2, true);
+		press(surface, 'Enter');
+		press(surface, 'Enter');
+
+		expect(stroke(container).getAttribute('d')).toBe(
+			'M0 0 C13.33 0 66.67 0 80 0'
+		);
+	});
+
+	it('abandons a drawing with Escape', async () => {
+		const announce = jest.fn();
+
+		const {container} = render(<AnnotationHarness onAnnounce={announce} />);
+
+		const surface = await startDrawing(0);
+
+		press(surface, 'ArrowRight', 2, true);
+		press(surface, 'Escape');
+
+		expect(
+			screen.queryByRole('application', {name: 'drawing-area'})
+		).toBeNull();
+		expect(stroke(container)).toBeNull();
+		expect(announce).toHaveBeenLastCalledWith('drawing-canceled');
+	});
+
+	it('places pen points with clicks and finishes on the last one', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		const surface = await startDrawing(1);
+
+		const tap = (clientX: number, clientY: number) => {
+			fireEvent.pointerDown(surface, {clientX, clientY, pointerId: 1});
+			fireEvent.pointerUp(surface, {clientX, clientY, pointerId: 1});
+		};
+
+		tap(100, 100);
+		tap(150, 100);
+		tap(150, 150);
+		tap(150, 150);
+
+		expect(stroke(container)).toHaveAttribute(
+			'transform',
+			'translate(200 200)'
+		);
+		expect(stroke(container).getAttribute('d')).toMatch(
+			/^M0 0 C.* 100 0 C.* 100 100$/
+		);
+	});
+
+	it('commits a freehand drag on release, simplified', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		const surface = await startDrawing(1);
+
+		fireEvent.pointerDown(surface, {clientX: 0, clientY: 0, pointerId: 1});
+
+		for (let step = 1; step <= 20; step++) {
+			fireEvent.pointerMove(surface, {
+				clientX: step * 5,
+				clientY: 0,
+				pointerId: 1,
+			});
+		}
+
+		fireEvent.pointerUp(surface, {clientX: 100, clientY: 0, pointerId: 1});
+
+		expect(stroke(container).getAttribute('d')).toBe(
+			'M0 0 C33.33 0 166.67 0 200 0'
 		);
 	});
 });

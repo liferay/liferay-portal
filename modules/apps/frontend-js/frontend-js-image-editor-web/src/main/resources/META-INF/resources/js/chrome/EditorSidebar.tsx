@@ -38,6 +38,8 @@ interface Props {
 
 	onSelectOverlay: (id: string | null) => void;
 
+	onStartDrawing: (via: 'keyboard' | 'pointer') => void;
+
 	presets: FilterPreset[];
 
 	proportional: boolean;
@@ -61,6 +63,7 @@ export function EditorSidebar({
 	onAspectLockedChange,
 	onProportionalChange,
 	onSelectOverlay,
+	onStartDrawing,
 	presets,
 	proportional,
 	selectedOverlayId,
@@ -125,6 +128,7 @@ export function EditorSidebar({
 						area={state.crop}
 						dispatch={dispatch}
 						onAnnounce={onAnnounce}
+						onStartDrawing={onStartDrawing}
 						tools={tools}
 					/>
 

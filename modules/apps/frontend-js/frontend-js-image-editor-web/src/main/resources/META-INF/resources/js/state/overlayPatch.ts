@@ -33,6 +33,16 @@ const EDITABLE_KEYS: {[K in Kind]: ReadonlySet<string>} = {
 	]),
 	circle: new Set(BOX_KEYS),
 	shape: new Set(BOX_KEYS),
+	stroke: new Set([
+		'color',
+		'opacity',
+		'points',
+		'rotation',
+		'smooth',
+		'width',
+		'x',
+		'y',
+	]),
 	text: new Set([
 		'color',
 		'fontFamily',
@@ -56,6 +66,19 @@ const CLEARABLE_KEYS = new Set(['borderColor', 'borderWidth', 'sketchSeed']);
 const AT_LEAST_ONE = new Set(['fontSize', 'height', 'thickness', 'width']);
 
 function validate(key: string, value: unknown): unknown {
+	if (key === 'smooth') {
+		return typeof value === 'boolean' ? value : undefined;
+	}
+
+	if (key === 'points') {
+		return Array.isArray(value) &&
+			value.length >= 2 &&
+			value.length % 2 === 0 &&
+			value.every((entry) => Number.isFinite(entry))
+			? value
+			: undefined;
+	}
+
 	if (ENUM_KEYS[key]) {
 		return typeof value === 'string' && ENUM_KEYS[key].has(value)
 			? value

@@ -14,6 +14,7 @@ import {
 	CircleOverlay,
 	Overlay,
 	ShapeOverlay,
+	StrokeOverlay,
 	TextOverlay,
 } from '../../src/main/resources/META-INF/resources/js/state/types';
 
@@ -61,7 +62,18 @@ const ARROW: ArrowOverlay = {
 	y: 400,
 };
 
-const ALL: Overlay[] = [RECT, CIRCLE, TEXT, ARROW];
+const STROKE: StrokeOverlay = {
+	color: '#0b5fff',
+	id: 'stroke-1',
+	kind: 'stroke',
+	points: [0, 100, 200, 0],
+	smooth: true,
+	width: 6,
+	x: 300,
+	y: 300,
+};
+
+const ALL: Overlay[] = [RECT, CIRCLE, TEXT, ARROW, STROKE];
 
 function withOverlays(overlays: Overlay[]) {
 	let history = initialHistory(1600, 1000);
@@ -114,6 +126,17 @@ describe('rotate-90 carries the annotations', () => {
 			.overlays[0] as ArrowOverlay;
 
 		expect(rotated).toMatchObject({dx: 100, dy: 200, x: 600, y: 300});
+	});
+
+	it('maps the points of a stroke and rebases its origin', () => {
+		const rotated = rotate(withOverlays([STROKE]), 1).present
+			.overlays[0] as StrokeOverlay;
+
+		expect(rotated).toMatchObject({
+			points: [0, 0, 100, 200],
+			x: 600,
+			y: 300,
+		});
 	});
 
 	it('returns every kind to itself after four turns', () => {

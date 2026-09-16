@@ -167,7 +167,12 @@ interface HistoryEntry {
 	state: EditState;
 }
 
-export type Overlay = ArrowOverlay | CircleOverlay | ShapeOverlay | TextOverlay;
+export type Overlay =
+	| ArrowOverlay
+	| CircleOverlay
+	| ShapeOverlay
+	| StrokeOverlay
+	| TextOverlay;
 
 export type RatioPreset =
 	| '1:1'
@@ -182,6 +187,24 @@ type Rotation = 0 | 90 | 180 | 270;
 
 export interface ShapeOverlay extends BoxOverlayBase {
 	kind: 'shape';
+}
+
+export interface StrokeOverlay {
+	color: string;
+	id: string;
+	kind: 'stroke';
+	opacity?: number;
+
+	points: number[];
+
+	rotation?: number;
+
+	smooth: boolean;
+
+	width: number;
+
+	x: number;
+	y: number;
 }
 
 export interface TextOverlay {

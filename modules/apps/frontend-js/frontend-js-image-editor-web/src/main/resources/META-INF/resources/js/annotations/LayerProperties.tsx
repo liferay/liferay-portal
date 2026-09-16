@@ -222,6 +222,50 @@ export function LayerProperties({
 					/>
 				)}
 
+				{overlay.kind === 'stroke' && (
+					<NumberField
+						id={eid('layer-prop-stroke-width')}
+						label={Liferay.Language.get('thickness')}
+						min={1}
+						onCommit={(width) => commitPatch({width})}
+						onPreview={(width) => previewPatch({width})}
+						value={overlay.width}
+					/>
+				)}
+
+				{overlay.kind === 'stroke' && (
+					<ClayForm.Group small>
+						<label htmlFor={eid('layer-prop-stroke-style')}>
+							{Liferay.Language.get('line-style')}
+						</label>
+
+						<ClaySelectWithOption
+							id={eid('layer-prop-stroke-style')}
+							onChange={(event) =>
+								commitPatch(
+									patchFor(overlay)({
+										smooth: event.target.value === 'smooth',
+									})
+								)
+							}
+							options={[
+								{
+									label: Liferay.Language.get('smooth-curve'),
+									value: 'smooth',
+								},
+								{
+									label: Liferay.Language.get(
+										'straight-lines'
+									),
+									value: 'straight',
+								},
+							]}
+							sizing="sm"
+							value={overlay.smooth ? 'smooth' : 'straight'}
+						/>
+					</ClayForm.Group>
+				)}
+
 				{overlay.kind === 'text' && (
 					<ClayForm.Group small>
 						<label htmlFor={eid('layer-prop-font-family')}>

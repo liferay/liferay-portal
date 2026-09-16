@@ -10,7 +10,13 @@ import {
 	RatioPreset,
 } from './state/types';
 
-export type AnnotateTool = 'arrow' | 'circle' | 'rectangle' | 'square' | 'text';
+export type AnnotateTool =
+	| 'arrow'
+	| 'circle'
+	| 'draw'
+	| 'rectangle'
+	| 'square'
+	| 'text';
 
 export const SHAPE_TOOLS = ['rectangle', 'square', 'circle', 'arrow'] as const;
 
@@ -28,7 +34,7 @@ export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
 	'highlights',
 ];
 
-export const ANNOTATE_TOOLS: AnnotateTool[] = ['text', ...SHAPE_TOOLS];
+export const ANNOTATE_TOOLS: AnnotateTool[] = ['text', ...SHAPE_TOOLS, 'draw'];
 
 export const FILTER_PRESETS: FilterPreset[] = [
 	'none',

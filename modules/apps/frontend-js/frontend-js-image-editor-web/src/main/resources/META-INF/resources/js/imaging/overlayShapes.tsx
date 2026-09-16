@@ -7,7 +7,12 @@ import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {ArrowOverlay, Overlay} from '../state/types';
-import {sketchyEllipsePath, sketchyRectPath} from './strokeGeometry';
+import {
+	pointsBounds,
+	pointsToPath,
+	sketchyEllipsePath,
+	sketchyRectPath,
+} from './strokeGeometry';
 
 export const DEFAULT_BORDER_COLOR = '#272833';
 
@@ -92,6 +97,21 @@ export function overlayBounds(overlay: Overlay): {
 				y: overlay.y,
 			};
 
+		case 'stroke': {
+
+			// The points' own box, grown by the stroke on every side.
+
+			const box = pointsBounds(overlay.points);
+			const pad = overlay.width / 2;
+
+			return {
+				height: box.height + overlay.width,
+				width: box.width + overlay.width,
+				x: overlay.x + box.x - pad,
+				y: overlay.y + box.y - pad,
+			};
+		}
+
 		case 'text':
 			return {
 				height: overlay.fontSize * 1.2,
@@ -150,6 +170,9 @@ export function overlayLabel(overlay: Overlay): string {
 
 		case 'shape':
 			return Liferay.Language.get('rectangle');
+
+		case 'stroke':
+			return Liferay.Language.get('stroke');
 
 		case 'text':
 			return sub(Liferay.Language.get('text-x'), overlay.text);
@@ -340,6 +363,19 @@ function renderOverlayNode(overlay: Overlay) {
 				/>
 			);
 
+		case 'stroke':
+			return (
+				<path
+					d={pointsToPath(overlay.points, overlay.smooth)}
+					fill="none"
+					stroke={overlay.color}
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					strokeWidth={overlay.width}
+					transform={`translate(${overlay.x} ${overlay.y})`}
+				/>
+			);
+
 		case 'text':
 			return (
 				<text
@@ -379,6 +415,24 @@ export function mirrorOverlay(overlay: Overlay, boundsWidth: number): Overlay {
 	}
 
 	const rotation = overlay.rotation ? -overlay.rotation : overlay.rotation;
+
+	if (overlay.kind === 'stroke') {
+
+		// The origin reflects and every relative x negates, exactly as
+		// the arrow's vector does: the stroke keeps hugging whatever it
+		// was drawn around.
+
+		const box = pointsBounds(overlay.points);
+
+		return {
+			...overlay,
+			points: overlay.points.map((value, index) =>
+				index % 2 === 0 ? box.width - (value - box.x) + box.x : value
+			),
+			rotation,
+			x: boundsWidth - overlay.x - box.width - box.x * 2,
+		};
+	}
 
 	if (overlay.kind === 'text') {
 		const width = textWidth(

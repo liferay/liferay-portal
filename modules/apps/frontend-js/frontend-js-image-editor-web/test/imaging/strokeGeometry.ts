@@ -6,8 +6,10 @@
 import '@testing-library/jest-dom';
 
 import {
+	pointsBounds,
 	pointsToPath,
 	seededRandom,
+	simplifyPoints,
 	sketchyEllipsePath,
 	sketchyRectPath,
 } from '../../src/main/resources/META-INF/resources/js/imaging/strokeGeometry';
@@ -63,5 +65,37 @@ describe('pointsToPath', () => {
 
 	it('draws nothing from no points', () => {
 		expect(pointsToPath([], true)).toBe('');
+	});
+});
+
+describe('simplifyPoints', () => {
+	it('drops the points that lie within the tolerance of a straight run', () => {
+		expect(
+			simplifyPoints([0, 0, 10, 0.5, 20, 0, 30, 0.2, 40, 0], 1)
+		).toEqual([0, 0, 40, 0]);
+	});
+
+	it('keeps the corners', () => {
+		expect(simplifyPoints([0, 0, 10, 0, 20, 0, 20, 10, 20, 20], 1)).toEqual(
+			[0, 0, 20, 0, 20, 20]
+		);
+	});
+
+	it('returns a copy of anything too short to simplify', () => {
+		const points = [1, 2, 3, 4];
+
+		expect(simplifyPoints(points, 1)).toEqual(points);
+		expect(simplifyPoints(points, 1)).not.toBe(points);
+	});
+});
+
+describe('pointsBounds', () => {
+	it('boxes the points', () => {
+		expect(pointsBounds([10, 20, -5, 40, 30, 0])).toEqual({
+			height: 40,
+			width: 35,
+			x: -5,
+			y: 0,
+		});
 	});
 });

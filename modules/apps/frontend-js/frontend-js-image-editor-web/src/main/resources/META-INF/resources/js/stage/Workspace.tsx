@@ -15,12 +15,18 @@ import {LoadedImage} from '../imaging/loadImage';
 import {EditorAction} from '../state/editorReducer';
 import {EditState, rotatedSize} from '../state/types';
 import {CropMarquee} from './CropMarquee';
+import {DrawResult, DrawSurface} from './DrawSurface';
 import {OverlaysEditable} from './OverlaysEditable';
 
 interface Props {
 	aspectLocked: boolean;
 
 	dispatch: (action: EditorAction) => void;
+
+	drawing?: boolean;
+
+	guidedDrawing?: boolean;
+
 	image: LoadedImage;
 
 	multiSelectedIds: string[];
@@ -28,6 +34,9 @@ interface Props {
 	onCenterCrop: () => void;
 
 	onCopyOverlay: (id: string) => void;
+
+	onFinishDrawing?: (result: DrawResult | null) => void;
+
 	onMultiSelectToggle: (id: string) => void;
 
 	onPasteOverlay: () => void;
@@ -53,11 +62,14 @@ interface Props {
 export function Workspace({
 	aspectLocked,
 	dispatch,
+	drawing,
+	guidedDrawing,
 	image,
 	multiSelectedIds,
 	onAnnounce,
 	onCenterCrop,
 	onCopyOverlay,
+	onFinishDrawing,
 	onMultiSelectToggle,
 	onPasteOverlay,
 	onSelectOverlay,
@@ -237,6 +249,28 @@ export function Workspace({
 
 					{state.frame.overAnnotations && (
 						<FrameShape crop={crop} frame={state.frame} />
+					)}
+
+					{/*
+					 * The drawing surface rides above everything while it
+					 * lasts, because while drawing, drawing is the mode.
+					 */}
+
+					{drawing && onFinishDrawing && (
+						<DrawSurface
+							area={crop}
+							color="#0b5fff"
+							guided={guidedDrawing}
+							onAnnounce={onAnnounce}
+							onFinish={onFinishDrawing}
+							width={Math.max(
+								3,
+								Math.round(
+									Math.min(crop.width, crop.height) * 0.008
+								)
+							)}
+							zoom={zoom}
+						/>
 					)}
 				</CropMarquee>
 			</svg>

@@ -25,8 +25,11 @@ import {useOverlaySelection} from './hooks/useOverlaySelection';
 import {useSaveController} from './hooks/useSaveController';
 import {anchoredScroll} from './imaging/geometry';
 import {LoadedImage} from './imaging/loadImage';
+import {DrawResult} from './stage/DrawSurface';
 import {Workspace} from './stage/Workspace';
+import {focusOverlayNode} from './stage/focusOverlayNode';
 import {redoLabel, undoLabel} from './state/editorReducer';
+import {nextId} from './state/ids';
 import {CropRect, EditState, rotatedSize} from './state/types';
 
 const STAGE_PADDING = 48;
@@ -148,6 +151,59 @@ function Editor({
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
 	const [aspectLocked, setAspectLocked] = useState(false);
+
+	const [drawing, setDrawing] = useState<null | {guided: boolean}>(null);
+
+	const finishDrawing = (result: DrawResult | null) => {
+		setDrawing(null);
+
+		if (!result) {
+			return;
+		}
+
+		let minX = Infinity;
+		let minY = Infinity;
+
+		for (let index = 0; index < result.points.length; index += 2) {
+			minX = Math.min(minX, result.points[index]);
+			minY = Math.min(minY, result.points[index + 1]);
+		}
+
+		const id = nextId('stroke');
+
+		dispatch({
+			overlay: {
+				color: '#0b5fff',
+				id,
+				kind: 'stroke',
+				points: result.points.map(
+					(value, index) =>
+						Math.round(
+							(value - (index % 2 === 0 ? minX : minY)) * 10
+						) / 10
+				),
+				smooth: result.smooth,
+				width: Math.max(
+					3,
+					Math.round(
+						Math.min(state.crop.width, state.crop.height) * 0.008
+					)
+				),
+				x: Math.round(minX),
+				y: Math.round(minY),
+			},
+			type: 'add-overlay',
+		});
+
+		announce(
+			sub(
+				Liferay.Language.get('x-added-to-the-center-of-the-crop-area'),
+				Liferay.Language.get('stroke')
+			)
+		);
+
+		focusOverlayNode(() => editorRef.current ?? document, id);
+	};
 
 	const [cropFramed, setCropFramed] = useState(false);
 
@@ -445,11 +501,14 @@ function Editor({
 						<Workspace
 							aspectLocked={aspectLocked}
 							dispatch={dispatch}
+							drawing={Boolean(drawing)}
+							guidedDrawing={drawing?.guided}
 							image={image}
 							multiSelectedIds={multiSelectedIds}
 							onAnnounce={announce}
 							onCenterCrop={centerCrop}
 							onCopyOverlay={copyOverlay}
+							onFinishDrawing={finishDrawing}
 							onMultiSelectToggle={toggleMultiSelect}
 							onPasteOverlay={pasteOverlay}
 							onSelectOverlay={selectOverlay}
@@ -488,6 +547,9 @@ function Editor({
 								onAspectLockedChange={setAspectLocked}
 								onProportionalChange={setLayerProportional}
 								onSelectOverlay={selectOverlay}
+								onStartDrawing={(via) =>
+									setDrawing({guided: via === 'keyboard'})
+								}
 								presets={enabled.filters}
 								proportional={layerProportional}
 								selectedOverlayId={selectedOverlayId}

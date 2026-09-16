@@ -11,6 +11,7 @@ import {
 } from '../../src/main/resources/META-INF/resources/js/state/overlayPatch';
 import {
 	ShapeOverlay,
+	StrokeOverlay,
 	TextOverlay,
 } from '../../src/main/resources/META-INF/resources/js/state/types';
 
@@ -129,5 +130,37 @@ describe('patchOverlay on shapes and arrows', () => {
 		expect(patchOverlay(SHAPE, {borderWidth: -4})).toMatchObject({
 			borderWidth: 0,
 		});
+	});
+});
+
+const STROKE: StrokeOverlay = {
+	color: '#0b5fff',
+	id: 'stroke-1',
+	kind: 'stroke',
+	points: [0, 0, 50, 50],
+	smooth: true,
+	width: 4,
+	x: 10,
+	y: 20,
+};
+
+describe('patchOverlay on strokes', () => {
+	it('switches the line style with a boolean and nothing else', () => {
+		expect(patchOverlay(STROKE, {smooth: false})).toMatchObject({
+			smooth: false,
+		});
+		expect(patchOverlay(STROKE, {smooth: 'no' as never})).toBe(STROKE);
+	});
+
+	it('takes only whole, finite point lists', () => {
+		expect(patchOverlay(STROKE, {points: [1, 2, 3]})).toBe(STROKE);
+		expect(patchOverlay(STROKE, {points: [1, NaN]})).toBe(STROKE);
+		expect(patchOverlay(STROKE, {points: [1, 2, 3, 4]})).toMatchObject({
+			points: [1, 2, 3, 4],
+		});
+	});
+
+	it('keeps the width at one', () => {
+		expect(patchOverlay(STROKE, {width: 0})).toMatchObject({width: 1});
 	});
 });

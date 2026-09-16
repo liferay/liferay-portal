@@ -21,6 +21,7 @@ import {
 	ArrowOverlay,
 	Overlay,
 	ShapeOverlay,
+	StrokeOverlay,
 	TextOverlay,
 	isBoxOverlay,
 } from '../../src/main/resources/META-INF/resources/js/state/types';
@@ -223,5 +224,50 @@ describe('a shape', () => {
 
 	it('fades as a group, so the border fades with the fill', () => {
 		expect(markup({...RECT, opacity: 50})).toMatch(/^<g opacity="0.5">/);
+	});
+});
+
+const STROKE: StrokeOverlay = {
+	color: '#0b5fff',
+	id: 'stroke-1',
+	kind: 'stroke',
+	points: [10, 0, 210, -100],
+	smooth: true,
+	width: 6,
+	x: 290,
+	y: 400,
+};
+
+describe('a stroke', () => {
+	it('is boxed by its points, grown by its own width', () => {
+		expect(isBoxOverlay(STROKE)).toBe(false);
+
+		expect(overlayBounds(STROKE)).toEqual({
+			height: 106,
+			width: 206,
+			x: 297,
+			y: 297,
+		});
+	});
+
+	it('draws its points as one path from its origin', () => {
+		const svg = markup(STROKE);
+
+		expect(svg).toContain('d="M10 0 C43.33 -16.67 176.67 -83.33 210 -100"');
+		expect(svg).toContain('transform="translate(290 400)"');
+		expect(svg).toContain('stroke-width="6"');
+	});
+
+	it('is named as a stroke', () => {
+		expect(overlayLabel(STROKE)).toBe('stroke');
+	});
+
+	it('keeps hugging what it was drawn around when the photo mirrors', () => {
+		const mirrored = mirrorOverlay(STROKE, 1000) as StrokeOverlay;
+
+		expect(mirrored.points).toEqual([210, 0, 10, -100]);
+		expect(mirrored.x + mirrored.points[0]).toBe(700);
+		expect(mirrored.x + mirrored.points[2]).toBe(500);
+		expect(mirrored.y).toBe(STROKE.y);
 	});
 });

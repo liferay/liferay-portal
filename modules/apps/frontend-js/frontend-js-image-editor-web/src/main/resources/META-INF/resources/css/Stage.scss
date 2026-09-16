@@ -95,6 +95,37 @@
 	cursor: move;
 }
 
+.image-editor .editor-draw-surface rect:focus {
+	outline: none;
+}
+
+.image-editor .editor-draw-cursor-halo line {
+	stroke: $white;
+}
+
+.image-editor .editor-draw-cursor-line line {
+	stroke: var(--editor-accent);
+}
+
+.image-editor .editor-draw-cursor-dot {
+	fill: $white;
+	stroke: var(--editor-accent);
+}
+
+.image-editor .editor-draw-preview {
+	opacity: 0.9;
+}
+
+.image-editor .editor-draw-anchor {
+	fill: $white;
+	stroke: var(--editor-accent);
+}
+
+.image-editor .editor-draw-anchor-halo {
+	fill: none;
+	stroke: $white;
+}
+
 .image-editor .object-handle {
 	fill: $white;
 	stroke: var(--editor-accent);

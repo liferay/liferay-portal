@@ -6,6 +6,7 @@
 import {EditState, Overlay, rotatedSize} from '../state/types';
 import {coverScale} from './geometry';
 import {overlayCenter, textWidth} from './overlayShapes';
+import {pointsBounds} from './strokeGeometry';
 
 export type Matrix = readonly [number, number, number, number, number, number];
 
@@ -221,6 +222,34 @@ export function transformOverlay(overlay: Overlay, matrix: Matrix): Overlay {
 				width: round(folded.width),
 				x: round(cx - folded.width / 2),
 				y: round(cy - folded.height / 2),
+			};
+		}
+
+		case 'stroke': {
+			const absolute: Array<[number, number]> = [];
+
+			for (let index = 0; index < overlay.points.length; index += 2) {
+				absolute.push(
+					applyToPoint(
+						matrix,
+						overlay.x + overlay.points[index],
+						overlay.y + overlay.points[index + 1]
+					)
+				);
+			}
+
+			const flat = absolute.flat();
+
+			const box = pointsBounds(flat);
+
+			return {
+				...overlay,
+				points: flat.map((value, index) =>
+					round(value - (index % 2 === 0 ? box.x : box.y))
+				),
+				width: round(overlay.width * scale),
+				x: round(box.x),
+				y: round(box.y),
 			};
 		}
 

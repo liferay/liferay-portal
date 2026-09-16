@@ -109,10 +109,18 @@ interface Props {
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
 
+	onStartDrawing: (via: 'keyboard' | 'pointer') => void;
+
 	tools: AnnotateTool[];
 }
 
-export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
+export function AnnotatePanel({
+	area,
+	dispatch,
+	onAnnounce,
+	onStartDrawing,
+	tools,
+}: Props) {
 	const eid = useEditorId();
 
 	const editorRoot = useEditorRoot();
@@ -130,6 +138,7 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 	const controls: string[] = [
 		...(tools.includes('text') ? ['text'] : []),
 		...(shapeTools.length ? ['shapes'] : []),
+		...(tools.includes('draw') ? ['draw'] : []),
 	];
 
 	const indexOf = (control: string) => controls.indexOf(control);
@@ -346,6 +355,30 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 							}}
 						/>
 					</ClayDropDown>
+				)}
+
+				{tools.includes('draw') && (
+					<ClayButton
+						{...rovingProps(indexOf('draw'))}
+						aria-label={Liferay.Language.get('draw')}
+						className="editor-tool-tile"
+						displayType="secondary"
+						onClick={(event: React.MouseEvent) =>
+
+							// A click a keyboard produced reports no
+							// detail: that is the browser's own record of
+							// how the button was pressed.
+
+							onStartDrawing(
+								event.detail === 0 ? 'keyboard' : 'pointer'
+							)
+						}
+					>
+						<ToolTile
+							icon="pencil"
+							label={Liferay.Language.get('draw')}
+						/>
+					</ClayButton>
 				)}
 			</div>
 
