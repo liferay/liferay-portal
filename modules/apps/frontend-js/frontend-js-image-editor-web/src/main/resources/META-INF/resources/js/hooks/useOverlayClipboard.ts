@@ -8,7 +8,7 @@ import {useRef} from 'react';
 
 import {overlayLabel} from '../imaging/overlayShapes';
 import {focusOverlayNode} from '../stage/focusOverlayNode';
-import {EditorAction} from '../state/editorReducer';
+import {EditorAction, cloneOffset} from '../state/editorReducer';
 import {nextId} from '../state/ids';
 import {EditState, Overlay} from '../state/types';
 
@@ -41,9 +41,7 @@ export function useOverlayClipboard(
 			return;
 		}
 
-		const offset = Math.round(
-			Math.max(16, Math.min(state.sourceWidth, state.sourceHeight) * 0.02)
-		);
+		const offset = cloneOffset(state);
 
 		const overlay: Overlay = {
 			...copied,

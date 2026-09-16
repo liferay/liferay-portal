@@ -70,6 +70,14 @@ export interface InitialStateOptions {
 
 const HISTORY_LIMIT = 100;
 
+export function cloneOffset(
+	state: Pick<EditState, 'sourceHeight' | 'sourceWidth'>
+): number {
+	return Math.round(
+		Math.max(16, Math.min(state.sourceWidth, state.sourceHeight) * 0.02)
+	);
+}
+
 export function clampCrop(
 	crop: CropRect,
 	bounds: {height: number; width: number}
@@ -114,12 +122,7 @@ export function editorReducer(
 
 			const source = present.overlays[index];
 
-			const offset = Math.round(
-				Math.max(
-					16,
-					Math.min(present.sourceWidth, present.sourceHeight) * 0.02
-				)
-			);
+			const offset = cloneOffset(present);
 
 			const clone: Overlay = {
 				...source,
