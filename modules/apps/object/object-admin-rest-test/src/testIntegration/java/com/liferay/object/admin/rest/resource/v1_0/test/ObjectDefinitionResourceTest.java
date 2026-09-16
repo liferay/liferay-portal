@@ -2014,6 +2014,7 @@ public class ObjectDefinitionResourceTest
 			null, objectField);
 
 		_testPutObjectDefinitionByExternalReferenceCodeWithDuplicateDefaultObjectLayout();
+		_testPutObjectDefinitionByExternalReferenceCodeWithMissingObjectDefinition1();
 		_testPutObjectDefinitionByExternalReferenceCodeWithSystemAggregationObjectField();
 		_testPutObjectDefinitionWithAllowStandaloneObjectEntry();
 		_testPutObjectDefinitionWithObjectViewExternalReferenceCode();
@@ -3654,6 +3655,78 @@ public class ObjectDefinitionResourceTest
 
 		_assertScreenNavigationCategories(
 			putObjectDefinition.getClassName(), 1);
+	}
+
+	private void _testPutObjectDefinitionByExternalReferenceCodeWithMissingObjectDefinition1()
+		throws Exception {
+
+		ObjectDefinition randomObjectDefinition = randomObjectDefinition();
+
+		randomObjectDefinition.setPanelCategoryKey("");
+		randomObjectDefinition.setScope(ObjectDefinitionConstants.SCOPE_DEPOT);
+
+		randomObjectDefinition.setObjectFields(
+			new ObjectField[] {
+				new ObjectField() {
+					{
+						businessType = BusinessType.RELATIONSHIP;
+						DBType = ObjectField.DBType.LONG;
+						indexed = true;
+						label = Collections.singletonMap(
+							"en_US", RandomTestUtil.randomString());
+						name = "r_relationshipName_c_objectDefinition1Id";
+						objectDefinitionExternalReferenceCode1 =
+							"TESTOBJECTDEFINITION";
+						objectDefinitionScope1 =
+							ObjectDefinitionConstants.SCOPE_DEPOT;
+						objectRelationshipExternalReferenceCode =
+							RandomTestUtil.randomString();
+					}
+				}
+			});
+
+		ObjectDefinition putObjectDefinition =
+			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
+				randomObjectDefinition.getExternalReferenceCode(),
+				randomObjectDefinition);
+
+		ObjectField objectField = _getObjectField(
+			putObjectDefinition, "r_relationshipName_c_objectDefinition1Id");
+
+		_assertObjectField(
+			"TESTOBJECTDEFINITION",
+			ObjectField::getObjectDefinitionExternalReferenceCode1,
+			objectField);
+		_assertObjectField(
+			ObjectDefinitionConstants.SCOPE_DEPOT,
+			ObjectField::getObjectDefinitionScope1, objectField);
+
+		ObjectDefinition objectDefinition =
+			objectDefinitionResource.getObjectDefinitionByExternalReferenceCode(
+				"TESTOBJECTDEFINITION");
+
+		Assert.assertEquals(
+			ObjectDefinitionConstants.SCOPE_DEPOT, objectDefinition.getScope());
+
+		Assert.assertEquals(
+			new Status() {
+				{
+					code = WorkflowConstants.STATUS_EMPTY;
+					label = WorkflowConstants.getStatusLabel(
+						WorkflowConstants.STATUS_EMPTY);
+					label_i18n = _language.get(
+						LanguageResources.getResourceBundle(
+							LocaleUtil.getDefault()),
+						WorkflowConstants.getStatusLabel(
+							WorkflowConstants.STATUS_EMPTY));
+				}
+			},
+			objectDefinition.getStatus());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			putObjectDefinition.getId());
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getId());
 	}
 
 	private void _testPutObjectDefinitionByExternalReferenceCodeWithSystemAggregationObjectField()
