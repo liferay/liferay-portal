@@ -75,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -615,6 +616,76 @@ public class BatchEngineImportTaskExecutorTest
 	}
 
 	@Test
+	public void testCreateBlogPostingsWithNestedImport() throws Exception {
+		_nestedBatchEngineImportTask = _addBatchEngineImportTask(
+			BatchEngineTaskOperation.CREATE, null,
+			_getBlogPostingsJSONCreateContent(
+				TestPropsValues.getGroupId(), FIELD_NAMES),
+			"JSON", null,
+			BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL);
+
+		_batchEngineImportTask = _addBatchEngineImportTask(
+			BatchEngineTaskOperation.CREATE, null,
+			_getBlogPostingsJSONCreateContent(
+				TestPropsValues.getGroupId(), FIELD_NAMES),
+			"JSON", null,
+			BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL);
+
+		AtomicBoolean nestedImportExecuted = new AtomicBoolean();
+
+		_batchEngineImportTaskExecutor.execute(
+			_batchEngineImportTask,
+			new TestBlogPostingBatchEngineTaskItemDelegate() {
+
+				@Override
+				public BlogPosting createItem(
+						BlogPosting blogPosting,
+						Map<String, Serializable> queryParameters)
+					throws Exception {
+
+					if (nestedImportExecuted.compareAndSet(false, true)) {
+						_batchEngineImportTaskExecutor.execute(
+							_nestedBatchEngineImportTask,
+							new TestBlogPostingBatchEngineTaskItemDelegate(),
+							true);
+					}
+
+					return super.createItem(blogPosting, queryParameters);
+				}
+
+				@Override
+				public Class<BlogPosting> getItemClass() {
+					return BlogPosting.class;
+				}
+
+			},
+			true);
+
+		_batchEngineImportTask =
+			_batchEngineImportTaskLocalService.getBatchEngineImportTask(
+				_batchEngineImportTask.getBatchEngineImportTaskId());
+
+		Assert.assertEquals(
+			BatchEngineTaskExecuteStatus.COMPLETED.toString(),
+			_batchEngineImportTask.getExecuteStatus());
+		Assert.assertEquals(
+			ROWS_COUNT, _batchEngineImportTask.getProcessedItemsCount());
+
+		_nestedBatchEngineImportTask =
+			_batchEngineImportTaskLocalService.getBatchEngineImportTask(
+				_nestedBatchEngineImportTask.getBatchEngineImportTaskId());
+
+		Assert.assertEquals(
+			BatchEngineTaskExecuteStatus.COMPLETED.toString(),
+			_nestedBatchEngineImportTask.getExecuteStatus());
+		Assert.assertEquals(
+			ROWS_COUNT, _nestedBatchEngineImportTask.getProcessedItemsCount());
+
+		Assert.assertEquals(
+			initialCount + (2 * ROWS_COUNT), getBlogEntriesCount());
+	}
+
+	@Test
 	public void testDeleteBlogPostingsFromCSVFile() throws Exception {
 		List<BlogsEntry> blogsEntries = addBlogsEntries();
 
@@ -1102,6 +1173,28 @@ public class BatchEngineImportTaskExecutorTest
 
 		private final AtomicInteger _count = new AtomicInteger();
 
+	}
+
+	private BatchEngineImportTask _addBatchEngineImportTask(
+			BatchEngineTaskOperation batchEngineTaskOperation,
+			String callbackURL, byte[] content, String contentType,
+			Map<String, String> fieldNameMappingMap, int importStrategy)
+		throws Exception {
+
+		Map<String, Serializable> parameters = new HashMap<>();
+
+		if (batchEngineTaskOperation == BatchEngineTaskOperation.CREATE) {
+			parameters = HashMapBuilder.<String, Serializable>put(
+				"siteId",
+				(Serializable)String.valueOf(TestPropsValues.getGroupId())
+			).build();
+		}
+
+		return _batchEngineImportTaskLocalService.addBatchEngineImportTask(
+			null, TestPropsValues.getCompanyId(), user.getUserId(), _BATCH_SIZE,
+			callbackURL, BlogPosting.class.getName(), content, contentType,
+			BatchEngineTaskExecuteStatus.INITIAL.name(), fieldNameMappingMap,
+			importStrategy, batchEngineTaskOperation.name(), parameters, null);
 	}
 
 	private void _assertAllowedAndFailedCallbackURL(
@@ -1676,22 +1769,9 @@ public class BatchEngineImportTaskExecutorTest
 			Map<String, String> fieldNameMappingMap, int importStrategy)
 		throws Exception {
 
-		Map<String, Serializable> parameters = new HashMap<>();
-
-		if (batchEngineTaskOperation == BatchEngineTaskOperation.CREATE) {
-			parameters = HashMapBuilder.<String, Serializable>put(
-				"siteId",
-				(Serializable)String.valueOf(TestPropsValues.getGroupId())
-			).build();
-		}
-
-		_batchEngineImportTask =
-			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
-				null, TestPropsValues.getCompanyId(), user.getUserId(),
-				_BATCH_SIZE, callbackURL, BlogPosting.class.getName(), content,
-				contentType, BatchEngineTaskExecuteStatus.INITIAL.name(),
-				fieldNameMappingMap, importStrategy,
-				batchEngineTaskOperation.name(), parameters, null);
+		_batchEngineImportTask = _addBatchEngineImportTask(
+			batchEngineTaskOperation, callbackURL, content, contentType,
+			fieldNameMappingMap, importStrategy);
 
 		_batchEngineImportTaskExecutor.execute(_batchEngineImportTask);
 
@@ -1789,6 +1869,9 @@ public class BatchEngineImportTaskExecutorTest
 	@Inject
 	private ExportImportReportEntryLocalService
 		_exportImportReportEntryLocalService;
+
+	@DeleteAfterTestRun
+	private BatchEngineImportTask _nestedBatchEngineImportTask;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
