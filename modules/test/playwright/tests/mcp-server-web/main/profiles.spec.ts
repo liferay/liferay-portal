@@ -12,6 +12,7 @@ import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {FDSTablePage} from '../../../pages/mcp-server-web/FDSTablePage';
 import getRandomString from '../../../utils/getRandomString';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {
 	expectFDSTableColumns,
 	expectFDSTableRowActions,
@@ -171,6 +172,7 @@ test.describe('Profiles - FDS Table', () => {
 				'Title',
 				'Path',
 				'Description',
+				'Status',
 				'Last Modified',
 			]);
 		}
@@ -182,6 +184,7 @@ test.describe('Profiles - FDS Table', () => {
 		async ({fdsTablePage}) => {
 			await expectFDSTableSortOptions(fdsTablePage, [
 				'Title',
+				'Status',
 				'Last Modified',
 			]);
 		}
@@ -1105,6 +1108,66 @@ test.describe('Profiles - Tools tab', () => {
 
 			await expect(profilesPage.row('getToolSetsPage')).toBeVisible();
 			await expect(profilesPage.rows).toHaveCount(1);
+		}
+	);
+});
+
+test.describe('Profiles - Status', () => {
+	test(
+		'Rejects activating a new profile without tools',
+		{tag: '@LPD-99378'},
+		async ({page, profilesPage}) => {
+			await profilesPage.goto();
+			await profilesPage.newProfileButton.click();
+
+			await profilesPage.nameInput.fill(profileName());
+			await profilesPage.descriptionInput.fill('Created from the UI');
+			await profilesPage.statusToggle.click();
+			await profilesPage.saveButton.click();
+
+			await waitForAlert(
+				page,
+				'This profile cannot be activated because it has no associated tools.',
+				{type: 'danger'}
+			);
+
+			await expect(profilesPage.formHeading).toHaveText('New Profile');
+		}
+	);
+
+	test(
+		'Activates a profile with tools from the detail view',
+		{tag: '@LPD-99378'},
+		async ({apiHelpers, profilesPage}) => {
+			const name = profileName();
+
+			const profile = await createProfile(apiHelpers, name);
+
+			await createProfileTool(
+				apiHelpers,
+				profile.externalReferenceCode,
+				'getToolSetsPage'
+			);
+
+			await profilesPage.goto();
+			await profilesPage.search(name);
+			await profilesPage.clickAction(name, 'Edit');
+
+			await expect(profilesPage.statusToggle).not.toBeChecked();
+
+			await profilesPage.statusToggle.click();
+
+			await expect(profilesPage.statusToggle).toBeChecked();
+
+			await profilesPage.saveButton.click();
+
+			await expect(profilesPage.row(name)).toBeVisible();
+
+			const saved = await apiHelpers.get(
+				`${apiHelpers.baseUrl}${PROFILES_API}/by-external-reference-code/${profile.externalReferenceCode}`
+			);
+
+			expect(saved.profileStatus.key).toBe('active');
 		}
 	);
 });
