@@ -6,4 +6,8 @@ dependencies {
 	compileOnly project(":modules:osb-faro-api")
 	compileOnly project(":modules:osb-faro-engine-client")
 	compileOnly project(":modules:osb-faro-rest-api")
+	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
+	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation project(":modules:osb-faro-engine-client")
+	testImplementation project(":modules:osb-faro-rest-api")
 }
