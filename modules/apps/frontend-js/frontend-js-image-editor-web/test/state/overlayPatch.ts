@@ -10,6 +10,7 @@ import {
 	patchOverlay,
 } from '../../src/main/resources/META-INF/resources/js/state/overlayPatch';
 import {
+	RedactOverlay,
 	ShapeOverlay,
 	StrokeOverlay,
 	TextOverlay,
@@ -162,5 +163,26 @@ describe('patchOverlay on strokes', () => {
 
 	it('keeps the width at one', () => {
 		expect(patchOverlay(STROKE, {width: 0})).toMatchObject({width: 1});
+	});
+});
+
+const REDACT: RedactOverlay = {
+	height: 80,
+	id: 'redact-1',
+	kind: 'redact',
+	level: 'fine',
+	width: 120,
+	x: 0,
+	y: 0,
+};
+
+describe('patchOverlay on redactions', () => {
+	it('owns no color, and keeps its level and style to the known values', () => {
+		expect(patchOverlay(REDACT, {color: '#000000'} as never)).toBe(REDACT);
+		expect(patchOverlay(REDACT, {level: 'huge' as never})).toBe(REDACT);
+		expect(patchOverlay(REDACT, {style: 'smear' as never})).toBe(REDACT);
+		expect(
+			patchOverlay(REDACT, {level: 'coarse', style: 'blur'})
+		).toMatchObject({level: 'coarse', style: 'blur'});
 	});
 });

@@ -5,6 +5,13 @@
 
 import '@testing-library/jest-dom';
 
+import {coverScale} from '../../src/main/resources/META-INF/resources/js/imaging/geometry';
+import {
+	applyToPoint,
+	imageMatrix,
+	invert,
+	multiply,
+} from '../../src/main/resources/META-INF/resources/js/imaging/overlayTransform';
 import {
 	editorReducer,
 	initialHistory,
@@ -13,6 +20,7 @@ import {
 	ArrowOverlay,
 	CircleOverlay,
 	Overlay,
+	RedactOverlay,
 	ShapeOverlay,
 	StrokeOverlay,
 	TextOverlay,
@@ -73,7 +81,17 @@ const STROKE: StrokeOverlay = {
 	y: 300,
 };
 
-const ALL: Overlay[] = [RECT, CIRCLE, TEXT, ARROW, STROKE];
+const REDACT: RedactOverlay = {
+	height: 160,
+	id: 'redact-1',
+	kind: 'redact',
+	level: 'fine',
+	width: 360,
+	x: 260,
+	y: 700,
+};
+
+const ALL: Overlay[] = [RECT, CIRCLE, TEXT, ARROW, STROKE, REDACT];
 
 function withOverlays(overlays: Overlay[]) {
 	let history = initialHistory(1600, 1000);
@@ -128,6 +146,18 @@ describe('rotate-90 carries the annotations', () => {
 		expect(rotated).toMatchObject({dx: 100, dy: 200, x: 600, y: 300});
 	});
 
+	it('keeps a redaction over the same pixels', () => {
+		const rotated = rotate(withOverlays([REDACT]), 1).present
+			.overlays[0] as RedactOverlay;
+
+		expect(rotated).toMatchObject({
+			height: 360,
+			width: 160,
+			x: 1000 - (700 + 160),
+			y: 260,
+		});
+	});
+
 	it('maps the points of a stroke and rebases its origin', () => {
 		const rotated = rotate(withOverlays([STROKE]), 1).present
 			.overlays[0] as StrokeOverlay;
@@ -174,5 +204,95 @@ describe('rotate-90 carries the annotations', () => {
 		expect(rotated.y).toBeCloseTo(flipped.y, 1);
 		expect(rotated.width).toBeCloseTo(flipped.width, 1);
 		expect(rotated.height).toBeCloseTo(flipped.height, 1);
+	});
+});
+
+describe('straighten carries the redactions and only them', () => {
+	it('locks a redaction to its content and leaves a caption on the frame', () => {
+		let history = withOverlays([REDACT, TEXT]);
+
+		history = editorReducer(history, {angle: 10, type: 'set-angle'});
+
+		const [redact, text] = history.present.overlays as [
+			RedactOverlay,
+			TextOverlay,
+		];
+
+		expect(text).toEqual(TEXT);
+
+		const scale = coverScale(1600, 1000, 10);
+
+		expect(redact.width).toBeCloseTo(360 * scale, 0);
+		expect(redact.height).toBeCloseTo(160 * scale, 0);
+		expect(redact.rotation).toBeCloseTo(10, 1);
+
+		const mapping = multiply(
+			imageMatrix({
+				angle: 10,
+				flipHorizontal: false,
+				rotation: 0,
+				sourceHeight: 1000,
+				sourceWidth: 1600,
+			}),
+			invert(
+				imageMatrix({
+					angle: 0,
+					flipHorizontal: false,
+					rotation: 0,
+					sourceHeight: 1000,
+					sourceWidth: 1600,
+				})
+			)
+		);
+
+		const [expectedX, expectedY] = applyToPoint(
+			mapping,
+			260 + 360 / 2,
+			700 + 160 / 2
+		);
+
+		expect(redact.x + redact.width / 2).toBeCloseTo(expectedX, 0);
+		expect(redact.y + redact.height / 2).toBeCloseTo(expectedY, 0);
+	});
+
+	it('transforms once per gesture, from the angle it started at', () => {
+		let history = withOverlays([REDACT]);
+
+		history = editorReducer(history, {
+			angle: 4,
+			transient: true,
+			type: 'set-angle',
+		});
+		history = editorReducer(history, {
+			angle: 8,
+			transient: true,
+			type: 'set-angle',
+		});
+
+		expect(history.present.overlays[0]).toEqual(REDACT);
+
+		history = editorReducer(history, {angle: 8, type: 'set-angle'});
+
+		const committed = history.present.overlays[0] as RedactOverlay;
+
+		expect(committed.rotation).toBeCloseTo(8, 1);
+
+		history = editorReducer(history, {type: 'undo'});
+
+		expect(history.present.angle).toBe(0);
+		expect(history.present.overlays[0]).toEqual(REDACT);
+	});
+
+	it('leaves the redaction alone when the gesture lands where it started', () => {
+		let history = withOverlays([REDACT]);
+
+		history = editorReducer(history, {
+			angle: 6,
+			transient: true,
+			type: 'set-angle',
+		});
+		history = editorReducer(history, {angle: 0, type: 'set-angle'});
+
+		expect(history.present.overlays[0]).toEqual(REDACT);
 	});
 });

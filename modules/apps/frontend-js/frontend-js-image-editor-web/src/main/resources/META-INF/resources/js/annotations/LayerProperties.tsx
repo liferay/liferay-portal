@@ -22,6 +22,8 @@ import {
 	ArrowOverlay,
 	CircleOverlay,
 	Overlay,
+	RedactLevel,
+	RedactStyle,
 	ShapeOverlay,
 	isBoxOverlay,
 } from '../state/types';
@@ -107,18 +109,92 @@ export function LayerProperties({
 			)}
 
 			<div className="editor-panel-grid">
-				<ColorField
-					fill
-					id={eid('layer-prop-color')}
-					label={
-						overlay.kind === 'text'
-							? Liferay.Language.get('text-color')
-							: Liferay.Language.get('color')
-					}
-					onCommit={(color) => commitPatch({color})}
-					onPreview={(color) => previewPatch({color})}
-					value={overlay.color}
-				/>
+				{overlay.kind === 'redact' && (
+					<ClayForm.Group small>
+						<label htmlFor={eid('layer-prop-redact-style')}>
+							{Liferay.Language.get('type')}
+						</label>
+
+						<ClaySelectWithOption
+							id={eid('layer-prop-redact-style')}
+							onChange={(event) =>
+								commitPatch(
+									patchFor(overlay)({
+										style: event.target
+											.value as RedactStyle,
+									})
+								)
+							}
+							options={[
+								{
+									label: Liferay.Language.get('pixelate'),
+									value: 'pixel',
+								},
+								{
+									label: Liferay.Language.get('blur'),
+									value: 'blur',
+								},
+							]}
+							sizing="sm"
+							value={overlay.style ?? 'pixel'}
+						/>
+					</ClayForm.Group>
+				)}
+
+				{overlay.kind === 'redact' && (
+					<ClayForm.Group small>
+						<label htmlFor={eid('layer-prop-level')}>
+							{Liferay.Language.get('strength')}
+						</label>
+
+						<ClaySelectWithOption
+							id={eid('layer-prop-level')}
+							onChange={(event) =>
+								commitPatch(
+									patchFor(overlay)({
+										level: event.target
+											.value as RedactLevel,
+									})
+								)
+							}
+							options={[
+								{
+									label: Liferay.Language.get('maximum'),
+									value: 'coarse',
+								},
+								{
+									label: Liferay.Language.get('strong'),
+									value: 'medium',
+								},
+								{
+									label: Liferay.Language.get('light'),
+									value: 'fine',
+								},
+								{
+									label: Liferay.Language.get('minimum'),
+									value: 'tiny',
+								},
+							]}
+							sizing="sm"
+							value={overlay.level}
+						/>
+					</ClayForm.Group>
+				)}
+
+				{overlay.kind !== 'redact' && (
+					<ColorField
+						fill
+						id={eid('layer-prop-color')}
+						label={
+							overlay.kind === 'text'
+								? Liferay.Language.get('text-color')
+								: Liferay.Language.get('color')
+						}
+						onCommit={(color) => commitPatch({color})}
+						onPreview={(color) => previewPatch({color})}
+						value={overlay.color}
+					/>
+				)}
 
 				<NumberField
 					id={eid('layer-prop-x')}

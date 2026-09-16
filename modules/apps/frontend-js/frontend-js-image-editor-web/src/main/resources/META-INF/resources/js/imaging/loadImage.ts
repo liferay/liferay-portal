@@ -3,11 +3,25 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {RedactLevel} from '../state/types';
+
 export const MAX_IMAGE_BYTES = 25 * 1024 * 1024;
 
 export const MAX_IMAGE_PIXELS = 36_000_000;
 
 const PREVIEW_MAX_SIZE = 2048;
+
+/**
+ * Longest side, in pixels, of the downsampled copies behind each redaction
+ * level. Scaling these back up with nearest-neighbor is what produces the
+ * mosaic, so a smaller source means coarser blocks.
+ */
+export const REDACT_SIZES: Record<RedactLevel, number> = {
+	coarse: 24,
+	fine: 96,
+	medium: 48,
+	tiny: 192,
+};
 
 const THUMB_MAX_SIZE = 160;
 
@@ -36,6 +50,14 @@ export interface LoadedImage {
 
 	fileName: string;
 	height: number;
+
+	/**
+	 * Downsampled copies of the picture, one per redaction level, that a
+	 * pixelated redaction reveals through its clip. Data URLs, not blob
+	 * URLs: the export SVG rasterizes through an img that cannot fetch
+	 * blob: subresources.
+	 */
+	pixelUrls: Record<RedactLevel, string>;
 
 	/**
 	 * Object URL of the downscaled preview bitmap the SVG workspace
@@ -90,6 +112,12 @@ export async function loadImage(
 			blob,
 			fileName,
 			height: bitmap.height,
+			pixelUrls: {
+				coarse: downsampleToDataURL(bitmap, REDACT_SIZES.coarse),
+				fine: downsampleToDataURL(bitmap, REDACT_SIZES.fine),
+				medium: downsampleToDataURL(bitmap, REDACT_SIZES.medium),
+				tiny: downsampleToDataURL(bitmap, REDACT_SIZES.tiny),
+			},
 			previewUrl,
 			thumbUrl: downsampleToDataURL(bitmap, THUMB_MAX_SIZE, 'image/jpeg'),
 			type: blob.type || 'image/jpeg',

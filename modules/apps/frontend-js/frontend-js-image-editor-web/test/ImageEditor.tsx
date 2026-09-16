@@ -21,6 +21,7 @@ const image = (previewUrl: string): LoadedImage => ({
 	blob: new Blob(),
 	fileName: 'a.jpg',
 	height: 800,
+	pixelUrls: {coarse: 'c.png', fine: 'f.png', medium: 'm.png', tiny: 't.png'},
 	previewUrl,
 	thumbUrl: 'thumb.jpg',
 	type: 'image/jpeg',

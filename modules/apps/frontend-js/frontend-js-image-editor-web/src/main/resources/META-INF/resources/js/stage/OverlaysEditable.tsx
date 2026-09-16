@@ -10,6 +10,7 @@ import {useEditorId, useEditorRoot} from '../chrome/instance';
 import {arrowDelta} from '../imaging/geometry';
 import {
 	OverlayShape,
+	RedactSource,
 	overlayBounds,
 	overlayHitBox,
 	overlayLabel,
@@ -116,6 +117,7 @@ interface Props {
 
 	proportional: boolean;
 
+	redactSource: RedactSource;
 	selectedId: string | null;
 	zoom: number;
 }
@@ -129,6 +131,7 @@ export function OverlaysEditable({
 	onSelect,
 	overlays,
 	proportional,
+	redactSource,
 	selectedId,
 	zoom,
 }: Props) {
@@ -823,7 +826,10 @@ export function OverlaysEditable({
 				return (
 					<g key={overlay.id} transform={overlayTransform(overlay)}>
 						{editing?.id !== overlay.id && (
-							<OverlayShape overlay={overlay} />
+							<OverlayShape
+								overlay={overlay}
+								redactSource={redactSource}
+							/>
 						)}
 
 						{focus?.id === overlay.id ? (

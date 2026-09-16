@@ -43,6 +43,7 @@ const IMAGE: LoadedImage = {
 	blob: new Blob(),
 	fileName: 'test.jpg',
 	height: 800,
+	pixelUrls: {coarse: 'c.png', fine: 'f.png', medium: 'm.png', tiny: 't.png'},
 	previewUrl: 'test.jpg',
 	thumbUrl: 'thumb.jpg',
 	type: 'image/jpeg',
@@ -1431,6 +1432,62 @@ describe('drawing', () => {
 		expect(stroke(container).getAttribute('d')).toBe(
 			'M0 0 C33.33 0 166.67 0 200 0'
 		);
+	});
+});
+
+describe('a redaction', () => {
+	const revealed = (container: HTMLElement) =>
+		container.querySelector(
+			'[clip-path*="redact-clip-"] image'
+		) as SVGImageElement;
+
+	it('pixelates through a clipped source and blurs from the picture', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-redaction'}));
+
+		expect(
+			within(
+				document.querySelector('.editor-layer-list') as HTMLElement
+			).getByText('redacted-area')
+		).toBeInTheDocument();
+
+		expect(revealed(container)).toHaveAttribute('href', 'f.png');
+		expect(screen.queryByLabelText('color')).toBeNull();
+
+		fireEvent.change(screen.getByLabelText('strength'), {
+			target: {value: 'tiny'},
+		});
+
+		expect(revealed(container)).toHaveAttribute('href', 't.png');
+
+		fireEvent.change(screen.getByLabelText('type'), {
+			target: {value: 'blur'},
+		});
+
+		expect(revealed(container)).toHaveAttribute('href', 'test.jpg');
+		expect(
+			container.querySelector('filter[id^="redact-blur-"] feGaussianBlur')
+		).toBeInTheDocument();
+
+		fireEvent.change(screen.getByLabelText('type'), {
+			target: {value: 'pixel'},
+		});
+
+		expect(revealed(container)).toHaveAttribute('href', 't.png');
+	});
+
+	it('is a box, with the handles of a rectangle', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-redaction'}));
+
+		act(() => {
+			(container.querySelector('.overlay-hit') as SVGElement).focus();
+		});
+
+		expect(container.querySelectorAll('.object-handle')).toHaveLength(9);
+		expect(screen.getByLabelText('width')).toBeInTheDocument();
 	});
 });
 

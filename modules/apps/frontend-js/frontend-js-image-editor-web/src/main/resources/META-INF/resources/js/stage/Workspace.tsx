@@ -238,6 +238,19 @@ export function Workspace({
 						onSelect={onSelectOverlay}
 						overlays={state.overlays}
 						proportional={proportional}
+						redactSource={{
+							filter: isIdentityFilter(
+								state.adjustments,
+								state.filter
+							)
+								? undefined
+								: `url(#${eid('preview-filter')})`,
+							imageUrl: image.previewUrl,
+							pixelUrls: image.pixelUrls,
+							sourceHeight: state.sourceHeight,
+							sourceWidth: state.sourceWidth,
+							transform: imageTransform(state),
+						}}
 						selectedId={selectedOverlayId}
 						zoom={zoom}
 					/>

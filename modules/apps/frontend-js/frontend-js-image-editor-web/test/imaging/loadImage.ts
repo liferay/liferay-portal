@@ -86,6 +86,12 @@ describe('the preview URL ownership', () => {
 
 		expect(image.previewUrl).toBe('blob:preview');
 		expect(typeof image.thumbUrl).toBe('string');
+		expect(Object.keys(image.pixelUrls).sort()).toEqual([
+			'coarse',
+			'fine',
+			'medium',
+			'tiny',
+		]);
 		expect(revokeObjectURL).not.toHaveBeenCalled();
 
 		disposeLoadedImage(image);

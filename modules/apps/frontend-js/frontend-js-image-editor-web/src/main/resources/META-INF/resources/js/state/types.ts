@@ -170,6 +170,7 @@ interface HistoryEntry {
 export type Overlay =
 	| ArrowOverlay
 	| CircleOverlay
+	| RedactOverlay
 	| ShapeOverlay
 	| StrokeOverlay
 	| TextOverlay;
@@ -182,6 +183,27 @@ export type RatioPreset =
 	| '9:16'
 	| 'custom'
 	| 'original';
+
+export type RedactLevel = 'coarse' | 'fine' | 'medium' | 'tiny';
+
+export interface RedactOverlay {
+	height: number;
+	id: string;
+	kind: 'redact';
+
+	level: RedactLevel;
+
+	opacity?: number;
+	rotation?: number;
+
+	style?: RedactStyle;
+
+	width: number;
+	x: number;
+	y: number;
+}
+
+export type RedactStyle = 'blur' | 'pixel';
 
 type Rotation = 0 | 90 | 180 | 270;
 
@@ -231,6 +253,10 @@ export function rotatedSize(state: EditState): {
 
 export function isBoxOverlay(
 	overlay: Overlay
-): overlay is CircleOverlay | ShapeOverlay {
-	return overlay.kind === 'circle' || overlay.kind === 'shape';
+): overlay is CircleOverlay | RedactOverlay | ShapeOverlay {
+	return (
+		overlay.kind === 'circle' ||
+		overlay.kind === 'redact' ||
+		overlay.kind === 'shape'
+	);
 }

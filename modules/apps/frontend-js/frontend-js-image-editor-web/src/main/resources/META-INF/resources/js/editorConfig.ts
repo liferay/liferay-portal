@@ -15,6 +15,7 @@ export type AnnotateTool =
 	| 'circle'
 	| 'draw'
 	| 'rectangle'
+	| 'redaction'
 	| 'square'
 	| 'text';
 
@@ -34,7 +35,12 @@ export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
 	'highlights',
 ];
 
-export const ANNOTATE_TOOLS: AnnotateTool[] = ['text', ...SHAPE_TOOLS, 'draw'];
+export const ANNOTATE_TOOLS: AnnotateTool[] = [
+	'text',
+	...SHAPE_TOOLS,
+	'draw',
+	'redaction',
+];
 
 export const FILTER_PRESETS: FilterPreset[] = [
 	'none',

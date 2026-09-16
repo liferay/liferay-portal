@@ -14,6 +14,13 @@ import {
 
 const DATA_URL = 'data:image/jpeg;base64,AAAA';
 
+const PIXEL_URLS = {
+	coarse: 'c.png',
+	fine: 'f.png',
+	medium: 'm.png',
+	tiny: 't.png',
+};
+
 function markup(
 	adjustments: Partial<Adjustments> = {},
 	frame: Partial<Frame> = {}
@@ -26,7 +33,8 @@ function markup(
 			adjustments: {...state.adjustments, ...adjustments},
 			frame: {...state.frame, ...frame},
 		},
-		DATA_URL
+		DATA_URL,
+		PIXEL_URLS
 	);
 }
 
@@ -78,7 +86,8 @@ describe('the frame and the annotations', () => {
 				frame: {...state.frame, kind: 'mat', overAnnotations},
 				overlays: [caption],
 			},
-			DATA_URL
+			DATA_URL,
+			PIXEL_URLS
 		);
 
 		return [output.indexOf('editor-frame'), output.indexOf('<text')];

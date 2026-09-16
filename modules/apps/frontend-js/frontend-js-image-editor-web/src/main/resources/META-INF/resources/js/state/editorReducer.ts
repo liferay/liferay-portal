@@ -291,9 +291,33 @@ export function editorReducer(
 				return history;
 			}
 
+			let overlays = present.overlays;
+
+			// Straightening moves the picture under the annotations. A
+			// caption stays where it was written on the frame, but a
+			// redaction hides content, so it travels with the pixels,
+			// once, from the angle the gesture started at.
+
+			if (!action.transient) {
+				const base = history.pendingBase?.state ?? present;
+
+				if (base.angle !== action.angle) {
+					const mapping = multiply(
+						imageMatrix({...base, angle: action.angle}),
+						invert(imageMatrix(base))
+					);
+
+					overlays = present.overlays.map((overlay) =>
+						overlay.kind === 'redact'
+							? transformOverlay(overlay, mapping)
+							: overlay
+					);
+				}
+			}
+
 			return applyEdit(
 				history,
-				{...present, angle: action.angle},
+				{...present, angle: action.angle, overlays},
 				Liferay.Language.get('straighten'),
 				action.transient
 			);

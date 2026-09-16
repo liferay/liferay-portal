@@ -22,6 +22,7 @@ const IMAGE: LoadedImage = {
 	blob: new Blob(),
 	fileName: 'test.jpg',
 	height: 800,
+	pixelUrls: {coarse: 'c.png', fine: 'f.png', medium: 'm.png', tiny: 't.png'},
 	previewUrl: 'test.jpg',
 	thumbUrl: 'thumb.jpg',
 	type: 'image/jpeg',

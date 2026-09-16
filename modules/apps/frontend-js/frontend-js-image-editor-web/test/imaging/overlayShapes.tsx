@@ -20,6 +20,7 @@ import {
 import {
 	ArrowOverlay,
 	Overlay,
+	RedactOverlay,
 	ShapeOverlay,
 	StrokeOverlay,
 	TextOverlay,
@@ -269,5 +270,36 @@ describe('a stroke', () => {
 		expect(mirrored.x + mirrored.points[0]).toBe(700);
 		expect(mirrored.x + mirrored.points[2]).toBe(500);
 		expect(mirrored.y).toBe(STROKE.y);
+	});
+});
+
+const REDACT: RedactOverlay = {
+	height: 80,
+	id: 'redact-1',
+	kind: 'redact',
+	level: 'fine',
+	width: 120,
+	x: 100,
+	y: 200,
+};
+
+describe('a redaction', () => {
+	it('is a box named by what it does', () => {
+		expect(isBoxOverlay(REDACT)).toBe(true);
+		expect(overlayBounds(REDACT)).toEqual({
+			height: 80,
+			width: 120,
+			x: 100,
+			y: 200,
+		});
+		expect(overlayLabel(REDACT)).toBe('redacted-area');
+	});
+
+	it('falls back to a solid block without a source to reveal', () => {
+		expect(markup(REDACT)).toContain('<rect fill="#14151f"');
+	});
+
+	it('mirrors by its far edge, so it keeps hiding the same pixels', () => {
+		expect(mirrorOverlay(REDACT, 1000)).toMatchObject({x: 780, y: 200});
 	});
 });

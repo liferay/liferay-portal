@@ -202,6 +202,7 @@ export function transformOverlay(overlay: Overlay, matrix: Matrix): Overlay {
 		}
 
 		case 'circle':
+		case 'redact':
 		case 'shape': {
 			const [cx, cy] = applyToPoint(
 				matrix,

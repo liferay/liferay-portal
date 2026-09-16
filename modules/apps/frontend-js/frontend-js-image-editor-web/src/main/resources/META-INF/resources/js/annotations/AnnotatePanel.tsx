@@ -139,6 +139,7 @@ export function AnnotatePanel({
 		...(tools.includes('text') ? ['text'] : []),
 		...(shapeTools.length ? ['shapes'] : []),
 		...(tools.includes('draw') ? ['draw'] : []),
+		...(tools.includes('redaction') ? ['redaction'] : []),
 	];
 
 	const indexOf = (control: string) => controls.indexOf(control);
@@ -225,6 +226,17 @@ export function AnnotatePanel({
 
 		focusOverlayNode(editorRoot, overlay.id, delay);
 	};
+
+	const addRedaction = () =>
+		add({
+			height: Math.round(area.height * 0.15),
+			id: nextId('redact'),
+			kind: 'redact',
+			level: 'fine',
+			width: Math.round(area.width * 0.25),
+			x: Math.round(centerX - area.width * 0.125),
+			y: Math.round(centerY - area.height * 0.075),
+		});
 
 	const addRectangle = () =>
 		add({
@@ -377,6 +389,21 @@ export function AnnotatePanel({
 						<ToolTile
 							icon="pencil"
 							label={Liferay.Language.get('draw')}
+						/>
+					</ClayButton>
+				)}
+
+				{tools.includes('redaction') && (
+					<ClayButton
+						{...rovingProps(indexOf('redaction'))}
+						aria-label={Liferay.Language.get('add-redaction')}
+						className="editor-tool-tile"
+						displayType="secondary"
+						onClick={addRedaction}
+					>
+						<ToolTile
+							icon="hidden"
+							label={Liferay.Language.get('redact')}
 						/>
 					</ClayButton>
 				)}

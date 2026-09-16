@@ -39,6 +39,7 @@ describe('resolveConfig', () => {
 			'circle',
 			'arrow',
 			'draw',
+			'redaction',
 		]);
 	});
 

@@ -32,6 +32,16 @@ const EDITABLE_KEYS: {[K in Kind]: ReadonlySet<string>} = {
 		'y',
 	]),
 	circle: new Set(BOX_KEYS),
+	redact: new Set([
+		'height',
+		'level',
+		'opacity',
+		'rotation',
+		'style',
+		'width',
+		'x',
+		'y',
+	]),
 	shape: new Set(BOX_KEYS),
 	stroke: new Set([
 		'color',
@@ -59,6 +69,8 @@ const STRING_KEYS = new Set(['borderColor', 'color', 'fontFamily', 'text']);
 
 const ENUM_KEYS: Record<string, ReadonlySet<string>> = {
 	head: new Set(['filled', 'open']),
+	level: new Set(['coarse', 'fine', 'medium', 'tiny']),
+	style: new Set(['blur', 'pixel']),
 };
 
 const CLEARABLE_KEYS = new Set(['borderColor', 'borderWidth', 'sketchSeed']);
