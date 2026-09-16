@@ -24,12 +24,34 @@ public class PaginationBarLabels extends HashMap<String, String> {
 		setSelectPerPageItems(selectPerPageItems);
 	}
 
+	public void setEllipsisAriaLabel(String ellipsisAriaLabel) {
+		put("ellipsisAriaLabel", ellipsisAriaLabel);
+	}
+
+	public void setItemsPerPagePickerAriaLabel(
+		String itemsPerPagePickerAriaLabel) {
+
+		put("itemsPerPagePickerAriaLabel", itemsPerPagePickerAriaLabel);
+	}
+
+	public void setNextPageAriaLabel(String nextPageAriaLabel) {
+		put("nextPageAriaLabel", nextPageAriaLabel);
+	}
+
+	public void setPageLinkAriaLabel(String pageLinkAriaLabel) {
+		put("pageLinkAriaLabel", pageLinkAriaLabel);
+	}
+
 	public void setPaginationResults(String paginationResults) {
 		put("paginationResults", paginationResults);
 	}
 
 	public void setPerPageItems(String perPageItems) {
 		put("perPageItems", perPageItems);
+	}
+
+	public void setPreviousPageAriaLabel(String previousPageAriaLabel) {
+		put("previousPageAriaLabel", previousPageAriaLabel);
 	}
 
 	public void setSelectPerPageItems(String selectPerPageItems) {

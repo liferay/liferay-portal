@@ -66,6 +66,13 @@ export default function CollectionPagination({
 
 					<ClayPaginationWithBasicItems
 						active={activePage}
+						ariaLabels={{
+							link: Liferay.Language.get('go-to-page-x'),
+							next: Liferay.Language.get('go-to-the-next-page-x'),
+							previous: Liferay.Language.get(
+								'go-to-the-previous-page-x'
+							),
+						}}
 						disableEllipsis
 						onActiveChange={onPageChange}
 						totalPages={

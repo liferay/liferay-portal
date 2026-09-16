@@ -63,6 +63,15 @@ public class PaginationBarTag extends BaseContainerTag {
 			ResourceBundle resourceBundle =
 				TagResourceBundleUtil.getResourceBundle(pageContext);
 
+			paginationBarLabels.setEllipsisAriaLabel(
+				LanguageUtil.get(resourceBundle, "show-pages-x-through-x"));
+			paginationBarLabels.setItemsPerPagePickerAriaLabel(
+				LanguageUtil.get(resourceBundle, "items-per-page"));
+			paginationBarLabels.setNextPageAriaLabel(
+				LanguageUtil.get(resourceBundle, "go-to-the-next-page-x"));
+			paginationBarLabels.setPageLinkAriaLabel(
+				LanguageUtil.get(resourceBundle, "go-to-page-x"));
+
 			paginationBarLabels.setPaginationResults(
 				LanguageUtil.format(
 					PortalUtil.getLocale(getRequest()),
@@ -73,6 +82,9 @@ public class PaginationBarTag extends BaseContainerTag {
 				"{0} " + LanguageUtil.get(resourceBundle, "items");
 
 			paginationBarLabels.setPerPageItems(perPageItems);
+
+			paginationBarLabels.setPreviousPageAriaLabel(
+				LanguageUtil.get(resourceBundle, "go-to-the-previous-page-x"));
 			paginationBarLabels.setSelectPerPageItems(perPageItems);
 
 			setPaginationBarLabels(paginationBarLabels);
