@@ -1,5 +1,5 @@
 {
-	"@generated": "fb0d1d0a1ad1b8e615b555732beb85f0cf6007df",
+	"@generated": "d2f8a20ac4496a60a5a664cdbc0e7a77b5df85ca",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -28,6 +28,9 @@
 			],
 			"frontend-js-web": [
 				"../../../../../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/main/index.d.ts"
+			],
+			"frontend-js-web/auto_fields": [
+				"../../../../../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/auto_fields/index.js"
 			],
 			"frontend-js-web/legacy": [
 				"../../../../../../../frontend-js/frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"

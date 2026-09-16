@@ -1,5 +1,5 @@
 {
-	"@generated": "dcd791bb7417539a54f374c97d4b7af1139b92be",
+	"@generated": "d9eabf67044c88760a55d3f513c3a31e516d8bc1",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,6 +11,9 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"frontend-js-web/auto_fields": [
+				"./../src/main/resources/META-INF/resources/auto_fields/index.js"
+			],
 			"frontend-js-web/legacy": [
 				"./../src/main/resources/META-INF/resources/legacy/index.ts"
 			]

@@ -1,5 +1,5 @@
 {
-	"@generated": "b3f72cec436b2dbe6d78be495cba9fc211bb118c",
+	"@generated": "3f71331f715b6de4a06444689bb9441f76502d56",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,6 +11,9 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"frontend-js-web/auto_fields": [
+				"./auto_fields/index.js"
+			],
 			"frontend-js-web/legacy": [
 				"./legacy/index.ts"
 			]
