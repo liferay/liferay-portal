@@ -587,6 +587,14 @@ describe('shapes and arrows', () => {
 
 		const addText = screen.getByRole('button', {name: 'add-text'});
 
+		// Both tiles open something rather than act at once, and say so:
+		// the menu trigger through Clay, the dialog one on its own.
+
+		expect(addText).toHaveAttribute('aria-haspopup', 'dialog');
+		expect(screen.getByRole('button', {name: 'add-shape'})).toHaveAttribute(
+			'aria-haspopup'
+		);
+
 		addText.focus();
 
 		fireEvent.keyDown(addText, {key: 'ArrowRight'});

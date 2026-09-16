@@ -295,6 +295,7 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 				{tools.includes('text') && (
 					<ClayButton
 						{...rovingProps(indexOf('text'))}
+						aria-haspopup="dialog"
 						aria-label={Liferay.Language.get('add-text')}
 						className="editor-tool-tile"
 						displayType="secondary"
