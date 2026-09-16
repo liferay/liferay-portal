@@ -5,7 +5,7 @@
 
 import {fetch} from 'frontend-js-web';
 
-export interface EmojiEntry {
+interface EmojiRow {
 	c: string;
 
 	g: number;
@@ -13,10 +13,18 @@ export interface EmojiEntry {
 	n: string;
 }
 
+export interface EmojiEntry extends EmojiRow {
+
+	/**
+	 * The name the search reads, folded once here rather than on every
+	 * keystroke.
+	 */
+	search: string;
+}
+
 export interface EmojiCatalog {
 	byCharacter: Map<string, EmojiEntry>;
 	entries: EmojiEntry[];
-	searchKeys: string[];
 }
 
 let pending: Promise<EmojiCatalog> | null = null;
@@ -40,11 +48,19 @@ export function loadEmojiCatalog(): Promise<EmojiCatalog> {
 
 				return response.json();
 			})
-			.then((entries: EmojiEntry[]) => ({
-				byCharacter: new Map(entries.map((entry) => [entry.c, entry])),
-				entries,
-				searchKeys: entries.map((entry) => entry.n.toLowerCase()),
-			}))
+			.then((rows: EmojiRow[]) => {
+				const entries = rows.map((row) => ({
+					...row,
+					search: row.n.toLowerCase(),
+				}));
+
+				return {
+					byCharacter: new Map(
+						entries.map((entry) => [entry.c, entry])
+					),
+					entries,
+				};
+			})
 			.catch((error: unknown) => {
 
 				// A failed load must not poison the cache: the next time

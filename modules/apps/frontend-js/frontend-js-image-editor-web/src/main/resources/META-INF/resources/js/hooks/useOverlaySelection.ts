@@ -58,6 +58,10 @@ export function useOverlaySelection(
 		setSelectedOverlayId(id);
 	};
 
+	const selectedKind = overlays.find(
+		(candidate) => candidate.id === selectedOverlayId
+	)?.kind;
+
 	const previousSelectedIdRef = useRef<string | null>(null);
 
 	useEffect(() => {
@@ -67,12 +71,11 @@ export function useOverlaySelection(
 
 		previousSelectedIdRef.current = selectedOverlayId;
 
-		const overlay = overlays.find(
-			(candidate) => candidate.id === selectedOverlayId
-		);
+		// A picture is the one kind nobody means to stretch, so selecting
+		// one locks its proportions.
 
-		setLayerProportional(overlay?.kind === 'image');
-	}, [overlays, selectedOverlayId]);
+		setLayerProportional(selectedKind === 'image');
+	}, [selectedKind, selectedOverlayId]);
 
 	return {
 		layerProportional,

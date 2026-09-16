@@ -196,11 +196,9 @@ export function EmojiPicker({onChoose}: Props) {
 
 		const words = needle.split(/\s+/);
 
-		return catalog.entries.filter((_, index) => {
-			const name = catalog.searchKeys[index];
-
-			return words.every((word) => name.includes(word));
-		});
+		return catalog.entries.filter((entry) =>
+			words.every((word) => entry.search.includes(word))
+		);
 	}, [catalog, query]);
 
 	const shown = matches.slice(0, limit);
@@ -363,7 +361,7 @@ export function EmojiPicker({onChoose}: Props) {
 				role="grid"
 			>
 				{rows.map((row, rowIndex) => (
-					<div className="editor-emoji-row" key={rowIndex} role="row">
+					<div className="editor-emoji-row" key={row[0].c} role="row">
 						{row.map((entry, columnIndex) => {
 							const index = rowIndex * COLUMNS + columnIndex;
 
