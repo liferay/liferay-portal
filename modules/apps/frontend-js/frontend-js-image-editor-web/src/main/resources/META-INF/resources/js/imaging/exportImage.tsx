@@ -11,7 +11,7 @@ import {FilterDefs, isIdentityFilter} from './FilterDefs';
 import {FrameShape} from './frameShapes';
 import {imageTransform} from './geometry';
 import {LoadedImage} from './loadImage';
-import {OverlayShape, overlayTransform} from './overlayShapes';
+import {OverlayShape, overlayTransform, redactSourceFor} from './overlayShapes';
 
 export function editedImageMarkup(
 	state: EditState,
@@ -19,6 +19,15 @@ export function editedImageMarkup(
 	pixelUrls: LoadedImage['pixelUrls']
 ): string {
 	const {crop} = state;
+
+	// The same data URL the picture itself uses: the rasteriser runs in
+	// secure static mode and cannot fetch a `blob:` subresource.
+
+	const redactSource = redactSourceFor(state, {
+		filterId: 'export-filter',
+		imageUrl: dataUrl,
+		pixelUrls,
+	});
 
 	return renderToStaticMarkup(
 		<svg
@@ -56,24 +65,7 @@ export function editedImageMarkup(
 				<g key={overlay.id} transform={overlayTransform(overlay)}>
 					<OverlayShape
 						overlay={overlay}
-						redactSource={{
-							filter: isIdentityFilter(
-								state.adjustments,
-								state.filter
-							)
-								? undefined
-								: 'url(#export-filter)',
-
-							// The same data URL the picture itself uses:
-							// the rasteriser runs in secure static mode
-							// and cannot fetch a `blob:` subresource.
-
-							imageUrl: dataUrl,
-							pixelUrls,
-							sourceHeight: state.sourceHeight,
-							sourceWidth: state.sourceWidth,
-							transform: imageTransform(state),
-						}}
+						redactSource={redactSource}
 					/>
 				</g>
 			))}

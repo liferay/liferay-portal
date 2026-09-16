@@ -8,10 +8,13 @@ import React from 'react';
 
 import {
 	ArrowOverlay,
+	EditState,
 	Overlay,
 	RedactLevel,
 	RedactOverlay,
 } from '../state/types';
+import {isIdentityFilter} from './FilterDefs';
+import {imageTransform} from './geometry';
 import {REDACT_SIZES} from './loadImage';
 import {
 	pointsBounds,
@@ -218,6 +221,26 @@ export interface RedactSource {
 	 * the photo whatever the rotation and straighten angle.
 	 */
 	transform?: string;
+}
+
+export function redactSourceFor(
+	state: EditState,
+	picture: {
+		filterId: string;
+		imageUrl: string;
+		pixelUrls: Record<RedactLevel, string>;
+	}
+): RedactSource {
+	return {
+		filter: isIdentityFilter(state.adjustments, state.filter)
+			? undefined
+			: `url(#${picture.filterId})`,
+		imageUrl: picture.imageUrl,
+		pixelUrls: picture.pixelUrls,
+		sourceHeight: state.sourceHeight,
+		sourceWidth: state.sourceWidth,
+		transform: imageTransform(state),
+	};
 }
 
 /**

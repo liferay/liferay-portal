@@ -12,7 +12,10 @@ import {FilterDefs, isIdentityFilter} from '../imaging/FilterDefs';
 import {FrameShape} from '../imaging/frameShapes';
 import {imageTransform} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
-import {DEFAULT_ANNOTATION_COLOR} from '../imaging/overlayShapes';
+import {
+	DEFAULT_ANNOTATION_COLOR,
+	redactSourceFor,
+} from '../imaging/overlayShapes';
 import {EditorAction} from '../state/editorReducer';
 import {EditState, rotatedSize} from '../state/types';
 import {CropMarquee} from './CropMarquee';
@@ -236,19 +239,11 @@ export function Workspace({
 						onSelect={onSelectOverlay}
 						overlays={state.overlays}
 						proportional={proportional}
-						redactSource={{
-							filter: isIdentityFilter(
-								state.adjustments,
-								state.filter
-							)
-								? undefined
-								: `url(#${eid('preview-filter')})`,
+						redactSource={redactSourceFor(state, {
+							filterId: eid('preview-filter'),
 							imageUrl: image.previewUrl,
 							pixelUrls: image.pixelUrls,
-							sourceHeight: state.sourceHeight,
-							sourceWidth: state.sourceWidth,
-							transform: imageTransform(state),
-						}}
+						})}
 						selectedId={selectedOverlayId}
 						zoom={zoom}
 					/>
