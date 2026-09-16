@@ -11,6 +11,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {EditorSection} from '../chrome/EditorSection';
 import {useEditorId, useEditorRoot} from '../chrome/instance';
 import {overlayLabel} from '../imaging/overlayShapes';
+import {focusOverlayNode} from '../stage/focusOverlayNode';
 import {EditorAction} from '../state/editorReducer';
 import {nextId} from '../state/ids';
 import {Overlay} from '../state/types';
@@ -308,16 +309,10 @@ export function LayersPanel({
 
 										onSelect(overlay.id);
 
-										window.setTimeout(() => {
-											const node =
-												editorRoot().querySelector(
-													`[data-overlay-id="${overlay.id}"]`
-												);
-
-											(
-												node as unknown as HTMLElement | null
-											)?.focus?.();
-										}, 0);
+										focusOverlayNode(
+											editorRoot,
+											overlay.id
+										);
 									}
 									else if (
 										event.key === 'Delete' ||

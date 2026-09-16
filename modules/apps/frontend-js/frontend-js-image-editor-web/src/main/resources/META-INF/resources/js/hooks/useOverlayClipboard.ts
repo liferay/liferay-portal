@@ -7,6 +7,7 @@ import {sub} from 'frontend-js-web';
 import {useRef} from 'react';
 
 import {overlayLabel} from '../imaging/overlayShapes';
+import {focusOverlayNode} from '../stage/focusOverlayNode';
 import {EditorAction} from '../state/editorReducer';
 import {nextId} from '../state/ids';
 import {EditState, Overlay} from '../state/types';
@@ -59,11 +60,7 @@ export function useOverlayClipboard(
 
 		announce(sub(Liferay.Language.get('x-pasted'), overlayLabel(overlay)));
 
-		window.setTimeout(() => {
-			root()
-				.querySelector<HTMLElement>(`[data-overlay-id="${overlay.id}"]`)
-				?.focus({preventScroll: true});
-		}, 0);
+		focusOverlayNode(root, overlay.id);
 	};
 
 	return {copyOverlay, pasteOverlay};
