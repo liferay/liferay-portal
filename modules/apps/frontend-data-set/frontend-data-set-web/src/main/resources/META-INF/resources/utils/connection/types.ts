@@ -5,61 +5,28 @@
 
 import {IFDSState} from '../types';
 
-import type {FDSConnectionFilter} from '@liferay/js-api/data-set';
+import type {FDSState} from '@liferay/js-api/data-set';
 
 /**
  * The data set state as a connection leaves it, which only the data set
  * reads.
  *
- * `connectionFilters` stays out of `IFDSState` so that no data set code can
- * write it: keeping it out of the type the data set writes makes any attempt
- * to change it a compile error rather than a convention. Its element type is
- * the published one, so what the data set reads here is exactly what a
- * consumer wrote through the connection.
+ * What a connection writes is taken from the published contract rather than
+ * declared again here, so the two cannot drift. Being readonly there is what
+ * this file wants anyway: the members below stay out of `IFDSState` so that
+ * no data set code can write them, which makes any attempt a compile error
+ * rather than a convention.
  *
  * It lives here, rather than next to `IFDSState`, because the modules that
  * consume `@liferay/frontend-data-set-web` types do not depend on
- * `@liferay/js-api`, and this file is internal to the data set.
+ * `@liferay/js-api`. That is also why `offeredCustomConfigs` is not picked
+ * from the contract: the data set writes it, so it stays declared on
+ * `IFDSState`, and typing it there would put this dependency in reach of
+ * every one of those modules.
  */
-export interface IConnectedFDSState extends IFDSState {
-
-	/**
-	 * Whatever the consumer asked to have remembered, which the data set
-	 * keeps in the URL and never reads, filed by the connection under its own
-	 * app id. One config per connection, so that what comes back on the next
-	 * visit is what was given rather than a set of parts to reassemble.
-	 *
-	 * The data set stores and hands back the whole map without looking in it,
-	 * which is why the keying is the connection's business alone: today one
-	 * consumer owns the filtering and one key is in play, and a URL written
-	 * now still says what it says once several consumers can share it.
-	 */
-	appliedCustomConfigs?: Readonly<Record<string, unknown>>;
-
-	/**
-	 * Absent while no connection drives the filtering, which is the case
-	 * for every data set that has no external consumer. Once present, it
-	 * supersedes `filters` as the only contribution to the request, and the
-	 * data set stops showing a filter UI.
-	 */
-	connectionFilters?: ReadonlyArray<FDSConnectionFilter>;
-
-	/**
-	 * The app id of the connection that owns the filtering, written by the
-	 * connection as it takes the filtering over and absent while no
-	 * connection drives it.
-	 *
-	 * The data set is the side that keeps `appliedCustomConfigs` in the URL
-	 * and offers them back on the next visit, each filed under the app id of
-	 * the connection that left it. This is how the data set knows whose that
-	 * is: which key of what the URL carries a connection is going to claim,
-	 * and whether anyone is coming for it at all.
-	 *
-	 * `connectionFilters` does not answer that: a consumer may own the
-	 * filtering and filter by nothing, and the filters it applied may
-	 * outlive the connection that applied them. Being in the state rather
-	 * than in the module also puts it within reach of a second copy of this
-	 * module on the page, which cannot see the owners the first one keeps.
-	 */
-	filteringOwnerAppId?: string;
-}
+export interface IConnectedFDSState
+	extends IFDSState,
+		Pick<
+			FDSState,
+			'appliedCustomConfigs' | 'connectionFilters' | 'filteringOwnerAppId'
+		> {}
