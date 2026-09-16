@@ -83,8 +83,8 @@ public class KaleoDesignerPortletTest {
 	public void testRender() throws Exception {
 		_testRenderWithNonexistentKaleoDefinition();
 		_testRenderWithNonexistentKaleoDefinitionVersion();
-		_testRenderWithoutViewPermission();
 		_testRenderWithViewPermission();
+		_testRenderWithoutViewPermission();
 	}
 
 	private KaleoDefinition _addKaleoDefinition(long groupId) throws Exception {
