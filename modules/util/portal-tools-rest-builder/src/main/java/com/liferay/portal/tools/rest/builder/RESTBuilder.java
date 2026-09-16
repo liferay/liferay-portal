@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.StringUtil_IW;
 import com.liferay.portal.kernel.util.TextFormatter;
+import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.Validator_IW;
 import com.liferay.portal.tools.ArgumentsUtil;
@@ -342,7 +343,7 @@ public class RESTBuilder {
 				openAPIYAML);
 
 			_createExternalSchemaFiles(
-				allExternalSchemas, context, escapedVersion);
+				allExternalSchemas, allSchemas, context, escapedVersion);
 
 			for (Map.Entry<String, Schema> entry : allSchemas.entrySet()) {
 				Schema schema = entry.getValue();
@@ -1201,9 +1202,22 @@ public class RESTBuilder {
 	}
 
 	private void _createExternalSchemaFiles(
-			Map<String, Schema> allExternalSchemas, Map<String, Object> context,
+			Map<String, Schema> allExternalSchemas,
+			Map<String, Schema> allSchemas, Map<String, Object> context,
 			String escapedVersion)
 		throws Exception {
+
+		Map<String, Object> mergedContext =
+			HashMapBuilder.<String, Object>putAll(
+				context
+			).put(
+				"allSchemas",
+				TreeMapBuilder.putAll(
+					allExternalSchemas
+				).putAll(
+					allSchemas
+				).build()
+			).build();
 
 		boolean createClientScopeFiles = true;
 
@@ -1212,19 +1226,20 @@ public class RESTBuilder {
 			String schemaName = entry.getKey();
 
 			_putSchema(
-				context, escapedVersion,
+				mergedContext, escapedVersion,
 				Collections.singletonMap(schemaName, schemaName), schema,
 				schemaName, Collections.emptySet());
 
 			if (Validator.isNotNull(_configYAML.getClientDir())) {
 				if (createClientScopeFiles && _containsVulcanScope(schema)) {
-					_createClientScopeFile(context);
+					_createClientScopeFile(mergedContext);
 
 					createClientScopeFiles = false;
 				}
 
-				_createClientDTOFile(context, escapedVersion, schemaName);
-				_createClientSerDesFile(context, escapedVersion, schemaName);
+				_createClientDTOFile(mergedContext, escapedVersion, schemaName);
+				_createClientSerDesFile(
+					mergedContext, escapedVersion, schemaName);
 			}
 		}
 	}
