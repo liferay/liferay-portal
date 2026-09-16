@@ -15,6 +15,18 @@ public class TestClassResultFactory {
 	public static TestClassResult newTestClassResult(
 		Build build, JSONObject suiteJSONObject) {
 
+		if (build instanceof DownstreamBuild) {
+			DownstreamBuild downstreamBuild = (DownstreamBuild)build;
+
+			String batchName = downstreamBuild.getBatchName();
+
+			if (batchName.startsWith("js-unit") ||
+				batchName.startsWith("workspaces-js-unit")) {
+
+				return new JSUnitTestClassResult(build, suiteJSONObject);
+			}
+		}
+
 		return new DefaultTestClassResult(build, suiteJSONObject);
 	}
 

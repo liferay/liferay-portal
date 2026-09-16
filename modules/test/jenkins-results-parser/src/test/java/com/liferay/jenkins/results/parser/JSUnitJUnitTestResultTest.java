@@ -45,6 +45,15 @@ public class JSUnitJUnitTestResultTest
 				"liferay-portal.modules.apps.portal-search.portal-search-web." +
 					"test.js.index",
 				"simpleTestName"));
+		testEquals(
+			"dxp.apps.analytics.analytics-reports-web.test.js.components." +
+				"TrafficSources displays the traffic sources with buttons to " +
+					"view keywords",
+			_getTestResultTestName(
+				".opt.dev.projects.github.liferay-portal.modules.dxp.apps." +
+					"analytics.analytics-reports-web.test.js.components",
+				"TrafficSources displays the traffic sources with buttons to " +
+					"view keywords"));
 	}
 
 	@Test

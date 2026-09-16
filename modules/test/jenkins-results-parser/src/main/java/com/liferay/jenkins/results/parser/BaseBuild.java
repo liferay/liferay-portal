@@ -3543,7 +3543,7 @@ public abstract class BaseBuild implements Build {
 					this, suiteJSONObject);
 
 			_testClassResults.put(
-				testClassResult.getClassName(), testClassResult);
+				testClassResult.getTestClassResultKey(), testClassResult);
 		}
 	}
 

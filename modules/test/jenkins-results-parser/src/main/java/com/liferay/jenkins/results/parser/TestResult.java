@@ -49,6 +49,8 @@ public interface TestResult {
 
 	public String getTestReportURL();
 
+	public String getTestResultKey();
+
 	public boolean isFailing();
 
 	public boolean isSkipped();

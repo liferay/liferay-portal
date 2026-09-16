@@ -56,6 +56,12 @@ public class JSUnitJUnitTestResult extends JUnitTestResult {
 	}
 
 	@Override
+	public String getTestResultKey() {
+		return JenkinsResultsParserUtil.combine(
+			getClassName(), "#", getTestName());
+	}
+
+	@Override
 	public String getTestTaskName() {
 		String testClassFilePath = _getTestClassFilePath();
 

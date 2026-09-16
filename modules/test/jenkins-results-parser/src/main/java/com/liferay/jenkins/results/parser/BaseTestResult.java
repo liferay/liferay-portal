@@ -112,6 +112,11 @@ public abstract class BaseTestResult implements TestResult {
 	}
 
 	@Override
+	public String getTestResultKey() {
+		return getTestName();
+	}
+
+	@Override
 	public boolean isFailing() {
 		String status = getStatus();
 
