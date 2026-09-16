@@ -56,10 +56,10 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 
 	@Descriptor("Execute upgrade for a specific module")
 	public String execute(String bundleSymbolicName) {
-		List<UpgradeInfo> upgradeInfos = _upgradeExecutor.getUpgradeInfos(
-			bundleSymbolicName);
+		Set<String> bundleSymbolicNames =
+			_upgradeExecutor.getBundleSymbolicNames();
 
-		if (upgradeInfos == null) {
+		if (!bundleSymbolicNames.contains(bundleSymbolicName)) {
 			return "No upgrade processes registered for " + bundleSymbolicName;
 		}
 
@@ -69,7 +69,7 @@ public class UpgradeOSGiCommands implements OSGiCommands {
 					_upgradeExecutor.execute(
 						BundleUtil.getBundle(
 							_bundleContext, bundleSymbolicName),
-						upgradeInfos);
+						_upgradeExecutor.getUpgradeInfos(bundleSymbolicName));
 				}
 				catch (Throwable throwable) {
 					_log.error(
