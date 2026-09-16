@@ -124,30 +124,33 @@ public class ProductSpecificationUtil {
 		String externalReferenceCode = GetterUtil.getString(
 			productSpecification.getOptionCategoryExternalReferenceCode());
 
-		CPOptionCategory cpOptionCategory =
-			cpOptionCategoryService.
-				fetchCPOptionCategoryByExternalReferenceCode(
-					externalReferenceCode, serviceContext.getCompanyId());
+		if (Validator.isNull(externalReferenceCode)) {
+			CPOptionCategory cpOptionCategory =
+				cpOptionCategoryService.fetchCPOptionCategory(
+					GetterUtil.getLong(
+						productSpecification.getOptionCategoryId()));
 
-		if (cpOptionCategory != null) {
-			return cpOptionCategory.getCPOptionCategoryId();
+			if (cpOptionCategory != null) {
+				return cpOptionCategory.getCPOptionCategoryId();
+			}
 		}
+		else {
+			CPOptionCategory cpOptionCategory =
+				cpOptionCategoryService.
+					fetchCPOptionCategoryByExternalReferenceCode(
+						externalReferenceCode, serviceContext.getCompanyId());
 
-		cpOptionCategory = cpOptionCategoryService.fetchCPOptionCategory(
-			GetterUtil.getLong(productSpecification.getOptionCategoryId()));
+			if (cpOptionCategory != null) {
+				return cpOptionCategory.getCPOptionCategoryId();
+			}
 
-		if (cpOptionCategory != null) {
-			return cpOptionCategory.getCPOptionCategoryId();
-		}
+			if (LazyReferencingThreadLocal.isEnabled()) {
+				cpOptionCategory =
+					cpOptionCategoryService.getOrAddEmptyCPOptionCategory(
+						externalReferenceCode);
 
-		if (Validator.isNotNull(externalReferenceCode) &&
-			LazyReferencingThreadLocal.isEnabled()) {
-
-			cpOptionCategory =
-				cpOptionCategoryService.getOrAddEmptyCPOptionCategory(
-					externalReferenceCode);
-
-			return cpOptionCategory.getCPOptionCategoryId();
+				return cpOptionCategory.getCPOptionCategoryId();
+			}
 		}
 
 		if (cpSpecificationOption == null) {

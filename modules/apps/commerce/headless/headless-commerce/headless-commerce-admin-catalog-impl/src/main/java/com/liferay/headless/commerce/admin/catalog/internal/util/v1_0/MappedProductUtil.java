@@ -40,17 +40,25 @@ public class MappedProductUtil {
 			ServiceContextHelper serviceContextHelper)
 		throws PortalException {
 
-		long skuId = GetterUtil.getLong(mappedProduct.getSkuId());
+		String skuExternalReferenceCode =
+			mappedProduct.getSkuExternalReferenceCode();
 
-		CPInstance cpInstance =
-			cpInstanceService.fetchCPInstanceByExternalReferenceCode(
-				mappedProduct.getSkuExternalReferenceCode(), companyId);
+		long skuId = 0;
 
-		if (cpInstance != null) {
-			skuId = cpInstance.getCPInstanceId();
+		if (Validator.isNull(skuExternalReferenceCode)) {
+			skuId = GetterUtil.getLong(mappedProduct.getSkuId());
+		}
+		else {
+			CPInstance cpInstance =
+				cpInstanceService.fetchCPInstanceByExternalReferenceCode(
+					skuExternalReferenceCode, companyId);
+
+			if (cpInstance != null) {
+				skuId = cpInstance.getCPInstanceId();
+			}
 		}
 
-		long productId = getCProductId(
+		long cProductId = getCProductId(
 			companyId, cpDefinitionService, groupId, mappedProduct);
 
 		ServiceContext serviceContext = serviceContextHelper.getServiceContext(
@@ -60,7 +68,7 @@ public class MappedProductUtil {
 			getExpandoBridgeAttributes(companyId, locale, mappedProduct));
 
 		return csDiagramEntryService.addCSDiagramEntry(
-			cpDefinitionId, skuId, productId, isDiagram(null, mappedProduct),
+			cpDefinitionId, skuId, cProductId, isDiagram(null, mappedProduct),
 			GetterUtil.getInteger(mappedProduct.getQuantity()),
 			GetterUtil.getString(mappedProduct.getSequence()),
 			GetterUtil.getString(mappedProduct.getSku()), serviceContext);

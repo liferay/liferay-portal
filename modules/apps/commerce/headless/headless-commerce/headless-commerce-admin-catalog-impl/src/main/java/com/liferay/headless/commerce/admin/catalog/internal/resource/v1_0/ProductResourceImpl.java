@@ -13,9 +13,16 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagService;
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
+import com.liferay.commerce.pricing.model.CommercePricingClass;
+import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
+import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
+import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelService;
+import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
@@ -75,6 +82,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOptionValue;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductProductGroup;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductSubscriptionConfiguration;
@@ -161,6 +169,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -607,16 +616,37 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			String externalReferenceCode, Product product)
 		throws Exception {
 
+		String catalogExternalReferenceCode =
+			product.getCatalogExternalReferenceCode();
+
 		CommerceCatalog commerceCatalog = null;
 
-		if (product.getCatalogId() != null) {
-			commerceCatalog = _commerceCatalogLocalService.getCommerceCatalog(
-				product.getCatalogId());
+		if (Validator.isNull(catalogExternalReferenceCode)) {
+			Long catalogId = product.getCatalogId();
+
+			if (catalogId != null) {
+				commerceCatalog =
+					_commerceCatalogLocalService.fetchCommerceCatalog(
+						catalogId);
+			}
 		}
-		else if (product.getCatalogExternalReferenceCode() != null) {
+		else {
 			commerceCatalog =
-				_commerceCatalogService.getOrAddEmptyCommerceCatalog(
-					product.getCatalogExternalReferenceCode());
+				_commerceCatalogService.
+					fetchCommerceCatalogByExternalReferenceCode(
+						catalogExternalReferenceCode,
+						contextCompany.getCompanyId());
+
+			if (commerceCatalog == null) {
+				CommerceCurrency commerceCurrency =
+					_commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+						catalogExternalReferenceCode, null);
+
+				commerceCatalog =
+					_commerceCatalogService.getOrAddEmptyCommerceCatalog(
+						catalogExternalReferenceCode,
+						commerceCurrency.getCode());
+			}
 		}
 
 		if (commerceCatalog == null) {
@@ -1492,21 +1522,24 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				CPDefinition.class.getName(), cpDefinition.getCPDefinitionId());
 
 			for (ProductChannel productChannel : productChannels) {
-				CommerceChannel commerceChannel =
-					_commerceChannelService.
-						fetchCommerceChannelByExternalReferenceCode(
-							GetterUtil.getString(
-								productChannel.getExternalReferenceCode()),
-							contextCompany.getCompanyId());
+				CommerceChannel commerceChannel = null;
 
-				if (commerceChannel == null) {
+				String externalReferenceCode = GetterUtil.getString(
+					productChannel.getExternalReferenceCode());
+
+				if (Validator.isNull(externalReferenceCode)) {
 					commerceChannel =
 						_commerceChannelService.fetchCommerceChannel(
 							GetterUtil.getLong(productChannel.getChannelId()));
+				}
+				else {
+					commerceChannel =
+						_commerceChannelService.getOrAddEmptyCommerceChannel(
+							externalReferenceCode);
+				}
 
-					if (commerceChannel == null) {
-						continue;
-					}
+				if (commerceChannel == null) {
+					continue;
 				}
 
 				_commerceChannelRelService.addCommerceChannelRel(
@@ -1529,27 +1562,82 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 			for (ProductAccountGroup productAccountGroup :
 					productAccountGroups) {
 
-				AccountGroup accountGroup =
-					_accountGroupService.
-						fetchAccountGroupByExternalReferenceCode(
-							GetterUtil.getString(
-								productAccountGroup.getExternalReferenceCode()),
-							contextCompany.getCompanyId());
+				AccountGroup accountGroup = null;
 
-				if (accountGroup == null) {
+				String externalReferenceCode = GetterUtil.getString(
+					productAccountGroup.getExternalReferenceCode());
+
+				if (Validator.isNull(externalReferenceCode)) {
 					accountGroup = _accountGroupService.fetchAccountGroup(
 						GetterUtil.getLong(
 							productAccountGroup.getAccountGroupId()));
+				}
+				else {
+					accountGroup =
+						_accountGroupService.getOrAddEmptyAccountGroup(
+							externalReferenceCode,
+							GetterUtil.getString(
+								productAccountGroup.getName(),
+								externalReferenceCode));
+				}
 
-					if (accountGroup == null) {
-						continue;
-					}
+				if (accountGroup == null) {
+					continue;
 				}
 
 				_accountGroupRelService.addAccountGroupRel(
 					accountGroup.getAccountGroupId(),
 					CPDefinition.class.getName(),
 					cpDefinition.getCPDefinitionId());
+			}
+		}
+
+		// Product groups
+
+		ProductProductGroup[] productProductGroups = product.getProductGroups();
+
+		if (productProductGroups != null) {
+			for (CommercePricingClassCPDefinitionRel
+					commercePricingClassCPDefinitionRel :
+						_commercePricingClassCPDefinitionRelLocalService.
+							getCommercePricingClassByCPDefinitionId(
+								cpDefinition.getCPDefinitionId())) {
+
+				_commercePricingClassCPDefinitionRelService.
+					deleteCommercePricingClassCPDefinitionRel(
+						commercePricingClassCPDefinitionRel.
+							getCommercePricingClassCPDefinitionRelId());
+			}
+
+			for (ProductProductGroup productProductGroup :
+					productProductGroups) {
+
+				CommercePricingClass commercePricingClass = null;
+
+				String externalReferenceCode = GetterUtil.getString(
+					productProductGroup.getExternalReferenceCode());
+
+				if (Validator.isNull(externalReferenceCode)) {
+					commercePricingClass =
+						_commercePricingClassService.fetchCommercePricingClass(
+							GetterUtil.getLong(
+								productProductGroup.getProductGroupId()));
+				}
+				else {
+					commercePricingClass =
+						_commercePricingClassService.
+							getOrAddEmptyCommercePricingClass(
+								externalReferenceCode);
+				}
+
+				if (commercePricingClass == null) {
+					continue;
+				}
+
+				_commercePricingClassCPDefinitionRelService.
+					addCommercePricingClassCPDefinitionRel(
+						commercePricingClass.getCommercePricingClassId(),
+						cpDefinition.getCPDefinitionId(), serviceContext);
 			}
 		}
 
@@ -1886,6 +1974,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	private CommerceChannelService _commerceChannelService;
 
 	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
+
+	@Reference
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 
 	@Reference
@@ -1893,6 +1984,17 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Reference
 	private CommercePriceListLocalService _commercePriceListLocalService;
+
+	@Reference
+	private CommercePricingClassCPDefinitionRelLocalService
+		_commercePricingClassCPDefinitionRelLocalService;
+
+	@Reference
+	private CommercePricingClassCPDefinitionRelService
+		_commercePricingClassCPDefinitionRelService;
+
+	@Reference
+	private CommercePricingClassService _commercePricingClassService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;

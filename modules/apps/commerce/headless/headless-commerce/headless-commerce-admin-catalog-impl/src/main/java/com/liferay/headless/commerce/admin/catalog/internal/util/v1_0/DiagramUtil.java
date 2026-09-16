@@ -20,6 +20,7 @@ import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 import com.liferay.upload.UniqueFileNameProvider;
 
@@ -138,6 +139,36 @@ public class DiagramUtil {
 		throws Exception {
 
 		if (diagram.getAttachmentBase64() == null) {
+			String imageExternalReferenceCode =
+				diagram.getImageExternalReferenceCode();
+
+			if (Validator.isNull(imageExternalReferenceCode)) {
+				CPAttachmentFileEntry cpAttachmentFileEntry =
+					cpAttachmentFileEntryService.fetchCPAttachmentFileEntry(
+						GetterUtil.getLong(diagram.getImageId()));
+
+				if ((cpAttachmentFileEntry != null) &&
+					(cpAttachmentFileEntry.getCompanyId() != companyId)) {
+
+					diagram.setImageId(() -> 0L);
+				}
+
+				return diagram;
+			}
+
+			CPAttachmentFileEntry cpAttachmentFileEntry =
+				cpAttachmentFileEntryService.
+					fetchCPAttachmentFileEntryByExternalReferenceCode(
+						imageExternalReferenceCode, companyId);
+
+			if (cpAttachmentFileEntry == null) {
+				diagram.setImageId(() -> 0L);
+			}
+			else {
+				diagram.setImageId(
+					cpAttachmentFileEntry::getCPAttachmentFileEntryId);
+			}
+
 			return diagram;
 		}
 

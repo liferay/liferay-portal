@@ -37,14 +37,16 @@ public class ProductOptionUtil {
 
 		CPOption cpOption = null;
 
-		long optionId = GetterUtil.getLong(productOption.getOptionId());
+		String optionExternalReferenceCode =
+			productOption.getOptionExternalReferenceCode();
 
-		if (optionId > 0) {
-			cpOption = cpOptionService.getCPOption(optionId);
+		if (Validator.isNotNull(optionExternalReferenceCode)) {
+			cpOption = cpOptionService.getOrAddEmptyCPOption(
+				optionExternalReferenceCode);
 		}
 		else {
-			cpOption = cpOptionService.getOrAddEmptyCPOption(
-				productOption.getOptionExternalReferenceCode());
+			cpOption = cpOptionService.getCPOption(
+				GetterUtil.getLong(productOption.getOptionId()));
 		}
 
 		CPDefinitionOptionRel cpDefinitionOptionRel = null;
