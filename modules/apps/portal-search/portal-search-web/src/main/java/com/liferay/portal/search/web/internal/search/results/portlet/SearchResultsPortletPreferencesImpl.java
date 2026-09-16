@@ -26,6 +26,13 @@ public class SearchResultsPortletPreferencesImpl
 	}
 
 	@Override
+	public int getAccurateCountLimit() {
+		return getInteger(
+			SearchResultsPortletPreferences.PREFERENCE_KEY_ACCURATE_COUNT_LIMIT,
+			1000);
+	}
+
+	@Override
 	public String getFederatedSearchKey() {
 		return getString(
 			SearchResultsPortletPreferences.PREFERENCE_KEY_FEDERATED_SEARCH_KEY,

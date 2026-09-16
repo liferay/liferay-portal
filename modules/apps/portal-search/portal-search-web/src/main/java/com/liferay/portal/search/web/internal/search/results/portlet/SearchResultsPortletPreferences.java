@@ -10,6 +10,9 @@ package com.liferay.portal.search.web.internal.search.results.portlet;
  */
 public interface SearchResultsPortletPreferences {
 
+	public static final String PREFERENCE_KEY_ACCURATE_COUNT_LIMIT =
+		"accurateCountLimit";
+
 	public static final String PREFERENCE_KEY_DISPLAY_IN_DOCUMENT_FORM =
 		"displayInDocumentForm";
 
@@ -38,6 +41,8 @@ public interface SearchResultsPortletPreferences {
 		"showPagination";
 
 	public static final String PREFERENCE_KEY_VIEW_IN_CONTEXT = "viewInContext";
+
+	public int getAccurateCountLimit();
 
 	public String getFederatedSearchKey();
 
