@@ -58,7 +58,7 @@ public class AssetSummaryMetric implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the tracked asset."
+		description = "ID of the tracked asset."
 	)
 	public String getAssetId() {
 		if (_assetIdSupplier != null) {
@@ -93,7 +93,7 @@ public class AssetSummaryMetric implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Identifier of the tracked asset.")
+	@GraphQLField(description = "ID of the tracked asset.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String assetId;
 
@@ -873,4 +873,4 @@ public class AssetSummaryMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:346339633
+// LIFERAY-REST-BUILDER-HASH:-715899407

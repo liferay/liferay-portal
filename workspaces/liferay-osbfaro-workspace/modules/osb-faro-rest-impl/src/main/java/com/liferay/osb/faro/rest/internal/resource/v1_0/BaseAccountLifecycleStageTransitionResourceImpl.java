@@ -5,8 +5,8 @@
 
 package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
-import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegmentMembership;
-import com.liferay.osb.faro.rest.resource.v1_0.IndividualSegmentMembershipResource;
+import com.liferay.osb.faro.rest.dto.v1_0.AccountLifecycleStageTransition;
+import com.liferay.osb.faro.rest.resource.v1_0.AccountLifecycleStageTransitionResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -45,16 +45,16 @@ import java.util.Map;
  */
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
-public abstract class BaseIndividualSegmentMembershipResourceImpl
-	implements EntityModelResource, IndividualSegmentMembershipResource {
+public abstract class BaseAccountLifecycleStageTransitionResourceImpl
+	implements AccountLifecycleStageTransitionResource, EntityModelResource {
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/individual-segments/{individualSegmentId}/memberships'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/account-lifecycles/{accountLifecycleId}/stage-transitions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List individuals currently or formerly in an individual segment. Each entry links one individual to the individual segment and records when the individual entered (and, if applicable, exited). Use the resulting `individualId` values with `getWorkspaceGroupIndividual` to retrieve the full individual record."
+		description = "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are matched case-insensitively against the stage type (e.g. PIPELINE or 'at risk') or the stage description. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -64,9 +64,25 @@ public abstract class BaseIndividualSegmentMembershipResourceImpl
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the individual segment whose memberships should be listed.",
+				description = "ID of the account lifecycle whose stage transitions should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "individualSegmentId"
+				name = "accountLifecycleId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Only include accounts headquartered in this country.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "country"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Only include moves out of this stage. Give the stage type (e.g. PIPELINE) or its description; matching is case-insensitive.",
+				example = "PIPELINE",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "fromLifecycleStage"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Only include accounts in this industry.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "industry"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Page number (starts at 1).",
@@ -79,36 +95,87 @@ public abstract class BaseIndividualSegmentMembershipResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Sort expression `column:asc|desc`.",
-				example = "dateCreated:desc",
+				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeEnd"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Date-range preset. Use one of the listed enum values (e.g. LAST_90_DAYS). Defaults to LAST_90_DAYS. When both rangeStart and rangeEnd are set, they take precedence over rangeKey.",
+				example = "LAST_90_DAYS",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeKey"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeStart"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Only include accounts that are members of this segment.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "segmentId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Sort expression `column:asc|desc`. Defaults to `transitionDate:desc`. Columns: accountId, accountName, fromAccountLifecycleStageId, toAccountLifecycleStageId, transitionDate.",
+				example = "transitionDate:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Only include moves into this stage. Give the stage type (e.g. ONBOARDING) or its description; matching is case-insensitive.",
+				example = "ONBOARDING",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "toLifecycleStage"
 			)
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
 			@io.swagger.v3.oas.annotations.tags.Tag(
-				name = "IndividualSegmentMembership"
+				name = "AccountLifecycleStageTransition"
 			)
 		}
 	)
 	@jakarta.ws.rs.GET
 	@jakarta.ws.rs.Path(
-		"/workspace/{groupId}/individual-segments/{individualSegmentId}/memberships"
+		"/workspace/{groupId}/account-lifecycles/{accountLifecycleId}/stage-transitions"
 	)
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<IndividualSegmentMembership>
-			getWorkspaceGroupIndividualSegmentMembershipsPage(
+	public Page<AccountLifecycleStageTransition>
+			getWorkspaceGroupAccountLifecycleStageTransitionsPage(
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 				@jakarta.validation.constraints.NotNull
 				@jakarta.ws.rs.PathParam("groupId")
 				Long groupId,
 				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 				@jakarta.validation.constraints.NotNull
-				@jakarta.ws.rs.PathParam("individualSegmentId")
-				String individualSegmentId,
+				@jakarta.ws.rs.PathParam("accountLifecycleId")
+				String accountLifecycleId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("country")
+				String country,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("fromLifecycleStage")
+				String fromLifecycleStage,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("industry")
+				String industry,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("rangeEnd")
+				String rangeEnd,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("rangeKey")
+				String rangeKey,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("rangeStart")
+				String rangeStart,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("segmentId")
+				Long segmentId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("toLifecycleStage")
+				String toLifecycleStage,
 				@jakarta.ws.rs.core.Context Pagination pagination,
 				@jakarta.ws.rs.core.Context
 					com.liferay.portal.kernel.search.Sort[] sorts)
@@ -567,7 +634,7 @@ public abstract class BaseIndividualSegmentMembershipResourceImpl
 
 	private static final com.liferay.portal.kernel.log.Log _log =
 		LogFactoryUtil.getLog(
-			BaseIndividualSegmentMembershipResourceImpl.class);
+			BaseAccountLifecycleStageTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:247196915
+// LIFERAY-REST-BUILDER-HASH:966844319

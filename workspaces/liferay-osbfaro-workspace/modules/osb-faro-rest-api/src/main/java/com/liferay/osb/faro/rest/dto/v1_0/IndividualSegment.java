@@ -153,7 +153,7 @@ public class IndividualSegment implements Serializable {
 	private Supplier<Long> _anonymousIndividualCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the channel this segment is scoped to."
+		description = "ID of the channel this segment is scoped to."
 	)
 	public String getChannelId() {
 		if (_channelIdSupplier != null) {
@@ -188,9 +188,7 @@ public class IndividualSegment implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Identifier of the channel this segment is scoped to."
-	)
+	@GraphQLField(description = "ID of the channel this segment is scoped to.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String channelId;
 
@@ -331,7 +329,7 @@ public class IndividualSegment implements Serializable {
 	private Supplier<String> _filterSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Segment id. Use this with `getWorkspaceGroupIndividualSegment` to fetch a single segment."
+		description = "Segment ID. Use this with `getWorkspaceGroupIndividualSegment` to fetch a single segment."
 	)
 	public String getId() {
 		if (_idSupplier != null) {
@@ -365,7 +363,7 @@ public class IndividualSegment implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Segment id. Use this with `getWorkspaceGroupIndividualSegment` to fetch a single segment."
+		description = "Segment ID. Use this with `getWorkspaceGroupIndividualSegment` to fetch a single segment."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String id;
@@ -1216,4 +1214,4 @@ public class IndividualSegment implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:610870599
+// LIFERAY-REST-BUILDER-HASH:-1793603065

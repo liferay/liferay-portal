@@ -53,7 +53,7 @@ public class Workspace implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
+		description = "ID of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
 	)
 	public Long getGroupId() {
 		if (_groupIdSupplier != null) {
@@ -89,7 +89,7 @@ public class Workspace implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
+		description = "ID of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long groupId;
@@ -294,4 +294,4 @@ public class Workspace implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:151028202
+// LIFERAY-REST-BUILDER-HASH:932538794

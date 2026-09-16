@@ -53,7 +53,7 @@ public class Channel implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Channel id. Use this with `getWorkspaceGroupChannel` to fetch the channel directly."
+		description = "Channel ID. Use this with `getWorkspaceGroupChannel` to fetch the channel directly."
 	)
 	public String getId() {
 		if (_idSupplier != null) {
@@ -87,7 +87,7 @@ public class Channel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Channel id. Use this with `getWorkspaceGroupChannel` to fetch the channel directly."
+		description = "Channel ID. Use this with `getWorkspaceGroupChannel` to fetch the channel directly."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String id;
@@ -296,4 +296,4 @@ public class Channel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-871139250
+// LIFERAY-REST-BUILDER-HASH:409073742

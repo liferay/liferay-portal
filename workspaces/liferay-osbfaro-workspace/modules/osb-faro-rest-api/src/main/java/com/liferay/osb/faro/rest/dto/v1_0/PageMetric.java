@@ -53,7 +53,7 @@ public class PageMetric implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the tracked page (the page's canonical URL)."
+		description = "ID of the tracked page (the page's canonical URL)."
 	)
 	public String getAssetId() {
 		if (_assetIdSupplier != null) {
@@ -89,7 +89,7 @@ public class PageMetric implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the tracked page (the page's canonical URL)."
+		description = "ID of the tracked page (the page's canonical URL)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String assetId;
@@ -231,7 +231,7 @@ public class PageMetric implements Serializable {
 	private Supplier<Double> _bounceRateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the data source providing this page's analytics events."
+		description = "ID of the data source providing this page's analytics events."
 	)
 	public String getDataSourceId() {
 		if (_dataSourceIdSupplier != null) {
@@ -267,7 +267,7 @@ public class PageMetric implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the data source providing this page's analytics events."
+		description = "ID of the data source providing this page's analytics events."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String dataSourceId;
@@ -1003,4 +1003,4 @@ public class PageMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1480901446
+// LIFERAY-REST-BUILDER-HASH:593040454

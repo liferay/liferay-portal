@@ -54,12 +54,12 @@ public abstract class BaseAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/accounts/{accountId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetch a single account by id from an Analytics Cloud Workspace. Use this when you already have an account id. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
+		description = "Fetch a single account by ID from an Analytics Cloud Workspace. Use this when you already have an account ID. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
@@ -97,22 +97,22 @@ public abstract class BaseAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/accounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by id, use `getAccount`."
+		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the channel whose search terms should be listed.",
+				description = "ID of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the workspace's account lifecycle. The name is resolved to the stage identifier that backs the filter, so pass the name, not the identifier.",
+				description = "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the workspace's account lifecycle. The name is resolved to the stage ID that backs the filter, so pass the name, not the ID.",
 				example = "AT_RISK",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "lifecycleStage"
@@ -622,4 +622,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1031633444
+// LIFERAY-REST-BUILDER-HASH:-1696987310

@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.graphql.query.v1_0;
 
 import com.liferay.osb.faro.rest.dto.v1_0.Account;
+import com.liferay.osb.faro.rest.dto.v1_0.AccountLifecycleStageTransition;
 import com.liferay.osb.faro.rest.dto.v1_0.AssetSummaryMetric;
 import com.liferay.osb.faro.rest.dto.v1_0.Channel;
 import com.liferay.osb.faro.rest.dto.v1_0.Event;
@@ -15,6 +16,7 @@ import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegmentMembership;
 import com.liferay.osb.faro.rest.dto.v1_0.PageMetric;
 import com.liferay.osb.faro.rest.dto.v1_0.SearchTerm;
 import com.liferay.osb.faro.rest.dto.v1_0.Workspace;
+import com.liferay.osb.faro.rest.resource.v1_0.AccountLifecycleStageTransitionResource;
 import com.liferay.osb.faro.rest.resource.v1_0.AccountResource;
 import com.liferay.osb.faro.rest.resource.v1_0.AssetSummaryMetricResource;
 import com.liferay.osb.faro.rest.resource.v1_0.ChannelResource;
@@ -62,6 +64,15 @@ public class Query {
 
 		_accountResourceComponentServiceObjects =
 			accountResourceComponentServiceObjects;
+	}
+
+	public static void
+		setAccountLifecycleStageTransitionResourceComponentServiceObjects(
+			ComponentServiceObjects<AccountLifecycleStageTransitionResource>
+				accountLifecycleStageTransitionResourceComponentServiceObjects) {
+
+		_accountLifecycleStageTransitionResourceComponentServiceObjects =
+			accountLifecycleStageTransitionResourceComponentServiceObjects;
 	}
 
 	public static void setAssetSummaryMetricResourceComponentServiceObjects(
@@ -143,7 +154,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupAccount(accountId: ___, groupId: ___){accountName, annualRevenue, country, dateModified, id, industry, lastActivityDate, lifecycleStage}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetch a single account by id from an Analytics Cloud Workspace. Use this when you already have an account id. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
+		description = "Fetch a single account by ID from an Analytics Cloud Workspace. Use this when you already have an account ID. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
 	)
 	public Account workspaceGroupAccount(
 			@GraphQLName("groupId") Long groupId,
@@ -163,7 +174,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccounts(channelId: ___, groupId: ___, lifecycleStage: ___, page: ___, pageSize: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by id, use `getAccount`."
+		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`."
 	)
 	public AccountPage workspaceGroupChannelAccounts(
 			@GraphQLName("groupId") Long groupId,
@@ -183,6 +194,47 @@ public class Query {
 					groupId, channelId, lifecycleStage, search,
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(accountResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupAccountLifecycleStageTransitions(accountLifecycleId: ___, country: ___, fromLifecycleStage: ___, groupId: ___, industry: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, segmentId: ___, sorts: ___, toLifecycleStage: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are matched case-insensitively against the stage type (e.g. PIPELINE or 'at risk') or the stage description. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+	)
+	public AccountLifecycleStageTransitionPage
+			workspaceGroupAccountLifecycleStageTransitions(
+				@GraphQLName("groupId") Long groupId,
+				@GraphQLName("accountLifecycleId") String accountLifecycleId,
+				@GraphQLName("country") String country,
+				@GraphQLName("fromLifecycleStage") String fromLifecycleStage,
+				@GraphQLName("industry") String industry,
+				@GraphQLName("rangeEnd") String rangeEnd,
+				@GraphQLName("rangeKey") String rangeKey,
+				@GraphQLName("rangeStart") String rangeStart,
+				@GraphQLName("segmentId") Long segmentId,
+				@GraphQLName("toLifecycleStage") String toLifecycleStage,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page,
+				@GraphQLName("sort") String sortsString)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_accountLifecycleStageTransitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			accountLifecycleStageTransitionResource ->
+				new AccountLifecycleStageTransitionPage(
+					accountLifecycleStageTransitionResource.
+						getWorkspaceGroupAccountLifecycleStageTransitionsPage(
+							groupId, accountLifecycleId, country,
+							fromLifecycleStage, industry, rangeEnd, rangeKey,
+							rangeStart, segmentId, toLifecycleStage,
+							Pagination.of(page, pageSize),
+							_sortsBiFunction.apply(
+								accountLifecycleStageTransitionResource,
+								sortsString))));
 	}
 
 	/**
@@ -247,7 +299,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannels(groupId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by id, use `getWorkspaceGroupChannel`."
+		description = "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
 	)
 	public ChannelPage workspaceGroupChannels(
 			@GraphQLName("groupId") Long groupId)
@@ -299,7 +351,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividuals(accountId: ___, channelId: ___, groupId: ___, includeAnonymousUsers: ___, individualSegmentId: ___, interestName: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, channel, segment, or interest. Use this for queries to find a person. To fetch a single individual by id, use `getWorkspaceGroupIndividual` instead."
+		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, channel, segment, or interest. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
 	)
 	public IndividualPage workspaceGroupChannelIndividuals(
 			@GraphQLName("groupId") Long groupId,
@@ -330,7 +382,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividual(channelId: ___, groupId: ___, individualId: ___){accountName, activitiesCount, dateCreated, dateModified, demographics, firstActivityDate, id, lastActivityDate, lastSessionCountry, profileType}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an id. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
+		description = "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
 	)
 	public Individual workspaceGroupIndividual(
 			@GraphQLName("groupId") Long groupId,
@@ -352,7 +404,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividualSegments(channelId: ___, groupId: ___, name: ___, page: ___, pageSize: ___, search: ___, status: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by id, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	public IndividualSegmentPage workspaceGroupChannelIndividualSegments(
 			@GraphQLName("groupId") Long groupId,
@@ -380,7 +432,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividualSegment(groupId: ___, individualSegmentId: ___){activeIndividualCount, anonymousIndividualCount, channelId, dateCreated, dateModified, filter, id, includeAnonymousUsers, individualCount, knownIndividualCount, lastActivityDate, name, segmentType, state, status}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetch a single individual segment by id from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "Fetch a single individual segment by ID from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	public IndividualSegment workspaceGroupIndividualSegment(
 			@GraphQLName("groupId") Long groupId,
@@ -522,6 +574,41 @@ public class Query {
 
 		@GraphQLField
 		protected java.util.Collection<Account> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
+	@GraphQLName("AccountLifecycleStageTransitionPage")
+	public class AccountLifecycleStageTransitionPage {
+
+		public AccountLifecycleStageTransitionPage(
+			Page accountLifecycleStageTransitionPage) {
+
+			actions = accountLifecycleStageTransitionPage.getActions();
+
+			items = accountLifecycleStageTransitionPage.getItems();
+			lastPage = accountLifecycleStageTransitionPage.getLastPage();
+			page = accountLifecycleStageTransitionPage.getPage();
+			pageSize = accountLifecycleStageTransitionPage.getPageSize();
+			totalCount = accountLifecycleStageTransitionPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<AccountLifecycleStageTransition> items;
 
 		@GraphQLField
 		protected long lastPage;
@@ -873,6 +960,30 @@ public class Query {
 	}
 
 	private void _populateResourceContext(
+			AccountLifecycleStageTransitionResource
+				accountLifecycleStageTransitionResource)
+		throws Exception {
+
+		accountLifecycleStageTransitionResource.setContextAcceptLanguage(
+			_acceptLanguage);
+		accountLifecycleStageTransitionResource.setContextCompany(_company);
+		accountLifecycleStageTransitionResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		accountLifecycleStageTransitionResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		accountLifecycleStageTransitionResource.setContextUriInfo(_uriInfo);
+		accountLifecycleStageTransitionResource.setContextUser(_user);
+		accountLifecycleStageTransitionResource.setGroupLocalService(
+			_groupLocalService);
+		accountLifecycleStageTransitionResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		accountLifecycleStageTransitionResource.
+			setResourcePermissionLocalService(_resourcePermissionLocalService);
+		accountLifecycleStageTransitionResource.setRoleLocalService(
+			_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			AssetSummaryMetricResource assetSummaryMetricResource)
 		throws Exception {
 
@@ -1040,6 +1151,9 @@ public class Query {
 
 	private static ComponentServiceObjects<AccountResource>
 		_accountResourceComponentServiceObjects;
+	private static ComponentServiceObjects
+		<AccountLifecycleStageTransitionResource>
+			_accountLifecycleStageTransitionResourceComponentServiceObjects;
 	private static ComponentServiceObjects<AssetSummaryMetricResource>
 		_assetSummaryMetricResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ChannelResource>
@@ -1076,4 +1190,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1221139226
+// LIFERAY-REST-BUILDER-HASH:1638010399

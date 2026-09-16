@@ -51,17 +51,17 @@ public abstract class BaseIndividualSegmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individual-segments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by id, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the channel whose search terms should be listed.",
+				description = "ID of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
@@ -134,12 +134,12 @@ public abstract class BaseIndividualSegmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/individual-segments/{individualSegmentId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetch a single individual segment by id from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "Fetch a single individual segment by ID from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
@@ -620,4 +620,4 @@ public abstract class BaseIndividualSegmentResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualSegmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1561941332
+// LIFERAY-REST-BUILDER-HASH:419480026

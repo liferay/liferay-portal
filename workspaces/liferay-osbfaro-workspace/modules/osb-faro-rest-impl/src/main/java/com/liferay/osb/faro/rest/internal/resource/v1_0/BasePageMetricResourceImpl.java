@@ -59,27 +59,27 @@ public abstract class BasePageMetricResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the channel whose search terms should be listed.",
+				description = "ID of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of an account. When set, narrow the metrics to activity from the individuals in that account.",
+				description = "ID of an account. When set, narrow the metrics to activity from the individuals in that account.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "accountId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Optional data source id to scope results to a single data source.",
+				description = "Optional data source ID to scope results to a single data source.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "dataSourceId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of an individual. When set, narrow the metrics to activity from that individual.",
+				description = "ID of an individual. When set, narrow the metrics to activity from that individual.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "individualId"
 			),
@@ -115,7 +115,7 @@ public abstract class BasePageMetricResourceImpl
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of a segment. When set, narrow the metrics to activity from the individuals in that segment.",
+				description = "ID of a segment. When set, narrow the metrics to activity from the individuals in that segment.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "segmentId"
 			),
@@ -627,4 +627,4 @@ public abstract class BasePageMetricResourceImpl
 		LogFactoryUtil.getLog(BasePageMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:183163115
+// LIFERAY-REST-BUILDER-HASH:-2088149571

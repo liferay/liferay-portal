@@ -59,7 +59,7 @@ public class Event implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the application that emitted the event."
+		description = "ID of the application that emitted the event."
 	)
 	public String getApplicationId() {
 		if (_applicationIdSupplier != null) {
@@ -94,9 +94,7 @@ public class Event implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Identifier of the application that emitted the event."
-	)
+	@GraphQLField(description = "ID of the application that emitted the event.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String applicationId;
 
@@ -282,7 +280,7 @@ public class Event implements Serializable {
 	private Supplier<Date> _createDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the individual that emitted the event. Null for anonymous individuals. Use with `getWorkspaceGroupIndividual` to fetch the individual."
+		description = "ID of the individual that emitted the event. Null for anonymous individuals. Use with `getWorkspaceGroupIndividual` to fetch the individual."
 	)
 	public String getIndividualId() {
 		if (_individualIdSupplier != null) {
@@ -318,7 +316,7 @@ public class Event implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the individual that emitted the event. Null for anonymous individuals. Use with `getWorkspaceGroupIndividual` to fetch the individual."
+		description = "ID of the individual that emitted the event. Null for anonymous individuals. Use with `getWorkspaceGroupIndividual` to fetch the individual."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String individualId;
@@ -907,4 +905,4 @@ public class Event implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1859884365
+// LIFERAY-REST-BUILDER-HASH:-202593843

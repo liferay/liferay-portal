@@ -54,7 +54,7 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
@@ -92,12 +92,12 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by id, use `getWorkspaceGroupChannel`."
+		description = "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			)
@@ -565,4 +565,4 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1686915252
+// LIFERAY-REST-BUILDER-HASH:-1476995928

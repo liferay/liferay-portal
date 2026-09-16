@@ -55,17 +55,17 @@ public abstract class BaseEventResourceImpl implements EventResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the channel whose events should be listed.",
+				description = "ID of the channel whose events should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of an account. When set, narrow the events to those from the individuals in that account.",
+				description = "ID of an account. When set, narrow the events to those from the individuals in that account.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "accountId"
 			),
@@ -75,7 +75,7 @@ public abstract class BaseEventResourceImpl implements EventResource {
 				name = "includeAnonymousUsers"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of an individual. When set, narrow the events to those from that individual.",
+				description = "ID of an individual. When set, narrow the events to those from that individual.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "individualId"
 			),
@@ -111,7 +111,7 @@ public abstract class BaseEventResourceImpl implements EventResource {
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of a segment. When set, narrow the events to those from the individuals in that segment.",
+				description = "ID of a segment. When set, narrow the events to those from the individuals in that segment.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "segmentId"
 			)
@@ -608,4 +608,4 @@ public abstract class BaseEventResourceImpl implements EventResource {
 		LogFactoryUtil.getLog(BaseEventResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:2084904575
+// LIFERAY-REST-BUILDER-HASH:-1280203923

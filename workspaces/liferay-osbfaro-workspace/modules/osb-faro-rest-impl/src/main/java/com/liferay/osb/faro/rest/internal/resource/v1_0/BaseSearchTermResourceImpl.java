@@ -55,12 +55,12 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the channel whose search terms should be listed.",
+				description = "ID of the channel whose search terms should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId"
 			),
@@ -570,4 +570,4 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 		LogFactoryUtil.getLog(BaseSearchTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:82529165
+// LIFERAY-REST-BUILDER-HASH:1330436301

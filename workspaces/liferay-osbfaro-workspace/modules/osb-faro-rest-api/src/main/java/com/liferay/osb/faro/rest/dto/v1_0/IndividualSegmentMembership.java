@@ -152,7 +152,7 @@ public class IndividualSegmentMembership implements Serializable {
 	private Supplier<Date> _dateRemovedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the individual whose membership this record describes. Use with `getWorkspaceGroupIndividual` to fetch the individual."
+		description = "ID of the individual whose membership this record describes. Use with `getWorkspaceGroupIndividual` to fetch the individual."
 	)
 	public String getIndividualId() {
 		if (_individualIdSupplier != null) {
@@ -188,7 +188,7 @@ public class IndividualSegmentMembership implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Identifier of the individual whose membership this record describes. Use with `getWorkspaceGroupIndividual` to fetch the individual."
+		description = "ID of the individual whose membership this record describes. Use with `getWorkspaceGroupIndividual` to fetch the individual."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String individualId;
@@ -197,7 +197,7 @@ public class IndividualSegmentMembership implements Serializable {
 	private Supplier<String> _individualIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the segment this membership belongs to."
+		description = "ID of the segment this membership belongs to."
 	)
 	public String getIndividualSegmentId() {
 		if (_individualSegmentIdSupplier != null) {
@@ -232,9 +232,7 @@ public class IndividualSegmentMembership implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Identifier of the segment this membership belongs to."
-	)
+	@GraphQLField(description = "ID of the segment this membership belongs to.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String individualSegmentId;
 
@@ -548,4 +546,4 @@ public class IndividualSegmentMembership implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:468504562
+// LIFERAY-REST-BUILDER-HASH:1050858682
