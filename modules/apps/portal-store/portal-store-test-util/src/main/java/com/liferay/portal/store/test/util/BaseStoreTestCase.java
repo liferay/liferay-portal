@@ -8,20 +8,31 @@ package com.liferay.portal.store.test.util;
 import com.liferay.document.library.kernel.exception.NoSuchFileException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileVersion;
+import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLTrashLocalServiceUtil;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.document.library.test.util.DLAppTestUtil;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
+import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
+import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
+import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -29,10 +40,12 @@ import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portlet.documentlibrary.store.DLStoreImpl;
 
+import java.io.File;
 import java.io.InputStream;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.After;
@@ -222,6 +235,68 @@ public abstract class BaseStoreTestCase {
 		}
 		finally {
 			DLStoreImpl.setStore(originalStore);
+		}
+	}
+
+	@Test
+	public void testExportImportFileEntry() throws Exception {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+		Store originalStore = ReflectionTestUtil.getFieldValue(
+			DLStoreImpl.class, "_wrappedStore");
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		DLStoreImpl.setStore(_store);
+
+		try {
+			Group group = GroupTestUtil.addGroup();
+			Group importedGroup = GroupTestUtil.addGroup();
+
+			FileEntry fileEntry = DLAppTestUtil.addFileEntry(
+				group.getGroupId());
+
+			DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
+
+			DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
+
+			Assert.assertTrue(
+				_store.hasFile(
+					dlFileEntry.getCompanyId(),
+					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
+					dlFileVersion.getStoreFileName()));
+
+			File larFile = _exportLayoutsAsFile(group.getGroupId());
+
+			_importLayouts(importedGroup.getGroupId(), larFile);
+
+			larFile.delete();
+
+			FileEntry importedFileEntry =
+				DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+					fileEntry.getUuid(), importedGroup.getGroupId());
+
+			DLFileEntry importedDLFileEntry =
+				(DLFileEntry)importedFileEntry.getModel();
+
+			DLFileVersion importedDLFileVersion =
+				importedDLFileEntry.getFileVersion();
+
+			Assert.assertTrue(
+				_store.hasFile(
+					importedDLFileEntry.getCompanyId(),
+					importedDLFileEntry.getDataRepositoryId(),
+					importedDLFileEntry.getName(),
+					importedDLFileVersion.getStoreFileName()));
+
+			GroupTestUtil.deleteGroup(group);
+			GroupTestUtil.deleteGroup(importedGroup);
+		}
+		finally {
+			DLStoreImpl.setStore(originalStore);
+
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 		}
 	}
 
@@ -503,6 +578,59 @@ public abstract class BaseStoreTestCase {
 
 	protected static final byte[] DATA_VERSION =
 		new byte[BaseStoreTestCase._DATA_SIZE];
+
+	private File _exportLayoutsAsFile(long groupId) throws Exception {
+		return ExportImportLocalServiceUtil.exportLayoutsAsFile(
+			ExportImportConfigurationLocalServiceUtil.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildExportLayoutSettingsMap(
+							TestPropsValues.getUser(), groupId, false,
+							new long[0], _getParameterMap())));
+	}
+
+	private Map<String, String[]> _getParameterMap() {
+		return HashMapBuilder.put(
+			PortletDataHandlerKeys.DATA_STRATEGY,
+			new String[] {PortletDataHandlerKeys.DATA_STRATEGY_MIRROR_OVERWRITE}
+		).put(
+			PortletDataHandlerKeys.DELETIONS,
+			new String[] {Boolean.FALSE.toString()}
+		).put(
+			PortletDataHandlerKeys.PERMISSIONS,
+			new String[] {Boolean.FALSE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_CONFIGURATION,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_CONFIGURATION_ALL,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_DATA,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_DATA_ALL,
+			new String[] {Boolean.TRUE.toString()}
+		).put(
+			PortletDataHandlerKeys.PORTLET_SETUP_ALL,
+			new String[] {Boolean.TRUE.toString()}
+		).build();
+	}
+
+	private void _importLayouts(long groupId, File larFile) throws Exception {
+		ExportImportLocalServiceUtil.importLayouts(
+			ExportImportConfigurationLocalServiceUtil.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildImportLayoutSettingsMap(
+							TestPropsValues.getUser(), groupId, false, null,
+							_getParameterMap())),
+			larFile);
+	}
 
 	private static final int _DATA_SIZE = 1024 * 65;
 

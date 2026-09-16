@@ -29,58 +29,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-129271."
-	@priority = 4
-	test AssertNoErrorMessageAfterExportAndImportSiteLAR {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		var containerId = PropsUtil.get("azure.container.id");
-		var companyId = JSONCompany.getCompanyId();
-		var groupId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Test Site Name",
-			site = "true");
-
-		AntCommands.runCommand("build-test-azure.xml", "assert-no-document-in-container -Dazure.container.id=${containerId} -DcompanyId=${companyId} -DgroupId=${groupId}");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Site Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		AntCommands.runCommand("build-test-azure.xml", "assert-document-in-container -Dazure.container.id=${containerId} -DcompanyId=${companyId} -DgroupId=${groupId}");
-
-		LAR.exportSiteCP(siteScopeName = "Test Site Name");
-
-		var larFileName = LAR.getLarFileName();
-
-		LAR.downloadLar();
-
-		HeadlessSite.addSite(siteName = "Test Site Name 1");
-
-		for (var layoutUtilityPageName : list "404 Error,500 Error") {
-			JSONLayoututilitypage.deleteLayoutUtilityPage(
-				groupName = "Test Site Name 1",
-				layoutUtilityPageName = ${layoutUtilityPageName});
-		}
-
-		var groupId1 = JSONGroupAPI._getGroupIdByName(
-			groupName = "Test Site Name 1",
-			site = "true");
-
-		AntCommands.runCommand("build-test-azure.xml", "assert-no-document-in-container -Dazure.container.id=${containerId} -DcompanyId=${companyId} -DgroupId=${groupId1}");
-
-		LAR.importSiteCP(
-			larFileName = ${larFileName},
-			siteName = "Test Site Name 1");
-
-		AntCommands.runCommand("build-test-azure.xml", "assert-document-in-container -Dazure.container.id=${containerId} -DcompanyId=${companyId} -DgroupId=${groupId1}");
-
-		AssertConsoleTextNotPresent(value1 = "java.io.IOException");
-	}
-
 	@description = "This is a use case for LPS-127589."
 	@priority = 3
 	test AzureConnectionDoesNotLeakWhenServingFileAsStream {

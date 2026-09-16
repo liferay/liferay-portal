@@ -29,50 +29,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-129271."
-	@priority = 4
-	test AssertNoErrorMessageAfterExportAndImportSiteLAR {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		var bucketID = PropsUtil.get("s3.bucket.id");
-		var companyId = JSONCompany.getCompanyId();
-		var groupId = JSONGroupAPI._getGroupIdByName(
-			groupName = "Test Site Name",
-			site = "true");
-
-		for (var layoutUtilityPageName : list "404 Error,500 Error") {
-			JSONLayoututilitypage.deleteLayoutUtilityPage(
-				groupName = "Test Site Name",
-				layoutUtilityPageName = ${layoutUtilityPageName});
-		}
-
-		AntCommands.runCommand("build-test-s3-store.xml", "assert-no-document-in-bucket -DcompanyId=${companyId} -DgroupId=${groupId} -Ds3.bucket.id=${bucketID}");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Site Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		AntCommands.runCommand("build-test-s3-store.xml", "assert-document-in-bucket -DcompanyId=${companyId} -DgroupId=${groupId} -Ds3.bucket.id=${bucketID}");
-
-		LAR.exportSiteCP(siteScopeName = "Test Site Name");
-
-		var larFileName = LAR.getLarFileName();
-
-		LAR.downloadLar();
-
-		HeadlessSite.addSite(siteName = "Test Site Name 1");
-
-		LAR.importSiteCP(
-			larFileName = ${larFileName},
-			siteName = "Test Site Name 1");
-
-		AssertConsoleTextNotPresent(value1 = "java.io.IOException");
-	}
-
 	@description = "Verify a data migration can be executed from the default store to IBM S3 store."
 	@priority = 3
 	test IBMS3StoreDataMigration {
