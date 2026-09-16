@@ -66,7 +66,14 @@ public class AudiencesEntryLocalServiceTest {
 						"value", RandomTestUtil.randomString()
 					),
 					JSONUtil.put(
-						"attribute", "segments"
+						"attribute", "batch_segments"
+					).put(
+						"operator", "includes"
+					).put(
+						"value", RandomTestUtil.randomString()
+					),
+					JSONUtil.put(
+						"attribute", "real_time_segments"
 					).put(
 						"operator", "includes"
 					).put(

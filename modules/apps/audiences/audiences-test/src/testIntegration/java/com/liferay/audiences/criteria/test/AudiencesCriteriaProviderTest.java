@@ -68,7 +68,9 @@ public class AudiencesCriteriaProviderTest {
 		Assert.assertEquals(
 			audiencesCriterias.toString(), 14, audiencesCriterias.size());
 		Assert.assertNull(
-			_getAudiencesCriteria(audiencesCriterias, "segments"));
+			_getAudiencesCriteria(audiencesCriterias, "batch_segments"));
+		Assert.assertNull(
+			_getAudiencesCriteria(audiencesCriterias, "real_time_segments"));
 
 		AudiencesCriteria urlAudiencesCriteria = _getAudiencesCriteria(
 			audiencesCriterias, "url");
@@ -163,7 +165,9 @@ public class AudiencesCriteriaProviderTest {
 		Assert.assertEquals(
 			audiencesCriterias.toString(), 2, audiencesCriterias.size());
 		Assert.assertNull(
-			_getAudiencesCriteria(audiencesCriterias, "segments"));
+			_getAudiencesCriteria(audiencesCriterias, "batch_segments"));
+		Assert.assertNull(
+			_getAudiencesCriteria(audiencesCriterias, "real_time_segments"));
 
 		AudiencesCriteria authenticationAudiencesCriteria =
 			_getAudiencesCriteria(
@@ -187,7 +191,10 @@ public class AudiencesCriteriaProviderTest {
 
 		Assert.assertFalse(options.toString(), options.isEmpty());
 
-		SegmentsEntry segmentsEntry = _addSegmentsEntry();
+		SegmentsEntry batchSegmentsEntry = _addSegmentsEntry(
+			SegmentsEntryConstants.TYPE_BATCH);
+		SegmentsEntry realTimeSegmentsEntry = _addSegmentsEntry(
+			SegmentsEntryConstants.TYPE_REAL_TIME);
 
 		audiencesCriteriaTypes =
 			_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
@@ -198,23 +205,14 @@ public class AudiencesCriteriaProviderTest {
 		audiencesCriterias = audiencesCriteriaType.getAudiencesCriterias();
 
 		Assert.assertEquals(
-			audiencesCriterias.toString(), 3, audiencesCriterias.size());
+			audiencesCriterias.toString(), 4, audiencesCriterias.size());
 
-		AudiencesCriteria segmentsAudiencesCriteria = _getAudiencesCriteria(
-			audiencesCriterias, "segments");
-
-		Assert.assertEquals(
-			AudiencesCriteria.InputType.SELECT,
-			segmentsAudiencesCriteria.getInputType());
-		Assert.assertEquals(
-			AudiencesCriteria.Type.SET, segmentsAudiencesCriteria.getType());
-
-		AudiencesCriteria.Option option = _getOption(
-			segmentsAudiencesCriteria.getOptions(),
-			segmentsEntry.getExternalReferenceCode());
-
-		Assert.assertEquals(
-			segmentsEntry.getName(LocaleUtil.getDefault()), option.getLabel());
+		_assertSegmentsAudiencesCriteria(
+			_getAudiencesCriteria(audiencesCriterias, "real_time_segments"),
+			"Real-Time Segments", realTimeSegmentsEntry);
+		_assertSegmentsAudiencesCriteria(
+			_getAudiencesCriteria(audiencesCriterias, "batch_segments"),
+			"Batch Segments", batchSegmentsEntry);
 	}
 
 	private ClientExtensionEntry _addClientExtensionEntry(
@@ -245,18 +243,37 @@ public class AudiencesCriteriaProviderTest {
 		return clientExtensionEntry;
 	}
 
-	private SegmentsEntry _addSegmentsEntry() throws Exception {
+	private SegmentsEntry _addSegmentsEntry(int type) throws Exception {
 		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			CriteriaSerializer.serialize(new Criteria()),
-			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND, type,
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId()));
 
 		_segmentsEntries.add(segmentsEntry);
 
 		return segmentsEntry;
+	}
+
+	private void _assertSegmentsAudiencesCriteria(
+		AudiencesCriteria audiencesCriteria, String label,
+		SegmentsEntry segmentsEntry) {
+
+		Assert.assertEquals(
+			AudiencesCriteria.InputType.SELECT,
+			audiencesCriteria.getInputType());
+		Assert.assertEquals(label, audiencesCriteria.getLabel());
+		Assert.assertEquals(
+			AudiencesCriteria.Type.SET, audiencesCriteria.getType());
+
+		AudiencesCriteria.Option option = _getOption(
+			audiencesCriteria.getOptions(),
+			segmentsEntry.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			segmentsEntry.getName(LocaleUtil.getDefault()), option.getLabel());
 	}
 
 	private AudiencesCriteria _getAudiencesCriteria(
