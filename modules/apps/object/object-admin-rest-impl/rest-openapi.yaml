@@ -256,6 +256,12 @@ components:
                     type: string
                 objectDefinitionExternalReferenceCode1:
                     type: string
+                objectDefinitionModifiable1:
+                    type: boolean
+                objectDefinitionScope1:
+                    type: string
+                objectDefinitionSystem1:
+                    type: boolean
                 objectFieldSettings:
                     items:
                         $ref: "#/components/schemas/ObjectFieldSetting"
