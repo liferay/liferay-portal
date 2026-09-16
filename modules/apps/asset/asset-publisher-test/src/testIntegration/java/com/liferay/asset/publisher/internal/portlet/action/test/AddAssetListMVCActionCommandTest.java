@@ -15,6 +15,7 @@ import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -30,6 +31,8 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -117,8 +120,13 @@ public class AddAssetListMVCActionCommandTest {
 
 		String portletId = LayoutTestUtil.addPortletToLayout(
 			layout, AssetPublisherPortletKeys.ASSET_PUBLISHER,
-			Collections.singletonMap(
-				"selectionStyle", new String[] {"dynamic"}));
+			HashMapBuilder.put(
+				"anyAssetType", new String[] {_CLASS_NAME_ID_NONEXISTENT}
+			).put(
+				"classNameIds", new String[] {_CLASS_NAME_IDS}
+			).put(
+				"selectionStyle", new String[] {"dynamic"}
+			).build());
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
@@ -160,7 +168,11 @@ public class AddAssetListMVCActionCommandTest {
 		).build();
 
 		Assert.assertEquals(
-			"true", unicodeProperties.getProperty("anyAssetType", null));
+			_CLASS_NAME_ID_NONEXISTENT,
+			unicodeProperties.getProperty("anyAssetType", null));
+		Assert.assertEquals(
+			_CLASS_NAME_IDS,
+			unicodeProperties.getProperty("classNameIds", null));
 	}
 
 	private void _testAddAssetListFromManualCollection(
@@ -201,6 +213,13 @@ public class AddAssetListMVCActionCommandTest {
 		Assert.assertEquals(
 			"asset-list", portletPreferences.getValue("selectionStyle", null));
 	}
+
+	private static final String _CLASS_NAME_ID_NONEXISTENT = String.valueOf(
+		RandomTestUtil.nextLong());
+
+	private static final String _CLASS_NAME_IDS =
+		PortalUtil.getClassNameId(Layout.class) + StringPool.COMMA +
+			RandomTestUtil.nextLong();
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
