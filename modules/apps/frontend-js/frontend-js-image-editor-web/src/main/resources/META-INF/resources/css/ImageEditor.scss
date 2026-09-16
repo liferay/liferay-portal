@@ -14,6 +14,10 @@
 	--editor-border: var(--cadmin-gray-300, var(--gray-300, #{$gray-300}));
 	--editor-primary: var(--cadmin-primary, var(--primary, #{$primary}));
 	--editor-surface: var(--cadmin-body-bg, var(--body-bg, #{$body-bg}));
+	--editor-text-muted: var(
+		--cadmin-secondary,
+		var(--secondary, #{$secondary})
+	);
 	--editor-workspace-bg: #{$dark};
 
 	display: flex;

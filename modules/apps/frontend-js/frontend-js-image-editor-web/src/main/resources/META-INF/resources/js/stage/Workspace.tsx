@@ -22,8 +22,16 @@ interface Props {
 
 	dispatch: (action: EditorAction) => void;
 	image: LoadedImage;
+
+	multiSelectedIds: string[];
 	onAnnounce: (message: string) => void;
 	onCenterCrop: () => void;
+
+	onCopyOverlay: (id: string) => void;
+	onMultiSelectToggle: (id: string) => void;
+
+	onPasteOverlay: () => void;
+
 	onSelectOverlay: (id: string | null) => void;
 	onWorkspacePointerLeave?: () => void;
 	onWorkspacePointerMove?: (event: React.PointerEvent) => void;
@@ -46,8 +54,12 @@ export function Workspace({
 	aspectLocked,
 	dispatch,
 	image,
+	multiSelectedIds,
 	onAnnounce,
 	onCenterCrop,
+	onCopyOverlay,
+	onMultiSelectToggle,
+	onPasteOverlay,
 	onSelectOverlay,
 	onWorkspacePointerLeave,
 	onWorkspacePointerMove,
@@ -88,6 +100,13 @@ export function Workspace({
 		else if (event.key === '2') {
 			event.preventDefault();
 			onCenterCrop();
+		}
+		else if (
+			(event.metaKey || event.ctrlKey) &&
+			event.key.toLowerCase() === 'v'
+		) {
+			event.preventDefault();
+			onPasteOverlay();
 		}
 	};
 
@@ -191,7 +210,10 @@ export function Workspace({
 				>
 					<OverlaysEditable
 						dispatch={dispatch}
+						multiSelectedIds={multiSelectedIds}
 						onAnnounce={onAnnounce}
+						onCopy={onCopyOverlay}
+						onMultiSelectToggle={onMultiSelectToggle}
 						onSelect={onSelectOverlay}
 						overlays={state.overlays}
 						proportional={proportional}

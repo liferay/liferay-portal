@@ -33,8 +33,16 @@ export type EditorAction =
 	| {id: string; newId: string; type: 'duplicate-overlay'}
 	| {type: 'flip-horizontal'}
 	| {direction: -1 | 1; id: string; type: 'move-overlay-layer'}
+	| {
+			dx: number;
+			dy: number;
+			ids: string[];
+			transient?: boolean;
+			type: 'move-overlays';
+	  }
 	| {type: 'redo'}
 	| {id: string; type: 'remove-overlay'}
+	| {ids: string[]; type: 'remove-overlays'}
 	| {type: 'reset-adjustments'}
 	| {type: 'rotate-90'}
 	| {
@@ -152,6 +160,60 @@ export function editorReducer(
 				history,
 				{...present, overlays},
 				Liferay.Language.get('layer-order')
+			);
+		}
+
+		case 'move-overlays': {
+			const moving = new Set(action.ids);
+
+			if (!moving.size) {
+				return history;
+			}
+
+			if (
+				!action.transient &&
+				!history.pendingBase &&
+				!action.dx &&
+				!action.dy
+			) {
+				return history;
+			}
+
+			return applyEdit(
+				history,
+				{
+					...present,
+					overlays: present.overlays.map((overlay) =>
+						moving.has(overlay.id)
+							? {
+									...overlay,
+									x: overlay.x + action.dx,
+									y: overlay.y + action.dy,
+								}
+							: overlay
+					),
+				},
+				Liferay.Language.get('annotation'),
+				action.transient
+			);
+		}
+
+		case 'remove-overlays': {
+			const removing = new Set(action.ids);
+
+			if (!removing.size) {
+				return history;
+			}
+
+			return applyEdit(
+				history,
+				{
+					...present,
+					overlays: present.overlays.filter(
+						(overlay) => !removing.has(overlay.id)
+					),
+				},
+				Liferay.Language.get('annotation')
 			);
 		}
 

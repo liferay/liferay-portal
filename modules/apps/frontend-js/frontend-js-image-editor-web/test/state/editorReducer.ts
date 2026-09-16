@@ -652,3 +652,101 @@ describe('layers', () => {
 		).toBe(state);
 	});
 });
+
+describe('groups', () => {
+	const caption = {
+		color: '#ffffff',
+		fontFamily: 'sans-serif',
+		fontSize: 48,
+		id: 'text-1',
+		kind: 'text' as const,
+		text: 'Hello',
+		x: 100,
+		y: 100,
+	};
+
+	const three = () => {
+		let state = history();
+
+		for (const id of ['text-1', 'text-2', 'text-3']) {
+			state = editorReducer(state, {
+				overlay: {...caption, id},
+				type: 'add-overlay',
+			});
+		}
+
+		return state;
+	};
+
+	it('moves the named annotations together and leaves the rest', () => {
+		const state = editorReducer(three(), {
+			dx: 10,
+			dy: -5,
+			ids: ['text-1', 'text-3'],
+			type: 'move-overlays',
+		});
+
+		expect(state.present.overlays.map(({x, y}) => [x, y])).toEqual([
+			[110, 95],
+			[100, 100],
+			[110, 95],
+		]);
+		expect(undoLabel(state)).toBe('annotation');
+	});
+
+	it('collapses a group drag into one step and ignores an empty move', () => {
+		let state = editorReducer(three(), {
+			dx: 5,
+			dy: 0,
+			ids: ['text-1', 'text-2'],
+			transient: true,
+			type: 'move-overlays',
+		});
+
+		state = editorReducer(state, {
+			dx: 5,
+			dy: 0,
+			ids: ['text-1', 'text-2'],
+			transient: true,
+			type: 'move-overlays',
+		});
+
+		state = editorReducer(state, {
+			dx: 0,
+			dy: 0,
+			ids: ['text-1', 'text-2'],
+			type: 'move-overlays',
+		});
+
+		expect(state.present.overlays[0]).toMatchObject({x: 110});
+		expect(state.past).toHaveLength(4);
+
+		expect(
+			editorReducer(state, {
+				dx: 0,
+				dy: 0,
+				ids: ['text-1'],
+				type: 'move-overlays',
+			})
+		).toBe(state);
+
+		expect(
+			editorReducer(state, {dx: 9, dy: 9, ids: [], type: 'move-overlays'})
+		).toBe(state);
+	});
+
+	it('removes the named annotations as one step', () => {
+		const state = editorReducer(three(), {
+			ids: ['text-1', 'text-3'],
+			type: 'remove-overlays',
+		});
+
+		expect(state.present.overlays.map((item) => item.id)).toEqual([
+			'text-2',
+		]);
+
+		expect(editorReducer(state, {ids: [], type: 'remove-overlays'})).toBe(
+			state
+		);
+	});
+});

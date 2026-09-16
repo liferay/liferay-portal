@@ -17,6 +17,8 @@ import {LayerProperties} from './LayerProperties';
 
 interface Props {
 	dispatch: (action: EditorAction) => void;
+
+	multiSelectedIds: string[];
 	onAnnounce: (message: string) => void;
 	onProportionalChange: (proportional: boolean) => void;
 	onSelect: (id: string | null) => void;
@@ -29,6 +31,7 @@ interface Props {
 
 export function LayersPanel({
 	dispatch,
+	multiSelectedIds,
 	onAnnounce,
 	onProportionalChange,
 	onSelect,
@@ -168,6 +171,24 @@ export function LayersPanel({
 			next?.focus();
 		}, 0);
 
+		if (
+			multiSelectedIds.length > 1 &&
+			multiSelectedIds.includes(overlay.id)
+		) {
+			dispatch({ids: multiSelectedIds, type: 'remove-overlays'});
+
+			onAnnounce(
+				sub(
+					Liferay.Language.get('x-annotations-removed'),
+					multiSelectedIds.length
+				)
+			);
+
+			onSelect(null);
+
+			return;
+		}
+
 		dispatch({id: overlay.id, type: 'remove-overlay'});
 
 		onAnnounce(
@@ -265,6 +286,8 @@ export function LayersPanel({
 							className={[
 								'editor-layer-item',
 								isSelected && 'editor-layer-item-selected',
+								multiSelectedIds.includes(overlay.id) &&
+									'editor-layer-item-grouped',
 							]
 								.filter(Boolean)
 								.join(' ')}
@@ -387,7 +410,26 @@ export function LayersPanel({
 				})}
 			</ul>
 
-			{selected && (
+			{/*
+			 * A status region, mounted at all times: a live region that
+			 * appears together with its message is not reliably spoken,
+			 * one that already exists and changes is. It carries the
+			 * group's count for everyone, which is also why the global
+			 * announcer stays quiet about it.
+			 */}
+
+			<p className="editor-group-note" role="status">
+				{multiSelectedIds.length >= 2
+					? sub(
+							Liferay.Language.get(
+								'x-annotations-are-grouped-they-move-and-delete-together-select-one-without-shift-to-edit-its-properties'
+							),
+							multiSelectedIds.length
+						)
+					: ''}
+			</p>
+
+			{multiSelectedIds.length < 2 && selected && (
 				<LayerProperties
 					dispatch={dispatch}
 					key={selected.id}

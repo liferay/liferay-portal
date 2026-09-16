@@ -20,6 +20,7 @@ import {
 } from './chrome/instance';
 import {EditorConfig, resolveConfig} from './editorConfig';
 import {useEditorHistory} from './hooks/useEditorHistory';
+import {useOverlayClipboard} from './hooks/useOverlayClipboard';
 import {useOverlaySelection} from './hooks/useOverlaySelection';
 import {useSaveController} from './hooks/useSaveController';
 import {anchoredScroll} from './imaging/geometry';
@@ -101,10 +102,21 @@ function Editor({
 
 	const {
 		layerProportional,
+		multiSelectedIds,
 		selectOverlay,
 		selectedOverlayId,
 		setLayerProportional,
-	} = useOverlaySelection();
+		setSelectedOverlayId,
+		toggleMultiSelect,
+	} = useOverlaySelection(announce);
+
+	const {copyOverlay, pasteOverlay} = useOverlayClipboard(
+		state,
+		dispatch,
+		setSelectedOverlayId,
+		announce,
+		() => editorRef.current ?? document
+	);
 
 	const {handleSave, saveError, saving} = useSaveController(
 		image,
@@ -427,8 +439,12 @@ function Editor({
 							aspectLocked={aspectLocked}
 							dispatch={dispatch}
 							image={image}
+							multiSelectedIds={multiSelectedIds}
 							onAnnounce={announce}
 							onCenterCrop={centerCrop}
+							onCopyOverlay={copyOverlay}
+							onMultiSelectToggle={toggleMultiSelect}
+							onPasteOverlay={pasteOverlay}
 							onSelectOverlay={selectOverlay}
 							onWorkspacePointerLeave={
 								handleWorkspacePointerLeave
@@ -459,6 +475,7 @@ function Editor({
 							dispatch={dispatch}
 							frames={enabled.frames}
 							image={image}
+							multiSelectedIds={multiSelectedIds}
 							onAnnounce={announce}
 							onAspectLockedChange={setAspectLocked}
 							onProportionalChange={setLayerProportional}

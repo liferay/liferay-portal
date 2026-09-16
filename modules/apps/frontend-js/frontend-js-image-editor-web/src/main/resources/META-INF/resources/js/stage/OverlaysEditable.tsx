@@ -92,7 +92,12 @@ interface ManipGesture {
 
 interface Props {
 	dispatch: (action: EditorAction) => void;
+
+	multiSelectedIds: string[];
 	onAnnounce: (message: string) => void;
+
+	onCopy: (id: string) => void;
+	onMultiSelectToggle: (id: string) => void;
 	onSelect: (id: string | null) => void;
 	overlays: Overlay[];
 
@@ -104,7 +109,10 @@ interface Props {
 
 export function OverlaysEditable({
 	dispatch,
+	multiSelectedIds,
 	onAnnounce,
+	onCopy,
+	onMultiSelectToggle,
 	onSelect,
 	overlays,
 	proportional,
@@ -145,6 +153,10 @@ export function OverlaysEditable({
 
 	const current = (id: string) =>
 		overlaysRef.current.find((overlay) => overlay.id === id);
+
+	const multiSet = new Set(multiSelectedIds);
+
+	const grouped = (id: string) => multiSet.has(id) && multiSet.size > 1;
 
 	const announceMoved = (id: string) => {
 		const overlay = current(id);
@@ -189,6 +201,19 @@ export function OverlaysEditable({
 				return;
 			}
 
+			if (
+				(event.metaKey || event.ctrlKey) &&
+				event.key.toLowerCase() === 'c'
+			) {
+
+				// Copy, not cut: the original stays. Paste is handled by
+				// the workspace, which this event bubbles up to.
+
+				onCopy(id);
+
+				return;
+			}
+
 			if (event.key === 'Delete' || event.key === 'Backspace') {
 				event.preventDefault();
 
@@ -201,6 +226,24 @@ export function OverlaysEditable({
 				).closest<HTMLElement>('.editor-workspace');
 
 				window.setTimeout(() => workspace?.focus(), 0);
+
+				// Delete on a group member takes the whole group: one
+				// entry, one undo, every ring accounted for.
+
+				if (grouped(id)) {
+					dispatch({ids: [...multiSet], type: 'remove-overlays'});
+
+					onAnnounce(
+						sub(
+							Liferay.Language.get('x-annotations-removed'),
+							multiSet.size
+						)
+					);
+
+					onSelect(null);
+
+					return;
+				}
 
 				const overlay = current(id);
 
@@ -242,6 +285,20 @@ export function OverlaysEditable({
 
 			setFocus({id, modality: 'keyboard'});
 
+			// A member of the move-together set never travels alone.
+
+			if (grouped(id)) {
+				dispatch({
+					dx: delta[0] * step,
+					dy: delta[1] * step,
+					ids: [...multiSet],
+					transient: true,
+					type: 'move-overlays',
+				});
+
+				return;
+			}
+
 			// The rotation pivot is the overlay's own center, so it travels
 			// with the element: a plain positional delta already moves the
 			// element exactly along the screen axes, rotated or not.
@@ -265,6 +322,24 @@ export function OverlaysEditable({
 
 			keyboardGestureRef.current = null;
 
+			if (grouped(id)) {
+				dispatch({
+					dx: 0,
+					dy: 0,
+					ids: [...multiSet],
+					type: 'move-overlays',
+				});
+
+				onAnnounce(
+					sub(
+						Liferay.Language.get('x-annotations-moved-together'),
+						multiSet.size
+					)
+				);
+
+				return;
+			}
+
 			const overlay = current(id);
 
 			if (overlay) {
@@ -286,6 +361,15 @@ export function OverlaysEditable({
 				return;
 			}
 
+			// Shift+click curates the move-together set instead of
+			// starting a drag: membership is a decision, not a gesture.
+
+			if (event.shiftKey) {
+				onMultiSelectToggle(id);
+
+				return;
+			}
+
 			event.currentTarget.setPointerCapture?.(event.pointerId);
 
 			onSelect(id);
@@ -303,6 +387,29 @@ export function OverlaysEditable({
 		const gesture = pointerGestureRef.current;
 
 		if (!gesture) {
+			return;
+		}
+
+		if (grouped(gesture.id)) {
+
+			// The set moves by the pointer's delta since the last event:
+			// relative steps, so every member keeps its own place in the
+			// formation.
+
+			const dx = (event.clientX - gesture.startX) / zoom;
+			const dy = (event.clientY - gesture.startY) / zoom;
+
+			gesture.startX = event.clientX;
+			gesture.startY = event.clientY;
+
+			dispatch({
+				dx,
+				dy,
+				ids: [...multiSet],
+				transient: true,
+				type: 'move-overlays',
+			});
+
 			return;
 		}
 
@@ -358,6 +465,24 @@ export function OverlaysEditable({
 		}
 
 		pointerGestureRef.current = null;
+
+		if (grouped(gesture.id)) {
+			dispatch({
+				dx: 0,
+				dy: 0,
+				ids: [...multiSet],
+				type: 'move-overlays',
+			});
+
+			onAnnounce(
+				sub(
+					Liferay.Language.get('x-annotations-moved-together'),
+					multiSet.size
+				)
+			);
+
+			return;
+		}
 
 		const overlay = current(gesture.id);
 
@@ -678,7 +803,8 @@ export function OverlaysEditable({
 								zoom={zoom}
 							/>
 						) : (
-							selectedId === overlay.id && (
+							(selectedId === overlay.id ||
+								multiSet.has(overlay.id)) && (
 								<FocusRing
 									bounds={bounds}
 									emphasis="pointer"
@@ -745,6 +871,7 @@ export function OverlaysEditable({
 							)}
 
 						{editing?.id !== overlay.id &&
+							multiSet.size <= 1 &&
 							(selectedId === overlay.id ||
 								focus?.id === overlay.id) && (
 								<g

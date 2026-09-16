@@ -64,8 +64,12 @@ function EditorHarness() {
 					aspectLocked={aspectLocked}
 					dispatch={dispatch}
 					image={IMAGE}
+					multiSelectedIds={[]}
 					onAnnounce={() => {}}
 					onCenterCrop={() => {}}
+					onCopyOverlay={() => {}}
+					onMultiSelectToggle={() => {}}
+					onPasteOverlay={() => {}}
 					onSelectOverlay={setSelectedOverlayId}
 					onZoom={zoomBy}
 					onZoomActual={() => setZoom(1)}

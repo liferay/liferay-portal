@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {fireEvent, render, screen} from '@testing-library/react';
+import {act, fireEvent, render, screen, within} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -100,5 +100,93 @@ describe('the host configuration', () => {
 			screen.getByRole('button', {name: 'crop-area'})
 		).toBeInTheDocument();
 		expect(screen.getByLabelText('straighten')).toBeInTheDocument();
+	});
+});
+
+describe('the annotations', () => {
+
+	// Adding a shape hands the focus to it on the next frame, so the
+	// stage has to settle before the next thing is done to it, as it does
+	// for a person.
+
+	async function addRectangle() {
+		fireEvent.click(screen.getByRole('button', {name: 'add-shape'}));
+
+		fireEvent.click(
+			within(screen.getByRole('grid', {name: 'add-shape'})).getByRole(
+				'button',
+				{name: 'rectangle'}
+			)
+		);
+
+		await act(() => new Promise((resolve) => setTimeout(resolve, 40)));
+	}
+
+	it('pastes a copy beside the original and hands it the focus', async () => {
+		const {container} = render(
+			<ImageEditor
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		await addRectangle();
+
+		const original = container.querySelector(
+			'.overlay-hit'
+		) as SVGRectElement;
+
+		fireEvent.keyDown(original, {ctrlKey: true, key: 'c'});
+
+		fireEvent.keyDown(
+			screen.getByRole('region', {name: 'image-workspace'}),
+			{ctrlKey: true, key: 'v'}
+		);
+
+		const hits = container.querySelectorAll('.overlay-hit');
+
+		expect(hits).toHaveLength(2);
+
+		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+		expect(document.activeElement).toBe(hits[1]);
+
+		// The copy is selected and is what the properties show.
+
+		expect(
+			screen.getAllByRole('button', {name: 'rectangle', pressed: true})
+		).toHaveLength(1);
+	});
+
+	it('frees the aspect lock when the selection changes', async () => {
+		const {container} = render(
+			<ImageEditor
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		await addRectangle();
+
+		// The crop panel has a lock of its own; the layer's lives in the
+		// properties.
+
+		const lock = () =>
+			within(
+				container.querySelector(
+					'.editor-layer-properties'
+				) as HTMLElement
+			).getByRole('button', {name: 'lock-aspect-ratio'});
+
+		fireEvent.click(lock());
+
+		expect(lock()).toHaveAttribute('aria-pressed', 'true');
+
+		await addRectangle();
+
+		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(2);
+		expect(lock()).toHaveAttribute('aria-pressed', 'false');
 	});
 });

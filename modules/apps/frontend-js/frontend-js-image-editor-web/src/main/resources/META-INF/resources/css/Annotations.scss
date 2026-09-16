@@ -93,10 +93,13 @@
 	position: relative;
 }
 
+.image-editor .editor-layer-item-grouped,
 .image-editor .editor-layer-item-selected {
 	background: var(--editor-primary);
 }
 
+.image-editor .editor-layer-item-grouped .editor-layer-actions .btn,
+.image-editor .editor-layer-item-grouped .editor-layer-name,
 .image-editor .editor-layer-item-selected .editor-layer-actions .btn,
 .image-editor .editor-layer-item-selected .editor-layer-name {
 	color: $white;
@@ -160,4 +163,14 @@
 	font-size: 0.875rem;
 	font-weight: 600;
 	margin-bottom: 0.5rem;
+}
+
+.image-editor .editor-group-note {
+	color: var(--editor-text-muted);
+	font-size: 0.8125rem;
+	margin: 0.25rem 0 0;
+}
+
+.image-editor .editor-group-note:empty {
+	margin: 0;
 }

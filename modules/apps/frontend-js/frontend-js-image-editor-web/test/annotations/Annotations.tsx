@@ -58,6 +58,32 @@ function AnnotationHarness({
 
 	const [proportional, setProportional] = useState(false);
 
+	const [multiIds, setMultiIds] = useState<string[]>([]);
+
+	const [clipboard, setClipboard] = useState<Overlay | null>(null);
+
+	const selectAsEditor = (id: string | null) => {
+		setSelectedId(id);
+
+		setMultiIds((ids) => (id !== null && ids.includes(id) ? ids : []));
+	};
+
+	const toggleMulti = (id: string) => {
+		const base = multiIds.length
+			? multiIds
+			: selectedId && selectedId !== id
+				? [selectedId]
+				: [];
+
+		const next = multiIds.includes(id)
+			? multiIds.filter((candidate) => candidate !== id)
+			: [...base, id];
+
+		setMultiIds(next.length >= 2 ? next : []);
+
+		setSelectedId(id);
+	};
+
 	return (
 		<ClayIconSpriteContext.Provider value="/icons.svg">
 			<EditorInstanceProvider value="aie-">
@@ -65,9 +91,31 @@ function AnnotationHarness({
 					aspectLocked={false}
 					dispatch={dispatch}
 					image={IMAGE}
+					multiSelectedIds={multiIds}
 					onAnnounce={() => {}}
 					onCenterCrop={() => {}}
-					onSelectOverlay={setSelectedId}
+					onCopyOverlay={(id) =>
+						setClipboard(
+							history.present.overlays.find(
+								(overlay) => overlay.id === id
+							) ?? null
+						)
+					}
+					onMultiSelectToggle={toggleMulti}
+					onPasteOverlay={() => {
+						if (clipboard) {
+							dispatch({
+								overlay: {
+									...clipboard,
+									id: `${clipboard.id}-copy`,
+									x: clipboard.x + 16,
+									y: clipboard.y + 16,
+								},
+								type: 'add-overlay',
+							});
+						}
+					}}
+					onSelectOverlay={selectAsEditor}
 					onZoom={() => {}}
 					onZoomActual={() => {}}
 					onZoomFit={() => {}}
@@ -87,9 +135,10 @@ function AnnotationHarness({
 
 				<LayersPanel
 					dispatch={dispatch}
+					multiSelectedIds={multiIds}
 					onAnnounce={() => {}}
 					onProportionalChange={setProportional}
-					onSelect={setSelectedId}
+					onSelect={selectAsEditor}
 					overlays={history.present.overlays}
 					proportional={proportional}
 					selectedId={selectedId}
@@ -1117,6 +1166,162 @@ describe('two editors on one page', () => {
 
 		expect(document.activeElement).toBe(
 			second.querySelector('.editor-workspace')
+		);
+	});
+});
+
+describe('groups and the clipboard', () => {
+	it('moves a shift-built group together, and only moves it', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+		addShape('circle');
+
+		const hits = container.querySelectorAll('.overlay-hit');
+
+		// Select the circle plainly, then Shift+click the rectangle: the
+		// pair is seeded from the standing selection.
+
+		fireEvent.focus(hits[1]);
+		fireEvent.pointerDown(hits[0], {shiftKey: true});
+
+		// Both wear a ring, and the manipulation handles are gone: a
+		// group grants movement and nothing else.
+
+		expect(
+			container.querySelectorAll('.selection-ring, .focus-ring-outer')
+				.length
+		).toBeGreaterThanOrEqual(2);
+		expect(container.querySelectorAll('.object-handle')).toHaveLength(0);
+
+		const circle = () =>
+			container.querySelector(
+				'.editor-workspace ellipse'
+			) as SVGEllipseElement;
+
+		const rectangleX = Number(shape(container).getAttribute('x'));
+		const circleX = Number(circle().getAttribute('cx'));
+
+		// An arrow on one member moves both, and a drag on one does too.
+
+		fireEvent.keyDown(hits[1], {key: 'ArrowRight', shiftKey: true});
+		fireEvent.keyUp(hits[1], {key: 'ArrowRight', shiftKey: true});
+
+		expect(Number(shape(container).getAttribute('x'))).toBe(
+			rectangleX + 10
+		);
+		expect(Number(circle().getAttribute('cx'))).toBe(circleX + 10);
+
+		fireEvent.pointerDown(hits[0], {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(hits[0], {clientX: 5, clientY: 0});
+		fireEvent.pointerMove(hits[0], {clientX: 10, clientY: 0});
+		fireEvent.pointerUp(hits[0]);
+
+		expect(Number(shape(container).getAttribute('x'))).toBe(
+			rectangleX + 30
+		);
+		expect(Number(circle().getAttribute('cx'))).toBe(circleX + 30);
+
+		// The whole formation is one undo step.
+
+		fireEvent.click(screen.getByRole('button', {name: 'undo'}));
+
+		expect(Number(shape(container).getAttribute('x'))).toBe(
+			rectangleX + 10
+		);
+		expect(Number(circle().getAttribute('cx'))).toBe(circleX + 10);
+
+		// While the group lives, the properties yield to a note: editing
+		// "the selected layer" beside two rings would change one and read
+		// as a lie.
+
+		expect(screen.queryByText('selected-layer-x')).toBeNull();
+		expect(screen.getByRole('status')).toHaveTextContent(
+			'x-annotations-are-grouped'
+		);
+		expect(
+			document.querySelectorAll('.editor-layer-item-grouped')
+		).toHaveLength(2);
+
+		// A plain click on a member keeps the group (that is how it is
+		// dragged); a plain click on another annotation dissolves it.
+
+		fireEvent.pointerDown(hits[0]);
+		fireEvent.pointerUp(hits[0]);
+
+		expect(screen.getByRole('status')).not.toBeEmptyDOMElement();
+
+		addShape('square');
+
+		const third = container.querySelectorAll('.overlay-hit')[2];
+
+		fireEvent.pointerDown(third);
+		fireEvent.pointerUp(third);
+
+		expect(screen.getByRole('status')).toBeEmptyDOMElement();
+		expect(screen.getByText('selected-layer-x')).toBeInTheDocument();
+	});
+
+	it('deletes a whole group with one key and undoes it whole', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+		addShape('circle');
+
+		const hits = container.querySelectorAll('.overlay-hit');
+
+		fireEvent.focus(hits[1]);
+		fireEvent.pointerDown(hits[0], {shiftKey: true});
+
+		fireEvent.keyDown(hits[0], {key: 'Delete'});
+
+		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(0);
+
+		fireEvent.click(screen.getByRole('button', {name: 'undo'}));
+
+		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(2);
+	});
+
+	it('deletes a whole group from a layer row as well', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+		addShape('circle');
+
+		const hits = container.querySelectorAll('.overlay-hit');
+
+		fireEvent.focus(hits[1]);
+		fireEvent.pointerDown(hits[0], {shiftKey: true});
+
+		fireEvent.click(screen.getAllByRole('button', {name: 'delete-x'})[0]);
+
+		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(0);
+		expect(screen.queryByText('layers')).toBeNull();
+	});
+
+	it('copies the focused annotation and pastes it into the workspace', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		const target = hit(container);
+
+		fireEvent.keyDown(target, {ctrlKey: true, key: 'c'});
+
+		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(1);
+
+		fireEvent.keyDown(
+			screen.getByRole('region', {name: 'image-workspace'}),
+			{ctrlKey: true, key: 'v'}
+		);
+
+		const shapes = container.querySelectorAll(
+			'.editor-workspace rect[fill]:not([class])'
+		);
+
+		expect(shapes).toHaveLength(2);
+		expect(Number(shapes[1].getAttribute('x'))).toBe(
+			Number(shapes[0].getAttribute('x')) + 16
 		);
 	});
 });
