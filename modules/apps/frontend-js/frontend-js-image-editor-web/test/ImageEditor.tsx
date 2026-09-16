@@ -3,7 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {act, fireEvent, render, screen, within} from '@testing-library/react';
+import {
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -119,7 +125,9 @@ describe('the annotations', () => {
 			)
 		);
 
-		await act(() => new Promise((resolve) => setTimeout(resolve, 40)));
+		const hits = document.querySelectorAll('.overlay-hit');
+
+		await waitFor(() => expect(hits[hits.length - 1]).toHaveFocus());
 	}
 
 	it('pastes a copy beside the original and hands it the focus', async () => {
@@ -148,9 +156,7 @@ describe('the annotations', () => {
 
 		expect(hits).toHaveLength(2);
 
-		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
-
-		expect(document.activeElement).toBe(hits[1]);
+		await waitFor(() => expect(hits[1]).toHaveFocus());
 
 		// The copy is selected and is what the properties show.
 
@@ -175,9 +181,7 @@ describe('the annotations', () => {
 
 		const lock = () =>
 			within(
-				container.querySelector(
-					'.editor-layer-properties'
-				) as HTMLElement
+				screen.getByRole('group', {name: 'selected-layer-x'})
 			).getByRole('button', {name: 'lock-aspect-ratio'});
 
 		fireEvent.click(lock());

@@ -182,6 +182,13 @@ const hit = (container: HTMLElement) =>
 const caption = (container: HTMLElement) =>
 	container.querySelector('.editor-workspace text') as SVGTextElement;
 
+/**
+ * The in-place editor shares its name with the Text field of the layer
+ * properties, so it is looked up inside the workspace.
+ */
+const workspace = () =>
+	within(screen.getByRole('region', {name: 'image-workspace'}));
+
 describe('text annotations', () => {
 	it('writes a caption from the dialog and centers it on the crop', async () => {
 		const {container} = render(<AnnotationHarness start={cropped} />);
@@ -279,16 +286,14 @@ describe('text annotations', () => {
 
 		fireEvent.doubleClick(hit(container));
 
-		const editor = container.querySelector(
-			'.overlay-text-editor'
-		) as HTMLInputElement;
+		const editor = workspace().getByRole('textbox', {name: 'text'});
 
-		expect(editor.value).toBe('Hello');
+		expect(editor).toHaveValue('Hello');
 
 		fireEvent.change(editor, {target: {value: 'Liferay'}});
 		fireEvent.keyDown(editor, {key: 'Enter'});
 
-		expect(container.querySelector('.overlay-text-editor')).toBeNull();
+		expect(workspace().queryByRole('textbox', {name: 'text'})).toBeNull();
 		expect(caption(container)).toHaveTextContent('Liferay');
 
 		// The editor unmounts under the focus: the caption takes it back, so
@@ -302,9 +307,7 @@ describe('text annotations', () => {
 
 		fireEvent.doubleClick(hit(container));
 
-		const editor = container.querySelector(
-			'.overlay-text-editor'
-		) as HTMLInputElement;
+		const editor = workspace().getByRole('textbox', {name: 'text'});
 
 		fireEvent.change(editor, {target: {value: 'Liferay'}});
 		fireEvent.keyDown(editor, {key: 'Escape'});
@@ -339,11 +342,11 @@ describe('text annotations', () => {
 
 		expect(hit(container)).toBeNull();
 
-		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
-
-		expect(
-			screen.getByRole('region', {name: 'image-workspace'})
-		).toHaveFocus();
+		await waitFor(() =>
+			expect(
+				screen.getByRole('region', {name: 'image-workspace'})
+			).toHaveFocus()
+		);
 	});
 
 	it('paints the annotations under the dim layer and the marquee', () => {
@@ -837,9 +840,7 @@ describe('layers', () => {
 
 		expect(container.querySelectorAll('.selection-ring')).toHaveLength(1);
 		expect(
-			screen
-				.getByText('selected-layer-x')
-				.closest('.editor-layer-properties')
+			screen.getByRole('group', {name: 'selected-layer-x'})
 		).toContainElement(screen.getByLabelText('width'));
 	});
 
@@ -850,9 +851,9 @@ describe('layers', () => {
 
 		fireEvent.keyDown(hit(container), {key: 'Enter'});
 
-		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
-
-		expect(document.activeElement?.id).toBe('aie-layer-prop-color');
+		await waitFor(() =>
+			expect(document.activeElement?.id).toBe('aie-layer-prop-color')
+		);
 	});
 
 	it('jumps from a layer row to its node on the stage on Enter', async () => {
@@ -872,9 +873,9 @@ describe('layers', () => {
 
 		fireEvent.keyDown(row, {key: 'Enter'});
 
-		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
-
-		expect(document.activeElement).toBe(hit(container));
+		await waitFor(() =>
+			expect(document.activeElement).toBe(hit(container))
+		);
 	});
 
 	it('duplicates a layer from its row and selects the copy', () => {
@@ -912,9 +913,7 @@ describe('layers', () => {
 
 		expect(layerNames()).toEqual(['text-x']);
 
-		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
-
-		expect(document.activeElement).toBe(row('text-x'));
+		await waitFor(() => expect(document.activeElement).toBe(row('text-x')));
 	});
 
 	it('roves through the rows and skips the disabled actions', () => {
@@ -1194,10 +1193,10 @@ describe('two editors on one page', () => {
 
 		fireEvent.click(within(second).getByRole('button', {name: 'delete-x'}));
 
-		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
-
-		expect(document.activeElement).toBe(
-			second.querySelector('.editor-workspace')
+		await waitFor(() =>
+			expect(document.activeElement).toBe(
+				second.querySelector('.editor-workspace')
+			)
 		);
 	});
 });
