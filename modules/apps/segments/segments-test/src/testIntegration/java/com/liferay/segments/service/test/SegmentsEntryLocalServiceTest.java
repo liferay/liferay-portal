@@ -184,7 +184,7 @@ public class SegmentsEntryLocalServiceTest {
 
 	@Test
 	public void testAddSegmentsEntryWithType() throws Exception {
-		SegmentsEntry segmentsEntry = _addAsahSegmentsEntry(null);
+		SegmentsEntry segmentsEntry = _addSegmentsEntry(null);
 
 		Assert.assertEquals(
 			SegmentsEntryConstants.TYPE_BATCH, segmentsEntry.getType());
@@ -194,7 +194,7 @@ public class SegmentsEntryLocalServiceTest {
 		Assert.assertEquals(
 			SegmentsEntryConstants.TYPE_DEFAULT, segmentsEntry.getType());
 
-		segmentsEntry = _addAsahSegmentsEntry(
+		segmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_REAL_TIME);
 
 		Assert.assertEquals(
@@ -267,11 +267,11 @@ public class SegmentsEntryLocalServiceTest {
 			_group.getGroupId(), sources,
 			SegmentsEntryConstants.TYPE_REAL_TIME);
 
-		SegmentsEntry batchSegmentsEntry = _addAsahSegmentsEntry(
+		SegmentsEntry batchSegmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_BATCH);
-		SegmentsEntry defaultSegmentsEntry = _addAsahSegmentsEntry(
+		SegmentsEntry defaultSegmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_DEFAULT);
-		SegmentsEntry realTimeSegmentsEntry = _addAsahSegmentsEntry(
+		SegmentsEntry realTimeSegmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_REAL_TIME);
 
 		List<SegmentsEntry> segmentsEntries =
@@ -314,9 +314,9 @@ public class SegmentsEntryLocalServiceTest {
 
 	@Test
 	public void testGetSegmentsEntriesByType() throws Exception {
-		SegmentsEntry batchSegmentsEntry = _addAsahSegmentsEntry(
+		SegmentsEntry batchSegmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_BATCH);
-		SegmentsEntry realTimeSegmentsEntry = _addAsahSegmentsEntry(
+		SegmentsEntry realTimeSegmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_REAL_TIME);
 
 		List<SegmentsEntry> segmentsEntries =
@@ -357,9 +357,9 @@ public class SegmentsEntryLocalServiceTest {
 
 		String name = RandomTestUtil.randomString();
 
-		SegmentsEntry batchSegmentsEntry = _addAsahSegmentsEntry(
+		SegmentsEntry batchSegmentsEntry = _addSegmentsEntry(
 			name, SegmentsEntryConstants.TYPE_BATCH);
-		SegmentsEntry realTimeSegmentsEntry = _addAsahSegmentsEntry(
+		SegmentsEntry realTimeSegmentsEntry = _addSegmentsEntry(
 			name, SegmentsEntryConstants.TYPE_REAL_TIME);
 
 		BaseModelSearchResult<SegmentsEntry> baseModelSearchResult =
@@ -611,11 +611,11 @@ public class SegmentsEntryLocalServiceTest {
 		_testUpdateSegmentsEntryWithReferredSource();
 	}
 
-	private SegmentsEntry _addAsahSegmentsEntry(String type) throws Exception {
-		return _addAsahSegmentsEntry(RandomTestUtil.randomString(), type);
+	private SegmentsEntry _addSegmentsEntry(String type) throws Exception {
+		return _addSegmentsEntry(RandomTestUtil.randomString(), type);
 	}
 
-	private SegmentsEntry _addAsahSegmentsEntry(String name, String type)
+	private SegmentsEntry _addSegmentsEntry(String name, String type)
 		throws Exception {
 
 		return SegmentsTestUtil.addSegmentsEntry(

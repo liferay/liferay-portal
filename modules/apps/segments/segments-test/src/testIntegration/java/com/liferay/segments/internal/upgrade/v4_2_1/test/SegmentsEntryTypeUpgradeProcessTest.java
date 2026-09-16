@@ -53,30 +53,28 @@ public class SegmentsEntryTypeUpgradeProcessTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_untypedAsahSegmentsEntry = _addSegmentsEntry(
+		_segmentsEntry1 = _addSegmentsEntry(
 			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND, null);
-		_untypedSegmentsEntry = _addSegmentsEntry(
+		_segmentsEntry2 = _addSegmentsEntry(
 			SegmentsEntryConstants.SOURCE_DEFAULT, null);
-		_realTimeSegmentsEntry = _addSegmentsEntry(
+		_segmentsEntry3 = _addSegmentsEntry(
 			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
 			SegmentsEntryConstants.TYPE_REAL_TIME);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		_segmentsEntryLocalService.deleteSegmentsEntry(_realTimeSegmentsEntry);
-		_segmentsEntryLocalService.deleteSegmentsEntry(
-			_untypedAsahSegmentsEntry);
-		_segmentsEntryLocalService.deleteSegmentsEntry(_untypedSegmentsEntry);
+		_segmentsEntryLocalService.deleteSegmentsEntry(_segmentsEntry1);
+		_segmentsEntryLocalService.deleteSegmentsEntry(_segmentsEntry2);
+		_segmentsEntryLocalService.deleteSegmentsEntry(_segmentsEntry3);
 	}
 
 	@Test
 	public void testUpgrade() throws Exception {
-		Assert.assertNull(_getType(_untypedAsahSegmentsEntry));
-		Assert.assertNull(_getType(_untypedSegmentsEntry));
+		Assert.assertNull(_getType(_segmentsEntry1));
+		Assert.assertNull(_getType(_segmentsEntry2));
 		Assert.assertEquals(
-			SegmentsEntryConstants.TYPE_REAL_TIME,
-			_getType(_realTimeSegmentsEntry));
+			SegmentsEntryConstants.TYPE_REAL_TIME, _getType(_segmentsEntry3));
 
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator, _CLASS_NAME);
@@ -86,14 +84,11 @@ public class SegmentsEntryTypeUpgradeProcessTest {
 		EntityCacheUtil.clearCache();
 
 		Assert.assertEquals(
-			SegmentsEntryConstants.TYPE_BATCH,
-			_getType(_untypedAsahSegmentsEntry));
+			SegmentsEntryConstants.TYPE_BATCH, _getType(_segmentsEntry1));
 		Assert.assertEquals(
-			SegmentsEntryConstants.TYPE_DEFAULT,
-			_getType(_untypedSegmentsEntry));
+			SegmentsEntryConstants.TYPE_DEFAULT, _getType(_segmentsEntry2));
 		Assert.assertEquals(
-			SegmentsEntryConstants.TYPE_REAL_TIME,
-			_getType(_realTimeSegmentsEntry));
+			SegmentsEntryConstants.TYPE_REAL_TIME, _getType(_segmentsEntry3));
 	}
 
 	private SegmentsEntry _addSegmentsEntry(String source, String type)
@@ -134,13 +129,12 @@ public class SegmentsEntryTypeUpgradeProcessTest {
 	@DeleteAfterTestRun
 	private Group _group;
 
-	private SegmentsEntry _realTimeSegmentsEntry;
+	private SegmentsEntry _segmentsEntry1;
+	private SegmentsEntry _segmentsEntry2;
+	private SegmentsEntry _segmentsEntry3;
 
 	@Inject
 	private SegmentsEntryLocalService _segmentsEntryLocalService;
-
-	private SegmentsEntry _untypedAsahSegmentsEntry;
-	private SegmentsEntry _untypedSegmentsEntry;
 
 	@Inject(
 		filter = "(&(component.name=com.liferay.segments.internal.upgrade.registry.SegmentsServiceUpgradeStepRegistrator))"
