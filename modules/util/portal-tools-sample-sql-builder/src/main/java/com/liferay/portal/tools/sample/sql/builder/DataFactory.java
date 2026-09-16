@@ -6029,8 +6029,11 @@ public class DataFactory {
 
 			objectFieldSettingModels.add(
 				newObjectFieldSettingModel(
-					objectFieldId, "objectRelationshipERCObjectFieldName",
-					"r_userTicket_userERC"));
+					objectFieldId,
+					ObjectFieldSettingConstants.
+						NAME_OBJECT_RELATIONSHIP_ERC_OBJECT_FIELD_NAME,
+					StringUtil.replaceLast(
+						objectFieldModel.getName(), "Id", "ERC")));
 		}
 
 		return objectFieldSettingModels;
