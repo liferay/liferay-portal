@@ -132,25 +132,18 @@ export function DrawSurface({
 
 	const [focused, setFocused] = useState(false);
 
-	const [cursor, setCursor] = useState({
-		x: Math.round(area.x + area.width / 2),
-		y: Math.round(area.y + area.height / 2),
-	});
-
-	/**
-	 * The guided line's fixed parts: the start (always the crop centre)
-	 * and, once Enter has set it, the end. `stage` is which point the
-	 * arrows are moving.
-	 */
-	const [guide, setGuide] = useState<{
-		end: {x: number; y: number} | null;
-		stage: 'bend' | 'end';
-	}>({end: null, stage: 'end'});
-
 	const start = {
 		x: Math.round(area.x + area.width / 2),
 		y: Math.round(area.y + area.height / 2),
 	};
+
+	const [cursor, setCursor] = useState(start);
+
+	/**
+	 * The guided line's end, once Enter has set it. Until then the arrows
+	 * are aiming the end; from then on they are bending the middle.
+	 */
+	const [end, setEnd] = useState<{x: number; y: number} | null>(null);
 
 	const surfaceRef = useRef<SVGRectElement>(null);
 
@@ -381,10 +374,10 @@ export function DrawSurface({
 				// One stage back: the end unfixes and the arrows hold it
 				// again.
 
-				if (guide.stage === 'bend') {
-					setCursor({...guide.end!});
+				if (end) {
+					setCursor(end);
 
-					setGuide({end: null, stage: 'end'});
+					setEnd(null);
 
 					onAnnounce(
 						Liferay.Language.get(
@@ -395,7 +388,7 @@ export function DrawSurface({
 				break;
 
 			case 'Enter':
-				if (guide.stage === 'end') {
+				if (!end) {
 
 					// A line needs a length before it can be set.
 
@@ -414,7 +407,7 @@ export function DrawSurface({
 					// The end is fixed; the arrows now hold the middle,
 					// starting from the straight line's own midpoint.
 
-					setGuide({end: {...cursor}, stage: 'bend'});
+					setEnd(cursor);
 
 					setCursor({
 						x: Math.round((start.x + cursor.x) / 2),
@@ -431,8 +424,6 @@ export function DrawSurface({
 				}
 
 				{
-					const end = guide.end!;
-
 					const straightX = (start.x + end.x) / 2;
 					const straightY = (start.y + end.y) / 2;
 
@@ -529,19 +520,12 @@ export function DrawSurface({
 	};
 
 	const preview = guided
-		? guide.stage === 'end'
+		? !end
 			? Math.hypot(cursor.x - start.x, cursor.y - start.y) >= 1
 				? pointsToPath([start.x, start.y, cursor.x, cursor.y], false)
 				: ''
 			: pointsToPath(
-					[
-						start.x,
-						start.y,
-						cursor.x,
-						cursor.y,
-						guide.end!.x,
-						guide.end!.y,
-					],
+					[start.x, start.y, cursor.x, cursor.y, end.x, end.y],
 					true
 				)
 		: pointsToPath(points, true);
@@ -592,9 +576,7 @@ export function DrawSurface({
 
 			{guided && <DrawAnchor x={start.x} y={start.y} zoom={zoom} />}
 
-			{guided && guide.end && (
-				<DrawAnchor x={guide.end.x} y={guide.end.y} zoom={zoom} />
-			)}
+			{guided && end && <DrawAnchor x={end.x} y={end.y} zoom={zoom} />}
 
 			{/*
 			 * The keyboard cursor: a crosshair that never grows or
