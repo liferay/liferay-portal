@@ -806,8 +806,8 @@ AUI.add(
 								'frontend-js-web',
 								'legacy'
 							)
-						).then(({checkAll}) => {
-							checkAll(
+						).then(({checkAllBox}) => {
+							checkAllBox(
 								instance._fileListSelector,
 								instance._selectUploadedFileCheckboxId,
 								instance._allRowIdsCheckboxSelector
