@@ -143,8 +143,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 		try (SafeCloseable safeCloseable2 =
 				BatchEngineThreadLocal.setBatchImportInProcessWithSafeCloseable(
-					true);
-			SafeCloseable safeCloseable3 = SearchContext.openBatchMode()) {
+					true)) {
 
 			batchEngineImportTask.setExecuteStatus(
 				BatchEngineTaskExecuteStatus.STARTED.toString());
@@ -170,12 +169,14 @@ public class BatchEngineImportTaskExecutorImpl
 			BatchEngineImportTask finalBatchEngineImportTask =
 				batchEngineImportTask;
 
-			batchEngineImportTask = BatchEngineTaskExecutorUtil.execute(
-				checkPermissions,
-				() -> _importFile(
-					finalBatchEngineImportTask, batchEngineTaskItemDelegate,
-					file, user),
-				user);
+			try (SafeCloseable safeCloseable3 = SearchContext.openBatchMode()) {
+				batchEngineImportTask = BatchEngineTaskExecutorUtil.execute(
+					checkPermissions,
+					() -> _importFile(
+						finalBatchEngineImportTask, batchEngineTaskItemDelegate,
+						file, user),
+					user);
+			}
 
 			_updateBatchEngineImportTask(
 				BatchEngineTaskExecuteStatus.COMPLETED, batchEngineImportTask,
