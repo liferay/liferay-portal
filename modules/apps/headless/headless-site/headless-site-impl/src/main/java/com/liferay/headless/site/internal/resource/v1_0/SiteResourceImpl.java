@@ -505,7 +505,16 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	private ServiceContext _getServiceContext() throws PortalException {
 		ServiceContext serviceContext = null;
 
-		if (contextHttpServletRequest != null) {
+		ServiceContext currentServiceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if ((currentServiceContext != null) &&
+			(currentServiceContext.getRequest() != null)) {
+
+			serviceContext = ServiceContextFactory.getInstance(
+				currentServiceContext.getRequest());
+		}
+		else if (contextHttpServletRequest != null) {
 			serviceContext = ServiceContextFactory.getInstance(
 				contextHttpServletRequest);
 		}
