@@ -21,15 +21,11 @@ function docker_compose {
 
 	compose_files=(--file "${dir}/docker-compose.yaml")
 
-	local overrides=${LIFERAY_COMPOSE_OVERRIDES:-}
-
-	local override
 	local dash_override_file
 	local dot_override_file
+	local override
 
-	# Dotted files (docker-compose.<name>.yaml) are copied from the sample
-	# workspace. Hyphenated files (docker-compose-<name>.yaml) are specific to
-	# a workspace and are added last so they take precedence.
+	local overrides=${LIFERAY_COMPOSE_OVERRIDES:-}
 
 	for override in ${overrides//,/ }
 	do
