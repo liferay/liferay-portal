@@ -296,7 +296,7 @@ function reducer(state: State, action: Action): State {
 			if (field.parent !== structure.uuid) {
 				const item = findChild({root: structure, uuid: field.parent});
 
-				if (item?.type === 'repeatable-group') {
+				if (item?.type === 'group') {
 					parent = item;
 				}
 			}
@@ -1256,8 +1256,7 @@ function getTargetChildren({
 
 	if (
 		target &&
-		(target.type === 'repeatable-group' ||
-			target.type === 'referenced-structure')
+		(target.type === 'group' || target.type === 'referenced-structure')
 	) {
 		return target.children;
 	}

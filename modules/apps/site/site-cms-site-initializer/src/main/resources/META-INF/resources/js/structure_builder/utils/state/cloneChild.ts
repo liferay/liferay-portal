@@ -30,7 +30,7 @@ export default function cloneChild({
 }): StructureChild {
 	const uuid = getUuid();
 
-	if (child.type === 'repeatable-group') {
+	if (child.type === 'group') {
 		const group: RepeatableGroup = {
 			...child,
 			children: new Map(),

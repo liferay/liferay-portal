@@ -20,10 +20,7 @@ export function getChildrenUuids({
 	for (const child of root.children.values()) {
 		uuids.add(child.uuid);
 
-		if (
-			child.type === 'referenced-structure' ||
-			child.type === 'repeatable-group'
-		) {
+		if (child.type === 'referenced-structure' || child.type === 'group') {
 			getChildrenUuids({root: child, uuids});
 		}
 	}

@@ -82,7 +82,7 @@ function getPath(
 		}
 		else if (
 			child.type === 'referenced-structure' ||
-			child.type === 'repeatable-group'
+			child.type === 'group'
 		) {
 			const nextPath = getPath(uuid, child.children, [
 				...path,

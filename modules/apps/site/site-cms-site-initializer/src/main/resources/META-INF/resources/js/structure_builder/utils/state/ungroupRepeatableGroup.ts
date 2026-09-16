@@ -21,7 +21,7 @@ export default function ungroupRepeatableGroup({
 
 		// If it's the group we are ungrouping, insert its children
 
-		if (child.uuid === uuid && child.type === 'repeatable-group') {
+		if (child.uuid === uuid && child.type === 'group') {
 			for (const grandChild of child.children.values()) {
 				const nextGrandChild = {
 					...grandChild,
@@ -34,7 +34,7 @@ export default function ungroupRepeatableGroup({
 
 		// Insert the child. If it's a repeatable group, build it with recursive call
 
-		else if (child.type === 'repeatable-group') {
+		else if (child.type === 'group') {
 			const group: RepeatableGroup = {
 				...child,
 				children: ungroupRepeatableGroup({

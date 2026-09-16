@@ -30,7 +30,7 @@ export default function updateChild({
 
 		// If it's a repeatable group, build it with recursive call
 
-		else if (child.type === 'repeatable-group') {
+		else if (child.type === 'group') {
 			const group: RepeatableGroup = {
 				...child,
 				children: updateChild({child: updatedChild, root: child}),

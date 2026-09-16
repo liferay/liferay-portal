@@ -26,7 +26,7 @@ export default function isRenamable({
 	else if (child.type === 'related-content') {
 		return false;
 	}
-	else if (child.type === 'repeatable-group') {
+	else if (child.type === 'group') {
 		return true;
 	}
 	else if (child.locked) {

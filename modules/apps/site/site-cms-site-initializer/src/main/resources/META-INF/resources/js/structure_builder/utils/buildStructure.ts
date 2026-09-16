@@ -299,7 +299,7 @@ export function buildRepeatableGroup({
 		parent,
 		relationshipERC,
 		relationshipName,
-		type: 'repeatable-group',
+		type: 'group',
 		uuid,
 	};
 }

@@ -54,7 +54,7 @@ function isValidTarget({
 
 	const target = findChild({root: structure, uuid: targetUuid});
 
-	if (!target || target.type !== 'repeatable-group') {
+	if (!target || target.type !== 'group') {
 		return false;
 	}
 

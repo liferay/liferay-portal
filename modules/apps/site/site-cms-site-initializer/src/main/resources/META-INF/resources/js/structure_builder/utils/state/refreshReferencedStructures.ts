@@ -75,7 +75,7 @@ export default function refreshReferencedStructures({
 
 		// It's repeatable group
 
-		else if (child.type === 'repeatable-group') {
+		else if (child.type === 'group') {
 
 			// Ignore it if it's not in the new objectDefinition
 

@@ -39,7 +39,7 @@ export default function updateHistory({
 			};
 
 			if (
-				child.type === 'repeatable-group' ||
+				child.type === 'group' ||
 				child.type === 'related-content' ||
 				child.type === 'referenced-structure'
 			) {

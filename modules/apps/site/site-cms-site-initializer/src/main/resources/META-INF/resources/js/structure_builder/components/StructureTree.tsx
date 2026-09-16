@@ -309,7 +309,7 @@ export default function StructureTree({search}: {search: string}) {
 					return true;
 				}
 
-				if (target.type !== 'repeatable-group') {
+				if (target.type !== 'group') {
 					return false;
 				}
 
@@ -377,7 +377,7 @@ export default function StructureTree({search}: {search: string}) {
 								'structure-builder__tree-node--field-icon':
 									isField(item),
 								'structure-builder__tree-node--group-icon':
-									item.type === 'repeatable-group',
+									item.type === 'group',
 								'structure-builder__tree-node--structure-icon':
 									item.type === 'referenced-structure',
 							})}
@@ -393,8 +393,7 @@ export default function StructureTree({search}: {search: string}) {
 								actions={
 									isBeingRenamed(childItem.id) ? undefined : (
 										<>
-											{childItem.type ===
-												'repeatable-group' &&
+											{childItem.type === 'group' &&
 											!isReferenced({
 												root: structure,
 												uuid: childItem.id,
@@ -482,8 +481,7 @@ function ItemContent({id, item}: {id?: string; item: TreeItem}) {
 				<ItemStatus item={item} />
 			</span>
 
-			{item.type === 'referenced-structure' ||
-			item.type === 'repeatable-group' ? (
+			{item.type === 'referenced-structure' || item.type === 'group' ? (
 				<ClayIcon
 					className="mt-0"
 					data-title={Liferay.Language.get('repeatable')}
@@ -748,7 +746,7 @@ function buildItems({
 			}
 			else if (
 				child.type === 'referenced-structure' ||
-				child.type === 'repeatable-group'
+				child.type === 'group'
 			) {
 				const label = getLocalizedValue(child.label);
 
@@ -870,7 +868,7 @@ function getItemActions({
 		actions.push({type: 'divider' as const});
 	}
 
-	if (item.type === 'repeatable-group') {
+	if (item.type === 'group') {
 		actions.push({
 			label: Liferay.Language.get('ungroup'),
 			onClick: () =>
@@ -898,7 +896,7 @@ function getItemActions({
 		symbolLeft: 'copy',
 	});
 
-	if (item.type === 'repeatable-group') {
+	if (item.type === 'group') {
 		actions.push({
 			disabled: !clipboard?.items.length,
 			label: Liferay.Language.get('paste'),
@@ -963,7 +961,7 @@ function hasReferencedStructureChild(
 			return true;
 		}
 
-		if (child.type === 'repeatable-group') {
+		if (child.type === 'group') {
 			return hasReferencedStructureChild(child.children);
 		}
 	}

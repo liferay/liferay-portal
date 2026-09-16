@@ -40,7 +40,7 @@ export default function Settings() {
 		);
 	}
 
-	if (item.type === 'repeatable-group') {
+	if (item.type === 'group') {
 		return (
 			<RepeatableGroupSettings
 				disabled={item.referenced}

@@ -52,7 +52,7 @@ export type RepeatableGroup = {
 	parent: Uuid;
 	relationshipERC: string;
 	relationshipName: string;
-	type: 'repeatable-group';
+	type: 'group';
 	uuid: Uuid;
 };
 

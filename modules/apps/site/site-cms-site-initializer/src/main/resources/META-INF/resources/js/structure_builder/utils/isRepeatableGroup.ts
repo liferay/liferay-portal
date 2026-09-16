@@ -8,5 +8,5 @@ import {RepeatableGroup, StructureChild} from '../types/Structure';
 export default function isRepeatableGroup(
 	child: StructureChild
 ): child is RepeatableGroup {
-	return child.type === 'repeatable-group';
+	return child.type === 'group';
 }

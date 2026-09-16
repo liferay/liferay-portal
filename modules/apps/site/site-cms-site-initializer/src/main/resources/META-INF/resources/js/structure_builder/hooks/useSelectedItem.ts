@@ -23,7 +23,7 @@ type SelectedChild =
 			relatedContent: RelatedContent;
 			type: 'related-content';
 	  }
-	| {group: RepeatableGroup; referenced: boolean; type: 'repeatable-group'};
+	| {group: RepeatableGroup; referenced: boolean; type: 'group'};
 
 type SelectedItem =
 	| {type: 'main-structure'}
@@ -73,11 +73,11 @@ function findSelectedChild(
 					type: 'related-content',
 				};
 			}
-			else if (child.type === 'repeatable-group') {
+			else if (child.type === 'group') {
 				return {
 					group: child,
 					referenced: isReferenced,
-					type: 'repeatable-group',
+					type: 'group',
 				};
 			}
 			else {
@@ -90,7 +90,7 @@ function findSelectedChild(
 		}
 		else if (
 			child.type === 'referenced-structure' ||
-			child.type === 'repeatable-group'
+			child.type === 'group'
 		) {
 			const group = findSelectedChild(
 				uuid,

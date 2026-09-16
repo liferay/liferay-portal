@@ -40,7 +40,7 @@ export default function deleteChildren({
 
 		// If it's a repeatable group, do recursive call with its children
 
-		else if (child.type === 'repeatable-group') {
+		else if (child.type === 'group') {
 			const {
 				deletedChildrenUuids: groupDeletedChildrenUuids,
 				updatedChildren: groupChildren,
@@ -84,7 +84,7 @@ function getDeletedChildrenUuids({child}: {child: StructureChild}): Set<Uuid> {
 
 	deletedChildrenUuids.add(child.uuid);
 
-	if (child.type === 'repeatable-group') {
+	if (child.type === 'group') {
 		for (const groupChild of child.children.values()) {
 			const groupDeletedChildrenUuids = getDeletedChildrenUuids({
 				child: groupChild,

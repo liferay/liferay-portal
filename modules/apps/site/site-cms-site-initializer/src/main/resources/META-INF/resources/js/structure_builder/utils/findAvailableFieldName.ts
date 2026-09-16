@@ -14,8 +14,7 @@ export default function findAvailableFieldName(
 	const deletedFields =
 		deletedChildren?.filter(
 			(child) =>
-				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group'
+				child.type !== 'referenced-structure' && child.type !== 'group'
 		) || [];
 
 	const fields = [...deletedFields, ...children.values()];
@@ -24,7 +23,7 @@ export default function findAvailableFieldName(
 		fields.some(
 			(child) =>
 				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group' &&
+				child.type !== 'group' &&
 				child.name === name
 		);
 

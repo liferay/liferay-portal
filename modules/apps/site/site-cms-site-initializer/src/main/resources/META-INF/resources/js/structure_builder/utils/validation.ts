@@ -373,8 +373,7 @@ function getSiblingFieldNames(
 	const deletedFields =
 		deletedChildren?.filter(
 			(child) =>
-				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group'
+				child.type !== 'referenced-structure' && child.type !== 'group'
 		) || [];
 
 	const fields = [...deletedFields, ...children.values()];
@@ -383,7 +382,7 @@ function getSiblingFieldNames(
 		.filter(
 			(child) =>
 				child.type !== 'referenced-structure' &&
-				child.type !== 'repeatable-group' &&
+				child.type !== 'group' &&
 				child.uuid !== uuid
 		)
 		.map((child) => child.name);
@@ -421,7 +420,7 @@ export function useValidate() {
 					invalids.set(child.uuid, errors);
 				}
 			}
-			else if (child.type === 'repeatable-group') {
+			else if (child.type === 'group') {
 				errors = validateRepeatableGroup({data: child});
 
 				if (errors.size) {

@@ -25,7 +25,7 @@ export default function addChild({
 
 		// Insert the child. If it's a repeatable group, build it with recursive call
 
-		if (rootChild.type === 'repeatable-group') {
+		if (rootChild.type === 'group') {
 			const group: RepeatableGroup = {
 				...rootChild,
 				children: addChild({

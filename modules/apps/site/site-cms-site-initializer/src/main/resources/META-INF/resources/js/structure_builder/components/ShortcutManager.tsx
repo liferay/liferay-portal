@@ -178,7 +178,7 @@ export default function ShortcutManager() {
 
 				if (
 					isReferenced({root: structure, uuid}) ||
-					item.type !== 'repeatable-group'
+					item.type !== 'group'
 				) {
 					return false;
 				}

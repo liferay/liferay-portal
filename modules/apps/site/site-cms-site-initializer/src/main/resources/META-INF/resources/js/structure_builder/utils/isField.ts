@@ -21,6 +21,6 @@ export default function isField(item: {
 		item.type &&
 			item.type !== 'referenced-structure' &&
 			item.type !== 'related-content' &&
-			item.type !== 'repeatable-group'
+			item.type !== 'group'
 	);
 }
