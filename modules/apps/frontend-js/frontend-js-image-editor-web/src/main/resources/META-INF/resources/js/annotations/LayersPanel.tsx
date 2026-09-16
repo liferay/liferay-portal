@@ -125,21 +125,24 @@ export function LayersPanel({
 			);
 
 		if (horizontal) {
-			let next = column + horizontal;
+			let enabled: number | undefined;
 
-			while (next >= 0 && next <= lastColumn) {
+			for (
+				let next = column + horizontal;
+				next >= 0 && next <= lastColumn;
+				next += horizontal
+			) {
 				if (!buttonAt(row, next)?.disabled) {
+					enabled = next;
 					break;
 				}
-
-				next += horizontal;
 			}
 
-			if (next < 0 || next > lastColumn) {
+			if (enabled === undefined) {
 				return;
 			}
 
-			column = next;
+			column = enabled;
 		}
 		else if (buttonAt(row, column)?.disabled) {
 			column = 0;
