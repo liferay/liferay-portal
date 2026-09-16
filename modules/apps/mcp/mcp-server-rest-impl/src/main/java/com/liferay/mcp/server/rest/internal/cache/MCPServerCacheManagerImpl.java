@@ -34,7 +34,7 @@ public class MCPServerCacheManagerImpl
 	public void clearServletCache(long companyId) {
 		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
 
-		mcpServerServlet.invalidateAll(companyId);
+		mcpServerServlet.clearServletCache(companyId);
 	}
 
 	@Clusterable
@@ -42,7 +42,7 @@ public class MCPServerCacheManagerImpl
 	public void clearServletCache(long companyId, String mcpServerProfileName) {
 		MCPServerServlet mcpServerServlet = (MCPServerServlet)_servlet;
 
-		mcpServerServlet.invalidate(companyId, mcpServerProfileName);
+		mcpServerServlet.clearServletCache(companyId, mcpServerProfileName);
 	}
 
 	@Override

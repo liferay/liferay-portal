@@ -81,24 +81,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class MCPServerServlet extends HttpServlet {
 
-	@Override
-	public void destroy() {
-		synchronized (this) {
-			for (Servlet servlet : _servlets.values()) {
-				servlet.destroy();
-			}
-
-			_servlets.clear();
-		}
-	}
-
-	public void invalidate(long companyId, String mcpServerProfileName) {
-		synchronized (this) {
-			_destroy(_getServletKey(companyId, mcpServerProfileName));
-		}
-	}
-
-	public void invalidateAll(long companyId) {
+	public void clearServletCache(long companyId) {
 		synchronized (this) {
 			String companyIdString = String.valueOf(companyId);
 
@@ -110,6 +93,23 @@ public class MCPServerServlet extends HttpServlet {
 					_destroy(servletKey);
 				}
 			}
+		}
+	}
+
+	public void clearServletCache(long companyId, String mcpServerProfileName) {
+		synchronized (this) {
+			_destroy(_getServletKey(companyId, mcpServerProfileName));
+		}
+	}
+
+	@Override
+	public void destroy() {
+		synchronized (this) {
+			for (Servlet servlet : _servlets.values()) {
+				servlet.destroy();
+			}
+
+			_servlets.clear();
 		}
 	}
 
