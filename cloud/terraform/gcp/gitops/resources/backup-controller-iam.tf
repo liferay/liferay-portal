@@ -20,16 +20,14 @@ resource "google_project_iam_custom_role" "backup_controller_custom_role" {
 		"storagetransfer.projects.getServiceAccount",
 	]
 	project=var.project_id
-	provisioner "local-exec" {
-		command="gcloud iam roles delete ${self.role_id} --project ${self.project} --quiet"
-		on_failure=continue
-		when=destroy
-	}
-	role_id=replace("${var.deployment_name}_backup_controller", "-", "_")
+	role_id=replace("${var.deployment_name}_backup_controller_${random_id.backup_controller_role_id.hex}", "-", "_")
 	title="Liferay Backup Controller Role"
 }
 resource "google_project_iam_member" "backup_controller_iam_member" {
 	member="${local.ksa_principal_base}/backup-controller"
 	project=var.project_id
 	role=google_project_iam_custom_role.backup_controller_custom_role.name
+}
+resource "random_id" "backup_controller_role_id" {
+	byte_length=2
 }

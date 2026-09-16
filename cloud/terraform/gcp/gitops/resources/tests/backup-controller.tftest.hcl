@@ -14,6 +14,13 @@ override_data {
 		number="1234567890"
 	}
 }
+override_resource {
+	override_during=plan
+	target=random_id.backup_controller_role_id
+	values={
+		hex="a1b2"
+	}
+}
 run "should_bind_the_backup_controller_role_to_the_ksa" {
 	assert {
 		condition=endswith(google_project_iam_member.backup_controller_iam_member.member, "/sa/backup-controller")
@@ -27,8 +34,8 @@ run "should_create_the_backup_controller_custom_role" {
 		error_message="The backup controller role must grant Cloud SQL backup permissions"
 	}
 	assert {
-		condition=google_project_iam_custom_role.backup_controller_custom_role.role_id == "liferay_test_backup_controller"
-		error_message="The backup controller role id must replace hyphens with underscores"
+		condition=google_project_iam_custom_role.backup_controller_custom_role.role_id == "liferay_test_backup_controller_a1b2"
+		error_message="The backup controller role id must replace hyphens with underscores and carry the per-deployment suffix"
 	}
 	assert {
 		condition=google_project_iam_custom_role.backup_controller_custom_role.title == "Liferay Backup Controller Role"
