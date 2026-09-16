@@ -143,7 +143,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		String providerErrorMessage = RandomTestUtil.randomString();
 
-		_assertThrowsAndExits(
+		_assertExits(
 			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.keyCSPEntry(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -282,7 +282,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		String providerErrorMessage = RandomTestUtil.randomString();
 
-		_assertThrowsAndExits(
+		_assertExits(
 			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.preOperationalSelfTest(
 				() -> {
@@ -485,7 +485,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		SecurityException securityException2 = new SecurityException();
 
-		_assertThrowsAndExits(
+		_assertExits(
 			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.selfTest(
 				() -> {
@@ -516,6 +516,14 @@ public class FIPSApplicationStateMachineUtilTest {
 		Map<String, Object> fipsAuditLogEntry, String key, String value) {
 
 		Assert.assertEquals(value, fipsAuditLogEntry.get(key));
+	}
+
+	private void _assertExits(
+		Class<? extends Throwable> throwableClass,
+		ThrowingRunnable throwingRunnable) {
+
+		_assertExits(
+			() -> Assert.assertThrows(throwableClass, throwingRunnable));
 	}
 
 	private void _assertExits(Runnable runnable) {
@@ -556,25 +564,6 @@ public class FIPSApplicationStateMachineUtilTest {
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 
 		Assert.assertTrue(_fipsAuditLogEntries.isEmpty());
-	}
-
-	private void _assertThrowsAndExits(
-		Class<? extends Throwable> throwableClass,
-		ThrowingRunnable throwingRunnable) {
-
-		try (MockedStatic<Runtime> runtimeMockedStatic = Mockito.mockStatic(
-				Runtime.class)) {
-
-			Runtime runtime = _mockRuntime(runtimeMockedStatic);
-
-			Assert.assertThrows(throwableClass, throwingRunnable);
-
-			Mockito.verify(
-				runtime
-			).exit(
-				1
-			);
-		}
 	}
 
 	private Thread _getShutdownHookThread() {
@@ -696,7 +685,7 @@ public class FIPSApplicationStateMachineUtilTest {
 	private void _testErrorWithLoggingFailure() {
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
-		_assertThrowsAndExits(
+		_assertExits(
 			RuntimeException.class,
 			() -> FIPSApplicationStateMachineUtil.error(
 				RandomTestUtil.randomString(),
@@ -877,7 +866,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
-		_assertThrowsAndExits(
+		_assertExits(
 			runtimeException.getClass(),
 			() -> FIPSApplicationStateMachineUtil.selfTest(
 				() -> {
