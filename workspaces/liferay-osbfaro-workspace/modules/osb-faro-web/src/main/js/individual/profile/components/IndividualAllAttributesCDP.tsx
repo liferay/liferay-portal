@@ -225,6 +225,7 @@ const IndividualDetailsCDP = ({
 								detailsListCDPColumns.getDateModified(),
 							]}
 							entityLabel={Liferay.Language.get('all-attributes')}
+							nowrap={false}
 							rowIdentifier="name"
 						/>
 					</Card>

@@ -299,7 +299,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
                   class="table-responsive"
                 >
                   <table
-                    class="table table-autofit table-list table-nowrap table-head-bordered table-hover table-striped"
+                    class="table table-autofit table-list table-head-bordered table-hover table-striped"
                   >
                     <thead>
                       <tr>

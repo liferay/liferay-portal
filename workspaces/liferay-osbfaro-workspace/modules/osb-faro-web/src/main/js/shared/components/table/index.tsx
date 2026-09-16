@@ -34,6 +34,7 @@ interface ITableProps {
 	internalSort?: boolean;
 	items: {[key: string]: any}[];
 	loading?: boolean;
+	nowrap?: boolean;
 	orderIOMap?: OrderedMap<string, OrderParams>;
 	onOrderIOMapChange?: (orderIOMap: OrderedMap<string, OrderParams>) => void;
 	onRowClick?: (item: {[key: string]: any}) => void;
@@ -72,6 +73,7 @@ const Table: React.FC<ITableProps> = ({
 	internalSort = false,
 	items = [],
 	loading = false,
+	nowrap = true,
 	onOrderIOMapChange,
 	onRowClick,
 	onRowDelete = noop,
@@ -146,7 +148,7 @@ const Table: React.FC<ITableProps> = ({
 		'table',
 		'table-autofit',
 		'table-list',
-		'table-nowrap',
+		{'table-nowrap': nowrap},
 		'table-head-bordered',
 		'table-hover',
 		{
