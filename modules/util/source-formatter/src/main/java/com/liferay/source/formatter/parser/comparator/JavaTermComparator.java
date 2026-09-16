@@ -93,18 +93,11 @@ public class JavaTermComparator implements Comparator<JavaTerm> {
 			}
 		}
 
-		if (name1.compareToIgnoreCase(name2) != 0) {
-			NaturalOrderStringComparator naturalOrderStringComparator =
-				new NaturalOrderStringComparator(true, false);
-
-			return naturalOrderStringComparator.compare(name1, name2);
-		}
-
 		if (name1.compareTo(name2) != 0) {
 			NaturalOrderStringComparator naturalOrderStringComparator =
 				new NaturalOrderStringComparator(true, true);
 
-			return -naturalOrderStringComparator.compare(name1, name2);
+			return naturalOrderStringComparator.compare(name1, name2);
 		}
 
 		return _compareParameterTypes(javaTerm1, javaTerm2);
