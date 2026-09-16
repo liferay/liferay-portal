@@ -261,7 +261,7 @@ exports[`RequestList should render 1`] = `
                 </a>
               </th>
               <th
-                class="table-head-title"
+                class="table-head-title text-nowrap"
               >
                 <a
                   class="button-root w-100 btn btn-unstyled"
@@ -365,7 +365,9 @@ exports[`RequestList should render 1`] = `
               <td>
                 Delete
               </td>
-              <td>
+              <td
+                class="text-nowrap"
+              >
                 Oct 9, 2019
               </td>
               <td>
@@ -418,7 +420,9 @@ exports[`RequestList should render 1`] = `
               <td>
                 Unsuppress
               </td>
-              <td>
+              <td
+                class="text-nowrap"
+              >
                 Oct 9, 2019
               </td>
               <td>
@@ -471,7 +475,9 @@ exports[`RequestList should render 1`] = `
               <td>
                 Suppress
               </td>
-              <td>
+              <td
+                class="text-nowrap"
+              >
                 Sep 9, 2019
               </td>
               <td>
@@ -527,7 +533,9 @@ exports[`RequestList should render 1`] = `
               <td>
                 Suppress
               </td>
-              <td>
+              <td
+                class="text-nowrap"
+              >
                 Nov 9, 2019
               </td>
               <td>
@@ -589,7 +597,9 @@ exports[`RequestList should render 1`] = `
               <td>
                 Access
               </td>
-              <td>
+              <td
+                class="text-nowrap"
+              >
                 Sep 9, 2019
               </td>
               <td>
@@ -642,7 +652,9 @@ exports[`RequestList should render 1`] = `
               <td>
                 Delete
               </td>
-              <td>
+              <td
+                class="text-nowrap"
+              >
                 Sep 9, 2019
               </td>
               <td>
@@ -694,7 +706,9 @@ exports[`RequestList should render 1`] = `
               <td>
                 Access
               </td>
-              <td>
+              <td
+                class="text-nowrap"
+              >
                 Dec 5, 2019
               </td>
               <td>

@@ -408,7 +408,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
                           </button>
                         </th>
                         <th
-                          class="table-head-title"
+                          class="table-head-title text-nowrap"
                         >
                           <button
                             class="inline-item text-truncate-inline btn btn-unstyled"
@@ -479,7 +479,9 @@ exports[`IndividualProfileRoutes should render 1`] = `
                             -
                           </a>
                         </td>
-                        <td>
+                        <td
+                          class="text-nowrap"
+                        >
                           -
                         </td>
                       </tr>
@@ -516,7 +518,9 @@ exports[`IndividualProfileRoutes should render 1`] = `
                             -
                           </a>
                         </td>
-                        <td>
+                        <td
+                          class="text-nowrap"
+                        >
                           -
                         </td>
                       </tr>
@@ -553,7 +557,9 @@ exports[`IndividualProfileRoutes should render 1`] = `
                             -
                           </a>
                         </td>
-                        <td>
+                        <td
+                          class="text-nowrap"
+                        >
                           -
                         </td>
                       </tr>
@@ -590,7 +596,9 @@ exports[`IndividualProfileRoutes should render 1`] = `
                             -
                           </a>
                         </td>
-                        <td>
+                        <td
+                          class="text-nowrap"
+                        >
                           -
                         </td>
                       </tr>
@@ -627,7 +635,9 @@ exports[`IndividualProfileRoutes should render 1`] = `
                             -
                           </a>
                         </td>
-                        <td>
+                        <td
+                          class="text-nowrap"
+                        >
                           -
                         </td>
                       </tr>

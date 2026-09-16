@@ -350,6 +350,7 @@ const RequestList: React.FC<IRequestListProps> = ({
 					},
 					{
 						accessor: CREATE_DATE,
+						className: 'text-nowrap',
 						dataFormatter: (date: string) =>
 							formatDateToTimeZone(
 								date,

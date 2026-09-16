@@ -564,6 +564,7 @@ export const detailsListColumns = {
 	}),
 	getDateModified: (timeZoneId: string | undefined) => ({
 		accessor: 'dateModified',
+		className: 'text-nowrap',
 		dataFormatter: (dateModified: string | number | null | undefined) =>
 			!isNil(dateModified) &&
 			applyTimeZone(dateModified, timeZoneId).fromNow(),

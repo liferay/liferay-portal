@@ -36,6 +36,7 @@ export const detailsListCDPColumns = {
 				formatDateToTimeZone(date, getCustomDateFormat()),
 			datePath: 'dateModified',
 		},
+		className: 'text-nowrap',
 		label: Liferay.Language.get('last-modified'),
 		sortable: false,
 	}),

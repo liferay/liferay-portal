@@ -230,7 +230,7 @@ exports[`EntityDetailsList should render 1`] = `
                     </button>
                   </th>
                   <th
-                    class="table-head-title"
+                    class="table-head-title text-nowrap"
                   >
                     <button
                       class="inline-item text-truncate-inline btn btn-unstyled"
@@ -301,7 +301,9 @@ exports[`EntityDetailsList should render 1`] = `
                       test data source
                     </a>
                   </td>
-                  <td>
+                  <td
+                    class="text-nowrap"
+                  >
                     7 days ago
                   </td>
                 </tr>
@@ -338,7 +340,9 @@ exports[`EntityDetailsList should render 1`] = `
                       test data source
                     </a>
                   </td>
-                  <td>
+                  <td
+                    class="text-nowrap"
+                  >
                     7 days ago
                   </td>
                 </tr>
@@ -375,7 +379,9 @@ exports[`EntityDetailsList should render 1`] = `
                       test data source
                     </a>
                   </td>
-                  <td>
+                  <td
+                    class="text-nowrap"
+                  >
                     7 days ago
                   </td>
                 </tr>
