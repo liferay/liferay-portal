@@ -14,6 +14,8 @@ import com.liferay.document.library.configuration.DLConfiguration;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -171,6 +173,20 @@ public class ViewDashboardDisplayContext {
 				_httpServletRequest)
 		).put(
 			"cmpEnabled", LicenseManagerUtil.isAppEnabled(App.CMP)
+		).put(
+			"cmpProjectObjectDefinitionId",
+			() -> {
+				ObjectDefinition cmpProjectObjectDefinition =
+					ObjectDefinitionLocalServiceUtil.
+						fetchObjectDefinitionByExternalReferenceCode(
+							"L_CMP_PROJECT", _themeDisplay.getCompanyId());
+
+				if (cmpProjectObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpProjectObjectDefinition.getObjectDefinitionId();
+			}
 		).put(
 			"cmsGroupId", () -> _getCMSGroupId()
 		).put(
