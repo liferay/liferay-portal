@@ -217,13 +217,22 @@ public class JSUnitBatchBuildTestrayCaseResult
 		if ((_testClassMethod == null) &&
 			jsUnitJUnitTestClass.isBuildCachingEnabled()) {
 
-			TestClassReport cachedTestClassReport =
-				jsUnitJUnitTestClass.getCachedTestClassReport();
+			List<TestClassReport> cachedTestClassReports =
+				jsUnitJUnitTestClass.getCachedTestClassReports();
 
-			if (cachedTestClassReport != null) {
-				_testClassReport = cachedTestClassReport;
+			if (cachedTestClassReports != null) {
+				for (TestClassReport cachedTestClassReport :
+						cachedTestClassReports) {
 
-				return _testClassReport;
+					if (Objects.equals(
+							cachedTestClassReport.getTestClassName(),
+							getName())) {
+
+						_testClassReport = cachedTestClassReport;
+
+						return _testClassReport;
+					}
+				}
 			}
 		}
 

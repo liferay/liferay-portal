@@ -6,10 +6,13 @@
 package com.liferay.jenkins.results.parser.test.clazz;
 
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
-import com.liferay.jenkins.results.parser.RandomTestUtil;
+import com.liferay.jenkins.results.parser.TestClassReport;
 import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitModulesBatchTestClassGroup;
 
 import java.io.File;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -24,6 +27,112 @@ import org.mockito.Mockito;
  */
 public class JSUnitJUnitTestClassTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testGetCachedTestClassReports() throws Exception {
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
+			_getBatchTestClassGroup();
+
+		TestClassReport testClassReport = Mockito.mock(TestClassReport.class);
+
+		Mockito.doReturn(
+			testClassReport
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).getCachedTestClassReport(
+			_TEST_TASK_NAME
+		);
+
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
+			_getJSONObject(_JS_UNIT_FILE_1), jsUnitModulesBatchTestClassGroup);
+
+		Assert.assertEquals(
+			Collections.singletonList(testClassReport),
+			jsUnitJUnitTestClass.getCachedTestClassReports());
+	}
+
+	@Test
+	public void testGetCachedTestClassReportsTestClassFile() throws Exception {
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
+			_getBatchTestClassGroup();
+
+		TestClassReport testClassReport1 = Mockito.mock(TestClassReport.class);
+
+		Mockito.doReturn(
+			testClassReport1
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).getCachedTestClassReport(
+			_JS_UNIT_FILE_1
+		);
+
+		TestClassReport testClassReport2 = Mockito.mock(TestClassReport.class);
+
+		Mockito.doReturn(
+			testClassReport2
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).getCachedTestClassReport(
+			_JS_UNIT_FILE_2
+		);
+
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
+			_getJSONObject(_JS_UNIT_FILE_1, _JS_UNIT_FILE_2),
+			jsUnitModulesBatchTestClassGroup);
+
+		jsUnitJUnitTestClass.setTestClassFileReported(true);
+
+		Assert.assertEquals(
+			Arrays.asList(testClassReport1, testClassReport2),
+			jsUnitJUnitTestClass.getCachedTestClassReports());
+	}
+
+	@Test
+	public void testGetCachedTestClassReportsTestClassFileIncomplete()
+		throws Exception {
+
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
+			_getBatchTestClassGroup();
+
+		Mockito.doReturn(
+			Mockito.mock(TestClassReport.class)
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).getCachedTestClassReport(
+			_JS_UNIT_FILE_1
+		);
+
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
+			_getJSONObject(_JS_UNIT_FILE_1, _JS_UNIT_FILE_2),
+			jsUnitModulesBatchTestClassGroup);
+
+		jsUnitJUnitTestClass.setTestClassFileReported(true);
+
+		Assert.assertNull(jsUnitJUnitTestClass.getCachedTestClassReports());
+	}
+
+	@Test
+	public void testGetCachedTestClassReportsTestClassFileTaskName()
+		throws Exception {
+
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
+			_getBatchTestClassGroup();
+
+		Mockito.doReturn(
+			Mockito.mock(TestClassReport.class)
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).getCachedTestClassReport(
+			_TEST_TASK_NAME
+		);
+
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
+			_getJSONObject(_JS_UNIT_FILE_1), jsUnitModulesBatchTestClassGroup);
+
+		jsUnitJUnitTestClass.setTestClassFileReported(true);
+
+		Assert.assertNull(jsUnitJUnitTestClass.getCachedTestClassReports());
+	}
 
 	@Test
 	public void testIsTestClassFileReported() throws Exception {
@@ -67,9 +176,6 @@ public class JSUnitJUnitTestClassTest
 	}
 
 	private JSUnitModulesBatchTestClassGroup _getBatchTestClassGroup() {
-		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
-			Mockito.mock(JSUnitModulesBatchTestClassGroup.class);
-
 		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
 			PortalGitWorkingDirectory.class);
 
@@ -79,30 +185,62 @@ public class JSUnitJUnitTestClassTest
 			portalGitWorkingDirectory
 		).getWorkingDirectory();
 
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
+			Mockito.mock(JSUnitModulesBatchTestClassGroup.class);
+
 		Mockito.doReturn(
 			portalGitWorkingDirectory
 		).when(
 			jsUnitModulesBatchTestClassGroup
 		).getPortalGitWorkingDirectory();
 
+		Mockito.doReturn(
+			true
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).isBuildCachingEnabled();
+
 		return jsUnitModulesBatchTestClassGroup;
+	}
+
+	private JSONObject _getJSONObject(String... testClassMethodNames) {
+		JSONArray methodsJSONArray = new JSONArray();
+
+		for (String testClassMethodName : testClassMethodNames) {
+			methodsJSONArray.put(
+				new JSONObject(
+				).put(
+					"ignored", false
+				).put(
+					"name", testClassMethodName
+				));
+		}
+
+		JSONObject jsonObject = new JSONObject();
+
+		return jsonObject.put(
+			"file", "/x/modules/apps/a/b"
+		).put(
+			"ignored", false
+		).put(
+			"methods", methodsJSONArray
+		);
 	}
 
 	private JSUnitJUnitTestClass _getTestClass(JSONObject jsonObject) {
 		if (jsonObject == null) {
-			jsonObject = new JSONObject();
-
-			jsonObject.put(
-				"file", RandomTestUtil.randomString()
-			).put(
-				"ignored", false
-			).put(
-				"methods", new JSONArray()
-			);
+			jsonObject = _getJSONObject();
 		}
 
+		return _getTestClass(jsonObject, _getBatchTestClassGroup());
+	}
+
+	private JSUnitJUnitTestClass _getTestClass(
+		JSONObject jsonObject,
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup) {
+
 		return (JSUnitJUnitTestClass)TestClassFactory.newTestClass(
-			_getBatchTestClassGroup(), jsonObject);
+			jsUnitModulesBatchTestClassGroup, jsonObject);
 	}
 
 	private JSONObject _serialize(JSUnitJUnitTestClass jsUnitJUnitTestClass) {
@@ -110,5 +248,13 @@ public class JSUnitJUnitTestClassTest
 
 		return new JSONObject(jsonObject.toString());
 	}
+
+	private static final String _JS_UNIT_FILE_1 =
+		"modules/apps/a/b/test/Foo.test.js";
+
+	private static final String _JS_UNIT_FILE_2 =
+		"modules/apps/a/b/test/Bar.test.js";
+
+	private static final String _TEST_TASK_NAME = ":apps:a:b:packageRunTest";
 
 }

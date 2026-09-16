@@ -12,6 +12,10 @@ import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 
 import java.io.File;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.json.JSONObject;
 
 /**
@@ -21,31 +25,51 @@ public class JSUnitJUnitTestClass extends JUnitTestClass {
 
 	@Override
 	public DownstreamBuildReport getCachedDownstreamBuildReport() {
-		if (!_cachedTestClassReportSearched) {
-			getCachedTestClassReport();
+		if (!_cachedTestClassReportsSearched) {
+			getCachedTestClassReports();
 		}
 
 		return _cachedDownstreamBuildReport;
 	}
 
-	public TestClassReport getCachedTestClassReport() {
-		if (!isBuildCachingEnabled() || _cachedTestClassReportSearched) {
-			return _cachedTestClassReport;
+	@Override
+	public List<TestClassReport> getCachedTestClassReports() {
+		if (!isBuildCachingEnabled() || _cachedTestClassReportsSearched) {
+			return _cachedTestClassReports;
 		}
+
+		List<TestClassReport> cachedTestClassReports = new ArrayList<>();
 
 		BatchTestClassGroup batchTestClassGroup = getBatchTestClassGroup();
 
-		_cachedTestClassReport = batchTestClassGroup.getCachedTestClassReport(
-			getName());
+		for (String testClassReportName : _getTestClassReportNames()) {
+			TestClassReport cachedTestClassReport =
+				batchTestClassGroup.getCachedTestClassReport(
+					testClassReportName);
 
-		if (_cachedTestClassReport != null) {
-			_cachedDownstreamBuildReport =
-				_cachedTestClassReport.getDownstreamBuildReport();
+			if (cachedTestClassReport == null) {
+				return _cachedTestClassReports;
+			}
+
+			cachedTestClassReports.add(cachedTestClassReport);
 		}
 
-		_cachedTestClassReportSearched = true;
+		if (cachedTestClassReports.isEmpty()) {
+			return _cachedTestClassReports;
+		}
 
-		return _cachedTestClassReport;
+		_cachedTestClassReports = cachedTestClassReports;
+
+		for (TestClassReport cachedTestClassReport : cachedTestClassReports) {
+			_cachedDownstreamBuildReport =
+				cachedTestClassReport.getDownstreamBuildReport();
+
+			break;
+		}
+
+		_cachedTestClassReportsSearched = true;
+
+		return _cachedTestClassReports;
 	}
 
 	@Override
@@ -113,9 +137,23 @@ public class JSUnitJUnitTestClass extends JUnitTestClass {
 		return getName();
 	}
 
+	private List<String> _getTestClassReportNames() {
+		if (!_testClassFileReported) {
+			return Collections.singletonList(getName());
+		}
+
+		List<String> testClassReportNames = new ArrayList<>();
+
+		for (TestClassMethod testClassMethod : getTestClassMethods()) {
+			testClassReportNames.add(testClassMethod.getName());
+		}
+
+		return testClassReportNames;
+	}
+
 	private DownstreamBuildReport _cachedDownstreamBuildReport;
-	private TestClassReport _cachedTestClassReport;
-	private boolean _cachedTestClassReportSearched;
+	private List<TestClassReport> _cachedTestClassReports;
+	private boolean _cachedTestClassReportsSearched;
 	private boolean _testClassFileReported;
 
 }
