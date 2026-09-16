@@ -288,11 +288,11 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 		User spaceAdministratorUser = UserTestUtil.addUser(
 			testCompany, PropsValues.DEFAULT_ADMIN_PASSWORD);
 
-		_userLocalService.updateEmailAddressVerified(
-			spaceAdministratorUser.getUserId(), true);
-
 		_userLocalService.addGroupUsers(
 			groupId, new long[] {spaceAdministratorUser.getUserId()});
+
+		_userLocalService.updateEmailAddressVerified(
+			spaceAdministratorUser.getUserId(), true);
 
 		Role assetLibraryAdministratorRole = _roleLocalService.getRole(
 			TestPropsValues.getCompanyId(),
@@ -301,18 +301,6 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 		_userGroupRoleLocalService.addUserGroupRoles(
 			spaceAdministratorUser.getUserId(), groupId,
 			new long[] {assetLibraryAdministratorRole.getRoleId()});
-
-		TaskAssigneeResource spaceAdministratorTaskAssigneeResource =
-			TaskAssigneeResource.builder(
-			).authentication(
-				spaceAdministratorUser.getEmailAddress(),
-				PropsValues.DEFAULT_ADMIN_PASSWORD
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
 
 		String lastName = RandomTestUtil.randomString();
 
@@ -328,6 +316,18 @@ public class TaskAssigneeResourceTest extends BaseTaskAssigneeResourceTestCase {
 
 		User assignableUser = _addUser(
 			groupId, RandomTestUtil.randomString(), lastName);
+
+		TaskAssigneeResource spaceAdministratorTaskAssigneeResource =
+			TaskAssigneeResource.builder(
+			).authentication(
+				spaceAdministratorUser.getEmailAddress(),
+				PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
 
 		long[] taskAssigneeIds = _getTaskAssigneeIds(
 			spaceAdministratorTaskAssigneeResource.getTaskAssigneesPage(

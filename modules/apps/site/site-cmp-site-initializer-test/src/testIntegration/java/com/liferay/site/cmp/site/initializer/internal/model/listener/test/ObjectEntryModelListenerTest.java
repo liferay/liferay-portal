@@ -426,6 +426,10 @@ public class ObjectEntryModelListenerTest {
 
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
+		_assertGroupMembershipWithoutUserGroupRoles(
+			cmpProjectObjectEntry, originalProjectManagerUser);
+		_assertGroupMembershipWithoutUserGroupRoles(
+			cmpProjectObjectEntry, originalProjectSponsorUser);
 		_assertUserGroupRoles(
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
 			cmpProjectObjectEntry.getGroupId(),
@@ -434,10 +438,6 @@ public class ObjectEntryModelListenerTest {
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
 			cmpProjectObjectEntry.getGroupId(),
 			newProjectSponsorUser.getUserId());
-		_assertGroupMembershipWithoutUserGroupRoles(
-			cmpProjectObjectEntry, originalProjectManagerUser);
-		_assertGroupMembershipWithoutUserGroupRoles(
-			cmpProjectObjectEntry, originalProjectSponsorUser);
 	}
 
 	private void _assertResourceActions(
@@ -546,8 +546,7 @@ public class ObjectEntryModelListenerTest {
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
 			cmpProjectObjectEntry.getGroupId(), projectSponsorUser.getUserId());
 
-		// Updating the description without assign members permission keeps
-		// both roles
+		// Updating the description without assign members keeps both roles
 
 		User user = UserTestUtil.addUser();
 
@@ -577,11 +576,9 @@ public class ObjectEntryModelListenerTest {
 			ObjectEntry cmpProjectObjectEntry)
 		throws Exception {
 
-		// A manager may clear their own name
+		// A project manager may clear their own name
 
 		User projectManagerUser = UserTestUtil.addUser(
-			cmpProjectObjectEntry.getGroupId());
-		User projectSponsorUser = UserTestUtil.addUser(
 			cmpProjectObjectEntry.getGroupId());
 
 		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
@@ -622,7 +619,10 @@ public class ObjectEntryModelListenerTest {
 				projectContributorUser.getUserId(),
 				cmpProjectObjectEntry.getGroupId()));
 
-		// Clearing the manager and sponsor revokes both holders
+		// Clearing the project manager and project sponsor revokes both holders
+
+		User projectSponsorUser = UserTestUtil.addUser(
+			cmpProjectObjectEntry.getGroupId());
 
 		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
 			cmpProjectObjectEntry, projectManagerUser.getUserId(),
@@ -636,7 +636,7 @@ public class ObjectEntryModelListenerTest {
 		_assertGroupMembershipWithoutUserGroupRoles(
 			cmpProjectObjectEntry, projectSponsorUser);
 
-		// Reassigning as the outgoing manager keeps authority through the save
+		// Reassigning as the outgoing project manager keeps authority on save
 
 		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
 			cmpProjectObjectEntry, projectManagerUser.getUserId(),
@@ -649,7 +649,7 @@ public class ObjectEntryModelListenerTest {
 		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
 			cmpProjectObjectEntry, 0, 0, TestPropsValues.getUserId());
 
-		// Reassigning the manager and sponsor revokes the previous holders
+		// Reassigning both roles revokes the previous holders
 
 		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
 			cmpProjectObjectEntry, projectManagerUser.getUserId(),
@@ -664,7 +664,7 @@ public class ObjectEntryModelListenerTest {
 			ObjectEntry cmpProjectObjectEntry)
 		throws Exception {
 
-		// A manager assigning an administrator is refused
+		// A project manager assigning an administrator is refused
 
 		User projectManagerUser = UserTestUtil.addUser(
 			cmpProjectObjectEntry.getGroupId());
@@ -677,7 +677,7 @@ public class ObjectEntryModelListenerTest {
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
 			cmpProjectObjectEntry.getGroupId(), projectManagerUser.getUserId());
 
-		User administratorUser = UserTestUtil.addCompanyAdminUser(
+		User companyAdminUser = UserTestUtil.addCompanyAdminUser(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 
 		UserTestUtil.setUser(projectManagerUser);
@@ -685,7 +685,7 @@ public class ObjectEntryModelListenerTest {
 		try {
 			_updateProjectManagerProjectSponsor(
 				cmpProjectObjectEntry, projectManagerUser.getUserId(),
-				administratorUser.getUserId(), projectManagerUser.getUserId());
+				companyAdminUser.getUserId(), projectManagerUser.getUserId());
 
 			Assert.fail();
 		}
@@ -695,7 +695,7 @@ public class ObjectEntryModelListenerTest {
 					PrincipalException.MustHavePermission);
 		}
 
-		// A manager may assign and revoke an ordinary user
+		// A project manager may assign and revoke an ordinary user
 
 		User user = UserTestUtil.addUser();
 
@@ -722,9 +722,9 @@ public class ObjectEntryModelListenerTest {
 
 		cmpProjectObjectEntry = _updateProjectManagerProjectSponsor(
 			cmpProjectObjectEntry, projectManagerUser.getUserId(),
-			administratorUser.getUserId(), TestPropsValues.getUserId());
+			companyAdminUser.getUserId(), TestPropsValues.getUserId());
 
-		// Revoking an administrator as a manager is refused
+		// Revoking an administrator as a project manager is refused
 
 		UserTestUtil.setUser(projectManagerUser);
 
@@ -745,7 +745,7 @@ public class ObjectEntryModelListenerTest {
 
 		_assertUserGroupRoles(
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
-			cmpProjectObjectEntry.getGroupId(), administratorUser.getUserId());
+			cmpProjectObjectEntry.getGroupId(), companyAdminUser.getUserId());
 
 		_updateProjectManagerProjectSponsor(
 			cmpProjectObjectEntry, 0, 0, TestPropsValues.getUserId());
