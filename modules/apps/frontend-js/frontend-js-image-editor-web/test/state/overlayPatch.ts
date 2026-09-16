@@ -65,8 +65,7 @@ describe('patchOverlay', () => {
 
 		expect(typed({fontSize: 80})).toEqual({fontSize: 80});
 
-		// @ts-expect-error a caption has no `width`; the compiler is the
-		// guard here, the runtime filter is the second line of defence.
+		// @ts-expect-error
 
 		typed({width: 300});
 	});

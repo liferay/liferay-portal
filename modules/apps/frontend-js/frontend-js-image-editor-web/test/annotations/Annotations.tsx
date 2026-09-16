@@ -164,10 +164,6 @@ const hit = (container: HTMLElement) =>
 const caption = (container: HTMLElement) =>
 	container.querySelector('.editor-workspace text') as SVGTextElement;
 
-/**
- * The in-place editor shares its name with the Text field of the layer
- * properties, so it is looked up inside the workspace.
- */
 const workspace = () =>
 	within(screen.getByRole('region', {name: 'image-workspace'}));
 
@@ -197,10 +193,6 @@ describe('text annotations', () => {
 		expect(text).toHaveAttribute('font-size', '40');
 		expect(text).toHaveAttribute('font-family', 'serif');
 		expect(text).toHaveAttribute('fill', '#ff0000');
-
-		// Center of the crop (900, 600), not of the image (600, 400): the
-		// anchor sits on the baseline, so the text is centered by its
-		// measured width and hangs from the vertical middle.
 
 		expect(Number(text.getAttribute('x'))).toBe(900 - (7 * 40 * 0.6) / 2);
 		expect(Number(text.getAttribute('y'))).toBe(600);
@@ -282,9 +274,6 @@ describe('text annotations', () => {
 		expect(workspace().queryByRole('textbox', {name: 'text'})).toBeNull();
 		expect(caption(container)).toHaveTextContent('Liferay');
 
-		// The editor unmounts under the focus: the caption takes it back, so
-		// the next arrow key or Ctrl+Z still lands inside the editor.
-
 		await waitFor(() => expect(hit(container)).toHaveFocus());
 	});
 
@@ -357,12 +346,6 @@ describe('text annotations', () => {
 	});
 });
 
-/**
- * Shapes live behind a menu of drawings, so adding one is two steps: open
- * the menu, then pick the cell. The cells are named rather than labelled
- * in text, and the query goes through the grid because the same name also
- * belongs to the stage node it creates.
- */
 function addShape(shape: string) {
 	fireEvent.click(screen.getByRole('button', {name: 'add-shape'}));
 
@@ -427,8 +410,6 @@ describe('shapes and arrows', () => {
 			Number(target.getAttribute('y')) +
 			Number(target.getAttribute('height')) / 2;
 
-		// Center of the crop (900, 600), not of the image (600, 400).
-
 		expect(Math.round(centerX)).toBe(900);
 		expect(Math.round(centerY)).toBe(600);
 	});
@@ -440,15 +421,9 @@ describe('shapes and arrows', () => {
 
 		fireEvent.focus(hit(container));
 
-		// Four corners, four edges and the rotation knob.
-
 		const handles = container.querySelectorAll('.object-handle');
 
 		expect(handles).toHaveLength(9);
-
-		// The bottom right corner sits at (750, 460); dragging it 50 by
-		// 20 screen pixels at 50% zoom moves it 100 by 40 image pixels,
-		// and the box grows from its center on both sides.
 
 		const corner = handles[2];
 
@@ -481,8 +456,6 @@ describe('shapes and arrows', () => {
 
 		fireEvent.focus(hit(container));
 
-		// The east edge handle sits at (750, 400).
-
 		const edge = container.querySelectorAll('.object-handle')[5];
 
 		fireEvent.pointerDown(edge, {clientX: 0, clientY: 0});
@@ -500,9 +473,6 @@ describe('shapes and arrows', () => {
 		addShape('rectangle');
 
 		fireEvent.focus(hit(container));
-
-		// The knob hangs 48 image pixels above the top edge, at (600, 292);
-		// swinging it to the right of the center is a quarter turn.
 
 		const knob = container.querySelector(
 			'.object-handle-rotate'
@@ -538,9 +508,6 @@ describe('shapes and arrows', () => {
 
 		expect(ends).toHaveLength(2);
 
-		// The tip sits at (720, 400); 50 screen pixels down is 100 image
-		// pixels down.
-
 		fireEvent.pointerDown(ends[1], {clientX: 0, clientY: 0});
 		fireEvent.pointerMove(ends[1], {clientX: 0, clientY: 50});
 		fireEvent.pointerUp(ends[1]);
@@ -554,8 +521,6 @@ describe('shapes and arrows', () => {
 		expect(
 			container.querySelector('.editor-workspace polygon')
 		).toHaveAttribute('points', expect.stringMatching(/^720,500/));
-
-		// The tail pivots on the tip.
 
 		fireEvent.pointerDown(ends[0], {clientX: 0, clientY: 0});
 		fireEvent.pointerMove(ends[0], {clientX: -50, clientY: 0});
@@ -591,9 +556,6 @@ describe('shapes and arrows', () => {
 
 		const addText = screen.getByRole('button', {name: 'add-text'});
 
-		// Both tiles open something rather than act at once, and say so:
-		// the menu trigger through Clay, the dialog one on its own.
-
 		expect(addText).toHaveAttribute('aria-haspopup', 'dialog');
 		expect(screen.getByRole('button', {name: 'add-shape'})).toHaveAttribute(
 			'aria-haspopup'
@@ -605,17 +567,11 @@ describe('shapes and arrows', () => {
 
 		expect(document.activeElement).toHaveAccessibleName('add-shape');
 
-		// One tab stop for the whole panel, wherever the roving index
-		// happens to be sitting.
-
 		expect(
 			document.querySelectorAll(
 				'.editor-annotate-actions [data-index][tabindex="0"]'
 			)
 		).toHaveLength(1);
-
-		// On a menu button the vertical arrows belong to the menu, so
-		// they must not walk the panel.
 
 		fireEvent.keyDown(document.activeElement as Element, {
 			key: 'ArrowUp',
@@ -634,10 +590,6 @@ const layerNames = () =>
 		node.getAttribute('aria-label')
 	);
 
-/**
- * The stage node and the layer row share the annotation's name, so a row
- * is looked up inside the list.
- */
 const row = (name: string) =>
 	within(
 		document.querySelector('.editor-layer-list') as HTMLElement
@@ -686,17 +638,12 @@ describe('layers', () => {
 
 		expect(shape(container)).toHaveAttribute('fill', '#0b5fff');
 
-		// Width commits on Enter.
-
 		const widthInput = screen.getByLabelText('width');
 
 		fireEvent.change(widthInput, {target: {value: '500'}});
 		fireEvent.keyDown(widthInput, {key: 'Enter'});
 
 		expect(shape(container)).toHaveAttribute('width', '500');
-
-		// Color previews while the picker moves and commits on blur. A
-		// shape has a color, only a caption has a text color.
 
 		expect(screen.queryByLabelText('text-color')).toBeNull();
 
@@ -708,8 +655,6 @@ describe('layers', () => {
 
 		fireEvent.blur(colorInput);
 
-		// Opacity wraps the node in a translucent group.
-
 		const opacityInput = screen.getByLabelText('opacity');
 
 		fireEvent.change(opacityInput, {target: {value: '50'}});
@@ -720,14 +665,8 @@ describe('layers', () => {
 			'0.5'
 		);
 
-		// Position, which is what makes dragging optional for a pointer
-		// user who cannot drag (WCAG 2.2, 2.5.7).
-
 		const xInput = screen.getByLabelText('x-position');
 		const yInput = screen.getByLabelText('y-position');
-
-		// A position has no lower bound, and an unbounded field carries no
-		// min attribute at all rather than an unparseable one.
 
 		expect(xInput).not.toHaveAttribute('min');
 		expect(screen.getByLabelText('opacity')).toHaveAttribute('min', '0');
@@ -739,8 +678,6 @@ describe('layers', () => {
 
 		expect(shape(container)).toHaveAttribute('x', '120');
 		expect(shape(container)).toHaveAttribute('y', '340');
-
-		// Rotation spins the whole interactive group around the center.
 
 		const rotationInput = screen.getByLabelText('rotation');
 
@@ -797,8 +734,6 @@ describe('layers', () => {
 
 		expect(height).toHaveValue(120);
 
-		// Locked, the side that was not typed follows.
-
 		fireEvent.click(padlock);
 
 		expect(padlock).toHaveAttribute('aria-pressed', 'true');
@@ -816,15 +751,11 @@ describe('layers', () => {
 
 		const hits = container.querySelectorAll('.overlay-hit');
 
-		// Focusing the caption on the stage presses its row.
-
 		fireEvent.focus(hits[0]);
 
 		expect(
 			screen.getByRole('button', {name: 'text-x', pressed: true})
 		).toBeInTheDocument();
-
-		// Pressing the rectangle row rings it on the stage.
 
 		fireEvent.blur(hits[0]);
 
@@ -881,9 +812,6 @@ describe('layers', () => {
 
 		expect(layerNames()).toEqual(['rectangle', 'rectangle']);
 
-		// The copy is selected: one pressed row, one ring on the stage, and
-		// the copy sits offset from the original.
-
 		expect(
 			screen.getAllByRole('button', {name: 'rectangle', pressed: true})
 		).toHaveLength(1);
@@ -923,15 +851,9 @@ describe('layers', () => {
 			document.querySelectorAll('.editor-layer-list [tabindex="0"]')
 		).toHaveLength(1);
 
-		// The topmost layer cannot move up, so the first arrow to the right
-		// lands on "move down".
-
 		fireEvent.keyDown(top, {key: 'ArrowRight'});
 
 		expect(document.activeElement).toHaveAccessibleName('move-x-down');
-
-		// Down a row lands on the same column when it is enabled, and on
-		// the row's name when it is not: the bottom layer cannot move down.
 
 		fireEvent.keyDown(document.activeElement as Element, {
 			key: 'ArrowDown',
@@ -977,8 +899,6 @@ describe('layers', () => {
 
 		expect(caption(container)).toHaveAttribute('font-size', '72');
 
-		// An empty caption is refused: the field falls back to the text.
-
 		fireEvent.change(textInput, {target: {value: '   '}});
 		fireEvent.blur(textInput);
 
@@ -989,9 +909,6 @@ describe('layers', () => {
 		const {container} = render(<AnnotationHarness />);
 
 		addShape('arrow');
-
-		// Its two ends are the properties, and rotation is not one of
-		// them: where an arrow points is already said by its ends.
 
 		expect(screen.queryByLabelText('rotation')).toBeNull();
 
@@ -1005,9 +922,6 @@ describe('layers', () => {
 
 		expect(screen.getByLabelText('tip-y-position')).toHaveValue(120);
 		expect(screen.getByLabelText('y-position')).toHaveValue(tailY);
-
-		// The open head is the same two barbs left as strokes, and its
-		// shaft runs the whole way to the tip.
 
 		fireEvent.change(screen.getByLabelText('arrow-head'), {
 			target: {value: 'open'},
@@ -1052,9 +966,6 @@ describe('layers', () => {
 		const wobble = path.getAttribute('d')!;
 
 		expect(wobble.endsWith('Z')).toBe(true);
-
-		// The seed lives in the state, so a re-render redraws the same
-		// wobble instead of a new one.
 
 		fireEvent.click(row('rectangle'));
 
@@ -1114,10 +1025,6 @@ describe('layers', () => {
 			fireEvent.keyDown(field, {key: 'Enter'});
 		}
 
-		// What is painted shrinks to what was asked for; what can be hit
-		// does not go below the minimum (WCAG 2.2, 2.5.8). The harness
-		// renders at 50%, so those 24 screen pixels are 48 image units.
-
 		expect(shape(container)).toHaveAttribute('width', '8');
 		expect(hit(container)).toHaveAttribute('width', '48');
 		expect(hit(container)).toHaveAttribute('height', '48');
@@ -1175,9 +1082,6 @@ describe('two editors on one page', () => {
 			within(second).getByRole('button', {name: 'add-shape'})
 		);
 
-		// The shape menu portals to the body; the one open right now is
-		// the second editor's.
-
 		fireEvent.click(
 			within(screen.getByRole('grid', {name: 'add-shape'})).getByRole(
 				'button',
@@ -1204,14 +1108,8 @@ describe('groups and the clipboard', () => {
 
 		const hits = container.querySelectorAll('.overlay-hit');
 
-		// Select the circle plainly, then Shift+click the rectangle: the
-		// pair is seeded from the standing selection.
-
 		fireEvent.focus(hits[1]);
 		fireEvent.pointerDown(hits[0], {shiftKey: true});
-
-		// Both wear a ring, and the manipulation handles are gone: a
-		// group grants movement and nothing else.
 
 		expect(
 			container.querySelectorAll('.selection-ring, .focus-ring-outer')
@@ -1226,8 +1124,6 @@ describe('groups and the clipboard', () => {
 
 		const rectangleX = Number(shape(container).getAttribute('x'));
 		const circleX = Number(circle().getAttribute('cx'));
-
-		// An arrow on one member moves both, and a drag on one does too.
 
 		fireEvent.keyDown(hits[1], {key: 'ArrowRight', shiftKey: true});
 		fireEvent.keyUp(hits[1], {key: 'ArrowRight', shiftKey: true});
@@ -1247,18 +1143,12 @@ describe('groups and the clipboard', () => {
 		);
 		expect(Number(circle().getAttribute('cx'))).toBe(circleX + 30);
 
-		// The whole formation is one undo step.
-
 		fireEvent.click(screen.getByRole('button', {name: 'undo'}));
 
 		expect(Number(shape(container).getAttribute('x'))).toBe(
 			rectangleX + 10
 		);
 		expect(Number(circle().getAttribute('cx'))).toBe(circleX + 10);
-
-		// While the group lives, the properties yield to a note: editing
-		// "the selected layer" beside two rings would change one and read
-		// as a lie.
 
 		expect(screen.queryByText('selected-layer-x')).toBeNull();
 		expect(screen.getByRole('status')).toHaveTextContent(
@@ -1267,9 +1157,6 @@ describe('groups and the clipboard', () => {
 		expect(
 			document.querySelectorAll('.editor-layer-item-grouped')
 		).toHaveLength(2);
-
-		// A plain click on a member keeps the group (that is how it is
-		// dragged); a plain click on another annotation dissolves it.
 
 		fireEvent.pointerDown(hits[0]);
 		fireEvent.pointerUp(hits[0]);

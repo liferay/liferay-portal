@@ -564,8 +564,6 @@ describe('overlays', () => {
 
 		expect(turned.rotation).toBe(90);
 
-		// The caption's center follows the pixel it was written over.
-
 		const bounds = rotatedSize(state.present);
 
 		expect(bounds).toEqual({height: WIDTH, width: HEIGHT});

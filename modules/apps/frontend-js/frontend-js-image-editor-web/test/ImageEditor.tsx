@@ -110,11 +110,6 @@ describe('the host configuration', () => {
 });
 
 describe('the annotations', () => {
-
-	// Adding a shape hands the focus to it on the next frame, so the
-	// stage has to settle before the next thing is done to it, as it does
-	// for a person.
-
 	async function addRectangle() {
 		fireEvent.click(screen.getByRole('button', {name: 'add-shape'}));
 
@@ -158,8 +153,6 @@ describe('the annotations', () => {
 
 		await waitFor(() => expect(hits[1]).toHaveFocus());
 
-		// The copy is selected and is what the properties show.
-
 		expect(
 			screen.getAllByRole('button', {name: 'rectangle', pressed: true})
 		).toHaveLength(1);
@@ -175,9 +168,6 @@ describe('the annotations', () => {
 		);
 
 		await addRectangle();
-
-		// The crop panel has a lock of its own; the layer's lives in the
-		// properties.
 
 		const lock = () =>
 			within(
