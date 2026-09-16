@@ -12,8 +12,8 @@ import React, {useEffect, useState} from 'react';
 import AssetBulkActionTaskService from '../common/services/AssetBulkActionTaskService';
 
 interface ModalBulkDeleteObjectEntriesProps {
-	namespace: string;
 	objectDefinition: ObjectDefinition;
+	portletNamespace: string;
 }
 
 interface ModalBulkDeleteObjectEntriesState {
@@ -81,8 +81,8 @@ function getBulkDeleteMessage(
 }
 
 export default function ModalBulkDeleteObjectEntries({
-	namespace,
 	objectDefinition,
+	portletNamespace,
 }: ModalBulkDeleteObjectEntriesProps) {
 	const [deleteButtonDisabled, setDeleteButtonDisabled] =
 		useState<boolean>(false);
@@ -94,7 +94,9 @@ export default function ModalBulkDeleteObjectEntries({
 			visible: false,
 		});
 
-	const bulkStatusComponent = Liferay.component(`${namespace}BulkStatus`);
+	const bulkStatusComponent = Liferay.component(
+		`${portletNamespace}BulkStatus`
+	);
 
 	const isSelectAll =
 		!!modalDeleteObjectsEntriesState.selectedData?.selectAll;
@@ -193,14 +195,17 @@ export default function ModalBulkDeleteObjectEntries({
 			});
 		};
 
-		Liferay.on('openModalBulkDeleteObjectEntries', openModal);
+		Liferay.on(
+			`${portletNamespace}openModalBulkDeleteObjectEntries`,
+			openModal
+		);
 
 		return () =>
 			Liferay.detach(
-				'openModalBulkDeleteObjectEntries',
+				`${portletNamespace}openModalBulkDeleteObjectEntries`,
 				openModal as () => void
 			);
-	}, []);
+	}, [portletNamespace]);
 
 	return modalDeleteObjectsEntriesState.visible ? (
 		<ClayModal

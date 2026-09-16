@@ -74,9 +74,9 @@ String portletNamespace = liferayPortletResponse.getNamespace();
 				module="{ModalBulkDeleteObjectEntries} from object-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
-						"namespace", portletNamespace
-					).put(
 						"objectDefinition", objectDefinition
+					).put(
+						"portletNamespace", portletNamespace
 					).build()
 				%>'
 			/>

@@ -70,9 +70,12 @@ export default function ViewObjectEntriesFDSPropsTransformer({
 			selectedData: any;
 		}) => {
 			if (action?.data?.id === 'delete') {
-				Liferay.fire('openModalBulkDeleteObjectEntries', {
-					selectedData,
-				});
+				Liferay.fire(
+					`${otherProps.namespace}openModalBulkDeleteObjectEntries`,
+					{
+						selectedData,
+					}
+				);
 			}
 		},
 	};
