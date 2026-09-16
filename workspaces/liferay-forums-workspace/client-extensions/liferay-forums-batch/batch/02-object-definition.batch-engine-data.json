@@ -1,0 +1,324 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"onErrorFail": "false",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": true,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_BAN",
+			"label": {
+				"en_US": "C2M0 Ban"
+			},
+			"modifiable": true,
+			"name": "C2M0Ban",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Bans"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": true,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": true,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_CATEGORY",
+			"label": {
+				"en_US": "C2M0 Category"
+			},
+			"modifiable": true,
+			"name": "C2M0Category",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Categories"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": true,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": true,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_MESSAGE",
+			"label": {
+				"en_US": "C2M0 Message"
+			},
+			"modifiable": true,
+			"name": "C2M0Message",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Messages"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"active": true,
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"externalReferenceCode": "C2M0_MESSAGE_ATTACHMENT",
+			"label": {
+				"en_US": "C2M0 Message Attachment"
+			},
+			"name": "C2M0MessageAttachment",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"pluralLabel": {
+				"en_US": "C2M0 Message Attachments"
+			},
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_SUBSCRIPTION",
+			"label": {
+				"en_US": "C2M0 Subscription"
+			},
+			"modifiable": true,
+			"name": "C2M0Subscription",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Subscriptions"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": true,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_SUSPICIOUS_ACTIVITY",
+			"label": {
+				"en_US": "C2M0 Suspicious Activity"
+			},
+			"modifiable": true,
+			"name": "C2M0SuspiciousActivity",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Suspicious Activities"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": true,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": true,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_THREAD",
+			"label": {
+				"en_US": "C2M0 Thread"
+			},
+			"modifiable": true,
+			"name": "C2M0Thread",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Threads"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_USER",
+			"label": {
+				"en_US": "C2M0 User"
+			},
+			"modifiable": true,
+			"name": "C2M0User",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Users"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
+			"accountEntryRestricted": false,
+			"accountEntryRestrictedObjectFieldName": "",
+			"active": true,
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableFormContainer": true,
+			"enableFriendlyURLCustomization": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"enableObjectEntryDraft": false,
+			"enableObjectEntryHistory": false,
+			"enableObjectEntrySchedule": false,
+			"enableObjectEntrySubscription": false,
+			"enableObjectEntryVersioning": false,
+			"externalReferenceCode": "C2M0_VOTE",
+			"label": {
+				"en_US": "C2M0 Vote"
+			},
+			"modifiable": true,
+			"name": "C2M0Vote",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"panelCategoryKey": "",
+			"parameterRequired": false,
+			"pluralLabel": {
+				"en_US": "C2M0 Votes"
+			},
+			"portlet": false,
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved"
+			},
+			"system": false,
+			"titleObjectFieldName": "externalReferenceCode"
+		}
+	]
+}
