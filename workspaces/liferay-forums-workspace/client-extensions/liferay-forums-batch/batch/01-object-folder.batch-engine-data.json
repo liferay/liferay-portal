@@ -1,0 +1,21 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectFolder",
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"onErrorFail": "false",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"externalReferenceCode": "C2M0_FORUMS",
+			"label": {
+				"en_US": "C2M0 Forums"
+			},
+			"name": "C2M0Forums"
+		}
+	]
+}
