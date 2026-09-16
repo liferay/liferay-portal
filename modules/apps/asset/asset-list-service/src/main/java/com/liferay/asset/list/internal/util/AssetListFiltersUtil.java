@@ -134,6 +134,10 @@ public class AssetListFiltersUtil {
 		return _commonFieldTypesMap.get(propertyName);
 	}
 
+	private static boolean _isAllQuantifier(JSONObject jsonObject) {
+		return Objects.equals(jsonObject.getString("quantifier"), "all");
+	}
+
 	private static boolean _isCommonFieldRow(JSONObject jsonObject) {
 		if ((jsonObject.getLong("classNameId") <= 0) &&
 			(jsonObject.getLong("classTypeId") <= 0)) {
@@ -247,7 +251,7 @@ public class AssetListFiltersUtil {
 		}
 
 		if (localized) {
-			return new MatchQuery(field, value);
+			return _toMatchQuery(field, jsonObject, value);
 		}
 
 		if (Objects.equals(field, Field.USER_NAME)) {
@@ -324,7 +328,7 @@ public class AssetListFiltersUtil {
 			return null;
 		}
 
-		if (Objects.equals(jsonObject.getString("quantifier"), "all")) {
+		if (_isAllQuantifier(jsonObject)) {
 			BooleanFilter booleanFilter = new BooleanFilter();
 
 			for (String value : values) {
@@ -340,6 +344,35 @@ public class AssetListFiltersUtil {
 		termsFilter.addValues(values.toArray(new String[0]));
 
 		return termsFilter;
+	}
+
+	private static Query _toMatchQuery(
+		String field, JSONObject jsonObject, String value) {
+
+		if (!_isAllQuantifier(jsonObject)) {
+			return new MatchQuery(field, value);
+		}
+
+		String[] terms = StringUtil.split(value, CharPool.SPACE);
+
+		if (terms.length == 0) {
+			return null;
+		}
+
+		if (terms.length == 1) {
+			return new MatchQuery(field, value);
+		}
+
+		BooleanQuery booleanQuery = new BooleanQuery();
+
+		for (String term : terms) {
+			if (Validator.isNotNull(term)) {
+				booleanQuery.add(
+					new MatchQuery(field, term), BooleanClauseOccur.MUST);
+			}
+		}
+
+		return booleanQuery;
 	}
 
 	private static NestedQuery _toNestedQuery(
@@ -570,7 +603,7 @@ public class AssetListFiltersUtil {
 			return new TermQuery(subfield, value);
 		}
 
-		return new MatchQuery(subfield, value);
+		return _toMatchQuery(subfield, filterJSONObject, value);
 	}
 
 	private static final String _TYPE_DATE = "date";
