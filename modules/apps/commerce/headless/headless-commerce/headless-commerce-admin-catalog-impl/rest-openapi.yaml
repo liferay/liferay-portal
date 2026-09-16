@@ -995,9 +995,14 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                imageExternalReferenceCode:
+                    description:
+                        External reference code of the attachment that holds the diagram image. Preferred over `imageId` on import, because it survives a transfer between instances; the identifier is only consulted when this is omitted.
+                    example: exampleERC
+                    type: string
                 imageId:
                     description:
-                        Identifier of the attachment that holds the diagram image. Populated from the uploaded `attachmentBase64`; can also be set explicitly to point at an existing diagram-type attachment.
+                        Identifier of the attachment that holds the diagram image. Populated from the uploaded `attachmentBase64`; can also be set explicitly to point at an existing diagram-type attachment. Only consulted when `imageExternalReferenceCode` is omitted.
                     example: 33132
                     format: int64
                     minimum: 0
@@ -1820,6 +1825,12 @@ components:
                     type: array
                 productConfiguration:
                     $ref: "#/components/schemas/ProductConfiguration"
+                productGroups:
+                    description:
+                        Product groups the product belongs to. Each entry carries the external reference code of the product group, so the membership survives a transfer between instances.
+                    items:
+                        $ref: "#/components/schemas/ProductProductGroup"
+                    type: array
                 productId:
                     description:
                         Identifier of the parent product envelope; stable across product revisions; read-only; filterable and sortable via the OData query parameter.
@@ -2802,6 +2813,36 @@ components:
             required:
                 -   key
                 -   name
+            type: object
+        ProductProductGroup:
+            description:
+                Association between a product and a product group; admin catalog write view used to manage which product groups a product belongs to. The product group itself is addressed by its external reference code.
+            properties:
+                externalReferenceCode:
+                    description:
+                        External reference code of the product group; the key the import resolves the membership by.
+                    example: AB-34098-789-N
+                    type: string
+                id:
+                    description:
+                        Primary key of the row that links the product to the product group.
+                    example: 31130
+                    format: int64
+                    minimum: 0
+                    type: integer
+                productGroupId:
+                    description:
+                        Identifier of the product group; consulted only when the external reference code is omitted.
+                    example: 31130
+                    format: int64
+                    minimum: 0
+                    type: integer
+                title:
+                    description:
+                        Title of the product group. Read-only; populated from the linked product group.
+                    example: Title
+                    readOnly: true
+                    type: string
             type: object
         ProductShippingConfiguration:
             description:
@@ -18447,6 +18488,63 @@ paths:
             summary: Gets a list of channel related to a product.
             tags:
                 -   ProductChannel
+    /products/{id}/product-groups:
+        get:
+            description:
+                Lists the product groups the product identified by product ID belongs to. Validation -- Returns empty page when product ID not found (no exception).
+            operationId: getProductIdProductGroupsPage
+            parameters:
+                -   $ref: "#/components/parameters/idPathParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductProductGroup"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductProductGroup"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of product groups related to a product.
+            tags:
+                -   ProductProductGroup
     /products/{id}/product-virtual-settings:
         get:
             description:

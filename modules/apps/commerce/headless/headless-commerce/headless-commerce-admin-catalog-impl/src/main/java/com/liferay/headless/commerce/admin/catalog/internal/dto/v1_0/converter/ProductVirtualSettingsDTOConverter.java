@@ -14,9 +14,11 @@ import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstant
 import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettings;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettingsFileEntry;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Status;
+import com.liferay.headless.commerce.admin.catalog.internal.util.FileEntryUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -97,6 +99,25 @@ public class ProductVirtualSettingsDTOConverter
 							}
 						};
 					});
+				setAttachment(
+					() -> {
+						if (cpdVirtualSettingFileEntries.isEmpty()) {
+							return null;
+						}
+
+						CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
+							cpdVirtualSettingFileEntries.get(0);
+
+						long fileEntryId =
+							cpdVirtualSettingFileEntry.getFileEntryId();
+
+						if (fileEntryId == 0) {
+							return null;
+						}
+
+						return FileEntryUtil.getBase64EncodedContent(
+							_dlAppLocalService.getFileEntry(fileEntryId));
+					});
 				setDuration(
 					() -> TimeUnit.MILLISECONDS.toDays(
 						cpDefinitionVirtualSetting.getDuration()));
@@ -107,6 +128,17 @@ public class ProductVirtualSettingsDTOConverter
 				setProductVirtualSettingsFileEntries(
 					() -> _toProductVirtualSettingsFileEntries(
 						cpdVirtualSettingFileEntries, cpDefinition));
+				setSampleAttachment(
+					() -> {
+						FileEntry fileEntry =
+							cpDefinitionVirtualSetting.getSampleFileEntry();
+
+						if (fileEntry == null) {
+							return null;
+						}
+
+						return FileEntryUtil.getBase64EncodedContent(fileEntry);
+					});
 				setSampleSrc(
 					() -> {
 						FileEntry fileEntry =
@@ -230,6 +262,19 @@ public class ProductVirtualSettingsDTOConverter
 			cpdVirtualSettingFileEntry ->
 				new ProductVirtualSettingsFileEntry() {
 					{
+						setAttachment(
+							() -> {
+								long fileEntryId =
+									cpdVirtualSettingFileEntry.getFileEntryId();
+
+								if (fileEntryId == 0) {
+									return null;
+								}
+
+								return FileEntryUtil.getBase64EncodedContent(
+									_dlAppLocalService.getFileEntry(
+										fileEntryId));
+							});
 						setSrc(
 							() -> {
 								long fileEntryId =
@@ -281,6 +326,9 @@ public class ProductVirtualSettingsDTOConverter
 	@Reference
 	private CPDefinitionVirtualSettingService
 		_cpDefinitionVirtualSettingService;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

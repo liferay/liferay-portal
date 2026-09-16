@@ -10,6 +10,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPInstanceService;
+import com.liferay.commerce.shop.by.diagram.constants.CSDiagramCPTypeConstants;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramPin;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramEntryService;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -108,7 +110,8 @@ public class PinResourceImpl extends BasePinResourceImpl {
 	@NestedField(parentClass = Product.class, value = "pins")
 	@Override
 	public Page<Pin> getProductIdPinsPage(
-			Long productId, String search, Pagination pagination, Sort[] sorts)
+			@NestedFieldId(value = "productId") Long productId, String search,
+			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		CPDefinition cpDefinition =
@@ -118,6 +121,12 @@ public class PinResourceImpl extends BasePinResourceImpl {
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + productId);
+		}
+
+		if (!CSDiagramCPTypeConstants.NAME.equals(
+				cpDefinition.getProductTypeName())) {
+
+			return null;
 		}
 
 		return Page.of(
@@ -197,7 +206,7 @@ public class PinResourceImpl extends BasePinResourceImpl {
 				skuId = cpInstance.getCPInstanceId();
 			}
 
-			long productId = MappedProductUtil.getCProductId(
+			long cProductId = MappedProductUtil.getCProductId(
 				contextCompany.getCompanyId(), _cpDefinitionService, groupId,
 				mappedProduct);
 
@@ -215,7 +224,7 @@ public class PinResourceImpl extends BasePinResourceImpl {
 
 			if (csDiagramEntry == null) {
 				_csDiagramEntryService.addCSDiagramEntry(
-					cpDefinitionId, skuId, productId,
+					cpDefinitionId, skuId, cProductId,
 					MappedProductUtil.isDiagram(csDiagramEntry, mappedProduct),
 					GetterUtil.getInteger(mappedProduct.getQuantity()),
 					GetterUtil.getString(mappedProduct.getSequence()),
@@ -224,7 +233,7 @@ public class PinResourceImpl extends BasePinResourceImpl {
 			}
 			else {
 				_csDiagramEntryService.updateCSDiagramEntry(
-					csDiagramEntry.getCSDiagramEntryId(), skuId, productId,
+					csDiagramEntry.getCSDiagramEntryId(), skuId, cProductId,
 					MappedProductUtil.isDiagram(csDiagramEntry, mappedProduct),
 					GetterUtil.getInteger(mappedProduct.getQuantity()),
 					GetterUtil.getString(mappedProduct.getSequence()),

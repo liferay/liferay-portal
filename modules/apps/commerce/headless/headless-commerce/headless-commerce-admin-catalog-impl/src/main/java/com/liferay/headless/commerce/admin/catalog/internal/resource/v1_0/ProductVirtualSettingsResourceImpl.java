@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettings;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductVirtualSettingsResource;
@@ -64,6 +65,12 @@ public class ProductVirtualSettingsResourceImpl
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + id);
+		}
+
+		if (!VirtualCPTypeConstants.NAME.equals(
+				cpDefinition.getProductTypeName())) {
+
+			return null;
 		}
 
 		return _toProductVirtualSettings(cpDefinition.getCPDefinitionId());

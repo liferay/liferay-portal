@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramSetting;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramSettingService;
 import com.liferay.document.library.util.DLURLHelperUtil;
@@ -53,6 +54,21 @@ public class DiagramDTOConverter
 			{
 				setColor(csDiagramSetting::getColor);
 				setId(csDiagramSetting::getCSDiagramSettingId);
+				setImageExternalReferenceCode(
+					() -> {
+						CPAttachmentFileEntry cpAttachmentFileEntry =
+							_cpAttachmentFileEntryLocalService.
+								fetchCPAttachmentFileEntry(
+									csDiagramSetting.
+										getCPAttachmentFileEntryId());
+
+						if (cpAttachmentFileEntry == null) {
+							return null;
+						}
+
+						return cpAttachmentFileEntry.getExternalReferenceCode();
+					});
+				setImageId(csDiagramSetting::getCPAttachmentFileEntryId);
 				setImageURL(
 					() -> {
 						CPAttachmentFileEntry cpAttachmentFileEntry =
@@ -76,6 +92,10 @@ public class DiagramDTOConverter
 			}
 		};
 	}
+
+	@Reference
+	private CPAttachmentFileEntryLocalService
+		_cpAttachmentFileEntryLocalService;
 
 	@Reference
 	private CSDiagramSettingService _csDiagramSettingService;

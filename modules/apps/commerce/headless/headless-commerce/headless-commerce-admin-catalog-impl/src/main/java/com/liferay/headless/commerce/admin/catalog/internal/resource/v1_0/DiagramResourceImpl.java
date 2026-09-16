@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.upload.UniqueFileNameProvider;
 
 import org.osgi.service.component.annotations.Component;
@@ -67,7 +68,10 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 
 	@NestedField(parentClass = Product.class, value = "diagram")
 	@Override
-	public Diagram getProductIdDiagram(Long productId) throws Exception {
+	public Diagram getProductIdDiagram(
+			@NestedFieldId(value = "productId") Long productId)
+		throws Exception {
+
 		CPDefinition cpDefinition =
 			_cpDefinitionService.fetchCPDefinitionByCProductId(
 				productId, false);
@@ -78,8 +82,12 @@ public class DiagramResourceImpl extends BaseDiagramResourceImpl {
 		}
 
 		CSDiagramSetting csDiagramSetting =
-			_csDiagramSettingService.getCSDiagramSettingByCPDefinitionId(
+			_csDiagramSettingService.fetchCSDiagramSettingByCPDefinitionId(
 				cpDefinition.getCPDefinitionId());
+
+		if (csDiagramSetting == null) {
+			return null;
+		}
 
 		return _toDiagram(csDiagramSetting.getCSDiagramSettingId());
 	}

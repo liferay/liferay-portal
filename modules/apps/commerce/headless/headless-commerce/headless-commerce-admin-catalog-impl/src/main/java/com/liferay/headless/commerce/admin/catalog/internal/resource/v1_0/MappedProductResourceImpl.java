@@ -10,6 +10,7 @@ import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPInstanceService;
+import com.liferay.commerce.shop.by.diagram.constants.CSDiagramCPTypeConstants;
 import com.liferay.commerce.shop.by.diagram.model.CSDiagramEntry;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramEntryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.MappedProduct;
@@ -30,6 +31,7 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
+import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.SearchUtil;
@@ -131,7 +133,8 @@ public class MappedProductResourceImpl extends BaseMappedProductResourceImpl {
 	@NestedField(parentClass = Product.class, value = "mappedProducts")
 	@Override
 	public Page<MappedProduct> getProductIdMappedProductsPage(
-			Long productId, String search, Pagination pagination, Sort[] sorts)
+			@NestedFieldId(value = "productId") Long productId, String search,
+			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		CPDefinition cpDefinition =
@@ -141,6 +144,12 @@ public class MappedProductResourceImpl extends BaseMappedProductResourceImpl {
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + productId);
+		}
+
+		if (!CSDiagramCPTypeConstants.NAME.equals(
+				cpDefinition.getProductTypeName())) {
+
+			return null;
 		}
 
 		return _getMappedProductsPage(
