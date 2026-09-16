@@ -235,9 +235,9 @@ public class SegmentsEntryLocalServiceTest {
 
 	@Test
 	public void testGetSegmentsEntries() throws Exception {
+		_testGetSegmentsEntriesBySourceWithType();
 		_testGetSegmentsEntriesCountWithIncludeAncestorSegmentsEntries();
 		_testGetSegmentsEntriesWithIncludeAncestorSegmentsEntries();
-		_testGetSegmentsEntriesBySourceWithType();
 	}
 
 	@Test
