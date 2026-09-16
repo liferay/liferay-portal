@@ -54,9 +54,12 @@ export default function ViewObjectEntriesFDSPropsTransformer({
 			itemData: any;
 		}) {
 			if (action.data.id === 'deleteObjectEntry') {
-				Liferay.fire('openModalDeleteObjectEntry', {
-					objectEntry: itemData,
-				});
+				Liferay.fire(
+					`${otherProps.namespace}openModalDeleteObjectEntry`,
+					{
+						objectEntry: itemData,
+					}
+				);
 			}
 		},
 		onBulkActionItemClick: async ({

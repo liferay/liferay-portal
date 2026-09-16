@@ -10,6 +10,7 @@ import React, {useEffect, useState} from 'react';
 
 interface ModalDeleteObjectEntryProps {
 	byExternalReferenceCodePath: string;
+	portletNamespace: string;
 }
 
 interface ModalDeleteObjectEntryState {
@@ -20,6 +21,7 @@ interface ModalDeleteObjectEntryState {
 
 export default function ModalDeleteObjectEntry({
 	byExternalReferenceCodePath,
+	portletNamespace,
 }: ModalDeleteObjectEntryProps) {
 	const [modalDeleteObjectEntryState, setModalDeleteObjectEntryState] =
 		useState<ModalDeleteObjectEntryState>({
@@ -76,14 +78,14 @@ export default function ModalDeleteObjectEntry({
 			}));
 		};
 
-		Liferay.on('openModalDeleteObjectEntry', openModal);
+		Liferay.on(`${portletNamespace}openModalDeleteObjectEntry`, openModal);
 
 		return () =>
 			Liferay.detach(
-				'openModalDeleteObjectEntry',
+				`${portletNamespace}openModalDeleteObjectEntry`,
 				openModal as () => void
 			);
-	}, []);
+	}, [portletNamespace]);
 
 	return modalDeleteObjectEntryState.visible ? (
 		<ClayModal

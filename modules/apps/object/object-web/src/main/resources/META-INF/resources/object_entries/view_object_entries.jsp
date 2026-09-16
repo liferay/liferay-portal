@@ -11,6 +11,8 @@
 ViewObjectEntriesDisplayContext viewObjectEntriesDisplayContext = (ViewObjectEntriesDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDefinition();
+
+String portletNamespace = liferayPortletResponse.getNamespace();
 %>
 
 <c:choose>
@@ -25,7 +27,7 @@ ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDef
 				module="{BulkStatus} from object-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
-						"bulkComponentId", liferayPortletResponse.getNamespace() + "BulkStatus"
+						"bulkComponentId", portletNamespace + "BulkStatus"
 					).put(
 						"bulkInProgress", bulkSelectionRunner.isBusy(user)
 					).put(
@@ -45,7 +47,7 @@ ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDef
 			formName="fm"
 			id="<%= viewObjectEntriesDisplayContext.getFDSId() %>"
 			itemsPerPage="<%= 20 %>"
-			namespace="<%= liferayPortletResponse.getNamespace() %>"
+			namespace="<%= portletNamespace %>"
 			pageNumber="<%= 1 %>"
 			portletURL="<%= liferayPortletResponse.createRenderURL() %>"
 			propsTransformer="{ViewObjectEntriesFDSPropsTransformer} from object-web"
@@ -60,6 +62,8 @@ ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDef
 				props='<%=
 					HashMapBuilder.<String, Object>put(
 						"byExternalReferenceCodePath", viewObjectEntriesDisplayContext.getByExternalReferenceCodePath()
+					).put(
+						"portletNamespace", portletNamespace
 					).build()
 				%>'
 			/>
@@ -70,7 +74,7 @@ ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDef
 				module="{ModalBulkDeleteObjectEntries} from object-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
-						"namespace", liferayPortletResponse.getNamespace()
+						"namespace", portletNamespace
 					).put(
 						"objectDefinition", objectDefinition
 					).build()
