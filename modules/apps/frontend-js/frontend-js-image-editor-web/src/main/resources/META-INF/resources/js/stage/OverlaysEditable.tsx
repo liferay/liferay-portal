@@ -58,26 +58,38 @@ function toStageDelta(
 
 const MINIMUM_TARGET = 24;
 
-const STRETCH_EDGES = [
-	{cursor: 'ns-resize', name: 'n', x: 0.5, y: 0},
-	{cursor: 'ew-resize', name: 'e', x: 1, y: 0.5},
-	{cursor: 'ns-resize', name: 's', x: 0.5, y: 1},
-	{cursor: 'ew-resize', name: 'w', x: 0, y: 0.5},
-] as const;
+type StretchEdge = 'e' | 'n' | 's' | 'w';
 
-const ARROW_ENDS = ['tail', 'tip'] as const;
+interface ResizeHandle {
+	cursor: string;
 
-const RESIZE_CORNERS = [
+	edge?: StretchEdge;
+
+	name: string;
+	x: number;
+	y: number;
+}
+
+const RESIZE_CORNERS: ResizeHandle[] = [
 	{cursor: 'nwse-resize', name: 'nw', x: 0, y: 0},
 	{cursor: 'nesw-resize', name: 'ne', x: 1, y: 0},
 	{cursor: 'nwse-resize', name: 'se', x: 1, y: 1},
 	{cursor: 'nesw-resize', name: 'sw', x: 0, y: 1},
 ];
 
+const STRETCH_EDGES: ResizeHandle[] = [
+	{cursor: 'ns-resize', edge: 'n', name: 'n', x: 0.5, y: 0},
+	{cursor: 'ew-resize', edge: 'e', name: 'e', x: 1, y: 0.5},
+	{cursor: 'ns-resize', edge: 's', name: 's', x: 0.5, y: 1},
+	{cursor: 'ew-resize', edge: 'w', name: 'w', x: 0, y: 0.5},
+];
+
+const ARROW_ENDS = ['tail', 'tip'] as const;
+
 interface ManipGesture {
 	centerX: number;
 	centerY: number;
-	edge?: 'e' | 'n' | 's' | 'w';
+	edge?: StretchEdge;
 
 	end?: 'tail' | 'tip';
 
@@ -528,11 +540,11 @@ export function OverlaysEditable({
 	const startManipulation =
 		(
 			overlay: Overlay,
-			kind: 'endpoint' | 'resize' | 'rotate',
+			kind: ManipGesture['kind'],
 			handleX: number,
 			handleY: number,
-			edge?: 'e' | 'n' | 's' | 'w',
-			end?: 'tail' | 'tip'
+			edge?: StretchEdge,
+			end?: ManipGesture['end']
 		) =>
 		(event: React.PointerEvent<SVGElement>) => {
 			event.stopPropagation();
@@ -781,6 +793,8 @@ export function OverlaysEditable({
 		strokeWidth: 1.5 / zoom,
 	};
 
+	const handleSize = 10 / zoom;
+
 	return (
 		<g>
 			<desc id={eid('overlay-instructions')}>
@@ -919,76 +933,54 @@ export function OverlaysEditable({
 										})
 									) : (
 										<>
-											{RESIZE_CORNERS.map((corner) => {
-												const handleX =
-													bounds.x +
-													corner.x * bounds.width;
-												const handleY =
-													bounds.y +
-													corner.y * bounds.height;
-												const size = 10 / zoom;
-
-												return (
-													<rect
-														{...handleProps}
-														className="object-handle"
-														height={size}
-														key={corner.name}
-														onPointerDown={startManipulation(
-															overlay,
-															'resize',
-															handleX,
-															handleY
-														)}
-														style={{
-															cursor: corner.cursor,
-														}}
-														width={size}
-														x={handleX - size / 2}
-														y={handleY - size / 2}
-													/>
-												);
-											})}
-
-											{isBoxOverlay(overlay) &&
-												!proportional &&
-												STRETCH_EDGES.map((edge) => {
+											{[
+												...RESIZE_CORNERS,
+												...(isBoxOverlay(overlay) &&
+												!proportional
+													? STRETCH_EDGES
+													: []),
+											].map(
+												({
+													cursor,
+													edge,
+													name,
+													x,
+													y,
+												}) => {
 													const handleX =
 														bounds.x +
-														edge.x * bounds.width;
+														x * bounds.width;
 													const handleY =
 														bounds.y +
-														edge.y * bounds.height;
-													const size = 10 / zoom;
+														y * bounds.height;
 
 													return (
 														<rect
 															{...handleProps}
 															className="object-handle"
-															height={size}
-															key={edge.name}
+															height={handleSize}
+															key={name}
 															onPointerDown={startManipulation(
 																overlay,
 																'resize',
 																handleX,
 																handleY,
-																edge.name
+																edge
 															)}
-															style={{
-																cursor: edge.cursor,
-															}}
-															width={size}
+															style={{cursor}}
+															width={handleSize}
 															x={
 																handleX -
-																size / 2
+																handleSize / 2
 															}
 															y={
 																handleY -
-																size / 2
+																handleSize / 2
 															}
 														/>
 													);
-												})}
+												}
+											)}
 
 											<line
 												className="object-rotate-stick"
