@@ -44,6 +44,7 @@ export interface RuleGroup {
 }
 
 export type Attribute =
+	| 'batch_segments'
 	| 'browser_name'
 	| 'browser_version'
 	| 'cookies'
@@ -54,9 +55,9 @@ export type Attribute =
 	| 'local_date'
 	| 'local_hour'
 	| 'pathname'
+	| 'real_time_segments'
 	| 'referrer'
 	| `request_parameters`
-	| 'segments'
 	| 'timezone'
 	| 'url'
 	| 'user_agent';

@@ -189,7 +189,10 @@ export class Detection {
 		attr: Attribute,
 		cache: Cache
 	): Promise<AttributeValue> {
-		if (attr === 'browser_name') {
+		if (attr === 'batch_segments') {
+			return getSegments(cache);
+		}
+		else if (attr === 'browser_name') {
 			return getBrowserName(cache);
 		}
 		else if (attr === 'browser_version') {
@@ -219,14 +222,14 @@ export class Detection {
 		else if (attr === 'pathname') {
 			return getPathname();
 		}
+		else if (attr === 'real_time_segments') {
+			return getSegments(cache);
+		}
 		else if (attr === 'referrer') {
 			return getReferrer();
 		}
 		else if (attr === 'request_parameters') {
 			return getRequestParameters();
-		}
-		else if (attr === 'segments') {
-			return getSegments(cache);
 		}
 		else if (attr === 'timezone') {
 			return getTimezone();
