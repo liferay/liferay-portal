@@ -35,10 +35,7 @@ public class BaseTopLevelBuildReportTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		Map<String, ?> topLevelBuildReports = ReflectionTestUtil.getFieldValue(
-			BuildReportFactory.class, "_topLevelBuildReports");
-
-		topLevelBuildReports.clear();
+		_clearTopLevelBuildReports();
 
 		ReflectionTestUtil.setFieldValue(
 			TestrayCloudBucket.class, "_hasGoogleApplicationCredentials", null);
@@ -427,6 +424,8 @@ public class BaseTopLevelBuildReportTest
 			"https://test-1-1.liferay.com/job/previous-job/1",
 			String.valueOf(previousTopLevelBuildReport.getBuildURL()));
 
+		_clearTopLevelBuildReports();
+
 		Assert.assertSame(
 			previousTopLevelBuildReport,
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
@@ -668,6 +667,13 @@ public class BaseTopLevelBuildReportTest
 		baseTopLevelBuildReport.initialize(new JSONObject());
 
 		_assertDownstreamBuildReports(baseTopLevelBuildReport, 0);
+	}
+
+	private void _clearTopLevelBuildReports() {
+		Map<String, ?> topLevelBuildReports = ReflectionTestUtil.getFieldValue(
+			BuildReportFactory.class, "_topLevelBuildReports");
+
+		topLevelBuildReports.clear();
 	}
 
 	private List<DownstreamBuildReport> _assertDownstreamBuildReports(
