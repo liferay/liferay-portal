@@ -792,6 +792,48 @@ public class EditAssetListDisplayContext {
 		).buildString();
 	}
 
+	public long[] getNonexistentClassNameIds() {
+		if (_nonexistentClassNameIds != null) {
+			return _nonexistentClassNameIds;
+		}
+
+		_nonexistentClassNameIds = getNonexistentClassNameIds(
+			_unicodeProperties);
+
+		return _nonexistentClassNameIds;
+	}
+
+	public long[] getNonexistentClassNameIds(
+		UnicodeProperties unicodeProperties) {
+
+		boolean anyAssetType = GetterUtil.getBoolean(
+			unicodeProperties.getProperty(
+				"anyAssetType", Boolean.TRUE.toString()));
+		String selectionStyle = unicodeProperties.getProperty(
+			"selectionStyle", "dynamic");
+
+		if (anyAssetType || selectionStyle.equals("manual")) {
+			return new long[0];
+		}
+
+		long[] classNameIds = GetterUtil.getLongValues(
+			StringUtil.split(
+				unicodeProperties.getProperty(
+					"classNameIds", StringPool.BLANK)));
+
+		long defaultClassNameId = GetterUtil.getLong(
+			unicodeProperties.getProperty("anyAssetType", null));
+
+		if (defaultClassNameId != 0) {
+			classNameIds = new long[] {defaultClassNameId};
+		}
+
+		return ArrayUtil.filter(
+			classNameIds,
+			classNameId -> Validator.isNull(
+				PortalUtil.fetchClassName(classNameId)));
+	}
+
 	public String getOrderByColumn1() {
 		if (_orderByColumn1 != null) {
 			return _orderByColumn1;
@@ -1485,6 +1527,7 @@ public class EditAssetListDisplayContext {
 	private final InfoSearchClassMapperRegistry _infoSearchClassMapperRegistry;
 	private final ItemSelector _itemSelector;
 	private Boolean _liveGroup;
+	private long[] _nonexistentClassNameIds;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private String _orderByColumn1;
 	private String _orderByColumn2;
