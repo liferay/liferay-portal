@@ -131,13 +131,14 @@ public class NotificationUtil {
 			serviceBuilderNotificationTemplate =
 				NotificationTemplateLocalServiceUtil.createNotificationTemplate(
 					0L);
+
+			serviceBuilderNotificationTemplate.setUserId(user.getUserId());
+			serviceBuilderNotificationTemplate.setUserName(user.getFullName());
 		}
 
 		serviceBuilderNotificationTemplate.setExternalReferenceCode(
 			notificationTemplate.getExternalReferenceCode());
 		serviceBuilderNotificationTemplate.setCompanyId(user.getCompanyId());
-		serviceBuilderNotificationTemplate.setUserId(user.getUserId());
-		serviceBuilderNotificationTemplate.setUserName(user.getFullName());
 
 		long objectDefinitionId = GetterUtil.getLong(
 			notificationTemplate.getObjectDefinitionId());
