@@ -7,6 +7,7 @@ import {ObjectDefinition} from '../../common/types/ObjectDefinition';
 import {State} from '../contexts/StateContext';
 import {RepeatableGroup, Structure} from '../types/Structure';
 import buildObjectDefinition from './buildObjectDefinition';
+import isRepeatableGroup from './isRepeatableGroup';
 
 export default function buildGroupObjectDefinitions({
 	children,
@@ -20,7 +21,7 @@ export default function buildGroupObjectDefinitions({
 	let definitions: ObjectDefinition[] = [...objectDefinitions];
 
 	for (const child of children.values()) {
-		if (child.type !== 'repeatable-group') {
+		if (!isRepeatableGroup(child)) {
 			continue;
 		}
 

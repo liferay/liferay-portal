@@ -20,6 +20,7 @@ import {
 import {FIELD_TYPE_TO_DB_TYPE, Field, getFieldBusinessType} from './field';
 import isField from './isField';
 import {isFieldTextSearchable} from './isFieldTextSearchable';
+import isRepeatableGroup from './isRepeatableGroup';
 
 export default function buildObjectDefinition({
 	children = new Map(),
@@ -143,9 +144,7 @@ function getReferencedStructures(
 function getRepeatableGroups(
 	children: Structure['children']
 ): RepeatableGroup[] {
-	return Array.from(children.values()).filter(
-		(child) => child.type === 'repeatable-group'
-	) as RepeatableGroup[];
+	return Array.from(children.values()).filter(isRepeatableGroup);
 }
 
 function buildFields(fields: Field[]) {

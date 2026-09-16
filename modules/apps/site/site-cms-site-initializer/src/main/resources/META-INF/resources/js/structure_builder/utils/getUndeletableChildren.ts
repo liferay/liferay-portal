@@ -9,6 +9,7 @@ import findChild from './findChild';
 import isField from './isField';
 import isLocked from './isLocked';
 import isReferenced from './isReferenced';
+import isRepeatableGroup from './isRepeatableGroup';
 
 export type UndeletableReason =
 	| 'is-locked'
@@ -37,7 +38,7 @@ export default function getUndeletableChildren(
 			uuid: item.parent,
 		});
 
-		if (parent?.type === 'repeatable-group') {
+		if (parent && isRepeatableGroup(parent)) {
 			const groupFields = Array.from(parent.children.values()).filter(
 				(child) => isField(child)
 			);
