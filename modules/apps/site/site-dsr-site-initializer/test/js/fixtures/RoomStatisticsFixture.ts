@@ -5,10 +5,17 @@
 
 export const roomStatisticsFixture = {
 	identityActivity: {count: 10},
+	identityActivityToday: {count: 3},
 	identityComment: {count: 5},
+	identityCommentToday: {count: 2},
 	siteVisitorBehavior: {
 		knownVisitors: 20,
 		totalSessionDuration: 45 * 60000,
 		visitors: 100,
+	},
+	siteVisitorBehaviorToday: {
+		knownVisitors: 4,
+		totalSessionDuration: 10 * 60000,
+		visitors: 8,
 	},
 };

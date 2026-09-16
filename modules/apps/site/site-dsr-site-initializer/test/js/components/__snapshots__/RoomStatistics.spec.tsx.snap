@@ -37,7 +37,7 @@ exports[`RoomStatistics matches snapshot 1`] = `
                 <span
                   class="font-weight-semi-bold ml-2 room-statistics-text"
                 >
-                  45 minutes
+                  55 minutes
                 </span>
               </div>
             </div>
@@ -63,7 +63,7 @@ exports[`RoomStatistics matches snapshot 1`] = `
                 <span
                   class="font-weight-semi-bold ml-2 room-statistics-text"
                 >
-                  100
+                  108
                 </span>
               </div>
             </div>
@@ -89,7 +89,7 @@ exports[`RoomStatistics matches snapshot 1`] = `
                 <span
                   class="font-weight-semi-bold ml-2 room-statistics-text"
                 >
-                  20
+                  24
                 </span>
               </div>
             </div>
@@ -115,7 +115,7 @@ exports[`RoomStatistics matches snapshot 1`] = `
                 <span
                   class="font-weight-semi-bold ml-2 room-statistics-text"
                 >
-                  10
+                  13
                 </span>
               </div>
             </div>
@@ -141,7 +141,7 @@ exports[`RoomStatistics matches snapshot 1`] = `
                 <span
                   class="font-weight-semi-bold ml-2 room-statistics-text"
                 >
-                  5
+                  7
                 </span>
               </div>
             </div>
