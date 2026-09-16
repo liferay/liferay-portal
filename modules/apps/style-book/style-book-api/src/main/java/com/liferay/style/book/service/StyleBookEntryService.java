@@ -49,9 +49,9 @@ public interface StyleBookEntryService extends BaseService {
 	 */
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
-			boolean defaultStyleBookEntry, String frontendTokensValues,
-			String name, String styleBookEntryKey, String themeId,
-			ServiceContext serviceContext)
+			boolean defaultStyleBookEntry, String frontendTokenDefinition,
+			String frontendTokensValues, String name, String styleBookEntryKey,
+			String themeId, ServiceContext serviceContext)
 		throws PortalException;
 
 	public StyleBookEntry addStyleBookEntry(
@@ -62,8 +62,9 @@ public interface StyleBookEntryService extends BaseService {
 
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
-			String frontendTokensValues, String name, String styleBookEntryKey,
-			String themeId, ServiceContext serviceContext)
+			String frontendTokenDefinition, String frontendTokensValues,
+			String name, String styleBookEntryKey, String themeId,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public StyleBookEntry copyStyleBookEntry(
@@ -132,7 +133,8 @@ public interface StyleBookEntryService extends BaseService {
 		throws PortalException;
 
 	public StyleBookEntry updateFrontendTokenDefinition(
-			long styleBookEntryId, String frontendTokenDefinition)
+			long styleBookEntryId, String frontendTokenDefinition,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public StyleBookEntry updateFrontendTokensValues(
@@ -148,15 +150,17 @@ public interface StyleBookEntryService extends BaseService {
 		throws PortalException;
 
 	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, boolean defaultStylebookEntry,
-			String frontendTokensValues, String name, String styleBookEntryKey,
-			long previewFileEntryId, ServiceContext serviceContext)
+			long styleBookEntryId, boolean defaultStyleBookEntry,
+			String frontendTokenDefinition, String frontendTokensValues,
+			String name, String styleBookEntryKey, long previewFileEntryId,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokensValues, String name,
+			long styleBookEntryId, String frontendTokenDefinition,
+			String frontendTokensValues, String name,
 			ServiceContext serviceContext)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1251938403
+// LIFERAY-SERVICE-BUILDER-HASH:-930720101
