@@ -5,6 +5,7 @@
 
 import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import LinkRenderer from '../../../../src/main/resources/META-INF/resources/js/props_transformer/cell_renderers/LinkRenderer';
@@ -17,19 +18,23 @@ const STYLE_BOOK_ENTRY_CLASS_NAME =
 const _renderLinkRenderer = ({
 	actions,
 	itemData,
+	onRowClick,
 }: {
 	actions: any;
 	itemData: any;
+	onRowClick?: () => void;
 }) =>
 	render(
-		<LinkRenderer
-			actions={actions as any}
-			itemData={itemData as any}
-			options={{actionId: 'edit'}}
-			stickerClassName=""
-			symbol="book"
-			value={itemData?.name ?? ''}
-		/>
+		<div onClick={onRowClick}>
+			<LinkRenderer
+				actions={actions as any}
+				itemData={itemData as any}
+				options={{actionId: 'edit'}}
+				stickerClassName=""
+				symbol="book"
+				value={itemData?.name ?? ''}
+			/>
+		</div>
 	);
 
 describe('LinkRenderer', () => {
@@ -52,6 +57,29 @@ describe('LinkRenderer', () => {
 			'href',
 			'/fragment'
 		);
+	});
+
+	it('does not select the row when the link is clicked', async () => {
+		const onRowClick = jest.fn();
+
+		_renderLinkRenderer({
+			actions: [
+				{
+					data: {id: 'edit'},
+					href: '/fragment',
+					label: 'edit',
+				},
+			],
+			itemData: {
+				entryClassName: FRAGMENT_COLLECTION_CLASS_NAME,
+				name: 'Set 1',
+			},
+			onRowClick,
+		});
+
+		await userEvent.click(screen.getByRole('link', {name: 'Set 1'}));
+
+		expect(onRowClick).not.toHaveBeenCalled();
 	});
 
 	it('renders plain text when the action visibilityFilter does not match the entryClassName', () => {
