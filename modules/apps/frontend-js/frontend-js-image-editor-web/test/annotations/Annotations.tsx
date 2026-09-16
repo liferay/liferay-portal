@@ -26,6 +26,7 @@ import {
 	ANNOTATE_TOOLS,
 	AnnotateTool,
 } from '../../src/main/resources/META-INF/resources/js/editorConfig';
+import {useOverlaySelection} from '../../src/main/resources/META-INF/resources/js/hooks/useOverlaySelection';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
@@ -67,35 +68,16 @@ function AnnotationHarness({
 }) {
 	const [history, dispatch] = useReducer(editorReducer, undefined, start);
 
-	const [selectedId, setSelectedId] = useState<string | null>(null);
-
-	const [proportional, setProportional] = useState(false);
-
-	const [multiIds, setMultiIds] = useState<string[]>([]);
+	const {
+		layerProportional,
+		multiSelectedIds,
+		selectOverlay,
+		selectedOverlayId,
+		setLayerProportional,
+		toggleMultiSelect,
+	} = useOverlaySelection(() => {});
 
 	const [clipboard, setClipboard] = useState<Overlay | null>(null);
-
-	const selectAsEditor = (id: string | null) => {
-		setSelectedId(id);
-
-		setMultiIds((ids) => (id !== null && ids.includes(id) ? ids : []));
-	};
-
-	const toggleMulti = (id: string) => {
-		const base = multiIds.length
-			? multiIds
-			: selectedId && selectedId !== id
-				? [selectedId]
-				: [];
-
-		const next = multiIds.includes(id)
-			? multiIds.filter((candidate) => candidate !== id)
-			: [...base, id];
-
-		setMultiIds(next.length >= 2 ? next : []);
-
-		setSelectedId(id);
-	};
 
 	return (
 		<ClayIconSpriteContext.Provider value="/icons.svg">
@@ -104,7 +86,7 @@ function AnnotationHarness({
 					aspectLocked={false}
 					dispatch={dispatch}
 					image={IMAGE}
-					multiSelectedIds={multiIds}
+					multiSelectedIds={multiSelectedIds}
 					onAnnounce={() => {}}
 					onCenterCrop={() => {}}
 					onCopyOverlay={(id) =>
@@ -114,7 +96,7 @@ function AnnotationHarness({
 							) ?? null
 						)
 					}
-					onMultiSelectToggle={toggleMulti}
+					onMultiSelectToggle={toggleMultiSelect}
 					onPasteOverlay={() => {
 						if (clipboard) {
 							dispatch({
@@ -128,12 +110,12 @@ function AnnotationHarness({
 							});
 						}
 					}}
-					onSelectOverlay={selectAsEditor}
+					onSelectOverlay={selectOverlay}
 					onZoom={() => {}}
 					onZoomActual={() => {}}
 					onZoomFit={() => {}}
-					proportional={proportional}
-					selectedOverlayId={selectedId}
+					proportional={layerProportional}
+					selectedOverlayId={selectedOverlayId}
 					showCrop
 					showRecenter
 					state={history.present}
@@ -149,13 +131,13 @@ function AnnotationHarness({
 
 				<LayersPanel
 					dispatch={dispatch}
-					multiSelectedIds={multiIds}
+					multiSelectedIds={multiSelectedIds}
 					onAnnounce={() => {}}
-					onProportionalChange={setProportional}
-					onSelect={selectAsEditor}
+					onProportionalChange={setLayerProportional}
+					onSelect={selectOverlay}
 					overlays={history.present.overlays}
-					proportional={proportional}
-					selectedId={selectedId}
+					proportional={layerProportional}
+					selectedId={selectedOverlayId}
 				/>
 
 				<button onClick={() => dispatch({type: 'undo'})}>undo</button>
