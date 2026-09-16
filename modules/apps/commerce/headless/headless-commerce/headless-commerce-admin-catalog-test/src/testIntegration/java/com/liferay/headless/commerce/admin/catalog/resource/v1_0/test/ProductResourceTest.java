@@ -12,6 +12,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.pricing.model.CommercePricingClass;
+import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOptionCategory;
@@ -23,13 +25,17 @@ import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
+import com.liferay.commerce.shop.by.diagram.constants.CSDiagramCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Attachment;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Diagram;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfiguration;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductProductGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductTaxConfiguration;
@@ -144,6 +150,10 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_commerceChannel = CommerceTestUtil.addCommerceChannel(
 			testGroup.getGroupId(), commerceCurrency.getCode());
 
+		_commercePricingClass =
+			_commercePricingClassLocalService.addCommercePricingClass(
+				user.getUserId(), RandomTestUtil.randomLocaleStringMap(), null,
+				serviceContext);
 		_cpOptionCategory = CPTestUtil.addCPOptionCategory(
 			testGroup.getGroupId());
 		_cpSpecificationOption = CPTestUtil.addCPSpecificationOption(
@@ -392,10 +402,12 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductProductShippingConfigurationFromProductConfiguration();
 		_testPostProductProductTaxConfigurationFromProductConfiguration();
 		_testPostProductVirtual();
+		_testPostProductWithDiagramImageExternalReferenceCode();
 		_testPostProductWithLazyReferencingDisabled();
 		_testPostProductWithLazyReferencingEnabled();
 		_testPostProductWithProductAccountGroupExternalReferenceCode();
 		_testPostProductWithProductChannelExternalReferenceCode();
+		_testPostProductWithProductGroupExternalReferenceCode();
 		_testPostProductWithTermsOfUseJournalArticleExternalReferenceCode();
 		_testPostProductWithTermsOfUseJournalArticleGroupExternalReferenceCode();
 		_testPostProductWithWorkflowSingleApprover();
@@ -1224,6 +1236,66 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertNotNull(productVirtualSettingsFileEntry.getSrc());
 	}
 
+	private void _testPostProductWithDiagramImageExternalReferenceCode()
+		throws Exception {
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ProductResource productResource = ProductResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "diagram,images"
+		).build();
+
+		String attachmentExternalReferenceCode = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		Product randomProduct = _randomProductWithSku();
+
+		randomProduct.setDiagram(
+			new Diagram() {
+				{
+					color = StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+					imageExternalReferenceCode =
+						attachmentExternalReferenceCode;
+					radius = RandomTestUtil.randomDouble();
+					type = _DIAGRAM_TYPE_DEFAULT;
+				}
+			});
+		randomProduct.setImages(
+			new Attachment[] {
+				new Attachment() {
+					{
+						attachment = Base64.encode(
+							FileUtil.getBytes(
+								ProductResourceTest.class,
+								"dependencies/image.jpg"));
+						externalReferenceCode = attachmentExternalReferenceCode;
+						neverExpire = true;
+						title = LanguageUtils.getLanguageIdMap(
+							RandomTestUtil.randomLocaleStringMap());
+					}
+				}
+			});
+		randomProduct.setProductType(CSDiagramCPTypeConstants.NAME);
+
+		Product postProduct = productResource.postProduct(randomProduct);
+
+		Diagram diagram = postProduct.getDiagram();
+
+		Attachment attachment = postProduct.getImages()[0];
+
+		Assert.assertEquals(
+			attachmentExternalReferenceCode,
+			diagram.getImageExternalReferenceCode());
+		Assert.assertEquals(attachment.getId(), diagram.getImageId());
+		Assert.assertEquals(_DIAGRAM_TYPE_DEFAULT, diagram.getType());
+	}
+
 	private void _testPostProductWithLazyReferencingDisabled()
 		throws Exception {
 
@@ -1343,6 +1415,45 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			_commerceChannel.getExternalReferenceCode(),
 			productChannel.getExternalReferenceCode());
+	}
+
+	private void _testPostProductWithProductGroupExternalReferenceCode()
+		throws Exception {
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ProductResource productResource = ProductResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "productGroups"
+		).build();
+
+		Product randomProduct = _randomProductWithSku();
+
+		randomProduct.setProductGroups(
+			new ProductProductGroup[] {
+				new ProductProductGroup() {
+					{
+						externalReferenceCode =
+							_commercePricingClass.getExternalReferenceCode();
+					}
+				}
+			});
+
+		Product postProduct = productResource.postProduct(randomProduct);
+
+		ProductProductGroup productProductGroup =
+			postProduct.getProductGroups()[0];
+
+		Assert.assertEquals(
+			_commercePricingClass.getExternalReferenceCode(),
+			productProductGroup.getExternalReferenceCode());
+		Assert.assertEquals(
+			_commercePricingClass.getCommercePricingClassId(),
+			GetterUtil.getLong(productProductGroup.getProductGroupId()));
 	}
 
 	private void _testPostProductWithTermsOfUseJournalArticleExternalReferenceCode()
@@ -1495,6 +1606,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			getProduct.getName());
 	}
 
+	private static final String _DIAGRAM_TYPE_DEFAULT = "diagram.type.default";
+
 	@DeleteAfterTestRun
 	private AccountGroup _accountGroup;
 
@@ -1512,6 +1625,12 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@DeleteAfterTestRun
+	private CommercePricingClass _commercePricingClass;
+
+	@Inject
+	private CommercePricingClassLocalService _commercePricingClassLocalService;
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
