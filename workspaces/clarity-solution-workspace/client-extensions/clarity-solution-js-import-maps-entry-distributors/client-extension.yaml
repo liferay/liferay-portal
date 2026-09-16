@@ -3,6 +3,6 @@ assemble:
         into: static
 clarity-solution-js-import-maps-entry-distributors:
     bareSpecifier: clarity-solution-js-import-maps-entry-distributors
-    name: Clarity Solution JS Import Maps Entry Distributor Details Service
+    name: Clarity Solution JS Import Maps Entry Distributors
     type: jsImportMapsEntry
     url: /index.js
