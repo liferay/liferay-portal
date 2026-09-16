@@ -90,8 +90,11 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 			List<StaticSiteExportResource> staticSiteExportResources =
 				_fetchStaticSiteExportResources(
-					serviceContext.getRequest(), resourceFailures,
-					staticSiteExportLayouts);
+					serviceContext.getRequest(),
+					_portal.getPortalURL(
+						company.getVirtualHostname(),
+						_portal.getPortalServerPort(false), false),
+					resourceFailures, staticSiteExportLayouts);
 
 			StaticSiteExportURLRewriter staticSiteExportURLRewriter =
 				new StaticSiteExportURLRewriter(
@@ -162,7 +165,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	}
 
 	private List<StaticSiteExportResource> _fetchStaticSiteExportResources(
-			HttpServletRequest httpServletRequest,
+			HttpServletRequest httpServletRequest, String portalURL,
 			List<StaticSiteExportReport.Failure> resourceFailures,
 			List<StaticSiteExportLayout> staticSiteExportLayouts)
 		throws Exception {
@@ -189,8 +192,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 		StaticSiteExportResourceFetcher staticSiteExportResourceFetcher =
 			new StaticSiteExportResourceFetcher(
-				_bundleContext, httpServletRequest,
-				new DummyHttpServletResponse(),
+				httpServletRequest, new DummyHttpServletResponse(), portalURL,
 				ServletContextPool.get(_portal.getServletContextName()),
 				new StaticSiteExportBundleResourceResolver(_bundleContext));
 

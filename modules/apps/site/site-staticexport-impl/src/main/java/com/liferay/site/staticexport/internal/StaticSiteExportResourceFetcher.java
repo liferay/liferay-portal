@@ -5,37 +5,31 @@
 
 package com.liferay.site.staticexport.internal;
 
-import com.liferay.petra.function.UnsafeBiConsumer;
+import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
+import com.liferay.portal.kernel.servlet.MetaInfoCacheServletResponse;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 
-import jakarta.servlet.Filter;
 import jakarta.servlet.RequestDispatcher;
-import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-
-import java.util.Collection;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Víctor Galán
@@ -43,14 +37,15 @@ import org.osgi.framework.ServiceReference;
 public class StaticSiteExportResourceFetcher {
 
 	public StaticSiteExportResourceFetcher(
-		BundleContext bundleContext, HttpServletRequest httpServletRequest,
-		HttpServletResponse httpServletResponse, ServletContext servletContext,
+		HttpServletRequest httpServletRequest,
+		HttpServletResponse httpServletResponse, String portalURL,
+		ServletContext servletContext,
 		StaticSiteExportBundleResourceResolver
 			staticSiteExportBundleResourceResolver) {
 
-		_bundleContext = bundleContext;
 		_httpServletRequest = httpServletRequest;
 		_httpServletResponse = httpServletResponse;
+		_portalURL = portalURL;
 		_servletContext = servletContext;
 		_staticSiteExportBundleResourceResolver =
 			staticSiteExportBundleResourceResolver;
@@ -59,115 +54,77 @@ public class StaticSiteExportResourceFetcher {
 	public File fetch(String url) throws Exception {
 		String path = HttpComponentsUtil.getPath(url);
 
-		File file = _staticSiteExportBundleResourceResolver.resolve(path);
+		File file = null;
+
+		String moduleName = _getModuleName(path);
+
+		if (moduleName == null) {
+			file = _getServletFile(path, _servletContext, url);
+		}
+		else {
+			String resourcePath = StringUtil.removeFirst(
+				path, _MODULE_PATH_PREFIX + moduleName);
+
+			file = _staticSiteExportBundleResourceResolver.resolve(
+				moduleName, resourcePath);
+
+			if (file == null) {
+				file = _getServletFile(
+					resourcePath, ServletContextPool.get(moduleName), url);
+			}
+		}
 
 		if (file != null) {
 			return file;
 		}
 
-		file = _include(path, url);
-
-		if (file != null) {
-			return file;
-		}
-
-		file = _service(path, url);
-
-		if (file != null) {
-			return file;
-		}
-
-		return _filter(path, url);
+		return _fetchFile(url);
 	}
 
-	private File _filter(String path, String url) throws Exception {
-		Collection<ServiceReference<Filter>> serviceReferences =
-			_bundleContext.getServiceReferences(
-				Filter.class, "(servlet-filter-name=Frontend Resource Filter)");
+	private File _fetchFile(String url) throws Exception {
+		Http.Options options = new Http.Options();
 
-		for (ServiceReference<Filter> serviceReference : serviceReferences) {
-			Filter filter = _bundleContext.getService(serviceReference);
+		options.setFollowRedirects(true);
+		options.setLocation(_portalURL + url);
 
-			try {
-				return _write(
-					new PathHttpServletRequestWrapper(
-						_getHttpServletRequest(url), path, false),
-					(httpServletRequest, httpServletResponse) ->
-						filter.doFilter(
-							httpServletRequest, httpServletResponse,
-							(servletRequest, servletResponse) -> {
-							}));
-			}
-			finally {
-				_bundleContext.ungetService(serviceReference);
-			}
+		File file = FileUtil.createTempFile();
+
+		try (InputStream inputStream = HttpUtil.URLtoInputStream(options);
+			OutputStream outputStream = new FileOutputStream(file)) {
+
+			StreamUtil.transfer(inputStream, outputStream);
 		}
 
-		return null;
+		Http.Response response = options.getResponse();
+
+		if ((file.length() == 0) ||
+			(response.getResponseCode() != HttpServletResponse.SC_OK)) {
+
+			FileUtil.delete(file);
+
+			return null;
+		}
+
+		return file;
 	}
 
-	private HttpServletRequest _getHttpServletRequest(String url) {
-		String queryString = HttpComponentsUtil.getQueryString(url);
-
-		if (Validator.isNull(queryString)) {
-			return _httpServletRequest;
+	private String _getModuleName(String path) {
+		if (!path.startsWith(_MODULE_PATH_PREFIX)) {
+			return null;
 		}
 
-		return DynamicServletRequest.addQueryString(
-			_httpServletRequest, queryString, false);
+		int index = path.indexOf(CharPool.SLASH, _MODULE_PATH_PREFIX.length());
+
+		if (index == -1) {
+			return null;
+		}
+
+		return path.substring(_MODULE_PATH_PREFIX.length(), index);
 	}
 
-	private int _getMatchLength(String path, Object patterns) {
-		if (patterns instanceof String[]) {
-			int matchLength = -1;
-
-			for (String pattern : (String[])patterns) {
-				matchLength = Math.max(
-					matchLength, _getMatchLength(path, pattern));
-			}
-
-			return matchLength;
-		}
-
-		return _getMatchLength(path, String.valueOf(patterns));
-	}
-
-	private int _getMatchLength(String path, String pattern) {
-		if (pattern.equals(path)) {
-			return Integer.MAX_VALUE;
-		}
-
-		if (!pattern.endsWith("/*")) {
-			return -1;
-		}
-
-		String prefix = pattern.substring(0, pattern.length() - 2);
-
-		if (prefix.isEmpty() || path.equals(prefix) ||
-			!path.startsWith(prefix + StringPool.SLASH)) {
-
-			return -1;
-		}
-
-		return prefix.length();
-	}
-
-	private File _include(String path, String url) throws Exception {
-		ServletContext servletContext = _servletContext;
-
-		if (path.startsWith(_MODULE_PATH_PREFIX)) {
-			int slashIndex = path.indexOf(
-				CharPool.SLASH, _MODULE_PATH_PREFIX.length());
-
-			if (slashIndex == -1) {
-				return null;
-			}
-
-			servletContext = ServletContextPool.get(
-				path.substring(_MODULE_PATH_PREFIX.length(), slashIndex));
-
-			path = path.substring(slashIndex);
-		}
+	private File _getServletFile(
+			String path, ServletContext servletContext, String url)
+		throws Exception {
 
 		if (servletContext == null) {
 			return null;
@@ -181,72 +138,28 @@ public class StaticSiteExportResourceFetcher {
 			return null;
 		}
 
-		return _write(
-			new PathHttpServletRequestWrapper(
-				_getHttpServletRequest(url), path, false),
-			requestDispatcher::include);
-	}
+		HttpServletRequest httpServletRequest = _httpServletRequest;
 
-	private File _service(String path, String url) throws Exception {
-		if (!path.startsWith(_MODULE_PATH_PREFIX)) {
-			return null;
+		String queryString = HttpComponentsUtil.getQueryString(url);
+
+		if (Validator.isNotNull(queryString)) {
+			httpServletRequest = DynamicServletRequest.addQueryString(
+				httpServletRequest, queryString, false);
 		}
-
-		String servletPath = path.substring(_MODULE_PATH_PREFIX.length() - 1);
-
-		int bestMatchLength = -1;
-		ServiceReference<Servlet> bestServiceReference = null;
-
-		Collection<ServiceReference<Servlet>> serviceReferences =
-			_bundleContext.getServiceReferences(
-				Servlet.class, "(osgi.http.whiteboard.servlet.pattern=*)");
-
-		for (ServiceReference<Servlet> serviceReference : serviceReferences) {
-			int matchLength = _getMatchLength(
-				servletPath,
-				serviceReference.getProperty(
-					"osgi.http.whiteboard.servlet.pattern"));
-
-			if (matchLength > bestMatchLength) {
-				bestMatchLength = matchLength;
-				bestServiceReference = serviceReference;
-			}
-		}
-
-		if (bestServiceReference == null) {
-			return null;
-		}
-
-		Servlet servlet = _bundleContext.getService(bestServiceReference);
-
-		try {
-			return _write(
-				new PathHttpServletRequestWrapper(
-					_getHttpServletRequest(url), servletPath, true),
-				servlet::service);
-		}
-		finally {
-			_bundleContext.ungetService(bestServiceReference);
-		}
-	}
-
-	private File _write(
-			HttpServletRequest httpServletRequest,
-			UnsafeBiConsumer<HttpServletRequest, HttpServletResponse, Exception>
-				unsafeBiConsumer)
-		throws Exception {
 
 		File file = FileUtil.createTempFile();
 
-		StatusHttpServletResponseWrapper statusHttpServletResponseWrapper =
-			new StatusHttpServletResponseWrapper(_httpServletResponse);
+		MetaInfoCacheServletResponse metaInfoCacheServletResponse =
+			new MetaInfoCacheServletResponse(_httpServletResponse);
 
 		try (OutputStream outputStream = new FileOutputStream(file)) {
 			PipingServletResponse pipingServletResponse =
 				new PipingServletResponse(
-					statusHttpServletResponseWrapper, outputStream);
+					metaInfoCacheServletResponse, outputStream);
 
-			unsafeBiConsumer.accept(httpServletRequest, pipingServletResponse);
+			requestDispatcher.include(
+				new PathHttpServletRequestWrapper(httpServletRequest, path),
+				pipingServletResponse);
 
 			PrintWriter printWriter = pipingServletResponse.getWriter();
 
@@ -254,7 +167,7 @@ public class StaticSiteExportResourceFetcher {
 		}
 
 		if ((file.length() == 0) ||
-			(statusHttpServletResponseWrapper.getStatus() !=
+			(metaInfoCacheServletResponse.getStatus() !=
 				HttpServletResponse.SC_OK)) {
 
 			FileUtil.delete(file);
@@ -267,9 +180,9 @@ public class StaticSiteExportResourceFetcher {
 
 	private static final String _MODULE_PATH_PREFIX = "/o/";
 
-	private final BundleContext _bundleContext;
 	private final HttpServletRequest _httpServletRequest;
 	private final HttpServletResponse _httpServletResponse;
+	private final String _portalURL;
 	private final ServletContext _servletContext;
 	private final StaticSiteExportBundleResourceResolver
 		_staticSiteExportBundleResourceResolver;
@@ -278,24 +191,11 @@ public class StaticSiteExportResourceFetcher {
 		extends HttpServletRequestWrapper {
 
 		public PathHttpServletRequestWrapper(
-			HttpServletRequest httpServletRequest, String path,
-			boolean themeDisplayHidden) {
+			HttpServletRequest httpServletRequest, String path) {
 
 			super(httpServletRequest);
 
 			_path = path;
-			_themeDisplayHidden = themeDisplayHidden;
-		}
-
-		@Override
-		public Object getAttribute(String name) {
-			if (_themeDisplayHidden &&
-				StringUtil.equals(name, WebKeys.THEME_DISPLAY)) {
-
-				return null;
-			}
-
-			return super.getAttribute(name);
 		}
 
 		@Override
@@ -326,40 +226,6 @@ public class StaticSiteExportResourceFetcher {
 		}
 
 		private final String _path;
-		private final boolean _themeDisplayHidden;
-
-	}
-
-	private static class StatusHttpServletResponseWrapper
-		extends HttpServletResponseWrapper {
-
-		public StatusHttpServletResponseWrapper(
-			HttpServletResponse httpServletResponse) {
-
-			super(httpServletResponse);
-		}
-
-		@Override
-		public int getStatus() {
-			return _status;
-		}
-
-		@Override
-		public void sendError(int status) {
-			_status = status;
-		}
-
-		@Override
-		public void sendError(int status, String message) {
-			_status = status;
-		}
-
-		@Override
-		public void setStatus(int status) {
-			_status = status;
-		}
-
-		private int _status = HttpServletResponse.SC_OK;
 
 	}
 
