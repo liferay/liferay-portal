@@ -345,6 +345,49 @@ public class CPOptionCategoryServiceHttp {
 		}
 	}
 
+	public static com.liferay.commerce.product.model.CPOptionCategory
+			getOrAddEmptyCPOptionCategory(
+				HttpPrincipal httpPrincipal, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPOptionCategoryServiceUtil.class,
+				"getOrAddEmptyCPOptionCategory",
+				_getOrAddEmptyCPOptionCategoryParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.CPOptionCategory)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
 		<com.liferay.commerce.product.model.CPOptionCategory>
 				searchCPOptionCategories(
@@ -356,7 +399,7 @@ public class CPOptionCategoryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionCategoryServiceUtil.class, "searchCPOptionCategories",
-				_searchCPOptionCategoriesParameterTypes7);
+				_searchCPOptionCategoriesParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords, start, end, sort);
@@ -402,7 +445,7 @@ public class CPOptionCategoryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CPOptionCategoryServiceUtil.class, "updateCPOptionCategory",
-				_updateCPOptionCategoryParameterTypes8);
+				_updateCPOptionCategoryParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, cpOptionCategoryId, titleMap,
@@ -464,16 +507,20 @@ public class CPOptionCategoryServiceHttp {
 	private static final Class<?>[]
 		_getCPOptionCategoryByExternalReferenceCodeParameterTypes6 =
 			new Class[] {String.class, long.class};
-	private static final Class<?>[] _searchCPOptionCategoriesParameterTypes7 =
+	private static final Class<?>[]
+		_getOrAddEmptyCPOptionCategoryParameterTypes7 = new Class[] {
+			String.class
+		};
+	private static final Class<?>[] _searchCPOptionCategoriesParameterTypes8 =
 		new Class[] {
 			long.class, String.class, int.class, int.class,
 			com.liferay.portal.kernel.search.Sort.class
 		};
-	private static final Class<?>[] _updateCPOptionCategoryParameterTypes8 =
+	private static final Class<?>[] _updateCPOptionCategoryParameterTypes9 =
 		new Class[] {
 			String.class, long.class, java.util.Map.class, java.util.Map.class,
 			double.class, String.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1801570202
+// LIFERAY-SERVICE-BUILDER-HASH:-643166857

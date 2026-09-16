@@ -335,6 +335,50 @@ public class CommerceCatalogServiceHttp {
 		}
 	}
 
+	public static com.liferay.commerce.product.model.CommerceCatalog
+			getOrAddEmptyCommerceCatalog(
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				String commerceCurrencyCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceCatalogServiceUtil.class,
+				"getOrAddEmptyCommerceCatalog",
+				_getOrAddEmptyCommerceCatalogParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, commerceCurrencyCode);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.CommerceCatalog)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static java.util.List
 		<com.liferay.commerce.product.model.CommerceCatalog> search(
 				HttpPrincipal httpPrincipal, long companyId, String keywords,
@@ -344,7 +388,7 @@ public class CommerceCatalogServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceCatalogServiceUtil.class, "search",
-				_searchParameterTypes7);
+				_searchParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords, start, end, sort);
@@ -385,7 +429,7 @@ public class CommerceCatalogServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceCatalogServiceUtil.class, "searchCommerceCatalogsCount",
-				_searchCommerceCatalogsCountParameterTypes8);
+				_searchCommerceCatalogsCountParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, companyId, keywords);
@@ -428,7 +472,7 @@ public class CommerceCatalogServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceCatalogServiceUtil.class, "updateCommerceCatalog",
-				_updateCommerceCatalogParameterTypes9);
+				_updateCommerceCatalogParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceCatalogId, accountEntryId, name,
@@ -473,7 +517,7 @@ public class CommerceCatalogServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceCatalogServiceUtil.class,
 				"updateCommerceCatalogExternalReferenceCode",
-				_updateCommerceCatalogExternalReferenceCodeParameterTypes10);
+				_updateCommerceCatalogExternalReferenceCodeParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, commerceCatalogId);
@@ -530,21 +574,25 @@ public class CommerceCatalogServiceHttp {
 		new Class[] {long.class};
 	private static final Class<?>[] _getCommerceCatalogsParameterTypes6 =
 		new Class[] {long.class, int.class, int.class};
-	private static final Class<?>[] _searchParameterTypes7 = new Class[] {
+	private static final Class<?>[]
+		_getOrAddEmptyCommerceCatalogParameterTypes7 = new Class[] {
+			String.class, String.class
+		};
+	private static final Class<?>[] _searchParameterTypes8 = new Class[] {
 		long.class, String.class, int.class, int.class,
 		com.liferay.portal.kernel.search.Sort.class
 	};
 	private static final Class<?>[]
-		_searchCommerceCatalogsCountParameterTypes8 = new Class[] {
+		_searchCommerceCatalogsCountParameterTypes9 = new Class[] {
 			long.class, String.class
 		};
-	private static final Class<?>[] _updateCommerceCatalogParameterTypes9 =
+	private static final Class<?>[] _updateCommerceCatalogParameterTypes10 =
 		new Class[] {
 			long.class, long.class, String.class, String.class, String.class
 		};
 	private static final Class<?>[]
-		_updateCommerceCatalogExternalReferenceCodeParameterTypes10 =
+		_updateCommerceCatalogExternalReferenceCodeParameterTypes11 =
 			new Class[] {String.class, long.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1350786515
+// LIFERAY-SERVICE-BUILDER-HASH:438772409

@@ -76,6 +76,11 @@ public interface CommerceCatalogService extends BaseService {
 	public List<CommerceCatalog> getCommerceCatalogs(
 		long companyId, int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceCatalog getOrAddEmptyCommerceCatalog(
+			String externalReferenceCode, String commerceCurrencyCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -102,4 +107,4 @@ public interface CommerceCatalogService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:771870047
+// LIFERAY-SERVICE-BUILDER-HASH:512418921

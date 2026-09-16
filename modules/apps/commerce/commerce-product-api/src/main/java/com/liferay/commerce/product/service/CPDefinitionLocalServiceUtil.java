@@ -705,12 +705,12 @@ public class CPDefinitionLocalServiceUtil {
 	}
 
 	public static CPDefinition getOrAddEmptyCPDefinition(
-			String externalReferenceCode, String productTypeName,
-			long companyId, long userId, long groupId)
+			String externalReferenceCode, long companyId, long userId,
+			long groupId, String productTypeName)
 		throws PortalException {
 
 		return getService().getOrAddEmptyCPDefinition(
-			externalReferenceCode, productTypeName, companyId, userId, groupId);
+			externalReferenceCode, companyId, userId, groupId, productTypeName);
 	}
 
 	/**
@@ -1011,4 +1011,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:496117148
+// LIFERAY-SERVICE-BUILDER-HASH:-420942032

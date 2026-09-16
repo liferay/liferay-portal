@@ -91,6 +91,14 @@ public class CPOptionCategoryServiceUtil {
 			externalReferenceCode, companyId);
 	}
 
+	public static CPOptionCategory getOrAddEmptyCPOptionCategory(
+			String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPOptionCategory(
+			externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -131,4 +139,4 @@ public class CPOptionCategoryServiceUtil {
 			CPOptionCategoryServiceUtil.class, CPOptionCategoryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1506637409
+// LIFERAY-SERVICE-BUILDER-HASH:643949918

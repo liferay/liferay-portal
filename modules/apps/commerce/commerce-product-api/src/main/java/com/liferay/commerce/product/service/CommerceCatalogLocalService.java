@@ -328,7 +328,8 @@ public interface CommerceCatalogLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceCatalog getOrAddEmptyCommerceCatalog(
-			String externalReferenceCode, long companyId, long userId)
+			String externalReferenceCode, long companyId, long userId,
+			String commerceCurrencyCode)
 		throws PortalException;
 
 	/**
@@ -399,4 +400,4 @@ public interface CommerceCatalogLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1094960087
+// LIFERAY-SERVICE-BUILDER-HASH:-103930748

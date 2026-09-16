@@ -106,6 +106,13 @@ public class CommerceChannelServiceUtil {
 			accountEntryId, name, start, end);
 	}
 
+	public static CommerceChannel getOrAddEmptyCommerceChannel(
+			String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCommerceChannel(externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -168,4 +175,4 @@ public class CommerceChannelServiceUtil {
 			CommerceChannelServiceUtil.class, CommerceChannelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2139869695
+// LIFERAY-SERVICE-BUILDER-HASH:2060162770

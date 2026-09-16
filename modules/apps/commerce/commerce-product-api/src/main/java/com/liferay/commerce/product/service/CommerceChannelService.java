@@ -90,6 +90,11 @@ public interface CommerceChannelService extends BaseService {
 			long accountEntryId, String name, int start, int end)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceChannel getOrAddEmptyCommerceChannel(
+			String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -122,4 +127,4 @@ public interface CommerceChannelService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1416888171
+// LIFERAY-SERVICE-BUILDER-HASH:8603756

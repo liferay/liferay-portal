@@ -81,6 +81,11 @@ public interface CPOptionCategoryService extends BaseService {
 			String externalReferenceCode, long companyId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPOptionCategory getOrAddEmptyCPOptionCategory(
+			String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -100,4 +105,4 @@ public interface CPOptionCategoryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-547064225
+// LIFERAY-SERVICE-BUILDER-HASH:948925080

@@ -527,11 +527,10 @@ public interface CPDefinitionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getLayoutUuid(long groupId, long cpDefinitionId);
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinition getOrAddEmptyCPDefinition(
-			String externalReferenceCode, String productTypeName,
-			long companyId, long userId, long groupId)
+			String externalReferenceCode, long companyId, long userId,
+			long groupId, String productTypeName)
 		throws PortalException;
 
 	/**
@@ -727,4 +726,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:927766104
+// LIFERAY-SERVICE-BUILDER-HASH:960126460

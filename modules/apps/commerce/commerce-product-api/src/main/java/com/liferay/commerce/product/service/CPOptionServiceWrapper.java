@@ -104,6 +104,13 @@ public class CPOptionServiceWrapper
 		return _cpOptionService.getCPOption(cpOptionId);
 	}
 
+	@Override
+	public CPOption getOrAddEmptyCPOption(String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpOptionService.getOrAddEmptyCPOption(externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -161,4 +168,4 @@ public class CPOptionServiceWrapper
 	private CPOptionService _cpOptionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1811757224
+// LIFERAY-SERVICE-BUILDER-HASH:1923882150

@@ -270,6 +270,15 @@ public class CPDefinitionServiceWrapper
 			cpDefinitionId);
 	}
 
+	@Override
+	public CPDefinition getOrAddEmptyCPDefinition(
+			String externalReferenceCode, long groupId, String productTypeName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionService.getOrAddEmptyCPDefinition(
+			externalReferenceCode, groupId, productTypeName);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -483,4 +492,4 @@ public class CPDefinitionServiceWrapper
 	private CPDefinitionService _cpDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1646990015
+// LIFERAY-SERVICE-BUILDER-HASH:-8494158

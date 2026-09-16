@@ -101,6 +101,11 @@ public interface CommercePricingClassService extends BaseService {
 	public int getCommercePricingClassesCount(long cpDefinitionId, String title)
 		throws PrincipalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommercePricingClass getOrAddEmptyCommercePricingClass(
+			String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -129,4 +134,4 @@ public interface CommercePricingClassService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1701245953
+// LIFERAY-SERVICE-BUILDER-HASH:714831715
