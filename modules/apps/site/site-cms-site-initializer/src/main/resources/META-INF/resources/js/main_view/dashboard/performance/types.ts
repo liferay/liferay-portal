@@ -12,6 +12,8 @@ export type DashboardAdditionalProps = Pick<
 	| 'autocompleteURL'
 	| 'breadcrumbProps'
 	| 'candidateAssetLibraries'
+	| 'cmpEnabled'
+	| 'cmpProjectObjectDefinitionId'
 	| 'cmsGroupId'
 	| 'collaboratorURLs'
 	| 'contentViewURL'

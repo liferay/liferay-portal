@@ -9,6 +9,7 @@ import {
 } from '@liferay/analytics-reports-js-components-web';
 import React, {createContext, useMemo, useState} from 'react';
 
+import {ProjectOption, initialProject} from '../common/ProjectPicker';
 import {SpaceOption, initialSpace} from '../common/SpacePicker';
 import {DashboardAdditionalProps} from './types';
 
@@ -21,7 +22,9 @@ const initialRange: RangeSelector = {
 type State = {
 	additionalProps?: DashboardAdditionalProps;
 	constants: {[key: string]: string};
+	project: ProjectOption;
 	range: RangeSelector;
+	setProject: (project: ProjectOption) => void;
 	setRange: (range: RangeSelector) => void;
 	setSpace: (space: SpaceOption) => void;
 	space: SpaceOption;
@@ -31,7 +34,9 @@ type State = {
 const PerformanceContext = createContext<State>({
 	additionalProps: undefined,
 	constants: {},
+	project: initialProject,
 	range: initialRange,
+	setProject: () => {},
 	setRange: () => {},
 	setSpace: () => {},
 	space: initialSpace,
@@ -51,6 +56,7 @@ function PerformanceContextProvider({
 	constants?: {[key: string]: string};
 	spaceIds?: string[];
 }) {
+	const [project, setProject] = useState<ProjectOption>(initialProject);
 	const [range, setRange] = useState<RangeSelector>(initialRange);
 	const [space, setSpace] = useState<SpaceOption>(initialSpace);
 
@@ -58,13 +64,15 @@ function PerformanceContextProvider({
 		() => ({
 			additionalProps,
 			constants,
+			project,
 			range,
+			setProject,
 			setRange,
 			setSpace,
 			space,
 			spaceIds,
 		}),
-		[additionalProps, constants, range, space, spaceIds]
+		[additionalProps, constants, project, range, space, spaceIds]
 	);
 
 	return (
