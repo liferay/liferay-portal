@@ -129,8 +129,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CERTIFICATE_AND_PRIVATE_KEY_KEY_LENGTH_SELECT</td>
-	<td>//select[contains(@id,'SamlAdminPortlet_certificateKeyLength')]</td>
+	<td>CERTIFICATE_AND_PRIVATE_KEY_KEY_SIZE_SELECT</td>
+	<td>//select[contains(@id,'SamlAdminPortlet_certificateKeySize')]</td>
 	<td></td>
 </tr>
 <tr>

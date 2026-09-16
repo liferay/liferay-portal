@@ -681,7 +681,7 @@ definition {
 		}
 
 		Select(
-			locator1 = "CPSAMLAdmin#CERTIFICATE_AND_PRIVATE_KEY_KEY_LENGTH_SELECT",
+			locator1 = "CPSAMLAdmin#CERTIFICATE_AND_PRIVATE_KEY_KEY_SIZE_SELECT",
 			value1 = 2048);
 
 		Type(
