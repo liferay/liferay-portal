@@ -35,8 +35,6 @@ $c: '.ddm-form-builder';
 		box-shadow: 0 0 3px 0 unquote('hsl(from #{$black} h s l / 0.2)');
 		cursor: grabbing;
 		opacity: 0.7;
-		position: absolute;
-		z-index: 10;
 	}
 
 	.ddm-drag-item {
@@ -112,20 +110,6 @@ $c: '.ddm-form-builder';
 				background-color: $light-blue-100;
 				border-color: $active-blue;
 				border-style: solid;
-			}
-		}
-	}
-}
-
-.rtl {
-	#{$c} {
-		.dragging {
-			transform: translate(1700px);
-		}
-
-		.field-type {
-			&.dragging {
-				transform: translate(0);
 			}
 		}
 	}

@@ -27,8 +27,15 @@ function getItemStyles(initialOffset, currentOffset) {
 	const {x, y} = currentOffset;
 	const transform = `translate(${x}px, ${y}px)`;
 
+	// Anchor the preview at the top left corner of the layer so the
+	// translation lands under the pointer in right-to-left languages too.
+	// A block box would otherwise start at the right edge of the layer.
+
 	return {
 		WebkitTransform: transform,
+		left: 0,
+		position: 'absolute',
+		top: 0,
 		transform,
 	};
 }

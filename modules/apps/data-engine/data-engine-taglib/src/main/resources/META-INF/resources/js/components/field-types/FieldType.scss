@@ -54,7 +54,7 @@ $fieldTypeFieldSet: $success;
 }
 
 .field-type-drag-preview {
-	max-width: 280px;
+	width: 280px;
 
 	.field-type {
 		background-color: $white;
@@ -131,13 +131,5 @@ $fieldTypeFieldSet: $success;
 
 	.panel-body {
 		padding-right: 0;
-	}
-}
-
-.rtl {
-	.field-type-drag-preview {
-		.field-type {
-			transform: translate(2250px);
-		}
 	}
 }
