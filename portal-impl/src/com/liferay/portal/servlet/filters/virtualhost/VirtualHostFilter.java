@@ -11,7 +11,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.LayoutFriendlyURLException;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -489,7 +488,7 @@ public class VirtualHostFilter extends BasePortalFilter {
 	}
 
 	private boolean _hasFriendlyURLLayout(long groupId, String friendlyURL)
-		throws PortalException {
+		throws Exception {
 
 		try {
 			LayoutLocalServiceUtil.getFriendlyURLLayout(
