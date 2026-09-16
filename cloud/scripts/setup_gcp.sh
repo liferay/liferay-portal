@@ -35,9 +35,9 @@ function main {
 	_GCP_DEPLOYMENT_NAME="$(jq --raw-output '.variables.deployment_name' "${1}")"
 	_GCP_PROJECT_ID="$(jq --raw-output '.variables.project_id' "${1}")"
 
-	echo "Attempting to login to your Google Cloud account via application default credentials."
+	_log_in_to_gcloud_application_default
 
-	gcloud auth application-default login
+	_log_in_to_gcloud
 
 	local bucket_name=""
 	local region=""
@@ -268,6 +268,32 @@ function _log {
 	echo "[Tfstate bucket configuration] ${1}"
 }
 
+function _log_in_to_gcloud {
+	if gcloud auth print-access-token --quiet &> /dev/null
+	then
+		echo "Reusing the active Google Cloud login."
+
+		return
+	fi
+
+	echo "Attempting to login to your Google Cloud account."
+
+	gcloud auth login
+}
+
+function _log_in_to_gcloud_application_default {
+	if gcloud auth application-default print-access-token --quiet &> /dev/null
+	then
+		echo "Reusing the active Google Cloud application default credentials."
+
+		return
+	fi
+
+	echo "Attempting to login to your Google Cloud account via application default credentials."
+
+	gcloud auth application-default login
+}
+
 function _popd {
 	popd > /dev/null
 }
@@ -346,8 +372,6 @@ function _set_up_gcp_gke {
 	echo "Setting up the Google GKE cluster."
 
 	_terraform_init_and_apply "." "gke" "${bucket_name}" "${deployment_name}" "${region}" "${@:4}"
-
-	gcloud auth login
 
 	gcloud \
 		container \
