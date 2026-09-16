@@ -110,7 +110,9 @@ export function LayerProperties({
 				<ColorField
 					fill
 					id={eid('layer-prop-color')}
-					label={Liferay.Language.get('text-color')}
+					label={Liferay.Language.get(
+						overlay.kind === 'text' ? 'text-color' : 'color'
+					)}
 					onCommit={(color) => commitPatch({color})}
 					onPreview={(color) => previewPatch({color})}
 					value={overlay.color}

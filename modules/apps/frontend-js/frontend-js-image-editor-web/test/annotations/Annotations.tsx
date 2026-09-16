@@ -684,9 +684,12 @@ describe('layers', () => {
 
 		expect(shape(container)).toHaveAttribute('width', '500');
 
-		// Color previews while the picker moves and commits on blur.
+		// Color previews while the picker moves and commits on blur. A
+		// shape has a color, only a caption has a text color.
 
-		const colorInput = screen.getByLabelText('text-color');
+		expect(screen.queryByLabelText('text-color')).toBeNull();
+
+		const colorInput = screen.getByLabelText('color');
 
 		fireEvent.change(colorInput, {target: {value: '#00ff00'}});
 
@@ -938,6 +941,8 @@ describe('layers', () => {
 		const {container} = render(<AnnotationHarness start={withCaption} />);
 
 		fireEvent.click(row('text-x'));
+
+		expect(screen.getByLabelText('text-color')).toBeInTheDocument();
 
 		const textInput = screen.getByLabelText('text');
 
