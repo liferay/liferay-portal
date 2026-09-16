@@ -142,6 +142,12 @@ public class BaseTopLevelBuildReportTest
 		_testGetBuildProfile(
 			RandomTestUtil.randomString(), Job.BuildProfile.DXP);
 		_testGetBuildProfile(null, Job.BuildProfile.DXP);
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(null);
+
+		Assert.assertEquals(
+			Job.BuildProfile.DXP, baseTopLevelBuildReport.getBuildProfile());
 	}
 
 	@Test
@@ -438,7 +444,7 @@ public class BaseTopLevelBuildReportTest
 						_newControllerBuildJSONObject(1, "SUCCESS")
 					)
 				)),
-			"controller-job", urlReader);
+			"http://test-1-1/job/controller-job", urlReader);
 
 		setUrlReaderOutput("{}", "previous-job/1/", urlReader);
 
@@ -480,7 +486,7 @@ public class BaseTopLevelBuildReportTest
 						)
 					)
 				)),
-			"controller-job", urlReader);
+			"http://test-1-1/job/controller-job", urlReader);
 
 		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
 
@@ -489,6 +495,23 @@ public class BaseTopLevelBuildReportTest
 
 		Assert.assertNull(
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
+
+		_testGetPreviousTopLevelBuildReport(
+			"https://test-1-1.liferay.com/job/previous-job/2", 3,
+			_newControllerBuildJSONObject(3, "SUCCESS"),
+			_newControllerBuildJSONObject(2, "FAILURE"),
+			_newControllerBuildJSONObject(1, "SUCCESS"));
+		_testGetPreviousTopLevelBuildReport(
+			"https://test-1-1.liferay.com/job/previous-job/2", 3,
+			_newControllerBuildJSONObject(3, "SUCCESS"),
+			_newControllerBuildJSONObject(2, "UNSTABLE"),
+			_newControllerBuildJSONObject(1, "SUCCESS"));
+		_testGetPreviousTopLevelBuildReport(
+			"https://test-1-1.liferay.com/job/previous-job/2", 3,
+			_newControllerBuildJSONObject(3, "SUCCESS"),
+			_newControllerBuildJSONObject(2, "SUCCESS"),
+			_newControllerBuildJSONObject(1, "SUCCESS"));
+		_testGetPreviousTopLevelBuildReport(null, 3);
 	}
 
 	@Test
@@ -505,6 +528,10 @@ public class BaseTopLevelBuildReportTest
 			"https://test-9-9.liferay.com/userContent/testResults/test-job" +
 				"/builds/123/test.results.json",
 			"https://test-9-9.liferay.com/");
+		_testGetTestResultsJSONUserContentURL(
+			"https://test-1-0.liferay.com/userContent/testResults/test-job" +
+				"/builds/123/test.results.json",
+			"");
 	}
 
 	@Test
@@ -914,6 +941,53 @@ public class BaseTopLevelBuildReportTest
 			_newBaseTopLevelBuildReport(buildReportJSONObject);
 
 		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
+	}
+
+	private void _testGetPreviousTopLevelBuildReport(
+			String expectedBuildURLString, int currentBuildNumber,
+			JSONObject... controllerBuildJSONObjects)
+		throws Exception {
+
+		UrlReader urlReader = mockUrlReader();
+
+		JSONObject controllerJobJSONObject = new JSONObject();
+
+		if (controllerBuildJSONObjects.length > 0) {
+			JSONArray buildsJSONArray = new JSONArray();
+
+			for (JSONObject controllerBuildJSONObject :
+					controllerBuildJSONObjects) {
+
+				buildsJSONArray.put(controllerBuildJSONObject);
+			}
+
+			controllerJobJSONObject.put("builds", buildsJSONArray);
+		}
+
+		setUrlReaderOutput(
+			String.valueOf(controllerJobJSONObject),
+			"http://test-1-1/job/controller-job", urlReader);
+
+		setUrlReaderOutput("{}", "previous-job/", urlReader);
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport();
+
+		baseTopLevelBuildReport.setControllerBuildReport(
+			_newControllerBuildReport(currentBuildNumber));
+
+		TopLevelBuildReport previousTopLevelBuildReport =
+			baseTopLevelBuildReport.getPreviousTopLevelBuildReport();
+
+		if (expectedBuildURLString == null) {
+			Assert.assertNull(previousTopLevelBuildReport);
+
+			return;
+		}
+
+		Assert.assertEquals(
+			expectedBuildURLString,
+			String.valueOf(previousTopLevelBuildReport.getBuildURL()));
 	}
 
 	private void _testGetTestResultsJSONUserContentURL(
