@@ -1,0 +1,25 @@
+import com.liferay.gradle.plugins.patcher.PatchTask
+
+apply plugin: "com.liferay.patcher"
+
+task patch(type: PatchTask)
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+dependencies {
+	compileOnly group: "org.apache.tika", name: "tika-parsers", version: "1.28.5"
+}
+
+jarSources {
+	mustRunAfter patch
+}
+
+patch {
+	ext {
+		autoClean = false
+	}
+
+	fileNames "org/apache/tika/parser/isatab/ISArchiveParser.java"
+	originalLibModuleName = "tika-parsers"
+}
