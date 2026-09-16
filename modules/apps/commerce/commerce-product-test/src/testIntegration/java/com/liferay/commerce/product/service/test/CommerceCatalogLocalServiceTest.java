@@ -109,7 +109,7 @@ public class CommerceCatalogLocalServiceTest {
 		try {
 			_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
 				externalReferenceCode, TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId());
+				TestPropsValues.getUserId(), "USD");
 
 			Assert.fail();
 		}
@@ -125,7 +125,7 @@ public class CommerceCatalogLocalServiceTest {
 			commerceCatalog =
 				_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
 					externalReferenceCode, TestPropsValues.getCompanyId(),
-					TestPropsValues.getUserId());
+					TestPropsValues.getUserId(), "USD");
 
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
@@ -136,7 +136,7 @@ public class CommerceCatalogLocalServiceTest {
 			CommerceCatalog resolvedCommerceCatalog =
 				_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
 					externalReferenceCode, TestPropsValues.getCompanyId(),
-					TestPropsValues.getUserId());
+					TestPropsValues.getUserId(), "USD");
 
 			Assert.assertEquals(
 				commerceCatalog.getCommerceCatalogId(),

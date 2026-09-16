@@ -189,6 +189,31 @@ public class CommercePricingClassServiceImpl
 	}
 
 	@Override
+	public CommercePricingClass getOrAddEmptyCommercePricingClass(
+			String externalReferenceCode)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CommercePricingClass commercePricingClass =
+			commercePricingClassService.
+				fetchCommercePricingClassByExternalReferenceCode(
+					externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (commercePricingClass != null) {
+			return commercePricingClass;
+		}
+
+		_checkPortletResourcePermission(
+			null, CommercePricingClassActionKeys.ADD_COMMERCE_PRICING_CLASS);
+
+		return commercePricingClassLocalService.
+			getOrAddEmptyCommercePricingClass(
+				externalReferenceCode, permissionChecker.getCompanyId(),
+				permissionChecker.getUserId());
+	}
+
+	@Override
 	public List<CommercePricingClass> searchByCPDefinitionId(
 			long cpDefinitionId, String title, int start, int end)
 		throws PrincipalException {
