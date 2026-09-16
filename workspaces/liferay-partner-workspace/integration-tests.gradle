@@ -21,6 +21,14 @@ gradle.allprojects {
 
 		if (project.name.endsWith("-test")) {
 			deploy.enabled = false
+
+			tasks.matching {
+				Task task ->
+
+				["deploy", "dockerCopy", "dockerDeploy"].contains(task.name)
+			}.configureEach {
+				enabled = false
+			}
 		}
 
 		if (integrationTestTarget == "bundle") {
@@ -51,11 +59,11 @@ gradle.allprojects {
 }
 
 gradle.projectsEvaluated {
-	gradle.rootProject.subprojects.each {
+	gradle.rootProject.subprojects {
 		Project project ->
 
-		pluginManager.withPlugin("com.liferay.test.integration") {
-			configurations.testModules.dependencies.each {
+		project.pluginManager.withPlugin("com.liferay.test.integration") {
+			project.configurations.testModules.dependencies.each {
 				Dependency dependency ->
 
 				project.rootProject.dependencies.add("providedModules", dependency.copy())
