@@ -7,7 +7,6 @@ package com.liferay.portal.servlet.filters.virtualhost.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -98,28 +97,10 @@ public class VirtualHostFilterTest {
 
 	@Test
 	public void testProcessFilterDoesNotForwardMissingFileEntryURL() {
-		Assert.assertNull(
-			_getForwardedDocumentURL(
-				StringBundler.concat(
-					"/d/", RandomTestUtil.randomString(), StringPool.SLASH,
-					RandomTestUtil.randomString())));
-
-		Assert.assertNull(
-			_getForwardedDocumentURL(
-				StringBundler.concat(
-					StringPool.SLASH, RandomTestUtil.randomLong(), "/0/",
-					RandomTestUtil.randomString())));
-
-		Assert.assertNull(
-			_getForwardedDocumentURL(
-				StringBundler.concat(
-					"/portlet_file_entry/", RandomTestUtil.randomLong(),
-					StringPool.SLASH, RandomTestUtil.randomString(),
-					StringPool.SLASH, RandomTestUtil.randomString())));
-
-		Assert.assertNull(
-			_getForwardedDocumentURL(
-				"/portlet_file_entry/" + RandomTestUtil.randomString()));
+		Assert.assertNull(_getForwardedDLURL("/1234/0/file"));
+		Assert.assertNull(_getForwardedDLURL("/d/site/file"));
+		Assert.assertNull(_getForwardedDLURL("/portlet_file_entry/1/2/3"));
+		Assert.assertNull(_getForwardedDLURL("/portlet_file_entry/file"));
 	}
 
 	@Test
@@ -267,7 +248,7 @@ public class VirtualHostFilterTest {
 	@Test
 	public void testProcessFilterForwardsUnknownDocumentsURL() {
 		Assert.assertNotNull(
-			_getForwardedDocumentURL(
+			_getForwardedDLURL(
 				StringPool.SLASH + RandomTestUtil.randomString()));
 	}
 
@@ -331,7 +312,7 @@ public class VirtualHostFilterTest {
 		}
 	}
 
-	private String _getForwardedDocumentURL(String path) {
+	private String _getForwardedDLURL(String path) {
 		MockHttpServletRequest mockHttpServletRequest =
 			_getMockHttpServletRequest("/documents" + path);
 
