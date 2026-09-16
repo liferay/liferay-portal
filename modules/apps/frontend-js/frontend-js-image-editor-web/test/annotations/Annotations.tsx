@@ -105,8 +105,7 @@ function AnnotationHarness({
 				<Workspace
 					aspectLocked={false}
 					dispatch={dispatch}
-					drawing={Boolean(drawing)}
-					guidedDrawing={drawing?.guided}
+					drawing={drawing}
 					image={IMAGE}
 					multiSelectedIds={multiSelectedIds}
 					onAnnounce={onAnnounce}

@@ -24,9 +24,7 @@ interface Props {
 
 	dispatch: (action: EditorAction) => void;
 
-	drawing?: boolean;
-
-	guidedDrawing?: boolean;
+	drawing?: {guided: boolean} | null;
 
 	image: LoadedImage;
 
@@ -64,7 +62,6 @@ export function Workspace({
 	aspectLocked,
 	dispatch,
 	drawing,
-	guidedDrawing,
 	image,
 	multiSelectedIds,
 	onAnnounce,
@@ -274,7 +271,7 @@ export function Workspace({
 						<DrawSurface
 							area={crop}
 							color={DEFAULT_ANNOTATION_COLOR}
-							guided={guidedDrawing}
+							guided={drawing.guided}
 							onAnnounce={onAnnounce}
 							onFinish={onFinishDrawing}
 							width={strokeWidthFor(crop)}

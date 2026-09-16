@@ -470,8 +470,7 @@ function Editor({
 						<Workspace
 							aspectLocked={aspectLocked}
 							dispatch={dispatch}
-							drawing={Boolean(drawing)}
-							guidedDrawing={drawing?.guided}
+							drawing={drawing}
 							image={image}
 							multiSelectedIds={multiSelectedIds}
 							onAnnounce={announce}
