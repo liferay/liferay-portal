@@ -171,11 +171,13 @@ export function DrawSurface({
 		surfaceRef.current?.focus({preventScroll: true});
 
 		onAnnounce(
-			Liferay.Language.get(
-				guided
-					? 'the-line-starts-at-the-center-of-the-crop-area.-move-its-end-with-the-arrow-keys-then-press-enter-to-set-the-line'
-					: 'drawing-started.-click-or-press-enter-to-add-points-and-finish-on-the-last-point'
-			)
+			guided
+				? Liferay.Language.get(
+						'the-line-starts-at-the-center-of-the-crop-area.-move-its-end-with-the-arrow-keys-then-press-enter-to-set-the-line'
+					)
+				: Liferay.Language.get(
+						'drawing-started.-click-or-press-enter-to-add-points-and-finish-on-the-last-point'
+					)
 		);
 	}, [guided, onAnnounce]);
 
