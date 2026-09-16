@@ -13,6 +13,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlag;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -57,10 +61,13 @@ public class FeatureFlagApplication extends Application {
 	@Path("/set-enabled")
 	@POST
 	public Response confirm(
-		@Context HttpServletRequest httpServletRequest,
-		@Context HttpServletResponse httpServletResponse,
-		@FormParam("companyId") long companyId,
-		@FormParam("enabled") boolean enabled, @FormParam("key") String key) {
+			@Context HttpServletRequest httpServletRequest,
+			@Context HttpServletResponse httpServletResponse,
+			@FormParam("companyId") long companyId,
+			@FormParam("enabled") boolean enabled, @FormParam("key") String key)
+		throws Exception {
+
+		_checkPermission(companyId);
 
 		_featureFlagsBagProvider.setEnabled(companyId, key, enabled);
 
@@ -126,6 +133,20 @@ public class FeatureFlagApplication extends Application {
 			return Response.status(
 				Response.Status.INTERNAL_SERVER_ERROR
 			).build();
+		}
+	}
+
+	private void _checkPermission(long companyId) throws Exception {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (companyId == CompanyConstants.SYSTEM) {
+			if (!permissionChecker.isOmniadmin()) {
+				throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+			}
+		}
+		else if (!permissionChecker.isCompanyAdmin(companyId)) {
+			throw new PrincipalException.MustBeCompanyAdmin(permissionChecker);
 		}
 	}
 
