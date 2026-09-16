@@ -36,14 +36,13 @@ public class FIPSAuditEventFactoryTest {
 			FIPSAuditEvent.Severity.WARNING, fipsAuditEvent.getSeverity());
 
 		_assertFields(
-			attemptedUserId, authenticationMethod, clientIP,
-			consecutiveFailureCount, failureReason, fipsAuditEvent);
-
-		_assertFields(
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0,
 			StringPool.BLANK,
 			FIPSAuditEventFactory.createAuthAttemptFailure(
 				null, null, null, 0, null));
+		_assertFields(
+			attemptedUserId, authenticationMethod, clientIP,
+			consecutiveFailureCount, failureReason, fipsAuditEvent);
 	}
 
 	@Test
@@ -63,14 +62,13 @@ public class FIPSAuditEventFactoryTest {
 			FIPSAuditEvent.Severity.WARNING, fipsAuditEvent.getSeverity());
 
 		_assertFields(
-			fipsAuditEvent, receivingEndpoint, rejectedValue, tokenIssuer,
-			tokenType);
-
-		_assertFields(
 			FIPSAuditEventFactory.createFederationTokenRejected(
 				null, null, null, null),
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 			StringPool.BLANK);
+		_assertFields(
+			fipsAuditEvent, receivingEndpoint, rejectedValue, tokenIssuer,
+			tokenType);
 	}
 
 	private void _assertFields(
