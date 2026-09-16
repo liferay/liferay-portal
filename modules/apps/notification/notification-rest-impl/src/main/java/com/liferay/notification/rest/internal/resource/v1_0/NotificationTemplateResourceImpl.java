@@ -102,10 +102,7 @@ public class NotificationTemplateResourceImpl
 
 			com.liferay.notification.model.NotificationTemplate
 				serviceBuilderNotificationTemplate =
-					_notificationTemplateLocalService.
-						fetchNotificationTemplateByExternalReferenceCode(
-							notificationTemplate.getExternalReferenceCode(),
-							contextCompany.getCompanyId());
+					_fetchNotificationTemplate(notificationTemplate);
 
 			if ((serviceBuilderNotificationTemplate == null) ||
 				!serviceBuilderNotificationTemplate.isSystem()) {
@@ -451,6 +448,20 @@ public class NotificationTemplateResourceImpl
 
 			throw new UnsupportedOperationException();
 		}
+	}
+
+	private com.liferay.notification.model.NotificationTemplate
+		_fetchNotificationTemplate(NotificationTemplate notificationTemplate) {
+
+		if (notificationTemplate.getId() != null) {
+			return _notificationTemplateLocalService.fetchNotificationTemplate(
+				notificationTemplate.getId());
+		}
+
+		return _notificationTemplateLocalService.
+			fetchNotificationTemplateByExternalReferenceCode(
+				notificationTemplate.getExternalReferenceCode(),
+				contextCompany.getCompanyId());
 	}
 
 	private Locale _getLocale() {
