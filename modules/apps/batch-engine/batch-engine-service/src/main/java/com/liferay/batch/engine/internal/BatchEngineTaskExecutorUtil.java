@@ -10,6 +10,7 @@ import com.liferay.batch.engine.internal.security.permission.LiberalPermissionCh
 import com.liferay.batch.engine.internal.util.ItemIndexThreadLocal;
 import com.liferay.batch.engine.jaxrs.uri.BatchEngineUriInfo;
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.audit.AuditRequestThreadLocal;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusMessageSender;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocal;
@@ -59,11 +60,12 @@ public class BatchEngineTaskExecutorUtil {
 
 		PrincipalThreadLocal.setName(user.getUserId());
 
-		try {
+		try (SafeCloseable safeCloseable =
+				ItemIndexThreadLocal.pushIndexQueueWithSafeCloseable()) {
+
 			return unsafeSupplier.get();
 		}
 		finally {
-			ItemIndexThreadLocal.clear();
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 			PrincipalThreadLocal.setName(name);
 		}

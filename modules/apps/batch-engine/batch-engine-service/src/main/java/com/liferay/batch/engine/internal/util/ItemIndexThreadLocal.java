@@ -6,6 +6,7 @@
 package com.liferay.batch.engine.internal.util;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.lang.SafeCloseable;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -22,7 +23,9 @@ public class ItemIndexThreadLocal {
 	}
 
 	public static void clear() {
-		_indexQueue.remove();
+		Queue<Integer> indexQueue = _indexQueue.get();
+
+		indexQueue.clear();
 	}
 
 	public static int get() {
@@ -31,14 +34,18 @@ public class ItemIndexThreadLocal {
 		return indexQueue.peek();
 	}
 
+	public static SafeCloseable pushIndexQueueWithSafeCloseable() {
+		return _indexQueue.setWithSafeCloseable(new LinkedList<>());
+	}
+
 	public static int remove() {
 		Queue<Integer> indexQueue = _indexQueue.get();
 
 		return indexQueue.remove();
 	}
 
-	private static final ThreadLocal<Queue<Integer>> _indexQueue =
+	private static final CentralizedThreadLocal<Queue<Integer>> _indexQueue =
 		new CentralizedThreadLocal<>(
-			ItemIndexThreadLocal.class + "._indexQueue", LinkedList::new);
+			ItemIndexThreadLocal.class + "._indexQueue");
 
 }
