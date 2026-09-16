@@ -1317,7 +1317,7 @@ public class ObjectDefinitionLocalServiceImpl
 		_addOrUpdateObjectDefinitionSettings(
 			objectDefinition, objectDefinitionSettings);
 
-		_updateObjectFields(objectDefinition, objectFields);
+		_updateObjectFields(false, objectDefinition, objectFields);
 
 		_objectFolderItemLocalService.updateObjectFolderObjectFolderItem(
 			objectDefinitionId, objectDefinition.getObjectFolderId(),
@@ -2765,8 +2765,10 @@ public class ObjectDefinitionLocalServiceImpl
 		long oldObjectFolderId = objectDefinition.getObjectFolderId();
 		boolean oldActive = objectDefinition.isActive();
 		String oldClassName = objectDefinition.getClassName();
+
 		boolean oldEnableObjectEntrySubscription =
 			objectDefinition.isEnableObjectEntrySubscription();
+		int oldStatus = objectDefinition.getStatus();
 
 		_validateExternalReferenceCode(
 			externalReferenceCode, objectDefinition.isSystem());
@@ -2930,7 +2932,9 @@ public class ObjectDefinitionLocalServiceImpl
 
 			objectDefinition = _update(objectDefinition);
 
-			_updateObjectFields(objectDefinition, objectFields);
+			_updateObjectFields(
+				oldStatus == WorkflowConstants.STATUS_EMPTY, objectDefinition,
+				objectFields);
 
 			_objectFolderItemLocalService.updateObjectFolderObjectFolderItem(
 				objectDefinition.getObjectDefinitionId(),
@@ -2993,7 +2997,9 @@ public class ObjectDefinitionLocalServiceImpl
 			_objectFieldLocalService.updateObjectField(objectField);
 		}
 
-		_updateObjectFields(objectDefinition, objectFields);
+		_updateObjectFields(
+			oldStatus == WorkflowConstants.STATUS_EMPTY, objectDefinition,
+			objectFields);
 
 		_objectFolderItemLocalService.updateObjectFolderObjectFolderItem(
 			objectDefinition.getObjectDefinitionId(),
@@ -3005,7 +3011,8 @@ public class ObjectDefinitionLocalServiceImpl
 	}
 
 	private void _updateObjectFields(
-			ObjectDefinition objectDefinition, List<ObjectField> objectFields)
+			boolean addSystemObjectFields, ObjectDefinition objectDefinition,
+			List<ObjectField> objectFields)
 		throws PortalException {
 
 		if (objectFields == null) {
@@ -3026,35 +3033,37 @@ public class ObjectDefinitionLocalServiceImpl
 						objectField.getExternalReferenceCode(),
 						objectDefinition.getObjectDefinitionId());
 
-				if (existingObjectField == null) {
+				if (existingObjectField != null) {
+					_objectFieldLocalService.updateObjectField(
+						existingObjectField.getExternalReferenceCode(),
+						existingObjectField.getObjectFieldId(),
+						existingObjectField.getUserId(),
+						existingObjectField.getListTypeDefinitionId(),
+						existingObjectField.getObjectDefinitionId(),
+						existingObjectField.getBusinessType(),
+						existingObjectField.getDBColumnName(),
+						existingObjectField.getDBTableName(),
+						existingObjectField.getDBType(),
+						objectField.getDescriptionMap(),
+						existingObjectField.isIndexed(),
+						objectField.isIndexedAsKeyword(),
+						objectField.getIndexedLanguageId(),
+						objectField.getLabelMap(),
+						existingObjectField.isLocalized(),
+						existingObjectField.getName(),
+						existingObjectField.getReadOnly(),
+						existingObjectField.getReadOnlyConditionExpression(),
+						existingObjectField.isRequired(),
+						existingObjectField.isState(),
+						existingObjectField.isSystem(),
+						objectField.getObjectFieldSettings());
+
 					continue;
 				}
 
-				_objectFieldLocalService.updateObjectField(
-					existingObjectField.getExternalReferenceCode(),
-					existingObjectField.getObjectFieldId(),
-					existingObjectField.getUserId(),
-					existingObjectField.getListTypeDefinitionId(),
-					existingObjectField.getObjectDefinitionId(),
-					existingObjectField.getBusinessType(),
-					existingObjectField.getDBColumnName(),
-					existingObjectField.getDBTableName(),
-					existingObjectField.getDBType(),
-					objectField.getDescriptionMap(),
-					existingObjectField.isIndexed(),
-					objectField.isIndexedAsKeyword(),
-					objectField.getIndexedLanguageId(),
-					objectField.getLabelMap(),
-					existingObjectField.isLocalized(),
-					existingObjectField.getName(),
-					existingObjectField.getReadOnly(),
-					existingObjectField.getReadOnlyConditionExpression(),
-					existingObjectField.isRequired(),
-					existingObjectField.isState(),
-					existingObjectField.isSystem(),
-					objectField.getObjectFieldSettings());
-
-				continue;
+				if (!addSystemObjectFields) {
+					continue;
+				}
 			}
 
 			if (objectField.compareBusinessType(
