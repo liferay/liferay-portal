@@ -54,7 +54,8 @@ public class StyleBookEntryVersionTableReferenceDefinitionTest
 	@Override
 	protected CTModel<?> addCTModel() throws Exception {
 		return _styleBookEntryLocalService.updateStyleBookEntry(
-			_styleBookEntry.getStyleBookEntryId(), "{}",
+			_styleBookEntry.getStyleBookEntryId(),
+			_styleBookEntry.getFrontendTokenDefinition(), "{}",
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
 	}

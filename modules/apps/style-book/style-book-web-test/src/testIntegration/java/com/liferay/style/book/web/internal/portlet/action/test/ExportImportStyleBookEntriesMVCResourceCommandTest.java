@@ -198,6 +198,7 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 		StyleBookEntry updatedStyleBookEntry =
 			_styleBookEntryLocalService.updateStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(),
+				styleBookEntry.getFrontendTokenDefinition(),
 				_read("updated-frontend-tokens-values.json"),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
@@ -248,6 +249,7 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 		StyleBookEntry updatedStyleBookEntry =
 			_styleBookEntryLocalService.updateStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(),
+				styleBookEntry.getFrontendTokenDefinition(),
 				_read("updated-frontend-tokens-values.json"), name,
 				ServiceContextTestUtil.getServiceContext(
 					_sourceGroup, TestPropsValues.getUserId()));
