@@ -133,7 +133,6 @@ public class KaleoDesignerPortletTest {
 			new MockLiferayPortletContext(path));
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _getThemeDisplay(user));
-
 		mockLiferayPortletRenderRequest.setParameter(
 			"mvcPath", "/designer/edit_workflow_definition.jsp");
 		mockLiferayPortletRenderRequest.setParameter("name", name);
@@ -231,13 +230,13 @@ public class KaleoDesignerPortletTest {
 			mockLiferayPortletRenderRequest,
 			new MockLiferayPortletRenderResponse());
 
+		Assert.assertTrue(
+			SessionErrors.isEmpty(mockLiferayPortletRenderRequest));
 		Assert.assertEquals(
 			_kaleoDefinitionVersionLocalService.getLatestKaleoDefinitionVersion(
 				_kaleoDefinition.getCompanyId(), _kaleoDefinition.getName()),
 			mockLiferayPortletRenderRequest.getAttribute(
 				"KALEO_DRAFT_DEFINITION"));
-		Assert.assertTrue(
-			SessionErrors.isEmpty(mockLiferayPortletRenderRequest));
 	}
 
 	@DeleteAfterTestRun
