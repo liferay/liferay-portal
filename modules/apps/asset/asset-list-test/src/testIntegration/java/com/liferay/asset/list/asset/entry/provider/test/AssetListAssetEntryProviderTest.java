@@ -1158,6 +1158,37 @@ public class AssetListAssetEntryProviderTest {
 	}
 
 	@Test
+	public void testGetDynamicAssetEntriesWithNonexistentClassNameIds()
+		throws Exception {
+
+		_blogsEntryLocalService.addEntry(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		long nonexistentClassNameId = RandomTestUtil.randomLong();
+
+		_assertDynamicAssetEntriesCount(
+			Boolean.FALSE.toString(),
+			StringUtil.merge(
+				new long[] {
+					_portal.getClassNameId(BlogsEntry.class.getName()),
+					nonexistentClassNameId
+				}),
+			1);
+		_assertDynamicAssetEntriesCount(
+			Boolean.FALSE.toString(),
+			StringUtil.merge(
+				new long[] {
+					nonexistentClassNameId, RandomTestUtil.randomLong()
+				}),
+			0);
+		_assertDynamicAssetEntriesCount(
+			String.valueOf(nonexistentClassNameId), null, 0);
+	}
+
+	@Test
 	public void testGetDynamicAssetEntriesWithSegmentsEntryNotPrioritized()
 		throws Exception {
 
@@ -2014,6 +2045,34 @@ public class AssetListAssetEntryProviderTest {
 		for (AssetEntry expectedAssetEntry : expectedAssetEntries) {
 			Assert.assertTrue(assetEntries.contains(expectedAssetEntry));
 		}
+	}
+
+	private void _assertDynamicAssetEntriesCount(
+			String anyAssetType, String classNameIds, int expectedCount)
+		throws Exception {
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"anyAssetType", anyAssetType
+				).put(
+					"classNameIds", classNameIds
+				).put(
+					"groupIds", String.valueOf(_group.getGroupId())
+				).buildString(),
+				_serviceContext);
+
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
+				null, null, StringPool.BLANK, StringPool.BLANK,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			expectedCount);
 	}
 
 	private void _assertGetManualAssetEntriesMatchingAllAssetCategories(
