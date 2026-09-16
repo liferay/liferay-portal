@@ -57,7 +57,7 @@
 		}
 	}
 
-	@supports not selector(::-webkit-scrollbar) {
+	@supports #{'not selector(::-webkit-scrollbar)'} {
 		[data-color-scheme='dark'],
 		[data-color-scheme='dark-high-contrast'] {
 			scrollbar-color: $scrollbar-thumb $scrollbar-track;
