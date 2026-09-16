@@ -2014,6 +2014,7 @@ public class ObjectDefinitionResourceTest
 			null, objectField);
 
 		_testPutObjectDefinitionByExternalReferenceCodeWithDuplicateDefaultObjectLayout();
+		_testPutObjectDefinitionByExternalReferenceCodeWithEmptyObjectDefinitionAndSystemObjectField();
 		_testPutObjectDefinitionByExternalReferenceCodeWithMissingObjectDefinition1();
 		_testPutObjectDefinitionByExternalReferenceCodeWithSystemAggregationObjectField();
 		_testPutObjectDefinitionWithAllowStandaloneObjectEntry();
@@ -3655,6 +3656,108 @@ public class ObjectDefinitionResourceTest
 
 		_assertScreenNavigationCategories(
 			putObjectDefinition.getClassName(), 1);
+	}
+
+	private void _testPutObjectDefinitionByExternalReferenceCodeWithEmptyObjectDefinitionAndSystemObjectField()
+		throws Exception {
+
+		ObjectDefinition randomObjectDefinition1 = randomObjectDefinition();
+
+		randomObjectDefinition1.setObjectFields(
+			new ObjectField[] {
+				new ObjectField() {
+					{
+						businessType = BusinessType.RELATIONSHIP;
+						DBType = ObjectField.DBType.LONG;
+						indexed = true;
+						label = Collections.singletonMap(
+							"en_US", RandomTestUtil.randomString());
+						name = "r_relationshipName_c_objectDefinition1Id";
+						objectDefinitionExternalReferenceCode1 =
+							"TESTOBJECTDEFINITION";
+						objectRelationshipExternalReferenceCode =
+							RandomTestUtil.randomString();
+					}
+				}
+			});
+
+		ObjectDefinition putObjectDefinition1 =
+			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
+				randomObjectDefinition1.getExternalReferenceCode(),
+				randomObjectDefinition1);
+
+		ObjectDefinition emptyObjectDefinition =
+			objectDefinitionResource.getObjectDefinitionByExternalReferenceCode(
+				"TESTOBJECTDEFINITION");
+
+		Assert.assertEquals(
+			new Status() {
+				{
+					code = WorkflowConstants.STATUS_EMPTY;
+					label = WorkflowConstants.getStatusLabel(
+						WorkflowConstants.STATUS_EMPTY);
+					label_i18n = _language.get(
+						LanguageResources.getResourceBundle(
+							LocaleUtil.getDefault()),
+						WorkflowConstants.getStatusLabel(
+							WorkflowConstants.STATUS_EMPTY));
+				}
+			},
+			emptyObjectDefinition.getStatus());
+
+		ObjectDefinition randomObjectDefinition2 = randomObjectDefinition();
+
+		randomObjectDefinition2.setExternalReferenceCode(
+			"TESTOBJECTDEFINITION");
+		randomObjectDefinition2.setObjectFields(
+			new ObjectField[] {
+				new ObjectField() {
+					{
+						businessType = BusinessType.TEXT;
+						DBType = ObjectField.DBType.STRING;
+						label = Collections.singletonMap(
+							"en_US", RandomTestUtil.randomString());
+						name = "title";
+						system = true;
+					}
+				}
+			});
+		randomObjectDefinition2.setStatus(
+			new Status() {
+				{
+					code = WorkflowConstants.STATUS_APPROVED;
+				}
+			});
+		randomObjectDefinition2.setTitleObjectFieldName("title");
+
+		ObjectDefinition putObjectDefinition2 =
+			objectDefinitionResource.putObjectDefinitionByExternalReferenceCode(
+				"TESTOBJECTDEFINITION", randomObjectDefinition2);
+
+		_assertObjectField(
+			true, ObjectField::getSystem,
+			_getObjectField(putObjectDefinition2, "title"));
+
+		Assert.assertEquals(
+			new Status() {
+				{
+					code = WorkflowConstants.STATUS_APPROVED;
+					label = WorkflowConstants.getStatusLabel(
+						WorkflowConstants.STATUS_APPROVED);
+					label_i18n = _language.get(
+						LanguageResources.getResourceBundle(
+							LocaleUtil.getDefault()),
+						WorkflowConstants.getStatusLabel(
+							WorkflowConstants.STATUS_APPROVED));
+				}
+			},
+			putObjectDefinition2.getStatus());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			putObjectDefinition2.getId());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			putObjectDefinition1.getId());
 	}
 
 	private void _testPutObjectDefinitionByExternalReferenceCodeWithMissingObjectDefinition1()
