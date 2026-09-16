@@ -11,8 +11,11 @@ import com.liferay.jenkins.results.parser.RandomTestUtil;
 
 import java.io.File;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -24,6 +27,55 @@ import org.junit.Test;
  * @author Michael Hashimoto
  */
 public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
+
+	@Test
+	public void testFormatTestResultsFileDuplicateTestName() throws Exception {
+		File projectDir = createProjectDir("node-scripts test");
+
+		write(
+			"describe('a', () => {it('b', () => {});});", projectDir,
+			_TEST_DIR_PATH + "/a.js");
+		write(
+			"describe('a', () => {it('b', () => {});});", projectDir,
+			_TEST_DIR_PATH + "/b.js");
+
+		List<Element> testCaseElements = _formatTestCaseElements(
+			_getTestSuite(
+				"a",
+				_getTestCase(_CLASS_NAME, "a b") +
+					_getTestCase(_CLASS_NAME, "a b")),
+			projectDir);
+
+		testEquals(
+			new HashSet<>(
+				Arrays.asList(
+					_PROJECT_PATH + "/" + _TEST_DIR_PATH + "/a.js",
+					_PROJECT_PATH + "/" + _TEST_DIR_PATH + "/b.js")),
+			_getClassNames(testCaseElements));
+	}
+
+	@Test
+	public void testFormatTestResultsFileDuplicateTestNameExhausted()
+		throws Exception {
+
+		File projectDir = createProjectDir("node-scripts test");
+
+		write(
+			"describe('a', () => {it('b', () => {});});", projectDir,
+			_TEST_DIR_PATH + "/a.js");
+
+		List<Element> testCaseElements = _formatTestCaseElements(
+			_getTestSuite(
+				"a",
+				_getTestCase(_CLASS_NAME, "a b") +
+					_getTestCase(_CLASS_NAME, "a b")),
+			projectDir);
+
+		testEquals(
+			new HashSet<>(
+				Arrays.asList(_PROJECT_PATH + "/" + _TEST_DIR_PATH + "/a.js")),
+			_getClassNames(testCaseElements));
+	}
 
 	@Test
 	public void testFormatTestResultsFileDynamic() throws Exception {
@@ -166,6 +218,16 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 	}
 
 	private Element _format(String content, File projectDir) throws Exception {
+		List<Element> testCaseElements = _formatTestCaseElements(
+			content, projectDir);
+
+		return testCaseElements.get(0);
+	}
+
+	private List<Element> _formatTestCaseElements(
+			String content, File projectDir)
+		throws Exception {
+
 		File testResultsFile = _createTestResultsFile(content, projectDir);
 
 		TestClassFileUtil.formatTestResultsFile(
@@ -186,9 +248,17 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 
 		testEquals(_PROJECT_PATH, testSuiteElement.attributeValue("package"));
 
-		List<Element> testCaseElements = testSuiteElement.elements("testcase");
+		return testSuiteElement.elements("testcase");
+	}
 
-		return testCaseElements.get(0);
+	private Set<String> _getClassNames(List<Element> testCaseElements) {
+		Set<String> classNames = new HashSet<>();
+
+		for (Element testCaseElement : testCaseElements) {
+			classNames.add(testCaseElement.attributeValue("classname"));
+		}
+
+		return classNames;
 	}
 
 	private String _getTestCase(String className, String name) {

@@ -13,8 +13,10 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -58,13 +60,17 @@ public class TestClassFileUtil {
 			testSuiteElements.add(rootElement);
 		}
 
+		Set<TestClassFileMethod> matchedTestClassFileMethods = new HashSet<>();
+
 		for (Element testSuiteElement : testSuiteElements) {
 			testSuiteElement.addAttribute("package", projectPath);
 
 			for (Element testCaseElement :
 					testSuiteElement.elements("testcase")) {
 
-				_formatTestCaseElement(portalDir, testCaseElement, testPackage);
+				_formatTestCaseElement(
+					matchedTestClassFileMethods, portalDir, testCaseElement,
+					testPackage);
 			}
 		}
 
@@ -79,6 +85,7 @@ public class TestClassFileUtil {
 	}
 
 	private static void _formatTestCaseElement(
+			Set<TestClassFileMethod> matchedTestClassFileMethods,
 			File portalDir, Element testCaseElement, TestPackage testPackage)
 		throws IOException {
 
@@ -92,7 +99,7 @@ public class TestClassFileUtil {
 		String testCaseName = testCaseElement.attributeValue("name");
 
 		TestClassFileMethod testClassFileMethod = _getTestClassFileMethod(
-			testCaseName, testClassFiles);
+			matchedTestClassFileMethods, testCaseName, testClassFiles);
 
 		if (testClassFileMethod == null) {
 			return;
@@ -112,17 +119,32 @@ public class TestClassFileUtil {
 	}
 
 	private static TestClassFileMethod _getTestClassFileMethod(
+			Set<TestClassFileMethod> matchedTestClassFileMethods,
 			String testCaseName, List<TestClassFile> testClassFiles)
 		throws IOException {
+
+		TestClassFileMethod matchedTestClassFileMethod = null;
 
 		for (TestClassFile testClassFile : testClassFiles) {
 			for (TestClassFileMethod testClassFileMethod :
 					testClassFile.getTestClassFileMethods()) {
 
-				if (testClassFileMethod.matches(testCaseName)) {
+				if (!testClassFileMethod.matches(testCaseName)) {
+					continue;
+				}
+
+				if (matchedTestClassFileMethods.add(testClassFileMethod)) {
 					return testClassFileMethod;
 				}
+
+				if (matchedTestClassFileMethod == null) {
+					matchedTestClassFileMethod = testClassFileMethod;
+				}
 			}
+		}
+
+		if (matchedTestClassFileMethod != null) {
+			return matchedTestClassFileMethod;
 		}
 
 		for (TestClassFile testClassFile : testClassFiles) {
