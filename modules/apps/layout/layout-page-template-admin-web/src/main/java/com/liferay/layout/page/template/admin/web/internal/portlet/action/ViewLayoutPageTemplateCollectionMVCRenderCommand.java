@@ -5,8 +5,15 @@
 
 package com.liferay.layout.page.template.admin.web.internal.portlet.action;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
+import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -26,6 +33,19 @@ public class ViewLayoutPageTemplateCollectionMVCRenderCommand
 	@Override
 	protected String getPath() {
 		return "/view.jsp";
+	}
+
+	@Override
+	protected void setAttributes(
+		RenderRequest renderRequest, RenderResponse renderResponse) {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		renderRequest.setAttribute(
+			LayoutPageTemplateAdminWebKeys.SHOW_COLLECTIONS_PANEL,
+			!DesignLibraryUtil.isDesignLibraryScope(
+				themeDisplay.getScopeGroup()));
 	}
 
 }

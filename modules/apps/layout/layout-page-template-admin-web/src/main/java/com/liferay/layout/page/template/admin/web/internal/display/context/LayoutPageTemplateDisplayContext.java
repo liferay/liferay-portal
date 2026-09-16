@@ -375,6 +375,13 @@ public class LayoutPageTemplateDisplayContext {
 			_themeDisplay.getSiteGroupId(), actionId);
 	}
 
+	public boolean isShowCollectionsPanel() {
+		return GetterUtil.getBoolean(
+			_httpServletRequest.getAttribute(
+				LayoutPageTemplateAdminWebKeys.SHOW_COLLECTIONS_PANEL),
+			true);
+	}
+
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;
 	private LayoutPageTemplateCollection _layoutPageTemplateCollection;
