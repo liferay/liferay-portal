@@ -212,6 +212,8 @@ public class SitePageResourceImpl
 							")");
 					}
 				).put(
+					"flatten", "true"
+				).put(
 					"privateLayout",
 					String.valueOf(portletDataContext.isPrivateLayout())
 				).put(
