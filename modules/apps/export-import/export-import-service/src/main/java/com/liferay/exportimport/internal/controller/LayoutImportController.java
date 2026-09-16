@@ -197,9 +197,11 @@ public class LayoutImportController implements ImportController {
 					portletDataContext.getParameterMap();
 
 				ExportImportThreadLocal.setLastImportUserName(
-					MapUtil.getString(parameterMap, "lastImportUserName"));
+					MapUtil.getString(
+						parameterMap, "lastImportUserName", null));
 				ExportImportThreadLocal.setLastImportUserUuid(
-					MapUtil.getString(parameterMap, "lastImportUserUuid"));
+					MapUtil.getString(
+						parameterMap, "lastImportUserUuid", null));
 
 				_exportImportLifecycleManager.fireExportImportLifecycleEvent(
 					ExportImportLifecycleConstants.EVENT_LAYOUT_IMPORT_STARTED,
