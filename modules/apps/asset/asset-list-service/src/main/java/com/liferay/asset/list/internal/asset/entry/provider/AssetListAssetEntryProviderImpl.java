@@ -299,6 +299,11 @@ public class AssetListAssetEntryProviderImpl
 		String keywords, int start, int end) {
 
 		try {
+			assetEntryQueries = ListUtil.filter(
+				assetEntryQueries,
+				assetEntryQuery -> ArrayUtil.isNotEmpty(
+					assetEntryQuery.getClassNameIds()));
+
 			if (ListUtil.isEmpty(assetEntryQueries)) {
 				return InfoPage.of(Collections.emptyList());
 			}
@@ -515,22 +520,25 @@ public class AssetListAssetEntryProviderImpl
 			return availableClassNameIds;
 		}
 
-		long defaultClassNameId = GetterUtil.getLong(
-			unicodeProperties.getProperty("anyAssetType", null));
-
-		if (defaultClassNameId > 0) {
-			return new long[] {defaultClassNameId};
-		}
-
 		long[] classNameIds = GetterUtil.getLongValues(
 			StringUtil.split(
 				unicodeProperties.getProperty("classNameIds", null)));
 
-		if (ArrayUtil.isNotEmpty(classNameIds)) {
-			return classNameIds;
+		long defaultClassNameId = GetterUtil.getLong(
+			unicodeProperties.getProperty("anyAssetType", null));
+
+		if (defaultClassNameId != 0) {
+			classNameIds = new long[] {defaultClassNameId};
 		}
 
-		return availableClassNameIds;
+		if (ArrayUtil.isEmpty(classNameIds)) {
+			return availableClassNameIds;
+		}
+
+		return ArrayUtil.filter(
+			classNameIds,
+			classNameId -> ArrayUtil.contains(
+				availableClassNameIds, classNameId));
 	}
 
 	private long[] _getClassTypeIds(

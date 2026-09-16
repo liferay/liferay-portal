@@ -31,9 +31,15 @@ public class AssetListObjectFieldUtil {
 			return null;
 		}
 
+		String className = PortalUtil.fetchClassName(classNameId);
+
+		if (Validator.isNull(className)) {
+			return null;
+		}
+
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
-				companyId, PortalUtil.getClassName(classNameId));
+				companyId, className);
 
 		if (objectDefinition == null) {
 			return null;
