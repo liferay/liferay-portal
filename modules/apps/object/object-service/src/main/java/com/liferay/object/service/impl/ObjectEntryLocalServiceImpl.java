@@ -6036,6 +6036,44 @@ public class ObjectEntryLocalServiceImpl
 		return false;
 	}
 
+	private boolean _insertIntoExtensionTable(
+			Connection connection,
+			DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
+			long objectEntryId)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			dynamicObjectDefinitionTable.getObjectDefinition();
+
+		String tableName = dynamicObjectDefinitionTable.getTableName();
+
+		if (objectDefinition.isUnmodifiableSystemObject() ||
+			!Objects.equals(
+				tableName, objectDefinition.getExtensionDBTableName())) {
+
+			return false;
+		}
+
+		String sql = StringBundler.concat(
+			"insert into ", tableName, " (",
+			dynamicObjectDefinitionTable.getPrimaryKeyColumnName(),
+			") values (?)");
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("SQL: " + sql);
+		}
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				sql)) {
+
+			preparedStatement.setLong(1, objectEntryId);
+
+			preparedStatement.executeUpdate();
+		}
+
+		return true;
+	}
+
 	private void _insertIntoLocalizationTable(
 			String defaultLanguageId, Map<String, Serializable> insertedValues,
 			ObjectDefinition objectDefinition, long objectEntryId,
@@ -8020,7 +8058,12 @@ public class ObjectEntryLocalServiceImpl
 				columnNames, index++, insertedValues, preparedStatement,
 				Types.BIGINT, objectEntryId);
 
-			preparedStatement.executeUpdate();
+			if ((preparedStatement.executeUpdate() == 0) &&
+				_insertIntoExtensionTable(
+					connection, dynamicObjectDefinitionTable, objectEntryId)) {
+
+				preparedStatement.executeUpdate();
+			}
 
 			FinderCacheUtil.clearDSLQueryCache(
 				dynamicObjectDefinitionTable.getTableName());
