@@ -573,7 +573,7 @@ resource "kubernetes_secret" "argocd_secret" {
 	metadata {
 		annotations={
 			"meta.helm.sh/release-name"="argocd"
-			"meta.helm.sh/release-namespace"=var.argocd_namespace
+			"meta.helm.sh/release-namespace"=kubernetes_namespace.argocd.metadata[0].name
 		}
 		labels=merge(
 			local.common_labels,
@@ -581,7 +581,7 @@ resource "kubernetes_secret" "argocd_secret" {
 				"app.kubernetes.io/managed-by"="Helm"
 			})
 		name="argocd-secret"
-		namespace=var.argocd_namespace
+		namespace=kubernetes_namespace.argocd.metadata[0].name
 	}
 	type="Opaque"
 }

@@ -4,7 +4,7 @@ resource "helm_release" "crossplane" {
 	cleanup_on_fail=true
 	create_namespace=false
 	name="crossplane"
-	namespace=var.crossplane_namespace
+	namespace=kubernetes_namespace.crossplane.metadata[0].name
 	repository="https://charts.crossplane.io/stable"
 	values=[
 		yamlencode(

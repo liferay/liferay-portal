@@ -4,7 +4,7 @@ resource "helm_release" "argo_workflows" {
 		kubernetes_namespace.argocd,
 	]
 	name="argo-workflows"
-	namespace=var.argo_workflows_namespace
+	namespace=kubernetes_namespace.argo_workflows.metadata[0].name
 	repository="https://argoproj.github.io/argo-helm"
 	upgrade_install=true
 	values=[
