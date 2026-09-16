@@ -7,7 +7,32 @@ import {Overlay} from './types';
 
 type Kind = Overlay['kind'];
 
+const BOX_KEYS = [
+	'borderColor',
+	'borderWidth',
+	'color',
+	'height',
+	'opacity',
+	'rotation',
+	'sketchSeed',
+	'width',
+	'x',
+	'y',
+];
+
 const EDITABLE_KEYS: {[K in Kind]: ReadonlySet<string>} = {
+	arrow: new Set([
+		'color',
+		'dx',
+		'dy',
+		'head',
+		'opacity',
+		'thickness',
+		'x',
+		'y',
+	]),
+	circle: new Set(BOX_KEYS),
+	shape: new Set(BOX_KEYS),
 	text: new Set([
 		'color',
 		'fontFamily',
@@ -20,11 +45,23 @@ const EDITABLE_KEYS: {[K in Kind]: ReadonlySet<string>} = {
 	]),
 };
 
-const STRING_KEYS = new Set(['color', 'fontFamily', 'text']);
+const STRING_KEYS = new Set(['borderColor', 'color', 'fontFamily', 'text']);
 
-const AT_LEAST_ONE = new Set(['fontSize']);
+const ENUM_KEYS: Record<string, ReadonlySet<string>> = {
+	head: new Set(['filled', 'open']),
+};
+
+const CLEARABLE_KEYS = new Set(['borderColor', 'borderWidth', 'sketchSeed']);
+
+const AT_LEAST_ONE = new Set(['fontSize', 'height', 'thickness', 'width']);
 
 function validate(key: string, value: unknown): unknown {
+	if (ENUM_KEYS[key]) {
+		return typeof value === 'string' && ENUM_KEYS[key].has(value)
+			? value
+			: undefined;
+	}
+
 	if (STRING_KEYS.has(key)) {
 		return typeof value === 'string' ? value : undefined;
 	}
@@ -39,6 +76,10 @@ function validate(key: string, value: unknown): unknown {
 
 	if (AT_LEAST_ONE.has(key)) {
 		return Math.max(1, value);
+	}
+
+	if (key === 'borderWidth') {
+		return Math.max(0, value);
 	}
 
 	return value;
@@ -63,9 +104,11 @@ export function patchOverlay(
 			continue;
 		}
 
-		const value = validate(key, raw);
+		const clearing = raw === undefined && CLEARABLE_KEYS.has(key);
 
-		if (value === undefined) {
+		const value = clearing ? undefined : validate(key, raw);
+
+		if (value === undefined && !clearing) {
 			continue;
 		}
 

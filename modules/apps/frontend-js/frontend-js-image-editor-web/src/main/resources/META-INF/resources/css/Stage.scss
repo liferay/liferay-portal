@@ -95,6 +95,20 @@
 	cursor: move;
 }
 
+.image-editor .object-handle {
+	fill: $white;
+	stroke: var(--editor-accent);
+}
+
+.image-editor .object-handle-rotate {
+	cursor: grab;
+}
+
+.image-editor .object-rotate-stick {
+	pointer-events: none;
+	stroke: var(--editor-accent);
+}
+
 .image-editor .crop-handle-visual,
 .image-editor .focus-ring-inner,
 .image-editor .focus-ring-outer,

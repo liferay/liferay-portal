@@ -9,7 +9,10 @@ import {
 	patchFor,
 	patchOverlay,
 } from '../../src/main/resources/META-INF/resources/js/state/overlayPatch';
-import {TextOverlay} from '../../src/main/resources/META-INF/resources/js/state/types';
+import {
+	ShapeOverlay,
+	TextOverlay,
+} from '../../src/main/resources/META-INF/resources/js/state/types';
 
 const TEXT: TextOverlay = {
 	color: '#ffffff',
@@ -71,5 +74,61 @@ describe('patchOverlay', () => {
 	it('returns the same reference when nothing changes', () => {
 		expect(patchOverlay(TEXT, {text: 'Hello', x: 400})).toBe(TEXT);
 		expect(patchOverlay(TEXT, {})).toBe(TEXT);
+	});
+});
+
+const SHAPE: ShapeOverlay = {
+	color: '#0b5fff',
+	height: 100,
+	id: 'shape-1',
+	kind: 'shape',
+	width: 300,
+	x: 100,
+	y: 200,
+};
+
+describe('patchOverlay on shapes and arrows', () => {
+	it('drops keys another kind owns', () => {
+		expect(patchOverlay(SHAPE, {text: 'smuggled'} as never)).toBe(SHAPE);
+	});
+
+	it('rejects values outside an enum', () => {
+		const arrow = patchOverlay(
+			{
+				color: '#000000',
+				dx: 10,
+				dy: 10,
+				head: 'filled',
+				id: 'arrow-1',
+				kind: 'arrow',
+				thickness: 4,
+				x: 0,
+				y: 0,
+			},
+			{head: 'banana' as never}
+		);
+
+		expect(arrow).toMatchObject({head: 'filled'});
+	});
+
+	it('clears an optional key on an explicit undefined', () => {
+		const seeded = patchOverlay(SHAPE, {sketchSeed: 42}) as ShapeOverlay;
+
+		expect(seeded.sketchSeed).toBe(42);
+
+		const cleaned = patchOverlay(seeded, {
+			sketchSeed: undefined,
+		}) as ShapeOverlay;
+
+		expect(cleaned.sketchSeed).toBeUndefined();
+
+		expect(patchOverlay(SHAPE, {x: undefined})).toBe(SHAPE);
+	});
+
+	it('keeps the sizes at one and the border unsigned', () => {
+		expect(patchOverlay(SHAPE, {height: -20})).toMatchObject({height: 1});
+		expect(patchOverlay(SHAPE, {borderWidth: -4})).toMatchObject({
+			borderWidth: 0,
+		});
 	});
 });

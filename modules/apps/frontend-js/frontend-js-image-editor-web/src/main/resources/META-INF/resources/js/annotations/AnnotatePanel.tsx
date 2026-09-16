@@ -6,6 +6,7 @@
 import '../../css/Annotations.scss';
 
 import ClayButton from '@clayui/button';
+import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {sub} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
@@ -14,8 +15,21 @@ import {EditorSection} from '../chrome/EditorSection';
 import {useEditorId, useEditorRoot} from '../chrome/instance';
 import {overlayLabel, textWidth} from '../imaging/overlayShapes';
 import {EditorAction} from '../state/editorReducer';
+import {nextId} from '../state/ids';
 import {CropRect, Overlay} from '../state/types';
+import {MenuGrid} from './MenuGrid';
 import {TextDialog} from './TextDialog';
+
+const SHAPE_TOOLS = ['rectangle', 'square', 'circle', 'arrow'] as const;
+
+type ShapeTool = (typeof SHAPE_TOOLS)[number];
+
+const SHAPE_LABELS: Record<ShapeTool, string> = {
+	arrow: Liferay.Language.get('arrow'),
+	circle: Liferay.Language.get('circle'),
+	rectangle: Liferay.Language.get('rectangle'),
+	square: Liferay.Language.get('square'),
+};
 
 function focusOverlay(root: () => ParentNode, id: string, delay = 0): void {
 	window.setTimeout(() => {
@@ -57,13 +71,71 @@ function revealInWorkspace(node: SVGElement): void {
 	workspace.scrollTop += overflow(box.top, box.bottom, area.top, area.bottom);
 }
 
-function ToolTile({icon, label}: {icon: string; label: string}) {
+function ToolTile({
+	icon,
+	label,
+	menu,
+}: {
+	icon: string;
+	label: string;
+
+	menu?: boolean;
+}) {
 	return (
 		<>
 			<ClayIcon aria-hidden="true" symbol={icon} />
 
 			<span className="editor-tool-tile-label">{label}</span>
+
+			{menu && (
+				<ClayIcon
+					aria-hidden="true"
+					className="editor-tool-tile-caret"
+					symbol="angle-down-small"
+				/>
+			)}
 		</>
+	);
+}
+
+function ShapePreview({shape}: {shape: ShapeTool}) {
+	return (
+		<svg
+			aria-hidden="true"
+			className="editor-menu-preview"
+			focusable="false"
+			height={22}
+			viewBox="0 0 16 16"
+			width={22}
+		>
+			{shape === 'rectangle' && (
+				<rect fill="currentColor" height={8} width={14} x={1} y={4} />
+			)}
+
+			{shape === 'square' && (
+				<rect fill="currentColor" height={12} width={12} x={2} y={2} />
+			)}
+
+			{shape === 'circle' && (
+				<circle cx={8} cy={8} fill="currentColor" r={6} />
+			)}
+
+			{shape === 'arrow' && (
+				<>
+					<line
+						stroke="currentColor"
+						strokeLinecap="round"
+						strokeWidth={2}
+						x1={2}
+						x2={10}
+						y1={8}
+						y2={8}
+					/>
+
+					<polygon fill="currentColor" points="15,8 9,11 9,5" />
+				</>
+			)}
+		</svg>
 	);
 }
 
@@ -80,11 +152,13 @@ export function AnnotatePanel({area, dispatch, onAnnounce}: Props) {
 
 	const [textDialogOpen, setTextDialogOpen] = useState(false);
 
+	const [shapeMenuOpen, setShapeMenuOpen] = useState(false);
+
 	const [rovingIndex, setRovingIndex] = useState(0);
 
 	const panelRef = useRef<HTMLDivElement>(null);
 
-	const controls = ['text'];
+	const controls = ['text', 'shapes'];
 
 	const indexOf = (control: string) => controls.indexOf(control);
 
@@ -95,16 +169,32 @@ export function AnnotatePanel({area, dispatch, onAnnounce}: Props) {
 			return;
 		}
 
+		const isMenu = origin.hasAttribute('data-menu-trigger');
+
 		let index = Number(origin.getAttribute('data-index'));
 
 		switch (event.key) {
 			case 'ArrowDown':
+				if (isMenu) {
+					return;
+				}
+
+				index = Math.min(index + 1, controls.length - 1);
+				break;
+
 			case 'ArrowRight':
 				index = Math.min(index + 1, controls.length - 1);
 				break;
 
-			case 'ArrowLeft':
 			case 'ArrowUp':
+				if (isMenu) {
+					return;
+				}
+
+				index = Math.max(index - 1, 0);
+				break;
+
+			case 'ArrowLeft':
 				index = Math.max(index - 1, 0);
 				break;
 
@@ -155,6 +245,71 @@ export function AnnotatePanel({area, dispatch, onAnnounce}: Props) {
 		focusOverlay(editorRoot, overlay.id, delay);
 	};
 
+	const addRectangle = () =>
+		add({
+			color: '#0b5fff',
+			height: Math.round(area.height * 0.15),
+			id: nextId('shape'),
+			kind: 'shape',
+			width: Math.round(area.width * 0.25),
+			x: Math.round(centerX - area.width * 0.125),
+			y: Math.round(centerY - area.height * 0.075),
+		});
+
+	const addSquare = () => {
+		const size = Math.round(Math.min(area.width, area.height) * 0.2);
+
+		add({
+			color: '#0b5fff',
+			height: size,
+			id: nextId('shape'),
+			kind: 'shape',
+			width: size,
+			x: Math.round(centerX - size / 2),
+			y: Math.round(centerY - size / 2),
+		});
+	};
+
+	const addCircle = () => {
+		const size = Math.round(Math.min(area.width, area.height) * 0.2);
+
+		add({
+			color: '#0b5fff',
+			height: size,
+			id: nextId('circle'),
+			kind: 'circle',
+			width: size,
+			x: Math.round(centerX - size / 2),
+			y: Math.round(centerY - size / 2),
+		});
+	};
+
+	const addArrow = () => {
+		const length = Math.round(Math.min(area.width, area.height) * 0.3);
+
+		add({
+			color: '#0b5fff',
+			dx: length,
+			dy: 0,
+			head: 'filled',
+			id: nextId('arrow'),
+			kind: 'arrow',
+			thickness: Math.max(
+				2,
+				Math.round(Math.min(area.width, area.height) * 0.012)
+			),
+			x: Math.round(centerX - length / 2),
+			y: centerY,
+		});
+	};
+
+	const ADD_SHAPE: Record<ShapeTool, () => void> = {
+		arrow: addArrow,
+		circle: addCircle,
+		rectangle: addRectangle,
+		square: addSquare,
+	};
+
 	return (
 		<EditorSection
 			title={Liferay.Language.get('annotate')}
@@ -177,6 +332,42 @@ export function AnnotatePanel({area, dispatch, onAnnounce}: Props) {
 						label={Liferay.Language.get('text')}
 					/>
 				</ClayButton>
+
+				<ClayDropDown
+					active={shapeMenuOpen}
+					menuElementAttrs={{className: 'editor-menu-popover'}}
+					onActiveChange={setShapeMenuOpen}
+					trigger={
+						<ClayButton
+							{...rovingProps(indexOf('shapes'))}
+							aria-label={Liferay.Language.get('add-shape')}
+							className="editor-tool-tile"
+							data-menu-trigger
+							displayType="secondary"
+						>
+							<ToolTile
+								icon="squares"
+								label={Liferay.Language.get('shape')}
+								menu
+							/>
+						</ClayButton>
+					}
+				>
+					<MenuGrid
+						choices={SHAPE_TOOLS.map((shape) => ({
+							art: <ShapePreview shape={shape} />,
+							id: shape,
+							label: SHAPE_LABELS[shape],
+						}))}
+						columns={4}
+						label={Liferay.Language.get('add-shape')}
+						onChoose={(shape) => {
+							setShapeMenuOpen(false);
+
+							ADD_SHAPE[shape as ShapeTool]();
+						}}
+					/>
+				</ClayDropDown>
 			</div>
 
 			<TextDialog

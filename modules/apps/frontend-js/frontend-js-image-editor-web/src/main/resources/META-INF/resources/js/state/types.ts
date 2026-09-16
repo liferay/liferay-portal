@@ -33,12 +33,50 @@ export const RATIO_VALUES: Record<
 
 export type AdjustmentKey = keyof Adjustments;
 
+export type ArrowHead = 'filled' | 'open';
+
+export interface ArrowOverlay {
+	color: string;
+
+	dx: number;
+
+	dy: number;
+
+	head: ArrowHead;
+	id: string;
+	kind: 'arrow';
+	opacity?: number;
+
+	thickness: number;
+
+	x: number;
+	y: number;
+}
+
 export interface Adjustments {
 	brightness: number;
 	contrast: number;
 	highlights: number;
 	saturation: number;
 	shadows: number;
+}
+
+export interface CircleOverlay {
+	borderColor?: string;
+	borderWidth?: number;
+	color: string;
+
+	height: number;
+	id: string;
+	kind: 'circle';
+	opacity?: number;
+	rotation?: number;
+
+	sketchSeed?: number;
+
+	width: number;
+	x: number;
+	y: number;
 }
 
 export interface CropRect {
@@ -123,7 +161,7 @@ interface HistoryEntry {
 	state: EditState;
 }
 
-export type Overlay = TextOverlay;
+export type Overlay = ArrowOverlay | CircleOverlay | ShapeOverlay | TextOverlay;
 
 export type RatioPreset =
 	| '1:1'
@@ -135,6 +173,24 @@ export type RatioPreset =
 	| 'original';
 
 type Rotation = 0 | 90 | 180 | 270;
+
+export interface ShapeOverlay {
+	borderColor?: string;
+	borderWidth?: number;
+	color: string;
+
+	height: number;
+	id: string;
+	kind: 'shape';
+	opacity?: number;
+	rotation?: number;
+
+	sketchSeed?: number;
+
+	width: number;
+	x: number;
+	y: number;
+}
 
 export interface TextOverlay {
 	color: string;
@@ -156,4 +212,10 @@ export function rotatedSize(state: EditState): {
 	return state.rotation % 180 === 0
 		? {height: state.sourceHeight, width: state.sourceWidth}
 		: {height: state.sourceWidth, width: state.sourceHeight};
+}
+
+export function isBoxOverlay(
+	overlay: Overlay
+): overlay is CircleOverlay | ShapeOverlay {
+	return overlay.kind === 'circle' || overlay.kind === 'shape';
 }

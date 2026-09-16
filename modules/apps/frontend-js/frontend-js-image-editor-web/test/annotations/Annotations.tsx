@@ -4,7 +4,7 @@
  */
 
 import {ClayIconSpriteContext} from '@clayui/icon';
-import {act, fireEvent, render, screen} from '@testing-library/react';
+import {act, fireEvent, render, screen, within} from '@testing-library/react';
 import React, {useReducer, useState} from 'react';
 
 import '@testing-library/jest-dom';
@@ -278,5 +278,269 @@ describe('text annotations', () => {
 		expect(classes.indexOf('crop-dim')).toBeGreaterThan(
 			classes.indexOf('crop-move')
 		);
+	});
+});
+
+/**
+ * Shapes live behind a menu of drawings, so adding one is two steps: open
+ * the menu, then pick the cell. The cells are named rather than labelled
+ * in text, and the query goes through the grid because the same name also
+ * belongs to the stage node it creates.
+ */
+function addShape(shape: string) {
+	fireEvent.click(screen.getByRole('button', {name: 'add-shape'}));
+
+	fireEvent.click(
+		within(screen.getByRole('grid', {name: 'add-shape'})).getByRole(
+			'button',
+			{name: shape}
+		)
+	);
+}
+
+const shape = (container: HTMLElement) =>
+	container.querySelector(
+		'.editor-workspace rect[fill]:not([class])'
+	) as SVGRectElement;
+
+describe('shapes and arrows', () => {
+	it('offers the rectangle, the square, the circle and the arrow from one menu', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		expect(shape(container)).toHaveAttribute('width', '300');
+		expect(shape(container)).toHaveAttribute('height', '120');
+		expect(hit(container)).toHaveAttribute('aria-label', 'rectangle');
+
+		addShape('square');
+
+		const squares = container.querySelectorAll(
+			'.editor-workspace rect[fill]:not([class])'
+		);
+
+		expect(squares[1].getAttribute('width')).toBe(
+			squares[1].getAttribute('height')
+		);
+
+		addShape('circle');
+
+		expect(
+			container.querySelectorAll('.editor-workspace ellipse')
+		).toHaveLength(1);
+
+		addShape('arrow');
+
+		expect(
+			container.querySelectorAll('.editor-workspace polygon')
+		).toHaveLength(1);
+		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(4);
+	});
+
+	it('centers a new shape on the crop, not on the image', () => {
+		const {container} = render(<AnnotationHarness start={cropped} />);
+
+		addShape('circle');
+
+		const target = hit(container);
+
+		const centerX =
+			Number(target.getAttribute('x')) +
+			Number(target.getAttribute('width')) / 2;
+		const centerY =
+			Number(target.getAttribute('y')) +
+			Number(target.getAttribute('height')) / 2;
+
+		// Center of the crop (900, 600), not of the image (600, 400).
+
+		expect(Math.round(centerX)).toBe(900);
+		expect(Math.round(centerY)).toBe(600);
+	});
+
+	it('resizes a rectangle from a corner, and keeps the proportions with Shift', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		fireEvent.focus(hit(container));
+
+		// Four corners, four edges and the rotation knob.
+
+		const handles = container.querySelectorAll('.object-handle');
+
+		expect(handles).toHaveLength(9);
+
+		// The bottom right corner sits at (750, 460); dragging it 50 by
+		// 20 screen pixels at 50% zoom moves it 100 by 40 image pixels,
+		// and the box grows from its center on both sides.
+
+		const corner = handles[2];
+
+		fireEvent.pointerDown(corner, {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(corner, {clientX: 50, clientY: 20});
+		fireEvent.pointerUp(corner);
+
+		expect(shape(container)).toHaveAttribute('width', '500');
+		expect(shape(container)).toHaveAttribute('height', '200');
+		expect(shape(container)).toHaveAttribute('x', '350');
+
+		fireEvent.pointerDown(corner, {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(corner, {
+			clientX: 50,
+			clientY: 0,
+			shiftKey: true,
+		});
+		fireEvent.pointerUp(corner);
+
+		const width = Number(shape(container).getAttribute('width'));
+		const height = Number(shape(container).getAttribute('height'));
+
+		expect(width / height).toBeCloseTo(2.5, 1);
+	});
+
+	it('stretches one side from an edge handle and anchors the other', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		fireEvent.focus(hit(container));
+
+		// The east edge handle sits at (750, 400).
+
+		const edge = container.querySelectorAll('.object-handle')[5];
+
+		fireEvent.pointerDown(edge, {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(edge, {clientX: 50, clientY: 30});
+		fireEvent.pointerUp(edge);
+
+		expect(shape(container)).toHaveAttribute('width', '400');
+		expect(shape(container)).toHaveAttribute('height', '120');
+		expect(shape(container)).toHaveAttribute('x', '450');
+	});
+
+	it('rotates a rectangle with the knob, snapping to 15 degrees with Shift', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		fireEvent.focus(hit(container));
+
+		// The knob hangs 48 image pixels above the top edge, at (600, 292);
+		// swinging it to the right of the center is a quarter turn.
+
+		const knob = container.querySelector(
+			'.object-handle-rotate'
+		) as SVGCircleElement;
+
+		fireEvent.pointerDown(knob, {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(knob, {clientX: 54, clientY: 54});
+
+		expect(
+			shape(container).closest('g[transform]')?.getAttribute('transform')
+		).toBe('rotate(90 600 400)');
+
+		fireEvent.pointerMove(knob, {clientX: 54, clientY: 50, shiftKey: true});
+		fireEvent.pointerUp(knob);
+
+		expect(
+			shape(container).closest('g[transform]')?.getAttribute('transform')
+		).toBe('rotate(90 600 400)');
+
+		fireEvent.click(screen.getByRole('button', {name: 'undo'}));
+
+		expect(shape(container).closest('g[transform]')).toBeNull();
+	});
+
+	it('aims an arrow by its tip and leaves the tail where it was', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('arrow');
+
+		fireEvent.focus(hit(container));
+
+		const ends = container.querySelectorAll('.object-handle');
+
+		expect(ends).toHaveLength(2);
+
+		// The tip sits at (720, 400); 50 screen pixels down is 100 image
+		// pixels down.
+
+		fireEvent.pointerDown(ends[1], {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(ends[1], {clientX: 0, clientY: 50});
+		fireEvent.pointerUp(ends[1]);
+
+		const shaft = container.querySelector(
+			'.editor-workspace line[stroke-linecap="round"]'
+		) as SVGLineElement;
+
+		expect(shaft).toHaveAttribute('x1', '480');
+		expect(shaft).toHaveAttribute('y1', '400');
+		expect(
+			container.querySelector('.editor-workspace polygon')
+		).toHaveAttribute('points', expect.stringMatching(/^720,500/));
+
+		// The tail pivots on the tip.
+
+		fireEvent.pointerDown(ends[0], {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(ends[0], {clientX: -50, clientY: 0});
+		fireEvent.pointerUp(ends[0]);
+
+		expect(shaft).toHaveAttribute('x1', '380');
+		expect(
+			container.querySelector('.editor-workspace polygon')
+		).toHaveAttribute('points', expect.stringMatching(/^720,500/));
+	});
+
+	it('reverts a cancelled resize entirely', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		fireEvent.focus(hit(container));
+
+		const corner = container.querySelectorAll('.object-handle')[2];
+
+		fireEvent.pointerDown(corner, {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(corner, {clientX: 50, clientY: 20});
+
+		expect(shape(container)).toHaveAttribute('width', '500');
+
+		fireEvent.pointerCancel(corner);
+
+		expect(shape(container)).toHaveAttribute('width', '300');
+	});
+
+	it('roves a single tab stop through the annotate controls', () => {
+		render(<AnnotationHarness />);
+
+		const addText = screen.getByRole('button', {name: 'add-text'});
+
+		addText.focus();
+
+		fireEvent.keyDown(addText, {key: 'ArrowRight'});
+
+		expect(document.activeElement).toHaveAccessibleName('add-shape');
+
+		// One tab stop for the whole panel, wherever the roving index
+		// happens to be sitting.
+
+		expect(
+			document.querySelectorAll(
+				'.editor-annotate-actions [data-index][tabindex="0"]'
+			)
+		).toHaveLength(1);
+
+		// On a menu button the vertical arrows belong to the menu, so
+		// they must not walk the panel.
+
+		fireEvent.keyDown(document.activeElement as Element, {
+			key: 'ArrowUp',
+		});
+
+		expect(document.activeElement).toHaveAccessibleName('add-shape');
+
+		fireEvent.keyDown(document.activeElement as Element, {key: 'Home'});
+
+		expect(document.activeElement).toHaveAccessibleName('add-text');
 	});
 });

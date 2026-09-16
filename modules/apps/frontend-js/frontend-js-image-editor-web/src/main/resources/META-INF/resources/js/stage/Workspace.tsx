@@ -96,7 +96,7 @@ export function Workspace({
 			onPointerDown={(event) => {
 				if (
 					!(event.target as Element).closest(
-						'.overlay-hit, .overlay-text-editor'
+						'.overlay-hit, .object-handles, .overlay-text-editor'
 					)
 				) {
 					onSelectOverlay(null);

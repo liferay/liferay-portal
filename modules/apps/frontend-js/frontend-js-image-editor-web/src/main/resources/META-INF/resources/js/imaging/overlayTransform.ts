@@ -156,6 +156,24 @@ export function similarityOf(matrix: Matrix): {
 
 const round = (value: number) => Math.round(value * 100) / 100;
 
+function foldBoxRotation(
+	width: number,
+	height: number,
+	rotation: number
+): {height: number; rotation: number; width: number} {
+	let folded = ((rotation % 360) + 360) % 360;
+	let w = width;
+	let h = height;
+
+	while (folded >= 90) {
+		folded -= 90;
+
+		[w, h] = [h, w];
+	}
+
+	return {height: h, rotation: round(folded), width: w};
+}
+
 function foldRotation(rotation: number, degrees: number): number | undefined {
 	return round((((rotation + degrees) % 360) + 360) % 360) || undefined;
 }
@@ -168,6 +186,44 @@ export function transformOverlay(overlay: Overlay, matrix: Matrix): Overlay {
 	}
 
 	switch (overlay.kind) {
+		case 'arrow': {
+			const [x, y] = applyToPoint(matrix, overlay.x, overlay.y);
+			const [dx, dy] = applyToVector(matrix, overlay.dx, overlay.dy);
+
+			return {
+				...overlay,
+				dx: round(dx),
+				dy: round(dy),
+				thickness: round(overlay.thickness * scale),
+				x: round(x),
+				y: round(y),
+			};
+		}
+
+		case 'circle':
+		case 'shape': {
+			const [cx, cy] = applyToPoint(
+				matrix,
+				overlay.x + overlay.width / 2,
+				overlay.y + overlay.height / 2
+			);
+
+			const folded = foldBoxRotation(
+				overlay.width * scale,
+				overlay.height * scale,
+				(overlay.rotation ?? 0) + degrees
+			);
+
+			return {
+				...overlay,
+				height: round(folded.height),
+				rotation: folded.rotation || undefined,
+				width: round(folded.width),
+				x: round(cx - folded.width / 2),
+				y: round(cy - folded.height / 2),
+			};
+		}
+
 		case 'text': {
 			const center = overlayCenter(overlay);
 
