@@ -25,7 +25,7 @@ import {EditorAction} from '../state/editorReducer';
 import {nextId} from '../state/ids';
 import {CropRect, Overlay} from '../state/types';
 import {MenuGrid} from './MenuGrid';
-import {TextDialog} from './TextDialog';
+import {TEXT_DIALOG_CLOSE_MS, TextDialog} from './TextDialog';
 
 const SHAPE_COLOR = '#0b5fff';
 
@@ -363,7 +363,7 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 									2,
 							y: centerY,
 						},
-						450
+						TEXT_DIALOG_CLOSE_MS
 					)
 				}
 				onOpenChange={setTextDialogOpen}

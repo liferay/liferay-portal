@@ -13,6 +13,10 @@ import {nextId} from '../state/ids';
 import {TextOverlay} from '../state/types';
 import {FONT_FAMILIES} from './textFonts';
 
+export const TEXT_DIALOG_OPEN_MS = 350;
+
+export const TEXT_DIALOG_CLOSE_MS = 450;
+
 interface Props {
 	onAdd: (overlay: Omit<TextOverlay, 'x' | 'y'>) => void;
 	onOpenChange: (open: boolean) => void;
@@ -46,7 +50,7 @@ export function TextDialog({onAdd, onOpenChange, open}: Props) {
 			) {
 				inputRef.current?.focus();
 			}
-		}, 350);
+		}, TEXT_DIALOG_OPEN_MS);
 
 		return () => window.clearTimeout(id);
 	}, [open]);
