@@ -71,7 +71,9 @@ function get_gradle_property {
 
 	if [[ -z ${value} ]]
 	then
-		_die "Property \"${key}\" was not found."
+		_print_error "Property \"${key}\" was not found."
+
+		return 1
 	fi
 
 	echo "${value}"
