@@ -134,7 +134,9 @@ describe('[CMS Dashboard] NeedsReview', () => {
 
 		const {from, to} = dateReviewFilter.selectedData;
 
-		expect(to.day).toBe(from.day);
+		expect(to.day).toBe(
+			Math.min(from.day, new Date(to.year, to.month, 0).getDate())
+		);
 		expect((to.year - from.year) * 12 + (to.month - from.month)).toBe(1);
 	});
 
