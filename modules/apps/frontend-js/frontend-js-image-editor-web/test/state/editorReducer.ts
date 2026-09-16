@@ -468,7 +468,10 @@ describe('overlays', () => {
 
 		expect(state.present.overlays[0]).toMatchObject({id: 'text-1', x: 200});
 
-		state = editorReducer(state, {id: 'text-1', type: 'remove-overlay'});
+		state = editorReducer(state, {
+			ids: ['text-1'],
+			type: 'remove-overlays',
+		});
 
 		expect(state.present.overlays).toHaveLength(0);
 		expect(state.past).toHaveLength(3);

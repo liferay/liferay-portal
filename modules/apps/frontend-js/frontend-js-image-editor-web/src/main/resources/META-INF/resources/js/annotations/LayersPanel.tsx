@@ -194,7 +194,7 @@ export function LayersPanel({
 			return;
 		}
 
-		dispatch({id: overlay.id, type: 'remove-overlay'});
+		dispatch({ids: [overlay.id], type: 'remove-overlays'});
 
 		onAnnounce(
 			sub(

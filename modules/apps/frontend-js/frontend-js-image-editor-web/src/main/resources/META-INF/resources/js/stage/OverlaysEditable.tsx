@@ -260,7 +260,7 @@ export function OverlaysEditable({
 
 				const overlay = current(id);
 
-				dispatch({id, type: 'remove-overlay'});
+				dispatch({ids: [id], type: 'remove-overlays'});
 
 				if (overlay) {
 					onAnnounce(

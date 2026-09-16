@@ -41,7 +41,6 @@ export type EditorAction =
 			type: 'move-overlays';
 	  }
 	| {type: 'redo'}
-	| {id: string; type: 'remove-overlay'}
 	| {ids: string[]; type: 'remove-overlays'}
 	| {type: 'reset-adjustments'}
 	| {type: 'rotate-90'}
@@ -214,19 +213,6 @@ export function editorReducer(
 					...present,
 					overlays: present.overlays.filter(
 						(overlay) => !removing.has(overlay.id)
-					),
-				},
-				Liferay.Language.get('annotation')
-			);
-		}
-
-		case 'remove-overlay': {
-			return applyEdit(
-				history,
-				{
-					...present,
-					overlays: present.overlays.filter(
-						(overlay) => overlay.id !== action.id
 					),
 				},
 				Liferay.Language.get('annotation')
