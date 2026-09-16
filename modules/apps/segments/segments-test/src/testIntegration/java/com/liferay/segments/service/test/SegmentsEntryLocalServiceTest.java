@@ -120,6 +120,7 @@ public class SegmentsEntryLocalServiceTest {
 			segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 			segmentsEntry.getDescriptionMap(), true,
 			segmentsEntry.getCriteria(),
+			segmentsEntry.getType(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertFalse(segmentsEntry.isActive());
@@ -874,6 +875,7 @@ public class SegmentsEntryLocalServiceTest {
 			_segmentsEntryLocalService.updateSegmentsEntry(
 				null, segmentsEntry.getSegmentsEntryId(), segmentsEntryKey,
 				nameMap, descriptionMap, false, criteria,
+				segmentsEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(
@@ -907,6 +909,7 @@ public class SegmentsEntryLocalServiceTest {
 			segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 			segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
 			segmentsEntry.getCriteria(),
+			segmentsEntry.getType(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
@@ -930,6 +933,7 @@ public class SegmentsEntryLocalServiceTest {
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
 				segmentsEntry.getCriteria(),
+				segmentsEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId())));
 	}
 
@@ -949,6 +953,7 @@ public class SegmentsEntryLocalServiceTest {
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
 				segmentsEntry.getCriteria(),
+				segmentsEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(
@@ -972,6 +977,7 @@ public class SegmentsEntryLocalServiceTest {
 				null, segmentsEntry.getSegmentsEntryId(), segmentsEntryKey,
 				segmentsEntry.getNameMap(), segmentsEntry.getDescriptionMap(),
 				segmentsEntry.isActive(), segmentsEntry.getCriteria(),
+				segmentsEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId())));
 	}
 
@@ -995,6 +1001,7 @@ public class SegmentsEntryLocalServiceTest {
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), false,
 				CriteriaSerializer.serialize(new Criteria()),
+				segmentsEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(
@@ -1021,6 +1028,7 @@ public class SegmentsEntryLocalServiceTest {
 				segmentsEntry.getSegmentsEntryKey(), segmentsEntry.getNameMap(),
 				segmentsEntry.getDescriptionMap(), false,
 				CriteriaSerializer.serialize(criteria),
+				segmentsEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(
