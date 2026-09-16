@@ -9,6 +9,7 @@ import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.list.constants.AssetListConstants;
 import com.liferay.asset.util.AssetRendererFactoryClassProvider;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
@@ -92,11 +93,7 @@ public class AssetListEntryExportImportContentProcessor
 			String defaultClassName = _fetchClassName(
 				defaultClassNameId, stagedModel);
 
-			if (defaultClassName == null) {
-				unicodeProperties.setProperty(
-					"anyAssetType", Boolean.TRUE.toString());
-			}
-			else {
+			if (defaultClassName != null) {
 				unicodeProperties.setProperty(
 					"anyAssetTypeClassName", defaultClassName);
 			}
@@ -235,13 +232,27 @@ public class AssetListEntryExportImportContentProcessor
 						return null;
 					})));
 
-		long[] classNameIds = TransformUtil.transformToLongArray(
-			Arrays.asList(
-				StringUtil.split(unicodeProperties.getProperty("classNames"))),
-			className -> _portal.getClassNameId(className));
+		String classNames = unicodeProperties.getProperty("classNames");
 
-		unicodeProperties.setProperty(
-			"classNameIds", StringUtil.merge(classNameIds));
+		if (Validator.isNotNull(classNames) ||
+			!Objects.equals(
+				unicodeProperties.getProperty("anyAssetType"),
+				Boolean.FALSE.toString())) {
+
+			unicodeProperties.setProperty(
+				"classNameIds",
+				StringUtil.merge(
+					TransformUtil.transformToLongArray(
+						Arrays.asList(StringUtil.split(classNames)),
+						className -> _portal.getClassNameId(className))));
+		}
+		else if (Validator.isNotNull(
+					unicodeProperties.getProperty("classNameIds"))) {
+
+			unicodeProperties.setProperty(
+				"classNameIds",
+				String.valueOf(AssetListConstants.CLASS_NAME_ID_NONEXISTENT));
+		}
 
 		String anyAssetTypeClassName = unicodeProperties.getProperty(
 			"anyAssetTypeClassName");
@@ -250,6 +261,17 @@ public class AssetListEntryExportImportContentProcessor
 			unicodeProperties.setProperty(
 				"anyAssetType",
 				String.valueOf(_portal.getClassNameId(anyAssetTypeClassName)));
+		}
+		else {
+			long defaultClassNameId = GetterUtil.getLong(
+				unicodeProperties.getProperty("anyAssetType"));
+
+			if (defaultClassNameId > 0) {
+				unicodeProperties.setProperty(
+					"anyAssetType",
+					String.valueOf(
+						AssetListConstants.CLASS_NAME_ID_NONEXISTENT));
+			}
 		}
 
 		Map<Long, Long> ddmStructureIds =

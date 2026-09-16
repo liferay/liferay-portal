@@ -10,6 +10,8 @@ package com.liferay.asset.list.constants;
  */
 public class AssetListConstants {
 
+	public static final long CLASS_NAME_ID_NONEXISTENT = -1;
+
 	public static final String RESOURCE_NAME = "com.liferay.asset.list";
 
 	public static final String SERVICE_NAME = "com.liferay.asset.list";
