@@ -26,6 +26,10 @@ export function multiply(first: Matrix, second: Matrix): Matrix {
 	];
 }
 
+export function scaleAround(factor: number, x: number, y: number): Matrix {
+	return [factor, 0, 0, factor, x * (1 - factor), y * (1 - factor)];
+}
+
 export function invert(matrix: Matrix): Matrix {
 	const [a, b, c, d, tx, ty] = matrix;
 

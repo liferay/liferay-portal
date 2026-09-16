@@ -183,6 +183,21 @@ const cropped = () =>
 		type: 'set-crop',
 	});
 
+const withStroke = () =>
+	editorReducer(initialHistory(IMAGE.width, IMAGE.height), {
+		overlay: {
+			color: '#0b5fff',
+			id: 'stroke-1',
+			kind: 'stroke',
+			points: [0, 0, 200, 100],
+			smooth: false,
+			width: 10,
+			x: 300,
+			y: 400,
+		},
+		type: 'add-overlay',
+	});
+
 const hit = (container: HTMLElement) =>
 	container.querySelector('.overlay-hit') as SVGRectElement;
 
@@ -1385,6 +1400,51 @@ describe('drawing', () => {
 		expect(stroke(container)).toBeNull();
 		expect(announce).toHaveBeenLastCalledWith('drawing-canceled');
 		expect(container.querySelector('.editor-workspace')).toHaveFocus();
+	});
+
+	it('scales a stroke from a corner, thickness and all', () => {
+		const {container} = render(<AnnotationHarness start={withStroke} />);
+
+		fireEvent.focus(hit(container));
+
+		const handles = container.querySelectorAll('.object-handle');
+
+		// Four corners and the rotation knob: a stroke has no edges to
+		// stretch, so it scales as a whole.
+
+		expect(handles).toHaveLength(5);
+
+		fireEvent.pointerDown(handles[2], {clientX: 0, clientY: 0});
+		fireEvent.pointerMove(handles[2], {clientX: 50, clientY: 20});
+		fireEvent.pointerUp(handles[2]);
+
+		const path = stroke(container);
+
+		const [x2, y2] = path
+			.getAttribute('d')!
+			.replace('M0 0 L', '')
+			.split(' ')
+			.map(Number);
+
+		expect(x2).toBeGreaterThan(200);
+		expect(x2 / 200).toBeCloseTo(y2 / 100, 2);
+
+		expect(Number(path.getAttribute('stroke-width'))).toBeCloseTo(
+			(10 * x2) / 200,
+			0
+		);
+
+		// The center holds, so the stroke grows around what it marks.
+
+		const [x, y] = path
+			.getAttribute('transform')!
+			.replace('translate(', '')
+			.replace(')', '')
+			.split(' ')
+			.map(Number);
+
+		expect(x + x2 / 2).toBeCloseTo(400, 0);
+		expect(y + y2 / 2).toBeCloseTo(450, 0);
 	});
 
 	it('places pen points with clicks and finishes on the last one', async () => {

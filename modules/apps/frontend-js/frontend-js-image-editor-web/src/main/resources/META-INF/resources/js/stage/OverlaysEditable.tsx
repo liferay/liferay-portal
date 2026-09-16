@@ -16,13 +16,35 @@ import {
 	overlayLabel,
 	overlayRotation,
 	overlayTransform,
-	textWidth,
 } from '../imaging/overlayShapes';
+import {scaleAround, transformOverlay} from '../imaging/overlayTransform';
+import {pointsBounds} from '../imaging/strokeGeometry';
 import {EditorAction} from '../state/editorReducer';
 import {ArrowOverlay, Overlay, isBoxOverlay} from '../state/types';
 import {FocusModality, FocusRing, matchesFocusVisible} from './FocusRing';
 import {OverlayTextEditor} from './OverlayTextEditor';
 import {focusOverlayNode} from './focusOverlayNode';
+
+const MINIMUM_SIZE = 8;
+
+function scalableSize(overlay: Overlay): number {
+	switch (overlay.kind) {
+		case 'arrow':
+			return Infinity;
+
+		case 'stroke': {
+			const box = pointsBounds(overlay.points);
+
+			return Math.max(box.width, box.height) || 1;
+		}
+
+		case 'text':
+			return overlay.fontSize;
+
+		default:
+			return Math.min(overlay.width, overlay.height);
+	}
+}
 
 function toLocalDelta(
 	dx: number,
@@ -703,47 +725,20 @@ export function OverlaysEditable({
 		}
 
 		// Corner resize, anchored at the center so the geometry stays
-		// stable under rotation. Boxes resize freely by default and keep
-		// their proportions with Shift, matching the crop; text scales
-		// proportionally because its size is a single value.
+		// stable under rotation. A box resizes freely by default and
+		// keeps its proportions with Shift, matching the crop; everything
+		// else scales as a whole, the same way a turn of the picture
+		// scales it.
 
-		const scale = Math.max(
-			Math.hypot(pointX - centerX, pointY - centerY) /
-				gesture.startDistance,
-			0.05
-		);
-
-		if (overlay.kind === 'text') {
-			const fontSize = Math.max(Math.round(overlay.fontSize * scale), 8);
-
-			// Keep the estimated text box centered while it scales.
-
-			dispatch({
-				id: gesture.id,
-				patch: {
-					fontSize,
-					x:
-						centerX -
-						textWidth(overlay.text, overlay.fontFamily, fontSize) /
-							2,
-					y: centerY + 0.4 * fontSize,
-				},
-				transient: true,
-				type: 'update-overlay',
-			});
-		}
-		else if (isBoxOverlay(overlay)) {
-			let width;
-			let height;
-
-			if (event.shiftKey || proportional) {
-				width = Math.max(overlay.width * scale, 8);
-				height = Math.max(overlay.height * scale, 8);
-			}
-			else {
-				width = Math.max(Math.abs(pointX - centerX) * 2, 8);
-				height = Math.max(Math.abs(pointY - centerY) * 2, 8);
-			}
+		if (isBoxOverlay(overlay) && !(event.shiftKey || proportional)) {
+			const height = Math.max(
+				Math.abs(pointY - centerY) * 2,
+				MINIMUM_SIZE
+			);
+			const width = Math.max(
+				Math.abs(pointX - centerX) * 2,
+				MINIMUM_SIZE
+			);
 
 			dispatch({
 				id: gesture.id,
@@ -756,7 +751,25 @@ export function OverlaysEditable({
 				transient: true,
 				type: 'update-overlay',
 			});
+
+			return;
 		}
+
+		const factor = Math.max(
+			Math.hypot(pointX - centerX, pointY - centerY) /
+				gesture.startDistance,
+			MINIMUM_SIZE / scalableSize(overlay)
+		);
+
+		dispatch({
+			id: gesture.id,
+			patch: transformOverlay(
+				overlay,
+				scaleAround(factor, centerX, centerY)
+			),
+			transient: true,
+			type: 'update-overlay',
+		});
 	};
 
 	const handleManipulationUp = () => {
