@@ -19,15 +19,17 @@ import {
 	ShapeTool,
 	isShapeTool,
 } from '../editorConfig';
-import {overlayLabel, textWidth} from '../imaging/overlayShapes';
+import {
+	DEFAULT_ANNOTATION_COLOR,
+	overlayLabel,
+	textWidth,
+} from '../imaging/overlayShapes';
 import {focusOverlayNode} from '../stage/focusOverlayNode';
 import {EditorAction} from '../state/editorReducer';
 import {nextId} from '../state/ids';
 import {CropRect, Overlay} from '../state/types';
 import {MenuGrid} from './MenuGrid';
 import {TEXT_DIALOG_CLOSE_MS, TextDialog} from './TextDialog';
-
-const SHAPE_COLOR = '#0b5fff';
 
 const SHAPE_LABELS: Record<ShapeTool, string> = {
 	arrow: Liferay.Language.get('arrow'),
@@ -240,7 +242,7 @@ export function AnnotatePanel({
 
 	const addRectangle = () =>
 		add({
-			color: SHAPE_COLOR,
+			color: DEFAULT_ANNOTATION_COLOR,
 			height: Math.round(area.height * 0.15),
 			id: nextId('shape'),
 			kind: 'shape',
@@ -253,7 +255,7 @@ export function AnnotatePanel({
 		const size = Math.round(Math.min(area.width, area.height) * 0.2);
 
 		add({
-			color: SHAPE_COLOR,
+			color: DEFAULT_ANNOTATION_COLOR,
 			height: size,
 			id: nextId('shape'),
 			kind: 'shape',
@@ -267,7 +269,7 @@ export function AnnotatePanel({
 		const size = Math.round(Math.min(area.width, area.height) * 0.2);
 
 		add({
-			color: SHAPE_COLOR,
+			color: DEFAULT_ANNOTATION_COLOR,
 			height: size,
 			id: nextId('circle'),
 			kind: 'circle',
@@ -281,7 +283,7 @@ export function AnnotatePanel({
 		const length = Math.round(Math.min(area.width, area.height) * 0.3);
 
 		add({
-			color: SHAPE_COLOR,
+			color: DEFAULT_ANNOTATION_COLOR,
 			dx: length,
 			dy: 0,
 			head: 'filled',

@@ -20,6 +20,8 @@ import {
 	sketchyRectPath,
 } from './strokeGeometry';
 
+export const DEFAULT_ANNOTATION_COLOR = '#0b5fff';
+
 export const DEFAULT_BORDER_COLOR = '#272833';
 
 let measureContext: CanvasRenderingContext2D | null | undefined;

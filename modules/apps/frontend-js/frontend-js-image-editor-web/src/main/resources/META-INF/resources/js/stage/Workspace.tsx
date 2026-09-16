@@ -12,10 +12,11 @@ import {FilterDefs, isIdentityFilter} from '../imaging/FilterDefs';
 import {FrameShape} from '../imaging/frameShapes';
 import {imageTransform} from '../imaging/geometry';
 import {LoadedImage} from '../imaging/loadImage';
+import {DEFAULT_ANNOTATION_COLOR} from '../imaging/overlayShapes';
 import {EditorAction} from '../state/editorReducer';
 import {EditState, rotatedSize} from '../state/types';
 import {CropMarquee} from './CropMarquee';
-import {DrawResult, DrawSurface} from './DrawSurface';
+import {DrawResult, DrawSurface, strokeWidthFor} from './DrawSurface';
 import {OverlaysEditable} from './OverlaysEditable';
 
 interface Props {
@@ -272,16 +273,11 @@ export function Workspace({
 					{drawing && onFinishDrawing && (
 						<DrawSurface
 							area={crop}
-							color="#0b5fff"
+							color={DEFAULT_ANNOTATION_COLOR}
 							guided={guidedDrawing}
 							onAnnounce={onAnnounce}
 							onFinish={onFinishDrawing}
-							width={Math.max(
-								3,
-								Math.round(
-									Math.min(crop.width, crop.height) * 0.008
-								)
-							)}
+							width={strokeWidthFor(crop)}
 							zoom={zoom}
 						/>
 					)}

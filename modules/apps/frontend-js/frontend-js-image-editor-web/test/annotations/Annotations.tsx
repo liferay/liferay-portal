@@ -28,7 +28,10 @@ import {
 } from '../../src/main/resources/META-INF/resources/js/editorConfig';
 import {useOverlaySelection} from '../../src/main/resources/META-INF/resources/js/hooks/useOverlaySelection';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
-import {DrawResult} from '../../src/main/resources/META-INF/resources/js/stage/DrawSurface';
+import {
+	DrawResult,
+	strokeFromDrawing,
+} from '../../src/main/resources/META-INF/resources/js/stage/DrawSurface';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
 	editorReducer,
@@ -77,30 +80,12 @@ function AnnotationHarness({
 	const finishDrawing = (result: DrawResult | null) => {
 		setDrawing(null);
 
-		if (!result) {
-			return;
+		if (result) {
+			dispatch({
+				overlay: strokeFromDrawing(result, history.present.crop),
+				type: 'add-overlay',
+			});
 		}
-
-		const xs = result.points.filter((_, index) => index % 2 === 0);
-		const ys = result.points.filter((_, index) => index % 2 === 1);
-		const minX = Math.min(...xs);
-		const minY = Math.min(...ys);
-
-		dispatch({
-			overlay: {
-				color: '#0b5fff',
-				id: `stroke-${history.present.overlays.length + 1}`,
-				kind: 'stroke',
-				points: result.points.map((value, index) =>
-					index % 2 === 0 ? value - minX : value - minY
-				),
-				smooth: result.smooth,
-				width: 3,
-				x: minX,
-				y: minY,
-			},
-			type: 'add-overlay',
-		});
 	};
 
 	const {

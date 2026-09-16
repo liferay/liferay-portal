@@ -25,11 +25,10 @@ import {useOverlaySelection} from './hooks/useOverlaySelection';
 import {useSaveController} from './hooks/useSaveController';
 import {anchoredScroll} from './imaging/geometry';
 import {LoadedImage} from './imaging/loadImage';
-import {DrawResult} from './stage/DrawSurface';
+import {DrawResult, strokeFromDrawing} from './stage/DrawSurface';
 import {Workspace} from './stage/Workspace';
 import {focusOverlayNode} from './stage/focusOverlayNode';
 import {redoLabel, undoLabel} from './state/editorReducer';
-import {nextId} from './state/ids';
 import {CropRect, EditState, rotatedSize} from './state/types';
 
 const STAGE_PADDING = 48;
@@ -161,39 +160,9 @@ function Editor({
 			return;
 		}
 
-		let minX = Infinity;
-		let minY = Infinity;
+		const overlay = strokeFromDrawing(result, state.crop);
 
-		for (let index = 0; index < result.points.length; index += 2) {
-			minX = Math.min(minX, result.points[index]);
-			minY = Math.min(minY, result.points[index + 1]);
-		}
-
-		const id = nextId('stroke');
-
-		dispatch({
-			overlay: {
-				color: '#0b5fff',
-				id,
-				kind: 'stroke',
-				points: result.points.map(
-					(value, index) =>
-						Math.round(
-							(value - (index % 2 === 0 ? minX : minY)) * 10
-						) / 10
-				),
-				smooth: result.smooth,
-				width: Math.max(
-					3,
-					Math.round(
-						Math.min(state.crop.width, state.crop.height) * 0.008
-					)
-				),
-				x: Math.round(minX),
-				y: Math.round(minY),
-			},
-			type: 'add-overlay',
-		});
+		dispatch({overlay, type: 'add-overlay'});
 
 		announce(
 			sub(
@@ -202,7 +171,7 @@ function Editor({
 			)
 		);
 
-		focusOverlayNode(() => editorRef.current ?? document, id);
+		focusOverlayNode(() => editorRef.current ?? document, overlay.id);
 	};
 
 	const [cropFramed, setCropFramed] = useState(false);

@@ -7,8 +7,14 @@ import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {useEditorId} from '../chrome/instance';
-import {pointsToPath, simplifyPoints} from '../imaging/strokeGeometry';
-import {CropRect} from '../state/types';
+import {DEFAULT_ANNOTATION_COLOR} from '../imaging/overlayShapes';
+import {
+	pointsBounds,
+	pointsToPath,
+	simplifyPoints,
+} from '../imaging/strokeGeometry';
+import {nextId} from '../state/ids';
+import {CropRect, StrokeOverlay} from '../state/types';
 
 const CAPTURE_SPACING = 3;
 
@@ -35,6 +41,32 @@ function DrawAnchor({x, y, zoom}: {x: number; y: number; zoom: number}) {
 export interface DrawResult {
 	points: number[];
 	smooth: boolean;
+}
+
+export function strokeWidthFor(area: CropRect): number {
+	return Math.max(3, Math.round(Math.min(area.width, area.height) * 0.008));
+}
+
+export function strokeFromDrawing(
+	result: DrawResult,
+	area: CropRect
+): StrokeOverlay {
+	const box = pointsBounds(result.points);
+
+	return {
+		color: DEFAULT_ANNOTATION_COLOR,
+		id: nextId('stroke'),
+		kind: 'stroke',
+		points: result.points.map(
+			(value, index) =>
+				Math.round((value - (index % 2 === 0 ? box.x : box.y)) * 10) /
+				10
+		),
+		smooth: result.smooth,
+		width: strokeWidthFor(area),
+		x: Math.round(box.x),
+		y: Math.round(box.y),
+	};
 }
 
 interface Props {
