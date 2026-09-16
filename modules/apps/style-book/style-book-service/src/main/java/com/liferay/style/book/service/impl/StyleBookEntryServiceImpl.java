@@ -38,9 +38,9 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 	@Override
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
-			boolean defaultStyleBookEntry, String frontendTokensValues,
-			String name, String styleBookEntryKey, String themeId,
-			ServiceContext serviceContext)
+			boolean defaultStyleBookEntry, String frontendTokenDefinition,
+			String frontendTokensValues, String name, String styleBookEntryKey,
+			String themeId, ServiceContext serviceContext)
 		throws PortalException {
 
 		_portletResourcePermission.check(
@@ -49,8 +49,8 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 
 		return styleBookEntryLocalService.addStyleBookEntry(
 			externalReferenceCode, getUserId(), groupId, defaultStyleBookEntry,
-			frontendTokensValues, name, styleBookEntryKey, themeId,
-			serviceContext);
+			frontendTokenDefinition, frontendTokensValues, name,
+			styleBookEntryKey, themeId, serviceContext);
 	}
 
 	@Override
@@ -61,20 +61,22 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 		throws PortalException {
 
 		return addStyleBookEntry(
-			externalReferenceCode, groupId, StringPool.BLANK, name,
-			styleBookEntryKey, themeId, serviceContext);
+			externalReferenceCode, groupId, StringPool.BLANK, StringPool.BLANK,
+			name, styleBookEntryKey, themeId, serviceContext);
 	}
 
 	@Override
 	public StyleBookEntry addStyleBookEntry(
 			String externalReferenceCode, long groupId,
-			String frontendTokensValues, String name, String styleBookEntryKey,
-			String themeId, ServiceContext serviceContext)
+			String frontendTokenDefinition, String frontendTokensValues,
+			String name, String styleBookEntryKey, String themeId,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		return addStyleBookEntry(
-			externalReferenceCode, groupId, false, frontendTokensValues, name,
-			styleBookEntryKey, themeId, serviceContext);
+			externalReferenceCode, groupId, false, frontendTokenDefinition,
+			frontendTokensValues, name, styleBookEntryKey, themeId,
+			serviceContext);
 	}
 
 	@Override
