@@ -19,14 +19,14 @@ import java.util.List;
  */
 public class FilterBuilder {
 
-	public void addFilter(String fieldName, String operator, Object value) {
-		_addFilter(fieldName, operator, value, true);
-	}
-
 	public void addFilter(
-		String fieldName, String operator, Object value, boolean required) {
+		String fieldName, String operator, boolean required, Object value) {
 
 		_addFilter(fieldName, operator, value, required);
+	}
+
+	public void addFilter(String fieldName, String operator, Object value) {
+		_addFilter(fieldName, operator, value, true);
 	}
 
 	public void addNullFilter(String fieldName, String operator) {

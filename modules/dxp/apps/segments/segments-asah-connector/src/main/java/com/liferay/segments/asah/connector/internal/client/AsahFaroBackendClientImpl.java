@@ -216,11 +216,11 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 			"status", FilterConstants.COMPARISON_OPERATOR_EQUALS,
 			IndividualSegment.Status.ACTIVE.name());
 		filterBuilder.addFilter(
-			"type", FilterConstants.COMPARISON_OPERATOR_EQUALS,
-			IndividualSegment.Type.BATCH.name(), false);
+			"type", FilterConstants.COMPARISON_OPERATOR_EQUALS, false,
+			IndividualSegment.Type.BATCH.name());
 		filterBuilder.addFilter(
-			"type", FilterConstants.COMPARISON_OPERATOR_EQUALS,
-			IndividualSegment.Type.REAL_TIME.name(), false);
+			"type", FilterConstants.COMPARISON_OPERATOR_EQUALS, false,
+			IndividualSegment.Type.REAL_TIME.name());
 
 		try {
 			AnalyticsConfiguration analyticsConfiguration =
