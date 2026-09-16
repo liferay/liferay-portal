@@ -4,6 +4,7 @@
 	<checkstyle>
 		<suppress checks="MethodNamingCheck" files="portal-cache-test-util/src/test/java/com/liferay/portal/cache/test/util/TransactionalPortalCacheTest\.java" />
 		<suppress checks="PersistenceCallCheck" files="portal-cache-test/src/testIntegration/java/com/liferay/portal/cache/internal/test/EntityCacheRollbackTest\.java" />
+		<suppress checks="TestClassStaticVariableCheck" files="portal-cache-test/src/testIntegration/java/com/liferay/portal/cache/internal/test/ClusterLinkTest\.java" />
 	</checkstyle>
 	<source-check>
 		<suppress checks="JavaCompanyThreadLocalCheck" files="portal-cache-impl/src/main/java/com/liferay/portal/cache/internal/dao/orm/EntityCacheImpl\.java" />

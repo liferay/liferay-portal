@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.cluster.tomcat.TomcatCluster;
 import com.liferay.portal.test.cluster.tomcat.TomcatNode;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.io.Closeable;
@@ -129,6 +131,14 @@ public class ClusterLinkTest implements Serializable {
 
 		_testCustomizeChannelNames(true, clusterNode1, clusterNode2);
 
+		_tomcatNode1.syncExecute(
+			() -> {
+				_logCapture = LoggerTestUtil.configureLog4JLogger(
+					"org.jgroups.protocols.SYM_ENCRYPT", LoggerTestUtil.ERROR);
+
+				return null;
+			});
+
 		try (Closeable closeable = _applyPortalExtPropertiesLines(
 				true, _tomcatNode2,
 				PropsKeys.CLUSTER_LINK_CHANNEL_NAME_CONTROL +
@@ -141,6 +151,23 @@ public class ClusterLinkTest implements Serializable {
 
 			_testCustomizeChannelNames(
 				false, clusterNode1, isolatedClusterNode2);
+		}
+
+		List<String> messages = _tomcatNode1.syncExecute(
+			() -> {
+				try (LogCapture logCapture = _logCapture) {
+					return new ArrayList<>(logCapture.getMessages());
+				}
+			});
+
+		Assert.assertFalse(messages.isEmpty());
+
+		for (String message : messages) {
+			Assert.assertTrue(
+				message,
+				message.contains(
+					"rejected decryption of multicast message from " +
+						"non-member"));
 		}
 
 		ClusterNode reconnectedClusterNode2 = _tomcatNode2.syncExecute(
@@ -287,6 +314,7 @@ public class ClusterLinkTest implements Serializable {
 		Assert.assertEquals(visible, clusterNodes.contains(clusterNode1));
 	}
 
+	private static transient LogCapture _logCapture;
 	private static transient TomcatNode _tomcatNode1;
 	private static transient TomcatNode _tomcatNode2;
 
