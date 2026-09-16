@@ -11,6 +11,29 @@
 	},
 	"items": [
 		{
+			"active": true,
+			"enableCategorization": false,
+			"enableComments": false,
+			"enableIndexSearch": true,
+			"enableLocalization": false,
+			"externalReferenceCode": "C2M0_ATTACHMENT",
+			"label": {
+				"en_US": "C2M0 Attachment"
+			},
+			"name": "C2M0Attachment",
+			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
+			"pluralLabel": {
+				"en_US": "C2M0 Attachments"
+			},
+			"scope": "site",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			},
+			"titleObjectFieldName": "externalReferenceCode"
+		},
+		{
 			"accountEntryRestricted": false,
 			"accountEntryRestrictedObjectFieldName": "",
 			"active": true,
@@ -119,29 +142,6 @@
 				"label_i18n": "Approved"
 			},
 			"system": false,
-			"titleObjectFieldName": "externalReferenceCode"
-		},
-		{
-			"active": true,
-			"enableCategorization": false,
-			"enableComments": false,
-			"enableIndexSearch": true,
-			"enableLocalization": false,
-			"externalReferenceCode": "C2M0_ATTACHMENT",
-			"label": {
-				"en_US": "C2M0 Attachment"
-			},
-			"name": "C2M0Attachment",
-			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
-			"pluralLabel": {
-				"en_US": "C2M0 Attachments"
-			},
-			"scope": "site",
-			"status": {
-				"code": 0,
-				"label": "approved",
-				"label_i18n": "Approved"
-			},
 			"titleObjectFieldName": "externalReferenceCode"
 		},
 		{
