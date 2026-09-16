@@ -161,17 +161,17 @@ function foldBoxRotation(
 	height: number,
 	rotation: number
 ): {height: number; rotation: number; width: number} {
-	let folded = ((rotation % 360) + 360) % 360;
-	let w = width;
-	let h = height;
+	const folded = ((rotation % 360) + 360) % 360;
 
-	while (folded >= 90) {
-		folded -= 90;
+	const quarterTurns = Math.floor(folded / 90);
 
-		[w, h] = [h, w];
-	}
+	const swapped = quarterTurns % 2 === 1;
 
-	return {height: h, rotation: round(folded), width: w};
+	return {
+		height: swapped ? width : height,
+		rotation: round(folded - quarterTurns * 90),
+		width: swapped ? height : width,
+	};
 }
 
 function foldRotation(rotation: number, degrees: number): number | undefined {
