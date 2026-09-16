@@ -138,7 +138,9 @@ public class TaxonomyCategoryBriefSerDes {
 
 			sb.append("\"taxonomyCategoryReference\": ");
 
-			sb.append(taxonomyCategoryBrief.getTaxonomyCategoryReference());
+			sb.append(
+				String.valueOf(
+					taxonomyCategoryBrief.getTaxonomyCategoryReference()));
 		}
 
 		sb.append("}");
@@ -449,4 +451,4 @@ public class TaxonomyCategoryBriefSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-606925211
+// LIFERAY-REST-BUILDER-HASH:-733933675

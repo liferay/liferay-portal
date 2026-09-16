@@ -81,7 +81,7 @@ public class PageElementSerDes {
 			sb.append("[");
 
 			for (int i = 0; i < pageElement.getPageElements().length; i++) {
-				sb.append(pageElement.getPageElements()[i]);
+				sb.append(String.valueOf(pageElement.getPageElements()[i]));
 
 				if ((i + 1) < pageElement.getPageElements().length) {
 					sb.append(", ");
@@ -309,4 +309,4 @@ public class PageElementSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:238684867
+// LIFERAY-REST-BUILDER-HASH:-1712306401

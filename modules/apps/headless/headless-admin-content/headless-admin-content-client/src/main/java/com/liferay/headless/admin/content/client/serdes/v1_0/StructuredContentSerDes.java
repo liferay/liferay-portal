@@ -74,7 +74,7 @@ public class StructuredContentSerDes {
 
 			sb.append("\"aggregateRating\": ");
 
-			sb.append(structuredContent.getAggregateRating());
+			sb.append(String.valueOf(structuredContent.getAggregateRating()));
 		}
 
 		if (structuredContent.getAssetLibraryKey() != null) {
@@ -128,7 +128,8 @@ public class StructuredContentSerDes {
 			for (int i = 0; i < structuredContent.getContentFields().length;
 				 i++) {
 
-				sb.append(structuredContent.getContentFields()[i]);
+				sb.append(
+					String.valueOf(structuredContent.getContentFields()[i]));
 
 				if ((i + 1) < structuredContent.getContentFields().length) {
 					sb.append(", ");
@@ -155,7 +156,7 @@ public class StructuredContentSerDes {
 
 			sb.append("\"creator\": ");
 
-			sb.append(structuredContent.getCreator());
+			sb.append(String.valueOf(structuredContent.getCreator()));
 		}
 
 		if (structuredContent.getCustomFields() != null) {
@@ -414,7 +415,8 @@ public class StructuredContentSerDes {
 			for (int i = 0; i < structuredContent.getRelatedContents().length;
 				 i++) {
 
-				sb.append(structuredContent.getRelatedContents()[i]);
+				sb.append(
+					String.valueOf(structuredContent.getRelatedContents()[i]));
 
 				if ((i + 1) < structuredContent.getRelatedContents().length) {
 					sb.append(", ");
@@ -436,7 +438,8 @@ public class StructuredContentSerDes {
 			for (int i = 0; i < structuredContent.getRenderedContents().length;
 				 i++) {
 
-				sb.append(structuredContent.getRenderedContents()[i]);
+				sb.append(
+					String.valueOf(structuredContent.getRenderedContents()[i]));
 
 				if ((i + 1) < structuredContent.getRenderedContents().length) {
 					sb.append(", ");
@@ -489,7 +492,9 @@ public class StructuredContentSerDes {
 				 i < structuredContent.getTaxonomyCategoryBriefs().length;
 				 i++) {
 
-				sb.append(structuredContent.getTaxonomyCategoryBriefs()[i]);
+				sb.append(
+					String.valueOf(
+						structuredContent.getTaxonomyCategoryBriefs()[i]));
 
 				if ((i + 1) <
 						structuredContent.getTaxonomyCategoryBriefs().length) {
@@ -1432,4 +1437,4 @@ public class StructuredContentSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1077439754
+// LIFERAY-REST-BUILDER-HASH:-1709072807

@@ -138,4 +138,4 @@ public class Options implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1193633295
+// LIFERAY-REST-BUILDER-HASH:1465487466

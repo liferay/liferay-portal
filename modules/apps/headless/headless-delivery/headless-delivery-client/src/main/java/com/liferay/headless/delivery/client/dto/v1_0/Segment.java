@@ -245,4 +245,4 @@ public class Segment implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1173603460
+// LIFERAY-REST-BUILDER-HASH:-155458576

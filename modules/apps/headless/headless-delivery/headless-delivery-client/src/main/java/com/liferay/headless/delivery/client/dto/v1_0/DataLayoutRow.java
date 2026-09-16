@@ -79,4 +79,4 @@ public class DataLayoutRow implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-220039854
+// LIFERAY-REST-BUILDER-HASH:-1152610680

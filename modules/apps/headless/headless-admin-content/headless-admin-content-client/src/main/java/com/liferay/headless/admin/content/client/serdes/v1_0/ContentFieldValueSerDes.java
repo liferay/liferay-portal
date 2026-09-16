@@ -68,7 +68,7 @@ public class ContentFieldValueSerDes {
 
 			sb.append("\"document\": ");
 
-			sb.append(contentFieldValue.getDocument());
+			sb.append(String.valueOf(contentFieldValue.getDocument()));
 		}
 
 		if (contentFieldValue.getGeo() != null) {
@@ -78,7 +78,7 @@ public class ContentFieldValueSerDes {
 
 			sb.append("\"geo\": ");
 
-			sb.append(contentFieldValue.getGeo());
+			sb.append(String.valueOf(contentFieldValue.getGeo()));
 		}
 
 		if (contentFieldValue.getImage() != null) {
@@ -88,7 +88,7 @@ public class ContentFieldValueSerDes {
 
 			sb.append("\"image\": ");
 
-			sb.append(contentFieldValue.getImage());
+			sb.append(String.valueOf(contentFieldValue.getImage()));
 		}
 
 		if (contentFieldValue.getLink() != null) {
@@ -112,7 +112,8 @@ public class ContentFieldValueSerDes {
 
 			sb.append("\"structuredContentLink\": ");
 
-			sb.append(contentFieldValue.getStructuredContentLink());
+			sb.append(
+				String.valueOf(contentFieldValue.getStructuredContentLink()));
 		}
 
 		if (contentFieldValue.getValue() != null) {
@@ -383,4 +384,4 @@ public class ContentFieldValueSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2141319463
+// LIFERAY-REST-BUILDER-HASH:204092594

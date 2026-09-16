@@ -162,4 +162,4 @@ public class AggregateRating implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-709104621
+// LIFERAY-REST-BUILDER-HASH:-524839622

@@ -437,4 +437,4 @@ public class DataDefinitionField implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-675316984
+// LIFERAY-REST-BUILDER-HASH:1134279054

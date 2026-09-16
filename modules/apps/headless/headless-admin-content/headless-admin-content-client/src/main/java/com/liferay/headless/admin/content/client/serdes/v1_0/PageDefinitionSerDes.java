@@ -55,7 +55,7 @@ public class PageDefinitionSerDes {
 
 			sb.append("\"pageElement\": ");
 
-			sb.append(pageDefinition.getPageElement());
+			sb.append(String.valueOf(pageDefinition.getPageElement()));
 		}
 
 		if (pageDefinition.getPageRules() != null) {
@@ -68,7 +68,7 @@ public class PageDefinitionSerDes {
 			sb.append("[");
 
 			for (int i = 0; i < pageDefinition.getPageRules().length; i++) {
-				sb.append(pageDefinition.getPageRules()[i]);
+				sb.append(String.valueOf(pageDefinition.getPageRules()[i]));
 
 				if ((i + 1) < pageDefinition.getPageRules().length) {
 					sb.append(", ");
@@ -85,7 +85,7 @@ public class PageDefinitionSerDes {
 
 			sb.append("\"settings\": ");
 
-			sb.append(pageDefinition.getSettings());
+			sb.append(String.valueOf(pageDefinition.getSettings()));
 		}
 
 		if (pageDefinition.getVersion() != null) {
@@ -306,4 +306,4 @@ public class PageDefinitionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:391617992
+// LIFERAY-REST-BUILDER-HASH:-1894520265

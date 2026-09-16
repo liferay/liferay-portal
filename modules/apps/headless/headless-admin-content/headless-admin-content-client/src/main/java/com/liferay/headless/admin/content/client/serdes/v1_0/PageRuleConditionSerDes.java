@@ -82,7 +82,7 @@ public class PageRuleConditionSerDes {
 
 			sb.append("\"options\": ");
 
-			sb.append(pageRuleCondition.getOptions());
+			sb.append(String.valueOf(pageRuleCondition.getOptions()));
 		}
 
 		if (pageRuleCondition.getType() != null) {
@@ -295,4 +295,4 @@ public class PageRuleConditionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1129740718
+// LIFERAY-REST-BUILDER-HASH:-1812471933

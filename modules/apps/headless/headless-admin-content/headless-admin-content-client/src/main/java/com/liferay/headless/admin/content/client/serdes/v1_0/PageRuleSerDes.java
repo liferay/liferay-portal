@@ -97,7 +97,7 @@ public class PageRuleSerDes {
 			sb.append("[");
 
 			for (int i = 0; i < pageRule.getPageRuleActions().length; i++) {
-				sb.append(pageRule.getPageRuleActions()[i]);
+				sb.append(String.valueOf(pageRule.getPageRuleActions()[i]));
 
 				if ((i + 1) < pageRule.getPageRuleActions().length) {
 					sb.append(", ");
@@ -117,7 +117,7 @@ public class PageRuleSerDes {
 			sb.append("[");
 
 			for (int i = 0; i < pageRule.getPageRuleConditions().length; i++) {
-				sb.append(pageRule.getPageRuleConditions()[i]);
+				sb.append(String.valueOf(pageRule.getPageRuleConditions()[i]));
 
 				if ((i + 1) < pageRule.getPageRuleConditions().length) {
 					sb.append(", ");
@@ -367,4 +367,4 @@ public class PageRuleSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:761387937
+// LIFERAY-REST-BUILDER-HASH:-1605979956

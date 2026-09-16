@@ -111,7 +111,7 @@ public class DataLayoutSerDes {
 			sb.append("[");
 
 			for (int i = 0; i < dataLayout.getDataLayoutPages().length; i++) {
-				sb.append(dataLayout.getDataLayoutPages()[i]);
+				sb.append(String.valueOf(dataLayout.getDataLayoutPages()[i]));
 
 				if ((i + 1) < dataLayout.getDataLayoutPages().length) {
 					sb.append(", ");
@@ -131,7 +131,7 @@ public class DataLayoutSerDes {
 			sb.append("[");
 
 			for (int i = 0; i < dataLayout.getDataRules().length; i++) {
-				sb.append(dataLayout.getDataRules()[i]);
+				sb.append(String.valueOf(dataLayout.getDataRules()[i]));
 
 				if ((i + 1) < dataLayout.getDataRules().length) {
 					sb.append(", ");
@@ -624,4 +624,4 @@ public class DataLayoutSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1371989014
+// LIFERAY-REST-BUILDER-HASH:1500137030

@@ -60,7 +60,8 @@ public class DataLayoutRowSerDes {
 			for (int i = 0; i < dataLayoutRow.getDataLayoutColumns().length;
 				 i++) {
 
-				sb.append(dataLayoutRow.getDataLayoutColumns()[i]);
+				sb.append(
+					String.valueOf(dataLayoutRow.getDataLayoutColumns()[i]));
 
 				if ((i + 1) < dataLayoutRow.getDataLayoutColumns().length) {
 					sb.append(", ");
@@ -232,4 +233,4 @@ public class DataLayoutRowSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1420197494
+// LIFERAY-REST-BUILDER-HASH:-1559815606

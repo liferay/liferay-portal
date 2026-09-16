@@ -68,7 +68,9 @@ public class StructuredContentLinkSerDes {
 
 			sb.append("\"embeddedStructuredContent\": ");
 
-			sb.append(structuredContentLink.getEmbeddedStructuredContent());
+			sb.append(
+				String.valueOf(
+					structuredContentLink.getEmbeddedStructuredContent()));
 		}
 
 		if (structuredContentLink.getId() != null) {
@@ -304,4 +306,4 @@ public class StructuredContentLinkSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:849552100
+// LIFERAY-REST-BUILDER-HASH:-2021316541

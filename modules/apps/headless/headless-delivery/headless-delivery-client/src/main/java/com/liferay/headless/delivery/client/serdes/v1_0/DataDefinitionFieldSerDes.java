@@ -161,7 +161,9 @@ public class DataDefinitionFieldSerDes {
 				 i++) {
 
 				sb.append(
-					dataDefinitionField.getNestedDataDefinitionFields()[i]);
+					String.valueOf(
+						dataDefinitionField.getNestedDataDefinitionFields()
+							[i]));
 
 				if ((i + 1) < dataDefinitionField.
 						getNestedDataDefinitionFields().length) {
@@ -664,4 +666,4 @@ public class DataDefinitionFieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2023605296
+// LIFERAY-REST-BUILDER-HASH:690703936

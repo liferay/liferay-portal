@@ -96,7 +96,8 @@ public class SettingsSerDes {
 			for (int i = 0; i < settings.getGlobalCSSClientExtensions().length;
 				 i++) {
 
-				sb.append(settings.getGlobalCSSClientExtensions()[i]);
+				sb.append(
+					String.valueOf(settings.getGlobalCSSClientExtensions()[i]));
 
 				if ((i + 1) < settings.getGlobalCSSClientExtensions().length) {
 					sb.append(", ");
@@ -118,7 +119,8 @@ public class SettingsSerDes {
 			for (int i = 0; i < settings.getGlobalJSClientExtensions().length;
 				 i++) {
 
-				sb.append(settings.getGlobalJSClientExtensions()[i]);
+				sb.append(
+					String.valueOf(settings.getGlobalJSClientExtensions()[i]));
 
 				if ((i + 1) < settings.getGlobalJSClientExtensions().length) {
 					sb.append(", ");
@@ -149,7 +151,7 @@ public class SettingsSerDes {
 
 			sb.append("\"masterPage\": ");
 
-			sb.append(settings.getMasterPage());
+			sb.append(String.valueOf(settings.getMasterPage()));
 		}
 
 		if (settings.getStyleBook() != null) {
@@ -159,7 +161,7 @@ public class SettingsSerDes {
 
 			sb.append("\"styleBook\": ");
 
-			sb.append(settings.getStyleBook());
+			sb.append(String.valueOf(settings.getStyleBook()));
 		}
 
 		if (settings.getThemeCSSClientExtension() != null) {
@@ -169,7 +171,7 @@ public class SettingsSerDes {
 
 			sb.append("\"themeCSSClientExtension\": ");
 
-			sb.append(settings.getThemeCSSClientExtension());
+			sb.append(String.valueOf(settings.getThemeCSSClientExtension()));
 		}
 
 		if (settings.getThemeName() != null) {
@@ -203,7 +205,8 @@ public class SettingsSerDes {
 
 			sb.append("\"themeSpritemapClientExtension\": ");
 
-			sb.append(settings.getThemeSpritemapClientExtension());
+			sb.append(
+				String.valueOf(settings.getThemeSpritemapClientExtension()));
 		}
 
 		sb.append("}");
@@ -580,4 +583,4 @@ public class SettingsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1577246780
+// LIFERAY-REST-BUILDER-HASH:-1405958999

@@ -55,7 +55,7 @@ public class ContentFieldSerDes {
 
 			sb.append("\"contentFieldValue\": ");
 
-			sb.append(contentField.getContentFieldValue());
+			sb.append(String.valueOf(contentField.getContentFieldValue()));
 		}
 
 		if (contentField.getContentFieldValue_i18n() != null) {
@@ -160,7 +160,8 @@ public class ContentFieldSerDes {
 			for (int i = 0; i < contentField.getNestedContentFields().length;
 				 i++) {
 
-				sb.append(contentField.getNestedContentFields()[i]);
+				sb.append(
+					String.valueOf(contentField.getNestedContentFields()[i]));
 
 				if ((i + 1) < contentField.getNestedContentFields().length) {
 					sb.append(", ");
@@ -497,4 +498,4 @@ public class ContentFieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-401832284
+// LIFERAY-REST-BUILDER-HASH:-1440078379

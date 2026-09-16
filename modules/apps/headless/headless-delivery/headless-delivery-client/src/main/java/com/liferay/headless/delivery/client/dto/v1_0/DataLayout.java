@@ -354,4 +354,4 @@ public class DataLayout implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1734363368
+// LIFERAY-REST-BUILDER-HASH:-2134581078

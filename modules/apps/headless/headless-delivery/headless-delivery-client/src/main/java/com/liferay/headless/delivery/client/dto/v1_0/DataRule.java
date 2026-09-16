@@ -142,4 +142,4 @@ public class DataRule implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-353095464
+// LIFERAY-REST-BUILDER-HASH:1184069559

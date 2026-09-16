@@ -144,4 +144,4 @@ public class StructuredContentLink implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:916535462
+// LIFERAY-REST-BUILDER-HASH:-70802462
