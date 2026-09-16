@@ -774,6 +774,13 @@ export function OverlaysEditable({
 		}
 	};
 
+	const handleProps = {
+		onPointerCancel: cancelManipGesture,
+		onPointerMove: handleManipulationMove,
+		onPointerUp: handleManipulationUp,
+		strokeWidth: 1.5 / zoom,
+	};
+
 	return (
 		<g>
 			<desc id={eid('overlay-instructions')}>
@@ -892,13 +899,11 @@ export function OverlaysEditable({
 
 											return (
 												<circle
+													{...handleProps}
 													className="object-handle"
 													cx={handleX}
 													cy={handleY}
 													key={end}
-													onPointerCancel={
-														cancelManipGesture
-													}
 													onPointerDown={startManipulation(
 														overlay,
 														'endpoint',
@@ -907,14 +912,7 @@ export function OverlaysEditable({
 														undefined,
 														end
 													)}
-													onPointerMove={
-														handleManipulationMove
-													}
-													onPointerUp={
-														handleManipulationUp
-													}
 													r={6 / zoom}
-													strokeWidth={1.5 / zoom}
 													style={{cursor: 'move'}}
 												/>
 											);
@@ -932,25 +930,16 @@ export function OverlaysEditable({
 
 												return (
 													<rect
+														{...handleProps}
 														className="object-handle"
 														height={size}
 														key={corner.name}
-														onPointerCancel={
-															cancelManipGesture
-														}
 														onPointerDown={startManipulation(
 															overlay,
 															'resize',
 															handleX,
 															handleY
 														)}
-														onPointerMove={
-															handleManipulationMove
-														}
-														onPointerUp={
-															handleManipulationUp
-														}
-														strokeWidth={1.5 / zoom}
 														style={{
 															cursor: corner.cursor,
 														}}
@@ -974,12 +963,10 @@ export function OverlaysEditable({
 
 													return (
 														<rect
+															{...handleProps}
 															className="object-handle"
 															height={size}
 															key={edge.name}
-															onPointerCancel={
-																cancelManipGesture
-															}
 															onPointerDown={startManipulation(
 																overlay,
 																'resize',
@@ -987,15 +974,6 @@ export function OverlaysEditable({
 																handleY,
 																edge.name
 															)}
-															onPointerMove={
-																handleManipulationMove
-															}
-															onPointerUp={
-																handleManipulationUp
-															}
-															strokeWidth={
-																1.5 / zoom
-															}
 															style={{
 																cursor: edge.cursor,
 															}}
@@ -1022,26 +1000,17 @@ export function OverlaysEditable({
 											/>
 
 											<circle
+												{...handleProps}
 												className="object-handle object-handle-rotate"
 												cx={bounds.x + bounds.width / 2}
 												cy={bounds.y - 24 / zoom}
-												onPointerCancel={
-													cancelManipGesture
-												}
 												onPointerDown={startManipulation(
 													overlay,
 													'rotate',
 													bounds.x + bounds.width / 2,
 													bounds.y - 24 / zoom
 												)}
-												onPointerMove={
-													handleManipulationMove
-												}
-												onPointerUp={
-													handleManipulationUp
-												}
 												r={6 / zoom}
-												strokeWidth={1.5 / zoom}
 											/>
 										</>
 									)}
