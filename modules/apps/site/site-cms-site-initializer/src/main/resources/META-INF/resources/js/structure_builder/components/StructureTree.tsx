@@ -51,6 +51,7 @@ import isField from '../utils/isField';
 import isLocked from '../utils/isLocked';
 import isReferenced from '../utils/isReferenced';
 import isRenamable from '../utils/isRenamable';
+import isRepeatableGroup from '../utils/isRepeatableGroup';
 import AddChildDropdown from './AddChildDropdown';
 
 type TreeItem = {
@@ -70,6 +71,7 @@ type TreeItem = {
 	icon: string;
 	id: Uuid;
 	invalid?: boolean;
+	isRepeatable?: boolean;
 	label: string;
 	locked?: boolean;
 	name?: string;
@@ -481,7 +483,7 @@ function ItemContent({id, item}: {id?: string; item: TreeItem}) {
 				<ItemStatus item={item} />
 			</span>
 
-			{item.type === 'referenced-structure' || item.type === 'group' ? (
+			{item.type === 'referenced-structure' || item.isRepeatable ? (
 				<ClayIcon
 					className="mt-0"
 					data-title={Liferay.Language.get('repeatable')}
@@ -771,6 +773,7 @@ function buildItems({
 					icon: 'fieldset',
 					id: child.uuid,
 					invalid: invalids.has(child.uuid),
+					isRepeatable: isRepeatableGroup(child),
 					label,
 					type: child.type,
 				};
