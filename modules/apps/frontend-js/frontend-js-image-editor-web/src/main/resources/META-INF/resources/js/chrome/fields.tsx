@@ -13,25 +13,25 @@ interface FieldProps {
 	label: string;
 }
 
-export function NumberField({
+interface NumberInputProps {
+	ariaLabel?: string;
+	id: string;
+	max?: number;
+	min: number;
+	onCommit: (value: number) => void;
+	onPreview?: (value: number) => void;
+	value: number;
+}
+
+function NumberInput({
+	ariaLabel,
 	id,
-	label,
 	max,
-	min = 1,
+	min,
 	onCommit,
 	onPreview,
-	suffix,
 	value,
-}: FieldProps & {
-	max?: number;
-	min?: number;
-	onCommit: (value: number) => void;
-
-	onPreview?: (value: number) => void;
-
-	suffix?: string;
-	value: number;
-}) {
+}: NumberInputProps) {
 	const [draft, setDraft] = useState(String(value));
 
 	useEffect(() => setDraft(String(value)), [value]);
@@ -64,11 +64,12 @@ export function NumberField({
 		onPreview?.(next);
 	};
 
-	const input = (
+	return (
 		<ClayInput
+			aria-label={ariaLabel}
 			id={id}
 			max={max}
-			min={min}
+			min={Number.isFinite(min) ? min : undefined}
 			onBlur={commit}
 			onChange={(event) => setDraft(event.target.value)}
 			onKeyDown={(event: React.KeyboardEvent) => {
@@ -88,6 +89,82 @@ export function NumberField({
 			sizing="sm"
 			type="number"
 			value={draft}
+		/>
+	);
+}
+
+interface ColorInputProps {
+	ariaLabel?: string;
+	className?: string;
+	id: string;
+	onCommit: (value: string) => void;
+	onPreview: (value: string) => void;
+	value: string;
+}
+
+function ColorInput({
+	ariaLabel,
+	className,
+	id,
+	onCommit,
+	onPreview,
+	value,
+}: ColorInputProps) {
+	const draggingRef = useRef(false);
+
+	return (
+		<input
+			aria-label={ariaLabel}
+			className={classNames(
+				'editor-color-input form-control form-control-sm',
+				className
+			)}
+			id={id}
+			onBlur={() => {
+				if (draggingRef.current) {
+					draggingRef.current = false;
+
+					onCommit(value);
+				}
+			}}
+			onChange={(event) => {
+				draggingRef.current = true;
+
+				onPreview(event.target.value);
+			}}
+			type="color"
+			value={value}
+		/>
+	);
+}
+
+export function NumberField({
+	id,
+	label,
+	max,
+	min = 1,
+	onCommit,
+	onPreview,
+	suffix,
+	value,
+}: FieldProps & {
+	max?: number;
+	min?: number;
+	onCommit: (value: number) => void;
+
+	onPreview?: (value: number) => void;
+
+	suffix?: string;
+	value: number;
+}) {
+	const input = (
+		<NumberInput
+			id={id}
+			max={max}
+			min={min}
+			onCommit={onCommit}
+			onPreview={onPreview}
+			value={value}
 		/>
 	);
 
@@ -166,31 +243,15 @@ export function ColorField({
 	onPreview: (value: string) => void;
 	value: string;
 }) {
-	const draggingRef = useRef(false);
-
 	return (
 		<ClayForm.Group small>
 			<label htmlFor={id}>{label}</label>
 
-			<input
-				className={classNames(
-					'editor-color-input form-control form-control-sm',
-					{'editor-color-fill': fill}
-				)}
+			<ColorInput
+				className={classNames({'editor-color-fill': fill})}
 				id={id}
-				onBlur={() => {
-					if (draggingRef.current) {
-						draggingRef.current = false;
-
-						onCommit(value);
-					}
-				}}
-				onChange={(event) => {
-					draggingRef.current = true;
-
-					onPreview(event.target.value);
-				}}
-				type="color"
+				onCommit={onCommit}
+				onPreview={onPreview}
 				value={value}
 			/>
 		</ClayForm.Group>
@@ -339,24 +400,6 @@ export function BorderField({
 	widthLabel: string;
 	widthValue: number;
 }) {
-	const [draft, setDraft] = useState(String(widthValue));
-
-	const draggingRef = useRef(false);
-
-	useEffect(() => setDraft(String(widthValue)), [widthValue]);
-
-	const commit = () => {
-		const parsed = Number.parseInt(draft, 10);
-
-		if (Number.isNaN(parsed)) {
-			setDraft(String(widthValue));
-
-			return;
-		}
-
-		onWidthCommit(Math.max(parsed, 0));
-	};
-
 	return (
 		<ClayForm.Group small>
 
@@ -374,63 +417,22 @@ export function BorderField({
 			<div aria-labelledby={`${id}-label`} role="group">
 				<ClayInput.Group small>
 					<ClayInput.GroupItem prepend>
-						<ClayInput
-							aria-label={widthLabel}
+						<NumberInput
+							ariaLabel={widthLabel}
 							id={id}
 							min={0}
-							onBlur={commit}
-							onChange={(event) => setDraft(event.target.value)}
-							onKeyDown={(event: React.KeyboardEvent) => {
-								if (event.key === 'Enter') {
-									event.preventDefault();
-									commit();
-								}
-								else if (
-									event.key === 'ArrowUp' ||
-									event.key === 'ArrowDown'
-								) {
-									event.preventDefault();
-
-									const parsed = Number.parseInt(draft, 10);
-
-									const next = Math.max(
-										(Number.isNaN(parsed)
-											? widthValue
-											: parsed) +
-											(event.key === 'ArrowUp' ? 1 : -1) *
-												(event.shiftKey ? 10 : 1),
-										0
-									);
-
-									setDraft(String(next));
-
-									onWidthPreview?.(next);
-								}
-							}}
-							sizing="sm"
-							type="number"
-							value={draft}
+							onCommit={onWidthCommit}
+							onPreview={onWidthPreview}
+							value={widthValue}
 						/>
 					</ClayInput.GroupItem>
 
 					<ClayInput.GroupItem append shrink>
-						<input
-							aria-label={colorLabel}
-							className="editor-color-input form-control form-control-sm"
+						<ColorInput
+							ariaLabel={colorLabel}
 							id={`${id}-color`}
-							onBlur={() => {
-								if (draggingRef.current) {
-									draggingRef.current = false;
-
-									onColorCommit(colorValue);
-								}
-							}}
-							onChange={(event) => {
-								draggingRef.current = true;
-
-								onColorPreview(event.target.value);
-							}}
-							type="color"
+							onCommit={onColorCommit}
+							onPreview={onColorPreview}
 							value={colorValue}
 						/>
 					</ClayInput.GroupItem>

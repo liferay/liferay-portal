@@ -715,6 +715,12 @@ describe('layers', () => {
 		const xInput = screen.getByLabelText('x-position');
 		const yInput = screen.getByLabelText('y-position');
 
+		// A position has no lower bound, and an unbounded field carries no
+		// min attribute at all rather than an unparseable one.
+
+		expect(xInput).not.toHaveAttribute('min');
+		expect(screen.getByLabelText('opacity')).toHaveAttribute('min', '0');
+
 		fireEvent.change(xInput, {target: {value: '120'}});
 		fireEvent.keyDown(xInput, {key: 'Enter'});
 		fireEvent.change(yInput, {target: {value: '340'}});
