@@ -4,7 +4,14 @@
  */
 
 import {ClayIconSpriteContext} from '@clayui/icon';
-import {act, fireEvent, render, screen, within} from '@testing-library/react';
+import {
+	act,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import React, {useReducer, useRef, useState} from 'react';
 
 import '@testing-library/jest-dom';
@@ -267,7 +274,7 @@ describe('text annotations', () => {
 		expect(screen.getByRole('button', {name: 'undo'})).toBeInTheDocument();
 	});
 
-	it('edits a caption in place on double click', () => {
+	it('edits a caption in place on double click', async () => {
 		const {container} = render(<AnnotationHarness start={withCaption} />);
 
 		fireEvent.doubleClick(hit(container));
@@ -283,9 +290,14 @@ describe('text annotations', () => {
 
 		expect(container.querySelector('.overlay-text-editor')).toBeNull();
 		expect(caption(container)).toHaveTextContent('Liferay');
+
+		// The editor unmounts under the focus: the caption takes it back, so
+		// the next arrow key or Ctrl+Z still lands inside the editor.
+
+		await waitFor(() => expect(hit(container)).toHaveFocus());
 	});
 
-	it('abandons an in-place edit with Escape', () => {
+	it('abandons an in-place edit with Escape', async () => {
 		const {container} = render(<AnnotationHarness start={withCaption} />);
 
 		fireEvent.doubleClick(hit(container));
@@ -298,6 +310,8 @@ describe('text annotations', () => {
 		fireEvent.keyDown(editor, {key: 'Escape'});
 
 		expect(caption(container)).toHaveTextContent('Hello');
+
+		await waitFor(() => expect(hit(container)).toHaveFocus());
 	});
 
 	it('selects on focus and clears the selection on a click elsewhere', () => {

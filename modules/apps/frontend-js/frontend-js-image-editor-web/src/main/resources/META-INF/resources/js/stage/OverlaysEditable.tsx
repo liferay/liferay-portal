@@ -21,6 +21,7 @@ import {EditorAction} from '../state/editorReducer';
 import {ArrowOverlay, Overlay, isBoxOverlay} from '../state/types';
 import {FocusModality, FocusRing, matchesFocusVisible} from './FocusRing';
 import {OverlayTextEditor} from './OverlayTextEditor';
+import {focusOverlayNode} from './focusOverlayNode';
 
 function toLocalDelta(
 	dx: number,
@@ -509,6 +510,14 @@ export function OverlaysEditable({
 		}
 	};
 
+	const finishTextEdit = () => {
+		if (editing) {
+			setEditing(null);
+
+			focusOverlayNode(editorRoot, editing.id);
+		}
+	};
+
 	const commitTextEdit = () => {
 		if (!editing) {
 			return;
@@ -517,7 +526,7 @@ export function OverlaysEditable({
 		const overlay = current(editing.id);
 		const value = editing.draft.trim();
 
-		setEditing(null);
+		finishTextEdit();
 
 		if (
 			overlay &&
@@ -882,7 +891,7 @@ export function OverlaysEditable({
 								<OverlayTextEditor
 									bounds={bounds}
 									draft={editing.draft}
-									onCancel={() => setEditing(null)}
+									onCancel={finishTextEdit}
 									onChange={(draft) =>
 										setEditing({draft, id: overlay.id})
 									}
