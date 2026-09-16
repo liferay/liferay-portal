@@ -1250,6 +1250,15 @@ public class ObjectRelationshipLocalServiceImpl
 				dbTableName, objectField.getBusinessType(),
 				objectField.getDBColumnName(), "Long"));
 
+		if (!objectDefinition2.isUnmodifiableSystemObject()) {
+			runSQL(
+				DynamicObjectDefinitionTableUtil.
+					getInsertMissingExtensionTableRowsSQL(
+						dbTableName,
+						objectDefinition2.getPKObjectFieldDBColumnName(),
+						objectDefinition2.getDBTableName()));
+		}
+
 		ObjectDBManagerUtil.createIndexMetadata(
 			_currentConnection.getConnection(
 				objectRelationshipPersistence.getDataSource()),
