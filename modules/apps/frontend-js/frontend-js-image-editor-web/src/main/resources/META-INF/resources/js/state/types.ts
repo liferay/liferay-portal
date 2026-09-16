@@ -62,14 +62,13 @@ export interface Adjustments {
 	shadows: number;
 }
 
-export interface CircleOverlay {
+interface BoxOverlayBase {
 	borderColor?: string;
 	borderWidth?: number;
 	color: string;
 
 	height: number;
 	id: string;
-	kind: 'circle';
 	opacity?: number;
 	rotation?: number;
 
@@ -78,6 +77,10 @@ export interface CircleOverlay {
 	width: number;
 	x: number;
 	y: number;
+}
+
+export interface CircleOverlay extends BoxOverlayBase {
+	kind: 'circle';
 }
 
 export interface CropRect {
@@ -177,22 +180,8 @@ export type RatioPreset =
 
 type Rotation = 0 | 90 | 180 | 270;
 
-export interface ShapeOverlay {
-	borderColor?: string;
-	borderWidth?: number;
-	color: string;
-
-	height: number;
-	id: string;
+export interface ShapeOverlay extends BoxOverlayBase {
 	kind: 'shape';
-	opacity?: number;
-	rotation?: number;
-
-	sketchSeed?: number;
-
-	width: number;
-	x: number;
-	y: number;
 }
 
 export interface TextOverlay {
