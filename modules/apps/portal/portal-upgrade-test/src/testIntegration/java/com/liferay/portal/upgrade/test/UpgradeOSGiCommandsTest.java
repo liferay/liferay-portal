@@ -6,10 +6,12 @@
 package com.liferay.portal.upgrade.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -111,7 +113,10 @@ public class UpgradeOSGiCommandsTest {
 
 		String bundleSymbolicName = bundle.getSymbolicName();
 
-		try {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"UPGRADE_DATABASE_AUTO_RUN", false, false)) {
+
 			_registerRecoveringUpgradeStepRegistrator(bundle);
 
 			ReflectionTestUtil.invoke(
@@ -124,6 +129,21 @@ public class UpgradeOSGiCommandsTest {
 			_serviceRegistration.unregister();
 
 			_registerRecoveringUpgradeStepRegistrator(bundle);
+
+			Class<?> clazz = _upgradeOSGiCommands.getClass();
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					clazz.getName(), LoggerTestUtil.OFF)) {
+
+				ReflectionTestUtil.invoke(
+					_upgradeOSGiCommands, "execute",
+					new Class<?>[] {String.class}, bundleSymbolicName);
+			}
+
+			Release release = _releaseLocalService.fetchRelease(
+				bundleSymbolicName);
+
+			Assert.assertEquals("1.0.0", release.getSchemaVersion());
 
 			ReflectionTestUtil.invoke(
 				_upgradeOSGiCommands, "execute", new Class<?>[] {String.class},
