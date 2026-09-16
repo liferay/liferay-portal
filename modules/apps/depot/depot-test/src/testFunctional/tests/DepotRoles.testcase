@@ -179,7 +179,7 @@ definition {
 
 		Role.openRolesAdmin();
 
-		RoleNavigator.gotoRoleType(roleType = "Asset Library");
+		RoleNavigator.gotoRoleType(roleType = "Space");
 
 		AssertTextEquals(
 			key_itemName = "Asset Library Connected Site Member",
@@ -473,13 +473,13 @@ definition {
 
 		Role.openRolesAdmin();
 
-		RoleNavigator.gotoRoleType(roleType = "Asset Library");
+		RoleNavigator.gotoRoleType(roleType = "Space");
 
 		LexiconEntry.delete(rowEntry = "AL Role Name");
 
 		Role.openRolesAdmin();
 
-		RoleNavigator.gotoRoleType(roleType = "Asset Library");
+		RoleNavigator.gotoRoleType(roleType = "Space");
 
 		Role.viewDefaultCP(roleTitle = "AL Role Name");
 	}
@@ -490,7 +490,7 @@ definition {
 	test CanEditALRole {
 		Role.openRolesAdmin();
 
-		RoleNavigator.gotoRoleType(roleType = "Asset Library");
+		RoleNavigator.gotoRoleType(roleType = "Space");
 
 		Role.add(roleTitle = "AL Role Name");
 
@@ -504,11 +504,11 @@ definition {
 
 		Role.viewCP(
 			roleTitle = "AL Role Name",
-			roleType = "Asset Library");
+			roleType = "Space");
 
 		Role.openRolesAdmin();
 
-		RoleNavigator.gotoRoleType(roleType = "Asset Library");
+		RoleNavigator.gotoRoleType(roleType = "Space");
 
 		LexiconEntry.gotoEntry(rowEntry = "AL Role Name");
 
@@ -550,9 +550,9 @@ definition {
 
 		Role.openRolesAdmin();
 
-		Navigator.gotoNavItem(navItem = "Asset Library Roles");
+		Navigator.gotoNavItem(navItem = "Space Roles");
 
-		PermissionsInline.gotoRolePermissions(roleName = "Asset Library Content Reviewer");
+		PermissionsInline.gotoRolePermissions(roleName = "Space Content Reviewer");
 
 		Role.definePermissionPG(
 			permissionDefinitionKey = "CONTENT_PERMISSIONS_ASSIGN_MEMBERS_CHECKBOX",
@@ -571,16 +571,16 @@ definition {
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		AssertTextEquals(
-			key_card = "Asset Library Content Reviewer",
+			key_card = "Space Content Reviewer",
 			locator1 = "Card#CARD_TITLE",
-			value1 = "Asset Library Content Reviewer");
+			value1 = "Space Content Reviewer");
 
 		AssertElementNotPresent(
-			key_card = "Asset Library Administrator",
+			key_card = "Space Administrator",
 			locator1 = "Card#CARD_TITLE");
 
 		AssertElementNotPresent(
-			key_card = "Asset Library Owner",
+			key_card = "Space Owner",
 			locator1 = "Card#CARD_TITLE");
 	}
 
@@ -679,19 +679,19 @@ definition {
 		DepotNavigator.openDepotMembershipsAdmin(depotName = "Test Depot Name");
 
 		Depot.assignAssetLibraryRole(
-			checkAllRoles = "Asset Library Administrator,Asset Library Owner,Asset Library Content Reviewer",
+			checkAllRoles = "Space Administrator,Space Owner,Space Content Reviewer",
 			resourceName = "userfn userln",
-			roleTitle = "Asset Library Owner");
+			roleTitle = "Space Owner");
 
 		ManagementBar.setFilterAndOrder(filterBy = "Roles");
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
-		for (var roleTitle : list "Asset Library Administrator,Asset Library Owner,Asset Library Content Reviewer") {
+		for (var roleTitle : list "Space Administrator,Space Owner,Space Content Reviewer") {
 			LexiconEntry.viewEntryName(rowEntry = ${roleTitle});
 		}
 
-		LexiconCard.clickCardTitle(card = "Asset Library Owner");
+		LexiconCard.clickCardTitle(card = "Space Owner");
 
 		SelectFrameTop();
 

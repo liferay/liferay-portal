@@ -352,7 +352,7 @@ definition {
 
 	@summary = "Default summary"
 	macro viewCP(toolTip = null, roleType = null, roleDescription = null) {
-		if (contains("Asset Library,Organization,Site", ${roleType})) {
+		if (contains("Organization,Site,Space", ${roleType})) {
 			Navigator.gotoNavItem(navItem = "${roleType} Roles");
 		}
 		else {
