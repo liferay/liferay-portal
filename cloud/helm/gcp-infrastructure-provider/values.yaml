@@ -14,6 +14,7 @@ crossplaneGsaEmail: ""
 crossplaneNamespace: crossplane-system
 eck-operator:
     enabled: true
+extraObjects: []
 filestore:
     enabled: true
     storageClassName: filestore-sc
