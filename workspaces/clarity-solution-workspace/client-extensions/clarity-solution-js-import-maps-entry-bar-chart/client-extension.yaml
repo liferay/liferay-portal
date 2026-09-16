@@ -5,4 +5,4 @@ clarity-solution-js-import-maps-entry-bar-chart:
     bareSpecifier: clarity-solution-js-import-maps-entry-bar-chart
     name: Clarity Solution JS Import Maps Entry Bar Chart
     type: jsImportMapsEntry
-    url: /index.js
+    url: index.js

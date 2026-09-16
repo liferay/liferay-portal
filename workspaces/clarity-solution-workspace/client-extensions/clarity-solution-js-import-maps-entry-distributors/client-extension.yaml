@@ -5,4 +5,4 @@ clarity-solution-js-import-maps-entry-distributors:
     bareSpecifier: clarity-solution-js-import-maps-entry-distributors
     name: Clarity Solution JS Import Maps Entry Distributors
     type: jsImportMapsEntry
-    url: /index.js
+    url: index.js
