@@ -340,11 +340,16 @@ public class ObjectEntrySearchUtil {
 			return column.eq(GetterUtil.getLong(value));
 		}
 		else if (dbType.equals(ObjectFieldConstants.DB_TYPE_STRING)) {
-			if (value == null) {
-				return column.isNull();
+			String valueString = GetterUtil.getString(value);
+
+			if (Validator.isNull(valueString)) {
+				return column.isNull(
+				).or(
+					column.eq(StringPool.BLANK)
+				).withParentheses();
 			}
 
-			return column.eq(String.valueOf(value));
+			return column.eq(valueString);
 		}
 
 		return null;
