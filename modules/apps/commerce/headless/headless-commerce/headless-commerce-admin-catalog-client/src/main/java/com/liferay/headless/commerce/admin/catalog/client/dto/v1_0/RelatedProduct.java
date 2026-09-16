@@ -111,6 +111,27 @@ public class RelatedProduct implements Cloneable, Serializable {
 
 	protected Long productId;
 
+	public String getProductType() {
+		return productType;
+	}
+
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	public void setProductType(
+		UnsafeSupplier<String, Exception> productTypeUnsafeSupplier) {
+
+		try {
+			productType = productTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String productType;
+
 	public String getType() {
 		return type;
 	}
@@ -162,4 +183,4 @@ public class RelatedProduct implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1657036294
+// LIFERAY-REST-BUILDER-HASH:-2133274906

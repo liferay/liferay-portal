@@ -187,9 +187,13 @@ public abstract class BaseProductGroupProductResourceTestCase {
 
 		ProductGroupProduct productGroupProduct = randomProductGroupProduct();
 
+		productGroupProduct.setCatalogCurrencyCode(regex);
+		productGroupProduct.setCatalogCurrencyExternalReferenceCode(regex);
+		productGroupProduct.setCatalogExternalReferenceCode(regex);
 		productGroupProduct.setProductExternalReferenceCode(regex);
 		productGroupProduct.setProductGroupExternalReferenceCode(regex);
 		productGroupProduct.setProductName(regex);
+		productGroupProduct.setProductType(regex);
 		productGroupProduct.setSku(regex);
 
 		String json = ProductGroupProductSerDes.toJSON(productGroupProduct);
@@ -199,10 +203,18 @@ public abstract class BaseProductGroupProductResourceTestCase {
 		productGroupProduct = ProductGroupProductSerDes.toDTO(json);
 
 		Assert.assertEquals(
+			regex, productGroupProduct.getCatalogCurrencyCode());
+		Assert.assertEquals(
+			regex,
+			productGroupProduct.getCatalogCurrencyExternalReferenceCode());
+		Assert.assertEquals(
+			regex, productGroupProduct.getCatalogExternalReferenceCode());
+		Assert.assertEquals(
 			regex, productGroupProduct.getProductExternalReferenceCode());
 		Assert.assertEquals(
 			regex, productGroupProduct.getProductGroupExternalReferenceCode());
 		Assert.assertEquals(regex, productGroupProduct.getProductName());
+		Assert.assertEquals(regex, productGroupProduct.getProductType());
 		Assert.assertEquals(regex, productGroupProduct.getSku());
 	}
 
@@ -949,6 +961,42 @@ public abstract class BaseProductGroupProductResourceTestCase {
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (productGroupProduct.getCatalogCurrencyCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productGroupProduct.
+						getCatalogCurrencyExternalReferenceCode() == null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productGroupProduct.getCatalogExternalReferenceCode() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"productExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -992,6 +1040,14 @@ public abstract class BaseProductGroupProductResourceTestCase {
 
 			if (Objects.equals("productName", additionalAssertFieldName)) {
 				if (productGroupProduct.getProductName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (productGroupProduct.getProductType() == null) {
 					valid = false;
 				}
 
@@ -1129,6 +1185,50 @@ public abstract class BaseProductGroupProductResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productGroupProduct1.getCatalogCurrencyCode(),
+						productGroupProduct2.getCatalogCurrencyCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productGroupProduct1.
+							getCatalogCurrencyExternalReferenceCode(),
+						productGroupProduct2.
+							getCatalogCurrencyExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productGroupProduct1.getCatalogExternalReferenceCode(),
+						productGroupProduct2.
+							getCatalogExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						productGroupProduct1.getId(),
@@ -1197,6 +1297,17 @@ public abstract class BaseProductGroupProductResourceTestCase {
 				if (!Objects.deepEquals(
 						productGroupProduct1.getProductName(),
 						productGroupProduct2.getProductName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						productGroupProduct1.getProductType(),
+						productGroupProduct2.getProductType())) {
 
 					return false;
 				}
@@ -1322,6 +1433,146 @@ public abstract class BaseProductGroupProductResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("catalogCurrencyCode")) {
+			Object object = productGroupProduct.getCatalogCurrencyCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("catalogCurrencyExternalReferenceCode")) {
+			Object object =
+				productGroupProduct.getCatalogCurrencyExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("catalogExternalReferenceCode")) {
+			Object object =
+				productGroupProduct.getCatalogExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
 
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
@@ -1478,6 +1729,52 @@ public abstract class BaseProductGroupProductResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("productType")) {
+			Object object = productGroupProduct.getProductType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("sku")) {
 			Object object = productGroupProduct.getSku();
 
@@ -1571,6 +1868,12 @@ public abstract class BaseProductGroupProductResourceTestCase {
 	protected ProductGroupProduct randomProductGroupProduct() throws Exception {
 		return new ProductGroupProduct() {
 			{
+				catalogCurrencyCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogCurrencyExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				productExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -1579,6 +1882,8 @@ public abstract class BaseProductGroupProductResourceTestCase {
 				productGroupId = RandomTestUtil.randomLong();
 				productId = RandomTestUtil.randomLong();
 				productName = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				productType = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				sku = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
@@ -1833,4 +2138,4 @@ public abstract class BaseProductGroupProductResourceTestCase {
 		ProductGroupProductResource _productGroupProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1910112997
+// LIFERAY-REST-BUILDER-HASH:147102285

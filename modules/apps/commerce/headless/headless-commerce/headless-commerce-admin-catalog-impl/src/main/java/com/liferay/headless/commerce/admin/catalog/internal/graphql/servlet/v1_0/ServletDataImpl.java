@@ -33,6 +33,7 @@ import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.Produc
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductGroupResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductOptionResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductOptionValueResourceImpl;
+import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductProductGroupResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductShippingConfigurationResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductSpecificationResourceImpl;
@@ -73,6 +74,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductGroupPro
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductGroupResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductOptionResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductOptionValueResource;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductProductGroupResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductShippingConfigurationResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductSpecificationResource;
@@ -247,6 +249,8 @@ public class ServletDataImpl implements ServletData {
 			_productOptionResourceComponentServiceObjects);
 		Query.setProductOptionValueResourceComponentServiceObjects(
 			_productOptionValueResourceComponentServiceObjects);
+		Query.setProductProductGroupResourceComponentServiceObjects(
+			_productProductGroupResourceComponentServiceObjects);
 		Query.setProductShippingConfigurationResourceComponentServiceObjects(
 			_productShippingConfigurationResourceComponentServiceObjects);
 		Query.setProductSpecificationResourceComponentServiceObjects(
@@ -1774,6 +1778,11 @@ public class ServletDataImpl implements ServletData {
 							ProductOptionValueResourceImpl.class,
 							"getProductOptionValue"));
 					put(
+						"query#productIdProductGroups",
+						new ObjectValuePair<>(
+							ProductProductGroupResourceImpl.class,
+							"getProductIdProductGroupsPage"));
+					put(
 						"query#productByExternalReferenceCodeShippingConfiguration",
 						new ObjectValuePair<>(
 							ProductShippingConfigurationResourceImpl.class,
@@ -2328,6 +2337,10 @@ public class ServletDataImpl implements ServletData {
 		_linkedProductResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<ProductProductGroupResource>
+		_productProductGroupResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<ProductVirtualSettingsResource>
 		_productVirtualSettingsResourceComponentServiceObjects;
 
@@ -2340,4 +2353,4 @@ public class ServletDataImpl implements ServletData {
 		_skuVirtualSettingsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:953118730
+// LIFERAY-REST-BUILDER-HASH:1617227089

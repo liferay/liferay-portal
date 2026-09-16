@@ -79,6 +79,20 @@ public class DiagramSerDes {
 			sb.append(diagram.getId());
 		}
 
+		if (diagram.getImageExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"imageExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(diagram.getImageExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (diagram.getImageId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -192,6 +206,15 @@ public class DiagramSerDes {
 			map.put("id", String.valueOf(diagram.getId()));
 		}
 
+		if (diagram.getImageExternalReferenceCode() == null) {
+			map.put("imageExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"imageExternalReferenceCode",
+				String.valueOf(diagram.getImageExternalReferenceCode()));
+		}
+
 		if (diagram.getImageId() == null) {
 			map.put("imageId", null);
 		}
@@ -262,6 +285,11 @@ public class DiagramSerDes {
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "imageExternalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "imageId")) {
 				return false;
 			}
@@ -306,6 +334,14 @@ public class DiagramSerDes {
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				if (jsonParserFieldValue != null) {
 					diagram.setId(Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "imageExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					diagram.setImageExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "imageId")) {
@@ -431,4 +467,4 @@ public class DiagramSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-322788395
+// LIFERAY-REST-BUILDER-HASH:703986538

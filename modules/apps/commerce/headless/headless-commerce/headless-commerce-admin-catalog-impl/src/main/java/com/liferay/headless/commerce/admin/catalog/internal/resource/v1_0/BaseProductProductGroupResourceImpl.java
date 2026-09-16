@@ -1,13 +1,13 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
-import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Diagram;
-import com.liferay.headless.commerce.admin.catalog.resource.v1_0.DiagramResource;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductProductGroup;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductProductGroupResource;
 import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
@@ -20,7 +20,6 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.filter.ExpressionConvert;
@@ -44,10 +43,8 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.io.Serializable;
@@ -65,53 +62,17 @@ import java.util.Set;
  */
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
-public abstract class BaseDiagramResourceImpl
-	implements DiagramResource, EntityModelResource,
-			   VulcanBatchEngineTaskItemDelegate<Diagram> {
+public abstract class BaseProductProductGroupResourceImpl
+	implements EntityModelResource, ProductProductGroupResource,
+			   VulcanBatchEngineTaskItemDelegate<ProductProductGroup> {
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/diagrams'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/product-groups'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the diagram setting attached to the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when no diagram setting exists."
-	)
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode", required = true
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Diagram")}
-	)
-	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path(
-		"/products/by-externalReferenceCode/{externalReferenceCode}/diagrams"
-	)
-	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Diagram getProductByExternalReferenceCodeDiagram(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("externalReferenceCode")
-			String externalReferenceCode)
-		throws Exception {
-
-		return new Diagram();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/diagrams'  -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the diagram setting attached to the product identified by product ID. Returns 404 when the product ID is not found, and 404 when no diagram setting exists."
+		description = "Lists the product groups the product identified by product ID belongs to. Validation -- Returns empty page when product ID not found (no exception)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -119,229 +80,56 @@ public abstract class BaseDiagramResourceImpl
 				description = "Internal numeric identifier of the target resource. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the resource's lifetime.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "id", required = true
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "One-based page index. Combined with pageSize to paginate the result set; defaults to 1 when omitted.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Number of items per page. Defaults to the portal's configured page size when omitted; capped by the portal configuration to prevent unbounded reads.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
 			)
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Diagram")}
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "ProductProductGroup"
+			)
+		}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/products/{id}/diagrams")
+	@jakarta.ws.rs.Path("/products/{id}/product-groups")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Diagram getProductIdDiagram(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("id")
-			Long id)
-		throws Exception {
-
-		return new Diagram();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/diagrams/{diagramId}' -d $'{"attachmentBase64": ___, "color": ___, "id": ___, "imageExternalReferenceCode": ___, "imageId": ___, "radius": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the diagram setting identified by diagramId. Returns 404 when `diagramId` is not found. Side effects -- Updates the diagram's image attachment and may replace the linked DL file entry."
-	)
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the diagram setting attached to a product. Addresses a single CSDiagramSetting that owns the hotspot map for shop-by-diagram navigation.",
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "diagramId", required = true
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Diagram")}
-	)
-	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.PATCH
-	@jakarta.ws.rs.Path("/diagrams/{diagramId}")
-	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Diagram patchDiagram(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("diagramId")
-			Long diagramId,
-			Diagram diagram)
-		throws Exception {
-
-		return new Diagram();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/diagrams' -d $'{"attachmentBase64": ___, "color": ___, "id": ___, "imageExternalReferenceCode": ___, "imageId": ___, "radius": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a diagram setting under the product identified by external reference code. Returns 404 when the product external reference code is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image."
-	)
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "externalReferenceCode", required = true
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Diagram")}
-	)
-	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path(
-		"/products/by-externalReferenceCode/{externalReferenceCode}/diagrams"
-	)
-	@jakarta.ws.rs.POST
-	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Diagram postProductByExternalReferenceCodeDiagram(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("externalReferenceCode")
-			String externalReferenceCode,
-			Diagram diagram)
-		throws Exception {
-
-		return new Diagram();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/diagrams' -d $'{"attachmentBase64": ___, "color": ___, "id": ___, "imageExternalReferenceCode": ___, "imageId": ___, "radius": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a diagram setting under the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image."
-	)
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Internal numeric identifier of the target resource. Counterpart to the `by-externalReferenceCode` path variant; identifiers are server-assigned and stable across the resource's lifetime.",
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
-				name = "id", required = true
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Diagram")}
-	)
-	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
-	@jakarta.ws.rs.Path("/products/{id}/diagrams")
-	@jakarta.ws.rs.POST
-	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Diagram postProductIdDiagram(
+	public Page<ProductProductGroup> getProductIdProductGroupsPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("id")
 			Long id,
-			Diagram diagram)
+			@jakarta.ws.rs.core.Context Pagination pagination)
 		throws Exception {
 
-		return new Diagram();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/diagrams/batch'  -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Parameters(
-		value = {
-			@io.swagger.v3.oas.annotations.Parameter(
-				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
-				name = "callbackURL"
-			)
-		}
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Diagram")}
-	)
-	@jakarta.ws.rs.Consumes("application/json")
-	@jakarta.ws.rs.Path("/products/diagrams/batch")
-	@jakarta.ws.rs.POST
-	@jakarta.ws.rs.Produces("application/json")
-	@Override
-	public Response postProductIdDiagramBatch(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.ws.rs.QueryParam("callbackURL")
-			String callbackURL,
-			Object object)
-		throws Exception {
-
-		vulcanBatchEngineImportTaskResource.setContextAcceptLanguage(
-			contextAcceptLanguage);
-		vulcanBatchEngineImportTaskResource.setContextCompany(contextCompany);
-		vulcanBatchEngineImportTaskResource.setContextHttpServletRequest(
-			contextHttpServletRequest);
-		vulcanBatchEngineImportTaskResource.setContextUriInfo(contextUriInfo);
-		vulcanBatchEngineImportTaskResource.setContextUser(contextUser);
-
-		Response.ResponseBuilder responseBuilder = Response.accepted();
-
-		return responseBuilder.entity(
-			vulcanBatchEngineImportTaskResource.postImportTask(
-				Diagram.class.getName(), callbackURL, null, object)
-		).build();
+		return Page.of(Collections.emptyList());
 	}
 
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
-			Collection<Diagram> diagrams, Map<String, Serializable> parameters)
+			Collection<ProductProductGroup> productProductGroups,
+			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<Diagram, Diagram, Exception> diagramUnsafeFunction =
-			null;
-
-		String createStrategy = (String)parameters.getOrDefault(
-			"createStrategy", "INSERT");
-
-		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("externalReferenceCode")) {
-				diagramUnsafeFunction =
-					diagram -> postProductByExternalReferenceCodeDiagram(
-						(String)parameters.get("externalReferenceCode"),
-						diagram);
-			}
-			else {
-				throw new NotSupportedException(
-					"One of the following parameters must be specified: [externalReferenceCode]");
-			}
-		}
-
-		if (diagramUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Create strategy \"" + createStrategy +
-					"\" is not supported for Diagram");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				diagrams, diagramUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				diagrams, diagramUnsafeFunction::apply);
-		}
-		else {
-			for (Diagram diagram : diagrams) {
-				diagramUnsafeFunction.apply(diagram);
-			}
-		}
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Override
 	public void delete(
-			Collection<Diagram> diagrams, Map<String, Serializable> parameters)
+			Collection<ProductProductGroup> productProductGroups,
+			Map<String, Serializable> parameters)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -349,11 +137,11 @@ public abstract class BaseDiagramResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray();
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
-		return SetUtil.fromArray("PARTIAL_UPDATE");
+		return SetUtil.fromArray();
 	}
 
 	@Override
@@ -365,7 +153,7 @@ public abstract class BaseDiagramResourceImpl
 	}
 
 	public String getResourceName() {
-		return "Diagram";
+		return "ProductProductGroup";
 	}
 
 	public String getVersion() {
@@ -373,7 +161,7 @@ public abstract class BaseDiagramResourceImpl
 	}
 
 	@Override
-	public Page<Diagram> read(
+	public Page<ProductProductGroup> read(
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts,
@@ -417,39 +205,12 @@ public abstract class BaseDiagramResourceImpl
 
 	@Override
 	public void update(
-			Collection<Diagram> diagrams, Map<String, Serializable> parameters)
+			Collection<ProductProductGroup> productProductGroups,
+			Map<String, Serializable> parameters)
 		throws Exception {
 
-		UnsafeFunction<Diagram, Diagram, Exception> diagramUnsafeFunction =
-			null;
-
-		String updateStrategy = (String)parameters.getOrDefault(
-			"updateStrategy", "UPDATE");
-
-		if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
-			diagramUnsafeFunction = diagram -> patchDiagram(
-				diagram.getId(), diagram);
-		}
-
-		if (diagramUnsafeFunction == null) {
-			throw new NotSupportedException(
-				"Update strategy \"" + updateStrategy +
-					"\" is not supported for Diagram");
-		}
-
-		if (contextBatchUnsafeBiConsumer != null) {
-			contextBatchUnsafeBiConsumer.accept(
-				diagrams, diagramUnsafeFunction);
-		}
-		else if (contextBatchUnsafeConsumer != null) {
-			contextBatchUnsafeConsumer.accept(
-				diagrams, diagramUnsafeFunction::apply);
-		}
-		else {
-			for (Diagram diagram : diagrams) {
-				diagramUnsafeFunction.apply(diagram);
-			}
-		}
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Override
@@ -465,7 +226,9 @@ public abstract class BaseDiagramResourceImpl
 
 	public void setContextBatchUnsafeBiConsumer(
 		UnsafeBiConsumer
-			<Collection<Diagram>, UnsafeFunction<Diagram, Diagram, Exception>,
+			<Collection<ProductProductGroup>,
+			 UnsafeFunction
+				 <ProductProductGroup, ProductProductGroup, Exception>,
 			 Exception> contextBatchUnsafeBiConsumer) {
 
 		this.contextBatchUnsafeBiConsumer = contextBatchUnsafeBiConsumer;
@@ -473,7 +236,8 @@ public abstract class BaseDiagramResourceImpl
 
 	public void setContextBatchUnsafeConsumer(
 		UnsafeBiConsumer
-			<Collection<Diagram>, UnsafeConsumer<Diagram, Exception>, Exception>
+			<Collection<ProductProductGroup>,
+			 UnsafeConsumer<ProductProductGroup, Exception>, Exception>
 				contextBatchUnsafeConsumer) {
 
 		this.contextBatchUnsafeConsumer = contextBatchUnsafeConsumer;
@@ -983,10 +747,12 @@ public abstract class BaseDiagramResourceImpl
 
 	protected AcceptLanguage contextAcceptLanguage;
 	protected UnsafeBiConsumer
-		<Collection<Diagram>, UnsafeFunction<Diagram, Diagram, Exception>,
+		<Collection<ProductProductGroup>,
+		 UnsafeFunction<ProductProductGroup, ProductProductGroup, Exception>,
 		 Exception> contextBatchUnsafeBiConsumer;
 	protected UnsafeBiConsumer
-		<Collection<Diagram>, UnsafeConsumer<Diagram, Exception>, Exception>
+		<Collection<ProductProductGroup>,
+		 UnsafeConsumer<ProductProductGroup, Exception>, Exception>
 			contextBatchUnsafeConsumer;
 	protected com.liferay.portal.kernel.model.Company contextCompany;
 	protected HttpServletRequest contextHttpServletRequest;
@@ -1008,7 +774,7 @@ public abstract class BaseDiagramResourceImpl
 		vulcanBatchEngineImportTaskResource;
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BaseDiagramResourceImpl.class);
+		LogFactoryUtil.getLog(BaseProductProductGroupResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-933319550
+// LIFERAY-REST-BUILDER-HASH:-1408374809

@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -13,11 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
-import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Diagram;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductProductGroup;
 import com.liferay.headless.commerce.admin.catalog.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
-import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.DiagramResource;
-import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.DiagramSerDes;
+import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.ProductProductGroupResource;
+import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.ProductProductGroupSerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -74,7 +76,7 @@ import org.junit.Test;
  * @generated
  */
 @Generated("")
-public abstract class BaseDiagramResourceTestCase {
+public abstract class BaseProductProductGroupResourceTestCase {
 
 	@ClassRule
 	@Rule
@@ -97,12 +99,12 @@ public abstract class BaseDiagramResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
-		_diagramResource.setContextCompany(testCompany);
+		_productProductGroupResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
 			testCompany.getCompanyId());
 
-		diagramResource = DiagramResource.builder(
+		productProductGroupResource = ProductProductGroupResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -124,23 +126,24 @@ public abstract class BaseDiagramResourceTestCase {
 	public void testClientSerDesToDTO() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		Diagram diagram1 = randomDiagram();
+		ProductProductGroup productProductGroup1 = randomProductProductGroup();
 
-		String json = objectMapper.writeValueAsString(diagram1);
+		String json = objectMapper.writeValueAsString(productProductGroup1);
 
-		Diagram diagram2 = DiagramSerDes.toDTO(json);
+		ProductProductGroup productProductGroup2 =
+			ProductProductGroupSerDes.toDTO(json);
 
-		Assert.assertTrue(equals(diagram1, diagram2));
+		Assert.assertTrue(equals(productProductGroup1, productProductGroup2));
 	}
 
 	@Test
 	public void testClientSerDesToJSON() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		Diagram diagram = randomDiagram();
+		ProductProductGroup productProductGroup = randomProductProductGroup();
 
-		String json1 = objectMapper.writeValueAsString(diagram);
-		String json2 = DiagramSerDes.toJSON(diagram);
+		String json1 = objectMapper.writeValueAsString(productProductGroup);
+		String json2 = ProductProductGroupSerDes.toJSON(productProductGroup);
 
 		Assert.assertEquals(
 			objectMapper.readTree(json1), objectMapper.readTree(json2));
@@ -168,348 +171,205 @@ public abstract class BaseDiagramResourceTestCase {
 	public void testEscapeRegexInStringFields() throws Exception {
 		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
 
-		Diagram diagram = randomDiagram();
+		ProductProductGroup productProductGroup = randomProductProductGroup();
 
-		diagram.setColor(regex);
-		diagram.setImageExternalReferenceCode(regex);
-		diagram.setImageURL(regex);
-		diagram.setProductExternalReferenceCode(regex);
-		diagram.setType(regex);
+		productProductGroup.setExternalReferenceCode(regex);
+		productProductGroup.setTitle(regex);
 
-		String json = DiagramSerDes.toJSON(diagram);
+		String json = ProductProductGroupSerDes.toJSON(productProductGroup);
 
 		Assert.assertFalse(json.contains(regex));
 
-		diagram = DiagramSerDes.toDTO(json);
-
-		Assert.assertEquals(regex, diagram.getColor());
-		Assert.assertEquals(regex, diagram.getImageExternalReferenceCode());
-		Assert.assertEquals(regex, diagram.getImageURL());
-		Assert.assertEquals(regex, diagram.getProductExternalReferenceCode());
-		Assert.assertEquals(regex, diagram.getType());
-	}
-
-	@Test
-	public void testGetProductByExternalReferenceCodeDiagram()
-		throws Exception {
-
-		Diagram postDiagram =
-			testGetProductByExternalReferenceCodeDiagram_addDiagram();
-
-		Diagram getDiagram =
-			diagramResource.getProductByExternalReferenceCodeDiagram(
-				testGetProductByExternalReferenceCodeDiagram_getExternalReferenceCode());
-
-		assertEquals(postDiagram, getDiagram);
-		assertValid(getDiagram);
-	}
-
-	protected Diagram testGetProductByExternalReferenceCodeDiagram_addDiagram()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected String
-			testGetProductByExternalReferenceCodeDiagram_getExternalReferenceCode()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testGraphQLGetProductByExternalReferenceCodeDiagram()
-		throws Exception {
-
-		Diagram diagram =
-			testGraphQLGetProductByExternalReferenceCodeDiagram_addDiagram();
-
-		// No namespace
-
-		Assert.assertTrue(
-			equals(
-				diagram,
-				DiagramSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"productByExternalReferenceCodeDiagram",
-								new HashMap<String, Object>() {
-									{
-										put(
-											"externalReferenceCode",
-											"\"" +
-												testGraphQLGetProductByExternalReferenceCodeDiagram_getExternalReferenceCode() +
-													"\"");
-									}
-								},
-								getGraphQLFields())),
-						"JSONObject/data",
-						"Object/productByExternalReferenceCodeDiagram"))));
-
-		// Using the namespace headlessCommerceAdminCatalog_v1_0
-
-		Assert.assertTrue(
-			equals(
-				diagram,
-				DiagramSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"headlessCommerceAdminCatalog_v1_0",
-								new GraphQLField(
-									"productByExternalReferenceCodeDiagram",
-									new HashMap<String, Object>() {
-										{
-											put(
-												"externalReferenceCode",
-												"\"" +
-													testGraphQLGetProductByExternalReferenceCodeDiagram_getExternalReferenceCode() +
-														"\"");
-										}
-									},
-									getGraphQLFields()))),
-						"JSONObject/data",
-						"JSONObject/headlessCommerceAdminCatalog_v1_0",
-						"Object/productByExternalReferenceCodeDiagram"))));
-	}
-
-	protected String
-			testGraphQLGetProductByExternalReferenceCodeDiagram_getExternalReferenceCode()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testGraphQLGetProductByExternalReferenceCodeDiagramNotFound()
-		throws Exception {
-
-		String irrelevantExternalReferenceCode =
-			"\"" + RandomTestUtil.randomString() + "\"";
-
-		// No namespace
+		productProductGroup = ProductProductGroupSerDes.toDTO(json);
 
 		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"productByExternalReferenceCodeDiagram",
-						new HashMap<String, Object>() {
-							{
-								put(
-									"externalReferenceCode",
-									irrelevantExternalReferenceCode);
-							}
-						},
-						getGraphQLFields())),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-
-		// Using the namespace headlessCommerceAdminCatalog_v1_0
-
-		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"headlessCommerceAdminCatalog_v1_0",
-						new GraphQLField(
-							"productByExternalReferenceCodeDiagram",
-							new HashMap<String, Object>() {
-								{
-									put(
-										"externalReferenceCode",
-										irrelevantExternalReferenceCode);
-								}
-							},
-							getGraphQLFields()))),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-	}
-
-	protected Diagram
-			testGraphQLGetProductByExternalReferenceCodeDiagram_addDiagram()
-		throws Exception {
-
-		return testGraphQLProductDiagram_addDiagram();
+			regex, productProductGroup.getExternalReferenceCode());
+		Assert.assertEquals(regex, productProductGroup.getTitle());
 	}
 
 	@Test
-	public void testGetProductIdDiagram() throws Exception {
-		Diagram postDiagram = testGetProductIdDiagram_addDiagram();
+	public void testGetProductIdProductGroupsPage() throws Exception {
+		Long id = testGetProductIdProductGroupsPage_getId();
+		Long irrelevantId = testGetProductIdProductGroupsPage_getIrrelevantId();
 
-		Diagram getDiagram = diagramResource.getProductIdDiagram(
-			testGetProductIdDiagram_getId(postDiagram));
+		Page<ProductProductGroup> page =
+			productProductGroupResource.getProductIdProductGroupsPage(
+				id, Pagination.of(1, 10));
 
-		assertEquals(postDiagram, getDiagram);
-		assertValid(getDiagram);
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantId != null) {
+			ProductProductGroup irrelevantProductProductGroup =
+				testGetProductIdProductGroupsPage_addProductProductGroup(
+					irrelevantId, randomIrrelevantProductProductGroup());
+
+			page = productProductGroupResource.getProductIdProductGroupsPage(
+				irrelevantId, Pagination.of(1, (int)totalCount + 1));
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantProductProductGroup,
+				(List<ProductProductGroup>)page.getItems());
+			assertValid(
+				page,
+				testGetProductIdProductGroupsPage_getExpectedActions(
+					irrelevantId));
+		}
+
+		ProductProductGroup productProductGroup1 =
+			testGetProductIdProductGroupsPage_addProductProductGroup(
+				id, randomProductProductGroup());
+
+		ProductProductGroup productProductGroup2 =
+			testGetProductIdProductGroupsPage_addProductProductGroup(
+				id, randomProductProductGroup());
+
+		page = productProductGroupResource.getProductIdProductGroupsPage(
+			id, Pagination.of(1, (int)totalCount + 2));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			productProductGroup1, (List<ProductProductGroup>)page.getItems());
+		assertContains(
+			productProductGroup2, (List<ProductProductGroup>)page.getItems());
+		assertValid(
+			page, testGetProductIdProductGroupsPage_getExpectedActions(id));
 	}
 
-	protected Diagram testGetProductIdDiagram_addDiagram() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected Long testGetProductIdDiagram_getId(Diagram diagram)
+	protected Map<String, Map<String, String>>
+			testGetProductIdProductGroupsPage_getExpectedActions(Long id)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
 	}
 
 	@Test
-	public void testGraphQLGetProductIdDiagram() throws Exception {
-		Diagram diagram = testGraphQLGetProductIdDiagram_addDiagram();
-
-		// No namespace
-
-		Assert.assertTrue(
-			equals(
-				diagram,
-				DiagramSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"productIdDiagram",
-								new HashMap<String, Object>() {
-									{
-										put(
-											"id",
-											testGraphQLGetProductIdDiagram_getId(
-												diagram));
-									}
-								},
-								getGraphQLFields())),
-						"JSONObject/data", "Object/productIdDiagram"))));
-
-		// Using the namespace headlessCommerceAdminCatalog_v1_0
-
-		Assert.assertTrue(
-			equals(
-				diagram,
-				DiagramSerDes.toDTO(
-					JSONUtil.getValueAsString(
-						invokeGraphQLQuery(
-							new GraphQLField(
-								"headlessCommerceAdminCatalog_v1_0",
-								new GraphQLField(
-									"productIdDiagram",
-									new HashMap<String, Object>() {
-										{
-											put(
-												"id",
-												testGraphQLGetProductIdDiagram_getId(
-													diagram));
-										}
-									},
-									getGraphQLFields()))),
-						"JSONObject/data",
-						"JSONObject/headlessCommerceAdminCatalog_v1_0",
-						"Object/productIdDiagram"))));
-	}
-
-	protected Long testGraphQLGetProductIdDiagram_getId(Diagram diagram)
+	public void testGetProductIdProductGroupsPageWithPagination()
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		Long id = testGetProductIdProductGroupsPage_getId();
+
+		Page<ProductProductGroup> productProductGroupsPage =
+			productProductGroupResource.getProductIdProductGroupsPage(id, null);
+
+		int totalCount = GetterUtil.getInteger(
+			productProductGroupsPage.getTotalCount());
+
+		ProductProductGroup productProductGroup1 =
+			testGetProductIdProductGroupsPage_addProductProductGroup(
+				id, randomProductProductGroup());
+
+		ProductProductGroup productProductGroup2 =
+			testGetProductIdProductGroupsPage_addProductProductGroup(
+				id, randomProductProductGroup());
+
+		ProductProductGroup productProductGroup3 =
+			testGetProductIdProductGroupsPage_addProductProductGroup(
+				id, randomProductProductGroup());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<ProductProductGroup> page1 =
+				productProductGroupResource.getProductIdProductGroupsPage(
+					id,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				productProductGroup1,
+				(List<ProductProductGroup>)page1.getItems());
+
+			Page<ProductProductGroup> page2 =
+				productProductGroupResource.getProductIdProductGroupsPage(
+					id,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			assertContains(
+				productProductGroup2,
+				(List<ProductProductGroup>)page2.getItems());
+
+			Page<ProductProductGroup> page3 =
+				productProductGroupResource.getProductIdProductGroupsPage(
+					id,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit));
+
+			assertContains(
+				productProductGroup3,
+				(List<ProductProductGroup>)page3.getItems());
+		}
+		else {
+			Page<ProductProductGroup> page1 =
+				productProductGroupResource.getProductIdProductGroupsPage(
+					id, Pagination.of(1, totalCount + 2));
+
+			List<ProductProductGroup> productProductGroups1 =
+				(List<ProductProductGroup>)page1.getItems();
+
+			Assert.assertEquals(
+				productProductGroups1.toString(), totalCount + 2,
+				productProductGroups1.size());
+
+			Page<ProductProductGroup> page2 =
+				productProductGroupResource.getProductIdProductGroupsPage(
+					id, Pagination.of(2, totalCount + 2));
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<ProductProductGroup> productProductGroups2 =
+				(List<ProductProductGroup>)page2.getItems();
+
+			Assert.assertEquals(
+				productProductGroups2.toString(), 1,
+				productProductGroups2.size());
+
+			Page<ProductProductGroup> page3 =
+				productProductGroupResource.getProductIdProductGroupsPage(
+					id, Pagination.of(1, (int)totalCount + 3));
+
+			assertContains(
+				productProductGroup1,
+				(List<ProductProductGroup>)page3.getItems());
+			assertContains(
+				productProductGroup2,
+				(List<ProductProductGroup>)page3.getItems());
+			assertContains(
+				productProductGroup3,
+				(List<ProductProductGroup>)page3.getItems());
+		}
 	}
 
-	@Test
-	public void testGraphQLGetProductIdDiagramNotFound() throws Exception {
-		Long irrelevantId = RandomTestUtil.randomLong();
-
-		// No namespace
-
-		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"productIdDiagram",
-						new HashMap<String, Object>() {
-							{
-								put("id", irrelevantId);
-							}
-						},
-						getGraphQLFields())),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-
-		// Using the namespace headlessCommerceAdminCatalog_v1_0
-
-		Assert.assertEquals(
-			"Not Found",
-			JSONUtil.getValueAsString(
-				invokeGraphQLQuery(
-					new GraphQLField(
-						"headlessCommerceAdminCatalog_v1_0",
-						new GraphQLField(
-							"productIdDiagram",
-							new HashMap<String, Object>() {
-								{
-									put("id", irrelevantId);
-								}
-							},
-							getGraphQLFields()))),
-				"JSONArray/errors", "Object/0", "JSONObject/extensions",
-				"Object/code"));
-	}
-
-	protected Diagram testGraphQLGetProductIdDiagram_addDiagram()
-		throws Exception {
-
-		return testGraphQLProductDiagram_addDiagram();
-	}
-
-	@Test
-	public void testPatchDiagram() throws Exception {
-		Assert.assertTrue(false);
-	}
-
-	@Test
-	public void testPostProductByExternalReferenceCodeDiagram()
-		throws Exception {
-
-		Diagram randomDiagram = randomDiagram();
-
-		Diagram postDiagram =
-			testPostProductByExternalReferenceCodeDiagram_addDiagram(
-				randomDiagram);
-
-		assertEquals(randomDiagram, postDiagram);
-		assertValid(postDiagram);
-	}
-
-	protected Diagram testPostProductByExternalReferenceCodeDiagram_addDiagram(
-			Diagram diagram)
+	protected ProductProductGroup
+			testGetProductIdProductGroupsPage_addProductProductGroup(
+				Long id, ProductProductGroup productProductGroup)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
 	}
 
-	@Test
-	public void testPostProductIdDiagram() throws Exception {
-		Diagram randomDiagram = randomDiagram();
-
-		Diagram postDiagram = testPostProductIdDiagram_addDiagram(
-			randomDiagram);
-
-		assertEquals(randomDiagram, postDiagram);
-		assertValid(postDiagram);
-	}
-
-	protected Diagram testPostProductIdDiagram_addDiagram(Diagram diagram)
-		throws Exception {
-
+	protected Long testGetProductIdProductGroupsPage_getId() throws Exception {
 		throw new UnsupportedOperationException(
 			"This method needs to be implemented");
+	}
+
+	protected Long testGetProductIdProductGroupsPage_getIrrelevantId()
+		throws Exception {
+
+		return null;
 	}
 
 	@Test
@@ -517,23 +377,23 @@ public abstract class BaseDiagramResourceTestCase {
 		Assert.assertTrue(true);
 	}
 
-	protected Diagram testGraphQLProductDiagram_addDiagram() throws Exception {
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
+	protected void assertContains(
+		ProductProductGroup productProductGroup,
+		List<ProductProductGroup> productProductGroups) {
 
-	protected void assertContains(Diagram diagram, List<Diagram> diagrams) {
 		boolean contains = false;
 
-		for (Diagram item : diagrams) {
-			if (equals(diagram, item)) {
+		for (ProductProductGroup item : productProductGroups) {
+			if (equals(productProductGroup, item)) {
 				contains = true;
 
 				break;
 			}
 		}
 
-		Assert.assertTrue(diagrams + " does not contain " + diagram, contains);
+		Assert.assertTrue(
+			productProductGroups + " does not contain " + productProductGroup,
+			contains);
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -544,35 +404,46 @@ public abstract class BaseDiagramResourceTestCase {
 			expectedHttpResponseStatusCode, actualHttpResponse.getStatusCode());
 	}
 
-	protected void assertEquals(Diagram diagram1, Diagram diagram2) {
+	protected void assertEquals(
+		ProductProductGroup productProductGroup1,
+		ProductProductGroup productProductGroup2) {
+
 		Assert.assertTrue(
-			diagram1 + " does not equal " + diagram2,
-			equals(diagram1, diagram2));
+			productProductGroup1 + " does not equal " + productProductGroup2,
+			equals(productProductGroup1, productProductGroup2));
 	}
 
 	protected void assertEquals(
-		List<Diagram> diagrams1, List<Diagram> diagrams2) {
+		List<ProductProductGroup> productProductGroups1,
+		List<ProductProductGroup> productProductGroups2) {
 
-		Assert.assertEquals(diagrams1.size(), diagrams2.size());
+		Assert.assertEquals(
+			productProductGroups1.size(), productProductGroups2.size());
 
-		for (int i = 0; i < diagrams1.size(); i++) {
-			Diagram diagram1 = diagrams1.get(i);
-			Diagram diagram2 = diagrams2.get(i);
+		for (int i = 0; i < productProductGroups1.size(); i++) {
+			ProductProductGroup productProductGroup1 =
+				productProductGroups1.get(i);
+			ProductProductGroup productProductGroup2 =
+				productProductGroups2.get(i);
 
-			assertEquals(diagram1, diagram2);
+			assertEquals(productProductGroup1, productProductGroup2);
 		}
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<Diagram> diagrams1, List<Diagram> diagrams2) {
+		List<ProductProductGroup> productProductGroups1,
+		List<ProductProductGroup> productProductGroups2) {
 
-		Assert.assertEquals(diagrams1.size(), diagrams2.size());
+		Assert.assertEquals(
+			productProductGroups1.size(), productProductGroups2.size());
 
-		for (Diagram diagram1 : diagrams1) {
+		for (ProductProductGroup productProductGroup1 : productProductGroups1) {
 			boolean contains = false;
 
-			for (Diagram diagram2 : diagrams2) {
-				if (equals(diagram1, diagram2)) {
+			for (ProductProductGroup productProductGroup2 :
+					productProductGroups2) {
+
+				if (equals(productProductGroup1, productProductGroup2)) {
 					contains = true;
 
 					break;
@@ -580,91 +451,44 @@ public abstract class BaseDiagramResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				diagrams2 + " does not contain " + diagram1, contains);
+				productProductGroups2 + " does not contain " +
+					productProductGroup1,
+				contains);
 		}
 	}
 
-	protected void assertValid(Diagram diagram) throws Exception {
+	protected void assertValid(ProductProductGroup productProductGroup)
+		throws Exception {
+
 		boolean valid = true;
 
-		if (diagram.getId() == null) {
+		if (productProductGroup.getId() == null) {
 			valid = false;
 		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals("attachmentBase64", additionalAssertFieldName)) {
-				if (diagram.getAttachmentBase64() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("color", additionalAssertFieldName)) {
-				if (diagram.getColor() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
 			if (Objects.equals(
-					"imageExternalReferenceCode", additionalAssertFieldName)) {
+					"externalReferenceCode", additionalAssertFieldName)) {
 
-				if (diagram.getImageExternalReferenceCode() == null) {
+				if (productProductGroup.getExternalReferenceCode() == null) {
 					valid = false;
 				}
 
 				continue;
 			}
 
-			if (Objects.equals("imageId", additionalAssertFieldName)) {
-				if (diagram.getImageId() == null) {
+			if (Objects.equals("productGroupId", additionalAssertFieldName)) {
+				if (productProductGroup.getProductGroupId() == null) {
 					valid = false;
 				}
 
 				continue;
 			}
 
-			if (Objects.equals("imageURL", additionalAssertFieldName)) {
-				if (diagram.getImageURL() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"productExternalReferenceCode",
-					additionalAssertFieldName)) {
-
-				if (diagram.getProductExternalReferenceCode() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("productId", additionalAssertFieldName)) {
-				if (diagram.getProductId() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("radius", additionalAssertFieldName)) {
-				if (diagram.getRadius() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("type", additionalAssertFieldName)) {
-				if (diagram.getType() == null) {
+			if (Objects.equals("title", additionalAssertFieldName)) {
+				if (productProductGroup.getTitle() == null) {
 					valid = false;
 				}
 
@@ -679,18 +503,20 @@ public abstract class BaseDiagramResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<Diagram> page) {
+	protected void assertValid(Page<ProductProductGroup> page) {
 		assertValid(page, Collections.emptyMap());
 	}
 
 	protected void assertValid(
-		Page<Diagram> page, Map<String, Map<String, String>> expectedActions) {
+		Page<ProductProductGroup> page,
+		Map<String, Map<String, String>> expectedActions) {
 
 		boolean valid = false;
 
-		java.util.Collection<Diagram> diagrams = page.getItems();
+		java.util.Collection<ProductProductGroup> productProductGroups =
+			page.getItems();
 
-		int size = diagrams.size();
+		int size = productProductGroups.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -728,12 +554,14 @@ public abstract class BaseDiagramResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.headless.commerce.admin.catalog.dto.v1_0.
-						Diagram.class)) {
+						ProductProductGroup.class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -781,28 +609,23 @@ public abstract class BaseDiagramResourceTestCase {
 		return new String[0];
 	}
 
-	protected boolean equals(Diagram diagram1, Diagram diagram2) {
-		if (diagram1 == diagram2) {
+	protected boolean equals(
+		ProductProductGroup productProductGroup1,
+		ProductProductGroup productProductGroup2) {
+
+		if (productProductGroup1 == productProductGroup2) {
 			return true;
 		}
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
-			if (Objects.equals("attachmentBase64", additionalAssertFieldName)) {
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
 				if (!Objects.deepEquals(
-						diagram1.getAttachmentBase64(),
-						diagram2.getAttachmentBase64())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("color", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						diagram1.getColor(), diagram2.getColor())) {
+						productProductGroup1.getExternalReferenceCode(),
+						productProductGroup2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -811,19 +634,9 @@ public abstract class BaseDiagramResourceTestCase {
 			}
 
 			if (Objects.equals("id", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(diagram1.getId(), diagram2.getId())) {
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"imageExternalReferenceCode", additionalAssertFieldName)) {
-
 				if (!Objects.deepEquals(
-						diagram1.getImageExternalReferenceCode(),
-						diagram2.getImageExternalReferenceCode())) {
+						productProductGroup1.getId(),
+						productProductGroup2.getId())) {
 
 					return false;
 				}
@@ -831,9 +644,10 @@ public abstract class BaseDiagramResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("imageId", additionalAssertFieldName)) {
+			if (Objects.equals("productGroupId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						diagram1.getImageId(), diagram2.getImageId())) {
+						productProductGroup1.getProductGroupId(),
+						productProductGroup2.getProductGroupId())) {
 
 					return false;
 				}
@@ -841,53 +655,10 @@ public abstract class BaseDiagramResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("imageURL", additionalAssertFieldName)) {
+			if (Objects.equals("title", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						diagram1.getImageURL(), diagram2.getImageURL())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"productExternalReferenceCode",
-					additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						diagram1.getProductExternalReferenceCode(),
-						diagram2.getProductExternalReferenceCode())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("productId", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						diagram1.getProductId(), diagram2.getProductId())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("radius", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						diagram1.getRadius(), diagram2.getRadius())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals("type", additionalAssertFieldName)) {
-				if (!Objects.deepEquals(
-						diagram1.getType(), diagram2.getType())) {
+						productProductGroup1.getTitle(),
+						productProductGroup2.getTitle())) {
 
 					return false;
 				}
@@ -951,13 +722,13 @@ public abstract class BaseDiagramResourceTestCase {
 	protected java.util.Collection<EntityField> getEntityFields()
 		throws Exception {
 
-		if (!(_diagramResource instanceof EntityModelResource)) {
+		if (!(_productProductGroupResource instanceof EntityModelResource)) {
 			throw new UnsupportedOperationException(
 				"Resource is not an instance of EntityModelResource");
 		}
 
 		EntityModelResource entityModelResource =
-			(EntityModelResource)_diagramResource;
+			(EntityModelResource)_productProductGroupResource;
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
@@ -990,7 +761,8 @@ public abstract class BaseDiagramResourceTestCase {
 	}
 
 	protected String getFilterString(
-		EntityField entityField, String operator, Diagram diagram) {
+		EntityField entityField, String operator,
+		ProductProductGroup productProductGroup) {
 
 		StringBundler sb = new StringBundler();
 
@@ -1002,13 +774,8 @@ public abstract class BaseDiagramResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
-		if (entityFieldName.equals("attachmentBase64")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("color")) {
-			Object object = diagram.getColor();
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = productProductGroup.getExternalReferenceCode();
 
 			String value = String.valueOf(object);
 
@@ -1058,162 +825,13 @@ public abstract class BaseDiagramResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("imageExternalReferenceCode")) {
-			Object object = diagram.getImageExternalReferenceCode();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("imageId")) {
+		if (entityFieldName.equals("productGroupId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("imageURL")) {
-			Object object = diagram.getImageURL();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("productExternalReferenceCode")) {
-			Object object = diagram.getProductExternalReferenceCode();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("productId")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("radius")) {
-			sb.append(String.valueOf(diagram.getRadius()));
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("type")) {
-			Object object = diagram.getType();
+		if (entityFieldName.equals("title")) {
+			Object object = productProductGroup.getTitle();
 
 			String value = String.valueOf(object);
 
@@ -1302,36 +920,34 @@ public abstract class BaseDiagramResourceTestCase {
 			invoke(queryGraphQLField.toString()));
 	}
 
-	protected Diagram randomDiagram() throws Exception {
-		return new Diagram() {
+	protected ProductProductGroup randomProductProductGroup() throws Exception {
+		return new ProductProductGroup() {
 			{
-				color = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
-				imageExternalReferenceCode = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-				imageId = RandomTestUtil.randomLong();
-				imageURL = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-				productExternalReferenceCode = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-				productId = RandomTestUtil.randomLong();
-				radius = RandomTestUtil.randomDouble();
-				type = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				productGroupId = RandomTestUtil.randomLong();
+				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
 	}
 
-	protected Diagram randomIrrelevantDiagram() throws Exception {
-		Diagram randomIrrelevantDiagram = randomDiagram();
+	protected ProductProductGroup randomIrrelevantProductProductGroup()
+		throws Exception {
 
-		return randomIrrelevantDiagram;
+		ProductProductGroup randomIrrelevantProductProductGroup =
+			randomProductProductGroup();
+
+		return randomIrrelevantProductProductGroup;
 	}
 
-	protected Diagram randomPatchDiagram() throws Exception {
-		return randomDiagram();
+	protected ProductProductGroup randomPatchProductProductGroup()
+		throws Exception {
+
+		return randomProductProductGroup();
 	}
 
-	protected DiagramResource diagramResource;
+	protected ProductProductGroupResource productProductGroupResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
@@ -1530,16 +1146,15 @@ public abstract class BaseDiagramResourceTestCase {
 	}
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BaseDiagramResourceTestCase.class);
+		LogFactoryUtil.getLog(BaseProductProductGroupResourceTestCase.class);
 
 	private static Format _format;
 
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private
-		com.liferay.headless.commerce.admin.catalog.resource.v1_0.
-			DiagramResource _diagramResource;
+	private com.liferay.headless.commerce.admin.catalog.resource.v1_0.
+		ProductProductGroupResource _productProductGroupResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2017961467
+// LIFERAY-REST-BUILDER-HASH:-1861224492

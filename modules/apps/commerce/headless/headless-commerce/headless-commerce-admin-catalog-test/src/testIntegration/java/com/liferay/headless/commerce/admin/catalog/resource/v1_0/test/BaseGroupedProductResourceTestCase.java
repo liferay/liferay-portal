@@ -187,6 +187,7 @@ public abstract class BaseGroupedProductResourceTestCase {
 		GroupedProduct groupedProduct = randomGroupedProduct();
 
 		groupedProduct.setEntryProductExternalReferenceCode(regex);
+		groupedProduct.setEntryProductType(regex);
 		groupedProduct.setProductExternalReferenceCode(regex);
 
 		String json = GroupedProductSerDes.toJSON(groupedProduct);
@@ -197,6 +198,7 @@ public abstract class BaseGroupedProductResourceTestCase {
 
 		Assert.assertEquals(
 			regex, groupedProduct.getEntryProductExternalReferenceCode());
+		Assert.assertEquals(regex, groupedProduct.getEntryProductType());
 		Assert.assertEquals(
 			regex, groupedProduct.getProductExternalReferenceCode());
 	}
@@ -919,6 +921,14 @@ public abstract class BaseGroupedProductResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("entryProductType", additionalAssertFieldName)) {
+				if (groupedProduct.getEntryProductType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("priority", additionalAssertFieldName)) {
 				if (groupedProduct.getPriority() == null) {
 					valid = false;
@@ -1113,6 +1123,17 @@ public abstract class BaseGroupedProductResourceTestCase {
 				if (!equals(
 						(Map)groupedProduct1.getEntryProductName(),
 						(Map)groupedProduct2.getEntryProductName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("entryProductType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						groupedProduct1.getEntryProductType(),
+						groupedProduct2.getEntryProductType())) {
 
 					return false;
 				}
@@ -1353,6 +1374,52 @@ public abstract class BaseGroupedProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("entryProductType")) {
+			Object object = groupedProduct.getEntryProductType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("id")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1476,6 +1543,8 @@ public abstract class BaseGroupedProductResourceTestCase {
 				entryProductExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				entryProductId = RandomTestUtil.randomLong();
+				entryProductType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				priority = RandomTestUtil.randomDouble();
 				productExternalReferenceCode = StringUtil.toLowerCase(
@@ -1729,4 +1798,4 @@ public abstract class BaseGroupedProductResourceTestCase {
 		GroupedProductResource _groupedProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:992581107
+// LIFERAY-REST-BUILDER-HASH:-1912904511

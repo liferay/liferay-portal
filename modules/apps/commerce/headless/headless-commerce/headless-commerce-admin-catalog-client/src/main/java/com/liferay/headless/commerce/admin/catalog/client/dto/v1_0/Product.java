@@ -112,6 +112,53 @@ public class Product implements Cloneable, Serializable {
 
 	protected Catalog catalog;
 
+	public String getCatalogCurrencyCode() {
+		return catalogCurrencyCode;
+	}
+
+	public void setCatalogCurrencyCode(String catalogCurrencyCode) {
+		this.catalogCurrencyCode = catalogCurrencyCode;
+	}
+
+	public void setCatalogCurrencyCode(
+		UnsafeSupplier<String, Exception> catalogCurrencyCodeUnsafeSupplier) {
+
+		try {
+			catalogCurrencyCode = catalogCurrencyCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String catalogCurrencyCode;
+
+	public String getCatalogCurrencyExternalReferenceCode() {
+		return catalogCurrencyExternalReferenceCode;
+	}
+
+	public void setCatalogCurrencyExternalReferenceCode(
+		String catalogCurrencyExternalReferenceCode) {
+
+		this.catalogCurrencyExternalReferenceCode =
+			catalogCurrencyExternalReferenceCode;
+	}
+
+	public void setCatalogCurrencyExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			catalogCurrencyExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			catalogCurrencyExternalReferenceCode =
+				catalogCurrencyExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String catalogCurrencyExternalReferenceCode;
+
 	public String getCatalogExternalReferenceCode() {
 		return catalogExternalReferenceCode;
 	}
@@ -726,6 +773,28 @@ public class Product implements Cloneable, Serializable {
 
 	protected ProductConfiguration productConfiguration;
 
+	public ProductProductGroup[] getProductGroups() {
+		return productGroups;
+	}
+
+	public void setProductGroups(ProductProductGroup[] productGroups) {
+		this.productGroups = productGroups;
+	}
+
+	public void setProductGroups(
+		UnsafeSupplier<ProductProductGroup[], Exception>
+			productGroupsUnsafeSupplier) {
+
+		try {
+			productGroups = productGroupsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ProductProductGroup[] productGroups;
+
 	public Long getProductId() {
 		return productId;
 	}
@@ -1172,4 +1241,4 @@ public class Product implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:110130144
+// LIFERAY-REST-BUILDER-HASH:-447741523

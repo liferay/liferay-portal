@@ -165,6 +165,27 @@ public class MappedProduct implements Cloneable, Serializable {
 
 	protected Map<String, String> productName;
 
+	public String getProductType() {
+		return productType;
+	}
+
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	public void setProductType(
+		UnsafeSupplier<String, Exception> productTypeUnsafeSupplier) {
+
+		try {
+			productType = productTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String productType;
+
 	public Integer getQuantity() {
 		return quantity;
 	}
@@ -360,4 +381,4 @@ public class MappedProduct implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1942356038
+// LIFERAY-REST-BUILDER-HASH:-1668655236

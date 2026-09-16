@@ -87,6 +87,31 @@ public class Diagram implements Cloneable, Serializable {
 
 	protected Long id;
 
+	public String getImageExternalReferenceCode() {
+		return imageExternalReferenceCode;
+	}
+
+	public void setImageExternalReferenceCode(
+		String imageExternalReferenceCode) {
+
+		this.imageExternalReferenceCode = imageExternalReferenceCode;
+	}
+
+	public void setImageExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			imageExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			imageExternalReferenceCode =
+				imageExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String imageExternalReferenceCode;
+
 	public Long getImageId() {
 		return imageId;
 	}
@@ -247,4 +272,4 @@ public class Diagram implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1840651634
+// LIFERAY-REST-BUILDER-HASH:-635442751

@@ -121,6 +121,20 @@ public class MappedProductSerDes {
 			sb.append(_toJSON(mappedProduct.getProductName()));
 		}
 
+		if (mappedProduct.getProductType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(mappedProduct.getProductType()));
+
+			sb.append("\"");
+		}
+
 		if (mappedProduct.getQuantity() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -262,6 +276,14 @@ public class MappedProductSerDes {
 				"productName", String.valueOf(mappedProduct.getProductName()));
 		}
 
+		if (mappedProduct.getProductType() == null) {
+			map.put("productType", null);
+		}
+		else {
+			map.put(
+				"productType", String.valueOf(mappedProduct.getProductType()));
+		}
+
 		if (mappedProduct.getQuantity() == null) {
 			map.put("quantity", null);
 		}
@@ -344,6 +366,9 @@ public class MappedProductSerDes {
 			else if (Objects.equals(jsonParserFieldName, "productName")) {
 				return true;
 			}
+			else if (Objects.equals(jsonParserFieldName, "productType")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "quantity")) {
 				return false;
 			}
@@ -424,6 +449,11 @@ public class MappedProductSerDes {
 				if (jsonParserFieldValue != null) {
 					mappedProduct.setProductName(
 						(Map<String, String>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "productType")) {
+				if (jsonParserFieldValue != null) {
+					mappedProduct.setProductType((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "quantity")) {
@@ -550,4 +580,4 @@ public class MappedProductSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-161335863
+// LIFERAY-REST-BUILDER-HASH:1194750399

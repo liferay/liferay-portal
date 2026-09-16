@@ -189,6 +189,7 @@ public abstract class BaseMappedProductResourceTestCase {
 		MappedProduct mappedProduct = randomMappedProduct();
 
 		mappedProduct.setProductExternalReferenceCode(regex);
+		mappedProduct.setProductType(regex);
 		mappedProduct.setSequence(regex);
 		mappedProduct.setSku(regex);
 		mappedProduct.setSkuExternalReferenceCode(regex);
@@ -201,6 +202,7 @@ public abstract class BaseMappedProductResourceTestCase {
 
 		Assert.assertEquals(
 			regex, mappedProduct.getProductExternalReferenceCode());
+		Assert.assertEquals(regex, mappedProduct.getProductType());
 		Assert.assertEquals(regex, mappedProduct.getSequence());
 		Assert.assertEquals(regex, mappedProduct.getSku());
 		Assert.assertEquals(regex, mappedProduct.getSkuExternalReferenceCode());
@@ -1569,6 +1571,14 @@ public abstract class BaseMappedProductResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (mappedProduct.getProductType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("quantity", additionalAssertFieldName)) {
 				if (mappedProduct.getQuantity() == null) {
 					valid = false;
@@ -1801,6 +1811,17 @@ public abstract class BaseMappedProductResourceTestCase {
 				if (!equals(
 						(Map)mappedProduct1.getProductName(),
 						(Map)mappedProduct2.getProductName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						mappedProduct1.getProductType(),
+						mappedProduct2.getProductType())) {
 
 					return false;
 				}
@@ -2051,6 +2072,52 @@ public abstract class BaseMappedProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("productType")) {
+			Object object = mappedProduct.getProductType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("quantity")) {
 			sb.append(String.valueOf(mappedProduct.getQuantity()));
 
@@ -2256,6 +2323,8 @@ public abstract class BaseMappedProductResourceTestCase {
 				productExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				productId = RandomTestUtil.randomLong();
+				productType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				quantity = RandomTestUtil.randomInt();
 				sequence = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -2510,4 +2579,4 @@ public abstract class BaseMappedProductResourceTestCase {
 		MappedProductResource _mappedProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:631225623
+// LIFERAY-REST-BUILDER-HASH:-1238502745

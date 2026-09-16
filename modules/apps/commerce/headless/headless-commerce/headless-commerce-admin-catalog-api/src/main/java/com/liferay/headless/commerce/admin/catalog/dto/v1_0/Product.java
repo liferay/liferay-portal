@@ -250,6 +250,103 @@ public class Product implements Serializable {
 	private Supplier<Catalog> _catalogSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "ISO 4217 code of the default currency of the parent catalog. A catalog cannot exist without a currency, so the currency must travel with the catalog reference whenever the product is imported before the catalog.",
+		example = "USD"
+	)
+	public String getCatalogCurrencyCode() {
+		if (_catalogCurrencyCodeSupplier != null) {
+			catalogCurrencyCode = _catalogCurrencyCodeSupplier.get();
+
+			_catalogCurrencyCodeSupplier = null;
+		}
+
+		return catalogCurrencyCode;
+	}
+
+	public void setCatalogCurrencyCode(String catalogCurrencyCode) {
+		this.catalogCurrencyCode = catalogCurrencyCode;
+
+		_catalogCurrencyCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCatalogCurrencyCode(
+		UnsafeSupplier<String, Exception> catalogCurrencyCodeUnsafeSupplier) {
+
+		_catalogCurrencyCodeSupplier = () -> {
+			try {
+				return catalogCurrencyCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "ISO 4217 code of the default currency of the parent catalog. A catalog cannot exist without a currency, so the currency must travel with the catalog reference whenever the product is imported before the catalog."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String catalogCurrencyCode;
+
+	@JsonIgnore
+	private Supplier<String> _catalogCurrencyCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the default currency of the parent catalog; resolved after `catalogCurrencyCode` and used to create the currency when neither identifier matches an existing one.",
+		example = "AB-34098-789-N"
+	)
+	public String getCatalogCurrencyExternalReferenceCode() {
+		if (_catalogCurrencyExternalReferenceCodeSupplier != null) {
+			catalogCurrencyExternalReferenceCode =
+				_catalogCurrencyExternalReferenceCodeSupplier.get();
+
+			_catalogCurrencyExternalReferenceCodeSupplier = null;
+		}
+
+		return catalogCurrencyExternalReferenceCode;
+	}
+
+	public void setCatalogCurrencyExternalReferenceCode(
+		String catalogCurrencyExternalReferenceCode) {
+
+		this.catalogCurrencyExternalReferenceCode =
+			catalogCurrencyExternalReferenceCode;
+
+		_catalogCurrencyExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCatalogCurrencyExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			catalogCurrencyExternalReferenceCodeUnsafeSupplier) {
+
+		_catalogCurrencyExternalReferenceCodeSupplier = () -> {
+			try {
+				return catalogCurrencyExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the default currency of the parent catalog; resolved after `catalogCurrencyCode` and used to create the currency when neither identifier matches an existing one."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String catalogCurrencyExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _catalogCurrencyExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "External reference code of the parent catalog; used on create when `catalogId` is not supplied to look up the catalog within the company; the request is rejected when neither resolves.",
 		example = "AB-34098-789-N"
 	)
@@ -1560,6 +1657,53 @@ public class Product implements Serializable {
 	private Supplier<ProductConfiguration> _productConfigurationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Product groups the product belongs to. Each entry carries the external reference code of the product group, so the membership survives a transfer between instances."
+	)
+	@Valid
+	public ProductProductGroup[] getProductGroups() {
+		if (_productGroupsSupplier != null) {
+			productGroups = _productGroupsSupplier.get();
+
+			_productGroupsSupplier = null;
+		}
+
+		return productGroups;
+	}
+
+	public void setProductGroups(ProductProductGroup[] productGroups) {
+		this.productGroups = productGroups;
+
+		_productGroupsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setProductGroups(
+		UnsafeSupplier<ProductProductGroup[], Exception>
+			productGroupsUnsafeSupplier) {
+
+		_productGroupsSupplier = () -> {
+			try {
+				return productGroupsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Product groups the product belongs to. Each entry carries the external reference code of the product group, so the membership survives a transfer between instances."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ProductProductGroup[] productGroups;
+
+	@JsonIgnore
+	private Supplier<ProductProductGroup[]> _productGroupsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Identifier of the parent product envelope; stable across product revisions; read-only; filterable and sortable via the OData query parameter.",
 		example = "30129"
 	)
@@ -2523,6 +2667,39 @@ public class Product implements Serializable {
 			sb.append(String.valueOf(catalog));
 		}
 
+		String catalogCurrencyCode = getCatalogCurrencyCode();
+
+		if (catalogCurrencyCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(catalogCurrencyCode));
+
+			sb.append("\"");
+		}
+
+		String catalogCurrencyExternalReferenceCode =
+			getCatalogCurrencyExternalReferenceCode();
+
+		if (catalogCurrencyExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(catalogCurrencyExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		String catalogExternalReferenceCode = getCatalogExternalReferenceCode();
 
 		if (catalogExternalReferenceCode != null) {
@@ -2968,6 +3145,28 @@ public class Product implements Serializable {
 			sb.append(String.valueOf(productConfiguration));
 		}
 
+		ProductProductGroup[] productGroups = getProductGroups();
+
+		if (productGroups != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productGroups\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < productGroups.length; i++) {
+				sb.append(String.valueOf(productGroups[i]));
+
+				if ((i + 1) < productGroups.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Long productId = getProductId();
 
 		if (productId != null) {
@@ -3392,4 +3591,4 @@ public class Product implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1158156629
+// LIFERAY-REST-BUILDER-HASH:187906210
