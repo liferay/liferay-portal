@@ -127,14 +127,14 @@
 			"enableComments": false,
 			"enableIndexSearch": true,
 			"enableLocalization": false,
-			"externalReferenceCode": "C2M0_MESSAGE_ATTACHMENT",
+			"externalReferenceCode": "C2M0_ATTACHMENT",
 			"label": {
-				"en_US": "C2M0 Message Attachment"
+				"en_US": "C2M0 Attachment"
 			},
-			"name": "C2M0MessageAttachment",
+			"name": "C2M0Attachment",
 			"objectFolderExternalReferenceCode": "C2M0_FORUMS",
 			"pluralLabel": {
-				"en_US": "C2M0 Message Attachments"
+				"en_US": "C2M0 Attachments"
 			},
 			"scope": "site",
 			"status": {
