@@ -149,6 +149,8 @@ public class SegmentsEntryPersistenceTest {
 
 		newSegmentsEntry.setSource(RandomTestUtil.randomString());
 
+		newSegmentsEntry.setType(RandomTestUtil.nextInt());
+
 		newSegmentsEntry.setLastPublishDate(RandomTestUtil.nextDate());
 
 		newSegmentsEntry = _persistence.update(newSegmentsEntry);
@@ -203,6 +205,8 @@ public class SegmentsEntryPersistenceTest {
 			newSegmentsEntry.getCriteria());
 		Assert.assertEquals(
 			existingSegmentsEntry.getSource(), newSegmentsEntry.getSource());
+		Assert.assertEquals(
+			existingSegmentsEntry.getType(), newSegmentsEntry.getType());
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingSegmentsEntry.getLastPublishDate()),
 			Time.getShortTimestamp(newSegmentsEntry.getLastPublishDate()));
@@ -357,6 +361,24 @@ public class SegmentsEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountBySRC_T() throws Exception {
+		_persistence.countBySRC_T("", RandomTestUtil.nextInt());
+
+		_persistence.countBySRC_T("null", 0);
+
+		_persistence.countBySRC_T((String)null, 0);
+	}
+
+	@Test
+	public void testCountBySRC_TArrayable() throws Exception {
+		_persistence.countBySRC_T(
+			new String[] {
+				RandomTestUtil.randomString(), "", "null", null, null
+			},
+			new int[] {RandomTestUtil.nextInt(), 0});
+	}
+
+	@Test
 	public void testCountByG_A_SRC() throws Exception {
 		_persistence.countByG_A_SRC(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "");
@@ -375,6 +397,46 @@ public class SegmentsEntryPersistenceTest {
 			new String[] {
 				RandomTestUtil.randomString(), "", "null", null, null
 			});
+	}
+
+	@Test
+	public void testCountByG_SRC_T() throws Exception {
+		_persistence.countByG_SRC_T(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt());
+
+		_persistence.countByG_SRC_T(0L, "null", 0);
+
+		_persistence.countByG_SRC_T(0L, (String)null, 0);
+	}
+
+	@Test
+	public void testCountByG_SRC_TArrayable() throws Exception {
+		_persistence.countByG_SRC_T(
+			new long[] {RandomTestUtil.nextLong(), 0L},
+			new String[] {
+				RandomTestUtil.randomString(), "", "null", null, null
+			},
+			new int[] {RandomTestUtil.nextInt(), 0});
+	}
+
+	@Test
+	public void testCountByC_SRC_T() throws Exception {
+		_persistence.countByC_SRC_T(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextInt());
+
+		_persistence.countByC_SRC_T(0L, "null", 0);
+
+		_persistence.countByC_SRC_T(0L, (String)null, 0);
+	}
+
+	@Test
+	public void testCountByC_SRC_TArrayable() throws Exception {
+		_persistence.countByC_SRC_T(
+			RandomTestUtil.nextLong(),
+			new String[] {
+				RandomTestUtil.randomString(), "", "null", null, null
+			},
+			new int[] {RandomTestUtil.nextInt(), 0});
 	}
 
 	@Test
@@ -440,7 +502,8 @@ public class SegmentsEntryPersistenceTest {
 			true, "groupId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
 			"segmentsEntryKey", true, "name", true, "description", true,
-			"active", true, "source", true, "lastPublishDate", true);
+			"active", true, "source", true, "type", true, "lastPublishDate",
+			true);
 	}
 
 	@Test
@@ -776,6 +839,8 @@ public class SegmentsEntryPersistenceTest {
 
 		segmentsEntry.setSource(RandomTestUtil.randomString());
 
+		segmentsEntry.setType(RandomTestUtil.nextInt());
+
 		segmentsEntry.setLastPublishDate(RandomTestUtil.nextDate());
 
 		_segmentsEntries.add(_persistence.update(segmentsEntry));
@@ -789,4 +854,4 @@ public class SegmentsEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1645171650
+// LIFERAY-SERVICE-BUILDER-HASH:-691793561

@@ -314,7 +314,7 @@ public class SegmentsEntryServiceHttp {
 	public static java.util.List<com.liferay.segments.model.SegmentsEntry>
 		getSegmentsEntries(
 			HttpPrincipal httpPrincipal, long groupId, String[] sources,
-			int start, int end,
+			int[] types, int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
 				<com.liferay.segments.model.SegmentsEntry> orderByComparator) {
 
@@ -324,7 +324,8 @@ public class SegmentsEntryServiceHttp {
 				_getSegmentsEntriesParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, groupId, sources, start, end, orderByComparator);
+				methodKey, groupId, sources, types, start, end,
+				orderByComparator);
 
 			Object returnObj = null;
 
@@ -380,7 +381,8 @@ public class SegmentsEntryServiceHttp {
 	}
 
 	public static int getSegmentsEntriesCount(
-		HttpPrincipal httpPrincipal, long groupId, String[] sources) {
+		HttpPrincipal httpPrincipal, long groupId, String[] sources,
+		int[] types) {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -388,7 +390,7 @@ public class SegmentsEntryServiceHttp {
 				_getSegmentsEntriesCountParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, groupId, sources);
+				methodKey, groupId, sources, types);
 
 			Object returnObj = null;
 
@@ -618,13 +620,13 @@ public class SegmentsEntryServiceHttp {
 		};
 	private static final Class<?>[] _getSegmentsEntriesParameterTypes7 =
 		new Class[] {
-			long.class, String[].class, int.class, int.class,
+			long.class, String[].class, int[].class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[] _getSegmentsEntriesCountParameterTypes8 =
 		new Class[] {long.class};
 	private static final Class<?>[] _getSegmentsEntriesCountParameterTypes9 =
-		new Class[] {long.class, String[].class};
+		new Class[] {long.class, String[].class, int[].class};
 	private static final Class<?>[] _getSegmentsEntryParameterTypes10 =
 		new Class[] {long.class};
 	private static final Class<?>[]
@@ -644,4 +646,4 @@ public class SegmentsEntryServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1512865323
+// LIFERAY-SERVICE-BUILDER-HASH:-1351631579

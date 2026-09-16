@@ -68,7 +68,7 @@ public class SegmentsEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -104,6 +104,8 @@ public class SegmentsEntryCacheModel
 		sb.append(criteria);
 		sb.append(", source=");
 		sb.append(source);
+		sb.append(", type=");
+		sb.append(type);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
 		sb.append("}");
@@ -195,6 +197,8 @@ public class SegmentsEntryCacheModel
 			segmentsEntryImpl.setSource(source);
 		}
 
+		segmentsEntryImpl.setType(type);
+
 		if (lastPublishDate == Long.MIN_VALUE) {
 			segmentsEntryImpl.setLastPublishDate(null);
 		}
@@ -234,6 +238,8 @@ public class SegmentsEntryCacheModel
 		active = objectInput.readBoolean();
 		criteria = (String)objectInput.readObject();
 		source = objectInput.readUTF();
+
+		type = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -312,6 +318,7 @@ public class SegmentsEntryCacheModel
 			objectOutput.writeUTF(source);
 		}
 
+		objectOutput.writeInt(type);
 		objectOutput.writeLong(lastPublishDate);
 	}
 
@@ -332,7 +339,8 @@ public class SegmentsEntryCacheModel
 	public boolean active;
 	public String criteria;
 	public String source;
+	public int type;
 	public long lastPublishDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:395340247
+// LIFERAY-SERVICE-BUILDER-HASH:-101241814

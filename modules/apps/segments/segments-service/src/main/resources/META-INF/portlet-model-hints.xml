@@ -23,6 +23,7 @@
 			<hint-collection name="CLOB" />
 		</field>
 		<field name="source" type="String" />
+		<field name="type" type="int" />
 		<field name="lastPublishDate" type="Date" />
 	</model>
 	<model name="com.liferay.segments.model.SegmentsEntryRel">

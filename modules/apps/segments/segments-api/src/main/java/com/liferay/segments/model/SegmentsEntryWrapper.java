@@ -53,6 +53,7 @@ public class SegmentsEntryWrapper
 		attributes.put("active", isActive());
 		attributes.put("criteria", getCriteria());
 		attributes.put("source", getSource());
+		attributes.put("type", getType());
 		attributes.put("lastPublishDate", getLastPublishDate());
 
 		return attributes;
@@ -161,6 +162,12 @@ public class SegmentsEntryWrapper
 
 		if (source != null) {
 			setSource(source);
+		}
+
+		Integer type = (Integer)attributes.get("type");
+
+		if (type != null) {
+			setType(type);
 		}
 
 		Date lastPublishDate = (Date)attributes.get("lastPublishDate");
@@ -485,6 +492,16 @@ public class SegmentsEntryWrapper
 	@Override
 	public String getSource() {
 		return model.getSource();
+	}
+
+	/**
+	 * Returns the type of this segments entry.
+	 *
+	 * @return the type of this segments entry
+	 */
+	@Override
+	public int getType() {
+		return model.getType();
 	}
 
 	/**
@@ -828,6 +845,16 @@ public class SegmentsEntryWrapper
 	}
 
 	/**
+	 * Sets the type of this segments entry.
+	 *
+	 * @param type the type of this segments entry
+	 */
+	@Override
+	public void setType(int type) {
+		model.setType(type);
+	}
+
+	/**
 	 * Sets the user ID of this segments entry.
 	 *
 	 * @param userId the user ID of this segments entry
@@ -897,4 +924,4 @@ public class SegmentsEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-505864568
+// LIFERAY-SERVICE-BUILDER-HASH:417465346

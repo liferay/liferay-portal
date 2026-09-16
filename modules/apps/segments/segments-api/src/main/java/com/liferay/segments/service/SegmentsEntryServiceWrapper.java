@@ -104,12 +104,12 @@ public class SegmentsEntryServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsEntry> getSegmentsEntries(
-		long groupId, String[] sources, int start, int end,
+		long groupId, String[] sources, int[] types, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
 			orderByComparator) {
 
 		return _segmentsEntryService.getSegmentsEntries(
-			groupId, sources, start, end, orderByComparator);
+			groupId, sources, types, start, end, orderByComparator);
 	}
 
 	@Override
@@ -118,8 +118,11 @@ public class SegmentsEntryServiceWrapper
 	}
 
 	@Override
-	public int getSegmentsEntriesCount(long groupId, String[] sources) {
-		return _segmentsEntryService.getSegmentsEntriesCount(groupId, sources);
+	public int getSegmentsEntriesCount(
+		long groupId, String[] sources, int[] types) {
+
+		return _segmentsEntryService.getSegmentsEntriesCount(
+			groupId, sources, types);
 	}
 
 	@Override
@@ -178,4 +181,4 @@ public class SegmentsEntryServiceWrapper
 	private SegmentsEntryService _segmentsEntryService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2092707456
+// LIFERAY-SERVICE-BUILDER-HASH:1654911328

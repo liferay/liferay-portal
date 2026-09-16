@@ -52,13 +52,13 @@ public class SegmentsEntryLocalServiceWrapper
 			String externalReferenceCode, String segmentsEntryKey,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
-			boolean active, String criteria, String source,
+			boolean active, String criteria, String source, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _segmentsEntryLocalService.addSegmentsEntry(
 			externalReferenceCode, segmentsEntryKey, nameMap, descriptionMap,
-			active, criteria, source, serviceContext);
+			active, criteria, source, type, serviceContext);
 	}
 
 	@Override
@@ -378,12 +378,12 @@ public class SegmentsEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsEntry> getSegmentsEntries(
-		long groupId, String[] sources, int start, int end,
+		long groupId, String[] sources, int[] types, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
 			orderByComparator) {
 
 		return _segmentsEntryLocalService.getSegmentsEntries(
-			groupId, sources, start, end, orderByComparator);
+			groupId, sources, types, start, end, orderByComparator);
 	}
 
 	@Override
@@ -404,22 +404,22 @@ public class SegmentsEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<SegmentsEntry> getSegmentsEntriesBySource(
-		long companyId, String source, int start, int end,
+		long companyId, String source, int[] types, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
 			orderByComparator) {
 
 		return _segmentsEntryLocalService.getSegmentsEntriesBySource(
-			companyId, source, start, end, orderByComparator);
+			companyId, source, types, start, end, orderByComparator);
 	}
 
 	@Override
 	public java.util.List<SegmentsEntry> getSegmentsEntriesBySource(
-		String source, int start, int end,
+		String source, int[] types, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<SegmentsEntry>
 			orderByComparator) {
 
 		return _segmentsEntryLocalService.getSegmentsEntriesBySource(
-			source, start, end, orderByComparator);
+			source, types, start, end, orderByComparator);
 	}
 
 	/**
@@ -473,9 +473,11 @@ public class SegmentsEntryLocalServiceWrapper
 	}
 
 	@Override
-	public int getSegmentsEntriesCount(long groupId, String[] sources) {
+	public int getSegmentsEntriesCount(
+		long groupId, String[] sources, int[] types) {
+
 		return _segmentsEntryLocalService.getSegmentsEntriesCount(
-			groupId, sources);
+			groupId, sources, types);
 	}
 
 	/**
@@ -561,13 +563,13 @@ public class SegmentsEntryLocalServiceWrapper
 			String segmentsEntryKey,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.Map<java.util.Locale, String> descriptionMap,
-			boolean active, String criteria,
+			boolean active, String criteria, int type,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _segmentsEntryLocalService.updateSegmentsEntry(
 			externalReferenceCode, segmentsEntryId, segmentsEntryKey, nameMap,
-			descriptionMap, active, criteria, serviceContext);
+			descriptionMap, active, criteria, type, serviceContext);
 	}
 
 	@Override
@@ -610,4 +612,4 @@ public class SegmentsEntryLocalServiceWrapper
 	private SegmentsEntryLocalService _segmentsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:701262167
+// LIFERAY-SERVICE-BUILDER-HASH:1876414601

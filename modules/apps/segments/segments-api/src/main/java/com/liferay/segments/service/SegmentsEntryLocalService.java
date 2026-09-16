@@ -87,7 +87,7 @@ public interface SegmentsEntryLocalService
 	public SegmentsEntry addSegmentsEntry(
 			String externalReferenceCode, String segmentsEntryKey,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			boolean active, String criteria, String source,
+			boolean active, String criteria, String source, int type,
 			ServiceContext serviceContext)
 		throws PortalException;
 
@@ -297,7 +297,7 @@ public interface SegmentsEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SegmentsEntry> getSegmentsEntries(
-		long groupId, String[] sources, int start, int end,
+		long groupId, String[] sources, int[] types, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -310,12 +310,12 @@ public interface SegmentsEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SegmentsEntry> getSegmentsEntriesBySource(
-		long companyId, String source, int start, int end,
+		long companyId, String source, int[] types, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SegmentsEntry> getSegmentsEntriesBySource(
-		String source, int start, int end,
+		String source, int[] types, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator);
 
 	/**
@@ -356,7 +356,8 @@ public interface SegmentsEntryLocalService
 	public int getSegmentsEntriesCount(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSegmentsEntriesCount(long groupId, String[] sources);
+	public int getSegmentsEntriesCount(
+		long groupId, String[] sources, int[] types);
 
 	/**
 	 * Returns the segments entry with the primary key.
@@ -416,7 +417,7 @@ public interface SegmentsEntryLocalService
 			String externalReferenceCode, long segmentsEntryId,
 			String segmentsEntryKey, Map<Locale, String> nameMap,
 			Map<Locale, String> descriptionMap, boolean active, String criteria,
-			ServiceContext serviceContext)
+			int type, ServiceContext serviceContext)
 		throws PortalException;
 
 	@Override
@@ -435,4 +436,4 @@ public interface SegmentsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-15771358
+// LIFERAY-SERVICE-BUILDER-HASH:1239669196
