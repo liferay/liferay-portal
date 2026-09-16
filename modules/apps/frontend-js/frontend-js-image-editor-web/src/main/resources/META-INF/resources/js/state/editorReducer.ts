@@ -3,6 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {mirrorOverlay} from '../imaging/overlayShapes';
+import {
+	imageMatrix,
+	invert,
+	multiply,
+	transformOverlay,
+} from '../imaging/overlayTransform';
+import {patchOverlay} from './overlayPatch';
 import {
 	AdjustmentKey,
 	CropRect,
@@ -13,15 +21,18 @@ import {
 	FilterPreset,
 	Frame,
 	MIN_CROP_SIZE,
+	Overlay,
 	RATIO_VALUES,
 	RatioPreset,
 	rotatedSize,
 } from './types';
 
 export type EditorAction =
+	| {overlay: Overlay; type: 'add-overlay'}
 	| {type: 'cancel-gesture'}
 	| {type: 'flip-horizontal'}
 	| {type: 'redo'}
+	| {id: string; type: 'remove-overlay'}
 	| {type: 'reset-adjustments'}
 	| {type: 'rotate-90'}
 	| {
@@ -35,7 +46,13 @@ export type EditorAction =
 	| {filter: FilterPreset; type: 'set-filter'}
 	| {frame: Partial<Frame>; transient?: boolean; type: 'set-frame'}
 	| {ratio: RatioPreset; type: 'set-ratio'}
-	| {type: 'undo'};
+	| {type: 'undo'}
+	| {
+			id: string;
+			patch: Partial<Overlay>;
+			transient?: boolean;
+			type: 'update-overlay';
+	  };
 
 export interface InitialStateOptions {
 	ratios?: RatioPreset[];
@@ -68,6 +85,59 @@ export function editorReducer(
 	const {present} = history;
 
 	switch (action.type) {
+		case 'add-overlay': {
+			return applyEdit(
+				history,
+				{...present, overlays: [...present.overlays, action.overlay]},
+				Liferay.Language.get('annotation')
+			);
+		}
+
+		case 'remove-overlay': {
+			return applyEdit(
+				history,
+				{
+					...present,
+					overlays: present.overlays.filter(
+						(overlay) => overlay.id !== action.id
+					),
+				},
+				Liferay.Language.get('annotation')
+			);
+		}
+
+		case 'update-overlay': {
+			const target = present.overlays.find(
+				(overlay) => overlay.id === action.id
+			);
+
+			if (!target) {
+				return history;
+			}
+
+			const patched = patchOverlay(target, action.patch);
+
+			if (
+				patched === target &&
+				!action.transient &&
+				!history.pendingBase
+			) {
+				return history;
+			}
+
+			return applyEdit(
+				history,
+				{
+					...present,
+					overlays: present.overlays.map((overlay) =>
+						overlay.id === action.id ? patched : overlay
+					),
+				},
+				Liferay.Language.get('annotation'),
+				action.transient
+			);
+		}
+
 		case 'set-adjustment': {
 			if (
 				!action.transient &&
@@ -207,6 +277,9 @@ export function editorReducer(
 						x: bounds.width - present.crop.x - present.crop.width,
 					},
 					flipHorizontal: !present.flipHorizontal,
+					overlays: present.overlays.map((overlay) =>
+						mirrorOverlay(overlay, bounds.width)
+					),
 				},
 				Liferay.Language.get('flip')
 			);
@@ -221,6 +294,11 @@ export function editorReducer(
 
 			const bounds = rotatedSize(next);
 
+			const mapping = multiply(
+				imageMatrix(next),
+				invert(imageMatrix(present))
+			);
+
 			return applyEdit(
 				history,
 				{
@@ -231,6 +309,9 @@ export function editorReducer(
 						x: 0,
 						y: 0,
 					},
+					overlays: present.overlays.map((overlay) =>
+						transformOverlay(overlay, mapping)
+					),
 					ratio: 'original',
 				},
 				Liferay.Language.get('rotation')
@@ -312,6 +393,7 @@ export function initialEditState(
 		filter: 'none',
 		flipHorizontal: false,
 		frame: {...DEFAULT_FRAME},
+		overlays: [],
 		ratio,
 		rotation: 0,
 		sourceHeight,

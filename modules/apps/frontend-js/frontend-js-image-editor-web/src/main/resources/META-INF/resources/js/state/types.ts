@@ -68,6 +68,7 @@ export interface EditState {
 
 	frame: Frame;
 
+	overlays: Overlay[];
 	ratio: RatioPreset;
 	rotation: Rotation;
 	sourceHeight: number;
@@ -122,6 +123,8 @@ interface HistoryEntry {
 	state: EditState;
 }
 
+export type Overlay = TextOverlay;
+
 export type RatioPreset =
 	| '1:1'
 	| '16:9'
@@ -132,6 +135,19 @@ export type RatioPreset =
 	| 'original';
 
 type Rotation = 0 | 90 | 180 | 270;
+
+export interface TextOverlay {
+	color: string;
+	fontFamily: string;
+	fontSize: number;
+	id: string;
+	kind: 'text';
+	opacity?: number;
+	rotation?: number;
+	text: string;
+	x: number;
+	y: number;
+}
 
 export function rotatedSize(state: EditState): {
 	height: number;

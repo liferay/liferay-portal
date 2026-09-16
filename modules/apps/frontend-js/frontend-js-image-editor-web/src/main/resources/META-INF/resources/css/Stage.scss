@@ -86,8 +86,13 @@
 }
 
 .image-editor .crop-handle,
-.image-editor .crop-move {
+.image-editor .crop-move,
+.image-editor .overlay-hit {
 	outline: none;
+}
+
+.image-editor .overlay-hit {
+	cursor: move;
 }
 
 .image-editor .crop-handle-visual,

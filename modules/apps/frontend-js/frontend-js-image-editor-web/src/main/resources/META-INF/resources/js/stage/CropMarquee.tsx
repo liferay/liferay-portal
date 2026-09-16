@@ -79,6 +79,8 @@ interface Props {
 
 	bounds: {height: number; width: number};
 
+	children?: React.ReactNode;
+
 	crop: CropRect;
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
@@ -154,6 +156,7 @@ export function applyResizeModifiers(
 export function CropMarquee({
 	aspectLocked,
 	bounds,
+	children,
 	crop,
 	dispatch,
 	onAnnounce,
@@ -331,7 +334,7 @@ export function CropMarquee({
 	const strokeWidth = 2 / zoom;
 
 	if (!showCrop) {
-		return null;
+		return <g>{children}</g>;
 	}
 
 	const dimPath =
@@ -418,6 +421,8 @@ export function CropMarquee({
 					zoom={zoom}
 				/>
 			)}
+
+			{children}
 
 			<path
 				className="crop-dim"

@@ -437,3 +437,146 @@ describe('initialHistory with allowed ratios', () => {
 		).toBe('custom');
 	});
 });
+
+describe('overlays', () => {
+	const caption = {
+		color: '#ffffff',
+		fontFamily: 'sans-serif',
+		fontSize: 48,
+		id: 'text-1',
+		kind: 'text' as const,
+		text: 'Hello',
+		x: 100,
+		y: 100,
+	};
+
+	it('adds, updates and removes an annotation, one step each', () => {
+		let state = editorReducer(history(), {
+			overlay: caption,
+			type: 'add-overlay',
+		});
+
+		expect(state.present.overlays).toEqual([caption]);
+		expect(undoLabel(state)).toBe('annotation');
+
+		state = editorReducer(state, {
+			id: 'text-1',
+			patch: {x: 200},
+			type: 'update-overlay',
+		});
+
+		expect(state.present.overlays[0]).toMatchObject({id: 'text-1', x: 200});
+
+		state = editorReducer(state, {id: 'text-1', type: 'remove-overlay'});
+
+		expect(state.present.overlays).toHaveLength(0);
+		expect(state.past).toHaveLength(3);
+	});
+
+	it('ignores an update that changes nothing or names no annotation', () => {
+		const state = editorReducer(history(), {
+			overlay: caption,
+			type: 'add-overlay',
+		});
+
+		expect(
+			editorReducer(state, {
+				id: 'text-1',
+				patch: {x: 100},
+				type: 'update-overlay',
+			})
+		).toBe(state);
+
+		expect(
+			editorReducer(state, {
+				id: 'text-9',
+				patch: {x: 300},
+				type: 'update-overlay',
+			})
+		).toBe(state);
+	});
+
+	it('collapses a drag into a single undo step', () => {
+		let state = editorReducer(history(), {
+			overlay: caption,
+			type: 'add-overlay',
+		});
+
+		state = editorReducer(state, {
+			id: 'text-1',
+			patch: {x: 120},
+			transient: true,
+			type: 'update-overlay',
+		});
+		state = editorReducer(state, {
+			id: 'text-1',
+			patch: {x: 140},
+			transient: true,
+			type: 'update-overlay',
+		});
+		state = editorReducer(state, {
+			id: 'text-1',
+			patch: {x: 140},
+			type: 'update-overlay',
+		});
+
+		expect(state.present.overlays[0]).toMatchObject({x: 140});
+		expect(state.past).toHaveLength(2);
+
+		state = editorReducer(state, {type: 'undo'});
+
+		expect(state.present.overlays[0]).toMatchObject({x: 100});
+	});
+
+	it('mirrors the annotations with the photograph', () => {
+		let state = editorReducer(history(), {
+			overlay: caption,
+			type: 'add-overlay',
+		});
+
+		state = editorReducer(state, {type: 'flip-horizontal'});
+
+		expect(state.present.overlays[0]).toMatchObject({
+			x: WIDTH - 100 - 5 * 48 * 0.6,
+			y: 100,
+		});
+
+		state = editorReducer(state, {type: 'flip-horizontal'});
+
+		expect(state.present.overlays[0]).toMatchObject({x: 100, y: 100});
+	});
+
+	it('turns the annotations with the photograph', () => {
+		let state = editorReducer(history(), {
+			overlay: caption,
+			type: 'add-overlay',
+		});
+
+		state = editorReducer(state, {type: 'rotate-90'});
+
+		const turned = state.present.overlays[0] as typeof caption & {
+			rotation?: number;
+		};
+
+		expect(turned.rotation).toBe(90);
+
+		// The caption's center follows the pixel it was written over.
+
+		const bounds = rotatedSize(state.present);
+
+		expect(bounds).toEqual({height: WIDTH, width: HEIGHT});
+		expect(turned.x + (5 * 48 * 0.6) / 2).toBeCloseTo(HEIGHT - 80.8, 0);
+		expect(turned.y - 0.4 * 48).toBeCloseTo(172, 0);
+
+		for (let turn = 0; turn < 3; turn++) {
+			state = editorReducer(state, {type: 'rotate-90'});
+		}
+
+		expect(state.present.overlays[0]).toMatchObject({
+			fontSize: 48,
+			rotation: undefined,
+			x: 100,
+			y: 100,
+		});
+	});
+});

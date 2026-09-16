@@ -11,6 +11,7 @@ import {FilterDefs, isIdentityFilter} from './FilterDefs';
 import {FrameShape} from './frameShapes';
 import {imageTransform} from './geometry';
 import {LoadedImage} from './loadImage';
+import {OverlayShape, overlayTransform} from './overlayShapes';
 
 export function editedImageMarkup(state: EditState, dataUrl: string): string {
 	const {crop} = state;
@@ -42,6 +43,12 @@ export function editedImageMarkup(state: EditState, dataUrl: string): string {
 					width={state.sourceWidth}
 				/>
 			</g>
+
+			{state.overlays.map((overlay) => (
+				<g key={overlay.id} transform={overlayTransform(overlay)}>
+					<OverlayShape overlay={overlay} />
+				</g>
+			))}
 
 			<FrameShape crop={crop} frame={state.frame} />
 		</svg>

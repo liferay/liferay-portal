@@ -18,3 +18,21 @@ if (!globalThis.ResizeObserver) {
 
 HTMLCanvasElement.prototype.getContext = (() =>
 	null) as unknown as HTMLCanvasElement['getContext'];
+
+if (!globalThis.PointerEvent) {
+
+	// jsdom has no PointerEvent; without it fireEvent.pointerDown builds a
+	// plain Event and the coordinates and modifier keys silently vanish.
+
+	globalThis.PointerEvent = class PointerEvent extends MouseEvent {
+		pointerId: number;
+		pointerType: string;
+
+		constructor(type: string, params: PointerEventInit = {}) {
+			super(type, params);
+
+			this.pointerId = params.pointerId ?? 0;
+			this.pointerType = params.pointerType ?? 'mouse';
+		}
+	} as unknown as typeof globalThis.PointerEvent;
+}

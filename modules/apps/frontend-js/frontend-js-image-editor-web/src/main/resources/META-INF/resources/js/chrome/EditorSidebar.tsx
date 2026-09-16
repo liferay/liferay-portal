@@ -7,6 +7,7 @@ import '../../css/Panels.scss';
 
 import React from 'react';
 
+import {AnnotatePanel} from '../annotations/AnnotatePanel';
 import {LoadedImage} from '../imaging/loadImage';
 import {AdjustPanel} from '../panels/AdjustPanel';
 import {CropPanel} from '../panels/CropPanel';
@@ -95,6 +96,12 @@ export function EditorSidebar({
 					presets={frames}
 				/>
 			)}
+
+			<AnnotatePanel
+				area={state.crop}
+				dispatch={dispatch}
+				onAnnounce={onAnnounce}
+			/>
 		</aside>
 	);
 }

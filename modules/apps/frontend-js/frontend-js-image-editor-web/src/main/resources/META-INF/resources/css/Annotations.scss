@@ -1,0 +1,30 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+.image-editor .editor-annotate-actions {
+	display: grid;
+	gap: 0.5rem;
+	grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+}
+
+.image-editor .editor-tool-tile {
+	align-items: center;
+	display: flex;
+	gap: 0.5rem;
+	justify-content: flex-start;
+	padding: 0.5rem 0.75rem;
+	width: 100%;
+}
+
+.image-editor .editor-tool-tile .lexicon-icon {
+	font-size: 1rem;
+	margin: 0;
+}
+
+.image-editor .editor-tool-tile-label {
+	font-size: 0.8125rem;
+	font-weight: 400;
+	line-height: 1;
+}

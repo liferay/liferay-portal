@@ -50,6 +50,10 @@ function EditorHarness() {
 
 	const [aspectLocked, setAspectLocked] = useState(false);
 
+	const [selectedOverlayId, setSelectedOverlayId] = useState<string | null>(
+		null
+	);
+
 	const zoomBy = (direction: -1 | 1) =>
 		setZoom((current) => current + direction * 0.25);
 
@@ -62,9 +66,11 @@ function EditorHarness() {
 					image={IMAGE}
 					onAnnounce={() => {}}
 					onCenterCrop={() => {}}
+					onSelectOverlay={setSelectedOverlayId}
 					onZoom={zoomBy}
 					onZoomActual={() => setZoom(1)}
 					onZoomFit={() => setZoom(0.5)}
+					selectedOverlayId={selectedOverlayId}
 					showCrop
 					showRecenter
 					state={history.present}

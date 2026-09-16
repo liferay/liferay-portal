@@ -15,6 +15,7 @@ import {LoadedImage} from '../imaging/loadImage';
 import {EditorAction} from '../state/editorReducer';
 import {EditState, rotatedSize} from '../state/types';
 import {CropMarquee} from './CropMarquee';
+import {OverlaysEditable} from './OverlaysEditable';
 
 interface Props {
 	aspectLocked: boolean;
@@ -23,12 +24,14 @@ interface Props {
 	image: LoadedImage;
 	onAnnounce: (message: string) => void;
 	onCenterCrop: () => void;
+	onSelectOverlay: (id: string | null) => void;
 	onWorkspacePointerLeave?: () => void;
 	onWorkspacePointerMove?: (event: React.PointerEvent) => void;
 	onWorkspaceScroll?: () => void;
 	onZoom: (direction: -1 | 1) => void;
 	onZoomActual: () => void;
 	onZoomFit: () => void;
+	selectedOverlayId: string | null;
 	showCrop: boolean;
 	showRecenter: boolean;
 	state: EditState;
@@ -42,12 +45,14 @@ export function Workspace({
 	image,
 	onAnnounce,
 	onCenterCrop,
+	onSelectOverlay,
 	onWorkspacePointerLeave,
 	onWorkspacePointerMove,
 	onWorkspaceScroll,
 	onZoom,
 	onZoomActual,
 	onZoomFit,
+	selectedOverlayId,
 	showCrop,
 	showRecenter,
 	state,
@@ -88,6 +93,15 @@ export function Workspace({
 			aria-label={Liferay.Language.get('image-workspace')}
 			className="editor-workspace"
 			onKeyDown={handleKeyDown}
+			onPointerDown={(event) => {
+				if (
+					!(event.target as Element).closest(
+						'.overlay-hit, .overlay-text-editor'
+					)
+				) {
+					onSelectOverlay(null);
+				}
+			}}
 			onPointerLeave={onWorkspacePointerLeave}
 			onPointerMove={onWorkspacePointerMove}
 			onScroll={onWorkspaceScroll}
@@ -170,7 +184,16 @@ export function Workspace({
 					showCrop={showCrop}
 					showRecenter={showRecenter}
 					zoom={zoom}
-				/>
+				>
+					<OverlaysEditable
+						dispatch={dispatch}
+						onAnnounce={onAnnounce}
+						onSelect={onSelectOverlay}
+						overlays={state.overlays}
+						selectedId={selectedOverlayId}
+						zoom={zoom}
+					/>
+				</CropMarquee>
 			</svg>
 		</div>
 	);

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {createContext, useCallback, useContext} from 'react';
+import React, {createContext, useCallback, useContext} from 'react';
 
 const EditorInstanceContext = createContext('aie-');
 
@@ -23,4 +23,15 @@ export function useEditorId(): (name: string) => string {
 	const prefix = useContext(EditorInstanceContext);
 
 	return useCallback((name: string) => prefix + name, [prefix]);
+}
+
+const EditorRootContext =
+	createContext<React.RefObject<HTMLElement | null> | null>(null);
+
+export const EditorRootProvider = EditorRootContext.Provider;
+
+export function useEditorRoot(): () => ParentNode {
+	const ref = useContext(EditorRootContext);
+
+	return useCallback(() => ref?.current ?? document, [ref]);
 }
