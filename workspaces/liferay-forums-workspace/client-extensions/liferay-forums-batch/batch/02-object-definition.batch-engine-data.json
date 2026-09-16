@@ -25,6 +25,8 @@
 			"pluralLabel": {
 				"en_US": "C2M0 Attachments"
 			},
+			"portlet": false,
+			"restContextPath": "/o/c/c2m0attachments",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -61,6 +63,7 @@
 				"en_US": "C2M0 Bans"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0bans",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -98,6 +101,7 @@
 				"en_US": "C2M0 Categories"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0categories",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -135,6 +139,7 @@
 				"en_US": "C2M0 Messages"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0messages",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -172,6 +177,7 @@
 				"en_US": "C2M0 Subscriptions"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0subscriptions",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -209,6 +215,7 @@
 				"en_US": "C2M0 Suspicious Activities"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0suspiciousactivities",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -246,6 +253,7 @@
 				"en_US": "C2M0 Threads"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0threads",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -283,6 +291,7 @@
 				"en_US": "C2M0 Users"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0users",
 			"scope": "site",
 			"status": {
 				"code": 0,
@@ -320,6 +329,7 @@
 				"en_US": "C2M0 Votes"
 			},
 			"portlet": false,
+			"restContextPath": "/o/c/c2m0votes",
 			"scope": "site",
 			"status": {
 				"code": 0,
