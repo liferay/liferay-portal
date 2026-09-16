@@ -26,6 +26,8 @@ import {CropRect, Overlay} from '../state/types';
 import {MenuGrid} from './MenuGrid';
 import {TextDialog} from './TextDialog';
 
+const SHAPE_COLOR = '#0b5fff';
+
 const SHAPE_LABELS: Record<ShapeTool, string> = {
 	arrow: Liferay.Language.get('arrow'),
 	circle: Liferay.Language.get('circle'),
@@ -256,7 +258,7 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 
 	const addRectangle = () =>
 		add({
-			color: '#0b5fff',
+			color: SHAPE_COLOR,
 			height: Math.round(area.height * 0.15),
 			id: nextId('shape'),
 			kind: 'shape',
@@ -269,7 +271,7 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 		const size = Math.round(Math.min(area.width, area.height) * 0.2);
 
 		add({
-			color: '#0b5fff',
+			color: SHAPE_COLOR,
 			height: size,
 			id: nextId('shape'),
 			kind: 'shape',
@@ -283,7 +285,7 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 		const size = Math.round(Math.min(area.width, area.height) * 0.2);
 
 		add({
-			color: '#0b5fff',
+			color: SHAPE_COLOR,
 			height: size,
 			id: nextId('circle'),
 			kind: 'circle',
@@ -297,7 +299,7 @@ export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 		const length = Math.round(Math.min(area.width, area.height) * 0.3);
 
 		add({
-			color: '#0b5fff',
+			color: SHAPE_COLOR,
 			dx: length,
 			dy: 0,
 			head: 'filled',
