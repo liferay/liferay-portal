@@ -54,7 +54,7 @@ components:
             properties:
                 assetId:
                     description:
-                        "Identifier of the tracked asset."
+                        "ID of the tracked asset."
                     readOnly: true
                     type: string
                 assetTitle:
@@ -123,7 +123,7 @@ components:
             properties:
                 id:
                     description:
-                        "Channel id. Use this with `getWorkspaceGroupChannel` to fetch the channel directly."
+                        "Channel ID. Use this with `getWorkspaceGroupChannel` to fetch the channel directly."
                     readOnly: true
                     type: string
                 name:
@@ -138,7 +138,7 @@ components:
             properties:
                 applicationId:
                     description:
-                        "Identifier of the application that emitted the event."
+                        "ID of the application that emitted the event."
                     readOnly: true
                     type: string
                 assetTitle:
@@ -166,7 +166,7 @@ components:
                     type: string
                 individualId:
                     description:
-                        "Identifier of the individual that emitted the event. Null for anonymous individuals. Use with `getWorkspaceGroupIndividual` to fetch the individual."
+                        "ID of the individual that emitted the event. Null for anonymous individuals. Use with `getWorkspaceGroupIndividual` to fetch the individual."
                     readOnly: true
                     type: string
                 name:
@@ -309,7 +309,7 @@ components:
                     type: integer
                 channelId:
                     description:
-                        "Identifier of the channel this segment is scoped to."
+                        "ID of the channel this segment is scoped to."
                     readOnly: true
                     type: string
                 dateCreated:
@@ -331,7 +331,7 @@ components:
                     type: string
                 id:
                     description:
-                        "Segment id. Use this with `getWorkspaceGroupIndividualSegment` to fetch a single segment."
+                        "Segment ID. Use this with `getWorkspaceGroupIndividualSegment` to fetch a single segment."
                     readOnly: true
                     type: string
                 includeAnonymousUsers:
@@ -399,12 +399,12 @@ components:
                     type: string
                 individualId:
                     description:
-                        "Identifier of the individual whose membership this record describes. Use with `getWorkspaceGroupIndividual` to fetch the individual."
+                        "ID of the individual whose membership this record describes. Use with `getWorkspaceGroupIndividual` to fetch the individual."
                     readOnly: true
                     type: string
                 individualSegmentId:
                     description:
-                        "Identifier of the segment this membership belongs to."
+                        "ID of the segment this membership belongs to."
                     readOnly: true
                     type: string
                 status:
@@ -420,7 +420,7 @@ components:
             properties:
                 assetId:
                     description:
-                        "Identifier of the tracked page (the page's canonical URL)."
+                        "ID of the tracked page (the page's canonical URL)."
                     readOnly: true
                     type: string
                 assetTitle:
@@ -442,7 +442,7 @@ components:
                     type: number
                 dataSourceId:
                     description:
-                        "Identifier of the data source providing this page's analytics events."
+                        "ID of the data source providing this page's analytics events."
                     readOnly: true
                     type: string
                 directAccess:
@@ -523,7 +523,7 @@ components:
             properties:
                 groupId:
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
                     format: int64
                     readOnly: true
                     type: integer
@@ -547,12 +547,12 @@ paths:
     "/workspace/{groupId}/accounts/{accountId}":
         get:
             description:
-                "Fetch a single account by id from an Analytics Cloud Workspace. Use this when you already have an account id. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
+                "Fetch a single account by ID from an Analytics Cloud Workspace. Use this when you already have an account ID. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
             operationId: getWorkspaceGroupAccount
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -578,12 +578,12 @@ paths:
     "/workspace/{groupId}/channels":
         get:
             description:
-                "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by id, use `getWorkspaceGroupChannel`."
+                "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
             operationId: getWorkspaceGroupChannelsPage
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -611,7 +611,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -637,12 +637,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/accounts":
         get:
             description:
-                "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by id, use `getAccount`."
+                "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`."
             operationId: getWorkspaceGroupChannelAccountsPage
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -650,14 +650,14 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose search terms should be listed."
+                        "ID of the channel whose search terms should be listed."
                     name: channelId
                     required: true
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the workspace's account lifecycle. The name is resolved to the stage identifier that backs the filter, so pass the name, not the identifier."
+                        "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the workspace's account lifecycle. The name is resolved to the stage ID that backs the filter, so pass the name, not the ID."
                     example: AT_RISK
                     name: lifecycleStage
                     schema:
@@ -710,7 +710,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -718,20 +718,20 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose search terms should be listed."
+                        "ID of the channel whose search terms should be listed."
                     name: channelId
                     required: true
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of an account. When set, narrow the metrics to activity from the individuals in that account."
+                        "ID of an account. When set, narrow the metrics to activity from the individuals in that account."
                     name: accountId
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of an individual. When set, narrow the metrics to activity from that individual."
+                        "ID of an individual. When set, narrow the metrics to activity from that individual."
                     name: individualId
                     schema:
                         type: string
@@ -775,7 +775,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of a segment. When set, narrow the metrics to activity from the individuals in that segment."
+                        "ID of a segment. When set, narrow the metrics to activity from the individuals in that segment."
                     name: segmentId
                     schema:
                         type: string
@@ -808,7 +808,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -816,14 +816,14 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose events should be listed."
+                        "ID of the channel whose events should be listed."
                     name: channelId
                     required: true
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of an account. When set, narrow the events to those from the individuals in that account."
+                        "ID of an account. When set, narrow the events to those from the individuals in that account."
                     name: accountId
                     schema:
                         type: string
@@ -835,7 +835,7 @@ paths:
                         type: boolean
                 -   in: query
                     description:
-                        "Identifier of an individual. When set, narrow the events to those from that individual."
+                        "ID of an individual. When set, narrow the events to those from that individual."
                     name: individualId
                     schema:
                         type: string
@@ -879,7 +879,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of a segment. When set, narrow the events to those from the individuals in that segment."
+                        "ID of a segment. When set, narrow the events to those from the individuals in that segment."
                     name: segmentId
                     schema:
                         type: string
@@ -900,12 +900,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individual-segments":
         get:
             description:
-                "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by id, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+                "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
             operationId: getWorkspaceGroupChannelIndividualSegmentsPage
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -913,7 +913,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose search terms should be listed."
+                        "ID of the channel whose search terms should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -966,12 +966,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individuals":
         get:
             description:
-                "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, channel, segment, or interest. Use this for queries to find a person. To fetch a single individual by id, use `getWorkspaceGroupIndividual` instead."
+                "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, channel, segment, or interest. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
             operationId: getWorkspaceGroupChannelIndividualsPage
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -979,14 +979,14 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose search terms should be listed."
+                        "ID of the channel whose search terms should be listed."
                     name: channelId
                     required: true
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Optional account id to restrict results to individuals associated with an account."
+                        "Optional account ID to restrict results to individuals associated with an account."
                     name: accountId
                     schema:
                         type: string
@@ -998,7 +998,7 @@ paths:
                         type: boolean
                 -   in: query
                     description:
-                        "Optional individual segment id to restrict results to members of that segment."
+                        "Optional individual segment ID to restrict results to members of that segment."
                     name: individualSegmentId
                     schema:
                         type: string
@@ -1049,7 +1049,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1057,26 +1057,26 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose search terms should be listed."
+                        "ID of the channel whose search terms should be listed."
                     name: channelId
                     required: true
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of an account. When set, narrow the metrics to activity from the individuals in that account."
+                        "ID of an account. When set, narrow the metrics to activity from the individuals in that account."
                     name: accountId
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Optional data source id to scope results to a single data source."
+                        "Optional data source ID to scope results to a single data source."
                     name: dataSourceId
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of an individual. When set, narrow the metrics to activity from that individual."
+                        "ID of an individual. When set, narrow the metrics to activity from that individual."
                     name: individualId
                     schema:
                         type: string
@@ -1120,7 +1120,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Identifier of a segment. When set, narrow the metrics to activity from the individuals in that segment."
+                        "ID of a segment. When set, narrow the metrics to activity from the individuals in that segment."
                     name: segmentId
                     schema:
                         type: string
@@ -1153,7 +1153,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1161,7 +1161,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose search terms should be listed."
+                        "ID of the channel whose search terms should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1215,12 +1215,12 @@ paths:
     "/workspace/{groupId}/individual-segments/{individualSegmentId}":
         get:
             description:
-                "Fetch a single individual segment by id from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+                "Fetch a single individual segment by ID from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
             operationId: getWorkspaceGroupIndividualSegment
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1251,7 +1251,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1300,12 +1300,12 @@ paths:
     "/workspace/{groupId}/individuals/{individualId}":
         get:
             description:
-                "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an id. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
+                "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
             operationId: getWorkspaceGroupIndividual
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1320,7 +1320,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Optional channel id to scope the lookup to a single channel."
+                        "Optional channel ID to scope the lookup to a single channel."
                     name: channelId
                     schema:
                         type: string
