@@ -21,45 +21,47 @@ public class JSUnitJUnitTestResultTest
 	public void testGetClassName() {
 		testEquals(
 			":apps:portal-search:portal-search-web:packageRunTest",
-			_getJSUnitJUnitTestResult(
-				"liferay-portal.modules.apps.portal-search.portal-search-" +
-					"web.test.js.index",
-				"a b"
-			).getClassName());
-
+			_getTestResultClassName(
+				"liferay-portal.modules.apps.portal-search.portal-search-web." +
+					"test.js.index",
+				"a b"));
 		testEquals(
 			"modules/apps/portal-search/portal-search-web/test/js/index.js",
-			_getJSUnitJUnitTestResult(
+			_getTestResultClassName(
 				"modules/apps/portal-search/portal-search-web/test/js/index.js",
-				"a > b"
-			).getClassName());
+				"a > b"));
 	}
 
 	@Test
 	public void testGetTestNameTestClassFile() {
 		testEquals(
 			"a > b",
-			_getJSUnitJUnitTestResult(
+			_getTestResultTestName(
 				"modules/apps/portal-search/portal-search-web/test/js/index.js",
-				"a > b"
-			).getTestName());
+				"a > b"));
+		testEquals(
+			"apps.portal-search.portal-search-web.test.js.index.simpleTestName",
+			_getTestResultTestName(
+				"liferay-portal.modules.apps.portal-search.portal-search-web." +
+					"test.js.index",
+				"simpleTestName"));
 	}
 
 	@Test
 	public void testGetTestTaskName() {
 		testEquals(
 			":apps:frontend-js:frontend-js-clay-web:packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"liferay-portal.modules.apps.frontend-js.frontend-js-clay-" +
 					"web.clay.clay-button.src.__tests__.index"));
 		testEquals(
 			":apps:frontend-js:frontend-js-web:packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"liferay-portal.modules.apps.frontend-js.frontend-js-web.src." +
 					"__tests__.index"));
 		testEquals(
 			":apps:portal-search:portal-search-web:packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"liferay-portal.modules.apps.portal-search.portal-search-" +
 					"web.test.js.index"));
 	}
@@ -68,17 +70,17 @@ public class JSUnitJUnitTestResultTest
 	public void testGetTestTaskNameTestClassFile() {
 		testEquals(
 			":apps:frontend-js:frontend-js-clay-web:packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"modules/apps/frontend-js/frontend-js-clay-web/clay" +
 					"/clay-button/src/__tests__/index.tsx"));
 		testEquals(
 			":apps:frontend-js:frontend-js-web:packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"modules/apps/frontend-js/frontend-js-web/src/__tests__" +
 					"/index.js"));
 		testEquals(
 			":apps:portal-search:portal-search-web:packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"modules/apps/portal-search/portal-search-web/test/js" +
 					"/index.js"));
 	}
@@ -88,13 +90,13 @@ public class JSUnitJUnitTestResultTest
 		testEquals(
 			"workspaces/liferay-aihub-workspace:client-extensions:" +
 				"liferay-aihub-custom-element:packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"workspaces/liferay-aihub-workspace/client-extensions" +
 					"/liferay-aihub-custom-element/src/tests/api.spec.ts"));
 		testEquals(
 			"workspaces/liferay-osbfaro-workspace:modules:osb-faro-web:" +
 				"packageRunTest",
-			_getTestTaskName(
+			_getTestResultTaskName(
 				"workspaces/liferay-osbfaro-workspace/modules/osb-faro-web" +
 					"/src/main/js/assets/__tests__/dashboards.tsx"));
 	}
@@ -116,11 +118,25 @@ public class JSUnitJUnitTestResultTest
 			));
 	}
 
-	private String _getTestTaskName(String className) {
+	private String _getTestResultClassName(String className, String name) {
+		JSUnitJUnitTestResult jsUnitJUnitTestResult = _getJSUnitJUnitTestResult(
+			className, name);
+
+		return jsUnitJUnitTestResult.getClassName();
+	}
+
+	private String _getTestResultTaskName(String className) {
 		JSUnitJUnitTestResult jsUnitJUnitTestResult = _getJSUnitJUnitTestResult(
 			className, RandomTestUtil.randomString());
 
 		return jsUnitJUnitTestResult.getTestTaskName();
+	}
+
+	private String _getTestResultTestName(String className, String name) {
+		JSUnitJUnitTestResult jsUnitJUnitTestResult = _getJSUnitJUnitTestResult(
+			className, name);
+
+		return jsUnitJUnitTestResult.getTestName();
 	}
 
 }
