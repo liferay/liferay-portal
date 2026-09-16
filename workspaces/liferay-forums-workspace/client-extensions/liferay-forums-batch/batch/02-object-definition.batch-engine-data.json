@@ -41,7 +41,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
@@ -77,7 +78,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
@@ -113,7 +115,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
@@ -136,7 +139,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"titleObjectFieldName": "externalReferenceCode"
 		},
@@ -171,7 +175,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
@@ -207,7 +212,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
@@ -243,7 +249,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
@@ -279,7 +286,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
@@ -315,7 +323,8 @@
 			"scope": "site",
 			"status": {
 				"code": 0,
-				"label": "approved"
+				"label": "approved",
+				"label_i18n": "Approved"
 			},
 			"system": false,
 			"titleObjectFieldName": "externalReferenceCode"
