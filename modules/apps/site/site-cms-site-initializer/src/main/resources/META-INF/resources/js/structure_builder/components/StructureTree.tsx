@@ -33,9 +33,9 @@ import selectStructureChildren from '../selectors/selectStructureChildren';
 import selectStructureLocalizedLabel from '../selectors/selectStructureLocalizedLabel';
 import selectStructureUuid from '../selectors/selectStructureUuid';
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
-	RepeatableGroup,
 	Structure,
 	StructureChild,
 } from '../types/Structure';
@@ -77,7 +77,7 @@ type TreeItem = {
 		| FieldType
 		| ReferencedStructure['type']
 		| RelatedContent['type']
-		| RepeatableGroup['type'];
+		| Group['type'];
 };
 
 export type SelectionMode = 'multiple' | 'range' | 'single';
@@ -714,7 +714,7 @@ function buildItems({
 	search,
 	structure,
 }: {
-	children: (ReferencedStructure | RepeatableGroup | Structure)['children'];
+	children: (ReferencedStructure | Group | Structure)['children'];
 	clipboard: Clipboard | null;
 	dispatch: React.Dispatch<Action>;
 	invalids: State['invalids'];
@@ -954,7 +954,7 @@ function getRootActions({
 }
 
 function hasReferencedStructureChild(
-	children: (RepeatableGroup | Structure)['children']
+	children: (Group | Structure)['children']
 ): boolean {
 	for (const child of children.values()) {
 		if (child.type === 'referenced-structure') {

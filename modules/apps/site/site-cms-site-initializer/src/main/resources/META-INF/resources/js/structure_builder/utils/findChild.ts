@@ -4,8 +4,8 @@
  */
 
 import {
+	Group,
 	ReferencedStructure,
-	RepeatableGroup,
 	Structure,
 	StructureChild,
 } from '../types/Structure';
@@ -15,7 +15,7 @@ export default function findChild({
 	root,
 	uuid,
 }: {
-	root: ReferencedStructure | RepeatableGroup | Structure;
+	root: ReferencedStructure | Group | Structure;
 	uuid: Uuid;
 }): StructureChild | null {
 	for (const child of root.children.values()) {

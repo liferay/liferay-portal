@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	ReferencedStructure,
-	RelatedContent,
-	RepeatableGroup,
-} from '../types/Structure';
+import {Group, ReferencedStructure, RelatedContent} from '../types/Structure';
 import {Field, FieldType} from './field';
 
 export default function isField(item: {
@@ -15,7 +11,7 @@ export default function isField(item: {
 		| FieldType
 		| ReferencedStructure['type']
 		| RelatedContent['type']
-		| RepeatableGroup['type'];
+		| Group['type'];
 }): item is Field {
 	return Boolean(
 		item.type &&

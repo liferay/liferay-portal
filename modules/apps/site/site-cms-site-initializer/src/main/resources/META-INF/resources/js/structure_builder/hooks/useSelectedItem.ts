@@ -7,9 +7,9 @@ import {useSelector} from '../contexts/StateContext';
 import selectSelection from '../selectors/selectSelection';
 import selectStructureChildren from '../selectors/selectStructureChildren';
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
-	RepeatableGroup,
 	Structure,
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
@@ -23,7 +23,7 @@ type SelectedChild =
 			relatedContent: RelatedContent;
 			type: 'related-content';
 	  }
-	| {group: RepeatableGroup; referenced: boolean; type: 'group'};
+	| {group: Group; referenced: boolean; type: 'group'};
 
 type SelectedItem =
 	| {type: 'main-structure'}
@@ -55,7 +55,7 @@ export default function useSelectedItem(): SelectedItem {
 
 function findSelectedChild(
 	uuid: Uuid,
-	children: (ReferencedStructure | RepeatableGroup | Structure)['children'],
+	children: (ReferencedStructure | Group | Structure)['children'],
 	isReferenced: boolean = false
 ): SelectedChild | null {
 	for (const child of children.values()) {

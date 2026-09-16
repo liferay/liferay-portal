@@ -13,8 +13,8 @@ import {State, useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectState from '../selectors/selectState';
 import selectStructureChildren from '../selectors/selectStructureChildren';
 import {
+	Group,
 	RelatedContent,
-	RepeatableGroup,
 	Structure,
 	StructureChild,
 } from '../types/Structure';
@@ -180,7 +180,7 @@ export function validateRepeatableGroup({
 	data,
 }: {
 	currentErrors?: ErrorMap;
-	data: Partial<RepeatableGroup>;
+	data: Partial<Group>;
 }): ErrorMap {
 	const {label} = data;
 

@@ -11,7 +11,7 @@ import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
 import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectStructure from '../selectors/selectStructure';
-import {RepeatableGroup} from '../types/Structure';
+import {Group} from '../types/Structure';
 import {
 	FIELD_TYPES,
 	FIELD_TYPE_ICON,
@@ -39,7 +39,7 @@ export default function AddChildDropdown({
 }: {
 	className?: string;
 	displayType?: 'secondary' | 'unstyled';
-	parentUuid?: RepeatableGroup['uuid'];
+	parentUuid?: Group['uuid'];
 	triggerProps?: React.HTMLAttributes<HTMLButtonElement> & {
 		'data-canonical-name'?: string;
 	};

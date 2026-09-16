@@ -13,7 +13,7 @@ import {Dispatch} from 'react';
 
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {Action, State} from '../contexts/StateContext';
-import {RepeatableGroup, Structure, StructureChild} from '../types/Structure';
+import {Group, Structure, StructureChild} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findAvailableFieldName from './findAvailableFieldName';
 import findChild from './findChild';
@@ -85,7 +85,7 @@ export default async function handleMoveChildren({
 			: (findChild({
 					root: structure,
 					uuid: targetUuid,
-				}) as RepeatableGroup);
+				}) as Group);
 
 	if (hasNameConflict(movableItems, target)) {
 		const onNameConflict = await openOptionsModal({
@@ -152,7 +152,7 @@ export default async function handleMoveChildren({
 
 function hasNameConflict(
 	movableItems: StructureChild[],
-	target: Structure | RepeatableGroup
+	target: Structure | Group
 ): boolean {
 	return movableItems.some((item) =>
 		Array.from(target.children.values()).some(

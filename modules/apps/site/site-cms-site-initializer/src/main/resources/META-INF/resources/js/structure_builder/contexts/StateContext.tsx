@@ -17,6 +17,7 @@ import {Space} from '../../common/types/Space';
 import {Workflow} from '../../common/types/Workflow';
 import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {
+	Group,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
@@ -291,7 +292,7 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			let parent: Structure | RepeatableGroup = structure;
+			let parent: Structure | Group = structure;
 
 			if (field.parent !== structure.uuid) {
 				const item = findChild({root: structure, uuid: field.parent});
@@ -530,7 +531,7 @@ function reducer(state: State, action: Action): State {
 				const parent = (findChild({
 					root: nextStructure,
 					uuid: child.parent,
-				}) || nextStructure) as Structure | RepeatableGroup;
+				}) || nextStructure) as Structure | Group;
 
 				const copy = cloneChild({
 					child,
@@ -941,7 +942,7 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			const group = findChild({root: structure, uuid}) as RepeatableGroup;
+			const group = findChild({root: structure, uuid}) as Group;
 
 			if (!group) {
 				return state;
