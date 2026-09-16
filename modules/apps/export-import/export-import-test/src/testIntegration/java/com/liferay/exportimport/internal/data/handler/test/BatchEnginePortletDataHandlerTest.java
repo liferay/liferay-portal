@@ -59,7 +59,11 @@ import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.notification.constants.NotificationConstants;
 import com.liferay.notification.constants.NotificationPortletKeys;
+import com.liferay.notification.constants.NotificationRecipientConstants;
+import com.liferay.notification.constants.NotificationRecipientSettingConstants;
+import com.liferay.notification.context.NotificationContext;
 import com.liferay.notification.model.NotificationRecipient;
+import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.test.util.NotificationTemplateUtil;
@@ -1662,6 +1666,9 @@ public class BatchEnginePortletDataHandlerTest {
 		NotificationTemplate systemNotificationTemplate =
 			_addSystemNotificationTemplate();
 
+		Map<String, Object> notificationRecipientSettingsMap =
+			_getNotificationRecipientSettingsMap(notificationTemplate);
+
 		File larFile = _exportNotificationTemplates();
 
 		List<String> externalReferenceCodes = JSONUtil.toStringList(
@@ -1683,10 +1690,14 @@ public class BatchEnginePortletDataHandlerTest {
 
 		_importNotificationTemplates(larFile, null);
 
-		_assertNotificationTemplate(
-			notificationTemplate,
+		NotificationTemplate importedNotificationTemplate =
 			_getNotificationTemplate(
-				notificationTemplate.getExternalReferenceCode()));
+				notificationTemplate.getExternalReferenceCode());
+
+		_assertNotificationTemplate(
+			notificationTemplate, importedNotificationTemplate);
+		_assertNotificationRecipientSettings(
+			notificationRecipientSettingsMap, importedNotificationTemplate);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
@@ -2053,12 +2064,8 @@ public class BatchEnginePortletDataHandlerTest {
 		NotificationTemplate notificationTemplate =
 			_addUserNotificationTemplate(TestPropsValues.getUserId());
 
-		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
-
 		Map<String, Object> notificationRecipientSettingsMap =
-			NotificationRecipientSettingUtil.toMap(
-				notificationRecipient.getNotificationRecipientSettings());
+			_getNotificationRecipientSettingsMap(notificationTemplate);
 
 		File larFile = _exportNotificationTemplates();
 
@@ -2073,15 +2080,8 @@ public class BatchEnginePortletDataHandlerTest {
 
 		_assertNotificationTemplate(
 			notificationTemplate, importedNotificationTemplate);
-
-		NotificationRecipient importedNotificationRecipient =
-			importedNotificationTemplate.getNotificationRecipient();
-
-		Assert.assertEquals(
-			notificationRecipientSettingsMap,
-			NotificationRecipientSettingUtil.toMap(
-				importedNotificationRecipient.
-					getNotificationRecipientSettings()));
+		_assertNotificationRecipientSettings(
+			notificationRecipientSettingsMap, importedNotificationTemplate);
 	}
 
 	@Test
@@ -3410,18 +3410,53 @@ public class BatchEnginePortletDataHandlerTest {
 	private NotificationTemplate _addNotificationTemplate(long userId)
 		throws Exception {
 
-		NotificationTemplate notificationTemplate =
-			_notificationTemplateLocalService.addNotificationTemplate(
-				RandomTestUtil.randomString(), userId,
+		NotificationContext notificationContext =
+			NotificationTemplateUtil.createNotificationContext(
+				_userLocalService.getUser(userId),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
 				NotificationConstants.TYPE_EMAIL);
+
+		List<NotificationRecipientSetting> notificationRecipientSettings =
+			new ArrayList<>(
+				notificationContext.getNotificationRecipientSettings());
+
+		notificationRecipientSettings.add(
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_BCC,
+				RandomTestUtil.randomString() + "@liferay.com"));
+		notificationRecipientSettings.add(
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_BCC_TYPE,
+				NotificationRecipientConstants.TYPE_EMAIL));
+		notificationRecipientSettings.add(
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_CC,
+				RandomTestUtil.randomString() + "@liferay.com"));
+		notificationRecipientSettings.add(
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_CC_TYPE,
+				NotificationRecipientConstants.TYPE_EMAIL));
+		notificationRecipientSettings.add(
+			NotificationRecipientSettingUtil.createNotificationRecipientSetting(
+				NotificationRecipientSettingConstants.NAME_TO_TYPE,
+				NotificationRecipientConstants.TYPE_EMAIL));
+
+		notificationContext.setNotificationRecipientSettings(
+			notificationRecipientSettings);
+
+		NotificationTemplate notificationTemplate =
+			notificationContext.getNotificationTemplate();
 
 		notificationTemplate.setBodyMap(_randomLocalizedMap());
 		notificationTemplate.setNameMap(_randomLocalizedMap());
+		notificationTemplate.setRecipientType(
+			NotificationRecipientConstants.TYPE_EMAIL);
 		notificationTemplate.setSubjectMap(_randomLocalizedMap());
 
 		return _registerNotificationTemplate(
-			_notificationTemplateLocalService.updateNotificationTemplate(
-				notificationTemplate));
+			_notificationTemplateLocalService.addNotificationTemplate(
+				notificationContext));
 	}
 
 	private ObjectDefinition _addObjectDefinition(String scope)
@@ -3875,6 +3910,20 @@ public class BatchEnginePortletDataHandlerTest {
 		Assert.assertEquals(
 			expectedNotificationTemplate.getUserId(),
 			notificationTemplate.getUserId());
+	}
+
+	private void _assertNotificationRecipientSettings(
+			Map<String, Object> expectedNotificationRecipientSettingsMap,
+			NotificationTemplate notificationTemplate)
+		throws Exception {
+
+		NotificationRecipient notificationRecipient =
+			notificationTemplate.getNotificationRecipient();
+
+		Assert.assertEquals(
+			expectedNotificationRecipientSettingsMap,
+			NotificationRecipientSettingUtil.toMap(
+				notificationRecipient.getNotificationRecipientSettings()));
 	}
 
 	private void _assertNotificationTemplateRoleNames(
@@ -4358,6 +4407,17 @@ public class BatchEnginePortletDataHandlerTest {
 		).withUserIdStrategy(
 			userIdStrategy
 		).executeImport();
+	}
+
+	private Map<String, Object> _getNotificationRecipientSettingsMap(
+			NotificationTemplate notificationTemplate)
+		throws Exception {
+
+		NotificationRecipient notificationRecipient =
+			notificationTemplate.getNotificationRecipient();
+
+		return NotificationRecipientSettingUtil.toMap(
+			notificationRecipient.getNotificationRecipientSettings());
 	}
 
 	private Map<Locale, String> _randomLocalizedMap() {
