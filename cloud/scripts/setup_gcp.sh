@@ -276,7 +276,7 @@ function _log_in_to_gcloud {
 		return
 	fi
 
-	echo "Attempting to login to your Google Cloud account."
+	echo "Attempting to log in to your Google Cloud account."
 
 	gcloud auth login
 }
@@ -289,7 +289,7 @@ function _log_in_to_gcloud_application_default {
 		return
 	fi
 
-	echo "Attempting to login to your Google Cloud account via application default credentials."
+	echo "Attempting to log in to your Google Cloud account via application default credentials."
 
 	gcloud auth application-default login
 }

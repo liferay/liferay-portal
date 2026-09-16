@@ -1,0 +1,66 @@
+suite: Backup Restore Sanitization ConfigMap
+templates:
+    -   templates/backup-restore-sanitization-configmap.yaml
+tests:
+    -   asserts:
+            -   exists:
+                    path: data["x-010-fix-urls.sql"]
+            -   exists:
+                    path: data["x-020-anonymize-users.sql"]
+        it: Adds every script as its own SQL file named after its key
+        set:
+            backup.enabled: true
+            backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';
+            backup.restore.sanitizationScripts.x-020-anonymize-users: UPDATE User_ SET emailAddress = NULL;
+    -   asserts:
+            -   equal:
+                    path: data["x-010-verbatim.sql"]
+                    value: |
+                        SELECT '{{ .Values.backup.enabled }}';
+        it: Emits a script verbatim without rendering it as a template
+        set:
+            backup.enabled: true
+            backup.restore.sanitizationScripts.x-010-verbatim: SELECT '{{ .Values.backup.enabled }}';
+    -   asserts:
+            -   equal:
+                    path: metadata.labels.component
+                    value: backup-restore-platform
+        it: Labels the ConfigMap as backup restore platform
+        set:
+            backup.enabled: true
+            backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: backup-restore-sanitization
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: ConfigMap
+        it: Names the ConfigMap for the restore workflow
+        set:
+            backup.enabled: true
+            backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';
+    -   asserts:
+            -   exists:
+                    path: data["x-010-fix-urls.sql"]
+            -   notExists:
+                    path: data["x-empty.sql"]
+        it: Omits scripts with empty values
+        set:
+            backup.enabled: true
+            backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';
+            backup.restore.sanitizationScripts.x-empty: ""
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the ConfigMap when backups are disabled
+        set:
+            backup.enabled: false
+            backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the ConfigMap when no scripts are configured
+        set:
+            backup.enabled: true

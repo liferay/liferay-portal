@@ -5,12 +5,18 @@ argo:
         ttlStrategy:
             secondsAfterCompletion: 86400
 images:
+    cloudSQLProxy:
+        repository: gcr.io/cloud-sql-connectors/cloud-sql-proxy
+        tag: 2.25.4
     gcloud:
         repository: google/cloud-sdk
         tag: 565.0.0-stable
     helmKubectl:
         repository: dtzar/helm-kubectl
         tag: 4.1.1
+    postgres:
+        repository: postgres
+        tag: 18-alpine
 liferayInfrastructure:
     waitTimeoutSeconds: 3600
 liferayWorkload:
@@ -23,3 +29,5 @@ resources:
         requests:
             cpu: 100m
             memory: 128Mi
+restoreSanitization:
+    timeoutSeconds: 1800

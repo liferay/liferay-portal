@@ -104,7 +104,7 @@ spec:
                     -   get
                     -   "{{ "{{" }}inputs.parameters.resource-type}}"
                     -   --output
-                    -   jsonpath={.items[0].metadata.name}
+                    -   jsonpath={{ "{{" }}inputs.parameters.jsonpath}}
                     -   --selector
                     -   dataPlane={{ "{{" }}inputs.parameters.data-inactive}}
                 command: [kubectl]
@@ -114,6 +114,8 @@ spec:
             inputs:
                 parameters:
                     -   name: data-inactive
+                    -   default: "{.items[0].metadata.name}"
+                        name: jsonpath
                     -   name: resource-type
             name: get-inactive-resource
         -   container:
@@ -228,6 +230,17 @@ spec:
                             parameters:
                                 -   name: data-inactive
                                     value: "{{ "{{" }}inputs.parameters.data-inactive}}"
+                                -   name: jsonpath
+                                    value: "{.items[0].status.atProvider.connectionName}"
+                                -   name: resource-type
+                                    value: databaseinstances.sql.gcp.m.upbound.io
+                        depends: provision-target-data-plane
+                        name: get-inactive-cloudsql-connection-name
+                        template: get-inactive-resource
+                    -   arguments:
+                            parameters:
+                                -   name: data-inactive
+                                    value: "{{ "{{" }}inputs.parameters.data-inactive}}"
                                 -   name: resource-type
                                     value: databaseinstances.sql.gcp.m.upbound.io
                         depends: provision-target-data-plane
@@ -292,6 +305,13 @@ spec:
                         depends: get-inactive-dl-bucket
                         name: restore-dl-bucket
                         template: restore-dl-bucket
+                    -   arguments:
+                            parameters:
+                                -   name: restore-instance-connection-name
+                                    value: "{{ "{{" }}tasks.get-inactive-cloudsql-connection-name.outputs.result}}"
+                        depends: get-inactive-cloudsql-connection-name && provision-database-user
+                        name: sanitize-database
+                        template: sanitize-database
             inputs:
                 parameters:
                     -   name: database-snapshot-uuid
@@ -431,6 +451,66 @@ spec:
                                     value: "{{ "{{" }}inputs.parameters.target-active-data-plane}}"
                         name: clean-up-target-data-plane
                         template: apply-wait-infrastructure
+        -   activeDeadlineSeconds: {{ .Values.restoreSanitization.timeoutSeconds }}
+            executor:
+                serviceAccountName: backup-restore-service-account
+            initContainers:
+                -   args:
+                        -   "{{ "{{" }}inputs.parameters.restore-instance-connection-name}}"
+                        -   --auto-iam-authn
+                        -   --port=$(DATABASE_PORT)
+                        -   --private-ip
+                        -   --structured-logs
+                    env:
+                        -   name: CSQL_PROXY_HEALTH_CHECK
+                            value: "true"
+                        -   name: CSQL_PROXY_HTTP_ADDRESS
+                            value: 0.0.0.0
+                        -   name: CSQL_PROXY_HTTP_PORT
+                            value: "9801"
+                    envFrom:
+                        -   secretRef:
+                                name: managed-service-details
+                    image: "{{ .Values.images.cloudSQLProxy.repository }}:{{ .Values.images.cloudSQLProxy.tag }}"
+                    name: cloud-sql-proxy
+                    resources:
+                        {{- .Values.resources.default | toYaml | nindent 24 }}
+                    restartPolicy: Always
+                    securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                            drop:
+                                -   ALL
+                    startupProbe:
+                        failureThreshold: 30
+                        httpGet:
+                            path: /startup
+                            port: 9801
+                        periodSeconds: 2
+            inputs:
+                parameters:
+                    -   name: restore-instance-connection-name
+            name: sanitize-database
+            script:
+                command: [sh]
+                envFrom:
+                    -   secretRef:
+                            name: managed-service-details
+                image: "{{ .Values.images.postgres.repository }}:{{ .Values.images.postgres.tag }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    {{- tpl (.Files.Get "scripts/sanitize-database.sh") . | nindent 20 }}
+                volumeMounts:
+                    -   mountPath: /restore-sanitization
+                        name: restore-sanitization
+                        readOnly: true
+            serviceAccountName: liferay-default
+            volumes:
+                -   configMap:
+                        name: backup-restore-sanitization
+                        optional: true
+                    name: restore-sanitization
         -   inputs:
                 parameters:
                     -   name: expected-generation

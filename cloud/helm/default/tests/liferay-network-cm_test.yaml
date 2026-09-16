@@ -6,9 +6,6 @@ tests:
             -   equal:
                     path: data["LIFERAY_COMPANY_PERIOD_DEFAULT_PERIOD_VIRTUAL_PERIOD_HOST_PERIOD_NAME"]
                     value: a.example.com
-            -   equal:
-                    path: data["LIFERAY_COMPANY_PERIOD_DEFAULT_PERIOD_WEB_PERIOD_ID"]
-                    value: a.example.com
         it: Derives the default virtual host from the first configured hostname
         set:
             network.enabled: true
@@ -25,6 +22,14 @@ tests:
             network.hostnames:
                 -   a.example.com
                 -   b.example.com
+    -   asserts:
+            -   notExists:
+                    path: data["LIFERAY_COMPANY_PERIOD_DEFAULT_PERIOD_WEB_PERIOD_ID"]
+        it: Leaves the default web ID to the portal
+        set:
+            network.enabled: true
+            network.hostnames:
+                -   a.example.com
     -   asserts:
             -   hasDocuments:
                     count: 0

@@ -35,7 +35,7 @@ run "should_create_the_backup_controller_custom_role" {
 	}
 	assert {
 		condition=google_project_iam_custom_role.backup_controller_custom_role.role_id == "liferay_test_backup_controller_a1b2"
-		error_message="The backup controller role id must replace hyphens with underscores and carry the per-deployment suffix"
+		error_message="The backup controller role ID must replace hyphens with underscores and carry the per deployment suffix"
 	}
 	assert {
 		condition=google_project_iam_custom_role.backup_controller_custom_role.title == "Liferay Backup Controller Role"

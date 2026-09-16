@@ -140,7 +140,7 @@ spec:
                                     -   --private-ip
                                     -   --structured-logs
                                     -   "{{ $instanceConnectionName }}"
-                                image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1
+                                image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
                                 name: cloud-sql-proxy
                                 resources:
                                     limits:

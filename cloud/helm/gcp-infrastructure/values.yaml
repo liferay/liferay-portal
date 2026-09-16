@@ -4,6 +4,8 @@ backup:
         serviceAccountName: backup-cleanup-service-account
     enabled: false
     region: ""
+    restore:
+        sanitizationScripts: {}
     retentionDays: 30
     schedule: 0 5 * * *
     storageClass: NEARLINE

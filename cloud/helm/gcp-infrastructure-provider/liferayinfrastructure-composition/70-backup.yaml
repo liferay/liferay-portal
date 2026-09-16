@@ -152,6 +152,29 @@ spec:
                 namespace: {{ $namespace }}
     managementPolicies: {{ $managementPolicies }}
 ---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-service-account-token
+    labels:
+        {{- $labels | toYaml | nindent 8 }}
+    name: backup-restore-service-account-token
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            kind: Secret
+            metadata:
+                annotations:
+                    kubernetes.io/service-account.name: backup-restore-service-account
+                labels:
+                    {{- $labels | toYaml | nindent 20 }}
+                name: backup-restore-service-account.service-account-token
+                namespace: {{ $namespace }}
+            type: kubernetes.io/service-account-token
+    managementPolicies: {{ $managementPoliciesNoUpdate }}
+---
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: Bucket
 metadata:

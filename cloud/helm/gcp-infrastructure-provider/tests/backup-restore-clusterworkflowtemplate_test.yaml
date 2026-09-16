@@ -1,0 +1,163 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: Backup Restore ClusterWorkflowTemplate
+templates:
+    -   charts/liferay-subchart-backup-restore/templates/clusterworkflowtemplate.yaml
+tests:
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        depends: "!prepare-target-data-plane.Omitted && !prepare-target-data-plane.Skipped && !promote-target-data-plane.Succeeded"
+                        name: clean-up-target-data-plane
+                    path: spec.templates[?(@.name=="main")].dag.tasks
+        it: Cleans up the target data plane when the sanitization fails
+    -   asserts:
+            -   lengthEqual:
+                    count: 1
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].name
+                    value: cloud-sql-proxy
+            -   contains:
+                    content: "{{inputs.parameters.restore-instance-connection-name}}"
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args
+            -   contains:
+                    content: --port=$(DATABASE_PORT)
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args
+            -   contains:
+                    content: --auto-iam-authn
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].restartPolicy
+                    value: Always
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].image
+                    value: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
+            -   contains:
+                    content:
+                        name: CSQL_PROXY_HEALTH_CHECK
+                        value: "true"
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].env
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].startupProbe.httpGet.path
+                    value: /startup
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].startupProbe.httpGet.port
+                    value: 9801
+            -   notMatchRegex:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.source
+                    pattern: pg_isready
+        it: Creates the Cloud SQL proxy to the restored instance as a native sidecar
+    -   asserts:
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].securityContext.allowPrivilegeEscalation
+                    value: false
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].securityContext.capabilities.drop
+                    value:
+                        -   ALL
+        it: Drops the sidecar privileges the controller defaults do not cover
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        depends: provision-target-data-plane
+                        name: get-inactive-cloudsql-connection-name
+                        template: get-inactive-resource
+                    path: spec.templates[?(@.name=="prepare-target-data-plane")].dag.tasks
+            -   contains:
+                    content:
+                        name: jsonpath
+                        value: "{.items[0].status.atProvider.connectionName}"
+                    path: spec.templates[?(@.name=="prepare-target-data-plane")].dag.tasks[?(@.name=="get-inactive-cloudsql-connection-name")].arguments.parameters
+            -   equal:
+                    path: spec.templates[?(@.name=="get-inactive-resource")].inputs.parameters[?(@.name=="jsonpath")].default
+                    value: "{.items[0].metadata.name}"
+        it: Looks up the restored instance connection name
+    -   asserts:
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].volumes[0].configMap.name
+                    value: backup-restore-sanitization
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].volumes[0].configMap.optional
+                    value: true
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.volumeMounts[0].mountPath
+                    value: /restore-sanitization
+        it: Mounts the restore sanitization ConfigMap as optional
+    -   asserts:
+            -   equal:
+                    path: metadata.labels.component
+                    value: backup-restore-platform
+            -   equal:
+                    path: metadata.name
+                    value: backup-restore-cluster-workflow-template
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: ClusterWorkflowTemplate
+        it: Names the cluster workflow template
+    -   asserts:
+            -   equal:
+                    path: spec.serviceAccountName
+                    value: backup-restore-service-account
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].executor.serviceAccountName
+                    value: backup-restore-service-account
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].serviceAccountName
+                    value: liferay-default
+        it: Reports task results as the backup restore service account while the pod runs as the Liferay workload
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        depends: promote-target-data-plane
+                        name: restart-liferay
+                    path: spec.templates[?(@.name=="main")].dag.tasks
+            -   notContains:
+                    any: true
+                    content:
+                        name: sanitize-database
+                    path: spec.templates[?(@.name=="main")].dag.tasks
+        it: Restarts Liferay after promoting the target data plane
+    -   asserts:
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.image
+                    value: postgres:18-alpine
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.envFrom[0].secretRef.name
+                    value: managed-service-details
+            -   matchRegex:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.source
+                    pattern: --dbname lportal
+            -   matchRegex:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.source
+                    pattern: --single-transaction
+            -   matchRegex:
+                    path: spec.templates[?(@.name=="sanitize-database")].script.source
+                    pattern: ON_ERROR_STOP=1
+        it: Runs psql against the Liferay database in one transaction
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        depends: get-inactive-cloudsql-connection-name && provision-database-user
+                        name: sanitize-database
+                    path: spec.templates[?(@.name=="prepare-target-data-plane")].dag.tasks
+            -   contains:
+                    any: true
+                    content:
+                        depends: prepare-target-data-plane
+                        name: promote-target-data-plane
+                    path: spec.templates[?(@.name=="main")].dag.tasks
+        it: Sanitizes the restored database before promoting it
+    -   asserts:
+            -   equal:
+                    path: spec.templates[?(@.name=="sanitize-database")].activeDeadlineSeconds
+                    value: 600
+        it: Sizes the sanitization timeout from the values
+        set:
+            liferay-subchart-backup-restore.restoreSanitization.timeoutSeconds: 600
