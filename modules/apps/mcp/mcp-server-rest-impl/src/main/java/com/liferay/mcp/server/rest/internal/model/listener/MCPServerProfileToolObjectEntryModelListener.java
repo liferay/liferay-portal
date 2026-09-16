@@ -7,6 +7,7 @@ package com.liferay.mcp.server.rest.internal.model.listener;
 
 import com.liferay.mcp.server.rest.internal.cache.MCPServerCacheManager;
 import com.liferay.mcp.server.rest.internal.constants.MCPServerConstants;
+import com.liferay.mcp.server.rest.internal.util.MCPServerProfileUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectRelationship;
@@ -20,6 +21,8 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -80,6 +83,7 @@ public class MCPServerProfileToolObjectEntryModelListener
 		throws ModelListenerException {
 
 		_clearServletCache(objectEntry);
+		_deactivateMCPServerProfile(objectEntry);
 	}
 
 	@Override
@@ -117,6 +121,44 @@ public class MCPServerProfileToolObjectEntryModelListener
 		_mcpServerCacheManager.clearServletCache(
 			objectEntry.getCompanyId(),
 			MapUtil.getString(mcpServerProfileObjectEntry.getValues(), "name"));
+	}
+
+	private void _deactivateMCPServerProfile(ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		ObjectEntry mcpServerProfileObjectEntry =
+			_objectEntryLocalService.fetchObjectEntry(
+				MapUtil.getLong(
+					objectEntry.getValues(),
+					"r_mcpServerProfileToTools_l_mcpServerProfileId"));
+
+		if ((mcpServerProfileObjectEntry == null) ||
+			!MCPServerProfileUtil.isActive(mcpServerProfileObjectEntry)) {
+
+			return;
+		}
+
+		try {
+			int toolsCount = MCPServerProfileUtil.getToolsCount(
+				mcpServerProfileObjectEntry, _objectEntryLocalService,
+				_objectRelationshipLocalService);
+
+			if (toolsCount > 1) {
+				return;
+			}
+
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				mcpServerProfileObjectEntry.getUserId(),
+				mcpServerProfileObjectEntry.getObjectEntryId(),
+				mcpServerProfileObjectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"profileStatus", "inactive"
+				).build(),
+				new ServiceContext());
+		}
+		catch (PortalException portalException) {
+			throw new ModelListenerException(portalException);
+		}
 	}
 
 	private void _validateRestrictFields(ObjectEntry objectEntry)
