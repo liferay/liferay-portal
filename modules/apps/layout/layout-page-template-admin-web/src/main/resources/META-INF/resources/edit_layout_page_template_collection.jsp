@@ -10,7 +10,7 @@
 <%
 String redirect = ParamUtil.getString(request, "redirect");
 
-long layoutPageTemplateCollectionId = ParamUtil.getLong(request, "layoutPageTemplateCollectionId");
+long layoutPageTemplateCollectionId = GetterUtil.getLong(request.getAttribute(LayoutPageTemplateAdminWebKeys.LAYOUT_PAGE_TEMPLATE_COLLECTION_ID));
 
 LayoutPageTemplateCollection layoutPageTemplateCollection = LayoutPageTemplateCollectionLocalServiceUtil.fetchLayoutPageTemplateCollection(layoutPageTemplateCollectionId);
 

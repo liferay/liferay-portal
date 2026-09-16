@@ -9,6 +9,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
+import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateCollectionPermission;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplatePermission;
 import com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -127,8 +129,12 @@ public class LayoutPageTemplateDisplayContext {
 					getLayoutPageTemplateCollectionId();
 		}
 
-		long layoutPageTemplateCollectionId = ParamUtil.getLong(
-			_httpServletRequest, "layoutPageTemplateCollectionId");
+		long layoutPageTemplateCollectionId = GetterUtil.getLong(
+			_httpServletRequest.getAttribute(
+				LayoutPageTemplateAdminWebKeys.
+					LAYOUT_PAGE_TEMPLATE_COLLECTION_ID),
+			ParamUtil.getLong(
+				_httpServletRequest, "layoutPageTemplateCollectionId"));
 
 		if (layoutPageTemplateCollectionId <= 0) {
 			layoutPageTemplateCollectionId =

@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -11,21 +11,21 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Eudaldo Alonso
+ * @author Georgel Pop
  */
 @Component(
 	property = {
 		"jakarta.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
-		"mvc.command.name=/layout_page_template_admin/edit_layout_page_template_collection"
+		"mvc.command.name=/layout_page_template_admin/view_layout_page_template_collection"
 	},
 	service = MVCRenderCommand.class
 )
-public class EditLayoutPageTemplateCollectionMVCRenderCommand
+public class ViewLayoutPageTemplateCollectionMVCRenderCommand
 	extends BaseLayoutPageTemplateCollectionMVCRenderCommand {
 
 	@Override
 	protected String getPath() {
-		return "/edit_layout_page_template_collection.jsp";
+		return "/view.jsp";
 	}
 
 }

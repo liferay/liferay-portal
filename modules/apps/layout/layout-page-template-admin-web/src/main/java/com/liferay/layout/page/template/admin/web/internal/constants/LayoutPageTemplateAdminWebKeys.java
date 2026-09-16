@@ -15,6 +15,9 @@ public class LayoutPageTemplateAdminWebKeys {
 
 	public static final String ITEM_SELECTOR = "ITEM_SELECTOR";
 
+	public static final String LAYOUT_PAGE_TEMPLATE_COLLECTION_ID =
+		"LAYOUT_PAGE_TEMPLATE_COLLECTION_ID";
+
 	public static final String LAYOUT_PAGE_TEMPLATE_COLLECTIONS =
 		"LAYOUT_PAGE_TEMPLATE_COLLECTIONS";
 
