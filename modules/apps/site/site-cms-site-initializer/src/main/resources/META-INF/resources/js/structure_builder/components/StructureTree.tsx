@@ -45,7 +45,7 @@ import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import handleMoveChildren from '../utils/handleMoveChildren';
 import handlePaste from '../utils/handlePaste';
-import handleUngroupRepeatableGroup from '../utils/handleUngroupRepeatableGroup';
+import handleUngroup from '../utils/handleUngroup';
 import isCopyable from '../utils/isCopyable';
 import isField from '../utils/isField';
 import isLocked from '../utils/isLocked';
@@ -872,7 +872,7 @@ function getItemActions({
 		actions.push({
 			label: Liferay.Language.get('ungroup'),
 			onClick: () =>
-				handleUngroupRepeatableGroup({
+				handleUngroup({
 					dispatch,
 					publishedChildren,
 					uuid: item.uuid,

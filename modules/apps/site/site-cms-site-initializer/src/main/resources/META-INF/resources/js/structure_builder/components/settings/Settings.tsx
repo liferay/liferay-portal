@@ -8,9 +8,9 @@ import React from 'react';
 
 import {getImage} from '../../../common/utils/getImage';
 import useSelectedItem from '../../hooks/useSelectedItem';
+import GroupSettings from './GroupSettings';
 import ReferencedStructureSettings from './ReferencedStructureSettings';
 import RelatedContentSettings from './RelatedContentSettings';
-import RepeatableGroupSettings from './RepeatableGroupSettings';
 import StructureFieldSettings from './StructureFieldSettings';
 import StructureSettings from './StructureSettings';
 
@@ -42,7 +42,7 @@ export default function Settings() {
 
 	if (item.type === 'group') {
 		return (
-			<RepeatableGroupSettings
+			<GroupSettings
 				disabled={item.referenced}
 				group={item.group}
 				key={item.group.uuid}

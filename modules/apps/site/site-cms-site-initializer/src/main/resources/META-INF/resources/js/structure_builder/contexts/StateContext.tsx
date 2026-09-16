@@ -41,7 +41,7 @@ import deleteChildren from '../utils/state/deleteChildren';
 import moveChildren from '../utils/state/moveChildren';
 import refreshReferencedStructures from '../utils/state/refreshReferencedStructures';
 import sortChildren from '../utils/state/sortChildren';
-import ungroup from '../utils/state/ungroupRepeatableGroup';
+import ungroup from '../utils/state/ungroup';
 import updateChild from '../utils/state/updateChild';
 import updateHistory from '../utils/state/updateHistory';
 import {

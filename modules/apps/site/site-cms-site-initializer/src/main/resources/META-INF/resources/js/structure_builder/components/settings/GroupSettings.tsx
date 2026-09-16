@@ -16,7 +16,7 @@ import {RepeatableGroup} from '../../types/Structure';
 import Breadcrumb from '../Breadcrumb';
 import {LocalizedInput} from '../LocalizedInput';
 
-export default function RepeatableGroupSettings({
+export default function GroupSettings({
 	disabled,
 	group,
 }: {

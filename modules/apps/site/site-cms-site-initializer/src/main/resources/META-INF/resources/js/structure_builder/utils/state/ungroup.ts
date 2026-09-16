@@ -6,7 +6,7 @@
 import {RepeatableGroup, Structure} from '../../types/Structure';
 import {Uuid} from '../../types/Uuid';
 
-export default function ungroupRepeatableGroup({
+export default function ungroup({
 	root,
 	uuid,
 }: {
@@ -37,7 +37,7 @@ export default function ungroupRepeatableGroup({
 		else if (child.type === 'group') {
 			const group: RepeatableGroup = {
 				...child,
-				children: ungroupRepeatableGroup({
+				children: ungroup({
 					root: child,
 					uuid,
 				}),

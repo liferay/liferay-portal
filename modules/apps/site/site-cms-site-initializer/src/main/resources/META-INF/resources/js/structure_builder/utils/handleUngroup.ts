@@ -9,7 +9,7 @@ import {Dispatch} from 'react';
 import {Action, State} from '../contexts/StateContext';
 import {Uuid} from '../types/Uuid';
 
-export default async function handleUngroupRepeatableGroup({
+export default async function handleUngroup({
 	dispatch,
 	publishedChildren,
 	uuid,
