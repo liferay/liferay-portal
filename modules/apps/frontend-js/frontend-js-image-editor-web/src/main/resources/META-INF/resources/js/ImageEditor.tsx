@@ -99,7 +99,12 @@ function Editor({
 
 	const state = history.present;
 
-	const {selectOverlay, selectedOverlayId} = useOverlaySelection();
+	const {
+		layerProportional,
+		selectOverlay,
+		selectedOverlayId,
+		setLayerProportional,
+	} = useOverlaySelection();
 
 	const {handleSave, saveError, saving} = useSaveController(
 		image,
@@ -181,6 +186,38 @@ function Editor({
 	}, []);
 
 	useEffect(() => setCropFramed(false), [state.crop]);
+
+	const sidebarRef = useRef<HTMLElement>(null);
+
+	const previousOverlayCountRef = useRef(0);
+
+	useEffect(() => {
+		const first =
+			previousOverlayCountRef.current === 0 && !!state.overlays.length;
+
+		previousOverlayCountRef.current = state.overlays.length;
+
+		if (!first) {
+			return;
+		}
+
+		const frame = requestAnimationFrame(() => {
+			const sidebar = sidebarRef.current;
+			const annotateTitle = document.getElementById(
+				`${instancePrefix}annotate-panel-title`
+			);
+
+			if (!sidebar || !annotateTitle) {
+				return;
+			}
+
+			sidebar.scrollTop +=
+				annotateTitle.getBoundingClientRect().top -
+				sidebar.getBoundingClientRect().top;
+		});
+
+		return () => cancelAnimationFrame(frame);
+	}, [state.overlays.length, instancePrefix]);
 
 	useEffect(() => {
 		if (autoFitRef.current && workspaceRef.current) {
@@ -408,6 +445,7 @@ function Editor({
 							onZoom={zoomBy}
 							onZoomActual={zoomToActual}
 							onZoomFit={zoomToFit}
+							proportional={layerProportional}
 							selectedOverlayId={selectedOverlayId}
 							showCrop={enabled.crop.enabled}
 							showRecenter={!cropFramed}
@@ -423,9 +461,14 @@ function Editor({
 							image={image}
 							onAnnounce={announce}
 							onAspectLockedChange={setAspectLocked}
+							onProportionalChange={setLayerProportional}
+							onSelectOverlay={selectOverlay}
 							presets={enabled.filters}
+							proportional={layerProportional}
+							selectedOverlayId={selectedOverlayId}
 							showCrop={enabled.crop.enabled}
 							showStraighten={enabled.crop.straighten}
+							sidebarRef={sidebarRef}
 							sliders={enabled.adjustments}
 							state={state}
 						/>

@@ -8,6 +8,7 @@ import '../../css/Panels.scss';
 import React from 'react';
 
 import {AnnotatePanel} from '../annotations/AnnotatePanel';
+import {LayersPanel} from '../annotations/LayersPanel';
 import {LoadedImage} from '../imaging/loadImage';
 import {AdjustPanel} from '../panels/AdjustPanel';
 import {CropPanel} from '../panels/CropPanel';
@@ -30,9 +31,18 @@ interface Props {
 	image: LoadedImage;
 	onAnnounce: (message: string) => void;
 	onAspectLockedChange: (locked: boolean) => void;
+	onProportionalChange: (proportional: boolean) => void;
+
+	onSelectOverlay: (id: string | null) => void;
+
 	presets: FilterPreset[];
+
+	proportional: boolean;
+
+	selectedOverlayId: string | null;
 	showCrop: boolean;
 	showStraighten: boolean;
+	sidebarRef: React.Ref<HTMLElement>;
 	sliders: AdjustmentKey[];
 	state: EditState;
 }
@@ -44,9 +54,14 @@ export function EditorSidebar({
 	image,
 	onAnnounce,
 	onAspectLockedChange,
+	onProportionalChange,
+	onSelectOverlay,
 	presets,
+	proportional,
+	selectedOverlayId,
 	showCrop,
 	showStraighten,
+	sidebarRef,
 	sliders,
 	state,
 }: Props) {
@@ -54,6 +69,7 @@ export function EditorSidebar({
 		<aside
 			aria-label={Liferay.Language.get('edit-controls')}
 			className="editor-sidebar"
+			ref={sidebarRef}
 		>
 			{showCrop && (
 				<CropPanel
@@ -101,6 +117,16 @@ export function EditorSidebar({
 				area={state.crop}
 				dispatch={dispatch}
 				onAnnounce={onAnnounce}
+			/>
+
+			<LayersPanel
+				dispatch={dispatch}
+				onAnnounce={onAnnounce}
+				onProportionalChange={onProportionalChange}
+				onSelect={onSelectOverlay}
+				overlays={state.overlays}
+				proportional={proportional}
+				selectedId={selectedOverlayId}
 			/>
 		</aside>
 	);

@@ -6,7 +6,7 @@
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
-import {useEditorId} from '../chrome/instance';
+import {useEditorId, useEditorRoot} from '../chrome/instance';
 import {arrowDelta} from '../imaging/geometry';
 import {
 	OverlayShape,
@@ -95,6 +95,9 @@ interface Props {
 	onAnnounce: (message: string) => void;
 	onSelect: (id: string | null) => void;
 	overlays: Overlay[];
+
+	proportional: boolean;
+
 	selectedId: string | null;
 	zoom: number;
 }
@@ -104,10 +107,13 @@ export function OverlaysEditable({
 	onAnnounce,
 	onSelect,
 	overlays,
+	proportional,
 	selectedId,
 	zoom,
 }: Props) {
 	const eid = useEditorId();
+
+	const editorRoot = useEditorRoot();
 
 	const overlaysRef = useRef(overlays);
 
@@ -157,6 +163,32 @@ export function OverlaysEditable({
 
 	const handleKeyDown =
 		(id: string) => (event: React.KeyboardEvent<SVGElement>) => {
+			if (event.key === 'Enter') {
+				event.preventDefault();
+
+				onSelect(id);
+
+				window.setTimeout(() => {
+					const header = editorRoot()
+						.querySelector(`#${eid('layers-panel-title')}`)
+						?.closest('button');
+
+					if (header?.getAttribute('aria-expanded') === 'false') {
+						(header as HTMLButtonElement).click();
+					}
+
+					window.requestAnimationFrame(() => {
+						editorRoot()
+							.querySelector<HTMLElement>(
+								'.editor-layer-properties input, .editor-layer-properties select'
+							)
+							?.focus();
+					});
+				}, 0);
+
+				return;
+			}
+
 			if (event.key === 'Delete' || event.key === 'Backspace') {
 				event.preventDefault();
 
@@ -555,7 +587,7 @@ export function OverlaysEditable({
 			let width;
 			let height;
 
-			if (event.shiftKey) {
+			if (event.shiftKey || proportional) {
 				width = Math.max(overlay.width * scale, 8);
 				height = Math.max(overlay.height * scale, 8);
 			}
@@ -621,7 +653,7 @@ export function OverlaysEditable({
 		<g>
 			<desc id={eid('overlay-instructions')}>
 				{Liferay.Language.get(
-					'use-the-arrow-keys-to-move-by-1-pixel-hold-shift-for-10-pixels-press-delete-to-remove'
+					'use-the-arrow-keys-to-move-by-1-pixel-hold-shift-for-10-pixels-press-enter-to-edit-the-properties-delete-to-remove'
 				)}
 			</desc>
 
@@ -803,6 +835,7 @@ export function OverlaysEditable({
 											})}
 
 											{isBoxOverlay(overlay) &&
+												!proportional &&
 												STRETCH_EDGES.map((edge) => {
 													const handleX =
 														bounds.x +

@@ -30,7 +30,9 @@ import {
 export type EditorAction =
 	| {overlay: Overlay; type: 'add-overlay'}
 	| {type: 'cancel-gesture'}
+	| {id: string; newId: string; type: 'duplicate-overlay'}
 	| {type: 'flip-horizontal'}
+	| {direction: -1 | 1; id: string; type: 'move-overlay-layer'}
 	| {type: 'redo'}
 	| {id: string; type: 'remove-overlay'}
 	| {type: 'reset-adjustments'}
@@ -90,6 +92,66 @@ export function editorReducer(
 				history,
 				{...present, overlays: [...present.overlays, action.overlay]},
 				Liferay.Language.get('annotation')
+			);
+		}
+
+		case 'duplicate-overlay': {
+			const index = present.overlays.findIndex(
+				(overlay) => overlay.id === action.id
+			);
+
+			if (index < 0) {
+				return history;
+			}
+
+			const source = present.overlays[index];
+
+			const offset = Math.round(
+				Math.max(
+					16,
+					Math.min(present.sourceWidth, present.sourceHeight) * 0.02
+				)
+			);
+
+			const clone: Overlay = {
+				...source,
+				id: action.newId,
+				x: source.x + offset,
+				y: source.y + offset,
+			};
+
+			const overlays = [...present.overlays];
+
+			overlays.splice(index + 1, 0, clone);
+
+			return applyEdit(
+				history,
+				{...present, overlays},
+				Liferay.Language.get('annotation')
+			);
+		}
+
+		case 'move-overlay-layer': {
+			const index = present.overlays.findIndex(
+				(overlay) => overlay.id === action.id
+			);
+			const target = index + action.direction;
+
+			if (index < 0 || target < 0 || target >= present.overlays.length) {
+				return history;
+			}
+
+			const overlays = [...present.overlays];
+
+			[overlays[index], overlays[target]] = [
+				overlays[target],
+				overlays[index],
+			];
+
+			return applyEdit(
+				history,
+				{...present, overlays},
+				Liferay.Language.get('layer-order')
 			);
 		}
 

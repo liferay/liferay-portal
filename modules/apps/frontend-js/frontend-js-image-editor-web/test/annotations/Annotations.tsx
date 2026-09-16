@@ -5,12 +5,16 @@
 
 import {ClayIconSpriteContext} from '@clayui/icon';
 import {act, fireEvent, render, screen, within} from '@testing-library/react';
-import React, {useReducer, useState} from 'react';
+import React, {useReducer, useRef, useState} from 'react';
 
 import '@testing-library/jest-dom';
 
 import {AnnotatePanel} from '../../src/main/resources/META-INF/resources/js/annotations/AnnotatePanel';
-import {EditorInstanceProvider} from '../../src/main/resources/META-INF/resources/js/chrome/instance';
+import {LayersPanel} from '../../src/main/resources/META-INF/resources/js/annotations/LayersPanel';
+import {
+	EditorInstanceProvider,
+	EditorRootProvider,
+} from '../../src/main/resources/META-INF/resources/js/chrome/instance';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
@@ -52,6 +56,8 @@ function AnnotationHarness({
 
 	const [selectedId, setSelectedId] = useState<string | null>(null);
 
+	const [proportional, setProportional] = useState(false);
+
 	return (
 		<ClayIconSpriteContext.Provider value="/icons.svg">
 			<EditorInstanceProvider value="aie-">
@@ -65,6 +71,7 @@ function AnnotationHarness({
 					onZoom={() => {}}
 					onZoomActual={() => {}}
 					onZoomFit={() => {}}
+					proportional={proportional}
 					selectedOverlayId={selectedId}
 					showCrop
 					showRecenter
@@ -76,6 +83,16 @@ function AnnotationHarness({
 					area={history.present.crop}
 					dispatch={dispatch}
 					onAnnounce={() => {}}
+				/>
+
+				<LayersPanel
+					dispatch={dispatch}
+					onAnnounce={() => {}}
+					onProportionalChange={setProportional}
+					onSelect={setSelectedId}
+					overlays={history.present.overlays}
+					proportional={proportional}
+					selectedId={selectedId}
 				/>
 
 				<button onClick={() => dispatch({type: 'undo'})}>undo</button>
@@ -542,5 +559,564 @@ describe('shapes and arrows', () => {
 		fireEvent.keyDown(document.activeElement as Element, {key: 'Home'});
 
 		expect(document.activeElement).toHaveAccessibleName('add-text');
+	});
+});
+
+const layerNames = () =>
+	[...document.querySelectorAll('.editor-layer-name')].map((node) =>
+		node.getAttribute('aria-label')
+	);
+
+/**
+ * The stage node and the layer row share the annotation's name, so a row
+ * is looked up inside the list.
+ */
+const row = (name: string) =>
+	within(
+		document.querySelector('.editor-layer-list') as HTMLElement
+	).getByRole('button', {name});
+
+describe('layers', () => {
+	it('lists the layers topmost first and reorders them from their rows', () => {
+		render(<AnnotationHarness start={withCaption} />);
+
+		addShape('rectangle');
+
+		expect(layerNames()).toEqual(['rectangle', 'text-x']);
+
+		fireEvent.click(
+			screen.getAllByRole('button', {name: 'move-x-down'})[0]
+		);
+
+		expect(layerNames()).toEqual(['text-x', 'rectangle']);
+
+		fireEvent.click(screen.getByRole('button', {name: 'undo'}));
+
+		expect(layerNames()).toEqual(['rectangle', 'text-x']);
+	});
+
+	it('hides the panel until there is a layer, and again after the last one goes', () => {
+		render(<AnnotationHarness />);
+
+		expect(screen.queryByText('layers')).toBeNull();
+
+		addShape('rectangle');
+
+		expect(screen.getByText('layers')).toBeInTheDocument();
+
+		fireEvent.keyDown(
+			screen.getByRole('button', {name: 'rectangle', pressed: true}),
+			{key: 'Delete'}
+		);
+
+		expect(screen.queryByText('layers')).toBeNull();
+	});
+
+	it('edits the selected layer from the properties', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		expect(shape(container)).toHaveAttribute('fill', '#0b5fff');
+
+		// Width commits on Enter.
+
+		const widthInput = screen.getByLabelText('width');
+
+		fireEvent.change(widthInput, {target: {value: '500'}});
+		fireEvent.keyDown(widthInput, {key: 'Enter'});
+
+		expect(shape(container)).toHaveAttribute('width', '500');
+
+		// Color previews while the picker moves and commits on blur.
+
+		const colorInput = screen.getByLabelText('text-color');
+
+		fireEvent.change(colorInput, {target: {value: '#00ff00'}});
+
+		expect(shape(container)).toHaveAttribute('fill', '#00ff00');
+
+		fireEvent.blur(colorInput);
+
+		// Opacity wraps the node in a translucent group.
+
+		const opacityInput = screen.getByLabelText('opacity');
+
+		fireEvent.change(opacityInput, {target: {value: '50'}});
+		fireEvent.keyDown(opacityInput, {key: 'Enter'});
+
+		expect(shape(container).closest('g[opacity]')).toHaveAttribute(
+			'opacity',
+			'0.5'
+		);
+
+		// Position, which is what makes dragging optional for a pointer
+		// user who cannot drag (WCAG 2.2, 2.5.7).
+
+		const xInput = screen.getByLabelText('x-position');
+		const yInput = screen.getByLabelText('y-position');
+
+		fireEvent.change(xInput, {target: {value: '120'}});
+		fireEvent.keyDown(xInput, {key: 'Enter'});
+		fireEvent.change(yInput, {target: {value: '340'}});
+		fireEvent.keyDown(yInput, {key: 'Enter'});
+
+		expect(shape(container)).toHaveAttribute('x', '120');
+		expect(shape(container)).toHaveAttribute('y', '340');
+
+		// Rotation spins the whole interactive group around the center.
+
+		const rotationInput = screen.getByLabelText('rotation');
+
+		fireEvent.change(rotationInput, {target: {value: '45'}});
+		fireEvent.keyDown(rotationInput, {key: 'Enter'});
+
+		expect(
+			shape(container).closest('g[transform]')?.getAttribute('transform')
+		).toContain('rotate(45');
+	});
+
+	it('steps a number with the arrows and clamps it to its range', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		const opacityInput = screen.getByLabelText('opacity');
+
+		fireEvent.keyDown(opacityInput, {key: 'ArrowUp', shiftKey: true});
+
+		expect(opacityInput).toHaveValue(100);
+
+		fireEvent.keyDown(opacityInput, {key: 'ArrowDown', shiftKey: true});
+		fireEvent.keyDown(opacityInput, {key: 'ArrowDown'});
+
+		expect(opacityInput).toHaveValue(89);
+		expect(shape(container).closest('g[opacity]')).toHaveAttribute(
+			'opacity',
+			'0.89'
+		);
+
+		fireEvent.change(opacityInput, {target: {value: 'abc'}});
+		fireEvent.blur(opacityInput);
+
+		expect(opacityInput).toHaveValue(89);
+	});
+
+	it('leaves a shape free to stretch, and locks on request', () => {
+		render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		const padlock = screen.getByRole('button', {
+			name: 'lock-aspect-ratio',
+		});
+
+		expect(padlock).toHaveAttribute('aria-pressed', 'false');
+
+		const width = screen.getByLabelText('width') as HTMLInputElement;
+		const height = screen.getByLabelText('height') as HTMLInputElement;
+
+		fireEvent.change(width, {target: {value: '200'}});
+		fireEvent.keyDown(width, {key: 'Enter'});
+
+		expect(height).toHaveValue(120);
+
+		// Locked, the side that was not typed follows.
+
+		fireEvent.click(padlock);
+
+		expect(padlock).toHaveAttribute('aria-pressed', 'true');
+
+		fireEvent.change(width, {target: {value: '100'}});
+		fireEvent.keyDown(width, {key: 'Enter'});
+
+		expect(height).toHaveValue(60);
+	});
+
+	it('syncs the selection between the stage and the layers panel', () => {
+		const {container} = render(<AnnotationHarness start={withCaption} />);
+
+		addShape('rectangle');
+
+		const hits = container.querySelectorAll('.overlay-hit');
+
+		// Focusing the caption on the stage presses its row.
+
+		fireEvent.focus(hits[0]);
+
+		expect(
+			screen.getByRole('button', {name: 'text-x', pressed: true})
+		).toBeInTheDocument();
+
+		// Pressing the rectangle row rings it on the stage.
+
+		fireEvent.blur(hits[0]);
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'rectangle', pressed: false})
+		);
+
+		expect(container.querySelectorAll('.selection-ring')).toHaveLength(1);
+		expect(
+			screen
+				.getByText('selected-layer-x')
+				.closest('.editor-layer-properties')
+		).toContainElement(screen.getByLabelText('width'));
+	});
+
+	it('jumps from the stage node to its properties on Enter', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		fireEvent.keyDown(hit(container), {key: 'Enter'});
+
+		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+		expect(document.activeElement?.id).toBe('aie-layer-prop-color');
+	});
+
+	it('jumps from a layer row to its node on the stage on Enter', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		const row = screen.getByRole('button', {
+			name: 'rectangle',
+			pressed: true,
+		});
+
+		expect(row).toHaveAttribute(
+			'aria-describedby',
+			'aie-layer-name-description'
+		);
+
+		fireEvent.keyDown(row, {key: 'Enter'});
+
+		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+		expect(document.activeElement).toBe(hit(container));
+	});
+
+	it('duplicates a layer from its row and selects the copy', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		fireEvent.click(screen.getByRole('button', {name: 'duplicate-x'}));
+
+		expect(layerNames()).toEqual(['rectangle', 'rectangle']);
+
+		// The copy is selected: one pressed row, one ring on the stage, and
+		// the copy sits offset from the original.
+
+		expect(
+			screen.getAllByRole('button', {name: 'rectangle', pressed: true})
+		).toHaveLength(1);
+		expect(container.querySelectorAll('.selection-ring')).toHaveLength(1);
+
+		const shapes = container.querySelectorAll(
+			'.editor-workspace rect[fill]:not([class])'
+		);
+
+		expect(Number(shapes[1].getAttribute('x'))).toBe(
+			Number(shapes[0].getAttribute('x')) + 16
+		);
+	});
+
+	it('removes a layer from its row and keeps the focus in the list', async () => {
+		render(<AnnotationHarness start={withCaption} />);
+
+		addShape('rectangle');
+
+		fireEvent.click(screen.getAllByRole('button', {name: 'delete-x'})[0]);
+
+		expect(layerNames()).toEqual(['text-x']);
+
+		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+		expect(document.activeElement).toBe(row('text-x'));
+	});
+
+	it('roves through the rows and skips the disabled actions', () => {
+		render(<AnnotationHarness start={withCaption} />);
+
+		addShape('rectangle');
+
+		const top = row('rectangle');
+
+		act(() => top.focus());
+
+		expect(
+			document.querySelectorAll('.editor-layer-list [tabindex="0"]')
+		).toHaveLength(1);
+
+		// The topmost layer cannot move up, so the first arrow to the right
+		// lands on "move down".
+
+		fireEvent.keyDown(top, {key: 'ArrowRight'});
+
+		expect(document.activeElement).toHaveAccessibleName('move-x-down');
+
+		// Down a row lands on the same column when it is enabled, and on
+		// the row's name when it is not: the bottom layer cannot move down.
+
+		fireEvent.keyDown(document.activeElement as Element, {
+			key: 'ArrowDown',
+		});
+
+		expect(document.activeElement).toBe(row('text-x'));
+
+		fireEvent.keyDown(document.activeElement as Element, {
+			key: 'ArrowRight',
+		});
+
+		expect(document.activeElement).toHaveAccessibleName('move-x-up');
+
+		fireEvent.keyDown(document.activeElement as Element, {key: 'Home'});
+
+		expect(document.activeElement).toBe(top);
+	});
+
+	it('changes the caption and its font from the properties', () => {
+		const {container} = render(<AnnotationHarness start={withCaption} />);
+
+		fireEvent.click(row('text-x'));
+
+		const textInput = screen.getByLabelText('text');
+
+		fireEvent.change(textInput, {target: {value: 'Liferay'}});
+		fireEvent.keyDown(textInput, {key: 'Enter'});
+
+		expect(caption(container)).toHaveTextContent('Liferay');
+
+		fireEvent.change(screen.getByLabelText('font-family'), {
+			target: {value: 'monospace'},
+		});
+
+		expect(caption(container)).toHaveAttribute('font-family', 'monospace');
+
+		const size = screen.getByLabelText('font-size');
+
+		fireEvent.change(size, {target: {value: '72'}});
+		fireEvent.keyDown(size, {key: 'Enter'});
+
+		expect(caption(container)).toHaveAttribute('font-size', '72');
+
+		// An empty caption is refused: the field falls back to the text.
+
+		fireEvent.change(textInput, {target: {value: '   '}});
+		fireEvent.blur(textInput);
+
+		expect(textInput).toHaveValue('Liferay');
+	});
+
+	it('aims an arrow from its tip fields and opens its head', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('arrow');
+
+		// Its two ends are the properties, and rotation is not one of
+		// them: where an arrow points is already said by its ends.
+
+		expect(screen.queryByLabelText('rotation')).toBeNull();
+
+		const tipY = screen.getByLabelText('tip-y-position');
+		const tailY = Number(
+			screen.getByLabelText('y-position').getAttribute('value')
+		);
+
+		fireEvent.change(tipY, {target: {value: '120'}});
+		fireEvent.keyDown(tipY, {key: 'Enter'});
+
+		expect(screen.getByLabelText('tip-y-position')).toHaveValue(120);
+		expect(screen.getByLabelText('y-position')).toHaveValue(tailY);
+
+		// The open head is the same two barbs left as strokes, and its
+		// shaft runs the whole way to the tip.
+
+		fireEvent.change(screen.getByLabelText('arrow-head'), {
+			target: {value: 'open'},
+		});
+
+		expect(
+			container.querySelectorAll('.editor-workspace polygon')
+		).toHaveLength(0);
+
+		const shaft = container.querySelector(
+			'.editor-workspace line[stroke-linecap="round"]'
+		) as SVGLineElement;
+
+		expect(Number(shaft.getAttribute('y2'))).toBe(120);
+		expect(Number(shaft.getAttribute('y1'))).toBe(tailY);
+
+		const thickness = screen.getByLabelText('thickness');
+
+		fireEvent.change(thickness, {target: {value: '20'}});
+		fireEvent.keyDown(thickness, {key: 'Enter'});
+
+		expect(shaft).toHaveAttribute('stroke-width', '20');
+	});
+
+	it('dresses a rectangle in the hand-drawn style and back', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		expect(shape(container)).toBeInTheDocument();
+
+		fireEvent.change(screen.getByLabelText('style'), {
+			target: {value: 'sketchy'},
+		});
+
+		expect(shape(container)).toBeNull();
+
+		const path = container.querySelector(
+			'.editor-workspace path[fill="#0b5fff"]'
+		) as SVGPathElement;
+
+		const wobble = path.getAttribute('d')!;
+
+		expect(wobble.endsWith('Z')).toBe(true);
+
+		// The seed lives in the state, so a re-render redraws the same
+		// wobble instead of a new one.
+
+		fireEvent.click(row('rectangle'));
+
+		expect(
+			container
+				.querySelector('.editor-workspace path[fill="#0b5fff"]')
+				?.getAttribute('d')
+		).toBe(wobble);
+
+		fireEvent.change(screen.getByLabelText('style'), {
+			target: {value: 'clean'},
+		});
+
+		expect(shape(container)).toBeInTheDocument();
+	});
+
+	it('draws no border until one is asked for', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		expect(shape(container)).not.toHaveAttribute('stroke');
+
+		const width = screen.getByLabelText('border-width');
+
+		fireEvent.change(width, {target: {value: '4'}});
+		fireEvent.keyDown(width, {key: 'Enter'});
+
+		expect(shape(container)).toHaveAttribute('stroke-width', '4');
+		expect(shape(container)).toHaveAttribute('stroke', '#272833');
+
+		const color = screen.getByLabelText('border-color');
+
+		fireEvent.change(color, {target: {value: '#ff0000'}});
+		fireEvent.blur(color);
+
+		expect(shape(container)).toHaveAttribute('stroke', '#ff0000');
+
+		fireEvent.change(width, {target: {value: '0'}});
+		fireEvent.keyDown(width, {key: 'Enter'});
+
+		expect(shape(container)).not.toHaveAttribute('stroke');
+	});
+
+	it('keeps a 24 pixel target on an annotation smaller than that', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		for (const [label, value] of [
+			['width', '8'],
+			['height', '8'],
+		]) {
+			const field = screen.getByLabelText(label);
+
+			fireEvent.change(field, {target: {value}});
+			fireEvent.keyDown(field, {key: 'Enter'});
+		}
+
+		// What is painted shrinks to what was asked for; what can be hit
+		// does not go below the minimum (WCAG 2.2, 2.5.8). The harness
+		// renders at 50%, so those 24 screen pixels are 48 image units.
+
+		expect(shape(container)).toHaveAttribute('width', '8');
+		expect(hit(container)).toHaveAttribute('width', '48');
+		expect(hit(container)).toHaveAttribute('height', '48');
+
+		expect(Number(hit(container).getAttribute('x'))).toBe(
+			Number(shape(container).getAttribute('x')) - 20
+		);
+	});
+
+	it('hides the stretch handles while the proportions are locked', () => {
+		const {container} = render(<AnnotationHarness />);
+
+		addShape('rectangle');
+
+		fireEvent.focus(hit(container));
+
+		expect(container.querySelectorAll('.object-handle')).toHaveLength(9);
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'lock-aspect-ratio'})
+		);
+
+		expect(container.querySelectorAll('.object-handle')).toHaveLength(5);
+	});
+});
+
+describe('two editors on one page', () => {
+	function ScopedHarness({label}: {label: string}) {
+		const rootRef = useRef<HTMLDivElement>(null);
+
+		return (
+			<div data-editor={label} ref={rootRef}>
+				<EditorInstanceProvider value={`${label}-`}>
+					<EditorRootProvider value={rootRef}>
+						<AnnotationHarness />
+					</EditorRootProvider>
+				</EditorInstanceProvider>
+			</div>
+		);
+	}
+
+	it('hands the focus to its own workspace after the last deletion', async () => {
+		const {container} = render(
+			<>
+				<ScopedHarness label="one" />
+				<ScopedHarness label="two" />
+			</>
+		);
+
+		const second = container.querySelector(
+			'[data-editor="two"]'
+		) as HTMLElement;
+
+		fireEvent.click(
+			within(second).getByRole('button', {name: 'add-shape'})
+		);
+
+		// The shape menu portals to the body; the one open right now is
+		// the second editor's.
+
+		fireEvent.click(
+			within(screen.getByRole('grid', {name: 'add-shape'})).getByRole(
+				'button',
+				{name: 'rectangle'}
+			)
+		);
+
+		fireEvent.click(within(second).getByRole('button', {name: 'delete-x'}));
+
+		await act(() => new Promise((resolve) => setTimeout(resolve, 20)));
+
+		expect(document.activeElement).toBe(
+			second.querySelector('.editor-workspace')
+		);
 	});
 });

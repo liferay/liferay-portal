@@ -580,3 +580,75 @@ describe('overlays', () => {
 		});
 	});
 });
+
+describe('layers', () => {
+	const caption = {
+		color: '#ffffff',
+		fontFamily: 'sans-serif',
+		fontSize: 48,
+		id: 'text-1',
+		kind: 'text' as const,
+		text: 'Hello',
+		x: 100,
+		y: 100,
+	};
+
+	const two = () => {
+		const state = editorReducer(history(), {
+			overlay: caption,
+			type: 'add-overlay',
+		});
+
+		return editorReducer(state, {
+			overlay: {...caption, id: 'text-2', text: 'World'},
+			type: 'add-overlay',
+		});
+	};
+
+	it('duplicates a layer right above the original with an offset', () => {
+		const state = editorReducer(two(), {
+			id: 'text-1',
+			newId: 'text-1-copy',
+			type: 'duplicate-overlay',
+		});
+
+		expect(state.present.overlays.map((item) => item.id)).toEqual([
+			'text-1',
+			'text-1-copy',
+			'text-2',
+		]);
+
+		expect(state.present.overlays[1]).toMatchObject({x: 120, y: 120});
+		expect(undoLabel(state)).toBe('annotation');
+	});
+
+	it('reorders a layer and stops at either end', () => {
+		const state = editorReducer(two(), {
+			direction: 1,
+			id: 'text-1',
+			type: 'move-overlay-layer',
+		});
+
+		expect(state.present.overlays.map((item) => item.id)).toEqual([
+			'text-2',
+			'text-1',
+		]);
+		expect(undoLabel(state)).toBe('layer-order');
+
+		expect(
+			editorReducer(state, {
+				direction: 1,
+				id: 'text-1',
+				type: 'move-overlay-layer',
+			})
+		).toBe(state);
+
+		expect(
+			editorReducer(state, {
+				direction: -1,
+				id: 'text-9',
+				type: 'move-overlay-layer',
+			})
+		).toBe(state);
+	});
+});
