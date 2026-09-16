@@ -1063,3 +1063,32 @@ When you rename a local, propagate the new name to every call site, every parame
 -some-key=Alpha of the bravo
 +some-key=Alpha of the Bravo
 ```
+
+### Rule 48: Sort Helm Unit Test Cases by Their `it` Description
+
+**Why:** A `helm unittest` suite (a `*_test.yaml` file under a chart's `tests` directory) lists its cases under `tests`, and those cases are independent of one another, so they sort alphabetically by their `it` description in case sensitive ASCII order — the same order rule 202 applies to any other sortable sequence. Sorting by the description rather than by the document the case selects or the assertion it makes gives every new case one obvious place and keeps a suite of twenty cases scannable.
+
+**Examples:**
+
+```diff
+ tests:
+-    -   asserts:
+-            -   hasDocuments:
+-                    count: 0
+-        it: Omits the resource when the feature is disabled
+-        set:
+-            some.feature.enabled: false
+     -   asserts:
+             -   equal:
+                     path: metadata.name
+                     value: some-name
+         it: Names the resource after the release
+         set:
+             some.feature.enabled: true
++    -   asserts:
++            -   hasDocuments:
++                    count: 0
++        it: Omits the resource when the feature is disabled
++        set:
++            some.feature.enabled: false
+```

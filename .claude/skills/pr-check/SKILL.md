@@ -90,6 +90,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [JavaScript Unit Tests](validations/javascript-unit-test.md)
 
+1. [Helm Unit Test Order](validations/helm-unit-test-order.md)
+
 Process each validation in a subagent.
 
 ### Pass 1: Estimate
