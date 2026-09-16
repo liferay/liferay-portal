@@ -22,12 +22,7 @@ import org.json.JSONObject;
 /**
  * @author Michael Hashimoto
  */
-public class WorkspacesJSUnitModulesTestClass extends JSUnitModulesTestClass {
-
-	@Override
-	public String getTestClassName() {
-		return getName();
-	}
+public class WorkspacesJSUnitJUnitTestClass extends JSUnitJUnitTestClass {
 
 	@Override
 	public String getTestTaskName() {
@@ -45,13 +40,13 @@ public class WorkspacesJSUnitModulesTestClass extends JSUnitModulesTestClass {
 			":", getTaskName());
 	}
 
-	protected WorkspacesJSUnitModulesTestClass(
+	protected WorkspacesJSUnitJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, File testClassFile) {
 
 		super(batchTestClassGroup, testClassFile);
 	}
 
-	protected WorkspacesJSUnitModulesTestClass(
+	protected WorkspacesJSUnitJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, JSONObject jsonObject) {
 
 		super(batchTestClassGroup, jsonObject);

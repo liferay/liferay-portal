@@ -119,13 +119,6 @@ public abstract class ModulesTestClass extends BaseTestClass {
 
 		_taskName = taskName;
 
-		if (this instanceof JSUnitModulesTestClass) {
-			_testPropertiesFile = null;
-			_testrayMainComponentName = null;
-
-			return;
-		}
-
 		File testPropertiesBaseDir = getTestPropertiesBaseDir(
 			getTestClassFile());
 

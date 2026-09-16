@@ -5,12 +5,15 @@
 
 package com.liferay.jenkins.results.parser.testray;
 
+import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
-import com.liferay.jenkins.results.parser.test.clazz.JSUnitModulesTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.JSUnitJUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitModulesBatchTestClassGroup;
+
+import java.io.File;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,23 +31,23 @@ public class TestrayImporterTest
 
 	@Test
 	public void testIsTestClassFileReported() throws Exception {
-		JSUnitModulesTestClass jsUnitModulesTestClass = _getTestClass(
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
 			"modules/apps/a/b/test/js/c.js");
 
-		jsUnitModulesTestClass.setTestClassFileReported(true);
+		jsUnitJUnitTestClass.setTestClassFileReported(true);
 
-		Assert.assertTrue(_isTestClassFileReported(jsUnitModulesTestClass));
+		Assert.assertTrue(_isTestClassFileReported(jsUnitJUnitTestClass));
 	}
 
 	@Test
 	public void testIsTestClassFileReportedNoTestClassMethods()
 		throws Exception {
 
-		JSUnitModulesTestClass jsUnitModulesTestClass = _getTestClass();
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass();
 
-		jsUnitModulesTestClass.setTestClassFileReported(true);
+		jsUnitJUnitTestClass.setTestClassFileReported(true);
 
-		Assert.assertFalse(_isTestClassFileReported(jsUnitModulesTestClass));
+		Assert.assertFalse(_isTestClassFileReported(jsUnitJUnitTestClass));
 	}
 
 	@Test
@@ -55,13 +58,35 @@ public class TestrayImporterTest
 
 	@Test
 	public void testIsTestClassFileReportedTestTask() throws Exception {
-		JSUnitModulesTestClass jsUnitModulesTestClass = _getTestClass(
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
 			"modules/apps/a/b/test/js/c.js");
 
-		Assert.assertFalse(_isTestClassFileReported(jsUnitModulesTestClass));
+		Assert.assertFalse(_isTestClassFileReported(jsUnitJUnitTestClass));
 	}
 
-	private JSUnitModulesTestClass _getTestClass(String... methodNames) {
+	private JSUnitModulesBatchTestClassGroup _getBatchTestClassGroup() {
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
+			Mockito.mock(JSUnitModulesBatchTestClassGroup.class);
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			new File("/x")
+		).when(
+			portalGitWorkingDirectory
+		).getWorkingDirectory();
+
+		Mockito.doReturn(
+			portalGitWorkingDirectory
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).getPortalGitWorkingDirectory();
+
+		return jsUnitModulesBatchTestClassGroup;
+	}
+
+	private JSUnitJUnitTestClass _getTestClass(String... methodNames) {
 		JSONArray methodsJSONArray = new JSONArray();
 
 		for (String methodName : methodNames) {
@@ -78,13 +103,13 @@ public class TestrayImporterTest
 		).put(
 			"file", RandomTestUtil.randomString()
 		).put(
-			"methods", methodsJSONArray
+			"ignored", false
 		).put(
-			"task_name", "packageRunTest"
+			"methods", methodsJSONArray
 		);
 
-		return (JSUnitModulesTestClass)TestClassFactory.newTestClass(
-			Mockito.mock(JSUnitModulesBatchTestClassGroup.class), jsonObject);
+		return (JSUnitJUnitTestClass)TestClassFactory.newTestClass(
+			_getBatchTestClassGroup(), jsonObject);
 	}
 
 	private boolean _isTestClassFileReported(TestClass testClass) {

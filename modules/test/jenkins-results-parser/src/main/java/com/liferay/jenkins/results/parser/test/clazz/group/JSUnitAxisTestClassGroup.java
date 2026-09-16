@@ -8,7 +8,7 @@ package com.liferay.jenkins.results.parser.test.clazz.group;
 import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.TestClassReport;
-import com.liferay.jenkins.results.parser.test.clazz.JSUnitModulesTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.JSUnitJUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 
 import java.io.File;
@@ -34,11 +34,11 @@ public class JSUnitAxisTestClassGroup extends AxisTestClassGroup {
 		Set<DownstreamBuildReport> cachedDownstreamBuildReports =
 			new HashSet<>();
 
-		for (JSUnitModulesTestClass jsUnitModulesTestClass :
-				getJSUnitModulesTestClasses()) {
+		for (JSUnitJUnitTestClass jsUnitJUnitTestClass :
+				getJSUnitJUnitTestClasses()) {
 
 			DownstreamBuildReport downstreamBuildReport =
-				jsUnitModulesTestClass.getCachedDownstreamBuildReport();
+				jsUnitJUnitTestClass.getCachedDownstreamBuildReport();
 
 			cachedDownstreamBuildReports.add(downstreamBuildReport);
 		}
@@ -57,18 +57,18 @@ public class JSUnitAxisTestClassGroup extends AxisTestClassGroup {
 		return jsonObject;
 	}
 
-	public List<JSUnitModulesTestClass> getJSUnitModulesTestClasses() {
-		List<JSUnitModulesTestClass> jsUnitModulesTestClass = new ArrayList<>();
+	public List<JSUnitJUnitTestClass> getJSUnitJUnitTestClasses() {
+		List<JSUnitJUnitTestClass> jsUnitJUnitTestClasses = new ArrayList<>();
 
 		for (TestClass testClass : getTestClasses()) {
-			if (!(testClass instanceof JSUnitModulesTestClass)) {
+			if (!(testClass instanceof JSUnitJUnitTestClass)) {
 				continue;
 			}
 
-			jsUnitModulesTestClass.add((JSUnitModulesTestClass)testClass);
+			jsUnitJUnitTestClasses.add((JSUnitJUnitTestClass)testClass);
 		}
 
-		return jsUnitModulesTestClass;
+		return jsUnitJUnitTestClasses;
 	}
 
 	@Override
@@ -96,11 +96,11 @@ public class JSUnitAxisTestClassGroup extends AxisTestClassGroup {
 			return false;
 		}
 
-		for (JSUnitModulesTestClass jsUnitModulesTestClass :
-				getJSUnitModulesTestClasses()) {
+		for (JSUnitJUnitTestClass jsUnitJUnitTestClass :
+				getJSUnitJUnitTestClasses()) {
 
 			TestClassReport cachedTestClassReport =
-				jsUnitModulesTestClass.getCachedTestClassReport();
+				jsUnitJUnitTestClass.getCachedTestClassReport();
 
 			if (cachedTestClassReport == null) {
 				return false;

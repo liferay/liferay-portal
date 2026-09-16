@@ -9,7 +9,7 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
-import com.liferay.jenkins.results.parser.test.clazz.JSUnitModulesTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.JSUnitJUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
@@ -169,11 +169,11 @@ public class JSUnitModulesBatchTestClassGroup
 				TestClass testClass = TestClassFactory.newTestClass(
 					this, moduleTestDir);
 
-				if (testClass instanceof JSUnitModulesTestClass) {
-					JSUnitModulesTestClass jsUnitModulesTestClass =
-						(JSUnitModulesTestClass)testClass;
+				if (testClass instanceof JSUnitJUnitTestClass) {
+					JSUnitJUnitTestClass jsUnitJUnitTestClass =
+						(JSUnitJUnitTestClass)testClass;
 
-					jsUnitModulesTestClass.setTestClassFileReported(
+					jsUnitJUnitTestClass.setTestClassFileReported(
 						_isTestClassFileReported());
 				}
 

@@ -12,15 +12,12 @@ import com.liferay.jenkins.results.parser.test.clazz.group.BatchTestClassGroup;
 
 import java.io.File;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.json.JSONObject;
 
 /**
  * @author Michael Hashimoto
  */
-public class JSUnitModulesTestClass extends ModulesTestClass {
+public class JSUnitJUnitTestClass extends JUnitTestClass {
 
 	@Override
 	public DownstreamBuildReport getCachedDownstreamBuildReport() {
@@ -31,7 +28,6 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 		return _cachedDownstreamBuildReport;
 	}
 
-	@Override
 	public TestClassReport getCachedTestClassReport() {
 		if (!isBuildCachingEnabled() || _cachedTestClassReportSearched) {
 			return _cachedTestClassReport;
@@ -69,8 +65,8 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 	}
 
 	@Override
-	public String getTestrayMainComponentName() {
-		return _testrayMainComponentName;
+	public String getTestClassName() {
+		return getName();
 	}
 
 	@Override
@@ -92,91 +88,34 @@ public class JSUnitModulesTestClass extends ModulesTestClass {
 		_testClassFileReported = testClassFileReported;
 	}
 
-	protected JSUnitModulesTestClass(
+	protected JSUnitJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, File testClassFile) {
 
-		super(batchTestClassGroup, testClassFile, "packageRunTest");
-
-		File testPropertiesBaseDir = getTestPropertiesBaseDir(
-			getTestClassFile());
-
-		if ((testPropertiesBaseDir != null) && testPropertiesBaseDir.exists()) {
-			_testPropertiesFile = new File(
-				testPropertiesBaseDir, "test.properties");
-
-			String testrayMainComponentName =
-				JenkinsResultsParserUtil.getProperty(
-					JenkinsResultsParserUtil.getProperties(_testPropertiesFile),
-					"testray.main.component.name");
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(
-					testrayMainComponentName)) {
-
-				_testrayMainComponentName = testrayMainComponentName;
-
-				return;
-			}
-
-			File appBaseDir = _getAppBaseDir();
-
-			File appTestPropertiesFile = new File(
-				appBaseDir, "test.properties");
-
-			_testrayMainComponentName = JenkinsResultsParserUtil.getProperty(
-				JenkinsResultsParserUtil.getProperties(appTestPropertiesFile),
-				"testray.main.component.name");
-		}
-		else {
-			_testPropertiesFile = null;
-			_testrayMainComponentName = null;
-		}
+		super(batchTestClassGroup, testClassFile);
 	}
 
-	protected JSUnitModulesTestClass(
+	protected JSUnitJUnitTestClass(
 		BatchTestClassGroup batchTestClassGroup, JSONObject jsonObject) {
 
 		super(batchTestClassGroup, jsonObject);
-
-		if (jsonObject.has("test_properties_file")) {
-			_testPropertiesFile = new File(
-				jsonObject.getString("test_properties_file"));
-		}
-		else {
-			_testPropertiesFile = null;
-		}
-
-		if (jsonObject.has("testray_main_component_name")) {
-			_testrayMainComponentName = jsonObject.getString(
-				"testray_main_component_name");
-		}
-		else {
-			_testrayMainComponentName = null;
-		}
 
 		_testClassFileReported = jsonObject.optBoolean(
 			"test_class_file_reported");
 	}
 
 	@Override
-	protected List<File> getModulesProjectDirs() {
-		return Collections.singletonList(getModuleBaseDir());
+	protected String getTaskName() {
+		return "packageRunTest";
 	}
 
-	protected File getTestPropertiesFile() {
-		return _testPropertiesFile;
-	}
-
-	private File _getAppBaseDir() {
-		String filePath = _testPropertiesFile.toString();
-
-		return new File(filePath.replaceAll("(.*/apps/[^/]+)/.+", "$1"));
+	@Override
+	protected String getTestName() {
+		return getName();
 	}
 
 	private DownstreamBuildReport _cachedDownstreamBuildReport;
 	private TestClassReport _cachedTestClassReport;
 	private boolean _cachedTestClassReportSearched;
 	private boolean _testClassFileReported;
-	private final File _testPropertiesFile;
-	private final String _testrayMainComponentName;
 
 }

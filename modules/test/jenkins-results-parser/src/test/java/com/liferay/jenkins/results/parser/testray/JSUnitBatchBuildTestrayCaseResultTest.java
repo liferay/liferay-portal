@@ -8,16 +8,19 @@ package com.liferay.jenkins.results.parser.testray;
 import com.liferay.jenkins.results.parser.BaseDownstreamBuildReport;
 import com.liferay.jenkins.results.parser.BuildReport;
 import com.liferay.jenkins.results.parser.DownstreamBuild;
+import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 import com.liferay.jenkins.results.parser.TestReportFactory;
 import com.liferay.jenkins.results.parser.TestResult;
 import com.liferay.jenkins.results.parser.TestResultFactory;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
-import com.liferay.jenkins.results.parser.test.clazz.JSUnitModulesTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.JSUnitJUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitAxisTestClassGroup;
 import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitModulesBatchTestClassGroup;
+
+import java.io.File;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,13 +42,12 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 	public void testGetName() throws Exception {
 		_mockWorkspace();
 
-		JSUnitModulesTestClass jsUnitModulesTestClass = _getTestClass(
-			_CLASS_PATH);
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(_CLASS_PATH);
 
 		testEquals(
 			":apps:a:b:packageRunTest",
 			_getJSUnitBatchBuildTestrayCaseResult(
-				jsUnitModulesTestClass, null
+				jsUnitJUnitTestClass, null
 			).getName());
 	}
 
@@ -53,16 +55,16 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 	public void testGetNameLongTestClassFile() throws Exception {
 		_mockWorkspace();
 
-		JSUnitModulesTestClass jsUnitModulesTestClass = _getTestClass(
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
 			_LONG_CLASS_PATH);
 
 		List<TestClassMethod> testClassMethods =
-			jsUnitModulesTestClass.getTestClassMethods();
+			jsUnitJUnitTestClass.getTestClassMethods();
 
 		testEquals(
 			_LONG_CLASS_PATH,
 			_getJSUnitBatchBuildTestrayCaseResult(
-				jsUnitModulesTestClass, testClassMethods.get(0)
+				jsUnitJUnitTestClass, testClassMethods.get(0)
 			).getName());
 	}
 
@@ -70,16 +72,15 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 	public void testGetNameTestClassFile() throws Exception {
 		_mockWorkspace();
 
-		JSUnitModulesTestClass jsUnitModulesTestClass = _getTestClass(
-			_CLASS_PATH);
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(_CLASS_PATH);
 
 		List<TestClassMethod> testClassMethods =
-			jsUnitModulesTestClass.getTestClassMethods();
+			jsUnitJUnitTestClass.getTestClassMethods();
 
 		testEquals(
 			_CLASS_PATH,
 			_getJSUnitBatchBuildTestrayCaseResult(
-				jsUnitModulesTestClass, testClassMethods.get(0)
+				jsUnitJUnitTestClass, testClassMethods.get(0)
 			).getName());
 	}
 
@@ -110,15 +111,36 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 			_getStatus(_OTHER_CLASS_PATH, _CLASS_PATH));
 	}
 
+	private JSUnitModulesBatchTestClassGroup _getBatchTestClassGroup() {
+		JSUnitModulesBatchTestClassGroup jsUnitModulesBatchTestClassGroup =
+			Mockito.mock(JSUnitModulesBatchTestClassGroup.class);
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
+			PortalGitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			new File("/x")
+		).when(
+			portalGitWorkingDirectory
+		).getWorkingDirectory();
+
+		Mockito.doReturn(
+			portalGitWorkingDirectory
+		).when(
+			jsUnitModulesBatchTestClassGroup
+		).getPortalGitWorkingDirectory();
+
+		return jsUnitModulesBatchTestClassGroup;
+	}
+
 	private JSUnitBatchBuildTestrayCaseResult
 		_getJSUnitBatchBuildTestrayCaseResult(
-			JSUnitModulesTestClass jsUnitModulesTestClass,
+			JSUnitJUnitTestClass jsUnitJUnitTestClass,
 			TestClassMethod testClassMethod) {
 
 		return new JSUnitBatchBuildTestrayCaseResult(
-			Mockito.mock(JSUnitAxisTestClassGroup.class),
-			jsUnitModulesTestClass, testClassMethod,
-			Mockito.mock(TestrayBuild.class),
+			Mockito.mock(JSUnitAxisTestClassGroup.class), jsUnitJUnitTestClass,
+			testClassMethod, Mockito.mock(TestrayBuild.class),
 			Mockito.mock(TopLevelBuildReport.class));
 	}
 
@@ -165,15 +187,15 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 			baseDownstreamBuildReport
 		).getTestReports();
 
-		JSUnitModulesTestClass jsUnitModulesTestClass = _getTestClass(
+		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
 			testClassMethodName);
 
 		List<TestClassMethod> testClassMethods =
-			jsUnitModulesTestClass.getTestClassMethods();
+			jsUnitJUnitTestClass.getTestClassMethods();
 
 		JSUnitBatchBuildTestrayCaseResult jsUnitBatchBuildTestrayCaseResult =
 			_getJSUnitBatchBuildTestrayCaseResult(
-				jsUnitModulesTestClass, testClassMethods.get(0));
+				jsUnitJUnitTestClass, testClassMethods.get(0));
 
 		ReflectionTestUtil.invoke(
 			jsUnitBatchBuildTestrayCaseResult, "setBuildReport",
@@ -182,7 +204,7 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 		return jsUnitBatchBuildTestrayCaseResult.getStatus();
 	}
 
-	private JSUnitModulesTestClass _getTestClass(String methodName) {
+	private JSUnitJUnitTestClass _getTestClass(String methodName) {
 		JSONObject methodJSONObject = new JSONObject(
 			"ignored", false
 		).put(
@@ -193,17 +215,17 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 		).put(
 			"file", "/x/modules/apps/a/b"
 		).put(
+			"ignored", false
+		).put(
 			"methods",
 			new JSONArray(
 			).put(
 				methodJSONObject
 			)
-		).put(
-			"task_name", "packageRunTest"
 		);
 
-		return (JSUnitModulesTestClass)TestClassFactory.newTestClass(
-			Mockito.mock(JSUnitModulesBatchTestClassGroup.class), jsonObject);
+		return (JSUnitJUnitTestClass)TestClassFactory.newTestClass(
+			_getBatchTestClassGroup(), jsonObject);
 	}
 
 	private void _mockWorkspace() {

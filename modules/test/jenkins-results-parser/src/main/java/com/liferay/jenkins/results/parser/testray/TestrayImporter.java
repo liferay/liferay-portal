@@ -31,7 +31,7 @@ import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.job.property.JobProperty;
 import com.liferay.jenkins.results.parser.job.property.JobPropertyFactory;
 import com.liferay.jenkins.results.parser.persistent.resource.PersistentResource;
-import com.liferay.jenkins.results.parser.test.clazz.JSUnitModulesTestClass;
+import com.liferay.jenkins.results.parser.test.clazz.JSUnitJUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
@@ -1554,14 +1554,14 @@ public class TestrayImporter {
 	}
 
 	private boolean _isTestClassFileReported(TestClass testClass) {
-		if (!(testClass instanceof JSUnitModulesTestClass)) {
+		if (!(testClass instanceof JSUnitJUnitTestClass)) {
 			return false;
 		}
 
-		JSUnitModulesTestClass jsUnitModulesTestClass =
-			(JSUnitModulesTestClass)testClass;
+		JSUnitJUnitTestClass jsUnitJUnitTestClass =
+			(JSUnitJUnitTestClass)testClass;
 
-		if (!jsUnitModulesTestClass.isTestClassFileReported()) {
+		if (!jsUnitJUnitTestClass.isTestClassFileReported()) {
 			return false;
 		}
 
