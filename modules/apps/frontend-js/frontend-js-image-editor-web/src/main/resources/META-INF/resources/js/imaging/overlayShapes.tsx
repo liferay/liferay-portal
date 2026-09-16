@@ -194,12 +194,6 @@ export function overlayLabel(overlay: Overlay): string {
 	}
 }
 
-/**
- * The visual node of an overlay. Shared verbatim between the interactive
- * preview and the static export renderer. Opacity (the native color input
- * offers no alpha channel) wraps the node as a group attribute, so it
- * rasterizes identically at export.
- */
 export interface RedactSource {
 
 	/**
@@ -226,6 +220,12 @@ export interface RedactSource {
 	transform?: string;
 }
 
+/**
+ * The visual node of an overlay. Shared verbatim between the interactive
+ * preview and the static export renderer. Opacity (the native color input
+ * offers no alpha channel) wraps the node as a group attribute, so it
+ * rasterizes identically at export.
+ */
 export function OverlayShape({
 	overlay,
 	redactSource,

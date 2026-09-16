@@ -97,6 +97,20 @@ export function pointsToPath(
  * wobble the same way on the stage, on the export and on every re-render,
  * so the wobble is a function of a stored seed, never of the clock.
  */
+export function seededRandom(seed: number): () => number {
+	let state = seed >>> 0;
+
+	return () => {
+		state = (state + 0x6d2b79f5) >>> 0;
+
+		let mixed = Math.imul(state ^ (state >>> 15), 1 | state);
+
+		mixed ^= mixed + Math.imul(mixed ^ (mixed >>> 7), 61 | mixed);
+
+		return ((mixed ^ (mixed >>> 14)) >>> 0) / 4294967296;
+	};
+}
+
 export function simplifyPoints(points: number[], epsilon: number): number[] {
 	const count = points.length / 2;
 
@@ -155,20 +169,6 @@ export function simplifyPoints(points: number[], epsilon: number): number[] {
 	}
 
 	return kept;
-}
-
-export function seededRandom(seed: number): () => number {
-	let state = seed >>> 0;
-
-	return () => {
-		state = (state + 0x6d2b79f5) >>> 0;
-
-		let mixed = Math.imul(state ^ (state >>> 15), 1 | state);
-
-		mixed ^= mixed + Math.imul(mixed ^ (mixed >>> 7), 61 | mixed);
-
-		return ((mixed ^ (mixed >>> 14)) >>> 0) / 4294967296;
-	};
 }
 
 /**
