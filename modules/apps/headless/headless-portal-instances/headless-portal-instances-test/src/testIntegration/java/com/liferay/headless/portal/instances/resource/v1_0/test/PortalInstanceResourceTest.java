@@ -110,7 +110,7 @@ public class PortalInstanceResourceTest
 
 			User user = UserTestUtil.getAdminUser(company.getCompanyId());
 
-			portalInstanceResource = PortalInstanceResource.builder(
+			importTaskResource = ImportTaskResource.builder(
 			).authentication(
 				user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
 			).endpoint(
@@ -119,8 +119,7 @@ public class PortalInstanceResourceTest
 			).locale(
 				LocaleUtil.getDefault()
 			).build();
-
-			importTaskResource = ImportTaskResource.builder(
+			portalInstanceResource = PortalInstanceResource.builder(
 			).authentication(
 				user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
 			).endpoint(
