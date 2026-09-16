@@ -181,6 +181,7 @@ public class LayoutFinderImpl
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
 				DSLQueryFactoryUtil.select(
+					LayoutTable.INSTANCE
 				).from(
 					LayoutTable.INSTANCE
 				).innerJoinON(
