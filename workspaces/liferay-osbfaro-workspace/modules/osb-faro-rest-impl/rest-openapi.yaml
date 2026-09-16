@@ -48,6 +48,67 @@ components:
                     readOnly: true
                     type: string
             type: object
+        AccountLifecycleStage:
+            description:
+                "A stage of an account lifecycle. Each lifecycle has one stage per stage type, ordered by display order."
+            properties:
+                description:
+                    description:
+                        "Description of the stage."
+                    readOnly: true
+                    type: string
+                displayOrder:
+                    description:
+                        "Position of the stage in the lifecycle, starting at 1."
+                    readOnly: true
+                    type: integer
+                id:
+                    description:
+                        "Stage ID."
+                    readOnly: true
+                    type: string
+                maxDuration:
+                    description:
+                        "Maximum number of days an account is expected to stay in the stage before it is considered stalled. Null when no limit is set."
+                    readOnly: true
+                    type: integer
+                stageType:
+                    description:
+                        "Stage type: AWARE, ENGAGED, PIPELINE, ONBOARDING, ESTABLISHED, or AT_RISK. Use it (or the description) as `fromLifecycleStage` or `toLifecycleStage` to filter stage transitions."
+                    readOnly: true
+                    type: string
+            type: object
+        AccountLifecycleStageTransition:
+            description:
+                "An account moving from one account lifecycle stage to another. An account that moved several times in the requested date range appears once per move."
+            properties:
+                accountId:
+                    description:
+                        "Account ID. Use this with `getWorkspaceGroupAccount` to fetch the account."
+                    readOnly: true
+                    type: string
+                accountName:
+                    description:
+                        "Name of the account."
+                    readOnly: true
+                    type: string
+                fromAccountLifecycleStage:
+                    $ref: "#/components/schemas/AccountLifecycleStage"
+                    description:
+                        "Stage the account left."
+                    readOnly: true
+                toAccountLifecycleStage:
+                    $ref: "#/components/schemas/AccountLifecycleStage"
+                    description:
+                        "Stage the account entered."
+                    readOnly: true
+                transitionDate:
+                    description:
+                        "When the account entered the new stage."
+                    format: date-time
+                    readOnly: true
+                    type: string
+            type: object
         AssetSummaryMetric:
             description:
                 "An aggregated set of analytics metrics for a single tracked asset (page, blog, document, form, journal, object entry, etc.) over the selected date range. Trend percentages compare metrics on the selected date range to the previous date range. Use `getWorkspaceGroupChannelAssetSummariesPage` to list these sets of metrics."
@@ -544,6 +605,113 @@ info:
     x-class-name: FaroRest
 openapi: 3.0.1
 paths:
+    "/workspace/{groupId}/account-lifecycles/{accountLifecycleId}/stage-transitions":
+        get:
+            description:
+                "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are matched case-insensitively against the stage type (e.g. PIPELINE or 'at risk') or the stage description. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+            operationId: getWorkspaceGroupAccountLifecycleStageTransitionsPage
+            parameters:
+                -   in: path
+                    description:
+                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                    name: groupId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: path
+                    description:
+                        "ID of the account lifecycle whose stage transitions should be listed."
+                    name: accountLifecycleId
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Only include accounts headquartered in this country."
+                    name: country
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Only include moves out of this stage. Give the stage type (e.g. PIPELINE) or its description; matching is case-insensitive."
+                    example: PIPELINE
+                    name: fromLifecycleStage
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Only include accounts in this industry."
+                    name: industry
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Page number (starts at 1)."
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Page size."
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    description:
+                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                    name: rangeEnd
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Date-range preset. Use one of the listed enum values (e.g. LAST_90_DAYS). Defaults to LAST_90_DAYS. When both rangeStart and rangeEnd are set, they take precedence over rangeKey."
+                    example: LAST_90_DAYS
+                    name: rangeKey
+                    schema:
+                        enum: [LAST_180_DAYS, LAST_24_HOURS, LAST_28_DAYS, LAST_30_DAYS, LAST_7_DAYS, LAST_90_DAYS, LAST_YEAR, YESTERDAY]
+                        type: string
+                -   in: query
+                    description:
+                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                    name: rangeStart
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Only include accounts that are members of this segment."
+                    name: segmentId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    description:
+                        "Sort expression `column:asc|desc`. Defaults to `transitionDate:desc`. Columns: accountId, accountName, fromAccountLifecycleStageId, toAccountLifecycleStageId, transitionDate."
+                    example: transitionDate:desc
+                    name: sort
+                    schema:
+                        type: string
+                -   in: query
+                    description:
+                        "Only include moves into this stage. Give the stage type (e.g. ONBOARDING) or its description; matching is case-insensitive."
+                    example: ONBOARDING
+                    name: toLifecycleStage
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/AccountLifecycleStageTransition"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/AccountLifecycleStageTransition"
+                                type: array
+            tags: ["AccountLifecycleStageTransition"]
     "/workspace/{groupId}/accounts/{accountId}":
         get:
             description:
