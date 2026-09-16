@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.util.KeyValuePair;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -25,31 +24,30 @@ public class AudiencesEntryModelListener
 
 	@Override
 	public void onAfterCreate(AudiencesEntry audiencesEntry) {
-		_portalCache.remove(audiencesEntry.getCompanyId());
+		_removeFromPortalCache(audiencesEntry);
 	}
 
 	@Override
 	public void onAfterRemove(AudiencesEntry audiencesEntry) {
-		_portalCache.remove(audiencesEntry.getCompanyId());
+		_removeFromPortalCache(audiencesEntry);
 	}
 
 	@Override
 	public void onAfterUpdate(
 		AudiencesEntry originalAudiencesEntry, AudiencesEntry audiencesEntry) {
 
-		_portalCache.remove(audiencesEntry.getCompanyId());
+		_removeFromPortalCache(audiencesEntry);
 	}
 
-	@Activate
-	protected void activate() {
-		_portalCache =
+	private void _removeFromPortalCache(AudiencesEntry audiencesEntry) {
+		PortalCache<Long, KeyValuePair> portalCache =
 			(PortalCache<Long, KeyValuePair>)_multiVMPool.getPortalCache(
 				AudiencesEntry.class.getName());
+
+		portalCache.remove(audiencesEntry.getCompanyId());
 	}
 
 	@Reference
 	private MultiVMPool _multiVMPool;
-
-	private PortalCache<Long, KeyValuePair> _portalCache;
 
 }

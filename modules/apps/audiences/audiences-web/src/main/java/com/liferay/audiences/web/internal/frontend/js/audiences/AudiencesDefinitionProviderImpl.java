@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import java.util.List;
 import java.util.Set;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
@@ -49,7 +48,11 @@ public class AudiencesDefinitionProviderImpl
 			return null;
 		}
 
-		AudiencesDefinition audiencesDefinition = _portalCache.get(companyId);
+		PortalCache<Long, AudiencesDefinition> portalCache =
+			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
+				AudiencesEntry.class.getName());
+
+		AudiencesDefinition audiencesDefinition = portalCache.get(companyId);
 
 		if (audiencesDefinition != null) {
 			return audiencesDefinition;
@@ -102,16 +105,9 @@ public class AudiencesDefinitionProviderImpl
 		audiencesDefinition = new AudiencesDefinition(
 			json, HashedFilesUtil.computeHash(json));
 
-		_portalCache.put(companyId, audiencesDefinition);
+		portalCache.put(companyId, audiencesDefinition);
 
 		return audiencesDefinition;
-	}
-
-	@Activate
-	protected void activate() {
-		_portalCache =
-			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
-				AudiencesEntry.class.getName());
 	}
 
 	@Deactivate
@@ -205,7 +201,5 @@ public class AudiencesDefinitionProviderImpl
 
 	@Reference
 	private MultiVMPool _multiVMPool;
-
-	private PortalCache<Long, AudiencesDefinition> _portalCache;
 
 }

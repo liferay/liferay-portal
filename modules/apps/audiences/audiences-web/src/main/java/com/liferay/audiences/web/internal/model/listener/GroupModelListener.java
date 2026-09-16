@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelListener;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -25,19 +24,14 @@ public class GroupModelListener extends BaseModelListener<Group> {
 
 	@Override
 	public void onAfterRemove(Group group) {
-		_portalCache.remove(group.getCompanyId());
-	}
-
-	@Activate
-	protected void activate() {
-		_portalCache =
+		PortalCache<Long, AudiencesDefinition> portalCache =
 			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
 				AudiencesEntry.class.getName());
+
+		portalCache.remove(group.getCompanyId());
 	}
 
 	@Reference
 	private MultiVMPool _multiVMPool;
-
-	private PortalCache<Long, AudiencesDefinition> _portalCache;
 
 }
