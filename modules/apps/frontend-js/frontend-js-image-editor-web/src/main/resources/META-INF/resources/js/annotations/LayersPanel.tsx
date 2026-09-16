@@ -4,6 +4,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
@@ -283,14 +284,11 @@ export function LayersPanel({
 
 					return (
 						<li
-							className={[
-								'editor-layer-item',
-								isSelected && 'editor-layer-item-selected',
-								multiSelectedIds.includes(overlay.id) &&
-									'editor-layer-item-grouped',
-							]
-								.filter(Boolean)
-								.join(' ')}
+							className={classNames('editor-layer-item', {
+								'editor-layer-item-grouped':
+									multiSelectedIds.includes(overlay.id),
+								'editor-layer-item-selected': isSelected,
+							})}
 							key={overlay.id}
 						>
 							<button
