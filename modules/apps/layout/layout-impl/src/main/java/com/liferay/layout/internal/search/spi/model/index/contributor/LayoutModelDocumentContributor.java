@@ -11,8 +11,10 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -67,6 +69,21 @@ public class LayoutModelDocumentContributor
 				layout.getNameMap(), layout.getDefaultLanguageId(),
 				layout.getGroupId()),
 			true, true);
+
+		if (layout.getParentLayoutId() !=
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID) {
+
+			Layout parentLayout = _layoutLocalService.fetchLayout(
+				layout.getGroupId(), layout.isPrivateLayout(),
+				layout.getParentLayoutId());
+
+			if (parentLayout != null) {
+				document.addKeyword(
+					"parentLayoutExternalReferenceCode",
+					parentLayout.getExternalReferenceCode());
+			}
+		}
+
 		document.addText(
 			"privateLayout", String.valueOf(layout.isPrivateLayout()));
 		document.addText("systemLayout", String.valueOf(layout.isSystem()));
@@ -140,6 +157,9 @@ public class LayoutModelDocumentContributor
 
 	@Reference
 	private LayoutContentProvider _layoutContentProvider;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 	@Reference
 	private LayoutServiceContextHelper _layoutServiceContextHelper;
