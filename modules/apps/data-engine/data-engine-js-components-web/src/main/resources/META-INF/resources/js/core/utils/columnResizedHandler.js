@@ -233,7 +233,11 @@ export function handleResizeLeft(props, state, indexes, columnTarget) {
 
 	let newContext = currentContext;
 
-	if (columnIndex === 0 && columnTarget > 0) {
+	if (
+		columnIndex === 0 &&
+		columnTarget > 0 &&
+		columnTarget < currentColumn.size
+	) {
 		newContext = FormSupport.addColumn(
 			newContext,
 			columnIndex,
