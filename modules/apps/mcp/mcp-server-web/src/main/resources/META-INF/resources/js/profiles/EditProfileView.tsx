@@ -12,6 +12,7 @@ import React, {useEffect, useState} from 'react';
 
 import {FormField} from '../forms/FormField';
 import {FormSection} from '../forms/FormSection';
+import {FormToggle} from '../forms/FormToggle';
 import {getProfile} from '../services/getProfile';
 import {patchProfile} from '../services/patchProfile';
 import {postProfile} from '../services/postProfile';
@@ -99,6 +100,7 @@ function ProfileForm({
 }: ProfileFormProps) {
 	const formik = useFormik<ProfileFormValues>({
 		initialValues: {
+			active: profile?.profileStatus?.key === 'active',
 			description: profile?.description ?? '',
 			name: profile?.name ?? '',
 		},
@@ -106,6 +108,7 @@ function ProfileForm({
 			const payload: ProfilePayload = {
 				description: values.description,
 				name: values.name,
+				profileStatus: {key: values.active ? 'active' : 'inactive'},
 			};
 
 			const {data: saved, error} = profile?.externalReferenceCode
@@ -158,7 +161,20 @@ function ProfileForm({
 	return (
 		<FormikProvider value={formik}>
 			<Form className="profile-form" noValidate>
+				<FormSection title={Liferay.Language.get('profile-status')}>
+					<div className="align-items-center d-flex justify-content-between">
+						<span className="text-secondary">
+							{Liferay.Language.get(
+								'activate-to-make-this-profiles-tools-available-to-mcp-clients'
+							)}
+						</span>
+
+						<FormToggle name="active" />
+					</div>
+				</FormSection>
+
 				<FormSection
+					className="mt-4"
 					title={Liferay.Language.get('profile-information')}
 				>
 					<FormField

@@ -64,6 +64,7 @@ export type Profile = {
 	friendlyUrlPath?: string;
 	id?: number;
 	name: string;
+	profileStatus?: {key: string; name?: string};
 };
 
 export type ProfileActionContext = {
@@ -91,6 +92,7 @@ export type ProfileDataMaskRow = {
 };
 
 export type ProfileFormValues = {
+	active: boolean;
 	description: string;
 	name: string;
 };
@@ -98,6 +100,7 @@ export type ProfileFormValues = {
 export type ProfilePayload = {
 	description: string;
 	name: string;
+	profileStatus: {key: string};
 };
 
 export type ProfileTool = {
