@@ -215,7 +215,7 @@ public class ViewSharedWithMeSectionDisplayContextTest
 			).build(),
 			fdsActionDropdownItems.get(7));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"download", "download-folder", "Download", "get",
+			"download", "download-folder", "Download Folder", "get",
 			HashMapBuilder.<String, Object>put(
 				"className", ObjectEntryFolder.class.getName()
 			).build(),
