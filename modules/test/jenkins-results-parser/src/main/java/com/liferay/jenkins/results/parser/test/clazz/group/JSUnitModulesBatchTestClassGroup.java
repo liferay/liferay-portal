@@ -13,6 +13,8 @@ import com.liferay.jenkins.results.parser.test.clazz.JSUnitModulesTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassFactory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClassMethod;
+import com.liferay.jenkins.results.parser.test.clazz.file.TestPackage;
+import com.liferay.jenkins.results.parser.test.clazz.file.TestPackageFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -175,13 +177,19 @@ public class JSUnitModulesBatchTestClassGroup
 						_isTestClassFileReported());
 				}
 
+				TestPackage testPackage = TestPackageFactory.newTestPackage(
+					moduleTestDir);
+
 				for (File jsUnitFile :
 						portalGitWorkingDirectory.getJSUnitFiles()) {
 
 					String jsUnitFilePath =
 						JenkinsResultsParserUtil.getCanonicalPath(jsUnitFile);
 
-					if (!jsUnitFilePath.startsWith(moduleTestDirPath)) {
+					if (!jsUnitFilePath.startsWith(moduleTestDirPath) ||
+						((testPackage != null) &&
+						 testPackage.isTestClassFileIgnored(jsUnitFile))) {
+
 						continue;
 					}
 

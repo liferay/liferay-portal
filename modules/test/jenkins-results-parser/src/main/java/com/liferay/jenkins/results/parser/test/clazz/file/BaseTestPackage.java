@@ -94,7 +94,9 @@ public abstract class BaseTestPackage implements TestPackage {
 
 					File file = filePath.toFile();
 
-					if (!TestClassFileFactory.isTestClassFile(file)) {
+					if (!TestClassFileFactory.isTestClassFile(file) ||
+						isTestClassFileIgnored(file)) {
+
 						return FileVisitResult.CONTINUE;
 					}
 
@@ -131,6 +133,11 @@ public abstract class BaseTestPackage implements TestPackage {
 		}
 
 		return scriptsJSONObject.optString("test", null);
+	}
+
+	@Override
+	public boolean isTestClassFileIgnored(File file) {
+		return false;
 	}
 
 	@Override

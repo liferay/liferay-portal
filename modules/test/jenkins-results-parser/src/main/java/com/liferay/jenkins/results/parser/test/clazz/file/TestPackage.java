@@ -32,4 +32,6 @@ public interface TestPackage {
 
 	public String getTestScript();
 
+	public boolean isTestClassFileIgnored(File file);
+
 }
