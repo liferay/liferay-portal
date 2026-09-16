@@ -9,9 +9,7 @@ function main {
 
 	if [[ -z ${oauth_application_name} ]]
 	then
-		echo "The OAuth application name was not provided." >&2
-
-		exit 1
+		_die "The OAuth application name was not provided."
 	fi
 
 	touch ../../.env

@@ -1,0 +1,6 @@
+services:
+    liferay:
+        environment:
+            LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL: jdbc:postgresql://localhost:5432/lportal
+        network_mode: host
+        ports: !override []

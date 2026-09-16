@@ -13,22 +13,45 @@ then
 fi
 
 function docker_compose {
+	local dir
+
+	dir="$(dirname "${BASH_SOURCE[0]}")/.."
+
 	local compose_files
 
-	compose_files=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose.yaml")
+	compose_files=(--file "${dir}/docker-compose.yaml")
+
+	local dash_override_file
+	local dot_override_file
+	local override
 
 	local overrides=${LIFERAY_COMPOSE_OVERRIDES:-}
 
-	local override
-
 	for override in ${overrides//,/ }
 	do
-		compose_files+=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-${override}.yaml")
+		dot_override_file="${dir}/docker-compose.${override}.yaml"
+
+		if [[ -f "${dot_override_file}" ]]
+		then
+			compose_files+=(--file "${dot_override_file}")
+		fi
+
+		dash_override_file="${dir}/docker-compose-${override}.yaml"
+
+		if [[ -f "${dash_override_file}" ]]
+		then
+			compose_files+=(--file "${dash_override_file}")
+		fi
+
+		if [[ ! -f "${dot_override_file}" ]] && [[ ! -f "${dash_override_file}" ]]
+		then
+			_die "No compose override file found for \"${override}\"."
+		fi
 	done
 
-	if [[ -f "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-env.yaml" ]]
+	if [[ -f "${dir}/docker-compose-env.yaml" ]]
 	then
-		compose_files+=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-env.yaml")
+		compose_files+=(--file "${dir}/docker-compose-env.yaml")
 	fi
 
 	docker compose "${compose_files[@]}" "${@}"
@@ -48,12 +71,20 @@ function get_gradle_property {
 
 	if [[ -z ${value} ]]
 	then
-		echo "Property \"${key}\" was not found." >&2
-
-		return 1
+		_die "Property \"${key}\" was not found."
 	fi
 
 	echo "${value}"
+}
+
+function _die {
+	_print_error "${*}"
+
+	exit 1
+}
+
+function _print_error {
+	echo "${*}" >&2
 }
 
 function _read_property {
