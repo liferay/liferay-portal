@@ -21,7 +21,6 @@ public class SegmentsEntryTypeUpgradeProcess extends UpgradeProcess {
 			SegmentsEntryConstants.TYPE_BATCH,
 			" and source = '" +
 				SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND + "'");
-
 		_updateType(SegmentsEntryConstants.TYPE_DEFAULT, "");
 	}
 
