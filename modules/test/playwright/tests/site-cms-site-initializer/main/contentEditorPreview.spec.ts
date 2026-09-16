@@ -633,6 +633,9 @@ test(
 				await input.fill(value);
 			};
 
+			const dateInput = (nth: number) =>
+				form.getByLabel('Date').and(form.getByRole('textbox')).nth(nth);
+
 			const fieldInteractions: Array<{
 				action: () => Promise<void>;
 				label: string;
@@ -693,16 +696,11 @@ test(
 					label: 'Numeric',
 				},
 				{
-					action: () =>
-						fill(form.getByLabel('Date').first(), '2026-05-01'),
+					action: () => fill(dateInput(0), '05/01/2026'),
 					label: 'Date',
 				},
 				{
-					action: () =>
-						fill(
-							form.getByLabel('Date').nth(1),
-							'2026-05-01T13:30'
-						),
+					action: () => fill(dateInput(1), '05/01/2026 01:30 PM'),
 					label: 'Date and Time',
 				},
 				{

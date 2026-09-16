@@ -170,8 +170,8 @@ test(
 				{label: 'Essay', value: 'First long text value.'},
 				{label: 'Amount', value: '10'},
 				{label: 'Ratio', value: '1.5'},
-				{label: 'Day', value: '2026-08-28'},
-				{label: 'Moment', value: '2026-08-28T10:30'},
+				{label: 'Day', type: 'Date', value: '08/28/2026'},
+				{label: 'Moment', type: 'Date', value: '08/28/2026 10:30 AM'},
 			]);
 
 			await selectPicklistOption(page, 'State', 'Completed');
@@ -194,8 +194,8 @@ test(
 				{label: 'Essay', value: 'Second long text value.'},
 				{label: 'Amount', value: '25'},
 				{label: 'Ratio', value: '3.75'},
-				{label: 'Day', value: '2026-09-15'},
-				{label: 'Moment', value: '2026-09-15T16:45'},
+				{label: 'Day', type: 'Date', value: '09/15/2026'},
+				{label: 'Moment', type: 'Date', value: '09/15/2026 04:45 PM'},
 				{label: 'Flag', type: 'Checkbox', value: true},
 			]);
 
