@@ -118,7 +118,7 @@ function Editor({
 		setLayerProportional,
 		setSelectedOverlayId,
 		toggleMultiSelect,
-	} = useOverlaySelection(announce);
+	} = useOverlaySelection(state.overlays, announce);
 
 	const {copyOverlay, pasteOverlay} = useOverlayClipboard(
 		state,

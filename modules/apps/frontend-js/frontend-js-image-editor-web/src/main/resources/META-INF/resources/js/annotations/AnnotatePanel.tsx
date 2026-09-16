@@ -19,6 +19,7 @@ import {
 	ShapeTool,
 	isShapeTool,
 } from '../editorConfig';
+import {loadOverlayImage} from '../imaging/loadImage';
 import {
 	DEFAULT_ANNOTATION_COLOR,
 	overlayLabel,
@@ -136,6 +137,8 @@ export function AnnotatePanel({
 
 	const [textDialogOpen, setTextDialogOpen] = useState(false);
 
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
 	const panelRef = useRef<HTMLDivElement>(null);
 
 	const shapeTools = tools.filter(isShapeTool);
@@ -145,6 +148,7 @@ export function AnnotatePanel({
 		...(shapeTools.length ? ['shapes'] : []),
 		...(tools.includes('draw') ? ['draw'] : []),
 		...(tools.includes('redaction') ? ['redaction'] : []),
+		...(tools.includes('image') ? ['image'] : []),
 		...(tools.includes('emoji') ? ['emoji'] : []),
 	];
 
@@ -243,6 +247,39 @@ export function AnnotatePanel({
 			x: Math.round(centerX - area.width * 0.125),
 			y: Math.round(centerY - area.height * 0.075),
 		});
+
+	const addImage = async (file: File) => {
+		let picture;
+
+		try {
+			picture = await loadOverlayImage(file);
+		}
+		catch {
+			onAnnounce(
+				Liferay.Language.get('that-file-could-not-be-read-as-an-image')
+			);
+
+			return;
+		}
+
+		const width = Math.min(
+			Math.round(area.width / 3),
+			Math.round(((area.height / 3) * picture.width) / picture.height)
+		);
+
+		const height = Math.round((width * picture.height) / picture.width);
+
+		add({
+			description: file.name.replace(/\.[^.]+$/, ''),
+			height,
+			id: nextId('image'),
+			kind: 'image',
+			src: picture.src,
+			width,
+			x: Math.round(centerX - width / 2),
+			y: Math.round(centerY - height / 2),
+		});
+	};
 
 	const addEmoji = (character: string, name: string) =>
 		add({
@@ -423,6 +460,47 @@ export function AnnotatePanel({
 							label={Liferay.Language.get('redact')}
 						/>
 					</ClayButton>
+				)}
+
+				{tools.includes('image') && (
+					<>
+						<ClayButton
+							{...rovingProps(indexOf('image'))}
+							aria-label={Liferay.Language.get('add-image')}
+							className="editor-tool-tile"
+							displayType="secondary"
+							onClick={() => fileInputRef.current?.click()}
+						>
+							<ToolTile
+								icon="picture"
+								label={Liferay.Language.get('image')}
+							/>
+						</ClayButton>
+
+						{/*
+						 * Hidden rather than visually hidden: the button is
+						 * the control, and a reachable input next to it
+						 * would be the same action announced twice.
+						 */}
+						<input
+							accept="image/png,image/jpeg,image/webp,image/gif"
+							hidden
+							onChange={(event) => {
+								const file = event.target.files?.[0];
+
+								// Cleared before the await, so picking the
+								// same file again still fires a change.
+
+								event.target.value = '';
+
+								if (file) {
+									addImage(file);
+								}
+							}}
+							ref={fileInputRef}
+							type="file"
+						/>
+					</>
 				)}
 
 				{tools.includes('emoji') && (

@@ -11,6 +11,7 @@ import {
 	MAX_IMAGE_PIXELS,
 	disposeLoadedImage,
 	loadImage,
+	loadOverlayImage,
 } from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 
 function bitmapOf(width: number, height: number) {
@@ -101,5 +102,29 @@ describe('the preview URL ownership', () => {
 
 		createObjectURL.mockRestore();
 		revokeObjectURL.mockRestore();
+	});
+});
+
+describe('the overlay bitmap lifecycle', () => {
+	it('closes the bitmap even when the downsample throws', async () => {
+		const bitmap = bitmapOf(100, 80);
+
+		decoder.mockResolvedValue(bitmap);
+
+		const getContext = jest
+			.spyOn(HTMLCanvasElement.prototype, 'getContext')
+			.mockReturnValue({
+				drawImage: () => {
+					throw new Error('canvas refused');
+				},
+			} as any);
+
+		await expect(loadOverlayImage(new Blob(['x']))).rejects.toThrow(
+			'canvas refused'
+		);
+
+		expect(bitmap.close).toHaveBeenCalled();
+
+		getContext.mockRestore();
 	});
 });

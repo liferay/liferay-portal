@@ -5,7 +5,12 @@
 
 import {useEffect, useRef, useState} from 'react';
 
-export function useOverlaySelection(announce: (message: string) => void) {
+import {Overlay} from '../state/types';
+
+export function useOverlaySelection(
+	overlays: Overlay[],
+	announce: (message: string) => void
+) {
 	const [multiSelectedIds, setMultiSelectedIds] = useState<string[]>([]);
 
 	const [layerProportional, setLayerProportional] = useState(false);
@@ -62,8 +67,12 @@ export function useOverlaySelection(announce: (message: string) => void) {
 
 		previousSelectedIdRef.current = selectedOverlayId;
 
-		setLayerProportional(false);
-	}, [selectedOverlayId]);
+		const overlay = overlays.find(
+			(candidate) => candidate.id === selectedOverlayId
+		);
+
+		setLayerProportional(overlay?.kind === 'image');
+	}, [overlays, selectedOverlayId]);
 
 	return {
 		layerProportional,

@@ -184,10 +184,25 @@ interface HistoryEntry {
 	state: EditState;
 }
 
+export interface ImageOverlay {
+	description: string;
+
+	height: number;
+	id: string;
+	kind: 'image';
+	opacity?: number;
+	rotation?: number;
+	src: string;
+	width: number;
+	x: number;
+	y: number;
+}
+
 export type Overlay =
 	| ArrowOverlay
 	| CircleOverlay
 	| EmojiOverlay
+	| ImageOverlay
 	| RedactOverlay
 	| ShapeOverlay
 	| StrokeOverlay
@@ -271,9 +286,10 @@ export function rotatedSize(state: EditState): {
 
 export function isBoxOverlay(
 	overlay: Overlay
-): overlay is CircleOverlay | RedactOverlay | ShapeOverlay {
+): overlay is CircleOverlay | ImageOverlay | RedactOverlay | ShapeOverlay {
 	return (
 		overlay.kind === 'circle' ||
+		overlay.kind === 'image' ||
 		overlay.kind === 'redact' ||
 		overlay.kind === 'shape'
 	);

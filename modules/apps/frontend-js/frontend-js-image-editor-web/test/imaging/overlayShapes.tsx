@@ -20,6 +20,7 @@ import {
 import {
 	ArrowOverlay,
 	EmojiOverlay,
+	ImageOverlay,
 	Overlay,
 	RedactOverlay,
 	ShapeOverlay,
@@ -333,5 +334,53 @@ describe('an emoji annotation', () => {
 
 	it('mirrors by its point when the photograph flips', () => {
 		expect(mirrorOverlay(EMOJI_OVERLAY, 1000)).toMatchObject({x: 600});
+	});
+});
+
+const PICTURE: ImageOverlay = {
+	description: 'Team badge',
+	height: 40,
+	id: 'image-1',
+	kind: 'image',
+	src: 'data:image/png;base64,AAAA',
+	width: 80,
+	x: 100,
+	y: 50,
+};
+
+describe('an image annotation', () => {
+	it('is one more box, so it stretches and mirrors like the rest', () => {
+		expect(isBoxOverlay(PICTURE)).toBe(true);
+
+		expect(overlayBounds(PICTURE)).toEqual({
+			height: 40,
+			width: 80,
+			x: 100,
+			y: 50,
+		});
+
+		expect(mirrorOverlay(PICTURE, 1000)).toMatchObject({x: 820});
+	});
+
+	it('is named by its description, which is what is read out', () => {
+		expect(overlayLabel(PICTURE)).toBe('Team badge');
+	});
+
+	it('fills its box rather than letterboxing inside it', () => {
+		const svg = markup(PICTURE);
+
+		expect(svg).toContain('preserveAspectRatio="none"');
+		expect(svg).toContain('href="data:image/png;base64,AAAA"');
+	});
+
+	it('keeps a full size target when the picture is a small badge', () => {
+		const stamp = {...PICTURE, height: 6, width: 6};
+
+		expect(overlayHitBox(stamp, 24)).toEqual({
+			height: 24,
+			width: 24,
+			x: 91,
+			y: 41,
+		});
 	});
 });

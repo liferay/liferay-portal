@@ -95,7 +95,7 @@ function AnnotationHarness({
 		selectedOverlayId,
 		setLayerProportional,
 		toggleMultiSelect,
-	} = useOverlaySelection(() => {});
+	} = useOverlaySelection(history.present.overlays, () => {});
 
 	const [clipboard, setClipboard] = useState<Overlay | null>(null);
 

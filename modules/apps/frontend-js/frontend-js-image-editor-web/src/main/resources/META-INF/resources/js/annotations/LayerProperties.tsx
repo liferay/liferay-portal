@@ -108,6 +108,15 @@ export function LayerProperties({
 				/>
 			)}
 
+			{overlay.kind === 'image' && (
+				<TextField
+					id={eid('layer-prop-description')}
+					label={Liferay.Language.get('image-description')}
+					onCommit={(description) => commitPatch({description})}
+					value={overlay.description}
+				/>
+			)}
+
 			<div className="editor-panel-grid">
 				{overlay.kind === 'redact' && (
 					<ClayForm.Group small>
@@ -181,20 +190,22 @@ export function LayerProperties({
 					</ClayForm.Group>
 				)}
 
-				{overlay.kind !== 'redact' && overlay.kind !== 'emoji' && (
-					<ColorField
-						fill
-						id={eid('layer-prop-color')}
-						label={
-							overlay.kind === 'text'
-								? Liferay.Language.get('text-color')
-								: Liferay.Language.get('color')
-						}
-						onCommit={(color) => commitPatch({color})}
-						onPreview={(color) => previewPatch({color})}
-						value={overlay.color}
-					/>
-				)}
+				{overlay.kind !== 'redact' &&
+					overlay.kind !== 'emoji' &&
+					overlay.kind !== 'image' && (
+						<ColorField
+							fill
+							id={eid('layer-prop-color')}
+							label={
+								overlay.kind === 'text'
+									? Liferay.Language.get('text-color')
+									: Liferay.Language.get('color')
+							}
+							onCommit={(color) => commitPatch({color})}
+							onPreview={(color) => previewPatch({color})}
+							value={overlay.color}
+						/>
+					)}
 
 				<NumberField
 					id={eid('layer-prop-x')}

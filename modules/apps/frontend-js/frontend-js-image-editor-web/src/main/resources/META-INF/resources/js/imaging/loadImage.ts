@@ -9,6 +9,8 @@ export const MAX_IMAGE_BYTES = 25 * 1024 * 1024;
 
 export const MAX_IMAGE_PIXELS = 36_000_000;
 
+export const OVERLAY_IMAGE_MAX_SIZE = 1600;
+
 const PREVIEW_MAX_SIZE = 2048;
 
 /**
@@ -134,6 +136,42 @@ export async function loadImage(
 	finally {
 		bitmap.close();
 	}
+}
+
+/**
+ * Reads a picture the user picked for an image annotation. PNG out, so
+ * transparency survives, and a data URL rather than an object URL because
+ * the export SVG cannot fetch `blob:`.
+ */
+export async function loadOverlayImage(
+	blob: Blob
+): Promise<{height: number; src: string; width: number}> {
+	const bitmap = await decodeWithinLimits(blob);
+
+	const {height, width} = bitmap;
+
+	let src: string;
+
+	try {
+		const longestSide = Math.max(width, height);
+
+		const scale = Math.min(1, OVERLAY_IMAGE_MAX_SIZE / longestSide);
+
+		src = downsampleToDataURL(
+			bitmap,
+			Math.round(longestSide * scale),
+			'image/png'
+		);
+	}
+	finally {
+		bitmap.close();
+	}
+
+	if (!src) {
+		throw new Error('Could not read the picture');
+	}
+
+	return {height, src, width};
 }
 
 function downsampleToDataURL(

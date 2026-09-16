@@ -242,6 +242,26 @@ export function transformOverlay(overlay: Overlay, matrix: Matrix): Overlay {
 			};
 		}
 
+		case 'image': {
+			const [cx, cy] = applyToPoint(
+				matrix,
+				overlay.x + overlay.width / 2,
+				overlay.y + overlay.height / 2
+			);
+
+			const width = round(overlay.width * scale);
+			const height = round(overlay.height * scale);
+
+			return {
+				...overlay,
+				height,
+				rotation: foldRotation(overlay.rotation ?? 0, degrees),
+				width,
+				x: round(cx - width / 2),
+				y: round(cy - height / 2),
+			};
+		}
+
 		case 'stroke': {
 			const absolute: Array<[number, number]> = [];
 

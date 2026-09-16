@@ -15,6 +15,7 @@ export type AnnotateTool =
 	| 'circle'
 	| 'draw'
 	| 'emoji'
+	| 'image'
 	| 'rectangle'
 	| 'redaction'
 	| 'square'
@@ -41,6 +42,7 @@ export const ANNOTATE_TOOLS: AnnotateTool[] = [
 	...SHAPE_TOOLS,
 	'draw',
 	'redaction',
+	'image',
 	'emoji',
 ];
 

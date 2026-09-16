@@ -41,6 +41,16 @@ const EDITABLE_KEYS: {[K in Kind]: ReadonlySet<string>} = {
 		'x',
 		'y',
 	]),
+	image: new Set([
+		'description',
+		'height',
+		'opacity',
+		'rotation',
+		'src',
+		'width',
+		'x',
+		'y',
+	]),
 	redact: new Set([
 		'height',
 		'level',
@@ -78,8 +88,10 @@ const STRING_KEYS = new Set([
 	'borderColor',
 	'character',
 	'color',
+	'description',
 	'fontFamily',
 	'name',
+	'src',
 	'text',
 ]);
 
