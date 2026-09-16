@@ -133,6 +133,7 @@ public class StyleBookEntryZipProcessorImpl
 				styleBookEntry =
 					_styleBookEntryEntryService.updateStyleBookEntry(
 						styleBookEntry.getStyleBookEntryId(),
+						styleBookEntry.getFrontendTokenDefinition(),
 						frontendTokensValues, name, new ServiceContext());
 			}
 

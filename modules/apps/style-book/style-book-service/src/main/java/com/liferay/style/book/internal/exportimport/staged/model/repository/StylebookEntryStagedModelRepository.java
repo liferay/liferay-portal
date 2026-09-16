@@ -132,6 +132,7 @@ public class StylebookEntryStagedModelRepository
 			portletDataContext.getUserId(styleBookEntry.getUserUuid()),
 			styleBookEntry.getStyleBookEntryId(),
 			styleBookEntry.isDefaultStyleBookEntry(),
+			styleBookEntry.getFrontendTokenDefinition(),
 			styleBookEntry.getFrontendTokensValues(), styleBookEntry.getName(),
 			styleBookEntry.getStyleBookEntryKey(),
 			styleBookEntry.getPreviewFileEntryId(),

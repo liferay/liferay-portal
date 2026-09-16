@@ -383,6 +383,7 @@ public class StyleBookResourceImpl
 			_styleBookEntryService.updateStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(),
 				Boolean.TRUE.equals(styleBook.getDefaultStyleBook()),
+				styleBookEntry.getFrontendTokenDefinition(),
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(),
 				_getPreviewFileEntryId(
@@ -417,6 +418,7 @@ public class StyleBookResourceImpl
 			_styleBookEntryService.updateStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(),
 				styleBook.getDefaultStyleBook(),
+				styleBookEntry.getFrontendTokenDefinition(),
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(),
 				_getPreviewFileEntryId(
