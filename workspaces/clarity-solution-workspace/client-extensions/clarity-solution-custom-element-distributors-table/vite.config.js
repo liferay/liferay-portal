@@ -12,7 +12,7 @@ export default defineConfig({
 		rollupOptions: {
 			external: [
 				'/@clayui/*/',
-				'clarity-solution-js-import-maps-entry-distributor-details-service',
+				'clarity-solution-js-import-maps-entry-distributors',
 				'react',
 				'react-dom',
 			],
