@@ -1200,7 +1200,7 @@ describe('groups and the clipboard', () => {
 		expect(screen.getByText('selected-layer-x')).toBeInTheDocument();
 	});
 
-	it('deletes a whole group with one key and undoes it whole', () => {
+	it('deletes a whole group with one key and undoes it whole', async () => {
 		const {container} = render(<AnnotationHarness />);
 
 		addShape('rectangle');
@@ -1215,12 +1215,16 @@ describe('groups and the clipboard', () => {
 
 		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(0);
 
+		await waitFor(() =>
+			expect(container.querySelector('.editor-workspace')).toHaveFocus()
+		);
+
 		fireEvent.click(screen.getByRole('button', {name: 'undo'}));
 
 		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(2);
 	});
 
-	it('deletes a whole group from a layer row as well', () => {
+	it('deletes a whole group from a layer row as well', async () => {
 		const {container} = render(<AnnotationHarness />);
 
 		addShape('rectangle');
@@ -1235,6 +1239,10 @@ describe('groups and the clipboard', () => {
 
 		expect(container.querySelectorAll('.overlay-hit')).toHaveLength(0);
 		expect(screen.queryByText('layers')).toBeNull();
+
+		await waitFor(() =>
+			expect(container.querySelector('.editor-workspace')).toHaveFocus()
+		);
 	});
 
 	it('copies the focused annotation and pastes it into the workspace', () => {
@@ -1284,6 +1292,12 @@ describe('drawing', () => {
 		});
 
 		await waitFor(() => expect(surface).toHaveFocus());
+
+		await waitFor(() =>
+			expect(
+				surface.parentElement?.querySelector('.focus-ring-outer')
+			).toBeInTheDocument()
+		);
 
 		return surface;
 	};
@@ -1371,6 +1385,7 @@ describe('drawing', () => {
 		).toBeNull();
 		expect(stroke(container)).toBeNull();
 		expect(announce).toHaveBeenLastCalledWith('drawing-canceled');
+		expect(container.querySelector('.editor-workspace')).toHaveFocus();
 	});
 
 	it('places pen points with clicks and finishes on the last one', async () => {

@@ -15,6 +15,7 @@ import {
 } from '../imaging/strokeGeometry';
 import {nextId} from '../state/ids';
 import {CropRect, StrokeOverlay} from '../state/types';
+import {FocusRing} from './FocusRing';
 
 const CAPTURE_SPACING = 3;
 
@@ -129,6 +130,8 @@ export function DrawSurface({
 
 	const [points, setPoints] = useState<number[]>([]);
 
+	const [focused, setFocused] = useState(false);
+
 	const [cursor, setCursor] = useState({
 		x: Math.round(area.x + area.width / 2),
 		y: Math.round(area.y + area.height / 2),
@@ -211,6 +214,8 @@ export function DrawSurface({
 		);
 
 	const cancel = () => {
+		surfaceRef.current?.closest<HTMLElement>('.editor-workspace')?.focus();
+
 		onFinish(null);
 
 		onAnnounce(Liferay.Language.get('drawing-canceled'));
@@ -554,6 +559,8 @@ export function DrawSurface({
 				aria-label={Liferay.Language.get('drawing-area')}
 				fill="transparent"
 				height={area.height}
+				onBlur={() => setFocused(false)}
+				onFocus={() => setFocused(true)}
 				onKeyDown={handleKeyDown}
 				onPointerCancel={handlePointerCancel}
 				onPointerDown={handlePointerDown}
@@ -567,6 +574,8 @@ export function DrawSurface({
 				x={area.x}
 				y={area.y}
 			/>
+
+			{focused && <FocusRing bounds={area} zoom={zoom} />}
 
 			{Boolean(preview) && (
 				<path
