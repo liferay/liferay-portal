@@ -65,7 +65,7 @@ public class SegmentsEntryModelPreFilterContributor
 			booleanFilter.add(sourceTermsFilter, BooleanClauseOccur.MUST_NOT);
 		}
 
-		String[] excludedTypes = (String[])params.get("excludedTypes");
+		int[] excludedTypes = (int[])params.get("excludedTypes");
 
 		if (ArrayUtil.isNotEmpty(excludedTypes)) {
 			TermsFilter typeTermsFilter = new TermsFilter("type");

@@ -25,12 +25,12 @@ public class SegmentsEntryTypeUpgradeProcess extends UpgradeProcess {
 		_updateType(SegmentsEntryConstants.TYPE_DEFAULT, "");
 	}
 
-	private void _updateType(String type, String whereClause) throws Exception {
+	private void _updateType(int type, String whereClause) throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"update SegmentsEntry set type_ = ? where type_ is null" +
 					whereClause)) {
 
-			preparedStatement.setString(1, type);
+			preparedStatement.setInt(1, type);
 
 			preparedStatement.executeUpdate();
 		}

@@ -146,8 +146,7 @@ public class SegmentsServiceUpgradeStepRegistrator
 
 		registry.register(
 			"4.1.1", "4.2.0",
-			UpgradeProcessFactory.addColumns(
-				"SegmentsEntry", "type_ VARCHAR(75) null"));
+			UpgradeProcessFactory.addColumns("SegmentsEntry", "type_ INTEGER"));
 
 		registry.register(
 			"4.2.0", "4.2.1", new SegmentsEntryTypeUpgradeProcess());

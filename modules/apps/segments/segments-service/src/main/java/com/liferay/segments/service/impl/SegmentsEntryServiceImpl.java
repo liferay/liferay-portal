@@ -55,7 +55,8 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 
 		return segmentsEntryLocalService.addSegmentsEntry(
 			externalReferenceCode, segmentsEntryKey, nameMap, descriptionMap,
-			active, criteria, source, serviceContext);
+			active, criteria, source, SegmentsEntryConstants.TYPE_DEFAULT,
+			serviceContext);
 	}
 
 	@Override
@@ -130,23 +131,12 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 
 	@Override
 	public List<SegmentsEntry> getSegmentsEntries(
-		long groupId, String[] sources, int start, int end,
-		OrderByComparator<SegmentsEntry> orderByComparator) {
-
-		return segmentsEntryPersistence.findByG_SRC_NotT(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
-			SegmentsEntryConstants.TYPE_REAL_TIME, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<SegmentsEntry> getSegmentsEntries(
-		long groupId, String[] sources, String type, int start, int end,
+		long groupId, String[] sources, int[] types, int start, int end,
 		OrderByComparator<SegmentsEntry> orderByComparator) {
 
 		return segmentsEntryPersistence.findByG_SRC_T(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
-			new String[] {type}, start, end, orderByComparator);
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources, types,
+			start, end, orderByComparator);
 	}
 
 	@Override
@@ -156,19 +146,11 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 	}
 
 	@Override
-	public int getSegmentsEntriesCount(long groupId, String[] sources) {
-		return segmentsEntryPersistence.filterCountByG_SRC_NotT(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
-			SegmentsEntryConstants.TYPE_REAL_TIME);
-	}
-
-	@Override
 	public int getSegmentsEntriesCount(
-		long groupId, String[] sources, String type) {
+		long groupId, String[] sources, int[] types) {
 
 		return segmentsEntryPersistence.filterCountByG_SRC_T(
-			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources,
-			new String[] {type});
+			_portal.getCurrentAndAncestorSiteGroupIds(groupId), sources, types);
 	}
 
 	@Override
@@ -223,9 +205,13 @@ public class SegmentsEntryServiceImpl extends SegmentsEntryServiceBaseImpl {
 		_segmentsEntryResourcePermission.check(
 			getPermissionChecker(), segmentsEntryId, ActionKeys.UPDATE);
 
+		SegmentsEntry segmentsEntry = segmentsEntryPersistence.findByPrimaryKey(
+			segmentsEntryId);
+
 		return segmentsEntryLocalService.updateSegmentsEntry(
 			externalReferenceCode, segmentsEntryId, segmentsEntryKey, nameMap,
-			descriptionMap, active, criteria, serviceContext);
+			descriptionMap, active, criteria, segmentsEntry.getType(),
+			serviceContext);
 	}
 
 	@Reference
