@@ -44,6 +44,22 @@ describe('PerformanceService', () => {
 		);
 	});
 
+	it('repeats cmpProjectIds as separate query parameters', async () => {
+		const get = jest
+			.spyOn(ApiHelper, 'get')
+			.mockResolvedValue({data: null, error: null});
+
+		await PerformanceService.getOverviewMetrics({
+			cmpProjectIds: ['10', '20'],
+			depotEntryIds: ['1'],
+			rangeKey: RangeSelectors.Last7Days,
+		});
+
+		expect(get).toHaveBeenCalledWith(
+			'/o/analytics-cms-rest/v1.0/performance-overview-metric?cmpProjectIds=10&cmpProjectIds=20&depotEntryIds=1&rangeKey=7'
+		);
+	});
+
 	it('builds the metric export URL', () => {
 		expect(
 			PerformanceService.getMetricExportURL({
@@ -64,6 +80,17 @@ describe('PerformanceService', () => {
 			})
 		).toBe(
 			'/o/analytics-cms-rest/v1.0/performance-top-asset/export?rangeKey=7&sort=engagementMetric%3Adesc'
+		);
+	});
+
+	it('builds the top assets export URL with the selected project', () => {
+		expect(
+			PerformanceService.getTopAssetsExportURL({
+				cmpProjectIds: ['10'],
+				rangeKey: RangeSelectors.Last7Days,
+			})
+		).toBe(
+			'/o/analytics-cms-rest/v1.0/performance-top-asset/export?cmpProjectIds=10&rangeKey=7'
 		);
 	});
 });
