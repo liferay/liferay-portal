@@ -1720,6 +1720,42 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
 	@Test
+	public void testExportImportNotificationTemplatesWithDifferentExistingCreator()
+		throws Exception {
+
+		User user1 = UserTestUtil.addUser();
+
+		_users.add(user1);
+
+		NotificationTemplate notificationTemplate = _addNotificationTemplate(
+			user1.getUserId());
+
+		File larFile = _exportNotificationTemplates();
+
+		_notificationTemplateLocalService.deleteNotificationTemplate(
+			notificationTemplate);
+
+		User user2 = UserTestUtil.addUser();
+
+		_users.add(user2);
+
+		_registerNotificationTemplate(
+			_notificationTemplateLocalService.addNotificationTemplate(
+				notificationTemplate.getExternalReferenceCode(),
+				user2.getUserId(), NotificationConstants.TYPE_EMAIL));
+
+		_importNotificationTemplates(larFile, UserIdStrategy.CURRENT_USER_ID);
+
+		NotificationTemplate importedNotificationTemplate =
+			_getNotificationTemplate(
+				notificationTemplate.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			user2.getUserId(), importedNotificationTemplate.getUserId());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
+	@Test
 	public void testExportImportNotificationTemplatesWithExistingOriginalCreator()
 		throws Exception {
 

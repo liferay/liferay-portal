@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -648,6 +649,29 @@ public class NotificationTemplateResourceTest
 		Assert.assertEquals(
 			user.getExternalReferenceCode(),
 			creator.getExternalReferenceCode());
+
+		user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		com.liferay.notification.model.NotificationTemplate
+			serviceBuilderNotificationTemplate =
+				_notificationTemplateLocalService.addNotificationTemplate(
+					RandomTestUtil.randomString(), user.getUserId(),
+					NotificationConstants.TYPE_EMAIL);
+
+		_notificationTemplates.add(serviceBuilderNotificationTemplate);
+
+		notificationTemplate =
+			notificationTemplateResource.getNotificationTemplate(
+				serviceBuilderNotificationTemplate.
+					getNotificationTemplateId());
+
+		creator = notificationTemplate.getCreator();
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			creator.getExternalReferenceCode());
 	}
 
 	private void _testPostNotificationTemplateNameWithoutDefaultLanguage()
@@ -787,5 +811,8 @@ public class NotificationTemplateResourceTest
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
+
+	@DeleteAfterTestRun
+	private List<User> _users = new ArrayList<>();
 
 }
