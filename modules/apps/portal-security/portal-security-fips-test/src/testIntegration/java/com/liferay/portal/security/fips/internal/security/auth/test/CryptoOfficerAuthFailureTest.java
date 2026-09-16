@@ -24,7 +24,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.security.fips.test.util.FIPSAuditTestUtil;
+import com.liferay.portal.security.fips.test.util.FIPSTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -82,7 +82,12 @@ public class CryptoOfficerAuthFailureTest {
 
 			User user = _addCryptoOfficerUser();
 
-			_assertFailureByScreenName(user);
+			Assert.assertEquals(
+				Authenticator.FAILURE,
+				_userLocalService.authenticateByScreenName(
+					_company.getCompanyId(), user.getScreenName(),
+					RandomTestUtil.randomString(), Collections.emptyMap(),
+					Collections.emptyMap(), null));
 
 			List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(
 				user);
@@ -101,7 +106,12 @@ public class CryptoOfficerAuthFailureTest {
 
 			User user = _addCryptoOfficerUser();
 
-			_assertFailureByUserId(user);
+			Assert.assertEquals(
+				Authenticator.FAILURE,
+				_userLocalService.authenticateByUserId(
+					_company.getCompanyId(), user.getUserId(),
+					RandomTestUtil.randomString(), Collections.emptyMap(),
+					Collections.emptyMap(), null));
 
 			List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(
 				user);
@@ -139,31 +149,13 @@ public class CryptoOfficerAuthFailureTest {
 				Collections.emptyMap(), null));
 	}
 
-	private void _assertFailureByScreenName(User user) throws Exception {
-		Assert.assertEquals(
-			Authenticator.FAILURE,
-			_userLocalService.authenticateByScreenName(
-				_company.getCompanyId(), user.getScreenName(),
-				RandomTestUtil.randomString(), Collections.emptyMap(),
-				Collections.emptyMap(), null));
-	}
-
-	private void _assertFailureByUserId(User user) throws Exception {
-		Assert.assertEquals(
-			Authenticator.FAILURE,
-			_userLocalService.authenticateByUserId(
-				_company.getCompanyId(), user.getUserId(),
-				RandomTestUtil.randomString(), Collections.emptyMap(),
-				Collections.emptyMap(), null));
-	}
-
 	private List<JSONObject> _getAuthAttemptFailureJSONObjects(User user)
 		throws Exception {
 
 		String userId = String.valueOf(user.getUserId());
 
 		return ListUtil.filter(
-			FIPSAuditTestUtil.getJSONObjects(),
+			FIPSTestUtil.getAuditLogJSONObjects(),
 			jsonObject -> {
 				if (!Objects.equals(
 						jsonObject.getString("event-type"),
@@ -239,7 +231,7 @@ public class CryptoOfficerAuthFailureTest {
 
 		List<JSONObject> jsonObjects = _getAuthAttemptFailureJSONObjects(user);
 
-		Assert.assertTrue(jsonObjects.toString(), jsonObjects.isEmpty());
+		Assert.assertTrue(jsonObjects.isEmpty());
 	}
 
 	private Company _company;

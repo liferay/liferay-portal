@@ -20,7 +20,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.security.fips.test.util.FIPSAuditTestUtil;
+import com.liferay.portal.security.fips.test.util.FIPSTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.nio.charset.StandardCharsets;
@@ -85,7 +85,7 @@ public class FIPSAuditUtilTest {
 
 		FIPSAuditUtil.write(fipsAuditEvent);
 
-		List<JSONObject> jsonObjects = FIPSAuditTestUtil.getJSONObjects();
+		List<JSONObject> jsonObjects = FIPSTestUtil.getAuditLogJSONObjects();
 
 		JSONObject jsonObject = _getJSONObject(eventType, jsonObjects);
 
@@ -151,7 +151,7 @@ public class FIPSAuditUtilTest {
 			IllegalArgumentException.class,
 			() -> FIPSAuditUtil.write(fipsAuditEvent));
 
-		for (JSONObject jsonObject : FIPSAuditTestUtil.getJSONObjects()) {
+		for (JSONObject jsonObject : FIPSTestUtil.getAuditLogJSONObjects()) {
 			Assert.assertNotEquals(
 				eventType, jsonObject.getString("event-type"));
 		}
@@ -280,7 +280,7 @@ public class FIPSAuditUtilTest {
 			new FIPSAuditEvent(
 				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
 
-		Path path = FIPSAuditTestUtil.getLogPath();
+		Path path = FIPSTestUtil.getAuditLogPath();
 
 		FileSystem fileSystem = path.getFileSystem();
 
@@ -356,7 +356,7 @@ public class FIPSAuditUtilTest {
 	}
 
 	private JSONObject _getJSONObject(String eventType) throws Exception {
-		return _getJSONObject(eventType, FIPSAuditTestUtil.getJSONObjects());
+		return _getJSONObject(eventType, FIPSTestUtil.getAuditLogJSONObjects());
 	}
 
 	private JSONObject _getJSONObject(
@@ -374,7 +374,7 @@ public class FIPSAuditUtilTest {
 	}
 
 	private long _getLastEventSequence() throws Exception {
-		List<JSONObject> jsonObjects = FIPSAuditTestUtil.getJSONObjects();
+		List<JSONObject> jsonObjects = FIPSTestUtil.getAuditLogJSONObjects();
 
 		JSONObject jsonObject = jsonObjects.get(jsonObjects.size() - 1);
 

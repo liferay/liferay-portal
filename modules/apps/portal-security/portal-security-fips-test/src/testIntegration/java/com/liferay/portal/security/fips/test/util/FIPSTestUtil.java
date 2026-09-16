@@ -23,15 +23,15 @@ import java.util.List;
 /**
  * @author Jorge García Jiménez
  */
-public class FIPSAuditTestUtil {
+public class FIPSTestUtil {
 
-	public static List<JSONObject> getJSONObjects() throws Exception {
+	public static List<JSONObject> getAuditLogJSONObjects() throws Exception {
 		return TransformUtil.unsafeTransform(
-			Files.readAllLines(getLogPath()),
+			Files.readAllLines(getAuditLogPath()),
 			JSONFactoryUtil::createJSONObject);
 	}
 
-	public static Path getLogPath() {
+	public static Path getAuditLogPath() {
 		LocalDate localDate = LocalDate.now(ZoneOffset.UTC);
 
 		return Paths.get(
