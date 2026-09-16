@@ -97,6 +97,7 @@ import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectEntryServiceWrapper;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -125,6 +126,7 @@ import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.WorkflowableComment;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -145,6 +147,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
@@ -163,6 +166,7 @@ import com.liferay.portal.kernel.service.OrganizationLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -8343,6 +8347,89 @@ public class ObjectEntryResourceTest {
 				Http.Method.GET
 			).toString(),
 			JSONCompareMode.LENIENT);
+	}
+
+	@Test
+	public void testGetObjectEntryWithExcludedNestedFields() throws Exception {
+		_objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			_objectDefinition1, _OBJECT_FIELD_NAME_1, _OBJECT_FIELD_VALUE_1);
+		_objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			_objectDefinition2, _OBJECT_FIELD_NAME_TEXT,
+			RandomTestUtil.randomString());
+		_objectRelationship1 = _addObjectRelationshipAndRelateObjectEntries(
+			ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		AtomicInteger atomicInteger = new AtomicInteger();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ServiceWrapper.class,
+				new ObjectEntryServiceWrapper(_objectEntryService) {
+
+					@Override
+					public List<ObjectEntry> getManyToManyObjectEntries(
+							long groupId, long objectRelationshipId,
+							long primaryKey, boolean related, boolean reverse,
+							String search, int start, int end)
+						throws PortalException {
+
+						atomicInteger.incrementAndGet();
+
+						return super.getManyToManyObjectEntries(
+							groupId, objectRelationshipId, primaryKey, related,
+							reverse, search, start, end);
+					}
+
+				},
+				HashMapDictionaryBuilder.<String, Object>put(
+					"service.ranking", Integer.MAX_VALUE
+				).put(
+					"service.wrapper.class", ObjectEntryService.class.getName()
+				).build());
+
+		try {
+			String endpoint = _getEndpoint(
+				_objectEntry1.getObjectEntryId(), _objectRelationship1,
+				_objectDefinition1);
+
+			// Nested field excluded by fields
+
+			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null, endpoint + "&fields=" + _OBJECT_FIELD_NAME_1,
+				Http.Method.GET);
+
+			Assert.assertFalse(jsonObject.has(_objectRelationship1.getName()));
+
+			Assert.assertEquals(0, atomicInteger.get());
+
+			// Nested field excluded by restrictFields
+
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null,
+				endpoint + "&restrictFields=" + _objectRelationship1.getName(),
+				Http.Method.GET);
+
+			Assert.assertFalse(jsonObject.has(_objectRelationship1.getName()));
+
+			Assert.assertEquals(0, atomicInteger.get());
+
+			// Nested field included
+
+			jsonObject = HTTPTestUtil.invokeToJSONObject(
+				null, endpoint, Http.Method.GET);
+
+			JSONArray jsonArray = jsonObject.getJSONArray(
+				_objectRelationship1.getName());
+
+			Assert.assertEquals(1, jsonArray.length());
+
+			Assert.assertEquals(1, atomicInteger.get());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
 	}
 
 	@Test

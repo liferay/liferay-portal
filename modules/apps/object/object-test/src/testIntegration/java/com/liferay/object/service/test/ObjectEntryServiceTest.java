@@ -34,9 +34,11 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.object.service.ObjectEntryServiceWrapper;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
 import com.liferay.object.tree.Edge;
 import com.liferay.object.tree.Node;
@@ -46,6 +48,8 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -56,6 +60,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -66,6 +71,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
@@ -86,6 +92,7 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
@@ -106,6 +113,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -116,6 +124,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Marco Leo
@@ -656,6 +667,14 @@ public class ObjectEntryServiceTest {
 				"User ", _user.getUserId(), " must have DELETE permission for ",
 				_rootObjectDefinition.getClassName(), " ", rootObjectEntryId),
 			() -> _objectEntryService.deleteObjectEntry(rootObjectEntryId));
+	}
+
+	@Test
+	public void testGetManyToManyObjectEntries() throws Exception {
+		_testGetManyToManyObjectEntries(false, false);
+		_testGetManyToManyObjectEntries(false, true);
+		_testGetManyToManyObjectEntries(true, false);
+		_testGetManyToManyObjectEntries(true, true);
 	}
 
 	@Test
@@ -1574,6 +1593,140 @@ public class ObjectEntryServiceTest {
 
 			_objectEntryService.deleteObjectEntry(
 				objectEntry.getObjectEntryId());
+		}
+	}
+
+	private void _testGetManyToManyObjectEntries(
+			boolean hasPermission, boolean sqlCheckEnabled)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition.getObjectDefinitionId(),
+				_objectDefinition.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				"relationship", false,
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY, null);
+
+		ObjectEntry objectEntry = _addObjectEntry(_adminUser);
+		ObjectEntry relatedObjectEntry1 = _addObjectEntry(_adminUser);
+		ObjectEntry relatedObjectEntry2 = _addObjectEntry(_adminUser);
+
+		ObjectRelationshipTestUtil.relateObjectEntries(
+			objectEntry.getObjectEntryId(),
+			relatedObjectEntry1.getObjectEntryId(), objectRelationship,
+			TestPropsValues.getUserId());
+		ObjectRelationshipTestUtil.relateObjectEntries(
+			objectEntry.getObjectEntryId(),
+			relatedObjectEntry2.getObjectEntryId(), objectRelationship,
+			TestPropsValues.getUserId());
+
+		_setResourcePermissions(
+			_objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(relatedObjectEntry1.getObjectEntryId()),
+			RoleConstants.USER, new String[] {ActionKeys.VIEW});
+
+		if (hasPermission) {
+			_setResourcePermissions(
+				_objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(relatedObjectEntry2.getObjectEntryId()),
+				RoleConstants.USER, new String[] {ActionKeys.VIEW});
+		}
+
+		AtomicInteger atomicInteger = new AtomicInteger();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ServiceWrapper.class,
+				new ObjectEntryServiceWrapper(_objectEntryService) {
+
+					@Override
+					public void checkModelResourcePermission(
+							long objectDefinitionId, long objectEntryId,
+							String actionId)
+						throws PortalException {
+
+						atomicInteger.incrementAndGet();
+
+						super.checkModelResourcePermission(
+							objectDefinitionId, objectEntryId, actionId);
+					}
+
+				},
+				HashMapDictionaryBuilder.<String, Object>put(
+					"service.ranking", Integer.MAX_VALUE
+				).put(
+					"service.wrapper.class", ObjectEntryService.class.getName()
+				).build());
+
+		try {
+			_setUser(_user);
+
+			try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+					new ConfigurationTemporarySwapper(
+						"com.liferay.portal.security.permission.internal." +
+							"configuration.InlinePermissionConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"sqlCheckEnabled", sqlCheckEnabled
+						).build())) {
+
+				if (hasPermission) {
+					Assert.assertEquals(
+						SetUtil.fromArray(
+							relatedObjectEntry1, relatedObjectEntry2),
+						SetUtil.fromList(
+							_objectEntryService.getManyToManyObjectEntries(
+								_group.getGroupId(),
+								objectRelationship.getObjectRelationshipId(),
+								objectEntry.getObjectEntryId(), true, false,
+								null, QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+				}
+				else if (sqlCheckEnabled) {
+					Assert.assertEquals(
+						SetUtil.fromArray(relatedObjectEntry1),
+						SetUtil.fromList(
+							_objectEntryService.getManyToManyObjectEntries(
+								_group.getGroupId(),
+								objectRelationship.getObjectRelationshipId(),
+								objectEntry.getObjectEntryId(), true, false,
+								null, QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+				}
+				else {
+					AssertUtils.assertFailure(
+						PrincipalException.MustHavePermission.class,
+						StringBundler.concat(
+							"User ", _user.getUserId(),
+							" must have VIEW permission for ",
+							_objectDefinition.getClassName(), " ",
+							relatedObjectEntry2.getObjectEntryId()),
+						() -> _objectEntryService.getManyToManyObjectEntries(
+							_group.getGroupId(),
+							objectRelationship.getObjectRelationshipId(),
+							objectEntry.getObjectEntryId(), true, false, null,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS));
+				}
+
+				if (sqlCheckEnabled) {
+					Assert.assertEquals(0, atomicInteger.get());
+				}
+				else {
+					Assert.assertEquals(2, atomicInteger.get());
+				}
+			}
+		}
+		finally {
+			serviceRegistration.unregister();
+
+			_setUser(_adminUser);
+
+			_objectRelationshipLocalService.deleteObjectRelationship(
+				objectRelationship);
 		}
 	}
 
