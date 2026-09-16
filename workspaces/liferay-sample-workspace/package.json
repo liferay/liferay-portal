@@ -18,6 +18,13 @@
 			"client-extensions/liferay-sample-custom-element-3",
 			"client-extensions/liferay-sample-custom-element-4",
 			"client-extensions/liferay-sample-custom-element-5",
+			"client-extensions/liferay-sample-custom-element-6",
+			"client-extensions/liferay-sample-custom-element-7",
+			"client-extensions/liferay-sample-editor-config-contributor-1",
+			"client-extensions/liferay-sample-editor-config-contributor-2",
+			"client-extensions/liferay-sample-editor-config-contributor-3",
+			"client-extensions/liferay-sample-editor-config-contributor-4",
+			"client-extensions/liferay-sample-editor-config-contributor-5",
 			"client-extensions/liferay-sample-etc-frontend",
 			"client-extensions/liferay-sample-etc-node",
 			"client-extensions/liferay-sample-fds-cell-renderer",
@@ -27,13 +34,6 @@
 			"client-extensions/liferay-sample-theme-css-2",
 			"client-extensions/liferay-sample-theme-css-3",
 			"client-extensions/liferay-sample-theme-spritemap-2",
-			"client-extensions/liferay-sample-custom-element-6",
-			"client-extensions/liferay-sample-editor-config-contributor-1",
-			"client-extensions/liferay-sample-editor-config-contributor-2",
-			"client-extensions/liferay-sample-custom-element-7",
-			"client-extensions/liferay-sample-editor-config-contributor-3",
-			"client-extensions/liferay-sample-editor-config-contributor-4",
-			"client-extensions/liferay-sample-editor-config-contributor-5",
 			"client-extensions/liferay-sample-editor-config-contributor-6"
 		]
 	}
