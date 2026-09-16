@@ -13,8 +13,6 @@ import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
-import java.security.Permission;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +32,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
@@ -47,20 +46,6 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@BeforeClass
 	public static void setUpClass() {
-		System.setSecurityManager(
-			new SecurityManager() {
-
-				@Override
-				public void checkExit(int status) {
-					throw new SecurityException();
-				}
-
-				@Override
-				public void checkPermission(Permission permission) {
-				}
-
-			});
-
 		_logManagerMockedStatic.when(
 			() -> LogManager.getLogger(FIPSLog4jUtil.class)
 		).thenReturn(
@@ -70,8 +55,6 @@ public class FIPSApplicationStateMachineUtilTest {
 
 	@AfterClass
 	public static void tearDownClass() {
-		System.setSecurityManager(null);
-
 		_logManagerMockedStatic.close();
 	}
 
@@ -160,7 +143,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		String providerErrorMessage = RandomTestUtil.randomString();
 
-		Assert.assertThrows(
+		_assertThrowsAndExits(
 			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.keyCSPEntry(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -299,7 +282,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		String providerErrorMessage = RandomTestUtil.randomString();
 
-		Assert.assertThrows(
+		_assertThrowsAndExits(
 			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.preOperationalSelfTest(
 				() -> {
@@ -502,7 +485,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		SecurityException securityException2 = new SecurityException();
 
-		Assert.assertThrows(
+		_assertThrowsAndExits(
 			SecurityException.class,
 			() -> FIPSApplicationStateMachineUtil.selfTest(
 				() -> {
@@ -523,18 +506,32 @@ public class FIPSApplicationStateMachineUtilTest {
 		Throwable[] suppressedThrowables2 = securityException2.getSuppressed();
 
 		Assert.assertEquals(
-			ArrayUtil.toString(suppressedThrowables2, ""), 2,
+			ArrayUtil.toString(suppressedThrowables2, ""), 1,
 			suppressedThrowables2.length);
 		Assert.assertSame(
 			RuntimeException.class, suppressedThrowables2[0].getClass());
-		Assert.assertSame(
-			SecurityException.class, suppressedThrowables2[1].getClass());
 	}
 
 	private void _assertEnvelope(
 		Map<String, Object> fipsAuditLogEntry, String key, String value) {
 
 		Assert.assertEquals(value, fipsAuditLogEntry.get(key));
+	}
+
+	private void _assertExits(Runnable runnable) {
+		try (MockedStatic<Runtime> runtimeMockedStatic = Mockito.mockStatic(
+				Runtime.class)) {
+
+			Runtime runtime = _mockRuntime(runtimeMockedStatic);
+
+			runnable.run();
+
+			Mockito.verify(
+				runtime
+			).exit(
+				1
+			);
+		}
 	}
 
 	private void _assertField(
@@ -561,17 +558,30 @@ public class FIPSApplicationStateMachineUtilTest {
 		Assert.assertTrue(_fipsAuditLogEntries.isEmpty());
 	}
 
+	private void _assertThrowsAndExits(
+		Class<? extends Throwable> throwableClass,
+		ThrowingRunnable throwingRunnable) {
+
+		try (MockedStatic<Runtime> runtimeMockedStatic = Mockito.mockStatic(
+				Runtime.class)) {
+
+			Runtime runtime = _mockRuntime(runtimeMockedStatic);
+
+			Assert.assertThrows(throwableClass, throwingRunnable);
+
+			Mockito.verify(
+				runtime
+			).exit(
+				1
+			);
+		}
+	}
+
 	private Thread _getShutdownHookThread() {
 		try (MockedStatic<Runtime> runtimeMockedStatic = Mockito.mockStatic(
 				Runtime.class)) {
 
-			Runtime runtime = Mockito.mock(Runtime.class);
-
-			runtimeMockedStatic.when(
-				Runtime::getRuntime
-			).thenReturn(
-				runtime
-			);
+			Runtime runtime = _mockRuntime(runtimeMockedStatic);
 
 			ReflectionTestUtil.invoke(
 				FIPSApplicationStateMachineUtil.class, "_registerShutdownHook",
@@ -588,6 +598,18 @@ public class FIPSApplicationStateMachineUtilTest {
 
 			return argumentCaptor.getValue();
 		}
+	}
+
+	private Runtime _mockRuntime(MockedStatic<Runtime> runtimeMockedStatic) {
+		Runtime runtime = Mockito.mock(Runtime.class);
+
+		runtimeMockedStatic.when(
+			Runtime::getRuntime
+		).thenReturn(
+			runtime
+		);
+
+		return runtime;
 	}
 
 	private void _setFIPSApplicationState(
@@ -612,8 +634,7 @@ public class FIPSApplicationStateMachineUtilTest {
 		String failedStep = RandomTestUtil.randomString();
 		String providerErrorMessage = RandomTestUtil.randomString();
 
-		Assert.assertThrows(
-			SecurityException.class,
+		_assertExits(
 			() -> FIPSApplicationStateMachineUtil.error(
 				failedStep, new SecurityException(providerErrorMessage)));
 
@@ -675,8 +696,8 @@ public class FIPSApplicationStateMachineUtilTest {
 	private void _testErrorWithLoggingFailure() {
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
-		Assert.assertThrows(
-			SecurityException.class,
+		_assertThrowsAndExits(
+			RuntimeException.class,
 			() -> FIPSApplicationStateMachineUtil.error(
 				RandomTestUtil.randomString(),
 				new SecurityException(RandomTestUtil.randomString())));
@@ -856,7 +877,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
 
-		Assert.assertThrows(
+		_assertThrowsAndExits(
 			runtimeException.getClass(),
 			() -> FIPSApplicationStateMachineUtil.selfTest(
 				() -> {
