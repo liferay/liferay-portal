@@ -143,7 +143,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			_updateExportClassTypeIds(companyId, portletPreferences);
 			exportImportPortletPreferencesProcessorHelper.
 				updateExportPortletPreferencesClassPKs(
-					companyId, portletPreferences, "assetVocabularyId",
+					portletPreferences, "assetVocabularyId",
 					AssetVocabulary.class.getName(),
 					primaryKey -> _getExportReferenceValue(
 						companyId, AssetVocabulary.class.getName(),
@@ -212,7 +212,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			_updateImportClassTypeIds(companyId, portletPreferences);
 			exportImportPortletPreferencesProcessorHelper.
 				updateImportPortletPreferencesClassPKs(
-					companyId, portletPreferences, "assetVocabularyId",
+					portletPreferences, "assetVocabularyId",
 					portletPreferencesOldValue -> _getImportReferenceValue(
 						companyId, AssetVocabulary.class.getName(),
 						portletPreferencesOldValue));
@@ -1055,8 +1055,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 			exportImportPortletPreferencesProcessorHelper.
 				updateExportPortletPreferencesClassPKs(
-					companyId, portletPreferences,
-					"queryValues" + name.substring(9),
+					portletPreferences, "queryValues" + name.substring(9),
 					AssetCategory.class.getName(),
 					primaryKey -> _getExportReferenceValue(
 						companyId, AssetCategory.class.getName(),
@@ -1113,7 +1112,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		exportImportPortletPreferencesProcessorHelper.
 			updateExportPortletPreferencesClassPKs(
-				companyId, portletPreferences,
+				portletPreferences,
 				"classTypeIdsJournalArticleAssetRendererFactory",
 				DDMStructure.class.getName(),
 				primaryKey -> _getExportReferenceValue(
@@ -1130,7 +1129,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 			exportImportPortletPreferencesProcessorHelper.
 				updateExportPortletPreferencesClassPKs(
-					companyId, portletPreferences, "classTypeIds",
+					portletPreferences, "classTypeIds",
 					DDMStructure.class.getName(),
 					primaryKey -> _getExportReferenceValue(
 						companyId, DDMStructure.class.getName(),
@@ -1476,8 +1475,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 			exportImportPortletPreferencesProcessorHelper.
 				updateImportPortletPreferencesClassPKs(
-					companyId, portletPreferences,
-					"queryValues" + name.substring(9),
+					portletPreferences, "queryValues" + name.substring(9),
 					portletPreferencesOldValue -> _getImportReferenceValue(
 						companyId, AssetCategory.class.getName(),
 						portletPreferencesOldValue));
@@ -1530,7 +1528,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		exportImportPortletPreferencesProcessorHelper.
 			updateImportPortletPreferencesClassPKs(
-				companyId, portletPreferences,
+				portletPreferences,
 				"classTypeIdsJournalArticleAssetRendererFactory",
 				portletPreferencesOldValue -> _getImportReferenceValue(
 					companyId, DDMStructure.class.getName(),
@@ -1538,7 +1536,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		exportImportPortletPreferencesProcessorHelper.
 			updateImportPortletPreferencesClassPKs(
-				companyId, portletPreferences, "classTypeIds",
+				portletPreferences, "classTypeIds",
 				portletPreferencesOldValue -> _getImportReferenceValue(
 					companyId, DDMStructure.class.getName(),
 					portletPreferencesOldValue));

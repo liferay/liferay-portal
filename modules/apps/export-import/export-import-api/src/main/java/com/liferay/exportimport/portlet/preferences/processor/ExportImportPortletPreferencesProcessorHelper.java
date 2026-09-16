@@ -25,13 +25,12 @@ public interface ExportImportPortletPreferencesProcessorHelper {
 		long companyId, String externalReferenceCode);
 
 	public void updateExportPortletPreferencesClassPKs(
-			long companyId, PortletPreferences portletPreferences, String key,
-			String className,
+			PortletDataContext portletDataContext, Portlet portlet,
+			PortletPreferences portletPreferences, String key, String className,
 			Function<String, String> exportPortletPreferencesNewValueFunction)
 		throws Exception;
 
 	public void updateExportPortletPreferencesClassPKs(
-			PortletDataContext portletDataContext, Portlet portlet,
 			PortletPreferences portletPreferences, String key, String className,
 			Function<String, String> exportPortletPreferencesNewValueFunction)
 		throws Exception;
@@ -42,14 +41,14 @@ public interface ExportImportPortletPreferencesProcessorHelper {
 		throws PortletDataException;
 
 	public void updateImportPortletPreferencesClassPKs(
-			long companyId, PortletPreferences portletPreferences, String key,
+			PortletDataContext portletDataContext,
+			PortletPreferences portletPreferences, String key,
+			long companyGroupId,
 			Function<String, Long> importPortletPreferencesNewValueFunction)
 		throws Exception;
 
 	public void updateImportPortletPreferencesClassPKs(
-			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences, String key,
-			long companyGroupId,
 			Function<String, Long> importPortletPreferencesNewValueFunction)
 		throws Exception;
 

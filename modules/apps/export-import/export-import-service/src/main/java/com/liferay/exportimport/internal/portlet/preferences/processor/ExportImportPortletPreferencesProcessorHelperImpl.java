@@ -83,8 +83,8 @@ public class ExportImportPortletPreferencesProcessorHelperImpl
 
 	@Override
 	public void updateExportPortletPreferencesClassPKs(
-			long companyId, PortletPreferences portletPreferences, String key,
-			String className,
+			PortletDataContext portletDataContext, Portlet portlet,
+			PortletPreferences portletPreferences, String key, String className,
 			Function<String, String> exportPortletPreferencesNewValueFunction)
 		throws Exception {
 
@@ -95,7 +95,6 @@ public class ExportImportPortletPreferencesProcessorHelperImpl
 
 	@Override
 	public void updateExportPortletPreferencesClassPKs(
-			PortletDataContext portletDataContext, Portlet portlet,
 			PortletPreferences portletPreferences, String key, String className,
 			Function<String, String> exportPortletPreferencesNewValueFunction)
 		throws Exception {
@@ -131,16 +130,6 @@ public class ExportImportPortletPreferencesProcessorHelperImpl
 
 	@Override
 	public void updateImportPortletPreferencesClassPKs(
-			long companyId, PortletPreferences portletPreferences, String key,
-			Function<String, Long> importPortletPreferencesNewValueFunction)
-		throws Exception {
-
-		_updateImportPortletPreferencesClassPKs(
-			portletPreferences, key, importPortletPreferencesNewValueFunction);
-	}
-
-	@Override
-	public void updateImportPortletPreferencesClassPKs(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences, String key,
 			long companyGroupId,
@@ -149,6 +138,16 @@ public class ExportImportPortletPreferencesProcessorHelperImpl
 
 		_updateImportPortletPreferencesClassPKs(
 			portletPreferences, key, importPortletPreferencesNewValueSupplier);
+	}
+
+	@Override
+	public void updateImportPortletPreferencesClassPKs(
+			PortletPreferences portletPreferences, String key,
+			Function<String, Long> importPortletPreferencesNewValueFunction)
+		throws Exception {
+
+		_updateImportPortletPreferencesClassPKs(
+			portletPreferences, key, importPortletPreferencesNewValueFunction);
 	}
 
 	private String _getRemoteGroupExternalReferenceCode(Group group) {
