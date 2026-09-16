@@ -29,6 +29,35 @@ import UndoManager from './undo_manager';
 
 const CSS_ICON_LOADING = 'loading-animation';
 
+/**
+ * Configuration a cloned <code>liferay-ui:input-localized</code> inherits from
+ * the row it was cloned from. Everything identifying the instance itself (its
+ * id, name and the nodes it is bound to) is rebuilt for the clone instead, and
+ * the component's own runtime state is left out.
+ */
+const INPUT_LOCALIZED_CONFIG_ATTRIBUTES = [
+	'activeLanguageIds',
+	'adminMode',
+	'availableLocales',
+	'columns',
+	'defaultLanguageId',
+	'editor',
+	'fieldPrefix',
+	'fieldPrefixSeparator',
+	'frontendJsComponentsWebModule',
+	'frontendJsReactWebModule',
+	'frontendJsStateWebModule',
+	'helpMessage',
+	'items',
+	'itemsError',
+	'languagesTranslationsAriaLabels',
+	'lazy',
+	'namespace',
+	'selectedLanguageId',
+	'toggleSelection',
+	'translatedLanguages',
+];
+
 const CSS_VALIDATION_HELPER_CLASSES = [
 	'error',
 	'error-field',
@@ -418,11 +447,12 @@ export class AutoFields extends Emitter {
 		return this._createCloneFromMarkup(
 			clone,
 			rowGuid,
-			this._getFormValidator(node)
+			this._getFormValidator(node),
+			all(node, '.language-value')
 		);
 	}
 
-	_createCloneFromMarkup(node, rowGuid, formValidator) {
+	_createCloneFromMarkup(node, rowGuid, formValidator, inputsLocalized) {
 		let fieldStrings;
 
 		let rules;
@@ -496,6 +526,12 @@ export class AutoFields extends Emitter {
 
 		this._clearHelpText(node);
 
+		this.once('clone', () => {
+			for (const item of inputsLocalized) {
+				this._registerInputLocalized(item.getAttribute('id'), rowGuid);
+			}
+		});
+
 		for (const item of all(node, '.form-validator-stack, .help-inline')) {
 			item.remove();
 		}
@@ -565,6 +601,58 @@ export class AutoFields extends Emitter {
 			handle: sortableHandle,
 			nodes: '.lfr-form-row',
 		});
+	}
+
+	/**
+	 * Cloning a row copies the markup of a
+	 * <code>liferay-ui:input-localized</code> but not the component that keeps
+	 * its hidden per locale inputs in sync with the visible one, so a clone
+	 * would submit an empty value however much the user typed into it. Register
+	 * a component of its own against the ids the clone was rewritten with,
+	 * seeded from the configuration of the row it came from.
+	 *
+	 * The trigger and palette ids are namespaced twice because
+	 * <code>liferay-ui:icon-menu</code> namespaces the id the localized input
+	 * already namespaced.
+	 */
+	_registerInputLocalized(sourceId, rowGuid) {
+		const inputLocalized =
+			Liferay.InputLocalized &&
+			Liferay.InputLocalized._instances[sourceId];
+
+		if (!inputLocalized) {
+			return;
+		}
+
+		const id = inputLocalized.get('id').replace(/[0-9]+$/, rowGuid);
+		const namespace = inputLocalized.get('namespace');
+
+		const namespacedId = `${namespace}${id}`;
+
+		const config = {};
+
+		for (const name of INPUT_LOCALIZED_CONFIG_ATTRIBUTES) {
+			const value = inputLocalized.get(name);
+
+			if (value !== undefined) {
+				config[name] = value;
+			}
+		}
+
+		Liferay.InputLocalized.register(namespacedId, {
+			...config,
+			boundingBox: `#${namespacedId}PaletteBoundingBox`,
+			contentBox: `#${namespacedId}PaletteContentBox`,
+			id,
+			inputBox: `#${namespacedId}BoundingBox`,
+			inputPlaceholder: `#${namespacedId}`,
+			name: id,
+			selected: (config.items || []).indexOf(
+				inputLocalized.getSelectedLanguageId()
+			),
+		});
+
+		Liferay.Menu.register(`${namespace}${namespacedId}Menu`);
 	}
 
 	_resolveFieldIndexes(name) {
