@@ -2302,6 +2302,74 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 		</sequential>
 	</macrodef>
 
+	<macrodef name="get-workspace-bundle-url">
+		<attribute name="mirror.dir" />
+		<attribute name="workspace.dir" />
+
+		<sequential>
+			<beanshell>
+				<![CDATA[
+					import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
+					import java.io.File;
+
+					import java.util.Properties;
+
+					String mirrorDirName = "@{mirror.dir}";
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(mirrorDirName)) {
+						return;
+					}
+
+					Properties gradleProperties = JenkinsResultsParserUtil.getProperties(new File[] {new File("@{workspace.dir}", "gradle.properties")});
+
+					String product = gradleProperties.getProperty("liferay.workspace.product");
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(product)) {
+						return;
+					}
+
+					String productVersion = product.substring(product.indexOf("-") + 1);
+
+					String bundleURL = JenkinsResultsParserUtil.getBuildProperty("portal.bundle.tomcat", new String[] {productVersion});
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(bundleURL)) {
+						return;
+					}
+
+					File bundleFile = new File(new File(mirrorDirName, product.replaceFirst("-", "/")), bundleURL.substring(bundleURL.lastIndexOf("/") + 1));
+
+					if (!bundleFile.exists()) {
+						return;
+					}
+
+					project.setProperty("workspace.bundle.url", "file:" + bundleFile.getAbsolutePath());
+
+					System.out.println("Using the mirrored bundle at " + bundleFile);
+				]]>
+			</beanshell>
+
+			<fail if:set="env.JENKINS_HOME" message="Unable to find a mirrored bundle for the workspace at @{workspace.dir}." unless:set="workspace.bundle.url" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="gradle-execute-workspace">
+		<attribute name="task" />
+		<attribute default="" name="test.name" />
+
+		<sequential>
+			<exec dir="${workspace.dir}" executable="./gradlew" failonerror="true">
+				<arg if:set="env.JENKINS_HOME" value="--max-workers=4" />
+				<arg if:set="env.JENKINS_HOME" value="--no-daemon" />
+				<arg value="--stacktrace" />
+				<arg line="${gradle.jvm.args}" />
+				<arg value="@{task}" />
+				<arg line="@{test.name}" />
+				<env key="GIT_DISCOVERY_ACROSS_FILESYSTEM" value="1" />
+			</exec>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="install-lpkg-patch">
 		<attribute name="patch.file.zip.url" />
 
@@ -12396,6 +12464,70 @@ send_user $expect_out(buffer)]]></echo>
 				>
 					<fileset
 						dir="${workspace.dir}/${test.task.project.dir}/build/test-results/test"
+						erroronmissingdir="false"
+						includes="TEST-*.xml"
+					/>
+					<flattenmapper />
+				</copy>
+
+				<lstopwatch action="total" name="test.execution.duration${test.task.name}" />
+			</finally>
+		</trycatch>
+	</target>
+
+	<target name="gradle-execute-workspaces-integration">
+		<local name="test.task.name" />
+		<local name="test.task.project.dir" />
+		<local name="test.task.results.dir.name" />
+		<local name="workspace.dir" />
+
+		<antelope:stringutil property="test.task.name" string="${test.task}">
+			<antelope:replace regex="\:" replacement="." />
+		</antelope:stringutil>
+
+		<antelope:stringutil property="test.task.project.dir" string="${test.task}">
+			<antelope:replace regex="\:[^\:]+$" replacement="" />
+			<antelope:replace regex="^\:" replacement="" />
+			<antelope:replace regex="\:" replacement="/" />
+		</antelope:stringutil>
+
+		<antelope:stringutil property="test.task.results.dir.name" string="${test.task}">
+			<antelope:replace regex="^.*\:" replacement="" />
+		</antelope:stringutil>
+
+		<property location="${dir}" name="workspace.dir" />
+
+		<chmod
+			file="${workspace.dir}/gradlew"
+			perm="a+x"
+		/>
+
+		<trycatch property="exception.message">
+			<try>
+				<lstopwatch action="start" name="test.execution.duration${test.task.name}" />
+
+				<gradle-execute-workspace task="initBundle" />
+
+				<copy
+					file="${workspace.dir}/build/license.xml"
+					todir="${workspace.dir}/bundles/deploy"
+				/>
+
+				<gradle-execute-workspace task="deploy" />
+
+				<gradle-execute-workspace task="${test.task}" test.name="${test.name}" />
+			</try>
+			<catch>
+				<fail>${exception.message}</fail>
+			</catch>
+			<finally>
+				<copy
+					failonerror="false"
+					overwrite="true"
+					todir="${project.dir}/workspaces/test-results"
+				>
+					<fileset
+						dir="${workspace.dir}/${test.task.project.dir}/build/test-results/${test.task.results.dir.name}"
 						erroronmissingdir="false"
 						includes="TEST-*.xml"
 					/>

@@ -4583,6 +4583,47 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="run-workspaces-integration-test">
+		<attribute default="" name="test.task.group" />
+		<attribute default="" name="workspace.bundle.mirror.dir" />
+		<attribute default="" name="workspace.license.xml.url" />
+
+		<sequential>
+			<local name="workspace.dir" />
+			<local name="workspace.name" />
+			<local name="workspace.path" />
+
+			<propertycopy from="workspaces.names[workspaces-integration][${env.CI_TEST_SUITE}]" name="workspace.name" silent="true" />
+
+			<fail message="Unable to find a workspace for the &quot;workspaces-integration&quot; batch in the &quot;${env.CI_TEST_SUITE}&quot; suite." unless="workspace.name" />
+
+			<condition else="workspaces/${workspace.name}" property="workspace.path" value="${liferay.portal.private.dir}/workspaces/${workspace.name}">
+				<available file="${liferay.portal.private.dir}/workspaces/${workspace.name}" />
+			</condition>
+
+			<property location="${workspace.path}" name="workspace.dir" />
+
+			<download-gradle-wrapper-binary workspace.dir="${workspace.dir}" />
+
+			<get-workspace-bundle-url mirror.dir="@{workspace.bundle.mirror.dir}" workspace.dir="${workspace.dir}" />
+
+			<mkdir dir="${workspace.dir}/build" />
+
+			<mirrors-get
+				dest="${workspace.dir}/build/license.xml"
+				src="@{workspace.license.xml.url}"
+			/>
+
+			<local name="gradle.args" />
+
+			<property name="gradle.args" value="--continue -Pintegration.test.target=bundle" />
+
+			<var if:set="workspace.bundle.url" name="gradle.args" value="${gradle.args} -Pliferay.workspace.bundle.url=${workspace.bundle.url}" />
+
+			<run-workspaces-junit-test gradle.target="gradle-execute-workspaces-integration" test.junit.args="${gradle.args}" test.task.group="@{test.task.group}" />
+		</sequential>
+	</macrodef>
+
 	<macrodef name="run-workspaces-js-unit-test">
 		<attribute name="test.class.group" />
 		<attribute default="" name="test.gradle.args" />
@@ -4645,6 +4686,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 	</macrodef>
 
 	<macrodef name="run-workspaces-junit-test">
+		<attribute default="gradle-execute-workspaces" name="gradle.target" />
 		<attribute default="" name="test.junit.args" />
 		<attribute default="" name="test.task.group" />
 
@@ -4774,9 +4816,9 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 						int timeout = Integer.parseInt(project.getProperty("test.class.timeout.minutes"));
 
 						try {
-							System.out.println("\"gradle-execute-workspaces\" will timeout in " + timeout);
+							System.out.println("\"@{gradle.target}\" will timeout in " + timeout);
 
-							AntUtil.callTargetWithTimeout(projectDir, "build-test.xml", "gradle-execute-workspaces", parameters, timeout, false);
+							AntUtil.callTargetWithTimeout(projectDir, "build-test.xml", "@{gradle.target}", parameters, timeout, false);
 						}
 						catch(Exception exception) {
 							System.out.println("Unable to run Gradle execute workspaces target for " + testTaskName);
@@ -10966,6 +11008,40 @@ junit.jvm.override.version=21</echo>
 		<antcall target="workspaces-compile">
 			<param name="batch.jdk.version" value="11" />
 		</antcall>
+	</target>
+
+	<target name="workspaces-integration">
+		<run-batch-test>
+			<test-action>
+				<print-test-class-group test.class.group.index="${axis.variable}" />
+
+				<lstopwatch action="start" name="test.execution.duration" />
+
+				<mkdir dir="${project.dir}/workspaces/test-results" />
+
+				<run-workspaces-integration-test test.task.group="${test.task.group}" workspace.bundle.mirror.dir="${workspace.bundle.mirror.dir}" workspace.license.xml.url="${test.license.xml.url}" />
+
+				<lstopwatch action="total" name="test.execution.duration" />
+			</test-action>
+
+			<test-set-up>
+				<if>
+					<isset property="TEST_CLASS_GROUP_${axis.variable}" />
+					<then>
+						<local name="test.class.group" />
+
+						<propertycopy from="TEST_CLASS_GROUP_${axis.variable}" name="test.class.group" />
+
+						<echo file="${project.dir}/test.class.file.names.properties">TEST_CLASS_GROUP_${axis.variable}=${test.class.group}</echo>
+					</then>
+					<else>
+						<antcall inheritAll="false" target="record-test-class-file-names">
+							<param name="test.class.groups.size" value="${test.batch.size}" />
+						</antcall>
+					</else>
+				</if>
+			</test-set-up>
+		</run-batch-test>
 	</target>
 
 	<target name="workspaces-js-unit">
