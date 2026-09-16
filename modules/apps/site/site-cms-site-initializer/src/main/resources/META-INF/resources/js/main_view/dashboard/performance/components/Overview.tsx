@@ -49,7 +49,7 @@ const METRICS: MetricConfig[] = [
 ];
 
 export function Overview() {
-	const {range, space} = useContext(PerformanceContext);
+	const {project, range, space} = useContext(PerformanceContext);
 
 	const [loading, setLoading] = useState(true);
 	const [metrics, setMetrics] = useState<OverviewMetrics>();
@@ -62,6 +62,8 @@ export function Overview() {
 			setLoading(true);
 
 			const {data, error} = await PerformanceService.getOverviewMetrics({
+				cmpProjectIds:
+					project.value === 'all' ? undefined : [project.value],
 				depotEntryIds:
 					space.value === 'all' ? undefined : [space.value],
 				rangeKey: range.rangeKey,
@@ -79,7 +81,7 @@ export function Overview() {
 		}
 
 		getMetrics();
-	}, [range.rangeKey, space.value]);
+	}, [project.value, range.rangeKey, space.value]);
 
 	return (
 		<>

@@ -47,7 +47,7 @@ const VIEW_OPTIONS: {icon: string; label: string; value: ViewType}[] = [
 ];
 
 export function AssetConsumption() {
-	const {constants, range, space} = useContext(PerformanceContext);
+	const {constants, project, range, space} = useContext(PerformanceContext);
 
 	const [assetConsumption, setAssetConsumption] =
 		useState<AssetConsumptionData>();
@@ -63,6 +63,11 @@ export function AssetConsumption() {
 	const [pageSize, setPageSize] = useState(20);
 	const [viewType, setViewType] = useState<ViewType>('chart');
 
+	const cmpProjectIds = useMemo(
+		() => (project.value === 'all' ? undefined : [project.value]),
+		[project.value]
+	);
+
 	const depotEntryIds = useMemo(
 		() => (space.value === 'all' ? undefined : [space.value]),
 		[space.value]
@@ -71,7 +76,7 @@ export function AssetConsumption() {
 	useEffect(() => {
 		setFilters(initialFilters);
 		setPage(1);
-	}, [space.value]);
+	}, [project.value, space.value]);
 
 	useEffect(() => {
 		async function fetchData() {
@@ -79,6 +84,7 @@ export function AssetConsumption() {
 
 			const {data, error} = await PerformanceService.getAssetConsumption({
 				categoryId: toFilterParam(filters.category.value),
+				cmpProjectIds,
 				depotEntryIds,
 				groupBy,
 				page,
@@ -101,7 +107,15 @@ export function AssetConsumption() {
 		}
 
 		fetchData();
-	}, [depotEntryIds, filters, groupBy, page, pageSize, range.rangeKey]);
+	}, [
+		cmpProjectIds,
+		depotEntryIds,
+		filters,
+		groupBy,
+		page,
+		pageSize,
+		range.rangeKey,
+	]);
 
 	const groupByLabel =
 		GROUP_BY_OPTIONS.find(({value}) => value === groupBy)?.label ?? '';

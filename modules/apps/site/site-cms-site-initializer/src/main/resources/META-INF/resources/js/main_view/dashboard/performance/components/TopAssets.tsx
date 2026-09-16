@@ -190,13 +190,16 @@ const views = [
 ];
 
 export function TopAssets() {
-	const {additionalProps, range, space} = useContext(PerformanceContext);
+	const {additionalProps, project, range, space} =
+		useContext(PerformanceContext);
 
+	const cmpProjectIds = project.value === 'all' ? undefined : [project.value];
 	const depotEntryIds = space.value === 'all' ? undefined : [space.value];
 
 	const additionalAPIURLParameters = [
 		NESTED_FIELDS,
 		`rangeKey=${range.rangeKey}`,
+		...(cmpProjectIds ?? []).map((id) => `cmpProjectIds=${id}`),
 		...(depotEntryIds ?? []).map((id) => `depotEntryIds=${id}`),
 	].join('&');
 
@@ -261,6 +264,7 @@ export function TopAssets() {
 			Preferences={
 				<DownloadButton
 					href={PerformanceService.getTopAssetsExportURL({
+						cmpProjectIds,
 						depotEntryIds,
 						rangeKey: range.rangeKey,
 					})}

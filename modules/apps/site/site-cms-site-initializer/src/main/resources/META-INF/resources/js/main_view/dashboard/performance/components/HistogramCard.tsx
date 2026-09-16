@@ -19,11 +19,16 @@ export function HistogramCard({
 	metricType: MetricType;
 	title: string;
 }) {
-	const {range, space} = useContext(PerformanceContext);
+	const {project, range, space} = useContext(PerformanceContext);
 
 	const [histogram, setHistogram] = useState<Histogram>();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	const cmpProjectIds = useMemo(
+		() => (project.value === 'all' ? undefined : [project.value]),
+		[project.value]
+	);
 
 	const depotEntryIds = useMemo(
 		() => (space.value === 'all' ? undefined : [space.value]),
@@ -35,6 +40,7 @@ export function HistogramCard({
 			setLoading(true);
 
 			const {data, error} = await PerformanceService.getHistogramMetric({
+				cmpProjectIds,
 				depotEntryIds,
 				rangeKey: range.rangeKey,
 				selectedMetric: metricType,
@@ -51,7 +57,7 @@ export function HistogramCard({
 		}
 
 		fetchData();
-	}, [depotEntryIds, metricType, range.rangeKey]);
+	}, [cmpProjectIds, depotEntryIds, metricType, range.rangeKey]);
 
 	const metrics = histogram?.metrics ?? [];
 

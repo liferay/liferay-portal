@@ -81,11 +81,16 @@ function Card({
 	groupBy: 'categories' | 'location';
 	title: string;
 }) {
-	const {range, space} = useContext(PerformanceContext);
+	const {project, range, space} = useContext(PerformanceContext);
 
 	const [metric, setMetric] = useState<PerformanceMetric>();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	const cmpProjectIds = useMemo(
+		() => (project.value === 'all' ? undefined : [project.value]),
+		[project.value]
+	);
 
 	const depotEntryIds = useMemo(
 		() => (space.value === 'all' ? undefined : [space.value]),
@@ -97,6 +102,7 @@ function Card({
 			setLoading(true);
 
 			const {data, error} = await PerformanceService.getMetric({
+				cmpProjectIds,
 				depotEntryIds,
 				groupBy,
 				metricType: 'viewsMetric',
@@ -109,7 +115,7 @@ function Card({
 		}
 
 		fetchData();
-	}, [depotEntryIds, groupBy, range.rangeKey]);
+	}, [cmpProjectIds, depotEntryIds, groupBy, range.rangeKey]);
 
 	const metrics = metric?.metrics ?? [];
 
@@ -122,6 +128,7 @@ function Card({
 			Preferences={
 				<DownloadButton
 					href={PerformanceService.getMetricExportURL({
+						cmpProjectIds,
 						depotEntryIds,
 						groupBy,
 						metricType: 'viewsMetric',
