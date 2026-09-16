@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.staticexport.StaticSiteExport;
 import com.liferay.site.staticexport.StaticSiteExportLayout;
+import com.liferay.site.staticexport.StaticSiteExportReport;
 import com.liferay.site.staticexport.StaticSiteExportResource;
 import com.liferay.site.staticexport.StaticSiteExporter;
 
@@ -74,20 +75,23 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
 					company)) {
 
-			StaticSiteExportReportImpl staticSiteExportReportImpl =
-				new StaticSiteExportReportImpl();
+			List<StaticSiteExportReport.Failure> layoutFailures =
+				new ArrayList<>();
 
 			List<StaticSiteExportLayout> staticSiteExportLayouts =
 				_exportStaticSiteExportLayouts(
-					groupId, locales, staticSiteExportReportImpl);
+					groupId, layoutFailures, locales);
+
+			List<StaticSiteExportReport.Failure> resourceFailures =
+				new ArrayList<>();
 
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
 			List<StaticSiteExportResource> staticSiteExportResources =
 				_fetchStaticSiteExportResources(
-					serviceContext.getRequest(), staticSiteExportLayouts,
-					staticSiteExportReportImpl);
+					serviceContext.getRequest(), resourceFailures,
+					staticSiteExportLayouts);
 
 			StaticSiteExportURLRewriter staticSiteExportURLRewriter =
 				new StaticSiteExportURLRewriter(
@@ -98,7 +102,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 			return new StaticSiteExportImpl(
 				_rewriteLayouts(
 					staticSiteExportLayouts, staticSiteExportURLRewriter),
-				staticSiteExportReportImpl,
+				new StaticSiteExportReport(layoutFailures, resourceFailures),
 				_rewriteResources(
 					staticSiteExportResources, staticSiteExportURLRewriter));
 		}
@@ -116,8 +120,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	}
 
 	private List<StaticSiteExportLayout> _exportStaticSiteExportLayouts(
-			long groupId, Set<Locale> locales,
-			StaticSiteExportReportImpl staticSiteExportReportImpl)
+			long groupId, List<StaticSiteExportReport.Failure> layoutFailures,
+			Set<Locale> locales)
 		throws PortalException {
 
 		List<StaticSiteExportLayout> staticSiteExportLayouts =
@@ -135,7 +139,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 				try {
 					staticSiteExportLayouts.add(
-						new StaticSiteExportLayoutImpl(
+						new StaticSiteExportLayout(
 							_layoutPreviewRenderer.render(
 								layout, locale, segmentsExperienceId),
 							locale,
@@ -147,8 +151,9 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 						_log.warn("Unable to render " + friendlyURL, exception);
 					}
 
-					staticSiteExportReportImpl.addLayoutFailure(
-						exception.getMessage(), friendlyURL);
+					layoutFailures.add(
+						new StaticSiteExportReport.Failure(
+							exception.getMessage(), friendlyURL));
 				}
 			}
 		}
@@ -158,8 +163,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 	private List<StaticSiteExportResource> _fetchStaticSiteExportResources(
 			HttpServletRequest httpServletRequest,
-			List<StaticSiteExportLayout> staticSiteExportLayouts,
-			StaticSiteExportReportImpl staticSiteExportReportImpl)
+			List<StaticSiteExportReport.Failure> resourceFailures,
+			List<StaticSiteExportLayout> staticSiteExportLayouts)
 		throws Exception {
 
 		List<StaticSiteExportResource> staticSiteExportResources =
@@ -208,21 +213,23 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 					_log.debug("Unable to fetch " + url, exception);
 				}
 
-				staticSiteExportReportImpl.addResourceFailure(
-					exception.getMessage(), url);
+				resourceFailures.add(
+					new StaticSiteExportReport.Failure(
+						exception.getMessage(), url));
 
 				continue;
 			}
 
 			if (file == null) {
-				staticSiteExportReportImpl.addResourceFailure(
-					"No servlet serves the resource", url);
+				resourceFailures.add(
+					new StaticSiteExportReport.Failure(
+						"No servlet serves the resource", url));
 
 				continue;
 			}
 
 			staticSiteExportResources.add(
-				new StaticSiteExportResourceImpl(
+				new StaticSiteExportResource(
 					file, StaticSiteExportResourcePathUtil.getPath(url), url));
 
 			if (_isStylesheetURL(url)) {
@@ -371,7 +378,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				staticSiteExportLayouts) {
 
 			rewrittenStaticSiteExportLayouts.add(
-				new StaticSiteExportLayoutImpl(
+				new StaticSiteExportLayout(
 					staticSiteExportURLRewriter.rewriteHTML(
 						staticSiteExportLayout.getHTML()),
 					staticSiteExportLayout.getLocale(),

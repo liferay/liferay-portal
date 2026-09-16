@@ -5,27 +5,50 @@
 
 package com.liferay.site.staticexport;
 
+import java.util.Collections;
 import java.util.List;
-
-import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * @author Víctor Galán
  */
-@ProviderType
-public interface StaticSiteExportReport {
+public class StaticSiteExportReport {
 
-	public List<Failure> getLayoutFailures();
+	public StaticSiteExportReport(
+		List<Failure> layoutFailures, List<Failure> resourceFailures) {
 
-	public List<Failure> getResourceFailures();
+		_layoutFailures = layoutFailures;
+		_resourceFailures = resourceFailures;
+	}
 
-	@ProviderType
-	public interface Failure {
+	public List<Failure> getLayoutFailures() {
+		return Collections.unmodifiableList(_layoutFailures);
+	}
 
-		public String getMessage();
+	public List<Failure> getResourceFailures() {
+		return Collections.unmodifiableList(_resourceFailures);
+	}
 
-		public String getURL();
+	public static class Failure {
+
+		public Failure(String message, String url) {
+			_message = message;
+			_url = url;
+		}
+
+		public String getMessage() {
+			return _message;
+		}
+
+		public String getURL() {
+			return _url;
+		}
+
+		private final String _message;
+		private final String _url;
 
 	}
+
+	private final List<Failure> _layoutFailures;
+	private final List<Failure> _resourceFailures;
 
 }

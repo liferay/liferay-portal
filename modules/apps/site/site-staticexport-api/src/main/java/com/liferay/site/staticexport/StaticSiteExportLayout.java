@@ -7,20 +7,39 @@ package com.liferay.site.staticexport;
 
 import java.util.Locale;
 
-import org.osgi.annotation.versioning.ProviderType;
-
 /**
  * @author Víctor Galán
  */
-@ProviderType
-public interface StaticSiteExportLayout {
+public class StaticSiteExportLayout {
 
-	public String getHTML();
+	public StaticSiteExportLayout(
+		String html, Locale locale, String path, long plid) {
 
-	public Locale getLocale();
+		_html = html;
+		_locale = locale;
+		_path = path;
+		_plid = plid;
+	}
 
-	public String getPath();
+	public String getHTML() {
+		return _html;
+	}
 
-	public long getPlid();
+	public Locale getLocale() {
+		return _locale;
+	}
+
+	public String getPath() {
+		return _path;
+	}
+
+	public long getPlid() {
+		return _plid;
+	}
+
+	private final String _html;
+	private final Locale _locale;
+	private final String _path;
+	private final long _plid;
 
 }
