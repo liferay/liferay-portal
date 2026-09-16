@@ -81,6 +81,16 @@ public class NotificationTemplateResourceTest
 
 	@Override
 	@Test
+	public void testGetNotificationTemplateByExternalReferenceCode()
+		throws Exception {
+
+		super.testGetNotificationTemplateByExternalReferenceCode();
+
+		_testGetNotificationTemplateByExternalReferenceCodeNotFound();
+	}
+
+	@Override
+	@Test
 	public void testGetNotificationTemplatesPage() throws Exception {
 		super.testGetNotificationTemplatesPage();
 
@@ -489,6 +499,16 @@ public class NotificationTemplateResourceTest
 			404,
 			notificationTemplateResource.
 				deleteNotificationTemplateByExternalReferenceCodeHttpResponse(
+					RandomTestUtil.randomString()));
+	}
+
+	private void _testGetNotificationTemplateByExternalReferenceCodeNotFound()
+		throws Exception {
+
+		assertHttpResponseStatusCode(
+			404,
+			notificationTemplateResource.
+				getNotificationTemplateByExternalReferenceCodeHttpResponse(
 					RandomTestUtil.randomString()));
 	}
 
