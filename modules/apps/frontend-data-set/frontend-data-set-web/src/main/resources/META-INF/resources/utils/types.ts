@@ -499,7 +499,7 @@ export {
 export enum EConfigInURLKeys {
 	ACTIVE_FILTERS = 'filters',
 	ACTIVE_SORTS = 'sorts',
-	CUSTOM_CONFIGS = 'cc',
+	CUSTOM_CONFIGS = 'custom',
 	DELTA = 'delta',
 	PAGE_NUMBER = 'page',
 	SEARCH_PARAM = 'q',

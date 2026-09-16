@@ -16,6 +16,7 @@ import {FDSConnection} from '../src/main/resources/META-INF/resources/js/api/FDS
 import {readConfigFromURL} from '../src/main/resources/META-INF/resources/utils/configInURL';
 import EVENTS from '../src/main/resources/META-INF/resources/utils/eventsDefinitions';
 import recentSearches from '../src/main/resources/META-INF/resources/utils/recentSearches';
+import {EConfigInURLKeys} from '../src/main/resources/META-INF/resources/utils/types';
 
 const ID = 'test-fds';
 
@@ -507,7 +508,9 @@ describe('FrontendDataSet', () => {
 			await chooseView('Blue things');
 
 			await waitFor(() =>
-				expect(readConfigFromURL(id)?.cc).toEqual({
+				expect(
+					readConfigFromURL(id)?.[EConfigInURLKeys.CUSTOM_CONFIGS]
+				).toEqual({
 					[APP_ID]: CUSTOM_CONFIG,
 				})
 			);
@@ -532,7 +535,9 @@ describe('FrontendDataSet', () => {
 			);
 
 			expect(lastRequestedFilter(requests)).not.toContain(BLUE);
-			expect(readConfigFromURL(id)?.cc).toBeUndefined();
+			expect(
+				readConfigFromURL(id)?.[EConfigInURLKeys.CUSTOM_CONFIGS]
+			).toBeUndefined();
 		});
 	});
 });
