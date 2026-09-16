@@ -7,10 +7,9 @@ package com.liferay.site.staticexport.internal;
 
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,13 +18,12 @@ import java.io.OutputStream;
 
 import java.net.URL;
 
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.http.context.ServletContextHelper;
+import org.osgi.service.http.whiteboard.HttpWhiteboardConstants;
 
 /**
  * @author Víctor Galán
@@ -33,44 +31,42 @@ import org.osgi.framework.BundleContext;
 public class StaticSiteExportBundleResourceResolver {
 
 	public StaticSiteExportBundleResourceResolver(BundleContext bundleContext) {
-		for (Bundle bundle : bundleContext.getBundles()) {
-			Dictionary<String, String> headers = bundle.getHeaders(
-				StringPool.BLANK);
-
-			String webContextPath = headers.get("Web-ContextPath");
-
-			if (Validator.isNotNull(webContextPath)) {
-				_bundles.put(
-					StringUtil.removeFirst(webContextPath, StringPool.SLASH),
-					bundle);
-			}
-		}
+		_bundleContext = bundleContext;
 	}
 
-	public File resolve(String path) throws Exception {
-		if (!path.startsWith(_MODULE_PATH_PREFIX)) {
-			return null;
+	public File resolve(String moduleName, String resourcePath)
+		throws Exception {
+
+		Collection<ServiceReference<ServletContextHelper>> serviceReferences =
+			_bundleContext.getServiceReferences(
+				ServletContextHelper.class,
+				StringBundler.concat(
+					StringPool.OPEN_PARENTHESIS,
+					HttpWhiteboardConstants.HTTP_WHITEBOARD_CONTEXT_PATH, "=/",
+					moduleName, StringPool.CLOSE_PARENTHESIS));
+
+		for (ServiceReference<ServletContextHelper> serviceReference :
+				serviceReferences) {
+
+			ServletContextHelper servletContextHelper =
+				_bundleContext.getService(serviceReference);
+
+			try {
+				URL url = _getResourceURL(resourcePath, servletContextHelper);
+
+				if (url != null) {
+					return _getFile(url);
+				}
+			}
+			finally {
+				_bundleContext.ungetService(serviceReference);
+			}
 		}
 
-		int index = path.indexOf(CharPool.SLASH, _MODULE_PATH_PREFIX.length());
+		return null;
+	}
 
-		if (index == -1) {
-			return null;
-		}
-
-		Bundle bundle = _bundles.get(
-			path.substring(_MODULE_PATH_PREFIX.length(), index));
-
-		if (bundle == null) {
-			return null;
-		}
-
-		URL url = _getEntryURL(bundle, path.substring(index));
-
-		if (url == null) {
-			return null;
-		}
-
+	private File _getFile(URL url) throws Exception {
 		File file = FileUtil.createTempFile();
 
 		try (InputStream inputStream = url.openStream();
@@ -82,78 +78,37 @@ public class StaticSiteExportBundleResourceResolver {
 		return file;
 	}
 
-	private URL _getEntryURL(Bundle bundle, String path) {
-		for (String prefix : _ENTRY_PREFIXES) {
-			URL url = bundle.getEntry(prefix + path);
+	private URL _getResourceURL(
+		String resourcePath, ServletContextHelper servletContextHelper) {
 
-			if (url != null) {
-				return url;
-			}
+		URL url = servletContextHelper.getResource(resourcePath);
+
+		if (url != null) {
+			return url;
 		}
 
-		String unhashedPath = _unhash(path);
+		resourcePath = _removeHash(resourcePath);
 
-		for (String prefix : _ENTRY_PREFIXES) {
-			URL url = bundle.getEntry(prefix + unhashedPath);
-
-			if (url != null) {
-				return url;
-			}
-		}
-
-		int index = unhashedPath.lastIndexOf(CharPool.SLASH);
-
-		String fileName = unhashedPath.substring(index + 1);
-
-		for (String prefix : _ENTRY_PREFIXES) {
-			String directoryPath = prefix + unhashedPath.substring(0, index);
-
-			if (Validator.isNull(directoryPath)) {
-				directoryPath = StringPool.SLASH;
-			}
-
-			Enumeration<URL> enumeration = bundle.findEntries(
-				directoryPath, StringPool.STAR, false);
-
-			while ((enumeration != null) && enumeration.hasMoreElements()) {
-				URL url = enumeration.nextElement();
-
-				String urlPath = url.getPath();
-
-				String candidateFileName = urlPath.substring(
-					urlPath.lastIndexOf(CharPool.SLASH) + 1);
-
-				if (fileName.equals(_unhash(candidateFileName))) {
-					return url;
-				}
-			}
-		}
-
-		return null;
+		return servletContextHelper.getResource(resourcePath);
 	}
 
-	private String _unhash(String path) {
-		int index = path.indexOf(".(");
+	private String _removeHash(String resourcePath) {
+		int index = resourcePath.indexOf(".(");
 
 		if (index == -1) {
-			return path;
+			return resourcePath;
 		}
 
-		int endIndex = path.indexOf(CharPool.CLOSE_PARENTHESIS, index);
+		int endIndex = resourcePath.indexOf(CharPool.CLOSE_PARENTHESIS, index);
 
 		if (endIndex == -1) {
-			return path;
+			return resourcePath;
 		}
 
-		return path.substring(0, index) + path.substring(endIndex + 1);
+		return resourcePath.substring(0, index) +
+			resourcePath.substring(endIndex + 1);
 	}
 
-	private static final String[] _ENTRY_PREFIXES = {
-		"META-INF/resources", StringPool.BLANK
-	};
-
-	private static final String _MODULE_PATH_PREFIX = "/o/";
-
-	private final Map<String, Bundle> _bundles = new HashMap<>();
+	private final BundleContext _bundleContext;
 
 }
