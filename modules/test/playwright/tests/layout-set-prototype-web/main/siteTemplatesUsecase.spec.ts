@@ -141,7 +141,7 @@ test(
 
 			const sitePages = await apiHelpers.headlessAdminSite.getPages(
 				site.externalReferenceCode,
-				'pageSize=100&privateLayout=false'
+				'flatten=true&pageSize=100&privateLayout=false'
 			);
 
 			expect(
@@ -178,7 +178,7 @@ test(
 			const sitePagesAfterLink =
 				await apiHelpers.headlessAdminSite.getPages(
 					site.externalReferenceCode,
-					'pageSize=100&privateLayout=false'
+					'flatten=true&pageSize=100&privateLayout=false'
 				);
 
 			expect(

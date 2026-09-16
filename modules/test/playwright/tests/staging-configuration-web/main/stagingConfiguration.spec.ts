@@ -521,7 +521,7 @@ testWithSitePagesAPI(
 		await expect(async () => {
 			const sitePages = await apiHelpers.headlessAdminSite.getPages(
 				externalReferenceCode,
-				'pageSize=100&privateLayout=false'
+				'flatten=true&pageSize=100&privateLayout=false'
 			);
 
 			expect(sitePages.items.length).toBeGreaterThan(0);

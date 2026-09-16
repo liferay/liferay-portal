@@ -205,7 +205,7 @@ test(
 
 		const getPages = await apiHelpers.headlessAdminSite.getPages(
 			siteA.externalReferenceCode,
-			'sort=pageSettings/priority:asc'
+			'flatten=true&sort=pageSettings/priority:asc'
 		);
 
 		expect(getPages.items[0].pageSettings.priority).toEqual(0);
@@ -278,7 +278,7 @@ test(
 
 		const importedPages = await apiHelpers.headlessAdminSite.getPages(
 			siteB.externalReferenceCode,
-			'sort=pageSettings/priority:asc'
+			'flatten=true&sort=pageSettings/priority:asc'
 		);
 
 		expect(importedPages.items[0].pageSettings.priority).toEqual(0);
