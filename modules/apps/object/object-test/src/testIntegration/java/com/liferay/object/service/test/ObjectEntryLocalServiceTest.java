@@ -6658,6 +6658,87 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetValuesWithFirstExtensionTableAggregationObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition1 = _publishCustomObjectDefinition(
+			Collections.singletonList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Name", "name")));
+		ObjectDefinition objectDefinition2 = _publishCustomObjectDefinition(
+			Collections.singletonList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Name", "name")));
+
+		try {
+			ObjectRelationship objectRelationship =
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService, objectDefinition1,
+					objectDefinition2);
+
+			ObjectField aggregationObjectField = _addCustomObjectField(
+				new AggregationObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).name(
+					"a" + RandomTestUtil.randomString()
+				).objectDefinitionId(
+					objectDefinition1.getObjectDefinitionId()
+				).objectFieldSettings(
+					Arrays.asList(
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_FUNCTION
+						).value(
+							ObjectFieldSettingConstants.VALUE_COUNT
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.
+								NAME_OBJECT_RELATIONSHIP_NAME
+						).value(
+							objectRelationship.getName()
+						).build())
+				).build());
+
+			Assert.assertEquals(
+				objectDefinition1.getExtensionDBTableName(),
+				aggregationObjectField.getDBTableName());
+
+			ObjectEntry objectEntry = _addObjectEntry(
+				0, objectDefinition1.getObjectDefinitionId(),
+				Collections.emptyMap());
+
+			ObjectField relationshipObjectField =
+				_objectFieldLocalService.fetchObjectField(
+					objectRelationship.getObjectFieldId2());
+
+			_addObjectEntry(
+				0, objectDefinition2.getObjectDefinitionId(),
+				HashMapBuilder.<String, Serializable>put(
+					relationshipObjectField.getName(),
+					objectEntry.getObjectEntryId()
+				).build());
+
+			Assert.assertEquals(
+				1,
+				MapUtil.getInteger(
+					_objectEntryLocalService.getValues(
+						objectEntry.getObjectEntryId()),
+					aggregationObjectField.getName()));
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition1);
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition2);
+		}
+	}
+
+	@Test
 	public void testLoadValues() throws Exception {
 		ObjectEntry objectEntry1 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
@@ -8712,6 +8793,151 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateObjectEntryWithFirstExtensionTableObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition1 = _publishCustomObjectDefinition(
+			Collections.singletonList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Name", "name")));
+		ObjectDefinition objectDefinition2 = _publishCustomObjectDefinition(
+			Collections.singletonList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Name", "name")));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.service.impl.ObjectEntryLocalServiceImpl",
+				LoggerTestUtil.DEBUG)) {
+
+			ObjectEntry objectEntry = _addObjectEntry(
+				0, objectDefinition1.getObjectDefinitionId(),
+				Collections.emptyMap());
+
+			_assertExtensionTableInsertSQLs(0, logCapture, objectDefinition1);
+
+			ObjectField textObjectField = _addCustomObjectField(
+				new TextObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).name(
+					"a" + RandomTestUtil.randomString()
+				).objectDefinitionId(
+					objectDefinition1.getObjectDefinitionId()
+				).build());
+
+			Assert.assertEquals(
+				objectDefinition1.getExtensionDBTableName(),
+				textObjectField.getDBTableName());
+
+			Assert.assertEquals(
+				Collections.singletonList(objectEntry.getObjectEntryId()),
+				_objectEntryLocalService.getPrimaryKeys(
+					new Long[] {0L}, TestPropsValues.getCompanyId(),
+					TestPropsValues.getUserId(),
+					objectDefinition1.getObjectDefinitionId(), null, false,
+					null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+			Assert.assertEquals(
+				1,
+				_objectEntryLocalService.getValuesListCount(
+					new Long[] {0L}, TestPropsValues.getCompanyId(),
+					TestPropsValues.getUserId(),
+					objectDefinition1.getObjectDefinitionId(), null, false,
+					null));
+			Assert.assertEquals(
+				StringPool.BLANK,
+				MapUtil.getString(
+					_objectEntryLocalService.getValues(
+						objectEntry.getObjectEntryId()),
+					textObjectField.getName()));
+
+			String value = RandomTestUtil.randomString();
+
+			_objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					textObjectField.getName(), value
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			_assertExtensionTableInsertSQLs(0, logCapture, objectDefinition1);
+
+			Assert.assertEquals(
+				value,
+				MapUtil.getString(
+					_objectEntryLocalService.getValues(
+						objectEntry.getObjectEntryId()),
+					textObjectField.getName()));
+
+			ObjectField stateObjectField = _addCustomObjectField(
+				new PicklistObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).listTypeDefinitionId(
+					_listTypeDefinition.getListTypeDefinitionId()
+				).name(
+					"a" + RandomTestUtil.randomString()
+				).objectDefinitionId(
+					objectDefinition1.getObjectDefinitionId()
+				).objectFieldSettings(
+					Arrays.asList(
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_DEFAULT_VALUE
+						).value(
+							"listTypeEntryKey1"
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_DEFAULT_VALUE_TYPE
+						).value(
+							ObjectFieldSettingConstants.VALUE_INPUT_AS_VALUE
+						).build())
+				).required(
+					true
+				).state(
+					true
+				).build());
+
+			Assert.assertEquals(
+				"listTypeEntryKey1",
+				MapUtil.getString(
+					_objectEntryLocalService.getValues(
+						objectEntry.getObjectEntryId()),
+					stateObjectField.getName()));
+
+			ObjectRelationship objectRelationship =
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService, objectDefinition1,
+					objectDefinition2);
+
+			ObjectField relationshipObjectField =
+				_objectFieldLocalService.fetchObjectField(
+					objectRelationship.getObjectFieldId2());
+
+			Assert.assertEquals(
+				objectDefinition2.getExtensionDBTableName(),
+				relationshipObjectField.getDBTableName());
+
+			_addObjectEntry(
+				0, objectDefinition2.getObjectDefinitionId(),
+				Collections.emptyMap());
+
+			_assertExtensionTableInsertSQLs(1, logCapture, objectDefinition2);
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition1);
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition2);
+		}
+	}
+
+	@Test
 	public void testUpdateObjectEntryWithJavaDelegateObjectValidationRule()
 		throws Exception {
 
@@ -10150,6 +10376,26 @@ public class ObjectEntryLocalServiceTest {
 
 		Assert.assertEquals(expectedClassName, dlFileEntry.getClassName());
 		Assert.assertEquals(expectedClassPK, dlFileEntry.getClassPK());
+	}
+
+	private void _assertExtensionTableInsertSQLs(
+		int expectedCount, LogCapture logCapture,
+		ObjectDefinition objectDefinition) {
+
+		List<String> sqls = new ArrayList<>();
+
+		for (LogEntry logEntry : logCapture.getLogEntries()) {
+			String message = logEntry.getMessage();
+
+			if (message.startsWith(
+					"SQL: insert into " +
+						objectDefinition.getExtensionDBTableName())) {
+
+				sqls.add(message);
+			}
+		}
+
+		Assert.assertEquals(sqls.toString(), expectedCount, sqls.size());
 	}
 
 	private void _assertFailureObjectValidationRule(
