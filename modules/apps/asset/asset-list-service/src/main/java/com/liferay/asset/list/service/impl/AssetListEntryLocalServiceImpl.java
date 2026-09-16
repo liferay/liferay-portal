@@ -31,6 +31,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -649,7 +651,18 @@ public class AssetListEntryLocalServiceImpl
 			return AssetEntry.class.getName();
 		}
 
-		return _portal.getClassName(defaultAssetType);
+		String className = _portal.fetchClassName(defaultAssetType);
+
+		if (Validator.isNull(className)) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to resolve class name ID " + defaultAssetType);
+			}
+
+			return AssetEntry.class.getName();
+		}
+
+		return className;
 	}
 
 	private String _getAssetRendererFactoryName(String assetEntryType) {
@@ -944,6 +957,9 @@ public class AssetListEntryLocalServiceImpl
 			throw new DuplicateAssetListEntryTitleException();
 		}
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetListEntryLocalServiceImpl.class);
 
 	@Reference
 	private AssetEntryLocalService _assetEntryLocalService;

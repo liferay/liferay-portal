@@ -187,7 +187,7 @@ public class AssetListAssetEntryProviderImpl
 			if (classNameIds.length == 1) {
 				classTypeIds = _getClassTypeIds(
 					assetListEntry, unicodeProperties,
-					_portal.getClassName(classNameIds[0]));
+					_portal.fetchClassName(classNameIds[0]));
 
 				assetEntryQuery.setClassTypeIds(classTypeIds);
 			}
