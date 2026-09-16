@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
 import java.util.Locale;
@@ -87,9 +88,14 @@ public class AssetListTypePropertiesUtil {
 			return null;
 		}
 
+		String className = PortalUtil.fetchClassName(classNameId);
+
+		if (Validator.isNull(className)) {
+			return null;
+		}
+
 		return ObjectDefinitionLocalServiceUtil.
-			fetchObjectDefinitionByClassName(
-				companyId, PortalUtil.getClassName(classNameId));
+			fetchObjectDefinitionByClassName(companyId, className);
 	}
 
 	private static JSONObject _getCommonFieldJSONObject(
