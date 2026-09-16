@@ -161,85 +161,84 @@ public class AttachmentObjectFieldBusinessType
 		UnsafeSupplierValue<LiferayFileEntry, Exception>
 			liferayFileEntryUnsafeSupplierValue = new UnsafeSupplierValue<>(
 				() -> _toValue(
-					dlFileEntryUnsafeSupplierValue, LiferayFileEntry::new));
+					LiferayFileEntry::new, dlFileEntryUnsafeSupplierValue));
 
 		return new FileEntry() {
 			{
 				setAlternativeText(
 					() -> _toValue(
-						liferayFileEntryUnsafeSupplierValue,
 						liferayFileEntry -> {
 							FileVersion fileVersion =
 								liferayFileEntry.getFileVersion();
 
 							return fileVersion.getDescription();
-						}));
+						},
+						liferayFileEntryUnsafeSupplierValue));
 				setExtension(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
-						DLFileEntry::getExtension));
+						DLFileEntry::getExtension,
+						dlFileEntryUnsafeSupplierValue));
 				setExternalReferenceCode(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
-						DLFileEntry::getExternalReferenceCode));
+						DLFileEntry::getExternalReferenceCode,
+						dlFileEntryUnsafeSupplierValue));
 				setFileBase64(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
-						dlFileEntry -> _getFileBase64(
-							dlFileEntry, objectField)));
+						dlFileEntry -> _getFileBase64(dlFileEntry, objectField),
+						dlFileEntryUnsafeSupplierValue));
 				setFileURL(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
-						dlFileEntry -> _getFileURL(dlFileEntry, objectField)));
+						dlFileEntry -> _getFileURL(dlFileEntry, objectField),
+						dlFileEntryUnsafeSupplierValue));
 				setFolder(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
-						dlFileEntry -> _getFolder(dlFileEntry, objectField)));
+						dlFileEntry -> _getFolder(dlFileEntry, objectField),
+						dlFileEntryUnsafeSupplierValue));
 				setId(() -> fileEntryId);
 				setLink(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
 						dlFileEntry -> LinkUtil.toLink(
 							_dlAppService, dlFileEntry, _dlURLHelper,
 							objectEntry.getGroupId(),
 							objectDefinition.getExternalReferenceCode(),
 							objectEntry, _objectEntryService, objectField,
-							GuestOrUserUtil.getPermissionChecker(), _portal)));
+							GuestOrUserUtil.getPermissionChecker(), _portal),
+						dlFileEntryUnsafeSupplierValue));
 				setMetadata(
 					() -> _toValue(
-						liferayFileEntryUnsafeSupplierValue,
 						liferayFileEntry -> _getMetadata(
 							liferayFileEntry.getFileVersion(),
-							dtoConverterContext.getLocale(), objectField)));
+							dtoConverterContext.getLocale(), objectField),
+						liferayFileEntryUnsafeSupplierValue));
 				setMimeType(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
-						DLFileEntry::getMimeType));
+						DLFileEntry::getMimeType,
+						dlFileEntryUnsafeSupplierValue));
 				setName(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
-						DLFileEntry::getFileName));
+						DLFileEntry::getFileName,
+						dlFileEntryUnsafeSupplierValue));
 				setPreviewURL(
 					() -> _toValue(
-						liferayFileEntryUnsafeSupplierValue,
 						liferayFileEntry -> _getPreviewURL(
-							liferayFileEntry, objectField)));
+							liferayFileEntry, objectField),
+						liferayFileEntryUnsafeSupplierValue));
 				setScope(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
 						dlFileEntry -> _getScope(
-							dlFileEntry, objectDefinition, objectEntry)));
+							dlFileEntry, objectDefinition, objectEntry),
+						dlFileEntryUnsafeSupplierValue));
 				setSize(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
 						dlFileEntry -> LanguageUtil.formatStorageSize(
 							dlFileEntry.getSize(),
-							dtoConverterContext.getLocale())));
+							dtoConverterContext.getLocale()),
+						dlFileEntryUnsafeSupplierValue));
 				setThumbnailURL(
 					() -> _toValue(
-						dlFileEntryUnsafeSupplierValue,
 						dlFileEntry -> _getThumbnailURL(
-							dlFileEntry, objectField)));
+							dlFileEntry, objectField),
+						dlFileEntryUnsafeSupplierValue));
 			}
 		};
 	}
@@ -762,8 +761,8 @@ public class AttachmentObjectFieldBusinessType
 	}
 
 	private <S, T> T _toValue(
-			UnsafeSupplierValue<S, Exception> unsafeSupplierValue,
-			UnsafeFunction<S, T, Exception> unsafeFunction)
+			UnsafeFunction<S, T, Exception> unsafeFunction,
+			UnsafeSupplierValue<S, Exception> unsafeSupplierValue)
 		throws Exception {
 
 		S value = unsafeSupplierValue.getValue();
