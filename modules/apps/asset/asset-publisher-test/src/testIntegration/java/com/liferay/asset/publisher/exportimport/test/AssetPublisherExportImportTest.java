@@ -249,28 +249,22 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	public void testChildLayoutScopeIds() throws Exception {
 		Group childGroup = GroupTestUtil.addGroup(group.getGroupId());
 
-		Map<String, String[]> preferenceMap = HashMapBuilder.put(
-			"scopeIds",
-			new String[] {
-				AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX +
-					childGroup.getGroupId()
-			}
-		).build();
+		PortletPreferences portletPreferences = getImportedPortletPreferences(
+			HashMapBuilder.put(
+				"scopeIds",
+				new String[] {
+					AssetPublisherHelper.SCOPE_ID_CHILD_GROUP_PREFIX +
+						childGroup.getGroupId()
+				}
+			).build());
 
-		try {
-			PortletPreferences portletPreferences =
-				getImportedPortletPreferences(preferenceMap);
+		Assert.assertEquals(null, portletPreferences.getValue("scopeId", null));
+		Assert.assertEquals(
+			AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
+				childGroup.getGroupId(),
+			portletPreferences.getValue("scopeIds", null));
 
-			Assert.assertEquals(
-				null, portletPreferences.getValue("scopeId", null));
-			Assert.assertEquals(
-				AssetPublisherHelper.SCOPE_ID_GROUP_PREFIX +
-					childGroup.getGroupId(),
-				portletPreferences.getValue("scopeIds", null));
-		}
-		finally {
-			_groupLocalService.deleteGroup(childGroup);
-		}
+		_groupLocalService.deleteGroup(childGroup);
 	}
 
 	@Test
@@ -1643,29 +1637,21 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		Map<String, Object> portletConfiguration;
+		Map<String, Object> portletConfiguration =
+			_portletPreferencesPortletConfigurationExporter.
+				getPortletConfiguration(layout.getPlid(), portletId);
 
-		try {
-			portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(layout.getPlid(), portletId);
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
 
 		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		try {
-			_portletPreferencesPortletConfigurationImporter.
-				importPortletConfiguration(
-					importedLayout.getPlid(), portletId, portletConfiguration);
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		_portletPreferencesPortletConfigurationImporter.
+			importPortletConfiguration(
+				importedLayout.getPlid(), portletId, portletConfiguration);
+
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
 
 		return LayoutTestUtil.getPortletPreferences(importedLayout, portletId);
 	}
