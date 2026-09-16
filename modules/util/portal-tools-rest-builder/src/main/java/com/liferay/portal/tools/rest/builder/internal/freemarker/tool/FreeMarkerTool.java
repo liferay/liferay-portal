@@ -323,9 +323,7 @@ public class FreeMarkerTool {
 	}
 
 	public String getDTOParentClassName(
-		OpenAPIYAML openAPIYAML, String schemaName) {
-
-		Map<String, Schema> schemas = getSchemas(openAPIYAML);
+		String schemaName, Map<String, Schema> schemas) {
 
 		Schema schema = schemas.get(schemaName);
 

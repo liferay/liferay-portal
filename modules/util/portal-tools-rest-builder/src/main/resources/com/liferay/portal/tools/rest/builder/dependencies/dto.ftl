@@ -119,7 +119,7 @@ import java.util.function.Supplier;
 
 @XmlRootElement(name = "${schemaName}")
 
-<#assign dtoParentClassName = freeMarkerTool.getDTOParentClassName(openAPIYAML, schemaName)! />
+<#assign dtoParentClassName = freeMarkerTool.getDTOParentClassName(schemaName, allSchemas)! />
 
 public <#if schema.discriminator?has_content>abstract</#if> class ${schemaName} <#if dtoParentClassName?has_content>extends ${dtoParentClassName}</#if> implements Serializable {
 

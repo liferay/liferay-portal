@@ -57,7 +57,7 @@ public class ${schemaName}SerDes {
 			enumSchemas = freeMarkerTool.getDTOEnumSchemas(configYAML, openAPIYAML, schema)
 			properties = freeMarkerTool.getDTOProperties(configYAML, openAPIYAML, schema, allSchemas)
 
-			dtoParentClassName = freeMarkerTool.getDTOParentClassName(openAPIYAML, schemaName)!
+			dtoParentClassName = freeMarkerTool.getDTOParentClassName(schemaName, allSchemas)!
 		/>
 
 		<#if schema.discriminator?has_content>
