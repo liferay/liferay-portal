@@ -152,8 +152,7 @@ components:
                     type: string
                 assetType:
                     description:
-                        "Asset category."
-                    enum: [BLOG, DOCUMENT, FORM, JOURNAL, OBJECT_ENTRY, PAGE]
+                        "Asset category as reported by the analytics engine (e.g. Blog, Document, Form, Journal, Page)."
                     readOnly: true
                     type: string
                 downloads:
