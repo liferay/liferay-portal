@@ -402,74 +402,20 @@ public class BaseTopLevelBuildReportTest
 		Assert.assertNull(
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
 
-		UrlReader urlReader = mockUrlReader();
-
-		setUrlReaderOutput(
-			String.valueOf(
-				new JSONObject(
-				).put(
-					"builds",
-					new JSONArray(
-					).put(
-						_newControllerBuildJSONObject(4, "SUCCESS")
-					).put(
-						_newControllerBuildJSONObject(3, "SUCCESS")
-					).put(
-						_newControllerBuildJSONObject(2, "ABORTED")
-					).put(
-						_newControllerBuildJSONObject(1, "SUCCESS")
-					)
-				)),
-			"http://test-1-1/job/controller-job", urlReader);
-
-		setUrlReaderOutput("{}", "previous-job/1/", urlReader);
-
-		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
-
-		baseTopLevelBuildReport.setControllerBuildReport(
-			_newControllerBuildReport(3));
+		baseTopLevelBuildReport = _testGetPreviousTopLevelBuildReport(
+			3, "https://test-1-1.liferay.com/job/previous-job/1",
+			_newControllerBuildJSONObject(4, "SUCCESS"),
+			_newControllerBuildJSONObject(3, "SUCCESS"),
+			_newControllerBuildJSONObject(2, "ABORTED"),
+			_newControllerBuildJSONObject(1, "SUCCESS"));
 
 		TopLevelBuildReport previousTopLevelBuildReport =
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport();
-
-		Assert.assertEquals(
-			"https://test-1-1.liferay.com/job/previous-job/1",
-			String.valueOf(previousTopLevelBuildReport.getBuildURL()));
 
 		_clearCache(BuildReportFactory.class, "_topLevelBuildReports");
 
 		Assert.assertSame(
 			previousTopLevelBuildReport,
-			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
-
-		setUrlReaderOutput(
-			String.valueOf(
-				new JSONObject(
-				).put(
-					"builds",
-					new JSONArray(
-					).put(
-						new JSONObject(
-						).put(
-							"number", 3
-						)
-					).put(
-						new JSONObject(
-						).put(
-							"description", RandomTestUtil.randomString()
-						).put(
-							"number", 2
-						)
-					)
-				)),
-			"http://test-1-1/job/controller-job", urlReader);
-
-		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
-
-		baseTopLevelBuildReport.setControllerBuildReport(
-			_newControllerBuildReport(3));
-
-		Assert.assertNull(
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
 
 		_testGetPreviousTopLevelBuildReport(
@@ -488,6 +434,18 @@ public class BaseTopLevelBuildReportTest
 			_newControllerBuildJSONObject(2, "UNSTABLE"),
 			_newControllerBuildJSONObject(1, "SUCCESS"));
 		_testGetPreviousTopLevelBuildReport(3, null);
+		_testGetPreviousTopLevelBuildReport(
+			3, null,
+			new JSONObject(
+			).put(
+				"number", 3
+			),
+			new JSONObject(
+			).put(
+				"description", RandomTestUtil.randomString()
+			).put(
+				"number", 2
+			));
 	}
 
 	@Test
@@ -942,7 +900,7 @@ public class BaseTopLevelBuildReportTest
 		Assert.assertNull(baseTopLevelBuildReport.getControllerBuildReport());
 	}
 
-	private void _testGetPreviousTopLevelBuildReport(
+	private BaseTopLevelBuildReport _testGetPreviousTopLevelBuildReport(
 			int currentBuildNumber, String expectedBuildURLString,
 			JSONObject... controllerBuildJSONObjects)
 		throws Exception {
@@ -963,11 +921,11 @@ public class BaseTopLevelBuildReportTest
 			controllerJobJSONObject.put("builds", buildsJSONArray);
 		}
 
+		setUrlReaderOutput("{}", "previous-job/", urlReader);
+
 		setUrlReaderOutput(
 			String.valueOf(controllerJobJSONObject),
 			"http://test-1-1/job/controller-job", urlReader);
-
-		setUrlReaderOutput("{}", "previous-job/", urlReader);
 
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport();
@@ -980,13 +938,14 @@ public class BaseTopLevelBuildReportTest
 
 		if (expectedBuildURLString == null) {
 			Assert.assertNull(previousTopLevelBuildReport);
-
-			return;
+		}
+		else {
+			Assert.assertEquals(
+				expectedBuildURLString,
+				String.valueOf(previousTopLevelBuildReport.getBuildURL()));
 		}
 
-		Assert.assertEquals(
-			expectedBuildURLString,
-			String.valueOf(previousTopLevelBuildReport.getBuildURL()));
+		return baseTopLevelBuildReport;
 	}
 
 	private void _testGetTestResultsJSONUserContentURL(
