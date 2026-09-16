@@ -81,8 +81,18 @@ public class SystemFDSSerializerTest {
 				getObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_SNAPSHOT", TestPropsValues.getCompanyId());
 
-		_dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
-			_FDS_NAME, _LABEL, objectDefinition);
+		_dataSetSnapshotObjectEntry = _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"fdsName", _FDS_NAME
+			).put(
+				"label", _LABEL
+			).put(
+				"viewConfig", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 
 		_memberUser = UserTestUtil.addUser();
 
@@ -107,8 +117,7 @@ public class SystemFDSSerializerTest {
 		JSONArray jsonArray = _fdsSerializer.serializeSnapshots(
 			_FDS_NAME, _getHttpServletRequest(_memberUser.getUserId()));
 
-		JSONObject itemJSONObject = _getItemJSONObject(
-			jsonArray, _dataSetSnapshotObjectEntry.getObjectEntryId());
+		JSONObject itemJSONObject = _getItemJSONObject(jsonArray);
 
 		Assert.assertEquals(_LABEL, itemJSONObject.getString("label"));
 
@@ -117,9 +126,7 @@ public class SystemFDSSerializerTest {
 		jsonArray = _fdsSerializer.serializeSnapshots(
 			_FDS_NAME, _getHttpServletRequest(_nonmemberUser.getUserId()));
 
-		Assert.assertNull(
-			_getItemJSONObject(
-				jsonArray, _dataSetSnapshotObjectEntry.getObjectEntryId()));
+		Assert.assertNull(_getItemJSONObject(jsonArray));
 	}
 
 	@Test
@@ -137,7 +144,7 @@ public class SystemFDSSerializerTest {
 					"L_DATA_SET_USER_CONFIGURATION",
 					TestPropsValues.getCompanyId());
 
-		// malformed configuration
+		// malformed data set user configuration
 
 		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
@@ -157,7 +164,7 @@ public class SystemFDSSerializerTest {
 			_fdsSerializer.serializeUserConfiguration(
 				_FDS_NAME, httpServletRequest));
 
-		// unknown key in configuration
+		// random entry in data set user configuration
 
 		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.addOrUpdateObjectEntry(
@@ -180,7 +187,7 @@ public class SystemFDSSerializerTest {
 			_fdsSerializer.serializeUserConfiguration(
 				_FDS_NAME, httpServletRequest));
 
-		// valid configuration
+		// valid data set user configuration
 
 		_dataSetUserConfigurationObjectEntry =
 			_objectEntryLocalService.updateObjectEntry(
@@ -209,24 +216,6 @@ public class SystemFDSSerializerTest {
 			JSONCompareMode.STRICT);
 	}
 
-	private ObjectEntry _addDataSetSnapshotObjectEntry(
-			String fdsName, String label, ObjectDefinition objectDefinition)
-		throws Exception {
-
-		return _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"fdsName", fdsName
-			).put(
-				"label", label
-			).put(
-				"viewConfig", RandomTestUtil.randomString()
-			).build(),
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
-	}
-
 	private HttpServletRequest _getHttpServletRequest(long userId)
 		throws Exception {
 
@@ -241,9 +230,7 @@ public class SystemFDSSerializerTest {
 		return mockHttpServletRequest;
 	}
 
-	private JSONObject _getItemJSONObject(
-		JSONArray jsonArray, long objectEntryId) {
-
+	private JSONObject _getItemJSONObject(JSONArray jsonArray) {
 		for (int i = 0; i < jsonArray.length(); i++) {
 			JSONObject groupJSONObject = jsonArray.getJSONObject(i);
 
@@ -256,7 +243,9 @@ public class SystemFDSSerializerTest {
 			for (int j = 0; j < itemsJSONArray.length(); j++) {
 				JSONObject itemJSONObject = itemsJSONArray.getJSONObject(j);
 
-				if (itemJSONObject.getLong("id") == objectEntryId) {
+				if (itemJSONObject.getLong("id") ==
+						_dataSetSnapshotObjectEntry.getObjectEntryId()) {
+
 					return itemJSONObject;
 				}
 			}
