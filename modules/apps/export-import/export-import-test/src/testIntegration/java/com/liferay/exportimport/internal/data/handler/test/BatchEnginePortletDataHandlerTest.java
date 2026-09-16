@@ -1579,10 +1579,15 @@ public class BatchEnginePortletDataHandlerTest {
 		Layout layout1 = LayoutTestUtil.addTypePortletLayout(group1);
 		Layout layout2 = LayoutTestUtil.addTypePortletLayout(group1);
 
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+			group1, layout1.getPlid());
+
 		File larFile = new ExportImportExecutor(
 		).withGroupId(
 			group1.getGroupId()
 		).withIncludeLayoutSetLayouts(
+		).withLayoutId(
+			childLayout.getLayoutId()
 		).withLayoutId(
 			layout1.getLayoutId()
 		).executeExport();
@@ -1601,6 +1606,11 @@ public class BatchEnginePortletDataHandlerTest {
 			layout1.getExternalReferenceCode(), group2.getGroupId());
 
 		Assert.assertNotNull(layout1);
+
+		childLayout = _layoutLocalService.fetchLayoutByExternalReferenceCode(
+			childLayout.getExternalReferenceCode(), group2.getGroupId());
+
+		Assert.assertEquals(layout1.getPlid(), childLayout.getParentPlid());
 
 		layout2 = _layoutLocalService.fetchLayoutByExternalReferenceCode(
 			layout2.getExternalReferenceCode(), group2.getGroupId());
