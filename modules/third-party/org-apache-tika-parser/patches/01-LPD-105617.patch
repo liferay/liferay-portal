@@ -1,0 +1,36 @@
+diff --git a/org/apache/tika/parser/isatab/ISArchiveParser.java b/org/apache/tika/parser/isatab/ISArchiveParser.java
+index 15abe95..a74e11b 100644
+--- a/org/apache/tika/parser/isatab/ISArchiveParser.java
++++ b/org/apache/tika/parser/isatab/ISArchiveParser.java
+@@ -20,6 +20,7 @@ import java.io.File;
+ import java.io.FilenameFilter;
+ import java.io.IOException;
+ import java.io.InputStream;
++import java.nio.file.Path;
+ import java.util.Collections;
+ import java.util.Set;
+ 
+@@ -134,13 +135,19 @@ public class ISArchiveParser implements Parser {
+ 	}
+ 	
+ 	private void parseAssay(XHTMLContentHandler xhtml, Metadata metadata, ParseContext context) throws IOException, SAXException, TikaException {
++		Path locationPath = new File(this.location).toPath().normalize();
+ 		for (String assayFileName : metadata.getValues(studyAssayFileNameField)) {
+ 			xhtml.startElement("div");
+ 			xhtml.element("h3", "ASSAY " + assayFileName);
+-			InputStream stream = TikaInputStream.get(new File(this.location + assayFileName));
+-			ISATabUtils.parseAssay(stream, xhtml, metadata, context);
+-			stream.close();
++			Path assayPath = locationPath.resolve(assayFileName).normalize();
++			if (!assayPath.startsWith(locationPath)) {
++				throw new IOException("The assay file \"" + assayFileName + "\" is outside of the ISA-Tab directory \"" + locationPath + "\"");
++			}
++			try (InputStream stream = TikaInputStream.get(assayPath)) {
++				ISATabUtils.parseAssay(stream, xhtml, metadata, context);
++			}
+ 			xhtml.endElement("div");
+ 		}
+ 	}
+ }
++/* @generated */
+\ No newline at end of file
