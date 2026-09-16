@@ -47,12 +47,13 @@ function buildInitialState({
 	const child: RepeatableGroup = {
 		children: new Map(),
 		erc: 'child-erc',
+		isRepeatable: true,
 		label: childLabel,
 		name: 'group',
 		parent: STRUCTURE_UUID,
 		relationshipERC: 'rel-erc',
 		relationshipName: 'rel',
-		type: 'repeatable-group',
+		type: 'group',
 		uuid: CHILD_UUID,
 	};
 

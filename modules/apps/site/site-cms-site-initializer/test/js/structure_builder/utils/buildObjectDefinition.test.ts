@@ -467,12 +467,13 @@ describe('buildObjectDefinition', () => {
 		const repeatableGroup: RepeatableGroup = {
 			children: new Map(),
 			erc: 'group-erc',
+			isRepeatable: true,
 			label: {en_US: 'Repeatable Group'},
 			name: 'repeatableGroup',
 			parent: getUuid(),
 			relationshipERC: 'group-rel-erc',
 			relationshipName: 'groupRelationship',
-			type: 'repeatable-group',
+			type: 'group',
 			uuid: groupUuid,
 		};
 

@@ -479,9 +479,7 @@ describe('buildStructure', () => {
 			children.filter((child) => child.type === 'related-content')
 		).toEqual([]);
 
-		expect(
-			children.filter((child) => child.type === 'repeatable-group')
-		).toEqual([
+		expect(children.filter((child) => child.type === 'group')).toEqual([
 			expect.objectContaining({
 				erc: 'SELF_GROUP_ERC',
 				relationshipERC: 'self-group',
