@@ -51,7 +51,12 @@ export function BaseLinkRenderer({
 				<ClayIcon symbol={symbol} />
 			</ClaySticker>
 
-			<ClayLink aria-label={value} data-senna-off href={formattedHref}>
+			<ClayLink
+				aria-label={value}
+				data-senna-off
+				href={formattedHref}
+				onClick={(event) => event.stopPropagation()}
+			>
 				{value}
 			</ClayLink>
 		</div>
