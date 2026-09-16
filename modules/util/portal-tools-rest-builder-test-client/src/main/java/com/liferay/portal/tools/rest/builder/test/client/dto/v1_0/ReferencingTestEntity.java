@@ -50,6 +50,54 @@ public class ReferencingTestEntity implements Cloneable, Serializable {
 
 	protected ExternalScopedTestEntity externalScopedTestEntity;
 
+	public ExternalTestEntity1 getExternalTestEntity1() {
+		return externalTestEntity1;
+	}
+
+	public void setExternalTestEntity1(
+		ExternalTestEntity1 externalTestEntity1) {
+
+		this.externalTestEntity1 = externalTestEntity1;
+	}
+
+	public void setExternalTestEntity1(
+		UnsafeSupplier<ExternalTestEntity1, Exception>
+			externalTestEntity1UnsafeSupplier) {
+
+		try {
+			externalTestEntity1 = externalTestEntity1UnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ExternalTestEntity1 externalTestEntity1;
+
+	public ExternalTestEntity2 getExternalTestEntity2() {
+		return externalTestEntity2;
+	}
+
+	public void setExternalTestEntity2(
+		ExternalTestEntity2 externalTestEntity2) {
+
+		this.externalTestEntity2 = externalTestEntity2;
+	}
+
+	public void setExternalTestEntity2(
+		UnsafeSupplier<ExternalTestEntity2, Exception>
+			externalTestEntity2UnsafeSupplier) {
+
+		try {
+			externalTestEntity2 = externalTestEntity2UnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ExternalTestEntity2 externalTestEntity2;
+
 	@Override
 	public ReferencingTestEntity clone() throws CloneNotSupportedException {
 		return (ReferencingTestEntity)super.clone();
@@ -83,4 +131,4 @@ public class ReferencingTestEntity implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:717412057
+// LIFERAY-REST-BUILDER-HASH:-896499469

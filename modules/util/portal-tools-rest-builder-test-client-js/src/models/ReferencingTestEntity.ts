@@ -4,6 +4,8 @@
  */
 
 			import {ExternalScopedTestEntity} from './ExternalScopedTestEntity';
+			import {ExternalTestEntity1} from './ExternalTestEntity1';
+			import {ExternalTestEntity2} from './ExternalTestEntity2';
 
 /**
  * @author Alejandro Tardín
@@ -12,6 +14,8 @@
 
 	export class ReferencingTestEntity {
 			"externalScopedTestEntity"?: ExternalScopedTestEntity;
+			"externalTestEntity1"?: ExternalTestEntity1;
+			"externalTestEntity2"?: ExternalTestEntity2;
 
 		static "discriminator": string | undefined = undefined;
 
@@ -24,6 +28,16 @@
 			baseName: "externalScopedTestEntity",
 			name: "externalScopedTestEntity",
 			type: "ExternalScopedTestEntity",
+		},
+		{
+			baseName: "externalTestEntity1",
+			name: "externalTestEntity1",
+			type: "ExternalTestEntity1",
+		},
+		{
+			baseName: "externalTestEntity2",
+			name: "externalTestEntity2",
+			type: "ExternalTestEntity2",
 		},
 		];
 

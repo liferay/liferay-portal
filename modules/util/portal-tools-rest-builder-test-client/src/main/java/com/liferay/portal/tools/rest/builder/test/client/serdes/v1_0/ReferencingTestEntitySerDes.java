@@ -57,6 +57,26 @@ public class ReferencingTestEntitySerDes {
 			sb.append(referencingTestEntity.getExternalScopedTestEntity());
 		}
 
+		if (referencingTestEntity.getExternalTestEntity1() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalTestEntity1\": ");
+
+			sb.append(referencingTestEntity.getExternalTestEntity1());
+		}
+
+		if (referencingTestEntity.getExternalTestEntity2() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalTestEntity2\": ");
+
+			sb.append(referencingTestEntity.getExternalTestEntity2());
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -88,6 +108,24 @@ public class ReferencingTestEntitySerDes {
 					referencingTestEntity.getExternalScopedTestEntity()));
 		}
 
+		if (referencingTestEntity.getExternalTestEntity1() == null) {
+			map.put("externalTestEntity1", null);
+		}
+		else {
+			map.put(
+				"externalTestEntity1",
+				String.valueOf(referencingTestEntity.getExternalTestEntity1()));
+		}
+
+		if (referencingTestEntity.getExternalTestEntity2() == null) {
+			map.put("externalTestEntity2", null);
+		}
+		else {
+			map.put(
+				"externalTestEntity2",
+				String.valueOf(referencingTestEntity.getExternalTestEntity2()));
+		}
+
 		return map;
 	}
 
@@ -111,6 +149,16 @@ public class ReferencingTestEntitySerDes {
 
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalTestEntity1")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalTestEntity2")) {
+
+				return false;
+			}
 
 			return false;
 		}
@@ -126,6 +174,24 @@ public class ReferencingTestEntitySerDes {
 				if (jsonParserFieldValue != null) {
 					referencingTestEntity.setExternalScopedTestEntity(
 						ExternalScopedTestEntitySerDes.toDTO(
+							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalTestEntity1")) {
+
+				if (jsonParserFieldValue != null) {
+					referencingTestEntity.setExternalTestEntity1(
+						ExternalTestEntity1SerDes.toDTO(
+							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalTestEntity2")) {
+
+				if (jsonParserFieldValue != null) {
+					referencingTestEntity.setExternalTestEntity2(
+						ExternalTestEntity2SerDes.toDTO(
 							(String)jsonParserFieldValue));
 				}
 			}
@@ -216,4 +282,4 @@ public class ReferencingTestEntitySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1584692043
+// LIFERAY-REST-BUILDER-HASH:2088097346

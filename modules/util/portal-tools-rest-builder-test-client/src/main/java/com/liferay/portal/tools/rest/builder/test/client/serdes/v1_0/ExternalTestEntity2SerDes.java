@@ -5,7 +5,7 @@
 
 package com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0;
 
-import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.ExternalScopedTestEntity;
+import com.liferay.portal.tools.rest.builder.test.client.dto.v1_0.ExternalTestEntity2;
 import com.liferay.portal.tools.rest.builder.test.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,26 +22,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class ExternalScopedTestEntitySerDes {
+public class ExternalTestEntity2SerDes {
 
-	public static ExternalScopedTestEntity toDTO(String json) {
-		ExternalScopedTestEntityJSONParser externalScopedTestEntityJSONParser =
-			new ExternalScopedTestEntityJSONParser();
+	public static ExternalTestEntity2 toDTO(String json) {
+		ExternalTestEntity2JSONParser externalTestEntity2JSONParser =
+			new ExternalTestEntity2JSONParser();
 
-		return externalScopedTestEntityJSONParser.parseToDTO(json);
+		return externalTestEntity2JSONParser.parseToDTO(json);
 	}
 
-	public static ExternalScopedTestEntity[] toDTOs(String json) {
-		ExternalScopedTestEntityJSONParser externalScopedTestEntityJSONParser =
-			new ExternalScopedTestEntityJSONParser();
+	public static ExternalTestEntity2[] toDTOs(String json) {
+		ExternalTestEntity2JSONParser externalTestEntity2JSONParser =
+			new ExternalTestEntity2JSONParser();
 
-		return externalScopedTestEntityJSONParser.parseToDTOs(json);
+		return externalTestEntity2JSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(
-		ExternalScopedTestEntity externalScopedTestEntity) {
-
-		if (externalScopedTestEntity == null) {
+	public static String toJSON(ExternalTestEntity2 externalTestEntity2) {
+		if (externalTestEntity2 == null) {
 			return "null";
 		}
 
@@ -49,7 +47,7 @@ public class ExternalScopedTestEntitySerDes {
 
 		sb.append("{");
 
-		if (externalScopedTestEntity.getExternalReferenceCode() != null) {
+		if (externalTestEntity2.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -58,20 +56,9 @@ public class ExternalScopedTestEntitySerDes {
 
 			sb.append("\"");
 
-			sb.append(
-				_escape(externalScopedTestEntity.getExternalReferenceCode()));
+			sb.append(_escape(externalTestEntity2.getExternalReferenceCode()));
 
 			sb.append("\"");
-		}
-
-		if (externalScopedTestEntity.getScope() != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"scope\": ");
-
-			sb.append(externalScopedTestEntity.getScope());
 		}
 
 		sb.append("}");
@@ -80,61 +67,49 @@ public class ExternalScopedTestEntitySerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		ExternalScopedTestEntityJSONParser externalScopedTestEntityJSONParser =
-			new ExternalScopedTestEntityJSONParser();
+		ExternalTestEntity2JSONParser externalTestEntity2JSONParser =
+			new ExternalTestEntity2JSONParser();
 
-		return externalScopedTestEntityJSONParser.parseToMap(json);
+		return externalTestEntity2JSONParser.parseToMap(json);
 	}
 
 	public static Map<String, String> toMap(
-		ExternalScopedTestEntity externalScopedTestEntity) {
+		ExternalTestEntity2 externalTestEntity2) {
 
-		if (externalScopedTestEntity == null) {
+		if (externalTestEntity2 == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (externalScopedTestEntity.getExternalReferenceCode() == null) {
+		if (externalTestEntity2.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
 		else {
 			map.put(
 				"externalReferenceCode",
-				String.valueOf(
-					externalScopedTestEntity.getExternalReferenceCode()));
-		}
-
-		if (externalScopedTestEntity.getScope() == null) {
-			map.put("scope", null);
-		}
-		else {
-			map.put(
-				"scope", String.valueOf(externalScopedTestEntity.getScope()));
+				String.valueOf(externalTestEntity2.getExternalReferenceCode()));
 		}
 
 		return map;
 	}
 
-	public static class ExternalScopedTestEntityJSONParser
-		extends BaseJSONParser<ExternalScopedTestEntity> {
+	public static class ExternalTestEntity2JSONParser
+		extends BaseJSONParser<ExternalTestEntity2> {
 
 		@Override
-		protected ExternalScopedTestEntity createDTO() {
-			return new ExternalScopedTestEntity();
+		protected ExternalTestEntity2 createDTO() {
+			return new ExternalTestEntity2();
 		}
 
 		@Override
-		protected ExternalScopedTestEntity[] createDTOArray(int size) {
-			return new ExternalScopedTestEntity[size];
+		protected ExternalTestEntity2[] createDTOArray(int size) {
+			return new ExternalTestEntity2[size];
 		}
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
 			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "scope")) {
 				return false;
 			}
 
@@ -143,20 +118,13 @@ public class ExternalScopedTestEntitySerDes {
 
 		@Override
 		protected void setField(
-			ExternalScopedTestEntity externalScopedTestEntity,
-			String jsonParserFieldName, Object jsonParserFieldValue) {
+			ExternalTestEntity2 externalTestEntity2, String jsonParserFieldName,
+			Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
 				if (jsonParserFieldValue != null) {
-					externalScopedTestEntity.setExternalReferenceCode(
+					externalTestEntity2.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "scope")) {
-				if (jsonParserFieldValue != null) {
-					externalScopedTestEntity.setScope(
-						com.liferay.portal.tools.rest.builder.test.client.scope.
-							Scope.toDTO((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -246,4 +214,4 @@ public class ExternalScopedTestEntitySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-240560954
+// LIFERAY-REST-BUILDER-HASH:-1986996661

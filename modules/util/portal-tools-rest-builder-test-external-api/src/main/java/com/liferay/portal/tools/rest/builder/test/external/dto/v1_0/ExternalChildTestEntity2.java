@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.tools.rest.builder.test.dto.v1_0;
+package com.liferay.portal.tools.rest.builder.test.external.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -13,9 +13,6 @@ import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.tools.rest.builder.test.external.dto.v1_0.ExternalScopedTestEntity;
-import com.liferay.portal.tools.rest.builder.test.external.dto.v1_0.ExternalTestEntity1;
-import com.liferay.portal.tools.rest.builder.test.external.dto.v1_0.ExternalTestEntity2;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
@@ -37,52 +34,49 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * @author Alejandro Tardín
+ * @author Rubén Pulido
  * @generated
  */
 @Generated("")
-@GraphQLName("ReferencingTestEntity")
+@GraphQLName("ExternalChildTestEntity2")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "ReferencingTestEntity")
-public class ReferencingTestEntity implements Serializable {
+@XmlRootElement(name = "ExternalChildTestEntity2")
+public class ExternalChildTestEntity2
+	extends ExternalTestEntity1 implements Serializable {
 
-	public static ReferencingTestEntity toDTO(String json) {
-		return ObjectMapperUtil.readValue(ReferencingTestEntity.class, json);
+	public static ExternalChildTestEntity2 toDTO(String json) {
+		return ObjectMapperUtil.readValue(ExternalChildTestEntity2.class, json);
 	}
 
-	public static ReferencingTestEntity unsafeToDTO(String json) {
+	public static ExternalChildTestEntity2 unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(
-			ReferencingTestEntity.class, json);
+			ExternalChildTestEntity2.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	@Valid
-	public ExternalScopedTestEntity getExternalScopedTestEntity() {
-		if (_externalScopedTestEntitySupplier != null) {
-			externalScopedTestEntity = _externalScopedTestEntitySupplier.get();
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCodeSupplier != null) {
+			externalReferenceCode = _externalReferenceCodeSupplier.get();
 
-			_externalScopedTestEntitySupplier = null;
+			_externalReferenceCodeSupplier = null;
 		}
 
-		return externalScopedTestEntity;
+		return externalReferenceCode;
 	}
 
-	public void setExternalScopedTestEntity(
-		ExternalScopedTestEntity externalScopedTestEntity) {
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
 
-		this.externalScopedTestEntity = externalScopedTestEntity;
-
-		_externalScopedTestEntitySupplier = null;
+		_externalReferenceCodeSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setExternalScopedTestEntity(
-		UnsafeSupplier<ExternalScopedTestEntity, Exception>
-			externalScopedTestEntityUnsafeSupplier) {
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
 
-		_externalScopedTestEntitySupplier = () -> {
+		_externalReferenceCodeSupplier = () -> {
 			try {
-				return externalScopedTestEntityUnsafeSupplier.get();
+				return externalReferenceCodeUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -95,40 +89,37 @@ public class ReferencingTestEntity implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected ExternalScopedTestEntity externalScopedTestEntity;
+	protected String externalReferenceCode;
 
 	@JsonIgnore
-	private Supplier<ExternalScopedTestEntity>
-		_externalScopedTestEntitySupplier;
+	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
-	public ExternalTestEntity1 getExternalTestEntity1() {
-		if (_externalTestEntity1Supplier != null) {
-			externalTestEntity1 = _externalTestEntity1Supplier.get();
+	public com.liferay.portal.vulcan.scope.Scope getScope() {
+		if (_scopeSupplier != null) {
+			scope = _scopeSupplier.get();
 
-			_externalTestEntity1Supplier = null;
+			_scopeSupplier = null;
 		}
 
-		return externalTestEntity1;
+		return scope;
 	}
 
-	public void setExternalTestEntity1(
-		ExternalTestEntity1 externalTestEntity1) {
+	public void setScope(com.liferay.portal.vulcan.scope.Scope scope) {
+		this.scope = scope;
 
-		this.externalTestEntity1 = externalTestEntity1;
-
-		_externalTestEntity1Supplier = null;
+		_scopeSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setExternalTestEntity1(
-		UnsafeSupplier<ExternalTestEntity1, Exception>
-			externalTestEntity1UnsafeSupplier) {
+	public void setScope(
+		UnsafeSupplier<com.liferay.portal.vulcan.scope.Scope, Exception>
+			scopeUnsafeSupplier) {
 
-		_externalTestEntity1Supplier = () -> {
+		_scopeSupplier = () -> {
 			try {
-				return externalTestEntity1UnsafeSupplier.get();
+				return scopeUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -141,55 +132,10 @@ public class ReferencingTestEntity implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected ExternalTestEntity1 externalTestEntity1;
+	protected com.liferay.portal.vulcan.scope.Scope scope;
 
 	@JsonIgnore
-	private Supplier<ExternalTestEntity1> _externalTestEntity1Supplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema
-	@Valid
-	public ExternalTestEntity2 getExternalTestEntity2() {
-		if (_externalTestEntity2Supplier != null) {
-			externalTestEntity2 = _externalTestEntity2Supplier.get();
-
-			_externalTestEntity2Supplier = null;
-		}
-
-		return externalTestEntity2;
-	}
-
-	public void setExternalTestEntity2(
-		ExternalTestEntity2 externalTestEntity2) {
-
-		this.externalTestEntity2 = externalTestEntity2;
-
-		_externalTestEntity2Supplier = null;
-	}
-
-	@JsonIgnore
-	public void setExternalTestEntity2(
-		UnsafeSupplier<ExternalTestEntity2, Exception>
-			externalTestEntity2UnsafeSupplier) {
-
-		_externalTestEntity2Supplier = () -> {
-			try {
-				return externalTestEntity2UnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected ExternalTestEntity2 externalTestEntity2;
-
-	@JsonIgnore
-	private Supplier<ExternalTestEntity2> _externalTestEntity2Supplier;
+	private Supplier<com.liferay.portal.vulcan.scope.Scope> _scopeSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -197,14 +143,14 @@ public class ReferencingTestEntity implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ReferencingTestEntity)) {
+		if (!(object instanceof ExternalChildTestEntity2)) {
 			return false;
 		}
 
-		ReferencingTestEntity referencingTestEntity =
-			(ReferencingTestEntity)object;
+		ExternalChildTestEntity2 externalChildTestEntity2 =
+			(ExternalChildTestEntity2)object;
 
-		return Objects.equals(toString(), referencingTestEntity.toString());
+		return Objects.equals(toString(), externalChildTestEntity2.toString());
 	}
 
 	@Override
@@ -219,41 +165,46 @@ public class ReferencingTestEntity implements Serializable {
 
 		sb.append("{");
 
-		ExternalScopedTestEntity externalScopedTestEntity =
-			getExternalScopedTestEntity();
+		String externalReferenceCode = getExternalReferenceCode();
 
-		if (externalScopedTestEntity != null) {
+		if (externalReferenceCode != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"externalScopedTestEntity\": ");
+			sb.append("\"externalReferenceCode\": ");
 
-			sb.append(externalScopedTestEntity);
+			sb.append("\"");
+
+			sb.append(_escape(externalReferenceCode));
+
+			sb.append("\"");
 		}
 
-		ExternalTestEntity1 externalTestEntity1 = getExternalTestEntity1();
+		com.liferay.portal.vulcan.scope.Scope scope = getScope();
 
-		if (externalTestEntity1 != null) {
+		if (scope != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"externalTestEntity1\": ");
+			sb.append("\"scope\": ");
 
-			sb.append(externalTestEntity1);
+			sb.append(scope);
 		}
 
-		ExternalTestEntity2 externalTestEntity2 = getExternalTestEntity2();
+		Type type = getType();
 
-		if (externalTestEntity2 != null) {
+		if (type != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"externalTestEntity2\": ");
+			sb.append("\"type\": ");
 
-			sb.append(externalTestEntity2);
+			sb.append("\"");
+			sb.append(type);
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -263,7 +214,7 @@ public class ReferencingTestEntity implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.portal.tools.rest.builder.test.dto.v1_0.ReferencingTestEntity",
+		defaultValue = "com.liferay.portal.tools.rest.builder.test.external.dto.v1_0.ExternalChildTestEntity2",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -378,4 +329,4 @@ public class ReferencingTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:657015260
+// LIFERAY-REST-BUILDER-HASH:-469494885

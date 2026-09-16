@@ -318,6 +318,26 @@ public abstract class BaseReferencingTestEntityResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"externalTestEntity1", additionalAssertFieldName)) {
+
+				if (referencingTestEntity.getExternalTestEntity1() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalTestEntity2", additionalAssertFieldName)) {
+
+				if (referencingTestEntity.getExternalTestEntity2() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -452,6 +472,32 @@ public abstract class BaseReferencingTestEntityResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"externalTestEntity1", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						referencingTestEntity1.getExternalTestEntity1(),
+						referencingTestEntity2.getExternalTestEntity1())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"externalTestEntity2", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						referencingTestEntity1.getExternalTestEntity2(),
+						referencingTestEntity2.getExternalTestEntity2())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -561,6 +607,16 @@ public abstract class BaseReferencingTestEntityResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("externalScopedTestEntity")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("externalTestEntity1")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("externalTestEntity2")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -843,4 +899,4 @@ public abstract class BaseReferencingTestEntityResourceTestCase {
 		ReferencingTestEntityResource _referencingTestEntityResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-449026251
+// LIFERAY-REST-BUILDER-HASH:149254371

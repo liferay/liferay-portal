@@ -74,7 +74,7 @@ public abstract class BaseReferencingTestEntityResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/referencing-test-entities' -d $'{"externalScopedTestEntity": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/portal-tools-rest-builder-test/v1.0/referencing-test-entities' -d $'{"externalScopedTestEntity": ___, "externalTestEntity1": ___, "externalTestEntity2": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -840,4 +840,4 @@ public abstract class BaseReferencingTestEntityResourceImpl
 		LogFactoryUtil.getLog(BaseReferencingTestEntityResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1682681229
+// LIFERAY-REST-BUILDER-HASH:-777138302

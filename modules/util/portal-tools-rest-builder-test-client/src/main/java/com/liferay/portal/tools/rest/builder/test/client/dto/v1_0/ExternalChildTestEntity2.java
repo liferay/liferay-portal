@@ -6,7 +6,7 @@
 package com.liferay.portal.tools.rest.builder.test.client.dto.v1_0;
 
 import com.liferay.portal.tools.rest.builder.test.client.function.UnsafeSupplier;
-import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.ExternalScopedTestEntitySerDes;
+import com.liferay.portal.tools.rest.builder.test.client.serdes.v1_0.ExternalChildTestEntity2SerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,11 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class ExternalScopedTestEntity implements Cloneable, Serializable {
+public class ExternalChildTestEntity2
+	extends ExternalTestEntity1 implements Cloneable, Serializable {
 
-	public static ExternalScopedTestEntity toDTO(String json) {
-		return ExternalScopedTestEntitySerDes.toDTO(json);
+	public static ExternalChildTestEntity2 toDTO(String json) {
+		return ExternalChildTestEntity2SerDes.toDTO(json);
 	}
 
 	public String getExternalReferenceCode() {
@@ -75,8 +76,8 @@ public class ExternalScopedTestEntity implements Cloneable, Serializable {
 		scope;
 
 	@Override
-	public ExternalScopedTestEntity clone() throws CloneNotSupportedException {
-		return (ExternalScopedTestEntity)super.clone();
+	public ExternalChildTestEntity2 clone() throws CloneNotSupportedException {
+		return (ExternalChildTestEntity2)super.clone();
 	}
 
 	@Override
@@ -85,14 +86,14 @@ public class ExternalScopedTestEntity implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ExternalScopedTestEntity)) {
+		if (!(object instanceof ExternalChildTestEntity2)) {
 			return false;
 		}
 
-		ExternalScopedTestEntity externalScopedTestEntity =
-			(ExternalScopedTestEntity)object;
+		ExternalChildTestEntity2 externalChildTestEntity2 =
+			(ExternalChildTestEntity2)object;
 
-		return Objects.equals(toString(), externalScopedTestEntity.toString());
+		return Objects.equals(toString(), externalChildTestEntity2.toString());
 	}
 
 	@Override
@@ -103,8 +104,8 @@ public class ExternalScopedTestEntity implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return ExternalScopedTestEntitySerDes.toJSON(this);
+		return ExternalChildTestEntity2SerDes.toJSON(this);
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1166069868
+// LIFERAY-REST-BUILDER-HASH:-332464900
