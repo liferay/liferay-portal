@@ -109,6 +109,17 @@ public class VirtualHostFilterTest {
 				StringBundler.concat(
 					StringPool.SLASH, RandomTestUtil.randomLong(), "/0/",
 					RandomTestUtil.randomString())));
+
+		Assert.assertNull(
+			_getForwardedDocumentURL(
+				StringBundler.concat(
+					"/portlet_file_entry/", RandomTestUtil.randomLong(),
+					StringPool.SLASH, RandomTestUtil.randomString(),
+					StringPool.SLASH, RandomTestUtil.randomString())));
+
+		Assert.assertNull(
+			_getForwardedDocumentURL(
+				"/portlet_file_entry/" + RandomTestUtil.randomString()));
 	}
 
 	@Test
