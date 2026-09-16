@@ -8,6 +8,7 @@ import ClayForm, {ClayInput, ClaySelectWithOption} from '@clayui/form';
 import ClayModal, {useModal} from '@clayui/modal';
 import React, {useEffect, useRef, useState} from 'react';
 
+import {ColorField} from '../chrome/fields';
 import {useEditorId} from '../chrome/instance';
 import {nextId} from '../state/ids';
 import {TextOverlay} from '../state/types';
@@ -132,35 +133,25 @@ export function TextDialog({onAdd, onOpenChange, open}: Props) {
 								{Liferay.Language.get('font-size')}
 							</label>
 
-							<ClayInput.Group>
-								<ClayInput.GroupItem prepend>
-									<ClayInput
-										id={eid('text-font-size')}
-										min={8}
-										onChange={(event) =>
-											setFontSize(event.target.value)
-										}
-										type="number"
-										value={fontSize}
-									/>
-								</ClayInput.GroupItem>
-
-								<ClayInput.GroupItem append shrink>
-									<input
-										aria-label={Liferay.Language.get(
-											'text-color'
-										)}
-										className="editor-color-input form-control"
-										id={eid('text-color')}
-										onChange={(event) =>
-											setColor(event.target.value)
-										}
-										type="color"
-										value={color}
-									/>
-								</ClayInput.GroupItem>
-							</ClayInput.Group>
+							<ClayInput
+								id={eid('text-font-size')}
+								min={8}
+								onChange={(event) =>
+									setFontSize(event.target.value)
+								}
+								type="number"
+								value={fontSize}
+							/>
 						</ClayForm.Group>
+
+						<ColorField
+							fill
+							id={eid('text-color')}
+							label={Liferay.Language.get('text-color')}
+							onCommit={setColor}
+							onPreview={setColor}
+							value={color}
+						/>
 
 						<ClayButton
 							disabled={!text.trim()}

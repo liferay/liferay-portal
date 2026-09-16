@@ -186,6 +186,9 @@ describe('text annotations', () => {
 		fireEvent.change(screen.getByLabelText('font-family'), {
 			target: {value: 'serif'},
 		});
+		fireEvent.change(screen.getByLabelText('text-color'), {
+			target: {value: '#ff0000'},
+		});
 		fireEvent.submit(input.closest('form') as HTMLFormElement);
 
 		const text = caption(container);
@@ -193,6 +196,7 @@ describe('text annotations', () => {
 		expect(text).toHaveTextContent('Liferay');
 		expect(text).toHaveAttribute('font-size', '40');
 		expect(text).toHaveAttribute('font-family', 'serif');
+		expect(text).toHaveAttribute('fill', '#ff0000');
 
 		// Center of the crop (900, 600), not of the image (600, 400): the
 		// anchor sits on the baseline, so the text is centered by its
