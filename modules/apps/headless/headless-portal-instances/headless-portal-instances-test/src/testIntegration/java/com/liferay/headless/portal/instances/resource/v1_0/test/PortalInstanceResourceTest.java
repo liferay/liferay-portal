@@ -14,6 +14,7 @@ import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceCopy;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceExport;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceImport;
+import com.liferay.headless.portal.instances.client.http.HttpInvoker.HttpResponse;
 import com.liferay.headless.portal.instances.client.pagination.Page;
 import com.liferay.headless.portal.instances.client.problem.Problem;
 import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceResource;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -59,6 +61,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.List;
 
@@ -179,6 +182,11 @@ public class PortalInstanceResourceTest
 		_testPostPortalInstanceWithAdmin();
 		_testPostPortalInstanceWithAdminAndCompanyStrangers();
 		_testPostPortalInstanceWithoutOmniadminPermission();
+	}
+
+	@Test
+	public void testPostPortalInstanceBatch() throws Exception {
+		_testPostPortalInstanceBatchWithSeveralPortalInstances();
 	}
 
 	@Override
@@ -748,6 +756,79 @@ public class PortalInstanceResourceTest
 			"FORBIDDEN",
 			() -> userPortalInstanceResource.patchPortalInstance(
 				_portalInstance.getPortalInstanceId(), randomPortalInstance()));
+	}
+
+	private void _testPostPortalInstanceBatchWithSeveralPortalInstances()
+		throws Exception {
+
+		List<PortalInstance> portalInstances = Arrays.asList(
+			randomPortalInstance(), randomPortalInstance());
+
+		try {
+			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+			for (PortalInstance portalInstance : portalInstances) {
+				jsonArray.put(
+					JSONFactoryUtil.createJSONObject(
+						portalInstance.toString()));
+			}
+
+			HttpResponse httpResponse =
+				portalInstanceResource.postPortalInstanceBatchHttpResponse(
+					null, jsonArray);
+
+			Assert.assertEquals(202, httpResponse.getStatusCode());
+
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+			for (PortalInstance portalInstance : portalInstances) {
+				PortalInstance getPortalInstance =
+					portalInstanceResource.getPortalInstance(
+						portalInstance.getPortalInstanceId());
+
+				assertEquals(portalInstance, getPortalInstance);
+				assertValid(getPortalInstance);
+			}
+
+			jsonArray = JSONFactoryUtil.createJSONArray();
+
+			for (PortalInstance portalInstance : portalInstances) {
+				jsonArray.put(
+					JSONUtil.put(
+						"portalInstanceId",
+						portalInstance.getPortalInstanceId()));
+			}
+
+			httpResponse =
+				portalInstanceResource.deletePortalInstanceBatchHttpResponse(
+					null, jsonArray);
+
+			Assert.assertEquals(202, httpResponse.getStatusCode());
+
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+			for (PortalInstance portalInstance : portalInstances) {
+				assertHttpResponseStatusCode(
+					404,
+					portalInstanceResource.getPortalInstanceHttpResponse(
+						portalInstance.getPortalInstanceId()));
+			}
+		}
+		finally {
+			for (PortalInstance portalInstance : portalInstances) {
+				Company company =
+					_companyLocalService.fetchCompanyByVirtualHost(
+						portalInstance.getVirtualHost());
+
+				if (company != null) {
+					_deletePortalInstance(_toPortalInstance(company));
+				}
+			}
+		}
 	}
 
 	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
