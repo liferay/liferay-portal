@@ -1348,7 +1348,13 @@ public class ObjectDefinitionResourceImpl
 						serviceBuilderObjectDefinition2.getCompanyId(),
 						contextUser.getUserId(),
 						serviceBuilderObjectDefinition2.getObjectFolderId(),
-						true, ObjectDefinitionConstants.SCOPE_COMPANY, false);
+						GetterUtil.get(
+							objectField.getObjectDefinitionModifiable1(), true),
+						GetterUtil.get(
+							objectField.getObjectDefinitionScope1(),
+							ObjectDefinitionConstants.SCOPE_COMPANY),
+						GetterUtil.get(
+							objectField.getObjectDefinitionSystem1(), false));
 
 			com.liferay.object.model.ObjectRelationship objectRelationship =
 				_objectRelationshipLocalService.

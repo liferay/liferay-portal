@@ -57,6 +57,7 @@ public class ObjectFieldDTOConverter
 			return null;
 		}
 
+		ObjectDefinition objectDefinition1 = null;
 		ObjectRelationship objectRelationship = null;
 
 		if (objectField.compareBusinessType(
@@ -66,8 +67,15 @@ public class ObjectFieldDTOConverter
 				_objectRelationshipLocalService.
 					fetchObjectRelationshipByObjectFieldId2(
 						objectField.getObjectFieldId());
+
+			if (objectRelationship != null) {
+				objectDefinition1 =
+					_objectDefinitionLocalService.fetchObjectDefinition(
+						objectRelationship.getObjectDefinitionId1());
+			}
 		}
 
+		ObjectDefinition finalObjectDefinition1 = objectDefinition1;
 		ObjectRelationship finalObjectRelationship = objectRelationship;
 
 		return new ObjectField() {
@@ -112,16 +120,36 @@ public class ObjectFieldDTOConverter
 				setName(objectField::getName);
 				setObjectDefinitionExternalReferenceCode1(
 					() -> {
-						if (finalObjectRelationship == null) {
+						if (finalObjectDefinition1 == null) {
 							return null;
 						}
 
-						ObjectDefinition objectDefinition =
-							_objectDefinitionLocalService.fetchObjectDefinition(
-								finalObjectRelationship.
-									getObjectDefinitionId1());
+						return finalObjectDefinition1.
+							getExternalReferenceCode();
+					});
+				setObjectDefinitionModifiable1(
+					() -> {
+						if (finalObjectDefinition1 == null) {
+							return null;
+						}
 
-						return objectDefinition.getExternalReferenceCode();
+						return finalObjectDefinition1.isModifiable();
+					});
+				setObjectDefinitionScope1(
+					() -> {
+						if (finalObjectDefinition1 == null) {
+							return null;
+						}
+
+						return finalObjectDefinition1.getScope();
+					});
+				setObjectDefinitionSystem1(
+					() -> {
+						if (finalObjectDefinition1 == null) {
+							return null;
+						}
+
+						return finalObjectDefinition1.isSystem();
 					});
 				setObjectFieldSettings(
 					() -> TransformUtil.transformToArray(
