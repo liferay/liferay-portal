@@ -33,6 +33,7 @@ import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporaryS
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelper;
 import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -78,6 +79,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -632,6 +634,8 @@ public class BatchEngineImportTaskExecutorTest
 			"JSON", null,
 			BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL);
 
+		AtomicReference<String> executeStatusAtBatchModeSync =
+			new AtomicReference<>();
 		AtomicBoolean nestedImportExecuted = new AtomicBoolean();
 
 		_batchEngineImportTaskExecutor.execute(
@@ -645,6 +649,20 @@ public class BatchEngineImportTaskExecutorTest
 					throws Exception {
 
 					if (nestedImportExecuted.compareAndSet(false, true)) {
+						SearchContext.registerBatchModeSyncCallable(
+							() -> {
+								BatchEngineImportTask batchEngineImportTask =
+									_batchEngineImportTaskLocalService.
+										getBatchEngineImportTask(
+											_batchEngineImportTask.
+												getBatchEngineImportTaskId());
+
+								executeStatusAtBatchModeSync.set(
+									batchEngineImportTask.getExecuteStatus());
+
+								return null;
+							});
+
 						_batchEngineImportTaskExecutor.execute(
 							_nestedBatchEngineImportTask,
 							new TestBlogPostingBatchEngineTaskItemDelegate(),
@@ -664,6 +682,10 @@ public class BatchEngineImportTaskExecutorTest
 
 			},
 			true);
+
+		Assert.assertEquals(
+			BatchEngineTaskExecuteStatus.STARTED.toString(),
+			executeStatusAtBatchModeSync.get());
 
 		_batchEngineImportTask =
 			_batchEngineImportTaskLocalService.getBatchEngineImportTask(
