@@ -1,0 +1,55 @@
+{{- if and .Values.licensing.enabled .Values.licensing.onlineActivationWorkflow.enabled -}}
+{{- $userAccess := .Values.licensing.onlineActivationWorkflow.userAccess -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: {{ $userAccess.roleName }}
+    namespace: {{ include "liferay.namespace" . }}
+rules:
+    -   apiGroups: [""]
+        resources: ["events", "pods", "pods/log"]
+        verbs: ["get", "list", "watch"]
+    -   apiGroups: ["argoproj.io"]
+        resources: ["cronworkflows", "workfloweventbindings", "workflowtaskresults", "workflowtasksets", "workflowtemplates"]
+        verbs: ["get", "list", "watch"]
+    -   apiGroups: ["argoproj.io"]
+        resources: ["workflows"]
+        verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: online-activation-user-role-binding
+    namespace: {{ include "liferay.namespace" . }}
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: {{ $userAccess.roleName }}
+subjects:
+    -   kind: ServiceAccount
+        name: {{ $userAccess.serviceAccountName }}
+        namespace: {{ include "liferay.namespace" . }}
+---
+apiVersion: v1
+kind: Secret
+metadata:
+    annotations:
+        kubernetes.io/service-account.name: {{ $userAccess.serviceAccountName }}
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: {{ $userAccess.tokenSecretName }}
+    namespace: {{ include "liferay.namespace" . }}
+type: kubernetes.io/service-account-token
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    labels:
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: {{ $userAccess.serviceAccountName }}
+    namespace: {{ include "liferay.namespace" . }}
+{{- end -}}

@@ -388,8 +388,15 @@ licensing:
     offlineActivationBundle: ""
     onlineActivationWorkflow:
         clusterRoleName: online-activation-cluster-role
+        clusterWorkflowTemplateName: online-activation-cluster-workflow-template
         enabled: true
         serviceAccountName: online-activation-service-account
+        ttlSecondsAfterCompletion: 3600
+        userAccess:
+            roleName: online-activation-user-role
+            serviceAccountName: online-activation-user-service-account
+            tokenSecretName: online-activation-user-token
+        workflowTemplateName: online-activation-workflow-template
     secretName: ""
     syncInterval: 60
 livenessProbe:

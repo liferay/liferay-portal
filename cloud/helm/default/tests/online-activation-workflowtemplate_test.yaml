@@ -1,0 +1,68 @@
+release:
+    name: liferay-default
+    namespace: liferay-acme-prd
+suite: Online Activation Workflow Template
+templates:
+    -   templates/online-activation-workflowtemplate.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.arguments.parameters[0].name
+                    value: activation-code
+            -   equal:
+                    path: spec.arguments.parameters[1].name
+                    value: liferay-environment-name
+            -   equal:
+                    path: spec.arguments.parameters[1].value
+                    value: liferay-default
+        it: Declares the parameters the cluster template resolves from the submitted workflow
+        set:
+            licensing.enabled: true
+            licensing.onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.templates[0].steps[0][0].templateRef.clusterScope
+                    value: true
+            -   equal:
+                    path: spec.templates[0].steps[0][0].templateRef.name
+                    value: online-activation-cluster-workflow-template
+            -   equal:
+                    path: spec.templates[0].steps[0][0].templateRef.template
+                    value: main
+        it: Delegates to the cluster template, so the activation logic stays in one place
+        set:
+            licensing.enabled: true
+            licensing.onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the template when licensing is disabled
+        set:
+            licensing.enabled: false
+            licensing.onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the template when the online activation workflow is disabled
+        set:
+            licensing.enabled: true
+            licensing.onlineActivationWorkflow.enabled: false
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: online-activation-workflow-template
+            -   equal:
+                    path: metadata.namespace
+                    value: liferay-acme-prd
+        it: Places the submittable template in the environment namespace
+        set:
+            licensing.enabled: true
+            licensing.onlineActivationWorkflow.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.serviceAccountName
+                    value: online-activation-service-account
+        it: Runs the workflow pods as the workflow identity, not as the submitting user
+        set:
+            licensing.enabled: true
+            licensing.onlineActivationWorkflow.enabled: true
