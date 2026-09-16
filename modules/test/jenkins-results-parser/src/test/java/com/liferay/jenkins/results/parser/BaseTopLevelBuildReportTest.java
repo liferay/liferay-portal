@@ -35,7 +35,7 @@ public class BaseTopLevelBuildReportTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_clearTopLevelBuildReports();
+		_clearCache(BuildReportFactory.class, "_topLevelBuildReports");
 
 		ReflectionTestUtil.setFieldValue(
 			TestrayCloudBucket.class, "_hasGoogleApplicationCredentials", null);
@@ -120,6 +120,20 @@ public class BaseTopLevelBuildReportTest
 		Assert.assertEquals(
 			String.valueOf(testrayAttachmentURL),
 			String.valueOf(testrayAttachmentURLs.get(1)));
+	}
+
+	@Test
+	public void testBaseTopLevelBuildReport() {
+		try {
+			_newBaseTopLevelBuildReport(new JSONObject(), "not-a-build-url");
+
+			Assert.fail();
+		}
+		catch (RuntimeException runtimeException) {
+			String message = runtimeException.getMessage();
+
+			Assert.assertTrue(message.startsWith("Invalid Build URL"));
+		}
 	}
 
 	@Test
@@ -338,42 +352,58 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
-	public void testGetJobReport() {
-		BaseTopLevelBuildReport baseTopLevelBuildReport = Mockito.mock(
+	public void testGetJobReport() throws Exception {
+		BaseTopLevelBuildReport baseTopLevelBuildReport1 = Mockito.mock(
 			BaseTopLevelBuildReport.class);
 
 		Mockito.doCallRealMethod(
 		).when(
-			baseTopLevelBuildReport
+			baseTopLevelBuildReport1
+		).getJobReport();
+
+		try {
+			baseTopLevelBuildReport1.getJobReport();
+
+			Assert.fail();
+		}
+		catch (RuntimeException runtimeException) {
+			String message = runtimeException.getMessage();
+
+			Assert.assertTrue(message.startsWith("Invalid Build URL"));
+		}
+
+		Mockito.doReturn(
+			new URL("https://test-1-0.liferay.com/job/test-job/123")
+		).when(
+			baseTopLevelBuildReport1
+		).getBuildURL();
+
+		JobReport jobReport = baseTopLevelBuildReport1.getJobReport();
+
+		Assert.assertEquals(
+			"https://test-1-0.liferay.com/job/test-job",
+			String.valueOf(jobReport.getJobURL()));
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport2 = Mockito.mock(
+			BaseTopLevelBuildReport.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTopLevelBuildReport2
 		).getJobReport();
 
 		Mockito.doReturn(
-			null
+			new URL("https://test-1-0.liferay.com/job/test-job/456")
 		).when(
-			baseTopLevelBuildReport
+			baseTopLevelBuildReport2
 		).getBuildURL();
 
-		try {
-			baseTopLevelBuildReport.getJobReport();
+		Assert.assertSame(
+			jobReport, baseTopLevelBuildReport2.getJobReport());
 
-			Assert.fail("Expected a RuntimeException for an invalid build URL");
-		}
-		catch (RuntimeException runtimeException) {
-			String message = runtimeException.getMessage();
+		_clearCache(JobReport.class, "_jobReports");
 
-			Assert.assertTrue(message.startsWith("Invalid Build URL"));
-		}
-
-		try {
-			_newBaseTopLevelBuildReport(new JSONObject(), "not-a-build-url");
-
-			Assert.fail("Expected a RuntimeException for an invalid build URL");
-		}
-		catch (RuntimeException runtimeException) {
-			String message = runtimeException.getMessage();
-
-			Assert.assertTrue(message.startsWith("Invalid Build URL"));
-		}
+		Assert.assertSame(jobReport, baseTopLevelBuildReport1.getJobReport());
 	}
 
 	@Test
@@ -424,7 +454,7 @@ public class BaseTopLevelBuildReportTest
 			"https://test-1-1.liferay.com/job/previous-job/1",
 			String.valueOf(previousTopLevelBuildReport.getBuildURL()));
 
-		_clearTopLevelBuildReports();
+		_clearCache(BuildReportFactory.class, "_topLevelBuildReports");
 
 		Assert.assertSame(
 			previousTopLevelBuildReport,
@@ -669,11 +699,11 @@ public class BaseTopLevelBuildReportTest
 		_assertDownstreamBuildReports(baseTopLevelBuildReport, 0);
 	}
 
-	private void _clearTopLevelBuildReports() {
-		Map<String, ?> topLevelBuildReports = ReflectionTestUtil.getFieldValue(
-			BuildReportFactory.class, "_topLevelBuildReports");
+	private void _clearCache(Class<?> clazz, String fieldName) {
+		Map<String, ?> cache = ReflectionTestUtil.getFieldValue(
+			clazz, fieldName);
 
-		topLevelBuildReports.clear();
+		cache.clear();
 	}
 
 	private List<DownstreamBuildReport> _assertDownstreamBuildReports(
