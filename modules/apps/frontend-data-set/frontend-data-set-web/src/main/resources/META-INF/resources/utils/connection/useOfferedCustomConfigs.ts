@@ -9,7 +9,7 @@ import {EViewsActionTypes} from '../../views/viewsReducer';
 import {EConfigInURLBehavior, EConfigInURLKeys} from '../types';
 import useConfigInURL from '../useConfigInURL';
 
-const APPLY_TIMEOUT = 10000;
+const APPLY_TIMEOUT = 5000;
 
 /**
  * Keeping in the page URL whatever a connection asked the data set to
