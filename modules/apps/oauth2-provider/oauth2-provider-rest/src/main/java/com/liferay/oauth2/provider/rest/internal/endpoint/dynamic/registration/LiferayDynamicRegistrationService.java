@@ -23,9 +23,12 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -48,7 +51,10 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
+import java.net.URI;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -360,6 +366,79 @@ public class LiferayDynamicRegistrationService
 		return OAuth2SecureRandomGenerator.generateClientSecret();
 	}
 
+	@Override
+	protected void validateRequestUri(
+		String redirectURI, String applicationType,
+		List<String> allowedGrantTypes) {
+
+		if (Validator.isBlank(redirectURI)) {
+			_reportInvalidRedirectURIError("Redirect URI is blank");
+		}
+
+		String host = null;
+		String scheme = null;
+
+		try {
+			URI uri = URI.create(redirectURI);
+
+			host = uri.getHost();
+			scheme = uri.getScheme();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(illegalArgumentException);
+			}
+
+			_reportInvalidRedirectURIError(
+				"Redirect URI " + redirectURI + " is malformed");
+		}
+
+		if ((host == null) || (scheme == null)) {
+			_reportInvalidRedirectURIError(
+				"Redirect URI " + redirectURI + " has no host or no scheme");
+		}
+
+		host = StringUtil.toLowerCase(host);
+
+		scheme = StringUtil.toLowerCase(scheme);
+
+		if (!scheme.equals(Http.HTTP) && !scheme.equals(Http.HTTPS)) {
+			_reportInvalidRedirectURIError(
+				"Redirect URI scheme " + scheme + " is not supported");
+		}
+
+		if (StringUtil.equalsIgnoreCase(
+				applicationType, _APPLICATION_TYPE_NATIVE)) {
+
+			if (scheme.equals(Http.HTTP) && !_loopbackHosts.contains(host)) {
+				_reportInvalidRedirectURIError(
+					"Redirect URI host " + host + " is not a loopback host");
+			}
+
+			return;
+		}
+
+		if ((!Validator.isBlank(applicationType) &&
+			 !StringUtil.equalsIgnoreCase(
+				 applicationType, _APPLICATION_TYPE_WEB)) ||
+			!allowedGrantTypes.contains(OAuthConstants.IMPLICIT_GRANT)) {
+
+			return;
+		}
+
+		if (!scheme.equals(Http.HTTPS)) {
+			_reportInvalidRedirectURIError(
+				"Redirect URI " + redirectURI +
+					" must use HTTPS for the implicit grant type");
+		}
+
+		if (host.equals(_HOST_LOCALHOST)) {
+			_reportInvalidRedirectURIError(
+				"Redirect URI host localhost is not supported for the " +
+					"implicit grant type");
+		}
+	}
+
 	private AuditMessage _getAddAuditMessage(Response response) {
 		if (response == null) {
 			return null;
@@ -403,7 +482,7 @@ public class LiferayDynamicRegistrationService
 
 	private String _getApplicationType(ClientRegistration clientRegistration) {
 		return GetterUtil.getString(
-			clientRegistration.getApplicationType(), "web");
+			clientRegistration.getApplicationType(), _APPLICATION_TYPE_WEB);
 	}
 
 	private JSONObject _getBaseAdditionalInfoJSONObject() {
@@ -550,6 +629,13 @@ public class LiferayDynamicRegistrationService
 		}
 
 		return false;
+	}
+
+	private void _reportInvalidRedirectURIError(String description) {
+		OAuth2ErrorUtil.reportInvalidRequestError(
+			description,
+			OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_REDIRECT_URI,
+			Response.Status.BAD_REQUEST);
 	}
 
 	private void _setAllowedGrantTypes(Client client) {
@@ -806,14 +892,6 @@ public class LiferayDynamicRegistrationService
 				allowedRedirectURIPattern, this::_toPattern));
 
 		for (String redirectURI : redirectURIs) {
-			if (Validator.isBlank(redirectURI)) {
-				OAuth2ErrorUtil.reportInvalidRequestError(
-					"Redirect URI is blank",
-					OAuth2ProviderRESTEndpointConstants.
-						ERROR_INVALID_REDIRECT_URI,
-					Response.Status.BAD_REQUEST);
-			}
-
 			boolean matched = false;
 
 			for (Pattern pattern : patterns) {
@@ -866,6 +944,15 @@ public class LiferayDynamicRegistrationService
 			OAuthUtils.parseScope(scope));
 	}
 
+	private static final String _APPLICATION_TYPE_NATIVE = "native";
+
+	private static final String _APPLICATION_TYPE_WEB = "web";
+
+	private static final String _HOST_LOCALHOST = "localhost";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LiferayDynamicRegistrationService.class);
+
 	private static final Map<String, String> _allowedResponseTypes =
 		HashMapBuilder.put(
 			OAuthConstants.AUTHORIZATION_CODE_GRANT,
@@ -875,6 +962,8 @@ public class LiferayDynamicRegistrationService
 		).build();
 	private static final Map<String, Pattern> _globPatterns =
 		new ConcurrentHashMap<>();
+	private static final List<String> _loopbackHosts = Arrays.asList(
+		"127.0.0.1", "[::1]", _HOST_LOCALHOST);
 
 	private ConfigurationProvider _configurationProvider;
 	private Portal _portal;
