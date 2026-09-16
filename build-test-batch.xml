@@ -3442,7 +3442,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 
 								System.out.println("\"gradle-execute-modules\" will timeout in " + timeout);
 
-								AntUtil.callTargetWithTimeout(projectDir, "build-common.xml", "gradle-execute-modules", parameters, timeout, true);
+								AntUtil.callTargetWithTimeout(projectDir, "build-test.xml", "gradle-execute-modules", parameters, timeout, true);
 							}
 							catch(Exception exception) {
 								System.out.println("Unable to run Gradle execute modules target for " + entry.getKey());
@@ -4627,7 +4627,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 						System.out.println("Executing Gradle task: " + testTaskName);
 
 						try {
-							AntUtil.callTarget(projectDir, "build-common.xml", "gradle-execute-workspaces-js-unit", parameters);
+							AntUtil.callTarget(projectDir, "build-test.xml", "gradle-execute-workspaces-js-unit", parameters);
 						}
 						catch (Exception exception) {
 							System.out.println("Unable to run Gradle task " + testTaskName);
@@ -4776,7 +4776,7 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 						try {
 							System.out.println("\"gradle-execute-workspaces\" will timeout in " + timeout);
 
-							AntUtil.callTargetWithTimeout(projectDir, "build-common.xml", "gradle-execute-workspaces", parameters, timeout, false);
+							AntUtil.callTargetWithTimeout(projectDir, "build-test.xml", "gradle-execute-workspaces", parameters, timeout, false);
 						}
 						catch(Exception exception) {
 							System.out.println("Unable to run Gradle execute workspaces target for " + testTaskName);
