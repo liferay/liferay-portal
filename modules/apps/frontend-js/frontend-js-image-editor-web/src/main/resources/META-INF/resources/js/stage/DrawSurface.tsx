@@ -18,6 +18,13 @@ import {CropRect, StrokeOverlay} from '../state/types';
 
 const CAPTURE_SPACING = 3;
 
+const CURSOR_DIRECTIONS: Record<string, [number, number]> = {
+	ArrowDown: [0, 1],
+	ArrowLeft: [-1, 0],
+	ArrowRight: [1, 0],
+	ArrowUp: [0, -1],
+};
+
 const DRAG_THRESHOLD = 4;
 
 function DrawAnchor({x, y, zoom}: {x: number; y: number; zoom: number}) {
@@ -335,28 +342,34 @@ export function DrawSurface({
 		announcePoint(points.length / 2 + 1, x, y);
 	};
 
+	const moveCursor = (event: React.KeyboardEvent<SVGRectElement>) => {
+		const direction = CURSOR_DIRECTIONS[event.key];
+
+		if (!direction) {
+			return false;
+		}
+
+		const step = (event.shiftKey ? 10 : 1) / zoom;
+
+		setCursor((at) => ({
+			x: at.x + direction[0] * step,
+			y: at.y + direction[1] * step,
+		}));
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		return true;
+	};
+
 	const handleGuidedKeyDown = (
 		event: React.KeyboardEvent<SVGRectElement>
 	) => {
-		const step = (event.shiftKey ? 10 : 1) / zoom;
+		if (moveCursor(event)) {
+			return;
+		}
 
 		switch (event.key) {
-			case 'ArrowDown':
-				setCursor((at) => ({...at, y: at.y + step}));
-				break;
-
-			case 'ArrowLeft':
-				setCursor((at) => ({...at, x: at.x - step}));
-				break;
-
-			case 'ArrowRight':
-				setCursor((at) => ({...at, x: at.x + step}));
-				break;
-
-			case 'ArrowUp':
-				setCursor((at) => ({...at, y: at.y - step}));
-				break;
-
 			case 'Backspace':
 			case 'Delete':
 
@@ -462,25 +475,11 @@ export function DrawSurface({
 			return;
 		}
 
-		const step = (event.shiftKey ? 10 : 1) / zoom;
+		if (moveCursor(event)) {
+			return;
+		}
 
 		switch (event.key) {
-			case 'ArrowDown':
-				setCursor((at) => ({...at, y: at.y + step}));
-				break;
-
-			case 'ArrowLeft':
-				setCursor((at) => ({...at, x: at.x - step}));
-				break;
-
-			case 'ArrowRight':
-				setCursor((at) => ({...at, x: at.x + step}));
-				break;
-
-			case 'ArrowUp':
-				setCursor((at) => ({...at, y: at.y - step}));
-				break;
-
 			case 'Backspace':
 			case 'Delete':
 				setPoints((current) => current.slice(0, -2));
