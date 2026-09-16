@@ -9,6 +9,7 @@ import React from 'react';
 
 import {AnnotatePanel} from '../annotations/AnnotatePanel';
 import {LayersPanel} from '../annotations/LayersPanel';
+import {AnnotateTool} from '../editorConfig';
 import {LoadedImage} from '../imaging/loadImage';
 import {AdjustPanel} from '../panels/AdjustPanel';
 import {CropPanel} from '../panels/CropPanel';
@@ -47,6 +48,7 @@ interface Props {
 	sidebarRef: React.Ref<HTMLElement>;
 	sliders: AdjustmentKey[];
 	state: EditState;
+	tools: AnnotateTool[];
 }
 
 export function EditorSidebar({
@@ -67,6 +69,7 @@ export function EditorSidebar({
 	sidebarRef,
 	sliders,
 	state,
+	tools,
 }: Props) {
 	return (
 		<aside
@@ -116,22 +119,27 @@ export function EditorSidebar({
 				/>
 			)}
 
-			<AnnotatePanel
-				area={state.crop}
-				dispatch={dispatch}
-				onAnnounce={onAnnounce}
-			/>
+			{!!tools.length && (
+				<>
+					<AnnotatePanel
+						area={state.crop}
+						dispatch={dispatch}
+						onAnnounce={onAnnounce}
+						tools={tools}
+					/>
 
-			<LayersPanel
-				dispatch={dispatch}
-				multiSelectedIds={multiSelectedIds}
-				onAnnounce={onAnnounce}
-				onProportionalChange={onProportionalChange}
-				onSelect={onSelectOverlay}
-				overlays={state.overlays}
-				proportional={proportional}
-				selectedId={selectedOverlayId}
-			/>
+					<LayersPanel
+						dispatch={dispatch}
+						multiSelectedIds={multiSelectedIds}
+						onAnnounce={onAnnounce}
+						onProportionalChange={onProportionalChange}
+						onSelect={onSelectOverlay}
+						overlays={state.overlays}
+						proportional={proportional}
+						selectedId={selectedOverlayId}
+					/>
+				</>
+			)}
 		</aside>
 	);
 }

@@ -15,6 +15,10 @@ import {
 	EditorInstanceProvider,
 	EditorRootProvider,
 } from '../../src/main/resources/META-INF/resources/js/chrome/instance';
+import {
+	ANNOTATE_TOOLS,
+	AnnotateTool,
+} from '../../src/main/resources/META-INF/resources/js/editorConfig';
 import {LoadedImage} from '../../src/main/resources/META-INF/resources/js/imaging/loadImage';
 import {Workspace} from '../../src/main/resources/META-INF/resources/js/stage/Workspace';
 import {
@@ -49,8 +53,10 @@ const CAPTION: Overlay = {
 
 function AnnotationHarness({
 	start = () => initialHistory(IMAGE.width, IMAGE.height),
+	tools = ANNOTATE_TOOLS,
 }: {
 	start?: () => EditorHistory;
+	tools?: AnnotateTool[];
 }) {
 	const [history, dispatch] = useReducer(editorReducer, undefined, start);
 
@@ -131,6 +137,7 @@ function AnnotationHarness({
 					area={history.present.crop}
 					dispatch={dispatch}
 					onAnnounce={() => {}}
+					tools={tools}
 				/>
 
 				<LayersPanel
@@ -1322,6 +1329,35 @@ describe('groups and the clipboard', () => {
 		expect(shapes).toHaveLength(2);
 		expect(Number(shapes[1].getAttribute('x'))).toBe(
 			Number(shapes[0].getAttribute('x')) + 16
+		);
+	});
+});
+
+describe('the host configuration', () => {
+	it('offers only the tools the host asked for, in the menu order', () => {
+		render(<AnnotationHarness tools={['arrow', 'circle']} />);
+
+		expect(screen.queryByRole('button', {name: 'add-text'})).toBeNull();
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-shape'}));
+
+		const cells = within(
+			screen.getByRole('grid', {name: 'add-shape'})
+		).getAllByRole('button');
+
+		expect(cells.map((cell) => cell.getAttribute('aria-label'))).toEqual([
+			'circle',
+			'arrow',
+		]);
+	});
+
+	it('keeps the single tab stop on the only control left', () => {
+		render(<AnnotationHarness tools={['text']} />);
+
+		expect(screen.queryByRole('button', {name: 'add-shape'})).toBeNull();
+		expect(screen.getByRole('button', {name: 'add-text'})).toHaveAttribute(
+			'tabindex',
+			'0'
 		);
 	});
 });

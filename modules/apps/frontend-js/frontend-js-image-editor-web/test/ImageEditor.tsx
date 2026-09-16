@@ -190,3 +190,38 @@ describe('the annotations', () => {
 		expect(lock()).toHaveAttribute('aria-pressed', 'false');
 	});
 });
+
+describe('the annotation tools of the host', () => {
+	it('hides the annotate and layers panels when the host turns them off', () => {
+		render(
+			<ImageEditor
+				config={{annotate: false}}
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		expect(screen.queryByText('annotate')).toBeNull();
+		expect(screen.queryByRole('button', {name: 'add-shape'})).toBeNull();
+	});
+
+	it('drops the whole sidebar when nothing is left to show in it', () => {
+		render(
+			<ImageEditor
+				config={{
+					adjustments: false,
+					annotate: false,
+					crop: false,
+					filters: false,
+					frames: false,
+				}}
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		expect(document.querySelector('.editor-sidebar')).toBeNull();
+	});
+});

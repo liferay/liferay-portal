@@ -22,8 +22,9 @@ const SAMPLE_URL = '/o/frontend-js-image-editor-sample-web/images/sample.jpg';
  * `?adjustments=brightness,contrast` picks the ones to keep. `?filters=`
  * turns the filter gallery off and `?filters=sepia,noir` narrows the
  * presets. `?frames=` turns the frame gallery off and `?frames=mat,line`
- * narrows the kinds, so every host configuration can be tried from the
- * address bar.
+ * narrows the kinds. `?annotate=` turns the annotation tools off and
+ * `?annotate=text,arrow` narrows them, so every host configuration can be
+ * tried from the address bar.
  */
 function configFromSearch(search) {
 	const params = new URLSearchParams(search);
@@ -47,6 +48,7 @@ function configFromSearch(search) {
 
 	return {
 		adjustments: section(params.get('adjustments'), 'sliders'),
+		annotate: section(params.get('annotate'), 'tools'),
 		crop:
 			crop === null
 				? undefined

@@ -7,6 +7,7 @@ import '@testing-library/jest-dom';
 
 import {
 	ADJUSTMENT_KEYS,
+	ANNOTATE_TOOLS,
 	FILTER_PRESETS,
 	FRAME_KINDS,
 	RATIO_PRESETS,
@@ -27,6 +28,27 @@ describe('resolveConfig', () => {
 			resolveConfig({adjustments: {sliders: ['shadows', 'contrast']}})
 				.adjustments
 		).toEqual(['contrast', 'shadows']);
+	});
+
+	it('exposes every annotation tool by default', () => {
+		expect(resolveConfig().annotate).toEqual(ANNOTATE_TOOLS);
+		expect(ANNOTATE_TOOLS).toEqual([
+			'text',
+			'rectangle',
+			'square',
+			'circle',
+			'arrow',
+		]);
+	});
+
+	it('switches the annotation tools off with false', () => {
+		expect(resolveConfig({annotate: false}).annotate).toEqual([]);
+	});
+
+	it('narrows the annotation tools to a subset in panel order', () => {
+		expect(
+			resolveConfig({annotate: {tools: ['arrow', 'text']}}).annotate
+		).toEqual(['text', 'arrow']);
 	});
 
 	it('exposes every filter preset by default', () => {

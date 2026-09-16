@@ -13,16 +13,18 @@ import React, {useRef, useState} from 'react';
 
 import {EditorSection} from '../chrome/EditorSection';
 import {useEditorId, useEditorRoot} from '../chrome/instance';
+import {
+	AnnotateTool,
+	SHAPE_TOOLS,
+	ShapeTool,
+	isShapeTool,
+} from '../editorConfig';
 import {overlayLabel, textWidth} from '../imaging/overlayShapes';
 import {EditorAction} from '../state/editorReducer';
 import {nextId} from '../state/ids';
 import {CropRect, Overlay} from '../state/types';
 import {MenuGrid} from './MenuGrid';
 import {TextDialog} from './TextDialog';
-
-const SHAPE_TOOLS = ['rectangle', 'square', 'circle', 'arrow'] as const;
-
-type ShapeTool = (typeof SHAPE_TOOLS)[number];
 
 const SHAPE_LABELS: Record<ShapeTool, string> = {
 	arrow: Liferay.Language.get('arrow'),
@@ -143,9 +145,11 @@ interface Props {
 	area: CropRect;
 	dispatch: (action: EditorAction) => void;
 	onAnnounce: (message: string) => void;
+
+	tools: AnnotateTool[];
 }
 
-export function AnnotatePanel({area, dispatch, onAnnounce}: Props) {
+export function AnnotatePanel({area, dispatch, onAnnounce, tools}: Props) {
 	const eid = useEditorId();
 
 	const editorRoot = useEditorRoot();
@@ -158,7 +162,12 @@ export function AnnotatePanel({area, dispatch, onAnnounce}: Props) {
 
 	const panelRef = useRef<HTMLDivElement>(null);
 
-	const controls = ['text', 'shapes'];
+	const shapeTools = tools.filter(isShapeTool);
+
+	const controls: string[] = [
+		...(tools.includes('text') ? ['text'] : []),
+		...(shapeTools.length ? ['shapes'] : []),
+	];
 
 	const indexOf = (control: string) => controls.indexOf(control);
 
@@ -320,54 +329,60 @@ export function AnnotatePanel({area, dispatch, onAnnounce}: Props) {
 				onKeyDown={handlePanelKeyDown}
 				ref={panelRef}
 			>
-				<ClayButton
-					{...rovingProps(indexOf('text'))}
-					aria-label={Liferay.Language.get('add-text')}
-					className="editor-tool-tile"
-					displayType="secondary"
-					onClick={() => setTextDialogOpen(true)}
-				>
-					<ToolTile
-						icon="text"
-						label={Liferay.Language.get('text')}
-					/>
-				</ClayButton>
+				{tools.includes('text') && (
+					<ClayButton
+						{...rovingProps(indexOf('text'))}
+						aria-label={Liferay.Language.get('add-text')}
+						className="editor-tool-tile"
+						displayType="secondary"
+						onClick={() => setTextDialogOpen(true)}
+					>
+						<ToolTile
+							icon="text"
+							label={Liferay.Language.get('text')}
+						/>
+					</ClayButton>
+				)}
 
-				<ClayDropDown
-					active={shapeMenuOpen}
-					menuElementAttrs={{className: 'editor-menu-popover'}}
-					onActiveChange={setShapeMenuOpen}
-					trigger={
-						<ClayButton
-							{...rovingProps(indexOf('shapes'))}
-							aria-label={Liferay.Language.get('add-shape')}
-							className="editor-tool-tile"
-							data-menu-trigger
-							displayType="secondary"
-						>
-							<ToolTile
-								icon="squares"
-								label={Liferay.Language.get('shape')}
-								menu
-							/>
-						</ClayButton>
-					}
-				>
-					<MenuGrid
-						choices={SHAPE_TOOLS.map((shape) => ({
-							art: <ShapePreview shape={shape} />,
-							id: shape,
-							label: SHAPE_LABELS[shape],
-						}))}
-						columns={4}
-						label={Liferay.Language.get('add-shape')}
-						onChoose={(shape) => {
-							setShapeMenuOpen(false);
+				{!!shapeTools.length && (
+					<ClayDropDown
+						active={shapeMenuOpen}
+						menuElementAttrs={{className: 'editor-menu-popover'}}
+						onActiveChange={setShapeMenuOpen}
+						trigger={
+							<ClayButton
+								{...rovingProps(indexOf('shapes'))}
+								aria-label={Liferay.Language.get('add-shape')}
+								className="editor-tool-tile"
+								data-menu-trigger
+								displayType="secondary"
+							>
+								<ToolTile
+									icon="squares"
+									label={Liferay.Language.get('shape')}
+									menu
+								/>
+							</ClayButton>
+						}
+					>
+						<MenuGrid
+							choices={SHAPE_TOOLS.filter((shape) =>
+								shapeTools.includes(shape)
+							).map((shape) => ({
+								art: <ShapePreview shape={shape} />,
+								id: shape,
+								label: SHAPE_LABELS[shape],
+							}))}
+							columns={4}
+							label={Liferay.Language.get('add-shape')}
+							onChoose={(shape) => {
+								setShapeMenuOpen(false);
 
-							ADD_SHAPE[shape as ShapeTool]();
-						}}
-					/>
-				</ClayDropDown>
+								ADD_SHAPE[shape as ShapeTool]();
+							}}
+						/>
+					</ClayDropDown>
+				)}
 			</div>
 
 			<TextDialog

@@ -86,6 +86,13 @@ function Editor({
 
 	const enabled = useMemo(() => resolveConfig(config), [config]);
 
+	const hasSidebar =
+		enabled.crop.enabled ||
+		!!enabled.adjustments.length ||
+		!!enabled.filters.length ||
+		!!enabled.frames.length ||
+		!!enabled.annotate.length;
+
 	const announce = useAnnouncer();
 
 	const savingRef = useRef(false);
@@ -470,25 +477,28 @@ function Editor({
 							zoom={zoom}
 						/>
 
-						<EditorSidebar
-							aspectLocked={aspectLocked}
-							dispatch={dispatch}
-							frames={enabled.frames}
-							image={image}
-							multiSelectedIds={multiSelectedIds}
-							onAnnounce={announce}
-							onAspectLockedChange={setAspectLocked}
-							onProportionalChange={setLayerProportional}
-							onSelectOverlay={selectOverlay}
-							presets={enabled.filters}
-							proportional={layerProportional}
-							selectedOverlayId={selectedOverlayId}
-							showCrop={enabled.crop.enabled}
-							showStraighten={enabled.crop.straighten}
-							sidebarRef={sidebarRef}
-							sliders={enabled.adjustments}
-							state={state}
-						/>
+						{hasSidebar && (
+							<EditorSidebar
+								aspectLocked={aspectLocked}
+								dispatch={dispatch}
+								frames={enabled.frames}
+								image={image}
+								multiSelectedIds={multiSelectedIds}
+								onAnnounce={announce}
+								onAspectLockedChange={setAspectLocked}
+								onProportionalChange={setLayerProportional}
+								onSelectOverlay={selectOverlay}
+								presets={enabled.filters}
+								proportional={layerProportional}
+								selectedOverlayId={selectedOverlayId}
+								showCrop={enabled.crop.enabled}
+								showStraighten={enabled.crop.straighten}
+								sidebarRef={sidebarRef}
+								sliders={enabled.adjustments}
+								state={state}
+								tools={enabled.annotate}
+							/>
+						)}
 					</div>
 
 					{saveError && (

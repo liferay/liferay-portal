@@ -10,6 +10,16 @@ import {
 	RatioPreset,
 } from './state/types';
 
+export type AnnotateTool = 'arrow' | 'circle' | 'rectangle' | 'square' | 'text';
+
+export const SHAPE_TOOLS = ['rectangle', 'square', 'circle', 'arrow'] as const;
+
+export type ShapeTool = (typeof SHAPE_TOOLS)[number];
+
+export function isShapeTool(tool: AnnotateTool): tool is ShapeTool {
+	return (SHAPE_TOOLS as readonly AnnotateTool[]).includes(tool);
+}
+
 export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
 	'brightness',
 	'contrast',
@@ -17,6 +27,8 @@ export const ADJUSTMENT_KEYS: AdjustmentKey[] = [
 	'shadows',
 	'highlights',
 ];
+
+export const ANNOTATE_TOOLS: AnnotateTool[] = ['text', ...SHAPE_TOOLS];
 
 export const FILTER_PRESETS: FilterPreset[] = [
 	'none',
@@ -67,6 +79,8 @@ export const RATIO_PRESETS: RatioPreset[] = [
 export interface EditorConfig {
 	adjustments?: false | {sliders?: AdjustmentKey[]};
 
+	annotate?: false | {tools?: AnnotateTool[]};
+
 	crop?:
 		| false
 		| {
@@ -82,6 +96,7 @@ export interface EditorConfig {
 
 interface ResolvedEditorConfig {
 	adjustments: AdjustmentKey[];
+	annotate: AnnotateTool[];
 	crop: {
 		enabled: boolean;
 		ratios: RatioPreset[];
@@ -100,6 +115,10 @@ export function resolveConfig(config: EditorConfig = {}): ResolvedEditorConfig {
 			config.adjustments === false
 				? []
 				: pick(ADJUSTMENT_KEYS, config.adjustments?.sliders),
+		annotate:
+			config.annotate === false
+				? []
+				: pick(ANNOTATE_TOOLS, config.annotate?.tools),
 		crop:
 			crop === false
 				? {enabled: false, ratios: [], rotate: false, straighten: false}
