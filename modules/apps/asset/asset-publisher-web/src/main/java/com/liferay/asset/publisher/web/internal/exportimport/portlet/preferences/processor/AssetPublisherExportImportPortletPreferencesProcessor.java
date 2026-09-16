@@ -43,7 +43,6 @@ import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortle
 import com.liferay.exportimport.portlet.preferences.processor.base.BaseExportImportPortletPreferencesProcessor;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
@@ -544,10 +543,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 	@Reference
 	protected StagingGroupHelper stagingGroupHelper;
 
-	private String _escapePound(String value) {
-		return StringUtil.replace(value, CharPool.POUND, "%23");
-	}
-
 	private void _exportAssetObjects(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)
@@ -702,7 +697,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 
 		String uuid = null;
 		long groupId = 0L;
-		String structureKey = null;
 
 		if (className.equals(AssetCategory.class.getName())) {
 			AssetCategory assetCategory =
@@ -730,7 +724,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			if (ddmStructure != null) {
 				uuid = ddmStructure.getUuid();
 				groupId = ddmStructure.getGroupId();
-				structureKey = ddmStructure.getStructureKey();
 			}
 		}
 
@@ -744,21 +737,14 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			return null;
 		}
 
-		String groupExternalReferenceCode = _escapePound(
-			exportImportPortletPreferencesProcessorHelper.
-				getGroupExportPortletPreferencesExternalReferenceCode(
-					companyId, group.getExternalReferenceCode()));
-
-		if (Validator.isNotNull(structureKey)) {
-			return StringUtil.merge(
-				new Object[] {
-					uuid, groupExternalReferenceCode, _escapePound(structureKey)
-				},
-				StringPool.POUND);
-		}
-
 		return StringUtil.merge(
-			new Object[] {uuid, groupExternalReferenceCode}, StringPool.POUND);
+			new Object[] {
+				uuid,
+				exportImportPortletPreferencesProcessorHelper.
+					getGroupExportPortletPreferencesExternalReferenceCode(
+						companyId, group.getExternalReferenceCode())
+			},
+			StringPool.POUND);
 	}
 
 	private String _getExportScopeId(
@@ -905,7 +891,7 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 		}
 
 		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
-			_unescapePound(oldValues[1]), companyId);
+			oldValues[1], companyId);
 
 		if (group == null) {
 			return null;
@@ -936,12 +922,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			DDMStructure ddmStructure =
 				ddmStructureLocalService.fetchStructureByUuidAndGroupId(
 					uuid, groupId, true);
-
-			if ((ddmStructure == null) && (oldValues.length > 2)) {
-				ddmStructure = ddmStructureLocalService.fetchStructure(
-					groupId, portal.getClassNameId(JournalArticle.class),
-					_unescapePound(oldValues[2]), true);
-			}
 
 			if (ddmStructure != null) {
 				return ddmStructure.getStructureId();
@@ -1054,10 +1034,6 @@ public class AssetPublisherExportImportPortletPreferencesProcessor
 			name, new String[] {StringPool.BLANK});
 
 		portletPreferences.setValues(name, values);
-	}
-
-	private String _unescapePound(String value) {
-		return StringUtil.replace(value, "%23", StringPool.POUND);
 	}
 
 	private void _updateExportCategoryQueryValues(
