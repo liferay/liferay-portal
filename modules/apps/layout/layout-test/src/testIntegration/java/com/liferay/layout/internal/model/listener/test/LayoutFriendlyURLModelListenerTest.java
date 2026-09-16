@@ -13,6 +13,7 @@ import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.layout.friendly.url.LayoutFriendlyURLEntryHelper;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -71,12 +72,14 @@ public class LayoutFriendlyURLModelListenerTest {
 		try {
 			_testCreateLayoutFriendlyURL(0);
 
-			BatchEngineThreadLocal.setBatchImportInProcess(true);
+			try (SafeCloseable safeCloseable =
+					BatchEngineThreadLocal.
+						setBatchImportInProcessWithSafeCloseable(true)) {
 
-			_testCreateLayoutFriendlyURL(1);
+				_testCreateLayoutFriendlyURL(1);
+			}
 		}
 		finally {
-			BatchEngineThreadLocal.setBatchImportInProcess(false);
 			ExportImportThreadLocal.setLayoutImportInProcess(false);
 		}
 
@@ -85,13 +88,11 @@ public class LayoutFriendlyURLModelListenerTest {
 
 		_testCreateLayoutFriendlyURL(0);
 
-		BatchEngineThreadLocal.setBatchImportInProcess(true);
+		try (SafeCloseable safeCloseable =
+				BatchEngineThreadLocal.setBatchImportInProcessWithSafeCloseable(
+					true)) {
 
-		try {
 			_testCreateLayoutFriendlyURL(1);
-		}
-		finally {
-			BatchEngineThreadLocal.setBatchImportInProcess(false);
 		}
 	}
 
@@ -107,12 +108,14 @@ public class LayoutFriendlyURLModelListenerTest {
 		try {
 			_testUpdateLayoutFriendlyURL(0, layout);
 
-			BatchEngineThreadLocal.setBatchImportInProcess(true);
+			try (SafeCloseable safeCloseable =
+					BatchEngineThreadLocal.
+						setBatchImportInProcessWithSafeCloseable(true)) {
 
-			_testUpdateLayoutFriendlyURL(1, layout);
+				_testUpdateLayoutFriendlyURL(1, layout);
+			}
 		}
 		finally {
-			BatchEngineThreadLocal.setBatchImportInProcess(false);
 			ExportImportThreadLocal.setLayoutImportInProcess(false);
 		}
 
@@ -121,13 +124,11 @@ public class LayoutFriendlyURLModelListenerTest {
 
 		_testUpdateLayoutFriendlyURL(0, layout);
 
-		BatchEngineThreadLocal.setBatchImportInProcess(true);
+		try (SafeCloseable safeCloseable =
+				BatchEngineThreadLocal.setBatchImportInProcessWithSafeCloseable(
+					true)) {
 
-		try {
 			_testUpdateLayoutFriendlyURL(1, layout);
-		}
-		finally {
-			BatchEngineThreadLocal.setBatchImportInProcess(false);
 		}
 	}
 

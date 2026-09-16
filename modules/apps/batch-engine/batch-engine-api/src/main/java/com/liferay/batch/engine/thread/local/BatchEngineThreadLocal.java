@@ -6,6 +6,7 @@
 package com.liferay.batch.engine.thread.local;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.lang.SafeCloseable;
 
 /**
  * @author Alejandro Tardín
@@ -16,11 +17,13 @@ public class BatchEngineThreadLocal {
 		return _batchImportInProcess.get();
 	}
 
-	public static void setBatchImportInProcess(boolean batchImportInProcess) {
-		_batchImportInProcess.set(batchImportInProcess);
+	public static SafeCloseable setBatchImportInProcessWithSafeCloseable(
+		boolean batchImportInProcess) {
+
+		return _batchImportInProcess.setWithSafeCloseable(batchImportInProcess);
 	}
 
-	private static final ThreadLocal<Boolean> _batchImportInProcess =
+	private static final CentralizedThreadLocal<Boolean> _batchImportInProcess =
 		new CentralizedThreadLocal<>(
 			BatchEngineThreadLocal.class + "._batchImportInProcess",
 			() -> Boolean.FALSE);

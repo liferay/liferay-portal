@@ -15,6 +15,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -61,7 +62,6 @@ public class LayoutPrototypeLocalServiceTest {
 	@Test
 	public void testAddLayoutPrototype() throws PortalException {
 		try {
-			BatchEngineThreadLocal.setBatchImportInProcess(false);
 			ExportImportThreadLocal.setLayoutImportInProcess(false);
 
 			LayoutPrototype layoutPrototype = _testAddLayoutPrototype();
@@ -71,16 +71,18 @@ public class LayoutPrototypeLocalServiceTest {
 					fetchFirstLayoutPageTemplateEntry(
 						layoutPrototype.getLayoutPrototypeId()));
 
-			BatchEngineThreadLocal.setBatchImportInProcess(true);
+			try (SafeCloseable safeCloseable =
+					BatchEngineThreadLocal.
+						setBatchImportInProcessWithSafeCloseable(true)) {
 
-			layoutPrototype = _testAddLayoutPrototype();
+				layoutPrototype = _testAddLayoutPrototype();
 
-			Assert.assertNotNull(
-				_layoutPageTemplateEntryLocalService.
-					fetchFirstLayoutPageTemplateEntry(
-						layoutPrototype.getLayoutPrototypeId()));
+				Assert.assertNotNull(
+					_layoutPageTemplateEntryLocalService.
+						fetchFirstLayoutPageTemplateEntry(
+							layoutPrototype.getLayoutPrototypeId()));
+			}
 
-			BatchEngineThreadLocal.setBatchImportInProcess(false);
 			ExportImportThreadLocal.setLayoutImportInProcess(true);
 
 			layoutPrototype = _testAddLayoutPrototype();
@@ -91,7 +93,6 @@ public class LayoutPrototypeLocalServiceTest {
 						layoutPrototype.getLayoutPrototypeId()));
 		}
 		finally {
-			BatchEngineThreadLocal.setBatchImportInProcess(false);
 			ExportImportThreadLocal.setLayoutImportInProcess(false);
 		}
 	}
