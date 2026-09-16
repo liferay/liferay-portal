@@ -20,6 +20,9 @@ import {
 import AnalyticsFrame from './AnalyticsFrame';
 import Loader from './Loader';
 
+const RANGE_KEY_LAST_7_DAYS = 7;
+const RANGE_KEY_TODAY = -2;
+
 const formatTime = (milliseconds?: number): string => {
 	if (!milliseconds) {
 		return sub(Liferay.Language.get('x-minutes'), 0);
@@ -65,14 +68,31 @@ const formatTime = (milliseconds?: number): string => {
 	return minutesLabel;
 };
 
+const sum = (...values: Array<number | undefined>): number =>
+	values.reduce<number>((total, value) => total + (value ?? 0), 0);
+
 const toRoomStatistics = (response: any): IRoomStatistics => {
 	return {
-		timeViewedMilliseconds:
-			response?.siteVisitorBehavior?.totalSessionDuration ?? 0,
-		totalActions: response?.identityActivity?.count ?? 0,
-		totalComments: response?.identityComment?.count ?? 0,
-		totalVisits: response?.siteVisitorBehavior?.visitors ?? 0,
-		uniqueVisitors: response?.siteVisitorBehavior?.knownVisitors ?? 0,
+		timeViewedMilliseconds: sum(
+			response?.siteVisitorBehavior?.totalSessionDuration,
+			response?.siteVisitorBehaviorToday?.totalSessionDuration
+		),
+		totalActions: sum(
+			response?.identityActivity?.count,
+			response?.identityActivityToday?.count
+		),
+		totalComments: sum(
+			response?.identityComment?.count,
+			response?.identityCommentToday?.count
+		),
+		totalVisits: sum(
+			response?.siteVisitorBehavior?.visitors,
+			response?.siteVisitorBehaviorToday?.visitors
+		),
+		uniqueVisitors: sum(
+			response?.siteVisitorBehavior?.knownVisitors,
+			response?.siteVisitorBehaviorToday?.knownVisitors
+		),
 	};
 };
 
@@ -131,25 +151,51 @@ const RoomStatistics = ({
 				{
 					key: 'siteVisitorBehavior',
 					path: '/site-visitor-behavior-metric',
+					variables: {
+						rangeKey: RANGE_KEY_LAST_7_DAYS,
+					},
+				},
+				{
+					key: 'siteVisitorBehaviorToday',
+					path: '/site-visitor-behavior-metric',
+					variables: {
+						rangeKey: RANGE_KEY_TODAY,
+					},
 				},
 				{
 					key: 'identityActivity',
 					path: '/identity-activity',
+					variables: {
+						rangeKey: RANGE_KEY_LAST_7_DAYS,
+					},
+				},
+				{
+					key: 'identityActivityToday',
+					path: '/identity-activity',
+					variables: {
+						rangeKey: RANGE_KEY_TODAY,
+					},
 				},
 				{
 					key: 'identityComment',
 					path: '/identity-activity',
 					variables: {
 						includedEventIds: ['commentPosted'],
-						rangeKey: 7,
+						rangeKey: RANGE_KEY_LAST_7_DAYS,
+					},
+				},
+				{
+					key: 'identityCommentToday',
+					path: '/identity-activity',
+					variables: {
+						includedEventIds: ['commentPosted'],
+						rangeKey: RANGE_KEY_TODAY,
 					},
 				},
 			],
 		},
 		settings: {isAnalyticsEnabled},
-		variables: {
-			rangeKey: 7,
-		},
+		variables: {},
 	});
 
 	useEffect(() => {
