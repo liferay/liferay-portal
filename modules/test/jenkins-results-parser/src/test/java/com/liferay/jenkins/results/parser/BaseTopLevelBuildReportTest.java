@@ -185,15 +185,14 @@ public class BaseTopLevelBuildReportTest
 		List<FailureReport> distinctFailureReports =
 			baseTopLevelBuildReport.getDistinctFailureReports();
 
-		Assert.assertEquals(
-			distinctFailureReports.toString(), 2,
-			distinctFailureReports.size());
 		Assert.assertTrue(distinctFailureReports.contains(failureReport1));
 		Assert.assertTrue(distinctFailureReports.contains(failureReport3));
-
 		Assert.assertSame(
 			distinctFailureReports,
 			baseTopLevelBuildReport.getDistinctFailureReports());
+		Assert.assertEquals(
+			distinctFailureReports.toString(), 2,
+			distinctFailureReports.size());
 	}
 
 	@Test
@@ -268,10 +267,10 @@ public class BaseTopLevelBuildReportTest
 		List<FailureReport> failureReports =
 			baseTopLevelBuildReport.getFailureReports();
 
-		Assert.assertEquals(
-			failureReports.toString(), 3, failureReports.size());
 		Assert.assertTrue(failureReports.contains(cachedFailureReport));
 		Assert.assertTrue(failureReports.contains(downstreamFailureReport));
+		Assert.assertEquals(
+			failureReports.toString(), 3, failureReports.size());
 
 		Assert.assertSame(
 			failureReports, baseTopLevelBuildReport.getFailureReports());
@@ -681,10 +680,10 @@ public class BaseTopLevelBuildReportTest
 		List<FailureReport> uniqueFailureReports =
 			baseTopLevelBuildReport.getUniqueFailureReports();
 
-		Assert.assertEquals(
-			uniqueFailureReports.toString(), 1, uniqueFailureReports.size());
 		Assert.assertNotSame(distinctFailureReports, uniqueFailureReports);
 		Assert.assertTrue(uniqueFailureReports.contains(expectedFailureReport));
+		Assert.assertEquals(
+			uniqueFailureReports.toString(), 1, uniqueFailureReports.size());
 
 		Assert.assertSame(
 			uniqueFailureReports,
