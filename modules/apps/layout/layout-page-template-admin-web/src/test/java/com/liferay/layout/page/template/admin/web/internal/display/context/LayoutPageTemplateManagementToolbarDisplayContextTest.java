@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.layout.page.template.admin.web.internal.security.permission.resource.LayoutPageTemplateEntryPermission;
@@ -29,6 +30,7 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -60,6 +62,7 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 
 	@After
 	public void tearDown() {
+		_designLibraryUtilMockedStatic.close();
 		_layoutPageTemplateEntryPermissionMockedStatic.close();
 	}
 
@@ -70,10 +73,7 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 
 		LayoutPageTemplateManagementToolbarDisplayContext
 			layoutPageTemplateManagementToolbarDisplayContext =
-				new LayoutPageTemplateManagementToolbarDisplayContext(
-					_httpServletRequest, _getMockLiferayPortletActionRequest(),
-					new MockLiferayPortletRenderResponse(),
-					Mockito.mock(LayoutPageTemplateDisplayContext.class));
+				_getLayoutPageTemplateManagementToolbarDisplayContext();
 
 		Mockito.when(
 			_layoutPageTemplateEntry.isDraft()
@@ -94,10 +94,7 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 
 		LayoutPageTemplateManagementToolbarDisplayContext
 			layoutPageTemplateManagementToolbarDisplayContext =
-				new LayoutPageTemplateManagementToolbarDisplayContext(
-					_httpServletRequest, _getMockLiferayPortletActionRequest(),
-					new MockLiferayPortletRenderResponse(),
-					Mockito.mock(LayoutPageTemplateDisplayContext.class));
+				_getLayoutPageTemplateManagementToolbarDisplayContext();
 
 		Mockito.when(
 			_layoutPageTemplateEntry.getLayoutPrototypeId()
@@ -112,54 +109,35 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 	}
 
 	@Test
-	@TestInfo("LPD-89086")
+	@TestInfo({"LPD-89086", "LPD-104842"})
 	public void testGetCreationMenu() throws Exception {
-		for (boolean featureFlagEnabled : new boolean[] {false, true}) {
-			try (MockedStatic<FeatureFlagManagerUtil>
-					featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-						FeatureFlagManagerUtil.class)) {
+		LayoutPageTemplateManagementToolbarDisplayContext
+			layoutPageTemplateManagementToolbarDisplayContext =
+				_getLayoutPageTemplateManagementToolbarDisplayContext();
 
-				featureFlagManagerUtilMockedStatic.when(
-					() -> FeatureFlagManagerUtil.isEnabled(
-						Mockito.anyLong(), Mockito.eq("LPD-76864"))
-				).thenReturn(
-					featureFlagEnabled
-				);
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
 
-				LayoutPageTemplateManagementToolbarDisplayContext
-					layoutPageTemplateManagementToolbarDisplayContext =
-						new LayoutPageTemplateManagementToolbarDisplayContext(
-							_httpServletRequest,
-							_getMockLiferayPortletActionRequest(),
-							new MockLiferayPortletRenderResponse(),
-							Mockito.mock(
-								LayoutPageTemplateDisplayContext.class));
-
-				CreationMenu creationMenu =
-					layoutPageTemplateManagementToolbarDisplayContext.
-						getCreationMenu();
-
-				List<DropdownItem> primaryDropdownItems =
-					(List<DropdownItem>)creationMenu.get("primaryItems");
-
-				if (featureFlagEnabled) {
-					DropdownItem primaryDropdownItem = primaryDropdownItems.get(
-						1);
-
-					Assert.assertEquals(
-						Boolean.TRUE, primaryDropdownItem.get("deprecated"));
-
-					Assert.assertEquals(
-						primaryDropdownItems.toString(), 2,
-						primaryDropdownItems.size());
-				}
-				else {
-					Assert.assertEquals(
-						primaryDropdownItems.toString(), 1,
-						primaryDropdownItems.size());
-				}
-			}
+			_testGetCreationMenu(
+				false, featureFlagManagerUtilMockedStatic,
+				layoutPageTemplateManagementToolbarDisplayContext);
+			_testGetCreationMenu(
+				true, featureFlagManagerUtilMockedStatic,
+				layoutPageTemplateManagementToolbarDisplayContext);
 		}
+
+		_testGetCreationMenuInDesignLibraryGroup(
+			layoutPageTemplateManagementToolbarDisplayContext);
+	}
+
+	private LayoutPageTemplateManagementToolbarDisplayContext
+		_getLayoutPageTemplateManagementToolbarDisplayContext() {
+
+		return new LayoutPageTemplateManagementToolbarDisplayContext(
+			_httpServletRequest, _getMockLiferayPortletActionRequest(),
+			new MockLiferayPortletRenderResponse(),
+			Mockito.mock(LayoutPageTemplateDisplayContext.class));
 	}
 
 	private MockLiferayPortletActionRequest
@@ -183,6 +161,16 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 			}
 
 		};
+	}
+
+	private List<DropdownItem> _getPrimaryDropdownItems(
+		LayoutPageTemplateManagementToolbarDisplayContext
+			layoutPageTemplateManagementToolbarDisplayContext) {
+
+		CreationMenu creationMenu =
+			layoutPageTemplateManagementToolbarDisplayContext.getCreationMenu();
+
+		return (List<DropdownItem>)creationMenu.get("primaryItems");
 	}
 
 	private void _setUpHttpServletRequest() {
@@ -219,10 +207,74 @@ public class LayoutPageTemplateManagementToolbarDisplayContextTest {
 		Mockito.when(
 			_themeDisplay.getScopeGroup()
 		).thenReturn(
-			Mockito.mock(Group.class)
+			_group
 		);
 	}
 
+	private void _testGetCreationMenu(
+		boolean featureFlagEnabled,
+		MockedStatic<FeatureFlagManagerUtil> featureFlagManagerUtilMockedStatic,
+		LayoutPageTemplateManagementToolbarDisplayContext
+			layoutPageTemplateManagementToolbarDisplayContext) {
+
+		featureFlagManagerUtilMockedStatic.when(
+			() -> FeatureFlagManagerUtil.isEnabled(
+				Mockito.anyLong(), Mockito.eq("LPD-76864"))
+		).thenReturn(
+			featureFlagEnabled
+		);
+
+		List<DropdownItem> primaryDropdownItems = _getPrimaryDropdownItems(
+			layoutPageTemplateManagementToolbarDisplayContext);
+
+		if (featureFlagEnabled) {
+			Assert.assertEquals(
+				primaryDropdownItems.toString(), 2,
+				primaryDropdownItems.size());
+
+			DropdownItem primaryDropdownItem = primaryDropdownItems.get(1);
+
+			Assert.assertEquals(
+				Boolean.TRUE, primaryDropdownItem.get("deprecated"));
+		}
+		else {
+			Assert.assertEquals(
+				primaryDropdownItems.toString(), 1,
+				primaryDropdownItems.size());
+		}
+	}
+
+	private void _testGetCreationMenuInDesignLibraryGroup(
+		LayoutPageTemplateManagementToolbarDisplayContext
+			layoutPageTemplateManagementToolbarDisplayContext) {
+
+		_designLibraryUtilMockedStatic.when(
+			() -> DesignLibraryUtil.isDesignLibraryScope(_group)
+		).thenReturn(
+			true
+		);
+
+		List<DropdownItem> primaryDropdownItems = _getPrimaryDropdownItems(
+			layoutPageTemplateManagementToolbarDisplayContext);
+
+		Assert.assertEquals(
+			primaryDropdownItems.toString(), 1, primaryDropdownItems.size());
+
+		DropdownItem primaryDropdownItem = primaryDropdownItems.get(0);
+
+		Map<String, Object> data = (Map<String, Object>)primaryDropdownItem.get(
+			"data");
+
+		Assert.assertEquals("addLayoutPageTemplateEntry", data.get("action"));
+		Assert.assertTrue(data.containsKey("addPageTemplateURL"));
+
+		Assert.assertNull(primaryDropdownItem.get("href"));
+	}
+
+	private final MockedStatic<DesignLibraryUtil>
+		_designLibraryUtilMockedStatic = Mockito.mockStatic(
+			DesignLibraryUtil.class);
+	private final Group _group = Mockito.mock(Group.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
 	private final LayoutPageTemplateEntry _layoutPageTemplateEntry =
