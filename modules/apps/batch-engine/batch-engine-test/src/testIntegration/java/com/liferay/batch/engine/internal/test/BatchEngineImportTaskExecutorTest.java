@@ -16,6 +16,7 @@ import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.model.BatchEngineImportTaskError;
 import com.liferay.batch.engine.service.BatchEngineImportTaskErrorLocalService;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
+import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
@@ -649,6 +650,9 @@ public class BatchEngineImportTaskExecutorTest
 							new TestBlogPostingBatchEngineTaskItemDelegate(),
 							true);
 					}
+
+					Assert.assertTrue(
+						BatchEngineThreadLocal.isBatchImportInProcess());
 
 					return super.createItem(blogPosting, queryParameters);
 				}
