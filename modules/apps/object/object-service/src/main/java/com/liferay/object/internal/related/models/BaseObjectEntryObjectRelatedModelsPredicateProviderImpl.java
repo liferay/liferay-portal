@@ -17,6 +17,8 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.odata.filter.InvalidFilterException;
 
+import java.util.Collection;
+
 /**
  * @author Luis Miguel Barcos
  */
@@ -81,6 +83,24 @@ public abstract class BaseObjectEntryObjectRelatedModelsPredicateProviderImpl
 				objectDefinition.getObjectDefinitionId(),
 				objectDefinition.getExtensionDBTableName()),
 			objectDefinition.getExtensionDBTableName());
+	}
+
+	protected Predicate getExtensionLeftJoinPredicate(
+		DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
+		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable) {
+
+		Collection<Column<DynamicObjectDefinitionTable, ?>> columns =
+			extensionDynamicObjectDefinitionTable.getColumns();
+
+		if (columns.size() > 1) {
+			Column<DynamicObjectDefinitionTable, Long> primaryKeyColumn =
+				dynamicObjectDefinitionTable.getPrimaryKeyColumn();
+
+			return primaryKeyColumn.eq(
+				extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn());
+		}
+
+		return null;
 	}
 
 	protected <T extends BaseTable<T>> Column<?, ?> getPKObjectFieldColumn(

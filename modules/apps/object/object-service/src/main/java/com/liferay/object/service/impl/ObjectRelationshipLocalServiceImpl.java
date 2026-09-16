@@ -108,6 +108,7 @@ import java.sql.Connection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1525,16 +1526,25 @@ public class ObjectRelationshipLocalServiceImpl
 			return 0;
 		}
 
+		Collection<Column<DynamicObjectDefinitionTable, ?>> columns =
+			extensionDynamicObjectDefinitionTable.getColumns();
+
+		Predicate leftJoinPredicate = null;
+
+		if (columns.size() > 1) {
+			leftJoinPredicate =
+				extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn(
+				).eq(
+					dynamicObjectDefinitionTable.getPrimaryKeyColumn()
+				);
+		}
+
 		DSLQuery dslQuery = DSLQueryFactoryUtil.countDistinct(
 			ObjectEntryTable.INSTANCE.objectEntryId
 		).from(
 			dynamicObjectDefinitionTable
-		).innerJoinON(
-			extensionDynamicObjectDefinitionTable,
-			extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn(
-			).eq(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn()
-			)
+		).leftJoinOn(
+			extensionDynamicObjectDefinitionTable, leftJoinPredicate
 		).innerJoinON(
 			ObjectEntryTable.INSTANCE,
 			ObjectEntryTable.INSTANCE.objectEntryId.eq(

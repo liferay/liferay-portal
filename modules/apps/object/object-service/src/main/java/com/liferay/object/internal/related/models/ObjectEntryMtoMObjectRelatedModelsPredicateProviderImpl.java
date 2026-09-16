@@ -88,13 +88,11 @@ public class ObjectEntryMtoMObjectRelatedModelsPredicateProviderImpl
 						ObjectEntryTable.INSTANCE.objectEntryId.eq(
 							relatedDynamicObjectDefinitionTable.
 								getPrimaryKeyColumn())
-					).innerJoinON(
+					).leftJoinOn(
 						relatedObjectDefinitionExtensionTable,
-						relatedDynamicObjectDefinitionTable.getPrimaryKeyColumn(
-						).eq(
-							relatedObjectDefinitionExtensionTable.
-								getPrimaryKeyColumn()
-						)
+						getExtensionLeftJoinPredicate(
+							relatedDynamicObjectDefinitionTable,
+							relatedObjectDefinitionExtensionTable)
 					).leftJoinOn(
 						relatedDynamicObjectDefinitionLocalizationTable,
 						ObjectEntrySearchUtil.

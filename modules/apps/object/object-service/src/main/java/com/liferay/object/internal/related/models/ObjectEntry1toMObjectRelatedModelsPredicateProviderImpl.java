@@ -174,12 +174,11 @@ public class ObjectEntry1toMObjectRelatedModelsPredicateProviderImpl
 				ObjectEntryTable.INSTANCE,
 				ObjectEntryTable.INSTANCE.objectEntryId.eq(
 					dynamicObjectDefinitionTable.getPrimaryKeyColumn())
-			).innerJoinON(
+			).leftJoinOn(
 				extensionDynamicObjectDefinitionTable,
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn(
-				).eq(
-					extensionDynamicObjectDefinitionTable.getPrimaryKeyColumn()
-				)
+				getExtensionLeftJoinPredicate(
+					dynamicObjectDefinitionTable,
+					extensionDynamicObjectDefinitionTable)
 			).leftJoinOn(
 				dynamicObjectDefinitionLocalizationTable,
 				ObjectEntrySearchUtil.getLeftJoinLocalizationTablePredicate(
