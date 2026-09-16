@@ -354,7 +354,11 @@ public class AssetHelperImpl implements AssetHelper {
 		Locale locale = themeDisplay.getLocale();
 
 		for (long classNameId : classNameIds) {
-			String className = _portal.getClassName(classNameId);
+			String className = _portal.fetchClassName(classNameId);
+
+			if (Validator.isNull(className)) {
+				continue;
+			}
 
 			AssetRendererFactory<?> assetRendererFactory =
 				AssetRendererFactoryRegistryUtil.
