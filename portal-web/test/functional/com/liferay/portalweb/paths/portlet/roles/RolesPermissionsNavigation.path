@@ -17,7 +17,7 @@
 </tr>
 <tr>
 	<td>PERMISSIONS_NAVIGATION</td>
-	<td>//*[contains(.,'${key_permissionNavHeader}') and contains(@data-qa-id,'editRolePermissionsNavigation')]//button[contains(.,'${key_permissionNavItem}')]</td>
+	<td>//*[contains(.,'${key_permissionNavHeader}') and contains(@data-qa-id,'editRolePermissionsNavigation')]//button[normalize-space()='${key_permissionNavItem}']</td>
 	<td></td>
 </tr>
 <tr>
