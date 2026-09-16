@@ -85,6 +85,14 @@ public class ViewProfilesDisplayContext {
 			).build()
 		).add(
 			FDSSortItemBuilder.setDirection(
+				"asc"
+			).setKey(
+				"profileStatus"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "status")
+			).build()
+		).add(
+			FDSSortItemBuilder.setDirection(
 				"desc"
 			).setKey(
 				"dateModified"
