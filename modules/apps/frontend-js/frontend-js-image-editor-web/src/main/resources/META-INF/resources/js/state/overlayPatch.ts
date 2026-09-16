@@ -32,6 +32,15 @@ const EDITABLE_KEYS: {[K in Kind]: ReadonlySet<string>} = {
 		'y',
 	]),
 	circle: new Set(BOX_KEYS),
+	emoji: new Set([
+		'character',
+		'name',
+		'opacity',
+		'rotation',
+		'size',
+		'x',
+		'y',
+	]),
 	redact: new Set([
 		'height',
 		'level',
@@ -65,7 +74,14 @@ const EDITABLE_KEYS: {[K in Kind]: ReadonlySet<string>} = {
 	]),
 };
 
-const STRING_KEYS = new Set(['borderColor', 'color', 'fontFamily', 'text']);
+const STRING_KEYS = new Set([
+	'borderColor',
+	'character',
+	'color',
+	'fontFamily',
+	'name',
+	'text',
+]);
 
 const ENUM_KEYS: Record<string, ReadonlySet<string>> = {
 	head: new Set(['filled', 'open']),
@@ -75,7 +91,13 @@ const ENUM_KEYS: Record<string, ReadonlySet<string>> = {
 
 const CLEARABLE_KEYS = new Set(['borderColor', 'borderWidth', 'sketchSeed']);
 
-const AT_LEAST_ONE = new Set(['fontSize', 'height', 'thickness', 'width']);
+const AT_LEAST_ONE = new Set([
+	'fontSize',
+	'height',
+	'size',
+	'thickness',
+	'width',
+]);
 
 function validate(key: string, value: unknown): unknown {
 	if (key === 'smooth') {

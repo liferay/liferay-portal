@@ -181,7 +181,7 @@ export function LayerProperties({
 					</ClayForm.Group>
 				)}
 
-				{overlay.kind !== 'redact' && (
+				{overlay.kind !== 'redact' && overlay.kind !== 'emoji' && (
 					<ColorField
 						fill
 						id={eid('layer-prop-color')}
@@ -340,6 +340,17 @@ export function LayerProperties({
 							value={overlay.smooth ? 'smooth' : 'straight'}
 						/>
 					</ClayForm.Group>
+				)}
+
+				{overlay.kind === 'emoji' && (
+					<NumberField
+						id={eid('layer-prop-size')}
+						label={Liferay.Language.get('size')}
+						min={8}
+						onCommit={(size) => commitPatch({size})}
+						onPreview={(size) => previewPatch({size})}
+						value={overlay.size}
+					/>
 				)}
 
 				{overlay.kind === 'text' && (

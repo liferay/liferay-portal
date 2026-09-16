@@ -230,6 +230,18 @@ export function transformOverlay(overlay: Overlay, matrix: Matrix): Overlay {
 			};
 		}
 
+		case 'emoji': {
+			const [cx, cy] = applyToPoint(matrix, overlay.x, overlay.y);
+
+			return {
+				...overlay,
+				rotation: foldRotation(overlay.rotation ?? 0, degrees),
+				size: round(overlay.size * scale),
+				x: round(cx),
+				y: round(cy),
+			};
+		}
+
 		case 'stroke': {
 			const absolute: Array<[number, number]> = [];
 

@@ -28,6 +28,7 @@ import {focusOverlayNode} from '../stage/focusOverlayNode';
 import {EditorAction} from '../state/editorReducer';
 import {nextId} from '../state/ids';
 import {CropRect, Overlay} from '../state/types';
+import {EmojiPicker} from './EmojiPicker';
 import {MenuGrid} from './MenuGrid';
 import {TEXT_DIALOG_CLOSE_MS, TextDialog} from './TextDialog';
 
@@ -127,11 +128,13 @@ export function AnnotatePanel({
 
 	const editorRoot = useEditorRoot();
 
-	const [textDialogOpen, setTextDialogOpen] = useState(false);
+	const [emojiMenuOpen, setEmojiMenuOpen] = useState(false);
+
+	const [rovingIndex, setRovingIndex] = useState(0);
 
 	const [shapeMenuOpen, setShapeMenuOpen] = useState(false);
 
-	const [rovingIndex, setRovingIndex] = useState(0);
+	const [textDialogOpen, setTextDialogOpen] = useState(false);
 
 	const panelRef = useRef<HTMLDivElement>(null);
 
@@ -142,6 +145,7 @@ export function AnnotatePanel({
 		...(shapeTools.length ? ['shapes'] : []),
 		...(tools.includes('draw') ? ['draw'] : []),
 		...(tools.includes('redaction') ? ['redaction'] : []),
+		...(tools.includes('emoji') ? ['emoji'] : []),
 	];
 
 	const indexOf = (control: string) => controls.indexOf(control);
@@ -238,6 +242,17 @@ export function AnnotatePanel({
 			width: Math.round(area.width * 0.25),
 			x: Math.round(centerX - area.width * 0.125),
 			y: Math.round(centerY - area.height * 0.075),
+		});
+
+	const addEmoji = (character: string, name: string) =>
+		add({
+			character,
+			id: nextId('emoji'),
+			kind: 'emoji',
+			name,
+			size: Math.round(Math.min(area.width, area.height) * 0.2),
+			x: centerX,
+			y: centerY,
 		});
 
 	const addRectangle = () =>
@@ -408,6 +423,42 @@ export function AnnotatePanel({
 							label={Liferay.Language.get('redact')}
 						/>
 					</ClayButton>
+				)}
+
+				{tools.includes('emoji') && (
+					<ClayDropDown
+						active={emojiMenuOpen}
+						menuElementAttrs={{
+							className:
+								'editor-emoji-popover editor-menu-popover',
+						}}
+						onActiveChange={setEmojiMenuOpen}
+						trigger={
+							<ClayButton
+								{...rovingProps(indexOf('emoji'))}
+								aria-label={Liferay.Language.get('add-emoji')}
+								className="editor-tool-tile"
+								data-menu-trigger
+								displayType="secondary"
+							>
+								<ToolTile
+									icon="emoji"
+									label={Liferay.Language.get('emoji')}
+									menu
+								/>
+							</ClayButton>
+						}
+					>
+						{emojiMenuOpen && (
+							<EmojiPicker
+								onChoose={(entry) => {
+									setEmojiMenuOpen(false);
+
+									addEmoji(entry.c, entry.n);
+								}}
+							/>
+						)}
+					</ClayDropDown>
 				)}
 			</div>
 

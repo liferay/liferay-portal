@@ -14,6 +14,7 @@ export type AnnotateTool =
 	| 'arrow'
 	| 'circle'
 	| 'draw'
+	| 'emoji'
 	| 'rectangle'
 	| 'redaction'
 	| 'square'
@@ -40,6 +41,7 @@ export const ANNOTATE_TOOLS: AnnotateTool[] = [
 	...SHAPE_TOOLS,
 	'draw',
 	'redaction',
+	'emoji',
 ];
 
 export const FILTER_PRESETS: FilterPreset[] = [

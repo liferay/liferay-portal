@@ -327,6 +327,23 @@ export function LayersPanel({
 								}}
 								type="button"
 							>
+
+								{/*
+								 * The character itself, in front of its
+								 * name: decoration a sighted eye scans
+								 * faster than a word, hidden from the
+								 * name the row already has.
+								 */}
+
+								{overlay.kind === 'emoji' && (
+									<span
+										aria-hidden="true"
+										className="editor-layer-glyph"
+									>
+										{overlay.character}
+									</span>
+								)}
+
 								{label}
 							</button>
 

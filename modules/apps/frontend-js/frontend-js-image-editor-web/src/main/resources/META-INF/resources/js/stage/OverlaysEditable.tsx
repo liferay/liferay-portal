@@ -32,6 +32,9 @@ function scalableSize(overlay: Overlay): number {
 		case 'arrow':
 			return Infinity;
 
+		case 'emoji':
+			return overlay.size;
+
 		case 'stroke': {
 			const box = pointsBounds(overlay.points);
 

@@ -19,6 +19,7 @@ import {
 } from '../../src/main/resources/META-INF/resources/js/imaging/overlayShapes';
 import {
 	ArrowOverlay,
+	EmojiOverlay,
 	Overlay,
 	RedactOverlay,
 	ShapeOverlay,
@@ -301,5 +302,36 @@ describe('a redaction', () => {
 
 	it('mirrors by its far edge, so it keeps hiding the same pixels', () => {
 		expect(mirrorOverlay(REDACT, 1000)).toMatchObject({x: 780, y: 200});
+	});
+});
+
+const EMOJI_OVERLAY: EmojiOverlay = {
+	character: '🎉',
+	id: 'emoji-1',
+	kind: 'emoji',
+	name: 'party popper',
+	size: 120,
+	x: 400,
+	y: 300,
+};
+
+describe('an emoji annotation', () => {
+	it('is a square centred on its point', () => {
+		expect(isBoxOverlay(EMOJI_OVERLAY)).toBe(false);
+
+		expect(overlayBounds(EMOJI_OVERLAY)).toEqual({
+			height: 120,
+			width: 120,
+			x: 340,
+			y: 240,
+		});
+	});
+
+	it('is named by Unicode, not by us', () => {
+		expect(overlayLabel(EMOJI_OVERLAY)).toBe('party popper');
+	});
+
+	it('mirrors by its point when the photograph flips', () => {
+		expect(mirrorOverlay(EMOJI_OVERLAY, 1000)).toMatchObject({x: 600});
 	});
 });

@@ -386,6 +386,17 @@ describe('text annotations', () => {
 	});
 });
 
+async function addEmoji(name: string) {
+	fireEvent.click(screen.getByRole('button', {name: 'add-emoji'}));
+
+	fireEvent.click(
+		within(await screen.findByRole('grid', {name: 'add-emoji'})).getByRole(
+			'button',
+			{name}
+		)
+	);
+}
+
 function addShape(shape: string) {
 	fireEvent.click(screen.getByRole('button', {name: 'add-shape'}));
 
@@ -1547,6 +1558,72 @@ describe('a redaction', () => {
 
 		expect(container.querySelectorAll('.object-handle')).toHaveLength(9);
 		expect(screen.getByLabelText('width')).toBeInTheDocument();
+	});
+});
+
+describe('an emoji annotation', () => {
+	it('adds an emoji as a layer of its own, sized but never coloured', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		await addEmoji('star');
+
+		expect(hit(container)).toHaveAttribute('aria-label', 'star');
+
+		expect(
+			container.querySelector('.editor-layer-glyph')?.textContent
+		).toBe('⭐');
+
+		expect(screen.getByLabelText('size')).toBeInTheDocument();
+		expect(screen.queryByLabelText('color')).toBeNull();
+		expect(screen.queryByLabelText('font-family')).toBeNull();
+	});
+
+	it('finds an emoji whatever the capitalisation of its name', async () => {
+		render(<AnnotationHarness />);
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-emoji'}));
+
+		fireEvent.change(await screen.findByLabelText('search-emoji'), {
+			target: {value: 'spain'},
+		});
+
+		expect(
+			within(screen.getByRole('grid', {name: 'add-emoji'})).getByRole(
+				'button',
+				{name: 'flag: Spain'}
+			)
+		).toBeInTheDocument();
+	});
+
+	it('moves with the keyboard like every other annotation', async () => {
+		const {container} = render(<AnnotationHarness />);
+
+		await addEmoji('star');
+
+		const initialX = Number(hit(container).getAttribute('x'));
+
+		fireEvent.keyDown(hit(container), {key: 'ArrowRight', shiftKey: true});
+		fireEvent.keyUp(hit(container), {key: 'ArrowRight', shiftKey: true});
+
+		expect(Number(hit(container).getAttribute('x'))).toBe(initialX + 10);
+	});
+
+	it('is centered on the crop, not on the image', async () => {
+		const {container} = render(<AnnotationHarness start={cropped} />);
+
+		await addEmoji('star');
+
+		const target = hit(container);
+
+		const centerX =
+			Number(target.getAttribute('x')) +
+			Number(target.getAttribute('width')) / 2;
+		const centerY =
+			Number(target.getAttribute('y')) +
+			Number(target.getAttribute('height')) / 2;
+
+		expect(Math.round(centerX)).toBe(900);
+		expect(Math.round(centerY)).toBe(600);
 	});
 });
 

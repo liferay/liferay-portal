@@ -40,6 +40,7 @@ describe('resolveConfig', () => {
 			'arrow',
 			'draw',
 			'redaction',
+			'emoji',
 		]);
 	});
 
