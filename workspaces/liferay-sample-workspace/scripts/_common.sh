@@ -56,6 +56,16 @@ function get_gradle_property {
 	echo "${value}"
 }
 
+function _die {
+	_print_error "${*}"
+
+	exit 1
+}
+
+function _print_error {
+	echo "${*}" >&2
+}
+
 function _read_property {
 	local key=${1}
 	local file=${2}
