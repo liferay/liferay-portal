@@ -29,6 +29,7 @@ import java.io.Serializable;
 
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -52,6 +53,11 @@ public class DataSetShowSearchUpgradeProcessTest {
 	public void setUp() throws Exception {
 		FrontendDataSetTestUtil.initialize(
 			DataSetShowSearchUpgradeProcessTest.class);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		FrontendDataSetTestUtil.tearDown();
 	}
 
 	@Test

@@ -45,6 +45,7 @@ import java.io.Serializable;
 
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -109,6 +110,11 @@ public class SystemFDSSerializerTest {
 			Arrays.asList(SharingEntryAction.VIEW), null,
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		FrontendDataSetTestUtil.tearDown();
 	}
 
 	@Test
