@@ -495,6 +495,11 @@ public class ObjectEntryLocalServiceImpl
 		objectEntry.setTreePath(objectEntry.buildTreePath());
 
 		_setExternalReferenceCode(objectEntry, values);
+
+		if (Validator.isNull(objectEntry.getExternalReferenceCode())) {
+			objectEntry.setExternalReferenceCode(objectEntry.getUuid());
+		}
+
 		_setRootObjectEntryId(objectDefinition, objectEntry, values);
 		_setDisplayDate(objectEntry, values);
 
