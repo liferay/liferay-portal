@@ -25,6 +25,8 @@ import {
 	RedactLevel,
 	RedactStyle,
 	ShapeOverlay,
+	StrokeOverlay,
+	TextOverlay,
 	isBoxOverlay,
 } from '../state/types';
 import {FONT_FAMILIES} from './textFonts';
@@ -190,22 +192,20 @@ export function LayerProperties({
 					</ClayForm.Group>
 				)}
 
-				{overlay.kind !== 'redact' &&
-					overlay.kind !== 'emoji' &&
-					overlay.kind !== 'image' && (
-						<ColorField
-							fill
-							id={eid('layer-prop-color')}
-							label={
-								overlay.kind === 'text'
-									? Liferay.Language.get('text-color')
-									: Liferay.Language.get('color')
-							}
-							onCommit={(color) => commitPatch({color})}
-							onPreview={(color) => previewPatch({color})}
-							value={overlay.color}
-						/>
-					)}
+				{hasColor(overlay) && (
+					<ColorField
+						fill
+						id={eid('layer-prop-color')}
+						label={
+							overlay.kind === 'text'
+								? Liferay.Language.get('text-color')
+								: Liferay.Language.get('color')
+						}
+						onCommit={(color) => commitPatch({color})}
+						onPreview={(color) => previewPatch({color})}
+						value={overlay.color}
+					/>
+				)}
 
 				<NumberField
 					id={eid('layer-prop-x')}
@@ -527,4 +527,19 @@ export function LayerProperties({
 
 function hasBorder(overlay: Overlay): overlay is CircleOverlay | ShapeOverlay {
 	return overlay.kind === 'circle' || overlay.kind === 'shape';
+}
+
+function hasColor(
+	overlay: Overlay
+): overlay is
+	| ArrowOverlay
+	| CircleOverlay
+	| ShapeOverlay
+	| StrokeOverlay
+	| TextOverlay {
+	return (
+		overlay.kind !== 'emoji' &&
+		overlay.kind !== 'image' &&
+		overlay.kind !== 'redact'
+	);
 }

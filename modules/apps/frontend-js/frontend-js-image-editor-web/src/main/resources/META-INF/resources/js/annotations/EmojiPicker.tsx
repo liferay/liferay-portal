@@ -310,7 +310,7 @@ export function EmojiPicker({onChoose}: Props) {
 								Liferay.Language.get(
 									'search-to-find-any-of-the-x-emoji'
 								),
-								catalog?.entries.length ?? 0
+								catalog.entries.length
 							)}
 				</div>
 			</div>
