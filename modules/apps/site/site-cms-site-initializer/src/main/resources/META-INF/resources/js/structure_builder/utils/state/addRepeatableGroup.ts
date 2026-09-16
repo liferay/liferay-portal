@@ -68,6 +68,7 @@ export default function addRepeatableGroup({
 				])
 			),
 			erc: getRandomId(),
+			isRepeatable: true,
 			label: buildLocalizedValue('repeatable-group'),
 			name: getRandomName({capitalize: true}),
 			parent: groupParent,
