@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.context.Context;
 import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
@@ -160,8 +161,12 @@ public abstract class BaseSegmentsEntryProvider
 
 		if (segmentsEntries.isEmpty()) {
 			segmentsEntries = segmentsEntryLocalService.getSegmentsEntries(
-				groupId, new String[] {getSource()}, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+				groupId, new String[] {getSource()},
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
+				},
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 		}
 
 		if (segmentsEntries.isEmpty()) {

@@ -92,6 +92,7 @@ public class SegmentsEntryModelResourcePermissionWrapperTest {
 				Collections.singletonMap(
 					LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 				true, null, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+				SegmentsEntryConstants.TYPE_DEFAULT,
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertFalse(

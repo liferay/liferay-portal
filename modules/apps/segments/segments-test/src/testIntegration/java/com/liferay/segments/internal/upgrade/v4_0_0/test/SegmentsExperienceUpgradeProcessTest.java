@@ -223,6 +223,7 @@ public class SegmentsExperienceUpgradeProcessTest
 			Collections.singletonMap(
 				defaultLocale, RandomTestUtil.randomString()),
 			true, null, SegmentsEntryConstants.SOURCE_DEFAULT,
+			SegmentsEntryConstants.TYPE_DEFAULT,
 			ServiceContextTestUtil.getServiceContext(groupId));
 	}
 

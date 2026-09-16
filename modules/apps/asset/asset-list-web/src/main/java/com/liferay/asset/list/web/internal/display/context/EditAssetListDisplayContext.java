@@ -470,6 +470,10 @@ public class EditAssetListDisplayContext {
 					SegmentsEntryConstants.SOURCE_DEFAULT,
 					SegmentsEntryConstants.SOURCE_REFERRED
 				},
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
+				},
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
 			segmentsEntry -> !ArrayUtil.contains(
 				getSelectedSegmentsEntryIds(),

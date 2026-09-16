@@ -49,6 +49,7 @@ public class SegmentsEntryExternalReferenceCodeUpgradeProcessTest
 					defaultLocale, RandomTestUtil.randomString()),
 				true, CriteriaSerializer.serialize(new Criteria()),
 				SegmentsEntryConstants.SOURCE_DEFAULT,
+				SegmentsEntryConstants.TYPE_DEFAULT,
 				ServiceContextTestUtil.getServiceContext(group.getGroupId()))
 		};
 	}

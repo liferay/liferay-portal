@@ -265,12 +265,20 @@ public class SegmentsDisplayContext {
 					new String[] {
 						SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND
 					},
+					new int[] {
+						SegmentsEntryConstants.TYPE_BATCH,
+						SegmentsEntryConstants.TYPE_DEFAULT
+					},
 					searchContainer.getStart(), searchContainer.getEnd(),
 					searchContainer.getOrderByComparator()),
 				_segmentsEntryService.getSegmentsEntriesCount(
 					_themeDisplay.getScopeGroupId(),
 					new String[] {
 						SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND
+					},
+					new int[] {
+						SegmentsEntryConstants.TYPE_BATCH,
+						SegmentsEntryConstants.TYPE_DEFAULT
 					}));
 		}
 		else {
@@ -282,6 +290,10 @@ public class SegmentsDisplayContext {
 						SegmentsEntryConstants.SOURCE_DEFAULT,
 						SegmentsEntryConstants.SOURCE_REFERRED
 					},
+					new int[] {
+						SegmentsEntryConstants.TYPE_BATCH,
+						SegmentsEntryConstants.TYPE_DEFAULT
+					},
 					searchContainer.getStart(), searchContainer.getEnd(),
 					searchContainer.getOrderByComparator()),
 				_segmentsEntryService.getSegmentsEntriesCount(
@@ -290,6 +302,10 @@ public class SegmentsDisplayContext {
 						SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
 						SegmentsEntryConstants.SOURCE_DEFAULT,
 						SegmentsEntryConstants.SOURCE_REFERRED
+					},
+					new int[] {
+						SegmentsEntryConstants.TYPE_BATCH,
+						SegmentsEntryConstants.TYPE_DEFAULT
 					}));
 		}
 

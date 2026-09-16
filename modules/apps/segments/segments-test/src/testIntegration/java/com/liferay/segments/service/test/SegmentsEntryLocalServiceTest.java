@@ -184,7 +184,8 @@ public class SegmentsEntryLocalServiceTest {
 
 	@Test
 	public void testAddSegmentsEntryWithType() throws Exception {
-		SegmentsEntry segmentsEntry = _addSegmentsEntry(null);
+		SegmentsEntry segmentsEntry = _addSegmentsEntry(
+			SegmentsEntryConstants.TYPE_DEFAULT);
 
 		Assert.assertEquals(
 			SegmentsEntryConstants.TYPE_BATCH, segmentsEntry.getType());
@@ -262,22 +263,31 @@ public class SegmentsEntryLocalServiceTest {
 		String[] sources = {SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND};
 
 		int batchCount = _segmentsEntryLocalService.getSegmentsEntriesCount(
-			_group.getGroupId(), sources);
+			_group.getGroupId(), sources,
+			new int[] {
+				SegmentsEntryConstants.TYPE_BATCH,
+				SegmentsEntryConstants.TYPE_DEFAULT
+			});
 		int realTimeCount = _segmentsEntryLocalService.getSegmentsEntriesCount(
 			_group.getGroupId(), sources,
-			SegmentsEntryConstants.TYPE_REAL_TIME);
+			new int[] {SegmentsEntryConstants.TYPE_REAL_TIME});
 
 		SegmentsEntry batchSegmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_BATCH);
-		SegmentsEntry defaultSegmentsEntry = _addSegmentsEntry(
+		SegmentsEntry defaultSegmentsEntry = _setType(
+			_addSegmentsEntry(SegmentsEntryConstants.TYPE_DEFAULT),
 			SegmentsEntryConstants.TYPE_DEFAULT);
 		SegmentsEntry realTimeSegmentsEntry = _addSegmentsEntry(
 			SegmentsEntryConstants.TYPE_REAL_TIME);
 
 		List<SegmentsEntry> segmentsEntries =
 			_segmentsEntryLocalService.getSegmentsEntries(
-				_group.getGroupId(), sources, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+				_group.getGroupId(), sources,
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
+				},
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		Assert.assertTrue(
 			segmentsEntries.toString(),
@@ -292,10 +302,15 @@ public class SegmentsEntryLocalServiceTest {
 		Assert.assertEquals(
 			batchCount + 2,
 			_segmentsEntryLocalService.getSegmentsEntriesCount(
-				_group.getGroupId(), sources));
+				_group.getGroupId(), sources,
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
+				}));
 
 		segmentsEntries = _segmentsEntryLocalService.getSegmentsEntries(
-			_group.getGroupId(), sources, SegmentsEntryConstants.TYPE_REAL_TIME,
+			_group.getGroupId(), sources,
+			new int[] {SegmentsEntryConstants.TYPE_REAL_TIME},
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		Assert.assertFalse(
@@ -309,27 +324,7 @@ public class SegmentsEntryLocalServiceTest {
 			realTimeCount + 1,
 			_segmentsEntryLocalService.getSegmentsEntriesCount(
 				_group.getGroupId(), sources,
-				SegmentsEntryConstants.TYPE_REAL_TIME));
-	}
-
-	@Test
-	public void testGetSegmentsEntriesByType() throws Exception {
-		SegmentsEntry batchSegmentsEntry = _addSegmentsEntry(
-			SegmentsEntryConstants.TYPE_BATCH);
-		SegmentsEntry realTimeSegmentsEntry = _addSegmentsEntry(
-			SegmentsEntryConstants.TYPE_REAL_TIME);
-
-		List<SegmentsEntry> segmentsEntries =
-			_segmentsEntryLocalService.getSegmentsEntriesByType(
-				SegmentsEntryConstants.TYPE_REAL_TIME, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
-
-		Assert.assertFalse(
-			segmentsEntries.toString(),
-			segmentsEntries.contains(batchSegmentsEntry));
-		Assert.assertTrue(
-			segmentsEntries.toString(),
-			segmentsEntries.contains(realTimeSegmentsEntry));
+				new int[] {SegmentsEntryConstants.TYPE_REAL_TIME}));
 	}
 
 	@Test
@@ -611,11 +606,11 @@ public class SegmentsEntryLocalServiceTest {
 		_testUpdateSegmentsEntryWithReferredSource();
 	}
 
-	private SegmentsEntry _addSegmentsEntry(String type) throws Exception {
+	private SegmentsEntry _addSegmentsEntry(int type) throws Exception {
 		return _addSegmentsEntry(RandomTestUtil.randomString(), type);
 	}
 
-	private SegmentsEntry _addSegmentsEntry(String name, String type)
+	private SegmentsEntry _addSegmentsEntry(String name, int type)
 		throws Exception {
 
 		return SegmentsTestUtil.addSegmentsEntry(
@@ -637,6 +632,14 @@ public class SegmentsEntryLocalServiceTest {
 		return SegmentsTestUtil.addSegmentsExperiment(
 			_group.getGroupId(), segmentsExperience.getSegmentsExperienceId(),
 			0);
+	}
+
+	private SegmentsEntry _setType(SegmentsEntry segmentsEntry, int type)
+		throws Exception {
+
+		segmentsEntry.setType(type);
+
+		return _segmentsEntryLocalService.updateSegmentsEntry(segmentsEntry);
 	}
 
 	private void _testAddSegmentsEntry() throws Exception {
@@ -720,6 +723,7 @@ public class SegmentsEntryLocalServiceTest {
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomBoolean(),
 				CriteriaSerializer.serialize(new Criteria()), null,
+				SegmentsEntryConstants.TYPE_DEFAULT,
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(

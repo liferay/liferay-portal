@@ -130,6 +130,7 @@ public class SegmentsEntryUpgradeProcessTest {
 			Collections.singletonMap(locale, RandomTestUtil.randomString()),
 			Collections.singletonMap(locale, RandomTestUtil.randomString()),
 			true, criteria, SegmentsEntryConstants.SOURCE_DEFAULT,
+			SegmentsEntryConstants.TYPE_DEFAULT,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 

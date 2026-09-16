@@ -217,6 +217,7 @@ import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsEntryLocalService;
@@ -4069,7 +4070,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 					jsonObject.get(
 						"criteria"
 					).toString(),
-					null, serviceContext);
+					null, SegmentsEntryConstants.TYPE_DEFAULT, serviceContext);
 			}
 			else {
 				segmentsEntry = _segmentsEntryLocalService.updateSegmentsEntry(
@@ -4082,7 +4083,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 					jsonObject.get(
 						"criteria"
 					).toString(),
-					serviceContext);
+					segmentsEntry.getType(), serviceContext);
 			}
 
 			stringUtilReplaceValues.put(

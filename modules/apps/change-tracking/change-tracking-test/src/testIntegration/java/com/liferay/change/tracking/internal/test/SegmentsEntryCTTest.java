@@ -122,7 +122,7 @@ public class SegmentsEntryCTTest {
 				null, segmentsEntry.getSegmentsEntryId(),
 				segmentsEntry.getSegmentsEntryKey(), nameMap,
 				segmentsEntry.getDescriptionMap(), segmentsEntry.isActive(),
-				segmentsEntry.getCriteria(),
+				segmentsEntry.getCriteria(), segmentsEntry.getType(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 		}
 

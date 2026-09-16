@@ -104,6 +104,10 @@ public class AsahSegmentsEntryProvider implements SegmentsEntryProvider {
 					new String[] {
 						SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND
 					},
+					new int[] {
+						SegmentsEntryConstants.TYPE_BATCH,
+						SegmentsEntryConstants.TYPE_DEFAULT
+					},
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 			if (segmentsEntries.isEmpty()) {

@@ -376,6 +376,10 @@ public class AudiencesCriteriaProviderImpl
 			TransformUtil.transform(
 				_segmentsEntryLocalService.getSegmentsEntriesBySource(
 					companyId, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+					new int[] {
+						SegmentsEntryConstants.TYPE_BATCH,
+						SegmentsEntryConstants.TYPE_DEFAULT
+					},
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
 				segmentsEntry -> new AudiencesCriteria.Option(
 					segmentsEntry.getName(locale),

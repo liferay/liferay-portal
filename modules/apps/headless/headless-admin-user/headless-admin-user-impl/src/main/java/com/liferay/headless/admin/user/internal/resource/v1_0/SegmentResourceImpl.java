@@ -48,6 +48,10 @@ public class SegmentResourceImpl extends BaseSegmentResourceImpl {
 						SegmentsEntryConstants.SOURCE_DEFAULT,
 						SegmentsEntryConstants.SOURCE_REFERRED
 					},
+					new int[] {
+						SegmentsEntryConstants.TYPE_BATCH,
+						SegmentsEntryConstants.TYPE_DEFAULT
+					},
 					pagination.getStartPosition(), pagination.getEndPosition(),
 					null),
 				this::_toSegment),
@@ -58,6 +62,10 @@ public class SegmentResourceImpl extends BaseSegmentResourceImpl {
 					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
 					SegmentsEntryConstants.SOURCE_DEFAULT,
 					SegmentsEntryConstants.SOURCE_REFERRED
+				},
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
 				}));
 	}
 

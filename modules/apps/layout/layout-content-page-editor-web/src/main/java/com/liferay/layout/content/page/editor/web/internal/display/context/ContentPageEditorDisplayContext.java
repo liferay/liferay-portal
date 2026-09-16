@@ -1306,6 +1306,10 @@ public class ContentPageEditorDisplayContext {
 					SegmentsEntryConstants.SOURCE_DEFAULT,
 					SegmentsEntryConstants.SOURCE_REFERRED
 				},
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
+				},
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 		}
 		else {
@@ -1313,6 +1317,10 @@ public class ContentPageEditorDisplayContext {
 				stagingGroupHelper.getStagedPortletGroupId(
 					getGroupId(), SegmentsPortletKeys.SEGMENTS),
 				new String[] {SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND},
+				new int[] {
+					SegmentsEntryConstants.TYPE_BATCH,
+					SegmentsEntryConstants.TYPE_DEFAULT
+				},
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 		}
 
