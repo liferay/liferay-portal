@@ -88,6 +88,12 @@ public class AssetListTypePropertiesUtilTest {
 			true
 		);
 
+		_portalUtilMockedStatic.when(
+			() -> PortalUtil.getClassName(Mockito.anyLong())
+		).thenThrow(
+			new RuntimeException()
+		);
+
 		_setUpLanguageUtil();
 	}
 
@@ -473,6 +479,26 @@ public class AssetListTypePropertiesUtilTest {
 		}
 	}
 
+	@Test
+	public void testGetTypePropertiesJSONArraySkipsNonexistentClassNameId() {
+		_setUpObjectDefinition(
+			_CLASS_NAME_ID_1, _LABEL_1,
+			Collections.singletonList(
+				_mockObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT, "title")));
+
+		JSONArray jsonArray =
+			AssetListTypePropertiesUtil.getTypePropertiesJSONArray(
+				new long[] {_CLASS_NAME_ID_1, RandomTestUtil.randomLong()},
+				new long[] {_CLASS_TYPE_ID_1, 0}, _COMPANY_ID, LocaleUtil.US);
+
+		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
+
+		JSONObject groupJSONObject = jsonArray.getJSONObject(1);
+
+		Assert.assertEquals(_LABEL_1, groupJSONObject.getString("label"));
+	}
+
 	private static void _setUpJSONFactoryUtil() {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
@@ -553,7 +579,7 @@ public class AssetListTypePropertiesUtilTest {
 		);
 
 		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getClassName(classNameId)
+			() -> PortalUtil.fetchClassName(classNameId)
 		).thenReturn(
 			"com.liferay.test.Class" + classNameId
 		);

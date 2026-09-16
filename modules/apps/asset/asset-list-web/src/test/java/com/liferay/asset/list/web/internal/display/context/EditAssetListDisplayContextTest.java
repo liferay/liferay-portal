@@ -10,6 +10,7 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.ClassTypeReader;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
+import com.liferay.asset.list.constants.AssetListConstants;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalServiceUtil;
@@ -35,6 +36,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -208,6 +210,80 @@ public class EditAssetListDisplayContextTest {
 					RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
 					RandomTestUtil.randomLong()
 				}));
+	}
+
+	@Test
+	public void testGetClassNameIdsDynamicSelectionNonexistentClassNameId() {
+		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.put(
+			"anyAssetType", AssetListConstants.CLASS_NAME_ID_NONEXISTENT
+		).put(
+			"selectionStyle", "dynamic"
+		).build();
+
+		EditAssetListDisplayContext editAssetListDisplayContext =
+			_getEditAssetListDisplayContext(unicodeProperties);
+
+		Assert.assertArrayEquals(
+			new long[0],
+			editAssetListDisplayContext.getClassNameIds(
+				unicodeProperties,
+				new long[] {
+					RandomTestUtil.randomLong(), RandomTestUtil.randomLong()
+				}));
+	}
+
+	@Test
+	public void testGetNonexistentClassNameIds() {
+		long classNameId = RandomTestUtil.randomLong();
+		long nonexistentClassNameId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_portal.fetchClassName(classNameId)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		EditAssetListDisplayContext editAssetListDisplayContext =
+			_getEditAssetListDisplayContext(new UnicodeProperties());
+
+		Assert.assertArrayEquals(
+			new long[] {AssetListConstants.CLASS_NAME_ID_NONEXISTENT},
+			editAssetListDisplayContext.getNonexistentClassNameIds(
+				UnicodePropertiesBuilder.put(
+					"anyAssetType", AssetListConstants.CLASS_NAME_ID_NONEXISTENT
+				).build()));
+		Assert.assertArrayEquals(
+			new long[] {nonexistentClassNameId},
+			editAssetListDisplayContext.getNonexistentClassNameIds(
+				UnicodePropertiesBuilder.put(
+					"anyAssetType", Boolean.FALSE.toString()
+				).put(
+					"classNameIds",
+					StringUtil.merge(
+						new long[] {classNameId, nonexistentClassNameId})
+				).build()));
+		Assert.assertArrayEquals(
+			new long[0],
+			editAssetListDisplayContext.getNonexistentClassNameIds(
+				UnicodePropertiesBuilder.put(
+					"anyAssetType", Boolean.TRUE.toString()
+				).put(
+					"classNameIds", String.valueOf(nonexistentClassNameId)
+				).build()));
+		Assert.assertArrayEquals(
+			new long[0],
+			editAssetListDisplayContext.getNonexistentClassNameIds(
+				UnicodePropertiesBuilder.put(
+					"anyAssetType", classNameId
+				).put(
+					"classNameIds", String.valueOf(nonexistentClassNameId)
+				).build()));
+		Assert.assertArrayEquals(
+			new long[] {nonexistentClassNameId},
+			editAssetListDisplayContext.getNonexistentClassNameIds(
+				UnicodePropertiesBuilder.put(
+					"anyAssetType", nonexistentClassNameId
+				).build()));
 	}
 
 	@Test

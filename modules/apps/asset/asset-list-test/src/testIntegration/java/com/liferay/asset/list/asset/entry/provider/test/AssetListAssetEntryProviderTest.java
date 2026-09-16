@@ -14,6 +14,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
+import com.liferay.asset.list.constants.AssetListConstants;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
@@ -1171,6 +1172,9 @@ public class AssetListAssetEntryProviderTest {
 
 		_assertDynamicAssetEntriesCount(
 			Boolean.FALSE.toString(),
+			String.valueOf(AssetListConstants.CLASS_NAME_ID_NONEXISTENT), 0);
+		_assertDynamicAssetEntriesCount(
+			Boolean.FALSE.toString(),
 			StringUtil.merge(
 				new long[] {
 					_portal.getClassNameId(BlogsEntry.class.getName()),
@@ -1183,6 +1187,9 @@ public class AssetListAssetEntryProviderTest {
 				new long[] {
 					nonexistentClassNameId, RandomTestUtil.randomLong()
 				}),
+			0);
+		_assertDynamicAssetEntriesCount(
+			String.valueOf(AssetListConstants.CLASS_NAME_ID_NONEXISTENT), null,
 			0);
 		_assertDynamicAssetEntriesCount(
 			String.valueOf(nonexistentClassNameId), null, 0);

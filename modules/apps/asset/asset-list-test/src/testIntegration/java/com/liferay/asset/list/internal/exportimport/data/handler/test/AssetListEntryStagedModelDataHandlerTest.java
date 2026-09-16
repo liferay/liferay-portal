@@ -7,6 +7,7 @@ package com.liferay.asset.list.internal.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.list.constants.AssetListConstants;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
@@ -27,7 +28,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -64,10 +64,11 @@ public class AssetListEntryStagedModelDataHandlerTest
 		new LiferayIntegrationTestRule();
 
 	@Test
-	@TestInfo({"LPD-86116", "LPD-86506", "LPD-103053"})
+	@TestInfo({"LPD-86116", "LPD-86506", "LPD-102486", "LPD-103053"})
 	public void testExportImportAssetListEntry() throws Exception {
 		_testExportImportAssetListEntryWithNonexistentClassName();
 		_testExportImportAssetListEntryWithNonexistentClassNames();
+		_testExportImportAssetListEntryWithOnlyNonexistentClassNameIds();
 		_testExportImportAssetListEntryWithSegmentsEntry();
 		_testExportImportAssetListEntryWithStaleAnyAssetTypeClassName();
 	}
@@ -216,9 +217,9 @@ public class AssetListEntryStagedModelDataHandlerTest
 					new long[] {assetEntryClassNameId, nonexistentClassNameId})
 			).buildString());
 
-		Assert.assertTrue(
-			GetterUtil.getBoolean(
-				unicodeProperties.getProperty("anyAssetType")));
+		Assert.assertEquals(
+			String.valueOf(AssetListConstants.CLASS_NAME_ID_NONEXISTENT),
+			unicodeProperties.getProperty("anyAssetType"));
 		Assert.assertEquals(
 			String.valueOf(assetEntryClassNameId),
 			unicodeProperties.getProperty("classNameIds"));
@@ -238,10 +239,32 @@ public class AssetListEntryStagedModelDataHandlerTest
 					})
 			).buildString());
 
-		Assert.assertTrue(
-			GetterUtil.getBoolean(
-				unicodeProperties.getProperty("anyAssetType")));
+		Assert.assertEquals(
+			String.valueOf(AssetListConstants.CLASS_NAME_ID_NONEXISTENT),
+			unicodeProperties.getProperty("anyAssetType"));
 		Assert.assertNull(unicodeProperties.getProperty("classNameIds"));
+	}
+
+	private void _testExportImportAssetListEntryWithOnlyNonexistentClassNameIds()
+		throws Exception {
+
+		UnicodeProperties unicodeProperties = _exportImportAssetListEntry(
+			UnicodePropertiesBuilder.put(
+				"anyAssetType", Boolean.FALSE.toString()
+			).put(
+				"classNameIds",
+				StringUtil.merge(
+					new long[] {
+						RandomTestUtil.randomLong(), RandomTestUtil.randomLong()
+					})
+			).buildString());
+
+		Assert.assertEquals(
+			Boolean.FALSE.toString(),
+			unicodeProperties.getProperty("anyAssetType"));
+		Assert.assertEquals(
+			String.valueOf(AssetListConstants.CLASS_NAME_ID_NONEXISTENT),
+			unicodeProperties.getProperty("classNameIds"));
 	}
 
 	private void _testExportImportAssetListEntryWithSegmentsEntry()
@@ -294,9 +317,9 @@ public class AssetListEntryStagedModelDataHandlerTest
 				"anyAssetTypeClassName", AssetEntry.class.getName()
 			).buildString());
 
-		Assert.assertTrue(
-			GetterUtil.getBoolean(
-				unicodeProperties.getProperty("anyAssetType")));
+		Assert.assertEquals(
+			String.valueOf(AssetListConstants.CLASS_NAME_ID_NONEXISTENT),
+			unicodeProperties.getProperty("anyAssetType"));
 		Assert.assertNull(
 			unicodeProperties.getProperty("anyAssetTypeClassName"));
 	}
