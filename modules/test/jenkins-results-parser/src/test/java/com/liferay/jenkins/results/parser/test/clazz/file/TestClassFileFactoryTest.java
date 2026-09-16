@@ -33,7 +33,6 @@ public class TestClassFileFactoryTest extends BaseTestClassFileTestCase {
 		testSame(
 			testClassFile,
 			TestClassFileFactory.newTestClassFile(file, testPackage));
-
 		testSame(
 			testClassFile,
 			TestClassFileFactory.newTestClassFile(
