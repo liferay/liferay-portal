@@ -74,15 +74,18 @@ export default function ModalSchedulePublication({
 	useEffect(() => {
 		const openModal = () => setVisible(true);
 
-		Liferay.on('openModalSchedulePublication', openModal);
+		Liferay.on(
+			`${portletNamespace}openModalSchedulePublication`,
+			openModal
+		);
 
 		return () => {
 			Liferay.detach(
-				'openModalSchedulePublication',
+				`${portletNamespace}openModalSchedulePublication`,
 				openModal as () => void
 			);
 		};
-	}, []);
+	}, [portletNamespace]);
 
 	return (
 		<>

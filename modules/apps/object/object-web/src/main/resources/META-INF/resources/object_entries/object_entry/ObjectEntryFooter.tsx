@@ -70,7 +70,9 @@ export default function ObjectEntryFooter({
 
 							<ClayDropDown.Item
 								onClick={() =>
-									Liferay.fire('openModalSchedulePublication')
+									Liferay.fire(
+										`${portletNamespace}openModalSchedulePublication`
+									)
 								}
 								symbolLeft="date-time"
 							>
