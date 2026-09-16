@@ -18,6 +18,7 @@ import React, {Ref, useContext, useMemo, useRef, useState} from 'react';
 
 import FrontendDataSetContext from '../../../FrontendDataSetContext';
 import {DEFAULT_FETCH_HEADERS} from '../../../constants';
+import {IConnectedFDSState} from '../../../utils/connection/types';
 import getRandomId from '../../../utils/getRandomId';
 import ViewsContext, {ISnapshot, ISnapshots} from '../../../views/ViewsContext';
 import {EViewsActionTypes} from '../../../views/viewsReducer';
@@ -196,6 +197,8 @@ const SnapshotsControls = () => {
 		portletId,
 	} = useContext(FrontendDataSetContext);
 
+	const {appliedCustomConfigs} = globalFDSState as IConnectedFDSState;
+
 	const [
 		{
 			activeSnapshotERC,
@@ -313,6 +316,7 @@ const SnapshotsControls = () => {
 			portletId,
 			viewConfig: JSON.stringify({
 				activeView,
+				customConfigs: appliedCustomConfigs,
 				filters: globalFDSState.filters,
 				paginationDelta,
 				sorts,

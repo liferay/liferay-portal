@@ -12,6 +12,8 @@ import '@testing-library/jest-dom';
 
 import FrontendDataSet from '../src/main/resources/META-INF/resources/FrontendDataSet';
 import FrontendDataSetContext from '../src/main/resources/META-INF/resources/FrontendDataSetContext';
+import {FDSConnection} from '../src/main/resources/META-INF/resources/js/api/FDSConnection';
+import {readConfigFromURL} from '../src/main/resources/META-INF/resources/utils/configInURL';
 import EVENTS from '../src/main/resources/META-INF/resources/utils/eventsDefinitions';
 import recentSearches from '../src/main/resources/META-INF/resources/utils/recentSearches';
 
@@ -53,12 +55,17 @@ function mockPendingRequests() {
 	const requests: Array<{
 		resolve: (body: string) => void;
 		signal?: AbortSignal | null;
+		url: string;
 	}> = [];
 
 	fetch.mockResponse(
 		(request) =>
 			new Promise<string>((resolve) => {
-				requests.push({resolve, signal: request.signal});
+				requests.push({
+					resolve,
+					signal: request.signal,
+					url: request.url,
+				});
 			})
 	);
 
@@ -341,6 +348,191 @@ describe('FrontendDataSet', () => {
 			await settle();
 
 			expect(recentSearches.get(id)).toEqual([]);
+		});
+	});
+
+	describe('User views of a data set whose filtering is delegated', () => {
+		const APP_ID = 'sampleCustomElement';
+
+		const BLUE = "color eq 'Blue'";
+
+		const CUSTOM_CONFIG = {selections: {color: ['Blue']}};
+
+		const SAVED_VIEW = {
+			configuration: JSON.stringify({
+				activeView: VIEWS[0],
+				customConfigs: {[APP_ID]: CUSTOM_CONFIG},
+				filters: [],
+				paginationDelta: 20,
+				sorts: [],
+				visibleFieldNames: {},
+			}),
+			erc: 'blue-things',
+			id: 1,
+			label: 'Blue things',
+		};
+
+		let connection: FDSConnection;
+		let onApply: jest.Mock;
+
+		beforeEach(() => {
+			Liferay.FeatureFlags['LPS-164563'] = true;
+
+			// The connection detaches this handle as it disconnects
+
+			(Liferay.on as jest.Mock).mockReturnValue({detach: jest.fn()});
+		});
+
+		afterEach(() => {
+			connection?.disconnect();
+
+			delete Liferay.FeatureFlags['LPS-164563'];
+
+			(Liferay.on as jest.Mock).mockReturnValue(undefined);
+		});
+
+		async function renderWithSavedView() {
+			const requests = mockPendingRequests();
+
+			render(
+				<FrontendDataSet
+					apiURL="/o/products"
+					id={id}
+					snapshots={[
+						{
+							headerVisible: false,
+							items: [SAVED_VIEW],
+							label: 'owned',
+						},
+					]}
+					snapshotsEnabled={true}
+					views={VIEWS}
+				/>
+			);
+
+			await waitFor(() => expect(requests.length).toBeGreaterThan(0));
+
+			act(() =>
+				requests.forEach((request) =>
+					request.resolve(itemsResponse(['unfiltered']))
+				)
+			);
+
+			expect(await screen.findByText('unfiltered')).toBeInTheDocument();
+
+			return requests;
+		}
+
+		async function connectOwningFilters() {
+			const onStatus = jest.fn();
+
+			onApply = jest.fn((customConfig) =>
+				customConfig === null
+					? connection.clearFilters()
+					: connection.setFilters(
+							[{id: 'color', odataFilterString: BLUE}],
+							customConfig
+						)
+			);
+
+			connection = new FDSConnection(
+				id,
+				{apply: onApply, search: jest.fn()},
+				onStatus,
+				{appId: APP_ID, owns: ['filters', 'search']}
+			);
+
+			await waitFor(() =>
+				expect(onStatus).toHaveBeenCalledWith(
+					expect.objectContaining({status: 'ready'})
+				)
+			);
+		}
+
+		const lastRequestedFilter = (
+			requests: ReturnType<typeof mockPendingRequests>
+		) =>
+			new URL(requests[requests.length - 1].url).searchParams.get(
+				'filter'
+			) ?? '';
+
+		async function chooseView(label: string) {
+			await userEvent.click(screen.getByRole('button', {name: 'views'}));
+
+			await userEvent.click(await screen.findByText(label));
+		}
+
+		it('hands a restored view back to the connection that owns the filtering', async () => {
+			await renderWithSavedView();
+			await connectOwningFilters();
+
+			await chooseView('Blue things');
+
+			await waitFor(() =>
+				expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG)
+			);
+		});
+
+		it('asks for what the restored view was showing', async () => {
+			const requests = await renderWithSavedView();
+			await connectOwningFilters();
+
+			const requestCount = requests.length;
+
+			await chooseView('Blue things');
+
+			await waitFor(() =>
+				expect(requests.length).toBeGreaterThan(requestCount)
+			);
+
+			expect(lastRequestedFilter(requests)).toContain(BLUE);
+		});
+
+		it('holds a restored view for a connection that has yet to arrive', async () => {
+			await renderWithSavedView();
+
+			await chooseView('Blue things');
+
+			await connectOwningFilters();
+
+			await waitFor(() =>
+				expect(onApply).toHaveBeenCalledWith(CUSTOM_CONFIG)
+			);
+		});
+
+		it('leaves the restored view in the address, so a reload brings it back', async () => {
+			await renderWithSavedView();
+			await connectOwningFilters();
+
+			await chooseView('Blue things');
+
+			await waitFor(() =>
+				expect(readConfigFromURL(id)?.cc).toEqual({
+					[APP_ID]: CUSTOM_CONFIG,
+				})
+			);
+		});
+
+		it('tells the owner to drop its filtering when the default view comes back', async () => {
+			const requests = await renderWithSavedView();
+			await connectOwningFilters();
+
+			await chooseView('Blue things');
+
+			await waitFor(() => expect(onApply).toHaveBeenCalled());
+
+			const requestCount = requests.length;
+
+			await chooseView('default-view');
+
+			await waitFor(() => expect(onApply).toHaveBeenLastCalledWith(null));
+
+			await waitFor(() =>
+				expect(requests.length).toBeGreaterThan(requestCount)
+			);
+
+			expect(lastRequestedFilter(requests)).not.toContain(BLUE);
+			expect(readConfigFromURL(id)?.cc).toBeUndefined();
 		});
 	});
 });

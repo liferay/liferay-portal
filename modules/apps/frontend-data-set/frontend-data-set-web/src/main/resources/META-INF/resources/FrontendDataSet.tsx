@@ -1955,11 +1955,19 @@ const FrontendDataSetContent = ({
 		}
 	});
 
+	const offerCustomConfigs = (customConfigs: unknown) =>
+		filteringOwnerAppId || customConfigs !== undefined
+			? customConfigs ?? null
+			: undefined;
+
 	const handleSnapshotChange = ({defaultSnapshot, snapshots, value}: any) => {
 		if (value === 'DEFAULT_VIEW') {
+			const offeredCustomConfigs = offerCustomConfigs(undefined);
+
 			updateConfigInURL({
 				[EConfigInURLKeys.ACTIVE_FILTERS]: defaultSnapshot.filters,
 				[EConfigInURLKeys.ACTIVE_SORTS]: defaultSnapshot.sorts,
+				[EConfigInURLKeys.CUSTOM_CONFIGS]: undefined,
 				[EConfigInURLKeys.DELTA]: {...defaultSnapshot.paginationDelta},
 				[EConfigInURLKeys.VIEW_NAME]: {
 					...defaultSnapshot.activeView.name,
@@ -1975,9 +1983,14 @@ const FrontendDataSetContent = ({
 
 			skipSnapshotsUpdatedChangeRef.current = true;
 
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
+			}
+
 			setGlobalFDSState({
 				...unfrozenGlobalFDSState,
 				filters: defaultSnapshot.filters,
+				offeredCustomConfigs,
 			});
 		}
 		else {
@@ -1987,6 +2000,10 @@ const FrontendDataSetContent = ({
 					.find((snapshot: ISnapshot) => snapshot.erc === value)
 			);
 
+			const {customConfigs} = snapshot.configuration;
+
+			const offeredCustomConfigs = offerCustomConfigs(customConfigs);
+
 			updateConfigInURL({
 				[EConfigInURLKeys.ACTIVE_FILTERS]:
 					snapshot.configuration.filters,
@@ -1994,6 +2011,7 @@ const FrontendDataSetContent = ({
 					newSorts: snapshot.configuration.sorts,
 					oldSorts: sorts,
 				}),
+				[EConfigInURLKeys.CUSTOM_CONFIGS]: customConfigs,
 				[EConfigInURLKeys.DELTA]:
 					snapshot.configuration.paginationDelta,
 				[EConfigInURLKeys.VIEW_NAME]:
@@ -2009,9 +2027,14 @@ const FrontendDataSetContent = ({
 
 			skipSnapshotsUpdatedChangeRef.current = true;
 
+			if (offeredCustomConfigs !== undefined) {
+				setCustomConfigsOffered(true);
+			}
+
 			setGlobalFDSState({
 				...unfrozenGlobalFDSState,
 				filters: snapshot.configuration.filters,
+				offeredCustomConfigs,
 			});
 		}
 	};
