@@ -8,9 +8,7 @@ import {sub} from 'frontend-js-web';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
 import {useEditorId} from '../chrome/instance';
-import {EmojiCatalog, loadEmojiCatalog} from './emojiLoader';
-
-import type {EmojiEntry} from './emojiData';
+import {EmojiCatalog, EmojiEntry, loadEmojiCatalog} from './emojiLoader';
 
 const COLUMNS = 8;
 
@@ -154,16 +152,25 @@ export function EmojiPicker({onChoose}: Props) {
 
 	const [catalog, setCatalog] = useState<EmojiCatalog | null>(null);
 
+	const [failed, setFailed] = useState(false);
+
 	const [query, setQuery] = useState('');
 
 	useEffect(() => {
 		let alive = true;
 
-		loadEmojiCatalog().then((loaded) => {
-			if (alive) {
-				setCatalog(loaded);
+		loadEmojiCatalog().then(
+			(loaded) => {
+				if (alive) {
+					setCatalog(loaded);
+				}
+			},
+			() => {
+				if (alive) {
+					setFailed(true);
+				}
 			}
-		});
+		);
 
 		return () => {
 			alive = false;
@@ -267,6 +274,16 @@ export function EmojiPicker({onChoose}: Props) {
 		event.preventDefault();
 		event.stopPropagation();
 	};
+
+	if (failed) {
+		return (
+			<div className="editor-emoji-picker">
+				<p className="editor-emoji-empty" role="alert">
+					{Liferay.Language.get('an-unexpected-error-occurred')}
+				</p>
+			</div>
+		);
+	}
 
 	if (!catalog) {
 		return <div aria-hidden="true" className="editor-emoji-popover" />;

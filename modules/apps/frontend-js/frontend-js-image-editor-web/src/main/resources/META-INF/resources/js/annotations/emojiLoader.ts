@@ -3,7 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import type {EmojiEntry} from './emojiData';
+import {fetch} from 'frontend-js-web';
+
+export interface EmojiEntry {
+	c: string;
+
+	g: number;
+
+	n: string;
+}
 
 export interface EmojiCatalog {
 	byCharacter: Map<string, EmojiEntry>;
@@ -11,18 +19,42 @@ export interface EmojiCatalog {
 	searchKeys: string[];
 }
 
-let cache: EmojiCatalog | null = null;
+let pending: Promise<EmojiCatalog> | null = null;
 
-export async function loadEmojiCatalog(): Promise<EmojiCatalog> {
-	if (!cache) {
-		const {EMOJI} = await import('./emojiData');
+/**
+ * The catalogue is a resource of the module rather than part of its
+ * bundle, and it is asked for the first time the picker opens: nineteen
+ * hundred names are a quarter of the editor's weight, and most sessions
+ * never open the picker at all. A dynamic import would not do, because
+ * the portal build bundles without code splitting and would inline it.
+ */
+export function loadEmojiCatalog(): Promise<EmojiCatalog> {
+	if (!pending) {
+		pending = fetch('/o/frontend-js-image-editor-web/emoji.json')
+			.then((response: Response) => {
+				if (!response.ok) {
+					throw new Error(
+						`The emoji catalog answered ${response.status}`
+					);
+				}
 
-		cache = {
-			byCharacter: new Map(EMOJI.map((entry) => [entry.c, entry])),
-			entries: EMOJI,
-			searchKeys: EMOJI.map((entry) => entry.n.toLowerCase()),
-		};
+				return response.json();
+			})
+			.then((entries: EmojiEntry[]) => ({
+				byCharacter: new Map(entries.map((entry) => [entry.c, entry])),
+				entries,
+				searchKeys: entries.map((entry) => entry.n.toLowerCase()),
+			}))
+			.catch((error: unknown) => {
+
+				// A failed load must not poison the cache: the next time
+				// the picker opens is a new chance to reach the catalog.
+
+				pending = null;
+
+				throw error;
+			});
 	}
 
-	return cache;
+	return pending;
 }

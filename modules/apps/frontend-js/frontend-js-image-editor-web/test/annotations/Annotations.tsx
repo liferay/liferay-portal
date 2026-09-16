@@ -386,6 +386,19 @@ describe('text annotations', () => {
 	});
 });
 
+const EMOJI_CATALOG = [
+	{c: '⭐', g: 7, n: 'star'},
+	{c: '🎉', g: 6, n: 'party popper'},
+	{c: '🇪🇸', g: 8, n: 'flag: Spain'},
+];
+
+// The shared jest setup replaces the global fetch with jest-fetch-mock,
+// whose own methods are not on the DOM type.
+
+const fetchMock = fetch as unknown as jest.Mock & {
+	mockResponse: (body: string) => void;
+};
+
 async function addEmoji(name: string) {
 	fireEvent.click(screen.getByRole('button', {name: 'add-emoji'}));
 
@@ -1562,6 +1575,35 @@ describe('a redaction', () => {
 });
 
 describe('an emoji annotation', () => {
+	beforeEach(() => {
+
+		// The catalog is a resource of the module, asked for the first
+		// time the picker opens.
+
+		fetchMock.mockResponse(JSON.stringify(EMOJI_CATALOG));
+	});
+
+	it('asks the module for the catalog, once however often it opens', async () => {
+		render(<AnnotationHarness />);
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-emoji'}));
+
+		await screen.findByRole('grid', {name: 'add-emoji'});
+
+		expect(fetchMock.mock.calls[0][0]).toBe(
+			'/o/frontend-js-image-editor-web/emoji.json'
+		);
+
+		const calls = fetchMock.mock.calls.length;
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-emoji'}));
+		fireEvent.click(screen.getByRole('button', {name: 'add-emoji'}));
+
+		await screen.findByRole('grid', {name: 'add-emoji'});
+
+		expect(fetchMock.mock.calls).toHaveLength(calls);
+	});
+
 	it('adds an emoji as a layer of its own, sized but never coloured', async () => {
 		const {container} = render(<AnnotationHarness />);
 
