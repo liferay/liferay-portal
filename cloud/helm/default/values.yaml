@@ -161,6 +161,11 @@ customInitContainers:
                                 cp --force --recursive --verbose /opt/liferay/osgi/marketplace/. /temp/osgi/marketplace
                             fi
 
+                            if [ -z "$(ls --almost-all /temp/osgi/modules)" ]
+                            then
+                                cp --force --recursive --verbose /opt/liferay/osgi/modules/. /temp/osgi/modules
+                            fi
+
                             mkdir --parents /temp/tomcat/conf
 
                             sed '/<Manager/d' /opt/liferay/tomcat/conf/context.xml > /temp/tomcat/conf/context.xml

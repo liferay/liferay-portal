@@ -1,0 +1,34 @@
+suite: Prepopulate Data Init Container
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: cp --force --recursive --verbose /opt/liferay/osgi/marketplace/\. /temp/osgi/marketplace
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Seeds the OSGi marketplace folder from the image
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: cp --force --recursive --verbose /opt/liferay/osgi/modules/\. /temp/osgi/modules
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Seeds the OSGi modules folder from the image so the bundled trial license survives the volume mount
+    -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: -z "\$\(ls --almost-all /temp/osgi/modules\)"
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Seeds the OSGi modules folder only when the persistent volume copy is empty
