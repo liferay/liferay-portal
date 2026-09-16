@@ -756,7 +756,7 @@ public class SitePageResourceImpl
 				ServiceContextThreadLocal.getServiceContext();
 
 			HttpServletRequest httpServletRequest =
-				_portal.getOriginalServletRequest(contextHttpServletRequest);
+				_portal.getOriginalServletRequest(serviceContext.getRequest());
 
 			httpServletRequest = DynamicServletRequest.addQueryString(
 				httpServletRequest, "p_l_id=" + layout.getPlid(), false);
