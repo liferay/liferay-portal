@@ -1694,10 +1694,12 @@ public class BatchEnginePortletDataHandlerTest {
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode());
 
-		_assertNotificationTemplate(
-			notificationTemplate, importedNotificationTemplate);
+		_notificationTemplates.add(importedNotificationTemplate);
+
 		_assertNotificationRecipientSettings(
 			notificationRecipientSettingsMap, importedNotificationTemplate);
+		_assertNotificationTemplate(
+			notificationTemplate, importedNotificationTemplate);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
@@ -1723,6 +1725,8 @@ public class BatchEnginePortletDataHandlerTest {
 		NotificationTemplate importedNotificationTemplate =
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode());
+
+		_notificationTemplates.add(importedNotificationTemplate);
 
 		Assert.assertEquals(
 			TestPropsValues.getUserId(),
@@ -1750,7 +1754,7 @@ public class BatchEnginePortletDataHandlerTest {
 
 		_users.add(user2);
 
-		_registerNotificationTemplate(
+		_notificationTemplates.add(
 			_notificationTemplateLocalService.addNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode(),
 				user2.getUserId(), NotificationConstants.TYPE_EMAIL));
@@ -1787,6 +1791,8 @@ public class BatchEnginePortletDataHandlerTest {
 		NotificationTemplate importedNotificationTemplate =
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode());
+
+		_notificationTemplates.add(importedNotificationTemplate);
 
 		Assert.assertEquals(
 			user.getUserId(), importedNotificationTemplate.getUserId());
@@ -1841,9 +1847,13 @@ public class BatchEnginePortletDataHandlerTest {
 			larFile1
 		).executeImport();
 
-		Assert.assertNotNull(
+		NotificationTemplate importedNotificationTemplate =
 			_fetchNotificationTemplate(
-				notificationTemplate1.getExternalReferenceCode()));
+				notificationTemplate1.getExternalReferenceCode());
+
+		Assert.assertNotNull(importedNotificationTemplate);
+
+		_notificationTemplates.add(importedNotificationTemplate);
 
 		new ExportImportExecutor(
 		).withGroupId(
@@ -1899,6 +1909,8 @@ public class BatchEnginePortletDataHandlerTest {
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode());
 
+		_notificationTemplates.add(importedNotificationTemplate);
+
 		Assert.assertEquals(
 			TestPropsValues.getUserId(),
 			importedNotificationTemplate.getUserId());
@@ -1952,6 +1964,8 @@ public class BatchEnginePortletDataHandlerTest {
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode());
 
+		_notificationTemplates.add(importedNotificationTemplate);
+
 		_resourcePermissionLocalService.removeResourcePermission(
 			TestPropsValues.getCompanyId(),
 			NotificationTemplate.class.getName(),
@@ -1997,13 +2011,15 @@ public class BatchEnginePortletDataHandlerTest {
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode());
 
+		_notificationTemplates.add(existingNotificationTemplate);
+
 		_resourcePermissionLocalService.setResourcePermissions(
 			TestPropsValues.getCompanyId(),
 			NotificationTemplate.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			String.valueOf(
 				existingNotificationTemplate.getNotificationTemplateId()),
-			guestRoleId, new String[] {ActionKeys.VIEW});
+			_getSiteMemberRoleId(), new String[] {ActionKeys.VIEW});
 
 		new ExportImportExecutor(
 		).withGroupId(
@@ -2015,7 +2031,7 @@ public class BatchEnginePortletDataHandlerTest {
 
 		_assertNotificationTemplateRoleNames(
 			notificationTemplate.getExternalReferenceCode(),
-			RoleConstants.OWNER, RoleConstants.GUEST);
+			RoleConstants.OWNER, RoleConstants.SITE_MEMBER);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49854"))
@@ -2039,7 +2055,7 @@ public class BatchEnginePortletDataHandlerTest {
 		).withIncludeNotificationTemplates(
 		).executeExport();
 
-		_registerNotificationTemplate(
+		_notificationTemplates.add(
 			_notificationTemplateLocalService.addAssigneeNotificationTemplate(
 				externalReferenceCode, TestPropsValues.getUserId(),
 				RandomTestUtil.randomString()));
@@ -2078,10 +2094,12 @@ public class BatchEnginePortletDataHandlerTest {
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode());
 
-		_assertNotificationTemplate(
-			notificationTemplate, importedNotificationTemplate);
+		_notificationTemplates.add(importedNotificationTemplate);
+
 		_assertNotificationRecipientSettings(
 			notificationRecipientSettingsMap, importedNotificationTemplate);
+		_assertNotificationTemplate(
+			notificationTemplate, importedNotificationTemplate);
 	}
 
 	@Test
@@ -3448,15 +3466,19 @@ public class BatchEnginePortletDataHandlerTest {
 		NotificationTemplate notificationTemplate =
 			notificationContext.getNotificationTemplate();
 
-		notificationTemplate.setBodyMap(_randomLocalizedMap());
-		notificationTemplate.setNameMap(_randomLocalizedMap());
+		notificationTemplate.setBodyMap(_getRandomLocalizedMap());
+		notificationTemplate.setNameMap(_getRandomLocalizedMap());
 		notificationTemplate.setRecipientType(
 			NotificationRecipientConstants.TYPE_EMAIL);
-		notificationTemplate.setSubjectMap(_randomLocalizedMap());
+		notificationTemplate.setSubjectMap(_getRandomLocalizedMap());
 
-		return _registerNotificationTemplate(
+		notificationTemplate =
 			_notificationTemplateLocalService.addNotificationTemplate(
-				notificationContext));
+				notificationContext);
+
+		_notificationTemplates.add(notificationTemplate);
+
+		return notificationTemplate;
 	}
 
 	private ObjectDefinition _addObjectDefinition(String scope)
@@ -3711,10 +3733,14 @@ public class BatchEnginePortletDataHandlerTest {
 	private NotificationTemplate _addSystemNotificationTemplate()
 		throws Exception {
 
-		return _registerNotificationTemplate(
+		NotificationTemplate notificationTemplate =
 			_notificationTemplateLocalService.addAssigneeNotificationTemplate(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				RandomTestUtil.randomString()));
+				RandomTestUtil.randomString());
+
+		_notificationTemplates.add(notificationTemplate);
+
+		return notificationTemplate;
 	}
 
 	private ObjectEntry _addSystemObjectEntry(ObjectDefinition objectDefinition)
@@ -3778,14 +3804,18 @@ public class BatchEnginePortletDataHandlerTest {
 	private NotificationTemplate _addUserNotificationTemplate(long userId)
 		throws Exception {
 
-		return _registerNotificationTemplate(
+		NotificationTemplate notificationTemplate =
 			_notificationTemplateLocalService.addNotificationTemplate(
 				NotificationTemplateUtil.createNotificationContext(
 					_userLocalService.getUser(userId),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(),
-					NotificationConstants.TYPE_USER_NOTIFICATION)));
+					NotificationConstants.TYPE_USER_NOTIFICATION));
+
+		_notificationTemplates.add(notificationTemplate);
+
+		return notificationTemplate;
 	}
 
 	private void _assertComments(
@@ -3885,6 +3915,20 @@ public class BatchEnginePortletDataHandlerTest {
 		}
 	}
 
+	private void _assertNotificationRecipientSettings(
+			Map<String, Object> expectedNotificationRecipientSettingsMap,
+			NotificationTemplate notificationTemplate)
+		throws Exception {
+
+		NotificationRecipient notificationRecipient =
+			notificationTemplate.getNotificationRecipient();
+
+		Assert.assertEquals(
+			expectedNotificationRecipientSettingsMap,
+			NotificationRecipientSettingUtil.toMap(
+				notificationRecipient.getNotificationRecipientSettings()));
+	}
+
 	private void _assertNotificationTemplate(
 		NotificationTemplate expectedNotificationTemplate,
 		NotificationTemplate notificationTemplate) {
@@ -3912,20 +3956,6 @@ public class BatchEnginePortletDataHandlerTest {
 			notificationTemplate.getUserId());
 	}
 
-	private void _assertNotificationRecipientSettings(
-			Map<String, Object> expectedNotificationRecipientSettingsMap,
-			NotificationTemplate notificationTemplate)
-		throws Exception {
-
-		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
-
-		Assert.assertEquals(
-			expectedNotificationRecipientSettingsMap,
-			NotificationRecipientSettingUtil.toMap(
-				notificationRecipient.getNotificationRecipientSettings()));
-	}
-
 	private void _assertNotificationTemplateRoleNames(
 			String externalReferenceCode, String... expectedRoleNames)
 		throws Exception {
@@ -3944,7 +3974,7 @@ public class BatchEnginePortletDataHandlerTest {
 				Role role = _roleLocalService.fetchRole(
 					resourcePermission.getRoleId());
 
-				return role.getName();
+				return (role == null) ? null : role.getName();
 			});
 
 		Assert.assertEquals(
@@ -4107,10 +4137,9 @@ public class BatchEnginePortletDataHandlerTest {
 			String externalReferenceCode)
 		throws Exception {
 
-		return _registerNotificationTemplate(
-			_notificationTemplateLocalService.
-				fetchNotificationTemplateByExternalReferenceCode(
-					externalReferenceCode, TestPropsValues.getCompanyId()));
+		return _notificationTemplateLocalService.
+			fetchNotificationTemplateByExternalReferenceCode(
+				externalReferenceCode, TestPropsValues.getCompanyId());
 	}
 
 	private JSONArray _getClassExternalReferenceCodesJSONArray(
@@ -4342,14 +4371,24 @@ public class BatchEnginePortletDataHandlerTest {
 		return portletDataContext.getManifestSummary();
 	}
 
+	private Map<String, Object> _getNotificationRecipientSettingsMap(
+			NotificationTemplate notificationTemplate)
+		throws Exception {
+
+		NotificationRecipient notificationRecipient =
+			notificationTemplate.getNotificationRecipient();
+
+		return NotificationRecipientSettingUtil.toMap(
+			notificationRecipient.getNotificationRecipientSettings());
+	}
+
 	private NotificationTemplate _getNotificationTemplate(
 			String externalReferenceCode)
 		throws Exception {
 
-		return _registerNotificationTemplate(
-			_notificationTemplateLocalService.
-				getNotificationTemplateByExternalReferenceCode(
-					externalReferenceCode, TestPropsValues.getCompanyId()));
+		return _notificationTemplateLocalService.
+			getNotificationTemplateByExternalReferenceCode(
+				externalReferenceCode, TestPropsValues.getCompanyId());
 	}
 
 	private long _getObjectEntryGroupId(long groupId, String scope) {
@@ -4380,6 +4419,21 @@ public class BatchEnginePortletDataHandlerTest {
 			fileEntryFriendlyURL, group.getFriendlyURL());
 	}
 
+	private Map<Locale, String> _getRandomLocalizedMap() {
+		return HashMapBuilder.put(
+			LocaleUtil.BRAZIL, RandomTestUtil.randomString()
+		).put(
+			LocaleUtil.getDefault(), RandomTestUtil.randomString()
+		).build();
+	}
+
+	private long _getSiteMemberRoleId() throws Exception {
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER);
+
+		return role.getRoleId();
+	}
+
 	private void _importLanguageOverrides(File larFile, String userIdStrategy)
 		throws Exception {
 
@@ -4407,25 +4461,6 @@ public class BatchEnginePortletDataHandlerTest {
 		).withUserIdStrategy(
 			userIdStrategy
 		).executeImport();
-	}
-
-	private Map<String, Object> _getNotificationRecipientSettingsMap(
-			NotificationTemplate notificationTemplate)
-		throws Exception {
-
-		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
-
-		return NotificationRecipientSettingUtil.toMap(
-			notificationRecipient.getNotificationRecipientSettings());
-	}
-
-	private Map<Locale, String> _randomLocalizedMap() {
-		return HashMapBuilder.put(
-			LocaleUtil.BRAZIL, RandomTestUtil.randomString()
-		).put(
-			LocaleUtil.getDefault(), RandomTestUtil.randomString()
-		).build();
 	}
 
 	private SafeCloseable _register(
@@ -4479,18 +4514,6 @@ public class BatchEnginePortletDataHandlerTest {
 				finalSafeCloseable.close();
 			}
 		};
-	}
-
-	private NotificationTemplate _registerNotificationTemplate(
-		NotificationTemplate notificationTemplate) {
-
-		if ((notificationTemplate != null) &&
-			!_notificationTemplates.contains(notificationTemplate)) {
-
-			_notificationTemplates.add(notificationTemplate);
-		}
-
-		return notificationTemplate;
 	}
 
 	private <S> SafeCloseable _registerServiceWithSafeCloseable(

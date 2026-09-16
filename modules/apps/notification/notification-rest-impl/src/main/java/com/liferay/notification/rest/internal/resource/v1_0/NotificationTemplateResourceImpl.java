@@ -101,8 +101,8 @@ public class NotificationTemplateResourceImpl
 				notificationTemplates) {
 
 			com.liferay.notification.model.NotificationTemplate
-				serviceBuilderNotificationTemplate =
-					_fetchNotificationTemplate(notificationTemplate);
+				serviceBuilderNotificationTemplate = _fetchNotificationTemplate(
+					notificationTemplate);
 
 			if ((serviceBuilderNotificationTemplate == null) ||
 				!serviceBuilderNotificationTemplate.isSystem()) {

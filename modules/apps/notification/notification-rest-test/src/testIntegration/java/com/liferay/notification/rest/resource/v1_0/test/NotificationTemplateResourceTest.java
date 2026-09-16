@@ -15,8 +15,6 @@ import com.liferay.notification.rest.client.dto.v1_0.Creator;
 import com.liferay.notification.rest.client.dto.v1_0.NotificationTemplate;
 import com.liferay.notification.rest.client.pagination.Page;
 import com.liferay.notification.rest.client.pagination.Pagination;
-import com.liferay.notification.rest.client.permission.Permission;
-import com.liferay.notification.rest.client.serdes.v1_0.NotificationTemplateSerDes;
 import com.liferay.notification.rest.resource.v1_0.NotificationTemplateResource;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.object.model.ObjectDefinition;
@@ -36,7 +34,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
@@ -48,7 +45,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -81,21 +77,11 @@ public class NotificationTemplateResourceTest
 
 	@Override
 	@Test
-	public void testGetNotificationTemplateByExternalReferenceCode()
-		throws Exception {
-
-		super.testGetNotificationTemplateByExternalReferenceCode();
-
-		_testGetNotificationTemplateByExternalReferenceCodeNotFound();
-	}
-
-	@Override
-	@Test
 	public void testGetNotificationTemplatesPage() throws Exception {
 		super.testGetNotificationTemplatesPage();
 
-		_testGetNotificationTemplatesPageObjectDefinitionFilter();
-		_testGetNotificationTemplatesPageSystemFilter();
+		_testGetNotificationTemplatesPageWithObjectDefinitionIdFilter();
+		_testGetNotificationTemplatesPageWithSystemFilter();
 	}
 
 	@Override
@@ -218,7 +204,7 @@ public class NotificationTemplateResourceTest
 				"JSONArray/recipients", "JSONObject/0"),
 			JSONCompareMode.LENIENT);
 
-		_testPatchNotificationTemplateName();
+		_testPatchNotificationTemplateWithName();
 	}
 
 	@Override
@@ -264,10 +250,10 @@ public class NotificationTemplateResourceTest
 			JSONUtil.put(
 				"toType", NotificationRecipientConstants.TYPE_SUBSCRIBERS));
 
-		_testPostNotificationTemplateCreator();
-		_testPostNotificationTemplateNameWithoutDefaultLanguage();
-		_testPostNotificationTemplateWithFeatureFlagDisabled();
+		_testPostNotificationTemplateWithCreator();
+		_testPostNotificationTemplateWithNameWithoutDefaultLanguage();
 		_testPostNotificationTemplateWithPermissions();
+		_testPostNotificationTemplateWithPermissionsAndFeatureFlagDisabled();
 	}
 
 	@Override
@@ -300,8 +286,7 @@ public class NotificationTemplateResourceTest
 	public void testPutNotificationTemplate() throws Exception {
 		super.testPutNotificationTemplate();
 
-		_testPutNotificationTemplateNameTranslations();
-		_testPutNotificationTemplateNameTranslationsWithoutI18nMap();
+		_testPutNotificationTemplateWithNameTranslations();
 		_testPutNotificationTemplateWithPermissions();
 	}
 
@@ -449,47 +434,70 @@ public class NotificationTemplateResourceTest
 		return notificationTemplate;
 	}
 
-	private void _assertRoleNames(
-			NotificationTemplate notificationTemplate,
-			String... expectedRoleNames)
+	private void _assertPermissions(JSONObject jsonObject, String roleName)
 		throws Exception {
 
 		Assert.assertEquals(
-			ListUtil.sort(Arrays.asList(expectedRoleNames)),
-			ListUtil.sort(_getRoleNames(notificationTemplate.getId())));
+			Collections.singletonList(roleName),
+			JSONUtil.toList(
+				jsonObject.getJSONArray("permissions"),
+				permissionJSONObject -> permissionJSONObject.getString(
+					"roleName")));
 	}
 
-	private List<String> _getRoleNames(Long notificationTemplateId)
-		throws Exception {
-
-		return JSONUtil.toList(
-			JSONUtil.getValueAsJSONArray(
-				HTTPTestUtil.invokeToJSONObject(
-					null,
-					"notification/v1.0/notification-templates/" +
-						notificationTemplateId + "?nestedFields=permissions",
-					Http.Method.GET),
-				"JSONArray/permissions"),
-			permissionJSONObject -> permissionJSONObject.getString("roleName"));
+	private JSONObject _getNotificationTemplateJSONObject(String roleName) {
+		return JSONUtil.put(
+			"description", RandomTestUtil.randomString()
+		).put(
+			"editorType", NotificationTemplateConstants.EDITOR_TYPE_RICH_TEXT
+		).put(
+			"name", RandomTestUtil.randomString()
+		).put(
+			"permissions", JSONUtil.putAll(_getPermissionsJSONObject(roleName))
+		).put(
+			"recipients", JSONUtil.putAll()
+		).put(
+			"subject",
+			JSONUtil.put(
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+				RandomTestUtil.randomString())
+		).put(
+			"type", NotificationConstants.TYPE_USER_NOTIFICATION
+		);
 	}
 
-	private NotificationTemplate _randomNotificationTemplateWithPermissions(
-			String roleName)
+	private JSONObject _getPermissionsJSONObject(String roleName) {
+		return JSONUtil.put(
+			"actionIds", new String[] {ActionKeys.VIEW}
+		).put(
+			"roleName", roleName
+		);
+	}
+
+	private JSONObject _postNotificationTemplateWithPermissions(String roleName)
 		throws Exception {
 
-		NotificationTemplate notificationTemplate =
-			randomNotificationTemplate();
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			String.valueOf(_getNotificationTemplateJSONObject(roleName)),
+			"notification/v1.0/notification-templates?nestedFields=permissions",
+			Http.Method.POST);
 
-		notificationTemplate.setSystem(false);
+		_notificationTemplates.add(
+			_notificationTemplateLocalService.fetchNotificationTemplate(
+				jsonObject.getLong("id")));
 
-		Permission permission = new Permission();
+		return jsonObject;
+	}
 
-		permission.setActionIds(new Object[] {ActionKeys.VIEW});
-		permission.setRoleName(roleName);
+	private JSONObject _putNotificationTemplateWithPermissions(
+			long notificationTemplateId, String roleName)
+		throws Exception {
 
-		notificationTemplate.setPermissions(new Permission[] {permission});
-
-		return notificationTemplate;
+		return HTTPTestUtil.invokeToJSONObject(
+			String.valueOf(_getNotificationTemplateJSONObject(roleName)),
+			"notification/v1.0/notification-templates/" +
+				notificationTemplateId + "?nestedFields=permissions",
+			Http.Method.PUT);
 	}
 
 	private void _testDeleteNotificationTemplateByExternalReferenceCodeNotFound()
@@ -502,17 +510,7 @@ public class NotificationTemplateResourceTest
 					RandomTestUtil.randomString()));
 	}
 
-	private void _testGetNotificationTemplateByExternalReferenceCodeNotFound()
-		throws Exception {
-
-		assertHttpResponseStatusCode(
-			404,
-			notificationTemplateResource.
-				getNotificationTemplateByExternalReferenceCodeHttpResponse(
-					RandomTestUtil.randomString()));
-	}
-
-	private void _testGetNotificationTemplatesPageObjectDefinitionFilter()
+	private void _testGetNotificationTemplatesPageWithObjectDefinitionIdFilter()
 		throws Exception {
 
 		NotificationTemplate notificationTemplate = _addNotificationTemplate(
@@ -534,16 +532,17 @@ public class NotificationTemplateResourceTest
 				null, null, "objectDefinitionId eq 0", Pagination.of(1, 100),
 				null);
 
-		List<Long> ids = TransformUtil.transform(
+		List<Long> notificationTemplateIds = TransformUtil.transform(
 			page.getItems(), NotificationTemplate::getId);
 
 		Assert.assertTrue(
-			ids.toString(), ids.contains(notificationTemplate.getId()));
+			notificationTemplateIds.contains(notificationTemplate.getId()));
 		Assert.assertFalse(
-			ids.toString(), ids.contains(objectNotificationTemplate.getId()));
+			notificationTemplateIds.contains(
+				objectNotificationTemplate.getId()));
 	}
 
-	private void _testGetNotificationTemplatesPageSystemFilter()
+	private void _testGetNotificationTemplatesPageWithSystemFilter()
 		throws Exception {
 
 		NotificationTemplate notificationTemplate = _addNotificationTemplate(
@@ -561,16 +560,17 @@ public class NotificationTemplateResourceTest
 			notificationTemplateResource.getNotificationTemplatesPage(
 				null, null, "system eq false", Pagination.of(1, 100), null);
 
-		List<Long> ids = TransformUtil.transform(
+		List<Long> notificationTemplateIds = TransformUtil.transform(
 			page.getItems(), NotificationTemplate::getId);
 
 		Assert.assertTrue(
-			ids.toString(), ids.contains(notificationTemplate.getId()));
+			notificationTemplateIds.contains(notificationTemplate.getId()));
 		Assert.assertFalse(
-			ids.toString(), ids.contains(systemNotificationTemplate.getId()));
+			notificationTemplateIds.contains(
+				systemNotificationTemplate.getId()));
 	}
 
-	private void _testPatchNotificationTemplateName() throws Exception {
+	private void _testPatchNotificationTemplateWithName() throws Exception {
 		NotificationTemplate notificationTemplate =
 			randomNotificationTemplate();
 
@@ -603,10 +603,10 @@ public class NotificationTemplateResourceTest
 
 		Assert.assertEquals(name, notificationTemplate.getName());
 
-		Map<String, String> nameI18n = notificationTemplate.getName_i18n();
+		Map<String, String> nameI18nMap = notificationTemplate.getName_i18n();
 
-		Assert.assertEquals(name, nameI18n.get(defaultLanguageId));
-		Assert.assertEquals(translatedName, nameI18n.get("pt_BR"));
+		Assert.assertEquals(name, nameI18nMap.get(defaultLanguageId));
+		Assert.assertEquals(translatedName, nameI18nMap.get("pt_BR"));
 	}
 
 	private void _testPostNotificationTemplate(JSONObject recipientJSONObject)
@@ -658,7 +658,7 @@ public class NotificationTemplateResourceTest
 					toDTO(notificationTemplateJSONObject.toString())));
 	}
 
-	private void _testPostNotificationTemplateCreator() throws Exception {
+	private void _testPostNotificationTemplateWithCreator() throws Exception {
 		NotificationTemplate notificationTemplate = _addNotificationTemplate(
 			randomNotificationTemplate());
 
@@ -670,39 +670,29 @@ public class NotificationTemplateResourceTest
 			user.getExternalReferenceCode(),
 			creator.getExternalReferenceCode());
 
-		user = UserTestUtil.addUser();
-
-		_users.add(user);
+		_user = UserTestUtil.addUser();
 
 		com.liferay.notification.model.NotificationTemplate
 			serviceBuilderNotificationTemplate =
 				_notificationTemplateLocalService.addNotificationTemplate(
-					RandomTestUtil.randomString(), user.getUserId(),
+					RandomTestUtil.randomString(), _user.getUserId(),
 					NotificationConstants.TYPE_EMAIL);
 
 		_notificationTemplates.add(serviceBuilderNotificationTemplate);
 
 		notificationTemplate =
 			notificationTemplateResource.getNotificationTemplate(
-				serviceBuilderNotificationTemplate.
-					getNotificationTemplateId());
+				serviceBuilderNotificationTemplate.getNotificationTemplateId());
 
 		creator = notificationTemplate.getCreator();
 
 		Assert.assertEquals(
-			user.getExternalReferenceCode(),
+			_user.getExternalReferenceCode(),
 			creator.getExternalReferenceCode());
 	}
 
-	private void _testPostNotificationTemplateNameWithoutDefaultLanguage()
+	private void _testPostNotificationTemplateWithNameWithoutDefaultLanguage()
 		throws Exception {
-
-		NotificationTemplate notificationTemplate =
-			randomNotificationTemplate();
-
-		notificationTemplate.setName(() -> null);
-		notificationTemplate.setName_i18n(
-			Collections.singletonMap("pt_BR", RandomTestUtil.randomString()));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
@@ -712,13 +702,27 @@ public class NotificationTemplateResourceTest
 			Assert.assertEquals(
 				400,
 				HTTPTestUtil.invokeToHttpCode(
-					NotificationTemplateSerDes.toJSON(notificationTemplate),
+					JSONUtil.put(
+						"name_i18n",
+						JSONUtil.put("pt_BR", RandomTestUtil.randomString())
+					).put(
+						"recipients", JSONUtil.putAll()
+					).toString(),
 					"notification/v1.0/notification-templates",
 					Http.Method.POST));
 		}
 	}
 
-	private void _testPostNotificationTemplateWithFeatureFlagDisabled()
+	private void _testPostNotificationTemplateWithPermissions()
+		throws Exception {
+
+		_assertPermissions(
+			_postNotificationTemplateWithPermissions(
+				RoleConstants.ADMINISTRATOR),
+			RoleConstants.ADMINISTRATOR);
+	}
+
+	private void _testPostNotificationTemplateWithPermissionsAndFeatureFlagDisabled()
 		throws Exception {
 
 		try (PropsTemporarySwapper propsTemporarySwapper =
@@ -729,93 +733,82 @@ public class NotificationTemplateResourceTest
 			Assert.assertEquals(
 				400,
 				HTTPTestUtil.invokeToHttpCode(
-					NotificationTemplateSerDes.toJSON(
-						_randomNotificationTemplateWithPermissions(
-							RoleConstants.ADMINISTRATOR)),
+					String.valueOf(
+						JSONUtil.put(
+							"permissions",
+							JSONUtil.putAll(
+								_getPermissionsJSONObject(
+									RoleConstants.ADMINISTRATOR)))),
 					"notification/v1.0/notification-templates",
 					Http.Method.POST));
 		}
 	}
 
-	private void _testPostNotificationTemplateWithPermissions()
+	private void _testPutNotificationTemplateWithNameTranslations()
 		throws Exception {
-
-		NotificationTemplate notificationTemplate = _addNotificationTemplate(
-			_randomNotificationTemplateWithPermissions(
-				RoleConstants.ADMINISTRATOR));
-
-		_assertRoleNames(notificationTemplate, RoleConstants.ADMINISTRATOR);
-	}
-
-	private void _testPutNotificationTemplateNameTranslations()
-		throws Exception {
-
-		NotificationTemplate notificationTemplate = _addNotificationTemplate(
-			randomNotificationTemplate());
 
 		String defaultLanguageId = LocaleUtil.toLanguageId(
 			LocaleUtil.getSiteDefault());
-		String name = RandomTestUtil.randomString();
+
+		// With a name internationalization map
+
+		NotificationTemplate notificationTemplate1 = _addNotificationTemplate(
+			randomNotificationTemplate());
+
+		String name1 = RandomTestUtil.randomString();
 		String translatedName = RandomTestUtil.randomString();
 
-		notificationTemplate.setName(() -> name);
-		notificationTemplate.setName_i18n(
+		notificationTemplate1.setName(() -> name1);
+		notificationTemplate1.setName_i18n(
 			HashMapBuilder.put(
-				defaultLanguageId, name
+				defaultLanguageId, name1
 			).put(
 				"pt_BR", translatedName
 			).build());
 
-		notificationTemplate =
+		notificationTemplate1 =
 			notificationTemplateResource.putNotificationTemplate(
-				notificationTemplate.getId(), notificationTemplate);
+				notificationTemplate1.getId(), notificationTemplate1);
 
-		Assert.assertEquals(name, notificationTemplate.getName());
+		Assert.assertEquals(name1, notificationTemplate1.getName());
 
-		Map<String, String> nameI18n = notificationTemplate.getName_i18n();
+		Map<String, String> nameI18nMap1 = notificationTemplate1.getName_i18n();
 
-		Assert.assertEquals(name, nameI18n.get(defaultLanguageId));
-		Assert.assertEquals(translatedName, nameI18n.get("pt_BR"));
-	}
+		Assert.assertEquals(name1, nameI18nMap1.get(defaultLanguageId));
+		Assert.assertEquals(translatedName, nameI18nMap1.get("pt_BR"));
 
-	private void _testPutNotificationTemplateNameTranslationsWithoutI18nMap()
-		throws Exception {
+		// Without a name internationalization map
 
-		NotificationTemplate notificationTemplate = _addNotificationTemplate(
+		NotificationTemplate notificationTemplate2 = _addNotificationTemplate(
 			randomNotificationTemplate());
 
-		String defaultLanguageId = LocaleUtil.toLanguageId(
-			LocaleUtil.getSiteDefault());
+		String name2 = RandomTestUtil.randomString();
 
-		String name = RandomTestUtil.randomString();
+		notificationTemplate2.setName(() -> name2);
 
-		notificationTemplate.setName(() -> name);
+		notificationTemplate2.setName_i18n(() -> null);
 
-		notificationTemplate.setName_i18n(() -> null);
-
-		notificationTemplate =
+		notificationTemplate2 =
 			notificationTemplateResource.putNotificationTemplate(
-				notificationTemplate.getId(), notificationTemplate);
+				notificationTemplate2.getId(), notificationTemplate2);
 
-		Assert.assertEquals(name, notificationTemplate.getName());
+		Assert.assertEquals(name2, notificationTemplate2.getName());
 
-		Map<String, String> nameI18n = notificationTemplate.getName_i18n();
+		Map<String, String> nameI18nMap2 = notificationTemplate2.getName_i18n();
 
-		Assert.assertEquals(name, nameI18n.get(defaultLanguageId));
+		Assert.assertEquals(name2, nameI18nMap2.get(defaultLanguageId));
 	}
 
 	private void _testPutNotificationTemplateWithPermissions()
 		throws Exception {
 
-		NotificationTemplate notificationTemplate = _addNotificationTemplate(
-			_randomNotificationTemplateWithPermissions(
-				RoleConstants.ADMINISTRATOR));
+		JSONObject jsonObject = _postNotificationTemplateWithPermissions(
+			RoleConstants.ADMINISTRATOR);
 
-		notificationTemplateResource.putNotificationTemplate(
-			notificationTemplate.getId(),
-			_randomNotificationTemplateWithPermissions(RoleConstants.GUEST));
-
-		_assertRoleNames(notificationTemplate, RoleConstants.GUEST);
+		_assertPermissions(
+			_putNotificationTemplateWithPermissions(
+				jsonObject.getLong("id"), RoleConstants.GUEST),
+			RoleConstants.GUEST);
 	}
 
 	@Inject
@@ -833,6 +826,6 @@ public class NotificationTemplateResourceTest
 	private ObjectDefinition _objectDefinition;
 
 	@DeleteAfterTestRun
-	private List<User> _users = new ArrayList<>();
+	private User _user;
 
 }
