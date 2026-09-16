@@ -13,11 +13,10 @@ import com.liferay.asset.list.service.AssetListEntryService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.util.AssetPublisherHelper;
 import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectionStyleConstants;
+import com.liferay.asset.publisher.web.internal.util.AssetListTypeSettingsUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
-import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -35,20 +34,14 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletPreferences;
 
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -145,65 +138,10 @@ public class AddAssetListMVCActionCommand extends BaseMVCActionCommand {
 				selectionStyle,
 				AssetPublisherSelectionStyleConstants.TYPE_DYNAMIC)) {
 
-			UnicodeProperties unicodeProperties = new UnicodeProperties(true);
-
-			Enumeration<String> enumeration = portletPreferences.getNames();
-
-			while (enumeration.hasMoreElements()) {
-				String name = enumeration.nextElement();
-
-				String value = StringUtil.merge(
-					portletPreferences.getValues(name, null));
-
-				if (Validator.isNull(value)) {
-					continue;
-				}
-
-				if (!name.equals("scopeIds")) {
-					unicodeProperties.put(name, value);
-
-					continue;
-				}
-
-				List<Long> groupIds = TransformUtil.transformToList(
-					value.split(StringPool.COMMA),
-					part -> {
-						if (part.equals("Group_default")) {
-							return serviceContext.getScopeGroupId();
-						}
-
-						if (!part.startsWith("Group_")) {
-							return null;
-						}
-
-						long groupId = GetterUtil.getLong(
-							StringUtil.removeSubstring(part, "Group_"), -1);
-
-						if (groupId != -1) {
-							return groupId;
-						}
-
-						return null;
-					});
-
-				if (groupIds.isEmpty()) {
-					continue;
-				}
-
-				name = "groupIds";
-				value = ListUtil.toString(groupIds, StringPool.BLANK);
-
-				unicodeProperties.put(name, value);
-			}
-
-			if (Validator.isNull(
-					unicodeProperties.getProperty("anyAssetType"))) {
-
-				unicodeProperties.put("anyAssetType", "true");
-			}
-
 			return _assetListEntryService.addDynamicAssetListEntry(
-				null, scopeGroupId, title, unicodeProperties.toString(),
+				null, scopeGroupId, title,
+				AssetListTypeSettingsUtil.getTypeSettings(
+					serviceContext.getScopeGroupId(), portletPreferences),
 				serviceContext);
 		}
 

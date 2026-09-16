@@ -12,11 +12,11 @@ import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.asset.publisher.util.AssetPublisherHelper;
 import com.liferay.asset.publisher.web.internal.constants.AssetPublisherSelectionStyleConstants;
+import com.liferay.asset.publisher.web.internal.util.AssetListTypeSettingsUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.osgi.util.osgi.commands.OSGiCommands;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -36,15 +36,9 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
-import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Objects;
 
 import org.apache.felix.service.command.Descriptor;
@@ -82,7 +76,9 @@ public class AssetPublisherOSGiCommands implements OSGiCommands {
 			_getTitle(
 				layout.isDraftLayout(), instanceId,
 				name.substring(0, Math.min(name.length(), 60))),
-			_getTypeSettings(layout, jxPortletPreferences), serviceContext);
+			AssetListTypeSettingsUtil.getTypeSettings(
+				layout.getGroupId(), jxPortletPreferences),
+			serviceContext);
 	}
 
 	private AssetListEntry _getAssetListEntry(
@@ -159,68 +155,6 @@ public class AssetPublisherOSGiCommands implements OSGiCommands {
 	private String _getTitle(boolean draft, String instanceId, String name) {
 		return StringBundler.concat(
 			"AP ", instanceId, draft ? "_0" : "_1", StringPool.SPACE, name);
-	}
-
-	private String _getTypeSettings(
-		Layout layout,
-		jakarta.portlet.PortletPreferences jxPortletPreferences) {
-
-		UnicodeProperties unicodeProperties = new UnicodeProperties(true);
-
-		Enumeration<String> enumeration = jxPortletPreferences.getNames();
-
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-
-			String value = StringUtil.merge(
-				jxPortletPreferences.getValues(name, null));
-
-			if (Validator.isNull(value) || name.contains("email")) {
-				continue;
-			}
-
-			if (!name.equals("scopeIds")) {
-				unicodeProperties.put(name, value);
-
-				continue;
-			}
-
-			List<Long> groupIds = TransformUtil.transformToList(
-				value.split(StringPool.COMMA),
-				part -> {
-					if (part.equals("Group_default")) {
-						return layout.getGroupId();
-					}
-
-					if (!part.startsWith("Group_")) {
-						return null;
-					}
-
-					long groupId = GetterUtil.getLong(
-						StringUtil.removeSubstring(part, "Group_"), -1);
-
-					if (groupId != -1) {
-						return groupId;
-					}
-
-					return null;
-				});
-
-			if (groupIds.isEmpty()) {
-				continue;
-			}
-
-			name = "groupIds";
-			value = ListUtil.toString(groupIds, StringPool.BLANK);
-
-			unicodeProperties.put(name, value);
-		}
-
-		if (Validator.isNull(unicodeProperties.getProperty("anyAssetType"))) {
-			unicodeProperties.put("anyAssetType", "true");
-		}
-
-		return unicodeProperties.toString();
 	}
 
 	private void _migratePortletPreferences(Long companyId)
