@@ -376,6 +376,93 @@ test(
 );
 
 test(
+	'Select All stays in sync with the individual file selections in the multiple files upload',
+	{
+		tag: '@LPD-105917',
+	},
+	async ({documentLibraryEditFilePage, page}) => {
+		await documentLibraryEditFilePage.goToNewFileDifferentType(
+			'Multiple Files Upload'
+		);
+
+		const firstFileName = getRandomString();
+		const secondFileName = getRandomString();
+
+		await page.getByRole('button', {name: 'Select Files'}).waitFor();
+		await page.locator('input[type="file"]').setInputFiles([
+			{
+				buffer: Buffer.from(firstFileName),
+				mimeType: 'text/plain',
+				name: `${firstFileName}.txt`,
+			},
+			{
+				buffer: Buffer.from(secondFileName),
+				mimeType: 'text/plain',
+				name: `${secondFileName}.txt`,
+			},
+		]);
+
+		const firstFileCheckbox = page.getByRole('checkbox', {
+			name: `${firstFileName}.txt`,
+		});
+		const secondFileCheckbox = page.getByRole('checkbox', {
+			name: `${secondFileName}.txt`,
+		});
+		const selectAllCheckbox = page.getByLabel('Select All');
+
+		await expect(firstFileCheckbox).toBeEnabled();
+		await expect(secondFileCheckbox).toBeEnabled();
+
+		await selectAllCheckbox.check();
+		await selectAllCheckbox.uncheck();
+
+		const fileCheckboxes = await page.locator('input.select-file').all();
+
+		for (const fileCheckbox of fileCheckboxes) {
+			await expect(fileCheckbox).not.toBeChecked();
+		}
+
+		await firstFileCheckbox.check();
+
+		await expect(selectAllCheckbox).not.toBeChecked();
+
+		for (const fileCheckbox of fileCheckboxes) {
+			await fileCheckbox.check();
+		}
+
+		await expect(selectAllCheckbox).toBeChecked();
+
+		await firstFileCheckbox.uncheck();
+
+		await expect(secondFileCheckbox).toBeChecked();
+		await expect(selectAllCheckbox).not.toBeChecked();
+
+		await selectAllCheckbox.check();
+
+		await expect(firstFileCheckbox).toBeChecked();
+
+		await secondFileCheckbox.uncheck();
+
+		await expect(firstFileCheckbox).toBeChecked();
+		await expect(selectAllCheckbox).not.toBeChecked();
+
+		await selectAllCheckbox.check();
+
+		await clickAndExpectToBeVisible({
+			autoClick: false,
+			target: page.locator(
+				'#_com_liferay_document_library_web_portlet_DLAdminPortlet_documentLibraryContainer'
+			),
+			trigger: page.getByRole('button', {name: 'Publish'}),
+		});
+
+		await expect(
+			page.getByRole('link', {exact: true, name: firstFileName})
+		).toBeVisible();
+	}
+);
+
+test(
 	'Unable to filter by category if their vocabulary is related with a specific document type',
 	{
 		tag: '@LPD-50971',
