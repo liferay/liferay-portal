@@ -75,6 +75,21 @@ describe('Table', () => {
 		expect(container.querySelector('.table-nowrap')).toBeTruthy();
 	});
 
+	it('should render without nowrap rows, so long values wrap', () => {
+		const {container} = render(
+			<MemoryRouter>
+				<Table
+					columns={COLUMNS}
+					items={INDIVIDUALS}
+					nowrap={false}
+					rowIdentifier='id'
+				/>
+			</MemoryRouter>
+		);
+
+		expect(container.querySelector('.table-nowrap')).toBeNull();
+	});
+
 	it('should render w/ loading', () => {
 		const {container} = render(
 			<MemoryRouter>
