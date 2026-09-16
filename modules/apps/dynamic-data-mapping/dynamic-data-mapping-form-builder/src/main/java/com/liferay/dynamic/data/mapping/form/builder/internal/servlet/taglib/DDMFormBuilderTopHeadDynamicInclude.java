@@ -41,6 +41,12 @@ public class DDMFormBuilderTopHeadDynamicInclude extends BaseDynamicInclude {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		String fileName = "/css/main.css";
+
+		if (_portal.isRightToLeft(httpServletRequest)) {
+			fileName = "/css/main_rtl.css";
+		}
+
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
 		printWriter.print("<link href=\"");
@@ -48,7 +54,7 @@ public class DDMFormBuilderTopHeadDynamicInclude extends BaseDynamicInclude {
 			_portal.getStaticResourceURL(
 				httpServletRequest,
 				StringBundler.concat(
-					themeDisplay.getCDNBaseURL(), _postfix, "/css/main.css")));
+					themeDisplay.getCDNBaseURL(), _postfix, fileName)));
 		printWriter.print(StringPool.QUOTE);
 		printWriter.print(
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
