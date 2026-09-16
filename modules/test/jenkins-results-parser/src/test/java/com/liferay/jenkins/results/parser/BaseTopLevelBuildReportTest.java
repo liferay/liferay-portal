@@ -883,14 +883,17 @@ public class BaseTopLevelBuildReportTest
 	private void _testGetTestResultsJSONUserContentURL(
 		String expectedURLString, String jenkinsRemoteURL) {
 
-		Properties properties = new Properties();
+		if (jenkinsRemoteURL == null) {
+			JenkinsResultsParserUtil.setBuildProperties(new String[0]);
+		}
+		else {
+			Properties properties = new Properties();
 
-		if (jenkinsRemoteURL != null) {
 			properties.setProperty(
 				"jenkins.remote.url[test-1-0]", jenkinsRemoteURL);
-		}
 
-		JenkinsResultsParserUtil.setBuildProperties(properties);
+			JenkinsResultsParserUtil.setBuildProperties(properties);
+		}
 
 		BaseTopLevelBuildReport baseTopLevelBuildReport =
 			_newBaseTopLevelBuildReport();
