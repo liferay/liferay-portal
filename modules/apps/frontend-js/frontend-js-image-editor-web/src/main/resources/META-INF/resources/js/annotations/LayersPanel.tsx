@@ -257,9 +257,9 @@ export function LayersPanel({
 
 		onAnnounce(
 			sub(
-				Liferay.Language.get(
-					visualDirection === -1 ? 'x-moved-up' : 'x-moved-down'
-				),
+				visualDirection === -1
+					? Liferay.Language.get('x-moved-up')
+					: Liferay.Language.get('x-moved-down'),
 				overlayLabel(overlay)
 			)
 		);

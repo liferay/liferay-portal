@@ -110,9 +110,11 @@ export function LayerProperties({
 				<ColorField
 					fill
 					id={eid('layer-prop-color')}
-					label={Liferay.Language.get(
-						overlay.kind === 'text' ? 'text-color' : 'color'
-					)}
+					label={
+						overlay.kind === 'text'
+							? Liferay.Language.get('text-color')
+							: Liferay.Language.get('color')
+					}
 					onCommit={(color) => commitPatch({color})}
 					onPreview={(color) => previewPatch({color})}
 					value={overlay.color}
@@ -273,11 +275,13 @@ export function LayerProperties({
 							displayType="secondary"
 							onClick={() => {
 								onAnnounce(
-									Liferay.Language.get(
-										proportional
-											? 'aspect-ratio-unlocked'
-											: 'aspect-ratio-locked'
-									)
+									proportional
+										? Liferay.Language.get(
+												'aspect-ratio-unlocked'
+											)
+										: Liferay.Language.get(
+												'aspect-ratio-locked'
+											)
 								);
 
 								onProportionalChange(!proportional);

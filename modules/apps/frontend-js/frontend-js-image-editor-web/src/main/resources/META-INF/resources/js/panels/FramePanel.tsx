@@ -120,11 +120,13 @@ function FramePanelCards({dispatch, frame, image, onAnnounce, presets}: Props) {
 								});
 
 								onAnnounce(
-									Liferay.Language.get(
-										overAnnotations
-											? 'the-frame-is-drawn-over-the-annotations'
-											: 'the-frame-is-drawn-under-the-annotations'
-									)
+									overAnnotations
+										? Liferay.Language.get(
+												'the-frame-is-drawn-over-the-annotations'
+											)
+										: Liferay.Language.get(
+												'the-frame-is-drawn-under-the-annotations'
+											)
 								);
 							}}
 							options={[
