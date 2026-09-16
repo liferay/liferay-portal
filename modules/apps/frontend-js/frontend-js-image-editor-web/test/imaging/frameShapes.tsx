@@ -18,6 +18,7 @@ const FRAME: Frame = {
 	color: '#ffffff',
 	kind: 'mat',
 	offset: 0,
+	overAnnotations: true,
 	size: 4,
 };
 

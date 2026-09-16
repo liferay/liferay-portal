@@ -352,6 +352,7 @@ export function editorReducer(
 				frame.color === present.frame.color &&
 				frame.kind === present.frame.kind &&
 				frame.offset === present.frame.offset &&
+				frame.overAnnotations === present.frame.overAnnotations &&
 				frame.size === present.frame.size
 			) {
 				return history;

@@ -15,6 +15,7 @@ export const DEFAULT_FRAME: Frame = {
 	color: '#ffffff',
 	kind: 'none',
 	offset: 0,
+	overAnnotations: true,
 	size: 4,
 };
 
@@ -140,6 +141,8 @@ export interface Frame {
 	kind: FrameKind;
 
 	offset: number;
+
+	overAnnotations: boolean;
 
 	size: number;
 }

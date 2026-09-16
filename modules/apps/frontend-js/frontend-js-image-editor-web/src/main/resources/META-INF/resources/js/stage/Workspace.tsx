@@ -195,8 +195,6 @@ export function Workspace({
 					</g>
 				</g>
 
-				<FrameShape crop={crop} frame={state.frame} />
-
 				<CropMarquee
 					aspectLocked={aspectLocked}
 					bounds={bounds}
@@ -208,6 +206,17 @@ export function Workspace({
 					showRecenter={showRecenter}
 					zoom={zoom}
 				>
+
+					{/*
+					 * Under the annotations when asked: a mat that covers
+					 * the caption written along the bottom edge is a real
+					 * outcome, and which one is wanted is the user's call.
+					 */}
+
+					{!state.frame.overAnnotations && (
+						<FrameShape crop={crop} frame={state.frame} />
+					)}
+
 					<OverlaysEditable
 						dispatch={dispatch}
 						multiSelectedIds={multiSelectedIds}
@@ -220,6 +229,15 @@ export function Workspace({
 						selectedId={selectedOverlayId}
 						zoom={zoom}
 					/>
+
+					{/*
+					 * Above the marquee is never right: the marquee is
+					 * chrome, the frame is picture.
+					 */}
+
+					{state.frame.overAnnotations && (
+						<FrameShape crop={crop} frame={state.frame} />
+					)}
 				</CropMarquee>
 			</svg>
 		</div>

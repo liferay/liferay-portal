@@ -56,3 +56,45 @@ describe('editedImageMarkup', () => {
 		expect(output).toContain('stroke-width="40"');
 	});
 });
+
+describe('the frame and the annotations', () => {
+	const caption = {
+		color: '#ffffff',
+		fontFamily: 'sans-serif',
+		fontSize: 48,
+		id: 'text-1',
+		kind: 'text' as const,
+		text: 'Hello',
+		x: 100,
+		y: 900,
+	};
+
+	const order = (overAnnotations: boolean) => {
+		const state = initialEditState(1600, 1000);
+
+		const output = editedImageMarkup(
+			{
+				...state,
+				frame: {...state.frame, kind: 'mat', overAnnotations},
+				overlays: [caption],
+			},
+			DATA_URL
+		);
+
+		return [output.indexOf('editor-frame'), output.indexOf('<text')];
+	};
+
+	it('draws the annotations, then the frame over them by default', () => {
+		const [frame, text] = order(true);
+
+		expect(text).toBeGreaterThan(-1);
+		expect(frame).toBeGreaterThan(text);
+	});
+
+	it('draws the frame first when it goes under the annotations', () => {
+		const [frame, text] = order(false);
+
+		expect(frame).toBeGreaterThan(-1);
+		expect(text).toBeGreaterThan(frame);
+	});
+});

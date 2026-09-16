@@ -44,13 +44,19 @@ export function editedImageMarkup(state: EditState, dataUrl: string): string {
 				/>
 			</g>
 
+			{!state.frame.overAnnotations && (
+				<FrameShape crop={crop} frame={state.frame} />
+			)}
+
 			{state.overlays.map((overlay) => (
 				<g key={overlay.id} transform={overlayTransform(overlay)}>
 					<OverlayShape overlay={overlay} />
 				</g>
 			))}
 
-			<FrameShape crop={crop} frame={state.frame} />
+			{state.frame.overAnnotations && (
+				<FrameShape crop={crop} frame={state.frame} />
+			)}
 		</svg>
 	);
 }

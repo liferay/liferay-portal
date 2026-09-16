@@ -364,6 +364,7 @@ describe('set-frame', () => {
 			color: '#ffffff',
 			kind: 'mat',
 			offset: 0,
+			overAnnotations: true,
 			size: 10,
 		});
 	});
@@ -748,5 +749,33 @@ describe('groups', () => {
 		expect(editorReducer(state, {ids: [], type: 'remove-overlays'})).toBe(
 			state
 		);
+	});
+});
+
+describe('the frame placement', () => {
+	it('moves under the annotations when asked, and no more than that', () => {
+		let state = editorReducer(history(), {
+			frame: {kind: 'mat'},
+			type: 'set-frame',
+		});
+
+		expect(state.present.frame.overAnnotations).toBe(true);
+
+		state = editorReducer(state, {
+			frame: {overAnnotations: false},
+			type: 'set-frame',
+		});
+
+		expect(state.present.frame).toMatchObject({
+			kind: 'mat',
+			overAnnotations: false,
+		});
+
+		expect(
+			editorReducer(state, {
+				frame: {overAnnotations: false},
+				type: 'set-frame',
+			})
+		).toBe(state);
 	});
 });

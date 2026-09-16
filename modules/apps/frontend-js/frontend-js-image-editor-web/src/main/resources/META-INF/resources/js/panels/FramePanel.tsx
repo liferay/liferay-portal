@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import {sub} from 'frontend-js-web';
 import React, {memo} from 'react';
 
@@ -101,6 +102,45 @@ function FramePanelCards({dispatch, frame, image, onAnnounce, presets}: Props) {
 						}
 						value={frame.color}
 					/>
+
+					<ClayForm.Group small>
+						<label htmlFor={eid('frame-placement')}>
+							{Liferay.Language.get('placement')}
+						</label>
+
+						<ClaySelectWithOption
+							id={eid('frame-placement')}
+							onChange={(event) => {
+								const overAnnotations =
+									event.target.value === 'over';
+
+								dispatch({
+									frame: {overAnnotations},
+									type: 'set-frame',
+								});
+
+								onAnnounce(
+									Liferay.Language.get(
+										overAnnotations
+											? 'the-frame-is-drawn-over-the-annotations'
+											: 'the-frame-is-drawn-under-the-annotations'
+									)
+								);
+							}}
+							options={[
+								{
+									label: Liferay.Language.get('on-top'),
+									value: 'over',
+								},
+								{
+									label: Liferay.Language.get('behind'),
+									value: 'under',
+								},
+							]}
+							sizing="sm"
+							value={frame.overAnnotations ? 'over' : 'under'}
+						/>
+					</ClayForm.Group>
 
 					{SLIDERS.map(({key, label, max}) => (
 						<CommitSlider
