@@ -12,17 +12,21 @@
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
 taglib uri="http://liferay.com/tld/ddm" prefix="liferay-ddm" %><%@
 taglib uri="http://liferay.com/tld/frontend" prefix="liferay-frontend" %><%@
+taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <%@ page import="com.liferay.portal.kernel.dao.search.SearchContainer" %><%@
+page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.User" %><%@
 page import="com.liferay.portal.kernel.search.Document" %><%@
 page import="com.liferay.portal.kernel.util.HashMapBuilder" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
+page import="com.liferay.portal.kernel.util.PortalUtil" %><%@
 page import="com.liferay.portal.kernel.util.WebKeys" %><%@
 page import="com.liferay.portal.search.web.internal.result.display.context.SearchResultSummaryDisplayContext" %><%@
 page import="com.liferay.portal.search.web.internal.search.results.configuration.SearchResultsPortletInstanceConfiguration" %><%@
+page import="com.liferay.portal.search.web.internal.search.results.portlet.SearchResultsPaginatorDisplayContext" %><%@
 page import="com.liferay.portal.search.web.internal.search.results.portlet.SearchResultsPortletDisplayContext" %>
 
 <%@ page import="java.util.List" %>
@@ -72,13 +76,32 @@ SearchContainer<Document> searchContainer = searchResultsPortletDisplayContext.g
 		/>
 
 		<c:if test="<%= searchResultsPortletDisplayContext.isShowPagination() %>">
-			<aui:form action="#" useNamespace="<%= false %>">
-				<liferay-ui:search-paginator
-					id="<%= liferayPortletResponse.getNamespace() %>"
-					markupView="lexicon"
-					searchContainer="<%= searchContainer %>"
-				/>
-			</aui:form>
+			<c:choose>
+				<c:when test='<%= FeatureFlagManagerUtil.isEnabled(PortalUtil.getCompanyId(request), "LPD-98858") %>'>
+
+					<%
+					SearchResultsPaginatorDisplayContext searchResultsPaginatorDisplayContext = new SearchResultsPaginatorDisplayContext(request, searchContainer);
+					%>
+
+					<c:if test="<%= searchResultsPaginatorDisplayContext.isAvailable() %>">
+						<div>
+							<react:component
+								module="{ClassicSearchPaginator} from portal-search-web"
+								props="<%= searchResultsPaginatorDisplayContext.getProps() %>"
+							/>
+						</div>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+					<aui:form action="#" useNamespace="<%= false %>">
+						<liferay-ui:search-paginator
+							id="<%= liferayPortletResponse.getNamespace() %>"
+							markupView="lexicon"
+							searchContainer="<%= searchContainer %>"
+						/>
+					</aui:form>
+				</c:otherwise>
+			</c:choose>
 		</c:if>
 	</c:otherwise>
 </c:choose>

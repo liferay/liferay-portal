@@ -16,6 +16,8 @@ export {default as SelectVocabularies} from './components/SelectVocabularies';
 export {default as SortConfigurationOptions} from './components/SortConfigurationOptions';
 export {default as SystemSettingsFieldList} from './components/SystemSettingsFieldList';
 export {default as SearchBarConfigurationSuggestions} from './components/search_bar_configuration_suggestions';
+export {default as ClassicSearchPaginator} from './components/search_paginator/ClassicSearchPaginator';
+export {default as LimitedSearchPaginator} from './components/search_paginator/LimitedSearchPaginator';
 export {default as SemanticSearchConfiguration} from './components/semantic_search_configuration';
 
 // Utils + shared
