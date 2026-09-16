@@ -4691,6 +4691,14 @@ ${poshi.runner.testsuite.testcase.name}</echo>
 		<attribute default="" name="test.task.group" />
 
 		<sequential>
+			<fail message="Unable to select tests. &quot;test.task.group&quot; resolved to &quot;@{test.task.group}&quot; rather than a task group.">
+				<condition>
+					<not>
+						<matches pattern="[^\[]+\[[^\]]+\]" string="@{test.task.group}" />
+					</not>
+				</condition>
+			</fail>
+
 			<beanshell>
 				<![CDATA[
 					import com.liferay.jenkins.results.parser.AntUtil;
