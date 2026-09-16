@@ -39,6 +39,8 @@ window.themeDisplay = {
 	getUserId: () => 0,
 };
 
+const eventHandlers = {};
+
 window.Liferay = {
 	...(window.Liferay || {}),
 	Language: {
@@ -72,4 +74,27 @@ window.Liferay = {
 		getLexiconIconTpl: (icon) => icon,
 	},
 	component: () => {},
+	detach: (name, handler) => {
+		if (eventHandlers[name]) {
+			eventHandlers[name] = eventHandlers[name].filter(
+				(eventHandler) => eventHandler !== handler
+			);
+		}
+	},
+	fire: (name, data) => {
+		(eventHandlers[name] || []).forEach((eventHandler) =>
+			eventHandler(data)
+		);
+	},
+	on: (name, handler) => {
+		if (!eventHandlers[name]) {
+			eventHandlers[name] = [];
+		}
+
+		eventHandlers[name].push(handler);
+
+		return {
+			detach: () => window.Liferay.detach(name, handler),
+		};
+	},
 };

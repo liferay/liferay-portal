@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {cleanup, render} from '@testing-library/react';
+import {act, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -18,67 +18,15 @@ const MOCK_OBJECT_ENTRY = {
 };
 
 describe('ModalDeleteObjectEntry', () => {
-	const {Liferay: originalLiferay} = window;
-
-	beforeAll(() => {
-		window['Liferay'] = {
-			...originalLiferay,
-
-			detach: (name, fn): void => {
-				window.removeEventListener(name as string, fn as EventListener);
-			},
-			fire: (name, payload) => {
-				const event = document.createEvent('CustomEvent');
-
-				event.initCustomEvent(name);
-
-				if (payload) {
-					Object.keys(payload).forEach((key: string) => {
-						(event as any)[key] = payload[key];
-					});
-				}
-
-				window.dispatchEvent(event);
-			},
-
-			on: (name, fn) => {
-				if (fn) {
-					window.addEventListener(
-						name as string,
-						fn as EventListener
-					);
-				}
-
-				return {
-					detach: () => {
-						if (fn) {
-							window.removeEventListener(
-								name as string,
-								fn as EventListener
-							);
-						}
-
-						return 0;
-					},
-				};
-			},
-		};
-	});
-
-	afterAll(() => {
-		cleanup();
-
-		window.Liferay = originalLiferay;
-
-		jest.resetAllMocks();
-	});
-
 	it('can disable the delete button after clicking on it', async () => {
 		const {findByText} = render(
-			<ModalDeleteObjectEntry byExternalReferenceCodePath="/test" />
+			<ModalDeleteObjectEntry
+				byExternalReferenceCodePath="/test"
+				portletNamespace="_portletNamespace_"
+			/>
 		);
 
-		Liferay.fire('openModalDeleteObjectEntry', {
+		Liferay.fire('_portletNamespace_openModalDeleteObjectEntry', {
 			objectEntry: MOCK_OBJECT_ENTRY,
 		});
 
@@ -89,5 +37,29 @@ describe('ModalDeleteObjectEntry', () => {
 		userEvent.click(deleteButton);
 
 		expect(deleteButton).toBeDisabled();
+	});
+
+	it('opens the modal only in the widget that fired the event', async () => {
+		render(
+			<>
+				<ModalDeleteObjectEntry
+					byExternalReferenceCodePath="/test1"
+					portletNamespace="_portletNamespace1_"
+				/>
+
+				<ModalDeleteObjectEntry
+					byExternalReferenceCodePath="/test2"
+					portletNamespace="_portletNamespace2_"
+				/>
+			</>
+		);
+
+		await act(async () => {
+			Liferay.fire('_portletNamespace1_openModalDeleteObjectEntry', {
+				objectEntry: MOCK_OBJECT_ENTRY,
+			});
+		});
+
+		expect(document.querySelectorAll('.modal-content')).toHaveLength(1);
 	});
 });
