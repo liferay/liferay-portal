@@ -335,29 +335,6 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	@Test
-	public void testGetTestSuiteName() {
-		String testSuiteName = RandomTestUtil.randomString();
-
-		BaseTopLevelBuildReport baseTopLevelBuildReport =
-			_newBaseTopLevelBuildReport(
-				new JSONObject(
-				).put(
-					"testSuiteName", testSuiteName
-				));
-
-		Assert.assertEquals(
-			testSuiteName, baseTopLevelBuildReport.getTestSuiteName());
-
-		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
-
-		Assert.assertEquals("", baseTopLevelBuildReport.getTestSuiteName());
-
-		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
-
-		Assert.assertNull(baseTopLevelBuildReport.getTestSuiteName());
-	}
-
-	@Test
 	public void testGetJobReport() throws Exception {
 		BaseTopLevelBuildReport baseTopLevelBuildReport1 = Mockito.mock(
 			BaseTopLevelBuildReport.class);
@@ -393,19 +370,18 @@ public class BaseTopLevelBuildReportTest
 		BaseTopLevelBuildReport baseTopLevelBuildReport2 = Mockito.mock(
 			BaseTopLevelBuildReport.class);
 
-		Mockito.doCallRealMethod(
-		).when(
-			baseTopLevelBuildReport2
-		).getJobReport();
-
 		Mockito.doReturn(
 			new URL("https://test-1-0.liferay.com/job/test-job/456")
 		).when(
 			baseTopLevelBuildReport2
 		).getBuildURL();
 
-		Assert.assertSame(
-			jobReport, baseTopLevelBuildReport2.getJobReport());
+		Mockito.doCallRealMethod(
+		).when(
+			baseTopLevelBuildReport2
+		).getJobReport();
+
+		Assert.assertSame(jobReport, baseTopLevelBuildReport2.getJobReport());
 
 		_clearCache(JobReport.class, "_jobReports");
 
@@ -497,25 +473,29 @@ public class BaseTopLevelBuildReportTest
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
 
 		_testGetPreviousTopLevelBuildReport(
-			"https://test-1-1.liferay.com/job/previous-job/2", 3,
+			3, "https://test-1-1.liferay.com/job/previous-job/2",
 			_newControllerBuildJSONObject(3, "SUCCESS"),
 			_newControllerBuildJSONObject(2, "FAILURE"),
 			_newControllerBuildJSONObject(1, "SUCCESS"));
 		_testGetPreviousTopLevelBuildReport(
-			"https://test-1-1.liferay.com/job/previous-job/2", 3,
-			_newControllerBuildJSONObject(3, "SUCCESS"),
-			_newControllerBuildJSONObject(2, "UNSTABLE"),
-			_newControllerBuildJSONObject(1, "SUCCESS"));
-		_testGetPreviousTopLevelBuildReport(
-			"https://test-1-1.liferay.com/job/previous-job/2", 3,
+			3, "https://test-1-1.liferay.com/job/previous-job/2",
 			_newControllerBuildJSONObject(3, "SUCCESS"),
 			_newControllerBuildJSONObject(2, "SUCCESS"),
 			_newControllerBuildJSONObject(1, "SUCCESS"));
-		_testGetPreviousTopLevelBuildReport(null, 3);
+		_testGetPreviousTopLevelBuildReport(
+			3, "https://test-1-1.liferay.com/job/previous-job/2",
+			_newControllerBuildJSONObject(3, "SUCCESS"),
+			_newControllerBuildJSONObject(2, "UNSTABLE"),
+			_newControllerBuildJSONObject(1, "SUCCESS"));
+		_testGetPreviousTopLevelBuildReport(3, null);
 	}
 
 	@Test
 	public void testGetTestResultsJSONUserContentURL() {
+		_testGetTestResultsJSONUserContentURL(
+			"https://test-1-0.liferay.com/userContent/testResults/test-job" +
+				"/builds/123/test.results.json",
+			"");
 		_testGetTestResultsJSONUserContentURL(
 			"https://test-1-0.liferay.com/userContent/testResults/test-job" +
 				"/builds/123/test.results.json",
@@ -528,10 +508,29 @@ public class BaseTopLevelBuildReportTest
 			"https://test-9-9.liferay.com/userContent/testResults/test-job" +
 				"/builds/123/test.results.json",
 			"https://test-9-9.liferay.com/");
-		_testGetTestResultsJSONUserContentURL(
-			"https://test-1-0.liferay.com/userContent/testResults/test-job" +
-				"/builds/123/test.results.json",
-			"");
+	}
+
+	@Test
+	public void testGetTestSuiteName() {
+		String testSuiteName = RandomTestUtil.randomString();
+
+		BaseTopLevelBuildReport baseTopLevelBuildReport =
+			_newBaseTopLevelBuildReport(
+				new JSONObject(
+				).put(
+					"testSuiteName", testSuiteName
+				));
+
+		Assert.assertEquals(
+			testSuiteName, baseTopLevelBuildReport.getTestSuiteName());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport();
+
+		Assert.assertEquals("", baseTopLevelBuildReport.getTestSuiteName());
+
+		baseTopLevelBuildReport = _newBaseTopLevelBuildReport(null);
+
+		Assert.assertNull(baseTopLevelBuildReport.getTestSuiteName());
 	}
 
 	@Test
@@ -726,13 +725,6 @@ public class BaseTopLevelBuildReportTest
 		_assertDownstreamBuildReports(baseTopLevelBuildReport, 0);
 	}
 
-	private void _clearCache(Class<?> clazz, String fieldName) {
-		Map<String, ?> cache = ReflectionTestUtil.getFieldValue(
-			clazz, fieldName);
-
-		cache.clear();
-	}
-
 	private List<DownstreamBuildReport> _assertDownstreamBuildReports(
 		BaseTopLevelBuildReport baseTopLevelBuildReport, int expectedCount) {
 
@@ -757,6 +749,13 @@ public class BaseTopLevelBuildReportTest
 			testrayAttachmentURLs.size());
 
 		return testrayAttachmentURLs;
+	}
+
+	private void _clearCache(Class<?> clazz, String fieldName) {
+		Map<String, ?> cache = ReflectionTestUtil.getFieldValue(
+			clazz, fieldName);
+
+		cache.clear();
 	}
 
 	private BaseTopLevelBuildReport _newBaseTopLevelBuildReport() {
@@ -799,9 +798,6 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	private ControllerBuildReport _newControllerBuildReport(int buildNumber) {
-		ControllerBuildReport controllerBuildReport = Mockito.mock(
-			ControllerBuildReport.class);
-
 		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
 
 		Mockito.doReturn(
@@ -809,6 +805,9 @@ public class BaseTopLevelBuildReportTest
 		).when(
 			jenkinsMaster
 		).getRemoteURL();
+
+		ControllerBuildReport controllerBuildReport = Mockito.mock(
+			ControllerBuildReport.class);
 
 		Mockito.doReturn(
 			buildNumber
@@ -944,7 +943,7 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	private void _testGetPreviousTopLevelBuildReport(
-			String expectedBuildURLString, int currentBuildNumber,
+			int currentBuildNumber, String expectedBuildURLString,
 			JSONObject... controllerBuildJSONObjects)
 		throws Exception {
 
