@@ -719,7 +719,8 @@ public class JournalTransformerTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"Article ", articleId,
-				" cannot include itself with DDM template ", ddmTemplateKey),
+				" cannot include itself with dynamic data mapping template ",
+				ddmTemplateKey),
 			logEntry.getMessage());
 	}
 
