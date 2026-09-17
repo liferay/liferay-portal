@@ -3672,13 +3672,13 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static String getThreadDump(int lines) {
+		StringBuilder sb = new StringBuilder();
+
 		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
 		ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(
 			threadMXBean.isObjectMonitorUsageSupported(),
 			threadMXBean.isSynchronizerUsageSupported());
-
-		StringBuilder sb = new StringBuilder();
 
 		for (ThreadInfo threadInfo : threadInfos) {
 			sb.append("\"");
