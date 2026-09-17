@@ -16,7 +16,6 @@ import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.frontend.js.audiences.AudiencesDefinition;
 import com.liferay.frontend.js.audiences.AudiencesDefinitionProvider;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -139,8 +138,6 @@ public class AudiencesDefinitionProviderTest {
 
 		audiencesEntry = _audiencesEntryLocalService.updateAudiencesEntry(
 			audiencesEntry);
-
-		_multiVMPool.removePortalCache(AudiencesEntry.class.getName());
 
 		JSONObject jsonObject = _getAudienceJSONObject(audiencesEntry);
 
@@ -286,8 +283,5 @@ public class AudiencesDefinitionProviderTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private MultiVMPool _multiVMPool;
 
 }
