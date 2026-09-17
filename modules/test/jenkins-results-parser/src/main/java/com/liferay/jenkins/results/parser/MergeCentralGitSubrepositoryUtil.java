@@ -412,10 +412,6 @@ public class MergeCentralGitSubrepositoryUtil {
 	private static boolean _isBlacklisted(
 		String remote, List<String> subrepoMergeBlacklist) {
 
-		if (subrepoMergeBlacklist.isEmpty()) {
-			return false;
-		}
-
 		Matcher matcher = _githubRemotePattern.matcher(remote);
 
 		if (matcher.find() &&
