@@ -836,7 +836,7 @@
 
 				<property name="source.formatter.result" value="-1" />
 
-				<fail message=".${line.separator}Source Formatter exited with a toolchain failure, reported above. This is not${line.separator}a formatting violation.">
+				<fail message="Source Formatter exited with a toolchain failure, reported above.${line.separator}This is not a formatting violation.">
 					<condition>
 						<equals arg1="${source.formatter.result}" arg2="2" />
 					</condition>
