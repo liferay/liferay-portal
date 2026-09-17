@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -205,8 +206,11 @@ public class AutoSaveArticleMVCResourceCommandTest {
 		MockLiferayResourceRequest mockLiferayResourceRequest =
 			_getMockLiferayResourceRequest();
 
+		String articleId = RandomTestUtil.randomString();
+
 		mockLiferayResourceRequest.setParameter(
-			"articleId", "manualarticleid1");
+			"articleId", articleId);
+
 		mockLiferayResourceRequest.setParameter(
 			"autoArticleId", StringPool.FALSE);
 
@@ -214,7 +218,7 @@ public class AutoSaveArticleMVCResourceCommandTest {
 
 		Assert.assertTrue(jsonObject.getBoolean("success"));
 		Assert.assertEquals(
-			StringUtil.toUpperCase("manualarticleid1"),
+			StringUtil.toUpperCase(articleId),
 			jsonObject.getString("articleId"));
 		Assert.assertTrue(jsonObject.has("friendlyURL"));
 	}
