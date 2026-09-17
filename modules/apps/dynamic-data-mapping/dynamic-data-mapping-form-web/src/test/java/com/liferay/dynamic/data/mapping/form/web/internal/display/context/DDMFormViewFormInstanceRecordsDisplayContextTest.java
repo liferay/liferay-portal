@@ -119,7 +119,7 @@ public class DDMFormViewFormInstanceRecordsDisplayContextTest {
 	}
 
 	@Test
-	public void testGetPortletDisplayURLBack() throws Exception {
+	public void testGetPortletDisplayGetURLBack() throws Exception {
 		DDMFormAdminDisplayContext ddmFormAdminDisplayContext = Mockito.mock(
 			DDMFormAdminDisplayContext.class);
 
