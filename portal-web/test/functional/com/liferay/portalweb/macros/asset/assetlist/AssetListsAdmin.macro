@@ -336,7 +336,7 @@ definition {
 				locator1 = "Configuration#SCOPE_SELECT",
 				value1 = "Select");
 
-			MenuItem.click(menuItem = "Other Site or Asset Library...");
+			MenuItem.click(menuItem = "Other Site, Asset Library, or Space...");
 
 			SelectFrame(value1 = "relative=top");
 
