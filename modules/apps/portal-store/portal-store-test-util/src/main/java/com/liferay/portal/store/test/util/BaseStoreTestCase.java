@@ -193,49 +193,41 @@ public abstract class BaseStoreTestCase {
 
 		DLStoreImpl.setStore(_store);
 
-		try {
-			Group group = GroupTestUtil.addGroup();
+		Group group = GroupTestUtil.addGroup();
 
-			FileEntry fileEntry = DLAppTestUtil.addFileEntry(
-				group.getGroupId());
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(group.getGroupId());
 
-			DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
+		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
 
-			DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
+		DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
 
-			Assert.assertTrue(
-				_store.hasFile(
-					dlFileEntry.getCompanyId(),
-					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
-					dlFileVersion.getStoreFileName()));
+		Assert.assertTrue(
+			_store.hasFile(
+				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(), dlFileVersion.getStoreFileName()));
 
-			DLTrashLocalServiceUtil.moveFileEntryToTrash(
-				dlFileEntry.getUserId(), dlFileEntry.getRepositoryId(),
-				dlFileEntry.getFileEntryId());
+		DLTrashLocalServiceUtil.moveFileEntryToTrash(
+			dlFileEntry.getUserId(), dlFileEntry.getRepositoryId(),
+			dlFileEntry.getFileEntryId());
 
-			Assert.assertTrue(
-				_store.hasFile(
-					dlFileEntry.getCompanyId(),
-					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
-					dlFileVersion.getStoreFileName()));
+		Assert.assertTrue(
+			_store.hasFile(
+				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(), dlFileVersion.getStoreFileName()));
 
-			TrashHandler trashHandler =
-				TrashHandlerRegistryUtil.getTrashHandler(
-					DLFileEntry.class.getName());
+		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
+			DLFileEntry.class.getName());
 
-			trashHandler.deleteTrashEntry(dlFileEntry.getPrimaryKey());
+		trashHandler.deleteTrashEntry(dlFileEntry.getPrimaryKey());
 
-			Assert.assertFalse(
-				_store.hasFile(
-					dlFileEntry.getCompanyId(),
-					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
-					dlFileVersion.getStoreFileName()));
+		Assert.assertFalse(
+			_store.hasFile(
+				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(), dlFileVersion.getStoreFileName()));
 
-			GroupTestUtil.deleteGroup(group);
-		}
-		finally {
-			DLStoreImpl.setStore(originalStore);
-		}
+		GroupTestUtil.deleteGroup(group);
+
+		DLStoreImpl.setStore(originalStore);
 	}
 
 	@Test
@@ -250,54 +242,49 @@ public abstract class BaseStoreTestCase {
 
 		DLStoreImpl.setStore(_store);
 
-		try {
-			Group group = GroupTestUtil.addGroup();
-			Group importedGroup = GroupTestUtil.addGroup();
+		Group group = GroupTestUtil.addGroup();
+		Group importedGroup = GroupTestUtil.addGroup();
 
-			FileEntry fileEntry = DLAppTestUtil.addFileEntry(
-				group.getGroupId());
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(group.getGroupId());
 
-			DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
+		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
 
-			DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
+		DLFileVersion dlFileVersion = dlFileEntry.getFileVersion();
 
-			Assert.assertTrue(
-				_store.hasFile(
-					dlFileEntry.getCompanyId(),
-					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
-					dlFileVersion.getStoreFileName()));
+		Assert.assertTrue(
+			_store.hasFile(
+				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(), dlFileVersion.getStoreFileName()));
 
-			File larFile = _exportLayoutsAsFile(group.getGroupId());
+		File larFile = _exportLayoutsAsFile(group.getGroupId());
 
-			_importLayouts(importedGroup.getGroupId(), larFile);
+		_importLayouts(importedGroup.getGroupId(), larFile);
 
-			larFile.delete();
+		larFile.delete();
 
-			FileEntry importedFileEntry =
-				DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
-					fileEntry.getUuid(), importedGroup.getGroupId());
+		FileEntry importedFileEntry =
+			DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+				fileEntry.getUuid(), importedGroup.getGroupId());
 
-			DLFileEntry importedDLFileEntry =
-				(DLFileEntry)importedFileEntry.getModel();
+		DLFileEntry importedDLFileEntry =
+			(DLFileEntry)importedFileEntry.getModel();
 
-			DLFileVersion importedDLFileVersion =
-				importedDLFileEntry.getFileVersion();
+		DLFileVersion importedDLFileVersion =
+			importedDLFileEntry.getFileVersion();
 
-			Assert.assertTrue(
-				_store.hasFile(
-					importedDLFileEntry.getCompanyId(),
-					importedDLFileEntry.getDataRepositoryId(),
-					importedDLFileEntry.getName(),
-					importedDLFileVersion.getStoreFileName()));
+		Assert.assertTrue(
+			_store.hasFile(
+				importedDLFileEntry.getCompanyId(),
+				importedDLFileEntry.getDataRepositoryId(),
+				importedDLFileEntry.getName(),
+				importedDLFileVersion.getStoreFileName()));
 
-			GroupTestUtil.deleteGroup(group);
-			GroupTestUtil.deleteGroup(importedGroup);
-		}
-		finally {
-			DLStoreImpl.setStore(originalStore);
+		GroupTestUtil.deleteGroup(group);
+		GroupTestUtil.deleteGroup(importedGroup);
 
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		DLStoreImpl.setStore(originalStore);
+
+		PermissionThreadLocal.setPermissionChecker(permissionChecker);
 	}
 
 	@Test
