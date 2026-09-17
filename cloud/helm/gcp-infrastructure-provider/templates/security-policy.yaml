@@ -1,0 +1,41 @@
+{{- if .Values.gateway.accessControl.enabled -}}
+{{- $accessControl := .Values.gateway.accessControl -}}
+{{- if not $accessControl.allowedCIDRs }}
+{{- fail "The value \"gateway.accessControl.allowedCIDRs\" must not be empty when \"gateway.accessControl.enabled\" is true" }}
+{{- end }}
+{{- if not $accessControl.gateways }}
+{{- fail "The value \"gateway.accessControl.gateways\" must not be empty when \"gateway.accessControl.enabled\" is true" }}
+{{- end }}
+{{- range $index, $gateway := $accessControl.gateways }}
+{{- if $index }}
+---
+{{ end }}
+{{- $name := required "The value \"name\" is required for every entry of \"gateway.accessControl.gateways\"" $gateway.name }}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-110"
+    labels:
+        app: liferay
+        component: security-policy
+    name: {{ $name }}-security-policy
+    namespace: {{ required "The value \"namespace\" is required for every entry of \"gateway.accessControl.gateways\"" $gateway.namespace }}
+spec:
+    authorization:
+        defaultAction: Deny
+        rules:
+            -   action: Allow
+                name: allowed-cidrs
+                principal:
+                    clientCIDRs:
+                        {{- range $accessControl.allowedCIDRs }}
+                        -   {{ . | quote }}
+                        {{- end }}
+    targetRefs:
+        -   group: gateway.networking.k8s.io
+            kind: Gateway
+            name: {{ $name }}
+{{- end }}
+{{- end -}}

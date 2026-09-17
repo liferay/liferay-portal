@@ -164,7 +164,15 @@ resource "kubernetes_manifest" "infrastructure_appproject" {
 					server="https://kubernetes.default.svc"
 				},
 				{
+					namespace="monitoring-system"
+					server="https://kubernetes.default.svc"
+				},
+				{
 					namespace=local.liferay_namespace_pattern
+					server="https://kubernetes.default.svc"
+				},
+				{
+					namespace=var.argocd_namespace
 					server="https://kubernetes.default.svc"
 				},
 				{

@@ -1,0 +1,87 @@
+release:
+    name: my-release
+    namespace: liferay-system
+set:
+    gateway:
+        accessControl:
+            allowedCIDRs:
+                -   200.150.10.0/24
+            enabled: true
+            gateways:
+                -   name: argocd-gateway
+                    namespace: argocd
+suite: Security Policy
+templates:
+    -   templates/security-policy.yaml
+tests:
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "gateway.accessControl.allowedCIDRs" must not be empty when "gateway.accessControl.enabled" is true
+        it: Fails when the allowlist is enabled with no CIDR
+        set:
+            gateway.accessControl.allowedCIDRs: []
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "gateway.accessControl.gateways" must not be empty when "gateway.accessControl.enabled" is true
+        it: Fails when the allowlist is enabled with no gateway
+        set:
+            gateway.accessControl.gateways: []
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the policies while the allowlist is disabled
+        set:
+            gateway.accessControl.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+            -   documentIndex: 0
+                equal:
+                    path: metadata.name
+                    value: argocd-gateway-security-policy
+            -   documentIndex: 0
+                equal:
+                    path: metadata.namespace
+                    value: argocd
+            -   documentIndex: 0
+                equal:
+                    path: spec.targetRefs[0].name
+                    value: argocd-gateway
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: argo-workflows-gateway-security-policy
+            -   documentIndex: 1
+                equal:
+                    path: metadata.namespace
+                    value: argo-workflows
+            -   documentIndex: 1
+                equal:
+                    path: spec.targetRefs[0].name
+                    value: argo-workflows-gateway
+        it: Renders one policy per gateway, each in the namespace of its target
+        set:
+            gateway.accessControl.gateways:
+                -   name: argocd-gateway
+                    namespace: argocd
+                -   name: argo-workflows-gateway
+                    namespace: argo-workflows
+    -   asserts:
+            -   isKind:
+                    of: SecurityPolicy
+            -   equal:
+                    path: spec.authorization.defaultAction
+                    value: Deny
+            -   equal:
+                    path: spec.authorization.rules[0].action
+                    value: Allow
+            -   equal:
+                    path: spec.authorization.rules[0].principal.clientCIDRs
+                    value:
+                        -   200.150.10.0/24
+                        -   198.51.100.14/32
+        it: Restricts access to the declared CIDRs and denies everything else
+        set:
+            gateway.accessControl.allowedCIDRs:
+                -   200.150.10.0/24
+                -   198.51.100.14/32

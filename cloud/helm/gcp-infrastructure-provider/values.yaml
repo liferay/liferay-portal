@@ -19,6 +19,10 @@ filestore:
     storageClassName: filestore-sc
     tier: standard
 gateway:
+    accessControl:
+        allowedCIDRs: []
+        enabled: false
+        gateways: []
     enabled: true
     internetFacing: true
     namespace: envoy-gateway-system
