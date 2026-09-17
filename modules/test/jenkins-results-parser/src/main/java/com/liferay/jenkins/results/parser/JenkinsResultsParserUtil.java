@@ -3668,6 +3668,10 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static String getThreadDump() {
+		return getThreadDump(_LINES_THREAD_DUMP_DEFAULT);
+	}
+
+	public static String getThreadDump(int lines) {
 		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
 		ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(
@@ -3706,7 +3710,10 @@ public class JenkinsResultsParserUtil {
 
 			MonitorInfo[] monitorInfos = threadInfo.getLockedMonitors();
 
-			for (int i = 0; i < stackTraceElements.length; i++) {
+			int stackTraceElementsCount = Math.min(
+				stackTraceElements.length, lines);
+
+			for (int i = 0; i < stackTraceElementsCount; i++) {
 				sb.append("\tat ");
 				sb.append(stackTraceElements[i]);
 				sb.append("\n");
@@ -3720,6 +3727,24 @@ public class JenkinsResultsParserUtil {
 					sb.append(monitorInfo);
 					sb.append("\n");
 				}
+			}
+
+			if (stackTraceElements.length > stackTraceElementsCount) {
+				sb.append("\t...\n");
+			}
+
+			for (MonitorInfo monitorInfo : monitorInfos) {
+				int lockedStackDepth = monitorInfo.getLockedStackDepth();
+
+				if ((lockedStackDepth >= 0) &&
+					(lockedStackDepth < stackTraceElementsCount)) {
+
+					continue;
+				}
+
+				sb.append("\t- locked ");
+				sb.append(monitorInfo);
+				sb.append("\n");
 			}
 
 			LockInfo[] lockInfos = threadInfo.getLockedSynchronizers();
@@ -6986,6 +7011,8 @@ public class JenkinsResultsParserUtil {
 		"http://test-1-0/userContent/bundles/test-portal-acceptance-upstream";
 
 	private static final String _JENKINS_DIST_ROOT_PATH_DEFAULT = "/tmp/dist";
+
+	private static final int _LINES_THREAD_DUMP_DEFAULT = 40;
 
 	private static final long _MILLIS_BASH_COMMAND_TIMEOUT_DEFAULT =
 		1000 * 60 * 60;
