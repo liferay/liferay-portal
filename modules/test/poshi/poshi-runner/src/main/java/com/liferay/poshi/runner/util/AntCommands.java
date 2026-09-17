@@ -88,10 +88,15 @@ public class AntCommands implements Callable<Void> {
 		BufferedReader inputBufferedReader = new BufferedReader(
 			inputStreamReader);
 
+		StringBuilder outputSB = new StringBuilder();
+
 		String line = null;
 
 		while ((line = inputBufferedReader.readLine()) != null) {
 			System.out.println(line);
+
+			outputSB.append(line);
+			outputSB.append("\n");
 		}
 
 		InputStreamReader errorStreamReader = new InputStreamReader(
@@ -100,16 +105,34 @@ public class AntCommands implements Callable<Void> {
 		BufferedReader errorBufferedReader = new BufferedReader(
 			errorStreamReader);
 
-		if (errorBufferedReader.ready()) {
-			while ((line = errorBufferedReader.readLine()) != null) {
-				System.out.println(line);
+		while ((line = errorBufferedReader.readLine()) != null) {
+			System.out.println(line);
+
+			outputSB.append(line);
+			outputSB.append("\n");
+		}
+
+		int exitValue = process.waitFor();
+
+		if (exitValue != 0) {
+			String outputString = outputSB.toString();
+
+			if (outputString.length() > _MAX_OUTPUT_LENGTH) {
+				outputString = outputString.substring(
+					outputString.length() - _MAX_OUTPUT_LENGTH);
 			}
 
-			throw new Exception();
+			throw new Exception(
+				StringUtil.combine(
+					"Ant command \"", sb.toString(),
+					"\" failed with exit value ", String.valueOf(exitValue),
+					"\n", outputString));
 		}
 
 		return null;
 	}
+
+	private static final int _MAX_OUTPUT_LENGTH = 5000;
 
 	private final String _fileName;
 	private final String _target;
