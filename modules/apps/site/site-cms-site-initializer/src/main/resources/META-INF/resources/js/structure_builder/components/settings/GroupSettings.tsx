@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import {ClayToggle} from '@clayui/form';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
@@ -63,6 +64,16 @@ function GeneralTab({disabled, group}: {disabled?: boolean; group: Group}) {
 
 	return (
 		<div>
+			{errors.get('global') ? (
+				<ClayAlert
+					displayType="danger"
+					role={null}
+					title={Liferay.Language.get('error')}
+				>
+					{errors.get('global')}
+				</ClayAlert>
+			) : null}
+
 			<div className="pb-2">
 				<p className="font-weight-semi-bold mb-0 text-3">
 					{Liferay.Language.get('field-type')}
