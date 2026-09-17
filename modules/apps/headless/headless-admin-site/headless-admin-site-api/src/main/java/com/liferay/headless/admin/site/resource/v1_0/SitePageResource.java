@@ -63,6 +63,12 @@ public interface SitePageResource {
 				String sitePageExternalReferenceCode, String roleNames)
 		throws Exception;
 
+	public Page<SitePage> getSiteSitePageSitePagesPage(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode, Boolean flatten,
+			Pagination pagination)
+		throws Exception;
+
 	public Page<SitePage> getSiteSitePagesPage(
 			String siteExternalReferenceCode, Boolean flatten,
 			Boolean privateLayout, String search,
@@ -211,4 +217,4 @@ public interface SitePageResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1763993505
+// LIFERAY-REST-BUILDER-HASH:568745648
