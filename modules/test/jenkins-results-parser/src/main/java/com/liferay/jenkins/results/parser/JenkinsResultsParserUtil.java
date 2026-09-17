@@ -27,6 +27,12 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 
+import java.lang.management.LockInfo;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MonitorInfo;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+
 import java.net.HttpURLConnection;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -3659,6 +3665,109 @@ public class JenkinsResultsParserUtil {
 		}
 
 		return subdirectories;
+	}
+
+	public static String getThreadDump() {
+		ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+
+		ThreadInfo[] threadInfos = threadMXBean.dumpAllThreads(
+			threadMXBean.isObjectMonitorUsageSupported(),
+			threadMXBean.isSynchronizerUsageSupported());
+
+		StringBuilder sb = new StringBuilder();
+
+		for (ThreadInfo threadInfo : threadInfos) {
+			sb.append("\"");
+			sb.append(threadInfo.getThreadName());
+			sb.append("\" #");
+			sb.append(threadInfo.getThreadId());
+			sb.append(" ");
+			sb.append(threadInfo.getThreadState());
+
+			String lockName = threadInfo.getLockName();
+
+			if (lockName != null) {
+				sb.append(" on ");
+				sb.append(lockName);
+			}
+
+			String lockOwnerName = threadInfo.getLockOwnerName();
+
+			if (lockOwnerName != null) {
+				sb.append(" owned by \"");
+				sb.append(lockOwnerName);
+				sb.append("\" #");
+				sb.append(threadInfo.getLockOwnerId());
+			}
+
+			sb.append("\n");
+
+			StackTraceElement[] stackTraceElements = threadInfo.getStackTrace();
+
+			MonitorInfo[] monitorInfos = threadInfo.getLockedMonitors();
+
+			for (int i = 0; i < stackTraceElements.length; i++) {
+				sb.append("\tat ");
+				sb.append(stackTraceElements[i]);
+				sb.append("\n");
+
+				for (MonitorInfo monitorInfo : monitorInfos) {
+					if (monitorInfo.getLockedStackDepth() != i) {
+						continue;
+					}
+
+					sb.append("\t- locked ");
+					sb.append(monitorInfo);
+					sb.append("\n");
+				}
+			}
+
+			LockInfo[] lockInfos = threadInfo.getLockedSynchronizers();
+
+			if (lockInfos.length > 0) {
+				sb.append("\tLocked synchronizers:\n");
+
+				for (LockInfo lockInfo : lockInfos) {
+					sb.append("\t- ");
+					sb.append(lockInfo);
+					sb.append("\n");
+				}
+			}
+
+			sb.append("\n");
+		}
+
+		long[] deadlockedThreadIds = null;
+
+		if (threadMXBean.isSynchronizerUsageSupported()) {
+			deadlockedThreadIds = threadMXBean.findDeadlockedThreads();
+		}
+		else {
+			deadlockedThreadIds = threadMXBean.findMonitorDeadlockedThreads();
+		}
+
+		if (deadlockedThreadIds != null) {
+			sb.append("Found ");
+			sb.append(deadlockedThreadIds.length);
+			sb.append(" deadlocked threads:\n");
+
+			ThreadInfo[] deadlockedThreadInfos = threadMXBean.getThreadInfo(
+				deadlockedThreadIds);
+
+			for (ThreadInfo deadlockedThreadInfo : deadlockedThreadInfos) {
+				if (deadlockedThreadInfo == null) {
+					continue;
+				}
+
+				sb.append("\t\"");
+				sb.append(deadlockedThreadInfo.getThreadName());
+				sb.append("\" #");
+				sb.append(deadlockedThreadInfo.getThreadId());
+				sb.append("\n");
+			}
+		}
+
+		return sb.toString();
 	}
 
 	public static String getUpstreamUserName(
