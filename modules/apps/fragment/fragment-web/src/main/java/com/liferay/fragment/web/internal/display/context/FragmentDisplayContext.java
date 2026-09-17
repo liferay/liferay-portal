@@ -1107,7 +1107,7 @@ public class FragmentDisplayContext {
 		String backURL = ParamUtil.getString(_httpServletRequest, "backURL");
 
 		if (Validator.isNull(backURL)) {
-			backURL = getRedirect();
+			backURL = ParamUtil.getString(_httpServletRequest, "redirect");
 		}
 
 		if (Validator.isNull(backURL)) {
