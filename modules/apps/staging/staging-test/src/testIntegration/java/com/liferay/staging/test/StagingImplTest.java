@@ -530,7 +530,6 @@ public class StagingImplTest {
 
 		_testLocalStagingWithLayoutVersioningLastImportSettings(
 			layout, layoutSetBranch);
-
 		_testLocalStagingWithLayoutVersioningLastImportSettings(
 			layout,
 			LayoutSetBranchLocalServiceUtil.addLayoutSetBranch(
