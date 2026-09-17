@@ -29,7 +29,7 @@
 {{- $backupVaultPrincipalId := $backupVaultIdentity.principalId | default "" -}}
 
 {{- if $backupVaultPrincipalId }}
-{{- range $dataPlane := $dataPlanes }}
+{{- range $dataPlane := list "blue" "green" }}
 apiVersion: authorization.azure.m.upbound.io/v1beta1
 kind: RoleAssignment
 metadata:
@@ -74,6 +74,8 @@ spec:
         kind: ClusterProviderConfig
         name: iam
 ---
+{{- end }}
+{{- range $dataPlane := list "blue" "green" }}
 apiVersion: authorization.azure.m.upbound.io/v1beta1
 kind: RoleAssignment
 metadata:
@@ -119,15 +121,15 @@ apiVersion: authorization.azure.m.upbound.io/v1beta1
 kind: RoleAssignment
 metadata:
     annotations:
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-vault-backup-operator
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-backup-restore-vault-backup-contributor
     labels:
         {{- $tags | toYaml | nindent 8 }}
-    name: {{ $backupRestoreIdentityName }}-vault-backup-operator
+    name: {{ $backupRestoreIdentityName }}-vault-backup-contributor
 spec:
     forProvider:
         principalId: {{ $backupRestoreIdentityPrincipalId }}
         principalType: ServicePrincipal
-        roleDefinitionName: Backup Operator
+        roleDefinitionName: Backup Contributor
         scope: /subscriptions/{{ $env.subscriptionId }}/resourceGroups/{{ $env.resourceGroupName }}/providers/Microsoft.DataProtection/backupVaults/{{ $backupVaultName }}
     managementPolicies: {{ $managementPolicies }}
     providerConfigRef:
@@ -154,10 +156,9 @@ spec:
         name: iam
 ---
 {{- end }}
-{{- range $dataPlane := $dataPlanes }}
+{{- range $dataPlane := list "blue" "green" }}
 {{- $backupRoleId := dig (printf "liferay-backup-vault-storage-%s" $dataPlane) "resource" "status" "atProvider" "id" "" $observedResources }}
-{{- $isDoclibRestoreTarget := and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
-{{- if and $backupRoleId (not $isDoclibRestoreTarget) }}
+{{- if and $backupRoleId (or (eq $dataPlane $activeDataPlane) (has $dataPlane $observedBackupDataPlanes)) }}
 apiVersion: dataprotection.azure.m.upbound.io/v1beta1
 kind: BackupInstanceBlobStorage
 metadata:
@@ -320,8 +321,7 @@ spec:
         kind: ClusterProviderConfig
         name: iam
 {{- range $dataPlane := list "blue" "green" }}
-{{- $isDoclibRestoreTarget := and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane) }}
-{{- if or (and (has $dataPlane $dataPlanes) (not $isDoclibRestoreTarget)) (has $dataPlane $observedBackupDataPlanes) }}
+{{- if or (eq $dataPlane $activeDataPlane) (has $dataPlane $observedBackupDataPlanes) }}
 ---
 apiVersion: protection.crossplane.io/v1beta1
 kind: Usage

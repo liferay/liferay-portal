@@ -537,6 +537,19 @@ spec:
                         template: roll-back-restart
                     -   arguments:
                             parameters:
+                                -   name: backup-vault-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.backup-vault-name}}"
+                                -   name: data-inactive
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-inactive}}"
+                                -   name: resource-group-name
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.resource-group-name}}"
+                                -   name: storage-account-id-demoted
+                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.storage-account-id-active}}"
+                        depends: promote-inactive-data-plane
+                        name: set-data-plane-protection
+                        template: set-data-plane-protection
+                    -   arguments:
+                            parameters:
                                 -   name: expected-generation
                                     value: "{{ "{{" }}tasks.provision-inactive-data-plane.outputs.parameters.generation}}"
                         depends: provision-inactive-data-plane
@@ -779,6 +792,196 @@ spec:
                                     value: "{{ "{{" }}inputs.parameters.target-active-data-plane}}"
                         name: clean-up-infrastructure
                         template: clean-up-infrastructure
+        -   inputs:
+                parameters:
+                    -   name: backup-vault-name
+                    -   name: data-inactive
+                    -   name: resource-group-name
+                    -   name: storage-account-id-demoted
+            name: set-data-plane-protection
+            steps:
+                -   -   arguments:
+                            parameters:
+                                -   name: data-inactive
+                                    value: "{{ "{{" }}inputs.parameters.data-inactive}}"
+                        name: get-inactive-storage-account
+                        template: get-inactive-storage-account
+                -   -   arguments:
+                            parameters:
+                                -   name: backup-vault-name
+                                    value: "{{ "{{" }}inputs.parameters.backup-vault-name}}"
+                                -   name: resource-group-name
+                                    value: "{{ "{{" }}inputs.parameters.resource-group-name}}"
+                                -   name: storage-account-id-demoted
+                                    value: "{{ "{{" }}inputs.parameters.storage-account-id-demoted}}"
+                                -   name: storage-account-id-promoted
+                                    value: "{{ "{{" }}steps.get-inactive-storage-account.outputs.parameters.storage-account-id}}"
+                        name: set-data-plane-protection-backup-instances
+                        template: set-data-plane-protection-backup-instances
+        -   activeDeadlineSeconds: {{ .Values.azureBackupService.protectionWaitTimeoutSeconds }}
+            inputs:
+                parameters:
+                    -   name: backup-vault-name
+                    -   name: resource-group-name
+                    -   name: storage-account-id-demoted
+                    -   name: storage-account-id-promoted
+            name: set-data-plane-protection-backup-instances
+            script:
+                command: [sh]
+                env:
+                    -   name: AZURE_CONFIG_DIR
+                        value: /tmp/azure
+                    -   name: AZURE_EXTENSION_DIR
+                        value: /tmp/azure-extensions
+                image: "{{ $azureCli }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    set -o errexit
+                    set -o nounset
+
+                    az extension add \
+                        --name dataprotection \
+                        --version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
+                        --yes >/dev/null
+
+                    az login \
+                        --federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
+                        --service-principal \
+                        --tenant "${AZURE_TENANT_ID}" \
+                        --username "${AZURE_CLIENT_ID}" >/dev/null
+
+                    backup_vault_name="{{ "{{" }}inputs.parameters.backup-vault-name}}"
+                    resource_group_name="{{ "{{" }}inputs.parameters.resource-group-name}}"
+                    storage_account_id_demoted="{{ "{{" }}inputs.parameters.storage-account-id-demoted}}"
+                    storage_account_id_promoted="{{ "{{" }}inputs.parameters.storage-account-id-promoted}}"
+
+                    _wait_for_protection_state() {
+                        local deadline
+                        local state
+
+                        deadline=$(($(date +%s) + {{ .Values.azureBackupService.protectionWaitTimeoutSeconds }}))
+
+                        while [ $(date +%s) -lt ${deadline} ]
+                        do
+                            state=$( \
+                                az dataprotection backup-instance show \
+                                    --name "${1}" \
+                                    --output tsv \
+                                    --query properties.currentProtectionState \
+                                    --resource-group "${resource_group_name}" \
+                                    --vault-name "${backup_vault_name}")
+
+                            if [ "${state}" = "${2}" ]
+                            then
+                                return 0
+                            fi
+
+                            echo "The backup instance ${1} reports the protection state ${state}."
+
+                            sleep 15
+                        done
+
+                        return 1
+                    }
+
+                    promoted_instance_name=""
+
+                    timeout=$(($(date +%s) + {{ .Values.azureBackupService.protectionWaitTimeoutSeconds }}))
+
+                    while [ $(date +%s) -lt ${timeout} ]
+                    do
+                        promoted_instance_name=$( \
+                            az dataprotection backup-instance list \
+                                --output tsv \
+                                --query "[?properties.dataSourceInfo.resourceID=='${storage_account_id_promoted}'].name | [0]" \
+                                --resource-group "${resource_group_name}" \
+                                --vault-name "${backup_vault_name}")
+
+                        if [ -n "${promoted_instance_name}" ]
+                        then
+                            break
+                        fi
+
+                        echo "No backup instance protects the promoted data plane yet."
+
+                        sleep 15
+                    done
+
+                    if [ -z "${promoted_instance_name}" ]
+                    then
+                        echo "No backup instance was created for the promoted data plane." >&2
+
+                        exit 1
+                    fi
+
+                    promoted_state=$( \
+                        az dataprotection backup-instance show \
+                            --name "${promoted_instance_name}" \
+                            --output tsv \
+                            --query properties.currentProtectionState \
+                            --resource-group "${resource_group_name}" \
+                            --vault-name "${backup_vault_name}")
+
+                    if [ "${promoted_state}" = "BackupsSuspended" ]
+                    then
+                        az dataprotection backup-instance resume-protection \
+                            --name "${promoted_instance_name}" \
+                            --no-wait \
+                            --output none \
+                            --resource-group "${resource_group_name}" \
+                            --vault-name "${backup_vault_name}"
+
+                        if ! _wait_for_protection_state "${promoted_instance_name}" ProtectionConfigured
+                        then
+                            echo "Backups were not resumed on the promoted data plane." >&2
+
+                            exit 1
+                        fi
+
+                        echo "Backups were resumed on the promoted data plane."
+                    fi
+
+                    demoted_instance_name=$( \
+                        az dataprotection backup-instance list \
+                            --output tsv \
+                            --query "[?properties.dataSourceInfo.resourceID=='${storage_account_id_demoted}'].name | [0]" \
+                            --resource-group "${resource_group_name}" \
+                            --vault-name "${backup_vault_name}")
+
+                    if [ -z "${demoted_instance_name}" ]
+                    then
+                        echo "No backup instance protects the demoted data plane, so no backups were suspended."
+
+                        exit 0
+                    fi
+
+                    demoted_state=$( \
+                        az dataprotection backup-instance show \
+                            --name "${demoted_instance_name}" \
+                            --output tsv \
+                            --query properties.currentProtectionState \
+                            --resource-group "${resource_group_name}" \
+                            --vault-name "${backup_vault_name}")
+
+                    if [ "${demoted_state}" = "ProtectionConfigured" ]
+                    then
+                        az dataprotection backup-instance suspend-backup \
+                            --name "${demoted_instance_name}" \
+                            --no-wait \
+                            --output none \
+                            --resource-group "${resource_group_name}" \
+                            --vault-name "${backup_vault_name}"
+
+                        if ! _wait_for_protection_state "${demoted_instance_name}" BackupsSuspended
+                        then
+                            echo "Backups were not suspended on the demoted data plane." >&2
+
+                            exit 1
+                        fi
+
+                        echo "Backups were suspended on the demoted data plane."
+                    fi
         -   activeDeadlineSeconds: {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}
             inputs:
                 parameters:

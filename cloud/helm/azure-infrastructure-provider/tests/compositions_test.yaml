@@ -118,6 +118,10 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Reader\\s+scope: [^\\n]+Microsoft.DBforPostgreSQL/flexibleServers/"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$dataPlane := \\$dataPlanes \\}\\}\\s+apiVersion: authorization[^\\v]*\\s+kind: RoleAssignment\\s+metadata:\\s+annotations:\\s+gotemplating[^:]*: liferay-backup-restore-database-"
         it: Grants the restore identity read on each plane database server
     -   asserts:
             -   documentIndex: 0
@@ -141,11 +145,11 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "composition-resource-name: liferay-backup-restore-vault-backup-operator"
+                    pattern: "composition-resource-name: liferay-backup-restore-vault-backup-contributor"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "roleDefinitionName: Backup Operator"
+                    pattern: "roleDefinitionName: Backup Contributor"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -158,7 +162,7 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "principalId: \\{\\{ \\$backupRestoreIdentityPrincipalId \\}\\}\\s+principalType: ServicePrincipal\\s+roleDefinitionName: Reader\\s+scope: [^\\n]+Microsoft.DataProtection/backupVaults/\\{\\{ \\$backupVaultName \\}\\}"
-        it: Grants the restore identity the vault roles the restore and its polling demand
+        it: Grants the restore identity the vault roles the restore and the protection switch demand
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
@@ -187,7 +191,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: \{\{- if and \$backupRoleId \(not \$isDoclibRestoreTarget\) \}\}
+                    pattern: \{\{- if and \$backupRoleId \(or \(eq \$dataPlane \$activeDataPlane\) \(has \$dataPlane \$observedBackupDataPlanes\)\) \}\}
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -213,11 +217,11 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "if and \\$backupRoleId \\(not \\$isDoclibRestoreTarget\\)"
+                    pattern: "if and \\$backupRoleId \\(or \\(eq \\$dataPlane \\$activeDataPlane\\) \\(has \\$dataPlane \\$observedBackupDataPlanes\\)\\)"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "if or \\(and \\(has \\$dataPlane \\$dataPlanes\\) \\(not \\$isDoclibRestoreTarget\\)\\) \\(has \\$dataPlane \\$observedBackupDataPlanes\\)"
+                    pattern: "if or \\(eq \\$dataPlane \\$activeDataPlane\\) \\(has \\$dataPlane \\$observedBackupDataPlanes\\)"
         it: Holds protection off the restore target until it is promoted
     -   asserts:
             -   equal:
@@ -269,6 +273,24 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "kind: Account"
         it: Implements the shared Liferay APIs through the packaged function pipeline
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$i, \\$dataPlane := list \"blue\" \"green\" \\}\\}\\s+\\{\\{- \\$storageAccountName"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$dataPlane := list \"blue\" \"green\" \\}\\}\\s+apiVersion: authorization[^\\v]*\\s+kind: RoleAssignment\\s+metadata:\\s+annotations:\\s+gotemplating[^:]*: liferay-storage-role-assignment-"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$dataPlane := list \"blue\" \"green\" \\}\\}\\s+apiVersion: authorization[^\\v]*\\s+kind: RoleAssignment\\s+metadata:\\s+annotations:\\s+gotemplating[^:]*: liferay-backup-vault-storage-"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$dataPlane := list \"blue\" \"green\" \\}\\}\\s+apiVersion: authorization[^\\v]*\\s+kind: RoleAssignment\\s+metadata:\\s+annotations:\\s+gotemplating[^:]*: liferay-backup-restore-storage-"
+        it: Keeps each plane storage account and its role assignments beyond a data plane swap
     -   asserts:
             -   documentIndex: 0
                 notMatchRegex:
@@ -365,7 +387,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "or \\(and \\(has \\$dataPlane \\$dataPlanes\\) \\(not \\$isDoclibRestoreTarget\\)\\) \\(has \\$dataPlane \\$observedBackupDataPlanes\\)"
+                    pattern: "or \\(eq \\$dataPlane \\$activeDataPlane\\) \\(has \\$dataPlane \\$observedBackupDataPlanes\\)"
         it: Orders the storage account deletion behind its backup instance
     -   asserts:
             -   documentIndex: 0
@@ -525,6 +547,12 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$dataPlane := list \"blue\" \"green\" \\}\\}\\s+\\{\\{- \\$backupRoleId := dig"
+        it: Retains each backup instance once created so a promotion never soft deletes one
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "blobProperties:\\s+changeFeedEnabled: true"
             -   documentIndex: 0
                 matchRegex:
@@ -579,13 +607,9 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- \\$isDoclibRestoreTarget := and \\(eq \\$restorePhase \"provisioning\"\\) \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\}\\}"
+                    pattern: "\\{\\{- if eq \\$dataPlane \\$activeDataPlane \\}\\}\\s+---\\s+apiVersion: storage.azure.m.upbound.io/v1beta1\\s+kind: Container"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if not \\$isDoclibRestoreTarget \\}\\}\\s+---\\s+apiVersion: storage.azure.m.upbound.io/v1beta1\\s+kind: Container"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "writeConnectionSecretToRef:\\s+name: liferay-storage-\\{\\{ \\$dataPlane \\}\\}-credentials\\s+\\{\\{- if not \\$isDoclibRestoreTarget \\}\\}"
-        it: Withholds the restore target document library container so the restore can create it
+                    pattern: "writeConnectionSecretToRef:\\s+name: liferay-storage-\\{\\{ \\$dataPlane \\}\\}-credentials\\s+\\{\\{- if eq \\$dataPlane \\$activeDataPlane \\}\\}"
+        it: Keeps the document library container only on the active plane

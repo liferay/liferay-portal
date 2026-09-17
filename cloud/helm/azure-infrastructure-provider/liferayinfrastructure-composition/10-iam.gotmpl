@@ -2,7 +2,7 @@
 {{- $identityPrincipalId := dig "liferay-identity" "resource" "status" "atProvider" "principalId" "" $observedResources }}
 
 {{- if $identityPrincipalId }}
-{{- range $dataPlane := $dataPlanes }}
+{{- range $dataPlane := list "blue" "green" }}
 apiVersion: authorization.azure.m.upbound.io/v1beta1
 kind: RoleAssignment
 metadata:

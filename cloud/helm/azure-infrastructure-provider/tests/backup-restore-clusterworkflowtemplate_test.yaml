@@ -115,7 +115,7 @@ tests:
                     path: spec.templates[13].activeDeadlineSeconds
                     value: 7200
             -   equal:
-                    path: spec.templates[15].activeDeadlineSeconds
+                    path: spec.templates[17].activeDeadlineSeconds
                     value: 3600
         it: Sets every step timeout well above the measured restore duration
     -   asserts:
@@ -135,10 +135,10 @@ tests:
                     path: spec.templates[9].dag.tasks[6].depends
                     value: provision-inactive-data-plane
             -   equal:
-                    path: spec.templates[9].dag.tasks[9].name
+                    path: spec.templates[9].dag.tasks[10].name
                     value: wait-for-database
             -   equal:
-                    path: spec.templates[9].dag.tasks[9].depends
+                    path: spec.templates[9].dag.tasks[10].depends
                     value: provision-inactive-data-plane
             -   equal:
                     path: spec.templates[9].dag.tasks[3].name
@@ -170,3 +170,38 @@ tests:
                     path: spec.templates[3].retryStrategy.backoff.maxDuration
                     value: 20m
         it: Waits only for the storage account and retries past role assignment propagation
+    -   asserts:
+            -   equal:
+                    path: spec.templates[9].dag.tasks[9].name
+                    value: set-data-plane-protection
+            -   equal:
+                    path: spec.templates[9].dag.tasks[9].depends
+                    value: promote-inactive-data-plane
+            -   equal:
+                    path: spec.templates[16].activeDeadlineSeconds
+                    value: 600
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: backup-instance resume-protection
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: backup-instance suspend-backup
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: promoted_state.. = .BackupsSuspended
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: demoted_state.. = .ProtectionConfigured
+            -   notMatchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: stop-protection
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: _wait_for_protection_state
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: (?s)resume-protection.*?--no-wait
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: (?s)suspend-backup.*?--no-wait
+        it: Suspends backups on the demoted plane and resumes them on the promoted one
