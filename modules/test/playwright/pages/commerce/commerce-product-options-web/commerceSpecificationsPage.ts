@@ -6,19 +6,24 @@
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
 export class CommerceSpecificationsPage {
-	readonly addNewProductSpecifications: Locator;
-	readonly addNewProductSpecificationsGroup: Locator;
 	readonly addDescriptionSpecifications: Locator;
 	readonly addDescriptionSpecificationsGroup: Locator;
 	readonly createNewSpecificationsProduct: Locator;
 	readonly createNewSpecificationsProductGroup: Locator;
+	readonly defaultGroupCell: (entryName: string) => Locator;
 	readonly deleteModalButtonAction: (action: string) => Locator;
+	readonly entryRow: (entryName: string) => Locator;
+	readonly entryRowActionButton: (entryName: string) => Locator;
+	readonly entryRowActionMenuItem: (action: string) => Locator;
 	readonly goBack: Locator;
 	readonly goToSpecificationGroup: Locator;
+	readonly goToSpecificationLabel: Locator;
+	readonly groupTitle: Locator;
 	readonly keyContent: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly sidePanelSpecificationPicklistItemsFrame: FrameLocator;
+	readonly specificationLabel: Locator;
 	readonly specificationNameLink: (specificationName: string) => Locator;
 	readonly specificationPicklistActionButton: (
 		specificationName: string
@@ -36,11 +41,6 @@ export class CommerceSpecificationsPage {
 	constructor(page: Page) {
 		this.page = page;
 
-		this.addNewProductSpecifications = page.getByLabel(
-			'Label\n\n\t\t\t\n\t\t\t\t\n\n\t\t\t\tRequired'
-		);
-		this.addNewProductSpecificationsGroup =
-			page.getByText('Title required');
 		this.addDescriptionSpecifications = page.getByLabel(
 			'Characters Maximum: 4000'
 		);
@@ -51,16 +51,33 @@ export class CommerceSpecificationsPage {
 		this.createNewSpecificationsProductGroup = page.getByRole('link', {
 			name: 'Add Specification Group',
 		});
+		this.defaultGroupCell = (entryName: string) =>
+			this.entryRow(entryName).locator('.lfr-default-group-column');
 		this.deleteModalButtonAction = (action: string) =>
 			page.getByRole('button', {exact: true, name: action});
+		this.entryRow = (entryName: string) =>
+			page.getByRole('row').filter({hasText: entryName});
+		this.entryRowActionButton = (entryName: string) =>
+			this.entryRow(entryName).locator(
+				'a.component-action.dropdown-toggle'
+			);
+		this.entryRowActionMenuItem = (action: string) =>
+			page
+				.locator('.dropdown-menu:visible')
+				.getByText(action, {exact: true});
 		this.goBack = page.locator('span[title="Back"]');
 		this.goToSpecificationGroup = page.getByRole('link', {
 			name: 'Specification Groups',
 		});
+		this.goToSpecificationLabel = page.getByRole('link', {
+			name: 'Specification Labels',
+		});
+		this.groupTitle = page.getByLabel('Title Required');
 		this.keyContent = page.getByLabel('Key Required');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.sidePanelSpecificationPicklistItemsFrame =
 			page.frameLocator('iframe');
+		this.specificationLabel = page.getByLabel('Label Required');
 		this.specificationNameLink = (specificationName) =>
 			page.getByRole('link', {exact: true, name: specificationName});
 		this.specificationPicklistActionButton = (specificationName: string) =>
@@ -89,7 +106,7 @@ export class CommerceSpecificationsPage {
 	}
 
 	async waitForKey(specificationName) {
-		await this.addNewProductSpecifications.fill(specificationName);
-		await this.addNewProductSpecifications.waitFor();
+		await this.specificationLabel.fill(specificationName);
+		await this.specificationLabel.waitFor();
 	}
 }

@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {globalMenuPagesTest} from '../../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+import {fillLocalizedInput} from '../../utils/fillLocalizedInput';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -20,6 +22,18 @@ export const test = mergeTests(
 	dataApiHelpersTest,
 	loginTest()
 );
+
+function acceptNextConfirmation(page: Page) {
+	const confirmation = {message: ''};
+
+	page.once('dialog', async (dialog) => {
+		confirmation.message = dialog.message();
+
+		await dialog.accept();
+	});
+
+	return confirmation;
+}
 
 test(
 	'Unable to delete specification picklist items',
@@ -122,7 +136,7 @@ test(
 			await commerceSpecificationsPage.goBack.click();
 			await commerceSpecificationsPage.goToSpecificationGroup.click();
 			await commerceSpecificationsPage.createNewSpecificationsProductGroup.click();
-			await commerceSpecificationsPage.addNewProductSpecificationsGroup.fill(
+			await commerceSpecificationsPage.groupTitle.fill(
 				'Specification group'
 			);
 			await commerceSpecificationsPage.addDescriptionSpecificationsGroup.fill(
@@ -194,5 +208,180 @@ test(
 		await waitForAlert(page);
 
 		await expect(commerceSpecificationsPage.visibleToggle).toBeChecked();
+	}
+);
+
+test(
+	'Specification groups and labels can be edited and deleted',
+	{
+		tag: [
+			'@COMMERCE-6281',
+			'@COMMERCE-6282',
+			'@COMMERCE-6283',
+			'@COMMERCE-6284',
+			'@LPD-106079',
+		],
+	},
+	async ({apiHelpers, commerceSpecificationsPage, globalMenuPage, page}) => {
+		const optionCategory =
+			await apiHelpers.headlessCommerceAdminCatalog.postOptionCategory(
+				getRandomString()
+			);
+
+		const specification1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postSpecification(
+				true,
+				0,
+				getRandomString(),
+				optionCategory
+			);
+		const specification2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postSpecification(
+				true,
+				0,
+				getRandomString(),
+				optionCategory
+			);
+
+		const deleteConfirmationMessage =
+			'Are you sure you want to delete this? It will be deleted immediately.';
+
+		const newGroupKey = getRandomString();
+		const newGroupTitle = getRandomString();
+		const newSpecificationKey = getRandomString();
+		const newSpecificationTitle = getRandomString();
+
+		await test.step('Edit a specification label', async () => {
+			await globalMenuPage.goToCommerce('Specifications');
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: commerceSpecificationsPage.entryRowActionMenuItem(
+					'Edit'
+				),
+				trigger: commerceSpecificationsPage.entryRowActionButton(
+					specification1.title.en_US
+				),
+			});
+
+			await fillLocalizedInput(
+				commerceSpecificationsPage.specificationLabel,
+				newSpecificationTitle
+			);
+			await commerceSpecificationsPage.keyContent.fill(
+				newSpecificationKey
+			);
+			await commerceSpecificationsPage.saveButton.click();
+
+			await waitForAlert(page);
+
+			await expect(
+				commerceSpecificationsPage.specificationLabel
+			).toHaveValue(newSpecificationTitle);
+			await expect(commerceSpecificationsPage.keyContent).toHaveValue(
+				newSpecificationKey
+			);
+
+			await commerceSpecificationsPage.goBack.click();
+
+			await expect(
+				commerceSpecificationsPage.entryRow(newSpecificationTitle)
+			).toBeVisible();
+			await expect(
+				commerceSpecificationsPage.defaultGroupCell(
+					newSpecificationTitle
+				)
+			).toHaveText(optionCategory.title.en_US);
+		});
+
+		await test.step('Delete a specification label', async () => {
+			const confirmation = acceptNextConfirmation(page);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: commerceSpecificationsPage.entryRowActionMenuItem(
+					'Delete'
+				),
+				trigger: commerceSpecificationsPage.entryRowActionButton(
+					specification2.title.en_US
+				),
+			});
+
+			await waitForAlert(page);
+
+			expect(confirmation.message).toBe(deleteConfirmationMessage);
+			await expect(
+				commerceSpecificationsPage.entryRow(specification2.title.en_US)
+			).toHaveCount(0);
+		});
+
+		await test.step('Edit a specification group', async () => {
+			await commerceSpecificationsPage.goToSpecificationGroup.click();
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: commerceSpecificationsPage.entryRowActionMenuItem(
+					'Edit'
+				),
+				trigger: commerceSpecificationsPage.entryRowActionButton(
+					optionCategory.title.en_US
+				),
+			});
+
+			await fillLocalizedInput(
+				commerceSpecificationsPage.groupTitle,
+				newGroupTitle
+			);
+			await commerceSpecificationsPage.keyContent.fill(newGroupKey);
+			await commerceSpecificationsPage.saveButton.click();
+
+			await waitForAlert(page);
+
+			await expect(commerceSpecificationsPage.groupTitle).toHaveValue(
+				newGroupTitle
+			);
+			await expect(commerceSpecificationsPage.keyContent).toHaveValue(
+				newGroupKey
+			);
+
+			await commerceSpecificationsPage.goBack.click();
+
+			await expect(
+				commerceSpecificationsPage.entryRow(newGroupTitle)
+			).toBeVisible();
+		});
+
+		await test.step('Delete a specification group holding a label', async () => {
+			const confirmation = acceptNextConfirmation(page);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: commerceSpecificationsPage.entryRowActionMenuItem(
+					'Delete'
+				),
+				trigger:
+					commerceSpecificationsPage.entryRowActionButton(
+						newGroupTitle
+					),
+			});
+
+			await waitForAlert(page);
+
+			expect(confirmation.message).toBe(deleteConfirmationMessage);
+			await expect(
+				commerceSpecificationsPage.entryRow(newGroupTitle)
+			).toHaveCount(0);
+
+			await commerceSpecificationsPage.goToSpecificationLabel.click();
+
+			await expect(
+				commerceSpecificationsPage.entryRow(newSpecificationTitle)
+			).toBeVisible();
+			await expect(
+				commerceSpecificationsPage.defaultGroupCell(
+					newSpecificationTitle
+				)
+			).toHaveText('');
+		});
 	}
 );
