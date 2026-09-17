@@ -190,7 +190,11 @@ public class ServiceContextUtil {
 
 		Scope scope = taxonomyCategoryBrief.getScope();
 
-		if (Validator.isNull(externalReferenceCode) || (scope == null) ||
+		if (scope == null) {
+			return groupId;
+		}
+
+		if (Validator.isNull(externalReferenceCode) ||
 			Validator.isNull(scope.getExternalReferenceCode())) {
 
 			_log.error(
