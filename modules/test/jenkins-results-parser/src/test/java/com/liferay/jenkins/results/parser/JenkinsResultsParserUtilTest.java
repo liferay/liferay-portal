@@ -17,6 +17,7 @@ import java.net.ServerSocket;
 
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -493,6 +494,90 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testGetThreadDump() {
+		String threadDump = JenkinsResultsParserUtil.getThreadDump();
+
+		Thread currentThread = Thread.currentThread();
+
+		Assert.assertTrue(
+			"Thread dump does not name the current thread",
+			threadDump.contains("\"" + currentThread.getName() + "\""));
+
+		Assert.assertTrue(
+			"Thread dump does not contain a frame for this test method",
+			threadDump.contains(
+				"JenkinsResultsParserUtilTest.testGetThreadDump"));
+	}
+
+	@Test(timeout = 30000)
+	public void testGetThreadDumpBlockedThread() throws Exception {
+		String lockOwnerThreadName = "LRCI-8101-lock-owner";
+		String lockWaiterThreadName = "LRCI-8101-lock-waiter";
+
+		Object lock = new Object();
+
+		CountDownLatch holdLatch = new CountDownLatch(1);
+		CountDownLatch lockedLatch = new CountDownLatch(1);
+
+		Thread lockOwnerThread = new Thread(
+			() -> {
+				synchronized (lock) {
+					lockedLatch.countDown();
+
+					try {
+						holdLatch.await();
+					}
+					catch (InterruptedException interruptedException) {
+						throw new RuntimeException(interruptedException);
+					}
+				}
+			},
+			lockOwnerThreadName);
+
+		Thread lockWaiterThread = new Thread(
+			() -> {
+				synchronized (lock) {
+				}
+			},
+			lockWaiterThreadName);
+
+		try {
+			lockOwnerThread.start();
+
+			lockedLatch.await();
+
+			lockWaiterThread.start();
+
+			while (lockWaiterThread.getState() != Thread.State.BLOCKED) {
+				JenkinsResultsParserUtil.sleep(10);
+			}
+
+			String lockWaiterHeader = _getThreadDumpHeader(
+				JenkinsResultsParserUtil.getThreadDump(), lockWaiterThreadName);
+
+			Assert.assertNotNull(
+				"Thread dump does not name " + lockWaiterThreadName,
+				lockWaiterHeader);
+
+			Assert.assertTrue(
+				"Expected a blocked thread state in " + lockWaiterHeader,
+				lockWaiterHeader.contains("BLOCKED"));
+
+			Assert.assertTrue(
+				"Expected the lock owner in " + lockWaiterHeader,
+				lockWaiterHeader.contains(
+					"owned by \"" + lockOwnerThreadName + "\""));
+		}
+		finally {
+			holdLatch.countDown();
+
+			lockOwnerThread.join();
+
+			lockWaiterThread.join();
+		}
+	}
+
+	@Test
 	public void testInvokeJenkinsBuild() throws Exception {
 		Environment environment = mockEnvironment();
 
@@ -804,6 +889,16 @@ public class JenkinsResultsParserUtilTest
 			buildAwsPropertiesFile.exists());
 
 		return JenkinsResultsParserUtil.getProperties(buildAwsPropertiesFile);
+	}
+
+	private String _getThreadDumpHeader(String threadDump, String threadName) {
+		for (String line : threadDump.split("\n")) {
+			if (line.startsWith("\"" + threadName + "\"")) {
+				return line;
+			}
+		}
+
+		return null;
 	}
 
 	private void _testFetchBuildURL(
