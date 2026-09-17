@@ -337,32 +337,36 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				151
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				172
+					"\"setSSLHostnameVerifier\", see LPD-93649",
+				173
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"NoopHostnameVerifier\", see LPD-93649",
-				183
+				177
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"NoopHostnameVerifier\", see LPD-93649",
-				190
+				188
+			).addExpectedMessage(
+				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
+					"\"NoopHostnameVerifier\", see LPD-93649",
+				195
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"TrustSelfSignedStrategy\", see LPD-93649",
-				196
+				201
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"TrustAllStrategy\", see LPD-93649",
-				209
+				214
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"NoopHostnameVerifier\", see LPD-93649",
-				213
+				218
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"NoopHostnameVerifier\", see LPD-93649",
-				217
+				222
 			));
 		test(
 			SourceProcessorTestParameters.create(
@@ -374,7 +378,11 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"NoopHostnameVerifier\", see LPD-93649",
-				58
+				55
+			).addExpectedMessage(
+				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
+					"\"NoopHostnameVerifier\", see LPD-93649",
+				65
 			));
 		test(
 			"FIPSTLSVerification3.testjava",
@@ -386,6 +394,11 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			"Check \"PropsValues.FIPS_ENABLED\" in the same class as a trust " +
 				"manager, see LPD-93649",
 			15);
+		test(
+			"FIPSTLSVerification5.testjava",
+			"Check \"PropsValues.FIPS_ENABLED\" in the same class as a trust " +
+				"manager, see LPD-93649",
+			17);
 	}
 
 	@Test

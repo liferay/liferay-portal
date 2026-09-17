@@ -22,8 +22,8 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {
-			TokenTypes.CLASS_DEF, TokenTypes.IDENT, TokenTypes.LITERAL_NEW,
-			TokenTypes.METHOD_CALL
+			TokenTypes.CLASS_DEF, TokenTypes.IDENT, TokenTypes.LAMBDA,
+			TokenTypes.LITERAL_NEW, TokenTypes.METHOD_CALL
 		};
 	}
 
@@ -45,6 +45,9 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 		}
 		else if (detailAST.getType() == TokenTypes.IDENT) {
 			_checkBypassName(detailAST);
+		}
+		else if (detailAST.getType() == TokenTypes.LAMBDA) {
+			_checkLambda(detailAST);
 		}
 		else if (detailAST.getType() == TokenTypes.LITERAL_NEW) {
 			_checkAnonymousClass(detailAST);
@@ -134,6 +137,41 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 			StringBundler.concat(_METHOD_NAME, "(", argument, ")"));
 	}
 
+	private void _checkLambda(DetailAST lambdaDetailAST) {
+		DetailAST exprDetailAST = lambdaDetailAST.findFirstToken(
+			TokenTypes.EXPR);
+
+		if (exprDetailAST == null) {
+			return;
+		}
+
+		DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
+
+		if ((firstChildDetailAST == null) ||
+			(firstChildDetailAST.getType() != TokenTypes.LITERAL_TRUE)) {
+
+			return;
+		}
+
+		DetailAST methodCallDetailAST = getParentWithTokenType(
+			lambdaDetailAST, TokenTypes.METHOD_CALL);
+
+		if (methodCallDetailAST == null) {
+			return;
+		}
+
+		String methodName = getMethodName(methodCallDetailAST);
+
+		if ((methodName == null) ||
+			!ArrayUtil.contains(_SINK_METHOD_NAMES, methodName) ||
+			_hasGuard(lambdaDetailAST)) {
+
+			return;
+		}
+
+		log(lambdaDetailAST, _MSG_REQUIRED_GUARD_METHOD, methodName);
+	}
+
 	private void _checkTrustManagerClass(DetailAST classDefDetailAST) {
 		for (int tokenType :
 				new int[] {
@@ -148,13 +186,13 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 			}
 
 			for (String name : getNames(clauseDetailAST, false)) {
-				if (!ArrayUtil.contains(_TRUST_MANAGER_CLASS_NAMES, name) ||
-					_containsGuard(classDefDetailAST)) {
-
+				if (!ArrayUtil.contains(_TRUST_MANAGER_CLASS_NAMES, name)) {
 					continue;
 				}
 
-				log(classDefDetailAST, _MSG_REQUIRED_GUARD_CLASS);
+				if (!_containsGuard(classDefDetailAST)) {
+					log(classDefDetailAST, _MSG_REQUIRED_GUARD_CLASS);
+				}
 
 				return;
 			}
@@ -169,7 +207,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 
 			String text = fullIdent.getText();
 
-			if (text.equals(_GUARD_NAME)) {
+			if (text.equals(_GUARD_NAME) && _isCondition(dotDetailAST)) {
 				return true;
 			}
 		}
@@ -212,6 +250,26 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 		return _containsGuard(parentDetailAST);
 	}
 
+	private boolean _isCondition(DetailAST detailAST) {
+		DetailAST childDetailAST = detailAST;
+		DetailAST parentDetailAST = detailAST.getParent();
+
+		while (parentDetailAST != null) {
+			if (parentDetailAST.getType() == TokenTypes.LITERAL_IF) {
+				DetailAST lparenDetailAST = parentDetailAST.getFirstChild();
+
+				if (childDetailAST == lparenDetailAST.getNextSibling()) {
+					return true;
+				}
+			}
+
+			childDetailAST = parentDetailAST;
+			parentDetailAST = parentDetailAST.getParent();
+		}
+
+		return false;
+	}
+
 	private static final String[] _ANONYMOUS_CLASS_NAMES = {
 		"HostnameVerifier", "X509ExtendedTrustManager", "X509TrustManager"
 	};
@@ -231,6 +289,11 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 
 	private static final String _MSG_REQUIRED_GUARD_METHOD =
 		"guard.method.required";
+
+	private static final String[] _SINK_METHOD_NAMES = {
+		"loadTrustMaterial", "setDefaultHostnameVerifier",
+		"setHostnameVerifier", "setSSLHostnameVerifier"
+	};
 
 	private static final String[] _TRUST_MANAGER_CLASS_NAMES = {
 		"X509ExtendedTrustManager", "X509TrustManager"

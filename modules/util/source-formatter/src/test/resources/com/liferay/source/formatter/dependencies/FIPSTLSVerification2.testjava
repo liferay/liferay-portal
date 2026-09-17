@@ -48,6 +48,13 @@ public class FIPSTLSVerification2 {
 		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
 	}
 
+	public void unguardedWithMention(HttpClientBuilder httpClientBuilder) {
+		httpClientBuilder.setUserAgent(
+			String.valueOf(PropsValues.FIPS_ENABLED));
+
+		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+	}
+
 	private static final boolean _VERIFY_SERVER_HOSTNAME = true;
 
 	private static final HostnameVerifier _hostnameVerifier =

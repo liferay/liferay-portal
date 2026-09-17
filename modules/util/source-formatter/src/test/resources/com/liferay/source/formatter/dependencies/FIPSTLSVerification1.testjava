@@ -168,6 +168,11 @@ public class FIPSTLSVerification1 {
 		};
 	}
 
+	public void lambdaHostnameVerifier(HttpClientBuilder httpClientBuilder) {
+		httpClientBuilder.setSSLHostnameVerifier(
+			(hostName, sslSession) -> true);
+	}
+
 	public void noopHostnameVerifier(HttpClientBuilder httpClientBuilder) {
 		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
 	}
