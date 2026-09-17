@@ -29,6 +29,9 @@ function getItemStyles(initialOffset, currentOffset) {
 
 	return {
 		WebkitTransform: transform,
+		left: 0,
+		position: 'absolute',
+		top: 0,
 		transform,
 	};
 }
