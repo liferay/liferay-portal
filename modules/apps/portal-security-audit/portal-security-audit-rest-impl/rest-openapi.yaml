@@ -50,6 +50,12 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                impersonated:
+                    readOnly: true
+                    type: boolean
+                impersonatedCreator:
+                    $ref: ../../headless/headless-delivery/headless-delivery-impl/rest-openapi.yaml#Creator
+                    readOnly: true
                 objectName:
                     readOnly: true
                     type: string
