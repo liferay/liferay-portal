@@ -508,6 +508,55 @@ export async function completedVirtualOrderItemSetUp(
 	};
 }
 
+async function waitForIndexedItems(
+	getItemsPage: () => Promise<{items?: Array<{id: number}>}>,
+	description: string
+) {
+	let items = [];
+
+	await expect(async () => {
+		const itemsPage = await getItemsPage();
+
+		items = itemsPage.items || [];
+
+		expect(
+			items.length,
+			`The ${description} was not indexed in time`
+		).toBeGreaterThan(0);
+	}).toPass({timeout: 30000});
+
+	return items;
+}
+
+async function waitForIndexedCatalogProducts(
+	apiHelpers: DataApiHelpers,
+	catalogId: number
+) {
+	const getProducts = async () => {
+		const productsPage =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductsPage(
+				100,
+				''
+			);
+
+		return (productsPage.items || []).filter(
+			(product) => product.catalogId === catalogId
+		);
+	};
+
+	let products = await getProducts();
+
+	await expect(async () => {
+		const previousCount = products.length;
+
+		products = await getProducts();
+
+		expect(products.length).toBe(previousCount);
+	}).toPass({timeout: 30000});
+
+	return products;
+}
+
 export async function initializerSetUp(
 	apiHelpers: DataApiHelpers,
 	templateKey: string,
@@ -526,35 +575,36 @@ export async function initializerSetUp(
 		templateType: 'site-initializer',
 	});
 
-	const channels =
-		await apiHelpers.headlessCommerceAdminChannel.getChannelsPage(
-			channelName
-		);
+	const channelItems = await waitForIndexedItems(
+		() =>
+			apiHelpers.headlessCommerceAdminChannel.getChannelsPage(
+				channelName
+			),
+		`channel "${channelName}"`
+	);
 
-	apiHelpers.data.push({id: channels.items.at(-1).id, type: 'channel'});
+	apiHelpers.data.push({id: channelItems.at(-1).id, type: 'channel'});
 
-	const catalogs =
-		await apiHelpers.headlessCommerceAdminCatalog.getCatalogsPage(
-			catalogName
-		);
+	const catalogItems = await waitForIndexedItems(
+		() =>
+			apiHelpers.headlessCommerceAdminCatalog.getCatalogsPage(
+				catalogName
+			),
+		`catalog "${catalogName}"`
+	);
 
-	if (catalogs.items?.length) {
-		apiHelpers.data.push({id: catalogs.items[0].id, type: 'catalog'});
+	apiHelpers.data.push({id: catalogItems[0].id, type: 'catalog'});
 
-		const products =
-			await apiHelpers.headlessCommerceAdminCatalog.getProductsPage(
-				100,
-				''
-			);
+	const products = await waitForIndexedCatalogProducts(
+		apiHelpers,
+		catalogItems[0].id
+	);
 
-		for (const product of products.items) {
-			if (product.catalogId === catalogs.items[0].id) {
-				apiHelpers.data.push({
-					id: product.productId,
-					type: 'product',
-				});
-			}
-		}
+	for (const product of products) {
+		apiHelpers.data.push({
+			id: product.productId,
+			type: 'product',
+		});
 	}
 
 	const options = await apiHelpers.headlessCommerceAdminCatalog.getOptions();
@@ -596,7 +646,7 @@ export async function initializerSetUp(
 		});
 	}
 
-	return {catalog: catalogs.items[0], channel: channels.items[0], site};
+	return {catalog: catalogItems[0], channel: channelItems[0], site};
 }
 
 export async function enableGuestPageView(
