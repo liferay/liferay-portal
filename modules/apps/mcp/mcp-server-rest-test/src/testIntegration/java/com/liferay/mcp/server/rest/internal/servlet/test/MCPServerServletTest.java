@@ -795,7 +795,26 @@ public class MCPServerServletTest {
 
 		MCPServerTestUtil.updateMCPServerProfileStatus(objectEntry, "inactive");
 
-		Assert.assertEquals(404, _getResponseCode(authorization, name));
+		Http.Options options = new Http.Options();
+
+		options.addHeader("Authorization", authorization);
+		options.setLocation(_getMCPURL() + StringPool.SLASH + name);
+
+		String responseContent = _http.URLtoString(options);
+
+		Http.Response response = options.getResponse();
+
+		Assert.assertEquals(404, response.getResponseCode());
+
+		Assert.assertEquals(
+			JSONUtil.put(
+				"error",
+				StringBundler.concat(
+					"MCP server profile \"", name,
+					"\" is inactive. Activate it in the MCP Server control ",
+					"panel to make its tools available.")
+			).toString(),
+			responseContent);
 
 		MCPServerTestUtil.updateMCPServerProfileStatus(objectEntry, "active");
 
