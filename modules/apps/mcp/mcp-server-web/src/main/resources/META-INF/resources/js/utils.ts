@@ -10,6 +10,7 @@ import {
 	DataMaskTreeItem,
 	DataMaskTypeKey,
 	ProfileTool,
+	ToolSet,
 	ToolSummary,
 	ToolTreeItem,
 } from './types';
@@ -56,15 +57,12 @@ export function buildToolChildren(
 ): ToolTreeItem[] {
 	const assignedToolIds = getAssignedToolIds(profileTools);
 
-	return tools.map((tool) => {
-		const id = toToolId(toolSetName, tool.name);
-
-		return {
-			assigned: assignedToolIds.has(id),
-			id,
+	return tools
+		.map((tool) => ({
+			id: toToolId(toolSetName, tool.name),
 			name: tool.name,
-		};
-	});
+		}))
+		.filter((toolTreeItem) => !assignedToolIds.has(toolTreeItem.id));
 }
 
 export function buildToolWaves<T extends {toolName: string}>(
@@ -132,8 +130,20 @@ export function getAssignedToolIds(profileTools: ProfileTool[]): Set<string> {
 	);
 }
 
-export function getEligibleToolIds(children: ToolTreeItem[]): string[] {
-	return children.filter((child) => !child.assigned).map((child) => child.id);
+export function getAvailableToolSets(
+	toolSets: ToolSet[],
+	profileTools: ProfileTool[],
+	toolsByToolSetName: Map<string, ToolSummary[]>
+): ToolSet[] {
+	return toolSets.filter((toolSet) => {
+		const tools = toolsByToolSetName.get(toolSet.name);
+
+		if (!tools) {
+			return true;
+		}
+
+		return !!buildToolChildren(toolSet.name, tools, profileTools).length;
+	});
 }
 
 export function getSelectedDataMaskExternalReferenceCodes(

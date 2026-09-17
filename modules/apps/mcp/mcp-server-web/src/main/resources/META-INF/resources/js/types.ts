@@ -150,7 +150,6 @@ export type ToolSummary = {
 };
 
 export type ToolTreeItem = {
-	assigned?: boolean;
 	children?: ToolTreeItem[];
 	id: string;
 	name: string;

@@ -19,8 +19,7 @@ import {ProfileTool, ToolSet, ToolSummary, ToolTreeItem} from '../types';
 import {
 	buildToolChildren,
 	buildToolWaves,
-	getAssignedToolIds,
-	getEligibleToolIds,
+	getAvailableToolSets,
 	getSelectedTools,
 	openErrorToast,
 	openSuccessToast,
@@ -47,25 +46,8 @@ export default function AddToolsModal({
 		Set<string>
 	>(new Set());
 
-	const selectedKeysRef = useRef(selectedKeys);
-
-	useEffect(() => {
-		selectedKeysRef.current = selectedKeys;
-	}, [selectedKeys]);
-
 	const toolsCacheRef = useRef<Record<string, Promise<ToolSummary[] | null>>>(
 		{}
-	);
-
-	const assignedToolIds = useMemo(
-		() => getAssignedToolIds(profileTools),
-		[profileTools]
-	);
-
-	const assignedToolSetNames = useMemo(
-		() =>
-			new Set(profileTools.map((profileTool) => profileTool.toolSetName)),
-		[profileTools]
 	);
 
 	const loadToolSet = useCallback((toolSetName: string) => {
@@ -91,43 +73,87 @@ export default function AddToolsModal({
 		return toolsCacheRef.current[toolSetName];
 	}, []);
 
+	const loadToolsByToolSetName = useCallback(
+		async (toolSetNames: string[]) => {
+			const toolsByToolSetName = new Map<string, ToolSummary[]>();
+
+			await Promise.all(
+				toolSetNames.map(async (toolSetName) => {
+					const tools = await loadToolSet(toolSetName);
+
+					if (tools) {
+						toolsByToolSetName.set(toolSetName, tools);
+					}
+				})
+			);
+
+			return toolsByToolSetName;
+		},
+		[loadToolSet]
+	);
+
 	useEffect(() => {
 		let isMounted = true;
 
-		Promise.all([getToolSets(), getProfileTools(profileERC)]).then(
-			([toolSetsResult, profileToolsResult]) => {
-				if (!isMounted) {
-					return;
-				}
+		const loadToolSets = async () => {
+			const [toolSetsResult, profileToolsResult] = await Promise.all([
+				getToolSets(),
+				getProfileTools(profileERC),
+			]);
 
-				if (
-					toolSetsResult.error ||
-					!toolSetsResult.data ||
-					profileToolsResult.error ||
-					!profileToolsResult.data
-				) {
-					openErrorToast(
-						toolSetsResult.error ||
-							profileToolsResult.error ||
-							Liferay.Language.get('an-unexpected-error-occurred')
-					);
-
-					onClose();
-
-					return;
-				}
-
-				setProfileTools(profileToolsResult.data.items);
-				setToolSets(toolSetsResult.data);
-
-				setLoading(false);
+			if (!isMounted) {
+				return;
 			}
-		);
+
+			if (
+				toolSetsResult.error ||
+				!toolSetsResult.data ||
+				profileToolsResult.error ||
+				!profileToolsResult.data
+			) {
+				openErrorToast(
+					toolSetsResult.error ||
+						profileToolsResult.error ||
+						Liferay.Language.get('an-unexpected-error-occurred')
+				);
+
+				onClose();
+
+				return;
+			}
+
+			const loadedProfileTools = profileToolsResult.data.items;
+
+			const toolsByToolSetName = await loadToolsByToolSetName([
+				...new Set(
+					loadedProfileTools.map(
+						(profileTool) => profileTool.toolSetName
+					)
+				),
+			]);
+
+			if (!isMounted) {
+				return;
+			}
+
+			setProfileTools(loadedProfileTools);
+			setToolSets(
+				getAvailableToolSets(
+					toolSetsResult.data,
+					loadedProfileTools,
+					toolsByToolSetName
+				)
+			);
+
+			setLoading(false);
+		};
+
+		loadToolSets();
 
 		return () => {
 			isMounted = false;
 		};
-	}, [onClose, profileERC]);
+	}, [loadToolsByToolSetName, onClose, profileERC]);
 
 	const initialItems = useMemo(
 		() =>
@@ -155,58 +181,18 @@ export default function AddToolsModal({
 
 		const children = buildToolChildren(item.name, tools, profileTools);
 
-		if (selectedKeysRef.current.has(item.id)) {
-			const eligibleToolIds = getEligibleToolIds(children);
+		setSelectedKeys((previousKeys) => {
+			if (!previousKeys.has(item.id)) {
+				return previousKeys;
+			}
 
-			setSelectedKeys(
-				(previousKeys) => new Set([...previousKeys, ...eligibleToolIds])
-			);
-		}
+			return new Set([
+				...previousKeys,
+				...children.map((child) => child.id),
+			]);
+		});
 
 		return children;
-	};
-
-	const getAssignedToolSetState = (item: ToolTreeItem) => {
-		const eligibleToolIds = getEligibleToolIds(item.children ?? []);
-
-		const selectedCount = eligibleToolIds.filter((eligibleToolId) =>
-			selectedKeys.has(eligibleToolId)
-		).length;
-
-		const checked =
-			!eligibleToolIds.length || selectedCount === eligibleToolIds.length;
-
-		return {
-			checked,
-			disabled: !eligibleToolIds.length,
-			indeterminate: !checked,
-		};
-	};
-
-	const toggleAssignedToolSet = (item: ToolTreeItem) => {
-		const eligibleToolIds = getEligibleToolIds(item.children ?? []);
-
-		setSelectedKeys((previousKeys) => {
-			const keys = new Set(previousKeys);
-
-			if (
-				eligibleToolIds.length &&
-				eligibleToolIds.every((eligibleToolId) =>
-					keys.has(eligibleToolId)
-				)
-			) {
-				eligibleToolIds.forEach((eligibleToolId) =>
-					keys.delete(eligibleToolId)
-				);
-			}
-			else {
-				eligibleToolIds.forEach((eligibleToolId) =>
-					keys.add(eligibleToolId)
-				);
-			}
-
-			return keys;
-		});
 	};
 
 	const stopSelectingToolSet = (toolSetName: string) => {
@@ -247,26 +233,23 @@ export default function AddToolsModal({
 		loadToolSet(item.name).then((tools) => {
 			stopSelectingToolSet(item.name);
 
-			if (!tools || !selectedKeysRef.current.has(item.id)) {
+			if (!tools) {
 				return;
 			}
 
-			const eligibleToolIds = getEligibleToolIds(
-				buildToolChildren(item.name, tools, profileTools)
-			);
+			setSelectedKeys((previousKeys) => {
+				if (!previousKeys.has(item.id)) {
+					return previousKeys;
+				}
 
-			setSelectedKeys(
-				(previousKeys) => new Set([...previousKeys, ...eligibleToolIds])
-			);
+				return new Set([
+					...previousKeys,
+					...buildToolChildren(item.name, tools, profileTools).map(
+						(child) => child.id
+					),
+				]);
+			});
 		});
-	};
-
-	const onSelectionChange = (keys: Set<React.Key>) => {
-		setSelectedKeys(
-			new Set(
-				[...keys].filter((key) => !assignedToolIds.has(String(key)))
-			)
-		);
 	};
 
 	const addSelected = async () => {
@@ -357,7 +340,7 @@ export default function AddToolsModal({
 							defaultItems={initialItems}
 							nestedKey="children"
 							onLoadMore={onLoadMore}
-							onSelectionChange={onSelectionChange}
+							onSelectionChange={setSelectedKeys}
 							selectedKeys={selectedKeys}
 							selectionMode="multiple-recursive"
 							showExpanderOnHover={false}
@@ -366,40 +349,16 @@ export default function AddToolsModal({
 								item.children ? (
 									<TreeView.Item>
 										<TreeView.ItemStack
-											disabled={item.children.every(
-												(child) => child.assigned
-											)}
 											expandOnClick={false}
 											expanderDisabled={false}
 											onClick={(event) =>
 												event.preventDefault()
 											}
 										>
-											{item.children.some(
-												(child) => child.assigned
-											) ? (
-												<span>
-													<ClayCheckbox
-														aria-label={item.name}
-														onChange={() =>
-															toggleAssignedToolSet(
-																item
-															)
-														}
-														onClick={(event) =>
-															event.stopPropagation()
-														}
-														{...getAssignedToolSetState(
-															item
-														)}
-													/>
-												</span>
-											) : (
-												<ClayCheckbox
-													aria-label={item.name}
-													checked
-												/>
-											)}
+											<ClayCheckbox
+												aria-label={item.name}
+												checked
+											/>
 
 											<span className="font-weight-normal pl-1 text-3">
 												{item.name}
@@ -407,65 +366,23 @@ export default function AddToolsModal({
 										</TreeView.ItemStack>
 
 										<TreeView.Group items={item.children}>
-											{(child: ToolTreeItem) =>
-												child.assigned ? (
-													<TreeView.Item disabled>
-														<span>
-															<ClayCheckbox
-																aria-label={
-																	child.name
-																}
-																checked
-																disabled
-																onChange={() => {}}
-															/>
-														</span>
+											{(child: ToolTreeItem) => (
+												<TreeView.Item
+													onClick={(event) =>
+														event.preventDefault()
+													}
+												>
+													<ClayCheckbox
+														aria-label={child.name}
+														checked
+													/>
 
-														<span className="font-weight-normal pl-1 text-3">
-															{child.name}
-														</span>
-													</TreeView.Item>
-												) : (
-													<TreeView.Item
-														onClick={(event) =>
-															event.preventDefault()
-														}
-													>
-														<ClayCheckbox
-															aria-label={
-																child.name
-															}
-															checked
-														/>
-
-														<span className="font-weight-normal pl-1 text-3">
-															{child.name}
-														</span>
-													</TreeView.Item>
-												)
-											}
+													<span className="font-weight-normal pl-1 text-3">
+														{child.name}
+													</span>
+												</TreeView.Item>
+											)}
 										</TreeView.Group>
-									</TreeView.Item>
-								) : assignedToolSetNames.has(item.name) ? (
-									<TreeView.Item
-										expandable
-										onClick={(event) =>
-											event.preventDefault()
-										}
-									>
-										<span>
-											<ClayCheckbox
-												aria-label={item.name}
-												checked={false}
-												disabled
-												indeterminate
-												onChange={() => {}}
-											/>
-										</span>
-
-										<span className="font-weight-normal pl-1 text-3">
-											{item.name}
-										</span>
 									</TreeView.Item>
 								) : (
 									<TreeView.Item
