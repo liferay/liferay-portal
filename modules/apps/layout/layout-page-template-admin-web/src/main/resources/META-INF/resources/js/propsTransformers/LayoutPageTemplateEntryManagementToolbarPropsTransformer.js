@@ -8,6 +8,17 @@ import {openSimpleInputModal} from 'frontend-js-components-web';
 import openDeletePageTemplateModal from '../commands/openDeletePageTemplateModal';
 
 export default function propsTransformer({portletNamespace, ...otherProps}) {
+	const addLayoutPageTemplateEntry = (data) => {
+		openSimpleInputModal({
+			dialogTitle: Liferay.Language.get('add-page-template'),
+			formSubmitURL: data?.addPageTemplateURL,
+			mainFieldLabel: Liferay.Language.get('name'),
+			mainFieldName: 'name',
+			mainFieldPlaceholder: Liferay.Language.get('name'),
+			namespace: portletNamespace,
+		});
+	};
+
 	const deleteLayoutPageTemplateEntries = () => {
 		openDeletePageTemplateModal({
 			onDelete: () => {
@@ -43,18 +54,18 @@ export default function propsTransformer({portletNamespace, ...otherProps}) {
 				exportLayoutPageTemplateEntries(data);
 			}
 		},
+		onCreateButtonClick(event, {item}) {
+			const data = item?.data;
+
+			if (data?.action === 'addLayoutPageTemplateEntry') {
+				addLayoutPageTemplateEntry(data);
+			}
+		},
 		onCreationMenuItemClick(event, {item}) {
 			const data = item?.data;
 
 			if (data?.action === 'addLayoutPageTemplateEntry') {
-				openSimpleInputModal({
-					dialogTitle: Liferay.Language.get('add-page-template'),
-					formSubmitURL: data?.addPageTemplateURL,
-					mainFieldLabel: Liferay.Language.get('name'),
-					mainFieldName: 'name',
-					mainFieldPlaceholder: Liferay.Language.get('name'),
-					namespace: portletNamespace,
-				});
+				addLayoutPageTemplateEntry(data);
 			}
 		},
 	};
