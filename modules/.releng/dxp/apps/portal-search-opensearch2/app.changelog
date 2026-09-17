@@ -46,3 +46,15 @@ app.change.log-2.1.0=LPD-87417
 
 app.git.id-2.1.0=22d8510f5a068eacc1c8e30b2a681f2b7229a224
 
+#
+# Liferay App Version 2.2.0
+#
+
+app.artifacts-2.2.0=\
+	com.liferay.portal.search.opensearch2.api-1.2.1.jar,\
+	com.liferay.portal.search.opensearch2.impl-1.0.24.jar
+
+app.change.log-2.2.0=LPD-100998 LPD-101741 LPD-103633 LPD-104351 LPD-105487 LPD-75868 LPD-75963 LPD-75968 LPD-88016 LPD-88080 LPD-88833 LPD-89383 LPD-90510 LPD-91206 LPD-95481 LPD-97005 LPD-98598 LPD-98952
+
+app.git.id-2.2.0=e6040886f808b26ec12050987ff124229133148e
+
