@@ -15,6 +15,7 @@ import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {Action, State} from '../contexts/StateContext';
 import {Group, Structure, StructureChild} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
+import exceedsMaxNesting, {MAX_NESTING} from './exceedsMaxNesting';
 import findAvailableFieldName from './findAvailableFieldName';
 import findChild from './findChild';
 import getUndeletableChildren, {
@@ -37,6 +38,26 @@ export default async function handleMoveChildren({
 	targetUuid: Uuid;
 	uuids: Uuid[];
 }) {
+	if (
+		exceedsMaxNesting({
+			items: uuids.map((uuid) => findChild({root: structure, uuid})!),
+			structure,
+			targetUuid,
+		})
+	) {
+		openToast({
+			message: sub(
+				Liferay.Language.get(
+					'groups-cannot-be-nested-more-than-x-levels-deep'
+				),
+				MAX_NESTING
+			),
+			type: 'danger',
+		});
+
+		return;
+	}
+
 	const movingPublished = uuids.some(
 		(uuid) =>
 			!isReferenced({root: structure, uuid}) &&

@@ -4,11 +4,13 @@
  */
 
 import {openToast} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import {Dispatch} from 'react';
 
 import {Action, Clipboard} from '../contexts/StateContext';
 import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
+import exceedsMaxNesting, {MAX_NESTING} from './exceedsMaxNesting';
 import findChild from './findChild';
 import isReferenced from './isReferenced';
 
@@ -31,6 +33,20 @@ export default function handlePaste({
 		openToast({
 			message: Liferay.Language.get(
 				'items-could-not-be-pasted-because-the-target-is-not-allowed'
+			),
+			type: 'danger',
+		});
+
+		return;
+	}
+
+	if (exceedsMaxNesting({items: clipboard.items, structure, targetUuid})) {
+		openToast({
+			message: sub(
+				Liferay.Language.get(
+					'groups-cannot-be-nested-more-than-x-levels-deep'
+				),
+				MAX_NESTING
 			),
 			type: 'danger',
 		});
