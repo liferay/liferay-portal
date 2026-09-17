@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
+import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -59,9 +60,9 @@ public class CPMeasurementUnitServiceTest {
 
 		_cpMeasurementUnit = _cpMeasurementUnitService.addCPMeasurementUnit(
 			null, RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomString(3), RandomTestUtil.nextDouble(), true,
-			RandomTestUtil.nextDouble(), RandomTestUtil.nextInt(),
-			_serviceContext);
+			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			RandomTestUtil.nextDouble(), true, RandomTestUtil.nextDouble(),
+			RandomTestUtil.nextInt(), _serviceContext);
 		_role = _roleLocalService.addRole(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
 			RandomTestUtil.randomString(), null, null,
@@ -79,9 +80,11 @@ public class CPMeasurementUnitServiceTest {
 
 			_cpMeasurementUnitService.addCPMeasurementUnit(
 				null, RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomString(3), RandomTestUtil.nextDouble(),
-				RandomTestUtil.randomBoolean(), RandomTestUtil.nextDouble(),
-				RandomTestUtil.nextInt(), _serviceContext);
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				RandomTestUtil.nextDouble(), RandomTestUtil.randomBoolean(),
+				RandomTestUtil.nextDouble(), RandomTestUtil.nextInt(),
+				_serviceContext);
 
 			Assert.fail();
 		}
@@ -102,9 +105,11 @@ public class CPMeasurementUnitServiceTest {
 
 			_cpMeasurementUnitService.addCPMeasurementUnit(
 				null, RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomString(3), RandomTestUtil.nextDouble(),
-				RandomTestUtil.randomBoolean(), RandomTestUtil.nextDouble(),
-				RandomTestUtil.nextInt(), _serviceContext);
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
+				RandomTestUtil.nextDouble(), RandomTestUtil.randomBoolean(),
+				RandomTestUtil.nextDouble(), RandomTestUtil.nextInt(),
+				_serviceContext);
 		}
 	}
 
@@ -527,7 +532,9 @@ public class CPMeasurementUnitServiceTest {
 			_cpMeasurementUnitService.updateCPMeasurementUnit(
 				RandomTestUtil.randomString(),
 				_cpMeasurementUnit.getCPMeasurementUnitId(),
-				_cpMeasurementUnit.getNameMap(), RandomTestUtil.randomString(3),
+				_cpMeasurementUnit.getNameMap(),
+				RandomTestUtil.randomString(
+					UniqueStringRandomizerBumper.INSTANCE),
 				_cpMeasurementUnit.getRate(), _cpMeasurementUnit.isPrimary(),
 				RandomTestUtil.nextDouble(), RandomTestUtil.nextInt(),
 				_serviceContext);
