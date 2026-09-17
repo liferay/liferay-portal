@@ -62,12 +62,16 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.ExistsFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -250,6 +254,62 @@ public class SitePageResourceImpl
 	}
 
 	@Override
+	public Page<SitePage> getSiteSitePageSitePagesPage(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode, Boolean flatten,
+			Pagination pagination)
+		throws Exception {
+
+		Layout layout = SitePageUtil.getSitePageLayout(
+			GroupUtil.getGroupId(
+				true, contextCompany.getCompanyId(), siteExternalReferenceCode),
+			sitePageExternalReferenceCode);
+
+		EnabledUtil.checkEnabled(contextCompany, layout.isPrivateLayout());
+
+		List<Layout> layouts = null;
+
+		if (GetterUtil.getBoolean(flatten)) {
+			layouts = layout.getAllChildren();
+		}
+		else {
+			layouts = layout.getChildren();
+		}
+
+		List<Layout> sitePageLayouts = transform(
+			layouts,
+			curLayout -> {
+				if (!ArrayUtil.contains(_TYPES, curLayout.getType())) {
+					return null;
+				}
+
+				try {
+					if (LayoutPermissionUtil.contains(
+							PermissionThreadLocal.getPermissionChecker(),
+							curLayout, ActionKeys.VIEW)) {
+
+						return curLayout;
+					}
+				}
+				catch (PortalException portalException) {
+					if (_log.isDebugEnabled()) {
+						_log.debug(portalException);
+					}
+				}
+
+				return null;
+			});
+
+		return Page.of(
+			transform(
+				ListUtil.subList(
+					sitePageLayouts, pagination.getStartPosition(),
+					pagination.getEndPosition()),
+				this::_toSitePage),
+			pagination, sitePageLayouts.size());
+	}
+
+	@Override
 	public ContentPageSpecification postSiteSitePagePageSpecification(
 			String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode,
@@ -343,15 +403,7 @@ public class SitePageResourceImpl
 			searchContext -> {
 				searchContext.addVulcanAggregation(aggregation);
 				searchContext.setAttribute(Field.TITLE, search);
-				searchContext.setAttribute(
-					Field.TYPE,
-					new String[] {
-						LayoutConstants.TYPE_CONTENT,
-						LayoutConstants.TYPE_EMBEDDED,
-						LayoutConstants.TYPE_LINK_TO_LAYOUT,
-						LayoutConstants.TYPE_NODE, LayoutConstants.TYPE_PORTLET,
-						LayoutConstants.TYPE_URL
-					});
+				searchContext.setAttribute(Field.TYPE, _TYPES);
 				searchContext.setAttribute(
 					"privateLayout", privateLayout.toString());
 				searchContext.setAttribute(
@@ -1283,6 +1335,12 @@ public class SitePageResourceImpl
 		publishedPageSpecification.setExternalReferenceCode(
 			sitePage::getExternalReferenceCode);
 	}
+
+	private static final String[] _TYPES = {
+		LayoutConstants.TYPE_CONTENT, LayoutConstants.TYPE_EMBEDDED,
+		LayoutConstants.TYPE_LINK_TO_LAYOUT, LayoutConstants.TYPE_NODE,
+		LayoutConstants.TYPE_PORTLET, LayoutConstants.TYPE_URL
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SitePageResourceImpl.class);

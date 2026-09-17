@@ -30,6 +30,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.PermissionService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -38,9 +40,13 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
+import com.liferay.portal.vulcan.permission.Permission;
+import com.liferay.portal.vulcan.permission.PermissionUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -129,6 +135,7 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 
 						return parentLayout.getExternalReferenceCode();
 					});
+				setPermissions(() -> _toPermissions(layout));
 				setTaxonomyCategoryBriefs(
 					() -> AssetUtil.getTaxonomyCategoryBriefs(
 						Layout.class.getName(), layout.getPlid(),
@@ -301,6 +308,25 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 		return pageSettings;
 	}
 
+	private Permission[] _toPermissions(Layout layout) throws Exception {
+		return NestedFieldsSupplier.supply(
+			"permissions",
+			nestedFieldNames -> {
+				_permissionService.checkPermission(
+					layout.getGroupId(), Layout.class.getName(),
+					layout.getPlid());
+
+				Collection<Permission> permissions =
+					PermissionUtil.getPermissions(
+						layout.getCompanyId(),
+						_resourceActionLocalService.getResourceActions(
+							Layout.class.getName()),
+						layout.getPlid(), Layout.class.getName(), null);
+
+				return permissions.toArray(new Permission[0]);
+			});
+	}
+
 	private WidgetPageSettings _toWidgetPageSettings(Layout layout) {
 		WidgetPageSettings widgetPageSettings = new WidgetPageSettings();
 
@@ -394,5 +420,11 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 
 	@Reference
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
+
+	@Reference
+	private PermissionService _permissionService;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
 
 }
