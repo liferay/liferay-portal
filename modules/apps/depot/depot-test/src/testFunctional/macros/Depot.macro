@@ -768,6 +768,8 @@ definition {
 			card = ${userScreenName},
 			item = "Remove Membership");
 
+		AssertConfirm.assertConfirmationNoError(value1 = "Only direct memberships will be removed. Inherited memberships (from an organization or a user group) will remain.");
+
 		Alert.viewSuccessMessage();
 	}
 
