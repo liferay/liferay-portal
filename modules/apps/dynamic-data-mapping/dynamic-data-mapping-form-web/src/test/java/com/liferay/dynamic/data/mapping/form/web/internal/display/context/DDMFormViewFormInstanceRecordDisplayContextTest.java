@@ -6,6 +6,7 @@
 package com.liferay.dynamic.data.mapping.form.web.internal.display.context;
 
 import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderer;
+import com.liferay.dynamic.data.mapping.form.renderer.DDMFormRenderingContext;
 import com.liferay.dynamic.data.mapping.form.values.factory.DDMFormValuesFactory;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
@@ -17,10 +18,15 @@ import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordService;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.util.DDMFormValuesMerger;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.RenderRequest;
@@ -30,11 +36,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Collections;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 /**
@@ -49,11 +57,13 @@ public class DDMFormViewFormInstanceRecordDisplayContextTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_setUpDDMForm();
 		_setUpDDMFormInstanceRecordService();
 		_setUpDDMFormInstanceVersionLocalService();
 		_setUpDDMFormRenderer();
 		_setUpDDMFormValuesMerger();
 		_setUpHttpServletRequest();
+		_setUpLanguageUtil();
 		_setUpPortalUtil();
 	}
 
@@ -77,6 +87,59 @@ public class DDMFormViewFormInstanceRecordDisplayContextTest {
 		).getFormInstanceRecord(
 			_FORM_INSTANCE_RECORD_ID
 		);
+	}
+
+	@Test
+	public void testGetDDMFormContextWithRedirectURL() throws Exception {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		Mockito.when(
+			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
+		Mockito.when(
+			_httpServletRequest.getParameter("redirect")
+		).thenReturn(
+			_REDIRECT_URL
+		);
+
+		DDMFormViewFormInstanceRecordDisplayContext
+			ddmFormViewFormInstanceRecordDisplayContext =
+				new DDMFormViewFormInstanceRecordDisplayContext(
+					_httpServletRequest,
+					Mockito.mock(HttpServletResponse.class),
+					_ddmFormInstanceRecordService,
+					_ddmFormInstanceVersionLocalService, _ddmFormRenderer,
+					Mockito.mock(DDMFormValuesFactory.class),
+					_ddmFormValuesMerger);
+
+		ddmFormViewFormInstanceRecordDisplayContext.getDDMFormContext(
+			_renderRequest);
+
+		ArgumentCaptor<DDMFormRenderingContext>
+			ddmFormRenderingContextArgumentCaptor = ArgumentCaptor.forClass(
+				DDMFormRenderingContext.class);
+
+		Mockito.verify(
+			_ddmFormRenderer
+		).getDDMFormTemplateContext(
+			Mockito.any(), Mockito.any(),
+			ddmFormRenderingContextArgumentCaptor.capture()
+		);
+
+		DDMFormRenderingContext ddmFormRenderingContext =
+			ddmFormRenderingContextArgumentCaptor.getValue();
+
+		Assert.assertEquals(
+			_ESCAPED_REDIRECT_URL, ddmFormRenderingContext.getRedirectURL());
 	}
 
 	private DDMFormInstance _mockDDMFormInstance() throws Exception {
@@ -140,6 +203,14 @@ public class DDMFormViewFormInstanceRecordDisplayContextTest {
 		return ddmFormValues;
 	}
 
+	private void _setUpDDMForm() {
+		Mockito.when(
+			_ddmForm.getAvailableLocales()
+		).thenReturn(
+			SetUtil.fromArray(LocaleUtil.US)
+		);
+	}
+
 	private void _setUpDDMFormInstanceRecordService() throws Exception {
 		DDMFormInstanceRecord ddmFormInstanceRecord =
 			_mockDDMFormInstanceRecord();
@@ -159,7 +230,7 @@ public class DDMFormViewFormInstanceRecordDisplayContextTest {
 		Mockito.when(
 			ddmStructureVersion.getDDMForm()
 		).thenReturn(
-			Mockito.mock(DDMForm.class)
+			_ddmForm
 		);
 
 		Mockito.when(
@@ -215,15 +286,35 @@ public class DDMFormViewFormInstanceRecordDisplayContextTest {
 		);
 	}
 
+	private void _setUpLanguageUtil() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		languageUtil.setLanguage(Mockito.mock(Language.class));
+	}
+
 	private void _setUpPortalUtil() {
 		PortalUtil portalUtil = new PortalUtil();
 
-		portalUtil.setPortal(Mockito.mock(Portal.class));
+		Portal portal = Mockito.mock(Portal.class);
+
+		Mockito.when(
+			portal.escapeRedirect(_REDIRECT_URL)
+		).thenReturn(
+			_ESCAPED_REDIRECT_URL
+		);
+
+		portalUtil.setPortal(portal);
 	}
+
+	private static final String _ESCAPED_REDIRECT_URL =
+		RandomTestUtil.randomString();
 
 	private static final long _FORM_INSTANCE_RECORD_ID =
 		RandomTestUtil.randomLong();
 
+	private static final String _REDIRECT_URL = RandomTestUtil.randomString();
+
+	private final DDMForm _ddmForm = Mockito.mock(DDMForm.class);
 	private final DDMFormInstanceRecordService _ddmFormInstanceRecordService =
 		Mockito.mock(DDMFormInstanceRecordService.class);
 	private final DDMFormInstanceVersion _ddmFormInstanceVersion = Mockito.mock(

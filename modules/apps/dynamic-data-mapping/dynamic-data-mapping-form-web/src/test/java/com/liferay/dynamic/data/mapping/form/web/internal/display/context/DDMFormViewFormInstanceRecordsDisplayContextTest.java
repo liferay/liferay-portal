@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.PortletRequest;
+import jakarta.portlet.PortletURL;
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 
@@ -114,6 +116,43 @@ public class DDMFormViewFormInstanceRecordsDisplayContextTest {
 			LocaleUtil.US,
 			_ddmFormViewFormInstanceRecordsDisplayContext.getDefaultLocale(
 				ddmFormInstanceRecord));
+	}
+
+	@Test
+	public void testGetPortletDisplayURLBack() throws Exception {
+		DDMFormAdminDisplayContext ddmFormAdminDisplayContext = Mockito.mock(
+			DDMFormAdminDisplayContext.class);
+
+		String portletURLString = RandomTestUtil.randomString();
+
+		PortletURL portletURL = _mockPortletURL(portletURLString);
+
+		Mockito.when(
+			ddmFormAdminDisplayContext.getPortletURL()
+		).thenReturn(
+			portletURL
+		);
+
+		String redirectURL = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_portal.escapeRedirect(redirectURL)
+		).thenReturn(
+			null
+		);
+
+		ThemeDisplay themeDisplay = _mockThemeDisplay();
+
+		new DDMFormViewFormInstanceRecordsDisplayContext(
+			_mockRenderRequest(
+				ddmFormAdminDisplayContext, redirectURL, themeDisplay),
+			Mockito.mock(RenderResponse.class), _mockDDMFormInstance(),
+			Mockito.mock(DDMFormInstanceRecordLocalService.class),
+			_mockDDMFormFieldTypeServicesRegistry());
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		Assert.assertEquals(portletURLString, portletDisplay.getURLBack());
 	}
 
 	@Test
@@ -222,6 +261,45 @@ public class DDMFormViewFormInstanceRecordsDisplayContextTest {
 		return ddmStructure;
 	}
 
+	private PortletURL _mockPortletURL(String portletURLString) {
+		PortletURL portletURL = Mockito.mock(PortletURL.class);
+
+		Mockito.when(
+			portletURL.toString()
+		).thenReturn(
+			portletURLString
+		);
+
+		return portletURL;
+	}
+
+	private RenderRequest _mockRenderRequest(
+		DDMFormAdminDisplayContext ddmFormAdminDisplayContext,
+		String redirectURL, ThemeDisplay themeDisplay) {
+
+		RenderRequest renderRequest = Mockito.mock(RenderRequest.class);
+
+		Mockito.when(
+			renderRequest.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT)
+		).thenReturn(
+			ddmFormAdminDisplayContext
+		);
+
+		Mockito.when(
+			renderRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
+		Mockito.when(
+			renderRequest.getParameter("redirect")
+		).thenReturn(
+			redirectURL
+		);
+
+		return renderRequest;
+	}
+
 	private ThemeDisplay _mockThemeDisplay() {
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
 
@@ -264,7 +342,11 @@ public class DDMFormViewFormInstanceRecordsDisplayContextTest {
 	private void _setUpPortalUtil() {
 		PortalUtil portalUtil = new PortalUtil();
 
-		Portal portal = Mockito.mock(Portal.class);
+		Mockito.when(
+			_portal.escapeRedirect(Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(0)
+		);
 
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
@@ -278,15 +360,16 @@ public class DDMFormViewFormInstanceRecordsDisplayContextTest {
 		);
 
 		Mockito.when(
-			portal.getHttpServletRequest(Mockito.any(PortletRequest.class))
+			_portal.getHttpServletRequest(Mockito.any(PortletRequest.class))
 		).thenReturn(
 			httpServletRequest
 		);
 
-		portalUtil.setPortal(portal);
+		portalUtil.setPortal(_portal);
 	}
 
 	private DDMFormViewFormInstanceRecordsDisplayContext
 		_ddmFormViewFormInstanceRecordsDisplayContext;
+	private final Portal _portal = Mockito.mock(Portal.class);
 
 }
