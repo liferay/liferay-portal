@@ -624,15 +624,16 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 
 		long companyId = objectEntry.getCompanyId();
-
 		List<String> projectManagerRoleNames = Collections.singletonList(
 			DepotRolesConstants.PROJECT_MANAGER);
-		List<String> projectSponsorRoleNames = Collections.singletonList(
-			DepotRolesConstants.PROJECT_MEMBER);
 
 		_addUserGroupRoles(
 			companyId, groupId, originalProjectManagerUserId,
 			projectManagerRoleNames, projectManagerUserId);
+
+		List<String> projectSponsorRoleNames = Collections.singletonList(
+			DepotRolesConstants.PROJECT_MEMBER);
+
 		_addUserGroupRoles(
 			companyId, groupId, originalProjectSponsorUserId,
 			projectSponsorRoleNames, projectSponsorUserId);
