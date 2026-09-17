@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Frontend JS AUI Sample Web
+Bundle-SymbolicName: com.liferay.frontend.js.aui.sample.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /frontend-js-aui-sample-web

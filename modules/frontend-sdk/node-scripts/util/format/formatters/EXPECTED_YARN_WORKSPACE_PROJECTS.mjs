@@ -138,6 +138,7 @@ export default [
 	'@liferay/frontend-editor-ckeditor5-sample-web',
 	'@liferay/frontend-icons-web',
 	'@liferay/frontend-js-audiences-web',
+	'@liferay/frontend-js-aui-sample-web',
 	'@liferay/frontend-js-bootstrap-support-web',
 	'@liferay/frontend-js-charts-sample-web',
 	'@liferay/frontend-js-charts-web',
