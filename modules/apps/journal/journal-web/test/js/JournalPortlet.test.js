@@ -11,7 +11,7 @@ import JournalPortlet from '../../src/main/resources/META-INF/resources/js/Journ
 
 const NAMESPACE = 'portletNamespace';
 
-const renderComponent = () => {
+const renderComponent = ({includeArticleIdWrapper = true} = {}) => {
 	return render(
 		<>
 			<div className="article-content-content" />
@@ -61,7 +61,9 @@ const renderComponent = () => {
 					type="hidden"
 				/>
 
-				<div className="hide" id={`${NAMESPACE}articleIdWrapper`} />
+				{includeArticleIdWrapper && (
+					<div className="hide" id={`${NAMESPACE}articleIdWrapper`} />
+				)}
 
 				<input
 					id={`${NAMESPACE}version`}
@@ -85,6 +87,7 @@ const renderComponent = () => {
 };
 
 describe('JournalPortlet', () => {
+	let friendlyUrlInputComponent;
 	let lock;
 
 	beforeEach(() => {
@@ -96,11 +99,21 @@ describe('JournalPortlet', () => {
 			unlock: jest.fn(),
 		};
 
+		friendlyUrlInputComponent = {
+			getValue: jest.fn(() => ''),
+			updateInput: jest.fn(),
+			updateInputLanguage: jest.fn(),
+		};
+
 		global.Liferay.BREAKPOINTS = {PHONE: 767};
 
 		global.Liferay.component = jest.fn((componentId) => {
 			if (componentId === `${NAMESPACE}titleMapAsXML`) {
 				return {getValue: () => 'Test'};
+			}
+
+			if (componentId === `${NAMESPACE}friendlyURL`) {
+				return friendlyUrlInputComponent;
 			}
 
 			return undefined;
@@ -193,5 +206,58 @@ describe('JournalPortlet', () => {
 		ddmFormValidHandler();
 
 		expect(actionInput).toHaveValue('/journal/update_article');
+	});
+
+	it('finishes syncing the autosave response when articleIdWrapper does not exist, as when Force Autogenerate ID is off', async () => {
+		jest.useFakeTimers();
+
+		renderComponent({includeArticleIdWrapper: false});
+
+		JournalPortlet({
+			articleId: null,
+			autoSaveDraftEnabled: true,
+			autoSaveDraftURL: 'http://localhost/o/journal/auto_save_article',
+			availableLocales: ['en_US'],
+			classNameId: '0',
+			contentTitle: 'Test',
+			defaultLanguageId: 'en_US',
+			hasSavePermission: true,
+			namespace: NAMESPACE,
+		});
+
+		await act(async () => {});
+
+		const newArticleIdInput = document.getElementById(
+			`${NAMESPACE}newArticleId`
+		);
+
+		newArticleIdInput.value = 'test123456';
+		newArticleIdInput.dispatchEvent(new Event('change', {bubbles: true}));
+
+		fetch.mockResponseOnce(
+			JSON.stringify({
+				articleId: 'test123456',
+				friendlyURL: 'test123456',
+				modifiedDate: 1700000000000,
+				success: true,
+				version: '1.0',
+			})
+		);
+
+		act(() => {
+			jest.advanceTimersByTime(1500);
+		});
+
+		await act(async () => {});
+
+		// A regression here throws while reading articleIdWrapper, which is
+		// only rendered when Force Autogenerate ID is on. The thrown error
+		// aborts the callback before formDate and the lock get updated, so
+		// asserting on those proves the whole success path actually ran.
+
+		const formDateInput = document.getElementById(`${NAMESPACE}formDate`);
+
+		expect(formDateInput).toHaveValue('1700000000000');
+		expect(lock.unlock).toHaveBeenCalledWith();
 	});
 });
