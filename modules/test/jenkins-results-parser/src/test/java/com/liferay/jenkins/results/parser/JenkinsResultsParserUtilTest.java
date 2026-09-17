@@ -552,8 +552,10 @@ public class JenkinsResultsParserUtilTest
 				JenkinsResultsParserUtil.sleep(10);
 			}
 
+			String threadDump = JenkinsResultsParserUtil.getThreadDump();
+
 			String lockWaiterHeader = _getThreadDumpHeader(
-				JenkinsResultsParserUtil.getThreadDump(), lockWaiterThreadName);
+				threadDump, lockWaiterThreadName);
 
 			Assert.assertNotNull(
 				"Thread dump does not name " + lockWaiterThreadName,
@@ -567,6 +569,13 @@ public class JenkinsResultsParserUtilTest
 				"Expected the lock owner in " + lockWaiterHeader,
 				lockWaiterHeader.contains(
 					"owned by \"" + lockOwnerThreadName + "\""));
+
+			String lockOwnerEntry = _getThreadDumpEntry(
+				threadDump, lockOwnerThreadName);
+
+			Assert.assertTrue(
+				"Expected a locked monitor in " + lockOwnerEntry,
+				lockOwnerEntry.contains("- locked"));
 		}
 		finally {
 			holdLatch.countDown();
@@ -575,6 +584,83 @@ public class JenkinsResultsParserUtilTest
 
 			lockWaiterThread.join();
 		}
+	}
+
+	@Test(timeout = 30000)
+	public void testGetThreadDumpDeadlockedThreads() throws Exception {
+		String firstThreadName = "deadlock-first";
+		String secondThreadName = "deadlock-second";
+
+		Object firstLock = new Object();
+		Object secondLock = new Object();
+
+		CountDownLatch bothLockedLatch = new CountDownLatch(2);
+		CountDownLatch proceedLatch = new CountDownLatch(1);
+
+		Thread firstThread = new Thread(
+			() -> {
+				synchronized (firstLock) {
+					bothLockedLatch.countDown();
+
+					try {
+						proceedLatch.await();
+					}
+					catch (InterruptedException interruptedException) {
+						return;
+					}
+
+					synchronized (secondLock) {
+					}
+				}
+			},
+			firstThreadName);
+
+		Thread secondThread = new Thread(
+			() -> {
+				synchronized (secondLock) {
+					bothLockedLatch.countDown();
+
+					try {
+						proceedLatch.await();
+					}
+					catch (InterruptedException interruptedException) {
+						return;
+					}
+
+					synchronized (firstLock) {
+					}
+				}
+			},
+			secondThreadName);
+
+		firstThread.setDaemon(true);
+		secondThread.setDaemon(true);
+
+		firstThread.start();
+		secondThread.start();
+
+		bothLockedLatch.await();
+
+		proceedLatch.countDown();
+
+		String threadDump = JenkinsResultsParserUtil.getThreadDump();
+
+		while (!threadDump.contains(" deadlocked threads:")) {
+			JenkinsResultsParserUtil.sleep(10);
+
+			threadDump = JenkinsResultsParserUtil.getThreadDump();
+		}
+
+		String deadlockSection = threadDump.substring(
+			threadDump.indexOf(" deadlocked threads:"));
+
+		Assert.assertTrue(
+			"Expected " + firstThreadName + " in " + deadlockSection,
+			deadlockSection.contains("\"" + firstThreadName + "\""));
+
+		Assert.assertTrue(
+			"Expected " + secondThreadName + " in " + deadlockSection,
+			deadlockSection.contains("\"" + secondThreadName + "\""));
 	}
 
 	@Test
@@ -889,6 +975,28 @@ public class JenkinsResultsParserUtilTest
 			buildAwsPropertiesFile.exists());
 
 		return JenkinsResultsParserUtil.getProperties(buildAwsPropertiesFile);
+	}
+
+	private String _getThreadDumpEntry(String threadDump, String threadName) {
+		StringBuilder sb = new StringBuilder();
+
+		boolean matched = false;
+
+		for (String line : threadDump.split("\n")) {
+			if (line.startsWith("\"" + threadName + "\"")) {
+				matched = true;
+			}
+			else if (matched && line.isEmpty()) {
+				break;
+			}
+
+			if (matched) {
+				sb.append(line);
+				sb.append("\n");
+			}
+		}
+
+		return sb.toString();
 	}
 
 	private String _getThreadDumpHeader(String threadDump, String threadName) {
