@@ -80,4 +80,28 @@ public class ThrowableUtilTest {
 				UnsupportedClassVersionError.class));
 	}
 
+	@Test
+	public void testGetNestedThrowableWhenSuppressed() {
+		UnsupportedClassVersionError unsupportedClassVersionError =
+			new UnsupportedClassVersionError(
+				"org/slf4j/impl/StaticLoggerBinder has been compiled by a " +
+					"more recent version of the Java Runtime");
+
+		ExecutionException executionException = new ExecutionException(
+			new RuntimeException(
+				"Unable to format Unrelated.bnd",
+				new IOException("Read failed")));
+
+		executionException.addSuppressed(
+			new ExecutionException(
+				new RuntimeException(
+					"Unable to format Test.macro",
+					unsupportedClassVersionError)));
+
+		Assert.assertSame(
+			unsupportedClassVersionError,
+			ThrowableUtil.getNestedThrowable(
+				executionException, UnsupportedClassVersionError.class));
+	}
+
 }
