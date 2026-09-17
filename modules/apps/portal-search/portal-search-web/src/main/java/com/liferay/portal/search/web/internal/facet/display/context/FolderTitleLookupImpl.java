@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.search.SearchException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
+import java.util.function.LongFunction;
 
 /**
  * @author André de Oliveira
@@ -23,9 +24,10 @@ import java.util.Map;
 public class FolderTitleLookupImpl implements FolderTitleLookup {
 
 	public FolderTitleLookupImpl(
-		FolderSearcher folderSearcher, HttpServletRequest httpServletRequest) {
+		LongFunction<FolderSearcher> folderSearcherFunction,
+		HttpServletRequest httpServletRequest) {
 
-		_folderSearcher = folderSearcher;
+		_folderSearcherFunction = folderSearcherFunction;
 		_httpServletRequest = httpServletRequest;
 	}
 
@@ -54,11 +56,10 @@ public class FolderTitleLookupImpl implements FolderTitleLookup {
 		return null;
 	}
 
-	private SearchContext _getSearchContext(long curFolderId) {
+	private SearchContext _getSearchContext() {
 		SearchContext searchContext = SearchContextFactory.getInstance(
 			_httpServletRequest);
 
-		searchContext.setFolderIds(new long[] {curFolderId});
 		searchContext.setGroupIds(new long[0]);
 		searchContext.setKeywords(StringPool.BLANK);
 
@@ -77,14 +78,17 @@ public class FolderTitleLookupImpl implements FolderTitleLookup {
 
 	private Hits _searchFolder(long curFolderId) {
 		try {
-			return _folderSearcher.search(_getSearchContext(curFolderId));
+			FolderSearcher folderSearcher = _folderSearcherFunction.apply(
+				curFolderId);
+
+			return folderSearcher.search(_getSearchContext());
 		}
 		catch (SearchException searchException) {
 			throw new RuntimeException(searchException);
 		}
 	}
 
-	private final FolderSearcher _folderSearcher;
+	private final LongFunction<FolderSearcher> _folderSearcherFunction;
 	private final HttpServletRequest _httpServletRequest;
 
 }

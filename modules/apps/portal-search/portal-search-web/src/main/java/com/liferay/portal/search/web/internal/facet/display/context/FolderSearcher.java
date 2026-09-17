@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.TermsFilter;
-import com.liferay.portal.kernel.util.ArrayUtil;
 
 /**
  * @author Eduardo García
@@ -20,7 +19,9 @@ import com.liferay.portal.kernel.util.ArrayUtil;
  */
 public class FolderSearcher extends BaseSearcher {
 
-	public FolderSearcher() {
+	public FolderSearcher(long folderId) {
+		_folderId = folderId;
+
 		setDefaultSelectedFieldNames(Field.TITLE, Field.UID);
 		setDefaultSelectedLocalizedFieldNames(Field.TITLE);
 		setFilterSearch(true);
@@ -39,8 +40,7 @@ public class FolderSearcher extends BaseSearcher {
 
 		TermsFilter termsFilter = new TermsFilter(Field.ENTRY_CLASS_PK);
 
-		termsFilter.addValues(
-			ArrayUtil.toStringArray(searchContext.getFolderIds()));
+		termsFilter.addValue(String.valueOf(_folderId));
 
 		booleanFilter.add(termsFilter, BooleanClauseOccur.MUST);
 
@@ -53,5 +53,7 @@ public class FolderSearcher extends BaseSearcher {
 		"com.liferay.journal.model.JournalFolder",
 		"com.liferay.object.model.ObjectEntryFolder"
 	};
+
+	private final long _folderId;
 
 }

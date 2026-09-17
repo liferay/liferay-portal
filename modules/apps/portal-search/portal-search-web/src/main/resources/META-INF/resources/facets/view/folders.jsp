@@ -11,7 +11,7 @@
 FolderSearchFacetDisplayContextBuilder folderSearchFacetDisplayContextBuilder = new FolderSearchFacetDisplayContextBuilder(renderRequest);
 
 folderSearchFacetDisplayContextBuilder.setFacet(facet);
-folderSearchFacetDisplayContextBuilder.setFolderTitleLookup(new FolderTitleLookupImpl(new FolderSearcher(), request));
+folderSearchFacetDisplayContextBuilder.setFolderTitleLookup(new FolderTitleLookupImpl(folderId -> new FolderSearcher(folderId), request));
 folderSearchFacetDisplayContextBuilder.setFrequenciesVisible(dataJSONObject.getBoolean("showAssetCount", true));
 folderSearchFacetDisplayContextBuilder.setFrequencyThreshold(dataJSONObject.getInt("frequencyThreshold"));
 folderSearchFacetDisplayContextBuilder.setMaxTerms(dataJSONObject.getInt("maxTerms", 10));

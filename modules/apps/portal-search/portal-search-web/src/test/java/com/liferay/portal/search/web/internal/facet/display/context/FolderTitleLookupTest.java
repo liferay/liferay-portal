@@ -19,6 +19,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.LongFunction;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -45,7 +47,8 @@ public class FolderTitleLookupTest {
 			_getTitleLocalizedFieldName(LocaleUtil.BRAZIL), "My Title");
 
 		FolderTitleLookup folderTitleLookup = new FolderTitleLookupImpl(
-			_mockFolderSearcher(hits), _mockHttpServletRequest(LocaleUtil.US));
+			_mockFolderSearcherFunction(hits),
+			_mockHttpServletRequest(LocaleUtil.US));
 
 		Assert.assertEquals(
 			"My Title",
@@ -59,7 +62,7 @@ public class FolderTitleLookupTest {
 		Hits hits = _getHitsWithDocument(Field.TITLE, "My Title");
 
 		FolderTitleLookup folderTitleLookup = new FolderTitleLookupImpl(
-			_mockFolderSearcher(hits),
+			_mockFolderSearcherFunction(hits),
 			_mockHttpServletRequest(LocaleUtil.BRAZIL));
 
 		Assert.assertEquals(
@@ -75,12 +78,36 @@ public class FolderTitleLookupTest {
 			_getTitleLocalizedFieldName(LocaleUtil.BRAZIL), "My Title");
 
 		FolderTitleLookup folderTitleLookup = new FolderTitleLookupImpl(
-			_mockFolderSearcher(hits),
+			_mockFolderSearcherFunction(hits),
 			_mockHttpServletRequest(LocaleUtil.BRAZIL));
 
 		Assert.assertEquals(
 			"My Title",
 			folderTitleLookup.getFolderTitle(RandomTestUtil.randomLong()));
+	}
+
+	@Test
+	public void testGetFolderTitleSearchesRequestedFolder()
+		throws SearchException {
+
+		AtomicLong atomicLong = new AtomicLong();
+
+		FolderSearcher folderSearcher = _mockFolderSearcher(
+			_getHitsWithDocument(Field.TITLE, "My Title"));
+
+		FolderTitleLookup folderTitleLookup = new FolderTitleLookupImpl(
+			curFolderId -> {
+				atomicLong.set(curFolderId);
+
+				return folderSearcher;
+			},
+			_mockHttpServletRequest(LocaleUtil.US));
+
+		long folderId = RandomTestUtil.randomLong();
+
+		folderTitleLookup.getFolderTitle(folderId);
+
+		Assert.assertEquals(folderId, atomicLong.get());
 	}
 
 	private Hits _getHitsWithDocument(String fieldName, String value) {
@@ -112,6 +139,14 @@ public class FolderTitleLookupTest {
 		);
 
 		return folderSearcher;
+	}
+
+	private LongFunction<FolderSearcher> _mockFolderSearcherFunction(Hits hits)
+		throws SearchException {
+
+		FolderSearcher folderSearcher = _mockFolderSearcher(hits);
+
+		return folderId -> folderSearcher;
 	}
 
 	private MockHttpServletRequest _mockHttpServletRequest(Locale locale) {

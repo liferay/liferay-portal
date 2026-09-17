@@ -112,7 +112,7 @@ public class FolderFacetPortlet extends MVCPortlet {
 				_getAggregationName(renderRequest)));
 		folderSearchFacetDisplayContextBuilder.setFolderTitleLookup(
 			new FolderTitleLookupImpl(
-				new FolderSearcher(),
+				FolderSearcher::new,
 				portal.getHttpServletRequest(renderRequest)));
 
 		FolderFacetPortletPreferences folderFacetPortletPreferences =
