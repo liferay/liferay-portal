@@ -331,6 +331,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_testGetSitePageSitePagesPage(false);
 		_testGetSitePageSitePagesPage(true);
+		_testGetSiteSitePagesPageWithFlatten();
 		_testGetSiteSitePagesPageWithPageSpecificationVersionsNestedField();
 	}
 
@@ -2293,7 +2294,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				StringUtil.toLowerCase(RandomTestUtil.randomString())));
 
 		Page<SitePage> page = sitePageResource.getSiteSitePagesPage(
-			siteExternalReferenceCode, privateLayout, null, null,
+			siteExternalReferenceCode, null, privateLayout, null, null,
 			"externalReferenceCode eq '" + sitePage.getExternalReferenceCode() +
 				"'",
 			Pagination.of(1, 10), null);
@@ -2357,6 +2358,43 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			null, 1, customApplicationDecorator, sitePage);
 	}
 
+	private void _testGetSiteSitePagesPageWithFlatten() throws Exception {
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+
+		Page<SitePage> page = sitePageResource.getSiteSitePagesPage(
+			testGroup.getExternalReferenceCode(), null, false, null, null, null,
+			Pagination.of(1, 100), null);
+
+		List<String> externalReferenceCodes = TransformUtil.transform(
+			(List<SitePage>)page.getItems(),
+			SitePage::getExternalReferenceCode);
+
+		Assert.assertTrue(
+			externalReferenceCodes.contains(
+				parentLayout.getExternalReferenceCode()));
+		Assert.assertFalse(
+			externalReferenceCodes.contains(
+				childLayout.getExternalReferenceCode()));
+
+		page = sitePageResource.getSiteSitePagesPage(
+			testGroup.getExternalReferenceCode(), true, false, null, null, null,
+			Pagination.of(1, 100), null);
+
+		externalReferenceCodes = TransformUtil.transform(
+			(List<SitePage>)page.getItems(),
+			SitePage::getExternalReferenceCode);
+
+		Assert.assertTrue(
+			externalReferenceCodes.contains(
+				parentLayout.getExternalReferenceCode()));
+		Assert.assertTrue(
+			externalReferenceCodes.contains(
+				childLayout.getExternalReferenceCode()));
+	}
+
 	private void _testGetSiteSitePagesPageWithPageSpecificationVersionsNestedField()
 		throws Exception {
 
@@ -2377,7 +2415,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			"pageSpecificationVersions");
 
 		Page<SitePage> sitePagesPage = sitePageResource.getSiteSitePagesPage(
-			testGroup.getExternalReferenceCode(), false, null, null, null,
+			testGroup.getExternalReferenceCode(), null, false, null, null, null,
 			Pagination.of(1, -1), null);
 
 		for (SitePage sitePage : sitePagesPage.getItems()) {
@@ -5154,7 +5192,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		throws Exception {
 
 		Page<SitePage> page = sitePageResource.getSiteSitePagesPage(
-			testGroup.getExternalReferenceCode(), false, null, null, null,
+			testGroup.getExternalReferenceCode(), null, false, null, null, null,
 			Pagination.of(0, 0), null);
 
 		for (SitePage sitePage : page.getItems()) {
