@@ -33,6 +33,8 @@ function main {
 		from_path="${from_path%/*}"
 	fi
 
+	into_path=$(echo "${into_path}" | sed "s|^/*||")
+
 	local source_uri=":${provider_type},env_auth=true${backend_options:+,${backend_options}}:${bucket_name}/${from_path}"
 	local target_path="/temp/${into_path}"
 

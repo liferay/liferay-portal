@@ -128,6 +128,7 @@ customInitContainers:
                                 /temp/liferay/reports \
                                 /temp/liferay/routes \
                                 /temp/liferay/work \
+                                /temp/mnt/liferay/patching \
                                 /temp/osgi/client-extensions \
                                 /temp/osgi/configs \
                                 /temp/osgi/modules \
@@ -533,6 +534,9 @@ volumeClaimTemplates:
                 requests:
                     storage: 1Gi
 volumeMounts:
+    -   mountPath: /mnt/liferay/patching
+        name: liferay-persistent-volume
+        subPath: mnt/liferay/patching
     -   mountPath: /opt/liferay/data
         name: liferay-persistent-volume
         subPath: liferay/data

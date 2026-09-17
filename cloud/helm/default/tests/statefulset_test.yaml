@@ -61,6 +61,15 @@ tests:
                 -   name: FOO
                     value: bar
     -   asserts:
+            -   matchRegex:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-prepopulate-data")].command[2]
+                    pattern: /temp/mnt/liferay/patching
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Creates the patching directory on the persistent volume
+    -   asserts:
             -   equal:
                     path: spec.volumeClaimTemplates[0].spec.storageClassName
                     value: hyperdisk-balanced-rwo
@@ -92,6 +101,19 @@ tests:
                             requests:
                                 storage: 1Gi
                         storageClassName: premium-rwo
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        mountPath: /mnt/liferay/patching
+                        name: liferay-persistent-volume
+                        subPath: mnt/liferay/patching
+                    path: spec.template.spec.containers[0].volumeMounts
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Mounts the patching directory into the Liferay container
     -   asserts:
             -   equal:
                     path: metadata.name
