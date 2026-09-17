@@ -914,17 +914,19 @@ test.describe('Import and Export Structures', () => {
 				override: false,
 			});
 
+			// Wait for the import response before navigating away, otherwise
+			// the navigation aborts the request while the server is still
+			// writing its response
+
+			await waitForAlert(page, 'successfully imported', {
+				type: 'success',
+			});
+
 			// The structure and its field are restored
 
-			await expect(async () => {
-				await structuresPage.goto();
+			await structuresPage.goto();
 
-				await expect(
-					structuresPage.getItem(structureLabel)
-				).toBeVisible({
-					timeout: 5000,
-				});
-			}).toPass();
+			await expect(structuresPage.getItem(structureLabel)).toBeVisible();
 
 			// The import created a new object definition, so register its
 			// id for the cleanup
