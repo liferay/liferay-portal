@@ -12,6 +12,8 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
@@ -77,6 +79,28 @@ public class ProductDTOConverter
 			{
 				setActions(dtoConverterContext::getActions);
 				setActive(() -> !cpDefinition.isInactive());
+				setCatalogCurrencyCode(
+					() -> {
+						CommerceCatalog commerceCatalog =
+							cpDefinition.getCommerceCatalog();
+
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getCommerceCurrencyCode();
+					});
+				setCatalogCurrencyExternalReferenceCode(
+					() -> {
+						CommerceCurrency commerceCurrency =
+							_fetchCommerceCurrency(cpDefinition);
+
+						if (commerceCurrency == null) {
+							return null;
+						}
+
+						return commerceCurrency.getExternalReferenceCode();
+					});
 				setCatalogExternalReferenceCode(
 					() -> {
 						CommerceCatalog commerceCatalog =
@@ -180,6 +204,18 @@ public class ProductDTOConverter
 		};
 	}
 
+	private CommerceCurrency _fetchCommerceCurrency(CPDefinition cpDefinition) {
+		CommerceCatalog commerceCatalog = cpDefinition.getCommerceCatalog();
+
+		if (commerceCatalog == null) {
+			return null;
+		}
+
+		return _commerceCurrencyLocalService.fetchCommerceCurrency(
+			commerceCatalog.getCompanyId(),
+			commerceCatalog.getCommerceCurrencyCode());
+	}
+
 	private CPType _getCPType(String name) {
 		return _cpTypeRegistry.getCPType(name);
 	}
@@ -254,6 +290,9 @@ public class ProductDTOConverter
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;

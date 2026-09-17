@@ -13,6 +13,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetTagService;
+import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
@@ -114,6 +115,7 @@ import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.SkuUnitOfM
 import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.SkuUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
+import com.liferay.headless.commerce.core.util.CommerceCurrencyUtil;
 import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.headless.commerce.core.util.ExpandoUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
@@ -125,6 +127,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -692,14 +695,8 @@ public class ProductResourceImpl
 						contextCompany.getCompanyId());
 
 			if (commerceCatalog == null) {
-				CommerceCurrency commerceCurrency =
-					_commerceCurrencyService.getOrAddEmptyCommerceCurrency(
-						catalogExternalReferenceCode, null);
-
-				commerceCatalog =
-					_commerceCatalogService.getOrAddEmptyCommerceCatalog(
-						catalogExternalReferenceCode,
-						commerceCurrency.getCode());
+				commerceCatalog = _fetchCommerceCatalog(
+					catalogExternalReferenceCode, product);
 			}
 		}
 
@@ -986,6 +983,20 @@ public class ProductResourceImpl
 		return cpDefinition;
 	}
 
+	private CommerceCatalog _fetchCommerceCatalog(
+			String catalogExternalReferenceCode, Product product)
+		throws Exception {
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return null;
+		}
+
+		CommerceCurrency commerceCurrency = _getCommerceCurrency(product);
+
+		return _commerceCatalogService.getOrAddEmptyCommerceCatalog(
+			catalogExternalReferenceCode, commerceCurrency.getCode());
+	}
+
 	private Map<String, Map<String, String>> _getActions(
 		CPDefinition cpDefinition) {
 
@@ -1090,6 +1101,32 @@ public class ProductResourceImpl
 		}
 
 		return cpDefinition;
+	}
+
+	private CommerceCurrency _getCommerceCurrency(Product product)
+		throws Exception {
+
+		String catalogCurrencyCode = product.getCatalogCurrencyCode();
+		String catalogCurrencyExternalReferenceCode =
+			product.getCatalogCurrencyExternalReferenceCode();
+
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.fetchCommerceCurrency(
+				contextCompany.getCompanyId(), catalogCurrencyCode,
+				catalogCurrencyExternalReferenceCode, 0);
+
+		if (commerceCurrency != null) {
+			return commerceCurrency;
+		}
+
+		if (Validator.isNull(catalogCurrencyExternalReferenceCode)) {
+			throw new NoSuchCurrencyException(
+				"Unable to find currency with external reference code " +
+					catalogCurrencyExternalReferenceCode);
+		}
+
+		return _commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+			catalogCurrencyExternalReferenceCode, catalogCurrencyCode);
 	}
 
 	private Map<String, Serializable> _getExpandoBridgeAttributes(

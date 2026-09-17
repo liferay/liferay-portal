@@ -5,6 +5,8 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelService;
@@ -68,6 +70,28 @@ public class ProductGroupProductDTOConverter
 
 		return new ProductGroupProduct() {
 			{
+				setCatalogCurrencyCode(
+					() -> {
+						CommerceCatalog commerceCatalog =
+							cpDefinition.getCommerceCatalog();
+
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getCommerceCurrencyCode();
+					});
+				setCatalogCurrencyExternalReferenceCode(
+					() -> {
+						CommerceCurrency commerceCurrency =
+							_fetchCommerceCurrency(cpDefinition);
+
+						if (commerceCurrency == null) {
+							return null;
+						}
+
+						return commerceCurrency.getExternalReferenceCode();
+					});
 				setCatalogExternalReferenceCode(
 					() -> {
 						CommerceCatalog commerceCatalog =
@@ -96,6 +120,18 @@ public class ProductGroupProductDTOConverter
 		};
 	}
 
+	private CommerceCurrency _fetchCommerceCurrency(CPDefinition cpDefinition) {
+		CommerceCatalog commerceCatalog = cpDefinition.getCommerceCatalog();
+
+		if (commerceCatalog == null) {
+			return null;
+		}
+
+		return _commerceCurrencyLocalService.fetchCommerceCurrency(
+			commerceCatalog.getCompanyId(),
+			commerceCatalog.getCommerceCurrencyCode());
+	}
+
 	private String _getSku(CPDefinition cpDefinition, Locale locale) {
 		List<CPInstance> cpInstances = cpDefinition.getCPInstances();
 
@@ -111,6 +147,9 @@ public class ProductGroupProductDTOConverter
 
 		return cpInstance.getSku();
 	}
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CommercePricingClassCPDefinitionRelService

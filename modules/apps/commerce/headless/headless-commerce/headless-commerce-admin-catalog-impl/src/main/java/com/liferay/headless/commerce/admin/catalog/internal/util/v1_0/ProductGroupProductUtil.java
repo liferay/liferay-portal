@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
+import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
@@ -19,7 +20,9 @@ import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductGroupProduct;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
+import com.liferay.headless.commerce.core.util.CommerceCurrencyUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -95,13 +98,9 @@ public class ProductGroupProductUtil {
 				catalogExternalReferenceCode, serviceContext.getCompanyId());
 
 		if (commerceCatalog == null) {
-			CommerceCurrency commerceCurrency =
-				commerceCurrencyService.getOrAddEmptyCommerceCurrency(
-					catalogExternalReferenceCode, null);
-
-			commerceCatalog =
-				commerceCatalogService.getOrAddEmptyCommerceCatalog(
-					catalogExternalReferenceCode, commerceCurrency.getCode());
+			commerceCatalog = _getCommerceCatalog(
+				catalogExternalReferenceCode, commerceCatalogService,
+				commerceCurrencyService, productGroupProduct, serviceContext);
 		}
 
 		CPDefinition cpDefinition =
@@ -111,6 +110,57 @@ public class ProductGroupProductUtil {
 				productGroupProduct.getProductType());
 
 		return cpDefinition.getCPDefinitionId();
+	}
+
+	private static CommerceCatalog _getCommerceCatalog(
+			String catalogExternalReferenceCode,
+			CommerceCatalogService commerceCatalogService,
+			CommerceCurrencyService commerceCurrencyService,
+			ProductGroupProduct productGroupProduct,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			throw new NoSuchCatalogException(
+				"Unable to find catalog with external reference code " +
+					catalogExternalReferenceCode);
+		}
+
+		CommerceCurrency commerceCurrency = _getCommerceCurrency(
+			commerceCurrencyService, productGroupProduct, serviceContext);
+
+		return commerceCatalogService.getOrAddEmptyCommerceCatalog(
+			catalogExternalReferenceCode, commerceCurrency.getCode());
+	}
+
+	private static CommerceCurrency _getCommerceCurrency(
+			CommerceCurrencyService commerceCurrencyService,
+			ProductGroupProduct productGroupProduct,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		String catalogCurrencyCode =
+			productGroupProduct.getCatalogCurrencyCode();
+		String catalogCurrencyExternalReferenceCode =
+			productGroupProduct.getCatalogCurrencyExternalReferenceCode();
+
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.fetchCommerceCurrency(
+				serviceContext.getCompanyId(), catalogCurrencyCode,
+				catalogCurrencyExternalReferenceCode, 0);
+
+		if (commerceCurrency != null) {
+			return commerceCurrency;
+		}
+
+		if (Validator.isNull(catalogCurrencyExternalReferenceCode)) {
+			throw new NoSuchCurrencyException(
+				"Unable to find currency with external reference code " +
+					catalogCurrencyExternalReferenceCode);
+		}
+
+		return commerceCurrencyService.getOrAddEmptyCommerceCurrency(
+			catalogCurrencyExternalReferenceCode, catalogCurrencyCode);
 	}
 
 }
