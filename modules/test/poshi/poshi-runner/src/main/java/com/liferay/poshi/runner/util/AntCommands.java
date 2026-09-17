@@ -12,6 +12,7 @@ import com.liferay.poshi.core.util.StringUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import java.util.concurrent.Callable;
@@ -79,40 +80,21 @@ public class AntCommands implements Callable<Void> {
 			sb.append(poshiProperties.testName);
 		}
 
-		Process process = runtime.exec(
-			sb.toString(), null, new File(projectDirName));
+		Process process = new BufferedProcess(
+			_BUFFER_SIZE,
+			runtime.exec(sb.toString(), null, new File(projectDirName)));
 
-		InputStreamReader inputStreamReader = new InputStreamReader(
-			process.getInputStream());
+		process.waitFor();
 
-		BufferedReader inputBufferedReader = new BufferedReader(
-			inputStreamReader);
+		// Read the exit value only after the process ends, so that the
+		// buffering threads are given time to drain the last of the output
+
+		int exitValue = process.exitValue();
 
 		StringBuilder outputSB = new StringBuilder();
 
-		String line = null;
-
-		while ((line = inputBufferedReader.readLine()) != null) {
-			System.out.println(line);
-
-			outputSB.append(line);
-			outputSB.append("\n");
-		}
-
-		InputStreamReader errorStreamReader = new InputStreamReader(
-			process.getErrorStream());
-
-		BufferedReader errorBufferedReader = new BufferedReader(
-			errorStreamReader);
-
-		while ((line = errorBufferedReader.readLine()) != null) {
-			System.out.println(line);
-
-			outputSB.append(line);
-			outputSB.append("\n");
-		}
-
-		int exitValue = process.waitFor();
+		_readInputStream(process.getInputStream(), outputSB);
+		_readInputStream(process.getErrorStream(), outputSB);
 
 		if (exitValue != 0) {
 			String outputString = outputSB.toString();
@@ -131,6 +113,25 @@ public class AntCommands implements Callable<Void> {
 
 		return null;
 	}
+
+	private void _readInputStream(InputStream inputStream, StringBuilder sb)
+		throws Exception {
+
+		try (BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(inputStream))) {
+
+			String line = null;
+
+			while ((line = bufferedReader.readLine()) != null) {
+				System.out.println(line);
+
+				sb.append(line);
+				sb.append("\n");
+			}
+		}
+	}
+
+	private static final int _BUFFER_SIZE = 2000000;
 
 	private static final int _MAX_OUTPUT_LENGTH = 5000;
 
