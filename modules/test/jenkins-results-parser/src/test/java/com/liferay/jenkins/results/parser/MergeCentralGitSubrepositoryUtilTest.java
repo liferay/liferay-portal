@@ -45,17 +45,16 @@ public class MergeCentralGitSubrepositoryUtilTest
 	public void testGetRemote() throws Exception {
 		File gitrepoFile = new File("modules/integrations/mulesoft/.gitrepo");
 
-		Properties present = new Properties();
+		Properties gitrepoProperties = new Properties();
 
-		present.setProperty(
-			"remote", "git@github.com:liferay/liferay-portal.git");
+		gitrepoProperties.setProperty("remote", _SSH_REMOTE_URL);
 
 		Assert.assertEquals(
-			"git@github.com:liferay/liferay-portal.git",
+			_SSH_REMOTE_URL,
 			ReflectionTestUtil.invoke(
 				MergeCentralGitSubrepositoryUtil.class, "_getRemote",
-				new Class<?>[] {Properties.class, File.class}, present,
-				gitrepoFile));
+				new Class<?>[] {Properties.class, File.class},
+				gitrepoProperties, gitrepoFile));
 
 		Assert.assertNull(
 			ReflectionTestUtil.invoke(
@@ -66,32 +65,36 @@ public class MergeCentralGitSubrepositoryUtilTest
 
 	@Test
 	public void testIsBlacklisted() throws Exception {
-		String gitRemote =
-			"git@github.com:liferay/com-liferay-osb-asah-private.git";
-		String httpsRemote =
-			"https://github.com/liferay/com-liferay-osb-asah-private.git";
-		List<String> blacklist = Arrays.asList("com-liferay-osb-asah-private");
+		List<String> subrepoMergeBlacklist = Arrays.asList(
+			"com-liferay-osb-asah-private");
 
 		Assert.assertFalse(
 			(boolean)ReflectionTestUtil.invoke(
 				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
-				new Class<?>[] {String.class, List.class}, gitRemote,
+				new Class<?>[] {String.class, List.class}, _SSH_REMOTE_URL,
 				Collections.emptyList()));
 		Assert.assertFalse(
 			(boolean)ReflectionTestUtil.invoke(
 				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
-				new Class<?>[] {String.class, List.class}, httpsRemote,
-				blacklist));
+				new Class<?>[] {String.class, List.class}, _HTTPS_REMOTE_URL,
+				subrepoMergeBlacklist));
 		Assert.assertFalse(
 			(boolean)ReflectionTestUtil.invoke(
 				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
 				new Class<?>[] {String.class, List.class},
-				"git@github.com:liferay/other-repo.git", blacklist));
+				"git@github.com:liferay/other-repo.git",
+				subrepoMergeBlacklist));
 		Assert.assertTrue(
 			(boolean)ReflectionTestUtil.invoke(
 				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
-				new Class<?>[] {String.class, List.class}, gitRemote,
-				blacklist));
+				new Class<?>[] {String.class, List.class}, _SSH_REMOTE_URL,
+				subrepoMergeBlacklist));
 	}
+
+	private static final String _HTTPS_REMOTE_URL =
+		"https://github.com/liferay/com-liferay-osb-asah-private.git";
+
+	private static final String _SSH_REMOTE_URL =
+		"git@github.com:liferay/com-liferay-osb-asah-private.git";
 
 }

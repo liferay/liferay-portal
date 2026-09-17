@@ -67,21 +67,22 @@ public class CentralGitSubrepositoryTest
 				gitrepoProperties.load(fileInputStream);
 			}
 
-			CentralGitSubrepository mock = Mockito.mock(
+			CentralGitSubrepository centralGitSubrepository = Mockito.mock(
 				CentralGitSubrepository.class);
 
 			ReflectionTestUtil.setFieldValue(
-				mock, "_gitrepoProperties", gitrepoProperties);
+				centralGitSubrepository, "_gitrepoProperties",
+				gitrepoProperties);
 
 			Mockito.doCallRealMethod(
 			).when(
-				mock
+				centralGitSubrepository
 			).isAutoPullEnabled();
 
 			Assert.assertFalse(
 				"Expected isAutoPullEnabled() false for " +
 					gitrepoFile.getPath(),
-				mock.isAutoPullEnabled());
+				centralGitSubrepository.isAutoPullEnabled());
 		}
 	}
 
@@ -103,16 +104,17 @@ public class CentralGitSubrepositoryTest
 
 		gitrepoProperties.setProperty("remote", remote);
 
-		CentralGitSubrepository mock = Mockito.mock(
+		CentralGitSubrepository centralGitSubrepository = Mockito.mock(
 			CentralGitSubrepository.class);
 
 		ReflectionTestUtil.setFieldValue(
-			mock, "_gitrepoProperties", gitrepoProperties);
+			centralGitSubrepository, "_gitrepoProperties", gitrepoProperties);
 
 		Assert.assertEquals(
 			expectedName,
 			ReflectionTestUtil.invoke(
-				mock, "_getGitSubrepositoryName", new Class<?>[0]));
+				centralGitSubrepository, "_getGitSubrepositoryName",
+				new Class<?>[0]));
 	}
 
 	private void _testGetGitSubrepositoryUsername(
@@ -122,16 +124,17 @@ public class CentralGitSubrepositoryTest
 
 		gitrepoProperties.setProperty("remote", remote);
 
-		CentralGitSubrepository mock = Mockito.mock(
+		CentralGitSubrepository centralGitSubrepository = Mockito.mock(
 			CentralGitSubrepository.class);
 
 		ReflectionTestUtil.setFieldValue(
-			mock, "_gitrepoProperties", gitrepoProperties);
+			centralGitSubrepository, "_gitrepoProperties", gitrepoProperties);
 
 		Assert.assertEquals(
 			expectedUsername,
 			ReflectionTestUtil.invoke(
-				mock, "_getGitSubrepositoryUsername", new Class<?>[0]));
+				centralGitSubrepository, "_getGitSubrepositoryUsername",
+				new Class<?>[0]));
 	}
 
 	private void _testIsAutoPullEnabled(
@@ -150,18 +153,19 @@ public class CentralGitSubrepositoryTest
 			gitrepoProperties.setProperty("mode", mode);
 		}
 
-		CentralGitSubrepository mock = Mockito.mock(
+		CentralGitSubrepository centralGitSubrepository = Mockito.mock(
 			CentralGitSubrepository.class);
 
 		ReflectionTestUtil.setFieldValue(
-			mock, "_gitrepoProperties", gitrepoProperties);
+			centralGitSubrepository, "_gitrepoProperties", gitrepoProperties);
 
 		Mockito.doCallRealMethod(
 		).when(
-			mock
+			centralGitSubrepository
 		).isAutoPullEnabled();
 
-		Assert.assertEquals(expected, mock.isAutoPullEnabled());
+		Assert.assertEquals(
+			expected, centralGitSubrepository.isAutoPullEnabled());
 	}
 
 	private void _testIsGitSubrepositoryUpstreamCommitMerged(
@@ -177,27 +181,29 @@ public class CentralGitSubrepositoryTest
 			gitrepoProperties.setProperty("commit", commit);
 		}
 
-		CentralGitSubrepository mock = Mockito.mock(
+		CentralGitSubrepository centralGitSubrepository = Mockito.mock(
 			CentralGitSubrepository.class);
 
 		ReflectionTestUtil.setFieldValue(
-			mock, "_gitrepoProperties", gitrepoProperties);
+			centralGitSubrepository, "_gitrepoProperties", gitrepoProperties);
 
 		ReflectionTestUtil.setFieldValue(
-			mock, "_gitSubrepositoryUpstreamCommit", upstreamCommit);
+			centralGitSubrepository, "_gitSubrepositoryUpstreamCommit",
+			upstreamCommit);
 
 		Mockito.doCallRealMethod(
 		).when(
-			mock
+			centralGitSubrepository
 		).isGitSubrepositoryUpstreamCommitMerged();
 
 		Mockito.doCallRealMethod(
 		).when(
-			mock
+			centralGitSubrepository
 		).getGitSubrepositoryUpstreamCommit();
 
 		Assert.assertEquals(
-			expected, mock.isGitSubrepositoryUpstreamCommitMerged());
+			expected,
+			centralGitSubrepository.isGitSubrepositoryUpstreamCommitMerged());
 	}
 
 }
