@@ -15,11 +15,37 @@ import java.util.Properties;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
 /**
  * @author Charlotte Wong
  */
 public class MergeCentralGitSubrepositoryUtilTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testCreateGitSubrepositoryMergePullRequests() throws Exception {
+		File centralWorkingDirectory = File.createTempFile(
+			"merge-central-subrepository-", null);
+
+		centralWorkingDirectory.delete();
+
+		centralWorkingDirectory.mkdir();
+
+		File modulesDir = new File(centralWorkingDirectory, "modules");
+
+		_writeGitrepoFile(modulesDir, "blacklisted", _SSH_REMOTE_URL);
+
+		File brokenDir = _writeGitrepoFile(modulesDir, "broken", null);
+
+		Assert.assertEquals(
+			JenkinsResultsParserUtil.combine(
+				"Skipped these subrepositories with no \"remote\" key:\n",
+				brokenDir.getPath()),
+			_createGitSubrepositoryMergePullRequests(centralWorkingDirectory));
+	}
 
 	@Test
 	public void testGetMergeBranchName() throws Exception {
@@ -47,28 +73,6 @@ public class MergeCentralGitSubrepositoryUtilTest
 	}
 
 	@Test
-	public void testGetRemote() throws Exception {
-		File gitrepoFile = new File(RandomTestUtil.randomString());
-
-		Properties gitrepoProperties = new Properties();
-
-		gitrepoProperties.setProperty("remote", _SSH_REMOTE_URL);
-
-		Assert.assertEquals(
-			_SSH_REMOTE_URL,
-			ReflectionTestUtil.invoke(
-				MergeCentralGitSubrepositoryUtil.class, "_getRemote",
-				new Class<?>[] {Properties.class, File.class},
-				gitrepoProperties, gitrepoFile));
-
-		Assert.assertNull(
-			ReflectionTestUtil.invoke(
-				MergeCentralGitSubrepositoryUtil.class, "_getRemote",
-				new Class<?>[] {Properties.class, File.class}, new Properties(),
-				gitrepoFile));
-	}
-
-	@Test
 	public void testIsBlacklisted() throws Exception {
 		_testIsBlacklisted(
 			false, _SSH_REMOTE_URL, Collections.<String>emptyList());
@@ -83,6 +87,70 @@ public class MergeCentralGitSubrepositoryUtilTest
 		_testIsBlacklisted(true, _SSH_REMOTE_URL, subrepoMergeBlacklist);
 	}
 
+	private String _createGitSubrepositoryMergePullRequests(
+			File centralWorkingDirectory)
+		throws Exception {
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"email.list[merge-central-subrepository]", "ci@liferay.com");
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		Mockito.when(
+			gitWorkingDirectory.getWorkingDirectory()
+		).thenReturn(
+			centralWorkingDirectory
+		);
+
+		ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(
+			String.class);
+
+		try (MockedStatic<GitWorkingDirectoryFactory>
+				gitWorkingDirectoryFactoryMockedStatic = Mockito.mockStatic(
+					GitWorkingDirectoryFactory.class);
+			MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
+					JenkinsResultsParserUtil.class, Mockito.CALLS_REAL_METHODS);
+			MockedStatic<NotificationUtil> notificationUtilMockedStatic =
+				Mockito.mockStatic(NotificationUtil.class)) {
+
+			gitWorkingDirectoryFactoryMockedStatic.when(
+				() -> GitWorkingDirectoryFactory.newGitWorkingDirectory(
+					Mockito.anyString(), Mockito.anyString())
+			).thenReturn(
+				gitWorkingDirectory
+			);
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				JenkinsResultsParserUtil::getBuildProperties
+			).thenReturn(
+				buildProperties
+			);
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				() -> JenkinsResultsParserUtil.getBuildPropertyAsList(
+					Mockito.anyBoolean(), Mockito.anyString())
+			).thenReturn(
+				Arrays.asList("com-liferay-osb-asah-private")
+			);
+
+			MergeCentralGitSubrepositoryUtil.
+				createGitSubrepositoryMergePullRequests(
+					centralWorkingDirectory.getPath(), "7.0.x", "liferay",
+					"liferay", "7.0.x");
+
+			notificationUtilMockedStatic.verify(
+				() -> NotificationUtil.sendEmail(
+					argumentCaptor.capture(), Mockito.anyString(),
+					Mockito.anyString(), Mockito.anyString()));
+		}
+
+		return argumentCaptor.getValue();
+	}
+
 	private void _testIsBlacklisted(
 			boolean expected, String remote, List<String> subrepoMergeBlacklist)
 		throws Exception {
@@ -93,6 +161,26 @@ public class MergeCentralGitSubrepositoryUtilTest
 				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
 				new Class<?>[] {String.class, List.class}, remote,
 				subrepoMergeBlacklist));
+	}
+
+	private File _writeGitrepoFile(File modulesDir, String name, String remote)
+		throws Exception {
+
+		File gitrepoDir = new File(modulesDir, name);
+
+		gitrepoDir.mkdirs();
+
+		String content = "[subrepo]\n\tmode = pull\n";
+
+		if (remote != null) {
+			content = JenkinsResultsParserUtil.combine(
+				content, "\tremote = ", remote, "\n");
+		}
+
+		JenkinsResultsParserUtil.write(
+			new File(gitrepoDir, ".gitrepo"), content);
+
+		return gitrepoDir;
 	}
 
 	private static final String _HTTPS_REMOTE_URL =

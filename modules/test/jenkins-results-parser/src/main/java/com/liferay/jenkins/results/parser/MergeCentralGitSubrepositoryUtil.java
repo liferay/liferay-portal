@@ -43,6 +43,7 @@ public class MergeCentralGitSubrepositoryUtil {
 		}
 
 		List<String> failedGitrepoPaths = new ArrayList<>();
+		List<String> skippedGitrepoPaths = new ArrayList<>();
 		List<String> subrepoMergeBlacklist =
 			JenkinsResultsParserUtil.getBuildPropertyAsList(
 				false, "subrepo.merge.blacklist");
@@ -55,11 +56,15 @@ public class MergeCentralGitSubrepositoryUtil {
 				Properties gitrepoProperties = _getPropertiesFromGitrepoFile(
 					gitrepoFile);
 
-				String remote = _getRemote(gitrepoProperties, gitrepoFile);
+				String remote = gitrepoProperties.getProperty("remote");
 
-				if ((remote == null) ||
-					_isBlacklisted(remote, subrepoMergeBlacklist)) {
+				if (remote == null) {
+					skippedGitrepoPaths.add(gitrepoFile.getParent());
 
+					continue;
+				}
+
+				if (_isBlacklisted(remote, subrepoMergeBlacklist)) {
 					continue;
 				}
 
@@ -122,18 +127,19 @@ public class MergeCentralGitSubrepositoryUtil {
 			}
 		}
 
+		if (!skippedGitrepoPaths.isEmpty()) {
+			_sendEmail(
+				JenkinsResultsParserUtil.combine(
+					"Skipped these subrepositories with no \"remote\" key:\n",
+					StringUtils.join(skippedGitrepoPaths, "\n")));
+		}
+
 		if (!failedGitrepoPaths.isEmpty()) {
 			String message = JenkinsResultsParserUtil.combine(
 				"Unable to create a pull to merge these subrepositories:\n",
 				StringUtils.join(failedGitrepoPaths, "\n"));
 
-			Properties buildProperties =
-				JenkinsResultsParserUtil.getBuildProperties();
-
-			NotificationUtil.sendEmail(
-				message, "jenkins", "Merge central Git subrepository",
-				buildProperties.getProperty(
-					"email.list[merge-central-subrepository]"));
+			_sendEmail(message);
 
 			throw new RuntimeException(message);
 		}
@@ -395,20 +401,6 @@ public class MergeCentralGitSubrepositoryUtil {
 		return properties;
 	}
 
-	private static String _getRemote(
-		Properties gitrepoProperties, File gitrepoFile) {
-
-		String remote = gitrepoProperties.getProperty("remote");
-
-		if (remote == null) {
-			System.out.println(
-				"WARNING: Skipping " + gitrepoFile.getPath() +
-					": missing required 'remote' key");
-		}
-
-		return remote;
-	}
-
 	private static boolean _isBlacklisted(
 		String remote, List<String> subrepoMergeBlacklist) {
 
@@ -446,6 +438,16 @@ public class MergeCentralGitSubrepositoryUtil {
 		finally {
 			centralGitWorkingDirectory.removeGitRemote(originGitRemote);
 		}
+	}
+
+	private static void _sendEmail(String message) throws IOException {
+		Properties buildProperties =
+			JenkinsResultsParserUtil.getBuildProperties();
+
+		NotificationUtil.sendEmail(
+			message, "jenkins", "Merge central Git subrepository",
+			buildProperties.getProperty(
+				"email.list[merge-central-subrepository]"));
 	}
 
 	private static final Pattern _githubRemotePattern = Pattern.compile(
