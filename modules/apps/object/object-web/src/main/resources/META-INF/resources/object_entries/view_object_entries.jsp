@@ -11,8 +11,6 @@
 ViewObjectEntriesDisplayContext viewObjectEntriesDisplayContext = (ViewObjectEntriesDisplayContext)request.getAttribute(WebKeys.PORTLET_DISPLAY_CONTEXT);
 
 ObjectDefinition objectDefinition = viewObjectEntriesDisplayContext.getObjectDefinition();
-
-String portletNamespace = liferayPortletResponse.getNamespace();
 %>
 
 <c:choose>
@@ -27,7 +25,7 @@ String portletNamespace = liferayPortletResponse.getNamespace();
 				module="{BulkStatus} from object-web"
 				props='<%=
 					HashMapBuilder.<String, Object>put(
-						"bulkComponentId", portletNamespace + "BulkStatus"
+						"bulkComponentId", liferayPortletResponse.getNamespace() + "BulkStatus"
 					).put(
 						"bulkInProgress", bulkSelectionRunner.isBusy(user)
 					).put(
@@ -47,7 +45,7 @@ String portletNamespace = liferayPortletResponse.getNamespace();
 			formName="fm"
 			id="<%= viewObjectEntriesDisplayContext.getFDSId() %>"
 			itemsPerPage="<%= 20 %>"
-			namespace="<%= portletNamespace %>"
+			namespace="<%= liferayPortletResponse.getNamespace() %>"
 			pageNumber="<%= 1 %>"
 			portletURL="<%= liferayPortletResponse.createRenderURL() %>"
 			propsTransformer="{ViewObjectEntriesFDSPropsTransformer} from object-web"
@@ -63,7 +61,7 @@ String portletNamespace = liferayPortletResponse.getNamespace();
 					HashMapBuilder.<String, Object>put(
 						"byExternalReferenceCodePath", viewObjectEntriesDisplayContext.getByExternalReferenceCodePath()
 					).put(
-						"portletNamespace", portletNamespace
+						"portletNamespace", liferayPortletResponse.getNamespace()
 					).build()
 				%>'
 			/>
@@ -76,7 +74,7 @@ String portletNamespace = liferayPortletResponse.getNamespace();
 					HashMapBuilder.<String, Object>put(
 						"objectDefinition", objectDefinition
 					).put(
-						"portletNamespace", portletNamespace
+						"portletNamespace", liferayPortletResponse.getNamespace()
 					).build()
 				%>'
 			/>
