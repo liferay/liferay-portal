@@ -110,12 +110,7 @@ interface IProps extends React.ComponentProps<typeof PaginationBar> {
 	 * Labels for changing some texts inside the component.
 	 * Use this property for i18n.
 	 */
-	labels?: {
-		itemsPerPagePickerAriaLabel?: string;
-		paginationResults: string;
-		perPageItems: string;
-		selectPerPageItems: string;
-	};
+	labels?: Partial<typeof DEFAULT_LABELS>;
 
 	/**
 	 * Callback called when the state of the active page changes (controlled).
@@ -153,9 +148,13 @@ interface IProps extends React.ComponentProps<typeof PaginationBar> {
 }
 
 const DEFAULT_LABELS = {
+	ellipsisAriaLabel: 'Show Pages {0} Through {1}',
 	itemsPerPagePickerAriaLabel: 'Items Per Page',
+	nextPageAriaLabel: 'Go to the Next Page, {0}',
+	pageLinkAriaLabel: 'Go to Page, {0}',
 	paginationResults: 'Showing {0} to {1} of {2}',
 	perPageItems: '{0} items',
+	previousPageAriaLabel: 'Go to the Previous Page, {0}',
 	selectPerPageItems: '{0} items',
 };
 
@@ -193,7 +192,7 @@ export function ClayPaginationBarWithBasicItems({
 	ellipsisBuffer,
 	ellipsisProps,
 	hrefConstructor,
-	labels = DEFAULT_LABELS,
+	labels: externalLabels,
 	onActiveChange,
 	onDeltaChange,
 	onPageChange,
@@ -213,7 +212,7 @@ export function ClayPaginationBarWithBasicItems({
 		onChange: onActiveChange ?? onPageChange,
 		value: typeof active === 'undefined' ? activePage : active,
 	});
-	labels = {...DEFAULT_LABELS, ...labels};
+	const labels = {...DEFAULT_LABELS, ...externalLabels};
 	if (!activeDelta) {
 		activeDelta = deltas[0]!.label;
 	}
@@ -266,6 +265,12 @@ export function ClayPaginationBarWithBasicItems({
 			<ClayPaginationWithBasicItems
 				active={internalActive}
 				alignmentPosition={alignmentPosition}
+				ariaLabels={{
+					ellipsis: labels.ellipsisAriaLabel,
+					link: labels.pageLinkAriaLabel,
+					next: labels.nextPageAriaLabel,
+					previous: labels.previousPageAriaLabel,
+				}}
 				disableEllipsis={disableEllipsis}
 				disabledPages={disabledPages}
 				ellipsisBuffer={ellipsisBuffer}

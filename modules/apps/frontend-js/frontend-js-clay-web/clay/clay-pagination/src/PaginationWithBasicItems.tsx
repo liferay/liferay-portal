@@ -15,6 +15,13 @@ import React from 'react';
 
 import {Pagination} from './Pagination';
 
+const DEFAULT_ARIA_LABELS = {
+	ellipsis: 'Show Pages {0} Through {1}',
+	link: 'Go to Page, {0}',
+	next: 'Go to the Next Page, {0}',
+	previous: 'Go to the Previous Page, {0}',
+};
+
 const ELLIPSIS_BUFFER = 2;
 
 interface IProps extends React.ComponentProps<typeof Pagination> {
@@ -39,11 +46,7 @@ interface IProps extends React.ComponentProps<typeof Pagination> {
 	/**
 	 * Labels for the aria attributes
 	 */
-	ariaLabels?: {
-		link: string;
-		next: string;
-		previous: string;
-	};
+	ariaLabels?: Partial<typeof DEFAULT_ARIA_LABELS>;
 
 	/**
 	 * Sets the default active page (uncontrolled).
@@ -106,19 +109,12 @@ export const ClayPaginationWithBasicItems = React.forwardRef(
 			active,
 			activePage,
 			alignmentPosition,
-			ariaLabels = {
-				link: 'Go to page, {0}',
-				next: 'Go to the next page, {0}',
-				previous: 'Go to the previous page, {0}',
-			},
+			ariaLabels: externalAriaLabels,
 			defaultActive,
 			disabledPages = [],
 			disableEllipsis = false,
 			ellipsisBuffer = ELLIPSIS_BUFFER,
-			ellipsisProps = {
-				'aria-label': 'Show pages {0} through {1}',
-				'title': 'Show pages {0} through {1}',
-			},
+			ellipsisProps,
 			hrefConstructor,
 			onActiveChange,
 			onPageChange,
@@ -140,6 +136,8 @@ export const ClayPaginationWithBasicItems = React.forwardRef(
 			onChange: onActiveChange ?? onPageChange,
 			value: typeof active === 'undefined' ? activePage : active,
 		});
+
+		const ariaLabels = {...DEFAULT_ARIA_LABELS, ...externalAriaLabels};
 
 		const previousPage = internalActive - 1;
 		const previousHref = hrefConstructor && hrefConstructor(previousPage);
@@ -178,12 +176,14 @@ export const ClayPaginationWithBasicItems = React.forwardRef(
 							{
 								EllipsisComponent: Pagination.Ellipsis,
 								ellipsisProps: {
+									'aria-label': ariaLabels.ellipsis,
+									'title': ariaLabels.ellipsis,
 									...ellipsisProps,
 									alignmentPosition,
-									disabled: disableEllipsis,
+									'disabled': disableEllipsis,
 									disabledPages,
 									hrefConstructor,
-									onPageChange: setActive,
+									'onPageChange': setActive,
 								},
 								items: pages,
 							},
