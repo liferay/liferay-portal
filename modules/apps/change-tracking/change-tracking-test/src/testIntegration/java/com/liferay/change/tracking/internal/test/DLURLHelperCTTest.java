@@ -10,6 +10,7 @@ import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
@@ -61,7 +62,8 @@ public class DLURLHelperCTTest {
 
 	@Test
 	public void testGetPreviewURLWithPreviewCTCollection() throws Exception {
-		String previewURL = null;
+		String previewURL1 = null;
+		String previewURL2 = null;
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -78,15 +80,19 @@ public class DLURLHelperCTTest {
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), TestPropsValues.getUserId()));
 
-			previewURL = _dlURLHelper.getPreviewURL(
+			previewURL1 = _dlURLHelper.getPreviewURL(
+				fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
+				StringPool.BLANK, true, false);
+			previewURL2 = DLUtil.getPreviewURL(
 				fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
 				StringPool.BLANK, true, false);
 		}
 
-		Assert.assertTrue(
-			previewURL,
-			previewURL.contains(
-				"previewCTCollectionId=" + _ctCollection.getCtCollectionId()));
+		String expectedParam =
+			"previewCTCollectionId=" + _ctCollection.getCtCollectionId();
+
+		Assert.assertTrue(previewURL1, previewURL1.contains(expectedParam));
+		Assert.assertTrue(previewURL2, previewURL2.contains(expectedParam));
 	}
 
 	private ThemeDisplay _getThemeDisplay() throws PortalException {
