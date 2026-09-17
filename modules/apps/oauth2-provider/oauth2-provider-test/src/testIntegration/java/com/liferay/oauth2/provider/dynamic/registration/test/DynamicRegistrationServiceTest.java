@@ -787,9 +787,12 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	@Test
 	public void testRegisterWithInvalidRedirectURI() throws Exception {
 		_testRegisterWithInvalidRedirectURI(StringPool.BLANK);
-		_testRegisterWithInvalidRedirectURI("com.example.app:/callback");
-		_testRegisterWithInvalidRedirectURI("ht tp://example.com/callback");
-		_testRegisterWithInvalidRedirectURI("myapp://example.com/callback");
+		_testRegisterWithInvalidRedirectURI(
+			"com.example.app:/" + RandomTestUtil.randomString());
+		_testRegisterWithInvalidRedirectURI(
+			"ht tp://" + RandomTestUtil.randomString() + ".com/callback");
+		_testRegisterWithInvalidRedirectURI(
+			"myapp://" + RandomTestUtil.randomString() + ".com/callback");
 	}
 
 	@Test
