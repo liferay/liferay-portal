@@ -398,14 +398,14 @@ public class LiferayDynamicRegistrationService
 				"Redirect URI " + redirectURI + " has no host or no scheme");
 		}
 
-		host = StringUtil.toLowerCase(host);
-
 		scheme = StringUtil.toLowerCase(scheme);
 
 		if (!scheme.equals(Http.HTTP) && !scheme.equals(Http.HTTPS)) {
 			_reportInvalidRedirectURIError(
 				"Redirect URI scheme " + scheme + " is not supported");
 		}
+
+		host = StringUtil.toLowerCase(host);
 
 		if (StringUtil.equalsIgnoreCase(
 				applicationType, _APPLICATION_TYPE_NATIVE)) {
