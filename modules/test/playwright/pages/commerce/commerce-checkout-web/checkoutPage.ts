@@ -60,6 +60,16 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	readonly orderItemsTableLocator: Locator;
 	readonly orderSuccessMessage: Locator;
 	readonly noDefaultBillingAddressError: Locator;
+	readonly orderSummaryDelivery: Locator;
+	readonly orderSummaryItemCell: (
+		productName: string,
+		columnName: string
+	) => Locator;
+	readonly orderSummaryItemListPrice: (productName: string) => Locator;
+	readonly orderSummaryItemPromoPrice: (productName: string) => Locator;
+	readonly orderSummaryItemRow: (productName: string) => Locator;
+	readonly orderSummarySubtotal: Locator;
+	readonly orderSummaryTotal: Locator;
 	readonly orderSummaryTableRow: (
 		colPosition: number,
 		value: number | string,
@@ -183,6 +193,33 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.noDefaultBillingAddressError = page.getByText(
 			'No default billing address has been created for this account',
 			{exact: false}
+		);
+		this.orderSummaryDelivery = page.locator(
+			'.commerce-delivery .commerce-value'
+		);
+		this.orderSummaryItemRow = (productName: string) =>
+			this.orderItemsTableLocator.locator('tr').filter({
+				has: page.locator('td.lfr-product-column', {
+					hasText: productName,
+				}),
+			});
+		this.orderSummaryItemCell = (productName: string, columnName: string) =>
+			this.orderSummaryItemRow(productName).locator(
+				`td.lfr-${columnName}-column`
+			);
+		this.orderSummaryItemListPrice = (productName: string) =>
+			this.orderSummaryItemCell(productName, 'price').locator(
+				'.price-value:not(.price-value-promo)'
+			);
+		this.orderSummaryItemPromoPrice = (productName: string) =>
+			this.orderSummaryItemCell(productName, 'price').locator(
+				'.price-value-promo'
+			);
+		this.orderSummarySubtotal = page.locator(
+			'.commerce-subtotal .commerce-value'
+		);
+		this.orderSummaryTotal = page.locator(
+			'.commerce-total .commerce-value'
 		);
 		this.orderSummaryTableRow = async (
 			colPosition: number,

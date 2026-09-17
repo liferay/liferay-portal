@@ -20,7 +20,9 @@ export class CommerceMiniCartPage {
 	readonly miniCartItem: (productName: string) => Locator;
 	readonly miniCartItemShowOptionsButton: (productName: string) => Locator;
 	readonly miniCartItemsContainer: Locator;
+	readonly miniCartItemListPrice: (productName: string) => Locator;
 	readonly miniCartItemPrice: (text: RegExp, productName?: string) => Locator;
+	readonly miniCartItemPromoPrice: (productName: string) => Locator;
 	readonly miniCartItemReplacementLabel: (productName: string) => Locator;
 	readonly miniCartItemUnitOfMeasure: (productName: string) => Locator;
 	readonly miniCartReplacementInfoMessage: Locator;
@@ -90,6 +92,14 @@ export class CommerceMiniCartPage {
 				exact: true,
 				name: 'Show Options',
 			});
+		this.miniCartItemListPrice = (productName: string) =>
+			this.miniCartItem(productName).locator(
+				'.mini-cart-item-price .price-value:not(.price-value-promo)'
+			);
+		this.miniCartItemPromoPrice = (productName: string) =>
+			this.miniCartItem(productName).locator(
+				'.mini-cart-item-price .price-value-promo'
+			);
 		this.miniCartItemPrice = (text: RegExp, productName?: string) =>
 			(productName ? this.miniCartItem(productName) : page)
 				.locator('div')
