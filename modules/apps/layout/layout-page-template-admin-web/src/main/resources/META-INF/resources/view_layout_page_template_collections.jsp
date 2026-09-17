@@ -21,6 +21,7 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 
 <clay:container-fluid
 	cssClass="container-view"
+	size="xxxl"
 >
 	<clay:row>
 		<c:if test="<%= layoutPageTemplateDisplayContext.isShowCollectionsPanel() %>">
