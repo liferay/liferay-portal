@@ -407,9 +407,7 @@ public class LiferayDynamicRegistrationService
 
 		host = StringUtil.toLowerCase(host);
 
-		if (StringUtil.equalsIgnoreCase(
-				applicationType, _APPLICATION_TYPE_NATIVE)) {
-
+		if (StringUtil.equalsIgnoreCase(applicationType, "native")) {
 			if (scheme.equals(Http.HTTP) && !_loopbackHosts.contains(host)) {
 				_reportInvalidRedirectURIError(
 					"Redirect URI host " + host + " is not a loopback host");
@@ -943,8 +941,6 @@ public class LiferayDynamicRegistrationService
 			OAuthConstants.INVALID_SCOPE, "Scope",
 			OAuthUtils.parseScope(scope));
 	}
-
-	private static final String _APPLICATION_TYPE_NATIVE = "native";
 
 	private static final String _APPLICATION_TYPE_WEB = "web";
 
