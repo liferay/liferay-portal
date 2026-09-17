@@ -24,6 +24,7 @@ import com.liferay.document.library.kernel.util.comparator.RepositoryModelTitleC
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -449,7 +450,7 @@ public class DLImpl implements DL {
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean appendVersion, boolean absoluteURL) {
 
-		StringBundler sb = new StringBundler(15);
+		StringBundler sb = new StringBundler(17);
 
 		if ((themeDisplay != null) && absoluteURL) {
 			sb.append(themeDisplay.getPortalURL());
@@ -487,6 +488,15 @@ public class DLImpl implements DL {
 		Date modifiedDate = fileVersion.getModifiedDate();
 
 		sb.append(modifiedDate.getTime());
+
+		long ctCollectionId = fileVersion.getCtCollectionId();
+
+		if (ctCollectionId !=
+				CTCollectionThreadLocal.CT_COLLECTION_ID_PRODUCTION) {
+
+			sb.append("&previewCTCollectionId=");
+			sb.append(ctCollectionId);
+		}
 
 		sb.append(queryString);
 
