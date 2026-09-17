@@ -43,13 +43,20 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -250,6 +257,46 @@ public class ExportPreviewResourceTest
 			exportPreviewResource.getSiteExportPreview(
 				externalReferenceCode, null, null, plid, portletId, null),
 			portletId);
+	}
+
+	@FeatureFlag("LPD-38869")
+	@Test
+	@TestInfo("LPD-105790")
+	public void testGetSiteExportPreviewWithPortletInfoPermission()
+		throws Exception {
+
+		String externalReferenceCode = testGroup.getExternalReferenceCode();
+
+		String portletId = _siteObjectDefinition.getPortletId();
+
+		long plid = _addLayoutWithPortlet(testGroup, portletId);
+
+		_userLocalService.addGroupUsers(
+			testGroup.getGroupId(), new long[] {_user.getUserId()});
+
+		assertHttpResponseStatusCode(
+			404,
+			_exportPreviewResource.getSiteExportPreviewHttpResponse(
+				externalReferenceCode, null, null, plid, portletId, null));
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			_role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()),
+			ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
+
+		_roleLocalService.addUserRole(_user.getUserId(), _role);
+
+		_testGetPortletExportPreview(
+			_exportPreviewResource.getSiteExportPreview(
+				externalReferenceCode, null, null, plid, portletId, null),
+			portletId);
+
+		assertHttpResponseStatusCode(
+			404,
+			_exportPreviewResource.getSiteExportPreviewHttpResponse(
+				externalReferenceCode, null, null, 0L, null, null));
 	}
 
 	private LayoutPageTemplateCollection _addBasicLayoutPageTemplateCollection()
@@ -709,6 +756,12 @@ public class ExportPreviewResourceTest
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@DeleteAfterTestRun
+	private Role _role;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	private ObjectDefinition _siteObjectDefinition;
 	private User _user;
