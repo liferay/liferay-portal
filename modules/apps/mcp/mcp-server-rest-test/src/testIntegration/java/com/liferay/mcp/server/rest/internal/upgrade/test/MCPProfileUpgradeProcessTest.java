@@ -201,6 +201,7 @@ public class MCPProfileUpgradeProcessTest {
 				"getToolSetToolSetNameToolSummariesPage\nmcp-server-v1.0 ",
 				"getToolSetToolSetNameTool\nmcp-server-v1.0 ",
 				"postToolSetToolSetNameToolInvoke"));
+		_objectEntry4 = _addObjectEntry(null, objectDefinition, "malformed");
 
 		return objectDefinition;
 	}
@@ -226,15 +227,6 @@ public class MCPProfileUpgradeProcessTest {
 			ServiceContextTestUtil.getServiceContext(
 				_company.getCompanyId(), _company.getGroupId(),
 				_user.getUserId()));
-	}
-
-	private void _assertActiveProfileStatus(ObjectEntry objectEntry)
-		throws Exception {
-
-		Map<String, Serializable> values = _objectEntryLocalService.getValues(
-			objectEntry.getObjectEntryId());
-
-		Assert.assertEquals("active", values.get("profileStatus"));
 	}
 
 	private void _assertMCPServerProfileToolObjectEntries(
@@ -278,6 +270,16 @@ public class MCPProfileUpgradeProcessTest {
 			_objectEntryLocalService.fetchObjectEntry(
 				externalReferenceCode, 0,
 				objectDefinition.getObjectDefinitionId()));
+	}
+
+	private void _assertProfileStatus(
+			String expectedProfileStatus, ObjectEntry objectEntry)
+		throws Exception {
+
+		Map<String, Serializable> values = _objectEntryLocalService.getValues(
+			objectEntry.getObjectEntryId());
+
+		Assert.assertEquals(expectedProfileStatus, values.get("profileStatus"));
 	}
 
 	private void _assertUpgrade(ObjectDefinition objectDefinition)
@@ -388,9 +390,10 @@ public class MCPProfileUpgradeProcessTest {
 		Assert.assertEquals(
 			"inactive", defaultValueObjectFieldSetting.getValue());
 
-		_assertActiveProfileStatus(_objectEntry1);
-		_assertActiveProfileStatus(_objectEntry2);
-		_assertActiveProfileStatus(_objectEntry3);
+		_assertProfileStatus("active", _objectEntry1);
+		_assertProfileStatus("active", _objectEntry2);
+		_assertProfileStatus("active", _objectEntry3);
+		_assertProfileStatus("inactive", _objectEntry4);
 	}
 
 	private void _deleteObjectDefinition(String externalReferenceCode)
@@ -580,6 +583,7 @@ public class MCPProfileUpgradeProcessTest {
 	private ObjectEntry _objectEntry1;
 	private ObjectEntry _objectEntry2;
 	private ObjectEntry _objectEntry3;
+	private ObjectEntry _objectEntry4;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

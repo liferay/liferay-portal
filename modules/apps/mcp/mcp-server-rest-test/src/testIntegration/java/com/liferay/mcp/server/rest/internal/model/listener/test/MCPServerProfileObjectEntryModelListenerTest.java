@@ -6,16 +6,27 @@
 package com.liferay.mcp.server.rest.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.mcp.server.rest.test.util.MCPServerTestUtil;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -95,6 +106,28 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 	}
 
 	@Test
+	public void testOnBeforeCreate() throws Exception {
+		_assertNoAssociatedToolsFailure(
+			() -> _addMCPServerProfileObjectEntry());
+
+		BatchEngineUnitThreadLocal.setFileName(
+			"com.liferay.mcp.server.rest.impl_1.0.0 [1]");
+
+		try {
+			ObjectEntry mcpServerProfileObjectEntry =
+				_addMCPServerProfileObjectEntry();
+
+			Assert.assertEquals(
+				"active",
+				MapUtil.getString(
+					mcpServerProfileObjectEntry.getValues(), "profileStatus"));
+		}
+		finally {
+			BatchEngineUnitThreadLocal.setFileName(StringPool.BLANK);
+		}
+	}
+
+	@Test
 	public void testOnBeforeRemove() throws Exception {
 		ObjectEntry mcpServerProfileObjectEntry =
 			MCPServerTestUtil.addMCPServerProfileObjectEntry(
@@ -157,6 +190,56 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		}
 	}
 
+	@Test
+	public void testOnBeforeUpdate() throws Exception {
+		ObjectEntry mcpServerProfileObjectEntry =
+			MCPServerTestUtil.addMCPServerProfileObjectEntry(
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			"inactive",
+			MapUtil.getString(
+				mcpServerProfileObjectEntry.getValues(), "profileStatus"));
+
+		_assertNoAssociatedToolsFailure(
+			() -> MCPServerTestUtil.updateMCPServerProfileStatus(
+				mcpServerProfileObjectEntry, "active"));
+	}
+
+	private ObjectEntry _addMCPServerProfileObjectEntry() throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_MCP_SERVER_PROFILE", TestPropsValues.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"description", RandomTestUtil.randomString()
+			).put(
+				"name", RandomTestUtil.randomString()
+			).put(
+				"profileStatus", "active"
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private void _assertNoAssociatedToolsFailure(
+		UnsafeRunnable<Exception> unsafeRunnable) {
+
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			StringBundler.concat(
+				"com.liferay.object.exception.ObjectEntryValuesException$",
+				"InvalidObjectField: MCP server profile has no associated ",
+				"tools"),
+			unsafeRunnable);
+	}
+
 	private int _getMCPServerProfileDataMaskObjectEntriesCount(
 			String mcpServerProfileExternalReferenceCode)
 		throws Exception {
@@ -174,6 +257,9 @@ public class MCPServerProfileObjectEntryModelListenerTest {
 		"L_DATA_MASK_NATIONAL_ID_BSN", "L_DATA_MASK_NATIONAL_ID_DNI_NIF",
 		"L_DATA_MASK_NATIONAL_ID_SSN", "L_DATA_MASK_PHONE_NUMBER"
 	};
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

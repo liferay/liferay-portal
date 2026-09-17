@@ -115,7 +115,7 @@ public class MCPServerTestUtil {
 				).put(
 					"name", name
 				).put(
-					"profileStatus", "active"
+					"profileStatus", "inactive"
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
@@ -127,7 +127,12 @@ public class MCPServerTestUtil {
 				parts[1], parts[0]);
 		}
 
-		return mcpServerProfileObjectEntry;
+		if (tools.length == 0) {
+			return mcpServerProfileObjectEntry;
+		}
+
+		return updateMCPServerProfileStatus(
+			mcpServerProfileObjectEntry, "active");
 	}
 
 	public static ObjectEntry addMCPServerProfileToolObjectEntry(
@@ -390,6 +395,22 @@ public class MCPServerTestUtil {
 				prefix + "01.list.type.definition",
 				prefix + "02.object.definition", prefix + "03.object.entry"
 			});
+	}
+
+	public static ObjectEntry updateMCPServerProfileStatus(
+			ObjectEntry mcpServerProfileObjectEntry, String profileStatus)
+		throws Exception {
+
+		return ObjectEntryLocalServiceUtil.updateObjectEntry(
+			TestPropsValues.getUserId(),
+			mcpServerProfileObjectEntry.getObjectEntryId(),
+			mcpServerProfileObjectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>putAll(
+				mcpServerProfileObjectEntry.getValues()
+			).put(
+				"profileStatus", profileStatus
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	public static void updateMCPServerProfileToolObjectEntry(

@@ -161,7 +161,7 @@ public class MCPProfileToolUpgradeProcessTest {
 			).put(
 				"name", RandomTestUtil.randomString()
 			).put(
-				"profileStatus", "active"
+				"profileStatus", "inactive"
 			).build());
 
 		return _addObjectEntry(
