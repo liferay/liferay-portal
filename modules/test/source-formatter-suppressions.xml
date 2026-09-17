@@ -13,6 +13,7 @@
 		<suppress checks="CDNCheck" files="maven-executor/src/main/java/com/liferay/maven/executor/MavenExecutor.java" />
 		<suppress checks="JavaModuleTestCheck" files="arquillian-extension-junit-bridge-test/src/testIntegration/java/com/liferay/arquillian/extension/junit/bridge/junit/test/item/.*" />
 		<suppress checks="JavaModuleTestCheck" files="jenkins-results-parser/src/test/java/com/liferay/jenkins/results/parser/Test\.java" />
+		<suppress checks="PropertiesPlaywrightTestCheck" files="playwright/tests/portal-db-infrastructure/upgrade/test\.properties" />
 		<suppress checks="SHSubshellCheck" files="playwright/env/common\.sh" />
 		<suppress checks="StringMethodsCheck" />
 		<suppress checks="TSConfigFileCheck" files="playwright/tests/portal-db-infrastructure/upgrade.*/config\.ts" />
