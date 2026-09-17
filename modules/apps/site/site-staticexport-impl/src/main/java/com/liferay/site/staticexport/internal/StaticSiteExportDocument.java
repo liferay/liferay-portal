@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -109,10 +108,7 @@ public class StaticSiteExportDocument {
 		return urls;
 	}
 
-	public void rewrite(
-		Function<String, String> pathFunction,
-		Predicate<String> portalURLPredicate) {
-
+	public void rewrite(Function<String, String> pathFunction) {
 		for (String attributeName : _ATTRIBUTE_NAMES) {
 			for (Element element :
 					_document.select("[" + attributeName + "]")) {
@@ -123,11 +119,6 @@ public class StaticSiteExportDocument {
 
 				if (path != null) {
 					element.attr(attributeName, path);
-				}
-				else if (_isAlternateLink(element) &&
-						 portalURLPredicate.test(url)) {
-
-					element.remove();
 				}
 			}
 		}
@@ -219,16 +210,6 @@ public class StaticSiteExportDocument {
 		String[] candidateParts = StringUtil.split(candidate, CharPool.SPACE);
 
 		return candidateParts[0];
-	}
-
-	private boolean _isAlternateLink(Element element) {
-		if (StringUtil.equals(element.tagName(), "link") &&
-			StringUtil.equals(element.attr("rel"), "alternate")) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private static final String[] _ATTRIBUTE_NAMES = {

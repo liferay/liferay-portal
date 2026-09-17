@@ -27,7 +27,7 @@ public class StaticSiteExportURLRewriter {
 	}
 
 	public void rewrite(StaticSiteExportDocument staticSiteExportDocument) {
-		staticSiteExportDocument.rewrite(this::_getPath, this::_isPortalURL);
+		staticSiteExportDocument.rewrite(this::_getPath);
 	}
 
 	public String rewriteCSS(String css) {
@@ -61,10 +61,6 @@ public class StaticSiteExportURLRewriter {
 		}
 
 		return StringPool.SLASH + path;
-	}
-
-	private boolean _isPortalURL(String url) {
-		return !StringUtil.equals(url, _toPortalPath(url));
 	}
 
 	private String _toPortalPath(String url) {

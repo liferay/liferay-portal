@@ -56,8 +56,6 @@ public class StaticSiteExportURLRewriterTest {
 					"rel=\"canonical\">",
 					"<link href=\"http://localhost:8080/es/web/site/about\" ",
 					"hreflang=\"es-ES\" rel=\"alternate\">",
-					"<link href=\"http://localhost:8080/zh/web/site/about\" ",
-					"hreflang=\"zh-CN\" rel=\"alternate\">",
 					"<link href=\"/o/theme/css/clay.css?languageId=en_US\" ",
 					"rel=\"stylesheet\"></head><body>",
 					"<a href=\"http://localhost:8080/web/site\">Home</a>",
@@ -74,10 +72,6 @@ public class StaticSiteExportURLRewriterTest {
 			html, CoreMatchers.containsString("href=\"/about.html\""));
 		Assert.assertThat(
 			html, CoreMatchers.containsString("href=\"/es/about.html\""));
-		Assert.assertThat(
-			html,
-			CoreMatchers.not(
-				CoreMatchers.containsString("hreflang=\"zh-CN\"")));
 		Assert.assertThat(
 			html,
 			CoreMatchers.containsString("href=\"/o/theme/css/clay.1a2b.css\""));
