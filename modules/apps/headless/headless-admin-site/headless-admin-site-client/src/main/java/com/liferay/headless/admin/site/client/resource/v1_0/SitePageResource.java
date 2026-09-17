@@ -70,15 +70,15 @@ public interface SitePageResource {
 		throws Exception;
 
 	public Page<SitePage> getSiteSitePagesPage(
-			String siteExternalReferenceCode, Boolean privateLayout,
-			String search, List<String> aggregations, String filterString,
-			Pagination pagination, String sortString)
+			String siteExternalReferenceCode, Boolean flatten,
+			Boolean privateLayout, String search, List<String> aggregations,
+			String filterString, Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSiteSitePagesPageHttpResponse(
-			String siteExternalReferenceCode, Boolean privateLayout,
-			String search, List<String> aggregations, String filterString,
-			Pagination pagination, String sortString)
+			String siteExternalReferenceCode, Boolean flatten,
+			Boolean privateLayout, String search, List<String> aggregations,
+			String filterString, Pagination pagination, String sortString)
 		throws Exception;
 
 	public SitePage patchSiteSitePage(
@@ -611,14 +611,14 @@ public interface SitePageResource {
 		}
 
 		public Page<SitePage> getSiteSitePagesPage(
-				String siteExternalReferenceCode, Boolean privateLayout,
-				String search, List<String> aggregations, String filterString,
-				Pagination pagination, String sortString)
+				String siteExternalReferenceCode, Boolean flatten,
+				Boolean privateLayout, String search, List<String> aggregations,
+				String filterString, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSiteSitePagesPageHttpResponse(
-					siteExternalReferenceCode, privateLayout, search,
+					siteExternalReferenceCode, flatten, privateLayout, search,
 					aggregations, filterString, pagination, sortString);
 
 			String content = httpResponse.getContent();
@@ -681,9 +681,9 @@ public interface SitePageResource {
 		}
 
 		public HttpInvoker.HttpResponse getSiteSitePagesPageHttpResponse(
-				String siteExternalReferenceCode, Boolean privateLayout,
-				String search, List<String> aggregations, String filterString,
-				Pagination pagination, String sortString)
+				String siteExternalReferenceCode, Boolean flatten,
+				Boolean privateLayout, String search, List<String> aggregations,
+				String filterString, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -706,6 +706,10 @@ public interface SitePageResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (flatten != null) {
+				httpInvoker.parameter("flatten", String.valueOf(flatten));
+			}
 
 			if (privateLayout != null) {
 				httpInvoker.parameter(
@@ -1610,4 +1614,4 @@ public interface SitePageResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:898122047
+// LIFERAY-REST-BUILDER-HASH:610784474
