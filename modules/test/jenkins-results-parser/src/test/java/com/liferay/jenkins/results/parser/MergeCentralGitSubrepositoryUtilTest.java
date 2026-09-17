@@ -22,27 +22,27 @@ public class MergeCentralGitSubrepositoryUtilTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testGetMergeBranchName() {
+	public void testGetMergeBranchName() throws Exception {
 		Assert.assertEquals(
 			"ci-merge-com-liferay-osb-asah-private-7.0.x-abc1234def5678",
 			ReflectionTestUtil.invoke(
-				_UTIL, "_getMergeBranchName",
+				MergeCentralGitSubrepositoryUtil.class, "_getMergeBranchName",
 				new Class<?>[] {String.class, String.class, String.class},
 				"7.0.x", "com-liferay-osb-asah-private", "abc1234def5678"));
 	}
 
 	@Test
-	public void testGetMergeBranchNamePrefix() {
+	public void testGetMergeBranchNamePrefix() throws Exception {
 		Assert.assertEquals(
 			"ci-merge-com-liferay-osb-asah-private-7.0.x",
 			ReflectionTestUtil.invoke(
-				_UTIL, "_getMergeBranchNamePrefix",
-				new Class<?>[] {String.class},
+				MergeCentralGitSubrepositoryUtil.class,
+				"_getMergeBranchNamePrefix", new Class<?>[] {String.class},
 				"ci-merge-com-liferay-osb-asah-private-7.0.x-abc1234def"));
 	}
 
 	@Test
-	public void testGetRemote() {
+	public void testGetRemote() throws Exception {
 		File gitrepoFile = new File("modules/integrations/mulesoft/.gitrepo");
 
 		Properties present = new Properties();
@@ -53,19 +53,19 @@ public class MergeCentralGitSubrepositoryUtilTest
 		Assert.assertEquals(
 			"git@github.com:liferay/liferay-portal.git",
 			ReflectionTestUtil.invoke(
-				_UTIL, "_getRemote",
+				MergeCentralGitSubrepositoryUtil.class, "_getRemote",
 				new Class<?>[] {Properties.class, File.class}, present,
 				gitrepoFile));
 
 		Assert.assertNull(
 			ReflectionTestUtil.invoke(
-				_UTIL, "_getRemote",
+				MergeCentralGitSubrepositoryUtil.class, "_getRemote",
 				new Class<?>[] {Properties.class, File.class}, new Properties(),
 				gitrepoFile));
 	}
 
 	@Test
-	public void testIsBlacklisted() {
+	public void testIsBlacklisted() throws Exception {
 		String gitRemote =
 			"git@github.com:liferay/com-liferay-osb-asah-private.git";
 		String httpsRemote =
@@ -74,27 +74,24 @@ public class MergeCentralGitSubrepositoryUtilTest
 
 		Assert.assertFalse(
 			(boolean)ReflectionTestUtil.invoke(
-				_UTIL, "_isBlacklisted",
+				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
 				new Class<?>[] {String.class, List.class}, gitRemote,
 				Collections.emptyList()));
 		Assert.assertFalse(
 			(boolean)ReflectionTestUtil.invoke(
-				_UTIL, "_isBlacklisted",
+				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
 				new Class<?>[] {String.class, List.class}, httpsRemote,
 				blacklist));
 		Assert.assertFalse(
 			(boolean)ReflectionTestUtil.invoke(
-				_UTIL, "_isBlacklisted",
+				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
 				new Class<?>[] {String.class, List.class},
 				"git@github.com:liferay/other-repo.git", blacklist));
 		Assert.assertTrue(
 			(boolean)ReflectionTestUtil.invoke(
-				_UTIL, "_isBlacklisted",
+				MergeCentralGitSubrepositoryUtil.class, "_isBlacklisted",
 				new Class<?>[] {String.class, List.class}, gitRemote,
 				blacklist));
 	}
-
-	private static final MergeCentralGitSubrepositoryUtil _UTIL =
-		new MergeCentralGitSubrepositoryUtil();
 
 }
