@@ -337,6 +337,84 @@ test.describe('Custom Facet', () => {
 			expect(warningOccurred).toBe(false);
 		});
 	});
+
+	test('Resets pagination when a term is selected @LPD-106149', async ({
+		apiHelpers,
+		page,
+		searchPage,
+		site,
+	}) => {
+		let siteLayout: Layout;
+
+		const keyword = `Test Blog ${getRandomString()}`;
+		const tag = `tag_${getRandomString()}`;
+
+		await test.step('Create enough blog postings to fill two pages', async () => {
+			for (let count = 0; count < 21; count++) {
+				await apiHelpers.headlessDelivery.postBlog(site.id, {
+					headline: `${keyword} ${count}`,
+				});
+			}
+
+			await apiHelpers.headlessDelivery.postBlog(site.id, {
+				headline: `${keyword} tagged`,
+				keywords: [tag],
+			});
+		});
+
+		await test.step('Add search widgets to a page of the site', async () => {
+			siteLayout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				options: {type: 'portlet'},
+				title: getRandomString(),
+			});
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}${siteLayout.friendlyURL}`
+			);
+
+			await searchPage.addPortlet('Search Bar', 'Search');
+			await searchPage.addPortlet('Custom Facet', 'Search');
+			await searchPage.addPortlet('Search Results', 'Search');
+		});
+
+		await test.step('Aggregate the custom facet by tag', async () => {
+			await searchPage.openSearchPortletConfiguration('Custom Facet');
+
+			await searchPage.fillPortletConfigurationsInput([
+				{
+					label: 'Aggregation Field Required',
+					value: 'assetTagNames.raw',
+				},
+			]);
+
+			await searchPage.savePortletConfiguration();
+		});
+
+		await test.step('Search and navigate to the second page of results', async () => {
+			await searchPage.searchKeywordInMainContent(keyword);
+
+			await expect(searchPage.searchResultsTotalLabel).toHaveText(
+				new RegExp(`Results for ${keyword}`)
+			);
+
+			await searchPage.selectPaginationPageNumber(2);
+		});
+
+		await test.step('Select the tag term and expect its single result', async () => {
+			const tagTerm = page
+				.locator('.portlet-custom-facet')
+				.getByRole('checkbox', {name: new RegExp(tag)});
+
+			await searchPage.selectSearchFacetCheckbox(tagTerm);
+
+			expect(new URL(page.url()).searchParams.has('start')).toBe(false);
+
+			await expect(
+				searchPage.searchResults.getByText(`${keyword} tagged`)
+			).toBeVisible();
+		});
+	});
 });
 
 test.describe('Folder Facet', () => {
