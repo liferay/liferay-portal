@@ -136,3 +136,22 @@ export default function App() {
 	);
 }
 ```
+
+### Accessibility
+
+`ClayPaginationBarWithBasicItems` generates `aria-label`'s for the previous, next, page, and ellipsis links it renders. Custom labels can be passed through the `labels` attribute, alongside the visible strings. It is useful for providing translated labels for screen readers or custom text more relevant to your app. The component replaces the placeholder `{0}` with the page number, and `{0}` and `{1}` with the first and last page the ellipsis covers. Any key that is omitted falls back to its default English label.
+
+```jsx
+<ClayPaginationBarWithBasicItems
+	labels={{
+		ellipsisAriaLabel: 'Show pages {0} through {1}',
+		nextPageAriaLabel: 'Change the page to {0}',
+		pageLinkAriaLabel: 'Change the page to {0}',
+		paginationResults: 'Showing {0} to {1} of {2}',
+		perPageItems: '{0} items',
+		previousPageAriaLabel: 'Change the page to {0}',
+		selectPerPageItems: '{0} items',
+	}}
+	totalItems={21}
+/>
+```

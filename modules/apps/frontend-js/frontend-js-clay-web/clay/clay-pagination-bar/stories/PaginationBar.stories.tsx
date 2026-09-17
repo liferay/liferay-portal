@@ -99,3 +99,25 @@ export function WithoutDropdown() {
 		/>
 	);
 }
+export function WithCustomAriaLabels() {
+	const [delta, setDelta] = useState<number>(5);
+
+	return (
+		<ClayPaginationBarWithBasicItems
+			activeDelta={delta}
+			ellipsisBuffer={2}
+			labels={{
+				ellipsisAriaLabel: 'Mostra le pagine da {0} a {1}',
+				itemsPerPagePickerAriaLabel: 'Elementi per pagina',
+				nextPageAriaLabel: 'Vai alla pagina successiva, {0}',
+				pageLinkAriaLabel: 'Vai alla pagina, {0}',
+				paginationResults: 'Da {0} a {1} di {2}',
+				perPageItems: '{0} elementi',
+				previousPageAriaLabel: 'Vai alla pagina precedente, {0}',
+				selectPerPageItems: '{0} elementi',
+			}}
+			onDeltaChange={setDelta}
+			totalItems={100}
+		/>
+	);
+}

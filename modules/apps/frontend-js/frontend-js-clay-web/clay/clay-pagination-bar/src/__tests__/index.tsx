@@ -9,6 +9,12 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
+const labels = {
+	paginationResults: 'Showing {0} to {1} of {2}',
+	perPageItems: '{0} items',
+	selectPerPageItems: '{0} items',
+};
+
 const spritemap = 'path/to/spritemap';
 
 describe('ClayPaginationBar', () => {
@@ -195,5 +201,61 @@ describe('ClayPaginationBar', () => {
 		expect(getByText(container, '1').parentElement?.classList).toContain(
 			'active'
 		);
+	});
+
+	it('renders the aria labels that are provided', () => {
+		const {getByLabelText} = render(
+			<ClayPaginationBarWithBasicItems
+				defaultActive={2}
+				labels={{
+					...labels,
+					nextPageAriaLabel: 'Vai alla pagina successiva, {0}',
+					pageLinkAriaLabel: 'Vai alla pagina, {0}',
+					previousPageAriaLabel: 'Vai alla pagina precedente, {0}',
+				}}
+				spritemap={spritemap}
+				totalItems={50}
+			/>
+		);
+
+		expect(getByLabelText('Vai alla pagina, 3')).toBeInTheDocument();
+		expect(
+			getByLabelText('Vai alla pagina successiva, 3')
+		).toBeInTheDocument();
+		expect(
+			getByLabelText('Vai alla pagina precedente, 1')
+		).toBeInTheDocument();
+	});
+
+	it('falls back to the default aria labels that are not provided', () => {
+		const {getByLabelText} = render(
+			<ClayPaginationBarWithBasicItems
+				defaultActive={2}
+				labels={labels}
+				spritemap={spritemap}
+				totalItems={50}
+			/>
+		);
+
+		expect(getByLabelText('Go to page, 3')).toBeInTheDocument();
+		expect(getByLabelText('Go to the next page, 3')).toBeInTheDocument();
+		expect(
+			getByLabelText('Go to the previous page, 1')
+		).toBeInTheDocument();
+	});
+
+	it('renders the ellipsis aria label that is provided', () => {
+		const {getByLabelText} = render(
+			<ClayPaginationBarWithBasicItems
+				labels={{
+					...labels,
+					ellipsisAriaLabel: 'Mostra le pagine da {0} a {1}',
+				}}
+				spritemap={spritemap}
+				totalItems={100}
+			/>
+		);
+
+		expect(getByLabelText('Mostra le pagine da 4 a 9')).toBeInTheDocument();
 	});
 });

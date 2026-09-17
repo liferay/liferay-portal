@@ -199,4 +199,57 @@ describe('ClayPagination', () => {
 		expect(changeMock).toHaveBeenLastCalledWith(2);
 		expect(onSubmitFn).not.toHaveBeenCalled();
 	});
+
+	it('renders the aria labels that are provided', () => {
+		const {getByLabelText} = render(
+			<ClayPaginationWithBasicItems
+				ariaLabels={{
+					link: 'Vai alla pagina, {0}',
+					next: 'Vai alla pagina successiva, {0}',
+					previous: 'Vai alla pagina precedente, {0}',
+				}}
+				defaultActive={2}
+				spritemap={spritemap}
+				totalPages={5}
+			/>
+		);
+
+		expect(getByLabelText('Vai alla pagina, 3')).toBeInTheDocument();
+		expect(
+			getByLabelText('Vai alla pagina successiva, 3')
+		).toBeInTheDocument();
+		expect(
+			getByLabelText('Vai alla pagina precedente, 1')
+		).toBeInTheDocument();
+	});
+
+	it('falls back to the default aria labels that are not provided', () => {
+		const {getByLabelText} = render(
+			<ClayPaginationWithBasicItems
+				ariaLabels={{link: 'Vai alla pagina, {0}'}}
+				defaultActive={2}
+				spritemap={spritemap}
+				totalPages={5}
+			/>
+		);
+
+		expect(getByLabelText('Vai alla pagina, 3')).toBeInTheDocument();
+		expect(getByLabelText('Go to the next page, 3')).toBeInTheDocument();
+		expect(
+			getByLabelText('Go to the previous page, 1')
+		).toBeInTheDocument();
+	});
+
+	it('renders the ellipsis aria label that is provided', () => {
+		const {getByLabelText} = render(
+			<ClayPaginationWithBasicItems
+				ariaLabels={{ellipsis: 'Mostra le pagine da {0} a {1}'}}
+				defaultActive={1}
+				spritemap={spritemap}
+				totalPages={10}
+			/>
+		);
+
+		expect(getByLabelText('Mostra le pagine da 4 a 9')).toBeInTheDocument();
+	});
 });
