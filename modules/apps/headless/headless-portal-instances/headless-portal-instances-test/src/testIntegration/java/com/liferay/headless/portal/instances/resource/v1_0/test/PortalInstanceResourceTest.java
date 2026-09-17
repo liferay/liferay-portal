@@ -178,15 +178,11 @@ public class PortalInstanceResourceTest
 	@Override
 	@Test
 	public void testPostPortalInstance() throws Exception {
+		_testPostPortalInstanceBatchWithSeveralPortalInstances();
 		_testPostPortalInstanceWithoutAdmin();
 		_testPostPortalInstanceWithAdmin();
 		_testPostPortalInstanceWithAdminAndCompanyStrangers();
 		_testPostPortalInstanceWithoutOmniadminPermission();
-	}
-
-	@Test
-	public void testPostPortalInstanceBatch() throws Exception {
-		_testPostPortalInstanceBatchWithSeveralPortalInstances();
 	}
 
 	@Override
