@@ -60,10 +60,10 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 					return null;
 				}
 
-				return _FRONTEND_TOKEN_DEFINITION_FILE_NAME;
+				return "frontend-token-definition.json";
 			}
 		).put(
-			"frontendTokensValuesPath", _FRONTEND_TOKENS_VALUES_FILE_NAME
+			"frontendTokensValuesPath", "frontend-tokens-values.json"
 		).put(
 			"name", getName()
 		).put(
@@ -79,12 +79,12 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 
 		if (!Validator.isBlank(frontendTokenDefinition)) {
 			zipWriter.addEntry(
-				path + StringPool.SLASH + _FRONTEND_TOKEN_DEFINITION_FILE_NAME,
+				path + "/frontend-token-definition.json",
 				frontendTokenDefinition);
 		}
 
 		zipWriter.addEntry(
-			path + StringPool.SLASH + _FRONTEND_TOKENS_VALUES_FILE_NAME,
+			path + "/frontend-tokens-values.json",
 			getFrontendTokensValues());
 
 		if (previewFileEntry != null) {
@@ -121,12 +121,6 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 
 		return "thumbnail." + previewFileEntry.getExtension();
 	}
-
-	private static final String _FRONTEND_TOKEN_DEFINITION_FILE_NAME =
-		"frontend-token-definition.json";
-
-	private static final String _FRONTEND_TOKENS_VALUES_FILE_NAME =
-		"frontend-tokens-values.json";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		StyleBookEntryImpl.class);
