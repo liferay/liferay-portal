@@ -42,6 +42,7 @@ import java.io.File;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -82,6 +83,18 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				_exportStaticSiteExportLayouts(
 					groupId, layoutFailures, locales);
 
+			Map<StaticSiteExportLayout, StaticSiteExportDocument>
+				staticSiteExportDocuments = new LinkedHashMap<>();
+
+			for (StaticSiteExportLayout staticSiteExportLayout :
+					staticSiteExportLayouts) {
+
+				staticSiteExportDocuments.put(
+					staticSiteExportLayout,
+					new StaticSiteExportDocument(
+						staticSiteExportLayout.getHTML(), _jsonFactory));
+			}
+
 			List<StaticSiteExportReport.Failure> resourceFailures =
 				new ArrayList<>();
 
@@ -94,17 +107,17 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 					_portal.getPortalURL(
 						company.getVirtualHostname(),
 						_portal.getPortalServerPort(false), false),
-					resourceFailures, staticSiteExportLayouts);
+					resourceFailures, staticSiteExportDocuments.values());
 
 			StaticSiteExportURLRewriter staticSiteExportURLRewriter =
 				new StaticSiteExportURLRewriter(
-					_jsonFactory, _getPagePaths(group, staticSiteExportLayouts),
+					_getPagePaths(group, staticSiteExportLayouts),
 					company.getVirtualHostname(),
 					_getResourcePaths(staticSiteExportResources));
 
 			return new StaticSiteExportImpl(
 				_rewriteLayouts(
-					staticSiteExportLayouts, staticSiteExportURLRewriter),
+					staticSiteExportDocuments, staticSiteExportURLRewriter),
 				new StaticSiteExportReport(layoutFailures, resourceFailures),
 				_rewriteResources(
 					staticSiteExportResources, staticSiteExportURLRewriter));
@@ -167,27 +180,26 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	private List<StaticSiteExportResource> _fetchStaticSiteExportResources(
 			HttpServletRequest httpServletRequest, String portalURL,
 			List<StaticSiteExportReport.Failure> resourceFailures,
-			List<StaticSiteExportLayout> staticSiteExportLayouts)
+			Collection<StaticSiteExportDocument> staticSiteExportDocuments)
 		throws Exception {
 
 		List<StaticSiteExportResource> staticSiteExportResources =
 			new ArrayList<>();
 
 		StaticSiteExportResourceHarvester staticSiteExportResourceHarvester =
-			new StaticSiteExportResourceHarvester(_jsonFactory);
+			new StaticSiteExportResourceHarvester();
 
 		Map<String, String> importMapPrefixes = new LinkedHashMap<>();
 		Deque<String> urls = new ArrayDeque<>();
 
-		for (StaticSiteExportLayout staticSiteExportLayout :
-				staticSiteExportLayouts) {
-
-			String html = staticSiteExportLayout.getHTML();
+		for (StaticSiteExportDocument staticSiteExportDocument :
+				staticSiteExportDocuments) {
 
 			importMapPrefixes.putAll(
-				staticSiteExportResourceHarvester.harvestImportMapPrefixes(
-					html));
-			urls.addAll(staticSiteExportResourceHarvester.harvestHTML(html));
+				staticSiteExportDocument.getImportMapPrefixes());
+			urls.addAll(
+				staticSiteExportResourceHarvester.harvestDocument(
+					staticSiteExportDocument));
 		}
 
 		StaticSiteExportResourceFetcher staticSiteExportResourceFetcher =
@@ -370,19 +382,26 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	}
 
 	private List<StaticSiteExportLayout> _rewriteLayouts(
-		List<StaticSiteExportLayout> staticSiteExportLayouts,
+		Map<StaticSiteExportLayout, StaticSiteExportDocument>
+			staticSiteExportDocuments,
 		StaticSiteExportURLRewriter staticSiteExportURLRewriter) {
 
 		List<StaticSiteExportLayout> rewrittenStaticSiteExportLayouts =
 			new ArrayList<>();
 
-		for (StaticSiteExportLayout staticSiteExportLayout :
-				staticSiteExportLayouts) {
+		for (Map.Entry<StaticSiteExportLayout, StaticSiteExportDocument> entry :
+				staticSiteExportDocuments.entrySet()) {
+
+			StaticSiteExportLayout staticSiteExportLayout = entry.getKey();
+
+			StaticSiteExportDocument staticSiteExportDocument =
+				entry.getValue();
+
+			staticSiteExportURLRewriter.rewrite(staticSiteExportDocument);
 
 			rewrittenStaticSiteExportLayouts.add(
 				new StaticSiteExportLayout(
-					staticSiteExportURLRewriter.rewriteHTML(
-						staticSiteExportLayout.getHTML()),
+					staticSiteExportDocument.getHTML(),
 					staticSiteExportLayout.getLocale(),
 					staticSiteExportLayout.getPath(),
 					staticSiteExportLayout.getPlid()));

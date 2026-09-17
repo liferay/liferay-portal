@@ -44,11 +44,15 @@ public class StaticSiteExportResourceHarvesterTest {
 
 	@Test
 	public void testHarvestJS() {
-		Map<String, String> importMapPrefixes =
-			_staticSiteExportResourceHarvester.harvestImportMapPrefixes(
+		StaticSiteExportDocument staticSiteExportDocument =
+			new StaticSiteExportDocument(
 				"<script type=\"importmap\">{\"imports\": {\"react\": " +
 					"\"/o/react-web/react.js\", \"@clayui/\": " +
-						"\"/o/clay-web/\"}}</script>");
+						"\"/o/clay-web/\"}}</script>",
+				new JSONFactoryImpl());
+
+		Map<String, String> importMapPrefixes =
+			staticSiteExportDocument.getImportMapPrefixes();
 
 		Assert.assertEquals(
 			importMapPrefixes.toString(),
@@ -78,6 +82,6 @@ public class StaticSiteExportResourceHarvesterTest {
 
 	private final StaticSiteExportResourceHarvester
 		_staticSiteExportResourceHarvester =
-			new StaticSiteExportResourceHarvester(new JSONFactoryImpl());
+			new StaticSiteExportResourceHarvester();
 
 }

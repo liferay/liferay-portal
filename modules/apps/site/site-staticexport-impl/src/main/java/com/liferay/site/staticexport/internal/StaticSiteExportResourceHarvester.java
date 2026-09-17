@@ -7,34 +7,19 @@ package com.liferay.site.staticexport.internal;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONException;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-
 /**
  * @author Víctor Galán
  */
 public class StaticSiteExportResourceHarvester {
-
-	public StaticSiteExportResourceHarvester(JSONFactory jsonFactory) {
-		_jsonFactory = jsonFactory;
-	}
 
 	public Set<String> harvestCSS(String css, String cssURL) {
 		Set<String> urls = new LinkedHashSet<>();
@@ -60,58 +45,16 @@ public class StaticSiteExportResourceHarvester {
 		return urls;
 	}
 
-	public Set<String> harvestHTML(String html) {
+	public Set<String> harvestDocument(
+		StaticSiteExportDocument staticSiteExportDocument) {
+
 		Set<String> urls = new LinkedHashSet<>();
 
-		Document document = Jsoup.parse(html);
-
-		for (String attributeName : _ATTRIBUTE_NAMES) {
-			for (Element element : document.select("[" + attributeName + "]")) {
-				_addURL(element.attr(attributeName), urls);
-			}
-		}
-
-		for (Element element : document.select("[srcset]")) {
-			for (String candidate :
-					StringUtil.split(element.attr("srcset"), CharPool.COMMA)) {
-
-				String[] candidateParts = StringUtil.split(
-					StringUtil.trim(candidate), CharPool.SPACE);
-
-				_addURL(candidateParts[0], urls);
-			}
-		}
-
-		for (Element element : document.select("script[type=importmap]")) {
-			_addImportMapURLs(element.data(), urls);
+		for (String url : staticSiteExportDocument.getURLs()) {
+			_addURL(url, urls);
 		}
 
 		return urls;
-	}
-
-	public Map<String, String> harvestImportMapPrefixes(String html) {
-		Map<String, String> prefixes = new LinkedHashMap<>();
-
-		Document document = Jsoup.parse(html);
-
-		for (Element element : document.select("script[type=importmap]")) {
-			for (Map.Entry<String, String> entry :
-					_getImports(
-						element.data()
-					).entrySet()) {
-
-				String specifier = entry.getKey();
-				String url = entry.getValue();
-
-				if (specifier.endsWith(StringPool.SLASH) &&
-					url.endsWith(StringPool.SLASH)) {
-
-					prefixes.put(specifier, url);
-				}
-			}
-		}
-
-		return prefixes;
 	}
 
 	public Set<String> harvestJS(
@@ -157,18 +100,6 @@ public class StaticSiteExportResourceHarvester {
 		return urls;
 	}
 
-	private void _addImportMapURLs(String importMap, Set<String> urls) {
-		for (String url :
-				_getImports(
-					importMap
-				).values()) {
-
-			if (!url.endsWith(StringPool.SLASH)) {
-				_addURL(url, urls);
-			}
-		}
-	}
-
 	private void _addURL(String url, Set<String> urls) {
 		if (Validator.isNull(url)) {
 			return;
@@ -189,39 +120,6 @@ public class StaticSiteExportResourceHarvester {
 				return;
 			}
 		}
-	}
-
-	private Map<String, String> _getImports(String importMap) {
-		Map<String, String> imports = new LinkedHashMap<>();
-
-		JSONObject importsJSONObject = null;
-
-		try {
-			JSONObject jsonObject = _jsonFactory.createJSONObject(importMap);
-
-			importsJSONObject = jsonObject.getJSONObject("imports");
-		}
-		catch (JSONException jsonException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(jsonException);
-			}
-
-			return imports;
-		}
-
-		if (importsJSONObject == null) {
-			return imports;
-		}
-
-		Iterator<String> iterator = importsJSONObject.keys();
-
-		while (iterator.hasNext()) {
-			String specifier = iterator.next();
-
-			imports.put(specifier, importsJSONObject.getString(specifier));
-		}
-
-		return imports;
 	}
 
 	private String _resolve(String baseURL, String url) {
@@ -277,19 +175,12 @@ public class StaticSiteExportResourceHarvester {
 		return url;
 	}
 
-	private static final String[] _ATTRIBUTE_NAMES = {
-		"href", "poster", "src", "xlink:href"
-	};
-
 	private static final String _RESOURCE_EXTENSIONS =
 		"css|gif|ico|jpeg|jpg|js|json|png|svg|webp|woff|woff2";
 
 	private static final String[] _RESOURCE_PREFIXES = {
 		"/combo", "/documents/", "/image/", "/o/", "/webserver/"
 	};
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		StaticSiteExportResourceHarvester.class);
 
 	private static final Pattern _blockCommentPattern = Pattern.compile(
 		"/\\*.*?\\*/", Pattern.DOTALL);
@@ -303,7 +194,5 @@ public class StaticSiteExportResourceHarvester {
 			"\\.(?:css|js))[\"'`]");
 	private static final Pattern _jsRelativeStylesheetPathPattern =
 		Pattern.compile("[\"'](\\.{1,2}/[-@$/.\\w()]+\\.css)[\"']");
-
-	private final JSONFactory _jsonFactory;
 
 }

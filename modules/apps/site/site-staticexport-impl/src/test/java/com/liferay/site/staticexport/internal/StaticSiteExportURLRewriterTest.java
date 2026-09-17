@@ -29,7 +29,6 @@ public class StaticSiteExportURLRewriterTest {
 	public void testRewrite() {
 		StaticSiteExportURLRewriter staticSiteExportURLRewriter =
 			new StaticSiteExportURLRewriter(
-				new JSONFactoryImpl(),
 				HashMapBuilder.put(
 					"/es/web/site/about", "es/about.html"
 				).put(
@@ -47,23 +46,29 @@ public class StaticSiteExportURLRewriterTest {
 					"/o/theme/images/logo.png", "o/theme/images/logo.png"
 				).build());
 
-		String html = staticSiteExportURLRewriter.rewriteHTML(
-			StringBundler.concat(
-				"<html><head>",
-				"<script type=\"importmap\">{\"imports\": {\"react\": ",
-				"\"/o/react-web/react.js\"}}</script>",
-				"<link href=\"http://localhost:8080/web/site/about\" ",
-				"rel=\"canonical\">",
-				"<link href=\"http://localhost:8080/es/web/site/about\" ",
-				"hreflang=\"es-ES\" rel=\"alternate\">",
-				"<link href=\"http://localhost:8080/zh/web/site/about\" ",
-				"hreflang=\"zh-CN\" rel=\"alternate\">",
-				"<link href=\"/o/theme/css/clay.css?languageId=en_US\" ",
-				"rel=\"stylesheet\"></head><body>",
-				"<a href=\"http://localhost:8080/web/site\">Home</a>",
-				"<a href=\"https://liferay.com\">Liferay</a>",
-				"<img src=\"/o/theme/images/logo.png\" ",
-				"srcset=\"/o/theme/images/logo.png 1x\"></body></html>"));
+		StaticSiteExportDocument staticSiteExportDocument =
+			new StaticSiteExportDocument(
+				StringBundler.concat(
+					"<html><head>",
+					"<script type=\"importmap\">{\"imports\": {\"react\": ",
+					"\"/o/react-web/react.js\"}}</script>",
+					"<link href=\"http://localhost:8080/web/site/about\" ",
+					"rel=\"canonical\">",
+					"<link href=\"http://localhost:8080/es/web/site/about\" ",
+					"hreflang=\"es-ES\" rel=\"alternate\">",
+					"<link href=\"http://localhost:8080/zh/web/site/about\" ",
+					"hreflang=\"zh-CN\" rel=\"alternate\">",
+					"<link href=\"/o/theme/css/clay.css?languageId=en_US\" ",
+					"rel=\"stylesheet\"></head><body>",
+					"<a href=\"http://localhost:8080/web/site\">Home</a>",
+					"<a href=\"https://liferay.com\">Liferay</a>",
+					"<img src=\"/o/theme/images/logo.png\" ",
+					"srcset=\"/o/theme/images/logo.png 1x\"></body></html>"),
+				new JSONFactoryImpl());
+
+		staticSiteExportURLRewriter.rewrite(staticSiteExportDocument);
+
+		String html = staticSiteExportDocument.getHTML();
 
 		Assert.assertThat(
 			html, CoreMatchers.containsString("href=\"/about.html\""));
