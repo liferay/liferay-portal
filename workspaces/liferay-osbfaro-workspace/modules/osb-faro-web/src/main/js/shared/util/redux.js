@@ -12,7 +12,11 @@ export const setState =
 	({error, loading}) =>
 	(state, action) =>
 		state.update(action.payload.id, (item = new RemoteData()) =>
-			item.merge({error, loading})
+			item.merge({
+				error,
+				errorStatus: error ? action.errorStatus ?? null : null,
+				loading,
+			})
 		);
 
 /**

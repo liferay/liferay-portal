@@ -6,6 +6,27 @@ import {isFunction, noop} from 'lodash';
 import {PropTypes} from 'prop-types';
 import {RemoteData} from '../util/records';
 
+/**
+ * Maps an HTTP status to the ErrorPage props that describe it. Without this
+ * every failure renders the 404 page, so a user who lacks permission is told
+ * the page does not exist.
+ * @param {number} errorStatus - The status the request failed with.
+ * @returns {object} - Props for ErrorPage, empty when the status is unknown.
+ */
+export function getStatusErrorPageProps(errorStatus) {
+	if (errorStatus === 403) {
+		return {
+			message: Liferay.Language.get(
+				'you-do-not-have-permission-to-view-this-resource'
+			),
+			subtitle: Liferay.Language.get('unauthorized-access'),
+			title: '403'
+		};
+	}
+
+	return {};
+}
+
 const defaultOptions = {
 	errorPageProps: {},
 	propName: 'data',
@@ -68,6 +89,7 @@ export default (action, mapStateToRemoteData, options = {}) =>
 						className,
 						data,
 						error,
+						errorStatus,
 						groupId,
 						loading,
 						...otherProps
@@ -81,7 +103,11 @@ export default (action, mapStateToRemoteData, options = {}) =>
 							? errorPageProps({channelId, groupId})
 							: errorPageProps;
 
-						return renderErrorPage({className, ...props});
+						return renderErrorPage({
+							className,
+							...getStatusErrorPageProps(errorStatus),
+							...props
+						});
 					} else if (!data && loading) {
 						return <Loading className={className} />;
 					} else {

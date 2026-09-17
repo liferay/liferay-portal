@@ -17,5 +17,14 @@ describe('redux', () => {
 				new Map().set(23, new RemoteData({error: true, loading: false}))
 			);
 		});
+
+		it('should keep the error status from the action', () => {
+			const state = handleError(new Map(), {
+				errorStatus: 403,
+				payload: {id: 23},
+			});
+
+			expect(state.get(23).errorStatus).toBe(403);
+		});
 	});
 });

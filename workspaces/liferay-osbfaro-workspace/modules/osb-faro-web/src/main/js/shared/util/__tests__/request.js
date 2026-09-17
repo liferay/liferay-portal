@@ -169,6 +169,12 @@ describe('request', () => {
 		);
 	});
 
+	it('should expose the response status on the rejected error', () => {
+		fetch.mockReturnValue(Promise.resolve(new Response('', {status: 403})));
+
+		return request({}).catch((error) => expect(error.status).toBe(403));
+	});
+
 	it('should handle an xhr status of 204 where the response is empty', () => {
 		fetch.mockReturnValue(Promise.resolve(new Response('', {status: 204})));
 

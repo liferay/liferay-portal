@@ -102,6 +102,31 @@ describe('API Middleware', () => {
 		);
 	});
 
+	it('should put the error status on the failure action', () => {
+		const error = new Error('Unauthorized Access');
+
+		error.status = 403;
+
+		const action = {
+			meta: {
+				[CALL_API]: {
+					data: {foo: 'bar'},
+					requestFn: () => Promise.reject(error),
+					types: ['TEST_REQUEST', 'TEST_SUCCESS', 'TEST_FAILURE'],
+				},
+			},
+			payload: {id: 'KOR-1'},
+			type: 'NO_OP',
+		};
+
+		const next = jest.fn();
+
+		return api()(next)(action).catch(() => {
+			expect(next).toBeCalledTimes(2);
+			expect(next.mock.calls[1][0].errorStatus).toBe(403);
+		});
+	});
+
 	it('should call requestFn if requestFn exists', () => {
 		const requestFn = jest.fn().mockReturnValue(Promise.resolve(''));
 

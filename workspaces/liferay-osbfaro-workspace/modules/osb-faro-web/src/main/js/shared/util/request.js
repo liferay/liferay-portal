@@ -81,6 +81,19 @@ export function getRequestData(data) {
 		}, {});
 }
 
+/**
+ * Tags an error with the HTTP status that produced it, so callers can tell a
+ * permission failure apart from a missing resource.
+ * @param {Error} error - The error to tag.
+ * @param {number} status - The response status.
+ * @returns {Error} - The same error, now carrying the status.
+ */
+export function withStatus(error, status) {
+	error.status = status;
+
+	return error;
+}
+
 export default (request) => {
 	const {
 		baseURL = '/o/faro',
@@ -116,25 +129,31 @@ export default (request) => {
 				parseFromJSON(await response.text()) || {};
 
 			if (field) {
-				throw new ValidationError(field, localizedMessage);
+				throw withStatus(
+					new ValidationError(field, localizedMessage),
+					status
+				);
 			}
 
 			if (messageKey) {
-				throw new Error(messageKey);
+				throw withStatus(new Error(messageKey), status);
 			}
 
-			throw new Error(
-				localizedMessage ? localizedMessage : 'Request Error'
+			throw withStatus(
+				new Error(
+					localizedMessage ? localizedMessage : 'Request Error'
+				),
+				status
 			);
 		}
 		else if (status === 401) {
 			reloadPage();
 		}
 		else if (status === 403) {
-			throw new Error(UNAUTHORIZED_ACCESS);
+			throw withStatus(new Error(UNAUTHORIZED_ACCESS), status);
 		}
 		else if (status >= 300) {
-			throw new Error('Request error');
+			throw withStatus(new Error('Request error'), status);
 		}
 		else if (contentType === 'json') {
 			return response.json();

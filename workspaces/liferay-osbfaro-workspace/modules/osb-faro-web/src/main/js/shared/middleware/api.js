@@ -44,6 +44,7 @@ export default () => (next) => (action) => {
 			next(
 				toAction(failureType, action, {
 					error: true,
+					errorStatus: get(error, ['status'], null),
 				})
 			);
 

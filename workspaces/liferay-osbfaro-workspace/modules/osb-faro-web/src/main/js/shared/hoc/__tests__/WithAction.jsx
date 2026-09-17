@@ -53,6 +53,38 @@ describe('withAction', () => {
 		expect(container).toMatchSnapshot();
 	});
 
+	it('should render a permission error instead of the 404 when the request failed with a 403', () => {
+		const WrappedComponent = compose(
+			withStaticRouter,
+			withAction(
+				action,
+				() => new RemoteData({error: true, errorStatus: 403})
+			)
+		)(jest.fn());
+
+		const {container} = renderWithStore(WrappedComponent);
+
+		expect(container.textContent).toContain(
+			'You do not have permission to view this resource.'
+		);
+		expect(container.textContent).not.toContain(
+			'The page you are looking for does not exist.'
+		);
+	});
+
+	it('should still render the 404 when the failure carries no status', () => {
+		const WrappedComponent = compose(
+			withStaticRouter,
+			withAction(action, () => new RemoteData({error: true}))
+		)(jest.fn());
+
+		const {container} = renderWithStore(WrappedComponent);
+
+		expect(container.textContent).toContain(
+			'The page you are looking for does not exist.'
+		);
+	});
+
 	it('should render a custom error message', () => {
 		const WrappedComponent = compose(
 			withStaticRouter,
