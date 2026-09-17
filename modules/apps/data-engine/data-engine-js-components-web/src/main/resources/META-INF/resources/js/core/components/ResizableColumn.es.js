@@ -58,10 +58,6 @@ const ResizableColumn = ({
 
 				const rowRect = row.getBoundingClientRect();
 
-				// The grid lays columns out from the right edge in
-				// right-to-left languages, so measure the pointer offset
-				// from that edge to get the same column index.
-
 				const offset =
 					document.dir === 'rtl'
 						? rowRect.right - event.clientX
