@@ -307,7 +307,7 @@ test(
 	'The filter finds a screen inside an application',
 	{tag: '@LPD-103691'},
 	async ({globalMenuPage, page}) => {
-		const sideNavigation = page.getByLabel('Applications Menu', {
+		const sideNavigation = page.getByLabel('Control Panel Menu', {
 			exact: true,
 		});
 
@@ -334,7 +334,7 @@ test(
 			await waitForPageToBeLoaded(page);
 
 			await expect(
-				page.getByRole('heading', {name: 'System Settings'})
+				page.getByRole('heading', {name: 'File Storage'})
 			).toBeAttached();
 		});
 	}
@@ -344,7 +344,7 @@ test(
 	'The filter finds a screen inside a permission filtered application',
 	{tag: '@LPD-103691'},
 	async ({globalMenuPage, page}) => {
-		const sideNavigation = page.getByLabel('Applications Menu', {
+		const sideNavigation = page.getByLabel('Control Panel Menu', {
 			exact: true,
 		});
 
