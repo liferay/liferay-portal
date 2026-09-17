@@ -50,7 +50,7 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/search-terms'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List search terms used on pages tracked by the Analytics Cloud workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'most searched words' style queries."
+		description = "List search terms used on pages tracked by the Analytics Cloud workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'most searched words' style queries."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -80,7 +80,7 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 				name = "rangeEnd"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Date-range preset. Use one of the listed enum values. Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
+				description = "Date range preset. Use one of the listed enum values. Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
 				example = "LAST_30_DAYS",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeKey"
@@ -570,4 +570,4 @@ public abstract class BaseSearchTermResourceImpl implements SearchTermResource {
 		LogFactoryUtil.getLog(BaseSearchTermResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1330436301
+// LIFERAY-REST-BUILDER-HASH:527475629

@@ -74,6 +74,30 @@ public class IndividualSerDes {
 			sb.append(individual.getActivitiesCount());
 		}
 
+		if (individual.getActivityStatus() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"activityStatus\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(individual.getActivityStatus()));
+
+			sb.append("\"");
+		}
+
+		if (individual.getAverageSessionDuration() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"averageSessionDuration\": ");
+
+			sb.append(individual.getAverageSessionDuration());
+		}
+
 		if (individual.getDateCreated() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -121,6 +145,20 @@ public class IndividualSerDes {
 			}
 		}
 
+		if (individual.getEmailAddress() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"emailAddress\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(individual.getEmailAddress()));
+
+			sb.append("\"");
+		}
+
 		if (individual.getFirstActivityDate() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -147,6 +185,21 @@ public class IndividualSerDes {
 			sb.append("\"");
 
 			sb.append(_escape(individual.getId()));
+
+			sb.append("\"");
+		}
+
+		if (individual.getKnownSinceDate() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"knownSinceDate\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(individual.getKnownSinceDate()));
 
 			sb.append("\"");
 		}
@@ -181,6 +234,20 @@ public class IndividualSerDes {
 			sb.append("\"");
 		}
 
+		if (individual.getName() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"name\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(individual.getName()));
+
+			sb.append("\"");
+		}
+
 		if (individual.getProfileType() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -191,6 +258,16 @@ public class IndividualSerDes {
 			sb.append("\"");
 			sb.append(individual.getProfileType());
 			sb.append("\"");
+		}
+
+		if (individual.getSessionsCount() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sessionsCount\": ");
+
+			sb.append(individual.getSessionsCount());
 		}
 
 		sb.append("}");
@@ -230,6 +307,24 @@ public class IndividualSerDes {
 				String.valueOf(individual.getActivitiesCount()));
 		}
 
+		if (individual.getActivityStatus() == null) {
+			map.put("activityStatus", null);
+		}
+		else {
+			map.put(
+				"activityStatus",
+				String.valueOf(individual.getActivityStatus()));
+		}
+
+		if (individual.getAverageSessionDuration() == null) {
+			map.put("averageSessionDuration", null);
+		}
+		else {
+			map.put(
+				"averageSessionDuration",
+				String.valueOf(individual.getAverageSessionDuration()));
+		}
+
 		if (individual.getDateCreated() == null) {
 			map.put("dateCreated", null);
 		}
@@ -256,6 +351,14 @@ public class IndividualSerDes {
 				"demographics", String.valueOf(individual.getDemographics()));
 		}
 
+		if (individual.getEmailAddress() == null) {
+			map.put("emailAddress", null);
+		}
+		else {
+			map.put(
+				"emailAddress", String.valueOf(individual.getEmailAddress()));
+		}
+
 		if (individual.getFirstActivityDate() == null) {
 			map.put("firstActivityDate", null);
 		}
@@ -271,6 +374,15 @@ public class IndividualSerDes {
 		}
 		else {
 			map.put("id", String.valueOf(individual.getId()));
+		}
+
+		if (individual.getKnownSinceDate() == null) {
+			map.put("knownSinceDate", null);
+		}
+		else {
+			map.put(
+				"knownSinceDate",
+				liferayToJSONDateFormat.format(individual.getKnownSinceDate()));
 		}
 
 		if (individual.getLastActivityDate() == null) {
@@ -292,11 +404,26 @@ public class IndividualSerDes {
 				String.valueOf(individual.getLastSessionCountry()));
 		}
 
+		if (individual.getName() == null) {
+			map.put("name", null);
+		}
+		else {
+			map.put("name", String.valueOf(individual.getName()));
+		}
+
 		if (individual.getProfileType() == null) {
 			map.put("profileType", null);
 		}
 		else {
 			map.put("profileType", String.valueOf(individual.getProfileType()));
+		}
+
+		if (individual.getSessionsCount() == null) {
+			map.put("sessionsCount", null);
+		}
+		else {
+			map.put(
+				"sessionsCount", String.valueOf(individual.getSessionsCount()));
 		}
 
 		return map;
@@ -323,6 +450,14 @@ public class IndividualSerDes {
 			else if (Objects.equals(jsonParserFieldName, "activitiesCount")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "activityStatus")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "averageSessionDuration")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				return false;
 			}
@@ -332,10 +467,16 @@ public class IndividualSerDes {
 			else if (Objects.equals(jsonParserFieldName, "demographics")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "emailAddress")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "firstActivityDate")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "knownSinceDate")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "lastActivityDate")) {
@@ -346,7 +487,13 @@ public class IndividualSerDes {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "name")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "profileType")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "sessionsCount")) {
 				return false;
 			}
 
@@ -369,6 +516,19 @@ public class IndividualSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "activityStatus")) {
+				if (jsonParserFieldValue != null) {
+					individual.setActivityStatus((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "averageSessionDuration")) {
+
+				if (jsonParserFieldValue != null) {
+					individual.setAverageSessionDuration(
+						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
 				if (jsonParserFieldValue != null) {
 					individual.setDateCreated(
@@ -386,6 +546,11 @@ public class IndividualSerDes {
 					individual.setDemographics((Object)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "emailAddress")) {
+				if (jsonParserFieldValue != null) {
+					individual.setEmailAddress((String)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "firstActivityDate")) {
 				if (jsonParserFieldValue != null) {
 					individual.setFirstActivityDate(
@@ -395,6 +560,12 @@ public class IndividualSerDes {
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				if (jsonParserFieldValue != null) {
 					individual.setId((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "knownSinceDate")) {
+				if (jsonParserFieldValue != null) {
+					individual.setKnownSinceDate(
+						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "lastActivityDate")) {
@@ -411,11 +582,22 @@ public class IndividualSerDes {
 						(String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "name")) {
+				if (jsonParserFieldValue != null) {
+					individual.setName((String)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "profileType")) {
 				if (jsonParserFieldValue != null) {
 					individual.setProfileType(
 						Individual.ProfileType.create(
 							(String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "sessionsCount")) {
+				if (jsonParserFieldValue != null) {
+					individual.setSessionsCount(
+						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -499,4 +681,4 @@ public class IndividualSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1584617762
+// LIFERAY-REST-BUILDER-HASH:-1289614337

@@ -172,8 +172,11 @@ public abstract class BaseIndividualResourceTestCase {
 		Individual individual = randomIndividual();
 
 		individual.setAccountName(regex);
+		individual.setActivityStatus(regex);
+		individual.setEmailAddress(regex);
 		individual.setId(regex);
 		individual.setLastSessionCountry(regex);
+		individual.setName(regex);
 
 		String json = IndividualSerDes.toJSON(individual);
 
@@ -182,8 +185,11 @@ public abstract class BaseIndividualResourceTestCase {
 		individual = IndividualSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, individual.getAccountName());
+		Assert.assertEquals(regex, individual.getActivityStatus());
+		Assert.assertEquals(regex, individual.getEmailAddress());
 		Assert.assertEquals(regex, individual.getId());
 		Assert.assertEquals(regex, individual.getLastSessionCountry());
+		Assert.assertEquals(regex, individual.getName());
 	}
 
 	@Test
@@ -198,9 +204,12 @@ public abstract class BaseIndividualResourceTestCase {
 
 		Page<Individual> page =
 			individualResource.getWorkspaceGroupChannelIndividualsPage(
-				groupId, channelId, RandomTestUtil.randomString(), null,
+				groupId, channelId, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				Pagination.of(1, 10), null);
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null, Pagination.of(1, 10),
+				null);
 
 		long totalCount = page.getTotalCount();
 
@@ -212,6 +221,7 @@ public abstract class BaseIndividualResourceTestCase {
 
 			page = individualResource.getWorkspaceGroupChannelIndividualsPage(
 				irrelevantGroupId, irrelevantChannelId, null, null, null, null,
+				null, null, null, null, null,
 				Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -233,8 +243,8 @@ public abstract class BaseIndividualResourceTestCase {
 				groupId, channelId, randomIndividual());
 
 		page = individualResource.getWorkspaceGroupChannelIndividualsPage(
-			groupId, channelId, null, null, null, null, Pagination.of(1, 10),
-			null);
+			groupId, channelId, null, null, null, null, null, null, null, null,
+			null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -266,7 +276,8 @@ public abstract class BaseIndividualResourceTestCase {
 
 		Page<Individual> individualsPage =
 			individualResource.getWorkspaceGroupChannelIndividualsPage(
-				groupId, channelId, null, null, null, null, null, null);
+				groupId, channelId, null, null, null, null, null, null, null,
+				null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(individualsPage.getTotalCount());
 
@@ -289,7 +300,8 @@ public abstract class BaseIndividualResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<Individual> page1 =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -301,7 +313,8 @@ public abstract class BaseIndividualResourceTestCase {
 
 			Page<Individual> page2 =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -311,7 +324,8 @@ public abstract class BaseIndividualResourceTestCase {
 
 			Page<Individual> page3 =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -322,8 +336,8 @@ public abstract class BaseIndividualResourceTestCase {
 		else {
 			Page<Individual> page1 =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
-					Pagination.of(1, totalCount + 2), null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null, Pagination.of(1, totalCount + 2), null);
 
 			List<Individual> individuals1 = (List<Individual>)page1.getItems();
 
@@ -332,8 +346,8 @@ public abstract class BaseIndividualResourceTestCase {
 
 			Page<Individual> page2 =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
-					Pagination.of(2, totalCount + 2), null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -344,8 +358,9 @@ public abstract class BaseIndividualResourceTestCase {
 
 			Page<Individual> page3 =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
-					Pagination.of(1, (int)totalCount + 3), null);
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null, Pagination.of(1, (int)totalCount + 3),
+					null);
 
 			assertContains(individual1, (List<Individual>)page3.getItems());
 			assertContains(individual2, (List<Individual>)page3.getItems());
@@ -476,12 +491,14 @@ public abstract class BaseIndividualResourceTestCase {
 
 		Page<Individual> page =
 			individualResource.getWorkspaceGroupChannelIndividualsPage(
-				groupId, channelId, null, null, null, null, null, null);
+				groupId, channelId, null, null, null, null, null, null, null,
+				null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<Individual> ascPage =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -490,7 +507,8 @@ public abstract class BaseIndividualResourceTestCase {
 
 			Page<Individual> descPage =
 				individualResource.getWorkspaceGroupChannelIndividualsPage(
-					groupId, channelId, null, null, null, null,
+					groupId, channelId, null, null, null, null, null, null,
+					null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -789,7 +807,21 @@ public abstract class BaseIndividualResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("averageSessionDuration", additionalAssertFieldName)) {
+			if (Objects.equals("activityStatus", additionalAssertFieldName)) {
+				if (individual.getActivityStatus() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"averageSessionDuration", additionalAssertFieldName)) {
+
+				if (individual.getAverageSessionDuration() == null) {
+					valid = false;
+				}
+
 				continue;
 			}
 
@@ -801,10 +833,26 @@ public abstract class BaseIndividualResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("emailAddress", additionalAssertFieldName)) {
+				if (individual.getEmailAddress() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"firstActivityDate", additionalAssertFieldName)) {
 
 				if (individual.getFirstActivityDate() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("knownSinceDate", additionalAssertFieldName)) {
+				if (individual.getKnownSinceDate() == null) {
 					valid = false;
 				}
 
@@ -829,6 +877,14 @@ public abstract class BaseIndividualResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("name", additionalAssertFieldName)) {
+				if (individual.getName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("profileType", additionalAssertFieldName)) {
 				if (individual.getProfileType() == null) {
 					valid = false;
@@ -838,6 +894,10 @@ public abstract class BaseIndividualResourceTestCase {
 			}
 
 			if (Objects.equals("sessionsCount", additionalAssertFieldName)) {
+				if (individual.getSessionsCount() == null) {
+					valid = false;
+				}
+
 				continue;
 			}
 
@@ -981,7 +1041,20 @@ public abstract class BaseIndividualResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("averageSessionDuration", additionalAssertFieldName)) {
+			if (Objects.equals("activityStatus", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						individual1.getActivityStatus(),
+						individual2.getActivityStatus())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"averageSessionDuration", additionalAssertFieldName)) {
+
 				if (!Objects.deepEquals(
 						individual1.getAverageSessionDuration(),
 						individual2.getAverageSessionDuration())) {
@@ -1025,6 +1098,17 @@ public abstract class BaseIndividualResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("emailAddress", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						individual1.getEmailAddress(),
+						individual2.getEmailAddress())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"firstActivityDate", additionalAssertFieldName)) {
 
@@ -1041,6 +1125,17 @@ public abstract class BaseIndividualResourceTestCase {
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						individual1.getId(), individual2.getId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("knownSinceDate", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						individual1.getKnownSinceDate(),
+						individual2.getKnownSinceDate())) {
 
 					return false;
 				}
@@ -1065,6 +1160,16 @@ public abstract class BaseIndividualResourceTestCase {
 				if (!Objects.deepEquals(
 						individual1.getLastSessionCountry(),
 						individual2.getLastSessionCountry())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						individual1.getName(), individual2.getName())) {
 
 					return false;
 				}
@@ -1252,6 +1357,52 @@ public abstract class BaseIndividualResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("activityStatus")) {
+			Object object = individual.getActivityStatus();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("averageSessionDuration")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1318,6 +1469,52 @@ public abstract class BaseIndividualResourceTestCase {
 		if (entityFieldName.equals("demographics")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("emailAddress")) {
+			Object object = individual.getEmailAddress();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("firstActivityDate")) {
@@ -1395,6 +1592,35 @@ public abstract class BaseIndividualResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("knownSinceDate")) {
+			if (operator.equals("between")) {
+				Date date = individual.getKnownSinceDate();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(individual.getKnownSinceDate()));
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("lastActivityDate")) {
 			if (operator.equals("between")) {
 				Date date = individual.getLastActivityDate();
@@ -1426,6 +1652,52 @@ public abstract class BaseIndividualResourceTestCase {
 
 		if (entityFieldName.equals("lastSessionCountry")) {
 			Object object = individual.getLastSessionCountry();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("name")) {
+			Object object = individual.getName();
 
 			String value = String.valueOf(object);
 
@@ -1530,14 +1802,21 @@ public abstract class BaseIndividualResourceTestCase {
 				accountName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				activitiesCount = RandomTestUtil.randomLong();
+				activityStatus = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				averageSessionDuration = RandomTestUtil.randomLong();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
+				emailAddress =
+					StringUtil.toLowerCase(RandomTestUtil.randomString()) +
+						"@liferay.com";
 				firstActivityDate = RandomTestUtil.nextDate();
 				id = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				knownSinceDate = RandomTestUtil.nextDate();
 				lastActivityDate = RandomTestUtil.nextDate();
 				lastSessionCountry = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				sessionsCount = RandomTestUtil.randomLong();
 			}
 		};
@@ -1763,4 +2042,4 @@ public abstract class BaseIndividualResourceTestCase {
 		_individualResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:89174091
+// LIFERAY-REST-BUILDER-HASH:-1869924808

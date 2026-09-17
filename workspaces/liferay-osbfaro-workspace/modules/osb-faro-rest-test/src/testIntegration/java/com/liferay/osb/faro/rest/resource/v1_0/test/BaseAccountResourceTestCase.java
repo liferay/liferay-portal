@@ -172,10 +172,12 @@ public abstract class BaseAccountResourceTestCase {
 		Account account = randomAccount();
 
 		account.setAccountName(regex);
+		account.setAccountType(regex);
 		account.setCountry(regex);
 		account.setId(regex);
 		account.setIndustry(regex);
 		account.setLifecycleStage(regex);
+		account.setWebsite(regex);
 
 		String json = AccountSerDes.toJSON(account);
 
@@ -184,10 +186,12 @@ public abstract class BaseAccountResourceTestCase {
 		account = AccountSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, account.getAccountName());
+		Assert.assertEquals(regex, account.getAccountType());
 		Assert.assertEquals(regex, account.getCountry());
 		Assert.assertEquals(regex, account.getId());
 		Assert.assertEquals(regex, account.getIndustry());
 		Assert.assertEquals(regex, account.getLifecycleStage());
+		Assert.assertEquals(regex, account.getWebsite());
 	}
 
 	@Test
@@ -337,8 +341,10 @@ public abstract class BaseAccountResourceTestCase {
 
 		Page<Account> page =
 			accountResource.getWorkspaceGroupChannelAccountsPage(
-				groupId, channelId, RandomTestUtil.randomString(), null,
-				Pagination.of(1, 10), null);
+				groupId, channelId, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null, Pagination.of(1, 10),
+				null);
 
 		long totalCount = page.getTotalCount();
 
@@ -349,8 +355,8 @@ public abstract class BaseAccountResourceTestCase {
 					randomIrrelevantAccount());
 
 			page = accountResource.getWorkspaceGroupChannelAccountsPage(
-				irrelevantGroupId, irrelevantChannelId, null, null,
-				Pagination.of(1, (int)totalCount + 1), null);
+				irrelevantGroupId, irrelevantChannelId, null, null, null, null,
+				null, Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -368,7 +374,8 @@ public abstract class BaseAccountResourceTestCase {
 			groupId, channelId, randomAccount());
 
 		page = accountResource.getWorkspaceGroupChannelAccountsPage(
-			groupId, channelId, null, null, Pagination.of(1, 10), null);
+			groupId, channelId, null, null, null, null, null,
+			Pagination.of(1, 10), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -400,7 +407,7 @@ public abstract class BaseAccountResourceTestCase {
 
 		Page<Account> accountsPage =
 			accountResource.getWorkspaceGroupChannelAccountsPage(
-				groupId, channelId, null, null, null, null);
+				groupId, channelId, null, null, null, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(accountsPage.getTotalCount());
 
@@ -420,7 +427,7 @@ public abstract class BaseAccountResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<Account> page1 =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -432,7 +439,7 @@ public abstract class BaseAccountResourceTestCase {
 
 			Page<Account> page2 =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -442,7 +449,7 @@ public abstract class BaseAccountResourceTestCase {
 
 			Page<Account> page3 =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -453,7 +460,7 @@ public abstract class BaseAccountResourceTestCase {
 		else {
 			Page<Account> page1 =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(1, totalCount + 2), null);
 
 			List<Account> accounts1 = (List<Account>)page1.getItems();
@@ -463,7 +470,7 @@ public abstract class BaseAccountResourceTestCase {
 
 			Page<Account> page2 =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
@@ -474,7 +481,7 @@ public abstract class BaseAccountResourceTestCase {
 
 			Page<Account> page3 =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(account1, (List<Account>)page3.getItems());
@@ -604,12 +611,12 @@ public abstract class BaseAccountResourceTestCase {
 
 		Page<Account> page =
 			accountResource.getWorkspaceGroupChannelAccountsPage(
-				groupId, channelId, null, null, null, null);
+				groupId, channelId, null, null, null, null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<Account> ascPage =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -618,7 +625,7 @@ public abstract class BaseAccountResourceTestCase {
 
 			Page<Account> descPage =
 				accountResource.getWorkspaceGroupChannelAccountsPage(
-					groupId, channelId, null, null,
+					groupId, channelId, null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -752,6 +759,22 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("accountType", additionalAssertFieldName)) {
+				if (account.getAccountType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("activitiesCount", additionalAssertFieldName)) {
+				if (account.getActivitiesCount() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("annualRevenue", additionalAssertFieldName)) {
 				if (account.getAnnualRevenue() == null) {
 					valid = false;
@@ -762,6 +785,16 @@ public abstract class BaseAccountResourceTestCase {
 
 			if (Objects.equals("country", additionalAssertFieldName)) {
 				if (account.getCountry() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"firstActivityDate", additionalAssertFieldName)) {
+
+				if (account.getFirstActivityDate() == null) {
 					valid = false;
 				}
 
@@ -786,6 +819,24 @@ public abstract class BaseAccountResourceTestCase {
 
 			if (Objects.equals("lifecycleStage", additionalAssertFieldName)) {
 				if (account.getLifecycleStage() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"numberOfEmployees", additionalAssertFieldName)) {
+
+				if (account.getNumberOfEmployees() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("website", additionalAssertFieldName)) {
+				if (account.getWebsite() == null) {
 					valid = false;
 				}
 
@@ -919,6 +970,27 @@ public abstract class BaseAccountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("accountType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getAccountType(), account2.getAccountType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("activitiesCount", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getActivitiesCount(),
+						account2.getActivitiesCount())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("annualRevenue", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						account1.getAnnualRevenue(),
@@ -944,6 +1016,19 @@ public abstract class BaseAccountResourceTestCase {
 				if (!Objects.deepEquals(
 						account1.getDateModified(),
 						account2.getDateModified())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"firstActivityDate", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						account1.getFirstActivityDate(),
+						account2.getFirstActivityDate())) {
 
 					return false;
 				}
@@ -984,6 +1069,29 @@ public abstract class BaseAccountResourceTestCase {
 				if (!Objects.deepEquals(
 						account1.getLifecycleStage(),
 						account2.getLifecycleStage())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"numberOfEmployees", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						account1.getNumberOfEmployees(),
+						account2.getNumberOfEmployees())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("website", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						account1.getWebsite(), account2.getWebsite())) {
 
 					return false;
 				}
@@ -1144,6 +1252,57 @@ public abstract class BaseAccountResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("accountType")) {
+			Object object = account.getAccountType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("activitiesCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("annualRevenue")) {
 			sb.append(String.valueOf(account.getAnnualRevenue()));
 
@@ -1220,6 +1379,35 @@ public abstract class BaseAccountResourceTestCase {
 				sb.append(" ");
 
 				sb.append(_format.format(account.getDateModified()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("firstActivityDate")) {
+			if (operator.equals("between")) {
+				Date date = account.getFirstActivityDate();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(account.getFirstActivityDate()));
 			}
 
 			return sb.toString();
@@ -1392,6 +1580,58 @@ public abstract class BaseAccountResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("numberOfEmployees")) {
+			sb.append(String.valueOf(account.getNumberOfEmployees()));
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("website")) {
+			Object object = account.getWebsite();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1441,15 +1681,21 @@ public abstract class BaseAccountResourceTestCase {
 			{
 				accountName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				accountType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				activitiesCount = RandomTestUtil.randomLong();
 				annualRevenue = RandomTestUtil.randomDouble();
 				country = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				dateModified = RandomTestUtil.nextDate();
+				firstActivityDate = RandomTestUtil.nextDate();
 				id = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				industry = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				lastActivityDate = RandomTestUtil.nextDate();
 				lifecycleStage = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				numberOfEmployees = RandomTestUtil.randomInt();
+				website = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
 		};
 	}
@@ -1674,4 +1920,4 @@ public abstract class BaseAccountResourceTestCase {
 		_accountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1223141093
+// LIFERAY-REST-BUILDER-HASH:-1845843405

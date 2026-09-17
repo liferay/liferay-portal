@@ -54,7 +54,7 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/account-lifecycles/{accountLifecycleId}/stage-transitions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are matched case-insensitively against the stage type (e.g. PIPELINE or 'at risk') or the stage description. For date-range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
+		description = "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are matched case-insensitively against the stage type (e.g. PIPELINE or 'at risk') or the stage description. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -100,7 +100,7 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 				name = "rangeEnd"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Date-range preset. Use one of the listed enum values (e.g. LAST_90_DAYS). Defaults to LAST_90_DAYS. When both rangeStart and rangeEnd are set, they take precedence over rangeKey.",
+				description = "Date range preset. Use one of the listed enum values (e.g. LAST_90_DAYS). Defaults to LAST_90_DAYS. When both rangeStart and rangeEnd are set, they take precedence over rangeKey.",
 				example = "LAST_90_DAYS",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeKey"
@@ -637,4 +637,4 @@ public abstract class BaseAccountLifecycleStageTransitionResourceImpl
 			BaseAccountLifecycleStageTransitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:966844319
+// LIFERAY-REST-BUILDER-HASH:1835229887

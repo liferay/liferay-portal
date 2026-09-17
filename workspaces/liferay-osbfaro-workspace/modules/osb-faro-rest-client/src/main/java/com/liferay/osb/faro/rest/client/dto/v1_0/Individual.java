@@ -40,8 +40,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			accountName = accountNameUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -61,12 +61,33 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			activitiesCount = activitiesCountUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	protected Long activitiesCount;
+
+	public String getActivityStatus() {
+		return activityStatus;
+	}
+
+	public void setActivityStatus(String activityStatus) {
+		this.activityStatus = activityStatus;
+	}
+
+	public void setActivityStatus(
+		UnsafeSupplier<String, Exception> activityStatusUnsafeSupplier) {
+
+		try {
+			activityStatus = activityStatusUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String activityStatus;
 
 	public Long getAverageSessionDuration() {
 		return averageSessionDuration;
@@ -82,8 +103,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			averageSessionDuration = averageSessionDurationUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -103,8 +124,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			dateCreated = dateCreatedUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -124,8 +145,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			dateModified = dateModifiedUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -145,12 +166,33 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			demographics = demographicsUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	protected Object demographics;
+
+	public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	public void setEmailAddress(
+		UnsafeSupplier<String, Exception> emailAddressUnsafeSupplier) {
+
+		try {
+			emailAddress = emailAddressUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String emailAddress;
 
 	public Date getFirstActivityDate() {
 		return firstActivityDate;
@@ -166,8 +208,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			firstActivityDate = firstActivityDateUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -185,12 +227,33 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			id = idUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	protected String id;
+
+	public Date getKnownSinceDate() {
+		return knownSinceDate;
+	}
+
+	public void setKnownSinceDate(Date knownSinceDate) {
+		this.knownSinceDate = knownSinceDate;
+	}
+
+	public void setKnownSinceDate(
+		UnsafeSupplier<Date, Exception> knownSinceDateUnsafeSupplier) {
+
+		try {
+			knownSinceDate = knownSinceDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date knownSinceDate;
 
 	public Date getLastActivityDate() {
 		return lastActivityDate;
@@ -206,8 +269,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			lastActivityDate = lastActivityDateUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -227,12 +290,31 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			lastSessionCountry = lastSessionCountryUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
 	protected String lastSessionCountry;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+		try {
+			name = nameUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String name;
 
 	public ProfileType getProfileType() {
 		return profileType;
@@ -256,8 +338,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			profileType = profileTypeUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -277,8 +359,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			sessionsCount = sessionsCountUnsafeSupplier.get();
 		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
+		catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -349,4 +431,4 @@ public class Individual implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2059935576
+// LIFERAY-REST-BUILDER-HASH:769200648

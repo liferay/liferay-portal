@@ -5,12 +5,9 @@
 
 package com.liferay.osb.faro.rest.dto.v1_0;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -20,8 +17,6 @@ import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
-
-import jakarta.validation.Valid;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -145,10 +140,10 @@ public class AssetSummaryMetric implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _assetTitleSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(description = "Asset category.")
-	@JsonGetter("assetType")
-	@Valid
-	public AssetType getAssetType() {
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Asset category as reported by the analytics engine (e.g. Blog, Document, Form, Journal, Page)."
+	)
+	public String getAssetType() {
 		if (_assetTypeSupplier != null) {
 			assetType = _assetTypeSupplier.get();
 
@@ -158,18 +153,7 @@ public class AssetSummaryMetric implements Serializable {
 		return assetType;
 	}
 
-	@JsonIgnore
-	public String getAssetTypeAsString() {
-		AssetType assetType = getAssetType();
-
-		if (assetType == null) {
-			return null;
-		}
-
-		return assetType.toString();
-	}
-
-	public void setAssetType(AssetType assetType) {
+	public void setAssetType(String assetType) {
 		this.assetType = assetType;
 
 		_assetTypeSupplier = null;
@@ -177,7 +161,7 @@ public class AssetSummaryMetric implements Serializable {
 
 	@JsonIgnore
 	public void setAssetType(
-		UnsafeSupplier<AssetType, Exception> assetTypeUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> assetTypeUnsafeSupplier) {
 
 		_assetTypeSupplier = () -> {
 			try {
@@ -192,12 +176,14 @@ public class AssetSummaryMetric implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "Asset category.")
+	@GraphQLField(
+		description = "Asset category as reported by the analytics engine (e.g. Blog, Document, Form, Journal, Page)."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected AssetType assetType;
+	protected String assetType;
 
 	@JsonIgnore
-	private Supplier<AssetType> _assetTypeSupplier;
+	private Supplier<String> _assetTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Download count over the selected date range. Null when the asset type doesn't track downloads."
@@ -623,7 +609,7 @@ public class AssetSummaryMetric implements Serializable {
 			sb.append("\"");
 		}
 
-		AssetType assetType = getAssetType();
+		String assetType = getAssetType();
 
 		if (assetType != null) {
 			if (sb.length() > 1) {
@@ -633,7 +619,9 @@ public class AssetSummaryMetric implements Serializable {
 			sb.append("\"assetType\": ");
 
 			sb.append("\"");
-			sb.append(assetType);
+
+			sb.append(_escape(assetType));
+
 			sb.append("\"");
 		}
 
@@ -745,45 +733,6 @@ public class AssetSummaryMetric implements Serializable {
 	)
 	public String xClassName;
 
-	@GraphQLName("AssetType")
-	public static enum AssetType {
-
-		BLOG("BLOG"), DOCUMENT("DOCUMENT"), FORM("FORM"), JOURNAL("JOURNAL"),
-		OBJECT_ENTRY("OBJECT_ENTRY"), PAGE("PAGE");
-
-		@JsonCreator
-		public static AssetType create(String value) {
-			if ((value == null) || value.equals("")) {
-				return null;
-			}
-
-			for (AssetType assetType : values()) {
-				if (Objects.equals(assetType.getValue(), value)) {
-					return assetType;
-				}
-			}
-
-			throw new IllegalArgumentException("Invalid enum value: " + value);
-		}
-
-		@JsonValue
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private AssetType(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
-
 	private static String _escape(Object object) {
 		return StringUtil.replace(
 			String.valueOf(object), _JSON_ESCAPE_STRINGS[0],
@@ -873,4 +822,4 @@ public class AssetSummaryMetric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-715899407
+// LIFERAY-REST-BUILDER-HASH:994486562

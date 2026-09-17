@@ -43,12 +43,14 @@ public interface AccountResource {
 
 	public Page<Account> getWorkspaceGroupChannelAccountsPage(
 			Long groupId, String channelId, String lifecycleStage,
-			String search, Pagination pagination, String sortString)
+			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getWorkspaceGroupChannelAccountsPageHttpResponse(
 				Long groupId, String channelId, String lifecycleStage,
+				String rangeEnd, String rangeKey, String rangeStart,
 				String search, Pagination pagination, String sortString)
 		throws Exception;
 
@@ -268,13 +270,14 @@ public interface AccountResource {
 
 		public Page<Account> getWorkspaceGroupChannelAccountsPage(
 				Long groupId, String channelId, String lifecycleStage,
+				String rangeEnd, String rangeKey, String rangeStart,
 				String search, Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getWorkspaceGroupChannelAccountsPageHttpResponse(
-					groupId, channelId, lifecycleStage, search, pagination,
-					sortString);
+					groupId, channelId, lifecycleStage, rangeEnd, rangeKey,
+					rangeStart, search, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -338,6 +341,7 @@ public interface AccountResource {
 		public HttpInvoker.HttpResponse
 				getWorkspaceGroupChannelAccountsPageHttpResponse(
 					Long groupId, String channelId, String lifecycleStage,
+					String rangeEnd, String rangeKey, String rangeStart,
 					String search, Pagination pagination, String sortString)
 			throws Exception {
 
@@ -365,6 +369,18 @@ public interface AccountResource {
 			if (lifecycleStage != null) {
 				httpInvoker.parameter(
 					"lifecycleStage", String.valueOf(lifecycleStage));
+			}
+
+			if (rangeEnd != null) {
+				httpInvoker.parameter("rangeEnd", String.valueOf(rangeEnd));
+			}
+
+			if (rangeKey != null) {
+				httpInvoker.parameter("rangeKey", String.valueOf(rangeKey));
+			}
+
+			if (rangeStart != null) {
+				httpInvoker.parameter("rangeStart", String.valueOf(rangeStart));
 			}
 
 			if (search != null) {
@@ -410,4 +426,4 @@ public interface AccountResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2011398787
+// LIFERAY-REST-BUILDER-HASH:-2074771572

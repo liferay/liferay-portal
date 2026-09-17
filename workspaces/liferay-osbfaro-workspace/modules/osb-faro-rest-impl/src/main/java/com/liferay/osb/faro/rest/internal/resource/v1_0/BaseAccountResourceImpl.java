@@ -128,12 +128,28 @@ public abstract class BaseAccountResourceImpl
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeEnd"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
+				example = "LAST_30_DAYS",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeKey"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "rangeStart"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
 				description = "Free-text keyword search across account name and related fields. Empty or null returns all matching assets.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Sort expression `column:asc|desc`. Defaults to `accountName:asc` when omitted. Separate with commas for multiple column sort.",
+				description = "Sort expression `column:asc|desc`. Defaults to `accountName:asc` when omitted. Sortable columns include accountName, activitiesCount, annualRevenue, and lastActivityDate. Separate with commas for multiple column sort.",
 				example = "accountName:asc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -159,6 +175,15 @@ public abstract class BaseAccountResourceImpl
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("lifecycleStage")
 			String lifecycleStage,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("rangeEnd")
+			String rangeEnd,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("rangeKey")
+			String rangeKey,
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("rangeStart")
+			String rangeStart,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -622,4 +647,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1696987310
+// LIFERAY-REST-BUILDER-HASH:1023387459

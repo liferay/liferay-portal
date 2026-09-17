@@ -67,24 +67,16 @@ public class AssetSummaryMetric implements Cloneable, Serializable {
 
 	protected String assetTitle;
 
-	public AssetType getAssetType() {
+	public String getAssetType() {
 		return assetType;
 	}
 
-	public String getAssetTypeAsString() {
-		if (assetType == null) {
-			return null;
-		}
-
-		return assetType.toString();
-	}
-
-	public void setAssetType(AssetType assetType) {
+	public void setAssetType(String assetType) {
 		this.assetType = assetType;
 	}
 
 	public void setAssetType(
-		UnsafeSupplier<AssetType, Exception> assetTypeUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> assetTypeUnsafeSupplier) {
 
 		try {
 			assetType = assetTypeUnsafeSupplier.get();
@@ -94,7 +86,7 @@ public class AssetSummaryMetric implements Cloneable, Serializable {
 		}
 	}
 
-	protected AssetType assetType;
+	protected String assetType;
 
 	public Double getDownloads() {
 		return downloads;
@@ -301,39 +293,5 @@ public class AssetSummaryMetric implements Cloneable, Serializable {
 		return AssetSummaryMetricSerDes.toJSON(this);
 	}
 
-	public static enum AssetType {
-
-		BLOG("BLOG"), DOCUMENT("DOCUMENT"), FORM("FORM"), JOURNAL("JOURNAL"),
-		OBJECT_ENTRY("OBJECT_ENTRY"), PAGE("PAGE");
-
-		public static AssetType create(String value) {
-			for (AssetType assetType : values()) {
-				if (Objects.equals(assetType.getValue(), value) ||
-					Objects.equals(assetType.name(), value)) {
-
-					return assetType;
-				}
-			}
-
-			return null;
-		}
-
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private AssetType(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
-
 }
-// LIFERAY-REST-BUILDER-HASH:1199210539
+// LIFERAY-REST-BUILDER-HASH:-2092426612

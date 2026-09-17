@@ -46,6 +46,18 @@ public interface IndividualSegmentResource {
 				String status, Pagination pagination)
 		throws Exception;
 
+	public Page<IndividualSegment>
+			getWorkspaceGroupIndividualIndividualSegmentsPage(
+				Long groupId, String individualId, String channelId,
+				String search, String status, Pagination pagination)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getWorkspaceGroupIndividualIndividualSegmentsPageHttpResponse(
+				Long groupId, String individualId, String channelId,
+				String search, String status, Pagination pagination)
+		throws Exception;
+
 	public IndividualSegment getWorkspaceGroupIndividualSegment(
 			Long groupId, String individualSegmentId)
 		throws Exception;
@@ -295,6 +307,138 @@ public interface IndividualSegmentResource {
 			return httpInvoker.invoke();
 		}
 
+		public Page<IndividualSegment>
+				getWorkspaceGroupIndividualIndividualSegmentsPage(
+					Long groupId, String individualId, String channelId,
+					String search, String status, Pagination pagination)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				getWorkspaceGroupIndividualIndividualSegmentsPageHttpResponse(
+					groupId, individualId, channelId, search, status,
+					pagination);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return Page.of(content, IndividualSegmentSerDes::toDTO);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				getWorkspaceGroupIndividualIndividualSegmentsPageHttpResponse(
+					Long groupId, String individualId, String channelId,
+					String search, String status, Pagination pagination)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			if (channelId != null) {
+				httpInvoker.parameter("channelId", String.valueOf(channelId));
+			}
+
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (status != null) {
+				httpInvoker.parameter("status", String.valueOf(status));
+			}
+
+			if (pagination != null) {
+				httpInvoker.parameter(
+					"page", String.valueOf(pagination.getPage()));
+				httpInvoker.parameter(
+					"pageSize", String.valueOf(pagination.getPageSize()));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/faro-rest/v1.0/workspace/{groupId}/individuals/{individualId}/individual-segments");
+
+			httpInvoker.path("groupId", groupId);
+			httpInvoker.path("individualId", individualId);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
 		public IndividualSegment getWorkspaceGroupIndividualSegment(
 				Long groupId, String individualSegmentId)
 			throws Exception {
@@ -416,4 +560,4 @@ public interface IndividualSegmentResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1886274286
+// LIFERAY-REST-BUILDER-HASH:535168336

@@ -49,6 +49,12 @@ public interface IndividualSegmentResource {
 				String status, Pagination pagination)
 		throws Exception;
 
+	public Page<IndividualSegment>
+			getWorkspaceGroupIndividualIndividualSegmentsPage(
+				Long groupId, String individualId, String channelId,
+				String search, String status, Pagination pagination)
+		throws Exception;
+
 	public IndividualSegment getWorkspaceGroupIndividualSegment(
 			Long groupId, String individualSegmentId)
 		throws Exception;
@@ -141,4 +147,4 @@ public interface IndividualSegmentResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1650608003
+// LIFERAY-REST-BUILDER-HASH:1907565182

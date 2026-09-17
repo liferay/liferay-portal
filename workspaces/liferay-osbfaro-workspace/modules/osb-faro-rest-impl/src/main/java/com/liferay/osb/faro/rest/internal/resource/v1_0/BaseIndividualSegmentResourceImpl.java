@@ -131,6 +131,89 @@ public abstract class BaseIndividualSegmentResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/individuals/{individualId}/individual-segments'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "List the individual segments a single individual belongs to, or formerly belonged to. Use this to check whether a person is already in a nurture or intent segment before recommending an action. To list all segments in a channel, use `getWorkspaceGroupChannelIndividualSegmentsPage`."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "groupId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "ID of the individual whose segments should be listed.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "individualId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Optional channel ID to scope the lookup to a single channel.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "channelId"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page number (starts at 1).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "page"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Page size.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "pageSize"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Free-text search across segment name and related fields.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "search"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "Filter by segment operational status.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "status"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "IndividualSegment")
+		}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/workspace/{groupId}/individuals/{individualId}/individual-segments"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Page<IndividualSegment>
+			getWorkspaceGroupIndividualIndividualSegmentsPage(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("groupId")
+				Long groupId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("individualId")
+				String individualId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("channelId")
+				String channelId,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("search")
+				String search,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("status")
+				String status,
+				@jakarta.ws.rs.core.Context Pagination pagination)
+		throws Exception {
+
+		return Page.of(Collections.emptyList());
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/individual-segments/{individualSegmentId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
@@ -620,4 +703,4 @@ public abstract class BaseIndividualSegmentResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualSegmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:419480026
+// LIFERAY-REST-BUILDER-HASH:1689003055

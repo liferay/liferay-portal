@@ -82,7 +82,9 @@ public class AssetSummaryMetricSerDes {
 			sb.append("\"assetType\": ");
 
 			sb.append("\"");
-			sb.append(assetSummaryMetric.getAssetType());
+
+			sb.append(_escape(assetSummaryMetric.getAssetType()));
+
 			sb.append("\"");
 		}
 
@@ -362,8 +364,7 @@ public class AssetSummaryMetricSerDes {
 			else if (Objects.equals(jsonParserFieldName, "assetType")) {
 				if (jsonParserFieldValue != null) {
 					assetSummaryMetric.setAssetType(
-						AssetSummaryMetric.AssetType.create(
-							(String)jsonParserFieldValue));
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "downloads")) {
@@ -503,4 +504,4 @@ public class AssetSummaryMetricSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-199752451
+// LIFERAY-REST-BUILDER-HASH:-853501188

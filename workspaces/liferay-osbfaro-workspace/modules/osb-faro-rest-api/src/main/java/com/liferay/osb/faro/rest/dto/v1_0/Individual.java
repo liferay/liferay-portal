@@ -155,6 +155,96 @@ public class Individual implements Serializable {
 	private Supplier<Long> _activitiesCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Engagement classification computed by Analytics Cloud from the individual's recent activity. The set of values is defined by the analytics engine."
+	)
+	public String getActivityStatus() {
+		if (_activityStatusSupplier != null) {
+			activityStatus = _activityStatusSupplier.get();
+
+			_activityStatusSupplier = null;
+		}
+
+		return activityStatus;
+	}
+
+	public void setActivityStatus(String activityStatus) {
+		this.activityStatus = activityStatus;
+
+		_activityStatusSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setActivityStatus(
+		UnsafeSupplier<String, Exception> activityStatusUnsafeSupplier) {
+
+		_activityStatusSupplier = () -> {
+			try {
+				return activityStatusUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Engagement classification computed by Analytics Cloud from the individual's recent activity. The set of values is defined by the analytics engine."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String activityStatus;
+
+	@JsonIgnore
+	private Supplier<String> _activityStatusSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Average duration of the individual's sessions, in milliseconds."
+	)
+	public Long getAverageSessionDuration() {
+		if (_averageSessionDurationSupplier != null) {
+			averageSessionDuration = _averageSessionDurationSupplier.get();
+
+			_averageSessionDurationSupplier = null;
+		}
+
+		return averageSessionDuration;
+	}
+
+	public void setAverageSessionDuration(Long averageSessionDuration) {
+		this.averageSessionDuration = averageSessionDuration;
+
+		_averageSessionDurationSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAverageSessionDuration(
+		UnsafeSupplier<Long, Exception> averageSessionDurationUnsafeSupplier) {
+
+		_averageSessionDurationSupplier = () -> {
+			try {
+				return averageSessionDurationUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Average duration of the individual's sessions, in milliseconds."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long averageSessionDuration;
+
+	@JsonIgnore
+	private Supplier<Long> _averageSessionDurationSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "First time this Individual was observed by Analytics Cloud."
 	)
 	public Date getDateCreated() {
@@ -291,6 +381,51 @@ public class Individual implements Serializable {
 	private Supplier<Object> _demographicsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Email address of a known individual, taken from the 'email' demographic attribute. Null for anonymous individuals or when no data source supplies one."
+	)
+	public String getEmailAddress() {
+		if (_emailAddressSupplier != null) {
+			emailAddress = _emailAddressSupplier.get();
+
+			_emailAddressSupplier = null;
+		}
+
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+
+		_emailAddressSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setEmailAddress(
+		UnsafeSupplier<String, Exception> emailAddressUnsafeSupplier) {
+
+		_emailAddressSupplier = () -> {
+			try {
+				return emailAddressUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Email address of a known individual, taken from the 'email' demographic attribute. Null for anonymous individuals or when no data source supplies one."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String emailAddress;
+
+	@JsonIgnore
+	private Supplier<String> _emailAddressSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Date of the earliest tracked activity for this individual."
 	)
 	public Date getFirstActivityDate() {
@@ -377,6 +512,51 @@ public class Individual implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _idSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Date the individual stopped being anonymous and became known."
+	)
+	public Date getKnownSinceDate() {
+		if (_knownSinceDateSupplier != null) {
+			knownSinceDate = _knownSinceDateSupplier.get();
+
+			_knownSinceDateSupplier = null;
+		}
+
+		return knownSinceDate;
+	}
+
+	public void setKnownSinceDate(Date knownSinceDate) {
+		this.knownSinceDate = knownSinceDate;
+
+		_knownSinceDateSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setKnownSinceDate(
+		UnsafeSupplier<Date, Exception> knownSinceDateUnsafeSupplier) {
+
+		_knownSinceDateSupplier = () -> {
+			try {
+				return knownSinceDateUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Date the individual stopped being anonymous and became known."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date knownSinceDate;
+
+	@JsonIgnore
+	private Supplier<Date> _knownSinceDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Date of the most recent tracked activity for this individual."
@@ -469,6 +649,49 @@ public class Individual implements Serializable {
 	private Supplier<String> _lastSessionCountrySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Display name of a known individual, built from the 'givenName' and 'familyName' demographic attributes. Null when neither is available."
+	)
+	public String getName() {
+		if (_nameSupplier != null) {
+			name = _nameSupplier.get();
+
+			_nameSupplier = null;
+		}
+
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+
+		_nameSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+		_nameSupplier = () -> {
+			try {
+				return nameUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Display name of a known individual, built from the 'givenName' and 'familyName' demographic attributes. Null when neither is available."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String name;
+
+	@JsonIgnore
+	private Supplier<String> _nameSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Profile classification. KNOWN individuals are identified by email/account; ANONYMOUS individuals are browser-tracked only."
 	)
 	@JsonGetter("profileType")
@@ -526,6 +749,51 @@ public class Individual implements Serializable {
 	@JsonIgnore
 	private Supplier<ProfileType> _profileTypeSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total number of sessions attributed to this individual over their whole history. Not a windowed count."
+	)
+	public Long getSessionsCount() {
+		if (_sessionsCountSupplier != null) {
+			sessionsCount = _sessionsCountSupplier.get();
+
+			_sessionsCountSupplier = null;
+		}
+
+		return sessionsCount;
+	}
+
+	public void setSessionsCount(Long sessionsCount) {
+		this.sessionsCount = sessionsCount;
+
+		_sessionsCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSessionsCount(
+		UnsafeSupplier<Long, Exception> sessionsCountUnsafeSupplier) {
+
+		_sessionsCountSupplier = () -> {
+			try {
+				return sessionsCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Total number of sessions attributed to this individual over their whole history. Not a windowed count."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long sessionsCount;
+
+	@JsonIgnore
+	private Supplier<Long> _sessionsCountSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -582,6 +850,34 @@ public class Individual implements Serializable {
 			sb.append("\"activitiesCount\": ");
 
 			sb.append(activitiesCount);
+		}
+
+		String activityStatus = getActivityStatus();
+
+		if (activityStatus != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"activityStatus\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(activityStatus));
+
+			sb.append("\"");
+		}
+
+		Long averageSessionDuration = getAverageSessionDuration();
+
+		if (averageSessionDuration != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"averageSessionDuration\": ");
+
+			sb.append(averageSessionDuration);
 		}
 
 		Date dateCreated = getDateCreated();
@@ -649,6 +945,22 @@ public class Individual implements Serializable {
 			}
 		}
 
+		String emailAddress = getEmailAddress();
+
+		if (emailAddress != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"emailAddress\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(emailAddress));
+
+			sb.append("\"");
+		}
+
 		Date firstActivityDate = getFirstActivityDate();
 
 		if (firstActivityDate != null) {
@@ -677,6 +989,22 @@ public class Individual implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(id));
+
+			sb.append("\"");
+		}
+
+		Date knownSinceDate = getKnownSinceDate();
+
+		if (knownSinceDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"knownSinceDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(knownSinceDate));
 
 			sb.append("\"");
 		}
@@ -713,6 +1041,22 @@ public class Individual implements Serializable {
 			sb.append("\"");
 		}
 
+		String name = getName();
+
+		if (name != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"name\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(name));
+
+			sb.append("\"");
+		}
+
 		ProfileType profileType = getProfileType();
 
 		if (profileType != null) {
@@ -725,6 +1069,18 @@ public class Individual implements Serializable {
 			sb.append("\"");
 			sb.append(profileType);
 			sb.append("\"");
+		}
+
+		Long sessionsCount = getSessionsCount();
+
+		if (sessionsCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sessionsCount\": ");
+
+			sb.append(sessionsCount);
 		}
 
 		sb.append("}");
@@ -866,4 +1222,4 @@ public class Individual implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:499529180
+// LIFERAY-REST-BUILDER-HASH:383417997

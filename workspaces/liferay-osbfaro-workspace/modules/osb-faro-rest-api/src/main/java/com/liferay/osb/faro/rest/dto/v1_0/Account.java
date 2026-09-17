@@ -100,6 +100,96 @@ public class Account implements Serializable {
 	private Supplier<String> _accountNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Account classification supplied by the data source (e.g. 'Customer', 'Partner')."
+	)
+	public String getAccountType() {
+		if (_accountTypeSupplier != null) {
+			accountType = _accountTypeSupplier.get();
+
+			_accountTypeSupplier = null;
+		}
+
+		return accountType;
+	}
+
+	public void setAccountType(String accountType) {
+		this.accountType = accountType;
+
+		_accountTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAccountType(
+		UnsafeSupplier<String, Exception> accountTypeUnsafeSupplier) {
+
+		_accountTypeSupplier = () -> {
+			try {
+				return accountTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Account classification supplied by the data source (e.g. 'Customer', 'Partner')."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String accountType;
+
+	@JsonIgnore
+	private Supplier<String> _accountTypeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Total number of tracked activities attributed to individuals associated with this account, over the account's whole history. Not a windowed count."
+	)
+	public Long getActivitiesCount() {
+		if (_activitiesCountSupplier != null) {
+			activitiesCount = _activitiesCountSupplier.get();
+
+			_activitiesCountSupplier = null;
+		}
+
+		return activitiesCount;
+	}
+
+	public void setActivitiesCount(Long activitiesCount) {
+		this.activitiesCount = activitiesCount;
+
+		_activitiesCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setActivitiesCount(
+		UnsafeSupplier<Long, Exception> activitiesCountUnsafeSupplier) {
+
+		_activitiesCountSupplier = () -> {
+			try {
+				return activitiesCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Total number of tracked activities attributed to individuals associated with this account, over the account's whole history. Not a windowed count."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long activitiesCount;
+
+	@JsonIgnore
+	private Supplier<Long> _activitiesCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Annual revenue of the account."
 	)
 	public Double getAnnualRevenue() {
@@ -231,6 +321,51 @@ public class Account implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Date> _dateModifiedSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Date of the earliest tracked activity from any individual associated with this account."
+	)
+	public Date getFirstActivityDate() {
+		if (_firstActivityDateSupplier != null) {
+			firstActivityDate = _firstActivityDateSupplier.get();
+
+			_firstActivityDateSupplier = null;
+		}
+
+		return firstActivityDate;
+	}
+
+	public void setFirstActivityDate(Date firstActivityDate) {
+		this.firstActivityDate = firstActivityDate;
+
+		_firstActivityDateSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFirstActivityDate(
+		UnsafeSupplier<Date, Exception> firstActivityDateUnsafeSupplier) {
+
+		_firstActivityDateSupplier = () -> {
+			try {
+				return firstActivityDateUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Date of the earliest tracked activity from any individual associated with this account."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date firstActivityDate;
+
+	@JsonIgnore
+	private Supplier<Date> _firstActivityDateSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Account ID. Use this with `getWorkspaceGroupAccount` to fetch the account directly."
@@ -410,6 +545,92 @@ public class Account implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _lifecycleStageSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Number of employees reported for the account."
+	)
+	public Integer getNumberOfEmployees() {
+		if (_numberOfEmployeesSupplier != null) {
+			numberOfEmployees = _numberOfEmployeesSupplier.get();
+
+			_numberOfEmployeesSupplier = null;
+		}
+
+		return numberOfEmployees;
+	}
+
+	public void setNumberOfEmployees(Integer numberOfEmployees) {
+		this.numberOfEmployees = numberOfEmployees;
+
+		_numberOfEmployeesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setNumberOfEmployees(
+		UnsafeSupplier<Integer, Exception> numberOfEmployeesUnsafeSupplier) {
+
+		_numberOfEmployeesSupplier = () -> {
+			try {
+				return numberOfEmployeesUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "Number of employees reported for the account.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Integer numberOfEmployees;
+
+	@JsonIgnore
+	private Supplier<Integer> _numberOfEmployeesSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Website of the account."
+	)
+	public String getWebsite() {
+		if (_websiteSupplier != null) {
+			website = _websiteSupplier.get();
+
+			_websiteSupplier = null;
+		}
+
+		return website;
+	}
+
+	public void setWebsite(String website) {
+		this.website = website;
+
+		_websiteSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setWebsite(
+		UnsafeSupplier<String, Exception> websiteUnsafeSupplier) {
+
+		_websiteSupplier = () -> {
+			try {
+				return websiteUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "Website of the account.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected String website;
+
+	@JsonIgnore
+	private Supplier<String> _websiteSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -456,6 +677,34 @@ public class Account implements Serializable {
 			sb.append("\"");
 		}
 
+		String accountType = getAccountType();
+
+		if (accountType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(accountType));
+
+			sb.append("\"");
+		}
+
+		Long activitiesCount = getActivitiesCount();
+
+		if (activitiesCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"activitiesCount\": ");
+
+			sb.append(activitiesCount);
+		}
+
 		Double annualRevenue = getAnnualRevenue();
 
 		if (annualRevenue != null) {
@@ -496,6 +745,22 @@ public class Account implements Serializable {
 			sb.append("\"");
 
 			sb.append(liferayToJSONDateFormat.format(dateModified));
+
+			sb.append("\"");
+		}
+
+		Date firstActivityDate = getFirstActivityDate();
+
+		if (firstActivityDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"firstActivityDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(firstActivityDate));
 
 			sb.append("\"");
 		}
@@ -560,6 +825,34 @@ public class Account implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(lifecycleStage));
+
+			sb.append("\"");
+		}
+
+		Integer numberOfEmployees = getNumberOfEmployees();
+
+		if (numberOfEmployees != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"numberOfEmployees\": ");
+
+			sb.append(numberOfEmployees);
+		}
+
+		String website = getWebsite();
+
+		if (website != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"website\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(website));
 
 			sb.append("\"");
 		}
@@ -665,4 +958,4 @@ public class Account implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:317732157
+// LIFERAY-REST-BUILDER-HASH:1374552283

@@ -420,6 +420,238 @@ public abstract class BaseIndividualSegmentResourceTestCase {
 	}
 
 	@Test
+	public void testGetWorkspaceGroupIndividualIndividualSegmentsPage()
+		throws Exception {
+
+		Long groupId =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getGroupId();
+		Long irrelevantGroupId =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getIrrelevantGroupId();
+		String individualId =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getIndividualId();
+		String irrelevantIndividualId =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getIrrelevantIndividualId();
+
+		Page<IndividualSegment> page =
+			individualSegmentResource.
+				getWorkspaceGroupIndividualIndividualSegmentsPage(
+					groupId, individualId, RandomTestUtil.randomString(), null,
+					RandomTestUtil.randomString(), Pagination.of(1, 10));
+
+		long totalCount = page.getTotalCount();
+
+		if ((irrelevantGroupId != null) && (irrelevantIndividualId != null)) {
+			IndividualSegment irrelevantIndividualSegment =
+				testGetWorkspaceGroupIndividualIndividualSegmentsPage_addIndividualSegment(
+					irrelevantGroupId, irrelevantIndividualId,
+					randomIrrelevantIndividualSegment());
+
+			page =
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						irrelevantGroupId, irrelevantIndividualId, null, null,
+						null, Pagination.of(1, (int)totalCount + 1));
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantIndividualSegment,
+				(List<IndividualSegment>)page.getItems());
+			assertValid(
+				page,
+				testGetWorkspaceGroupIndividualIndividualSegmentsPage_getExpectedActions(
+					irrelevantGroupId, irrelevantIndividualId));
+		}
+
+		IndividualSegment individualSegment1 =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_addIndividualSegment(
+				groupId, individualId, randomIndividualSegment());
+
+		IndividualSegment individualSegment2 =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_addIndividualSegment(
+				groupId, individualId, randomIndividualSegment());
+
+		page =
+			individualSegmentResource.
+				getWorkspaceGroupIndividualIndividualSegmentsPage(
+					groupId, individualId, null, null, null,
+					Pagination.of(1, 10));
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			individualSegment1, (List<IndividualSegment>)page.getItems());
+		assertContains(
+			individualSegment2, (List<IndividualSegment>)page.getItems());
+		assertValid(
+			page,
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getExpectedActions(
+				groupId, individualId));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getExpectedActions(
+				Long groupId, String individualId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetWorkspaceGroupIndividualIndividualSegmentsPageWithPagination()
+		throws Exception {
+
+		Long groupId =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getGroupId();
+		String individualId =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getIndividualId();
+
+		Page<IndividualSegment> individualSegmentsPage =
+			individualSegmentResource.
+				getWorkspaceGroupIndividualIndividualSegmentsPage(
+					groupId, individualId, null, null, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			individualSegmentsPage.getTotalCount());
+
+		IndividualSegment individualSegment1 =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_addIndividualSegment(
+				groupId, individualId, randomIndividualSegment());
+
+		IndividualSegment individualSegment2 =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_addIndividualSegment(
+				groupId, individualId, randomIndividualSegment());
+
+		IndividualSegment individualSegment3 =
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_addIndividualSegment(
+				groupId, individualId, randomIndividualSegment());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<IndividualSegment> page1 =
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						groupId, individualId, null, null, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+							pageSizeLimit));
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				individualSegment1, (List<IndividualSegment>)page1.getItems());
+
+			Page<IndividualSegment> page2 =
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						groupId, individualId, null, null, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+							pageSizeLimit));
+
+			assertContains(
+				individualSegment2, (List<IndividualSegment>)page2.getItems());
+
+			Page<IndividualSegment> page3 =
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						groupId, individualId, null, null, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+							pageSizeLimit));
+
+			assertContains(
+				individualSegment3, (List<IndividualSegment>)page3.getItems());
+		}
+		else {
+			Page<IndividualSegment> page1 =
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						groupId, individualId, null, null, null,
+						Pagination.of(1, totalCount + 2));
+
+			List<IndividualSegment> individualSegments1 =
+				(List<IndividualSegment>)page1.getItems();
+
+			Assert.assertEquals(
+				individualSegments1.toString(), totalCount + 2,
+				individualSegments1.size());
+
+			Page<IndividualSegment> page2 =
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						groupId, individualId, null, null, null,
+						Pagination.of(2, totalCount + 2));
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<IndividualSegment> individualSegments2 =
+				(List<IndividualSegment>)page2.getItems();
+
+			Assert.assertEquals(
+				individualSegments2.toString(), 1, individualSegments2.size());
+
+			Page<IndividualSegment> page3 =
+				individualSegmentResource.
+					getWorkspaceGroupIndividualIndividualSegmentsPage(
+						groupId, individualId, null, null, null,
+						Pagination.of(1, (int)totalCount + 3));
+
+			assertContains(
+				individualSegment1, (List<IndividualSegment>)page3.getItems());
+			assertContains(
+				individualSegment2, (List<IndividualSegment>)page3.getItems());
+			assertContains(
+				individualSegment3, (List<IndividualSegment>)page3.getItems());
+		}
+	}
+
+	protected IndividualSegment
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_addIndividualSegment(
+				Long groupId, String individualId,
+				IndividualSegment individualSegment)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getGroupId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Long
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getIrrelevantGroupId()
+		throws Exception {
+
+		return null;
+	}
+
+	protected String
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getIndividualId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetWorkspaceGroupIndividualIndividualSegmentsPage_getIrrelevantIndividualId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
 	public void testGetWorkspaceGroupIndividualSegment() throws Exception {
 		IndividualSegment postIndividualSegment =
 			testGetWorkspaceGroupIndividualSegment_addIndividualSegment();
@@ -1786,4 +2018,4 @@ public abstract class BaseIndividualSegmentResourceTestCase {
 		_individualSegmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:557749357
+// LIFERAY-REST-BUILDER-HASH:1855285172
