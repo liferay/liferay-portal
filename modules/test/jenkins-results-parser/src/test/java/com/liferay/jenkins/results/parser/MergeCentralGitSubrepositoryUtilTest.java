@@ -23,12 +23,16 @@ public class MergeCentralGitSubrepositoryUtilTest
 
 	@Test
 	public void testGetMergeBranchName() throws Exception {
+		String gitSubrepositoryUpstreamCommit = RandomTestUtil.randomSHA();
+
 		Assert.assertEquals(
-			"ci-merge-com-liferay-osb-asah-private-7.0.x-abc1234def5678",
+			"ci-merge-com-liferay-osb-asah-private-7.0.x-" +
+				gitSubrepositoryUpstreamCommit,
 			ReflectionTestUtil.invoke(
 				MergeCentralGitSubrepositoryUtil.class, "_getMergeBranchName",
 				new Class<?>[] {String.class, String.class, String.class},
-				"7.0.x", "com-liferay-osb-asah-private", "abc1234def5678"));
+				"7.0.x", "com-liferay-osb-asah-private",
+				gitSubrepositoryUpstreamCommit));
 	}
 
 	@Test
@@ -38,12 +42,13 @@ public class MergeCentralGitSubrepositoryUtilTest
 			ReflectionTestUtil.invoke(
 				MergeCentralGitSubrepositoryUtil.class,
 				"_getMergeBranchNamePrefix", new Class<?>[] {String.class},
-				"ci-merge-com-liferay-osb-asah-private-7.0.x-abc1234def"));
+				"ci-merge-com-liferay-osb-asah-private-7.0.x-" +
+					RandomTestUtil.randomSHA()));
 	}
 
 	@Test
 	public void testGetRemote() throws Exception {
-		File gitrepoFile = new File("modules/integrations/mulesoft/.gitrepo");
+		File gitrepoFile = new File(RandomTestUtil.randomString());
 
 		Properties gitrepoProperties = new Properties();
 
