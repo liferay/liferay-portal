@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.search.filter.TermFilter;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -76,7 +77,8 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 			_backgroundTaskLocalService.getBackgroundTask(importProcessId);
 
 		PermissionUtil.checkImportPermission(
-			contextCompany.getCompanyId(), backgroundTask.getGroupId());
+			contextCompany.getCompanyId(), backgroundTask.getGroupId(),
+			PermissionUtil.getGroupActionId(backgroundTask));
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_IMPORT_TASK_EXECUTOR);
@@ -120,9 +122,17 @@ public class ReportEntryResourceImpl extends BaseReportEntryResourceImpl {
 			(exportImportConfigurationType ==
 				ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET)) {
 
+			String groupActionId = ActionKeys.EXPORT_IMPORT_LAYOUTS;
+
+			if (exportImportConfigurationType ==
+					ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET) {
+
+				groupActionId = ActionKeys.EXPORT_IMPORT_PORTLET_INFO;
+			}
+
 			PermissionUtil.checkImportPermission(
 				contextCompany.getCompanyId(),
-				exportImportConfiguration.getGroupId());
+				exportImportConfiguration.getGroupId(), groupActionId);
 		}
 		else {
 			PermissionUtil.checkPublishPermission(

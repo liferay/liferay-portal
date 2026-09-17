@@ -150,7 +150,8 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		long groupId = group.getGroupId();
 
 		PermissionUtil.checkImportPermission(
-			contextCompany.getCompanyId(), groupId);
+			contextCompany.getCompanyId(), groupId,
+			PermissionUtil.getGroupActionId(portletId));
 
 		FileEntry fileEntry = _addTempFileEntry(groupId, multipartBody);
 

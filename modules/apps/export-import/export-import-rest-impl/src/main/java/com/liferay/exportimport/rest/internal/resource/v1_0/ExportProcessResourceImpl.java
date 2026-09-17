@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
@@ -75,7 +76,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			_backgroundTaskLocalService.getBackgroundTask(exportProcessId);
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), backgroundTask.getGroupId());
+			contextCompany.getCompanyId(), backgroundTask.getGroupId(),
+			PermissionUtil.getGroupActionId(backgroundTask));
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
@@ -106,7 +108,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			_backgroundTaskLocalService.getBackgroundTask(exportProcessId);
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), backgroundTask.getGroupId());
+			contextCompany.getCompanyId(), backgroundTask.getGroupId(),
+			PermissionUtil.getGroupActionId(backgroundTask));
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
@@ -122,7 +125,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			_backgroundTaskLocalService.getBackgroundTask(exportProcessId);
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), backgroundTask.getGroupId());
+			contextCompany.getCompanyId(), backgroundTask.getGroupId(),
+			PermissionUtil.getGroupActionId(backgroundTask));
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
@@ -153,7 +157,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			_backgroundTaskLocalService.getBackgroundTask(exportProcessId);
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), backgroundTask.getGroupId());
+			contextCompany.getCompanyId(), backgroundTask.getGroupId(),
+			PermissionUtil.getGroupActionId(backgroundTask));
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
@@ -225,7 +230,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			_backgroundTaskLocalService.getBackgroundTask(exportProcessId);
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), backgroundTask.getGroupId());
+			contextCompany.getCompanyId(), backgroundTask.getGroupId(),
+			PermissionUtil.getGroupActionId(backgroundTask));
 
 		BackgroundTaskUtil.checkTaskExecutorClassName(
 			backgroundTask, _CLASS_NAMES_TASK_EXECUTOR);
@@ -278,7 +284,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		throws Exception {
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), groupId);
+			contextCompany.getCompanyId(), groupId,
+			PermissionUtil.getGroupActionId(portletId));
 
 		DynamicQuery dynamicQuery = _getDynamicQuery(
 			creatorId, groupId, portletId, search, status);
@@ -378,7 +385,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		long groupId = group.getGroupId();
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), groupId);
+			contextCompany.getCompanyId(), groupId,
+			ActionKeys.EXPORT_IMPORT_LAYOUTS);
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
@@ -449,7 +457,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		long groupId = group.getGroupId();
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), groupId);
+			contextCompany.getCompanyId(), groupId,
+			ActionKeys.EXPORT_IMPORT_PORTLET_INFO);
 
 		String fileName = exportProcessRequest.getName();
 

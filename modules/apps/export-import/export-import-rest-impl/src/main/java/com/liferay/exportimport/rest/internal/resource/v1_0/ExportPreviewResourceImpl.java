@@ -89,7 +89,8 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		long groupId = group.getGroupId();
 
 		PermissionUtil.checkExportPermission(
-			contextCompany.getCompanyId(), groupId);
+			contextCompany.getCompanyId(), groupId,
+			PermissionUtil.getGroupActionId(portletId));
 
 		boolean portletScoped = !Validator.isBlank(portletId);
 
