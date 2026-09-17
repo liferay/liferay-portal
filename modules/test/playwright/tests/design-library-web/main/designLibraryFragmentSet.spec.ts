@@ -25,7 +25,7 @@ const test = mergeTests(
 
 test(
 	'Editing a Design Library fragment set redirects back to the resources listing',
-	{tag: '@LPD-97638'},
+	{tag: ['@LPD-97638', '@LPD-102114']},
 	async ({apiHelpers, designLibrariesPage, page}) => {
 		const designLibraryName = getRandomString();
 		const fragmentSetName = getRandomString();
@@ -111,6 +111,49 @@ test(
 						name: editedFragmentSetName,
 					})
 				).toBeVisible();
+			});
+
+			await test.step('Open the fragment set from the resources listing row link', async () => {
+				await contentTable
+					.getByRole('row', {name: editedFragmentSetName})
+					.getByRole('link')
+					.first()
+					.click();
+
+				await expect(page).toHaveURL(/fragment_collection/);
+			});
+
+			await test.step('Reload the fragment set without the back parameters, as when returning from the fragment editor', async () => {
+				const url = new URL(page.url());
+
+				for (const key of [...url.searchParams.keys()]) {
+					if (key.endsWith('_backURL') || key.endsWith('_redirect')) {
+						url.searchParams.delete(key);
+					}
+				}
+
+				await page.goto(url.toString());
+			});
+
+			const backLink = page.locator(
+				'.control-menu-nav-item a.control-menu-nav-link'
+			);
+
+			await test.step('The back button does not point at the fragment set itself', async () => {
+				await expect(backLink).toHaveAttribute(
+					'href',
+					/view_resources_design_library/
+				);
+			});
+
+			await test.step('Clicking the back button returns to the resources listing', async () => {
+				await backLink.click();
+
+				await expect(
+					page.getByRole('link', {name: editedFragmentSetName})
+				).toBeVisible();
+
+				await expect(page).toHaveURL(/view_resources_design_library/);
 			});
 		}
 		finally {
