@@ -155,8 +155,9 @@ public class DDMFormViewFormInstanceRecordDisplayContext {
 			"ddmFormInstanceRecordId",
 			ddmFormInstanceRecord.getFormInstanceRecordId());
 
-		String redirectURL = ParamUtil.getString(
-			_ddmFormAdminRequestHelper.getRequest(), "redirect");
+		String redirectURL = PortalUtil.escapeRedirect(
+			ParamUtil.getString(
+				_ddmFormAdminRequestHelper.getRequest(), "redirect"));
 
 		if (Validator.isNotNull(redirectURL)) {
 			Locale locale = ddmForm.getDefaultLocale();

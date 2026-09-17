@@ -8,7 +8,7 @@
 <%@ include file="/admin/init.jsp" %>
 
 <%
-String redirect = ParamUtil.getString(request, "redirect");
+String redirect = PortalUtil.escapeRedirect(ParamUtil.getString(request, "redirect"));
 
 DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion = ddmFormAdminDisplayContext.getDDMFormInstanceRecordVersion();
 

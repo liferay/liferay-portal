@@ -929,7 +929,8 @@ public class DDMFormDisplayContext {
 			"showPartialResultsToRespondents",
 			isShowPartialResultsToRespondents());
 
-		String redirectURL = ParamUtil.getString(_renderRequest, "redirect");
+		String redirectURL = PortalUtil.escapeRedirect(
+			ParamUtil.getString(_renderRequest, "redirect"));
 
 		if (Validator.isNotNull(redirectURL)) {
 			ddmFormRenderingContext.setCancelLabel(

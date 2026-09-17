@@ -8,7 +8,7 @@
 <%@ include file="/display/init.jsp" %>
 
 <%
-String redirect = ParamUtil.getString(request, "redirect");
+String redirect = PortalUtil.escapeRedirect(ParamUtil.getString(request, "redirect"));
 
 DDMFormInstance formInstance = ddmFormDisplayContext.getFormInstance();
 

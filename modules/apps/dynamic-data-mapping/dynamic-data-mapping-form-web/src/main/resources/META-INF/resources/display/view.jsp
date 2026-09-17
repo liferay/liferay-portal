@@ -127,7 +127,7 @@ boolean limitToOneSubmissionPerUser = DDMFormInstanceSubmissionLimitStatusUtil.i
 						String redirectURL = ddmFormDisplayContext.getRedirectURL();
 
 						if (Validator.isNull(redirectURL)) {
-							redirectURL = ParamUtil.getString(request, "redirect", currentURL);
+							redirectURL = PortalUtil.escapeRedirect(ParamUtil.getString(request, "redirect", currentURL));
 						}
 						%>
 

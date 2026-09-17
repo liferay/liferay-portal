@@ -91,7 +91,8 @@ public class DDMFormViewFormInstanceRecordsDisplayContext {
 
 		portletDisplay.setShowBackIcon(true);
 
-		String redirect = ParamUtil.getString(renderRequest, "redirect");
+		String redirect = PortalUtil.escapeRedirect(
+			ParamUtil.getString(renderRequest, "redirect"));
 
 		if (Validator.isNull(redirect)) {
 			DDMFormAdminDisplayContext ddmFormAdminDisplayContext =
