@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -32,6 +32,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -118,6 +119,26 @@ public class DownloadEntriesMVCResourceCommandTest {
 		return mockLiferayResourceRequest;
 	}
 
+	private Map<String, String> _getZipEntries(byte[] bytes) throws Exception {
+		Map<String, String> zipEntries = new LinkedHashMap<>();
+
+		try (ZipInputStream zipInputStream = new ZipInputStream(
+				new ByteArrayInputStream(bytes))) {
+
+			ZipEntry zipEntry = zipInputStream.getNextEntry();
+
+			while (zipEntry != null) {
+				zipEntries.put(
+					zipEntry.getName(),
+					new String(zipInputStream.readAllBytes()));
+
+				zipEntry = zipInputStream.getNextEntry();
+			}
+		}
+
+		return zipEntries;
+	}
+
 	private Map<String, String> _serveResource(
 			MockLiferayResourceRequest mockLiferayResourceRequest)
 		throws Exception {
@@ -132,24 +153,7 @@ public class DownloadEntriesMVCResourceCommandTest {
 			(ByteArrayOutputStream)
 				mockLiferayResourceResponse.getPortletOutputStream();
 
-		Map<String, String> zipEntries = new LinkedHashMap<>();
-
-		try (ZipInputStream zipInputStream = new ZipInputStream(
-				new ByteArrayInputStream(
-					byteArrayOutputStream.toByteArray()))) {
-
-			ZipEntry zipEntry = zipInputStream.getNextEntry();
-
-			while (zipEntry != null) {
-				zipEntries.put(
-					zipEntry.getName(),
-					new String(zipInputStream.readAllBytes()));
-
-				zipEntry = zipInputStream.getNextEntry();
-			}
-		}
-
-		return zipEntries;
+		return _getZipEntries(byteArrayOutputStream.toByteArray());
 	}
 
 	private void _testServeResourceDownloadEntries() throws Exception {
@@ -223,5 +227,22 @@ public class DownloadEntriesMVCResourceCommandTest {
 
 	@Inject(filter = "mvc.command.name=/document_library/download_folder")
 	private MVCResourceCommand _mvcResourceCommand;
+
+	private static class TestMockLiferayResourceResponse
+		extends MockLiferayResourceResponse {
+
+		@Override
+		public String getProperty(String name) {
+			return _properties.get(name);
+		}
+
+		@Override
+		public void setProperty(String name, String value) {
+			_properties.put(name, value);
+		}
+
+		private final Map<String, String> _properties = new HashMap<>();
+
+	}
 
 }
