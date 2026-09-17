@@ -59,6 +59,9 @@ public class DLSizeLimitConfigurationFormRenderer
 			"maxSizeToCopy",
 			ParamUtil.getLong(httpServletRequest, "maxSizeToCopy")
 		).put(
+			"maxSizeToDownload",
+			ParamUtil.getLong(httpServletRequest, "maxSizeToDownload")
+		).put(
 			"mimeTypeSizeLimit", _getMimeTypeSizeLimit(httpServletRequest)
 		).build();
 	}

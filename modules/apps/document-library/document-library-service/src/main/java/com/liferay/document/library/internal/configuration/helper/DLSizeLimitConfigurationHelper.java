@@ -45,6 +45,13 @@ public class DLSizeLimitConfigurationHelper {
 		return dlSizeLimitConfiguration.maxSizeToCopy();
 	}
 
+	public long getCompanyMaxSizeToDownload(long companyId) {
+		DLSizeLimitConfiguration dlSizeLimitConfiguration =
+			_getCompanyDLSizeLimitConfiguration(companyId);
+
+		return dlSizeLimitConfiguration.maxSizeToDownload();
+	}
+
 	public Map<String, Long> getCompanyMimeTypeSizeLimit(long companyId) {
 		return Collections.unmodifiableMap(
 			_companyMimeTypeSizeLimitsMap.computeIfAbsent(
@@ -80,6 +87,13 @@ public class DLSizeLimitConfigurationHelper {
 			_getGroupDLSizeLimitConfiguration(companyId, groupId);
 
 		return dlSizeLimitConfiguration.maxSizeToCopy();
+	}
+
+	public long getGroupMaxSizeToDownload(long companyId, long groupId) {
+		DLSizeLimitConfiguration dlSizeLimitConfiguration =
+			_getGroupDLSizeLimitConfiguration(companyId, groupId);
+
+		return dlSizeLimitConfiguration.maxSizeToDownload();
 	}
 
 	public Map<String, Long> getGroupMimeTypeSizeLimit(
@@ -118,6 +132,10 @@ public class DLSizeLimitConfigurationHelper {
 
 	public long getSystemMaxSizeToCopy() {
 		return _systemDLSizeLimitConfiguration.maxSizeToCopy();
+	}
+
+	public long getSystemMaxSizeToDownload() {
+		return _systemDLSizeLimitConfiguration.maxSizeToDownload();
 	}
 
 	public Map<String, Long> getSystemMimeTypeSizeLimit() {

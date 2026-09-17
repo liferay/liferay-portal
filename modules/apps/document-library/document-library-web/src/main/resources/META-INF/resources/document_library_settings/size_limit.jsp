@@ -49,3 +49,13 @@ DLSizeLimitConfigurationDisplayContext dlSizeLimitConfigurationDisplayContext = 
 
 	<aui:input label="size-limit-copy-files" name="maxSizeToCopy" type="number" value="<%= dlSizeLimitConfigurationDisplayContext.getMaxSizeToCopy() %>" />
 </div>
+
+<div class="form-group">
+	<h3 class="c-mb-2 sheet-subtitle text-secondary"><liferay-ui:message key="download-limit-title" /></h3>
+
+	<p class="c-mb-4 text-3 text-secondary">
+		<liferay-ui:message key="download-limit-help" />
+	</p>
+
+	<aui:input label="size-limit-download-files" name="maxSizeToDownload" type="number" value="<%= dlSizeLimitConfigurationDisplayContext.getMaxSizeToDownload() %>" />
+</div>

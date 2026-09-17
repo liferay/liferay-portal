@@ -39,6 +39,12 @@ public class DLSizeLimitConfigurationProviderImpl
 	}
 
 	@Override
+	public long getCompanyMaxSizeToDownload(long companyId) {
+		return _dlSizeLimitConfigurationHelper.getCompanyMaxSizeToDownload(
+			companyId);
+	}
+
+	@Override
 	public Map<String, Long> getCompanyMimeTypeSizeLimit(long companyId) {
 		return _dlSizeLimitConfigurationHelper.getCompanyMimeTypeSizeLimit(
 			companyId);
@@ -57,6 +63,12 @@ public class DLSizeLimitConfigurationProviderImpl
 	}
 
 	@Override
+	public long getGroupMaxSizeToDownload(long groupId) {
+		return _dlSizeLimitConfigurationHelper.getGroupMaxSizeToDownload(
+			_getCompanyId(groupId), groupId);
+	}
+
+	@Override
 	public Map<String, Long> getGroupMimeTypeSizeLimit(long groupId) {
 		return _dlSizeLimitConfigurationHelper.getGroupMimeTypeSizeLimit(
 			_getCompanyId(groupId), groupId);
@@ -70,6 +82,11 @@ public class DLSizeLimitConfigurationProviderImpl
 	@Override
 	public long getSystemMaxSizeToCopy() {
 		return _dlSizeLimitConfigurationHelper.getSystemMaxSizeToCopy();
+	}
+
+	@Override
+	public long getSystemMaxSizeToDownload() {
+		return _dlSizeLimitConfigurationHelper.getSystemMaxSizeToDownload();
 	}
 
 	@Override

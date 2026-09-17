@@ -131,6 +131,29 @@ public class DLSizeLimitConfigurationDisplayContext {
 		throw new IllegalArgumentException("Unsupported scope: " + _scope);
 	}
 
+	public long getMaxSizeToDownload() {
+		if (_scope.equals(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getValue())) {
+
+			return _dlSizeLimitConfigurationProvider.
+				getCompanyMaxSizeToDownload(_scopePK);
+		}
+		else if (_scope.equals(
+					ExtendedObjectClassDefinition.Scope.GROUP.getValue())) {
+
+			return _dlSizeLimitConfigurationProvider.getGroupMaxSizeToDownload(
+				_scopePK);
+		}
+		else if (_scope.equals(
+					ExtendedObjectClassDefinition.Scope.SYSTEM.getValue())) {
+
+			return _dlSizeLimitConfigurationProvider.
+				getSystemMaxSizeToDownload();
+		}
+
+		throw new IllegalArgumentException("Unsupported scope: " + _scope);
+	}
+
 	private Map<String, Long> _getMimeTypeSizeLimit() {
 		if (_scope.equals(
 				ExtendedObjectClassDefinition.Scope.COMPANY.getValue())) {
