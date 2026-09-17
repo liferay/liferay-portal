@@ -90,7 +90,8 @@ public class CentralGitSubrepositoryTest
 	public void testIsGitSubrepositoryUpstreamCommitMerged() throws Exception {
 		String upstreamCommit = RandomTestUtil.randomString();
 
-		_testIsGitSubrepositoryUpstreamCommitMerged("", false, upstreamCommit);
+		_testIsGitSubrepositoryUpstreamCommitMerged(
+			null, false, upstreamCommit);
 		_testIsGitSubrepositoryUpstreamCommitMerged(
 			RandomTestUtil.randomString(), false, upstreamCommit);
 		_testIsGitSubrepositoryUpstreamCommitMerged(
@@ -142,9 +143,6 @@ public class CentralGitSubrepositoryTest
 
 		Properties gitrepoProperties = new Properties();
 
-		gitrepoProperties.setProperty(
-			"remote", "git@github.com:liferay/liferay-portal.git");
-
 		if (autopull != null) {
 			gitrepoProperties.setProperty("autopull", autopull);
 		}
@@ -174,10 +172,7 @@ public class CentralGitSubrepositoryTest
 
 		Properties gitrepoProperties = new Properties();
 
-		gitrepoProperties.setProperty(
-			"remote", "git@github.com:liferay/liferay-portal.git");
-
-		if (!commit.isEmpty()) {
+		if (commit != null) {
 			gitrepoProperties.setProperty("commit", commit);
 		}
 
