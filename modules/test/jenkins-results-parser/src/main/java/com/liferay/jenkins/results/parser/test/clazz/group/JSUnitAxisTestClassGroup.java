@@ -50,9 +50,13 @@ public class JSUnitAxisTestClassGroup extends AxisTestClassGroup {
 	public JSONObject getJSONObject() {
 		JSONObject jsonObject = super.getJSONObject();
 
-		jsonObject.put(
-			"test_base_dir",
-			JenkinsResultsParserUtil.getCanonicalPath(getTestBaseDir()));
+		File testBaseDir = getTestBaseDir();
+
+		if (testBaseDir != null) {
+			jsonObject.put(
+				"test_base_dir",
+				JenkinsResultsParserUtil.getCanonicalPath(testBaseDir));
+		}
 
 		return jsonObject;
 	}
