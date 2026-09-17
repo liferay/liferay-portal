@@ -644,13 +644,13 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 					styleBookEntry.getFrontendTokenDefinition())) {
 
 				Assert.assertEquals(
-					_FRONTEND_TOKEN_DEFINITION_FILE_NAME,
+					"frontend-token-definition.json",
 					jsonObject.getString("frontendTokenDefinitionPath"));
 			}
 		}
 
 		if (_isStyleBookFile(
-				_FRONTEND_TOKEN_DEFINITION_FILE_NAME, zipEntry.getName())) {
+				"frontend-token-definition.json", zipEntry.getName())) {
 
 			JSONAssert.assertEquals(
 				styleBookEntry.getFrontendTokenDefinition(),
@@ -680,9 +680,6 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 				FileUtil.getBytes(zipFile.getInputStream(zipEntry)));
 		}
 	}
-
-	private static final String _FRONTEND_TOKEN_DEFINITION_FILE_NAME =
-		"frontend-token-definition.json";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
