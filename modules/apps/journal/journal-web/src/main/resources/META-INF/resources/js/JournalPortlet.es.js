@@ -424,8 +424,11 @@ export default function _JournalPortlet({
 					articleVersionInput.value = data.version;
 					displayedVersion.innerHTML = data.version;
 
-					articleIdWrapper.classList.remove('hide');
-					displayedArticleId.innerHTML = articleId;
+					if (articleIdWrapper) {
+						articleIdWrapper.classList.remove('hide');
+
+						displayedArticleId.innerHTML = articleId;
+					}
 
 					formDateInput.value = data.modifiedDate;
 					lockHolder.lock?.unlock();
@@ -440,7 +443,10 @@ export default function _JournalPortlet({
 					}
 				}
 				else {
-					formDateInput.value = data.modifiedDate;
+					if (data.modifiedDate) {
+						formDateInput.value = data.modifiedDate;
+					}
+
 					lockHolder.lock?.unlock(true);
 					showAlert(
 						Liferay.Language.get(
