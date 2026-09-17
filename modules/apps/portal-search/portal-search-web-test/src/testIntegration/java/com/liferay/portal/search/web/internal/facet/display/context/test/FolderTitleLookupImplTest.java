@@ -89,14 +89,14 @@ public class FolderTitleLookupImplTest {
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
 
+		Assert.assertEquals(
+			objectEntryFolder.getName(),
+			_getFolderTitle(objectEntryFolder.getObjectEntryFolderId()));
+
 		ObjectEntryFolder childObjectEntryFolder =
 			ObjectEntryFolderTestUtil.addObjectEntryFolder(
 				_group.getGroupId(),
 				objectEntryFolder.getObjectEntryFolderId());
-
-		Assert.assertEquals(
-			objectEntryFolder.getName(),
-			_getFolderTitle(objectEntryFolder.getObjectEntryFolderId()));
 
 		Assert.assertEquals(
 			childObjectEntryFolder.getName(),
