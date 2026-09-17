@@ -131,11 +131,17 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -321,6 +327,18 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				).buildString()));
 
 		_testGetSiteSitePageWithWidgetPageTypeWithWidgetPageWidgetInstances();
+	}
+
+	@Override
+	@Test
+	public void testGetSiteSitePageSitePagesPage() throws Exception {
+		super.testGetSiteSitePageSitePagesPage();
+
+		_testGetSiteSitePageSitePagesPageWithFlatten();
+		_testGetSiteSitePageSitePagesPageWithoutViewPermission();
+		_testGetSiteSitePageSitePagesPageWithPermissions();
+		_testGetSiteSitePageSitePagesPageWithUnknownSitePageExternalReferenceCode();
+		_testGetSiteSitePageSitePagesPageWithUnsupportedType();
 	}
 
 	@Override
@@ -576,6 +594,39 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	@Override
+	protected SitePage testGetSiteSitePageSitePagesPage_addSitePage(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode, SitePage sitePage)
+		throws Exception {
+
+		sitePage.setParentSitePageExternalReferenceCode(
+			sitePageExternalReferenceCode);
+
+		return sitePageResource.postSiteSitePage(
+			siteExternalReferenceCode, false, sitePage);
+	}
+
+	@Override
+	protected String
+			testGetSiteSitePageSitePagesPage_getIrrelevantSitePageExternalReferenceCode()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(irrelevantGroup);
+
+		return layout.getExternalReferenceCode();
+	}
+
+	@Override
+	protected String
+			testGetSiteSitePageSitePagesPage_getSitePageExternalReferenceCode()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		return layout.getExternalReferenceCode();
+	}
+
+	@Override
 	protected SitePage testGetSiteSitePagesPage_addSitePage(
 			String siteExternalReferenceCode, SitePage sitePage)
 		throws Exception {
@@ -791,6 +842,17 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertTrue(
 			sitePage.getPageSettings() instanceof EmbeddedPageSettings);
 		Assert.assertEquals(SitePage.Type.EMBEDDED_PAGE, sitePage.getType());
+	}
+
+	private void _assertExternalReferenceCodes(
+		List<Layout> expectedLayouts, Page<SitePage> page) {
+
+		Assert.assertEquals(
+			TransformUtil.transform(
+				expectedLayouts, Layout::getExternalReferenceCode),
+			TransformUtil.transform(
+				(List<SitePage>)page.getItems(),
+				SitePage::getExternalReferenceCode));
 	}
 
 	private void _assertFragmentImageValue(
@@ -2020,6 +2082,20 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private SitePageResource _getSitePageResource(
+		String userLogin, String userPassword) {
+
+		return SitePageResource.builder(
+		).authentication(
+			userLogin, userPassword
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private SitePageResource _getSitePageResource(
 		String nestedFields, String userLogin, String userPassword) {
 
 		return SitePageResource.builder(
@@ -2318,6 +2394,176 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_assertSitePage(layout, sitePage);
 		_testGetSiteSitePageWithNestedFields(sitePage);
+	}
+
+	private void _testGetSiteSitePageSitePagesPageWithFlatten()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+		Layout childlessLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+
+		Layout grandchildLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, childLayout.getPlid());
+
+		Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			parentLayout.getExternalReferenceCode(), null,
+			Pagination.of(1, 10));
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		_assertExternalReferenceCodes(
+			Arrays.asList(childLayout, childlessLayout), page);
+
+		page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			parentLayout.getExternalReferenceCode(), true,
+			Pagination.of(1, 10));
+
+		Assert.assertEquals(3, page.getTotalCount());
+
+		_assertExternalReferenceCodes(
+			Arrays.asList(childLayout, grandchildLayout, childlessLayout),
+			page);
+
+		page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			parentLayout.getExternalReferenceCode(), true, Pagination.of(2, 2));
+
+		Assert.assertEquals(3, page.getTotalCount());
+
+		_assertExternalReferenceCodes(
+			Collections.singletonList(childlessLayout), page);
+
+		page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			childlessLayout.getExternalReferenceCode(), true,
+			Pagination.of(1, 10));
+
+		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteSitePageSitePagesPageWithPermissions()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		LayoutTestUtil.addTypePortletLayout(testGroup, parentLayout.getPlid());
+
+		SitePageResource sitePageResource = _getSitePageResource("permissions");
+
+		Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			parentLayout.getExternalReferenceCode(), null,
+			Pagination.of(1, 10));
+
+		SitePage sitePage = page.fetchFirstItem();
+
+		Assert.assertTrue(ArrayUtil.isNotEmpty(sitePage.getPermissions()));
+	}
+
+	private void _testGetSiteSitePageSitePagesPageWithUnknownSitePageExternalReferenceCode()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			HttpInvoker.HttpResponse httpResponse =
+				sitePageResource.getSiteSitePageSitePagesPageHttpResponse(
+					testGroup.getExternalReferenceCode(),
+					RandomTestUtil.randomString(), null, Pagination.of(1, 10));
+
+			Assert.assertEquals(404, httpResponse.getStatusCode());
+		}
+	}
+
+	private void _testGetSiteSitePageSitePagesPageWithUnsupportedType()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+
+		Layout panelLayout = LayoutTestUtil.addTypePanelLayout(
+			testGroup.getGroupId());
+
+		_layoutLocalService.updateParentLayoutId(
+			panelLayout.getPlid(), parentLayout.getPlid());
+
+		for (Boolean flatten : new Boolean[] {null, true}) {
+			Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
+				testGroup.getExternalReferenceCode(),
+				parentLayout.getExternalReferenceCode(), flatten,
+				Pagination.of(1, 10));
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			_assertExternalReferenceCodes(
+				Collections.singletonList(childLayout), page);
+		}
+	}
+
+	private void _testGetSiteSitePageSitePagesPageWithoutViewPermission()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Layout restrictedLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+		Layout viewableLayout = LayoutTestUtil.addTypePortletLayout(
+			testGroup, parentLayout.getPlid());
+
+		LayoutTestUtil.addTypePortletLayout(
+			testGroup, restrictedLayout.getPlid());
+
+		for (String roleName :
+				new String[] {
+					RoleConstants.GUEST, RoleConstants.SITE_MEMBER,
+					RoleConstants.USER
+				}) {
+
+			Role role = _roleLocalService.getRole(
+				testCompany.getCompanyId(), roleName);
+
+			_resourcePermissionLocalService.removeResourcePermission(
+				testCompany.getCompanyId(), Layout.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(restrictedLayout.getPlid()), role.getRoleId(),
+				ActionKeys.VIEW);
+		}
+
+		Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			parentLayout.getExternalReferenceCode(), true,
+			Pagination.of(1, 10));
+
+		Assert.assertEquals(3, page.getTotalCount());
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		SitePageResource userSitePageResource = _getSitePageResource(
+			user.getEmailAddress(), password);
+
+		for (Boolean flatten : new Boolean[] {null, true}) {
+			page = userSitePageResource.getSiteSitePageSitePagesPage(
+				testGroup.getExternalReferenceCode(),
+				parentLayout.getExternalReferenceCode(), flatten,
+				Pagination.of(1, 10));
+
+			Assert.assertEquals(1, page.getTotalCount());
+
+			_assertExternalReferenceCodes(
+				Collections.singletonList(viewableLayout), page);
+		}
 	}
 
 	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
@@ -5381,6 +5627,12 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	private Portal _portal;
 
 	private final Map<String, Integer> _priorities = new HashMap<>();
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
