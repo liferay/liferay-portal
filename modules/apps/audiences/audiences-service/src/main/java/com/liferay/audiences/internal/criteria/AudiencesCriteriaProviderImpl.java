@@ -100,11 +100,11 @@ public class AudiencesCriteriaProviderImpl
 		return customAudiencesCriteriaKeys;
 	}
 
-	private void _addSegmentsAudiencesCriteria(
+	private void _addSegmentsEntriesAudiencesCriteria(
 		List<AudiencesCriteria> audiencesCriterias, long companyId, String key,
 		String labelKey, Locale locale, int type) {
 
-		List<AudiencesCriteria.Option> segmentsOptions =
+		List<AudiencesCriteria.Option> options =
 			TransformUtil.transform(
 				_segmentsEntryLocalService.getSegmentsEntriesBySource(
 					companyId, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
@@ -114,7 +114,7 @@ public class AudiencesCriteriaProviderImpl
 					segmentsEntry.getName(locale),
 					segmentsEntry.getExternalReferenceCode()));
 
-		if (segmentsOptions.isEmpty()) {
+		if (options.isEmpty()) {
 			return;
 		}
 
@@ -128,7 +128,7 @@ public class AudiencesCriteriaProviderImpl
 			).setLabel(
 				_language.get(locale, labelKey)
 			).setOptions(
-				segmentsOptions
+				options
 			).setType(
 				AudiencesCriteria.Type.SET
 			).build());
@@ -406,11 +406,11 @@ public class AudiencesCriteriaProviderImpl
 					AudiencesCriteria.Type.STRING
 				).build()));
 
-		_addSegmentsAudiencesCriteria(
+		_addSegmentsEntriesAudiencesCriteria(
 			audiencesCriterias, companyId,
 			AudiencesCriteriaKeys.REAL_TIME_SEGMENTS, "real-time-segments",
 			locale, SegmentsEntryConstants.TYPE_REAL_TIME);
-		_addSegmentsAudiencesCriteria(
+		_addSegmentsEntriesAudiencesCriteria(
 			audiencesCriterias, companyId, AudiencesCriteriaKeys.BATCH_SEGMENTS,
 			"batch-segments", locale, SegmentsEntryConstants.TYPE_BATCH);
 
