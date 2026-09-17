@@ -216,7 +216,7 @@ public class AutoSaveArticleMVCResourceCommandTest {
 		Assert.assertEquals(
 			StringUtil.toUpperCase("manualarticleid1"),
 			jsonObject.getString("articleId"));
-		Assert.assertNotNull(jsonObject.getString("friendlyURL"));
+		Assert.assertTrue(jsonObject.has("friendlyURL"));
 	}
 
 	private MockMultipartHttpServletRequest
