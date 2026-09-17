@@ -10,9 +10,7 @@ import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 
 export const test = mergeTests(backendPageTest);
 
-test.skip('Teardown: Delete the SEO Studio site and disable its feature flag', async ({
-	backendPage,
-}) => {
+test.skip('Teardown: Delete the SEO Studio site', async ({backendPage}) => {
 	await backendPage.goto('/');
 
 	const apiHelpers = new ApiHelpers(backendPage);
@@ -23,6 +21,4 @@ test.skip('Teardown: Delete the SEO Studio site and disable its feature flag', a
 	if (siteId) {
 		await apiHelpers.headlessAdminSite.deleteSite('L_SEO_STUDIO');
 	}
-
-	await apiHelpers.featureFlag.updateFeatureFlag('LPD-44511', false);
 });

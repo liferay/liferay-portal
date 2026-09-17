@@ -10,14 +10,10 @@ import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 
 export const test = mergeTests(backendPageTest);
 
-test.skip('Setup: Create the SEO Studio site via its feature flag', async ({
-	backendPage,
-}) => {
+test.skip('Setup: Verify the SEO Studio site exists', async ({backendPage}) => {
 	await backendPage.goto('/');
 
 	const apiHelpers = new ApiHelpers(backendPage);
-
-	await apiHelpers.featureFlag.updateFeatureFlag('LPD-44511', true);
 
 	const site = await apiHelpers.headlessAdminSite.getSite('L_SEO_STUDIO');
 
