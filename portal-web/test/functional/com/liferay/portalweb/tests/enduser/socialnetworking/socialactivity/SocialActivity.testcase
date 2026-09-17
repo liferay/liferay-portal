@@ -38,15 +38,7 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "User Activity",
-			configurationName = "Social Activity",
-			configurationScope = "System Scope");
+		SystemSettings.openToConfigInSystemSettings(portletId = "com.liferay.social.activity.internal.configuration.SocialActivitySystemConfiguration");
 
 		FormFields.viewCheckboxChecked(fieldName = "enableUserSocialActivityTracking");
 
@@ -95,19 +87,11 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
-		ApplicationsMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Control Panel",
-			portlet = "System Settings");
-
-		SystemSettings.gotoConfiguration(
-			configurationCategory = "User Activity",
-			configurationName = "Social Activity",
-			configurationScope = "System Scope");
+		SystemSettings.openToConfigInSystemSettings(portletId = "com.liferay.social.activity.internal.configuration.SocialActivitySystemConfiguration");
 
 		FormFields.disableCheckbox(fieldName = "enable");
 
-		PortletEntry.save();
+		PortletEntry.update();
 
 		FormFields.viewCheckboxNotChecked(fieldName = "enable");
 
