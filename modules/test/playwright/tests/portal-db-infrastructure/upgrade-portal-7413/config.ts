@@ -8,6 +8,7 @@ export const config = {
 	testDir: 'tests/portal-db-infrastructure/upgrade',
 	timeout: 480 * 1000,
 	use: {
+		archiveUserPassword: 'password',
 		testIdAttribute: 'data-qa-id',
 	},
 };

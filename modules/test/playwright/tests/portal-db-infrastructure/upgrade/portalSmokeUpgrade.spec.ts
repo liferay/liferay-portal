@@ -178,7 +178,15 @@ test.describe.serial('View portal smoke upgrade', () => {
 		async ({page}) => {
 			await performLogout(page);
 
-			await performLoginViaApi({page, screenName: 'user'});
+			const {archiveUserPassword} = test.info().project.use as {
+				archiveUserPassword?: string;
+			};
+
+			await performLoginViaApi({
+				page,
+				password: archiveUserPassword,
+				screenName: 'user',
+			});
 
 			const response = await page.request.get(
 				'/o/headless-admin-user/v1.0/my-user-account',
