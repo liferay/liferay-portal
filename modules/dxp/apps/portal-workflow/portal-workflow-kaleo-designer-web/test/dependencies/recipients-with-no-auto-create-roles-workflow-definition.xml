@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+
+<workflow-definition
+	xmlns="urn:liferay.com:liferay-workflow_7.4.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:liferay.com:liferay-workflow_7.4.0 http://www.liferay.com/dtd/liferay-workflow-definition_7_4_0.xsd"
+>
+	<name>Recipients with No Auto Create Roles</name>
+	<state>
+		<name>Start</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						100
+					]
+				}
+			]]>
+		</metadata>
+		<initial>true</initial>
+		<transitions>
+			<transition>
+				<name>review</name>
+				<target>Review</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</state>
+	<task>
+		<name>Review</name>
+		<metadata>
+			<![CDATA[
+				{
+					"xy": [
+						300,
+						260
+					]
+				}
+			]]>
+		</metadata>
+		<actions>
+			<notification>
+				<name>Review Notification</name>
+				<template>A new submission is waiting for your review.</template>
+				<template-language>text</template-language>
+				<notification-type>email</notification-type>
+				<recipients>
+					<roles>
+						<role>
+							<role-type>regular</role-type>
+							<name>Portal Content Reviewer</name>
+						</role>
+						<role>
+							<role-type>regular</role-type>
+							<name>Portal Content Publisher</name>
+						</role>
+					</roles>
+				</recipients>
+				<execution-type>onEntry</execution-type>
+			</notification>
+		</actions>
+		<assignments>
+			<user />
+		</assignments>
+		<transitions>
+			<transition>
+				<name>end</name>
+				<target>End</target>
+				<default>true</default>
+			</transition>
+		</transitions>
+	</task>
+	<state>
+		<name>End</name>
+		<metadata>
+			<![CDATA[
+				{
+					"terminal": true,
+					"xy": [
+						300,
+						500
+					]
+				}
+			]]>
+		</metadata>
+	</state>
+</workflow-definition>

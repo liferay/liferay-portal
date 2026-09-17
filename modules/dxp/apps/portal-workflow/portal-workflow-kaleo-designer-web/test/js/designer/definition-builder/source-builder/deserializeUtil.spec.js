@@ -8,17 +8,40 @@ import path from 'path';
 
 import DeserializeUtil from '../../../../../src/main/resources/META-INF/resources/designer/js/definition-builder/source-builder/deserializeUtil';
 
-describe('DeserializeUtil', () => {
-	it('getElements should make transition names unique only when they share the same source node', () => {
-		const xmlFilePath = path.join(
-			__dirname,
-			'../../../../dependencies/same-name-transitions-workflow-definition.xml'
+const getElements = (fileName) => {
+	const xmlFilePath = path.join(
+		__dirname,
+		`../../../../dependencies/${fileName}`
+	);
+
+	const xmlFileContent = fs.readFileSync(xmlFilePath, 'utf8');
+
+	const deserializeUtil = new DeserializeUtil(xmlFileContent);
+
+	return deserializeUtil.getElements();
+};
+
+describe('Deserializing a notification whose recipient roles omit auto-create', () => {
+	it('Reads every role and leaves auto-create unset', () => {
+		const elements = getElements(
+			'recipients-with-no-auto-create-roles-workflow-definition.xml'
 		);
-		const xmlFileContent = fs.readFileSync(xmlFilePath, 'utf8');
 
-		const deserializeUtil = new DeserializeUtil(xmlFileContent);
+		const task = elements.find((element) => element.id === 'Review');
 
-		const elements = deserializeUtil.getElements();
+		expect(task.data.notifications.recipients[0][0]).toEqual({
+			assignmentType: ['roleType'],
+			roleName: ['Portal Content Reviewer', 'Portal Content Publisher'],
+			roleType: ['regular', 'regular'],
+		});
+	});
+});
+
+describe('Deserializing transitions that share a name', () => {
+	it('Renames a transition only when its source node already uses the name', () => {
+		const elements = getElements(
+			'same-name-transitions-workflow-definition.xml'
+		);
 
 		const TransitionFromStartToParentTask = elements.find(
 			(element) =>
