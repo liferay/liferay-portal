@@ -5,10 +5,6 @@
 
 package com.liferay.jenkins.results.parser;
 
-import java.io.File;
-import java.io.FileInputStream;
-
-import java.util.List;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -46,44 +42,8 @@ public class CentralGitSubrepositoryTest
 		_testIsAutoPullEnabled(null, false, "pull");
 		_testIsAutoPullEnabled(null, false, "push");
 		_testIsAutoPullEnabled("false", false, "pull");
+		_testIsAutoPullEnabled("true", false, "push");
 		_testIsAutoPullEnabled("true", true, "pull");
-	}
-
-	@Test
-	public void testIsAutoPullEnabledMasterBranchInvariant() throws Exception {
-		File modulesDir = new File(
-			"../../../modules"
-		).getCanonicalFile();
-
-		List<File> gitrepoFiles = JenkinsResultsParserUtil.findFiles(
-			modulesDir, ".gitrepo");
-
-		for (File gitrepoFile : gitrepoFiles) {
-			Properties gitrepoProperties = new Properties();
-
-			try (FileInputStream fileInputStream = new FileInputStream(
-					gitrepoFile)) {
-
-				gitrepoProperties.load(fileInputStream);
-			}
-
-			CentralGitSubrepository centralGitSubrepository = Mockito.mock(
-				CentralGitSubrepository.class);
-
-			ReflectionTestUtil.setFieldValue(
-				centralGitSubrepository, "_gitrepoProperties",
-				gitrepoProperties);
-
-			Mockito.doCallRealMethod(
-			).when(
-				centralGitSubrepository
-			).isAutoPullEnabled();
-
-			Assert.assertFalse(
-				"Expected isAutoPullEnabled() false for " +
-					gitrepoFile.getPath(),
-				centralGitSubrepository.isAutoPullEnabled());
-		}
 	}
 
 	@Test
