@@ -6,6 +6,7 @@
 package com.liferay.portal.search.web.internal.search.results.portlet.shared.search;
 
 import com.liferay.portal.kernel.dao.search.SearchPaginationUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
@@ -94,6 +95,13 @@ public class SearchResultsPortletSharedSearchContributor
 
 		SearchContext searchContext = searchRequestBuilder.withSearchContextGet(
 			Function.identity());
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-98858")) {
+
+			searchRequestBuilder.trackTotalHitsLimit(
+				searchResultsPortletPreferences.getAccurateCountLimit());
+		}
 
 		int paginationStart = GetterUtil.getInteger(
 			portletSharedSearchSettings.getParameter(
