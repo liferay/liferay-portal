@@ -280,8 +280,8 @@ export function getErrorMessage(
 	property: ValidationProperty,
 	error: ValidationError,
 	values: {
-		erc: string;
-		name: string;
+		erc?: string;
+		name?: string;
 	}
 ) {
 	const {erc, name} = values;

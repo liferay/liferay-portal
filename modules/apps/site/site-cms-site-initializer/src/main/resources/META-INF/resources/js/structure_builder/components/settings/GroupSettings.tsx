@@ -12,7 +12,7 @@ import React, {useEffect} from 'react';
 import focusInvalidElement from '../../../common/utils/focusInvalidElement';
 import {useSelector, useStateDispatch} from '../../contexts/StateContext';
 import selectErrors from '../../selectors/selectErrors';
-import {RepeatableGroup} from '../../types/Structure';
+import {Group} from '../../types/Structure';
 import Breadcrumb from '../Breadcrumb';
 import {LocalizedInput} from '../LocalizedInput';
 
@@ -21,7 +21,7 @@ export default function GroupSettings({
 	group,
 }: {
 	disabled?: boolean;
-	group: RepeatableGroup;
+	group: Group;
 }) {
 	useEffect(() => {
 		focusInvalidElement();
@@ -48,13 +48,7 @@ export default function GroupSettings({
 	);
 }
 
-function GeneralTab({
-	disabled,
-	group,
-}: {
-	disabled?: boolean;
-	group: RepeatableGroup;
-}) {
+function GeneralTab({disabled, group}: {disabled?: boolean; group: Group}) {
 	const dispatch = useStateDispatch();
 
 	const errors = useSelector(selectErrors(group.uuid));

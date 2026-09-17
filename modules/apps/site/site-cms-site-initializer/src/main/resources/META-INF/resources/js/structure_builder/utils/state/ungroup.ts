@@ -3,16 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {RepeatableGroup, Structure} from '../../types/Structure';
+import {Group, Structure} from '../../types/Structure';
 import {Uuid} from '../../types/Uuid';
 
 export default function ungroup({
 	root,
 	uuid,
 }: {
-	root: Structure | RepeatableGroup;
+	root: Structure | Group;
 	uuid: Uuid;
-}): Structure['children'] | RepeatableGroup['children'] {
+}): Structure['children'] | Group['children'] {
 	const children = new Map();
 
 	// Iterate over children
@@ -35,7 +35,7 @@ export default function ungroup({
 		// Insert the child. If it's a repeatable group, build it with recursive call
 
 		else if (child.type === 'group') {
-			const group: RepeatableGroup = {
+			const group: Group = {
 				...child,
 				children: ungroup({
 					root: child,

@@ -5,6 +5,7 @@
 
 import buildLocalizedValue from '../../../common/utils/buildLocalizedValue';
 import {
+	Group,
 	RepeatableGroup,
 	Structure,
 	StructureChild,
@@ -23,7 +24,7 @@ export default function addRepeatableGroup({
 	groupChildren: StructureChild[];
 	groupParent: Uuid;
 	groupUuid: Uuid;
-	root: Structure | RepeatableGroup;
+	root: Structure | Group;
 }): Structure['children'] | RepeatableGroup['children'] {
 	const children = new Map();
 
@@ -40,7 +41,7 @@ export default function addRepeatableGroup({
 		// Insert the child. If it's a repeatable group, build it with recursive call
 
 		if (child.type === 'group') {
-			const group: RepeatableGroup = {
+			const group: Group = {
 				...child,
 				children: addRepeatableGroup({
 					groupChildren,

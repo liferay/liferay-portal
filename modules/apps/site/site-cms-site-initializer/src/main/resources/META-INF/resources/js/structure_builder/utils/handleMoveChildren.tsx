@@ -137,14 +137,20 @@ export default async function handleMoveChildren({
 		}
 
 		if (onNameConflict === 'rename') {
-			movableItems = movableItems.map((item) => ({
-				...item,
-				name: findAvailableFieldName(
-					target.children,
-					deletedChildren,
-					item.name
-				),
-			}));
+			movableItems = movableItems.map((item) => {
+				if (!item.name) {
+					return item;
+				}
+
+				return {
+					...item,
+					name: findAvailableFieldName(
+						target.children,
+						deletedChildren,
+						item.name
+					),
+				};
+			});
 		}
 		else if (onNameConflict === 'do-not-move') {
 			movableItems = movableItems.filter(
@@ -177,7 +183,7 @@ function hasNameConflict(
 ): boolean {
 	return movableItems.some((item) =>
 		Array.from(target.children.values()).some(
-			(child) => child.name === item.name
+			(child) => Boolean(item.name) && child.name === item.name
 		)
 	);
 }

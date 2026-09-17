@@ -44,20 +44,29 @@ export type RelatedContent = {
 	uuid: Uuid;
 };
 
-export type Group = {
+type BaseGroup = {
 	children: Map<Uuid, StructureChild>;
-	erc: string;
-	isRepeatable: true;
+	erc?: string;
 	label: Liferay.Language.LocalizedValue<string>;
-	name: string;
+	name?: string;
 	parent: Uuid;
-	relationshipERC: string;
-	relationshipName: string;
+	relationshipERC?: string;
+	relationshipName?: string;
 	type: 'group';
 	uuid: Uuid;
 };
 
-export type RepeatableGroup = Group & {isRepeatable: true};
+export type NonRepeatableGroup = BaseGroup & {isRepeatable: false};
+
+export type RepeatableGroup = BaseGroup & {
+	erc: string;
+	isRepeatable: true;
+	name: string;
+	relationshipERC: string;
+	relationshipName: string;
+};
+
+export type Group = NonRepeatableGroup | RepeatableGroup;
 
 export type StructureChild =
 	| Field
