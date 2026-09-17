@@ -6,6 +6,7 @@
 package com.liferay.diff.internal;
 
 import com.liferay.diff.DiffHtml;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProvider;
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -68,6 +69,15 @@ public class DiffHtmlTest {
 
 		Assert.assertNotEquals(source, diff);
 		Assert.assertNotEquals(target, diff);
+	}
+
+	@Test
+	public void testDiffWhereSourceAndTargetAreEmpty() throws Exception {
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_diffHtml.diff(
+				new StringReader(StringPool.BLANK),
+				new StringReader(StringPool.BLANK)));
 	}
 
 	@Test
