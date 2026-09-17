@@ -593,6 +593,10 @@ public class OpenAPIUtil {
 	}
 
 	private static Set<String> _getFilterFieldPaths(String filter) {
+		if (Validator.isNull(filter)) {
+			return Collections.emptySet();
+		}
+
 		Set<String> fieldPaths = new LinkedHashSet<>();
 
 		Matcher matcher = _fieldPathPattern.matcher(_getMaskedFilter(filter));
@@ -802,10 +806,6 @@ public class OpenAPIUtil {
 		}
 
 		return multipartEntityBuilder.build();
-	}
-
-	private static String _getNormalizedFieldPath(String fieldPath) {
-		return StringUtil.replace(fieldPath, CharPool.SLASH, CharPool.PERIOD);
 	}
 
 	private static Map<String, Object> _getOneOfSchemaMap(
@@ -1030,18 +1030,6 @@ public class OpenAPIUtil {
 		}
 
 		return path;
-	}
-
-	private static Set<String> _getQueryFieldPaths(String name, Object value) {
-		if (Objects.equals(name, "filter")) {
-			return _getFilterFieldPaths(String.valueOf(value));
-		}
-
-		if (Objects.equals(name, "sort")) {
-			return _getSortFieldPaths(String.valueOf(value));
-		}
-
-		return Collections.emptySet();
 	}
 
 	private static String _getQueryString(
@@ -1298,6 +1286,10 @@ public class OpenAPIUtil {
 	}
 
 	private static Set<String> _getSortFieldPaths(String sort) {
+		if (Validator.isNull(sort)) {
+			return Collections.emptySet();
+		}
+
 		Set<String> fieldPaths = new LinkedHashSet<>();
 
 		for (String string : StringUtil.split(sort)) {
@@ -1342,7 +1334,8 @@ public class OpenAPIUtil {
 	private static boolean _isRestrictedFieldPath(
 		String fieldPath, String[] restrictFieldNames) {
 
-		String normalizedFieldPath = _getNormalizedFieldPath(fieldPath);
+		String normalizedFieldPath = StringUtil.replace(
+			fieldPath, CharPool.SLASH, CharPool.PERIOD);
 
 		for (String restrictFieldName : restrictFieldNames) {
 			if (normalizedFieldPath.equals(restrictFieldName) ||
@@ -1374,9 +1367,21 @@ public class OpenAPIUtil {
 
 			String name = entry.getKey();
 
-			for (String fieldPath :
-					_getQueryFieldPaths(name, entry.getValue())) {
+			Set<String> fieldPaths = null;
 
+			if (Objects.equals(name, "filter")) {
+				fieldPaths = _getFilterFieldPaths(
+					String.valueOf(entry.getValue()));
+			}
+			else if (Objects.equals(name, "sort")) {
+				fieldPaths = _getSortFieldPaths(
+					String.valueOf(entry.getValue()));
+			}
+			else {
+				continue;
+			}
+
+			for (String fieldPath : fieldPaths) {
 				if (!_isRestrictedFieldPath(fieldPath, restrictFieldNames)) {
 					continue;
 				}
