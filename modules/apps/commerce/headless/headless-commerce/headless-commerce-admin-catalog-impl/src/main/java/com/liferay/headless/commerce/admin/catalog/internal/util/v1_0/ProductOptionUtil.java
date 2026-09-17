@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
+import com.liferay.commerce.product.exception.NoSuchCPOptionException;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelService;
@@ -13,6 +14,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -40,13 +42,23 @@ public class ProductOptionUtil {
 		String optionExternalReferenceCode =
 			productOption.getOptionExternalReferenceCode();
 
-		if (Validator.isNotNull(optionExternalReferenceCode)) {
+		if (Validator.isNull(optionExternalReferenceCode)) {
+			cpOption = cpOptionService.getCPOption(
+				GetterUtil.getLong(productOption.getOptionId()));
+		}
+		else if (LazyReferencingThreadLocal.isEnabled()) {
 			cpOption = cpOptionService.getOrAddEmptyCPOption(
 				optionExternalReferenceCode);
 		}
 		else {
-			cpOption = cpOptionService.getCPOption(
-				GetterUtil.getLong(productOption.getOptionId()));
+			cpOption = cpOptionService.fetchCPOptionByExternalReferenceCode(
+				optionExternalReferenceCode, serviceContext.getCompanyId());
+
+			if (cpOption == null) {
+				throw new NoSuchCPOptionException(
+					"Unable to find option with external reference code " +
+						optionExternalReferenceCode);
+			}
 		}
 
 		CPDefinitionOptionRel cpDefinitionOptionRel = null;

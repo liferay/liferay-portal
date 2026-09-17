@@ -1623,10 +1623,17 @@ public class ProductResourceImpl
 						_commerceChannelService.fetchCommerceChannel(
 							GetterUtil.getLong(productChannel.getChannelId()));
 				}
-				else {
+				else if (LazyReferencingThreadLocal.isEnabled()) {
 					commerceChannel =
 						_commerceChannelService.getOrAddEmptyCommerceChannel(
 							externalReferenceCode);
+				}
+				else {
+					commerceChannel =
+						_commerceChannelService.
+							fetchCommerceChannelByExternalReferenceCode(
+								externalReferenceCode,
+								contextCompany.getCompanyId());
 				}
 
 				if (commerceChannel == null) {
@@ -1663,13 +1670,20 @@ public class ProductResourceImpl
 						GetterUtil.getLong(
 							productAccountGroup.getAccountGroupId()));
 				}
-				else {
+				else if (LazyReferencingThreadLocal.isEnabled()) {
 					accountGroup =
 						_accountGroupService.getOrAddEmptyAccountGroup(
 							externalReferenceCode,
 							GetterUtil.getString(
 								productAccountGroup.getName(),
 								externalReferenceCode));
+				}
+				else {
+					accountGroup =
+						_accountGroupService.
+							fetchAccountGroupByExternalReferenceCode(
+								externalReferenceCode,
+								contextCompany.getCompanyId());
 				}
 
 				if (accountGroup == null) {
@@ -1714,11 +1728,18 @@ public class ProductResourceImpl
 							GetterUtil.getLong(
 								productProductGroup.getProductGroupId()));
 				}
-				else {
+				else if (LazyReferencingThreadLocal.isEnabled()) {
 					commercePricingClass =
 						_commercePricingClassService.
 							getOrAddEmptyCommercePricingClass(
 								externalReferenceCode);
+				}
+				else {
+					commercePricingClass =
+						_commercePricingClassService.
+							fetchCommercePricingClassByExternalReferenceCode(
+								externalReferenceCode,
+								contextCompany.getCompanyId());
 				}
 
 				if (commercePricingClass == null) {
