@@ -500,11 +500,9 @@ public class JenkinsResultsParserUtilTest
 		Thread currentThread = Thread.currentThread();
 
 		Assert.assertTrue(
-			"Thread dump does not name the current thread",
 			threadDump.contains("\"" + currentThread.getName() + "\""));
 
 		Assert.assertTrue(
-			"Thread dump does not contain a frame for this test method",
 			threadDump.contains(
 				"JenkinsResultsParserUtilTest.testGetThreadDump"));
 	}
@@ -557,25 +555,16 @@ public class JenkinsResultsParserUtilTest
 			String lockWaiterHeader = _getThreadDumpHeader(
 				threadDump, lockWaiterThreadName);
 
-			Assert.assertNotNull(
-				"Thread dump does not name " + lockWaiterThreadName,
-				lockWaiterHeader);
+			Assert.assertTrue(lockWaiterHeader.contains("BLOCKED"));
 
 			Assert.assertTrue(
-				"Expected a blocked thread state in " + lockWaiterHeader,
-				lockWaiterHeader.contains("BLOCKED"));
-
-			Assert.assertTrue(
-				"Expected the lock owner in " + lockWaiterHeader,
 				lockWaiterHeader.contains(
 					"owned by \"" + lockOwnerThreadName + "\""));
 
 			String lockOwnerEntry = _getThreadDumpEntry(
 				threadDump, lockOwnerThreadName);
 
-			Assert.assertTrue(
-				"Expected a locked monitor in " + lockOwnerEntry,
-				lockOwnerEntry.contains("- locked"));
+			Assert.assertTrue(lockOwnerEntry.contains("- locked"));
 		}
 		finally {
 			holdLatch.countDown();
@@ -655,11 +644,9 @@ public class JenkinsResultsParserUtilTest
 			threadDump.indexOf(" deadlocked threads:"));
 
 		Assert.assertTrue(
-			"Expected " + firstThreadName + " in " + deadlockSection,
 			deadlockSection.contains("\"" + firstThreadName + "\""));
 
 		Assert.assertTrue(
-			"Expected " + secondThreadName + " in " + deadlockSection,
 			deadlockSection.contains("\"" + secondThreadName + "\""));
 	}
 
