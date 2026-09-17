@@ -31,12 +31,11 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 	@Test
 	public void testFormatTestResultsFileClassName() throws Exception {
 		_testFormat(
-			_CLASS_NAME + ".b_js", "a b", "a > b", "b.js", "a.js",
-			_TEST_FILE_CONTENT, "b.js", _TEST_FILE_CONTENT);
-
-		_testFormat(
 			_CLASS_NAME + ".a_test_js", "a b", "a > b", "a.test.js",
 			"a.test.js", _TEST_FILE_CONTENT);
+		_testFormat(
+			_CLASS_NAME + ".b_js", "a b", "a > b", "b.js", "a.js",
+			_TEST_FILE_CONTENT, "b.js", _TEST_FILE_CONTENT);
 
 		String name = RandomTestUtil.randomString();
 
@@ -83,12 +82,11 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 	@Test
 	public void testFormatTestResultsFileDynamic() throws Exception {
 		_testFormat(
-			_CLASS_NAME, "a value", "a value", "a.js", "a.js",
-			"it(`a ${b}`, () => {});");
-
-		_testFormat(
 			_CLASS_NAME, "100abc complete", "100abc complete", "a.js", "a.js",
 			"it('100%s complete', () => {});");
+		_testFormat(
+			_CLASS_NAME, "a value", "a value", "a.js", "a.js",
+			"it(`a ${b}`, () => {});");
 	}
 
 	@Test
@@ -96,7 +94,6 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 		_testFormat(
 			_CLASS_NAME, "c a", "c a", "b.js", "a.js",
 			"it(`c ${d}`, () => {});", "b.js", "it('c a', () => {});");
-
 		_testFormat(
 			_CLASS_NAME, "c a", "c a", "b.js", "z.js",
 			"it(`c ${d}`, () => {});", "b.js", "it('c a', () => {});");
