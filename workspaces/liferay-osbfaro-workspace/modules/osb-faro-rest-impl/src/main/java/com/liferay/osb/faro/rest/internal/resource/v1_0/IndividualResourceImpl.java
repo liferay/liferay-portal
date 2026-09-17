@@ -33,8 +33,10 @@ public class IndividualResourceImpl extends BaseIndividualResourceImpl {
 	@Override
 	public Page<Individual> getWorkspaceGroupChannelIndividualsPage(
 			Long groupId, String channelId, String accountId,
-			Boolean includeAnonymousUsers, String individualSegmentId,
-			String interestName, Pagination pagination, Sort[] sorts)
+			String activityStatus, Boolean includeAnonymousUsers,
+			String individualSegmentId, String interestName, String rangeEnd,
+			String rangeKey, String rangeStart, String search,
+			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		Results<com.liferay.osb.faro.engine.client.model.Individual> results =

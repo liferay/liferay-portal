@@ -55,7 +55,8 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 	@Override
 	public Page<Account> getWorkspaceGroupChannelAccountsPage(
 			Long groupId, String channelId, String lifecycleStage,
-			String search, Pagination pagination, Sort[] sorts)
+			String rangeEnd, String rangeKey, String rangeStart, String search,
+			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
 		FaroProject faroProject =
