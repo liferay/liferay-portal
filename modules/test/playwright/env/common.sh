@@ -862,12 +862,21 @@ function update_property {
 }
 
 function upgrade_legacy_database_set_up {
+	local custom_upgrade_properties=${3}
 	local data_archive_type=${1}
 	local portal_version=${2}
 
 	rebuild_legacy_database "${data_archive_type}" "${portal_version}"
 
-	ant -f build-test.xml upgrade-legacy-database
+	if [[ -n ${custom_upgrade_properties} ]]
+	then
+		ant -f build-test.xml \
+			-Dcustom.upgrade.properties="${custom_upgrade_properties}" \
+			-Dtest.class=PortalSmokeUpgrade \
+			upgrade-legacy-database
+	else
+		ant -f build-test.xml upgrade-legacy-database
+	fi
 
 	assert_clean_upgrade_log
 
