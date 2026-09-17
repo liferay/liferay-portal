@@ -10,6 +10,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.servlet.PortalWebResourceConstants;
 import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseDynamicInclude;
@@ -56,27 +57,15 @@ public class AUITopHeadJSDynamicInclude extends BaseDynamicInclude {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		List<String> jsResourcePaths = _getJSResourcePaths(themeDisplay);
+
 		if (themeDisplay.isThemeJsFastLoad()) {
-			if (themeDisplay.isThemeJsBarebone()) {
-				_renderBundleComboURLs(
-					httpServletRequest, httpServletResponse, _jsResourcePaths);
-			}
-			else {
-				_renderBundleComboURLs(
-					httpServletRequest, httpServletResponse,
-					_allJSResourcePaths);
-			}
+			_renderBundleComboURLs(
+				httpServletRequest, httpServletResponse, jsResourcePaths);
 		}
 		else {
-			if (themeDisplay.isThemeJsBarebone()) {
-				_renderBundleURLs(
-					httpServletRequest, httpServletResponse, _jsResourcePaths);
-			}
-			else {
-				_renderBundleURLs(
-					httpServletRequest, httpServletResponse,
-					_allJSResourcePaths);
-			}
+			_renderBundleURLs(
+				httpServletRequest, httpServletResponse, jsResourcePaths);
 		}
 	}
 
@@ -92,32 +81,40 @@ public class AUITopHeadJSDynamicInclude extends BaseDynamicInclude {
 		AUIConfiguration auiConfiguration = ConfigurableUtil.createConfigurable(
 			AUIConfiguration.class, properties);
 
-		List<String> allJSResourcePaths = new ArrayList<>();
-		List<String> jsResourcePaths = new ArrayList<>();
+		_setJSResourcePaths(auiConfiguration.enableAUIPreload());
+	}
 
-		for (String resourcePath : _FILE_NAMES_AUI_CORE) {
-			allJSResourcePaths.add(
-				_servletContext.getContextPath() + resourcePath);
-			jsResourcePaths.add(
-				_servletContext.getContextPath() + resourcePath);
-		}
+	private List<String> _getDeprecatedJSResourcePaths(
+		List<String> jsResourcePaths) {
 
-		if (auiConfiguration.enableAUIPreload()) {
-			for (String resourcePath : _FILE_NAMES_AUI_PRELOAD) {
-				allJSResourcePaths.add(
-					_servletContext.getContextPath() + resourcePath);
-				jsResourcePaths.add(
-					_servletContext.getContextPath() + resourcePath);
+		List<String> deprecatedJSResourcePaths = new ArrayList<>(
+			jsResourcePaths);
+
+		String contextPath = _servletContext.getContextPath();
+
+		deprecatedJSResourcePaths.add(
+			jsResourcePaths.indexOf(contextPath + _FILE_NAME_AUI_SANDBOX) + 1,
+			contextPath + _FILE_NAME_MODULES_DEPRECATED);
+
+		return deprecatedJSResourcePaths;
+	}
+
+	private List<String> _getJSResourcePaths(ThemeDisplay themeDisplay) {
+		if (FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-57347")) {
+
+			if (themeDisplay.isThemeJsBarebone()) {
+				return _deprecatedJSResourcePaths;
 			}
 
-			for (String resourcePath : _FILE_NAMES_AUI_PRELOAD_AUTHENTICATED) {
-				allJSResourcePaths.add(
-					_servletContext.getContextPath() + resourcePath);
-			}
+			return _allDeprecatedJSResourcePaths;
 		}
 
-		_allJSResourcePaths = allJSResourcePaths;
-		_jsResourcePaths = jsResourcePaths;
+		if (themeDisplay.isThemeJsBarebone()) {
+			return _jsResourcePaths;
+		}
+
+		return _allJSResourcePaths;
 	}
 
 	private void _renderBundleComboURLs(
@@ -188,8 +185,47 @@ public class AUITopHeadJSDynamicInclude extends BaseDynamicInclude {
 		printWriter.println("\" type=\"text/javascript\"></script>");
 	}
 
+	private void _setJSResourcePaths(boolean enableAUIPreload) {
+		List<String> allJSResourcePaths = new ArrayList<>();
+		List<String> jsResourcePaths = new ArrayList<>();
+
+		for (String resourcePath : _FILE_NAMES_AUI_CORE) {
+			allJSResourcePaths.add(
+				_servletContext.getContextPath() + resourcePath);
+			jsResourcePaths.add(
+				_servletContext.getContextPath() + resourcePath);
+		}
+
+		if (enableAUIPreload) {
+			for (String resourcePath : _FILE_NAMES_AUI_PRELOAD) {
+				allJSResourcePaths.add(
+					_servletContext.getContextPath() + resourcePath);
+				jsResourcePaths.add(
+					_servletContext.getContextPath() + resourcePath);
+			}
+
+			for (String resourcePath : _FILE_NAMES_AUI_PRELOAD_AUTHENTICATED) {
+				allJSResourcePaths.add(
+					_servletContext.getContextPath() + resourcePath);
+			}
+		}
+
+		_allDeprecatedJSResourcePaths = _getDeprecatedJSResourcePaths(
+			allJSResourcePaths);
+		_allJSResourcePaths = allJSResourcePaths;
+		_deprecatedJSResourcePaths = _getDeprecatedJSResourcePaths(
+			jsResourcePaths);
+		_jsResourcePaths = jsResourcePaths;
+	}
+
+	private static final String _FILE_NAME_AUI_SANDBOX =
+		"/liferay/aui_sandbox.js";
+
+	private static final String _FILE_NAME_MODULES_DEPRECATED =
+		"/liferay/modules_deprecated.js";
+
 	private static final String[] _FILE_NAMES_AUI_CORE = {
-		"/aui/aui/aui-min.js", "/liferay/modules.js", "/liferay/aui_sandbox.js",
+		"/aui/aui/aui-min.js", "/liferay/modules.js", _FILE_NAME_AUI_SANDBOX,
 		"/aui/attribute-base/attribute-base-min.js",
 		"/aui/attribute-complex/attribute-complex-min.js",
 		"/aui/attribute-core/attribute-core-min.js",
@@ -292,7 +328,11 @@ public class AUITopHeadJSDynamicInclude extends BaseDynamicInclude {
 	@Reference
 	private AbsolutePortalURLBuilderFactory _absolutePortalURLBuilderFactory;
 
+	private volatile List<String> _allDeprecatedJSResourcePaths =
+		new ArrayList<>();
 	private volatile List<String> _allJSResourcePaths = new ArrayList<>();
+	private volatile List<String> _deprecatedJSResourcePaths =
+		new ArrayList<>();
 	private volatile List<String> _jsResourcePaths = new ArrayList<>();
 
 	@Reference(
