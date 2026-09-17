@@ -10,8 +10,10 @@ import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -371,6 +373,21 @@ public class MCPServerTestUtil {
 		}
 
 		return mcpServerProfileDataMaskObjectEntries;
+	}
+
+	public static List<ObjectEntry> getMCPServerProfileToolObjectEntries(
+			ObjectEntry mcpServerProfileObjectEntry)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipLocalServiceUtil.getObjectRelationship(
+				mcpServerProfileObjectEntry.getObjectDefinitionId(),
+				"mcpServerProfileToTools");
+
+		return ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
+			0, objectRelationship.getObjectRelationshipId(), null, false,
+			mcpServerProfileObjectEntry.getObjectEntryId(), true, null,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	public static void processBatchEngineUnits() {
