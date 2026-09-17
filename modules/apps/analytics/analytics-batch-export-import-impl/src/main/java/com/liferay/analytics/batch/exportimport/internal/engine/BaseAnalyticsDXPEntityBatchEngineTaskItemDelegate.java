@@ -7,11 +7,22 @@ package com.liferay.analytics.batch.exportimport.internal.engine;
 
 import com.liferay.analytics.batch.exportimport.internal.odata.entity.AnalyticsDXPEntityEntityModel;
 import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
+import com.liferay.batch.engine.pagination.Page;
+import com.liferay.batch.engine.pagination.Pagination;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.odata.entity.EntityModel;
 
 import java.io.Serializable;
@@ -19,6 +30,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Marcos Martins
@@ -31,6 +44,17 @@ public abstract class BaseAnalyticsDXPEntityBatchEngineTaskItemDelegate<T>
 		throws Exception {
 
 		return _entityModel;
+	}
+
+	@Override
+	public final Page<T> read(
+			Filter filter, Pagination pagination, Sort[] sorts,
+			Map<String, Serializable> parameters, String search)
+		throws Exception {
+
+		_checkPermission();
+
+		return doRead(filter, pagination, sorts, parameters, search);
 	}
 
 	protected DynamicQuery buildDynamicQuery(
@@ -74,6 +98,39 @@ public abstract class BaseAnalyticsDXPEntityBatchEngineTaskItemDelegate<T>
 
 		return predicate.and(
 			modifiedDateColumn.gt((Date)resourceLastModifiedDate));
+	}
+
+	protected abstract Page<T> doRead(
+			Filter filter, Pagination pagination, Sort[] sorts,
+			Map<String, Serializable> parameters, String search)
+		throws Exception;
+
+	@Reference
+	protected RoleLocalService roleLocalService;
+
+	private void _checkPermission() throws Exception {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker == null) {
+			throw new PrincipalException(
+				"Unable to read analytics DXP entities without a permission " +
+					"checker");
+		}
+
+		long companyId = contextCompany.getCompanyId();
+
+		if (permissionChecker.isCompanyAdmin(companyId) ||
+			roleLocalService.hasUserRole(
+				permissionChecker.getUserId(), companyId,
+				RoleConstants.ANALYTICS_ADMINISTRATOR, true)) {
+
+			return;
+		}
+
+		throw new PrincipalException.MustHavePermission(
+			permissionChecker.getUserId(), Company.class.getName(), companyId,
+			ActionKeys.VIEW);
 	}
 
 	private static final EntityModel _entityModel =

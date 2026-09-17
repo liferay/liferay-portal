@@ -7,14 +7,12 @@ package com.liferay.analytics.batch.exportimport.internal.engine;
 
 import com.liferay.analytics.batch.exportimport.internal.dto.v1_0.converter.constants.DTOConverterConstants;
 import com.liferay.analytics.batch.exportimport.internal.engine.util.DTOConverterUtil;
-import com.liferay.analytics.batch.exportimport.internal.odata.entity.AnalyticsDXPEntityEntityModel;
 import com.liferay.analytics.dxp.entity.rest.dto.v1_0.DXPEntity;
 import com.liferay.analytics.message.storage.model.AnalyticsAssociationTable;
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.configuration.AnalyticsConfigurationRegistry;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.analytics.settings.security.constants.AnalyticsSecurityConstants;
-import com.liferay.batch.engine.BaseBatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.BatchEngineTaskItemDelegate;
 import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
@@ -40,7 +38,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 
 import java.io.Serializable;
@@ -65,17 +62,10 @@ import org.osgi.service.component.annotations.Reference;
 	service = BatchEngineTaskItemDelegate.class
 )
 public class AnalyticsAssociationAnalyticsDXPEntityBatchEngineTaskItemDelegate
-	extends BaseBatchEngineTaskItemDelegate<DXPEntity> {
+	extends BaseAnalyticsDXPEntityBatchEngineTaskItemDelegate<DXPEntity> {
 
 	@Override
-	public EntityModel getEntityModel(Map<String, List<String>> multivaluedMap)
-		throws Exception {
-
-		return _entityModel;
-	}
-
-	@Override
-	public Page<DXPEntity> read(
+	protected Page<DXPEntity> doRead(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
@@ -448,8 +438,6 @@ public class AnalyticsAssociationAnalyticsDXPEntityBatchEngineTaskItemDelegate
 		return idsMap;
 	}
 
-	private static final EntityModel _entityModel =
-		new AnalyticsDXPEntityEntityModel();
 	private static final ThreadLocal<Long> _lastSeenUserId =
 		new CentralizedThreadLocal<>(
 			AnalyticsAssociationAnalyticsDXPEntityBatchEngineTaskItemDelegate.

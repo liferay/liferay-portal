@@ -49,8 +49,19 @@ public class AssetEntityAnalyticsBatchEngineTaskItemDelegate
 		return AssetEntity.class;
 	}
 
+	@Activate
+	protected void activate() {
+		_classNameIdsSupplier = _classNameLocalService.getClassNameIdsSupplier(
+			new String[] {
+				"com.liferay.document.library.kernel.model.DLFileEntry",
+				"com.liferay.blogs.model.BlogsEntry",
+				"com.liferay.journal.model.JournalArticle",
+				"com.liferay.knowledge.base.model.KBArticle"
+			});
+	}
+
 	@Override
-	public Page<AssetEntity> read(
+	protected Page<AssetEntity> doRead(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
@@ -72,17 +83,6 @@ public class AssetEntityAnalyticsBatchEngineTaskItemDelegate
 			_assetEntryLocalService.dslQuery(
 				_createCountDSLQuery(
 					contextCompany.getCompanyId(), parameters)));
-	}
-
-	@Activate
-	protected void activate() {
-		_classNameIdsSupplier = _classNameLocalService.getClassNameIdsSupplier(
-			new String[] {
-				"com.liferay.document.library.kernel.model.DLFileEntry",
-				"com.liferay.blogs.model.BlogsEntry",
-				"com.liferay.journal.model.JournalArticle",
-				"com.liferay.knowledge.base.model.KBArticle"
-			});
 	}
 
 	private Predicate _buildPredicate(

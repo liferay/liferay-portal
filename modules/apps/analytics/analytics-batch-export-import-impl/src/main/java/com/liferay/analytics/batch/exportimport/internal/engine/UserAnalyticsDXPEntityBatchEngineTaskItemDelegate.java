@@ -64,7 +64,7 @@ public class UserAnalyticsDXPEntityBatchEngineTaskItemDelegate
 	extends BaseAnalyticsDXPEntityBatchEngineTaskItemDelegate<DXPEntity> {
 
 	@Override
-	public Page<DXPEntity> read(
+	protected Page<DXPEntity> doRead(
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
