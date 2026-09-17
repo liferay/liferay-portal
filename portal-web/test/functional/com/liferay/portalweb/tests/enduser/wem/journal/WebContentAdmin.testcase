@@ -1163,7 +1163,7 @@ definition {
 			LexiconTable.viewTableEntryInfo(
 				columnName = "scope",
 				tableEntry = "WC Structure Name",
-				tableEntryInfo = "Asset Library");
+				tableEntryInfo = "Asset Library or Space");
 		}
 	}
 
