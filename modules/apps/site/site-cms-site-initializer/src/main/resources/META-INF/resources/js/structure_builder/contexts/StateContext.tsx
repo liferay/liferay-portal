@@ -35,6 +35,7 @@ import getRandomId from '../utils/getRandomId';
 import getUuid from '../utils/getUuid';
 import normalizeString from '../utils/normalizeString';
 import addChild from '../utils/state/addChild';
+import addGroup from '../utils/state/addGroup';
 import addRepeatableGroup from '../utils/state/addRepeatableGroup';
 import cloneChild from '../utils/state/cloneChild';
 import deleteChildren from '../utils/state/deleteChildren';
@@ -127,6 +128,12 @@ type AddReferencedStructuresAction = {
 type AddRelatedContentAction = {
 	relatedContent: RelatedContent;
 	type: 'add-related-content';
+};
+
+type AddGroupAction = {
+	parent: Uuid;
+	type: 'add-group';
+	uuids: Uuid[];
 };
 
 type AddRepeatableGroupAction = {
@@ -256,6 +263,7 @@ export type Action =
 	| AddFieldAction
 	| AddReferencedStructuresAction
 	| AddRelatedContentAction
+	| AddGroupAction
 	| AddRepeatableGroupAction
 	| AddErrorAction
 	| ClearErrorsAction
@@ -390,6 +398,30 @@ function reducer(state: State, action: Action): State {
 				...state,
 				selection: [relatedContent.uuid],
 				structure: {...structure, children: sortedChildren},
+			};
+		}
+		case 'add-group': {
+			const {structure} = state;
+
+			const {parent, uuids} = action;
+
+			const items = uuids.map(
+				(uuid) => findChild({root: structure, uuid})!
+			);
+
+			const groupUuid = getUuid();
+
+			const children = addGroup({
+				groupChildren: items,
+				groupParent: parent,
+				groupUuid,
+				root: structure,
+			});
+
+			return {
+				...state,
+				selection: [groupUuid],
+				structure: {...structure, children},
 			};
 		}
 		case 'add-repeatable-group': {

@@ -8,6 +8,7 @@ import {Action} from '../contexts/StateContext';
 export default function actionGeneratesChanges(actionType: Action['type']) {
 	switch (actionType) {
 		case 'add-field':
+		case 'add-group':
 		case 'add-referenced-structures':
 		case 'add-related-content':
 		case 'add-repeatable-group':

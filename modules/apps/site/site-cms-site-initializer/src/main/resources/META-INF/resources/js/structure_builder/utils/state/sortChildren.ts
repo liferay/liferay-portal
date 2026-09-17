@@ -4,7 +4,6 @@
  */
 
 import {Structure, StructureChild} from '../../types/Structure';
-import isRepeatableGroup from '../isRepeatableGroup';
 
 export default function sortChildren(
 	children: Structure['children']
@@ -21,7 +20,7 @@ export default function sortChildren(
 }
 
 function getWeight(child: StructureChild) {
-	if (isRepeatableGroup(child)) {
+	if (child.type === 'group') {
 		return 3;
 	}
 

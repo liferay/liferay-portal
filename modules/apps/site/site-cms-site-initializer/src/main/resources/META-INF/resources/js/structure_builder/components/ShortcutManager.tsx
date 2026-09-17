@@ -10,7 +10,7 @@ import {useCache, useStaleCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectState from '../selectors/selectState';
 import findChild from '../utils/findChild';
-import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
+import handleAddGroup from '../utils/handleAddGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import handlePaste from '../utils/handlePaste';
 import handlePublishStructure from '../utils/handlePublishStructure';
@@ -156,7 +156,7 @@ export default function ShortcutManager() {
 		map.set('Ctrl+G', {
 			enabled: () => Boolean(selection.length),
 			handler: () =>
-				handleAddRepeatableGroup({
+				handleAddGroup({
 					dispatch,
 					publishedChildren,
 					structure,

@@ -17,7 +17,7 @@ import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectPublishedChildren from '../selectors/selectPublishedChildren';
 import selectSelection from '../selectors/selectSelection';
 import selectStructure from '../selectors/selectStructure';
-import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
+import handleAddGroup from '../utils/handleAddGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import isCopyable from '../utils/isCopyable';
 import isLocked from '../utils/isLocked';
@@ -168,15 +168,19 @@ function Toolbar({
 			<ClayDropDownWithItems
 				items={[
 					{
-						label: Liferay.Language.get('create-repeatable-group'),
+						label: Liferay.FeatureFlags['LPD-96666']
+							? Liferay.Language.get('group')
+							: Liferay.Language.get('create-repeatable-group'),
 						onClick: () =>
-							handleAddRepeatableGroup({
+							handleAddGroup({
 								dispatch,
 								publishedChildren,
 								structure,
 								uuids: selection,
 							}),
-						symbolLeft: 'repeat',
+						symbolLeft: Liferay.FeatureFlags['LPD-96666']
+							? 'fieldset'
+							: 'repeat',
 					},
 					{type: 'divider'},
 					{

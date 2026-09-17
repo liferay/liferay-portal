@@ -10,6 +10,7 @@ import React from 'react';
 import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
 import {useCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
+import selectPublishedChildren from '../selectors/selectPublishedChildren';
 import selectStructure from '../selectors/selectStructure';
 import {Group} from '../types/Structure';
 import {
@@ -22,6 +23,7 @@ import {
 import getRandomId from '../utils/getRandomId';
 import getRandomName from '../utils/getRandomName';
 import getUuid from '../utils/getUuid';
+import handleAddGroup from '../utils/handleAddGroup';
 import openReferencedStructureModal from '../utils/openReferencedStructureModal';
 
 type Item = {
@@ -45,6 +47,7 @@ export default function AddChildDropdown({
 	};
 }) {
 	const dispatch = useStateDispatch();
+	const publishedChildren = useSelector(selectPublishedChildren);
 	const structure = useSelector(selectStructure);
 
 	const {data: objectDefinitions, status} = useCache('object-definitions');
@@ -85,6 +88,23 @@ export default function AddChildDropdown({
 						})
 					),
 					{type: 'divider'},
+					...(Liferay.FeatureFlags['LPD-96666']
+						? [
+								{
+									label: Liferay.Language.get('group'),
+									onClick: () =>
+										handleAddGroup({
+											dispatch,
+											parent:
+												parentUuid ?? structure.uuid,
+											publishedChildren,
+											structure,
+											uuids: [],
+										}),
+									symbolLeft: 'fieldset',
+								},
+							]
+						: []),
 					{
 						className: 'dropdown-item-cms-warning',
 						label: Liferay.Language.get('select-related-content'),

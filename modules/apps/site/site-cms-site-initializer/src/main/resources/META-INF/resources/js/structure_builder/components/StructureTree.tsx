@@ -41,7 +41,7 @@ import {
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {FIELD_TYPE_ICON, FieldType} from '../utils/field';
-import handleAddRepeatableGroup from '../utils/handleAddRepeatableGroup';
+import handleAddGroup from '../utils/handleAddGroup';
 import handleDeleteChildren from '../utils/handleDeleteChildren';
 import handleMoveChildren from '../utils/handleMoveChildren';
 import handlePaste from '../utils/handlePaste';
@@ -857,15 +857,19 @@ function getItemActions({
 
 	if (isField(item)) {
 		actions.push({
-			label: Liferay.Language.get('create-repeatable-group'),
+			label: Liferay.FeatureFlags['LPD-96666']
+				? Liferay.Language.get('group')
+				: Liferay.Language.get('create-repeatable-group'),
 			onClick: () =>
-				handleAddRepeatableGroup({
+				handleAddGroup({
 					dispatch,
 					publishedChildren,
 					structure,
 					uuids: [item.uuid],
 				}),
-			symbolLeft: 'repeat',
+			symbolLeft: Liferay.FeatureFlags['LPD-96666']
+				? 'fieldset'
+				: 'repeat',
 		});
 
 		actions.push({type: 'divider' as const});
