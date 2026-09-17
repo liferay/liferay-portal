@@ -195,6 +195,11 @@ test(
 				status: {code: 0},
 			})) as ObjectDefinition;
 
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
 		await structuresPage.goto();
 
 		await page
@@ -920,6 +925,19 @@ test.describe('Import and Export Structures', () => {
 					timeout: 5000,
 				});
 			}).toPass();
+
+			// The import created a new object definition, so register its
+			// id for the cleanup
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.getObjectDefinitionByName(
+					structureLabel
+				);
+
+			apiHelpers.data.push({
+				id: objectDefinition.id,
+				type: 'objectDefinition',
+			});
 
 			await structuresPage.execItemAction({
 				action: 'Edit',
