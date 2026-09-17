@@ -31,10 +31,10 @@ public class AccountValidatorResultUpgradeProcess extends UpgradeProcess {
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				while (resultSet.next()) {
-                    runSQL(
-                        "update ObjectRelationship set " +
-                        "deletionType = 'cascade' where objectFieldId2 = " +
-                        resultSet.getLong("objectFieldId"));
+					runSQL(
+						"update ObjectRelationship set deletionType = " +
+							"'cascade' where objectFieldId2 = " +
+								resultSet.getLong("objectFieldId"));
 				}
 			}
 		}
