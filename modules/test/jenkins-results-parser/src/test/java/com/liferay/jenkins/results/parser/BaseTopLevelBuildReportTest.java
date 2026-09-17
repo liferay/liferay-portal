@@ -403,11 +403,17 @@ public class BaseTopLevelBuildReportTest
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
 
 		baseTopLevelBuildReport = _testGetPreviousTopLevelBuildReport(
-			3, "https://test-1-1.liferay.com/job/previous-job/1",
-			_newControllerBuildJSONObject(4, "SUCCESS"),
-			_newControllerBuildJSONObject(3, "SUCCESS"),
-			_newControllerBuildJSONObject(2, "ABORTED"),
-			_newControllerBuildJSONObject(1, "SUCCESS"));
+			new JSONArray(
+			).put(
+				_newControllerBuildJSONObject(4, "SUCCESS")
+			).put(
+				_newControllerBuildJSONObject(3, "SUCCESS")
+			).put(
+				_newControllerBuildJSONObject(2, "ABORTED")
+			).put(
+				_newControllerBuildJSONObject(1, "SUCCESS")
+			),
+			3, "https://test-1-1.liferay.com/job/previous-job/1");
 
 		TopLevelBuildReport previousTopLevelBuildReport =
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport();
@@ -419,33 +425,52 @@ public class BaseTopLevelBuildReportTest
 			baseTopLevelBuildReport.getPreviousTopLevelBuildReport());
 
 		_testGetPreviousTopLevelBuildReport(
-			3, "https://test-1-1.liferay.com/job/previous-job/2",
-			_newControllerBuildJSONObject(3, "SUCCESS"),
-			_newControllerBuildJSONObject(2, "FAILURE"),
-			_newControllerBuildJSONObject(1, "SUCCESS"));
-		_testGetPreviousTopLevelBuildReport(
-			3, "https://test-1-1.liferay.com/job/previous-job/2",
-			_newControllerBuildJSONObject(3, "SUCCESS"),
-			_newControllerBuildJSONObject(2, "SUCCESS"),
-			_newControllerBuildJSONObject(1, "SUCCESS"));
-		_testGetPreviousTopLevelBuildReport(
-			3, "https://test-1-1.liferay.com/job/previous-job/2",
-			_newControllerBuildJSONObject(3, "SUCCESS"),
-			_newControllerBuildJSONObject(2, "UNSTABLE"),
-			_newControllerBuildJSONObject(1, "SUCCESS"));
-		_testGetPreviousTopLevelBuildReport(3, null);
-		_testGetPreviousTopLevelBuildReport(
-			3, null,
-			new JSONObject(
+			new JSONArray(
 			).put(
-				"number", 3
+				_newControllerBuildJSONObject(3, "SUCCESS")
+			).put(
+				_newControllerBuildJSONObject(2, "FAILURE")
+			).put(
+				_newControllerBuildJSONObject(1, "SUCCESS")
 			),
-			new JSONObject(
+			3, "https://test-1-1.liferay.com/job/previous-job/2");
+		_testGetPreviousTopLevelBuildReport(
+			new JSONArray(
 			).put(
-				"description", RandomTestUtil.randomString()
+				_newControllerBuildJSONObject(3, "SUCCESS")
 			).put(
-				"number", 2
-			));
+				_newControllerBuildJSONObject(2, "SUCCESS")
+			).put(
+				_newControllerBuildJSONObject(1, "SUCCESS")
+			),
+			3, "https://test-1-1.liferay.com/job/previous-job/2");
+		_testGetPreviousTopLevelBuildReport(
+			new JSONArray(
+			).put(
+				_newControllerBuildJSONObject(3, "SUCCESS")
+			).put(
+				_newControllerBuildJSONObject(2, "UNSTABLE")
+			).put(
+				_newControllerBuildJSONObject(1, "SUCCESS")
+			),
+			3, "https://test-1-1.liferay.com/job/previous-job/2");
+		_testGetPreviousTopLevelBuildReport(
+			new JSONArray(
+			).put(
+				new JSONObject(
+				).put(
+					"number", 3
+				)
+			).put(
+				new JSONObject(
+				).put(
+					"description", RandomTestUtil.randomString()
+				).put(
+					"number", 2
+				)
+			),
+			3, null);
+		_testGetPreviousTopLevelBuildReport(null, 3, null);
 	}
 
 	@Test
@@ -901,23 +926,15 @@ public class BaseTopLevelBuildReportTest
 	}
 
 	private BaseTopLevelBuildReport _testGetPreviousTopLevelBuildReport(
-			int currentBuildNumber, String expectedBuildURLString,
-			JSONObject... controllerBuildJSONObjects)
+			JSONArray buildsJSONArray, int currentBuildNumber,
+			String expectedBuildURLString)
 		throws Exception {
 
 		UrlReader urlReader = mockUrlReader();
 
 		JSONObject controllerJobJSONObject = new JSONObject();
 
-		if (controllerBuildJSONObjects.length > 0) {
-			JSONArray buildsJSONArray = new JSONArray();
-
-			for (JSONObject controllerBuildJSONObject :
-					controllerBuildJSONObjects) {
-
-				buildsJSONArray.put(controllerBuildJSONObject);
-			}
-
+		if (buildsJSONArray != null) {
 			controllerJobJSONObject.put("builds", buildsJSONArray);
 		}
 
