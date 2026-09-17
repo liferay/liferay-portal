@@ -5,6 +5,7 @@
 
 package com.liferay.audiences.web.internal.frontend.js.audiences;
 
+import com.liferay.audiences.cache.AudiencesDefinitionCache;
 import com.liferay.audiences.criteria.AudiencesCriteriaProvider;
 import com.liferay.audiences.model.AudiencesEntry;
 import com.liferay.audiences.service.AudiencesEntryGroupRelLocalService;
@@ -12,8 +13,6 @@ import com.liferay.audiences.service.AudiencesEntryLocalService;
 import com.liferay.frontend.js.audiences.AudiencesDefinition;
 import com.liferay.frontend.js.audiences.AudiencesDefinitionProvider;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.cache.MultiVMPool;
-import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -32,7 +31,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -48,11 +46,8 @@ public class AudiencesDefinitionProviderImpl
 			return null;
 		}
 
-		PortalCache<Long, AudiencesDefinition> portalCache =
-			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
-				AudiencesEntry.class.getName());
-
-		AudiencesDefinition audiencesDefinition = portalCache.get(companyId);
+		AudiencesDefinition audiencesDefinition =
+			_audiencesDefinitionCache.getAudiencesDefinition(companyId);
 
 		if (audiencesDefinition != null) {
 			return audiencesDefinition;
@@ -105,14 +100,10 @@ public class AudiencesDefinitionProviderImpl
 		audiencesDefinition = new AudiencesDefinition(
 			json, HashedFilesUtil.computeHash(json));
 
-		portalCache.put(companyId, audiencesDefinition);
+		_audiencesDefinitionCache.putAudiencesDefinition(
+			companyId, audiencesDefinition);
 
 		return audiencesDefinition;
-	}
-
-	@Deactivate
-	protected void deactivate() {
-		_multiVMPool.removePortalCache(AudiencesEntry.class.getName());
 	}
 
 	private JSONObject _getAudiencesEntryJSONObject(
@@ -187,6 +178,9 @@ public class AudiencesDefinitionProviderImpl
 	private AudiencesCriteriaProvider _audiencesCriteriaProvider;
 
 	@Reference
+	private AudiencesDefinitionCache _audiencesDefinitionCache;
+
+	@Reference
 	private AudiencesEntryGroupRelLocalService
 		_audiencesEntryGroupRelLocalService;
 
@@ -198,8 +192,5 @@ public class AudiencesDefinitionProviderImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	@Reference
-	private MultiVMPool _multiVMPool;
 
 }

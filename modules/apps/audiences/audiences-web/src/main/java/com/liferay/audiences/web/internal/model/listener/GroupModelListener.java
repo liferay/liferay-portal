@@ -5,10 +5,7 @@
 
 package com.liferay.audiences.web.internal.model.listener;
 
-import com.liferay.audiences.model.AudiencesEntry;
-import com.liferay.frontend.js.audiences.AudiencesDefinition;
-import com.liferay.portal.kernel.cache.MultiVMPool;
-import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.audiences.cache.AudiencesDefinitionCache;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelListener;
@@ -24,14 +21,11 @@ public class GroupModelListener extends BaseModelListener<Group> {
 
 	@Override
 	public void onAfterRemove(Group group) {
-		PortalCache<Long, AudiencesDefinition> portalCache =
-			(PortalCache<Long, AudiencesDefinition>)_multiVMPool.getPortalCache(
-				AudiencesEntry.class.getName());
-
-		portalCache.remove(group.getCompanyId());
+		_audiencesDefinitionCache.removeAudiencesDefinition(
+			group.getCompanyId());
 	}
 
 	@Reference
-	private MultiVMPool _multiVMPool;
+	private AudiencesDefinitionCache _audiencesDefinitionCache;
 
 }
