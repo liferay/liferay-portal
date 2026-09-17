@@ -6,6 +6,12 @@
 package com.liferay.object.web.internal.info.item.updater.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetEntry;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -50,6 +56,8 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -94,6 +102,84 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			objectEntry2);
 
 		assertObjectEntryValues(name1, name2);
+	}
+
+	@Test
+	public void testUpdateFromInfoItemFieldValuesWithAssetCategorization()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"name"
+					).build()),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		long groupId = TestPropsValues.getGroupId();
+
+		_assetVocabulary = _assetVocabularyLocalService.addVocabulary(
+			TestPropsValues.getUserId(), groupId, RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(groupId));
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), groupId, RandomTestUtil.randomString(),
+			_assetVocabulary.getVocabularyId(),
+			ServiceContextTestUtil.getServiceContext(groupId));
+
+		String assetTagName = RandomTestUtil.randomString();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(groupId);
+
+		serviceContext.setAssetCategoryIds(
+			new long[] {assetCategory.getCategoryId()});
+		serviceContext.setAssetTagNames(new String[] {assetTagName});
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			groupId, objectDefinition.getObjectDefinitionId(), serviceContext,
+			HashMapBuilder.<String, Serializable>put(
+				"name", RandomTestUtil.randomString()
+			).build());
+
+		String name = RandomTestUtil.randomString();
+
+		_updateFromInfoItemFieldValues(
+			InfoItemFieldValues.builder(
+			).infoFieldValue(
+				new InfoFieldValue<>(
+					InfoField.builder(
+					).infoFieldType(
+						TextInfoFieldType.INSTANCE
+					).namespace(
+						ObjectField.class.getSimpleName()
+					).name(
+						"name"
+					).build(),
+					name)
+			).build(),
+			objectDefinition, objectEntry);
+
+		Assert.assertEquals(
+			name,
+			MapUtil.getString(
+				objectEntryLocalService.getValues(
+					objectEntry.getObjectEntryId()),
+				"name"));
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			objectDefinition.getClassName(), objectEntry.getObjectEntryId());
+
+		Assert.assertArrayEquals(
+			new long[] {assetCategory.getCategoryId()},
+			assetEntry.getCategoryIds());
+		Assert.assertArrayEquals(
+			new String[] {assetTagName}, assetEntry.getTagNames());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
@@ -672,6 +758,18 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 		infoItemFieldValuesUpdater.updateFromInfoItemFieldValues(
 			objectEntry, infoItemFieldValues);
 	}
+
+	@Inject
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
+
+	@DeleteAfterTestRun
+	private AssetVocabulary _assetVocabulary;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
