@@ -27,6 +27,7 @@ import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.query.Query;
+import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.workflow.metrics.internal.petra.executor.WorkflowMetricsPortalExecutor;
 import com.liferay.portal.workflow.metrics.internal.search.index.util.WorkflowMetricsIndexerUtil;
 
@@ -139,7 +140,9 @@ public abstract class BaseWorkflowMetricsIndexer {
 	protected void updateDocuments(
 		long companyId, Map<String, Object> fieldsMap, Query filterQuery) {
 
-		if (!searchCapabilities.isWorkflowMetricsSupported()) {
+		if (!searchCapabilities.isWorkflowMetricsSupported() ||
+			PortalInstances.isCompanyInDeletionProcess(companyId)) {
+
 			return;
 		}
 
@@ -205,13 +208,16 @@ public abstract class BaseWorkflowMetricsIndexer {
 	protected WorkflowMetricsPortalExecutor workflowMetricsPortalExecutor;
 
 	private void _updateDocument(Document document) {
-		if (!searchCapabilities.isWorkflowMetricsSupported()) {
+		long companyId = document.getLong("companyId");
+
+		if (!searchCapabilities.isWorkflowMetricsSupported() ||
+			PortalInstances.isCompanyInDeletionProcess(companyId)) {
+
 			return;
 		}
 
 		UpdateDocumentRequest updateDocumentRequest = new UpdateDocumentRequest(
-			getIndexName(document.getLong("companyId")),
-			document.getString("uid"), document);
+			getIndexName(companyId), document.getString("uid"), document);
 
 		updateDocumentRequest.setRefresh(
 			IndexWriterHelperUtil.isIndexCommitImmediately());
