@@ -224,6 +224,26 @@ public class AuditEventSerDes {
 			sb.append(auditEvent.getId());
 		}
 
+		if (auditEvent.getImpersonated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"impersonated\": ");
+
+			sb.append(auditEvent.getImpersonated());
+		}
+
+		if (auditEvent.getImpersonatedCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"impersonatedCreator\": ");
+
+			sb.append(auditEvent.getImpersonatedCreator());
+		}
+
 		if (auditEvent.getObjectName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -456,6 +476,23 @@ public class AuditEventSerDes {
 			map.put("id", String.valueOf(auditEvent.getId()));
 		}
 
+		if (auditEvent.getImpersonated() == null) {
+			map.put("impersonated", null);
+		}
+		else {
+			map.put(
+				"impersonated", String.valueOf(auditEvent.getImpersonated()));
+		}
+
+		if (auditEvent.getImpersonatedCreator() == null) {
+			map.put("impersonatedCreator", null);
+		}
+		else {
+			map.put(
+				"impersonatedCreator",
+				String.valueOf(auditEvent.getImpersonatedCreator()));
+		}
+
 		if (auditEvent.getObjectName() == null) {
 			map.put("objectName", null);
 		}
@@ -577,6 +614,14 @@ public class AuditEventSerDes {
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "impersonated")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "impersonatedCreator")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "objectName")) {
 				return false;
 			}
@@ -687,6 +732,19 @@ public class AuditEventSerDes {
 				if (jsonParserFieldValue != null) {
 					auditEvent.setId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "impersonated")) {
+				if (jsonParserFieldValue != null) {
+					auditEvent.setImpersonated((Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "impersonatedCreator")) {
+
+				if (jsonParserFieldValue != null) {
+					auditEvent.setImpersonatedCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "objectName")) {
@@ -819,4 +877,4 @@ public class AuditEventSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1122246182
+// LIFERAY-REST-BUILDER-HASH:245183244

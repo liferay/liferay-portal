@@ -320,6 +320,48 @@ public class AuditEvent implements Cloneable, Serializable {
 
 	protected Long id;
 
+	public Boolean getImpersonated() {
+		return impersonated;
+	}
+
+	public void setImpersonated(Boolean impersonated) {
+		this.impersonated = impersonated;
+	}
+
+	public void setImpersonated(
+		UnsafeSupplier<Boolean, Exception> impersonatedUnsafeSupplier) {
+
+		try {
+			impersonated = impersonatedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean impersonated;
+
+	public Creator getImpersonatedCreator() {
+		return impersonatedCreator;
+	}
+
+	public void setImpersonatedCreator(Creator impersonatedCreator) {
+		this.impersonatedCreator = impersonatedCreator;
+	}
+
+	public void setImpersonatedCreator(
+		UnsafeSupplier<Creator, Exception> impersonatedCreatorUnsafeSupplier) {
+
+		try {
+			impersonatedCreator = impersonatedCreatorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Creator impersonatedCreator;
+
 	public String getObjectName() {
 		return objectName;
 	}
@@ -520,4 +562,4 @@ public class AuditEvent implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-477295016
+// LIFERAY-REST-BUILDER-HASH:428980568

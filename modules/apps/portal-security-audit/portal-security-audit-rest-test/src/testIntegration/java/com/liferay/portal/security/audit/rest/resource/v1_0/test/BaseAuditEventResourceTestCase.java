@@ -642,6 +642,24 @@ public abstract class BaseAuditEventResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("impersonated", additionalAssertFieldName)) {
+				if (auditEvent.getImpersonated() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"impersonatedCreator", additionalAssertFieldName)) {
+
+				if (auditEvent.getImpersonatedCreator() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("objectName", additionalAssertFieldName)) {
 				if (auditEvent.getObjectName() == null) {
 					valid = false;
@@ -969,6 +987,30 @@ public abstract class BaseAuditEventResourceTestCase {
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						auditEvent1.getId(), auditEvent2.getId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("impersonated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						auditEvent1.getImpersonated(),
+						auditEvent2.getImpersonated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"impersonatedCreator", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						auditEvent1.getImpersonatedCreator(),
+						auditEvent2.getImpersonatedCreator())) {
 
 					return false;
 				}
@@ -1553,6 +1595,16 @@ public abstract class BaseAuditEventResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("impersonated")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("impersonatedCreator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("objectName")) {
 			Object object = auditEvent.getObjectName();
 
@@ -1946,6 +1998,7 @@ public abstract class BaseAuditEventResourceTestCase {
 				httpMethod = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
+				impersonated = RandomTestUtil.randomBoolean();
 				objectName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				requestId = StringUtil.toLowerCase(
@@ -2185,4 +2238,4 @@ public abstract class BaseAuditEventResourceTestCase {
 			_auditEventResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1955357174
+// LIFERAY-REST-BUILDER-HASH:-219272632
