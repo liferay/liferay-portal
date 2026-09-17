@@ -8777,7 +8777,7 @@ paths:
         get:
             # @review
             description:
-                Retrieves the private or public pages of the site
+                Retrieves the private or public pages of the site. Results can be paginated, filtered, searched, flattened, and sorted. Without flatten, only the top level pages are returned.
             operationId: getSiteSitePagesPage
             parameters:
                 -   in: path
@@ -8799,6 +8799,10 @@ paths:
                     name: filter
                     schema:
                         type: string
+                -   in: query
+                    name: flatten
+                    schema:
+                        type: boolean
                 -   in: query
                     name: nestedFields
                     schema:
