@@ -6,13 +6,16 @@
 package com.liferay.portal.kernel.audit;
 
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
@@ -94,24 +97,39 @@ public class AuditMessage implements Serializable {
 
 		long realUserId = auditRequestContext.getRealUserId();
 
-		long doAsUserId = 0;
+		long impersonatedUserId = 0;
 
 		if (PrincipalThreadLocal.getName() != null) {
-			doAsUserId = GetterUtil.getLong(PrincipalThreadLocal.getName());
+			impersonatedUserId = GetterUtil.getLong(
+				PrincipalThreadLocal.getName());
 		}
 
-		if ((realUserId > 0) && (doAsUserId != realUserId) &&
-			!_additionalInfoJSONObject.has("doAsUserId")) {
+		if ((realUserId > 0) && (impersonatedUserId != realUserId)) {
+			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+				User impersonatedUser = UserLocalServiceUtil.fetchUser(
+					impersonatedUserId);
 
-			_additionalInfoJSONObject.put(
-				"doAsUserEmailAddress",
-				PortalUtil.getUserEmailAddress(doAsUserId)
-			).put(
-				"doAsUserId", String.valueOf(doAsUserId)
-			).put(
-				"doAsUserName",
-				PortalUtil.getUserName(doAsUserId, StringPool.BLANK)
-			);
+				if ((impersonatedUser != null) &&
+					!impersonatedUser.isGuestUser()) {
+
+					_impersonated = true;
+					_impersonatedUserEmailAddress =
+						impersonatedUser.getEmailAddress();
+					_impersonatedUserId = impersonatedUserId;
+					_impersonatedUserName = impersonatedUser.getFullName();
+				}
+			}
+			else if (!_additionalInfoJSONObject.has("doAsUserId")) {
+				_additionalInfoJSONObject.put(
+					"doAsUserEmailAddress",
+					PortalUtil.getUserEmailAddress(impersonatedUserId)
+				).put(
+					"doAsUserId", String.valueOf(impersonatedUserId)
+				).put(
+					"doAsUserName",
+					PortalUtil.getUserName(impersonatedUserId, StringPool.BLANK)
+				);
+			}
 		}
 
 		if (userId == realUserId) {

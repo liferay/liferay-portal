@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ClassedModel;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.List;
@@ -71,12 +69,6 @@ public class AuditMessageBuilder {
 
 		long companyId = CompanyThreadLocal.getCompanyId();
 
-		long userId = 0;
-
-		if (PrincipalThreadLocal.getName() != null) {
-			userId = GetterUtil.getLong(PrincipalThreadLocal.getName());
-		}
-
 		AuditRequestContext auditRequestContext =
 			AuditRequestContextThreadLocal.getAuditRequestContext();
 
@@ -87,16 +79,6 @@ public class AuditMessageBuilder {
 
 		JSONObject additionalInfoJSONObject =
 			JSONFactoryUtil.createJSONObject();
-
-		if ((realUserId > 0) && (userId != realUserId)) {
-			additionalInfoJSONObject.put(
-				"doAsUserEmailAddress", PortalUtil.getUserEmailAddress(userId)
-			).put(
-				"doAsUserId", String.valueOf(userId)
-			).put(
-				"doAsUserName", PortalUtil.getUserName(userId, StringPool.BLANK)
-			);
-		}
 
 		if (attributes != null) {
 			additionalInfoJSONObject.put(

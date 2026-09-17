@@ -8,6 +8,7 @@ package com.liferay.portal.action;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouterUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -312,7 +313,9 @@ public class LayoutAction implements Action {
 					JSONObject additionalInfoJSONObject = null;
 
 					if (Validator.isNotNull(themeDisplay.getDoAsUserId()) &&
-						(realUser.getUserId() != user.getUserId())) {
+						(realUser.getUserId() != user.getUserId()) &&
+						!FeatureFlagManagerUtil.isEnabled(
+							realUser.getCompanyId(), "LPD-6417")) {
 
 						additionalInfoJSONObject = JSONUtil.put(
 							"doAsUserEmailAddress", user.getEmailAddress()
