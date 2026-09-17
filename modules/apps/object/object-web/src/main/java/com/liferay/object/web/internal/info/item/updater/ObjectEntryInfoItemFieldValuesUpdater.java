@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.exception.InfoFormException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -152,7 +153,7 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 						setFriendlyUrlPath_i18n(
 							() -> (Map<String, String>)curProperties.get(
 								"objectEntryFriendlyURL_i18n"));
-						setKeywords(serviceContext::getAssetTagNames);
+						setKeywords(() -> _getKeywords(serviceContext));
 						setProperties(() -> curProperties);
 						setStatus(
 							() -> new Status() {
@@ -161,9 +162,8 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 								}
 							});
 						setTaxonomyCategoryBriefs(
-							() -> _toTaxonomyCategoryBriefs(
-								serviceContext.getAssetCategoryIds(),
-								themeDisplay.getLocale()));
+							() -> _getTaxonomyCategoryBriefs(
+								themeDisplay.getLocale(), serviceContext));
 					}
 				});
 
@@ -299,6 +299,16 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 		}
 	}
 
+	private String[] _getKeywords(ServiceContext serviceContext) {
+		String[] assetTagNames = serviceContext.getAssetTagNames();
+
+		if (ArrayUtil.isEmpty(assetTagNames)) {
+			return null;
+		}
+
+		return assetTagNames;
+	}
+
 	private Map<String, Object> _getProperties(
 		ObjectEntry objectEntry, InfoItemFieldValues infoItemFieldValues) {
 
@@ -315,6 +325,18 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 		return ObjectEntryUtil.toProperties(
 			objectEntry.getCompanyId(), infoItemFieldValues,
 			objectEntry.getValues());
+	}
+
+	private TaxonomyCategoryBrief[] _getTaxonomyCategoryBriefs(
+		Locale locale, ServiceContext serviceContext) {
+
+		long[] assetCategoryIds = serviceContext.getAssetCategoryIds();
+
+		if (ArrayUtil.isEmpty(assetCategoryIds)) {
+			return null;
+		}
+
+		return _toTaxonomyCategoryBriefs(assetCategoryIds, locale);
 	}
 
 	private void _relateMainObjectEntry(
