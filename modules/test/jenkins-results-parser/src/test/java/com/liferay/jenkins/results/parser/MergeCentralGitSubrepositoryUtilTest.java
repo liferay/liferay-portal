@@ -65,15 +65,16 @@ public class MergeCentralGitSubrepositoryUtilTest
 
 	@Test
 	public void testIsBlacklisted() throws Exception {
+		_testIsBlacklisted(
+			false, _SSH_REMOTE_URL, Collections.<String>emptyList());
+
 		List<String> subrepoMergeBlacklist = Arrays.asList(
 			"com-liferay-osb-asah-private");
 
 		_testIsBlacklisted(
-			false, _SSH_REMOTE_URL, Collections.<String>emptyList());
-		_testIsBlacklisted(false, _HTTPS_REMOTE_URL, subrepoMergeBlacklist);
-		_testIsBlacklisted(
 			false, "git@github.com:liferay/other-repo.git",
 			subrepoMergeBlacklist);
+		_testIsBlacklisted(false, _HTTPS_REMOTE_URL, subrepoMergeBlacklist);
 		_testIsBlacklisted(true, _SSH_REMOTE_URL, subrepoMergeBlacklist);
 	}
 

@@ -25,26 +25,26 @@ public class CentralGitSubrepositoryTest
 	@Test
 	public void testGetGitSubrepositoryName() {
 		_testGetGitSubrepositoryName(
-			"liferay-portal", "git@github.com:liferay/liferay-portal.git");
-		_testGetGitSubrepositoryName(
 			"com-liferay-osb-asah-private",
 			"git@github.com:liferay/com-liferay-osb-asah-private.git");
+		_testGetGitSubrepositoryName(
+			"liferay-portal", "git@github.com:liferay/liferay-portal.git");
 	}
 
 	@Test
 	public void testGetGitSubrepositoryUsername() {
 		_testGetGitSubrepositoryUsername(
-			"liferay", "git@github.com:liferay/liferay-portal.git");
-		_testGetGitSubrepositoryUsername(
 			"brianchandotcom",
 			"git@github.com:brianchandotcom/liferay-portal.git");
+		_testGetGitSubrepositoryUsername(
+			"liferay", "git@github.com:liferay/liferay-portal.git");
 	}
 
 	@Test
 	public void testIsAutoPullEnabled() {
 		_testIsAutoPullEnabled(null, false, null);
-		_testIsAutoPullEnabled(null, false, "push");
 		_testIsAutoPullEnabled(null, false, "pull");
+		_testIsAutoPullEnabled(null, false, "push");
 		_testIsAutoPullEnabled("false", false, "pull");
 		_testIsAutoPullEnabled("true", true, "pull");
 	}
@@ -194,12 +194,12 @@ public class CentralGitSubrepositoryTest
 		Mockito.doCallRealMethod(
 		).when(
 			centralGitSubrepository
-		).isGitSubrepositoryUpstreamCommitMerged();
+		).getGitSubrepositoryUpstreamCommit();
 
 		Mockito.doCallRealMethod(
 		).when(
 			centralGitSubrepository
-		).getGitSubrepositoryUpstreamCommit();
+		).isGitSubrepositoryUpstreamCommitMerged();
 
 		Assert.assertEquals(
 			expected,
