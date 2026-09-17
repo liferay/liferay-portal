@@ -13,6 +13,9 @@ import com.liferay.portal.kernel.backgroundtask.DelegatingBackgroundTaskExecutor
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 
 import java.io.Serializable;
 
@@ -44,6 +47,9 @@ public class ThreadLocalAwareBackgroundTaskExecutor
 		throws Exception {
 
 		long companyId = CompanyThreadLocal.getCompanyId();
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+		String principalName = PrincipalThreadLocal.getName();
 		Map<String, Serializable> threadLocalValues =
 			_backgroundTaskThreadLocalManager.getThreadLocalValues();
 
@@ -68,6 +74,9 @@ public class ThreadLocalAwareBackgroundTaskExecutor
 		finally {
 			_backgroundTaskThreadLocalManager.setThreadLocalValues(
 				companyId, threadLocalValues);
+
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+			PrincipalThreadLocal.setName(principalName, false);
 		}
 	}
 
