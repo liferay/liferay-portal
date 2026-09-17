@@ -145,6 +145,14 @@ public abstract class BaseTestPackage implements TestPackage {
 			JenkinsResultsParserUtil.read(packageJSONFile));
 	}
 
+	protected Map<String, TestClassFile> getClassNameTestClassFilesMap()
+		throws IOException {
+
+		_initializeTestClassFiles();
+
+		return _classNameTestClassFilesMap;
+	}
+
 	protected Map<String, TestClassFile> getClassPathTestClassFilesMap()
 		throws IOException {
 
@@ -171,6 +179,7 @@ public abstract class BaseTestPackage implements TestPackage {
 			return;
 		}
 
+		_classNameTestClassFilesMap = new HashMap<>();
 		_classPathTestClassFilesMap = new HashMap<>();
 		_parentDirPathTestClassFilesMap = new HashMap<>();
 
@@ -188,6 +197,18 @@ public abstract class BaseTestPackage implements TestPackage {
 			if (x != -1) {
 				relativeParentDirPath = relativeClassPath.substring(0, x);
 			}
+
+			File file = testClassFile.getFile();
+
+			String className = file.getName();
+
+			className = className.replace('.', '_');
+
+			if (!relativeParentDirPath.isEmpty()) {
+				className = relativeParentDirPath + "/" + className;
+			}
+
+			_classNameTestClassFilesMap.put(className, testClassFile);
 
 			List<TestClassFile> testClassFiles =
 				_parentDirPathTestClassFilesMap.get(relativeParentDirPath);
@@ -209,6 +230,7 @@ public abstract class BaseTestPackage implements TestPackage {
 		".git", ".gradle", "bin", "build", "classes", "dist", "node_modules",
 		"test-classes", "test-coverage", "tmp");
 
+	private Map<String, TestClassFile> _classNameTestClassFilesMap;
 	private Map<String, TestClassFile> _classPathTestClassFilesMap;
 	private final File _packageJSONFile;
 	private final JSONObject _packageJSONObject;

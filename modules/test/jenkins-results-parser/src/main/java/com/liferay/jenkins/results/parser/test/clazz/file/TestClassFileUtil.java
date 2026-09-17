@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -89,8 +89,19 @@ public class TestClassFileUtil {
 			File portalDir, Element testCaseElement, TestPackage testPackage)
 		throws IOException {
 
-		List<TestClassFile> testClassFiles = _getTestClassFiles(
-			testCaseElement, testPackage);
+		String testCaseClassName = testCaseElement.attributeValue("classname");
+
+		TestClassFile testClassFile = testPackage.getTestClassFile(
+			testCaseClassName);
+
+		List<TestClassFile> testClassFiles;
+
+		if (testClassFile == null) {
+			testClassFiles = testPackage.getTestClassFiles(testCaseClassName);
+		}
+		else {
+			testClassFiles = Collections.singletonList(testClassFile);
+		}
 
 		if ((testClassFiles == null) || testClassFiles.isEmpty()) {
 			return;
@@ -101,18 +112,22 @@ public class TestClassFileUtil {
 		TestClassFileMethod testClassFileMethod = _getTestClassFileMethod(
 			matchedTestClassFileMethods, testCaseName, testClassFiles);
 
-		if (testClassFileMethod == null) {
-			return;
+		if (testClassFileMethod != null) {
+			testClassFile = testClassFileMethod.getTestClassFile();
 		}
 
-		TestClassFile testClassFile = testClassFileMethod.getTestClassFile();
+		if (testClassFile == null) {
+			return;
+		}
 
 		testCaseElement.addAttribute(
 			"classname",
 			JenkinsResultsParserUtil.getPathRelativeTo(
 				testClassFile.getFile(), portalDir));
 
-		if (testClassFileMethod.matches(testCaseName)) {
+		if ((testClassFileMethod != null) &&
+			testClassFileMethod.matches(testCaseName)) {
+
 			testCaseElement.addAttribute(
 				"name", testClassFileMethod.getFullName());
 		}
@@ -158,22 +173,6 @@ public class TestClassFileUtil {
 		}
 
 		return null;
-	}
-
-	private static List<TestClassFile> _getTestClassFiles(
-			Element testCaseElement, TestPackage testPackage)
-		throws IOException {
-
-		String testCaseClassName = testCaseElement.attributeValue("classname");
-
-		TestClassFile testClassFile = testPackage.getTestClassFile(
-			testCaseClassName);
-
-		if (testClassFile != null) {
-			return Arrays.asList(testClassFile);
-		}
-
-		return testPackage.getTestClassFiles(testCaseClassName);
 	}
 
 }

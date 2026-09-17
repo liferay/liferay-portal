@@ -24,7 +24,16 @@ public class JestTestPackage extends BaseTestPackage {
 		Map<String, TestClassFile> classPathTestClassFilesMap =
 			getClassPathTestClassFilesMap();
 
-		return classPathTestClassFilesMap.get(classPath);
+		TestClassFile testClassFile = classPathTestClassFilesMap.get(classPath);
+
+		if (testClassFile != null) {
+			return testClassFile;
+		}
+
+		Map<String, TestClassFile> classNameTestClassFilesMap =
+			getClassNameTestClassFilesMap();
+
+		return classNameTestClassFilesMap.get(_formatParentDirPath(classPath));
 	}
 
 	@Override
