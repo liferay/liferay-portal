@@ -511,8 +511,8 @@ public class JenkinsResultsParserUtilTest
 
 	@Test(timeout = 30000)
 	public void testGetThreadDumpBlockedThread() throws Exception {
-		String lockOwnerThreadName = "LRCI-8101-lock-owner";
-		String lockWaiterThreadName = "LRCI-8101-lock-waiter";
+		String lockOwnerThreadName = "lock-owner";
+		String lockWaiterThreadName = "lock-waiter";
 
 		Object lock = new Object();
 
