@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayToggle} from '@clayui/form';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
 import ClayTabs from '@clayui/tabs';
@@ -12,7 +13,10 @@ import React, {useEffect} from 'react';
 import focusInvalidElement from '../../../common/utils/focusInvalidElement';
 import {useSelector, useStateDispatch} from '../../contexts/StateContext';
 import selectErrors from '../../selectors/selectErrors';
+import selectPublishedChildren from '../../selectors/selectPublishedChildren';
+import selectStructure from '../../selectors/selectStructure';
 import {Group} from '../../types/Structure';
+import handleUpdateGroup from '../../utils/handleUpdateGroup';
 import Breadcrumb from '../Breadcrumb';
 import {LocalizedInput} from '../LocalizedInput';
 
@@ -52,6 +56,8 @@ function GeneralTab({disabled, group}: {disabled?: boolean; group: Group}) {
 	const dispatch = useStateDispatch();
 
 	const errors = useSelector(selectErrors(group.uuid));
+	const publishedChildren = useSelector(selectPublishedChildren);
+	const structure = useSelector(selectStructure);
 
 	const labelInputId = useId();
 
@@ -63,7 +69,9 @@ function GeneralTab({disabled, group}: {disabled?: boolean; group: Group}) {
 				</p>
 
 				<ClayLabel displayType="success" inverse>
-					{Liferay.Language.get('repeatable-group')}
+					{Liferay.FeatureFlags['LPD-96666']
+						? Liferay.Language.get('group')
+						: Liferay.Language.get('repeatable-group')}
 				</ClayLabel>
 			</div>
 
@@ -74,15 +82,40 @@ function GeneralTab({disabled, group}: {disabled?: boolean; group: Group}) {
 				id={labelInputId}
 				label={Liferay.Language.get('label')}
 				onSave={(translations) => {
-					dispatch({
+					handleUpdateGroup({
+						dispatch,
+						group,
 						label: translations,
-						type: 'update-repeatable-group',
-						uuid: group.uuid,
+						publishedChildren,
+						structure,
 					});
 				}}
 				required
 				translations={group.label}
 			/>
+
+			{Liferay.FeatureFlags['LPD-96666'] ? (
+				<div className="align-items-center d-flex mt-4">
+					<ClayToggle
+						aria-label={Liferay.Language.get('repeatable')}
+						disabled={disabled}
+						onToggle={(isRepeatable) =>
+							handleUpdateGroup({
+								dispatch,
+								group,
+								isRepeatable,
+								publishedChildren,
+								structure,
+							})
+						}
+						toggled={group.isRepeatable}
+					/>
+
+					<span className="ml-2">
+						{Liferay.Language.get('repeatable')}
+					</span>
+				</div>
+			) : null}
 		</div>
 	);
 }

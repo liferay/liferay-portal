@@ -44,14 +44,15 @@ import refreshReferencedStructures from '../utils/state/refreshReferencedStructu
 import sortChildren from '../utils/state/sortChildren';
 import ungroup from '../utils/state/ungroup';
 import updateChild from '../utils/state/updateChild';
+import updateGroupRepeatable from '../utils/state/updateGroupRepeatable';
 import updateHistory from '../utils/state/updateHistory';
 import {
 	ErrorMap,
 	ValidationError,
 	ValidationProperty,
 	validateField,
+	validateGroup,
 	validateRelatedContent,
-	validateRepeatableGroup,
 	validateStructure,
 } from '../utils/validation';
 
@@ -238,9 +239,10 @@ type UpdateRelatedContentAction = {
 	uuid: Uuid;
 };
 
-type UpdateRepeatableGroupAction = {
-	label: Liferay.Language.LocalizedValue<string>;
-	type: 'update-repeatable-group';
+type UpdateGroupAction = {
+	isRepeatable?: boolean;
+	label?: Liferay.Language.LocalizedValue<string>;
+	type: 'update-group';
 	uuid: Uuid;
 };
 
@@ -285,7 +287,7 @@ export type Action =
 	| UngroupAction
 	| UpdateFieldAction
 	| UpdateRelatedContentAction
-	| UpdateRepeatableGroupAction
+	| UpdateGroupAction
 	| UpdateStructureAction
 	| ValidateAction;
 
@@ -969,41 +971,41 @@ function reducer(state: State, action: Action): State {
 				},
 			};
 		}
-		case 'update-repeatable-group': {
-			const {label, uuid} = action;
+		case 'update-group': {
+			const {isRepeatable, label, uuid} = action;
 
-			const {structure} = state;
+			const {history, savedChildren, structure} = state;
 
-			const group = findChild({root: structure, uuid}) as Group;
+			const group = findChild({root: structure, uuid});
 
-			if (!group) {
+			if (!group || group.type !== 'group') {
 				return state;
 			}
 
-			const nextGroup = {
-				...group,
-				label,
-			};
+			if (isRepeatable !== undefined) {
+				if (group.isRepeatable === isRepeatable) {
+					return state;
+				}
 
-			const nextChildren = updateChild({
-				child: nextGroup,
-				root: structure,
-			});
+				const {children, history: nextHistory} = updateGroupRepeatable({
+					group,
+					history,
+					isRepeatable,
+					savedChildren,
+					structure,
+				});
 
-			const nextState: State = {
-				...state,
-				structure: {
-					...structure,
-					children: nextChildren,
-				},
-			};
-
-			// Validate the data sent in the action
+				return {
+					...state,
+					history: nextHistory,
+					structure: {...structure, children},
+				};
+			}
 
 			const invalids = new Map(state.invalids);
 
-			const errors = validateRepeatableGroup({
-				currentErrors: invalids.get(structure.uuid),
+			const errors = validateGroup({
+				currentErrors: invalids.get(group.uuid),
 				data: {label},
 			});
 
@@ -1014,11 +1016,16 @@ function reducer(state: State, action: Action): State {
 				invalids.delete(group.uuid);
 			}
 
-			// Return new state
-
 			return {
-				...nextState,
+				...state,
 				invalids,
+				structure: {
+					...structure,
+					children: updateChild({
+						child: {...group, label: label!},
+						root: structure,
+					}),
+				},
 			};
 		}
 		case 'update-structure': {

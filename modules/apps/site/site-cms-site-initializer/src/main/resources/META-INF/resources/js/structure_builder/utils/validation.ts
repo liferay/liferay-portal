@@ -175,7 +175,7 @@ export function validateRelatedContent({
 	return errors;
 }
 
-export function validateRepeatableGroup({
+export function validateGroup({
 	currentErrors,
 	data,
 }: {
@@ -421,7 +421,7 @@ export function useValidate() {
 				}
 			}
 			else if (child.type === 'group') {
-				errors = validateRepeatableGroup({data: child});
+				errors = validateGroup({data: child});
 
 				if (errors.size) {
 					invalids.set(child.uuid, errors);

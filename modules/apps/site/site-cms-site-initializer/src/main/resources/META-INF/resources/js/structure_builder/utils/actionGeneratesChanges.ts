@@ -20,7 +20,7 @@ export default function actionGeneratesChanges(actionType: Action['type']) {
 		case 'set-workflow':
 		case 'ungroup':
 		case 'update-field':
-		case 'update-repeatable-group':
+		case 'update-group':
 		case 'update-related-content':
 		case 'update-structure':
 			return true;
