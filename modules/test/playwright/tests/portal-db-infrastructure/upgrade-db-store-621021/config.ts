@@ -5,9 +5,10 @@
 
 export const config = {
 	name: 'portal-db-infrastructure.upgrade-db-store-621021',
-	testDir: 'tests/portal-db-infrastructure/upgrade-db-store-621021',
+	testDir: 'tests/portal-db-infrastructure/upgrade-db-store',
 	timeout: 480 * 1000,
 	use: {
+		expectedImageSize: 13229,
 		testIdAttribute: 'data-qa-id',
 	},
 };

@@ -53,9 +53,13 @@ test.describe('View DB store upgrade', () => {
 			});
 
 			await test.step('View the image after upgrade', async () => {
+				const {expectedImageSize} = test.info().project.use as {
+					expectedImageSize?: number;
+				};
+
 				await viewUpgradedDocument({
 					documentPageURL: '/web/site-name/document',
-					expectedSize: 13229,
+					expectedSize: expectedImageSize,
 					page,
 					title: 'Image1',
 				});

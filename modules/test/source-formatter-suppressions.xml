@@ -17,7 +17,7 @@
 		<suppress checks="SHSubshellCheck" files="playwright/env/common\.sh" />
 		<suppress checks="StringMethodsCheck" />
 		<suppress checks="TSConfigFileCheck" files="playwright/tests/portal-db-infrastructure/upgrade.*/config\.ts" />
-		<suppress checks="TSSpecFileLocationCheck" files="playwright/tests/portal-db-infrastructure/upgrade/.*\.spec\.ts" />
+		<suppress checks="TSSpecFileLocationCheck" files="playwright/tests/portal-db-infrastructure/upgrade.*/.*\.spec\.ts" />
 		<suppress checks="XMLEmptyLinesCheck" files="jenkins-plugin-events/src/main/resources/com/liferay/jenkins/plugin/events/JenkinsEventsManagementLink/index\.jelly" />
 	</source-check>
 </suppressions>
