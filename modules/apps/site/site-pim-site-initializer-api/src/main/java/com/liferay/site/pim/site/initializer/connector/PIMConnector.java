@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.connector;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -18,6 +19,8 @@ public interface PIMConnector {
 	public String getKey();
 
 	public String getName(Locale locale);
+
+	public List<PIMConnectorField> getPIMConnectorFields(Locale locale);
 
 	public boolean isActive(long companyId);
 
