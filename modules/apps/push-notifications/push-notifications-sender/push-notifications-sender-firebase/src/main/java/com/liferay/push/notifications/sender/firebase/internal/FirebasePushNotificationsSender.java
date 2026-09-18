@@ -19,12 +19,14 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.push.notifications.constants.PushNotificationsConstants;
 import com.liferay.push.notifications.exception.PushNotificationsException;
 import com.liferay.push.notifications.sender.PushNotificationsSender;
@@ -277,8 +279,9 @@ public class FirebasePushNotificationsSender
 		_projectNumber =
 			_firebasePushNotificationsSenderConfiguration.projectNumber();
 
-		String serviceAccountKey =
-			_firebasePushNotificationsSenderConfiguration.serviceAccountKey();
+		String serviceAccountKey = _secretResolver.resolve(
+			CompanyConstants.SYSTEM,
+			_firebasePushNotificationsSenderConfiguration.serviceAccountKey());
 
 		try {
 			if (Validator.isBlank(serviceAccountKey)) {
@@ -417,6 +420,9 @@ public class FirebasePushNotificationsSender
 	private JSONFactory _jsonFactory;
 
 	private String _projectNumber;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	private class DeviceGroup {
 

@@ -10,6 +10,7 @@ dependencies {
 	compileOnly group: "io.opencensus", name: "opencensus-contrib-http-util", version: "0.31.1"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:push-notifications:push-notifications-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-function")
