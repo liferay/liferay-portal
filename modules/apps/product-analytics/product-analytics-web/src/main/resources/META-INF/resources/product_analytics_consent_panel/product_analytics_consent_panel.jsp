@@ -22,8 +22,8 @@ ProductAnalyticsConsentPanelDisplayContext productAnalyticsConsentPanelDisplayCo
 			size="12"
 		>
 			<clay:alert
-				displayType='<%= ParamUtil.getString(request, "alertDisplayType", "info") %>'
-				message="<%= alertMessage %>"
+				displayType='<%= HtmlUtil.escapeAttribute(ParamUtil.getString(request, "alertDisplayType", "info")) %>'
+				message="<%= HtmlUtil.escape(alertMessage) %>"
 			/>
 		</clay:col>
 	</c:if>
