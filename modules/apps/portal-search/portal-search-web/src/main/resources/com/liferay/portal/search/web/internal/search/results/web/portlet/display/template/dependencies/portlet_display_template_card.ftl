@@ -1,8 +1,14 @@
+<#assign totalHitsLabel = searchContainer.getTotal() />
+
+<#if !searchResultsPortletDisplayContext.isTotalHitsExact()>
+	<#assign totalHitsLabel = languageUtil.format(locale, "x-plus", [totalHitsLabel], false) />
+</#if>
+
 <div class="c-mb-4 c-mt-4 search-total-label">
 	<#if searchContainer.getTotal() == 1>
-		${languageUtil.format(locale, "x-result-for-x", [searchContainer.getTotal(), "<strong>" + htmlUtil.escape(searchResultsPortletDisplayContext.getKeywords()) + "</strong>"], false)}
+		${languageUtil.format(locale, "x-result-for-x", [totalHitsLabel, "<strong>" + htmlUtil.escape(searchResultsPortletDisplayContext.getKeywords()) + "</strong>"], false)}
 	<#else>
-		${languageUtil.format(locale, "x-results-for-x", [searchContainer.getTotal(), "<strong>" + htmlUtil.escape(searchResultsPortletDisplayContext.getKeywords()) + "</strong>"], false)}
+		${languageUtil.format(locale, "x-results-for-x", [totalHitsLabel, "<strong>" + htmlUtil.escape(searchResultsPortletDisplayContext.getKeywords()) + "</strong>"], false)}
 	</#if>
 </div>
 
