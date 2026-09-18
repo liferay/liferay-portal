@@ -221,8 +221,8 @@ public class AccountServiceUpgradeStepRegistrator
 			"2.12.1", "2.13.0",
 			UpgradeProcessFactory.runSQL(
 				StringBundler.concat(
-					"update ObjectRelationship set deletionType = 'cascade' ",
-					"where objectFieldId2 in (select ",
+					"update ObjectRelationship set deletionType = ",
+					"'cascade' where objectFieldId2 in (select ",
 					"ObjectField.objectFieldId from ObjectDefinition inner ",
 					"join ObjectField on ObjectField.objectDefinitionId = ",
 					"ObjectDefinition.objectDefinitionId where ",
