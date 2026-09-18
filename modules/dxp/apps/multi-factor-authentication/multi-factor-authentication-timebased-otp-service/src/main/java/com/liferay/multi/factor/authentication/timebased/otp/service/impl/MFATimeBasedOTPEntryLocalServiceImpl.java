@@ -23,6 +23,7 @@ import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.exception.SecretException;
 
 import java.util.Date;
@@ -119,18 +120,9 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 			MFATimeBasedOTPEntry mfaTimeBasedOTPEntry)
 		throws PortalException {
 
-		String sharedSecret = mfaTimeBasedOTPEntry.getSharedSecret();
-
-		if (!KeyReferenceUtil.isKeyReference(sharedSecret)) {
-			return sharedSecret;
-		}
-
-		try (Secret secret = _secretManager.getSecret(
-				mfaTimeBasedOTPEntry.getCompanyId(),
-				KeyReferenceUtil.toKeyReference(sharedSecret))) {
-
-			return new String(secret.getChars());
-		}
+		return _secretResolver.resolve(
+			mfaTimeBasedOTPEntry.getCompanyId(),
+			mfaTimeBasedOTPEntry.getSharedSecret());
 	}
 
 	@Override
@@ -201,7 +193,7 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry) {
 
 		return StringBundler.concat(
-			MFATimeBasedOTPEntry.class.getSimpleName(), StringPool.POUND,
+			MFATimeBasedOTPEntry.class.getSimpleName(), StringPool.SLASH,
 			mfaTimeBasedOTPEntry.getMfaTimeBasedOTPEntryId());
 	}
 
@@ -233,6 +225,9 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 
 	@Reference
 	private SecretManager _secretManager;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference
 	private UserLocalService _userLocalService;
