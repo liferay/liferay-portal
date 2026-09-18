@@ -4,6 +4,7 @@
  */
 
 import ConnectorNameRenderer from './cell_renderers/ConnectorNameRenderer';
+import ConnectorStatusRenderer from './cell_renderers/ConnectorStatusRenderer';
 
 export default function propsTransformer({...props}: {[key: string]: any}) {
 	return {
@@ -13,6 +14,11 @@ export default function propsTransformer({...props}: {[key: string]: any}) {
 				{
 					component: ConnectorNameRenderer,
 					name: 'nameTableCellRenderer',
+					type: 'internal',
+				},
+				{
+					component: ConnectorStatusRenderer,
+					name: 'statusTableCellRenderer',
 					type: 'internal',
 				},
 			],

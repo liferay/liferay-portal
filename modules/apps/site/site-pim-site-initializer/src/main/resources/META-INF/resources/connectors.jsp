@@ -34,7 +34,6 @@ ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext = (ViewPIMConnec
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{ConnectorsFDSPropsTransformer} from site-pim-site-initializer"
 			selectedItemsKey="id"
-			showSearch="<%= false %>"
 		/>
 	</div>
 </div>
