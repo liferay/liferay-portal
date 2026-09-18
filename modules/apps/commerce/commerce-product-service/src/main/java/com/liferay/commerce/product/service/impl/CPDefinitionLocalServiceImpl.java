@@ -2635,6 +2635,7 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		if ((status == WorkflowConstants.STATUS_EXPIRED) &&
+			(cpDefinition.getStatus() != WorkflowConstants.STATUS_EXPIRED) &&
 			((expirationDate == null) || expirationDate.after(date))) {
 
 			cpDefinition.setExpirationDate(date);
