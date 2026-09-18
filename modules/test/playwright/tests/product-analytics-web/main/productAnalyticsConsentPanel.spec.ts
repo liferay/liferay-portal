@@ -150,6 +150,40 @@ disabledTest(
 );
 
 test(
+	'Escape the alert parameters in Product Analytics Consent Panel to avoid XSS injections',
+	{tag: '@LPD-106198'},
+	async ({page}) => {
+		page.on('dialog', async (dialog) => {
+			if (dialog.type() === 'alert') {
+				throw new Error('XSS detected');
+			}
+		});
+
+		const alertDisplayType = 'info" onmouseover="alert(1)';
+		const alertMessage = '<img src=x onerror=alert(1)>';
+		const portletId =
+			'com_liferay_product_analytics_web_portlet_ProductAnalyticsConsentPanelPortlet';
+
+		const params = new URLSearchParams({
+			[`_${portletId}_alertDisplayType`]: alertDisplayType,
+			[`_${portletId}_alertMessage`]: alertMessage,
+			p_p_id: portletId,
+			p_p_lifecycle: '0',
+			p_p_state: 'maximized',
+		});
+
+		await page.goto(`/group/control_panel/manage?${params.toString()}`);
+
+		const alert = page
+			.locator(`#_${portletId}_productAnalyticsConsentPanelForm`)
+			.getByRole('alert');
+
+		await expect(alert).not.toHaveAttribute('onmouseover');
+		await expect(alert).toContainText(alertMessage);
+	}
+);
+
+test(
 	'Verify Consent Renewal Period field is only enabled when Product Analytics is enabled',
 	{tag: '@LPD-74662'},
 	async ({page, systemSettingsPage}) => {
