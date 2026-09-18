@@ -9,10 +9,10 @@ import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
-import com.liferay.dynamic.data.mapping.util.FieldsToDDMFormValuesConverter;
+import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
+import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
-import com.liferay.journal.util.JournalConverter;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -25,7 +25,10 @@ import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -98,12 +101,19 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 							setCTCollectionIdWithSafeCloseable(
 								ddmStructure.getCtCollectionId())) {
 
+					DDMFormValues ddmFormValues =
+						_ddmFieldLocalService.getDDMFormValues(
+							originalDDMStructure.getDDMForm(),
+							journalArticle.getId());
+
+					if (ddmFormValues == null) {
+						return;
+					}
+
 					_ddmFieldLocalService.updateDDMFormValues(
 						ddmStructure.getStructureId(), journalArticle.getId(),
-						_fieldsToDDMFormValuesConverter.convert(
-							ddmStructure,
-							_journalConverter.getDDMFields(
-								ddmStructure, journalArticle.getContent())));
+						_createDDMFormValues(
+							ddmStructure.getDDMForm(), ddmFormValues));
 				}
 			};
 		}
@@ -130,6 +140,114 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
 		}
+	}
+
+	private DDMFormFieldValue _createDDMFormFieldValue(
+		DDMFormField ddmFormField, DDMFormFieldValue matchingDDMFormFieldValue,
+		List<DDMFormFieldValue> scopeDDMFormFieldValues) {
+
+		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
+
+		ddmFormFieldValue.setFieldReference(ddmFormField.getFieldReference());
+		ddmFormFieldValue.setName(ddmFormField.getName());
+
+		if (matchingDDMFormFieldValue == null) {
+			ddmFormFieldValue.setInstanceId(StringUtil.randomString());
+		}
+		else {
+			ddmFormFieldValue.setInstanceId(
+				matchingDDMFormFieldValue.getInstanceId());
+			ddmFormFieldValue.setValue(matchingDDMFormFieldValue.getValue());
+		}
+
+		for (DDMFormFieldValue nestedDDMFormFieldValue :
+				_createDDMFormFieldValues(
+					ddmFormField.getNestedDDMFormFields(),
+					scopeDDMFormFieldValues)) {
+
+			ddmFormFieldValue.addNestedDDMFormFieldValue(
+				nestedDDMFormFieldValue);
+		}
+
+		return ddmFormFieldValue;
+	}
+
+	private List<DDMFormFieldValue> _createDDMFormFieldValues(
+		List<DDMFormField> ddmFormFields,
+		List<DDMFormFieldValue> scopeDDMFormFieldValues) {
+
+		List<DDMFormFieldValue> ddmFormFieldValues = new ArrayList<>();
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
+			List<DDMFormFieldValue> matchingDDMFormFieldValues =
+				_getMatchingDDMFormFieldValues(
+					ddmFormField.getName(), scopeDDMFormFieldValues);
+
+			if (matchingDDMFormFieldValues.isEmpty()) {
+				ddmFormFieldValues.add(
+					_createDDMFormFieldValue(
+						ddmFormField, null, scopeDDMFormFieldValues));
+
+				continue;
+			}
+
+			if (!ddmFormField.isRepeatable()) {
+				matchingDDMFormFieldValues = matchingDDMFormFieldValues.subList(
+					0, 1);
+			}
+
+			for (DDMFormFieldValue matchingDDMFormFieldValue :
+					matchingDDMFormFieldValues) {
+
+				ddmFormFieldValues.add(
+					_createDDMFormFieldValue(
+						ddmFormField, matchingDDMFormFieldValue,
+						matchingDDMFormFieldValue.
+							getNestedDDMFormFieldValues()));
+			}
+		}
+
+		return ddmFormFieldValues;
+	}
+
+	private DDMFormValues _createDDMFormValues(
+		DDMForm ddmForm, DDMFormValues originalDDMFormValues) {
+
+		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
+
+		ddmFormValues.setAvailableLocales(
+			originalDDMFormValues.getAvailableLocales());
+		ddmFormValues.setDefaultLocale(
+			originalDDMFormValues.getDefaultLocale());
+
+		for (DDMFormFieldValue ddmFormFieldValue :
+				_createDDMFormFieldValues(
+					ddmForm.getDDMFormFields(),
+					originalDDMFormValues.getDDMFormFieldValues())) {
+
+			ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
+		}
+
+		return ddmFormValues;
+	}
+
+	private List<DDMFormFieldValue> _getMatchingDDMFormFieldValues(
+		String name, List<DDMFormFieldValue> ddmFormFieldValues) {
+
+		List<DDMFormFieldValue> matchingDDMFormFieldValues = new ArrayList<>();
+
+		for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+			if (Objects.equals(ddmFormFieldValue.getName(), name)) {
+				matchingDDMFormFieldValues.add(ddmFormFieldValue);
+			}
+			else {
+				matchingDDMFormFieldValues.addAll(
+					_getMatchingDDMFormFieldValues(
+						name, ddmFormFieldValue.getNestedDDMFormFieldValues()));
+			}
+		}
+
+		return matchingDDMFormFieldValues;
 	}
 
 	private boolean _hasModifiedPredefinedValue(
@@ -171,16 +289,10 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 	private DDMFieldLocalService _ddmFieldLocalService;
 
 	@Reference
-	private FieldsToDDMFormValuesConverter _fieldsToDDMFormValuesConverter;
-
-	@Reference
 	private IndexerRegistry _indexerRegistry;
 
 	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;
-
-	@Reference
-	private JournalConverter _journalConverter;
 
 	@Reference
 	private Portal _portal;
