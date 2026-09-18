@@ -10,7 +10,6 @@ import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.internal.upgrade.v1_1_0.SchemaUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_11_2.RoleResourceUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_12_1.AccountEntryResourcePermissionUpgradeProcess;
-import com.liferay.account.internal.upgrade.v2_13_0.AccountValidatorResultUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_4_0.AccountGroupResourceUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_5_0.AccountRoleResourceUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
@@ -217,9 +216,6 @@ public class AccountServiceUpgradeStepRegistrator
 			"2.12.0", "2.12.1",
 			new AccountEntryResourcePermissionUpgradeProcess(
 				_resourceActionLocalService, _resourcePermissionLocalService));
-
-		registry.register(
-			"2.12.1", "2.13.0", new AccountValidatorResultUpgradeProcess());
 	}
 
 	@Reference
