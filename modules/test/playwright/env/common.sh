@@ -23,6 +23,22 @@ function assert_clean_upgrade_log {
 	fi
 }
 
+function assert_document_library_not_populated {
+	local document_library_dir="${LIFERAY_HOME}/data/document_library"
+
+	if [[ ! -d ${document_library_dir} ]]
+	then
+		return 0
+	fi
+
+	if [ $(ls -A "${document_library_dir}" | wc -l) -gt 1 ]
+	then
+		echo "Unable to confirm the database store was used for ${document_library_dir}."
+
+		exit 1
+	fi
+}
+
 function cluster_set_up {
 	local jvm_heap_override=${3}
 
