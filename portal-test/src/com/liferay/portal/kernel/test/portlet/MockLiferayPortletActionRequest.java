@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
 import jakarta.portlet.ActionParameters;
 import jakarta.portlet.PortletConfig;
@@ -54,6 +55,10 @@ public class MockLiferayPortletActionRequest
 				(proxy, method, args) -> {
 					if (Objects.equals(method.getName(), "getPortletId")) {
 						return "testPortlet";
+					}
+
+					if (Objects.equals(method.getName(), "getResourceBundle")) {
+						return ResourceBundleUtil.EMPTY_RESOURCE_BUNDLE;
 					}
 
 					return null;
