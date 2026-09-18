@@ -16,7 +16,7 @@
 			"externalReferenceCode": "L_ACCOUNT",
 			"objectRelationships": [
 				{
-					"deletionType": "cascade",
+					"deletionType": "prevent",
 					"edge": false,
 					"externalReferenceCode": "L_ACCOUNT_TO_L_ACCOUNT_VALIDATOR_RESULTS",
 					"label": {
