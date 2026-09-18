@@ -1292,9 +1292,11 @@ public class PermissionCheckerTest {
 
 	private void _testHasPermissionWithLiveGroup() throws Exception {
 		Group group = GroupTestUtil.addGroup();
-		Group liveGroup = GroupTestUtil.addGroup();
 
 		_groups.add(group);
+
+		Group liveGroup = GroupTestUtil.addGroup();
+
 		_groups.add(liveGroup);
 
 		_resourcePermissionLocalService.setResourcePermissions(
