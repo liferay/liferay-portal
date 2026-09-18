@@ -18,7 +18,7 @@ import type {
 	FDSConnectionStatus,
 	FDSState,
 	FDSStateChangeCallback,
-} from '@liferay/js-api/data-set';
+} from '@liferay/js-api/data-set/connection';
 
 const FDS_NAME = 'testDataSet';
 
@@ -848,71 +848,5 @@ describe('FDSConnection filters', () => {
 		expect(readState().filteringOwnerAppId).toBe(CONNECTION_ID);
 
 		expect(readState().connectionFilters).toBeUndefined();
-	});
-
-	// A client extension is a custom element and may be taken off the page
-	// without disconnecting. Its element leaving is the only account of that
-	// the data set gets, and without it the filtering would stay taken by a
-	// connection nobody can reach until the next reload.
-
-	it('grants the filtering to a consumer that connects once the element of the owner has left the page', async () => {
-		const element = document.createElement('div');
-
-		document.body.appendChild(element);
-
-		await connect({
-			appId: CONNECTION_ID,
-			element,
-			owns: ['filters', 'search'],
-		});
-
-		element.remove();
-
-		const {onSecondStatus} = await connectSecondOwningFilters('ready');
-
-		expect(onSecondStatus).toHaveBeenCalledWith(
-			expect.objectContaining({status: 'ready'})
-		);
-	});
-
-	it('tells the consumer whose element left the page that its connection is gone', async () => {
-		const element = document.createElement('div');
-
-		document.body.appendChild(element);
-
-		await connect({
-			appId: CONNECTION_ID,
-			element,
-			owns: ['filters', 'search'],
-		});
-
-		element.remove();
-
-		await connectSecondOwningFilters('ready');
-
-		expect(onStatus).toHaveBeenCalledWith(
-			expect.objectContaining({status: 'disconnected'})
-		);
-	});
-
-	// Two copies of one client extension on the page, which is what an
-	// element still in the document tells apart from a stale claim.
-
-	it('refuses the filtering to a second consumer while the element of the owner is still on the page', async () => {
-		const element = document.createElement('div');
-
-		document.body.appendChild(element);
-
-		await connect({
-			appId: CONNECTION_ID,
-			element,
-			owns: ['filters', 'search'],
-		});
-
-		const {onSecondStatus} = await connectSecondOwningFilters();
-
-		expect(onSecondStatus).toHaveBeenCalledWith(
-			expect.objectContaining({status: 'refused'})
-		);
 	});
 });

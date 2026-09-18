@@ -5,7 +5,7 @@
 
 import {IFDSState} from '../types';
 
-import type {FDSState} from '@liferay/js-api/data-set';
+import type {FDSState} from '@liferay/js-api/data-set/connection';
 
 /**
  * The data set state as a connection leaves it, which only the data set

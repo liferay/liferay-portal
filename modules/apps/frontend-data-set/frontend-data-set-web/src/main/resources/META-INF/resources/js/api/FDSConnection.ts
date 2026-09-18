@@ -13,7 +13,7 @@ import type {
 	FDSConnectionStatus,
 	FDSState,
 	FDSStateChangeCallback,
-} from '@liferay/js-api/data-set';
+} from '@liferay/js-api/data-set/connection';
 import Atom = Liferay.State.Atom;
 
 const DEFAULT_TIMEOUT = 10000;
@@ -57,7 +57,6 @@ export class FDSConnection {
 	private appId?: string;
 	private atom!: Atom<FDSState>;
 	private disconnected = false;
-	private element?: HTMLElement;
 	private fdsName: string;
 	private instanceId: number = ++FDSConnection.instanceCount;
 	private isReady = false;
@@ -79,7 +78,6 @@ export class FDSConnection {
 	) {
 		this.apply = fdsStateChangeCallback.apply;
 		this.appId = options.appId;
-		this.element = options.element;
 		this.fdsName = fdsName;
 		this.onFDSConnectionInfoChange = onFDSConnectionInfoChange;
 		this.requestedOwnership = options.owns ?? DEFAULT_OWNERSHIP;
@@ -390,21 +388,17 @@ export class FDSConnection {
 	private isFilteringOwnedByAnotherConnection(): boolean {
 		const owner = FDSConnection.filteringOwners.get(this.fdsName);
 
-		// Nothing asks this after taking the claim today, and this is what
-		// keeps the reclaiming below from tearing down the very connection
-		// that asked.
-
 		if (owner === this) {
 			return false;
 		}
 
 		if (owner) {
-			if (!owner.element || owner.element.isConnected) {
-				return true;
-			}
-
-			owner.disconnect();
+			return true;
 		}
+
+		// Another copy of this module on the page keeps its own owners, out of
+		// reach of this one, so what says the filtering is owned then is the
+		// claim its owner left in the state of the data set.
 
 		return Liferay.State.read(this.atom).filteringOwnerAppId !== undefined;
 	}
