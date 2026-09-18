@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.ldap.SafeLdapContext;
 import com.liferay.portal.security.ldap.SafeLdapFilter;
 import com.liferay.portal.security.ldap.SafeLdapFilterConstraints;
@@ -416,7 +417,8 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 		return getSafeLdapContext(
 			companyId, ldapServerConfiguration.baseProviderURL(),
 			ldapServerConfiguration.securityPrincipal(),
-			ldapServerConfiguration.securityCredential());
+			_secretResolver.resolve(
+				companyId, ldapServerConfiguration.securityCredential()));
 	}
 
 	@Override
@@ -1105,6 +1107,9 @@ public class SafePortalLDAPImpl implements SafePortalLDAP {
 
 	@Reference
 	private LDAPSettings _ldapSettings;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference(
 		target = "(factoryPid=com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration)"

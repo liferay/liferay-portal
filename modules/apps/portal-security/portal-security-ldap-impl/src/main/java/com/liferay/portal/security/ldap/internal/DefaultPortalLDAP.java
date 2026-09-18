@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.ldap.PortalLDAP;
 import com.liferay.portal.security.ldap.UserConverterKeys;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
@@ -117,8 +118,8 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 		String baseProviderURL = ldapServerConfiguration.baseProviderURL();
 		String securityPrincipal = ldapServerConfiguration.securityPrincipal();
-		String securityCredential =
-			ldapServerConfiguration.securityCredential();
+		String securityCredential = _secretResolver.resolve(
+			companyId, ldapServerConfiguration.securityCredential());
 
 		return getContext(
 			companyId, baseProviderURL, securityPrincipal, securityCredential);
@@ -1136,6 +1137,9 @@ public class DefaultPortalLDAP implements PortalLDAP {
 
 	@Reference
 	private LDAPSettings _ldapSettings;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference(
 		target = "(factoryPid=com.liferay.portal.security.ldap.configuration.SystemLDAPConfiguration)"

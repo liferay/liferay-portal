@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.portal.security.ldap.SafeLdapContext;
 import com.liferay.portal.security.ldap.SafeLdapFilter;
 import com.liferay.portal.security.ldap.SafeLdapNameFactory;
@@ -158,7 +159,8 @@ public class LDAPTestDisplayContext {
 				_companyId,
 				ParamUtil.getLong(_httpServletRequest, "ldapServerId"));
 
-		return ldapServerConfiguration.securityCredential();
+		return SecretResolverUtil.resolve(
+			_companyId, ldapServerConfiguration.securityCredential());
 	}
 
 	private Map<String, String> _getMappings(String prefix, String... names) {
