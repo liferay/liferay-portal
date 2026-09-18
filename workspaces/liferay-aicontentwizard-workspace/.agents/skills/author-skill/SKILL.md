@@ -138,7 +138,7 @@ Only after approval:
 
 A skill published by Phase 6 exists only in this workspace. Nobody else gets it, and a later workspace update can overwrite it if a skill of the same name is published upstream. Contributing it is what makes it durable and shared.
 
-Tell the user this, and leave the contribution to them. This skill's work ends at the workspace boundary.
+Tell the user this, and point them at `commit-skill`, which collapses the duplicated workspace trees into the repository's symlinked layout and commits the result. Recommend it; do not invoke it. Contributing is the user's call, and this skill's work ends at the workspace boundary.
 
 ## Patterns and Gotchas
 
@@ -165,4 +165,5 @@ Whether the skill does its job is for the user to judge, by invoking it on a rea
 ## See Also
 
 - `.agents/liferay-rules.md` — holds the Skill Router and Preflight Rule tables a new skill is added to.
+- `skills/commit-skill/SKILL.md` — commits a published skill to liferay-portal. Phase 7 recommends it; it is never invoked automatically.
 - `skills/scaffold-client-extension/SKILL.md` — the closest existing example of collecting inputs, generating files, and handing off to another skill.
