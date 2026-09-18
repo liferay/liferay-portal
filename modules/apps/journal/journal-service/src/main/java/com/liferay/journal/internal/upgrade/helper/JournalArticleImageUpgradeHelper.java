@@ -160,6 +160,10 @@ public class JournalArticleImageUpgradeHelper {
 		Matcher matcher = _oldDocumentLibraryURLPattern.matcher(url);
 
 		if (!matcher.find()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Unable to parse file entry from URL " + url);
+			}
+
 			return null;
 		}
 
