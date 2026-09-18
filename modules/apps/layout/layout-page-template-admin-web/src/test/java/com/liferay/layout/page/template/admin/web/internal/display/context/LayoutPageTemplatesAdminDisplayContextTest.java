@@ -166,6 +166,50 @@ public class LayoutPageTemplatesAdminDisplayContextTest {
 	}
 
 	@Test
+	public void testGetTabs1() {
+		_setUpGroup(false);
+
+		LayoutPageTemplatesAdminDisplayContext
+			layoutPageTemplatesAdminDisplayContext =
+				new LayoutPageTemplatesAdminDisplayContext(
+					_liferayPortletRequest, _liferayPortletResponse);
+
+		Assert.assertEquals(
+			"master-layouts",
+			layoutPageTemplatesAdminDisplayContext.getTabs1());
+	}
+
+	@Test
+	public void testGetTabs1InCompanyGroup() {
+		_setUpGroup(true);
+
+		LayoutPageTemplatesAdminDisplayContext
+			layoutPageTemplatesAdminDisplayContext =
+				new LayoutPageTemplatesAdminDisplayContext(
+					_liferayPortletRequest, _liferayPortletResponse);
+
+		Assert.assertEquals(
+			"page-templates",
+			layoutPageTemplatesAdminDisplayContext.getTabs1());
+	}
+
+	@Test
+	@TestInfo("LPD-104842")
+	public void testGetTabs1InDesignLibraryGroup() {
+		_setUpDesignLibraryScope(true);
+		_setUpGroup(false);
+
+		LayoutPageTemplatesAdminDisplayContext
+			layoutPageTemplatesAdminDisplayContext =
+				new LayoutPageTemplatesAdminDisplayContext(
+					_liferayPortletRequest, _liferayPortletResponse);
+
+		Assert.assertEquals(
+			"page-templates",
+			layoutPageTemplatesAdminDisplayContext.getTabs1());
+	}
+
+	@Test
 	public void testIsShowPageTemplates() {
 		_testIsShowPageTemplates(false, 0, false);
 		_testIsShowPageTemplates(false, RandomTestUtil.randomInt(), true);
