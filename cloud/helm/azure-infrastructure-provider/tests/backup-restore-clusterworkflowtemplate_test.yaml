@@ -197,11 +197,17 @@ tests:
                     pattern: stop-protection
             -   matchRegex:
                     path: spec.templates[16].script.source
-                    pattern: _wait_for_protection_state
+                    pattern: wait_for_protection_state
             -   matchRegex:
                     path: spec.templates[16].script.source
                     pattern: (?s)resume-protection.*?--no-wait
             -   matchRegex:
                     path: spec.templates[16].script.source
                     pattern: (?s)suspend-backup.*?--no-wait
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: (?s)function wait_for_protection_state \{.*?function main \{
+            -   matchRegex:
+                    path: spec.templates[16].script.source
+                    pattern: (?s)function main \{.*?\nmain
         it: Suspends backups on the demoted plane and resumes them on the promoted one
