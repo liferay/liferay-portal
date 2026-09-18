@@ -31,9 +31,18 @@ public class LayoutPageTemplatePortletUtil {
 			httpServletRequest, "layoutPageTemplateCollectionId");
 
 		if (layoutPageTemplateCollectionId > 0) {
-			return LayoutPageTemplateCollectionLocalServiceUtil.
-				fetchLayoutPageTemplateCollection(
-					layoutPageTemplateCollectionId);
+			LayoutPageTemplateCollection layoutPageTemplateCollection =
+				LayoutPageTemplateCollectionLocalServiceUtil.
+					fetchLayoutPageTemplateCollection(
+						layoutPageTemplateCollectionId);
+
+			if ((layoutPageTemplateCollection != null) &&
+				(layoutPageTemplateCollection.getGroupId() == groupId)) {
+
+				return layoutPageTemplateCollection;
+			}
+
+			return null;
 		}
 
 		String externalReferenceCode = ParamUtil.getString(
