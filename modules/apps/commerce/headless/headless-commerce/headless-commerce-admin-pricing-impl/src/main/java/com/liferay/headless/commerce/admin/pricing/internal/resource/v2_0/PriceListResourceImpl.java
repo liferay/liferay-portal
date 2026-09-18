@@ -29,6 +29,7 @@ import com.liferay.commerce.price.list.service.CommercePriceListDiscountRelServi
 import com.liferay.commerce.price.list.service.CommercePriceListOrderTypeRelService;
 import com.liferay.commerce.price.list.service.CommercePriceListService;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryService;
+import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.pricing.service.CommercePriceModifierService;
@@ -42,6 +43,8 @@ import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceEntry;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceListAccount;
@@ -90,6 +93,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.math.BigDecimal;
 
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -101,9 +105,12 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v2_0/price-list.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = PriceListResource.class
 )
-public class PriceListResourceImpl extends BasePriceListResourceImpl {
+public class PriceListResourceImpl
+	extends BasePriceListResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<PriceList> {
 
 	@Override
 	public void deletePriceList(Long id) throws Exception {
@@ -135,6 +142,50 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 		throws Exception {
 
 		return _entityModel;
+	}
+
+	@Override
+	public ExportImportDescriptor<CommercePriceList>
+		getExportImportDescriptor() {
+
+		return new ExportImportDescriptor<>() {
+
+			@Override
+			public String getKey() {
+				return PriceListResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "price-lists";
+			}
+
+			@Override
+			public Class<CommercePriceList> getModelClass() {
+				return CommercePriceList.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of("priceEntries.tierPrices");
+			}
+
+			@Override
+			public String getPortletId() {
+				return CommercePricingPortletKeys.COMMERCE_PRICE_LIST;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_PRICING;
+			}
+
+		};
 	}
 
 	@Override
@@ -583,7 +634,8 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 						GetterUtil.getLong(priceEntry.getPriceEntryId()),
 						cProductId, cpInstanceUuid,
 						commercePriceList.getCommercePriceListId(),
-						priceEntry.getDiscountDiscovery(),
+						GetterUtil.getBoolean(
+							priceEntry.getDiscountDiscovery(), true),
 						priceEntry.getDiscountLevel1(),
 						priceEntry.getDiscountLevel2(),
 						priceEntry.getDiscountLevel3(),
@@ -602,8 +654,8 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 						BigDecimal.valueOf(priceEntry.getPrice()),
 						GetterUtil.getBoolean(
 							priceEntry.getPriceOnApplication()),
-						priceEntry.getSkuExternalReferenceCode(), null,
-						serviceContext);
+						priceEntry.getSkuExternalReferenceCode(),
+						priceEntry.getUnitOfMeasureKey(), serviceContext);
 
 				TierPrice[] tierPrices = priceEntry.getTierPrices();
 

@@ -27,6 +27,9 @@ public class ExportImportConstants {
 
 	public static final String SECTION_KEY_OTHER = "category.other";
 
+	public static final String SECTION_KEY_PRICING =
+		"category.commerce.pricing";
+
 	public static final String SECTION_KEY_PRODUCT_MANAGEMENT =
 		"category.commerce.product_management";
 

@@ -11,6 +11,7 @@ import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommerceTierPriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryService;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceEntry;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.TierPriceUtil;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.TierPriceResource;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -43,7 +45,8 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v2_0/tier-price.properties",
-	scope = ServiceScope.PROTOTYPE, service = TierPriceResource.class
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = TierPriceResource.class
 )
 public class TierPriceResourceImpl extends BaseTierPriceResourceImpl {
 
@@ -101,6 +104,7 @@ public class TierPriceResourceImpl extends BaseTierPriceResourceImpl {
 			_toTierPrices(commerceTierPriceEntries), pagination, totalCount);
 	}
 
+	@NestedField(parentClass = PriceEntry.class, value = "tierPrices")
 	@Override
 	public Page<TierPrice> getPriceEntryIdTierPricesPage(
 			Long id, Pagination pagination)

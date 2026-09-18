@@ -22,6 +22,7 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-product-type-simple")
 	compileOnly project(":apps:commerce:headless:headless-commerce-core-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-pricing-api")
+	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":core:petra:petra-function")
