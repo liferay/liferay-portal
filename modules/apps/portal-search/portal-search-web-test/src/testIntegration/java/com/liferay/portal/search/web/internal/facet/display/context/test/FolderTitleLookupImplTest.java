@@ -66,17 +66,18 @@ public class FolderTitleLookupImplTest {
 		bundle = BundleUtil.getBundle(
 			bundle.getBundleContext(), "com.liferay.portal.search.web");
 
-		_folderSearcherConstructor = bundle.loadClass(
-			_PACKAGE_NAME + ".FolderSearcher"
-		).getConstructor(
-			Long.TYPE
-		);
+		Class<?> folderSearcherClass = bundle.loadClass(
+			_PACKAGE_NAME + ".FolderSearcher");
 
-		_folderTitleLookupImplConstructor = bundle.loadClass(
-			_PACKAGE_NAME + ".FolderTitleLookupImpl"
-		).getConstructor(
-			LongFunction.class, HttpServletRequest.class
-		);
+		_folderSearcherConstructor = folderSearcherClass.getConstructor(
+			Long.TYPE);
+
+		Class<?> folderTitleLookupImplClass = bundle.loadClass(
+			_PACKAGE_NAME + ".FolderTitleLookupImpl");
+
+		_folderTitleLookupImplConstructor =
+			folderTitleLookupImplClass.getConstructor(
+				LongFunction.class, HttpServletRequest.class);
 	}
 
 	@Test
