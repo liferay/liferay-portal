@@ -1,7 +1,11 @@
 {{- if .Values.argocd.gateway.enabled -}}
+{{- $accessControl := .Values.accessControl }}
 {{- $envoyProxy := .Values.argocd.gateway.envoyProxy }}
 {{- $hostname := required "The value \"argocd.gateway.hostname\" is required to route traffic to ArgoCD" .Values.argocd.gateway.hostname }}
 {{- $tlsEnabled := ne .Values.argocd.gateway.tls.externalSecretKey "" }}
+{{- if and $accessControl.enabled (not $accessControl.allowedCIDRs) }}
+{{- fail "The value \"accessControl.allowedCIDRs\" must not be empty when \"accessControl.enabled\" is true" }}
+{{- end }}
 {{- if $tlsEnabled }}
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
@@ -158,4 +162,35 @@ spec:
         -   backendRefs:
                 -   name: argocd-server
                     port: 80
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: argocd-gateway-security-policy
+    name: argocd-gateway-security-policy
+    namespace: {{ .Release.Namespace }}
+spec:
+    authorization:
+        {{- if $accessControl.enabled }}
+        defaultAction: Deny
+        rules:
+            -   action: Allow
+                name: allowed-cidrs
+                principal:
+                    clientCIDRs:
+                        {{- range $accessControl.allowedCIDRs }}
+                        -   {{ . | quote }}
+                        {{- end }}
+        {{- else }}
+        defaultAction: Allow
+        {{- end }}
+    targetRefs:
+        -   group: gateway.networking.k8s.io
+            kind: Gateway
+            name: argocd-gateway
 {{- end -}}

@@ -1,3 +1,12 @@
+accessControl:
+    allowedCIDRs:
+        -   10.0.0.0/16
+        -   203.0.113.0/24
+    enabled: true
+argocd:
+    gateway:
+        enabled: true
+        hostname: argocd.liferay.render
 clusterSecretStore:
     name: liferay-render-secret-store
 deploymentContext:

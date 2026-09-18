@@ -7,7 +7,65 @@ templates:
 tests:
     -   asserts:
             -   hasDocuments:
-                    count: 4
+                    count: 5
+            -   documentIndex: 4
+                equal:
+                    path: spec.authorization.defaultAction
+                    value: Allow
+            -   documentIndex: 4
+                notExists:
+                    path: spec.authorization.rules
+        it: Allows every client while the allowlist is disabled, without removing the policy
+        set:
+            argocd:
+                gateway:
+                    enabled: true
+                    hostname: argocd.liferay.test
+    -   asserts:
+            -   hasDocuments:
+                    count: 5
+            -   documentIndex: 4
+                isKind:
+                    of: SecurityPolicy
+            -   documentIndex: 4
+                equal:
+                    path: spec.authorization.rules[0].action
+                    value: Allow
+            -   documentIndex: 4
+                equal:
+                    path: spec.authorization.rules[0].principal.clientCIDRs
+                    value:
+                        -   10.0.0.0/16
+                        -   203.0.113.0/24
+        it: Allows only the configured CIDR blocks
+        set:
+            accessControl:
+                allowedCIDRs:
+                    -   10.0.0.0/16
+                    -   203.0.113.0/24
+                enabled: true
+            argocd:
+                gateway:
+                    enabled: true
+                    hostname: argocd.liferay.test
+    -   asserts:
+            -   documentIndex: 4
+                equal:
+                    path: spec.authorization.defaultAction
+                    value: Deny
+        it: Denies every client that is not allowlisted
+        set:
+            accessControl:
+                allowedCIDRs:
+                    -   203.0.113.0/24
+                enabled: true
+            argocd:
+                gateway:
+                    enabled: true
+                    hostname: argocd.liferay.test
+    -   asserts:
+            -   hasDocuments:
+                    count: 5
             -   documentIndex: 0
                 equal:
                     path: metadata.namespace
@@ -125,13 +183,56 @@ tests:
                         externalSecretKey: liferay-certificates-argocd
     -   asserts:
             -   failedTemplate:
+                    errorPattern: The value "accessControl.allowedCIDRs" must not be empty when "accessControl.enabled" is true
+        it: Rejects an enabled allowlist without CIDR blocks
+        set:
+            accessControl:
+                enabled: true
+            argocd:
+                gateway:
+                    enabled: true
+                    hostname: argocd.liferay.test
+    -   asserts:
+            -   failedTemplate:
                     errorPattern: The value "argocd.gateway.hostname" is required to route traffic to ArgoCD
         it: Rejects an enabled gateway without a hostname
         set:
             argocd.gateway.enabled: true
     -   asserts:
             -   hasDocuments:
-                    count: 6
+                    count: 7
+            -   documentIndex: 6
+                isKind:
+                    of: SecurityPolicy
+            -   documentIndex: 6
+                equal:
+                    path: spec.targetRefs[0].kind
+                    value: Gateway
+            -   documentIndex: 6
+                equal:
+                    path: spec.targetRefs[0].name
+                    value: argocd-gateway
+            -   documentIndex: 6
+                equal:
+                    path: metadata.namespace
+                    value: argocd-system
+        it: Targets the gateway rather than the routes
+        set:
+            accessControl:
+                allowedCIDRs:
+                    -   203.0.113.0/24
+                enabled: true
+            argocd:
+                gateway:
+                    enabled: true
+                    hostname: argocd.liferay.test
+                    tls:
+                        externalSecretKey: liferay-certificates-argocd
+            clusterSecretStore:
+                name: liferay-secret-store
+    -   asserts:
+            -   hasDocuments:
+                    count: 7
             -   documentIndex: 0
                 equal:
                     path: metadata.name
