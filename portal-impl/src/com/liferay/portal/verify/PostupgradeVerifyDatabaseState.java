@@ -479,15 +479,14 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 	private static final Log _log = LogFactoryUtil.getLog(
 		PostupgradeVerifyDatabaseState.class);
 
-	private static final DCLSingleton<Map<String, List<String>>>
+	private final DCLSingleton<Map<String, List<String>>>
 		_columnDefinitionsMapDCLSingleton = new DCLSingleton<>();
-	private static final DCLSingleton<Map<String, String>>
+	private final List<String> _errorMessages = new ArrayList<>();
+	private final DCLSingleton<Map<String, String>>
 		_historicalServiceComponentTablesServletContextNamesDCLSingleton =
 			new DCLSingleton<>();
-	private static final DCLSingleton<Map<String, String>>
+	private final DCLSingleton<Map<String, String>>
 		_tablesServletContextNamesDCLSingleton = new DCLSingleton<>();
-
-	private final List<String> _errorMessages = new ArrayList<>();
 	private final List<String> _warnMessages = new ArrayList<>();
 
 }
