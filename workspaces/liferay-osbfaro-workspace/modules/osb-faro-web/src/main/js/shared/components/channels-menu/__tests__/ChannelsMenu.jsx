@@ -2,7 +2,7 @@ import ChannelsMenu from '../index';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {BrowserRouter} from 'react-router-dom';
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {Provider} from 'react-redux';
 
 jest.unmock('react-dom');
@@ -49,7 +49,7 @@ describe('ChannelsMenu', () => {
 	});
 
 	it('should render dropdown menu when clicked', () => {
-		const {container} = render(
+		render(
 			<Provider store={mockStore()}>
 				<BrowserRouter>
 					<ChannelsMenu
@@ -61,12 +61,28 @@ describe('ChannelsMenu', () => {
 			</Provider>
 		);
 
-		const toggleButton = container.querySelector('.channels-menu');
+		const toggleButton = screen.getByRole('combobox', {name: 'Property'});
 
 		fireEvent.click(toggleButton);
 
-		expect(
-			document.body.querySelector('.channels-menu-dropdown')
-		).toBeTruthy();
+		expect(screen.getByRole('listbox')).toBeTruthy();
+	});
+
+	it('should mark the selected channel and let the other one be picked', () => {
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<ChannelsMenu
+						channels={mockMenuItems()}
+						defaultChannelId='1'
+						groupId='123456'
+					/>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		fireEvent.click(screen.getByRole('combobox', {name: 'Property'}));
+
+		expect(screen.getByText('Link 2')).toBeTruthy();
 	});
 });
