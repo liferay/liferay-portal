@@ -63,6 +63,9 @@ function getValidFields({
 
 			let targetSchemaName;
 
+			const reference =
+				propertyValue.$ref ?? propertyValue.allOf?.[0]?.$ref;
+
 			if (propertyValue.items?.$ref) {
 				field.name = `${field.name}${FDS_ARRAY_FIELD_NAME_PARENT_SUFFIX}`;
 				field.type = type ? type : 'array';
@@ -71,10 +74,10 @@ function getValidFields({
 					''
 				);
 			}
-			else if (propertyValue.$ref) {
+			else if (reference) {
 				field.name = `${field.name}${FDS_NESTED_FIELD_NAME_PARENT_SUFFIX}`;
 				field.type = type ? type : 'object';
-				targetSchemaName = propertyValue.$ref.replace(/^.*\//, '');
+				targetSchemaName = reference.replace(/^.*\//, '');
 			}
 			else if (propertyValue['x-parent-map'] === 'properties') {
 				const schemaNames = Object.keys(schemas);

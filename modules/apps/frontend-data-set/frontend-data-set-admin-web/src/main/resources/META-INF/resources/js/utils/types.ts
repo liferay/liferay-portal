@@ -52,6 +52,7 @@ export enum ESelectionFilterSourceType {
 
 export interface IProperty {
 	$ref?: string;
+	allOf?: IProperty[];
 	format?: EFieldFormat;
 	items?: IProperty;
 	type?: EFieldType;

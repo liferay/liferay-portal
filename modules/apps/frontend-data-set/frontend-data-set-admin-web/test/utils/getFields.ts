@@ -244,6 +244,46 @@ describe('getValidFields', () => {
 		}
 	});
 
+	it('Include children properties from schemas referenced via allOf property', () => {
+
+		// D points to E through a described reference, which OpenAPI expresses
+		// by wrapping the reference in allOf so the description can sit beside it
+
+		const wrappedSchemas = {
+			D: {
+				properties: {
+					d_e: {
+						allOf: [{$ref: '#/components/schemas/E'}],
+						description: 'Information about E',
+						type: 'object',
+					},
+				},
+				type: 'object',
+			},
+			E: {
+				properties: {
+					e_code: {
+						type: 'string',
+					},
+				},
+				type: 'object',
+			},
+		} as ISchemas;
+
+		const result = getValidFields({
+			contextPath: '',
+			schemaName: 'D',
+			schemas: wrappedSchemas,
+			visitedFields: [],
+		});
+
+		const d_e = result.find((item) => item.label === 'd_e');
+
+		expect(d_e?.name).toEqual('d_e.*');
+
+		assertChildren(d_e, ['d_e.e_code']);
+	});
+
 	it('Include children properties from schemas referenced via x-map-properties property, no loops', () => {
 		const result = getValidFields({
 			contextPath: '',
