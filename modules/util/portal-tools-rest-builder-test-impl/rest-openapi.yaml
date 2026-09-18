@@ -44,6 +44,16 @@ components:
                 relatedCompanyTestEntity:
                     $ref: "#/components/schemas/CompanyTestEntity"
             type: object
+        BatchTestEntityAction:
+            description:
+                "Reproduces an operation whose schema already names its parent, so the generated method is post<Parent><Schema> and carries no path parameter."
+            properties:
+                name:
+                    type: string
+                sourceBatchTestEntityId:
+                    format: int64
+                    type: integer
+            type: object
         ChildTestEntity1:
             allOf:
                 -   $ref: "#/components/schemas/TestEntity"
@@ -1072,6 +1082,29 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/BatchTestEntity"
             tags: ["BatchTestEntity"]
+    "/batch-test-entities/action":
+        post:
+            operationId: postBatchTestEntityAction
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/BatchTestEntityAction"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/BatchTestEntityAction"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/BatchTestEntityAction"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/BatchTestEntityAction"
+                    description:
+                        "OK"
+            tags: ["BatchTestEntityAction"]
     "/batch-test-entities/by-external-reference-code/{externalReferenceCode}":
         delete:
             operationId: deleteBatchTestEntityByExternalReferenceCode
