@@ -18,7 +18,7 @@ import {
 	Structure,
 } from '../types/Structure';
 import {FIELD_TYPE_TO_DB_TYPE, Field, getFieldBusinessType} from './field';
-import isField from './isField';
+import getOwnFields from './getOwnFields';
 import {isFieldTextSearchable} from './isFieldTextSearchable';
 import isRepeatableGroup from './isRepeatableGroup';
 
@@ -56,7 +56,7 @@ export default function buildObjectDefinition({
 		enableObjectEntryVersioning: true,
 		externalReferenceCode: erc,
 		label,
-		objectFields: buildFields(getFields(children)),
+		objectFields: buildFields(getOwnFields(children)),
 		objectRelationships: buildRelationships({
 			referencedStructures: getReferencedStructures(children),
 			relatedContents: getRelatedContents(children),
@@ -119,12 +119,6 @@ export default function buildObjectDefinition({
 	}
 
 	return objectDefinition;
-}
-
-function getFields(children: Structure['children']): Field[] {
-	return Array.from(children.values()).filter((child) =>
-		isField(child)
-	) as Field[];
 }
 
 function getRelatedContents(children: Structure['children']): RelatedContent[] {
