@@ -2,12 +2,14 @@ import * as API from 'shared/api';
 import ChannelsMenu, {Channel} from '../channels-menu';
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
+import Panel from '@clayui/panel';
 import React from 'react';
 import SidebarItem from './SidebarItem';
 import UserDropdown, {Menus} from 'shared/components/user-dropdown';
 import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {DEVELOPER_MODE, LANGUAGES} from 'shared/util/constants';
 import {Link, matchPath} from 'react-router-dom';
+import {Map} from 'immutable';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {User} from 'shared/util/records';
 
@@ -18,7 +20,9 @@ interface ISidebarProps {
 	className?: string;
 	collapsed: boolean;
 	currentUser: User;
+	expandedSections: Map<string, boolean>;
 	groupId: string;
+	onSectionExpandedChange: (sectionKey: string, expanded: boolean) => void;
 	onToggle: () => void;
 }
 
@@ -29,7 +33,9 @@ const Sidebar: React.FC<ISidebarProps> = ({
 	className,
 	collapsed = false,
 	currentUser = new User(),
+	expandedSections = Map(),
 	groupId,
+	onSectionExpandedChange,
 	onToggle,
 }) => {
 	const LDPEnabled = useLDPEnabled({groupId});
@@ -38,7 +44,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 		{
 			items: [
 				LDPEnabled && {
-					icon: 'polls',
+					icon: 'plant',
 					label: Liferay.Language.get('lifecycles'),
 					route: Routes.LIFECYCLE,
 					url: toRoute(Routes.LIFECYCLE, {channelId, groupId}),
@@ -50,13 +56,13 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					url: toRoute(Routes.CAMPAIGNS, {channelId, groupId}),
 				},
 				{
-					icon: 'ac_page',
+					icon: 'sites',
 					label: Liferay.Language.get('sites'),
 					route: Routes.SITES,
 					url: toRoute(Routes.SITES, {channelId, groupId}),
 				},
 				{
-					icon: 'ac_assets',
+					icon: 'sheets',
 					label: Liferay.Language.get('assets'),
 					route: Routes.ASSETS,
 					url: toRoute(Routes.ASSETS, {
@@ -65,7 +71,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					}),
 				},
 				{
-					icon: 'ac_event_analysis',
+					icon: 'click',
 					label: Liferay.Language.get('events'),
 					route: Routes.EVENT_ANALYSIS,
 					url: toRoute(Routes.EVENT_ANALYSIS, {
@@ -74,12 +80,13 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					}),
 				},
 			].filter(Boolean) as [],
+			key: 'touchpoints',
 			label: Liferay.Language.get('touchpoints'),
 		},
 		{
 			items: [
 				{
-					icon: 'ac_segment',
+					icon: 'box-squared',
 					label: Liferay.Language.get('segments'),
 					route: `${Routes.CONTACTS}/${SEGMENTS}`,
 					url: toRoute(Routes.CONTACTS_LIST_ENTITY, {
@@ -89,7 +96,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					}),
 				},
 				LDPEnabled && {
-					icon: 'ac_account',
+					icon: 'briefcase',
 					label: Liferay.Language.get('accounts'),
 					route: `${Routes.CONTACTS}/${ACCOUNTS}`,
 					url: toRoute(Routes.CONTACTS_LIST_ENTITY, {
@@ -99,7 +106,7 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					}),
 				},
 				{
-					icon: 'ac_individual',
+					icon: 'users',
 					label: Liferay.Language.get('individuals'),
 					route: Routes.CONTACTS_INDIVIDUALS,
 					url: toRoute(Routes.CONTACTS_INDIVIDUALS, {
@@ -108,17 +115,19 @@ const Sidebar: React.FC<ISidebarProps> = ({
 					}),
 				},
 			].filter(Boolean) as [],
+			key: 'people',
 			label: Liferay.Language.get('people'),
 		},
 		{
 			items: [
 				{
-					icon: 'ac_test',
+					icon: 'test',
 					label: Liferay.Language.get('tests'),
 					route: Routes.TESTS,
 					url: toRoute(Routes.TESTS, {channelId, groupId}),
 				},
 			],
+			key: 'optimize',
 			label: Liferay.Language.get('optimize'),
 		},
 	];
@@ -195,32 +204,54 @@ const Sidebar: React.FC<ISidebarProps> = ({
 			</div>
 
 			<div className="sidebar-body">
-				{sidebarSections.map(({items, label}, sectionIndex) => (
-					<div className="section" key={sectionIndex}>
-						<div className="h5 section-title">{label}</div>
+				{sidebarSections.map(({items, key, label}) => (
+					<Panel
+						collapsable
+						displayTitle={
+							<div className="section-title">
+								<span>{label}</span>
 
-						<ul className="nav-list">
-							{items.map(
-								({icon, label, route, url}, itemIndex) => (
-									<SidebarItem
-										active={
-											!!matchPath(
-												{
-													end: false,
-													path: route,
-												},
-												activePathname
-											)
-										}
-										href={url}
-										icon={icon}
-										key={itemIndex}
-										label={label}
-									/>
-								)
-							)}
-						</ul>
-					</div>
+								<ClayIcon
+									className="icon-root"
+									symbol={
+										expandedSections.get(key, true)
+											? 'angle-down'
+											: 'angle-right'
+									}
+								/>
+							</div>
+						}
+						expanded={expandedSections.get(key, true)}
+						key={key}
+						onExpandedChange={(expanded) =>
+							onSectionExpandedChange(key, expanded)
+						}
+						showCollapseIcon={false}
+					>
+						<Panel.Body>
+							<ul className="nav-list">
+								{items.map(
+									({icon, label, route, url}, itemIndex) => (
+										<SidebarItem
+											active={
+												!!matchPath(
+													{
+														end: false,
+														path: route,
+													},
+													activePathname
+												)
+											}
+											href={url}
+											icon={icon}
+											key={itemIndex}
+											label={label}
+										/>
+									)
+								)}
+							</ul>
+						</Panel.Body>
+					</Panel>
 				))}
 			</div>
 
