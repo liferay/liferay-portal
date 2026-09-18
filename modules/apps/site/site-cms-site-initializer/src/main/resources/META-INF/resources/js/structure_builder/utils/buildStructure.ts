@@ -9,18 +9,22 @@ import {
 	ObjectDefinition,
 	ObjectDefinitions,
 	ObjectField,
+	ObjectLayoutBox,
 	ObjectRelationship,
 } from '../../common/types/ObjectDefinition';
 import {
+	NonRepeatableGroup,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
 	Structure,
+	StructureChild,
 } from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import {Field, FieldType, SelectFromListField} from './field';
 import getUuid from './getUuid';
 import isCustomObjectField from './isCustomObjectField';
+import isField from './isField';
 import sortChildren from './state/sortChildren';
 
 export default function buildStructure({
@@ -161,7 +165,115 @@ export function buildChildren({
 		children.set(relatedContent.uuid, relatedContent);
 	}
 
-	return sortChildren(children);
+	return sortChildren(applyLayout({children, objectDefinition, parent}));
+}
+
+function applyLayout({
+	children,
+	objectDefinition,
+	parent,
+}: {
+	children: Structure['children'];
+	objectDefinition: ObjectDefinition;
+	parent: Uuid;
+}): Structure['children'] {
+	const [objectLayout] = objectDefinition.objectLayouts ?? [];
+
+	if (!objectLayout) {
+		return children;
+	}
+
+	const nextChildren = new Map(children);
+
+	const fields = new Map(
+		Array.from(children.values())
+			.filter((child): child is Field => isField(child))
+			.map((field) => [field.name, field])
+	);
+
+	const takeFields = (objectLayoutBox: ObjectLayoutBox, groupParent: Uuid) =>
+		objectLayoutBox.objectLayoutRows.flatMap((objectLayoutRow) =>
+			objectLayoutRow.objectLayoutColumns.flatMap(
+				(objectLayoutColumn) => {
+					const field = fields.get(
+						objectLayoutColumn.objectFieldName
+					);
+
+					if (!field) {
+						return [];
+					}
+
+					nextChildren.delete(field.uuid);
+
+					return [{...field, parent: groupParent}];
+				}
+			)
+		);
+
+	for (const objectLayoutTab of objectLayout.objectLayoutTabs) {
+		const [firstBox] = objectLayoutTab.objectLayoutBoxes;
+
+		if (firstBox && !Object.keys(firstBox.name ?? {}).length) {
+			continue;
+		}
+
+		const uuid = getUuid();
+
+		const groupChildren: StructureChild[] = [];
+
+		for (const objectLayoutBox of objectLayoutTab.objectLayoutBoxes) {
+			if (objectLayoutBox.collapsable && objectLayoutBox.name) {
+				const nestedUuid = getUuid();
+
+				groupChildren.push(
+					buildGroup({
+						children: takeFields(objectLayoutBox, nestedUuid),
+						label: objectLayoutBox.name,
+						parent: uuid,
+						uuid: nestedUuid,
+					})
+				);
+			}
+			else {
+				groupChildren.push(...takeFields(objectLayoutBox, uuid));
+			}
+		}
+
+		nextChildren.set(
+			uuid,
+			buildGroup({
+				children: groupChildren,
+				label: objectLayoutTab.name,
+				parent,
+				uuid,
+			})
+		);
+	}
+
+	return nextChildren;
+}
+
+function buildGroup({
+	children,
+	label,
+	parent,
+	uuid,
+}: {
+	children: StructureChild[];
+	label: Liferay.Language.LocalizedValue<string>;
+	parent: Uuid;
+	uuid: Uuid;
+}): NonRepeatableGroup {
+	return {
+		children: sortChildren(
+			new Map(children.map((child) => [child.uuid, child]))
+		),
+		isRepeatable: false,
+		label,
+		parent,
+		type: 'group',
+		uuid,
+	};
 }
 
 export function buildField({
