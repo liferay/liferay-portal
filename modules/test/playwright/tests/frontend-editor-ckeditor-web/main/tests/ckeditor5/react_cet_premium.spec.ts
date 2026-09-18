@@ -102,3 +102,44 @@ test(
 		}
 	}
 );
+
+test(
+	'Content styled only via the editor content stylesheet is inlined without unresolved CSS variables in the exported preview',
+	{tag: '@LPD-105914'},
+	async ({classicPage, page}) => {
+		await classicPage.toolbar.container
+			.getByRole('button', {name: 'Insert table'})
+			.click();
+
+		await page
+			.locator('.ck-insert-table-dropdown__grid div')
+			.first()
+			.click();
+
+		const editableTable = classicPage.editable.locator('table').first();
+
+		await expect(editableTable).toBeVisible();
+		await expect(editableTable).toHaveAttribute('class', /.+/);
+
+		const [popup] = await Promise.all([
+			page.waitForEvent('popup'),
+			classicPage.toolbar.container
+				.getByRole('button', {
+					exact: true,
+					name: 'Preview with Inline Styles',
+				})
+				.click(),
+		]);
+
+		await popup.waitForLoadState();
+
+		const exportedHTML = await popup.content();
+
+		expect(exportedHTML).not.toContain('var(--');
+
+		const exportedTable = popup.locator('table').first();
+
+		await expect(exportedTable).not.toHaveAttribute('class', /.+/);
+		await expect(exportedTable).toHaveAttribute('style', /.+/);
+	}
+);
