@@ -105,8 +105,6 @@ public class EditPIMConnectorDisplayContext {
 		return JSONUtil.put(
 			"active", MapUtil.getBoolean(values, "active")
 		).put(
-			"apiSchema", MapUtil.getString(values, "apiSchema")
-		).put(
 			"key", MapUtil.getString(values, "key")
 		).put(
 			"name", MapUtil.getString(values, "name")

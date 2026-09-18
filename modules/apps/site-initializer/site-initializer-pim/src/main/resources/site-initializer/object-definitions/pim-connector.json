@@ -38,14 +38,14 @@
 		{
 			"DBType": "Clob",
 			"businessType": "LongText",
-			"externalReferenceCode": "API_SCHEMA",
+			"externalReferenceCode": "FIELD_MAPPING",
 			"indexed": false,
 			"indexedAsKeyword": false,
 			"indexedLanguageId": "",
 			"label": {
-				"en_US": "API Schema"
+				"en_US": "Field Mapping"
 			},
-			"name": "apiSchema",
+			"name": "fieldMapping",
 			"required": false,
 			"system": true
 		},

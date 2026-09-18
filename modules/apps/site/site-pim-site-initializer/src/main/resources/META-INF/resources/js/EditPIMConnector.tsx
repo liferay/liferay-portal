@@ -20,7 +20,6 @@ interface IPIMConnector {
 
 interface IPIMConnectorData {
 	active: boolean;
-	apiSchema: string;
 	key: string;
 	name: string;
 }
@@ -45,7 +44,6 @@ export default function EditPIMConnector({
 	const isNew = Number(objectEntryId) === 0;
 
 	const [active, setActive] = useState(Boolean(pimConnector?.active));
-	const [apiSchema, setApiSchema] = useState(pimConnector?.apiSchema || '');
 	const [key, setKey] = useState(pimConnector?.key || '');
 	const [name, setName] = useState(pimConnector?.name || '');
 
@@ -64,7 +62,6 @@ export default function EditPIMConnector({
 				{
 					body: JSON.stringify({
 						active,
-						apiSchema,
 						key,
 						name,
 					}),
@@ -167,22 +164,6 @@ export default function EditPIMConnector({
 							]}
 							required
 							value={key}
-						/>
-					</ClayForm.Group>
-
-					<ClayForm.Group>
-						<label htmlFor="pimConnectorAPISchema">
-							{Liferay.Language.get('api-schema')}
-						</label>
-
-						<textarea
-							className="form-control"
-							id="pimConnectorAPISchema"
-							onChange={(event) =>
-								setApiSchema(event.target.value)
-							}
-							rows={12}
-							value={apiSchema}
 						/>
 					</ClayForm.Group>
 
