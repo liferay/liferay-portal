@@ -125,6 +125,23 @@ const editorConfigTransformer: EditorConfigTransformer<any> = (config) => {
 
 	return {
 		...config,
+
+		// These paths follow the __liferay__/css/<bundle>$<export>.css
+		// convention Liferay's build tooling uses to expose a module's
+		// bundled CSS exports; it's an internal resolution mechanism, not a
+		// public API. A developer copying this pattern into their own
+		// project must find the equivalent path for their own module by
+		// inspecting its built __liferay__/css output (or the network
+		// requests the browser makes for that module's CSS), not by
+		// reusing the frontend-editor-ckeditor-web path above.
+
+		exportInlineStyles: {
+			stripCssClasses: true,
+			stylesheets: [
+				'/o/frontend-editor-ckeditor-web/__liferay__/css/ckeditor5$ckeditor5.css',
+				'/o/frontend-editor-ckeditor-web/__liferay__/css/ckeditor5-premium-features$ckeditor5-premium-features.css',
+			],
+		},
 		extraPlugins,
 		mergeFields: MERGE_FIELDS_CONFIG,
 		template: TEMPLATE_CONFIG,
