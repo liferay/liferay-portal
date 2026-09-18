@@ -252,7 +252,7 @@ public class ObjectRelationshipExtensionProvider
 					objectDefinition.getCompanyId(),
 					_getDefaultDTOConverterContext(
 						objectDefinition, primaryKey, null, userId),
-					nestedObjectEntry, partialUpdate, relatedObjectDefinition);
+					relatedObjectDefinition, nestedObjectEntry, partialUpdate);
 
 				_relateNestedObjectEntry(
 					objectDefinition, objectRelationship, primaryKey,
@@ -366,12 +366,12 @@ public class ObjectRelationshipExtensionProvider
 
 	private ObjectEntry _updateObjectEntry(
 			long companyId, DTOConverterContext dtoConverterContext,
-			ObjectEntry objectEntry, boolean partialUpdate,
-			ObjectDefinition objectDefinition)
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			boolean partialUpdate)
 		throws Exception {
 
-		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 		ObjectEntry existingObjectEntry = null;
+		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 		String scopeKey = objectDefinition.getScope();
 
 		ObjectEntryManager objectEntryManager =
