@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.service.ReleaseLocalServiceUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.TreeMapBuilder;
 
 import java.sql.ResultSet;
 
@@ -37,6 +38,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.function.Function;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -231,29 +233,6 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		}
 	}
 
-	private static Map<String, List<String>> _getColumnDefinitionsMap() {
-		Map<String, List<String>> columnDefinitionsMap =
-			DBResourceUtil.getPortalColumnDefinitionsMap();
-
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		for (Bundle bundle : bundleContext.getBundles()) {
-			String symbolicName = bundle.getSymbolicName();
-
-			if (!symbolicName.startsWith("com.liferay") ||
-				(!BundleUtil.isLiferayRequireSchemaVersionBundle(bundle) &&
-				 !BundleUtil.isLiferayServiceBundle(bundle))) {
-
-				continue;
-			}
-
-			columnDefinitionsMap.putAll(
-				DBResourceUtil.getModuleColumnDefinitionsMap(bundle));
-		}
-
-		return columnDefinitionsMap;
-	}
-
 	private void _addMessages(
 		Map<String, List<String>> messagesMap, Collection<String> names,
 		String prefix, Map<String, String> servletContextNames) {
@@ -298,6 +277,34 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		names.removeAll(collection2);
 
 		return names;
+	}
+
+	private <T> Map<String, T> _getDefinitionsMap(
+		Function<Bundle, Map<String, T>> moduleDefinitionsMapFunction,
+		Map<String, T> portalDefinitionsMap) {
+
+		Map<String, T> definitionsMap = TreeMapBuilder.<String, T>create(
+			String.CASE_INSENSITIVE_ORDER
+		).putAll(
+			portalDefinitionsMap
+		).build();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			String symbolicName = bundle.getSymbolicName();
+
+			if (!symbolicName.startsWith("com.liferay") ||
+				(!BundleUtil.isLiferayRequireSchemaVersionBundle(bundle) &&
+				 !BundleUtil.isLiferayServiceBundle(bundle))) {
+
+				continue;
+			}
+
+			definitionsMap.putAll(moduleDefinitionsMapFunction.apply(bundle));
+		}
+
+		return definitionsMap;
 	}
 
 	private String _getMessage(
@@ -366,7 +373,9 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 
 		processConcurrently(
 			_columnDefinitionsMapDCLSingleton.getSingleton(
-				PostupgradeVerifyDatabaseState::_getColumnDefinitionsMap),
+				() -> _getDefinitionsMap(
+					DBResourceUtil::getModuleColumnDefinitionsMap,
+					DBResourceUtil.getPortalColumnDefinitionsMap())),
 			entry -> {
 				String tableName = entry.getKey();
 
