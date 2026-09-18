@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "PriceListAccountGroup"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Account-group binding that restricts a price list's eligibility to a specific AccountGroup, with an `order` integer that controls the resolution priority. Backed by price list account group link.",
-	requiredProperties = {"accountGroupId", "priceListId"}
+	description = "Account-group binding that restricts a price list's eligibility to a specific AccountGroup, with an `order` integer that controls the resolution priority. Backed by price list account group link."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PriceListAccountGroup")
@@ -197,7 +195,6 @@ public class PriceListAccountGroup implements Serializable {
 		description = "Reference to the accountGroup entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long accountGroupId;
 
 	@JsonIgnore
@@ -436,7 +433,6 @@ public class PriceListAccountGroup implements Serializable {
 		description = "Reference to the priceList entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long priceListId;
 
 	@JsonIgnore
@@ -698,4 +694,4 @@ public class PriceListAccountGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1024801323
+// LIFERAY-REST-BUILDER-HASH:-785655011

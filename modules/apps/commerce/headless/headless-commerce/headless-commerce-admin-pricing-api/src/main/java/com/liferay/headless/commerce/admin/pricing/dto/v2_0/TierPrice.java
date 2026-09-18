@@ -52,7 +52,7 @@ import java.util.function.Supplier;
 )
 @io.swagger.v3.oas.annotations.media.Schema(
 	description = "Quantity-break override on a price entry. Binds a minimumQuantity threshold to an override price; the runtime resolves the highest-quantity tier whose minimumQuantity is at most the cart line quantity. Backed by tier price.",
-	requiredProperties = {"minimumQuantity", "price", "priceEntryId"}
+	requiredProperties = {"minimumQuantity", "price"}
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "TierPrice")
@@ -861,7 +861,6 @@ public class TierPrice implements Serializable {
 		description = "Reference to the priceEntry entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long priceEntryId;
 
 	@JsonIgnore
@@ -1364,4 +1363,4 @@ public class TierPrice implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-642994822
+// LIFERAY-REST-BUILDER-HASH:-812522908

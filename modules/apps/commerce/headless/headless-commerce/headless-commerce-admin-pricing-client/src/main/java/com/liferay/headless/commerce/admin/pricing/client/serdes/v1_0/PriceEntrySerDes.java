@@ -126,6 +126,34 @@ public class PriceEntrySerDes {
 			sb.append(priceEntry.getPriceListId());
 		}
 
+		if (priceEntry.getProductExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceEntry.getProductExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
+		if (priceEntry.getProductType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceEntry.getProductType()));
+
+			sb.append("\"");
+		}
+
 		if (priceEntry.getPromoPrice() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -267,6 +295,22 @@ public class PriceEntrySerDes {
 			map.put("priceListId", String.valueOf(priceEntry.getPriceListId()));
 		}
 
+		if (priceEntry.getProductExternalReferenceCode() == null) {
+			map.put("productExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"productExternalReferenceCode",
+				String.valueOf(priceEntry.getProductExternalReferenceCode()));
+		}
+
+		if (priceEntry.getProductType() == null) {
+			map.put("productType", null);
+		}
+		else {
+			map.put("productType", String.valueOf(priceEntry.getProductType()));
+		}
+
 		if (priceEntry.getPromoPrice() == null) {
 			map.put("promoPrice", null);
 		}
@@ -348,6 +392,14 @@ public class PriceEntrySerDes {
 			else if (Objects.equals(jsonParserFieldName, "priceListId")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "productExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "productType")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "promoPrice")) {
 				return false;
 			}
@@ -418,6 +470,19 @@ public class PriceEntrySerDes {
 				if (jsonParserFieldValue != null) {
 					priceEntry.setPriceListId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "productExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceEntry.setProductExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "productType")) {
+				if (jsonParserFieldValue != null) {
+					priceEntry.setProductType((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "promoPrice")) {
@@ -548,4 +613,4 @@ public class PriceEntrySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1408128486
+// LIFERAY-REST-BUILDER-HASH:-1069829792

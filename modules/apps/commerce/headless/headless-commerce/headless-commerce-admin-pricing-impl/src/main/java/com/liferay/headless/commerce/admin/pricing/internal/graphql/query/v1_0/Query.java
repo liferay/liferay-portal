@@ -384,7 +384,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntry(id: ___){customFields, externalReferenceCode, hasTierPrice, id, price, priceListExternalReferenceCode, priceListId, promoPrice, sku, skuExternalReferenceCode, skuId, tierPrices}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntry(id: ___){customFields, externalReferenceCode, hasTierPrice, id, price, priceListExternalReferenceCode, priceListId, productExternalReferenceCode, productType, promoPrice, sku, skuExternalReferenceCode, skuId, tierPrices}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches a price entry by internal ID. Delegates to the service. Validation -- NoSuchPriceEntryException -> 404 when the ID is unknown."
@@ -399,7 +399,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntryByExternalReferenceCode(externalReferenceCode: ___){customFields, externalReferenceCode, hasTierPrice, id, price, priceListExternalReferenceCode, priceListId, promoPrice, sku, skuExternalReferenceCode, skuId, tierPrices}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceEntryByExternalReferenceCode(externalReferenceCode: ___){customFields, externalReferenceCode, hasTierPrice, id, price, priceListExternalReferenceCode, priceListId, productExternalReferenceCode, productType, promoPrice, sku, skuExternalReferenceCode, skuId, tierPrices}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches a price entry by externalReferenceCode. 404 when no entry with that ERC exists."
@@ -463,7 +463,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceList(id: ___){active, catalogId, currencyCode, customFields, displayDate, expirationDate, externalReferenceCode, id, name, neverExpire, priceEntries, priceListAccountGroups, priority}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceList(id: ___){active, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, currencyCode, currencyExternalReferenceCode, customFields, displayDate, expirationDate, externalReferenceCode, id, name, neverExpire, priceEntries, priceListAccountGroups, priority}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches a price list by internal ID. Delegates to the service. Validation -- NoSuchPriceListException -> 404 when the ID is unknown."
@@ -478,7 +478,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListByExternalReferenceCode(externalReferenceCode: ___){active, catalogId, currencyCode, customFields, displayDate, expirationDate, externalReferenceCode, id, name, neverExpire, priceEntries, priceListAccountGroups, priority}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {priceListByExternalReferenceCode(externalReferenceCode: ___){active, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, currencyCode, currencyExternalReferenceCode, customFields, displayDate, expirationDate, externalReferenceCode, id, name, neverExpire, priceEntries, priceListAccountGroups, priority}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches a price list by externalReferenceCode. 404 when no list with that ERC exists."
@@ -1491,4 +1491,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1930752126
+// LIFERAY-REST-BUILDER-HASH:97744844

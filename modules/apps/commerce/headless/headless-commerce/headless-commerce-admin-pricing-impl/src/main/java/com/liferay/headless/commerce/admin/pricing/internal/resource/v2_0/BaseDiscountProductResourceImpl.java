@@ -281,7 +281,7 @@ public abstract class BaseDiscountProductResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/by-externalReferenceCode/{externalReferenceCode}/discount-products' -d $'{"discountExternalReferenceCode": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/by-externalReferenceCode/{externalReferenceCode}/discount-products' -d $'{"catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "discountExternalReferenceCode": ___, "productExternalReferenceCode": ___, "productId": ___, "productType": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates discount link (product binding) for Discount by ERC. Throws NoSuchDiscountException or NoSuchCProductException on lookup failure."
@@ -321,7 +321,7 @@ public abstract class BaseDiscountProductResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-products' -d $'{"discountExternalReferenceCode": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-products' -d $'{"catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "discountExternalReferenceCode": ___, "productExternalReferenceCode": ___, "productId": ___, "productType": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates discount link (product binding) for Discount by ID."
@@ -1117,4 +1117,4 @@ public abstract class BaseDiscountProductResourceImpl
 		LogFactoryUtil.getLog(BaseDiscountProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1822071545
+// LIFERAY-REST-BUILDER-HASH:-1018032201

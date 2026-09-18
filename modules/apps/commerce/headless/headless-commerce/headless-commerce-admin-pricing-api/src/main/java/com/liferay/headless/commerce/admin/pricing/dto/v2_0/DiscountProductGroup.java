@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "DiscountProductGroup"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "product group binding that restricts a discount to products inside a product group. Backed by discount link with the pricing class class name.",
-	requiredProperties = {"productGroupId"}
+	description = "product group binding that restricts a discount to products inside a product group. Backed by discount link with the pricing class class name."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "DiscountProductGroup")
@@ -387,7 +385,6 @@ public class DiscountProductGroup implements Serializable {
 		description = "Reference to the productGroup entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long productGroupId;
 
 	@JsonIgnore
@@ -637,4 +634,4 @@ public class DiscountProductGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1060153878
+// LIFERAY-REST-BUILDER-HASH:942900756

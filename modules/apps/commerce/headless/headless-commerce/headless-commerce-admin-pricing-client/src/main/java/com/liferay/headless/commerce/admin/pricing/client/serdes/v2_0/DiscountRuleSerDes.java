@@ -67,6 +67,20 @@ public class DiscountRuleSerDes {
 			sb.append(discountRule.getDiscountId());
 		}
 
+		if (discountRule.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(discountRule.getExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (discountRule.getId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -119,6 +133,20 @@ public class DiscountRuleSerDes {
 			sb.append("\"");
 		}
 
+		if (discountRule.getTypeSettingsValue() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"typeSettingsValue\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(discountRule.getTypeSettingsValue()));
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -152,6 +180,15 @@ public class DiscountRuleSerDes {
 			map.put("discountId", String.valueOf(discountRule.getDiscountId()));
 		}
 
+		if (discountRule.getExternalReferenceCode() == null) {
+			map.put("externalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"externalReferenceCode",
+				String.valueOf(discountRule.getExternalReferenceCode()));
+		}
+
 		if (discountRule.getId() == null) {
 			map.put("id", null);
 		}
@@ -181,6 +218,15 @@ public class DiscountRuleSerDes {
 				"typeSettings", String.valueOf(discountRule.getTypeSettings()));
 		}
 
+		if (discountRule.getTypeSettingsValue() == null) {
+			map.put("typeSettingsValue", null);
+		}
+		else {
+			map.put(
+				"typeSettingsValue",
+				String.valueOf(discountRule.getTypeSettingsValue()));
+		}
+
 		return map;
 	}
 
@@ -205,6 +251,11 @@ public class DiscountRuleSerDes {
 			else if (Objects.equals(jsonParserFieldName, "discountId")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
@@ -215,6 +266,9 @@ public class DiscountRuleSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "typeSettings")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "typeSettingsValue")) {
 				return false;
 			}
 
@@ -238,6 +292,14 @@ public class DiscountRuleSerDes {
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "externalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					discountRule.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				if (jsonParserFieldValue != null) {
 					discountRule.setId(
@@ -257,6 +319,12 @@ public class DiscountRuleSerDes {
 			else if (Objects.equals(jsonParserFieldName, "typeSettings")) {
 				if (jsonParserFieldValue != null) {
 					discountRule.setTypeSettings((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "typeSettingsValue")) {
+				if (jsonParserFieldValue != null) {
+					discountRule.setTypeSettingsValue(
+						(String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -346,4 +414,4 @@ public class DiscountRuleSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1387647681
+// LIFERAY-REST-BUILDER-HASH:1987458227

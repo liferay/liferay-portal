@@ -154,6 +154,52 @@ public class DiscountRule implements Serializable {
 	@JsonIgnore
 	private Supplier<Long> _discountIdSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key for create and update; must be unique within the company. On import it is what binds the payload to the discount rule already stored, so a repeated import updates that rule instead of adding another one.",
+		example = "DR-0001"
+	)
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCodeSupplier != null) {
+			externalReferenceCode = _externalReferenceCodeSupplier.get();
+
+			_externalReferenceCodeSupplier = null;
+		}
+
+		return externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
+
+		_externalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
+
+		_externalReferenceCodeSupplier = () -> {
+			try {
+				return externalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Idempotency key for create and update; must be unique within the company. On import it is what binds the payload to the discount rule already stored, so a repeated import updates that rule instead of adding another one."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String externalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _externalReferenceCodeSupplier;
+
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Internal numeric identifier of the discountrule. Server-assigned and stable.",
@@ -332,6 +378,52 @@ public class DiscountRule implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _typeSettingsSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Value of the type settings for the rule type, without the type prefix the stored settings carry. Takes precedence over `typeSettings` on input.",
+		example = "22.50"
+	)
+	public String getTypeSettingsValue() {
+		if (_typeSettingsValueSupplier != null) {
+			typeSettingsValue = _typeSettingsValueSupplier.get();
+
+			_typeSettingsValueSupplier = null;
+		}
+
+		return typeSettingsValue;
+	}
+
+	public void setTypeSettingsValue(String typeSettingsValue) {
+		this.typeSettingsValue = typeSettingsValue;
+
+		_typeSettingsValueSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTypeSettingsValue(
+		UnsafeSupplier<String, Exception> typeSettingsValueUnsafeSupplier) {
+
+		_typeSettingsValueSupplier = () -> {
+			try {
+				return typeSettingsValueUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Value of the type settings for the rule type, without the type prefix the stored settings carry. Takes precedence over `typeSettings` on input."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String typeSettingsValue;
+
+	@JsonIgnore
+	private Supplier<String> _typeSettingsValueSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -381,6 +473,22 @@ public class DiscountRule implements Serializable {
 			sb.append("\"discountId\": ");
 
 			sb.append(discountId);
+		}
+
+		String externalReferenceCode = getExternalReferenceCode();
+
+		if (externalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(externalReferenceCode));
+
+			sb.append("\"");
 		}
 
 		Long id = getId();
@@ -439,6 +547,22 @@ public class DiscountRule implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(typeSettings));
+
+			sb.append("\"");
+		}
+
+		String typeSettingsValue = getTypeSettingsValue();
+
+		if (typeSettingsValue != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"typeSettingsValue\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(typeSettingsValue));
 
 			sb.append("\"");
 		}
@@ -565,4 +689,4 @@ public class DiscountRule implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1276097573
+// LIFERAY-REST-BUILDER-HASH:1603056456

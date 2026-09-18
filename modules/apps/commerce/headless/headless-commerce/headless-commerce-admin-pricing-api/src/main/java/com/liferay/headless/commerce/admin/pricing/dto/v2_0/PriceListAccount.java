@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "PriceListAccount"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Account binding that restricts a price list's eligibility to a specific Account. Backed by price list account link.",
-	requiredProperties = {"accountId", "priceListId"}
+	description = "Account binding that restricts a price list's eligibility to a specific Account. Backed by price list account link."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PriceListAccount")
@@ -194,7 +192,6 @@ public class PriceListAccount implements Serializable {
 		description = "Reference to the account entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long accountId;
 
 	@JsonIgnore
@@ -433,7 +430,6 @@ public class PriceListAccount implements Serializable {
 		description = "Reference to the priceList entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long priceListId;
 
 	@JsonIgnore
@@ -693,4 +689,4 @@ public class PriceListAccount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1529594219
+// LIFERAY-REST-BUILDER-HASH:1693108008

@@ -255,6 +255,52 @@ public class Discount implements Serializable {
 	private Supplier<String> _couponCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "User who created the discount. Read-only; embedded through the `creator` nested field."
+	)
+	@Valid
+	public Creator getCreator() {
+		if (_creatorSupplier != null) {
+			creator = _creatorSupplier.get();
+
+			_creatorSupplier = null;
+		}
+
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+
+		_creatorSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		_creatorSupplier = () -> {
+			try {
+				return creatorUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "User who created the discount. Read-only; embedded through the `creator` nested field."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Creator creator;
+
+	@JsonIgnore
+	private Supplier<Creator> _creatorSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Free-form Expando custom fields attached to the underlying discount entity. Keys are Expando attribute names; values follow each attribute's declared column type.",
 		example = "{priority=high, segment=B2B}"
 	)
@@ -300,6 +346,98 @@ public class Discount implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Map<String, ?>> _customFieldsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Creation timestamp in ISO 8601 (UTC). Read-only; set when the discount is first persisted. Filterable and sortable via the OData query parameter.",
+		example = "2017-07-21"
+	)
+	public Date getDateCreated() {
+		if (_dateCreatedSupplier != null) {
+			dateCreated = _dateCreatedSupplier.get();
+
+			_dateCreatedSupplier = null;
+		}
+
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+
+		_dateCreatedSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDateCreated(
+		UnsafeSupplier<Date, Exception> dateCreatedUnsafeSupplier) {
+
+		_dateCreatedSupplier = () -> {
+			try {
+				return dateCreatedUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Creation timestamp in ISO 8601 (UTC). Read-only; set when the discount is first persisted. Filterable and sortable via the OData query parameter."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date dateCreated;
+
+	@JsonIgnore
+	private Supplier<Date> _dateCreatedSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter.",
+		example = "2017-07-21"
+	)
+	public Date getDateModified() {
+		if (_dateModifiedSupplier != null) {
+			dateModified = _dateModifiedSupplier.get();
+
+			_dateModifiedSupplier = null;
+		}
+
+		return dateModified;
+	}
+
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+
+		_dateModifiedSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDateModified(
+		UnsafeSupplier<Date, Exception> dateModifiedUnsafeSupplier) {
+
+		_dateModifiedSupplier = () -> {
+			try {
+				return dateModifiedUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Last modification timestamp in ISO 8601 (UTC). Read-only; updated on each save. Filterable and sortable via the OData query parameter."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date dateModified;
+
+	@JsonIgnore
+	private Supplier<Date> _dateModifiedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Account-group bindings cascaded on upsert. Each entry attaches the discount to one AccountGroup; supplying this array on POST/PUT replaces the previous bindings."
@@ -679,6 +817,52 @@ public class Discount implements Serializable {
 
 	@JsonIgnore
 	private Supplier<DiscountRule[]> _discountRulesSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "SKU bindings cascaded on upsert. Each entry restricts the discount to one SKU; supplying this array on POST/PUT replaces the previous bindings."
+	)
+	@Valid
+	public DiscountSku[] getDiscountSkus() {
+		if (_discountSkusSupplier != null) {
+			discountSkus = _discountSkusSupplier.get();
+
+			_discountSkusSupplier = null;
+		}
+
+		return discountSkus;
+	}
+
+	public void setDiscountSkus(DiscountSku[] discountSkus) {
+		this.discountSkus = discountSkus;
+
+		_discountSkusSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDiscountSkus(
+		UnsafeSupplier<DiscountSku[], Exception> discountSkusUnsafeSupplier) {
+
+		_discountSkusSupplier = () -> {
+			try {
+				return discountSkusUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "SKU bindings cascaded on upsert. Each entry restricts the discount to one SKU; supplying this array on POST/PUT replaces the previous bindings."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected DiscountSku[] discountSkus;
+
+	@JsonIgnore
+	private Supplier<DiscountSku[]> _discountSkusSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Date and time when the discount becomes effective. ISO 8601.",
@@ -1432,6 +1616,53 @@ public class Discount implements Serializable {
 	@JsonIgnore
 	private Supplier<BigDecimal> _percentageLevel4Supplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public com.liferay.portal.vulcan.permission.Permission[] getPermissions() {
+		if (_permissionsSupplier != null) {
+			permissions = _permissionsSupplier.get();
+
+			_permissionsSupplier = null;
+		}
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.portal.vulcan.permission.Permission[] permissions) {
+
+		this.permissions = permissions;
+
+		_permissionsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.portal.vulcan.permission.Permission[], Exception>
+				permissionsUnsafeSupplier) {
+
+		_permissionsSupplier = () -> {
+			try {
+				return permissionsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected com.liferay.portal.vulcan.permission.Permission[] permissions;
+
+	@JsonIgnore
+	private Supplier<com.liferay.portal.vulcan.permission.Permission[]>
+		_permissionsSupplier;
+
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "When true, all attached discount rules must pass for the discount to apply; when false, any single passing rule activates the discount.",
 		example = "true"
@@ -1524,6 +1755,52 @@ public class Discount implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _targetSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Key of the order slice the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping`. Takes precedence over `target` on input.",
+		example = "subtotal"
+	)
+	public String getTargetKey() {
+		if (_targetKeySupplier != null) {
+			targetKey = _targetKeySupplier.get();
+
+			_targetKeySupplier = null;
+		}
+
+		return targetKey;
+	}
+
+	public void setTargetKey(String targetKey) {
+		this.targetKey = targetKey;
+
+		_targetKeySupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTargetKey(
+		UnsafeSupplier<String, Exception> targetKeyUnsafeSupplier) {
+
+		_targetKeySupplier = () -> {
+			try {
+				return targetKeyUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Key of the order slice the discount applies to. One of `subtotal`, `total`, `products`, `categories`, `skus`, `product-groups`, `shipping`. Takes precedence over `target` on input."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String targetKey;
+
+	@JsonIgnore
+	private Supplier<String> _targetKeySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Human-readable name of the discount; shown in admin and used as the fallback label at checkout.",
@@ -1751,6 +2028,18 @@ public class Discount implements Serializable {
 			sb.append("\"");
 		}
 
+		Creator creator = getCreator();
+
+		if (creator != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(creator));
+		}
+
 		Map<String, ?> customFields = getCustomFields();
 
 		if (customFields != null) {
@@ -1761,6 +2050,38 @@ public class Discount implements Serializable {
 			sb.append("\"customFields\": ");
 
 			sb.append(_toJSON(customFields));
+		}
+
+		Date dateCreated = getDateCreated();
+
+		if (dateCreated != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(dateCreated));
+
+			sb.append("\"");
+		}
+
+		Date dateModified = getDateModified();
+
+		if (dateModified != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(dateModified));
+
+			sb.append("\"");
 		}
 
 		DiscountAccountGroup[] discountAccountGroups =
@@ -1934,6 +2255,28 @@ public class Discount implements Serializable {
 				sb.append(String.valueOf(discountRules[i]));
 
 				if ((i + 1) < discountRules.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		DiscountSku[] discountSkus = getDiscountSkus();
+
+		if (discountSkus != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"discountSkus\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < discountSkus.length; i++) {
+				sb.append(String.valueOf(discountSkus[i]));
+
+				if ((i + 1) < discountSkus.length) {
 					sb.append(", ");
 				}
 			}
@@ -2157,6 +2500,29 @@ public class Discount implements Serializable {
 			sb.append(percentageLevel4);
 		}
 
+		com.liferay.portal.vulcan.permission.Permission[] permissions =
+			getPermissions();
+
+		if (permissions != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < permissions.length; i++) {
+				sb.append(permissions[i]);
+
+				if ((i + 1) < permissions.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Boolean rulesConjunction = getRulesConjunction();
 
 		if (rulesConjunction != null) {
@@ -2181,6 +2547,22 @@ public class Discount implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(target));
+
+			sb.append("\"");
+		}
+
+		String targetKey = getTargetKey();
+
+		if (targetKey != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"targetKey\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(targetKey));
 
 			sb.append("\"");
 		}
@@ -2347,4 +2729,4 @@ public class Discount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-878969281
+// LIFERAY-REST-BUILDER-HASH:1438281757

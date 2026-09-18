@@ -177,6 +177,52 @@ public class PriceEntry implements Cloneable, Serializable {
 
 	protected Long priceListId;
 
+	public String getProductExternalReferenceCode() {
+		return productExternalReferenceCode;
+	}
+
+	public void setProductExternalReferenceCode(
+		String productExternalReferenceCode) {
+
+		this.productExternalReferenceCode = productExternalReferenceCode;
+	}
+
+	public void setProductExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			productExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			productExternalReferenceCode =
+				productExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String productExternalReferenceCode;
+
+	public String getProductType() {
+		return productType;
+	}
+
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	public void setProductType(
+		UnsafeSupplier<String, Exception> productTypeUnsafeSupplier) {
+
+		try {
+			productType = productTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String productType;
+
 	public BigDecimal getPromoPrice() {
 		return promoPrice;
 	}
@@ -312,4 +358,4 @@ public class PriceEntry implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:67678718
+// LIFERAY-REST-BUILDER-HASH:-2009316531

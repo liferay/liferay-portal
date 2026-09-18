@@ -193,8 +193,12 @@ public abstract class BasePriceModifierProductResourceTestCase {
 		PriceModifierProduct priceModifierProduct =
 			randomPriceModifierProduct();
 
+		priceModifierProduct.setCatalogCurrencyCode(regex);
+		priceModifierProduct.setCatalogCurrencyExternalReferenceCode(regex);
+		priceModifierProduct.setCatalogExternalReferenceCode(regex);
 		priceModifierProduct.setPriceModifierExternalReferenceCode(regex);
 		priceModifierProduct.setProductExternalReferenceCode(regex);
+		priceModifierProduct.setProductType(regex);
 
 		String json = PriceModifierProductSerDes.toJSON(priceModifierProduct);
 
@@ -203,10 +207,18 @@ public abstract class BasePriceModifierProductResourceTestCase {
 		priceModifierProduct = PriceModifierProductSerDes.toDTO(json);
 
 		Assert.assertEquals(
+			regex, priceModifierProduct.getCatalogCurrencyCode());
+		Assert.assertEquals(
+			regex,
+			priceModifierProduct.getCatalogCurrencyExternalReferenceCode());
+		Assert.assertEquals(
+			regex, priceModifierProduct.getCatalogExternalReferenceCode());
+		Assert.assertEquals(
 			regex,
 			priceModifierProduct.getPriceModifierExternalReferenceCode());
 		Assert.assertEquals(
 			regex, priceModifierProduct.getProductExternalReferenceCode());
+		Assert.assertEquals(regex, priceModifierProduct.getProductType());
 	}
 
 	@Test
@@ -1245,6 +1257,42 @@ public abstract class BasePriceModifierProductResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (priceModifierProduct.getCatalogCurrencyCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (priceModifierProduct.
+						getCatalogCurrencyExternalReferenceCode() == null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (priceModifierProduct.getCatalogExternalReferenceCode() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"priceModifierExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -1298,6 +1346,14 @@ public abstract class BasePriceModifierProductResourceTestCase {
 
 			if (Objects.equals("productId", additionalAssertFieldName)) {
 				if (priceModifierProduct.getProductId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (priceModifierProduct.getProductType() == null) {
 					valid = false;
 				}
 
@@ -1439,6 +1495,50 @@ public abstract class BasePriceModifierProductResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						priceModifierProduct1.getCatalogCurrencyCode(),
+						priceModifierProduct2.getCatalogCurrencyCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						priceModifierProduct1.
+							getCatalogCurrencyExternalReferenceCode(),
+						priceModifierProduct2.
+							getCatalogCurrencyExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						priceModifierProduct1.getCatalogExternalReferenceCode(),
+						priceModifierProduct2.
+							getCatalogExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"priceModifierExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -1508,6 +1608,17 @@ public abstract class BasePriceModifierProductResourceTestCase {
 				if (!Objects.deepEquals(
 						priceModifierProduct1.getProductId(),
 						priceModifierProduct2.getProductId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						priceModifierProduct1.getProductType(),
+						priceModifierProduct2.getProductType())) {
 
 					return false;
 				}
@@ -1628,6 +1739,146 @@ public abstract class BasePriceModifierProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("catalogCurrencyCode")) {
+			Object object = priceModifierProduct.getCatalogCurrencyCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("catalogCurrencyExternalReferenceCode")) {
+			Object object =
+				priceModifierProduct.getCatalogCurrencyExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("catalogExternalReferenceCode")) {
+			Object object =
+				priceModifierProduct.getCatalogExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("priceModifierExternalReferenceCode")) {
 			Object object =
 				priceModifierProduct.getPriceModifierExternalReferenceCode();
@@ -1742,6 +1993,52 @@ public abstract class BasePriceModifierProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("productType")) {
+			Object object = priceModifierProduct.getProductType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1791,6 +2088,12 @@ public abstract class BasePriceModifierProductResourceTestCase {
 
 		return new PriceModifierProduct() {
 			{
+				catalogCurrencyCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogCurrencyExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				priceModifierExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				priceModifierId = RandomTestUtil.randomLong();
@@ -1798,6 +2101,8 @@ public abstract class BasePriceModifierProductResourceTestCase {
 				productExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				productId = RandomTestUtil.randomLong();
+				productType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 			}
 		};
 	}
@@ -2050,4 +2355,4 @@ public abstract class BasePriceModifierProductResourceTestCase {
 		PriceModifierProductResource _priceModifierProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2063237793
+// LIFERAY-REST-BUILDER-HASH:-884434957

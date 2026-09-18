@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "DiscountAccountGroup"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Account-group binding that restricts a discount's eligibility to a specific AccountGroup. Backed by discount account group link.",
-	requiredProperties = {"accountGroupId"}
+	description = "Account-group binding that restricts a discount's eligibility to a specific AccountGroup. Backed by discount account group link."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "DiscountAccountGroup")
@@ -197,7 +195,6 @@ public class DiscountAccountGroup implements Serializable {
 		description = "Reference to the accountGroup entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long accountGroupId;
 
 	@JsonIgnore
@@ -638,4 +635,4 @@ public class DiscountAccountGroup implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:367698944
+// LIFERAY-REST-BUILDER-HASH:82861766

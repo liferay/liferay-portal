@@ -20,7 +20,6 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 import jakarta.annotation.Generated;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -44,8 +43,7 @@ import java.util.function.Supplier;
 	value = "PriceListDiscount"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Discount linkage attached to a price list. Ties one discount to the price list so its rules participate in price resolution against that list. Backed by price list discount link.",
-	requiredProperties = {"discountId", "priceListId"}
+	description = "Discount linkage attached to a price list. Ties one discount to the price list so its rules participate in price resolution against that list. Backed by price list discount link."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PriceListDiscount")
@@ -151,7 +149,6 @@ public class PriceListDiscount implements Serializable {
 		description = "Reference to the discount entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long discountId;
 
 	@JsonIgnore
@@ -389,7 +386,6 @@ public class PriceListDiscount implements Serializable {
 		description = "Reference to the priceList entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long priceListId;
 
 	@JsonIgnore
@@ -642,4 +638,4 @@ public class PriceListDiscount implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2078275375
+// LIFERAY-REST-BUILDER-HASH:145752760

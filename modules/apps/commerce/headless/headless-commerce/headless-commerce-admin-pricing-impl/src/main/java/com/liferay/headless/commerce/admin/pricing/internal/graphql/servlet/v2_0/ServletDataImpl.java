@@ -274,6 +274,11 @@ public class ServletDataImpl implements ServletData {
 							DiscountResourceImpl.class,
 							"putDiscountByExternalReferenceCode"));
 					put(
+						"mutation#updateDiscountPermissionsPage",
+						new ObjectValuePair<>(
+							DiscountResourceImpl.class,
+							"putDiscountPermissionsPage"));
+					put(
 						"mutation#deleteDiscountAccount",
 						new ObjectValuePair<>(
 							DiscountAccountResourceImpl.class,
@@ -906,6 +911,11 @@ public class ServletDataImpl implements ServletData {
 							DiscountResourceImpl.class,
 							"getDiscountByExternalReferenceCode"));
 					put(
+						"query#discountPermissions",
+						new ObjectValuePair<>(
+							DiscountResourceImpl.class,
+							"getDiscountPermissionsPage"));
+					put(
 						"query#discounts",
 						new ObjectValuePair<>(
 							DiscountResourceImpl.class, "getDiscountsPage"));
@@ -1475,4 +1485,4 @@ public class ServletDataImpl implements ServletData {
 		_skuResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1953227541
+// LIFERAY-REST-BUILDER-HASH:-99327755

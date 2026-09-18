@@ -114,6 +114,27 @@ public class Discount implements Cloneable, Serializable {
 
 	protected String couponCode;
 
+	public Creator getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+	}
+
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		try {
+			creator = creatorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Creator creator;
+
 	public Map<String, ?> getCustomFields() {
 		return customFields;
 	}
@@ -134,6 +155,48 @@ public class Discount implements Cloneable, Serializable {
 	}
 
 	protected Map<String, ?> customFields;
+
+	public Date getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Date dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public void setDateCreated(
+		UnsafeSupplier<Date, Exception> dateCreatedUnsafeSupplier) {
+
+		try {
+			dateCreated = dateCreatedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date dateCreated;
+
+	public Date getDateModified() {
+		return dateModified;
+	}
+
+	public void setDateModified(Date dateModified) {
+		this.dateModified = dateModified;
+	}
+
+	public void setDateModified(
+		UnsafeSupplier<Date, Exception> dateModifiedUnsafeSupplier) {
+
+		try {
+			dateModified = dateModifiedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date dateModified;
 
 	public DiscountAccountGroup[] getDiscountAccountGroups() {
 		return discountAccountGroups;
@@ -313,6 +376,27 @@ public class Discount implements Cloneable, Serializable {
 	}
 
 	protected DiscountRule[] discountRules;
+
+	public DiscountSku[] getDiscountSkus() {
+		return discountSkus;
+	}
+
+	public void setDiscountSkus(DiscountSku[] discountSkus) {
+		this.discountSkus = discountSkus;
+	}
+
+	public void setDiscountSkus(
+		UnsafeSupplier<DiscountSku[], Exception> discountSkusUnsafeSupplier) {
+
+		try {
+			discountSkus = discountSkusUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected DiscountSku[] discountSkus;
 
 	public Date getDisplayDate() {
 		return displayDate;
@@ -653,6 +737,38 @@ public class Discount implements Cloneable, Serializable {
 
 	protected BigDecimal percentageLevel4;
 
+	public
+		com.liferay.headless.commerce.admin.pricing.client.permission.
+			Permission[] getPermissions() {
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.headless.commerce.admin.pricing.client.permission.
+			Permission[] permissions) {
+
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.headless.commerce.admin.pricing.client.permission.
+				Permission[],
+			 Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected
+		com.liferay.headless.commerce.admin.pricing.client.permission.
+			Permission[] permissions;
+
 	public Boolean getRulesConjunction() {
 		return rulesConjunction;
 	}
@@ -694,6 +810,27 @@ public class Discount implements Cloneable, Serializable {
 	}
 
 	protected String target;
+
+	public String getTargetKey() {
+		return targetKey;
+	}
+
+	public void setTargetKey(String targetKey) {
+		this.targetKey = targetKey;
+	}
+
+	public void setTargetKey(
+		UnsafeSupplier<String, Exception> targetKeyUnsafeSupplier) {
+
+		try {
+			targetKey = targetKeyUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String targetKey;
 
 	public String getTitle() {
 		return title;
@@ -790,4 +927,4 @@ public class Discount implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1911163409
+// LIFERAY-REST-BUILDER-HASH:-1421403943

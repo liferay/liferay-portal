@@ -58,6 +58,7 @@ import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTa
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
+import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.annotation.Generated;
 
@@ -385,6 +386,29 @@ public class Mutation {
 			discountResource ->
 				discountResource.putDiscountByExternalReferenceCode(
 					externalReferenceCode, discount));
+	}
+
+	@GraphQLField(
+		description = "Replaces the role permissions granted on the discount identified by ID. Roles missing from the request lose their individual permissions. Requires the PERMISSIONS action on the discount."
+	)
+	public java.util.Collection<com.liferay.portal.vulcan.permission.Permission>
+			updateDiscountPermissionsPage(
+				@GraphQLName("discountId") Long discountId,
+				@GraphQLName("permissions")
+					com.liferay.portal.vulcan.permission.Permission[]
+						permissions)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_discountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			discountResource -> {
+				Page paginationPage =
+					discountResource.putDiscountPermissionsPage(
+						discountId, permissions);
+
+				return paginationPage.getItems();
+			});
 	}
 
 	@GraphQLField(
@@ -2869,4 +2893,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1870507978
+// LIFERAY-REST-BUILDER-HASH:-2143182777

@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "DiscountChannel"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Channel binding that restricts a discount's eligibility to a specific channel. Backed by channel link with the discount class name.",
-	requiredProperties = {"channelId"}
+	description = "Channel binding that restricts a discount's eligibility to a specific channel. Backed by channel link with the discount class name."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "DiscountChannel")
@@ -241,7 +239,6 @@ public class DiscountChannel implements Serializable {
 		description = "Reference to the channel entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long channelId;
 
 	@JsonIgnore
@@ -633,4 +630,4 @@ public class DiscountChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:279584170
+// LIFERAY-REST-BUILDER-HASH:-810338333

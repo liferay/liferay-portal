@@ -267,7 +267,9 @@ public abstract class BasePriceListResourceImpl
 	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists'  -u 'test@liferay.com:test'
 	 */
-	@io.swagger.v3.oas.annotations.Operation(description = "")
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Pages price lists with search and OData filter via SearchUtil. Filterable fields -- accountGroupId, accountId, catalogBasePriceList, catalogId, channelId, createDate, dateCreated, dateModified, externalReferenceCode, name, orderTypeId, type (from PriceListEntityModel); sortable fields -- createDate, dateCreated, dateModified, externalReferenceCode, name."
+	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -326,7 +328,7 @@ public abstract class BasePriceListResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/{id}' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates price list by ID using JSON Merge Patch semantics. Also updates nested relations if supplied."
@@ -362,7 +364,7 @@ public abstract class BasePriceListResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Updates price list by ERC using JSON Merge Patch semantics. Throws NoSuchPriceListException when ERC is unknown."
@@ -408,6 +410,16 @@ public abstract class BasePriceListResourceImpl
 		if (priceList.getCatalogBasePriceList() != null) {
 			existingPriceList.setCatalogBasePriceList(
 				priceList.getCatalogBasePriceList());
+		}
+
+		if (priceList.getCatalogCurrencyCode() != null) {
+			existingPriceList.setCatalogCurrencyCode(
+				priceList.getCatalogCurrencyCode());
+		}
+
+		if (priceList.getCatalogCurrencyExternalReferenceCode() != null) {
+			existingPriceList.setCatalogCurrencyExternalReferenceCode(
+				priceList.getCatalogCurrencyExternalReferenceCode());
 		}
 
 		if (priceList.getCatalogExternalReferenceCode() != null) {
@@ -491,7 +503,7 @@ public abstract class BasePriceListResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates or updates price list; upsert by external reference code semantics. Cascades supplied nested relations (account-group, account, channel, discount, order-type, modifier, entry)."
@@ -637,7 +649,7 @@ public abstract class BasePriceListResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-lists/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "author": ___, "catalogBasePriceList": ___, "catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "catalogId": ___, "catalogName": ___, "createDate": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "id": ___, "name": ___, "netPrice": ___, "neverExpire": ___, "parentPriceListId": ___, "priceEntries": ___, "priceListAccountGroups": ___, "priceListAccounts": ___, "priceListChannels": ___, "priceListDiscounts": ___, "priceListOrderTypes": ___, "priceModifiers": ___, "priority": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Replaces price list by ERC; PUT replaces the resource while PATCH applies JSON Merge Patch."
@@ -1468,4 +1480,4 @@ public abstract class BasePriceListResourceImpl
 		LogFactoryUtil.getLog(BasePriceListResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1052205628
+// LIFERAY-REST-BUILDER-HASH:1752563030

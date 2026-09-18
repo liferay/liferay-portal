@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "PriceListOrderType"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "order type binding that restricts a price list's eligibility to a specific order type. Backed by price list order type link.",
-	requiredProperties = {"orderTypeId", "priceListId"}
+	description = "order type binding that restricts a price list's eligibility to a specific order type. Backed by price list order type link."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PriceListOrderType")
@@ -241,7 +239,6 @@ public class PriceListOrderType implements Serializable {
 		description = "Reference to the orderType entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long orderTypeId;
 
 	@JsonIgnore
@@ -339,7 +336,6 @@ public class PriceListOrderType implements Serializable {
 		description = "Reference to the priceList entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long priceListId;
 
 	@JsonIgnore
@@ -694,4 +690,4 @@ public class PriceListOrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1955953207
+// LIFERAY-REST-BUILDER-HASH:-149212095

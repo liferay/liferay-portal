@@ -215,9 +215,11 @@ public abstract class BaseDiscountRuleResourceTestCase {
 
 		DiscountRule discountRule = randomDiscountRule();
 
+		discountRule.setExternalReferenceCode(regex);
 		discountRule.setName(regex);
 		discountRule.setType(regex);
 		discountRule.setTypeSettings(regex);
+		discountRule.setTypeSettingsValue(regex);
 
 		String json = DiscountRuleSerDes.toJSON(discountRule);
 
@@ -225,9 +227,11 @@ public abstract class BaseDiscountRuleResourceTestCase {
 
 		discountRule = DiscountRuleSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, discountRule.getExternalReferenceCode());
 		Assert.assertEquals(regex, discountRule.getName());
 		Assert.assertEquals(regex, discountRule.getType());
 		Assert.assertEquals(regex, discountRule.getTypeSettings());
+		Assert.assertEquals(regex, discountRule.getTypeSettingsValue());
 	}
 
 	@Test
@@ -1545,6 +1549,16 @@ public abstract class BaseDiscountRuleResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (discountRule.getExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("name", additionalAssertFieldName)) {
 				if (discountRule.getName() == null) {
 					valid = false;
@@ -1563,6 +1577,16 @@ public abstract class BaseDiscountRuleResourceTestCase {
 
 			if (Objects.equals("typeSettings", additionalAssertFieldName)) {
 				if (discountRule.getTypeSettings() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"typeSettingsValue", additionalAssertFieldName)) {
+
+				if (discountRule.getTypeSettingsValue() == null) {
 					valid = false;
 				}
 
@@ -1626,6 +1650,8 @@ public abstract class BaseDiscountRuleResourceTestCase {
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
+
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
 
 		graphQLFields.add(new GraphQLField("id"));
 
@@ -1712,6 +1738,19 @@ public abstract class BaseDiscountRuleResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						discountRule1.getExternalReferenceCode(),
+						discountRule2.getExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("id", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						discountRule1.getId(), discountRule2.getId())) {
@@ -1746,6 +1785,19 @@ public abstract class BaseDiscountRuleResourceTestCase {
 				if (!Objects.deepEquals(
 						discountRule1.getTypeSettings(),
 						discountRule2.getTypeSettings())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"typeSettingsValue", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						discountRule1.getTypeSettingsValue(),
+						discountRule2.getTypeSettingsValue())) {
 
 					return false;
 				}
@@ -1868,6 +1920,52 @@ public abstract class BaseDiscountRuleResourceTestCase {
 		if (entityFieldName.equals("discountId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = discountRule.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("id")) {
@@ -2013,6 +2111,52 @@ public abstract class BaseDiscountRuleResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("typeSettingsValue")) {
+			Object object = discountRule.getTypeSettingsValue();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -2061,10 +2205,14 @@ public abstract class BaseDiscountRuleResourceTestCase {
 		return new DiscountRule() {
 			{
 				discountId = RandomTestUtil.randomLong();
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				type = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				typeSettings = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				typeSettingsValue = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 			}
 		};
@@ -2335,4 +2483,4 @@ public abstract class BaseDiscountRuleResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-364007303
+// LIFERAY-REST-BUILDER-HASH:1951619918

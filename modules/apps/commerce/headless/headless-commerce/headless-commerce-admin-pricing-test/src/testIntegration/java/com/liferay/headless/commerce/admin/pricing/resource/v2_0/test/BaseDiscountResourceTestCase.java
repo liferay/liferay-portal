@@ -20,6 +20,7 @@ import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.Discount;
 import com.liferay.headless.commerce.admin.pricing.client.http.HttpInvoker;
 import com.liferay.headless.commerce.admin.pricing.client.pagination.Page;
 import com.liferay.headless.commerce.admin.pricing.client.pagination.Pagination;
+import com.liferay.headless.commerce.admin.pricing.client.permission.Permission;
 import com.liferay.headless.commerce.admin.pricing.client.resource.v2_0.DiscountResource;
 import com.liferay.headless.commerce.admin.pricing.client.serdes.v2_0.DiscountSerDes;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -43,6 +45,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.JAXRSWhiteboardTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateUtil;
@@ -160,6 +163,19 @@ public abstract class BaseDiscountResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		permissionsDiscountResource = DiscountResource.builder(
+		).authentication(
+			_testCompanyAdminUser.getEmailAddress(),
+			PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameter(
+			"nestedFields", "permissions"
+		).build();
 	}
 
 	@After
@@ -224,6 +240,7 @@ public abstract class BaseDiscountResourceTestCase {
 		discount.setLevel(regex);
 		discount.setLimitationType(regex);
 		discount.setTarget(regex);
+		discount.setTargetKey(regex);
 		discount.setTitle(regex);
 
 		String json = DiscountSerDes.toJSON(discount);
@@ -238,6 +255,7 @@ public abstract class BaseDiscountResourceTestCase {
 		Assert.assertEquals(regex, discount.getLevel());
 		Assert.assertEquals(regex, discount.getLimitationType());
 		Assert.assertEquals(regex, discount.getTarget());
+		Assert.assertEquals(regex, discount.getTargetKey());
 		Assert.assertEquals(regex, discount.getTitle());
 	}
 
@@ -534,6 +552,13 @@ public abstract class BaseDiscountResourceTestCase {
 
 		assertEquals(postDiscount, getDiscount);
 		assertValid(getDiscount);
+
+		Assert.assertNull(getDiscount.getPermissions());
+
+		getDiscount = permissionsDiscountResource.getDiscount(
+			postDiscount.getId());
+
+		Assert.assertNotNull(getDiscount.getPermissions());
 	}
 
 	@Test
@@ -837,6 +862,14 @@ public abstract class BaseDiscountResourceTestCase {
 
 		assertEquals(postDiscount, getDiscount);
 		assertValid(getDiscount);
+
+		Assert.assertNull(getDiscount.getPermissions());
+
+		getDiscount =
+			permissionsDiscountResource.getDiscountByExternalReferenceCode(
+				postDiscount.getExternalReferenceCode());
+
+		Assert.assertNotNull(getDiscount.getPermissions());
 	}
 
 	protected Discount testGetDiscountByExternalReferenceCode_addDiscount()
@@ -961,6 +994,53 @@ public abstract class BaseDiscountResourceTestCase {
 	}
 
 	@Test
+	public void testGetDiscountPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Discount postDiscount = testGetDiscountPermissionsPage_addDiscount();
+
+		Page<Permission> page = discountResource.getDiscountPermissionsPage(
+			postDiscount.getId(), RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected Discount testGetDiscountPermissionsPage_addDiscount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetDiscountPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Discount postDiscount =
+			testGraphQLGetDiscountPermissionsPage_addDiscount();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"discountPermissions",
+			new HashMap<String, Object>() {
+				{
+					put("discountId", postDiscount.getId());
+				}
+			},
+			new GraphQLField("page"), new GraphQLField("totalCount"));
+
+		JSONObject discountPermissionsJSONObject =
+			JSONUtil.getValueAsJSONObject(
+				invokeGraphQLQuery(graphQLField), "JSONObject/data",
+				"JSONObject/discountPermissions");
+
+		Assert.assertNotNull(discountPermissionsJSONObject);
+	}
+
+	protected Discount testGraphQLGetDiscountPermissionsPage_addDiscount()
+		throws Exception {
+
+		return testGraphQLDiscount_addDiscount();
+	}
+
+	@Test
 	public void testGetDiscountsPage() throws Exception {
 		Page<Discount> page = discountResource.getDiscountsPage(
 			null, null, Pagination.of(1, 10), null);
@@ -979,6 +1059,17 @@ public abstract class BaseDiscountResourceTestCase {
 		assertContains(discount1, (List<Discount>)page.getItems());
 		assertContains(discount2, (List<Discount>)page.getItems());
 		assertValid(page, testGetDiscountsPage_getExpectedActions());
+
+		for (Discount discount : page.getItems()) {
+			Assert.assertNull(discount.getPermissions());
+		}
+
+		page = permissionsDiscountResource.getDiscountsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		for (Discount discount : page.getItems()) {
+			Assert.assertNotNull(discount.getPermissions());
+		}
 
 		discountResource.deleteDiscount(discount1.getId());
 
@@ -1412,9 +1503,31 @@ public abstract class BaseDiscountResourceTestCase {
 
 		assertEquals(randomDiscount, postDiscount);
 		assertValid(postDiscount);
+
+		Discount randomPermissionsDiscount1 = randomPermissionsDiscount();
+
+		Discount postPermissionsDiscount1 = testPostDiscount_addDiscount(
+			randomPermissionsDiscount1);
+
+		Assert.assertNull(postPermissionsDiscount1.getPermissions());
+
+		Discount randomPermissionsDiscount2 = randomPermissionsDiscount();
+
+		Discount postPermissionsDiscount2 =
+			testPostDiscount_addPermissionsDiscount(randomPermissionsDiscount2);
+
+		Assert.assertNotNull(postPermissionsDiscount2.getPermissions());
 	}
 
 	protected Discount testPostDiscount_addDiscount(Discount discount)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected Discount testPostDiscount_addPermissionsDiscount(
+			Discount discount)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -1444,12 +1557,31 @@ public abstract class BaseDiscountResourceTestCase {
 		assertEquals(randomDiscount, putDiscount);
 		assertValid(putDiscount);
 
+		Assert.assertNull(putDiscount.getPermissions());
+
 		Discount getDiscount =
 			discountResource.getDiscountByExternalReferenceCode(
 				putDiscount.getExternalReferenceCode());
 
 		assertEquals(randomDiscount, getDiscount);
 		assertValid(getDiscount);
+
+		Discount randomPermissionsDiscount = randomPermissionsDiscount();
+
+		putDiscount = discountResource.putDiscountByExternalReferenceCode(
+			postDiscount.getExternalReferenceCode(), randomPermissionsDiscount);
+
+		assertEquals(randomPermissionsDiscount, putDiscount);
+		assertValid(putDiscount);
+
+		Assert.assertNull(putDiscount.getPermissions());
+
+		putDiscount =
+			permissionsDiscountResource.putDiscountByExternalReferenceCode(
+				postDiscount.getExternalReferenceCode(),
+				randomPermissionsDiscount);
+
+		Assert.assertNotNull(putDiscount.getPermissions());
 
 		Discount newDiscount =
 			testPutDiscountByExternalReferenceCode_createDiscount();
@@ -1481,6 +1613,49 @@ public abstract class BaseDiscountResourceTestCase {
 		throws Exception {
 
 		return randomDiscount();
+	}
+
+	@Test
+	public void testPutDiscountPermissionsPage() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		Discount discount = testPutDiscountPermissionsPage_addDiscount();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			discountResource.putDiscountPermissionsPageHttpResponse(
+				discount.getId(),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"VIEW"});
+							setRoleName(role.getName());
+						}
+					}
+				}));
+
+		assertHttpResponseStatusCode(
+			404,
+			discountResource.putDiscountPermissionsPageHttpResponse(
+				0L,
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(new String[] {"-"});
+							setRoleName("-");
+						}
+					}
+				}));
+	}
+
+	protected Discount testPutDiscountPermissionsPage_addDiscount()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
 	}
 
 	@Test
@@ -1750,6 +1925,14 @@ public abstract class BaseDiscountResourceTestCase {
 	protected void assertValid(Discount discount) throws Exception {
 		boolean valid = true;
 
+		if (discount.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (discount.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (discount.getId() == null) {
 			valid = false;
 		}
@@ -1783,6 +1966,14 @@ public abstract class BaseDiscountResourceTestCase {
 
 			if (Objects.equals("couponCode", additionalAssertFieldName)) {
 				if (discount.getCouponCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (discount.getCreator() == null) {
 					valid = false;
 				}
 
@@ -1863,6 +2054,14 @@ public abstract class BaseDiscountResourceTestCase {
 
 			if (Objects.equals("discountRules", additionalAssertFieldName)) {
 				if (discount.getDiscountRules() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("discountSkus", additionalAssertFieldName)) {
+				if (discount.getDiscountSkus() == null) {
 					valid = false;
 				}
 
@@ -1995,6 +2194,14 @@ public abstract class BaseDiscountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (discount.getPermissions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("rulesConjunction", additionalAssertFieldName)) {
 				if (discount.getRulesConjunction() == null) {
 					valid = false;
@@ -2005,6 +2212,14 @@ public abstract class BaseDiscountResourceTestCase {
 
 			if (Objects.equals("target", additionalAssertFieldName)) {
 				if (discount.getTarget() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("targetKey", additionalAssertFieldName)) {
+				if (discount.getTargetKey() == null) {
 					valid = false;
 				}
 
@@ -2197,10 +2412,42 @@ public abstract class BaseDiscountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discount1.getCreator(), discount2.getCreator())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("customFields", additionalAssertFieldName)) {
 				if (!equals(
 						(Map)discount1.getCustomFields(),
 						(Map)discount2.getCustomFields())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discount1.getDateCreated(),
+						discount2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discount1.getDateModified(),
+						discount2.getDateModified())) {
 
 					return false;
 				}
@@ -2297,6 +2544,17 @@ public abstract class BaseDiscountResourceTestCase {
 				if (!Objects.deepEquals(
 						discount1.getDiscountRules(),
 						discount2.getDiscountRules())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("discountSkus", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discount1.getDiscountSkus(),
+						discount2.getDiscountSkus())) {
 
 					return false;
 				}
@@ -2482,6 +2740,17 @@ public abstract class BaseDiscountResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discount1.getPermissions(),
+						discount2.getPermissions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("rulesConjunction", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						discount1.getRulesConjunction(),
@@ -2496,6 +2765,16 @@ public abstract class BaseDiscountResourceTestCase {
 			if (Objects.equals("target", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						discount1.getTarget(), discount2.getTarget())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("targetKey", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discount1.getTargetKey(), discount2.getTargetKey())) {
 
 					return false;
 				}
@@ -2744,9 +3023,72 @@ public abstract class BaseDiscountResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("customFields")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = discount.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(discount.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = discount.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(discount.getDateModified()));
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("discountAccountGroups")) {
@@ -2785,6 +3127,11 @@ public abstract class BaseDiscountResourceTestCase {
 		}
 
 		if (entityFieldName.equals("discountRules")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("discountSkus")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -3067,6 +3414,11 @@ public abstract class BaseDiscountResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("rulesConjunction")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -3074,6 +3426,52 @@ public abstract class BaseDiscountResourceTestCase {
 
 		if (entityFieldName.equals("target")) {
 			Object object = discount.getTarget();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("targetKey")) {
+			Object object = discount.getTargetKey();
 
 			String value = String.valueOf(object);
 
@@ -3226,6 +3624,8 @@ public abstract class BaseDiscountResourceTestCase {
 					RandomTestUtil.randomString());
 				couponCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				displayDate = RandomTestUtil.nextDate();
 				expirationDate = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
@@ -3241,6 +3641,8 @@ public abstract class BaseDiscountResourceTestCase {
 				numberOfUse = RandomTestUtil.randomInt();
 				rulesConjunction = RandomTestUtil.randomBoolean();
 				target = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				targetKey = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				useCouponCode = RandomTestUtil.randomBoolean();
 				usePercentage = RandomTestUtil.randomBoolean();
@@ -3256,6 +3658,25 @@ public abstract class BaseDiscountResourceTestCase {
 
 	protected Discount randomPatchDiscount() throws Exception {
 		return randomDiscount();
+	}
+
+	protected Discount randomPermissionsDiscount() throws Exception {
+		Discount discount = randomDiscount();
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		discount.setPermissions(
+			new Permission[] {
+				new Permission() {
+					{
+						setActionIds(new String[] {"VIEW"});
+						setRoleName(role.getName());
+					}
+				}
+			});
+
+		return discount;
 	}
 
 	protected final JSONObject waitForFinish(
@@ -3283,6 +3704,7 @@ public abstract class BaseDiscountResourceTestCase {
 	protected DiscountResource discountResource;
 	protected ImportTaskResource importTaskResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
+	protected DiscountResource permissionsDiscountResource;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
@@ -3514,4 +3936,4 @@ public abstract class BaseDiscountResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-474098931
+// LIFERAY-REST-BUILDER-HASH:133278362

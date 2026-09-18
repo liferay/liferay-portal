@@ -214,6 +214,8 @@ public abstract class BasePriceEntryResourceTestCase {
 
 		priceEntry.setExternalReferenceCode(regex);
 		priceEntry.setPriceListExternalReferenceCode(regex);
+		priceEntry.setProductExternalReferenceCode(regex);
+		priceEntry.setProductType(regex);
 		priceEntry.setSku(regex);
 		priceEntry.setSkuExternalReferenceCode(regex);
 
@@ -226,6 +228,9 @@ public abstract class BasePriceEntryResourceTestCase {
 		Assert.assertEquals(regex, priceEntry.getExternalReferenceCode());
 		Assert.assertEquals(
 			regex, priceEntry.getPriceListExternalReferenceCode());
+		Assert.assertEquals(
+			regex, priceEntry.getProductExternalReferenceCode());
+		Assert.assertEquals(regex, priceEntry.getProductType());
 		Assert.assertEquals(regex, priceEntry.getSku());
 		Assert.assertEquals(regex, priceEntry.getSkuExternalReferenceCode());
 	}
@@ -1610,6 +1615,25 @@ public abstract class BasePriceEntryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"productExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (priceEntry.getProductExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (priceEntry.getProductType() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("promoPrice", additionalAssertFieldName)) {
 				if (priceEntry.getPromoPrice() == null) {
 					valid = false;
@@ -1846,6 +1870,31 @@ public abstract class BasePriceEntryResourceTestCase {
 				if (!Objects.deepEquals(
 						priceEntry1.getPriceListId(),
 						priceEntry2.getPriceListId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"productExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						priceEntry1.getProductExternalReferenceCode(),
+						priceEntry2.getProductExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						priceEntry1.getProductType(),
+						priceEntry2.getProductType())) {
 
 					return false;
 				}
@@ -2132,6 +2181,98 @@ public abstract class BasePriceEntryResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("productExternalReferenceCode")) {
+			Object object = priceEntry.getProductExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("productType")) {
+			Object object = priceEntry.getProductType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("promoPrice")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2293,6 +2434,10 @@ public abstract class BasePriceEntryResourceTestCase {
 				priceListExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				priceListId = RandomTestUtil.randomLong();
+				productExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				productType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				sku = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				skuExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -2567,4 +2712,4 @@ public abstract class BasePriceEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1515985247
+// LIFERAY-REST-BUILDER-HASH:-386546645

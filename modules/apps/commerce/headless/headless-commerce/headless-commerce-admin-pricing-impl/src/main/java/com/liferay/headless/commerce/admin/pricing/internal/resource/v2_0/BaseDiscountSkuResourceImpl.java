@@ -272,7 +272,7 @@ public abstract class BaseDiscountSkuResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/by-externalReferenceCode/{externalReferenceCode}/discount-skus' -d $'{"discountExternalReferenceCode": ___, "productId": ___, "productName": ___, "skuExternalReferenceCode": ___, "skuId": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/by-externalReferenceCode/{externalReferenceCode}/discount-skus' -d $'{"catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "discountExternalReferenceCode": ___, "productExternalReferenceCode": ___, "productId": ___, "productName": ___, "productType": ___, "skuExternalReferenceCode": ___, "skuId": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates discount link (SKU binding) for Discount by ERC. Throws NoSuchDiscountException when discount ERC is unknown."
@@ -310,7 +310,7 @@ public abstract class BaseDiscountSkuResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-skus' -d $'{"discountExternalReferenceCode": ___, "productId": ___, "productName": ___, "skuExternalReferenceCode": ___, "skuId": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/discounts/{id}/discount-skus' -d $'{"catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "discountExternalReferenceCode": ___, "productExternalReferenceCode": ___, "productId": ___, "productName": ___, "productType": ___, "skuExternalReferenceCode": ___, "skuId": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates discount link (SKU binding) for Discount by ID."
@@ -1101,4 +1101,4 @@ public abstract class BaseDiscountSkuResourceImpl
 		LogFactoryUtil.getLog(BaseDiscountSkuResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:824288145
+// LIFERAY-REST-BUILDER-HASH:-1327173555

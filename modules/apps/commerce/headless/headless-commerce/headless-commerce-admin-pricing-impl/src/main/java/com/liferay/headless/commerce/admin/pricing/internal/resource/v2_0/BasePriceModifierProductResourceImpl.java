@@ -290,7 +290,7 @@ public abstract class BasePriceModifierProductResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/by-externalReferenceCode/{externalReferenceCode}/price-modifier-products' -d $'{"priceModifierExternalReferenceCode": ___, "priceModifierId": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/by-externalReferenceCode/{externalReferenceCode}/price-modifier-products' -d $'{"catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "priceModifierExternalReferenceCode": ___, "priceModifierId": ___, "productExternalReferenceCode": ___, "productId": ___, "productType": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates price modifier link (product binding) for PriceModifier by ERC. Throws NoSuchPriceModifierException when modifier ERC is unknown."
@@ -333,7 +333,7 @@ public abstract class BasePriceModifierProductResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-products' -d $'{"priceModifierExternalReferenceCode": ___, "priceModifierId": ___, "productExternalReferenceCode": ___, "productId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-modifiers/{id}/price-modifier-products' -d $'{"catalogCurrencyCode": ___, "catalogCurrencyExternalReferenceCode": ___, "catalogExternalReferenceCode": ___, "priceModifierExternalReferenceCode": ___, "priceModifierId": ___, "productExternalReferenceCode": ___, "productId": ___, "productType": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Creates price modifier link (product binding) for PriceModifier by ID."
@@ -1141,4 +1141,4 @@ public abstract class BasePriceModifierProductResourceImpl
 		LogFactoryUtil.getLog(BasePriceModifierProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:636669941
+// LIFERAY-REST-BUILDER-HASH:2088813627

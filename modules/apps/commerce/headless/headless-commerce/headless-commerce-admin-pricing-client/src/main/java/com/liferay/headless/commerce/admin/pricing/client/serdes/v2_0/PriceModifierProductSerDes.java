@@ -57,6 +57,55 @@ public class PriceModifierProductSerDes {
 			sb.append(_toJSON(priceModifierProduct.getActions()));
 		}
 
+		if (priceModifierProduct.getCatalogCurrencyCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceModifierProduct.getCatalogCurrencyCode()));
+
+			sb.append("\"");
+		}
+
+		if (priceModifierProduct.getCatalogCurrencyExternalReferenceCode() !=
+				null) {
+
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(
+					priceModifierProduct.
+						getCatalogCurrencyExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
+		if (priceModifierProduct.getCatalogExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(
+					priceModifierProduct.getCatalogExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (priceModifierProduct.getPriceModifierExternalReferenceCode() !=
 				null) {
 
@@ -132,6 +181,20 @@ public class PriceModifierProductSerDes {
 			sb.append(priceModifierProduct.getProductId());
 		}
 
+		if (priceModifierProduct.getProductType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productType\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceModifierProduct.getProductType()));
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -159,6 +222,38 @@ public class PriceModifierProductSerDes {
 		else {
 			map.put(
 				"actions", String.valueOf(priceModifierProduct.getActions()));
+		}
+
+		if (priceModifierProduct.getCatalogCurrencyCode() == null) {
+			map.put("catalogCurrencyCode", null);
+		}
+		else {
+			map.put(
+				"catalogCurrencyCode",
+				String.valueOf(priceModifierProduct.getCatalogCurrencyCode()));
+		}
+
+		if (priceModifierProduct.getCatalogCurrencyExternalReferenceCode() ==
+				null) {
+
+			map.put("catalogCurrencyExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"catalogCurrencyExternalReferenceCode",
+				String.valueOf(
+					priceModifierProduct.
+						getCatalogCurrencyExternalReferenceCode()));
+		}
+
+		if (priceModifierProduct.getCatalogExternalReferenceCode() == null) {
+			map.put("catalogExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"catalogExternalReferenceCode",
+				String.valueOf(
+					priceModifierProduct.getCatalogExternalReferenceCode()));
 		}
 
 		if (priceModifierProduct.getPriceModifierExternalReferenceCode() ==
@@ -220,6 +315,15 @@ public class PriceModifierProductSerDes {
 				String.valueOf(priceModifierProduct.getProductId()));
 		}
 
+		if (priceModifierProduct.getProductType() == null) {
+			map.put("productType", null);
+		}
+		else {
+			map.put(
+				"productType",
+				String.valueOf(priceModifierProduct.getProductType()));
+		}
+
 		return map;
 	}
 
@@ -240,6 +344,22 @@ public class PriceModifierProductSerDes {
 		protected boolean parseMaps(String jsonParserFieldName) {
 			if (Objects.equals(jsonParserFieldName, "actions")) {
 				return true;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogCurrencyCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"catalogCurrencyExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogExternalReferenceCode")) {
+
+				return false;
 			}
 			else if (Objects.equals(
 						jsonParserFieldName,
@@ -266,6 +386,9 @@ public class PriceModifierProductSerDes {
 			else if (Objects.equals(jsonParserFieldName, "productId")) {
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "productType")) {
+				return false;
+			}
 
 			return false;
 		}
@@ -279,6 +402,32 @@ public class PriceModifierProductSerDes {
 				if (jsonParserFieldValue != null) {
 					priceModifierProduct.setActions(
 						(Map<String, Map<String, String>>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogCurrencyCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceModifierProduct.setCatalogCurrencyCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"catalogCurrencyExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceModifierProduct.
+						setCatalogCurrencyExternalReferenceCode(
+							(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceModifierProduct.setCatalogExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -322,6 +471,12 @@ public class PriceModifierProductSerDes {
 				if (jsonParserFieldValue != null) {
 					priceModifierProduct.setProductId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "productType")) {
+				if (jsonParserFieldValue != null) {
+					priceModifierProduct.setProductType(
+						(String)jsonParserFieldValue);
 				}
 			}
 		}
@@ -411,4 +566,4 @@ public class PriceModifierProductSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-893705983
+// LIFERAY-REST-BUILDER-HASH:-1866895963

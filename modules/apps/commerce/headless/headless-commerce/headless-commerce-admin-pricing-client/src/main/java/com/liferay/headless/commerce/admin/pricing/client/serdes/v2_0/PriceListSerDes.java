@@ -102,6 +102,35 @@ public class PriceListSerDes {
 			sb.append(priceList.getCatalogBasePriceList());
 		}
 
+		if (priceList.getCatalogCurrencyCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceList.getCatalogCurrencyCode()));
+
+			sb.append("\"");
+		}
+
+		if (priceList.getCatalogCurrencyExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(priceList.getCatalogCurrencyExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (priceList.getCatalogExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -155,6 +184,16 @@ public class PriceListSerDes {
 			sb.append("\"");
 		}
 
+		if (priceList.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(String.valueOf(priceList.getCreator()));
+		}
+
 		if (priceList.getCurrencyCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -201,6 +240,36 @@ public class PriceListSerDes {
 			sb.append("\"customFields\": ");
 
 			sb.append(_toJSON(priceList.getCustomFields()));
+		}
+
+		if (priceList.getDateCreated() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateCreated\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(priceList.getDateCreated()));
+
+			sb.append("\"");
+		}
+
+		if (priceList.getDateModified() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"dateModified\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				liferayToJSONDateFormat.format(priceList.getDateModified()));
+
+			sb.append("\"");
 		}
 
 		if (priceList.getDisplayDate() != null) {
@@ -530,6 +599,25 @@ public class PriceListSerDes {
 				String.valueOf(priceList.getCatalogBasePriceList()));
 		}
 
+		if (priceList.getCatalogCurrencyCode() == null) {
+			map.put("catalogCurrencyCode", null);
+		}
+		else {
+			map.put(
+				"catalogCurrencyCode",
+				String.valueOf(priceList.getCatalogCurrencyCode()));
+		}
+
+		if (priceList.getCatalogCurrencyExternalReferenceCode() == null) {
+			map.put("catalogCurrencyExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"catalogCurrencyExternalReferenceCode",
+				String.valueOf(
+					priceList.getCatalogCurrencyExternalReferenceCode()));
+		}
+
 		if (priceList.getCatalogExternalReferenceCode() == null) {
 			map.put("catalogExternalReferenceCode", null);
 		}
@@ -562,6 +650,13 @@ public class PriceListSerDes {
 				liferayToJSONDateFormat.format(priceList.getCreateDate()));
 		}
 
+		if (priceList.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put("creator", String.valueOf(priceList.getCreator()));
+		}
+
 		if (priceList.getCurrencyCode() == null) {
 			map.put("currencyCode", null);
 		}
@@ -592,6 +687,24 @@ public class PriceListSerDes {
 		else {
 			map.put(
 				"customFields", String.valueOf(priceList.getCustomFields()));
+		}
+
+		if (priceList.getDateCreated() == null) {
+			map.put("dateCreated", null);
+		}
+		else {
+			map.put(
+				"dateCreated",
+				liferayToJSONDateFormat.format(priceList.getDateCreated()));
+		}
+
+		if (priceList.getDateModified() == null) {
+			map.put("dateModified", null);
+		}
+		else {
+			map.put(
+				"dateModified",
+				liferayToJSONDateFormat.format(priceList.getDateModified()));
 		}
 
 		if (priceList.getDisplayDate() == null) {
@@ -775,6 +888,17 @@ public class PriceListSerDes {
 				return false;
 			}
 			else if (Objects.equals(
+						jsonParserFieldName, "catalogCurrencyCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"catalogCurrencyExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
 						jsonParserFieldName, "catalogExternalReferenceCode")) {
 
 				return false;
@@ -786,6 +910,9 @@ public class PriceListSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "createDate")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
@@ -801,6 +928,12 @@ public class PriceListSerDes {
 			}
 			else if (Objects.equals(jsonParserFieldName, "customFields")) {
 				return true;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "displayDate")) {
 				return false;
@@ -900,6 +1033,23 @@ public class PriceListSerDes {
 				}
 			}
 			else if (Objects.equals(
+						jsonParserFieldName, "catalogCurrencyCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceList.setCatalogCurrencyCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"catalogCurrencyExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceList.setCatalogCurrencyExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
 						jsonParserFieldName, "catalogExternalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
@@ -922,6 +1072,12 @@ public class PriceListSerDes {
 				if (jsonParserFieldValue != null) {
 					priceList.setCreateDate(
 						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					priceList.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
@@ -947,6 +1103,18 @@ public class PriceListSerDes {
 				if (jsonParserFieldValue != null) {
 					priceList.setCustomFields(
 						(Map<String, ?>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
+				if (jsonParserFieldValue != null) {
+					priceList.setDateCreated(
+						toDate((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "dateModified")) {
+				if (jsonParserFieldValue != null) {
+					priceList.setDateModified(
+						toDate((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "displayDate")) {
@@ -1228,4 +1396,4 @@ public class PriceListSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-775744894
+// LIFERAY-REST-BUILDER-HASH:-17191812

@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "DiscountCategory"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "AssetCategory binding that restricts a discount to products tagged with a specific category. Backed by discount link with the AssetCategory class name.",
-	requiredProperties = {"categoryId"}
+	description = "AssetCategory binding that restricts a discount to products tagged with a specific category. Backed by discount link with the AssetCategory class name."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "DiscountCategory")
@@ -241,7 +239,6 @@ public class DiscountCategory implements Serializable {
 		description = "Reference to the category entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long categoryId;
 
 	@JsonIgnore
@@ -634,4 +631,4 @@ public class DiscountCategory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1219406838
+// LIFERAY-REST-BUILDER-HASH:-337550102

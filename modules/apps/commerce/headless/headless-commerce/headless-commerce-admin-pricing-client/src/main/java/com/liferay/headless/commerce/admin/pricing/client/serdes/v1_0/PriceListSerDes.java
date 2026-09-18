@@ -63,6 +63,49 @@ public class PriceListSerDes {
 			sb.append(priceList.getActive());
 		}
 
+		if (priceList.getCatalogCurrencyCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceList.getCatalogCurrencyCode()));
+
+			sb.append("\"");
+		}
+
+		if (priceList.getCatalogCurrencyExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogCurrencyExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(priceList.getCatalogCurrencyExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
+		if (priceList.getCatalogExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"catalogExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceList.getCatalogExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (priceList.getCatalogId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -83,6 +126,20 @@ public class PriceListSerDes {
 			sb.append("\"");
 
 			sb.append(_escape(priceList.getCurrencyCode()));
+
+			sb.append("\"");
+		}
+
+		if (priceList.getCurrencyExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"currencyExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(priceList.getCurrencyExternalReferenceCode()));
 
 			sb.append("\"");
 		}
@@ -256,6 +313,34 @@ public class PriceListSerDes {
 			map.put("active", String.valueOf(priceList.getActive()));
 		}
 
+		if (priceList.getCatalogCurrencyCode() == null) {
+			map.put("catalogCurrencyCode", null);
+		}
+		else {
+			map.put(
+				"catalogCurrencyCode",
+				String.valueOf(priceList.getCatalogCurrencyCode()));
+		}
+
+		if (priceList.getCatalogCurrencyExternalReferenceCode() == null) {
+			map.put("catalogCurrencyExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"catalogCurrencyExternalReferenceCode",
+				String.valueOf(
+					priceList.getCatalogCurrencyExternalReferenceCode()));
+		}
+
+		if (priceList.getCatalogExternalReferenceCode() == null) {
+			map.put("catalogExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"catalogExternalReferenceCode",
+				String.valueOf(priceList.getCatalogExternalReferenceCode()));
+		}
+
 		if (priceList.getCatalogId() == null) {
 			map.put("catalogId", null);
 		}
@@ -269,6 +354,15 @@ public class PriceListSerDes {
 		else {
 			map.put(
 				"currencyCode", String.valueOf(priceList.getCurrencyCode()));
+		}
+
+		if (priceList.getCurrencyExternalReferenceCode() == null) {
+			map.put("currencyExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"currencyExternalReferenceCode",
+				String.valueOf(priceList.getCurrencyExternalReferenceCode()));
 		}
 
 		if (priceList.getCustomFields() == null) {
@@ -371,10 +465,31 @@ public class PriceListSerDes {
 			if (Objects.equals(jsonParserFieldName, "active")) {
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogCurrencyCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"catalogCurrencyExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogExternalReferenceCode")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "catalogId")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "currencyExternalReferenceCode")) {
+
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "customFields")) {
@@ -425,6 +540,31 @@ public class PriceListSerDes {
 					priceList.setActive((Boolean)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogCurrencyCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceList.setCatalogCurrencyCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"catalogCurrencyExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceList.setCatalogCurrencyExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "catalogExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceList.setCatalogExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
 			else if (Objects.equals(jsonParserFieldName, "catalogId")) {
 				if (jsonParserFieldValue != null) {
 					priceList.setCatalogId(
@@ -434,6 +574,14 @@ public class PriceListSerDes {
 			else if (Objects.equals(jsonParserFieldName, "currencyCode")) {
 				if (jsonParserFieldValue != null) {
 					priceList.setCurrencyCode((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "currencyExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					priceList.setCurrencyExternalReferenceCode(
+						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "customFields")) {
@@ -608,4 +756,4 @@ public class PriceListSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-14633698
+// LIFERAY-REST-BUILDER-HASH:-51490026

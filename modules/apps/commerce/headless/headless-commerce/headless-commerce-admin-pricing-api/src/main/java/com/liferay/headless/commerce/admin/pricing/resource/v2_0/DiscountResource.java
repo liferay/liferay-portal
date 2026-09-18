@@ -61,6 +61,10 @@ public interface DiscountResource {
 			String externalReferenceCode)
 		throws Exception;
 
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getDiscountPermissionsPage(Long discountId, String roleNames)
+		throws Exception;
+
 	public Page<Discount> getDiscountsPage(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
@@ -88,6 +92,12 @@ public interface DiscountResource {
 
 	public Discount putDiscountByExternalReferenceCode(
 			String externalReferenceCode, Discount discount)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putDiscountPermissionsPage(
+				Long discountId,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -186,4 +196,4 @@ public interface DiscountResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:107335533
+// LIFERAY-REST-BUILDER-HASH:-949514495

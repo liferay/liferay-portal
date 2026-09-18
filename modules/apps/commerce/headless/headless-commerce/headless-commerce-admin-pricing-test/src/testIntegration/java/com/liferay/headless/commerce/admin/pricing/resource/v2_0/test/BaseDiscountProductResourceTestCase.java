@@ -189,8 +189,12 @@ public abstract class BaseDiscountProductResourceTestCase {
 
 		DiscountProduct discountProduct = randomDiscountProduct();
 
+		discountProduct.setCatalogCurrencyCode(regex);
+		discountProduct.setCatalogCurrencyExternalReferenceCode(regex);
+		discountProduct.setCatalogExternalReferenceCode(regex);
 		discountProduct.setDiscountExternalReferenceCode(regex);
 		discountProduct.setProductExternalReferenceCode(regex);
+		discountProduct.setProductType(regex);
 
 		String json = DiscountProductSerDes.toJSON(discountProduct);
 
@@ -198,10 +202,16 @@ public abstract class BaseDiscountProductResourceTestCase {
 
 		discountProduct = DiscountProductSerDes.toDTO(json);
 
+		Assert.assertEquals(regex, discountProduct.getCatalogCurrencyCode());
+		Assert.assertEquals(
+			regex, discountProduct.getCatalogCurrencyExternalReferenceCode());
+		Assert.assertEquals(
+			regex, discountProduct.getCatalogExternalReferenceCode());
 		Assert.assertEquals(
 			regex, discountProduct.getDiscountExternalReferenceCode());
 		Assert.assertEquals(
 			regex, discountProduct.getProductExternalReferenceCode());
+		Assert.assertEquals(regex, discountProduct.getProductType());
 	}
 
 	@Test
@@ -1175,6 +1185,40 @@ public abstract class BaseDiscountProductResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (discountProduct.getCatalogCurrencyCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (discountProduct.getCatalogCurrencyExternalReferenceCode() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (discountProduct.getCatalogExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"discountExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -1226,6 +1270,14 @@ public abstract class BaseDiscountProductResourceTestCase {
 
 			if (Objects.equals("productId", additionalAssertFieldName)) {
 				if (discountProduct.getProductId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (discountProduct.getProductType() == null) {
 					valid = false;
 				}
 
@@ -1366,6 +1418,49 @@ public abstract class BaseDiscountProductResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						discountProduct1.getCatalogCurrencyCode(),
+						discountProduct2.getCatalogCurrencyCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						discountProduct1.
+							getCatalogCurrencyExternalReferenceCode(),
+						discountProduct2.
+							getCatalogCurrencyExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						discountProduct1.getCatalogExternalReferenceCode(),
+						discountProduct2.getCatalogExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"discountExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -1432,6 +1527,17 @@ public abstract class BaseDiscountProductResourceTestCase {
 				if (!Objects.deepEquals(
 						discountProduct1.getProductId(),
 						discountProduct2.getProductId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productType", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						discountProduct1.getProductType(),
+						discountProduct2.getProductType())) {
 
 					return false;
 				}
@@ -1552,6 +1658,145 @@ public abstract class BaseDiscountProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("catalogCurrencyCode")) {
+			Object object = discountProduct.getCatalogCurrencyCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("catalogCurrencyExternalReferenceCode")) {
+			Object object =
+				discountProduct.getCatalogCurrencyExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("catalogExternalReferenceCode")) {
+			Object object = discountProduct.getCatalogExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("discountExternalReferenceCode")) {
 			Object object = discountProduct.getDiscountExternalReferenceCode();
 
@@ -1664,6 +1909,52 @@ public abstract class BaseDiscountProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("productType")) {
+			Object object = discountProduct.getProductType();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1711,6 +2002,12 @@ public abstract class BaseDiscountProductResourceTestCase {
 	protected DiscountProduct randomDiscountProduct() throws Exception {
 		return new DiscountProduct() {
 			{
+				catalogCurrencyCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogCurrencyExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				discountExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				discountId = RandomTestUtil.randomLong();
@@ -1718,6 +2015,8 @@ public abstract class BaseDiscountProductResourceTestCase {
 				productExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				productId = RandomTestUtil.randomLong();
+				productType = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 			}
 		};
 	}
@@ -1968,4 +2267,4 @@ public abstract class BaseDiscountProductResourceTestCase {
 		DiscountProductResource _discountProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:284779153
+// LIFERAY-REST-BUILDER-HASH:201002201

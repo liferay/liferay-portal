@@ -69,6 +69,27 @@ public class DiscountRule implements Cloneable, Serializable {
 
 	protected Long discountId;
 
+	public String getExternalReferenceCode() {
+		return externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
+
+		try {
+			externalReferenceCode = externalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String externalReferenceCode;
+
 	public Long getId() {
 		return id;
 	}
@@ -147,6 +168,27 @@ public class DiscountRule implements Cloneable, Serializable {
 
 	protected String typeSettings;
 
+	public String getTypeSettingsValue() {
+		return typeSettingsValue;
+	}
+
+	public void setTypeSettingsValue(String typeSettingsValue) {
+		this.typeSettingsValue = typeSettingsValue;
+	}
+
+	public void setTypeSettingsValue(
+		UnsafeSupplier<String, Exception> typeSettingsValueUnsafeSupplier) {
+
+		try {
+			typeSettingsValue = typeSettingsValueUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String typeSettingsValue;
+
 	@Override
 	public DiscountRule clone() throws CloneNotSupportedException {
 		return (DiscountRule)super.clone();
@@ -179,4 +221,4 @@ public class DiscountRule implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1165518400
+// LIFERAY-REST-BUILDER-HASH:1459146845

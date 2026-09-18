@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "DiscountOrderType"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "order type binding that restricts a discount's eligibility to a specific order type. Backed by discount order type link.",
-	requiredProperties = {"orderTypeId"}
+	description = "order type binding that restricts a discount's eligibility to a specific order type. Backed by discount order type link."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "DiscountOrderType")
@@ -385,7 +383,6 @@ public class DiscountOrderType implements Serializable {
 		description = "Reference to the orderType entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long orderTypeId;
 
 	@JsonIgnore
@@ -693,4 +690,4 @@ public class DiscountOrderType implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1603196912
+// LIFERAY-REST-BUILDER-HASH:1724390946

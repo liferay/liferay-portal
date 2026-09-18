@@ -219,6 +219,8 @@ public abstract class BasePriceListResourceTestCase {
 		PriceList priceList = randomPriceList();
 
 		priceList.setAuthor(regex);
+		priceList.setCatalogCurrencyCode(regex);
+		priceList.setCatalogCurrencyExternalReferenceCode(regex);
 		priceList.setCatalogExternalReferenceCode(regex);
 		priceList.setCatalogName(regex);
 		priceList.setCurrencyCode(regex);
@@ -233,6 +235,9 @@ public abstract class BasePriceListResourceTestCase {
 		priceList = PriceListSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, priceList.getAuthor());
+		Assert.assertEquals(regex, priceList.getCatalogCurrencyCode());
+		Assert.assertEquals(
+			regex, priceList.getCatalogCurrencyExternalReferenceCode());
 		Assert.assertEquals(regex, priceList.getCatalogExternalReferenceCode());
 		Assert.assertEquals(regex, priceList.getCatalogName());
 		Assert.assertEquals(regex, priceList.getCurrencyCode());
@@ -1791,6 +1796,14 @@ public abstract class BasePriceListResourceTestCase {
 	protected void assertValid(PriceList priceList) throws Exception {
 		boolean valid = true;
 
+		if (priceList.getDateCreated() == null) {
+			valid = false;
+		}
+
+		if (priceList.getDateModified() == null) {
+			valid = false;
+		}
+
 		if (priceList.getId() == null) {
 			valid = false;
 		}
@@ -1833,6 +1846,29 @@ public abstract class BasePriceListResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (priceList.getCatalogCurrencyCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (priceList.getCatalogCurrencyExternalReferenceCode() ==
+						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"catalogExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -1861,6 +1897,14 @@ public abstract class BasePriceListResourceTestCase {
 
 			if (Objects.equals("createDate", additionalAssertFieldName)) {
 				if (priceList.getCreateDate() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (priceList.getCreator() == null) {
 					valid = false;
 				}
 
@@ -2220,6 +2264,33 @@ public abstract class BasePriceListResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"catalogCurrencyCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						priceList1.getCatalogCurrencyCode(),
+						priceList2.getCatalogCurrencyCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"catalogCurrencyExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						priceList1.getCatalogCurrencyExternalReferenceCode(),
+						priceList2.getCatalogCurrencyExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"catalogExternalReferenceCode",
 					additionalAssertFieldName)) {
 
@@ -2258,6 +2329,16 @@ public abstract class BasePriceListResourceTestCase {
 				if (!Objects.deepEquals(
 						priceList1.getCreateDate(),
 						priceList2.getCreateDate())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("creator", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						priceList1.getCreator(), priceList2.getCreator())) {
 
 					return false;
 				}
@@ -2305,6 +2386,28 @@ public abstract class BasePriceListResourceTestCase {
 				if (!equals(
 						(Map)priceList1.getCustomFields(),
 						(Map)priceList2.getCustomFields())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						priceList1.getDateCreated(),
+						priceList2.getDateCreated())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("dateModified", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						priceList1.getDateModified(),
+						priceList2.getDateModified())) {
 
 					return false;
 				}
@@ -2689,6 +2792,98 @@ public abstract class BasePriceListResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("catalogCurrencyCode")) {
+			Object object = priceList.getCatalogCurrencyCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("catalogCurrencyExternalReferenceCode")) {
+			Object object = priceList.getCatalogCurrencyExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("catalogExternalReferenceCode")) {
 			Object object = priceList.getCatalogExternalReferenceCode();
 
@@ -2815,6 +3010,11 @@ public abstract class BasePriceListResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("creator")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("currencyCode")) {
 			Object object = priceList.getCurrencyCode();
 
@@ -2915,6 +3115,64 @@ public abstract class BasePriceListResourceTestCase {
 		if (entityFieldName.equals("customFields")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("dateCreated")) {
+			if (operator.equals("between")) {
+				Date date = priceList.getDateCreated();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(priceList.getDateCreated()));
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("dateModified")) {
+			if (operator.equals("between")) {
+				Date date = priceList.getDateModified();
+
+				sb = new StringBundler();
+
+				sb.append("(");
+				sb.append(entityFieldName);
+				sb.append(" gt ");
+				sb.append(_format.format(date.getTime() - (2 * Time.SECOND)));
+				sb.append(" and ");
+				sb.append(entityFieldName);
+				sb.append(" lt ");
+				sb.append(_format.format(date.getTime() + (2 * Time.SECOND)));
+				sb.append(")");
+			}
+			else {
+				sb.append(entityFieldName);
+
+				sb.append(" ");
+				sb.append(operator);
+				sb.append(" ");
+
+				sb.append(_format.format(priceList.getDateModified()));
+			}
+
+			return sb.toString();
 		}
 
 		if (entityFieldName.equals("displayDate")) {
@@ -3188,6 +3446,10 @@ public abstract class BasePriceListResourceTestCase {
 				active = RandomTestUtil.randomBoolean();
 				author = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				catalogBasePriceList = RandomTestUtil.randomBoolean();
+				catalogCurrencyCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				catalogCurrencyExternalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				catalogExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				catalogId = RandomTestUtil.randomLong();
@@ -3199,6 +3461,8 @@ public abstract class BasePriceListResourceTestCase {
 				currencyExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				currencyId = RandomTestUtil.randomLong();
+				dateCreated = RandomTestUtil.nextDate();
+				dateModified = RandomTestUtil.nextDate();
 				displayDate = RandomTestUtil.nextDate();
 				expirationDate = RandomTestUtil.nextDate();
 				externalReferenceCode = StringUtil.toLowerCase(
@@ -3479,4 +3743,4 @@ public abstract class BasePriceListResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1638251613
+// LIFERAY-REST-BUILDER-HASH:965215006

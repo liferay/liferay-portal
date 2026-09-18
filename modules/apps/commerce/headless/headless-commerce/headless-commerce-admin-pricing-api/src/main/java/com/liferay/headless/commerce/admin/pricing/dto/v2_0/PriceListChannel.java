@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "PriceListChannel"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Channel binding that restricts a price list's eligibility to a specific channel. Backed by price list channel link.",
-	requiredProperties = {"channelId", "priceListId"}
+	description = "Channel binding that restricts a price list's eligibility to a specific channel. Backed by price list channel link."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PriceListChannel")
@@ -241,7 +239,6 @@ public class PriceListChannel implements Serializable {
 		description = "Reference to the channel entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long channelId;
 
 	@JsonIgnore
@@ -433,7 +430,6 @@ public class PriceListChannel implements Serializable {
 		description = "Reference to the priceList entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long priceListId;
 
 	@JsonIgnore
@@ -693,4 +689,4 @@ public class PriceListChannel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1529774639
+// LIFERAY-REST-BUILDER-HASH:-1714468592

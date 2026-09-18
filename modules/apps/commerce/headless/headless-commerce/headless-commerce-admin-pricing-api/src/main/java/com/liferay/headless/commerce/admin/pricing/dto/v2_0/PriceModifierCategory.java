@@ -21,7 +21,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -45,8 +44,7 @@ import java.util.function.Supplier;
 	value = "PriceModifierCategory"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "AssetCategory binding that restricts a price modifier to products tagged with a specific category. Backed by price modifier link with the AssetCategory class name.",
-	requiredProperties = {"categoryId", "priceModifierId"}
+	description = "AssetCategory binding that restricts a price modifier to products tagged with a specific category. Backed by price modifier link with the AssetCategory class name."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PriceModifierCategory")
@@ -242,7 +240,6 @@ public class PriceModifierCategory implements Serializable {
 		description = "Reference to the category entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long categoryId;
 
 	@JsonIgnore
@@ -388,7 +385,6 @@ public class PriceModifierCategory implements Serializable {
 		description = "Reference to the priceModifier entity (FK identifier)."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotNull
 	protected Long priceModifierId;
 
 	@JsonIgnore
@@ -638,4 +634,4 @@ public class PriceModifierCategory implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-482662219
+// LIFERAY-REST-BUILDER-HASH:1379504504
