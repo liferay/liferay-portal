@@ -10,17 +10,21 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {RecycleBinPage} from '../../../pages/trash-web/RecycleBinPage';
 import {viewUpgradedDocument} from '../utils/viewUpgradedDocument';
 
-const test = mergeTests(loginTest(), documentLibraryPagesTest);
+const test = mergeTests(documentLibraryPagesTest, loginTest());
 
 test.describe.serial('View AFS store upgrade', () => {
 	test(
 		'Can view the upgraded document library',
 		{tag: '@LPD-104390'},
 		async ({page}) => {
-			for (const title of ['Document1', 'Image1']) {
+			for (const [title, expectedSize] of [
+				['Document1', 22016],
+				['Image1', 5176],
+			] as const) {
 				await test.step(`View ${title} after upgrade`, async () => {
 					await viewUpgradedDocument({
 						documentPageURL: '/web/site-name/document',
+						expectedSize,
 						page,
 						title,
 					});

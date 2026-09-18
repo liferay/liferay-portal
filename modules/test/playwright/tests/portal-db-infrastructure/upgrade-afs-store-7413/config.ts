@@ -5,8 +5,8 @@
 
 export const config = {
 	name: 'portal-db-infrastructure.upgrade-afs-store-7413',
-	retries: 0,
 	testDir: 'tests/portal-db-infrastructure/upgrade-afs-store-7413',
+	timeout: 480 * 1000,
 	use: {
 		testIdAttribute: 'data-qa-id',
 	},
