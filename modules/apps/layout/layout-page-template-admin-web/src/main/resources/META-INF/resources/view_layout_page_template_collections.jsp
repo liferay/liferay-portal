@@ -120,43 +120,53 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 			LayoutPageTemplateCollection layoutPageTemplateCollection = layoutPageTemplateDisplayContext.getLayoutPageTemplateCollection();
 			%>
 
-			<c:if test="<%= layoutPageTemplateCollection != null %>">
-				<clay:sheet
-					size="full"
-				>
-					<h2 class="sheet-title">
-						<clay:content-row
-							verticalAlign="center"
-						>
-							<clay:content-col>
-								<span>
-									<%= HtmlUtil.escape(layoutPageTemplateCollection.getName()) %>
-								</span>
-							</clay:content-col>
-
-							<clay:content-col
-								cssClass="inline-item-after"
-								verticalAlign="end"
+			<c:choose>
+				<c:when test="<%= layoutPageTemplateCollection != null %>">
+					<clay:sheet
+						size="full"
+					>
+						<h2 class="sheet-title">
+							<clay:content-row
+								verticalAlign="center"
 							>
+								<clay:content-col>
+									<span>
+										<%= HtmlUtil.escape(layoutPageTemplateCollection.getName()) %>
+									</span>
+								</clay:content-col>
 
-								<%
-								LayoutPageTemplateCollectionActionDropdownItem layoutPageTemplateCollectionActionDropdownItem = new LayoutPageTemplateCollectionActionDropdownItem(request, layoutPageTemplateCollection, renderResponse, "page-templates");
-								%>
+								<clay:content-col
+									cssClass="inline-item-after"
+									verticalAlign="end"
+								>
 
-								<clay:dropdown-actions
-									aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
-									dropdownItems="<%= layoutPageTemplateCollectionActionDropdownItem.getActionDropdownItems() %>"
-									propsTransformer="{LayoutPageTemplateCollectionPropsTransformer} from layout-page-template-admin-web"
-								/>
-							</clay:content-col>
-						</clay:content-row>
-					</h2>
+									<%
+									LayoutPageTemplateCollectionActionDropdownItem layoutPageTemplateCollectionActionDropdownItem = new LayoutPageTemplateCollectionActionDropdownItem(request, layoutPageTemplateCollection, renderResponse, "page-templates");
+									%>
 
-					<clay:sheet-section>
-						<liferay-util:include page="/view_layout_page_template_entries.jsp" servletContext="<%= application %>" />
-					</clay:sheet-section>
-				</clay:sheet>
-			</c:if>
+									<clay:dropdown-actions
+										aria-label='<%= LanguageUtil.get(request, "show-actions") %>'
+										dropdownItems="<%= layoutPageTemplateCollectionActionDropdownItem.getActionDropdownItems() %>"
+										propsTransformer="{LayoutPageTemplateCollectionPropsTransformer} from layout-page-template-admin-web"
+									/>
+								</clay:content-col>
+							</clay:content-row>
+						</h2>
+
+						<clay:sheet-section>
+							<liferay-util:include page="/view_layout_page_template_entries.jsp" servletContext="<%= application %>" />
+						</clay:sheet-section>
+					</clay:sheet>
+				</c:when>
+				<c:when test="<%= layoutPageTemplateDisplayContext.isHideCollectionsPanel() %>">
+					<liferay-frontend:empty-result-message
+						actionDropdownItems="<%= layoutPageTemplateDisplayContext.isShowAddButton(LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_COLLECTION) ? layoutPageTemplateDisplayContext.getActionDropdownItems() : null %>"
+						animationType="<%= EmptyResultMessageKeys.AnimationType.NONE %>"
+						description='<%= LanguageUtil.get(request, "page-template-sets-are-needed-to-create-page-templates") %>'
+						elementType='<%= LanguageUtil.get(request, "page-template-sets") %>'
+					/>
+				</c:when>
+			</c:choose>
 		</clay:col>
 	</clay:row>
 </clay:container-fluid>
