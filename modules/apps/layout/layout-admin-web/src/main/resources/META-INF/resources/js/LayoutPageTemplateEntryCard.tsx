@@ -97,7 +97,10 @@ export default function LayoutPageTemplateEntryCard({
 				role="option"
 				tabIndex={0}
 			>
-				<ClayCard.AspectRatio containerAspectRatio="16/9">
+				<ClayCard.AspectRatio
+					className="card-item-first"
+					containerAspectRatio="16/9"
+				>
 					{thumbnailURL ? (
 						<img
 							alt="thumbnail"
