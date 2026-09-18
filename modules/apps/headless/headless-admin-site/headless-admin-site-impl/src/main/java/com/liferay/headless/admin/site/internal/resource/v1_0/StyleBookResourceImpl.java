@@ -311,7 +311,7 @@ public class StyleBookResourceImpl
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.addStyleBookEntry(
 				styleBook.getExternalReferenceCode(), groupId,
-				Boolean.TRUE.equals(styleBook.getDefaultStyleBook()),
+				GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
 				StringPool.BLANK, styleBook.getFrontendTokensValues(),
 				styleBook.getName(), styleBook.getKey(), styleBook.getThemeId(),
 				_getServiceContext(groupId));
@@ -383,7 +383,7 @@ public class StyleBookResourceImpl
 		return _toStyleBook(
 			_styleBookEntryService.updateStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(),
-				Boolean.TRUE.equals(styleBook.getDefaultStyleBook()),
+				GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
 				styleBookEntry.getFrontendTokenDefinition(),
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(),
