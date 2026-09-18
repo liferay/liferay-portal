@@ -10,7 +10,7 @@ import java.io.Serializable;
 /**
  * @author Shuyang Zhou
  */
-public interface CacheModel<T> extends Serializable {
+public interface CacheModel<T> extends Cloneable, Serializable {
 
 	public T toEntityModel();
 
