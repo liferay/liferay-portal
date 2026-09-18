@@ -14,10 +14,12 @@ import com.liferay.commerce.price.list.service.CommercePriceListService;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryService;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceEntry;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.internal.odata.entity.v2_0.PriceEntryEntityModel;
+import com.liferay.headless.commerce.admin.pricing.internal.util.SkuUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.TierPriceUtil;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.PriceEntryResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
@@ -30,7 +32,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -259,20 +260,14 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 
 		long cProductId = 0;
 		String cpInstanceUuid = null;
-		CPInstance cpInstance = null;
 
-		long skuId = GetterUtil.getLong(priceEntry.getSkuId());
-		String skuExternalReferenceCode =
-			priceEntry.getSkuExternalReferenceCode();
-
-		if (skuId > 0) {
-			cpInstance = _cpInstanceService.fetchCPInstance(skuId);
-		}
-		else if (Validator.isNotNull(skuExternalReferenceCode)) {
-			cpInstance =
-				_cpInstanceService.fetchCPInstanceByExternalReferenceCode(
-					skuExternalReferenceCode, serviceContext.getCompanyId());
-		}
+		CPInstance cpInstance = SkuUtil.fetchCPInstance(
+			_cpDefinitionService, _cpInstanceService,
+			commercePriceList.getGroupId(),
+			priceEntry.getProductExternalReferenceCode(),
+			priceEntry.getProductType(), serviceContext,
+			priceEntry.getSkuExternalReferenceCode(),
+			GetterUtil.getLong(priceEntry.getSkuId()));
 
 		if (cpInstance != null) {
 			CPDefinition cpDefinition = cpInstance.getCPDefinition();
@@ -445,6 +440,9 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 
 	@Reference
 	private CommerceTierPriceEntryService _commerceTierPriceEntryService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
 
 	@Reference
 	private CPInstanceService _cpInstanceService;
