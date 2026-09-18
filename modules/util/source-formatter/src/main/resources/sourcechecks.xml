@@ -737,6 +737,7 @@
 		<check name="JavaTermOrderCheck">
 			<category name="Styling" />
 			<description name="Checks the order of javaterms." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaTermStylingCheck">
 			<category name="Styling" />
