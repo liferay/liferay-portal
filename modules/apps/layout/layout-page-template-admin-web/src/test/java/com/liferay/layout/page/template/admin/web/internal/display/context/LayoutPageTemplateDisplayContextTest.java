@@ -5,8 +5,11 @@
 
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
-import com.liferay.layout.page.template.admin.web.internal.constants.LayoutPageTemplateAdminWebKeys;
+import com.liferay.design.library.util.DesignLibraryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.RenderRequest;
@@ -14,11 +17,14 @@ import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -31,32 +37,63 @@ public class LayoutPageTemplateDisplayContextTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Test
-	@TestInfo("LPD-104842")
-	public void testIsShowCollectionsPanel() {
-		_testIsShowCollectionsPanel(true, null);
-		_testIsShowCollectionsPanel(false, Boolean.FALSE);
+	@Before
+	public void setUp() {
+		_setUpThemeDisplay();
 	}
 
-	private void _testIsShowCollectionsPanel(
-		boolean expectedShowCollectionsPanel, Boolean showCollectionsPanel) {
+	@After
+	public void tearDown() {
+		_designLibraryUtilMockedStatic.close();
+	}
+
+	@Test
+	@TestInfo("LPD-104842")
+	public void testIsHideCollectionsPanel() {
+		_testIsHideCollectionsPanel(false);
+		_testIsHideCollectionsPanel(true);
+	}
+
+	private void _setUpDesignLibraryScope(boolean designLibraryScope) {
+		_designLibraryUtilMockedStatic.when(
+			() -> DesignLibraryUtil.isDesignLibraryScope(_group)
+		).thenReturn(
+			designLibraryScope
+		);
+	}
+
+	private void _setUpThemeDisplay() {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 		Mockito.when(
-			_httpServletRequest.getAttribute(
-				LayoutPageTemplateAdminWebKeys.SHOW_COLLECTIONS_PANEL)
+			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
 		).thenReturn(
-			showCollectionsPanel
+			themeDisplay
 		);
+
+		Mockito.when(
+			themeDisplay.getScopeGroup()
+		).thenReturn(
+			_group
+		);
+	}
+
+	private void _testIsHideCollectionsPanel(boolean designLibraryScope) {
+		_setUpDesignLibraryScope(designLibraryScope);
 
 		LayoutPageTemplateDisplayContext layoutPageTemplateDisplayContext =
 			new LayoutPageTemplateDisplayContext(
 				_httpServletRequest, _renderRequest, _renderResponse);
 
 		Assert.assertEquals(
-			expectedShowCollectionsPanel,
-			layoutPageTemplateDisplayContext.isShowCollectionsPanel());
+			designLibraryScope,
+			layoutPageTemplateDisplayContext.isHideCollectionsPanel());
 	}
 
+	private final MockedStatic<DesignLibraryUtil>
+		_designLibraryUtilMockedStatic = Mockito.mockStatic(
+			DesignLibraryUtil.class);
+	private final Group _group = Mockito.mock(Group.class);
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
 	private final RenderRequest _renderRequest = Mockito.mock(
