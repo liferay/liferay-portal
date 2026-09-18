@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -339,9 +340,9 @@ public class StyleBookResourceImpl
 		StyleBookEntry styleBookEntry =
 			_styleBookEntryService.addStyleBookEntry(
 				styleBook.getExternalReferenceCode(), groupId,
-				styleBook.getDefaultStyleBook(), StringPool.BLANK,
-				styleBook.getFrontendTokensValues(), styleBook.getName(),
-				styleBook.getKey(), styleBook.getThemeId(),
+				GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
+				StringPool.BLANK, styleBook.getFrontendTokensValues(),
+				styleBook.getName(), styleBook.getKey(), styleBook.getThemeId(),
 				_getServiceContext(groupId));
 
 		long previewFileEntryId = _getPreviewFileEntryId(
@@ -417,7 +418,7 @@ public class StyleBookResourceImpl
 		return _toStyleBook(
 			_styleBookEntryService.updateStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(),
-				styleBook.getDefaultStyleBook(),
+				GetterUtil.getBoolean(styleBook.getDefaultStyleBook()),
 				styleBookEntry.getFrontendTokenDefinition(),
 				styleBook.getFrontendTokensValues(), styleBook.getName(),
 				styleBook.getKey(),
