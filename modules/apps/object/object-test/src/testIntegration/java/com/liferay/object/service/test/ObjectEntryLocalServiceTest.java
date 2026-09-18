@@ -2495,7 +2495,7 @@ public class ObjectEntryLocalServiceTest {
 				objectField5.getName()),
 			0);
 
-		Double updatedRandomDouble = RandomTestUtil.randomDouble();
+		Double weight = RandomTestUtil.randomDouble();
 
 		objectEntry = _objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
@@ -2505,12 +2505,12 @@ public class ObjectEntryLocalServiceTest {
 			).put(
 				"listTypeEntryKeyRequired", "listTypeEntryKey1"
 			).put(
-				"weight", updatedRandomDouble
+				"weight", weight
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertEquals(
-			updatedRandomDouble + 10,
+			weight + 10,
 			MapUtil.getDouble(objectEntry.getValues(), objectField2.getName()),
 			0);
 
