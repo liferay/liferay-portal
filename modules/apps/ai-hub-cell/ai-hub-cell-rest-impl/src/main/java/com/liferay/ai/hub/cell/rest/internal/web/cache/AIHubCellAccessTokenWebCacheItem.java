@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 /**
  * @author Manuele Castro
@@ -30,7 +31,9 @@ public class AIHubCellAccessTokenWebCacheItem extends BaseWebCacheItem {
 			StringPool.POUND, aiHubCellConfiguration.serviceURL());
 
 		JSONObject jsonObject = (JSONObject)WebCachePoolUtil.get(
-			key, new AIHubCellAccessTokenWebCacheItem(aiHubCellConfiguration));
+			key,
+			new AIHubCellAccessTokenWebCacheItem(
+				aiHubCellConfiguration, companyId));
 
 		if (!isExpired(jsonObject.getString("access_token"))) {
 			return jsonObject;
@@ -39,13 +42,16 @@ public class AIHubCellAccessTokenWebCacheItem extends BaseWebCacheItem {
 		WebCachePoolUtil.remove(key);
 
 		return (JSONObject)WebCachePoolUtil.get(
-			key, new AIHubCellAccessTokenWebCacheItem(aiHubCellConfiguration));
+			key,
+			new AIHubCellAccessTokenWebCacheItem(
+				aiHubCellConfiguration, companyId));
 	}
 
 	public AIHubCellAccessTokenWebCacheItem(
-		AIHubCellConfiguration aiHubCellConfiguration) {
+		AIHubCellConfiguration aiHubCellConfiguration, long companyId) {
 
 		_aiHubCellConfiguration = aiHubCellConfiguration;
+		_companyId = companyId;
 	}
 
 	@Override
@@ -55,7 +61,9 @@ public class AIHubCellAccessTokenWebCacheItem extends BaseWebCacheItem {
 
 			options.addPart("client_id", _aiHubCellConfiguration.clientId());
 			options.addPart(
-				"client_secret", _aiHubCellConfiguration.clientSecret());
+				"client_secret",
+				SecretResolverUtil.resolve(
+					_companyId, _aiHubCellConfiguration.clientSecret()));
 			options.addPart("grant_type", "client_credentials");
 			options.setLocation(
 				_aiHubCellConfiguration.serviceURL() + "/o/oauth2/token");
@@ -88,6 +96,7 @@ public class AIHubCellAccessTokenWebCacheItem extends BaseWebCacheItem {
 		AIHubCellAccessTokenWebCacheItem.class);
 
 	private final AIHubCellConfiguration _aiHubCellConfiguration;
+	private final long _companyId;
 	private long _refreshTime;
 
 }

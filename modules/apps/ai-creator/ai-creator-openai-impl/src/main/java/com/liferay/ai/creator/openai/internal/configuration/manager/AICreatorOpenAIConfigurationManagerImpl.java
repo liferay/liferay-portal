@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -34,7 +35,8 @@ public class AICreatorOpenAIConfigurationManagerImpl
 				_configurationProvider.getCompanyConfiguration(
 					AICreatorOpenAICompanyConfiguration.class, companyId);
 
-		return aiCreatorOpenAICompanyConfiguration.apiKey();
+		return _secretResolver.resolve(
+			companyId, aiCreatorOpenAICompanyConfiguration.apiKey());
 	}
 
 	@Override
@@ -48,7 +50,8 @@ public class AICreatorOpenAIConfigurationManagerImpl
 				AICreatorOpenAIGroupConfiguration.class, group.getCompanyId(),
 				groupId);
 
-		return aiCreatorOpenAIGroupConfiguration.apiKey();
+		return _secretResolver.resolve(
+			group.getCompanyId(), aiCreatorOpenAIGroupConfiguration.apiKey());
 	}
 
 	@Override
@@ -59,8 +62,10 @@ public class AICreatorOpenAIConfigurationManagerImpl
 			_configurationProvider.getGroupConfiguration(
 				AICreatorOpenAIGroupConfiguration.class, companyId, groupId);
 
-		if (Validator.isNotNull(aiCreatorOpenAIGroupConfiguration.apiKey())) {
-			return aiCreatorOpenAIGroupConfiguration.apiKey();
+		String apiKey = aiCreatorOpenAIGroupConfiguration.apiKey();
+
+		if (Validator.isNotNull(apiKey)) {
+			return _secretResolver.resolve(companyId, apiKey);
 		}
 
 		AICreatorOpenAICompanyConfiguration
@@ -68,7 +73,8 @@ public class AICreatorOpenAIConfigurationManagerImpl
 				_configurationProvider.getCompanyConfiguration(
 					AICreatorOpenAICompanyConfiguration.class, companyId);
 
-		return aiCreatorOpenAICompanyConfiguration.apiKey();
+		return _secretResolver.resolve(
+			companyId, aiCreatorOpenAICompanyConfiguration.apiKey());
 	}
 
 	@Override
@@ -168,5 +174,8 @@ public class AICreatorOpenAIConfigurationManagerImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
