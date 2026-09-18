@@ -878,10 +878,8 @@ public class LiferayDynamicRegistrationService
 		}
 
 		if (allowedRedirectURIPatternsSet.isEmpty()) {
-			OAuth2ErrorUtil.reportInvalidRequestError(
-				"Redirect URIs are not allowed for open registration",
-				OAuth2ProviderRESTEndpointConstants.ERROR_INVALID_REDIRECT_URI,
-				Response.Status.BAD_REQUEST);
+			_reportInvalidRedirectURIError(
+				"Redirect URIs are not allowed for open registration");
 		}
 
 		List<Pattern> patterns = TransformUtil.transform(
@@ -903,12 +901,9 @@ public class LiferayDynamicRegistrationService
 			}
 
 			if (!matched) {
-				OAuth2ErrorUtil.reportInvalidRequestError(
+				_reportInvalidRedirectURIError(
 					"Redirect URI " + redirectURI +
-						" is not allowed for open registration",
-					OAuth2ProviderRESTEndpointConstants.
-						ERROR_INVALID_REDIRECT_URI,
-					Response.Status.BAD_REQUEST);
+						" is not allowed for open registration");
 			}
 		}
 	}
