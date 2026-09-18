@@ -16,7 +16,7 @@
 					<%
 					ClickToChatConfiguration clickToChatConfiguration = ClickToChatConfigurationUtil.getClickToChatConfiguration(themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId());
 
-					String chatProviderSecretKey = clickToChatConfiguration.chatProviderSecretKey();
+					String chatProviderSecretKey = GetterUtil.getString(request.getAttribute(ClickToChatWebKeys.CLICK_TO_CHAT_CHAT_PROVIDER_SECRET_KEY));
 
 					String jwtToken = Jwts.builder(
 					).setHeaderParam(

@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -152,7 +153,9 @@ public class ClickToChatBottomJSPDynamicInclude extends BaseJSPDynamicInclude {
 			clickToChatConfiguration.chatProviderKeyId());
 		httpServletRequest.setAttribute(
 			ClickToChatWebKeys.CLICK_TO_CHAT_CHAT_PROVIDER_SECRET_KEY,
-			clickToChatConfiguration.chatProviderSecretKey());
+			_secretResolver.resolve(
+				themeDisplay.getCompanyId(),
+				clickToChatConfiguration.chatProviderSecretKey()));
 
 		super.include(httpServletRequest, httpServletResponse, key);
 	}
@@ -177,6 +180,9 @@ public class ClickToChatBottomJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.click.to.chat.web)")
 	private ServletContext _servletContext;
