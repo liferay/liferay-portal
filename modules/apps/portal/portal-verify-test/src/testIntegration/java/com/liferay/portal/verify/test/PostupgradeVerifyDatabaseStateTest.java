@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.model.ReleaseConstants;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.service.ServiceComponentLocalService;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -34,7 +33,6 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.verify.PostupgradeVerifyDatabaseState;
-import com.liferay.portal.verify.VerifyException;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.test.util.BaseVerifyProcessTestCase;
 
@@ -44,7 +42,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.junit.Assert;
@@ -337,19 +334,6 @@ public class PostupgradeVerifyDatabaseStateTest
 
 			renameView(_STALE_VIEW_NAME, _VIEW_NAME);
 		}
-	}
-
-	@Override
-	protected void doVerify() throws VerifyException {
-		Object dclSingleton = ReflectionTestUtil.getFieldValue(
-			PostupgradeVerifyDatabaseState.class,
-			"_historicalServiceComponentTablesServletContextNamesDCLSingleton");
-
-		ReflectionTestUtil.invoke(
-			dclSingleton, "destroy", new Class<?>[] {Consumer.class},
-			(Object)null);
-
-		super.doVerify();
 	}
 
 	@Override
