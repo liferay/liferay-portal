@@ -232,6 +232,14 @@ describe('AccountMetricsCard', () => {
 			expect(screen.getByText('TOTAL INDIVIDUALS')).toBeInTheDocument();
 		});
 
+		it('should reserve the rendered height so the card does not shrink while loading', () => {
+			const {container} = renderAccountMetricsCard({loading: true});
+
+			expect(container.querySelector('.card-root')).toHaveStyle({
+				minHeight: '115px',
+			});
+		});
+
 		it('should render the metrics when it is not loading', () => {
 			const {container} = renderAccountMetricsCard({loading: false});
 

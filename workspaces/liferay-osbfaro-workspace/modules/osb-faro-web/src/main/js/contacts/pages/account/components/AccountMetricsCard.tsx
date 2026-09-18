@@ -66,7 +66,10 @@ const AccountMetricsCard: React.FC<IAccountMetricsCardProps> = ({
 	};
 
 	return (
-		<Card className={classNames(className, 'flex-fill p-3 w-100')}>
+		<Card
+			className={classNames(className, 'flex-fill p-3 w-100')}
+			minHeight={115}
+		>
 			<Card.Title>
 				<div className="font-weight-semi-bold">
 					<Text size={5}>{title.toUpperCase()}</Text>
