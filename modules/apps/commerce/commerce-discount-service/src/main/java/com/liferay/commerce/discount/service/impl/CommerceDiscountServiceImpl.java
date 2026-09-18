@@ -245,15 +245,15 @@ public class CommerceDiscountServiceImpl
 
 			if (commerceDiscount != null) {
 				return updateCommerceDiscount(
-					commerceDiscountId, title, target, useCouponCode,
-					couponCode, usePercentage, maximumDiscountAmount, level,
-					level1, level2, level3, level4, limitationType,
-					limitationTimes, limitationTimesPerAccount,
-					rulesConjunction, active, displayDateMonth, displayDateDay,
-					displayDateYear, displayDateHour, displayDateMinute,
-					expirationDateMonth, expirationDateDay, expirationDateYear,
-					expirationDateHour, expirationDateMinute, neverExpire,
-					serviceContext);
+					commerceDiscount.getCommerceDiscountId(), title, target,
+					useCouponCode, couponCode, usePercentage,
+					maximumDiscountAmount, level, level1, level2, level3,
+					level4, limitationType, limitationTimes,
+					limitationTimesPerAccount, rulesConjunction, active,
+					displayDateMonth, displayDateDay, displayDateYear,
+					displayDateHour, displayDateMinute, expirationDateMonth,
+					expirationDateDay, expirationDateYear, expirationDateHour,
+					expirationDateMinute, neverExpire, serviceContext);
 			}
 		}
 

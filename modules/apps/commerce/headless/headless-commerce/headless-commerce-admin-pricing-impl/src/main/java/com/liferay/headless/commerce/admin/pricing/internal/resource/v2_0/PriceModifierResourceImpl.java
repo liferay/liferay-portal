@@ -6,6 +6,8 @@
 package com.liferay.headless.commerce.admin.pricing.internal.resource.v2_0;
 
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.price.list.exception.NoSuchPriceListException;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceListService;
@@ -14,7 +16,9 @@ import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.pricing.service.CommercePriceModifierService;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceModifierUtil;
@@ -333,9 +337,11 @@ public class PriceModifierResourceImpl extends BasePriceModifierResourceImpl {
 
 		PriceModifierUtil.addOrUpdateCommercePriceModifierRels(
 			contextCompany.getGroupId(), _assetCategoryLocalService,
-			_commercePricingClassService, _cProductLocalService,
-			_commercePriceModifierRelService, priceModifier,
-			commercePriceModifier, _serviceContextHelper);
+			_assetCategoryService, _cProductLocalService,
+			_commerceCatalogService, _commerceCurrencyService,
+			_commercePriceModifierRelService, _commercePricingClassService,
+			_cpDefinitionService, priceModifier, commercePriceModifier,
+			_serviceContextHelper);
 	}
 
 	private CommercePriceModifier _updatePriceModifier(
@@ -378,7 +384,16 @@ public class PriceModifierResourceImpl extends BasePriceModifierResourceImpl {
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
+	private AssetCategoryService _assetCategoryService;
+
+	@Reference
 	private CProductLocalService _cProductLocalService;
+
+	@Reference
+	private CommerceCatalogService _commerceCatalogService;
+
+	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
 
 	@Reference
 	private CommercePriceListService _commercePriceListService;
@@ -397,6 +412,9 @@ public class PriceModifierResourceImpl extends BasePriceModifierResourceImpl {
 
 	@Reference
 	private CommercePricingClassService _commercePricingClassService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

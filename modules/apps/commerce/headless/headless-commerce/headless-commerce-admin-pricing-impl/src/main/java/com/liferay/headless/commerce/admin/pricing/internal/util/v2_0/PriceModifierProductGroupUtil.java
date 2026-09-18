@@ -14,7 +14,9 @@ import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProductGroup;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -33,40 +35,75 @@ public class PriceModifierProductGroupUtil {
 		ServiceContext serviceContext =
 			serviceContextHelper.getServiceContext();
 
-		CommercePricingClass commercePricingClass;
+		CommercePricingClass commercePricingClass = _getCommercePricingClass(
+			commercePricingClassService, priceModifierProductGroup,
+			serviceContext);
 
-		if (Validator.isNull(
-				priceModifierProductGroup.
-					getProductGroupExternalReferenceCode())) {
+		CommercePriceModifierRel commercePriceModifierRel =
+			commercePriceModifierRelService.fetchCommercePriceModifierRel(
+				commercePriceModifier.getCommercePriceModifierId(),
+				CommercePricingClass.class.getName(),
+				commercePricingClass.getCommercePricingClassId());
 
-			commercePricingClass =
-				commercePricingClassService.getCommercePricingClass(
-					priceModifierProductGroup.getProductGroupId());
-		}
-		else {
-			commercePricingClass =
-				commercePricingClassService.
-					fetchCommercePricingClassByExternalReferenceCode(
-						priceModifierProductGroup.
-							getProductGroupExternalReferenceCode(),
-						serviceContext.getCompanyId());
-
-			if (commercePricingClass == null) {
-				String productGroupExternalReferenceCode =
-					priceModifierProductGroup.
-						getProductGroupExternalReferenceCode();
-
-				throw new NoSuchPricingClassException(
-					"Unable to find Product Group with " +
-						"externalReferenceCode: " +
-							productGroupExternalReferenceCode);
-			}
+		if (commercePriceModifierRel != null) {
+			return commercePriceModifierRel;
 		}
 
 		return commercePriceModifierRelService.addCommercePriceModifierRel(
 			commercePriceModifier.getCommercePriceModifierId(),
 			CommercePricingClass.class.getName(),
 			commercePricingClass.getCommercePricingClassId(), serviceContext);
+	}
+
+	private static CommercePricingClass _getCommercePricingClass(
+			CommercePricingClassService commercePricingClassService,
+			PriceModifierProductGroup priceModifierProductGroup,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		String productGroupExternalReferenceCode =
+			priceModifierProductGroup.getProductGroupExternalReferenceCode();
+
+		if (Validator.isNull(productGroupExternalReferenceCode)) {
+			return commercePricingClassService.getCommercePricingClass(
+				GetterUtil.getLong(
+					priceModifierProductGroup.getProductGroupId()));
+		}
+
+		CommercePricingClass commercePricingClass =
+			commercePricingClassService.
+				fetchCommercePricingClassByExternalReferenceCode(
+					productGroupExternalReferenceCode,
+					serviceContext.getCompanyId());
+
+		if (commercePricingClass != null) {
+			return commercePricingClass;
+		}
+
+		long productGroupId = GetterUtil.getLong(
+			priceModifierProductGroup.getProductGroupId());
+
+		if ((productGroupId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
+			commercePricingClass =
+				commercePricingClassService.fetchCommercePricingClass(
+					productGroupId);
+
+			if ((commercePricingClass != null) &&
+				(commercePricingClass.getCompanyId() ==
+					serviceContext.getCompanyId())) {
+
+				return commercePricingClass;
+			}
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			throw new NoSuchPricingClassException(
+				"Unable to find Product Group with externalReferenceCode: " +
+					productGroupExternalReferenceCode);
+		}
+
+		return commercePricingClassService.getOrAddEmptyCommercePricingClass(
+			productGroupExternalReferenceCode);
 	}
 
 }

@@ -8,6 +8,7 @@ package com.liferay.headless.commerce.admin.pricing.internal.resource.v2_0;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountGroupService;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
@@ -166,7 +167,8 @@ public class PriceListResourceImpl
 					"creator", "priceEntries.tierPrices",
 					"priceListAccountGroups", "priceListAccounts",
 					"priceListChannels", "priceListDiscounts",
-					"priceListOrderTypes", "priceModifiers");
+					"priceListOrderTypes",
+					"priceModifiers.priceModifierProducts");
 			}
 
 			@Override
@@ -545,9 +547,12 @@ public class PriceListResourceImpl
 
 				PriceModifierUtil.addOrUpdateCommercePriceModifierRels(
 					contextCompany.getGroupId(), _assetCategoryLocalService,
-					_commercePricingClassService, _cProductLocalService,
-					_commercePriceModifierRelService, priceModifier,
-					commercePriceModifier, _serviceContextHelper);
+					_assetCategoryService, _cProductLocalService,
+					_commerceCatalogService, _commerceCurrencyService,
+					_commercePriceModifierRelService,
+					_commercePricingClassService, _cpDefinitionService,
+					priceModifier, commercePriceModifier,
+					_serviceContextHelper);
 			}
 		}
 
@@ -709,6 +714,9 @@ public class PriceListResourceImpl
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference
 	private CProductLocalService _cProductLocalService;

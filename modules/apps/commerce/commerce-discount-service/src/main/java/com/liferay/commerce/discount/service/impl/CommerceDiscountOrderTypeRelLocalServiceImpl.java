@@ -178,6 +178,27 @@ public class CommerceDiscountOrderTypeRelLocalServiceImpl
 				commerceDiscountId, name));
 	}
 
+	@Override
+	public CommerceDiscountOrderTypeRel updatePriority(
+			long commerceDiscountOrderTypeRelId, int priority)
+		throws PortalException {
+
+		CommerceDiscountOrderTypeRel commerceDiscountOrderTypeRel =
+			commerceDiscountOrderTypeRelPersistence.findByPrimaryKey(
+				commerceDiscountOrderTypeRelId);
+
+		commerceDiscountOrderTypeRel.setPriority(priority);
+
+		commerceDiscountOrderTypeRel =
+			commerceDiscountOrderTypeRelPersistence.update(
+				commerceDiscountOrderTypeRel);
+
+		_reindexCommerceDiscount(
+			commerceDiscountOrderTypeRel.getCommerceDiscountId());
+
+		return commerceDiscountOrderTypeRel;
+	}
+
 	private GroupByStep _getGroupByStep(
 			FromStep fromStep, Long commerceDiscountId, String keywords)
 		throws PortalException {

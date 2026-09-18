@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.util.v2_0;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.discount.model.CommerceDiscount;
@@ -13,7 +14,9 @@ import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccount;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 /**
@@ -31,24 +34,65 @@ public class DiscountAccountUtil {
 		ServiceContext serviceContext =
 			serviceContextHelper.getServiceContext();
 
-		AccountEntry accountEntry;
+		AccountEntry accountEntry = _getAccountEntry(
+			accountEntryService, discountAccount, serviceContext);
 
-		if (Validator.isNull(
-				discountAccount.getAccountExternalReferenceCode())) {
+		CommerceDiscountAccountRel commerceDiscountAccountRel =
+			commerceDiscountAccountRelService.fetchCommerceDiscountAccountRel(
+				accountEntry.getAccountEntryId(),
+				commerceDiscount.getCommerceDiscountId());
 
-			accountEntry = accountEntryService.getAccountEntry(
-				discountAccount.getAccountId());
-		}
-		else {
-			accountEntry =
-				accountEntryService.getAccountEntryByExternalReferenceCode(
-					discountAccount.getAccountExternalReferenceCode(),
-					serviceContext.getCompanyId());
+		if (commerceDiscountAccountRel != null) {
+			return commerceDiscountAccountRel;
 		}
 
 		return commerceDiscountAccountRelService.addCommerceDiscountAccountRel(
 			commerceDiscount.getCommerceDiscountId(),
 			accountEntry.getAccountEntryId(), serviceContext);
+	}
+
+	private static AccountEntry _getAccountEntry(
+			AccountEntryService accountEntryService,
+			DiscountAccount discountAccount, ServiceContext serviceContext)
+		throws PortalException {
+
+		String accountExternalReferenceCode =
+			discountAccount.getAccountExternalReferenceCode();
+
+		if (Validator.isNull(accountExternalReferenceCode)) {
+			return accountEntryService.getAccountEntry(
+				GetterUtil.getLong(discountAccount.getAccountId()));
+		}
+
+		AccountEntry accountEntry =
+			accountEntryService.fetchAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, serviceContext.getCompanyId());
+
+		if (accountEntry != null) {
+			return accountEntry;
+		}
+
+		long accountId = GetterUtil.getLong(discountAccount.getAccountId());
+
+		if ((accountId > 0) && !LazyReferencingThreadLocal.isEnabled()) {
+			accountEntry = accountEntryService.fetchAccountEntry(accountId);
+
+			if ((accountEntry != null) &&
+				(accountEntry.getCompanyId() ==
+					serviceContext.getCompanyId())) {
+
+				return accountEntry;
+			}
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			return accountEntryService.getAccountEntryByExternalReferenceCode(
+				accountExternalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		return accountEntryService.getOrAddEmptyAccountEntry(
+			accountExternalReferenceCode, accountExternalReferenceCode,
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
 	}
 
 }

@@ -7,6 +7,7 @@ package com.liferay.headless.commerce.admin.pricing.internal.resource.v2_0;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountRel;
@@ -124,8 +125,8 @@ public class DiscountCategoryResourceImpl
 		CommerceDiscountRel commerceDiscountRel =
 			DiscountCategoryUtil.addCommerceDiscountRel(
 				contextCompany.getGroupId(), _assetCategoryLocalService,
-				_commerceDiscountRelService, discountCategory, commerceDiscount,
-				_serviceContextHelper);
+				_assetCategoryService, _commerceDiscountRelService,
+				discountCategory, commerceDiscount, _serviceContextHelper);
 
 		return _toDiscountCategory(
 			commerceDiscountRel.getCommerceDiscountRelId());
@@ -139,7 +140,8 @@ public class DiscountCategoryResourceImpl
 		CommerceDiscountRel commerceDiscountRel =
 			DiscountCategoryUtil.addCommerceDiscountRel(
 				contextCompany.getGroupId(), _assetCategoryLocalService,
-				_commerceDiscountRelService, discountCategory,
+				_assetCategoryService, _commerceDiscountRelService,
+				discountCategory,
 				_commerceDiscountService.getCommerceDiscount(id),
 				_serviceContextHelper);
 
@@ -188,6 +190,9 @@ public class DiscountCategoryResourceImpl
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.discount.model.CommerceDiscountRel)"

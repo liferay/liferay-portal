@@ -7,14 +7,11 @@ package com.liferay.headless.commerce.admin.pricing.internal.resource.v2_0;
 
 import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountGroupService;
-import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
-import com.liferay.commerce.discount.model.CommerceDiscountAccountRel;
-import com.liferay.commerce.discount.model.CommerceDiscountCommerceAccountGroupRel;
-import com.liferay.commerce.discount.model.CommerceDiscountOrderTypeRel;
-import com.liferay.commerce.discount.model.CommerceDiscountRel;
 import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.service.CommerceDiscountAccountRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountCommerceAccountGroupRelService;
@@ -24,11 +21,11 @@ import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
 import com.liferay.commerce.discount.service.CommerceDiscountService;
 import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
-import com.liferay.commerce.product.exception.NoSuchCProductException;
-import com.liferay.commerce.product.model.CPDefinition;
-import com.liferay.commerce.product.model.CProduct;
-import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CPInstanceService;
+import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
@@ -43,6 +40,7 @@ import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountOrderType;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProduct;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountProductGroup;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountRule;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountSku;
 import com.liferay.headless.commerce.admin.pricing.internal.odata.entity.v2_0.DiscountEntityModel;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountAccountGroupUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountAccountUtil;
@@ -52,6 +50,7 @@ import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountOr
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountProductGroupUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountProductUtil;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountRuleUtil;
+import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountSkuUtil;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.DateConfig;
@@ -454,17 +453,6 @@ public class DiscountResourceImpl
 			for (DiscountAccountGroup discountAccountGroup :
 					discountAccountGroups) {
 
-				CommerceDiscountCommerceAccountGroupRel
-					commerceDiscountCommerceAccountGroupRel =
-						_commerceDiscountCommerceAccountGroupRelService.
-							fetchCommerceDiscountCommerceAccountGroupRel(
-								commerceDiscount.getCommerceDiscountId(),
-								discountAccountGroup.getAccountGroupId());
-
-				if (commerceDiscountCommerceAccountGroupRel != null) {
-					continue;
-				}
-
 				DiscountAccountGroupUtil.addCommerceDiscountAccountGroupRel(
 					_accountGroupService,
 					_commerceDiscountCommerceAccountGroupRelService,
@@ -479,16 +467,6 @@ public class DiscountResourceImpl
 
 		if (discountAccounts != null) {
 			for (DiscountAccount discountAccount : discountAccounts) {
-				CommerceDiscountAccountRel commerceDiscountAccountRel =
-					_commerceDiscountAccountRelService.
-						fetchCommerceDiscountAccountRel(
-							discountAccount.getAccountId(),
-							commerceDiscount.getCommerceDiscountId());
-
-				if (commerceDiscountAccountRel != null) {
-					continue;
-				}
-
 				DiscountAccountUtil.addCommerceDiscountAccountRel(
 					_accountEntryService, _commerceDiscountAccountRelService,
 					discountAccount, commerceDiscount, _serviceContextHelper);
@@ -502,19 +480,10 @@ public class DiscountResourceImpl
 
 		if (discountCategories != null) {
 			for (DiscountCategory discountCategory : discountCategories) {
-				CommerceDiscountRel commerceDiscountRel =
-					_commerceDiscountRelService.fetchCommerceDiscountRel(
-						AssetCategory.class.getName(),
-						discountCategory.getCategoryId());
-
-				if (commerceDiscountRel != null) {
-					continue;
-				}
-
 				DiscountCategoryUtil.addCommerceDiscountRel(
 					contextCompany.getGroupId(), _assetCategoryLocalService,
-					_commerceDiscountRelService, discountCategory,
-					commerceDiscount, _serviceContextHelper);
+					_assetCategoryService, _commerceDiscountRelService,
+					discountCategory, commerceDiscount, _serviceContextHelper);
 			}
 		}
 
@@ -524,16 +493,6 @@ public class DiscountResourceImpl
 
 		if (discountChannels != null) {
 			for (DiscountChannel discountChannel : discountChannels) {
-				CommerceChannelRel commerceChannelRel =
-					_commerceChannelRelService.fetchCommerceChannelRel(
-						CommerceDiscount.class.getName(),
-						commerceDiscount.getCommerceDiscountId(),
-						discountChannel.getChannelId());
-
-				if (commerceChannelRel != null) {
-					continue;
-				}
-
 				DiscountChannelUtil.addCommerceDiscountChannelRel(
 					_commerceChannelService, _commerceChannelRelService,
 					discountChannel, commerceDiscount, _serviceContextHelper);
@@ -547,16 +506,6 @@ public class DiscountResourceImpl
 
 		if (discountOrderTypes != null) {
 			for (DiscountOrderType discountOrderType : discountOrderTypes) {
-				CommerceDiscountOrderTypeRel commerceDiscountOrderTypeRel =
-					_commerceDiscountOrderTypeRelService.
-						fetchCommerceDiscountOrderTypeRel(
-							commerceDiscount.getCommerceDiscountId(),
-							discountOrderType.getOrderTypeId());
-
-				if (commerceDiscountOrderTypeRel != null) {
-					continue;
-				}
-
 				DiscountOrderTypeUtil.addCommerceDiscountOrderTypeRel(
 					commerceDiscount, _commerceDiscountOrderTypeRelService,
 					_commerceOrderTypeService, discountOrderType,
@@ -573,15 +522,6 @@ public class DiscountResourceImpl
 			for (DiscountProductGroup discountProductGroup :
 					discountProductGroups) {
 
-				CommerceDiscountRel commerceDiscountRel =
-					_commerceDiscountRelService.fetchCommerceDiscountRel(
-						DiscountProductGroup.class.getName(),
-						discountProductGroup.getProductGroupId());
-
-				if (commerceDiscountRel != null) {
-					continue;
-				}
-
 				DiscountProductGroupUtil.addCommerceDiscountRel(
 					_commercePricingClassService, _commerceDiscountRelService,
 					discountProductGroup, commerceDiscount,
@@ -595,37 +535,11 @@ public class DiscountResourceImpl
 
 		if (discountProducts != null) {
 			for (DiscountProduct discountProduct : discountProducts) {
-				CProduct cProduct = _cProductLocalService.fetchCProduct(
-					discountProduct.getProductId());
-
-				if (cProduct == null) {
-					cProduct =
-						_cProductLocalService.
-							fetchCProductByExternalReferenceCode(
-								discountProduct.
-									getProductExternalReferenceCode(),
-								contextCompany.getCompanyId());
-				}
-
-				if (cProduct == null) {
-					throw new NoSuchCProductException(
-						"Unable to find product with external reference code " +
-							discountProduct.getProductExternalReferenceCode());
-				}
-
-				CommerceDiscountRel commerceDiscountRel =
-					_commerceDiscountRelService.fetchCommerceDiscountRel(
-						commerceDiscount.getCommerceDiscountId(),
-						CPDefinition.class.getName(),
-						cProduct.getPublishedCPDefinitionId());
-
-				if (commerceDiscountRel != null) {
-					continue;
-				}
-
 				DiscountProductUtil.addCommerceDiscountRel(
-					_cProductLocalService, _commerceDiscountRelService,
-					discountProduct, commerceDiscount, _serviceContextHelper);
+					_cProductLocalService, _commerceCatalogService,
+					_commerceCurrencyService, _commerceDiscountRelService,
+					_cpDefinitionService, discountProduct, commerceDiscount,
+					_serviceContextHelper);
 			}
 		}
 
@@ -649,6 +563,21 @@ public class DiscountResourceImpl
 			}
 		}
 
+		// Discount skus
+
+		DiscountSku[] discountSkus = discount.getDiscountSkus();
+
+		if (discountSkus != null) {
+			for (DiscountSku discountSku : discountSkus) {
+				DiscountSkuUtil.addCommerceDiscountRel(
+					_commerceCatalogService, _commerceCurrencyService,
+					commerceDiscount, _commerceDiscountRelService,
+					_cpDefinitionService, _cpInstanceService,
+					_cpInstanceUnitOfMeasureLocalService, discountSku,
+					_serviceContextHelper);
+			}
+		}
+
 		return commerceDiscount;
 	}
 
@@ -664,13 +593,22 @@ public class DiscountResourceImpl
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
+	private AssetCategoryService _assetCategoryService;
+
+	@Reference
 	private CProductLocalService _cProductLocalService;
+
+	@Reference
+	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
 	private CommerceChannelRelService _commerceChannelRelService;
 
 	@Reference
 	private CommerceChannelService _commerceChannelService;
+
+	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
 
 	@Reference
 	private CommerceDiscountAccountRelService
@@ -698,6 +636,16 @@ public class DiscountResourceImpl
 
 	@Reference
 	private CommercePricingClassService _commercePricingClassService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPInstanceService _cpInstanceService;
+
+	@Reference
+	private CPInstanceUnitOfMeasureLocalService
+		_cpInstanceUnitOfMeasureLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.pricing.internal.dto.v2_0.converter.DiscountDTOConverter)"

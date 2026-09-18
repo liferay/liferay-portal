@@ -416,6 +416,27 @@ public class CommerceDiscountRelLocalServiceImpl
 				CommercePricingClassTable.INSTANCE.title));
 	}
 
+	@Override
+	public CommerceDiscountRel updateTypeSettings(
+			long commerceDiscountRelId,
+			UnicodeProperties typeSettingsUnicodeProperties)
+		throws PortalException {
+
+		CommerceDiscountRel commerceDiscountRel =
+			commerceDiscountRelPersistence.findByPrimaryKey(
+				commerceDiscountRelId);
+
+		commerceDiscountRel.setTypeSettingsUnicodeProperties(
+			typeSettingsUnicodeProperties);
+
+		commerceDiscountRel = commerceDiscountRelPersistence.update(
+			commerceDiscountRel);
+
+		_reindexCommerceDiscount(commerceDiscountRel.getCommerceDiscountId());
+
+		return commerceDiscountRel;
+	}
+
 	private List<CommerceDiscountRel> _getCommerceDiscountRels(
 		List<Long> commerceDiscountRelIds) {
 

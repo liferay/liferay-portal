@@ -7,6 +7,7 @@ package com.liferay.headless.commerce.admin.pricing.internal.resource.v2_0;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.commerce.pricing.exception.NoSuchPriceModifierException;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.model.CommercePriceModifierRel;
@@ -130,8 +131,9 @@ public class PriceModifierCategoryResourceImpl
 		CommercePriceModifierRel commercePriceModifierRel =
 			PriceModifierCategoryUtil.addCommercePriceModifierRel(
 				contextCompany.getGroupId(), _assetCategoryLocalService,
-				_commercePriceModifierRelService, priceModifierCategory,
-				commercePriceModifier, _serviceContextHelper);
+				_assetCategoryService, _commercePriceModifierRelService,
+				priceModifierCategory, commercePriceModifier,
+				_serviceContextHelper);
 
 		return _toPriceModifierCategory(
 			commercePriceModifierRel.getCommercePriceModifierRelId());
@@ -145,7 +147,8 @@ public class PriceModifierCategoryResourceImpl
 		CommercePriceModifierRel commercePriceModifierRel =
 			PriceModifierCategoryUtil.addCommercePriceModifierRel(
 				contextCompany.getGroupId(), _assetCategoryLocalService,
-				_commercePriceModifierRelService, priceModifierCategory,
+				_assetCategoryService, _commercePriceModifierRelService,
+				priceModifierCategory,
 				_commercePriceModifierService.getCommercePriceModifier(id),
 				_serviceContextHelper);
 
@@ -196,6 +199,9 @@ public class PriceModifierCategoryResourceImpl
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetCategoryService _assetCategoryService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.pricing.model.CommercePriceModifierRel)"

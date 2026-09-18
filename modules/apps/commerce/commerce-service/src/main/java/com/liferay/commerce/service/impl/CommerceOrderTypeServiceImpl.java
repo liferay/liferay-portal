@@ -143,6 +143,35 @@ public class CommerceOrderTypeServiceImpl
 	}
 
 	@Override
+	public CommerceOrderType getOrAddEmptyCommerceOrderType(
+			String externalReferenceCode)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CommerceOrderType commerceOrderType =
+			commerceOrderTypeService.
+				fetchCommerceOrderTypeByExternalReferenceCode(
+					externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (commerceOrderType != null) {
+			return commerceOrderType;
+		}
+
+		PortletResourcePermission portletResourcePermission =
+			_commerceOrderTypeModelResourcePermission.
+				getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			permissionChecker, null,
+			CommerceOrderActionKeys.ADD_COMMERCE_ORDER_TYPE);
+
+		return commerceOrderTypeLocalService.getOrAddEmptyCommerceOrderType(
+			externalReferenceCode, permissionChecker.getCompanyId(),
+			permissionChecker.getUserId());
+	}
+
+	@Override
 	public CommerceOrderType updateCommerceOrderType(
 			String externalReferenceCode, long commerceOrderTypeId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,

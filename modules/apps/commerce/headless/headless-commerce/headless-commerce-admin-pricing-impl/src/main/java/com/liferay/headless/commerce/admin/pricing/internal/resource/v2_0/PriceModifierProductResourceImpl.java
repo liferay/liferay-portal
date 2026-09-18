@@ -5,13 +5,16 @@
 
 package com.liferay.headless.commerce.admin.pricing.internal.resource.v2_0;
 
+import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.commerce.pricing.exception.NoSuchPriceModifierException;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
 import com.liferay.commerce.pricing.model.CommercePriceModifierRel;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelService;
 import com.liferay.commerce.pricing.service.CommercePriceModifierService;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CProductLocalService;
+import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.PriceModifierProduct;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.PriceModifierProductUtil;
@@ -136,9 +139,10 @@ public class PriceModifierProductResourceImpl
 
 		CommercePriceModifierRel commercePriceModifierRel =
 			PriceModifierProductUtil.addCommercePriceModifierRel(
-				_cProductLocalService, _commercePriceModifierRelService,
-				priceModifierProduct, commercePriceModifier,
-				_serviceContextHelper);
+				_cProductLocalService, _commerceCatalogService,
+				_commerceCurrencyService, _commercePriceModifierRelService,
+				_cpDefinitionService, priceModifierProduct,
+				commercePriceModifier, _serviceContextHelper);
 
 		return _toPriceModifierProduct(
 			commercePriceModifierRel.getCommercePriceModifierRelId());
@@ -151,8 +155,9 @@ public class PriceModifierProductResourceImpl
 
 		CommercePriceModifierRel commercePriceModifierRel =
 			PriceModifierProductUtil.addCommercePriceModifierRel(
-				_cProductLocalService, _commercePriceModifierRelService,
-				priceModifierProduct,
+				_cProductLocalService, _commerceCatalogService,
+				_commerceCurrencyService, _commercePriceModifierRelService,
+				_cpDefinitionService, priceModifierProduct,
 				_commercePriceModifierService.getCommercePriceModifier(id),
 				_serviceContextHelper);
 
@@ -204,6 +209,12 @@ public class PriceModifierProductResourceImpl
 	@Reference
 	private CProductLocalService _cProductLocalService;
 
+	@Reference
+	private CommerceCatalogService _commerceCatalogService;
+
+	@Reference
+	private CommerceCurrencyService _commerceCurrencyService;
+
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.pricing.model.CommercePriceModifierRel)"
 	)
@@ -215,6 +226,9 @@ public class PriceModifierProductResourceImpl
 
 	@Reference
 	private CommercePriceModifierService _commercePriceModifierService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
