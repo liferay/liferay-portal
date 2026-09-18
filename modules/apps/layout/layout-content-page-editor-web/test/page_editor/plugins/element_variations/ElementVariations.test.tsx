@@ -384,7 +384,9 @@ describe('ElementVariations', () => {
 		).toBeInTheDocument();
 
 		expect(
-			screen.queryByRole('button', {name: 'open-sidebar'})
+			screen.queryByRole('button', {
+				name: 'open-element-variations-panel',
+			})
 		).not.toBeInTheDocument();
 	});
 
@@ -394,13 +396,15 @@ describe('ElementVariations', () => {
 		renderElementVariations();
 
 		expect(
-			screen.queryByRole('button', {name: 'open-sidebar'})
+			screen.queryByRole('button', {
+				name: 'open-element-variations-panel',
+			})
 		).not.toBeInTheDocument();
 
 		await userEvent.click(screen.getByRole('button', {name: 'close'}));
 
 		expect(
-			screen.getByRole('button', {name: 'open-sidebar'})
+			screen.getByRole('button', {name: 'open-element-variations-panel'})
 		).toBeInTheDocument();
 	});
 
@@ -411,11 +415,13 @@ describe('ElementVariations', () => {
 
 		await userEvent.click(screen.getByRole('button', {name: 'close'}));
 		await userEvent.click(
-			screen.getByRole('button', {name: 'open-sidebar'})
+			screen.getByRole('button', {name: 'open-element-variations-panel'})
 		);
 
 		expect(
-			screen.queryByRole('button', {name: 'open-sidebar'})
+			screen.queryByRole('button', {
+				name: 'open-element-variations-panel',
+			})
 		).not.toBeInTheDocument();
 	});
 
@@ -426,7 +432,7 @@ describe('ElementVariations', () => {
 		renderElementVariations();
 
 		expect(
-			screen.getByRole('button', {name: 'open-sidebar'})
+			screen.getByRole('button', {name: 'open-element-variations-panel'})
 		).toBeInTheDocument();
 	});
 

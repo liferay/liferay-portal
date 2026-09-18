@@ -418,11 +418,16 @@ function ElementVariations({
 
 			{open ? null : (
 				<ClayButtonWithIcon
-					aria-label={Liferay.Language.get('open-sidebar')}
+					aria-label={Liferay.Language.get(
+						'open-element-variations-panel'
+					)}
 					className="element-variations__sidebar-trigger position-fixed shadow-sm"
 					displayType="secondary"
 					onClick={() => setSidebarOpen(true)}
 					symbol="angle-double-right"
+					title={Liferay.Language.get(
+						'open-element-variations-panel'
+					)}
 				/>
 			)}
 
