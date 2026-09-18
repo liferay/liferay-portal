@@ -52,7 +52,7 @@ export const getDefaultChannel = (
  */
 
 export const ChannelsMenu: React.FC<IChannelsMenuProps> = ({
-	channels,
+	channels = [],
 	className,
 	defaultChannelId,
 	groupId,
