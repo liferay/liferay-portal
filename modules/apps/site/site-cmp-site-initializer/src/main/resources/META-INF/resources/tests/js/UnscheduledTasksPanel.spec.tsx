@@ -153,7 +153,7 @@ describe('UnscheduledTasksPanel', () => {
 
 		expect(getAllByTestId('calendarUnscheduledTaskTitle')).toHaveLength(20);
 
-		fireEvent.click(getByLabelText('Go to page, 2'));
+		fireEvent.click(getByLabelText('Go to Page, 2'));
 
 		expect(getAllByTestId('calendarUnscheduledTaskTitle')).toHaveLength(5);
 	});
@@ -234,7 +234,7 @@ describe('UnscheduledTasksPanel', () => {
 				)
 			);
 
-		fireEvent.click(getByLabelText('Go to page, 2'));
+		fireEvent.click(getByLabelText('Go to Page, 2'));
 
 		expect(getByText('Task 21')).toBeInTheDocument();
 

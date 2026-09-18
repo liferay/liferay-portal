@@ -32,7 +32,7 @@
 </tr>
 <tr>
 	<td>DIGITAL_SIGNATURE_NAVIGATE_NEXT</td>
-	<td>//*[contains(@aria-label, 'Go to the next page')]</td>
+	<td>//*[contains(@aria-label, 'Go to the Next Page')]</td>
 	<td></td>
 </tr>
 <tr>

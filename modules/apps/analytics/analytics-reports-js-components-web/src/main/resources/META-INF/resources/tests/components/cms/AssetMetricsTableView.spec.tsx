@@ -213,7 +213,7 @@ describe('TableView with different metrics', () => {
 			/>
 		);
 
-		const paginationButton = screen.getByLabelText('Go to page, 1');
+		const paginationButton = screen.getByLabelText('Go to Page, 1');
 
 		expect(paginationButton).toBeInTheDocument();
 	});

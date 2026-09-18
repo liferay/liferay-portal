@@ -234,9 +234,9 @@ describe('ClayPagination', () => {
 		);
 
 		expect(getByLabelText('Vai alla pagina, 3')).toBeInTheDocument();
-		expect(getByLabelText('Go to the next page, 3')).toBeInTheDocument();
+		expect(getByLabelText('Go to the Next Page, 3')).toBeInTheDocument();
 		expect(
-			getByLabelText('Go to the previous page, 1')
+			getByLabelText('Go to the Previous Page, 1')
 		).toBeInTheDocument();
 	});
 

@@ -63,7 +63,7 @@ exports[`ClayPaginationBar renders 1`] = `
           class="page-item active"
         >
           <a
-            aria-label="Go to page, 1"
+            aria-label="Go to Page, 1"
             class="page-link"
             tabindex="0"
           >
@@ -74,7 +74,7 @@ exports[`ClayPaginationBar renders 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to page, 2"
+            aria-label="Go to Page, 2"
             class="page-link"
             tabindex="0"
           >
@@ -85,7 +85,7 @@ exports[`ClayPaginationBar renders 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to page, 3"
+            aria-label="Go to Page, 3"
             class="page-link"
             tabindex="0"
           >
@@ -100,9 +100,9 @@ exports[`ClayPaginationBar renders 1`] = `
           >
             <button
               aria-haspopup="true"
-              aria-label="Show pages 4 through 9"
+              aria-label="Show Pages 4 Through 9"
               class="dropdown-toggle page-link btn btn-unstyled"
-              title="Show pages 4 through 9"
+              title="Show Pages 4 Through 9"
               type="button"
             >
               ...
@@ -113,7 +113,7 @@ exports[`ClayPaginationBar renders 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to page, 10"
+            aria-label="Go to Page, 10"
             class="page-link"
             tabindex="0"
           >
@@ -124,7 +124,7 @@ exports[`ClayPaginationBar renders 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to the next page, 2"
+            aria-label="Go to the Next Page, 2"
             class="page-link"
             data-testid="nextArrow"
             role="button"
@@ -184,7 +184,7 @@ exports[`ClayPaginationBar renders without a DropDown 1`] = `
           class="page-item active"
         >
           <a
-            aria-label="Go to page, 1"
+            aria-label="Go to Page, 1"
             class="page-link"
             tabindex="0"
           >
@@ -195,7 +195,7 @@ exports[`ClayPaginationBar renders without a DropDown 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to page, 2"
+            aria-label="Go to Page, 2"
             class="page-link"
             tabindex="0"
           >
@@ -206,7 +206,7 @@ exports[`ClayPaginationBar renders without a DropDown 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to page, 3"
+            aria-label="Go to Page, 3"
             class="page-link"
             tabindex="0"
           >
@@ -221,9 +221,9 @@ exports[`ClayPaginationBar renders without a DropDown 1`] = `
           >
             <button
               aria-haspopup="true"
-              aria-label="Show pages 4 through 9"
+              aria-label="Show Pages 4 Through 9"
               class="dropdown-toggle page-link btn btn-unstyled"
-              title="Show pages 4 through 9"
+              title="Show Pages 4 Through 9"
               type="button"
             >
               ...
@@ -234,7 +234,7 @@ exports[`ClayPaginationBar renders without a DropDown 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to page, 10"
+            aria-label="Go to Page, 10"
             class="page-link"
             tabindex="0"
           >
@@ -245,7 +245,7 @@ exports[`ClayPaginationBar renders without a DropDown 1`] = `
           class="page-item"
         >
           <a
-            aria-label="Go to the next page, 2"
+            aria-label="Go to the Next Page, 2"
             class="page-link"
             data-testid="nextArrow"
             role="button"
@@ -305,7 +305,7 @@ exports[`ClayPaginationBar totalItems with 0 will render the pagination bar with
           class="page-item active"
         >
           <a
-            aria-label="Go to page, 1"
+            aria-label="Go to Page, 1"
             class="page-link"
             tabindex="0"
           >

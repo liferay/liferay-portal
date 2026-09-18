@@ -217,7 +217,7 @@ describe('[CMS Dashboard] ExpiredAssetsCard', () => {
 		});
 
 		const nextPageButton = screen.getByRole('button', {
-			name: 'Go to the next page, 2',
+			name: 'Go to the Next Page, 2',
 		});
 
 		fireEvent.click(nextPageButton);

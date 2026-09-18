@@ -265,12 +265,12 @@ describe('Multishipping', () => {
 		await act(async () => {
 			expect(
 				renderedComponent.queryByRole('button', {
-					name: 'Go to the next page, 2',
+					name: 'Go to the Next Page, 2',
 				})
 			).not.toBeNull();
 			(
 				renderedComponent.queryByRole('button', {
-					name: 'Go to the next page, 2',
+					name: 'Go to the Next Page, 2',
 				}) as HTMLButtonElement
 			).click();
 		});

@@ -240,7 +240,7 @@ describe('[CMS Dashboard] Components: PaginatedTable', () => {
 		expect(tableRows.length).toBe(20);
 
 		const nextPageButton = screen.getByRole('button', {
-			name: 'Go to the next page, 2',
+			name: 'Go to the Next Page, 2',
 		});
 
 		fireEvent.click(nextPageButton);
@@ -316,7 +316,7 @@ describe('[CMS Dashboard] Components: PaginatedTable', () => {
 		);
 
 		const nextPageButton = screen.getByRole('button', {
-			name: 'Go to the next page, 2',
+			name: 'Go to the Next Page, 2',
 		});
 
 		await nextPageButton.click();

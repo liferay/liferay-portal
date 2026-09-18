@@ -129,7 +129,7 @@ exports[`DocumentPreviewerWrapper renders with a document 1`] = `
           class="page-item active"
         >
           <a
-            aria-label="Go to page, 1"
+            aria-label="Go to Page, 1"
             class="page-link"
             tabindex="0"
           >
@@ -270,7 +270,7 @@ exports[`DocumentPreviewerWrapper renders with a document without preview 1`] = 
           class="page-item active"
         >
           <a
-            aria-label="Go to page, 1"
+            aria-label="Go to Page, 1"
             class="page-link"
             tabindex="0"
           >
@@ -418,7 +418,7 @@ exports[`DocumentPreviewerWrapper renders with an image 1`] = `
           class="page-item active"
         >
           <a
-            aria-label="Go to page, 1"
+            aria-label="Go to Page, 1"
             class="page-link"
             tabindex="0"
           >

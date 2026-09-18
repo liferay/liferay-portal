@@ -12,7 +12,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to the previous page, 11"
+          aria-label="Go to the Previous Page, 11"
           class="page-link"
           data-testid="prevArrow"
           role="button"
@@ -32,7 +32,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to page, 1"
+          aria-label="Go to Page, 1"
           class="page-link"
           tabindex="0"
         >
@@ -47,9 +47,9 @@ exports[`ClayPagination renders 1`] = `
         >
           <button
             aria-haspopup="true"
-            aria-label="Show pages 2 through 9"
+            aria-label="Show Pages 2 Through 9"
             class="dropdown-toggle page-link btn btn-unstyled"
-            title="Show pages 2 through 9"
+            title="Show Pages 2 Through 9"
             type="button"
           >
             ...
@@ -60,7 +60,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to page, 10"
+          aria-label="Go to Page, 10"
           class="page-link"
           tabindex="0"
         >
@@ -71,7 +71,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to page, 11"
+          aria-label="Go to Page, 11"
           class="page-link"
           tabindex="0"
         >
@@ -82,7 +82,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item active"
       >
         <a
-          aria-label="Go to page, 12"
+          aria-label="Go to Page, 12"
           class="page-link"
           tabindex="0"
         >
@@ -93,7 +93,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to page, 13"
+          aria-label="Go to Page, 13"
           class="page-link"
           tabindex="0"
         >
@@ -104,7 +104,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to page, 14"
+          aria-label="Go to Page, 14"
           class="page-link"
           tabindex="0"
         >
@@ -119,9 +119,9 @@ exports[`ClayPagination renders 1`] = `
         >
           <button
             aria-haspopup="true"
-            aria-label="Show pages 15 through 24"
+            aria-label="Show Pages 15 Through 24"
             class="dropdown-toggle page-link btn btn-unstyled"
-            title="Show pages 15 through 24"
+            title="Show Pages 15 Through 24"
             type="button"
           >
             ...
@@ -132,7 +132,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to page, 25"
+          aria-label="Go to Page, 25"
           class="page-link"
           tabindex="0"
         >
@@ -143,7 +143,7 @@ exports[`ClayPagination renders 1`] = `
         class="page-item"
       >
         <a
-          aria-label="Go to the next page, 13"
+          aria-label="Go to the Next Page, 13"
           class="page-link"
           data-testid="nextArrow"
           role="button"
@@ -193,7 +193,7 @@ exports[`ClayPagination renders with only one page 1`] = `
         class="page-item active"
       >
         <a
-          aria-label="Go to page, 1"
+          aria-label="Go to Page, 1"
           class="page-link"
           tabindex="0"
         >
@@ -251,7 +251,7 @@ exports[`ClayPagination totalPages with 0 will render the pagination with only o
         class="page-item active"
       >
         <a
-          aria-label="Go to page, 1"
+          aria-label="Go to Page, 1"
           class="page-link"
           tabindex="0"
         >
