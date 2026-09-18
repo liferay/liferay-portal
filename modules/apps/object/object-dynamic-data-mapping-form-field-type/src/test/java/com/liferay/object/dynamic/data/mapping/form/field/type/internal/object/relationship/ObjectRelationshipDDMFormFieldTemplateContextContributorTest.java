@@ -137,6 +137,20 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 	}
 
 	@Test
+	public void testGetParametersURL() {
+		String additionalAPIURLParameters = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				_PORTAL_URL, _REST_CONTEXT_PATH, StringPool.QUESTION,
+				additionalAPIURLParameters),
+			_getAPIURL(additionalAPIURLParameters));
+
+		Assert.assertEquals(
+			_PORTAL_URL + _REST_CONTEXT_PATH, _getAPIURL(StringPool.BLANK));
+	}
+
+	@Test
 	public void testGetSelectedOptionLabel() throws Exception {
 		Assert.assertEquals(
 			StringPool.BLANK, _getSelectedOptionLabel(StringPool.BLANK));
@@ -164,20 +178,6 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 		Assert.assertEquals(
 			StringPool.BLANK,
 			_getSelectedOptionLabel(String.valueOf(_PRIMARY_KEY)));
-	}
-
-	@Test
-	public void testGetParametersURL() {
-		String additionalAPIURLParameters = RandomTestUtil.randomString();
-
-		Assert.assertEquals(
-			StringBundler.concat(
-				_PORTAL_URL, _REST_CONTEXT_PATH, StringPool.QUESTION,
-				additionalAPIURLParameters),
-			_getAPIURL(additionalAPIURLParameters));
-
-		Assert.assertEquals(
-			_PORTAL_URL + _REST_CONTEXT_PATH, _getAPIURL(StringPool.BLANK));
 	}
 
 	private String _getAPIURL(String additionalAPIURLParameters) {
