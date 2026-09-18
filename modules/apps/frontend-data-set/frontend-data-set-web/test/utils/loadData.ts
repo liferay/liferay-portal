@@ -72,6 +72,39 @@ describe('loadData util', () => {
 		);
 	});
 
+	it('omits the filter parameter when every oData filter string is empty', async () => {
+		await loadData({
+			apiURL: '/o/products',
+			currentURL: '/sample-portlet-page-url',
+			delta: 20,
+			odataFiltersStrings: [''],
+			page: 1,
+		});
+
+		const requestUrl = fetch.mock.calls[0][0];
+
+		expect(requestUrl).not.toContain('filter=');
+		expect(requestUrl).toContain(
+			'/o/products?currentURL=%2Fsample-portlet-page-url&page=1&pageSize=20'
+		);
+	});
+
+	it('drops empty oData filter strings while keeping non-empty ones', async () => {
+		await loadData({
+			apiURL: '/o/products',
+			currentURL: '/sample-portlet-page-url',
+			delta: 20,
+			odataFiltersStrings: ['', 'catalogId eq 32642'],
+			page: 1,
+		});
+
+		const requestUrl = fetch.mock.calls[0][0];
+
+		expect(requestUrl).toContain(
+			'/o/products?currentURL=%2Fsample-portlet-page-url&filter=%28catalogId+eq+32642%29&page=1&pageSize=20'
+		);
+	});
+
 	it('requests data for a Frontend Data Set with a sort parameter', async () => {
 		await loadData({
 			apiURL: '/o/products',
