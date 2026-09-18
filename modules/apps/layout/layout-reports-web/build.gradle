@@ -23,6 +23,7 @@ dependencies {
 	compileOnly project(":apps:layout:layout-taglib")
 	compileOnly project(":apps:learn:learn-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:portal-template:portal-template-react-renderer-api")
 	compileOnly project(":apps:product-navigation:product-navigation-control-menu-api")
 	compileOnly project(":apps:segments:segments-api")
