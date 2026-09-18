@@ -497,14 +497,14 @@ public class JenkinsResultsParserUtilTest
 	public void testGetThreadDump() {
 		String threadDump = JenkinsResultsParserUtil.getThreadDump();
 
+		Assert.assertTrue(
+			threadDump.contains(
+				"JenkinsResultsParserUtilTest.testGetThreadDump"));
+
 		Thread currentThread = Thread.currentThread();
 
 		Assert.assertTrue(
 			threadDump.contains("\"" + currentThread.getName() + "\""));
-
-		Assert.assertTrue(
-			threadDump.contains(
-				"JenkinsResultsParserUtilTest.testGetThreadDump"));
 	}
 
 	@Test(timeout = 30000)
