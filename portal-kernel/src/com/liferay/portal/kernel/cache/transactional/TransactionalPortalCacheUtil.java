@@ -193,6 +193,8 @@ public class TransactionalPortalCacheUtil {
 
 		int index = portalCacheMaps.size() - 1;
 
+		V value = null;
+
 		while (true) {
 			PortalCacheMap portalCacheMap = portalCacheMaps.get(index);
 
@@ -203,15 +205,40 @@ public class TransactionalPortalCacheUtil {
 				ValueEntry valueEntry = uncommittedBuffer.get(key);
 
 				if (valueEntry != null) {
-					return (V)valueEntry._value;
+					value = (V)valueEntry._value;
+
+					break;
 				}
 			}
 
 			if (!portalCacheMap._savepoint) {
-				return null;
+				break;
 			}
 
 			index--;
+		}
+
+		if ((value == null) || (index != (portalCacheMaps.size() - 1))) {
+			boolean[] uncommittedBufferMissMarker =
+				_uncommittedBufferMissMarker.get();
+
+			if (uncommittedBufferMissMarker != null) {
+				uncommittedBufferMissMarker[0] = true;
+			}
+		}
+
+		return value;
+	}
+
+	public static <K extends Serializable, V> V get(
+		PortalCache<K, V> portalCache, K key,
+		boolean[] uncommittedBufferMissMarker) {
+
+		try (SafeCloseable safeCloseable =
+				_uncommittedBufferMissMarker.setWithSafeCloseable(
+					uncommittedBufferMissMarker)) {
+
+			return portalCache.get(key);
 		}
 	}
 
@@ -350,6 +377,10 @@ public class TransactionalPortalCacheUtil {
 			TransactionalPortalCacheUtil.class.getName() + "._portalCacheMaps",
 			ArrayList::new, false);
 	private static volatile Boolean _transactionalCacheEnabled;
+	private static final CentralizedThreadLocal<boolean[]>
+		_uncommittedBufferMissMarker = new CentralizedThreadLocal<>(
+			TransactionalPortalCacheUtil.class.getName() +
+				"._uncommittedBufferMissMarker");
 
 	private static class MVCCUncommittedBuffer implements UncommittedBuffer {
 

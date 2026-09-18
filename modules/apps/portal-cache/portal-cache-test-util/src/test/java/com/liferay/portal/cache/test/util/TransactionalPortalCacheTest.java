@@ -6,6 +6,7 @@
 package com.liferay.portal.cache.test.util;
 
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.transaction.TransactionLifecycleListener;
 import com.liferay.portal.kernel.transaction.TransactionStatus;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -946,6 +948,131 @@ public class TransactionalPortalCacheTest {
 		Assert.assertFalse(
 			"TransactionalPortalCacheUtil should be disabled",
 			TransactionalPortalCacheUtil.isEnabled());
+	}
+
+	@Test
+	public void testTransactionalPortalCacheUtilGet() throws Exception {
+		_setEnableTransactionalCache(true);
+
+		TransactionalPortalCache<String, MVCCModel> transactionalPortalCache =
+			new TransactionalPortalCache<>(
+				new MVCCPortalCache<>(
+					new TestPortalCache<>("Test MVCC Portal Cache")),
+				true);
+
+		// Outside tx
+
+		boolean[] uncommittedBufferMissMarker = {false};
+
+		Assert.assertNull(
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, uncommittedBufferMissMarker));
+		Assert.assertFalse(uncommittedBufferMissMarker[0]);
+
+		// Inside tx
+
+		TransactionalPortalCacheUtil.begin();
+
+		uncommittedBufferMissMarker = new boolean[] {false};
+
+		Assert.assertNull(
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, uncommittedBufferMissMarker));
+		Assert.assertTrue(uncommittedBufferMissMarker[0]);
+
+		MockMVCCModel mockMVCCModel = new MockMVCCModel(0);
+
+		transactionalPortalCache.put(_KEY_1, mockMVCCModel);
+
+		uncommittedBufferMissMarker = new boolean[] {false};
+
+		Assert.assertSame(
+			mockMVCCModel,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, uncommittedBufferMissMarker));
+		Assert.assertFalse(uncommittedBufferMissMarker[0]);
+
+		TransactionalPortalCacheUtil.commit(false);
+
+		// Outside tx, after commit
+
+		uncommittedBufferMissMarker = new boolean[] {false};
+
+		Assert.assertSame(
+			mockMVCCModel,
+			TransactionalPortalCacheUtil.get(
+				transactionalPortalCache, _KEY_1, uncommittedBufferMissMarker));
+		Assert.assertFalse(uncommittedBufferMissMarker[0]);
+
+		// Try-with-resources coverage
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					TransactionalPortalCacheUtil.class,
+					"_uncommittedBufferMissMarker",
+					new CentralizedThreadLocal<boolean[]>("") {
+
+						@Override
+						public SafeCloseable setWithSafeCloseable(
+							boolean[] value) {
+
+							return null;
+						}
+
+					})) {
+
+			Assert.assertSame(
+				mockMVCCModel,
+				TransactionalPortalCacheUtil.get(
+					transactionalPortalCache, _KEY_1, null));
+
+			try {
+				TransactionalPortalCacheUtil.get(
+					transactionalPortalCache, null, null);
+				Assert.fail();
+			}
+			catch (Exception exception) {
+				Assert.assertSame(
+					NullPointerException.class, exception.getClass());
+			}
+		}
+
+		RuntimeException runtimeException = new RuntimeException();
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					TransactionalPortalCacheUtil.class,
+					"_uncommittedBufferMissMarker",
+					new CentralizedThreadLocal<boolean[]>("") {
+
+						@Override
+						public SafeCloseable setWithSafeCloseable(
+							boolean[] value) {
+
+							return () -> {
+								throw runtimeException;
+							};
+						}
+
+					})) {
+
+			try {
+				TransactionalPortalCacheUtil.get(
+					transactionalPortalCache, null, null);
+				Assert.fail();
+			}
+			catch (Exception exception) {
+				Assert.assertSame(
+					NullPointerException.class, exception.getClass());
+
+				Throwable[] throwables = exception.getSuppressed();
+
+				Assert.assertEquals(
+					Arrays.toString(throwables), 1, throwables.length);
+
+				Assert.assertSame(runtimeException, throwables[0]);
+			}
+		}
 	}
 
 	@Test
