@@ -64,7 +64,7 @@
 											>
 												<div class="h5">
 													<aui:a href="<%= (childGroup.getGroupId() != scopeGroupId) ? childGroup.getDisplayURL(themeDisplay) : null %>">
-														<%= childGroup.getDescriptiveName(locale) %>
+														<%= HtmlUtil.escape(childGroup.getDescriptiveName(locale)) %>
 													</aui:a>
 												</div>
 
