@@ -274,6 +274,25 @@ test(
 );
 
 test(
+	'Verify Product Analytics User Configuration is not available from Account Settings',
+	{tag: '@LPD-80264'},
+	async ({accountSettingsPage, productAnalyticsBannerPage}) => {
+		await productAnalyticsBannerPage.acceptAllButton.click();
+
+		await accountSettingsPage.page
+			.getByText('Consent Manager')
+			.first()
+			.waitFor();
+
+		await expect(
+			accountSettingsPage.page.locator(
+				'[id="_com_liferay_my_account_web_portlet_MyAccountPortlet_productAnalyticsConsentPanelForm"]'
+			)
+		).not.toBeVisible();
+	}
+);
+
+test(
 	'Verify specific Consent types can be configured from the Consent Panel',
 	{tag: '@LPD-60006'},
 	async ({
@@ -352,25 +371,6 @@ test(
 
 			await expectAllCookiesDeclined(page);
 		});
-	}
-);
-
-test(
-	'Verify Product Analytics User Configuration is not available from Account Settings',
-	{tag: '@LPD-80264'},
-	async ({accountSettingsPage, productAnalyticsBannerPage}) => {
-		await productAnalyticsBannerPage.acceptAllButton.click();
-
-		await accountSettingsPage.page
-			.getByText('Consent Manager')
-			.first()
-			.waitFor();
-
-		await expect(
-			accountSettingsPage.page.locator(
-				'[id="_com_liferay_my_account_web_portlet_MyAccountPortlet_productAnalyticsConsentPanelForm"]'
-			)
-		).not.toBeVisible();
 	}
 );
 
