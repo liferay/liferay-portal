@@ -628,6 +628,18 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.diff.impl.jar!html5diff.jar</file-name>
+				<version>1.4.5</version>
+				<project-name>HTML5Diff</project-name>
+				<project-url>https://github.com/SchweizerischeBundesbahnen/html5diff</project-url>
+				<licenses>
+					<license>
+						<license-name>Apache License Version 2.0, January 2004</license-name>
+						<license-url>http://www.apache.org/licenses/</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.diff.impl.jar!java-diff.jar</file-name>
 				<version>1.1</version>
 				<project-name>Java Diff</project-name>
@@ -636,18 +648,6 @@
 					<license>
 						<license-name>BSD</license-name>
 						<license-url>http://www.opensource.org/licenses/bsd-license.php</license-url>
-					</license>
-				</licenses>
-			</library>
-			<library>
-				<file-name>com.liferay.diff.impl.jar!html5diff.jar</file-name>
-				<version>1.4.5</version>
-				<project-name>HTML5Diff</project-name>
-				<project-url>https://github.com/SchweizerischeBundesbahnen/html5diff</project-url>
-				<licenses>
-					<license>
-						<license-name>Apache License, Version 2.0</license-name>
-						<license-url>https://www.apache.org/licenses/LICENSE-2.0.txt</license-url>
 					</license>
 				</licenses>
 			</library>
@@ -4215,6 +4215,17 @@
 				</licenses>
 			</library>
 			<library>
+				<file-name>com.liferay.portal.store.s3.jar!url-connection-client.jar</file-name>
+				<version>2.39.6</version>
+				<project-name>AWS Java SDK :: HTTP Clients :: URL Connection</project-name>
+				<licenses>
+					<license>
+						<license-name>Apache License, Version 2.0</license-name>
+						<license-url>https://aws.amazon.com/apache2.0</license-url>
+					</license>
+				</licenses>
+			</library>
+			<library>
 				<file-name>com.liferay.portal.store.s3.jar!utils.jar</file-name>
 				<version>2.39.6</version>
 				<project-name>AWS Java SDK :: Utilities</project-name>
@@ -4462,7 +4473,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-core.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika core</project-name>
 				<project-url>https://tika.apache.org/</project-url>
 				<licenses>
@@ -4474,7 +4485,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-apple-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika Apple parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-apple-module/</project-url>
 				<licenses>
@@ -4486,7 +4497,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-audiovideo-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika audiovideo parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-audiovideo-module/</project-url>
 				<licenses>
@@ -4498,7 +4509,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-cad-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika cad parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-cad-module/</project-url>
 				<licenses>
@@ -4510,7 +4521,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-code-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika code parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-code-module/</project-url>
 				<licenses>
@@ -4522,7 +4533,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-font-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika font parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-font-module/</project-url>
 				<licenses>
@@ -4534,7 +4545,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-html-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika html parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-html-module/</project-url>
 				<licenses>
@@ -4546,7 +4557,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-image-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika image parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-image-module/</project-url>
 				<licenses>
@@ -4558,7 +4569,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-mail-commons.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika mail commons</project-name>
 				<project-url>https://tika.apache.org/tika-parser-mail-commons/</project-url>
 				<licenses>
@@ -4570,7 +4581,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-mail-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika mail parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-mail-module/</project-url>
 				<licenses>
@@ -4582,7 +4593,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-microsoft-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika Microsoft parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-microsoft-module/</project-url>
 				<licenses>
@@ -4594,7 +4605,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-miscoffice-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika miscellaneous office format parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-miscoffice-module/</project-url>
 				<licenses>
@@ -4606,7 +4617,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-pdf-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika PDF parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-pdf-module/</project-url>
 				<licenses>
@@ -4618,7 +4629,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-pkg-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika package parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-pkg-module/</project-url>
 				<licenses>
@@ -4630,7 +4641,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-scientific-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika scientific parser module</project-name>
 				<licenses>
 					<license>
@@ -4641,7 +4652,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-text-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika text parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-text-module/</project-url>
 				<licenses>
@@ -4653,7 +4664,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-xml-module.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika XML parser module</project-name>
 				<project-url>https://tika.apache.org/tika-parser-xml-module/</project-url>
 				<licenses>
@@ -4665,7 +4676,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-xmp-commons.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika XMP commons</project-name>
 				<project-url>https://tika.apache.org/tika-parser-xmp-commons/</project-url>
 				<licenses>
@@ -4677,7 +4688,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.tika.jar!tika-parser-zip-commons.jar</file-name>
-				<version>3.3.1</version>
+				<version>3.3.2</version>
 				<project-name>Apache Tika ZIP commons</project-name>
 				<project-url>https://tika.apache.org/tika-parser-zip-commons/</project-url>
 				<licenses>
