@@ -38,6 +38,38 @@ export type ObjectField = {
 	system: boolean;
 };
 
+export type ObjectLayout = {
+	defaultObjectLayout: boolean;
+	name: Liferay.Language.LocalizedValue<string>;
+	objectDefinitionExternalReferenceCode?: string;
+	objectLayoutTabs: ObjectLayoutTab[];
+};
+
+export type ObjectLayoutBox = {
+	collapsable: boolean;
+	name?: Liferay.Language.LocalizedValue<string>;
+	objectLayoutRows: ObjectLayoutRow[];
+	priority?: number;
+	type: 'categorization' | 'regular' | 'seo';
+};
+
+type ObjectLayoutColumn = {
+	objectFieldName: string;
+	priority?: number;
+	size?: number;
+};
+
+type ObjectLayoutRow = {
+	objectLayoutColumns: ObjectLayoutColumn[];
+	priority?: number;
+};
+
+export type ObjectLayoutTab = {
+	name: Liferay.Language.LocalizedValue<string>;
+	objectLayoutBoxes: ObjectLayoutBox[];
+	priority?: number;
+};
+
 export type ObjectRelationship = {
 	deletionType: string;
 	edge?: boolean;
@@ -77,6 +109,7 @@ export type ObjectDefinition = {
 		| 'L_CMS_CONTENT_STRUCTURES'
 		| 'L_CMS_FILE_TYPES'
 		| 'L_CMS_STRUCTURE_REPEATABLE_GROUPS';
+	objectLayouts?: ObjectLayout[];
 	objectRelationships?: ObjectRelationship[];
 	pluralLabel: Liferay.Language.LocalizedValue<string>;
 	restContextPath?: string;
