@@ -93,6 +93,7 @@ if (Validator.isNull(titlePage)) {
 					<aui:input name="p_l_id" type="hidden" value="<%= layout.getPlid() %>" />
 					<aui:input name="p_auth" type="hidden" value="<%= AuthTokenUtil.getToken(request) %>" />
 					<aui:input name="doAsUserId" type="hidden" value="<%= themeDisplay.getDoAsUserId() %>" />
+					<aui:input name="doAsUserLanguageId" type="hidden" value="<%= themeDisplay.getDoAsUserLanguageId() %>" />
 					<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 					<aui:input name="<%= WebKeys.REFERER %>" type="hidden" value="<%= referer %>" />
 					<aui:input name="ticketId" type="hidden" value="<%= ticketId %>" />
