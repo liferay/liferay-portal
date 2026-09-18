@@ -5,13 +5,13 @@
 
 package com.liferay.document.library.web.internal.portlet.action;
 
-import com.liferay.document.library.configuration.DLSizeLimitConfigurationProvider;
 import com.liferay.document.library.constants.DLPortletKeys;
+import com.liferay.document.library.kernel.exception.FileSizeException;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
-import com.liferay.document.library.web.internal.exception.DLObjectSizeLimitExceededException;
+import com.liferay.document.library.kernel.util.DLValidator;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -99,14 +99,16 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 
 			return false;
 		}
-		catch (DLObjectSizeLimitExceededException
-					dlObjectSizeLimitExceededException) {
-
+		catch (FileSizeException fileSizeException) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(dlObjectSizeLimitExceededException);
+				_log.debug(fileSizeException);
 			}
 
 			try {
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)resourceRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
+
 				resourceResponse.setProperty(
 					ResourceResponse.HTTP_STATUS_CODE,
 					String.valueOf(
@@ -114,7 +116,13 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 
 				PortletResponseUtil.write(
 					resourceResponse,
-					dlObjectSizeLimitExceededException.getMessage());
+					_language.format(
+						themeDisplay.getLocale(),
+						"the-total-size-of-all-items-to-download-must-not-" +
+							"exceed-x",
+						_language.formatStorageSize(
+							fileSizeException.getMaxSize(),
+							themeDisplay.getLocale())));
 			}
 			catch (IOException ioException) {
 				throw new PortletException(ioException);
@@ -204,7 +212,8 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 				}
 			}
 
-			_validateSize(themeDisplay, size);
+			_dlValidator.validateDownloadSize(
+				themeDisplay.getScopeGroupId(), size);
 
 			PortletResponseUtil.setHeaders(
 				resourceRequest, resourceResponse, null, null,
@@ -248,7 +257,9 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 
 		_checkFolder(folderId);
 
-		_validateSize(themeDisplay, _getFolderSize(themeDisplay, folderId));
+		_dlValidator.validateDownloadSize(
+			themeDisplay.getScopeGroupId(),
+			_getFolderSize(themeDisplay, folderId));
 
 		PortletResponseUtil.setHeaders(
 			resourceRequest, resourceResponse, null, null,
@@ -279,26 +290,6 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 		return _dlFolderLocalService.getFolderSize(
 			dlFolder.getCompanyId(), dlFolder.getGroupId(),
 			dlFolder.getTreePath());
-	}
-
-	private long _getMaxSizeToDownload(ThemeDisplay themeDisplay) {
-		long groupMaxSizeToDownload =
-			_dlSizeLimitConfigurationProvider.getGroupMaxSizeToDownload(
-				themeDisplay.getScopeGroupId());
-
-		if (groupMaxSizeToDownload != 0) {
-			return groupMaxSizeToDownload;
-		}
-
-		long companyMaxSizeToDownload =
-			_dlSizeLimitConfigurationProvider.getCompanyMaxSizeToDownload(
-				themeDisplay.getCompanyId());
-
-		if (companyMaxSizeToDownload != 0) {
-			return companyMaxSizeToDownload;
-		}
-
-		return _dlSizeLimitConfigurationProvider.getSystemMaxSizeToDownload();
 	}
 
 	private String _getPath(String path, String name) {
@@ -357,23 +348,6 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 		}
 
 		return _isExternalRepositoryFolder(_dlAppService.getFolder(folderId));
-	}
-
-	private void _validateSize(ThemeDisplay themeDisplay, long size)
-		throws PortalException {
-
-		long maxSizeToDownload = _getMaxSizeToDownload(themeDisplay);
-
-		if ((maxSizeToDownload == 0) || (size <= maxSizeToDownload)) {
-			return;
-		}
-
-		throw new DLObjectSizeLimitExceededException(
-			_language.format(
-				themeDisplay.getLocale(),
-				"the-total-size-of-all-items-to-download-must-not-exceed-x",
-				_language.formatStorageSize(
-					maxSizeToDownload, themeDisplay.getLocale())));
 	}
 
 	private void _zipFileEntry(
@@ -452,7 +426,7 @@ public class DownloadEntriesMVCResourceCommand implements MVCResourceCommand {
 	private DLFolderLocalService _dlFolderLocalService;
 
 	@Reference
-	private DLSizeLimitConfigurationProvider _dlSizeLimitConfigurationProvider;
+	private DLValidator _dlValidator;
 
 	@Reference
 	private Language _language;

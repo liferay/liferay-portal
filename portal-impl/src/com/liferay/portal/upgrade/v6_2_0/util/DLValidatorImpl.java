@@ -55,6 +55,11 @@ public final class DLValidatorImpl implements DLValidator {
 		return replaceDLNameBlacklist(name);
 	}
 
+	@Override
+	public long getMaxAllowableDownloadSize(long groupId) {
+		return 0;
+	}
+
 	/**
 	 * @see com.liferay.portal.upload.internal.configuration.UploadServletRequestConfiguration#maxSize
 	 */
@@ -116,6 +121,10 @@ public final class DLValidatorImpl implements DLValidator {
 		if (!isValidName(directoryName)) {
 			throw new FolderNameException(directoryName);
 		}
+	}
+
+	@Override
+	public void validateDownloadSize(long groupId, long size) {
 	}
 
 	@Override

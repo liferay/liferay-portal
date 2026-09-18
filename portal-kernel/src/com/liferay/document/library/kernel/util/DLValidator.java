@@ -28,6 +28,8 @@ public interface DLValidator {
 
 	public String fixName(String name);
 
+	public long getMaxAllowableDownloadSize(long groupId);
+
 	public long getMaxAllowableSize(long groupId, String mimeType);
 
 	public long getMaxAllowableSize(long groupId, String mimeType, long limit);
@@ -38,6 +40,9 @@ public interface DLValidator {
 
 	public void validateDirectoryName(String directoryName)
 		throws FolderNameException;
+
+	public void validateDownloadSize(long groupId, long size)
+		throws FileSizeException;
 
 	public void validateFileExtension(String fileName)
 		throws FileExtensionException;
