@@ -456,22 +456,10 @@ export const EXPIRATION_DATE_LABELS = {
 };
 
 export const LANGUAGES = [
-	{
-		id: LanguageIds.English,
-		label: Liferay.Language.get('english'),
-	},
-	{
-		id: LanguageIds.Japanese,
-		label: Liferay.Language.get('japanese'),
-	},
-	{
-		id: LanguageIds.Portuguese,
-		label: Liferay.Language.get('portuguese'),
-	},
-	{
-		id: LanguageIds.Spanish,
-		label: Liferay.Language.get('spanish'),
-	},
+	LanguageIds.English,
+	LanguageIds.Japanese,
+	LanguageIds.Portuguese,
+	LanguageIds.Spanish,
 ];
 
 export const ONE_DAY = '86400000';

@@ -28,6 +28,25 @@ export function resolveLocale(languageId?: string | null): string {
 	return SUPPORTED_LOCALES[resolveLanguageId(languageId)];
 }
 
+/**
+ * Names a language the way the portal's own language selector does:
+ * in the language itself, and without the country, which DXP only
+ * appends to tell two locales of the same language apart.
+ */
+export function getLanguageDisplayName(languageId?: string | null): string {
+	const locale = resolveLocale(languageId);
+
+	const [language] = locale.split('-');
+
+	const displayName =
+		new Intl.DisplayNames([locale], {type: 'language'}).of(language) ||
+		locale;
+
+	return (
+		displayName.charAt(0).toLocaleUpperCase(locale) + displayName.slice(1)
+	);
+}
+
 const LANGUAGE_IDS_BY_LOCALE: Record<string, LanguageIds> = Object.fromEntries(
 	Object.entries(SUPPORTED_LOCALES).map(
 		([languageId, locale]): [string, LanguageIds] => [

@@ -7,7 +7,7 @@ import React, {useRef, useState} from 'react';
 import UserDropdown, {Menus} from 'shared/components/user-dropdown';
 import {LANGUAGES} from 'shared/util/constants';
 import {Link} from 'react-router-dom';
-import {resolveLanguageId} from 'shared/util/locale';
+import {getLanguageDisplayName, resolveLanguageId} from 'shared/util/locale';
 import {Routes, toRoute} from 'shared/util/router';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {User} from 'shared/util/records';
@@ -143,7 +143,7 @@ const TopBar: React.FC<ITopBarProps> = ({
 					onSetActive={setActive}
 				>
 					<ClayDropDown.ItemList>
-						{LANGUAGES.map(({id, label}) => (
+						{LANGUAGES.map((id) => (
 							<ClayDropDown.Item
 								active={languageId === id}
 								key={id}
@@ -157,7 +157,7 @@ const TopBar: React.FC<ITopBarProps> = ({
 										.then(() => window.location.reload());
 								}}
 							>
-								{label}
+								{getLanguageDisplayName(id)}
 							</ClayDropDown.Item>
 						))}
 					</ClayDropDown.ItemList>

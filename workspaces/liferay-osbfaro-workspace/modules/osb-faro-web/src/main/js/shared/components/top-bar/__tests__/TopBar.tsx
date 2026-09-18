@@ -95,7 +95,7 @@ describe('TopBar', () => {
 
 		fireEvent.click(screen.getByTitle(/language/i));
 
-		fireEvent.click(await screen.findByText(/japanese/i));
+		fireEvent.click(await screen.findByText('日本語'));
 
 		await waitFor(() =>
 			expect(API.user.updateLanguage).toHaveBeenCalledWith({
@@ -109,7 +109,7 @@ describe('TopBar', () => {
 
 		fireEvent.click(screen.getByTitle(/language/i));
 
-		fireEvent.click(await screen.findByText(/english/i));
+		fireEvent.click(await screen.findByText('English'));
 
 		expect(API.user.updateLanguage).not.toHaveBeenCalled();
 	});
