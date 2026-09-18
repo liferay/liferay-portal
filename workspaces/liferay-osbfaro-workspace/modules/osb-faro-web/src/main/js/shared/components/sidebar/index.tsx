@@ -127,91 +127,96 @@ const Sidebar: React.FC<ISidebarProps> = ({
 
 	return (
 		<div className={getCN('sidebar-root', className, {collapsed})}>
-			<div className="sidebar-header">
-				<ChannelsMenu
-					channels={channels}
-					defaultChannelId={channelId}
-					groupId={groupId}
-				/>
-			</div>
-
-			<div className="sidebar-body">
-				{sidebarSections.map(({items, key, label}) => (
-					<Panel
-						collapsable
-						displayTitle={
-							<div className="section-title">
-								<span>{label}</span>
-
-								<ClayIcon
-									className="icon-root"
-									symbol={
-										expandedSections.get(key, true)
-											? 'angle-down'
-											: 'angle-right'
-									}
-								/>
-							</div>
-						}
-						expanded={expandedSections.get(key, true)}
-						key={key}
-						onExpandedChange={(expanded) =>
-							onSectionExpandedChange(key, expanded)
-						}
-						showCollapseIcon={false}
-					>
-						<Panel.Body>
-							<ul className="nav-list">
-								{items.map(
-									({icon, label, route, url}, itemIndex) => (
-										<SidebarItem
-											active={
-												!!matchPath(
-													{
-														end: false,
-														path: route,
-													},
-													activePathname
-												)
-											}
-											href={url}
-											icon={icon}
-											key={itemIndex}
-											label={label}
-										/>
-									)
-								)}
-							</ul>
-						</Panel.Body>
-					</Panel>
-				))}
-			</div>
-
-			{DEVELOPER_MODE && (
-				<div className="sidebar-footer">
-					<div className="divider" />
-
-					<ul className="nav-list">
-						<SidebarItem
-							active={
-								!!matchPath(
-									{
-										end: false,
-										path: Routes.UI_KIT,
-									},
-									activePathname
-								)
-							}
-							href={toRoute(Routes.UI_KIT, {
-								channelId,
-								groupId,
-							})}
-							icon="code"
-							label="UI Kit"
-						/>
-					</ul>
+			<div className="sidebar-menu">
+				<div className="sidebar-header">
+					<ChannelsMenu
+						channels={channels}
+						defaultChannelId={channelId}
+						groupId={groupId}
+					/>
 				</div>
-			)}
+
+				<div className="sidebar-body">
+					{sidebarSections.map(({items, key, label}) => (
+						<Panel
+							collapsable
+							displayTitle={
+								<div className="section-title">
+									<span>{label}</span>
+
+									<ClayIcon
+										className="icon-root"
+										symbol={
+											expandedSections.get(key, true)
+												? 'angle-down'
+												: 'angle-right'
+										}
+									/>
+								</div>
+							}
+							expanded={expandedSections.get(key, true)}
+							key={key}
+							onExpandedChange={(expanded) =>
+								onSectionExpandedChange(key, expanded)
+							}
+							showCollapseIcon={false}
+						>
+							<Panel.Body>
+								<ul className="nav-list">
+									{items.map(
+										(
+											{icon, label, route, url},
+											itemIndex
+										) => (
+											<SidebarItem
+												active={
+													!!matchPath(
+														{
+															end: false,
+															path: route,
+														},
+														activePathname
+													)
+												}
+												href={url}
+												icon={icon}
+												key={itemIndex}
+												label={label}
+											/>
+										)
+									)}
+								</ul>
+							</Panel.Body>
+						</Panel>
+					))}
+				</div>
+
+				{DEVELOPER_MODE && (
+					<div className="sidebar-footer">
+						<div className="divider" />
+
+						<ul className="nav-list">
+							<SidebarItem
+								active={
+									!!matchPath(
+										{
+											end: false,
+											path: Routes.UI_KIT,
+										},
+										activePathname
+									)
+								}
+								href={toRoute(Routes.UI_KIT, {
+									channelId,
+									groupId,
+								})}
+								icon="code"
+								label="UI Kit"
+							/>
+						</ul>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };

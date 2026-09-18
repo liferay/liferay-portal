@@ -17,6 +17,7 @@ jest.mock('shared/api', () => ({
 }));
 
 const defaultProps = {
+	collapsed: false,
 	currentUser: new User({
 		emailAddress: 'test@test.com',
 		languageId: 'en_US',
@@ -63,6 +64,15 @@ describe('TopBar', () => {
 		fireEvent.click(screen.getByTitle(/menu/i));
 
 		expect(defaultProps.onToggle).toHaveBeenCalled();
+	});
+
+	it.each([
+		[false, 'product-menu-open'],
+		[true, 'product-menu-closed'],
+	])('marks the toggle as collapsed=%p with %s', (collapsed, symbol) => {
+		const {container} = renderTopBar({collapsed});
+
+		expect(container.querySelector(`.lexicon-icon-${symbol}`)).toBeTruthy();
 	});
 
 	it('links the settings button to the workspace settings', () => {

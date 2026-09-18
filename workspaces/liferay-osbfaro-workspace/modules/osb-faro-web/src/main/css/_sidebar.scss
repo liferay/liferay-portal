@@ -1,57 +1,29 @@
 .sidebar-root {
 	background: $lightL1;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+	height: calc(100% - #{$topBarHeight});
 	left: 0;
 	overflow: hidden;
 	position: fixed;
-	transition: width 0.2s ease-out;
+	top: $topBarHeight;
 	width: $sidebarOpenWidth;
 	z-index: 1000;
 
+	@media (prefers-reduced-motion: no-preference) {
+		transition:
+			visibility 0.5s ease,
+			width 0.5s ease;
+	}
+
 	&.collapsed {
-		width: $sidebarClosedWidth;
-
-		.item-label,
-		.section-title,
-		.channels-menu-label,
-		.channels-menu-trigger {
-			opacity: 0;
-			visibility: hidden;
-		}
-
-		.sidebar-body {
-			overflow-x: hidden;
-		}
-
-		.channels-menu-icon {
-			opacity: 1;
-			transition:
-				opacity 0.2s ease,
-				visibility 0.2s ease;
-			transition-delay: 0.2s;
-			visibility: visible;
-		}
+		visibility: hidden;
+		width: 0;
 	}
 
-	.item-label,
-	.section-title {
-		opacity: 1;
-		transition:
-			opacity 0.2s ease,
-			visibility 0.2s ease;
-		visibility: visible;
-	}
-
-	.channels-menu-label,
-	.channels-menu-trigger {
-		opacity: 1;
-		transition:
-			opacity 0.2s ease,
-			visibility 0.2s ease;
-		transition-delay: 0.1s;
-		visibility: visible;
+	.sidebar-menu {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		width: $sidebarOpenWidth;
 	}
 
 	.link,

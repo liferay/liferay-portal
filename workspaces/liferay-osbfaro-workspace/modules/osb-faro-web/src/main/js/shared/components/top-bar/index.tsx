@@ -13,6 +13,7 @@ import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {User} from 'shared/util/records';
 
 interface ITopBarProps extends React.HTMLAttributes<HTMLElement> {
+	collapsed: boolean;
 	currentUser: User;
 	groupId: string;
 	onToggle: () => void;
@@ -26,6 +27,7 @@ export function getLanguageLabel(languageId?: string | null): string {
 
 const TopBar: React.FC<ITopBarProps> = ({
 	className,
+	collapsed = false,
 	currentUser = new User(),
 	groupId,
 	onToggle,
@@ -60,7 +62,7 @@ const TopBar: React.FC<ITopBarProps> = ({
 	return (
 		<div
 			className={getCN(
-				'align-items-center bg-white border-bottom d-flex justify-content-between px-3 sticky-top top-bar-root',
+				'align-items-center bg-white border-bottom d-flex fixed-top justify-content-between px-3 top-bar-root',
 				className
 			)}
 		>
@@ -75,11 +77,17 @@ const TopBar: React.FC<ITopBarProps> = ({
 					size="sm"
 					title={Liferay.Language.get('menu')}
 				>
-					<ClayIcon symbol="product-menu-open" />
+					<ClayIcon
+						symbol={
+							collapsed
+								? 'product-menu-closed'
+								: 'product-menu-open'
+						}
+					/>
 				</ClayButton>
 
 				<ClayIcon
-					className="icon-root icon-size-md ml-2"
+					className="icon-root ml-2 top-bar-logo"
 					symbol={LDPEnabled ? 'ldp_logo' : 'ac_logo'}
 				/>
 

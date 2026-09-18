@@ -1,6 +1,10 @@
 .top-bar-root {
 	height: $topBarHeight;
 
+	.top-bar-logo {
+		font-size: 20px;
+	}
+
 	.top-bar-divider {
 		background: $mainLighten74;
 		height: 20px;

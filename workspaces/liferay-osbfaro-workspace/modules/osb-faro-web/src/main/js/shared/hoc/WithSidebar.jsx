@@ -198,6 +198,13 @@ export default compose(
 
 				return (
 					<div className={classes}>
+						<TopBar
+							collapsed={collapsed}
+							currentUser={currentUser}
+							groupId={groupId}
+							onToggle={this.handleSidebarToggle}
+						/>
+
 						<Sidebar
 							activePathname={location.pathname}
 							channelId={selectedChannel && selectedChannel.id}
@@ -211,12 +218,6 @@ export default compose(
 						/>
 
 						<div className="with-sidebar-content">
-							<TopBar
-								currentUser={currentUser}
-								groupId={groupId}
-								onToggle={this.handleSidebarToggle}
-							/>
-
 							<WrappedComponent
 								{...otherProps}
 								currentUser={currentUser}

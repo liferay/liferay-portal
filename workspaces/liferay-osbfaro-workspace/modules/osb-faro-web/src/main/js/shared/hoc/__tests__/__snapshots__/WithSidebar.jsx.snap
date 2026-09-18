@@ -15,356 +15,475 @@ exports[`withSidebar should render with the sidebar 1`] = `
     class="with-sidebar-root has-sidebar"
   >
     <div
+      class="align-items-center bg-white border-bottom d-flex fixed-top justify-content-between px-3 top-bar-root"
+    >
+      <div
+        class="align-items-center d-flex"
+      >
+        <button
+          aria-label="Menu"
+          class="btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
+          data-tooltip-align="bottom"
+          title="Menu"
+          type="button"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-product-menu-open"
+            role="presentation"
+          >
+            <use
+              href="#product-menu-open"
+            />
+          </svg>
+        </button>
+        <svg
+          class="lexicon-icon lexicon-icon-ac_logo icon-root ml-2 top-bar-logo"
+          role="presentation"
+        >
+          <use
+            href="#ac_logo"
+          />
+        </svg>
+        <span
+          class="font-weight-semi-bold ml-2 text-nowrap top-bar-product-name"
+        >
+          Analytics Cloud
+        </span>
+      </div>
+      <div
+        class="align-items-center d-flex"
+      >
+        <a
+          aria-label="Settings"
+          class="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
+          data-discover="true"
+          data-tooltip-align="bottom"
+          href="/workspace/23/settings/data-source"
+          title="Settings"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-cog"
+            role="presentation"
+          >
+            <use
+              href="#cog"
+            />
+          </svg>
+        </a>
+        <span
+          class="mx-2 top-bar-divider"
+        />
+        <button
+          class="text-nowrap btn btn-outline-borderless btn-sm btn-outline-secondary"
+          data-tooltip-align="bottom"
+          title="Language"
+          type="button"
+        >
+          <svg
+            class="lexicon-icon lexicon-icon-automatic-translate inline-item inline-item-before top-bar-language-icon"
+            role="presentation"
+          >
+            <use
+              href="#automatic-translate"
+            />
+          </svg>
+          <span
+            class="top-bar-language-label"
+          >
+            EN (US)
+          </span>
+          <svg
+            class="lexicon-icon lexicon-icon-caret-bottom inline-item inline-item-after top-bar-language-caret"
+            role="presentation"
+          >
+            <use
+              href="#caret-bottom"
+            />
+          </svg>
+        </button>
+        <div
+          class="ml-2 top-bar-user"
+        >
+          <button
+            aria-label="Test Test"
+            class="user-menu button-root btn btn-unstyled trigger"
+            type="button"
+          >
+            <div
+              class="text-truncate"
+            >
+              <div
+                class="sticker sticker-root sticker-static avatar sticker-circle"
+              >
+                <svg
+                  class="lexicon-icon lexicon-icon-user icon-root"
+                  role="presentation"
+                >
+                  <use
+                    href="#user"
+                  />
+                </svg>
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
       class="sidebar-root"
     >
       <div
-        class="sidebar-header"
+        class="sidebar-menu"
       >
         <div
-          class="channels-menu-root"
+          class="sidebar-header"
         >
           <div
-            class="channels-menu-label"
-          >
-            Property
-          </div>
-          <button
-            aria-activedescendant=""
-            aria-expanded="false"
-            aria-haspopup="listbox"
-            aria-label="Property"
-            class="rounded-lg d-flex justify-content-between align-items-center btn btn-block btn-secondary"
-            role="combobox"
-            tabindex="0"
-            type="button"
-          >
-            Channel 1
-            <svg
-              class="lexicon-icon lexicon-icon-caret-double inline-item inline-item-after"
-              role="presentation"
-            >
-              <use
-                href="#caret-double"
-              />
-            </svg>
-          </button>
-          <div
-            class="channels-menu-icon"
-          >
-            <svg
-              class="lexicon-icon lexicon-icon-sites icon-root"
-              role="presentation"
-            >
-              <use
-                href="#sites"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div
-        class="sidebar-body"
-      >
-        <div
-          class="panel"
-        >
-          <button
-            aria-controls="clay-id-3"
-            aria-expanded="true"
-            class="panel-header panel-header-link show btn btn-unstyled"
-            type="button"
+            class="channels-menu-root"
           >
             <div
-              class="section-title"
+              class="channels-menu-label"
             >
-              <span>
-                Touchpoints
-              </span>
+              Property
+            </div>
+            <button
+              aria-activedescendant=""
+              aria-expanded="false"
+              aria-haspopup="listbox"
+              aria-label="Property"
+              class="rounded-lg d-flex justify-content-between align-items-center btn btn-block btn-secondary"
+              role="combobox"
+              tabindex="0"
+              type="button"
+            >
+              Channel 1
               <svg
-                class="lexicon-icon lexicon-icon-angle-down icon-root"
+                class="lexicon-icon lexicon-icon-caret-double inline-item inline-item-after"
                 role="presentation"
               >
                 <use
-                  href="#angle-down"
+                  href="#caret-double"
                 />
               </svg>
-            </div>
-          </button>
-          <div
-            aria-labelledby="clay-id-3"
-            class="panel-collapse"
-            id="clay-id-3"
-            role="region"
-          >
+            </button>
             <div
-              class="panel-body"
+              class="channels-menu-icon"
             >
-              <ul
-                class="nav-list"
+              <svg
+                class="lexicon-icon lexicon-icon-sites icon-root"
+                role="presentation"
               >
-                <li
-                  class="sidebar-item-root"
-                >
-                  <a
-                    class="link btn btn-unstyled"
-                    href="/workspace/23/1/sites"
-                  >
-                    <span
-                      class="link-content-wrapper"
-                    >
-                      <span
-                        class="icon-wrapper"
-                      >
-                        <svg
-                          class="lexicon-icon lexicon-icon-sites icon-root"
-                          role="presentation"
-                        >
-                          <use
-                            href="#sites"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Sites
-                      </span>
-                    </span>
-                  </a>
-                </li>
-                <li
-                  class="sidebar-item-root"
-                >
-                  <a
-                    class="link btn btn-unstyled"
-                    href="/workspace/23/1/assets"
-                  >
-                    <span
-                      class="link-content-wrapper"
-                    >
-                      <span
-                        class="icon-wrapper"
-                      >
-                        <svg
-                          class="lexicon-icon lexicon-icon-sheets icon-root"
-                          role="presentation"
-                        >
-                          <use
-                            href="#sheets"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Assets
-                      </span>
-                    </span>
-                  </a>
-                </li>
-                <li
-                  class="sidebar-item-root"
-                >
-                  <a
-                    class="link btn btn-unstyled"
-                    href="/workspace/23/1/event-analysis"
-                  >
-                    <span
-                      class="link-content-wrapper"
-                    >
-                      <span
-                        class="icon-wrapper"
-                      >
-                        <svg
-                          class="lexicon-icon lexicon-icon-click icon-root"
-                          role="presentation"
-                        >
-                          <use
-                            href="#click"
-                          />
-                        </svg>
-                      </span>
-                      <span
-                        class="item-label"
-                      >
-                        Events
-                      </span>
-                    </span>
-                  </a>
-                </li>
-              </ul>
+                <use
+                  href="#sites"
+                />
+              </svg>
             </div>
           </div>
         </div>
         <div
-          class="panel"
+          class="sidebar-body"
         >
-          <button
-            aria-controls="clay-id-4"
-            aria-expanded="true"
-            class="panel-header panel-header-link show btn btn-unstyled"
-            type="button"
-          >
-            <div
-              class="section-title"
-            >
-              <span>
-                People
-              </span>
-              <svg
-                class="lexicon-icon lexicon-icon-angle-down icon-root"
-                role="presentation"
-              >
-                <use
-                  href="#angle-down"
-                />
-              </svg>
-            </div>
-          </button>
           <div
-            aria-labelledby="clay-id-4"
-            class="panel-collapse"
-            id="clay-id-4"
-            role="region"
+            class="panel"
           >
-            <div
-              class="panel-body"
+            <button
+              aria-controls="clay-id-6"
+              aria-expanded="true"
+              class="panel-header panel-header-link show btn btn-unstyled"
+              type="button"
             >
-              <ul
-                class="nav-list"
+              <div
+                class="section-title"
               >
-                <li
-                  class="sidebar-item-root"
+                <span>
+                  Touchpoints
+                </span>
+                <svg
+                  class="lexicon-icon lexicon-icon-angle-down icon-root"
+                  role="presentation"
                 >
-                  <a
-                    class="link btn btn-unstyled"
-                    href="/workspace/23/1/contacts/segments"
+                  <use
+                    href="#angle-down"
+                  />
+                </svg>
+              </div>
+            </button>
+            <div
+              aria-labelledby="clay-id-6"
+              class="panel-collapse"
+              id="clay-id-6"
+              role="region"
+            >
+              <div
+                class="panel-body"
+              >
+                <ul
+                  class="nav-list"
+                >
+                  <li
+                    class="sidebar-item-root"
                   >
-                    <span
-                      class="link-content-wrapper"
+                    <a
+                      class="link btn btn-unstyled"
+                      href="/workspace/23/1/sites"
                     >
                       <span
-                        class="icon-wrapper"
+                        class="link-content-wrapper"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-box-squared icon-root"
-                          role="presentation"
+                        <span
+                          class="icon-wrapper"
                         >
-                          <use
-                            href="#box-squared"
-                          />
-                        </svg>
+                          <svg
+                            class="lexicon-icon lexicon-icon-sites icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#sites"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Sites
+                        </span>
                       </span>
-                      <span
-                        class="item-label"
-                      >
-                        Segments
-                      </span>
-                    </span>
-                  </a>
-                </li>
-                <li
-                  class="sidebar-item-root"
-                >
-                  <a
-                    class="link btn btn-unstyled"
-                    href="/workspace/23/1/contacts/individuals"
+                    </a>
+                  </li>
+                  <li
+                    class="sidebar-item-root"
                   >
-                    <span
-                      class="link-content-wrapper"
+                    <a
+                      class="link btn btn-unstyled"
+                      href="/workspace/23/1/assets"
                     >
                       <span
-                        class="icon-wrapper"
+                        class="link-content-wrapper"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-users icon-root"
-                          role="presentation"
+                        <span
+                          class="icon-wrapper"
                         >
-                          <use
-                            href="#users"
-                          />
-                        </svg>
+                          <svg
+                            class="lexicon-icon lexicon-icon-sheets icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#sheets"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Assets
+                        </span>
                       </span>
+                    </a>
+                  </li>
+                  <li
+                    class="sidebar-item-root"
+                  >
+                    <a
+                      class="link btn btn-unstyled"
+                      href="/workspace/23/1/event-analysis"
+                    >
                       <span
-                        class="item-label"
+                        class="link-content-wrapper"
                       >
-                        Individuals
+                        <span
+                          class="icon-wrapper"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-click icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#click"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Events
+                        </span>
                       </span>
-                    </span>
-                  </a>
-                </li>
-              </ul>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="panel"
-        >
-          <button
-            aria-controls="clay-id-5"
-            aria-expanded="true"
-            class="panel-header panel-header-link show btn btn-unstyled"
-            type="button"
-          >
-            <div
-              class="section-title"
-            >
-              <span>
-                Optimize
-              </span>
-              <svg
-                class="lexicon-icon lexicon-icon-angle-down icon-root"
-                role="presentation"
-              >
-                <use
-                  href="#angle-down"
-                />
-              </svg>
-            </div>
-          </button>
           <div
-            aria-labelledby="clay-id-5"
-            class="panel-collapse"
-            id="clay-id-5"
-            role="region"
+            class="panel"
           >
-            <div
-              class="panel-body"
+            <button
+              aria-controls="clay-id-7"
+              aria-expanded="true"
+              class="panel-header panel-header-link show btn btn-unstyled"
+              type="button"
             >
-              <ul
-                class="nav-list"
+              <div
+                class="section-title"
               >
-                <li
-                  class="sidebar-item-root"
+                <span>
+                  People
+                </span>
+                <svg
+                  class="lexicon-icon lexicon-icon-angle-down icon-root"
+                  role="presentation"
                 >
-                  <a
-                    class="link btn btn-unstyled"
-                    href="/workspace/23/1/tests"
+                  <use
+                    href="#angle-down"
+                  />
+                </svg>
+              </div>
+            </button>
+            <div
+              aria-labelledby="clay-id-7"
+              class="panel-collapse"
+              id="clay-id-7"
+              role="region"
+            >
+              <div
+                class="panel-body"
+              >
+                <ul
+                  class="nav-list"
+                >
+                  <li
+                    class="sidebar-item-root"
                   >
-                    <span
-                      class="link-content-wrapper"
+                    <a
+                      class="link btn btn-unstyled"
+                      href="/workspace/23/1/contacts/segments"
                     >
                       <span
-                        class="icon-wrapper"
+                        class="link-content-wrapper"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-test icon-root"
-                          role="presentation"
+                        <span
+                          class="icon-wrapper"
                         >
-                          <use
-                            href="#test"
-                          />
-                        </svg>
+                          <svg
+                            class="lexicon-icon lexicon-icon-box-squared icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#box-squared"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Segments
+                        </span>
                       </span>
+                    </a>
+                  </li>
+                  <li
+                    class="sidebar-item-root"
+                  >
+                    <a
+                      class="link btn btn-unstyled"
+                      href="/workspace/23/1/contacts/individuals"
+                    >
                       <span
-                        class="item-label"
+                        class="link-content-wrapper"
                       >
-                        Tests
+                        <span
+                          class="icon-wrapper"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-users icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#users"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Individuals
+                        </span>
                       </span>
-                    </span>
-                  </a>
-                </li>
-              </ul>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div
+            class="panel"
+          >
+            <button
+              aria-controls="clay-id-8"
+              aria-expanded="true"
+              class="panel-header panel-header-link show btn btn-unstyled"
+              type="button"
+            >
+              <div
+                class="section-title"
+              >
+                <span>
+                  Optimize
+                </span>
+                <svg
+                  class="lexicon-icon lexicon-icon-angle-down icon-root"
+                  role="presentation"
+                >
+                  <use
+                    href="#angle-down"
+                  />
+                </svg>
+              </div>
+            </button>
+            <div
+              aria-labelledby="clay-id-8"
+              class="panel-collapse"
+              id="clay-id-8"
+              role="region"
+            >
+              <div
+                class="panel-body"
+              >
+                <ul
+                  class="nav-list"
+                >
+                  <li
+                    class="sidebar-item-root"
+                  >
+                    <a
+                      class="link btn btn-unstyled"
+                      href="/workspace/23/1/tests"
+                    >
+                      <span
+                        class="link-content-wrapper"
+                      >
+                        <span
+                          class="icon-wrapper"
+                        >
+                          <svg
+                            class="lexicon-icon lexicon-icon-test icon-root"
+                            role="presentation"
+                          >
+                            <use
+                              href="#test"
+                            />
+                          </svg>
+                        </span>
+                        <span
+                          class="item-label"
+                        >
+                          Tests
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -373,121 +492,6 @@ exports[`withSidebar should render with the sidebar 1`] = `
     <div
       class="with-sidebar-content"
     >
-      <div
-        class="align-items-center bg-white border-bottom d-flex justify-content-between px-3 sticky-top top-bar-root"
-      >
-        <div
-          class="align-items-center d-flex"
-        >
-          <button
-            aria-label="Menu"
-            class="btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
-            data-tooltip-align="bottom"
-            title="Menu"
-            type="button"
-          >
-            <svg
-              class="lexicon-icon lexicon-icon-product-menu-open"
-              role="presentation"
-            >
-              <use
-                href="#product-menu-open"
-              />
-            </svg>
-          </button>
-          <svg
-            class="lexicon-icon lexicon-icon-ac_logo icon-root icon-size-md ml-2"
-            role="presentation"
-          >
-            <use
-              href="#ac_logo"
-            />
-          </svg>
-          <span
-            class="font-weight-semi-bold ml-2 text-nowrap top-bar-product-name"
-          >
-            Analytics Cloud
-          </span>
-        </div>
-        <div
-          class="align-items-center d-flex"
-        >
-          <a
-            aria-label="Settings"
-            class="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
-            data-discover="true"
-            data-tooltip-align="bottom"
-            href="/workspace/23/settings/data-source"
-            title="Settings"
-          >
-            <svg
-              class="lexicon-icon lexicon-icon-cog"
-              role="presentation"
-            >
-              <use
-                href="#cog"
-              />
-            </svg>
-          </a>
-          <span
-            class="mx-2 top-bar-divider"
-          />
-          <button
-            class="text-nowrap btn btn-outline-borderless btn-sm btn-outline-secondary"
-            data-tooltip-align="bottom"
-            title="Language"
-            type="button"
-          >
-            <svg
-              class="lexicon-icon lexicon-icon-automatic-translate inline-item inline-item-before top-bar-language-icon"
-              role="presentation"
-            >
-              <use
-                href="#automatic-translate"
-              />
-            </svg>
-            <span
-              class="top-bar-language-label"
-            >
-              EN (US)
-            </span>
-            <svg
-              class="lexicon-icon lexicon-icon-caret-bottom inline-item inline-item-after top-bar-language-caret"
-              role="presentation"
-            >
-              <use
-                href="#caret-bottom"
-              />
-            </svg>
-          </button>
-          <div
-            class="ml-2 top-bar-user"
-          >
-            <button
-              aria-label="Test Test"
-              class="user-menu button-root btn btn-unstyled trigger"
-              type="button"
-            >
-              <div
-                class="text-truncate"
-              >
-                <div
-                  class="sticker sticker-root sticker-static avatar sticker-circle"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-user icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#user"
-                    />
-                  </svg>
-                </div>
-              </div>
-            </button>
-          </div>
-        </div>
-      </div>
       <p>
         bizbaz
       </p>

@@ -1,13 +1,16 @@
 .with-sidebar-root {
 	min-height: 100vh;
 	padding-left: $sidebarOpenWidth;
+	padding-top: $topBarHeight;
 
 	&.has-sidebar {
-		transition: padding 0.2s ease;
+		@media (prefers-reduced-motion: no-preference) {
+			transition: padding 0.5s ease;
+		}
 	}
 
 	&.sidebar-collapsed {
-		padding-left: $sidebarClosedWidth;
+		padding-left: 0;
 	}
 }
 
