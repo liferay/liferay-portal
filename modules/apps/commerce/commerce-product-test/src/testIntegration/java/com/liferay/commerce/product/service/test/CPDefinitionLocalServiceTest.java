@@ -519,6 +519,54 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testAddFutureExpiredCPDefinitionWithStatusExpired()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Add product definition"
+		).given(
+			"I add a product definition"
+		).when(
+			"expirationDate is in a future date"
+		).and(
+			"status is expired"
+		).then(
+			"product definition should keep expirationDate and have a status " +
+				"of expired"
+		);
+
+		long time = System.currentTimeMillis();
+
+		Date displayDate = new Date(time);
+		Date expirationDate = new Date(time + Time.YEAR);
+
+		User user = TestPropsValues.getUser();
+
+		Calendar expirationCalendar = CalendarFactoryUtil.getCalendar(
+			user.getTimeZone());
+
+		expirationCalendar.setTime(expirationDate);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME,
+			displayDate, expirationDate, false, false,
+			WorkflowConstants.STATUS_EXPIRED);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EXPIRED, cpDefinition.getStatus());
+
+		Assert.assertEquals(
+			_portal.getDate(
+				expirationCalendar.get(Calendar.MONTH),
+				expirationCalendar.get(Calendar.DATE),
+				expirationCalendar.get(Calendar.YEAR),
+				expirationCalendar.get(Calendar.HOUR_OF_DAY),
+				expirationCalendar.get(Calendar.MINUTE), user.getTimeZone(),
+				null),
+			cpDefinition.getExpirationDate());
+	}
+
+	@Test
 	public void testCloneCPDefinitionOptionRelExternalReferenceCodes()
 		throws Exception {
 
