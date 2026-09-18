@@ -12,7 +12,7 @@ import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import {CheckoutPage} from '../../../../pages/commerce/commerce-checkout-web/checkoutPage';
 import {
 	performLoginViaApi,
-	performLogout,
+	performUserSwitchViaApi,
 } from '../../../../utils/performLogin';
 import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
 
@@ -27,6 +27,12 @@ type TProductFixture = {
 	priceEntryId: number;
 	skuId: number;
 	skuName: string;
+};
+
+type TPriceConfiguration = {
+	bulkPricing?: boolean;
+	price: number;
+	tiers?: TTier[];
 };
 
 type TTier = {minimumQuantity: number; price: number};
@@ -109,32 +115,6 @@ test.afterAll(async ({browser}) => {
 
 	await page.close();
 });
-
-function formatPrice(price: number) {
-	return `$ ${price.toFixed(2)}`;
-}
-
-async function setPriceEntry(
-	apiHelpers: DataApiHelpers,
-	product: TProductFixture,
-	{
-		bulkPricing = false,
-		price,
-		tiers = [],
-	}: {bulkPricing?: boolean; price: number; tiers?: TTier[]}
-) {
-	await apiHelpers.headlessCommerceAdminPricing.patchPriceEntry(
-		product.priceEntryId,
-		{bulkPricing, price}
-	);
-
-	for (const tier of tiers) {
-		await apiHelpers.headlessCommerceAdminPricing.postTierPrice(
-			product.priceEntryId,
-			tier
-		);
-	}
-}
 
 async function checkoutAndAssertPrice(
 	checkoutPage: CheckoutPage,
@@ -226,6 +206,76 @@ async function checkoutAndAssertPrice(
 	await expect(checkoutPage.orderSuccessMessage).toBeVisible();
 }
 
+async function configurePriceEntry(
+	apiHelpers: DataApiHelpers,
+	priceEntryId: number,
+	{bulkPricing = false, price, tiers = []}: TPriceConfiguration
+) {
+	await apiHelpers.headlessCommerceAdminPricing.patchPriceEntry(
+		priceEntryId,
+		{bulkPricing, price}
+	);
+
+	for (const tier of tiers) {
+		await apiHelpers.headlessCommerceAdminPricing.postTierPrice(
+			priceEntryId,
+			tier
+		);
+	}
+}
+
+async function configurePromoPriceEntry(
+	apiHelpers: DataApiHelpers,
+	product: TProductFixture,
+	priceConfiguration: TPriceConfiguration
+) {
+	const promoPriceEntry =
+		await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
+			price: priceConfiguration.price,
+			priceListId: basePromoPriceList.id,
+			skuId: product.skuId,
+		});
+
+	await configurePriceEntry(
+		apiHelpers,
+		promoPriceEntry.priceEntryId,
+		priceConfiguration
+	);
+}
+
+function formatPrice(price: number) {
+	return `$ ${price.toFixed(2)}`;
+}
+
+function resolveUnitPrice(
+	{bulkPricing = false, price, tiers = []}: TPriceConfiguration,
+	quantity: number
+) {
+	const applicableTiers = tiers
+		.filter((tier) => tier.minimumQuantity <= quantity)
+		.sort((a, b) => a.minimumQuantity - b.minimumQuantity);
+
+	if (!applicableTiers.length) {
+		return price;
+	}
+
+	if (bulkPricing) {
+		return applicableTiers[applicableTiers.length - 1].price;
+	}
+
+	let coveredQuantity = 0;
+	let currentPrice = price;
+	let total = 0;
+
+	for (const tier of applicableTiers) {
+		total += currentPrice * (tier.minimumQuantity - coveredQuantity - 1);
+		coveredQuantity = tier.minimumQuantity - 1;
+		currentPrice = tier.price;
+	}
+
+	return (total + currentPrice * (quantity - coveredQuantity)) / quantity;
+}
+
 test(
 	'List price applies at checkout when the promotion price is higher',
 	{tag: ['@COMMERCE-10279', '@LPD-106099']},
@@ -236,7 +286,7 @@ test(
 		commerceThemeMiniumCatalogPage,
 		page,
 	}) => {
-		await setPriceEntry(apiHelpers, uJoint, {price: 24});
+		await configurePriceEntry(apiHelpers, uJoint.priceEntryId, {price: 24});
 
 		await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
 			price: 40,
@@ -257,8 +307,7 @@ test(
 			channel.id
 		);
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
 
 		await page.goto(`/web${site.friendlyUrlPath}`);
 
@@ -286,7 +335,7 @@ test(
 	'Promotion price applies at checkout when it is lower than the list price',
 	{tag: ['@COMMERCE-10280', '@LPD-106099']},
 	async ({apiHelpers, checkoutPage, commerceMiniCartPage, page}) => {
-		await setPriceEntry(apiHelpers, uJoint, {price: 24});
+		await configurePriceEntry(apiHelpers, uJoint.priceEntryId, {price: 24});
 
 		await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
 			price: 14,
@@ -307,8 +356,7 @@ test(
 			channel.id
 		);
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
 
 		await page.goto(`/web${site.friendlyUrlPath}`);
 
@@ -340,7 +388,7 @@ test(
 	'Bulk price applies at checkout',
 	{tag: ['@COMMERCE-10245', '@LPD-106099']},
 	async ({apiHelpers, checkoutPage, commerceMiniCartPage, page}) => {
-		await setPriceEntry(apiHelpers, uJoint, {
+		await configurePriceEntry(apiHelpers, uJoint.priceEntryId, {
 			bulkPricing: true,
 			price: 24,
 			tiers: [{minimumQuantity: 7, price: 50}],
@@ -359,8 +407,7 @@ test(
 			channel.id
 		);
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
 
 		await page.goto(`/web${site.friendlyUrlPath}`);
 
@@ -380,7 +427,7 @@ test(
 	'Tiered price applies at checkout',
 	{tag: ['@COMMERCE-12443', '@LPD-106099']},
 	async ({apiHelpers, checkoutPage, commerceMiniCartPage, page}) => {
-		await setPriceEntry(apiHelpers, absSensor, {
+		await configurePriceEntry(apiHelpers, absSensor.priceEntryId, {
 			price: 50,
 			tiers: [{minimumQuantity: 5, price: 20}],
 		});
@@ -400,8 +447,7 @@ test(
 			channel.id
 		);
 
-		await performLogout(page);
-		await performLoginViaApi({page, screenName: buyerUser.alternateName});
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
 
 		await page.goto(`/web${site.friendlyUrlPath}`);
 
@@ -441,7 +487,7 @@ for (const {bulkPricing, initialUnitPrice, title, unitPrice} of [
 			commerceThemeMiniumCatalogPage,
 			page,
 		}) => {
-			await setPriceEntry(apiHelpers, uJoint, {
+			await configurePriceEntry(apiHelpers, uJoint.priceEntryId, {
 				bulkPricing,
 				price: 24,
 				tiers: [
@@ -465,11 +511,7 @@ for (const {bulkPricing, initialUnitPrice, title, unitPrice} of [
 				channel.id
 			);
 
-			await performLogout(page);
-			await performLoginViaApi({
-				page,
-				screenName: buyerUser.alternateName,
-			});
+			await performUserSwitchViaApi(page, buyerUser.alternateName);
 
 			await page.goto(`/web${site.friendlyUrlPath}`);
 
@@ -512,6 +554,153 @@ for (const {bulkPricing, initialUnitPrice, title, unitPrice} of [
 				productName: uJoint.name,
 				quantity: 10,
 				unitPrice,
+			});
+		}
+	);
+}
+
+for (const {
+	listPriceConfiguration,
+	promoPriceConfiguration,
+	quantity,
+	tag,
+	title,
+} of [
+	{
+		listPriceConfiguration: {
+			bulkPricing: true,
+			price: 24,
+			tiers: [{minimumQuantity: 1, price: 40}],
+		},
+		promoPriceConfiguration: {
+			price: 45,
+			tiers: [{minimumQuantity: 4, price: 10}],
+		},
+		quantity: 4,
+		tag: '@COMMERCE-10290',
+		title: 'Tiered promotion price applies at checkout over a bulk price list price',
+	},
+	{
+		listPriceConfiguration: {price: 24},
+		promoPriceConfiguration: {
+			bulkPricing: true,
+			price: 30,
+			tiers: [{minimumQuantity: 5, price: 15}],
+		},
+		quantity: 5,
+		tag: '@COMMERCE-10282',
+		title: 'Bulk promotion price applies at checkout when only the promotion has tiers',
+	},
+	{
+		listPriceConfiguration: {
+			bulkPricing: true,
+			price: 24,
+			tiers: [{minimumQuantity: 1, price: 50}],
+		},
+		promoPriceConfiguration: {
+			bulkPricing: true,
+			price: 55,
+			tiers: [{minimumQuantity: 5, price: 30}],
+		},
+		quantity: 5,
+		tag: '@COMMERCE-10307',
+		title: 'Bulk promotion price applies at checkout over a bulk price list price',
+	},
+	{
+		listPriceConfiguration: {
+			price: 50,
+			tiers: [{minimumQuantity: 5, price: 40}],
+		},
+		promoPriceConfiguration: {
+			bulkPricing: true,
+			price: 55,
+			tiers: [{minimumQuantity: 5, price: 30}],
+		},
+		quantity: 5,
+		tag: '@COMMERCE-10306',
+		title: 'Bulk promotion price applies at checkout over a tiered price list price',
+	},
+	{
+		listPriceConfiguration: {
+			price: 50,
+			tiers: [{minimumQuantity: 5, price: 40}],
+		},
+		promoPriceConfiguration: {
+			price: 55,
+			tiers: [{minimumQuantity: 5, price: 10}],
+		},
+		quantity: 5,
+		tag: '@COMMERCE-10289',
+		title: 'Tiered promotion price applies at checkout over a tiered price list price',
+	},
+	{
+		listPriceConfiguration: {price: 24},
+		promoPriceConfiguration: {
+			price: 25,
+			tiers: [{minimumQuantity: 5, price: 10}],
+		},
+		quantity: 5,
+		tag: '@COMMERCE-10281',
+		title: 'Tiered promotion price applies at checkout when only the promotion has tiers',
+	},
+]) {
+	test(
+		title,
+		{tag: [tag, '@LPD-106247']},
+		async ({
+			apiHelpers,
+			checkoutPage,
+			commerceMiniCartPage,
+			commerceThemeMiniumCatalogPage,
+			page,
+		}) => {
+			await configurePriceEntry(
+				apiHelpers,
+				uJoint.priceEntryId,
+				listPriceConfiguration
+			);
+			await configurePromoPriceEntry(
+				apiHelpers,
+				uJoint,
+				promoPriceConfiguration
+			);
+
+			const {account, buyerUser} = await createAccountWithBuyerUser(
+				apiHelpers,
+				site.id
+			);
+
+			await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [{options: '[]', quantity, skuId: uJoint.skuId}],
+				},
+				channel.id
+			);
+
+			await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+			await page.goto(`/web${site.friendlyUrlPath}`);
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardPrice(
+					uJoint.name,
+					formatPrice(resolveUnitPrice(listPriceConfiguration, 1))
+				)
+			).toBeVisible();
+
+			await commerceMiniCartPage.miniCartButton.click();
+			await commerceMiniCartPage.submitButton.click();
+
+			await checkoutAndAssertPrice(checkoutPage, {
+				buyerName: buyerUser.alternateName,
+				listUnitPrice: resolveUnitPrice(
+					listPriceConfiguration,
+					quantity
+				),
+				productName: uJoint.name,
+				quantity,
+				unitPrice: resolveUnitPrice(promoPriceConfiguration, quantity),
 			});
 		}
 	);

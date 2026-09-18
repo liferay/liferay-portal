@@ -69,6 +69,7 @@ export class CommerceAdminPriceListDetailsPage extends CommerceDNDTablePage {
 	readonly specificAccountsRadio: Locator;
 	readonly specificChannelsRadio: Locator;
 	readonly specificOrderTypesRadio: Locator;
+	readonly tieredPricingRadio: Locator;
 
 	constructor(page: Page) {
 		super(
@@ -240,6 +241,9 @@ export class CommerceAdminPriceListDetailsPage extends CommerceDNDTablePage {
 		this.specificOrderTypesRadio = page.getByRole('radio', {
 			name: 'Specific Order Types',
 		});
+		this.tieredPricingRadio = page
+			.frameLocator('iframe')
+			.getByRole('radio', {name: 'Tiered Pricing'});
 	}
 
 	async assertUOMSelectedInSidePanel({

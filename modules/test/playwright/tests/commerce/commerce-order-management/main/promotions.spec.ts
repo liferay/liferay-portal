@@ -272,3 +272,83 @@ test(
 		}
 	}
 );
+
+test(
+	'Bulk pricing and a tier price can be set on a promotion price entry',
+	{tag: ['@COMMERCE-10282', '@LPD-106247']},
+	async ({
+		apiHelpers,
+		commerceAdminPriceListDetailsPage,
+		commerceAdminPromotionsPage,
+	}) => {
+		const minimumQuantity = '5';
+		const promotionName = `Test Promotion ${getRandomString()}`;
+		const tierPrice = '15';
+
+		const promotion =
+			await apiHelpers.headlessCommerceAdminPricing.postPriceList({
+				catalogId: catalog.id,
+				currencyCode: 'USD',
+				name: promotionName,
+				type: 'promotion',
+			});
+
+		await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
+			price: 50,
+			priceListId: promotion.id,
+			skuId: sku.id,
+		});
+
+		await commerceAdminPromotionsPage.goto();
+
+		await commerceAdminPromotionsPage.promotionLink(promotionName).click();
+
+		await commerceAdminPriceListDetailsPage.entriesTab.click();
+
+		await commerceAdminPriceListDetailsPage
+			.skusTableRowLink(sku.sku)
+			.click();
+
+		await expect(
+			commerceAdminPriceListDetailsPage.tieredPricingRadio
+		).toBeChecked();
+
+		await commerceAdminPriceListDetailsPage.bulkPricingRadio.check();
+
+		await commerceAdminPriceListDetailsPage.addTierPriceButton.click();
+
+		await commerceAdminPriceListDetailsPage.addTierPriceEntryQuantity.fill(
+			minimumQuantity
+		);
+		await commerceAdminPriceListDetailsPage.addTierPriceEntryPrice.fill(
+			tierPrice
+		);
+
+		await commerceAdminPriceListDetailsPage.addTierPriceEntrySaveButton.click();
+
+		await expect(
+			commerceAdminPriceListDetailsPage.skuLink(`$ ${tierPrice}.00`)
+		).toBeVisible();
+
+		await commerceAdminPriceListDetailsPage.sidePanelSaveButton.click();
+
+		await commerceAdminPriceListDetailsPage
+			.skusTableRowLink(sku.sku)
+			.click();
+
+		await expect(
+			commerceAdminPriceListDetailsPage.bulkPricingRadio
+		).toBeChecked();
+
+		await commerceAdminPriceListDetailsPage
+			.skuLink(`$ ${tierPrice}.00`)
+			.click();
+
+		await expect(
+			commerceAdminPriceListDetailsPage.editPriceTierQuantity
+		).toHaveValue(minimumQuantity);
+		await expect(
+			commerceAdminPriceListDetailsPage.editPriceTierPrice
+		).toHaveValue(`${tierPrice}.00`);
+	}
+);
