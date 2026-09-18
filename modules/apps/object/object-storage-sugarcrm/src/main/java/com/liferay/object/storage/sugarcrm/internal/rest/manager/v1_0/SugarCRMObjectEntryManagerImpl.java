@@ -362,7 +362,7 @@ public class SugarCRMObjectEntryManagerImpl
 			@Override
 			public JSONObject getAccessToken(long companyId, long groupId) {
 				JSONObject jSONObject = SugarCRMAccessTokenWebCacheItem.get(
-					_getSugarCRMConfiguration(companyId, groupId));
+					companyId, _getSugarCRMConfiguration(companyId, groupId));
 
 				if (jSONObject == null) {
 					throw new ObjectEntryManagerHttpException(

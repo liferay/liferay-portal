@@ -484,6 +484,7 @@ public class SalesforceObjectEntryManagerImpl
 				while (retry < 3) {
 					JSONObject jSONObject =
 						SalesforceAccessTokenWebCacheItem.get(
+							companyId,
 							_getSalesforceConfiguration(companyId, groupId));
 
 					if (jSONObject != null) {

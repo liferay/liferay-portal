@@ -13,6 +13,7 @@ dependencies {
 	compileOnly project(":apps:object:object-storage-salesforce-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-reflect")
