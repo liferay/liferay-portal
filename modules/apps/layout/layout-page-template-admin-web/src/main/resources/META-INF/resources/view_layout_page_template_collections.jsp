@@ -123,6 +123,7 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 			<c:choose>
 				<c:when test="<%= layoutPageTemplateCollection != null %>">
 					<clay:sheet
+						cssClass='<%= layoutPageTemplateDisplayContext.isDesignLibraryScope() ? "design-library-page-template-set" : StringPool.BLANK %>'
 						size="full"
 					>
 						<h2 class="sheet-title">

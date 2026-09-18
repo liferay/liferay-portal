@@ -366,9 +366,13 @@ public class LayoutPageTemplateDisplayContext {
 		return verticalNavItemList;
 	}
 
-	public boolean isHideCollectionsPanel() {
+	public boolean isDesignLibraryScope() {
 		return DesignLibraryUtil.isDesignLibraryScope(
 			_themeDisplay.getScopeGroup());
+	}
+
+	public boolean isHideCollectionsPanel() {
+		return isDesignLibraryScope();
 	}
 
 	public boolean isSearch() {
