@@ -733,10 +733,9 @@ public class PermissionCheckerTest {
 
 	@Test
 	public void testHasPermissionWithLiveGroup() throws Exception {
-		_user = UserTestUtil.addUser();
-
 		_role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+		_user = UserTestUtil.addUser();
 
 		_userLocalService.setRoleUsers(
 			_role.getRoleId(), new long[] {_user.getUserId()});
@@ -764,10 +763,9 @@ public class PermissionCheckerTest {
 
 	@Test
 	public void testHasPermissionWithMissingLiveGroup() throws Exception {
-		_user = UserTestUtil.addUser();
-
 		_role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+		_user = UserTestUtil.addUser();
 
 		_userLocalService.setRoleUsers(
 			_role.getRoleId(), new long[] {_user.getUserId()});
