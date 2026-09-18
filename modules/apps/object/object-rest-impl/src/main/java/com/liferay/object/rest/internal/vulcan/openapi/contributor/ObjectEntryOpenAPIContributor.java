@@ -269,8 +269,8 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 		}
 
 		_setBatchUnsupportedFormats(objectDefinitionSchemaProperties);
-		_setFieldRefs(schemas);
 		_setFieldDescriptions(schemas);
+		_setFieldRefs(schemas);
 		_setReadOnlyProperties(schemas);
 	}
 
