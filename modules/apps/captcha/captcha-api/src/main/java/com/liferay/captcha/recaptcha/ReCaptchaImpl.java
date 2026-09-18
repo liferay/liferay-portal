@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.ResourceRequest;
@@ -114,7 +115,10 @@ public class ReCaptchaImpl extends SimpleCaptchaImpl {
 
 		try {
 			options.addPart(
-				"secret", captchaConfiguration.reCaptchaPrivateKey());
+				"secret",
+				_secretResolver.resolve(
+					PortalUtil.getCompanyId(httpServletRequest),
+					captchaConfiguration.reCaptchaPrivateKey()));
 		}
 		catch (SystemException systemException) {
 			_log.error(systemException);
@@ -195,5 +199,8 @@ public class ReCaptchaImpl extends SimpleCaptchaImpl {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }

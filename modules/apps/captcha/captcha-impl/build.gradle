@@ -13,6 +13,7 @@ dependencies {
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-upgrade-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:portal:portal-catapult-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")

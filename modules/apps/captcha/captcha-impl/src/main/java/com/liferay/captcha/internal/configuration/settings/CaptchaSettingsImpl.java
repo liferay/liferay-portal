@@ -9,6 +9,8 @@ import com.liferay.captcha.configuration.CaptchaConfiguration;
 import com.liferay.captcha.provider.CaptchaProvider;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.captcha.CaptchaSettings;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -53,7 +55,9 @@ public class CaptchaSettingsImpl implements CaptchaSettings {
 		CaptchaConfiguration captchaConfiguration =
 			_captchaProvider.getCaptchaConfiguration();
 
-		return captchaConfiguration.reCaptchaPrivateKey();
+		return _secretResolver.resolve(
+			CompanyThreadLocal.getCompanyId(),
+			captchaConfiguration.reCaptchaPrivateKey());
 	}
 
 	@Override
@@ -190,5 +194,8 @@ public class CaptchaSettingsImpl implements CaptchaSettings {
 
 	@Reference
 	private ConfigurationAdmin _configurationAdmin;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
