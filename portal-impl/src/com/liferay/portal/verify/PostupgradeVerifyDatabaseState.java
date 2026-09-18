@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 
 import java.sql.ResultSet;
@@ -44,6 +45,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -355,6 +358,34 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 		return String.valueOf(state);
 	}
 
+	private boolean _hasIndexColumnNames(
+		IndexMetadata databaseIndexMetadata, String[] expectedColumnNames) {
+
+		String[] databaseColumnNames = databaseIndexMetadata.getColumnNames();
+
+		if (databaseColumnNames.length != expectedColumnNames.length) {
+			return false;
+		}
+
+		for (int i = 0; i < databaseColumnNames.length; i++) {
+			String databaseColumnName = databaseColumnNames[i];
+
+			Matcher matcher = _columnNamePattern.matcher(databaseColumnName);
+
+			if (!matcher.matches()) {
+				continue;
+			}
+
+			if (!StringUtil.equalsIgnoreCase(
+					expectedColumnNames[i], databaseColumnName)) {
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private Set<String> _intersect(
 		Collection<String> collection1, Collection<String> collection2) {
 
@@ -556,9 +587,40 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 						databaseIndexMetadataMap.get(
 							expectedIndexMetadata.getIndexName());
 
-					if ((databaseIndexMetadata == null) ||
-						(databaseIndexMetadata.isUnique() ==
-							expectedIndexMetadata.isUnique())) {
+					if (databaseIndexMetadata == null) {
+						continue;
+					}
+
+					List<String> expectedIndexColumnNames =
+						TransformUtil.transform(
+							Arrays.asList(
+								expectedIndexMetadata.getColumnNames()),
+							dbInspector::normalizeName);
+
+					if (!_hasIndexColumnNames(
+							databaseIndexMetadata,
+							expectedIndexMetadata.getColumnNames())) {
+
+						List<String> messages =
+							errorIndexMessagesMap.computeIfAbsent(
+								tableName, key -> new ArrayList<>());
+
+						messages.add(
+							_getMessage(
+								StringBundler.concat(
+									"Index ",
+									dbInspector.normalizeName(
+										expectedIndexMetadata.getIndexName()),
+									" is not defined as ",
+									expectedIndexColumnNames, " for ",
+									normalizedTableName, " table"),
+								servletContextName));
+
+						continue;
+					}
+
+					if (databaseIndexMetadata.isUnique() ==
+							expectedIndexMetadata.isUnique()) {
 
 						continue;
 					}
@@ -745,6 +807,9 @@ public class PostupgradeVerifyDatabaseState extends VerifyProcess {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PostupgradeVerifyDatabaseState.class);
+
+	private static final Pattern _columnNamePattern = Pattern.compile(
+		"[a-zA-Z0-9_]+");
 
 	private final DCLSingleton<Map<String, List<String>>>
 		_columnDefinitionsMapDCLSingleton = new DCLSingleton<>();
