@@ -19,6 +19,15 @@ portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 renderResponse.setTitle(LanguageUtil.format(request, "usages-and-propagation-x", fragmentEntry.getName()));
 %>
 
+<liferay-ui:error exception="<%= InvalidPropagationTargetGroupsException.class %>" message="the-selected-sites-are-no-longer-connected-to-this-design-library" />
+
+<c:if test='<%= SessionMessages.contains(renderRequest, "sitesSkippedFromPropagation") %>'>
+	<clay:alert
+		displayType="warning"
+		message="some-of-the-selected-sites-are-no-longer-connected-to-this-design-library-and-were-not-updated"
+	/>
+</c:if>
+
 <clay:container-fluid
 	cssClass="container-form-lg"
 	size="xxxl"
