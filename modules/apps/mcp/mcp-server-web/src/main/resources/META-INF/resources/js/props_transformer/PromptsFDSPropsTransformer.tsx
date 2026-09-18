@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+
 import {Prompt} from '../types';
 import confirmAndDeletePromptAction from './actions/confirmAndDeletePromptAction';
 import duplicatePromptAction from './actions/duplicatePromptAction';
+import MCPStatusRenderer from './cell_renderers/MCPStatusRenderer';
 
 interface ItemsAction {
 	data?: {id?: string};
@@ -20,6 +23,15 @@ export default function PromptsFDSPropsTransformer(
 ) {
 	return {
 		...props,
+		customRenderers: {
+			tableCell: [
+				{
+					component: MCPStatusRenderer,
+					name: 'mcpStatusRenderer',
+					type: 'internal',
+				} as IInternalRenderer,
+			],
+		},
 		onActionDropdownItemClick({
 			action,
 			itemData,

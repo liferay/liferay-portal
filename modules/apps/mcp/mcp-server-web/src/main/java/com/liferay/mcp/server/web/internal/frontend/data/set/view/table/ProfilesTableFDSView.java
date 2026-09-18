@@ -43,8 +43,12 @@ public class ProfilesTableFDSView extends BaseTableFDSView {
 		).add(
 			"description", "description"
 		).add(
-			"profileStatus.name", "status",
-			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
+			"profileStatus", "status",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"mcpStatusRenderer"
+			).setSortable(
+				true
+			)
 		).add(
 			"dateModified", "last-modified",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
