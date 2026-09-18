@@ -74,6 +74,8 @@ exports[`withSidebar should render with the sidebar 1`] = `
           class="mx-2 top-bar-divider"
         />
         <button
+          aria-expanded="false"
+          aria-haspopup="true"
           class="text-nowrap btn btn-outline-borderless btn-sm btn-outline-secondary"
           data-tooltip-align="bottom"
           title="Language"
@@ -489,13 +491,9 @@ exports[`withSidebar should render with the sidebar 1`] = `
         </div>
       </div>
     </div>
-    <div
-      class="with-sidebar-content"
-    >
-      <p>
-        bizbaz
-      </p>
-    </div>
+    <p>
+      bizbaz
+    </p>
   </div>
 </div>
 `;

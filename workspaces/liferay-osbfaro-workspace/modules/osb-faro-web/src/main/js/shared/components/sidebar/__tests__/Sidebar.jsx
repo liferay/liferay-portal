@@ -5,12 +5,10 @@ import {fireEvent, render, screen} from '@testing-library/react';
 import {Map} from 'immutable';
 import {MemoryRouter} from 'react-router';
 import {Provider} from 'react-redux';
-import {User} from 'shared/util/records';
 
 const defaultProps = {
 	activePathname: '',
 	channelId: '123',
-	currentUser: new User({emailAddress: 'test@test.com', name: 'Test Test'}),
 	groupId: '23'
 };
 

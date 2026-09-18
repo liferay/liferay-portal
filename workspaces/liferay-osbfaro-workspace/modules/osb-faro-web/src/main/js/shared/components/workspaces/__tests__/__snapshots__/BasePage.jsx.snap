@@ -30,7 +30,6 @@ exports[`WorkspacesBasePage should render 1`] = `
       </a>
       <div>
         <button
-          aria-label="Test Test"
           class="user-menu button-root btn btn-unstyled trigger"
           type="button"
         >

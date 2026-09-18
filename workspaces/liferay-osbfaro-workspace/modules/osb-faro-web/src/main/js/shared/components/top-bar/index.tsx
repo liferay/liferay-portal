@@ -7,22 +7,17 @@ import React, {useRef, useState} from 'react';
 import UserDropdown, {Menus} from 'shared/components/user-dropdown';
 import {LANGUAGES} from 'shared/util/constants';
 import {Link} from 'react-router-dom';
-import {getLanguageDisplayName, resolveLanguageId} from 'shared/util/locale';
+import {getLanguageDisplayName, getLanguageLabel} from 'shared/util/locale';
 import {Routes, toRoute} from 'shared/util/router';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {User} from 'shared/util/records';
 
-interface ITopBarProps extends React.HTMLAttributes<HTMLElement> {
+interface ITopBarProps {
+	className?: string;
 	collapsed: boolean;
 	currentUser: User;
 	groupId: string;
 	onToggle: () => void;
-}
-
-export function getLanguageLabel(languageId?: string | null): string {
-	const [language, country] = resolveLanguageId(languageId).split('_');
-
-	return `${language.toUpperCase()} (${country})`;
 }
 
 const TopBar: React.FC<ITopBarProps> = ({
@@ -112,6 +107,8 @@ const TopBar: React.FC<ITopBarProps> = ({
 				<span className="mx-2 top-bar-divider" />
 
 				<ClayButton
+					aria-expanded={active}
+					aria-haspopup="true"
 					borderless
 					className="text-nowrap"
 					data-tooltip-align="bottom"
@@ -148,6 +145,8 @@ const TopBar: React.FC<ITopBarProps> = ({
 								active={languageId === id}
 								key={id}
 								onClick={() => {
+									setActive(false);
+
 									if (languageId === id) {
 										return;
 									}

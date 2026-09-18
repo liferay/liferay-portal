@@ -138,7 +138,7 @@ export default compose(
 				if (hasChanges(prevProps, this.props, 'collapsed')) {
 					setTimeout(
 						() => window.dispatchEvent(this._toggleSidebarEvent),
-						250
+						500
 					);
 				}
 
@@ -217,13 +217,11 @@ export default compose(
 							}
 						/>
 
-						<div className="with-sidebar-content">
-							<WrappedComponent
-								{...otherProps}
-								currentUser={currentUser}
-								groupId={groupId}
-							/>
-						</div>
+						<WrappedComponent
+							{...otherProps}
+							currentUser={currentUser}
+							groupId={groupId}
+						/>
 					</div>
 				);
 			}

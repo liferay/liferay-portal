@@ -186,4 +186,25 @@ describe('UserDropdown', () => {
 
 		expect(screen.getByText('Language')).toBeInTheDocument();
 	});
+
+	it('renders the trigger as an icon sticker when a symbol is given', () => {
+		const {container} = render(
+			<Wrapper>
+				<UserDropdown
+					initialActiveMenu="base"
+					menus={mockMenus()}
+					symbol="user"
+					userName="Test Test"
+				/>
+			</Wrapper>
+		);
+
+		expect(
+			container.querySelector('.avatar .lexicon-icon-user')
+		).toBeTruthy();
+
+		expect(screen.queryByText('Test Test')).toBeNull();
+
+		expect(screen.getByLabelText('Test Test')).toBeTruthy();
+	});
 });

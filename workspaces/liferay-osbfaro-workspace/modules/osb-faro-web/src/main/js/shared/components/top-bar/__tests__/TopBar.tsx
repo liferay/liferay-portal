@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import mockStore, {mockStoreDataLDP} from 'test/mock-store';
 import React from 'react';
-import TopBar, {getLanguageLabel} from '../index';
+import TopBar from '../index';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
@@ -35,17 +35,6 @@ const renderTopBar = (props = {}, storeData = mockStoreDataLDP) =>
 			</MemoryRouter>
 		</Provider>
 	);
-
-describe('getLanguageLabel', () => {
-	it('compacts a portal languageId', () => {
-		expect(getLanguageLabel('en_US')).toBe('EN (US)');
-		expect(getLanguageLabel('pt_BR')).toBe('PT (BR)');
-	});
-
-	it('falls back to the default language when there is none', () => {
-		expect(getLanguageLabel(null)).toBe('EN (US)');
-	});
-});
 
 describe('TopBar', () => {
 	afterEach(() => {
@@ -112,6 +101,22 @@ describe('TopBar', () => {
 		fireEvent.click(await screen.findByText('English'));
 
 		expect(API.user.updateLanguage).not.toHaveBeenCalled();
+	});
+
+	it('closes the language menu once a language is picked', async () => {
+		renderTopBar();
+
+		const trigger = screen.getByTitle(/language/i);
+
+		fireEvent.click(trigger);
+
+		expect(trigger).toHaveAttribute('aria-expanded', 'true');
+
+		fireEvent.click(await screen.findByText('English'));
+
+		await waitFor(() =>
+			expect(trigger).toHaveAttribute('aria-expanded', 'false')
+		);
 	});
 
 	it('opens the user menu from the sticker', async () => {

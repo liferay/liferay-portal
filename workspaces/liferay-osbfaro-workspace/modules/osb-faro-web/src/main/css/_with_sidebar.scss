@@ -12,9 +12,7 @@
 	&.sidebar-collapsed {
 		padding-left: 0;
 	}
-}
 
-.with-sidebar-content {
 	.index-root {
 		min-height: calc(100vh - #{$topBarHeight});
 	}

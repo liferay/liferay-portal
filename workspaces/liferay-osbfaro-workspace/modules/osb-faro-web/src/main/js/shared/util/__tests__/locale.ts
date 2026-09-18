@@ -2,6 +2,7 @@ import {
 	DEFAULT_LANGUAGE_ID,
 	DEFAULT_LOCALE,
 	getLanguageDisplayName,
+	getLanguageLabel,
 	getLocale,
 	resolveLanguageId,
 	resolveLocale,
@@ -83,4 +84,15 @@ describe('getLanguageDisplayName', () => {
 			);
 		}
 	);
+});
+
+describe('getLanguageLabel', () => {
+	it('compacts a portal languageId', () => {
+		expect(getLanguageLabel('en_US')).toBe('EN (US)');
+		expect(getLanguageLabel('pt_BR')).toBe('PT (BR)');
+	});
+
+	it('falls back to the default language when there is none', () => {
+		expect(getLanguageLabel(null)).toBe('EN (US)');
+	});
 });

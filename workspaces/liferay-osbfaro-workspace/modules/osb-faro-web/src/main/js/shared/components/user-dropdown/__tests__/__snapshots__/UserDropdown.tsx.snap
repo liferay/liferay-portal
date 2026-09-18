@@ -4,7 +4,6 @@ exports[`UserDropdown should render 1`] = `
 <div>
   <div>
     <button
-      aria-label="Test Test"
       class="user-menu button-root btn btn-unstyled trigger"
       type="button"
     >
@@ -37,7 +36,6 @@ exports[`UserDropdown should render dropdown menu when clicked 1`] = `
   >
     <div>
       <button
-        aria-label="Test Test"
         class="user-menu button-root btn btn-unstyled trigger"
         style=""
         type="button"

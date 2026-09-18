@@ -30,7 +30,6 @@ exports[`SuccessDisplayIf should render a scheduled maintenance error page if th
       </a>
       <div>
         <button
-          aria-label="Test Test"
           class="user-menu button-root btn btn-unstyled trigger"
           type="button"
         >
@@ -132,7 +131,6 @@ exports[`SuccessDisplayIf should render activating display if project state is "
       </a>
       <div>
         <button
-          aria-label="Test Test"
           class="user-menu button-root btn btn-unstyled trigger"
           type="button"
         >
@@ -276,7 +274,6 @@ exports[`SuccessDisplayIf should render activating display if project state is "
       </a>
       <div>
         <button
-          aria-label="Test Test"
           class="user-menu button-root btn btn-unstyled trigger"
           type="button"
         >
@@ -402,7 +399,6 @@ exports[`SuccessDisplayIf should render an unavailable error page if the project
       </a>
       <div>
         <button
-          aria-label="Test Test"
           class="user-menu button-root btn btn-unstyled trigger"
           type="button"
         >

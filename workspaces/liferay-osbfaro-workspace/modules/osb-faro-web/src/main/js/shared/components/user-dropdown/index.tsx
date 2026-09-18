@@ -175,7 +175,7 @@ const userDropDown: React.FC<IUserDropdownProps> = ({
 const Label = React.forwardRef<HTMLButtonElement, ILabelProps>(
 	({className, showCaret, symbol, userName, ...otherProps}, ref) => (
 		<button
-			aria-label={userName}
+			aria-label={symbol ? userName : undefined}
 			className={getCN(
 				'user-menu button-root btn btn-unstyled trigger',
 				className
