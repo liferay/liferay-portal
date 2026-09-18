@@ -154,7 +154,9 @@ export default function ElementVariationFilterMenu({
 							))}
 					</DropDown.ItemList>
 
-					<div className="dropdown-footer">
+					<div className="dropdown-divider" />
+
+					<DropDown.Caption>
 						<ClayButton
 							disabled={!values.length}
 							displayType="primary"
@@ -171,7 +173,7 @@ export default function ElementVariationFilterMenu({
 						>
 							{Liferay.Language.get('add-filter')}
 						</ClayButton>
-					</div>
+					</DropDown.Caption>
 				</>
 			) : (
 				<>
