@@ -113,7 +113,7 @@ export function LayerProperties({
 			{overlay.kind === 'image' && (
 				<TextField
 					id={eid('layer-prop-description')}
-					label={Liferay.Language.get('image-description')}
+					label={Liferay.Language.get('image-name')}
 					onCommit={(description) => commitPatch({description})}
 					value={overlay.description}
 				/>
