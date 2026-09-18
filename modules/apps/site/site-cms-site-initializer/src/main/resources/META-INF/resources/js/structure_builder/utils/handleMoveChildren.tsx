@@ -15,7 +15,7 @@ import getLocalizedValue from '../../common/utils/getLocalizedValue';
 import {Action, State} from '../contexts/StateContext';
 import {Group, Structure, StructureChild} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
-import exceedsMaxNesting, {MAX_NESTING} from './exceedsMaxNesting';
+import exceedsMaxNesting, {getMaxNesting} from './exceedsMaxNesting';
 import findAvailableFieldName from './findAvailableFieldName';
 import findChild from './findChild';
 import getUndeletableChildren, {
@@ -50,7 +50,7 @@ export default async function handleMoveChildren({
 				Liferay.Language.get(
 					'groups-cannot-be-nested-more-than-x-levels-deep'
 				),
-				MAX_NESTING
+				getMaxNesting()
 			),
 			type: 'danger',
 		});

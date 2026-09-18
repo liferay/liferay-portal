@@ -10,7 +10,7 @@ import {Dispatch} from 'react';
 import {Action, Clipboard} from '../contexts/StateContext';
 import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
-import exceedsMaxNesting, {MAX_NESTING} from './exceedsMaxNesting';
+import exceedsMaxNesting, {getMaxNesting} from './exceedsMaxNesting';
 import findChild from './findChild';
 import isReferenced from './isReferenced';
 
@@ -46,7 +46,7 @@ export default function handlePaste({
 				Liferay.Language.get(
 					'groups-cannot-be-nested-more-than-x-levels-deep'
 				),
-				MAX_NESTING
+				getMaxNesting()
 			),
 			type: 'danger',
 		});

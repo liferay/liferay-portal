@@ -7,7 +7,9 @@ import {Structure, StructureChild} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
 import findChild from './findChild';
 
-export const MAX_NESTING = 4;
+export function getMaxNesting(): number {
+	return Liferay.FeatureFlags['LPD-96666'] ? 2 : 4;
+}
 
 export default function exceedsMaxNesting({
 	items,
@@ -25,7 +27,7 @@ export default function exceedsMaxNesting({
 
 	const levels = levelsUp + levelsDown + (newGroup ? 1 : 0);
 
-	return levels > MAX_NESTING;
+	return levels > getMaxNesting();
 }
 
 function getLevelsUp({

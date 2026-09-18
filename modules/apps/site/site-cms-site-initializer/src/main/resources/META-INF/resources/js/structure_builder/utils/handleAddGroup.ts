@@ -10,7 +10,7 @@ import {Dispatch} from 'react';
 import {Action, State} from '../contexts/StateContext';
 import {Structure} from '../types/Structure';
 import {Uuid} from '../types/Uuid';
-import exceedsMaxNesting, {MAX_NESTING} from './exceedsMaxNesting';
+import exceedsMaxNesting, {getMaxNesting} from './exceedsMaxNesting';
 import findChild from './findChild';
 import handleAddRepeatableGroup from './handleAddRepeatableGroup';
 
@@ -64,7 +64,7 @@ export default async function handleAddGroup({
 				Liferay.Language.get(
 					'groups-cannot-be-nested-more-than-x-levels-deep'
 				),
-				MAX_NESTING
+				getMaxNesting()
 			),
 			type: 'danger',
 		});
