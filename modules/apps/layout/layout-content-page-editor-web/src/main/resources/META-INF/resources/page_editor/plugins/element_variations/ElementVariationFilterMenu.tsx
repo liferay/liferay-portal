@@ -86,7 +86,7 @@ export default function ElementVariationFilterMenu({
 		>
 			{!active ? null : filterType ? (
 				<>
-					<div className="align-items-center d-flex dropdown-header">
+					<div className="dropdown-subheader">
 						<ClayButtonWithIcon
 							aria-label={Liferay.Language.get('back')}
 							className="component-action mr-2"
