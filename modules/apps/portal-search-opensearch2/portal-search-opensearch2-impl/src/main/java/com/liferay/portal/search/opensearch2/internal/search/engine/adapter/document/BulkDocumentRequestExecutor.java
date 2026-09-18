@@ -204,8 +204,8 @@ public class BulkDocumentRequestExecutor {
 					StringBundler.concat(
 						"There was an exception while getting a response from ",
 						"the search engine, will retry in ", _waitInSeconds,
-						" seconds (", i, "/", _numberOfTries, "). ",
-						exception));
+						" seconds (", i, "/", _numberOfTries, "). ", exception),
+					exception);
 
 				try {
 					Thread.sleep(_waitInSeconds * Time.SECOND);
