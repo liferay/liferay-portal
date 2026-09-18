@@ -29,6 +29,7 @@ const PLACEHOLDERS: Record<FDSConnectionStatus, string> = {
 	connecting: 'waiting',
 	disconnected: 'Search is not available',
 	ready: 'Type search query...',
+	refused: 'Type search query...',
 	timeout: 'Search is not available',
 };
 

@@ -2755,10 +2755,12 @@
   dependencies:
     "@ckeditor/ckeditor5-word-count" "*"
 
-"@liferay/js-api@^0.7.1":
-  version "0.7.1"
-  resolved "https://registry.yarnpkg.com/@liferay/js-api/-/js-api-0.7.1.tgz#a70c25b19aef94916506a1be5a8ce4061ccaac5b"
-  integrity sha512-m7g2BORO8o0GOhW89T5lfnY++SFb4+Yt3dBBOTrE03HwifZsnSTJ9B40/zL5VbLN/US2SFXW9U3cSi7YKOGv4g==
+"@liferay/js-api@0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@liferay/js-api/-/js-api-0.9.1.tgz#724f99b90d12822e0f56415abe49a534cd568923"
+  integrity sha512-bQj9EslCWoMcAenmUlAkCifUMJtyeAZTUch7v3RZY/kvW3+Gf4wBJKV9KULY6QIoxaen1grRqvKZ6exkeoHNHA==
+  dependencies:
+    "@ckeditor/ckeditor5-word-count" "*"
 
 "@liferay/prettier-plugin@1.1.5":
   version "1.1.5"
