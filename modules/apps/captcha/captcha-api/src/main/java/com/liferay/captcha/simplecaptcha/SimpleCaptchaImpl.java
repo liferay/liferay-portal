@@ -358,14 +358,10 @@ public class SimpleCaptchaImpl implements Captcha {
 			throw new CaptchaTextException();
 		}
 
-		boolean valid = captchaText.equals(
+		httpSession.removeAttribute(httpSessionKey);
+
+		return captchaText.equals(
 			ParamUtil.getString(httpServletRequest, "captchaText"));
-
-		if (valid) {
-			httpSession.removeAttribute(httpSessionKey);
-		}
-
-		return valid;
 	}
 
 	protected boolean validateChallenge(PortletRequest portletRequest)

@@ -7,6 +7,7 @@ package com.liferay.captcha.simplecaptcha;
 
 import com.liferay.captcha.configuration.CaptchaConfiguration;
 import com.liferay.captcha.provider.CaptchaProvider;
+import com.liferay.portal.kernel.captcha.CaptchaTextException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -82,38 +83,8 @@ public class SimpleCaptchaImplTest {
 
 	@Test
 	public void testValidateChallenge() throws Exception {
-		MockHttpSession mockHttpSession = new MockHttpSession(
-			new MockServletContext(), RandomTestUtil.randomString());
-
-		String captchaId1 = RandomTestUtil.randomString();
-		String captchaText = RandomTestUtil.randomString();
-
-		mockHttpSession.setAttribute(
-			captchaId1 + WebKeys.CAPTCHA_TEXT, captchaText);
-
-		String captchaId2 = RandomTestUtil.randomString();
-
-		mockHttpSession.setAttribute(
-			captchaId2 + WebKeys.CAPTCHA_TEXT, RandomTestUtil.randomString());
-
-		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(captchaId1, mockHttpSession);
-
-		mockHttpServletRequest.setParameter("captchaText", captchaText);
-
-		Mockito.when(
-			_portal.getOriginalServletRequest(Mockito.any())
-		).thenReturn(
-			mockHttpServletRequest
-		);
-
-		Assert.assertTrue(
-			_simpleCaptchaImpl.validateChallenge(mockHttpServletRequest));
-
-		Assert.assertNull(
-			mockHttpSession.getAttribute(captchaId1 + WebKeys.CAPTCHA_TEXT));
-		Assert.assertNotNull(
-			mockHttpSession.getAttribute(captchaId2 + WebKeys.CAPTCHA_TEXT));
+		_testValidateChallenge();
+		_testValidateChallengeWithWrongCaptchaText();
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
@@ -202,6 +173,83 @@ public class SimpleCaptchaImplTest {
 
 		_simpleCaptchaImpl.serveImage(
 			mockHttpServletRequest, new MockHttpServletResponse());
+	}
+
+	private void _testValidateChallenge() throws Exception {
+		MockHttpSession mockHttpSession = new MockHttpSession(
+			new MockServletContext(), RandomTestUtil.randomString());
+
+		String captchaId1 = RandomTestUtil.randomString();
+		String captchaText = RandomTestUtil.randomString();
+
+		mockHttpSession.setAttribute(
+			captchaId1 + WebKeys.CAPTCHA_TEXT, captchaText);
+
+		String captchaId2 = RandomTestUtil.randomString();
+
+		mockHttpSession.setAttribute(
+			captchaId2 + WebKeys.CAPTCHA_TEXT, RandomTestUtil.randomString());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(captchaId1, mockHttpSession);
+
+		mockHttpServletRequest.setParameter("captchaText", captchaText);
+
+		Mockito.when(
+			_portal.getOriginalServletRequest(Mockito.any())
+		).thenReturn(
+			mockHttpServletRequest
+		);
+
+		Assert.assertTrue(
+			_simpleCaptchaImpl.validateChallenge(mockHttpServletRequest));
+
+		Assert.assertNull(
+			mockHttpSession.getAttribute(captchaId1 + WebKeys.CAPTCHA_TEXT));
+		Assert.assertNotNull(
+			mockHttpSession.getAttribute(captchaId2 + WebKeys.CAPTCHA_TEXT));
+	}
+
+	private void _testValidateChallengeWithWrongCaptchaText() throws Exception {
+		MockHttpSession mockHttpSession = new MockHttpSession(
+			new MockServletContext(), RandomTestUtil.randomString());
+
+		String captchaId1 = RandomTestUtil.randomString();
+		String captchaText = RandomTestUtil.randomString();
+
+		mockHttpSession.setAttribute(
+			captchaId1 + WebKeys.CAPTCHA_TEXT, captchaText);
+
+		String captchaId2 = RandomTestUtil.randomString();
+
+		mockHttpSession.setAttribute(
+			captchaId2 + WebKeys.CAPTCHA_TEXT, RandomTestUtil.randomString());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(captchaId1, mockHttpSession);
+
+		mockHttpServletRequest.setParameter(
+			"captchaText", RandomTestUtil.randomString());
+
+		Mockito.when(
+			_portal.getOriginalServletRequest(Mockito.any())
+		).thenReturn(
+			mockHttpServletRequest
+		);
+
+		Assert.assertFalse(
+			_simpleCaptchaImpl.validateChallenge(mockHttpServletRequest));
+
+		Assert.assertNull(
+			mockHttpSession.getAttribute(captchaId1 + WebKeys.CAPTCHA_TEXT));
+		Assert.assertNotNull(
+			mockHttpSession.getAttribute(captchaId2 + WebKeys.CAPTCHA_TEXT));
+
+		mockHttpServletRequest.setParameter("captchaText", captchaText);
+
+		Assert.assertThrows(
+			CaptchaTextException.class,
+			() -> _simpleCaptchaImpl.validateChallenge(mockHttpServletRequest));
 	}
 
 	private CaptchaConfiguration _captchaConfiguration;
