@@ -115,6 +115,27 @@ public class ReflectionUtilTest {
 	}
 
 	@Test
+	public void testClone() {
+		try {
+			ReflectionUtil.clone(new NotCloneableClass());
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertSame(
+				CloneNotSupportedException.class, exception.getClass());
+		}
+
+		CloneableClass cloneableClass1 = new CloneableClass();
+
+		CloneableClass cloneableClass2 = ReflectionUtil.clone(cloneableClass1);
+
+		Assert.assertNotSame(cloneableClass1, cloneableClass2);
+		Assert.assertEquals(cloneableClass1._id, cloneableClass2._id);
+		Assert.assertSame(cloneableClass1._name, cloneableClass2._name);
+		Assert.assertSame(cloneableClass1._obj, cloneableClass2._obj);
+	}
+
+	@Test
 	public void testConstructor() throws Exception {
 		new ReflectionUtil();
 
@@ -573,6 +594,17 @@ public class ReflectionUtilTest {
 		private final Object _privateFinalObject = new Object();
 		private Object _privateObject = new Object();
 
+	}
+
+	private class CloneableClass implements Cloneable {
+
+		private final long _id = 1;
+		private final String _name = CloneableClass.class.getName();
+		private final Object _obj = new Object();
+
+	}
+
+	private class NotCloneableClass {
 	}
 
 	private interface TestInterface {

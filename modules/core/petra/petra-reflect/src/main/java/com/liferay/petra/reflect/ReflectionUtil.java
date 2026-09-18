@@ -22,6 +22,15 @@ import java.util.function.Consumer;
  */
 public class ReflectionUtil {
 
+	public static <T> T clone(T t) {
+		try {
+			return (T)_cloneMethodHandle.invokeExact(t);
+		}
+		catch (Throwable throwable) {
+			return _throwException(throwable);
+		}
+	}
+
 	public static Field fetchDeclaredField(
 		boolean accessible, Class<?> clazz, String name) {
 
@@ -351,6 +360,7 @@ public class ReflectionUtil {
 		throw (E)throwable;
 	}
 
+	private static final MethodHandle _cloneMethodHandle;
 	private static final MethodHandle _fetchDeclaredFieldMethodHandle;
 	private static final MethodHandle _fetchDeclaredMethodMethodHandle;
 	private static final MethodHandle _fetchFieldMethodHandle;
@@ -365,6 +375,9 @@ public class ReflectionUtil {
 			field.setAccessible(true);
 
 			_lookup = (MethodHandles.Lookup)field.get(null);
+
+			_cloneMethodHandle = _lookup.findVirtual(
+				Object.class, "clone", MethodType.methodType(Object.class));
 		}
 		catch (Exception exception) {
 			throw new ExceptionInInitializerError(exception);
