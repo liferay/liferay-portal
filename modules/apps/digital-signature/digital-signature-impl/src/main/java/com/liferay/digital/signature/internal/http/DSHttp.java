@@ -79,11 +79,12 @@ public class DSHttp {
 	}
 
 	private String _getDocuSignAccessToken(
+			long companyId,
 			DigitalSignatureConfiguration digitalSignatureConfiguration)
 		throws Exception {
 
 		JSONObject jsonObject = DSAccessTokenWebCacheItem.get(
-			digitalSignatureConfiguration.apiUsername(),
+			digitalSignatureConfiguration.apiUsername(), companyId,
 			digitalSignatureConfiguration.environment(),
 			digitalSignatureConfiguration.integrationKey(),
 			digitalSignatureConfiguration.rsaPrivateKey());
@@ -131,9 +132,10 @@ public class DSHttp {
 			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
 				companyId, groupId);
 
-		options.addHeader(
-			"Authorization",
-			"Bearer " + _getDocuSignAccessToken(digitalSignatureConfiguration));
+		String docuSignAccessToken = _getDocuSignAccessToken(
+			companyId, digitalSignatureConfiguration);
+
+		options.addHeader("Authorization", "Bearer " + docuSignAccessToken);
 
 		if (bodyJSONObject != null) {
 			options.setBody(

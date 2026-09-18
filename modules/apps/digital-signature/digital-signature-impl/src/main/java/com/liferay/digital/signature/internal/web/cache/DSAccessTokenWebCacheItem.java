@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.webcache.WebCacheItem;
 import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -35,25 +36,27 @@ import net.oauth.signature.pem.PKCS1EncodedKeySpec;
 public class DSAccessTokenWebCacheItem implements WebCacheItem {
 
 	public static JSONObject get(
-		String apiUsername, String environment, String integrationKey,
-		String rsaPrivateKey) {
+		String apiUsername, long companyId, String environment,
+		String integrationKey, String rsaPrivateKey) {
 
 		return (JSONObject)WebCachePoolUtil.get(
 			StringBundler.concat(
 				DSAccessTokenWebCacheItem.class.getName(), StringPool.POUND,
-				apiUsername, StringPool.POUND, environment, StringPool.POUND,
-				integrationKey, StringPool.POUND, rsaPrivateKey),
+				companyId, StringPool.POUND, apiUsername, StringPool.POUND,
+				environment, StringPool.POUND, integrationKey, StringPool.POUND,
+				rsaPrivateKey),
 			new DSAccessTokenWebCacheItem(
-				apiUsername, environment, integrationKey, rsaPrivateKey));
+				apiUsername, companyId, environment, integrationKey,
+				rsaPrivateKey));
 	}
 
 	public DSAccessTokenWebCacheItem(
-		String apiUsername, String environment, String integrationKey,
-		String rsaPrivateKey) {
+		String apiUsername, long companyId, String environment,
+		String integrationKey, String rsaPrivateKey) {
 
 		_apiUsername = apiUsername;
 		_environment = environment;
-		_integrationKey = integrationKey;
+		_integrationKey = SecretResolverUtil.resolve(companyId, integrationKey);
 
 		if (environment.equals("production")) {
 			_environmentBaseURI = "account.docusign.com";
@@ -66,7 +69,8 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 			_rsaPrivateKeyBytes = new byte[0];
 		}
 		else {
-			String pem = _getPEM(rsaPrivateKey);
+			String pem = _getPEM(
+				SecretResolverUtil.resolve(companyId, rsaPrivateKey));
 
 			_rsaPrivateKeyBytes = pem.getBytes();
 		}
