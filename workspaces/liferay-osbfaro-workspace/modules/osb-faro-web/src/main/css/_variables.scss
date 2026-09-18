@@ -51,7 +51,7 @@ $navbarHeight: 72px;
 $pagePadding: 48px;
 $profileHeaderMargin: 16px;
 $sidebarClosedWidth: 80px;
-$sidebarOpenWidth: 232px;
+$sidebarOpenWidth: 280px;
 
 $maxPageWidth: 1280px;
 $minPageWidth: 992px;
@@ -67,6 +67,9 @@ $liferayDataSourceCardSideMinWidth: 280px;
  * Lexicon
  */
 $main: var(--cadmin-gray-900);
+$dark: var(--cadmin-dark);
+$light: var(--cadmin-light);
+$lightL1: var(--cadmin-light-l1);
 $mainLighten4: var(--cadmin-dark-l1);
 $mainLighten8: var(--cadmin-gray-800);
 $mainLighten28: var(--cadmin-gray-600);
@@ -75,6 +78,7 @@ $mainLighten65: var(--cadmin-gray-400);
 $mainLighten74: var(--cadmin-gray-300);
 $secondary: $mainLighten28;
 $secondaryHover: var(--cadmin-gray-100);
+$secondaryL0: var(--cadmin-secondary-l0);
 
 $primary: var(--cadmin-primary);
 $primaryDarken5: var(--cadmin-primary-d1);

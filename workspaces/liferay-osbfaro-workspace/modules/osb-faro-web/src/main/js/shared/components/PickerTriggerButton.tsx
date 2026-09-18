@@ -7,7 +7,7 @@ interface IPickerTriggerButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	buttonClassName?: string;
 	label: string;
-	size?: 'sm' | 'xs';
+	size?: 'regular' | 'sm' | 'xs';
 }
 
 const PickerTriggerButton = React.forwardRef<

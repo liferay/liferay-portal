@@ -1,12 +1,17 @@
-import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
-import Item from './Item';
-import React, {useRef, useState} from 'react';
+import PickerTriggerButton from '../PickerTriggerButton';
+import React from 'react';
 import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
+import {Option, Picker} from '@clayui/core';
 import {Routes, toRoute} from 'shared/util/router';
+import {truncateText} from 'shared/util/util';
 import {updateDefaultChannelId} from 'shared/actions/preferences';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
+
+const MAX_LABEL_LENGTH = 35;
+
+const PICKER_WIDTH = 248;
 
 export type Channel = {
 	createTime: number;
@@ -30,11 +35,6 @@ interface IChannelsMenuProps extends React.HTMLAttributes<HTMLElement> {
 	}) => void;
 }
 
-interface IChannelsButtonProps
-	extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-	channel?: Channel | null;
-}
-
 export const getDefaultChannel = (
 	defaultChannelId: string | undefined,
 	channels: Channel[]
@@ -46,6 +46,13 @@ export const getDefaultChannel = (
 	return null;
 };
 
+/**
+ * Built on `Picker` (`@clayui/core`) with `searchable`, the same idiomatic
+ * pattern `StageConditionRow.renderFieldPicker` uses for "pick one item from
+ * a searchable list" — `PickerTriggerButton` as the trigger, carrying only
+ * the utility classes that lay the label out against the caret.
+ */
+
 export const ChannelsMenu: React.FC<IChannelsMenuProps> = ({
 	channels,
 	className,
@@ -53,127 +60,66 @@ export const ChannelsMenu: React.FC<IChannelsMenuProps> = ({
 	groupId,
 	updateDefaultChannelId,
 }) => {
-	const [active, setActive] = useState(false);
-	const [searchTerm, setSearchTerm] = useState('');
-	const triggerElementRef = useRef(null);
-	const menuElementRef = useRef(null);
-
-	const handleActive = () => {
-		setActive(!active);
-	};
+	const history = useHistoryAdapter();
 
 	const channel = getDefaultChannel(defaultChannelId, channels);
 
 	return (
-		<>
-			<ChannelsButton
-				channel={channel}
-				className={className}
-				onClick={channel ? handleActive : undefined}
-				ref={triggerElementRef}
-			/>
+		<div className={getCN('channels-menu-root', className)}>
+			<div className="channels-menu-label">
+				{Liferay.Language.get('property')}
+			</div>
 
-			{channel && (
-				<ClayDropDown.Menu
-					active={active}
-					alignElementRef={triggerElementRef}
-					alignmentPosition={Align.RightTop}
-					className="channels-menu-dropdown"
-					offsetFn={() => [12, 0]}
-					onSetActive={setActive}
-					ref={menuElementRef}
-				>
-					<>
-						<div className="channels-menu-dropdown-header">
-							<div className="title">
-								<div>{Liferay.Language.get('properties')}</div>
-								<Link
-									className="text-white"
-									to={toRoute(Routes.SETTINGS_CHANNELS, {
-										groupId,
-									})}
-								>
-									<ClayIcon
-										className="icon-root"
-										symbol="cog"
-									/>
-								</Link>
-							</div>
+			<Picker
+				aria-label={Liferay.Language.get('property')}
+				as={PickerTriggerButton}
+				block
+				buttonClassName="d-flex justify-content-between align-items-center"
+				disabled={!channel}
+				items={channels}
+				label={
+					channel
+						? channel.name
+						: Liferay.Language.get('no-properties')
+				}
+				onSelectionChange={(key) => {
+					const selected = channels.find(
+						(item) => item.id === String(key)
+					);
 
-							<ClayDropDown.Search
-								className="header-search"
-								formProps={{
-									onSubmit: (e) => e.preventDefault(),
-								}}
-								onChange={setSearchTerm}
-								placeholder={Liferay.Language.get('search')}
-								value={searchTerm}
-							/>
-						</div>
-						<div className="channels-menu-dropdown-body">
-							<ClayDropDown.ItemList>
-								{channels.map((channel, i) => {
-									if (
-										!searchTerm ||
-										channel.name
-											.toLowerCase()
-											.includes(searchTerm.toLowerCase())
-									) {
-										return (
-											<Item
-												active={
-													defaultChannelId ===
-													channel.id
-												}
-												channel={channel}
-												groupId={groupId}
-												key={i}
-												onClick={() => {
-													updateDefaultChannelId({
-														defaultChannelId:
-															channel.id,
-														groupId,
-													});
-													handleActive();
-												}}
-												route={Routes.SITES}
-											/>
-										);
-									}
-								})}
-							</ClayDropDown.ItemList>
-						</div>
-					</>
-				</ClayDropDown.Menu>
-			)}
-		</>
+					if (!selected) {
+						return;
+					}
+
+					updateDefaultChannelId({
+						defaultChannelId: selected.id,
+						groupId,
+					});
+
+					history.push(
+						toRoute(Routes.SITES, {
+							channelId: selected.id,
+							groupId,
+						})
+					);
+				}}
+				searchable
+				selectedKey={channel ? channel.id : undefined}
+				size="regular"
+				width={PICKER_WIDTH}
+			>
+				{(item) => (
+					<Option key={item.id} textValue={item.name}>
+						{truncateText(item.name, MAX_LABEL_LENGTH, null)}
+					</Option>
+				)}
+			</Picker>
+
+			<div className="channels-menu-icon">
+				<ClayIcon className="icon-root" symbol="sites" />
+			</div>
+		</div>
 	);
 };
-
-const ChannelsButton = React.forwardRef<
-	HTMLButtonElement,
-	IChannelsButtonProps
->(({channel, className, ...otherProps}, ref) => (
-	<button
-		className={getCN(
-			'channels-menu button-root btn btn-unstyled',
-			className
-		)}
-		ref={ref}
-		{...otherProps}
-	>
-		<div className="channels-menu-icon">
-			<ClayIcon className="icon-root" symbol="sites" />
-		</div>
-
-		<div className="channels-menu-label">
-			{channel ? channel.name : Liferay.Language.get('no-properties')}
-		</div>
-
-		<div className="channels-menu-caret">
-			<ClayIcon className="icon-root" symbol="caret-right" />
-		</div>
-	</button>
-));
 
 export default connect(null, {updateDefaultChannelId})(ChannelsMenu);
