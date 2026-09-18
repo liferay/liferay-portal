@@ -137,7 +137,7 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributorTest
 	}
 
 	@Test
-	public void testGetParametersSelectedOptionLabel() throws Exception {
+	public void testGetSelectedOptionLabel() throws Exception {
 		Assert.assertEquals(
 			StringPool.BLANK, _getSelectedOptionLabel(StringPool.BLANK));
 		Assert.assertEquals(StringPool.BLANK, _getSelectedOptionLabel("0"));
