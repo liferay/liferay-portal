@@ -1373,7 +1373,42 @@ describe('drawing', () => {
 
 		expect(screen.getByLabelText('thickness')).toBeInTheDocument();
 		expect(screen.getByLabelText('line-style')).toHaveValue('smooth');
-		expect(screen.queryByLabelText('width')).toBeNull();
+	});
+
+	it('resizes a stroke from its size fields, keeping it drawable by keyboard alone', async () => {
+		render(<AnnotationHarness />);
+
+		const surface = await startDrawing(0);
+
+		press(surface, 'ArrowRight', 4, true);
+		press(surface, 'Enter');
+		press(surface, 'ArrowDown', 3, true);
+		press(surface, 'Enter');
+
+		const width = screen.getByLabelText('width') as HTMLInputElement;
+		const height = screen.getByLabelText('height') as HTMLInputElement;
+		const thickness = screen.getByLabelText('thickness');
+
+		expect(width).toHaveValue(80);
+		expect(height).toHaveValue(60);
+
+		fireEvent.change(width, {target: {value: '160'}});
+		fireEvent.keyDown(width, {key: 'Enter'});
+
+		expect(width).toHaveValue(160);
+		expect(height).toHaveValue(60);
+		expect(thickness).toHaveValue(6);
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'lock-aspect-ratio'})
+		);
+
+		fireEvent.change(height, {target: {value: '120'}});
+		fireEvent.keyDown(height, {key: 'Enter'});
+
+		expect(width).toHaveValue(320);
+		expect(height).toHaveValue(120);
+		expect(thickness).toHaveValue(12);
 	});
 
 	it('refuses to set a line with no length', async () => {

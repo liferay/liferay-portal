@@ -27,7 +27,23 @@ export function multiply(first: Matrix, second: Matrix): Matrix {
 }
 
 export function scaleAround(factor: number, x: number, y: number): Matrix {
-	return [factor, 0, 0, factor, x * (1 - factor), y * (1 - factor)];
+	return stretchAround(factor, factor, x, y);
+}
+
+export function stretchAround(
+	horizontal: number,
+	vertical: number,
+	x: number,
+	y: number
+): Matrix {
+	return [
+		horizontal,
+		0,
+		0,
+		vertical,
+		x * (1 - horizontal),
+		y * (1 - vertical),
+	];
 }
 
 export function invert(matrix: Matrix): Matrix {

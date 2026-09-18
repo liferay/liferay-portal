@@ -16,6 +16,8 @@ import {
 } from '../chrome/fields';
 import {useEditorId} from '../chrome/instance';
 import {DEFAULT_BORDER_COLOR, overlayLabel} from '../imaging/overlayShapes';
+import {stretchAround, transformOverlay} from '../imaging/overlayTransform';
+import {pointsBounds} from '../imaging/strokeGeometry';
 import {EditorAction} from '../state/editorReducer';
 import {patchFor} from '../state/overlayPatch';
 import {
@@ -30,6 +32,64 @@ import {
 	isBoxOverlay,
 } from '../state/types';
 import {FONT_FAMILIES} from './textFonts';
+
+/**
+ * A stroke keeps no box of its own, so its size is the box of its points and
+ * a new one is reached by scaling every point around its corner.
+ */
+function overlaySize(overlay: Overlay): {height: number; width: number} | null {
+	if (isBoxOverlay(overlay)) {
+		return {height: overlay.height, width: overlay.width};
+	}
+
+	if (overlay.kind === 'stroke') {
+		return pointsBounds(overlay.points);
+	}
+
+	return null;
+}
+
+function strokeSizePatch(
+	overlay: StrokeOverlay,
+	proportional: boolean,
+	side: 'height' | 'width',
+	value: number
+): Partial<Overlay> {
+	const box = pointsBounds(overlay.points);
+
+	const current = side === 'width' ? box.width : box.height;
+
+	if (!current) {
+		return {};
+	}
+
+	const factor = Math.max(value, 1) / current;
+
+	const scaled = transformOverlay(
+		overlay,
+		stretchAround(
+			side === 'width' || proportional ? factor : 1,
+			side === 'height' || proportional ? factor : 1,
+			overlay.x + box.x,
+			overlay.y + box.y
+		)
+	);
+
+	if (scaled.kind !== 'stroke') {
+		return {};
+	}
+
+	// A free stretch leaves the line as thick as it was, the way stretching a
+	// shape leaves its border alone. A proportional one scales it, matching
+	// what the corner handles do.
+
+	return {
+		points: scaled.points,
+		width: proportional ? scaled.width : overlay.width,
+		x: scaled.x,
+		y: scaled.y,
+	};
+}
 
 interface Props {
 	dispatch: (action: EditorAction) => void;
@@ -65,10 +125,16 @@ export function LayerProperties({
 			type: 'update-overlay',
 		});
 
+	const size = overlaySize(overlay);
+
 	const sizePatch = (
 		side: 'height' | 'width',
 		value: number
 	): Partial<Overlay> => {
+		if (overlay.kind === 'stroke') {
+			return strokeSizePatch(overlay, proportional, side, value);
+		}
+
 		if (!proportional || !isBoxOverlay(overlay)) {
 			return {[side]: value};
 		}
@@ -395,7 +461,7 @@ export function LayerProperties({
 					/>
 				)}
 
-				{isBoxOverlay(overlay) && (
+				{size && (
 					<div className="editor-crop-size-row editor-layer-size-row">
 						<NumberField
 							id={eid('layer-prop-width')}
@@ -404,7 +470,7 @@ export function LayerProperties({
 							onPreview={(width) =>
 								previewPatch(sizePatch('width', width))
 							}
-							value={overlay.width}
+							value={size.width}
 						/>
 
 						<ClayButtonWithIcon
@@ -440,7 +506,7 @@ export function LayerProperties({
 							onPreview={(height) =>
 								previewPatch(sizePatch('height', height))
 							}
-							value={overlay.height}
+							value={size.height}
 						/>
 					</div>
 				)}
