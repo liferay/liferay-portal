@@ -3,13 +3,12 @@ import getCN from 'classnames';
 import PickerTriggerButton from '../PickerTriggerButton';
 import React from 'react';
 import {connect} from 'react-redux';
+import {MAX_LABEL_LENGTH} from 'shared/util/constants';
 import {Option, Picker} from '@clayui/core';
 import {Routes, toRoute} from 'shared/util/router';
 import {truncateText} from 'shared/util/util';
 import {updateDefaultChannelId} from 'shared/actions/preferences';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
-
-const MAX_LABEL_LENGTH = 35;
 
 const PICKER_WIDTH = 248;
 

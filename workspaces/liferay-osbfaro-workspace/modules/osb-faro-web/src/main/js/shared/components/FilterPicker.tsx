@@ -6,12 +6,11 @@ import React, {useMemo, useState} from 'react';
 import {ClayInput} from '@clayui/form';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {Icon} from '@clayui/core';
+import {MAX_LABEL_LENGTH} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {truncateText} from 'shared/util/util';
 import {useDebounce} from 'shared/hooks/useDebounce';
 import {useRequest} from 'shared/hooks/useRequest';
-
-const MAX_LABEL_LENGTH = 35;
 
 const MENU_WIDTH = 240;
 
