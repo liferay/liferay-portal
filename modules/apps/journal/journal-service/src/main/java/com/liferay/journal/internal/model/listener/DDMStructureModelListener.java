@@ -108,7 +108,6 @@ public class DDMStructureModelListener extends BaseModelListener<DDMStructure> {
 			};
 		}
 
-		actionableDynamicQuery.setParallel(true);
 		actionableDynamicQuery.setPerformActionMethod(performActionMethod);
 
 		try {
