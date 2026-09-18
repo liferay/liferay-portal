@@ -36,15 +36,20 @@ export async function getTableRowCells(
 
 export class OrderImportPage {
 	readonly cancelButton: (source?: OrderImportSource) => Locator;
+	readonly closeModalButton: Locator;
+	readonly emptyState: (source?: OrderImportSource) => Locator;
 	readonly importButton: (source?: OrderImportSource) => Locator;
 	readonly importedRowsAlert: (count: number) => Locator;
+	readonly modalFrame: (source: OrderImportSource) => Locator;
 	readonly notImportedRowsAlert: (count: number) => Locator;
 	readonly orderActionsButton: Locator;
 	readonly page: Page;
 	readonly previewRows: (source?: OrderImportSource) => Locator;
 	readonly previewTable: (source?: OrderImportSource) => Locator;
+	readonly searchInput: (source?: OrderImportSource) => Locator;
 	readonly sourceLink: (name: string, source?: OrderImportSource) => Locator;
 	readonly sourceMenuItem: (source: OrderImportSource) => Locator;
+	readonly sourceRows: (source?: OrderImportSource) => Locator;
 	readonly sourceTable: (source?: OrderImportSource) => Locator;
 
 	constructor(page: Page) {
@@ -53,6 +58,11 @@ export class OrderImportPage {
 				exact: true,
 				name: 'Cancel',
 			});
+		this.closeModalButton = page
+			.locator('.modal-dialog')
+			.getByRole('button', {name: 'Close'});
+		this.emptyState = (source = 'Wish Lists') =>
+			this.frame(source).getByText('No Results Found', {exact: true});
 		this.importButton = (source = 'Wish Lists') =>
 			this.frame(source).getByRole('button', {
 				exact: true,
@@ -70,16 +80,22 @@ export class OrderImportPage {
 					? `${count} rows were not imported`
 					: '1 row was not imported'
 			);
+		this.modalFrame = (source: OrderImportSource) =>
+			page.locator(`iframe[title="Import from ${source}"]`);
 		this.orderActionsButton = page.locator('.thumb-menu');
 		this.page = page;
 		this.previewRows = (source = 'Wish Lists') =>
 			this.previewTable(source).locator('tbody tr');
 		this.previewTable = (source = 'Wish Lists') =>
 			this.frame(source).locator('.fds table');
+		this.searchInput = (source = 'Wish Lists') =>
+			this.frame(source).getByRole('searchbox');
 		this.sourceLink = (name: string, source = 'Wish Lists') =>
 			this.sourceTable(source).getByRole('link', {name});
 		this.sourceMenuItem = (source: OrderImportSource) =>
 			page.getByRole('menuitem', {name: `Import from ${source}`});
+		this.sourceRows = (source = 'Wish Lists') =>
+			this.sourceTable(source).locator('tbody tr');
 		this.sourceTable = (source = 'Wish Lists') =>
 			this.frame(source).locator('.fds table');
 	}
@@ -102,6 +118,12 @@ export class OrderImportPage {
 		source: OrderImportSource = 'Wish Lists'
 	) {
 		return getTableRowCells(this.previewTable(source), productName);
+	}
+
+	async search(keywords: string, source: OrderImportSource = 'Wish Lists') {
+		await this.searchInput(source).fill(keywords);
+
+		await this.searchInput(source).press('Enter');
 	}
 
 	async selectSource(name: string, source: OrderImportSource = 'Wish Lists') {

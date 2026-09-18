@@ -495,12 +495,14 @@ export class CommerceLayoutsPage {
 		{
 			importStatus,
 			quantity,
+			requestedDeliveryDate,
 			sku,
 			totalPrice,
 			unitPrice,
 		}: {
 			importStatus?: string;
 			quantity?: number;
+			requestedDeliveryDate?: string;
 			sku?: string;
 			totalPrice?: string;
 			unitPrice?: string;
@@ -526,6 +528,10 @@ export class CommerceLayoutsPage {
 
 		if (importStatus !== undefined) {
 			await expect(cells.nth(7)).toContainText(importStatus);
+		}
+
+		if (requestedDeliveryDate !== undefined) {
+			await expect(cells.nth(9)).toHaveText(requestedDeliveryDate);
 		}
 	}
 

@@ -308,3 +308,131 @@ test(
 		);
 	}
 );
+
+// Mirrors the rows in dependencies/commerce_valid_requested_delivery_date.csv
+// and dependencies/commerce_invalid_requested_delivery_date.csv.
+
+const REQUESTED_DELIVERY_DATE_ROWS = [
+	{date: '2022-12-04', productName: 'U-Joint', quantity: 1, sku: 'MIN55861'},
+	{date: '2023-09-30', productName: 'Mount', quantity: 2, sku: 'MIN55857'},
+	{
+		date: '2022-02-23',
+		productName: 'Torque Converters',
+		quantity: 3,
+		sku: 'MIN55859',
+	},
+];
+
+test(
+	'A CSV requested delivery date is previewed and stored on the imported items',
+	{tag: ['@LPD-106266']},
+	async ({apiHelpers, commerceLayoutsPage, page, pendingOrdersPage}) => {
+		await performUserSwitch(page, buyerScreenName);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{accountId: account.id},
+			channel.id
+		);
+
+		await pendingOrdersPage.gotoOrder(site.friendlyUrlPath, cart.id);
+
+		await pendingOrdersPage.openImportFromCSV();
+
+		await commerceLayoutsPage.importCsvFile(
+			path.join(
+				__dirname,
+				'/dependencies/commerce_valid_requested_delivery_date.csv'
+			)
+		);
+
+		for (const {
+			date,
+			productName,
+			quantity,
+			sku,
+		} of REQUESTED_DELIVERY_DATE_ROWS) {
+			await commerceLayoutsPage.expectImportCsvPreviewRow(productName, {
+				importStatus: 'OK',
+				quantity,
+				requestedDeliveryDate: date,
+				sku,
+			});
+		}
+
+		await commerceLayoutsPage.importCsvSubmitButton.click();
+
+		await expect(async () => {
+			const cartItems =
+				await apiHelpers.headlessCommerceDeliveryCart.getCartItems(
+					cart.id
+				);
+
+			expect(cartItems.totalCount).toBe(
+				REQUESTED_DELIVERY_DATE_ROWS.length
+			);
+
+			for (const {date, sku} of REQUESTED_DELIVERY_DATE_ROWS) {
+				const cartItem = cartItems.items.find(
+					(item: {sku: string}) => item.sku === sku
+				);
+
+				expect(cartItem.requestedDeliveryDate).toContain(date);
+			}
+		}).toPass({timeout: 30000});
+	}
+);
+
+test(
+	'An invalid CSV requested delivery date is reported and left unset on the imported items',
+	{tag: ['@LPD-106266']},
+	async ({apiHelpers, commerceLayoutsPage, page, pendingOrdersPage}) => {
+		await performUserSwitch(page, buyerScreenName);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{accountId: account.id},
+			channel.id
+		);
+
+		await pendingOrdersPage.gotoOrder(site.friendlyUrlPath, cart.id);
+
+		await pendingOrdersPage.openImportFromCSV();
+
+		await commerceLayoutsPage.importCsvFile(
+			path.join(
+				__dirname,
+				'/dependencies/commerce_invalid_requested_delivery_date.csv'
+			)
+		);
+
+		for (const {
+			productName,
+			quantity,
+			sku,
+		} of REQUESTED_DELIVERY_DATE_ROWS) {
+			await commerceLayoutsPage.expectImportCsvPreviewRow(productName, {
+				importStatus: 'OK',
+				quantity,
+				requestedDeliveryDate:
+					'The requested delivery date is invalid.',
+				sku,
+			});
+		}
+
+		await commerceLayoutsPage.importCsvSubmitButton.click();
+
+		await expect(async () => {
+			const cartItems =
+				await apiHelpers.headlessCommerceDeliveryCart.getCartItems(
+					cart.id
+				);
+
+			expect(cartItems.totalCount).toBe(
+				REQUESTED_DELIVERY_DATE_ROWS.length
+			);
+
+			for (const cartItem of cartItems.items) {
+				expect(cartItem.requestedDeliveryDate).toBeFalsy();
+			}
+		}).toPass({timeout: 30000});
+	}
+);

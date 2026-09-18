@@ -49,6 +49,7 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 	readonly saveButton: Locator;
 	readonly skuLink: (sku: string) => Locator;
 	readonly viewButton: Locator;
+	readonly viewMenuItem: Locator;
 
 	constructor(page: Page) {
 		super(
@@ -171,6 +172,10 @@ export class PendingOrdersPage extends CommerceDNDTablePage {
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.skuLink = (sku) => page.getByRole('link', {name: sku});
 		this.viewButton = page.getByLabel('View');
+		this.viewMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'View',
+		});
 	}
 
 	async gotoOrder(siteFriendlyUrlPath: string, orderId: number) {
