@@ -74,9 +74,8 @@ public class TestrayImporterTest
 				));
 		}
 
-		JSONObject jsonObject = new JSONObject();
-
-		jsonObject.put(
+		JSONObject jsonObject = new JSONObject(
+		).put(
 			"file", RandomTestUtil.randomString()
 		).put(
 			"methods", methodsJSONArray

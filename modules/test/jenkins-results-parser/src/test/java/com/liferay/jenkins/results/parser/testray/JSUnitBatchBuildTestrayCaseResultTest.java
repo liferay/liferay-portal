@@ -70,17 +70,15 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 	}
 
 	private JSUnitModulesTestClass _getTestClass() {
-		JSONObject methodJSONObject = new JSONObject();
-
-		methodJSONObject.put(
+		JSONObject methodJSONObject = new JSONObject(
+		).put(
 			"ignored", false
 		).put(
 			"name", "modules/apps/a/b/test/js/c.js"
 		);
 
-		JSONObject jsonObject = new JSONObject();
-
-		jsonObject.put(
+		JSONObject jsonObject = new JSONObject(
+		).put(
 			"file", "/x/modules/apps/a/b"
 		).put(
 			"methods",
