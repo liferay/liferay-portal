@@ -17,7 +17,7 @@ ProductAnalyticsConsentPanelDisplayContext productAnalyticsConsentPanelDisplayCo
 	String alertMessage = ParamUtil.getString(request, "alertMessage");
 	%>
 
-	<c:if test="<%= alertMessage != StringPool.BLANK %>">
+	<c:if test="<%= Validator.isNotNull(alertMessage) %>">
 		<clay:col
 			size="12"
 		>
