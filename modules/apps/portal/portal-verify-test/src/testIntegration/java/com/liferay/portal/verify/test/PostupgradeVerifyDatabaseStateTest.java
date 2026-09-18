@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.service.ServiceComponentLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -109,7 +110,7 @@ public class PostupgradeVerifyDatabaseStateTest
 		alterColumnName("UserTracker", "companyId", "companyId_backup LONG");
 
 		try {
-			_testVerifyColumns(
+			_testVerifyMessages(
 				_getExpectedMessage(
 					StringBundler.concat(
 						"Missing columns were detected for ",
@@ -131,7 +132,7 @@ public class PostupgradeVerifyDatabaseStateTest
 		alterColumnType("Address", "city", "VARCHAR(100)");
 
 		try {
-			_testVerifyColumns(
+			_testVerifyMessages(
 				_getExpectedMessage(
 					StringBundler.concat(
 						"Column ", getNormalizedName("city"),
@@ -440,7 +441,7 @@ public class PostupgradeVerifyDatabaseStateTest
 		}
 	}
 
-	private void _testVerifyColumns(String... expectedMessages)
+	private void _testVerifyMessages(String... expectedMessages)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -452,10 +453,7 @@ public class PostupgradeVerifyDatabaseStateTest
 			Set<String> messages = new HashSet<>();
 
 			for (String message : logCapture.getMessages()) {
-				if (message.startsWith("Column ") ||
-					message.startsWith("Missing columns") ||
-					message.startsWith("Stale columns")) {
-
+				if (ArrayUtil.exists(_MESSAGE_PREFIXES, message::startsWith)) {
 					messages.add(message);
 				}
 			}
@@ -465,6 +463,10 @@ public class PostupgradeVerifyDatabaseStateTest
 	}
 
 	private static final String _BUILD_NAMESPACE = "com.liferay.test.service";
+
+	private static final String[] _MESSAGE_PREFIXES = {
+		"Column ", "Missing columns", "Stale columns"
+	};
 
 	private static final String _STALE_VIEW_NAME = "TestStaleView";
 
