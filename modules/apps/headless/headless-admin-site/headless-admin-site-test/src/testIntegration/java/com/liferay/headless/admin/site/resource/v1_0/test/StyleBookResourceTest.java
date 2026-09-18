@@ -133,6 +133,15 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		_testPostSiteStyleBookWithBlankThemeId();
 		_testPostSiteStyleBookWithDuplicateExternalReferenceCode();
 		_testPostSiteStyleBookWithDuplicateKey();
+		_testPostSiteStyleBookWithNullDefaultStyleBook();
+	}
+
+	@Override
+	@Test
+	public void testPutSiteStyleBook() throws Exception {
+		super.testPutSiteStyleBook();
+
+		_testPutSiteStyleBookWithNullDefaultStyleBook();
 	}
 
 	@Override
@@ -756,6 +765,40 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 				"A style book with the same key already exists",
 				problemException.getMessage());
 		}
+	}
+
+	private void _testPostSiteStyleBookWithNullDefaultStyleBook()
+		throws Exception {
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setDefaultStyleBook(() -> null);
+
+		StyleBook postStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook);
+
+		Assert.assertFalse(postStyleBook.getDefaultStyleBook());
+	}
+
+	private void _testPutSiteStyleBookWithNullDefaultStyleBook()
+		throws Exception {
+
+		StyleBook randomStyleBook1 = randomStyleBook();
+
+		randomStyleBook1.setDefaultStyleBook(Boolean.FALSE);
+
+		StyleBook postStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook1);
+
+		StyleBook randomStyleBook2 = randomStyleBook();
+
+		randomStyleBook2.setDefaultStyleBook(() -> null);
+
+		StyleBook putStyleBook = styleBookResource.putSiteStyleBook(
+			testGroup.getExternalReferenceCode(),
+			postStyleBook.getExternalReferenceCode(), randomStyleBook2);
+
+		Assert.assertFalse(putStyleBook.getDefaultStyleBook());
 	}
 
 	@Inject
