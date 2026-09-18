@@ -780,6 +780,51 @@ public class CommerceDiscountRelServiceHttp {
 		}
 	}
 
+	public static com.liferay.commerce.discount.model.CommerceDiscountRel
+			updateTypeSettings(
+				HttpPrincipal httpPrincipal, long commerceDiscountRelId,
+				com.liferay.portal.kernel.util.UnicodeProperties
+					typeSettingsUnicodeProperties)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceDiscountRelServiceUtil.class, "updateTypeSettings",
+				_updateTypeSettingsParameterTypes17);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, commerceDiscountRelId,
+				typeSettingsUnicodeProperties);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.discount.model.CommerceDiscountRel)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		CommerceDiscountRelServiceHttp.class);
 
@@ -840,6 +885,10 @@ public class CommerceDiscountRelServiceHttp {
 	private static final Class<?>[]
 		_getCommercePricingClassesByCommerceDiscountIdCountParameterTypes16 =
 			new Class[] {long.class, String.class};
+	private static final Class<?>[] _updateTypeSettingsParameterTypes17 =
+		new Class[] {
+			long.class, com.liferay.portal.kernel.util.UnicodeProperties.class
+		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-549371553
+// LIFERAY-SERVICE-BUILDER-HASH:411867800

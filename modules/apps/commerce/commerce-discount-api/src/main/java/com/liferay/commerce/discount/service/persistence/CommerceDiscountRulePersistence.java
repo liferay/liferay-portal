@@ -94,6 +94,49 @@ public interface CommerceDiscountRulePersistence
 	public int countByCommerceDiscountId(long commerceDiscountId);
 
 	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchDiscountRuleException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce discount rule
+	 * @throws NoSuchDiscountRuleException if a matching commerce discount rule could not be found
+	 */
+	public CommerceDiscountRule findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchDiscountRuleException;
+
+	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce discount rule, or <code>null</code> if a matching commerce discount rule could not be found
+	 */
+	public CommerceDiscountRule fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache);
+
+	/**
+	 * Removes the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the commerce discount rule that was removed
+	 */
+	public CommerceDiscountRule removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchDiscountRuleException;
+
+	/**
+	 * Returns the number of commerce discount rules where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching commerce discount rules
+	 */
+	public int countByERC_C(String externalReferenceCode, long companyId);
+
+	/**
 	 * Creates a new commerce discount rule with the primary key. Does not add the commerce discount rule to the database.
 	 *
 	 * @param commerceDiscountRuleId the primary key for the new commerce discount rule
@@ -131,6 +174,19 @@ public interface CommerceDiscountRulePersistence
 	 * @return the commerce discount rule, or <code>null</code> if a commerce discount rule with the primary key could not be found
 	 */
 	public CommerceDiscountRule fetchByPrimaryKey(long commerceDiscountRuleId);
+
+	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce discount rule, or <code>null</code> if a matching commerce discount rule could not be found
+	 */
+	public default CommerceDiscountRule fetchByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return fetchByERC_C(externalReferenceCode, companyId, true);
+	}
 
 	/**
 	 * Returns all the commerce discount rules where commerceDiscountId = &#63;.
@@ -190,4 +246,4 @@ public interface CommerceDiscountRulePersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1998582497
+// LIFERAY-SERVICE-BUILDER-HASH:251197054

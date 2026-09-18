@@ -20,6 +20,7 @@ create index IX_6B4EEC38 on CommerceDiscountRel (classNameId, classPK);
 create index IX_2BF40CA3 on CommerceDiscountRel (commerceDiscountId, classNameId, classPK);
 
 create index IX_CB9E6769 on CommerceDiscountRule (commerceDiscountId);
+create unique index IX_5FF70F89 on CommerceDiscountRule (externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
 
 create index IX_28CE20FF on CommerceDiscountUsageEntry (commerceDiscountId, commerceAccountId, commerceOrderId);
 create index IX_E40C6220 on CommerceDiscountUsageEntry (commerceDiscountId, commerceOrderId);

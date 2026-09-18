@@ -250,6 +250,24 @@ public abstract class CommerceDiscountRuleLocalServiceBaseImpl
 			commerceDiscountRuleId);
 	}
 
+	@Override
+	public CommerceDiscountRule
+		fetchCommerceDiscountRuleByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return commerceDiscountRulePersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
+	}
+
+	@Override
+	public CommerceDiscountRule getCommerceDiscountRuleByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return commerceDiscountRulePersistence.findByERC_C(
+			externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the commerce discount rule with the primary key.
 	 *
@@ -482,4 +500,4 @@ public abstract class CommerceDiscountRuleLocalServiceBaseImpl
 		CommerceDiscountRuleLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:154948961
+// LIFERAY-SERVICE-BUILDER-HASH:1199068120

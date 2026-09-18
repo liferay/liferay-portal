@@ -107,6 +107,15 @@ public class CommerceOrderTypeServiceWrapper
 			className, classPK, active);
 	}
 
+	@Override
+	public com.liferay.commerce.model.CommerceOrderType
+			getOrAddEmptyCommerceOrderType(String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceOrderTypeService.getOrAddEmptyCommerceOrderType(
+			externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -165,4 +174,4 @@ public class CommerceOrderTypeServiceWrapper
 	private CommerceOrderTypeService _commerceOrderTypeService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-419748717
+// LIFERAY-SERVICE-BUILDER-HASH:-811820988

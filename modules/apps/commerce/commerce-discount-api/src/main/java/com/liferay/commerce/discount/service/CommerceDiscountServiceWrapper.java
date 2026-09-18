@@ -280,6 +280,15 @@ public class CommerceDiscountServiceWrapper
 				commercePricingClassId, title);
 	}
 
+	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscount
+			getOrAddEmptyCommerceDiscount(String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountService.getOrAddEmptyCommerceDiscount(
+			externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -438,4 +447,4 @@ public class CommerceDiscountServiceWrapper
 	private CommerceDiscountService _commerceDiscountService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:212125822
+// LIFERAY-SERVICE-BUILDER-HASH:-806921098

@@ -82,6 +82,11 @@ public interface CommerceOrderTypeService extends BaseService {
 			String className, long classPK, boolean active)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceOrderType getOrAddEmptyCommerceOrderType(
+			String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -105,4 +110,4 @@ public interface CommerceOrderTypeService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2021759472
+// LIFERAY-SERVICE-BUILDER-HASH:724344696

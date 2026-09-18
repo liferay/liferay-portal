@@ -138,5 +138,10 @@ public interface CommerceDiscountRelService extends BaseService {
 	 */
 	public String getOSGiServiceIdentifier();
 
+	public CommerceDiscountRel updateTypeSettings(
+			long commerceDiscountRelId,
+			UnicodeProperties typeSettingsUnicodeProperties)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1728565062
+// LIFERAY-SERVICE-BUILDER-HASH:-2113912963

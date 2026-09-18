@@ -307,6 +307,50 @@ public class CommerceDiscountOrderTypeRelServiceHttp {
 		}
 	}
 
+	public static
+		com.liferay.commerce.discount.model.CommerceDiscountOrderTypeRel
+				updatePriority(
+					HttpPrincipal httpPrincipal,
+					long commerceDiscountOrderTypeRelId, int priority)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceDiscountOrderTypeRelServiceUtil.class, "updatePriority",
+				_updatePriorityParameterTypes6);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, commerceDiscountOrderTypeRelId, priority);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.discount.model.
+				CommerceDiscountOrderTypeRel)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		CommerceDiscountOrderTypeRelServiceHttp.class);
 
@@ -336,6 +380,8 @@ public class CommerceDiscountOrderTypeRelServiceHttp {
 		_getCommerceDiscountOrderTypeRelsCountParameterTypes5 = new Class[] {
 			long.class, String.class
 		};
+	private static final Class<?>[] _updatePriorityParameterTypes6 =
+		new Class[] {long.class, int.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:654968598
+// LIFERAY-SERVICE-BUILDER-HASH:-1306972977

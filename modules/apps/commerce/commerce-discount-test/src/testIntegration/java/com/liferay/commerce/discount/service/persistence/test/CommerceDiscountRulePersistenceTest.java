@@ -6,6 +6,7 @@
 package com.liferay.commerce.discount.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.discount.exception.DuplicateCommerceDiscountRuleExternalReferenceCodeException;
 import com.liferay.commerce.discount.exception.NoSuchDiscountRuleException;
 import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleLocalServiceUtil;
@@ -17,6 +18,8 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -115,6 +118,9 @@ public class CommerceDiscountRulePersistenceTest {
 		CommerceDiscountRule newCommerceDiscountRule =
 			addCommerceDiscountRule();
 
+		newCommerceDiscountRule.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+
 		newCommerceDiscountRule.setCompanyId(RandomTestUtil.nextLong());
 
 		newCommerceDiscountRule.setUserId(RandomTestUtil.nextLong());
@@ -145,6 +151,9 @@ public class CommerceDiscountRulePersistenceTest {
 		Assert.assertEquals(
 			existingCommerceDiscountRule.getMvccVersion(),
 			newCommerceDiscountRule.getMvccVersion());
+		Assert.assertEquals(
+			existingCommerceDiscountRule.getExternalReferenceCode(),
+			newCommerceDiscountRule.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingCommerceDiscountRule.getCommerceDiscountRuleId(),
 			newCommerceDiscountRule.getCommerceDiscountRuleId());
@@ -179,11 +188,44 @@ public class CommerceDiscountRulePersistenceTest {
 			newCommerceDiscountRule.getTypeSettings());
 	}
 
+	@Test(
+		expected = DuplicateCommerceDiscountRuleExternalReferenceCodeException.class
+	)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		CommerceDiscountRule commerceDiscountRule = addCommerceDiscountRule();
+
+		CommerceDiscountRule newCommerceDiscountRule =
+			addCommerceDiscountRule();
+
+		newCommerceDiscountRule.setCompanyId(
+			commerceDiscountRule.getCompanyId());
+
+		newCommerceDiscountRule = _persistence.update(newCommerceDiscountRule);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newCommerceDiscountRule);
+
+		newCommerceDiscountRule.setExternalReferenceCode(
+			commerceDiscountRule.getExternalReferenceCode());
+
+		_persistence.update(newCommerceDiscountRule);
+	}
+
 	@Test
 	public void testCountByCommerceDiscountId() throws Exception {
 		_persistence.countByCommerceDiscountId(RandomTestUtil.nextLong());
 
 		_persistence.countByCommerceDiscountId(0L);
+	}
+
+	@Test
+	public void testCountByERC_C() throws Exception {
+		_persistence.countByERC_C("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_C("null", 0L);
+
+		_persistence.countByERC_C((String)null, 0L);
 	}
 
 	@Test
@@ -215,9 +257,10 @@ public class CommerceDiscountRulePersistenceTest {
 	protected OrderByComparator<CommerceDiscountRule> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"CommerceDiscountRule", "mvccVersion", true,
-			"commerceDiscountRuleId", true, "companyId", true, "userId", true,
-			"userName", true, "createDate", true, "modifiedDate", true, "name",
-			true, "commerceDiscountId", true, "type", true);
+			"externalReferenceCode", true, "commerceDiscountRuleId", true,
+			"companyId", true, "userId", true, "userName", true, "createDate",
+			true, "modifiedDate", true, "name", true, "commerceDiscountId",
+			true, "type", true);
 	}
 
 	@Test
@@ -454,10 +497,82 @@ public class CommerceDiscountRulePersistenceTest {
 		Assert.assertEquals(0, result.size());
 	}
 
+	@Test
+	public void testResetOriginalValues() throws Exception {
+		CommerceDiscountRule newCommerceDiscountRule =
+			addCommerceDiscountRule();
+
+		_persistence.clearCache();
+
+		_assertOriginalValues(
+			_persistence.findByPrimaryKey(
+				newCommerceDiscountRule.getPrimaryKey()));
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(true);
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(false);
+	}
+
+	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
+		throws Exception {
+
+		CommerceDiscountRule newCommerceDiscountRule =
+			addCommerceDiscountRule();
+
+		if (clearSession) {
+			Session session = _persistence.openSession();
+
+			session.flush();
+
+			session.clear();
+		}
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			CommerceDiscountRule.class, _dynamicQueryClassLoader);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"commerceDiscountRuleId",
+				newCommerceDiscountRule.getCommerceDiscountRuleId()));
+
+		List<CommerceDiscountRule> result = _persistence.findWithDynamicQuery(
+			dynamicQuery);
+
+		_assertOriginalValues(result.get(0));
+	}
+
+	private void _assertOriginalValues(
+		CommerceDiscountRule commerceDiscountRule) {
+
+		Assert.assertEquals(
+			commerceDiscountRule.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				commerceDiscountRule, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(commerceDiscountRule.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				commerceDiscountRule, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+	}
+
 	protected CommerceDiscountRule addCommerceDiscountRule() throws Exception {
 		long pk = RandomTestUtil.nextLong();
 
 		CommerceDiscountRule commerceDiscountRule = _persistence.create(pk);
+
+		commerceDiscountRule.setExternalReferenceCode(
+			RandomTestUtil.randomString());
 
 		commerceDiscountRule.setCompanyId(RandomTestUtil.nextLong());
 
@@ -488,4 +603,4 @@ public class CommerceDiscountRulePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:174313914
+// LIFERAY-SERVICE-BUILDER-HASH:-1405449173

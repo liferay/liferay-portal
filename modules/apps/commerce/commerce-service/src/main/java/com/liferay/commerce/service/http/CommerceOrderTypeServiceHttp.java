@@ -348,6 +348,48 @@ public class CommerceOrderTypeServiceHttp {
 	}
 
 	public static com.liferay.commerce.model.CommerceOrderType
+			getOrAddEmptyCommerceOrderType(
+				HttpPrincipal httpPrincipal, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceOrderTypeServiceUtil.class,
+				"getOrAddEmptyCommerceOrderType",
+				_getOrAddEmptyCommerceOrderTypeParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.model.CommerceOrderType)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.commerce.model.CommerceOrderType
 			updateCommerceOrderType(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				long commerceOrderTypeId,
@@ -365,7 +407,7 @@ public class CommerceOrderTypeServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				CommerceOrderTypeServiceUtil.class, "updateCommerceOrderType",
-				_updateCommerceOrderTypeParameterTypes7);
+				_updateCommerceOrderTypeParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, commerceOrderTypeId, nameMap,
@@ -413,7 +455,7 @@ public class CommerceOrderTypeServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceOrderTypeServiceUtil.class,
 				"updateCommerceOrderTypeExternalReferenceCode",
-				_updateCommerceOrderTypeExternalReferenceCodeParameterTypes8);
+				_updateCommerceOrderTypeExternalReferenceCodeParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, commerceOrderTypeId);
@@ -472,7 +514,11 @@ public class CommerceOrderTypeServiceHttp {
 		};
 	private static final Class<?>[] _getCommerceOrderTypesCountParameterTypes6 =
 		new Class[] {String.class, long.class, boolean.class};
-	private static final Class<?>[] _updateCommerceOrderTypeParameterTypes7 =
+	private static final Class<?>[]
+		_getOrAddEmptyCommerceOrderTypeParameterTypes7 = new Class[] {
+			String.class
+		};
+	private static final Class<?>[] _updateCommerceOrderTypeParameterTypes8 =
 		new Class[] {
 			String.class, long.class, java.util.Map.class, java.util.Map.class,
 			boolean.class, int.class, int.class, int.class, int.class,
@@ -481,8 +527,8 @@ public class CommerceOrderTypeServiceHttp {
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[]
-		_updateCommerceOrderTypeExternalReferenceCodeParameterTypes8 =
+		_updateCommerceOrderTypeExternalReferenceCodeParameterTypes9 =
 			new Class[] {String.class, long.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:101323089
+// LIFERAY-SERVICE-BUILDER-HASH:-380170375

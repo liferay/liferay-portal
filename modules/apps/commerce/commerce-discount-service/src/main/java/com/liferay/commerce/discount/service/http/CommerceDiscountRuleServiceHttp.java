@@ -133,6 +133,53 @@ public class CommerceDiscountRuleServiceHttp {
 		}
 	}
 
+	public static com.liferay.commerce.discount.model.CommerceDiscountRule
+			addOrUpdateCommerceDiscountRule(
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				long commerceDiscountRuleId, long commerceDiscountId,
+				String name, String type, String typeSettings,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CommerceDiscountRuleServiceUtil.class,
+				"addOrUpdateCommerceDiscountRule",
+				_addOrUpdateCommerceDiscountRuleParameterTypes2);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, commerceDiscountRuleId,
+				commerceDiscountId, name, type, typeSettings, serviceContext);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.discount.model.CommerceDiscountRule)
+				returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	public static void deleteCommerceDiscountRule(
 			HttpPrincipal httpPrincipal, long commerceDiscountRuleId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -141,7 +188,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"deleteCommerceDiscountRule",
-				_deleteCommerceDiscountRuleParameterTypes2);
+				_deleteCommerceDiscountRuleParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountRuleId);
@@ -179,7 +226,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"fetchCommerceDiscountRule",
-				_fetchCommerceDiscountRuleParameterTypes3);
+				_fetchCommerceDiscountRuleParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountRuleId);
@@ -222,7 +269,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"getCommerceDiscountRule",
-				_getCommerceDiscountRuleParameterTypes4);
+				_getCommerceDiscountRuleParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountRuleId);
@@ -270,7 +317,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"getCommerceDiscountRules",
-				_getCommerceDiscountRulesParameterTypes5);
+				_getCommerceDiscountRulesParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountId, start, end, orderByComparator);
@@ -316,7 +363,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"getCommerceDiscountRules",
-				_getCommerceDiscountRulesParameterTypes6);
+				_getCommerceDiscountRulesParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountId, name, start, end);
@@ -359,7 +406,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"getCommerceDiscountRulesCount",
-				_getCommerceDiscountRulesCountParameterTypes7);
+				_getCommerceDiscountRulesCountParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountId);
@@ -400,7 +447,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"getCommerceDiscountRulesCount",
-				_getCommerceDiscountRulesCountParameterTypes8);
+				_getCommerceDiscountRulesCountParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountId, name);
@@ -443,7 +490,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"updateCommerceDiscountRule",
-				_updateCommerceDiscountRuleParameterTypes9);
+				_updateCommerceDiscountRuleParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountRuleId, type, typeSettings);
@@ -487,7 +534,7 @@ public class CommerceDiscountRuleServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CommerceDiscountRuleServiceUtil.class,
 				"updateCommerceDiscountRule",
-				_updateCommerceDiscountRuleParameterTypes10);
+				_updateCommerceDiscountRuleParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, commerceDiscountRuleId, name, type, typeSettings);
@@ -534,33 +581,40 @@ public class CommerceDiscountRuleServiceHttp {
 			long.class, String.class, String.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _deleteCommerceDiscountRuleParameterTypes2 =
+	private static final Class<?>[]
+		_addOrUpdateCommerceDiscountRuleParameterTypes2 = new Class[] {
+			String.class, long.class, long.class, String.class, String.class,
+			String.class, com.liferay.portal.kernel.service.ServiceContext.class
+		};
+	private static final Class<?>[] _deleteCommerceDiscountRuleParameterTypes3 =
 		new Class[] {long.class};
-	private static final Class<?>[] _fetchCommerceDiscountRuleParameterTypes3 =
+	private static final Class<?>[] _fetchCommerceDiscountRuleParameterTypes4 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getCommerceDiscountRuleParameterTypes4 =
+	private static final Class<?>[] _getCommerceDiscountRuleParameterTypes5 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getCommerceDiscountRulesParameterTypes5 =
+	private static final Class<?>[] _getCommerceDiscountRulesParameterTypes6 =
 		new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getCommerceDiscountRulesParameterTypes6 =
+	private static final Class<?>[] _getCommerceDiscountRulesParameterTypes7 =
 		new Class[] {long.class, String.class, int.class, int.class};
 	private static final Class<?>[]
-		_getCommerceDiscountRulesCountParameterTypes7 = new Class[] {
+		_getCommerceDiscountRulesCountParameterTypes8 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_getCommerceDiscountRulesCountParameterTypes8 = new Class[] {
+		_getCommerceDiscountRulesCountParameterTypes9 = new Class[] {
 			long.class, String.class
 		};
-	private static final Class<?>[] _updateCommerceDiscountRuleParameterTypes9 =
-		new Class[] {long.class, String.class, String.class};
 	private static final Class<?>[]
 		_updateCommerceDiscountRuleParameterTypes10 = new Class[] {
+			long.class, String.class, String.class
+		};
+	private static final Class<?>[]
+		_updateCommerceDiscountRuleParameterTypes11 = new Class[] {
 			long.class, String.class, String.class, String.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1464073149
+// LIFERAY-SERVICE-BUILDER-HASH:287462250

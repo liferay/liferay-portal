@@ -69,10 +69,12 @@ public class CommerceDiscountRuleCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", commerceDiscountRuleId=");
 		sb.append(commerceDiscountRuleId);
 		sb.append(", companyId=");
@@ -104,6 +106,15 @@ public class CommerceDiscountRuleCacheModel
 			new CommerceDiscountRuleImpl();
 
 		commerceDiscountRuleImpl.setMvccVersion(mvccVersion);
+
+		if (externalReferenceCode == null) {
+			commerceDiscountRuleImpl.setExternalReferenceCode("");
+		}
+		else {
+			commerceDiscountRuleImpl.setExternalReferenceCode(
+				externalReferenceCode);
+		}
+
 		commerceDiscountRuleImpl.setCommerceDiscountRuleId(
 			commerceDiscountRuleId);
 		commerceDiscountRuleImpl.setCompanyId(companyId);
@@ -163,6 +174,7 @@ public class CommerceDiscountRuleCacheModel
 		throws ClassNotFoundException, IOException {
 
 		mvccVersion = objectInput.readLong();
+		externalReferenceCode = objectInput.readUTF();
 
 		commerceDiscountRuleId = objectInput.readLong();
 
@@ -182,6 +194,13 @@ public class CommerceDiscountRuleCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeLong(mvccVersion);
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
+		}
 
 		objectOutput.writeLong(commerceDiscountRuleId);
 
@@ -224,6 +243,7 @@ public class CommerceDiscountRuleCacheModel
 	}
 
 	public long mvccVersion;
+	public String externalReferenceCode;
 	public long commerceDiscountRuleId;
 	public long companyId;
 	public long userId;
@@ -236,4 +256,4 @@ public class CommerceDiscountRuleCacheModel
 	public String typeSettings;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1003178708
+// LIFERAY-SERVICE-BUILDER-HASH:1360032994

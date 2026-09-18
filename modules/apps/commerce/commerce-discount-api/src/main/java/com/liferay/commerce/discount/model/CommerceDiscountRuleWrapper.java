@@ -36,6 +36,7 @@ public class CommerceDiscountRuleWrapper
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("mvccVersion", getMvccVersion());
+		attributes.put("externalReferenceCode", getExternalReferenceCode());
 		attributes.put("commerceDiscountRuleId", getCommerceDiscountRuleId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
@@ -56,6 +57,13 @@ public class CommerceDiscountRuleWrapper
 
 		if (mvccVersion != null) {
 			setMvccVersion(mvccVersion);
+		}
+
+		String externalReferenceCode = (String)attributes.get(
+			"externalReferenceCode");
+
+		if (externalReferenceCode != null) {
+			setExternalReferenceCode(externalReferenceCode);
 		}
 
 		Long commerceDiscountRuleId = (Long)attributes.get(
@@ -163,6 +171,16 @@ public class CommerceDiscountRuleWrapper
 	@Override
 	public Date getCreateDate() {
 		return model.getCreateDate();
+	}
+
+	/**
+	 * Returns the external reference code of this commerce discount rule.
+	 *
+	 * @return the external reference code of this commerce discount rule
+	 */
+	@Override
+	public String getExternalReferenceCode() {
+		return model.getExternalReferenceCode();
 	}
 
 	/**
@@ -313,6 +331,16 @@ public class CommerceDiscountRuleWrapper
 	}
 
 	/**
+	 * Sets the external reference code of this commerce discount rule.
+	 *
+	 * @param externalReferenceCode the external reference code of this commerce discount rule
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		model.setExternalReferenceCode(externalReferenceCode);
+	}
+
+	/**
 	 * Sets the modified date of this commerce discount rule.
 	 *
 	 * @param modifiedDate the modified date of this commerce discount rule
@@ -422,4 +450,4 @@ public class CommerceDiscountRuleWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1221078720
+// LIFERAY-SERVICE-BUILDER-HASH:1564444546

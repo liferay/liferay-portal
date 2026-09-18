@@ -72,6 +72,34 @@ public class CommerceDiscountRuleLocalServiceWrapper
 			commerceDiscountId, name, type, typeSettings, serviceContext);
 	}
 
+	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRule
+			addCommerceDiscountRule(
+				String externalReferenceCode, long commerceDiscountId,
+				String name, String type, String typeSettings,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountRuleLocalService.addCommerceDiscountRule(
+			externalReferenceCode, commerceDiscountId, name, type, typeSettings,
+			serviceContext);
+	}
+
+	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRule
+			addOrUpdateCommerceDiscountRule(
+				String externalReferenceCode, long commerceDiscountRuleId,
+				long commerceDiscountId, String name, String type,
+				String typeSettings,
+				com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountRuleLocalService.
+			addOrUpdateCommerceDiscountRule(
+				externalReferenceCode, commerceDiscountRuleId,
+				commerceDiscountId, name, type, typeSettings, serviceContext);
+	}
+
 	/**
 	 * Creates a new commerce discount rule with the primary key. Does not add the commerce discount rule to the database.
 	 *
@@ -273,6 +301,16 @@ public class CommerceDiscountRuleLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRule
+		fetchCommerceDiscountRuleByExternalReferenceCode(
+			String externalReferenceCode, long companyId) {
+
+		return _commerceDiscountRuleLocalService.
+			fetchCommerceDiscountRuleByExternalReferenceCode(
+				externalReferenceCode, companyId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -293,6 +331,17 @@ public class CommerceDiscountRuleLocalServiceWrapper
 
 		return _commerceDiscountRuleLocalService.getCommerceDiscountRule(
 			commerceDiscountRuleId);
+	}
+
+	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRule
+			getCommerceDiscountRuleByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountRuleLocalService.
+			getCommerceDiscountRuleByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	/**
@@ -456,4 +505,4 @@ public class CommerceDiscountRuleLocalServiceWrapper
 	private CommerceDiscountRuleLocalService _commerceDiscountRuleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1629137902
+// LIFERAY-SERVICE-BUILDER-HASH:-639307238

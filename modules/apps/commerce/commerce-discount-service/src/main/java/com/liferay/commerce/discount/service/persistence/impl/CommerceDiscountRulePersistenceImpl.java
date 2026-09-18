@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.discount.service.persistence.impl;
 
+import com.liferay.commerce.discount.exception.DuplicateCommerceDiscountRuleExternalReferenceCodeException;
 import com.liferay.commerce.discount.exception.NoSuchDiscountRuleException;
 import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.model.CommerceDiscountRuleTable;
@@ -19,15 +20,24 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
+import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
+import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.io.Serializable;
 
@@ -37,6 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -162,6 +173,75 @@ public class CommerceDiscountRulePersistenceImpl
 			finderCache, new Object[] {commerceDiscountId});
 	}
 
+	private UniquePersistenceFinder
+		<CommerceDiscountRule, NoSuchDiscountRuleException>
+			_uniquePersistenceFinderByERC_C;
+
+	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchDiscountRuleException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce discount rule
+	 * @throws NoSuchDiscountRuleException if a matching commerce discount rule could not be found
+	 */
+	@Override
+	public CommerceDiscountRule findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchDiscountRuleException {
+
+		return _uniquePersistenceFinderByERC_C.find(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
+	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce discount rule, or <code>null</code> if a matching commerce discount rule could not be found
+	 */
+	@Override
+	public CommerceDiscountRule fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache) {
+
+		return _uniquePersistenceFinderByERC_C.fetch(
+			finderCache, new Object[] {externalReferenceCode, companyId},
+			useFinderCache);
+	}
+
+	/**
+	 * Removes the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the commerce discount rule that was removed
+	 */
+	@Override
+	public CommerceDiscountRule removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws NoSuchDiscountRuleException {
+
+		CommerceDiscountRule commerceDiscountRule = findByERC_C(
+			externalReferenceCode, companyId);
+
+		return remove(commerceDiscountRule);
+	}
+
+	/**
+	 * Returns the number of commerce discount rules where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching commerce discount rules
+	 */
+	@Override
+	public int countByERC_C(String externalReferenceCode, long companyId) {
+		return _uniquePersistenceFinderByERC_C.count(
+			finderCache, new Object[] {externalReferenceCode, companyId});
+	}
+
 	public CommerceDiscountRulePersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -268,6 +348,72 @@ public class CommerceDiscountRulePersistenceImpl
 
 		CommerceDiscountRuleModelImpl commerceDiscountRuleModelImpl =
 			(CommerceDiscountRuleModelImpl)commerceDiscountRule;
+
+		if (Validator.isNull(commerceDiscountRule.getExternalReferenceCode())) {
+			commerceDiscountRule.setExternalReferenceCode(
+				String.valueOf(commerceDiscountRule.getPrimaryKey()));
+		}
+		else {
+			if (!Objects.equals(
+					commerceDiscountRuleModelImpl.getColumnOriginalValue(
+						"externalReferenceCode"),
+					commerceDiscountRule.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId = commerceDiscountRule.getCompanyId();
+
+					long groupId = 0;
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = commerceDiscountRule.getPrimaryKey();
+					}
+
+					try {
+						commerceDiscountRule.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								CommerceDiscountRule.class.getName(), classPK,
+								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
+								commerceDiscountRule.getExternalReferenceCode(),
+								null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
+
+			CommerceDiscountRule ercCommerceDiscountRule = fetchByERC_C(
+				commerceDiscountRule.getExternalReferenceCode(),
+				commerceDiscountRule.getCompanyId());
+
+			if (isNew) {
+				if (ercCommerceDiscountRule != null) {
+					throw new DuplicateCommerceDiscountRuleExternalReferenceCodeException(
+						"Duplicate commerce discount rule with external reference code " +
+							commerceDiscountRule.getExternalReferenceCode() +
+								" and company " +
+									commerceDiscountRule.getCompanyId());
+				}
+			}
+			else {
+				if ((ercCommerceDiscountRule != null) &&
+					(commerceDiscountRule.getCommerceDiscountRuleId() !=
+						ercCommerceDiscountRule.getCommerceDiscountRuleId())) {
+
+					throw new DuplicateCommerceDiscountRuleExternalReferenceCodeException(
+						"Duplicate commerce discount rule with external reference code " +
+							commerceDiscountRule.getExternalReferenceCode() +
+								" and company " +
+									commerceDiscountRule.getCompanyId());
+				}
+			}
+		}
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
@@ -411,6 +557,25 @@ public class CommerceDiscountRulePersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					CommerceDiscountRule::getCommerceDiscountId));
 
+		_uniquePersistenceFinderByERC_C = new UniquePersistenceFinder<>(
+			this,
+			createUniqueFinderPath(
+				FINDER_CLASS_NAME_ENTITY, "fetchByERC_C",
+				new String[] {String.class.getName(), Long.class.getName()},
+				new String[] {"externalReferenceCode", "companyId"}, 0, 1,
+				false,
+				convertNullFunction(
+					CommerceDiscountRule::getExternalReferenceCode),
+				CommerceDiscountRule::getCompanyId),
+			_SQL_SELECT_COMMERCEDISCOUNTRULE_WHERE, "",
+			new FinderColumn<>(
+				"commerceDiscountRule.", "externalReferenceCode",
+				FinderColumn.Type.STRING, "=", true, true,
+				CommerceDiscountRule::getExternalReferenceCode),
+			new FinderColumn<>(
+				"commerceDiscountRule.", "companyId", FinderColumn.Type.LONG,
+				"=", true, true, CommerceDiscountRule::getCompanyId));
+
 		CommerceDiscountRuleUtil.setPersistence(this);
 	}
 
@@ -474,4 +639,4 @@ public class CommerceDiscountRulePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1391692280
+// LIFERAY-SERVICE-BUILDER-HASH:4483150

@@ -401,6 +401,14 @@ public class CommerceDiscountOrderTypeRelLocalServiceUtil {
 			commerceDiscountOrderTypeRel);
 	}
 
+	public static CommerceDiscountOrderTypeRel updatePriority(
+			long commerceDiscountOrderTypeRelId, int priority)
+		throws PortalException {
+
+		return getService().updatePriority(
+			commerceDiscountOrderTypeRelId, priority);
+	}
+
 	public static CommerceDiscountOrderTypeRelLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -411,4 +419,4 @@ public class CommerceDiscountOrderTypeRelLocalServiceUtil {
 			CommerceDiscountOrderTypeRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2032357687
+// LIFERAY-SERVICE-BUILDER-HASH:1871731049

@@ -538,6 +538,18 @@ public class CommerceDiscountRelLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscountRel
+			updateTypeSettings(
+				long commerceDiscountRelId,
+				com.liferay.portal.kernel.util.UnicodeProperties
+					typeSettingsUnicodeProperties)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountRelLocalService.updateTypeSettings(
+			commerceDiscountRelId, typeSettingsUnicodeProperties);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _commerceDiscountRelLocalService.getBasePersistence();
 	}
@@ -557,4 +569,4 @@ public class CommerceDiscountRelLocalServiceWrapper
 	private CommerceDiscountRelLocalService _commerceDiscountRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1351545835
+// LIFERAY-SERVICE-BUILDER-HASH:-1983296535

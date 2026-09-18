@@ -29,6 +29,10 @@ public class CommerceDiscountRuleTable
 	public final Column<CommerceDiscountRuleTable, Long> mvccVersion =
 		createColumn(
 			"mvccVersion", Long.class, Types.BIGINT, Column.FLAG_NULLITY);
+	public final Column<CommerceDiscountRuleTable, String>
+		externalReferenceCode = createColumn(
+			"externalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CommerceDiscountRuleTable, Long>
 		commerceDiscountRuleId = createColumn(
 			"commerceDiscountRuleId", Long.class, Types.BIGINT,
@@ -64,4 +68,4 @@ public class CommerceDiscountRuleTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1078446127
+// LIFERAY-SERVICE-BUILDER-HASH:183382669

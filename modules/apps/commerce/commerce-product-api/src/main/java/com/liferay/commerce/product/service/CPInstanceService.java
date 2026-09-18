@@ -149,6 +149,11 @@ public interface CPInstanceService extends BaseService {
 			long cProductId, String cpInstanceUuid)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPInstance getOrAddEmptyCPInstance(
+			String externalReferenceCode, long cpDefinitionId, long groupId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -229,4 +234,4 @@ public interface CPInstanceService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1767716551
+// LIFERAY-SERVICE-BUILDER-HASH:-278010867

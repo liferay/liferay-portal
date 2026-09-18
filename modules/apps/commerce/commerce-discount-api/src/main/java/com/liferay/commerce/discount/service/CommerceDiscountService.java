@@ -176,6 +176,11 @@ public interface CommerceDiscountService extends BaseService {
 			long commercePricingClassId, String title)
 		throws PrincipalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceDiscount getOrAddEmptyCommerceDiscount(
+			String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -250,4 +255,4 @@ public interface CommerceDiscountService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:762811418
+// LIFERAY-SERVICE-BUILDER-HASH:414150375

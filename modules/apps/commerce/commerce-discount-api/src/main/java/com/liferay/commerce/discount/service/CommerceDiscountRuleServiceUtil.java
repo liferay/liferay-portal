@@ -50,6 +50,18 @@ public class CommerceDiscountRuleServiceUtil {
 			commerceDiscountId, name, type, typeSettings, serviceContext);
 	}
 
+	public static CommerceDiscountRule addOrUpdateCommerceDiscountRule(
+			String externalReferenceCode, long commerceDiscountRuleId,
+			long commerceDiscountId, String name, String type,
+			String typeSettings,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().addOrUpdateCommerceDiscountRule(
+			externalReferenceCode, commerceDiscountRuleId, commerceDiscountId,
+			name, type, typeSettings, serviceContext);
+	}
+
 	public static void deleteCommerceDiscountRule(long commerceDiscountRuleId)
 		throws PortalException {
 
@@ -137,4 +149,4 @@ public class CommerceDiscountRuleServiceUtil {
 			CommerceDiscountRuleService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:746872371
+// LIFERAY-SERVICE-BUILDER-HASH:447580640

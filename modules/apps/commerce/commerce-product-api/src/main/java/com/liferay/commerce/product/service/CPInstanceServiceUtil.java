@@ -204,6 +204,14 @@ public class CPInstanceServiceUtil {
 		return getService().getCProductInstance(cProductId, cpInstanceUuid);
 	}
 
+	public static CPInstance getOrAddEmptyCPInstance(
+			String externalReferenceCode, long cpDefinitionId, long groupId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPInstance(
+			externalReferenceCode, cpDefinitionId, groupId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -357,4 +365,4 @@ public class CPInstanceServiceUtil {
 		new Snapshot<>(CPInstanceServiceUtil.class, CPInstanceService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:341622076
+// LIFERAY-SERVICE-BUILDER-HASH:-594295841

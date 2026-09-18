@@ -80,6 +80,17 @@ public interface CommerceDiscountRuleLocalService
 			String typeSettings, ServiceContext serviceContext)
 		throws PortalException;
 
+	public CommerceDiscountRule addCommerceDiscountRule(
+			String externalReferenceCode, long commerceDiscountId, String name,
+			String type, String typeSettings, ServiceContext serviceContext)
+		throws PortalException;
+
+	public CommerceDiscountRule addOrUpdateCommerceDiscountRule(
+			String externalReferenceCode, long commerceDiscountRuleId,
+			long commerceDiscountId, String name, String type,
+			String typeSettings, ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Creates a new commerce discount rule with the primary key. Does not add the commerce discount rule to the database.
 	 *
@@ -216,6 +227,11 @@ public interface CommerceDiscountRuleLocalService
 		long commerceDiscountRuleId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceDiscountRule
+		fetchCommerceDiscountRuleByExternalReferenceCode(
+			String externalReferenceCode, long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -228,6 +244,11 @@ public interface CommerceDiscountRuleLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceDiscountRule getCommerceDiscountRule(
 			long commerceDiscountRuleId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceDiscountRule getCommerceDiscountRuleByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
 		throws PortalException;
 
 	/**
@@ -313,4 +334,4 @@ public interface CommerceDiscountRuleLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:780522322
+// LIFERAY-SERVICE-BUILDER-HASH:-312471019

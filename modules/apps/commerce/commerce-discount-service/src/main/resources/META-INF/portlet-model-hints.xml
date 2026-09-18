@@ -94,6 +94,7 @@
 	</model>
 	<model name="com.liferay.commerce.discount.model.CommerceDiscountRule">
 		<field name="mvccVersion" type="long" />
+		<field name="externalReferenceCode" type="String" />
 		<field name="commerceDiscountRuleId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />

@@ -330,5 +330,9 @@ public interface CommerceDiscountOrderTypeRelLocalService
 	public CommerceDiscountOrderTypeRel updateCommerceDiscountOrderTypeRel(
 		CommerceDiscountOrderTypeRel commerceDiscountOrderTypeRel);
 
+	public CommerceDiscountOrderTypeRel updatePriority(
+			long commerceDiscountOrderTypeRelId, int priority)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1096869370
+// LIFERAY-SERVICE-BUILDER-HASH:550114796

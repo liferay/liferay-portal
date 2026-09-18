@@ -96,6 +96,14 @@ public class CommerceOrderTypeServiceUtil {
 			className, classPK, active);
 	}
 
+	public static CommerceOrderType getOrAddEmptyCommerceOrderType(
+			String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCommerceOrderType(
+			externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -144,4 +152,4 @@ public class CommerceOrderTypeServiceUtil {
 			CommerceOrderTypeServiceUtil.class, CommerceOrderTypeService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-821993473
+// LIFERAY-SERVICE-BUILDER-HASH:822006380

@@ -64,12 +64,12 @@ public class CommerceDiscountRuleModelImpl
 	public static final String TABLE_NAME = "CommerceDiscountRule";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"mvccVersion", Types.BIGINT}, {"commerceDiscountRuleId", Types.BIGINT},
-		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
-		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"name", Types.VARCHAR},
-		{"commerceDiscountId", Types.BIGINT}, {"type_", Types.VARCHAR},
-		{"typeSettings", Types.CLOB}
+		{"mvccVersion", Types.BIGINT}, {"externalReferenceCode", Types.VARCHAR},
+		{"commerceDiscountRuleId", Types.BIGINT}, {"companyId", Types.BIGINT},
+		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
+		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
+		{"name", Types.VARCHAR}, {"commerceDiscountId", Types.BIGINT},
+		{"type_", Types.VARCHAR}, {"typeSettings", Types.CLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -77,6 +77,7 @@ public class CommerceDiscountRuleModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("commerceDiscountRuleId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
@@ -90,7 +91,7 @@ public class CommerceDiscountRuleModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceDiscountRule (mvccVersion LONG default 0 not null,commerceDiscountRuleId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,commerceDiscountId LONG,type_ VARCHAR(75) null,typeSettings TEXT null)";
+		"create table CommerceDiscountRule (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,commerceDiscountRuleId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,commerceDiscountId LONG,type_ VARCHAR(75) null,typeSettings TEXT null)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CommerceDiscountRule";
@@ -116,11 +117,23 @@ public class CommerceDiscountRuleModelImpl
 	public static final long COMMERCEDISCOUNTID_COLUMN_BITMASK = 1L;
 
 	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long COMPANYID_COLUMN_BITMASK = 2L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 4L;
+
+	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATEDATE_COLUMN_BITMASK = 2L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -235,6 +248,9 @@ public class CommerceDiscountRuleModelImpl
 			attributeGetterFunctions.put(
 				"mvccVersion", CommerceDiscountRule::getMvccVersion);
 			attributeGetterFunctions.put(
+				"externalReferenceCode",
+				CommerceDiscountRule::getExternalReferenceCode);
+			attributeGetterFunctions.put(
 				"commerceDiscountRuleId",
 				CommerceDiscountRule::getCommerceDiscountRuleId);
 			attributeGetterFunctions.put(
@@ -277,6 +293,10 @@ public class CommerceDiscountRuleModelImpl
 				"mvccVersion",
 				(BiConsumer<CommerceDiscountRule, Long>)
 					CommerceDiscountRule::setMvccVersion);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<CommerceDiscountRule, String>)
+					CommerceDiscountRule::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"commerceDiscountRuleId",
 				(BiConsumer<CommerceDiscountRule, Long>)
@@ -341,6 +361,35 @@ public class CommerceDiscountRuleModelImpl
 
 	@JSON
 	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
+	}
+
+	@JSON
+	@Override
 	public long getCommerceDiscountRuleId() {
 		return _commerceDiscountRuleId;
 	}
@@ -367,6 +416,16 @@ public class CommerceDiscountRuleModelImpl
 		}
 
 		_companyId = companyId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalCompanyId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
 	@JSON
@@ -600,6 +659,8 @@ public class CommerceDiscountRuleModelImpl
 			new CommerceDiscountRuleImpl();
 
 		commerceDiscountRuleImpl.setMvccVersion(getMvccVersion());
+		commerceDiscountRuleImpl.setExternalReferenceCode(
+			getExternalReferenceCode());
 		commerceDiscountRuleImpl.setCommerceDiscountRuleId(
 			getCommerceDiscountRuleId());
 		commerceDiscountRuleImpl.setCompanyId(getCompanyId());
@@ -624,6 +685,8 @@ public class CommerceDiscountRuleModelImpl
 
 		commerceDiscountRuleImpl.setMvccVersion(
 			this.<Long>getColumnOriginalValue("mvccVersion"));
+		commerceDiscountRuleImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		commerceDiscountRuleImpl.setCommerceDiscountRuleId(
 			this.<Long>getColumnOriginalValue("commerceDiscountRuleId"));
 		commerceDiscountRuleImpl.setCompanyId(
@@ -725,6 +788,18 @@ public class CommerceDiscountRuleModelImpl
 			new CommerceDiscountRuleCacheModel();
 
 		commerceDiscountRuleCacheModel.mvccVersion = getMvccVersion();
+
+		commerceDiscountRuleCacheModel.externalReferenceCode =
+			getExternalReferenceCode();
+
+		String externalReferenceCode =
+			commerceDiscountRuleCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			commerceDiscountRuleCacheModel.externalReferenceCode = null;
+		}
 
 		commerceDiscountRuleCacheModel.commerceDiscountRuleId =
 			getCommerceDiscountRuleId();
@@ -850,6 +925,7 @@ public class CommerceDiscountRuleModelImpl
 	}
 
 	private long _mvccVersion;
+	private String _externalReferenceCode;
 	private long _commerceDiscountRuleId;
 	private long _companyId;
 	private long _userId;
@@ -894,6 +970,8 @@ public class CommerceDiscountRuleModelImpl
 
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
+		_columnOriginalValues.put(
 			"commerceDiscountRuleId", _commerceDiscountRuleId);
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("userId", _userId);
@@ -929,25 +1007,27 @@ public class CommerceDiscountRuleModelImpl
 
 		columnBitmasks.put("mvccVersion", 1L);
 
-		columnBitmasks.put("commerceDiscountRuleId", 2L);
+		columnBitmasks.put("externalReferenceCode", 2L);
 
-		columnBitmasks.put("companyId", 4L);
+		columnBitmasks.put("commerceDiscountRuleId", 4L);
 
-		columnBitmasks.put("userId", 8L);
+		columnBitmasks.put("companyId", 8L);
 
-		columnBitmasks.put("userName", 16L);
+		columnBitmasks.put("userId", 16L);
 
-		columnBitmasks.put("createDate", 32L);
+		columnBitmasks.put("userName", 32L);
 
-		columnBitmasks.put("modifiedDate", 64L);
+		columnBitmasks.put("createDate", 64L);
 
-		columnBitmasks.put("name", 128L);
+		columnBitmasks.put("modifiedDate", 128L);
 
-		columnBitmasks.put("commerceDiscountId", 256L);
+		columnBitmasks.put("name", 256L);
 
-		columnBitmasks.put("type_", 512L);
+		columnBitmasks.put("commerceDiscountId", 512L);
 
-		columnBitmasks.put("typeSettings", 1024L);
+		columnBitmasks.put("type_", 1024L);
+
+		columnBitmasks.put("typeSettings", 2048L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -956,4 +1036,4 @@ public class CommerceDiscountRuleModelImpl
 	private CommerceDiscountRule _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1355453254
+// LIFERAY-SERVICE-BUILDER-HASH:-1708336668

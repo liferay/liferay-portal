@@ -92,6 +92,7 @@ create table CommerceDiscountRel (
 
 create table CommerceDiscountRule (
 	mvccVersion LONG default 0 not null,
+	externalReferenceCode VARCHAR(75) null,
 	commerceDiscountRuleId LONG not null primary key,
 	companyId LONG,
 	userId LONG,

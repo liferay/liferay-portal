@@ -8,6 +8,7 @@ package com.liferay.commerce.discount.model;
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.model.AuditedModel;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
 
@@ -28,8 +29,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface CommerceDiscountRuleModel
-	extends AuditedModel, BaseModel<CommerceDiscountRule>, MVCCModel,
-			ShardedModel {
+	extends AuditedModel, BaseModel<CommerceDiscountRule>,
+			ExternalReferenceCodeModel, MVCCModel, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -66,6 +67,23 @@ public interface CommerceDiscountRuleModel
 	 */
 	@Override
 	public void setMvccVersion(long mvccVersion);
+
+	/**
+	 * Returns the external reference code of this commerce discount rule.
+	 *
+	 * @return the external reference code of this commerce discount rule
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this commerce discount rule.
+	 *
+	 * @param externalReferenceCode the external reference code of this commerce discount rule
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the commerce discount rule ID of this commerce discount rule.
@@ -245,4 +263,4 @@ public interface CommerceDiscountRuleModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1451831705
+// LIFERAY-SERVICE-BUILDER-HASH:1150098105

@@ -54,6 +54,12 @@ public interface CommerceDiscountRuleService extends BaseService {
 			String typeSettings, ServiceContext serviceContext)
 		throws PortalException;
 
+	public CommerceDiscountRule addOrUpdateCommerceDiscountRule(
+			String externalReferenceCode, long commerceDiscountRuleId,
+			long commerceDiscountId, String name, String type,
+			String typeSettings, ServiceContext serviceContext)
+		throws PortalException;
+
 	public void deleteCommerceDiscountRule(long commerceDiscountRuleId)
 		throws PortalException;
 
@@ -104,4 +110,4 @@ public interface CommerceDiscountRuleService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1375582945
+// LIFERAY-SERVICE-BUILDER-HASH:1021485481

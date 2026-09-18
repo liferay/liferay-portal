@@ -205,6 +205,65 @@ public class CommerceDiscountRuleUtil {
 	}
 
 	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchDiscountRuleException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce discount rule
+	 * @throws NoSuchDiscountRuleException if a matching commerce discount rule could not be found
+	 */
+	public static CommerceDiscountRule findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws com.liferay.commerce.discount.exception.
+			NoSuchDiscountRuleException {
+
+		return getPersistence().findByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching commerce discount rule, or <code>null</code> if a matching commerce discount rule could not be found
+	 */
+	public static CommerceDiscountRule fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache) {
+
+		return getPersistence().fetchByERC_C(
+			externalReferenceCode, companyId, useFinderCache);
+	}
+
+	/**
+	 * Removes the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the commerce discount rule that was removed
+	 */
+	public static CommerceDiscountRule removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws com.liferay.commerce.discount.exception.
+			NoSuchDiscountRuleException {
+
+		return getPersistence().removeByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
+	 * Returns the number of commerce discount rules where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching commerce discount rules
+	 */
+	public static int countByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return getPersistence().countByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
 	 * Creates a new commerce discount rule with the primary key. Does not add the commerce discount rule to the database.
 	 *
 	 * @param commerceDiscountRuleId the primary key for the new commerce discount rule
@@ -259,6 +318,19 @@ public class CommerceDiscountRuleUtil {
 		long commerceDiscountRuleId) {
 
 		return getPersistence().fetchByPrimaryKey(commerceDiscountRuleId);
+	}
+
+	/**
+	 * Returns the commerce discount rule where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching commerce discount rule, or <code>null</code> if a matching commerce discount rule could not be found
+	 */
+	public static CommerceDiscountRule fetchByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return getPersistence().fetchByERC_C(externalReferenceCode, companyId);
 	}
 
 	/**
@@ -326,4 +398,4 @@ public class CommerceDiscountRuleUtil {
 	private static volatile CommerceDiscountRulePersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:394094192
+// LIFERAY-SERVICE-BUILDER-HASH:-1398705285
