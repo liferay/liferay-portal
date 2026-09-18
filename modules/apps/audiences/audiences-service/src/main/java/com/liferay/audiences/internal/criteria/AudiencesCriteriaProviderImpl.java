@@ -104,15 +104,13 @@ public class AudiencesCriteriaProviderImpl
 		List<AudiencesCriteria> audiencesCriterias, long companyId, String key,
 		String labelKey, Locale locale, int type) {
 
-		List<AudiencesCriteria.Option> options =
-			TransformUtil.transform(
-				_segmentsEntryLocalService.getSegmentsEntriesBySource(
-					companyId, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
-					new int[] {type}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null),
-				segmentsEntry -> new AudiencesCriteria.Option(
-					segmentsEntry.getName(locale),
-					segmentsEntry.getExternalReferenceCode()));
+		List<AudiencesCriteria.Option> options = TransformUtil.transform(
+			_segmentsEntryLocalService.getSegmentsEntriesBySource(
+				companyId, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+				new int[] {type}, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+			segmentsEntry -> new AudiencesCriteria.Option(
+				segmentsEntry.getName(locale),
+				segmentsEntry.getExternalReferenceCode()));
 
 		if (options.isEmpty()) {
 			return;
