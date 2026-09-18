@@ -85,10 +85,6 @@ public class ObjectRelationshipExtensionProviderTest {
 
 		_objectEntry = _addObjectEntry(_OBJECT_FIELD_VALUE);
 
-		_userSystemObjectDefinitionManager =
-			_systemObjectDefinitionManagerRegistry.
-				getSystemObjectDefinitionManager("User");
-
 		_user = TestPropsValues.getUser();
 
 		_objectRelationship = _addObjectRelationship(_objectDefinition);
@@ -237,10 +233,14 @@ public class ObjectRelationshipExtensionProviderTest {
 			ObjectDefinition objectDefinition)
 		throws Exception {
 
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			_systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager("User");
+
 		ObjectDefinition userSystemObjectDefinition =
 			_objectDefinitionLocalService.fetchSystemObjectDefinition(
 				TestPropsValues.getCompanyId(),
-				_userSystemObjectDefinitionManager.getName());
+				systemObjectDefinitionManager.getName());
 
 		return ObjectRelationshipLocalServiceUtil.addObjectRelationship(
 			null, TestPropsValues.getUserId(),
@@ -500,6 +500,5 @@ public class ObjectRelationshipExtensionProviderTest {
 		_systemObjectDefinitionManagerRegistry;
 
 	private User _user;
-	private SystemObjectDefinitionManager _userSystemObjectDefinitionManager;
 
 }
