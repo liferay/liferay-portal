@@ -123,9 +123,10 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 			CPDefinition cpDefinition = _getCPDefinition(actionRequest);
 
 			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-				if ((cpDefinition != null) &&
-					!ParamUtil.getBoolean(actionRequest, "convertToDraft")) {
+				boolean convertToDraft = ParamUtil.getBoolean(
+					actionRequest, "convertToDraft");
 
+				if ((cpDefinition != null) && !convertToDraft) {
 					cpDefinition = _cpDefinitionService.copyCPDefinition(
 						cpDefinition.getCPDefinitionId(),
 						cpDefinition.getGroupId(),
@@ -137,6 +138,15 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 
 				cpDefinition = TransactionInvokerUtil.invoke(
 					_transactionConfig, cpDefinitionCallable);
+
+				if (convertToDraft) {
+					cpDefinition = _cpDefinitionService.updateStatus(
+						cpDefinition.getCPDefinitionId(),
+						WorkflowConstants.STATUS_DRAFT,
+						ServiceContextFactory.getInstance(
+							CPDefinition.class.getName(), actionRequest),
+						null);
+				}
 
 				String redirect = getSaveAndContinueRedirect(
 					actionRequest, cpDefinition.getCPDefinitionId(),
