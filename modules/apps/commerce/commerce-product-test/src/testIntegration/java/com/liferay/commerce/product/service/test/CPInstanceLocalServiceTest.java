@@ -696,7 +696,58 @@ public class CPInstanceLocalServiceTest {
 
 	@Test
 	public void testUpdateCPInstance() throws Exception {
-		_testUpdateCPInstanceWithReplacement();
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		cpInstance1.setReplacementCPInstanceUuid(
+			cpInstance2.getCPInstanceUuid());
+
+		CPDefinition cpDefinition = cpInstance2.getCPDefinition();
+
+		cpInstance1.setReplacementCProductId(cpDefinition.getCProductId());
+
+		cpInstance1 = _cpInstanceLocalService.updateCPInstance(cpInstance1);
+
+		CPInstance cpInstance3 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		cpInstance2.setReplacementCPInstanceUuid(
+			cpInstance3.getCPInstanceUuid());
+
+		cpDefinition = cpInstance3.getCPDefinition();
+
+		cpInstance2.setReplacementCProductId(cpDefinition.getCProductId());
+
+		_cpInstanceLocalService.updateCPInstance(cpInstance2);
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+		cpDefinition = cpInstance1.getCPDefinition();
+
+		try {
+			_cpInstanceLocalService.updateCPInstance(
+				cpInstance3.getExternalReferenceCode(),
+				cpInstance3.getCPInstanceId(), cpInstance3.getSku(), null, null,
+				false, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
+				BigDecimal.ZERO, false, calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, false,
+				false, 0, null, null, 0, false, 0, null, null, 0, null, true,
+				cpInstance1.getCPInstanceUuid(), cpDefinition.getCProductId(),
+				calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
+				calendar.get(Calendar.YEAR),
+				ServiceContextTestUtil.getServiceContext(
+					cpInstance3.getGroupId()));
+
+			Assert.fail();
+		}
+		catch (CPInstanceReplacementCPInstanceUuidException
+					cpInstanceReplacementCPInstanceUuidException) {
+
+			Assert.assertNotNull(cpInstanceReplacementCPInstanceUuidException);
+		}
 	}
 
 	@Rule
@@ -796,61 +847,6 @@ public class CPInstanceLocalServiceTest {
 				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
 				cpInstanceCPDefinitionOptionValueRel.
 					getCPDefinitionOptionValueRelId());
-		}
-	}
-
-	private void _testUpdateCPInstanceWithReplacement() throws Exception {
-		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
-			_commerceCatalog.getGroupId());
-		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
-			_commerceCatalog.getGroupId());
-
-		cpInstance1.setReplacementCPInstanceUuid(
-			cpInstance2.getCPInstanceUuid());
-
-		CPDefinition cpDefinition = cpInstance2.getCPDefinition();
-
-		cpInstance1.setReplacementCProductId(cpDefinition.getCProductId());
-
-		cpInstance1 = _cpInstanceLocalService.updateCPInstance(cpInstance1);
-
-		CPInstance cpInstance3 = CPTestUtil.addCPInstanceFromCatalog(
-			_commerceCatalog.getGroupId());
-
-		cpInstance2.setReplacementCPInstanceUuid(
-			cpInstance3.getCPInstanceUuid());
-
-		cpDefinition = cpInstance3.getCPDefinition();
-
-		cpInstance2.setReplacementCProductId(cpDefinition.getCProductId());
-
-		_cpInstanceLocalService.updateCPInstance(cpInstance2);
-
-		Calendar calendar = CalendarFactoryUtil.getCalendar();
-		cpDefinition = cpInstance1.getCPDefinition();
-
-		try {
-			_cpInstanceLocalService.updateCPInstance(
-				cpInstance3.getExternalReferenceCode(),
-				cpInstance3.getCPInstanceId(), cpInstance3.getSku(), null, null,
-				false, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
-				BigDecimal.ZERO, false, calendar.get(Calendar.MONTH),
-				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
-				calendar.get(Calendar.HOUR_OF_DAY),
-				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, false,
-				false, 0, null, null, 0, false, 0, null, null, 0, null, true,
-				cpInstance1.getCPInstanceUuid(), cpDefinition.getCProductId(),
-				calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
-				calendar.get(Calendar.YEAR),
-				ServiceContextTestUtil.getServiceContext(
-					cpInstance3.getGroupId()));
-
-			Assert.fail();
-		}
-		catch (CPInstanceReplacementCPInstanceUuidException
-					cpInstanceReplacementCPInstanceUuidException) {
-
-			Assert.assertNotNull(cpInstanceReplacementCPInstanceUuidException);
 		}
 	}
 
