@@ -58,7 +58,8 @@ public class IpstackSXPParameterContributor implements SXPParameterContributor {
 		}
 
 		JSONObject jsonObject = IpstackWebCacheItem.get(
-			exceptionListener, ipAddress, ipstackConfiguration);
+			searchContext.getCompanyId(), exceptionListener, ipAddress,
+			ipstackConfiguration);
 
 		if (jsonObject.length() == 0) {
 			return;

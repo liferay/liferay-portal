@@ -34,6 +34,7 @@ dependencies {
 	compileOnly project(":apps:portal-search:portal-search-rest-api")
 	compileOnly project(":apps:portal-search:portal-search-spi")
 	compileOnly project(":apps:portal-search:portal-search-web-api")
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")

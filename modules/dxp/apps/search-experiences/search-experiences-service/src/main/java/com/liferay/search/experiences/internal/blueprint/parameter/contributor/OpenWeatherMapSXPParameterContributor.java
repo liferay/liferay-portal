@@ -63,7 +63,7 @@ public class OpenWeatherMapSXPParameterContributor
 		}
 
 		JSONObject jsonObject = IpstackWebCacheItem.get(
-			exceptionListener, ipAddress,
+			searchContext.getCompanyId(), exceptionListener, ipAddress,
 			_getIpstackConfiguration(searchContext.getCompanyId()));
 
 		if (jsonObject.length() == 0) {
@@ -74,8 +74,8 @@ public class OpenWeatherMapSXPParameterContributor
 		String longitude = jsonObject.getString("longitude");
 
 		jsonObject = OpenWeatherMapWebCacheItem.get(
-			exceptionListener, latitude, longitude,
-			openWeatherMapConfiguration);
+			searchContext.getCompanyId(), exceptionListener, latitude,
+			longitude, openWeatherMapConfiguration);
 
 		if (jsonObject.length() == 0) {
 			return;
