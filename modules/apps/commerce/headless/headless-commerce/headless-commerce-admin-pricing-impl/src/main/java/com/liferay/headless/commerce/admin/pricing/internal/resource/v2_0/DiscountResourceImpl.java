@@ -22,6 +22,7 @@ import com.liferay.commerce.discount.service.CommerceDiscountOrderTypeRelService
 import com.liferay.commerce.discount.service.CommerceDiscountRelService;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
 import com.liferay.commerce.discount.service.CommerceDiscountService;
+import com.liferay.commerce.pricing.constants.CommercePricingPortletKeys;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -31,6 +32,8 @@ import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.commerce.service.CommerceOrderTypeService;
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.Discount;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccount;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountAccountGroup;
@@ -72,6 +75,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.math.BigDecimal;
 
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -83,9 +87,12 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v2_0/discount.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = DiscountResource.class
 )
-public class DiscountResourceImpl extends BaseDiscountResourceImpl {
+public class DiscountResourceImpl
+	extends BaseDiscountResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<Discount> {
 
 	@Override
 	public void deleteDiscount(Long id) throws Exception {
@@ -163,6 +170,54 @@ public class DiscountResourceImpl extends BaseDiscountResourceImpl {
 		throws Exception {
 
 		return _entityModel;
+	}
+
+	@Override
+	public ExportImportDescriptor<CommerceDiscount>
+		getExportImportDescriptor() {
+
+		return new ExportImportDescriptor<>() {
+
+			@Override
+			public String getKey() {
+				return DiscountResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "discounts";
+			}
+
+			@Override
+			public Class<CommerceDiscount> getModelClass() {
+				return CommerceDiscount.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return List.of(
+					"discountAccountGroups", "discountAccounts",
+					"discountCategories", "discountChannels",
+					"discountOrderTypes", "discountProductGroups",
+					"discountProducts", "discountRules", "discountSkus");
+			}
+
+			@Override
+			public String getPortletId() {
+				return CommercePricingPortletKeys.COMMERCE_DISCOUNT;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_PRICING;
+			}
+
+		};
 	}
 
 	@Override

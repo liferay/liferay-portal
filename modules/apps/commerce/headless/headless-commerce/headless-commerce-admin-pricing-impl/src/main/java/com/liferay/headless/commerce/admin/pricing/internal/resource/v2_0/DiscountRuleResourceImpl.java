@@ -10,6 +10,7 @@ import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleService;
 import com.liferay.commerce.discount.service.CommerceDiscountService;
+import com.liferay.headless.commerce.admin.pricing.dto.v2_0.Discount;
 import com.liferay.headless.commerce.admin.pricing.dto.v2_0.DiscountRule;
 import com.liferay.headless.commerce.admin.pricing.internal.util.v2_0.DiscountRuleUtil;
 import com.liferay.headless.commerce.admin.pricing.resource.v2_0.DiscountRuleResource;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
+import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -37,7 +39,8 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v2_0/discount-rule.properties",
-	scope = ServiceScope.PROTOTYPE, service = DiscountRuleResource.class
+	property = "nested.field.support=true", scope = ServiceScope.PROTOTYPE,
+	service = DiscountRuleResource.class
 )
 public class DiscountRuleResourceImpl extends BaseDiscountRuleResourceImpl {
 
@@ -77,6 +80,7 @@ public class DiscountRuleResourceImpl extends BaseDiscountRuleResourceImpl {
 			_toDiscountRules(commerceDiscountRules), pagination, totalCount);
 	}
 
+	@NestedField(parentClass = Discount.class, value = "discountRules")
 	@Override
 	public Page<DiscountRule> getDiscountIdDiscountRulesPage(
 			Long id, String search, Filter filter, Pagination pagination,

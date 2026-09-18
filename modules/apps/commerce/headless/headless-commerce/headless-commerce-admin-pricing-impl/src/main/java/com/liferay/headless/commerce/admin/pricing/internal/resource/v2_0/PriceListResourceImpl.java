@@ -162,7 +162,11 @@ public class PriceListResourceImpl
 
 			@Override
 			public List<String> getNestedFields() {
-				return List.of("creator", "priceEntries.tierPrices");
+				return List.of(
+					"creator", "priceEntries.tierPrices",
+					"priceListAccountGroups", "priceListAccounts",
+					"priceListChannels", "priceListDiscounts",
+					"priceListOrderTypes", "priceModifiers");
 			}
 
 			@Override
