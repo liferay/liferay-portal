@@ -13,6 +13,9 @@ images:
     helmKubectl:
         repository: dtzar/helm-kubectl
         tag: 4.1.1
+    postgres:
+        repository: postgres
+        tag: 18-alpine
 liferayInfrastructure:
     waitTimeoutSeconds: 3600
 liferayWorkload:
@@ -25,3 +28,5 @@ resources:
         requests:
             cpu: 100m
             memory: 128Mi
+restoreSanitization:
+    timeoutSeconds: 1800

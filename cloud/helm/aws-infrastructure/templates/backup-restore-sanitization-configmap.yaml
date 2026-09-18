@@ -1,0 +1,16 @@
+{{- if and .Values.backup.enabled .Values.backup.restore.sanitizationScripts -}}
+apiVersion: v1
+data:
+    {{- range $name, $sql := .Values.backup.restore.sanitizationScripts }}
+    {{- if $sql }}
+    {{ $name }}.sql: |
+        {{- $sql | nindent 8 }}
+    {{- end }}
+    {{- end }}
+kind: ConfigMap
+metadata:
+    labels:
+        component: backup-restore-platform
+    name: backup-restore-sanitization
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

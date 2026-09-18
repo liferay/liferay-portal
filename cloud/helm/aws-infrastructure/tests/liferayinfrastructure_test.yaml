@@ -27,6 +27,19 @@ tests:
             enabled: false
     -   asserts:
             -   equal:
+                    path: spec.backup.enabled
+                    value: true
+            -   equal:
+                    path: spec.backup.rules[0].ruleName
+                    value: daily-backups
+            -   notExists:
+                    path: spec.backup.restore
+        it: Omits the restore sanitization scripts from the spec
+        set:
+            backup.enabled: true
+            backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';
+    -   asserts:
+            -   equal:
                     path: spec.commonTags.EnvironmentId
                     value: env-123
             -   equal:
