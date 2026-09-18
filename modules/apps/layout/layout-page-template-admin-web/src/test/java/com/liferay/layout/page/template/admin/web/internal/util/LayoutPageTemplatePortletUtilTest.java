@@ -42,10 +42,12 @@ public class LayoutPageTemplatePortletUtilTest {
 	public void testFetchLayoutPageTemplateCollection() {
 		_testFetchLayoutPageTemplateCollection();
 		_testFetchLayoutPageTemplateCollectionWithExternalReferenceCode();
+		_testFetchLayoutPageTemplateCollectionWithOtherGroupId();
 		_testFetchLayoutPageTemplateCollectionWithoutParameters();
 	}
 
 	private void _testFetchLayoutPageTemplateCollection() {
+		long groupId = RandomTestUtil.randomLong();
 		long layoutPageTemplateCollectionId = RandomTestUtil.randomLong();
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -57,6 +59,12 @@ public class LayoutPageTemplatePortletUtilTest {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
 			Mockito.mock(LayoutPageTemplateCollection.class);
+
+		Mockito.when(
+			layoutPageTemplateCollection.getGroupId()
+		).thenReturn(
+			groupId
+		);
 
 		_layoutPageTemplateCollectionLocalServiceUtilMockedStatic.when(
 			() ->
@@ -70,7 +78,7 @@ public class LayoutPageTemplatePortletUtilTest {
 		Assert.assertSame(
 			layoutPageTemplateCollection,
 			LayoutPageTemplatePortletUtil.fetchLayoutPageTemplateCollection(
-				mockHttpServletRequest, RandomTestUtil.randomLong()));
+				mockHttpServletRequest, groupId));
 	}
 
 	private void _testFetchLayoutPageTemplateCollectionWithExternalReferenceCode() {
@@ -100,6 +108,39 @@ public class LayoutPageTemplatePortletUtilTest {
 			layoutPageTemplateCollection,
 			LayoutPageTemplatePortletUtil.fetchLayoutPageTemplateCollection(
 				mockHttpServletRequest, groupId));
+	}
+
+	private void _testFetchLayoutPageTemplateCollectionWithOtherGroupId() {
+		long layoutPageTemplateCollectionId = RandomTestUtil.randomLong();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameter(
+			"layoutPageTemplateCollectionId",
+			String.valueOf(layoutPageTemplateCollectionId));
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			Mockito.mock(LayoutPageTemplateCollection.class);
+
+		Mockito.when(
+			layoutPageTemplateCollection.getGroupId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		_layoutPageTemplateCollectionLocalServiceUtilMockedStatic.when(
+			() ->
+				LayoutPageTemplateCollectionLocalServiceUtil.
+					fetchLayoutPageTemplateCollection(
+						layoutPageTemplateCollectionId)
+		).thenReturn(
+			layoutPageTemplateCollection
+		);
+
+		Assert.assertNull(
+			LayoutPageTemplatePortletUtil.fetchLayoutPageTemplateCollection(
+				mockHttpServletRequest, RandomTestUtil.randomLong()));
 	}
 
 	private void _testFetchLayoutPageTemplateCollectionWithoutParameters() {
