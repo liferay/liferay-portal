@@ -21,12 +21,27 @@ components:
                     description:
                         The admin's first name.
                     type: string
+                middleName:
+                    description:
+                        The admin's middle name.
+                    type: string
+                password:
+                    description:
+                        The admin's password.
+                    format: password
+                    type: string
+                    writeOnly: true
+                screenName:
+                    description:
+                        The admin's screen name.
+                    type: string
             type: object
         PortalInstance:
             # @review
             properties:
                 active:
-                    readOnly: true
+                    description:
+                        whether the portal instance is active.
                     type: boolean
                 admin:
                     $ref: "#/components/schemas/Admin"
@@ -43,6 +58,11 @@ components:
                     description:
                         domain used for email authentication.
                     type: string
+                maxUsers:
+                    description:
+                        maximum number of users, or 0 for unlimited.
+                    format: int32
+                    type: integer
                 portalInstanceId:
                     description:
                         public unique key (corresponds to company's webId field)
@@ -66,6 +86,10 @@ components:
                     description:
                         The name of the new portal instance.
                     type: string
+                sourcePortalInstanceId:
+                    description:
+                        The web ID of the portal instance to copy.
+                    type: string
                 virtualHost:
                     description:
                         The virtual host of the new portal instance.
@@ -76,22 +100,31 @@ components:
                     type: string
             required:
                 -   name
+                -   sourcePortalInstanceId
                 -   virtualHost
                 -   webId
             type: object
         PortalInstanceExport:
             description:
-                The result of exporting a portal instance.
+                The export of a portal instance.
             properties:
                 exportedPartitionName:
                     description:
                         The name of the schema created by the export (e.g., lexported_12345).
+                    readOnly: true
+                    type: string
+                portalInstanceId:
+                    description:
+                        The web ID of the portal instance to export.
                     type: string
                 sourceCompanyId:
                     description:
                         The ID of the source company that was exported (e.g., 12345).
                     format: int64
+                    readOnly: true
                     type: integer
+            required:
+                -   portalInstanceId
             type: object
         PortalInstanceImport:
             description:
@@ -181,6 +214,56 @@ paths:
                         default response
             # @review
             tags: ["PortalInstance"]
+    /portal-instances/copy:
+        post:
+            description:
+                Copies the portal instance. Through POST /portal-instances/copy/batch the same operation runs asynchronously; poll the returned import task.
+            operationId: postPortalInstanceCopy
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceCopy"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceCopy"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstance"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstance"
+                    description:
+                        The copied portal instance.
+            tags: ["PortalInstanceCopy"]
+    /portal-instances/export:
+        post:
+            description:
+                Exports the portal instance. Through POST /portal-instances/export/batch the same operation runs asynchronously; poll the returned import task.
+            operationId: postPortalInstanceExport
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceExport"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PortalInstanceExport"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstanceExport"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PortalInstanceExport"
+                    description:
+                        The result of exporting the portal instance.
+            tags: ["PortalInstanceExport"]
     /portal-instances/import:
         post:
             description:
@@ -205,7 +288,7 @@ paths:
                                 $ref: "#/components/schemas/PortalInstance"
                     description:
                         The imported portal instance.
-            tags: ["PortalInstance"]
+            tags: ["PortalInstanceImport"]
     /portal-instances/{portalInstanceId}:
         delete:
             description:
@@ -300,37 +383,6 @@ paths:
                     description:
                         default response
             tags: ["PortalInstance"]
-    /portal-instances/{portalInstanceId}/copy:
-        post:
-            description:
-                Copies the portal instance
-            operationId: postPortalInstanceCopy
-            parameters:
-                -   in: path
-                    name: portalInstanceId
-                    required: true
-                    schema:
-                        type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/PortalInstanceCopy"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/PortalInstanceCopy"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/PortalInstance"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/PortalInstance"
-                    description:
-                        The copied portal instance.
-            tags: ["PortalInstance"]
     /portal-instances/{portalInstanceId}/deactivate:
         # @review
         put:
@@ -350,27 +402,4 @@ paths:
                         application/xml: {}
                     description:
                         default response
-            tags: ["PortalInstance"]
-    /portal-instances/{portalInstanceId}/export:
-        post:
-            description:
-                Exports the portal instance
-            operationId: postPortalInstanceExport
-            parameters:
-                -   in: path
-                    name: portalInstanceId
-                    required: true
-                    schema:
-                        type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/PortalInstanceExport"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/PortalInstanceExport"
-                    description:
-                        The result of exporting the portal instance.
             tags: ["PortalInstance"]
