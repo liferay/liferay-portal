@@ -23,26 +23,29 @@ function applyCustomFieldOdataFormat(key: string) {
 }
 
 function createOdataFilter(filters: Array<string>): string {
-	return filters.map((filter: string) => `(${filter})`).join(' and ');
+	return filters
+		.filter((filter: string) => Boolean(filter))
+		.map((filter: string) => `(${filter})`)
+		.join(' and ');
 }
 
 function getFiltersString(
 	odataFiltersStrings: Array<any>,
 	providedFilters: string | null
 ): string {
+	const odataFilter = createOdataFilter(odataFiltersStrings);
+
 	let filtersString = '';
 
 	if (providedFilters) {
 		filtersString += providedFilters;
 	}
 
-	if (providedFilters && odataFiltersStrings.length) {
+	if (providedFilters && odataFilter) {
 		filtersString += ' and ';
 	}
 
-	if (odataFiltersStrings.length) {
-		filtersString += createOdataFilter(odataFiltersStrings);
-	}
+	filtersString += odataFilter;
 
 	return filtersString;
 }
@@ -74,11 +77,13 @@ export async function loadData({
 
 	url.searchParams.delete('filter');
 
-	if (providedFilters || odataFiltersStrings.length) {
-		url.searchParams.append(
-			'filter',
-			getFiltersString(odataFiltersStrings, providedFilters)
-		);
+	const filtersString = getFiltersString(
+		odataFiltersStrings,
+		providedFilters
+	);
+
+	if (filtersString) {
+		url.searchParams.append('filter', filtersString);
 	}
 
 	if (Liferay.ThemeDisplay.isImpersonated()) {
