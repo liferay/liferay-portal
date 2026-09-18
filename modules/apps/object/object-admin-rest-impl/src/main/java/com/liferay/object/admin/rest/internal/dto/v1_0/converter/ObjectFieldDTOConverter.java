@@ -127,14 +127,6 @@ public class ObjectFieldDTOConverter
 						return finalObjectDefinition1.
 							getExternalReferenceCode();
 					});
-				setObjectDefinitionModifiable1(
-					() -> {
-						if (finalObjectDefinition1 == null) {
-							return null;
-						}
-
-						return finalObjectDefinition1.isModifiable();
-					});
 				setObjectDefinitionScope1(
 					() -> {
 						if (finalObjectDefinition1 == null) {
