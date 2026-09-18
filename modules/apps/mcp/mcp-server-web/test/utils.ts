@@ -9,7 +9,7 @@ import {
 	buildToolWaves,
 	filterDataMaskTree,
 	getAssignedToolIds,
-	getEligibleToolIds,
+	getAvailableToolSets,
 	getSelectedDataMaskExternalReferenceCodes,
 	getSelectedTools,
 	isSystemMask,
@@ -23,6 +23,7 @@ import type {
 	DataMask,
 	DataMaskTypeKey,
 	ProfileTool,
+	ToolSet,
 } from '../src/main/resources/META-INF/resources/js/types';
 
 function createDataMask(
@@ -45,6 +46,10 @@ function createProfileTool(toolSetName: string, toolName: string): ProfileTool {
 		toolName,
 		toolSetName,
 	};
+}
+
+function createToolSets(toolSetNames: string[]): ToolSet[] {
+	return toolSetNames.map((toolSetName) => ({name: toolSetName}));
 }
 
 function createTools(toolNames: string[]) {
@@ -240,7 +245,7 @@ describe('isSystemMask', () => {
 });
 
 describe('buildToolChildren', () => {
-	it('flags the tools the profile already carries as assigned', () => {
+	it('omits the tools the profile already carries', () => {
 		expect(
 			buildToolChildren(
 				'user-management',
@@ -249,16 +254,32 @@ describe('buildToolChildren', () => {
 			)
 		).toEqual([
 			{
-				assigned: true,
-				id: 'user-management/getUserAccount',
-				name: 'getUserAccount',
-			},
-			{
-				assigned: false,
 				id: 'user-management/createUserAccount',
 				name: 'createUserAccount',
 			},
 		]);
+	});
+
+	it('keeps a tool the profile carries under another tool set', () => {
+		expect(
+			buildToolChildren(
+				'user-management',
+				createTools(['getUserAccount']),
+				[createProfileTool('organizations', 'getUserAccount')]
+			)
+		).toEqual([
+			{id: 'user-management/getUserAccount', name: 'getUserAccount'},
+		]);
+	});
+
+	it('returns nothing when the profile carries every tool', () => {
+		expect(
+			buildToolChildren(
+				'user-management',
+				createTools(['getUserAccount']),
+				[createProfileTool('user-management', 'getUserAccount')]
+			)
+		).toEqual([]);
 	});
 });
 
@@ -316,29 +337,36 @@ describe('getAssignedToolIds', () => {
 	});
 });
 
-describe('getEligibleToolIds', () => {
-	it('keeps only the ids of the tools the profile does not carry yet', () => {
+describe('getAvailableToolSets', () => {
+	const toolSets = createToolSets(['user-management', 'organizations']);
+
+	it('omits a tool set whose every tool the profile carries', () => {
 		expect(
-			getEligibleToolIds(
-				buildToolChildren(
-					'user-management',
-					createTools(['getUserAccount', 'createUserAccount']),
-					[createProfileTool('user-management', 'getUserAccount')]
-				)
+			getAvailableToolSets(
+				toolSets,
+				[createProfileTool('user-management', 'getUserAccount')],
+				new Map([['user-management', createTools(['getUserAccount'])]])
 			)
-		).toEqual(['user-management/createUserAccount']);
+		).toEqual(createToolSets(['organizations']));
 	});
 
-	it('returns nothing when every tool is already assigned', () => {
+	it('keeps a tool set with a tool left to add', () => {
 		expect(
-			getEligibleToolIds(
-				buildToolChildren(
-					'user-management',
-					createTools(['getUserAccount']),
-					[createProfileTool('user-management', 'getUserAccount')]
-				)
+			getAvailableToolSets(
+				toolSets,
+				[createProfileTool('user-management', 'getUserAccount')],
+				new Map([
+					[
+						'user-management',
+						createTools(['getUserAccount', 'createUserAccount']),
+					],
+				])
 			)
-		).toEqual([]);
+		).toEqual(toolSets);
+	});
+
+	it('keeps a tool set whose tools were not read', () => {
+		expect(getAvailableToolSets(toolSets, [], new Map())).toEqual(toolSets);
 	});
 });
 
