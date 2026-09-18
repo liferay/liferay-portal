@@ -128,7 +128,6 @@ export default function AddChildDropdown({
 					},
 				]}
 				menuElementAttrs={{className: 'dropdown-menu-cms'}}
-				menuHeight="auto"
 				trigger={
 					<ClayButtonWithIcon
 						aria-label={Liferay.Language.get('add-field')}
