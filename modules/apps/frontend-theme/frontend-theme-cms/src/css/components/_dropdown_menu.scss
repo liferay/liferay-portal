@@ -34,6 +34,11 @@
 		padding-left: 3rem;
 	}
 
+	.dropdown-item-cms-success .dropdown-item-indicator-start {
+		background-color: $success-l2;
+		color: $teal-l1;
+	}
+
 	.dropdown-item-cms-warning .dropdown-item-indicator-start {
 		background-color: $warning-l2;
 		color: $orange-l1;

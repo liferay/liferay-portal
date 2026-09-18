@@ -5,7 +5,7 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
-import React from 'react';
+import React, {useRef, useState} from 'react';
 
 import buildLocalizedValue from '../../common/utils/buildLocalizedValue';
 import {useCache} from '../contexts/CacheContext';
@@ -25,6 +25,8 @@ import getRandomName from '../utils/getRandomName';
 import getUuid from '../utils/getUuid';
 import handleAddGroup from '../utils/handleAddGroup';
 import openReferencedStructureModal from '../utils/openReferencedStructureModal';
+
+const MENU_SPACING = 16;
 
 type Item = {
 	className?: string;
@@ -52,6 +54,11 @@ export default function AddChildDropdown({
 
 	const {data: objectDefinitions, status} = useCache('object-definitions');
 
+	const [maxHeight, setMaxHeight] = useState<number>();
+	const [search, setSearch] = useState('');
+
+	const triggerRef = useRef<HTMLButtonElement | null>(null);
+
 	const addField = (type: Field['type']) =>
 		dispatch({
 			field: getDefaultField({
@@ -77,34 +84,33 @@ export default function AddChildDropdown({
 		});
 
 	return (
-		<>
-			<ClayDropDownWithItems
-				items={[
-					...FIELD_TYPES.map(
-						(type): Item => ({
-							label: FIELD_TYPE_LABEL[type],
-							onClick: () => addField(type),
-							symbolLeft: FIELD_TYPE_ICON[type],
-						})
-					),
-					{type: 'divider'},
-					...(Liferay.FeatureFlags['LPD-96666']
-						? [
-								{
-									label: Liferay.Language.get('group'),
-									onClick: () =>
-										handleAddGroup({
-											dispatch,
-											parent:
-												parentUuid ?? structure.uuid,
-											publishedChildren,
-											structure,
-											uuids: [],
-										}),
-									symbolLeft: 'fieldset',
-								},
-							]
-						: []),
+		<ClayDropDownWithItems
+			items={[
+				Liferay.FeatureFlags['LPD-96666']
+					? [
+							{
+								className: 'dropdown-item-cms-success',
+								label: Liferay.Language.get('group'),
+								onClick: () =>
+									handleAddGroup({
+										dispatch,
+										parent: parentUuid ?? structure.uuid,
+										publishedChildren,
+										structure,
+										uuids: [],
+									}),
+								symbolLeft: 'fieldset',
+							},
+						]
+					: [],
+				FIELD_TYPES.map(
+					(type): Item => ({
+						label: FIELD_TYPE_LABEL[type],
+						onClick: () => addField(type),
+						symbolLeft: FIELD_TYPE_ICON[type],
+					})
+				),
+				[
 					{
 						className: 'dropdown-item-cms-warning',
 						label: Liferay.Language.get('select-related-content'),
@@ -126,20 +132,58 @@ export default function AddChildDropdown({
 							}),
 						symbolLeft: 'edit-layout',
 					},
-				]}
-				menuElementAttrs={{className: 'dropdown-menu-cms'}}
-				trigger={
-					<ClayButtonWithIcon
-						aria-label={Liferay.Language.get('add-field')}
-						className={className}
-						displayType={displayType}
-						size="sm"
-						symbol="plus"
-						title={Liferay.Language.get('add-field')}
-						{...triggerProps}
-					/>
+				],
+			]
+				.map((section) =>
+					section.filter(({label}) =>
+						label.toLowerCase().includes(search.toLowerCase())
+					)
+				)
+				.filter((section) => section.length)
+				.flatMap((section, index) =>
+					index ? [{type: 'divider' as const}, ...section] : section
+				)}
+			menuElementAttrs={{
+				className:
+					'dropdown-menu-cms structure-builder__add-child-menu',
+				style: {maxHeight},
+			}}
+			onActiveChange={(active) => {
+				if (!active) {
+					setSearch('');
+
+					return;
 				}
-			/>
-		</>
+
+				if (triggerRef.current) {
+					setMaxHeight(
+						window.innerHeight -
+							triggerRef.current.getBoundingClientRect().bottom -
+							MENU_SPACING
+					);
+				}
+			}}
+			onSearchValueChange={setSearch}
+			searchProps={{
+				className: 'pb-2',
+				placeholder: Liferay.Language.get('search'),
+			}}
+			searchValue={search}
+			searchable
+			trigger={
+				<ClayButtonWithIcon
+					aria-label={Liferay.Language.get('add-field')}
+					className={className}
+					displayType={displayType}
+					ref={(node: HTMLButtonElement) => {
+						triggerRef.current = node;
+					}}
+					size="sm"
+					symbol="plus"
+					title={Liferay.Language.get('add-field')}
+					{...triggerProps}
+				/>
+			}
+		/>
 	);
 }

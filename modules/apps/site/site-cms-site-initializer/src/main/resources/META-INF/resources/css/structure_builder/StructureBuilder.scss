@@ -4,6 +4,13 @@ $structureFieldsWidth: 448px;
 $structureFieldsWidthMobile: 320px;
 
 .structure-builder {
+	&__add-child-menu {
+		.dropdown-section {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+
 	&__sidebar {
 		background-color: $light-l1;
 		width: $structureFieldsWidth;
