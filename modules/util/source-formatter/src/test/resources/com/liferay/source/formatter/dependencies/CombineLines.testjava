@@ -58,6 +58,14 @@ public class CombineLines
 		return new ArrayList<>();
 	}
 
+	public String[][] getStringArray() {
+		return new String[][] {
+			new String[] {
+				"hello", "world"
+			}
+		};
+	}
+
 	@Meta.AD(
 		deflt = "false", required = false
 	)
@@ -73,14 +81,6 @@ public class CombineLines
 			StringUtil.replace(
 				test, "Hello World Hello World Hello",
 				"World Hello World Hello World");
-	}
-
-	public String[][] getStringArray() {
-		return new String[][] {
-			new String[] {
-				"hello", "world"
-			}
-		};
 	}
 
 	public int method1(

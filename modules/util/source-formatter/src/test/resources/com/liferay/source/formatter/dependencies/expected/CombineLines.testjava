@@ -43,6 +43,10 @@ public class CombineLines extends SuperClass {
 		return new ArrayList<>();
 	}
 
+	public String[][] getStringArray() {
+		return new String[][] {new String[] {"hello", "world"}};
+	}
+
 	@Meta.AD(deflt = "false", required = false)
 	public String getString1(String test) {
 		return test;
@@ -52,10 +56,6 @@ public class CombineLines extends SuperClass {
 		return StringUtil.replace(
 			test, "Hello World Hello World Hello",
 			"World Hello World Hello World");
-	}
-
-	public String[][] getStringArray() {
-		return new String[][] {new String[] {"hello", "world"}};
 	}
 
 	public int method1(String test1, String test2, String test3, String test4)
