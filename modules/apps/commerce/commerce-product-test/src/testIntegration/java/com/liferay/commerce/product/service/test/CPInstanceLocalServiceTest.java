@@ -696,7 +696,7 @@ public class CPInstanceLocalServiceTest {
 
 	@Test
 	public void testUpdateCPInstance() throws Exception {
-		_testUpdateCPInstanceReplacementCPInstanceLoop();
+		_testUpdateCPInstanceWithReplacement();
 	}
 
 	@Rule
@@ -799,39 +799,35 @@ public class CPInstanceLocalServiceTest {
 		}
 	}
 
-	private void _testUpdateCPInstanceReplacementCPInstanceLoop()
-		throws Exception {
-
+	private void _testUpdateCPInstanceWithReplacement() throws Exception {
 		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
 			_commerceCatalog.getGroupId());
-
 		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
 			_commerceCatalog.getGroupId());
-
-		CPDefinition cpDefinition2 = cpInstance2.getCPDefinition();
 
 		cpInstance1.setReplacementCPInstanceUuid(
 			cpInstance2.getCPInstanceUuid());
 
-		cpInstance1.setReplacementCProductId(cpDefinition2.getCProductId());
+		CPDefinition cpDefinition = cpInstance2.getCPDefinition();
+
+		cpInstance1.setReplacementCProductId(cpDefinition.getCProductId());
 
 		cpInstance1 = _cpInstanceLocalService.updateCPInstance(cpInstance1);
 
 		CPInstance cpInstance3 = CPTestUtil.addCPInstanceFromCatalog(
 			_commerceCatalog.getGroupId());
 
-		CPDefinition cpDefinition3 = cpInstance3.getCPDefinition();
-
 		cpInstance2.setReplacementCPInstanceUuid(
 			cpInstance3.getCPInstanceUuid());
 
-		cpInstance2.setReplacementCProductId(cpDefinition3.getCProductId());
+		cpDefinition = cpInstance3.getCPDefinition();
+
+		cpInstance2.setReplacementCProductId(cpDefinition.getCProductId());
 
 		_cpInstanceLocalService.updateCPInstance(cpInstance2);
 
 		Calendar calendar = CalendarFactoryUtil.getCalendar();
-
-		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
+		cpDefinition = cpInstance1.getCPDefinition();
 
 		try {
 			_cpInstanceLocalService.updateCPInstance(
@@ -843,7 +839,7 @@ public class CPInstanceLocalServiceTest {
 				calendar.get(Calendar.HOUR_OF_DAY),
 				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, false,
 				false, 0, null, null, 0, false, 0, null, null, 0, null, true,
-				cpInstance1.getCPInstanceUuid(), cpDefinition1.getCProductId(),
+				cpInstance1.getCPInstanceUuid(), cpDefinition.getCProductId(),
 				calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
 				calendar.get(Calendar.YEAR),
 				ServiceContextTestUtil.getServiceContext(
