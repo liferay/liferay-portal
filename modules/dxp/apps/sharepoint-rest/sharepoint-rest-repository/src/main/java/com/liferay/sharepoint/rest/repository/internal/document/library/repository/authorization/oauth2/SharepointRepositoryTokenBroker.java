@@ -6,6 +6,8 @@
 package com.liferay.sharepoint.rest.repository.internal.document.library.repository.authorization.oauth2;
 
 import com.liferay.document.library.repository.authorization.oauth2.Token;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.security.key.secret.SecretResolverUtil;
 import com.liferay.sharepoint.rest.repository.internal.configuration.SharepointRepositoryConfiguration;
 
 import com.microsoft.aad.msal4j.AuthorizationCodeParameters;
@@ -122,7 +124,9 @@ public class SharepointRepositoryTokenBroker {
 		return ConfidentialClientApplication.builder(
 			_sharepointRepositoryConfiguration.clientId(),
 			ClientCredentialFactory.createFromSecret(
-				_sharepointRepositoryConfiguration.clientSecret())
+				SecretResolverUtil.resolve(
+					CompanyThreadLocal.getCompanyId(),
+					_sharepointRepositoryConfiguration.clientSecret()))
 		).authority(
 			"https://login.microsoftonline.com/" +
 				_sharepointRepositoryConfiguration.tenantId()
