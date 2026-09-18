@@ -37,6 +37,12 @@ buildIBMS3StoreUnitTest {
 	filter {
 		String line ->
 
+		line.replace "s3Store,", "ibmS3Store,"
+	}
+
+	filter {
+		String line ->
+
 		line.replace "s3Store.", "ibmS3Store."
 	}
 
@@ -106,6 +112,7 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.reactivestreams", name: "reactive-streams", version: "1.0.4"
+	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-concurrent")

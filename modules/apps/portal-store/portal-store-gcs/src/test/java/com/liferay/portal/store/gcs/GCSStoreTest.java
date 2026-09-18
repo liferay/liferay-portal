@@ -12,6 +12,7 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.store.gcs.configuration.GCSStoreConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -47,6 +48,10 @@ public class GCSStoreTest {
 		MockitoAnnotations.openMocks(this);
 
 		_gcsStore = new GCSStore();
+
+		ReflectionTestUtil.setFieldValue(
+			_gcsStore, "_secretResolver",
+			(SecretResolver)(companyId, value) -> value);
 
 		Mockito.when(
 			ConfigurableUtil.createConfigurable(

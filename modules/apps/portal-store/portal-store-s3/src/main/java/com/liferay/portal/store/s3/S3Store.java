@@ -21,10 +21,12 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.store.s3.configuration.S3StoreConfiguration;
 
 import java.io.File;
@@ -54,6 +56,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
@@ -502,7 +505,9 @@ public class S3Store implements Store {
 			awsCredentialsProvider = StaticCredentialsProvider.create(
 				AwsBasicCredentials.create(
 					_s3StoreConfiguration.accessKey(),
-					_s3StoreConfiguration.secretKey()));
+					_secretResolver.resolve(
+						CompanyConstants.SYSTEM,
+						_s3StoreConfiguration.secretKey())));
 		}
 		else {
 			awsCredentialsProvider = DefaultCredentialsProvider.create();
@@ -533,7 +538,9 @@ public class S3Store implements Store {
 
 			if (Objects.equals(proxyAuthType, "username-password")) {
 				proxyConfigurationBuilder.password(
-					_s3StoreConfiguration.proxyPassword()
+					_secretResolver.resolve(
+						CompanyConstants.SYSTEM,
+						_s3StoreConfiguration.proxyPassword())
 				).username(
 					_s3StoreConfiguration.proxyUsername()
 				);
@@ -751,6 +758,10 @@ public class S3Store implements Store {
 	private S3AsyncClient _s3AsyncClient;
 	private S3StoreConfiguration _s3StoreConfiguration;
 	private S3TransferManager _s3TransferManager;
+
+	@Reference
+	private SecretResolver _secretResolver;
+
 	private StorageClass _storageClass;
 	private NoticeableThreadPoolExecutor _threadPoolExecutor;
 

@@ -39,12 +39,14 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.store.gcs.configuration.GCSStoreConfiguration;
 
 import java.io.ByteArrayInputStream;
@@ -70,6 +72,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
 import org.threeten.bp.Duration;
 
@@ -483,7 +486,8 @@ public class GCSStore implements Store {
 	}
 
 	private void _initEncryption() {
-		String aes256Key = _gcsStoreConfiguration.aes256Key();
+		String aes256Key = _secretResolver.resolve(
+			CompanyConstants.SYSTEM, _gcsStoreConfiguration.aes256Key());
 
 		if (Validator.isNull(aes256Key)) {
 			if (_log.isWarnEnabled()) {
@@ -507,7 +511,9 @@ public class GCSStore implements Store {
 	}
 
 	private void _initGCSStore() throws PortalException {
-		String serviceAccountKey = _gcsStoreConfiguration.serviceAccountKey();
+		String serviceAccountKey = _secretResolver.resolve(
+			CompanyConstants.SYSTEM,
+			_gcsStoreConfiguration.serviceAccountKey());
 
 		try {
 			if (Validator.isBlank(serviceAccountKey)) {
@@ -643,6 +649,10 @@ public class GCSStore implements Store {
 	private Storage _gcsStore;
 	private volatile GCSStoreConfiguration _gcsStoreConfiguration;
 	private GoogleCredentials _googleCredentials;
+
+	@Reference
+	private SecretResolver _secretResolver;
+
 	private ServiceRegistration<StoreAreaProcessor> _serviceRegistration;
 
 	private class GCSStoreAreaProcessor implements StoreAreaProcessor {

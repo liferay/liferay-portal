@@ -8,8 +8,10 @@ package com.liferay.portal.store.s3;
 import com.liferay.document.library.kernel.store.Store;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.store.s3.configuration.S3StoreConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -232,6 +234,10 @@ public class S3StoreUnitTest {
 
 		try {
 			S3Store s3Store = new S3Store();
+
+			ReflectionTestUtil.setFieldValue(
+				s3Store, "_secretResolver",
+				(SecretResolver)(companyId, value) -> value);
 
 			s3Store.activate(Collections.emptyMap());
 

@@ -49,10 +49,12 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.store.s3.configuration.S3StoreConfiguration;
 
 import java.io.File;
@@ -74,6 +76,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Brian Wing Shun Chan
@@ -422,7 +425,9 @@ public class IBMS3Store implements Store {
 			awsCredentialsProvider = new AWSStaticCredentialsProvider(
 				new BasicAWSCredentials(
 					_s3StoreConfiguration.accessKey(),
-					_s3StoreConfiguration.secretKey()));
+					_secretResolver.resolve(
+						CompanyConstants.SYSTEM,
+						_s3StoreConfiguration.secretKey())));
 		}
 		else {
 			awsCredentialsProvider = new DefaultAWSCredentialsProviderChain();
@@ -554,7 +559,9 @@ public class IBMS3Store implements Store {
 			proxyAuthType.equals("username-password")) {
 
 			clientConfiguration.setProxyPassword(
-				_s3StoreConfiguration.proxyPassword());
+				_secretResolver.resolve(
+					CompanyConstants.SYSTEM,
+					_s3StoreConfiguration.proxyPassword()));
 			clientConfiguration.setProxyUsername(
 				_s3StoreConfiguration.proxyUsername());
 
@@ -745,6 +752,10 @@ public class IBMS3Store implements Store {
 
 	private AmazonS3 _amazonS3;
 	private S3StoreConfiguration _s3StoreConfiguration;
+
+	@Reference
+	private SecretResolver _secretResolver;
+
 	private StorageClass _storageClass;
 	private NoticeableThreadPoolExecutor _threadPoolExecutor;
 	private TransferManager _transferManager;
