@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.util.CamelCaseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
@@ -380,6 +381,9 @@ public class ResourceOpenAPIParser {
 			}
 
 			if (methodName.equals("post" + parentSchemaName + schemaName) ||
+				(methodName.equals("post" + schemaName) &&
+				 ListUtil.isEmpty(
+					 javaMethodSignature.getPathJavaMethodParameters())) ||
 				isExternalReferenceCodeMethod("post", javaMethodSignature)) {
 
 				createStrategies.add("INSERT");
@@ -591,6 +595,9 @@ public class ResourceOpenAPIParser {
 				 methodName.equals(
 					 StringBundler.concat(
 						 "post", parentSchemaName, "Id", schemaName)) ||
+				 (methodName.equals("post" + schemaName) &&
+				  ListUtil.isEmpty(
+					  javaMethodSignature.getPathJavaMethodParameters())) ||
 				 methodName.equals("put" + schemaName)) {
 
 			batchOperationType = BatchOperationType.IMPORT;
