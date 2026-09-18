@@ -51,6 +51,20 @@ public class PriceListAccountGroupUtil {
 					serviceContext.getCompanyId());
 		}
 
+		CommercePriceListCommerceAccountGroupRel
+			commercePriceListCommerceAccountGroupRel =
+				commercePriceListCommerceAccountGroupRelService.
+					fetchCommercePriceListCommerceAccountGroupRel(
+						commercePriceList.getCommercePriceListId(),
+						accountGroup.getAccountGroupId());
+
+		if (commercePriceListCommerceAccountGroupRel != null) {
+			commercePriceListCommerceAccountGroupRelService.
+				deleteCommercePriceListCommerceAccountGroupRel(
+					commercePriceListCommerceAccountGroupRel.
+						getCommercePriceListCommerceAccountGroupRelId());
+		}
+
 		return commercePriceListCommerceAccountGroupRelService.
 			addCommercePriceListCommerceAccountGroupRel(
 				commercePriceList.getCommercePriceListId(),

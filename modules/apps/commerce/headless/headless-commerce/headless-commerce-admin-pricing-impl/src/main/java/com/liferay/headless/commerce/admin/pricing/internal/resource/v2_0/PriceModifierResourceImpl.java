@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -238,10 +239,15 @@ public class PriceModifierResourceImpl extends BasePriceModifierResourceImpl {
 		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
 			priceModifier.getExpirationDate(), serviceContext.getTimeZone());
 
+		long priceModifierId = 0;
+
+		if (Validator.isNull(priceModifier.getExternalReferenceCode())) {
+			priceModifierId = GetterUtil.getLong(priceModifier.getId());
+		}
+
 		CommercePriceModifier commercePriceModifier =
 			_commercePriceModifierService.addOrUpdateCommercePriceModifier(
-				priceModifier.getExternalReferenceCode(),
-				GetterUtil.getLong(priceModifier.getId()),
+				priceModifier.getExternalReferenceCode(), priceModifierId,
 				commercePriceList.getGroupId(),
 				commercePriceList.getCommercePriceListId(),
 				priceModifier.getTitle(), priceModifier.getTarget(),

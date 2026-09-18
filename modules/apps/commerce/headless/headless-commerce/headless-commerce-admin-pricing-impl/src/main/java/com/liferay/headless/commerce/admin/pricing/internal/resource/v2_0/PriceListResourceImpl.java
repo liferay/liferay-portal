@@ -16,11 +16,6 @@ import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.exception.NoSuchPriceListException;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
-import com.liferay.commerce.price.list.model.CommercePriceListAccountRel;
-import com.liferay.commerce.price.list.model.CommercePriceListChannelRel;
-import com.liferay.commerce.price.list.model.CommercePriceListCommerceAccountGroupRel;
-import com.liferay.commerce.price.list.model.CommercePriceListDiscountRel;
-import com.liferay.commerce.price.list.model.CommercePriceListOrderTypeRel;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
 import com.liferay.commerce.price.list.service.CommercePriceListAccountRelService;
 import com.liferay.commerce.price.list.service.CommercePriceListChannelRelService;
@@ -435,17 +430,6 @@ public class PriceListResourceImpl
 			for (PriceListAccountGroup priceListAccountGroup :
 					priceListAccountGroups) {
 
-				CommercePriceListCommerceAccountGroupRel
-					commercePriceListCommerceAccountGroupRel =
-						_commercePriceListCommerceAccountGroupRelService.
-							fetchCommercePriceListCommerceAccountGroupRel(
-								commercePriceList.getCommercePriceListId(),
-								priceListAccountGroup.getAccountGroupId());
-
-				if (commercePriceListCommerceAccountGroupRel != null) {
-					continue;
-				}
-
 				PriceListAccountGroupUtil.addCommercePriceListAccountGroupRel(
 					_accountGroupService,
 					_commercePriceListCommerceAccountGroupRelService,
@@ -460,16 +444,6 @@ public class PriceListResourceImpl
 
 		if (priceListAccounts != null) {
 			for (PriceListAccount priceListAccount : priceListAccounts) {
-				CommercePriceListAccountRel commercePriceListAccountRel =
-					_commercePriceListAccountRelService.
-						fetchCommercePriceListAccountRel(
-							commercePriceList.getCommercePriceListId(),
-							priceListAccount.getAccountId());
-
-				if (commercePriceListAccountRel != null) {
-					continue;
-				}
-
 				PriceListAccountUtil.addCommercePriceListAccountRel(
 					_accountEntryService, _commercePriceListAccountRelService,
 					priceListAccount, commercePriceList, _serviceContextHelper);
@@ -482,16 +456,6 @@ public class PriceListResourceImpl
 
 		if (priceListChannels != null) {
 			for (PriceListChannel priceListChannel : priceListChannels) {
-				CommercePriceListChannelRel commercePriceListChannelRel =
-					_commercePriceListChannelRelService.
-						fetchCommercePriceListChannelRel(
-							commercePriceList.getCommercePriceListId(),
-							priceListChannel.getPriceListId());
-
-				if (commercePriceListChannelRel != null) {
-					continue;
-				}
-
 				PriceListChannelUtil.addCommercePriceListChannelRel(
 					_commerceChannelService,
 					_commercePriceListChannelRelService, priceListChannel,
@@ -506,16 +470,6 @@ public class PriceListResourceImpl
 
 		if (priceListDiscounts != null) {
 			for (PriceListDiscount priceListDiscount : priceListDiscounts) {
-				CommercePriceListDiscountRel commercePriceListDiscountRel =
-					_commercePriceListDiscountRelService.
-						fetchCommercePriceListDiscountRel(
-							commercePriceList.getCommercePriceListId(),
-							priceListDiscount.getDiscountId());
-
-				if (commercePriceListDiscountRel != null) {
-					continue;
-				}
-
 				PriceListDiscountUtil.addCommercePriceListDiscountRel(
 					_commerceDiscountService,
 					_commercePriceListDiscountRelService, priceListDiscount,
@@ -530,16 +484,6 @@ public class PriceListResourceImpl
 
 		if (priceListOrderTypes != null) {
 			for (PriceListOrderType priceListOrderType : priceListOrderTypes) {
-				CommercePriceListOrderTypeRel commercePriceListOrderTypeRel =
-					_commercePriceListOrderTypeRelService.
-						fetchCommercePriceListOrderTypeRel(
-							commercePriceList.getCommercePriceListId(),
-							priceListOrderType.getOrderTypeId());
-
-				if (commercePriceListOrderTypeRel != null) {
-					continue;
-				}
-
 				PriceListOrderTypeUtil.addCommercePriceListOrderTypeRel(
 					_commerceOrderTypeService,
 					_commercePriceListOrderTypeRelService, priceListOrderType,
@@ -561,12 +505,19 @@ public class PriceListResourceImpl
 						priceModifier.getExpirationDate(),
 						serviceContext.getTimeZone());
 
+				long priceModifierId = 0;
+
+				if (Validator.isNull(
+						priceModifier.getExternalReferenceCode())) {
+
+					priceModifierId = GetterUtil.getLong(priceModifier.getId());
+				}
+
 				CommercePriceModifier commercePriceModifier =
 					_commercePriceModifierService.
 						addOrUpdateCommercePriceModifier(
 							priceModifier.getExternalReferenceCode(),
-							GetterUtil.getLong(priceModifier.getId()),
-							commercePriceList.getGroupId(),
+							priceModifierId, commercePriceList.getGroupId(),
 							commercePriceList.getCommercePriceListId(),
 							priceModifier.getTitle(), priceModifier.getTarget(),
 							priceModifier.getModifierAmount(),
@@ -628,10 +579,16 @@ public class PriceListResourceImpl
 					cpInstanceUuid = cpInstance.getCPInstanceUuid();
 				}
 
+				long priceEntryId = 0;
+
+				if (Validator.isNull(priceEntry.getExternalReferenceCode())) {
+					priceEntryId = GetterUtil.getLong(
+						priceEntry.getPriceEntryId());
+				}
+
 				CommercePriceEntry commercePriceEntry =
 					_commercePriceEntryService.addOrUpdateCommercePriceEntry(
-						priceEntry.getExternalReferenceCode(),
-						GetterUtil.getLong(priceEntry.getPriceEntryId()),
+						priceEntry.getExternalReferenceCode(), priceEntryId,
 						cProductId, cpInstanceUuid,
 						commercePriceList.getCommercePriceListId(),
 						GetterUtil.getBoolean(

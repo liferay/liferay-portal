@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -286,10 +287,15 @@ public class PriceEntryResourceImpl extends BasePriceEntryResourceImpl {
 		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
 			priceEntry.getExpirationDate(), serviceContext.getTimeZone());
 
+		long priceEntryId = 0;
+
+		if (Validator.isNull(priceEntry.getExternalReferenceCode())) {
+			priceEntryId = GetterUtil.getLong(priceEntry.getPriceEntryId());
+		}
+
 		CommercePriceEntry commercePriceEntry =
 			_commercePriceEntryService.addOrUpdateCommercePriceEntry(
-				priceEntry.getExternalReferenceCode(),
-				GetterUtil.getLong(priceEntry.getPriceEntryId()), cProductId,
+				priceEntry.getExternalReferenceCode(), priceEntryId, cProductId,
 				cpInstanceUuid, commercePriceList.getCommercePriceListId(),
 				GetterUtil.getBoolean(priceEntry.getDiscountDiscovery(), true),
 				priceEntry.getDiscountLevel1(), priceEntry.getDiscountLevel2(),

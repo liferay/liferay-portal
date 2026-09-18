@@ -29,6 +29,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.CatalogResource
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.CommerceCurrencyUtil;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
@@ -377,6 +378,14 @@ public class CatalogResourceImpl
 				catalog.getAccountId(), defaultAccountEntryId);
 		}
 
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			AccountEntry accountEntry =
+				_accountEntryService.getAccountEntryByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+			return accountEntry.getAccountEntryId();
+		}
+
 		AccountEntry accountEntry =
 			_accountEntryService.getOrAddEmptyAccountEntry(
 				externalReferenceCode, externalReferenceCode,
@@ -428,7 +437,9 @@ public class CatalogResourceImpl
 			return commerceCurrency;
 		}
 
-		if (Validator.isNull(currencyExternalReferenceCode)) {
+		if (Validator.isNull(currencyExternalReferenceCode) ||
+			!LazyReferencingThreadLocal.isEnabled()) {
+
 			throw new NoSuchCurrencyException(
 				"Unable to find currency with external reference code " +
 					currencyExternalReferenceCode);

@@ -13,7 +13,6 @@ import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.exception.NoSuchPriceListException;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
-import com.liferay.commerce.price.list.model.CommercePriceListCommerceAccountGroupRel;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
 import com.liferay.commerce.price.list.service.CommercePriceListCommerceAccountGroupRelService;
 import com.liferay.commerce.price.list.service.CommercePriceListService;
@@ -321,17 +320,6 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 		if (priceListAccountGroups != null) {
 			for (PriceListAccountGroup priceListAccountGroup :
 					priceListAccountGroups) {
-
-				CommercePriceListCommerceAccountGroupRel
-					commercePriceListCommerceAccountGroupRel =
-						_commercePriceListCommerceAccountGroupRelService.
-							fetchCommercePriceListCommerceAccountGroupRel(
-								commercePriceList.getCommercePriceListId(),
-								priceListAccountGroup.getAccountGroupId());
-
-				if (commercePriceListCommerceAccountGroupRel != null) {
-					continue;
-				}
 
 				PriceListAccountGroupUtil.addCommercePriceListAccountGroupRel(
 					_accountGroupService,

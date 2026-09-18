@@ -5,6 +5,7 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
+import com.liferay.commerce.exception.NoSuchAvailabilityEstimateException;
 import com.liferay.commerce.model.CPDAvailabilityEstimate;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.model.CommerceAvailabilityEstimate;
@@ -14,6 +15,7 @@ import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -45,8 +47,8 @@ public class ProductConfigurationUtil {
 	public static long getCommerceAvailabilityEstimateId(
 			CommerceAvailabilityEstimateService
 				commerceAvailabilityEstimateService,
-			ProductConfiguration productConfiguration,
-			long defaultCommerceAvailabilityEstimateId)
+			long companyId, long defaultCommerceAvailabilityEstimateId,
+			ProductConfiguration productConfiguration)
 		throws PortalException {
 
 		String externalReferenceCode =
@@ -56,6 +58,22 @@ public class ProductConfigurationUtil {
 			return GetterUtil.getLong(
 				productConfiguration.getAvailabilityEstimateId(),
 				defaultCommerceAvailabilityEstimateId);
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+				commerceAvailabilityEstimateService.
+					fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+						externalReferenceCode, companyId);
+
+			if (commerceAvailabilityEstimate == null) {
+				throw new NoSuchAvailabilityEstimateException(
+					"Unable to find availability estimate with external " +
+						"reference code " + externalReferenceCode);
+			}
+
+			return commerceAvailabilityEstimate.
+				getCommerceAvailabilityEstimateId();
 		}
 
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
@@ -69,6 +87,7 @@ public class ProductConfigurationUtil {
 	public static void updateCPDAvailabilityEstimate(
 			CommerceAvailabilityEstimateService
 				commerceAvailabilityEstimateService,
+			long companyId,
 			CPDAvailabilityEstimateService cpdAvailabilityEstimateService,
 			ProductConfiguration productConfiguration, long cpDefinitionId)
 		throws PortalException {
@@ -87,8 +106,8 @@ public class ProductConfigurationUtil {
 		cpdAvailabilityEstimateService.updateCPDAvailabilityEstimate(
 			0, cpDefinitionId,
 			getCommerceAvailabilityEstimateId(
-				commerceAvailabilityEstimateService, productConfiguration,
-				commerceAvailabilityEstimateId));
+				commerceAvailabilityEstimateService, companyId,
+				commerceAvailabilityEstimateId, productConfiguration));
 	}
 
 	public static CPDefinitionInventory updateCPDefinitionInventory(

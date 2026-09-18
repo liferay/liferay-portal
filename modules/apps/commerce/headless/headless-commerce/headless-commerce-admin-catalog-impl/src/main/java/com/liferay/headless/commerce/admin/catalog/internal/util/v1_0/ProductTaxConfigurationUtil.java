@@ -11,6 +11,7 @@ import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPTaxCategoryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -27,13 +28,15 @@ public class ProductTaxConfigurationUtil {
 
 		return cpDefinitionService.updateTaxCategoryInfo(
 			cpDefinition.getCPDefinitionId(),
-			_getCPTaxCategoryId(cpTaxCategoryService, productTaxConfiguration),
+			_getCPTaxCategoryId(
+				cpDefinition.getCompanyId(), cpTaxCategoryService,
+				productTaxConfiguration),
 			ProductUtil.isTaxExempt(cpDefinition, productTaxConfiguration),
 			false);
 	}
 
 	private static long _getCPTaxCategoryId(
-			CPTaxCategoryService cpTaxCategoryService,
+			long companyId, CPTaxCategoryService cpTaxCategoryService,
 			ProductTaxConfiguration productTaxConfiguration)
 		throws PortalException {
 
@@ -42,6 +45,14 @@ public class ProductTaxConfigurationUtil {
 
 		if (Validator.isNull(externalReferenceCode)) {
 			return GetterUtil.getLong(productTaxConfiguration.getId());
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			CPTaxCategory cpTaxCategory =
+				cpTaxCategoryService.getCPTaxCategoryByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+			return cpTaxCategory.getCPTaxCategoryId();
 		}
 
 		CPTaxCategory cpTaxCategory =

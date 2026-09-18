@@ -16,6 +16,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigur
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationResource;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.DateConfig;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -371,6 +372,15 @@ public class ProductConfigurationListResourceImpl
 		if (Validator.isNull(externalReferenceCode)) {
 			return GetterUtil.getLong(
 				productConfigurationList.getParentProductConfigurationListId());
+		}
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			CPConfigurationList cpConfigurationList =
+				_cpConfigurationListService.
+					getCPConfigurationListByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
+
+			return cpConfigurationList.getCPConfigurationListId();
 		}
 
 		CPConfigurationList cpConfigurationList =

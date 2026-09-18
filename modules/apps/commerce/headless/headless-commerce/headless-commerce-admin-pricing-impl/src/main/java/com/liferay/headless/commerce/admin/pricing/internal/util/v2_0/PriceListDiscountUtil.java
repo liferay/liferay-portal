@@ -57,6 +57,19 @@ public class PriceListDiscountUtil {
 			}
 		}
 
+		CommercePriceListDiscountRel commercePriceListDiscountRel =
+			commercePriceListDiscountRelService.
+				fetchCommercePriceListDiscountRel(
+					commercePriceList.getCommercePriceListId(),
+					commerceDiscount.getCommerceDiscountId());
+
+		if (commercePriceListDiscountRel != null) {
+			commercePriceListDiscountRelService.
+				deleteCommercePriceListDiscountRel(
+					commercePriceListDiscountRel.
+						getCommercePriceListDiscountRelId());
+		}
+
 		return commercePriceListDiscountRelService.
 			addCommercePriceListDiscountRel(
 				commercePriceList.getCommercePriceListId(),

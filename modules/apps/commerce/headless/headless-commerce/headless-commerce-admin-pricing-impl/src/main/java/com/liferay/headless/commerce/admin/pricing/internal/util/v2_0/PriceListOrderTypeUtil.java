@@ -61,6 +61,19 @@ public class PriceListOrderTypeUtil {
 			}
 		}
 
+		CommercePriceListOrderTypeRel commercePriceListOrderTypeRel =
+			commercePriceListOrderTypeRelService.
+				fetchCommercePriceListOrderTypeRel(
+					commercePriceList.getCommercePriceListId(),
+					commerceOrderType.getCommerceOrderTypeId());
+
+		if (commercePriceListOrderTypeRel != null) {
+			commercePriceListOrderTypeRelService.
+				deleteCommercePriceListOrderTypeRel(
+					commercePriceListOrderTypeRel.
+						getCommercePriceListOrderTypeRelId());
+		}
+
 		return commercePriceListOrderTypeRelService.
 			addCommercePriceListOrderTypeRel(
 				commercePriceList.getCommercePriceListId(),

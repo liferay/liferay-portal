@@ -57,6 +57,18 @@ public class PriceListChannelUtil {
 			}
 		}
 
+		CommercePriceListChannelRel commercePriceListChannelRel =
+			commercePriceListChannelRelService.fetchCommercePriceListChannelRel(
+				commerceChannel.getCommerceChannelId(),
+				commercePriceList.getCommercePriceListId());
+
+		if (commercePriceListChannelRel != null) {
+			commercePriceListChannelRelService.
+				deleteCommercePriceListChannelRel(
+					commercePriceListChannelRel.
+						getCommercePriceListChannelRelId());
+		}
+
 		return commercePriceListChannelRelService.
 			addCommercePriceListChannelRel(
 				commercePriceList.getCommercePriceListId(),

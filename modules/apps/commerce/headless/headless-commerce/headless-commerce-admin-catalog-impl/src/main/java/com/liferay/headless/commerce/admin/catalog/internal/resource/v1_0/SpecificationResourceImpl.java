@@ -384,6 +384,25 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 		return cpOptionCategory.getCPOptionCategoryId();
 	}
 
+	private long _getListTypeDefinitionId(String externalReferenceCode)
+		throws PortalException {
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			ListTypeDefinition listTypeDefinition =
+				_listTypeDefinitionService.
+					getListTypeDefinitionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
+
+			return listTypeDefinition.getListTypeDefinitionId();
+		}
+
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionService.getOrAddEmptyListTypeDefinition(
+				externalReferenceCode, false);
+
+		return listTypeDefinition.getListTypeDefinitionId();
+	}
+
 	private long[] _getListTypeDefinitionIds(Specification specification)
 		throws PortalException {
 
@@ -395,14 +414,7 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 		}
 
 		return transformToLongArray(
-			externalReferenceCodes,
-			externalReferenceCode -> {
-				ListTypeDefinition listTypeDefinition =
-					_listTypeDefinitionService.getOrAddEmptyListTypeDefinition(
-						externalReferenceCode, false);
-
-				return listTypeDefinition.getListTypeDefinitionId();
-			});
+			externalReferenceCodes, this::_getListTypeDefinitionId);
 	}
 
 	private Specification _toSpecification(Long cpSpecificationOptionId)

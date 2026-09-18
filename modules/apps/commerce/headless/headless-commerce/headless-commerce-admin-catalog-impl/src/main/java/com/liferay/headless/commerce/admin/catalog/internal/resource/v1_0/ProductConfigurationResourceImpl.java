@@ -260,8 +260,10 @@ public class ProductConfigurationResourceImpl
 					productConfiguration.getAllowBackOrder(),
 					cpConfigurationEntry.isBackOrders()),
 				ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
-					_commerceAvailabilityEstimateService, productConfiguration,
-					cpConfigurationEntry.getCommerceAvailabilityEstimateId()),
+					_commerceAvailabilityEstimateService,
+					contextCompany.getCompanyId(),
+					cpConfigurationEntry.getCommerceAvailabilityEstimateId(),
+					productConfiguration),
 				GetterUtil.getString(
 					productConfiguration.getInventoryEngine(),
 					cpConfigurationEntry.getCPDefinitionInventoryEngine()),
@@ -374,9 +376,11 @@ public class ProductConfigurationResourceImpl
 					productConfiguration.getAllowBackOrder(),
 					masterCPConfigurationEntry.isBackOrders()),
 				ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
-					_commerceAvailabilityEstimateService, productConfiguration,
+					_commerceAvailabilityEstimateService,
+					contextCompany.getCompanyId(),
 					masterCPConfigurationEntry.
-						getCommerceAvailabilityEstimateId()),
+						getCommerceAvailabilityEstimateId(),
+					productConfiguration),
 				GetterUtil.getString(
 					productConfiguration.getInventoryEngine(),
 					masterCPConfigurationEntry.
@@ -439,7 +443,7 @@ public class ProductConfigurationResourceImpl
 			cpDefinition.getCPDefinitionId());
 
 		ProductConfigurationUtil.updateCPDAvailabilityEstimate(
-			_commerceAvailabilityEstimateService,
+			_commerceAvailabilityEstimateService, cpDefinition.getCompanyId(),
 			_cpdAvailabilityEstimateService, productConfiguration,
 			cpDefinition.getCPDefinitionId());
 
@@ -517,8 +521,8 @@ public class ProductConfigurationResourceImpl
 					productConfiguration.getAllowedOrderQuantities(), null),
 				GetterUtil.getBoolean(productConfiguration.getAllowBackOrder()),
 				ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
-					_commerceAvailabilityEstimateService, productConfiguration,
-					0),
+					_commerceAvailabilityEstimateService,
+					contextCompany.getCompanyId(), 0, productConfiguration),
 				GetterUtil.getString(productConfiguration.getInventoryEngine()),
 				GetterUtil.getDouble(productShippingConfiguration.getDepth()),
 				GetterUtil.getBoolean(

@@ -332,10 +332,10 @@ public class SkuUtil {
 				cpDefinitionOptionRel.getCPDefinitionOptionRelId();
 
 			CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-				cpDefinitionOptionValueRelService.
-					getOrAddEmptyCPDefinitionOptionValueRel(
-						externalReferenceCode, cpDefinitionOptionRelId,
-						skuOption.getValue());
+				_getCPDefinitionOptionValueRel(
+					companyId, cpDefinitionOptionRelId,
+					cpDefinitionOptionValueRelService, externalReferenceCode,
+					skuOption.getValue());
 
 			if (cpDefinitionOptionValueRel.getCPDefinitionOptionRelId() !=
 					cpDefinitionOptionRelId) {
@@ -369,6 +369,32 @@ public class SkuUtil {
 		}
 
 		return null;
+	}
+
+	private static CPDefinitionOptionValueRel _getCPDefinitionOptionValueRel(
+			long companyId, long cpDefinitionOptionRelId,
+			CPDefinitionOptionValueRelService cpDefinitionOptionValueRelService,
+			String externalReferenceCode, String key)
+		throws PortalException {
+
+		if (!LazyReferencingThreadLocal.isEnabled()) {
+			CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+				cpDefinitionOptionValueRelService.
+					fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+						externalReferenceCode, companyId);
+
+			if (cpDefinitionOptionValueRel == null) {
+				throw new NoSuchCPDefinitionOptionValueRelException(
+					"Unable to find product option value with external " +
+						"reference code " + externalReferenceCode);
+			}
+
+			return cpDefinitionOptionValueRel;
+		}
+
+		return cpDefinitionOptionValueRelService.
+			getOrAddEmptyCPDefinitionOptionValueRel(
+				externalReferenceCode, cpDefinitionOptionRelId, key);
 	}
 
 	private static String _getCommercePricingConfigurationKey(
