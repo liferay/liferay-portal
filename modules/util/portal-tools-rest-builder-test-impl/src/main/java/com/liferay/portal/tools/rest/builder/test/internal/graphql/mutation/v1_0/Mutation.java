@@ -10,6 +10,7 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.BatchTestEntity;
+import com.liferay.portal.tools.rest.builder.test.dto.v1_0.BatchTestEntityAction;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.CompanyTestEntity;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.ERCAssetLibraryTestEntity;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.ERCScopedTestEntity;
@@ -23,6 +24,7 @@ import com.liferay.portal.tools.rest.builder.test.dto.v1_0.SiteTestEntity;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.Sort;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.AssetLibraryTestEntityResource;
+import com.liferay.portal.tools.rest.builder.test.resource.v1_0.BatchTestEntityActionResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.BatchTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.CompanyTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ERCAssetLibraryTestEntityResource;
@@ -81,6 +83,14 @@ public class Mutation {
 
 		_batchTestEntityResourceComponentServiceObjects =
 			batchTestEntityResourceComponentServiceObjects;
+	}
+
+	public static void setBatchTestEntityActionResourceComponentServiceObjects(
+		ComponentServiceObjects<BatchTestEntityActionResource>
+			batchTestEntityActionResourceComponentServiceObjects) {
+
+		_batchTestEntityActionResourceComponentServiceObjects =
+			batchTestEntityActionResourceComponentServiceObjects;
 	}
 
 	public static void setCompanyTestEntityResourceComponentServiceObjects(
@@ -305,6 +315,34 @@ public class Mutation {
 				batchTestEntityResource.
 					putBatchTestEntityByExternalReferenceCode(
 						externalReferenceCode, batchTestEntity));
+	}
+
+	@GraphQLField
+	public BatchTestEntityAction createBatchTestEntityAction(
+			@GraphQLName("batchTestEntityAction") BatchTestEntityAction
+				batchTestEntityAction)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_batchTestEntityActionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			batchTestEntityActionResource ->
+				batchTestEntityActionResource.postBatchTestEntityAction(
+					batchTestEntityAction));
+	}
+
+	@GraphQLField
+	public Response createBatchTestEntityActionBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_batchTestEntityActionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			batchTestEntityActionResource ->
+				batchTestEntityActionResource.postBatchTestEntityActionBatch(
+					callbackURL, object));
 	}
 
 	@GraphQLField
@@ -1879,6 +1917,28 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			BatchTestEntityActionResource batchTestEntityActionResource)
+		throws Exception {
+
+		batchTestEntityActionResource.setContextAcceptLanguage(_acceptLanguage);
+		batchTestEntityActionResource.setContextCompany(_company);
+		batchTestEntityActionResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		batchTestEntityActionResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		batchTestEntityActionResource.setContextUriInfo(_uriInfo);
+		batchTestEntityActionResource.setContextUser(_user);
+		batchTestEntityActionResource.setGroupLocalService(_groupLocalService);
+		batchTestEntityActionResource.setRoleLocalService(_roleLocalService);
+
+		batchTestEntityActionResource.setVulcanBatchEngineExportTaskResource(
+			_vulcanBatchEngineExportTaskResource);
+
+		batchTestEntityActionResource.setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResource);
+	}
+
+	private void _populateResourceContext(
 			CompanyTestEntityResource companyTestEntityResource)
 		throws Exception {
 
@@ -2195,6 +2255,8 @@ public class Mutation {
 		_assetLibraryTestEntityResourceComponentServiceObjects;
 	private static ComponentServiceObjects<BatchTestEntityResource>
 		_batchTestEntityResourceComponentServiceObjects;
+	private static ComponentServiceObjects<BatchTestEntityActionResource>
+		_batchTestEntityActionResourceComponentServiceObjects;
 	private static ComponentServiceObjects<CompanyTestEntityResource>
 		_companyTestEntityResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ERCAssetLibraryTestEntityResource>
@@ -2245,4 +2307,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-311735118
+// LIFERAY-REST-BUILDER-HASH:-133211032

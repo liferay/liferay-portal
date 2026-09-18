@@ -65,6 +65,28 @@ public class PortalInstanceCopy implements Cloneable, Serializable {
 
 	protected String name;
 
+	public String getSourcePortalInstanceId() {
+		return sourcePortalInstanceId;
+	}
+
+	public void setSourcePortalInstanceId(String sourcePortalInstanceId) {
+		this.sourcePortalInstanceId = sourcePortalInstanceId;
+	}
+
+	public void setSourcePortalInstanceId(
+		UnsafeSupplier<String, Exception>
+			sourcePortalInstanceIdUnsafeSupplier) {
+
+		try {
+			sourcePortalInstanceId = sourcePortalInstanceIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String sourcePortalInstanceId;
+
 	public String getVirtualHost() {
 		return virtualHost;
 	}
@@ -139,4 +161,4 @@ public class PortalInstanceCopy implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1292188389
+// LIFERAY-REST-BUILDER-HASH:1647581849

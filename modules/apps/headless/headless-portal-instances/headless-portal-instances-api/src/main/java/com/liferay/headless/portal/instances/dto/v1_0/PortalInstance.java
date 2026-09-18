@@ -51,7 +51,9 @@ public class PortalInstance implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(PortalInstance.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "whether the portal instance is active."
+	)
 	public Boolean getActive() {
 		if (_activeSupplier != null) {
 			active = _activeSupplier.get();
@@ -85,8 +87,8 @@ public class PortalInstance implements Serializable {
 		};
 	}
 
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@GraphQLField(description = "whether the portal instance is active.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Boolean active;
 
 	@JsonIgnore
@@ -221,6 +223,49 @@ public class PortalInstance implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _domainSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "maximum number of users, or 0 for unlimited."
+	)
+	public Integer getMaxUsers() {
+		if (_maxUsersSupplier != null) {
+			maxUsers = _maxUsersSupplier.get();
+
+			_maxUsersSupplier = null;
+		}
+
+		return maxUsers;
+	}
+
+	public void setMaxUsers(Integer maxUsers) {
+		this.maxUsers = maxUsers;
+
+		_maxUsersSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setMaxUsers(
+		UnsafeSupplier<Integer, Exception> maxUsersUnsafeSupplier) {
+
+		_maxUsersSupplier = () -> {
+			try {
+				return maxUsersUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "maximum number of users, or 0 for unlimited.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Integer maxUsers;
+
+	@JsonIgnore
+	private Supplier<Integer> _maxUsersSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "public unique key (corresponds to company's webId field)"
@@ -428,6 +473,18 @@ public class PortalInstance implements Serializable {
 			sb.append("\"");
 		}
 
+		Integer maxUsers = getMaxUsers();
+
+		if (maxUsers != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"maxUsers\": ");
+
+			sb.append(maxUsers);
+		}
+
 		String portalInstanceId = getPortalInstanceId();
 
 		if (portalInstanceId != null) {
@@ -598,4 +655,4 @@ public class PortalInstance implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:676681184
+// LIFERAY-REST-BUILDER-HASH:2094342589

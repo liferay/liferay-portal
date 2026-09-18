@@ -5,6 +5,7 @@
 
 	import {AssetLibraryTestEntity} from '../models/AssetLibraryTestEntity';
 	import {BatchTestEntity} from '../models/BatchTestEntity';
+	import {BatchTestEntityAction} from '../models/BatchTestEntityAction';
 	import {ChildTestEntity1} from '../models/ChildTestEntity1';
 	import {ChildTestEntity2} from '../models/ChildTestEntity2';
 	import {ChildTestEntity3} from '../models/ChildTestEntity3';
@@ -86,6 +87,7 @@ const primitives = new Set([
 const typeMap: {[index: string]: any} = {
 	AssetLibraryTestEntity,
 	BatchTestEntity,
+	BatchTestEntityAction,
 	ChildTestEntity1,
 	ChildTestEntity2,
 	ChildTestEntity3,

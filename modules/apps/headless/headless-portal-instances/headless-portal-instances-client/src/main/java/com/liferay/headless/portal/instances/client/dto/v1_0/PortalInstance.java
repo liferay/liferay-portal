@@ -107,6 +107,27 @@ public class PortalInstance implements Cloneable, Serializable {
 
 	protected String domain;
 
+	public Integer getMaxUsers() {
+		return maxUsers;
+	}
+
+	public void setMaxUsers(Integer maxUsers) {
+		this.maxUsers = maxUsers;
+	}
+
+	public void setMaxUsers(
+		UnsafeSupplier<Integer, Exception> maxUsersUnsafeSupplier) {
+
+		try {
+			maxUsers = maxUsersUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer maxUsers;
+
 	public String getPortalInstanceId() {
 		return portalInstanceId;
 	}
@@ -202,4 +223,4 @@ public class PortalInstance implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2129309558
+// LIFERAY-REST-BUILDER-HASH:-1864671653

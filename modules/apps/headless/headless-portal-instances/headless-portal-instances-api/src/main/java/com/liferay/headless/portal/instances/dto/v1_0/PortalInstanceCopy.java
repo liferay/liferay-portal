@@ -44,7 +44,9 @@ import java.util.function.Supplier;
 )
 @io.swagger.v3.oas.annotations.media.Schema(
 	description = "Configuration for copying a portal instance.",
-	requiredProperties = {"name", "virtualHost", "webId"}
+	requiredProperties = {
+		"name", "sourcePortalInstanceId", "virtualHost", "webId"
+	}
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "PortalInstanceCopy")
@@ -144,6 +146,51 @@ public class PortalInstanceCopy implements Serializable {
 
 	@JsonIgnore
 	private Supplier<String> _nameSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The web ID of the portal instance to copy."
+	)
+	public String getSourcePortalInstanceId() {
+		if (_sourcePortalInstanceIdSupplier != null) {
+			sourcePortalInstanceId = _sourcePortalInstanceIdSupplier.get();
+
+			_sourcePortalInstanceIdSupplier = null;
+		}
+
+		return sourcePortalInstanceId;
+	}
+
+	public void setSourcePortalInstanceId(String sourcePortalInstanceId) {
+		this.sourcePortalInstanceId = sourcePortalInstanceId;
+
+		_sourcePortalInstanceIdSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setSourcePortalInstanceId(
+		UnsafeSupplier<String, Exception>
+			sourcePortalInstanceIdUnsafeSupplier) {
+
+		_sourcePortalInstanceIdSupplier = () -> {
+			try {
+				return sourcePortalInstanceIdUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The web ID of the portal instance to copy.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	@NotEmpty
+	protected String sourcePortalInstanceId;
+
+	@JsonIgnore
+	private Supplier<String> _sourcePortalInstanceIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The virtual host of the new portal instance."
@@ -284,6 +331,22 @@ public class PortalInstanceCopy implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(name));
+
+			sb.append("\"");
+		}
+
+		String sourcePortalInstanceId = getSourcePortalInstanceId();
+
+		if (sourcePortalInstanceId != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"sourcePortalInstanceId\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(sourcePortalInstanceId));
 
 			sb.append("\"");
 		}
@@ -442,4 +505,4 @@ public class PortalInstanceCopy implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2145057930
+// LIFERAY-REST-BUILDER-HASH:499692405

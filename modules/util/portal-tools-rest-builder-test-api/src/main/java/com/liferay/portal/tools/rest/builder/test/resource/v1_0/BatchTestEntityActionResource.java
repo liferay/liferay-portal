@@ -1,11 +1,11 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.headless.portal.instances.resource.v1_0;
+package com.liferay.portal.tools.rest.builder.test.resource.v1_0;
 
-import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -13,10 +13,12 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
+import com.liferay.portal.tools.rest.builder.test.dto.v1_0.BatchTestEntityAction;
+import com.liferay.portal.tools.rest.builder.test.dto.v1_0.Filter;
+import com.liferay.portal.tools.rest.builder.test.dto.v1_0.Sort;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
-import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.annotation.Generated;
 
@@ -36,45 +38,22 @@ import org.osgi.annotation.versioning.ProviderType;
 /**
  * To access this resource, run:
  *
- *     curl -u your@email.com:yourpassword -D - http://localhost:8080/o/headless-portal-instances/v1.0
+ *     curl -u your@email.com:yourpassword -D - http://localhost:8080/o/portal-tools-rest-builder-test/v1.0
  *
- * @author Alberto Chaparro
+ * @author Alejandro Tardín
  * @generated
  */
+@CTAware
 @Generated("")
 @ProviderType
-public interface PortalInstanceResource {
+public interface BatchTestEntityActionResource {
 
-	public void deletePortalInstance(String portalInstanceId) throws Exception;
-
-	public Response deletePortalInstanceBatch(String callbackURL, Object object)
+	public BatchTestEntityAction postBatchTestEntityAction(
+			BatchTestEntityAction batchTestEntityAction)
 		throws Exception;
 
-	public PortalInstance getPortalInstance(String portalInstanceId)
-		throws Exception;
-
-	public Page<PortalInstance> getPortalInstancesPage(Boolean skipDefault)
-		throws Exception;
-
-	public PortalInstance patchPortalInstance(
-			String portalInstanceId, PortalInstance portalInstance)
-		throws Exception;
-
-	public PortalInstance postPortalInstance(PortalInstance portalInstance)
-		throws Exception;
-
-	public Response postPortalInstanceBatch(String callbackURL, Object object)
-		throws Exception;
-
-	public Response postPortalInstancesPageExportBatch(
-			Boolean skipDefault, String callbackURL, String contentType,
-			String fieldNames)
-		throws Exception;
-
-	public void putPortalInstanceActivate(String portalInstanceId)
-		throws Exception;
-
-	public void putPortalInstanceDeactivate(String portalInstanceId)
+	public Response postBatchTestEntityActionBatch(
+			String callbackURL, Object object)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -147,7 +126,7 @@ public interface PortalInstanceResource {
 	@ProviderType
 	public interface Builder {
 
-		public PortalInstanceResource build();
+		public BatchTestEntityActionResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -173,4 +152,4 @@ public interface PortalInstanceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:660353953
+// LIFERAY-REST-BUILDER-HASH:1884788154

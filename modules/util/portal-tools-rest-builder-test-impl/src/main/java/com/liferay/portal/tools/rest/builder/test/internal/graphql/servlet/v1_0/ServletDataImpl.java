@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.tools.rest.builder.test.internal.graphql.mutation.v1_0.Mutation;
 import com.liferay.portal.tools.rest.builder.test.internal.graphql.query.v1_0.Query;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.AssetLibraryTestEntityResourceImpl;
+import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.BatchTestEntityActionResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.BatchTestEntityResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.CompanyTestEntityResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.ERCAssetLibraryTestEntityResourceImpl;
@@ -27,6 +28,7 @@ import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.SortRes
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.TestEntityAddressResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0.TestEntityResourceImpl;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.AssetLibraryTestEntityResource;
+import com.liferay.portal.tools.rest.builder.test.resource.v1_0.BatchTestEntityActionResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.BatchTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.CompanyTestEntityResource;
 import com.liferay.portal.tools.rest.builder.test.resource.v1_0.ERCAssetLibraryTestEntityResource;
@@ -72,6 +74,8 @@ public class ServletDataImpl implements ServletData {
 			_assetLibraryTestEntityResourceComponentServiceObjects);
 		Mutation.setBatchTestEntityResourceComponentServiceObjects(
 			_batchTestEntityResourceComponentServiceObjects);
+		Mutation.setBatchTestEntityActionResourceComponentServiceObjects(
+			_batchTestEntityActionResourceComponentServiceObjects);
 		Mutation.setCompanyTestEntityResourceComponentServiceObjects(
 			_companyTestEntityResourceComponentServiceObjects);
 		Mutation.setERCAssetLibraryTestEntityResourceComponentServiceObjects(
@@ -209,6 +213,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							BatchTestEntityResourceImpl.class,
 							"putBatchTestEntityByExternalReferenceCode"));
+					put(
+						"mutation#createBatchTestEntityAction",
+						new ObjectValuePair<>(
+							BatchTestEntityActionResourceImpl.class,
+							"postBatchTestEntityAction"));
+					put(
+						"mutation#createBatchTestEntityActionBatch",
+						new ObjectValuePair<>(
+							BatchTestEntityActionResourceImpl.class,
+							"postBatchTestEntityActionBatch"));
 					put(
 						"mutation#deleteCompanyTestEntityByExternalReferenceCode",
 						new ObjectValuePair<>(
@@ -902,6 +916,10 @@ public class ServletDataImpl implements ServletData {
 		_batchTestEntityResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<BatchTestEntityActionResource>
+		_batchTestEntityActionResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<CompanyTestEntityResource>
 		_companyTestEntityResourceComponentServiceObjects;
 
@@ -966,4 +984,4 @@ public class ServletDataImpl implements ServletData {
 		_testEntityAddressResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-725757873
+// LIFERAY-REST-BUILDER-HASH:743102016

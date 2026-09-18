@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -13,14 +13,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
-import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
-import com.liferay.headless.batch.engine.client.http.HttpInvoker.HttpResponse;
-import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.client.dto.v1_0.PortalInstanceCopy;
 import com.liferay.headless.portal.instances.client.http.HttpInvoker;
 import com.liferay.headless.portal.instances.client.pagination.Page;
-import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceResource;
-import com.liferay.headless.portal.instances.client.serdes.v1_0.PortalInstanceSerDes;
+import com.liferay.headless.portal.instances.client.resource.v1_0.PortalInstanceCopyResource;
+import com.liferay.headless.portal.instances.client.serdes.v1_0.PortalInstanceCopySerDes;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -77,7 +75,7 @@ import org.junit.Test;
  * @generated
  */
 @Generated("")
-public abstract class BasePortalInstanceResourceTestCase {
+public abstract class BasePortalInstanceCopyResourceTestCase {
 
 	@ClassRule
 	@Rule
@@ -100,23 +98,12 @@ public abstract class BasePortalInstanceResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
-		_portalInstanceResource.setContextCompany(testCompany);
+		_portalInstanceCopyResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
 			testCompany.getCompanyId());
 
-		portalInstanceResource = PortalInstanceResource.builder(
-		).authentication(
-			_testCompanyAdminUser.getEmailAddress(),
-			PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-
-		importTaskResource = ImportTaskResource.builder(
+		portalInstanceCopyResource = PortalInstanceCopyResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -138,23 +125,24 @@ public abstract class BasePortalInstanceResourceTestCase {
 	public void testClientSerDesToDTO() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		PortalInstance portalInstance1 = randomPortalInstance();
+		PortalInstanceCopy portalInstanceCopy1 = randomPortalInstanceCopy();
 
-		String json = objectMapper.writeValueAsString(portalInstance1);
+		String json = objectMapper.writeValueAsString(portalInstanceCopy1);
 
-		PortalInstance portalInstance2 = PortalInstanceSerDes.toDTO(json);
+		PortalInstanceCopy portalInstanceCopy2 = PortalInstanceCopySerDes.toDTO(
+			json);
 
-		Assert.assertTrue(equals(portalInstance1, portalInstance2));
+		Assert.assertTrue(equals(portalInstanceCopy1, portalInstanceCopy2));
 	}
 
 	@Test
 	public void testClientSerDesToJSON() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		PortalInstance portalInstance = randomPortalInstance();
+		PortalInstanceCopy portalInstanceCopy = randomPortalInstanceCopy();
 
-		String json1 = objectMapper.writeValueAsString(portalInstance);
-		String json2 = PortalInstanceSerDes.toJSON(portalInstance);
+		String json1 = objectMapper.writeValueAsString(portalInstanceCopy);
+		String json2 = PortalInstanceCopySerDes.toJSON(portalInstanceCopy);
 
 		Assert.assertEquals(
 			objectMapper.readTree(json1), objectMapper.readTree(json2));
@@ -182,321 +170,44 @@ public abstract class BasePortalInstanceResourceTestCase {
 	public void testEscapeRegexInStringFields() throws Exception {
 		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
 
-		PortalInstance portalInstance = randomPortalInstance();
+		PortalInstanceCopy portalInstanceCopy = randomPortalInstanceCopy();
 
-		portalInstance.setDomain(regex);
-		portalInstance.setPortalInstanceId(regex);
-		portalInstance.setSiteInitializerKey(regex);
-		portalInstance.setVirtualHost(regex);
+		portalInstanceCopy.setName(regex);
+		portalInstanceCopy.setSourcePortalInstanceId(regex);
+		portalInstanceCopy.setVirtualHost(regex);
+		portalInstanceCopy.setWebId(regex);
 
-		String json = PortalInstanceSerDes.toJSON(portalInstance);
+		String json = PortalInstanceCopySerDes.toJSON(portalInstanceCopy);
 
 		Assert.assertFalse(json.contains(regex));
 
-		portalInstance = PortalInstanceSerDes.toDTO(json);
+		portalInstanceCopy = PortalInstanceCopySerDes.toDTO(json);
 
-		Assert.assertEquals(regex, portalInstance.getDomain());
-		Assert.assertEquals(regex, portalInstance.getPortalInstanceId());
-		Assert.assertEquals(regex, portalInstance.getSiteInitializerKey());
-		Assert.assertEquals(regex, portalInstance.getVirtualHost());
-	}
-
-	@Test
-	public void testDeletePortalInstance() throws Exception {
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		PortalInstance portalInstance =
-			testDeletePortalInstance_addPortalInstance();
-
-		assertHttpResponseStatusCode(
-			204,
-			portalInstanceResource.deletePortalInstanceHttpResponse(
-				portalInstance.getPortalInstanceId()));
-
-		assertHttpResponseStatusCode(
-			404,
-			portalInstanceResource.getPortalInstanceHttpResponse(
-				portalInstance.getPortalInstanceId()));
-		assertHttpResponseStatusCode(
-			404, portalInstanceResource.getPortalInstanceHttpResponse("-"));
-	}
-
-	protected PortalInstance testDeletePortalInstance_addPortalInstance()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testDeletePortalInstanceBatch() throws Exception {
-		PortalInstance portalInstance1 =
-			testDeletePortalInstanceBatch_addPortalInstance();
-
-		testDeletePortalInstanceBatch_deletePortalInstance(
-			202, null, portalInstance1.getPortalInstanceId());
-
-		assertHttpResponseStatusCode(
-			404,
-			portalInstanceResource.getPortalInstanceHttpResponse(
-				portalInstance1.getPortalInstanceId()));
-	}
-
-	protected PortalInstance testDeletePortalInstanceBatch_addPortalInstance()
-		throws Exception {
-
-		return testDeletePortalInstance_addPortalInstance();
-	}
-
-	protected void testDeletePortalInstanceBatch_deletePortalInstance(
-			int expectedStatusCode, String externalReferenceCode, String id)
-		throws Exception {
-
-		HttpInvoker.HttpResponse httpResponse =
-			portalInstanceResource.deletePortalInstanceBatchHttpResponse(
-				null,
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"externalReferenceCode", () -> externalReferenceCode
-					).put(
-						"portalInstanceId", () -> id
-					)));
-
-		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
-
-		waitForFinish(
-			"COMPLETED",
-			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
-	}
-
-	@Test
-	public void testGetPortalInstance() throws Exception {
-		PortalInstance postPortalInstance =
-			testGetPortalInstance_addPortalInstance();
-
-		PortalInstance getPortalInstance =
-			portalInstanceResource.getPortalInstance(
-				postPortalInstance.getPortalInstanceId());
-
-		assertEquals(postPortalInstance, getPortalInstance);
-		assertValid(getPortalInstance);
-	}
-
-	protected PortalInstance testGetPortalInstance_addPortalInstance()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testGetPortalInstancesPage() throws Exception {
-		Page<PortalInstance> page =
-			portalInstanceResource.getPortalInstancesPage(null);
-
-		long totalCount = page.getTotalCount();
-
-		PortalInstance portalInstance1 =
-			testGetPortalInstancesPage_addPortalInstance(
-				randomPortalInstance());
-
-		PortalInstance portalInstance2 =
-			testGetPortalInstancesPage_addPortalInstance(
-				randomPortalInstance());
-
-		page = portalInstanceResource.getPortalInstancesPage(null);
-
-		Assert.assertEquals(totalCount + 2, page.getTotalCount());
-
-		assertContains(portalInstance1, (List<PortalInstance>)page.getItems());
-		assertContains(portalInstance2, (List<PortalInstance>)page.getItems());
-		assertValid(page, testGetPortalInstancesPage_getExpectedActions());
-
-		portalInstanceResource.deletePortalInstance(
-			portalInstance1.getPortalInstanceId());
-
-		portalInstanceResource.deletePortalInstance(
-			portalInstance2.getPortalInstanceId());
-	}
-
-	protected Map<String, Map<String, String>>
-			testGetPortalInstancesPage_getExpectedActions()
-		throws Exception {
-
-		Map<String, Map<String, String>> expectedActions = new HashMap<>();
-
-		return expectedActions;
-	}
-
-	protected PortalInstance testGetPortalInstancesPage_addPortalInstance(
-			PortalInstance portalInstance)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testPatchPortalInstance() throws Exception {
-		PortalInstance postPortalInstance =
-			testPatchPortalInstance_addPortalInstance();
-
-		PortalInstance randomPatchPortalInstance = randomPatchPortalInstance();
-
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		PortalInstance patchPortalInstance =
-			portalInstanceResource.patchPortalInstance(
-				postPortalInstance.getPortalInstanceId(),
-				randomPatchPortalInstance);
-
-		PortalInstance expectedPatchPortalInstance = postPortalInstance.clone();
-
-		BeanTestUtil.copyProperties(
-			randomPatchPortalInstance, expectedPatchPortalInstance);
-
-		PortalInstance getPortalInstance =
-			portalInstanceResource.getPortalInstance(
-				patchPortalInstance.getPortalInstanceId());
-
-		assertEquals(expectedPatchPortalInstance, getPortalInstance);
-		assertValid(getPortalInstance);
-	}
-
-	protected PortalInstance testPatchPortalInstance_addPortalInstance()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testPostPortalInstance() throws Exception {
-		PortalInstance randomPortalInstance = randomPortalInstance();
-
-		PortalInstance postPortalInstance =
-			testPostPortalInstance_addPortalInstance(randomPortalInstance);
-
-		assertEquals(randomPortalInstance, postPortalInstance);
-		assertValid(postPortalInstance);
-	}
-
-	protected PortalInstance testPostPortalInstance_addPortalInstance(
-			PortalInstance portalInstance)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testPutPortalInstanceActivate() throws Exception {
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		PortalInstance portalInstance =
-			testPutPortalInstanceActivate_addPortalInstance();
-
-		assertHttpResponseStatusCode(
-			204,
-			portalInstanceResource.putPortalInstanceActivateHttpResponse(
-				portalInstance.getPortalInstanceId()));
-
-		assertHttpResponseStatusCode(
-			404,
-			portalInstanceResource.putPortalInstanceActivateHttpResponse("-"));
-	}
-
-	protected PortalInstance testPutPortalInstanceActivate_addPortalInstance()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testPutPortalInstanceDeactivate() throws Exception {
-		@SuppressWarnings("PMD.UnusedLocalVariable")
-		PortalInstance portalInstance =
-			testPutPortalInstanceDeactivate_addPortalInstance();
-
-		assertHttpResponseStatusCode(
-			204,
-			portalInstanceResource.putPortalInstanceDeactivateHttpResponse(
-				portalInstance.getPortalInstanceId()));
-
-		assertHttpResponseStatusCode(
-			404,
-			portalInstanceResource.putPortalInstanceDeactivateHttpResponse(
-				"-"));
-	}
-
-	protected PortalInstance testPutPortalInstanceDeactivate_addPortalInstance()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		Assert.assertEquals(regex, portalInstanceCopy.getName());
+		Assert.assertEquals(
+			regex, portalInstanceCopy.getSourcePortalInstanceId());
+		Assert.assertEquals(regex, portalInstanceCopy.getVirtualHost());
+		Assert.assertEquals(regex, portalInstanceCopy.getWebId());
 	}
 
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
-		PortalInstance portalInstance1 =
-			testBatchEngineDeleteImportTask_addPortalInstance();
-
-		testBatchEngineDeleteImportTask_deletePortalInstance(
-			200, null, portalInstance1.getPortalInstanceId());
-
-		assertHttpResponseStatusCode(
-			404,
-			portalInstanceResource.getPortalInstanceHttpResponse(
-				portalInstance1.getPortalInstanceId()));
+		Assert.assertTrue(true);
 	}
 
-	protected PortalInstance testBatchEngineDeleteImportTask_addPortalInstance()
-		throws Exception {
-
-		return testDeletePortalInstance_addPortalInstance();
-	}
-
-	protected void testBatchEngineDeleteImportTask_deletePortalInstance(
-			int expectedStatusCode, String externalReferenceCode, String id,
-			String... parameters)
-		throws Exception {
-
-		ImportTaskResource importTaskResource = ImportTaskResource.builder(
-		).authentication(
-			_testCompanyAdminUser.getEmailAddress(),
-			PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).parameters(
-			parameters
-		).build();
-
-		HttpResponse httpResponse =
-			importTaskResource.deleteImportTaskHttpResponse(
-				"com.liferay.headless.portal.instances.dto.v1_0.PortalInstance",
-				null, null, null, null,
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"externalReferenceCode", () -> externalReferenceCode
-					).put(
-						"portalInstanceId", () -> id
-					)));
-
-		Assert.assertEquals(expectedStatusCode, httpResponse.getStatusCode());
-
-		if (expectedStatusCode == 200) {
-			waitForFinish(
-				"COMPLETED",
-				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
-		}
+	@Test
+	public void testPostPortalInstanceCopy() throws Exception {
+		Assert.assertTrue(true);
 	}
 
 	protected void assertContains(
-		PortalInstance portalInstance, List<PortalInstance> portalInstances) {
+		PortalInstanceCopy portalInstanceCopy,
+		List<PortalInstanceCopy> portalInstanceCopies) {
 
 		boolean contains = false;
 
-		for (PortalInstance item : portalInstances) {
-			if (equals(portalInstance, item)) {
+		for (PortalInstanceCopy item : portalInstanceCopies) {
+			if (equals(portalInstanceCopy, item)) {
 				contains = true;
 
 				break;
@@ -504,7 +215,8 @@ public abstract class BasePortalInstanceResourceTestCase {
 		}
 
 		Assert.assertTrue(
-			portalInstances + " does not contain " + portalInstance, contains);
+			portalInstanceCopies + " does not contain " + portalInstanceCopy,
+			contains);
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -516,6 +228,32 @@ public abstract class BasePortalInstanceResourceTestCase {
 	}
 
 	protected void assertEquals(
+		PortalInstanceCopy portalInstanceCopy1,
+		PortalInstanceCopy portalInstanceCopy2) {
+
+		Assert.assertTrue(
+			portalInstanceCopy1 + " does not equal " + portalInstanceCopy2,
+			equals(portalInstanceCopy1, portalInstanceCopy2));
+	}
+
+	protected void assertEquals(
+		List<PortalInstanceCopy> portalInstanceCopies1,
+		List<PortalInstanceCopy> portalInstanceCopies2) {
+
+		Assert.assertEquals(
+			portalInstanceCopies1.size(), portalInstanceCopies2.size());
+
+		for (int i = 0; i < portalInstanceCopies1.size(); i++) {
+			PortalInstanceCopy portalInstanceCopy1 = portalInstanceCopies1.get(
+				i);
+			PortalInstanceCopy portalInstanceCopy2 = portalInstanceCopies2.get(
+				i);
+
+			assertEquals(portalInstanceCopy1, portalInstanceCopy2);
+		}
+	}
+
+	protected void assertEquals(
 		PortalInstance portalInstance1, PortalInstance portalInstance2) {
 
 		Assert.assertTrue(
@@ -523,31 +261,20 @@ public abstract class BasePortalInstanceResourceTestCase {
 			equals(portalInstance1, portalInstance2));
 	}
 
-	protected void assertEquals(
-		List<PortalInstance> portalInstances1,
-		List<PortalInstance> portalInstances2) {
-
-		Assert.assertEquals(portalInstances1.size(), portalInstances2.size());
-
-		for (int i = 0; i < portalInstances1.size(); i++) {
-			PortalInstance portalInstance1 = portalInstances1.get(i);
-			PortalInstance portalInstance2 = portalInstances2.get(i);
-
-			assertEquals(portalInstance1, portalInstance2);
-		}
-	}
-
 	protected void assertEqualsIgnoringOrder(
-		List<PortalInstance> portalInstances1,
-		List<PortalInstance> portalInstances2) {
+		List<PortalInstanceCopy> portalInstanceCopies1,
+		List<PortalInstanceCopy> portalInstanceCopies2) {
 
-		Assert.assertEquals(portalInstances1.size(), portalInstances2.size());
+		Assert.assertEquals(
+			portalInstanceCopies1.size(), portalInstanceCopies2.size());
 
-		for (PortalInstance portalInstance1 : portalInstances1) {
+		for (PortalInstanceCopy portalInstanceCopy1 : portalInstanceCopies1) {
 			boolean contains = false;
 
-			for (PortalInstance portalInstance2 : portalInstances2) {
-				if (equals(portalInstance1, portalInstance2)) {
+			for (PortalInstanceCopy portalInstanceCopy2 :
+					portalInstanceCopies2) {
+
+				if (equals(portalInstanceCopy1, portalInstanceCopy2)) {
 					contains = true;
 
 					break;
@@ -555,20 +282,121 @@ public abstract class BasePortalInstanceResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				portalInstances2 + " does not contain " + portalInstance1,
+				portalInstanceCopies2 + " does not contain " +
+					portalInstanceCopy1,
 				contains);
 		}
 	}
 
-	protected void assertValid(PortalInstance portalInstance) throws Exception {
-		boolean valid = true;
+	protected void assertValid(PortalInstanceCopy portalInstanceCopy)
+		throws Exception {
 
-		if (portalInstance.getPortalInstanceId() == null) {
-			valid = false;
-		}
+		boolean valid = true;
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals(
+					"destinationCompanyId", additionalAssertFieldName)) {
+
+				if (portalInstanceCopy.getDestinationCompanyId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name", additionalAssertFieldName)) {
+				if (portalInstanceCopy.getName() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"sourcePortalInstanceId", additionalAssertFieldName)) {
+
+				if (portalInstanceCopy.getSourcePortalInstanceId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("virtualHost", additionalAssertFieldName)) {
+				if (portalInstanceCopy.getVirtualHost() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("webId", additionalAssertFieldName)) {
+				if (portalInstanceCopy.getWebId() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			throw new IllegalArgumentException(
+				"Invalid additional assert field name " +
+					additionalAssertFieldName);
+		}
+
+		Assert.assertTrue(valid);
+	}
+
+	protected void assertValid(Page<PortalInstanceCopy> page) {
+		assertValid(page, Collections.emptyMap());
+	}
+
+	protected void assertValid(
+		Page<PortalInstanceCopy> page,
+		Map<String, Map<String, String>> expectedActions) {
+
+		boolean valid = false;
+
+		java.util.Collection<PortalInstanceCopy> portalInstanceCopies =
+			page.getItems();
+
+		int size = portalInstanceCopies.size();
+
+		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
+			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
+			(size > 0)) {
+
+			valid = true;
+		}
+
+		Assert.assertTrue(valid);
+
+		assertValid(page.getActions(), expectedActions);
+	}
+
+	protected void assertValid(
+		Map<String, Map<String, String>> actions1,
+		Map<String, Map<String, String>> actions2) {
+
+		for (String key : actions2.keySet()) {
+			Map action = actions1.get(key);
+
+			Assert.assertNotNull(key + " does not contain an action", action);
+
+			Map<String, String> expectedAction = actions2.get(key);
+
+			Assert.assertEquals(
+				expectedAction.get("method"), action.get("method"));
+			Assert.assertEquals(expectedAction.get("href"), action.get("href"));
+		}
+	}
+
+	protected void assertValid(PortalInstance portalInstance) {
+		boolean valid = true;
+
+		for (String additionalAssertFieldName :
+				getAdditionalPortalInstanceAssertFieldNames()) {
 
 			if (Objects.equals("active", additionalAssertFieldName)) {
 				if (portalInstance.getActive() == null) {
@@ -644,62 +472,21 @@ public abstract class BasePortalInstanceResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<PortalInstance> page) {
-		assertValid(page, Collections.emptyMap());
-	}
-
-	protected void assertValid(
-		Page<PortalInstance> page,
-		Map<String, Map<String, String>> expectedActions) {
-
-		boolean valid = false;
-
-		java.util.Collection<PortalInstance> portalInstances = page.getItems();
-
-		int size = portalInstances.size();
-
-		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
-			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
-			(size > 0)) {
-
-			valid = true;
-		}
-
-		Assert.assertTrue(valid);
-
-		assertValid(page.getActions(), expectedActions);
-	}
-
-	protected void assertValid(
-		Map<String, Map<String, String>> actions1,
-		Map<String, Map<String, String>> actions2) {
-
-		for (String key : actions2.keySet()) {
-			Map action = actions1.get(key);
-
-			Assert.assertNotNull(key + " does not contain an action", action);
-
-			Map<String, String> expectedAction = actions2.get(key);
-
-			Assert.assertEquals(
-				expectedAction.get("method"), action.get("method"));
-			Assert.assertEquals(expectedAction.get("href"), action.get("href"));
-		}
-	}
-
 	protected String[] getAdditionalAssertFieldNames() {
+		return new String[0];
+	}
+
+	protected String[] getAdditionalPortalInstanceAssertFieldNames() {
 		return new String[0];
 	}
 
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
-		graphQLFields.add(new GraphQLField("portalInstanceId"));
-
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
 					com.liferay.headless.portal.instances.dto.v1_0.
-						PortalInstance.class)) {
+						PortalInstanceCopy.class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -748,6 +535,110 @@ public abstract class BasePortalInstanceResourceTestCase {
 	}
 
 	protected boolean equals(
+		PortalInstanceCopy portalInstanceCopy1,
+		PortalInstanceCopy portalInstanceCopy2) {
+
+		if (portalInstanceCopy1 == portalInstanceCopy2) {
+			return true;
+		}
+
+		for (String additionalAssertFieldName :
+				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals(
+					"destinationCompanyId", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						portalInstanceCopy1.getDestinationCompanyId(),
+						portalInstanceCopy2.getDestinationCompanyId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("name", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						portalInstanceCopy1.getName(),
+						portalInstanceCopy2.getName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"sourcePortalInstanceId", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						portalInstanceCopy1.getSourcePortalInstanceId(),
+						portalInstanceCopy2.getSourcePortalInstanceId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("virtualHost", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						portalInstanceCopy1.getVirtualHost(),
+						portalInstanceCopy2.getVirtualHost())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("webId", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						portalInstanceCopy1.getWebId(),
+						portalInstanceCopy2.getWebId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			throw new IllegalArgumentException(
+				"Invalid additional assert field name " +
+					additionalAssertFieldName);
+		}
+
+		return true;
+	}
+
+	protected boolean equals(
+		Map<String, Object> map1, Map<String, Object> map2) {
+
+		if (Objects.equals(map1.keySet(), map2.keySet())) {
+			for (Map.Entry<String, Object> entry : map1.entrySet()) {
+				if (entry.getValue() instanceof Map) {
+					if (!equals(
+							(Map)entry.getValue(),
+							(Map)map2.get(entry.getKey()))) {
+
+						return false;
+					}
+				}
+				else if (!Objects.deepEquals(
+							entry.getValue(), map2.get(entry.getKey()))) {
+
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	protected boolean equals(
 		PortalInstance portalInstance1, PortalInstance portalInstance2) {
 
 		if (portalInstance1 == portalInstance2) {
@@ -755,7 +646,7 @@ public abstract class BasePortalInstanceResourceTestCase {
 		}
 
 		for (String additionalAssertFieldName :
-				getAdditionalAssertFieldNames()) {
+				getAdditionalPortalInstanceAssertFieldNames()) {
 
 			if (Objects.equals("active", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -855,32 +746,6 @@ public abstract class BasePortalInstanceResourceTestCase {
 		return true;
 	}
 
-	protected boolean equals(
-		Map<String, Object> map1, Map<String, Object> map2) {
-
-		if (Objects.equals(map1.keySet(), map2.keySet())) {
-			for (Map.Entry<String, Object> entry : map1.entrySet()) {
-				if (entry.getValue() instanceof Map) {
-					if (!equals(
-							(Map)entry.getValue(),
-							(Map)map2.get(entry.getKey()))) {
-
-						return false;
-					}
-				}
-				else if (!Objects.deepEquals(
-							entry.getValue(), map2.get(entry.getKey()))) {
-
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
 	protected java.lang.reflect.Field[] getDeclaredFields(Class clazz)
 		throws Exception {
 
@@ -903,13 +768,13 @@ public abstract class BasePortalInstanceResourceTestCase {
 	protected java.util.Collection<EntityField> getEntityFields()
 		throws Exception {
 
-		if (!(_portalInstanceResource instanceof EntityModelResource)) {
+		if (!(_portalInstanceCopyResource instanceof EntityModelResource)) {
 			throw new UnsupportedOperationException(
 				"Resource is not an instance of EntityModelResource");
 		}
 
 		EntityModelResource entityModelResource =
-			(EntityModelResource)_portalInstanceResource;
+			(EntityModelResource)_portalInstanceCopyResource;
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
@@ -943,7 +808,7 @@ public abstract class BasePortalInstanceResourceTestCase {
 
 	protected String getFilterString(
 		EntityField entityField, String operator,
-		PortalInstance portalInstance) {
+		PortalInstanceCopy portalInstanceCopy) {
 
 		StringBundler sb = new StringBundler();
 
@@ -955,23 +820,13 @@ public abstract class BasePortalInstanceResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
-		if (entityFieldName.equals("active")) {
+		if (entityFieldName.equals("destinationCompanyId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
 
-		if (entityFieldName.equals("admin")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("companyId")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("domain")) {
-			Object object = portalInstance.getDomain();
+		if (entityFieldName.equals("name")) {
+			Object object = portalInstanceCopy.getName();
 
 			String value = String.valueOf(object);
 
@@ -1016,60 +871,8 @@ public abstract class BasePortalInstanceResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("maxUsers")) {
-			sb.append(String.valueOf(portalInstance.getMaxUsers()));
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("portalInstanceId")) {
-			Object object = portalInstance.getPortalInstanceId();
-
-			String value = String.valueOf(object);
-
-			if (operator.equals("contains")) {
-				sb = new StringBundler();
-
-				sb.append("contains(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 2)) {
-					sb.append(value.substring(1, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else if (operator.equals("startswith")) {
-				sb = new StringBundler();
-
-				sb.append("startswith(");
-				sb.append(entityFieldName);
-				sb.append(",'");
-
-				if ((object != null) && (value.length() > 1)) {
-					sb.append(value.substring(0, value.length() - 1));
-				}
-				else {
-					sb.append(value);
-				}
-
-				sb.append("')");
-			}
-			else {
-				sb.append("'");
-				sb.append(value);
-				sb.append("'");
-			}
-
-			return sb.toString();
-		}
-
-		if (entityFieldName.equals("siteInitializerKey")) {
-			Object object = portalInstance.getSiteInitializerKey();
+		if (entityFieldName.equals("sourcePortalInstanceId")) {
+			Object object = portalInstanceCopy.getSourcePortalInstanceId();
 
 			String value = String.valueOf(object);
 
@@ -1115,7 +918,53 @@ public abstract class BasePortalInstanceResourceTestCase {
 		}
 
 		if (entityFieldName.equals("virtualHost")) {
-			Object object = portalInstance.getVirtualHost();
+			Object object = portalInstanceCopy.getVirtualHost();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("webId")) {
+			Object object = portalInstanceCopy.getWebId();
 
 			String value = String.valueOf(object);
 
@@ -1204,57 +1053,50 @@ public abstract class BasePortalInstanceResourceTestCase {
 			invoke(queryGraphQLField.toString()));
 	}
 
+	protected PortalInstanceCopy randomPortalInstanceCopy() throws Exception {
+		return new PortalInstanceCopy() {
+			{
+				destinationCompanyId = RandomTestUtil.randomLong();
+				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				sourcePortalInstanceId = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				virtualHost = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				webId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+			}
+		};
+	}
+
+	protected PortalInstanceCopy randomIrrelevantPortalInstanceCopy()
+		throws Exception {
+
+		PortalInstanceCopy randomIrrelevantPortalInstanceCopy =
+			randomPortalInstanceCopy();
+
+		return randomIrrelevantPortalInstanceCopy;
+	}
+
+	protected PortalInstanceCopy randomPatchPortalInstanceCopy()
+		throws Exception {
+
+		return randomPortalInstanceCopy();
+	}
+
 	protected PortalInstance randomPortalInstance() throws Exception {
 		return new PortalInstance() {
 			{
 				active = RandomTestUtil.randomBoolean();
 				companyId = RandomTestUtil.randomLong();
-				domain = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				domain = RandomTestUtil.randomString();
 				maxUsers = RandomTestUtil.randomInt();
-				portalInstanceId = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-				siteInitializerKey = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
-				virtualHost = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				portalInstanceId = RandomTestUtil.randomString();
+				siteInitializerKey = RandomTestUtil.randomString();
+				virtualHost = RandomTestUtil.randomString();
 			}
 		};
 	}
 
-	protected PortalInstance randomIrrelevantPortalInstance() throws Exception {
-		PortalInstance randomIrrelevantPortalInstance = randomPortalInstance();
-
-		return randomIrrelevantPortalInstance;
-	}
-
-	protected PortalInstance randomPatchPortalInstance() throws Exception {
-		return randomPortalInstance();
-	}
-
-	protected final JSONObject waitForFinish(
-			String expectedExecuteStatus, JSONObject jsonObject)
-		throws Exception {
-
-		while (true) {
-			ImportTask importTask = importTaskResource.getImportTask(
-				jsonObject.getLong("id"));
-
-			ImportTask.ExecuteStatus executeStatus =
-				importTask.getExecuteStatus();
-
-			if (StringUtil.equals(executeStatus.getValue(), "COMPLETED") ||
-				StringUtil.equals(executeStatus.getValue(), "FAILED")) {
-
-				Assert.assertEquals(
-					expectedExecuteStatus, executeStatus.getValue());
-
-				return jsonObject;
-			}
-		}
-	}
-
-	protected PortalInstanceResource portalInstanceResource;
-	protected ImportTaskResource importTaskResource;
+	protected PortalInstanceCopyResource portalInstanceCopyResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
@@ -1453,16 +1295,15 @@ public abstract class BasePortalInstanceResourceTestCase {
 	}
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BasePortalInstanceResourceTestCase.class);
+		LogFactoryUtil.getLog(BasePortalInstanceCopyResourceTestCase.class);
 
 	private static Format _format;
 
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private
-		com.liferay.headless.portal.instances.resource.v1_0.
-			PortalInstanceResource _portalInstanceResource;
+	private com.liferay.headless.portal.instances.resource.v1_0.
+		PortalInstanceCopyResource _portalInstanceCopyResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1453752637
+// LIFERAY-REST-BUILDER-HASH:-628478709

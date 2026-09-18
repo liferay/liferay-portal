@@ -9,6 +9,7 @@
  */
 
 	export {AssetLibraryTestEntityAPI} from './apis/AssetLibraryTestEntityAPI';
+	export {BatchTestEntityActionAPI} from './apis/BatchTestEntityActionAPI';
 	export {BatchTestEntityAPI} from './apis/BatchTestEntityAPI';
 	export {CompanyTestEntityAPI} from './apis/CompanyTestEntityAPI';
 	export {EntityModelResourceTestEntity1API} from './apis/EntityModelResourceTestEntity1API';
@@ -29,6 +30,7 @@
 
 	export {AssetLibraryTestEntity} from './models/AssetLibraryTestEntity';
 	export {BatchTestEntity} from './models/BatchTestEntity';
+	export {BatchTestEntityAction} from './models/BatchTestEntityAction';
 	export {ChildTestEntity1} from './models/ChildTestEntity1';
 	export {ChildTestEntity2} from './models/ChildTestEntity2';
 	export {ChildTestEntity3} from './models/ChildTestEntity3';

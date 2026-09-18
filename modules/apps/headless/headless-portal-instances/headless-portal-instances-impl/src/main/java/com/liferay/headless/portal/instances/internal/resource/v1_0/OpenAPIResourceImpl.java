@@ -87,9 +87,15 @@ public class OpenAPIResourceImpl {
 		{
 			add(PortalInstanceResourceImpl.class);
 
+			add(PortalInstanceCopyResourceImpl.class);
+
+			add(PortalInstanceExportResourceImpl.class);
+
+			add(PortalInstanceImportResourceImpl.class);
+
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:873268387
+// LIFERAY-REST-BUILDER-HASH:641446987

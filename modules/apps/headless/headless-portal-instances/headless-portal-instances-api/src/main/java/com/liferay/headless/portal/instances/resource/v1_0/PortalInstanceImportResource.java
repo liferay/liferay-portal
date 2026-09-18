@@ -1,11 +1,12 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
 package com.liferay.headless.portal.instances.resource.v1_0;
 
 import com.liferay.headless.portal.instances.dto.v1_0.PortalInstance;
+import com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceImport;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -16,7 +17,6 @@ import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
 import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
-import com.liferay.portal.vulcan.pagination.Page;
 
 import jakarta.annotation.Generated;
 
@@ -43,38 +43,14 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface PortalInstanceResource {
+public interface PortalInstanceImportResource {
 
-	public void deletePortalInstance(String portalInstanceId) throws Exception;
-
-	public Response deletePortalInstanceBatch(String callbackURL, Object object)
+	public PortalInstance postPortalInstanceImport(
+			PortalInstanceImport portalInstanceImport)
 		throws Exception;
 
-	public PortalInstance getPortalInstance(String portalInstanceId)
-		throws Exception;
-
-	public Page<PortalInstance> getPortalInstancesPage(Boolean skipDefault)
-		throws Exception;
-
-	public PortalInstance patchPortalInstance(
-			String portalInstanceId, PortalInstance portalInstance)
-		throws Exception;
-
-	public PortalInstance postPortalInstance(PortalInstance portalInstance)
-		throws Exception;
-
-	public Response postPortalInstanceBatch(String callbackURL, Object object)
-		throws Exception;
-
-	public Response postPortalInstancesPageExportBatch(
-			Boolean skipDefault, String callbackURL, String contentType,
-			String fieldNames)
-		throws Exception;
-
-	public void putPortalInstanceActivate(String portalInstanceId)
-		throws Exception;
-
-	public void putPortalInstanceDeactivate(String portalInstanceId)
+	public Response postPortalInstanceImportBatch(
+			String callbackURL, Object object)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -147,7 +123,7 @@ public interface PortalInstanceResource {
 	@ProviderType
 	public interface Builder {
 
-		public PortalInstanceResource build();
+		public PortalInstanceImportResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -173,4 +149,4 @@ public interface PortalInstanceResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:660353953
+// LIFERAY-REST-BUILDER-HASH:1238304780

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.headless.portal.instances.dto.v1_0;
+package com.liferay.portal.tools.rest.builder.test.dto.v1_0;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -19,8 +19,6 @@ import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 
 import jakarta.annotation.Generated;
 
-import jakarta.validation.constraints.NotEmpty;
-
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
@@ -34,57 +32,52 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 /**
- * @author Alberto Chaparro
+ * @author Alejandro Tardín
  * @generated
  */
 @Generated("")
 @GraphQLName(
-	description = "The export of a portal instance.",
-	value = "PortalInstanceExport"
+	description = "Reproduces an operation whose schema already names its parent, so the generated method is post<Parent><Schema> and carries no path parameter.",
+	value = "BatchTestEntityAction"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "The export of a portal instance.",
-	requiredProperties = {"portalInstanceId"}
+	description = "Reproduces an operation whose schema already names its parent, so the generated method is post<Parent><Schema> and carries no path parameter."
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "PortalInstanceExport")
-public class PortalInstanceExport implements Serializable {
+@XmlRootElement(name = "BatchTestEntityAction")
+public class BatchTestEntityAction implements Serializable {
 
-	public static PortalInstanceExport toDTO(String json) {
-		return ObjectMapperUtil.readValue(PortalInstanceExport.class, json);
+	public static BatchTestEntityAction toDTO(String json) {
+		return ObjectMapperUtil.readValue(BatchTestEntityAction.class, json);
 	}
 
-	public static PortalInstanceExport unsafeToDTO(String json) {
+	public static BatchTestEntityAction unsafeToDTO(String json) {
 		return ObjectMapperUtil.unsafeReadValue(
-			PortalInstanceExport.class, json);
+			BatchTestEntityAction.class, json);
 	}
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The name of the schema created by the export (e.g., lexported_12345)."
-	)
-	public String getExportedPartitionName() {
-		if (_exportedPartitionNameSupplier != null) {
-			exportedPartitionName = _exportedPartitionNameSupplier.get();
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getName() {
+		if (_nameSupplier != null) {
+			name = _nameSupplier.get();
 
-			_exportedPartitionNameSupplier = null;
+			_nameSupplier = null;
 		}
 
-		return exportedPartitionName;
+		return name;
 	}
 
-	public void setExportedPartitionName(String exportedPartitionName) {
-		this.exportedPartitionName = exportedPartitionName;
+	public void setName(String name) {
+		this.name = name;
 
-		_exportedPartitionNameSupplier = null;
+		_nameSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setExportedPartitionName(
-		UnsafeSupplier<String, Exception> exportedPartitionNameUnsafeSupplier) {
-
-		_exportedPartitionNameSupplier = () -> {
+	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
+		_nameSupplier = () -> {
 			try {
-				return exportedPartitionNameUnsafeSupplier.get();
+				return nameUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -95,85 +88,37 @@ public class PortalInstanceExport implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "The name of the schema created by the export (e.g., lexported_12345)."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String exportedPartitionName;
-
-	@JsonIgnore
-	private Supplier<String> _exportedPartitionNameSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The web ID of the portal instance to export."
-	)
-	public String getPortalInstanceId() {
-		if (_portalInstanceIdSupplier != null) {
-			portalInstanceId = _portalInstanceIdSupplier.get();
-
-			_portalInstanceIdSupplier = null;
-		}
-
-		return portalInstanceId;
-	}
-
-	public void setPortalInstanceId(String portalInstanceId) {
-		this.portalInstanceId = portalInstanceId;
-
-		_portalInstanceIdSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setPortalInstanceId(
-		UnsafeSupplier<String, Exception> portalInstanceIdUnsafeSupplier) {
-
-		_portalInstanceIdSupplier = () -> {
-			try {
-				return portalInstanceIdUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(description = "The web ID of the portal instance to export.")
+	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	@NotEmpty
-	protected String portalInstanceId;
+	protected String name;
 
 	@JsonIgnore
-	private Supplier<String> _portalInstanceIdSupplier;
+	private Supplier<String> _nameSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The ID of the source company that was exported (e.g., 12345)."
-	)
-	public Long getSourceCompanyId() {
-		if (_sourceCompanyIdSupplier != null) {
-			sourceCompanyId = _sourceCompanyIdSupplier.get();
+	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getSourceBatchTestEntityId() {
+		if (_sourceBatchTestEntityIdSupplier != null) {
+			sourceBatchTestEntityId = _sourceBatchTestEntityIdSupplier.get();
 
-			_sourceCompanyIdSupplier = null;
+			_sourceBatchTestEntityIdSupplier = null;
 		}
 
-		return sourceCompanyId;
+		return sourceBatchTestEntityId;
 	}
 
-	public void setSourceCompanyId(Long sourceCompanyId) {
-		this.sourceCompanyId = sourceCompanyId;
+	public void setSourceBatchTestEntityId(Long sourceBatchTestEntityId) {
+		this.sourceBatchTestEntityId = sourceBatchTestEntityId;
 
-		_sourceCompanyIdSupplier = null;
+		_sourceBatchTestEntityIdSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setSourceCompanyId(
-		UnsafeSupplier<Long, Exception> sourceCompanyIdUnsafeSupplier) {
+	public void setSourceBatchTestEntityId(
+		UnsafeSupplier<Long, Exception> sourceBatchTestEntityIdUnsafeSupplier) {
 
-		_sourceCompanyIdSupplier = () -> {
+		_sourceBatchTestEntityIdSupplier = () -> {
 			try {
-				return sourceCompanyIdUnsafeSupplier.get();
+				return sourceBatchTestEntityIdUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -184,14 +129,12 @@ public class PortalInstanceExport implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "The ID of the source company that was exported (e.g., 12345)."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected Long sourceCompanyId;
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Long sourceBatchTestEntityId;
 
 	@JsonIgnore
-	private Supplier<Long> _sourceCompanyIdSupplier;
+	private Supplier<Long> _sourceBatchTestEntityIdSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -199,14 +142,14 @@ public class PortalInstanceExport implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PortalInstanceExport)) {
+		if (!(object instanceof BatchTestEntityAction)) {
 			return false;
 		}
 
-		PortalInstanceExport portalInstanceExport =
-			(PortalInstanceExport)object;
+		BatchTestEntityAction batchTestEntityAction =
+			(BatchTestEntityAction)object;
 
-		return Objects.equals(toString(), portalInstanceExport.toString());
+		return Objects.equals(toString(), batchTestEntityAction.toString());
 	}
 
 	@Override
@@ -221,48 +164,32 @@ public class PortalInstanceExport implements Serializable {
 
 		sb.append("{");
 
-		String exportedPartitionName = getExportedPartitionName();
+		String name = getName();
 
-		if (exportedPartitionName != null) {
+		if (name != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"exportedPartitionName\": ");
+			sb.append("\"name\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(exportedPartitionName));
+			sb.append(_escape(name));
 
 			sb.append("\"");
 		}
 
-		String portalInstanceId = getPortalInstanceId();
+		Long sourceBatchTestEntityId = getSourceBatchTestEntityId();
 
-		if (portalInstanceId != null) {
+		if (sourceBatchTestEntityId != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"portalInstanceId\": ");
+			sb.append("\"sourceBatchTestEntityId\": ");
 
-			sb.append("\"");
-
-			sb.append(_escape(portalInstanceId));
-
-			sb.append("\"");
-		}
-
-		Long sourceCompanyId = getSourceCompanyId();
-
-		if (sourceCompanyId != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"sourceCompanyId\": ");
-
-			sb.append(sourceCompanyId);
+			sb.append(sourceBatchTestEntityId);
 		}
 
 		sb.append("}");
@@ -272,7 +199,7 @@ public class PortalInstanceExport implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.headless.portal.instances.dto.v1_0.PortalInstanceExport",
+		defaultValue = "com.liferay.portal.tools.rest.builder.test.dto.v1_0.BatchTestEntityAction",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -387,4 +314,4 @@ public class PortalInstanceExport implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1890914690
+// LIFERAY-REST-BUILDER-HASH:946347396

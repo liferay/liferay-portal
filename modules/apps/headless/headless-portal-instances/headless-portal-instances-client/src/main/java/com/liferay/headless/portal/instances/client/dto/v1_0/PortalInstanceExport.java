@@ -46,6 +46,27 @@ public class PortalInstanceExport implements Cloneable, Serializable {
 
 	protected String exportedPartitionName;
 
+	public String getPortalInstanceId() {
+		return portalInstanceId;
+	}
+
+	public void setPortalInstanceId(String portalInstanceId) {
+		this.portalInstanceId = portalInstanceId;
+	}
+
+	public void setPortalInstanceId(
+		UnsafeSupplier<String, Exception> portalInstanceIdUnsafeSupplier) {
+
+		try {
+			portalInstanceId = portalInstanceIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String portalInstanceId;
+
 	public Long getSourceCompanyId() {
 		return sourceCompanyId;
 	}
@@ -100,4 +121,4 @@ public class PortalInstanceExport implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:375632592
+// LIFERAY-REST-BUILDER-HASH:-112379357

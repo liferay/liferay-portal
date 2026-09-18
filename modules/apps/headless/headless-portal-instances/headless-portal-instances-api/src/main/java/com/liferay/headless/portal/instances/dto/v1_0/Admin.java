@@ -181,6 +181,135 @@ public class Admin implements Serializable {
 	@JsonIgnore
 	private Supplier<String> _givenNameSupplier;
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The admin's middle name."
+	)
+	public String getMiddleName() {
+		if (_middleNameSupplier != null) {
+			middleName = _middleNameSupplier.get();
+
+			_middleNameSupplier = null;
+		}
+
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+
+		_middleNameSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setMiddleName(
+		UnsafeSupplier<String, Exception> middleNameUnsafeSupplier) {
+
+		_middleNameSupplier = () -> {
+			try {
+				return middleNameUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The admin's middle name.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String middleName;
+
+	@JsonIgnore
+	private Supplier<String> _middleNameSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The admin's password."
+	)
+	public String getPassword() {
+		if (_passwordSupplier != null) {
+			password = _passwordSupplier.get();
+
+			_passwordSupplier = null;
+		}
+
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+
+		_passwordSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPassword(
+		UnsafeSupplier<String, Exception> passwordUnsafeSupplier) {
+
+		_passwordSupplier = () -> {
+			try {
+				return passwordUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The admin's password.")
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	protected String password;
+
+	@JsonIgnore
+	private Supplier<String> _passwordSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The admin's screen name."
+	)
+	public String getScreenName() {
+		if (_screenNameSupplier != null) {
+			screenName = _screenNameSupplier.get();
+
+			_screenNameSupplier = null;
+		}
+
+		return screenName;
+	}
+
+	public void setScreenName(String screenName) {
+		this.screenName = screenName;
+
+		_screenNameSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScreenName(
+		UnsafeSupplier<String, Exception> screenNameUnsafeSupplier) {
+
+		_screenNameSupplier = () -> {
+			try {
+				return screenNameUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The admin's screen name.")
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String screenName;
+
+	@JsonIgnore
+	private Supplier<String> _screenNameSupplier;
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {
@@ -252,6 +381,54 @@ public class Admin implements Serializable {
 			sb.append("\"");
 
 			sb.append(_escape(givenName));
+
+			sb.append("\"");
+		}
+
+		String middleName = getMiddleName();
+
+		if (middleName != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"middleName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(middleName));
+
+			sb.append("\"");
+		}
+
+		String password = getPassword();
+
+		if (password != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"password\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(password));
+
+			sb.append("\"");
+		}
+
+		String screenName = getScreenName();
+
+		if (screenName != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"screenName\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(screenName));
 
 			sb.append("\"");
 		}
@@ -378,4 +555,4 @@ public class Admin implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:866875775
+// LIFERAY-REST-BUILDER-HASH:-1727326677
