@@ -30,6 +30,17 @@ export default async function handleUpdateGroup({
 	if (isRepeatable !== undefined && group.isRepeatable !== isRepeatable) {
 		const uuids = Array.from(getChildrenUuids({root: group}));
 
+		if (isRepeatable && group.parent !== structure.uuid) {
+			openToast({
+				message: Liferay.Language.get(
+					'a-group-can-only-be-repeatable-at-the-first-level'
+				),
+				type: 'danger',
+			});
+
+			return;
+		}
+
 		if (
 			isRepeatable &&
 			uuids.some((uuid) => isLocked({root: structure, uuid}))

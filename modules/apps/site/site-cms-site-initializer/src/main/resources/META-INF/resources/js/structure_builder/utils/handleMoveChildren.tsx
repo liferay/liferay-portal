@@ -22,6 +22,7 @@ import getUndeletableChildren, {
 	UndeletableReason,
 } from './getUndeletableChildren';
 import isReferenced from './isReferenced';
+import isRelationship from './isRelationship';
 
 export default async function handleMoveChildren({
 	deletedChildren,
@@ -38,6 +39,23 @@ export default async function handleMoveChildren({
 	targetUuid: Uuid;
 	uuids: Uuid[];
 }) {
+	if (
+		Liferay.FeatureFlags['LPD-96666'] &&
+		targetUuid !== structure.uuid &&
+		uuids.some((uuid) =>
+			isRelationship(findChild({root: structure, uuid})!)
+		)
+	) {
+		openToast({
+			message: Liferay.Language.get(
+				'repeatable-groups-and-referenced-structures-can-only-be-placed-at-the-first-level'
+			),
+			type: 'danger',
+		});
+
+		return;
+	}
+
 	if (
 		exceedsMaxNesting({
 			items: uuids.map((uuid) => findChild({root: structure, uuid})!),

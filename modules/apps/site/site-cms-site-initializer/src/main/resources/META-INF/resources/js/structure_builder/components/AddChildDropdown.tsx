@@ -59,6 +59,11 @@ export default function AddChildDropdown({
 
 	const triggerRef = useRef<HTMLButtonElement | null>(null);
 
+	const nested =
+		Boolean(Liferay.FeatureFlags['LPD-96666']) &&
+		Boolean(parentUuid) &&
+		parentUuid !== structure.uuid;
+
 	const addField = (type: Field['type']) =>
 		dispatch({
 			field: getDefaultField({
@@ -110,29 +115,34 @@ export default function AddChildDropdown({
 						symbolLeft: FIELD_TYPE_ICON[type],
 					})
 				),
-				[
-					{
-						className: 'dropdown-item-cms-warning',
-						label: Liferay.Language.get('select-related-content'),
-						onClick: () => addRelatedContent(),
-						symbolLeft: 'select-from-list',
-					},
-					{
-						className: 'dropdown-item-cms-warning',
-						label: Liferay.Language.get(
-							'referenced-content-structure'
-						),
-						onClick: () =>
-							openReferencedStructureModal({
-								dispatch,
-								objectDefinitions,
-								parentUuid: parentUuid ?? structure.uuid,
-								status,
-								structure,
-							}),
-						symbolLeft: 'edit-layout',
-					},
-				],
+				nested
+					? []
+					: [
+							{
+								className: 'dropdown-item-cms-warning',
+								label: Liferay.Language.get(
+									'select-related-content'
+								),
+								onClick: () => addRelatedContent(),
+								symbolLeft: 'select-from-list',
+							},
+							{
+								className: 'dropdown-item-cms-warning',
+								label: Liferay.Language.get(
+									'referenced-content-structure'
+								),
+								onClick: () =>
+									openReferencedStructureModal({
+										dispatch,
+										objectDefinitions,
+										parentUuid:
+											parentUuid ?? structure.uuid,
+										status,
+										structure,
+									}),
+								symbolLeft: 'edit-layout',
+							},
+						],
 			]
 				.map((section) =>
 					section.filter(({label}) =>
