@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ChannelsMenu should render the first item as label 1`] = `
+<div>
+  <div
+    class="channels-menu-root"
+  >
+    <div
+      class="channels-menu-label"
+    >
+      Property
+    </div>
+    <button
+      aria-activedescendant=""
+      aria-expanded="false"
+      aria-haspopup="listbox"
+      aria-label="Property"
+      class="rounded-lg d-flex justify-content-between align-items-center btn btn-block btn-secondary"
+      role="combobox"
+      tabindex="0"
+      type="button"
+    >
+      Link 1
+      <svg
+        class="lexicon-icon lexicon-icon-caret-double inline-item inline-item-after"
+        role="presentation"
+      >
+        <use
+          href="#caret-double"
+        />
+      </svg>
+    </button>
+    <div
+      class="channels-menu-icon"
+    >
+      <svg
+        class="lexicon-icon lexicon-icon-sites icon-root"
+        role="presentation"
+      >
+        <use
+          href="#sites"
+        />
+      </svg>
+    </div>
+  </div>
+</div>
+`;
