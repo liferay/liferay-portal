@@ -13,6 +13,8 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {searchPageTest} from '../../../fixtures/searchPageTest';
 import getRandomString from '../../../utils/getRandomString';
+import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
+import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 
 export const test = mergeTests(
 	isolatedLayoutTest({type: 'portlet'}),
@@ -82,6 +84,235 @@ test.describe('Category Facet', () => {
 			}
 		});
 	});
+
+	test(
+		'Filters by a vocabulary selected from an asset library',
+		{tag: '@LPD-104381'},
+		async ({apiHelpers, layout, page, searchPage}) => {
+			const assetLibraryName = getRandomString();
+			const categoryNames = [getRandomString(), getRandomString()];
+			const keyword = getRandomString();
+			const vocabularyNames = [getRandomString(), getRandomString()];
+
+			await test.step('Create an asset library with two vocabularies connected to the site', async () => {
+				const company =
+					await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+						'liferay.com'
+					);
+
+				const guestGroup =
+					await apiHelpers.jsonWebServicesGroup.getGroupByKey(
+						company.companyId,
+						'Guest'
+					);
+
+				const assetLibrary =
+					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+						name: assetLibraryName,
+					});
+
+				await apiHelpers.headlessAssetLibrary.connectSite(
+					assetLibrary.externalReferenceCode,
+					guestGroup.externalReferenceCode
+				);
+
+				const categoryIds: number[] = [];
+
+				for (const [
+					index,
+					vocabularyName,
+				] of vocabularyNames.entries()) {
+					const vocabulary =
+						await apiHelpers.headlessAdminTaxonomy.postAssetLibraryTaxonomyVocabulary(
+							{
+								assetLibraryId: assetLibrary.siteId,
+								name: vocabularyName,
+							}
+						);
+
+					const category =
+						await apiHelpers.headlessAdminTaxonomy.postTaxonomyVocabularyTaxonomyCategory(
+							{
+								name: categoryNames[index],
+								vocabularyId: vocabulary.id,
+							}
+						);
+
+					categoryIds.push(category.id);
+				}
+
+				await apiHelpers.headlessDelivery.postStructuredContent({
+					categoryIds,
+					contentFields: [
+						{
+							contentFieldValue: {data: keyword},
+							name: 'content',
+						},
+					],
+					contentStructureId:
+						await getBasicWebContentStructureId(apiHelpers),
+					datePublished: null,
+					siteId: layout.groupId,
+					title: keyword,
+				});
+			});
+
+			await test.step('Add search portlets to the page', async () => {
+				await page.goto('/web/guest' + layout.friendlyURL);
+
+				await searchPage.addPortlet('Search Bar', 'Search');
+				await searchPage.addPortlet('Category Facet', 'Search');
+				await searchPage.addPortlet('Search Results', 'Search');
+			});
+
+			await test.step('Select the first asset library vocabulary in the configuration', async () => {
+				await searchPage.openSearchPortletConfiguration(
+					'Category Facet'
+				);
+
+				await searchPage.modalIFrame
+					.getByLabel('Select Vocabularies')
+					.click();
+
+				const assetLibraryTreeItem = searchPage.modalIFrame.getByRole(
+					'treeitem',
+					{name: assetLibraryName}
+				);
+
+				await assetLibraryTreeItem
+					.locator('.component-expander')
+					.click();
+
+				await searchPage.modalIFrame
+					.getByRole('treeitem', {name: vocabularyNames[0]})
+					.getByRole('checkbox')
+					.check();
+
+				await searchPage.savePortletConfiguration();
+			});
+
+			await test.step('Assert only the selected vocabulary category is listed', async () => {
+				await searchPage.searchKeywordInMainContent(keyword);
+
+				await expect(searchPage.searchResultsTotalLabel).toHaveText(
+					`1 Result for ${keyword}`
+				);
+
+				await expect(
+					await searchPage.getSearchFacetCheckbox(
+						categoryNames[0],
+						'Category'
+					)
+				).toBeVisible();
+
+				await expect(
+					await searchPage.getSearchFacetCheckbox(
+						categoryNames[1],
+						'Category'
+					)
+				).toBeHidden();
+			});
+		}
+	);
+
+	test(
+		'Allows a Site Administrator without a library role to view the connected library vocabularies',
+		{tag: '@LPD-104381'},
+		async ({apiHelpers, layout, page, searchPage}) => {
+			const assetLibraryName = getRandomString();
+			const vocabularyName = getRandomString();
+
+			const guestGroup =
+				await test.step('Create an asset library connected to the site', async () => {
+					const company =
+						await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+							'liferay.com'
+						);
+
+					const guestGroup =
+						await apiHelpers.jsonWebServicesGroup.getGroupByKey(
+							company.companyId,
+							'Guest'
+						);
+
+					const assetLibrary =
+						await apiHelpers.headlessAssetLibrary.createAssetLibrary(
+							{
+								name: assetLibraryName,
+							}
+						);
+
+					await apiHelpers.headlessAssetLibrary.connectSite(
+						assetLibrary.externalReferenceCode,
+						guestGroup.externalReferenceCode
+					);
+
+					await apiHelpers.headlessAdminTaxonomy.postAssetLibraryTaxonomyVocabulary(
+						{
+							assetLibraryId: assetLibrary.siteId,
+							name: vocabularyName,
+						}
+					);
+
+					return guestGroup;
+				});
+
+			await test.step('Assign a Site Administrator to the site without any library role', async () => {
+				const user =
+					await apiHelpers.headlessAdminUser.postUserAccount();
+
+				userData[user.alternateName] = {
+					name: user.givenName,
+					password: 'test',
+					surname: user.familyName,
+				};
+
+				const siteAdministratorRole =
+					await apiHelpers.headlessAdminUser.getRoleByName(
+						'Site Administrator'
+					);
+
+				await apiHelpers.headlessAdminUser.assignUserToSite(
+					siteAdministratorRole.id,
+					guestGroup.groupId,
+					user.id
+				);
+
+				await performUserSwitchViaApi(page, user.alternateName);
+			});
+
+			await test.step('Confirm the connected library vocabulary is visible in the configuration', async () => {
+				await page.goto('/web/guest' + layout.friendlyURL);
+
+				await searchPage.addPortlet('Search Bar', 'Search');
+				await searchPage.addPortlet('Category Facet', 'Search');
+				await searchPage.addPortlet('Search Results', 'Search');
+
+				await searchPage.openSearchPortletConfiguration(
+					'Category Facet'
+				);
+
+				await searchPage.modalIFrame
+					.getByLabel('Select Vocabularies')
+					.click();
+
+				const assetLibraryTreeItem = searchPage.modalIFrame.getByRole(
+					'treeitem',
+					{name: assetLibraryName}
+				);
+
+				await assetLibraryTreeItem
+					.locator('.component-expander')
+					.click();
+
+				await expect(
+					searchPage.modalIFrame.getByRole('treeitem', {
+						name: vocabularyName,
+					})
+				).toBeVisible();
+			});
+		}
+	);
 });
 
 test.describe('Selection Persistence', () => {
