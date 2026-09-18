@@ -6,6 +6,12 @@ templates:
     -   templates/liferayinfrastructure.yaml
 tests:
     -   asserts:
+            -   isEmpty:
+                    path: spec.backup.vaultTags
+            -   isEmpty:
+                    path: spec.storage.tags
+        it: Defaults the storage tags and backup vault tags to empty maps
+    -   asserts:
             -   equal:
                     path: metadata.name
                     value: my-release
@@ -55,18 +61,6 @@ tests:
             region: us-east-1
     -   asserts:
             -   equal:
-                    path: spec.search.elasticsearch.enabled
-                    value: false
-        it: Reflects the disabled Elasticsearch search engine by default
-    -   asserts:
-            -   equal:
-                    path: spec.search.elasticsearch.enabled
-                    value: true
-        it: Reflects the enabled Elasticsearch search engine when toggled on
-        set:
-            search.elasticsearch.enabled: true
-    -   asserts:
-            -   equal:
                     path: spec.backup.vaultTags.spend_area
                     value: storage
             -   equal:
@@ -77,8 +71,14 @@ tests:
             backup.vaultTags.spend_area: storage
             storage.tags.resource_type: backup
     -   asserts:
-            -   isEmpty:
-                    path: spec.backup.vaultTags
-            -   isEmpty:
-                    path: spec.storage.tags
-        it: Defaults the storage tags and backup vault tags to empty maps
+            -   equal:
+                    path: spec.search.elasticsearch.enabled
+                    value: false
+        it: Reflects the disabled Elasticsearch search engine by default
+    -   asserts:
+            -   equal:
+                    path: spec.search.elasticsearch.enabled
+                    value: true
+        it: Reflects the enabled Elasticsearch search engine when toggled on
+        set:
+            search.elasticsearch.enabled: true
