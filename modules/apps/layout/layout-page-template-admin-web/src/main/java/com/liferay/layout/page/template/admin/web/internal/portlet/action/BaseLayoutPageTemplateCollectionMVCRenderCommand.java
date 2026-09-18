@@ -44,16 +44,10 @@ public abstract class BaseLayoutPageTemplateCollectionMVCRenderCommand
 					getLayoutPageTemplateCollectionId());
 		}
 
-		setAttributes(renderRequest, renderResponse);
-
 		return getPath();
 	}
 
 	protected abstract String getPath();
-
-	protected void setAttributes(
-		RenderRequest renderRequest, RenderResponse renderResponse) {
-	}
 
 	@Reference
 	protected Portal portal;

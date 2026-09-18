@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.display.context;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.VerticalNavItemList;
@@ -365,6 +366,11 @@ public class LayoutPageTemplateDisplayContext {
 		return verticalNavItemList;
 	}
 
+	public boolean isHideCollectionsPanel() {
+		return DesignLibraryUtil.isDesignLibraryScope(
+			_themeDisplay.getScopeGroup());
+	}
+
 	public boolean isSearch() {
 		return Validator.isNotNull(getKeywords());
 	}
@@ -373,13 +379,6 @@ public class LayoutPageTemplateDisplayContext {
 		return LayoutPageTemplatePermission.contains(
 			_themeDisplay.getPermissionChecker(),
 			_themeDisplay.getSiteGroupId(), actionId);
-	}
-
-	public boolean isShowCollectionsPanel() {
-		return GetterUtil.getBoolean(
-			_httpServletRequest.getAttribute(
-				LayoutPageTemplateAdminWebKeys.SHOW_COLLECTIONS_PANEL),
-			true);
 	}
 
 	private final HttpServletRequest _httpServletRequest;

@@ -24,7 +24,7 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 	size="xxxl"
 >
 	<clay:row>
-		<c:if test="<%= layoutPageTemplateDisplayContext.isShowCollectionsPanel() %>">
+		<c:if test="<%= !layoutPageTemplateDisplayContext.isHideCollectionsPanel() %>">
 			<clay:col
 				lg="3"
 			>
@@ -113,7 +113,7 @@ List<LayoutPageTemplateCollection> layoutPageTemplateCollections = layoutPageTem
 		</c:if>
 
 		<clay:col
-			lg='<%= layoutPageTemplateDisplayContext.isShowCollectionsPanel() ? "9" : "12" %>'
+			lg='<%= layoutPageTemplateDisplayContext.isHideCollectionsPanel() ? "12" : "9" %>'
 		>
 
 			<%

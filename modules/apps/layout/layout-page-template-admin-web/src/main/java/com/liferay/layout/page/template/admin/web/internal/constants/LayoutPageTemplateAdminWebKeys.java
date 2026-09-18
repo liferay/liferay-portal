@@ -24,7 +24,4 @@ public class LayoutPageTemplateAdminWebKeys {
 	public static final String LAYOUT_PAGE_TEMPLATE_ENTRIES =
 		"LAYOUT_PAGE_TEMPLATE_ENTRIES";
 
-	public static final String SHOW_COLLECTIONS_PANEL =
-		"SHOW_COLLECTIONS_PANEL";
-
 }
