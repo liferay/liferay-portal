@@ -49,11 +49,15 @@ export default function ElementVariationFilterMenu({
 
 		setExclude(filter?.exclude ?? false);
 		setFilterType(nextFilterType);
+		setSearch('');
 		setValues(filter?.values ?? []);
 	};
 
+	const matchesSearch = (label: string) =>
+		label.toLowerCase().includes(search.toLowerCase());
+
 	const filterTypes = FILTER_TYPES.filter((type) =>
-		getFilterLabel(type).toLowerCase().includes(search.toLowerCase())
+		matchesSearch(getFilterLabel(type))
 	);
 
 	return (
@@ -87,7 +91,10 @@ export default function ElementVariationFilterMenu({
 							aria-label={Liferay.Language.get('back')}
 							className="component-action mr-2"
 							displayType={null}
-							onClick={() => setFilterType(null)}
+							onClick={() => {
+								setFilterType(null);
+								setSearch('');
+							}}
 							size="sm"
 							symbol="angle-left"
 						/>
@@ -95,7 +102,11 @@ export default function ElementVariationFilterMenu({
 						<span>{getFilterLabel(filterType)}</span>
 					</div>
 
-					<div className="dropdown-divider" />
+					<DropDown.Search
+						aria-label={Liferay.Language.get('search')}
+						onChange={setSearch}
+						value={search}
+					/>
 
 					<div className="align-items-center d-flex dropdown-section justify-content-between">
 						<label className="mb-0" htmlFor={excludeId}>
@@ -112,8 +123,9 @@ export default function ElementVariationFilterMenu({
 					<div className="dropdown-divider" />
 
 					<DropDown.ItemList role="presentation">
-						{getFilterOptions(filterType, audiences).map(
-							(option) => (
+						{getFilterOptions(filterType, audiences)
+							.filter((option) => matchesSearch(option.label))
+							.map((option) => (
 								<DropDown.Section
 									key={option.value}
 									role="none"
@@ -139,8 +151,7 @@ export default function ElementVariationFilterMenu({
 										}
 									/>
 								</DropDown.Section>
-							)
-						)}
+							))}
 					</DropDown.ItemList>
 
 					<div className="dropdown-footer">
