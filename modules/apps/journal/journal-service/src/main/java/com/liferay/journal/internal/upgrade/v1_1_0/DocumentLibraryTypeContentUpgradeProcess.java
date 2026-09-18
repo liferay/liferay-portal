@@ -42,9 +42,14 @@ public class DocumentLibraryTypeContentUpgradeProcess extends UpgradeProcess {
 		contentDocument = contentDocument.clone();
 
 		XPath xPath = SAXReaderUtil.createXPath(
-			"//dynamic-element[@type='document_library']");
+			"//dynamic-element[@type='document_library' or " +
+				"@type='image_gallery']");
 
 		List<Node> imageNodes = xPath.selectNodes(contentDocument);
+
+		if (imageNodes.isEmpty()) {
+			return null;
+		}
 
 		for (Node imageNode : imageNodes) {
 			Element imageElement = (Element)imageNode;
@@ -61,6 +66,8 @@ public class DocumentLibraryTypeContentUpgradeProcess extends UpgradeProcess {
 
 				dynamicContentElement.addCDATA(data);
 			}
+
+			imageElement.addAttribute("type", "document_library");
 		}
 
 		return contentDocument.formattedString();
@@ -71,7 +78,8 @@ public class DocumentLibraryTypeContentUpgradeProcess extends UpgradeProcess {
 
 			PreparedStatement preparedStatement1 = connection.prepareStatement(
 				"select content, id_ from JournalArticle where content like " +
-					"'%type=\"document_library\"%'");
+					"'%type=\"document_library\"%' or content like " +
+						"'%type=\"image_gallery\"%'");
 
 			ResultSet resultSet = preparedStatement1.executeQuery();
 
@@ -81,8 +89,14 @@ public class DocumentLibraryTypeContentUpgradeProcess extends UpgradeProcess {
 					"update JournalArticle set content = ? where id_ = ?")) {
 
 			while (resultSet.next()) {
-				preparedStatement2.setString(
-					1, _convertContent(resultSet.getString("content")));
+				String content = _convertContent(
+					resultSet.getString("content"));
+
+				if (content == null) {
+					continue;
+				}
+
+				preparedStatement2.setString(1, content);
 				preparedStatement2.setLong(2, resultSet.getLong("id_"));
 
 				preparedStatement2.addBatch();
