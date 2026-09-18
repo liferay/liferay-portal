@@ -12,6 +12,10 @@ clusterBootstrap:
         sysctl -w vm.max_map_count=1048576
 crossplaneNamespace: crossplane-system
 gateway:
+    accessControl:
+        allowedCIDRs: []
+        enabled: false
+        gateways: []
     internetFacing: true
     namespace: envoy-gateway-system
 liferay-dxp-operator:

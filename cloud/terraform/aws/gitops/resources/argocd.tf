@@ -172,6 +172,10 @@ resource "kubernetes_manifest" "infrastructure_appproject" {
 					server="https://kubernetes.default.svc"
 				},
 				{
+					namespace=var.argo_workflows_namespace
+					server="https://kubernetes.default.svc"
+				},
+				{
 					namespace=var.argocd_namespace
 					server="https://kubernetes.default.svc"
 				},
