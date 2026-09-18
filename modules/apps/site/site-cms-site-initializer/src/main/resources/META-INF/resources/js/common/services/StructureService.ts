@@ -181,10 +181,7 @@ async function updateStructure({
 		)
 	);
 
-	formData.append(
-		'deletedRepeatableGroupsERCs',
-		history.deletedGroupERCs.join(',')
-	);
+	formData.append('deletedGroupERCs', history.deletedGroupERCs.join(','));
 
 	formData.append('objectDefinition', JSON.stringify(mainObjectDefinition));
 
