@@ -352,7 +352,7 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 
 		_addSchemas(entityClass, schemas);
 
-		schema.$ref(entityClass.getSimpleName());
+		OpenAPISchemaUtil.setReference(entityClass.getSimpleName(), schema);
 	}
 
 	private void _addSchemas(
@@ -894,6 +894,7 @@ public class ObjectEntryOpenAPIContributor extends BaseOpenAPIContributor {
 					key,
 					new ArraySchema() {
 						{
+							setDescription(schema.getDescription());
 							setExtensions(schema.getExtensions());
 							setItems(
 								new Schema() {
