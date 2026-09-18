@@ -10,6 +10,7 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.model.CommerceOrderType;
 import com.liferay.commerce.price.list.constants.CommercePriceListConstants;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
@@ -17,6 +18,7 @@ import com.liferay.commerce.price.list.model.CommercePriceListChannelRel;
 import com.liferay.commerce.price.list.model.CommerceTierPriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListChannelRelLocalService;
+import com.liferay.commerce.price.list.service.CommercePriceListOrderTypeRelLocalService;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryLocalService;
 import com.liferay.commerce.pricing.constants.CommercePriceModifierConstants;
 import com.liferay.commerce.pricing.model.CommercePriceModifier;
@@ -29,6 +31,7 @@ import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
+import com.liferay.commerce.service.CommerceOrderTypeLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.price.list.CommercePriceListTestUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
@@ -37,12 +40,14 @@ import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceEntry;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceList;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListAccount;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListChannel;
+import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceListOrderType;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.PriceModifier;
 import com.liferay.headless.commerce.admin.pricing.client.dto.v2_0.TierPrice;
 import com.liferay.headless.commerce.admin.pricing.client.pagination.Page;
 import com.liferay.headless.commerce.admin.pricing.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.pricing.client.problem.Problem;
 import com.liferay.headless.commerce.admin.pricing.client.resource.v2_0.PriceListResource;
+import com.liferay.headless.commerce.core.util.DateConfig;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.SystemEvent;
@@ -697,6 +702,37 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 
 		PriceList priceList = _randomPriceListWithEmptyCatalog();
 
+		priceList.setCatalogId(_commerceCatalog.getCommerceCatalogId());
+
+		PriceListOrderType priceListOrderType = new PriceListOrderType();
+
+		DateConfig displayDateConfig = DateConfig.toDisplayDateConfig(
+			RandomTestUtil.nextDate(), _user.getTimeZone());
+		DateConfig expirationDateConfig = DateConfig.toExpirationDateConfig(
+			RandomTestUtil.nextDate(), _user.getTimeZone());
+
+		CommerceOrderType commerceOrderType =
+			_commerceOrderTypeLocalService.addCommerceOrderType(
+				RandomTestUtil.randomString(), _user.getUserId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomBoolean(), displayDateConfig.getMonth(),
+				displayDateConfig.getDay(), displayDateConfig.getYear(),
+				displayDateConfig.getHour(), displayDateConfig.getMinute(), 0,
+				expirationDateConfig.getMonth(), expirationDateConfig.getDay(),
+				expirationDateConfig.getYear(), expirationDateConfig.getHour(),
+				expirationDateConfig.getMinute(), true, _serviceContext);
+
+		_commerceOrderTypes.add(commerceOrderType);
+
+		priceListOrderType.setOrderTypeExternalReferenceCode(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+		priceListOrderType.setOrderTypeId(
+			commerceOrderType.getCommerceOrderTypeId());
+
+		priceList.setPriceListOrderTypes(
+			new PriceListOrderType[] {priceListOrderType});
+
 		try (SafeCloseable safeCloseable =
 				LazyReferencingTestUtil.setLazyReferencingWithSafeCloseable(
 					true)) {
@@ -741,6 +777,22 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 			cpDefinition.getCProductExternalReferenceCode());
 		Assert.assertEquals(
 			commerceCatalog.getGroupId(), cpDefinition.getGroupId());
+
+		CommerceOrderType emptyCommerceOrderType =
+			_commerceOrderTypeLocalService.
+				fetchCommerceOrderTypeByExternalReferenceCode(
+					priceListOrderType.getOrderTypeExternalReferenceCode(),
+					testCompany.getCompanyId());
+
+		_commerceOrderTypes.add(emptyCommerceOrderType);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, emptyCommerceOrderType.getStatus());
+		Assert.assertNotNull(
+			_commercePriceListOrderTypeRelLocalService.
+				fetchCommercePriceListOrderTypeRel(
+					postPriceList.getId(),
+					emptyCommerceOrderType.getCommerceOrderTypeId()));
 	}
 
 	private void _testPostPriceListWithSamePriceListAccount() throws Exception {
@@ -865,11 +917,21 @@ public class PriceListResourceTest extends BasePriceListResourceTestCase {
 	private CommerceCurrency _commerceCurrency;
 
 	@Inject
+	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
+
+	@DeleteAfterTestRun
+	private List<CommerceOrderType> _commerceOrderTypes = new ArrayList<>();
+
+	@Inject
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 
 	@Inject
 	private CommercePriceListChannelRelLocalService
 		_commercePriceListChannelRelLocalService;
+
+	@Inject
+	private CommercePriceListOrderTypeRelLocalService
+		_commercePriceListOrderTypeRelLocalService;
 
 	@DeleteAfterTestRun
 	private List<CommercePriceList> _commercePriceLists = new ArrayList<>();

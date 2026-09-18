@@ -390,6 +390,8 @@ public class PriceEntryResourceTest extends BasePriceEntryResourceTestCase {
 
 		PriceEntry priceEntry = _randomPriceEntryWithEmptySku();
 
+		priceEntry.setSkuId(_cpInstance.getCPInstanceId());
+
 		CommercePriceList commercePriceList = _addCommercePriceList();
 
 		try (SafeCloseable safeCloseable =
