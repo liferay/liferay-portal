@@ -10,6 +10,7 @@ import com.liferay.account.constants.AccountListTypeConstants;
 import com.liferay.account.internal.upgrade.v1_1_0.SchemaUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_11_2.RoleResourceUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_12_1.AccountEntryResourcePermissionUpgradeProcess;
+import com.liferay.account.internal.upgrade.v2_13_0.AccountValidatorResultUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_4_0.AccountGroupResourceUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_5_0.AccountRoleResourceUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
@@ -218,17 +219,7 @@ public class AccountServiceUpgradeStepRegistrator
 				_resourceActionLocalService, _resourcePermissionLocalService));
 
 		registry.register(
-			"2.12.1", "2.13.0",
-			UpgradeProcessFactory.runSQL(
-				StringBundler.concat(
-					"update ObjectRelationship set deletionType = ",
-					"'cascade' where objectFieldId2 in (select ",
-					"ObjectField.objectFieldId from ObjectDefinition inner ",
-					"join ObjectField on ObjectField.objectDefinitionId = ",
-					"ObjectDefinition.objectDefinitionId where ",
-					"ObjectDefinition.externalReferenceCode = ",
-					"'L_ACCOUNT_VALIDATOR_RESULT' and ObjectField.name = ",
-					"'r_accountToAccountValidatorResults_accountEntryId')")));
+			"2.12.1", "2.13.0", new AccountValidatorResultUpgradeProcess());
 	}
 
 	@Reference

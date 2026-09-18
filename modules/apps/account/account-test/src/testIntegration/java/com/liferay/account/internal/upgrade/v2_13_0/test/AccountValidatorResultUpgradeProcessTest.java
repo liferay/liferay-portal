@@ -26,6 +26,8 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -77,11 +79,6 @@ public class AccountValidatorResultUpgradeProcessTest {
 
 		_runUpgrade();
 
-		CacheRegistryUtil.clear();
-
-		_entityCache.clearCache();
-		_finderCache.clearCache();
-
 		ObjectRelationship objectRelationship =
 			_objectRelationshipLocalService.getObjectRelationship(
 				_objectRelationship.getObjectRelationshipId());
@@ -95,9 +92,17 @@ public class AccountValidatorResultUpgradeProcessTest {
 		UpgradeProcess[] upgradeProcesses = UpgradeTestUtil.getUpgradeSteps(
 			_upgradeStepRegistrator, new Version(2, 13, 0));
 
+		Assert.assertEquals(
+			Arrays.toString(upgradeProcesses), 1, upgradeProcesses.length);
+
 		for (UpgradeProcess upgradeProcess : upgradeProcesses) {
 			upgradeProcess.upgrade();
 		}
+
+		CacheRegistryUtil.clear();
+
+		_entityCache.clearCache();
+		_finderCache.clearCache();
 	}
 
 	@Inject

@@ -9,18 +9,30 @@ import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
 import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.manager.AccountEntryValidatorResultManager;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.test.util.AccountEntryTestUtil;
 import com.liferay.account.service.test.util.AccountEntryValidatorResultTestUtil;
 import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.account.validator.BaseAccountEntryValidator;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -38,8 +50,10 @@ public class AccountEntryValidatorResultManagerTest {
 
 	@ClassRule
 	@Rule
-	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
-		new LiferayIntegrationTestRule();
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	public void setUp() throws Exception {
@@ -47,6 +61,54 @@ public class AccountEntryValidatorResultManagerTest {
 			AccountEntryValidatorResultManagerTest.class);
 
 		_accountEntry = AccountEntryTestUtil.addAccountEntry();
+	}
+
+	@Test
+	public void testDeleteAccountEntry() throws Exception {
+		String className = RandomTestUtil.randomString();
+
+		_accountEntryValidatorResultManager.addAccountEntryValidatorResult(
+			_accountEntry,
+			AccountEntryValidatorResult.builder(
+				RandomTestUtil.randomString()
+			).resultStatus(
+				AccountEntryValidatorConstants.RESULT_SUCCESS
+			).build(),
+			className);
+		_accountEntryValidatorResultManager.addAccountEntryValidatorResult(
+			_accountEntry,
+			AccountEntryValidatorResult.builder(
+				RandomTestUtil.randomString()
+			).resultStatus(
+				AccountEntryValidatorConstants.RESULT_FAILURE
+			).build(),
+			className);
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_ACCOUNT", _accountEntry.getCompanyId());
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.
+				fetchObjectRelationshipByExternalReferenceCode(
+					"L_ACCOUNT_TO_L_ACCOUNT_VALIDATOR_RESULTS",
+					_accountEntry.getCompanyId(),
+					objectDefinition.getObjectDefinitionId());
+
+		List<ObjectEntry> objectEntries = _getObjectEntries(objectRelationship);
+
+		Assert.assertEquals(objectEntries.toString(), 2, objectEntries.size());
+
+		_accountEntryLocalService.deleteAccountEntry(_accountEntry);
+
+		Assert.assertNull(
+			_accountEntryLocalService.fetchAccountEntry(
+				_accountEntry.getAccountEntryId()));
+
+		objectEntries = _getObjectEntries(objectRelationship);
+
+		Assert.assertEquals(objectEntries.toString(), 0, objectEntries.size());
 	}
 
 	@Test
@@ -151,11 +213,33 @@ public class AccountEntryValidatorResultManagerTest {
 		Assert.assertEquals(1, testAccountEntryValidator.getDoValidateCount());
 	}
 
+	private List<ObjectEntry> _getObjectEntries(
+			ObjectRelationship objectRelationship)
+		throws Exception {
+
+		return _objectEntryLocalService.getOneToManyObjectEntries(
+			0, objectRelationship.getObjectRelationshipId(), null, false,
+			_accountEntry.getAccountEntryId(), true, null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
 	private AccountEntry _accountEntry;
+
+	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
 	private AccountEntryValidatorResultManager
 		_accountEntryValidatorResultManager;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	private static class TestAccountEntryValidator
 		extends BaseAccountEntryValidator {
