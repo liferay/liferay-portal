@@ -16,7 +16,7 @@ import {waitForFDS} from '../../../../../utils/waitFor';
 import {waitForSPAToBeLoaded} from '../../../../../utils/waitForSPAToBeLoaded';
 import {fdsSamplePageTest} from '../../fixtures/fdsSamplePageTest';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 20;
 
 const TOTAL_ENTRIES = 100;
 

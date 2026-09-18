@@ -30,6 +30,5 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 	apiURL="<%= fdsSampleDisplayContext.getAPIURL() %>"
 	emptyState="<%= fdsSampleDisplayContext.getEmptyState() %>"
 	id="<%= FDSSampleFDSNames.DELEGATED_FILTERS %>"
-	itemsPerPage="<%= 10 %>"
 	style="fluid"
 />
