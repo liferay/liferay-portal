@@ -1,17 +1,14 @@
-import * as API from 'shared/api';
 import ChannelsMenu, {Channel} from '../channels-menu';
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
 import Panel from '@clayui/panel';
 import React from 'react';
 import SidebarItem from './SidebarItem';
-import UserDropdown, {Menus} from 'shared/components/user-dropdown';
 import {ACCOUNTS, Routes, SEGMENTS, toRoute} from 'shared/util/router';
-import {DEVELOPER_MODE, LANGUAGES} from 'shared/util/constants';
-import {Link, matchPath} from 'react-router-dom';
+import {DEVELOPER_MODE} from 'shared/util/constants';
 import {Map} from 'immutable';
+import {matchPath} from 'react-router-dom';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
-import {User} from 'shared/util/records';
 
 interface ISidebarProps {
 	activePathname: string;
@@ -19,11 +16,9 @@ interface ISidebarProps {
 	channels: Channel[];
 	className?: string;
 	collapsed: boolean;
-	currentUser: User;
 	expandedSections: Map<string, boolean>;
 	groupId: string;
 	onSectionExpandedChange: (sectionKey: string, expanded: boolean) => void;
-	onToggle: () => void;
 }
 
 const Sidebar: React.FC<ISidebarProps> = ({
@@ -32,11 +27,9 @@ const Sidebar: React.FC<ISidebarProps> = ({
 	channels = [],
 	className,
 	collapsed = false,
-	currentUser = new User(),
 	expandedSections = Map(),
 	groupId,
 	onSectionExpandedChange,
-	onToggle,
 }) => {
 	const LDPEnabled = useLDPEnabled({groupId});
 
@@ -132,70 +125,9 @@ const Sidebar: React.FC<ISidebarProps> = ({
 		},
 	];
 
-	const getUserMenus = (): Menus => {
-		const {emailAddress, languageId} = currentUser;
-
-		return {
-			base: [
-				{
-					items: [
-						{
-							childMenuId: 'language',
-							divider: true,
-							label: Liferay.Language.get('language'),
-						},
-						{
-							label: Liferay.Language.get('switch-workspaces'),
-							url: Routes.BASE,
-						},
-						{
-							externalLink: true,
-							label: Liferay.Language.get('sign-out'),
-							url: Routes.LOGOUT,
-						},
-					],
-					subheaderLabel: emailAddress,
-				},
-			],
-			language: [
-				{
-					items: LANGUAGES.map(({id, label}) => {
-						const active = languageId === id;
-
-						return {
-							active,
-							label,
-							onClick: active
-								? undefined
-								: () => {
-										API.user
-											.updateLanguage({
-												languageId: id,
-											})
-											.then(() =>
-												window.location.reload()
-											);
-									},
-						};
-					}),
-				},
-			],
-		};
-	};
-
 	return (
 		<div className={getCN('sidebar-root', className, {collapsed})}>
 			<div className="sidebar-header">
-				<Link
-					className="sidebar-header-logo"
-					to={toRoute(Routes.SITES, {channelId, groupId})}
-				>
-					<ClayIcon
-						className="icon-root icon-size-md logo"
-						symbol={LDPEnabled ? 'ldp_logo' : 'ac_logo'}
-					/>
-				</Link>
-
 				<ChannelsMenu
 					channels={channels}
 					defaultChannelId={channelId}
@@ -255,36 +187,11 @@ const Sidebar: React.FC<ISidebarProps> = ({
 				))}
 			</div>
 
-			<div className="sidebar-footer">
-				<div className="divider" />
+			{DEVELOPER_MODE && (
+				<div className="sidebar-footer">
+					<div className="divider" />
 
-				<ul className="nav-list">
-					<UserDropdown
-						className="user-dropdown-root"
-						containerElement="li"
-						initialActiveMenu="base"
-						menus={getUserMenus()}
-						userName={currentUser.name}
-					/>
-
-					<SidebarItem
-						active={
-							!!matchPath(
-								{
-									end: false,
-									path: Routes.SETTINGS,
-								},
-								activePathname
-							)
-						}
-						href={toRoute(Routes.SETTINGS_DATA_SOURCE_LIST, {
-							groupId,
-						})}
-						icon="cog"
-						label={Liferay.Language.get('settings')}
-					/>
-
-					{DEVELOPER_MODE && (
+					<ul className="nav-list">
 						<SidebarItem
 							active={
 								!!matchPath(
@@ -302,16 +209,9 @@ const Sidebar: React.FC<ISidebarProps> = ({
 							icon="code"
 							label="UI Kit"
 						/>
-					)}
-
-					<SidebarItem
-						icon={
-							collapsed ? 'angle-right-small' : 'angle-left-small'
-						}
-						onClick={onToggle}
-					/>
-				</ul>
-			</div>
+					</ul>
+				</div>
+			)}
 		</div>
 	);
 };

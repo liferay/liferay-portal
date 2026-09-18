@@ -15,7 +15,6 @@
 
 		.item-label,
 		.section-title,
-		.user-name,
 		.channels-menu-label,
 		.channels-menu-trigger {
 			opacity: 0;
@@ -37,8 +36,7 @@
 	}
 
 	.item-label,
-	.section-title,
-	.user-name {
+	.section-title {
 		opacity: 1;
 		transition:
 			opacity 0.2s ease,
@@ -104,12 +102,6 @@
 				color: $mainLighten8;
 			}
 		}
-	}
-
-	.logo {
-		height: 24px;
-		margin-right: 16px;
-		width: 24px;
 	}
 
 	.nav-list {
@@ -184,10 +176,6 @@
 		align-items: center;
 		margin: 24px 0;
 		padding: 0 16px;
-
-		.sidebar-header-logo {
-			padding: 0 12px;
-		}
 	}
 
 	.sidebar-item-root {
@@ -216,20 +204,6 @@
 		.link-content-wrapper {
 			align-items: center;
 			display: flex;
-		}
-	}
-
-	.user-dropdown-root {
-		.avatar {
-			background-color: $secondary;
-			color: $main;
-			font-size: $fontSizeSmall;
-			font-weight: $fontWeightSemiBold;
-			margin-right: 16px;
-			transition:
-				border-color 0.15s ease-out,
-				background-color 0.15s ease-out,
-				color 0.15s ease-out;
 		}
 	}
 }

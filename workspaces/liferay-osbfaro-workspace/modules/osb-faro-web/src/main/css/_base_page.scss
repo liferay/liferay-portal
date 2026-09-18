@@ -114,9 +114,9 @@
 		}
 
 		.info-panel-root {
-			height: 100vh;
+			height: calc(100vh - #{$topBarHeight});
 			position: fixed;
-			top: 0;
+			top: $topBarHeight;
 			transform: translateY(-1px);
 		}
 	}

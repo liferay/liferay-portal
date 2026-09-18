@@ -2,7 +2,7 @@
 	background-color: $white;
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 119px);
+	height: calc(100vh - 119px - #{$topBarHeight});
 	position: relative;
 	width: 100%;
 

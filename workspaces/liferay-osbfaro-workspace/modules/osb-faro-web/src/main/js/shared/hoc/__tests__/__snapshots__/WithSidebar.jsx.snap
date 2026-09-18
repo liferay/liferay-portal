@@ -20,20 +20,6 @@ exports[`withSidebar should render with the sidebar 1`] = `
       <div
         class="sidebar-header"
       >
-        <a
-          class="sidebar-header-logo"
-          data-discover="true"
-          href="/workspace/23/1/sites"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-ac_logo icon-root icon-size-md logo"
-            role="presentation"
-          >
-            <use
-              href="#ac_logo"
-            />
-          </svg>
-        </a>
         <div
           class="channels-menu-root"
         >
@@ -383,19 +369,102 @@ exports[`withSidebar should render with the sidebar 1`] = `
           </div>
         </div>
       </div>
+    </div>
+    <div
+      class="with-sidebar-content"
+    >
       <div
-        class="sidebar-footer"
+        class="align-items-center bg-white border-bottom d-flex justify-content-between px-3 sticky-top top-bar-root"
       >
         <div
-          class="divider"
-        />
-        <ul
-          class="nav-list"
+          class="align-items-center d-flex"
         >
-          <li
-            class="user-dropdown-root"
+          <button
+            aria-label="Menu"
+            class="btn btn-monospaced btn-outline-borderless btn-sm btn-outline-secondary"
+            data-tooltip-align="bottom"
+            title="Menu"
+            type="button"
+          >
+            <svg
+              class="lexicon-icon lexicon-icon-product-menu-open"
+              role="presentation"
+            >
+              <use
+                href="#product-menu-open"
+              />
+            </svg>
+          </button>
+          <svg
+            class="lexicon-icon lexicon-icon-ac_logo icon-root icon-size-md ml-2"
+            role="presentation"
+          >
+            <use
+              href="#ac_logo"
+            />
+          </svg>
+          <span
+            class="font-weight-semi-bold ml-2 text-nowrap top-bar-product-name"
+          >
+            Analytics Cloud
+          </span>
+        </div>
+        <div
+          class="align-items-center d-flex"
+        >
+          <a
+            aria-label="Settings"
+            class="btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm"
+            data-discover="true"
+            data-tooltip-align="bottom"
+            href="/workspace/23/settings/data-source"
+            title="Settings"
+          >
+            <svg
+              class="lexicon-icon lexicon-icon-cog"
+              role="presentation"
+            >
+              <use
+                href="#cog"
+              />
+            </svg>
+          </a>
+          <span
+            class="mx-2 top-bar-divider"
+          />
+          <button
+            class="text-nowrap btn btn-outline-borderless btn-sm btn-outline-secondary"
+            data-tooltip-align="bottom"
+            title="Language"
+            type="button"
+          >
+            <svg
+              class="lexicon-icon lexicon-icon-automatic-translate inline-item inline-item-before top-bar-language-icon"
+              role="presentation"
+            >
+              <use
+                href="#automatic-translate"
+              />
+            </svg>
+            <span
+              class="top-bar-language-label"
+            >
+              EN (US)
+            </span>
+            <svg
+              class="lexicon-icon lexicon-icon-caret-bottom inline-item inline-item-after top-bar-language-caret"
+              role="presentation"
+            >
+              <use
+                href="#caret-bottom"
+              />
+            </svg>
+          </button>
+          <div
+            class="ml-2 top-bar-user"
           >
             <button
+              aria-label="Test Test"
               class="user-menu button-root btn btn-unstyled trigger"
               type="button"
             >
@@ -405,80 +474,24 @@ exports[`withSidebar should render with the sidebar 1`] = `
                 <div
                   class="sticker sticker-root sticker-static avatar sticker-circle"
                 >
-                  TT
+                  <svg
+                    class="lexicon-icon lexicon-icon-user icon-root"
+                    role="presentation"
+                  >
+                    <use
+                      href="#user"
+                    />
+                  </svg>
                 </div>
-                <span
-                  class="user-name"
-                >
-                  Test Test
-                </span>
               </div>
             </button>
-          </li>
-          <li
-            class="sidebar-item-root"
-          >
-            <a
-              class="link btn btn-unstyled"
-              href="/workspace/23/settings/data-source"
-            >
-              <span
-                class="link-content-wrapper"
-              >
-                <span
-                  class="icon-wrapper"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-cog icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#cog"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="item-label"
-                >
-                  Settings
-                </span>
-              </span>
-            </a>
-          </li>
-          <li
-            class="sidebar-item-root"
-          >
-            <button
-              class="link btn btn-unstyled"
-              type="button"
-            >
-              <span
-                class="link-content-wrapper"
-              >
-                <span
-                  class="icon-wrapper"
-                >
-                  <svg
-                    class="lexicon-icon lexicon-icon-angle-left-small icon-root"
-                    role="presentation"
-                  >
-                    <use
-                      href="#angle-left-small"
-                    />
-                  </svg>
-                </span>
-                <span
-                  class="item-label"
-                />
-              </span>
-            </button>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
+      <p>
+        bizbaz
+      </p>
     </div>
-    <p>
-      bizbaz
-    </p>
   </div>
 </div>
 `;

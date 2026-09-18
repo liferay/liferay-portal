@@ -20,11 +20,13 @@ interface IUserDropdownProps extends React.HTMLAttributes<HTMLElement> {
 	initialActiveMenu: string;
 	menus: Menus;
 	showCaret?: boolean;
+	symbol?: string;
 	userName: string;
 }
 
 interface ILabelProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	showCaret?: boolean;
+	symbol?: string;
 	userName: string;
 }
 
@@ -35,6 +37,7 @@ const userDropDown: React.FC<IUserDropdownProps> = ({
 	initialActiveMenu,
 	menus,
 	showCaret = false,
+	symbol,
 	userName,
 }: IUserDropdownProps) => {
 	const [active, setActive] = useState(false);
@@ -68,6 +71,7 @@ const userDropDown: React.FC<IUserDropdownProps> = ({
 					onClick={handleActive}
 					ref={triggerElementRef}
 					showCaret={showCaret}
+					symbol={symbol}
 					userName={userName}
 				/>
 			</ContainerElement>
@@ -169,8 +173,9 @@ const userDropDown: React.FC<IUserDropdownProps> = ({
 };
 
 const Label = React.forwardRef<HTMLButtonElement, ILabelProps>(
-	({className, showCaret, userName, ...otherProps}, ref) => (
+	({className, showCaret, symbol, userName, ...otherProps}, ref) => (
 		<button
+			aria-label={userName}
 			className={getCN(
 				'user-menu button-root btn btn-unstyled trigger',
 				className
@@ -180,11 +185,11 @@ const Label = React.forwardRef<HTMLButtonElement, ILabelProps>(
 			{...otherProps}
 		>
 			<div className="text-truncate">
-				<Sticker circle className="avatar">
-					{getInitials(userName)}
+				<Sticker circle className="avatar" symbol={symbol}>
+					{!symbol && getInitials(userName)}
 				</Sticker>
 
-				<span className="user-name">{userName}</span>
+				{!symbol && <span className="user-name">{userName}</span>}
 
 				{showCaret && (
 					<ClayIcon

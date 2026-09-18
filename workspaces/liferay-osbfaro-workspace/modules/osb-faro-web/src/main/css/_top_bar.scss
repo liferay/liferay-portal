@@ -1,0 +1,32 @@
+.top-bar-root {
+	height: $topBarHeight;
+
+	.top-bar-divider {
+		background: $mainLighten74;
+		height: 20px;
+		width: 1px;
+	}
+
+	.top-bar-product-name {
+		font-size: 18px;
+	}
+
+	.top-bar-user .avatar {
+		background: transparent;
+		border: 1px solid $mainLighten74;
+		color: $mainLighten28;
+		margin-right: 0;
+	}
+
+	@media (max-width: 576px) {
+		.top-bar-language-caret,
+		.top-bar-language-label,
+		.top-bar-product-name {
+			display: none;
+		}
+
+		.top-bar-language-icon {
+			margin-right: 0;
+		}
+	}
+}

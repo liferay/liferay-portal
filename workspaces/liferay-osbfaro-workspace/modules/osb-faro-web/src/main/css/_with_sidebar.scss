@@ -10,3 +10,9 @@
 		padding-left: $sidebarClosedWidth;
 	}
 }
+
+.with-sidebar-content {
+	.index-root {
+		min-height: calc(100vh - #{$topBarHeight});
+	}
+}

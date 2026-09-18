@@ -33,6 +33,7 @@ exports[`Workspaces should render a list of projects if there is only one projec
         </a>
         <div>
           <button
+            aria-label="Test Test"
             class="user-menu button-root btn btn-unstyled trigger"
             type="button"
           >
@@ -208,6 +209,7 @@ exports[`Workspaces should render empty state 1`] = `
         </a>
         <div>
           <button
+            aria-label="Test Test"
             class="user-menu button-root btn btn-unstyled trigger"
             type="button"
           >
@@ -369,6 +371,7 @@ exports[`Workspaces should render with a message that all basic tier plans have 
         </a>
         <div>
           <button
+            aria-label="Test Test"
             class="user-menu button-root btn btn-unstyled trigger"
             type="button"
           >
@@ -594,6 +597,7 @@ exports[`Workspaces should render with a message that one or more basic tier wor
         </a>
         <div>
           <button
+            aria-label="Test Test"
             class="user-menu button-root btn btn-unstyled trigger"
             type="button"
           >

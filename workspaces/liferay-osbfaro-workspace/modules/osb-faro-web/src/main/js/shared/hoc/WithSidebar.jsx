@@ -7,6 +7,7 @@ import getCN from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import Sidebar from 'shared/components/sidebar';
+import TopBar from 'shared/components/top-bar';
 import withCurrentUser from './WithCurrentUser';
 import withDefaultChannelId from './WithDefaultChannelId';
 import withQuery from './WithQuery';
@@ -202,20 +203,26 @@ export default compose(
 							channelId={selectedChannel && selectedChannel.id}
 							channels={channels}
 							collapsed={collapsed}
-							currentUser={currentUser}
 							expandedSections={expandedSections}
 							groupId={groupId}
 							onSectionExpandedChange={
 								this.handleSectionExpandedChange
 							}
-							onToggle={this.handleSidebarToggle}
 						/>
 
-						<WrappedComponent
-							{...otherProps}
-							currentUser={currentUser}
-							groupId={groupId}
-						/>
+						<div className="with-sidebar-content">
+							<TopBar
+								currentUser={currentUser}
+								groupId={groupId}
+								onToggle={this.handleSidebarToggle}
+							/>
+
+							<WrappedComponent
+								{...otherProps}
+								currentUser={currentUser}
+								groupId={groupId}
+							/>
+						</div>
 					</div>
 				);
 			}
