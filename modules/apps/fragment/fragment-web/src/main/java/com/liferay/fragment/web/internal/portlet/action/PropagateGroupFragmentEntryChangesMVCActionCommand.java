@@ -9,6 +9,8 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.fragment.constants.FragmentActionKeys;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
@@ -20,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -61,8 +64,13 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommand
 
 		String fragmentEntryERC = ParamUtil.getString(
 			actionRequest, "fragmentEntryERC");
+
 		long fragmentEntryGroupId = ParamUtil.getLong(
 			actionRequest, "fragmentEntryGroupId");
+
+		_portletResourcePermission.check(
+			themeDisplay.getPermissionChecker(), fragmentEntryGroupId,
+			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		long[] groupIds = ParamUtil.getLongValues(actionRequest, "rowIds");
 
@@ -178,5 +186,10 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommand
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference(
+		target = "(resource.name=" + FragmentConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 }
