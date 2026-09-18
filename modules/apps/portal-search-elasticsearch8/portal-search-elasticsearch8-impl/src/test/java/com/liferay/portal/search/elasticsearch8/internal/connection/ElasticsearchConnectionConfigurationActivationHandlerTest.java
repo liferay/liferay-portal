@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConnectionConfiguration;
 import com.liferay.portal.search.elasticsearch8.internal.configuration.ElasticsearchConfigurationWrapper;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.HashMap;
@@ -53,6 +54,10 @@ public class ElasticsearchConnectionConfigurationActivationHandlerTest {
 		ReflectionTestUtil.setFieldValue(
 			_elasticsearchConnectionConfigurationActivationHandler, "http",
 			_http);
+		ReflectionTestUtil.setFieldValue(
+			_elasticsearchConnectionConfigurationActivationHandler,
+			"_secretResolver", (SecretResolver)(companyId, value) -> value);
+
 		_configurableUtilMockedStatic.when(
 			() -> ConfigurableUtil.createConfigurable(
 				Mockito.eq(ElasticsearchConnectionConfiguration.class),

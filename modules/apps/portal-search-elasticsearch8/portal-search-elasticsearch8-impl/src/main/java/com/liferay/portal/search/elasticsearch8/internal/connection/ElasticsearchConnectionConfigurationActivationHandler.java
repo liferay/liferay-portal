@@ -6,8 +6,10 @@
 package com.liferay.portal.search.elasticsearch8.internal.connection;
 
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConnectionConfiguration;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.util.Map;
 
@@ -50,11 +52,15 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 		).maxConnectionsPerRoute(
 			elasticsearchConnectionConfiguration.maxConnectionsPerRoute()
 		).password(
-			elasticsearchConnectionConfiguration.password()
+			_secretResolver.resolve(
+				CompanyConstants.SYSTEM,
+				elasticsearchConnectionConfiguration.password())
 		).proxyConfig(
 			createProxyConfig(elasticsearchConnectionConfiguration)
 		).truststorePassword(
-			elasticsearchConnectionConfiguration.truststorePassword()
+			_secretResolver.resolve(
+				CompanyConstants.SYSTEM,
+				elasticsearchConnectionConfiguration.truststorePassword())
 		).truststorePath(
 			elasticsearchConnectionConfiguration.truststorePath()
 		).truststoreType(
@@ -78,7 +84,9 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 		).host(
 			elasticsearchConnectionConfiguration.proxyHost()
 		).password(
-			elasticsearchConnectionConfiguration.proxyPassword()
+			_secretResolver.resolve(
+				CompanyConstants.SYSTEM,
+				elasticsearchConnectionConfiguration.proxyPassword())
 		).port(
 			elasticsearchConnectionConfiguration.proxyPort()
 		).userName(
@@ -91,5 +99,8 @@ public class ElasticsearchConnectionConfigurationActivationHandler {
 
 	@Reference
 	protected Http http;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
