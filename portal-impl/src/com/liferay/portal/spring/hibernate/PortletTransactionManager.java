@@ -68,7 +68,7 @@ public class PortletTransactionManager implements PlatformTransactionManager {
 
 			transactionStatus = transactionStatusWrapper._transactionStatus;
 
-			transactionStatusWrapper.reset();
+			transactionStatusWrapper.reset(false);
 		}
 		catch (Throwable throwable2) {
 			throwable1 = throwable2;
@@ -177,7 +177,7 @@ public class PortletTransactionManager implements PlatformTransactionManager {
 
 			transactionStatus = transactionStatusWrapper._transactionStatus;
 
-			transactionStatusWrapper.reset();
+			transactionStatusWrapper.reset(true);
 		}
 		finally {
 			_portalTransactionManager.rollback(transactionStatus);
@@ -290,9 +290,14 @@ public class PortletTransactionManager implements PlatformTransactionManager {
 			_transactionStatus.releaseSavepoint(savepoint);
 		}
 
-		public void reset() {
+		public void reset(boolean rollback) {
 			try {
-				_portletSession.flush();
+				if (rollback) {
+					_portletSession.clear();
+				}
+				else {
+					_portletSession.flush();
+				}
 
 				if (PropsValues.DATABASE_PARTITION_ENABLED) {
 					LastSessionRecorderUtil.removePortletSession(
