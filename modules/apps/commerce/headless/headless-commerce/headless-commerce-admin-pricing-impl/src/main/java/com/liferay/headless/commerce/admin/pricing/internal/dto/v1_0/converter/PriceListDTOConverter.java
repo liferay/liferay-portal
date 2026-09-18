@@ -6,6 +6,7 @@
 package com.liferay.headless.commerce.admin.pricing.internal.dto.v1_0.converter;
 
 import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceListService;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -41,16 +42,62 @@ public class PriceListDTOConverter
 			_commercePriceListService.getCommercePriceList(
 				(Long)dtoConverterContext.getId());
 
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogService.fetchCommerceCatalogByGroupId(
+				commercePriceList.getGroupId());
+
 		return new PriceList() {
 			{
 				setActive(() -> !commercePriceList.isInactive());
-				setCatalogId(() -> _getCatalogId(commercePriceList));
+				setCatalogCurrencyCode(
+					() -> {
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getCommerceCurrencyCode();
+					});
+				setCatalogCurrencyExternalReferenceCode(
+					() -> {
+						CommerceCurrency catalogCommerceCurrency =
+							_fetchCommerceCurrency(commerceCatalog);
+
+						if (catalogCommerceCurrency == null) {
+							return null;
+						}
+
+						return catalogCommerceCurrency.
+							getExternalReferenceCode();
+					});
+				setCatalogExternalReferenceCode(
+					() -> {
+						if (commerceCatalog == null) {
+							return null;
+						}
+
+						return commerceCatalog.getExternalReferenceCode();
+					});
+				setCatalogId(
+					() -> {
+						if (commerceCatalog == null) {
+							return 0L;
+						}
+
+						return commerceCatalog.getCommerceCatalogId();
+					});
 				setCurrencyCode(
 					() -> {
 						CommerceCurrency commerceCurrency =
 							commercePriceList.getCommerceCurrency();
 
 						return commerceCurrency.getCode();
+					});
+				setCurrencyExternalReferenceCode(
+					() -> {
+						CommerceCurrency commerceCurrency =
+							commercePriceList.getCommerceCurrency();
+
+						return commerceCurrency.getExternalReferenceCode();
 					});
 				setCustomFields(
 					() -> {
@@ -70,22 +117,23 @@ public class PriceListDTOConverter
 		};
 	}
 
-	private long _getCatalogId(CommercePriceList commercePriceList)
-		throws Exception {
-
-		CommerceCatalog commerceCatalog =
-			_commerceCatalogService.fetchCommerceCatalogByGroupId(
-				commercePriceList.getGroupId());
+	private CommerceCurrency _fetchCommerceCurrency(
+		CommerceCatalog commerceCatalog) {
 
 		if (commerceCatalog == null) {
-			return 0L;
+			return null;
 		}
 
-		return commerceCatalog.getCommerceCatalogId();
+		return _commerceCurrencyLocalService.fetchCommerceCurrency(
+			commerceCatalog.getCompanyId(),
+			commerceCatalog.getCommerceCurrencyCode());
 	}
 
 	@Reference
 	private CommerceCatalogService _commerceCatalogService;
+
+	@Reference
+	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 	@Reference
 	private CommercePriceListService _commercePriceListService;

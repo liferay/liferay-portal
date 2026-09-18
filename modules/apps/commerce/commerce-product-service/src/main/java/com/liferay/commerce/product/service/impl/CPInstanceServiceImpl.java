@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -280,6 +281,29 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			cpInstance.getCPDefinitionId(), ActionKeys.VIEW);
 
 		return cpInstance;
+	}
+
+	@Override
+	public CPInstance getOrAddEmptyCPInstance(
+			String externalReferenceCode, long cpDefinitionId, long groupId)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CPInstance cpInstance =
+			cpInstanceService.fetchCPInstanceByExternalReferenceCode(
+				externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (cpInstance != null) {
+			return cpInstance;
+		}
+
+		_checkCommerceCatalogByCPDefinitionId(
+			cpDefinitionId, ActionKeys.UPDATE);
+
+		return cpInstanceLocalService.getOrAddEmptyCPInstance(
+			externalReferenceCode, cpDefinitionId, groupId,
+			permissionChecker.getCompanyId(), permissionChecker.getUserId());
 	}
 
 	@Override

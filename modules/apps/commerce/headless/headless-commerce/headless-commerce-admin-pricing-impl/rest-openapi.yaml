@@ -479,6 +479,16 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                productExternalReferenceCode:
+                    description:
+                        External reference code of the product the bound SKU belongs to. On read it mirrors that product's external reference code; on write it is used only when the SKU does not yet exist, to create it under that product.
+                    example: PROD0111
+                    type: string
+                productType:
+                    description:
+                        Product type name of the product the bound SKU belongs to. On read it mirrors that product's type; on write it is used only when neither the SKU nor its product exists yet, to create the product with the right type, and is then required.
+                    example: simple
+                    type: string
                 promoPrice:
                     description:
                         Promotional price applied when a promotion is active for the SKU. Expressed in the price list's currency; rejected when negative.
@@ -521,6 +531,21 @@ components:
                         Whether the price list is currently enabled. Inverse of the backend `inactive` flag; when false the runtime skips the list during price resolution.
                     example: true
                     type: boolean
+                catalogCurrencyCode:
+                    description:
+                        Currency code of the bound catalog. On read it mirrors that catalog's currency code; on write it is used only when the catalog does not yet exist, to create it with the right currency.
+                    example: USD
+                    type: string
+                catalogCurrencyExternalReferenceCode:
+                    description:
+                        External reference code of the catalog currency. On read it mirrors that currency's external reference code; on write it is resolved after `catalogCurrencyCode` and, when the currency has not been imported yet, used to create it as an empty stub.
+                    example: US_DOLLAR
+                    type: string
+                catalogExternalReferenceCode:
+                    description:
+                        External reference code of the bound catalog; alternative to `catalogId` for lookup.
+                    example: AAB-34098-789-N
+                    type: string
                 catalogId:
                     description:
                         Internal numeric identifier of the parent catalog. Resolved by the converter on the price list's groupId; 0 when the lookup fails.
@@ -532,6 +557,11 @@ components:
                     description:
                         ISO 4217 code of the currency the prices are expressed in. Must match an existing currency in the company scope (matched on the persisted record).
                     example: USD
+                    type: string
+                currencyExternalReferenceCode:
+                    description:
+                        External reference code of the currency the prices are expressed in; alternative to `currencyCode` for lookup.
+                    example: US_DOLLAR
                     type: string
                 customFields:
                     additionalProperties: true

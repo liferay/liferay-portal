@@ -10,6 +10,7 @@ import com.liferay.commerce.currency.util.CommercePriceFormatter;
 import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryService;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.expando.kernel.model.ExpandoBridge;
@@ -61,6 +62,8 @@ public class PriceEntryDTOConverter
 			commercePriceEntry.getCProductId(),
 			commercePriceEntry.getCPInstanceUuid());
 
+		CPDefinition cpDefinition = _fetchCPDefinition(cpInstance);
+
 		BigDecimal priceEntryPrice = commercePriceEntry.getPrice();
 
 		return new PriceEntry() {
@@ -92,8 +95,26 @@ public class PriceEntryDTOConverter
 					() -> _formatPrice(
 						priceEntryPrice, commerceCurrency,
 						dtoConverterContext.getLocale()));
+				setPriceListExternalReferenceCode(
+					commercePriceList::getExternalReferenceCode);
 				setPriceListId(commercePriceEntry::getCommercePriceListId);
 				setPriceOnApplication(commercePriceEntry::isPriceOnApplication);
+				setProductExternalReferenceCode(
+					() -> {
+						if (cpDefinition == null) {
+							return null;
+						}
+
+						return cpDefinition.getCProductExternalReferenceCode();
+					});
+				setProductType(
+					() -> {
+						if (cpDefinition == null) {
+							return null;
+						}
+
+						return cpDefinition.getProductTypeName();
+					});
 				setQuantity(commercePriceEntry::getQuantity);
 				setSkuExternalReferenceCode(
 					() -> {
@@ -114,6 +135,16 @@ public class PriceEntryDTOConverter
 				setUnitOfMeasureKey(commercePriceEntry::getUnitOfMeasureKey);
 			}
 		};
+	}
+
+	private CPDefinition _fetchCPDefinition(CPInstance cpInstance)
+		throws Exception {
+
+		if (cpInstance == null) {
+			return null;
+		}
+
+		return cpInstance.getCPDefinition();
 	}
 
 	private String _formatPrice(
