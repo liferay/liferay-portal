@@ -182,17 +182,19 @@ public class BulkDocumentRequestExecutor {
 			}
 			catch (Exception exception) {
 				if (i++ >= _numberOfTries) {
-					if (_numberOfTries == 1) {
-						_log.error("The retry failed to get a bulk response");
-					}
-					else if (_numberOfTries == 2) {
-						_log.error(
-							"Both retries failed to get a bulk response");
-					}
-					else if (_numberOfTries > 2) {
-						_log.error(
-							"All " + _numberOfTries +
-								" retries failed to get a bulk response");
+					List<BulkOperation> bulkOperations =
+						bulkRequest.operations();
+
+					_log.error(
+						StringBundler.concat(
+							"Unable to get a bulk response for ",
+							bulkOperations.size(), " operations"),
+						exception);
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							"Unable to execute the bulk request: " +
+								JsonpUtil.toString(bulkRequest));
 					}
 
 					throw new RuntimeException(exception);
