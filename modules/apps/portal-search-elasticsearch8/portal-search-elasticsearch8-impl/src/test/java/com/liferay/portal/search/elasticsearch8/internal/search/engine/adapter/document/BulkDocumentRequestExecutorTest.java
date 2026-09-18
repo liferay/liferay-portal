@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.elasticsearch8.internal.search.engine.adapter.document;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ErrorCause;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.BulkResponse;
@@ -17,6 +18,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchClientResolver;
 import com.liferay.portal.search.elasticsearch8.internal.connection.ElasticsearchFixture;
 import com.liferay.portal.search.elasticsearch8.internal.util.JsonpUtil;
 import com.liferay.portal.search.engine.adapter.document.BulkDocumentRequest;
@@ -24,7 +26,12 @@ import com.liferay.portal.search.engine.adapter.document.DeleteDocumentRequest;
 import com.liferay.portal.search.engine.adapter.document.IndexDocumentRequest;
 import com.liferay.portal.search.engine.adapter.document.UpdateDocumentRequest;
 import com.liferay.portal.search.test.util.indexing.DocumentFixture;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.io.IOException;
 
 import java.util.List;
 
@@ -33,6 +40,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+
+import org.mockito.Mockito;
 
 /**
  * @author Michael C. Han
@@ -109,6 +118,73 @@ public class BulkDocumentRequestExecutorTest {
 		}
 
 		Assert.assertEquals(sb.toString(), 3, bulkOperations.size());
+	}
+
+	@Test
+	public void testBulkDocumentResponseWhenNumberOfTriesIsZero()
+		throws Exception {
+
+		BulkDocumentRequest bulkDocumentRequest = new BulkDocumentRequest();
+
+		bulkDocumentRequest.addBulkableDocumentRequest(
+			new DeleteDocumentRequest(
+				_INDEX_NAME, RandomTestUtil.randomString()));
+		bulkDocumentRequest.addBulkableDocumentRequest(
+			new DeleteDocumentRequest(
+				_INDEX_NAME, RandomTestUtil.randomString()));
+
+		ElasticsearchClient elasticsearchClient = Mockito.mock(
+			ElasticsearchClient.class);
+
+		IOException ioException = new IOException(
+			RandomTestUtil.randomString());
+
+		Mockito.doThrow(
+			ioException
+		).when(
+			elasticsearchClient
+		).bulk(
+			Mockito.any(BulkRequest.class)
+		);
+
+		ElasticsearchClientResolver mockElasticsearchClientResolver =
+			Mockito.mock(ElasticsearchClientResolver.class);
+
+		Mockito.when(
+			mockElasticsearchClientResolver.getElasticsearchClient(
+				Mockito.nullable(String.class), Mockito.anyBoolean())
+		).thenReturn(
+			elasticsearchClient
+		);
+
+		BulkDocumentRequestExecutor bulkDocumentRequestExecutor =
+			new BulkDocumentRequestExecutor(
+				mockElasticsearchClientResolver, 0, 0);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				BulkDocumentRequestExecutor.class.getName(),
+				LoggerTestUtil.ERROR)) {
+
+			try {
+				bulkDocumentRequestExecutor.execute(bulkDocumentRequest);
+
+				Assert.fail();
+			}
+			catch (RuntimeException runtimeException) {
+				Assert.assertSame(ioException, runtimeException.getCause());
+			}
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to get a bulk response for 2 operations",
+				logEntry.getMessage());
+			Assert.assertSame(ioException, logEntry.getThrowable());
+		}
 	}
 
 	@Test
