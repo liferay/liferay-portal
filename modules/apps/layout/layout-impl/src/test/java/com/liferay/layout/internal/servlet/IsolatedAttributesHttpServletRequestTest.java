@@ -105,7 +105,6 @@ public class IsolatedAttributesHttpServletRequestTest {
 	@Test
 	public void testSetAttribute() {
 		_testSetAttribute();
-
 		_testSetAttributeWithRequestDispatcherAttribute();
 	}
 
