@@ -253,7 +253,7 @@ public class ObjectRelationshipExtensionProvider
 				relatedObjectDefinition, userId);
 
 			for (ObjectEntry nestedObjectEntry : nestedObjectEntries) {
-				nestedObjectEntry = _updateNestedObjectEntry(
+				nestedObjectEntry = _updateObjectEntry(
 					objectDefinition.getCompanyId(),
 					_getDefaultDTOConverterContext(
 						objectDefinition, primaryKey, null, userId),
@@ -370,17 +370,15 @@ public class ObjectRelationshipExtensionProvider
 			primaryKey2, serviceContext);
 	}
 
-	private ObjectEntry _updateNestedObjectEntry(
+	private ObjectEntry _updateObjectEntry(
 			long companyId, DTOConverterContext dtoConverterContext,
-			ObjectEntry nestedObjectEntry,
-			ObjectEntryManager objectEntryManager, boolean partialUpdate,
-			ObjectDefinition relatedObjectDefinition)
+			ObjectEntry objectEntry, ObjectEntryManager objectEntryManager,
+			boolean partialUpdate, ObjectDefinition objectDefinition)
 		throws Exception {
 
-		String externalReferenceCode =
-			nestedObjectEntry.getExternalReferenceCode();
-		ObjectEntry existingNestedObjectEntry = null;
-		String scopeKey = relatedObjectDefinition.getScope();
+		String externalReferenceCode = objectEntry.getExternalReferenceCode();
+		ObjectEntry existingObjectEntry = null;
+		String scopeKey = objectDefinition.getScope();
 
 		if (partialUpdate &&
 			(objectEntryManager instanceof DefaultObjectEntryManager)) {
@@ -388,21 +386,20 @@ public class ObjectRelationshipExtensionProvider
 			DefaultObjectEntryManager defaultObjectEntryManager =
 				DefaultObjectEntryManagerProvider.provide(objectEntryManager);
 
-			existingNestedObjectEntry =
-				defaultObjectEntryManager.fetchObjectEntry(
-					dtoConverterContext, externalReferenceCode,
-					relatedObjectDefinition, scopeKey);
+			existingObjectEntry = defaultObjectEntryManager.fetchObjectEntry(
+				dtoConverterContext, externalReferenceCode, objectDefinition,
+				scopeKey);
 		}
 
-		if (existingNestedObjectEntry == null) {
+		if (existingObjectEntry == null) {
 			return objectEntryManager.updateObjectEntry(
 				companyId, dtoConverterContext, externalReferenceCode,
-				relatedObjectDefinition, nestedObjectEntry, scopeKey);
+				objectDefinition, objectEntry, scopeKey);
 		}
 
 		return objectEntryManager.partialUpdateObjectEntry(
 			companyId, dtoConverterContext, externalReferenceCode,
-			relatedObjectDefinition, nestedObjectEntry, scopeKey);
+			objectDefinition, objectEntry, scopeKey);
 	}
 
 	@Reference
