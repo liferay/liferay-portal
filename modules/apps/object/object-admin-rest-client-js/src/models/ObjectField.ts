@@ -27,6 +27,8 @@
 			"localized"?: boolean;
 			"name"?: string;
 			"objectDefinitionExternalReferenceCode1"?: string;
+			"objectDefinitionScope1"?: string;
+			"objectDefinitionSystem1"?: boolean;
 			"objectFieldSettings"?: Array<ObjectFieldSetting>;
 			"objectRelationshipExternalReferenceCode"?: string;
 			"readOnly"?: 'conditional' | 'false' | 'true';
@@ -124,6 +126,16 @@
 			baseName: "objectDefinitionExternalReferenceCode1",
 			name: "objectDefinitionExternalReferenceCode1",
 			type: "string",
+		},
+		{
+			baseName: "objectDefinitionScope1",
+			name: "objectDefinitionScope1",
+			type: "string",
+		},
+		{
+			baseName: "objectDefinitionSystem1",
+			name: "objectDefinitionSystem1",
+			type: "boolean",
 		},
 		{
 			baseName: "objectFieldSettings",

@@ -240,6 +240,30 @@ public class ObjectFieldSerDes {
 			sb.append("\"");
 		}
 
+		if (objectField.getObjectDefinitionScope1() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"objectDefinitionScope1\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(objectField.getObjectDefinitionScope1()));
+
+			sb.append("\"");
+		}
+
+		if (objectField.getObjectDefinitionSystem1() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"objectDefinitionSystem1\": ");
+
+			sb.append(objectField.getObjectDefinitionSystem1());
+		}
+
 		if (objectField.getObjectFieldSettings() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -517,6 +541,24 @@ public class ObjectFieldSerDes {
 					objectField.getObjectDefinitionExternalReferenceCode1()));
 		}
 
+		if (objectField.getObjectDefinitionScope1() == null) {
+			map.put("objectDefinitionScope1", null);
+		}
+		else {
+			map.put(
+				"objectDefinitionScope1",
+				String.valueOf(objectField.getObjectDefinitionScope1()));
+		}
+
+		if (objectField.getObjectDefinitionSystem1() == null) {
+			map.put("objectDefinitionSystem1", null);
+		}
+		else {
+			map.put(
+				"objectDefinitionSystem1",
+				String.valueOf(objectField.getObjectDefinitionSystem1()));
+		}
+
 		if (objectField.getObjectFieldSettings() == null) {
 			map.put("objectFieldSettings", null);
 		}
@@ -673,6 +715,16 @@ public class ObjectFieldSerDes {
 				return false;
 			}
 			else if (Objects.equals(
+						jsonParserFieldName, "objectDefinitionScope1")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "objectDefinitionSystem1")) {
+
+				return false;
+			}
+			else if (Objects.equals(
 						jsonParserFieldName, "objectFieldSettings")) {
 
 				return false;
@@ -820,6 +872,22 @@ public class ObjectFieldSerDes {
 				if (jsonParserFieldValue != null) {
 					objectField.setObjectDefinitionExternalReferenceCode1(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "objectDefinitionScope1")) {
+
+				if (jsonParserFieldValue != null) {
+					objectField.setObjectDefinitionScope1(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "objectDefinitionSystem1")) {
+
+				if (jsonParserFieldValue != null) {
+					objectField.setObjectDefinitionSystem1(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -986,4 +1054,4 @@ public class ObjectFieldSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-954382079
+// LIFERAY-REST-BUILDER-HASH:-81517690

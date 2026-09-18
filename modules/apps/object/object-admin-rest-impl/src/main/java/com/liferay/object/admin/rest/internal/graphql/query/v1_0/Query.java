@@ -316,7 +316,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {objectField(objectFieldId: ___){DBType, actions, businessType, defaultValue, description, externalReferenceCode, id, indexed, indexedAsKeyword, indexedLanguageId, label, listTypeDefinitionExternalReferenceCode, listTypeDefinitionId, localized, name, objectDefinitionExternalReferenceCode1, objectFieldSettings, objectRelationshipExternalReferenceCode, readOnly, readOnlyConditionExpression, relationshipType, required, state, system, type, unique}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {objectField(objectFieldId: ___){DBType, actions, businessType, defaultValue, description, externalReferenceCode, id, indexed, indexedAsKeyword, indexedLanguageId, label, listTypeDefinitionExternalReferenceCode, listTypeDefinitionId, localized, name, objectDefinitionExternalReferenceCode1, objectDefinitionScope1, objectDefinitionSystem1, objectFieldSettings, objectRelationshipExternalReferenceCode, readOnly, readOnlyConditionExpression, relationshipType, required, state, system, type, unique}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField
 	public ObjectField objectField(
@@ -1511,4 +1511,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-139453050
+// LIFERAY-REST-BUILDER-HASH:-1732452141

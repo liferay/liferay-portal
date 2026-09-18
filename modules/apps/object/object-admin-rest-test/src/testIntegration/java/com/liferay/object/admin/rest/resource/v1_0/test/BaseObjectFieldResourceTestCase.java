@@ -224,6 +224,7 @@ public abstract class BaseObjectFieldResourceTestCase {
 		objectField.setListTypeDefinitionExternalReferenceCode(regex);
 		objectField.setName(regex);
 		objectField.setObjectDefinitionExternalReferenceCode1(regex);
+		objectField.setObjectDefinitionScope1(regex);
 		objectField.setObjectRelationshipExternalReferenceCode(regex);
 		objectField.setReadOnlyConditionExpression(regex);
 
@@ -241,6 +242,7 @@ public abstract class BaseObjectFieldResourceTestCase {
 		Assert.assertEquals(regex, objectField.getName());
 		Assert.assertEquals(
 			regex, objectField.getObjectDefinitionExternalReferenceCode1());
+		Assert.assertEquals(regex, objectField.getObjectDefinitionScope1());
 		Assert.assertEquals(
 			regex, objectField.getObjectRelationshipExternalReferenceCode());
 		Assert.assertEquals(
@@ -2379,6 +2381,26 @@ public abstract class BaseObjectFieldResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"objectDefinitionScope1", additionalAssertFieldName)) {
+
+				if (objectField.getObjectDefinitionScope1() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"objectDefinitionSystem1", additionalAssertFieldName)) {
+
+				if (objectField.getObjectDefinitionSystem1() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"objectFieldSettings", additionalAssertFieldName)) {
 
 				if (objectField.getObjectFieldSettings() == null) {
@@ -2770,6 +2792,32 @@ public abstract class BaseObjectFieldResourceTestCase {
 							getObjectDefinitionExternalReferenceCode1(),
 						objectField2.
 							getObjectDefinitionExternalReferenceCode1())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"objectDefinitionScope1", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						objectField1.getObjectDefinitionScope1(),
+						objectField2.getObjectDefinitionScope1())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"objectDefinitionSystem1", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						objectField1.getObjectDefinitionSystem1(),
+						objectField2.getObjectDefinitionSystem1())) {
 
 					return false;
 				}
@@ -3327,6 +3375,57 @@ public abstract class BaseObjectFieldResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("objectDefinitionScope1")) {
+			Object object = objectField.getObjectDefinitionScope1();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("objectDefinitionSystem1")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("objectFieldSettings")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -3523,6 +3622,9 @@ public abstract class BaseObjectFieldResourceTestCase {
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				objectDefinitionExternalReferenceCode1 = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				objectDefinitionScope1 = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				objectDefinitionSystem1 = RandomTestUtil.randomBoolean();
 				objectRelationshipExternalReferenceCode =
 					StringUtil.toLowerCase(RandomTestUtil.randomString());
 				readOnlyConditionExpression = StringUtil.toLowerCase(
@@ -3800,4 +3902,4 @@ public abstract class BaseObjectFieldResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-924957627
+// LIFERAY-REST-BUILDER-HASH:-1511825473
