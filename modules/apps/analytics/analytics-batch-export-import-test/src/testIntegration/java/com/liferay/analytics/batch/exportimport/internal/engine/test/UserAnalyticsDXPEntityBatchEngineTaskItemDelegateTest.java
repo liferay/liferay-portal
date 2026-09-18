@@ -65,9 +65,9 @@ public class UserAnalyticsDXPEntityBatchEngineTaskItemDelegateTest {
 
 	@Test
 	public void testRead() throws Exception {
-		_testReadIfAdministratorUser();
-		_testReadIfAnalyticsAdministratorUser();
-		_testReadIfRegularUser();
+		_testReadWithAdministratorUser();
+		_testReadWithAnalyticsAdministratorUser();
+		_testReadWithRegularUser();
 	}
 
 	private Page<DXPEntity> _read() throws Exception {
@@ -75,13 +75,13 @@ public class UserAnalyticsDXPEntityBatchEngineTaskItemDelegateTest {
 			null, Pagination.of(1, 1), null, Collections.emptyMap(), null);
 	}
 
-	private void _testReadIfAdministratorUser() throws Exception {
+	private void _testReadWithAdministratorUser() throws Exception {
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
 		Assert.assertNotNull(_read());
 	}
 
-	private void _testReadIfAnalyticsAdministratorUser() throws Exception {
+	private void _testReadWithAnalyticsAdministratorUser() throws Exception {
 		Role role = _roleLocalService.getRole(
 			_user.getCompanyId(), RoleConstants.ANALYTICS_ADMINISTRATOR);
 
@@ -92,7 +92,7 @@ public class UserAnalyticsDXPEntityBatchEngineTaskItemDelegateTest {
 		Assert.assertNotNull(_read());
 	}
 
-	private void _testReadIfRegularUser() throws Exception {
+	private void _testReadWithRegularUser() throws Exception {
 		UserTestUtil.setUser(_user);
 
 		try {
