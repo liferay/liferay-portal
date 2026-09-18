@@ -13,6 +13,9 @@ public class PIMFDSNames {
 	public static final String CONNECTORS =
 		PIMSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-connectors";
 
+	public static final String FIELD_MAPPINGS =
+		PIMSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-field-mappings";
+
 	public static final String PRODUCT_RELATIONSHIP_SELECTOR =
 		PIMSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
 			"-product-relationship-selector";

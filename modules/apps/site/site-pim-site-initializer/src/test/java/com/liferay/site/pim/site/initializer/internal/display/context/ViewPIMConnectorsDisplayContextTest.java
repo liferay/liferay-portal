@@ -180,6 +180,12 @@ public class ViewPIMConnectorsDisplayContextTest {
 			"Export"
 		);
 
+		Mockito.when(
+			language.get(httpServletRequest, "map-fields")
+		).thenReturn(
+			"Map Fields"
+		);
+
 		languageUtil.setLanguage(language);
 
 		ThemeDisplay themeDisplay = _mockThemeDisplay();
@@ -197,7 +203,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 			viewPIMConnectorsDisplayContext.getFDSActionDropdownItems();
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 3,
+			fdsActionDropdownItems.toString(), 4,
 			fdsActionDropdownItems.size());
 
 		FDSActionDropdownItem editFDSActionDropdownItem =
@@ -216,8 +222,26 @@ public class ViewPIMConnectorsDisplayContextTest {
 		Assert.assertEquals("get", data.get("method"));
 		Assert.assertEquals("update", data.get("permissionKey"));
 
-		FDSActionDropdownItem exportFDSActionDropdownItem =
+		FDSActionDropdownItem fieldMappingFDSActionDropdownItem =
 			fdsActionDropdownItems.get(1);
+
+		href = String.valueOf(fieldMappingFDSActionDropdownItem.get("href"));
+
+		Assert.assertEquals("/web/cms/field-mapping?objectEntryId={id}", href);
+
+		Assert.assertEquals(
+			"sheets", fieldMappingFDSActionDropdownItem.get("icon"));
+		Assert.assertEquals(
+			"Map Fields", fieldMappingFDSActionDropdownItem.get("label"));
+
+		data = (Map<?, ?>)fieldMappingFDSActionDropdownItem.get("data");
+
+		Assert.assertEquals("fieldMapping", data.get("id"));
+		Assert.assertEquals("get", data.get("method"));
+		Assert.assertEquals("update", data.get("permissionKey"));
+
+		FDSActionDropdownItem exportFDSActionDropdownItem =
+			fdsActionDropdownItems.get(2);
 
 		Assert.assertEquals(
 			"/o/pim/export-to-liferay-commerce",
@@ -233,7 +257,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 		Assert.assertEquals("get", data.get("method"));
 
 		FDSActionDropdownItem deleteFDSActionDropdownItem =
-			fdsActionDropdownItems.get(2);
+			fdsActionDropdownItems.get(3);
 
 		Assert.assertEquals(
 			"{actions.delete.href}", deleteFDSActionDropdownItem.get("href"));

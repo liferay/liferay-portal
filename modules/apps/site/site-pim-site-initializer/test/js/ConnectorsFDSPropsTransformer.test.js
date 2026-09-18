@@ -6,8 +6,7 @@
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/ConnectorsFDSPropsTransformer';
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
-	findAction: () => null,
-	replaceTokens: (href) => href,
+	getItemActionURL: () => null,
 }));
 
 describe('ConnectorsFDSPropsTransformer', () => {

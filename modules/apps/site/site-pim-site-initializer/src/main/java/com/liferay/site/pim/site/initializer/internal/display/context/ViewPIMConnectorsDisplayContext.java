@@ -85,6 +85,19 @@ public class ViewPIMConnectorsDisplayContext {
 				"edit"
 			),
 			FDSActionDropdownItemBuilder.setHref(
+				_getURL("/field-mapping") + "?objectEntryId={id}"
+			).setIcon(
+				"sheets"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "map-fields")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"update"
+			).build(
+				"fieldMapping"
+			),
+			FDSActionDropdownItemBuilder.setHref(
 				"/o/pim/export-to-liferay-commerce"
 			).setIcon(
 				"download"
