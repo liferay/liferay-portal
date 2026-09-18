@@ -14,10 +14,12 @@ import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.util.PortalInstances;
 
 import java.util.Map;
@@ -44,6 +46,10 @@ public class PortalInstancesConfigurationFactory {
 		PortalInstancesConfiguration portalInstancesConfiguration =
 			ConfigurableUtil.createConfigurable(
 				PortalInstancesConfiguration.class, properties);
+
+		String adminPassword = _secretResolver.resolve(
+			CompanyConstants.SYSTEM,
+			portalInstancesConfiguration.adminPassword());
 
 		DependencyManagerSyncUtil.registerSyncCallable(
 			new CompanyInheritableThreadLocalCallable<>(
@@ -78,7 +84,7 @@ public class PortalInstancesConfigurationFactory {
 								portalInstancesConfiguration.active(),
 								portalInstancesConfiguration.
 									addDefaultAdminUser(),
-								portalInstancesConfiguration.adminPassword(),
+								adminPassword,
 								portalInstancesConfiguration.adminScreenName(),
 								portalInstancesConfiguration.
 									adminEmailAddress(),
@@ -126,5 +132,8 @@ public class PortalInstancesConfigurationFactory {
 
 	@Reference(target = ModuleServiceLifecycle.PORTLETS_INITIALIZED)
 	private ModuleServiceLifecycle _moduleServiceLifecycle;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 }
