@@ -224,11 +224,6 @@ public class ObjectRelationshipExtensionProvider
 				ObjectRelationshipUtil.getRelatedObjectDefinition(
 					objectDefinition, objectRelationship);
 
-			ObjectEntryManager objectEntryManager =
-				_objectEntryManagerRegistry.getObjectEntryManager(
-					relatedObjectDefinition.getCompanyId(),
-					relatedObjectDefinition.getStorageType());
-
 			ObjectRelationshipElementsParser objectRelationshipElementsParser =
 				_objectRelationshipElementsParserRegistry.
 					getObjectRelationshipElementsParser(
@@ -257,8 +252,7 @@ public class ObjectRelationshipExtensionProvider
 					objectDefinition.getCompanyId(),
 					_getDefaultDTOConverterContext(
 						objectDefinition, primaryKey, null, userId),
-					nestedObjectEntry, objectEntryManager, partialUpdate,
-					relatedObjectDefinition);
+					nestedObjectEntry, partialUpdate, relatedObjectDefinition);
 
 				_relateNestedObjectEntry(
 					objectDefinition, objectRelationship, primaryKey,
@@ -372,13 +366,18 @@ public class ObjectRelationshipExtensionProvider
 
 	private ObjectEntry _updateObjectEntry(
 			long companyId, DTOConverterContext dtoConverterContext,
-			ObjectEntry objectEntry, ObjectEntryManager objectEntryManager,
-			boolean partialUpdate, ObjectDefinition objectDefinition)
+			ObjectEntry objectEntry, boolean partialUpdate,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		String externalReferenceCode = objectEntry.getExternalReferenceCode();
 		ObjectEntry existingObjectEntry = null;
 		String scopeKey = objectDefinition.getScope();
+
+		ObjectEntryManager objectEntryManager =
+			_objectEntryManagerRegistry.getObjectEntryManager(
+				objectDefinition.getCompanyId(),
+				objectDefinition.getStorageType());
 
 		if (partialUpdate &&
 			(objectEntryManager instanceof DefaultObjectEntryManager)) {
