@@ -23,7 +23,7 @@ public class JSUnitTestClassResultTest
 	@Test
 	public void testGetTestClassResults() {
 		testEquals(
-			2, _size(_getTestClassResults(_CLASS_NAME, _OTHER_CLASS_NAME)));
+			2, _size(_getTestClassResults(_CLASS_NAME, _CLASS_NAME_OTHER)));
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class JSUnitTestClassResultTest
 	@Test
 	public void testGetTestResults() {
 		TestClassResult testClassResult = _getTestClassResult(
-			_CLASS_PATH, _OTHER_CLASS_PATH);
+			_CLASS_PATH, _CLASS_PATH_OTHER);
 
 		testEquals(2, _size(testClassResult.getTestResults()));
 	}
@@ -51,9 +51,8 @@ public class JSUnitTestClassResultTest
 		JSONArray casesJSONArray = new JSONArray();
 
 		for (String classPath : classPaths) {
-			JSONObject caseJSONObject = new JSONObject();
-
-			caseJSONObject.put(
+			JSONObject caseJSONObject = new JSONObject(
+			).put(
 				"className", classPath
 			).put(
 				"duration", 1
@@ -66,9 +65,8 @@ public class JSUnitTestClassResultTest
 			casesJSONArray.put(caseJSONObject);
 		}
 
-		JSONObject suiteJSONObject = new JSONObject();
-
-		suiteJSONObject.put(
+		JSONObject suiteJSONObject = new JSONObject(
+		).put(
 			"cases", casesJSONArray
 		).put(
 			"duration", 1
@@ -92,9 +90,8 @@ public class JSUnitTestClassResultTest
 		JSONArray suitesJSONArray = new JSONArray();
 
 		for (String className : classNames) {
-			JSONObject caseJSONObject = new JSONObject();
-
-			caseJSONObject.put(
+			JSONObject caseJSONObject = new JSONObject(
+			).put(
 				"className", className
 			).put(
 				"duration", 1
@@ -104,9 +101,8 @@ public class JSUnitTestClassResultTest
 				"status", "PASSED"
 			);
 
-			JSONObject suiteJSONObject = new JSONObject();
-
-			suiteJSONObject.put(
+			JSONObject suiteJSONObject = new JSONObject(
+			).put(
 				"cases",
 				new JSONArray(
 				).put(
@@ -121,9 +117,10 @@ public class JSUnitTestClassResultTest
 			suitesJSONArray.put(suiteJSONObject);
 		}
 
-		JSONObject testReportJSONObject = new JSONObject();
-
-		testReportJSONObject.put("suites", suitesJSONArray);
+		JSONObject testReportJSONObject = new JSONObject(
+		).put(
+			"suites", suitesJSONArray
+		);
 
 		JUnitDownstreamBuild jUnitDownstreamBuild = Mockito.mock(
 			JUnitDownstreamBuild.class, Mockito.CALLS_REAL_METHODS);
@@ -162,13 +159,13 @@ public class JSUnitTestClassResultTest
 	private static final String _CLASS_NAME =
 		"liferay-portal.modules.apps.a.b.test.js.c";
 
+	private static final String _CLASS_NAME_OTHER =
+		"liferay-portal.modules.apps.a.b.test.js.d";
+
 	private static final String _CLASS_PATH =
 		"modules/apps/a/b/test/js/c.test.js";
 
-	private static final String _OTHER_CLASS_NAME =
-		"liferay-portal.modules.apps.a.b.test.js.d";
-
-	private static final String _OTHER_CLASS_PATH =
+	private static final String _CLASS_PATH_OTHER =
 		"modules/apps/a/b/test/js/nested/c.test.js";
 
 	private static final String _TEST_NAME = "a > b";

@@ -89,12 +89,12 @@ public class TestClassFileUtil {
 			File portalDir, Element testCaseElement, TestPackage testPackage)
 		throws IOException {
 
+		List<TestClassFile> testClassFiles = null;
+
 		String testCaseClassName = testCaseElement.attributeValue("classname");
 
 		TestClassFile testClassFile = testPackage.getTestClassFile(
 			testCaseClassName);
-
-		List<TestClassFile> testClassFiles;
 
 		if (testClassFile == null) {
 			testClassFiles = testPackage.getTestClassFiles(testCaseClassName);

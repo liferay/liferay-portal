@@ -31,16 +31,16 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 	@Test
 	public void testFormatTestResultsFileClassName() throws Exception {
 		_testFormat(
-			_CLASS_NAME + ".a_test_js", "a b", "a > b", "a.test.js",
+			"a > b", "a.test.js", _CLASS_NAME + ".a_test_js", "a b",
 			"a.test.js", _TEST_FILE_CONTENT);
 		_testFormat(
-			_CLASS_NAME + ".b_js", "a b", "a > b", "b.js", "a.js",
+			"a > b", "b.js", _CLASS_NAME + ".b_js", "a b", "a.js",
 			_TEST_FILE_CONTENT, "b.js", _TEST_FILE_CONTENT);
 
 		String name = RandomTestUtil.randomString();
 
 		_testFormat(
-			_CLASS_NAME + ".a_js", name, name, "a.js", "a.js",
+			name, "a.js", _CLASS_NAME + ".a_js", name, "a.js",
 			"it('b', () => {});");
 	}
 
@@ -82,27 +82,27 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 	@Test
 	public void testFormatTestResultsFileDynamic() throws Exception {
 		_testFormat(
-			_CLASS_NAME, "100abc complete", "100abc complete", "a.js", "a.js",
+			"100abc complete", "a.js", _CLASS_NAME, "100abc complete", "a.js",
 			"it('100%s complete', () => {});");
 		_testFormat(
-			_CLASS_NAME, "a value", "a value", "a.js", "a.js",
+			"a value", "a.js", _CLASS_NAME, "a value", "a.js",
 			"it(`a ${b}`, () => {});");
 	}
 
 	@Test
 	public void testFormatTestResultsFileExactMatch() throws Exception {
 		_testFormat(
-			_CLASS_NAME, "c a", "c a", "b.js", "a.js",
+			"c a", "b.js", _CLASS_NAME, "c a", "a.js",
 			"it(`c ${d}`, () => {});", "b.js", "it('c a', () => {});");
 		_testFormat(
-			_CLASS_NAME, "c a", "c a", "b.js", "z.js",
+			"c a", "b.js", _CLASS_NAME, "c a", "z.js",
 			"it(`c ${d}`, () => {});", "b.js", "it('c a', () => {});");
 	}
 
 	@Test
 	public void testFormatTestResultsFileJest() throws Exception {
 		_testFormat(
-			_CLASS_NAME, "a b", "a > b", "a.js", "a.js", _TEST_FILE_CONTENT);
+			"a > b", "a.js", _CLASS_NAME, "a b", "a.js", _TEST_FILE_CONTENT);
 	}
 
 	@Test
@@ -254,9 +254,8 @@ public class TestClassFileUtilTest extends BaseTestClassFileTestCase {
 	}
 
 	private void _testFormat(
-			String testCaseClassName, String testCaseName,
 			String expectedTestCaseName, String expectedTestFileName,
-			String... testFiles)
+			String testCaseClassName, String testCaseName, String... testFiles)
 		throws Exception {
 
 		Element testCaseElement = _format(

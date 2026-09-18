@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser.testray;
 import com.liferay.jenkins.results.parser.BaseDownstreamBuildReport;
 import com.liferay.jenkins.results.parser.BuildReport;
 import com.liferay.jenkins.results.parser.DownstreamBuild;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
 import com.liferay.jenkins.results.parser.TestReportFactory;
@@ -56,13 +57,13 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 		_mockWorkspace();
 
 		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
-			_LONG_CLASS_PATH);
+			_CLASS_PATH_LONG);
 
 		List<TestClassMethod> testClassMethods =
 			jsUnitJUnitTestClass.getTestClassMethods();
 
 		testEquals(
-			_LONG_CLASS_PATH,
+			_CLASS_PATH_LONG,
 			_getJSUnitBatchBuildTestrayCaseResult(
 				jsUnitJUnitTestClass, testClassMethods.get(0)
 			).getName());
@@ -90,7 +91,7 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 
 		testEquals(
 			TestrayCaseResult.Status.PASSED,
-			_getStatus(_LONG_CLASS_PATH, _LONG_CLASS_PATH));
+			_getStatus(_CLASS_PATH_LONG, _CLASS_PATH_LONG));
 	}
 
 	@Test
@@ -108,7 +109,7 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 
 		testEquals(
 			TestrayCaseResult.Status.UNTESTED,
-			_getStatus(_OTHER_CLASS_PATH, _CLASS_PATH));
+			_getStatus(_CLASS_PATH_OTHER, _CLASS_PATH));
 	}
 
 	private JSUnitModulesBatchTestClassGroup _getBatchTestClassGroup() {
@@ -149,6 +150,7 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 		throws Exception {
 
 		JSONObject caseJSONObject = new JSONObject(
+		).put(
 			"className", reportedClassPath
 		).put(
 			"duration", 1
@@ -206,6 +208,7 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 
 	private JSUnitJUnitTestClass _getTestClass(String methodName) {
 		JSONObject methodJSONObject = new JSONObject(
+		).put(
 			"ignored", false
 		).put(
 			"name", methodName
@@ -236,13 +239,14 @@ public class JSUnitBatchBuildTestrayCaseResultTest
 
 	private static final String _CLASS_PATH = "modules/apps/a/b/test/js/c.js";
 
-	private static final String _LONG_CLASS_PATH =
-		"modules/apps/layout/layout-content-page-editor-web/test/page_editor" +
-			"/app/plugins/browser/components/page_structure/components" +
-				"/item_configuration_panels/collection_general_panel" +
-					"/CollectionGeneralPanel.test.js";
+	private static final String _CLASS_PATH_LONG =
+		JenkinsResultsParserUtil.combine(
+			"modules/apps/layout/layout-content-page-editor-web/test",
+			"/page_editor/app/plugins/browser/components/page_structure",
+			"/components/item_configuration_panels/collection_general_panel",
+			"/CollectionGeneralPanel.test.js");
 
-	private static final String _OTHER_CLASS_PATH =
+	private static final String _CLASS_PATH_OTHER =
 		"modules/apps/a/b/test/js/d.js";
 
 }

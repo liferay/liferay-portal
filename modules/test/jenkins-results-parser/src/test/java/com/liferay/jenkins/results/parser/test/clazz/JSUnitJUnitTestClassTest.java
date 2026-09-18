@@ -44,7 +44,7 @@ public class JSUnitJUnitTestClassTest
 		);
 
 		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
-			_getJSONObject(_JS_UNIT_FILE_1), jsUnitModulesBatchTestClassGroup);
+			_getJSONObject(_JS_UNIT_FILE), jsUnitModulesBatchTestClassGroup);
 
 		Assert.assertEquals(
 			Collections.singletonList(testClassReport),
@@ -63,7 +63,7 @@ public class JSUnitJUnitTestClassTest
 		).when(
 			jsUnitModulesBatchTestClassGroup
 		).getCachedTestClassReport(
-			_JS_UNIT_FILE_1
+			_JS_UNIT_FILE
 		);
 
 		TestClassReport testClassReport2 = Mockito.mock(TestClassReport.class);
@@ -73,11 +73,11 @@ public class JSUnitJUnitTestClassTest
 		).when(
 			jsUnitModulesBatchTestClassGroup
 		).getCachedTestClassReport(
-			_JS_UNIT_FILE_2
+			_JS_UNIT_FILE_OTHER
 		);
 
 		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
-			_getJSONObject(_JS_UNIT_FILE_1, _JS_UNIT_FILE_2),
+			_getJSONObject(_JS_UNIT_FILE, _JS_UNIT_FILE_OTHER),
 			jsUnitModulesBatchTestClassGroup);
 
 		jsUnitJUnitTestClass.setTestClassFileReported(true);
@@ -99,11 +99,11 @@ public class JSUnitJUnitTestClassTest
 		).when(
 			jsUnitModulesBatchTestClassGroup
 		).getCachedTestClassReport(
-			_JS_UNIT_FILE_1
+			_JS_UNIT_FILE
 		);
 
 		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
-			_getJSONObject(_JS_UNIT_FILE_1, _JS_UNIT_FILE_2),
+			_getJSONObject(_JS_UNIT_FILE, _JS_UNIT_FILE_OTHER),
 			jsUnitModulesBatchTestClassGroup);
 
 		jsUnitJUnitTestClass.setTestClassFileReported(true);
@@ -127,7 +127,7 @@ public class JSUnitJUnitTestClassTest
 		);
 
 		JSUnitJUnitTestClass jsUnitJUnitTestClass = _getTestClass(
-			_getJSONObject(_JS_UNIT_FILE_1), jsUnitModulesBatchTestClassGroup);
+			_getJSONObject(_JS_UNIT_FILE), jsUnitModulesBatchTestClassGroup);
 
 		jsUnitJUnitTestClass.setTestClassFileReported(true);
 
@@ -249,10 +249,10 @@ public class JSUnitJUnitTestClassTest
 		return new JSONObject(jsonObject.toString());
 	}
 
-	private static final String _JS_UNIT_FILE_1 =
+	private static final String _JS_UNIT_FILE =
 		"modules/apps/a/b/test/Foo.test.js";
 
-	private static final String _JS_UNIT_FILE_2 =
+	private static final String _JS_UNIT_FILE_OTHER =
 		"modules/apps/a/b/test/Bar.test.js";
 
 	private static final String _TEST_TASK_NAME = ":apps:a:b:packageRunTest";
