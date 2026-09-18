@@ -906,26 +906,21 @@ public class CPDefinitionLocalServiceImpl
 			return sourceCPDefinition;
 		}
 
+		if (status == WorkflowConstants.STATUS_DRAFT) {
+			CPDefinition draftCPDefinition =
+				cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					sourceCPDefinition.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT);
+
+			if (draftCPDefinition != null) {
+				return draftCPDefinition;
+			}
+		}
+
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		User user = _userLocalService.getUser(serviceContext.getUserId());
-
-		if (!sourceCPDefinition.isDraft() &&
-			(status == WorkflowConstants.STATUS_DRAFT)) {
-
-			for (CPDefinition cProductCPDefinition :
-					cpDefinitionPersistence.findByC_S(
-						sourceCPDefinition.getCProductId(),
-						WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
-						QueryUtil.ALL_POS)) {
-
-				cpDefinitionLocalService.updateStatus(
-					user.getUserId(), cProductCPDefinition.getCPDefinitionId(),
-					WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
-					Collections.emptyMap());
-			}
-		}
 
 		CPDefinition targetCPDefinition =
 			(CPDefinition)sourceCPDefinition.clone();
@@ -2652,6 +2647,11 @@ public class CPDefinitionLocalServiceImpl
 
 		cpDefinition = cpDefinitionPersistence.update(cpDefinition);
 
+		if (status == WorkflowConstants.STATUS_DRAFT) {
+			_updateDraftCPDefinitionStatuses(
+				user.getUserId(), cpDefinition, serviceContext);
+		}
+
 		if (status == WorkflowConstants.STATUS_APPROVED) {
 
 			// Asset
@@ -3512,6 +3512,32 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		return newCPDefinitionLocalizations;
+	}
+
+	private void _updateDraftCPDefinitionStatuses(
+			long userId, CPDefinition cpDefinition,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		if (!_isVersioningEnabled(cpDefinition.getCompanyId())) {
+			return;
+		}
+
+		for (CPDefinition draftCPDefinition :
+				cpDefinitionPersistence.findByC_S(
+					cpDefinition.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS)) {
+
+			if (draftCPDefinition.getCPDefinitionId() !=
+					cpDefinition.getCPDefinitionId()) {
+
+				cpDefinitionLocalService.updateStatus(
+					userId, draftCPDefinition.getCPDefinitionId(),
+					WorkflowConstants.STATUS_INCOMPLETE, serviceContext,
+					Collections.emptyMap());
+			}
+		}
 	}
 
 	private void _validate(

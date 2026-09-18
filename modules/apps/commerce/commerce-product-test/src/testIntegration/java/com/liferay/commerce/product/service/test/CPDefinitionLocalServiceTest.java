@@ -612,7 +612,7 @@ public class CPDefinitionLocalServiceTest {
 		_testCopyCPDefinition();
 		_testCopyCPDefinitionDoesNotCopyDraftCPDefinition();
 		_testCopyCPDefinitionOptionRelExternalReferenceCodes();
-		_testCopyCPDefinitionSetsExistingDraftToIncomplete();
+		_testCopyCPDefinitionReturnsExistingDraftCPDefinition();
 		_testCopyCPDefinitionWithSKUCombinations();
 	}
 
@@ -1415,6 +1415,11 @@ public class CPDefinitionLocalServiceTest {
 				user.getTimeZone(), null));
 	}
 
+	@Test
+	public void testUpdateStatus() throws Exception {
+		_testUpdateStatusSetsExistingDraftToIncomplete();
+	}
+
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -1656,19 +1661,19 @@ public class CPDefinitionLocalServiceTest {
 		}
 	}
 
-	private void _testCopyCPDefinitionSetsExistingDraftToIncomplete()
+	private void _testCopyCPDefinitionReturnsExistingDraftCPDefinition()
 		throws Exception {
 
 		frutillaRule.scenario(
-			"Set existing draft to incomplete when a new draft is created"
+			"Reuse the existing draft instead of creating a second one"
 		).given(
 			"A published product definition with an existing draft"
 		).when(
-			"a new draft is created from the published product definition"
+			"a draft is requested again from the published product definition"
 		).then(
-			"the existing draft is set to incomplete"
+			"the existing draft is returned"
 		).and(
-			"the new draft is created"
+			"the product carries a single draft"
 		);
 
 		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
@@ -1703,13 +1708,14 @@ public class CPDefinitionLocalServiceTest {
 					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_DRAFT, cpDefinition3.getStatus());
-
-			cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
-				cpDefinition2.getCPDefinitionId());
+				cpDefinition2.getCPDefinitionId(),
+				cpDefinition3.getCPDefinitionId());
 
 			Assert.assertEquals(
-				WorkflowConstants.STATUS_INCOMPLETE, cpDefinition2.getStatus());
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT));
 		}
 	}
 
@@ -2288,6 +2294,72 @@ public class CPDefinitionLocalServiceTest {
 
 		Assert.assertTrue(cpDefinitions.contains(cpDefinition1));
 		Assert.assertTrue(cpDefinitions.contains(cpDefinition2));
+	}
+
+	private void _testUpdateStatusSetsExistingDraftToIncomplete()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Set existing draft to incomplete when a published product " +
+				"definition is converted to draft"
+		).given(
+			"A published product definition with an existing draft"
+		).when(
+			"the published product definition is converted to draft"
+		).then(
+			"the existing draft is set to incomplete"
+		).and(
+			"the product carries a single draft"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition1.getStatus());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition2.getStatus());
+
+			cpDefinition1 = _cpDefinitionLocalService.updateStatus(
+				TestPropsValues.getUserId(), cpDefinition1.getCPDefinitionId(),
+				WorkflowConstants.STATUS_DRAFT,
+				ServiceContextTestUtil.getServiceContext(
+					_commerceCatalog.getGroupId()),
+				Collections.emptyMap());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition1.getStatus());
+
+			cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
+				cpDefinition2.getCPDefinitionId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_INCOMPLETE, cpDefinition2.getStatus());
+
+			Assert.assertEquals(
+				1,
+				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+					cpDefinition1.getCProductId(),
+					WorkflowConstants.STATUS_DRAFT));
+		}
 	}
 
 	@Inject
