@@ -8,17 +8,23 @@ import {isNullOrUndefined} from '@liferay/layout-js-components-web';
 import {
 	ObjectDefinition,
 	ObjectField,
+	ObjectLayout,
+	ObjectLayoutBox,
+	ObjectLayoutTab,
 	ObjectRelationship,
 } from '../../common/types/ObjectDefinition';
 import {config} from '../config';
 import {
+	NonRepeatableGroup,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
 	Structure,
+	StructureChild,
 } from '../types/Structure';
 import {FIELD_TYPE_TO_DB_TYPE, Field, getFieldBusinessType} from './field';
 import getOwnFields from './getOwnFields';
+import isField from './isField';
 import {isFieldTextSearchable} from './isFieldTextSearchable';
 import isRepeatableGroup from './isRepeatableGroup';
 
@@ -118,7 +124,109 @@ export default function buildObjectDefinition({
 		);
 	}
 
+	const objectLayout = buildLayout({children, label});
+
+	objectDefinition.objectLayouts = objectLayout ? [objectLayout] : [];
+
 	return objectDefinition;
+}
+
+function buildLayout({
+	children,
+	label,
+}: {
+	children: Structure['children'];
+	label: Structure['label'];
+}): ObjectLayout | undefined {
+	const groups = Array.from(children.values()).filter(isPlainGroup);
+
+	if (!groups.length) {
+		return undefined;
+	}
+
+	const objectLayoutTabs: ObjectLayoutTab[] = [];
+
+	const fields = getDirectFields(children);
+
+	if (fields.length) {
+		objectLayoutTabs.push({
+			name: label,
+			objectLayoutBoxes: [buildBox({fields})],
+		});
+	}
+
+	for (const group of groups) {
+		objectLayoutTabs.push(buildTab(group));
+	}
+
+	return {
+		defaultObjectLayout: false,
+		name: label,
+		objectLayoutTabs: objectLayoutTabs.map((objectLayoutTab, priority) => ({
+			...objectLayoutTab,
+			priority,
+		})),
+	};
+}
+
+function buildBox({
+	collapsable = false,
+	fields,
+	name,
+}: {
+	collapsable?: boolean;
+	fields: Field[];
+	name?: Liferay.Language.LocalizedValue<string>;
+}): ObjectLayoutBox {
+	return {
+		collapsable,
+		...(name && {name}),
+		objectLayoutRows: fields.map((field, priority) => ({
+			objectLayoutColumns: [{objectFieldName: field.name, priority: 0}],
+			priority,
+		})),
+		priority: 0,
+		type: 'regular',
+	};
+}
+
+function buildTab(group: NonRepeatableGroup): ObjectLayoutTab {
+	const objectLayoutBoxes: ObjectLayoutBox[] = [];
+
+	const fields = getDirectFields(group.children);
+
+	if (fields.length) {
+		objectLayoutBoxes.push(buildBox({fields, name: group.label}));
+	}
+
+	for (const child of group.children.values()) {
+		if (isPlainGroup(child)) {
+			objectLayoutBoxes.push(
+				buildBox({
+					collapsable: true,
+					fields: getDirectFields(child.children),
+					name: child.label,
+				})
+			);
+		}
+	}
+
+	return {
+		name: group.label,
+		objectLayoutBoxes: objectLayoutBoxes.map(
+			(objectLayoutBox, priority) => ({...objectLayoutBox, priority})
+		),
+	};
+}
+
+function getDirectFields(children: Structure['children']): Field[] {
+	return Array.from(children.values()).filter((child) =>
+		isField(child)
+	) as Field[];
+}
+
+function isPlainGroup(child: StructureChild): child is NonRepeatableGroup {
+	return child.type === 'group' && !child.isRepeatable;
 }
 
 function getRelatedContents(children: Structure['children']): RelatedContent[] {
