@@ -391,6 +391,24 @@ describe('MainSearch', () => {
 			).not.toBeInTheDocument();
 		});
 
+		it('moves an item it reopens back to the top of the list', async () => {
+			storeVisitedItems([VANS, NIKE]);
+
+			const input = renderMainSearch({searchSuggestionsEnabled: true});
+
+			await user.click(input);
+
+			await user.click(screen.getByRole('menuitem', {name: VANS.label}));
+
+			await user.click(input);
+
+			expect(
+				screen
+					.getAllByRole('menuitem', {name: /Nike|Vans/})
+					.map((menuItem) => menuItem.textContent)
+			).toEqual([VANS.label, NIKE.label]);
+		});
+
 		it('links an item to the content it was visited at', async () => {
 			storeVisitedItems([NIKE]);
 

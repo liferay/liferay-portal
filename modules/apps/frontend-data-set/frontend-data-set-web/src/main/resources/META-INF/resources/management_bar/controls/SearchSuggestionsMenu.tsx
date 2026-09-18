@@ -148,7 +148,11 @@ function SearchSuggestionsMenu({
 								key={href}
 								label={label}
 								match={match}
-								onClick={onVisitedItemClick}
+								onClick={() => {
+									recentlyVisited.add(id, {href, label});
+
+									onVisitedItemClick();
+								}}
 								onRemove={() =>
 									setVisitedItems(
 										recentlyVisited.remove(id, href)
