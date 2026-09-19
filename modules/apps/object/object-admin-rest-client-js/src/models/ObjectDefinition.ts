@@ -30,6 +30,7 @@
 			"dateCreated"?: Date;
 			"dateModified"?: Date;
 			"defaultLanguageId"?: string;
+			"description"?: {[key: string]: string;};
 			"enableCategorization"?: boolean;
 			"enableComments"?: boolean;
 			"enableFormContainer"?: boolean;
@@ -121,6 +122,11 @@
 			baseName: "defaultLanguageId",
 			name: "defaultLanguageId",
 			type: "string",
+		},
+		{
+			baseName: "description",
+			name: "description",
+			type: "{[key: string]: string;}",
 		},
 		{
 			baseName: "enableCategorization",

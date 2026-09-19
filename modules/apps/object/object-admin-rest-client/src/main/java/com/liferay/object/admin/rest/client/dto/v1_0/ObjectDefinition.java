@@ -223,6 +223,28 @@ public class ObjectDefinition implements Cloneable, Serializable {
 
 	protected String defaultLanguageId;
 
+	public Map<String, String> getDescription() {
+		return description;
+	}
+
+	public void setDescription(Map<String, String> description) {
+		this.description = description;
+	}
+
+	public void setDescription(
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
+
+		try {
+			description = descriptionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, String> description;
+
 	public Boolean getEnableCategorization() {
 		return enableCategorization;
 	}
@@ -1122,4 +1144,4 @@ public class ObjectDefinition implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-746860302
+// LIFERAY-REST-BUILDER-HASH:-852775071

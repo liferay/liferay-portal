@@ -1866,6 +1866,14 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (objectDefinition.getDescription() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"enableCategorization", additionalAssertFieldName)) {
 
@@ -2449,6 +2457,17 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 				if (!Objects.deepEquals(
 						objectDefinition1.getDefaultLanguageId(),
 						objectDefinition2.getDefaultLanguageId())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("description", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)objectDefinition1.getDescription(),
+						(Map)objectDefinition2.getDescription())) {
 
 					return false;
 				}
@@ -3256,6 +3275,11 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 			}
 
 			return sb.toString();
+		}
+
+		if (entityFieldName.equals("description")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
 		}
 
 		if (entityFieldName.equals("enableCategorization")) {
@@ -4273,4 +4297,4 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:740775768
+// LIFERAY-REST-BUILDER-HASH:-896263020

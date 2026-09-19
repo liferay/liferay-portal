@@ -436,6 +436,49 @@ public class ObjectDefinition implements Serializable {
 	private Supplier<String> _defaultLanguageIdSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public Map<String, String> getDescription() {
+		if (_descriptionSupplier != null) {
+			description = _descriptionSupplier.get();
+
+			_descriptionSupplier = null;
+		}
+
+		return description;
+	}
+
+	public void setDescription(Map<String, String> description) {
+		this.description = description;
+
+		_descriptionSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDescription(
+		UnsafeSupplier<Map<String, String>, Exception>
+			descriptionUnsafeSupplier) {
+
+		_descriptionSupplier = () -> {
+			try {
+				return descriptionUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Map<String, String> description;
+
+	@JsonIgnore
+	private Supplier<Map<String, String>> _descriptionSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getEnableCategorization() {
 		if (_enableCategorizationSupplier != null) {
 			enableCategorization = _enableCategorizationSupplier.get();
@@ -2249,6 +2292,18 @@ public class ObjectDefinition implements Serializable {
 			sb.append("\"");
 		}
 
+		Map<String, String> description = getDescription();
+
+		if (description != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"description\": ");
+
+			sb.append(_toJSON(description));
+		}
+
 		Boolean enableCategorization = getEnableCategorization();
 
 		if (enableCategorization != null) {
@@ -2981,4 +3036,4 @@ public class ObjectDefinition implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-901680768
+// LIFERAY-REST-BUILDER-HASH:-364355004
