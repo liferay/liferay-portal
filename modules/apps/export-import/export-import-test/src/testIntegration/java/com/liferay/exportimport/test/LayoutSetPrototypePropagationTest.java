@@ -1456,18 +1456,6 @@ public class LayoutSetPrototypePropagationTest
 		return true;
 	}
 
-	protected void setLayoutsUpdateable(boolean layoutsUpdateable)
-		throws Exception {
-
-		_layoutSetPrototype =
-			LayoutSetPrototypeLocalServiceUtil.updateLayoutSetPrototype(
-				_layoutSetPrototype.getLayoutSetPrototypeId(),
-				_layoutSetPrototype.getNameMap(),
-				_layoutSetPrototype.getDescriptionMap(),
-				_layoutSetPrototype.isActive(), layoutsUpdateable,
-				ServiceContextTestUtil.getServiceContext());
-	}
-
 	protected Layout setLayoutUpdateable(
 			Layout layout, boolean layoutUpdateable)
 		throws Exception {
@@ -1481,6 +1469,18 @@ public class LayoutSetPrototypePropagationTest
 		layout.setTypeSettingsProperties(typeSettingsUnicodeProperties);
 
 		return LayoutLocalServiceUtil.updateLayout(layout);
+	}
+
+	protected void setLayoutsUpdateable(boolean layoutsUpdateable)
+		throws Exception {
+
+		_layoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.updateLayoutSetPrototype(
+				_layoutSetPrototype.getLayoutSetPrototypeId(),
+				_layoutSetPrototype.getNameMap(),
+				_layoutSetPrototype.getDescriptionMap(),
+				_layoutSetPrototype.isActive(), layoutsUpdateable,
+				ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Override
@@ -1895,14 +1895,14 @@ public class LayoutSetPrototypePropagationTest
 	private String _portletId;
 
 	@Inject
+	private PortletPreferenceValueLocalService
+		_portletPreferenceValueLocalService;
+
+	@Inject
 	private PortletPreferencesFactory _portletPreferencesFactory;
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
-	private PortletPreferenceValueLocalService
-		_portletPreferenceValueLocalService;
 
 	private Layout _prototypeLayout;
 

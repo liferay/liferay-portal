@@ -496,20 +496,6 @@ public class LayoutSEOLinkManagerTest {
 		return null;
 	}
 
-	private void _setupForTestingContentLocalizedLayoutSEOLinks()
-		throws Exception {
-
-		_layout = _setUpLayoutJournalArticleDefaultDisplayPageTemplate();
-
-		_groupFriendlyURL = _portal.getGroupFriendlyURL(
-			_group.getPublicLayoutSet(), _themeDisplay, false, false);
-
-		_canonicalURL = StringBundler.concat(
-			_getPortalURL(), _groupFriendlyURL,
-			FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
-			_expectedFriendlyURLs.get(LocaleUtil.US));
-	}
-
 	private void _setUpForTestingLayoutLocalizedLayoutSEOLinks()
 		throws Exception {
 
@@ -580,6 +566,20 @@ public class LayoutSEOLinkManagerTest {
 		ServiceContextThreadLocal.pushServiceContext(serviceContext);
 
 		return layout;
+	}
+
+	private void _setupForTestingContentLocalizedLayoutSEOLinks()
+		throws Exception {
+
+		_layout = _setUpLayoutJournalArticleDefaultDisplayPageTemplate();
+
+		_groupFriendlyURL = _portal.getGroupFriendlyURL(
+			_group.getPublicLayoutSet(), _themeDisplay, false, false);
+
+		_canonicalURL = StringBundler.concat(
+			_getPortalURL(), _groupFriendlyURL,
+			FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
+			_expectedFriendlyURLs.get(LocaleUtil.US));
 	}
 
 	private void _testWithLayoutSEOCompanyConfiguration(

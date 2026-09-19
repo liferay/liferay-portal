@@ -114,12 +114,12 @@ public class ConfigYAML implements Cloneable {
 		return _generateBatch;
 	}
 
-	public boolean isGenerateClientJS() {
-		return _generateClientJS;
-	}
-
 	public boolean isGenerateCRUD() {
 		return _generateCRUD;
+	}
+
+	public boolean isGenerateClientJS() {
+		return _generateClientJS;
 	}
 
 	public boolean isGenerateGraphQL() {
@@ -229,12 +229,12 @@ public class ConfigYAML implements Cloneable {
 		_generateBatch = generateBatch;
 	}
 
-	public void setGenerateClientJS(boolean generateClientJS) {
-		_generateClientJS = generateClientJS;
-	}
-
 	public void setGenerateCRUD(boolean generateCRUD) {
 		_generateCRUD = generateCRUD;
+	}
+
+	public void setGenerateClientJS(boolean generateClientJS) {
+		_generateClientJS = generateClientJS;
 	}
 
 	public void setGenerateGraphQL(boolean generateGraphQL) {
@@ -321,8 +321,8 @@ public class ConfigYAML implements Cloneable {
 	private boolean _forcePredictableSchemaPropertyName = true;
 	private boolean _generateActionProviders;
 	private boolean _generateBatch = true;
-	private boolean _generateClientJS;
 	private boolean _generateCRUD = true;
+	private boolean _generateClientJS;
 	private boolean _generateGraphQL = true;
 	private boolean _generateOpenAPI = true;
 	private boolean _generatePermissions;

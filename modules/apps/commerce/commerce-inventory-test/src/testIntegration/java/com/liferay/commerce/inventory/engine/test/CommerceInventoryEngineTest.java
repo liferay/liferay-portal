@@ -971,6 +971,48 @@ public class CommerceInventoryEngineTest {
 	}
 
 	@Test
+	public void testGetStockQuantitiesForInactiveWarehouseUsingCPChannel()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"It shall not be possible to retrieve stocks from an inactive " +
+				"warehouse using a commerce channel to the warehouse item"
+		).given(
+			"One inactive warehouse is created"
+		).when(
+			"A product is added to the warehouse"
+		).then(
+			"The retrieved stock quantity shall not contain the inactive " +
+				"warehouse stocks"
+		);
+
+		CommerceInventoryWarehouse commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				false, _serviceContext);
+
+		CommerceChannelRelLocalServiceUtil.addCommerceChannelRel(
+			CPDefinition.class.getName(), _cpInstance1.getCPDefinitionId(),
+			_commerceChannel.getCommerceChannelId(), _serviceContext);
+
+		BigDecimal quantity = BigDecimal.TEN;
+
+		_commerceInventoryWarehouseItemLocalService.
+			addCommerceInventoryWarehouseItem(
+				StringPool.BLANK, _user.getUserId(),
+				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+				quantity, BigDecimal.ZERO, _cpInstance1.getSku(),
+				StringPool.BLANK);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.ZERO,
+				_commerceInventoryEngine.getStockQuantity(
+					_group.getCompanyId(), _accountEntry.getAccountEntryId(),
+					_cpInstance1.getGroupId(), _commerceChannel.getGroupId(),
+					_cpInstance1.getSku(), StringPool.BLANK)));
+	}
+
+	@Test
 	public void testGetStockQuantitiesForInactiveWarehouseUsingChannel()
 		throws Exception {
 
@@ -993,48 +1035,6 @@ public class CommerceInventoryEngineTest {
 		CommerceChannelRelLocalServiceUtil.addCommerceChannelRel(
 			CommerceInventoryWarehouse.class.getName(),
 			commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-			_commerceChannel.getCommerceChannelId(), _serviceContext);
-
-		BigDecimal quantity = BigDecimal.TEN;
-
-		_commerceInventoryWarehouseItemLocalService.
-			addCommerceInventoryWarehouseItem(
-				StringPool.BLANK, _user.getUserId(),
-				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				quantity, BigDecimal.ZERO, _cpInstance1.getSku(),
-				StringPool.BLANK);
-
-		Assert.assertTrue(
-			BigDecimalUtil.eq(
-				BigDecimal.ZERO,
-				_commerceInventoryEngine.getStockQuantity(
-					_group.getCompanyId(), _accountEntry.getAccountEntryId(),
-					_cpInstance1.getGroupId(), _commerceChannel.getGroupId(),
-					_cpInstance1.getSku(), StringPool.BLANK)));
-	}
-
-	@Test
-	public void testGetStockQuantitiesForInactiveWarehouseUsingCPChannel()
-		throws Exception {
-
-		frutillaRule.scenario(
-			"It shall not be possible to retrieve stocks from an inactive " +
-				"warehouse using a commerce channel to the warehouse item"
-		).given(
-			"One inactive warehouse is created"
-		).when(
-			"A product is added to the warehouse"
-		).then(
-			"The retrieved stock quantity shall not contain the inactive " +
-				"warehouse stocks"
-		);
-
-		CommerceInventoryWarehouse commerceInventoryWarehouse =
-			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
-				false, _serviceContext);
-
-		CommerceChannelRelLocalServiceUtil.addCommerceChannelRel(
-			CPDefinition.class.getName(), _cpInstance1.getCPDefinitionId(),
 			_commerceChannel.getCommerceChannelId(), _serviceContext);
 
 		BigDecimal quantity = BigDecimal.TEN;

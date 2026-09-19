@@ -182,6 +182,34 @@ public class FolderStagedModelDataHandlerTest
 		return dependentStagedModelsMap;
 	}
 
+	protected DLFileEntryType addDLFileEntryType(
+			long groupId, long ddmStructureId)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				groupId, TestPropsValues.getUserId());
+
+		DLFileEntryType dlFileEntryType =
+			DLFileEntryTypeLocalServiceUtil.addFileEntryType(
+				null, TestPropsValues.getUserId(), groupId, ddmStructureId,
+				null,
+				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
+				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
+				serviceContext);
+
+		DDMStructure ddmStructure =
+			DDMStructureLocalServiceUtil.getDDMStructure(ddmStructureId);
+
+		ddmStructure.setStructureKey(
+			DLUtil.getDDMStructureKey(dlFileEntryType));
+
+		DDMStructureLocalServiceUtil.updateDDMStructure(ddmStructure);
+
+		return dlFileEntryType;
+	}
+
 	@Override
 	protected Map<String, List<StagedModel>> addDependentStagedModelsMap(
 			Group group)
@@ -213,34 +241,6 @@ public class FolderStagedModelDataHandlerTest
 			dependentStagedModelsMap, DLFolder.class, folder);
 
 		return dependentStagedModelsMap;
-	}
-
-	protected DLFileEntryType addDLFileEntryType(
-			long groupId, long ddmStructureId)
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				groupId, TestPropsValues.getUserId());
-
-		DLFileEntryType dlFileEntryType =
-			DLFileEntryTypeLocalServiceUtil.addFileEntryType(
-				null, TestPropsValues.getUserId(), groupId, ddmStructureId,
-				null,
-				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
-				Collections.singletonMap(LocaleUtil.US, "New File Entry Type"),
-				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
-				serviceContext);
-
-		DDMStructure ddmStructure =
-			DDMStructureLocalServiceUtil.getDDMStructure(ddmStructureId);
-
-		ddmStructure.setStructureKey(
-			DLUtil.getDDMStructureKey(dlFileEntryType));
-
-		DDMStructureLocalServiceUtil.updateDDMStructure(ddmStructure);
-
-		return dlFileEntryType;
 	}
 
 	@Override

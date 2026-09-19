@@ -422,9 +422,9 @@ public class SiteInitializerExtender
 	@Reference
 	private ExpandoValueLocalService _expandoValueLocalService;
 
-	private final Map<String, File> _files = new HashMap<>();
 	private final List<SiteInitializerExtension>
 		_fileSiteInitializerExtensions = new ArrayList<>();
+	private final Map<String, File> _files = new HashMap<>();
 
 	@Reference
 	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
@@ -474,11 +474,11 @@ public class SiteInitializerExtender
 	private LayoutSetLocalService _layoutSetLocalService;
 
 	@Reference
-	private LayoutsImporter _layoutsImporter;
-
-	@Reference
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
+
+	@Reference
+	private LayoutsImporter _layoutsImporter;
 
 	@Reference
 	private ListTypeDefinitionResource _listTypeDefinitionResource;

@@ -75,6 +75,18 @@ public class ObjectEntryFolderTrashHandlerTest {
 		return objectEntryFolder;
 	}
 
+	private void _testCheckEntriesWithPermissions() throws Exception {
+		ObjectEntryFolder objectEntryFolder =
+			_addExpiredTrashedObjectEntryFolder();
+
+		TrashEntryLocalServiceUtil.checkEntries();
+
+		Assert.assertNull(
+			TrashEntryLocalServiceUtil.fetchEntry(
+				ObjectEntryFolder.class.getName(),
+				objectEntryFolder.getObjectEntryFolderId()));
+	}
+
 	private void _testCheckEntriesWithoutPermissions() throws Exception {
 		ObjectEntryFolder objectEntryFolder =
 			_addExpiredTrashedObjectEntryFolder();
@@ -94,18 +106,6 @@ public class ObjectEntryFolderTrashHandlerTest {
 			PermissionThreadLocal.setPermissionChecker(
 				originalPermissionChecker);
 		}
-
-		Assert.assertNull(
-			TrashEntryLocalServiceUtil.fetchEntry(
-				ObjectEntryFolder.class.getName(),
-				objectEntryFolder.getObjectEntryFolderId()));
-	}
-
-	private void _testCheckEntriesWithPermissions() throws Exception {
-		ObjectEntryFolder objectEntryFolder =
-			_addExpiredTrashedObjectEntryFolder();
-
-		TrashEntryLocalServiceUtil.checkEntries();
 
 		Assert.assertNull(
 			TrashEntryLocalServiceUtil.fetchEntry(

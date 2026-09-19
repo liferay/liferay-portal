@@ -19,9 +19,9 @@ public interface CPCatalogEntry {
 
 	public List<CPDefinitionOptionRel> getCPDefinitionOptionRels();
 
-	public long getCProductId();
-
 	public List<CPSku> getCPSkus();
+
+	public long getCProductId();
 
 	public double getDepth();
 

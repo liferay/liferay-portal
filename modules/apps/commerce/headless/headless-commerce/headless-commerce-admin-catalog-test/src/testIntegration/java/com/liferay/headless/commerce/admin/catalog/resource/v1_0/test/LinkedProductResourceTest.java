@@ -178,14 +178,14 @@ public class LinkedProductResourceTest
 			linkedProduct.getProductId(), pageLinkedProduct.getProductId());
 	}
 
+	@Inject
+	private CProductLocalService _cProductLocalService;
+
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
 
 	@DeleteAfterTestRun
 	private CommerceCurrency _commerceCurrency;
-
-	@Inject
-	private CProductLocalService _cProductLocalService;
 
 	private MappedProductResource _mappedProductResource;
 

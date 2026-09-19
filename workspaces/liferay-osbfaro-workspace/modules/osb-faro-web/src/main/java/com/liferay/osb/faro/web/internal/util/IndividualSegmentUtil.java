@@ -108,6 +108,33 @@ public class IndividualSegmentUtil {
 		return (long)Math.ceil((maxValue - minValue) / _MAX_BINS);
 	}
 
+	protected static List<Double[]> getBinRanges(
+			double binSize, int numberOfBins, double minValue, double maxValue)
+		throws Exception {
+
+		if (binSize <= 0) {
+			binSize = getDefaultBinSize(numberOfBins, minValue, maxValue);
+		}
+		else if (binSize < getMinBinSize(minValue, maxValue)) {
+			throw new FaroException(
+				"Exceeded the maximum number of bins: " + _MAX_BINS);
+		}
+
+		List<Double[]> binRanges = new ArrayList<>();
+
+		double curMin = minValue;
+
+		while (curMin < maxValue) {
+			double curMax = Math.min(curMin + binSize, maxValue);
+
+			binRanges.add(new Double[] {curMin, curMax});
+
+			curMin = curMax;
+		}
+
+		return binRanges;
+	}
+
 	protected static List<Map<String, Object>>
 			getBinnedIndividualFieldDistribution(
 				FaroProject faroProject, IndividualSegment individualSegment,
@@ -196,33 +223,6 @@ public class IndividualSegmentUtil {
 		}
 
 		return individualFieldDistribution;
-	}
-
-	protected static List<Double[]> getBinRanges(
-			double binSize, int numberOfBins, double minValue, double maxValue)
-		throws Exception {
-
-		if (binSize <= 0) {
-			binSize = getDefaultBinSize(numberOfBins, minValue, maxValue);
-		}
-		else if (binSize < getMinBinSize(minValue, maxValue)) {
-			throw new FaroException(
-				"Exceeded the maximum number of bins: " + _MAX_BINS);
-		}
-
-		List<Double[]> binRanges = new ArrayList<>();
-
-		double curMin = minValue;
-
-		while (curMin < maxValue) {
-			double curMax = Math.min(curMin + binSize, maxValue);
-
-			binRanges.add(new Double[] {curMin, curMax});
-
-			curMin = curMax;
-		}
-
-		return binRanges;
 	}
 
 	protected static List<Map<String, Object>> getIndividualFieldDistribution(

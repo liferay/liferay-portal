@@ -234,12 +234,6 @@ public class DDMFormLayoutJSONDeserializer
 		ddmFormLayoutPage.setDDMFormLayoutRows(getDDMFormLayoutRows(jsonArray));
 	}
 
-	private void _setDDMFormLayoutPages(
-		JSONArray jsonArray, DDMFormLayout ddmFormLayout) {
-
-		ddmFormLayout.setDDMFormLayoutPages(getDDMFormLayoutPages(jsonArray));
-	}
-
 	private void _setDDMFormLayoutPageTitle(
 		JSONObject jsonObject, DDMFormLayoutPage ddmFormLayoutPage) {
 
@@ -262,6 +256,12 @@ public class DDMFormLayoutJSONDeserializer
 
 			title.setDefaultLocale(ddmFormLayout.getDefaultLocale());
 		}
+	}
+
+	private void _setDDMFormLayoutPages(
+		JSONArray jsonArray, DDMFormLayout ddmFormLayout) {
+
+		ddmFormLayout.setDDMFormLayoutPages(getDDMFormLayoutPages(jsonArray));
 	}
 
 	private void _setDDMFormLayoutPaginationMode(

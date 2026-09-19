@@ -48,6 +48,11 @@ public class CachedTestClassHistory extends BaseTestClassHistory {
 	}
 
 	@Override
+	public String getTestTaskName() {
+		return _jsonObject.optString("testTaskName");
+	}
+
+	@Override
 	public URL getTestrayCaseURL() {
 		String testrayCaseURL = _jsonObject.optString("testrayCaseURL");
 
@@ -61,11 +66,6 @@ public class CachedTestClassHistory extends BaseTestClassHistory {
 		catch (MalformedURLException malformedURLException) {
 			return null;
 		}
-	}
-
-	@Override
-	public String getTestTaskName() {
-		return _jsonObject.optString("testTaskName");
 	}
 
 	@Override

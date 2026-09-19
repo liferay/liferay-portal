@@ -136,10 +136,10 @@ public class SXPBlueprintSearchRequestContributorFederatedTest {
 	private Group _group;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@DeleteAfterTestRun
 	private SXPBlueprint _sxpBlueprint;

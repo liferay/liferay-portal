@@ -115,50 +115,6 @@ public class ContentManagerActionsTest {
 	}
 
 	@Test
-	public void testGetActionsJSONObjectWithoutPermissions() throws Exception {
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-		User user = UserTestUtil.addUser();
-
-		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
-
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(user));
-
-			MockHttpServletRequest mockHttpServletRequest =
-				new MockHttpServletRequest();
-
-			ThemeDisplay themeDisplay = ContentLayoutTestUtil.getThemeDisplay(
-				_company, _group, _layout);
-
-			mockHttpServletRequest.setAttribute(
-				WebKeys.THEME_DISPLAY, themeDisplay);
-
-			JSONObject actionsJSONObject = ReflectionTestUtil.invoke(
-				_contentManager, "_getActionsJSONObject",
-				new Class<?>[] {
-					LayoutClassedModelUsage.class,
-					LayoutDisplayPageObjectProvider.class, ThemeDisplay.class,
-					HttpServletRequest.class
-				},
-				_layoutClassedModelUsage, _layoutDisplayPageObjectProvider,
-				themeDisplay, mockHttpServletRequest);
-
-			Assert.assertFalse(actionsJSONObject.has("editImage"));
-			Assert.assertFalse(actionsJSONObject.has("editURL"));
-			Assert.assertFalse(actionsJSONObject.has("permissionsURL"));
-			Assert.assertFalse(actionsJSONObject.has("viewUsagesURL"));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-		}
-	}
-
-	@Test
 	public void testGetActionsJSONObjectWithPermissions() throws Exception {
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 		User user = UserTestUtil.addUser();
@@ -208,6 +164,50 @@ public class ContentManagerActionsTest {
 			Assert.assertTrue(actionsJSONObject.has("editURL"));
 			Assert.assertTrue(actionsJSONObject.has("permissionsURL"));
 			Assert.assertTrue(actionsJSONObject.has("viewUsagesURL"));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+		}
+	}
+
+	@Test
+	public void testGetActionsJSONObjectWithoutPermissions() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest();
+
+			ThemeDisplay themeDisplay = ContentLayoutTestUtil.getThemeDisplay(
+				_company, _group, _layout);
+
+			mockHttpServletRequest.setAttribute(
+				WebKeys.THEME_DISPLAY, themeDisplay);
+
+			JSONObject actionsJSONObject = ReflectionTestUtil.invoke(
+				_contentManager, "_getActionsJSONObject",
+				new Class<?>[] {
+					LayoutClassedModelUsage.class,
+					LayoutDisplayPageObjectProvider.class, ThemeDisplay.class,
+					HttpServletRequest.class
+				},
+				_layoutClassedModelUsage, _layoutDisplayPageObjectProvider,
+				themeDisplay, mockHttpServletRequest);
+
+			Assert.assertFalse(actionsJSONObject.has("editImage"));
+			Assert.assertFalse(actionsJSONObject.has("editURL"));
+			Assert.assertFalse(actionsJSONObject.has("permissionsURL"));
+			Assert.assertFalse(actionsJSONObject.has("viewUsagesURL"));
 		}
 		finally {
 			PermissionThreadLocal.setPermissionChecker(

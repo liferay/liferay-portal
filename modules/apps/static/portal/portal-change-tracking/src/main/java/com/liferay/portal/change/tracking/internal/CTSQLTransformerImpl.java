@@ -1238,9 +1238,9 @@ public class CTSQLTransformerImpl implements CTSQLTransformer {
 			return whereExpression;
 		}
 
+		private final Set<TableWrapper> _tableWrappers = new LinkedHashSet<>();
 		private final TablesNamesFinder _tablesNamesFinder =
 			new TablesNamesFinder();
-		private final Set<TableWrapper> _tableWrappers = new LinkedHashSet<>();
 
 	}
 

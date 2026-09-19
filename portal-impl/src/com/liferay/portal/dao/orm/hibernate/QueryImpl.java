@@ -163,13 +163,6 @@ public class QueryImpl implements Query {
 	}
 
 	@Override
-	public Query setCacheable(boolean cacheable) {
-		_query.setCacheable(cacheable);
-
-		return this;
-	}
-
-	@Override
 	public Query setCacheMode(CacheMode cacheMode) {
 		_query.setCacheMode(CacheModeTranslator.translate(cacheMode));
 
@@ -179,6 +172,13 @@ public class QueryImpl implements Query {
 	@Override
 	public Query setCacheRegion(String cacheRegion) {
 		_query.setCacheRegion(cacheRegion);
+
+		return this;
+	}
+
+	@Override
+	public Query setCacheable(boolean cacheable) {
+		_query.setCacheable(cacheable);
 
 		return this;
 	}

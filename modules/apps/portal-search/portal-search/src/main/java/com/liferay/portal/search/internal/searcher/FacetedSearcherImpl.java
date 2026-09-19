@@ -262,13 +262,13 @@ public class FacetedSearcherImpl
 	private final AddSearchKeywordsQueryContributorHelper
 		_addSearchKeywordsQueryContributorHelper;
 	private final ExpandoQueryContributorHelper _expandoQueryContributorHelper;
-	private final IndexerRegistry _indexerRegistry;
 	private final IndexSearcherHelper _indexSearcherHelper;
+	private final IndexerRegistry _indexerRegistry;
 	private final PostProcessSearchQueryContributorHelper
 		_postProcessSearchQueryContributorHelper;
 	private final PreFilterContributorHelper _preFilterContributorHelper;
+	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private final SearchableAssetClassNamesProvider
 		_searchableAssetClassNamesProvider;
-	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 }

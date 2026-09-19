@@ -87,6 +87,20 @@ public class CPDefinitionDisplayLayoutDisplayContext
 		).buildString();
 	}
 
+	public CPDisplayLayout getCPDisplayLayout() throws PortalException {
+		if (_cpDisplayLayout != null) {
+			return _cpDisplayLayout;
+		}
+
+		long cpDisplayLayoutId = ParamUtil.getLong(
+			cpRequestHelper.getRequest(), "cpDisplayLayoutId");
+
+		_cpDisplayLayout = _cpDisplayLayoutService.fetchCPDisplayLayout(
+			cpDisplayLayoutId);
+
+		return _cpDisplayLayout;
+	}
+
 	public CommerceChannel getCommerceChannel() {
 		long commerceChannelId = ParamUtil.getLong(
 			httpServletRequest, "commerceChannelId");
@@ -103,20 +117,6 @@ public class CPDefinitionDisplayLayoutDisplayContext
 		}
 
 		return commerceChannel.getCommerceChannelId();
-	}
-
-	public CPDisplayLayout getCPDisplayLayout() throws PortalException {
-		if (_cpDisplayLayout != null) {
-			return _cpDisplayLayout;
-		}
-
-		long cpDisplayLayoutId = ParamUtil.getLong(
-			cpRequestHelper.getRequest(), "cpDisplayLayoutId");
-
-		_cpDisplayLayout = _cpDisplayLayoutService.fetchCPDisplayLayout(
-			cpDisplayLayoutId);
-
-		return _cpDisplayLayout;
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

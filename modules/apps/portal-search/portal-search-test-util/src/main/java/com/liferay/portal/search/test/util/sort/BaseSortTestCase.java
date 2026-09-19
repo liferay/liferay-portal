@@ -113,6 +113,12 @@ public abstract class BaseSortTestCase extends BaseIndexingTestCase {
 			expected);
 	}
 
+	protected abstract String getScoreParameter();
+
+	protected Sort[] getScoreSortArray(int type, boolean reverse) {
+		return new Sort[] {new Sort(getScoreParameter(), type, reverse)};
+	}
+
 	protected Query getScoredQuery(String fieldName, String fieldValue) {
 		BooleanQuery booleanQuery = new BooleanQuery();
 
@@ -121,12 +127,6 @@ public abstract class BaseSortTestCase extends BaseIndexingTestCase {
 		booleanQuery.add(getDefaultQuery(), BooleanClauseOccur.SHOULD);
 
 		return booleanQuery;
-	}
-
-	protected abstract String getScoreParameter();
-
-	protected Sort[] getScoreSortArray(int type, boolean reverse) {
-		return new Sort[] {new Sort(getScoreParameter(), type, reverse)};
 	}
 
 	protected void testDoubleField(String fieldName) throws Exception {

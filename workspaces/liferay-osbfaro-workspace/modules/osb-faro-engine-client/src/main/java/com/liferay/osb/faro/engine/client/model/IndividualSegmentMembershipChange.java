@@ -53,12 +53,12 @@ public class IndividualSegmentMembershipChange {
 		return _individualName;
 	}
 
-	public Long getIndividualsCount() {
-		return _individualsCount;
-	}
-
 	public String getIndividualSegmentId() {
 		return _individualSegmentId;
+	}
+
+	public Long getIndividualsCount() {
+		return _individualsCount;
 	}
 
 	public String getOperation() {
@@ -105,12 +105,12 @@ public class IndividualSegmentMembershipChange {
 		_individualName = individualName;
 	}
 
-	public void setIndividualsCount(Long individualsCount) {
-		_individualsCount = individualsCount;
-	}
-
 	public void setIndividualSegmentId(String individualSegmentId) {
 		_individualSegmentId = individualSegmentId;
+	}
+
+	public void setIndividualsCount(Long individualsCount) {
+		_individualsCount = individualsCount;
 	}
 
 	public void setOperation(String operation) {
@@ -131,8 +131,8 @@ public class IndividualSegmentMembershipChange {
 	private String _individualEmail;
 	private String _individualId;
 	private String _individualName;
-	private Long _individualsCount;
 	private String _individualSegmentId;
+	private Long _individualsCount;
 	private String _operation = Operation.ADDED.name();
 
 }

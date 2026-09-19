@@ -118,6 +118,9 @@ public class LinkedProductResourceTest
 	}
 
 	@DeleteAfterTestRun
+	private CProduct _cProduct;
+
+	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;
 
 	@DeleteAfterTestRun
@@ -128,9 +131,6 @@ public class LinkedProductResourceTest
 
 	@DeleteAfterTestRun
 	private CPInstance _cpInstance;
-
-	@DeleteAfterTestRun
-	private CProduct _cProduct;
 
 	@DeleteAfterTestRun
 	private final List<CSDiagramEntry> _csDiagramEntries = new ArrayList<>();

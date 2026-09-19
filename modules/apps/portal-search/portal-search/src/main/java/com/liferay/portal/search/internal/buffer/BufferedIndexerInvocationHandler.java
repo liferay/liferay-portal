@@ -230,10 +230,10 @@ public class BufferedIndexerInvocationHandler implements InvocationHandler {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BufferedIndexerInvocationHandler.class);
 
+	private final IndexStatusManager _indexStatusManager;
 	private final Indexer<?> _indexer;
 	private volatile IndexerRegistryConfiguration _indexerRegistryConfiguration;
 	private volatile IndexerRequestBufferOverflowHandler
 		_indexerRequestBufferOverflowHandler;
-	private final IndexStatusManager _indexStatusManager;
 
 }

@@ -46,13 +46,13 @@ public class GroupSegmentsFieldCustomizer extends BaseSegmentsFieldCustomizer {
 	public static final String KEY = "group";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getGroup(fieldValue);
+	public String getClassName() {
+		return Group.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return Group.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getGroup(fieldValue);
 	}
 
 	@Override

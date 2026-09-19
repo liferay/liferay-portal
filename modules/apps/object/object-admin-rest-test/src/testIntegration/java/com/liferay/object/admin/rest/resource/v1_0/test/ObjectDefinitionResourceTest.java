@@ -2896,34 +2896,6 @@ public class ObjectDefinitionResourceTest
 			objectDefinition.getId());
 	}
 
-	private void _testGetObjectDefinitionsPage(
-			ObjectDefinition expectedObjectDefinition, Locale locale,
-			String search)
-		throws Exception {
-
-		User user = testVulcanCRUDItemDelegate_getUser();
-
-		ObjectDefinitionResource objectDefinitionResource =
-			ObjectDefinitionResource.builder(
-			).authentication(
-				user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				locale
-			).build();
-
-		Page<ObjectDefinition> page =
-			objectDefinitionResource.getObjectDefinitionsPage(
-				search, null, null, Pagination.of(1, 2), null);
-
-		Assert.assertTrue(
-			_contains(
-				expectedObjectDefinition,
-				(List<ObjectDefinition>)page.getItems()));
-	}
-
 	private void _testGetObjectDefinitionWithRootObjectDefinitionExternalReferenceCodes()
 		throws Exception {
 
@@ -3080,6 +3052,34 @@ public class ObjectDefinitionResourceTest
 					workflowDefinitionLink1, workflowDefinitionLink2)),
 			new HashSet<>(
 				Arrays.asList(objectDefinition.getWorkflowDefinitionLinks())));
+	}
+
+	private void _testGetObjectDefinitionsPage(
+			ObjectDefinition expectedObjectDefinition, Locale locale,
+			String search)
+		throws Exception {
+
+		User user = testVulcanCRUDItemDelegate_getUser();
+
+		ObjectDefinitionResource objectDefinitionResource =
+			ObjectDefinitionResource.builder(
+			).authentication(
+				user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				locale
+			).build();
+
+		Page<ObjectDefinition> page =
+			objectDefinitionResource.getObjectDefinitionsPage(
+				search, null, null, Pagination.of(1, 2), null);
+
+		Assert.assertTrue(
+			_contains(
+				expectedObjectDefinition,
+				(List<ObjectDefinition>)page.getItems()));
 	}
 
 	private void _testPatchObjectDefinitionWithObjectFields() throws Exception {
@@ -3930,58 +3930,6 @@ public class ObjectDefinitionResourceTest
 		Assert.assertEquals(objectViewId, persistedObjectView.getId());
 	}
 
-	private void _testPutObjectDefinitionWithoutObjectViewExternalReferenceCode()
-		throws Exception {
-
-		// Reimport a legacy object view without an external reference code
-
-		ObjectDefinition objectDefinition = _addObjectDefinition(
-			_randomModifiableSystemObjectDefinition());
-
-		ObjectView objectView = new ObjectView() {
-			{
-				defaultObjectView = true;
-				name = Collections.singletonMap(
-					"en_US", RandomTestUtil.randomString());
-				objectViewColumns = new ObjectViewColumn[] {
-					new ObjectViewColumn() {
-						{
-							label = Collections.singletonMap(
-								"en_US", RandomTestUtil.randomString());
-							objectFieldName = "customObjectField";
-							priority = 0;
-						}
-					}
-				};
-			}
-		};
-
-		objectDefinition.setObjectViews(new ObjectView[] {objectView});
-
-		objectDefinition = objectDefinitionResource.putObjectDefinition(
-			objectDefinition.getId(), objectDefinition);
-
-		ObjectView[] objectViews = objectDefinition.getObjectViews();
-
-		Assert.assertEquals(
-			Arrays.toString(objectViews), 1, objectViews.length);
-
-		String objectViewExternalReferenceCode =
-			objectViews[0].getExternalReferenceCode();
-
-		Assert.assertNotNull(objectViewExternalReferenceCode);
-
-		// Reimport without the object view
-
-		objectDefinition.setObjectViews(new ObjectView[0]);
-
-		objectDefinition = objectDefinitionResource.putObjectDefinition(
-			objectDefinition.getId(), objectDefinition);
-
-		Assert.assertNull(
-			_getObjectView(objectViewExternalReferenceCode, objectDefinition));
-	}
-
 	private void _testPutObjectDefinitionWithPermissions() throws Exception {
 
 		// Invalid permissions
@@ -4097,6 +4045,58 @@ public class ObjectDefinitionResourceTest
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), role1.getRoleId(),
 			ActionKeys.DELETE);
+	}
+
+	private void _testPutObjectDefinitionWithoutObjectViewExternalReferenceCode()
+		throws Exception {
+
+		// Reimport a legacy object view without an external reference code
+
+		ObjectDefinition objectDefinition = _addObjectDefinition(
+			_randomModifiableSystemObjectDefinition());
+
+		ObjectView objectView = new ObjectView() {
+			{
+				defaultObjectView = true;
+				name = Collections.singletonMap(
+					"en_US", RandomTestUtil.randomString());
+				objectViewColumns = new ObjectViewColumn[] {
+					new ObjectViewColumn() {
+						{
+							label = Collections.singletonMap(
+								"en_US", RandomTestUtil.randomString());
+							objectFieldName = "customObjectField";
+							priority = 0;
+						}
+					}
+				};
+			}
+		};
+
+		objectDefinition.setObjectViews(new ObjectView[] {objectView});
+
+		objectDefinition = objectDefinitionResource.putObjectDefinition(
+			objectDefinition.getId(), objectDefinition);
+
+		ObjectView[] objectViews = objectDefinition.getObjectViews();
+
+		Assert.assertEquals(
+			Arrays.toString(objectViews), 1, objectViews.length);
+
+		String objectViewExternalReferenceCode =
+			objectViews[0].getExternalReferenceCode();
+
+		Assert.assertNotNull(objectViewExternalReferenceCode);
+
+		// Reimport without the object view
+
+		objectDefinition.setObjectViews(new ObjectView[0]);
+
+		objectDefinition = objectDefinitionResource.putObjectDefinition(
+			objectDefinition.getId(), objectDefinition);
+
+		Assert.assertNull(
+			_getObjectView(objectViewExternalReferenceCode, objectDefinition));
 	}
 
 	private JSONObject _waitForFinish(

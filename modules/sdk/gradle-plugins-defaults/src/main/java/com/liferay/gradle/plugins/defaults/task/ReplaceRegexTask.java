@@ -50,13 +50,13 @@ public class ReplaceRegexTask extends DefaultTask {
 	}
 
 	@Internal
-	public Object getReplacement() {
-		return _replacement;
+	public List<Closure<Boolean>> getReplaceOnlyIf() {
+		return _replaceOnlyIfClosures;
 	}
 
 	@Internal
-	public List<Closure<Boolean>> getReplaceOnlyIf() {
-		return _replaceOnlyIfClosures;
+	public Object getReplacement() {
+		return _replacement;
 	}
 
 	public ReplaceRegexTask match(String regex, Iterable<Object> files) {
@@ -143,10 +143,6 @@ public class ReplaceRegexTask extends DefaultTask {
 		pre(preClosures);
 	}
 
-	public void setReplacement(Object replacement) {
-		_replacement = replacement;
-	}
-
 	public void setReplaceOnlyIf(
 		@SuppressWarnings("unchecked") Closure<Boolean>...
 			replaceOnlyIfClosures) {
@@ -160,6 +156,10 @@ public class ReplaceRegexTask extends DefaultTask {
 		_replaceOnlyIfClosures.clear();
 
 		replaceOnlyIf(replaceOnlyIfClosures);
+	}
+
+	public void setReplacement(Object replacement) {
+		_replacement = replacement;
 	}
 
 	private Object _getReplacementObject() {
@@ -247,8 +247,8 @@ public class ReplaceRegexTask extends DefaultTask {
 
 	private final Map<String, FileCollection> _matches = new LinkedHashMap<>();
 	private final List<Closure<String>> _preClosures = new ArrayList<>();
-	private Object _replacement;
 	private final List<Closure<Boolean>> _replaceOnlyIfClosures =
 		new ArrayList<>();
+	private Object _replacement;
 
 }

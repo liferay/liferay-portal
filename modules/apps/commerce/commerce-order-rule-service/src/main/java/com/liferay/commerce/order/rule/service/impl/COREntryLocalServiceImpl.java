@@ -285,6 +285,29 @@ public class COREntryLocalServiceImpl extends COREntryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<COREntry> getCOREntries(
+		long companyId, boolean active, int start, int end) {
+
+		return corEntryPersistence.findByC_A(companyId, active, start, end);
+	}
+
+	@Override
+	public List<COREntry> getCOREntries(
+		long companyId, boolean active, String type, int start, int end) {
+
+		return corEntryPersistence.findByC_A_LikeType(
+			companyId, active, type, start, end);
+	}
+
+	@Override
+	public List<COREntry> getCOREntries(
+		long companyId, String type, int start, int end) {
+
+		return corEntryPersistence.findByC_LikeType(
+			companyId, type, start, end);
+	}
+
+	@Override
 	public List<COREntry> getCommerceChannelAndCommerceOrderTypeCOREntries(
 		long companyId, long commerceChannelId, long commerceOrderTypeId) {
 
@@ -324,29 +347,6 @@ public class COREntryLocalServiceImpl extends COREntryLocalServiceBaseImpl {
 				COREntryTable.INSTANCE.type.descending(),
 				COREntryTable.INSTANCE.priority.descending()
 			));
-	}
-
-	@Override
-	public List<COREntry> getCOREntries(
-		long companyId, boolean active, int start, int end) {
-
-		return corEntryPersistence.findByC_A(companyId, active, start, end);
-	}
-
-	@Override
-	public List<COREntry> getCOREntries(
-		long companyId, boolean active, String type, int start, int end) {
-
-		return corEntryPersistence.findByC_A_LikeType(
-			companyId, active, type, start, end);
-	}
-
-	@Override
-	public List<COREntry> getCOREntries(
-		long companyId, String type, int start, int end) {
-
-		return corEntryPersistence.findByC_LikeType(
-			companyId, type, start, end);
 	}
 
 	@Override

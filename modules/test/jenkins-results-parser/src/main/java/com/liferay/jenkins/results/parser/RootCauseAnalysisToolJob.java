@@ -24,10 +24,6 @@ public class RootCauseAnalysisToolJob
 		return Collections.emptySet();
 	}
 
-	public GitWorkingDirectory getJenkinsGitWorkingDirectory() {
-		return _jenkinsGitWorkingDirectory;
-	}
-
 	@Override
 	public JSONObject getJSONObject() {
 		if (jsonObject != null) {
@@ -39,6 +35,10 @@ public class RootCauseAnalysisToolJob
 		jsonObject.put("upstream_branch_name", _upstreamBranchName);
 
 		return jsonObject;
+	}
+
+	public GitWorkingDirectory getJenkinsGitWorkingDirectory() {
+		return _jenkinsGitWorkingDirectory;
 	}
 
 	@Override

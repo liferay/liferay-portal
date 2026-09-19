@@ -846,43 +846,6 @@ public class LayoutReferencesExportImportContentProcessorTest {
 	}
 
 	@Test(expected = ExportImportContentValidationException.class)
-	@TestInfo("LPS-184978")
-	public void testValidateURLWithoutWhitelistedPatternsFailCase()
-		throws Exception {
-
-		Group group = GroupTestUtil.addGroup();
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						ExportImportServiceConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"validateLayoutReferencesWhitelistedURLPatterns",
-							new String[0]
-						).build())) {
-
-			_exportImportServiceConfigurationWhitelistedURLPatternsHelper.
-				rebuildURLPatternMapper(TestPropsValues.getCompanyId());
-
-			_layoutReferencesExportImportContentProcessor.
-				validateContentReferences(
-					group.getGroupId(),
-					StringBundler.concat(
-						_CONTENT_PREFIX,
-						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-						group.getFriendlyURL(), StringPool.SLASH,
-						RandomTestUtil.randomString(
-							LayoutFriendlyURLRandomizerBumper.INSTANCE),
-						_CONTENT_POSTFIX));
-		}
-		finally {
-			_exportImportServiceConfigurationWhitelistedURLPatternsHelper.
-				rebuildURLPatternMapper(TestPropsValues.getCompanyId());
-		}
-	}
-
-	@Test(expected = ExportImportContentValidationException.class)
 	public void testValidateURLWithWhitelistedExactMatchPatternFailCase()
 		throws Exception {
 
@@ -1040,6 +1003,43 @@ public class LayoutReferencesExportImportContentProcessorTest {
 					StringBundler.concat(
 						_CONTENT_PREFIX, prefixPattern,
 						RandomTestUtil.randomString(), _CONTENT_POSTFIX));
+		}
+		finally {
+			_exportImportServiceConfigurationWhitelistedURLPatternsHelper.
+				rebuildURLPatternMapper(TestPropsValues.getCompanyId());
+		}
+	}
+
+	@Test(expected = ExportImportContentValidationException.class)
+	@TestInfo("LPS-184978")
+	public void testValidateURLWithoutWhitelistedPatternsFailCase()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						ExportImportServiceConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"validateLayoutReferencesWhitelistedURLPatterns",
+							new String[0]
+						).build())) {
+
+			_exportImportServiceConfigurationWhitelistedURLPatternsHelper.
+				rebuildURLPatternMapper(TestPropsValues.getCompanyId());
+
+			_layoutReferencesExportImportContentProcessor.
+				validateContentReferences(
+					group.getGroupId(),
+					StringBundler.concat(
+						_CONTENT_PREFIX,
+						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+						group.getFriendlyURL(), StringPool.SLASH,
+						RandomTestUtil.randomString(
+							LayoutFriendlyURLRandomizerBumper.INSTANCE),
+						_CONTENT_POSTFIX));
 		}
 		finally {
 			_exportImportServiceConfigurationWhitelistedURLPatternsHelper.

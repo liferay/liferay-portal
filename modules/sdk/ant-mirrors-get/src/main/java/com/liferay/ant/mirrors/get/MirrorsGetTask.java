@@ -94,6 +94,10 @@ public class MirrorsGetTask extends Task {
 		_retries = retries;
 	}
 
+	public void setSSL(boolean ssl) {
+		_ssl = ssl;
+	}
+
 	public void setSkipChecksum(boolean skipChecksum) {
 		_skipChecksum = skipChecksum;
 	}
@@ -200,10 +204,6 @@ public class MirrorsGetTask extends Task {
 				_path = "";
 			}
 		}
-	}
-
-	public void setSSL(boolean ssl) {
-		_ssl = ssl;
 	}
 
 	public void setTryLocalNetwork(boolean tryLocalNetwork) {
@@ -1016,17 +1016,6 @@ public class MirrorsGetTask extends Task {
 				Pattern.quote(fileName));
 	}
 
-	private String _getUnableToCopyMessage(File targetFile) {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("Unable to copy ");
-		sb.append(_src);
-		sb.append(" to ");
-		sb.append(targetFile.getPath());
-
-		return sb.toString();
-	}
-
 	private String _getURLScheme() {
 		Project project = getProject();
 
@@ -1043,6 +1032,17 @@ public class MirrorsGetTask extends Task {
 		}
 
 		return "http://";
+	}
+
+	private String _getUnableToCopyMessage(File targetFile) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Unable to copy ");
+		sb.append(_src);
+		sb.append(" to ");
+		sb.append(targetFile.getPath());
+
+		return sb.toString();
 	}
 
 	private String _getUserAgent() {

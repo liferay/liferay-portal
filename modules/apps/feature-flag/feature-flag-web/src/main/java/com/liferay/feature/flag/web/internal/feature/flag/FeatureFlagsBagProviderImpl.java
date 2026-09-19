@@ -76,6 +76,11 @@ public class FeatureFlagsBagProviderImpl
 	}
 
 	@Override
+	public String getOSGiServiceIdentifier() {
+		return FeatureFlagsBagProviderImpl.class.getName();
+	}
+
+	@Override
 	public FeatureFlagsBag getOrCreateFeatureFlagsBag(long companyId) {
 		FeatureFlagsBag featureFlagsBag = _featureFlagsBags.get(companyId);
 
@@ -93,11 +98,6 @@ public class FeatureFlagsBagProviderImpl
 		}
 
 		return featureFlagsBag;
-	}
-
-	@Override
-	public String getOSGiServiceIdentifier() {
-		return FeatureFlagsBagProviderImpl.class.getName();
 	}
 
 	@Override

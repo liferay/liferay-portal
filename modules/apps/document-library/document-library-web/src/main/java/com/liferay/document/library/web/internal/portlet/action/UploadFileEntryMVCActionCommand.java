@@ -81,13 +81,13 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 	@Reference
 	private DLAppService _dlAppService;
 
+	@Reference
+	private DLURLHelper _dlURLHelper;
+
 	private final DLUploadFileEntryHandler _dlUploadFileEntryHandler =
 		new DLUploadFileEntryHandler();
 	private final DLUploadResponseHandler _dlUploadResponseHandler =
 		new DLUploadResponseHandler();
-
-	@Reference
-	private DLURLHelper _dlURLHelper;
 
 	@Reference
 	private DLValidator _dlValidator;

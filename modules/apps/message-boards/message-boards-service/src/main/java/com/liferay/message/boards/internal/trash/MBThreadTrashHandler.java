@@ -151,11 +151,6 @@ public class MBThreadTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return _mbThreadLocalService.fetchMBThread(classPK);
-	}
-
-	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
 		MBThreadTrashRenderer mbThreadTrashRenderer = new MBThreadTrashRenderer(
 			_mbThreadLocalService.getThread(classPK), _assetHelper);
@@ -163,6 +158,11 @@ public class MBThreadTrashHandler extends BaseTrashHandler {
 		mbThreadTrashRenderer.setServletContext(_servletContext);
 
 		return mbThreadTrashRenderer;
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return _mbThreadLocalService.fetchMBThread(classPK);
 	}
 
 	@Override

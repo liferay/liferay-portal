@@ -132,19 +132,6 @@ public class CommerceReturnContentDisplayContext {
 		_cpRequestHelper = new CPRequestHelper(httpServletRequest);
 	}
 
-	public String getAccountEntryName() throws PortalException {
-		CommerceReturn commerceReturn = getCommerceReturn();
-
-		if (commerceReturn == null) {
-			return StringPool.BLANK;
-		}
-
-		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
-			commerceReturn.getAccountId());
-
-		return accountEntry.getName();
-	}
-
 	public String getAPIURL() {
 		long accountEntryId = getCommerceAccountEntryId();
 		long commerceChannelId = getCommerceChannelId();
@@ -161,6 +148,19 @@ public class CommerceReturnContentDisplayContext {
 			true);
 
 		return "/o/commerce/returns?filter=" + encodedFilter;
+	}
+
+	public String getAccountEntryName() throws PortalException {
+		CommerceReturn commerceReturn = getCommerceReturn();
+
+		if (commerceReturn == null) {
+			return StringPool.BLANK;
+		}
+
+		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
+			commerceReturn.getAccountId());
+
+		return accountEntry.getName();
 	}
 
 	public long getCommerceAccountEntryId() {
@@ -590,53 +590,6 @@ public class CommerceReturnContentDisplayContext {
 		return _getTotalAmount();
 	}
 
-	public Map<String, Object> getReturnableOrderItemsContextParams() {
-		try {
-			CommerceReturn commerceReturn = getCommerceReturn();
-
-			if (commerceReturn == null) {
-				return new HashMap<>();
-			}
-
-			return HashMapBuilder.<String, Object>put(
-				"accountEntryId", commerceReturn.getAccountId()
-			).put(
-				"channelGroupId", commerceReturn.getChannelGroupId()
-			).put(
-				"channelId", commerceReturn.getChannelId()
-			).put(
-				"channelName", commerceReturn.getChannelName()
-			).put(
-				"commerceOrderId", commerceReturn.getOrderId()
-			).put(
-				"commerceOrderItemIds",
-				ParamUtil.getLongValues(
-					_cpRequestHelper.getRequest(), "commerceOrderItemIds")
-			).put(
-				"commerceReturnId",
-				ParamUtil.getLong(
-					_cpRequestHelper.getRequest(), "commerceReturnId")
-			).put(
-				"redirect",
-				PortletURLBuilder.create(
-					PortletProviderUtil.getPortletURL(
-						_cpRequestHelper.getRequest(),
-						CommerceReturn.class.getName(),
-						PortletProvider.Action.EDIT)
-				).setMVCRenderCommandName(
-					"/commerce_return_content/view_commerce_return"
-				).setParameter(
-					"commerceReturnId", ""
-				).buildString()
-			).build();
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-
-			return new HashMap<>();
-		}
-	}
-
 	public String getReturnItemsAPIURL() {
 		long commerceReturnId = getCommerceReturnId();
 
@@ -713,6 +666,53 @@ public class CommerceReturnContentDisplayContext {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	public Map<String, Object> getReturnableOrderItemsContextParams() {
+		try {
+			CommerceReturn commerceReturn = getCommerceReturn();
+
+			if (commerceReturn == null) {
+				return new HashMap<>();
+			}
+
+			return HashMapBuilder.<String, Object>put(
+				"accountEntryId", commerceReturn.getAccountId()
+			).put(
+				"channelGroupId", commerceReturn.getChannelGroupId()
+			).put(
+				"channelId", commerceReturn.getChannelId()
+			).put(
+				"channelName", commerceReturn.getChannelName()
+			).put(
+				"commerceOrderId", commerceReturn.getOrderId()
+			).put(
+				"commerceOrderItemIds",
+				ParamUtil.getLongValues(
+					_cpRequestHelper.getRequest(), "commerceOrderItemIds")
+			).put(
+				"commerceReturnId",
+				ParamUtil.getLong(
+					_cpRequestHelper.getRequest(), "commerceReturnId")
+			).put(
+				"redirect",
+				PortletURLBuilder.create(
+					PortletProviderUtil.getPortletURL(
+						_cpRequestHelper.getRequest(),
+						CommerceReturn.class.getName(),
+						PortletProvider.Action.EDIT)
+				).setMVCRenderCommandName(
+					"/commerce_return_content/view_commerce_return"
+				).setParameter(
+					"commerceReturnId", ""
+				).buildString()
+			).build();
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return new HashMap<>();
+		}
 	}
 
 	public String getShippingAddress() throws PortalException {

@@ -173,22 +173,6 @@ public class AnalyticsRenderFragmentLayoutPreDynamicIncludeTest {
 	}
 
 	@Test
-	public void testIncludeWithoutLayoutDisplayPageObjectProvider()
-		throws Exception {
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_include(mockHttpServletRequest, mockHttpServletResponse);
-
-		Assert.assertEquals(
-			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
-	}
-
-	@Test
 	public void testIncludeWithUnregisteredClass() throws Exception {
 		ClassName className = _classNameLocalService.addClassName(
 			MockObject.class.getName());
@@ -200,6 +184,22 @@ public class AnalyticsRenderFragmentLayoutPreDynamicIncludeTest {
 			LayoutDisplayPageWebKeys.LAYOUT_DISPLAY_PAGE_OBJECT_PROVIDER,
 			new MockObjectLayoutDisplayPageObjectProvider(
 				className.getClassNameId()));
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_include(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
+	}
+
+	@Test
+	public void testIncludeWithoutLayoutDisplayPageObjectProvider()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();

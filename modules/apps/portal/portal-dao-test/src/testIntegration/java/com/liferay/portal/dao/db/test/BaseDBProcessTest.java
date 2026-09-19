@@ -232,21 +232,6 @@ public class BaseDBProcessTest extends BaseDBProcess {
 	}
 
 	@Test
-	public void testAlterColumnNameNonexistentColumn() throws Exception {
-		try {
-			alterColumnName(
-				_TABLE_NAME, "nonexistentColumn",
-				"newNonexistentColumn LONG null");
-
-			Assert.fail();
-		}
-		catch (SQLException sqlException) {
-			Assert.assertFalse(
-				_dbInspector.hasColumn(_TABLE_NAME, "nonexistentColumn"));
-		}
-	}
-
-	@Test
 	public void testAlterColumnNameNoNullableChange() throws Exception {
 		alterColumnName(
 			_TABLE_NAME, "nilColumn", "nilColumnTest VARCHAR(75) null");
@@ -262,6 +247,21 @@ public class BaseDBProcessTest extends BaseDBProcess {
 		Assert.assertTrue(
 			_dbInspector.hasColumnType(
 				_TABLE_NAME, "notNilColumnTest", "VARCHAR(75) not null"));
+	}
+
+	@Test
+	public void testAlterColumnNameNonexistentColumn() throws Exception {
+		try {
+			alterColumnName(
+				_TABLE_NAME, "nonexistentColumn",
+				"newNonexistentColumn LONG null");
+
+			Assert.fail();
+		}
+		catch (SQLException sqlException) {
+			Assert.assertFalse(
+				_dbInspector.hasColumn(_TABLE_NAME, "nonexistentColumn"));
+		}
 	}
 
 	@Test

@@ -100,15 +100,15 @@ public abstract class ModulesTestClass extends BaseTestClass {
 		return "modules" + modulePath.replaceAll("/", ".");
 	}
 
-	public String getTestrayMainComponentName() {
-		return _testrayMainComponentName;
-	}
-
 	@Override
 	public String getTestTaskName() {
 		String modulePath = getModulePath();
 
 		return modulePath.replaceAll("/", ":") + ":" + getTaskName();
+	}
+
+	public String getTestrayMainComponentName() {
+		return _testrayMainComponentName;
 	}
 
 	protected ModulesTestClass(

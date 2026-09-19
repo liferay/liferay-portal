@@ -45,6 +45,16 @@ public class DateTimeObjectFieldBusinessTypeTest {
 	}
 
 	@Test
+	public void testGetDTOValue() throws Exception {
+		Assert.assertEquals(
+			"2025-08-04T00:00:00.000", _getDTOValue("2025-08-04"));
+		Assert.assertEquals(
+			"2025-08-04T09:10:00.000", _getDTOValue("2025-08-04 09:10"));
+		Assert.assertEquals(
+			"2025-08-04T09:10:11.123", _getDTOValue("2025-08-04 09:10:11.123"));
+	}
+
+	@Test
 	public void testGetDisplayContextValue() throws Exception {
 		Assert.assertEquals(
 			"2025-08-04 09:10",
@@ -57,14 +67,10 @@ public class DateTimeObjectFieldBusinessTypeTest {
 			_getDisplayContextValue("2025-08-04 09:10:11.123"));
 	}
 
-	@Test
-	public void testGetDTOValue() throws Exception {
-		Assert.assertEquals(
-			"2025-08-04T00:00:00.000", _getDTOValue("2025-08-04"));
-		Assert.assertEquals(
-			"2025-08-04T09:10:00.000", _getDTOValue("2025-08-04 09:10"));
-		Assert.assertEquals(
-			"2025-08-04T09:10:11.123", _getDTOValue("2025-08-04 09:10:11.123"));
+	private String _getDTOValue(String value) throws Exception {
+		return String.valueOf(
+			_objectFieldBusinessType.getDTOValue(
+				null, null, null, _getObjectField(), value));
 	}
 
 	private String _getDisplayContextValue(String value) throws Exception {
@@ -72,12 +78,6 @@ public class DateTimeObjectFieldBusinessTypeTest {
 			_objectFieldBusinessType.getDisplayContextValue(
 				_getObjectField(), TestPropsValues.getUserId(),
 				Collections.singletonMap(_OBJECT_FIELD_NAME, value)));
-	}
-
-	private String _getDTOValue(String value) throws Exception {
-		return String.valueOf(
-			_objectFieldBusinessType.getDTOValue(
-				null, null, null, _getObjectField(), value));
 	}
 
 	private ObjectField _getObjectField() {

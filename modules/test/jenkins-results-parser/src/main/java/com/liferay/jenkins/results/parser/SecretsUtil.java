@@ -676,13 +676,6 @@ public abstract class SecretsUtil {
 		);
 	}
 
-	private static String _getSecretReference(
-		String fieldLabel, String itemTitle, String vaultName) {
-
-		return JenkinsResultsParserUtil.combine(
-			"op://", vaultName, "/", itemTitle, "/", fieldLabel);
-	}
-
 	private static String _getSSMParameterValue(String parameterName)
 		throws IOException, TimeoutException {
 
@@ -698,6 +691,13 @@ public abstract class SecretsUtil {
 		value = value.replace("Finished executing Bash commands.", "");
 
 		return value.trim();
+	}
+
+	private static String _getSecretReference(
+		String fieldLabel, String itemTitle, String vaultName) {
+
+		return JenkinsResultsParserUtil.combine(
+			"op://", vaultName, "/", itemTitle, "/", fieldLabel);
 	}
 
 	private static boolean _isSecretsConfigured() {

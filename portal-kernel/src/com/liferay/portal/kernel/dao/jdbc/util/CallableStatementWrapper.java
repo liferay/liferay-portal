@@ -320,16 +320,6 @@ public class CallableStatementWrapper
 	}
 
 	@Override
-	public short getShort(int parameterIndex) throws SQLException {
-		return _callableStatement.getShort(parameterIndex);
-	}
-
-	@Override
-	public short getShort(String parameterName) throws SQLException {
-		return _callableStatement.getShort(parameterName);
-	}
-
-	@Override
 	public SQLXML getSQLXML(int parameterIndex) throws SQLException {
 		return _callableStatement.getSQLXML(parameterIndex);
 	}
@@ -337,6 +327,16 @@ public class CallableStatementWrapper
 	@Override
 	public SQLXML getSQLXML(String parameterName) throws SQLException {
 		return _callableStatement.getSQLXML(parameterName);
+	}
+
+	@Override
+	public short getShort(int parameterIndex) throws SQLException {
+		return _callableStatement.getShort(parameterIndex);
+	}
+
+	@Override
+	public short getShort(String parameterName) throws SQLException {
+		return _callableStatement.getShort(parameterName);
 	}
 
 	@Override
@@ -977,20 +977,6 @@ public class CallableStatementWrapper
 	}
 
 	@Override
-	public void setShort(int parameterIndex, short shortValue)
-		throws SQLException {
-
-		_callableStatement.setShort(parameterIndex, shortValue);
-	}
-
-	@Override
-	public void setShort(String parameterName, short shortValue)
-		throws SQLException {
-
-		_callableStatement.setShort(parameterName, shortValue);
-	}
-
-	@Override
 	public void setSQLXML(int parameterIndex, SQLXML sqlXML)
 		throws SQLException {
 
@@ -1002,6 +988,20 @@ public class CallableStatementWrapper
 		throws SQLException {
 
 		_callableStatement.setSQLXML(parameterName, sqlXML);
+	}
+
+	@Override
+	public void setShort(int parameterIndex, short shortValue)
+		throws SQLException {
+
+		_callableStatement.setShort(parameterIndex, shortValue);
+	}
+
+	@Override
+	public void setShort(String parameterName, short shortValue)
+		throws SQLException {
+
+		_callableStatement.setShort(parameterName, shortValue);
 	}
 
 	@Override
@@ -1073,15 +1073,6 @@ public class CallableStatementWrapper
 	}
 
 	@Override
-	public void setUnicodeStream(
-			int parameterIndex, InputStream inputStream, int length)
-		throws SQLException {
-
-		_callableStatement.setUnicodeStream(
-			parameterIndex, inputStream, length);
-	}
-
-	@Override
 	public void setURL(int parameterIndex, URL url) throws SQLException {
 		_callableStatement.setURL(parameterIndex, url);
 	}
@@ -1089,6 +1080,15 @@ public class CallableStatementWrapper
 	@Override
 	public void setURL(String parameterName, URL url) throws SQLException {
 		_callableStatement.setURL(parameterName, url);
+	}
+
+	@Override
+	public void setUnicodeStream(
+			int parameterIndex, InputStream inputStream, int length)
+		throws SQLException {
+
+		_callableStatement.setUnicodeStream(
+			parameterIndex, inputStream, length);
 	}
 
 	@Override

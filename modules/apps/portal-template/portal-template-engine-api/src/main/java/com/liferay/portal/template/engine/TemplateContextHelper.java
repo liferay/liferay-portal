@@ -824,26 +824,6 @@ public class TemplateContextHelper {
 		}
 
 		@Override
-		public Cookie[] getCookies() {
-			return _http.getCookies();
-		}
-
-		@Override
-		public boolean hasProxyConfig() {
-			return _http.hasProxyConfig();
-		}
-
-		@Override
-		public boolean isNonProxyHost(String host) {
-			return _http.isNonProxyHost(host);
-		}
-
-		@Override
-		public boolean isProxyHost(String host) {
-			return _http.isProxyHost(host);
-		}
-
-		@Override
 		public byte[] URLtoByteArray(Options options) throws IOException {
 			if (isLocationAccessDenied(options.getLocation())) {
 				throw new IOException(
@@ -985,6 +965,26 @@ public class TemplateContextHelper {
 			options.setLocation(url.toString());
 
 			return URLtoString(options);
+		}
+
+		@Override
+		public Cookie[] getCookies() {
+			return _http.getCookies();
+		}
+
+		@Override
+		public boolean hasProxyConfig() {
+			return _http.hasProxyConfig();
+		}
+
+		@Override
+		public boolean isNonProxyHost(String host) {
+			return _http.isNonProxyHost(host);
+		}
+
+		@Override
+		public boolean isProxyHost(String host) {
+			return _http.isProxyHost(host);
 		}
 
 		protected boolean isLocationAccessDenied(String location)

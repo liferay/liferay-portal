@@ -136,10 +136,6 @@ public class JUnitTestClass extends BaseTestClass {
 			_getPackageName(), ".", _getClassName());
 	}
 
-	public String getTestrayMainComponentName() {
-		return _testrayMainComponentName;
-	}
-
 	@Override
 	public String getTestTaskName() {
 		String taskName = getTaskName();
@@ -155,6 +151,10 @@ public class JUnitTestClass extends BaseTestClass {
 			".*/modules(/.+)/src/" + taskName + "/.+", "$1");
 
 		return testTaskName.replaceAll("/", ":") + ":" + taskName;
+	}
+
+	public String getTestrayMainComponentName() {
+		return _testrayMainComponentName;
 	}
 
 	@Override

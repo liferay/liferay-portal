@@ -267,9 +267,6 @@ public class ExtensionSelectionFDSFilterTest {
 	@Mock
 	private ObjectDefinitionService _objectDefinitionService;
 
-	@Mock
-	private Searcher _searcher;
-
 	@Mock(answer = Answers.RETURNS_SELF)
 	private SearchRequestBuilder _searchRequestBuilder;
 
@@ -278,5 +275,8 @@ public class ExtensionSelectionFDSFilterTest {
 
 	@Mock
 	private SearchResponse _searchResponse;
+
+	@Mock
+	private Searcher _searcher;
 
 }

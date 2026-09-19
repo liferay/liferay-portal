@@ -66,12 +66,12 @@ public class CommerceVirtualOrderItemEditDisplayContext {
 			new CPDefinitionVirtualSettingRequestHelper(renderRequest);
 	}
 
-	public int[] getActivationStatuses() {
-		return VirtualCPTypeConstants.ACTIVATION_STATUSES;
-	}
-
 	public String getActivationStatusLabel(int status) {
 		return CommerceOrderConstants.getOrderStatusLabel(status);
+	}
+
+	public int[] getActivationStatuses() {
+		return VirtualCPTypeConstants.ACTIVATION_STATUSES;
 	}
 
 	public CommerceOrder getCommerceOrder() {

@@ -330,16 +330,15 @@ public class JournalArticleMultiLanguageSearchTest {
 	private List<Group> _groups;
 
 	private Indexer<JournalArticle> _indexer;
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
 
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
 
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 	private User _user;
+	private UserSearchFixture _userSearchFixture;
 
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private UserSearchFixture _userSearchFixture;
 
 }

@@ -218,6 +218,54 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	}
 
 	@Test
+	@Transactional
+	public void testGetStructuresWithSiteAdminPermission() throws Throwable {
+		DDMStructure structure1 = addStructure(
+			_classNameId, StringUtil.randomString());
+		DDMStructure structure2 = addStructure(
+			_classNameId, StringUtil.randomString());
+
+		_ddmStructures.add(structure1);
+		_ddmStructures.add(structure2);
+
+		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
+
+		User siteAdminUser = UserTestUtil.addGroupAdminUser(group);
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(siteAdminUser));
+
+			List<DDMStructure> ddmStructures =
+				DDMStructureUtil.filterFindByGroupId(groupIds);
+
+			Assert.assertEquals(
+				ddmStructures.toString(), 2, ddmStructures.size());
+			Assert.assertEquals(structure1, ddmStructures.get(0));
+			Assert.assertEquals(structure2, ddmStructures.get(1));
+		}
+		finally {
+			_userLocalService.deleteUser(siteAdminUser);
+		}
+
+		siteAdminUser = UserTestUtil.addGroupAdminUser(_group);
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(siteAdminUser));
+
+			List<DDMStructure> ddmStructures =
+				DDMStructureUtil.filterFindByGroupId(groupIds);
+
+			Assert.assertEquals(
+				ddmStructures.toString(), 0, ddmStructures.size());
+		}
+		finally {
+			_userLocalService.deleteUser(siteAdminUser);
+		}
+	}
+
+	@Test
 	public void testGetStructuresWithoutUserPermission() throws Exception {
 		addStructure(group, _classNameId, StringUtil.randomString());
 		addStructure(group, _classNameId, StringUtil.randomString());
@@ -290,54 +338,6 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 				originalPermissionChecker);
 
 			_userLocalService.deleteUser(user);
-		}
-	}
-
-	@Test
-	@Transactional
-	public void testGetStructuresWithSiteAdminPermission() throws Throwable {
-		DDMStructure structure1 = addStructure(
-			_classNameId, StringUtil.randomString());
-		DDMStructure structure2 = addStructure(
-			_classNameId, StringUtil.randomString());
-
-		_ddmStructures.add(structure1);
-		_ddmStructures.add(structure2);
-
-		long[] groupIds = {group.getGroupId(), _group.getGroupId()};
-
-		User siteAdminUser = UserTestUtil.addGroupAdminUser(group);
-
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(siteAdminUser));
-
-			List<DDMStructure> ddmStructures =
-				DDMStructureUtil.filterFindByGroupId(groupIds);
-
-			Assert.assertEquals(
-				ddmStructures.toString(), 2, ddmStructures.size());
-			Assert.assertEquals(structure1, ddmStructures.get(0));
-			Assert.assertEquals(structure2, ddmStructures.get(1));
-		}
-		finally {
-			_userLocalService.deleteUser(siteAdminUser);
-		}
-
-		siteAdminUser = UserTestUtil.addGroupAdminUser(_group);
-
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(siteAdminUser));
-
-			List<DDMStructure> ddmStructures =
-				DDMStructureUtil.filterFindByGroupId(groupIds);
-
-			Assert.assertEquals(
-				ddmStructures.toString(), 0, ddmStructures.size());
-		}
-		finally {
-			_userLocalService.deleteUser(siteAdminUser);
 		}
 	}
 
@@ -570,11 +570,11 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	@Inject
 	private DDMStructureLocalService _ddmStructureLocalService;
 
-	@DeleteAfterTestRun
-	private final List<DDMStructure> _ddmStructures = new ArrayList<>();
-
 	@Inject
 	private DDMStructureService _ddmStructureService;
+
+	@DeleteAfterTestRun
+	private final List<DDMStructure> _ddmStructures = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private Group _group;

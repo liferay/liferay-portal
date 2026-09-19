@@ -412,27 +412,6 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 		return "var(--" + cssVariable + ")";
 	}
 
-	private JSONObject _getStylesJSONObject(
-		JSONObject itemConfigJSONObject, ViewportSize viewportSize) {
-
-		if (Objects.equals(viewportSize, ViewportSize.DESKTOP)) {
-			return itemConfigJSONObject.getJSONObject("styles");
-		}
-
-		JSONObject viewportJSONObject = itemConfigJSONObject.getJSONObject(
-			viewportSize.getViewportSizeId());
-
-		if (viewportJSONObject != null) {
-			JSONObject jsonObject = viewportJSONObject.getJSONObject("styles");
-
-			if (jsonObject != null) {
-				return jsonObject;
-			}
-		}
-
-		return _jsonFactory.createJSONObject();
-	}
-
 	private String _getStyleValue(
 		JSONObject frontendTokensJSONObject,
 		StyledLayoutStructureItem styledLayoutStructureItem, String styleName,
@@ -468,6 +447,27 @@ public class LayoutStructureCommonStylesCSSServlet extends HttpServlet {
 		}
 
 		return _getStyleFromStyleBookEntry(frontendTokensJSONObject, value);
+	}
+
+	private JSONObject _getStylesJSONObject(
+		JSONObject itemConfigJSONObject, ViewportSize viewportSize) {
+
+		if (Objects.equals(viewportSize, ViewportSize.DESKTOP)) {
+			return itemConfigJSONObject.getJSONObject("styles");
+		}
+
+		JSONObject viewportJSONObject = itemConfigJSONObject.getJSONObject(
+			viewportSize.getViewportSizeId());
+
+		if (viewportJSONObject != null) {
+			JSONObject jsonObject = viewportJSONObject.getJSONObject("styles");
+
+			if (jsonObject != null) {
+				return jsonObject;
+			}
+		}
+
+		return _jsonFactory.createJSONObject();
 	}
 
 	private boolean _includeStyles(

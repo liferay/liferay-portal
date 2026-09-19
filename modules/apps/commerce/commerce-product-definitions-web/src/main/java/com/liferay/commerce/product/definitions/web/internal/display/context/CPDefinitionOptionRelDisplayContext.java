@@ -81,6 +81,30 @@ public class CPDefinitionOptionRelDisplayContext
 		_itemSelector = itemSelector;
 	}
 
+	public CPDefinitionOptionRel getCPDefinitionOptionRel()
+		throws PortalException {
+
+		if (_cpDefinitionOptionRel != null) {
+			return _cpDefinitionOptionRel;
+		}
+
+		_cpDefinitionOptionRel = actionHelper.getCPDefinitionOptionRel(
+			cpRequestHelper.getRenderRequest());
+
+		return _cpDefinitionOptionRel;
+	}
+
+	public long getCPDefinitionOptionRelId() throws PortalException {
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			getCPDefinitionOptionRel();
+
+		if (cpDefinitionOptionRel == null) {
+			return 0;
+		}
+
+		return cpDefinitionOptionRel.getCPDefinitionOptionRelId();
+	}
+
 	public List<MultiselectItem> getCategoriesMultiselectItems(
 		String infoItemServiceKey, Locale locale) {
 
@@ -155,30 +179,6 @@ public class CPDefinitionOptionRelDisplayContext
 
 		return CommerceOptionTypeUtil.getAllowedCommerceOptionTypes(
 			commerceOptionTypes, allowedCommerceOptionTypes);
-	}
-
-	public CPDefinitionOptionRel getCPDefinitionOptionRel()
-		throws PortalException {
-
-		if (_cpDefinitionOptionRel != null) {
-			return _cpDefinitionOptionRel;
-		}
-
-		_cpDefinitionOptionRel = actionHelper.getCPDefinitionOptionRel(
-			cpRequestHelper.getRenderRequest());
-
-		return _cpDefinitionOptionRel;
-	}
-
-	public long getCPDefinitionOptionRelId() throws PortalException {
-		CPDefinitionOptionRel cpDefinitionOptionRel =
-			getCPDefinitionOptionRel();
-
-		if (cpDefinitionOptionRel == null) {
-			return 0;
-		}
-
-		return cpDefinitionOptionRel.getCPDefinitionOptionRelId();
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

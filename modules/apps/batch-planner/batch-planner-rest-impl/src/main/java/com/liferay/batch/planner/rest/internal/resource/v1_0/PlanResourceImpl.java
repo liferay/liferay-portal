@@ -56,19 +56,6 @@ public class PlanResourceImpl extends BasePlanResourceImpl {
 	}
 
 	@Override
-	public Page<Plan> getPlansPage(Pagination pagination) throws Exception {
-		return Page.of(
-			transform(
-				_batchPlannerPlanService.getBatchPlannerPlans(
-					contextCompany.getCompanyId(),
-					pagination.getStartPosition(), pagination.getEndPosition()),
-				this::_toPlan),
-			pagination,
-			_batchPlannerPlanService.getBatchPlannerPlansCount(
-				contextCompany.getCompanyId()));
-	}
-
-	@Override
 	public Response getPlanTemplate(String internalClassNameKey)
 		throws Exception {
 
@@ -79,6 +66,19 @@ public class PlanResourceImpl extends BasePlanResourceImpl {
 				_objectDefinitionLocalService,
 				_objectEntryOpenAPIResourceProvider, _openAPIYAMLProvider,
 				contextUriInfo));
+	}
+
+	@Override
+	public Page<Plan> getPlansPage(Pagination pagination) throws Exception {
+		return Page.of(
+			transform(
+				_batchPlannerPlanService.getBatchPlannerPlans(
+					contextCompany.getCompanyId(),
+					pagination.getStartPosition(), pagination.getEndPosition()),
+				this::_toPlan),
+			pagination,
+			_batchPlannerPlanService.getBatchPlannerPlansCount(
+				contextCompany.getCompanyId()));
 	}
 
 	@Override

@@ -110,11 +110,11 @@ public class ServiceTrackerListImpl<S, T> implements ServiceTrackerList<T> {
 
 	private final BundleContext _bundleContext;
 	private final Comparator<ServiceReferenceServiceTuple<S, ?>> _comparator;
-	private final List<ServiceReferenceServiceTuple<S, T>> _services =
-		new CopyOnWriteArrayList<>();
 	private final ServiceTracker<S, T> _serviceTracker;
 	private final ServiceTrackerCustomizer<S, T> _serviceTrackerCustomizer;
 	private final ServiceTrackerManager _serviceTrackerManager;
+	private final List<ServiceReferenceServiceTuple<S, T>> _services =
+		new CopyOnWriteArrayList<>();
 
 	private static class ServiceTrackerListIterator<S, T>
 		implements Iterator<T> {

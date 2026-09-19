@@ -142,12 +142,12 @@ public class CommerceNotificationTemplatesDisplayContext {
 	private final CommerceChannelLocalService _commerceChannelLocalService;
 	private final CommerceDefinitionTermContributorRegistry
 		_commerceDefinitionTermContributorRegistry;
-	private final CommerceNotificationsRequestHelper
-		_commerceNotificationsRequestHelper;
 	private CommerceNotificationTemplate _commerceNotificationTemplate;
 	private final CommerceNotificationTemplateService
 		_commerceNotificationTemplateService;
 	private final CommerceNotificationTypeRegistry
 		_commerceNotificationTypeRegistry;
+	private final CommerceNotificationsRequestHelper
+		_commerceNotificationsRequestHelper;
 
 }

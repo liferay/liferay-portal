@@ -99,6 +99,20 @@ public class CategoryCPDisplayLayoutDisplayContext
 		return _assetCategoryLocalService.getAssetCategory(assetCategoryId);
 	}
 
+	public CPDisplayLayout getCPDisplayLayout() throws PortalException {
+		if (_cpDisplayLayout != null) {
+			return _cpDisplayLayout;
+		}
+
+		long cpDisplayLayoutId = ParamUtil.getLong(
+			cpRequestHelper.getRequest(), "cpDisplayLayoutId");
+
+		_cpDisplayLayout = _cpDisplayLayoutService.fetchCPDisplayLayout(
+			cpDisplayLayoutId);
+
+		return _cpDisplayLayout;
+	}
+
 	public String getCategorySelectorURL(RenderResponse renderResponse) {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
@@ -147,20 +161,6 @@ public class CategoryCPDisplayLayoutDisplayContext
 		}
 
 		return commerceChannel.getCommerceChannelId();
-	}
-
-	public CPDisplayLayout getCPDisplayLayout() throws PortalException {
-		if (_cpDisplayLayout != null) {
-			return _cpDisplayLayout;
-		}
-
-		long cpDisplayLayoutId = ParamUtil.getLong(
-			cpRequestHelper.getRequest(), "cpDisplayLayoutId");
-
-		_cpDisplayLayout = _cpDisplayLayoutService.fetchCPDisplayLayout(
-			cpDisplayLayoutId);
-
-		return _cpDisplayLayout;
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

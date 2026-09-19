@@ -184,6 +184,9 @@ public class ProductTaxConfigurationResourceTest
 	}
 
 	@DeleteAfterTestRun
+	private CProduct _cProduct;
+
+	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
 
 	@Inject
@@ -191,9 +194,6 @@ public class ProductTaxConfigurationResourceTest
 
 	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
-
-	@DeleteAfterTestRun
-	private CProduct _cProduct;
 
 	@Inject
 	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;

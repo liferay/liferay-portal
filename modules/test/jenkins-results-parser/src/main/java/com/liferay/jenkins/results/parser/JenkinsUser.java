@@ -46,15 +46,15 @@ public interface JenkinsUser {
 			return _creationDateString;
 		}
 
-		public String getHash() {
-			return _hash;
-		}
-
 		public JenkinsResultsParserUtil.HTTPAuthorization
 			getHTTPAuthorization() {
 
 			return new JenkinsResultsParserUtil.BasicHTTPAuthorization(
 				getToken(), getJenkinsUserID());
+		}
+
+		public String getHash() {
+			return _hash;
 		}
 
 		public String getJenkinsUserID() {

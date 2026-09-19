@@ -133,13 +133,13 @@ public class CTEntryReindexMessageListener extends BaseMessageListener {
 	@Reference
 	private DestinationFactory _destinationFactory;
 
+	@Reference
+	private IndexWriterHelper _indexWriterHelper;
+
 	@Reference(
 		target = "(indexer.class.name=com.liferay.change.tracking.model.CTEntry)"
 	)
 	private Indexer<CTEntry> _indexer;
-
-	@Reference
-	private IndexWriterHelper _indexWriterHelper;
 
 	private ServiceRegistration<Destination> _serviceRegistration;
 

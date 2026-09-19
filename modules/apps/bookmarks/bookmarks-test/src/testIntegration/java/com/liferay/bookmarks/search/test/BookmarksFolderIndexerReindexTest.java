@@ -157,19 +157,19 @@ public class BookmarksFolderIndexerReindexTest {
 	@Inject
 	protected BookmarksFolderService bookmarksFolderService;
 
+	@Inject
+	protected IndexWriterHelper indexWriterHelper;
+
 	@Inject(
 		filter = "indexer.class.name=com.liferay.bookmarks.model.BookmarksFolder"
 	)
 	protected Indexer<BookmarksFolder> indexer;
 
 	@Inject
-	protected IndexWriterHelper indexWriterHelper;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
 	protected Searcher searcher;
-
-	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
 	protected UIDFactory uidFactory;

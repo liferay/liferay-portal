@@ -196,10 +196,10 @@ public class CommerceWishListItemServiceImpl
 	}
 
 	@Reference
-	protected CommerceProductViewPermission commerceProductViewPermission;
+	protected CProductLocalService cProductLocalService;
 
 	@Reference
-	protected CProductLocalService cProductLocalService;
+	protected CommerceProductViewPermission commerceProductViewPermission;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.wish.list.model.CommerceWishList)"

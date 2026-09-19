@@ -72,6 +72,93 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 			groupId, organizationIds);
 	}
 
+	@Override
+	public Organization addOrUpdateOrganization(
+			String externalReferenceCode, long parentOrganizationId,
+			String name, String type, long regionId, long countryId,
+			long statusListTypeId, String comments, boolean hasLogo,
+			byte[] logoBytes, boolean site, List<Address> addresses,
+			List<EmailAddress> emailAddresses, List<OrgLabor> orgLabors,
+			List<Phone> phones, List<Website> websites,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = getUser();
+
+		Organization organization = organizationPersistence.fetchByERC_C(
+			externalReferenceCode, user.getCompanyId());
+
+		if (organization == null) {
+			if (parentOrganizationId ==
+					OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
+
+				PortalPermissionUtil.check(
+					getPermissionChecker(), ActionKeys.ADD_ORGANIZATION);
+			}
+			else {
+				OrganizationPermissionUtil.check(
+					getPermissionChecker(), parentOrganizationId,
+					ActionKeys.ADD_ORGANIZATION);
+			}
+		}
+		else {
+			OrganizationPermissionUtil.check(
+				getPermissionChecker(), organization, ActionKeys.UPDATE);
+
+			if (organization.getParentOrganizationId() !=
+					parentOrganizationId) {
+
+				if (parentOrganizationId ==
+						OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
+
+					PortalPermissionUtil.check(
+						getPermissionChecker(), ActionKeys.ADD_ORGANIZATION);
+				}
+				else {
+					OrganizationPermissionUtil.check(
+						getPermissionChecker(), parentOrganizationId,
+						ActionKeys.ADD_ORGANIZATION);
+				}
+			}
+		}
+
+		organization = organizationLocalService.addOrUpdateOrganization(
+			externalReferenceCode, user.getUserId(), parentOrganizationId, name,
+			type, regionId, countryId, statusListTypeId, comments, hasLogo,
+			logoBytes, site, serviceContext);
+
+		if (addresses != null) {
+			UsersAdminUtil.updateAddresses(
+				Organization.class.getName(), organization.getOrganizationId(),
+				addresses, ListTypeConstants.ORGANIZATION_ADDRESS);
+		}
+
+		if (emailAddresses != null) {
+			UsersAdminUtil.updateEmailAddresses(
+				Organization.class.getName(), organization.getOrganizationId(),
+				emailAddresses);
+		}
+
+		if (orgLabors != null) {
+			UsersAdminUtil.updateOrgLabors(
+				organization.getOrganizationId(), orgLabors);
+		}
+
+		if (phones != null) {
+			UsersAdminUtil.updatePhones(
+				Organization.class.getName(), organization.getOrganizationId(),
+				phones);
+		}
+
+		if (websites != null) {
+			UsersAdminUtil.updateWebsites(
+				Organization.class.getName(), organization.getOrganizationId(),
+				websites);
+		}
+
+		return organization;
+	}
+
 	/**
 	 * Adds an organization with additional parameters.
 	 *
@@ -223,93 +310,6 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 		return organizationLocalService.addOrganizationUserByEmailAddress(
 			emailAddress, organizationId, serviceContext);
-	}
-
-	@Override
-	public Organization addOrUpdateOrganization(
-			String externalReferenceCode, long parentOrganizationId,
-			String name, String type, long regionId, long countryId,
-			long statusListTypeId, String comments, boolean hasLogo,
-			byte[] logoBytes, boolean site, List<Address> addresses,
-			List<EmailAddress> emailAddresses, List<OrgLabor> orgLabors,
-			List<Phone> phones, List<Website> websites,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		User user = getUser();
-
-		Organization organization = organizationPersistence.fetchByERC_C(
-			externalReferenceCode, user.getCompanyId());
-
-		if (organization == null) {
-			if (parentOrganizationId ==
-					OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
-
-				PortalPermissionUtil.check(
-					getPermissionChecker(), ActionKeys.ADD_ORGANIZATION);
-			}
-			else {
-				OrganizationPermissionUtil.check(
-					getPermissionChecker(), parentOrganizationId,
-					ActionKeys.ADD_ORGANIZATION);
-			}
-		}
-		else {
-			OrganizationPermissionUtil.check(
-				getPermissionChecker(), organization, ActionKeys.UPDATE);
-
-			if (organization.getParentOrganizationId() !=
-					parentOrganizationId) {
-
-				if (parentOrganizationId ==
-						OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
-
-					PortalPermissionUtil.check(
-						getPermissionChecker(), ActionKeys.ADD_ORGANIZATION);
-				}
-				else {
-					OrganizationPermissionUtil.check(
-						getPermissionChecker(), parentOrganizationId,
-						ActionKeys.ADD_ORGANIZATION);
-				}
-			}
-		}
-
-		organization = organizationLocalService.addOrUpdateOrganization(
-			externalReferenceCode, user.getUserId(), parentOrganizationId, name,
-			type, regionId, countryId, statusListTypeId, comments, hasLogo,
-			logoBytes, site, serviceContext);
-
-		if (addresses != null) {
-			UsersAdminUtil.updateAddresses(
-				Organization.class.getName(), organization.getOrganizationId(),
-				addresses, ListTypeConstants.ORGANIZATION_ADDRESS);
-		}
-
-		if (emailAddresses != null) {
-			UsersAdminUtil.updateEmailAddresses(
-				Organization.class.getName(), organization.getOrganizationId(),
-				emailAddresses);
-		}
-
-		if (orgLabors != null) {
-			UsersAdminUtil.updateOrgLabors(
-				organization.getOrganizationId(), orgLabors);
-		}
-
-		if (phones != null) {
-			UsersAdminUtil.updatePhones(
-				Organization.class.getName(), organization.getOrganizationId(),
-				phones);
-		}
-
-		if (websites != null) {
-			UsersAdminUtil.updateWebsites(
-				Organization.class.getName(), organization.getOrganizationId(),
-				websites);
-		}
-
-		return organization;
 	}
 
 	/**

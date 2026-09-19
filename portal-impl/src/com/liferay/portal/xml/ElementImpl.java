@@ -103,11 +103,6 @@ public class ElementImpl extends BranchImpl implements Element {
 	}
 
 	@Override
-	public List<Namespace> additionalNamespaces() {
-		return SAXReaderImpl.toNewNamespaces(_element.additionalNamespaces());
-	}
-
-	@Override
 	public Element addNamespace(String prefix, String uri) {
 		return new ElementImpl(_element.addNamespace(prefix, uri));
 	}
@@ -127,6 +122,11 @@ public class ElementImpl extends BranchImpl implements Element {
 	@Override
 	public Element addText(String text) {
 		return new ElementImpl(_element.addText(text));
+	}
+
+	@Override
+	public List<Namespace> additionalNamespaces() {
+		return SAXReaderImpl.toNewNamespaces(_element.additionalNamespaces());
 	}
 
 	@Override
@@ -183,11 +183,6 @@ public class ElementImpl extends BranchImpl implements Element {
 	}
 
 	@Override
-	public List<Attribute> attributes() {
-		return SAXReaderImpl.toNewAttributes(_element.attributes());
-	}
-
-	@Override
 	public String attributeValue(QName qName) {
 		QNameImpl qNameImpl = (QNameImpl)qName;
 
@@ -210,6 +205,11 @@ public class ElementImpl extends BranchImpl implements Element {
 	@Override
 	public String attributeValue(String name, String defaultValue) {
 		return _element.attributeValue(name, defaultValue);
+	}
+
+	@Override
+	public List<Attribute> attributes() {
+		return SAXReaderImpl.toNewAttributes(_element.attributes());
 	}
 
 	@Override
@@ -280,24 +280,6 @@ public class ElementImpl extends BranchImpl implements Element {
 	}
 
 	@Override
-	public List<Element> elements() {
-		return SAXReaderImpl.toNewElements(_element.elements());
-	}
-
-	@Override
-	public List<Element> elements(QName qName) {
-		QNameImpl qNameImpl = (QNameImpl)qName;
-
-		return SAXReaderImpl.toNewElements(
-			_element.elements(qNameImpl.getWrappedQName()));
-	}
-
-	@Override
-	public List<Element> elements(String name) {
-		return SAXReaderImpl.toNewElements(_element.elements(name));
-	}
-
-	@Override
 	public String elementText(QName qName) {
 		QNameImpl qNameImpl = (QNameImpl)qName;
 
@@ -319,6 +301,24 @@ public class ElementImpl extends BranchImpl implements Element {
 	@Override
 	public String elementTextTrim(String name) {
 		return _element.elementTextTrim(name);
+	}
+
+	@Override
+	public List<Element> elements() {
+		return SAXReaderImpl.toNewElements(_element.elements());
+	}
+
+	@Override
+	public List<Element> elements(QName qName) {
+		QNameImpl qNameImpl = (QNameImpl)qName;
+
+		return SAXReaderImpl.toNewElements(
+			_element.elements(qNameImpl.getWrappedQName()));
+	}
+
+	@Override
+	public List<Element> elements(String name) {
+		return SAXReaderImpl.toNewElements(_element.elements(name));
 	}
 
 	@Override
@@ -393,13 +393,13 @@ public class ElementImpl extends BranchImpl implements Element {
 	}
 
 	@Override
-	public List<Namespace> getNamespacesForURI(String uri) {
-		return SAXReaderImpl.toNewNamespaces(_element.getNamespacesForURI(uri));
+	public String getNamespaceURI() {
+		return _element.getNamespaceURI();
 	}
 
 	@Override
-	public String getNamespaceURI() {
-		return _element.getNamespaceURI();
+	public List<Namespace> getNamespacesForURI(String uri) {
+		return SAXReaderImpl.toNewNamespaces(_element.getNamespacesForURI(uri));
 	}
 
 	@Override
@@ -450,13 +450,13 @@ public class ElementImpl extends BranchImpl implements Element {
 	}
 
 	@Override
-	public int hashCode() {
-		return _element.hashCode();
+	public boolean hasMixedContent() {
+		return _element.hasMixedContent();
 	}
 
 	@Override
-	public boolean hasMixedContent() {
-		return _element.hasMixedContent();
+	public int hashCode() {
+		return _element.hashCode();
 	}
 
 	@Override

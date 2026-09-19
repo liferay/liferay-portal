@@ -79,19 +79,19 @@ public class CommerceTaxFixedRateLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommerceTaxFixedRateByCommerceTaxMethodId(
-		long commerceTaxMethodId) {
-
-		commerceTaxFixedRatePersistence.removeByCommerceTaxMethodId(
-			commerceTaxMethodId);
-	}
-
-	@Override
 	public void deleteCommerceTaxFixedRateByCPTaxCategoryId(
 		long cpTaxCategoryId) {
 
 		commerceTaxFixedRatePersistence.removeByCPTaxCategoryId(
 			cpTaxCategoryId);
+	}
+
+	@Override
+	public void deleteCommerceTaxFixedRateByCommerceTaxMethodId(
+		long commerceTaxMethodId) {
+
+		commerceTaxFixedRatePersistence.removeByCommerceTaxMethodId(
+			commerceTaxMethodId);
 	}
 
 	@Override

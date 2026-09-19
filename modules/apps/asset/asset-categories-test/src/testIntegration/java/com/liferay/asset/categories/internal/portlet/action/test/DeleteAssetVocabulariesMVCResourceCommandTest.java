@@ -65,6 +65,17 @@ public class DeleteAssetVocabulariesMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testServeResourceWithPermission() throws Exception {
+		User user = UserTestUtil.addCompanyAdminUser(
+			_companyLocalService.getCompany(_group.getCompanyId()));
+
+		JSONObject jsonObject = _serveResource(
+			_getMockLiferayResourceRequest(), user);
+
+		Assert.assertTrue(jsonObject.getBoolean("success"));
+	}
+
+	@Test
 	public void testServeResourceWithoutPermission() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -75,17 +86,6 @@ public class DeleteAssetVocabulariesMVCResourceCommandTest {
 			_language.get(
 				LocaleUtil.US, "one-or-more-entries-could-not-be-deleted"),
 			jsonObject.get("errorMessage"));
-	}
-
-	@Test
-	public void testServeResourceWithPermission() throws Exception {
-		User user = UserTestUtil.addCompanyAdminUser(
-			_companyLocalService.getCompany(_group.getCompanyId()));
-
-		JSONObject jsonObject = _serveResource(
-			_getMockLiferayResourceRequest(), user);
-
-		Assert.assertTrue(jsonObject.getBoolean("success"));
 	}
 
 	private MockLiferayResourceRequest _getMockLiferayResourceRequest() {

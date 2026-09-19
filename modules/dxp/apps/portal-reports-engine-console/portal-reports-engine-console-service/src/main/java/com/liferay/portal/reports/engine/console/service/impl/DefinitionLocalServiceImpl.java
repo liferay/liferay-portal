@@ -136,6 +136,15 @@ public class DefinitionLocalServiceImpl extends DefinitionLocalServiceBaseImpl {
 	}
 
 	@Override
+	public void deleteDefinitionTemplates(
+			long companyId, String attachmentsDirectory)
+		throws PortalException {
+
+		_store.deleteDirectory(
+			companyId, CompanyConstants.SYSTEM, attachmentsDirectory);
+	}
+
+	@Override
 	public void deleteDefinitions(long groupId) throws PortalException {
 		List<Definition> definitions = definitionPersistence.findByGroupId(
 			groupId);
@@ -143,15 +152,6 @@ public class DefinitionLocalServiceImpl extends DefinitionLocalServiceBaseImpl {
 		for (Definition definition : definitions) {
 			definitionLocalService.deleteDefinition(definition);
 		}
-	}
-
-	@Override
-	public void deleteDefinitionTemplates(
-			long companyId, String attachmentsDirectory)
-		throws PortalException {
-
-		_store.deleteDirectory(
-			companyId, CompanyConstants.SYSTEM, attachmentsDirectory);
 	}
 
 	@Override

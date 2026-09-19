@@ -306,32 +306,6 @@ public class FragmentEntryServiceTest {
 	}
 
 	@Test
-	public void testAddFragmentEntryWithoutAddPermission() throws Exception {
-		try {
-			UserTestUtil.setUser(
-				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER));
-
-			_fragmentEntryService.addFragmentEntry(
-				RandomTestUtil.randomString(), _group.getGroupId(),
-				_fragmentCollection.getFragmentCollectionId(),
-				"FRAGMENTENTRYKEYONE", "Fragment Entry One",
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), false, "{fieldSets: []}", null,
-				0, false, false, FragmentConstants.TYPE_COMPONENT, null,
-				WorkflowConstants.STATUS_APPROVED,
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
-
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
-		}
-		finally {
-			UserTestUtil.setUser(TestPropsValues.getUser());
-		}
-	}
-
-	@Test
 	public void testAddFragmentEntryWithType() throws Exception {
 		FragmentEntry fragmentEntry = _fragmentEntryService.addFragmentEntry(
 			null, _group.getGroupId(),
@@ -366,6 +340,32 @@ public class FragmentEntryServiceTest {
 		Assert.assertEquals(html, fragmentEntry.getHtml());
 		Assert.assertEquals(
 			FragmentConstants.TYPE_COMPONENT, fragmentEntry.getType());
+	}
+
+	@Test
+	public void testAddFragmentEntryWithoutAddPermission() throws Exception {
+		try {
+			UserTestUtil.setUser(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER));
+
+			_fragmentEntryService.addFragmentEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				_fragmentCollection.getFragmentCollectionId(),
+				"FRAGMENTENTRYKEYONE", "Fragment Entry One",
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), false, "{fieldSets: []}", null,
+				0, false, false, FragmentConstants.TYPE_COMPONENT, null,
+				WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+		}
+		finally {
+			UserTestUtil.setUser(TestPropsValues.getUser());
+		}
 	}
 
 	@Test

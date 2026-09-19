@@ -74,6 +74,10 @@ public class MockStateAwareResponse
 		return keys.iterator();
 	}
 
+	public String[] getRenderParameterValues(String key) {
+		return _renderParameters.get(key);
+	}
+
 	@Override
 	public MutableRenderParameters getRenderParameters() {
 		if (_mutableRenderParameters == null) {
@@ -81,10 +85,6 @@ public class MockStateAwareResponse
 		}
 
 		return _mutableRenderParameters;
-	}
-
-	public String[] getRenderParameterValues(String key) {
-		return _renderParameters.get(key);
 	}
 
 	@Override

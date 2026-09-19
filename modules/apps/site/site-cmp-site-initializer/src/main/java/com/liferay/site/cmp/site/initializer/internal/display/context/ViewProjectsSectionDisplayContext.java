@@ -51,12 +51,6 @@ public class ViewProjectsSectionDisplayContext
 		_depotEntryLocalService = depotEntryLocalService;
 	}
 
-	public Map<String, Object> getAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"filter", CMPDepotEntryGroupUtil.getFilterString()
-		).build();
-	}
-
 	@Override
 	public String getAPIURL() {
 		StringBundler sb = new StringBundler(4);
@@ -70,6 +64,12 @@ public class ViewProjectsSectionDisplayContext
 				"r_userToCMPProjectSponsor_user"));
 
 		return sb.toString();
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"filter", CMPDepotEntryGroupUtil.getFilterString()
+		).build();
 	}
 
 	@Override

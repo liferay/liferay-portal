@@ -85,6 +85,14 @@ public class CommerceTaxFixedRateAddressRelLocalServiceImpl
 	}
 
 	@Override
+	public void deleteCommerceTaxFixedRateAddressRelsByCPTaxCategoryId(
+		long cpTaxCategoryId) {
+
+		commerceTaxFixedRateAddressRelPersistence.removeByCPTaxCategoryId(
+			cpTaxCategoryId);
+	}
+
+	@Override
 	public void deleteCommerceTaxFixedRateAddressRelsByCommerceTaxMethodId(
 		long commerceTaxMethodId) {
 
@@ -97,14 +105,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceImpl
 		long countryId) {
 
 		commerceTaxFixedRateAddressRelPersistence.removeByCountryId(countryId);
-	}
-
-	@Override
-	public void deleteCommerceTaxFixedRateAddressRelsByCPTaxCategoryId(
-		long cpTaxCategoryId) {
-
-		commerceTaxFixedRateAddressRelPersistence.removeByCPTaxCategoryId(
-			cpTaxCategoryId);
 	}
 
 	@Override

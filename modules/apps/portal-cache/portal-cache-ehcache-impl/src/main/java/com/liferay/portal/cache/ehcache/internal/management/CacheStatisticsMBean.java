@@ -22,9 +22,9 @@ public interface CacheStatisticsMBean {
 
 	public long getCacheHits();
 
-	public long getCacheMisses();
-
 	public float getCacheMissPercentage();
+
+	public long getCacheMisses();
 
 	public long getCachePuts();
 

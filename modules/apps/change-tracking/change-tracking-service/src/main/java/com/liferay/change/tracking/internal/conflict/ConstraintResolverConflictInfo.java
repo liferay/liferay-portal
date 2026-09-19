@@ -27,6 +27,11 @@ public class ConstraintResolverConflictInfo extends BaseConflictInfo {
 	}
 
 	@Override
+	public long getCTAutoResolutionInfoId() {
+		return _ctAutoResolutionInfoId;
+	}
+
+	@Override
 	public String getConflictDescription(ResourceBundle resourceBundle) {
 		return ResourceBundleUtil.getString(
 			resourceBundle, _constraintResolver.getConflictDescriptionKey());
@@ -34,11 +39,6 @@ public class ConstraintResolverConflictInfo extends BaseConflictInfo {
 
 	public ConstraintResolver<?> getConstraintResolver() {
 		return _constraintResolver;
-	}
-
-	@Override
-	public long getCTAutoResolutionInfoId() {
-		return _ctAutoResolutionInfoId;
 	}
 
 	@Override

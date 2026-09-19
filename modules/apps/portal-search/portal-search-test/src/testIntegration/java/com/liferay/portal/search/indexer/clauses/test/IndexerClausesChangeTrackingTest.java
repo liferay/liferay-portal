@@ -348,10 +348,10 @@ public class IndexerClausesChangeTrackingTest {
 	protected MBMessageLocalService mbMessageLocalService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private ServiceContext _createServiceContext() throws Exception {
 		return ServiceContextTestUtil.getServiceContext(

@@ -72,10 +72,10 @@ public class UserGroupUADExporterTest
 	)
 	private UADExporter<UserGroup> _uadExporter;
 
-	@DeleteAfterTestRun
-	private final List<UserGroup> _userGroups = new ArrayList<>();
-
 	@Inject
 	private UserGroupUADTestHelper _userGroupUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<UserGroup> _userGroups = new ArrayList<>();
 
 }

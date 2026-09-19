@@ -123,12 +123,6 @@ public class OrganizationSearchPermissionFilterContributorTest {
 			_uidFactory.getUID(suborganization));
 	}
 
-	private void _testSearchWithoutOrganizationMembership() throws Exception {
-		OrganizationTestUtil.addOrganization();
-
-		_assertSearch(UserTestUtil.addUser());
-	}
-
 	private void _testSearchWithSingleOrganizationMembership()
 		throws Exception {
 
@@ -146,11 +140,17 @@ public class OrganizationSearchPermissionFilterContributorTest {
 		_assertSearch(user, _uidFactory.getUID(organization));
 	}
 
-	@Inject
-	private Searcher _searcher;
+	private void _testSearchWithoutOrganizationMembership() throws Exception {
+		OrganizationTestUtil.addOrganization();
+
+		_assertSearch(UserTestUtil.addUser());
+	}
 
 	@Inject
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+
+	@Inject
+	private Searcher _searcher;
 
 	@Inject
 	private UIDFactory _uidFactory;

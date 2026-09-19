@@ -404,6 +404,16 @@ public class ClusterSchedulerEngine
 		_schedulerEngine.validateTrigger(trigger, storageType);
 	}
 
+	protected void setClusterExecutor(ClusterExecutor clusterExecutor) {
+		_clusterExecutor = clusterExecutor;
+	}
+
+	protected void setClusterMasterExecutor(
+		ClusterMasterExecutor clusterMasterExecutor) {
+
+		_clusterMasterExecutor = clusterMasterExecutor;
+	}
+
 	protected void setClusterableThreadLocal(StorageType storageType) {
 		ClusterableContextThreadLocal.putThreadLocalContext(
 			STORAGE_TYPE, storageType);
@@ -420,16 +430,6 @@ public class ClusterSchedulerEngine
 
 		ClusterableContextThreadLocal.putThreadLocalContext(
 			PLUGIN_READY, pluginReady);
-	}
-
-	protected void setClusterExecutor(ClusterExecutor clusterExecutor) {
-		_clusterExecutor = clusterExecutor;
-	}
-
-	protected void setClusterMasterExecutor(
-		ClusterMasterExecutor clusterMasterExecutor) {
-
-		_clusterMasterExecutor = clusterMasterExecutor;
 	}
 
 	protected static final String PLUGIN_READY = "plugin.ready";

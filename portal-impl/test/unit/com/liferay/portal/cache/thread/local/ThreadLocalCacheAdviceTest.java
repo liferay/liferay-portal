@@ -26,13 +26,6 @@ public class ThreadLocalCacheAdviceTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testCacheKeyWithoutPreviewId() {
-		Assert.assertEquals("1", _getCacheKey(1L));
-		Assert.assertEquals("1#2", _getCacheKey(1L, 2L));
-		Assert.assertEquals("1#2#ff", _getCacheKey(1L, 2L, 255L));
-	}
-
-	@Test
 	public void testCacheKeyWithPreviewId() {
 		try (SafeCloseable safeCloseable =
 				PreviewableResolverUtil.setPreviewIdWithSafeCloseable(10L)) {
@@ -41,6 +34,13 @@ public class ThreadLocalCacheAdviceTest {
 			Assert.assertEquals("a#1#2", _getCacheKey(1L, 2L));
 			Assert.assertEquals("a#1#2#ff", _getCacheKey(1L, 2L, 255L));
 		}
+	}
+
+	@Test
+	public void testCacheKeyWithoutPreviewId() {
+		Assert.assertEquals("1", _getCacheKey(1L));
+		Assert.assertEquals("1#2", _getCacheKey(1L, 2L));
+		Assert.assertEquals("1#2#ff", _getCacheKey(1L, 2L, 255L));
 	}
 
 	private String _getCacheKey(Object... arguments) {

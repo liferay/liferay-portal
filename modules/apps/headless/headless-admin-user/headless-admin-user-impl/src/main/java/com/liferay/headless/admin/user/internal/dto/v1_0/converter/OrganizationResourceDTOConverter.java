@@ -487,13 +487,13 @@ public class OrganizationResourceDTOConverter
 	private Language _language;
 
 	@Reference
+	private OrgLaborService _orgLaborService;
+
+	@Reference
 	private OrganizationLocalService _organizationLocalService;
 
 	@Reference
 	private OrganizationService _organizationService;
-
-	@Reference
-	private OrgLaborService _orgLaborService;
 
 	@Reference
 	private PermissionService _permissionService;

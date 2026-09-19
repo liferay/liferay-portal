@@ -203,10 +203,10 @@ public class ContentDashboardFileExtensionItemSelectorView
 	private Language _language;
 
 	@Reference
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.content.dashboard.document.library.impl)"

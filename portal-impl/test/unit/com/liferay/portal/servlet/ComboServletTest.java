@@ -196,54 +196,6 @@ public class ComboServletTest {
 				_TEST_PORTLET_ID + ":js/javascript.js"));
 	}
 
-	@Test
-	public void testMaxFiles() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		int comboMaxFiles = 10;
-
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "COMBO_MAX_FILES", comboMaxFiles);
-
-		StringBuilder sb = new StringBuilder();
-
-		for (int i = 0; i < comboMaxFiles; i++) {
-			if (i > 0) {
-				sb.append(StringPool.AMPERSAND);
-			}
-
-			sb.append("/js/javascript");
-			sb.append(i);
-			sb.append(".js");
-		}
-
-		mockHttpServletRequest.setQueryString(sb.toString());
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_comboServlet.service(mockHttpServletRequest, mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-
-		sb.append(StringPool.AMPERSAND);
-		sb.append("/js/another_one.js");
-
-		mockHttpServletRequest = new MockHttpServletRequest();
-
-		mockHttpServletRequest.setQueryString(sb.toString());
-
-		mockHttpServletResponse = new MockHttpServletResponse();
-
-		_comboServlet.service(mockHttpServletRequest, mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_BAD_REQUEST,
-			mockHttpServletResponse.getStatus());
-	}
-
 	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
 	public void testMaxFileSizeDisabled() throws Exception {
@@ -339,6 +291,54 @@ public class ComboServletTest {
 	}
 
 	@Test
+	public void testMaxFiles() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		int comboMaxFiles = 10;
+
+		ReflectionTestUtil.setFieldValue(
+			PropsValues.class, "COMBO_MAX_FILES", comboMaxFiles);
+
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < comboMaxFiles; i++) {
+			if (i > 0) {
+				sb.append(StringPool.AMPERSAND);
+			}
+
+			sb.append("/js/javascript");
+			sb.append(i);
+			sb.append(".js");
+		}
+
+		mockHttpServletRequest.setQueryString(sb.toString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_comboServlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		sb.append(StringPool.AMPERSAND);
+		sb.append("/js/another_one.js");
+
+		mockHttpServletRequest = new MockHttpServletRequest();
+
+		mockHttpServletRequest.setQueryString(sb.toString());
+
+		mockHttpServletResponse = new MockHttpServletResponse();
+
+		_comboServlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_BAD_REQUEST,
+			mockHttpServletResponse.getStatus());
+	}
+
+	@Test
 	public void testMixedExtensionsRequest() throws Exception {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -363,33 +363,6 @@ public class ComboServletTest {
 		_testService("/js/aui.js", "/js//aui.js", _portalServletContext);
 		_testService("/js/aui.js", "/js/down/../aui.js", _portalServletContext);
 		_testService(null, "/../js/aui.js", _portalServletContext);
-	}
-
-	@Test
-	public void testServiceWithoutPortletIdButWithContext() throws Exception {
-		_testService(
-			"/js/javascript.js", "/portal/js/javascript.js",
-			_portalServletContext);
-	}
-
-	@Test
-	public void testServiceWithoutPortletIdButWithProxy() throws Exception {
-		_setUpProxy();
-
-		_testService(
-			"/js/javascript.js", "/proxyPath/js/javascript.js",
-			_portalServletContext);
-	}
-
-	@Test
-	public void testServiceWithoutPortletIdButWithProxyAndContext()
-		throws Exception {
-
-		_setUpProxy();
-
-		_testService(
-			"/js/javascript.js", "/proxyPath/portal/js/javascript.js",
-			_portalServletContext);
 	}
 
 	@Test
@@ -418,6 +391,33 @@ public class ComboServletTest {
 			"/portal/js/javascript.js",
 			_TEST_PORTLET_ID + ":/proxyPath/portal/js/javascript.js",
 			_pluginServletContext);
+	}
+
+	@Test
+	public void testServiceWithoutPortletIdButWithContext() throws Exception {
+		_testService(
+			"/js/javascript.js", "/portal/js/javascript.js",
+			_portalServletContext);
+	}
+
+	@Test
+	public void testServiceWithoutPortletIdButWithProxy() throws Exception {
+		_setUpProxy();
+
+		_testService(
+			"/js/javascript.js", "/proxyPath/js/javascript.js",
+			_portalServletContext);
+	}
+
+	@Test
+	public void testServiceWithoutPortletIdButWithProxyAndContext()
+		throws Exception {
+
+		_setUpProxy();
+
+		_testService(
+			"/js/javascript.js", "/proxyPath/portal/js/javascript.js",
+			_portalServletContext);
 	}
 
 	@Test

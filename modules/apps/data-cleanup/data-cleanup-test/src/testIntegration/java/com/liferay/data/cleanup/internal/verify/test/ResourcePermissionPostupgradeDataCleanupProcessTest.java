@@ -188,15 +188,15 @@ public class ResourcePermissionPostupgradeDataCleanupProcessTest
 	}
 
 	@Override
-	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {connection, _resourcePermissionLocalService};
-	}
-
-	@Override
 	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
 		return new Class<?>[] {
 			Connection.class, ResourcePermissionLocalService.class
 		};
+	}
+
+	@Override
+	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
+		return new Object[] {connection, _resourcePermissionLocalService};
 	}
 
 	@Override

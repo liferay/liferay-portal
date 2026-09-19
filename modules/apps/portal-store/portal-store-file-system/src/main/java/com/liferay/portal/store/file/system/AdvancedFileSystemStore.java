@@ -133,25 +133,6 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 	}
 
 	@Override
-	protected void getFileNames(
-		List<String> fileNames, String dirName, String path) {
-
-		super.getFileNames(fileNames, dirName, path);
-
-		ListIterator<String> iterator = fileNames.listIterator();
-
-		while (iterator.hasNext()) {
-			String shortFileName = iterator.next();
-
-			if (path.endsWith(_HOOK_EXTENSION)) {
-				shortFileName = FileUtil.stripExtension(shortFileName);
-			}
-
-			iterator.set(unbuildPath(shortFileName));
-		}
-	}
-
-	@Override
 	protected File getFileNameVersionFile(
 		long companyId, long repositoryId, String fileName, String version) {
 
@@ -194,6 +175,25 @@ public class AdvancedFileSystemStore extends FileSystemStore {
 			StringBundler.concat(
 				fileNameDir, StringPool.SLASH, fileNameFragment,
 				StringPool.UNDERLINE, version, ext));
+	}
+
+	@Override
+	protected void getFileNames(
+		List<String> fileNames, String dirName, String path) {
+
+		super.getFileNames(fileNames, dirName, path);
+
+		ListIterator<String> iterator = fileNames.listIterator();
+
+		while (iterator.hasNext()) {
+			String shortFileName = iterator.next();
+
+			if (path.endsWith(_HOOK_EXTENSION)) {
+				shortFileName = FileUtil.stripExtension(shortFileName);
+			}
+
+			iterator.set(unbuildPath(shortFileName));
+		}
 	}
 
 	@Override

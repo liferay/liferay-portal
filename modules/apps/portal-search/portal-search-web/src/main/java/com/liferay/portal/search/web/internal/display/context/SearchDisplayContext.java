@@ -383,6 +383,16 @@ public class SearchDisplayContext {
 		return _collatedSpellCheckResultEnabled;
 	}
 
+	public boolean isDLLinkToViewURL() {
+		if (_dlLinkToViewURL != null) {
+			return _dlLinkToViewURL;
+		}
+
+		_dlLinkToViewURL = false;
+
+		return _dlLinkToViewURL;
+	}
+
 	public boolean isDisplayFacet(String className) {
 		return GetterUtil.getBoolean(
 			_portletPreferences.getValue(className, null), true);
@@ -412,16 +422,6 @@ public class SearchDisplayContext {
 
 	public boolean isDisplayResultsInDocumentForm() {
 		return _searchResultPreferences.isDisplayResultsInDocumentForm();
-	}
-
-	public boolean isDLLinkToViewURL() {
-		if (_dlLinkToViewURL != null) {
-			return _dlLinkToViewURL;
-		}
-
-		_dlLinkToViewURL = false;
-
-		return _dlLinkToViewURL;
 	}
 
 	public boolean isHighlightEnabled() {

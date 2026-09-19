@@ -224,11 +224,11 @@ public class HighlightTranslatorTest {
 		private String _boundaryScannerType;
 		private final String _fieldName;
 		private Boolean _forceSource;
-		private String _fragmenter;
 		private Integer _fragmentSize;
-		private String _highlighterType;
+		private String _fragmenter;
 		private Boolean _highlightFilter;
 		private Query _highlightQuery;
+		private String _highlighterType;
 		private final String[] _matchedFields;
 		private Integer _noMatchSize;
 		private final Integer _numFragments;
@@ -282,11 +282,11 @@ public class HighlightTranslatorTest {
 		private final String _encoder;
 		private List<FieldConfig> _fieldConfigs;
 		private Boolean _forceSource;
-		private String _fragmenter;
 		private Integer _fragmentSize;
-		private String _highlighterType;
+		private String _fragmenter;
 		private Boolean _highlightFilter;
 		private Query _highlightQuery;
+		private String _highlighterType;
 		private Integer _noMatchSize;
 		private final Integer _numOfFragments;
 		private String _order;

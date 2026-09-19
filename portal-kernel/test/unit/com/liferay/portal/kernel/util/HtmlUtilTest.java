@@ -46,16 +46,16 @@ public class HtmlUtilTest {
 	}
 
 	@Test
-	public void testEscapeCaseSensitive() {
-		assertUnchangedEscape("CAPITAL lowercase Text");
-	}
-
-	@Test
 	public void testEscapeCSS() {
 		Assert.assertEquals("1", HtmlUtil.escapeCSS("1"));
 		Assert.assertEquals("\\27", HtmlUtil.escapeCSS("'"));
 		Assert.assertEquals("\\27 1", HtmlUtil.escapeCSS("'1"));
 		Assert.assertEquals("\\27a", HtmlUtil.escapeCSS("'a"));
+	}
+
+	@Test
+	public void testEscapeCaseSensitive() {
+		assertUnchangedEscape("CAPITAL lowercase Text");
 	}
 
 	@Test

@@ -76,24 +76,6 @@ public class ListUtilTest {
 	}
 
 	@Test
-	public void testFilterWithoutOutputList() {
-		List<String> expectedOutputList = new ArrayList<>();
-
-		expectedOutputList.add("b");
-
-		List<String> inputList = new ArrayList<>();
-
-		inputList.add("a");
-		inputList.add("b");
-		inputList.add("c");
-
-		Collection<String> actualOutputList = ListUtil.filter(
-			inputList, s -> s.equals("b"));
-
-		Assert.assertEquals(expectedOutputList, actualOutputList);
-	}
-
-	@Test
 	public void testFilterWithOutputList() {
 		List<String> expectedOutputList = new ArrayList<>();
 
@@ -114,6 +96,24 @@ public class ListUtilTest {
 			inputList, outputList, s -> s.equals("b"));
 
 		Assert.assertSame(outputList, actualOutputList);
+		Assert.assertEquals(expectedOutputList, actualOutputList);
+	}
+
+	@Test
+	public void testFilterWithoutOutputList() {
+		List<String> expectedOutputList = new ArrayList<>();
+
+		expectedOutputList.add("b");
+
+		List<String> inputList = new ArrayList<>();
+
+		inputList.add("a");
+		inputList.add("b");
+		inputList.add("c");
+
+		Collection<String> actualOutputList = ListUtil.filter(
+			inputList, s -> s.equals("b"));
+
 		Assert.assertEquals(expectedOutputList, actualOutputList);
 	}
 

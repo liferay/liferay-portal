@@ -103,8 +103,8 @@ public class TrashContentHorizontalCard implements HorizontalCard {
 
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
-	private final TrashedModel _trashedModel;
 	private final TrashRenderer _trashRenderer;
+	private final TrashedModel _trashedModel;
 	private final String _viewContentURL;
 
 }

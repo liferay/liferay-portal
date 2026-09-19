@@ -152,20 +152,20 @@ public class AssetListEntryUsagesDisplayContext {
 		return _navigation;
 	}
 
-	public int getPagesUsageCount() {
-		return AssetListEntryUsageLocalServiceUtil.getAssetListEntryUsagesCount(
-			_themeDisplay.getScopeGroupId(),
-			PortalUtil.getClassNameId(AssetListEntry.class),
-			String.valueOf(getAssetListEntryId()),
-			AssetListEntryUsageConstants.TYPE_LAYOUT);
-	}
-
 	public int getPageTemplatesUsageCount() {
 		return AssetListEntryUsageLocalServiceUtil.getAssetListEntryUsagesCount(
 			_themeDisplay.getScopeGroupId(),
 			PortalUtil.getClassNameId(AssetListEntry.class),
 			String.valueOf(getAssetListEntryId()),
 			AssetListEntryUsageConstants.TYPE_PAGE_TEMPLATE);
+	}
+
+	public int getPagesUsageCount() {
+		return AssetListEntryUsageLocalServiceUtil.getAssetListEntryUsagesCount(
+			_themeDisplay.getScopeGroupId(),
+			PortalUtil.getClassNameId(AssetListEntry.class),
+			String.valueOf(getAssetListEntryId()),
+			AssetListEntryUsageConstants.TYPE_LAYOUT);
 	}
 
 	public PortletURL getPortletURL() {

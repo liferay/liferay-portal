@@ -161,24 +161,6 @@ public class TLDDocBuilderPlugin implements Plugin<Project> {
 		return validateSchemaTask;
 	}
 
-	private void _configureTasksTLDDoc(
-		Project project, final Configuration tlddocConfiguration) {
-
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			TLDDocTask.class,
-			new Action<TLDDocTask>() {
-
-				@Override
-				public void execute(TLDDocTask tldDocTask) {
-					_configureTaskTLDDocClasspath(
-						tldDocTask, tlddocConfiguration);
-				}
-
-			});
-	}
-
 	private void _configureTaskTLDDocClasspath(
 		TLDDocTask tldDocTask, FileCollection fileCollection) {
 
@@ -231,6 +213,24 @@ public class TLDDocBuilderPlugin implements Plugin<Project> {
 				@Override
 				public Iterable<File> call() throws Exception {
 					return _getResourceDirs(project);
+				}
+
+			});
+	}
+
+	private void _configureTasksTLDDoc(
+		Project project, final Configuration tlddocConfiguration) {
+
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			TLDDocTask.class,
+			new Action<TLDDocTask>() {
+
+				@Override
+				public void execute(TLDDocTask tldDocTask) {
+					_configureTaskTLDDocClasspath(
+						tldDocTask, tlddocConfiguration);
 				}
 
 			});

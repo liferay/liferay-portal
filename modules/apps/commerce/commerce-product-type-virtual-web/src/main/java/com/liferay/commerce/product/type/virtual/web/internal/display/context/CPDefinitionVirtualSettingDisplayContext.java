@@ -75,28 +75,27 @@ public class CPDefinitionVirtualSettingDisplayContext
 		_itemSelector = itemSelector;
 	}
 
-	public int[] getActivationStatuses() {
-		return VirtualCPTypeConstants.ACTIVATION_STATUSES;
-	}
-
 	public String getActivationStatusLabel(int status) {
 		return CommerceOrderConstants.getOrderStatusLabel(status);
 	}
 
-	public CommerceVirtualOrderItemFileEntry
-			getCommerceVirtualOrderItemFileEntry()
+	public int[] getActivationStatuses() {
+		return VirtualCPTypeConstants.ACTIVATION_STATUSES;
+	}
+
+	public CPDVirtualSettingFileEntry getCPDVirtualSettingFileEntry()
 		throws PortalException {
 
-		if (_commerceVirtualOrderItemFileEntry != null) {
-			return _commerceVirtualOrderItemFileEntry;
+		if (_cpdVirtualSettingFileEntry != null) {
+			return _cpdVirtualSettingFileEntry;
 		}
 
-		_commerceVirtualOrderItemFileEntry =
+		_cpdVirtualSettingFileEntry =
 			_cpDefinitionVirtualSettingActionHelper.
-				getCommerceVirtualOrderItemFileEntry(
+				getCPDVirtualSettingFileEntry(
 					cpRequestHelper.getRenderRequest());
 
-		return _commerceVirtualOrderItemFileEntry;
+		return _cpdVirtualSettingFileEntry;
 	}
 
 	@Override
@@ -133,21 +132,6 @@ public class CPDefinitionVirtualSettingDisplayContext
 		return _cpDefinitionVirtualSetting;
 	}
 
-	public CPDVirtualSettingFileEntry getCPDVirtualSettingFileEntry()
-		throws PortalException {
-
-		if (_cpdVirtualSettingFileEntry != null) {
-			return _cpdVirtualSettingFileEntry;
-		}
-
-		_cpdVirtualSettingFileEntry =
-			_cpDefinitionVirtualSettingActionHelper.
-				getCPDVirtualSettingFileEntry(
-					cpRequestHelper.getRenderRequest());
-
-		return _cpdVirtualSettingFileEntry;
-	}
-
 	public CPInstance getCPInstance() throws PortalException {
 		if (_cpInstance != null) {
 			return _cpInstance;
@@ -169,6 +153,22 @@ public class CPDefinitionVirtualSettingDisplayContext
 		}
 
 		return cpInstanceId;
+	}
+
+	public CommerceVirtualOrderItemFileEntry
+			getCommerceVirtualOrderItemFileEntry()
+		throws PortalException {
+
+		if (_commerceVirtualOrderItemFileEntry != null) {
+			return _commerceVirtualOrderItemFileEntry;
+		}
+
+		_commerceVirtualOrderItemFileEntry =
+			_cpDefinitionVirtualSettingActionHelper.
+				getCommerceVirtualOrderItemFileEntry(
+					cpRequestHelper.getRenderRequest());
+
+		return _commerceVirtualOrderItemFileEntry;
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {
@@ -407,8 +407,8 @@ public class CPDefinitionVirtualSettingDisplayContext
 	private CPDefinitionVirtualSetting _cpDefinitionVirtualSetting;
 	private final CPDefinitionVirtualSettingActionHelper
 		_cpDefinitionVirtualSettingActionHelper;
-	private CPDVirtualSettingFileEntry _cpdVirtualSettingFileEntry;
 	private CPInstance _cpInstance;
+	private CPDVirtualSettingFileEntry _cpdVirtualSettingFileEntry;
 	private final DLAppService _dlAppService;
 	private final ItemSelector _itemSelector;
 	private final JournalArticleService _journalArticleService;

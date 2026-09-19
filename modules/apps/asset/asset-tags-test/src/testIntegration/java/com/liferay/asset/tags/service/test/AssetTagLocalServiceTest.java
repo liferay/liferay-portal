@@ -358,6 +358,23 @@ public class AssetTagLocalServiceTest {
 	}
 
 	@Test
+	public void testGetTagWithCaseSensitive() throws PortalException {
+		List<AssetTag> assetTags = _addAssetTags(new String[] {"tag", "TAG"});
+
+		for (AssetTag assetTag : assetTags) {
+			AssetTag actualAssetTag = _assetTagLocalService.getTag(
+				_group.getGroupId(), assetTag.getName());
+
+			Assert.assertNotNull(actualAssetTag);
+			Assert.assertEquals(assetTag.getTagId(), actualAssetTag.getTagId());
+		}
+
+		expectedException.expect(NoSuchTagException.class);
+
+		_assetTagLocalService.getTag(_group.getGroupId(), "Tag");
+	}
+
+	@Test
 	public void testGetTagsWithCaseInsensitive() throws Exception {
 		String[] expectedTagNames = {"tag1", "Tag1"};
 
@@ -415,23 +432,6 @@ public class AssetTagLocalServiceTest {
 			GroupTestUtil.deleteGroup(group1);
 			GroupTestUtil.deleteGroup(group2);
 		}
-	}
-
-	@Test
-	public void testGetTagWithCaseSensitive() throws PortalException {
-		List<AssetTag> assetTags = _addAssetTags(new String[] {"tag", "TAG"});
-
-		for (AssetTag assetTag : assetTags) {
-			AssetTag actualAssetTag = _assetTagLocalService.getTag(
-				_group.getGroupId(), assetTag.getName());
-
-			Assert.assertNotNull(actualAssetTag);
-			Assert.assertEquals(assetTag.getTagId(), actualAssetTag.getTagId());
-		}
-
-		expectedException.expect(NoSuchTagException.class);
-
-		_assetTagLocalService.getTag(_group.getGroupId(), "Tag");
 	}
 
 	@Test

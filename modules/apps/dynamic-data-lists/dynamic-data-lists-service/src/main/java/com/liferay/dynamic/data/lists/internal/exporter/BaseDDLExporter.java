@@ -106,13 +106,6 @@ public abstract class BaseDDLExporter implements DDLExporter {
 			LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault()));
 	}
 
-	protected DateTimeFormatter getDateTimeFormatter() {
-		DateTimeFormatter dateTimeFormatter =
-			DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
-
-		return dateTimeFormatter.withLocale(getLocale());
-	}
-
 	protected abstract DDLRecordSetVersionService
 		getDDLRecordSetVersionService();
 
@@ -121,6 +114,13 @@ public abstract class BaseDDLExporter implements DDLExporter {
 
 	protected abstract DDMFormFieldValueRendererRegistry
 		getDDMFormFieldValueRendererRegistry();
+
+	protected DateTimeFormatter getDateTimeFormatter() {
+		DateTimeFormatter dateTimeFormatter =
+			DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
+
+		return dateTimeFormatter.withLocale(getLocale());
+	}
 
 	protected Map<String, DDMFormField> getDistinctFields(long recordSetId)
 		throws Exception {

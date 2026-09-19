@@ -269,10 +269,10 @@ public class FragmentEntryFragmentRendererReact implements FragmentRenderer {
 	private FragmentEntryLinkJSModuleInitializerHelper
 		_fragmentEntryLinkJSModuleInitializerHelper;
 
+	private JSPackage _jsPackage;
+
 	@Reference
 	private JSONFactory _jsonFactory;
-
-	private JSPackage _jsPackage;
 
 	@Reference
 	private NPMResolver _npmResolver;

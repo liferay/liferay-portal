@@ -182,8 +182,8 @@ public class TestrayTestTaskHistory extends BaseTestTaskHistory {
 		}
 
 		private final boolean _latestBuild;
-		private final TestrayTestTaskHistory _testrayTestTaskHistory;
 		private final List<TestTaskReport> _testTaskReports = new ArrayList<>();
+		private final TestrayTestTaskHistory _testrayTestTaskHistory;
 
 	}
 

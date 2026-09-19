@@ -61,15 +61,6 @@ public class UserGroupRoleImpl extends UserGroupRoleBaseImpl {
 	}
 
 	@Override
-	public int hashCode() {
-		int hash = HashUtil.hash(0, getUserId());
-
-		hash = HashUtil.hash(hash, getGroupId());
-
-		return HashUtil.hash(hash, getRoleId());
-	}
-
-	@Override
 	public boolean hasOrganizationRole() {
 		Role role = RoleLocalServiceUtil.fetchRole(getRoleId());
 
@@ -101,6 +92,15 @@ public class UserGroupRoleImpl extends UserGroupRoleBaseImpl {
 		}
 
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = HashUtil.hash(0, getUserId());
+
+		hash = HashUtil.hash(hash, getGroupId());
+
+		return HashUtil.hash(hash, getRoleId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

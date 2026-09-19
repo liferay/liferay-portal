@@ -123,6 +123,23 @@ public class NavItemUtil {
 		return navItems;
 	}
 
+	public static List<NavItem> getNavItems(
+			List<NavItem> branchNavItems, HttpServletRequest httpServletRequest,
+			NavigationMenuMode navigationMenuMode, String rootItemId,
+			int rootItemLevel, String rootItemType, long siteNavigationMenuId)
+		throws Exception {
+
+		if (siteNavigationMenuId > 0) {
+			return _getMenuNavItems(
+				httpServletRequest, branchNavItems, rootItemType, rootItemLevel,
+				siteNavigationMenuId, rootItemId);
+		}
+
+		return _getNavItems(
+			navigationMenuMode, httpServletRequest, rootItemType, rootItemLevel,
+			rootItemId, branchNavItems);
+	}
+
 	public static Map<String, Object> getNavigationMenuContext(
 		int displayDepth, String expandedLevels,
 		HttpServletRequest httpServletRequest,
@@ -160,23 +177,6 @@ public class NavItemUtil {
 		).put(
 			"rootLayoutType", rootItemType
 		).build();
-	}
-
-	public static List<NavItem> getNavItems(
-			List<NavItem> branchNavItems, HttpServletRequest httpServletRequest,
-			NavigationMenuMode navigationMenuMode, String rootItemId,
-			int rootItemLevel, String rootItemType, long siteNavigationMenuId)
-		throws Exception {
-
-		if (siteNavigationMenuId > 0) {
-			return _getMenuNavItems(
-				httpServletRequest, branchNavItems, rootItemType, rootItemLevel,
-				siteNavigationMenuId, rootItemId);
-		}
-
-		return _getNavItems(
-			navigationMenuMode, httpServletRequest, rootItemType, rootItemLevel,
-			rootItemId, branchNavItems);
 	}
 
 	private static List<NavItem> _fromLayouts(

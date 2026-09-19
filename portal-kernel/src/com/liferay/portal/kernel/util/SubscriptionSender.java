@@ -556,6 +556,10 @@ public class SubscriptionSender implements Serializable {
 		this.replyToAddress = replyToAddress;
 	}
 
+	public void setSMTPAccount(SMTPAccount smtpAccount) {
+		this.smtpAccount = smtpAccount;
+	}
+
 	/**
 	 * @see com.liferay.portal.kernel.search.BaseIndexer#getSiteGroupId(long)
 	 */
@@ -585,10 +589,6 @@ public class SubscriptionSender implements Serializable {
 
 	public void setServiceContext(ServiceContext serviceContext) {
 		this.serviceContext = serviceContext;
-	}
-
-	public void setSMTPAccount(SMTPAccount smtpAccount) {
-		this.smtpAccount = smtpAccount;
 	}
 
 	public void setSubject(String subject) {

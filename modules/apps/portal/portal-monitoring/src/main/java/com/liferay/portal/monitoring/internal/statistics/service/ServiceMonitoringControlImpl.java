@@ -51,13 +51,13 @@ public class ServiceMonitoringControlImpl implements ServiceMonitoringControl {
 	}
 
 	@Override
-	public Set<String> getServiceClasses() {
-		return Collections.unmodifiableSet(_serviceClasses);
+	public Set<MethodSignature> getServiceClassMethods() {
+		return Collections.unmodifiableSet(_serviceClassMethods);
 	}
 
 	@Override
-	public Set<MethodSignature> getServiceClassMethods() {
-		return Collections.unmodifiableSet(_serviceClassMethods);
+	public Set<String> getServiceClasses() {
+		return Collections.unmodifiableSet(_serviceClasses);
 	}
 
 	@Override
@@ -122,8 +122,8 @@ public class ServiceMonitoringControlImpl implements ServiceMonitoringControl {
 
 	private boolean _inclusiveMode = true;
 	private volatile boolean _monitorServiceRequest;
-	private final Set<String> _serviceClasses = new HashSet<>();
 	private final Set<MethodSignature> _serviceClassMethods = new HashSet<>();
+	private final Set<String> _serviceClasses = new HashSet<>();
 	private volatile ServiceRegistration<ChainableMethodAdvice>
 		_serviceRegistration;
 

@@ -188,13 +188,13 @@ public class StatementWrapper implements Statement {
 	}
 
 	@Override
-	public boolean isClosed() throws SQLException {
-		return _statement.isClosed();
+	public boolean isCloseOnCompletion() throws SQLException {
+		return _statement.isCloseOnCompletion();
 	}
 
 	@Override
-	public boolean isCloseOnCompletion() throws SQLException {
-		return _statement.isCloseOnCompletion();
+	public boolean isClosed() throws SQLException {
+		return _statement.isClosed();
 	}
 
 	@Override

@@ -663,13 +663,13 @@ public class ProductConfigurationResourceImpl
 	private CPConfigurationListService _cpConfigurationListService;
 
 	@Reference
-	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
-
-	@Reference
 	private CPDefinitionInventoryService _cpDefinitionInventoryService;
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

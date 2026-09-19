@@ -317,10 +317,10 @@ public class AssetPublisherOSGiCommands implements OSGiCommands {
 		_layoutPageTemplateEntryLocalService;
 
 	@Reference
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Reference
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Reference
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 }

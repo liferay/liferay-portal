@@ -201,6 +201,9 @@ public class PriceModifierProductResourceImpl
 				commercePriceModifierRel.getCommercePriceModifierRelId()));
 	}
 
+	@Reference
+	private CProductLocalService _cProductLocalService;
+
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.pricing.model.CommercePriceModifierRel)"
 	)
@@ -212,9 +215,6 @@ public class PriceModifierProductResourceImpl
 
 	@Reference
 	private CommercePriceModifierService _commercePriceModifierService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

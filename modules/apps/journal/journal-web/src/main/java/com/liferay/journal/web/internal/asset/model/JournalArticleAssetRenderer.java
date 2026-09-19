@@ -294,23 +294,6 @@ public class JournalArticleAssetRenderer
 	}
 
 	@Override
-	public String getUrlTitle() {
-		return _article.getUrlTitle();
-	}
-
-	@Override
-	public String getUrlTitle(Locale locale) {
-		try {
-			return _article.getUrlTitle(locale);
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		return getUrlTitle();
-	}
-
-	@Override
 	public PortletURL getURLViewDiffs(
 			LiferayPortletRequest liferayPortletRequest,
 			LiferayPortletResponse liferayPortletResponse)
@@ -412,6 +395,23 @@ public class JournalArticleAssetRenderer
 		}
 
 		return noSuchEntryRedirect;
+	}
+
+	@Override
+	public String getUrlTitle() {
+		return _article.getUrlTitle();
+	}
+
+	@Override
+	public String getUrlTitle(Locale locale) {
+		try {
+			return _article.getUrlTitle(locale);
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return getUrlTitle();
 	}
 
 	@Override

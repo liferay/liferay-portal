@@ -227,6 +227,65 @@ public class CompareContentItemStrutsActionTest {
 			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
 	}
 
+	private void _testExecuteWithParameters() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(objectEntry);
+
+		mockHttpServletRequest.setParameter("p_p_state", "maximized");
+		mockHttpServletRequest.setParameter("version", "2");
+
+		MockHttpServletResponse mockHttpServletResponse = _execute(
+			mockHttpServletRequest, TestPropsValues.getUser());
+
+		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
+
+		Assert.assertTrue(redirectedURL.contains("p_p_state=maximized"));
+
+		Assert.assertTrue(redirectedURL.contains("version=2"));
+	}
+
+	private void _testExecuteWithRequestLocale() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(objectEntry);
+
+		_execute(mockHttpServletRequest, TestPropsValues.getUser());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_fetchLayoutPageTemplateEntry(objectEntry);
+
+		_layoutLocalService.updateFriendlyURL(
+			TestPropsValues.getUserId(), layoutPageTemplateEntry.getPlid(),
+			StringPool.SLASH +
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
+			LocaleUtil.toLanguageId(LocaleUtil.SPAIN));
+
+		Layout layout = _layoutLocalService.getLayout(
+			layoutPageTemplateEntry.getPlid());
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		themeDisplay.setLocale(LocaleUtil.SPAIN);
+
+		MockHttpServletResponse mockHttpServletResponse = _execute(
+			mockHttpServletRequest, TestPropsValues.getUser());
+
+		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
+
+		Assert.assertTrue(
+			redirectedURL.contains(layout.getFriendlyURL(LocaleUtil.SPAIN)));
+
+		Assert.assertFalse(
+			redirectedURL.contains(
+				layout.getFriendlyURL(
+					PortalUtil.getSiteDefaultLocale(_group))));
+	}
+
 	private void _testExecuteWithoutFeatureFlag() throws Exception {
 		ObjectEntry objectEntry = _addObjectEntry();
 
@@ -331,65 +390,6 @@ public class CompareContentItemStrutsActionTest {
 		Assert.assertNull(_fetchLayoutPageTemplateEntry(objectEntry));
 	}
 
-	private void _testExecuteWithParameters() throws Exception {
-		ObjectEntry objectEntry = _addObjectEntry();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(objectEntry);
-
-		mockHttpServletRequest.setParameter("p_p_state", "maximized");
-		mockHttpServletRequest.setParameter("version", "2");
-
-		MockHttpServletResponse mockHttpServletResponse = _execute(
-			mockHttpServletRequest, TestPropsValues.getUser());
-
-		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
-
-		Assert.assertTrue(redirectedURL.contains("p_p_state=maximized"));
-
-		Assert.assertTrue(redirectedURL.contains("version=2"));
-	}
-
-	private void _testExecuteWithRequestLocale() throws Exception {
-		ObjectEntry objectEntry = _addObjectEntry();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(objectEntry);
-
-		_execute(mockHttpServletRequest, TestPropsValues.getUser());
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_fetchLayoutPageTemplateEntry(objectEntry);
-
-		_layoutLocalService.updateFriendlyURL(
-			TestPropsValues.getUserId(), layoutPageTemplateEntry.getPlid(),
-			StringPool.SLASH +
-				StringUtil.toLowerCase(RandomTestUtil.randomString()),
-			LocaleUtil.toLanguageId(LocaleUtil.SPAIN));
-
-		Layout layout = _layoutLocalService.getLayout(
-			layoutPageTemplateEntry.getPlid());
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)mockHttpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		themeDisplay.setLocale(LocaleUtil.SPAIN);
-
-		MockHttpServletResponse mockHttpServletResponse = _execute(
-			mockHttpServletRequest, TestPropsValues.getUser());
-
-		String redirectedURL = mockHttpServletResponse.getRedirectedUrl();
-
-		Assert.assertTrue(
-			redirectedURL.contains(layout.getFriendlyURL(LocaleUtil.SPAIN)));
-
-		Assert.assertFalse(
-			redirectedURL.contains(
-				layout.getFriendlyURL(
-					PortalUtil.getSiteDefaultLocale(_group))));
-	}
-
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
@@ -424,12 +424,12 @@ public class CompareContentItemStrutsActionTest {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-	@DeleteAfterTestRun
-	private List<ObjectDefinition> _objectDefinitions;
-
 	@Inject
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+
+	@DeleteAfterTestRun
+	private List<ObjectDefinition> _objectDefinitions;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

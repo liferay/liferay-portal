@@ -337,32 +337,6 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		return StringPool.POUND + data;
 	}
 
-	private String _getData() {
-		if (super.containsKey(_RANDOM_ID + "Data") ||
-			Validator.isNotNull((String)get(_RANDOM_ID + "Data"))) {
-
-			return (String)get(_RANDOM_ID + "Data");
-		}
-
-		return (String)get("data");
-	}
-
-	private Locale _getDataLocale() {
-		Map<String, String> attributes = getAttributes();
-
-		if (attributes == null) {
-			return _locale;
-		}
-
-		String dataLanguageId = attributes.get("language-id");
-
-		if (Validator.isNull(dataLanguageId)) {
-			return _locale;
-		}
-
-		return LocaleUtil.fromLanguageId(dataLanguageId);
-	}
-
 	private String _getDDMJournalArticleFriendlyURL() {
 		if (_themeDisplay == null) {
 			return StringPool.BLANK;
@@ -412,6 +386,32 @@ public class TemplateNode extends LinkedHashMap<String, Object> {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private String _getData() {
+		if (super.containsKey(_RANDOM_ID + "Data") ||
+			Validator.isNotNull((String)get(_RANDOM_ID + "Data"))) {
+
+			return (String)get(_RANDOM_ID + "Data");
+		}
+
+		return (String)get("data");
+	}
+
+	private Locale _getDataLocale() {
+		Map<String, String> attributes = getAttributes();
+
+		if (attributes == null) {
+			return _locale;
+		}
+
+		String dataLanguageId = attributes.get("language-id");
+
+		if (Validator.isNull(dataLanguageId)) {
+			return _locale;
+		}
+
+		return LocaleUtil.fromLanguageId(dataLanguageId);
 	}
 
 	private String _getFileEntryData() {

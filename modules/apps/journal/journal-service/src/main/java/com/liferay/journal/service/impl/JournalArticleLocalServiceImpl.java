@@ -2537,6 +2537,56 @@ public class JournalArticleLocalServiceImpl
 				journalArticleLocalization.getLanguageId());
 	}
 
+	@Override
+	public String getArticleTitle(
+		long companyId, long articlePK, Locale locale) {
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getArticleTitle(companyId, articlePK, languageId);
+	}
+
+	@Override
+	public String getArticleTitle(
+		long companyId, long articlePK, String languageId) {
+
+		JournalArticleLocalization journalArticleLocalization =
+			_journalArticleLocalizationPersistence.fetchByC_A_L(
+				companyId, articlePK, languageId);
+
+		if (journalArticleLocalization == null) {
+			return null;
+		}
+
+		return journalArticleLocalization.getTitle();
+	}
+
+	@Override
+	public Map<Locale, String> getArticleTitleMap(
+		long companyId, long articlePK) {
+
+		Map<Locale, String> journalArticleLocalizationTitleMap =
+			new HashMap<>();
+
+		List<JournalArticleLocalization> journalArticleLocalizationList =
+			_journalArticleLocalizationPersistence.findByC_A(
+				companyId, articlePK);
+
+		for (JournalArticleLocalization journalArticleLocalization :
+				journalArticleLocalizationList) {
+
+			Locale locale = LocaleUtil.fromLanguageId(
+				journalArticleLocalization.getLanguageId(), true, false);
+
+			if (locale != null) {
+				journalArticleLocalizationTitleMap.put(
+					locale, journalArticleLocalization.getTitle());
+			}
+		}
+
+		return journalArticleLocalizationTitleMap;
+	}
+
 	/**
 	 * Returns all the web content articles present in the system.
 	 *
@@ -2977,56 +3027,6 @@ public class JournalArticleLocalServiceImpl
 	public int getArticlesCountByResourcePrimKey(long resourcePrimKey) {
 		return journalArticlePersistence.countByResourcePrimKey(
 			resourcePrimKey);
-	}
-
-	@Override
-	public String getArticleTitle(
-		long companyId, long articlePK, Locale locale) {
-
-		String languageId = LocaleUtil.toLanguageId(locale);
-
-		return getArticleTitle(companyId, articlePK, languageId);
-	}
-
-	@Override
-	public String getArticleTitle(
-		long companyId, long articlePK, String languageId) {
-
-		JournalArticleLocalization journalArticleLocalization =
-			_journalArticleLocalizationPersistence.fetchByC_A_L(
-				companyId, articlePK, languageId);
-
-		if (journalArticleLocalization == null) {
-			return null;
-		}
-
-		return journalArticleLocalization.getTitle();
-	}
-
-	@Override
-	public Map<Locale, String> getArticleTitleMap(
-		long companyId, long articlePK) {
-
-		Map<Locale, String> journalArticleLocalizationTitleMap =
-			new HashMap<>();
-
-		List<JournalArticleLocalization> journalArticleLocalizationList =
-			_journalArticleLocalizationPersistence.findByC_A(
-				companyId, articlePK);
-
-		for (JournalArticleLocalization journalArticleLocalization :
-				journalArticleLocalizationList) {
-
-			Locale locale = LocaleUtil.fromLanguageId(
-				journalArticleLocalization.getLanguageId(), true, false);
-
-			if (locale != null) {
-				journalArticleLocalizationTitleMap.put(
-					locale, journalArticleLocalization.getTitle());
-			}
-		}
-
-		return journalArticleLocalizationTitleMap;
 	}
 
 	/**
@@ -8382,27 +8382,6 @@ public class JournalArticleLocalServiceImpl
 		return JournalArticleConstants.SMALL_IMAGE_SOURCE_USER_COMPUTER;
 	}
 
-	private String _getUniqueCopyUrlTitle(
-			long groupId, String articleId, String urlTitle)
-		throws PortalException {
-
-		return UniqueUtil.getUniqueValue(
-			"copy",
-			uniqueValue -> {
-				JournalArticle article = fetchArticleByUrlTitle(
-					groupId, uniqueValue);
-
-				if ((article == null) ||
-					Objects.equals(articleId, article.getArticleId())) {
-
-					return true;
-				}
-
-				return false;
-			},
-			urlTitle);
-	}
-
 	private Map<String, String> _getURLTitleMap(
 		long groupId, long resourcePrimKey, Map<Locale, String> friendlyURLMap,
 		Map<Locale, String> titleMap) {
@@ -8460,6 +8439,27 @@ public class JournalArticleLocalServiceImpl
 		}
 
 		return urlTitleMap;
+	}
+
+	private String _getUniqueCopyUrlTitle(
+			long groupId, String articleId, String urlTitle)
+		throws PortalException {
+
+		return UniqueUtil.getUniqueValue(
+			"copy",
+			uniqueValue -> {
+				JournalArticle article = fetchArticleByUrlTitle(
+					groupId, uniqueValue);
+
+				if ((article == null) ||
+					Objects.equals(articleId, article.getArticleId())) {
+
+					return true;
+				}
+
+				return false;
+			},
+			urlTitle);
 	}
 
 	private boolean _isEmpty(

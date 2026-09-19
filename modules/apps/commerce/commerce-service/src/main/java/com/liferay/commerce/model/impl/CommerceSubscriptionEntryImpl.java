@@ -20,12 +20,6 @@ public class CommerceSubscriptionEntryImpl
 	extends CommerceSubscriptionEntryBaseImpl {
 
 	@Override
-	public CommerceOrderItem fetchCommerceOrderItem() {
-		return CommerceOrderItemLocalServiceUtil.fetchCommerceOrderItem(
-			getCommerceOrderItemId());
-	}
-
-	@Override
 	public CPDefinition fetchCPDefinition() throws PortalException {
 		CommerceOrderItem commerceOrderItem = fetchCommerceOrderItem();
 
@@ -45,6 +39,12 @@ public class CommerceSubscriptionEntryImpl
 		}
 
 		return commerceOrderItem.fetchCPInstance();
+	}
+
+	@Override
+	public CommerceOrderItem fetchCommerceOrderItem() {
+		return CommerceOrderItemLocalServiceUtil.fetchCommerceOrderItem(
+			getCommerceOrderItemId());
 	}
 
 	@Override

@@ -360,53 +360,6 @@ public class LayoutStructureRulesHelperTest {
 	}
 
 	@Test
-	public void testWithoutConditionsCompleted() throws Exception {
-		LayoutStructure layoutStructure = LayoutStructure.of(
-			_read("layout_data_rules_all.json"));
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(_user);
-
-		LayoutStructureRulesHelper.LayoutStructureRulesResult
-			layoutStructureRulesResult =
-				_layoutStructureRulesHelper.processLayoutStructureRules(
-					_group.getGroupId(), null, layoutStructure,
-					LocaleUtil.getDefault(), permissionChecker, new long[0]);
-
-		Set<String> displayedItemIds =
-			layoutStructureRulesResult.getDisplayedItemIds();
-
-		Assert.assertEquals(
-			displayedItemIds.toString(), 1, displayedItemIds.size());
-		Assert.assertTrue(
-			displayedItemIds.toString(),
-			displayedItemIds.contains("fragment1"));
-
-		Set<String> hiddenItemIds =
-			layoutStructureRulesResult.getHiddenItemIds();
-
-		Assert.assertEquals(hiddenItemIds.toString(), 1, hiddenItemIds.size());
-		Assert.assertTrue(
-			hiddenItemIds.toString(), hiddenItemIds.contains("container2"));
-
-		Assert.assertTrue(
-			MapUtil.toString(layoutStructureRulesResult.getItemIdsMap()),
-			MapUtil.isEmpty(layoutStructureRulesResult.getItemIdsMap()));
-		Assert.assertTrue(
-			MapUtil.toString(
-				layoutStructureRulesResult.getLayoutStructureRuleIdsMap()),
-			MapUtil.isEmpty(
-				layoutStructureRulesResult.getLayoutStructureRuleIdsMap()));
-
-		_testProcessLayoutStructureRulesWithFormTypeCondition(
-			layoutStructure, permissionChecker,
-			HashMapBuilder.put(
-				"hide", ListUtil.fromCollection(hiddenItemIds)
-			).put(
-				"show", ListUtil.fromCollection(displayedItemIds)
-			).build());
-	}
-
-	@Test
 	public void testWithSelectInfoFieldType() throws Exception {
 		InfoField<SelectInfoFieldType> infoField = InfoField.builder(
 			"Test"
@@ -462,6 +415,53 @@ public class LayoutStructureRulesHelperTest {
 			infoItemFieldValues, fieldName, "does-not-contain", "Goodbye");
 		_testWithFieldCondition(
 			infoItemFieldValues, fieldName, "is-not-empty", "");
+	}
+
+	@Test
+	public void testWithoutConditionsCompleted() throws Exception {
+		LayoutStructure layoutStructure = LayoutStructure.of(
+			_read("layout_data_rules_all.json"));
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_user);
+
+		LayoutStructureRulesHelper.LayoutStructureRulesResult
+			layoutStructureRulesResult =
+				_layoutStructureRulesHelper.processLayoutStructureRules(
+					_group.getGroupId(), null, layoutStructure,
+					LocaleUtil.getDefault(), permissionChecker, new long[0]);
+
+		Set<String> displayedItemIds =
+			layoutStructureRulesResult.getDisplayedItemIds();
+
+		Assert.assertEquals(
+			displayedItemIds.toString(), 1, displayedItemIds.size());
+		Assert.assertTrue(
+			displayedItemIds.toString(),
+			displayedItemIds.contains("fragment1"));
+
+		Set<String> hiddenItemIds =
+			layoutStructureRulesResult.getHiddenItemIds();
+
+		Assert.assertEquals(hiddenItemIds.toString(), 1, hiddenItemIds.size());
+		Assert.assertTrue(
+			hiddenItemIds.toString(), hiddenItemIds.contains("container2"));
+
+		Assert.assertTrue(
+			MapUtil.toString(layoutStructureRulesResult.getItemIdsMap()),
+			MapUtil.isEmpty(layoutStructureRulesResult.getItemIdsMap()));
+		Assert.assertTrue(
+			MapUtil.toString(
+				layoutStructureRulesResult.getLayoutStructureRuleIdsMap()),
+			MapUtil.isEmpty(
+				layoutStructureRulesResult.getLayoutStructureRuleIdsMap()));
+
+		_testProcessLayoutStructureRulesWithFormTypeCondition(
+			layoutStructure, permissionChecker,
+			HashMapBuilder.put(
+				"hide", ListUtil.fromCollection(hiddenItemIds)
+			).put(
+				"show", ListUtil.fromCollection(displayedItemIds)
+			).build());
 	}
 
 	private void _addFormTypeCondition(

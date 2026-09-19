@@ -518,6 +518,48 @@ public class SXPParameterDataCreatorUtil {
 			_fit((Long)parameter.getMax(), (Long)parameter.getMin(), value));
 	}
 
+	private static SXPParameter _getSXPParameter(
+		String name, Object object, Parameter parameter,
+		SearchContext searchContext, Parameter.Type type) {
+
+		if (type.equals(Parameter.Type.BOOLEAN)) {
+			return _getBooleanSXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.DATE)) {
+			return _getDateSXPParameter(
+				name, object, searchContext.getTimeZone(), parameter);
+		}
+		else if (type.equals(Parameter.Type.DOUBLE)) {
+			return _getDoubleSXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.FLOAT)) {
+			return _getFloatSXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.INTEGER)) {
+			return _getIntegerSXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.INTEGER_ARRAY)) {
+			return _getIntegerArraySXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.LONG)) {
+			return _getLongSXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.LONG_ARRAY)) {
+			return _getLongArraySXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.STRING)) {
+			return _getStringSXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.STRING_ARRAY)) {
+			return _getStringArraySXPParameter(name, object, parameter);
+		}
+		else if (type.equals(Parameter.Type.TIME_RANGE)) {
+			return _getTimeRangeSXPParameter(name, object);
+		}
+
+		throw new IllegalArgumentException();
+	}
+
 	private static String _getString(String defaultValue, Object object) {
 		if (object != null) {
 			return GetterUtil.getString(object);
@@ -587,48 +629,6 @@ public class SXPParameterDataCreatorUtil {
 		}
 
 		return new StringSXPParameter(name, true, value);
-	}
-
-	private static SXPParameter _getSXPParameter(
-		String name, Object object, Parameter parameter,
-		SearchContext searchContext, Parameter.Type type) {
-
-		if (type.equals(Parameter.Type.BOOLEAN)) {
-			return _getBooleanSXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.DATE)) {
-			return _getDateSXPParameter(
-				name, object, searchContext.getTimeZone(), parameter);
-		}
-		else if (type.equals(Parameter.Type.DOUBLE)) {
-			return _getDoubleSXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.FLOAT)) {
-			return _getFloatSXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.INTEGER)) {
-			return _getIntegerSXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.INTEGER_ARRAY)) {
-			return _getIntegerArraySXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.LONG)) {
-			return _getLongSXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.LONG_ARRAY)) {
-			return _getLongArraySXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.STRING)) {
-			return _getStringSXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.STRING_ARRAY)) {
-			return _getStringArraySXPParameter(name, object, parameter);
-		}
-		else if (type.equals(Parameter.Type.TIME_RANGE)) {
-			return _getTimeRangeSXPParameter(name, object);
-		}
-
-		throw new IllegalArgumentException();
 	}
 
 	private static SXPParameter _getTimeRangeSXPParameter(

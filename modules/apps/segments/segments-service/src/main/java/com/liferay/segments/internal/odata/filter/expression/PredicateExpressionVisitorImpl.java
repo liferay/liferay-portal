@@ -378,83 +378,6 @@ public class PredicateExpressionVisitorImpl<T extends Map>
 		};
 	}
 
-	private Predicate<T> _getLambdaContainsPredicate(
-		EntityField entityField, Object fieldValue) {
-
-		if (!Objects.equals(entityField.getType(), EntityField.Type.STRING)) {
-			throw new UnsupportedOperationException(
-				"Unsupported method _lambdaContains with entity field type " +
-					entityField.getType());
-		}
-
-		return p -> {
-			for (String name :
-					(String[])p.get(_lambdaCollectionEntityField.getName())) {
-
-				if (StringUtils.containsIgnoreCase(
-						String.valueOf(name), String.valueOf(fieldValue))) {
-
-					return true;
-				}
-			}
-
-			return false;
-		};
-	}
-
-	private EntityModel _getLambdaEntityModel(
-		String variableName, CollectionEntityField collectionEntityField) {
-
-		return new EntityModel() {
-
-			@Override
-			public Map<String, EntityField> getEntityFieldsMap() {
-				return Collections.singletonMap(
-					variableName, collectionEntityField.getEntityField());
-			}
-
-			@Override
-			public String getName() {
-				return collectionEntityField.getName();
-			}
-
-		};
-	}
-
-	private Predicate<T> _getLambdaEQPredicate(
-		EntityField entityField, Object fieldValue) {
-
-		if (!Objects.equals(entityField.getType(), EntityField.Type.STRING)) {
-			throw new UnsupportedOperationException(
-				"Unsupported method _getLambdaEQPredicate with entity field " +
-					entityField.getType());
-		}
-
-		return p -> {
-			for (String name :
-					(String[])p.get(_lambdaCollectionEntityField.getName())) {
-
-				if (fieldValue.equals(
-						_normalizeStringLiteral(String.valueOf(name)))) {
-
-					return true;
-				}
-			}
-
-			return false;
-		};
-	}
-
-	private Predicate<T> _getLambdaPredicate(
-		BinaryExpression.Operation operation, Object left, Object right) {
-
-		if (!Objects.equals(BinaryExpression.Operation.EQ, operation)) {
-			return null;
-		}
-
-		return _getLambdaEQPredicate((EntityField)left, right);
-	}
-
 	private Predicate<T> _getLEPredicate(
 		EntityField entityField, Object fieldValue) {
 
@@ -495,6 +418,83 @@ public class PredicateExpressionVisitorImpl<T extends Map>
 		throw new UnsupportedOperationException(
 			"Unsupported method _getLTPredicate with entity field type " +
 				entityField.getType());
+	}
+
+	private Predicate<T> _getLambdaContainsPredicate(
+		EntityField entityField, Object fieldValue) {
+
+		if (!Objects.equals(entityField.getType(), EntityField.Type.STRING)) {
+			throw new UnsupportedOperationException(
+				"Unsupported method _lambdaContains with entity field type " +
+					entityField.getType());
+		}
+
+		return p -> {
+			for (String name :
+					(String[])p.get(_lambdaCollectionEntityField.getName())) {
+
+				if (StringUtils.containsIgnoreCase(
+						String.valueOf(name), String.valueOf(fieldValue))) {
+
+					return true;
+				}
+			}
+
+			return false;
+		};
+	}
+
+	private Predicate<T> _getLambdaEQPredicate(
+		EntityField entityField, Object fieldValue) {
+
+		if (!Objects.equals(entityField.getType(), EntityField.Type.STRING)) {
+			throw new UnsupportedOperationException(
+				"Unsupported method _getLambdaEQPredicate with entity field " +
+					entityField.getType());
+		}
+
+		return p -> {
+			for (String name :
+					(String[])p.get(_lambdaCollectionEntityField.getName())) {
+
+				if (fieldValue.equals(
+						_normalizeStringLiteral(String.valueOf(name)))) {
+
+					return true;
+				}
+			}
+
+			return false;
+		};
+	}
+
+	private EntityModel _getLambdaEntityModel(
+		String variableName, CollectionEntityField collectionEntityField) {
+
+		return new EntityModel() {
+
+			@Override
+			public Map<String, EntityField> getEntityFieldsMap() {
+				return Collections.singletonMap(
+					variableName, collectionEntityField.getEntityField());
+			}
+
+			@Override
+			public String getName() {
+				return collectionEntityField.getName();
+			}
+
+		};
+	}
+
+	private Predicate<T> _getLambdaPredicate(
+		BinaryExpression.Operation operation, Object left, Object right) {
+
+		if (!Objects.equals(BinaryExpression.Operation.EQ, operation)) {
+			return null;
+		}
+
+		return _getLambdaEQPredicate((EntityField)left, right);
 	}
 
 	private Predicate<T> _getNotPredicate(Predicate<T> predicate) {

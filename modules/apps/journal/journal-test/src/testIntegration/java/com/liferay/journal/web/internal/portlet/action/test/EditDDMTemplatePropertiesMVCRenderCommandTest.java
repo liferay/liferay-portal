@@ -26,6 +26,23 @@ public class EditDDMTemplatePropertiesMVCRenderCommandTest
 		_testRenderWithUpdatePermission();
 	}
 
+	private void _testRenderWithUpdatePermission() throws Exception {
+		String path = "/ddm_template/edit_properties.jsp";
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			getMockLiferayPortletRenderRequest(
+				path, addUserWithUpdatePermission());
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"ddmTemplateId", String.valueOf(ddmTemplate.getTemplateId()));
+		mockLiferayPortletRenderRequest.setParameter(
+			"mvcRenderCommandName", _MVC_RENDER_COMMAND_NAME);
+
+		Assert.assertEquals(path, render(mockLiferayPortletRenderRequest));
+
+		assertDDMTemplateDisplayContext(mockLiferayPortletRenderRequest);
+	}
+
 	private void _testRenderWithoutUpdatePermission() throws Exception {
 		String path = "/error.jsp";
 
@@ -44,23 +61,6 @@ public class EditDDMTemplatePropertiesMVCRenderCommandTest
 			PrincipalException.MustHavePermission.class);
 
 		assertNoDDMTemplateDisplayContext(mockLiferayPortletRenderRequest);
-	}
-
-	private void _testRenderWithUpdatePermission() throws Exception {
-		String path = "/ddm_template/edit_properties.jsp";
-
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			getMockLiferayPortletRenderRequest(
-				path, addUserWithUpdatePermission());
-
-		mockLiferayPortletRenderRequest.setParameter(
-			"ddmTemplateId", String.valueOf(ddmTemplate.getTemplateId()));
-		mockLiferayPortletRenderRequest.setParameter(
-			"mvcRenderCommandName", _MVC_RENDER_COMMAND_NAME);
-
-		Assert.assertEquals(path, render(mockLiferayPortletRenderRequest));
-
-		assertDDMTemplateDisplayContext(mockLiferayPortletRenderRequest);
 	}
 
 	private static final String _MVC_RENDER_COMMAND_NAME =

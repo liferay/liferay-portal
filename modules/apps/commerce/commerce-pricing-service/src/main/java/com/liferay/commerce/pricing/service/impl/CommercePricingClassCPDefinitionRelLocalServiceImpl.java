@@ -123,6 +123,14 @@ public class CommercePricingClassCPDefinitionRelLocalServiceImpl
 	}
 
 	@Override
+	public long[] getCPDefinitionIds(long commercePricingClassId) {
+		return ListUtil.toLongArray(
+			commercePricingClassCPDefinitionRelPersistence.
+				findByCommercePricingClassId(commercePricingClassId),
+			CommercePricingClassCPDefinitionRel::getCPDefinitionId);
+	}
+
+	@Override
 	public List<CommercePricingClassCPDefinitionRel>
 		getCommercePricingClassByCPDefinitionId(long cpDefinitionId) {
 
@@ -165,14 +173,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceImpl
 		return commercePricingClassCPDefinitionRelFinder.
 			countByCommercePricingClassId(
 				commercePricingClassId, name, languageId);
-	}
-
-	@Override
-	public long[] getCPDefinitionIds(long commercePricingClassId) {
-		return ListUtil.toLongArray(
-			commercePricingClassCPDefinitionRelPersistence.
-				findByCommercePricingClassId(commercePricingClassId),
-			CommercePricingClassCPDefinitionRel::getCPDefinitionId);
 	}
 
 	@Override

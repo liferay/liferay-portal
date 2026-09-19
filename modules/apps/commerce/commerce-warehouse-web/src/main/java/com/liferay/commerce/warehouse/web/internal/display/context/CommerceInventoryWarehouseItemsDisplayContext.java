@@ -84,25 +84,6 @@ public class CommerceInventoryWarehouseItemsDisplayContext {
 		).buildString();
 	}
 
-	public CommerceInventoryWarehouseItem getCommerceInventoryWarehouseItem(
-			CommerceInventoryWarehouse commerceInventoryWarehouse,
-			String unitOfMeasureKey)
-		throws PortalException {
-
-		CPInstance cpInstance = getCPInstance();
-
-		return _commerceInventoryWarehouseItemService.
-			fetchCommerceInventoryWarehouseItem(
-				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
-				cpInstance.getSku(), unitOfMeasureKey);
-	}
-
-	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses()
-		throws PortalException {
-
-		return _getCommerceInventoryWarehouses();
-	}
-
 	public CPInstance getCPInstance() throws PortalException {
 		if (_cpInstance == null) {
 			long cpInstanceId = ParamUtil.getLong(
@@ -129,6 +110,25 @@ public class CommerceInventoryWarehouseItemsDisplayContext {
 		}
 
 		return cpInstanceUnitOfMeasureKeys;
+	}
+
+	public CommerceInventoryWarehouseItem getCommerceInventoryWarehouseItem(
+			CommerceInventoryWarehouse commerceInventoryWarehouse,
+			String unitOfMeasureKey)
+		throws PortalException {
+
+		CPInstance cpInstance = getCPInstance();
+
+		return _commerceInventoryWarehouseItemService.
+			fetchCommerceInventoryWarehouseItem(
+				commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+				cpInstance.getSku(), unitOfMeasureKey);
+	}
+
+	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses()
+		throws PortalException {
+
+		return _getCommerceInventoryWarehouses();
 	}
 
 	public String getFormattedQuantity(
@@ -183,9 +183,9 @@ public class CommerceInventoryWarehouseItemsDisplayContext {
 
 	private final CommerceInventoryWarehouseItemService
 		_commerceInventoryWarehouseItemService;
-	private List<CommerceInventoryWarehouse> _commerceInventoryWarehouses;
 	private final CommerceInventoryWarehouseService
 		_commerceInventoryWarehouseService;
+	private List<CommerceInventoryWarehouse> _commerceInventoryWarehouses;
 	private final CommerceQuantityFormatter _commerceQuantityFormatter;
 	private CPInstance _cpInstance;
 	private final CPInstanceService _cpInstanceService;

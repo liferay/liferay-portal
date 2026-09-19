@@ -242,11 +242,11 @@ public class CPDefinitionVirtualTest {
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
-	private final List<CPDefinition> _cpDefinitions = new ArrayList<>();
-
 	@Inject
 	private CPDefinitionVirtualSettingLocalService
 		_cpDefinitionVirtualSettingLocalService;
+
+	private final List<CPDefinition> _cpDefinitions = new ArrayList<>();
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;

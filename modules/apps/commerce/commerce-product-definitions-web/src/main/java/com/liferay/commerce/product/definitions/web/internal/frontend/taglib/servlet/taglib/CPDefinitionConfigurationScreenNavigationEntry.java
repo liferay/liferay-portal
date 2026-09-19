@@ -158,9 +158,6 @@ public class CPDefinitionConfigurationScreenNavigationEntry
 	private ConfigurationProvider _configurationProvider;
 
 	@Reference
-	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
-
-	@Reference
 	private CPDefinitionInventoryEngineRegistry
 		_cpDefinitionInventoryEngineRegistry;
 
@@ -181,6 +178,9 @@ public class CPDefinitionConfigurationScreenNavigationEntry
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;
+
+	@Reference
+	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
 
 	@Reference
 	private ItemSelector _itemSelector;

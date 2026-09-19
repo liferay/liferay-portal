@@ -106,10 +106,10 @@ public class UserGroupUADAnonymizerTest
 	@Inject
 	private UserGroupLocalService _userGroupLocalService;
 
-	@DeleteAfterTestRun
-	private final List<UserGroup> _userGroups = new ArrayList<>();
-
 	@Inject
 	private UserGroupUADTestHelper _userGroupUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<UserGroup> _userGroups = new ArrayList<>();
 
 }

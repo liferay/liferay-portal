@@ -485,6 +485,25 @@ public class CookiesManagerImpl implements CookiesManager {
 		return StringPool.SLASH;
 	}
 
+	private String _getCookieValue(
+		String cookieName, HttpServletRequest httpServletRequest,
+		boolean toUpperCase) {
+
+		Map<String, Cookie> cookiesMap = _getCookiesMap(httpServletRequest);
+
+		if (toUpperCase) {
+			cookieName = StringUtil.toUpperCase(cookieName);
+		}
+
+		Cookie cookie = cookiesMap.get(cookieName);
+
+		if (cookie == null) {
+			return null;
+		}
+
+		return cookie.getValue();
+	}
+
 	private Map<String, Cookie> _getCookiesMap(
 		HttpServletRequest httpServletRequest) {
 
@@ -548,25 +567,6 @@ public class CookiesManagerImpl implements CookiesManager {
 		catch (PortalException portalException) {
 			return ReflectionUtil.throwException(portalException);
 		}
-	}
-
-	private String _getCookieValue(
-		String cookieName, HttpServletRequest httpServletRequest,
-		boolean toUpperCase) {
-
-		Map<String, Cookie> cookiesMap = _getCookiesMap(httpServletRequest);
-
-		if (toUpperCase) {
-			cookieName = StringUtil.toUpperCase(cookieName);
-		}
-
-		Cookie cookie = cookiesMap.get(cookieName);
-
-		if (cookie == null) {
-			return null;
-		}
-
-		return cookie.getValue();
 	}
 
 	private String[] _getProperty(

@@ -305,17 +305,17 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 	}
 
 	@Override
-	public int hashCode() {
-		return HashUtil.hash(0, getClassName());
-	}
-
-	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker, String entryClassName,
 			long entryClassPK, String actionId)
 		throws Exception {
 
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return HashUtil.hash(0, getClassName());
 	}
 
 	@Override

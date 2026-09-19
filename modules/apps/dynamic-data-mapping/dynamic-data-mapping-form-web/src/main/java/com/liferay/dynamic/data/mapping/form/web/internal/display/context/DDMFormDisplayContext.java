@@ -212,10 +212,6 @@ public class DDMFormDisplayContext {
 		return _containerId;
 	}
 
-	public String getDataEngineModule() {
-		return _npmResolver.resolveModuleName("data-engine-js-components-web");
-	}
-
 	public Map<String, Object> getDDMFormContext() throws Exception {
 		DDMFormInstance ddmFormInstance = getFormInstance();
 
@@ -328,6 +324,10 @@ public class DDMFormDisplayContext {
 		DDMForm ddmForm = getDDMForm();
 
 		return ddmForm.getDDMFormSuccessPageSettings();
+	}
+
+	public String getDataEngineModule() {
+		return _npmResolver.resolveModuleName("data-engine-js-components-web");
 	}
 
 	public String getDefaultLanguageId() throws PortalException {

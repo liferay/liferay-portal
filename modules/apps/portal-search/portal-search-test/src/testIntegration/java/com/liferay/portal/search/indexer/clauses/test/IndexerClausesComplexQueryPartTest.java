@@ -321,12 +321,6 @@ public class IndexerClausesComplexQueryPartTest {
 		return withPartAdditive("should", _query);
 	}
 
-	protected Consumer<SearchRequestBuilder> withoutIndexerClauses() {
-		return searchRequestBuilder -> searchRequestBuilder.withSearchContext(
-			searchContext -> searchContext.setAttribute(
-				"search.full.query.suppress.indexer.provided.clauses", true));
-	}
-
 	protected Consumer<SearchRequestBuilder> withPart(
 		String occur, Query query) {
 
@@ -353,6 +347,12 @@ public class IndexerClausesComplexQueryPartTest {
 			).build());
 	}
 
+	protected Consumer<SearchRequestBuilder> withoutIndexerClauses() {
+		return searchRequestBuilder -> searchRequestBuilder.withSearchContext(
+			searchContext -> searchContext.setAttribute(
+				"search.full.query.suppress.indexer.provided.clauses", true));
+	}
+
 	@Inject
 	protected static DDMStructureLocalService ddmStructureLocalService;
 
@@ -377,10 +377,10 @@ public class IndexerClausesComplexQueryPartTest {
 	protected MBMessageLocalService mbMessageLocalService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private ServiceContext _createServiceContext() throws Exception {
 		return ServiceContextTestUtil.getServiceContext(
@@ -414,10 +414,11 @@ public class IndexerClausesComplexQueryPartTest {
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
 
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 	private MatchQuery _query;
 
 	@Inject

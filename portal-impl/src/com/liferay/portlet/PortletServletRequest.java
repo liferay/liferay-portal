@@ -250,16 +250,6 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 	}
 
 	@Override
-	public Locale getLocale() {
-		return _portletRequest.getLocale();
-	}
-
-	@Override
-	public Enumeration<Locale> getLocales() {
-		return _portletRequest.getLocales();
-	}
-
-	@Override
 	public String getLocalName() {
 		return null;
 	}
@@ -267,6 +257,16 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 	@Override
 	public int getLocalPort() {
 		return 0;
+	}
+
+	@Override
+	public Locale getLocale() {
+		return _portletRequest.getLocale();
+	}
+
+	@Override
+	public Enumeration<Locale> getLocales() {
+		return _portletRequest.getLocales();
 	}
 
 	@Override
@@ -391,11 +391,6 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 	}
 
 	@Override
-	public String getRequestedSessionId() {
-		return _portletRequest.getRequestedSessionId();
-	}
-
-	@Override
 	public String getRequestURI() {
 		return _requestURI;
 	}
@@ -403,6 +398,11 @@ public class PortletServletRequest extends HttpServletRequestWrapper {
 	@Override
 	public StringBuffer getRequestURL() {
 		return null;
+	}
+
+	@Override
+	public String getRequestedSessionId() {
+		return _portletRequest.getRequestedSessionId();
 	}
 
 	@Override

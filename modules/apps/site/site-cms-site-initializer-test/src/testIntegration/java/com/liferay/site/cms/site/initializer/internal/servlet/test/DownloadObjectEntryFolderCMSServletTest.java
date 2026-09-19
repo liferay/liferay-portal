@@ -675,6 +675,66 @@ public class DownloadObjectEntryFolderCMSServletTest
 		}
 	}
 
+	private void _testDownloadFolderWithPermissions() throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", group.getCompanyId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setAttribute(
+			"friendlyUrlMap", new HashMap<String, String>());
+
+		ObjectEntryFolder parentObjectEntryFolder = _addObjectEntryFolder(
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
+
+		_addObjectEntry(
+			objectDefinition.getObjectDefinitionId(),
+			parentObjectEntryFolder.getObjectEntryFolderId(), serviceContext);
+
+		ObjectEntryFolder childObjectEntryFolder = _addObjectEntryFolder(
+			parentObjectEntryFolder.getObjectEntryFolderId());
+
+		_addObjectEntry(
+			objectDefinition.getObjectDefinitionId(),
+			childObjectEntryFolder.getObjectEntryFolderId(), serviceContext);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(
+				null, HttpMethods.GET,
+				parentObjectEntryFolder.getObjectEntryFolderId(),
+				TestPropsValues.getUser());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			ContentTypes.APPLICATION_ZIP,
+			mockHttpServletResponse.getContentType());
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		String subfolderPrefix = StringBundler.concat(
+			parentObjectEntryFolder.getName(), StringPool.SLASH,
+			childObjectEntryFolder.getName(), StringPool.SLASH);
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
+				new ByteArrayInputStream(
+					mockHttpServletResponse.getContentAsByteArray()))) {
+
+			List<String> zipEntryNames = zipReader.getEntries();
+
+			Assert.assertTrue(
+				ListUtil.exists(
+					zipEntryNames,
+					zipEntryName -> zipEntryName.startsWith(subfolderPrefix)));
+		}
+	}
+
 	private void _testDownloadFolderWithoutPermissions() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
@@ -749,66 +809,6 @@ public class DownloadObjectEntryFolderCMSServletTest
 						zipEntryName -> zipEntryName.startsWith(
 							subfolderPrefix)));
 			}
-		}
-	}
-
-	private void _testDownloadFolderWithPermissions() throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMS_BASIC_DOCUMENT", group.getCompanyId());
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext();
-
-		serviceContext.setAttribute(
-			"friendlyUrlMap", new HashMap<String, String>());
-
-		ObjectEntryFolder parentObjectEntryFolder = _addObjectEntryFolder(
-			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT);
-
-		_addObjectEntry(
-			objectDefinition.getObjectDefinitionId(),
-			parentObjectEntryFolder.getObjectEntryFolderId(), serviceContext);
-
-		ObjectEntryFolder childObjectEntryFolder = _addObjectEntryFolder(
-			parentObjectEntryFolder.getObjectEntryFolderId());
-
-		_addObjectEntry(
-			objectDefinition.getObjectDefinitionId(),
-			childObjectEntryFolder.getObjectEntryFolderId(), serviceContext);
-
-		MockHttpServletRequest mockHttpServletRequest =
-			_getMockHttpServletRequest(
-				null, HttpMethods.GET,
-				parentObjectEntryFolder.getObjectEntryFolderId(),
-				TestPropsValues.getUser());
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_servlet.service(mockHttpServletRequest, mockHttpServletResponse);
-
-		Assert.assertEquals(
-			ContentTypes.APPLICATION_ZIP,
-			mockHttpServletResponse.getContentType());
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-
-		String subfolderPrefix = StringBundler.concat(
-			parentObjectEntryFolder.getName(), StringPool.SLASH,
-			childObjectEntryFolder.getName(), StringPool.SLASH);
-
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				new ByteArrayInputStream(
-					mockHttpServletResponse.getContentAsByteArray()))) {
-
-			List<String> zipEntryNames = zipReader.getEntries();
-
-			Assert.assertTrue(
-				ListUtil.exists(
-					zipEntryNames,
-					zipEntryName -> zipEntryName.startsWith(subfolderPrefix)));
 		}
 	}
 

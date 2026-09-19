@@ -138,6 +138,48 @@ public class CommerceReturnItemPermissionObjectValidationRuleEngineImplTest
 	}
 
 	@Test
+	public void testUpdateAuthorizeReturnWithoutReturningProducts()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		Map<String, Object> results = _objectValidationRuleEngine.execute(
+			HashMapBuilder.<String, Object>put(
+				"entryDTO",
+				HashMapBuilder.<String, Object>put(
+					"externalReferenceCode", externalReferenceCode
+				).put(
+					"properties",
+					HashMapBuilder.<String, Object>put(
+						"authorizeReturnWithoutReturningProducts", true
+					).put(
+						"r_commerceReturnToCommerceReturnItems_l_" +
+							"commerceReturnId",
+						_objectEntry.getObjectEntryId()
+					).build()
+				).build()
+			).put(
+				"originalEntryDTO",
+				HashMapBuilder.<String, Object>put(
+					"externalReferenceCode", externalReferenceCode
+				).put(
+					"properties",
+					HashMapBuilder.<String, Object>put(
+						"authorizeReturnWithoutReturningProducts", false
+					).put(
+						"r_commerceReturnToCommerceReturnItems_l_" +
+							"commerceReturnId",
+						_objectEntry.getObjectEntryId()
+					).build()
+				).build()
+			).build(),
+			null);
+
+		Assert.assertFalse(
+			GetterUtil.getBoolean(results.get("validationCriteriaMet")));
+	}
+
+	@Test
 	public void testUpdateAuthorized() throws Exception {
 		String externalReferenceCode = RandomTestUtil.randomString();
 
@@ -189,48 +231,6 @@ public class CommerceReturnItemPermissionObjectValidationRuleEngineImplTest
 				"returnStatus", CommerceReturnConstants.RETURN_STATUS_PENDING
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
-	}
-
-	@Test
-	public void testUpdateAuthorizeReturnWithoutReturningProducts()
-		throws Exception {
-
-		String externalReferenceCode = RandomTestUtil.randomString();
-
-		Map<String, Object> results = _objectValidationRuleEngine.execute(
-			HashMapBuilder.<String, Object>put(
-				"entryDTO",
-				HashMapBuilder.<String, Object>put(
-					"externalReferenceCode", externalReferenceCode
-				).put(
-					"properties",
-					HashMapBuilder.<String, Object>put(
-						"authorizeReturnWithoutReturningProducts", true
-					).put(
-						"r_commerceReturnToCommerceReturnItems_l_" +
-							"commerceReturnId",
-						_objectEntry.getObjectEntryId()
-					).build()
-				).build()
-			).put(
-				"originalEntryDTO",
-				HashMapBuilder.<String, Object>put(
-					"externalReferenceCode", externalReferenceCode
-				).put(
-					"properties",
-					HashMapBuilder.<String, Object>put(
-						"authorizeReturnWithoutReturningProducts", false
-					).put(
-						"r_commerceReturnToCommerceReturnItems_l_" +
-							"commerceReturnId",
-						_objectEntry.getObjectEntryId()
-					).build()
-				).build()
-			).build(),
-			null);
-
-		Assert.assertFalse(
-			GetterUtil.getBoolean(results.get("validationCriteriaMet")));
 	}
 
 	@Test

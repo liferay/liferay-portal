@@ -224,6 +224,27 @@ public class ObjectEntryTopPagesResourceTest
 		}
 	}
 
+	private void _testGetObjectEntryTopPagesWithUnsyncedGroup()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_BAD_REQUEST,
+				objectEntryTopPagesResource.getObjectEntryTopPagesHttpResponse(
+					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+					30));
+		}
+	}
+
 	private void _testGetObjectEntryTopPagesWithoutViewPermission()
 		throws Exception {
 
@@ -252,27 +273,6 @@ public class ObjectEntryTopPagesResourceTest
 				HttpURLConnection.HTTP_NOT_FOUND,
 				objectEntryTopPagesResource.getObjectEntryTopPagesHttpResponse(
 					null, _objectEntry.getObjectEntryId(), 30));
-		}
-	}
-
-	private void _testGetObjectEntryTopPagesWithUnsyncedGroup()
-		throws Exception {
-
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false);
-			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.WARN)) {
-
-			assertHttpResponseStatusCode(
-				HttpURLConnection.HTTP_BAD_REQUEST,
-				objectEntryTopPagesResource.getObjectEntryTopPagesHttpResponse(
-					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
-					30));
 		}
 	}
 

@@ -17,6 +17,15 @@ import com.liferay.info.localized.InfoLocalizedValue;
  */
 public class CommerceOrderItemInfoItemFields {
 
+	public static final InfoField<TextInfoFieldType> URLInfoField =
+		BuilderHolder._builder.infoFieldType(
+			TextInfoFieldType.INSTANCE
+		).name(
+			"URL"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				CommerceOrderItemInfoItemFields.class, "url")
+		).build();
 	public static final InfoField<NumberInfoFieldType> companyIdInfoField =
 		BuilderHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
@@ -169,15 +178,6 @@ public class CommerceOrderItemInfoItemFields {
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CommerceOrderItemInfoItemFields.class, "unit-price")
-		).build();
-	public static final InfoField<TextInfoFieldType> URLInfoField =
-		BuilderHolder._builder.infoFieldType(
-			TextInfoFieldType.INSTANCE
-		).name(
-			"URL"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CommerceOrderItemInfoItemFields.class, "url")
 		).build();
 	public static final InfoField<NumberInfoFieldType> userIdInfoField =
 		BuilderHolder._builder.infoFieldType(

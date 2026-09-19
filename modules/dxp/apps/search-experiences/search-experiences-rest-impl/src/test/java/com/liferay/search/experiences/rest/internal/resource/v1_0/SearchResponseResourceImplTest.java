@@ -636,10 +636,10 @@ public class SearchResponseResourceImplTest {
 		};
 	}
 
-	private final Searcher _searcher = Mockito.mock(Searcher.class);
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory =
 		Mockito.mock(SearchRequestBuilderFactory.class);
 	private SearchResponseResourceImpl _searchResponseResourceImpl;
+	private final Searcher _searcher = Mockito.mock(Searcher.class);
 	private final SXPBlueprintSearchRequestEnhancer
 		_sxpBlueprintSearchRequestEnhancer = Mockito.mock(
 			SXPBlueprintSearchRequestEnhancer.class);

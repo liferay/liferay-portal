@@ -155,16 +155,6 @@ public class DDMFormPagesTemplateContextFactory {
 		return false;
 	}
 
-	private List<Object> _createColumnsTemplateContext(
-		List<DDMFormLayoutColumn> ddmFormLayoutColumns) {
-
-		return TransformUtil.transform(
-			ddmFormLayoutColumns,
-			ddmFormLayoutColumn -> _createColumnTemplateContext(
-				ddmFormLayoutColumn.getDDMFormFieldNames(),
-				ddmFormLayoutColumn.getSize()));
-	}
-
 	private Map<String, Object> _createColumnTemplateContext(
 		List<String> ddmFormFiledNames, int size) {
 
@@ -175,21 +165,14 @@ public class DDMFormPagesTemplateContextFactory {
 		).build();
 	}
 
-	private List<Object> _createFieldsTemplateContext(
-		List<String> ddmFormFieldNames) {
+	private List<Object> _createColumnsTemplateContext(
+		List<DDMFormLayoutColumn> ddmFormLayoutColumns) {
 
-		List<Object> fieldsTemplateContext = new ArrayList<>();
-
-		for (String ddmFormFieldName : ddmFormFieldNames) {
-			List<Object> fieldTemplateContexts = _createFieldTemplateContext(
-				ddmFormFieldName);
-
-			if (ListUtil.isNotEmpty(fieldTemplateContexts)) {
-				fieldsTemplateContext.addAll(fieldTemplateContexts);
-			}
-		}
-
-		return fieldsTemplateContext;
+		return TransformUtil.transform(
+			ddmFormLayoutColumns,
+			ddmFormLayoutColumn -> _createColumnTemplateContext(
+				ddmFormLayoutColumn.getDDMFormFieldNames(),
+				ddmFormLayoutColumn.getSize()));
 	}
 
 	private List<Object> _createFieldTemplateContext(String ddmFormFieldName) {
@@ -209,19 +192,21 @@ public class DDMFormPagesTemplateContextFactory {
 		return ddmFormFieldTemplateContextFactory.create();
 	}
 
-	private List<Object> _createPagesTemplateContext(
-		List<DDMFormLayoutPage> ddmFormLayoutPages) {
+	private List<Object> _createFieldsTemplateContext(
+		List<String> ddmFormFieldNames) {
 
-		List<Object> pagesTemplateContext = new ArrayList<>();
+		List<Object> fieldsTemplateContext = new ArrayList<>();
 
-		int i = 0;
+		for (String ddmFormFieldName : ddmFormFieldNames) {
+			List<Object> fieldTemplateContexts = _createFieldTemplateContext(
+				ddmFormFieldName);
 
-		for (DDMFormLayoutPage ddmFormLayoutPage : ddmFormLayoutPages) {
-			pagesTemplateContext.add(
-				_createPageTemplateContext(ddmFormLayoutPage, i++));
+			if (ListUtil.isNotEmpty(fieldTemplateContexts)) {
+				fieldsTemplateContext.addAll(fieldTemplateContexts);
+			}
 		}
 
-		return pagesTemplateContext;
+		return fieldsTemplateContext;
 	}
 
 	private Map<String, Object> _createPageTemplateContext(
@@ -263,12 +248,19 @@ public class DDMFormPagesTemplateContextFactory {
 		return pageTemplateContext;
 	}
 
-	private List<Object> _createRowsTemplateContext(
-		List<DDMFormLayoutRow> ddmFormLayoutRows) {
+	private List<Object> _createPagesTemplateContext(
+		List<DDMFormLayoutPage> ddmFormLayoutPages) {
 
-		return TransformUtil.transform(
-			ddmFormLayoutRows,
-			ddmFormLayoutRow -> _createRowTemplateContext(ddmFormLayoutRow));
+		List<Object> pagesTemplateContext = new ArrayList<>();
+
+		int i = 0;
+
+		for (DDMFormLayoutPage ddmFormLayoutPage : ddmFormLayoutPages) {
+			pagesTemplateContext.add(
+				_createPageTemplateContext(ddmFormLayoutPage, i++));
+		}
+
+		return pagesTemplateContext;
 	}
 
 	private Map<String, Object> _createRowTemplateContext(
@@ -279,6 +271,14 @@ public class DDMFormPagesTemplateContextFactory {
 			_createColumnsTemplateContext(
 				ddmFormLayoutRow.getDDMFormLayoutColumns())
 		).build();
+	}
+
+	private List<Object> _createRowsTemplateContext(
+		List<DDMFormLayoutRow> ddmFormLayoutRows) {
+
+		return TransformUtil.transform(
+			ddmFormLayoutRows,
+			ddmFormLayoutRow -> _createRowTemplateContext(ddmFormLayoutRow));
 	}
 
 	private void _evaluate() {
@@ -416,9 +416,9 @@ public class DDMFormPagesTemplateContextFactory {
 	private final DDMForm _ddmForm;
 	private DDMFormEvaluator _ddmFormEvaluator;
 	private DDMFormEvaluatorEvaluateResponse _ddmFormEvaluatorEvaluateResponse;
-	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private DDMFormFieldTypeServicesRegistry _ddmFormFieldTypeServicesRegistry;
 	private final Map<String, List<DDMFormFieldValue>> _ddmFormFieldValuesMap;
+	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private final DDMFormLayout _ddmFormLayout;
 	private final DDMFormRenderingContext _ddmFormRenderingContext;
 	private final DDMFormValues _ddmFormValues;

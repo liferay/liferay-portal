@@ -215,9 +215,6 @@ public class ModelSearchConfiguratorServiceTrackerCustomizer
 	protected HitsProcessorRegistry hitsProcessorRegistry;
 
 	@Reference
-	protected IndexerRegistry indexerRegistry;
-
-	@Reference
 	protected IndexSearcherHelper indexSearcherHelper;
 
 	@Reference
@@ -225,6 +222,9 @@ public class ModelSearchConfiguratorServiceTrackerCustomizer
 
 	@Reference
 	protected IndexWriterHelper indexWriterHelper;
+
+	@Reference
+	protected IndexerRegistry indexerRegistry;
 
 	@Reference
 	protected PreFilterContributorHelper preFilterContributorHelper;

@@ -59,6 +59,17 @@ public class ViewBrokenLinksSectionDisplayContext
 	}
 
 	@Override
+	public String getAPIURL() {
+		String additionalAPIURLParameters = getAdditionalAPIURLParameters();
+
+		if (Validator.isNull(additionalAPIURLParameters)) {
+			return _API_URL;
+		}
+
+		return _API_URL + "?" + additionalAPIURLParameters;
+	}
+
+	@Override
 	public String getAdditionalAPIURLParameters() {
 		return _viewBrokenLinksSectionSystemFDSEntry.
 			getAdditionalAPIURLParameters(httpServletRequest);
@@ -78,17 +89,6 @@ public class ViewBrokenLinksSectionDisplayContext
 		}
 
 		return additionalProps;
-	}
-
-	@Override
-	public String getAPIURL() {
-		String additionalAPIURLParameters = getAdditionalAPIURLParameters();
-
-		if (Validator.isNull(additionalAPIURLParameters)) {
-			return _API_URL;
-		}
-
-		return _API_URL + "?" + additionalAPIURLParameters;
 	}
 
 	@Override

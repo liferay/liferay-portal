@@ -503,38 +503,6 @@ public class DLFileEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testAddFileEntryWithFriendlyURLWithoutExtensionWhenEnabledFriendlyURLWithExtension()
-		throws Exception {
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					DLFileEntryFriendlyURLConfiguration.class.getName(),
-					HashMapDictionaryBuilder.<String, Object>put(
-						"enableFriendlyURLWithExtension", "true"
-					).build())) {
-
-			String content = StringUtil.randomString();
-
-			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				"file.txt", ContentTypes.TEXT_PLAIN, "file.txt", "URL",
-				StringPool.BLANK, StringPool.BLANK, -1, new HashMap<>(), null,
-				new ByteArrayInputStream(content.getBytes()), 0, null, null,
-				null,
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
-
-			FriendlyURLEntry mainFriendlyURLEntry =
-				FriendlyURLEntryLocalServiceUtil.getMainFriendlyURLEntry(
-					PortalUtil.getClassNameId(FileEntry.class),
-					dlFileEntry.getFileEntryId());
-
-			Assert.assertEquals("url", mainFriendlyURLEntry.getUrlTitle());
-		}
-	}
-
-	@Test
 	public void testAddFileEntryWithFriendlyURLWithWrongExtensionWhenEnabledFriendlyURLWithExtension()
 		throws Exception {
 
@@ -563,6 +531,38 @@ public class DLFileEntryLocalServiceTest {
 					dlFileEntry.getFileEntryId());
 
 			Assert.assertEquals("url.txt", mainFriendlyURLEntry.getUrlTitle());
+		}
+	}
+
+	@Test
+	public void testAddFileEntryWithFriendlyURLWithoutExtensionWhenEnabledFriendlyURLWithExtension()
+		throws Exception {
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					DLFileEntryFriendlyURLConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"enableFriendlyURLWithExtension", "true"
+					).build())) {
+
+			String content = StringUtil.randomString();
+
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				"file.txt", ContentTypes.TEXT_PLAIN, "file.txt", "URL",
+				StringPool.BLANK, StringPool.BLANK, -1, new HashMap<>(), null,
+				new ByteArrayInputStream(content.getBytes()), 0, null, null,
+				null,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+			FriendlyURLEntry mainFriendlyURLEntry =
+				FriendlyURLEntryLocalServiceUtil.getMainFriendlyURLEntry(
+					PortalUtil.getClassNameId(FileEntry.class),
+					dlFileEntry.getFileEntryId());
+
+			Assert.assertEquals("url", mainFriendlyURLEntry.getUrlTitle());
 		}
 	}
 
@@ -800,36 +800,6 @@ public class DLFileEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testCheckinFileEntryDeletesPWC() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), ContentTypes.TEXT_PLAIN,
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringPool.BLANK, StringPool.BLANK, -1, new HashMap<>(), null,
-			new ByteArrayInputStream(new byte[0]), 0, null, null, null,
-			serviceContext);
-
-		DLFileEntryLocalServiceUtil.checkOutFileEntry(
-			TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
-			dlFileEntry.getFileEntryTypeId(), serviceContext);
-
-		DLFileEntryLocalServiceUtil.checkInFileEntry(
-			TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
-			DLVersionNumberIncrease.MAJOR, StringPool.BLANK, serviceContext);
-
-		Assert.assertFalse(
-			DLStoreUtil.hasFile(
-				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
-				dlFileEntry.getName(),
-				DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION));
-	}
-
-	@Test
 	public void testCheckInFileEntryRefreshesStoreUUID() throws Exception {
 		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
@@ -893,6 +863,36 @@ public class DLFileEntryLocalServiceTest {
 			DLStoreUtil.hasFile(
 				dlFileVersion.getCompanyId(), dlFileEntry.getDataRepositoryId(),
 				dlFileEntry.getName(), dlFileVersion.getStoreFileName()));
+	}
+
+	@Test
+	public void testCheckinFileEntryDeletesPWC() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.TEXT_PLAIN,
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringPool.BLANK, StringPool.BLANK, -1, new HashMap<>(), null,
+			new ByteArrayInputStream(new byte[0]), 0, null, null, null,
+			serviceContext);
+
+		DLFileEntryLocalServiceUtil.checkOutFileEntry(
+			TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
+			dlFileEntry.getFileEntryTypeId(), serviceContext);
+
+		DLFileEntryLocalServiceUtil.checkInFileEntry(
+			TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
+			DLVersionNumberIncrease.MAJOR, StringPool.BLANK, serviceContext);
+
+		Assert.assertFalse(
+			DLStoreUtil.hasFile(
+				dlFileEntry.getCompanyId(), dlFileEntry.getDataRepositoryId(),
+				dlFileEntry.getName(),
+				DLFileEntryConstants.PRIVATE_WORKING_COPY_VERSION));
 	}
 
 	@Test
@@ -2049,59 +2049,6 @@ public class DLFileEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testUpdateFileEntryWithFriendlyURLWithoutExtensionWhenEnabledFriendlyURLWithExtension()
-		throws Exception {
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					DLFileEntryFriendlyURLConfiguration.class.getName(),
-					HashMapDictionaryBuilder.<String, Object>put(
-						"enableFriendlyURLWithExtension", "true"
-					).build())) {
-
-			String content = StringUtil.randomString();
-
-			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				"file.txt", ContentTypes.TEXT_PLAIN, "file.txt",
-				"initial URL.txt", StringPool.BLANK, StringPool.BLANK, -1,
-				new HashMap<>(), null,
-				new ByteArrayInputStream(content.getBytes()), 0, null, null,
-				null,
-				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
-
-			DLFileEntryLocalServiceUtil.updateFileEntry(
-				TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
-				"file.txt", ContentTypes.TEXT_PLAIN, "file.txt", "URL",
-				StringPool.BLANK, StringPool.BLANK,
-				DLVersionNumberIncrease.fromMajorVersion(false),
-				dlFileEntry.getFileEntryTypeId(), new HashMap<>(), null,
-				new ByteArrayInputStream(content.getBytes()), 0, null, null,
-				null,
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-			List<FriendlyURLEntry> friendlyURLEntries =
-				FriendlyURLEntryLocalServiceUtil.getFriendlyURLEntries(
-					dlFileEntry.getGroupId(),
-					PortalUtil.getClassNameId(FileEntry.class),
-					dlFileEntry.getFileEntryId());
-
-			Assert.assertTrue(friendlyURLEntries.size() == 2);
-
-			FriendlyURLEntry friendlyURLEntry1 = friendlyURLEntries.get(0);
-			FriendlyURLEntry friendlyURLEntry2 = friendlyURLEntries.get(1);
-
-			Assert.assertEquals(
-				"initial-url.txt", friendlyURLEntry1.getUrlTitle());
-			Assert.assertFalse(friendlyURLEntry1.isMain());
-			Assert.assertEquals("url", friendlyURLEntry2.getUrlTitle());
-			Assert.assertTrue(friendlyURLEntry2.isMain());
-		}
-	}
-
-	@Test
 	public void testUpdateFileEntryWithFriendlyURLWithWrongExtensionWhenEnabledFriendlyURLWithExtension()
 		throws Exception {
 
@@ -2150,6 +2097,59 @@ public class DLFileEntryLocalServiceTest {
 				"initial-url.txt", friendlyURLEntry1.getUrlTitle());
 			Assert.assertFalse(friendlyURLEntry1.isMain());
 			Assert.assertEquals("url.txt", friendlyURLEntry2.getUrlTitle());
+			Assert.assertTrue(friendlyURLEntry2.isMain());
+		}
+	}
+
+	@Test
+	public void testUpdateFileEntryWithFriendlyURLWithoutExtensionWhenEnabledFriendlyURLWithExtension()
+		throws Exception {
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					DLFileEntryFriendlyURLConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"enableFriendlyURLWithExtension", "true"
+					).build())) {
+
+			String content = StringUtil.randomString();
+
+			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				"file.txt", ContentTypes.TEXT_PLAIN, "file.txt",
+				"initial URL.txt", StringPool.BLANK, StringPool.BLANK, -1,
+				new HashMap<>(), null,
+				new ByteArrayInputStream(content.getBytes()), 0, null, null,
+				null,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), TestPropsValues.getUserId()));
+
+			DLFileEntryLocalServiceUtil.updateFileEntry(
+				TestPropsValues.getUserId(), dlFileEntry.getFileEntryId(),
+				"file.txt", ContentTypes.TEXT_PLAIN, "file.txt", "URL",
+				StringPool.BLANK, StringPool.BLANK,
+				DLVersionNumberIncrease.fromMajorVersion(false),
+				dlFileEntry.getFileEntryTypeId(), new HashMap<>(), null,
+				new ByteArrayInputStream(content.getBytes()), 0, null, null,
+				null,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+			List<FriendlyURLEntry> friendlyURLEntries =
+				FriendlyURLEntryLocalServiceUtil.getFriendlyURLEntries(
+					dlFileEntry.getGroupId(),
+					PortalUtil.getClassNameId(FileEntry.class),
+					dlFileEntry.getFileEntryId());
+
+			Assert.assertTrue(friendlyURLEntries.size() == 2);
+
+			FriendlyURLEntry friendlyURLEntry1 = friendlyURLEntries.get(0);
+			FriendlyURLEntry friendlyURLEntry2 = friendlyURLEntries.get(1);
+
+			Assert.assertEquals(
+				"initial-url.txt", friendlyURLEntry1.getUrlTitle());
+			Assert.assertFalse(friendlyURLEntry1.isMain());
+			Assert.assertEquals("url", friendlyURLEntry2.getUrlTitle());
 			Assert.assertTrue(friendlyURLEntry2.isMain());
 		}
 	}

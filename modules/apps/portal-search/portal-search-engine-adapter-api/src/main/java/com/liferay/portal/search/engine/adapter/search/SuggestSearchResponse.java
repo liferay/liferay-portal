@@ -22,15 +22,6 @@ public class SuggestSearchResponse implements SearchResponse {
 			suggestSearchResult.getName(), suggestSearchResult);
 	}
 
-	public Collection<String> getSuggesterNames() {
-		return Collections.unmodifiableCollection(
-			_suggestSearchResultMap.keySet());
-	}
-
-	public SuggestSearchResult getSuggesterResult(String name) {
-		return _suggestSearchResultMap.get(name);
-	}
-
 	public Map<String, SuggestSearchResult> getSuggestSearchResultMap() {
 		return Collections.unmodifiableMap(_suggestSearchResultMap);
 	}
@@ -38,6 +29,15 @@ public class SuggestSearchResponse implements SearchResponse {
 	public Collection<SuggestSearchResult> getSuggestSearchResults() {
 		return Collections.unmodifiableCollection(
 			_suggestSearchResultMap.values());
+	}
+
+	public Collection<String> getSuggesterNames() {
+		return Collections.unmodifiableCollection(
+			_suggestSearchResultMap.keySet());
+	}
+
+	public SuggestSearchResult getSuggesterResult(String name) {
+		return _suggestSearchResultMap.get(name);
 	}
 
 	private final Map<String, SuggestSearchResult> _suggestSearchResultMap =

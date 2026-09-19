@@ -236,6 +236,9 @@ public class CommerceWishListItemLocalServiceImpl
 		}
 	}
 
+	@Reference
+	private CProductLocalService _cProductLocalService;
+
 	private CommerceWishListConfiguration _commerceWishListConfiguration;
 
 	@Reference
@@ -246,9 +249,6 @@ public class CommerceWishListItemLocalServiceImpl
 
 	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

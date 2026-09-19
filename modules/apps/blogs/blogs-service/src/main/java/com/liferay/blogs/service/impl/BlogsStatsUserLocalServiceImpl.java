@@ -48,17 +48,6 @@ public class BlogsStatsUserLocalServiceImpl
 	extends BlogsStatsUserLocalServiceBaseImpl {
 
 	@Override
-	public List<BlogsStatsUser> getGroupsStatsUsers(
-		long companyId, long groupId, int start, int end) {
-
-		Predicate predicate = _companyIdAlias.eq(companyId);
-
-		return _getBlogsStatsUsers(
-			UnaryOperator.identity(), predicate.and(_groupIdAlias.eq(groupId)),
-			_entryCountExpression.descending(), start, end);
-	}
-
-	@Override
 	public List<BlogsStatsUser> getGroupStatsUsers(
 		long groupId, int start, int end) {
 
@@ -68,6 +57,17 @@ public class BlogsStatsUserLocalServiceImpl
 			UnaryOperator.identity(),
 			predicate.and(_entryCountExpression.neq(0L)),
 			_lastPostDateExpression.descending(), start, end);
+	}
+
+	@Override
+	public List<BlogsStatsUser> getGroupsStatsUsers(
+		long companyId, long groupId, int start, int end) {
+
+		Predicate predicate = _companyIdAlias.eq(companyId);
+
+		return _getBlogsStatsUsers(
+			UnaryOperator.identity(), predicate.and(_groupIdAlias.eq(groupId)),
+			_entryCountExpression.descending(), start, end);
 	}
 
 	@Override

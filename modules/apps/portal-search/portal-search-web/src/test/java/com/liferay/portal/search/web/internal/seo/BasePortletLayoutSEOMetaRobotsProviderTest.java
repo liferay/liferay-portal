@@ -62,23 +62,6 @@ public class BasePortletLayoutSEOMetaRobotsProviderTest {
 	}
 
 	@Test
-	public void testGetContentIndexingDisabledWithoutSelection() {
-		_mockSEOPortletPreferences("categoryId", false);
-
-		Mockito.when(
-			_portletSharedRequestHelper.getParameter(
-				Mockito.eq("categoryId"), Mockito.any(RenderRequest.class))
-		).thenReturn(
-			null
-		);
-
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_basePortletLayoutSEOMetaRobotsProvider.getContent(
-				_createRenderRequest()));
-	}
-
-	@Test
 	public void testGetContentIndexingDisabledWithSelection() {
 		_mockSEOPortletPreferences("categoryId", false);
 
@@ -91,6 +74,23 @@ public class BasePortletLayoutSEOMetaRobotsProviderTest {
 
 		Assert.assertEquals(
 			"noindex, nofollow",
+			_basePortletLayoutSEOMetaRobotsProvider.getContent(
+				_createRenderRequest()));
+	}
+
+	@Test
+	public void testGetContentIndexingDisabledWithoutSelection() {
+		_mockSEOPortletPreferences("categoryId", false);
+
+		Mockito.when(
+			_portletSharedRequestHelper.getParameter(
+				Mockito.eq("categoryId"), Mockito.any(RenderRequest.class))
+		).thenReturn(
+			null
+		);
+
+		Assert.assertEquals(
+			StringPool.BLANK,
 			_basePortletLayoutSEOMetaRobotsProvider.getContent(
 				_createRenderRequest()));
 	}

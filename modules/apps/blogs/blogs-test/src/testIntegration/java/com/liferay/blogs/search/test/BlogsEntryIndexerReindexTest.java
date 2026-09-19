@@ -136,17 +136,17 @@ public class BlogsEntryIndexerReindexTest {
 	@Inject
 	protected BlogsEntryLocalService blogsEntryLocalService;
 
+	@Inject
+	protected IndexWriterHelper indexWriterHelper;
+
 	@Inject(filter = "indexer.class.name=com.liferay.blogs.model.BlogsEntry")
 	protected Indexer<BlogsEntry> indexer;
 
 	@Inject
-	protected IndexWriterHelper indexWriterHelper;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
 	protected Searcher searcher;
-
-	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
 	protected UIDFactory uidFactory;

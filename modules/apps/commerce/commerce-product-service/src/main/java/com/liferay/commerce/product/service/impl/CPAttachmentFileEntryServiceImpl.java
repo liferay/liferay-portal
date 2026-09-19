@@ -376,28 +376,6 @@ public class CPAttachmentFileEntryServiceImpl
 			priority, type, serviceContext);
 	}
 
-	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)
-		throws PortalException {
-
-		CPDefinition cpDefinition = _cpDefinitionPersistence.fetchByPrimaryKey(
-			cpDefinitionId);
-
-		if (cpDefinition == null) {
-			throw new NoSuchCPDefinitionException();
-		}
-
-		CommerceCatalog commerceCatalog =
-			_commerceCatalogLocalService.fetchCommerceCatalogByGroupId(
-				cpDefinition.getGroupId());
-
-		if (commerceCatalog == null) {
-			throw new PrincipalException();
-		}
-
-		_commerceCatalogModelResourcePermission.check(
-			getPermissionChecker(), commerceCatalog, actionId);
-	}
-
 	private void _checkCPAttachmentFileEntryPermissions(
 			CPAttachmentFileEntry cpAttachmentFileEntry)
 		throws PortalException {
@@ -441,6 +419,28 @@ public class CPAttachmentFileEntryServiceImpl
 		if (classNameId == cpDefinitionClassNameId) {
 			_checkCommerceCatalog(classPK, actionId);
 		}
+	}
+
+	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)
+		throws PortalException {
+
+		CPDefinition cpDefinition = _cpDefinitionPersistence.fetchByPrimaryKey(
+			cpDefinitionId);
+
+		if (cpDefinition == null) {
+			throw new NoSuchCPDefinitionException();
+		}
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.fetchCommerceCatalogByGroupId(
+				cpDefinition.getGroupId());
+
+		if (commerceCatalog == null) {
+			throw new PrincipalException();
+		}
+
+		_commerceCatalogModelResourcePermission.check(
+			getPermissionChecker(), commerceCatalog, actionId);
 	}
 
 	private String _getActionKeyByCPAttachmentFileEntryType(int type) {

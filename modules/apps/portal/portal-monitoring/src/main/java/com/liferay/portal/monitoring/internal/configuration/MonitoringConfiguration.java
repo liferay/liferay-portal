@@ -22,12 +22,6 @@ public interface MonitoringConfiguration {
 	@Meta.AD(deflt = "true", name = "monitor-enabled", required = false)
 	public boolean monitorEnabled();
 
-	@Meta.AD(
-		deflt = "200", name = "monitoring-message-max-queue-size",
-		required = false
-	)
-	public int monitoringMessageMaxQueueSize();
-
 	@Meta.AD(deflt = "true", name = "monitor-portal-request", required = false)
 	public boolean monitorPortalRequest();
 
@@ -64,6 +58,12 @@ public interface MonitoringConfiguration {
 		deflt = "false", name = "monitor-service-request", required = false
 	)
 	public boolean monitorServiceRequest();
+
+	@Meta.AD(
+		deflt = "200", name = "monitoring-message-max-queue-size",
+		required = false
+	)
+	public int monitoringMessageMaxQueueSize();
 
 	@Meta.AD(
 		deflt = "false", name = "show-per-request-data-sample", required = false

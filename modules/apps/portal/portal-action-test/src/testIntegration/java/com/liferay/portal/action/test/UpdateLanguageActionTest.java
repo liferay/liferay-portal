@@ -804,6 +804,23 @@ public class UpdateLanguageActionTest {
 				mockHttpServletRequest, themeDisplay, targetLocale));
 	}
 
+	private void _testGetRedirectWithPortletFriendlyURL(Locale sourceLocale)
+		throws Exception {
+
+		Map<Locale, String> friendlyURLMap =
+			_journalArticle.getFriendlyURLMap();
+
+		Locale defaultLocale = LocaleUtil.fromLanguageId(
+			_group.getDefaultLanguageId());
+
+		String path =
+			_PORTLET_FRIENDLY_URL_PART_ASSET_PUBLISHER +
+				friendlyURLMap.get(defaultLocale);
+
+		_testGetRedirectWithLayoutFriendlyURL(
+			path, sourceLocale, _targetLocale, false);
+	}
+
 	private void _testGetRedirectWithoutLayoutFriendlyURLWithFriendlyURLMapping(
 			Locale sourceLocale)
 		throws Exception {
@@ -821,23 +838,6 @@ public class UpdateLanguageActionTest {
 				_group.getFriendlyURL(), _layout.getFriendlyURL(_targetLocale),
 				path),
 			false);
-	}
-
-	private void _testGetRedirectWithPortletFriendlyURL(Locale sourceLocale)
-		throws Exception {
-
-		Map<Locale, String> friendlyURLMap =
-			_journalArticle.getFriendlyURLMap();
-
-		Locale defaultLocale = LocaleUtil.fromLanguageId(
-			_group.getDefaultLanguageId());
-
-		String path =
-			_PORTLET_FRIENDLY_URL_PART_ASSET_PUBLISHER +
-				friendlyURLMap.get(defaultLocale);
-
-		_testGetRedirectWithLayoutFriendlyURL(
-			path, sourceLocale, _targetLocale, false);
 	}
 
 	private void _updateLayoutFriendlyURL(String suffix) throws Exception {

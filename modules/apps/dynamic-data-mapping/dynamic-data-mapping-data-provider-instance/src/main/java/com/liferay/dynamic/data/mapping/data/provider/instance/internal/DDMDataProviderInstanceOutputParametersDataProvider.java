@@ -122,15 +122,6 @@ public class DDMDataProviderInstanceOutputParametersDataProvider
 	@Reference(target = "(ddm.form.values.deserializer.type=json)")
 	protected DDMFormValuesDeserializer jsonDDMFormValuesDeserializer;
 
-	private DDMFormValues _getDataProviderInstanceFormValues(
-		DDMDataProvider ddmDataProvider,
-		DDMDataProviderInstance ddmDataProviderInstance) {
-
-		DDMForm ddmForm = DDMFormFactory.create(ddmDataProvider.getSettings());
-
-		return deserialize(ddmDataProviderInstance.getDefinition(), ddmForm);
-	}
-
 	private DDMDataProviderOutputParametersSettings[]
 			_getDDMDataProviderOutputParametersSettings(
 				long dataProviderInstanceId)
@@ -160,6 +151,15 @@ public class DDMDataProviderInstanceOutputParametersDataProvider
 				DDMDataProviderParameterSettings.class, dataProviderFormValues);
 
 		return ddmDataProviderParameterSetting.outputParameters();
+	}
+
+	private DDMFormValues _getDataProviderInstanceFormValues(
+		DDMDataProvider ddmDataProvider,
+		DDMDataProviderInstance ddmDataProviderInstance) {
+
+		DDMForm ddmForm = DDMFormFactory.create(ddmDataProvider.getSettings());
+
+		return deserialize(ddmDataProviderInstance.getDefinition(), ddmForm);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

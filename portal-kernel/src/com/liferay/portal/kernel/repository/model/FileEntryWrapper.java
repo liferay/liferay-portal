@@ -310,13 +310,13 @@ public class FileEntryWrapper implements FileEntry, ModelWrapper<FileEntry> {
 	}
 
 	@Override
-	public int hashCode() {
-		return _fileEntry.hashCode();
+	public boolean hasLock() {
+		return _fileEntry.hasLock();
 	}
 
 	@Override
-	public boolean hasLock() {
-		return _fileEntry.hasLock();
+	public int hashCode() {
+		return _fileEntry.hashCode();
 	}
 
 	@Override

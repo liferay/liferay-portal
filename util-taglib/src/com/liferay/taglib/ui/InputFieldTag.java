@@ -56,12 +56,12 @@ public class InputFieldTag extends IncludeTag {
 		return _fieldParam;
 	}
 
-	public Format getFormat() {
-		return _format;
-	}
-
 	public String getFormName() {
 		return _formName;
+	}
+
+	public Format getFormat() {
+		return _format;
 	}
 
 	public String getId() {
@@ -156,12 +156,12 @@ public class InputFieldTag extends IncludeTag {
 		_fieldParam = fieldParam;
 	}
 
-	public void setFormat(Format format) {
-		_format = format;
-	}
-
 	public void setFormName(String formName) {
 		_formName = formName;
+	}
+
+	public void setFormat(Format format) {
+		_format = format;
 	}
 
 	public void setId(String id) {
@@ -297,8 +297,8 @@ public class InputFieldTag extends IncludeTag {
 	private boolean _disabled;
 	private String _field;
 	private String _fieldParam;
-	private Format _format;
 	private String _formName = "fm";
+	private Format _format;
 	private String _id;
 	private boolean _ignoreRequestValue;
 	private String _languageId;

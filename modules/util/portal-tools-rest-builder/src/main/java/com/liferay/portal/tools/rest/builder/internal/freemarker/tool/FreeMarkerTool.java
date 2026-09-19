@@ -896,6 +896,37 @@ public class FreeMarkerTool {
 		return null;
 	}
 
+	public String getRESTMethodJavadoc(
+		ConfigYAML configYAML, JavaMethodSignature javaMethodSignature,
+		OpenAPIYAML openAPIYAML) {
+
+		StringBundler sb = new StringBundler(10);
+
+		sb.append("Invoke this method with the command line:\n*\n* curl -X '");
+		sb.append(
+			StringUtil.toUpperCase(
+				OpenAPIParserUtil.getHTTPMethod(
+					javaMethodSignature.getOperation())));
+		sb.append("' 'http://localhost:8080/o");
+
+		Application application = configYAML.getApplication();
+
+		sb.append(application.getBaseURI());
+
+		sb.append("/");
+
+		Info info = openAPIYAML.getInfo();
+
+		sb.append(info.getVersion());
+
+		sb.append(javaMethodSignature.getPath());
+		sb.append("' ");
+		sb.append(_getRESTBody(javaMethodSignature, openAPIYAML));
+		sb.append(" -u 'test@liferay.com:test'");
+
+		return sb.toString();
+	}
+
 	public String getReferenceName(String reference) {
 		return OpenAPIParserUtil.getReferenceName(reference);
 	}
@@ -956,35 +987,8 @@ public class FreeMarkerTool {
 			configYAML, javaMethodParameters, operation, schemas, annotation);
 	}
 
-	public String getRESTMethodJavadoc(
-		ConfigYAML configYAML, JavaMethodSignature javaMethodSignature,
-		OpenAPIYAML openAPIYAML) {
-
-		StringBundler sb = new StringBundler(10);
-
-		sb.append("Invoke this method with the command line:\n*\n* curl -X '");
-		sb.append(
-			StringUtil.toUpperCase(
-				OpenAPIParserUtil.getHTTPMethod(
-					javaMethodSignature.getOperation())));
-		sb.append("' 'http://localhost:8080/o");
-
-		Application application = configYAML.getApplication();
-
-		sb.append(application.getBaseURI());
-
-		sb.append("/");
-
-		Info info = openAPIYAML.getInfo();
-
-		sb.append(info.getVersion());
-
-		sb.append(javaMethodSignature.getPath());
-		sb.append("' ");
-		sb.append(_getRESTBody(javaMethodSignature, openAPIYAML));
-		sb.append(" -u 'test@liferay.com:test'");
-
-		return sb.toString();
+	public String getSchemaVarName(String schemaName) {
+		return OpenAPIParserUtil.getSchemaVarName(schemaName);
 	}
 
 	public Map<String, Schema> getSchemas(OpenAPIYAML openAPIYAML) {
@@ -995,10 +999,6 @@ public class FreeMarkerTool {
 		}
 
 		return new TreeMap<>(components.getSchemas());
-	}
-
-	public String getSchemaVarName(String schemaName) {
-		return OpenAPIParserUtil.getSchemaVarName(schemaName);
 	}
 
 	public String getVersion(OpenAPIYAML openAPIYAML) {

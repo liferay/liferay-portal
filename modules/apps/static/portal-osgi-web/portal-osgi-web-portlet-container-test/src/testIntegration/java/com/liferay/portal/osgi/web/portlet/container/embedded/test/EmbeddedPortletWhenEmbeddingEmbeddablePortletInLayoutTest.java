@@ -177,10 +177,10 @@ public class EmbeddedPortletWhenEmbeddingEmbeddablePortletInLayoutTest {
 	private PortletLocalService _portletLocalService;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 }

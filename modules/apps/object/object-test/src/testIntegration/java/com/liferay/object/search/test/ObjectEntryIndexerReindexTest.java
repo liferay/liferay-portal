@@ -598,10 +598,10 @@ public class ObjectEntryIndexerReindexTest {
 	}
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private ObjectDefinition _addObjectDefinition(
 			boolean enableObjectEntryDraft, boolean enableObjectEntryVersioning,

@@ -133,10 +133,10 @@ public class ObjectEntrySearchHighlightTest {
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private static ObjectDefinition _addObjectDefinition(boolean localized)
 		throws Exception {

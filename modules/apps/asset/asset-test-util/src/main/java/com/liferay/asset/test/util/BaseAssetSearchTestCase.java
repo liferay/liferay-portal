@@ -1006,6 +1006,22 @@ public abstract class BaseAssetSearchTestCase {
 			ServiceContext serviceContext)
 		throws Exception;
 
+	protected BaseModel<?> addBaseModelWithClassType(
+			BaseModel<?> parentBaseModel, String keywords,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return addBaseModel(parentBaseModel, keywords, serviceContext);
+	}
+
+	protected BaseModel<?> addBaseModelWithWorkflow(
+			BaseModel<?> parentBaseModel, String keywords, boolean approved,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		return addBaseModel(parentBaseModel, keywords, serviceContext);
+	}
+
 	protected List<BaseModel<?>> addBaseModels(
 			Group[] groups, String keywords, ServiceContext serviceContext)
 		throws Exception {
@@ -1026,22 +1042,6 @@ public abstract class BaseAssetSearchTestCase {
 		}
 
 		return baseModels;
-	}
-
-	protected BaseModel<?> addBaseModelWithClassType(
-			BaseModel<?> parentBaseModel, String keywords,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		return addBaseModel(parentBaseModel, keywords, serviceContext);
-	}
-
-	protected BaseModel<?> addBaseModelWithWorkflow(
-			BaseModel<?> parentBaseModel, String keywords, boolean approved,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		return addBaseModel(parentBaseModel, keywords, serviceContext);
 	}
 
 	protected void assertCount(

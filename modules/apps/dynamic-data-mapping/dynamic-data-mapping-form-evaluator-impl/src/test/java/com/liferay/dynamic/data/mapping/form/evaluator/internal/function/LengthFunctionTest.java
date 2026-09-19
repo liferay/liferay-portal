@@ -24,20 +24,20 @@ public class LengthFunctionTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testApplyWithText() {
+		LengthFunction lengthFunction = new LengthFunction();
+
+		Assert.assertEquals(
+			Integer.valueOf(8), lengthFunction.apply("12345678"));
+	}
+
+	@Test
 	public void testApplyWithoutText() {
 		LengthFunction lengthFunction = new LengthFunction();
 
 		Assert.assertEquals(Integer.valueOf(0), lengthFunction.apply(null));
 		Assert.assertEquals(
 			Integer.valueOf(0), lengthFunction.apply(StringPool.BLANK));
-	}
-
-	@Test
-	public void testApplyWithText() {
-		LengthFunction lengthFunction = new LengthFunction();
-
-		Assert.assertEquals(
-			Integer.valueOf(8), lengthFunction.apply("12345678"));
 	}
 
 }

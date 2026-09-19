@@ -39,11 +39,11 @@ public abstract class BaseSitemapModelListener<T extends BaseModel<T>>
 	protected abstract String getAssetTypeKey();
 
 	@Reference
-	protected SitemapConfigurationManager sitemapConfigurationManager;
-
-	@Reference
 	protected SiteSitemapRegenerationEntryLocalService
 		siteSitemapRegenerationEntryLocalService;
+
+	@Reference
+	protected SitemapConfigurationManager sitemapConfigurationManager;
 
 	private void _addSiteSitemapRegenerationEntry(T model) {
 		GroupedModel groupedModel = (GroupedModel)model;

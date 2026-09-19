@@ -204,6 +204,39 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 	}
 
 	@Test
+	public void testDLExportableRepositoryPublisherIsInvokedWhenExporting()
+		throws Exception {
+
+		AtomicInteger atomicInteger = new AtomicInteger(0);
+
+		_registerService(
+			new CountingDLExportableRepositoryPublisher(atomicInteger));
+
+		initContext();
+
+		portletDataHandler.exportData(
+			portletDataContext, DLPortletKeys.DOCUMENT_LIBRARY, null);
+
+		Assert.assertTrue(atomicInteger.get() >= 1);
+	}
+
+	@Test
+	public void testDLExportableRepositoryPublisherIsInvokedWhenPreparingSummary()
+		throws Exception {
+
+		AtomicInteger atomicInteger = new AtomicInteger(0);
+
+		_registerService(
+			new CountingDLExportableRepositoryPublisher(atomicInteger));
+
+		initContext();
+
+		portletDataHandler.prepareManifestSummary(portletDataContext);
+
+		Assert.assertTrue(atomicInteger.get() >= 1);
+	}
+
+	@Test
 	public void testDeleteAllFolders() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
@@ -259,39 +292,6 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 		Assert.assertNull(
 			_ddmStructureLocalService.fetchDDMStructure(
 				dataDefinition.getId()));
-	}
-
-	@Test
-	public void testDLExportableRepositoryPublisherIsInvokedWhenExporting()
-		throws Exception {
-
-		AtomicInteger atomicInteger = new AtomicInteger(0);
-
-		_registerService(
-			new CountingDLExportableRepositoryPublisher(atomicInteger));
-
-		initContext();
-
-		portletDataHandler.exportData(
-			portletDataContext, DLPortletKeys.DOCUMENT_LIBRARY, null);
-
-		Assert.assertTrue(atomicInteger.get() >= 1);
-	}
-
-	@Test
-	public void testDLExportableRepositoryPublisherIsInvokedWhenPreparingSummary()
-		throws Exception {
-
-		AtomicInteger atomicInteger = new AtomicInteger(0);
-
-		_registerService(
-			new CountingDLExportableRepositoryPublisher(atomicInteger));
-
-		initContext();
-
-		portletDataHandler.prepareManifestSummary(portletDataContext);
-
-		Assert.assertTrue(atomicInteger.get() >= 1);
 	}
 
 	@Test

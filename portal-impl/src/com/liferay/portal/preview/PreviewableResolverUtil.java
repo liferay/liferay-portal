@@ -40,6 +40,14 @@ public class PreviewableResolverUtil {
 		return previewId;
 	}
 
+	public static Long getPreviewId() {
+		return _previewId.get();
+	}
+
+	public static Set<Long> getPreviewIds() {
+		return _previewableMaps.keySet();
+	}
+
 	public static Map<Serializable, Serializable> getPreviewableMap(
 		Class<?> modelClass) {
 
@@ -57,14 +65,6 @@ public class PreviewableResolverUtil {
 		}
 
 		return previewableMap.get(modelClass);
-	}
-
-	public static Long getPreviewId() {
-		return _previewId.get();
-	}
-
-	public static Set<Long> getPreviewIds() {
-		return _previewableMaps.keySet();
 	}
 
 	public static Map<Class<?>, Map<Serializable, Serializable>>
@@ -206,12 +206,12 @@ public class PreviewableResolverUtil {
 		return _previewId.setWithSafeCloseable(previewId);
 	}
 
-	private static final Map
-		<Long, Map<Class<?>, Map<Serializable, Serializable>>>
-			_previewableMaps = new ConcurrentHashMap<>();
 	private static final CentralizedThreadLocal<Long> _previewId =
 		new CentralizedThreadLocal<>(
 			PreviewableResolverUtil.class.getName() + "._previewId");
 	private static final AtomicLong _previewIdGenerator = new AtomicLong();
+	private static final Map
+		<Long, Map<Class<?>, Map<Serializable, Serializable>>>
+			_previewableMaps = new ConcurrentHashMap<>();
 
 }

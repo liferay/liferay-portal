@@ -108,6 +108,19 @@ public class CommercePaymentEntryDisplayContext {
 			_commercePaymentEntryService.fetchCommercePaymentEntry(classPK);
 	}
 
+	public String getAPIURL() {
+		String encodedFilter = URLCodec.encodeURL(
+			StringBundler.concat(
+				"id ne ", getCommercePaymentEntryId(), " and relatedItemId eq ",
+				getClassPK(), " and type/any(x:x eq ",
+				CommercePaymentEntryConstants.TYPE_REFUND,
+				StringPool.CLOSE_PARENTHESIS),
+			true);
+
+		return "/o/headless-commerce-admin-payment/v1.0/payments?filter=" +
+			encodedFilter;
+	}
+
 	public BigDecimal getAmount() {
 		BigDecimal amount = BigDecimal.ZERO;
 
@@ -122,19 +135,6 @@ public class CommercePaymentEntryDisplayContext {
 		}
 
 		return amount.stripTrailingZeros();
-	}
-
-	public String getAPIURL() {
-		String encodedFilter = URLCodec.encodeURL(
-			StringBundler.concat(
-				"id ne ", getCommercePaymentEntryId(), " and relatedItemId eq ",
-				getClassPK(), " and type/any(x:x eq ",
-				CommercePaymentEntryConstants.TYPE_REFUND,
-				StringPool.CLOSE_PARENTHESIS),
-			true);
-
-		return "/o/headless-commerce-admin-payment/v1.0/payments?filter=" +
-			encodedFilter;
 	}
 
 	public String getClassName() {

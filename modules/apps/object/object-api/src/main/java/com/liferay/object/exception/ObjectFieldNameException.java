@@ -13,20 +13,20 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class ObjectFieldNameException extends PortalException {
 
-	public static class MustBeginWithLowerCaseLetter
-		extends ObjectFieldNameException {
-
-		public MustBeginWithLowerCaseLetter() {
-			super("The first character of a name must be a lower case letter");
-		}
-
-	}
-
 	public static class MustBeLessThan41Characters
 		extends ObjectFieldNameException {
 
 		public MustBeLessThan41Characters() {
 			super("Name must be less than 41 characters");
+		}
+
+	}
+
+	public static class MustBeginWithLowerCaseLetter
+		extends ObjectFieldNameException {
+
+		public MustBeginWithLowerCaseLetter() {
+			super("The first character of a name must be a lower case letter");
 		}
 
 	}

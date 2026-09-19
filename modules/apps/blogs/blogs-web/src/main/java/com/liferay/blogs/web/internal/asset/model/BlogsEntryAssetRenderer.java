@@ -189,11 +189,6 @@ public class BlogsEntryAssetRenderer
 	}
 
 	@Override
-	public String getUrlTitle() {
-		return _entry.getUrlTitle();
-	}
-
-	@Override
 	public String getURLView(
 			LiferayPortletResponse liferayPortletResponse,
 			WindowState windowState)
@@ -252,6 +247,11 @@ public class BlogsEntryAssetRenderer
 		return getURLViewInContext(
 			themeDisplay, noSuchEntryRedirect, "/blogs/find_entry", "entryId",
 			_entry.getEntryId());
+	}
+
+	@Override
+	public String getUrlTitle() {
+		return _entry.getUrlTitle();
 	}
 
 	@Override

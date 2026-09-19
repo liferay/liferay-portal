@@ -105,11 +105,6 @@ public interface SearchResultInterpreter {
 			Document document, PortletRequest portletRequest)
 		throws Exception;
 
-	public String getAssetUrlTitle(Document document) throws PortalException;
-
-	public String getAssetUrlTitle(Document document, Locale locale)
-		throws PortalException;
-
 	public PortletURL getAssetURLView(
 			Document document, LiferayPortletResponse liferayPortletResponse,
 			WindowState windowState)
@@ -120,6 +115,11 @@ public interface SearchResultInterpreter {
 			LiferayPortletResponse liferayPortletResponse,
 			String noSuchEntryRedirect)
 		throws Exception;
+
+	public String getAssetUrlTitle(Document document) throws PortalException;
+
+	public String getAssetUrlTitle(Document document, Locale locale)
+		throws PortalException;
 
 	public String getAssetUuid(Document document) throws PortalException;
 

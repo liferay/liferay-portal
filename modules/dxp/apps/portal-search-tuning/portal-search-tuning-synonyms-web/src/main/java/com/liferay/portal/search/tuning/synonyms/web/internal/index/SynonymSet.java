@@ -15,12 +15,12 @@ public class SynonymSet {
 		_synonyms = synonymSet._synonyms;
 	}
 
-	public String getSynonyms() {
-		return _synonyms;
-	}
-
 	public String getSynonymSetDocumentId() {
 		return _synonymSetDocumentId;
+	}
+
+	public String getSynonyms() {
+		return _synonyms;
 	}
 
 	public static class SynonymSetBuilder {
@@ -37,16 +37,16 @@ public class SynonymSet {
 			return new SynonymSet(_synonymSet);
 		}
 
-		public SynonymSetBuilder synonyms(String synonyms) {
-			_synonymSet._synonyms = synonyms;
-
-			return this;
-		}
-
 		public SynonymSetBuilder synonymSetDocumentId(
 			String synonymSetDocumentId) {
 
 			_synonymSet._synonymSetDocumentId = synonymSetDocumentId;
+
+			return this;
+		}
+
+		public SynonymSetBuilder synonyms(String synonyms) {
+			_synonymSet._synonyms = synonyms;
 
 			return this;
 		}
@@ -58,7 +58,7 @@ public class SynonymSet {
 	private SynonymSet() {
 	}
 
-	private String _synonyms;
 	private String _synonymSetDocumentId;
+	private String _synonyms;
 
 }

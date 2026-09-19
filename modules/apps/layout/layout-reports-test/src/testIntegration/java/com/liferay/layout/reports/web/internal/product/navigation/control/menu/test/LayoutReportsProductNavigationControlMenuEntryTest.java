@@ -160,31 +160,6 @@ public class LayoutReportsProductNavigationControlMenuEntryTest {
 	}
 
 	@Test
-	public void testIsShowWithoutEnableCompanyConfiguration() throws Exception {
-		User user = TestPropsValues.getUser();
-
-		LayoutReportsTestUtil.
-			withLayoutReportsGooglePageSpeedCompanyConfiguration(
-				_group.getCompanyId(), false,
-				() -> Assert.assertFalse(
-					_productNavigationControlMenuEntry.isShow(
-						_getHttpServletRequest(
-							PermissionCheckerFactoryUtil.create(user), user))));
-	}
-
-	@Test
-	public void testIsShowWithoutEnableSystemConfiguration() throws Exception {
-		User user = TestPropsValues.getUser();
-
-		LayoutReportsTestUtil.withLayoutReportsGooglePageSpeedConfiguration(
-			false,
-			() -> Assert.assertFalse(
-				_productNavigationControlMenuEntry.isShow(
-					_getHttpServletRequest(
-						PermissionCheckerFactoryUtil.create(user), user))));
-	}
-
-	@Test
 	public void testIsShowWithUserDocumentEditPermission() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -271,6 +246,31 @@ public class LayoutReportsProductNavigationControlMenuEntryTest {
 			_userLocalService.deleteUser(user);
 			_roleLocalService.deleteRole(roleId);
 		}
+	}
+
+	@Test
+	public void testIsShowWithoutEnableCompanyConfiguration() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		LayoutReportsTestUtil.
+			withLayoutReportsGooglePageSpeedCompanyConfiguration(
+				_group.getCompanyId(), false,
+				() -> Assert.assertFalse(
+					_productNavigationControlMenuEntry.isShow(
+						_getHttpServletRequest(
+							PermissionCheckerFactoryUtil.create(user), user))));
+	}
+
+	@Test
+	public void testIsShowWithoutEnableSystemConfiguration() throws Exception {
+		User user = TestPropsValues.getUser();
+
+		LayoutReportsTestUtil.withLayoutReportsGooglePageSpeedConfiguration(
+			false,
+			() -> Assert.assertFalse(
+				_productNavigationControlMenuEntry.isShow(
+					_getHttpServletRequest(
+						PermissionCheckerFactoryUtil.create(user), user))));
 	}
 
 	private HttpServletRequest _getHttpServletRequest(

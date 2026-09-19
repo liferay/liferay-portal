@@ -90,6 +90,23 @@ public class OrganizationTestUtil {
 			false, new ServiceContext());
 	}
 
+	public static OrgLabor addOrgLabor(Organization organization)
+		throws Exception {
+
+		return OrgLaborLocalServiceUtil.addOrgLabor(
+			organization.getOrganizationId(),
+			_getListTypeId(
+				organization.getCompanyId(),
+				ListTypeConstants.ORGANIZATION_SERVICE),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
+			RandomTestUtil.nextInt(), RandomTestUtil.nextInt());
+	}
+
 	public static Organization addOrganization() throws Exception {
 		return addOrganization(
 			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
@@ -121,23 +138,6 @@ public class OrganizationTestUtil {
 			OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID,
 			RandomTestUtil.randomString(), type, 0, 0, listType.getListTypeId(),
 			StringPool.BLANK, false, null);
-	}
-
-	public static OrgLabor addOrgLabor(Organization organization)
-		throws Exception {
-
-		return OrgLaborLocalServiceUtil.addOrgLabor(
-			organization.getOrganizationId(),
-			_getListTypeId(
-				organization.getCompanyId(),
-				ListTypeConstants.ORGANIZATION_SERVICE),
-			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt(), RandomTestUtil.nextInt(),
-			RandomTestUtil.nextInt(), RandomTestUtil.nextInt());
 	}
 
 	public static PasswordPolicy addPasswordPolicyRel(

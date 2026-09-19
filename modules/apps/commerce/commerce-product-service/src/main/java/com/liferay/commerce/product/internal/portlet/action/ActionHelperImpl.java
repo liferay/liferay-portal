@@ -302,23 +302,6 @@ public class ActionHelperImpl implements ActionHelper {
 	}
 
 	@Override
-	public List<CPDefinition> getCPDefinitions(PortletRequest portletRequest)
-		throws PortalException {
-
-		List<CPDefinition> cpDefinitions = new ArrayList<>();
-
-		long[] cpDefinitionIds = ParamUtil.getLongValues(
-			portletRequest, "rowIds");
-
-		for (long cpDefinitionId : cpDefinitionIds) {
-			cpDefinitions.add(
-				_cpDefinitionService.getCPDefinition(cpDefinitionId));
-		}
-
-		return cpDefinitions;
-	}
-
-	@Override
 	public CPDefinitionSpecificationOptionValue
 			getCPDefinitionSpecificationOptionValue(
 				PortletRequest portletRequest)
@@ -378,6 +361,23 @@ public class ActionHelperImpl implements ActionHelper {
 	}
 
 	@Override
+	public List<CPDefinition> getCPDefinitions(PortletRequest portletRequest)
+		throws PortalException {
+
+		List<CPDefinition> cpDefinitions = new ArrayList<>();
+
+		long[] cpDefinitionIds = ParamUtil.getLongValues(
+			portletRequest, "rowIds");
+
+		for (long cpDefinitionId : cpDefinitionIds) {
+			cpDefinitions.add(
+				_cpDefinitionService.getCPDefinition(cpDefinitionId));
+		}
+
+		return cpDefinitions;
+	}
+
+	@Override
 	public CPInstance getCPInstance(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -399,22 +399,6 @@ public class ActionHelperImpl implements ActionHelper {
 		}
 
 		return cpInstance;
-	}
-
-	@Override
-	public List<CPInstance> getCPInstances(PortletRequest portletRequest)
-		throws PortalException {
-
-		List<CPInstance> cpInstances = new ArrayList<>();
-
-		long[] cpInstanceIds = ParamUtil.getLongValues(
-			portletRequest, "rowIds");
-
-		for (long cpInstanceId : cpInstanceIds) {
-			cpInstances.add(_cpInstanceService.getCPInstance(cpInstanceId));
-		}
-
-		return cpInstances;
 	}
 
 	@Override
@@ -445,6 +429,22 @@ public class ActionHelperImpl implements ActionHelper {
 		}
 
 		return cpInstanceUnitOfMeasure;
+	}
+
+	@Override
+	public List<CPInstance> getCPInstances(PortletRequest portletRequest)
+		throws PortalException {
+
+		List<CPInstance> cpInstances = new ArrayList<>();
+
+		long[] cpInstanceIds = ParamUtil.getLongValues(
+			portletRequest, "rowIds");
+
+		for (long cpInstanceId : cpInstanceIds) {
+			cpInstances.add(_cpInstanceService.getCPInstance(cpInstanceId));
+		}
+
+		return cpInstances;
 	}
 
 	@Override

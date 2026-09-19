@@ -239,14 +239,6 @@ public class LDAPUtil {
 		return baseURL + StringPool.SLASH + baseDN;
 	}
 
-	public static SafeLdapName getGroupsDNSafeLdapName(
-			LDAPServerConfiguration ldapServerConfiguration)
-		throws InvalidNameException {
-
-		return SafeLdapNameFactory.fromUnsafe(
-			ldapServerConfiguration.groupsDN());
-	}
-
 	public static SafeLdapFilter getGroupSearchSafeLdapFilter(
 			LDAPServerConfiguration ldapServerConfiguration,
 			LDAPFilterValidator ldapFilterValidator)
@@ -270,12 +262,12 @@ public class LDAPUtil {
 		}
 	}
 
-	public static SafeLdapName getUsersDNSafeLdapName(
+	public static SafeLdapName getGroupsDNSafeLdapName(
 			LDAPServerConfiguration ldapServerConfiguration)
 		throws InvalidNameException {
 
 		return SafeLdapNameFactory.fromUnsafe(
-			ldapServerConfiguration.usersDN());
+			ldapServerConfiguration.groupsDN());
 	}
 
 	public static SafeLdapFilter getUserSearchSafeLdapFilter(
@@ -299,6 +291,14 @@ public class LDAPUtil {
 						".userSearchFilter",
 				ldapFilterException);
 		}
+	}
+
+	public static SafeLdapName getUsersDNSafeLdapName(
+			LDAPServerConfiguration ldapServerConfiguration)
+		throws InvalidNameException {
+
+		return SafeLdapNameFactory.fromUnsafe(
+			ldapServerConfiguration.usersDN());
 	}
 
 	public static Date parseDate(String date) throws Exception {

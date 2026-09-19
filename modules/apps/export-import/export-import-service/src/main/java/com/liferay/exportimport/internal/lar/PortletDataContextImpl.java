@@ -1097,11 +1097,6 @@ public class PortletDataContextImpl implements PortletDataContext {
 	}
 
 	@Override
-	public Set<String> getScopedPrimaryKeys() {
-		return _scopedPrimaryKeys;
-	}
-
-	@Override
 	public long getScopeGroupId() {
 		return _scopeGroupId;
 	}
@@ -1114,6 +1109,11 @@ public class PortletDataContextImpl implements PortletDataContext {
 	@Override
 	public String getScopeType() {
 		return _scopeType;
+	}
+
+	@Override
+	public Set<String> getScopedPrimaryKeys() {
+		return _scopedPrimaryKeys;
 	}
 
 	@Override
@@ -2903,10 +2903,10 @@ public class PortletDataContextImpl implements PortletDataContext {
 	private boolean _privateLayout;
 	private final Set<String> _references = new HashSet<>();
 	private String _rootPortletId;
-	private final Set<String> _scopedPrimaryKeys = new HashSet<>();
 	private long _scopeGroupId;
 	private String _scopeLayoutUuid;
 	private String _scopeType;
+	private final Set<String> _scopedPrimaryKeys = new HashSet<>();
 	private long _sourceCompanyGroupId;
 	private long _sourceCompanyId;
 	private long _sourceGroupId;

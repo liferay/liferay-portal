@@ -52,12 +52,6 @@ public class InformationTemplatesTemplateHandler extends BaseTemplateHandler {
 	}
 
 	@Override
-	public String getTemplatesHelpPath(String language) {
-		return "com/liferay/template/web/internal/portlet/template" +
-			"/dependencies/template.ftl";
-	}
-
-	@Override
 	public Map<String, TemplateVariableGroup> getTemplateVariableGroups(
 			long classPK, String language, Locale locale)
 		throws Exception {
@@ -91,6 +85,12 @@ public class InformationTemplatesTemplateHandler extends BaseTemplateHandler {
 				return utilTemplateVariableGroup;
 			}
 		).build();
+	}
+
+	@Override
+	public String getTemplatesHelpPath(String language) {
+		return "com/liferay/template/web/internal/portlet/template" +
+			"/dependencies/template.ftl";
 	}
 
 	@Override

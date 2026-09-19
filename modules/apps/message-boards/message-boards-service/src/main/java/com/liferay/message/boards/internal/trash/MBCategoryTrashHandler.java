@@ -214,19 +214,6 @@ public class MBCategoryTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return _mbCategoryLocalService.fetchMBCategory(classPK);
-	}
-
-	@Override
-	public int getTrashModelsCount(long classPK) throws PortalException {
-		MBCategory category = _mbCategoryLocalService.getCategory(classPK);
-
-		return _mbCategoryLocalService.getCategoriesAndThreadsCount(
-			category.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
 	public List<TrashedModel> getTrashModelTrashedModels(
 			long classPK, int start, int end,
 			OrderByComparator<?> orderByComparator)
@@ -254,9 +241,22 @@ public class MBCategoryTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
+	public int getTrashModelsCount(long classPK) throws PortalException {
+		MBCategory category = _mbCategoryLocalService.getCategory(classPK);
+
+		return _mbCategoryLocalService.getCategoriesAndThreadsCount(
+			category.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
+	}
+
+	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
 		return new MBCategoryTrashRenderer(
 			_mbCategoryLocalService.getCategory(classPK));
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return _mbCategoryLocalService.fetchMBCategory(classPK);
 	}
 
 	@Override

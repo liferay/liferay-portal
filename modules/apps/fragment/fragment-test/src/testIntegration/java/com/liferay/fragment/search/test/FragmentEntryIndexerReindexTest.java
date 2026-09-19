@@ -156,13 +156,13 @@ public class FragmentEntryIndexerReindexTest {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
+	@Inject
+	protected IndexWriterHelper indexWriterHelper;
+
 	@Inject(
 		filter = "indexer.class.name=com.liferay.fragment.model.FragmentEntry"
 	)
 	protected Indexer<FragmentEntry> indexer;
-
-	@Inject
-	protected IndexWriterHelper indexWriterHelper;
 
 	@Inject
 	protected UIDFactory uidFactory;
@@ -249,9 +249,9 @@ public class FragmentEntryIndexerReindexTest {
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 }

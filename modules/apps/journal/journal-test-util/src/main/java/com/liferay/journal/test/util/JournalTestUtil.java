@@ -1148,6 +1148,22 @@ public class JournalTestUtil {
 		return ddmFormValues;
 	}
 
+	private static DDMFormFieldValue _getDDMFormFieldValue(
+		DDMFormField ddmFormField, String fieldValue, Locale locale) {
+
+		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
+
+		ddmFormFieldValue.setName(ddmFormField.getName());
+
+		Value value = new LocalizedValue(locale);
+
+		value.addString(locale, fieldValue);
+
+		ddmFormFieldValue.setValue(value);
+
+		return ddmFormFieldValue;
+	}
+
 	private static JSONObject _getDataDefinitionFieldJSONObject(
 		DDMFormField ddmFormField, String languageId) {
 
@@ -1185,22 +1201,6 @@ public class JournalTestUtil {
 		).put(
 			"tip", _toI18nJSONObject(ddmFormField.getTip())
 		);
-	}
-
-	private static DDMFormFieldValue _getDDMFormFieldValue(
-		DDMFormField ddmFormField, String fieldValue, Locale locale) {
-
-		DDMFormFieldValue ddmFormFieldValue = new DDMFormFieldValue();
-
-		ddmFormFieldValue.setName(ddmFormField.getName());
-
-		Value value = new LocalizedValue(locale);
-
-		value.addString(locale, fieldValue);
-
-		ddmFormFieldValue.setValue(value);
-
-		return ddmFormFieldValue;
 	}
 
 	private static String _getFeedFriendlyURL(long groupId, long plid)

@@ -182,6 +182,26 @@ public class TestrayTestClassHistory extends BaseTestClassHistory {
 	}
 
 	@Override
+	public TestTaskHistory getTestTaskHistory() {
+		return null;
+	}
+
+	@Override
+	public String getTestTaskName() {
+		if (_testClassReports.isEmpty()) {
+			return null;
+		}
+
+		TestClassReport testClassReport = _testClassReports.get(0);
+
+		if (testClassReport == null) {
+			return null;
+		}
+
+		return testClassReport.getTestTaskName();
+	}
+
+	@Override
 	public URL getTestrayCaseURL() {
 		if (_testrayCaseURLString != null) {
 			if (!JenkinsResultsParserUtil.isURL(_testrayCaseURLString)) {
@@ -223,26 +243,6 @@ public class TestrayTestClassHistory extends BaseTestClassHistory {
 		catch (MalformedURLException malformedURLException) {
 			throw new RuntimeException(malformedURLException);
 		}
-	}
-
-	@Override
-	public TestTaskHistory getTestTaskHistory() {
-		return null;
-	}
-
-	@Override
-	public String getTestTaskName() {
-		if (_testClassReports.isEmpty()) {
-			return null;
-		}
-
-		TestClassReport testClassReport = _testClassReports.get(0);
-
-		if (testClassReport == null) {
-			return null;
-		}
-
-		return testClassReport.getTestTaskName();
 	}
 
 	@Override

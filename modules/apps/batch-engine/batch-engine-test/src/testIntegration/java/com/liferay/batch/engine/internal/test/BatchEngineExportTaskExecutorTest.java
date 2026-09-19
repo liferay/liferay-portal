@@ -380,6 +380,32 @@ public class BatchEngineExportTaskExecutorTest
 	}
 
 	@Test
+	public void testExportBlogPostingsWithUncompressedContent() {
+		AssertUtils.assertFailure(
+			IllegalArgumentException.class,
+			"Uncompressed content cannot be stored in the database",
+			() -> _batchEngineExportTaskExecutor.execute(
+				_batchEngineExportTaskLocalService.addBatchEngineExportTask(
+					null, user.getCompanyId(), user.getUserId(), null,
+					BlogPosting.class.getName(), "JSON",
+					BatchEngineTaskExecuteStatus.INITIAL.name(), null,
+					_parameters, null),
+				new BatchEngineExportTaskExecutor.Settings() {
+
+					@Override
+					public boolean isCompressContent() {
+						return false;
+					}
+
+					@Override
+					public boolean isPersist() {
+						return true;
+					}
+
+				}));
+	}
+
+	@Test
 	@TestInfo("LPD-50699")
 	public void testExportBlogPostingsWithoutPersistingContent()
 		throws Throwable {
@@ -446,32 +472,6 @@ public class BatchEngineExportTaskExecutorTest
 
 				return null;
 			});
-	}
-
-	@Test
-	public void testExportBlogPostingsWithUncompressedContent() {
-		AssertUtils.assertFailure(
-			IllegalArgumentException.class,
-			"Uncompressed content cannot be stored in the database",
-			() -> _batchEngineExportTaskExecutor.execute(
-				_batchEngineExportTaskLocalService.addBatchEngineExportTask(
-					null, user.getCompanyId(), user.getUserId(), null,
-					BlogPosting.class.getName(), "JSON",
-					BatchEngineTaskExecuteStatus.INITIAL.name(), null,
-					_parameters, null),
-				new BatchEngineExportTaskExecutor.Settings() {
-
-					@Override
-					public boolean isCompressContent() {
-						return false;
-					}
-
-					@Override
-					public boolean isPersist() {
-						return true;
-					}
-
-				}));
 	}
 
 	@Test

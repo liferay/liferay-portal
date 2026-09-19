@@ -78,72 +78,6 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 	}
 
 	@Test
-	public void testGetPropsWithoutSegmentsEntryId() throws Exception {
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						SegmentsCompanyConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"segmentationEnabled", true
-						).build())) {
-
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				_getMockLiferayPortletRenderRequests();
-
-			mockLiferayPortletRenderRequest.setAttribute(
-				WebKeys.USER, TestPropsValues.getUser());
-			mockLiferayPortletRenderRequest.setParameter(
-				"groupId", String.valueOf(_group.getGroupId()));
-
-			_mvcRenderCommand.render(
-				mockLiferayPortletRenderRequest,
-				new MockLiferayPortletRenderResponse());
-
-			Map<String, Object> data = ReflectionTestUtil.invoke(
-				mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
-				"getData", new Class<?>[0]);
-
-			Map<String, Object> props = (Map<String, Object>)data.get("props");
-
-			JSONArray jsonArray = (JSONArray)props.get("contributors");
-
-			for (Object object : jsonArray) {
-				JSONObject jsonObject = (JSONObject)object;
-
-				Assert.assertNull(jsonObject.getJSONObject("initialQuery"));
-			}
-
-			Assert.assertEquals(
-				LocaleUtil.toLanguageId(
-					_portal.getSiteDefaultLocale(_group.getGroupId())),
-				props.get("defaultLanguageId"));
-
-			String formId = String.valueOf(props.get("formId"));
-
-			Assert.assertTrue(formId.endsWith("editSegmentFm"));
-
-			Assert.assertTrue((boolean)props.get("hasUpdatePermission"));
-			Assert.assertEquals(0, (int)props.get("initialMembersCount"));
-			Assert.assertFalse((boolean)props.get("initialSegmentActive"));
-			Assert.assertNull(props.get("initialSegmentName"));
-			Assert.assertTrue((boolean)props.get("isSegmentationEnabled"));
-			Assert.assertEquals(
-				String.valueOf(
-					_portal.getLocale(mockLiferayPortletRenderRequest)),
-				props.get("locale"));
-			Assert.assertNotNull(props.get("previewMembersURL"));
-			Assert.assertNotNull(props.get("redirect"));
-			Assert.assertNotNull(props.get("requestMembersCountURL"));
-			Assert.assertNotNull(props.get("scopeName"));
-			Assert.assertEquals(
-				_group.getDescriptiveName(), props.get("scopeName"));
-			Assert.assertNotNull(props.get("segmentsConfigurationURL"));
-			Assert.assertTrue((boolean)props.get("showInEditMode"));
-		}
-	}
-
-	@Test
 	public void testGetPropsWithSegmentsEntryId() throws Exception {
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			_getMockLiferayPortletRenderRequests();
@@ -218,6 +152,72 @@ public class EditSegmentsEntryMVCRenderCommandTest {
 			String.valueOf(props.get("initialSegmentName")));
 
 		Assert.assertNull(props.get("siteItemSelectorURL"));
+	}
+
+	@Test
+	public void testGetPropsWithoutSegmentsEntryId() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						SegmentsCompanyConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"segmentationEnabled", true
+						).build())) {
+
+			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+				_getMockLiferayPortletRenderRequests();
+
+			mockLiferayPortletRenderRequest.setAttribute(
+				WebKeys.USER, TestPropsValues.getUser());
+			mockLiferayPortletRenderRequest.setParameter(
+				"groupId", String.valueOf(_group.getGroupId()));
+
+			_mvcRenderCommand.render(
+				mockLiferayPortletRenderRequest,
+				new MockLiferayPortletRenderResponse());
+
+			Map<String, Object> data = ReflectionTestUtil.invoke(
+				mockLiferayPortletRenderRequest.getAttribute(_CLASS_NAME),
+				"getData", new Class<?>[0]);
+
+			Map<String, Object> props = (Map<String, Object>)data.get("props");
+
+			JSONArray jsonArray = (JSONArray)props.get("contributors");
+
+			for (Object object : jsonArray) {
+				JSONObject jsonObject = (JSONObject)object;
+
+				Assert.assertNull(jsonObject.getJSONObject("initialQuery"));
+			}
+
+			Assert.assertEquals(
+				LocaleUtil.toLanguageId(
+					_portal.getSiteDefaultLocale(_group.getGroupId())),
+				props.get("defaultLanguageId"));
+
+			String formId = String.valueOf(props.get("formId"));
+
+			Assert.assertTrue(formId.endsWith("editSegmentFm"));
+
+			Assert.assertTrue((boolean)props.get("hasUpdatePermission"));
+			Assert.assertEquals(0, (int)props.get("initialMembersCount"));
+			Assert.assertFalse((boolean)props.get("initialSegmentActive"));
+			Assert.assertNull(props.get("initialSegmentName"));
+			Assert.assertTrue((boolean)props.get("isSegmentationEnabled"));
+			Assert.assertEquals(
+				String.valueOf(
+					_portal.getLocale(mockLiferayPortletRenderRequest)),
+				props.get("locale"));
+			Assert.assertNotNull(props.get("previewMembersURL"));
+			Assert.assertNotNull(props.get("redirect"));
+			Assert.assertNotNull(props.get("requestMembersCountURL"));
+			Assert.assertNotNull(props.get("scopeName"));
+			Assert.assertEquals(
+				_group.getDescriptiveName(), props.get("scopeName"));
+			Assert.assertNotNull(props.get("segmentsConfigurationURL"));
+			Assert.assertTrue((boolean)props.get("showInEditMode"));
+		}
 	}
 
 	private SegmentsEntry _addSegmentEntry(String filterString)

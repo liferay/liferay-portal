@@ -106,14 +106,14 @@ public class FastExtendedProperties extends ExtendedProperties {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Enumeration keys() {
-		return Collections.enumeration(_map.keySet());
+	public Set keySet() {
+		return _map.keySet();
 	}
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public Set keySet() {
-		return _map.keySet();
+	public Enumeration keys() {
+		return Collections.enumeration(_map.keySet());
 	}
 
 	@Override

@@ -232,11 +232,11 @@ public class AuthPipeline {
 	private static final ServiceTrackerList<AuthDNE> _authDNEs =
 		ServiceTrackerListFactory.open(
 			SystemBundleUtil.getBundleContext(), AuthDNE.class);
-	private static final ServiceTrackerMap<String, List<Authenticator>>
-		_authenticators = ServiceTrackerMapFactory.openMultiValueMap(
-			SystemBundleUtil.getBundleContext(), Authenticator.class, "key");
 	private static final ServiceTrackerMap<String, List<AuthFailure>>
 		_authFailures = ServiceTrackerMapFactory.openMultiValueMap(
 			SystemBundleUtil.getBundleContext(), AuthFailure.class, "key");
+	private static final ServiceTrackerMap<String, List<Authenticator>>
+		_authenticators = ServiceTrackerMapFactory.openMultiValueMap(
+			SystemBundleUtil.getBundleContext(), Authenticator.class, "key");
 
 }

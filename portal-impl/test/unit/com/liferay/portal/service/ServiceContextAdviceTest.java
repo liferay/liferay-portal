@@ -115,21 +115,6 @@ public class ServiceContextAdviceTest {
 	}
 
 	@Test
-	public void testWithoutServiceContextParameter() {
-		ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
-
-		AopMethodInvocation aopMethodInvocation = ReflectionTestUtil.invoke(
-			_aopInvocationHandler, "_getAopMethodInvocation",
-			new Class<?>[] {Method.class},
-			ReflectionTestUtil.getMethod(
-				TestInterceptedClass.class, "method", Object.class));
-
-		Assert.assertNull(
-			ReflectionTestUtil.getFieldValue(
-				aopMethodInvocation, "_nextAopMethodInvocation"));
-	}
-
-	@Test
 	public void testWithServiceContextWrapper() throws Throwable {
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -150,6 +135,21 @@ public class ServiceContextAdviceTest {
 
 		Assert.assertSame(
 			serviceContext, ServiceContextThreadLocal.popServiceContext());
+	}
+
+	@Test
+	public void testWithoutServiceContextParameter() {
+		ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
+
+		AopMethodInvocation aopMethodInvocation = ReflectionTestUtil.invoke(
+			_aopInvocationHandler, "_getAopMethodInvocation",
+			new Class<?>[] {Method.class},
+			ReflectionTestUtil.getMethod(
+				TestInterceptedClass.class, "method", Object.class));
+
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				aopMethodInvocation, "_nextAopMethodInvocation"));
 	}
 
 	private AopMethodInvocation _createTestMethodInvocation(Method method) {

@@ -182,6 +182,16 @@ public class DefaultIndexer<T extends BaseModel<?>> implements Indexer<T> {
 	}
 
 	@Override
+	public boolean hasPermission(
+			PermissionChecker permissionChecker, String entryClassName,
+			long entryClassPK, String actionId)
+		throws Exception {
+
+		return _indexerPermissionPostFilter.hasPermission(
+			permissionChecker, entryClassPK);
+	}
+
+	@Override
 	public int hashCode() {
 		String[] searchClassNames = getSearchClassNames();
 
@@ -192,16 +202,6 @@ public class DefaultIndexer<T extends BaseModel<?>> implements Indexer<T> {
 		}
 
 		return HashUtil.hash(0, sb.toString());
-	}
-
-	@Override
-	public boolean hasPermission(
-			PermissionChecker permissionChecker, String entryClassName,
-			long entryClassPK, String actionId)
-		throws Exception {
-
-		return _indexerPermissionPostFilter.hasPermission(
-			permissionChecker, entryClassPK);
 	}
 
 	@Override

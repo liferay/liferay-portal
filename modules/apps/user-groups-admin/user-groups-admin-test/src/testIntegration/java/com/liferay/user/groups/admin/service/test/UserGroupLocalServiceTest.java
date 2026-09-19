@@ -408,6 +408,25 @@ public class UserGroupLocalServiceTest {
 	}
 
 	@Test
+	public void testSearchUserGroupWithDescendingOrder()
+		throws PortalException {
+
+		Hits hits = UserGroupLocalServiceUtil.search(
+			TestPropsValues.getCompanyId(), null, new LinkedHashMap<>(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			SortFactoryUtil.getSort(UserGroup.class, "name", "desc"));
+
+		List<UserGroup> expectedUserGroups = UsersAdminUtil.getUserGroups(hits);
+
+		List<UserGroup> userGroups = UserGroupLocalServiceUtil.search(
+			TestPropsValues.getCompanyId(), null, new LinkedHashMap<>(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			UsersAdminUtil.getUserGroupOrderByComparator("name", "desc"));
+
+		Assert.assertEquals(expectedUserGroups, userGroups);
+	}
+
+	@Test
 	public void testSearchUserGroups() throws Exception {
 		List<UserGroup> userGroups = _search(null, new LinkedHashMap<>());
 
@@ -451,25 +470,6 @@ public class UserGroupLocalServiceTest {
 			).build());
 
 		Assert.assertEquals(userGroups.toString(), 1, userGroups.size());
-	}
-
-	@Test
-	public void testSearchUserGroupWithDescendingOrder()
-		throws PortalException {
-
-		Hits hits = UserGroupLocalServiceUtil.search(
-			TestPropsValues.getCompanyId(), null, new LinkedHashMap<>(),
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			SortFactoryUtil.getSort(UserGroup.class, "name", "desc"));
-
-		List<UserGroup> expectedUserGroups = UsersAdminUtil.getUserGroups(hits);
-
-		List<UserGroup> userGroups = UserGroupLocalServiceUtil.search(
-			TestPropsValues.getCompanyId(), null, new LinkedHashMap<>(),
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			UsersAdminUtil.getUserGroupOrderByComparator("name", "desc"));
-
-		Assert.assertEquals(expectedUserGroups, userGroups);
 	}
 
 	@Test

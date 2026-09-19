@@ -19,15 +19,6 @@ import com.liferay.info.localized.InfoLocalizedValue;
  */
 public class CPAttachmentFileEntryInfoItemFields {
 
-	public static final InfoField<BooleanInfoFieldType> approvedInfoField =
-		BuilderHolder._builder.infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).name(
-			"approved"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPAttachmentFileEntryInfoItemFields.class, "approved")
-		).build();
 	public static final InfoField<BooleanInfoFieldType> CDNEnabledInfoField =
 		BuilderHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
@@ -36,6 +27,24 @@ public class CPAttachmentFileEntryInfoItemFields {
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CPAttachmentFileEntryInfoItemFields.class, "cdn-enabled")
+		).build();
+	public static final InfoField<TextInfoFieldType> URLInfoField =
+		BuilderHolder._builder.infoFieldType(
+			TextInfoFieldType.INSTANCE
+		).name(
+			"URL"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				CPAttachmentFileEntryInfoItemFields.class, "url")
+		).build();
+	public static final InfoField<BooleanInfoFieldType> approvedInfoField =
+		BuilderHolder._builder.infoFieldType(
+			BooleanInfoFieldType.INSTANCE
+		).name(
+			"approved"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				CPAttachmentFileEntryInfoItemFields.class, "approved")
 		).build();
 	public static final InfoField<NumberInfoFieldType> companyIdInfoField =
 		BuilderHolder._builder.infoFieldType(
@@ -300,15 +309,6 @@ public class CPAttachmentFileEntryInfoItemFields {
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CPAttachmentFileEntryInfoItemFields.class, "title")
-		).build();
-	public static final InfoField<TextInfoFieldType> URLInfoField =
-		BuilderHolder._builder.infoFieldType(
-			TextInfoFieldType.INSTANCE
-		).name(
-			"URL"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPAttachmentFileEntryInfoItemFields.class, "url")
 		).build();
 	public static final InfoField<NumberInfoFieldType> userIdInfoField =
 		BuilderHolder._builder.infoFieldType(

@@ -39,16 +39,16 @@ public class SkuDTOConverterContext extends DefaultDTOConverterContext {
 		_unitOfMeasureKey = unitOfMeasureKey;
 	}
 
+	public CPDefinition getCPDefinition() {
+		return _cpDefinition;
+	}
+
 	public CommerceContext getCommerceContext() {
 		return _commerceContext;
 	}
 
 	public long getCompanyId() {
 		return _companyId;
-	}
-
-	public CPDefinition getCPDefinition() {
-		return _cpDefinition;
 	}
 
 	public BigDecimal getQuantity() {

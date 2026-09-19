@@ -40,13 +40,13 @@ public class AlloyEditorRenderer implements EditorRenderer {
 	}
 
 	@Override
-	public String getResourcesJspPath() {
-		return "/resources.jsp";
+	public String getResourceType() {
+		return PortalWebResourceConstants.RESOURCE_TYPE_EDITOR_ALLOYEDITOR;
 	}
 
 	@Override
-	public String getResourceType() {
-		return PortalWebResourceConstants.RESOURCE_TYPE_EDITOR_ALLOYEDITOR;
+	public String getResourcesJspPath() {
+		return "/resources.jsp";
 	}
 
 }

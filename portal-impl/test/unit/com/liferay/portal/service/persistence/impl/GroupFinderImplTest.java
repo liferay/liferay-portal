@@ -355,18 +355,18 @@ public class GroupFinderImplTest {
 	}
 
 	@Test
-	public void testGetConditionWithoutWhere() {
-		Assert.assertEquals(
-			"", _getCondition("INNER JOIN Foo ON Foo.barId = Bar.barId"));
-	}
-
-	@Test
 	public void testGetConditionWithWhere() {
 		Assert.assertEquals(
 			"( Foo.status = ?) AND ",
 			_getCondition(
 				"INNER JOIN Foo ON Foo.barId = Bar.barId WHERE Foo.status = " +
 					"?"));
+	}
+
+	@Test
+	public void testGetConditionWithoutWhere() {
+		Assert.assertEquals(
+			"", _getCondition("INNER JOIN Foo ON Foo.barId = Bar.barId"));
 	}
 
 	@Test
@@ -422,19 +422,19 @@ public class GroupFinderImplTest {
 	}
 
 	@Test
-	public void testRemoveWhereWithoutWhere() {
-		Assert.assertEquals(
-			"INNER JOIN Foo ON Foo.barId = Bar.barId",
-			_removeWhere("INNER JOIN Foo ON Foo.barId = Bar.barId"));
-	}
-
-	@Test
 	public void testRemoveWhereWithWhere() {
 		Assert.assertEquals(
 			"INNER JOIN Foo ON Foo.barId = Bar.barId ",
 			_removeWhere(
 				"INNER JOIN Foo ON Foo.barId = Bar.barId WHERE Foo.status = " +
 					"?"));
+	}
+
+	@Test
+	public void testRemoveWhereWithoutWhere() {
+		Assert.assertEquals(
+			"INNER JOIN Foo ON Foo.barId = Bar.barId",
+			_removeWhere("INNER JOIN Foo ON Foo.barId = Bar.barId"));
 	}
 
 	private static String _normalizeSQL(String sql) {

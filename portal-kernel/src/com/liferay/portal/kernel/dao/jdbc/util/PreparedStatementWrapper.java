@@ -340,17 +340,17 @@ public class PreparedStatementWrapper
 	}
 
 	@Override
-	public void setShort(int parameterIndex, short shortValue)
-		throws SQLException {
-
-		_preparedStatement.setShort(parameterIndex, shortValue);
-	}
-
-	@Override
 	public void setSQLXML(int parameterIndex, SQLXML sqlXML)
 		throws SQLException {
 
 		_preparedStatement.setSQLXML(parameterIndex, sqlXML);
+	}
+
+	@Override
+	public void setShort(int parameterIndex, short shortValue)
+		throws SQLException {
+
+		_preparedStatement.setShort(parameterIndex, shortValue);
 	}
 
 	@Override
@@ -388,17 +388,17 @@ public class PreparedStatementWrapper
 	}
 
 	@Override
+	public void setURL(int parameterIndex, URL url) throws SQLException {
+		_preparedStatement.setURL(parameterIndex, url);
+	}
+
+	@Override
 	public void setUnicodeStream(
 			int parameterIndex, InputStream inputStream, int length)
 		throws SQLException {
 
 		_preparedStatement.setUnicodeStream(
 			parameterIndex, inputStream, length);
-	}
-
-	@Override
-	public void setURL(int parameterIndex, URL url) throws SQLException {
-		_preparedStatement.setURL(parameterIndex, url);
 	}
 
 	@Override

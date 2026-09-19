@@ -196,6 +196,11 @@ public class ClassNameLocalServiceImpl
 	}
 
 	@Override
+	public Supplier<Long> getClassNameIdSupplier(String className) {
+		return () -> getClassNameId(className);
+	}
+
+	@Override
 	public Supplier<long[]> getClassNameIdsSupplier(String[] classNames) {
 		Map<Long, long[]> classNameIdsMap = new ConcurrentHashMap<>();
 
@@ -219,11 +224,6 @@ public class ClassNameLocalServiceImpl
 
 			return classNameIds;
 		};
-	}
-
-	@Override
-	public Supplier<Long> getClassNameIdSupplier(String className) {
-		return () -> getClassNameId(className);
 	}
 
 	@Override

@@ -336,18 +336,18 @@ public class ResourceActionPostUpgradeDataCleanupProcessTest
 	}
 
 	@Override
-	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {
-			_companyLocalService, connection, _objectDefinitionLocalService,
-			_resourceActionLocalService
-		};
-	}
-
-	@Override
 	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
 		return new Class<?>[] {
 			CompanyLocalService.class, Connection.class,
 			ObjectDefinitionLocalService.class, ResourceActionLocalService.class
+		};
+	}
+
+	@Override
+	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
+		return new Object[] {
+			_companyLocalService, connection, _objectDefinitionLocalService,
+			_resourceActionLocalService
 		};
 	}
 

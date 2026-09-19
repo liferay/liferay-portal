@@ -156,6 +156,23 @@ public class DLVideoExternalShortcutDLFileEntryTypeHelper {
 		return nameMap;
 	}
 
+	private void _updateDLFileEntryTypeNameMap(
+		DLFileEntryType dlFileEntryType) {
+
+		Map<Locale, String> nameMap = dlFileEntryType.getNameMap();
+
+		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales();
+
+		if (nameMap.size() >= availableLocales.size()) {
+			return;
+		}
+
+		dlFileEntryType.setNameMap(
+			_getExternalVideoShortcutNameMap(availableLocales));
+
+		_dlFileEntryTypeLocalService.updateDLFileEntryType(dlFileEntryType);
+	}
+
 	private Map<Locale, String> _updateDescriptionMap(
 		Map<Locale, String> descriptionMap) {
 
@@ -172,23 +189,6 @@ public class DLVideoExternalShortcutDLFileEntryTypeHelper {
 		}
 
 		return updatedDescriptionMap;
-	}
-
-	private void _updateDLFileEntryTypeNameMap(
-		DLFileEntryType dlFileEntryType) {
-
-		Map<Locale, String> nameMap = dlFileEntryType.getNameMap();
-
-		Set<Locale> availableLocales = LanguageUtil.getAvailableLocales();
-
-		if (nameMap.size() >= availableLocales.size()) {
-			return;
-		}
-
-		dlFileEntryType.setNameMap(
-			_getExternalVideoShortcutNameMap(availableLocales));
-
-		_dlFileEntryTypeLocalService.updateDLFileEntryType(dlFileEntryType);
 	}
 
 	private Map<Locale, String> _updateNameMap(Map<Locale, String> nameMap) {

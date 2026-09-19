@@ -138,17 +138,17 @@ public class JournalFolderTrashHandler extends BaseJournalTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return _journalFolderLocalService.fetchFolder(classPK);
-	}
-
-	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
 		AssetRendererFactory<JournalFolder> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClass(
 				JournalFolder.class);
 
 		return (TrashRenderer)assetRendererFactory.getAssetRenderer(classPK);
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return _journalFolderLocalService.fetchFolder(classPK);
 	}
 
 	@Override

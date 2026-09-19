@@ -187,6 +187,8 @@ public abstract class BaseModelHintsImpl implements ModelHints {
 		return ListUtil.fromCollection(_models);
 	}
 
+	public abstract SAXReader getSAXReader();
+
 	@Override
 	public Tuple getSanitizeTuple(String model, String field) {
 		Map<String, FieldDataBag> fieldDataBags = _fieldDataBagsMap.get(model);
@@ -224,8 +226,6 @@ public abstract class BaseModelHintsImpl implements ModelHints {
 
 		return sanitizeTuples;
 	}
-
-	public abstract SAXReader getSAXReader();
 
 	@Override
 	public String getType(String model, String field) {

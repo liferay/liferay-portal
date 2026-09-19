@@ -79,34 +79,6 @@ public class SKUCombinationsIteratorTest {
 			count);
 	}
 
-	private Map<CPDefinitionOptionRel, CPDefinitionOptionValueRel[]>
-		_createCombinationGeneratorMap(
-			int optionsAndValuesCount, CPDefinition cpDefinition) {
-
-		Map<CPDefinitionOptionRel, CPDefinitionOptionValueRel[]>
-			combinationGeneratorMap = new HashMap<>();
-
-		for (int i = 0; i < optionsAndValuesCount; i++) {
-			CPDefinitionOptionValueRel[] cpDefinitionOptionValueRelArray =
-				new CPDefinitionOptionValueRel[optionsAndValuesCount];
-
-			CPDefinitionOptionRel cpDefinitionOptionRel =
-				_createCPDefinitionOptionRel(cpDefinition);
-
-			for (int j = 0; j < optionsAndValuesCount; j++) {
-				CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-					_createCPDefinitionOptionValueRel(cpDefinitionOptionRel);
-
-				cpDefinitionOptionValueRelArray[j] = cpDefinitionOptionValueRel;
-			}
-
-			combinationGeneratorMap.put(
-				cpDefinitionOptionRel, cpDefinitionOptionValueRelArray);
-		}
-
-		return combinationGeneratorMap;
-	}
-
 	private CPDefinition _createCPDefinition() {
 		CPDefinition cpDefinition = new CPDefinitionImpl();
 
@@ -174,6 +146,34 @@ public class SKUCombinationsIteratorTest {
 		cpDefinitionOptionValueRel.setName(RandomTestUtil.randomString());
 
 		return cpDefinitionOptionValueRel;
+	}
+
+	private Map<CPDefinitionOptionRel, CPDefinitionOptionValueRel[]>
+		_createCombinationGeneratorMap(
+			int optionsAndValuesCount, CPDefinition cpDefinition) {
+
+		Map<CPDefinitionOptionRel, CPDefinitionOptionValueRel[]>
+			combinationGeneratorMap = new HashMap<>();
+
+		for (int i = 0; i < optionsAndValuesCount; i++) {
+			CPDefinitionOptionValueRel[] cpDefinitionOptionValueRelArray =
+				new CPDefinitionOptionValueRel[optionsAndValuesCount];
+
+			CPDefinitionOptionRel cpDefinitionOptionRel =
+				_createCPDefinitionOptionRel(cpDefinition);
+
+			for (int j = 0; j < optionsAndValuesCount; j++) {
+				CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+					_createCPDefinitionOptionValueRel(cpDefinitionOptionRel);
+
+				cpDefinitionOptionValueRelArray[j] = cpDefinitionOptionValueRel;
+			}
+
+			combinationGeneratorMap.put(
+				cpDefinitionOptionRel, cpDefinitionOptionValueRelArray);
+		}
+
+		return combinationGeneratorMap;
 	}
 
 }

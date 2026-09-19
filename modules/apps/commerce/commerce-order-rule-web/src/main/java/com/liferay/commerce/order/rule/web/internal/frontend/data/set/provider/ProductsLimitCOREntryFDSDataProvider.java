@@ -141,12 +141,12 @@ public class ProductsLimitCOREntryFDSDataProvider
 		ProductsLimitCOREntryFDSDataProvider.class);
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private COREntryService _corEntryService;
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 }

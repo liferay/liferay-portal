@@ -66,11 +66,6 @@ public abstract class BaseTestClassGroup implements TestClassGroup {
 	}
 
 	@Override
-	public List<TestClass> getTestClasses() {
-		return new ArrayList<>(_testClasses);
-	}
-
-	@Override
 	public List<File> getTestClassFiles() {
 		List<File> testClassFiles = new ArrayList<>();
 
@@ -79,6 +74,11 @@ public abstract class BaseTestClassGroup implements TestClassGroup {
 		}
 
 		return testClassFiles;
+	}
+
+	@Override
+	public List<TestClass> getTestClasses() {
+		return new ArrayList<>(_testClasses);
 	}
 
 	@Override

@@ -29,6 +29,28 @@ public class FallbackSettingsTest {
 	}
 
 	@Test
+	public void testGetValueWhenConfigured() {
+		Mockito.when(
+			_settings.getValue("key2", null)
+		).thenReturn(
+			"value"
+		);
+
+		Assert.assertEquals(
+			"value", _fallbackSettings.getValue("key1", "default"));
+
+		verifyGetValue("key1", "key2");
+	}
+
+	@Test
+	public void testGetValueWhenUnconfigured() {
+		Assert.assertEquals(
+			"default", _fallbackSettings.getValue("key1", "default"));
+
+		verifyGetValue("key1", "key2", "key3");
+	}
+
+	@Test
 	public void testGetValuesWhenConfigured() {
 		String[] defaultValues = {"default"};
 
@@ -54,28 +76,6 @@ public class FallbackSettingsTest {
 			defaultValues, _fallbackSettings.getValues("key1", defaultValues));
 
 		verifyGetValues("key1", "key2", "key3");
-	}
-
-	@Test
-	public void testGetValueWhenConfigured() {
-		Mockito.when(
-			_settings.getValue("key2", null)
-		).thenReturn(
-			"value"
-		);
-
-		Assert.assertEquals(
-			"value", _fallbackSettings.getValue("key1", "default"));
-
-		verifyGetValue("key1", "key2");
-	}
-
-	@Test
-	public void testGetValueWhenUnconfigured() {
-		Assert.assertEquals(
-			"default", _fallbackSettings.getValue("key1", "default"));
-
-		verifyGetValue("key1", "key2", "key3");
 	}
 
 	protected void verifyGetValue(String... keys) {

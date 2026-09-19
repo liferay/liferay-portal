@@ -202,6 +202,14 @@ public class EditRankingDisplayBuilder {
 		return ParamUtil.getString(_httpServletRequest, "resultsRankingUid");
 	}
 
+	private String _getSXPBlueprintExternalReferenceCode() {
+		if (_ranking != null) {
+			return _ranking.getSXPBlueprintExternalReferenceCode();
+		}
+
+		return null;
+	}
+
 	private String _getSearchResultRankingsResourceURL() {
 		ResourceURL resourceURL = _renderResponse.createResourceURL();
 
@@ -219,14 +227,6 @@ public class EditRankingDisplayBuilder {
 		}
 
 		return ResultRankingsConstants.STATUS_ACTIVE;
-	}
-
-	private String _getSXPBlueprintExternalReferenceCode() {
-		if (_ranking != null) {
-			return _ranking.getSXPBlueprintExternalReferenceCode();
-		}
-
-		return null;
 	}
 
 	private String _getValidateResultRankingsResourceURL() {

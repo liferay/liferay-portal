@@ -148,12 +148,6 @@ public class DDMFormEvaluatorHelper {
 		return _buildDDMFormEvaluatorEvaluateResponse();
 	}
 
-	protected Map<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
-		getDDMFormFieldsPropertyChanges() {
-
-		return _ddmFormFieldsPropertyChanges;
-	}
-
 	protected DDMFormFieldValue getDDMFormFieldValue(
 		DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey) {
 
@@ -188,6 +182,12 @@ public class DDMFormEvaluatorHelper {
 		}
 
 		return defaultDDMFormFieldValueAccessor;
+	}
+
+	protected Map<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
+		getDDMFormFieldsPropertyChanges() {
+
+		return _ddmFormFieldsPropertyChanges;
 	}
 
 	protected Set<Integer> getDisabledPagesIndexes() {
@@ -897,6 +897,113 @@ public class DDMFormEvaluatorHelper {
 		value.addString(locale, String.valueOf(newValue));
 	}
 
+	private void _validateFieldWithDDMFormFieldValidation(
+		Map.Entry<DDMFormEvaluatorFieldContextKey, DDMFormFieldValidation>
+			entry) {
+
+		DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey =
+			entry.getKey();
+
+		if (_isConfirmationValueInvalid(ddmFormEvaluatorFieldContextKey) ||
+			_isFieldEmpty(ddmFormEvaluatorFieldContextKey) ||
+			_isFieldReadOnly(ddmFormEvaluatorFieldContextKey) ||
+			!_isFieldVisible(ddmFormEvaluatorFieldContextKey) ||
+			_isHideField(ddmFormEvaluatorFieldContextKey)) {
+
+			return;
+		}
+
+		DDMFormFieldValidation ddmFormFieldValidation = entry.getValue();
+
+		if (ddmFormFieldValidation == null) {
+			return;
+		}
+
+		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
+			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
+
+		if (Validator.isNull(ddmFormFieldValidationExpression.getValue())) {
+			return;
+		}
+
+		String fieldName = ddmFormEvaluatorFieldContextKey.getName();
+		String fieldInstanceId =
+			ddmFormEvaluatorFieldContextKey.getInstanceId();
+
+		Boolean valid = Boolean.FALSE;
+
+		try {
+			String localizedValueString = null;
+
+			LocalizedValue parameterLocalizedValue =
+				ddmFormFieldValidation.getParameterLocalizedValue();
+
+			if (parameterLocalizedValue != null) {
+				localizedValueString = parameterLocalizedValue.getString(
+					_ddmFormEvaluatorEvaluateRequest.getLocale());
+
+				if (Validator.isNull(localizedValueString)) {
+					localizedValueString = parameterLocalizedValue.getString(
+						parameterLocalizedValue.getDefaultLocale());
+				}
+			}
+
+			DDMExpression<Boolean> ddmExpression = null;
+
+			if (Validator.isNull(localizedValueString)) {
+				ddmExpression = _createExpression(
+					ddmFormFieldValidationExpression.getValue());
+			}
+			else {
+				ddmExpression = _createExpression(
+					ddmFormFieldValidationExpression.getExpression(
+						_ddmFormEvaluatorEvaluateRequest.getDDMFormValues(),
+						localizedValueString,
+						ddmFormEvaluatorExpressionParameterAccessor.
+							getTimeZoneId()));
+			}
+
+			ddmExpression.setVariable(
+				fieldName,
+				_getFieldPropertyResponseValue(
+					ddmFormEvaluatorFieldContextKey, "value"));
+
+			valid = ddmExpression.evaluate();
+		}
+		catch (DDMExpressionException ddmExpressionException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(ddmExpressionException);
+			}
+		}
+
+		UpdateFieldPropertyRequest.Builder builder =
+			UpdateFieldPropertyRequest.Builder.newBuilder(
+				fieldName, "valid", valid);
+
+		builder.withInstanceId(fieldInstanceId);
+
+		if (!Objects.equals(Boolean.TRUE, valid)) {
+			String errorMessage = null;
+
+			LocalizedValue errorMessageLocalizedValue =
+				ddmFormFieldValidation.getErrorMessageLocalizedValue();
+
+			if (errorMessageLocalizedValue != null) {
+				errorMessage = errorMessageLocalizedValue.getString(
+					_ddmFormEvaluatorEvaluateRequest.getLocale());
+			}
+
+			if (Validator.isNull(errorMessage)) {
+				errorMessage = LanguageUtil.get(
+					_getLocale(), "this-field-is-invalid");
+			}
+
+			builder.withParameter("errorMessage", errorMessage);
+		}
+
+		ddmFormEvaluatorExpressionObserver.updateFieldProperty(builder.build());
+	}
+
 	private void _validateFields() {
 		Set<String> nonevaluableFieldNames =
 			_getNonevaluableDDMFormFieldNames();
@@ -1006,113 +1113,6 @@ public class DDMFormEvaluatorHelper {
 		}
 	}
 
-	private void _validateFieldWithDDMFormFieldValidation(
-		Map.Entry<DDMFormEvaluatorFieldContextKey, DDMFormFieldValidation>
-			entry) {
-
-		DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey =
-			entry.getKey();
-
-		if (_isConfirmationValueInvalid(ddmFormEvaluatorFieldContextKey) ||
-			_isFieldEmpty(ddmFormEvaluatorFieldContextKey) ||
-			_isFieldReadOnly(ddmFormEvaluatorFieldContextKey) ||
-			!_isFieldVisible(ddmFormEvaluatorFieldContextKey) ||
-			_isHideField(ddmFormEvaluatorFieldContextKey)) {
-
-			return;
-		}
-
-		DDMFormFieldValidation ddmFormFieldValidation = entry.getValue();
-
-		if (ddmFormFieldValidation == null) {
-			return;
-		}
-
-		DDMFormFieldValidationExpression ddmFormFieldValidationExpression =
-			ddmFormFieldValidation.getDDMFormFieldValidationExpression();
-
-		if (Validator.isNull(ddmFormFieldValidationExpression.getValue())) {
-			return;
-		}
-
-		String fieldName = ddmFormEvaluatorFieldContextKey.getName();
-		String fieldInstanceId =
-			ddmFormEvaluatorFieldContextKey.getInstanceId();
-
-		Boolean valid = Boolean.FALSE;
-
-		try {
-			String localizedValueString = null;
-
-			LocalizedValue parameterLocalizedValue =
-				ddmFormFieldValidation.getParameterLocalizedValue();
-
-			if (parameterLocalizedValue != null) {
-				localizedValueString = parameterLocalizedValue.getString(
-					_ddmFormEvaluatorEvaluateRequest.getLocale());
-
-				if (Validator.isNull(localizedValueString)) {
-					localizedValueString = parameterLocalizedValue.getString(
-						parameterLocalizedValue.getDefaultLocale());
-				}
-			}
-
-			DDMExpression<Boolean> ddmExpression = null;
-
-			if (Validator.isNull(localizedValueString)) {
-				ddmExpression = _createExpression(
-					ddmFormFieldValidationExpression.getValue());
-			}
-			else {
-				ddmExpression = _createExpression(
-					ddmFormFieldValidationExpression.getExpression(
-						_ddmFormEvaluatorEvaluateRequest.getDDMFormValues(),
-						localizedValueString,
-						ddmFormEvaluatorExpressionParameterAccessor.
-							getTimeZoneId()));
-			}
-
-			ddmExpression.setVariable(
-				fieldName,
-				_getFieldPropertyResponseValue(
-					ddmFormEvaluatorFieldContextKey, "value"));
-
-			valid = ddmExpression.evaluate();
-		}
-		catch (DDMExpressionException ddmExpressionException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(ddmExpressionException);
-			}
-		}
-
-		UpdateFieldPropertyRequest.Builder builder =
-			UpdateFieldPropertyRequest.Builder.newBuilder(
-				fieldName, "valid", valid);
-
-		builder.withInstanceId(fieldInstanceId);
-
-		if (!Objects.equals(Boolean.TRUE, valid)) {
-			String errorMessage = null;
-
-			LocalizedValue errorMessageLocalizedValue =
-				ddmFormFieldValidation.getErrorMessageLocalizedValue();
-
-			if (errorMessageLocalizedValue != null) {
-				errorMessage = errorMessageLocalizedValue.getString(
-					_ddmFormEvaluatorEvaluateRequest.getLocale());
-			}
-
-			if (Validator.isNull(errorMessage)) {
-				errorMessage = LanguageUtil.get(
-					_getLocale(), "this-field-is-invalid");
-			}
-
-			builder.withParameter("errorMessage", errorMessage);
-		}
-
-		ddmFormEvaluatorExpressionObserver.updateFieldProperty(builder.build());
-	}
-
 	private void _validateNumericFieldsWithInputMask(
 		Set<String> nonevaluableFieldNames) {
 
@@ -1181,11 +1181,11 @@ public class DDMFormEvaluatorHelper {
 	private final DDMFormEvaluatorFormValuesHelper
 		_ddmFormEvaluatorFormValuesHelper;
 	private final DDMFormEvaluatorRuleHelper _ddmFormEvaluatorRuleHelper;
+	private final DDMFormFieldTypeServicesRegistry
+		_ddmFormFieldTypeServicesRegistry;
 	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private final Map<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
 		_ddmFormFieldsPropertyChanges = new HashMap<>();
-	private final DDMFormFieldTypeServicesRegistry
-		_ddmFormFieldTypeServicesRegistry;
 	private final DDMFormLayout _ddmFormLayout;
 	private final DDMFormPageChangeRegistry _ddmFormPageChangeRegistry;
 	private List<String> _evaluatedActions;

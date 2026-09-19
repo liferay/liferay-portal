@@ -60,33 +60,6 @@ public class ViewStructuresDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	public Map<String, Object> getAdditionalProps() {
-		Map<String, String> objectFolderTypeLabels = new HashMap<>();
-
-		for (CMSStructureObjectFolderContributor
-				cmsStructureObjectFolderContributor :
-					_cmsStructureObjectFolderContributors) {
-
-			String objectFolderExternalReferenceCode =
-				cmsStructureObjectFolderContributor.
-					getObjectFolderExternalReferenceCode();
-
-			if (Validator.isNull(objectFolderExternalReferenceCode)) {
-				continue;
-			}
-
-			objectFolderTypeLabels.put(
-				objectFolderExternalReferenceCode,
-				LanguageUtil.get(
-					_httpServletRequest,
-					cmsStructureObjectFolderContributor.getLabel()));
-		}
-
-		return HashMapBuilder.<String, Object>put(
-			"objectFolderTypeLabels", objectFolderTypeLabels
-		).build();
-	}
-
 	public String getAPIURL() {
 		StringBundler sb = new StringBundler();
 
@@ -118,6 +91,33 @@ public class ViewStructuresDisplayContext {
 		sb.append(")");
 
 		return sb.toString();
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		Map<String, String> objectFolderTypeLabels = new HashMap<>();
+
+		for (CMSStructureObjectFolderContributor
+				cmsStructureObjectFolderContributor :
+					_cmsStructureObjectFolderContributors) {
+
+			String objectFolderExternalReferenceCode =
+				cmsStructureObjectFolderContributor.
+					getObjectFolderExternalReferenceCode();
+
+			if (Validator.isNull(objectFolderExternalReferenceCode)) {
+				continue;
+			}
+
+			objectFolderTypeLabels.put(
+				objectFolderExternalReferenceCode,
+				LanguageUtil.get(
+					_httpServletRequest,
+					cmsStructureObjectFolderContributor.getLabel()));
+		}
+
+		return HashMapBuilder.<String, Object>put(
+			"objectFolderTypeLabels", objectFolderTypeLabels
+		).build();
 	}
 
 	public Map<String, Object> getBreadcrumbProps() {

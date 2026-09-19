@@ -264,6 +264,38 @@ public class ImportDataDefinitionMVCActionCommandTest
 	}
 
 	@Test
+	public void testProcessActionWithValidDataDefinitionAndName()
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			createMockLiferayPortletActionRequest(
+				"data_definition_with_valid_fields.json", "Imported Structure");
+
+		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertNotNull(
+			SessionMessages.get(
+				mockLiferayPortletActionRequest,
+				portal.getPortletId(mockLiferayPortletActionRequest) +
+					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE));
+		Assert.assertNotNull(
+			SessionMessages.get(
+				mockLiferayPortletActionRequest,
+				"importDataDefinitionSuccessMessage"));
+
+		DataDefinition dataDefinition = getImportedDataDefinition();
+
+		DataDefinitionField[] dataDefinitionFields =
+			dataDefinition.getDataDefinitionFields();
+
+		Assert.assertEquals("Text32861154", dataDefinitionFields[0].getName());
+	}
+
+	@Test
 	public void testProcessActionWithoutName() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.journal.web.internal.portlet.action." +
@@ -296,38 +328,6 @@ public class ImportDataDefinitionMVCActionCommandTest
 				StringUtil.startsWith(
 					throwable.getMessage(), "Name is null for locale"));
 		}
-	}
-
-	@Test
-	public void testProcessActionWithValidDataDefinitionAndName()
-		throws Exception {
-
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			createMockLiferayPortletActionRequest(
-				"data_definition_with_valid_fields.json", "Imported Structure");
-
-		setUpUploadPortletRequest(mockLiferayPortletActionRequest);
-
-		_mvcActionCommand.processAction(
-			mockLiferayPortletActionRequest,
-			new MockLiferayPortletActionResponse());
-
-		Assert.assertNotNull(
-			SessionMessages.get(
-				mockLiferayPortletActionRequest,
-				portal.getPortletId(mockLiferayPortletActionRequest) +
-					SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE));
-		Assert.assertNotNull(
-			SessionMessages.get(
-				mockLiferayPortletActionRequest,
-				"importDataDefinitionSuccessMessage"));
-
-		DataDefinition dataDefinition = getImportedDataDefinition();
-
-		DataDefinitionField[] dataDefinitionFields =
-			dataDefinition.getDataDefinitionFields();
-
-		Assert.assertEquals("Text32861154", dataDefinitionFields[0].getName());
 	}
 
 	private void _assertFailure(

@@ -163,31 +163,6 @@ public class CPConfigurationListRelServiceImpl
 	}
 
 	@Override
-	public List<CPConfigurationListRel>
-			getCommerceOrderTypeCPConfigurationListRels(
-				long cpConfigurationListId, String keywords, int start, int end)
-		throws PortalException {
-
-		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
-
-		return cpConfigurationListRelLocalService.
-			getCommerceOrderTypeCPConfigurationListRels(
-				cpConfigurationListId, keywords, start, end);
-	}
-
-	@Override
-	public int getCommerceOrderTypeCPConfigurationListRelsCount(
-			long cpConfigurationListId, String keywords)
-		throws PortalException {
-
-		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
-
-		return cpConfigurationListRelLocalService.
-			getCommerceOrderTypeCPConfigurationListRelsCount(
-				cpConfigurationListId, keywords);
-	}
-
-	@Override
 	public CPConfigurationListRel getCPConfigurationListRel(
 			long cpConfigurationListRelId)
 		throws PortalException {
@@ -262,6 +237,31 @@ public class CPConfigurationListRelServiceImpl
 
 		return cpConfigurationListRelLocalService.
 			getCPConfigurationListRelsCount(className, cpConfigurationListId);
+	}
+
+	@Override
+	public List<CPConfigurationListRel>
+			getCommerceOrderTypeCPConfigurationListRels(
+				long cpConfigurationListId, String keywords, int start, int end)
+		throws PortalException {
+
+		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
+
+		return cpConfigurationListRelLocalService.
+			getCommerceOrderTypeCPConfigurationListRels(
+				cpConfigurationListId, keywords, start, end);
+	}
+
+	@Override
+	public int getCommerceOrderTypeCPConfigurationListRelsCount(
+			long cpConfigurationListId, String keywords)
+		throws PortalException {
+
+		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
+
+		return cpConfigurationListRelLocalService.
+			getCommerceOrderTypeCPConfigurationListRelsCount(
+				cpConfigurationListId, keywords);
 	}
 
 	private void _checkCommerceCatalog(

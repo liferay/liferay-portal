@@ -884,6 +884,114 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			serviceBuilderRole2.getRoleId(), actionIds);
 	}
 
+	private void _testGetRoleVisibility() throws Exception {
+		RoleResource roleResource = _getRoleResource(
+			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
+
+		com.liferay.portal.kernel.model.Role serviceBuilderRole1 =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(), RoleConstants.GUEST);
+
+		Assert.assertNotNull(
+			roleResource.getRole(serviceBuilderRole1.getRoleId()));
+
+		com.liferay.portal.kernel.model.Role serviceBuilderRole2 =
+			RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			404,
+			roleResource.getRoleHttpResponse(serviceBuilderRole2.getRoleId()));
+	}
+
+	private void _testGetRoleWithNestedFields() throws Exception {
+		Role postRole = testGetRole_addRole();
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(),
+			com.liferay.portal.kernel.model.Role.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(postRole.getId()), role.getRoleId(),
+			new String[] {ActionKeys.DELETE});
+
+		RoleResource roleResource = RoleResource.builder(
+		).authentication(
+			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "permissions"
+		).build();
+
+		Role getRole = roleResource.getRole(postRole.getId());
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getRole.getPermissions(),
+				permission ->
+					Objects.equals(permission.getRoleName(), role.getName()) &&
+					(permission.getActionIds().length == 1) &&
+					Objects.equals(permission.getActionIds()[0], "DELETE")));
+	}
+
+	private void _testGetRoleWithRolePermissions() throws Exception {
+		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
+
+		RoleResource roleResource = _getRoleResource(_PASSWORD, user);
+
+		com.liferay.portal.kernel.model.Role serviceBuilderRole1 =
+			RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			testCompany.getCompanyId(), Organization.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(testCompany.getCompanyId()),
+			serviceBuilderRole1.getRoleId(), new String[] {ActionKeys.VIEW});
+
+		com.liferay.portal.kernel.model.Role serviceBuilderRole2 =
+			RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_setResourcePermissions(
+			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW);
+
+		_roleLocalService.addUserRole(
+			user.getUserId(), serviceBuilderRole2.getRoleId());
+
+		Role role = roleResource.getRole(serviceBuilderRole1.getRoleId());
+
+		Assert.assertTrue(ArrayUtil.isEmpty(role.getRolePermissions()));
+
+		_setResourcePermissions(
+			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW,
+			ActionKeys.PERMISSIONS);
+
+		role = roleResource.getRole(serviceBuilderRole1.getRoleId());
+
+		Assert.assertTrue(ArrayUtil.isEmpty(role.getRolePermissions()));
+
+		_setResourcePermissions(
+			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW,
+			ActionKeys.PERMISSIONS, ActionKeys.UPDATE);
+
+		role = roleResource.getRole(serviceBuilderRole1.getRoleId());
+
+		Assert.assertTrue(ArrayUtil.isEmpty(role.getRolePermissions()));
+
+		_setResourcePermissions(
+			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW,
+			ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
+			ActionKeys.DEFINE_PERMISSIONS);
+
+		role = roleResource.getRole(serviceBuilderRole1.getRoleId());
+
+		Assert.assertFalse(ArrayUtil.isEmpty(role.getRolePermissions()));
+	}
+
 	private void _testGetRolesPage() throws Exception {
 		Page<Role> page = roleResource.getRolesPage(
 			null, null, null, Pagination.of(1, 100));
@@ -1126,114 +1234,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			ListUtil.exists(
 				(List<Role>)page.getItems(),
 				role -> role.getId() == serviceBuilderRole.getRoleId()));
-	}
-
-	private void _testGetRoleVisibility() throws Exception {
-		RoleResource roleResource = _getRoleResource(
-			_PASSWORD, UserTestUtil.addUser(testCompany, _PASSWORD));
-
-		com.liferay.portal.kernel.model.Role serviceBuilderRole1 =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(), RoleConstants.GUEST);
-
-		Assert.assertNotNull(
-			roleResource.getRole(serviceBuilderRole1.getRoleId()));
-
-		com.liferay.portal.kernel.model.Role serviceBuilderRole2 =
-			RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		assertHttpResponseStatusCode(
-			404,
-			roleResource.getRoleHttpResponse(serviceBuilderRole2.getRoleId()));
-	}
-
-	private void _testGetRoleWithNestedFields() throws Exception {
-		Role postRole = testGetRole_addRole();
-
-		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
-			RoleConstants.TYPE_REGULAR);
-
-		_resourcePermissionLocalService.setResourcePermissions(
-			TestPropsValues.getCompanyId(),
-			com.liferay.portal.kernel.model.Role.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(postRole.getId()), role.getRoleId(),
-			new String[] {ActionKeys.DELETE});
-
-		RoleResource roleResource = RoleResource.builder(
-		).authentication(
-			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).parameters(
-			"nestedFields", "permissions"
-		).build();
-
-		Role getRole = roleResource.getRole(postRole.getId());
-
-		Assert.assertTrue(
-			ArrayUtil.exists(
-				getRole.getPermissions(),
-				permission ->
-					Objects.equals(permission.getRoleName(), role.getName()) &&
-					(permission.getActionIds().length == 1) &&
-					Objects.equals(permission.getActionIds()[0], "DELETE")));
-	}
-
-	private void _testGetRoleWithRolePermissions() throws Exception {
-		User user = UserTestUtil.addUser(testCompany, _PASSWORD);
-
-		RoleResource roleResource = _getRoleResource(_PASSWORD, user);
-
-		com.liferay.portal.kernel.model.Role serviceBuilderRole1 =
-			RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		_resourcePermissionLocalService.setResourcePermissions(
-			testCompany.getCompanyId(), Organization.class.getName(),
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(testCompany.getCompanyId()),
-			serviceBuilderRole1.getRoleId(), new String[] {ActionKeys.VIEW});
-
-		com.liferay.portal.kernel.model.Role serviceBuilderRole2 =
-			RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		_setResourcePermissions(
-			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW);
-
-		_roleLocalService.addUserRole(
-			user.getUserId(), serviceBuilderRole2.getRoleId());
-
-		Role role = roleResource.getRole(serviceBuilderRole1.getRoleId());
-
-		Assert.assertTrue(ArrayUtil.isEmpty(role.getRolePermissions()));
-
-		_setResourcePermissions(
-			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW,
-			ActionKeys.PERMISSIONS);
-
-		role = roleResource.getRole(serviceBuilderRole1.getRoleId());
-
-		Assert.assertTrue(ArrayUtil.isEmpty(role.getRolePermissions()));
-
-		_setResourcePermissions(
-			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW,
-			ActionKeys.PERMISSIONS, ActionKeys.UPDATE);
-
-		role = roleResource.getRole(serviceBuilderRole1.getRoleId());
-
-		Assert.assertTrue(ArrayUtil.isEmpty(role.getRolePermissions()));
-
-		_setResourcePermissions(
-			serviceBuilderRole1, serviceBuilderRole2, ActionKeys.VIEW,
-			ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
-			ActionKeys.DEFINE_PERMISSIONS);
-
-		role = roleResource.getRole(serviceBuilderRole1.getRoleId());
-
-		Assert.assertFalse(ArrayUtil.isEmpty(role.getRolePermissions()));
 	}
 
 	private void _testPatchRoleWithPermissions() throws Exception {

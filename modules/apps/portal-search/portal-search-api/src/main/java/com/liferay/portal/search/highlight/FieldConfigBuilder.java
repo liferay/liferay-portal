@@ -36,17 +36,17 @@ public interface FieldConfigBuilder {
 
 	public FieldConfigBuilder forceSource(Boolean forceSource);
 
-	public FieldConfigBuilder fragmenter(String fragmenter);
-
 	public FieldConfigBuilder fragmentOffset(Integer fragmentOffset);
 
 	public FieldConfigBuilder fragmentSize(Integer fragmentSize);
 
-	public FieldConfigBuilder highlighterType(String highlighterType);
+	public FieldConfigBuilder fragmenter(String fragmenter);
 
 	public FieldConfigBuilder highlightFilter(Boolean highlightFilter);
 
 	public FieldConfigBuilder highlightQuery(Query highlightQuery);
+
+	public FieldConfigBuilder highlighterType(String highlighterType);
 
 	public FieldConfigBuilder matchedFields(String... matchedFields);
 

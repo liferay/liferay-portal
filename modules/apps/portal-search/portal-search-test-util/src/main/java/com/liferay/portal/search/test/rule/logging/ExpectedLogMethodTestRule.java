@@ -93,19 +93,19 @@ public class ExpectedLogMethodTestRule extends MethodTestRule<Void> {
 		_logCapture = null;
 	}
 
-	protected List<LogEntry> getlogEntries() {
-		if (_logCapture != null) {
-			return _logCapture.getLogEntries();
-		}
-
-		return Collections.emptyList();
-	}
-
 	/**
 	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
 	 */
 	@Deprecated
 	protected List<LogRecord> getLogRecords() {
+		return Collections.emptyList();
+	}
+
+	protected List<LogEntry> getlogEntries() {
+		if (_logCapture != null) {
+			return _logCapture.getLogEntries();
+		}
+
 		return Collections.emptyList();
 	}
 

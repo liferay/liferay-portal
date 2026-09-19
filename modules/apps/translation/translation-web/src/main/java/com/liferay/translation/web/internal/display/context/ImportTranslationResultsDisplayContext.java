@@ -78,10 +78,6 @@ public class ImportTranslationResultsDisplayContext implements Serializable {
 		return _failureMessages;
 	}
 
-	public int getFailureMessagesCount() {
-		return _failureMessages.size();
-	}
-
 	public String getFailureMessagesCSVDataURL(Locale locale)
 		throws IOException {
 
@@ -103,6 +99,10 @@ public class ImportTranslationResultsDisplayContext implements Serializable {
 
 		return "data:text/csv;charset=utf-8," +
 			JS.encodeURIComponent(stringWriter.toString());
+	}
+
+	public int getFailureMessagesCount() {
+		return _failureMessages.size();
 	}
 
 	public String getFileName() {

@@ -187,25 +187,6 @@ public class HtmlBBCodeTranslatorImplTest {
 	}
 
 	@Test
-	public void testUnderline() {
-		String expected = "<u>text</u>";
-		String actual = _htmlBBCodeTranslatorImpl.parse("[u]text[/u]");
-
-		Assert.assertEquals(expected, actual);
-	}
-
-	@Test
-	public void testUnorderedList() {
-		String expected =
-			"<ul style=\"list-style: circle outside;\">" +
-				"<li>line1</li><li>line2</li></ul>";
-		String actual = _htmlBBCodeTranslatorImpl.parse(
-			"[list type=\"circle\"][*]line1[*]line2[/list]");
-
-		Assert.assertEquals(expected, actual);
-	}
-
-	@Test
 	public void testURL() {
 		String url = "https://msdn.microsoft.com/aa752574(VS.85).aspx";
 
@@ -226,6 +207,25 @@ public class HtmlBBCodeTranslatorImplTest {
 			"<a href=\"" + HtmlUtil.escapeHREF(urlWithAccents) + "\">link</a>";
 		String actual = _htmlBBCodeTranslatorImpl.parse(
 			"[url=" + urlWithAccents + "]link[/url]");
+
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testUnderline() {
+		String expected = "<u>text</u>";
+		String actual = _htmlBBCodeTranslatorImpl.parse("[u]text[/u]");
+
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testUnorderedList() {
+		String expected =
+			"<ul style=\"list-style: circle outside;\">" +
+				"<li>line1</li><li>line2</li></ul>";
+		String actual = _htmlBBCodeTranslatorImpl.parse(
+			"[list type=\"circle\"][*]line1[*]line2[/list]");
 
 		Assert.assertEquals(expected, actual);
 	}

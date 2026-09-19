@@ -38,14 +38,6 @@ public final class Experiment {
 		return new Date(_createDate.getTime());
 	}
 
-	public String getDataSourceId() {
-		return _dataSourceId;
-	}
-
-	public String getDescription() {
-		return _description;
-	}
-
 	@JsonProperty("dxpExperienceId")
 	public String getDXPExperienceId() {
 		return _dxpExperienceId;
@@ -79,6 +71,14 @@ public final class Experiment {
 	@JsonProperty("dxpVariants")
 	public List<DXPVariant> getDXPVariants() {
 		return _dxpVariants;
+	}
+
+	public String getDataSourceId() {
+		return _dataSourceId;
+	}
+
+	public String getDescription() {
+		return _description;
 	}
 
 	@JsonProperty("status")
@@ -171,14 +171,6 @@ public final class Experiment {
 		}
 	}
 
-	public void setDataSourceId(String dataSourceId) {
-		_dataSourceId = dataSourceId;
-	}
-
-	public void setDescription(String description) {
-		_description = description;
-	}
-
 	public void setDXPExperienceId(String dxpExperienceId) {
 		_dxpExperienceId = dxpExperienceId;
 	}
@@ -205,6 +197,14 @@ public final class Experiment {
 
 	public void setDXPVariants(List<DXPVariant> dxpVariants) {
 		_dxpVariants = dxpVariants;
+	}
+
+	public void setDataSourceId(String dataSourceId) {
+		_dataSourceId = dataSourceId;
+	}
+
+	public void setDescription(String description) {
+		_description = description;
 	}
 
 	public void setExperimentStatus(ExperimentStatus experimentStatus) {

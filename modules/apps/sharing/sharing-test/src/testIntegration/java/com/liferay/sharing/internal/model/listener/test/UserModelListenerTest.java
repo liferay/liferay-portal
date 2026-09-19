@@ -470,6 +470,37 @@ public class UserModelListenerTest {
 			workflowDefinitionLink);
 	}
 
+	private void _testOnBeforeRemoveWithToUserSharingEntries()
+		throws Exception {
+
+		User toUser = UserTestUtil.addGroupUser(
+			_group1, RoleConstants.POWER_USER);
+
+		_sharingEntryLocalService.addSharingEntry(
+			null, TestPropsValues.getUserId(), 0, 0, toUser.getUserId(),
+			_classNameLocalService.getClassNameId(Group.class.getName()),
+			_group1.getGroupId(), _group1.getGroupId(), true,
+			Arrays.asList(SharingEntryAction.VIEW), null,
+			ServiceContextTestUtil.getServiceContext(
+				_group1.getGroupId(), TestPropsValues.getUserId()));
+
+		List<SharingEntry> toUserSharingEntries =
+			_sharingEntryLocalService.getToUserSharingEntries(
+				toUser.getUserId());
+
+		Assert.assertEquals(
+			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
+
+		_userLocalService.deleteUser(toUser.getUserId());
+
+		toUserSharingEntries =
+			_sharingEntryLocalService.getToUserSharingEntries(
+				toUser.getUserId());
+
+		Assert.assertEquals(
+			toUserSharingEntries.toString(), 0, toUserSharingEntries.size());
+	}
+
 	private void _testOnBeforeRemoveWithoutToUserSharingEntries()
 		throws Exception {
 
@@ -504,37 +535,6 @@ public class UserModelListenerTest {
 
 		Assert.assertEquals(
 			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
-	}
-
-	private void _testOnBeforeRemoveWithToUserSharingEntries()
-		throws Exception {
-
-		User toUser = UserTestUtil.addGroupUser(
-			_group1, RoleConstants.POWER_USER);
-
-		_sharingEntryLocalService.addSharingEntry(
-			null, TestPropsValues.getUserId(), 0, 0, toUser.getUserId(),
-			_classNameLocalService.getClassNameId(Group.class.getName()),
-			_group1.getGroupId(), _group1.getGroupId(), true,
-			Arrays.asList(SharingEntryAction.VIEW), null,
-			ServiceContextTestUtil.getServiceContext(
-				_group1.getGroupId(), TestPropsValues.getUserId()));
-
-		List<SharingEntry> toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				toUser.getUserId());
-
-		Assert.assertEquals(
-			toUserSharingEntries.toString(), 1, toUserSharingEntries.size());
-
-		_userLocalService.deleteUser(toUser.getUserId());
-
-		toUserSharingEntries =
-			_sharingEntryLocalService.getToUserSharingEntries(
-				toUser.getUserId());
-
-		Assert.assertEquals(
-			toUserSharingEntries.toString(), 0, toUserSharingEntries.size());
 	}
 
 	@Inject

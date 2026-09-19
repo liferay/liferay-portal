@@ -43,13 +43,6 @@ public abstract class BaseSharepointStorageImpl implements SharepointStorage {
 	}
 
 	@Override
-	public Tree getDocumentsTree(SharepointRequest sharepointRequest)
-		throws Exception {
-
-		return new Tree();
-	}
-
-	@Override
 	public Tree getDocumentTree(SharepointRequest sharepointRequest)
 		throws Exception {
 
@@ -57,7 +50,7 @@ public abstract class BaseSharepointStorageImpl implements SharepointStorage {
 	}
 
 	@Override
-	public Tree getFoldersTree(SharepointRequest sharepointRequest)
+	public Tree getDocumentsTree(SharepointRequest sharepointRequest)
 		throws Exception {
 
 		return new Tree();
@@ -65,6 +58,13 @@ public abstract class BaseSharepointStorageImpl implements SharepointStorage {
 
 	@Override
 	public Tree getFolderTree(SharepointRequest sharepointRequest)
+		throws Exception {
+
+		return new Tree();
+	}
+
+	@Override
+	public Tree getFoldersTree(SharepointRequest sharepointRequest)
 		throws Exception {
 
 		return new Tree();

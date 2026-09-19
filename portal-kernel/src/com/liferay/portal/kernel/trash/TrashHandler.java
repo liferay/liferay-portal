@@ -350,10 +350,6 @@ public interface TrashHandler {
 	public int getTrashContainerModelsCount(long classPK)
 		throws PortalException;
 
-	public TrashedModel getTrashedModel(long classPK);
-
-	public int getTrashModelsCount(long classPK) throws PortalException;
-
 	public default List<TrashedModel> getTrashModelTrashedModels(
 			long classPK, int start, int end,
 			OrderByComparator<?> orderByComparator)
@@ -361,6 +357,8 @@ public interface TrashHandler {
 
 		return Collections.emptyList();
 	}
+
+	public int getTrashModelsCount(long classPK) throws PortalException;
 
 	/**
 	 * Returns the trash renderer associated to the model entity with the
@@ -370,6 +368,8 @@ public interface TrashHandler {
 	 * @return the trash renderer associated to the model entity
 	 */
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException;
+
+	public TrashedModel getTrashedModel(long classPK);
 
 	/**
 	 * Returns <code>true</code> if the user has the required permission to

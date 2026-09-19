@@ -556,13 +556,6 @@ public class DDMFormValuesValidatorTest {
 		_ddmFormValuesValidatorImpl.validate(ddmFormValues);
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void testValidationWithoutDDMFormReference() throws Exception {
-		DDMFormValues ddmFormValues = new DDMFormValues(null);
-
-		_ddmFormValuesValidatorImpl.validate(ddmFormValues);
-	}
-
 	@Test(expected = RequiredValue.class)
 	public void testValidationWithRequiredFieldAndEmptyDefaultLocaleValue()
 		throws Exception {
@@ -877,6 +870,13 @@ public class DDMFormValuesValidatorTest {
 				"contact", new UnlocalizedValue("contact value 2")));
 
 		ddmFormValues.addDDMFormFieldValue(ddmFormFieldValue);
+
+		_ddmFormValuesValidatorImpl.validate(ddmFormValues);
+	}
+
+	@Test(expected = NullPointerException.class)
+	public void testValidationWithoutDDMFormReference() throws Exception {
+		DDMFormValues ddmFormValues = new DDMFormValues(null);
 
 		_ddmFormValuesValidatorImpl.validate(ddmFormValues);
 	}

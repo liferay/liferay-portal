@@ -812,9 +812,9 @@ public class TestIntegrationPlugin implements Plugin<Project> {
 		"skip.managed.app.server";
 
 	private static final Set<File> _startedAppServerBinDirs = new HashSet<>();
-	private static final ReentrantLock _startedAppServersReentrantLock =
-		new ReentrantLock();
 	private static final Map<File, Integer> _startedAppServerStopCounters =
 		new HashMap<>();
+	private static final ReentrantLock _startedAppServersReentrantLock =
+		new ReentrantLock();
 
 }

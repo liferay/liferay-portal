@@ -16,6 +16,26 @@ import com.liferay.portal.kernel.util.OrderByComparator;
  */
 public class CommerceTaxEngineFixedUtil {
 
+	public static OrderByComparator<CPTaxCategory>
+		getCPTaxCategoryOrderByComparator(
+			String orderByCol, String orderByType) {
+
+		boolean orderByAsc = false;
+
+		if (orderByType.equals("asc")) {
+			orderByAsc = true;
+		}
+
+		OrderByComparator<CPTaxCategory> orderByComparator = null;
+
+		if (orderByCol.equals("name")) {
+			orderByComparator = CPTaxCategoryNameComparator.getInstance(
+				orderByAsc);
+		}
+
+		return orderByComparator;
+	}
+
 	public static OrderByComparator<CommerceTaxFixedRateAddressRel>
 		getCommerceTaxFixedRateAddressRelOrderByComparator(
 			String orderByCol, String orderByType) {
@@ -33,26 +53,6 @@ public class CommerceTaxEngineFixedUtil {
 			orderByComparator =
 				CommerceTaxFixedRateAddressRelCreateDateComparator.getInstance(
 					orderByAsc);
-		}
-
-		return orderByComparator;
-	}
-
-	public static OrderByComparator<CPTaxCategory>
-		getCPTaxCategoryOrderByComparator(
-			String orderByCol, String orderByType) {
-
-		boolean orderByAsc = false;
-
-		if (orderByType.equals("asc")) {
-			orderByAsc = true;
-		}
-
-		OrderByComparator<CPTaxCategory> orderByComparator = null;
-
-		if (orderByCol.equals("name")) {
-			orderByComparator = CPTaxCategoryNameComparator.getInstance(
-				orderByAsc);
 		}
 
 		return orderByComparator;

@@ -65,13 +65,13 @@ public class CacheStatisticsMBeanImpl
 	}
 
 	@Override
-	public long getCacheMisses() {
-		return _cacheStatistics.getCacheMisses();
+	public float getCacheMissPercentage() {
+		return _cacheStatistics.getCacheMissPercentage();
 	}
 
 	@Override
-	public float getCacheMissPercentage() {
-		return _cacheStatistics.getCacheMissPercentage();
+	public long getCacheMisses() {
+		return _cacheStatistics.getCacheMisses();
 	}
 
 	@Override

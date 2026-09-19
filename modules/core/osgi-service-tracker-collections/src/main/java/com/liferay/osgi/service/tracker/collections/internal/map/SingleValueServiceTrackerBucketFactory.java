@@ -91,11 +91,11 @@ public class SingleValueServiceTrackerBucketFactory<SR, TS>
 		}
 
 		private TS _service;
-		private final List<ServiceReferenceServiceTuple<SR, TS>>
-			_serviceReferences = new ArrayList<>(1);
 		private final ServiceReferenceServiceTupleComparator<SR>
 			_serviceReferenceServiceTupleComparator =
 				new ServiceReferenceServiceTupleComparator<>(_comparator);
+		private final List<ServiceReferenceServiceTuple<SR, TS>>
+			_serviceReferences = new ArrayList<>(1);
 
 	}
 

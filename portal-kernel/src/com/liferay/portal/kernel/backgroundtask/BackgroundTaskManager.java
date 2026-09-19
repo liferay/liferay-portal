@@ -93,6 +93,8 @@ public interface BackgroundTaskManager {
 	public BackgroundTask getBackgroundTask(long backgroundTaskId)
 		throws PortalException;
 
+	public String getBackgroundTaskStatusJSON(long backgroundTaskId);
+
 	public List<BackgroundTask> getBackgroundTasks(long groupId, int status);
 
 	public List<BackgroundTask> getBackgroundTasks(
@@ -198,8 +200,6 @@ public interface BackgroundTaskManager {
 
 	public int getBackgroundTasksCount(
 		long[] groupIds, String name, String[] taskExecutorClassNames);
-
-	public String getBackgroundTaskStatusJSON(long backgroundTaskId);
 
 	public void resumeBackgroundTask(long backgroundTaskId);
 

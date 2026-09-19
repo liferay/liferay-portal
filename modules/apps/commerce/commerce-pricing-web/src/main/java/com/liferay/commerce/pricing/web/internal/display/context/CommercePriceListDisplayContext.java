@@ -329,22 +329,6 @@ public class CommercePriceListDisplayContext
 			encodedFilter;
 	}
 
-	public String getPriceModifierCategoriesAPIURL() throws PortalException {
-		return "/o/headless-commerce-admin-pricing/v2.0/price-modifiers/" +
-			getCommercePriceModifierId() +
-				"/price-modifier-categories?nestedFields=category";
-	}
-
-	public List<FDSActionDropdownItem>
-		getPriceModifierCategoryFDSActionDropdownItems() {
-
-		return ListUtil.fromArray(
-			new FDSActionDropdownItem(
-				null, "trash", "remove",
-				LanguageUtil.get(httpServletRequest, "remove"), "delete",
-				"delete", "headless"));
-	}
-
 	public String getPriceModifierCPDefinitionAPIURL() throws PortalException {
 		return "/o/headless-commerce-admin-pricing/v2.0/price-modifiers/" +
 			getCommercePriceModifierId() +
@@ -361,12 +345,20 @@ public class CommercePriceListDisplayContext
 				"delete", "headless"));
 	}
 
-	public String getPriceModifierPricingClassesAPIURL()
-		throws PortalException {
-
+	public String getPriceModifierCategoriesAPIURL() throws PortalException {
 		return "/o/headless-commerce-admin-pricing/v2.0/price-modifiers/" +
 			getCommercePriceModifierId() +
-				"/price-modifier-product-groups?nestedFields=productGroup";
+				"/price-modifier-categories?nestedFields=category";
+	}
+
+	public List<FDSActionDropdownItem>
+		getPriceModifierCategoryFDSActionDropdownItems() {
+
+		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				null, "trash", "remove",
+				LanguageUtil.get(httpServletRequest, "remove"), "delete",
+				"delete", "headless"));
 	}
 
 	public List<FDSActionDropdownItem>
@@ -377,6 +369,14 @@ public class CommercePriceListDisplayContext
 				null, "trash", "remove",
 				LanguageUtil.get(httpServletRequest, "remove"), "delete",
 				"delete", "headless"));
+	}
+
+	public String getPriceModifierPricingClassesAPIURL()
+		throws PortalException {
+
+		return "/o/headless-commerce-admin-pricing/v2.0/price-modifiers/" +
+			getCommercePriceModifierId() +
+				"/price-modifier-product-groups?nestedFields=productGroup";
 	}
 
 	public CreationMenu getPriceModifiersCreationMenu() throws Exception {

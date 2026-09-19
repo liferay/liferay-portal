@@ -62,6 +62,12 @@ public class GCloudNaturalLanguageUtilTest {
 	}
 
 	@Test
+	public void testGetTypeWitHTML() {
+		Assert.assertEquals(
+			"HTML", GCloudNaturalLanguageUtil.getType(ContentTypes.TEXT_HTML));
+	}
+
+	@Test
 	public void testGetTypeWithMSWord() {
 		Assert.assertEquals(
 			"PLAIN_TEXT",
@@ -73,12 +79,6 @@ public class GCloudNaturalLanguageUtilTest {
 		Assert.assertEquals(
 			"PLAIN_TEXT",
 			GCloudNaturalLanguageUtil.getType(ContentTypes.TEXT_PLAIN));
-	}
-
-	@Test
-	public void testGetTypeWitHTML() {
-		Assert.assertEquals(
-			"HTML", GCloudNaturalLanguageUtil.getType(ContentTypes.TEXT_HTML));
 	}
 
 	@Test

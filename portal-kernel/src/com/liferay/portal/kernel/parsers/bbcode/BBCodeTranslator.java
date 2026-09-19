@@ -15,9 +15,9 @@ public interface BBCodeTranslator {
 
 	public String[] getEmoticonFiles();
 
-	public String[][] getEmoticons();
-
 	public String[] getEmoticonSymbols();
+
+	public String[][] getEmoticons();
 
 	public String getHTML(String bbcode);
 

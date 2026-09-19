@@ -75,18 +75,18 @@ public abstract class BaseSectionDisplayContextTestCase {
 		Assert.assertEquals(expectedLabel, fdsFilter.getLabel());
 	}
 
+	protected String getAPIURL(AssetEntry assetEntry) throws Exception {
+		return ReflectionTestUtil.invoke(
+			getSectionDisplayContext(_getHttpServletRequest(assetEntry)),
+			"getAPIURL", new Class<?>[0]);
+	}
+
 	protected Map<String, Object> getAdditionalProps(AssetEntry assetEntry)
 		throws Exception {
 
 		return ReflectionTestUtil.invoke(
 			getSectionDisplayContext(_getHttpServletRequest(assetEntry)),
 			"getAdditionalProps", new Class<?>[0]);
-	}
-
-	protected String getAPIURL(AssetEntry assetEntry) throws Exception {
-		return ReflectionTestUtil.invoke(
-			getSectionDisplayContext(_getHttpServletRequest(assetEntry)),
-			"getAPIURL", new Class<?>[0]);
 	}
 
 	protected List<DropdownItem> getBulkActionDropdownItems(

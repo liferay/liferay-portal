@@ -259,11 +259,11 @@ public class CentralGitSubrepository {
 	private Boolean _centralPullRequestCandidate;
 	private final String _centralUpstreamBranchName;
 	private final Properties _ciProperties;
-	private final Properties _gitrepoProperties;
 	private final String _gitSubrepositoryDirectory;
 	private final String _gitSubrepositoryName;
 	private final String _gitSubrepositoryUpstreamBranchName;
 	private String _gitSubrepositoryUpstreamCommit;
 	private final String _gitSubrepositoryUsername;
+	private final Properties _gitrepoProperties;
 
 }

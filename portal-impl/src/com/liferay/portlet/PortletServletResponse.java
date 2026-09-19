@@ -82,14 +82,6 @@ public class PortletServletResponse extends HttpServletResponseWrapper {
 		return false;
 	}
 
-	/**
-	 * @deprecated As of Wilberforce (7.0.x)
-	 */
-	@Deprecated
-	public String encodeRedirectUrl(String url) {
-		return null;
-	}
-
 	@Override
 	public String encodeRedirectURL(String url) {
 		return null;
@@ -99,12 +91,20 @@ public class PortletServletResponse extends HttpServletResponseWrapper {
 	 * @deprecated As of Wilberforce (7.0.x)
 	 */
 	@Deprecated
-	public String encodeUrl(String url) {
-		return _portletResponse.encodeURL(url);
+	public String encodeRedirectUrl(String url) {
+		return null;
 	}
 
 	@Override
 	public String encodeURL(String url) {
+		return _portletResponse.encodeURL(url);
+	}
+
+	/**
+	 * @deprecated As of Wilberforce (7.0.x)
+	 */
+	@Deprecated
+	public String encodeUrl(String url) {
 		return _portletResponse.encodeURL(url);
 	}
 

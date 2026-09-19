@@ -72,7 +72,7 @@ public class MonitorEngine {
 
 	private final MonitorResultStore _monitorResultStore;
 	private final MonitorRunner _monitorRunner = new MonitorRunner();
-	private final List<Monitor> _monitors;
 	private final MonitorScheduler _monitorScheduler;
+	private final List<Monitor> _monitors;
 
 }

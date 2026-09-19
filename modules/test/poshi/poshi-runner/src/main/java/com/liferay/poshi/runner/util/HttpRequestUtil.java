@@ -139,12 +139,6 @@ public class HttpRequestUtil {
 		return httpResponse.getErrorMessage();
 	}
 
-	public static Map<String, List<String>> getResponseHeaderFields(
-		HttpResponse httpResponse) {
-
-		return httpResponse.getHeaderFields();
-	}
-
 	public static List<String> getResponseHeaderFieldValue(
 		HttpResponse httpResponse, String headerFieldKey) {
 
@@ -152,6 +146,12 @@ public class HttpRequestUtil {
 			getResponseHeaderFields(httpResponse);
 
 		return responseHeaderFields.get(headerFieldKey);
+	}
+
+	public static Map<String, List<String>> getResponseHeaderFields(
+		HttpResponse httpResponse) {
+
+		return httpResponse.getHeaderFields();
 	}
 
 	public static Integer getResponseStatusCode(HttpResponse httpResponse) {

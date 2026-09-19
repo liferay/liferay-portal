@@ -252,10 +252,10 @@ public class ImporterFactory {
 	private GroupLocalService _groupLocalService;
 
 	@Reference
-	private IndexerRegistry _indexerRegistry;
+	private IndexStatusManager _indexStatusManager;
 
 	@Reference
-	private IndexStatusManager _indexStatusManager;
+	private IndexerRegistry _indexerRegistry;
 
 	@Reference
 	private JournalArticleLocalService _journalArticleLocalService;

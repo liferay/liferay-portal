@@ -127,6 +127,29 @@ public class ObjectRelationshipUtil {
 		).build();
 	}
 
+	public static String getRESTContextPath(
+		ObjectDefinition objectDefinition,
+		SystemObjectDefinitionManagerRegistry
+			systemObjectDefinitionManagerRegistry) {
+
+		if (!objectDefinition.isUnmodifiableSystemObject()) {
+			return objectDefinition.getRESTContextPath();
+		}
+
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager(objectDefinition.getName());
+
+		if (systemObjectDefinitionManager == null) {
+			return StringPool.BLANK;
+		}
+
+		JaxRsApplicationDescriptor jaxRsApplicationDescriptor =
+			systemObjectDefinitionManager.getJaxRsApplicationDescriptor();
+
+		return jaxRsApplicationDescriptor.getRESTContextPath();
+	}
+
 	public static ObjectDefinition getRelatedObjectDefinition(
 		ObjectDefinition objectDefinition,
 		ObjectRelationship objectRelationship) {
@@ -161,29 +184,6 @@ public class ObjectRelationshipUtil {
 		}
 
 		return relatedObjectDefinitions;
-	}
-
-	public static String getRESTContextPath(
-		ObjectDefinition objectDefinition,
-		SystemObjectDefinitionManagerRegistry
-			systemObjectDefinitionManagerRegistry) {
-
-		if (!objectDefinition.isUnmodifiableSystemObject()) {
-			return objectDefinition.getRESTContextPath();
-		}
-
-		SystemObjectDefinitionManager systemObjectDefinitionManager =
-			systemObjectDefinitionManagerRegistry.
-				getSystemObjectDefinitionManager(objectDefinition.getName());
-
-		if (systemObjectDefinitionManager == null) {
-			return StringPool.BLANK;
-		}
-
-		JaxRsApplicationDescriptor jaxRsApplicationDescriptor =
-			systemObjectDefinitionManager.getJaxRsApplicationDescriptor();
-
-		return jaxRsApplicationDescriptor.getRESTContextPath();
 	}
 
 	public static boolean isParameterRequired(

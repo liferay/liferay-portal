@@ -85,12 +85,6 @@ public class DLFileEntryImpl extends DLFileEntryBaseImpl {
 	}
 
 	@Override
-	public long getDataRepositoryId() {
-		return DLFolderConstants.getDataRepositoryId(
-			getGroupId(), getFolderId());
-	}
-
-	@Override
 	public Map<String, DDMFormValues> getDDMFormValuesMap(long fileVersionId)
 		throws PortalException {
 
@@ -129,6 +123,12 @@ public class DLFileEntryImpl extends DLFileEntryBaseImpl {
 	public DLFileEntryType getDLFileEntryType() throws PortalException {
 		return DLFileEntryTypeLocalServiceUtil.getDLFileEntryType(
 			getFileEntryTypeId());
+	}
+
+	@Override
+	public long getDataRepositoryId() {
+		return DLFolderConstants.getDataRepositoryId(
+			getGroupId(), getFolderId());
 	}
 
 	@Override

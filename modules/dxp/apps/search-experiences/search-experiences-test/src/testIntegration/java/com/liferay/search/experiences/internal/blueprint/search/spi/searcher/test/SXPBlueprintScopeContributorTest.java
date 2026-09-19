@@ -279,12 +279,12 @@ public class SXPBlueprintScopeContributorTest {
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
 
 	@Inject
-	private Searcher _searcher;
-
-	@Inject
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
 	private SearchRequestContributor _searchRequestContributor;
+
+	@Inject
+	private Searcher _searcher;
 
 }

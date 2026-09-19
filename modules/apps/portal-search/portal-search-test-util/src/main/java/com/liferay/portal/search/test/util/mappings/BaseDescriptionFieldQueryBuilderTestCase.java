@@ -149,6 +149,20 @@ public abstract class BaseDescriptionFieldQueryBuilderTestCase
 	}
 
 	@Test
+	public void testPhrasePrefixRequiresTrailingStar() throws Exception {
+		addDocument("Nametag");
+		addDocument("NA-META-G");
+		addDocument("Tag Name");
+		addDocument("TAG1");
+
+		assertSearch("\"NAM*\"", 2);
+		assertSearch("\"*nam*\"", 2);
+
+		assertSearchNoHits("\"Nam\"");
+		assertSearchNoHits("\"*NAM\"");
+	}
+
+	@Test
 	public void testPhrasePrefixes() throws Exception {
 		addDocument("Nametag");
 		addDocument("NA-META-G");
@@ -173,20 +187,6 @@ public abstract class BaseDescriptionFieldQueryBuilderTestCase
 		assertSearchNoHits("\"*me\"");
 		assertSearchNoHits("\"*namet\"");
 		assertSearchNoHits("\"*Ta\"");
-	}
-
-	@Test
-	public void testPhrasePrefixRequiresTrailingStar() throws Exception {
-		addDocument("Nametag");
-		addDocument("NA-META-G");
-		addDocument("Tag Name");
-		addDocument("TAG1");
-
-		assertSearch("\"NAM*\"", 2);
-		assertSearch("\"*nam*\"", 2);
-
-		assertSearchNoHits("\"Nam\"");
-		assertSearchNoHits("\"*NAM\"");
 	}
 
 	@Test

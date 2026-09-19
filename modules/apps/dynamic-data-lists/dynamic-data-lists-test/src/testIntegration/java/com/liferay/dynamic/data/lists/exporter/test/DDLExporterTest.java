@@ -548,17 +548,6 @@ public class DDLExporterTest {
 		return ddmFormField;
 	}
 
-	protected void createDDMFormFields(DDMForm ddmForm) {
-		for (DDMFormFieldType ddmFormFieldType : DDMFormFieldType.values()) {
-			String fieldName = "Field" + ddmFormFieldType.ordinal();
-
-			ddmForm.addDDMFormField(
-				createDDMFormField(
-					fieldName, ddmFormFieldType.getValue(),
-					_ddmFormFieldDataTypes.get(ddmFormFieldType)));
-		}
-	}
-
 	protected Value createDDMFormFieldValue(String valueString) {
 		Value value = new LocalizedValue(_defaultLocale);
 
@@ -576,6 +565,17 @@ public class DDLExporterTest {
 			ddmFormValues.addDDMFormFieldValue(
 				DDMFormValuesTestUtil.createDDMFormFieldValue(
 					fieldName, fieldValue));
+		}
+	}
+
+	protected void createDDMFormFields(DDMForm ddmForm) {
+		for (DDMFormFieldType ddmFormFieldType : DDMFormFieldType.values()) {
+			String fieldName = "Field" + ddmFormFieldType.ordinal();
+
+			ddmForm.addDDMFormField(
+				createDDMFormField(
+					fieldName, ddmFormFieldType.getValue(),
+					_ddmFormFieldDataTypes.get(ddmFormFieldType)));
 		}
 	}
 

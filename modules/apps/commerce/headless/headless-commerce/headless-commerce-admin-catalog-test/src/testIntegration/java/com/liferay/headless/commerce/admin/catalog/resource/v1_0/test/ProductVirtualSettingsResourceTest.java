@@ -118,6 +118,9 @@ public class ProductVirtualSettingsResourceTest
 	}
 
 	@DeleteAfterTestRun
+	private CProduct _cProduct;
+
+	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
 
 	@Inject
@@ -125,9 +128,6 @@ public class ProductVirtualSettingsResourceTest
 
 	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
-
-	@DeleteAfterTestRun
-	private CProduct _cProduct;
 
 	@DeleteAfterTestRun
 	private User _user;

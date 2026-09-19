@@ -279,6 +279,52 @@ public class EditServerMVCActionCommandTest {
 	}
 
 	@Test
+	public void testCleanUpOrphanedPortletPreferencesWithProperPortletPreferences()
+		throws Exception {
+
+		String portletId = PortletIdCodec.encode(
+			"com_liferay_test_portlet_TestPortlet");
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			_layout.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.setProperty("column-1", portletId);
+
+		_layout = _layoutLocalService.updateLayout(_layout);
+
+		_portletPreferences = _addPortletPreferences(
+			PortletKeys.PREFS_OWNER_ID_DEFAULT,
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(), portletId);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			_ctPortletPreferences = _addPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+				portletId);
+		}
+
+		ReflectionTestUtil.invoke(
+			_mvcActionCommand, "_cleanUpOrphanedPortletPreferences",
+			new Class<?>[0]);
+
+		Assert.assertNotNull(
+			_portletPreferencesLocalService.fetchPortletPreferences(
+				_portletPreferences.getPortletPreferencesId()));
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			Assert.assertNotNull(
+				_portletPreferencesLocalService.fetchPortletPreferences(
+					_ctPortletPreferences.getPortletPreferencesId()));
+		}
+	}
+
+	@Test
 	public void testCleanUpOrphanedPortletPreferencesWithoutLayoutRevision()
 		throws Exception {
 
@@ -331,52 +377,6 @@ public class EditServerMVCActionCommandTest {
 			Assert.assertNull(
 				_portletPreferencesLocalService.fetchPortletPreferences(
 					modifiedPortletPreferences.getPortletPreferencesId()));
-		}
-	}
-
-	@Test
-	public void testCleanUpOrphanedPortletPreferencesWithProperPortletPreferences()
-		throws Exception {
-
-		String portletId = PortletIdCodec.encode(
-			"com_liferay_test_portlet_TestPortlet");
-
-		UnicodeProperties typeSettingsUnicodeProperties =
-			_layout.getTypeSettingsProperties();
-
-		typeSettingsUnicodeProperties.setProperty("column-1", portletId);
-
-		_layout = _layoutLocalService.updateLayout(_layout);
-
-		_portletPreferences = _addPortletPreferences(
-			PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(), portletId);
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					_ctCollection.getCtCollectionId())) {
-
-			_ctPortletPreferences = _addPortletPreferences(
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-				portletId);
-		}
-
-		ReflectionTestUtil.invoke(
-			_mvcActionCommand, "_cleanUpOrphanedPortletPreferences",
-			new Class<?>[0]);
-
-		Assert.assertNotNull(
-			_portletPreferencesLocalService.fetchPortletPreferences(
-				_portletPreferences.getPortletPreferencesId()));
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					_ctCollection.getCtCollectionId())) {
-
-			Assert.assertNotNull(
-				_portletPreferencesLocalService.fetchPortletPreferences(
-					_ctPortletPreferences.getPortletPreferencesId()));
 		}
 	}
 
@@ -712,14 +712,14 @@ public class EditServerMVCActionCommandTest {
 	@Inject
 	private PortalPreferencesLocalService _portalPreferencesLocalService;
 
+	@Inject
+	private PortletPreferenceValueLocalService
+		_portletPreferenceValueLocalService;
+
 	@DeleteAfterTestRun
 	private PortletPreferences _portletPreferences;
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
-	private PortletPreferenceValueLocalService
-		_portletPreferenceValueLocalService;
 
 }

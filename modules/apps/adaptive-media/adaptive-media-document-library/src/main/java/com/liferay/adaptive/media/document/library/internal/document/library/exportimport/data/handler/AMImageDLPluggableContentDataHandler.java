@@ -155,6 +155,12 @@ public class AMImageDLPluggableContentDataHandler
 			basePath + ".json", _amImageSerializer.serialize(adaptiveMedia));
 	}
 
+	private String _getAMBasePath(FileEntry fileEntry, String uuid) {
+		return String.format(
+			"adaptive-media/%s/%s/%s", FileEntry.class.getSimpleName(),
+			fileEntry.getUuid(), uuid);
+	}
+
 	private List<AdaptiveMedia<AMProcessor<FileVersion>>> _getAdaptiveMedias(
 		FileEntry fileEntry,
 		AMImageConfigurationEntry amImageConfigurationEntry) {
@@ -179,12 +185,6 @@ public class AMImageDLPluggableContentDataHandler
 		}
 
 		return Collections.emptyList();
-	}
-
-	private String _getAMBasePath(FileEntry fileEntry, String uuid) {
-		return String.format(
-			"adaptive-media/%s/%s/%s", FileEntry.class.getSimpleName(),
-			fileEntry.getUuid(), uuid);
 	}
 
 	private String _getConfigurationEntryBinPath(

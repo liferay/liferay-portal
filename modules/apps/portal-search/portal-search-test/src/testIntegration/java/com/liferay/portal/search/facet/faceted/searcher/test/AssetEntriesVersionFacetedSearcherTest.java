@@ -191,9 +191,9 @@ public class AssetEntriesVersionFacetedSearcherTest {
 	@DeleteAfterTestRun
 	private Group _group;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
-
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 
 }

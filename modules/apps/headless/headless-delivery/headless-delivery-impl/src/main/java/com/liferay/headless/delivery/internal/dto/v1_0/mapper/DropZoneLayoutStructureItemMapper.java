@@ -44,21 +44,6 @@ public class DropZoneLayoutStructureItemMapper
 		};
 	}
 
-	private Fragment[] _toFragments(List<String> fragmentEntryKeys) {
-		List<Fragment> fragments = new ArrayList<>();
-
-		for (String fragmentEntryKey : fragmentEntryKeys) {
-			fragments.add(
-				new Fragment() {
-					{
-						setKey(() -> fragmentEntryKey);
-					}
-				});
-		}
-
-		return fragments.toArray(new Fragment[0]);
-	}
-
 	private Map<String, Fragment[]> _toFragmentSettingsMap(
 		DropZoneLayoutStructureItem dropZoneLayoutStructureItem) {
 
@@ -73,6 +58,21 @@ public class DropZoneLayoutStructureItemMapper
 			"allowedFragments",
 			_toFragments(dropZoneLayoutStructureItem.getFragmentEntryKeys())
 		).build();
+	}
+
+	private Fragment[] _toFragments(List<String> fragmentEntryKeys) {
+		List<Fragment> fragments = new ArrayList<>();
+
+		for (String fragmentEntryKey : fragmentEntryKeys) {
+			fragments.add(
+				new Fragment() {
+					{
+						setKey(() -> fragmentEntryKey);
+					}
+				});
+		}
+
+		return fragments.toArray(new Fragment[0]);
 	}
 
 }

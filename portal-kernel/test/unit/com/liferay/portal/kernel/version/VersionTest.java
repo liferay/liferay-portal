@@ -40,17 +40,17 @@ public class VersionTest {
 	}
 
 	@Test
-	public void testCompareSteps() {
-		Version version1 = Version.parseVersion("1.2.3.step-1");
-		Version version2 = Version.parseVersion("1.2.3.step-2");
+	public void testCompareStepToFinalVersion() {
+		Version version1 = Version.parseVersion("1.2.3.step-2");
+		Version version2 = Version.parseVersion("1.2.3");
 
 		Assert.assertTrue(version1.compareTo(version2) < 0);
 	}
 
 	@Test
-	public void testCompareStepToFinalVersion() {
-		Version version1 = Version.parseVersion("1.2.3.step-2");
-		Version version2 = Version.parseVersion("1.2.3");
+	public void testCompareSteps() {
+		Version version1 = Version.parseVersion("1.2.3.step-1");
+		Version version2 = Version.parseVersion("1.2.3.step-2");
 
 		Assert.assertTrue(version1.compareTo(version2) < 0);
 	}

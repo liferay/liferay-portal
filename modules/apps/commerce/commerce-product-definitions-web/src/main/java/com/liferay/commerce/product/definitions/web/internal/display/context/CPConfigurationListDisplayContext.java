@@ -91,76 +91,6 @@ public class CPConfigurationListDisplayContext {
 		liferayPortletResponse = cpRequestHelper.getLiferayPortletResponse();
 	}
 
-	public List<CommerceAvailabilityEstimate> getCommerceAvailabilityEstimates()
-		throws PortalException {
-
-		return commerceAvailabilityEstimateService.
-			getCommerceAvailabilityEstimates(
-				cpRequestHelper.getCompanyId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				CommerceAvailabilityEstimatePriorityComparator.getInstance(
-					true));
-	}
-
-	public String getCommerceCatalogName() throws PortalException {
-		CPConfigurationList cpConfigurationList = getCPConfigurationList();
-
-		if (cpConfigurationList == null) {
-			return StringPool.BLANK;
-		}
-
-		CommerceCatalog commerceCatalog =
-			cpConfigurationList.fetchCommerceCatalog();
-
-		if (commerceCatalog == null) {
-			return StringPool.BLANK;
-		}
-
-		return commerceCatalog.getName();
-	}
-
-	public List<CommerceCatalog> getCommerceCatalogs() throws PortalException {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		return commerceCatalogService.search(
-			themeDisplay.getCompanyId(), null, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
-	public List<CommerceLowStockActivity> getCommerceLowStockActivities() {
-		return commerceLowStockActivityRegistry.getCommerceLowStockActivities();
-	}
-
-	public Map<String, Object> getContext() {
-		return HashMapBuilder.<String, Object>put(
-			"addCPConfigurationListRenderURL",
-			() -> PortletURLBuilder.createRenderURL(
-				liferayPortletResponse
-			).setMVCRenderCommandName(
-				"/cp_configuration_lists/add_cp_configuration_list"
-			).setBackURL(
-				cpRequestHelper.getCurrentURL()
-			).setWindowState(
-				LiferayWindowState.POP_UP
-			).buildString()
-		).put(
-			"editCPConfigurationListRenderURL",
-			() -> PortletURLBuilder.createRenderURL(
-				liferayPortletResponse
-			).setMVCRenderCommandName(
-				"/cp_configuration_lists/edit_cp_configuration_list"
-			).setBackURL(
-				cpRequestHelper.getCurrentURL()
-			).buildString()
-		).put(
-			"namespace", liferayPortletResponse.getNamespace()
-		).put(
-			"windowState", LiferayWindowState.MAXIMIZED.toString()
-		).build();
-	}
-
 	public CPConfigurationEntry getCPConfigurationEntry()
 		throws PortalException {
 
@@ -294,6 +224,76 @@ public class CPConfigurationListDisplayContext {
 
 		return cpTaxCategoryLocalService.getCPTaxCategories(
 			themeDisplay.getCompanyId());
+	}
+
+	public List<CommerceAvailabilityEstimate> getCommerceAvailabilityEstimates()
+		throws PortalException {
+
+		return commerceAvailabilityEstimateService.
+			getCommerceAvailabilityEstimates(
+				cpRequestHelper.getCompanyId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
+				CommerceAvailabilityEstimatePriorityComparator.getInstance(
+					true));
+	}
+
+	public String getCommerceCatalogName() throws PortalException {
+		CPConfigurationList cpConfigurationList = getCPConfigurationList();
+
+		if (cpConfigurationList == null) {
+			return StringPool.BLANK;
+		}
+
+		CommerceCatalog commerceCatalog =
+			cpConfigurationList.fetchCommerceCatalog();
+
+		if (commerceCatalog == null) {
+			return StringPool.BLANK;
+		}
+
+		return commerceCatalog.getName();
+	}
+
+	public List<CommerceCatalog> getCommerceCatalogs() throws PortalException {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		return commerceCatalogService.search(
+			themeDisplay.getCompanyId(), null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+	}
+
+	public List<CommerceLowStockActivity> getCommerceLowStockActivities() {
+		return commerceLowStockActivityRegistry.getCommerceLowStockActivities();
+	}
+
+	public Map<String, Object> getContext() {
+		return HashMapBuilder.<String, Object>put(
+			"addCPConfigurationListRenderURL",
+			() -> PortletURLBuilder.createRenderURL(
+				liferayPortletResponse
+			).setMVCRenderCommandName(
+				"/cp_configuration_lists/add_cp_configuration_list"
+			).setBackURL(
+				cpRequestHelper.getCurrentURL()
+			).setWindowState(
+				LiferayWindowState.POP_UP
+			).buildString()
+		).put(
+			"editCPConfigurationListRenderURL",
+			() -> PortletURLBuilder.createRenderURL(
+				liferayPortletResponse
+			).setMVCRenderCommandName(
+				"/cp_configuration_lists/edit_cp_configuration_list"
+			).setBackURL(
+				cpRequestHelper.getCurrentURL()
+			).buildString()
+		).put(
+			"namespace", liferayPortletResponse.getNamespace()
+		).put(
+			"windowState", LiferayWindowState.MAXIMIZED.toString()
+		).build();
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

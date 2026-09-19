@@ -375,15 +375,6 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
-	private CommerceOrder _setCommerceOrderStatuses(
-		CommerceOrder commerceOrder, int paymentStatus, int orderStatus) {
-
-		commerceOrder.setOrderStatus(orderStatus);
-		commerceOrder.setPaymentStatus(paymentStatus);
-
-		return _commerceOrderLocalService.updateCommerceOrder(commerceOrder);
-	}
-
 	private CPInstance _setCPInstanceSubscriptionInfo(
 		CPInstance cpInstance, int subscriptionLength,
 		String subscriptionType) {
@@ -395,6 +386,15 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 		cpInstance.setMaxSubscriptionCycles(1);
 
 		return _cpInstanceLocalService.updateCPInstance(cpInstance);
+	}
+
+	private CommerceOrder _setCommerceOrderStatuses(
+		CommerceOrder commerceOrder, int paymentStatus, int orderStatus) {
+
+		commerceOrder.setOrderStatus(orderStatus);
+		commerceOrder.setPaymentStatus(paymentStatus);
+
+		return _commerceOrderLocalService.updateCommerceOrder(commerceOrder);
 	}
 
 	private CommerceCatalog _commerceCatalog;

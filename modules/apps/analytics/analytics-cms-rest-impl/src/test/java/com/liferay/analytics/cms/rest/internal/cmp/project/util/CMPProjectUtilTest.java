@@ -24,17 +24,6 @@ public class CMPProjectUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetFilteredCMPProjectIdsWithoutCMPProjectIds()
-		throws Exception {
-
-		Assert.assertNull(
-			CMPProjectUtil.getFilteredCMPProjectIds(ActionKeys.VIEW, null));
-		Assert.assertNull(
-			CMPProjectUtil.getFilteredCMPProjectIds(
-				ActionKeys.VIEW, new Long[0]));
-	}
-
-	@Test
 	public void testGetFilterStringWithCMPProjectIds() {
 		Assert.assertEquals(
 			"cmpProjects/id in ('39601')",
@@ -59,6 +48,17 @@ public class CMPProjectUtilTest {
 			CMPProjectUtil.getFilterString(null, "assetType eq 'blog'"));
 		Assert.assertNull(CMPProjectUtil.getFilterString(new Long[0], null));
 		Assert.assertNull(CMPProjectUtil.getFilterString(null, null));
+	}
+
+	@Test
+	public void testGetFilteredCMPProjectIdsWithoutCMPProjectIds()
+		throws Exception {
+
+		Assert.assertNull(
+			CMPProjectUtil.getFilteredCMPProjectIds(ActionKeys.VIEW, null));
+		Assert.assertNull(
+			CMPProjectUtil.getFilteredCMPProjectIds(
+				ActionKeys.VIEW, new Long[0]));
 	}
 
 	@Test

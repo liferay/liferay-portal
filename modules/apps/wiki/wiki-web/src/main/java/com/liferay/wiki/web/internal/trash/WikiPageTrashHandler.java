@@ -240,12 +240,6 @@ public class WikiPageTrashHandler extends BaseWikiTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return _wikiPageLocalService.fetchLatestPage(
-			classPK, WorkflowConstants.STATUS_ANY, false);
-	}
-
-	@Override
 	public List<TrashedModel> getTrashModelTrashedModels(
 			long classPK, int start, int end,
 			OrderByComparator<?> orderByComparator)
@@ -268,6 +262,12 @@ public class WikiPageTrashHandler extends BaseWikiTrashHandler {
 
 		return new WikiPageAssetRenderer(
 			_htmlParser, _trashHelper, _wikiEngineRenderer, page);
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return _wikiPageLocalService.fetchLatestPage(
+			classPK, WorkflowConstants.STATUS_ANY, false);
 	}
 
 	@Override

@@ -308,26 +308,6 @@ public class DLURLHelperTest {
 	}
 
 	@Test
-	public void testGetPreviewURLVersioned() throws Exception {
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, _user.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(),
-			ContentTypes.APPLICATION_OCTET_STREAM,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			(byte[])null, null, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), _user.getUserId()));
-
-		String previewURL = _dlURLHelper.getPreviewURL(
-			fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
-			StringPool.BLANK, true, false);
-
-		Assert.assertTrue(previewURL, previewURL.contains("version="));
-	}
-
-	@Test
 	public void testGetPreviewURLVersionUpdated() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -354,6 +334,26 @@ public class DLURLHelperTest {
 			StringPool.BLANK, true, false);
 
 		Assert.assertTrue(previewURL, previewURL.contains("version=2"));
+	}
+
+	@Test
+	public void testGetPreviewURLVersioned() throws Exception {
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, _user.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			(byte[])null, null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+
+		String previewURL = _dlURLHelper.getPreviewURL(
+			fileEntry, fileEntry.getFileVersion(), _getThemeDisplay(),
+			StringPool.BLANK, true, false);
+
+		Assert.assertTrue(previewURL, previewURL.contains("version="));
 	}
 
 	@Test

@@ -179,13 +179,13 @@ public class ServicesDropDownMetaTypeProvider
 			}
 
 			@Override
-			public InputStream getIcon(int size) throws IOException {
-				return null;
+			public String getID() {
+				return _metatypePID;
 			}
 
 			@Override
-			public String getID() {
-				return _metatypePID;
+			public InputStream getIcon(int size) throws IOException {
+				return null;
 			}
 
 			@Override

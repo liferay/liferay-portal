@@ -41,14 +41,14 @@ public class CommerceOrderAttachmentsDisplayContext {
 			httpServletRequest);
 	}
 
+	public String getAPIURL() {
+		return _getBaseAPIURL();
+	}
+
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"commerceOrderId", _commerceOrderId
 		).build();
-	}
-
-	public String getAPIURL() {
-		return _getBaseAPIURL();
 	}
 
 	public long getCommerceOrderId() {

@@ -1254,8 +1254,8 @@ public class FileSystemImporter extends BaseImporter {
 	protected final DLAppLocalService dlAppLocalService;
 	protected final DLFileEntryLocalService dlFileEntryLocalService;
 	protected final DLFolderLocalService dlFolderLocalService;
-	protected final IndexerRegistry indexerRegistry;
 	protected final IndexStatusManager indexStatusManager;
+	protected final IndexerRegistry indexerRegistry;
 	protected final JournalArticleLocalService journalArticleLocalService;
 	protected final JournalFolderLocalService journalFolderLocalService;
 	protected final LayoutLocalService layoutLocalService;
@@ -1611,14 +1611,6 @@ public class FileSystemImporter extends BaseImporter {
 		);
 	}
 
-	private String _getJournalId(String fileName) {
-		String id = FileUtil.stripExtension(fileName);
-
-		id = StringUtil.toUpperCase(id);
-
-		return StringUtil.replace(id, CharPool.SPACE, CharPool.DASH);
-	}
-
 	private String[] _getJSONArrayAsStringArray(
 		JSONObject jsonObject, String key) {
 
@@ -1650,6 +1642,14 @@ public class FileSystemImporter extends BaseImporter {
 			});
 
 		return JSONFactoryUtil.createJSONObject(json);
+	}
+
+	private String _getJournalId(String fileName) {
+		String id = FileUtil.stripExtension(fileName);
+
+		id = StringUtil.toUpperCase(id);
+
+		return StringUtil.replace(id, CharPool.SPACE, CharPool.DASH);
 	}
 
 	private String _getKey(String name) {

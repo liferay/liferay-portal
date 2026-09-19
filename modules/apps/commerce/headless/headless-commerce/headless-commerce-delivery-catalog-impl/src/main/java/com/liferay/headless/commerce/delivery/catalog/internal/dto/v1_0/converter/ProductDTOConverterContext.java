@@ -38,16 +38,16 @@ public class ProductDTOConverterContext extends DefaultDTOConverterContext {
 		_cpDefinition = cpDefinition;
 	}
 
-	public CommerceContext getCommerceContext() {
-		return _commerceContext;
-	}
-
 	public CPCatalogEntry getCPCatalogEntry() {
 		return _cpCatalogEntry;
 	}
 
 	public CPDefinition getCPDefinition() {
 		return _cpDefinition;
+	}
+
+	public CommerceContext getCommerceContext() {
+		return _commerceContext;
 	}
 
 	private final CommerceContext _commerceContext;

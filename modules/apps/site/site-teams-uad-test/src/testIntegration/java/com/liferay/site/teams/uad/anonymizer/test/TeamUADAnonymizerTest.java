@@ -98,11 +98,11 @@ public class TeamUADAnonymizerTest extends BaseUADAnonymizerTestCase<Team> {
 	@Inject
 	private TeamLocalService _teamLocalService;
 
-	@DeleteAfterTestRun
-	private final List<Team> _teams = new ArrayList<>();
-
 	@Inject
 	private TeamUADTestHelper _teamUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<Team> _teams = new ArrayList<>();
 
 	@Inject(
 		filter = "component.name=com.liferay.site.teams.uad.anonymizer.TeamUADAnonymizer"

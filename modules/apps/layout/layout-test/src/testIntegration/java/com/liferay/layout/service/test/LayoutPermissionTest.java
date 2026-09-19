@@ -88,6 +88,26 @@ public class LayoutPermissionTest {
 	}
 
 	@Test
+	public void testContainsGuestWithPreviewDraftPermission() throws Exception {
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.GUEST);
+
+		try {
+			Assert.assertTrue(
+				_layoutPermission.containsLayoutPreviewDraftPermission(
+					_getPermissionChecker(ActionKeys.PREVIEW_DRAFT, role),
+					LayoutTestUtil.addTypeContentLayout(_group)));
+		}
+		finally {
+			_resourcePermissionLocalService.removeResourcePermission(
+				_group.getCompanyId(), Layout.class.getName(),
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(_group.getCompanyId()), role.getRoleId(),
+				ActionKeys.PREVIEW_DRAFT);
+		}
+	}
+
+	@Test
 	public void testContainsGuestWithoutPreviewDraftPermission()
 		throws Exception {
 
@@ -99,9 +119,11 @@ public class LayoutPermissionTest {
 	}
 
 	@Test
-	public void testContainsGuestWithPreviewDraftPermission() throws Exception {
+	public void testContainsPortalContentReviewerWithPreviewDraftPermission()
+		throws Exception {
+
 		Role role = _roleLocalService.getRole(
-			_group.getCompanyId(), RoleConstants.GUEST);
+			_group.getCompanyId(), RoleConstants.PORTAL_CONTENT_REVIEWER);
 
 		try {
 			Assert.assertTrue(
@@ -130,28 +152,6 @@ public class LayoutPermissionTest {
 						RoleConstants.PORTAL_CONTENT_REVIEWER),
 					UserTestUtil.addUser()),
 				LayoutTestUtil.addTypeContentLayout(_group)));
-	}
-
-	@Test
-	public void testContainsPortalContentReviewerWithPreviewDraftPermission()
-		throws Exception {
-
-		Role role = _roleLocalService.getRole(
-			_group.getCompanyId(), RoleConstants.PORTAL_CONTENT_REVIEWER);
-
-		try {
-			Assert.assertTrue(
-				_layoutPermission.containsLayoutPreviewDraftPermission(
-					_getPermissionChecker(ActionKeys.PREVIEW_DRAFT, role),
-					LayoutTestUtil.addTypeContentLayout(_group)));
-		}
-		finally {
-			_resourcePermissionLocalService.removeResourcePermission(
-				_group.getCompanyId(), Layout.class.getName(),
-				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(_group.getCompanyId()), role.getRoleId(),
-				ActionKeys.PREVIEW_DRAFT);
-		}
 	}
 
 	@Test
@@ -289,43 +289,6 @@ public class LayoutPermissionTest {
 			_layoutPermission.containsLayoutPreviewDraftPermission(
 				_getPermissionChecker(ActionKeys.VIEW),
 				LayoutTestUtil.addTypeContentLayout(_group)));
-	}
-
-	@Test
-	public void testContainsWithoutViewPermissionOnApprovedLayout()
-		throws Exception {
-
-		Layout layout = _addTypeContentLayout(true);
-
-		_removeGuestViewPermission(layout);
-
-		Assert.assertFalse(
-			_layoutPermission.contains(
-				_getGuestPermissionChecker(), layout, ActionKeys.VIEW));
-	}
-
-	@Test
-	public void testContainsWithoutViewPermissionOnPendingLayout()
-		throws Exception {
-
-		try {
-			Layout layout = _addTypeContentLayout(true);
-
-			_removeGuestViewPermission(layout);
-
-			_setUpLayoutWorkflow();
-
-			layout = _updateLayout(layout);
-
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_PENDING, layout.getStatus());
-			Assert.assertFalse(
-				_layoutPermission.contains(
-					_getGuestPermissionChecker(), layout, ActionKeys.VIEW));
-		}
-		finally {
-			_tearDownLayoutWorkflow();
-		}
 	}
 
 	@Test
@@ -589,6 +552,43 @@ public class LayoutPermissionTest {
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_PENDING, layout.getStatus());
 
+			Assert.assertFalse(
+				_layoutPermission.contains(
+					_getGuestPermissionChecker(), layout, ActionKeys.VIEW));
+		}
+		finally {
+			_tearDownLayoutWorkflow();
+		}
+	}
+
+	@Test
+	public void testContainsWithoutViewPermissionOnApprovedLayout()
+		throws Exception {
+
+		Layout layout = _addTypeContentLayout(true);
+
+		_removeGuestViewPermission(layout);
+
+		Assert.assertFalse(
+			_layoutPermission.contains(
+				_getGuestPermissionChecker(), layout, ActionKeys.VIEW));
+	}
+
+	@Test
+	public void testContainsWithoutViewPermissionOnPendingLayout()
+		throws Exception {
+
+		try {
+			Layout layout = _addTypeContentLayout(true);
+
+			_removeGuestViewPermission(layout);
+
+			_setUpLayoutWorkflow();
+
+			layout = _updateLayout(layout);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_PENDING, layout.getStatus());
 			Assert.assertFalse(
 				_layoutPermission.contains(
 					_getGuestPermissionChecker(), layout, ActionKeys.VIEW));

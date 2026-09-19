@@ -418,10 +418,10 @@ public class AccountRoleLocalServiceImpl
 	private RoleLocalService _roleLocalService;
 
 	@Reference
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Reference
 	private SortFactory _sortFactory;

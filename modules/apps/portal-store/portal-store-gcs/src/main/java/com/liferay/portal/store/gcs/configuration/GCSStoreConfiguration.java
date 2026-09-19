@@ -30,16 +30,22 @@ public interface GCSStoreConfiguration {
 	public String bucketName();
 
 	@Meta.AD(
+		deflt = "120000", description = "initial-rpc-timeout-help",
+		name = "initial-rpc-timeout", required = false
+	)
+	public int initialRPCTimeout();
+
+	@Meta.AD(
 		deflt = "400", description = "initial-retry-delay-help",
 		name = "initial-retry-delay", required = false
 	)
 	public int initialRetryDelay();
 
 	@Meta.AD(
-		deflt = "120000", description = "initial-rpc-timeout-help",
-		name = "initial-rpc-timeout", required = false
+		deflt = "600000", description = "max-rpc-timeout-help",
+		name = "max-rpc-timeout", required = false
 	)
-	public int initialRPCTimeout();
+	public int maxRPCTimeout();
 
 	@Meta.AD(
 		deflt = "5", description = "max-retry-attempts-help",
@@ -52,12 +58,6 @@ public interface GCSStoreConfiguration {
 		name = "max-retry-delay", required = false
 	)
 	public int maxRetryDelay();
-
-	@Meta.AD(
-		deflt = "600000", description = "max-rpc-timeout-help",
-		name = "max-rpc-timeout", required = false
-	)
-	public int maxRPCTimeout();
 
 	@Meta.AD(
 		deflt = "1.5", description = "retry-delay-multiplier-help",

@@ -13,9 +13,9 @@ import java.util.Map;
  */
 public interface CTClosure {
 
-	public Map<Long, List<Long>> getChildPKsMap(long classNameId, long classPK);
-
 	public long getCTCollectionId();
+
+	public Map<Long, List<Long>> getChildPKsMap(long classNameId, long classPK);
 
 	public Map<Long, List<Long>> getParentPKsMap(
 		long classNameId, long classPK);

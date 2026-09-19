@@ -74,6 +74,20 @@ public class IndexWriterHelperImplTest {
 	}
 
 	@Test
+	public void testReindexWithSystemIndexerClassName() throws Exception {
+		Map<Long, Long> originalConfigurationModelCounts = new HashMap<>();
+
+		_populateOriginalCounts(
+			originalConfigurationModelCounts, _CLASS_NAME_CONFIGURATION_MODEL,
+			true);
+
+		_reindex(_CLASS_NAME_CONFIGURATION_MODEL_INDEXER);
+
+		_assertReindexedCounts(
+			originalConfigurationModelCounts, _CLASS_NAME_CONFIGURATION_MODEL);
+	}
+
+	@Test
 	public void testReindexWithoutClassName() throws Exception {
 		Map<Long, Long> originalBlogEntryCounts = new HashMap<>();
 		Map<Long, Long> originalConfigurationModelCounts = new HashMap<>();
@@ -91,20 +105,6 @@ public class IndexWriterHelperImplTest {
 
 		_assertReindexedCounts(
 			originalBlogEntryCounts, _CLASS_NAME_BLOGS_ENTRY);
-
-		_assertReindexedCounts(
-			originalConfigurationModelCounts, _CLASS_NAME_CONFIGURATION_MODEL);
-	}
-
-	@Test
-	public void testReindexWithSystemIndexerClassName() throws Exception {
-		Map<Long, Long> originalConfigurationModelCounts = new HashMap<>();
-
-		_populateOriginalCounts(
-			originalConfigurationModelCounts, _CLASS_NAME_CONFIGURATION_MODEL,
-			true);
-
-		_reindex(_CLASS_NAME_CONFIGURATION_MODEL_INDEXER);
 
 		_assertReindexedCounts(
 			originalConfigurationModelCounts, _CLASS_NAME_CONFIGURATION_MODEL);

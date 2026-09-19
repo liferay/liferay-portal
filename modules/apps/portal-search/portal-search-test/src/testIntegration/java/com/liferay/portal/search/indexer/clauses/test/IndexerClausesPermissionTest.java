@@ -323,15 +323,15 @@ public class IndexerClausesPermissionTest {
 		return serviceContext;
 	}
 
+	protected Consumer<SearchRequestBuilder> withPermissionCheck(User user) {
+		return searchRequestBuilder -> searchRequestBuilder.withSearchContext(
+			searchContext -> searchContext.setUserId(user.getUserId()));
+	}
+
 	protected Consumer<SearchRequestBuilder> withoutIndexerClauses() {
 		return searchRequestBuilder -> searchRequestBuilder.withSearchContext(
 			searchContext -> searchContext.setAttribute(
 				"search.full.query.suppress.indexer.provided.clauses", true));
-	}
-
-	protected Consumer<SearchRequestBuilder> withPermissionCheck(User user) {
-		return searchRequestBuilder -> searchRequestBuilder.withSearchContext(
-			searchContext -> searchContext.setUserId(user.getUserId()));
 	}
 
 	@Inject
@@ -361,10 +361,10 @@ public class IndexerClausesPermissionTest {
 	protected PermissionCheckerFactory permissionCheckerFactory;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private boolean _isSearchEngine(String vendor) {
 		SearchEngine searchEngine = _searchEngineHelper.getSearchEngine();
@@ -384,10 +384,10 @@ public class IndexerClausesPermissionTest {
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
-
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 
 	@Inject
 	private SearchEngineHelper _searchEngineHelper;

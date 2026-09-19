@@ -294,6 +294,28 @@ public class InfoRequestFieldValuesProviderHelper {
 		return new Tuple(StringUtil.split(result, StringPool.DOLLAR));
 	}
 
+	private InfoFieldValue<Object> _getInfoFieldValue(
+		boolean includeNullValues, InfoField<?> infoField, Locale locale,
+		Object value) {
+
+		if ((value == null) && !includeNullValues) {
+			return null;
+		}
+
+		if (infoField.isLocalizable()) {
+			return new InfoFieldValue<>(
+				infoField,
+				InfoLocalizedValue.builder(
+				).defaultLocale(
+					locale
+				).value(
+					locale, value
+				).build());
+		}
+
+		return new InfoFieldValue<>(infoField, value);
+	}
+
 	private <T> List<InfoField<?>> _getInfoFields(
 		String className, String formVariationKey, long groupId) {
 
@@ -318,28 +340,6 @@ public class InfoRequestFieldValuesProviderHelper {
 
 			return new ArrayList<>();
 		}
-	}
-
-	private InfoFieldValue<Object> _getInfoFieldValue(
-		boolean includeNullValues, InfoField<?> infoField, Locale locale,
-		Object value) {
-
-		if ((value == null) && !includeNullValues) {
-			return null;
-		}
-
-		if (infoField.isLocalizable()) {
-			return new InfoFieldValue<>(
-				infoField,
-				InfoLocalizedValue.builder(
-				).defaultLocale(
-					locale
-				).value(
-					locale, value
-				).build());
-		}
-
-		return new InfoFieldValue<>(infoField, value);
 	}
 
 	private Set<String> _getInputNames(

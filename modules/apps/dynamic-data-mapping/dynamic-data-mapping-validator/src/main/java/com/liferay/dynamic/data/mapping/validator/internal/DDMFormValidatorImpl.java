@@ -342,42 +342,6 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 		}
 	}
 
-	private void _validateDDMFormFields(
-			List<DDMFormField> ddmFormFields, Set<String> ddmFormFieldNames,
-			boolean allowInvalidAvailableLocalesForProperty,
-			Set<Locale> ddmFormAvailableLocales, Locale ddmFormDefaultLocale)
-		throws DDMFormValidationException {
-
-		for (DDMFormField ddmFormField : ddmFormFields) {
-			_validateDDMFormFieldName(ddmFormField, ddmFormFieldNames);
-
-			_validateDDMFormFieldType(ddmFormField);
-
-			_validateDDMFormFieldIndexType(ddmFormField);
-
-			_validateDDMFormFieldOptions(
-				allowInvalidAvailableLocalesForProperty, ddmFormField,
-				ddmFormAvailableLocales, ddmFormDefaultLocale);
-
-			_validateOptionalDDMFormFieldLocalizedProperty(
-				ddmFormField, "label", allowInvalidAvailableLocalesForProperty,
-				ddmFormAvailableLocales, ddmFormDefaultLocale);
-
-			_validateOptionalDDMFormFieldLocalizedProperty(
-				ddmFormField, "tip", allowInvalidAvailableLocalesForProperty,
-				ddmFormAvailableLocales, ddmFormDefaultLocale);
-
-			validateDDMFormFieldValidationExpression(
-				ddmFormField, ddmFormAvailableLocales);
-			_validateDDMFormFieldVisibilityExpression(ddmFormField);
-
-			_validateDDMFormFields(
-				ddmFormField.getNestedDDMFormFields(), ddmFormFieldNames,
-				allowInvalidAvailableLocalesForProperty,
-				ddmFormAvailableLocales, ddmFormDefaultLocale);
-		}
-	}
-
 	private void _validateDDMFormFieldType(DDMFormField ddmFormField)
 		throws DDMFormValidationException {
 
@@ -427,6 +391,42 @@ public class DDMFormValidatorImpl implements DDMFormValidator {
 
 			throw new MustSetValidVisibilityExpression(
 				ddmFormField.getName(), visibilityExpression);
+		}
+	}
+
+	private void _validateDDMFormFields(
+			List<DDMFormField> ddmFormFields, Set<String> ddmFormFieldNames,
+			boolean allowInvalidAvailableLocalesForProperty,
+			Set<Locale> ddmFormAvailableLocales, Locale ddmFormDefaultLocale)
+		throws DDMFormValidationException {
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
+			_validateDDMFormFieldName(ddmFormField, ddmFormFieldNames);
+
+			_validateDDMFormFieldType(ddmFormField);
+
+			_validateDDMFormFieldIndexType(ddmFormField);
+
+			_validateDDMFormFieldOptions(
+				allowInvalidAvailableLocalesForProperty, ddmFormField,
+				ddmFormAvailableLocales, ddmFormDefaultLocale);
+
+			_validateOptionalDDMFormFieldLocalizedProperty(
+				ddmFormField, "label", allowInvalidAvailableLocalesForProperty,
+				ddmFormAvailableLocales, ddmFormDefaultLocale);
+
+			_validateOptionalDDMFormFieldLocalizedProperty(
+				ddmFormField, "tip", allowInvalidAvailableLocalesForProperty,
+				ddmFormAvailableLocales, ddmFormDefaultLocale);
+
+			validateDDMFormFieldValidationExpression(
+				ddmFormField, ddmFormAvailableLocales);
+			_validateDDMFormFieldVisibilityExpression(ddmFormField);
+
+			_validateDDMFormFields(
+				ddmFormField.getNestedDDMFormFields(), ddmFormFieldNames,
+				allowInvalidAvailableLocalesForProperty,
+				ddmFormAvailableLocales, ddmFormDefaultLocale);
 		}
 	}
 

@@ -160,13 +160,13 @@ public class DiscountProductResourceImpl
 	}
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceDiscountRelService _commerceDiscountRelService;
 
 	@Reference
 	private CommerceDiscountService _commerceDiscountService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.pricing.internal.dto.v1_0.converter.DiscountProductDTOConverter)"

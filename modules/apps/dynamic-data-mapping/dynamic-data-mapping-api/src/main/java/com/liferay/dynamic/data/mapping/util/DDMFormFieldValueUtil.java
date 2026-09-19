@@ -62,6 +62,18 @@ public class DDMFormFieldValueUtil {
 		return optionLabel.getString(locale);
 	}
 
+	public static String getOptionValue(
+		DDMFormFieldValue ddmFormFieldValue, Locale locale) {
+
+		Value value = ddmFormFieldValue.getValue();
+
+		if (value == null) {
+			return StringPool.BLANK;
+		}
+
+		return value.getString(locale);
+	}
+
 	public static String getOptionsLabels(
 		DDMFormFieldValue ddmFormFieldValue, Locale locale) {
 
@@ -128,18 +140,6 @@ public class DDMFormFieldValueUtil {
 		}
 
 		return createJSONArray(valueString);
-	}
-
-	public static String getOptionValue(
-		DDMFormFieldValue ddmFormFieldValue, Locale locale) {
-
-		Value value = ddmFormFieldValue.getValue();
-
-		if (value == null) {
-			return StringPool.BLANK;
-		}
-
-		return value.getString(locale);
 	}
 
 	public static JSONObject getValueJSONObject(

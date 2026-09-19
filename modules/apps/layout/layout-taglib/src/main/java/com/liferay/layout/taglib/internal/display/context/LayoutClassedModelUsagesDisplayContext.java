@@ -185,18 +185,18 @@ public class LayoutClassedModelUsagesDisplayContext {
 		return _navigation;
 	}
 
-	public int getPagesUsageCount() {
-		return LayoutClassedModelUsageLocalServiceUtil.
-			getLayoutClassedModelUsagesCount(
-				_classNameId, _classPK,
-				LayoutClassedModelUsageConstants.TYPE_LAYOUT);
-	}
-
 	public int getPageTemplatesUsageCount() {
 		return LayoutClassedModelUsageLocalServiceUtil.
 			getLayoutClassedModelUsagesCount(
 				_classNameId, _classPK,
 				LayoutClassedModelUsageConstants.TYPE_PAGE_TEMPLATE);
+	}
+
+	public int getPagesUsageCount() {
+		return LayoutClassedModelUsageLocalServiceUtil.
+			getLayoutClassedModelUsagesCount(
+				_classNameId, _classPK,
+				LayoutClassedModelUsageConstants.TYPE_LAYOUT);
 	}
 
 	public PortletURL getPortletURL() throws PortletException {

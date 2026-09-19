@@ -204,20 +204,6 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 			StorageType.DEFAULT.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 	}
 
-	@Test(expected = StructureDefinitionException.class)
-	public void testAddStructureWithoutDefinition() throws Exception {
-		addStructure(
-			_classNameId, null, "Test Structure", StringPool.BLANK,
-			StorageType.DEFAULT.getValue(), DDMStructureConstants.TYPE_DEFAULT);
-	}
-
-	@Test(expected = StructureNameException.class)
-	public void testAddStructureWithoutName() throws Exception {
-		addStructure(
-			_classNameId, null, StringPool.BLANK, read("test-structure.xsd"),
-			StorageType.DEFAULT.getValue(), DDMStructureConstants.TYPE_DEFAULT);
-	}
-
 	@Test
 	public void testAddStructureWithReferencedDataProviderInstance1()
 		throws Exception {
@@ -326,6 +312,20 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 		Assert.assertEquals(
 			ddmDataProviderInstanceLinks.toString(), 1,
 			ddmDataProviderInstanceLinks.size());
+	}
+
+	@Test(expected = StructureDefinitionException.class)
+	public void testAddStructureWithoutDefinition() throws Exception {
+		addStructure(
+			_classNameId, null, "Test Structure", StringPool.BLANK,
+			StorageType.DEFAULT.getValue(), DDMStructureConstants.TYPE_DEFAULT);
+	}
+
+	@Test(expected = StructureNameException.class)
+	public void testAddStructureWithoutName() throws Exception {
+		addStructure(
+			_classNameId, null, StringPool.BLANK, read("test-structure.xsd"),
+			StorageType.DEFAULT.getValue(), DDMStructureConstants.TYPE_DEFAULT);
 	}
 
 	@Test

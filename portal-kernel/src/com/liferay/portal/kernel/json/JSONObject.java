@@ -53,9 +53,9 @@ public interface JSONObject extends Externalizable, JSONSerializable {
 
 	public boolean isNull(String key);
 
-	public Iterator<String> keys();
-
 	public Set<String> keySet();
+
+	public Iterator<String> keys();
 
 	public int length();
 

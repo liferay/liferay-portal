@@ -289,6 +289,42 @@ public class SalesforceObjectEntryManagerImpl
 				scopeKey, search));
 	}
 
+	private String _getSOSQLString(
+			long companyId, DTOConverterContext dtoConverterContext,
+			ObjectDefinition objectDefinition, String filterString,
+			String scopeKey)
+		throws Exception {
+
+		String accountRestrictionSOSQLString =
+			_getAccountRestrictionSOSQLString(
+				companyId, dtoConverterContext, objectDefinition, scopeKey);
+
+		String filterSOSQLString = _filterFactory.create(
+			filterString, objectDefinition);
+
+		String sosqlString = StringPool.BLANK;
+
+		if (Validator.isNull(accountRestrictionSOSQLString) &&
+			Validator.isNotNull(filterSOSQLString)) {
+
+			sosqlString = " WHERE " + filterSOSQLString;
+		}
+		else if (Validator.isNotNull(accountRestrictionSOSQLString) &&
+				 Validator.isNull(filterSOSQLString)) {
+
+			sosqlString = " WHERE " + accountRestrictionSOSQLString;
+		}
+		else if (Validator.isNotNull(accountRestrictionSOSQLString) &&
+				 Validator.isNotNull(filterSOSQLString)) {
+
+			sosqlString = StringBundler.concat(
+				" WHERE (", filterSOSQLString, ") AND ",
+				accountRestrictionSOSQLString);
+		}
+
+		return sosqlString;
+	}
+
 	private String _getSalesforcePagination(Pagination pagination) {
 		return StringBundler.concat(
 			" LIMIT ", pagination.getPageSize(), " OFFSET ",
@@ -349,42 +385,6 @@ public class SalesforceObjectEntryManagerImpl
 		}
 
 		return sb.toString();
-	}
-
-	private String _getSOSQLString(
-			long companyId, DTOConverterContext dtoConverterContext,
-			ObjectDefinition objectDefinition, String filterString,
-			String scopeKey)
-		throws Exception {
-
-		String accountRestrictionSOSQLString =
-			_getAccountRestrictionSOSQLString(
-				companyId, dtoConverterContext, objectDefinition, scopeKey);
-
-		String filterSOSQLString = _filterFactory.create(
-			filterString, objectDefinition);
-
-		String sosqlString = StringPool.BLANK;
-
-		if (Validator.isNull(accountRestrictionSOSQLString) &&
-			Validator.isNotNull(filterSOSQLString)) {
-
-			sosqlString = " WHERE " + filterSOSQLString;
-		}
-		else if (Validator.isNotNull(accountRestrictionSOSQLString) &&
-				 Validator.isNull(filterSOSQLString)) {
-
-			sosqlString = " WHERE " + accountRestrictionSOSQLString;
-		}
-		else if (Validator.isNotNull(accountRestrictionSOSQLString) &&
-				 Validator.isNotNull(filterSOSQLString)) {
-
-			sosqlString = StringBundler.concat(
-				" WHERE (", filterSOSQLString, ") AND ",
-				accountRestrictionSOSQLString);
-		}
-
-		return sosqlString;
 	}
 
 	private int _getTotalCount(

@@ -125,6 +125,20 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 	}
 
 	@Test
+	public void testGroupTrashDisabled() throws Exception {
+		Group group = createGroup(TestPropsValues.getCompanyId());
+
+		createFileEntryTrashEntry(group, false);
+
+		TrashTestUtil.disableTrash(group);
+
+		TrashEntryLocalServiceUtil.checkEntries();
+
+		Assert.assertEquals(
+			0, TrashEntryLocalServiceUtil.getTrashEntriesCount());
+	}
+
+	@Test
 	public void testGroups() throws Exception {
 		for (int i = 0; i < _GROUPS_COUNT; i++) {
 			Group group = updateTrashEntriesMaxAge(
@@ -138,20 +152,6 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 		Assert.assertEquals(
 			_GROUPS_COUNT * _NOT_EXPIRED_TRASH_ENTRIES_COUNT,
 			TrashEntryLocalServiceUtil.getTrashEntriesCount());
-	}
-
-	@Test
-	public void testGroupTrashDisabled() throws Exception {
-		Group group = createGroup(TestPropsValues.getCompanyId());
-
-		createFileEntryTrashEntry(group, false);
-
-		TrashTestUtil.disableTrash(group);
-
-		TrashEntryLocalServiceUtil.checkEntries();
-
-		Assert.assertEquals(
-			0, TrashEntryLocalServiceUtil.getTrashEntriesCount());
 	}
 
 	@Test

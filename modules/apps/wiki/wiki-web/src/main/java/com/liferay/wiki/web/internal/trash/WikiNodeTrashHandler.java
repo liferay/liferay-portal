@@ -138,17 +138,6 @@ public class WikiNodeTrashHandler extends BaseWikiTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return _wikiNodeLocalService.fetchWikiNode(classPK);
-	}
-
-	@Override
-	public int getTrashModelsCount(long classPK) {
-		return _wikiPageLocalService.getPagesCount(
-			classPK, true, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
 	public List<TrashedModel> getTrashModelTrashedModels(
 		long classPK, int start, int end,
 		OrderByComparator<?> orderByComparator) {
@@ -161,9 +150,20 @@ public class WikiNodeTrashHandler extends BaseWikiTrashHandler {
 	}
 
 	@Override
+	public int getTrashModelsCount(long classPK) {
+		return _wikiPageLocalService.getPagesCount(
+			classPK, true, WorkflowConstants.STATUS_IN_TRASH);
+	}
+
+	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
 		return new WikiNodeTrashRenderer(
 			_wikiNodeLocalService.getNode(classPK), _trashHelper);
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return _wikiNodeLocalService.fetchWikiNode(classPK);
 	}
 
 	@Override

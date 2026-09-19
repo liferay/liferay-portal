@@ -53,11 +53,11 @@ public class TeamUADExporterTest extends BaseUADExporterTestCase<Team> {
 		return _uadExporter;
 	}
 
-	@DeleteAfterTestRun
-	private final List<Team> _teams = new ArrayList<>();
-
 	@Inject
 	private TeamUADTestHelper _teamUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<Team> _teams = new ArrayList<>();
 
 	@Inject(
 		filter = "component.name=com.liferay.site.teams.uad.exporter.TeamUADExporter"

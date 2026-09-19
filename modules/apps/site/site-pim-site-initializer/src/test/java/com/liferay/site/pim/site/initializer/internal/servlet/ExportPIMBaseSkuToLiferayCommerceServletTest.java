@@ -436,22 +436,6 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 			"SKU-2", jsonObject2.getString("externalReferenceCode"));
 	}
 
-	private void _testDoGetWithoutUnitOfMeasure() throws Exception {
-		_mockGetObjectEntries(
-			_GROUP_ID, _mockObjectDefinition(),
-			_mockObjectEntry(
-				"SKU-1", "SKU-1",
-				HashMapBuilder.<String, Serializable>put(
-					"unitOfMeasureKey", ""
-				).build()));
-		_mockSpaceDepotEntries(_GROUP_ID);
-
-		JSONObject skuJSONObject = _getSkuJSONObject(_getJSONObject());
-
-		Assert.assertEquals("SKU-1", skuJSONObject.getString("sku"));
-		Assert.assertFalse(skuJSONObject.has("skuUnitOfMeasures"));
-	}
-
 	private void _testDoGetWithPortalException() throws Exception {
 		ObjectEntry objectEntry = _mockObjectEntry("SKU-1", "SKU-1");
 
@@ -551,6 +535,22 @@ public class ExportPIMBaseSkuToLiferayCommerceServletTest {
 		JSONObject jsonObject = _getJSONObject();
 
 		Assert.assertEquals("virtual", jsonObject.getString("productType"));
+	}
+
+	private void _testDoGetWithoutUnitOfMeasure() throws Exception {
+		_mockGetObjectEntries(
+			_GROUP_ID, _mockObjectDefinition(),
+			_mockObjectEntry(
+				"SKU-1", "SKU-1",
+				HashMapBuilder.<String, Serializable>put(
+					"unitOfMeasureKey", ""
+				).build()));
+		_mockSpaceDepotEntries(_GROUP_ID);
+
+		JSONObject skuJSONObject = _getSkuJSONObject(_getJSONObject());
+
+		Assert.assertEquals("SKU-1", skuJSONObject.getString("sku"));
+		Assert.assertFalse(skuJSONObject.has("skuUnitOfMeasures"));
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();

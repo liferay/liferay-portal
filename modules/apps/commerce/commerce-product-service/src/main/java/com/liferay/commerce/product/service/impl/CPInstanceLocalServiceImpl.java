@@ -2155,6 +2155,9 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			CPDefinitionOptionValueRelLocalService.class);
 
 	@Reference
+	private CProductPersistence _cProductPersistence;
+
+	@Reference
 	private CPDefinitionOptionValueRelPersistence
 		_cpDefinitionOptionValueRelPersistence;
 
@@ -2172,9 +2175,6 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 	@Reference
 	private CPInstanceUnitOfMeasurePersistence
 		_cpInstanceUnitOfMeasurePersistence;
-
-	@Reference
-	private CProductPersistence _cProductPersistence;
 
 	@Reference
 	private CPSubscriptionTypeRegistry _cpSubscriptionTypeRegistry;

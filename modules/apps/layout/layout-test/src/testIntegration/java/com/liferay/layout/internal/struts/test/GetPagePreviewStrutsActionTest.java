@@ -211,34 +211,6 @@ public class GetPagePreviewStrutsActionTest {
 	}
 
 	@Test
-	@TestInfo("LPS-158527")
-	public void testGetPagePreviewWithoutPermissions() throws Exception {
-		_addLayout(_group, false, LayoutConstants.TYPE_CONTENT);
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-		mockHttpServletRequest.setMethod(HttpMethods.GET);
-
-		Company company = _companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-
-		_themeDisplay.setRealUser(company.getGuestUser());
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_getPagePreviewStrutsAction.execute(
-			mockHttpServletRequest, mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
-	}
-
-	@Test
 	@TestInfo("LPD-80135")
 	public void testGetPagePreviewWithThemeCSSClientExtension()
 		throws Exception {
@@ -318,6 +290,34 @@ public class GetPagePreviewStrutsActionTest {
 			_clientExtensionEntryLocalService.deleteClientExtensionEntry(
 				clientExtensionEntry.getClientExtensionEntryId());
 		}
+	}
+
+	@Test
+	@TestInfo("LPS-158527")
+	public void testGetPagePreviewWithoutPermissions() throws Exception {
+		_addLayout(_group, false, LayoutConstants.TYPE_CONTENT);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+		mockHttpServletRequest.setMethod(HttpMethods.GET);
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		_themeDisplay.setRealUser(company.getGuestUser());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_getPagePreviewStrutsAction.execute(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_NOT_FOUND,
+			mockHttpServletResponse.getStatus());
 	}
 
 	private Layout _addLayout(Group group, boolean privateLayout, String type)

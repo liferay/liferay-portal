@@ -17,9 +17,9 @@ public interface ServiceMonitoringControl {
 	public void addServiceClassMethod(
 		String className, String methodName, String[] parameterTypes);
 
-	public Set<String> getServiceClasses();
-
 	public Set<MethodSignature> getServiceClassMethods();
+
+	public Set<String> getServiceClasses();
 
 	public boolean isInclusiveMode();
 

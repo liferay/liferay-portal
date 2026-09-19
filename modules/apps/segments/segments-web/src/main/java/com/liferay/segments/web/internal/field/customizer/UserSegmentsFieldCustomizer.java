@@ -46,13 +46,13 @@ public class UserSegmentsFieldCustomizer extends BaseSegmentsFieldCustomizer {
 	public static final String KEY = "user";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getUser(fieldValue);
+	public String getClassName() {
+		return User.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return User.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getUser(fieldValue);
 	}
 
 	@Override

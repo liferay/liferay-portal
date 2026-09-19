@@ -402,11 +402,6 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 			layoutPageTemplateEntry.getName());
 	}
 
-	private String _getUniqueId(String id) {
-		return LayoutPageTemplateEntry.class.getSimpleName() +
-			StringPool.UNDERLINE + id;
-	}
-
 	private String _getURLSeparator() {
 		FriendlyURLResolver friendlyURLResolver =
 			FriendlyURLResolverRegistryUtil.
@@ -420,6 +415,11 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 		}
 
 		return FriendlyURLResolverConstants.URL_SEPARATOR_X_CUSTOM_ASSET;
+	}
+
+	private String _getUniqueId(String id) {
+		return LayoutPageTemplateEntry.class.getSimpleName() +
+			StringPool.UNDERLINE + id;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

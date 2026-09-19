@@ -54,48 +54,6 @@ public class XLIFF12TranslationInfoItemFieldValuesExporterTest {
 	}
 
 	@Test
-	public void testExportedInlineCodesSurviveImportRoundTrip()
-		throws Exception {
-
-		TranslationTestUtil.withHTMLInlineCodeProtectionEnabled(
-			() -> {
-				InfoItemFieldValuesProvider<JournalArticle>
-					infoItemFieldValuesProvider =
-						(InfoItemFieldValuesProvider<JournalArticle>)
-							_infoItemServiceRegistry.getFirstInfoItemService(
-								InfoItemFieldValuesProvider.class,
-								JournalArticle.class.getName());
-
-				JournalArticle journalArticle =
-					TranslationTestUtil.getJournalArticleWithRichHTML(
-						_group, _ddmFormDeserializer);
-
-				InfoItemFieldValues infoItemFieldValues =
-					_xliffTranslationInfoItemFieldValuesImporter.
-						importInfoItemFieldValues(
-							_group.getGroupId(),
-							new InfoItemReference(
-								JournalArticle.class.getName(),
-								journalArticle.getResourcePrimKey()),
-							_xliffTranslationInfoItemFieldValuesExporter.
-								exportInfoItemFieldValues(
-									infoItemFieldValuesProvider.
-										getInfoItemFieldValues(journalArticle),
-									LocaleUtil.getDefault(),
-									LocaleUtil.fromLanguageId("es_ES")));
-
-				InfoFieldValue<Object> infoFieldValue =
-					infoItemFieldValues.getInfoFieldValue("HTML4acl");
-
-				Assert.assertEquals(
-					"<p class=\"intro\">Hola <b>mundo</b> &amp; mas</p><br/>" +
-						"<img src=\"/images/logo.png\"><script>console.log(" +
-							"\"protect\");</script><em>sin cerrar",
-					infoFieldValue.getValue(LocaleUtil.SPAIN));
-			});
-	}
-
-	@Test
 	public void testExportProtectsHTMLFieldWithInlineCodes() throws Exception {
 		TranslationTestUtil.withHTMLInlineCodeProtectionEnabled(
 			() -> {
@@ -266,6 +224,48 @@ public class XLIFF12TranslationInfoItemFieldValuesExporterTest {
 								journalArticle),
 							LocaleUtil.getDefault(),
 							LocaleUtil.fromLanguageId("es_ES")))));
+	}
+
+	@Test
+	public void testExportedInlineCodesSurviveImportRoundTrip()
+		throws Exception {
+
+		TranslationTestUtil.withHTMLInlineCodeProtectionEnabled(
+			() -> {
+				InfoItemFieldValuesProvider<JournalArticle>
+					infoItemFieldValuesProvider =
+						(InfoItemFieldValuesProvider<JournalArticle>)
+							_infoItemServiceRegistry.getFirstInfoItemService(
+								InfoItemFieldValuesProvider.class,
+								JournalArticle.class.getName());
+
+				JournalArticle journalArticle =
+					TranslationTestUtil.getJournalArticleWithRichHTML(
+						_group, _ddmFormDeserializer);
+
+				InfoItemFieldValues infoItemFieldValues =
+					_xliffTranslationInfoItemFieldValuesImporter.
+						importInfoItemFieldValues(
+							_group.getGroupId(),
+							new InfoItemReference(
+								JournalArticle.class.getName(),
+								journalArticle.getResourcePrimKey()),
+							_xliffTranslationInfoItemFieldValuesExporter.
+								exportInfoItemFieldValues(
+									infoItemFieldValuesProvider.
+										getInfoItemFieldValues(journalArticle),
+									LocaleUtil.getDefault(),
+									LocaleUtil.fromLanguageId("es_ES")));
+
+				InfoFieldValue<Object> infoFieldValue =
+					infoItemFieldValues.getInfoFieldValue("HTML4acl");
+
+				Assert.assertEquals(
+					"<p class=\"intro\">Hola <b>mundo</b> &amp; mas</p><br/>" +
+						"<img src=\"/images/logo.png\"><script>console.log(" +
+							"\"protect\");</script><em>sin cerrar",
+					infoFieldValue.getValue(LocaleUtil.SPAIN));
+			});
 	}
 
 	private JournalArticle _getJournalArticleWithRepeatableHTMLField()

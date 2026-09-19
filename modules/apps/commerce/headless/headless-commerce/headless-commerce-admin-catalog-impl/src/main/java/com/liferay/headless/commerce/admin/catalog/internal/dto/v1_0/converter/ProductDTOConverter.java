@@ -180,6 +180,10 @@ public class ProductDTOConverter
 		};
 	}
 
+	private CPType _getCPType(String name) {
+		return _cpTypeRegistry.getCPType(name);
+	}
+
 	private long _getCommerceCatalogId(CPDefinition cpDefinition) {
 		CommerceCatalog commerceCatalog = cpDefinition.getCommerceCatalog();
 
@@ -188,10 +192,6 @@ public class ProductDTOConverter
 		}
 
 		return commerceCatalog.getCommerceCatalogId();
-	}
-
-	private CPType _getCPType(String name) {
-		return _cpTypeRegistry.getCPType(name);
 	}
 
 	private String _getSku(CPDefinition cpDefinition, Locale locale) {

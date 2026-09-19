@@ -74,15 +74,15 @@ public class SharepointConnectionInfo {
 		return _sitePath;
 	}
 
+	public String getUserName() {
+		return _userName;
+	}
+
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getUserName}
 	 */
 	@Deprecated
 	public String getUsername() {
-		return _userName;
-	}
-
-	public String getUserName() {
 		return _userName;
 	}
 

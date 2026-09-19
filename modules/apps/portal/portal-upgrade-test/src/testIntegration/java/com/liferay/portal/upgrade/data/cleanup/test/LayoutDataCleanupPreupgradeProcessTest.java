@@ -191,11 +191,11 @@ public class LayoutDataCleanupPreupgradeProcessTest
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;

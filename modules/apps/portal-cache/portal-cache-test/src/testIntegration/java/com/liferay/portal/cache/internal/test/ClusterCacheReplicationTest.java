@@ -255,6 +255,111 @@ public class ClusterCacheReplicationTest implements Serializable {
 	}
 
 	@Test
+	public void testNotifyEntryPutWithReplicatePutsViaCopy() throws Exception {
+
+		// Assert node 1 is empty
+
+		String testCacheName = ClusterCacheReplicationTest.class.getName();
+
+		String testKey = "testKey";
+		String testValue = "testValue";
+
+		Assert.assertNull(
+			_tomcatNode1.syncExecute(
+				() -> {
+					PortalCache<String, String> portalCache =
+						PortalCacheHelperUtil.getPortalCache(
+							PortalCacheManagerNames.MULTI_VM, testCacheName);
+
+					PortalCacheReplicationTestUtil.setReplicatorFieldValue(
+						portalCache, "_replicatePutsViaCopy", true);
+
+					return portalCache.get(testKey);
+				}));
+
+		// Assert node 2 is empty
+
+		Assert.assertNull(
+			_tomcatNode2.syncExecute(
+				() -> {
+					PortalCache<String, String> portalCache =
+						PortalCacheHelperUtil.getPortalCache(
+							PortalCacheManagerNames.MULTI_VM, testCacheName);
+
+					PortalCacheReplicationTestUtil.setReplicatorFieldValue(
+						portalCache, "_replicatePutsViaCopy", true);
+
+					portalCache.registerPortalCacheListener(
+						new TestPortalCacheListener());
+
+					return portalCache.get(testKey);
+				}));
+
+		// Assert node 1 can see the value it just put
+
+		Assert.assertEquals(
+			testValue,
+			_tomcatNode1.syncExecute(
+				() -> {
+					PortalCache<String, String> portalCache =
+						PortalCacheHelperUtil.getPortalCache(
+							PortalCacheManagerNames.MULTI_VM, testCacheName);
+
+					portalCache.put(testKey, testValue);
+
+					return portalCache.get(testKey);
+				}));
+
+		// Assert node 2 has the same value because "_replicatePutsViaCopy" is
+		// set to true
+
+		Assert.assertEquals(
+			testValue,
+			_tomcatNode2.syncExecute(
+				() -> {
+					PortalCache<String, String> portalCache =
+						PortalCacheHelperUtil.getPortalCache(
+							PortalCacheManagerNames.MULTI_VM, testCacheName);
+
+					TestPortalCacheListener.await(
+						portalCache,
+						TestPortalCacheListener::getPutCountDownLatch);
+
+					return portalCache.get(testKey);
+				}));
+
+		// Assert node 1 is empty after removal
+
+		Assert.assertNull(
+			_tomcatNode1.syncExecute(
+				() -> {
+					PortalCache<String, String> portalCache =
+						PortalCacheHelperUtil.getPortalCache(
+							PortalCacheManagerNames.MULTI_VM, testCacheName);
+
+					portalCache.remove(testKey);
+
+					return portalCache.get(testKey);
+				}));
+
+		// Assert node 2 is also empty
+
+		Assert.assertNull(
+			_tomcatNode2.syncExecute(
+				() -> {
+					PortalCache<String, String> portalCache =
+						PortalCacheHelperUtil.getPortalCache(
+							PortalCacheManagerNames.MULTI_VM, testCacheName);
+
+					TestPortalCacheListener.await(
+						portalCache,
+						TestPortalCacheListener::getRemoveCountDownLatch);
+
+					return portalCache.get(testKey);
+				}));
+	}
+
+	@Test
 	public void testNotifyEntryPutWithoutReplicatePuts() throws Exception {
 
 		// Assert empty on node 1, set up property
@@ -481,111 +586,6 @@ public class ClusterCacheReplicationTest implements Serializable {
 					TestPortalCacheListener.await(
 						portalCache,
 						TestPortalCacheListener::getRemoveAllCountDownLatch);
-
-					return portalCache.get(testKey);
-				}));
-	}
-
-	@Test
-	public void testNotifyEntryPutWithReplicatePutsViaCopy() throws Exception {
-
-		// Assert node 1 is empty
-
-		String testCacheName = ClusterCacheReplicationTest.class.getName();
-
-		String testKey = "testKey";
-		String testValue = "testValue";
-
-		Assert.assertNull(
-			_tomcatNode1.syncExecute(
-				() -> {
-					PortalCache<String, String> portalCache =
-						PortalCacheHelperUtil.getPortalCache(
-							PortalCacheManagerNames.MULTI_VM, testCacheName);
-
-					PortalCacheReplicationTestUtil.setReplicatorFieldValue(
-						portalCache, "_replicatePutsViaCopy", true);
-
-					return portalCache.get(testKey);
-				}));
-
-		// Assert node 2 is empty
-
-		Assert.assertNull(
-			_tomcatNode2.syncExecute(
-				() -> {
-					PortalCache<String, String> portalCache =
-						PortalCacheHelperUtil.getPortalCache(
-							PortalCacheManagerNames.MULTI_VM, testCacheName);
-
-					PortalCacheReplicationTestUtil.setReplicatorFieldValue(
-						portalCache, "_replicatePutsViaCopy", true);
-
-					portalCache.registerPortalCacheListener(
-						new TestPortalCacheListener());
-
-					return portalCache.get(testKey);
-				}));
-
-		// Assert node 1 can see the value it just put
-
-		Assert.assertEquals(
-			testValue,
-			_tomcatNode1.syncExecute(
-				() -> {
-					PortalCache<String, String> portalCache =
-						PortalCacheHelperUtil.getPortalCache(
-							PortalCacheManagerNames.MULTI_VM, testCacheName);
-
-					portalCache.put(testKey, testValue);
-
-					return portalCache.get(testKey);
-				}));
-
-		// Assert node 2 has the same value because "_replicatePutsViaCopy" is
-		// set to true
-
-		Assert.assertEquals(
-			testValue,
-			_tomcatNode2.syncExecute(
-				() -> {
-					PortalCache<String, String> portalCache =
-						PortalCacheHelperUtil.getPortalCache(
-							PortalCacheManagerNames.MULTI_VM, testCacheName);
-
-					TestPortalCacheListener.await(
-						portalCache,
-						TestPortalCacheListener::getPutCountDownLatch);
-
-					return portalCache.get(testKey);
-				}));
-
-		// Assert node 1 is empty after removal
-
-		Assert.assertNull(
-			_tomcatNode1.syncExecute(
-				() -> {
-					PortalCache<String, String> portalCache =
-						PortalCacheHelperUtil.getPortalCache(
-							PortalCacheManagerNames.MULTI_VM, testCacheName);
-
-					portalCache.remove(testKey);
-
-					return portalCache.get(testKey);
-				}));
-
-		// Assert node 2 is also empty
-
-		Assert.assertNull(
-			_tomcatNode2.syncExecute(
-				() -> {
-					PortalCache<String, String> portalCache =
-						PortalCacheHelperUtil.getPortalCache(
-							PortalCacheManagerNames.MULTI_VM, testCacheName);
-
-					TestPortalCacheListener.await(
-						portalCache,
-						TestPortalCacheListener::getRemoveCountDownLatch);
 
 					return portalCache.get(testKey);
 				}));

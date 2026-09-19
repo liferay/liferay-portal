@@ -294,28 +294,6 @@ public class PoshiGetterUtil {
 		return returnObject;
 	}
 
-	public static String getNamespacedClassNameFromNamespacedClassCommandName(
-		String namespacedClassCommandName) {
-
-		Matcher matcher = _namespacedClassCommandNamePattern.matcher(
-			namespacedClassCommandName);
-
-		if (matcher.find()) {
-			String namespace = matcher.group("namespace");
-
-			if (Validator.isNull(namespace)) {
-				namespace = PoshiContext.getDefaultNamespace();
-			}
-
-			String className = matcher.group("className");
-
-			return namespace + "." + className;
-		}
-
-		throw new RuntimeException(
-			"Unable to find class name in " + namespacedClassCommandName);
-	}
-
 	public static String getNamespaceFromNamespacedClassCommandName(
 		String namespacedClassCommandName) {
 
@@ -354,6 +332,28 @@ public class PoshiGetterUtil {
 
 		throw new RuntimeException(
 			"Unable to find namespace in " + namespacedClassName);
+	}
+
+	public static String getNamespacedClassNameFromNamespacedClassCommandName(
+		String namespacedClassCommandName) {
+
+		Matcher matcher = _namespacedClassCommandNamePattern.matcher(
+			namespacedClassCommandName);
+
+		if (matcher.find()) {
+			String namespace = matcher.group("namespace");
+
+			if (Validator.isNull(namespace)) {
+				namespace = PoshiContext.getDefaultNamespace();
+			}
+
+			String className = matcher.group("className");
+
+			return namespace + "." + className;
+		}
+
+		throw new RuntimeException(
+			"Unable to find class name in " + namespacedClassCommandName);
 	}
 
 	public static String getProjectDirName() {

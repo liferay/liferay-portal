@@ -716,6 +716,9 @@ public class CPDefinitionLinkLocalServiceImpl
 	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Reference
+	private CProductPersistence _cProductPersistence;
+
+	@Reference
 	private CompanyLocalService _companyLocalService;
 
 	@Reference
@@ -723,9 +726,6 @@ public class CPDefinitionLinkLocalServiceImpl
 
 	@Reference
 	private CPDefinitionPersistence _cpDefinitionPersistence;
-
-	@Reference
-	private CProductPersistence _cProductPersistence;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;

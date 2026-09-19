@@ -509,10 +509,11 @@ public class AggregationFilteringTest {
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
 
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 	private String _keyword;
 	private User _user1;
 	private User _user2;

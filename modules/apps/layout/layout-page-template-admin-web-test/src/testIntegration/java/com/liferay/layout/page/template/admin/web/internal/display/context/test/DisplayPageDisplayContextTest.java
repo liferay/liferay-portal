@@ -93,6 +93,21 @@ public class DisplayPageDisplayContextTest {
 
 	@Test
 	@TestInfo("LPS-192722")
+	public void testCannotViewContentTypeAsUserWithViewPermission()
+		throws Exception {
+
+		JSONArray mappingTypesJSONArray = ReflectionTestUtil.invoke(
+			_getDisplayPageDisplayContext(), "getMappingTypesJSONArray",
+			new Class<?>[0]);
+
+		JSONArray mappingSubtypesJSONArray = _getMappingSubtypesJSONArray(
+			mappingTypesJSONArray);
+
+		Assert.assertEquals(2, mappingSubtypesJSONArray.length());
+	}
+
+	@Test
+	@TestInfo("LPS-192722")
 	public void testCannotViewContentTypeAsUserWithoutViewPermission()
 		throws Exception {
 
@@ -118,21 +133,6 @@ public class DisplayPageDisplayContextTest {
 			PermissionThreadLocal.setPermissionChecker(
 				originalPermissionChecker);
 		}
-	}
-
-	@Test
-	@TestInfo("LPS-192722")
-	public void testCannotViewContentTypeAsUserWithViewPermission()
-		throws Exception {
-
-		JSONArray mappingTypesJSONArray = ReflectionTestUtil.invoke(
-			_getDisplayPageDisplayContext(), "getMappingTypesJSONArray",
-			new Class<?>[0]);
-
-		JSONArray mappingSubtypesJSONArray = _getMappingSubtypesJSONArray(
-			mappingTypesJSONArray);
-
-		Assert.assertEquals(2, mappingSubtypesJSONArray.length());
 	}
 
 	private Object _getDisplayPageDisplayContext() throws Exception {

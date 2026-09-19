@@ -97,13 +97,6 @@ public class ResourceURLBuilder {
 		}
 
 		@Override
-		public AfterCacheabilityStep setCacheability(String cacheLevel) {
-			_resourceURL.setCacheability(cacheLevel);
-
-			return this;
-		}
-
-		@Override
 		public AfterCMDStep setCMD(String value) {
 			_setParameter(Constants.CMD, value, false);
 
@@ -115,6 +108,13 @@ public class ResourceURLBuilder {
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier) {
 
 			_setParameter(Constants.CMD, valueUnsafeSupplier, false);
+
+			return this;
+		}
+
+		@Override
+		public AfterCacheabilityStep setCacheability(String cacheLevel) {
+			_resourceURL.setCacheability(cacheLevel);
 
 			return this;
 		}
@@ -432,14 +432,14 @@ public class ResourceURLBuilder {
 				Tabs1Step, Tabs2Step {
 	}
 
-	public interface AfterCacheabilityStep
-		extends BuildStep, ResourceIDStep, SecureStep {
-	}
-
 	public interface AfterCMDStep
 		extends BackURLStep, BuildStep, CacheabilityStep, KeywordsStep,
 				NavigationStep, ParameterStep, PortletResourceStep,
 				RedirectStep, ResourceIDStep, SecureStep, Tabs1Step, Tabs2Step {
+	}
+
+	public interface AfterCacheabilityStep
+		extends BuildStep, ResourceIDStep, SecureStep {
 	}
 
 	public interface AfterKeywordsStep
@@ -515,18 +515,18 @@ public class ResourceURLBuilder {
 
 	}
 
-	public interface CacheabilityStep {
-
-		public AfterCacheabilityStep setCacheability(String cacheLevel);
-
-	}
-
 	public interface CMDStep {
 
 		public AfterCMDStep setCMD(String value);
 
 		public AfterCMDStep setCMD(
 			UnsafeSupplier<Object, Exception> valueUnsafeSupplier);
+
+	}
+
+	public interface CacheabilityStep {
+
+		public AfterCacheabilityStep setCacheability(String cacheLevel);
 
 	}
 

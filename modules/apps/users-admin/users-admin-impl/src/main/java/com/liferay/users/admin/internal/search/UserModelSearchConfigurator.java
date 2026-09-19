@@ -67,13 +67,13 @@ public class UserModelSearchConfigurator
 			_localization);
 	}
 
+	@Reference
+	private IndexWriterHelper _indexWriterHelper;
+
 	@Reference(
 		target = "(indexer.class.name=com.liferay.portal.kernel.model.Contact)"
 	)
 	private IndexerDocumentBuilder _indexerDocumentBuilder;
-
-	@Reference
-	private IndexWriterHelper _indexWriterHelper;
 
 	@Reference
 	private Localization _localization;

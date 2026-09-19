@@ -167,14 +167,14 @@ public class CopyItemsMVCActionCommand
 	}
 
 	@Override
-	protected String getNoninstanceablePortletExceptionMessage() {
-		return "the-layout-could-not-be-copied-because-it-contains-a-widget-" +
-			"x-that-can-only-appear-once-on-the-page";
+	protected String getNoSuchEntryLinkExceptionMessage() {
+		return "the-section-could-not-be-copied-because-it-no-longer-exists";
 	}
 
 	@Override
-	protected String getNoSuchEntryLinkExceptionMessage() {
-		return "the-section-could-not-be-copied-because-it-no-longer-exists";
+	protected String getNoninstanceablePortletExceptionMessage() {
+		return "the-layout-could-not-be-copied-because-it-contains-a-widget-" +
+			"x-that-can-only-appear-once-on-the-page";
 	}
 
 	@Reference

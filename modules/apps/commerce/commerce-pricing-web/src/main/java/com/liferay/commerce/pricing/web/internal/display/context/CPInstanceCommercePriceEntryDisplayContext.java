@@ -106,23 +106,6 @@ public class CPInstanceCommercePriceEntryDisplayContext
 		return priceCommerceMoney.format(cpRequestHelper.getLocale());
 	}
 
-	public CommercePriceEntry getCommercePriceEntry() throws PortalException {
-		return _commercePriceListActionHelper.getCommercePriceEntry(
-			cpRequestHelper.getRenderRequest());
-	}
-
-	public long getCommercePriceEntryId() throws PortalException {
-		long commercePriceEntryId = 0;
-
-		CommercePriceEntry commercePriceEntry = getCommercePriceEntry();
-
-		if (commercePriceEntry != null) {
-			commercePriceEntryId = commercePriceEntry.getCommercePriceEntryId();
-		}
-
-		return commercePriceEntryId;
-	}
-
 	public CPInstance getCPInstance() throws PortalException {
 		if (_cpInstance != null) {
 			return _cpInstance;
@@ -154,6 +137,23 @@ public class CPInstanceCommercePriceEntryDisplayContext
 		return cpInstance.getCPInstanceUnitOfMeasures(
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			CPInstanceUnitOfMeasurePriorityComparator.getInstance(true));
+	}
+
+	public CommercePriceEntry getCommercePriceEntry() throws PortalException {
+		return _commercePriceListActionHelper.getCommercePriceEntry(
+			cpRequestHelper.getRenderRequest());
+	}
+
+	public long getCommercePriceEntryId() throws PortalException {
+		long commercePriceEntryId = 0;
+
+		CommercePriceEntry commercePriceEntry = getCommercePriceEntry();
+
+		if (commercePriceEntry != null) {
+			commercePriceEntryId = commercePriceEntry.getCommercePriceEntryId();
+		}
+
+		return commercePriceEntryId;
 	}
 
 	public CreationMenu getCreationMenu() throws PortalException {

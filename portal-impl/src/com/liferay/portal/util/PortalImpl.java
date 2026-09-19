@@ -1483,6 +1483,109 @@ public class PortalImpl implements Portal {
 	}
 
 	@Override
+	public String getCDNHost(boolean secure) {
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		if (secure) {
+			return getCDNHostHttps(companyId);
+		}
+
+		return getCDNHostHttp(companyId);
+	}
+
+	@Override
+	public String getCDNHost(HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		boolean cdnEnabled = ParamUtil.getBoolean(
+			httpServletRequest, "cdn_enabled", true);
+		String portletId = ParamUtil.getString(httpServletRequest, "p_p_id");
+
+		if (!cdnEnabled || portletId.equals(PortletKeys.PORTAL_SETTINGS)) {
+			return StringPool.BLANK;
+		}
+
+		String cdnHost = null;
+
+		Company company = getCompany(httpServletRequest);
+
+		if (isSecure(httpServletRequest)) {
+			cdnHost = getCDNHostHttps(company.getCompanyId());
+		}
+		else {
+			cdnHost = getCDNHostHttp(company.getCompanyId());
+		}
+
+		if (Validator.isUrl(cdnHost)) {
+			return cdnHost;
+		}
+
+		return StringPool.BLANK;
+	}
+
+	@Override
+	public String getCDNHostHttp(long companyId) {
+		String cdnHostHttp = _cdnHostHttpMap.get(companyId);
+
+		if (cdnHostHttp != null) {
+			return cdnHostHttp;
+		}
+
+		try {
+			cdnHostHttp = PrefsPropsUtil.getString(
+				companyId, PropsKeys.CDN_HOST_HTTP, PropsValues.CDN_HOST_HTTP);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		if ((cdnHostHttp == null) || cdnHostHttp.startsWith("${") ||
+			!Validator.isUrl(cdnHostHttp)) {
+
+			cdnHostHttp = StringPool.BLANK;
+		}
+
+		_cdnHostHttpMap.put(companyId, cdnHostHttp);
+
+		return cdnHostHttp;
+	}
+
+	@Override
+	public String getCDNHostHttps(long companyId) {
+		String cdnHostHttps = _cdnHostHttpsMap.get(companyId);
+
+		if (cdnHostHttps != null) {
+			return cdnHostHttps;
+		}
+
+		try {
+			cdnHostHttps = PrefsPropsUtil.getString(
+				companyId, PropsKeys.CDN_HOST_HTTPS,
+				PropsValues.CDN_HOST_HTTPS);
+		}
+		catch (SystemException systemException) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(systemException);
+			}
+		}
+
+		if ((cdnHostHttps == null) || cdnHostHttps.startsWith("${") ||
+			!Validator.isUrl(cdnHostHttps)) {
+
+			cdnHostHttps = StringPool.BLANK;
+		}
+
+		_cdnHostHttpsMap.put(companyId, cdnHostHttps);
+
+		return cdnHostHttps;
+	}
+
+	@Override
 	public String getCanonicalURL(
 			String completeURL, ThemeDisplay themeDisplay, Layout layout)
 		throws PortalException {
@@ -1657,109 +1760,6 @@ public class PortalImpl implements Portal {
 		}
 
 		return groupFriendlyURL;
-	}
-
-	@Override
-	public String getCDNHost(boolean secure) {
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		if (secure) {
-			return getCDNHostHttps(companyId);
-		}
-
-		return getCDNHostHttp(companyId);
-	}
-
-	@Override
-	public String getCDNHost(HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		boolean cdnEnabled = ParamUtil.getBoolean(
-			httpServletRequest, "cdn_enabled", true);
-		String portletId = ParamUtil.getString(httpServletRequest, "p_p_id");
-
-		if (!cdnEnabled || portletId.equals(PortletKeys.PORTAL_SETTINGS)) {
-			return StringPool.BLANK;
-		}
-
-		String cdnHost = null;
-
-		Company company = getCompany(httpServletRequest);
-
-		if (isSecure(httpServletRequest)) {
-			cdnHost = getCDNHostHttps(company.getCompanyId());
-		}
-		else {
-			cdnHost = getCDNHostHttp(company.getCompanyId());
-		}
-
-		if (Validator.isUrl(cdnHost)) {
-			return cdnHost;
-		}
-
-		return StringPool.BLANK;
-	}
-
-	@Override
-	public String getCDNHostHttp(long companyId) {
-		String cdnHostHttp = _cdnHostHttpMap.get(companyId);
-
-		if (cdnHostHttp != null) {
-			return cdnHostHttp;
-		}
-
-		try {
-			cdnHostHttp = PrefsPropsUtil.getString(
-				companyId, PropsKeys.CDN_HOST_HTTP, PropsValues.CDN_HOST_HTTP);
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		if ((cdnHostHttp == null) || cdnHostHttp.startsWith("${") ||
-			!Validator.isUrl(cdnHostHttp)) {
-
-			cdnHostHttp = StringPool.BLANK;
-		}
-
-		_cdnHostHttpMap.put(companyId, cdnHostHttp);
-
-		return cdnHostHttp;
-	}
-
-	@Override
-	public String getCDNHostHttps(long companyId) {
-		String cdnHostHttps = _cdnHostHttpsMap.get(companyId);
-
-		if (cdnHostHttps != null) {
-			return cdnHostHttps;
-		}
-
-		try {
-			cdnHostHttps = PrefsPropsUtil.getString(
-				companyId, PropsKeys.CDN_HOST_HTTPS,
-				PropsValues.CDN_HOST_HTTPS);
-		}
-		catch (SystemException systemException) {
-
-			// LPS-52675
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(systemException);
-			}
-		}
-
-		if ((cdnHostHttps == null) || cdnHostHttps.startsWith("${") ||
-			!Validator.isUrl(cdnHostHttps)) {
-
-			cdnHostHttps = StringPool.BLANK;
-		}
-
-		_cdnHostHttpsMap.put(companyId, cdnHostHttps);
-
-		return cdnHostHttps;
 	}
 
 	@Override
@@ -4948,6 +4948,71 @@ public class PortalImpl implements Portal {
 	}
 
 	@Override
+	public String getURLWithSessionId(String url, String sessionId) {
+		if (!PropsValues.SESSION_ENABLE_URL_WITH_SESSION_ID) {
+			return url;
+		}
+
+		if (Validator.isNull(url)) {
+			return url;
+		}
+
+		// LEP-4787
+
+		int x = url.indexOf(CharPool.SEMICOLON);
+
+		if (x != -1) {
+			return url;
+		}
+
+		// LPS-73785
+
+		if (CompoundSessionIdSplitterUtil.hasSessionDelimiter()) {
+			HttpSession httpSession = PortalSessionContext.get(sessionId);
+
+			if (httpSession != null) {
+				while (httpSession instanceof HttpSessionWrapper) {
+					HttpSessionWrapper httpSessionWrapper =
+						(HttpSessionWrapper)httpSession;
+
+					httpSession = httpSessionWrapper.getWrappedSession();
+				}
+
+				sessionId = httpSession.getId();
+			}
+		}
+
+		x = url.indexOf(CharPool.QUESTION);
+
+		if (x != -1) {
+			return StringBundler.concat(
+				url.substring(0, x), JSESSIONID, sessionId, url.substring(x));
+		}
+
+		// In IE6, http://www.abc.com;jsessionid=XYZ does not work, but
+		// http://www.abc.com/;jsessionid=XYZ does work.
+
+		x = url.indexOf(StringPool.DOUBLE_SLASH);
+
+		StringBundler sb = new StringBundler(4);
+
+		sb.append(url);
+
+		if (x != -1) {
+			int y = url.lastIndexOf(CharPool.SLASH);
+
+			if ((x + 1) == y) {
+				sb.append(StringPool.SLASH);
+			}
+		}
+
+		sb.append(JSESSIONID);
+		sb.append(sessionId);
+
+		return sb.toString();
+	}
+
+	@Override
 	public String getUniqueElementId(
 		HttpServletRequest httpServletRequest, String namespace,
 		String elementId) {
@@ -5089,71 +5154,6 @@ public class PortalImpl implements Portal {
 	@Override
 	public Date getUptime() {
 		return _upTime;
-	}
-
-	@Override
-	public String getURLWithSessionId(String url, String sessionId) {
-		if (!PropsValues.SESSION_ENABLE_URL_WITH_SESSION_ID) {
-			return url;
-		}
-
-		if (Validator.isNull(url)) {
-			return url;
-		}
-
-		// LEP-4787
-
-		int x = url.indexOf(CharPool.SEMICOLON);
-
-		if (x != -1) {
-			return url;
-		}
-
-		// LPS-73785
-
-		if (CompoundSessionIdSplitterUtil.hasSessionDelimiter()) {
-			HttpSession httpSession = PortalSessionContext.get(sessionId);
-
-			if (httpSession != null) {
-				while (httpSession instanceof HttpSessionWrapper) {
-					HttpSessionWrapper httpSessionWrapper =
-						(HttpSessionWrapper)httpSession;
-
-					httpSession = httpSessionWrapper.getWrappedSession();
-				}
-
-				sessionId = httpSession.getId();
-			}
-		}
-
-		x = url.indexOf(CharPool.QUESTION);
-
-		if (x != -1) {
-			return StringBundler.concat(
-				url.substring(0, x), JSESSIONID, sessionId, url.substring(x));
-		}
-
-		// In IE6, http://www.abc.com;jsessionid=XYZ does not work, but
-		// http://www.abc.com/;jsessionid=XYZ does work.
-
-		x = url.indexOf(StringPool.DOUBLE_SLASH);
-
-		StringBundler sb = new StringBundler(4);
-
-		sb.append(url);
-
-		if (x != -1) {
-			int y = url.lastIndexOf(CharPool.SLASH);
-
-			if ((x + 1) == y) {
-				sb.append(StringPool.SLASH);
-			}
-		}
-
-		sb.append(JSESSIONID);
-		sb.append(sessionId);
-
-		return sb.toString();
 	}
 
 	@Override
@@ -5725,6 +5725,11 @@ public class PortalImpl implements Portal {
 	}
 
 	@Override
+	public boolean isRSSFeedsEnabled() {
+		return PropsValues.RSS_FEEDS_ENABLED;
+	}
+
+	@Override
 	public boolean isReservedParameter(String name) {
 		return _reservedParams.contains(name);
 	}
@@ -5737,11 +5742,6 @@ public class PortalImpl implements Portal {
 		String langDir = LanguageUtil.get(locale, LanguageConstants.KEY_DIR);
 
 		return langDir.equals("rtl");
-	}
-
-	@Override
-	public boolean isRSSFeedsEnabled() {
-		return PropsValues.RSS_FEEDS_ENABLED;
 	}
 
 	@Override

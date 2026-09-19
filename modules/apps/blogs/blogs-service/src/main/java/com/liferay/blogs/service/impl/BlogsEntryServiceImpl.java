@@ -454,6 +454,49 @@ public class BlogsEntryServiceImpl extends BlogsEntryServiceBaseImpl {
 	}
 
 	@Override
+	public List<BlogsEntry> getGroupUserEntries(
+		long groupId, long userId, int status, int start, int end,
+		OrderByComparator<BlogsEntry> orderByComparator) {
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return blogsEntryPersistence.filterFindByG_U_NotS(
+				groupId, userId, WorkflowConstants.STATUS_IN_TRASH, start, end,
+				orderByComparator);
+		}
+
+		return blogsEntryPersistence.filterFindByG_U_S(
+			groupId, userId, status, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<BlogsEntry> getGroupUserEntries(
+		long groupId, long userId, int[] statuses, int start, int end,
+		OrderByComparator<BlogsEntry> orderByComparator) {
+
+		return blogsEntryPersistence.filterFindByG_U_S(
+			groupId, userId, statuses, start, end, orderByComparator);
+	}
+
+	@Override
+	public int getGroupUserEntriesCount(long groupId, long userId, int status) {
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return blogsEntryPersistence.filterCountByG_U_NotS(
+				groupId, userId, WorkflowConstants.STATUS_IN_TRASH);
+		}
+
+		return blogsEntryPersistence.filterCountByG_U_S(
+			groupId, userId, status);
+	}
+
+	@Override
+	public int getGroupUserEntriesCount(
+		long groupId, long userId, int[] statuses) {
+
+		return blogsEntryPersistence.filterCountByG_U_S(
+			groupId, userId, statuses);
+	}
+
+	@Override
 	public List<BlogsEntry> getGroupsEntries(
 			long companyId, long groupId, Date displayDate, int status, int max)
 		throws PortalException {
@@ -496,49 +539,6 @@ public class BlogsEntryServiceImpl extends BlogsEntryServiceBaseImpl {
 		}
 
 		return blogsEntries1;
-	}
-
-	@Override
-	public List<BlogsEntry> getGroupUserEntries(
-		long groupId, long userId, int status, int start, int end,
-		OrderByComparator<BlogsEntry> orderByComparator) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return blogsEntryPersistence.filterFindByG_U_NotS(
-				groupId, userId, WorkflowConstants.STATUS_IN_TRASH, start, end,
-				orderByComparator);
-		}
-
-		return blogsEntryPersistence.filterFindByG_U_S(
-			groupId, userId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<BlogsEntry> getGroupUserEntries(
-		long groupId, long userId, int[] statuses, int start, int end,
-		OrderByComparator<BlogsEntry> orderByComparator) {
-
-		return blogsEntryPersistence.filterFindByG_U_S(
-			groupId, userId, statuses, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getGroupUserEntriesCount(long groupId, long userId, int status) {
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return blogsEntryPersistence.filterCountByG_U_NotS(
-				groupId, userId, WorkflowConstants.STATUS_IN_TRASH);
-		}
-
-		return blogsEntryPersistence.filterCountByG_U_S(
-			groupId, userId, status);
-	}
-
-	@Override
-	public int getGroupUserEntriesCount(
-		long groupId, long userId, int[] statuses) {
-
-		return blogsEntryPersistence.filterCountByG_U_S(
-			groupId, userId, statuses);
 	}
 
 	@Override

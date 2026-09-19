@@ -62,13 +62,13 @@ public class FrontendTokenCategoryImpl implements FrontendTokenCategory {
 	}
 
 	@Override
-	public Collection<FrontendToken> getFrontendTokens() {
-		return _frontendTokens;
+	public Collection<FrontendTokenSet> getFrontendTokenSets() {
+		return _frontendTokenSets;
 	}
 
 	@Override
-	public Collection<FrontendTokenSet> getFrontendTokenSets() {
-		return _frontendTokenSets;
+	public Collection<FrontendToken> getFrontendTokens() {
+		return _frontendTokens;
 	}
 
 	@Override
@@ -79,9 +79,9 @@ public class FrontendTokenCategoryImpl implements FrontendTokenCategory {
 	private final FrontendTokenDefinitionImpl _frontendTokenDefinitionImpl;
 	private final Collection<FrontendTokenMapping> _frontendTokenMappings =
 		new ArrayList<>();
-	private final Collection<FrontendToken> _frontendTokens = new ArrayList<>();
 	private final Collection<FrontendTokenSet> _frontendTokenSets =
 		new ArrayList<>();
+	private final Collection<FrontendToken> _frontendTokens = new ArrayList<>();
 	private final JSONLocalizer _jsonLocalizer;
 
 }

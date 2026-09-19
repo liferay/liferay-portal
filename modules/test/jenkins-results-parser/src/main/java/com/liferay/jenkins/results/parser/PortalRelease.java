@@ -764,13 +764,13 @@ public class PortalRelease {
 			".+\\-" + _PORTAL_VERSION_REGEX + ".*\\.(7z|tar.gz|zip)",
 			".+\\-" + _QUARTERLY_RELEASE_VERSION_REGEX +
 				".*\\.(7z|tar.gz|zip)");
+	private static final Pattern _bundleURLPattern = Pattern.compile(
+		"(?<bundlesBaseURL>https?://.+)/(?<bundleFileName>[^\\/]+" +
+			"\\.(7z|tar.gz|zip))");
 	private static final MultiPattern _bundlesBaseURLMultiPattern =
 		new MultiPattern(
 			"https?://.+/" + _PORTAL_VERSION_REGEX,
 			"https?://.+/" + _QUARTERLY_RELEASE_VERSION_REGEX);
-	private static final Pattern _bundleURLPattern = Pattern.compile(
-		"(?<bundlesBaseURL>https?://.+)/(?<bundleFileName>[^\\/]+" +
-			"\\.(7z|tar.gz|zip))");
 	private static final Pattern _portalBundleGlassFishFileNamePattern =
 		Pattern.compile(
 			"href=\\\"[^\\\"]*(?<fileName>liferay-[^\\\"]+-glassfish-[^\\\"]+" +

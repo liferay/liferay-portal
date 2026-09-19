@@ -293,17 +293,6 @@ public class CTEntryLocalServiceImpl extends CTEntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public CTEntry updateChangeType(long ctEntryId, int changeType)
-		throws PortalException {
-
-		CTEntry ctEntry = ctEntryPersistence.findByPrimaryKey(ctEntryId);
-
-		ctEntry.setChangeType(changeType);
-
-		return ctEntryPersistence.update(ctEntry);
-	}
-
-	@Override
 	public CTEntry updateCTEntry(CTEntry ctEntry) {
 		CTCollection ctCollection = _ctCollectionPersistence.fetchByPrimaryKey(
 			ctEntry.getCtCollectionId());
@@ -321,6 +310,17 @@ public class CTEntryLocalServiceImpl extends CTEntryLocalServiceBaseImpl {
 			throw new SystemException(
 				"Change tracking collection " + ctCollection + " is read only");
 		}
+
+		return ctEntryPersistence.update(ctEntry);
+	}
+
+	@Override
+	public CTEntry updateChangeType(long ctEntryId, int changeType)
+		throws PortalException {
+
+		CTEntry ctEntry = ctEntryPersistence.findByPrimaryKey(ctEntryId);
+
+		ctEntry.setChangeType(changeType);
 
 		return ctEntryPersistence.update(ctEntry);
 	}

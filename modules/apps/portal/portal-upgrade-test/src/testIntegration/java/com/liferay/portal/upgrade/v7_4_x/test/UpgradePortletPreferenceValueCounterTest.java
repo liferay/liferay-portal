@@ -88,10 +88,10 @@ public class UpgradePortletPreferenceValueCounterTest {
 	private CounterLocalService _counterLocalService;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 }

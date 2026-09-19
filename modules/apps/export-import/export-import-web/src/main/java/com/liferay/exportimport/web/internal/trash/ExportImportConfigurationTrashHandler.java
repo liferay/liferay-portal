@@ -56,12 +56,6 @@ public class ExportImportConfigurationTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return _exportImportConfigurationLocalService.
-			fetchExportImportConfiguration(classPK);
-	}
-
-	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
 		ExportImportConfigurationTrashRenderer
 			exportImportConfigurationTrashRenderer =
@@ -73,6 +67,12 @@ public class ExportImportConfigurationTrashHandler extends BaseTrashHandler {
 			_servletContext);
 
 		return exportImportConfigurationTrashRenderer;
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return _exportImportConfigurationLocalService.
+			fetchExportImportConfiguration(classPK);
 	}
 
 	@Override

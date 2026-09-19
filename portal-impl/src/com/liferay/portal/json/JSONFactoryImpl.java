@@ -125,13 +125,6 @@ public class JSONFactoryImpl implements JSONFactory {
 	}
 
 	@Override
-	public JSONTransformer createJavaScriptNormalizerJSONTransformer(
-		List<String> javaScriptAttributes) {
-
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public JSONArray createJSONArray() {
 		return new JSONArrayImpl();
 	}
@@ -174,6 +167,13 @@ public class JSONFactoryImpl implements JSONFactory {
 	@Override
 	public JSONSerializer createJSONSerializer() {
 		return new JSONSerializerImpl();
+	}
+
+	@Override
+	public JSONTransformer createJavaScriptNormalizerJSONTransformer(
+		List<String> javaScriptAttributes) {
+
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

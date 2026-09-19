@@ -199,6 +199,38 @@ public class WikiPageLocalServiceTest {
 	}
 
 	@Test
+	public void testAddPageWithRequiredCategory() throws Exception {
+		AssetVocabulary assetVocabulary = getRequiredAssetVocabulary();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		AssetCategory assetCategory = AssetCategoryLocalServiceUtil.addCategory(
+			TestPropsValues.getUserId(), _group.getGroupId(), "category 1",
+			assetVocabulary.getVocabularyId(), serviceContext);
+
+		long categoryId = assetCategory.getCategoryId();
+
+		serviceContext.setAssetCategoryIds(new long[] {categoryId});
+
+		WikiPage page = WikiTestUtil.addPage(
+			TestPropsValues.getUserId(), _node.getNodeId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true,
+			serviceContext);
+
+		List<AssetCategory> assetCategories =
+			AssetCategoryLocalServiceUtil.getCategories(
+				WikiPage.class.getName(), page.getResourcePrimKey());
+
+		Assert.assertEquals(
+			assetCategories.toString(), 1, assetCategories.size());
+
+		AssetCategory persistedAssetCategory = assetCategories.get(0);
+
+		Assert.assertEquals(categoryId, persistedAssetCategory.getCategoryId());
+	}
+
+	@Test
 	public void testAddPageWithoutExternalReferenceCode() throws Exception {
 		WikiPage wikiPage1 = WikiTestUtil.addPage(
 			TestPropsValues.getUserId(), _node.getNodeId(),
@@ -240,38 +272,6 @@ public class WikiPageLocalServiceTest {
 
 			throw new AssetCategoryTestException();
 		}
-	}
-
-	@Test
-	public void testAddPageWithRequiredCategory() throws Exception {
-		AssetVocabulary assetVocabulary = getRequiredAssetVocabulary();
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
-
-		AssetCategory assetCategory = AssetCategoryLocalServiceUtil.addCategory(
-			TestPropsValues.getUserId(), _group.getGroupId(), "category 1",
-			assetVocabulary.getVocabularyId(), serviceContext);
-
-		long categoryId = assetCategory.getCategoryId();
-
-		serviceContext.setAssetCategoryIds(new long[] {categoryId});
-
-		WikiPage page = WikiTestUtil.addPage(
-			TestPropsValues.getUserId(), _node.getNodeId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true,
-			serviceContext);
-
-		List<AssetCategory> assetCategories =
-			AssetCategoryLocalServiceUtil.getCategories(
-				WikiPage.class.getName(), page.getResourcePrimKey());
-
-		Assert.assertEquals(
-			assetCategories.toString(), 1, assetCategories.size());
-
-		AssetCategory persistedAssetCategory = assetCategories.get(0);
-
-		Assert.assertEquals(categoryId, persistedAssetCategory.getCategoryId());
 	}
 
 	@Test

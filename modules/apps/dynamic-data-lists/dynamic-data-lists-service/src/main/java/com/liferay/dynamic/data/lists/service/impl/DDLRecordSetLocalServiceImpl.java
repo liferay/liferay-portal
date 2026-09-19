@@ -387,6 +387,44 @@ public class DDLRecordSetLocalServiceImpl
 	}
 
 	/**
+	 * Returns the record set's settings as a DDMFormValues object. For more
+	 * information see <code>DDMFormValues</code> in the
+	 * <code>dynamic.data.mapping.api</code> module.
+	 *
+	 * @param  recordSet the record set
+	 * @return the record set settings as a DDMFormValues object
+	 * @throws PortalException if a portal exception occurred
+	 */
+	@Override
+	public DDMFormValues getRecordSetSettingsDDMFormValues(
+		DDLRecordSet recordSet) {
+
+		DDMForm ddmForm = DDMFormFactory.create(DDLRecordSetSettings.class);
+
+		return _deserialize(recordSet.getSettings(), ddmForm);
+	}
+
+	/**
+	 * Returns the record set's settings.
+	 *
+	 * @param  recordSet the record set
+	 * @return the record set settings
+	 * @throws PortalException if a portal exception occurred
+	 * @see    #getRecordSetSettingsDDMFormValues(DDLRecordSet)
+	 */
+	@Override
+	public DDLRecordSetSettings getRecordSetSettingsModel(
+			DDLRecordSet recordSet)
+		throws PortalException {
+
+		DDMFormValues ddmFormValues = getRecordSetSettingsDDMFormValues(
+			recordSet);
+
+		return DDMFormInstanceFactory.create(
+			DDLRecordSetSettings.class, ddmFormValues);
+	}
+
+	/**
 	 * Returns all the record sets belonging the group.
 	 *
 	 * @return the record sets belonging to the group
@@ -425,44 +463,6 @@ public class DDLRecordSetLocalServiceImpl
 
 		return ddlRecordSetFinder.countByG_D(
 			groupId, ddmStructureId, andOperator);
-	}
-
-	/**
-	 * Returns the record set's settings as a DDMFormValues object. For more
-	 * information see <code>DDMFormValues</code> in the
-	 * <code>dynamic.data.mapping.api</code> module.
-	 *
-	 * @param  recordSet the record set
-	 * @return the record set settings as a DDMFormValues object
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public DDMFormValues getRecordSetSettingsDDMFormValues(
-		DDLRecordSet recordSet) {
-
-		DDMForm ddmForm = DDMFormFactory.create(DDLRecordSetSettings.class);
-
-		return _deserialize(recordSet.getSettings(), ddmForm);
-	}
-
-	/**
-	 * Returns the record set's settings.
-	 *
-	 * @param  recordSet the record set
-	 * @return the record set settings
-	 * @throws PortalException if a portal exception occurred
-	 * @see    #getRecordSetSettingsDDMFormValues(DDLRecordSet)
-	 */
-	@Override
-	public DDLRecordSetSettings getRecordSetSettingsModel(
-			DDLRecordSet recordSet)
-		throws PortalException {
-
-		DDMFormValues ddmFormValues = getRecordSetSettingsDDMFormValues(
-			recordSet);
-
-		return DDMFormInstanceFactory.create(
-			DDLRecordSetSettings.class, ddmFormValues);
 	}
 
 	/**

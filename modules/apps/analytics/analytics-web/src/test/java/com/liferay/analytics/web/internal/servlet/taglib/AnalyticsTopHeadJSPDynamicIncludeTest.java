@@ -89,6 +89,17 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 	}
 
 	@Test
+	public void testGetAnalyticsCloudClientConfigWithIPAddressCookieDomain() {
+		Map<String, String> analyticsCloudClientConfig =
+			_getAnalyticsCloudClientConfig("10.0.0.5");
+
+		Assert.assertFalse(
+			analyticsCloudClientConfig.containsKey("cookieDomain"));
+		Assert.assertEquals(
+			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
+	}
+
+	@Test
 	public void testGetAnalyticsCloudClientConfigWithInvalidHost() {
 		CookiesManager cookiesManager = Mockito.mock(CookiesManager.class);
 
@@ -101,17 +112,6 @@ public class AnalyticsTopHeadJSPDynamicIncludeTest {
 		Map<String, String> analyticsCloudClientConfig =
 			_getAnalyticsCloudClientConfig(
 				cookiesManager, _createThemeDisplay());
-
-		Assert.assertFalse(
-			analyticsCloudClientConfig.containsKey("cookieDomain"));
-		Assert.assertEquals(
-			_PROJECT_ID, analyticsCloudClientConfig.get("projectId"));
-	}
-
-	@Test
-	public void testGetAnalyticsCloudClientConfigWithIPAddressCookieDomain() {
-		Map<String, String> analyticsCloudClientConfig =
-			_getAnalyticsCloudClientConfig("10.0.0.5");
 
 		Assert.assertFalse(
 			analyticsCloudClientConfig.containsKey("cookieDomain"));

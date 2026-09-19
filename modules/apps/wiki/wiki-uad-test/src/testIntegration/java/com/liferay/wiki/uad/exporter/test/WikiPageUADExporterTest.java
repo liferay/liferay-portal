@@ -75,10 +75,10 @@ public class WikiPageUADExporterTest
 	)
 	private UADExporter<WikiPage> _uadExporter;
 
-	@DeleteAfterTestRun
-	private final List<WikiPage> _wikiPages = new ArrayList<>();
-
 	@Inject
 	private WikiPageUADTestHelper _wikiPageUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<WikiPage> _wikiPages = new ArrayList<>();
 
 }

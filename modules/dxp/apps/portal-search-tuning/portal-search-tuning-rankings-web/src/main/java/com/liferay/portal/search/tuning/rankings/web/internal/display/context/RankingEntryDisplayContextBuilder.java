@@ -91,12 +91,6 @@ public class RankingEntryDisplayContextBuilder {
 			_getSizeString(_ranking.getPins()));
 	}
 
-	private void _setStatus(
-		RankingEntryDisplayContext rankingEntryDisplayContext) {
-
-		rankingEntryDisplayContext.setStatus(_ranking.getStatus());
-	}
-
 	private void _setSXPBlueprintExternalReferenceCode(
 		RankingEntryDisplayContext rankingEntryDisplayContext) {
 
@@ -108,6 +102,12 @@ public class RankingEntryDisplayContextBuilder {
 		RankingEntryDisplayContext rankingEntryDisplayContext) {
 
 		rankingEntryDisplayContext.setSXPBlueprintTitle(_sxpBlueprintTitle);
+	}
+
+	private void _setStatus(
+		RankingEntryDisplayContext rankingEntryDisplayContext) {
+
+		rankingEntryDisplayContext.setStatus(_ranking.getStatus());
 	}
 
 	private void _setUid(

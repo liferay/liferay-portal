@@ -137,10 +137,10 @@ public class RoleFinderTest {
 	private RoleLocalService _roleLocalService;
 
 	@DeleteAfterTestRun
-	private Role _roleWithoutViewPermission;
+	private Role _roleWithViewPermission;
 
 	@DeleteAfterTestRun
-	private Role _roleWithViewPermission;
+	private Role _roleWithoutViewPermission;
 
 	@DeleteAfterTestRun
 	private User _user;

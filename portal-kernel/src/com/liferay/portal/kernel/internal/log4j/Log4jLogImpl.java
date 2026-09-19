@@ -167,7 +167,7 @@ public class Log4jLogImpl implements Log {
 			throwable);
 	}
 
-	private final org.apache.logging.log4j.core.Logger _logger;
 	private String _logWrapperClassName = LogWrapper.class.getName();
+	private final org.apache.logging.log4j.core.Logger _logger;
 
 }

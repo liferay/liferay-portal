@@ -268,11 +268,11 @@ public class PlacedOrderItemShipmentResourceTest
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
-	@DeleteAfterTestRun
-	private final List<Address> _addresses = new ArrayList<>();
-
 	@Inject
 	private AddressLocalService _addressLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Address> _addresses = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;

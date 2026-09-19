@@ -114,10 +114,10 @@ public class CProductModelListenerTest {
 	}
 
 	@Inject
-	private ClassNameLocalService _classNameLocalService;
+	private CProductLocalService _cProductLocalService;
 
 	@Inject
-	private CProductLocalService _cProductLocalService;
+	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

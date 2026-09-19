@@ -106,6 +106,31 @@ public class CommerceCartContentDisplayContext {
 		_portal = portal;
 	}
 
+	public String getCPDefinitionURL(
+			long cpDefinitionId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		return cpDefinitionHelper.getFriendlyURL(cpDefinitionId, themeDisplay);
+	}
+
+	public String getCPInstanceCDNURL(CommerceOrderItem commerceOrderItem)
+		throws Exception {
+
+		return cpInstanceHelper.getCPInstanceCDNURL(
+			CommerceUtil.getCommerceAccountId(commerceContext),
+			commerceOrderItem.getCPInstanceId());
+	}
+
+	public FileVersion getCPInstanceImageFileVersion(
+			CommerceOrderItem commerceOrderItem)
+		throws Exception {
+
+		return cpInstanceHelper.getCPInstanceImageFileVersion(
+			CommerceUtil.getCommerceAccountId(commerceContext),
+			_portal.getCompanyId(_httpServletRequest),
+			commerceOrderItem.getCPInstanceId());
+	}
+
 	public CommerceOrder getCommerceOrder() {
 		if ((_commerceOrder != null) || (commerceContext == null)) {
 			return _commerceOrder;
@@ -153,31 +178,6 @@ public class CommerceCartContentDisplayContext {
 		}
 
 		return commerceChannel.getPriceDisplayType();
-	}
-
-	public String getCPDefinitionURL(
-			long cpDefinitionId, ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		return cpDefinitionHelper.getFriendlyURL(cpDefinitionId, themeDisplay);
-	}
-
-	public String getCPInstanceCDNURL(CommerceOrderItem commerceOrderItem)
-		throws Exception {
-
-		return cpInstanceHelper.getCPInstanceCDNURL(
-			CommerceUtil.getCommerceAccountId(commerceContext),
-			commerceOrderItem.getCPInstanceId());
-	}
-
-	public FileVersion getCPInstanceImageFileVersion(
-			CommerceOrderItem commerceOrderItem)
-		throws Exception {
-
-		return cpInstanceHelper.getCPInstanceImageFileVersion(
-			CommerceUtil.getCommerceAccountId(commerceContext),
-			_portal.getCompanyId(_httpServletRequest),
-			commerceOrderItem.getCPInstanceId());
 	}
 
 	public String getDeleteURL(CommerceOrderItem commerceOrderItem) {

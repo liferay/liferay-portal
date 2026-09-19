@@ -64,49 +64,6 @@ import org.osgi.service.component.annotations.Reference;
 public class CPCompareContentHelperImpl implements CPCompareContentHelper {
 
 	@Override
-	public Set<CPSpecificationOption> getCategorizedCPSpecificationOptions(
-			CPDataSourceResult cpDataSourceResult)
-		throws PortalException {
-
-		Set<CPSpecificationOption> cpSpecificationOptions =
-			new LinkedHashSet<>();
-
-		for (CPCatalogEntry cpCatalogEntry :
-				cpDataSourceResult.getCPCatalogEntries()) {
-
-			cpSpecificationOptions.addAll(
-				getCPSpecificationOptions(cpCatalogEntry, true));
-		}
-
-		return cpSpecificationOptions;
-	}
-
-	@Override
-	public String getCompareContentPortletNamespace() {
-		return _portal.getPortletNamespace(
-			CPPortletKeys.CP_COMPARE_CONTENT_WEB);
-	}
-
-	@Override
-	public String getCompareProductsURL(ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		Layout curLayout = themeDisplay.getLayout();
-
-		long plid = _portal.getPlidFromPortletId(
-			themeDisplay.getScopeGroupId(), curLayout.isPrivateLayout(),
-			CPPortletKeys.CP_COMPARE_CONTENT_WEB);
-
-		Layout layout = _layoutLocalService.fetchLayout(plid);
-
-		if (layout == null) {
-			return StringPool.BLANK;
-		}
-
-		return _portal.getLayoutURL(layout, themeDisplay);
-	}
-
-	@Override
 	public List<CPCatalogEntry> getCPCatalogEntries(
 			long groupId, long commerceAccountId,
 			HttpServletRequest httpServletRequest)
@@ -221,6 +178,49 @@ public class CPCompareContentHelperImpl implements CPCompareContentHelper {
 		}
 
 		return cpSpecificationOptions;
+	}
+
+	@Override
+	public Set<CPSpecificationOption> getCategorizedCPSpecificationOptions(
+			CPDataSourceResult cpDataSourceResult)
+		throws PortalException {
+
+		Set<CPSpecificationOption> cpSpecificationOptions =
+			new LinkedHashSet<>();
+
+		for (CPCatalogEntry cpCatalogEntry :
+				cpDataSourceResult.getCPCatalogEntries()) {
+
+			cpSpecificationOptions.addAll(
+				getCPSpecificationOptions(cpCatalogEntry, true));
+		}
+
+		return cpSpecificationOptions;
+	}
+
+	@Override
+	public String getCompareContentPortletNamespace() {
+		return _portal.getPortletNamespace(
+			CPPortletKeys.CP_COMPARE_CONTENT_WEB);
+	}
+
+	@Override
+	public String getCompareProductsURL(ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Layout curLayout = themeDisplay.getLayout();
+
+		long plid = _portal.getPlidFromPortletId(
+			themeDisplay.getScopeGroupId(), curLayout.isPrivateLayout(),
+			CPPortletKeys.CP_COMPARE_CONTENT_WEB);
+
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
+
+		return _portal.getLayoutURL(layout, themeDisplay);
 	}
 
 	@Override

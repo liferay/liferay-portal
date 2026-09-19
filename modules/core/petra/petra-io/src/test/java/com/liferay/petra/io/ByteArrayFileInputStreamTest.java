@@ -59,51 +59,6 @@ public class ByteArrayFileInputStreamTest {
 	}
 
 	@Test
-	public void testaAailable() throws Exception {
-
-		// Uninitialized
-
-		ByteArrayFileInputStream byteArrayFileInputStream =
-			new ByteArrayFileInputStream(_testFile, 512);
-
-		Assert.assertEquals(0, byteArrayFileInputStream.available());
-
-		// byte[]
-
-		byteArrayFileInputStream = new ByteArrayFileInputStream(
-			_testFile, 2048);
-
-		byteArrayFileInputStream.read();
-
-		Assert.assertNotNull(_dataField.get(byteArrayFileInputStream));
-		Assert.assertNull(_fileInputStreamField.get(byteArrayFileInputStream));
-		Assert.assertEquals(1, _indexField.getInt(byteArrayFileInputStream));
-		Assert.assertEquals(1023, byteArrayFileInputStream.available());
-
-		byteArrayFileInputStream.close();
-
-		// FileInputStream
-
-		byteArrayFileInputStream = new ByteArrayFileInputStream(_testFile, 512);
-
-		byteArrayFileInputStream.read();
-
-		Assert.assertNull(_dataField.get(byteArrayFileInputStream));
-
-		FileInputStream fileInputStream =
-			(FileInputStream)_fileInputStreamField.get(
-				byteArrayFileInputStream);
-
-		Assert.assertNotNull(fileInputStream);
-
-		Assert.assertEquals(0, _indexField.getInt(byteArrayFileInputStream));
-		Assert.assertEquals(
-			fileInputStream.available(), byteArrayFileInputStream.available());
-
-		byteArrayFileInputStream.close();
-	}
-
-	@Test
 	public void testBlockRead() throws IOException {
 
 		// byte[]
@@ -391,6 +346,51 @@ public class ByteArrayFileInputStreamTest {
 		byteArrayFileInputStream.skip(17);
 
 		Assert.assertEquals(-1, byteArrayFileInputStream.read());
+
+		byteArrayFileInputStream.close();
+	}
+
+	@Test
+	public void testaAailable() throws Exception {
+
+		// Uninitialized
+
+		ByteArrayFileInputStream byteArrayFileInputStream =
+			new ByteArrayFileInputStream(_testFile, 512);
+
+		Assert.assertEquals(0, byteArrayFileInputStream.available());
+
+		// byte[]
+
+		byteArrayFileInputStream = new ByteArrayFileInputStream(
+			_testFile, 2048);
+
+		byteArrayFileInputStream.read();
+
+		Assert.assertNotNull(_dataField.get(byteArrayFileInputStream));
+		Assert.assertNull(_fileInputStreamField.get(byteArrayFileInputStream));
+		Assert.assertEquals(1, _indexField.getInt(byteArrayFileInputStream));
+		Assert.assertEquals(1023, byteArrayFileInputStream.available());
+
+		byteArrayFileInputStream.close();
+
+		// FileInputStream
+
+		byteArrayFileInputStream = new ByteArrayFileInputStream(_testFile, 512);
+
+		byteArrayFileInputStream.read();
+
+		Assert.assertNull(_dataField.get(byteArrayFileInputStream));
+
+		FileInputStream fileInputStream =
+			(FileInputStream)_fileInputStreamField.get(
+				byteArrayFileInputStream);
+
+		Assert.assertNotNull(fileInputStream);
+
+		Assert.assertEquals(0, _indexField.getInt(byteArrayFileInputStream));
+		Assert.assertEquals(
+			fileInputStream.available(), byteArrayFileInputStream.available());
 
 		byteArrayFileInputStream.close();
 	}

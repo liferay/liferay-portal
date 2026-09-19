@@ -502,6 +502,42 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 	}
 
 	@Override
+	public List<WorkflowTransition> getWorkflowTaskWorkflowTransitions(
+			long workflowTaskId)
+		throws WorkflowException {
+
+		try {
+			KaleoTaskInstanceToken kaleoTaskInstanceToken =
+				_kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceToken(
+					workflowTaskId);
+
+			if (kaleoTaskInstanceToken.isCompleted()) {
+				return Collections.emptyList();
+			}
+
+			KaleoTask kaleoTask = kaleoTaskInstanceToken.getKaleoTask();
+
+			KaleoNode kaleoNode = kaleoTask.getKaleoNode();
+
+			return TransformUtil.transform(
+				kaleoNode.getKaleoTransitions(),
+				kaleoTransition -> new DefaultWorkflowTransition() {
+					{
+						setLabelMap(kaleoTransition.getLabelMap());
+						setName(kaleoTransition.getName());
+						setSourceNodeName(
+							kaleoTransition.getSourceKaleoNodeName());
+						setTargetNodeName(
+							kaleoTransition.getTargetKaleoNodeName());
+					}
+				});
+		}
+		catch (PortalException portalException) {
+			throw new WorkflowException(portalException);
+		}
+	}
+
+	@Override
 	public List<WorkflowTask> getWorkflowTasks(
 			long companyId, Boolean completed, int start, int end,
 			OrderByComparator<WorkflowTask> orderByComparator)
@@ -654,42 +690,6 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 		}
 		catch (Exception exception) {
 			throw new WorkflowException(exception);
-		}
-	}
-
-	@Override
-	public List<WorkflowTransition> getWorkflowTaskWorkflowTransitions(
-			long workflowTaskId)
-		throws WorkflowException {
-
-		try {
-			KaleoTaskInstanceToken kaleoTaskInstanceToken =
-				_kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceToken(
-					workflowTaskId);
-
-			if (kaleoTaskInstanceToken.isCompleted()) {
-				return Collections.emptyList();
-			}
-
-			KaleoTask kaleoTask = kaleoTaskInstanceToken.getKaleoTask();
-
-			KaleoNode kaleoNode = kaleoTask.getKaleoNode();
-
-			return TransformUtil.transform(
-				kaleoNode.getKaleoTransitions(),
-				kaleoTransition -> new DefaultWorkflowTransition() {
-					{
-						setLabelMap(kaleoTransition.getLabelMap());
-						setName(kaleoTransition.getName());
-						setSourceNodeName(
-							kaleoTransition.getSourceKaleoNodeName());
-						setTargetNodeName(
-							kaleoTransition.getTargetKaleoNodeName());
-					}
-				});
-		}
-		catch (PortalException portalException) {
-			throw new WorkflowException(portalException);
 		}
 	}
 

@@ -144,6 +144,11 @@ public class JournalIndexerTest {
 	}
 
 	@Test
+	public void testDeleteArticleVersion() throws Exception {
+		articleVersions(true, false);
+	}
+
+	@Test
 	public void testDeleteArticles() throws Exception {
 		SearchContext searchContext = SearchContextTestUtil.getSearchContext(
 			_group.getGroupId());
@@ -189,11 +194,6 @@ public class JournalIndexerTest {
 		JournalArticleLocalServiceUtil.deleteArticles(_group.getGroupId());
 
 		assertSearchCount(0, _group.getGroupId(), searchContext);
-	}
-
-	@Test
-	public void testDeleteArticleVersion() throws Exception {
-		articleVersions(true, false);
 	}
 
 	@Test

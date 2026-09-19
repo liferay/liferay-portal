@@ -62,6 +62,31 @@ public class ChainingCheck extends BaseCheck {
 		_checkChainingOnMethodCalls(detailAST);
 	}
 
+	private void _checkChainOrder(
+		DetailAST methodCallDetailAST, List<String> chainedMethodNames) {
+
+		if (!Objects.equals(chainedMethodNames.get(0), "status") ||
+			!Objects.equals(
+				chainedMethodNames.get(chainedMethodNames.size() - 1),
+				"build") ||
+			!Objects.equals(
+				getClassOrVariableName(methodCallDetailAST), "Response")) {
+
+			return;
+		}
+
+		List<String> middleMethodNames = chainedMethodNames.subList(
+			1, chainedMethodNames.size() - 1);
+
+		String unsortedNames = middleMethodNames.toString();
+
+		Collections.sort(middleMethodNames);
+
+		if (!unsortedNames.equals(middleMethodNames.toString())) {
+			log(methodCallDetailAST, _MSG_UNSORTED_RESPONSE);
+		}
+	}
+
 	private void _checkChainingOnMethodCalls(DetailAST detailAST) {
 		List<DetailAST> methodCallDetailASTs = getAllChildTokens(
 			detailAST, true, TokenTypes.METHOD_CALL);
@@ -116,31 +141,6 @@ public class ChainingCheck extends BaseCheck {
 		}
 		else if (isAttributeValue(_APPLY_TO_TYPE_CAST_KEY)) {
 			log(detailAST, _MSG_AVOID_TYPE_CAST_CHAINING);
-		}
-	}
-
-	private void _checkChainOrder(
-		DetailAST methodCallDetailAST, List<String> chainedMethodNames) {
-
-		if (!Objects.equals(chainedMethodNames.get(0), "status") ||
-			!Objects.equals(
-				chainedMethodNames.get(chainedMethodNames.size() - 1),
-				"build") ||
-			!Objects.equals(
-				getClassOrVariableName(methodCallDetailAST), "Response")) {
-
-			return;
-		}
-
-		List<String> middleMethodNames = chainedMethodNames.subList(
-			1, chainedMethodNames.size() - 1);
-
-		String unsortedNames = middleMethodNames.toString();
-
-		Collections.sort(middleMethodNames);
-
-		if (!unsortedNames.equals(middleMethodNames.toString())) {
-			log(methodCallDetailAST, _MSG_UNSORTED_RESPONSE);
 		}
 	}
 

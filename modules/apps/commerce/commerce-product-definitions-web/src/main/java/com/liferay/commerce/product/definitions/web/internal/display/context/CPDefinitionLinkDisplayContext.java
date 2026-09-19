@@ -205,6 +205,14 @@ public class CPDefinitionLinkDisplayContext
 			CPDefinitionLink.class.getName());
 	}
 
+	private List<CPDefinitionLink> _getCPDefinitionLinks(
+			long cpDefinitionId, String type)
+		throws PortalException {
+
+		return _cpDefinitionLinkService.getCPDefinitionLinks(
+			cpDefinitionId, type);
+	}
+
 	private long[] _getCheckedCPDefinitionIds(long cpDefinitionId, String type)
 		throws PortalException {
 
@@ -224,14 +232,6 @@ public class CPDefinitionLinkDisplayContext
 		}
 
 		return new long[0];
-	}
-
-	private List<CPDefinitionLink> _getCPDefinitionLinks(
-			long cpDefinitionId, String type)
-		throws PortalException {
-
-		return _cpDefinitionLinkService.getCPDefinitionLinks(
-			cpDefinitionId, type);
 	}
 
 	private long[] _getDisabledCPDefinitionIds(long cpDefinitionId, String type)

@@ -107,30 +107,6 @@ public class EditFileEntryMVCActionCommandTest {
 	}
 
 	@Test
-	public void testProcessActionAddDynamicWithoutRequiredDDMFormField()
-		throws Exception {
-
-		String fileName = RandomTestUtil.randomString() + ".txt";
-		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
-
-		_processAction(
-			_getMockLiferayPortletActionRequest(
-				_CONTENT_BYTES, fileName,
-				_getParameters(
-					Constants.ADD_DYNAMIC, folder.getFolderId(),
-					folder.getRepositoryId(), new String[0])),
-			new MockLiferayPortletActionResponse());
-
-		FileEntry actualFileEntry = _dlAppLocalService.getFileEntryByFileName(
-			_group.getGroupId(), folder.getFolderId(), fileName);
-
-		FileVersion fileVersion = actualFileEntry.getFileVersion();
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, fileVersion.getStatus());
-	}
-
-	@Test
 	public void testProcessActionAddDynamicWithRequiredDDMFormField()
 		throws Exception {
 
@@ -168,6 +144,30 @@ public class EditFileEntryMVCActionCommandTest {
 		_processAction(
 			_getMockLiferayPortletActionRequest(
 				new byte[0], fileName,
+				_getParameters(
+					Constants.ADD_DYNAMIC, folder.getFolderId(),
+					folder.getRepositoryId(), new String[0])),
+			new MockLiferayPortletActionResponse());
+
+		FileEntry actualFileEntry = _dlAppLocalService.getFileEntryByFileName(
+			_group.getGroupId(), folder.getFolderId(), fileName);
+
+		FileVersion fileVersion = actualFileEntry.getFileVersion();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, fileVersion.getStatus());
+	}
+
+	@Test
+	public void testProcessActionAddDynamicWithoutRequiredDDMFormField()
+		throws Exception {
+
+		String fileName = RandomTestUtil.randomString() + ".txt";
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		_processAction(
+			_getMockLiferayPortletActionRequest(
+				_CONTENT_BYTES, fileName,
 				_getParameters(
 					Constants.ADD_DYNAMIC, folder.getFolderId(),
 					folder.getRepositoryId(), new String[0])),

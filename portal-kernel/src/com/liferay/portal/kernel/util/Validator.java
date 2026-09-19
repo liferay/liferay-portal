@@ -594,6 +594,28 @@ public class Validator {
 	}
 
 	/**
+	 * Returns <code>true</code> if the string is an HTML document. The only
+	 * requirement is that it contain the opening and closing html tags.
+	 *
+	 * @param  s the string to check
+	 * @return <code>true</code> if the string is an HTML document;
+	 *         <code>false</code> otherwise
+	 */
+	public static boolean isHTML(String s) {
+		if (isNull(s)) {
+			return false;
+		}
+
+		if ((s.contains("<html>") || s.contains("<HTML>")) &&
+			(s.contains("</html>") || s.contains("</HTML>"))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns <code>true</code> if the string is a hexadecimal number.
 	 *
 	 * @param  hexString the string to check
@@ -658,28 +680,6 @@ public class Validator {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Returns <code>true</code> if the string is an HTML document. The only
-	 * requirement is that it contain the opening and closing html tags.
-	 *
-	 * @param  s the string to check
-	 * @return <code>true</code> if the string is an HTML document;
-	 *         <code>false</code> otherwise
-	 */
-	public static boolean isHTML(String s) {
-		if (isNull(s)) {
-			return false;
-		}
-
-		if ((s.contains("<html>") || s.contains("<HTML>")) &&
-			(s.contains("</html>") || s.contains("</HTML>"))) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	/**

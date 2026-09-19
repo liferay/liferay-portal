@@ -265,10 +265,10 @@ public class CTSearchEventListener implements CTEventListener {
 	private CTServiceRegistry _ctServiceRegistry;
 
 	@Reference
-	private IndexerRegistry _indexerRegistry;
+	private IndexWriterHelper _indexWriterHelper;
 
 	@Reference
-	private IndexWriterHelper _indexWriterHelper;
+	private IndexerRegistry _indexerRegistry;
 
 	@Reference
 	private UIDFactory _uidFactory;

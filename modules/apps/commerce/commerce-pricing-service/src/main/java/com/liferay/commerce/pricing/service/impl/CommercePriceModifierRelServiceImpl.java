@@ -99,6 +99,26 @@ public class CommercePriceModifierRelServiceImpl
 
 	@Override
 	public List<CommercePriceModifierRel>
+		getCPDefinitionsCommercePriceModifierRels(
+			long commercePriceModifierId, String name, String languageId,
+			int start, int end) {
+
+		return commercePriceModifierRelFinder.
+			findCPDefinitionsByCommercePriceModifierId(
+				commercePriceModifierId, name, languageId, start, end, true);
+	}
+
+	@Override
+	public int getCPDefinitionsCommercePriceModifierRelsCount(
+		long commercePriceModifierId, String name, String languageId) {
+
+		return commercePriceModifierRelFinder.
+			countCPDefinitionsByCommercePriceModifierId(
+				commercePriceModifierId, languageId, name, true);
+	}
+
+	@Override
+	public List<CommercePriceModifierRel>
 		getCategoriesCommercePriceModifierRels(
 			long commercePriceModifierId, String name, int start, int end) {
 
@@ -244,26 +264,6 @@ public class CommercePriceModifierRelServiceImpl
 		return commercePriceModifierRelFinder.
 			countPricingClassesByCommercePriceModifierId(
 				commercePriceModifierId, title, true);
-	}
-
-	@Override
-	public List<CommercePriceModifierRel>
-		getCPDefinitionsCommercePriceModifierRels(
-			long commercePriceModifierId, String name, String languageId,
-			int start, int end) {
-
-		return commercePriceModifierRelFinder.
-			findCPDefinitionsByCommercePriceModifierId(
-				commercePriceModifierId, name, languageId, start, end, true);
-	}
-
-	@Override
-	public int getCPDefinitionsCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String name, String languageId) {
-
-		return commercePriceModifierRelFinder.
-			countCPDefinitionsByCommercePriceModifierId(
-				commercePriceModifierId, languageId, name, true);
 	}
 
 	@Reference

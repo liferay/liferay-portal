@@ -347,11 +347,11 @@ public class ExportImportLayoutUtilityPageTest {
 		_layoutPageTemplateStructureLocalService;
 
 	@Inject
-	private LayoutsImporter _layoutsImporter;
-
-	@Inject
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
+
+	@Inject
+	private LayoutsImporter _layoutsImporter;
 
 	@Inject(
 		filter = "mvc.command.name=/layout_admin/export_layout_utility_page_entries"

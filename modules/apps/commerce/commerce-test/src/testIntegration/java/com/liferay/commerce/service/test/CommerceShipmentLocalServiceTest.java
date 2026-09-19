@@ -77,6 +77,20 @@ public class CommerceShipmentLocalServiceTest {
 	}
 
 	@Test
+	public void testGetCommerceShipmentStatusesByCommerceOrderId()
+		throws Exception {
+
+		CommerceOrder commerceOrder = _addCommerceOrder();
+
+		int[] statuses =
+			_commerceShipmentLocalService.
+				getCommerceShipmentStatusesByCommerceOrderId(
+					commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(Arrays.toString(statuses), 1, statuses.length);
+	}
+
+	@Test
 	public void testGetCommerceShipments() throws Exception {
 		CommerceOrder commerceOrder = _addCommerceOrder();
 
@@ -97,20 +111,6 @@ public class CommerceShipmentLocalServiceTest {
 			commerceOrder.getCommerceOrderId());
 
 		Assert.assertEquals(2, count);
-	}
-
-	@Test
-	public void testGetCommerceShipmentStatusesByCommerceOrderId()
-		throws Exception {
-
-		CommerceOrder commerceOrder = _addCommerceOrder();
-
-		int[] statuses =
-			_commerceShipmentLocalService.
-				getCommerceShipmentStatusesByCommerceOrderId(
-					commerceOrder.getCommerceOrderId());
-
-		Assert.assertEquals(Arrays.toString(statuses), 1, statuses.length);
 	}
 
 	private CommerceOrder _addCommerceOrder() throws Exception {

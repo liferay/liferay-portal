@@ -535,24 +535,6 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		}
 	}
 
-	private String _getAliasName(String keyARNOrAlias) {
-		if (keyARNOrAlias == null) {
-			return null;
-		}
-
-		if (keyARNOrAlias.startsWith("alias/")) {
-			return keyARNOrAlias;
-		}
-
-		int index = keyARNOrAlias.indexOf(":alias/");
-
-		if (index < 0) {
-			return null;
-		}
-
-		return keyARNOrAlias.substring(index + 1);
-	}
-
 	private AWSKMSCryptoProviderContext _getAWSKMSCryptoProviderContext(
 			long companyId)
 		throws CryptoException {
@@ -575,6 +557,24 @@ public abstract class BaseAWSKMSCryptoProvider implements CryptoProvider {
 		}
 
 		return awsKMSCryptoProviderContext;
+	}
+
+	private String _getAliasName(String keyARNOrAlias) {
+		if (keyARNOrAlias == null) {
+			return null;
+		}
+
+		if (keyARNOrAlias.startsWith("alias/")) {
+			return keyARNOrAlias;
+		}
+
+		int index = keyARNOrAlias.indexOf(":alias/");
+
+		if (index < 0) {
+			return null;
+		}
+
+		return keyARNOrAlias.substring(index + 1);
 	}
 
 	private String _getKeyId(

@@ -44,13 +44,13 @@ public class TeamSegmentsFieldCustomizer extends BaseSegmentsFieldCustomizer {
 	public static final String KEY = "team";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getTeam(fieldValue);
+	public String getClassName() {
+		return Team.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return Team.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getTeam(fieldValue);
 	}
 
 	@Override

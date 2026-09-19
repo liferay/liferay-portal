@@ -135,6 +135,16 @@ public class KBAttachmentEditorConfigContributor
 		return itemSelectorCriterion;
 	}
 
+	private ItemSelectorCriterion _getURLItemSelectorCriterion() {
+		ItemSelectorCriterion itemSelectorCriterion =
+			new URLItemSelectorCriterion();
+
+		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new URLItemSelectorReturnType());
+
+		return itemSelectorCriterion;
+	}
+
 	private ItemSelectorCriterion _getUploadItemSelectorCriterion(
 		long resourcePrimKey, ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
@@ -160,16 +170,6 @@ public class KBAttachmentEditorConfigContributor
 				"resourcePrimKey", resourcePrimKey
 			).buildString()
 		).build();
-	}
-
-	private ItemSelectorCriterion _getURLItemSelectorCriterion() {
-		ItemSelectorCriterion itemSelectorCriterion =
-			new URLItemSelectorCriterion();
-
-		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			new URLItemSelectorReturnType());
-
-		return itemSelectorCriterion;
 	}
 
 	@Reference

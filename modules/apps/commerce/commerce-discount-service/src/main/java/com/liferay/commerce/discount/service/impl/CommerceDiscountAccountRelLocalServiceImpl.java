@@ -106,18 +106,6 @@ public class CommerceDiscountAccountRelLocalServiceImpl
 			deleteCommerceDiscountAccountRel(commerceDiscountAccountRel);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public void deleteCommerceDiscountAccountRelsBycommerceAccountId(
-		long commerceAccountId) {
-
-		commerceDiscountAccountRelPersistence.removeByCommerceAccountId(
-			commerceAccountId);
-	}
-
 	@Override
 	public void deleteCommerceDiscountAccountRelsByCommerceDiscountId(
 			long commerceDiscountId)
@@ -133,6 +121,18 @@ public class CommerceDiscountAccountRelLocalServiceImpl
 			commerceDiscountAccountRelLocalService.
 				deleteCommerceDiscountAccountRel(commerceDiscountAccountRel);
 		}
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
+	@Override
+	public void deleteCommerceDiscountAccountRelsBycommerceAccountId(
+		long commerceAccountId) {
+
+		commerceDiscountAccountRelPersistence.removeByCommerceAccountId(
+			commerceAccountId);
 	}
 
 	@Override

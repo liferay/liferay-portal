@@ -142,14 +142,6 @@ public abstract class BaseDLTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public int getTrashModelsCount(long classPK) throws PortalException {
-		DocumentRepository documentRepository = getDocumentRepository(classPK);
-
-		return documentRepository.getFileEntriesAndFileShortcutsCount(
-			classPK, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
 	public List<TrashedModel> getTrashModelTrashedModels(
 			long classPK, int start, int end,
 			OrderByComparator<?> orderByComparator)
@@ -177,6 +169,14 @@ public abstract class BaseDLTrashHandler extends BaseTrashHandler {
 
 				return (DLFolder)folder.getModel();
 			});
+	}
+
+	@Override
+	public int getTrashModelsCount(long classPK) throws PortalException {
+		DocumentRepository documentRepository = getDocumentRepository(classPK);
+
+		return documentRepository.getFileEntriesAndFileShortcutsCount(
+			classPK, WorkflowConstants.STATUS_IN_TRASH);
 	}
 
 	protected DLFolder fetchDLFolder(long classPK) throws PortalException {

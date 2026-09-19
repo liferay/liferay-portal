@@ -72,6 +72,33 @@ public class DataLayoutUtil {
 		return ddmFormLayoutSerializerSerializeResponse.getContent();
 	}
 
+	public static DDMFormLayout toDDMFormLayout(
+			DataLayout dataLayout, DDMForm ddmForm,
+			DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry,
+			DDMFormRuleDeserializer ddmFormRuleDeserializer)
+		throws Exception {
+
+		DDMFormLayout ddmFormLayout = new DDMFormLayout();
+
+		ddmFormLayout.setDDMFormFields(
+			_toDDMFormFields(
+				dataLayout.getDataLayoutFields(),
+				ddmForm.getDDMFormFieldsMap(true),
+				ddmFormFieldTypeServicesRegistry));
+		ddmFormLayout.setDDMFormLayoutPages(
+			_toDDMFormLayoutPages(
+				dataLayout.getDataLayoutPages(), ddmForm.getDefaultLocale()));
+		ddmFormLayout.setDefaultLocale(ddmForm.getDefaultLocale());
+		ddmFormLayout.setPaginationMode(dataLayout.getPaginationMode());
+		ddmFormLayout.setDDMFormRules(
+			ddmFormRuleDeserializer.deserialize(
+				ddmForm,
+				JSONUtil.toJSONArray(
+					dataLayout.getDataRules(), rule -> _serializeRule(rule))));
+
+		return ddmFormLayout;
+	}
+
 	public static DataLayout toDataLayout(
 			DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry,
 			DDMFormLayout ddmFormLayout,
@@ -127,33 +154,6 @@ public class DataLayoutUtil {
 		return dataLayout;
 	}
 
-	public static DDMFormLayout toDDMFormLayout(
-			DataLayout dataLayout, DDMForm ddmForm,
-			DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry,
-			DDMFormRuleDeserializer ddmFormRuleDeserializer)
-		throws Exception {
-
-		DDMFormLayout ddmFormLayout = new DDMFormLayout();
-
-		ddmFormLayout.setDDMFormFields(
-			_toDDMFormFields(
-				dataLayout.getDataLayoutFields(),
-				ddmForm.getDDMFormFieldsMap(true),
-				ddmFormFieldTypeServicesRegistry));
-		ddmFormLayout.setDDMFormLayoutPages(
-			_toDDMFormLayoutPages(
-				dataLayout.getDataLayoutPages(), ddmForm.getDefaultLocale()));
-		ddmFormLayout.setDefaultLocale(ddmForm.getDefaultLocale());
-		ddmFormLayout.setPaginationMode(dataLayout.getPaginationMode());
-		ddmFormLayout.setDDMFormRules(
-			ddmFormRuleDeserializer.deserialize(
-				ddmForm,
-				JSONUtil.toJSONArray(
-					dataLayout.getDataRules(), rule -> _serializeRule(rule))));
-
-		return ddmFormLayout;
-	}
-
 	private static JSONObject _serializeRule(DataRule dataRule)
 		throws JSONException {
 
@@ -171,6 +171,135 @@ public class DataLayoutUtil {
 			"name",
 			JSONFactoryUtil.createJSONObject(gson.toJson(dataRule.getName()))
 		);
+	}
+
+	private static List<DDMFormField> _toDDMFormFields(
+		Map<String, Object> dataLayoutFields,
+		Map<String, DDMFormField> ddmFormFieldsMap,
+		DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry) {
+
+		List<DDMFormField> ddmFormFields = new ArrayList<>();
+
+		if (MapUtil.isEmpty(dataLayoutFields)) {
+			return ddmFormFields;
+		}
+
+		dataLayoutFields.forEach(
+			(key, value) -> {
+				DDMFormField ddmFormField = new DDMFormField();
+
+				ddmFormField.setName(key);
+
+				Map<String, Object> properties = ddmFormField.getProperties();
+
+				DDMFormField ddmFormDDMFormField = ddmFormFieldsMap.get(key);
+
+				Map<String, DDMFormField> settingsDDMFormFieldsMap =
+					SettingsDDMFormFieldsUtil.getSettingsDDMFormFields(
+						ddmFormFieldTypeServicesRegistry,
+						ddmFormDDMFormField.getType());
+
+				Map<String, Object> dataLayoutField =
+					(Map<String, Object>)value;
+
+				dataLayoutField.forEach(
+					(keyProperty, valueProperty) -> {
+						DDMFormField settingsDDMFormField =
+							settingsDDMFormFieldsMap.get(keyProperty);
+
+						if (settingsDDMFormField.isLocalizable()) {
+							properties.put(
+								keyProperty,
+								LocalizedValueUtil.toLocalizedValue(
+									(Map<String, Object>)valueProperty));
+						}
+						else {
+							properties.put(keyProperty, valueProperty);
+						}
+					});
+
+				ddmFormField.setType(ddmFormDDMFormField.getType());
+
+				ddmFormFields.add(ddmFormField);
+			});
+
+		return ddmFormFields;
+	}
+
+	private static DDMFormLayoutColumn _toDDMFormLayoutColumn(
+		DataLayoutColumn dataLayoutColumn) {
+
+		DDMFormLayoutColumn ddmFormLayoutColumn = new DDMFormLayoutColumn();
+
+		ddmFormLayoutColumn.setDDMFormFieldNames(
+			Arrays.asList(dataLayoutColumn.getFieldNames()));
+		ddmFormLayoutColumn.setSize(dataLayoutColumn.getColumnSize());
+
+		return ddmFormLayoutColumn;
+	}
+
+	private static List<DDMFormLayoutColumn> _toDDMFormLayoutColumns(
+		DataLayoutColumn[] dataLayoutColumns) {
+
+		if (ArrayUtil.isEmpty(dataLayoutColumns)) {
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transformToList(
+			dataLayoutColumns,
+			dataLayoutColumn -> _toDDMFormLayoutColumn(dataLayoutColumn));
+	}
+
+	private static DDMFormLayoutPage _toDDMFormLayoutPage(
+		DataLayoutPage dataLayoutPage, Locale locale) {
+
+		DDMFormLayoutPage ddmFormLayoutPage = new DDMFormLayoutPage();
+
+		ddmFormLayoutPage.setDDMFormLayoutRows(
+			_toDDMFormLayoutRows(dataLayoutPage.getDataLayoutRows()));
+		ddmFormLayoutPage.setDescription(
+			LocalizedValueUtil.toLocalizedValue(
+				dataLayoutPage.getDescription(), locale));
+		ddmFormLayoutPage.setTitle(
+			LocalizedValueUtil.toLocalizedValue(
+				dataLayoutPage.getTitle(), locale));
+
+		return ddmFormLayoutPage;
+	}
+
+	private static List<DDMFormLayoutPage> _toDDMFormLayoutPages(
+		DataLayoutPage[] dataLayoutPages, Locale locale) {
+
+		if (ArrayUtil.isEmpty(dataLayoutPages)) {
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transformToList(
+			dataLayoutPages,
+			dataLayoutPage -> _toDDMFormLayoutPage(dataLayoutPage, locale));
+	}
+
+	private static DDMFormLayoutRow _toDDMFormLayoutRow(
+		DataLayoutRow dataLayoutRow) {
+
+		DDMFormLayoutRow ddmFormLayoutRow = new DDMFormLayoutRow();
+
+		ddmFormLayoutRow.setDDMFormLayoutColumns(
+			_toDDMFormLayoutColumns(dataLayoutRow.getDataLayoutColumns()));
+
+		return ddmFormLayoutRow;
+	}
+
+	private static List<DDMFormLayoutRow> _toDDMFormLayoutRows(
+		DataLayoutRow[] dataLayoutRows) {
+
+		if (ArrayUtil.isEmpty(dataLayoutRows)) {
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transformToList(
+			dataLayoutRows,
+			dataLayoutRow -> _toDDMFormLayoutRow(dataLayoutRow));
 	}
 
 	private static DataLayoutColumn _toDataLayoutColumn(
@@ -333,135 +462,6 @@ public class DataLayoutUtil {
 		}
 
 		return dataRules;
-	}
-
-	private static List<DDMFormField> _toDDMFormFields(
-		Map<String, Object> dataLayoutFields,
-		Map<String, DDMFormField> ddmFormFieldsMap,
-		DDMFormFieldTypeServicesRegistry ddmFormFieldTypeServicesRegistry) {
-
-		List<DDMFormField> ddmFormFields = new ArrayList<>();
-
-		if (MapUtil.isEmpty(dataLayoutFields)) {
-			return ddmFormFields;
-		}
-
-		dataLayoutFields.forEach(
-			(key, value) -> {
-				DDMFormField ddmFormField = new DDMFormField();
-
-				ddmFormField.setName(key);
-
-				Map<String, Object> properties = ddmFormField.getProperties();
-
-				DDMFormField ddmFormDDMFormField = ddmFormFieldsMap.get(key);
-
-				Map<String, DDMFormField> settingsDDMFormFieldsMap =
-					SettingsDDMFormFieldsUtil.getSettingsDDMFormFields(
-						ddmFormFieldTypeServicesRegistry,
-						ddmFormDDMFormField.getType());
-
-				Map<String, Object> dataLayoutField =
-					(Map<String, Object>)value;
-
-				dataLayoutField.forEach(
-					(keyProperty, valueProperty) -> {
-						DDMFormField settingsDDMFormField =
-							settingsDDMFormFieldsMap.get(keyProperty);
-
-						if (settingsDDMFormField.isLocalizable()) {
-							properties.put(
-								keyProperty,
-								LocalizedValueUtil.toLocalizedValue(
-									(Map<String, Object>)valueProperty));
-						}
-						else {
-							properties.put(keyProperty, valueProperty);
-						}
-					});
-
-				ddmFormField.setType(ddmFormDDMFormField.getType());
-
-				ddmFormFields.add(ddmFormField);
-			});
-
-		return ddmFormFields;
-	}
-
-	private static DDMFormLayoutColumn _toDDMFormLayoutColumn(
-		DataLayoutColumn dataLayoutColumn) {
-
-		DDMFormLayoutColumn ddmFormLayoutColumn = new DDMFormLayoutColumn();
-
-		ddmFormLayoutColumn.setDDMFormFieldNames(
-			Arrays.asList(dataLayoutColumn.getFieldNames()));
-		ddmFormLayoutColumn.setSize(dataLayoutColumn.getColumnSize());
-
-		return ddmFormLayoutColumn;
-	}
-
-	private static List<DDMFormLayoutColumn> _toDDMFormLayoutColumns(
-		DataLayoutColumn[] dataLayoutColumns) {
-
-		if (ArrayUtil.isEmpty(dataLayoutColumns)) {
-			return Collections.emptyList();
-		}
-
-		return TransformUtil.transformToList(
-			dataLayoutColumns,
-			dataLayoutColumn -> _toDDMFormLayoutColumn(dataLayoutColumn));
-	}
-
-	private static DDMFormLayoutPage _toDDMFormLayoutPage(
-		DataLayoutPage dataLayoutPage, Locale locale) {
-
-		DDMFormLayoutPage ddmFormLayoutPage = new DDMFormLayoutPage();
-
-		ddmFormLayoutPage.setDDMFormLayoutRows(
-			_toDDMFormLayoutRows(dataLayoutPage.getDataLayoutRows()));
-		ddmFormLayoutPage.setDescription(
-			LocalizedValueUtil.toLocalizedValue(
-				dataLayoutPage.getDescription(), locale));
-		ddmFormLayoutPage.setTitle(
-			LocalizedValueUtil.toLocalizedValue(
-				dataLayoutPage.getTitle(), locale));
-
-		return ddmFormLayoutPage;
-	}
-
-	private static List<DDMFormLayoutPage> _toDDMFormLayoutPages(
-		DataLayoutPage[] dataLayoutPages, Locale locale) {
-
-		if (ArrayUtil.isEmpty(dataLayoutPages)) {
-			return Collections.emptyList();
-		}
-
-		return TransformUtil.transformToList(
-			dataLayoutPages,
-			dataLayoutPage -> _toDDMFormLayoutPage(dataLayoutPage, locale));
-	}
-
-	private static DDMFormLayoutRow _toDDMFormLayoutRow(
-		DataLayoutRow dataLayoutRow) {
-
-		DDMFormLayoutRow ddmFormLayoutRow = new DDMFormLayoutRow();
-
-		ddmFormLayoutRow.setDDMFormLayoutColumns(
-			_toDDMFormLayoutColumns(dataLayoutRow.getDataLayoutColumns()));
-
-		return ddmFormLayoutRow;
-	}
-
-	private static List<DDMFormLayoutRow> _toDDMFormLayoutRows(
-		DataLayoutRow[] dataLayoutRows) {
-
-		if (ArrayUtil.isEmpty(dataLayoutRows)) {
-			return Collections.emptyList();
-		}
-
-		return TransformUtil.transformToList(
-			dataLayoutRows,
-			dataLayoutRow -> _toDDMFormLayoutRow(dataLayoutRow));
 	}
 
 }

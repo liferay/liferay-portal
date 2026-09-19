@@ -79,10 +79,10 @@ public class AddedAllCommerceDiscountRuleTypeImpl
 	}
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CProductLocalService _cProductLocalService;
 
 	@Reference
-	private CProductLocalService _cProductLocalService;
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
 	private Language _language;

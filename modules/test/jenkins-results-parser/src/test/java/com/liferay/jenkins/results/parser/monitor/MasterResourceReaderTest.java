@@ -237,29 +237,6 @@ public class MasterResourceReaderTest
 	}
 
 	@Test
-	public void testGetPrometheusScrapeWithoutMemoryInfo() throws Exception {
-		mockShell();
-
-		String labelValue = RandomTestUtil.randomString();
-		String name = MonitorTestUtil.newMetricName();
-		UrlReader urlReader = mockUrlReader();
-
-		setUrlReaderOutput(
-			MonitorTestUtil.newSample("label", labelValue, name, "1.0"),
-			"/prometheus", urlReader);
-
-		String masterName = MonitorTestUtil.newJenkinsMasterName();
-
-		MasterResourceReader masterResourceReader =
-			MasterResourceReader.getInstance(masterName);
-
-		PrometheusScrape prometheusScrape =
-			masterResourceReader.getPrometheusScrape(_MILLIS_TIMEOUT);
-
-		testEquals(1.0D, prometheusScrape.getValue("label", labelValue, name));
-	}
-
-	@Test
 	public void testGetPrometheusScrapeWithReadFailure() throws Exception {
 		UrlReader urlReader = mockUrlReader();
 
@@ -286,6 +263,29 @@ public class MasterResourceReaderTest
 		setUrlReaderOutput(
 			MonitorTestUtil.newSample("label", labelValue, name, "1.0"),
 			"/prometheus", urlReader);
+
+		PrometheusScrape prometheusScrape =
+			masterResourceReader.getPrometheusScrape(_MILLIS_TIMEOUT);
+
+		testEquals(1.0D, prometheusScrape.getValue("label", labelValue, name));
+	}
+
+	@Test
+	public void testGetPrometheusScrapeWithoutMemoryInfo() throws Exception {
+		mockShell();
+
+		String labelValue = RandomTestUtil.randomString();
+		String name = MonitorTestUtil.newMetricName();
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			MonitorTestUtil.newSample("label", labelValue, name, "1.0"),
+			"/prometheus", urlReader);
+
+		String masterName = MonitorTestUtil.newJenkinsMasterName();
+
+		MasterResourceReader masterResourceReader =
+			MasterResourceReader.getInstance(masterName);
 
 		PrometheusScrape prometheusScrape =
 			masterResourceReader.getPrometheusScrape(_MILLIS_TIMEOUT);

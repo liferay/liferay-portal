@@ -248,6 +248,19 @@ public class CommerceShipmentLocalServiceImpl
 	}
 
 	@Override
+	public int[] getCommerceShipmentStatusesByCommerceOrderId(
+		long commerceOrderId) {
+
+		List<Integer> commerceShipmentStatuses = dslQuery(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.selectDistinct(
+					CommerceShipmentTable.INSTANCE.status),
+				commerceOrderId));
+
+		return ArrayUtil.toIntArray(commerceShipmentStatuses);
+	}
+
+	@Override
 	public List<CommerceShipment> getCommerceShipments(
 		long commerceOrderId, int start, int end) {
 
@@ -346,19 +359,6 @@ public class CommerceShipmentLocalServiceImpl
 
 		return commerceShipmentPersistence.countByG_C(
 			groupIds, commerceAddressId);
-	}
-
-	@Override
-	public int[] getCommerceShipmentStatusesByCommerceOrderId(
-		long commerceOrderId) {
-
-		List<Integer> commerceShipmentStatuses = dslQuery(
-			_getGroupByStep(
-				DSLQueryFactoryUtil.selectDistinct(
-					CommerceShipmentTable.INSTANCE.status),
-				commerceOrderId));
-
-		return ArrayUtil.toIntArray(commerceShipmentStatuses);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

@@ -350,6 +350,45 @@ public class PortalUtil {
 	}
 
 	/**
+	 * Returns the secure (HTTPS) or insecure (HTTP) content distribution
+	 * network (CDN) host address for this portal.
+	 *
+	 * @param  secure whether to get the secure CDN host address
+	 * @return the CDN host address
+	 */
+	public static String getCDNHost(boolean secure) {
+		return _portal.getCDNHost(secure);
+	}
+
+	public static String getCDNHost(HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		return _portal.getCDNHost(httpServletRequest);
+	}
+
+	/**
+	 * Returns the insecure (HTTP) content distribution network (CDN) host
+	 * address
+	 *
+	 * @param  companyId the company ID of a site
+	 * @return the CDN host address
+	 */
+	public static String getCDNHostHttp(long companyId) {
+		return _portal.getCDNHostHttp(companyId);
+	}
+
+	/**
+	 * Returns the secure (HTTPS) content distribution network (CDN) host
+	 * address
+	 *
+	 * @param  companyId the company ID of a site
+	 * @return the CDN host address
+	 */
+	public static String getCDNHostHttps(long companyId) {
+		return _portal.getCDNHostHttps(companyId);
+	}
+
+	/**
 	 * Returns the canonical URL for the page. The canonical URL is often used
 	 * to distinguish a preferred page from its translations.
 	 *
@@ -443,45 +482,6 @@ public class PortalUtil {
 		return _portal.getCanonicalURL(
 			completeURL, themeDisplay, layout, forceLayoutFriendlyURL,
 			includeQueryString);
-	}
-
-	/**
-	 * Returns the secure (HTTPS) or insecure (HTTP) content distribution
-	 * network (CDN) host address for this portal.
-	 *
-	 * @param  secure whether to get the secure CDN host address
-	 * @return the CDN host address
-	 */
-	public static String getCDNHost(boolean secure) {
-		return _portal.getCDNHost(secure);
-	}
-
-	public static String getCDNHost(HttpServletRequest httpServletRequest)
-		throws PortalException {
-
-		return _portal.getCDNHost(httpServletRequest);
-	}
-
-	/**
-	 * Returns the insecure (HTTP) content distribution network (CDN) host
-	 * address
-	 *
-	 * @param  companyId the company ID of a site
-	 * @return the CDN host address
-	 */
-	public static String getCDNHostHttp(long companyId) {
-		return _portal.getCDNHostHttp(companyId);
-	}
-
-	/**
-	 * Returns the secure (HTTPS) content distribution network (CDN) host
-	 * address
-	 *
-	 * @param  companyId the company ID of a site
-	 * @return the CDN host address
-	 */
-	public static String getCDNHostHttps(long companyId) {
-		return _portal.getCDNHostHttps(companyId);
 	}
 
 	public static String getChangeLanguageURL(
@@ -1493,6 +1493,10 @@ public class PortalUtil {
 		return _portal.getSystemSiteRoles();
 	}
 
+	public static String getURLWithSessionId(String url, String sessionId) {
+		return _portal.getURLWithSessionId(url, sessionId);
+	}
+
 	public static String getUniqueElementId(
 		HttpServletRequest httpServletRequest, String namespace, String id) {
 
@@ -1527,10 +1531,6 @@ public class PortalUtil {
 
 	public static Date getUptime() {
 		return _portal.getUptime();
-	}
-
-	public static String getURLWithSessionId(String url, String sessionId) {
-		return _portal.getURLWithSessionId(url, sessionId);
 	}
 
 	public static User getUser(HttpServletRequest httpServletRequest)
@@ -1707,16 +1707,16 @@ public class PortalUtil {
 		return _portal.isOmniadmin(user);
 	}
 
+	public static boolean isRSSFeedsEnabled() {
+		return _portal.isRSSFeedsEnabled();
+	}
+
 	public static boolean isReservedParameter(String name) {
 		return _portal.isReservedParameter(name);
 	}
 
 	public static boolean isRightToLeft(HttpServletRequest httpServletRequest) {
 		return _portal.isRightToLeft(httpServletRequest);
-	}
-
-	public static boolean isRSSFeedsEnabled() {
-		return _portal.isRSSFeedsEnabled();
 	}
 
 	public static boolean isSecure(HttpServletRequest httpServletRequest) {

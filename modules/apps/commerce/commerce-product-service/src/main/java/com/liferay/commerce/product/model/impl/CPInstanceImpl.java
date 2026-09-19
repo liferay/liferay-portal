@@ -33,13 +33,6 @@ public class CPInstanceImpl extends CPInstanceBaseImpl {
 	}
 
 	@Override
-	public CommerceCatalog getCommerceCatalog() throws PortalException {
-		CPDefinition cpDefinition = getCPDefinition();
-
-		return cpDefinition.getCommerceCatalog();
-	}
-
-	@Override
 	public CPDefinition getCPDefinition() throws PortalException {
 		return CPDefinitionLocalServiceUtil.getCPDefinition(
 			getCPDefinitionId());
@@ -96,6 +89,13 @@ public class CPInstanceImpl extends CPInstanceBaseImpl {
 		}
 
 		return null;
+	}
+
+	@Override
+	public CommerceCatalog getCommerceCatalog() throws PortalException {
+		CPDefinition cpDefinition = getCPDefinition();
+
+		return cpDefinition.getCommerceCatalog();
 	}
 
 	@Override

@@ -795,11 +795,11 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
-	@DeleteAfterTestRun
-	private final List<Address> _addresses = new ArrayList<>();
-
 	@Inject
 	private AddressLocalService _addressLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Address> _addresses = new ArrayList<>();
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
@@ -819,11 +819,11 @@ public class PlacedOrderResourceTest extends BasePlacedOrderResourceTestCase {
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
 
-	@DeleteAfterTestRun
-	private final List<CommerceOrder> _commerceOrders = new ArrayList<>();
-
 	@Inject
 	private CommerceOrderTypeLocalService _commerceOrderTypeLocalService;
+
+	@DeleteAfterTestRun
+	private final List<CommerceOrder> _commerceOrders = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private Country _country;

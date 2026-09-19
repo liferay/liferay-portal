@@ -704,11 +704,11 @@ public class AssetEntriesCheckerHelper {
 	private Portal _portal;
 
 	@Reference
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Reference
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Reference
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	@Reference
 	private RoleLocalService _roleLocalService;

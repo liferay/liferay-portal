@@ -562,15 +562,6 @@ public class SharingEntryLocalServiceTest {
 		Assert.assertTrue(to.contains(emailAddress));
 	}
 
-	@Test(expected = NoSuchTicketException.class)
-	@TestInfo("LPD-48130")
-	public void testAddSharingEntryWithNonexistentTicket() throws Exception {
-		_sharingEntryLocalService.addSharingEntry(
-			null, _fromUser.getUserId(), RandomTestUtil.randomLong(), 0, 0,
-			_classNameId, _group.getGroupId(), _group.getGroupId(), true,
-			Arrays.asList(SharingEntryAction.VIEW), null, _serviceContext);
-	}
-
 	@Test(expected = InvalidSharingEntryUserException.class)
 	@TestInfo("LPD-48130")
 	public void testAddSharingEntryWithNoTarget() throws Exception {
@@ -580,14 +571,13 @@ public class SharingEntryLocalServiceTest {
 			Arrays.asList(SharingEntryAction.VIEW), null, _serviceContext);
 	}
 
-	@Test(expected = InvalidSharingEntryActionException.class)
-	public void testAddSharingEntryWithoutViewSharingEntryAction()
-		throws Exception {
-
+	@Test(expected = NoSuchTicketException.class)
+	@TestInfo("LPD-48130")
+	public void testAddSharingEntryWithNonexistentTicket() throws Exception {
 		_sharingEntryLocalService.addSharingEntry(
-			null, _fromUser.getUserId(), 0, 0, _toUser.getUserId(),
+			null, _fromUser.getUserId(), RandomTestUtil.randomLong(), 0, 0,
 			_classNameId, _group.getGroupId(), _group.getGroupId(), true,
-			Arrays.asList(SharingEntryAction.UPDATE), null, _serviceContext);
+			Arrays.asList(SharingEntryAction.VIEW), null, _serviceContext);
 	}
 
 	@Test(expected = InvalidSharingEntryUserException.class)
@@ -620,6 +610,16 @@ public class SharingEntryLocalServiceTest {
 			_classNameId, _group.getGroupId(), _group.getGroupId(), true,
 			Arrays.asList(new SharingEntryAction[] {null}), null,
 			_serviceContext);
+	}
+
+	@Test(expected = InvalidSharingEntryActionException.class)
+	public void testAddSharingEntryWithoutViewSharingEntryAction()
+		throws Exception {
+
+		_sharingEntryLocalService.addSharingEntry(
+			null, _fromUser.getUserId(), 0, 0, _toUser.getUserId(),
+			_classNameId, _group.getGroupId(), _group.getGroupId(), true,
+			Arrays.asList(SharingEntryAction.UPDATE), null, _serviceContext);
 	}
 
 	@Test
@@ -1463,21 +1463,6 @@ public class SharingEntryLocalServiceTest {
 	}
 
 	@Test(expected = InvalidSharingEntryActionException.class)
-	public void testUpdateSharingEntryWithoutViewSharingEntryAction()
-		throws Exception {
-
-		SharingEntry sharingEntry = _sharingEntryLocalService.addSharingEntry(
-			null, _fromUser.getUserId(), 0, 0, _toUser.getUserId(),
-			_classNameId, _group.getGroupId(), _group.getGroupId(), true,
-			Arrays.asList(SharingEntryAction.VIEW), null, _serviceContext);
-
-		_sharingEntryLocalService.updateSharingEntry(
-			_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
-			Arrays.asList(SharingEntryAction.UPDATE), true, null,
-			_serviceContext);
-	}
-
-	@Test(expected = InvalidSharingEntryActionException.class)
 	public void testUpdateSharingEntryWithSharingEntryActionsContainingOneNullElement()
 		throws Exception {
 
@@ -1508,6 +1493,21 @@ public class SharingEntryLocalServiceTest {
 		_sharingEntryLocalService.updateSharingEntry(
 			_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
 			ListUtil.fromArray((SharingEntryAction[])null), true, null,
+			_serviceContext);
+	}
+
+	@Test(expected = InvalidSharingEntryActionException.class)
+	public void testUpdateSharingEntryWithoutViewSharingEntryAction()
+		throws Exception {
+
+		SharingEntry sharingEntry = _sharingEntryLocalService.addSharingEntry(
+			null, _fromUser.getUserId(), 0, 0, _toUser.getUserId(),
+			_classNameId, _group.getGroupId(), _group.getGroupId(), true,
+			Arrays.asList(SharingEntryAction.VIEW), null, _serviceContext);
+
+		_sharingEntryLocalService.updateSharingEntry(
+			_fromUser.getUserId(), sharingEntry.getSharingEntryId(),
+			Arrays.asList(SharingEntryAction.UPDATE), true, null,
 			_serviceContext);
 	}
 

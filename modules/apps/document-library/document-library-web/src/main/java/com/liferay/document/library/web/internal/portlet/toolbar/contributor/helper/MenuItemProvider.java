@@ -59,6 +59,26 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = MenuItemProvider.class)
 public class MenuItemProvider {
 
+	public MenuItem getAICreatorMenuItem(
+		Folder folder, ThemeDisplay themeDisplay,
+		PortletRequest portletRequest) {
+
+		long folderId = _getFolderId(folder);
+
+		if (!_hasPermission(
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroupId(), folderId,
+				ActionKeys.ADD_DOCUMENT)) {
+
+			return null;
+		}
+
+		return _aiCreatorOpenAIMenuItemFactory.
+			createAICreatorCreateImageMenuItem(
+				_getRepositoryId(folder, themeDisplay), folderId,
+				_getDefaultFileEntryTypeId(folderId), themeDisplay);
+	}
+
 	public List<MenuItem> getAddDocumentTypesMenuItems(
 		Folder folder, ThemeDisplay themeDisplay,
 		PortletRequest portletRequest) {
@@ -306,26 +326,6 @@ public class MenuItemProvider {
 			).buildString());
 
 		return urlMenuItem;
-	}
-
-	public MenuItem getAICreatorMenuItem(
-		Folder folder, ThemeDisplay themeDisplay,
-		PortletRequest portletRequest) {
-
-		long folderId = _getFolderId(folder);
-
-		if (!_hasPermission(
-				themeDisplay.getPermissionChecker(),
-				themeDisplay.getScopeGroupId(), folderId,
-				ActionKeys.ADD_DOCUMENT)) {
-
-			return null;
-		}
-
-		return _aiCreatorOpenAIMenuItemFactory.
-			createAICreatorCreateImageMenuItem(
-				_getRepositoryId(folder, themeDisplay), folderId,
-				_getDefaultFileEntryTypeId(folderId), themeDisplay);
 	}
 
 	@Activate

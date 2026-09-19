@@ -67,48 +67,6 @@ public class AssigneeObjectFieldBusinessType
 	}
 
 	@Override
-	public String getDescription(Locale locale) {
-		return LanguageUtil.get(
-			ResourceBundleUtil.getModuleAndPortalResourceBundle(
-				locale, getClass()),
-			"assign-the-entry-to-a-user-or-role");
-	}
-
-	@Override
-	public Object getDisplayContextValue(
-			ObjectField objectField, long userId, Map<String, Object> values)
-		throws PortalException {
-
-		return values.get(objectField.getName());
-	}
-
-	public String getDisplayName(long classNameId, long classPK) {
-		String className = _portal.fetchClassName(classNameId);
-
-		if (StringUtil.equals(className, Role.class.getName())) {
-			Role role = _roleLocalService.fetchRole(classPK);
-
-			if (role != null) {
-				return role.getName();
-			}
-
-			return null;
-		}
-
-		if (StringUtil.equals(className, User.class.getName())) {
-			User user = _userLocalService.fetchUser(classPK);
-
-			if (user != null) {
-				return user.getFullName();
-			}
-
-			return null;
-		}
-
-		return null;
-	}
-
-	@Override
 	public Serializable getDTOValue(
 			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
@@ -179,6 +137,48 @@ public class AssigneeObjectFieldBusinessType
 		}
 
 		return new Assignee();
+	}
+
+	@Override
+	public String getDescription(Locale locale) {
+		return LanguageUtil.get(
+			ResourceBundleUtil.getModuleAndPortalResourceBundle(
+				locale, getClass()),
+			"assign-the-entry-to-a-user-or-role");
+	}
+
+	@Override
+	public Object getDisplayContextValue(
+			ObjectField objectField, long userId, Map<String, Object> values)
+		throws PortalException {
+
+		return values.get(objectField.getName());
+	}
+
+	public String getDisplayName(long classNameId, long classPK) {
+		String className = _portal.fetchClassName(classNameId);
+
+		if (StringUtil.equals(className, Role.class.getName())) {
+			Role role = _roleLocalService.fetchRole(classPK);
+
+			if (role != null) {
+				return role.getName();
+			}
+
+			return null;
+		}
+
+		if (StringUtil.equals(className, User.class.getName())) {
+			User user = _userLocalService.fetchUser(classPK);
+
+			if (user != null) {
+				return user.getFullName();
+			}
+
+			return null;
+		}
+
+		return null;
 	}
 
 	@Override

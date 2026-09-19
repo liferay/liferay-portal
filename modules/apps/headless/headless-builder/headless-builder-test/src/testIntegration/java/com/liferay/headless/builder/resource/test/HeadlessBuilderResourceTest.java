@@ -2618,39 +2618,6 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 			JSONCompareMode.STRICT);
 	}
 
-	@Test
-	public void testPostWithoutResponseSchema() throws Exception {
-		_addAPIApplicationWithPostEndpoint(
-			false, _objectDefinition1.getExternalReferenceCode(),
-			APIApplication.Endpoint.Scope.COMPANY);
-
-		_publishAPIApplication(_API_APPLICATION_ERC_1);
-
-		String textPropertyValue = RandomTestUtil.randomString();
-
-		JSONAssert.assertEquals(
-			"{}",
-			HTTPTestUtil.invokeToJSONObject(
-				JSONUtil.put(
-					"textProperty", textPropertyValue
-				).toString(),
-				StringBundler.concat("c/", _BASE_URL_1, "/test"),
-				Http.Method.POST
-			).toString(),
-			JSONCompareMode.STRICT);
-
-		List<ObjectEntry> objectEntries =
-			_objectEntryLocalService.getObjectEntries(
-				0, _objectDefinition1.getObjectDefinitionId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		ObjectEntry objectEntry = objectEntries.get(objectEntries.size() - 1);
-
-		Map<String, Serializable> values = objectEntry.getValues();
-
-		Assert.assertEquals(textPropertyValue, values.get("textField"));
-	}
-
 	@FeatureFlag("LPD-10964")
 	@Test
 	public void testPostWithRecordProperty() throws Exception {
@@ -2993,31 +2960,37 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 		Assert.assertEquals(objectEntries.toString(), 1, objectEntries.size());
 	}
 
-	private void _addAggregationObjectField(
-			ObjectDefinition objectDefinition, String relationshipName)
-		throws Exception {
+	@Test
+	public void testPostWithoutResponseSchema() throws Exception {
+		_addAPIApplicationWithPostEndpoint(
+			false, _objectDefinition1.getExternalReferenceCode(),
+			APIApplication.Endpoint.Scope.COMPANY);
 
-		ObjectField aggregationObjectField = new AggregationObjectFieldBuilder(
-		).externalReferenceCode(
-			_API_SCHEMA_AGGREGATION_FIELD_ERC
-		).labelMap(
-			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
-		).name(
-			"aggregationField"
-		).objectDefinitionId(
-			objectDefinition.getObjectDefinitionId()
-		).objectFieldSettings(
-			Arrays.asList(
-				_createObjectFieldSetting(
-					ObjectFieldSettingConstants.NAME_FUNCTION,
-					ObjectFieldSettingConstants.VALUE_COUNT),
-				_createObjectFieldSetting(
-					ObjectFieldSettingConstants.NAME_OBJECT_RELATIONSHIP_NAME,
-					relationshipName))
-		).build();
+		_publishAPIApplication(_API_APPLICATION_ERC_1);
 
-		ObjectFieldTestUtil.addCustomObjectField(
-			TestPropsValues.getUserId(), aggregationObjectField);
+		String textPropertyValue = RandomTestUtil.randomString();
+
+		JSONAssert.assertEquals(
+			"{}",
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"textProperty", textPropertyValue
+				).toString(),
+				StringBundler.concat("c/", _BASE_URL_1, "/test"),
+				Http.Method.POST
+			).toString(),
+			JSONCompareMode.STRICT);
+
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, _objectDefinition1.getObjectDefinitionId(),
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		ObjectEntry objectEntry = objectEntries.get(objectEntries.size() - 1);
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(textPropertyValue, values.get("textField"));
 	}
 
 	private void _addAPIApplication(
@@ -3421,6 +3394,33 @@ public class HeadlessBuilderResourceTest extends BaseTestCase {
 				"r_apiEndpointToAPISorts_l_apiEndpointERC", _API_ENDPOINT_ERC_1
 			).toString(),
 			"headless-builder/sorts", Http.Method.POST);
+	}
+
+	private void _addAggregationObjectField(
+			ObjectDefinition objectDefinition, String relationshipName)
+		throws Exception {
+
+		ObjectField aggregationObjectField = new AggregationObjectFieldBuilder(
+		).externalReferenceCode(
+			_API_SCHEMA_AGGREGATION_FIELD_ERC
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).name(
+			"aggregationField"
+		).objectDefinitionId(
+			objectDefinition.getObjectDefinitionId()
+		).objectFieldSettings(
+			Arrays.asList(
+				_createObjectFieldSetting(
+					ObjectFieldSettingConstants.NAME_FUNCTION,
+					ObjectFieldSettingConstants.VALUE_COUNT),
+				_createObjectFieldSetting(
+					ObjectFieldSettingConstants.NAME_OBJECT_RELATIONSHIP_NAME,
+					relationshipName))
+		).build();
+
+		ObjectFieldTestUtil.addCustomObjectField(
+			TestPropsValues.getUserId(), aggregationObjectField);
 	}
 
 	private ObjectEntry _addCustomObjectEntry(

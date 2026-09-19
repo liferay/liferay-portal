@@ -466,37 +466,6 @@ public class FragmentEditableElementUtil {
 		return jsonObject;
 	}
 
-	private static FragmentEditableElement[] _getFragmentEditableElements(
-		long companyId, DTOConverterContext dtoConverterContext,
-		Map<String, String> editableTypes,
-		InfoItemServiceRegistry infoItemServiceRegistry, JSONObject jsonObject,
-		long scopeGroupId) {
-
-		return TransformUtil.transformToArray(
-			new TreeSet<>(jsonObject.keySet()),
-			fieldId -> {
-				FragmentEditableElementValue fragmentEditableElementValue =
-					_getFragmentEditableElementValue(
-						companyId, dtoConverterContext, infoItemServiceRegistry,
-						jsonObject.getJSONObject(fieldId), scopeGroupId,
-						editableTypes.getOrDefault(fieldId, "text"));
-
-				if (fragmentEditableElementValue == null) {
-					return null;
-				}
-
-				FragmentEditableElement fragmentEditableElement =
-					new FragmentEditableElement();
-
-				fragmentEditableElement.setFragmentEditableElementValue(
-					() -> fragmentEditableElementValue);
-				fragmentEditableElement.setId(() -> fieldId);
-
-				return fragmentEditableElement;
-			},
-			FragmentEditableElement.class);
-	}
-
 	private static FragmentEditableElementValue
 			_getFragmentEditableElementValue(
 				long companyId, DTOConverterContext dtoConverterContext,
@@ -555,6 +524,37 @@ public class FragmentEditableElementUtil {
 		}
 
 		return null;
+	}
+
+	private static FragmentEditableElement[] _getFragmentEditableElements(
+		long companyId, DTOConverterContext dtoConverterContext,
+		Map<String, String> editableTypes,
+		InfoItemServiceRegistry infoItemServiceRegistry, JSONObject jsonObject,
+		long scopeGroupId) {
+
+		return TransformUtil.transformToArray(
+			new TreeSet<>(jsonObject.keySet()),
+			fieldId -> {
+				FragmentEditableElementValue fragmentEditableElementValue =
+					_getFragmentEditableElementValue(
+						companyId, dtoConverterContext, infoItemServiceRegistry,
+						jsonObject.getJSONObject(fieldId), scopeGroupId,
+						editableTypes.getOrDefault(fieldId, "text"));
+
+				if (fragmentEditableElementValue == null) {
+					return null;
+				}
+
+				FragmentEditableElement fragmentEditableElement =
+					new FragmentEditableElement();
+
+				fragmentEditableElement.setFragmentEditableElementValue(
+					() -> fragmentEditableElementValue);
+				fragmentEditableElement.setId(() -> fieldId);
+
+				return fragmentEditableElement;
+			},
+			FragmentEditableElement.class);
 	}
 
 	private static FragmentInlineValue _getFragmentInlineValue(

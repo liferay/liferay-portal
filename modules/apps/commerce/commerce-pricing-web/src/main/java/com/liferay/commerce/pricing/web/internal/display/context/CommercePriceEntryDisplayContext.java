@@ -112,33 +112,6 @@ public class CommercePriceEntryDisplayContext
 			commercePricingRequestHelper.getLocale());
 	}
 
-	public CommercePriceEntry getCommercePriceEntry() throws PortalException {
-		if (_commercePriceEntry != null) {
-			return _commercePriceEntry;
-		}
-
-		long commercePriceEntryId = ParamUtil.getLong(
-			commercePricingRequestHelper.getRequest(), "commercePriceEntryId");
-
-		if (commercePriceEntryId > 0) {
-			_commercePriceEntry =
-				_commercePriceEntryService.getCommercePriceEntry(
-					commercePriceEntryId);
-		}
-
-		return _commercePriceEntry;
-	}
-
-	public long getCommercePriceEntryId() throws PortalException {
-		CommercePriceEntry commercePriceEntry = getCommercePriceEntry();
-
-		if (commercePriceEntry == null) {
-			return 0;
-		}
-
-		return commercePriceEntry.getCommercePriceEntryId();
-	}
-
 	public CPInstance getCPInstance() throws Exception {
 		if (_cpInstance != null) {
 			return _cpInstance;
@@ -169,6 +142,33 @@ public class CommercePriceEntryDisplayContext
 				getActiveCPInstanceUnitOfMeasures(cpInstance.getCPInstanceId()),
 			Comparator.comparing(
 				CPInstanceUnitOfMeasure::getKey, String::compareToIgnoreCase));
+	}
+
+	public CommercePriceEntry getCommercePriceEntry() throws PortalException {
+		if (_commercePriceEntry != null) {
+			return _commercePriceEntry;
+		}
+
+		long commercePriceEntryId = ParamUtil.getLong(
+			commercePricingRequestHelper.getRequest(), "commercePriceEntryId");
+
+		if (commercePriceEntryId > 0) {
+			_commercePriceEntry =
+				_commercePriceEntryService.getCommercePriceEntry(
+					commercePriceEntryId);
+		}
+
+		return _commercePriceEntry;
+	}
+
+	public long getCommercePriceEntryId() throws PortalException {
+		CommercePriceEntry commercePriceEntry = getCommercePriceEntry();
+
+		if (commercePriceEntry == null) {
+			return 0;
+		}
+
+		return commercePriceEntry.getCommercePriceEntryId();
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

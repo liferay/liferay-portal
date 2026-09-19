@@ -100,16 +100,6 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 	}
 
 	@Test
-	public void testAddAttributesAndParametersWithoutVirtualHostAndWithoutCurrentURL()
-		throws PortalException {
-
-		_testAddAttributesAndParameters(
-			null,
-			_getDynamicServletRequest(RandomTestUtil.randomString(), 0L, null),
-			null, null, null, null, null, 0);
-	}
-
-	@Test
 	public void testAddAttributesAndParametersWithVirtualHostAndWithContextPath()
 		throws PortalException {
 
@@ -147,34 +137,6 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 				false, layout.getCompanyId(), RandomTestUtil.randomLong(),
 				groupFriendlyURL),
 			groupFriendlyURL);
-
-		LayoutSet layoutSet = _getLayoutSet(
-			layout.getCompanyId(), layout.getGroupId(), layout, null);
-
-		_testAddAttributesAndParameters(
-			StringBundler.concat(
-				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-				StringPool.SLASH, RandomTestUtil.randomString(), "/test/test"),
-			_getDynamicServletRequest(
-				_PATH_CONTEXT, layout.getCompanyId(), layoutSet),
-			String.valueOf(layout.getGroupId()), languageId,
-			String.valueOf(layout.getLayoutId()), layoutSet, _PATH_PROXY, 1);
-	}
-
-	@Test
-	public void testAddAttributesAndParametersWithVirtualHostAndWithCurrentURLWithoutValidGroup()
-		throws PortalException {
-
-		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
-
-		Layout layout = _mockLayout(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
-
-		String groupFriendlyURL =
-			StringPool.SLASH + RandomTestUtil.randomString();
-
-		_mockGroupLocalService(layout.getCompanyId(), null, groupFriendlyURL);
 
 		LayoutSet layoutSet = _getLayoutSet(
 			layout.getCompanyId(), layout.getGroupId(), layout, null);
@@ -295,6 +257,34 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 	}
 
 	@Test
+	public void testAddAttributesAndParametersWithVirtualHostAndWithCurrentURLWithoutValidGroup()
+		throws PortalException {
+
+		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
+
+		Layout layout = _mockLayout(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
+
+		String groupFriendlyURL =
+			StringPool.SLASH + RandomTestUtil.randomString();
+
+		_mockGroupLocalService(layout.getCompanyId(), null, groupFriendlyURL);
+
+		LayoutSet layoutSet = _getLayoutSet(
+			layout.getCompanyId(), layout.getGroupId(), layout, null);
+
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				StringPool.SLASH, RandomTestUtil.randomString(), "/test/test"),
+			_getDynamicServletRequest(
+				_PATH_CONTEXT, layout.getCompanyId(), layoutSet),
+			String.valueOf(layout.getGroupId()), languageId,
+			String.valueOf(layout.getLayoutId()), layoutSet, _PATH_PROXY, 1);
+	}
+
+	@Test
 	public void testAddAttributesAndParametersWithVirtualHostAndWithInvalidCurrentURL()
 		throws PortalException {
 
@@ -336,47 +326,6 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 				_PATH_CONTEXT, layout.getCompanyId(), layoutSet),
 			String.valueOf(layout.getGroupId()), languageId,
 			String.valueOf(layout.getLayoutId()), layoutSet, _PATH_PROXY, 1);
-	}
-
-	@Test
-	public void testAddAttributesAndParametersWithVirtualHostWithoutLayoutsAndWithCurrentURLWithValidGroupWithoutLayouts()
-		throws PortalException {
-
-		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
-
-		String groupFriendlyURL =
-			StringPool.SLASH + RandomTestUtil.randomString();
-
-		Group group = _mockGroup(
-			true, RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
-			groupFriendlyURL);
-
-		_mockGroupLocalService(group.getCompanyId(), group, groupFriendlyURL);
-
-		LayoutSet layoutSet = _getLayoutSet(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomLong(), null,
-			null);
-
-		_testAddAttributesAndParameters(
-			StringBundler.concat(
-				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
-				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
-				groupFriendlyURL, "/test/test"),
-			_getDynamicServletRequest(
-				_PATH_CONTEXT, group.getCompanyId(), layoutSet),
-			null, null, null, layoutSet, _PATH_PROXY, 2);
-	}
-
-	@Test
-	public void testAddAttributesAndParametersWithVirtualHostWithoutLayoutsAndWithoutCurrentURL()
-		throws PortalException {
-
-		_testAddAttributesAndParameters(
-			null,
-			_getDynamicServletRequest(
-				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
-				null),
-			null, null, null, null, null, 0);
 	}
 
 	@Test
@@ -433,6 +382,57 @@ public class CommonStatusLayoutUtilityPageEntryRequestContributorTest {
 				layoutSet),
 			String.valueOf(layout.getGroupId()), null,
 			String.valueOf(layout.getLayoutId()), layoutSet, null, 1);
+	}
+
+	@Test
+	public void testAddAttributesAndParametersWithVirtualHostWithoutLayoutsAndWithCurrentURLWithValidGroupWithoutLayouts()
+		throws PortalException {
+
+		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
+
+		String groupFriendlyURL =
+			StringPool.SLASH + RandomTestUtil.randomString();
+
+		Group group = _mockGroup(
+			true, RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+			groupFriendlyURL);
+
+		_mockGroupLocalService(group.getCompanyId(), group, groupFriendlyURL);
+
+		LayoutSet layoutSet = _getLayoutSet(
+			RandomTestUtil.randomLong(), RandomTestUtil.randomLong(), null,
+			null);
+
+		_testAddAttributesAndParameters(
+			StringBundler.concat(
+				_PATH_PROXY, _PATH_CONTEXT, StringPool.SLASH, languageId,
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				groupFriendlyURL, "/test/test"),
+			_getDynamicServletRequest(
+				_PATH_CONTEXT, group.getCompanyId(), layoutSet),
+			null, null, null, layoutSet, _PATH_PROXY, 2);
+	}
+
+	@Test
+	public void testAddAttributesAndParametersWithVirtualHostWithoutLayoutsAndWithoutCurrentURL()
+		throws PortalException {
+
+		_testAddAttributesAndParameters(
+			null,
+			_getDynamicServletRequest(
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				null),
+			null, null, null, null, null, 0);
+	}
+
+	@Test
+	public void testAddAttributesAndParametersWithoutVirtualHostAndWithoutCurrentURL()
+		throws PortalException {
+
+		_testAddAttributesAndParameters(
+			null,
+			_getDynamicServletRequest(RandomTestUtil.randomString(), 0L, null),
+			null, null, null, null, null, 0);
 	}
 
 	private DynamicServletRequest _getDynamicServletRequest(

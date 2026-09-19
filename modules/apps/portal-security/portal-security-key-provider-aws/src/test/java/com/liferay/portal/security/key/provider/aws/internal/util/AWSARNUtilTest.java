@@ -65,8 +65,8 @@ public class AWSARNUtilTest {
 	}
 
 	@Test
-	public void testResolvePassesThroughAliasIdentifier() {
-		String identifier = "alias/" + RandomTestUtil.randomString();
+	public void testResolvePassesThroughARNIdentifier() {
+		String identifier = "arn:" + RandomTestUtil.randomString();
 
 		Assert.assertEquals(
 			identifier,
@@ -77,8 +77,8 @@ public class AWSARNUtilTest {
 	}
 
 	@Test
-	public void testResolvePassesThroughARNIdentifier() {
-		String identifier = "arn:" + RandomTestUtil.randomString();
+	public void testResolvePassesThroughAliasIdentifier() {
+		String identifier = "alias/" + RandomTestUtil.randomString();
 
 		Assert.assertEquals(
 			identifier,

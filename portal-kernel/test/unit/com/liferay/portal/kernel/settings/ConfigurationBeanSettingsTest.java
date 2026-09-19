@@ -26,23 +26,6 @@ public class ConfigurationBeanSettingsTest {
 	}
 
 	@Test
-	public void testGetValuesWithExistingKey() {
-		Assert.assertArrayEquals(
-			_configurationBean.stringArrayValue(),
-			_configurationBeanSettings.getValues(
-				"stringArrayValue", new String[] {"defaultValue"}));
-	}
-
-	@Test
-	public void testGetValuesWithMissingKey() {
-		String[] defaultValue = {"defaultValue"};
-
-		Assert.assertArrayEquals(
-			defaultValue,
-			_configurationBeanSettings.getValues("missingKey", defaultValue));
-	}
-
-	@Test
 	public void testGetValueWithExistingBooleanValue() {
 		Assert.assertEquals(
 			String.valueOf(_configurationBean.booleanValue()),
@@ -138,6 +121,23 @@ public class ConfigurationBeanSettingsTest {
 				"Location variable resolver is null",
 				nullPointerException.getMessage());
 		}
+	}
+
+	@Test
+	public void testGetValuesWithExistingKey() {
+		Assert.assertArrayEquals(
+			_configurationBean.stringArrayValue(),
+			_configurationBeanSettings.getValues(
+				"stringArrayValue", new String[] {"defaultValue"}));
+	}
+
+	@Test
+	public void testGetValuesWithMissingKey() {
+		String[] defaultValue = {"defaultValue"};
+
+		Assert.assertArrayEquals(
+			defaultValue,
+			_configurationBeanSettings.getValues("missingKey", defaultValue));
 	}
 
 	private ConfigurationBean _configurationBean;

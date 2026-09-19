@@ -125,8 +125,8 @@ public class WorkflowDefinitionResultRowSplitterTest {
 		_resultRows.add(resultRow);
 	}
 
-	private final List<ResultRow> _resultRows = new ArrayList<>();
 	private final ResultRowSplitter _resultRowSplitter =
 		new WorkflowDefinitionResultRowSplitter();
+	private final List<ResultRow> _resultRows = new ArrayList<>();
 
 }

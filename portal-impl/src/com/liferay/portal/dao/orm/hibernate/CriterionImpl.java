@@ -80,12 +80,12 @@ public class CriterionImpl implements Criterion {
 		_criterionType = CriterionType.SQL_RESTRICTION;
 	}
 
-	public List<Criterion> getCriterions() {
-		return _criterions;
-	}
-
 	public CriterionType getCriterionType() {
 		return _criterionType;
+	}
+
+	public List<Criterion> getCriterions() {
+		return _criterions;
 	}
 
 	public DynamicQuery getDynamicQuery() {
@@ -100,16 +100,16 @@ public class CriterionImpl implements Criterion {
 		return _propertyNameValues;
 	}
 
-	public Integer getSize() {
-		return _size;
-	}
-
 	public String getSQL() {
 		return _sql;
 	}
 
 	public Type[] getSQLTypes() {
 		return _sqlTypes;
+	}
+
+	public Integer getSize() {
+		return _size;
 	}
 
 	public String getTargetPropertyName() {
@@ -312,8 +312,8 @@ public class CriterionImpl implements Criterion {
 		return "{criterionType=" + _criterionType + "}";
 	}
 
-	private List<Criterion> _criterions;
 	private final CriterionType _criterionType;
+	private List<Criterion> _criterions;
 	private DynamicQuery _dynamicQuery;
 	private String _propertyName;
 	private Map<String, Criterion> _propertyNameValues;

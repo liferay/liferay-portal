@@ -29,16 +29,16 @@ public class BBCodeTranslatorUtil {
 		return bbCodeTranslator.getEmoticonFiles();
 	}
 
-	public static String[][] getEmoticons() {
-		BBCodeTranslator bbCodeTranslator = _bbCodeTranslatorSnapshot.get();
-
-		return bbCodeTranslator.getEmoticons();
-	}
-
 	public static String[] getEmoticonSymbols() {
 		BBCodeTranslator bbCodeTranslator = _bbCodeTranslatorSnapshot.get();
 
 		return bbCodeTranslator.getEmoticonSymbols();
+	}
+
+	public static String[][] getEmoticons() {
+		BBCodeTranslator bbCodeTranslator = _bbCodeTranslatorSnapshot.get();
+
+		return bbCodeTranslator.getEmoticons();
 	}
 
 	public static String getHTML(String bbcode) {

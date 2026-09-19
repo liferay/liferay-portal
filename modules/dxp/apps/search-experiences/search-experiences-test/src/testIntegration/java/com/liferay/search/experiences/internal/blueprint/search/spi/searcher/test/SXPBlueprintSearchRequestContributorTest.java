@@ -137,19 +137,19 @@ public class SXPBlueprintSearchRequestContributorTest {
 	}
 
 	@Test
-	public void testSortConfiguration() throws Exception {
-		_test(
-			new String[] {"alpha delta", "beta delta", "charlie delta"},
-			() -> _assertSearch(
-				"[charlie delta, beta delta, alpha delta]", "", "delta"));
-	}
-
-	@Test
 	public void testSXPBlueprintIdAttribute() throws Exception {
 		_test(
 			new String[] {"alpha", "beta", "charlie"},
 			() -> _assertSearch(
 				"[beta]", "", "beta", _sxpBlueprint.getSXPBlueprintId()));
+	}
+
+	@Test
+	public void testSortConfiguration() throws Exception {
+		_test(
+			new String[] {"alpha delta", "beta delta", "charlie delta"},
+			() -> _assertSearch(
+				"[charlie delta, beta delta, alpha delta]", "", "delta"));
 	}
 
 	@Rule
@@ -274,13 +274,13 @@ public class SXPBlueprintSearchRequestContributorTest {
 	private Http _http;
 
 	@Inject
-	private Searcher _searcher;
-
-	@Inject
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
 	private SearchRequestContributor _searchRequestContributor;
+
+	@Inject
+	private Searcher _searcher;
 
 	private ServiceContext _serviceContext;
 

@@ -4070,6 +4070,456 @@ public class ServiceBuilder {
 		ToolsUtil.writeFileRaw(propsFile, content, _modifiedFileNames);
 	}
 
+	private void _createSQLIndexes() throws Exception {
+		File sqlDir = new File(_sqlDirName);
+
+		if (!sqlDir.exists()) {
+			_mkdir(sqlDir);
+		}
+
+		// indexes.sql loading
+
+		File sqlFile = new File(_sqlDirName + "/" + _sqlIndexesFileName);
+
+		if (!sqlFile.exists()) {
+			_touch(sqlFile);
+		}
+
+		Map<String, List<IndexMetadata>> indexMetadatasMap = new TreeMap<>();
+
+		try (UnsyncBufferedReader unsyncBufferedReader =
+				new UnsyncBufferedReader(new FileReader(sqlFile))) {
+
+			iterate:
+			while (true) {
+				String indexSQL = unsyncBufferedReader.readLine();
+
+				if (indexSQL == null) {
+					break;
+				}
+
+				indexSQL = indexSQL.trim();
+
+				if (Validator.isNull(indexSQL)) {
+					continue;
+				}
+
+				IndexMetadata indexMetadata =
+					IndexMetadataFactoryUtil.createIndexMetadata(indexSQL);
+
+				List<String> pkEntityColumnDBNames = null;
+
+				Entity entity = _getEntityByTableName(
+					indexMetadata.getTableName());
+
+				if (entity != null) {
+					indexMetadata = new IndexMetadata(
+						indexMetadata.getIndexName(),
+						indexMetadata.getTableName(), indexMetadata.isUnique(),
+						indexMetadata.getColumnNames());
+
+					for (String columnName : indexMetadata.getColumnNames()) {
+						EntityColumn entityColumn =
+							_fetchEntityColumnByColumnDBName(
+								entity, columnName);
+
+						if (entityColumn == null) {
+							System.out.println(
+								StringBundler.concat(
+									"Removing index ",
+									indexMetadata.getIndexName(),
+									" because column \"", columnName,
+									"\" does not exist"));
+
+							continue iterate;
+						}
+					}
+
+					pkEntityColumnDBNames = entity.getPKEntityColumnDBNames();
+				}
+				else {
+					EntityMapping entityMapping = _entityMappings.get(
+						indexMetadata.getTableName());
+
+					pkEntityColumnDBNames =
+						_getEntityMappingPKEntityColumnDBNames(entityMapping);
+				}
+
+				_addIndexMetadata(
+					indexMetadatasMap, indexMetadata.getTableName(),
+					pkEntityColumnDBNames, indexMetadata, _optimizeDBIndexes);
+			}
+		}
+
+		// indexes.sql appending
+
+		for (Entity entity : _entities) {
+			if (!_isTargetEntity(entity) || !entity.isDefaultDataSource() ||
+				entity.isDeprecated()) {
+
+				continue;
+			}
+
+			if (!entity.hasFinderClassName() && !entity.hasPersistence()) {
+				continue;
+			}
+
+			String tableName = entity.getTable();
+
+			List<IndexMetadata> indexMetadatas = indexMetadatasMap.get(
+				tableName);
+
+			if ((indexMetadatas != null) && _optimizeDBIndexes) {
+				indexMetadatas.clear();
+			}
+
+			List<EntityFinder> entityFinders = entity.getEntityFinders();
+
+			for (EntityFinder entityFinder : entityFinders) {
+				_addIndexMetadata(
+					indexMetadatasMap, tableName,
+					entity.getPKEntityColumnDBNames(),
+					_createIndexMetadata(
+						entity, entityFinder, _optimizeDBIndexes),
+					_optimizeDBIndexes);
+			}
+
+			indexMetadatas = indexMetadatasMap.get(tableName);
+
+			if (_optimizeDBIndexes && (indexMetadatas != null)) {
+				indexMetadatasMap.put(
+					tableName,
+					_optimizeForBTreeIndexes(
+						entity.isChangeTrackingEnabled(), indexMetadatas));
+			}
+
+			for (EntityFinder indexOnlyEntityFinder :
+					entity.getIndexOnlyEntityFinders()) {
+
+				_addIndexMetadata(
+					indexMetadatasMap, tableName,
+					entity.getPKEntityColumnDBNames(),
+					_createIndexMetadata(entity, indexOnlyEntityFinder, false),
+					false);
+			}
+		}
+
+		for (Map.Entry<String, EntityMapping> entry :
+				_entityMappings.entrySet()) {
+
+			EntityMapping entityMapping = entry.getValue();
+
+			indexMetadatasMap.remove(entityMapping.getTableName());
+
+			_getCreateMappingTableIndex(entityMapping, indexMetadatasMap);
+		}
+
+		StringBundler sb = new StringBundler();
+
+		for (List<IndexMetadata> indexMetadatas : indexMetadatasMap.values()) {
+			Collections.sort(indexMetadatas);
+
+			for (IndexMetadata indexMetadata : indexMetadatas) {
+				sb.append(
+					indexMetadata.getCreateSQL(
+						_getColumnLengths(indexMetadata)));
+
+				sb.append(StringPool.NEW_LINE);
+			}
+
+			sb.append(StringPool.NEW_LINE);
+		}
+
+		if (!indexMetadatasMap.isEmpty()) {
+			sb.setIndex(sb.index() - 2);
+		}
+
+		ToolsUtil.writeFileRaw(sqlFile, sb.toString(), _modifiedFileNames);
+
+		// indexes.properties
+
+		File file = new File(_sqlDirName, "indexes.properties");
+
+		file.delete();
+	}
+
+	private void _createSQLMappingTables(
+			File sqlFile, String newCreateTableString,
+			EntityMapping entityMapping, boolean addMissingTables)
+		throws Exception {
+
+		if (!sqlFile.exists()) {
+			_touch(sqlFile);
+		}
+
+		String content = _read(sqlFile);
+
+		int x = content.indexOf(
+			_SQL_CREATE_TABLE + entityMapping.getTableName() + " (");
+
+		int y = content.indexOf(");", x);
+
+		if (x != -1) {
+			String oldCreateTableString = content.substring(x + 1, y);
+
+			if (!oldCreateTableString.equals(newCreateTableString)) {
+				content =
+					content.substring(0, x) + newCreateTableString +
+						content.substring(y + 2);
+
+				ToolsUtil.writeFileRaw(sqlFile, content, _modifiedFileNames);
+			}
+		}
+		else if (addMissingTables) {
+			try (UnsyncBufferedReader unsyncBufferedReader =
+					new UnsyncBufferedReader(new UnsyncStringReader(content))) {
+
+				StringBundler sb = new StringBundler();
+
+				String line = null;
+				boolean appendNewTable = true;
+
+				while ((line = unsyncBufferedReader.readLine()) != null) {
+					if (appendNewTable && line.startsWith(_SQL_CREATE_TABLE)) {
+						x = _SQL_CREATE_TABLE.length();
+
+						y = line.indexOf(" ", x);
+
+						String tableName = line.substring(x, y);
+
+						if (tableName.compareTo(entityMapping.getTableName()) >
+								0) {
+
+							sb.append(newCreateTableString);
+							sb.append("\n\n");
+
+							appendNewTable = false;
+						}
+					}
+
+					sb.append(line);
+					sb.append("\n");
+				}
+
+				if (appendNewTable) {
+					sb.append("\n");
+					sb.append(newCreateTableString);
+				}
+
+				ToolsUtil.writeFileRaw(
+					sqlFile, sb.toString(), _modifiedFileNames);
+			}
+		}
+	}
+
+	private void _createSQLSequences() throws IOException {
+		File sqlDir = new File(_sqlDirName);
+
+		if (!sqlDir.exists()) {
+			_mkdir(sqlDir);
+		}
+
+		File sqlFile = new File(_sqlDirName + "/" + _sqlSequencesFileName);
+
+		if (!sqlFile.exists()) {
+			_touch(sqlFile);
+		}
+
+		Set<String> sequenceSQLs = new TreeSet<>();
+
+		try (UnsyncBufferedReader unsyncBufferedReader =
+				new UnsyncBufferedReader(new FileReader(sqlFile))) {
+
+			while (true) {
+				String sequenceSQL = unsyncBufferedReader.readLine();
+
+				if (sequenceSQL == null) {
+					break;
+				}
+
+				if (Validator.isNotNull(sequenceSQL)) {
+					sequenceSQLs.add(sequenceSQL);
+				}
+			}
+		}
+
+		for (Entity entity : _entities) {
+			if (!_isTargetEntity(entity) || !entity.isDefaultDataSource()) {
+				continue;
+			}
+
+			if (!entity.hasFinderClassName() && !entity.hasPersistence()) {
+				continue;
+			}
+
+			List<EntityColumn> entityColumns = entity.getEntityColumns();
+
+			for (EntityColumn entityColumn : entityColumns) {
+				if (Objects.equals(entityColumn.getIdType(), "sequence")) {
+					StringBundler sb = new StringBundler(3);
+
+					String sequenceName = entityColumn.getIdParam();
+
+					if (sequenceName.length() > 30) {
+						sequenceName = sequenceName.substring(0, 30);
+					}
+
+					sb.append("create sequence ");
+					sb.append(sequenceName);
+					sb.append(";");
+
+					sequenceSQLs.add(sb.toString());
+				}
+			}
+		}
+
+		StringBundler sb = new StringBundler(sequenceSQLs.size() * 2);
+
+		for (String sequenceSQL : sequenceSQLs) {
+			sb.append(sequenceSQL);
+			sb.append("\n");
+		}
+
+		if (!sequenceSQLs.isEmpty()) {
+			sb.setIndex(sb.index() - 1);
+		}
+
+		ToolsUtil.writeFileRaw(sqlFile, sb.toString(), _modifiedFileNames);
+	}
+
+	private void _createSQLTables() throws Exception {
+		File sqlDir = new File(_sqlDirName);
+
+		if (!sqlDir.exists()) {
+			_mkdir(sqlDir);
+		}
+
+		File sqlFile = new File(_sqlDirName + "/" + _sqlFileName);
+
+		if (!sqlFile.exists()) {
+			_touch(sqlFile);
+		}
+
+		for (Entity entity : _entities) {
+			if (!_isTargetEntity(entity) || !entity.isDefaultDataSource() ||
+				entity.isDeprecated()) {
+
+				continue;
+			}
+
+			if (!entity.hasFinderClassName() && !entity.hasPersistence()) {
+				continue;
+			}
+
+			String createTableSQL = _getCreateTableSQL(entity);
+
+			if (Validator.isNotNull(createTableSQL)) {
+				_createSQLTables(sqlFile, createTableSQL, entity, true);
+
+				if (GetterUtil.getBoolean(
+						_compatProperties.getProperty(
+							"update.sql.file.auto.update"))) {
+
+					List<Path> updateSQLFilePaths = _getUpdateSQLFilePaths();
+
+					for (Path updateSQLFilePath : updateSQLFilePaths) {
+						if ((updateSQLFilePath != null) &&
+							Files.exists(updateSQLFilePath)) {
+
+							_createSQLTables(
+								updateSQLFilePath.toFile(), createTableSQL,
+								entity, false);
+						}
+					}
+				}
+			}
+		}
+
+		for (Map.Entry<String, EntityMapping> entry :
+				_entityMappings.entrySet()) {
+
+			EntityMapping entityMapping = entry.getValue();
+
+			String createMappingTableSQL = _getCreateMappingTableSQL(
+				entityMapping);
+
+			if (Validator.isNotNull(createMappingTableSQL)) {
+				_createSQLMappingTables(
+					sqlFile, createMappingTableSQL, entityMapping, true);
+			}
+		}
+
+		String content = _read(sqlFile);
+
+		ToolsUtil.writeFileRaw(sqlFile, content.trim(), _modifiedFileNames);
+	}
+
+	private void _createSQLTables(
+			File sqlFile, String newCreateTableString, Entity entity,
+			boolean addMissingTables)
+		throws IOException {
+
+		if (!sqlFile.exists()) {
+			_touch(sqlFile);
+		}
+
+		String content = _read(sqlFile);
+
+		int x = content.indexOf(_SQL_CREATE_TABLE + entity.getTable() + " (");
+
+		int y = content.indexOf(");", x);
+
+		if (x != -1) {
+			String oldCreateTableString = content.substring(x, y + 2);
+
+			if (!oldCreateTableString.equals(newCreateTableString)) {
+				content =
+					content.substring(0, x) + newCreateTableString +
+						content.substring(y + 2);
+
+				ToolsUtil.writeFileRaw(sqlFile, content, _modifiedFileNames);
+			}
+		}
+		else if (addMissingTables) {
+			try (UnsyncBufferedReader unsyncBufferedReader =
+					new UnsyncBufferedReader(new UnsyncStringReader(content))) {
+
+				StringBundler sb = new StringBundler();
+
+				String line = null;
+				boolean appendNewTable = true;
+
+				while ((line = unsyncBufferedReader.readLine()) != null) {
+					if (appendNewTable && line.startsWith(_SQL_CREATE_TABLE)) {
+						x = _SQL_CREATE_TABLE.length();
+
+						y = line.indexOf(" ", x);
+
+						String tableName = line.substring(x, y);
+
+						if (tableName.compareTo(entity.getTable()) > 0) {
+							sb.append(newCreateTableString);
+							sb.append("\n\n");
+
+							appendNewTable = false;
+						}
+					}
+
+					sb.append(line);
+					sb.append("\n");
+				}
+
+				if (appendNewTable) {
+					sb.append("\n");
+					sb.append(newCreateTableString);
+				}
+
+				ToolsUtil.writeFileRaw(
+					sqlFile, sb.toString(), _modifiedFileNames);
+			}
+		}
+	}
+
 	private void _createService(Entity entity, int sessionType)
 		throws Exception {
 
@@ -4527,456 +4977,6 @@ public class ServiceBuilder {
 		}
 
 		ToolsUtil.writeFileRaw(xmlFile, newContent, _modifiedFileNames);
-	}
-
-	private void _createSQLIndexes() throws Exception {
-		File sqlDir = new File(_sqlDirName);
-
-		if (!sqlDir.exists()) {
-			_mkdir(sqlDir);
-		}
-
-		// indexes.sql loading
-
-		File sqlFile = new File(_sqlDirName + "/" + _sqlIndexesFileName);
-
-		if (!sqlFile.exists()) {
-			_touch(sqlFile);
-		}
-
-		Map<String, List<IndexMetadata>> indexMetadatasMap = new TreeMap<>();
-
-		try (UnsyncBufferedReader unsyncBufferedReader =
-				new UnsyncBufferedReader(new FileReader(sqlFile))) {
-
-			iterate:
-			while (true) {
-				String indexSQL = unsyncBufferedReader.readLine();
-
-				if (indexSQL == null) {
-					break;
-				}
-
-				indexSQL = indexSQL.trim();
-
-				if (Validator.isNull(indexSQL)) {
-					continue;
-				}
-
-				IndexMetadata indexMetadata =
-					IndexMetadataFactoryUtil.createIndexMetadata(indexSQL);
-
-				List<String> pkEntityColumnDBNames = null;
-
-				Entity entity = _getEntityByTableName(
-					indexMetadata.getTableName());
-
-				if (entity != null) {
-					indexMetadata = new IndexMetadata(
-						indexMetadata.getIndexName(),
-						indexMetadata.getTableName(), indexMetadata.isUnique(),
-						indexMetadata.getColumnNames());
-
-					for (String columnName : indexMetadata.getColumnNames()) {
-						EntityColumn entityColumn =
-							_fetchEntityColumnByColumnDBName(
-								entity, columnName);
-
-						if (entityColumn == null) {
-							System.out.println(
-								StringBundler.concat(
-									"Removing index ",
-									indexMetadata.getIndexName(),
-									" because column \"", columnName,
-									"\" does not exist"));
-
-							continue iterate;
-						}
-					}
-
-					pkEntityColumnDBNames = entity.getPKEntityColumnDBNames();
-				}
-				else {
-					EntityMapping entityMapping = _entityMappings.get(
-						indexMetadata.getTableName());
-
-					pkEntityColumnDBNames =
-						_getEntityMappingPKEntityColumnDBNames(entityMapping);
-				}
-
-				_addIndexMetadata(
-					indexMetadatasMap, indexMetadata.getTableName(),
-					pkEntityColumnDBNames, indexMetadata, _optimizeDBIndexes);
-			}
-		}
-
-		// indexes.sql appending
-
-		for (Entity entity : _entities) {
-			if (!_isTargetEntity(entity) || !entity.isDefaultDataSource() ||
-				entity.isDeprecated()) {
-
-				continue;
-			}
-
-			if (!entity.hasFinderClassName() && !entity.hasPersistence()) {
-				continue;
-			}
-
-			String tableName = entity.getTable();
-
-			List<IndexMetadata> indexMetadatas = indexMetadatasMap.get(
-				tableName);
-
-			if ((indexMetadatas != null) && _optimizeDBIndexes) {
-				indexMetadatas.clear();
-			}
-
-			List<EntityFinder> entityFinders = entity.getEntityFinders();
-
-			for (EntityFinder entityFinder : entityFinders) {
-				_addIndexMetadata(
-					indexMetadatasMap, tableName,
-					entity.getPKEntityColumnDBNames(),
-					_createIndexMetadata(
-						entity, entityFinder, _optimizeDBIndexes),
-					_optimizeDBIndexes);
-			}
-
-			indexMetadatas = indexMetadatasMap.get(tableName);
-
-			if (_optimizeDBIndexes && (indexMetadatas != null)) {
-				indexMetadatasMap.put(
-					tableName,
-					_optimizeForBTreeIndexes(
-						entity.isChangeTrackingEnabled(), indexMetadatas));
-			}
-
-			for (EntityFinder indexOnlyEntityFinder :
-					entity.getIndexOnlyEntityFinders()) {
-
-				_addIndexMetadata(
-					indexMetadatasMap, tableName,
-					entity.getPKEntityColumnDBNames(),
-					_createIndexMetadata(entity, indexOnlyEntityFinder, false),
-					false);
-			}
-		}
-
-		for (Map.Entry<String, EntityMapping> entry :
-				_entityMappings.entrySet()) {
-
-			EntityMapping entityMapping = entry.getValue();
-
-			indexMetadatasMap.remove(entityMapping.getTableName());
-
-			_getCreateMappingTableIndex(entityMapping, indexMetadatasMap);
-		}
-
-		StringBundler sb = new StringBundler();
-
-		for (List<IndexMetadata> indexMetadatas : indexMetadatasMap.values()) {
-			Collections.sort(indexMetadatas);
-
-			for (IndexMetadata indexMetadata : indexMetadatas) {
-				sb.append(
-					indexMetadata.getCreateSQL(
-						_getColumnLengths(indexMetadata)));
-
-				sb.append(StringPool.NEW_LINE);
-			}
-
-			sb.append(StringPool.NEW_LINE);
-		}
-
-		if (!indexMetadatasMap.isEmpty()) {
-			sb.setIndex(sb.index() - 2);
-		}
-
-		ToolsUtil.writeFileRaw(sqlFile, sb.toString(), _modifiedFileNames);
-
-		// indexes.properties
-
-		File file = new File(_sqlDirName, "indexes.properties");
-
-		file.delete();
-	}
-
-	private void _createSQLMappingTables(
-			File sqlFile, String newCreateTableString,
-			EntityMapping entityMapping, boolean addMissingTables)
-		throws Exception {
-
-		if (!sqlFile.exists()) {
-			_touch(sqlFile);
-		}
-
-		String content = _read(sqlFile);
-
-		int x = content.indexOf(
-			_SQL_CREATE_TABLE + entityMapping.getTableName() + " (");
-
-		int y = content.indexOf(");", x);
-
-		if (x != -1) {
-			String oldCreateTableString = content.substring(x + 1, y);
-
-			if (!oldCreateTableString.equals(newCreateTableString)) {
-				content =
-					content.substring(0, x) + newCreateTableString +
-						content.substring(y + 2);
-
-				ToolsUtil.writeFileRaw(sqlFile, content, _modifiedFileNames);
-			}
-		}
-		else if (addMissingTables) {
-			try (UnsyncBufferedReader unsyncBufferedReader =
-					new UnsyncBufferedReader(new UnsyncStringReader(content))) {
-
-				StringBundler sb = new StringBundler();
-
-				String line = null;
-				boolean appendNewTable = true;
-
-				while ((line = unsyncBufferedReader.readLine()) != null) {
-					if (appendNewTable && line.startsWith(_SQL_CREATE_TABLE)) {
-						x = _SQL_CREATE_TABLE.length();
-
-						y = line.indexOf(" ", x);
-
-						String tableName = line.substring(x, y);
-
-						if (tableName.compareTo(entityMapping.getTableName()) >
-								0) {
-
-							sb.append(newCreateTableString);
-							sb.append("\n\n");
-
-							appendNewTable = false;
-						}
-					}
-
-					sb.append(line);
-					sb.append("\n");
-				}
-
-				if (appendNewTable) {
-					sb.append("\n");
-					sb.append(newCreateTableString);
-				}
-
-				ToolsUtil.writeFileRaw(
-					sqlFile, sb.toString(), _modifiedFileNames);
-			}
-		}
-	}
-
-	private void _createSQLSequences() throws IOException {
-		File sqlDir = new File(_sqlDirName);
-
-		if (!sqlDir.exists()) {
-			_mkdir(sqlDir);
-		}
-
-		File sqlFile = new File(_sqlDirName + "/" + _sqlSequencesFileName);
-
-		if (!sqlFile.exists()) {
-			_touch(sqlFile);
-		}
-
-		Set<String> sequenceSQLs = new TreeSet<>();
-
-		try (UnsyncBufferedReader unsyncBufferedReader =
-				new UnsyncBufferedReader(new FileReader(sqlFile))) {
-
-			while (true) {
-				String sequenceSQL = unsyncBufferedReader.readLine();
-
-				if (sequenceSQL == null) {
-					break;
-				}
-
-				if (Validator.isNotNull(sequenceSQL)) {
-					sequenceSQLs.add(sequenceSQL);
-				}
-			}
-		}
-
-		for (Entity entity : _entities) {
-			if (!_isTargetEntity(entity) || !entity.isDefaultDataSource()) {
-				continue;
-			}
-
-			if (!entity.hasFinderClassName() && !entity.hasPersistence()) {
-				continue;
-			}
-
-			List<EntityColumn> entityColumns = entity.getEntityColumns();
-
-			for (EntityColumn entityColumn : entityColumns) {
-				if (Objects.equals(entityColumn.getIdType(), "sequence")) {
-					StringBundler sb = new StringBundler(3);
-
-					String sequenceName = entityColumn.getIdParam();
-
-					if (sequenceName.length() > 30) {
-						sequenceName = sequenceName.substring(0, 30);
-					}
-
-					sb.append("create sequence ");
-					sb.append(sequenceName);
-					sb.append(";");
-
-					sequenceSQLs.add(sb.toString());
-				}
-			}
-		}
-
-		StringBundler sb = new StringBundler(sequenceSQLs.size() * 2);
-
-		for (String sequenceSQL : sequenceSQLs) {
-			sb.append(sequenceSQL);
-			sb.append("\n");
-		}
-
-		if (!sequenceSQLs.isEmpty()) {
-			sb.setIndex(sb.index() - 1);
-		}
-
-		ToolsUtil.writeFileRaw(sqlFile, sb.toString(), _modifiedFileNames);
-	}
-
-	private void _createSQLTables() throws Exception {
-		File sqlDir = new File(_sqlDirName);
-
-		if (!sqlDir.exists()) {
-			_mkdir(sqlDir);
-		}
-
-		File sqlFile = new File(_sqlDirName + "/" + _sqlFileName);
-
-		if (!sqlFile.exists()) {
-			_touch(sqlFile);
-		}
-
-		for (Entity entity : _entities) {
-			if (!_isTargetEntity(entity) || !entity.isDefaultDataSource() ||
-				entity.isDeprecated()) {
-
-				continue;
-			}
-
-			if (!entity.hasFinderClassName() && !entity.hasPersistence()) {
-				continue;
-			}
-
-			String createTableSQL = _getCreateTableSQL(entity);
-
-			if (Validator.isNotNull(createTableSQL)) {
-				_createSQLTables(sqlFile, createTableSQL, entity, true);
-
-				if (GetterUtil.getBoolean(
-						_compatProperties.getProperty(
-							"update.sql.file.auto.update"))) {
-
-					List<Path> updateSQLFilePaths = _getUpdateSQLFilePaths();
-
-					for (Path updateSQLFilePath : updateSQLFilePaths) {
-						if ((updateSQLFilePath != null) &&
-							Files.exists(updateSQLFilePath)) {
-
-							_createSQLTables(
-								updateSQLFilePath.toFile(), createTableSQL,
-								entity, false);
-						}
-					}
-				}
-			}
-		}
-
-		for (Map.Entry<String, EntityMapping> entry :
-				_entityMappings.entrySet()) {
-
-			EntityMapping entityMapping = entry.getValue();
-
-			String createMappingTableSQL = _getCreateMappingTableSQL(
-				entityMapping);
-
-			if (Validator.isNotNull(createMappingTableSQL)) {
-				_createSQLMappingTables(
-					sqlFile, createMappingTableSQL, entityMapping, true);
-			}
-		}
-
-		String content = _read(sqlFile);
-
-		ToolsUtil.writeFileRaw(sqlFile, content.trim(), _modifiedFileNames);
-	}
-
-	private void _createSQLTables(
-			File sqlFile, String newCreateTableString, Entity entity,
-			boolean addMissingTables)
-		throws IOException {
-
-		if (!sqlFile.exists()) {
-			_touch(sqlFile);
-		}
-
-		String content = _read(sqlFile);
-
-		int x = content.indexOf(_SQL_CREATE_TABLE + entity.getTable() + " (");
-
-		int y = content.indexOf(");", x);
-
-		if (x != -1) {
-			String oldCreateTableString = content.substring(x, y + 2);
-
-			if (!oldCreateTableString.equals(newCreateTableString)) {
-				content =
-					content.substring(0, x) + newCreateTableString +
-						content.substring(y + 2);
-
-				ToolsUtil.writeFileRaw(sqlFile, content, _modifiedFileNames);
-			}
-		}
-		else if (addMissingTables) {
-			try (UnsyncBufferedReader unsyncBufferedReader =
-					new UnsyncBufferedReader(new UnsyncStringReader(content))) {
-
-				StringBundler sb = new StringBundler();
-
-				String line = null;
-				boolean appendNewTable = true;
-
-				while ((line = unsyncBufferedReader.readLine()) != null) {
-					if (appendNewTable && line.startsWith(_SQL_CREATE_TABLE)) {
-						x = _SQL_CREATE_TABLE.length();
-
-						y = line.indexOf(" ", x);
-
-						String tableName = line.substring(x, y);
-
-						if (tableName.compareTo(entity.getTable()) > 0) {
-							sb.append(newCreateTableString);
-							sb.append("\n\n");
-
-							appendNewTable = false;
-						}
-					}
-
-					sb.append(line);
-					sb.append("\n");
-				}
-
-				if (appendNewTable) {
-					sb.append("\n");
-					sb.append(newCreateTableString);
-				}
-
-				ToolsUtil.writeFileRaw(
-					sqlFile, sb.toString(), _modifiedFileNames);
-			}
-		}
 	}
 
 	private void _createUADAnonymizer(Entity entity) throws Exception {
@@ -6050,6 +6050,40 @@ public class ServiceBuilder {
 		return sb.toString();
 	}
 
+	private String _getMethodSignature(
+		JavaMethod method, boolean useFullyQualifiedNames) {
+
+		StringBundler sb = new StringBundler();
+
+		sb.append(method.getName());
+		sb.append(StringPool.OPEN_PARENTHESIS);
+
+		for (JavaParameter parameter : method.getParameters()) {
+			JavaType type = parameter.getType();
+
+			String parameterValue = type.getFullyQualifiedName();
+
+			if (!useFullyQualifiedNames) {
+				int pos = parameterValue.lastIndexOf(CharPool.PERIOD);
+
+				if (pos != -1) {
+					parameterValue = parameterValue.substring(pos + 1);
+				}
+			}
+
+			sb.append(parameterValue);
+			sb.append(StringPool.COMMA);
+		}
+
+		if (sb.index() > 2) {
+			sb.setIndex(sb.index() - 1);
+		}
+
+		sb.append(StringPool.CLOSE_PARENTHESIS);
+
+		return sb.toString();
+	}
+
 	private List<JavaMethod> _getMethods(JavaClass javaClass) {
 		List<JavaMethod> methods = new ArrayList<>();
 
@@ -6128,40 +6162,6 @@ public class ServiceBuilder {
 		}
 
 		return methods;
-	}
-
-	private String _getMethodSignature(
-		JavaMethod method, boolean useFullyQualifiedNames) {
-
-		StringBundler sb = new StringBundler();
-
-		sb.append(method.getName());
-		sb.append(StringPool.OPEN_PARENTHESIS);
-
-		for (JavaParameter parameter : method.getParameters()) {
-			JavaType type = parameter.getType();
-
-			String parameterValue = type.getFullyQualifiedName();
-
-			if (!useFullyQualifiedNames) {
-				int pos = parameterValue.lastIndexOf(CharPool.PERIOD);
-
-				if (pos != -1) {
-					parameterValue = parameterValue.substring(pos + 1);
-				}
-			}
-
-			sb.append(parameterValue);
-			sb.append(StringPool.COMMA);
-		}
-
-		if (sb.index() > 2) {
-			sb.setIndex(sb.index() - 1);
-		}
-
-		sb.append(StringPool.CLOSE_PARENTHESIS);
-
-		return sb.toString();
 	}
 
 	private String _getSessionTypeName(int sessionType) {

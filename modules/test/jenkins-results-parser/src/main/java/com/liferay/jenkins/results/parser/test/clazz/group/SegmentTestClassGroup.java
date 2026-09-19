@@ -73,11 +73,6 @@ public class SegmentTestClassGroup extends BaseTestClassGroup {
 		return _batchTestClassGroup.getDownstreamJobName();
 	}
 
-	@Override
-	public Job getJob() {
-		return _batchTestClassGroup.getJob();
-	}
-
 	public JSONObject getJSONObject() {
 		JSONObject jsonObject = new JSONObject();
 
@@ -94,6 +89,11 @@ public class SegmentTestClassGroup extends BaseTestClassGroup {
 		);
 
 		return jsonObject;
+	}
+
+	@Override
+	public Job getJob() {
+		return _batchTestClassGroup.getJob();
 	}
 
 	public Integer getMaximumSlavesPerHost() {

@@ -52,19 +52,19 @@ public class JWTAssertAuthorizationGrantTest
 	}
 
 	@Test
-	public void testGrantWithoutSubject() {
-		JSONObject jsonObject = _getTokenResponseJSONObject(
-			getTokenWebTarget(), TEST_CLIENT_ID_1, null);
-
-		Assert.assertEquals("invalid_grant", jsonObject.getString("error"));
-	}
-
-	@Test
 	public void testGrantWithWrongAudience() throws Exception {
 		User user = UserTestUtil.getAdminUser(TestPropsValues.getCompanyId());
 
 		JSONObject jsonObject = _getTokenResponseJSONObject(
 			getJsonWebTarget("wrongPath"), TEST_CLIENT_ID_1, user.getUuid());
+
+		Assert.assertEquals("invalid_grant", jsonObject.getString("error"));
+	}
+
+	@Test
+	public void testGrantWithoutSubject() {
+		JSONObject jsonObject = _getTokenResponseJSONObject(
+			getTokenWebTarget(), TEST_CLIENT_ID_1, null);
 
 		Assert.assertEquals("invalid_grant", jsonObject.getString("error"));
 	}

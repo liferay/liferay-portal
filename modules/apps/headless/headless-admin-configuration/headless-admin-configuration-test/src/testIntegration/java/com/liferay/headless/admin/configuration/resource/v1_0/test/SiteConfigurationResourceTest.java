@@ -247,23 +247,6 @@ public class SiteConfigurationResourceTest
 		assertValid(getSiteConfiguration);
 	}
 
-	private void _testGetSiteSiteConfigurationWithoutPermission()
-		throws Exception {
-
-		try {
-			_userSiteConfigurationResource.getSiteSiteConfiguration(
-				testGroup.getExternalReferenceCode(),
-				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
-	}
-
 	private void _testGetSiteSiteConfigurationWithPasswordKey()
 		throws Exception {
 
@@ -291,6 +274,23 @@ public class SiteConfigurationResourceTest
 		properties = siteConfiguration.getProperties();
 
 		Assert.assertNull(properties.get("passwordStringKey"));
+	}
+
+	private void _testGetSiteSiteConfigurationWithoutPermission()
+		throws Exception {
+
+		try {
+			_userSiteConfigurationResource.getSiteSiteConfiguration(
+				testGroup.getExternalReferenceCode(),
+				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
 	}
 
 	private void _testPutSiteSiteConfigurationWithoutPermission()

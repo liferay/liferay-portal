@@ -227,13 +227,6 @@ public class SQLQueryImpl implements SQLQuery {
 	}
 
 	@Override
-	public Query setCacheable(boolean cacheable) {
-		_sqlQuery.setCacheable(cacheable);
-
-		return this;
-	}
-
-	@Override
 	public Query setCacheMode(CacheMode cacheMode) {
 		_sqlQuery.setCacheMode(CacheModeTranslator.translate(cacheMode));
 
@@ -243,6 +236,13 @@ public class SQLQueryImpl implements SQLQuery {
 	@Override
 	public Query setCacheRegion(String cacheRegion) {
 		_sqlQuery.setCacheRegion(cacheRegion);
+
+		return this;
+	}
+
+	@Override
+	public Query setCacheable(boolean cacheable) {
+		_sqlQuery.setCacheable(cacheable);
 
 		return this;
 	}

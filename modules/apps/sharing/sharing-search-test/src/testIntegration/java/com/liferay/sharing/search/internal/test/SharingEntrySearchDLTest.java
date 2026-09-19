@@ -92,31 +92,6 @@ public class SharingEntrySearchDLTest {
 	}
 
 	@Test
-	public void testUserCannotSearchPrivateDocument() throws Exception {
-		Indexer<DLFileEntry> indexer = IndexerRegistryUtil.getIndexer(
-			DLFileEntryConstants.getClassName());
-
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(_groupUser);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, permissionChecker)) {
-
-			SearchContext searchContext = new SearchContext();
-
-			searchContext.setCompanyId(_fileEntry.getCompanyId());
-			searchContext.setGroupIds(
-				new long[] {_fileEntry.getRepositoryId()});
-			searchContext.setKeywords(_title);
-			searchContext.setUserId(_groupUser.getUserId());
-
-			Hits hits = indexer.search(searchContext);
-
-			Assert.assertEquals(hits.toString(), 0, hits.getLength());
-		}
-	}
-
-	@Test
 	public void testUserCanSearchSharedPrivateDocument() throws Exception {
 		_sharingEntryLocalService.addSharingEntry(
 			null, TestPropsValues.getUserId(), 0, 0, _groupUser.getUserId(),
@@ -193,6 +168,31 @@ public class SharingEntrySearchDLTest {
 				_groupUser.getUserId(), userGroup);
 
 			_userGroupLocalService.deleteUserGroup(userGroup);
+		}
+	}
+
+	@Test
+	public void testUserCannotSearchPrivateDocument() throws Exception {
+		Indexer<DLFileEntry> indexer = IndexerRegistryUtil.getIndexer(
+			DLFileEntryConstants.getClassName());
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_groupUser);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, permissionChecker)) {
+
+			SearchContext searchContext = new SearchContext();
+
+			searchContext.setCompanyId(_fileEntry.getCompanyId());
+			searchContext.setGroupIds(
+				new long[] {_fileEntry.getRepositoryId()});
+			searchContext.setKeywords(_title);
+			searchContext.setUserId(_groupUser.getUserId());
+
+			Hits hits = indexer.search(searchContext);
+
+			Assert.assertEquals(hits.toString(), 0, hits.getLength());
 		}
 	}
 

@@ -699,17 +699,6 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void moveThreadsToTrash(long groupId, long userId)
-		throws PortalException {
-
-		List<MBThread> threads = mbThreadPersistence.findByGroupId(groupId);
-
-		for (MBThread thread : threads) {
-			moveThreadToTrash(userId, thread);
-		}
-	}
-
-	@Override
 	public MBThread moveThreadToTrash(long userId, long threadId)
 		throws PortalException {
 
@@ -773,6 +762,17 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 			extraDataJSONObject.toString(), 0);
 
 		return thread;
+	}
+
+	@Override
+	public void moveThreadsToTrash(long groupId, long userId)
+		throws PortalException {
+
+		List<MBThread> threads = mbThreadPersistence.findByGroupId(groupId);
+
+		for (MBThread thread : threads) {
+			moveThreadToTrash(userId, thread);
+		}
 	}
 
 	@Override

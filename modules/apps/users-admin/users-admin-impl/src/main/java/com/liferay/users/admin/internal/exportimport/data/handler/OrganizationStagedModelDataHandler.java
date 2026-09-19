@@ -664,10 +664,10 @@ public class OrganizationStagedModelDataHandler
 	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
-	private OrganizationLocalService _organizationLocalService;
+	private OrgLaborLocalService _orgLaborLocalService;
 
 	@Reference
-	private OrgLaborLocalService _orgLaborLocalService;
+	private OrganizationLocalService _organizationLocalService;
 
 	@Reference
 	private PasswordPolicyLocalService _passwordPolicyLocalService;

@@ -175,13 +175,13 @@ public class DLAppServiceImplTest {
 		Mockito.mock(AssetCategoryLocalService.class);
 	private final AssetTagLocalService _assetTagLocalService = Mockito.mock(
 		AssetTagLocalService.class);
+	private final MockedStatic<DLValidatorUtil> _dLValidatorUtilMockedStatic =
+		Mockito.mockStatic(DLValidatorUtil.class);
 	private final FileEntry _destinationFileEntry = Mockito.mock(
 		FileEntry.class);
 	private final Repository _destinationRepository = Mockito.mock(
 		Repository.class);
 	private final DLAppServiceImpl _dlAppServiceImpl = new DLAppServiceImpl();
-	private final MockedStatic<DLValidatorUtil> _dLValidatorUtilMockedStatic =
-		Mockito.mockStatic(DLValidatorUtil.class);
 	private final MockedStatic<GuestOrUserUtil> _guestOrUserUtilMockedStatic =
 		Mockito.mockStatic(GuestOrUserUtil.class);
 	private final RatingsEntryLocalService _ratingsEntryLocalService =

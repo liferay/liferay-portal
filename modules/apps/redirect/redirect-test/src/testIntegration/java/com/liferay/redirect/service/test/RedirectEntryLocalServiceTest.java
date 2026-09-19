@@ -321,21 +321,21 @@ public class RedirectEntryLocalServiceTest {
 	}
 
 	@Test(expected = LayoutFriendlyURLException.class)
+	public void testAddRedirectEntryFailsWhenSourceURLURLSeparator()
+		throws Exception {
+
+		_redirectEntryLocalService.addRedirectEntry(
+			_group.getGroupId(), "http://www.liferay.com", null, false, "/b/",
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	@Test(expected = LayoutFriendlyURLException.class)
 	public void testAddRedirectEntryFailsWhenSourceURLURLanguagePath()
 		throws Exception {
 
 		_redirectEntryLocalService.addRedirectEntry(
 			_group.getGroupId(), "http://www.liferay.com", null, false,
 			"es/test",
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-	}
-
-	@Test(expected = LayoutFriendlyURLException.class)
-	public void testAddRedirectEntryFailsWhenSourceURLURLSeparator()
-		throws Exception {
-
-		_redirectEntryLocalService.addRedirectEntry(
-			_group.getGroupId(), "http://www.liferay.com", null, false, "/b/",
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 

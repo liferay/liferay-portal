@@ -528,6 +528,110 @@ public class MiniumSiteInitializer implements SiteInitializer {
 		}
 	}
 
+	private List<CPDefinition> _importCPDefinitions(
+			long catalogGroupId, long commerceChannelId,
+			List<CommerceInventoryWarehouse> commerceInventoryWarehouses,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Group group = serviceContext.getScopeGroup();
+
+		JSONArray jsonArray = _getJSONArray("products.json");
+
+		if (_siteInitializerDependencyResolver != null) {
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				String externalReferenceCode = jsonObject.getString(
+					"externalReferenceCode");
+
+				String newExternalReferenceCode =
+					externalReferenceCode +
+						_siteInitializerDependencyResolver.getKey();
+
+				jsonObject.put(
+					"externalReferenceCode", newExternalReferenceCode);
+
+				JSONArray skusJSONArray = jsonObject.getJSONArray("skus");
+
+				if (skusJSONArray != null) {
+					for (int j = 0; j < skusJSONArray.length(); j++) {
+						JSONObject skuJSONObject = skusJSONArray.getJSONObject(
+							j);
+
+						String skuExternalReferenceCode =
+							skuJSONObject.getString("externalReferenceCode");
+
+						String newSkuExternalReferenceCode =
+							skuExternalReferenceCode +
+								_siteInitializerDependencyResolver.getKey();
+
+						skuJSONObject.put(
+							"externalReferenceCode",
+							newSkuExternalReferenceCode);
+					}
+				}
+			}
+		}
+
+		long[] commerceInventoryWarehouseIds = ListUtil.toLongArray(
+			commerceInventoryWarehouses,
+			CommerceInventoryWarehouse.
+				COMMERCE_INVENTORY_WAREHOUSE_ID_ACCESSOR);
+
+		return _cpDefinitionsImporter.importCPDefinitions(
+			jsonArray, group.getName(serviceContext.getLocale()),
+			catalogGroupId, commerceChannelId, commerceInventoryWarehouseIds,
+			_siteInitializerDependencyResolver.getImageClassLoader(),
+			_siteInitializerDependencyResolver.getImageDependencyPath(),
+			serviceContext.getScopeGroupId(), serviceContext.getUserId());
+	}
+
+	private void _importCPOptionCategories(
+			long catalogGroupId, ServiceContext serviceContext)
+		throws Exception {
+
+		if (_log.isInfoEnabled()) {
+			_log.info("Importing commerce product option categories...");
+		}
+
+		_cpOptionCategoriesImporter.importCPOptionCategories(
+			_getJSONArray("option-categories.json"), catalogGroupId,
+			serviceContext.getUserId());
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				"Commerce product option categories successfully imported");
+		}
+	}
+
+	private List<CPOption> _importCPOptions(
+			long catalogGroupId, ServiceContext serviceContext)
+		throws Exception {
+
+		return _cpOptionsImporter.importCPOptions(
+			_getJSONArray("options.json"), catalogGroupId,
+			serviceContext.getUserId());
+	}
+
+	private void _importCPSpecificationOptions(
+			long catalogGroupId, ServiceContext serviceContext)
+		throws Exception {
+
+		if (_log.isInfoEnabled()) {
+			_log.info("Importing commerce product specification options...");
+		}
+
+		_cpSpecificationOptionsImporter.importCPSpecificationOptions(
+			_getJSONArray("specification-options.json"), catalogGroupId,
+			serviceContext.getUserId());
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				"Commerce product specification options successfully imported");
+		}
+	}
+
 	private void _importCommerceAccounts(ServiceContext serviceContext)
 		throws Exception {
 
@@ -649,110 +753,6 @@ public class MiniumSiteInitializer implements SiteInitializer {
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce Users successfully imported");
-		}
-	}
-
-	private List<CPDefinition> _importCPDefinitions(
-			long catalogGroupId, long commerceChannelId,
-			List<CommerceInventoryWarehouse> commerceInventoryWarehouses,
-			ServiceContext serviceContext)
-		throws Exception {
-
-		Group group = serviceContext.getScopeGroup();
-
-		JSONArray jsonArray = _getJSONArray("products.json");
-
-		if (_siteInitializerDependencyResolver != null) {
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-				String externalReferenceCode = jsonObject.getString(
-					"externalReferenceCode");
-
-				String newExternalReferenceCode =
-					externalReferenceCode +
-						_siteInitializerDependencyResolver.getKey();
-
-				jsonObject.put(
-					"externalReferenceCode", newExternalReferenceCode);
-
-				JSONArray skusJSONArray = jsonObject.getJSONArray("skus");
-
-				if (skusJSONArray != null) {
-					for (int j = 0; j < skusJSONArray.length(); j++) {
-						JSONObject skuJSONObject = skusJSONArray.getJSONObject(
-							j);
-
-						String skuExternalReferenceCode =
-							skuJSONObject.getString("externalReferenceCode");
-
-						String newSkuExternalReferenceCode =
-							skuExternalReferenceCode +
-								_siteInitializerDependencyResolver.getKey();
-
-						skuJSONObject.put(
-							"externalReferenceCode",
-							newSkuExternalReferenceCode);
-					}
-				}
-			}
-		}
-
-		long[] commerceInventoryWarehouseIds = ListUtil.toLongArray(
-			commerceInventoryWarehouses,
-			CommerceInventoryWarehouse.
-				COMMERCE_INVENTORY_WAREHOUSE_ID_ACCESSOR);
-
-		return _cpDefinitionsImporter.importCPDefinitions(
-			jsonArray, group.getName(serviceContext.getLocale()),
-			catalogGroupId, commerceChannelId, commerceInventoryWarehouseIds,
-			_siteInitializerDependencyResolver.getImageClassLoader(),
-			_siteInitializerDependencyResolver.getImageDependencyPath(),
-			serviceContext.getScopeGroupId(), serviceContext.getUserId());
-	}
-
-	private void _importCPOptionCategories(
-			long catalogGroupId, ServiceContext serviceContext)
-		throws Exception {
-
-		if (_log.isInfoEnabled()) {
-			_log.info("Importing commerce product option categories...");
-		}
-
-		_cpOptionCategoriesImporter.importCPOptionCategories(
-			_getJSONArray("option-categories.json"), catalogGroupId,
-			serviceContext.getUserId());
-
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				"Commerce product option categories successfully imported");
-		}
-	}
-
-	private List<CPOption> _importCPOptions(
-			long catalogGroupId, ServiceContext serviceContext)
-		throws Exception {
-
-		return _cpOptionsImporter.importCPOptions(
-			_getJSONArray("options.json"), catalogGroupId,
-			serviceContext.getUserId());
-	}
-
-	private void _importCPSpecificationOptions(
-			long catalogGroupId, ServiceContext serviceContext)
-		throws Exception {
-
-		if (_log.isInfoEnabled()) {
-			_log.info("Importing commerce product specification options...");
-		}
-
-		_cpSpecificationOptionsImporter.importCPSpecificationOptions(
-			_getJSONArray("specification-options.json"), catalogGroupId,
-			serviceContext.getUserId());
-
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				"Commerce product specification options successfully imported");
 		}
 	}
 

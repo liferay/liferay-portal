@@ -22,15 +22,15 @@ import java.util.Set;
 public class UnmodifiableJSONObjectImpl extends JSONObjectImpl {
 
 	@Override
+	public Set<String> keySet() {
+		return Collections.emptySet();
+	}
+
+	@Override
 	public Iterator<String> keys() {
 		List<String> list = Collections.emptyList();
 
 		return list.iterator();
-	}
-
-	@Override
-	public Set<String> keySet() {
-		return Collections.emptySet();
 	}
 
 	@Override

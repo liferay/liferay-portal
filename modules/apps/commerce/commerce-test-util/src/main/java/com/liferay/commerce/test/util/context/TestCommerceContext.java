@@ -45,6 +45,16 @@ public class TestCommerceContext implements CommerceContext {
 	}
 
 	@Override
+	public long getCPConfigurationListId(long groupId) {
+		return 0;
+	}
+
+	@Override
+	public long[] getCPConfigurationListIds() {
+		return new long[0];
+	}
+
+	@Override
 	public long[] getCommerceAccountGroupIds() {
 		if (_accountEntry == null) {
 			return new long[0];
@@ -85,16 +95,6 @@ public class TestCommerceContext implements CommerceContext {
 	@Override
 	public int getCommerceSiteType() {
 		return 0;
-	}
-
-	@Override
-	public long getCPConfigurationListId(long groupId) {
-		return 0;
-	}
-
-	@Override
-	public long[] getCPConfigurationListIds() {
-		return new long[0];
 	}
 
 	private final AccountEntry _accountEntry;

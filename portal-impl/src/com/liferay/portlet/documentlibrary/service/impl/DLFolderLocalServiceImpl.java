@@ -373,6 +373,35 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	@Override
+	public long getFolderSize(long companyId, long groupId, String treePath) {
+		List<Long> result = dslQuery(
+			DSLQueryFactoryUtil.select(
+				DSLFunctionFactoryUtil.sum(
+					DLFileEntryTable.INSTANCE.size
+				).as(
+					"SUM_VALUE"
+				)
+			).from(
+				DLFileEntryTable.INSTANCE
+			).where(
+				DLFileEntryTable.INSTANCE.companyId.eq(
+					companyId
+				).and(
+					DLFileEntryTable.INSTANCE.groupId.eq(groupId)
+				).and(
+					DLFileEntryTable.INSTANCE.treePath.like(
+						treePath.concat(StringPool.PERCENT))
+				)
+			));
+
+		if (result.get(0) == null) {
+			return 0;
+		}
+
+		return result.get(0);
+	}
+
+	@Override
 	public List<DLFolder> getFolders(
 		long groupId, boolean mountPoint, String treePath, boolean hidden) {
 
@@ -508,35 +537,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 
 		return getFoldersCount(
 			groupId, parentFolderId, includeMountfolders, status);
-	}
-
-	@Override
-	public long getFolderSize(long companyId, long groupId, String treePath) {
-		List<Long> result = dslQuery(
-			DSLQueryFactoryUtil.select(
-				DSLFunctionFactoryUtil.sum(
-					DLFileEntryTable.INSTANCE.size
-				).as(
-					"SUM_VALUE"
-				)
-			).from(
-				DLFileEntryTable.INSTANCE
-			).where(
-				DLFileEntryTable.INSTANCE.companyId.eq(
-					companyId
-				).and(
-					DLFileEntryTable.INSTANCE.groupId.eq(groupId)
-				).and(
-					DLFileEntryTable.INSTANCE.treePath.like(
-						treePath.concat(StringPool.PERCENT))
-				)
-			));
-
-		if (result.get(0) == null) {
-			return 0;
-		}
-
-		return result.get(0);
 	}
 
 	@Override

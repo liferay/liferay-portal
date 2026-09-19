@@ -96,13 +96,13 @@ public final class CompanyWebIdConsoleAppender extends AbstractAppender {
 				_immediateFlush, getLayout(), getName(), _target);
 		}
 
-		@PluginBuilderAttribute("bufferedIo")
-		@SuppressWarnings("log4j.public.setter")
-		private boolean _bufferedIo = true;
-
 		@PluginBuilderAttribute("bufferSize")
 		@SuppressWarnings("log4j.public.setter")
 		private int _bufferSize = Constants.ENCODER_BYTE_BUFFER_SIZE;
+
+		@PluginBuilderAttribute("bufferedIo")
+		@SuppressWarnings("log4j.public.setter")
+		private boolean _bufferedIo = true;
 
 		@PluginBuilderAttribute("direct")
 		@SuppressWarnings("log4j.public.setter")
@@ -168,8 +168,8 @@ public final class CompanyWebIdConsoleAppender extends AbstractAppender {
 	}
 
 	private Appender _appender;
-	private final boolean _bufferedIo;
 	private final int _bufferSize;
+	private final boolean _bufferedIo;
 	private final boolean _direct;
 	private final boolean _follow;
 	private final boolean _immediateFlush;

@@ -190,12 +190,6 @@ public abstract class AuroraAmazonVM extends VM {
 		_amazonRDS = amazonRDSClientBuilder.build();
 	}
 
-	private String _getDbClusterId() {
-		DBInstance dbInstance = _getDBInstance();
-
-		return dbInstance.getDBClusterIdentifier();
-	}
-
 	private String _getDBClusterStatus() {
 		DescribeDBClustersRequest describeDBClustersRequest =
 			new DescribeDBClustersRequest();
@@ -232,6 +226,12 @@ public abstract class AuroraAmazonVM extends VM {
 		DBInstance dbInstance = _getDBInstance();
 
 		return dbInstance.getDBInstanceStatus();
+	}
+
+	private String _getDbClusterId() {
+		DBInstance dbInstance = _getDBInstance();
+
+		return dbInstance.getDBClusterIdentifier();
 	}
 
 	private final AmazonRDS _amazonRDS;

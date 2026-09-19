@@ -250,6 +250,18 @@ public class ElasticsearchIndexSearcherSearchAfterTest {
 			_indexSearcher, "_configurationProvider", configurationProvider);
 	}
 
+	private static void _setUpIndexSearchLimit() {
+		PropsUtil.set(
+			PropsKeys.INDEX_SEARCH_LIMIT, String.valueOf(_INDEX_SEARCH_LIMIT));
+	}
+
+	private static void _setUpIndexSearcherAndWriter() throws Exception {
+		_indexingFixture.setUp();
+
+		_indexSearcher = _indexingFixture.getIndexSearcher();
+		_indexWriter = _indexingFixture.getIndexWriter();
+	}
+
 	private static void _setUpIndexingFixture() throws Exception {
 		if (_indexingFixture != null) {
 			Assume.assumeTrue(_indexingFixture.isSearchEngineAvailable());
@@ -260,18 +272,6 @@ public class ElasticsearchIndexSearcherSearchAfterTest {
 		_indexingFixture = _createIndexingFixture();
 
 		Assume.assumeTrue(_indexingFixture.isSearchEngineAvailable());
-	}
-
-	private static void _setUpIndexSearcherAndWriter() throws Exception {
-		_indexingFixture.setUp();
-
-		_indexSearcher = _indexingFixture.getIndexSearcher();
-		_indexWriter = _indexingFixture.getIndexWriter();
-	}
-
-	private static void _setUpIndexSearchLimit() {
-		PropsUtil.set(
-			PropsKeys.INDEX_SEARCH_LIMIT, String.valueOf(_INDEX_SEARCH_LIMIT));
 	}
 
 	private static void _setUpSorts() {
@@ -430,9 +430,9 @@ public class ElasticsearchIndexSearcherSearchAfterTest {
 
 	private static final int _NUMBER_INDEXED_DOCUMENTS = 7;
 
-	private static IndexingFixture _indexingFixture;
 	private static IndexSearcher _indexSearcher;
 	private static IndexWriter _indexWriter;
+	private static IndexingFixture _indexingFixture;
 
 	private final List<Document> _documents = new ArrayList<>();
 	private String _entryClassName;

@@ -700,20 +700,6 @@ public class PullRequest {
 		return headJSONObject.getString("sha");
 	}
 
-	public JSONArray getSenderSHAStatusesJSONArray() {
-		JSONArray statusesJSONArray = null;
-
-		try {
-			statusesJSONArray = JenkinsResultsParserUtil.toJSONArray(
-				_jsonObject.getString("statuses_url"));
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		return statusesJSONArray;
-	}
-
 	public JSONObject getSenderSHAStatusJSONObject() {
 		JSONObject statusJSONObject = null;
 
@@ -729,6 +715,20 @@ public class PullRequest {
 		}
 
 		return statusJSONObject;
+	}
+
+	public JSONArray getSenderSHAStatusesJSONArray() {
+		JSONArray statusesJSONArray = null;
+
+		try {
+			statusesJSONArray = JenkinsResultsParserUtil.toJSONArray(
+				_jsonObject.getString("statuses_url"));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		return statusesJSONArray;
 	}
 
 	public String getSenderUsername() {
@@ -752,6 +752,11 @@ public class PullRequest {
 
 	public String getTitle() {
 		return _jsonObject.getString("title");
+	}
+
+	public String getURL() {
+		return getURL(
+			getReceiverUsername(), getGitRepositoryName(), getNumber());
 	}
 
 	public String getUpstreamBranchSHA() {
@@ -780,11 +785,6 @@ public class PullRequest {
 		JSONObject baseJSONObject = _jsonObject.getJSONObject("base");
 
 		return baseJSONObject.getString("ref");
-	}
-
-	public String getURL() {
-		return getURL(
-			getReceiverUsername(), getGitRepositoryName(), getNumber());
 	}
 
 	public boolean hasLabel(String labelName) {

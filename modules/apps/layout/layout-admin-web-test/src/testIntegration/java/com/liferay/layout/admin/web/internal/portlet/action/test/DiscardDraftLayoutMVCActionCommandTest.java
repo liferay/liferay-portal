@@ -163,28 +163,6 @@ public class DiscardDraftLayoutMVCActionCommandTest {
 	}
 
 	@Test
-	public void testDiscardDraftLayoutWithoutPermissions() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		User user = _userLocalService.getDefaultUser(_group.getCompanyId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			Exception exception = Assert.assertThrows(
-				PortletException.class,
-				() -> _discardDraftLayoutMVCActionCommand.processAction(
-					_getMockLiferayPortletActionRequest(draftLayout, user),
-					new MockLiferayPortletActionResponse()));
-
-			Assert.assertTrue(
-				exception.getCause() instanceof PrincipalException);
-		}
-	}
-
-	@Test
 	@TestInfo("LPS-86285")
 	public void testDiscardDraftLayoutWithUnpublishedChangesInSegmentsExperience()
 		throws Exception {
@@ -255,6 +233,28 @@ public class DiscardDraftLayoutMVCActionCommandTest {
 		Assert.assertNull(
 			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				fragmentEntryLink.getFragmentEntryLinkId()));
+	}
+
+	@Test
+	public void testDiscardDraftLayoutWithoutPermissions() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		User user = _userLocalService.getDefaultUser(_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Exception exception = Assert.assertThrows(
+				PortletException.class,
+				() -> _discardDraftLayoutMVCActionCommand.processAction(
+					_getMockLiferayPortletActionRequest(draftLayout, user),
+					new MockLiferayPortletActionResponse()));
+
+			Assert.assertTrue(
+				exception.getCause() instanceof PrincipalException);
+		}
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(

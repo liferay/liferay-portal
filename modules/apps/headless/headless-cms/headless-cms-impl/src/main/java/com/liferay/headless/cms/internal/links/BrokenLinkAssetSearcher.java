@@ -215,7 +215,7 @@ public class BrokenLinkAssetSearcher {
 		BrokenLinkAssetSearcher.class);
 
 	private final ObjectEntryLocalService _objectEntryLocalService;
-	private final Searcher _searcher;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private final Searcher _searcher;
 
 }

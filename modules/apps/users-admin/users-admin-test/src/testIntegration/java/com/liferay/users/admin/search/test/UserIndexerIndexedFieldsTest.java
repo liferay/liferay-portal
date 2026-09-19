@@ -500,10 +500,11 @@ public class UserIndexerIndexedFieldsTest {
 	@Inject
 	private ExpandoTableLocalService _expandoTableLocalService;
 
+	private ExpandoTableSearchFixture _expandoTableSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<ExpandoTable> _expandoTables;
 
-	private ExpandoTableSearchFixture _expandoTableSearchFixture;
 	private Group _group;
 
 	@DeleteAfterTestRun
@@ -515,10 +516,10 @@ public class UserIndexerIndexedFieldsTest {
 	@Inject
 	private OrganizationLocalService _organizationLocalService;
 
+	private OrganizationSearchFixture _organizationSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<Organization> _organizations;
-
-	private OrganizationSearchFixture _organizationSearchFixture;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
@@ -535,17 +536,17 @@ public class UserIndexerIndexedFieldsTest {
 	@Inject
 	private UserGroupLocalService _userGroupLocalService;
 
+	private UserGroupSearchFixture _userGroupSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<UserGroup> _userGroups = new ArrayList<>();
-
-	private UserGroupSearchFixture _userGroupSearchFixture;
 
 	@Inject
 	private UserLocalService _userLocalService;
 
+	private UserSearchFixture _userSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private UserSearchFixture _userSearchFixture;
 
 }

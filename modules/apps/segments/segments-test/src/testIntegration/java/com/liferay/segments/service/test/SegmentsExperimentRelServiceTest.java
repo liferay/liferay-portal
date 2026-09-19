@@ -79,9 +79,14 @@ public class SegmentsExperimentRelServiceTest {
 		_classPK = layout.getPlid();
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testAddSegmentsExperienceWithoutUpdateLayoutsPermission()
+	@Test
+	public void testAddSegmentsExperienceWithUpdateLayoutPermission()
 		throws Exception {
+
+		ResourcePermissionLocalServiceUtil.addResourcePermission(
+			_group.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			_role.getRoleId(), ActionKeys.UPDATE);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -92,14 +97,9 @@ public class SegmentsExperimentRelServiceTest {
 		}
 	}
 
-	@Test
-	public void testAddSegmentsExperienceWithUpdateLayoutPermission()
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testAddSegmentsExperienceWithoutUpdateLayoutsPermission()
 		throws Exception {
-
-		ResourcePermissionLocalServiceUtil.addResourcePermission(
-			_group.getCompanyId(), Layout.class.getName(),
-			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
-			_role.getRoleId(), ActionKeys.UPDATE);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {

@@ -45,6 +45,40 @@ import java.util.TimeZone;
  */
 public class DDMFormReportDataUtil {
 
+	public static JSONArray getFieldValuesJSONArray(
+			List<DDMFormInstanceRecord> ddmFormInstanceRecords,
+			String fieldName)
+		throws Exception {
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		for (DDMFormInstanceRecord ddmFormInstanceRecord :
+				ddmFormInstanceRecords) {
+
+			DDMFormValues ddmFormValues =
+				ddmFormInstanceRecord.getDDMFormValues();
+
+			Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
+				ddmFormValues.getDDMFormFieldValuesMap(true);
+
+			List<DDMFormFieldValue> ddmFormFieldValues =
+				ddmFormFieldValuesMap.get(fieldName);
+
+			if (ddmFormFieldValues == null) {
+				continue;
+			}
+
+			ddmFormFieldValues.forEach(
+				ddmFormFieldValue -> {
+					Value value = ddmFormFieldValue.getValue();
+
+					jsonArray.put(value.getString(value.getDefaultLocale()));
+				});
+		}
+
+		return jsonArray;
+	}
+
 	public static JSONArray getFieldsJSONArray(
 			DDMFormInstanceReport ddmFormInstanceReport)
 		throws PortalException {
@@ -88,40 +122,6 @@ public class DDMFormReportDataUtil {
 				);
 			},
 			_log);
-	}
-
-	public static JSONArray getFieldValuesJSONArray(
-			List<DDMFormInstanceRecord> ddmFormInstanceRecords,
-			String fieldName)
-		throws Exception {
-
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		for (DDMFormInstanceRecord ddmFormInstanceRecord :
-				ddmFormInstanceRecords) {
-
-			DDMFormValues ddmFormValues =
-				ddmFormInstanceRecord.getDDMFormValues();
-
-			Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap =
-				ddmFormValues.getDDMFormFieldValuesMap(true);
-
-			List<DDMFormFieldValue> ddmFormFieldValues =
-				ddmFormFieldValuesMap.get(fieldName);
-
-			if (ddmFormFieldValues == null) {
-				continue;
-			}
-
-			ddmFormFieldValues.forEach(
-				ddmFormFieldValue -> {
-					Value value = ddmFormFieldValue.getValue();
-
-					jsonArray.put(value.getString(value.getDefaultLocale()));
-				});
-		}
-
-		return jsonArray;
 	}
 
 	public static String getLastModifiedDate(

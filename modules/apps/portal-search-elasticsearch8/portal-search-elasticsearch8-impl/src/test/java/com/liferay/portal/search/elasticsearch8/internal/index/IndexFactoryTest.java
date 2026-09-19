@@ -144,6 +144,21 @@ public class IndexFactoryTest {
 	}
 
 	@Test
+	public void testAddMultipleCompanyIndexConfigurationContributors()
+		throws Exception {
+
+		_serviceRegistrations.add(
+			_bundleContext.registerService(
+				CompanyIndexConfigurationContributor.class,
+				new TestCompanyIndexConfigurationContributor(), null));
+
+		_serviceRegistrations.add(
+			_bundleContext.registerService(
+				CompanyIndexConfigurationContributor.class,
+				new TestCompanyIndexConfigurationContributor(), null));
+	}
+
+	@Test
 	public void testAdditionalIndexConfigurations() throws Exception {
 		Mockito.when(
 			_elasticsearchConfigurationWrapper.additionalIndexConfigurations()
@@ -227,21 +242,6 @@ public class IndexFactoryTest {
 		initializeIndex();
 
 		_assertAdditionalTypeMappings();
-	}
-
-	@Test
-	public void testAddMultipleCompanyIndexConfigurationContributors()
-		throws Exception {
-
-		_serviceRegistrations.add(
-			_bundleContext.registerService(
-				CompanyIndexConfigurationContributor.class,
-				new TestCompanyIndexConfigurationContributor(), null));
-
-		_serviceRegistrations.add(
-			_bundleContext.registerService(
-				CompanyIndexConfigurationContributor.class,
-				new TestCompanyIndexConfigurationContributor(), null));
 	}
 
 	@Test

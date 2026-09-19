@@ -1172,6 +1172,20 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			getResourceFolder.getExternalReferenceCode());
 	}
 
+	private void _testGetSiteResourceFileWithoutPermissionsProblemException()
+		throws Exception {
+
+		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
+			testGroup.getExternalReferenceCode(), randomResourceFile());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() ->
+				_userWithoutPermissionsResourceFileResource.getSiteResourceFile(
+					testGroup.getExternalReferenceCode(),
+					resourceFile.getExternalReferenceCode()));
+	}
+
 	private void _testGetSiteResourceFilesPage() throws Exception {
 		FragmentCollection fragmentCollection1 = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -1254,20 +1268,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
-	}
-
-	private void _testGetSiteResourceFileWithoutPermissionsProblemException()
-		throws Exception {
-
-		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
-			testGroup.getExternalReferenceCode(), randomResourceFile());
-
-		_assertProblemExceptionProblemStatus(
-			"NOT_FOUND",
-			() ->
-				_userWithoutPermissionsResourceFileResource.getSiteResourceFile(
-					testGroup.getExternalReferenceCode(),
-					resourceFile.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteResourceFolderResourceFilesPage()

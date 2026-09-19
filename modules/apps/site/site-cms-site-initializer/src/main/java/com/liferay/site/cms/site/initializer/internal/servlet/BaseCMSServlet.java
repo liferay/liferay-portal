@@ -129,10 +129,10 @@ public abstract class BaseCMSServlet extends HttpServlet {
 	protected Portal portal;
 
 	@Reference
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Reference
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private void _createContext(
 		HttpServletRequest httpServletRequest,

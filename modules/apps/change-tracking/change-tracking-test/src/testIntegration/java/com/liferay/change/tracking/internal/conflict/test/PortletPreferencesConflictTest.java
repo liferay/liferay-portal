@@ -68,107 +68,6 @@ public class PortletPreferencesConflictTest {
 	}
 
 	@Test
-	public void testResolvePortletPreferencesConflictTest() throws Exception {
-		jakarta.portlet.PortletPreferences jxPortletPreferences = null;
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					_ctCollection1.getCtCollectionId())) {
-
-			PortletPreferences portletPreferences =
-				_portletPreferencesLocalService.addPortletPreferences(
-					TestPropsValues.getCompanyId(),
-					PortletKeys.PREFS_OWNER_ID_DEFAULT,
-					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-					_portlet.getPortletId(), _portlet, null);
-
-			jxPortletPreferences =
-				_portletPreferenceValueLocalService.getPreferences(
-					portletPreferences);
-
-			Assert.assertNotNull(jxPortletPreferences);
-
-			jxPortletPreferences.setValue(
-				_ctCollection1.getName(), RandomTestUtil.randomString());
-
-			_portletPreferencesLocalService.updatePreferences(
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-				_portlet.getPortletId(), jxPortletPreferences);
-		}
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					_ctCollection2.getCtCollectionId())) {
-
-			PortletPreferences portletPreferences =
-				_portletPreferencesLocalService.addPortletPreferences(
-					TestPropsValues.getCompanyId(),
-					PortletKeys.PREFS_OWNER_ID_DEFAULT,
-					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-					_portlet.getPortletId(), _portlet, null);
-
-			jxPortletPreferences =
-				_portletPreferenceValueLocalService.getPreferences(
-					portletPreferences);
-
-			Assert.assertNotNull(jxPortletPreferences);
-
-			jxPortletPreferences.setValue(
-				_ctCollection2.getName(), RandomTestUtil.randomString());
-
-			_portletPreferencesLocalService.updatePreferences(
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-				_portlet.getPortletId(), jxPortletPreferences);
-		}
-
-		_ctProcessLocalService.addCTProcess(
-			_ctCollection2.getUserId(), _ctCollection2.getCtCollectionId());
-
-		jakarta.portlet.PortletPreferences publishedJavaxPortletPreferences =
-			_portletPreferencesLocalService.getPreferences(
-				TestPropsValues.getCompanyId(),
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-				_portlet.getPortletId());
-
-		Assert.assertNotNull(
-			publishedJavaxPortletPreferences.getValue(
-				_ctCollection2.getName(), null));
-
-		Assert.assertNull(
-			publishedJavaxPortletPreferences.getValue(
-				_ctCollection1.getName(), null));
-
-		Map<Long, List<ConflictInfo>> conflictInfos =
-			_ctCollectionLocalService.checkConflicts(_ctCollection1);
-
-		for (List<ConflictInfo> conflictInfoLists : conflictInfos.values()) {
-			for (ConflictInfo conflictInfo : conflictInfoLists) {
-				Assert.assertTrue(conflictInfo.isResolved());
-			}
-		}
-
-		_ctProcessLocalService.addCTProcess(
-			_ctCollection1.getUserId(), _ctCollection1.getCtCollectionId());
-
-		publishedJavaxPortletPreferences =
-			_portletPreferencesLocalService.getPreferences(
-				TestPropsValues.getCompanyId(),
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-				_portlet.getPortletId());
-
-		Assert.assertNotNull(
-			publishedJavaxPortletPreferences.getValue(
-				_ctCollection1.getName(), null));
-		Assert.assertNull(
-			publishedJavaxPortletPreferences.getValue(
-				_ctCollection2.getName(), null));
-	}
-
-	@Test
 	public void testResolvePortletPreferenceValueConflictTest()
 		throws Exception {
 
@@ -278,6 +177,107 @@ public class PortletPreferencesConflictTest {
 			_ctCollection1.getName());
 	}
 
+	@Test
+	public void testResolvePortletPreferencesConflictTest() throws Exception {
+		jakarta.portlet.PortletPreferences jxPortletPreferences = null;
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection1.getCtCollectionId())) {
+
+			PortletPreferences portletPreferences =
+				_portletPreferencesLocalService.addPortletPreferences(
+					TestPropsValues.getCompanyId(),
+					PortletKeys.PREFS_OWNER_ID_DEFAULT,
+					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+					_portlet.getPortletId(), _portlet, null);
+
+			jxPortletPreferences =
+				_portletPreferenceValueLocalService.getPreferences(
+					portletPreferences);
+
+			Assert.assertNotNull(jxPortletPreferences);
+
+			jxPortletPreferences.setValue(
+				_ctCollection1.getName(), RandomTestUtil.randomString());
+
+			_portletPreferencesLocalService.updatePreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+				_portlet.getPortletId(), jxPortletPreferences);
+		}
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection2.getCtCollectionId())) {
+
+			PortletPreferences portletPreferences =
+				_portletPreferencesLocalService.addPortletPreferences(
+					TestPropsValues.getCompanyId(),
+					PortletKeys.PREFS_OWNER_ID_DEFAULT,
+					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+					_portlet.getPortletId(), _portlet, null);
+
+			jxPortletPreferences =
+				_portletPreferenceValueLocalService.getPreferences(
+					portletPreferences);
+
+			Assert.assertNotNull(jxPortletPreferences);
+
+			jxPortletPreferences.setValue(
+				_ctCollection2.getName(), RandomTestUtil.randomString());
+
+			_portletPreferencesLocalService.updatePreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+				_portlet.getPortletId(), jxPortletPreferences);
+		}
+
+		_ctProcessLocalService.addCTProcess(
+			_ctCollection2.getUserId(), _ctCollection2.getCtCollectionId());
+
+		jakarta.portlet.PortletPreferences publishedJavaxPortletPreferences =
+			_portletPreferencesLocalService.getPreferences(
+				TestPropsValues.getCompanyId(),
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+				_portlet.getPortletId());
+
+		Assert.assertNotNull(
+			publishedJavaxPortletPreferences.getValue(
+				_ctCollection2.getName(), null));
+
+		Assert.assertNull(
+			publishedJavaxPortletPreferences.getValue(
+				_ctCollection1.getName(), null));
+
+		Map<Long, List<ConflictInfo>> conflictInfos =
+			_ctCollectionLocalService.checkConflicts(_ctCollection1);
+
+		for (List<ConflictInfo> conflictInfoLists : conflictInfos.values()) {
+			for (ConflictInfo conflictInfo : conflictInfoLists) {
+				Assert.assertTrue(conflictInfo.isResolved());
+			}
+		}
+
+		_ctProcessLocalService.addCTProcess(
+			_ctCollection1.getUserId(), _ctCollection1.getCtCollectionId());
+
+		publishedJavaxPortletPreferences =
+			_portletPreferencesLocalService.getPreferences(
+				TestPropsValues.getCompanyId(),
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+				_portlet.getPortletId());
+
+		Assert.assertNotNull(
+			publishedJavaxPortletPreferences.getValue(
+				_ctCollection1.getName(), null));
+		Assert.assertNull(
+			publishedJavaxPortletPreferences.getValue(
+				_ctCollection2.getName(), null));
+	}
+
 	@Inject
 	private CounterLocalService _counterLocalService;
 
@@ -306,10 +306,10 @@ public class PortletPreferencesConflictTest {
 	private PortletLocalService _portletLocalService;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 }

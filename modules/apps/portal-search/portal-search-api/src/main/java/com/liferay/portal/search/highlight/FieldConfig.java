@@ -35,17 +35,17 @@ public interface FieldConfig {
 
 	public Boolean getForceSource();
 
-	public String getFragmenter();
-
 	public Integer getFragmentOffset();
 
 	public Integer getFragmentSize();
 
-	public String getHighlighterType();
+	public String getFragmenter();
 
 	public Boolean getHighlightFilter();
 
 	public Query getHighlightQuery();
+
+	public String getHighlighterType();
 
 	public String[] getMatchedFields();
 

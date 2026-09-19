@@ -42,22 +42,6 @@ public class SegmentsEntryActionDropdownItemsProviderTest {
 	}
 
 	@Test
-	public void testGetActionDropdownItemsWithoutShowActions()
-		throws Exception {
-
-		SegmentsEntryActionDropdownItemsProvider
-			segmentsEntryActionDropdownItemsProvider =
-				new SegmentsEntryActionDropdownItemsProvider(
-					_httpServletRequest, _segmentsDisplayContext,
-					_segmentsEntry);
-
-		List<DropdownItem> dropdownItems = _getActionDropdownItems(
-			segmentsEntryActionDropdownItemsProvider.getActionDropdownItems());
-
-		Assert.assertEquals(dropdownItems.toString(), 0, dropdownItems.size());
-	}
-
-	@Test
 	public void testGetActionDropdownItemsWithShowActions() throws Exception {
 		Mockito.when(
 			_segmentsDisplayContext.isShowDeleteAction(_segmentsEntry)
@@ -98,6 +82,22 @@ public class SegmentsEntryActionDropdownItemsProviderTest {
 			dropdownItems,
 			new String[] {"edit", "view-members", "permissions", "delete"},
 			new String[] {"pencil", "users", "password-policies", "trash"});
+	}
+
+	@Test
+	public void testGetActionDropdownItemsWithoutShowActions()
+		throws Exception {
+
+		SegmentsEntryActionDropdownItemsProvider
+			segmentsEntryActionDropdownItemsProvider =
+				new SegmentsEntryActionDropdownItemsProvider(
+					_httpServletRequest, _segmentsDisplayContext,
+					_segmentsEntry);
+
+		List<DropdownItem> dropdownItems = _getActionDropdownItems(
+			segmentsEntryActionDropdownItemsProvider.getActionDropdownItems());
+
+		Assert.assertEquals(dropdownItems.toString(), 0, dropdownItems.size());
 	}
 
 	private void _assertDropdownItems(

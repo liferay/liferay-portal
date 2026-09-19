@@ -157,18 +157,6 @@ public class UniqueFinderEntryTest {
 	}
 
 	@Test
-	public void testFetchByNameWithoutCache() {
-		String name = RandomTestUtil.randomString();
-
-		_assertCacheResult(name, null);
-
-		Assert.assertNull(
-			_uniqueFinderEntryPersistence.fetchByName(name, false));
-
-		_assertCacheResult(name, null);
-	}
-
-	@Test
 	public void testFetchByNameWithStaleEntityInCache() {
 		String name = RandomTestUtil.randomString();
 
@@ -189,6 +177,18 @@ public class UniqueFinderEntryTest {
 			uniqueFinderEntry, _uniqueFinderEntryPersistence.fetchByName(name));
 
 		_assertCacheResult(name, uniqueFinderEntry);
+	}
+
+	@Test
+	public void testFetchByNameWithoutCache() {
+		String name = RandomTestUtil.randomString();
+
+		_assertCacheResult(name, null);
+
+		Assert.assertNull(
+			_uniqueFinderEntryPersistence.fetchByName(name, false));
+
+		_assertCacheResult(name, null);
 	}
 
 	private UniqueFinderEntry _addUniqueFinderEntry(

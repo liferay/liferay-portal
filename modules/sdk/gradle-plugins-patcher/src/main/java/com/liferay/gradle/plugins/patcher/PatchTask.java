@@ -193,6 +193,19 @@ public class PatchTask extends DefaultTask {
 		return GradleUtil.toFile(getProject(), _originalLibSrcFile);
 	}
 
+	@InputFiles
+	@PathSensitive(PathSensitivity.RELATIVE)
+	@SkipWhenEmpty
+	public FileCollection getPatchFiles() {
+		Project project = getProject();
+
+		if (!_patchFiles.isEmpty()) {
+			return project.files(_patchFiles);
+		}
+
+		return project.fileTree(_patchesDir);
+	}
+
 	@Input
 	@Optional
 	public Map<String, File> getPatchedSrcDirMappings() {
@@ -241,19 +254,6 @@ public class PatchTask extends DefaultTask {
 	@PathSensitive(PathSensitivity.RELATIVE)
 	public File getPatchesDir() {
 		return GradleUtil.toFile(getProject(), _patchesDir);
-	}
-
-	@InputFiles
-	@PathSensitive(PathSensitivity.RELATIVE)
-	@SkipWhenEmpty
-	public FileCollection getPatchFiles() {
-		Project project = getProject();
-
-		if (!_patchFiles.isEmpty()) {
-			return project.files(_patchFiles);
-		}
-
-		return project.fileTree(_patchesDir);
 	}
 
 	@Input
@@ -326,12 +326,6 @@ public class PatchTask extends DefaultTask {
 		}
 	}
 
-	public PatchTask patchedSrcDirMapping(String extension, Object dir) {
-		_patchedSrcDirMappings.put(extension, dir);
-
-		return this;
-	}
-
 	public PatchTask patchFiles(Iterable<Object> patchFiles) {
 		GUtil.addToCollection(_patchFiles, patchFiles);
 
@@ -340,6 +334,12 @@ public class PatchTask extends DefaultTask {
 
 	public PatchTask patchFiles(Object... patchFiles) {
 		return patchFiles(Arrays.asList(patchFiles));
+	}
+
+	public PatchTask patchedSrcDirMapping(String extension, Object dir) {
+		_patchedSrcDirMappings.put(extension, dir);
+
+		return this;
 	}
 
 	public void setArgs(Iterable<Object> args) {
@@ -388,6 +388,12 @@ public class PatchTask extends DefaultTask {
 		_originalLibSrcFile = originalLibSrcFile;
 	}
 
+	public void setPatchFiles(Iterable<Object> patchFiles) {
+		_patchFiles.clear();
+
+		patchFiles(patchFiles);
+	}
+
 	public void setPatchedSrcDirMappings(
 		Map<String, Object> patchedSrcDirMappings) {
 
@@ -398,12 +404,6 @@ public class PatchTask extends DefaultTask {
 
 	public void setPatchesDir(Object patchesDir) {
 		_patchesDir = patchesDir;
-	}
-
-	public void setPatchFiles(Iterable<Object> patchFiles) {
-		_patchFiles.clear();
-
-		patchFiles(patchFiles);
 	}
 
 	protected File fixPatchFiles() {
@@ -631,8 +631,8 @@ public class PatchTask extends DefaultTask {
 	private Object _originalLibSrcBaseUrl;
 	private Object _originalLibSrcDirName = ".";
 	private Object _originalLibSrcFile;
+	private final List<Object> _patchFiles = new ArrayList<>();
 	private final Map<String, Object> _patchedSrcDirMappings = new HashMap<>();
 	private Object _patchesDir = "patches";
-	private final List<Object> _patchFiles = new ArrayList<>();
 
 }

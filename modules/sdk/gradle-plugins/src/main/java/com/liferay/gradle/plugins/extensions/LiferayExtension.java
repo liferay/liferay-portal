@@ -173,10 +173,6 @@ public class LiferayExtension {
 		return appServer.getPortalDir();
 	}
 
-	public NamedDomainObjectContainer<AppServer> getAppServers() {
-		return _appServers;
-	}
-
 	public File getAppServerShieldedContainerLibPortalDir() {
 		AppServer appServer = getAppServer();
 
@@ -185,6 +181,10 @@ public class LiferayExtension {
 
 	public String getAppServerType() {
 		return GradleUtil.toString(_appServerType);
+	}
+
+	public NamedDomainObjectContainer<AppServer> getAppServers() {
+		return _appServers;
 	}
 
 	public String getDefaultVersion(
@@ -276,8 +276,8 @@ public class LiferayExtension {
 	}
 
 	private Object _appServerParentDir;
-	private final NamedDomainObjectContainer<AppServer> _appServers;
 	private Object _appServerType;
+	private final NamedDomainObjectContainer<AppServer> _appServers;
 	private final Map<String, Object> _defaultVersions = new HashMap<>();
 	private Object _deployDir;
 	private Closure<String> _deployedFileNameClosure;

@@ -190,6 +190,65 @@ public class OrphanReferencesDataCleanupUtilTest {
 	}
 
 	@Test
+	public void testCleanUpTableWithWhereClause() throws Exception {
+		long companyId = RandomTestUtil.nextLong();
+		long ownerType1 = PortletKeys.PREFS_OWNER_TYPE_COMPANY;
+		long ownerType2 = PortletKeys.PREFS_OWNER_TYPE_GROUP;
+
+		_testCleanUpTable(
+			logCapture -> {
+				List<LogEntry> logEntries = logCapture.getLogEntries();
+
+				Assert.assertEquals(
+					logEntries.toString(), 1, logEntries.size());
+
+				LogEntry logEntry = logEntries.get(0);
+
+				Assert.assertEquals(
+					_getCleanUpTableExpectedMessage(
+						2, false, "ownerId", "PortletPreferences", "companyId",
+						"Company", companyId),
+					logEntry.getMessage());
+			},
+			() -> _db.runSQL(
+				_connection,
+				"delete from PortletPreferences where companyId = " +
+					companyId),
+			null,
+			() -> {
+				_db.runSQL(
+					_connection,
+					StringBundler.concat(
+						"insert into PortletPreferences (mvccVersion, ",
+						"ctCollectionId, portletPreferencesId, ownerId, ",
+						"ownerType, companyId, portletId) values (0, 0, ",
+						RandomTestUtil.nextLong(), ", ", companyId, ", ",
+						ownerType1, ", ", companyId, ", '",
+						RandomTestUtil.randomString(), "')"));
+				_db.runSQL(
+					_connection,
+					StringBundler.concat(
+						"insert into PortletPreferences (mvccVersion, ",
+						"ctCollectionId, portletPreferencesId, ownerId, ",
+						"ownerType, companyId, portletId) values (0, 0, ",
+						RandomTestUtil.nextLong(), ", ", companyId, ", ",
+						ownerType1, ", ", companyId, ", '",
+						RandomTestUtil.randomString(), "')"));
+				_db.runSQL(
+					_connection,
+					StringBundler.concat(
+						"insert into PortletPreferences (mvccVersion, ",
+						"ctCollectionId, portletPreferencesId, ownerId, ",
+						"ownerType, companyId, portletId) values (0, 0, ",
+						RandomTestUtil.nextLong(), ", ", companyId, ", ",
+						ownerType2, ", ", companyId, ", '",
+						RandomTestUtil.randomString(), "')"));
+			},
+			false, "ownerType = " + ownerType1, "ownerId", "PortletPreferences",
+			"companyId", "Company");
+	}
+
+	@Test
 	public void testCleanUpTableWithoutWhereClause() throws Exception {
 		long companyId = RandomTestUtil.nextLong();
 
@@ -273,65 +332,6 @@ public class OrphanReferencesDataCleanupUtilTest {
 						RandomTestUtil.randomString(), "', [$FALSE$])"));
 			},
 			true, null, "companyId", "Portlet", "companyId", "Company");
-	}
-
-	@Test
-	public void testCleanUpTableWithWhereClause() throws Exception {
-		long companyId = RandomTestUtil.nextLong();
-		long ownerType1 = PortletKeys.PREFS_OWNER_TYPE_COMPANY;
-		long ownerType2 = PortletKeys.PREFS_OWNER_TYPE_GROUP;
-
-		_testCleanUpTable(
-			logCapture -> {
-				List<LogEntry> logEntries = logCapture.getLogEntries();
-
-				Assert.assertEquals(
-					logEntries.toString(), 1, logEntries.size());
-
-				LogEntry logEntry = logEntries.get(0);
-
-				Assert.assertEquals(
-					_getCleanUpTableExpectedMessage(
-						2, false, "ownerId", "PortletPreferences", "companyId",
-						"Company", companyId),
-					logEntry.getMessage());
-			},
-			() -> _db.runSQL(
-				_connection,
-				"delete from PortletPreferences where companyId = " +
-					companyId),
-			null,
-			() -> {
-				_db.runSQL(
-					_connection,
-					StringBundler.concat(
-						"insert into PortletPreferences (mvccVersion, ",
-						"ctCollectionId, portletPreferencesId, ownerId, ",
-						"ownerType, companyId, portletId) values (0, 0, ",
-						RandomTestUtil.nextLong(), ", ", companyId, ", ",
-						ownerType1, ", ", companyId, ", '",
-						RandomTestUtil.randomString(), "')"));
-				_db.runSQL(
-					_connection,
-					StringBundler.concat(
-						"insert into PortletPreferences (mvccVersion, ",
-						"ctCollectionId, portletPreferencesId, ownerId, ",
-						"ownerType, companyId, portletId) values (0, 0, ",
-						RandomTestUtil.nextLong(), ", ", companyId, ", ",
-						ownerType1, ", ", companyId, ", '",
-						RandomTestUtil.randomString(), "')"));
-				_db.runSQL(
-					_connection,
-					StringBundler.concat(
-						"insert into PortletPreferences (mvccVersion, ",
-						"ctCollectionId, portletPreferencesId, ownerId, ",
-						"ownerType, companyId, portletId) values (0, 0, ",
-						RandomTestUtil.nextLong(), ", ", companyId, ", ",
-						ownerType2, ", ", companyId, ", '",
-						RandomTestUtil.randomString(), "')"));
-			},
-			false, "ownerType = " + ownerType1, "ownerId", "PortletPreferences",
-			"companyId", "Company");
 	}
 
 	@Test

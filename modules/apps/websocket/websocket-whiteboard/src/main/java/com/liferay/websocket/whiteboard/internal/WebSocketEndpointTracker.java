@@ -206,10 +206,10 @@ public class WebSocketEndpointTracker {
 	@Reference
 	private LogService _logService;
 
-	private final ConcurrentMap<String, ServerEndpointConfigWrapper>
-		_serverEndpointConfigWrappers = new ConcurrentHashMap<>();
 	private ServiceTracker<Endpoint, ServerEndpointConfigWrapper>
 		_serverEndpointConfigWrapperServiceTracker;
+	private final ConcurrentMap<String, ServerEndpointConfigWrapper>
+		_serverEndpointConfigWrappers = new ConcurrentHashMap<>();
 
 	@Reference(target = "(original.bean=true)")
 	private ServletContext _servletContext;

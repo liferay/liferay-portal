@@ -25,9 +25,6 @@ public interface JSONFactory {
 
 	public String convertXMLtoJSONMLObject(String xml);
 
-	public JSONTransformer createJavaScriptNormalizerJSONTransformer(
-		List<String> javaScriptAttributes);
-
 	public JSONArray createJSONArray();
 
 	public JSONArray createJSONArray(Collection<?> collection);
@@ -45,6 +42,9 @@ public interface JSONFactory {
 	public JSONObject createJSONObject(String json) throws JSONException;
 
 	public JSONSerializer createJSONSerializer();
+
+	public JSONTransformer createJavaScriptNormalizerJSONTransformer(
+		List<String> javaScriptAttributes);
 
 	public Object deserialize(JSONObject jsonObject);
 

@@ -276,6 +276,28 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 			infoFieldValue.getValue(LocaleUtil.getSiteDefault()));
 	}
 
+	private void _assertInfoFieldValueWebURL(
+			String customAssetURLSeparator, Layout layout, Object object)
+		throws Exception {
+
+		Assert.assertTrue(object instanceof WebURL);
+
+		WebURL webURL = (WebURL)object;
+
+		Assert.assertEquals(
+			_portal.addPreservedParameters(
+				_themeDisplay,
+				StringBundler.concat(
+					_portal.getGroupFriendlyURL(
+						_group.getPublicLayoutSet(), _themeDisplay, false,
+						false),
+					customAssetURLSeparator,
+					layout.getFriendlyURL(LocaleUtil.getSiteDefault()),
+					StringPool.SLASH, _classNameId, StringPool.SLASH,
+					_journalArticle.getResourcePrimKey())),
+			webURL.getURL());
+	}
+
 	private void _assertInfoFieldValues(String customAssetURLSeparator)
 		throws Exception {
 
@@ -322,28 +344,6 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 				customAssetURLSeparator, _layout, object));
 	}
 
-	private void _assertInfoFieldValueWebURL(
-			String customAssetURLSeparator, Layout layout, Object object)
-		throws Exception {
-
-		Assert.assertTrue(object instanceof WebURL);
-
-		WebURL webURL = (WebURL)object;
-
-		Assert.assertEquals(
-			_portal.addPreservedParameters(
-				_themeDisplay,
-				StringBundler.concat(
-					_portal.getGroupFriendlyURL(
-						_group.getPublicLayoutSet(), _themeDisplay, false,
-						false),
-					customAssetURLSeparator,
-					layout.getFriendlyURL(LocaleUtil.getSiteDefault()),
-					StringPool.SLASH, _classNameId, StringPool.SLASH,
-					_journalArticle.getResourcePrimKey())),
-			webURL.getURL());
-	}
-
 	private String _getLabel(
 		Group group, LayoutPageTemplateEntry layoutPageTemplateEntry,
 		Locale locale) {
@@ -352,19 +352,6 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 			layoutPageTemplateEntry.getName(), StringPool.SPACE,
 			StringPool.OPEN_PARENTHESIS, group.getName(locale),
 			StringPool.CLOSE_PARENTHESIS);
-	}
-
-	private List<InfoField<?>> _getSortedInfoFields() {
-		InfoFieldSet infoFieldSet =
-			_displayPageInfoItemFieldSetProvider.getInfoFieldSet(
-				JournalArticle.class.getName(),
-				String.valueOf(_journalArticle.getDDMStructureId()),
-				"LayoutPageTemplateEntry", _group.getGroupId());
-
-		List<InfoField<?>> infoFields = infoFieldSet.getAllInfoFields();
-
-		return ListUtil.sort(
-			infoFields, Comparator.comparing(InfoField::getName));
 	}
 
 	private List<InfoFieldValue<Object>> _getSortedInfoFieldValues()
@@ -386,6 +373,19 @@ public class DisplayPageInfoItemFieldSetProviderTest {
 
 					return infoField.getName();
 				}));
+	}
+
+	private List<InfoField<?>> _getSortedInfoFields() {
+		InfoFieldSet infoFieldSet =
+			_displayPageInfoItemFieldSetProvider.getInfoFieldSet(
+				JournalArticle.class.getName(),
+				String.valueOf(_journalArticle.getDDMStructureId()),
+				"LayoutPageTemplateEntry", _group.getGroupId());
+
+		List<InfoField<?>> infoFields = infoFieldSet.getAllInfoFields();
+
+		return ListUtil.sort(
+			infoFields, Comparator.comparing(InfoField::getName));
 	}
 
 	private void _setUpThemeDisplay() throws Exception {

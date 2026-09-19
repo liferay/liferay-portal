@@ -1283,13 +1283,13 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 	private RoleLocalService _roleLocalService;
 
 	@Reference
-	private Searcher _searcher;
-
-	@Reference
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
 	private SearchResultResource.Factory _searchResultResourceFactory;
+
+	@Reference
+	private Searcher _searcher;
 
 	@Reference(target = "(bulk.selection.action.key=status.object)")
 	private BulkSelectionAction<Object> _statusObjectBulkSelectionAction;

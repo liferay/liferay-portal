@@ -51,13 +51,13 @@ public class AssetCategorySegmentsFieldCustomizer
 	public static final String KEY = "category";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getAssetCategory(fieldValue);
+	public String getClassName() {
+		return AssetCategory.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return AssetCategory.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getAssetCategory(fieldValue);
 	}
 
 	@Override

@@ -587,27 +587,6 @@ public class DDMIndexerImpl implements DDMIndexer {
 		fieldPair._mergeField(field);
 	}
 
-	private void _addFields(
-			DDMForm ddmForm, DDMFormFieldValue ddmFormFieldValue,
-			Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap,
-			long ddmStructureId, Locale defaultLocale,
-			Map<String, FieldPair> fieldPairs)
-		throws PortalException {
-
-		_addField(
-			ddmForm.getDDMFormField(ddmFormFieldValue.getName(), true),
-			ddmFormFieldValue, ddmFormFieldValuesMap, ddmStructureId,
-			defaultLocale, fieldPairs);
-
-		for (DDMFormFieldValue nestedDDMFormFieldValue :
-				ddmFormFieldValue.getNestedDDMFormFieldValues()) {
-
-			_addFields(
-				ddmForm, nestedDDMFormFieldValue, ddmFormFieldValuesMap,
-				ddmStructureId, defaultLocale, fieldPairs);
-		}
-	}
-
 	private void _addFieldValue(
 			StringBundler sb, String type, String valueString)
 		throws Exception {
@@ -699,6 +678,27 @@ public class DDMIndexerImpl implements DDMIndexer {
 				fieldName,
 				StringPool.QUOTE + String.valueOf(fieldValue) +
 					StringPool.QUOTE);
+		}
+	}
+
+	private void _addFields(
+			DDMForm ddmForm, DDMFormFieldValue ddmFormFieldValue,
+			Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap,
+			long ddmStructureId, Locale defaultLocale,
+			Map<String, FieldPair> fieldPairs)
+		throws PortalException {
+
+		_addField(
+			ddmForm.getDDMFormField(ddmFormFieldValue.getName(), true),
+			ddmFormFieldValue, ddmFormFieldValuesMap, ddmStructureId,
+			defaultLocale, fieldPairs);
+
+		for (DDMFormFieldValue nestedDDMFormFieldValue :
+				ddmFormFieldValue.getNestedDDMFormFieldValues()) {
+
+			_addFields(
+				ddmForm, nestedDDMFormFieldValue, ddmFormFieldValuesMap,
+				ddmStructureId, defaultLocale, fieldPairs);
 		}
 	}
 

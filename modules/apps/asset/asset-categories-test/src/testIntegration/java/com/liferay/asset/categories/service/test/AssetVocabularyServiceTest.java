@@ -357,17 +357,6 @@ public class AssetVocabularyServiceTest {
 	}
 
 	@Test
-	public void testGetGroupsVocabulariesWithNoGroupIds() throws Exception {
-		AssetTestUtil.addVocabulary(_group.getGroupId());
-
-		List<AssetVocabulary> assetVocabularies =
-			_assetVocabularyService.getGroupsVocabularies(new long[0]);
-
-		Assert.assertTrue(
-			assetVocabularies.toString(), assetVocabularies.isEmpty());
-	}
-
-	@Test
 	public void testGetGroupVocabulariesCountWithNoGroupIds() throws Exception {
 		AssetTestUtil.addVocabulary(_group.getGroupId());
 
@@ -588,6 +577,17 @@ public class AssetVocabularyServiceTest {
 
 		Assert.assertEquals(
 			vocabulary.getVocabularyId(), newVocabulary.getVocabularyId());
+	}
+
+	@Test
+	public void testGetGroupsVocabulariesWithNoGroupIds() throws Exception {
+		AssetTestUtil.addVocabulary(_group.getGroupId());
+
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyService.getGroupsVocabularies(new long[0]);
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
 	}
 
 	@Test

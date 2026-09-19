@@ -138,12 +138,12 @@ public abstract class SyntaxLogger {
 		}
 	}
 
-	public LoggerElement getSyntaxLoggerElement(String stackTrace) {
-		return _loggerElements.get(stackTrace);
-	}
-
 	public String getSyntaxLogText() {
 		return _syntaxLogLoggerElement.toString();
+	}
+
+	public LoggerElement getSyntaxLoggerElement(String stackTrace) {
+		return _loggerElements.get(stackTrace);
 	}
 
 	public abstract void updateStatus(Element element, String status);

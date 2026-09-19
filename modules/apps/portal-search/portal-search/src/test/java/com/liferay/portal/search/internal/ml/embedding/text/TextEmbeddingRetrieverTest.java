@@ -84,20 +84,6 @@ public class TextEmbeddingRetrieverTest {
 	}
 
 	@Test
-	public void testGetEmbeddingProviderStatuses() {
-		EmbeddingProviderStatus[] embeddingProviderStatuses =
-			_textEmbeddingRetrieverImpl.getEmbeddingProviderStatuses();
-
-		Assert.assertNotNull(embeddingProviderStatuses);
-		Assert.assertEquals(
-			Arrays.toString(embeddingProviderStatuses), 1,
-			embeddingProviderStatuses.length);
-		Assert.assertEquals(
-			Arrays.toString(embeddingProviderStatuses), _TEST_PROVIDER_NAME,
-			embeddingProviderStatuses[0].getProviderName());
-	}
-
-	@Test
 	public void testGetEmbeddingProviderStatusWithException() {
 		String message = RandomTestUtil.randomString();
 
@@ -144,6 +130,20 @@ public class TextEmbeddingRetrieverTest {
 			embeddingProviderStatus.getErrorMessage());
 		Assert.assertEquals(
 			invalidProviderName, embeddingProviderStatus.getProviderName());
+	}
+
+	@Test
+	public void testGetEmbeddingProviderStatuses() {
+		EmbeddingProviderStatus[] embeddingProviderStatuses =
+			_textEmbeddingRetrieverImpl.getEmbeddingProviderStatuses();
+
+		Assert.assertNotNull(embeddingProviderStatuses);
+		Assert.assertEquals(
+			Arrays.toString(embeddingProviderStatuses), 1,
+			embeddingProviderStatuses.length);
+		Assert.assertEquals(
+			Arrays.toString(embeddingProviderStatuses), _TEST_PROVIDER_NAME,
+			embeddingProviderStatuses[0].getProviderName());
 	}
 
 	@Test

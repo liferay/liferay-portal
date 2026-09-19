@@ -575,33 +575,6 @@ public class SegmentsEntryLocalServiceTest {
 				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 	}
 
-	private void _testAddSegmentsEntryWithoutName() throws Exception {
-		Locale defaultLocale = LocaleUtil.getDefault();
-
-		AssertUtils.assertFailure(
-			SegmentsEntryNameException.class,
-			"Name is null for locale " + defaultLocale.getDisplayName(),
-			() -> SegmentsTestUtil.addSegmentsEntry(
-				_group.getGroupId(), RandomTestUtil.randomString(),
-				StringPool.BLANK, StringPool.BLANK,
-				CriteriaSerializer.serialize(new Criteria())));
-	}
-
-	private void _testAddSegmentsEntryWithoutSource() throws Exception {
-		SegmentsEntry segmentsEntry =
-			_segmentsEntryLocalService.addSegmentsEntry(
-				null, RandomTestUtil.randomString(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomLocaleStringMap(),
-				RandomTestUtil.randomBoolean(),
-				CriteriaSerializer.serialize(new Criteria()), null,
-				SegmentsEntryConstants.TYPE_DEFAULT,
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		Assert.assertEquals(
-			SegmentsEntryConstants.SOURCE_DEFAULT, segmentsEntry.getSource());
-	}
-
 	private void _testAddSegmentsEntryWithReferredSource() throws Exception {
 		Criteria criteria = new Criteria();
 
@@ -636,6 +609,33 @@ public class SegmentsEntryLocalServiceTest {
 
 		Assert.assertEquals(
 			SegmentsEntryConstants.TYPE_REAL_TIME, segmentsEntry.getType());
+	}
+
+	private void _testAddSegmentsEntryWithoutName() throws Exception {
+		Locale defaultLocale = LocaleUtil.getDefault();
+
+		AssertUtils.assertFailure(
+			SegmentsEntryNameException.class,
+			"Name is null for locale " + defaultLocale.getDisplayName(),
+			() -> SegmentsTestUtil.addSegmentsEntry(
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				StringPool.BLANK, StringPool.BLANK,
+				CriteriaSerializer.serialize(new Criteria())));
+	}
+
+	private void _testAddSegmentsEntryWithoutSource() throws Exception {
+		SegmentsEntry segmentsEntry =
+			_segmentsEntryLocalService.addSegmentsEntry(
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomBoolean(),
+				CriteriaSerializer.serialize(new Criteria()), null,
+				SegmentsEntryConstants.TYPE_DEFAULT,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertEquals(
+			SegmentsEntryConstants.SOURCE_DEFAULT, segmentsEntry.getSource());
 	}
 
 	private void _testDeleteSegmentsEntry() throws Exception {

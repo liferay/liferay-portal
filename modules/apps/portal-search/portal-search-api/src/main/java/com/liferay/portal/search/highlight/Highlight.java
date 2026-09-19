@@ -32,15 +32,15 @@ public interface Highlight {
 
 	public Boolean getForceSource();
 
-	public String getFragmenter();
-
 	public Integer getFragmentSize();
 
-	public String getHighlighterType();
+	public String getFragmenter();
 
 	public Boolean getHighlightFilter();
 
 	public Query getHighlightQuery();
+
+	public String getHighlighterType();
 
 	public Integer getNoMatchSize();
 

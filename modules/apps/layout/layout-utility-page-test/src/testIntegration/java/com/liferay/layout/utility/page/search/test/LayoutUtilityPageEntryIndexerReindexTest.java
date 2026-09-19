@@ -100,13 +100,13 @@ public class LayoutUtilityPageEntryIndexerReindexTest {
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
+	@Inject
+	protected IndexWriterHelper indexWriterHelper;
+
 	@Inject(
 		filter = "indexer.class.name=com.liferay.layout.utility.page.model.LayoutUtilityPageEntry"
 	)
 	protected Indexer<LayoutUtilityPageEntry> indexer;
-
-	@Inject
-	protected IndexWriterHelper indexWriterHelper;
 
 	@Inject
 	protected UIDFactory uidFactory;
@@ -159,9 +159,9 @@ public class LayoutUtilityPageEntryIndexerReindexTest {
 		_layoutUtilityPageEntryLocalService;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 }

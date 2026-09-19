@@ -379,6 +379,21 @@ public class DLValidatorImplTest {
 				RandomTestUtil.randomInt(), "image/png"));
 	}
 
+	@Test
+	public void testValidLowerCaseExtension() throws Exception {
+		_validateFileExtension("test.gif");
+	}
+
+	@Test
+	public void testValidMixedCaseExtension() throws Exception {
+		_validateFileExtension("test.GiF");
+	}
+
+	@Test
+	public void testValidUpperCaseExtension() throws Exception {
+		_validateFileExtension("test.GIF");
+	}
+
 	@Test(expected = FileMimeTypeException.class)
 	public void testValidateFileMimeType() throws Exception {
 		_validateFileMimeType(new String[] {"*"}, "text/plain");
@@ -438,21 +453,6 @@ public class DLValidatorImplTest {
 				fileSizeException.getMessage());
 			Assert.assertNull(fileSizeException.getMimeType());
 		}
-	}
-
-	@Test
-	public void testValidLowerCaseExtension() throws Exception {
-		_validateFileExtension("test.gif");
-	}
-
-	@Test
-	public void testValidMixedCaseExtension() throws Exception {
-		_validateFileExtension("test.GiF");
-	}
-
-	@Test
-	public void testValidUpperCaseExtension() throws Exception {
-		_validateFileExtension("test.GIF");
 	}
 
 	private void _validateFileExtension(String fileName) throws Exception {

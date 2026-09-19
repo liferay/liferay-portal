@@ -350,23 +350,6 @@ public class SXPBlueprintAndSXPElementUpgradeProcessTest {
 			expectedSmallValue, portletPreferenceValue.getSmallValue());
 	}
 
-	private void _assertSearch(
-			String expectedTitle, IndexerFixture<?> indexerFixture)
-		throws Exception {
-
-		indexerFixture.reindexCompany(_group.getCompanyId());
-
-		List<Document> documents = ListUtil.fromArray(
-			indexerFixture.search(_user.getFullName()));
-
-		Assert.assertFalse(documents.isEmpty());
-		Assert.assertTrue(
-			ListUtil.exists(
-				documents,
-				document -> Objects.equals(
-					document.get("title_en_US"), expectedTitle)));
-	}
-
 	private void _assertSXPBlueprint(
 			String expectedElementInstancesJSON, long sxpBlueprintId)
 		throws Exception {
@@ -413,6 +396,23 @@ public class SXPBlueprintAndSXPElementUpgradeProcessTest {
 
 		_assertSearch(
 			sxpElement.getTitle(LocaleUtil.US), _sxpElementIndexerFixture);
+	}
+
+	private void _assertSearch(
+			String expectedTitle, IndexerFixture<?> indexerFixture)
+		throws Exception {
+
+		indexerFixture.reindexCompany(_group.getCompanyId());
+
+		List<Document> documents = ListUtil.fromArray(
+			indexerFixture.search(_user.getFullName()));
+
+		Assert.assertFalse(documents.isEmpty());
+		Assert.assertTrue(
+			ListUtil.exists(
+				documents,
+				document -> Objects.equals(
+					document.get("title_en_US"), expectedTitle)));
 	}
 
 	private String _read(String name) {
@@ -467,11 +467,11 @@ public class SXPBlueprintAndSXPElementUpgradeProcessTest {
 	private PortletLocalService _portletLocalService;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	private ServiceContext _serviceContext;
 	private final JSONObject _sxpBlueprintConfigurationJSONObject =

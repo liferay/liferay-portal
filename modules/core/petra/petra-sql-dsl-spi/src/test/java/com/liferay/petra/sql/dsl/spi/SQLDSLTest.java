@@ -139,6 +139,29 @@ public class SQLDSLTest {
 			LiferayUnitTestRule.INSTANCE);
 
 	@Test
+	public void testASTNodeListenerOrder() {
+		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
+		).from(
+			MainExampleTable.INSTANCE
+		);
+
+		StringBundler sb = new StringBundler();
+
+		dslQuery.toSQL(
+			sb::append,
+			astNode -> {
+				if (astNode instanceof Select) {
+					Assert.assertEquals("", sb.toString());
+				}
+				else if (astNode instanceof From) {
+					Assert.assertEquals("select * ", sb.toString());
+				}
+			});
+
+		Assert.assertEquals("select * from MainExample", sb.toString());
+	}
+
+	@Test
 	public void testAggregateExpression() {
 		Expression<Long> countExpression = DSLFunctionFactoryUtil.countDistinct(
 			ReferenceExampleTable.INSTANCE.nameColumn);
@@ -163,29 +186,6 @@ public class SQLDSLTest {
 			name);
 
 		Assert.assertSame(name, alias.getName());
-	}
-
-	@Test
-	public void testASTNodeListenerOrder() {
-		DSLQuery dslQuery = DSLQueryFactoryUtil.select(
-		).from(
-			MainExampleTable.INSTANCE
-		);
-
-		StringBundler sb = new StringBundler();
-
-		dslQuery.toSQL(
-			sb::append,
-			astNode -> {
-				if (astNode instanceof Select) {
-					Assert.assertEquals("", sb.toString());
-				}
-				else if (astNode instanceof From) {
-					Assert.assertEquals("select * ", sb.toString());
-				}
-			});
-
-		Assert.assertEquals("select * from MainExample", sb.toString());
 	}
 
 	@Test

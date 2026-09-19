@@ -92,8 +92,8 @@ public class SynonymsDisplayBuilderTest extends BaseSynonymsWebTestCase {
 	private final SearchEngineInformation _searchEngineInformation =
 		Mockito.mock(SearchEngineInformation.class);
 	private final Sorts _sorts = Mockito.mock(Sorts.class);
-	private SynonymsDisplayBuilder _synonymsDisplayBuilder;
 	private final SynonymSetIndexNameBuilder _synonymSetIndexNameBuilder =
 		Mockito.mock(SynonymSetIndexNameBuilder.class);
+	private SynonymsDisplayBuilder _synonymsDisplayBuilder;
 
 }

@@ -207,11 +207,11 @@ public class AuthPipelineTest {
 	private static final Log _log = LogFactoryUtil.getLog(
 		AuthPipelineTest.class);
 
-	private static ServiceRegistration<Authenticator>
-		_authenticatorServiceRegistration;
 	private static ServiceRegistration<AuthFailure>
 		_authFailureServiceRegistration;
-	private static boolean _calledAuthenticator;
+	private static ServiceRegistration<Authenticator>
+		_authenticatorServiceRegistration;
 	private static boolean _calledAuthFailure;
+	private static boolean _calledAuthenticator;
 
 }

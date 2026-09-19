@@ -54,21 +54,6 @@ public class DepotItemSelectorViewTest {
 	}
 
 	@Test
-	public void testIsVisibleForAnUnsupportedApplication() {
-		GroupItemSelectorCriterion groupItemSelectorCriterion =
-			new GroupItemSelectorCriterion();
-
-		groupItemSelectorCriterion.setPortletId(RandomTestUtil.randomString());
-
-		Assert.assertFalse(
-			_assetLibraryDepotItemSelectorView.isVisible(
-				groupItemSelectorCriterion, null));
-		Assert.assertFalse(
-			_spacesDepotItemSelectorView.isVisible(
-				groupItemSelectorCriterion, _themeDisplay));
-	}
-
-	@Test
 	public void testIsVisibleForASupportedApplication() {
 		GroupItemSelectorCriterion groupItemSelectorCriterion =
 			new GroupItemSelectorCriterion();
@@ -80,6 +65,21 @@ public class DepotItemSelectorViewTest {
 			_assetLibraryDepotItemSelectorView.isVisible(
 				groupItemSelectorCriterion, null));
 		Assert.assertTrue(
+			_spacesDepotItemSelectorView.isVisible(
+				groupItemSelectorCriterion, _themeDisplay));
+	}
+
+	@Test
+	public void testIsVisibleForAnUnsupportedApplication() {
+		GroupItemSelectorCriterion groupItemSelectorCriterion =
+			new GroupItemSelectorCriterion();
+
+		groupItemSelectorCriterion.setPortletId(RandomTestUtil.randomString());
+
+		Assert.assertFalse(
+			_assetLibraryDepotItemSelectorView.isVisible(
+				groupItemSelectorCriterion, null));
+		Assert.assertFalse(
 			_spacesDepotItemSelectorView.isVisible(
 				groupItemSelectorCriterion, _themeDisplay));
 	}

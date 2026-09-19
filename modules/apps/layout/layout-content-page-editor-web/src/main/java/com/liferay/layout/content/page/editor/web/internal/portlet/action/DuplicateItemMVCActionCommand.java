@@ -164,15 +164,15 @@ public class DuplicateItemMVCActionCommand
 	}
 
 	@Override
-	protected String getNoninstanceablePortletExceptionMessage() {
-		return "the-layout-could-not-be-duplicated-because-it-contains-a-" +
-			"widget-x-that-can-only-appear-once-on-the-page";
-	}
-
-	@Override
 	protected String getNoSuchEntryLinkExceptionMessage() {
 		return "the-section-could-not-be-duplicated-because-it-no-longer-" +
 			"exists";
+	}
+
+	@Override
+	protected String getNoninstanceablePortletExceptionMessage() {
+		return "the-layout-could-not-be-duplicated-because-it-contains-a-" +
+			"widget-x-that-can-only-appear-once-on-the-page";
 	}
 
 	@Reference

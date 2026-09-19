@@ -794,87 +794,6 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 	}
 
 	@Test
-	public void testExportImportJournalArticleWithoutVersionHistory()
-		throws Exception {
-
-		JournalArticle article = (JournalArticle)addStagedModel(
-			group.getGroupId());
-
-		article = (JournalArticle)addVersion(article);
-
-		Assert.assertEquals(
-			2,
-			JournalArticleLocalServiceUtil.getArticlesCount(
-				group.getGroupId(), article.getArticleId()));
-
-		Map<String, String[]> exportParameterMap = new HashMap<>();
-
-		addParameter(exportParameterMap, "version-history", false);
-
-		exportImportPortlet(
-			JournalPortletKeys.JOURNAL, exportParameterMap,
-			new HashMap<String, String[]>());
-
-		JournalArticle importedArticle = (JournalArticle)getStagedModel(
-			article.getUuid(), importedGroup.getGroupId());
-
-		Assert.assertEquals(
-			1,
-			JournalArticleLocalServiceUtil.getArticlesCount(
-				importedGroup.getGroupId(), importedArticle.getArticleId()));
-	}
-
-	@Test
-	@TestInfo("LPD-104372")
-	public void testExportImportJournalArticleWithoutVersionHistoryExpiresAllVersions()
-		throws Exception {
-
-		JournalArticle article = _addArticleWithExpiredVersions();
-
-		exportImportPortlet(JournalPortletKeys.JOURNAL);
-
-		Assert.assertEquals(
-			_VERSION_COUNT,
-			JournalArticleLocalServiceUtil.getArticlesCount(
-				importedGroup.getGroupId(), article.getArticleId()));
-
-		JournalArticle latestArticle =
-			JournalArticleLocalServiceUtil.getLatestArticle(
-				group.getGroupId(), article.getArticleId());
-
-		latestArticle = JournalArticleLocalServiceUtil.expireArticle(
-			TestPropsValues.getUserId(), group.getGroupId(),
-			latestArticle.getArticleId(), latestArticle.getVersion(), null,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		Calendar calendar = CalendarFactoryUtil.getCalendar();
-
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-
-		Date expirationDate = calendar.getTime();
-
-		latestArticle.setExpirationDate(expirationDate);
-
-		JournalArticleLocalServiceUtil.updateJournalArticle(latestArticle);
-
-		exportImportPortlet(
-			JournalPortletKeys.JOURNAL, _getParameterMap(false),
-			_getParameterMap(false));
-
-		for (JournalArticle importedArticle :
-				JournalArticleLocalServiceUtil.getArticles(
-					importedGroup.getGroupId(), article.getArticleId())) {
-
-			_assertEqualsExpirationDate(
-				expirationDate, importedArticle.getExpirationDate());
-
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_EXPIRED, importedArticle.getStatus());
-		}
-	}
-
-	@Test
 	@TestInfo("LPS-86608")
 	public void testExportImportJournalArticleWithRepeatableJournalArticleField()
 		throws Exception {
@@ -1007,6 +926,87 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			2,
 			JournalArticleLocalServiceUtil.getArticlesCount(
 				importedGroup.getGroupId()));
+	}
+
+	@Test
+	public void testExportImportJournalArticleWithoutVersionHistory()
+		throws Exception {
+
+		JournalArticle article = (JournalArticle)addStagedModel(
+			group.getGroupId());
+
+		article = (JournalArticle)addVersion(article);
+
+		Assert.assertEquals(
+			2,
+			JournalArticleLocalServiceUtil.getArticlesCount(
+				group.getGroupId(), article.getArticleId()));
+
+		Map<String, String[]> exportParameterMap = new HashMap<>();
+
+		addParameter(exportParameterMap, "version-history", false);
+
+		exportImportPortlet(
+			JournalPortletKeys.JOURNAL, exportParameterMap,
+			new HashMap<String, String[]>());
+
+		JournalArticle importedArticle = (JournalArticle)getStagedModel(
+			article.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertEquals(
+			1,
+			JournalArticleLocalServiceUtil.getArticlesCount(
+				importedGroup.getGroupId(), importedArticle.getArticleId()));
+	}
+
+	@Test
+	@TestInfo("LPD-104372")
+	public void testExportImportJournalArticleWithoutVersionHistoryExpiresAllVersions()
+		throws Exception {
+
+		JournalArticle article = _addArticleWithExpiredVersions();
+
+		exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+		Assert.assertEquals(
+			_VERSION_COUNT,
+			JournalArticleLocalServiceUtil.getArticlesCount(
+				importedGroup.getGroupId(), article.getArticleId()));
+
+		JournalArticle latestArticle =
+			JournalArticleLocalServiceUtil.getLatestArticle(
+				group.getGroupId(), article.getArticleId());
+
+		latestArticle = JournalArticleLocalServiceUtil.expireArticle(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			latestArticle.getArticleId(), latestArticle.getVersion(), null,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		Date expirationDate = calendar.getTime();
+
+		latestArticle.setExpirationDate(expirationDate);
+
+		JournalArticleLocalServiceUtil.updateJournalArticle(latestArticle);
+
+		exportImportPortlet(
+			JournalPortletKeys.JOURNAL, _getParameterMap(false),
+			_getParameterMap(false));
+
+		for (JournalArticle importedArticle :
+				JournalArticleLocalServiceUtil.getArticles(
+					importedGroup.getGroupId(), article.getArticleId())) {
+
+			_assertEqualsExpirationDate(
+				expirationDate, importedArticle.getExpirationDate());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EXPIRED, importedArticle.getStatus());
+		}
 	}
 
 	@Test

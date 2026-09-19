@@ -349,6 +349,34 @@ public class JournalArticleSitemapURLProviderTest {
 
 	@Test
 	@TestInfo("LPD-102047")
+	public void testJournalArticleSitemapURLProviderDefaultLayoutWhenGuestUserCanViewLayout()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId());
+
+		JournalArticle article = _addArticleWithLayoutUuid(layout);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(
+				_userLocalService.getGuestUser(_group.getCompanyId()));
+
+		Assert.assertTrue(
+			_journalArticleModelResourcePermission.contains(
+				permissionChecker, article, ActionKeys.VIEW));
+		Assert.assertTrue(
+			_layoutModelResourcePermission.contains(
+				permissionChecker, layout, ActionKeys.VIEW));
+
+		Element rootElement = _getRootElement();
+
+		_visitLayoutSet(permissionChecker, rootElement);
+
+		Assert.assertTrue(rootElement.hasContent());
+	}
+
+	@Test
+	@TestInfo("LPD-102047")
 	public void testJournalArticleSitemapURLProviderDefaultLayoutWhenGuestUserCannotViewLayout()
 		throws Exception {
 
@@ -375,34 +403,6 @@ public class JournalArticleSitemapURLProviderTest {
 		_visitLayoutSet(permissionChecker, rootElement);
 
 		Assert.assertFalse(rootElement.hasContent());
-	}
-
-	@Test
-	@TestInfo("LPD-102047")
-	public void testJournalArticleSitemapURLProviderDefaultLayoutWhenGuestUserCanViewLayout()
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypePortletLayout(
-			_group.getGroupId());
-
-		JournalArticle article = _addArticleWithLayoutUuid(layout);
-
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(
-				_userLocalService.getGuestUser(_group.getCompanyId()));
-
-		Assert.assertTrue(
-			_journalArticleModelResourcePermission.contains(
-				permissionChecker, article, ActionKeys.VIEW));
-		Assert.assertTrue(
-			_layoutModelResourcePermission.contains(
-				permissionChecker, layout, ActionKeys.VIEW));
-
-		Element rootElement = _getRootElement();
-
-		_visitLayoutSet(permissionChecker, rootElement);
-
-		Assert.assertTrue(rootElement.hasContent());
 	}
 
 	@Test

@@ -73,13 +73,13 @@ public class PortletConfigImplTest {
 	}
 
 	@Test
-	public void testGetResourceBundleWithoutResourceBundleProperty() {
-		_testGetResourceBundle(null);
+	public void testGetResourceBundleWithResourceBundleProperty() {
+		_testGetResourceBundle("content.Language");
 	}
 
 	@Test
-	public void testGetResourceBundleWithResourceBundleProperty() {
-		_testGetResourceBundle("content.Language");
+	public void testGetResourceBundleWithoutResourceBundleProperty() {
+		_testGetResourceBundle(null);
 	}
 
 	private void _assertResourceBundle(

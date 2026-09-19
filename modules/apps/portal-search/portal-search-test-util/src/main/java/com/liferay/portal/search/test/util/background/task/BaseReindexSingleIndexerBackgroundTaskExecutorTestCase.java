@@ -141,11 +141,11 @@ public abstract class BaseReindexSingleIndexerBackgroundTaskExecutorTestCase {
 	private final BackgroundTask _backgroundTask = Mockito.mock(
 		BackgroundTask.class);
 	private long _companyId;
+	private final IndexWriterHelper _indexWriterHelper = Mockito.mock(
+		IndexWriterHelper.class);
 	private final Indexer<Object> _indexer = Mockito.mock(Indexer.class);
 	private final IndexerRegistry _indexerRegistry = Mockito.mock(
 		IndexerRegistry.class);
-	private final IndexWriterHelper _indexWriterHelper = Mockito.mock(
-		IndexWriterHelper.class);
 	private final ReindexStatusMessageSender _reindexStatusMessageSender =
 		Mockito.mock(ReindexStatusMessageSender.class);
 	private SearchEngineFixture _searchEngineFixture;

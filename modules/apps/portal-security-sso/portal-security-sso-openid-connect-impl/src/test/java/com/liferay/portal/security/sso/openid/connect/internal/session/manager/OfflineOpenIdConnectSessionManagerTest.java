@@ -388,6 +388,20 @@ public class OfflineOpenIdConnectSessionManagerTest {
 		return oAuthClientEntry;
 	}
 
+	private OIDCProviderMetadata _createOIDCProviderMetadata()
+		throws Exception {
+
+		OIDCProviderMetadata oidcProviderMetadata = new OIDCProviderMetadata(
+			new Issuer(RandomTestUtil.randomString()),
+			List.of(SubjectType.PUBLIC),
+			new URI(RandomTestUtil.randomString()));
+
+		oidcProviderMetadata.setTokenEndpointURI(
+			new URI(RandomTestUtil.randomString()));
+
+		return oidcProviderMetadata;
+	}
+
 	private OfflineOpenIdConnectSessionManager
 			_createOfflineOpenIdConnectSessionManager(
 				String authServerWellKnownURI, String clientId, long companyId,
@@ -438,20 +452,6 @@ public class OfflineOpenIdConnectSessionManagerTest {
 			openIdConnectSessionLocalService);
 
 		return offlineOpenIdConnectSessionManager;
-	}
-
-	private OIDCProviderMetadata _createOIDCProviderMetadata()
-		throws Exception {
-
-		OIDCProviderMetadata oidcProviderMetadata = new OIDCProviderMetadata(
-			new Issuer(RandomTestUtil.randomString()),
-			List.of(SubjectType.PUBLIC),
-			new URI(RandomTestUtil.randomString()));
-
-		oidcProviderMetadata.setTokenEndpointURI(
-			new URI(RandomTestUtil.randomString()));
-
-		return oidcProviderMetadata;
 	}
 
 	private OpenIdConnectSession _createOpenIdConnectSession(

@@ -498,6 +498,28 @@ public class ContentLayoutTestUtil {
 			new MockLiferayPortletActionResponse());
 	}
 
+	public static MVCActionCommand getMVCActionCommand(String mvcCommandName) {
+		try {
+			Bundle bundle = FrameworkUtil.getBundle(
+				ContentLayoutTestUtil.class);
+
+			BundleContext bundleContext = bundle.getBundleContext();
+
+			Collection<ServiceReference<MVCActionCommand>>
+				mvcActionCommandReferences = bundleContext.getServiceReferences(
+					MVCActionCommand.class,
+					"(mvc.command.name=" + mvcCommandName + ")");
+
+			Iterator<ServiceReference<MVCActionCommand>> iterator =
+				mvcActionCommandReferences.iterator();
+
+			return bundleContext.getService(iterator.next());
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
 	public static MockHttpServletRequest getMockHttpServletRequest(
 			Company company, Group group, Layout layout)
 		throws Exception {
@@ -549,28 +571,6 @@ public class ContentLayoutTestUtil {
 					fetchDefaultSegmentsExperienceId(layout.getPlid())));
 
 		return mockLiferayPortletActionRequest;
-	}
-
-	public static MVCActionCommand getMVCActionCommand(String mvcCommandName) {
-		try {
-			Bundle bundle = FrameworkUtil.getBundle(
-				ContentLayoutTestUtil.class);
-
-			BundleContext bundleContext = bundle.getBundleContext();
-
-			Collection<ServiceReference<MVCActionCommand>>
-				mvcActionCommandReferences = bundleContext.getServiceReferences(
-					MVCActionCommand.class,
-					"(mvc.command.name=" + mvcCommandName + ")");
-
-			Iterator<ServiceReference<MVCActionCommand>> iterator =
-				mvcActionCommandReferences.iterator();
-
-			return bundleContext.getService(iterator.next());
-		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
-		}
 	}
 
 	public static String getRenderLayoutHTML(

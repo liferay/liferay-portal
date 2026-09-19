@@ -136,29 +136,6 @@ public class ExportImportTestUtil {
 			"group/", groupId, StringPool.FORWARD_SLASH, fileName);
 	}
 
-	public static JSONArray getExportedJSONArray(
-			String fileNamePrefix, long groupId, InputStream inputStream)
-		throws Exception {
-
-		String batchFileNameWithPath = getBatchFileNameWithPath(
-			fileNamePrefix + ".json", groupId);
-
-		try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
-			ZipEntry zipEntry = zipInputStream.getNextEntry();
-
-			while (zipEntry != null) {
-				if (Objects.equals(zipEntry.getName(), batchFileNameWithPath)) {
-					return JSONFactoryUtil.createJSONArray(
-						StringUtil.read(zipInputStream));
-				}
-
-				zipEntry = zipInputStream.getNextEntry();
-			}
-		}
-
-		return null;
-	}
-
 	public static PortletDataContext getExportPortletDataContext()
 		throws Exception {
 
@@ -215,6 +192,29 @@ public class ExportImportTestUtil {
 			rootElement.addElement("missing-references"));
 
 		return portletDataContext;
+	}
+
+	public static JSONArray getExportedJSONArray(
+			String fileNamePrefix, long groupId, InputStream inputStream)
+		throws Exception {
+
+		String batchFileNameWithPath = getBatchFileNameWithPath(
+			fileNamePrefix + ".json", groupId);
+
+		try (ZipInputStream zipInputStream = new ZipInputStream(inputStream)) {
+			ZipEntry zipEntry = zipInputStream.getNextEntry();
+
+			while (zipEntry != null) {
+				if (Objects.equals(zipEntry.getName(), batchFileNameWithPath)) {
+					return JSONFactoryUtil.createJSONArray(
+						StringUtil.read(zipInputStream));
+				}
+
+				zipEntry = zipInputStream.getNextEntry();
+			}
+		}
+
+		return null;
 	}
 
 	public static PortletDataContext getImportPortletDataContext()

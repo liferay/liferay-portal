@@ -142,14 +142,6 @@ public abstract class BaseKBTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public int getTrashModelsCount(long classPK) throws PortalException {
-		KBFolder kbFolder = kbFolderLocalService.getKBFolder(classPK);
-
-		return kbFolderLocalService.getKBFoldersAndKBArticlesCount(
-			kbFolder.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
 	public List<TrashedModel> getTrashModelTrashedModels(
 			long classPK, int start, int end,
 			OrderByComparator<?> orderByComparator)
@@ -169,6 +161,14 @@ public abstract class BaseKBTrashHandler extends BaseTrashHandler {
 
 				return (KBArticle)object;
 			});
+	}
+
+	@Override
+	public int getTrashModelsCount(long classPK) throws PortalException {
+		KBFolder kbFolder = kbFolderLocalService.getKBFolder(classPK);
+
+		return kbFolderLocalService.getKBFoldersAndKBArticlesCount(
+			kbFolder.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
 	}
 
 	protected abstract long getGroupId(long classPK) throws PortalException;

@@ -307,21 +307,6 @@ public class DDMFormInstanceLocalServiceImpl
 	}
 
 	@Override
-	public List<DDMFormInstance> getFormInstances(long groupId) {
-		return ddmFormInstancePersistence.findByGroupId(groupId);
-	}
-
-	@Override
-	public int getFormInstancesCount(long groupId) {
-		return ddmFormInstancePersistence.countByGroupId(groupId);
-	}
-
-	@Override
-	public int getFormInstancesCount(String uuid) throws PortalException {
-		return ddmFormInstancePersistence.countByUuid(uuid);
-	}
-
-	@Override
 	public DDMFormValues getFormInstanceSettingsFormValues(
 		DDMFormInstance formInstance) {
 
@@ -338,6 +323,21 @@ public class DDMFormInstanceLocalServiceImpl
 
 		return DDMFormInstanceFactory.create(
 			DDMFormInstanceSettings.class, formValues);
+	}
+
+	@Override
+	public List<DDMFormInstance> getFormInstances(long groupId) {
+		return ddmFormInstancePersistence.findByGroupId(groupId);
+	}
+
+	@Override
+	public int getFormInstancesCount(long groupId) {
+		return ddmFormInstancePersistence.countByGroupId(groupId);
+	}
+
+	@Override
+	public int getFormInstancesCount(String uuid) throws PortalException {
+		return ddmFormInstancePersistence.countByUuid(uuid);
 	}
 
 	@Override

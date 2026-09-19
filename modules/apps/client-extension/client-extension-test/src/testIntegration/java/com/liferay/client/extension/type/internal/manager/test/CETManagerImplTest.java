@@ -143,6 +143,33 @@ public class CETManagerImplTest {
 		}
 	}
 
+	private void _testGetCETWithMissingExternalReferenceCode()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.client.extension.type.internal.manager." +
+					"CETManagerImpl",
+				LoggerTestUtil.WARN)) {
+
+			String externalReferenceCode = RandomTestUtil.randomString();
+
+			Assert.assertNull(
+				_cetManager.getCET(
+					TestPropsValues.getCompanyId(), externalReferenceCode));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"No CET found for external reference code " +
+					externalReferenceCode,
+				logEntry.getMessage());
+		}
+	}
+
 	private void _testGetCETsReturnsOnlyRequestedType() throws Exception {
 		boolean containsGlobalCSS = false;
 
@@ -176,33 +203,6 @@ public class CETManagerImplTest {
 		}
 
 		Assert.assertTrue(containsGlobalCSS);
-	}
-
-	private void _testGetCETWithMissingExternalReferenceCode()
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.client.extension.type.internal.manager." +
-					"CETManagerImpl",
-				LoggerTestUtil.WARN)) {
-
-			String externalReferenceCode = RandomTestUtil.randomString();
-
-			Assert.assertNull(
-				_cetManager.getCET(
-					TestPropsValues.getCompanyId(), externalReferenceCode));
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"No CET found for external reference code " +
-					externalReferenceCode,
-				logEntry.getMessage());
-		}
 	}
 
 	@Inject

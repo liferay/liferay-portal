@@ -185,10 +185,10 @@ public class ProductConfigurationDTOConverter
 	}
 
 	@Reference
-	private CPDAvailabilityEstimateLocalService
-		_cpdAvailabilityEstimateLocalService;
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CPDAvailabilityEstimateLocalService
+		_cpdAvailabilityEstimateLocalService;
 
 }

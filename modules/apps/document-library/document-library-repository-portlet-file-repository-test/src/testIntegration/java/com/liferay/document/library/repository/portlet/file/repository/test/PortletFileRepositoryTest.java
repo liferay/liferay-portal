@@ -225,22 +225,6 @@ public class PortletFileRepositoryTest {
 	}
 
 	@Test
-	public void testFolderDeleteShouldDeleteAllFileEntries() throws Exception {
-		int fileEntriesToAdd = Math.abs(RandomTestUtil.randomInt()) % 10;
-
-		for (int i = 0; i < fileEntriesToAdd; i++) {
-			_addPortletFileEntry(RandomTestUtil.randomString());
-		}
-
-		PortletFileRepositoryUtil.deletePortletFolder(_folder.getFolderId());
-
-		int count = PortletFileRepositoryUtil.getPortletFileEntriesCount(
-			_group.getGroupId(), _folder.getFolderId());
-
-		Assert.assertEquals(0, count);
-	}
-
-	@Test
 	public void testFolderDeleteShouldDeleteAMImageEntries() throws Exception {
 		byte[] bytes = FileUtil.getBytes(
 			getClass(), "dependencies/liferay.jpg");
@@ -276,6 +260,22 @@ public class PortletFileRepositoryTest {
 			0,
 			_amImageEntryLocalService.getAMImageEntriesCount(
 				_group.getCompanyId(), amImageConfigurationEntry.getUUID()));
+	}
+
+	@Test
+	public void testFolderDeleteShouldDeleteAllFileEntries() throws Exception {
+		int fileEntriesToAdd = Math.abs(RandomTestUtil.randomInt()) % 10;
+
+		for (int i = 0; i < fileEntriesToAdd; i++) {
+			_addPortletFileEntry(RandomTestUtil.randomString());
+		}
+
+		PortletFileRepositoryUtil.deletePortletFolder(_folder.getFolderId());
+
+		int count = PortletFileRepositoryUtil.getPortletFileEntriesCount(
+			_group.getGroupId(), _folder.getFolderId());
+
+		Assert.assertEquals(0, count);
 	}
 
 	@Test(expected = NoSuchFolderException.class)

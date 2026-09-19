@@ -91,7 +91,7 @@ public class ReindexerImpl implements Reindexer {
 		Executors.defaultThreadFactory();
 
 	private volatile ExecutorService _executorService;
-	private volatile ReindexerConfiguration _reindexerConfiguration;
 	private volatile ReindexRequestsHolder _reindexRequestsHolder;
+	private volatile ReindexerConfiguration _reindexerConfiguration;
 
 }

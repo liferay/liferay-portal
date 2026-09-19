@@ -66,12 +66,12 @@ public class AppServer {
 		return _name;
 	}
 
-	public File getPortalDir() {
-		return GradleUtil.toFile(project, _portalDir);
-	}
-
 	public int getPortNumber() {
 		return GradleUtil.toInteger(_portNumber);
+	}
+
+	public File getPortalDir() {
+		return GradleUtil.toFile(project, _portalDir);
 	}
 
 	public File getShieldedContainerLibPortalDir() {
@@ -144,12 +144,12 @@ public class AppServer {
 		_libGlobalDir = libGlobalDir;
 	}
 
-	public void setPortalDir(Object portalDir) {
-		_portalDir = portalDir;
-	}
-
 	public void setPortNumber(Object portNumber) {
 		_portNumber = portNumber;
+	}
+
+	public void setPortalDir(Object portalDir) {
+		_portalDir = portalDir;
 	}
 
 	public void setShieldedContainerLibPortalDir(
@@ -196,8 +196,8 @@ public class AppServer {
 	private Object _dir;
 	private Object _libGlobalDir;
 	private final String _name;
-	private Object _portalDir;
 	private Object _portNumber = 8080;
+	private Object _portalDir;
 	private Object _shieldedContainerLibPortalDir;
 	private Object _startExecutable;
 	private final List<Object> _startExecutableArgs = new ArrayList<>();

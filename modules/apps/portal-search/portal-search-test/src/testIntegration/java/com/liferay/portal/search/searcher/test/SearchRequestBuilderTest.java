@@ -508,19 +508,18 @@ public class SearchRequestBuilderTest {
 	private SearchEngine _searchEngine;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Inject
 	private Sorts _sorts;
 
 	private User _user;
+	private UserSearchFixture _userSearchFixture;
 
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private UserSearchFixture _userSearchFixture;
 
 }

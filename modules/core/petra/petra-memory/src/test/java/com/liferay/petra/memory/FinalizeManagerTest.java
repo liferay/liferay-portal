@@ -91,6 +91,21 @@ public class FinalizeManagerTest {
 	}
 
 	@Test
+	public void testRegisterPhantom() throws InterruptedException {
+		doTestRegister(ReferenceType.PHANTOM);
+	}
+
+	@Test
+	public void testRegisterSoft() throws InterruptedException {
+		doTestRegister(ReferenceType.SOFT);
+	}
+
+	@Test
+	public void testRegisterWeak() throws InterruptedException {
+		doTestRegister(ReferenceType.WEAK);
+	}
+
+	@Test
 	public void testRegisterationIdentity() throws Exception {
 		String testString = new String("testString");
 
@@ -152,21 +167,6 @@ public class FinalizeManagerTest {
 
 		Assert.assertTrue(
 			finalizeActions.toString(), finalizeActions.isEmpty());
-	}
-
-	@Test
-	public void testRegisterPhantom() throws InterruptedException {
-		doTestRegister(ReferenceType.PHANTOM);
-	}
-
-	@Test
-	public void testRegisterSoft() throws InterruptedException {
-		doTestRegister(ReferenceType.SOFT);
-	}
-
-	@Test
-	public void testRegisterWeak() throws InterruptedException {
-		doTestRegister(ReferenceType.WEAK);
 	}
 
 	protected void doTestRegister(ReferenceType referenceType)

@@ -255,6 +255,15 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 	}
 
 	@Override
+	public int getAttributeType(String name) {
+		ExpandoColumn column =
+			ExpandoColumnLocalServiceUtil.getDefaultTableColumn(
+				_companyId, _className, name);
+
+		return column.getType();
+	}
+
+	@Override
 	public Map<String, Serializable> getAttributes() {
 		boolean secure =
 			PropsValues.PERMISSIONS_CUSTOM_ATTRIBUTE_READ_CHECK_BY_DEFAULT;
@@ -319,15 +328,6 @@ public class ExpandoBridgeImpl implements ExpandoBridge {
 		}
 
 		return attributeValues;
-	}
-
-	@Override
-	public int getAttributeType(String name) {
-		ExpandoColumn column =
-			ExpandoColumnLocalServiceUtil.getDefaultTableColumn(
-				_companyId, _className, name);
-
-		return column.getType();
 	}
 
 	@Override

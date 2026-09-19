@@ -25,18 +25,13 @@ public class IncludeExcludeClauseImpl implements IncludeExcludeClause {
 	}
 
 	@Override
-	public String[] getExcludedValues() {
-		return _excludedValues;
-	}
-
-	@Override
 	public String getExcludeRegex() {
 		return _excludeRegex;
 	}
 
 	@Override
-	public String[] getIncludedValues() {
-		return _includedValues;
+	public String[] getExcludedValues() {
+		return _excludedValues;
 	}
 
 	@Override
@@ -44,9 +39,14 @@ public class IncludeExcludeClauseImpl implements IncludeExcludeClause {
 		return _includeRegex;
 	}
 
-	private String[] _excludedValues;
+	@Override
+	public String[] getIncludedValues() {
+		return _includedValues;
+	}
+
 	private String _excludeRegex;
-	private String[] _includedValues;
+	private String[] _excludedValues;
 	private String _includeRegex;
+	private String[] _includedValues;
 
 }

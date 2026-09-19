@@ -411,6 +411,31 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 			pagination, _searcher.search(searchRequestBuilder.build()));
 	}
 
+	@SuppressWarnings("rawtypes")
+	private void _setDTOFields(
+		boolean embedded, String entryClassName, Long entryClassPK,
+		List<String> fields, SearchResult searchResult) {
+
+		DTOConverter dtoConverter = null;
+
+		if (embedded || _isEmptyOrContains(fields, "itemURL")) {
+			dtoConverter = _dtoConverterRegistry.getDTOConverter(
+				entryClassName);
+		}
+
+		if (dtoConverter == null) {
+			return;
+		}
+
+		if (embedded) {
+			_setEmbedded(
+				dtoConverter.getExternalDTOClassName(), entryClassPK,
+				searchResult);
+		}
+
+		_setItemURL(dtoConverter, entryClassPK, fields, searchResult);
+	}
+
 	private void _setDateCreated(
 		Document document, List<String> fields, SearchResult searchResult) {
 
@@ -475,31 +500,6 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 				() -> assetRenderer.getSearchSummary(
 					contextAcceptLanguage.getPreferredLocale()));
 		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	private void _setDTOFields(
-		boolean embedded, String entryClassName, Long entryClassPK,
-		List<String> fields, SearchResult searchResult) {
-
-		DTOConverter dtoConverter = null;
-
-		if (embedded || _isEmptyOrContains(fields, "itemURL")) {
-			dtoConverter = _dtoConverterRegistry.getDTOConverter(
-				entryClassName);
-		}
-
-		if (dtoConverter == null) {
-			return;
-		}
-
-		if (embedded) {
-			_setEmbedded(
-				dtoConverter.getExternalDTOClassName(), entryClassPK,
-				searchResult);
-		}
-
-		_setItemURL(dtoConverter, entryClassPK, fields, searchResult);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -696,10 +696,10 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 	private Localization _localization;
 
 	@Reference
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Reference
 	private VulcanCRUDItemDelegateBuilderRegistry

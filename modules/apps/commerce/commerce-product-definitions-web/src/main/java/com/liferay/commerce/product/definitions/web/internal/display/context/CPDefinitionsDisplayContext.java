@@ -171,75 +171,6 @@ public class CPDefinitionsDisplayContext
 				null));
 	}
 
-	public String getChannelItemSelectorUrl() throws PortalException {
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
-
-		CommerceChannelItemSelectorCriterion
-			commerceChannelItemSelectorCriterion =
-				new CommerceChannelItemSelectorCriterion();
-
-		commerceChannelItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			Collections.<ItemSelectorReturnType>singletonList(
-				new UUIDItemSelectorReturnType()));
-
-		return PortletURLBuilder.create(
-			_itemSelector.getItemSelectorURL(
-				requestBackedPortletURLFactory, "channelSelectItem",
-				commerceChannelItemSelectorCriterion)
-		).setParameter(
-			"checkedCommerceChannelIds", getCheckedCommerceChannelIds()
-		).buildString();
-	}
-
-	public CreationMenu getChannelsCreationMenu() throws PortalException {
-		return CreationMenuBuilder.addDropdownItem(
-			dropdownItem -> {
-				String cpDefinitionName = StringPool.BLANK;
-
-				CPDefinition cpDefinition = getCPDefinition();
-
-				if (cpDefinition != null) {
-					cpDefinitionName = cpDefinition.getName(
-						LocaleUtil.toLanguageId(cpRequestHelper.getLocale()));
-				}
-
-				dropdownItem.setHref(
-					liferayPortletResponse.getNamespace() +
-						"selectCommerceChannel");
-				dropdownItem.setLabel(
-					LanguageUtil.format(
-						httpServletRequest, "add-channel-relation-to-x",
-						cpDefinitionName));
-				dropdownItem.setTarget("event");
-			}
-		).build();
-	}
-
-	public String getCheckedCommerceAccountGroupIds() throws PortalException {
-		return StringUtil.merge(
-			TransformUtil.transformToLongArray(
-				_accountGroupRelLocalService.getAccountGroupRels(
-					CPDefinition.class.getName(), getCPDefinitionId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-				AccountGroupRel::getAccountGroupId));
-	}
-
-	public String getCheckedCommerceChannelIds() throws PortalException {
-		return StringUtil.merge(
-			TransformUtil.transformToLongArray(
-				_commerceChannelRelService.getCommerceChannelRels(
-					CPDefinition.class.getName(), getCPDefinitionId(), null,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				CommerceChannelRel::getCommerceChannelId));
-	}
-
-	public List<CommerceCatalog> getCommerceCatalogs() throws PortalException {
-		return _commerceCatalogService.search(
-			cpRequestHelper.getCompanyId(), null, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-	}
-
 	public CreationMenu getCPDefinitionSpecificationOptionValueCreationMenu()
 		throws Exception {
 
@@ -307,6 +238,75 @@ public class CPDefinitionsDisplayContext
 		}
 
 		return cpDefinition.getCProduct();
+	}
+
+	public String getChannelItemSelectorUrl() throws PortalException {
+		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
+			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
+
+		CommerceChannelItemSelectorCriterion
+			commerceChannelItemSelectorCriterion =
+				new CommerceChannelItemSelectorCriterion();
+
+		commerceChannelItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			Collections.<ItemSelectorReturnType>singletonList(
+				new UUIDItemSelectorReturnType()));
+
+		return PortletURLBuilder.create(
+			_itemSelector.getItemSelectorURL(
+				requestBackedPortletURLFactory, "channelSelectItem",
+				commerceChannelItemSelectorCriterion)
+		).setParameter(
+			"checkedCommerceChannelIds", getCheckedCommerceChannelIds()
+		).buildString();
+	}
+
+	public CreationMenu getChannelsCreationMenu() throws PortalException {
+		return CreationMenuBuilder.addDropdownItem(
+			dropdownItem -> {
+				String cpDefinitionName = StringPool.BLANK;
+
+				CPDefinition cpDefinition = getCPDefinition();
+
+				if (cpDefinition != null) {
+					cpDefinitionName = cpDefinition.getName(
+						LocaleUtil.toLanguageId(cpRequestHelper.getLocale()));
+				}
+
+				dropdownItem.setHref(
+					liferayPortletResponse.getNamespace() +
+						"selectCommerceChannel");
+				dropdownItem.setLabel(
+					LanguageUtil.format(
+						httpServletRequest, "add-channel-relation-to-x",
+						cpDefinitionName));
+				dropdownItem.setTarget("event");
+			}
+		).build();
+	}
+
+	public String getCheckedCommerceAccountGroupIds() throws PortalException {
+		return StringUtil.merge(
+			TransformUtil.transformToLongArray(
+				_accountGroupRelLocalService.getAccountGroupRels(
+					CPDefinition.class.getName(), getCPDefinitionId(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+				AccountGroupRel::getAccountGroupId));
+	}
+
+	public String getCheckedCommerceChannelIds() throws PortalException {
+		return StringUtil.merge(
+			TransformUtil.transformToLongArray(
+				_commerceChannelRelService.getCommerceChannelRels(
+					CPDefinition.class.getName(), getCPDefinitionId(), null,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				CommerceChannelRel::getCommerceChannelId));
+	}
+
+	public List<CommerceCatalog> getCommerceCatalogs() throws PortalException {
+		return _commerceCatalogService.search(
+			cpRequestHelper.getCompanyId(), null, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

@@ -117,6 +117,37 @@ public class AccountGroupRelLocalServiceTest {
 		}
 	}
 
+	@Test(expected = DuplicateAccountGroupRelException.class)
+	public void testAddAccountGroupRelThrowsDuplicateAccountGroupRelException()
+		throws Exception {
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			_accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
+			_accountEntry.getAccountEntryId());
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			_accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
+			_accountEntry.getAccountEntryId());
+	}
+
+	@Test(expected = NoSuchEntryException.class)
+	public void testAddAccountGroupRelThrowsNoSuchEntryException()
+		throws Exception {
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			_accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
+			_accountEntry.getAccountEntryId() + RandomTestUtil.nextLong());
+	}
+
+	@Test(expected = NoSuchGroupException.class)
+	public void testAddAccountGroupRelThrowsNoSuchGroupException()
+		throws Exception {
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			_accountGroup.getAccountGroupId() + RandomTestUtil.nextLong(),
+			AccountEntry.class.getName(), _accountEntry.getAccountEntryId());
+	}
+
 	@Test
 	public void testAddAccountGroupRels() throws Exception {
 		List<AccountEntry> accountEntries =
@@ -149,37 +180,6 @@ public class AccountGroupRelLocalServiceTest {
 				ArrayUtil.contains(
 					accountEntryIds, accountGroupRel.getClassPK()));
 		}
-	}
-
-	@Test(expected = DuplicateAccountGroupRelException.class)
-	public void testAddAccountGroupRelThrowsDuplicateAccountGroupRelException()
-		throws Exception {
-
-		_accountGroupRelLocalService.addAccountGroupRel(
-			_accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
-			_accountEntry.getAccountEntryId());
-
-		_accountGroupRelLocalService.addAccountGroupRel(
-			_accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
-			_accountEntry.getAccountEntryId());
-	}
-
-	@Test(expected = NoSuchEntryException.class)
-	public void testAddAccountGroupRelThrowsNoSuchEntryException()
-		throws Exception {
-
-		_accountGroupRelLocalService.addAccountGroupRel(
-			_accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
-			_accountEntry.getAccountEntryId() + RandomTestUtil.nextLong());
-	}
-
-	@Test(expected = NoSuchGroupException.class)
-	public void testAddAccountGroupRelThrowsNoSuchGroupException()
-		throws Exception {
-
-		_accountGroupRelLocalService.addAccountGroupRel(
-			_accountGroup.getAccountGroupId() + RandomTestUtil.nextLong(),
-			AccountEntry.class.getName(), _accountEntry.getAccountEntryId());
 	}
 
 	@Test

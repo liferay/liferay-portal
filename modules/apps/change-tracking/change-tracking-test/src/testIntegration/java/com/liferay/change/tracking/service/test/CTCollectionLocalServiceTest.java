@@ -782,11 +782,11 @@ public class CTCollectionLocalServiceTest {
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
 
-	@DeleteAfterTestRun
-	private final List<CTCollection> _ctCollections = new ArrayList<>();
-
 	@Inject
 	private CTCollectionService _ctCollectionService;
+
+	@DeleteAfterTestRun
+	private final List<CTCollection> _ctCollections = new ArrayList<>();
 
 	@Inject
 	private CTEntryLocalService _ctEntryLocalService;

@@ -230,17 +230,17 @@ public class FreeMarkerTemplate extends BaseTemplate {
 		}
 
 		@Override
-		@SuppressWarnings("rawtypes")
-		public Object getAdaptedObject(Class hint) {
-			return _map;
-		}
-
-		@Override
 		public TemplateModel getAPI() throws TemplateModelException {
 			ObjectWrapperWithAPISupport objectWrapperWithAPISupport =
 				(ObjectWrapperWithAPISupport)_objectWrapper;
 
 			return objectWrapperWithAPISupport.wrapAsAPI(_map);
+		}
+
+		@Override
+		@SuppressWarnings("rawtypes")
+		public Object getAdaptedObject(Class hint) {
+			return _map;
 		}
 
 		@Override

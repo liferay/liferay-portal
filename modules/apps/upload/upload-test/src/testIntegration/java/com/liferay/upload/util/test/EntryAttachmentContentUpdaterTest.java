@@ -110,6 +110,21 @@ public class EntryAttachmentContentUpdaterTest {
 	}
 
 	@Test
+	public void testUpdateContentWitImgTag() throws Exception {
+		StringBundler sb = new StringBundler(2);
+
+		sb.append("<p>Sample Text</p><a href=\"www.liferay.com\">");
+		sb.append("<span><img src=\"www.liferay.com/pic1.jpg\" /></span></a>");
+
+		String content = _attachmentContentUpdater.updateContent(
+			sb.toString(), ContentTypes.TEXT_HTML, tempFileEntry -> null);
+
+		String expectedContent = sb.toString();
+
+		_assertEquals(_parseHtml(expectedContent), _parseHtml(content));
+	}
+
+	@Test
 	public void testUpdateContentWithMultipleImgTags() throws Exception {
 		FileEntry tempFileEntry = TempFileEntryUtil.addTempFileEntry(
 			_group.getGroupId(), _user.getUserId(),
@@ -178,19 +193,6 @@ public class EntryAttachmentContentUpdaterTest {
 	}
 
 	@Test
-	public void testUpdateContentWithoutImgTag() throws Exception {
-		String originalContent =
-			"<p>Sample Text</p><a href=\"www.liferay.com\"></a>";
-
-		String content = _attachmentContentUpdater.updateContent(
-			originalContent, ContentTypes.TEXT_HTML, tempFileEntry -> null);
-
-		String expectedContent = originalContent;
-
-		Assert.assertEquals(expectedContent, content);
-	}
-
-	@Test
 	public void testUpdateContentWithSingleImgTag() throws Exception {
 		FileEntry tempFileEntry = TempFileEntryUtil.addTempFileEntry(
 			_group.getGroupId(), _user.getUserId(),
@@ -232,18 +234,16 @@ public class EntryAttachmentContentUpdaterTest {
 	}
 
 	@Test
-	public void testUpdateContentWitImgTag() throws Exception {
-		StringBundler sb = new StringBundler(2);
-
-		sb.append("<p>Sample Text</p><a href=\"www.liferay.com\">");
-		sb.append("<span><img src=\"www.liferay.com/pic1.jpg\" /></span></a>");
+	public void testUpdateContentWithoutImgTag() throws Exception {
+		String originalContent =
+			"<p>Sample Text</p><a href=\"www.liferay.com\"></a>";
 
 		String content = _attachmentContentUpdater.updateContent(
-			sb.toString(), ContentTypes.TEXT_HTML, tempFileEntry -> null);
+			originalContent, ContentTypes.TEXT_HTML, tempFileEntry -> null);
 
-		String expectedContent = sb.toString();
+		String expectedContent = originalContent;
 
-		_assertEquals(_parseHtml(expectedContent), _parseHtml(content));
+		Assert.assertEquals(expectedContent, content);
 	}
 
 	private void _assertEquals(Element expectedElement, Element actualElement) {

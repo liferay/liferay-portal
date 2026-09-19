@@ -297,9 +297,9 @@ public class UpgradeJournalArticles extends BasePortletIdUpgradeProcess {
 	private final DDMStructureLocalService _ddmStructureLocalService;
 	private final GroupLocalService _groupLocalService;
 	private final LayoutLocalService _layoutLocalService;
-	private final PortletPreferencesLocalService
-		_portletPreferencesLocalService;
 	private final PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+	private final PortletPreferencesLocalService
+		_portletPreferencesLocalService;
 
 }

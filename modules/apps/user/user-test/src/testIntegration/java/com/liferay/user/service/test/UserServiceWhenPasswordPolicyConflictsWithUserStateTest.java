@@ -125,8 +125,8 @@ public class UserServiceWhenPasswordPolicyConflictsWithUserStateTest {
 	}
 
 	private PasswordPolicy _defaultPasswordPolicy;
-	private boolean _originalChangeable;
 	private boolean _originalChangeRequired;
+	private boolean _originalChangeable;
 
 	@Inject
 	private PasswordPolicyLocalService _passwordPolicyLocalService;

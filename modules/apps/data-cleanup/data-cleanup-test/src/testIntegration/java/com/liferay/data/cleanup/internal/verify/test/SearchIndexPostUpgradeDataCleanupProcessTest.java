@@ -51,13 +51,13 @@ public class SearchIndexPostUpgradeDataCleanupProcessTest
 	}
 
 	@Override
-	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {_indexInformation, _indexNameBuilder};
+	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
+		return new Class<?>[] {IndexInformation.class, IndexNameBuilder.class};
 	}
 
 	@Override
-	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
-		return new Class<?>[] {IndexInformation.class, IndexNameBuilder.class};
+	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
+		return new Object[] {_indexInformation, _indexNameBuilder};
 	}
 
 	@Override

@@ -193,29 +193,6 @@ public class ConvertEmptyLayoutMVCActionCommandTest {
 	}
 
 	@Test
-	public void testConvertEmptyLayoutToPortletLayoutWithoutPermissions()
-		throws Exception {
-
-		Layout emptyLayout = LayoutTestUtil.addTypeEmptyLayout(_group);
-
-		User user = _userLocalService.getDefaultUser(_group.getCompanyId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			Exception exception = Assert.assertThrows(
-				PortletException.class,
-				() -> _mvcActionCommand.processAction(
-					_getMockLiferayPortletActionRequest(
-						emptyLayout, 0, 0, LayoutConstants.TYPE_PORTLET, user),
-					new MockLiferayPortletActionResponse()));
-
-			Assert.assertTrue(
-				exception.getCause() instanceof PrincipalException);
-		}
-	}
-
-	@Test
 	@TestInfo("LPD-72013")
 	public void testConvertEmptyLayoutToPortletLayoutWithPageTemplateEntryId()
 		throws Exception {
@@ -254,6 +231,29 @@ public class ConvertEmptyLayoutMVCActionCommandTest {
 		Assert.assertEquals(
 			layoutPageTemplateEntry.getExternalReferenceCode(),
 			layout.getPortletLayoutPageTemplateEntryERC());
+	}
+
+	@Test
+	public void testConvertEmptyLayoutToPortletLayoutWithoutPermissions()
+		throws Exception {
+
+		Layout emptyLayout = LayoutTestUtil.addTypeEmptyLayout(_group);
+
+		User user = _userLocalService.getDefaultUser(_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Exception exception = Assert.assertThrows(
+				PortletException.class,
+				() -> _mvcActionCommand.processAction(
+					_getMockLiferayPortletActionRequest(
+						emptyLayout, 0, 0, LayoutConstants.TYPE_PORTLET, user),
+					new MockLiferayPortletActionResponse()));
+
+			Assert.assertTrue(
+				exception.getCause() instanceof PrincipalException);
+		}
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(

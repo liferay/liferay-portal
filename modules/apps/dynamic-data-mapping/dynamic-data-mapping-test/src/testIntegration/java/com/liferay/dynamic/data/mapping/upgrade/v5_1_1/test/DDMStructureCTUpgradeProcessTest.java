@@ -66,13 +66,13 @@ public class DDMStructureCTUpgradeProcessTest
 		return _ddmStructure;
 	}
 
-	protected String getClassName() {
-		return DDMFormInstance.class.getName();
-	}
-
 	@Override
 	protected CTService<?> getCTService() {
 		return _ddmStructureLocalService;
+	}
+
+	protected String getClassName() {
+		return DDMFormInstance.class.getName();
 	}
 
 	protected DDMForm getDDMForm() {

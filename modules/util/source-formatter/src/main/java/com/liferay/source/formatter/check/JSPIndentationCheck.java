@@ -588,16 +588,16 @@ public class JSPIndentationCheck extends BaseFileCheck {
 			return null;
 		}
 
-		public boolean isClosed() {
-			return _closed;
-		}
-
 		public boolean isCloseTag() {
 			if (!_javaSource && (_lineTabLevel == -1)) {
 				return true;
 			}
 
 			return false;
+		}
+
+		public boolean isClosed() {
+			return _closed;
 		}
 
 		public boolean isJavaSource() {
@@ -618,9 +618,9 @@ public class JSPIndentationCheck extends BaseFileCheck {
 			_closed = closed;
 		}
 
-		private boolean _closed;
 		private final Pattern _closeTagNamePattern = Pattern.compile(
 			"</([\\-:\\w]+?)>");
+		private boolean _closed;
 		private final boolean _javaSource;
 		private final String _line;
 		private final int _lineNumber;

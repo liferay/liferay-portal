@@ -226,6 +226,10 @@ public class CPPublisherConfigurationDisplayContext
 		return rulesJSONArray;
 	}
 
+	public List<CPDataSource> getCPDataSources() {
+		return _cpDataSourceRegistry.getCPDataSources();
+	}
+
 	public String getCategorySelectorURL() {
 		HttpServletRequest httpServletRequest =
 			cpContentRequestHelper.getRequest();
@@ -249,10 +253,6 @@ public class CPPublisherConfigurationDisplayContext
 				_getPortletNamespace() + "selectCategory",
 				itemSelectorCriterion)
 		).buildString();
-	}
-
-	public List<CPDataSource> getCPDataSources() {
-		return _cpDataSourceRegistry.getCPDataSources();
 	}
 
 	public CPSku getDefaultCPSku(CPCatalogEntry cpCatalogEntry)

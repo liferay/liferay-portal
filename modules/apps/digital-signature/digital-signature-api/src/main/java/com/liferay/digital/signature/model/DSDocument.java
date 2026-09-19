@@ -17,12 +17,12 @@ public class DSDocument {
 		return assignTabsToDSRecipientId;
 	}
 
-	public String getData() {
-		return data;
-	}
-
 	public String getDSDocumentId() {
 		return dsDocumentId;
+	}
+
+	public String getData() {
+		return data;
 	}
 
 	public String getFileExtension() {
@@ -45,12 +45,12 @@ public class DSDocument {
 		this.assignTabsToDSRecipientId = assignTabsToDSRecipientId;
 	}
 
-	public void setData(String data) {
-		this.data = data;
-	}
-
 	public void setDSDocumentId(String dsDocumentId) {
 		this.dsDocumentId = dsDocumentId;
+	}
+
+	public void setData(String data) {
+		this.data = data;
 	}
 
 	public void setFileExtension(String fileExtension) {

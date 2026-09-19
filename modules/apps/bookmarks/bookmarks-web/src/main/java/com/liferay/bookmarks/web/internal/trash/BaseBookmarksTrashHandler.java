@@ -130,15 +130,6 @@ public abstract class BaseBookmarksTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public int getTrashModelsCount(long classPK) throws PortalException {
-		BookmarksFolder folder = BookmarksFolderLocalServiceUtil.getFolder(
-			classPK);
-
-		return BookmarksFolderLocalServiceUtil.getFoldersAndEntriesCount(
-			folder.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
 	public List<TrashedModel> getTrashModelTrashedModels(
 			long classPK, int start, int end,
 			OrderByComparator<?> orderByComparator)
@@ -158,6 +149,15 @@ public abstract class BaseBookmarksTrashHandler extends BaseTrashHandler {
 
 				return (BookmarksEntry)folderOrEntry;
 			});
+	}
+
+	@Override
+	public int getTrashModelsCount(long classPK) throws PortalException {
+		BookmarksFolder folder = BookmarksFolderLocalServiceUtil.getFolder(
+			classPK);
+
+		return BookmarksFolderLocalServiceUtil.getFoldersAndEntriesCount(
+			folder.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
 	}
 
 	protected abstract long getGroupId(long classPK) throws PortalException;

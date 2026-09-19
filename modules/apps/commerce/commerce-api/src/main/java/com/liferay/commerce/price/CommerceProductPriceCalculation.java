@@ -29,6 +29,15 @@ public interface CommerceProductPriceCalculation {
 			String unitOfMeasureKey)
 		throws PortalException;
 
+	public CommerceMoney getCPDefinitionMinimumPrice(
+			long cpDefinitionId, CommerceContext commerceContext)
+		throws PortalException;
+
+	public CommerceMoney getCPDefinitionOptionValueRelativePrice(
+			CommerceProductOptionValueRelativePriceRequest
+				commerceProductOptionValueRelativePriceRequest)
+		throws PortalException;
+
 	public CommerceProductPrice getCommerceProductPrice(
 			CommerceProductPriceRequest commerceProductPriceRequest)
 		throws PortalException;
@@ -41,15 +50,6 @@ public interface CommerceProductPriceCalculation {
 	public CommerceProductPrice getCommerceProductPrice(
 			long cpInstanceId, BigDecimal quantity, String unitOfMeasureKey,
 			CommerceContext commerceContext)
-		throws PortalException;
-
-	public CommerceMoney getCPDefinitionMinimumPrice(
-			long cpDefinitionId, CommerceContext commerceContext)
-		throws PortalException;
-
-	public CommerceMoney getCPDefinitionOptionValueRelativePrice(
-			CommerceProductOptionValueRelativePriceRequest
-				commerceProductOptionValueRelativePriceRequest)
 		throws PortalException;
 
 	public CommerceMoney getFinalPrice(

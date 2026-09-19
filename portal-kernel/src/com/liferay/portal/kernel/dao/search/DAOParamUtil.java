@@ -36,16 +36,6 @@ public class DAOParamUtil {
 		return GetterUtil.getBoolean(getString(portletRequest, param));
 	}
 
-	public static int getInteger(
-		HttpServletRequest httpServletRequest, String param) {
-
-		return GetterUtil.getInteger(getString(httpServletRequest, param));
-	}
-
-	public static int getInteger(PortletRequest portletRequest, String param) {
-		return GetterUtil.getInteger(getString(portletRequest, param));
-	}
-
 	public static String getISODate(
 		HttpServletRequest httpServletRequest, String param) {
 
@@ -116,6 +106,16 @@ public class DAOParamUtil {
 		}
 
 		return null;
+	}
+
+	public static int getInteger(
+		HttpServletRequest httpServletRequest, String param) {
+
+		return GetterUtil.getInteger(getString(httpServletRequest, param));
+	}
+
+	public static int getInteger(PortletRequest portletRequest, String param) {
+		return GetterUtil.getInteger(getString(portletRequest, param));
 	}
 
 	public static long getLong(

@@ -147,71 +147,6 @@ public class MasterLayoutsImporterTest {
 
 	@Test
 	@TestInfo("LPS-102207")
-	public void testExportImportMasterLayoutsWithThumbnail() throws Exception {
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				LayoutPageTemplateConstants.
-					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, RandomTestUtil.randomString(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0,
-				WorkflowConstants.STATUS_APPROVED,
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
-			_group.getGroupId(), RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		Class<?> clazz = getClass();
-
-		FileEntry fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
-			null, _group.getGroupId(), TestPropsValues.getUserId(),
-			LayoutPageTemplateEntry.class.getName(),
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-			RandomTestUtil.randomString(), repository.getDlFolderId(),
-			clazz.getResourceAsStream("dependencies/thumbnail.png"),
-			"thumbnail.png", ContentTypes.IMAGE_PNG, false);
-
-		InputStream inputStream = fileEntry.getContentStream();
-
-		_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
-			fileEntry.getFileEntryId());
-
-		File file = _layoutsExporter.exportLayoutPageTemplateEntries(
-			new long[] {layoutPageTemplateEntry.getLayoutPageTemplateEntryId()},
-			LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
-
-		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
-			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
-
-		Assert.assertEquals(
-			0,
-			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
-				_group.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
-
-		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
-			_getLayoutsImporterResultEntries(file);
-
-		Assert.assertEquals(
-			layoutsImporterResultEntries.toString(), 1,
-			layoutsImporterResultEntries.size());
-
-		LayoutPageTemplateEntry importedLayoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 0);
-
-		FileEntry importedFileEntry =
-			PortletFileRepositoryUtil.getPortletFileEntry(
-				importedLayoutPageTemplateEntry.getPreviewFileEntryId());
-
-		Assert.assertTrue(
-			IOUtils.contentEquals(
-				inputStream, importedFileEntry.getContentStream()));
-	}
-
-	@Test
-	@TestInfo("LPS-102207")
 	public void testExportImportMasterLayoutWithFragmentsConfiguration()
 		throws Exception {
 
@@ -349,6 +284,71 @@ public class MasterLayoutsImporterTest {
 	}
 
 	@Test
+	@TestInfo("LPS-102207")
+	public void testExportImportMasterLayoutsWithThumbnail() throws Exception {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				LayoutPageTemplateConstants.
+					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+				null, RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT, 0,
+				WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Repository repository = PortletFileRepositoryUtil.addPortletRepository(
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Class<?> clazz = getClass();
+
+		FileEntry fileEntry = PortletFileRepositoryUtil.addPortletFileEntry(
+			null, _group.getGroupId(), TestPropsValues.getUserId(),
+			LayoutPageTemplateEntry.class.getName(),
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+			RandomTestUtil.randomString(), repository.getDlFolderId(),
+			clazz.getResourceAsStream("dependencies/thumbnail.png"),
+			"thumbnail.png", ContentTypes.IMAGE_PNG, false);
+
+		InputStream inputStream = fileEntry.getContentStream();
+
+		_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+			fileEntry.getFileEntryId());
+
+		File file = _layoutsExporter.exportLayoutPageTemplateEntries(
+			new long[] {layoutPageTemplateEntry.getLayoutPageTemplateEntryId()},
+			LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+		Assert.assertEquals(
+			0,
+			_layoutPageTemplateEntryService.getLayoutPageTemplateEntriesCount(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
+
+		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
+			_getLayoutsImporterResultEntries(file);
+
+		Assert.assertEquals(
+			layoutsImporterResultEntries.toString(), 1,
+			layoutsImporterResultEntries.size());
+
+		LayoutPageTemplateEntry importedLayoutPageTemplateEntry =
+			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 0);
+
+		FileEntry importedFileEntry =
+			PortletFileRepositoryUtil.getPortletFileEntry(
+				importedLayoutPageTemplateEntry.getPreviewFileEntryId());
+
+		Assert.assertTrue(
+			IOUtils.contentEquals(
+				inputStream, importedFileEntry.getContentStream()));
+	}
+
+	@Test
 	public void testImportMasterLayoutDropZone() throws Exception {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_importLayoutPageTemplateEntry("master-page-drop-zone");
@@ -474,33 +474,6 @@ public class MasterLayoutsImporterTest {
 	}
 
 	@Test
-	public void testImportMasterLayouts() throws Exception {
-		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
-			_getLayoutsImporterResultEntries("master-page-multiple");
-
-		Assert.assertEquals(
-			layoutsImporterResultEntries.toString(), 2,
-			layoutsImporterResultEntries.size());
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
-			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 0);
-		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
-			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 1);
-
-		List<String> actualLayoutPageTemplateEntryNames = ListUtil.sort(
-			new ArrayList() {
-				{
-					add(layoutPageTemplateEntry1.getName());
-					add(layoutPageTemplateEntry2.getName());
-				}
-			});
-
-		Assert.assertArrayEquals(
-			new String[] {"Master Page One", "Master Page Two"},
-			actualLayoutPageTemplateEntryNames.toArray(new String[0]));
-	}
-
-	@Test
 	@TestInfo("LPS-102207")
 	public void testImportMasterLayoutWithCompositionOfFragments()
 		throws Exception {
@@ -618,6 +591,33 @@ public class MasterLayoutsImporterTest {
 			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId()),
 			"element-html");
+	}
+
+	@Test
+	public void testImportMasterLayouts() throws Exception {
+		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
+			_getLayoutsImporterResultEntries("master-page-multiple");
+
+		Assert.assertEquals(
+			layoutsImporterResultEntries.toString(), 2,
+			layoutsImporterResultEntries.size());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
+			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 0);
+		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
+			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 1);
+
+		List<String> actualLayoutPageTemplateEntryNames = ListUtil.sort(
+			new ArrayList() {
+				{
+					add(layoutPageTemplateEntry1.getName());
+					add(layoutPageTemplateEntry2.getName());
+				}
+			});
+
+		Assert.assertArrayEquals(
+			new String[] {"Master Page One", "Master Page Two"},
+			actualLayoutPageTemplateEntryNames.toArray(new String[0]));
 	}
 
 	@Test

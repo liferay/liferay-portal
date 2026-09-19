@@ -22,15 +22,6 @@ import org.junit.Assert;
  */
 public class AggregationAssert {
 
-	public static void assertBuckets(
-		String expected, BucketAggregationResult bucketAggregationResult) {
-
-		Assert.assertEquals(
-			expected,
-			String.valueOf(
-				new ArrayList<>(bucketAggregationResult.getBuckets())));
-	}
-
 	public static void assertBucketValues(
 		String expected, Function<Bucket, Double> function,
 		BucketAggregationResult bucketAggregationResult) {
@@ -41,6 +32,15 @@ public class AggregationAssert {
 				bucketAggregationResult.getBuckets(),
 				bucket -> String.valueOf(function.apply(bucket)),
 				StringPool.COMMA_AND_SPACE));
+	}
+
+	public static void assertBuckets(
+		String expected, BucketAggregationResult bucketAggregationResult) {
+
+		Assert.assertEquals(
+			expected,
+			String.valueOf(
+				new ArrayList<>(bucketAggregationResult.getBuckets())));
 	}
 
 	public static void assertKeyedBuckets(

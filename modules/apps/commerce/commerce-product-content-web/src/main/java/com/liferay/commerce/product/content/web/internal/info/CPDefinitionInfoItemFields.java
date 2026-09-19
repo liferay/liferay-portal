@@ -57,6 +57,15 @@ public class CPDefinitionInfoItemFields {
 			InfoLocalizedValue.localize(
 				CPDefinitionInfoItemFields.class, "available-individually")
 		).build();
+	public static final InfoField<NumberInfoFieldType> cProductIdInfoField =
+		BuilderHolder._builder.infoFieldType(
+			NumberInfoFieldType.INSTANCE
+		).name(
+			"cProductId"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				CPDefinitionInfoItemFields.class, "cProductId")
+		).build();
 	public static final InfoField<TextInfoFieldType> categoriesInfoField =
 		BuilderHolder._builder.infoFieldType(
 			TextInfoFieldType.INSTANCE
@@ -92,15 +101,6 @@ public class CPDefinitionInfoItemFields {
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CPDefinitionInfoItemFields.class, "cpDefinitionId")
-		).build();
-	public static final InfoField<NumberInfoFieldType> cProductIdInfoField =
-		BuilderHolder._builder.infoFieldType(
-			NumberInfoFieldType.INSTANCE
-		).name(
-			"cProductId"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "cProductId")
 		).build();
 	public static final InfoField<NumberInfoFieldType>
 		cpTaxCategoryIdInfoField = BuilderHolder._builder.infoFieldType(
@@ -427,6 +427,15 @@ public class CPDefinitionInfoItemFields {
 			InfoLocalizedValue.localize(
 				CPDefinitionInfoItemFields.class, "scheduled")
 		).build();
+	public static final InfoField<BooleanInfoFieldType>
+		shipSeparatelyPriceInfoField = BuilderHolder._builder.infoFieldType(
+			BooleanInfoFieldType.INSTANCE
+		).name(
+			"shipSeparately"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				CPDefinitionInfoItemFields.class, "ship-separately")
+		).build();
 	public static final InfoField<BooleanInfoFieldType> shippableInfoField =
 		BuilderHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
@@ -444,15 +453,6 @@ public class CPDefinitionInfoItemFields {
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CPDefinitionInfoItemFields.class, "shipping-extra-price")
-		).build();
-	public static final InfoField<BooleanInfoFieldType>
-		shipSeparatelyPriceInfoField = BuilderHolder._builder.infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).name(
-			"shipSeparately"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CPDefinitionInfoItemFields.class, "ship-separately")
 		).build();
 	public static final InfoField<TextInfoFieldType> shortDescriptionInfoField =
 		BuilderHolder._builder.infoFieldType(

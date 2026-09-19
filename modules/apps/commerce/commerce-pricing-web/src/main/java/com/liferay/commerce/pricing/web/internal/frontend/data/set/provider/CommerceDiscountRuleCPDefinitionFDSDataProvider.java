@@ -164,13 +164,13 @@ public class CommerceDiscountRuleCPDefinitionFDSDataProvider
 		CommerceDiscountRuleCPDefinitionFDSDataProvider.class);
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceDiscountRuleService _commerceDiscountRuleService;
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private Language _language;

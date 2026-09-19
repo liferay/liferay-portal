@@ -413,10 +413,10 @@ public class TableJoinHolderFactory {
 
 	private static final Consumer<String> _emptyStringConsumer = string -> {
 	};
-	private static final FromStep _validationFromStep =
-		new ValidationFromStep();
 	private static final Set<Operand> _validOperands = new HashSet<>(
 		Arrays.asList(Operand.AND, Operand.EQUAL, Operand.LIKE));
+	private static final FromStep _validationFromStep =
+		new ValidationFromStep();
 
 	private static class BridgePredicate {
 

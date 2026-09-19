@@ -157,11 +157,11 @@ public class CurrentAccountEntryManagerStore {
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Reference
-	private PortalPreferencesLocalService _portalPreferencesLocalService;
-
-	@Reference
 	private PortalPreferenceValueLocalService
 		_portalPreferenceValueLocalService;
+
+	@Reference
+	private PortalPreferencesLocalService _portalPreferencesLocalService;
 
 	@Reference
 	private PortletPreferencesFactory _portletPreferencesFactory;

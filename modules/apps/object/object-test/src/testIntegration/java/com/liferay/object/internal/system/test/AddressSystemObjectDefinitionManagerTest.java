@@ -138,6 +138,16 @@ public class AddressSystemObjectDefinitionManagerTest
 	}
 
 	@Override
+	protected void assertGetOrAddEmptyBaseModelWithPermissions(
+		BaseModel<?> baseModel) {
+
+		Address address = (Address)baseModel;
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, address.getStatus());
+	}
+
+	@Override
 	protected void assertGetOrAddEmptyBaseModelWithoutPermissions(
 			BaseModel<?> baseModel, User user)
 		throws PortalException {
@@ -161,16 +171,6 @@ public class AddressSystemObjectDefinitionManagerTest
 				User.class.getName(), " ", adminUser.getUserId()),
 			() -> systemObjectDefinitionManager.getOrAddEmptyBaseModel(
 				address.getExternalReferenceCode(), adminUser));
-	}
-
-	@Override
-	protected void assertGetOrAddEmptyBaseModelWithPermissions(
-		BaseModel<?> baseModel) {
-
-		Address address = (Address)baseModel;
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EMPTY, address.getStatus());
 	}
 
 	@Override

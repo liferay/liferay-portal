@@ -123,6 +123,14 @@ public class DLFileShortcutTrashHandler extends BaseDLTrashHandler {
 	}
 
 	@Override
+	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
+		DLFileShortcut dlFileShortcut =
+			_dlFileShortcutLocalService.getFileShortcut(classPK);
+
+		return new DLFileShortcutTrashRenderer(dlFileShortcut, _trashHelper);
+	}
+
+	@Override
 	public TrashedModel getTrashedModel(long classPK) {
 		try {
 			return _getDLFileShortcut(classPK);
@@ -134,14 +142,6 @@ public class DLFileShortcutTrashHandler extends BaseDLTrashHandler {
 
 			return null;
 		}
-	}
-
-	@Override
-	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
-		DLFileShortcut dlFileShortcut =
-			_dlFileShortcutLocalService.getFileShortcut(classPK);
-
-		return new DLFileShortcutTrashRenderer(dlFileShortcut, _trashHelper);
 	}
 
 	@Override

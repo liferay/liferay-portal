@@ -645,17 +645,17 @@ public class BasePersistenceImpl
 	}
 
 	@Override
-	public DataSource getDataSource() {
-		return _dataSource;
-	}
-
-	@Override
 	public DB getDB() {
 		if (_db == null) {
 			_db = DBManagerUtil.getDB(getDialect(), _dataSource);
 		}
 
 		return _db;
+	}
+
+	@Override
+	public DataSource getDataSource() {
+		return _dataSource;
 	}
 
 	public String getDefaultOrderBySQL() {
@@ -1092,6 +1092,10 @@ public class BasePersistenceImpl
 		return finderPath;
 	}
 
+	protected CTPersistenceHelper getCTPersistenceHelper() {
+		return null;
+	}
+
 	protected ClassLoader getClassLoader() {
 		Class<?> clazz = getClass();
 
@@ -1131,10 +1135,6 @@ public class BasePersistenceImpl
 		}
 
 		return fieldName;
-	}
-
-	protected CTPersistenceHelper getCTPersistenceHelper() {
-		return null;
 	}
 
 	protected EntityCache getEntityCache() {
@@ -1908,9 +1908,9 @@ public class BasePersistenceImpl
 		).build();
 
 	private String _countSQL;
-	private int _databaseOrderByMaxColumns;
 	private long _dataLimitModelMaxCount;
 	private DataSource _dataSource;
+	private int _databaseOrderByMaxColumns;
 	private DB _db;
 	private Map<String, String> _dbColumnNames = Collections.emptyMap();
 	private String _defaultOrderByJPQL;
@@ -1920,8 +1920,8 @@ public class BasePersistenceImpl
 	private String _entityAliasPrefix;
 	private String _filterPKColumnName;
 	private FinderPath _finderPathCountAll;
-	private FinderPath _finderPathWithoutPaginationFindAll;
 	private FinderPath _finderPathWithPaginationFindAll;
+	private FinderPath _finderPathWithoutPaginationFindAll;
 	private Class<T> _modelClass;
 	private Class<? extends T> _modelImplClass;
 	private ModelPKType _modelPKType = ModelPKType.COMPOUND;

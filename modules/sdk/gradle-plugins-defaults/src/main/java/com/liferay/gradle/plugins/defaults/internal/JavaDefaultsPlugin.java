@@ -58,6 +58,14 @@ public class JavaDefaultsPlugin extends BaseDefaultsPlugin<JavaPlugin> {
 		}
 	}
 
+	private void _configureTaskTestLogging(Test test) {
+		TestLoggingContainer testLoggingContainer = test.getTestLogging();
+
+		testLoggingContainer.setEvents(EnumSet.allOf(TestLogEvent.class));
+		testLoggingContainer.setExceptionFormat(TestExceptionFormat.FULL);
+		testLoggingContainer.setStackTraceFilters(Collections.emptyList());
+	}
+
 	private void _configureTasksJar(
 		Project project, final String portalVersion) {
 
@@ -96,14 +104,6 @@ public class JavaDefaultsPlugin extends BaseDefaultsPlugin<JavaPlugin> {
 				}
 
 			});
-	}
-
-	private void _configureTaskTestLogging(Test test) {
-		TestLoggingContainer testLoggingContainer = test.getTestLogging();
-
-		testLoggingContainer.setEvents(EnumSet.allOf(TestLogEvent.class));
-		testLoggingContainer.setExceptionFormat(TestExceptionFormat.FULL);
-		testLoggingContainer.setStackTraceFilters(Collections.emptyList());
 	}
 
 }

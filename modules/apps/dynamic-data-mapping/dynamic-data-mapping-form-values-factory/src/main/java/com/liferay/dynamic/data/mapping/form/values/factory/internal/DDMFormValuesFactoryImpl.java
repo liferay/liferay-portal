@@ -499,15 +499,6 @@ public class DDMFormValuesFactoryImpl implements DDMFormValuesFactory {
 		ddmFormFieldValue.setValue(value);
 	}
 
-	private void _setDDMFormFieldValues(
-		HttpServletRequest httpServletRequest, DDMFormValues ddmFormValues) {
-
-		List<DDMFormFieldValue> ddmFormFieldValues = _getDDMFormFieldValues(
-			httpServletRequest, ddmFormValues.getDDMForm(), ddmFormValues);
-
-		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
-	}
-
 	private void _setDDMFormFieldValueUnlocalizedValue(
 		HttpServletRequest httpServletRequest, String fieldType,
 		String ddmFormFieldParameterName, LocalizedValue predefinedValue,
@@ -522,6 +513,15 @@ public class DDMFormValuesFactoryImpl implements DDMFormValuesFactory {
 		Value value = new UnlocalizedValue(ddmFormFieldParameterValue);
 
 		ddmFormFieldValue.setValue(value);
+	}
+
+	private void _setDDMFormFieldValues(
+		HttpServletRequest httpServletRequest, DDMFormValues ddmFormValues) {
+
+		List<DDMFormFieldValue> ddmFormFieldValues = _getDDMFormFieldValues(
+			httpServletRequest, ddmFormValues.getDDMForm(), ddmFormValues);
+
+		ddmFormValues.setDDMFormFieldValues(ddmFormFieldValues);
 	}
 
 	private void _setDDMFormValuesAvailableLocales(

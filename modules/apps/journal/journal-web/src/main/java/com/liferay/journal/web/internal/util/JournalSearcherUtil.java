@@ -113,10 +113,10 @@ public class JournalSearcherUtil {
 	private static final Snapshot<JournalFolderLocalService>
 		_journalFolderLocalServiceSnapshot = new Snapshot<>(
 			JournalSearcherUtil.class, JournalFolderLocalService.class);
-	private static final Snapshot<Searcher> _searcherSnapshot = new Snapshot<>(
-		JournalSearcherUtil.class, Searcher.class);
 	private static final Snapshot<SearchRequestBuilderFactory>
 		_searchRequestBuilderFactorySnapshot = new Snapshot<>(
 			JournalSearcherUtil.class, SearchRequestBuilderFactory.class);
+	private static final Snapshot<Searcher> _searcherSnapshot = new Snapshot<>(
+		JournalSearcherUtil.class, Searcher.class);
 
 }

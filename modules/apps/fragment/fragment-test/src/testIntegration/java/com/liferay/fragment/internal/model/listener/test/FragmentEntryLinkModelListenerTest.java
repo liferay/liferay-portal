@@ -270,6 +270,28 @@ public class FragmentEntryLinkModelListenerTest {
 		Assert.assertTrue(editableValues, editableValues.contains("Read More"));
 	}
 
+	private void _testAddFragmentEntryLinkPreservesSVGAccessibilityAttributes()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-button"),
+			_createEditableValues(
+				"link",
+				StringBundler.concat(
+					"<svg aria-hidden=\"true\" focusable=\"false\" ",
+					"role=\"presentation\" viewBox=\"0 0 24 24\">",
+					"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg>")),
+			_serviceContext);
+
+		String editableValues = fragmentEntryLink.getEditableValues();
+
+		Assert.assertTrue(
+			editableValues, editableValues.contains("aria-hidden"));
+		Assert.assertTrue(editableValues, editableValues.contains("focusable"));
+		Assert.assertTrue(editableValues, editableValues.contains("role="));
+	}
+
 	private void _testAddFragmentEntryLinkPreservesSpriteReferenceInLinkField()
 		throws Exception {
 
@@ -294,28 +316,6 @@ public class FragmentEntryLinkModelListenerTest {
 		Assert.assertTrue(
 			editableValues, editableValues.contains(xlinkHrefURL));
 		Assert.assertTrue(editableValues, editableValues.contains("Read More"));
-	}
-
-	private void _testAddFragmentEntryLinkPreservesSVGAccessibilityAttributes()
-		throws Exception {
-
-		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-button"),
-			_createEditableValues(
-				"link",
-				StringBundler.concat(
-					"<svg aria-hidden=\"true\" focusable=\"false\" ",
-					"role=\"presentation\" viewBox=\"0 0 24 24\">",
-					"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg>")),
-			_serviceContext);
-
-		String editableValues = fragmentEntryLink.getEditableValues();
-
-		Assert.assertTrue(
-			editableValues, editableValues.contains("aria-hidden"));
-		Assert.assertTrue(editableValues, editableValues.contains("focusable"));
-		Assert.assertTrue(editableValues, editableValues.contains("role="));
 	}
 
 	private void _testAddFragmentEntryLinkSanitizesLinkFieldScriptContent()

@@ -206,11 +206,6 @@ public class FolderWrapper implements Folder, ModelWrapper<Folder> {
 	}
 
 	@Override
-	public int hashCode() {
-		return _folder.hashCode();
-	}
-
-	@Override
 	public boolean hasInheritableLock() {
 		return _folder.hasInheritableLock();
 	}
@@ -218,6 +213,11 @@ public class FolderWrapper implements Folder, ModelWrapper<Folder> {
 	@Override
 	public boolean hasLock() {
 		return _folder.hasLock();
+	}
+
+	@Override
+	public int hashCode() {
+		return _folder.hashCode();
 	}
 
 	@Override

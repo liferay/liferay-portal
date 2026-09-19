@@ -46,18 +46,6 @@ public class CommerceOrderItemImpl extends CommerceOrderItemBaseImpl {
 	}
 
 	@Override
-	public List<CommerceOrderItem> getChildCommerceOrderItems() {
-		return CommerceOrderItemLocalServiceUtil.getChildCommerceOrderItems(
-			getCommerceOrderItemId());
-	}
-
-	@Override
-	public CommerceOrder getCommerceOrder() throws PortalException {
-		return CommerceOrderLocalServiceUtil.getCommerceOrder(
-			getCommerceOrderId());
-	}
-
-	@Override
 	public CPDefinition getCPDefinition() throws PortalException {
 		CPInstance cpInstance = fetchCPInstance();
 
@@ -95,6 +83,18 @@ public class CommerceOrderItemImpl extends CommerceOrderItemBaseImpl {
 	@Override
 	public CProduct getCProduct() throws PortalException {
 		return CProductLocalServiceUtil.getCProduct(getCProductId());
+	}
+
+	@Override
+	public List<CommerceOrderItem> getChildCommerceOrderItems() {
+		return CommerceOrderItemLocalServiceUtil.getChildCommerceOrderItems(
+			getCommerceOrderItemId());
+	}
+
+	@Override
+	public CommerceOrder getCommerceOrder() throws PortalException {
+		return CommerceOrderLocalServiceUtil.getCommerceOrder(
+			getCommerceOrderId());
 	}
 
 	@Override

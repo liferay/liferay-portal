@@ -281,17 +281,6 @@ public class NavItem implements Serializable {
 	}
 
 	/**
-	 * Returns the unescaped name of the navigation item's layout in the current
-	 * request's locale.
-	 *
-	 * @return the unescaped name of the navigation item's layout in the current
-	 *         request's locale
-	 */
-	public String getUnescapedName() {
-		return _layout.getName(_themeDisplay.getLanguageId());
-	}
-
-	/**
 	 * Returns the URL of the navigation item's layout, in a format that makes
 	 * it safe to use the URL as an HREF attribute value
 	 *
@@ -301,6 +290,17 @@ public class NavItem implements Serializable {
 	 */
 	public String getURL() throws Exception {
 		return HtmlUtil.escapeHREF(getRegularFullURL());
+	}
+
+	/**
+	 * Returns the unescaped name of the navigation item's layout in the current
+	 * request's locale.
+	 *
+	 * @return the unescaped name of the navigation item's layout in the current
+	 *         request's locale
+	 */
+	public String getUnescapedName() {
+		return _layout.getName(_themeDisplay.getLanguageId());
 	}
 
 	/**

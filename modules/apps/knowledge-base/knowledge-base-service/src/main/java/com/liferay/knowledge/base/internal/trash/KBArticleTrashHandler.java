@@ -101,12 +101,6 @@ public class KBArticleTrashHandler extends BaseKBTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return kbArticleLocalService.fetchLatestKBArticle(
-			classPK, WorkflowConstants.STATUS_ANY);
-	}
-
-	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
 		AssetRendererFactory<KBArticle> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
@@ -115,6 +109,12 @@ public class KBArticleTrashHandler extends BaseKBTrashHandler {
 		return (TrashRenderer)assetRendererFactory.getAssetRenderer(
 			(KBArticle)getTrashedModel(classPK),
 			AssetRendererFactory.TYPE_LATEST_APPROVED);
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return kbArticleLocalService.fetchLatestKBArticle(
+			classPK, WorkflowConstants.STATUS_ANY);
 	}
 
 	@Override

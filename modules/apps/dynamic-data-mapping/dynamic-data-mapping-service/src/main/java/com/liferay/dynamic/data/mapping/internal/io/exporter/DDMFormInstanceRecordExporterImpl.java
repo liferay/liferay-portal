@@ -97,29 +97,6 @@ public class DDMFormInstanceRecordExporterImpl
 		return builder.build();
 	}
 
-	protected Map<String, String> getDDMFormFieldsLabel(
-		Map<String, DDMFormField> ddmFormFieldMap, Locale locale) {
-
-		Map<String, String> ddmFormFieldsLabel = new LinkedHashMap<>();
-
-		for (DDMFormField ddmFormField : ddmFormFieldMap.values()) {
-			LocalizedValue localizedValue = ddmFormField.getLabel();
-
-			ddmFormFieldsLabel.put(
-				ddmFormField.getFieldReference(),
-				localizedValue.getString(locale));
-		}
-
-		ddmFormFieldsLabel.put(_KEY_AUTHOR, _language.get(locale, _KEY_AUTHOR));
-		ddmFormFieldsLabel.put(
-			_KEY_LANGUAGE_ID, _language.get(locale, "default-language"));
-		ddmFormFieldsLabel.put(
-			_KEY_MODIFIED_DATE, _language.get(locale, "modified-date"));
-		ddmFormFieldsLabel.put(_KEY_STATUS, _language.get(locale, _KEY_STATUS));
-
-		return ddmFormFieldsLabel;
-	}
-
 	protected String getDDMFormFieldValue(
 		DDMFormField ddmFormField,
 		Map<String, List<DDMFormFieldValue>> ddmFormFieldValueMap,
@@ -207,6 +184,29 @@ public class DDMFormInstanceRecordExporterImpl
 
 				return ddmFormFieldsValue;
 			});
+	}
+
+	protected Map<String, String> getDDMFormFieldsLabel(
+		Map<String, DDMFormField> ddmFormFieldMap, Locale locale) {
+
+		Map<String, String> ddmFormFieldsLabel = new LinkedHashMap<>();
+
+		for (DDMFormField ddmFormField : ddmFormFieldMap.values()) {
+			LocalizedValue localizedValue = ddmFormField.getLabel();
+
+			ddmFormFieldsLabel.put(
+				ddmFormField.getFieldReference(),
+				localizedValue.getString(locale));
+		}
+
+		ddmFormFieldsLabel.put(_KEY_AUTHOR, _language.get(locale, _KEY_AUTHOR));
+		ddmFormFieldsLabel.put(
+			_KEY_LANGUAGE_ID, _language.get(locale, "default-language"));
+		ddmFormFieldsLabel.put(
+			_KEY_MODIFIED_DATE, _language.get(locale, "modified-date"));
+		ddmFormFieldsLabel.put(_KEY_STATUS, _language.get(locale, _KEY_STATUS));
+
+		return ddmFormFieldsLabel;
 	}
 
 	protected Map<String, DDMFormField> getDistinctFields(

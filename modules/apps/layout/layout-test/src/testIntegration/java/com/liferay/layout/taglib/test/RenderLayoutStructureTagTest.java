@@ -1838,6 +1838,98 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
+	@TestInfo({"LPS-123825", "LPS-149178"})
+	public void testRenderCollectionStyledLayoutStructureItemWithPagination()
+		throws Exception {
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"anyAssetType",
+					String.valueOf(_portal.getClassNameId(JournalArticle.class))
+				).buildString(),
+				_serviceContext);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		String itemId = _addCollectionStyledLayoutStructureItem(
+			JSONUtil.put(
+				"classNameId", _portal.getClassNameId(AssetListEntry.class)
+			).put(
+				"classPK", assetListEntry.getAssetListEntryId()
+			).put(
+				"itemType", JournalArticle.class.getName()
+			).put(
+				"type", InfoListItemSelectorReturnType.class.getName()
+			),
+			null, layout, null, segmentsExperienceId,
+			_addFragmentEntryLinks(
+				1, JSONUtil.put("collectionFieldId", "JournalArticle_title"),
+				layout.fetchDraftLayout(), segmentsExperienceId));
+
+		Locale locale = _portal.getSiteDefaultLocale(_group);
+
+		List<String> titles = _addJournalArticlesAndGetTitles(7, locale);
+
+		_testPagination(
+			itemId,
+			JSONUtil.put(
+				"displayAllItems", false
+			).put(
+				"displayAllPages", true
+			).put(
+				"numberOfItemsPerPage", 2
+			),
+			layout, 2, 4, segmentsExperienceId, titles);
+
+		_testPagination(
+			itemId,
+			JSONUtil.put(
+				"displayAllPages", false
+			).put(
+				"numberOfItemsPerPage", 6
+			).put(
+				"numberOfPages", 1
+			),
+			layout, 6, 1, segmentsExperienceId, titles);
+
+		_testPagination(
+			itemId,
+			JSONUtil.put(
+				"displayAllPages", true
+			).put(
+				"numberOfItemsPerPage", 7
+			).put(
+				"numberOfPages", 1
+			),
+			layout, 7, 1, segmentsExperienceId, titles);
+
+		_testPagination(
+			itemId,
+			JSONUtil.put(
+				"displayAllItems", false
+			).put(
+				"displayAllPages", false
+			).put(
+				"numberOfItemsPerPage", 2
+			).put(
+				"numberOfPages", 2
+			),
+			layout, 2, 2, segmentsExperienceId, titles);
+	}
+
+	@Test
 	@TestInfo("LPS-173440")
 	public void testRenderCollectionStyledLayoutStructureItemWithoutPermissions()
 		throws Exception {
@@ -1984,98 +2076,6 @@ public class RenderLayoutStructureTagTest {
 		Assert.assertEquals(
 			expectedJournalArticle1.getArticleId(),
 			actualJournalArticle.getArticleId());
-	}
-
-	@Test
-	@TestInfo({"LPS-123825", "LPS-149178"})
-	public void testRenderCollectionStyledLayoutStructureItemWithPagination()
-		throws Exception {
-
-		AssetListEntry assetListEntry =
-			_assetListEntryLocalService.addAssetListEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				RandomTestUtil.randomString(),
-				AssetListEntryTypeConstants.TYPE_DYNAMIC,
-				UnicodePropertiesBuilder.create(
-					true
-				).put(
-					"anyAssetType",
-					String.valueOf(_portal.getClassNameId(JournalArticle.class))
-				).buildString(),
-				_serviceContext);
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		long segmentsExperienceId =
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				draftLayout.getPlid());
-
-		String itemId = _addCollectionStyledLayoutStructureItem(
-			JSONUtil.put(
-				"classNameId", _portal.getClassNameId(AssetListEntry.class)
-			).put(
-				"classPK", assetListEntry.getAssetListEntryId()
-			).put(
-				"itemType", JournalArticle.class.getName()
-			).put(
-				"type", InfoListItemSelectorReturnType.class.getName()
-			),
-			null, layout, null, segmentsExperienceId,
-			_addFragmentEntryLinks(
-				1, JSONUtil.put("collectionFieldId", "JournalArticle_title"),
-				layout.fetchDraftLayout(), segmentsExperienceId));
-
-		Locale locale = _portal.getSiteDefaultLocale(_group);
-
-		List<String> titles = _addJournalArticlesAndGetTitles(7, locale);
-
-		_testPagination(
-			itemId,
-			JSONUtil.put(
-				"displayAllItems", false
-			).put(
-				"displayAllPages", true
-			).put(
-				"numberOfItemsPerPage", 2
-			),
-			layout, 2, 4, segmentsExperienceId, titles);
-
-		_testPagination(
-			itemId,
-			JSONUtil.put(
-				"displayAllPages", false
-			).put(
-				"numberOfItemsPerPage", 6
-			).put(
-				"numberOfPages", 1
-			),
-			layout, 6, 1, segmentsExperienceId, titles);
-
-		_testPagination(
-			itemId,
-			JSONUtil.put(
-				"displayAllPages", true
-			).put(
-				"numberOfItemsPerPage", 7
-			).put(
-				"numberOfPages", 1
-			),
-			layout, 7, 1, segmentsExperienceId, titles);
-
-		_testPagination(
-			itemId,
-			JSONUtil.put(
-				"displayAllItems", false
-			).put(
-				"displayAllPages", false
-			).put(
-				"numberOfItemsPerPage", 2
-			).put(
-				"numberOfPages", 2
-			),
-			layout, 2, 2, segmentsExperienceId, titles);
 	}
 
 	@Test
@@ -2501,101 +2501,6 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
-	@TestInfo("LPS-169924")
-	public void testRenderEditionFormWithoutAddPermission() throws Exception {
-		MockObject mockObject = new MockObject(
-			false, RandomTestUtil.randomLong(), false, false);
-
-		InfoField<TextInfoFieldType> infoField1 = _getInfoField(false);
-
-		String infoField1Value = RandomTestUtil.randomString();
-
-		mockObject.addInfoField(infoField1, infoField1Value);
-
-		InfoField<TextInfoFieldType> infoField2 = _getInfoField(false);
-
-		String infoField2Value = RandomTestUtil.randomString();
-
-		mockObject.addInfoField(infoField2, infoField2Value);
-
-		try (MockInfoServiceRegistrationHolder
-				mockInfoServiceRegistrationHolder =
-					new MockInfoServiceRegistrationHolder(
-						InfoFieldSet.builder(
-						).infoFieldSetEntries(
-							ListUtil.fromArray(infoField1, infoField2)
-						).build(),
-						mockObject, _portal, _displayPageInfoItemCapability,
-						_editPageInfoItemCapability)) {
-
-			Layout layout = _addDisplayPageWithFormAndGetLayout(
-				infoField1, infoField2);
-
-			MockHttpServletResponse mockHttpServletResponse = _renderLayout(
-				layout,
-				_getMockHttpServletRequest(
-					layout,
-					mockInfoServiceRegistrationHolder.
-						getMockObjectLayoutDisplayPageObjectProvider()));
-
-			String content = mockHttpServletResponse.getContentAsString();
-
-			Assert.assertTrue(content.isEmpty());
-		}
-	}
-
-	@Test
-	public void testRenderEditionFormWithoutUpdatePermission()
-		throws Exception {
-
-		MockObject mockObject = new MockObject(
-			RandomTestUtil.randomLong(), false, true);
-
-		InfoField<TextInfoFieldType> infoField1 = _getInfoField(false);
-
-		String infoField1Value = RandomTestUtil.randomString();
-
-		mockObject.addInfoField(infoField1, infoField1Value);
-
-		InfoField<TextInfoFieldType> infoField2 = _getInfoField(false);
-
-		String infoField2Value = RandomTestUtil.randomString();
-
-		mockObject.addInfoField(infoField2, infoField2Value);
-
-		try (MockInfoServiceRegistrationHolder
-				mockInfoServiceRegistrationHolder =
-					new MockInfoServiceRegistrationHolder(
-						InfoFieldSet.builder(
-						).infoFieldSetEntries(
-							ListUtil.fromArray(infoField1, infoField2)
-						).build(),
-						mockObject, _portal, _displayPageInfoItemCapability,
-						_editPageInfoItemCapability)) {
-
-			Layout layout = _addDisplayPageWithFormAndGetLayout(
-				infoField1, infoField2);
-
-			MockHttpServletResponse mockHttpServletResponse = _renderLayout(
-				layout,
-				_getMockHttpServletRequest(
-					layout,
-					mockInfoServiceRegistrationHolder.
-						getMockObjectLayoutDisplayPageObjectProvider()));
-
-			String content = mockHttpServletResponse.getContentAsString();
-
-			Assert.assertTrue(
-				content.contains("<fieldset disabled=\"disabled\">"));
-
-			_assertInfoFieldInput(infoField1, content, infoField1Value);
-			_assertInfoFieldInput(infoField2, content, infoField2Value);
-
-			_assertInputJSONObject(content, infoField1, infoField2);
-		}
-	}
-
-	@Test
 	@TestInfo("LPD-67912")
 	public void testRenderEditionFormWithSuccessMessageWithMappedLayout()
 		throws Exception {
@@ -2717,6 +2622,101 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
+	@TestInfo("LPS-169924")
+	public void testRenderEditionFormWithoutAddPermission() throws Exception {
+		MockObject mockObject = new MockObject(
+			false, RandomTestUtil.randomLong(), false, false);
+
+		InfoField<TextInfoFieldType> infoField1 = _getInfoField(false);
+
+		String infoField1Value = RandomTestUtil.randomString();
+
+		mockObject.addInfoField(infoField1, infoField1Value);
+
+		InfoField<TextInfoFieldType> infoField2 = _getInfoField(false);
+
+		String infoField2Value = RandomTestUtil.randomString();
+
+		mockObject.addInfoField(infoField2, infoField2Value);
+
+		try (MockInfoServiceRegistrationHolder
+				mockInfoServiceRegistrationHolder =
+					new MockInfoServiceRegistrationHolder(
+						InfoFieldSet.builder(
+						).infoFieldSetEntries(
+							ListUtil.fromArray(infoField1, infoField2)
+						).build(),
+						mockObject, _portal, _displayPageInfoItemCapability,
+						_editPageInfoItemCapability)) {
+
+			Layout layout = _addDisplayPageWithFormAndGetLayout(
+				infoField1, infoField2);
+
+			MockHttpServletResponse mockHttpServletResponse = _renderLayout(
+				layout,
+				_getMockHttpServletRequest(
+					layout,
+					mockInfoServiceRegistrationHolder.
+						getMockObjectLayoutDisplayPageObjectProvider()));
+
+			String content = mockHttpServletResponse.getContentAsString();
+
+			Assert.assertTrue(content.isEmpty());
+		}
+	}
+
+	@Test
+	public void testRenderEditionFormWithoutUpdatePermission()
+		throws Exception {
+
+		MockObject mockObject = new MockObject(
+			RandomTestUtil.randomLong(), false, true);
+
+		InfoField<TextInfoFieldType> infoField1 = _getInfoField(false);
+
+		String infoField1Value = RandomTestUtil.randomString();
+
+		mockObject.addInfoField(infoField1, infoField1Value);
+
+		InfoField<TextInfoFieldType> infoField2 = _getInfoField(false);
+
+		String infoField2Value = RandomTestUtil.randomString();
+
+		mockObject.addInfoField(infoField2, infoField2Value);
+
+		try (MockInfoServiceRegistrationHolder
+				mockInfoServiceRegistrationHolder =
+					new MockInfoServiceRegistrationHolder(
+						InfoFieldSet.builder(
+						).infoFieldSetEntries(
+							ListUtil.fromArray(infoField1, infoField2)
+						).build(),
+						mockObject, _portal, _displayPageInfoItemCapability,
+						_editPageInfoItemCapability)) {
+
+			Layout layout = _addDisplayPageWithFormAndGetLayout(
+				infoField1, infoField2);
+
+			MockHttpServletResponse mockHttpServletResponse = _renderLayout(
+				layout,
+				_getMockHttpServletRequest(
+					layout,
+					mockInfoServiceRegistrationHolder.
+						getMockObjectLayoutDisplayPageObjectProvider()));
+
+			String content = mockHttpServletResponse.getContentAsString();
+
+			Assert.assertTrue(
+				content.contains("<fieldset disabled=\"disabled\">"));
+
+			_assertInfoFieldInput(infoField1, content, infoField1Value);
+			_assertInfoFieldInput(infoField2, content, infoField2Value);
+
+			_assertInputJSONObject(content, infoField1, infoField2);
+		}
+	}
+
+	@Test
 	public void testRenderFormWithInfoFormException() throws Exception {
 		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
 
@@ -2821,42 +2821,6 @@ public class RenderLayoutStructureTagTest {
 	}
 
 	@Test
-	public void testRenderFormWithoutErrors() throws Exception {
-		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
-		InfoField<TextInfoFieldType> readOnlyInfoField = _getInfoField(true);
-
-		try (MockInfoServiceRegistrationHolder
-				mockInfoServiceRegistrationHolder =
-					new MockInfoServiceRegistrationHolder(
-						InfoFieldSet.builder(
-						).infoFieldSetEntries(
-							ListUtil.fromArray(infoField, readOnlyInfoField)
-						).build(),
-						_portal, _editPageInfoItemCapability)) {
-
-			Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-			ContentLayoutTestUtil.addFormToPublishedLayout(
-				false,
-				String.valueOf(
-					_portal.getClassNameId(MockObject.class.getName())),
-				"0", layout, _layoutStructureProvider, infoField,
-				readOnlyInfoField);
-
-			String content = _getRenderLayoutHTML(layout);
-
-			String errorHTML = "<div class=\"alert alert-danger\">";
-
-			Assert.assertFalse(content.contains(errorHTML));
-
-			_assertInfoFieldInput(infoField, content);
-			_assertInfoFieldInput(readOnlyInfoField, content);
-
-			_assertInputJSONObject(content, infoField, readOnlyInfoField);
-		}
-	}
-
-	@Test
 	@TestInfo("LPD-52923")
 	public void testRenderFormWithSuccessMessage() throws Exception {
 		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
@@ -2929,6 +2893,42 @@ public class RenderLayoutStructureTagTest {
 
 			_testRenderFormWithSuccessMessage(
 				HtmlUtil.escape(message), formItemId, infoField, layout);
+		}
+	}
+
+	@Test
+	public void testRenderFormWithoutErrors() throws Exception {
+		InfoField<TextInfoFieldType> infoField = _getInfoField(false);
+		InfoField<TextInfoFieldType> readOnlyInfoField = _getInfoField(true);
+
+		try (MockInfoServiceRegistrationHolder
+				mockInfoServiceRegistrationHolder =
+					new MockInfoServiceRegistrationHolder(
+						InfoFieldSet.builder(
+						).infoFieldSetEntries(
+							ListUtil.fromArray(infoField, readOnlyInfoField)
+						).build(),
+						_portal, _editPageInfoItemCapability)) {
+
+			Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+			ContentLayoutTestUtil.addFormToPublishedLayout(
+				false,
+				String.valueOf(
+					_portal.getClassNameId(MockObject.class.getName())),
+				"0", layout, _layoutStructureProvider, infoField,
+				readOnlyInfoField);
+
+			String content = _getRenderLayoutHTML(layout);
+
+			String errorHTML = "<div class=\"alert alert-danger\">";
+
+			Assert.assertFalse(content.contains(errorHTML));
+
+			_assertInfoFieldInput(infoField, content);
+			_assertInfoFieldInput(readOnlyInfoField, content);
+
+			_assertInputJSONObject(content, infoField, readOnlyInfoField);
 		}
 	}
 
@@ -3578,34 +3578,6 @@ public class RenderLayoutStructureTagTest {
 			WorkflowConstants.STATUS_APPROVED, _serviceContext);
 	}
 
-	private FragmentEntryLink[] _addFragmentEntryLinks(
-			int count, JSONObject jsonObject, Layout layout,
-			long segmentsExperienceId)
-		throws Exception {
-
-		FragmentEntryLink[] fragmentEntryLinks = new FragmentEntryLink[count];
-
-		FragmentEntry fragmentEntry = _addFragmentEntry();
-
-		for (int i = 0; i < count; i++) {
-			fragmentEntryLinks[i] =
-				_fragmentEntryLinkLocalService.addFragmentEntryLink(
-					null, TestPropsValues.getUserId(), _group.getGroupId(),
-					null, null, null, segmentsExperienceId, layout.getPlid(),
-					fragmentEntry.getCss(), fragmentEntry.getHtml(),
-					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-					JSONUtil.put(
-						FragmentEntryProcessorConstants.
-							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-						JSONUtil.put("element-text", jsonObject)
-					).toString(),
-					StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
-					fragmentEntry.getType(), _serviceContext);
-		}
-
-		return fragmentEntryLinks;
-	}
-
 	private FragmentEntryLink _addFragmentEntryLinkToLayout(
 			JSONObject editableFragmentEntryProcessorJSONObject,
 			FragmentEntry fragmentEntry, Layout layout, String parentItemId,
@@ -3659,6 +3631,34 @@ public class RenderLayoutStructureTagTest {
 			fragmentEntry.getHtml(), fragmentEntry.getJs(), layout,
 			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
 			0, segmentsExperienceId);
+	}
+
+	private FragmentEntryLink[] _addFragmentEntryLinks(
+			int count, JSONObject jsonObject, Layout layout,
+			long segmentsExperienceId)
+		throws Exception {
+
+		FragmentEntryLink[] fragmentEntryLinks = new FragmentEntryLink[count];
+
+		FragmentEntry fragmentEntry = _addFragmentEntry();
+
+		for (int i = 0; i < count; i++) {
+			fragmentEntryLinks[i] =
+				_fragmentEntryLinkLocalService.addFragmentEntryLink(
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					null, null, null, segmentsExperienceId, layout.getPlid(),
+					fragmentEntry.getCss(), fragmentEntry.getHtml(),
+					fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+					JSONUtil.put(
+						FragmentEntryProcessorConstants.
+							KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+						JSONUtil.put("element-text", jsonObject)
+					).toString(),
+					StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
+					fragmentEntry.getType(), _serviceContext);
+		}
+
+		return fragmentEntryLinks;
 	}
 
 	private JournalArticle _addJournalArticle(DDMStructure ddmStructure)

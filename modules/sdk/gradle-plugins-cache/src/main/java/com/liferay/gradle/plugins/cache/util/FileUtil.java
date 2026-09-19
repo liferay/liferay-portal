@@ -240,31 +240,6 @@ public class FileUtil extends com.liferay.gradle.util.FileUtil {
 		}
 	}
 
-	private static String _getGitIgnoredFileNamesResult(
-		Project project, File rootDir) {
-
-		List<File> gitIgnoreDirs = _getGitIgnoreDirs(rootDir);
-
-		for (File gitIgnoreDir : gitIgnoreDirs) {
-			File file = new File(gitIgnoreDir, _GIT_IGNORE_FILE_NAME);
-
-			file.renameTo(new File(gitIgnoreDir, _GIT_IGNORE_TEMP_FILE_NAME));
-		}
-
-		String result = _getGitResult(
-			project, rootDir, "ls-files",
-			"--exclude-per-directory=" + _GIT_IGNORE_TEMP_FILE_NAME,
-			"--ignored", "--others", "-z");
-
-		for (File gitIgnoreDir : gitIgnoreDirs) {
-			File file = new File(gitIgnoreDir, _GIT_IGNORE_TEMP_FILE_NAME);
-
-			file.renameTo(new File(gitIgnoreDir, _GIT_IGNORE_FILE_NAME));
-		}
-
-		return result;
-	}
-
 	private static List<File> _getGitIgnoreDirs(File dir) {
 		try {
 			final List<File> gitIgnoreDirs = new ArrayList<>();
@@ -305,6 +280,31 @@ public class FileUtil extends com.liferay.gradle.util.FileUtil {
 
 			return Collections.emptyList();
 		}
+	}
+
+	private static String _getGitIgnoredFileNamesResult(
+		Project project, File rootDir) {
+
+		List<File> gitIgnoreDirs = _getGitIgnoreDirs(rootDir);
+
+		for (File gitIgnoreDir : gitIgnoreDirs) {
+			File file = new File(gitIgnoreDir, _GIT_IGNORE_FILE_NAME);
+
+			file.renameTo(new File(gitIgnoreDir, _GIT_IGNORE_TEMP_FILE_NAME));
+		}
+
+		String result = _getGitResult(
+			project, rootDir, "ls-files",
+			"--exclude-per-directory=" + _GIT_IGNORE_TEMP_FILE_NAME,
+			"--ignored", "--others", "-z");
+
+		for (File gitIgnoreDir : gitIgnoreDirs) {
+			File file = new File(gitIgnoreDir, _GIT_IGNORE_TEMP_FILE_NAME);
+
+			file.renameTo(new File(gitIgnoreDir, _GIT_IGNORE_FILE_NAME));
+		}
+
+		return result;
 	}
 
 	private static String _getGitResult(

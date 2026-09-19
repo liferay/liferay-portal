@@ -641,8 +641,8 @@ public class MillerColumnsDisplayContext {
 
 	private List<Long> _duplicatedFriendlyURLPlids;
 	private final HttpServletRequest _httpServletRequest;
-	private final LayoutsAdminDisplayContext _layoutsAdminDisplayContext;
 	private final LayoutSetPrototypeHelper _layoutSetPrototypeHelper;
+	private final LayoutsAdminDisplayContext _layoutsAdminDisplayContext;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ThemeDisplay _themeDisplay;
 

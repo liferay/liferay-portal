@@ -170,6 +170,11 @@ public abstract class BaseBuildData implements BuildData {
 	}
 
 	@Override
+	public JSONObject getJSONObject() {
+		return _jsonObject;
+	}
+
+	@Override
 	public String getJenkinsGitHubBranchName() {
 		return getGitHubBranchName(getJenkinsGitHubURL());
 	}
@@ -197,11 +202,6 @@ public abstract class BaseBuildData implements BuildData {
 	@Override
 	public String getJobURL() {
 		return optString("job_url");
-	}
-
-	@Override
-	public JSONObject getJSONObject() {
-		return _jsonObject;
 	}
 
 	@Override

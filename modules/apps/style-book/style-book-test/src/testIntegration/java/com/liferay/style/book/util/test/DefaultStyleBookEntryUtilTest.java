@@ -203,20 +203,6 @@ public class DefaultStyleBookEntryUtilTest {
 	}
 
 	@Test
-	public void testGetStyleBookEntryNameWithMasterLayoutWithoutStyleBookEntry()
-		throws Exception {
-
-		Layout masterLayoutBasedLayout = _getMasterLayoutBasedLayout();
-
-		_addStyleBookEntry(false);
-
-		Assert.assertEquals(
-			"styles-from-x",
-			DefaultStyleBookEntryUtil.getStyleBookEntryName(
-				masterLayoutBasedLayout, null, null));
-	}
-
-	@Test
 	public void testGetStyleBookEntryNameWithMasterLayoutWithStyleBookEntry()
 		throws Exception {
 
@@ -239,11 +225,17 @@ public class DefaultStyleBookEntryUtilTest {
 	}
 
 	@Test
-	public void testGetStyleBookEntryNameWithoutMasterLayout() {
+	public void testGetStyleBookEntryNameWithMasterLayoutWithoutStyleBookEntry()
+		throws Exception {
+
+		Layout masterLayoutBasedLayout = _getMasterLayoutBasedLayout();
+
+		_addStyleBookEntry(false);
+
 		Assert.assertEquals(
 			"styles-from-x",
 			DefaultStyleBookEntryUtil.getStyleBookEntryName(
-				_layout, null, null));
+				masterLayoutBasedLayout, null, null));
 	}
 
 	@Test
@@ -260,6 +252,14 @@ public class DefaultStyleBookEntryUtilTest {
 			name,
 			DefaultStyleBookEntryUtil.getStyleBookEntryName(
 				_layout, null, styleBookEntry));
+	}
+
+	@Test
+	public void testGetStyleBookEntryNameWithoutMasterLayout() {
+		Assert.assertEquals(
+			"styles-from-x",
+			DefaultStyleBookEntryUtil.getStyleBookEntryName(
+				_layout, null, null));
 	}
 
 	private StyleBookEntry _addStyleBookEntry(boolean defaultStyleBookEntry)

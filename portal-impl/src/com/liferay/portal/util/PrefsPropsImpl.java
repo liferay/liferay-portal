@@ -528,12 +528,12 @@ public class PrefsPropsImpl implements PrefsProps {
 	private final PortletPreferences _emptyPortletPreferences =
 		new PortletPreferencesImpl();
 
-	@BeanReference(type = PortalPreferencesLocalService.class)
-	private PortalPreferencesLocalService _portalPreferencesLocalService;
-
 	@BeanReference(type = PortalPreferenceValueLocalService.class)
 	private PortalPreferenceValueLocalService
 		_portalPreferenceValueLocalService;
+
+	@BeanReference(type = PortalPreferencesLocalService.class)
+	private PortalPreferencesLocalService _portalPreferencesLocalService;
 
 	private ServiceRegistration<?> _serviceRegistration;
 

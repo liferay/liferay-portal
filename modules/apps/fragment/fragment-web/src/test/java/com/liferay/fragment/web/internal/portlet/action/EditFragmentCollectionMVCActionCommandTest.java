@@ -46,6 +46,21 @@ public class EditFragmentCollectionMVCActionCommandTest {
 		_testGetRedirectURLWithRedirect();
 	}
 
+	private void _testGetRedirectURLWithRedirect() {
+		String redirect = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_actionRequest.getParameter("redirect")
+		).thenReturn(
+			redirect
+		);
+
+		Assert.assertEquals(
+			redirect,
+			_editFragmentCollectionMVCActionCommand.getRedirectURL(
+				_actionRequest, _actionResponse, _fragmentCollection));
+	}
+
 	private void _testGetRedirectURLWithoutRedirect() {
 		long fragmentCollectionId = RandomTestUtil.randomLong();
 
@@ -78,21 +93,6 @@ public class EditFragmentCollectionMVCActionCommandTest {
 			redirectURL,
 			redirectURL.contains(
 				"fragmentCollectionId=" + fragmentCollectionId));
-	}
-
-	private void _testGetRedirectURLWithRedirect() {
-		String redirect = RandomTestUtil.randomString();
-
-		Mockito.when(
-			_actionRequest.getParameter("redirect")
-		).thenReturn(
-			redirect
-		);
-
-		Assert.assertEquals(
-			redirect,
-			_editFragmentCollectionMVCActionCommand.getRedirectURL(
-				_actionRequest, _actionResponse, _fragmentCollection));
 	}
 
 	private final ActionRequest _actionRequest = Mockito.mock(

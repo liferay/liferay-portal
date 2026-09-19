@@ -1117,11 +1117,11 @@ public class DDMFormFieldTemplateContextFactory {
 
 	private final DDMFormEvaluator _ddmFormEvaluator;
 	private final String _ddmFormFieldName;
+	private DDMFormFieldTypeServicesRegistry _ddmFormFieldTypeServicesRegistry;
+	private final List<DDMFormFieldValue> _ddmFormFieldValues;
 	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private final Map<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
 		_ddmFormFieldsPropertyChanges;
-	private DDMFormFieldTypeServicesRegistry _ddmFormFieldTypeServicesRegistry;
-	private final List<DDMFormFieldValue> _ddmFormFieldValues;
 	private final DDMFormRenderingContext _ddmFormRenderingContext;
 	private final DDMStructureLayoutLocalService
 		_ddmStructureLayoutLocalService;

@@ -31,11 +31,11 @@ public interface VerticalCard extends BaseClayCard {
 		return null;
 	}
 
-	public default List<LabelItem> getLabels() {
+	public default Map<String, String> getLabelStylesMap() {
 		return null;
 	}
 
-	public default Map<String, String> getLabelStylesMap() {
+	public default List<LabelItem> getLabels() {
 		return null;
 	}
 

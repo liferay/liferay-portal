@@ -92,16 +92,16 @@ public class MockContactsEngineClientImpl
 	}
 
 	@Override
+	public long getDXPUsersCount(FaroProject faroProject, String id) {
+		return contactsEngineClient.getDXPUsersCount(faroProject, id);
+	}
+
+	@Override
 	public Results<DataSourceUsageMetric> getDataSourceUsageMetrics(
 		FaroProject faroProject, Date date) {
 
 		return contactsEngineClient.getDataSourceUsageMetrics(
 			faroProject, date);
-	}
-
-	@Override
-	public long getDXPUsersCount(FaroProject faroProject, String id) {
-		return contactsEngineClient.getDXPUsersCount(faroProject, id);
 	}
 
 	@Override

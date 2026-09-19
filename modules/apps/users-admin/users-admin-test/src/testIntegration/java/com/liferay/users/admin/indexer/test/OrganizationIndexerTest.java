@@ -183,10 +183,10 @@ public class OrganizationIndexerTest {
 	protected OrganizationLocalService organizationLocalService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	@DeleteAfterTestRun
 	private final List<Organization> _organizations = new ArrayList<>();

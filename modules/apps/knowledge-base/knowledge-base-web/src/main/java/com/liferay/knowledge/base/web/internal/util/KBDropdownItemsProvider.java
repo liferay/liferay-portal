@@ -411,6 +411,94 @@ public class KBDropdownItemsProvider {
 		};
 	}
 
+	private String _getDeleteActionURL(
+		String cmd, KBArticle kbArticle, List<Long> selectedItemAncestorIds) {
+
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/knowledge_base/delete_kb_article"
+		).setCMD(
+			cmd
+		).setRedirect(
+			() -> {
+				PortletDisplay portletDisplay =
+					_themeDisplay.getPortletDisplay();
+
+				if (!Objects.equals(
+						portletDisplay.getRootPortletId(),
+						KBPortletKeys.KNOWLEDGE_BASE_ADMIN) &&
+					!Objects.equals(
+						portletDisplay.getRootPortletId(),
+						KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
+
+					return _createKbHomeRenderURL();
+				}
+
+				if (Objects.equals(
+						portletDisplay.getRootPortletId(),
+						KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
+
+					return PortletURLBuilder.createActionURL(
+						_liferayPortletResponse
+					).setParameter(
+						"resourcePrimKey",
+						() -> {
+							if (kbArticle.getParentResourcePrimKey() ==
+									kbArticle.getKbFolderId()) {
+
+								return null;
+							}
+
+							return kbArticle.getParentResourcePrimKey();
+						}
+					).buildString();
+				}
+
+				if (((selectedItemAncestorIds == null) &&
+					 _isKBArticleSelected(kbArticle)) ||
+					((selectedItemAncestorIds != null) &&
+					 selectedItemAncestorIds.contains(
+						 kbArticle.getResourcePrimKey()))) {
+
+					return _getParentNodeURL(kbArticle);
+				}
+
+				return _currentURL;
+			}
+		).setParameter(
+			"resourcePrimKey", kbArticle.getResourcePrimKey()
+		).buildString();
+	}
+
+	private String _getDeleteActionURL(
+		String cmd, KBFolder kbFolder, List<Long> selectedItemAncestorIds) {
+
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/knowledge_base/delete_kb_folder"
+		).setCMD(
+			cmd
+		).setRedirect(
+			() -> {
+				if (((selectedItemAncestorIds == null) &&
+					 _isKBFolderSelected(kbFolder)) ||
+					((selectedItemAncestorIds != null) &&
+					 selectedItemAncestorIds.contains(
+						 kbFolder.getKbFolderId()))) {
+
+					return _createKBFolderRenderURL(
+						kbFolder.getParentKBFolderId());
+				}
+
+				return _currentURL;
+			}
+		).setParameter(
+			"kbFolderId", kbFolder.getKbFolderId()
+		).buildString();
+	}
+
 	private UnsafeConsumer<DropdownItem, Exception>
 		_getDeleteActionUnsafeConsumer(
 			KBArticle kbArticle, List<Long> selectedItemAncestorIds) {
@@ -512,94 +600,6 @@ public class KBDropdownItemsProvider {
 				LanguageUtil.get(
 					_liferayPortletRequest.getHttpServletRequest(), "delete"));
 		};
-	}
-
-	private String _getDeleteActionURL(
-		String cmd, KBArticle kbArticle, List<Long> selectedItemAncestorIds) {
-
-		return PortletURLBuilder.createActionURL(
-			_liferayPortletResponse
-		).setActionName(
-			"/knowledge_base/delete_kb_article"
-		).setCMD(
-			cmd
-		).setRedirect(
-			() -> {
-				PortletDisplay portletDisplay =
-					_themeDisplay.getPortletDisplay();
-
-				if (!Objects.equals(
-						portletDisplay.getRootPortletId(),
-						KBPortletKeys.KNOWLEDGE_BASE_ADMIN) &&
-					!Objects.equals(
-						portletDisplay.getRootPortletId(),
-						KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
-
-					return _createKbHomeRenderURL();
-				}
-
-				if (Objects.equals(
-						portletDisplay.getRootPortletId(),
-						KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
-
-					return PortletURLBuilder.createActionURL(
-						_liferayPortletResponse
-					).setParameter(
-						"resourcePrimKey",
-						() -> {
-							if (kbArticle.getParentResourcePrimKey() ==
-									kbArticle.getKbFolderId()) {
-
-								return null;
-							}
-
-							return kbArticle.getParentResourcePrimKey();
-						}
-					).buildString();
-				}
-
-				if (((selectedItemAncestorIds == null) &&
-					 _isKBArticleSelected(kbArticle)) ||
-					((selectedItemAncestorIds != null) &&
-					 selectedItemAncestorIds.contains(
-						 kbArticle.getResourcePrimKey()))) {
-
-					return _getParentNodeURL(kbArticle);
-				}
-
-				return _currentURL;
-			}
-		).setParameter(
-			"resourcePrimKey", kbArticle.getResourcePrimKey()
-		).buildString();
-	}
-
-	private String _getDeleteActionURL(
-		String cmd, KBFolder kbFolder, List<Long> selectedItemAncestorIds) {
-
-		return PortletURLBuilder.createActionURL(
-			_liferayPortletResponse
-		).setActionName(
-			"/knowledge_base/delete_kb_folder"
-		).setCMD(
-			cmd
-		).setRedirect(
-			() -> {
-				if (((selectedItemAncestorIds == null) &&
-					 _isKBFolderSelected(kbFolder)) ||
-					((selectedItemAncestorIds != null) &&
-					 selectedItemAncestorIds.contains(
-						 kbFolder.getKbFolderId()))) {
-
-					return _createKBFolderRenderURL(
-						kbFolder.getParentKBFolderId());
-				}
-
-				return _currentURL;
-			}
-		).setParameter(
-			"kbFolderId", kbFolder.getKbFolderId()
-		).buildString();
 	}
 
 	private UnsafeConsumer<DropdownItem, Exception>

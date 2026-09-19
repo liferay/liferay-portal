@@ -121,13 +121,13 @@ public interface PatcherConfiguration {
 	public boolean patcherTestsEnabled();
 
 	@Meta.AD(deflt = "", required = false)
-	public String supportLiferayAccountSearchAPIEndpoint();
-
-	@Meta.AD(deflt = "", required = false)
 	public String supportLiferayAPIClientId();
 
 	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
 	public String supportLiferayAPIClientSecret();
+
+	@Meta.AD(deflt = "", required = false)
+	public String supportLiferayAccountSearchAPIEndpoint();
 
 	@Meta.AD(deflt = "", required = false)
 	public String supportLiferayURL();

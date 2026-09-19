@@ -138,6 +138,15 @@ public class LayoutsAdminDisplayContextTest {
 	}
 
 	@Test
+	public void testGetEditOrViewLayoutURLWithPortletLayout() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		String editOrViewLayoutURL = _getEditOrViewLayoutURL(_group, layout);
+
+		Assert.assertFalse(editOrViewLayoutURL.contains(Constants.EDIT));
+	}
+
+	@Test
 	public void testGetEditOrViewLayoutURLWithoutEditPermission()
 		throws Exception {
 
@@ -162,15 +171,6 @@ public class LayoutsAdminDisplayContextTest {
 			PermissionThreadLocal.setPermissionChecker(
 				originalPermissionChecker);
 		}
-	}
-
-	@Test
-	public void testGetEditOrViewLayoutURLWithPortletLayout() throws Exception {
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
-
-		String editOrViewLayoutURL = _getEditOrViewLayoutURL(_group, layout);
-
-		Assert.assertFalse(editOrViewLayoutURL.contains(Constants.EDIT));
 	}
 
 	private List<String> _getAvailableActions(Group group, Layout layout)

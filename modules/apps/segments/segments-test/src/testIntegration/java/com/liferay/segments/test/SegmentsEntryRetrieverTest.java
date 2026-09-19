@@ -121,9 +121,11 @@ public class SegmentsEntryRetrieverTest {
 	}
 
 	@Test
-	public void testGetSegmentsEntryIdsWithoutSegmentsEntry() throws Exception {
-		long[] segmentsEntryIds = _segmentsEntryRetriever.getSegmentsEntryIds(
-			_group.getGroupId(), _user.getUserId(), null);
+	public void testGetSegmentsEntryIdsWithSegmentsEntryIdParameterInViewMode()
+		throws Exception {
+
+		long[] segmentsEntryIds = _getSegmentsEntryIdsInSimulationMode(
+			Constants.VIEW, RandomTestUtil.randomLong());
 
 		Assert.assertEquals(
 			Arrays.toString(segmentsEntryIds), 1, segmentsEntryIds.length);
@@ -132,11 +134,9 @@ public class SegmentsEntryRetrieverTest {
 	}
 
 	@Test
-	public void testGetSegmentsEntryIdsWithSegmentsEntryIdParameterInViewMode()
-		throws Exception {
-
-		long[] segmentsEntryIds = _getSegmentsEntryIdsInSimulationMode(
-			Constants.VIEW, RandomTestUtil.randomLong());
+	public void testGetSegmentsEntryIdsWithoutSegmentsEntry() throws Exception {
+		long[] segmentsEntryIds = _segmentsEntryRetriever.getSegmentsEntryIds(
+			_group.getGroupId(), _user.getUserId(), null);
 
 		Assert.assertEquals(
 			Arrays.toString(segmentsEntryIds), 1, segmentsEntryIds.length);

@@ -902,25 +902,6 @@ public abstract class BaseJSONWebServiceClientImpl
 		return poolingNHttpClientConnectionManager;
 	}
 
-	protected Registry<SchemeIOSessionStrategy>
-		getSchemeIOSessionStrategyRegistry() {
-
-		RegistryBuilder<SchemeIOSessionStrategy> registryBuilder =
-			RegistryBuilder.<SchemeIOSessionStrategy>create();
-
-		registryBuilder.register("http", NoopIOSessionStrategy.INSTANCE);
-
-		if (_keyStore == null) {
-			registryBuilder.register(
-				"https", SSLIOSessionStrategy.getSystemDefaultStrategy());
-		}
-		else {
-			registryBuilder.register("https", getSSLIOSessionStrategy());
-		}
-
-		return registryBuilder.build();
-	}
-
 	protected SSLIOSessionStrategy getSSLIOSessionStrategy() {
 		SSLContextBuilder sslContextBuilder = SSLContexts.custom();
 
@@ -952,6 +933,25 @@ public abstract class BaseJSONWebServiceClientImpl
 		return new SSLIOSessionStrategy(
 			sslContext, httpsProtocols, cipherSuites,
 			SSLIOSessionStrategy.getDefaultHostnameVerifier());
+	}
+
+	protected Registry<SchemeIOSessionStrategy>
+		getSchemeIOSessionStrategyRegistry() {
+
+		RegistryBuilder<SchemeIOSessionStrategy> registryBuilder =
+			RegistryBuilder.<SchemeIOSessionStrategy>create();
+
+		registryBuilder.register("http", NoopIOSessionStrategy.INSTANCE);
+
+		if (_keyStore == null) {
+			registryBuilder.register(
+				"https", SSLIOSessionStrategy.getSystemDefaultStrategy());
+		}
+		else {
+			registryBuilder.register("https", getSSLIOSessionStrategy());
+		}
+
+		return registryBuilder.build();
 	}
 
 	protected int getStatus(String json) {

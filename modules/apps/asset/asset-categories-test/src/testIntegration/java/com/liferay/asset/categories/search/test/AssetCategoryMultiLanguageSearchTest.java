@@ -226,10 +226,10 @@ public class AssetCategoryMultiLanguageSearchTest {
 	protected SearchEngineHelper searchEngineHelper;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private void _addAssetCategoryMultiLanguage() throws Exception {
 		_assetCategoryFixture.createAssetCategory(

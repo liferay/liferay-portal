@@ -58,16 +58,6 @@ public class GroupFriendlyURLUtilTest {
 	}
 
 	@Test
-	public void testFetchFriendlyURLGroupWithoutMatchingGroupOrUser()
-		throws Exception {
-
-		Assert.assertNull(
-			GroupFriendlyURLUtil.fetchFriendlyURLGroup(
-				TestPropsValues.getCompanyId(),
-				StringPool.SLASH + RandomTestUtil.randomString()));
-	}
-
-	@Test
 	public void testFetchFriendlyURLGroupWithUserScreenName() throws Exception {
 		_user = UserTestUtil.addUser();
 
@@ -82,6 +72,16 @@ public class GroupFriendlyURLUtilTest {
 			StringPool.SLASH + _user.getScreenName());
 
 		Assert.assertEquals(userGroup.getGroupId(), group.getGroupId());
+	}
+
+	@Test
+	public void testFetchFriendlyURLGroupWithoutMatchingGroupOrUser()
+		throws Exception {
+
+		Assert.assertNull(
+			GroupFriendlyURLUtil.fetchFriendlyURLGroup(
+				TestPropsValues.getCompanyId(),
+				StringPool.SLASH + RandomTestUtil.randomString()));
 	}
 
 	@DeleteAfterTestRun

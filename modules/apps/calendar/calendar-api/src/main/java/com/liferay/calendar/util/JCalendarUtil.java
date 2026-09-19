@@ -41,23 +41,6 @@ public class JCalendarUtil {
 		return newJCalendar.getTimeInMillis();
 	}
 
-	public static long getDaysBetween(
-		Calendar startTimeJCalendar, Calendar endTimeJCalendar) {
-
-		startTimeJCalendar = toMidnightJCalendar(startTimeJCalendar);
-
-		if (isMidnight(endTimeJCalendar)) {
-			endTimeJCalendar.add(Calendar.DAY_OF_MONTH, -1);
-		}
-
-		endTimeJCalendar = toLastHourJCalendar(endTimeJCalendar);
-
-		long startTime = startTimeJCalendar.getTimeInMillis();
-		long endTime = endTimeJCalendar.getTimeInMillis();
-
-		return Math.round((float)(endTime - startTime) / DAY);
-	}
-
 	public static int getDSTShift(
 		Calendar jCalendar1, Calendar jCalendar2, TimeZone timeZone) {
 
@@ -75,6 +58,23 @@ public class JCalendarUtil {
 			jCalendar1.getTimeInMillis() - sameDayJCalendar.getTimeInMillis();
 
 		return shift.intValue();
+	}
+
+	public static long getDaysBetween(
+		Calendar startTimeJCalendar, Calendar endTimeJCalendar) {
+
+		startTimeJCalendar = toMidnightJCalendar(startTimeJCalendar);
+
+		if (isMidnight(endTimeJCalendar)) {
+			endTimeJCalendar.add(Calendar.DAY_OF_MONTH, -1);
+		}
+
+		endTimeJCalendar = toLastHourJCalendar(endTimeJCalendar);
+
+		long startTime = startTimeJCalendar.getTimeInMillis();
+		long endTime = endTimeJCalendar.getTimeInMillis();
+
+		return Math.round((float)(endTime - startTime) / DAY);
 	}
 
 	public static Calendar getJCalendar(Calendar jCalendar, TimeZone timeZone) {

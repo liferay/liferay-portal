@@ -279,66 +279,6 @@ public class UnsyncPrintWriterTest extends BaseWriterTestCase {
 	}
 
 	@Test
-	public void testInterruptedIOException() throws Exception {
-		UnsyncPrintWriter unsyncPrintWriter = new UnsyncPrintWriter(
-			new Writer() {
-
-				@Override
-				public void close() {
-				}
-
-				@Override
-				public void flush() {
-				}
-
-				@Override
-				public void write(char[] cbuf, int off, int len)
-					throws IOException {
-
-					throw new InterruptedIOException();
-				}
-
-				@Override
-				public void write(int c) throws IOException {
-					throw new InterruptedIOException();
-				}
-
-				@Override
-				public void write(String s) throws IOException {
-					throw new InterruptedIOException();
-				}
-
-				@Override
-				public void write(String s, int offset, int length)
-					throws IOException {
-
-					throw new InterruptedIOException();
-				}
-
-			});
-
-		unsyncPrintWriter.println();
-
-		Assert.assertTrue(Thread.interrupted());
-
-		unsyncPrintWriter.write(new char[0], 0, 0);
-
-		Assert.assertTrue(Thread.interrupted());
-
-		unsyncPrintWriter.write('c');
-
-		Assert.assertTrue(Thread.interrupted());
-
-		unsyncPrintWriter.write("test");
-
-		Assert.assertTrue(Thread.interrupted());
-
-		unsyncPrintWriter.write("test", 0, 4);
-
-		Assert.assertTrue(Thread.interrupted());
-	}
-
-	@Test
 	public void testIOException() {
 		Writer writer = new Writer() {
 
@@ -405,6 +345,66 @@ public class UnsyncPrintWriterTest extends BaseWriterTestCase {
 		unsyncPrintWriter.write("test", 0, 4);
 
 		Assert.assertTrue(unsyncPrintWriter.checkError());
+	}
+
+	@Test
+	public void testInterruptedIOException() throws Exception {
+		UnsyncPrintWriter unsyncPrintWriter = new UnsyncPrintWriter(
+			new Writer() {
+
+				@Override
+				public void close() {
+				}
+
+				@Override
+				public void flush() {
+				}
+
+				@Override
+				public void write(char[] cbuf, int off, int len)
+					throws IOException {
+
+					throw new InterruptedIOException();
+				}
+
+				@Override
+				public void write(int c) throws IOException {
+					throw new InterruptedIOException();
+				}
+
+				@Override
+				public void write(String s) throws IOException {
+					throw new InterruptedIOException();
+				}
+
+				@Override
+				public void write(String s, int offset, int length)
+					throws IOException {
+
+					throw new InterruptedIOException();
+				}
+
+			});
+
+		unsyncPrintWriter.println();
+
+		Assert.assertTrue(Thread.interrupted());
+
+		unsyncPrintWriter.write(new char[0], 0, 0);
+
+		Assert.assertTrue(Thread.interrupted());
+
+		unsyncPrintWriter.write('c');
+
+		Assert.assertTrue(Thread.interrupted());
+
+		unsyncPrintWriter.write("test");
+
+		Assert.assertTrue(Thread.interrupted());
+
+		unsyncPrintWriter.write("test", 0, 4);
+
+		Assert.assertTrue(Thread.interrupted());
 	}
 
 	@Test

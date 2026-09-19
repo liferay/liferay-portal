@@ -82,8 +82,8 @@ public class CaptureHandler extends Handler implements Closeable {
 
 	private final Handler[] _handlers;
 	private final Level _level;
-	private final Logger _logger;
 	private final List<LogRecord> _logRecords = new CopyOnWriteArrayList<>();
+	private final Logger _logger;
 	private final boolean _useParentHandlers;
 
 	private static class PrintableLogRecord extends LogRecord {

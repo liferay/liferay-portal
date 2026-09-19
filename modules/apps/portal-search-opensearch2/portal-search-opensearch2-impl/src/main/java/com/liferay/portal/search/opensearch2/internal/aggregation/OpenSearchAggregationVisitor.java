@@ -1637,6 +1637,17 @@ public class OpenSearchAggregationVisitor
 		throw new IllegalArgumentException("Invalid order " + order);
 	}
 
+	private ChiSquareHeuristic _translateChiSquareHeuristic(
+		ChiSquareSignificanceHeuristic chiSquareSignificanceHeuristic) {
+
+		return ChiSquareHeuristic.of(
+			chiSquareHeuristic -> chiSquareHeuristic.backgroundIsSuperset(
+				chiSquareSignificanceHeuristic.isBackgroundIsSuperset()
+			).includeNegatives(
+				chiSquareSignificanceHeuristic.isIncludeNegatives()
+			));
+	}
+
 	private org.opensearch.client.opensearch._types.aggregations.Aggregation
 		_translateChildAggregations(
 			Aggregation aggregation, ContainerBuilder containerBuilder) {
@@ -1658,17 +1669,6 @@ public class OpenSearchAggregationVisitor
 		}
 
 		return containerBuilder.build();
-	}
-
-	private ChiSquareHeuristic _translateChiSquareHeuristic(
-		ChiSquareSignificanceHeuristic chiSquareSignificanceHeuristic) {
-
-		return ChiSquareHeuristic.of(
-			chiSquareHeuristic -> chiSquareHeuristic.backgroundIsSuperset(
-				chiSquareSignificanceHeuristic.isBackgroundIsSuperset()
-			).includeNegatives(
-				chiSquareSignificanceHeuristic.isIncludeNegatives()
-			));
 	}
 
 	private TermsAggregationCollectMode _translateCollectMode(

@@ -152,6 +152,20 @@ public class OracleDB extends BaseDB {
 	}
 
 	@Override
+	public ResultSet getIndexResultSet(
+			Connection connection, String tableName, boolean onlyUnique)
+		throws SQLException {
+
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+		DBInspector dbInspector = new DBInspector(connection);
+
+		return databaseMetaData.getIndexInfo(
+			dbInspector.getCatalog(), dbInspector.getSchema(), tableName,
+			onlyUnique, true);
+	}
+
+	@Override
 	public List<Index> getIndexes(Connection connection) throws SQLException {
 		List<Index> indexes = new ArrayList<>();
 
@@ -179,20 +193,6 @@ public class OracleDB extends BaseDB {
 		}
 
 		return indexes;
-	}
-
-	@Override
-	public ResultSet getIndexResultSet(
-			Connection connection, String tableName, boolean onlyUnique)
-		throws SQLException {
-
-		DatabaseMetaData databaseMetaData = connection.getMetaData();
-
-		DBInspector dbInspector = new DBInspector(connection);
-
-		return databaseMetaData.getIndexInfo(
-			dbInspector.getCatalog(), dbInspector.getSchema(), tableName,
-			onlyUnique, true);
 	}
 
 	@Override

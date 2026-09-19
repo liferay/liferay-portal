@@ -88,16 +88,16 @@ public class LayoutStructureRule {
 		return _actionsJSONArray;
 	}
 
-	public JSONArray getConditionsJSONArray() {
-		return _conditionsJSONArray;
-	}
-
 	public String getConditionType() {
 		if (Validator.isNull(_conditionType)) {
 			return "all";
 		}
 
 		return _conditionType;
+	}
+
+	public JSONArray getConditionsJSONArray() {
+		return _conditionsJSONArray;
 	}
 
 	public String getId() {
@@ -125,12 +125,12 @@ public class LayoutStructureRule {
 		_actionsJSONArray = actionsJSONArray;
 	}
 
-	public void setConditionsJSONArray(JSONArray conditionsJSONArray) {
-		_conditionsJSONArray = conditionsJSONArray;
-	}
-
 	public void setConditionType(String conditionType) {
 		_conditionType = conditionType;
+	}
+
+	public void setConditionsJSONArray(JSONArray conditionsJSONArray) {
+		_conditionsJSONArray = conditionsJSONArray;
 	}
 
 	public void setId(String id) {
@@ -169,8 +169,8 @@ public class LayoutStructureRule {
 	}
 
 	private JSONArray _actionsJSONArray;
-	private JSONArray _conditionsJSONArray;
 	private String _conditionType = "all";
+	private JSONArray _conditionsJSONArray;
 	private String _id;
 	private String _name;
 	private String _script;

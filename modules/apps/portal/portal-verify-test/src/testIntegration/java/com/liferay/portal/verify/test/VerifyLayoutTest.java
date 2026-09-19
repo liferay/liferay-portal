@@ -119,13 +119,47 @@ public class VerifyLayoutTest extends BaseVerifyProcessTestCase {
 	}
 
 	@Test
-	public void testVerifyLayoutsWithoutReservedLayoutFriendlyURL()
+	public void testVerifyLayoutWithAsteriskReservedLayoutFriendlyURL()
 		throws Exception {
+
+		for (String keyword : PropsValues.LAYOUT_FRIENDLY_URL_KEYWORDS) {
+			if (keyword.contains(StringPool.STAR) &&
+				!keyword.contains(StringPool.UNDERLINE)) {
+
+				_keyword1 = StringUtil.replace(keyword, '*', "12345");
+
+				break;
+			}
+		}
+
+		_updateFriendlyURL(
+			_layout1.getPlid(), StringPool.FORWARD_SLASH + _keyword1);
 
 		super.testVerify();
 
 		Assert.assertEquals(
-			_errorMessages.toString(), 0, _errorMessages.size());
+			_errorMessages.toString(), 1, _errorMessages.size());
+
+		String errorMessage = _errorMessages.get(0);
+
+		Assert.assertTrue(errorMessage.contains(_keyword1));
+	}
+
+	@Test
+	public void testVerifyLayoutWithReservedLayoutFriendlyURL()
+		throws Exception {
+
+		_updateFriendlyURL(
+			_layout1.getPlid(), StringPool.FORWARD_SLASH + _keyword1);
+
+		super.testVerify();
+
+		Assert.assertEquals(
+			_errorMessages.toString(), 1, _errorMessages.size());
+
+		String errorMessage = _errorMessages.get(0);
+
+		Assert.assertTrue(errorMessage.contains(_keyword1));
 	}
 
 	@Test
@@ -190,47 +224,13 @@ public class VerifyLayoutTest extends BaseVerifyProcessTestCase {
 	}
 
 	@Test
-	public void testVerifyLayoutWithAsteriskReservedLayoutFriendlyURL()
+	public void testVerifyLayoutsWithoutReservedLayoutFriendlyURL()
 		throws Exception {
-
-		for (String keyword : PropsValues.LAYOUT_FRIENDLY_URL_KEYWORDS) {
-			if (keyword.contains(StringPool.STAR) &&
-				!keyword.contains(StringPool.UNDERLINE)) {
-
-				_keyword1 = StringUtil.replace(keyword, '*', "12345");
-
-				break;
-			}
-		}
-
-		_updateFriendlyURL(
-			_layout1.getPlid(), StringPool.FORWARD_SLASH + _keyword1);
 
 		super.testVerify();
 
 		Assert.assertEquals(
-			_errorMessages.toString(), 1, _errorMessages.size());
-
-		String errorMessage = _errorMessages.get(0);
-
-		Assert.assertTrue(errorMessage.contains(_keyword1));
-	}
-
-	@Test
-	public void testVerifyLayoutWithReservedLayoutFriendlyURL()
-		throws Exception {
-
-		_updateFriendlyURL(
-			_layout1.getPlid(), StringPool.FORWARD_SLASH + _keyword1);
-
-		super.testVerify();
-
-		Assert.assertEquals(
-			_errorMessages.toString(), 1, _errorMessages.size());
-
-		String errorMessage = _errorMessages.get(0);
-
-		Assert.assertTrue(errorMessage.contains(_keyword1));
+			_errorMessages.toString(), 0, _errorMessages.size());
 	}
 
 	@Override

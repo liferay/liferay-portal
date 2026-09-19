@@ -277,11 +277,11 @@ public class DisplayContextUtil {
 	private static final Log _log = LogFactoryUtil.getLog(
 		DisplayContextUtil.class);
 
-	private static final Snapshot<Searcher> _searcherSnapshot = new Snapshot<>(
-		DisplayContextUtil.class, Searcher.class);
 	private static final Snapshot<SearchRequestBuilderFactory>
 		_searchRequestBuilderFactorySnapshot = new Snapshot<>(
 			DisplayContextUtil.class, SearchRequestBuilderFactory.class);
+	private static final Snapshot<Searcher> _searcherSnapshot = new Snapshot<>(
+		DisplayContextUtil.class, Searcher.class);
 	private static final Snapshot<Sorts> _sortsSnapshot = new Snapshot<>(
 		DisplayContextUtil.class, Sorts.class);
 

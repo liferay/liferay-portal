@@ -413,6 +413,31 @@ public class ObjectEntryFolderLocalServiceImpl
 			serviceContext);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public ObjectEntryFolder moveObjectEntryFolderToTrash(
+			long userId, ObjectEntryFolder objectEntryFolder,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		if (objectEntryFolder.getStatus() ==
+				WorkflowConstants.STATUS_IN_TRASH) {
+
+			throw new TrashEntryException();
+		}
+
+		long parentObjectEntryFolderId =
+			objectEntryFolder.getParentObjectEntryFolderId();
+
+		objectEntryFolder.setParentObjectEntryFolderId(
+			ObjectEntryFolderUtil.getRootObjectEntryFolderId(
+				parentObjectEntryFolderId));
+
+		return _moveObjectEntryFolderToTrash(
+			objectEntryFolder, parentObjectEntryFolderId, serviceContext,
+			userId);
+	}
+
 	@Override
 	public void moveObjectEntryFoldersToTrash(
 			long userId, ObjectEntryFolder parentObjectEntryFolder,
@@ -441,31 +466,6 @@ public class ObjectEntryFolderLocalServiceImpl
 
 			indexer.reindex(objectEntryFolder);
 		}
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public ObjectEntryFolder moveObjectEntryFolderToTrash(
-			long userId, ObjectEntryFolder objectEntryFolder,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		if (objectEntryFolder.getStatus() ==
-				WorkflowConstants.STATUS_IN_TRASH) {
-
-			throw new TrashEntryException();
-		}
-
-		long parentObjectEntryFolderId =
-			objectEntryFolder.getParentObjectEntryFolderId();
-
-		objectEntryFolder.setParentObjectEntryFolderId(
-			ObjectEntryFolderUtil.getRootObjectEntryFolderId(
-				parentObjectEntryFolderId));
-
-		return _moveObjectEntryFolderToTrash(
-			objectEntryFolder, parentObjectEntryFolderId, serviceContext,
-			userId);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

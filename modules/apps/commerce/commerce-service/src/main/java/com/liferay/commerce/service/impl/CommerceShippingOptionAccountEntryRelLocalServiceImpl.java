@@ -73,19 +73,19 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommerceShippingOptionAccountEntryRelsByCommerceChannelId(
-		long commerceChannelId) {
-
-		commerceShippingOptionAccountEntryRelPersistence.
-			removeByCommerceChannelId(commerceChannelId);
-	}
-
-	@Override
 	public void deleteCommerceShippingOptionAccountEntryRelsByCSFixedOptionKey(
 		String commerceShippingFixedOptionKey) {
 
 		commerceShippingOptionAccountEntryRelPersistence.
 			removeByCommerceShippingOptionKey(commerceShippingFixedOptionKey);
+	}
+
+	@Override
+	public void deleteCommerceShippingOptionAccountEntryRelsByCommerceChannelId(
+		long commerceChannelId) {
+
+		commerceShippingOptionAccountEntryRelPersistence.
+			removeByCommerceChannelId(commerceChannelId);
 	}
 
 	@Override

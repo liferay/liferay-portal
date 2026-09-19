@@ -75,13 +75,13 @@ public class MonitoringConfigurationManager
 	}
 
 	@Override
-	public Set<String> getServiceClasses() {
-		return _serviceMonitoringControl.getServiceClasses();
+	public Set<MethodSignature> getServiceClassMethods() {
+		return _serviceMonitoringControl.getServiceClassMethods();
 	}
 
 	@Override
-	public Set<MethodSignature> getServiceClassMethods() {
-		return _serviceMonitoringControl.getServiceClassMethods();
+	public Set<String> getServiceClasses() {
+		return _serviceMonitoringControl.getServiceClasses();
 	}
 
 	@Override

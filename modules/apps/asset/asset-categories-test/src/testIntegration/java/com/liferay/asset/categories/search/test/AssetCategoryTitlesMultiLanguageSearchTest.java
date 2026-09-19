@@ -419,14 +419,14 @@ public class AssetCategoryTitlesMultiLanguageSearchTest {
 	@DeleteAfterTestRun
 	private List<AssetVocabulary> _assetVocabularies = new ArrayList<>();
 
-	@DeleteAfterTestRun
-	private List<Group> _groups;
-
 	private GroupSearchFixture _groupSearchFixture;
 
 	@DeleteAfterTestRun
-	private List<JournalArticle> _journalArticles;
+	private List<Group> _groups;
 
 	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
+	@DeleteAfterTestRun
+	private List<JournalArticle> _journalArticles;
 
 }

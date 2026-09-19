@@ -92,39 +92,6 @@ public class DefaultSegmentsExperienceRequestProcessorTest {
 	}
 
 	@Test
-	public void testGetSegmentsExperienceIdsWithoutSegmentsExperienceIds()
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		long[] segmentsExperienceIds =
-			_segmentsExperienceRequestProcessor.getSegmentsExperienceIds(
-				new MockHttpServletRequest(), new MockHttpServletResponse(),
-				_group.getGroupId(), layout.getPlid(), new long[0]);
-
-		Assert.assertEquals(
-			Arrays.toString(segmentsExperienceIds), 1,
-			segmentsExperienceIds.length);
-	}
-
-	@Test
-	public void testGetSegmentsExperienceIdsWithoutSegmentsExperienceIdsAndWithoutSegmentEntryIds()
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		long[] segmentsExperienceIds =
-			_segmentsExperienceRequestProcessor.getSegmentsExperienceIds(
-				new MockHttpServletRequest(), new MockHttpServletResponse(),
-				_group.getGroupId(), layout.getPlid(),
-				new long[] {SegmentsEntryConstants.ID_DEFAULT}, new long[0]);
-
-		Assert.assertEquals(
-			Arrays.toString(segmentsExperienceIds), 1,
-			segmentsExperienceIds.length);
-	}
-
-	@Test
 	@TestInfo("LPD-73850")
 	public void testGetSegmentsExperienceIdsWithSegmentEntryIds()
 		throws Exception {
@@ -186,6 +153,39 @@ public class DefaultSegmentsExperienceRequestProcessorTest {
 					segmentsEntry2.getSegmentsEntryId()
 				},
 				new long[0]));
+	}
+
+	@Test
+	public void testGetSegmentsExperienceIdsWithoutSegmentsExperienceIds()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		long[] segmentsExperienceIds =
+			_segmentsExperienceRequestProcessor.getSegmentsExperienceIds(
+				new MockHttpServletRequest(), new MockHttpServletResponse(),
+				_group.getGroupId(), layout.getPlid(), new long[0]);
+
+		Assert.assertEquals(
+			Arrays.toString(segmentsExperienceIds), 1,
+			segmentsExperienceIds.length);
+	}
+
+	@Test
+	public void testGetSegmentsExperienceIdsWithoutSegmentsExperienceIdsAndWithoutSegmentEntryIds()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		long[] segmentsExperienceIds =
+			_segmentsExperienceRequestProcessor.getSegmentsExperienceIds(
+				new MockHttpServletRequest(), new MockHttpServletResponse(),
+				_group.getGroupId(), layout.getPlid(),
+				new long[] {SegmentsEntryConstants.ID_DEFAULT}, new long[0]);
+
+		Assert.assertEquals(
+			Arrays.toString(segmentsExperienceIds), 1,
+			segmentsExperienceIds.length);
 	}
 
 	private SegmentsEntry _getSegmentsEntry(long groupId, User user)

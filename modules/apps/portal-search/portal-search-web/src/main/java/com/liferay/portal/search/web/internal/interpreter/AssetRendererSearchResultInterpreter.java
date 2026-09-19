@@ -371,30 +371,6 @@ public class AssetRendererSearchResultInterpreter
 	}
 
 	@Override
-	public String getAssetUrlTitle(Document document) throws PortalException {
-		AssetRenderer<?> assetRenderer = getAssetRenderer(document);
-
-		if (assetRenderer == null) {
-			return StringPool.BLANK;
-		}
-
-		return assetRenderer.getUrlTitle();
-	}
-
-	@Override
-	public String getAssetUrlTitle(Document document, Locale locale)
-		throws PortalException {
-
-		AssetRenderer<?> assetRenderer = getAssetRenderer(document);
-
-		if (assetRenderer == null) {
-			return StringPool.BLANK;
-		}
-
-		return assetRenderer.getUrlTitle(locale);
-	}
-
-	@Override
 	public PortletURL getAssetURLView(
 			Document document, LiferayPortletResponse liferayPortletResponse,
 			WindowState windowState)
@@ -428,6 +404,30 @@ public class AssetRendererSearchResultInterpreter
 
 		return assetRenderer.getURLViewInContext(
 			liferayPortletRequest, liferayPortletResponse, noSuchEntryRedirect);
+	}
+
+	@Override
+	public String getAssetUrlTitle(Document document) throws PortalException {
+		AssetRenderer<?> assetRenderer = getAssetRenderer(document);
+
+		if (assetRenderer == null) {
+			return StringPool.BLANK;
+		}
+
+		return assetRenderer.getUrlTitle();
+	}
+
+	@Override
+	public String getAssetUrlTitle(Document document, Locale locale)
+		throws PortalException {
+
+		AssetRenderer<?> assetRenderer = getAssetRenderer(document);
+
+		if (assetRenderer == null) {
+			return StringPool.BLANK;
+		}
+
+		return assetRenderer.getUrlTitle(locale);
 	}
 
 	@Override

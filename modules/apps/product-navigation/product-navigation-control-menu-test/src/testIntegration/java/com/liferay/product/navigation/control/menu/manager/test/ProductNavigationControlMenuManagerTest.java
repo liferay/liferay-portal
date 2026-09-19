@@ -121,20 +121,6 @@ public class ProductNavigationControlMenuManagerTest {
 	}
 
 	@Test
-	public void testIsShowControlMenuWithNormalUserWithoutRoleAccessInContentLayout()
-		throws Exception {
-
-		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
-			_group.getGroupId(), new String[0], true);
-
-		User user = UserTestUtil.addUser();
-
-		Assert.assertFalse(
-			_productNavigationControlMenuManager.isShowControlMenu(
-				_getHttpServletRequest(Collections.emptyMap(), user)));
-	}
-
-	@Test
 	public void testIsShowControlMenuWithNormalUserWithRoleAccessInContentLayout()
 		throws Exception {
 
@@ -164,6 +150,20 @@ public class ProductNavigationControlMenuManagerTest {
 		_roleLocalService.addUserRole(user.getUserId(), role);
 
 		Assert.assertTrue(
+			_productNavigationControlMenuManager.isShowControlMenu(
+				_getHttpServletRequest(Collections.emptyMap(), user)));
+	}
+
+	@Test
+	public void testIsShowControlMenuWithNormalUserWithoutRoleAccessInContentLayout()
+		throws Exception {
+
+		_menuAccessConfigurationManager.updateMenuAccessConfiguration(
+			_group.getGroupId(), new String[0], true);
+
+		User user = UserTestUtil.addUser();
+
+		Assert.assertFalse(
 			_productNavigationControlMenuManager.isShowControlMenu(
 				_getHttpServletRequest(Collections.emptyMap(), user)));
 	}

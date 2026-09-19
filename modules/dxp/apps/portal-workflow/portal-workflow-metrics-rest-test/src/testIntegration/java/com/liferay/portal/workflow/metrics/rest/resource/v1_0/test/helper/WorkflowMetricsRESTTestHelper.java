@@ -1174,16 +1174,6 @@ public class WorkflowMetricsRESTTestHelper {
 		_assertCount(1, indexName, parameters);
 	}
 
-	private Map<Locale, String> _createLocalizationMap(String value) {
-		Map<Locale, String> localizationMap = new HashMap<>();
-
-		for (Locale availableLocale : _language.getAvailableLocales()) {
-			localizationMap.put(availableLocale, value);
-		}
-
-		return localizationMap;
-	}
-
 	private Document _creatWorkflowMetricsSLAInstanceResultDocument(
 		long companyId, Instance instance, SLAResult slaResult) {
 
@@ -1294,6 +1284,16 @@ public class WorkflowMetricsRESTTestHelper {
 		);
 
 		return documentBuilder.build();
+	}
+
+	private Map<Locale, String> _createLocalizationMap(String value) {
+		Map<Locale, String> localizationMap = new HashMap<>();
+
+		for (Locale availableLocale : _language.getAvailableLocales()) {
+			localizationMap.put(availableLocale, value);
+		}
+
+		return localizationMap;
 	}
 
 	private void _deleteDocuments(String indexName, Object... parameters)
@@ -1562,10 +1562,10 @@ public class WorkflowMetricsRESTTestHelper {
 	private static final Log _log = LogFactoryUtil.getLog(
 		WorkflowMetricsRESTTestHelper.class);
 
-	private final Map<String, Object> _indexers = new HashMap<>();
-
 	@Reference
 	private IndexNameBuilder _indexNameBuilder;
+
+	private final Map<String, Object> _indexers = new HashMap<>();
 
 	@Reference
 	private InstanceWorkflowMetricsIndexer _instanceWorkflowMetricsIndexer;

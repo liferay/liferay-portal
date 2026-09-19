@@ -102,6 +102,17 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 	}
 
 	@Override
+	public long[] getCPDefinitionIds(long commercePricingClassId)
+		throws PortalException {
+
+		_commercePricingClassResourcePermission.check(
+			getPermissionChecker(), commercePricingClassId, ActionKeys.VIEW);
+
+		return commercePricingClassCPDefinitionRelLocalService.
+			getCPDefinitionIds(commercePricingClassId);
+	}
+
+	@Override
 	public CommercePricingClassCPDefinitionRel
 			getCommercePricingClassCPDefinitionRel(
 				long commercePricingClassCPDefinitionRelId)
@@ -172,17 +183,6 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 		return commercePricingClassCPDefinitionRelFinder.
 			countByCommercePricingClassId(
 				commercePricingClassId, name, languageId, true);
-	}
-
-	@Override
-	public long[] getCPDefinitionIds(long commercePricingClassId)
-		throws PortalException {
-
-		_commercePricingClassResourcePermission.check(
-			getPermissionChecker(), commercePricingClassId, ActionKeys.VIEW);
-
-		return commercePricingClassCPDefinitionRelLocalService.
-			getCPDefinitionIds(commercePricingClassId);
 	}
 
 	@Override

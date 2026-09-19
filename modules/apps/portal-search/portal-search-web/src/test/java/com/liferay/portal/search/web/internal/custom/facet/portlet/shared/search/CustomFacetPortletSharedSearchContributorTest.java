@@ -617,26 +617,6 @@ public class CustomFacetPortletSharedSearchContributorTest {
 			"_customFacetSearchContributor", customFacetSearchContributor);
 	}
 
-	private void _setUpDateRangeFacetSearchContributor(
-		CustomFacetPortletSharedSearchContributor
-			customFacetPortletSharedSearchContributor) {
-
-		DateRangeFacetSearchContributor dateRangeFacetSearchContributor =
-			new DateRangeFacetSearchContributorImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			dateRangeFacetSearchContributor, "_dateRangeFacetFactory",
-			new DateRangeFacetFactoryImpl());
-		ReflectionTestUtil.setFieldValue(
-			dateRangeFacetSearchContributor, "_jsonFactory",
-			new JSONFactoryImpl());
-
-		ReflectionTestUtil.setFieldValue(
-			customFacetPortletSharedSearchContributor,
-			"_dateRangeFacetSearchContributor",
-			dateRangeFacetSearchContributor);
-	}
-
 	private void _setUpDDMIndexer(
 		CustomFacetPortletSharedSearchContributor
 			customFacetPortletSharedSearchContributor,
@@ -661,6 +641,26 @@ public class CustomFacetPortletSharedSearchContributorTest {
 		ReflectionTestUtil.setFieldValue(
 			customFacetPortletSharedSearchContributor, "_ddmIndexer",
 			ddmIndexer);
+	}
+
+	private void _setUpDateRangeFacetSearchContributor(
+		CustomFacetPortletSharedSearchContributor
+			customFacetPortletSharedSearchContributor) {
+
+		DateRangeFacetSearchContributor dateRangeFacetSearchContributor =
+			new DateRangeFacetSearchContributorImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			dateRangeFacetSearchContributor, "_dateRangeFacetFactory",
+			new DateRangeFacetFactoryImpl());
+		ReflectionTestUtil.setFieldValue(
+			dateRangeFacetSearchContributor, "_jsonFactory",
+			new JSONFactoryImpl());
+
+		ReflectionTestUtil.setFieldValue(
+			customFacetPortletSharedSearchContributor,
+			"_dateRangeFacetSearchContributor",
+			dateRangeFacetSearchContributor);
 	}
 
 	private void _setUpNestedFacetSearchContributor(

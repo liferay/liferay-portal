@@ -113,15 +113,6 @@ public class MBGroupServiceSettings {
 			currentLanguageId);
 	}
 
-	public String[] getRanks(String languageId) {
-		return LocalizationUtil.getSettingsValues(
-			_typedSettings.getWrappedSettings(), "ranks", languageId);
-	}
-
-	public String getRecentPostsDateOffset() {
-		return _typedSettings.getValue("recentPostsDateOffset");
-	}
-
 	@Settings.Property(name = "rssDelta")
 	public int getRSSDelta() {
 		return _typedSettings.getIntegerValue("rssDelta");
@@ -137,6 +128,15 @@ public class MBGroupServiceSettings {
 	public String getRSSFeedType() {
 		return _typedSettings.getValue(
 			"rssFeedType", RSSUtil.getFeedType(RSSUtil.ATOM, 1.0));
+	}
+
+	public String[] getRanks(String languageId) {
+		return LocalizationUtil.getSettingsValues(
+			_typedSettings.getWrappedSettings(), "ranks", languageId);
+	}
+
+	public String getRecentPostsDateOffset() {
+		return _typedSettings.getValue("recentPostsDateOffset");
 	}
 
 	public boolean isAllowAnonymousPosting() {
@@ -159,10 +159,6 @@ public class MBGroupServiceSettings {
 		return _typedSettings.getBooleanValue("enableFlags");
 	}
 
-	public boolean isEnableRatings() {
-		return _typedSettings.getBooleanValue("enableRatings");
-	}
-
 	@Settings.Property(name = "enableRss")
 	public boolean isEnableRSS() {
 		if (!PortalUtil.isRSSFeedsEnabled()) {
@@ -170,6 +166,10 @@ public class MBGroupServiceSettings {
 		}
 
 		return _typedSettings.getBooleanValue("enableRss");
+	}
+
+	public boolean isEnableRatings() {
+		return _typedSettings.getBooleanValue("enableRatings");
 	}
 
 	public boolean isSubscribeByDefault() {

@@ -67,9 +67,6 @@ public interface ActionHelper {
 			PortletRequest portletRequest)
 		throws PortalException;
 
-	public List<CPDefinition> getCPDefinitions(PortletRequest portletRequest)
-		throws PortalException;
-
 	public CPDefinitionSpecificationOptionValue
 			getCPDefinitionSpecificationOptionValue(
 				PortletRequest portletRequest)
@@ -80,14 +77,17 @@ public interface ActionHelper {
 				PortletRequest portletRequest)
 		throws PortalException;
 
-	public CPInstance getCPInstance(PortletRequest portletRequest)
+	public List<CPDefinition> getCPDefinitions(PortletRequest portletRequest)
 		throws PortalException;
 
-	public List<CPInstance> getCPInstances(PortletRequest portletRequest)
+	public CPInstance getCPInstance(PortletRequest portletRequest)
 		throws PortalException;
 
 	public CPInstanceUnitOfMeasure getCPInstanceUnitOfMeasure(
 			PortletRequest portletRequest)
+		throws PortalException;
+
+	public List<CPInstance> getCPInstances(PortletRequest portletRequest)
 		throws PortalException;
 
 	public CPType getCPType(String name);

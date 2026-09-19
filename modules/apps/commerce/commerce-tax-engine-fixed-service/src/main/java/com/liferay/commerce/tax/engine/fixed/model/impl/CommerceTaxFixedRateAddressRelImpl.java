@@ -22,6 +22,12 @@ public class CommerceTaxFixedRateAddressRelImpl
 	extends CommerceTaxFixedRateAddressRelBaseImpl {
 
 	@Override
+	public CPTaxCategory getCPTaxCategory() throws PortalException {
+		return CPTaxCategoryLocalServiceUtil.getCPTaxCategory(
+			getCPTaxCategoryId());
+	}
+
+	@Override
 	public CommerceTaxMethod getCommerceTaxMethod() throws PortalException {
 		if (getCommerceTaxMethodId() <= 0) {
 			return null;
@@ -38,12 +44,6 @@ public class CommerceTaxFixedRateAddressRelImpl
 		}
 
 		return null;
-	}
-
-	@Override
-	public CPTaxCategory getCPTaxCategory() throws PortalException {
-		return CPTaxCategoryLocalServiceUtil.getCPTaxCategory(
-			getCPTaxCategoryId());
 	}
 
 	@Override

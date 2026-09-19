@@ -196,12 +196,6 @@ public class CPDefinitionImpl extends CPDefinitionBaseImpl {
 	}
 
 	@Override
-	public CommerceCatalog getCommerceCatalog() {
-		return CommerceCatalogLocalServiceUtil.fetchCommerceCatalogByGroupId(
-			getGroupId());
-	}
-
-	@Override
 	public List<CPAttachmentFileEntry> getCPAttachmentFileEntries(
 			int type, int status)
 		throws PortalException {
@@ -236,11 +230,6 @@ public class CPDefinitionImpl extends CPDefinitionBaseImpl {
 	}
 
 	@Override
-	public CProduct getCProduct() throws PortalException {
-		return CProductLocalServiceUtil.getCProduct(getCProductId());
-	}
-
-	@Override
 	public CPTaxCategory getCPTaxCategory() throws PortalException {
 		if (getCPTaxCategoryId() <= 0) {
 			return null;
@@ -248,6 +237,17 @@ public class CPDefinitionImpl extends CPDefinitionBaseImpl {
 
 		return CPTaxCategoryLocalServiceUtil.getCPTaxCategory(
 			getCPTaxCategoryId());
+	}
+
+	@Override
+	public CProduct getCProduct() throws PortalException {
+		return CProductLocalServiceUtil.getCProduct(getCProductId());
+	}
+
+	@Override
+	public CommerceCatalog getCommerceCatalog() {
+		return CommerceCatalogLocalServiceUtil.fetchCommerceCatalogByGroupId(
+			getGroupId());
 	}
 
 	@Override

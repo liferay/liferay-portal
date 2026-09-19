@@ -79,17 +79,6 @@ public class AssetVocabularyLocalServiceTest {
 	}
 
 	@Test
-	public void testGetGroupsVocabularies() throws Exception {
-		AssetTestUtil.addVocabulary(_group.getGroupId());
-
-		List<AssetVocabulary> assetVocabularies =
-			_assetVocabularyLocalService.getGroupsVocabularies(new long[0]);
-
-		Assert.assertTrue(
-			assetVocabularies.toString(), assetVocabularies.isEmpty());
-	}
-
-	@Test
 	public void testGetGroupVocabularies() throws Exception {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_group.getGroupId());
@@ -115,6 +104,17 @@ public class AssetVocabularyLocalServiceTest {
 			0,
 			_assetVocabularyLocalService.getGroupVocabulariesCount(
 				new long[0]));
+	}
+
+	@Test
+	public void testGetGroupsVocabularies() throws Exception {
+		AssetTestUtil.addVocabulary(_group.getGroupId());
+
+		List<AssetVocabulary> assetVocabularies =
+			_assetVocabularyLocalService.getGroupsVocabularies(new long[0]);
+
+		Assert.assertTrue(
+			assetVocabularies.toString(), assetVocabularies.isEmpty());
 	}
 
 	@Test

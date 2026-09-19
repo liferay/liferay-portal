@@ -30,15 +30,6 @@ import java.util.Set;
 @ProviderType
 public interface CPCompareContentHelper {
 
-	public Set<CPSpecificationOption> getCategorizedCPSpecificationOptions(
-			CPDataSourceResult cpDataSourceResult)
-		throws PortalException;
-
-	public String getCompareContentPortletNamespace();
-
-	public String getCompareProductsURL(ThemeDisplay themeDisplay)
-		throws PortalException;
-
 	public List<CPCatalogEntry> getCPCatalogEntries(
 			long groupId, long commerceAccountId,
 			HttpServletRequest httpServletRequest)
@@ -60,6 +51,15 @@ public interface CPCompareContentHelper {
 
 	public Set<CPSpecificationOption> getCPSpecificationOptions(
 			CPDataSourceResult cpDataSourceResult)
+		throws PortalException;
+
+	public Set<CPSpecificationOption> getCategorizedCPSpecificationOptions(
+			CPDataSourceResult cpDataSourceResult)
+		throws PortalException;
+
+	public String getCompareContentPortletNamespace();
+
+	public String getCompareProductsURL(ThemeDisplay themeDisplay)
 		throws PortalException;
 
 	public String getDefaultImageFileURL(

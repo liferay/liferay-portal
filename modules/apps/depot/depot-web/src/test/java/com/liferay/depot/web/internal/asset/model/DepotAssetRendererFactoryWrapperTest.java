@@ -55,64 +55,6 @@ public class DepotAssetRendererFactoryWrapperTest {
 	}
 
 	@Test
-	public void testAssetRendererReturnsFallbackGroup() throws Exception {
-		AssetRenderer<Object> assetRenderer = Mockito.mock(AssetRenderer.class);
-
-		Mockito.when(
-			_assetRendererFactory.getAssetRenderer(Mockito.anyLong())
-		).thenReturn(
-			assetRenderer
-		);
-
-		long depotGroupId = _setUpDepotGroup();
-
-		Mockito.when(
-			assetRenderer.getGroupId()
-		).thenReturn(
-			depotGroupId
-		);
-
-		long groupId = _setUpGroup();
-
-		Mockito.when(
-			_siteConnectedGroupGroupProvider.
-				getCurrentAndAncestorSiteAndDepotGroupIds(Mockito.anyLong())
-		).thenReturn(
-			new long[] {depotGroupId, groupId}
-		);
-
-		DepotAssetRendererFactoryWrapper depotAssetRendererFactoryWrapper =
-			new DepotAssetRendererFactoryWrapper(
-				_assetRendererFactory, null, null, _groupLocalService, null,
-				null, _siteConnectedGroupGroupProvider);
-
-		try (SafeCloseable safeCloseable =
-				GroupThreadLocal.setGroupIdWithSafeCloseable(-1)) {
-
-			Assert.assertSame(
-				assetRenderer,
-				depotAssetRendererFactoryWrapper.getAssetRenderer(
-					RandomTestUtil.randomLong()));
-		}
-
-		try (SafeCloseable safeCloseable =
-				GroupThreadLocal.setGroupIdWithSafeCloseable(-1)) {
-
-			ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
-
-			try {
-				Assert.assertSame(
-					assetRenderer,
-					depotAssetRendererFactoryWrapper.getAssetRenderer(
-						RandomTestUtil.randomLong()));
-			}
-			finally {
-				ServiceContextThreadLocal.popServiceContext();
-			}
-		}
-	}
-
-	@Test
 	public void testAssetRenderIsNotReturnedForUnconnectedGroup()
 		throws Exception {
 
@@ -186,6 +128,64 @@ public class DepotAssetRendererFactoryWrapperTest {
 				assetRenderer,
 				depotAssetRendererFactoryWrapper.getAssetRenderer(
 					RandomTestUtil.randomLong()));
+		}
+	}
+
+	@Test
+	public void testAssetRendererReturnsFallbackGroup() throws Exception {
+		AssetRenderer<Object> assetRenderer = Mockito.mock(AssetRenderer.class);
+
+		Mockito.when(
+			_assetRendererFactory.getAssetRenderer(Mockito.anyLong())
+		).thenReturn(
+			assetRenderer
+		);
+
+		long depotGroupId = _setUpDepotGroup();
+
+		Mockito.when(
+			assetRenderer.getGroupId()
+		).thenReturn(
+			depotGroupId
+		);
+
+		long groupId = _setUpGroup();
+
+		Mockito.when(
+			_siteConnectedGroupGroupProvider.
+				getCurrentAndAncestorSiteAndDepotGroupIds(Mockito.anyLong())
+		).thenReturn(
+			new long[] {depotGroupId, groupId}
+		);
+
+		DepotAssetRendererFactoryWrapper depotAssetRendererFactoryWrapper =
+			new DepotAssetRendererFactoryWrapper(
+				_assetRendererFactory, null, null, _groupLocalService, null,
+				null, _siteConnectedGroupGroupProvider);
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(-1)) {
+
+			Assert.assertSame(
+				assetRenderer,
+				depotAssetRendererFactoryWrapper.getAssetRenderer(
+					RandomTestUtil.randomLong()));
+		}
+
+		try (SafeCloseable safeCloseable =
+				GroupThreadLocal.setGroupIdWithSafeCloseable(-1)) {
+
+			ServiceContextThreadLocal.pushServiceContext(new ServiceContext());
+
+			try {
+				Assert.assertSame(
+					assetRenderer,
+					depotAssetRendererFactoryWrapper.getAssetRenderer(
+						RandomTestUtil.randomLong()));
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
 		}
 	}
 

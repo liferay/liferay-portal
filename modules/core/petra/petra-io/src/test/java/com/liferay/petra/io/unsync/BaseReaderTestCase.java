@@ -151,17 +151,17 @@ public abstract class BaseReaderTestCase {
 	}
 
 	@Test
-	public void testReady() throws Exception {
-		Reader reader = getReader(_VALUE);
-
-		Assert.assertTrue(reader.ready());
-	}
-
-	@Test
 	public void testReadZeroLength() throws IOException {
 		Reader reader = getReader(_VALUE);
 
 		Assert.assertEquals(0, reader.read(new char[0], 0, 0));
+	}
+
+	@Test
+	public void testReady() throws Exception {
+		Reader reader = getReader(_VALUE);
+
+		Assert.assertTrue(reader.ready());
 	}
 
 	@Test

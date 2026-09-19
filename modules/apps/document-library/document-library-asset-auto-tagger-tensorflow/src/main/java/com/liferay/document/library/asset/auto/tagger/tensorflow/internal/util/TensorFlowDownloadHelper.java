@@ -86,6 +86,10 @@ public class TensorFlowDownloadHelper {
 			StringPool.BLANK);
 	}
 
+	public boolean isDownloadFailed() {
+		return _downloadFailed;
+	}
+
 	public boolean isDownloaded() throws PortalException {
 		if (_store.hasFile(
 				_COMPANY_ID, CompanyConstants.SYSTEM, _getModelFileName(),
@@ -98,10 +102,6 @@ public class TensorFlowDownloadHelper {
 		}
 
 		return false;
-	}
-
-	public boolean isDownloadFailed() {
-		return _downloadFailed;
 	}
 
 	private void _downloadFile(String fileName, String url, String sha1)

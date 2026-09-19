@@ -97,45 +97,6 @@ public class DLEditFileShortcutDisplayContextTest {
 	}
 
 	@Test
-	public void testGetFieldsWithoutParametersAndWithAttributes() {
-		FileShortcut fileShortcut = _addRandomFileShortcut();
-
-		DLEditFileShortcutDisplayContext dlEditFileShortcutDisplayContext =
-			_getDLEditFileShortcutDisplayContext(
-				new MockHttpServletRequestBuilder(
-				).withAttribute(
-					WebKeys.DOCUMENT_LIBRARY_FILE_SHORTCUT, fileShortcut
-				).build());
-
-		Assert.assertEquals(
-			fileShortcut.getFileShortcutId(),
-			dlEditFileShortcutDisplayContext.getFileShortcutId());
-		Assert.assertEquals(
-			fileShortcut.getFolderId(),
-			dlEditFileShortcutDisplayContext.getFolderId());
-		Assert.assertEquals(
-			fileShortcut.getRepositoryId(),
-			dlEditFileShortcutDisplayContext.getRepositoryId());
-		Assert.assertEquals(
-			fileShortcut.getToFileEntryId(),
-			dlEditFileShortcutDisplayContext.getToFileEntryId());
-	}
-
-	@Test
-	public void testGetFieldsWithoutParametersAndWithoutAttributes() {
-		DLEditFileShortcutDisplayContext dlEditFileShortcutDisplayContext =
-			_getDLEditFileShortcutDisplayContext(new MockHttpServletRequest());
-
-		Assert.assertEquals(
-			0, dlEditFileShortcutDisplayContext.getFileShortcutId());
-		Assert.assertEquals(0, dlEditFileShortcutDisplayContext.getFolderId());
-		Assert.assertEquals(
-			0, dlEditFileShortcutDisplayContext.getRepositoryId());
-		Assert.assertEquals(
-			0, dlEditFileShortcutDisplayContext.getToFileEntryId());
-	}
-
-	@Test
 	public void testGetFieldsWithParametersAndWithAttributes() {
 		FileShortcut fileShortcut = _addRandomFileShortcut();
 
@@ -187,6 +148,45 @@ public class DLEditFileShortcutDisplayContextTest {
 			35678L, dlEditFileShortcutDisplayContext.getRepositoryId());
 		Assert.assertEquals(
 			56789L, dlEditFileShortcutDisplayContext.getToFileEntryId());
+	}
+
+	@Test
+	public void testGetFieldsWithoutParametersAndWithAttributes() {
+		FileShortcut fileShortcut = _addRandomFileShortcut();
+
+		DLEditFileShortcutDisplayContext dlEditFileShortcutDisplayContext =
+			_getDLEditFileShortcutDisplayContext(
+				new MockHttpServletRequestBuilder(
+				).withAttribute(
+					WebKeys.DOCUMENT_LIBRARY_FILE_SHORTCUT, fileShortcut
+				).build());
+
+		Assert.assertEquals(
+			fileShortcut.getFileShortcutId(),
+			dlEditFileShortcutDisplayContext.getFileShortcutId());
+		Assert.assertEquals(
+			fileShortcut.getFolderId(),
+			dlEditFileShortcutDisplayContext.getFolderId());
+		Assert.assertEquals(
+			fileShortcut.getRepositoryId(),
+			dlEditFileShortcutDisplayContext.getRepositoryId());
+		Assert.assertEquals(
+			fileShortcut.getToFileEntryId(),
+			dlEditFileShortcutDisplayContext.getToFileEntryId());
+	}
+
+	@Test
+	public void testGetFieldsWithoutParametersAndWithoutAttributes() {
+		DLEditFileShortcutDisplayContext dlEditFileShortcutDisplayContext =
+			_getDLEditFileShortcutDisplayContext(new MockHttpServletRequest());
+
+		Assert.assertEquals(
+			0, dlEditFileShortcutDisplayContext.getFileShortcutId());
+		Assert.assertEquals(0, dlEditFileShortcutDisplayContext.getFolderId());
+		Assert.assertEquals(
+			0, dlEditFileShortcutDisplayContext.getRepositoryId());
+		Assert.assertEquals(
+			0, dlEditFileShortcutDisplayContext.getToFileEntryId());
 	}
 
 	@Test

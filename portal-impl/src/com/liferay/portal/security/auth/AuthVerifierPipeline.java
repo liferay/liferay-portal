@@ -489,10 +489,10 @@ public class AuthVerifierPipeline {
 
 		private final AccessControlContext _accessControlContext;
 		private AuthVerifierResult _authVerifierResult;
-		private Set<AuthVerifierConfiguration>
-			_excludedAuthVerifierConfigurations;
 		private final URLPatternMapper<List<AuthVerifierConfiguration>>
 			_excludeURLPatternMapper;
+		private Set<AuthVerifierConfiguration>
+			_excludedAuthVerifierConfigurations;
 		private final String _requestURI;
 
 	}

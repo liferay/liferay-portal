@@ -208,9 +208,9 @@ public abstract class BaseDuplicateItemMVCActionCommand
 		return jsonArray;
 	}
 
-	protected abstract String getNoninstanceablePortletExceptionMessage();
-
 	protected abstract String getNoSuchEntryLinkExceptionMessage();
+
+	protected abstract String getNoninstanceablePortletExceptionMessage();
 
 	@Override
 	protected JSONObject processException(

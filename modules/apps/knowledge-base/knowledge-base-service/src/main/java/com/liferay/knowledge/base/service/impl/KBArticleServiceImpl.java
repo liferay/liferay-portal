@@ -448,6 +448,109 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	}
 
 	@Override
+	public KBArticleSearchDisplay getKBArticleSearchDisplay(
+			long groupId, String title, String content, int status,
+			Date startDate, Date endDate, boolean andOperator,
+			int[] curStartValues, int cur, int delta,
+			OrderByComparator<KBArticle> orderByComparator)
+		throws PortalException {
+
+		// See LPS-9546
+
+		int start = 0;
+
+		if (curStartValues.length > (cur - SearchContainer.DEFAULT_CUR)) {
+			start = curStartValues[cur - SearchContainer.DEFAULT_CUR];
+
+			curStartValues = ArrayUtil.subset(
+				curStartValues, 0, cur - SearchContainer.DEFAULT_CUR + 1);
+		}
+		else {
+			cur = SearchContainer.DEFAULT_CUR;
+
+			curStartValues = new int[] {0};
+		}
+
+		int end = start + _INTERVAL;
+
+		List<KBArticle> kbArticles = new ArrayList<>();
+
+		int curStartValue = 0;
+
+		while (curStartValue == 0) {
+			List<KBArticle> curKBArticles = kbArticleLocalService.search(
+				groupId, title, content, status, startDate, endDate,
+				andOperator, start, end, orderByComparator);
+
+			if (curKBArticles.isEmpty()) {
+				break;
+			}
+
+			for (int i = 0; i < curKBArticles.size(); i++) {
+				KBArticle curKBArticle = curKBArticles.get(i);
+
+				if (!_kbArticleModelResourcePermission.contains(
+						getPermissionChecker(), curKBArticle,
+						KBActionKeys.VIEW)) {
+
+					continue;
+				}
+
+				if (kbArticles.size() == delta) {
+					curStartValue = start + i;
+
+					break;
+				}
+
+				kbArticles.add(curKBArticle);
+			}
+
+			start = start + _INTERVAL;
+
+			end = start + _INTERVAL;
+		}
+
+		int total = ((cur - 1) * delta) + kbArticles.size();
+
+		if (curStartValue > 0) {
+			curStartValues = ArrayUtil.append(curStartValues, curStartValue);
+
+			total = total + 1;
+		}
+
+		return new KBArticleSearchDisplayImpl(
+			kbArticles, total, curStartValues);
+	}
+
+	@Override
+	public List<KBArticle> getKBArticleVersions(
+		long groupId, long resourcePrimKey, int status, int start, int end,
+		OrderByComparator<KBArticle> orderByComparator) {
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return kbArticlePersistence.filterFindByR_G_NotS(
+				resourcePrimKey, groupId, WorkflowConstants.STATUS_IN_TRASH,
+				start, end, orderByComparator);
+		}
+
+		return kbArticlePersistence.filterFindByR_G_S(
+			resourcePrimKey, groupId, status, start, end, orderByComparator);
+	}
+
+	@Override
+	public int getKBArticleVersionsCount(
+		long groupId, long resourcePrimKey, int status) {
+
+		if (status == WorkflowConstants.STATUS_ANY) {
+			return kbArticlePersistence.filterCountByR_G_NotS(
+				resourcePrimKey, groupId, WorkflowConstants.STATUS_IN_TRASH);
+		}
+
+		return kbArticlePersistence.filterCountByR_G_S(
+			resourcePrimKey, groupId, status);
+	}
+
+	@Override
 	public List<KBArticle> getKBArticles(
 		long groupId, long parentResourcePrimKey, int status, int start,
 		int end, OrderByComparator<KBArticle> orderByComparator) {
@@ -573,109 +676,6 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		}
 
 		return count;
-	}
-
-	@Override
-	public KBArticleSearchDisplay getKBArticleSearchDisplay(
-			long groupId, String title, String content, int status,
-			Date startDate, Date endDate, boolean andOperator,
-			int[] curStartValues, int cur, int delta,
-			OrderByComparator<KBArticle> orderByComparator)
-		throws PortalException {
-
-		// See LPS-9546
-
-		int start = 0;
-
-		if (curStartValues.length > (cur - SearchContainer.DEFAULT_CUR)) {
-			start = curStartValues[cur - SearchContainer.DEFAULT_CUR];
-
-			curStartValues = ArrayUtil.subset(
-				curStartValues, 0, cur - SearchContainer.DEFAULT_CUR + 1);
-		}
-		else {
-			cur = SearchContainer.DEFAULT_CUR;
-
-			curStartValues = new int[] {0};
-		}
-
-		int end = start + _INTERVAL;
-
-		List<KBArticle> kbArticles = new ArrayList<>();
-
-		int curStartValue = 0;
-
-		while (curStartValue == 0) {
-			List<KBArticle> curKBArticles = kbArticleLocalService.search(
-				groupId, title, content, status, startDate, endDate,
-				andOperator, start, end, orderByComparator);
-
-			if (curKBArticles.isEmpty()) {
-				break;
-			}
-
-			for (int i = 0; i < curKBArticles.size(); i++) {
-				KBArticle curKBArticle = curKBArticles.get(i);
-
-				if (!_kbArticleModelResourcePermission.contains(
-						getPermissionChecker(), curKBArticle,
-						KBActionKeys.VIEW)) {
-
-					continue;
-				}
-
-				if (kbArticles.size() == delta) {
-					curStartValue = start + i;
-
-					break;
-				}
-
-				kbArticles.add(curKBArticle);
-			}
-
-			start = start + _INTERVAL;
-
-			end = start + _INTERVAL;
-		}
-
-		int total = ((cur - 1) * delta) + kbArticles.size();
-
-		if (curStartValue > 0) {
-			curStartValues = ArrayUtil.append(curStartValues, curStartValue);
-
-			total = total + 1;
-		}
-
-		return new KBArticleSearchDisplayImpl(
-			kbArticles, total, curStartValues);
-	}
-
-	@Override
-	public List<KBArticle> getKBArticleVersions(
-		long groupId, long resourcePrimKey, int status, int start, int end,
-		OrderByComparator<KBArticle> orderByComparator) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterFindByR_G_NotS(
-				resourcePrimKey, groupId, WorkflowConstants.STATUS_IN_TRASH,
-				start, end, orderByComparator);
-		}
-
-		return kbArticlePersistence.filterFindByR_G_S(
-			resourcePrimKey, groupId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getKBArticleVersionsCount(
-		long groupId, long resourcePrimKey, int status) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.filterCountByR_G_NotS(
-				resourcePrimKey, groupId, WorkflowConstants.STATUS_IN_TRASH);
-		}
-
-		return kbArticlePersistence.filterCountByR_G_S(
-			resourcePrimKey, groupId, status);
 	}
 
 	@Override

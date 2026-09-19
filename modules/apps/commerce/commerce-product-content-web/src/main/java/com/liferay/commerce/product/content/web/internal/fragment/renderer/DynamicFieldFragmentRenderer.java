@@ -201,16 +201,6 @@ public class DynamicFieldFragmentRenderer implements FragmentRenderer {
 		}
 	}
 
-	private String _getConfigurationValue(
-		FragmentEntryLink fragmentEntryLink, String name) {
-
-		return GetterUtil.getString(
-			_fragmentEntryConfigurationParser.getFieldValue(
-				fragmentEntryLink.getConfigurationJSONObject(),
-				fragmentEntryLink.getEditableValuesJSONObject(),
-				LocaleUtil.getMostRelevantLocale(), name));
-	}
-
 	private String _getCPInstanceFieldValue(
 			HttpServletRequest httpServletRequest, CPDefinition cpDefinition,
 			String field)
@@ -262,6 +252,16 @@ public class DynamicFieldFragmentRenderer implements FragmentRenderer {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private String _getConfigurationValue(
+		FragmentEntryLink fragmentEntryLink, String name) {
+
+		return GetterUtil.getString(
+			_fragmentEntryConfigurationParser.getFieldValue(
+				fragmentEntryLink.getConfigurationJSONObject(),
+				fragmentEntryLink.getEditableValuesJSONObject(),
+				LocaleUtil.getMostRelevantLocale(), name));
 	}
 
 	private String _getFieldLabel(

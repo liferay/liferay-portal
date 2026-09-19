@@ -220,23 +220,6 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 		return commerceCurrency.getCode();
 	}
 
-	public String getDiscountCategoriesApiURL() throws PortalException {
-		return "/o/headless-commerce-admin-pricing/v2.0/discounts/" +
-			getCommerceDiscountId() +
-				"/discount-categories?nestedFields=category";
-	}
-
-	public List<FDSActionDropdownItem>
-			getDiscountCategoryFDSActionDropdownItems()
-		throws PortalException {
-
-		return ListUtil.fromArray(
-			new FDSActionDropdownItem(
-				null, "trash", "delete",
-				LanguageUtil.get(httpServletRequest, "delete"), "delete",
-				"delete", "headless"));
-	}
-
 	public String getDiscountCPDefinitionApiURL() throws PortalException {
 		return "/o/headless-commerce-admin-pricing/v2.0/discounts/" +
 			getCommerceDiscountId() + "/discount-products?nestedFields=product";
@@ -291,6 +274,23 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 			false);
 	}
 
+	public String getDiscountCategoriesApiURL() throws PortalException {
+		return "/o/headless-commerce-admin-pricing/v2.0/discounts/" +
+			getCommerceDiscountId() +
+				"/discount-categories?nestedFields=category";
+	}
+
+	public List<FDSActionDropdownItem>
+			getDiscountCategoryFDSActionDropdownItems()
+		throws PortalException {
+
+		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				null, "trash", "delete",
+				LanguageUtil.get(httpServletRequest, "delete"), "delete",
+				"delete", "headless"));
+	}
+
 	public CreationMenu getDiscountCreationMenu() throws Exception {
 		CreationMenu creationMenu = new CreationMenu();
 
@@ -343,12 +343,6 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 				"permissions", "modal-permissions"));
 	}
 
-	public String getDiscountPricingClassesApiURL() throws PortalException {
-		return "/o/headless-commerce-admin-pricing/v2.0/discounts/" +
-			getCommerceDiscountId() +
-				"/discount-product-groups?nestedFields=productGroup";
-	}
-
 	public List<FDSActionDropdownItem>
 			getDiscountPricingClassFDSActionDropdownItems()
 		throws PortalException {
@@ -368,6 +362,12 @@ public class CommerceDiscountDisplayContext extends BasePricingDisplayContext {
 				"screenNavigationCategoryKey", "details"
 			).buildString(),
 			false);
+	}
+
+	public String getDiscountPricingClassesApiURL() throws PortalException {
+		return "/o/headless-commerce-admin-pricing/v2.0/discounts/" +
+			getCommerceDiscountId() +
+				"/discount-product-groups?nestedFields=productGroup";
 	}
 
 	public CreationMenu getDiscountRuleCreationMenu() throws Exception {

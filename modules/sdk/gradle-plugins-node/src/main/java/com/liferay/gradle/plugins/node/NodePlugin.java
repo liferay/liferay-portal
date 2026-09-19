@@ -876,6 +876,20 @@ public class NodePlugin implements Plugin<Project> {
 			});
 	}
 
+	private void _configureTaskYarnInstall(YarnInstallTask yarnInstallTask) {
+		TaskOutputs taskOutputs = yarnInstallTask.getOutputs();
+
+		taskOutputs.upToDateWhen(
+			new Spec<Task>() {
+
+				@Override
+				public boolean isSatisfiedBy(Task task) {
+					return false;
+				}
+
+			});
+	}
+
 	private void _configureTasksDownloadNodeModule(
 		Project project, final NpmInstallTask npmInstallTask,
 		final Map<String, Object> packageJsonMap) {
@@ -1000,20 +1014,6 @@ public class NodePlugin implements Plugin<Project> {
 				@Override
 				public void execute(YarnInstallTask yarnInstallTask) {
 					_configureTaskYarnInstall(yarnInstallTask);
-				}
-
-			});
-	}
-
-	private void _configureTaskYarnInstall(YarnInstallTask yarnInstallTask) {
-		TaskOutputs taskOutputs = yarnInstallTask.getOutputs();
-
-		taskOutputs.upToDateWhen(
-			new Spec<Task>() {
-
-				@Override
-				public boolean isSatisfiedBy(Task task) {
-					return false;
 				}
 
 			});

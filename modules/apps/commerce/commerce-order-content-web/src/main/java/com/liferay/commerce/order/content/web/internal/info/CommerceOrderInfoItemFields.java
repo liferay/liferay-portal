@@ -402,6 +402,15 @@ public class CommerceOrderInfoItemFields {
 			InfoLocalizedValue.localize(
 				CommerceOrderInfoItemFields.class, "guest-order")
 		).build();
+	public static final InfoField<BooleanInfoFieldType>
+		inProgressOrderStatusInfoField = BuilderHolder._builder.infoFieldType(
+			BooleanInfoFieldType.INSTANCE
+		).name(
+			"inProgressOrderStatus"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				CommerceOrderInfoItemFields.class, "in-progress")
+		).build();
 	public static final InfoField<BooleanInfoFieldType> inactiveInfoField =
 		BuilderHolder._builder.infoFieldType(
 			BooleanInfoFieldType.INSTANCE
@@ -419,15 +428,6 @@ public class CommerceOrderInfoItemFields {
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CommerceOrderInfoItemFields.class, "incomplete")
-		).build();
-	public static final InfoField<BooleanInfoFieldType>
-		inProgressOrderStatusInfoField = BuilderHolder._builder.infoFieldType(
-			BooleanInfoFieldType.INSTANCE
-		).name(
-			"inProgressOrderStatus"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CommerceOrderInfoItemFields.class, "in-progress")
 		).build();
 	public static final InfoField<DateInfoFieldType>
 		lastPriceUpdateDateInfoField = BuilderHolder._builder.infoFieldType(

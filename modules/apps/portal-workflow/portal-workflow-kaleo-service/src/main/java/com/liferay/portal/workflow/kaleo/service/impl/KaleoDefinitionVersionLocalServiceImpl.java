@@ -574,13 +574,13 @@ public class KaleoDefinitionVersionLocalServiceImpl
 	private SearchEngineAdapter _searchEngineAdapter;
 
 	@Reference
-	private Searcher _searcher;
-
-	@Reference
 	private SearchLocalizationHelper _searchLocalizationHelper;
 
 	@Reference
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+
+	@Reference
+	private Searcher _searcher;
 
 	@Reference
 	private Sorts _sorts;

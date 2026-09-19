@@ -19,9 +19,9 @@ public interface FrontendTokenCategory {
 
 	public Collection<FrontendTokenMapping> getFrontendTokenMappings();
 
-	public Collection<FrontendToken> getFrontendTokens();
-
 	public Collection<FrontendTokenSet> getFrontendTokenSets();
+
+	public Collection<FrontendToken> getFrontendTokens();
 
 	public JSONObject getJSONObject(Locale locale);
 

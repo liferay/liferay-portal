@@ -114,19 +114,6 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceImpl
 				commerceDiscountCommerceAccountGroupRel);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public void
-		deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
-
-		commerceDiscountCommerceAccountGroupRelPersistence.
-			removeByCommerceAccountGroupId(commerceAccountGroupId);
-	}
-
 	@Override
 	public void
 			deleteCommerceDiscountCommerceAccountGroupRelsByCommerceDiscountId(
@@ -146,6 +133,19 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceImpl
 				deleteCommerceDiscountCommerceAccountGroupRel(
 					commerceDiscountCommerceAccountGroupRel);
 		}
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x)
+	 */
+	@Deprecated
+	@Override
+	public void
+		deleteCommerceDiscountCommerceAccountGroupRelsBycommerceAccountGroupId(
+			long commerceAccountGroupId) {
+
+		commerceDiscountCommerceAccountGroupRelPersistence.
+			removeByCommerceAccountGroupId(commerceAccountGroupId);
 	}
 
 	@Override

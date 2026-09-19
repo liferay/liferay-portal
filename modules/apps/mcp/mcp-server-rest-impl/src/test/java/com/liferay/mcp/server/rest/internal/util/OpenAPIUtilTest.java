@@ -436,6 +436,12 @@ public class OpenAPIUtilTest {
 				"No part named \"", fieldName, "\" in ", fileItems));
 	}
 
+	private String _getFileItemValue(List<FileItem> fileItems, String name) {
+		FileItem fileItem = _getFileItem(fileItems, name);
+
+		return fileItem.getString();
+	}
+
 	private List<FileItem> _getFileItems(VulcanRequestForwarder.Request request)
 		throws Exception {
 
@@ -472,12 +478,6 @@ public class OpenAPIUtilTest {
 				}
 
 			});
-	}
-
-	private String _getFileItemValue(List<FileItem> fileItems, String name) {
-		FileItem fileItem = _getFileItem(fileItems, name);
-
-		return fileItem.getString();
 	}
 
 	private Map<String, ?> _getInputSchema(

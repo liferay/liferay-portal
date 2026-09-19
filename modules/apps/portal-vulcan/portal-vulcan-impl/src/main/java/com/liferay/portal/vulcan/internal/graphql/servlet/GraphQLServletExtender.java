@@ -2123,8 +2123,8 @@ public class GraphQLServletExtender {
 		_servletContextHelperServiceRegistration;
 	private final Map<Method, ServletData> _servletDataMap = new HashMap<>();
 	private ServiceTrackerList<ServletData> _servletDataServiceTrackerList;
-	private final Map<Long, Servlet> _servlets = new ConcurrentHashMap<>();
 	private ServiceRegistration<Servlet> _servletServiceRegistration;
+	private final Map<Long, Servlet> _servlets = new ConcurrentHashMap<>();
 
 	@Reference
 	private SortParserProvider _sortParserProvider;

@@ -558,11 +558,11 @@ public class LayoutFriendlyURLEntryUpgradeProcessTest {
 	private FinderCache _finderCache;
 
 	@Inject
-	private FriendlyURLEntryLocalizationPersistence
-		_friendlyURLEntryLocalizationPersistence;
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@Inject
-	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+	private FriendlyURLEntryLocalizationPersistence
+		_friendlyURLEntryLocalizationPersistence;
 
 	@Inject
 	private FriendlyURLEntryMappingPersistence

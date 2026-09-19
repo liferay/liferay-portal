@@ -79,13 +79,13 @@ public class SharepointFolder implements ExtRepositoryFolder {
 	}
 
 	@Override
-	public String getExtension() {
-		return StringPool.BLANK;
+	public String getExtRepositoryModelKey() {
+		return _extRepositoryModelKey;
 	}
 
 	@Override
-	public String getExtRepositoryModelKey() {
-		return _extRepositoryModelKey;
+	public String getExtension() {
+		return StringPool.BLANK;
 	}
 
 	@Override

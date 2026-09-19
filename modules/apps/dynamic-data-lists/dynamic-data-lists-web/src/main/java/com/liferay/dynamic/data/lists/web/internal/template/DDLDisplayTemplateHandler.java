@@ -82,17 +82,6 @@ public class DDLDisplayTemplateHandler extends BaseDDMTemplateHandler {
 	}
 
 	@Override
-	public String getTemplatesHelpPath(String language) {
-		return DDLWebConfigurationUtil.get(
-			getTemplatesHelpPropertyKey(), new Filter(language));
-	}
-
-	@Override
-	public String getTemplatesHelpPropertyKey() {
-		return DDLWebConfigurationKeys.DYNAMIC_DATA_LISTS_HELP_TEMPLATE;
-	}
-
-	@Override
 	public Map<String, TemplateVariableGroup> getTemplateVariableGroups(
 			long classPK, String language, Locale locale)
 		throws Exception {
@@ -137,6 +126,17 @@ public class DDLDisplayTemplateHandler extends BaseDDMTemplateHandler {
 			ddlServicesTemplateVariableGroup);
 
 		return templateVariableGroups;
+	}
+
+	@Override
+	public String getTemplatesHelpPath(String language) {
+		return DDLWebConfigurationUtil.get(
+			getTemplatesHelpPropertyKey(), new Filter(language));
+	}
+
+	@Override
+	public String getTemplatesHelpPropertyKey() {
+		return DDLWebConfigurationKeys.DYNAMIC_DATA_LISTS_HELP_TEMPLATE;
 	}
 
 	@Override

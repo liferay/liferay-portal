@@ -72,13 +72,13 @@ public class PortletPreferenceValueTableReferenceDefinitionTest
 			portletPreferenceValue);
 	}
 
+	@Inject
+	private PortletPreferenceValueLocalService
+		_portletPreferenceValueLocalService;
+
 	private PortletPreferences _portletPreferences;
 
 	@Inject
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
-	private PortletPreferenceValueLocalService
-		_portletPreferenceValueLocalService;
 
 }

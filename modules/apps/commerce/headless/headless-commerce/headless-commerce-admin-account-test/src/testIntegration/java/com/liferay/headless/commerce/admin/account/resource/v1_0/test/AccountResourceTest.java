@@ -410,42 +410,6 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Assert.assertEquals(account1.getId(), account4.getId());
 	}
 
-	private void _testGetAccountsPage(List<Account> expectedAccountEntries)
-		throws Exception {
-
-		Page<Account> accountsPage = accountResource.getAccountsPage(
-			null, null, Pagination.of(1, 10), null);
-
-		for (Account account : accountsPage.getItems()) {
-			expectedAccountEntries.contains(account);
-		}
-	}
-
-	private void _testGetAccountsPageWithPermission() throws Exception {
-		User user = _addUser();
-
-		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
-
-		Account account1 = _postAccount(randomAccount());
-
-		Page<Account> accountsPage1 = accountResource.getAccountsPage(
-			null, null, Pagination.of(1, 10), null);
-
-		Assert.assertEquals(0, accountsPage1.getTotalCount());
-
-		_accountEntryUserRelLocalService.addAccountEntryUserRel(
-			account1.getId(), user.getUserId());
-
-		Page<Account> accountsPage2 = accountResource.getAccountsPage(
-			null, null, Pagination.of(1, 10), null);
-
-		Assert.assertEquals(1, accountsPage2.getTotalCount());
-
-		Account account2 = accountsPage2.fetchFirstItem();
-
-		Assert.assertEquals(account1.getId(), account2.getId());
-	}
-
 	private void _testGetAccountWithPermission() throws Exception {
 		User user1 = _addUser();
 
@@ -482,6 +446,42 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Account account4 = accountResource2.getAccount(account1.getId());
 
 		Assert.assertEquals(account1.getId(), account4.getId());
+	}
+
+	private void _testGetAccountsPage(List<Account> expectedAccountEntries)
+		throws Exception {
+
+		Page<Account> accountsPage = accountResource.getAccountsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		for (Account account : accountsPage.getItems()) {
+			expectedAccountEntries.contains(account);
+		}
+	}
+
+	private void _testGetAccountsPageWithPermission() throws Exception {
+		User user = _addUser();
+
+		AccountResource accountResource = _getAccountResource(_PASSWORD, user);
+
+		Account account1 = _postAccount(randomAccount());
+
+		Page<Account> accountsPage1 = accountResource.getAccountsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(0, accountsPage1.getTotalCount());
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			account1.getId(), user.getUserId());
+
+		Page<Account> accountsPage2 = accountResource.getAccountsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, accountsPage2.getTotalCount());
+
+		Account account2 = accountsPage2.fetchFirstItem();
+
+		Assert.assertEquals(account1.getId(), account2.getId());
 	}
 
 	private static final String _PASSWORD = RandomTestUtil.randomString();

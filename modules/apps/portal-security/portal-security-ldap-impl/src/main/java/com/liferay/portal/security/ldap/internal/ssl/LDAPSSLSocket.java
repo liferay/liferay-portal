@@ -80,6 +80,11 @@ public class LDAPSSLSocket extends SSLSocket {
 	}
 
 	@Override
+	public boolean getEnableSessionCreation() {
+		return _sslSocket.getEnableSessionCreation();
+	}
+
+	@Override
 	public String[] getEnabledCipherSuites() {
 		return _sslSocket.getEnabledCipherSuites();
 	}
@@ -87,11 +92,6 @@ public class LDAPSSLSocket extends SSLSocket {
 	@Override
 	public String[] getEnabledProtocols() {
 		return _sslSocket.getEnabledProtocols();
-	}
-
-	@Override
-	public boolean getEnableSessionCreation() {
-		return _sslSocket.getEnableSessionCreation();
 	}
 
 	@Override
@@ -165,6 +165,11 @@ public class LDAPSSLSocket extends SSLSocket {
 	}
 
 	@Override
+	public SSLParameters getSSLParameters() {
+		return _sslSocket.getSSLParameters();
+	}
+
+	@Override
 	public int getSendBufferSize() throws SocketException {
 		return _sslSocket.getSendBufferSize();
 	}
@@ -182,11 +187,6 @@ public class LDAPSSLSocket extends SSLSocket {
 	@Override
 	public int getSoTimeout() throws SocketException {
 		return _sslSocket.getSoTimeout();
-	}
-
-	@Override
-	public SSLParameters getSSLParameters() {
-		return _sslSocket.getSSLParameters();
 	}
 
 	@Override
@@ -257,6 +257,11 @@ public class LDAPSSLSocket extends SSLSocket {
 	}
 
 	@Override
+	public void setEnableSessionCreation(boolean flag) {
+		_sslSocket.setEnableSessionCreation(flag);
+	}
+
+	@Override
 	public void setEnabledCipherSuites(String[] suites) {
 		_sslSocket.setEnabledCipherSuites(suites);
 	}
@@ -264,11 +269,6 @@ public class LDAPSSLSocket extends SSLSocket {
 	@Override
 	public void setEnabledProtocols(String[] protocols) {
 		_sslSocket.setEnabledProtocols(protocols);
-	}
-
-	@Override
-	public void setEnableSessionCreation(boolean flag) {
-		_sslSocket.setEnableSessionCreation(flag);
 	}
 
 	@Override
@@ -305,6 +305,11 @@ public class LDAPSSLSocket extends SSLSocket {
 	}
 
 	@Override
+	public void setSSLParameters(SSLParameters params) {
+		_sslSocket.setSSLParameters(params);
+	}
+
+	@Override
 	public void setSendBufferSize(int size) throws SocketException {
 		_sslSocket.setSendBufferSize(size);
 	}
@@ -317,11 +322,6 @@ public class LDAPSSLSocket extends SSLSocket {
 	@Override
 	public void setSoTimeout(int timeout) throws SocketException {
 		_sslSocket.setSoTimeout(timeout);
-	}
-
-	@Override
-	public void setSSLParameters(SSLParameters params) {
-		_sslSocket.setSSLParameters(params);
 	}
 
 	@Override

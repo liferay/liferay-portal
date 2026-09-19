@@ -114,11 +114,6 @@ public class UserAssetRenderer extends BaseJSPAssetRenderer<User> {
 	}
 
 	@Override
-	public String getUrlTitle() {
-		return _user.getScreenName();
-	}
-
-	@Override
 	public String getURLViewInContext(
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
@@ -145,6 +140,11 @@ public class UserAssetRenderer extends BaseJSPAssetRenderer<User> {
 		}
 
 		return noSuchEntryRedirect;
+	}
+
+	@Override
+	public String getUrlTitle() {
+		return _user.getScreenName();
 	}
 
 	@Override

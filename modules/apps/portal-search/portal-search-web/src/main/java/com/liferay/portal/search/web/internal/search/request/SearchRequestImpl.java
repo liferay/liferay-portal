@@ -125,9 +125,9 @@ public class SearchRequestImpl {
 
 	private final SearchContainerBuilder _searchContainerBuilder;
 	private final SearchContextBuilder _searchContextBuilder;
-	private final Searcher _searcher;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private final Set<SearchSettingsContributor> _searchSettingsContributors =
 		new HashSet<>();
+	private final Searcher _searcher;
 
 }

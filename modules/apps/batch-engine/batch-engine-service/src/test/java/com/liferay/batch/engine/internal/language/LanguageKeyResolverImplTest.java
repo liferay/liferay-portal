@@ -207,18 +207,6 @@ public class LanguageKeyResolverImplTest {
 	}
 
 	@Test
-	public void testExpandWithoutPlaceholderIsNoOp() throws Exception {
-		Map<String, Object> map = LinkedHashMapBuilder.<String, Object>put(
-			"en_US", "Welcome"
-		).build();
-
-		_languageKeyResolver.expand(_COMPANY_ID, map);
-
-		Assert.assertEquals(map.toString(), 1, map.size());
-		Assert.assertEquals("Welcome", map.get("en_US"));
-	}
-
-	@Test
 	public void testExpandWithResolutionDisabledIsNoOp() throws Exception {
 		Mockito.when(
 			_batchEngineTaskCompanyConfiguration.languageKeyResolutionEnabled()
@@ -235,6 +223,18 @@ public class LanguageKeyResolverImplTest {
 		Assert.assertEquals(map.toString(), 1, map.size());
 		Assert.assertEquals(
 			"welcome-to-liferay", map.get(_FOR_EACH_LANGUAGE_ID));
+	}
+
+	@Test
+	public void testExpandWithoutPlaceholderIsNoOp() throws Exception {
+		Map<String, Object> map = LinkedHashMapBuilder.<String, Object>put(
+			"en_US", "Welcome"
+		).build();
+
+		_languageKeyResolver.expand(_COMPANY_ID, map);
+
+		Assert.assertEquals(map.toString(), 1, map.size());
+		Assert.assertEquals("Welcome", map.get("en_US"));
 	}
 
 	private void _whenTranslation(

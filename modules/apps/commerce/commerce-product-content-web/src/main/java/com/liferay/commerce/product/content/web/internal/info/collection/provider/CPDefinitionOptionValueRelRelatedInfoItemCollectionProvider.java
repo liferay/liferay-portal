@@ -216,6 +216,49 @@ public class CPDefinitionOptionValueRelRelatedInfoItemCollectionProvider
 		return assetCategories;
 	}
 
+	private List<CPDefinitionOptionValueRel> _getCPDefinitionOptionValueRels(
+		CPDefinition cpDefinition) {
+
+		return TransformUtil.transform(
+			_cpInstanceLocalService.getCPDefinitionInstances(
+				cpDefinition.getCPDefinitionId(),
+				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null),
+			cpInstance -> {
+				CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+					_cpDefinitionOptionValueRelLocalService.
+						createCPDefinitionOptionValueRel(0);
+
+				cpDefinitionOptionValueRel.setCPInstanceUuid(
+					cpInstance.getCPInstanceUuid());
+
+				cpDefinitionOptionValueRel.setCProductId(
+					cpDefinition.getCProductId());
+				cpDefinitionOptionValueRel.setKey(
+					FriendlyURLNormalizerUtil.normalize(
+						cpDefinition.getName() + StringPool.DASH +
+							cpInstance.getSku()));
+				cpDefinitionOptionValueRel.setName(cpDefinition.getName());
+				cpDefinitionOptionValueRel.setQuantity(BigDecimal.ONE);
+
+				return cpDefinitionOptionValueRel;
+			});
+	}
+
+	private List<CPDefinitionOptionValueRel> _getCPDefinitionOptionValueRels(
+		List<CPDefinition> cpDefinitions) {
+
+		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
+			new ArrayList<>();
+
+		for (CPDefinition cpDefinition : cpDefinitions) {
+			cpDefinitionOptionValueRels.addAll(
+				_getCPDefinitionOptionValueRels(cpDefinition));
+		}
+
+		return cpDefinitionOptionValueRels;
+	}
+
 	private long[] _getCategoryIds(CollectionQuery collectionQuery) {
 		List<Long> categoryIds = new ArrayList<>();
 
@@ -296,49 +339,6 @@ public class CPDefinitionOptionValueRelRelatedInfoItemCollectionProvider
 		}
 
 		return 0;
-	}
-
-	private List<CPDefinitionOptionValueRel> _getCPDefinitionOptionValueRels(
-		CPDefinition cpDefinition) {
-
-		return TransformUtil.transform(
-			_cpInstanceLocalService.getCPDefinitionInstances(
-				cpDefinition.getCPDefinitionId(),
-				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null),
-			cpInstance -> {
-				CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-					_cpDefinitionOptionValueRelLocalService.
-						createCPDefinitionOptionValueRel(0);
-
-				cpDefinitionOptionValueRel.setCPInstanceUuid(
-					cpInstance.getCPInstanceUuid());
-
-				cpDefinitionOptionValueRel.setCProductId(
-					cpDefinition.getCProductId());
-				cpDefinitionOptionValueRel.setKey(
-					FriendlyURLNormalizerUtil.normalize(
-						cpDefinition.getName() + StringPool.DASH +
-							cpInstance.getSku()));
-				cpDefinitionOptionValueRel.setName(cpDefinition.getName());
-				cpDefinitionOptionValueRel.setQuantity(BigDecimal.ONE);
-
-				return cpDefinitionOptionValueRel;
-			});
-	}
-
-	private List<CPDefinitionOptionValueRel> _getCPDefinitionOptionValueRels(
-		List<CPDefinition> cpDefinitions) {
-
-		List<CPDefinitionOptionValueRel> cpDefinitionOptionValueRels =
-			new ArrayList<>();
-
-		for (CPDefinition cpDefinition : cpDefinitions) {
-			cpDefinitionOptionValueRels.addAll(
-				_getCPDefinitionOptionValueRels(cpDefinition));
-		}
-
-		return cpDefinitionOptionValueRels;
 	}
 
 	private long[] _getGroupIds(CollectionQuery collectionQuery) {

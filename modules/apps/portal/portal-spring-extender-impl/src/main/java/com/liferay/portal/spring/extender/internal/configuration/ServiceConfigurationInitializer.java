@@ -160,11 +160,6 @@ public class ServiceConfigurationInitializer {
 		}
 
 		@Override
-		public String getServletContextName() {
-			return _bundle.getSymbolicName();
-		}
-
-		@Override
 		public InputStream getSQLIndexesInputStream() {
 			return _getInputStream("/META-INF/sql/indexes.sql");
 		}
@@ -177,6 +172,11 @@ public class ServiceConfigurationInitializer {
 		@Override
 		public InputStream getSQLTablesInputStream() {
 			return _getInputStream("/META-INF/sql/tables.sql");
+		}
+
+		@Override
+		public String getServletContextName() {
+			return _bundle.getSymbolicName();
 		}
 
 		private InputStream _getInputStream(String location) {

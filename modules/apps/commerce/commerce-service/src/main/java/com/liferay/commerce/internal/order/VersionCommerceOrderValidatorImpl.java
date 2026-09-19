@@ -94,16 +94,16 @@ public class VersionCommerceOrderValidatorImpl
 		return new CommerceOrderValidatorResult(true);
 	}
 
-	protected void setCommerceOrderItemLocalService(
-		CommerceOrderItemLocalService commerceOrderItemLocalService) {
-
-		_commerceOrderItemLocalService = commerceOrderItemLocalService;
-	}
-
 	protected void setCPInstanceLocalService(
 		CPInstanceLocalService cpInstanceLocalService) {
 
 		_cpInstanceLocalService = cpInstanceLocalService;
+	}
+
+	protected void setCommerceOrderItemLocalService(
+		CommerceOrderItemLocalService commerceOrderItemLocalService) {
+
+		_commerceOrderItemLocalService = commerceOrderItemLocalService;
 	}
 
 	private String _getLocalizedMessage(Locale locale, String key) {

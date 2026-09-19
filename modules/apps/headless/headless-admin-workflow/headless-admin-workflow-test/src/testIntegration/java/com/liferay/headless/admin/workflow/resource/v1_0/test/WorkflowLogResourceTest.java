@@ -314,13 +314,6 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 				RandomTestUtil.randomLong()));
 	}
 
-	private void _testGetWorkflowLogWithoutPermission() throws Exception {
-		WorkflowLog workflowLog = testGetWorkflowLog_addWorkflowLog();
-
-		_assertNotFound(
-			() -> _userWorkflowLogResource.getWorkflowLog(workflowLog.getId()));
-	}
-
 	private void _testGetWorkflowLogWithPermission() throws Exception {
 		WorkflowInstanceLink workflowInstanceLink =
 			_workflowInstanceLinkLocalService.addWorkflowInstanceLink(
@@ -337,6 +330,13 @@ public class WorkflowLogResourceTest extends BaseWorkflowLogResourceTestCase {
 
 		_workflowInstanceLinkLocalService.deleteWorkflowInstanceLink(
 			workflowInstanceLink);
+	}
+
+	private void _testGetWorkflowLogWithoutPermission() throws Exception {
+		WorkflowLog workflowLog = testGetWorkflowLog_addWorkflowLog();
+
+		_assertNotFound(
+			() -> _userWorkflowLogResource.getWorkflowLog(workflowLog.getId()));
 	}
 
 	private void _testGetWorkflowTaskWorkflowLogsPageWithoutPermission() {

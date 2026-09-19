@@ -745,6 +745,35 @@ public class BatchBuildTestrayCaseResult
 			getAxisName() + "/gradle_plugins.tar.gz");
 	}
 
+	private List<TestrayAttachment> _getJStacksTestrayAttachments() {
+		List<TestrayAttachment> testrayAttachments = new ArrayList<>();
+
+		BuildReport buildReport = getBuildReport();
+
+		if (buildReport == null) {
+			return testrayAttachments;
+		}
+
+		for (URL testrayAttachmentURL :
+				buildReport.getTestrayAttachmentURLs()) {
+
+			Matcher matcher = _jStacksURLPattern.matcher(
+				String.valueOf(testrayAttachmentURL));
+
+			if (!matcher.find()) {
+				continue;
+			}
+
+			testrayAttachments.add(
+				getTestrayAttachment(
+					buildReport,
+					"Docker Log (" + matcher.group("fileName") + ")",
+					getAxisName() + "/" + matcher.group("key")));
+		}
+
+		return testrayAttachments;
+	}
+
 	private TestrayAttachment _getJenkinsConsoleTestrayAttachment() {
 		String name = "Jenkins Console";
 		String key = getAxisName() + "/jenkins-console.txt.gz";
@@ -832,35 +861,6 @@ public class BatchBuildTestrayCaseResult
 
 		return JobPropertyFactory.newJobProperty(
 			basePropertyName, getBatchName(), job);
-	}
-
-	private List<TestrayAttachment> _getJStacksTestrayAttachments() {
-		List<TestrayAttachment> testrayAttachments = new ArrayList<>();
-
-		BuildReport buildReport = getBuildReport();
-
-		if (buildReport == null) {
-			return testrayAttachments;
-		}
-
-		for (URL testrayAttachmentURL :
-				buildReport.getTestrayAttachmentURLs()) {
-
-			Matcher matcher = _jStacksURLPattern.matcher(
-				String.valueOf(testrayAttachmentURL));
-
-			if (!matcher.find()) {
-				continue;
-			}
-
-			testrayAttachments.add(
-				getTestrayAttachment(
-					buildReport,
-					"Docker Log (" + matcher.group("fileName") + ")",
-					getAxisName() + "/" + matcher.group("key")));
-		}
-
-		return testrayAttachments;
 	}
 
 	private String _upperCaseFirstLetterOfEachWord(String string) {

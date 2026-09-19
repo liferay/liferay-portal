@@ -521,11 +521,11 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
-	private CPDVirtualSettingFileEntryLocalService
-		_cpdVirtualSettingFileEntryLocalService;
+	private CPInstanceLocalService _cpInstanceLocalService;
 
 	@Reference
-	private CPInstanceLocalService _cpInstanceLocalService;
+	private CPDVirtualSettingFileEntryLocalService
+		_cpdVirtualSettingFileEntryLocalService;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;

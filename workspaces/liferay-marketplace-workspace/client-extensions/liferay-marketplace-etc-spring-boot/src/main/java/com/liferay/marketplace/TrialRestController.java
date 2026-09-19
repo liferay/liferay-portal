@@ -618,9 +618,6 @@ public class TrialRestController extends BaseRestController {
 	private static final Log _log = LogFactory.getLog(
 		TrialRestController.class);
 
-	@Autowired
-	private ConsoleService _consoleService;
-
 	@Value("${liferay.marketplace.console.ssa.cluster}")
 	private String _consoleSSACluster;
 
@@ -629,6 +626,9 @@ public class TrialRestController extends BaseRestController {
 
 	@Value("${liferay.marketplace.console.ssa.project.uid}")
 	private String _consoleSSAProjectUid;
+
+	@Autowired
+	private ConsoleService _consoleService;
 
 	@Value("${liferay.marketplace.console.cluster}")
 	private String _consoleTrialCluster;

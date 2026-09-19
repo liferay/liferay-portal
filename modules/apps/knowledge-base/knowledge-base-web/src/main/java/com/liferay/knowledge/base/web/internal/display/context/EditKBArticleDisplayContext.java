@@ -328,30 +328,6 @@ public class EditKBArticleDisplayContext {
 		return "save";
 	}
 
-	public String getUpdateKBArticleURL() {
-		return PortletURLBuilder.createActionURL(
-			_liferayPortletResponse
-		).setActionName(
-			"/knowledge_base/update_kb_article"
-		).setMVCPath(
-			"/admin/common/edit_kb_article.jsp"
-		).setCMD(
-			() -> {
-				if (getKBArticle() == null) {
-					return Constants.ADD;
-				}
-
-				return Constants.UPDATE;
-			}
-		).setParameter(
-			"parentResourceClassNameId", getParentResourceClassNameId()
-		).setParameter(
-			"parentResourcePrimKey", getParentResourcePrimKey()
-		).setParameter(
-			"resourcePrimKey", getResourcePrimKey()
-		).buildString();
-	}
-
 	public String getURLTitlePrefix() throws PortalException {
 		StringBundler sb = new StringBundler(4);
 
@@ -374,6 +350,30 @@ public class EditKBArticleDisplayContext {
 		}
 
 		return StringUtil.shorten(sb.toString(), 40) + StringPool.SLASH;
+	}
+
+	public String getUpdateKBArticleURL() {
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/knowledge_base/update_kb_article"
+		).setMVCPath(
+			"/admin/common/edit_kb_article.jsp"
+		).setCMD(
+			() -> {
+				if (getKBArticle() == null) {
+					return Constants.ADD;
+				}
+
+				return Constants.UPDATE;
+			}
+		).setParameter(
+			"parentResourceClassNameId", getParentResourceClassNameId()
+		).setParameter(
+			"parentResourcePrimKey", getParentResourcePrimKey()
+		).setParameter(
+			"resourcePrimKey", getResourcePrimKey()
+		).buildString();
 	}
 
 	public String getUserFormattedDisplayDateString() {

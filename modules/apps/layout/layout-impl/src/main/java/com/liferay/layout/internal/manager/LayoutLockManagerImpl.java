@@ -114,28 +114,6 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 	}
 
 	@Override
-	public List<LockedLayout> getLockedLayouts(
-		long companyId, long groupId, Locale locale) {
-
-		return TransformUtil.transform(
-			_lockLocalService.getLocks(companyId, Layout.class.getName()),
-			lock -> {
-				Layout layout = _layoutLocalService.fetchLayout(
-					GetterUtil.getLong(lock.getKey()));
-
-				if ((layout == null) || (layout.getGroupId() != groupId)) {
-					return null;
-				}
-
-				return new LockedLayout(
-					layout.getClassPK(), lock.getCreateDate(),
-					_getLockedLayoutType(layout.getClassPK(), layout.getType()),
-					layout.getName(locale), layout.getPlid(),
-					lock.getUserName());
-			});
-	}
-
-	@Override
 	public String getLockedLayoutURL(ActionRequest actionRequest) {
 		return getLockedLayoutURL(_portal.getHttpServletRequest(actionRequest));
 	}
@@ -179,6 +157,28 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 				return null;
 			}
 		).buildString();
+	}
+
+	@Override
+	public List<LockedLayout> getLockedLayouts(
+		long companyId, long groupId, Locale locale) {
+
+		return TransformUtil.transform(
+			_lockLocalService.getLocks(companyId, Layout.class.getName()),
+			lock -> {
+				Layout layout = _layoutLocalService.fetchLayout(
+					GetterUtil.getLong(lock.getKey()));
+
+				if ((layout == null) || (layout.getGroupId() != groupId)) {
+					return null;
+				}
+
+				return new LockedLayout(
+					layout.getClassPK(), lock.getCreateDate(),
+					_getLockedLayoutType(layout.getClassPK(), layout.getType()),
+					layout.getName(locale), layout.getPlid(),
+					lock.getUserName());
+			});
 	}
 
 	@Override
@@ -352,6 +352,30 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 		return null;
 	}
 
+	private LockedLayoutType _getLockedLayoutType(long classPK, String type) {
+		if (Objects.equals(type, LayoutConstants.TYPE_ASSET_DISPLAY)) {
+			return LockedLayoutType.DISPLAY_PAGE_TEMPLATE;
+		}
+		else if (Objects.equals(type, LayoutConstants.TYPE_UTILITY)) {
+			return LockedLayoutType.UTILITY_PAGE;
+		}
+
+		if (!Objects.equals(type, LayoutConstants.TYPE_CONTENT)) {
+			return null;
+		}
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				fetchLayoutPageTemplateEntryByPlid(classPK);
+
+		if (layoutPageTemplateEntry != null) {
+			return _getLayoutPageTemplateEntryTypeLabel(
+				layoutPageTemplateEntry);
+		}
+
+		return LockedLayoutType.CONTENT_PAGE;
+	}
+
 	private Map<Long, LockedLayoutsGroupConfiguration>
 			_getLockedLayoutsGroupConfigurations(long companyId)
 		throws PortalException {
@@ -398,30 +422,6 @@ public class LayoutLockManagerImpl implements LayoutLockManager {
 		}
 
 		return lockedLayoutsGroupConfigurations;
-	}
-
-	private LockedLayoutType _getLockedLayoutType(long classPK, String type) {
-		if (Objects.equals(type, LayoutConstants.TYPE_ASSET_DISPLAY)) {
-			return LockedLayoutType.DISPLAY_PAGE_TEMPLATE;
-		}
-		else if (Objects.equals(type, LayoutConstants.TYPE_UTILITY)) {
-			return LockedLayoutType.UTILITY_PAGE;
-		}
-
-		if (!Objects.equals(type, LayoutConstants.TYPE_CONTENT)) {
-			return null;
-		}
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByPlid(classPK);
-
-		if (layoutPageTemplateEntry != null) {
-			return _getLayoutPageTemplateEntryTypeLabel(
-				layoutPageTemplateEntry);
-		}
-
-		return LockedLayoutType.CONTENT_PAGE;
 	}
 
 	private static final String _CLASS_NAME_LAYOUT = Layout.class.getName();

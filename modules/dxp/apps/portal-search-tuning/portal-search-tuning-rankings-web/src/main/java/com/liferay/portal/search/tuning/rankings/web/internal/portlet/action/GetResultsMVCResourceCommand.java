@@ -237,10 +237,10 @@ public class GetResultsMVCResourceCommand implements MVCResourceCommand {
 	protected SearchEngineAdapter searchEngineAdapter;
 
 	@Reference
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Reference
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		GetResultsMVCResourceCommand.class);
@@ -272,13 +272,13 @@ public class GetResultsMVCResourceCommand implements MVCResourceCommand {
 			return ParamUtil.getString(_resourceRequest, "resultsRankingUid");
 		}
 
-		public int getSize() {
-			return ParamUtil.getInteger(_resourceRequest, "size", 10);
-		}
-
 		public String getSXPBlueprintExternalReferenceCode() {
 			return ParamUtil.getString(
 				_resourceRequest, "sxpBlueprintExternalReferenceCode");
+		}
+
+		public int getSize() {
+			return ParamUtil.getInteger(_resourceRequest, "size", 10);
 		}
 
 		private final ResourceRequest _resourceRequest;

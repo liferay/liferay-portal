@@ -53,17 +53,17 @@ public class GroupFriendlyURLUtilTest {
 	}
 
 	@Test
+	public void testParseGroupFriendlyURLWithRoot() {
+		Assert.assertNull(
+			GroupFriendlyURLUtil.parseGroupFriendlyURL(StringPool.SLASH));
+	}
+
+	@Test
 	public void testParseGroupFriendlyURLWithoutSuffix() {
 		String groupURL = _getGroupURL();
 
 		Assert.assertEquals(
 			groupURL, GroupFriendlyURLUtil.parseGroupFriendlyURL(groupURL));
-	}
-
-	@Test
-	public void testParseGroupFriendlyURLWithRoot() {
-		Assert.assertNull(
-			GroupFriendlyURLUtil.parseGroupFriendlyURL(StringPool.SLASH));
 	}
 
 	private String _getGroupURL() {

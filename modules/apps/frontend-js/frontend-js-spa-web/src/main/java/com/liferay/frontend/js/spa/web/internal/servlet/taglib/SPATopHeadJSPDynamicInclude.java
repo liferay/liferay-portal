@@ -270,22 +270,6 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 			ParamUtil.getString(httpServletRequest, _redirectParamName));
 	}
 
-	private String _getNavigationExceptionSelectors(
-		SPAConfiguration spaConfiguration) {
-
-		List<String> navigationExceptionSelectors = new ArrayList<>();
-
-		navigationExceptionSelectors.addAll(
-			_globalNavigationExceptionSelectors);
-
-		Collections.addAll(
-			navigationExceptionSelectors,
-			spaConfiguration.navigationExceptionSelectors());
-
-		return ListUtil.toString(
-			navigationExceptionSelectors, (String)null, StringPool.BLANK);
-	}
-
 	private ServiceTracker<Object, Object>
 			_getNavigationExceptionSelectorTracker(BundleContext bundleContext)
 		throws Exception {
@@ -332,6 +316,22 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 				}
 
 			});
+	}
+
+	private String _getNavigationExceptionSelectors(
+		SPAConfiguration spaConfiguration) {
+
+		List<String> navigationExceptionSelectors = new ArrayList<>();
+
+		navigationExceptionSelectors.addAll(
+			_globalNavigationExceptionSelectors);
+
+		Collections.addAll(
+			navigationExceptionSelectors,
+			spaConfiguration.navigationExceptionSelectors());
+
+		return ListUtil.toString(
+			navigationExceptionSelectors, (String)null, StringPool.BLANK);
 	}
 
 	private JSONArray _getPortletsBlacklistJSONArray(long companyId) {

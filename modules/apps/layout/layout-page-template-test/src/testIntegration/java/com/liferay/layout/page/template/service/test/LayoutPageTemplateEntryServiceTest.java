@@ -293,6 +293,24 @@ public class LayoutPageTemplateEntryServiceTest {
 			layoutPrototype.getName(LocaleUtil.getMostRelevantLocale()));
 	}
 
+	@Test(expected = LayoutPageTemplateEntryNameException.class)
+	public void testAddLayoutPageTemplateEntryWithSymbolInName()
+		throws Exception {
+
+		LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+			_layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
+			"Test %&# Name");
+	}
+
+	@Test
+	public void testAddLayoutPageTemplateEntryWithUTF8CharsInName()
+		throws Exception {
+
+		LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+			_layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
+			"你好andこんにちは");
+	}
+
 	@Test
 	public void testAddLayoutPageTemplateEntryWithoutAddPermission()
 		throws Exception {
@@ -316,24 +334,6 @@ public class LayoutPageTemplateEntryServiceTest {
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
 		}
-	}
-
-	@Test(expected = LayoutPageTemplateEntryNameException.class)
-	public void testAddLayoutPageTemplateEntryWithSymbolInName()
-		throws Exception {
-
-		LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-			_layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
-			"Test %&# Name");
-	}
-
-	@Test
-	public void testAddLayoutPageTemplateEntryWithUTF8CharsInName()
-		throws Exception {
-
-		LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-			_layoutPageTemplateCollection.getLayoutPageTemplateCollectionId(),
-			"你好andこんにちは");
 	}
 
 	@Test
@@ -411,45 +411,6 @@ public class LayoutPageTemplateEntryServiceTest {
 		Assert.assertNotEquals(
 			layoutPageTemplateEntry.getPlid(),
 			copiedLayoutPageTemplateEntry.getPlid());
-	}
-
-	@Test(expected = PrincipalException.class)
-	public void testCopyLayoutPageTemplateEntryWithoutPermissions()
-		throws Exception {
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				_layoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId());
-
-		RoleTestUtil.removeResourcePermission(
-			RoleConstants.GUEST, LayoutPageTemplateEntry.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()),
-			ActionKeys.VIEW);
-
-		User user = UserTestUtil.addUser();
-
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
-
-		RoleTestUtil.addResourcePermission(
-			role, LayoutPageTemplateConstants.RESOURCE_NAME,
-			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
-			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user)) {
-
-			_layoutPageTemplateEntryService.copyLayoutPageTemplateEntry(
-				_group.getGroupId(),
-				_layoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId(),
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(), false,
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-		}
 	}
 
 	@Test
@@ -575,6 +536,45 @@ public class LayoutPageTemplateEntryServiceTest {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, copiedFileVersion.getStatus());
+	}
+
+	@Test(expected = PrincipalException.class)
+	public void testCopyLayoutPageTemplateEntryWithoutPermissions()
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, LayoutPageTemplateEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId()),
+			ActionKeys.VIEW);
+
+		User user = UserTestUtil.addUser();
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		RoleTestUtil.addResourcePermission(
+			role, LayoutPageTemplateConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			_layoutPageTemplateEntryService.copyLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				_layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(), false,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		}
 	}
 
 	@Test

@@ -1349,149 +1349,6 @@ public class RootProjectConfigurator implements Plugin<Project> {
 		return removeStaleDockerContainer;
 	}
 
-	private void _addTasksDistBundleArchive(
-		Project project, Copy distBundleTask,
-		WorkspaceExtension workspaceExtension) {
-
-		long buildTime = System.currentTimeMillis();
-
-		Tar distBundleTar = _addTaskDistBundle(
-			project, DIST_BUNDLE_TAR_TASK_NAME, Tar.class, distBundleTask,
-			workspaceExtension);
-
-		distBundleTar.setDescription(
-			"Assembles a Liferay bundle (tar.gz) for the current environment.");
-		distBundleTar.setGroup(BUNDLE_GROUP);
-
-		Zip distBundleZip = _addTaskDistBundle(
-			project, DIST_BUNDLE_ZIP_TASK_NAME, Zip.class, distBundleTask,
-			workspaceExtension);
-
-		distBundleZip.setDescription(
-			"Assembles a Liferay bundle (zip) for the current environment.");
-		distBundleZip.setGroup(BUNDLE_GROUP);
-
-		project.afterEvaluate(
-			new Action<Project>() {
-
-				@Override
-				public void execute(Project project) {
-					_configureDistBundleEnvArchive(
-						project, distBundleTar,
-						workspaceExtension.getEnvironment(),
-						workspaceExtension.isBundleDistIncludeMetadata(),
-						buildTime);
-
-					_configureDistBundleEnvArchive(
-						project, distBundleZip,
-						workspaceExtension.getEnvironment(),
-						workspaceExtension.isBundleDistIncludeMetadata(),
-						buildTime);
-				}
-
-			});
-	}
-
-	private void _addTasksDistBundleEnvironments(
-		Project project, Download downloadBundleTask,
-		WorkspaceExtension workspaceExtension,
-		Configuration bundleSupportConfiguration,
-		Configuration providedModulesConfiguration) {
-
-		long buildTime = System.currentTimeMillis();
-
-		File configsDir = workspaceExtension.getConfigsDir();
-
-		String[] environments = configsDir.list(
-			new FilenameFilter() {
-
-				@Override
-				public boolean accept(File file, String name) {
-					if (!name.startsWith(".") && file.isDirectory() &&
-						!name.equals("common") && !name.equals("docker")) {
-
-						return true;
-					}
-
-					return false;
-				}
-
-			});
-
-		if ((environments == null) || (environments.length == 0)) {
-			return;
-		}
-
-		Task distBundleTarAll = GradleUtil.addTask(
-			project, DIST_BUNDLE_TAR_ALL_TASK_NAME, DefaultTask.class);
-
-		distBundleTarAll.setDescription(
-			"Assembles a Liferay bundle (tar.gz) for each environment.");
-		distBundleTarAll.setGroup(BUNDLE_GROUP);
-
-		Task distBundleZipAll = GradleUtil.addTask(
-			project, DIST_BUNDLE_ZIP_ALL_TASK_NAME, DefaultTask.class);
-
-		distBundleZipAll.setDescription(
-			"Assembles a Liferay bundle (zip) for each environment.");
-		distBundleZipAll.setGroup(BUNDLE_GROUP);
-
-		project.afterEvaluate(
-			new Action<Project>() {
-
-				@Override
-				public void execute(Project project) {
-					for (String environment : environments) {
-						Copy distBundleEnvTask = _addTaskDistBundle(
-							project, downloadBundleTask,
-							DIST_BUNDLE_TASK_NAME +
-								StringUtil.capitalize(environment),
-							workspaceExtension, bundleSupportConfiguration,
-							environment, providedModulesConfiguration);
-
-						Tar distBundleTarTask = _addTaskDistBundle(
-							project,
-							DIST_BUNDLE_TAR_TASK_NAME +
-								StringUtil.capitalize(environment),
-							Tar.class, distBundleEnvTask, workspaceExtension);
-
-						Property<String> archiveExtensionProperty =
-							distBundleTarTask.getArchiveExtension();
-
-						archiveExtensionProperty.set("tar.gz");
-
-						distBundleTarTask.setCompression(Compression.GZIP);
-						distBundleTarTask.setDescription(
-							"Assembles a Liferay bundle (tar.gz) for " +
-								environment + ".");
-
-						_configureDistBundleEnvArchive(
-							project, distBundleTarTask, environment, true,
-							buildTime);
-
-						distBundleTarAll.dependsOn(distBundleTarTask);
-
-						Zip distBundleZipTask = _addTaskDistBundle(
-							project,
-							DIST_BUNDLE_ZIP_TASK_NAME +
-								StringUtil.capitalize(environment),
-							Zip.class, distBundleEnvTask, workspaceExtension);
-
-						distBundleZipTask.setDescription(
-							"Assembles a Liferay bundle (zip) for " +
-								environment + ".");
-
-						_configureDistBundleEnvArchive(
-							project, distBundleZipTask, environment, true,
-							buildTime);
-
-						distBundleZipAll.dependsOn(distBundleZipTask);
-					}
-				}
-
-			});
-	}
-
 	private DockerStartContainer _addTaskStartDockerContainer(
 		Project project, DockerCreateContainer dockerCreateContainer) {
 
@@ -1683,6 +1540,149 @@ public class RootProjectConfigurator implements Plugin<Project> {
 			"Verify Liferay Workspace product settings.");
 
 		return verifyProductTask;
+	}
+
+	private void _addTasksDistBundleArchive(
+		Project project, Copy distBundleTask,
+		WorkspaceExtension workspaceExtension) {
+
+		long buildTime = System.currentTimeMillis();
+
+		Tar distBundleTar = _addTaskDistBundle(
+			project, DIST_BUNDLE_TAR_TASK_NAME, Tar.class, distBundleTask,
+			workspaceExtension);
+
+		distBundleTar.setDescription(
+			"Assembles a Liferay bundle (tar.gz) for the current environment.");
+		distBundleTar.setGroup(BUNDLE_GROUP);
+
+		Zip distBundleZip = _addTaskDistBundle(
+			project, DIST_BUNDLE_ZIP_TASK_NAME, Zip.class, distBundleTask,
+			workspaceExtension);
+
+		distBundleZip.setDescription(
+			"Assembles a Liferay bundle (zip) for the current environment.");
+		distBundleZip.setGroup(BUNDLE_GROUP);
+
+		project.afterEvaluate(
+			new Action<Project>() {
+
+				@Override
+				public void execute(Project project) {
+					_configureDistBundleEnvArchive(
+						project, distBundleTar,
+						workspaceExtension.getEnvironment(),
+						workspaceExtension.isBundleDistIncludeMetadata(),
+						buildTime);
+
+					_configureDistBundleEnvArchive(
+						project, distBundleZip,
+						workspaceExtension.getEnvironment(),
+						workspaceExtension.isBundleDistIncludeMetadata(),
+						buildTime);
+				}
+
+			});
+	}
+
+	private void _addTasksDistBundleEnvironments(
+		Project project, Download downloadBundleTask,
+		WorkspaceExtension workspaceExtension,
+		Configuration bundleSupportConfiguration,
+		Configuration providedModulesConfiguration) {
+
+		long buildTime = System.currentTimeMillis();
+
+		File configsDir = workspaceExtension.getConfigsDir();
+
+		String[] environments = configsDir.list(
+			new FilenameFilter() {
+
+				@Override
+				public boolean accept(File file, String name) {
+					if (!name.startsWith(".") && file.isDirectory() &&
+						!name.equals("common") && !name.equals("docker")) {
+
+						return true;
+					}
+
+					return false;
+				}
+
+			});
+
+		if ((environments == null) || (environments.length == 0)) {
+			return;
+		}
+
+		Task distBundleTarAll = GradleUtil.addTask(
+			project, DIST_BUNDLE_TAR_ALL_TASK_NAME, DefaultTask.class);
+
+		distBundleTarAll.setDescription(
+			"Assembles a Liferay bundle (tar.gz) for each environment.");
+		distBundleTarAll.setGroup(BUNDLE_GROUP);
+
+		Task distBundleZipAll = GradleUtil.addTask(
+			project, DIST_BUNDLE_ZIP_ALL_TASK_NAME, DefaultTask.class);
+
+		distBundleZipAll.setDescription(
+			"Assembles a Liferay bundle (zip) for each environment.");
+		distBundleZipAll.setGroup(BUNDLE_GROUP);
+
+		project.afterEvaluate(
+			new Action<Project>() {
+
+				@Override
+				public void execute(Project project) {
+					for (String environment : environments) {
+						Copy distBundleEnvTask = _addTaskDistBundle(
+							project, downloadBundleTask,
+							DIST_BUNDLE_TASK_NAME +
+								StringUtil.capitalize(environment),
+							workspaceExtension, bundleSupportConfiguration,
+							environment, providedModulesConfiguration);
+
+						Tar distBundleTarTask = _addTaskDistBundle(
+							project,
+							DIST_BUNDLE_TAR_TASK_NAME +
+								StringUtil.capitalize(environment),
+							Tar.class, distBundleEnvTask, workspaceExtension);
+
+						Property<String> archiveExtensionProperty =
+							distBundleTarTask.getArchiveExtension();
+
+						archiveExtensionProperty.set("tar.gz");
+
+						distBundleTarTask.setCompression(Compression.GZIP);
+						distBundleTarTask.setDescription(
+							"Assembles a Liferay bundle (tar.gz) for " +
+								environment + ".");
+
+						_configureDistBundleEnvArchive(
+							project, distBundleTarTask, environment, true,
+							buildTime);
+
+						distBundleTarAll.dependsOn(distBundleTarTask);
+
+						Zip distBundleZipTask = _addTaskDistBundle(
+							project,
+							DIST_BUNDLE_ZIP_TASK_NAME +
+								StringUtil.capitalize(environment),
+							Zip.class, distBundleEnvTask, workspaceExtension);
+
+						distBundleZipTask.setDescription(
+							"Assembles a Liferay bundle (zip) for " +
+								environment + ".");
+
+						_configureDistBundleEnvArchive(
+							project, distBundleZipTask, environment, true,
+							buildTime);
+
+						distBundleZipAll.dependsOn(distBundleZipTask);
+					}
+				}
+
+			});
 	}
 
 	private <T extends AbstractArchiveTask> void _configureDistBundleEnvArchive(

@@ -246,25 +246,28 @@ public class InfoField<T extends InfoFieldType> implements InfoFieldSetEntry {
 
 	}
 
-	public static class NamespacedBuilder {
+	public static class NameStep<T extends InfoFieldType> {
 
-		public <T extends InfoFieldType> NameStep<T> infoFieldType(
-			T infoFieldType) {
+		public FinalStep<T> name(String name) {
+			_builder._name = name;
 
-			Builder builder = new Builder();
+			if (Validator.isNull(_builder._uniqueId)) {
+				_builder._uniqueId =
+					_builder._namespace + StringPool.UNDERLINE + name;
+			}
 
-			return builder.infoFieldType(
-				infoFieldType
-			).namespace(
-				_namespace
-			);
+			if (Validator.isNull(_builder._externalUniqueId)) {
+				_builder._externalUniqueId = _builder._uniqueId;
+			}
+
+			return new FinalStep<>(_builder);
 		}
 
-		private NamespacedBuilder(String namespace) {
-			_namespace = namespace;
+		private NameStep(Builder builder) {
+			_builder = builder;
 		}
 
-		private final String _namespace;
+		private final Builder _builder;
 
 	}
 
@@ -290,28 +293,25 @@ public class InfoField<T extends InfoFieldType> implements InfoFieldSetEntry {
 
 	}
 
-	public static class NameStep<T extends InfoFieldType> {
+	public static class NamespacedBuilder {
 
-		public FinalStep<T> name(String name) {
-			_builder._name = name;
+		public <T extends InfoFieldType> NameStep<T> infoFieldType(
+			T infoFieldType) {
 
-			if (Validator.isNull(_builder._uniqueId)) {
-				_builder._uniqueId =
-					_builder._namespace + StringPool.UNDERLINE + name;
-			}
+			Builder builder = new Builder();
 
-			if (Validator.isNull(_builder._externalUniqueId)) {
-				_builder._externalUniqueId = _builder._uniqueId;
-			}
-
-			return new FinalStep<>(_builder);
+			return builder.infoFieldType(
+				infoFieldType
+			).namespace(
+				_namespace
+			);
 		}
 
-		private NameStep(Builder builder) {
-			_builder = builder;
+		private NamespacedBuilder(String namespace) {
+			_namespace = namespace;
 		}
 
-		private final Builder _builder;
+		private final String _namespace;
 
 	}
 

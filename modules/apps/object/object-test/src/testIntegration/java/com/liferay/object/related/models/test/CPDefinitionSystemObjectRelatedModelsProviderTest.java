@@ -226,13 +226,13 @@ public class CPDefinitionSystemObjectRelatedModelsProviderTest
 			objectRelationship.getObjectRelationshipId());
 	}
 
+	private long[] _cProductIds;
+
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
-
-	private long[] _cProductIds;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;

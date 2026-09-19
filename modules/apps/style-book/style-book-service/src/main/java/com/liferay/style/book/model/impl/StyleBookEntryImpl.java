@@ -84,8 +84,7 @@ public class StyleBookEntryImpl extends StyleBookEntryBaseImpl {
 		}
 
 		zipWriter.addEntry(
-			path + "/frontend-tokens-values.json",
-			getFrontendTokensValues());
+			path + "/frontend-tokens-values.json", getFrontendTokensValues());
 
 		if (previewFileEntry != null) {
 			zipWriter.addEntry(

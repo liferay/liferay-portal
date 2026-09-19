@@ -689,10 +689,10 @@ public class WatchTask extends DefaultTask {
 		}
 	}
 
-	private static final Map<File, Attributes> _installedAttributes =
-		new HashMap<>();
 	private static final Pattern _installResponsePattern = Pattern.compile(
 		".*Bundle ID: (.*$).*", Pattern.DOTALL | Pattern.MULTILINE);
+	private static final Map<File, Attributes> _installedAttributes =
+		new HashMap<>();
 
 	private Object _bundleDir;
 	private Object _bundleSymbolicName;

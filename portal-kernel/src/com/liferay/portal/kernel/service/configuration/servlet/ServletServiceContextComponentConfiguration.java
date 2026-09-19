@@ -42,11 +42,6 @@ public class ServletServiceContextComponentConfiguration
 	}
 
 	@Override
-	public String getServletContextName() {
-		return _servletContext.getServletContextName();
-	}
-
-	@Override
 	public InputStream getSQLIndexesInputStream() {
 		return _servletContext.getResourceAsStream("/WEB-INF/sql/indexes.sql");
 	}
@@ -60,6 +55,11 @@ public class ServletServiceContextComponentConfiguration
 	@Override
 	public InputStream getSQLTablesInputStream() {
 		return _servletContext.getResourceAsStream("/WEB-INF/sql/tables.sql");
+	}
+
+	@Override
+	public String getServletContextName() {
+		return _servletContext.getServletContextName();
 	}
 
 	private final ServletContext _servletContext;

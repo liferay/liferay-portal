@@ -42,6 +42,12 @@ public class UserSetDigestTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
+	@Test
+	public void testAddUserWithWorkflowWithPrerequisites() throws Exception {
+		_testAddUserWithWorkflowHelper(
+			RandomTestUtil.randomString(), _generateRandomEmailAddress());
+	}
+
 	@Test(expected = UserEmailAddressException.class)
 	public void testAddUserWithWorkflowWithoutEmailAddress() throws Exception {
 		_testAddUserWithWorkflowHelper(RandomTestUtil.randomString(), null);
@@ -55,12 +61,6 @@ public class UserSetDigestTest {
 	@Test(expected = UserScreenNameException.class)
 	public void testAddUserWithWorkflowWithoutScreenName() throws Exception {
 		_testAddUserWithWorkflowHelper(null, _generateRandomEmailAddress());
-	}
-
-	@Test
-	public void testAddUserWithWorkflowWithPrerequisites() throws Exception {
-		_testAddUserWithWorkflowHelper(
-			RandomTestUtil.randomString(), _generateRandomEmailAddress());
 	}
 
 	@Test

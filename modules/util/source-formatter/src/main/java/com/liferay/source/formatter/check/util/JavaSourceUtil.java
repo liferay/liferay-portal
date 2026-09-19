@@ -275,6 +275,25 @@ public class JavaSourceUtil extends SourceUtil {
 		return parameterNames;
 	}
 
+	public static List<String> getParameterTypes(String methodCall) {
+		List<String> parameterTypes = new ArrayList<>();
+
+		List<String> parameters = splitParameters(getParameters(methodCall));
+
+		for (String parameter : parameters) {
+			int index = parameter.lastIndexOf(CharPool.SPACE);
+
+			if (index == -1) {
+				throw new InvalidParameterException(
+					"Unable to get parameter type");
+			}
+
+			parameterTypes.add(parameter.substring(0, index));
+		}
+
+		return parameterTypes;
+	}
+
 	public static String getParameters(String methodCall) {
 		String parameters = null;
 
@@ -295,25 +314,6 @@ public class JavaSourceUtil extends SourceUtil {
 		x = parameters.indexOf(StringPool.OPEN_PARENTHESIS);
 
 		return parameters.substring(x + 1, parameters.length() - 1);
-	}
-
-	public static List<String> getParameterTypes(String methodCall) {
-		List<String> parameterTypes = new ArrayList<>();
-
-		List<String> parameters = splitParameters(getParameters(methodCall));
-
-		for (String parameter : parameters) {
-			int index = parameter.lastIndexOf(CharPool.SPACE);
-
-			if (index == -1) {
-				throw new InvalidParameterException(
-					"Unable to get parameter type");
-			}
-
-			parameterTypes.add(parameter.substring(0, index));
-		}
-
-		return parameterTypes;
 	}
 
 	public static boolean isValidJavaParameter(String javaParameter) {

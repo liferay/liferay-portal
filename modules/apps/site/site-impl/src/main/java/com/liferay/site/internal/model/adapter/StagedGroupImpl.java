@@ -522,13 +522,13 @@ public class StagedGroupImpl extends GroupWrapper implements StagedGroup {
 	}
 
 	@Override
-	public boolean isInheritContent() {
-		return _group.isInheritContent();
+	public boolean isInStagingPortlet(String portletId) {
+		return _group.isInStagingPortlet(portletId);
 	}
 
 	@Override
-	public boolean isInStagingPortlet(String portletId) {
-		return _group.isInStagingPortlet(portletId);
+	public boolean isInheritContent() {
+		return _group.isInheritContent();
 	}
 
 	@Override

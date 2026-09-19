@@ -68,12 +68,12 @@ public class PropertyDefinition {
 		return _propertyClassDescription;
 	}
 
-	public Set<Class<?>> getPropertyClasses() {
-		return _propertyClasses;
-	}
-
 	public String getPropertyClassName() {
 		return _propertyClassName;
+	}
+
+	public Set<Class<?>> getPropertyClasses() {
+		return _propertyClasses;
 	}
 
 	public List<PropertyDefinition> getPropertyDefinitions() {
@@ -135,8 +135,8 @@ public class PropertyDefinition {
 		).build();
 
 	private String _propertyClassDescription;
-	private final Set<Class<?>> _propertyClasses;
 	private String _propertyClassName;
+	private final Set<Class<?>> _propertyClasses;
 	private List<PropertyDefinition> _propertyDefinitions;
 	private final String _propertyDescription;
 	private final String _propertyName;

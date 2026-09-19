@@ -240,6 +240,62 @@ public class SiteNavigationMenuItemUpgradeProcessTest {
 	}
 
 	@Test
+	public void testUpgradeWithCPDefinition() throws Exception {
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinition(
+			_group1.getGroupId());
+
+		SiteNavigationMenuItem siteNavigationMenuItem1 =
+			_addSiteNavigationMenuItem(
+				CPDefinition.class.getName(),
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"className", CPDefinition.class.getName()
+				).put(
+					"classPK", cpDefinition1.getCPDefinitionId()
+				).put(
+					"externalReferenceCode",
+					() -> {
+						CProduct cProduct = cpDefinition1.getCProduct();
+
+						return cProduct.getExternalReferenceCode();
+					}
+				).put(
+					"type", CPDefinition.class.getName()
+				).buildString());
+
+		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinition(
+			_group2.getGroupId());
+
+		SiteNavigationMenuItem siteNavigationMenuItem2 =
+			_addSiteNavigationMenuItem(
+				CPDefinition.class.getName(),
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"className", CPDefinition.class.getName()
+				).put(
+					"classPK", cpDefinition2.getCPDefinitionId()
+				).put(
+					"externalReferenceCode",
+					() -> {
+						CProduct cProduct = cpDefinition2.getCProduct();
+
+						return cProduct.getExternalReferenceCode();
+					}
+				).put(
+					"type", CPDefinition.class.getName()
+				).buildString());
+
+		_runUpgrade();
+
+		_assertNavigationMenuItemFromDifferentGroup(
+			siteNavigationMenuItem2.getSiteNavigationMenuItemId());
+		_assertNavigationMenuItemFromSameGroup(
+			siteNavigationMenuItem1.getSiteNavigationMenuItemId());
+	}
+
+	@Test
 	public void testUpgradeWithCompanyScopedObjectEntry() throws Exception {
 		ObjectDefinition companyScopedObjectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
@@ -313,62 +369,6 @@ public class SiteNavigationMenuItemUpgradeProcessTest {
 
 		Assert.assertNull(
 			typeSettingsUnicodeProperties.get("scopeExternalReferenceCode"));
-	}
-
-	@Test
-	public void testUpgradeWithCPDefinition() throws Exception {
-		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinition(
-			_group1.getGroupId());
-
-		SiteNavigationMenuItem siteNavigationMenuItem1 =
-			_addSiteNavigationMenuItem(
-				CPDefinition.class.getName(),
-				UnicodePropertiesBuilder.create(
-					true
-				).put(
-					"className", CPDefinition.class.getName()
-				).put(
-					"classPK", cpDefinition1.getCPDefinitionId()
-				).put(
-					"externalReferenceCode",
-					() -> {
-						CProduct cProduct = cpDefinition1.getCProduct();
-
-						return cProduct.getExternalReferenceCode();
-					}
-				).put(
-					"type", CPDefinition.class.getName()
-				).buildString());
-
-		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinition(
-			_group2.getGroupId());
-
-		SiteNavigationMenuItem siteNavigationMenuItem2 =
-			_addSiteNavigationMenuItem(
-				CPDefinition.class.getName(),
-				UnicodePropertiesBuilder.create(
-					true
-				).put(
-					"className", CPDefinition.class.getName()
-				).put(
-					"classPK", cpDefinition2.getCPDefinitionId()
-				).put(
-					"externalReferenceCode",
-					() -> {
-						CProduct cProduct = cpDefinition2.getCProduct();
-
-						return cProduct.getExternalReferenceCode();
-					}
-				).put(
-					"type", CPDefinition.class.getName()
-				).buildString());
-
-		_runUpgrade();
-
-		_assertNavigationMenuItemFromDifferentGroup(
-			siteNavigationMenuItem2.getSiteNavigationMenuItemId());
-		_assertNavigationMenuItemFromSameGroup(
-			siteNavigationMenuItem1.getSiteNavigationMenuItemId());
 	}
 
 	@Test

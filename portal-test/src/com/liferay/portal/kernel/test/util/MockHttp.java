@@ -36,26 +36,6 @@ public class MockHttp implements Http {
 	}
 
 	@Override
-	public Cookie[] getCookies() {
-		return null;
-	}
-
-	@Override
-	public boolean hasProxyConfig() {
-		return false;
-	}
-
-	@Override
-	public boolean isNonProxyHost(String host) {
-		return false;
-	}
-
-	@Override
-	public boolean isProxyHost(String host) {
-		return false;
-	}
-
-	@Override
 	public byte[] URLtoByteArray(Options options) throws IOException {
 		return _toBytes(options.getLocation(), options);
 	}
@@ -110,6 +90,26 @@ public class MockHttp implements Http {
 	@Override
 	public String URLtoString(URL url) throws IOException {
 		return new String(_toBytes(url, null));
+	}
+
+	@Override
+	public Cookie[] getCookies() {
+		return null;
+	}
+
+	@Override
+	public boolean hasProxyConfig() {
+		return false;
+	}
+
+	@Override
+	public boolean isNonProxyHost(String host) {
+		return false;
+	}
+
+	@Override
+	public boolean isProxyHost(String host) {
+		return false;
 	}
 
 	private byte[] _toBytes(String location, Options options)

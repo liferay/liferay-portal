@@ -147,6 +147,13 @@ public class ObjectEntryFolderSharingTest
 		}
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testUserWithAddDiscussionPermissionCanShareWithAddDiscussion()
+		throws Exception {
+	}
+
 	@Override
 	@Test
 	public void testUserWithAddDiscussionPermissionCannotShareWithUpdate()
@@ -205,44 +212,6 @@ public class ObjectEntryFolderSharingTest
 		}
 	}
 
-	@Ignore
-	@Override
-	@Test
-	public void testUserWithAddDiscussionPermissionCanShareWithAddDiscussion()
-		throws Exception {
-	}
-
-	@Override
-	@Test
-	public void testUserWithoutAddDiscussionSharingEntryActionCannotAddDiscussionPrivateModel()
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.security.permission." +
-					"AdvancedPermissionChecker",
-				LoggerTestUtil.ERROR)) {
-
-			super.
-				testUserWithoutAddDiscussionSharingEntryActionCannotAddDiscussionPrivateModel();
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
-			Assert.assertEquals(
-				"com.liferay.object.model.ObjectEntryFolder#ADD_DISCUSSION",
-				logEntry.getMessage());
-
-			Throwable throwable = logEntry.getThrowable();
-
-			Assert.assertEquals(
-				NoSuchResourceActionException.class, throwable.getClass());
-		}
-	}
-
 	@Override
 	@Test
 	public void testUserWithUpdateAndViewSharingEntryActionCannotAddDiscussionPrivateModel()
@@ -279,6 +248,37 @@ public class ObjectEntryFolderSharingTest
 	@Test
 	public void testUserWithViewSharingEntryActionCannotViewPendingModel()
 		throws Exception {
+	}
+
+	@Override
+	@Test
+	public void testUserWithoutAddDiscussionSharingEntryActionCannotAddDiscussionPrivateModel()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.permission." +
+					"AdvancedPermissionChecker",
+				LoggerTestUtil.ERROR)) {
+
+			super.
+				testUserWithoutAddDiscussionSharingEntryActionCannotAddDiscussionPrivateModel();
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+			Assert.assertEquals(
+				"com.liferay.object.model.ObjectEntryFolder#ADD_DISCUSSION",
+				logEntry.getMessage());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				NoSuchResourceActionException.class, throwable.getClass());
+		}
 	}
 
 	@Override

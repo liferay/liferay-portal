@@ -176,6 +176,27 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		return includesJobProperties;
 	}
 
+	@Override
+	public JSONObject getJSONObject() {
+		if (jsonObject != null) {
+			return jsonObject;
+		}
+
+		jsonObject = super.getJSONObject();
+
+		jsonObject.put("auto_balance_test_files", _autoBalanceTestFiles);
+		jsonObject.put("exclude_globs", getGlobs(getExcludesJobProperties()));
+		jsonObject.put("filter_globs", getGlobs(getFilterJobProperties()));
+		jsonObject.put("include_auto_balance_tests", _includeAutoBalanceTests);
+		jsonObject.put("include_globs", getGlobs(getIncludesJobProperties()));
+		jsonObject.put(
+			"include_unstaged_test_class_files",
+			_includeUnstagedTestClassFiles);
+		jsonObject.put("target_duration", getTargetAxisDuration());
+
+		return jsonObject;
+	}
+
 	public File getJavaFileFromFullClassName(String fullClassName) {
 		String classFileName =
 			fullClassName.replaceAll(".*\\.([^\\.]+)", "$1") + ".java";
@@ -208,27 +229,6 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 		}
 
 		return null;
-	}
-
-	@Override
-	public JSONObject getJSONObject() {
-		if (jsonObject != null) {
-			return jsonObject;
-		}
-
-		jsonObject = super.getJSONObject();
-
-		jsonObject.put("auto_balance_test_files", _autoBalanceTestFiles);
-		jsonObject.put("exclude_globs", getGlobs(getExcludesJobProperties()));
-		jsonObject.put("filter_globs", getGlobs(getFilterJobProperties()));
-		jsonObject.put("include_auto_balance_tests", _includeAutoBalanceTests);
-		jsonObject.put("include_globs", getGlobs(getIncludesJobProperties()));
-		jsonObject.put(
-			"include_unstaged_test_class_files",
-			_includeUnstagedTestClassFiles);
-		jsonObject.put("target_duration", getTargetAxisDuration());
-
-		return jsonObject;
 	}
 
 	public List<String> getTestClassMethodNames(

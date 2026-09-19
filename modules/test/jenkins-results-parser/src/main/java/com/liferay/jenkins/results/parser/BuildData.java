@@ -44,6 +44,8 @@ public interface BuildData {
 
 	public String getHostname();
 
+	public JSONObject getJSONObject();
+
 	public String getJenkinsGitHubBranchName();
 
 	public String getJenkinsGitHubRepositoryName();
@@ -55,8 +57,6 @@ public interface BuildData {
 	public String getJobName();
 
 	public String getJobURL();
-
-	public JSONObject getJSONObject();
 
 	public String getMasterHostname();
 

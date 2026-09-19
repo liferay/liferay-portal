@@ -212,68 +212,6 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 		return definition;
 	}
 
-	private void _parseActionElements(
-			List<Element> actionElements, ActionAware actionAware)
-		throws Exception {
-
-		if (actionElements.isEmpty()) {
-			return;
-		}
-
-		Set<Action> actions = new HashSet<>();
-
-		for (Element actionElement : actionElements) {
-			String name = actionElement.elementTextTrim("name");
-			String description = StringUtil.trim(
-				actionElement.elementText("description"));
-			String executionType = actionElement.elementTextTrim(
-				"execution-type");
-			int priority = GetterUtil.getInteger(
-				actionElement.elementTextTrim("priority"));
-
-			if (actionElement.element("script") != null) {
-				String script = StringUtil.trim(
-					actionElement.elementText("script"));
-				String scriptLanguage = actionElement.elementTextTrim(
-					"script-language");
-				String scriptRequiredContexts = actionElement.elementTextTrim(
-					"script-required-contexts");
-
-				actions.add(
-					new ScriptAction(
-						name, description, executionType, script,
-						scriptLanguage, scriptRequiredContexts, priority));
-			}
-			else if (actionElement.element("status") != null) {
-				actions.add(
-					new UpdateStatusAction(
-						name, description, executionType,
-						GetterUtil.getInteger(
-							actionElement.elementText("status")),
-						priority));
-			}
-		}
-
-		actionAware.setActions(actions);
-	}
-
-	private void _parseActionsElement(Element actionsElement, Node node)
-		throws Exception {
-
-		if (actionsElement == null) {
-			return;
-		}
-
-		List<Element> actionElements = actionsElement.elements("action");
-
-		_parseActionElements(actionElements, node);
-
-		List<Element> notificationElements = actionsElement.elements(
-			"notification");
-
-		_parseNotificationElements(notificationElements, node);
-	}
-
 	private AIDecision _parseAIDecision(Element aiDecisionElement)
 		throws Exception {
 
@@ -360,6 +298,68 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 		aiHubAgent.setSettings(settings);
 
 		return aiHubAgent;
+	}
+
+	private void _parseActionElements(
+			List<Element> actionElements, ActionAware actionAware)
+		throws Exception {
+
+		if (actionElements.isEmpty()) {
+			return;
+		}
+
+		Set<Action> actions = new HashSet<>();
+
+		for (Element actionElement : actionElements) {
+			String name = actionElement.elementTextTrim("name");
+			String description = StringUtil.trim(
+				actionElement.elementText("description"));
+			String executionType = actionElement.elementTextTrim(
+				"execution-type");
+			int priority = GetterUtil.getInteger(
+				actionElement.elementTextTrim("priority"));
+
+			if (actionElement.element("script") != null) {
+				String script = StringUtil.trim(
+					actionElement.elementText("script"));
+				String scriptLanguage = actionElement.elementTextTrim(
+					"script-language");
+				String scriptRequiredContexts = actionElement.elementTextTrim(
+					"script-required-contexts");
+
+				actions.add(
+					new ScriptAction(
+						name, description, executionType, script,
+						scriptLanguage, scriptRequiredContexts, priority));
+			}
+			else if (actionElement.element("status") != null) {
+				actions.add(
+					new UpdateStatusAction(
+						name, description, executionType,
+						GetterUtil.getInteger(
+							actionElement.elementText("status")),
+						priority));
+			}
+		}
+
+		actionAware.setActions(actions);
+	}
+
+	private void _parseActionsElement(Element actionsElement, Node node)
+		throws Exception {
+
+		if (actionsElement == null) {
+			return;
+		}
+
+		List<Element> actionElements = actionsElement.elements("action");
+
+		_parseActionElements(actionElements, node);
+
+		List<Element> notificationElements = actionsElement.elements(
+			"notification");
+
+		_parseNotificationElements(notificationElements, node);
 	}
 
 	private Set<Assignment> _parseAssignments(Element assignmentsElement)
@@ -625,23 +625,6 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 		return joinXor;
 	}
 
-	private Map<Locale, String> _parseLabels(Element labelsElement) {
-		if (labelsElement == null) {
-			return Collections.emptyMap();
-		}
-
-		Map<Locale, String> labelMap = new HashMap<>();
-
-		for (Element labelElement : labelsElement.elements()) {
-			labelMap.put(
-				LocaleUtil.fromLanguageId(
-					labelElement.attributeValue("language-id")),
-				labelElement.getTextTrim());
-		}
-
-		return labelMap;
-	}
-
 	private LLM _parseLLM(Element llmElement) throws Exception {
 		LLM llm = new LLM(
 			StringUtil.trim(llmElement.elementText("description")),
@@ -702,6 +685,23 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 		llm.setSettings(settings);
 
 		return llm;
+	}
+
+	private Map<Locale, String> _parseLabels(Element labelsElement) {
+		if (labelsElement == null) {
+			return Collections.emptyMap();
+		}
+
+		Map<Locale, String> labelMap = new HashMap<>();
+
+		for (Element labelElement : labelsElement.elements()) {
+			labelMap.put(
+				LocaleUtil.fromLanguageId(
+					labelElement.attributeValue("language-id")),
+				labelElement.getTextTrim());
+		}
+
+		return labelMap;
 	}
 
 	private void _parseNotificationElements(

@@ -1517,38 +1517,6 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 			"nested", "test", "test");
 	}
 
-	private void _testPostSearchPageWithoutHighlightConfiguration()
-		throws Exception {
-
-		if (Objects.equals(_searchEngine.getVendor(), "Solr")) {
-			return;
-		}
-
-		SearchPage<SearchResult> searchPage =
-			_postSearchPageWithSXPBlueprintConfiguration(
-				_user.getModelClassName(), _user.getFullName(),
-				_addSXPBlueprint(false));
-
-		List<SearchResult> searchResults = ListUtil.fromCollection(
-			searchPage.getItems());
-
-		Assert.assertFalse(searchResults.isEmpty());
-
-		int count = ListUtil.count(
-			searchResults,
-			searchResult -> Objects.equals(
-				searchResult.getTitle(), _user.getFullName()));
-
-		Assert.assertTrue(count >= 1);
-
-		Assert.assertEquals(
-			0,
-			ListUtil.count(
-				searchResults,
-				searchResult -> Objects.equals(
-					searchResult.getTitle(), _getUserHighlightedFullName())));
-	}
-
 	private void _testPostSearchPageWithSiteFacetConfiguration()
 		throws Exception {
 
@@ -1669,6 +1637,38 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 		_assertFacetConfiguration(
 			true, null, null, "user", _user.getUserId(),
 			String.valueOf(_user.getUserId()));
+	}
+
+	private void _testPostSearchPageWithoutHighlightConfiguration()
+		throws Exception {
+
+		if (Objects.equals(_searchEngine.getVendor(), "Solr")) {
+			return;
+		}
+
+		SearchPage<SearchResult> searchPage =
+			_postSearchPageWithSXPBlueprintConfiguration(
+				_user.getModelClassName(), _user.getFullName(),
+				_addSXPBlueprint(false));
+
+		List<SearchResult> searchResults = ListUtil.fromCollection(
+			searchPage.getItems());
+
+		Assert.assertFalse(searchResults.isEmpty());
+
+		int count = ListUtil.count(
+			searchResults,
+			searchResult -> Objects.equals(
+				searchResult.getTitle(), _user.getFullName()));
+
+		Assert.assertTrue(count >= 1);
+
+		Assert.assertEquals(
+			0,
+			ListUtil.count(
+				searchResults,
+				searchResult -> Objects.equals(
+					searchResult.getTitle(), _getUserHighlightedFullName())));
 	}
 
 	private void _testPostSearchPageZeroResults() throws Exception {

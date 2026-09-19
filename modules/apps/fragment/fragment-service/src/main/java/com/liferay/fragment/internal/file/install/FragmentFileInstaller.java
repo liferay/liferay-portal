@@ -157,6 +157,23 @@ public class FragmentFileInstaller implements FileInstaller {
 		}
 	}
 
+	private ZipEntry _getDeployZipEntry(ZipFile zipFile) {
+		Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
+
+		while (enumeration.hasMoreElements()) {
+			ZipEntry zipEntry = enumeration.nextElement();
+
+			if (Objects.equals(
+					_getFileName(zipEntry.getName()),
+					"liferay-deploy-fragments.json")) {
+
+				return zipEntry;
+			}
+		}
+
+		return null;
+	}
+
 	private Group _getDeploymentGroup(long companyId, String groupKey)
 		throws Exception {
 
@@ -173,23 +190,6 @@ public class FragmentFileInstaller implements FileInstaller {
 		}
 
 		return group;
-	}
-
-	private ZipEntry _getDeployZipEntry(ZipFile zipFile) {
-		Enumeration<? extends ZipEntry> enumeration = zipFile.entries();
-
-		while (enumeration.hasMoreElements()) {
-			ZipEntry zipEntry = enumeration.nextElement();
-
-			if (Objects.equals(
-					_getFileName(zipEntry.getName()),
-					"liferay-deploy-fragments.json")) {
-
-				return zipEntry;
-			}
-		}
-
-		return null;
 	}
 
 	private String _getFileName(String path) {

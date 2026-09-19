@@ -448,10 +448,10 @@ public class IndexerClauseContributorsTest {
 	protected MBMessageLocalService mbMessageLocalService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private ServiceContext _createServiceContext() throws Exception {
 		return ServiceContextTestUtil.getServiceContext(
@@ -470,10 +470,11 @@ public class IndexerClauseContributorsTest {
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
 
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 	private User _user;
 
 }

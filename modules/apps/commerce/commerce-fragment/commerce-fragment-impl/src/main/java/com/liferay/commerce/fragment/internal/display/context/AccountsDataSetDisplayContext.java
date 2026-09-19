@@ -41,17 +41,17 @@ public class AccountsDataSetDisplayContext extends BaseDisplayContext {
 			CommerceWebKeys.COMMERCE_CONTEXT);
 	}
 
+	public String getAPIURL() throws PortalException {
+		return StringBundler.concat(
+			"/o/headless-commerce-delivery-catalog/v1.0/channels/",
+			_commerceContext.getCommerceChannelId(), "/accounts");
+	}
+
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"currentAccountPostURL",
 			CommerceFragmentUtil.getCurrentAccountPostURL(httpServletRequest)
 		).build();
-	}
-
-	public String getAPIURL() throws PortalException {
-		return StringBundler.concat(
-			"/o/headless-commerce-delivery-catalog/v1.0/channels/",
-			_commerceContext.getCommerceChannelId(), "/accounts");
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {

@@ -112,10 +112,10 @@ public class ExportLayoutUtilityPageEntriesMVCResourceCommand
 	}
 
 	@Reference
-	private LayoutsExporter _layoutsExporter;
-
-	@Reference
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
+
+	@Reference
+	private LayoutsExporter _layoutsExporter;
 
 }

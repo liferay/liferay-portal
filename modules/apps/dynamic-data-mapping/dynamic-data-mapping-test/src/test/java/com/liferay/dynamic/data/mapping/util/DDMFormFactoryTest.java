@@ -136,15 +136,6 @@ public class DDMFormFactoryTest {
 	}
 
 	@Test
-	public void testCreateDynamicFormWithoutRules() {
-		DDMForm ddmForm = DDMFormFactory.create(DynamicFormWithoutRules.class);
-
-		List<DDMFormRule> ddmFormRules = ddmForm.getDDMFormRules();
-
-		Assert.assertEquals(ddmFormRules.toString(), 0, ddmFormRules.size());
-	}
-
-	@Test
 	public void testCreateDynamicFormWithRules() {
 		DDMForm ddmForm = DDMFormFactory.create(DynamicFormWithRules.class);
 
@@ -173,6 +164,15 @@ public class DDMFormFactoryTest {
 			ddmFormRuleActions.toString(), 1, ddmFormRuleActions.size());
 		Assert.assertArrayEquals(
 			new String[] {"action1"}, ddmFormRuleActions.toArray());
+	}
+
+	@Test
+	public void testCreateDynamicFormWithoutRules() {
+		DDMForm ddmForm = DDMFormFactory.create(DynamicFormWithoutRules.class);
+
+		List<DDMFormRule> ddmFormRules = ddmForm.getDDMFormRules();
+
+		Assert.assertEquals(ddmFormRules.toString(), 0, ddmFormRules.size());
 	}
 
 	@Test
@@ -281,10 +281,6 @@ public class DDMFormFactoryTest {
 
 	}
 
-	@com.liferay.dynamic.data.mapping.annotations.DDMForm
-	private interface DynamicFormWithoutRules {
-	}
-
 	@com.liferay.dynamic.data.mapping.annotations.DDMForm(
 		rules = {
 			@com.liferay.dynamic.data.mapping.annotations.DDMFormRule(
@@ -296,6 +292,10 @@ public class DDMFormFactoryTest {
 		}
 	)
 	private interface DynamicFormWithRules {
+	}
+
+	@com.liferay.dynamic.data.mapping.annotations.DDMForm
+	private interface DynamicFormWithoutRules {
 	}
 
 	@com.liferay.dynamic.data.mapping.annotations.DDMForm

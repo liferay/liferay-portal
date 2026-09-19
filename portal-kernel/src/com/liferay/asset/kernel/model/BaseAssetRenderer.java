@@ -228,16 +228,6 @@ public abstract class BaseAssetRenderer<T> implements AssetRenderer<T> {
 	}
 
 	@Override
-	public String getUrlTitle() {
-		return null;
-	}
-
-	@Override
-	public String getUrlTitle(Locale locale) {
-		return getUrlTitle();
-	}
-
-	@Override
 	public String getURLView(
 			LiferayPortletResponse liferayPortletResponse,
 			WindowState windowState)
@@ -271,6 +261,16 @@ public abstract class BaseAssetRenderer<T> implements AssetRenderer<T> {
 		throws Exception {
 
 		return null;
+	}
+
+	@Override
+	public String getUrlTitle() {
+		return null;
+	}
+
+	@Override
+	public String getUrlTitle(Locale locale) {
+		return getUrlTitle();
 	}
 
 	@Override

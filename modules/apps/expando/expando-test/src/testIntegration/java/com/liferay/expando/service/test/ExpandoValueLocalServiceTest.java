@@ -265,6 +265,52 @@ public class ExpandoValueLocalServiceTest {
 	}
 
 	@Test
+	public void testAddValueWithFlushInBetween() throws Throwable {
+		ExpandoColumn column1 = ExpandoTestUtil.addColumn(
+			_expandoTable, "Test Column 1", ExpandoColumnConstants.STRING);
+
+		ExpandoColumn column2 = ExpandoTestUtil.addColumn(
+			_expandoTable, "Test Column 2", ExpandoColumnConstants.STRING);
+
+		long classPK = _counterLocalService.increment();
+
+		ExpandoTestUtil.addValues(
+			_expandoTable, classPK,
+			new HashMapBuilder<>().<String, Serializable>put(
+				"Test Column 1", "column1-one"
+			).<String, Serializable>put(
+				"Test Column 2", "column2-one"
+			).build());
+
+		_entityCache.clearCache(ExpandoValueImpl.class);
+		_finderCache.clearCache(ExpandoValueImpl.class);
+
+		TransactionInvokerUtil.invoke(
+			TransactionConfig.Factory.create(
+				Propagation.REQUIRED, new Class<?>[] {Exception.class}),
+			() -> {
+				ExpandoTestUtil.addValue(
+					_expandoTable, column1, classPK, "column1-two");
+
+				ExpandoTestUtil.addValue(
+					_expandoTable, column2, classPK, "column2-two");
+
+				return null;
+			});
+
+		Assert.assertEquals(
+			"column1-two",
+			_expandoValueLocalService.getData(
+				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
+				_expandoTable.getName(), "Test Column 1", classPK));
+		Assert.assertEquals(
+			"column2-two",
+			_expandoValueLocalService.getData(
+				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
+				_expandoTable.getName(), "Test Column 2", classPK));
+	}
+
+	@Test
 	public void testAddValuesWithFlushInBetween() throws Throwable {
 		ExpandoTestUtil.addColumn(
 			_expandoTable, "Test Column 1", ExpandoColumnConstants.STRING);
@@ -295,52 +341,6 @@ public class ExpandoValueLocalServiceTest {
 					).<String, Serializable>put(
 						"Test Column 2", "column2-two"
 					).build());
-
-				return null;
-			});
-
-		Assert.assertEquals(
-			"column1-two",
-			_expandoValueLocalService.getData(
-				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
-				_expandoTable.getName(), "Test Column 1", classPK));
-		Assert.assertEquals(
-			"column2-two",
-			_expandoValueLocalService.getData(
-				_expandoTable.getCompanyId(), _expandoTable.getClassName(),
-				_expandoTable.getName(), "Test Column 2", classPK));
-	}
-
-	@Test
-	public void testAddValueWithFlushInBetween() throws Throwable {
-		ExpandoColumn column1 = ExpandoTestUtil.addColumn(
-			_expandoTable, "Test Column 1", ExpandoColumnConstants.STRING);
-
-		ExpandoColumn column2 = ExpandoTestUtil.addColumn(
-			_expandoTable, "Test Column 2", ExpandoColumnConstants.STRING);
-
-		long classPK = _counterLocalService.increment();
-
-		ExpandoTestUtil.addValues(
-			_expandoTable, classPK,
-			new HashMapBuilder<>().<String, Serializable>put(
-				"Test Column 1", "column1-one"
-			).<String, Serializable>put(
-				"Test Column 2", "column2-one"
-			).build());
-
-		_entityCache.clearCache(ExpandoValueImpl.class);
-		_finderCache.clearCache(ExpandoValueImpl.class);
-
-		TransactionInvokerUtil.invoke(
-			TransactionConfig.Factory.create(
-				Propagation.REQUIRED, new Class<?>[] {Exception.class}),
-			() -> {
-				ExpandoTestUtil.addValue(
-					_expandoTable, column1, classPK, "column1-two");
-
-				ExpandoTestUtil.addValue(
-					_expandoTable, column2, classPK, "column2-two");
 
 				return null;
 			});

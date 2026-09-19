@@ -19,34 +19,6 @@ import java.net.URL;
  */
 public class HttpUtil {
 
-	public static Cookie[] getCookies() {
-		Http http = _httpSnapshot.get();
-
-		return http.getCookies();
-	}
-
-	public static Http getHttp() {
-		return _httpSnapshot.get();
-	}
-
-	public static boolean hasProxyConfig() {
-		Http http = _httpSnapshot.get();
-
-		return http.hasProxyConfig();
-	}
-
-	public static boolean isNonProxyHost(String host) {
-		Http http = _httpSnapshot.get();
-
-		return http.isNonProxyHost(host);
-	}
-
-	public static boolean isProxyHost(String host) {
-		Http http = _httpSnapshot.get();
-
-		return http.isProxyHost(host);
-	}
-
 	public static byte[] URLtoByteArray(Http.Options options)
 		throws IOException {
 
@@ -128,6 +100,34 @@ public class HttpUtil {
 		Http http = _httpSnapshot.get();
 
 		return http.URLtoString(url);
+	}
+
+	public static Cookie[] getCookies() {
+		Http http = _httpSnapshot.get();
+
+		return http.getCookies();
+	}
+
+	public static Http getHttp() {
+		return _httpSnapshot.get();
+	}
+
+	public static boolean hasProxyConfig() {
+		Http http = _httpSnapshot.get();
+
+		return http.hasProxyConfig();
+	}
+
+	public static boolean isNonProxyHost(String host) {
+		Http http = _httpSnapshot.get();
+
+		return http.isNonProxyHost(host);
+	}
+
+	public static boolean isProxyHost(String host) {
+		Http http = _httpSnapshot.get();
+
+		return http.isProxyHost(host);
 	}
 
 	private static final Snapshot<Http> _httpSnapshot = new Snapshot<>(

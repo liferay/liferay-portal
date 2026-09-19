@@ -68,17 +68,6 @@ public class SiteNavigationMenuDisplayContextTest {
 	}
 
 	@Test
-	public void testGetAlertKeyWithoutPrivateLayoutsEnabled() throws Exception {
-		_setUpGroup(false);
-		_setUpLayout(false);
-
-		SiteNavigationMenuDisplayContext siteNavigationMenuDisplayContext =
-			new SiteNavigationMenuDisplayContext(_httpServletRequest);
-
-		Assert.assertEquals("", siteNavigationMenuDisplayContext.getAlertKey());
-	}
-
-	@Test
 	public void testGetAlertKeyWithPrivateLayoutsEnabledAndDisplayPageInEditMode()
 		throws Exception {
 
@@ -148,6 +137,17 @@ public class SiteNavigationMenuDisplayContextTest {
 		Assert.assertEquals(
 			"the-navigation-being-displayed-here-is-the-public-pages-hierarchy",
 			siteNavigationMenuDisplayContext.getAlertKey());
+	}
+
+	@Test
+	public void testGetAlertKeyWithoutPrivateLayoutsEnabled() throws Exception {
+		_setUpGroup(false);
+		_setUpLayout(false);
+
+		SiteNavigationMenuDisplayContext siteNavigationMenuDisplayContext =
+			new SiteNavigationMenuDisplayContext(_httpServletRequest);
+
+		Assert.assertEquals("", siteNavigationMenuDisplayContext.getAlertKey());
 	}
 
 	@Test

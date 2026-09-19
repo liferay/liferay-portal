@@ -308,6 +308,15 @@ public class SectionDisplayContextUtil {
 			appendStatus(_CMS_CONTENT_FILTER_STRING), httpServletRequest);
 	}
 
+	public static String getContentViewURL(ThemeDisplay themeDisplay) {
+		return StringBundler.concat(
+			themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+			GroupConstants.CMS_FRIENDLY_URL,
+			"/edit_content_item?p_l_mode=read&p_p_state=",
+			LiferayWindowState.POP_UP, "&redirect=",
+			themeDisplay.getURLCurrent(), "&objectEntryId={embedded.id}");
+	}
+
 	public static List<DropdownItem> getContentsBulkActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
 
@@ -353,15 +362,6 @@ public class SectionDisplayContextUtil {
 			fdsActionDropdownItems, httpServletRequest);
 
 		return fdsActionDropdownItems;
-	}
-
-	public static String getContentViewURL(ThemeDisplay themeDisplay) {
-		return StringBundler.concat(
-			themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
-			GroupConstants.CMS_FRIENDLY_URL,
-			"/edit_content_item?p_l_mode=read&p_p_state=",
-			LiferayWindowState.POP_UP, "&redirect=",
-			themeDisplay.getURLCurrent(), "&objectEntryId={embedded.id}");
 	}
 
 	public static CreationMenu getCreationMenu(

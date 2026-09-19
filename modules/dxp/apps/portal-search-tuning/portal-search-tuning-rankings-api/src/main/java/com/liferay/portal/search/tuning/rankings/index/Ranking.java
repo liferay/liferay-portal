@@ -36,9 +36,9 @@ public interface Ranking {
 
 	public String getRankingDocumentId();
 
-	public String getStatus();
-
 	public String getSXPBlueprintExternalReferenceCode();
+
+	public String getStatus();
 
 	public boolean isPinned(String documentId);
 

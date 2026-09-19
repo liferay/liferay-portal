@@ -937,15 +937,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<BlogsEntry> getGroupsEntries(
-		long companyId, long groupId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition) {
-
-		return blogsEntryFinder.findByGroupIds(
-			companyId, groupId, displayDate, queryDefinition);
-	}
-
-	@Override
 	public List<BlogsEntry> getGroupUserEntries(
 		long groupId, long userId, Date displayDate,
 		QueryDefinition<BlogsEntry> queryDefinition) {
@@ -975,6 +966,15 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 
 		return blogsEntryPersistence.countByG_U_LtD_S(
 			groupId, userId, displayDate, queryDefinition.getStatus());
+	}
+
+	@Override
+	public List<BlogsEntry> getGroupsEntries(
+		long companyId, long groupId, Date displayDate,
+		QueryDefinition<BlogsEntry> queryDefinition) {
+
+		return blogsEntryFinder.findByGroupIds(
+			companyId, groupId, displayDate, queryDefinition);
 	}
 
 	@Override
@@ -1844,6 +1844,16 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		return serviceContext.getLayoutFullURL();
 	}
 
+	private String _getURLTitle(long entryId) {
+		BlogsEntry entry = blogsEntryPersistence.fetchByPrimaryKey(entryId);
+
+		if (entry != null) {
+			return entry.getUrlTitle();
+		}
+
+		return StringPool.BLANK;
+	}
+
 	private String _getUniqueFileName(
 			long groupId, String fileName, long folderId)
 		throws PortalException {
@@ -1887,16 +1897,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			entry.getGroupId(),
 			_classNameLocalService.getClassNameId(BlogsEntry.class),
 			entry.getEntryId(), urlTitle);
-	}
-
-	private String _getURLTitle(long entryId) {
-		BlogsEntry entry = blogsEntryPersistence.fetchByPrimaryKey(entryId);
-
-		if (entry != null) {
-			return entry.getUrlTitle();
-		}
-
-		return StringPool.BLANK;
 	}
 
 	private boolean _hasFileEntry(

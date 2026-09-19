@@ -413,12 +413,12 @@ public class PoshiProperties extends Properties {
 	public String testBatchPropertyQuery = getProperty(
 		TEST_BATCH_PROPERTY_QUERY);
 	public String testBatchRunType = getProperty(TEST_BATCH_RUN_TYPE);
+	public String[] testCSVReportPropertyNames = StringUtil.split(
+		getProperty(TEST_CSV_REPORT_PROPERTY_NAMES));
 	public String testCaseAvailablePropertyNames = getProperty(
 		TEST_CASE_AVAILABLE_PROPERTY_NAMES);
 	public String testCaseRequiredPropertyNames = getProperty(
 		TEST_CASE_REQUIRED_PROPERTY_NAMES);
-	public String[] testCSVReportPropertyNames = StringUtil.split(
-		getProperty(TEST_CSV_REPORT_PROPERTY_NAMES));
 	public String testDependenciesDirName = getProperty(
 		TEST_DEPENDENCIES_DIR_NAME);
 	public String[] testDirs = StringUtil.split(getProperty(TEST_DIRS));

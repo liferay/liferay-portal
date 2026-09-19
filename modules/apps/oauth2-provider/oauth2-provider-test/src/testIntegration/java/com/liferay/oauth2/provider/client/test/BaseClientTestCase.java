@@ -649,12 +649,6 @@ public abstract class BaseClientTestCase {
 		return parameterMap.get("error")[0];
 	}
 
-	protected String parseJsonField(Response response, String fieldName) {
-		JSONObject jsonObject = parseJSONObject(response);
-
-		return jsonObject.getString(fieldName);
-	}
-
 	protected JSONObject parseJSONObject(Response response) {
 		String json = response.readEntity(String.class);
 
@@ -665,6 +659,12 @@ public abstract class BaseClientTestCase {
 			throw new IllegalArgumentException(
 				"The token service returned " + json);
 		}
+	}
+
+	protected String parseJsonField(Response response, String fieldName) {
+		JSONObject jsonObject = parseJSONObject(response);
+
+		return jsonObject.getString(fieldName);
 	}
 
 	protected String parsePAuthToken(Response response) {

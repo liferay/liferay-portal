@@ -250,6 +250,36 @@ public class ViewRoomsSectionDisplayContextTest {
 	}
 
 	@Test
+	public void testGetAPIURL() throws Exception {
+		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
+			new ViewRoomsSectionDisplayContext(
+				new HashMap<>(), _getMockHttpServletRequest(),
+				_objectDefinition, Mockito.mock(ObjectEntryService.class));
+
+		Assert.assertEquals(
+			"/o/digital-sales-room/rooms?nestedFields=creator," +
+				"r_accountToDSRRooms_accountEntryId",
+			viewRoomsSectionDisplayContext.getAPIURL());
+	}
+
+	@Test
+	public void testGetAPIURLWithConfiguration() throws Exception {
+		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
+			new ViewRoomsSectionDisplayContext(
+				HashMapBuilder.<String, Object>put(
+					"isHomePage", true
+				).build(),
+				_getMockHttpServletRequest(), _objectDefinition,
+				Mockito.mock(ObjectEntryService.class));
+
+		Assert.assertEquals(
+			"/o/digital-sales-room/rooms?nestedFields=creator," +
+				"r_accountToDSRRooms_accountEntryId&pageSize=5&sort" +
+					"=dateModified:desc",
+			viewRoomsSectionDisplayContext.getAPIURL());
+	}
+
+	@Test
 	public void testGetAdditionalProps() throws Exception {
 		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
 			new ViewRoomsSectionDisplayContext(
@@ -280,36 +310,6 @@ public class ViewRoomsSectionDisplayContextTest {
 							"uuid", "siteTemplateUuid"
 						)))
 			).build());
-	}
-
-	@Test
-	public void testGetAPIURL() throws Exception {
-		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
-			new ViewRoomsSectionDisplayContext(
-				new HashMap<>(), _getMockHttpServletRequest(),
-				_objectDefinition, Mockito.mock(ObjectEntryService.class));
-
-		Assert.assertEquals(
-			"/o/digital-sales-room/rooms?nestedFields=creator," +
-				"r_accountToDSRRooms_accountEntryId",
-			viewRoomsSectionDisplayContext.getAPIURL());
-	}
-
-	@Test
-	public void testGetAPIURLWithConfiguration() throws Exception {
-		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
-			new ViewRoomsSectionDisplayContext(
-				HashMapBuilder.<String, Object>put(
-					"isHomePage", true
-				).build(),
-				_getMockHttpServletRequest(), _objectDefinition,
-				Mockito.mock(ObjectEntryService.class));
-
-		Assert.assertEquals(
-			"/o/digital-sales-room/rooms?nestedFields=creator," +
-				"r_accountToDSRRooms_accountEntryId&pageSize=5&sort" +
-					"=dateModified:desc",
-			viewRoomsSectionDisplayContext.getAPIURL());
 	}
 
 	@Test

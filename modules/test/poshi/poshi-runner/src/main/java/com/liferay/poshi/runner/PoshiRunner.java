@@ -472,8 +472,8 @@ public class PoshiRunner {
 			}
 
 			private final Statement _statement;
-			private int _testcaseRetryCount;
 			private final List<String> _testResultMessages = new ArrayList<>();
+			private int _testcaseRetryCount;
 			private final Throwable[] _validRetryThrowables = {
 				new TimeoutException(), new UnreachableBrowserException(null),
 				new WebDriverException(

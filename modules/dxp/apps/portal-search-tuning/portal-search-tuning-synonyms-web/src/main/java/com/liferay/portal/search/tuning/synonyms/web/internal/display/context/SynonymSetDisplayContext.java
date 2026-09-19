@@ -46,12 +46,12 @@ public class SynonymSetDisplayContext {
 		_editRenderURL = editRenderURL;
 	}
 
-	public void setSynonyms(String synonyms) {
-		_synonymSet = synonyms;
-	}
-
 	public void setSynonymSetId(String synonymSetId) {
 		_synonymSetId = synonymSetId;
+	}
+
+	public void setSynonyms(String synonyms) {
+		_synonymSet = synonyms;
 	}
 
 	private String _displayedSynonymSet;

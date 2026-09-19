@@ -76,6 +76,10 @@ public class LiferayFileVersion extends LiferayModel implements FileVersion {
 		return expandoBridge.getAttributes();
 	}
 
+	public long getCTCollectionId() {
+		return _dlFileVersion.getCtCollectionId();
+	}
+
 	@Override
 	public String getChangeLog() {
 		return _dlFileVersion.getChangeLog();
@@ -112,10 +116,6 @@ public class LiferayFileVersion extends LiferayModel implements FileVersion {
 
 	@Override
 	public long getCtCollectionId() {
-		return _dlFileVersion.getCtCollectionId();
-	}
-
-	public long getCTCollectionId() {
 		return _dlFileVersion.getCtCollectionId();
 	}
 

@@ -339,23 +339,6 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeWithoutAnyConfiguration() throws Exception {
-		_upgrade();
-
-		Assert.assertNull(
-			_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
-		Assert.assertNull(
-			_getDLFileEntryConfiguration(
-				ExtendedObjectClassDefinition.Scope.COMPANY, null));
-		Assert.assertNull(
-			_getDLFileEntryConfiguration(
-				ExtendedObjectClassDefinition.Scope.GROUP, null));
-		Assert.assertNull(
-			_getDLFileEntryConfiguration(
-				ExtendedObjectClassDefinition.Scope.SYSTEM, null));
-	}
-
-	@Test
 	public void testUpgradeWithSystemDLFileEntryConfigurationOnly()
 		throws Exception {
 
@@ -415,6 +398,23 @@ public class DLFileEntryConfigurationUpgradeProcessTest {
 			_deleteConfigurations(_CLASS_NAME_DL_FILE_ENTRY_CONFIGURATION);
 			_deleteConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION);
 		}
+	}
+
+	@Test
+	public void testUpgradeWithoutAnyConfiguration() throws Exception {
+		_upgrade();
+
+		Assert.assertNull(
+			_getConfigurations(_CLASS_NAME_PDF_PREVIEW_CONFIGURATION));
+		Assert.assertNull(
+			_getDLFileEntryConfiguration(
+				ExtendedObjectClassDefinition.Scope.COMPANY, null));
+		Assert.assertNull(
+			_getDLFileEntryConfiguration(
+				ExtendedObjectClassDefinition.Scope.GROUP, null));
+		Assert.assertNull(
+			_getDLFileEntryConfiguration(
+				ExtendedObjectClassDefinition.Scope.SYSTEM, null));
 	}
 
 	private void _assertConfigurationValuesEquals(

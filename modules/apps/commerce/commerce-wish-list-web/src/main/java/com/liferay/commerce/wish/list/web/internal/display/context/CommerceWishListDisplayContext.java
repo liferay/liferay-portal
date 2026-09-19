@@ -86,6 +86,36 @@ public class CommerceWishListDisplayContext {
 			httpServletRequest);
 	}
 
+	public CPCatalogEntry getCPCatalogEntry(long cpDefinitionId)
+		throws PortalException {
+
+		CommerceContext commerceContext =
+			_commerceWishListRequestHelper.getCommerceContext();
+
+		long commerceAccountId = CommerceUtil.getCommerceAccountId(
+			commerceContext);
+		long commerceChannelGroupId =
+			commerceContext.getCommerceChannelGroupId();
+
+		if (!_commerceProductViewPermission.contains(
+				PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
+				commerceChannelGroupId, cpDefinitionId)) {
+
+			return null;
+		}
+
+		return _cpDefinitionHelper.getCPCatalogEntry(
+			commerceAccountId, commerceChannelGroupId, cpDefinitionId,
+			_commerceWishListRequestHelper.getLocale(), false);
+	}
+
+	public String getCPDefinitionURL(
+			long cpDefinitionId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		return _cpDefinitionHelper.getFriendlyURL(cpDefinitionId, themeDisplay);
+	}
+
 	public long getCommerceAccountId() throws PortalException {
 		return CommerceUtil.getCommerceAccountId(
 			_commerceWishListRequestHelper.getCommerceContext());
@@ -251,36 +281,6 @@ public class CommerceWishListDisplayContext {
 				commerceWishList.getCommerceWishListId()));
 
 		return _commerceWishListItemsSearchContainer;
-	}
-
-	public CPCatalogEntry getCPCatalogEntry(long cpDefinitionId)
-		throws PortalException {
-
-		CommerceContext commerceContext =
-			_commerceWishListRequestHelper.getCommerceContext();
-
-		long commerceAccountId = CommerceUtil.getCommerceAccountId(
-			commerceContext);
-		long commerceChannelGroupId =
-			commerceContext.getCommerceChannelGroupId();
-
-		if (!_commerceProductViewPermission.contains(
-				PermissionThreadLocal.getPermissionChecker(), commerceAccountId,
-				commerceChannelGroupId, cpDefinitionId)) {
-
-			return null;
-		}
-
-		return _cpDefinitionHelper.getCPCatalogEntry(
-			commerceAccountId, commerceChannelGroupId, cpDefinitionId,
-			_commerceWishListRequestHelper.getLocale(), false);
-	}
-
-	public String getCPDefinitionURL(
-			long cpDefinitionId, ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		return _cpDefinitionHelper.getFriendlyURL(cpDefinitionId, themeDisplay);
 	}
 
 	public PortletURL getPortletURL() {

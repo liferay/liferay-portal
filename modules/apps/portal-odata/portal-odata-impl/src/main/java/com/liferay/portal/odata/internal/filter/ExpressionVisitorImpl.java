@@ -406,25 +406,6 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 		return new QueryFilter(booleanQuery);
 	}
 
-	private EntityModel _getLambdaEntityModel(
-		String variableName, CollectionEntityField collectionEntityField) {
-
-		return new EntityModel() {
-
-			@Override
-			public Map<String, EntityField> getEntityFieldsMap() {
-				return Collections.singletonMap(
-					variableName, collectionEntityField.getEntityField());
-			}
-
-			@Override
-			public String getName() {
-				return collectionEntityField.getName();
-			}
-
-		};
-	}
-
 	private Filter _getLEFilter(
 		EntityField entityField, Object fieldValue, Locale locale) {
 
@@ -479,6 +460,25 @@ public class ExpressionVisitorImpl implements ExpressionVisitor<Object> {
 		throw new UnsupportedOperationException(
 			"Unsupported method _getLTFilter with entity field type " +
 				entityField.getType());
+	}
+
+	private EntityModel _getLambdaEntityModel(
+		String variableName, CollectionEntityField collectionEntityField) {
+
+		return new EntityModel() {
+
+			@Override
+			public Map<String, EntityField> getEntityFieldsMap() {
+				return Collections.singletonMap(
+					variableName, collectionEntityField.getEntityField());
+			}
+
+			@Override
+			public String getName() {
+				return collectionEntityField.getName();
+			}
+
+		};
 	}
 
 	private Filter _getNEFilter(

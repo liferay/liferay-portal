@@ -128,10 +128,10 @@ public class WikiPageUADAnonymizerTest
 	@Inject
 	private WikiPageLocalService _wikiPageLocalService;
 
-	@DeleteAfterTestRun
-	private final List<WikiPage> _wikiPages = new ArrayList<>();
-
 	@Inject
 	private WikiPageUADTestHelper _wikiPageUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<WikiPage> _wikiPages = new ArrayList<>();
 
 }

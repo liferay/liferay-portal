@@ -58,10 +58,10 @@ public class WikiPageUADDisplayTest extends BaseUADDisplayTestCase<WikiPage> {
 	)
 	private UADDisplay<WikiPage> _uadDisplay;
 
-	@DeleteAfterTestRun
-	private final List<WikiPage> _wikiPages = new ArrayList<>();
-
 	@Inject
 	private WikiPageUADTestHelper _wikiPageUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<WikiPage> _wikiPages = new ArrayList<>();
 
 }

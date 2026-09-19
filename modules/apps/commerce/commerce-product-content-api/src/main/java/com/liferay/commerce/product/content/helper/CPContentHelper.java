@@ -54,11 +54,6 @@ public interface CPContentHelper {
 	public String getAvailabilityLabel(HttpServletRequest httpServletRequest)
 		throws Exception;
 
-	public List<CPDefinitionSpecificationOptionValue>
-			getCategorizedCPDefinitionSpecificationOptionValues(
-				long cpDefinitionId, long cpOptionCategoryId)
-		throws PortalException;
-
 	public CPCatalogEntry getCPCatalogEntry(
 			HttpServletRequest httpServletRequest)
 		throws PortalException;
@@ -97,6 +92,11 @@ public interface CPContentHelper {
 
 	public List<CPType> getCPTypes();
 
+	public List<CPDefinitionSpecificationOptionValue>
+			getCategorizedCPDefinitionSpecificationOptionValues(
+				long cpDefinitionId, long cpOptionCategoryId)
+		throws PortalException;
+
 	public CPInstance getDefaultCPInstance(CPCatalogEntry cpCatalogEntry)
 		throws Exception;
 
@@ -119,12 +119,12 @@ public interface CPContentHelper {
 			CPCatalogEntry cpCatalogEntry, ThemeDisplay themeDisplay)
 		throws PortalException;
 
+	public String getImageURL(FileEntry fileEntry, ThemeDisplay themeDisplay)
+		throws Exception;
+
 	public List<CPMedia> getImages(
 			long cpDefinitionId, boolean gallery, ThemeDisplay themeDisplay)
 		throws PortalException;
-
-	public String getImageURL(FileEntry fileEntry, ThemeDisplay themeDisplay)
-		throws Exception;
 
 	public String getIncomingQuantityLabel(
 			long companyId, Locale locale, String sku, String unitOfMeasureKey,
@@ -152,12 +152,12 @@ public interface CPContentHelper {
 			LiferayPortletResponse liferayPortletResponse)
 		throws PortalException;
 
-	public boolean hasChildCPDefinitions(long cpDefinitionId);
-
 	public boolean hasCPDefinitionOptionRels(long cpDefinitionId);
 
 	public boolean hasCPDefinitionSpecificationOptionValues(long cpDefinitionId)
 		throws PortalException;
+
+	public boolean hasChildCPDefinitions(long cpDefinitionId);
 
 	public boolean hasMultipleCPSkus(CPCatalogEntry cpCatalogEntry)
 		throws Exception;

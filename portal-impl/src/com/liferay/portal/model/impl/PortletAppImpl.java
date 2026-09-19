@@ -125,11 +125,6 @@ public class PortletAppImpl implements PortletApp {
 	}
 
 	@Override
-	public List<Portlet> getPortlets() {
-		return new ArrayList<>(_portlets);
-	}
-
-	@Override
 	public PortletURLListener getPortletURLListener(String listenerClass) {
 		return _portletURLListenersMap.get(listenerClass);
 	}
@@ -137,6 +132,11 @@ public class PortletAppImpl implements PortletApp {
 	@Override
 	public Set<PortletURLListener> getPortletURLListeners() {
 		return _portletURLListeners;
+	}
+
+	@Override
+	public List<Portlet> getPortlets() {
+		return new ArrayList<>(_portlets);
 	}
 
 	@Override
@@ -222,11 +222,11 @@ public class PortletAppImpl implements PortletApp {
 	private final Set<PortletFilter> _portletFilters = new LinkedHashSet<>();
 	private final Map<String, PortletFilter> _portletFiltersMap =
 		new HashMap<>();
-	private final Set<Portlet> _portlets = new LinkedHashSet<>();
 	private final Set<PortletURLListener> _portletURLListeners =
 		new LinkedHashSet<>();
 	private final Map<String, PortletURLListener> _portletURLListenersMap =
 		new HashMap<>();
+	private final Set<Portlet> _portlets = new LinkedHashSet<>();
 	private final Map<String, PublicRenderParameter>
 		_publicRenderParametersMap = new HashMap<>();
 	private ServletContext _servletContext;

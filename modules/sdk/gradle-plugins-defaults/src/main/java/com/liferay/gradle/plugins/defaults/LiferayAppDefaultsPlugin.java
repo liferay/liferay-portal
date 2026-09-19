@@ -218,6 +218,19 @@ public class LiferayAppDefaultsPlugin implements Plugin<Project> {
 		GradleUtil.applyPlugin(project, NodeDefaultsPlugin.class);
 	}
 
+	private void _configureAppJSDoc(Project project, Project privateProject) {
+		if (privateProject == null) {
+			return;
+		}
+
+		AppJSDocConfigurationExtension appJSDocConfigurationExtension =
+			GradleUtil.getExtension(
+				project, AppJSDocConfigurationExtension.class);
+
+		appJSDocConfigurationExtension.subprojects(
+			privateProject.getSubprojects());
+	}
+
 	@SuppressWarnings("serial")
 	private void _configureAppJavadocBuilder(
 		Project project, Project privateProject) {
@@ -266,19 +279,6 @@ public class LiferayAppDefaultsPlugin implements Plugin<Project> {
 		}
 	}
 
-	private void _configureAppJSDoc(Project project, Project privateProject) {
-		if (privateProject == null) {
-			return;
-		}
-
-		AppJSDocConfigurationExtension appJSDocConfigurationExtension =
-			GradleUtil.getExtension(
-				project, AppJSDocConfigurationExtension.class);
-
-		appJSDocConfigurationExtension.subprojects(
-			privateProject.getSubprojects());
-	}
-
 	private void _configureAppTLDDocBuilder(
 		Project project, Project privateProject) {
 
@@ -301,17 +301,6 @@ public class LiferayAppDefaultsPlugin implements Plugin<Project> {
 
 		if (Validator.isNotNull(version)) {
 			project.setVersion(version);
-		}
-	}
-
-	private void _configureTaskAppJavadoc(
-		Project project, String appTitle, String appVersion) {
-
-		if (Validator.isNotNull(appTitle) && Validator.isNotNull(appVersion)) {
-			Javadoc javadoc = (Javadoc)GradleUtil.getTask(
-				project, AppJavadocBuilderPlugin.APP_JAVADOC_TASK_NAME);
-
-			javadoc.setTitle(String.format("%s %s API", appTitle, appVersion));
 		}
 	}
 
@@ -343,6 +332,17 @@ public class LiferayAppDefaultsPlugin implements Plugin<Project> {
 					}
 
 				});
+		}
+	}
+
+	private void _configureTaskAppJavadoc(
+		Project project, String appTitle, String appVersion) {
+
+		if (Validator.isNotNull(appTitle) && Validator.isNotNull(appVersion)) {
+			Javadoc javadoc = (Javadoc)GradleUtil.getTask(
+				project, AppJavadocBuilderPlugin.APP_JAVADOC_TASK_NAME);
+
+			javadoc.setTitle(String.format("%s %s API", appTitle, appVersion));
 		}
 	}
 

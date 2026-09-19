@@ -94,10 +94,10 @@ public class DLFileEntryTypePermissionUpdateHandler
 	}
 
 	@Reference
-	private DDMPermissionSupport _ddmPermissionSupport;
+	private DLFileEntryTypeLocalService _dLFileEntryTypeLocalService;
 
 	@Reference
-	private DLFileEntryTypeLocalService _dLFileEntryTypeLocalService;
+	private DDMPermissionSupport _ddmPermissionSupport;
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;

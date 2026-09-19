@@ -87,16 +87,6 @@ public class PatcherFixRelUtil {
 				patcherFixRel.getChildPatcherFixId()));
 	}
 
-	public static List<PatcherFix> getParentPatcherFixes(
-		PatcherFix childPatcherFix) {
-
-		return TransformUtil.transform(
-			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByChildPatcherFixId(
-				childPatcherFix.getPatcherFixId()),
-			patcherFixRel -> PatcherFixLocalServiceUtil.getPatcherFix(
-				patcherFixRel.getParentPatcherFixId()));
-	}
-
 	public static List<Long> getParentPatcherFixIds(
 			List<Long> allPatcherFixIds, List<Long> patcherFixIds)
 		throws Exception {
@@ -138,6 +128,16 @@ public class PatcherFixRelUtil {
 			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByChildPatcherFixId(
 				childPatcherFixId),
 			PatcherFixRelModel::getParentPatcherFixId);
+	}
+
+	public static List<PatcherFix> getParentPatcherFixes(
+		PatcherFix childPatcherFix) {
+
+		return TransformUtil.transform(
+			PatcherFixRelLocalServiceUtil.getPatcherFixRelsByChildPatcherFixId(
+				childPatcherFix.getPatcherFixId()),
+			patcherFixRel -> PatcherFixLocalServiceUtil.getPatcherFix(
+				patcherFixRel.getParentPatcherFixId()));
 	}
 
 	public static List<PatcherFix> getPatcherFixAncestors(

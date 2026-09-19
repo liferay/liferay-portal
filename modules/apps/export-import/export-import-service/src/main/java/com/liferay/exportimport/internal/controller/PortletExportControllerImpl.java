@@ -1431,11 +1431,11 @@ public class PortletExportControllerImpl implements PortletExportController {
 	private PortletLocalService _portletLocalService;
 
 	@Reference
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Reference
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Reference
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;

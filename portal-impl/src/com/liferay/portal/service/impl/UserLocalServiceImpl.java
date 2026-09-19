@@ -643,6 +643,61 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return true;
 	}
 
+	@Override
+	public User addOrUpdateUser(
+			String externalReferenceCode, long creatorUserId, long companyId,
+			boolean autoPassword, String password1, String password2,
+			boolean autoScreenName, String screenName, String emailAddress,
+			Locale locale, String firstName, String middleName, String lastName,
+			long prefixListTypeId, long suffixListTypeId, boolean male,
+			int birthdayMonth, int birthdayDay, int birthdayYear,
+			String jobTitle, boolean sendEmail, ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = userPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
+
+		if (user == null) {
+			user = addUserWithWorkflow(
+				creatorUserId, companyId, autoPassword, password1, password2,
+				autoScreenName, screenName, emailAddress, locale, firstName,
+				middleName, lastName, prefixListTypeId, suffixListTypeId, male,
+				birthdayMonth, birthdayDay, birthdayYear, jobTitle,
+				UserConstants.TYPE_REGULAR, new long[0], new long[0],
+				new long[0], new long[0], sendEmail, serviceContext);
+
+			user.setExternalReferenceCode(externalReferenceCode);
+
+			user = userPersistence.update(user);
+		}
+		else {
+			Contact contact = user.getContact();
+
+			boolean hasPortrait = false;
+
+			if (user.getPortraitId() > 0) {
+				hasPortrait = true;
+			}
+
+			user = updateUser(
+				user.getUserId(), null, password1, password2, false,
+				user.getReminderQueryQuestion(), user.getReminderQueryAnswer(),
+				screenName, emailAddress, hasPortrait, null,
+				user.getLanguageId(), user.getTimeZoneId(), user.getGreeting(),
+				user.getComments(), firstName, middleName, lastName,
+				prefixListTypeId, suffixListTypeId, male, birthdayMonth,
+				birthdayDay, birthdayYear, contact.getSmsSn(),
+				contact.getFacebookSn(), contact.getJabberSn(),
+				contact.getSkypeSn(), contact.getTwitterSn(), jobTitle,
+				user.getGroupIds(), user.getOrganizationIds(),
+				user.getRoleIds(),
+				_userGroupRolePersistence.findByUserId(user.getUserId()),
+				user.getUserGroupIds(), serviceContext);
+		}
+
+		return user;
+	}
+
 	/**
 	 * Adds the user to the organization.
 	 *
@@ -727,61 +782,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		reindex(userIds);
 
 		return true;
-	}
-
-	@Override
-	public User addOrUpdateUser(
-			String externalReferenceCode, long creatorUserId, long companyId,
-			boolean autoPassword, String password1, String password2,
-			boolean autoScreenName, String screenName, String emailAddress,
-			Locale locale, String firstName, String middleName, String lastName,
-			long prefixListTypeId, long suffixListTypeId, boolean male,
-			int birthdayMonth, int birthdayDay, int birthdayYear,
-			String jobTitle, boolean sendEmail, ServiceContext serviceContext)
-		throws PortalException {
-
-		User user = userPersistence.fetchByERC_C(
-			externalReferenceCode, companyId);
-
-		if (user == null) {
-			user = addUserWithWorkflow(
-				creatorUserId, companyId, autoPassword, password1, password2,
-				autoScreenName, screenName, emailAddress, locale, firstName,
-				middleName, lastName, prefixListTypeId, suffixListTypeId, male,
-				birthdayMonth, birthdayDay, birthdayYear, jobTitle,
-				UserConstants.TYPE_REGULAR, new long[0], new long[0],
-				new long[0], new long[0], sendEmail, serviceContext);
-
-			user.setExternalReferenceCode(externalReferenceCode);
-
-			user = userPersistence.update(user);
-		}
-		else {
-			Contact contact = user.getContact();
-
-			boolean hasPortrait = false;
-
-			if (user.getPortraitId() > 0) {
-				hasPortrait = true;
-			}
-
-			user = updateUser(
-				user.getUserId(), null, password1, password2, false,
-				user.getReminderQueryQuestion(), user.getReminderQueryAnswer(),
-				screenName, emailAddress, hasPortrait, null,
-				user.getLanguageId(), user.getTimeZoneId(), user.getGreeting(),
-				user.getComments(), firstName, middleName, lastName,
-				prefixListTypeId, suffixListTypeId, male, birthdayMonth,
-				birthdayDay, birthdayYear, contact.getSmsSn(),
-				contact.getFacebookSn(), contact.getJabberSn(),
-				contact.getSkypeSn(), contact.getTwitterSn(), jobTitle,
-				user.getGroupIds(), user.getOrganizationIds(),
-				user.getRoleIds(),
-				_userGroupRolePersistence.findByUserId(user.getUserId()),
-				user.getUserGroupIds(), serviceContext);
-		}
-
-		return user;
 	}
 
 	/**
@@ -2602,14 +2602,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		return userFinder.findByNoGroups();
 	}
 
-	@Override
-	public int getOrganizationsAndUserGroupsUsersCount(
-		long[] organizationIds, long[] userGroupIds) {
-
-		return userFinder.countByOrganizationsAndUserGroups(
-			organizationIds, userGroupIds);
-	}
-
 	/**
 	 * Returns the primary keys of all the users belonging to the organization.
 	 *
@@ -2689,6 +2681,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			LinkedHashMapBuilder.<String, Object>put(
 				"usersOrgs", Long.valueOf(organizationId)
 			).build());
+	}
+
+	@Override
+	public int getOrganizationsAndUserGroupsUsersCount(
+		long[] organizationIds, long[] userGroupIds) {
+
+		return userFinder.countByOrganizationsAndUserGroups(
+			organizationIds, userGroupIds);
 	}
 
 	/**

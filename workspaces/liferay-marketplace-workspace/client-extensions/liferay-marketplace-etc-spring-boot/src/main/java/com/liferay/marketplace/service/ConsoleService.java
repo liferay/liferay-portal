@@ -108,19 +108,6 @@ public class ConsoleService extends BaseService {
 		return _authorization;
 	}
 
-	public String getProjectsUsage(String userEmail) throws Exception {
-		return get(
-			getAuthorization(),
-			UriComponentsBuilder.fromUriString(
-				_consoleAuthURL
-			).path(
-				"/admin/user-projects-plan-usage"
-			).queryParam(
-				"userEmail", userEmail
-			).build(
-			).toUri());
-	}
-
 	public String getProjectUsage(String emailAddress, String projectId)
 		throws Exception {
 
@@ -153,6 +140,19 @@ public class ConsoleService extends BaseService {
 			StringBundler.concat(
 				"No project found with email address ", emailAddress,
 				" and project ID ", projectId));
+	}
+
+	public String getProjectsUsage(String userEmail) throws Exception {
+		return get(
+			getAuthorization(),
+			UriComponentsBuilder.fromUriString(
+				_consoleAuthURL
+			).path(
+				"/admin/user-projects-plan-usage"
+			).queryParam(
+				"userEmail", userEmail
+			).build(
+			).toUri());
 	}
 
 	public void setUpProject(

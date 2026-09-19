@@ -362,75 +362,6 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 		return userGroupResource.postUserGroup(userGroup);
 	}
 
-	private void _testGetUserGroupsPageWithFilter() throws Exception {
-		Page<UserGroup> page = userGroupResource.getUserGroupsPage(
-			null, null, Pagination.of(1, 10), null);
-
-		long totalCount = page.getTotalCount();
-
-		// Sleep for 1 second to ensure that user group 1 and existing user
-		// groups are created 1 second apart
-
-		Thread.sleep(1000);
-
-		UserGroup userGroup1 = testGetUserGroupsPage_addUserGroup(
-			randomUserGroup());
-
-		// Sleep for 1 second to ensure that user group 1 and user group 2 are
-		// created 1 second apart
-
-		Thread.sleep(1000);
-
-		UserGroup userGroup2 = testGetUserGroupsPage_addUserGroup(
-			randomUserGroup());
-
-		Date date = userGroup1.getDateCreated();
-
-		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-		page = userGroupResource.getUserGroupsPage(
-			null, "dateCreated lt " + dateFormat.format(date.getTime()),
-			Pagination.of(1, 2), null);
-
-		Assert.assertEquals(totalCount, page.getTotalCount());
-
-		page = userGroupResource.getUserGroupsPage(
-			null, "dateCreated ge " + dateFormat.format(date.getTime()),
-			Pagination.of(1, 2), null);
-
-		Assert.assertEquals(2, page.getTotalCount());
-
-		// Sleep for 1 second to ensure that user group 1 and user group 2 are
-		// modified 1 second apart
-
-		Thread.sleep(1000);
-
-		userGroup1.setDescription(
-			StringUtil.toLowerCase(RandomTestUtil.randomString()));
-
-		userGroup1 = userGroupResource.patchUserGroup(
-			userGroup1.getId(), userGroup1);
-
-		date = userGroup1.getDateModified();
-
-		page = userGroupResource.getUserGroupsPage(
-			null, "dateModified ge " + dateFormat.format(date.getTime()),
-			Pagination.of(1, 2), null);
-
-		Assert.assertEquals(1, page.getTotalCount());
-
-		assertContains(userGroup1, (List<UserGroup>)page.getItems());
-
-		page = userGroupResource.getUserGroupsPage(
-			null, "dateModified lt " + dateFormat.format(date.getTime()),
-			Pagination.of(1, 2), null);
-
-		Assert.assertEquals(totalCount + 1, page.getTotalCount());
-
-		assertContains(userGroup2, (List<UserGroup>)page.getItems());
-	}
-
 	private void _testGetUserGroupWithNestedFields() throws Exception {
 		com.liferay.portal.kernel.model.UserGroup userGroup =
 			_userGroupLocalService.addUserGroup(
@@ -535,6 +466,75 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 			serviceBuilderUserGroup.getUserGroupId());
 
 		Assert.assertTrue(ArrayUtil.isEmpty(getUserGroup.getPermissions()));
+	}
+
+	private void _testGetUserGroupsPageWithFilter() throws Exception {
+		Page<UserGroup> page = userGroupResource.getUserGroupsPage(
+			null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		// Sleep for 1 second to ensure that user group 1 and existing user
+		// groups are created 1 second apart
+
+		Thread.sleep(1000);
+
+		UserGroup userGroup1 = testGetUserGroupsPage_addUserGroup(
+			randomUserGroup());
+
+		// Sleep for 1 second to ensure that user group 1 and user group 2 are
+		// created 1 second apart
+
+		Thread.sleep(1000);
+
+		UserGroup userGroup2 = testGetUserGroupsPage_addUserGroup(
+			randomUserGroup());
+
+		Date date = userGroup1.getDateCreated();
+
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+		page = userGroupResource.getUserGroupsPage(
+			null, "dateCreated lt " + dateFormat.format(date.getTime()),
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(totalCount, page.getTotalCount());
+
+		page = userGroupResource.getUserGroupsPage(
+			null, "dateCreated ge " + dateFormat.format(date.getTime()),
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(2, page.getTotalCount());
+
+		// Sleep for 1 second to ensure that user group 1 and user group 2 are
+		// modified 1 second apart
+
+		Thread.sleep(1000);
+
+		userGroup1.setDescription(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()));
+
+		userGroup1 = userGroupResource.patchUserGroup(
+			userGroup1.getId(), userGroup1);
+
+		date = userGroup1.getDateModified();
+
+		page = userGroupResource.getUserGroupsPage(
+			null, "dateModified ge " + dateFormat.format(date.getTime()),
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		assertContains(userGroup1, (List<UserGroup>)page.getItems());
+
+		page = userGroupResource.getUserGroupsPage(
+			null, "dateModified lt " + dateFormat.format(date.getTime()),
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+		assertContains(userGroup2, (List<UserGroup>)page.getItems());
 	}
 
 	private void _testPostUserGroupBatch() throws Exception {

@@ -735,6 +735,24 @@ public class SimilarResultsUidsAndDestinationsTest
 		);
 	}
 
+	private void _setUpDLFileEntryLocalService(DLFileEntry dlFileEntry) {
+		Mockito.when(
+			dlFileEntryLocalService.fetchDLFileEntry(Mockito.anyLong())
+		).thenReturn(
+			dlFileEntry
+		);
+	}
+
+	private void _setUpDLFolderLocalService(DLFolder dlFolder) {
+		Mockito.doReturn(
+			dlFolder
+		).when(
+			dlFolderLocalService
+		).fetchDLFolder(
+			Mockito.anyLong()
+		);
+	}
+
 	private void _setUpDestinationAssetEntry(AssetEntry assetEntry) {
 		Mockito.doReturn(
 			assetEntry
@@ -759,24 +777,6 @@ public class SimilarResultsUidsAndDestinationsTest
 		).when(
 			destinationHelper
 		).getClassName();
-	}
-
-	private void _setUpDLFileEntryLocalService(DLFileEntry dlFileEntry) {
-		Mockito.when(
-			dlFileEntryLocalService.fetchDLFileEntry(Mockito.anyLong())
-		).thenReturn(
-			dlFileEntry
-		);
-	}
-
-	private void _setUpDLFolderLocalService(DLFolder dlFolder) {
-		Mockito.doReturn(
-			dlFolder
-		).when(
-			dlFolderLocalService
-		).fetchDLFolder(
-			Mockito.anyLong()
-		);
 	}
 
 	private void _setUpInputGroupId(long groupId) {

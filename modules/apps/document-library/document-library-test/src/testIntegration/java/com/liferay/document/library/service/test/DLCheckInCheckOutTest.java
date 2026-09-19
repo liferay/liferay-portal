@@ -204,6 +204,28 @@ public class DLCheckInCheckOutTest {
 		Assert.assertEquals("1.0", fileEntry.getVersion());
 	}
 
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testCancelCheckOutWithoutPermissionOverrideCheckout()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			DLAppServiceUtil.cancelCheckOut(fileEntry.getFileEntryId());
+		}
+	}
+
 	@Test
 	public void testCancelCheckout() throws Exception {
 		FileEntry fileEntry = createFileEntry(StringUtil.randomString());
@@ -231,28 +253,6 @@ public class DLCheckInCheckOutTest {
 
 		Assert.assertEquals(
 			fileEntry.getVersion(), DLFileEntryConstants.VERSION_DEFAULT);
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testCancelCheckOutWithoutPermissionOverrideCheckout()
-		throws Exception {
-
-		FileEntry fileEntry = null;
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_authorUser)) {
-
-			fileEntry = createFileEntry(StringUtil.randomString());
-
-			DLAppServiceUtil.checkOutFileEntry(
-				fileEntry.getFileEntryId(), _serviceContext);
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_overriderUser)) {
-
-			DLAppServiceUtil.cancelCheckOut(fileEntry.getFileEntryId());
-		}
 	}
 
 	@Test
@@ -337,30 +337,6 @@ public class DLCheckInCheckOutTest {
 	}
 
 	@Test(expected = FileEntryLockException.MustOwnLock.class)
-	public void testCheckInWithoutPermissionOverrideCheckout()
-		throws Exception {
-
-		FileEntry fileEntry = null;
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_authorUser)) {
-
-			fileEntry = createFileEntry(StringUtil.randomString());
-
-			DLAppServiceUtil.checkOutFileEntry(
-				fileEntry.getFileEntryId(), _serviceContext);
-		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_overriderUser)) {
-
-			DLAppServiceUtil.checkInFileEntry(
-				fileEntry.getFileEntryId(), DLVersionNumberIncrease.MINOR,
-				StringUtil.randomString(), _serviceContext);
-		}
-	}
-
-	@Test(expected = FileEntryLockException.MustOwnLock.class)
 	public void testCheckInWithPermissionOverrideCheckout() throws Exception {
 		Role role = RoleTestUtil.addRole(
 			"Overrider", RoleConstants.TYPE_REGULAR,
@@ -394,6 +370,30 @@ public class DLCheckInCheckOutTest {
 		}
 		finally {
 			RoleLocalServiceUtil.deleteRole(role.getRoleId());
+		}
+	}
+
+	@Test(expected = FileEntryLockException.MustOwnLock.class)
+	public void testCheckInWithoutPermissionOverrideCheckout()
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_authorUser)) {
+
+			fileEntry = createFileEntry(StringUtil.randomString());
+
+			DLAppServiceUtil.checkOutFileEntry(
+				fileEntry.getFileEntryId(), _serviceContext);
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_overriderUser)) {
+
+			DLAppServiceUtil.checkInFileEntry(
+				fileEntry.getFileEntryId(), DLVersionNumberIncrease.MINOR,
+				StringUtil.randomString(), _serviceContext);
 		}
 	}
 

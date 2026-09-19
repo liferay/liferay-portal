@@ -98,18 +98,6 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 	}
 
 	@Override
-	public List<AssetTag> getGroupsTags(long[] groupIds) {
-		if (ArrayUtil.isEmpty(groupIds)) {
-			return Collections.emptyList();
-		}
-
-		return sanitize(
-			assetTagPersistence.findByGroupId(
-				groupIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				new AssetTagNameComparator()));
-	}
-
-	@Override
 	public List<AssetTag> getGroupTags(long groupId) {
 		return sanitize(assetTagPersistence.findByGroupId(groupId));
 	}
@@ -148,6 +136,18 @@ public class AssetTagServiceImpl extends AssetTagServiceBaseImpl {
 		}
 
 		return new AssetTagDisplay(tags, total, start, end);
+	}
+
+	@Override
+	public List<AssetTag> getGroupsTags(long[] groupIds) {
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Collections.emptyList();
+		}
+
+		return sanitize(
+			assetTagPersistence.findByGroupId(
+				groupIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				new AssetTagNameComparator()));
 	}
 
 	@Override

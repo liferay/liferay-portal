@@ -207,6 +207,20 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	@Test
+	public void testGetAttachmentFileEntryByExternalReferenceCodeWithViewPermission()
+		throws Exception {
+
+		FileEntry fileEntry = _addAttachmentFileEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			_blogsEntryService.getAttachmentFileEntryByExternalReferenceCode(
+				fileEntry.getExternalReferenceCode(), fileEntry.getGroupId());
+		}
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testGetAttachmentFileEntryByExternalReferenceCodeWithoutViewPermission()
 		throws Exception {
@@ -224,7 +238,7 @@ public class BlogsEntryServiceTest {
 	}
 
 	@Test
-	public void testGetAttachmentFileEntryByExternalReferenceCodeWithViewPermission()
+	public void testGetAttachmentFileEntryWithViewPermission()
 		throws Exception {
 
 		FileEntry fileEntry = _addAttachmentFileEntry();
@@ -232,8 +246,8 @@ public class BlogsEntryServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, _permissionChecker)) {
 
-			_blogsEntryService.getAttachmentFileEntryByExternalReferenceCode(
-				fileEntry.getExternalReferenceCode(), fileEntry.getGroupId());
+			_blogsEntryService.getAttachmentFileEntry(
+				fileEntry.getFileEntryId());
 		}
 	}
 
@@ -254,16 +268,89 @@ public class BlogsEntryServiceTest {
 	}
 
 	@Test
-	public void testGetAttachmentFileEntryWithViewPermission()
-		throws Exception {
-
-		FileEntry fileEntry = _addAttachmentFileEntry();
+	public void testGetCompanyEntriesWithViewPermission() throws Exception {
+		BlogsEntry entry1 = _addEntry();
+		BlogsEntry entry2 = _addEntry();
+		BlogsEntry entry3 = _addEntry();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, _permissionChecker)) {
 
-			_blogsEntryService.getAttachmentFileEntry(
-				fileEntry.getFileEntryId());
+			List<BlogsEntry> blogsEntries =
+				_blogsEntryService.getCompanyEntries(
+					TestPropsValues.getCompanyId(), new Date(),
+					WorkflowConstants.STATUS_APPROVED, 100);
+
+			Assert.assertEquals(
+				blogsEntries.toString(), 3, blogsEntries.size());
+
+			Assert.assertTrue(blogsEntries.contains(entry3));
+			Assert.assertTrue(blogsEntries.contains(entry2));
+			Assert.assertTrue(blogsEntries.contains(entry1));
+		}
+	}
+
+	@Test
+	public void testGetCompanyEntriesWithViewPermissionAndDisplayDate()
+		throws Exception {
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(Calendar.YEAR, 2000);
+
+		BlogsEntry entry1 = _addEntry(calendar.getTime());
+
+		calendar.add(Calendar.HOUR, 2);
+
+		BlogsEntry entry2 = _addEntry(calendar.getTime());
+
+		calendar.add(Calendar.HOUR, 2);
+
+		_addEntry(calendar.getTime());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			calendar = Calendar.getInstance();
+
+			calendar.add(Calendar.HOUR, 3);
+			calendar.set(Calendar.YEAR, 2000);
+
+			List<BlogsEntry> blogsEntries =
+				_blogsEntryService.getCompanyEntries(
+					TestPropsValues.getCompanyId(), calendar.getTime(),
+					WorkflowConstants.STATUS_APPROVED, 2);
+
+			Assert.assertEquals(
+				blogsEntries.toString(), 2, blogsEntries.size());
+
+			Assert.assertTrue(blogsEntries.contains(entry1));
+			Assert.assertTrue(blogsEntries.contains(entry2));
+		}
+	}
+
+	@Test
+	public void testGetCompanyEntriesWithViewPermissionAndMax()
+		throws Exception {
+
+		_addEntry();
+
+		BlogsEntry entry2 = _addEntry();
+		BlogsEntry entry3 = _addEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			List<BlogsEntry> blogsEntries =
+				_blogsEntryService.getCompanyEntries(
+					TestPropsValues.getCompanyId(), new Date(),
+					WorkflowConstants.STATUS_APPROVED, 2);
+
+			Assert.assertEquals(
+				blogsEntries.toString(), 2, blogsEntries.size());
+
+			Assert.assertTrue(blogsEntries.contains(entry3));
+			Assert.assertTrue(blogsEntries.contains(entry2));
 		}
 	}
 
@@ -354,93 +441,6 @@ public class BlogsEntryServiceTest {
 
 			Assert.assertTrue(blogsEntries.contains(entry3));
 			Assert.assertTrue(blogsEntries.contains(entry1));
-		}
-	}
-
-	@Test
-	public void testGetCompanyEntriesWithViewPermission() throws Exception {
-		BlogsEntry entry1 = _addEntry();
-		BlogsEntry entry2 = _addEntry();
-		BlogsEntry entry3 = _addEntry();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			List<BlogsEntry> blogsEntries =
-				_blogsEntryService.getCompanyEntries(
-					TestPropsValues.getCompanyId(), new Date(),
-					WorkflowConstants.STATUS_APPROVED, 100);
-
-			Assert.assertEquals(
-				blogsEntries.toString(), 3, blogsEntries.size());
-
-			Assert.assertTrue(blogsEntries.contains(entry3));
-			Assert.assertTrue(blogsEntries.contains(entry2));
-			Assert.assertTrue(blogsEntries.contains(entry1));
-		}
-	}
-
-	@Test
-	public void testGetCompanyEntriesWithViewPermissionAndDisplayDate()
-		throws Exception {
-
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.set(Calendar.YEAR, 2000);
-
-		BlogsEntry entry1 = _addEntry(calendar.getTime());
-
-		calendar.add(Calendar.HOUR, 2);
-
-		BlogsEntry entry2 = _addEntry(calendar.getTime());
-
-		calendar.add(Calendar.HOUR, 2);
-
-		_addEntry(calendar.getTime());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			calendar = Calendar.getInstance();
-
-			calendar.add(Calendar.HOUR, 3);
-			calendar.set(Calendar.YEAR, 2000);
-
-			List<BlogsEntry> blogsEntries =
-				_blogsEntryService.getCompanyEntries(
-					TestPropsValues.getCompanyId(), calendar.getTime(),
-					WorkflowConstants.STATUS_APPROVED, 2);
-
-			Assert.assertEquals(
-				blogsEntries.toString(), 2, blogsEntries.size());
-
-			Assert.assertTrue(blogsEntries.contains(entry1));
-			Assert.assertTrue(blogsEntries.contains(entry2));
-		}
-	}
-
-	@Test
-	public void testGetCompanyEntriesWithViewPermissionAndMax()
-		throws Exception {
-
-		_addEntry();
-
-		BlogsEntry entry2 = _addEntry();
-		BlogsEntry entry3 = _addEntry();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			List<BlogsEntry> blogsEntries =
-				_blogsEntryService.getCompanyEntries(
-					TestPropsValues.getCompanyId(), new Date(),
-					WorkflowConstants.STATUS_APPROVED, 2);
-
-			Assert.assertEquals(
-				blogsEntries.toString(), 2, blogsEntries.size());
-
-			Assert.assertTrue(blogsEntries.contains(entry3));
-			Assert.assertTrue(blogsEntries.contains(entry2));
 		}
 	}
 
@@ -673,6 +673,29 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	@Test
+	public void testGetEntryWithViewPermission() throws Exception {
+		BlogsEntry entry = _addEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			_blogsEntryService.getEntry(entry.getEntryId());
+		}
+	}
+
+	@Test
+	public void testGetEntryWithViewPermission2() throws Exception {
+		BlogsEntry entry = _addEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			_blogsEntryService.getEntry(
+				entry.getGroupId(), entry.getUrlTitle());
+		}
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testGetEntryWithoutViewPermission() throws Exception {
 		BlogsEntry entry = _addEntry();
@@ -701,25 +724,84 @@ public class BlogsEntryServiceTest {
 	}
 
 	@Test
-	public void testGetEntryWithViewPermission() throws Exception {
-		BlogsEntry entry = _addEntry();
+	public void testGetGroupEntriesWithViewPermission() throws Exception {
+		BlogsEntry entry1 = _addEntry();
+		BlogsEntry entry2 = _addEntry();
+		BlogsEntry entry3 = _addEntry();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, _permissionChecker)) {
 
-			_blogsEntryService.getEntry(entry.getEntryId());
+			List<BlogsEntry> blogsEntries = _blogsEntryService.getGroupEntries(
+				_group.getGroupId(), new Date(),
+				WorkflowConstants.STATUS_APPROVED, 100);
+
+			Assert.assertEquals(
+				blogsEntries.toString(), 3, blogsEntries.size());
+
+			Assert.assertTrue(blogsEntries.contains(entry3));
+			Assert.assertTrue(blogsEntries.contains(entry2));
+			Assert.assertTrue(blogsEntries.contains(entry1));
 		}
 	}
 
 	@Test
-	public void testGetEntryWithViewPermission2() throws Exception {
-		BlogsEntry entry = _addEntry();
+	public void testGetGroupEntriesWithViewPermissionAndDisplayDate()
+		throws Exception {
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(Calendar.YEAR, 2000);
+
+		BlogsEntry entry1 = _addEntry(calendar.getTime());
+
+		calendar.add(Calendar.HOUR, 2);
+
+		BlogsEntry entry2 = _addEntry(calendar.getTime());
+
+		calendar.add(Calendar.HOUR, 2);
+
+		_addEntry(calendar.getTime());
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, _permissionChecker)) {
 
-			_blogsEntryService.getEntry(
-				entry.getGroupId(), entry.getUrlTitle());
+			calendar = Calendar.getInstance();
+
+			calendar.add(Calendar.HOUR, 3);
+			calendar.set(Calendar.YEAR, 2000);
+
+			List<BlogsEntry> blogsEntries = _blogsEntryService.getGroupEntries(
+				_group.getGroupId(), calendar.getTime(),
+				WorkflowConstants.STATUS_APPROVED, 2);
+
+			Assert.assertEquals(
+				blogsEntries.toString(), 2, blogsEntries.size());
+
+			Assert.assertTrue(blogsEntries.contains(entry1));
+			Assert.assertTrue(blogsEntries.contains(entry2));
+		}
+	}
+
+	@Test
+	public void testGetGroupEntriesWithViewPermissionAndMax() throws Exception {
+		_addEntry();
+
+		BlogsEntry entry2 = _addEntry();
+		BlogsEntry entry3 = _addEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			List<BlogsEntry> blogsEntries = _blogsEntryService.getGroupEntries(
+				_group.getGroupId(), new Date(),
+				WorkflowConstants.STATUS_APPROVED, 2);
+
+			Assert.assertEquals(
+				blogsEntries.toString(), 2, blogsEntries.size());
+
+			Assert.assertTrue(blogsEntries.contains(entry3));
+			Assert.assertTrue(blogsEntries.contains(entry2));
 		}
 	}
 
@@ -807,88 +889,6 @@ public class BlogsEntryServiceTest {
 
 			Assert.assertTrue(blogsEntries.contains(entry3));
 			Assert.assertTrue(blogsEntries.contains(entry1));
-		}
-	}
-
-	@Test
-	public void testGetGroupEntriesWithViewPermission() throws Exception {
-		BlogsEntry entry1 = _addEntry();
-		BlogsEntry entry2 = _addEntry();
-		BlogsEntry entry3 = _addEntry();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			List<BlogsEntry> blogsEntries = _blogsEntryService.getGroupEntries(
-				_group.getGroupId(), new Date(),
-				WorkflowConstants.STATUS_APPROVED, 100);
-
-			Assert.assertEquals(
-				blogsEntries.toString(), 3, blogsEntries.size());
-
-			Assert.assertTrue(blogsEntries.contains(entry3));
-			Assert.assertTrue(blogsEntries.contains(entry2));
-			Assert.assertTrue(blogsEntries.contains(entry1));
-		}
-	}
-
-	@Test
-	public void testGetGroupEntriesWithViewPermissionAndDisplayDate()
-		throws Exception {
-
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.set(Calendar.YEAR, 2000);
-
-		BlogsEntry entry1 = _addEntry(calendar.getTime());
-
-		calendar.add(Calendar.HOUR, 2);
-
-		BlogsEntry entry2 = _addEntry(calendar.getTime());
-
-		calendar.add(Calendar.HOUR, 2);
-
-		_addEntry(calendar.getTime());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			calendar = Calendar.getInstance();
-
-			calendar.add(Calendar.HOUR, 3);
-			calendar.set(Calendar.YEAR, 2000);
-
-			List<BlogsEntry> blogsEntries = _blogsEntryService.getGroupEntries(
-				_group.getGroupId(), calendar.getTime(),
-				WorkflowConstants.STATUS_APPROVED, 2);
-
-			Assert.assertEquals(
-				blogsEntries.toString(), 2, blogsEntries.size());
-
-			Assert.assertTrue(blogsEntries.contains(entry1));
-			Assert.assertTrue(blogsEntries.contains(entry2));
-		}
-	}
-
-	@Test
-	public void testGetGroupEntriesWithViewPermissionAndMax() throws Exception {
-		_addEntry();
-
-		BlogsEntry entry2 = _addEntry();
-		BlogsEntry entry3 = _addEntry();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			List<BlogsEntry> blogsEntries = _blogsEntryService.getGroupEntries(
-				_group.getGroupId(), new Date(),
-				WorkflowConstants.STATUS_APPROVED, 2);
-
-			Assert.assertEquals(
-				blogsEntries.toString(), 2, blogsEntries.size());
-
-			Assert.assertTrue(blogsEntries.contains(entry3));
-			Assert.assertTrue(blogsEntries.contains(entry2));
 		}
 	}
 
@@ -996,6 +996,15 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	@Test
+	public void testSubscribeEntryWithSubscribePermission() throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			_blogsEntryService.subscribe(_group.getGroupId());
+		}
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testSubscribeEntryWithoutSubscribePermission()
 		throws Exception {
@@ -1011,11 +1020,11 @@ public class BlogsEntryServiceTest {
 	}
 
 	@Test
-	public void testSubscribeEntryWithSubscribePermission() throws Exception {
+	public void testUnsubscribeEntryWithSubscribePermission() throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, _permissionChecker)) {
 
-			_blogsEntryService.subscribe(_group.getGroupId());
+			_blogsEntryService.unsubscribe(_group.getGroupId());
 		}
 	}
 
@@ -1030,37 +1039,6 @@ public class BlogsEntryServiceTest {
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			_blogsEntryService.unsubscribe(_group.getGroupId());
-		}
-	}
-
-	@Test
-	public void testUnsubscribeEntryWithSubscribePermission() throws Exception {
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			_blogsEntryService.unsubscribe(_group.getGroupId());
-		}
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateEntryWithoutUpdatePermission1() throws Exception {
-		BlogsEntry entry = _addEntry();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			_updateEntry(entry.getEntryId());
-		}
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateEntryWithoutUpdatePermission2() throws Exception {
-		BlogsEntry entry = _addEntry();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, _permissionChecker)) {
-
-			_updateEntry(entry.getEntryId());
 		}
 	}
 
@@ -1082,6 +1060,28 @@ public class BlogsEntryServiceTest {
 		BlogsEntry entry = _addEntry();
 
 		_addResourcePermission(ActionKeys.UPDATE, _CLASS_NAME_BLOGS_ENTRY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			_updateEntry(entry.getEntryId());
+		}
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateEntryWithoutUpdatePermission1() throws Exception {
+		BlogsEntry entry = _addEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			_updateEntry(entry.getEntryId());
+		}
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateEntryWithoutUpdatePermission2() throws Exception {
+		BlogsEntry entry = _addEntry();
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, _permissionChecker)) {

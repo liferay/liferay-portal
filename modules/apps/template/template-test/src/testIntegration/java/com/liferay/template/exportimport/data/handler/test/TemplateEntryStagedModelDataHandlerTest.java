@@ -100,14 +100,6 @@ public class TemplateEntryStagedModelDataHandlerTest
 
 	@Test
 	@TestInfo("LPD-32929")
-	public void testExportImportTemplateEntryWithoutVariation()
-		throws Exception {
-
-		_asserExportImportTemplateEntry(StringPool.BLANK, StringPool.BLANK);
-	}
-
-	@Test
-	@TestInfo("LPD-32929")
 	public void testExportImportTemplateEntryWithSiteTiedVariation()
 		throws Exception {
 
@@ -153,6 +145,14 @@ public class TemplateEntryStagedModelDataHandlerTest
 		_asserExportImportTemplateEntry(
 			String.valueOf(ddmStructure.getStructureId()),
 			String.valueOf(ddmStructure.getStructureId()));
+	}
+
+	@Test
+	@TestInfo("LPD-32929")
+	public void testExportImportTemplateEntryWithoutVariation()
+		throws Exception {
+
+		_asserExportImportTemplateEntry(StringPool.BLANK, StringPool.BLANK);
 	}
 
 	@Override

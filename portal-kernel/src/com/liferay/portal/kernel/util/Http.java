@@ -42,14 +42,6 @@ public interface Http {
 
 	public static final int URL_MAXIMUM_LENGTH = 2083;
 
-	public Cookie[] getCookies();
-
-	public boolean hasProxyConfig();
-
-	public boolean isNonProxyHost(String host);
-
-	public boolean isProxyHost(String host);
-
 	public byte[] URLtoByteArray(Http.Options options) throws IOException;
 
 	public byte[] URLtoByteArray(String location) throws IOException;
@@ -83,6 +75,14 @@ public interface Http {
 	 * @throws IOException if an IO exception occurred
 	 */
 	public String URLtoString(URL url) throws IOException;
+
+	public Cookie[] getCookies();
+
+	public boolean hasProxyConfig();
+
+	public boolean isNonProxyHost(String host);
+
+	public boolean isProxyHost(String host);
 
 	public class Auth {
 
@@ -310,12 +310,12 @@ public interface Http {
 			return _body;
 		}
 
-		public Cookie[] getCookies() {
-			return _cookies;
-		}
-
 		public CookieSpec getCookieSpec() {
 			return _cookieSpec;
+		}
+
+		public Cookie[] getCookies() {
+			return _cookies;
 		}
 
 		public List<FilePart> getFileParts() {
@@ -443,14 +443,14 @@ public interface Http {
 			_body = new Body(content, contentType, charset);
 		}
 
-		public void setCookies(Cookie[] cookies) {
-			_cookies = cookies;
-		}
-
 		public void setCookieSpec(Http.CookieSpec cookieSpec) {
 			if (cookieSpec != null) {
 				_cookieSpec = cookieSpec;
 			}
+		}
+
+		public void setCookies(Cookie[] cookies) {
+			_cookies = cookies;
 		}
 
 		public void setDelete(boolean delete) {
@@ -544,8 +544,8 @@ public interface Http {
 
 		private Auth _auth;
 		private Body _body;
-		private Cookie[] _cookies;
 		private CookieSpec _cookieSpec;
+		private Cookie[] _cookies;
 		private List<FilePart> _fileParts;
 		private boolean _followRedirects = true;
 		private Map<String, String> _headers;

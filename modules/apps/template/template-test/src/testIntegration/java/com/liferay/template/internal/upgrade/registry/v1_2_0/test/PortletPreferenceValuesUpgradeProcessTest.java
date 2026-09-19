@@ -145,11 +145,11 @@ public class PortletPreferenceValuesUpgradeProcessTest {
 	private PortletLocalService _portletLocalService;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	@Inject(
 		filter = "(&(component.name=com.liferay.template.internal.upgrade.registry.TemplateEntryUpgradeStepRegistrator))"

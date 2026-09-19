@@ -52,10 +52,10 @@ public class SearchDisplayContextFactoryImpl
 	protected SearchContextFactory searchContextFactory;
 
 	@Reference
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Reference
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	@Reference
 	protected SummaryBuilderFactory summaryBuilderFactory;

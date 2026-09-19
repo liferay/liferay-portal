@@ -13,12 +13,12 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface IncludeExcludeClause {
 
-	public String[] getExcludedValues();
-
 	public String getExcludeRegex();
 
-	public String[] getIncludedValues();
+	public String[] getExcludedValues();
 
 	public String getIncludeRegex();
+
+	public String[] getIncludedValues();
 
 }

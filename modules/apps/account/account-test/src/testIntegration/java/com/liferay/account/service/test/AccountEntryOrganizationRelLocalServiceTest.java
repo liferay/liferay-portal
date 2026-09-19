@@ -70,38 +70,6 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 					accountEntryOrganizationRel.getPrimaryKey()));
 	}
 
-	@Test
-	public void testAddAccountEntryOrganizationRels() throws Exception {
-		_organizations.add(OrganizationTestUtil.addOrganization());
-		_organizations.add(OrganizationTestUtil.addOrganization());
-
-		long[] organizationIds = ListUtil.toLongArray(
-			_organizations, Organization.ORGANIZATION_ID_ACCESSOR);
-
-		_accountEntryOrganizationRelLocalService.
-			addAccountEntryOrganizationRels(
-				_accountEntry.getAccountEntryId(), organizationIds);
-
-		Assert.assertEquals(
-			2,
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRelsCount(
-					_accountEntry.getAccountEntryId()));
-
-		long[] accountEntryOrganizationIds = ListUtil.toLongArray(
-			_accountEntryOrganizationRelLocalService.
-				getAccountEntryOrganizationRels(
-					_accountEntry.getAccountEntryId()),
-			AccountEntryOrganizationRelModel::getOrganizationId);
-
-		Assert.assertTrue(
-			ArrayUtil.containsAll(
-				organizationIds, accountEntryOrganizationIds));
-		Assert.assertTrue(
-			ArrayUtil.containsAll(
-				accountEntryOrganizationIds, organizationIds));
-	}
-
 	@Test(expected = DuplicateAccountEntryOrganizationRelException.class)
 	public void testAddAccountEntryOrganizationRelThrowsDuplicateAccountEntryOrganizationRelException()
 		throws Exception {
@@ -134,6 +102,38 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 	}
 
 	@Test
+	public void testAddAccountEntryOrganizationRels() throws Exception {
+		_organizations.add(OrganizationTestUtil.addOrganization());
+		_organizations.add(OrganizationTestUtil.addOrganization());
+
+		long[] organizationIds = ListUtil.toLongArray(
+			_organizations, Organization.ORGANIZATION_ID_ACCESSOR);
+
+		_accountEntryOrganizationRelLocalService.
+			addAccountEntryOrganizationRels(
+				_accountEntry.getAccountEntryId(), organizationIds);
+
+		Assert.assertEquals(
+			2,
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRelsCount(
+					_accountEntry.getAccountEntryId()));
+
+		long[] accountEntryOrganizationIds = ListUtil.toLongArray(
+			_accountEntryOrganizationRelLocalService.
+				getAccountEntryOrganizationRels(
+					_accountEntry.getAccountEntryId()),
+			AccountEntryOrganizationRelModel::getOrganizationId);
+
+		Assert.assertTrue(
+			ArrayUtil.containsAll(
+				organizationIds, accountEntryOrganizationIds));
+		Assert.assertTrue(
+			ArrayUtil.containsAll(
+				accountEntryOrganizationIds, organizationIds));
+	}
+
+	@Test
 	public void testDeleteAccountEntryOrganizationRel() throws Exception {
 		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
 			_accountEntry.getAccountEntryId(),
@@ -155,6 +155,16 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 				hasAccountEntryOrganizationRel(
 					_accountEntry.getAccountEntryId(),
 					_organization.getOrganizationId()));
+	}
+
+	@Test(expected = NoSuchEntryOrganizationRelException.class)
+	public void testDeleteAccountEntryOrganizationRelThrowsNoSuchEntryOrganizationRelException()
+		throws Exception {
+
+		_accountEntryOrganizationRelLocalService.
+			deleteAccountEntryOrganizationRel(
+				_accountEntry.getAccountEntryId(),
+				_organization.getOrganizationId());
 	}
 
 	@Test
@@ -184,16 +194,6 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 			_accountEntryOrganizationRelLocalService.
 				getAccountEntryOrganizationRelsCount(
 					_accountEntry.getAccountEntryId()));
-	}
-
-	@Test(expected = NoSuchEntryOrganizationRelException.class)
-	public void testDeleteAccountEntryOrganizationRelThrowsNoSuchEntryOrganizationRelException()
-		throws Exception {
-
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRel(
-				_accountEntry.getAccountEntryId(),
-				_organization.getOrganizationId());
 	}
 
 	@Test

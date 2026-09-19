@@ -1328,6 +1328,138 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			new Long[] {accountEntry.getAccountEntryId()});
 	}
 
+	private void _testGetAccountWithNestedFields() throws Exception {
+		Account randomAccount = randomAccount();
+
+		randomAccount.setKeywords(new String[] {RandomTestUtil.randomString()});
+		randomAccount.setLogoBase64(
+			Base64.encode(
+				FileUtil.getBytes(getClass(), "/images/liferay.png")));
+
+		Account postAccount = _postAccount(randomAccount);
+
+		User user = TestPropsValues.getUser();
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			postAccount.getId(), user.getUserId());
+
+		AccountGroup accountGroup = _accountGroupLocalService.addAccountGroup(
+			StringPool.BLANK, user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext());
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
+			postAccount.getId());
+
+		AccountRole accountRole = _accountRoleLocalService.addAccountRole(
+			RandomTestUtil.randomString(), user.getUserId(),
+			postAccount.getId(), RandomTestUtil.randomString(), null, null);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(postAccount.getId()), accountRole.getRoleId(),
+			new String[] {ActionKeys.DELETE});
+
+		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+			_classNameLocalService.getClassNameId(AccountEntry.class),
+			postAccount.getId());
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			TestPropsValues.getGroupId());
+
+		AssetCategory assetCategory = AssetTestUtil.addCategory(
+			TestPropsValues.getGroupId(), assetVocabulary.getVocabularyId());
+
+		_assetEntryAssetCategoryRelLocalService.addAssetEntryAssetCategoryRel(
+			assetEntry.getEntryId(), assetCategory.getCategoryId());
+
+		AccountResource accountResource = AccountResource.builder(
+		).authentication(
+			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields",
+			"accountGroupBriefs,accountRoles,accountUserAccounts,creator," +
+				"keywords,logoBase64,permissions,taxonomyCategoryBriefs"
+		).build();
+
+		Account getAccount = accountResource.getAccount(postAccount.getId());
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getAccount.getAccountGroupBriefs(),
+				accountGroupBrief ->
+					Objects.equals(
+						accountGroupBrief.getId(),
+						accountGroup.getAccountGroupId()) &&
+					Objects.equals(
+						accountGroupBrief.getName(), accountGroup.getName())));
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getAccount.getAccountRoles(),
+				innerAccountRole ->
+					innerAccountRole.getId() == accountRole.getRoleId()));
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getAccount.getAccountUserAccounts(),
+				userAccount -> userAccount.getId() == user.getUserId()));
+
+		Creator creator = getAccount.getCreator();
+
+		Assert.assertTrue(creator.getId() == TestPropsValues.getUserId());
+		Assert.assertTrue(
+			Objects.equals(
+				creator.getExternalReferenceCode(),
+				user.getExternalReferenceCode()));
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getAccount.getKeywords(),
+				keyword -> Objects.equals(
+					keyword, randomAccount.getKeywords()[0])));
+		Assert.assertNotNull(getAccount.getLogoBase64());
+		Assert.assertNotEquals(0, GetterUtil.getLong(getAccount.getLogoId()));
+
+		Role role = accountRole.getRole();
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getAccount.getPermissions(),
+				permission ->
+					Objects.equals(permission.getRoleName(), role.getName()) &&
+					(permission.getActionIds().length == 1) &&
+					Objects.equals(permission.getActionIds()[0], "DELETE")));
+
+		Assert.assertTrue(
+			ArrayUtil.exists(
+				getAccount.getTaxonomyCategoryBriefs(),
+				taxonomyCategoryBrief -> Objects.equals(
+					taxonomyCategoryBrief.getTaxonomyCategoryId(),
+					assetCategory.getCategoryId())));
+	}
+
+	private void _testGetAccountWithoutLogo() throws Exception {
+		Account postAccount = testGetAccount_addAccount();
+
+		Account getAccount = accountResource.getAccount(postAccount.getId());
+
+		assertEquals(postAccount, getAccount);
+		assertValid(getAccount);
+
+		Assert.assertEquals(0, GetterUtil.getLong(getAccount.getLogoId()));
+
+		String logoURL = getAccount.getLogoURL();
+
+		Assert.assertTrue(logoURL.contains("account_logo"));
+		Assert.assertFalse(logoURL.contains("organization_logo"));
+	}
+
 	private void _testGetAccountsPage(
 			List<AccountEntry> expectedAccountEntries, Long organizationId)
 		throws Exception {
@@ -1583,138 +1715,6 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			ArrayUtil.exists(
 				account.getAccountUserAccounts(),
 				userAccount -> userAccount.getId() == user.getUserId()));
-	}
-
-	private void _testGetAccountWithNestedFields() throws Exception {
-		Account randomAccount = randomAccount();
-
-		randomAccount.setKeywords(new String[] {RandomTestUtil.randomString()});
-		randomAccount.setLogoBase64(
-			Base64.encode(
-				FileUtil.getBytes(getClass(), "/images/liferay.png")));
-
-		Account postAccount = _postAccount(randomAccount);
-
-		User user = TestPropsValues.getUser();
-
-		_accountEntryUserRelLocalService.addAccountEntryUserRel(
-			postAccount.getId(), user.getUserId());
-
-		AccountGroup accountGroup = _accountGroupLocalService.addAccountGroup(
-			StringPool.BLANK, user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext());
-
-		_accountGroupRelLocalService.addAccountGroupRel(
-			accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
-			postAccount.getId());
-
-		AccountRole accountRole = _accountRoleLocalService.addAccountRole(
-			RandomTestUtil.randomString(), user.getUserId(),
-			postAccount.getId(), RandomTestUtil.randomString(), null, null);
-
-		_resourcePermissionLocalService.setResourcePermissions(
-			TestPropsValues.getCompanyId(), AccountEntry.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(postAccount.getId()), accountRole.getRoleId(),
-			new String[] {ActionKeys.DELETE});
-
-		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-			_classNameLocalService.getClassNameId(AccountEntry.class),
-			postAccount.getId());
-
-		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
-			TestPropsValues.getGroupId());
-
-		AssetCategory assetCategory = AssetTestUtil.addCategory(
-			TestPropsValues.getGroupId(), assetVocabulary.getVocabularyId());
-
-		_assetEntryAssetCategoryRelLocalService.addAssetEntryAssetCategoryRel(
-			assetEntry.getEntryId(), assetCategory.getCategoryId());
-
-		AccountResource accountResource = AccountResource.builder(
-		).authentication(
-			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).parameters(
-			"nestedFields",
-			"accountGroupBriefs,accountRoles,accountUserAccounts,creator," +
-				"keywords,logoBase64,permissions,taxonomyCategoryBriefs"
-		).build();
-
-		Account getAccount = accountResource.getAccount(postAccount.getId());
-
-		Assert.assertTrue(
-			ArrayUtil.exists(
-				getAccount.getAccountGroupBriefs(),
-				accountGroupBrief ->
-					Objects.equals(
-						accountGroupBrief.getId(),
-						accountGroup.getAccountGroupId()) &&
-					Objects.equals(
-						accountGroupBrief.getName(), accountGroup.getName())));
-		Assert.assertTrue(
-			ArrayUtil.exists(
-				getAccount.getAccountRoles(),
-				innerAccountRole ->
-					innerAccountRole.getId() == accountRole.getRoleId()));
-		Assert.assertTrue(
-			ArrayUtil.exists(
-				getAccount.getAccountUserAccounts(),
-				userAccount -> userAccount.getId() == user.getUserId()));
-
-		Creator creator = getAccount.getCreator();
-
-		Assert.assertTrue(creator.getId() == TestPropsValues.getUserId());
-		Assert.assertTrue(
-			Objects.equals(
-				creator.getExternalReferenceCode(),
-				user.getExternalReferenceCode()));
-
-		Assert.assertTrue(
-			ArrayUtil.exists(
-				getAccount.getKeywords(),
-				keyword -> Objects.equals(
-					keyword, randomAccount.getKeywords()[0])));
-		Assert.assertNotNull(getAccount.getLogoBase64());
-		Assert.assertNotEquals(0, GetterUtil.getLong(getAccount.getLogoId()));
-
-		Role role = accountRole.getRole();
-
-		Assert.assertTrue(
-			ArrayUtil.exists(
-				getAccount.getPermissions(),
-				permission ->
-					Objects.equals(permission.getRoleName(), role.getName()) &&
-					(permission.getActionIds().length == 1) &&
-					Objects.equals(permission.getActionIds()[0], "DELETE")));
-
-		Assert.assertTrue(
-			ArrayUtil.exists(
-				getAccount.getTaxonomyCategoryBriefs(),
-				taxonomyCategoryBrief -> Objects.equals(
-					taxonomyCategoryBrief.getTaxonomyCategoryId(),
-					assetCategory.getCategoryId())));
-	}
-
-	private void _testGetAccountWithoutLogo() throws Exception {
-		Account postAccount = testGetAccount_addAccount();
-
-		Account getAccount = accountResource.getAccount(postAccount.getId());
-
-		assertEquals(postAccount, getAccount);
-		assertValid(getAccount);
-
-		Assert.assertEquals(0, GetterUtil.getLong(getAccount.getLogoId()));
-
-		String logoURL = getAccount.getLogoURL();
-
-		Assert.assertTrue(logoURL.contains("account_logo"));
-		Assert.assertFalse(logoURL.contains("organization_logo"));
 	}
 
 	private void _testPatchAccountByExternalReferenceCodeWithMoreExternalReferenceCodes()
@@ -1986,19 +1986,6 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		Assert.assertTrue(patchAccount.getLogoId() > 0);
 	}
 
-	private void _testPatchAccountWithoutName() throws Exception {
-		Account postAccount = testPatchAccount_addAccount();
-
-		Account randomPatchAccount = randomPatchAccount();
-
-		randomPatchAccount.setName(() -> null);
-
-		Account patchAccount = accountResource.patchAccount(
-			postAccount.getId(), randomPatchAccount);
-
-		Assert.assertEquals(postAccount.getName(), patchAccount.getName());
-	}
-
 	private void _testPatchAccountWithPostalAddressPhoneNumber()
 		throws Exception {
 
@@ -2048,6 +2035,19 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 			address.getExternalReferenceCode());
 		Assert.assertEquals(
 			postalAddress.getPhoneNumber(), address.getPhoneNumber());
+	}
+
+	private void _testPatchAccountWithoutName() throws Exception {
+		Account postAccount = testPatchAccount_addAccount();
+
+		Account randomPatchAccount = randomPatchAccount();
+
+		randomPatchAccount.setName(() -> null);
+
+		Account patchAccount = accountResource.patchAccount(
+			postAccount.getId(), randomPatchAccount);
+
+		Assert.assertEquals(postAccount.getName(), patchAccount.getName());
 	}
 
 	private void _testPatchOrganizationMoveAccounts() throws Exception {
@@ -3142,28 +3142,6 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 		accountResource.putAccount(accountEntry.getAccountEntryId(), account);
 	}
 
-	private void _testPutAccountWithoutName() throws Exception {
-		Account postAccount = testPutAccount_addAccount();
-
-		Account randomAccount = randomAccount();
-
-		randomAccount.setName(() -> null);
-
-		try {
-			accountResource.putAccount(postAccount.getId(), randomAccount);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			String errorMessage = problem.getTitle();
-
-			Assert.assertTrue(
-				errorMessage.contains("The account name is invalid"));
-		}
-	}
-
 	private void _testPutAccountWithPostalAddressPhoneNumber()
 		throws Exception {
 
@@ -3188,6 +3166,28 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 		Assert.assertEquals(
 			postalAddress.getPhoneNumber(), address.getPhoneNumber());
+	}
+
+	private void _testPutAccountWithoutName() throws Exception {
+		Account postAccount = testPutAccount_addAccount();
+
+		Account randomAccount = randomAccount();
+
+		randomAccount.setName(() -> null);
+
+		try {
+			accountResource.putAccount(postAccount.getId(), randomAccount);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			String errorMessage = problem.getTitle();
+
+			Assert.assertTrue(
+				errorMessage.contains("The account name is invalid"));
+		}
 	}
 
 	private static final String _PASSWORD = RandomTestUtil.randomString();

@@ -668,13 +668,12 @@ public class FragmentEntryFragmentRendererTest {
 			new byte[0], null, null, null, _serviceContext);
 	}
 
-	private FragmentEntryLink _addHeadingFragmentEntryLink(
-			JSONObject jsonObject)
+	private FragmentEntryLink _addHTMLFragmentEntryLink(JSONObject jsonObject)
 		throws Exception {
 
 		FragmentEntry fragmentEntry =
 			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-heading");
+				"BASIC_COMPONENT-html");
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
 			null, TestPropsValues.getUserId(), _group.getGroupId(), null,
@@ -691,12 +690,13 @@ public class FragmentEntryFragmentRendererTest {
 			fragmentEntry.getType(), _serviceContext);
 	}
 
-	private FragmentEntryLink _addHTMLFragmentEntryLink(JSONObject jsonObject)
+	private FragmentEntryLink _addHeadingFragmentEntryLink(
+			JSONObject jsonObject)
 		throws Exception {
 
 		FragmentEntry fragmentEntry =
 			_fragmentCollectionContributorRegistry.getFragmentEntry(
-				"BASIC_COMPONENT-html");
+				"BASIC_COMPONENT-heading");
 
 		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
 			null, TestPropsValues.getUserId(), _group.getGroupId(), null,

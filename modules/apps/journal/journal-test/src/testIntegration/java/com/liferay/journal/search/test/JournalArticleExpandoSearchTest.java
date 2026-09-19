@@ -202,28 +202,29 @@ public class JournalArticleExpandoSearchTest {
 	protected JournalArticleLocalService journalArticleLocalService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private static final String _EXPANDO_COLUMN = "expandoColumn";
 
 	@DeleteAfterTestRun
 	private List<ExpandoColumn> _expandoColumns;
 
+	private ExpandoTableSearchFixture _expandoTableSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<ExpandoTable> _expandoTables;
 
-	private ExpandoTableSearchFixture _expandoTableSearchFixture;
 	private Group _group;
 
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
-
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 
 }

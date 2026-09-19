@@ -92,9 +92,9 @@ public class FeatureFlagConfigurationScreen implements ConfigurationScreen {
 		}
 	}
 
+	private final FeatureFlagType _featureFlagType;
 	private final FeatureFlagsDisplayContextFactory
 		_featureFlagsDisplayContextFactory;
-	private final FeatureFlagType _featureFlagType;
 	private final int _index;
 	private final String _scope;
 	private final ServletContext _servletContext;

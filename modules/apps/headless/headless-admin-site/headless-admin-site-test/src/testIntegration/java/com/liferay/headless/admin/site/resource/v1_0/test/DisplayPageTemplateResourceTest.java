@@ -1336,6 +1336,57 @@ public class DisplayPageTemplateResourceTest
 		assertValid(getDisplayPageTemplate);
 	}
 
+	private void _testGetSiteDisplayPageTemplateWithNestedFields(
+			DisplayPageTemplate displayPageTemplate)
+		throws Exception {
+
+		DisplayPageTemplateResource displayPageTemplateResource =
+			_getDisplayPageTemplateResource(
+				"friendlyUrlHistory,pageSpecifications");
+
+		_assertNestedFields(
+			displayPageTemplateResource.getSiteDisplayPageTemplate(
+				testGroup.getExternalReferenceCode(),
+				displayPageTemplate.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteDisplayPageTemplateWithPageElementsWithTemplateEntries()
+		throws Exception {
+
+		FragmentEntry fragmentEntry =
+			FragmentEntryTestUtil.
+				addCompanyGroupFragmentEntryWithTextEditable();
+		JournalArticle journalArticle = _randomCompanyGroupJournalArticle();
+
+		DisplayPageTemplate displayPageTemplate =
+			_getDisplayPageTemplateWithPageElements(
+				PageElementsTestUtil.getDisplayPageTemplatePageElements(
+					testCompany, fragmentEntry.getFragmentEntryKey(),
+					journalArticle, testGroup.getGroupId()),
+				PageElementsTestUtil.getDisplayPageTemplatePageElements(
+					testCompany, fragmentEntry.getFragmentEntryKey(),
+					journalArticle, testGroup.getGroupId()));
+
+		DisplayPageTemplate postDisplayPageTemplate =
+			displayPageTemplateResource.postSiteDisplayPageTemplate(
+				testGroup.getExternalReferenceCode(), displayPageTemplate);
+
+		DisplayPageTemplateResource displayPageTemplateResource =
+			_getDisplayPageTemplateResource("pageSpecifications");
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.getSiteDisplayPageTemplate(
+				testGroup.getExternalReferenceCode(),
+				postDisplayPageTemplate.getExternalReferenceCode());
+
+		assertEquals(displayPageTemplate, getDisplayPageTemplate);
+		assertValid(getDisplayPageTemplate);
+
+		PageElementsTestUtil.assertFieldKeysWithTemplateEntries(
+			getDisplayPageTemplate.getPageSpecifications(),
+			displayPageTemplate.getPageSpecifications());
+	}
+
 	private void _testGetSiteDisplayPageTemplatesPageWithPageSpecificationsAsNestedFields()
 		throws Exception {
 
@@ -1449,57 +1500,6 @@ public class DisplayPageTemplateResourceTest
 					displayPageTemplate.getThumbnailURLReference());
 			}
 		}
-	}
-
-	private void _testGetSiteDisplayPageTemplateWithNestedFields(
-			DisplayPageTemplate displayPageTemplate)
-		throws Exception {
-
-		DisplayPageTemplateResource displayPageTemplateResource =
-			_getDisplayPageTemplateResource(
-				"friendlyUrlHistory,pageSpecifications");
-
-		_assertNestedFields(
-			displayPageTemplateResource.getSiteDisplayPageTemplate(
-				testGroup.getExternalReferenceCode(),
-				displayPageTemplate.getExternalReferenceCode()));
-	}
-
-	private void _testGetSiteDisplayPageTemplateWithPageElementsWithTemplateEntries()
-		throws Exception {
-
-		FragmentEntry fragmentEntry =
-			FragmentEntryTestUtil.
-				addCompanyGroupFragmentEntryWithTextEditable();
-		JournalArticle journalArticle = _randomCompanyGroupJournalArticle();
-
-		DisplayPageTemplate displayPageTemplate =
-			_getDisplayPageTemplateWithPageElements(
-				PageElementsTestUtil.getDisplayPageTemplatePageElements(
-					testCompany, fragmentEntry.getFragmentEntryKey(),
-					journalArticle, testGroup.getGroupId()),
-				PageElementsTestUtil.getDisplayPageTemplatePageElements(
-					testCompany, fragmentEntry.getFragmentEntryKey(),
-					journalArticle, testGroup.getGroupId()));
-
-		DisplayPageTemplate postDisplayPageTemplate =
-			displayPageTemplateResource.postSiteDisplayPageTemplate(
-				testGroup.getExternalReferenceCode(), displayPageTemplate);
-
-		DisplayPageTemplateResource displayPageTemplateResource =
-			_getDisplayPageTemplateResource("pageSpecifications");
-
-		DisplayPageTemplate getDisplayPageTemplate =
-			displayPageTemplateResource.getSiteDisplayPageTemplate(
-				testGroup.getExternalReferenceCode(),
-				postDisplayPageTemplate.getExternalReferenceCode());
-
-		assertEquals(displayPageTemplate, getDisplayPageTemplate);
-		assertValid(getDisplayPageTemplate);
-
-		PageElementsTestUtil.assertFieldKeysWithTemplateEntries(
-			getDisplayPageTemplate.getPageSpecifications(),
-			displayPageTemplate.getPageSpecifications());
 	}
 
 	private void _testPatchSiteDisplayPageTemplate(

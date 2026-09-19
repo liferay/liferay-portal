@@ -363,9 +363,9 @@ public class ContentCoverageResourceImpl
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 }

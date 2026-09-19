@@ -1835,11 +1835,11 @@ public class CompanyLocalServiceTest {
 	private Portal _portal;
 
 	@Inject
-	private PortalPreferencesLocalService _portalPreferencesLocalService;
-
-	@Inject
 	private PortalPreferenceValueLocalService
 		_portalPreferenceValueLocalService;
+
+	@Inject
+	private PortalPreferencesLocalService _portalPreferencesLocalService;
 
 	@Inject
 	private PortletLocalService _portletLocalService;

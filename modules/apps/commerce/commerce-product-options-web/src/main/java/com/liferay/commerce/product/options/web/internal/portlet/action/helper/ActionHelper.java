@@ -81,20 +81,6 @@ public class ActionHelper {
 		return cpOptionCategories;
 	}
 
-	public List<CPOption> getCPOptions(ResourceRequest resourceRequest)
-		throws PortalException {
-
-		List<CPOption> cpOptions = new ArrayList<>();
-
-		long[] cpOptionIds = ParamUtil.getLongValues(resourceRequest, "rowIds");
-
-		for (long cpOptionId : cpOptionIds) {
-			cpOptions.add(_cpOptionService.getCPOption(cpOptionId));
-		}
-
-		return cpOptions;
-	}
-
 	public CPOptionValue getCPOptionValue(RenderRequest renderRequest)
 		throws PortalException {
 
@@ -136,6 +122,20 @@ public class ActionHelper {
 		}
 
 		return cpOptionValues;
+	}
+
+	public List<CPOption> getCPOptions(ResourceRequest resourceRequest)
+		throws PortalException {
+
+		List<CPOption> cpOptions = new ArrayList<>();
+
+		long[] cpOptionIds = ParamUtil.getLongValues(resourceRequest, "rowIds");
+
+		for (long cpOptionId : cpOptionIds) {
+			cpOptions.add(_cpOptionService.getCPOption(cpOptionId));
+		}
+
+		return cpOptions;
 	}
 
 	public List<CPSpecificationOption> getCPSpecificationOptions(

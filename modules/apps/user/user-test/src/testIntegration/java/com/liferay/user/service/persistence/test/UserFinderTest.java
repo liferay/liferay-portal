@@ -312,25 +312,6 @@ public class UserFinderTest {
 	}
 
 	@Test
-	public void testFindByKeywordsOrganizationsMembershipStrict()
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"ORGANIZATIONS_MEMBERSHIP_STRICT", false)) {
-
-			testFindByKeywordsWithInheritedGroups();
-		}
-
-		try (SafeCloseable safeCloseable =
-				PropsValuesTestUtil.swapWithSafeCloseable(
-					"ORGANIZATIONS_MEMBERSHIP_STRICT", true)) {
-
-			testFindByKeywordsWithInheritedGroups();
-		}
-	}
-
-	@Test
 	public void testFindByKeywordsOrganizationUsers() throws Exception {
 		List<User> users = _userFinder.findByKeywords(
 			TestPropsValues.getCompanyId(), null,
@@ -356,6 +337,25 @@ public class UserFinderTest {
 		Assert.assertTrue(users.toString(), users.contains(_organizationUser1));
 		Assert.assertFalse(
 			users.toString(), users.contains(_organizationUser2));
+	}
+
+	@Test
+	public void testFindByKeywordsOrganizationsMembershipStrict()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"ORGANIZATIONS_MEMBERSHIP_STRICT", false)) {
+
+			testFindByKeywordsWithInheritedGroups();
+		}
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"ORGANIZATIONS_MEMBERSHIP_STRICT", true)) {
+
+			testFindByKeywordsWithInheritedGroups();
+		}
 	}
 
 	@Test

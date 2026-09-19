@@ -91,6 +91,21 @@ public class CommerceShippingFixedOptionRelsDisplayContext
 		).buildString();
 	}
 
+	public String getCPMeasurementUnitName(int type) {
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		CPMeasurementUnit cpMeasurementUnit =
+			_cpMeasurementUnitLocalService.fetchPrimaryCPMeasurementUnit(
+				themeDisplay.getCompanyId(), type);
+
+		if (cpMeasurementUnit == null) {
+			return StringPool.BLANK;
+		}
+
+		return cpMeasurementUnit.getName(themeDisplay.getLanguageId());
+	}
+
 	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses()
 		throws PortalException {
 
@@ -164,21 +179,6 @@ public class CommerceShippingFixedOptionRelsDisplayContext
 		}
 
 		return commerceShippingFixedOptionRel.getCountryId();
-	}
-
-	public String getCPMeasurementUnitName(int type) {
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		CPMeasurementUnit cpMeasurementUnit =
-			_cpMeasurementUnitLocalService.fetchPrimaryCPMeasurementUnit(
-				themeDisplay.getCompanyId(), type);
-
-		if (cpMeasurementUnit == null) {
-			return StringPool.BLANK;
-		}
-
-		return cpMeasurementUnit.getName(themeDisplay.getLanguageId());
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

@@ -373,41 +373,6 @@ public class PatcherFixUtil {
 		return null;
 	}
 
-	public static List<PatcherFix> getPatcherFixesSelection(
-		long patcherProjectVersionId, boolean includeAnyStatusRebaseFixes) {
-
-		List<PatcherFix> filteredPatcherFixes = new ArrayList<>();
-
-		List<PatcherFix> patcherFixes = getFilteredPatcherFixes(
-			patcherProjectVersionId, WorkflowConstants.STATUS_FIX_COMPLETE);
-
-		if (includeAnyStatusRebaseFixes) {
-			patcherFixes = ListUtil.copy(patcherFixes);
-
-			patcherFixes.addAll(getRebasePatcherFixes(patcherProjectVersionId));
-
-			ListUtil.distinct(patcherFixes);
-		}
-
-		for (PatcherFix patcherFix : patcherFixes) {
-			if ((patcherFix.getType() != PatcherFixConstants.TYPE_AUTO_FIX) &&
-				(patcherFix.getType() != PatcherFixConstants.TYPE_PATCH) &&
-				(patcherFix.getType() != PatcherFixConstants.TYPE_WORKAROUND) &&
-				(patcherFix.getType() != PatcherFixConstants.TYPE_REBASE)) {
-
-				continue;
-			}
-
-			if (patcherFix.isObsolete()) {
-				continue;
-			}
-
-			filteredPatcherFixes.add(patcherFix);
-		}
-
-		return filteredPatcherFixes;
-	}
-
 	public static String getPatcherFixGitHubURL(long patcherFixId)
 		throws Exception {
 
@@ -522,6 +487,41 @@ public class PatcherFixUtil {
 		}
 
 		return patcherFixRadix;
+	}
+
+	public static List<PatcherFix> getPatcherFixesSelection(
+		long patcherProjectVersionId, boolean includeAnyStatusRebaseFixes) {
+
+		List<PatcherFix> filteredPatcherFixes = new ArrayList<>();
+
+		List<PatcherFix> patcherFixes = getFilteredPatcherFixes(
+			patcherProjectVersionId, WorkflowConstants.STATUS_FIX_COMPLETE);
+
+		if (includeAnyStatusRebaseFixes) {
+			patcherFixes = ListUtil.copy(patcherFixes);
+
+			patcherFixes.addAll(getRebasePatcherFixes(patcherProjectVersionId));
+
+			ListUtil.distinct(patcherFixes);
+		}
+
+		for (PatcherFix patcherFix : patcherFixes) {
+			if ((patcherFix.getType() != PatcherFixConstants.TYPE_AUTO_FIX) &&
+				(patcherFix.getType() != PatcherFixConstants.TYPE_PATCH) &&
+				(patcherFix.getType() != PatcherFixConstants.TYPE_WORKAROUND) &&
+				(patcherFix.getType() != PatcherFixConstants.TYPE_REBASE)) {
+
+				continue;
+			}
+
+			if (patcherFix.isObsolete()) {
+				continue;
+			}
+
+			filteredPatcherFixes.add(patcherFix);
+		}
+
+		return filteredPatcherFixes;
 	}
 
 	public static List<PatcherFix> getPreviousFixPackBuildFixes(

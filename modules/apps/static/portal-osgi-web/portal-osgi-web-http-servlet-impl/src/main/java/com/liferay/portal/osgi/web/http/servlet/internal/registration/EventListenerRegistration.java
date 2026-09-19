@@ -130,8 +130,8 @@ public class EventListenerRegistration
 		return Long.hashCode(getDTO().serviceId);
 	}
 
-	private final List<Class<? extends EventListener>> _classes;
 	private final ClassLoader _classLoader;
+	private final List<Class<? extends EventListener>> _classes;
 	private final EventListener _eventListenerProxy;
 	private final LiferayContextController _liferayContextController;
 	private final ServiceHolder<EventListener> _serviceHolder;

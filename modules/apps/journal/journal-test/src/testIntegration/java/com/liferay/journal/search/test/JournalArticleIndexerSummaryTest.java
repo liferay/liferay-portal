@@ -211,10 +211,10 @@ public class JournalArticleIndexerSummaryTest {
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
-
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 
 	@Inject
 	private Portal _portal;

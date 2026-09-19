@@ -133,18 +133,18 @@ public class ObjectEntryLayoutDisplayPageProviderTest {
 			objectEntry, _GROUP_FRIENDLY_URL + "/parent/child/grandchild");
 	}
 
-	private void _testGetLayoutDisplayPageObjectProviderWithoutSlash() {
-		ObjectEntry objectEntry = _setUpObjectEntry(
-			_REQUEST_GROUP_ID, _URL_TITLE);
-
-		_assertGetLayoutDisplayPageObjectProvider(objectEntry, _URL_TITLE);
-	}
-
 	private void _testGetLayoutDisplayPageObjectProviderWithSlashWithoutGroupPrefix() {
 		ObjectEntry objectEntry = _setUpObjectEntry(
 			_REQUEST_GROUP_ID, "parent/child");
 
 		_assertGetLayoutDisplayPageObjectProvider(objectEntry, "parent/child");
+	}
+
+	private void _testGetLayoutDisplayPageObjectProviderWithoutSlash() {
+		ObjectEntry objectEntry = _setUpObjectEntry(
+			_REQUEST_GROUP_ID, _URL_TITLE);
+
+		_assertGetLayoutDisplayPageObjectProvider(objectEntry, _URL_TITLE);
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();

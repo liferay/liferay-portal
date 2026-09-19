@@ -527,14 +527,6 @@ public class ExportProcessResourceTest
 	}
 
 	@Override
-	protected ExportProcess testGetExportProcessesPage_addExportProcess(
-			ExportProcess exportProcess)
-		throws Exception {
-
-		return _addExportProcess(randomExportProcess(), _getCompanyGroupId());
-	}
-
-	@Override
 	protected ProcessProgress testGetExportProcessProgress_addProcessProgress(
 			long exportProcessId, ProcessProgress processProgress)
 		throws Exception {
@@ -553,6 +545,14 @@ public class ExportProcessResourceTest
 				percentage = 50;
 			}
 		};
+	}
+
+	@Override
+	protected ExportProcess testGetExportProcessesPage_addExportProcess(
+			ExportProcess exportProcess)
+		throws Exception {
+
+		return _addExportProcess(randomExportProcess(), _getCompanyGroupId());
 	}
 
 	@Override
@@ -1022,27 +1022,6 @@ public class ExportProcessResourceTest
 			ObjectEntry::getExternalReferenceCode);
 	}
 
-	private void _testPostExportProcessWithoutPlid(
-			UnsafeFunction
-				<ExportProcessRequest, HttpInvoker.HttpResponse, Exception>
-					unsafeFunction)
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.WARN)) {
-
-			ExportProcessRequest exportProcessRequest =
-				new ExportProcessRequest();
-
-			exportProcessRequest.setName(RandomTestUtil.randomString());
-
-			assertHttpResponseStatusCode(
-				400, unsafeFunction.apply(exportProcessRequest));
-		}
-	}
-
 	@TestInfo("LPD-90359")
 	private void _testPostExportProcessWithPermissions(
 			long groupId, ObjectDefinition objectDefinition,
@@ -1106,6 +1085,27 @@ public class ExportProcessResourceTest
 		Assert.assertEquals(2, jsonArray2.length());
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	private void _testPostExportProcessWithoutPlid(
+			UnsafeFunction
+				<ExportProcessRequest, HttpInvoker.HttpResponse, Exception>
+					unsafeFunction)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			ExportProcessRequest exportProcessRequest =
+				new ExportProcessRequest();
+
+			exportProcessRequest.setName(RandomTestUtil.randomString());
+
+			assertHttpResponseStatusCode(
+				400, unsafeFunction.apply(exportProcessRequest));
+		}
 	}
 
 	private static final String _PORTLET_ID =

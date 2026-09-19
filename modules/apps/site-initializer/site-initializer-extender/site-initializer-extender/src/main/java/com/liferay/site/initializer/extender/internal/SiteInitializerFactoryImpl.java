@@ -328,11 +328,11 @@ public class SiteInitializerFactoryImpl implements SiteInitializerFactory {
 	private LayoutSetLocalService _layoutSetLocalService;
 
 	@Reference
-	private LayoutsImporter _layoutsImporter;
-
-	@Reference
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
+
+	@Reference
+	private LayoutsImporter _layoutsImporter;
 
 	@Reference
 	private ListTypeDefinitionResource _listTypeDefinitionResource;
@@ -379,14 +379,14 @@ public class SiteInitializerFactoryImpl implements SiteInitializerFactory {
 	private ObjectFieldResource.Factory _objectFieldResourceFactory;
 
 	@Reference
-	private ObjectFolderResource.Factory _objectfolderResourceFactory;
-
-	@Reference
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private ObjectRelationshipResource.Factory
 		_objectRelationshipResourceFactory;
+
+	@Reference
+	private ObjectFolderResource.Factory _objectfolderResourceFactory;
 
 	@Reference
 	private OrganizationLocalService _organizationLocalService;

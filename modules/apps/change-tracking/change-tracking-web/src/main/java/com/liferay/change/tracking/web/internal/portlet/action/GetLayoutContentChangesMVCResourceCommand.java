@@ -458,10 +458,10 @@ public class GetLayoutContentChangesMVCResourceCommand
 	private Portal _portal;
 
 	@Reference
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Reference
 	private Sorts _sorts;

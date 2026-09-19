@@ -333,9 +333,9 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 	private final boolean _allowAllClasses;
 	private final List<String> _allowedClassNames;
 	private final Set<String> _deniedAccessToStringClasses;
-	private final List<Class<?>> _restrictedClasses;
 	private final Map<String, Boolean> _restrictedClassMap =
 		new ConcurrentHashMap<>();
+	private final List<Class<?>> _restrictedClasses;
 	private final Map<String, Set<String>> _restrictedMethodNames;
 	private final List<String> _restrictedPackageNames;
 	private final Set<String> _serviceProxyClassNames =

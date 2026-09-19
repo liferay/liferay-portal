@@ -229,41 +229,6 @@ public class CPConfigurationListRelLocalServiceImpl
 	}
 
 	@Override
-	public List<CPConfigurationListRel>
-		getCommerceOrderTypeCPConfigurationListRels(
-			long cpConfigurationListId, String keywords, int start, int end) {
-
-		return dslQuery(
-			_getGroupByStep(
-				DSLQueryFactoryUtil.selectDistinct(
-					CPConfigurationListRelTable.INSTANCE),
-				CommerceOrderTypeTable.INSTANCE,
-				CommerceOrderTypeTable.INSTANCE.commerceOrderTypeId.eq(
-					CPConfigurationListRelTable.INSTANCE.classPK),
-				cpConfigurationListId, CommerceOrderType.class.getName(),
-				keywords, CommerceOrderTypeTable.INSTANCE.name
-			).limit(
-				start, end
-			));
-	}
-
-	@Override
-	public int getCommerceOrderTypeCPConfigurationListRelsCount(
-		long cpConfigurationListId, String keywords) {
-
-		return dslQueryCount(
-			_getGroupByStep(
-				DSLQueryFactoryUtil.countDistinct(
-					CPConfigurationListRelTable.INSTANCE.
-						CPConfigurationListRelId),
-				CommerceOrderTypeTable.INSTANCE,
-				CommerceOrderTypeTable.INSTANCE.commerceOrderTypeId.eq(
-					CPConfigurationListRelTable.INSTANCE.classPK),
-				cpConfigurationListId, CommerceOrderType.class.getName(),
-				keywords, CommerceOrderTypeTable.INSTANCE.name));
-	}
-
-	@Override
 	public List<CPConfigurationListRel> getCPConfigurationListRels(
 		long cpConfigurationListId) {
 
@@ -312,6 +277,41 @@ public class CPConfigurationListRelLocalServiceImpl
 		return cpConfigurationListRelPersistence.countByC_C(
 			_classNameLocalService.getClassNameId(className),
 			cpConfigurationListId);
+	}
+
+	@Override
+	public List<CPConfigurationListRel>
+		getCommerceOrderTypeCPConfigurationListRels(
+			long cpConfigurationListId, String keywords, int start, int end) {
+
+		return dslQuery(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.selectDistinct(
+					CPConfigurationListRelTable.INSTANCE),
+				CommerceOrderTypeTable.INSTANCE,
+				CommerceOrderTypeTable.INSTANCE.commerceOrderTypeId.eq(
+					CPConfigurationListRelTable.INSTANCE.classPK),
+				cpConfigurationListId, CommerceOrderType.class.getName(),
+				keywords, CommerceOrderTypeTable.INSTANCE.name
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
+	public int getCommerceOrderTypeCPConfigurationListRelsCount(
+		long cpConfigurationListId, String keywords) {
+
+		return dslQueryCount(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.countDistinct(
+					CPConfigurationListRelTable.INSTANCE.
+						CPConfigurationListRelId),
+				CommerceOrderTypeTable.INSTANCE,
+				CommerceOrderTypeTable.INSTANCE.commerceOrderTypeId.eq(
+					CPConfigurationListRelTable.INSTANCE.classPK),
+				cpConfigurationListId, CommerceOrderType.class.getName(),
+				keywords, CommerceOrderTypeTable.INSTANCE.name));
 	}
 
 	private GroupByStep _getGroupByStep(

@@ -102,13 +102,13 @@ public class RankingImpl implements Ranking {
 	}
 
 	@Override
-	public String getStatus() {
-		return _status;
+	public String getSXPBlueprintExternalReferenceCode() {
+		return _sxpBlueprintExternalReferenceCode;
 	}
 
 	@Override
-	public String getSXPBlueprintExternalReferenceCode() {
-		return _sxpBlueprintExternalReferenceCode;
+	public String getStatus() {
+		return _status;
 	}
 
 	@Override

@@ -454,6 +454,31 @@ public class RegionResourceTest extends BaseRegionResourceTestCase {
 		}
 	}
 
+	private void _testGetRegionWithNestedFields() throws Exception {
+		Region postRegion = _addRegion(randomRegion());
+
+		RegionResource regionResource = RegionResource.builder(
+		).authentication(
+			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "creator"
+		).build();
+
+		Region getRegion = regionResource.getRegion(postRegion.getId());
+
+		Creator creator = getRegion.getCreator();
+
+		User user = TestPropsValues.getUser();
+
+		Assert.assertEquals(creator.getId(), Long.valueOf(user.getUserId()));
+		Assert.assertTrue(
+			Objects.equals(
+				creator.getExternalReferenceCode(),
+				user.getExternalReferenceCode()));
+	}
+
 	private void _testGetRegionsPageWithFilter() throws Exception {
 		String keywords = RandomTestUtil.randomString();
 
@@ -515,31 +540,6 @@ public class RegionResourceTest extends BaseRegionResourceTestCase {
 		Assert.assertEquals(1, page.getTotalCount());
 
 		assertContains(region2, (List<Region>)page.getItems());
-	}
-
-	private void _testGetRegionWithNestedFields() throws Exception {
-		Region postRegion = _addRegion(randomRegion());
-
-		RegionResource regionResource = RegionResource.builder(
-		).authentication(
-			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
-		).locale(
-			LocaleUtil.getDefault()
-		).parameters(
-			"nestedFields", "creator"
-		).build();
-
-		Region getRegion = regionResource.getRegion(postRegion.getId());
-
-		Creator creator = getRegion.getCreator();
-
-		User user = TestPropsValues.getUser();
-
-		Assert.assertEquals(creator.getId(), Long.valueOf(user.getUserId()));
-		Assert.assertTrue(
-			Objects.equals(
-				creator.getExternalReferenceCode(),
-				user.getExternalReferenceCode()));
 	}
 
 	private <T extends Exception> void _testPostCountryRegionProblem(

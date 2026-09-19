@@ -557,8 +557,8 @@ public class ExportImportPerformanceTest {
 		"dependencies/portlet-preferences.tmpl");
 
 	private static int _fragmentEntryLinksPerLayout;
-	private static int _layoutsCount;
 	private static String _layoutType;
+	private static int _layoutsCount;
 	private static Path _logFilePath;
 	private static int _portletsPerContentLayout;
 	private static int _portletsPerPortletLayout;

@@ -98,6 +98,38 @@ public class GroupSelectorTag extends IncludeTag {
 		return themeDisplay.getScopeGroup();
 	}
 
+	private int _getGroupSelectorProviderGroupsCount(
+		HttpServletRequest httpServletRequest) {
+
+		GroupItemSelectorProvider groupSelectorProvider =
+			GroupItemSelectorProviderRegistryUtil.getGroupItemSelectorProvider(
+				_getGroupType(httpServletRequest));
+
+		if (groupSelectorProvider == null) {
+			return 0;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Group group = _getGroup(themeDisplay);
+
+		return groupSelectorProvider.getGroupsCount(
+			group.getCompanyId(), group.getGroupId(),
+			_getKeywords(httpServletRequest));
+	}
+
+	private String _getGroupType(HttpServletRequest httpServletRequest) {
+		if (_groupType != null) {
+			return _groupType;
+		}
+
+		_groupType = ParamUtil.getString(httpServletRequest, "groupType");
+
+		return _groupType;
+	}
+
 	private List<Group> _getGroups(
 		HttpServletRequest httpServletRequest,
 		boolean scopeGroupTypeAndSiteGroupType) {
@@ -139,38 +171,6 @@ public class GroupSelectorTag extends IncludeTag {
 		}
 
 		return groups;
-	}
-
-	private int _getGroupSelectorProviderGroupsCount(
-		HttpServletRequest httpServletRequest) {
-
-		GroupItemSelectorProvider groupSelectorProvider =
-			GroupItemSelectorProviderRegistryUtil.getGroupItemSelectorProvider(
-				_getGroupType(httpServletRequest));
-
-		if (groupSelectorProvider == null) {
-			return 0;
-		}
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Group group = _getGroup(themeDisplay);
-
-		return groupSelectorProvider.getGroupsCount(
-			group.getCompanyId(), group.getGroupId(),
-			_getKeywords(httpServletRequest));
-	}
-
-	private String _getGroupType(HttpServletRequest httpServletRequest) {
-		if (_groupType != null) {
-			return _groupType;
-		}
-
-		_groupType = ParamUtil.getString(httpServletRequest, "groupType");
-
-		return _groupType;
 	}
 
 	private String _getKeywords(HttpServletRequest httpServletRequest) {
@@ -244,9 +244,9 @@ public class GroupSelectorTag extends IncludeTag {
 	private static final Log _log = LogFactoryUtil.getLog(
 		GroupSelectorTag.class);
 
+	private String _groupType;
 	private List<Group> _groups;
 	private int _groupsCount = -1;
-	private String _groupType;
 	private String _keywords;
 	private Boolean _scopeGroupType;
 

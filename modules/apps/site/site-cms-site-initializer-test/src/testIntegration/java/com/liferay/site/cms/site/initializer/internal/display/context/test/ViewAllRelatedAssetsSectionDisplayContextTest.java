@@ -112,24 +112,6 @@ public class ViewAllRelatedAssetsSectionDisplayContextTest
 				"ViewAllRelatedAssetsSectionDisplayContext");
 	}
 
-	private void _testGetAdditionalAPIURLParametersWithoutRelatedCMPTasks()
-		throws Exception {
-
-		String additionalAPIURLParameters = ReflectionTestUtil.invoke(
-			_getViewAllRelatedAssetsSectionDisplayContext(
-				mockHttpServletRequest),
-			"getAdditionalAPIURLParameters", new Class<?>[0]);
-
-		Assert.assertTrue(
-			additionalAPIURLParameters,
-			additionalAPIURLParameters.contains(
-				StringBundler.concat(
-					"(cmsSection eq 'contents' or cmsSection eq 'files') and ",
-					"cmpProjectObjectEntryIds in (",
-					_objectEntry.getObjectEntryId(),
-					") and rootDescendantNode eq false")));
-	}
-
 	private void _testGetAdditionalAPIURLParametersWithRelatedCMPTasks()
 		throws Exception {
 
@@ -160,6 +142,24 @@ public class ViewAllRelatedAssetsSectionDisplayContextTest
 					") or cmpTaskObjectEntryIds in (",
 					relatedObjectEntry.getObjectEntryId(),
 					")) and rootDescendantNode eq false")));
+	}
+
+	private void _testGetAdditionalAPIURLParametersWithoutRelatedCMPTasks()
+		throws Exception {
+
+		String additionalAPIURLParameters = ReflectionTestUtil.invoke(
+			_getViewAllRelatedAssetsSectionDisplayContext(
+				mockHttpServletRequest),
+			"getAdditionalAPIURLParameters", new Class<?>[0]);
+
+		Assert.assertTrue(
+			additionalAPIURLParameters,
+			additionalAPIURLParameters.contains(
+				StringBundler.concat(
+					"(cmsSection eq 'contents' or cmsSection eq 'files') and ",
+					"cmpProjectObjectEntryIds in (",
+					_objectEntry.getObjectEntryId(),
+					") and rootDescendantNode eq false")));
 	}
 
 	@DeleteAfterTestRun

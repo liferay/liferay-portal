@@ -44,12 +44,12 @@ public class SimpleStringQuery extends Query {
 		}
 	}
 
-	public String getAnalyzer() {
-		return _analyzer;
-	}
-
 	public Boolean getAnalyzeWildcard() {
 		return _analyzeWildcard;
+	}
+
+	public String getAnalyzer() {
+		return _analyzer;
 	}
 
 	public Boolean getAutoGenerateSynonymsPhraseQuery() {
@@ -88,12 +88,12 @@ public class SimpleStringQuery extends Query {
 		return _quoteFieldSuffix;
 	}
 
-	public void setAnalyzer(String analyzer) {
-		_analyzer = analyzer;
-	}
-
 	public void setAnalyzeWildcard(Boolean analyzeWildcard) {
 		_analyzeWildcard = analyzeWildcard;
+	}
+
+	public void setAnalyzer(String analyzer) {
+		_analyzer = analyzer;
 	}
 
 	public void setAutoGenerateSynonymsPhraseQuery(
@@ -145,8 +145,8 @@ public class SimpleStringQuery extends Query {
 
 	private static final long serialVersionUID = 1L;
 
-	private String _analyzer;
 	private Boolean _analyzeWildcard;
+	private String _analyzer;
 	private Boolean _autoGenerateSynonymsPhraseQuery;
 	private Operator _defaultOperator;
 	private final Map<String, Float> _fieldBoostMap = new HashMap<>();

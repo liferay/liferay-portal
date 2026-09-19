@@ -16,9 +16,9 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface ConflictInfo {
 
-	public String getConflictDescription(ResourceBundle resourceBundle);
-
 	public long getCTAutoResolutionInfoId();
+
+	public String getConflictDescription(ResourceBundle resourceBundle);
 
 	public String getResolutionDescription(ResourceBundle resourceBundle);
 

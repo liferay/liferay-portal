@@ -1150,10 +1150,10 @@ public class CommerceOrderSplitTest {
 	@Inject
 	private ObjectActionLocalService _objectActionLocalService;
 
-	private final List<ObjectAction> _objectActions = new ArrayList<>();
-
 	@Inject
 	private ObjectActionTriggerRegistry _objectActionTriggerRegistry;
+
+	private final List<ObjectAction> _objectActions = new ArrayList<>();
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

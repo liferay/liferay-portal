@@ -51,6 +51,10 @@ public class DLUtil {
 		return _dl.getDDMStructureKey(fileEntryTypeUuid);
 	}
 
+	public static DL getDL() {
+		return _dl;
+	}
+
 	public static String getDeprecatedDDMStructureKey(
 		DLFileEntryType dlFileEntryType) {
 
@@ -63,10 +67,6 @@ public class DLUtil {
 
 	public static String getDividedPath(long id) {
 		return _dl.getDividedPath(id);
-	}
-
-	public static DL getDL() {
-		return _dl;
 	}
 
 	public static Map<String, String> getEmailDefinitionTerms(

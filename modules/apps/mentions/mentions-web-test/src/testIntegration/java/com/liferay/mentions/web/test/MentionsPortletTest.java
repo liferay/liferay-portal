@@ -69,24 +69,6 @@ public class MentionsPortletTest {
 	}
 
 	@Test
-	public void testServletResponseWithoutQuery() throws Exception {
-		User user = _addUser("example");
-
-		try {
-			JSONArray jsonArray = _getServletResponseJSONArray(null);
-
-			Assert.assertEquals(1, jsonArray.length());
-
-			JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-			Assert.assertEquals("example", jsonObject.getString("screenName"));
-		}
-		finally {
-			_userLocalService.deleteUser(user);
-		}
-	}
-
-	@Test
 	public void testServletResponseWithQueryWithFullScreenName()
 		throws Exception {
 
@@ -151,6 +133,24 @@ public class MentionsPortletTest {
 		JSONArray jsonArray = _getServletResponseJSONArray("");
 
 		Assert.assertEquals(0, jsonArray.length());
+	}
+
+	@Test
+	public void testServletResponseWithoutQuery() throws Exception {
+		User user = _addUser("example");
+
+		try {
+			JSONArray jsonArray = _getServletResponseJSONArray(null);
+
+			Assert.assertEquals(1, jsonArray.length());
+
+			JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+			Assert.assertEquals("example", jsonObject.getString("screenName"));
+		}
+		finally {
+			_userLocalService.deleteUser(user);
+		}
 	}
 
 	private Layout _addLayout(long groupId, long userId) throws Exception {

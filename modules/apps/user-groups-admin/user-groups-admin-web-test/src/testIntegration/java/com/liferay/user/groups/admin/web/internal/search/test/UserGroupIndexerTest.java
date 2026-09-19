@@ -142,10 +142,10 @@ public class UserGroupIndexerTest {
 	protected RoleLocalService roleLocalService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	@Inject
 	protected UserGroupLocalService userGroupLocalService;

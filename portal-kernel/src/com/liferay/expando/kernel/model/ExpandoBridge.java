@@ -65,6 +65,8 @@ public interface ExpandoBridge {
 
 	public UnicodeProperties getAttributeProperties(String name);
 
+	public int getAttributeType(String name);
+
 	public Map<String, Serializable> getAttributes();
 
 	public Map<String, Serializable> getAttributes(boolean secure);
@@ -73,8 +75,6 @@ public interface ExpandoBridge {
 
 	public Map<String, Serializable> getAttributes(
 		Collection<String> names, boolean secure);
-
-	public int getAttributeType(String name);
 
 	public String getClassName();
 

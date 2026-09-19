@@ -236,12 +236,6 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 			baseModel, _getCompanyId(baseModel), false);
 	}
 
-	private long _getCompanyId(T baseModel) {
-		ShardedModel shardedModel = (ShardedModel)baseModel;
-
-		return shardedModel.getCompanyId();
-	}
-
 	private List<Long> _getCTCollectionIds(long companyId) {
 		List<Long> ctCollectionIds = ListUtil.toList(
 			_ctCollectionLocalService.getCTCollections(
@@ -256,6 +250,12 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 		ctCollectionIds.add(CTConstants.CT_COLLECTION_ID_PRODUCTION);
 
 		return ctCollectionIds;
+	}
+
+	private long _getCompanyId(T baseModel) {
+		ShardedModel shardedModel = (ShardedModel)baseModel;
+
+		return shardedModel.getCompanyId();
 	}
 
 	private IndexerWriterMode _getIndexerWriterMode(T baseModel) {
@@ -319,10 +319,10 @@ public class IndexerWriterImpl<T extends BaseModel<?>>
 	private final BaseModelRetriever _baseModelRetriever;
 	private final BatchIndexingHelper _batchIndexingHelper;
 	private final CTCollectionLocalService _ctCollectionLocalService;
-	private final IndexerDocumentBuilder _indexerDocumentBuilder;
-	private Boolean _indexerEnabled;
 	private final IndexStatusManager _indexStatusManager;
 	private final IndexWriterHelper _indexWriterHelper;
+	private final IndexerDocumentBuilder _indexerDocumentBuilder;
+	private Boolean _indexerEnabled;
 	private final ModelIndexerWriterContributor<T>
 		_modelIndexerWriterContributor;
 	private final ModelSearchSettings _modelSearchSettings;

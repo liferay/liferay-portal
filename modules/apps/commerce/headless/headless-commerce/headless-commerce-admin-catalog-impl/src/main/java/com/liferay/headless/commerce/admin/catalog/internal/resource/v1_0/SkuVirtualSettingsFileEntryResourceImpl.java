@@ -262,11 +262,11 @@ public class SkuVirtualSettingsFileEntryResourceImpl
 		_cpDefinitionVirtualSettingService;
 
 	@Reference
-	private CPDVirtualSettingFileEntryService
-		_cpdVirtualSettingFileEntryService;
+	private CPInstanceLocalService _cpInstanceLocalService;
 
 	@Reference
-	private CPInstanceLocalService _cpInstanceLocalService;
+	private CPDVirtualSettingFileEntryService
+		_cpdVirtualSettingFileEntryService;
 
 	@Reference
 	private DLAppService _dlAppService;

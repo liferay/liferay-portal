@@ -277,6 +277,27 @@ public class LayoutActionsHelperTest {
 		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
 	}
 
+	private void _testIsShowViewHistoryActionWithUpdatePermission()
+		throws PortalException {
+
+		_setUpFeatureFlag(true);
+
+		Layout layout = _getLayout(_getGroup());
+
+		Mockito.when(
+			layout.isTypeContent()
+		).thenReturn(
+			true
+		);
+
+		_setUpLayoutPermissionUtil(layout, ActionKeys.UPDATE);
+
+		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
+			null, _themeDisplay, null);
+
+		Assert.assertTrue(layoutActionsHelper.isShowViewHistoryAction(layout));
+	}
+
 	private void _testIsShowViewHistoryActionWithoutProductionMode()
 		throws PortalException {
 
@@ -319,27 +340,6 @@ public class LayoutActionsHelperTest {
 			null, _themeDisplay, null);
 
 		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
-	}
-
-	private void _testIsShowViewHistoryActionWithUpdatePermission()
-		throws PortalException {
-
-		_setUpFeatureFlag(true);
-
-		Layout layout = _getLayout(_getGroup());
-
-		Mockito.when(
-			layout.isTypeContent()
-		).thenReturn(
-			true
-		);
-
-		_setUpLayoutPermissionUtil(layout, ActionKeys.UPDATE);
-
-		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
-			null, _themeDisplay, null);
-
-		Assert.assertTrue(layoutActionsHelper.isShowViewHistoryAction(layout));
 	}
 
 	private final MockedStatic<FeatureFlagManagerUtil>

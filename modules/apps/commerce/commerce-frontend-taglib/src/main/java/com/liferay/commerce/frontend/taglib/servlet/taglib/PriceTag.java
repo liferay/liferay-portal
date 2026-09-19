@@ -127,12 +127,12 @@ public class PriceTag extends IncludeTag {
 		return _showDefaultSkuPrice;
 	}
 
-	public void setCompact(boolean compact) {
-		_compact = compact;
-	}
-
 	public void setCPCatalogEntry(CPCatalogEntry cpCatalogEntry) {
 		_cpCatalogEntry = cpCatalogEntry;
+	}
+
+	public void setCompact(boolean compact) {
+		_compact = compact;
 	}
 
 	public void setNamespace(String namespace) {

@@ -49,6 +49,22 @@ public class SetUtilTest {
 	}
 
 	@Test
+	public void testIntersectWithWrapping() {
+		List<String> list1 = Arrays.asList("a", "b", "c");
+		List<String> list2 = Arrays.asList("c", "d");
+
+		Assert.assertEquals(
+			SetUtil.intersect(list1, list2),
+			new HashSet<String>(Arrays.asList("c")));
+
+		List<String> list3 = Arrays.asList("c", "d", "e");
+
+		Assert.assertEquals(
+			SetUtil.intersect(list1, list3),
+			new HashSet<String>(Arrays.asList("c")));
+	}
+
+	@Test
 	public void testIntersectWithoutWrapping() {
 		Set<String> set1 = new HashSet<>(Arrays.asList("a", "b", "c"));
 		Set<String> set2 = new HashSet<>(Arrays.asList("c", "d"));
@@ -69,22 +85,6 @@ public class SetUtilTest {
 		Assert.assertEquals(
 			new HashSet<String>(Arrays.asList("c")),
 			SetUtil.intersect(set1, set3));
-	}
-
-	@Test
-	public void testIntersectWithWrapping() {
-		List<String> list1 = Arrays.asList("a", "b", "c");
-		List<String> list2 = Arrays.asList("c", "d");
-
-		Assert.assertEquals(
-			SetUtil.intersect(list1, list2),
-			new HashSet<String>(Arrays.asList("c")));
-
-		List<String> list3 = Arrays.asList("c", "d", "e");
-
-		Assert.assertEquals(
-			SetUtil.intersect(list1, list3),
-			new HashSet<String>(Arrays.asList("c")));
 	}
 
 	@Test

@@ -114,11 +114,6 @@ public class SharepointFileEntry
 	}
 
 	@Override
-	public String getExtension() {
-		return FileUtil.getExtension(_name);
-	}
-
-	@Override
 	public ExtRepositoryFileEntry getExtRepositoryFileEntry() {
 		return this;
 	}
@@ -126,6 +121,11 @@ public class SharepointFileEntry
 	@Override
 	public String getExtRepositoryModelKey() {
 		return _extRepositoryModelKey;
+	}
+
+	@Override
+	public String getExtension() {
+		return FileUtil.getExtension(_name);
 	}
 
 	@Override

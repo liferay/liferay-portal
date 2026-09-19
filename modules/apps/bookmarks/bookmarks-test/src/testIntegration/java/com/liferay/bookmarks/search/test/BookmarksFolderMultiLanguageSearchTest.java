@@ -200,10 +200,10 @@ public class BookmarksFolderMultiLanguageSearchTest {
 	protected Indexer<BookmarksFolder> indexer;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	@Inject
 	protected UserLocalService userLocalService;

@@ -85,12 +85,6 @@ public interface LDAPServerConfiguration {
 	public String[] groupMappings();
 
 	@Meta.AD(
-		deflt = "", description = "groups-dn-help", name = "groups-dn",
-		required = false
-	)
-	public String groupsDN();
-
-	@Meta.AD(
 		deflt = "(objectClass=groupOfUniqueNames)",
 		description = "group-search-filter-help", name = "group-search-filter",
 		required = false
@@ -101,6 +95,12 @@ public interface LDAPServerConfiguration {
 		deflt = "true", name = "group-search-filter-enabled", required = false
 	)
 	public boolean groupSearchFilterEnabled();
+
+	@Meta.AD(
+		deflt = "", description = "groups-dn-help", name = "groups-dn",
+		required = false
+	)
+	public String groupsDN();
 
 	@Meta.AD(
 		deflt = "true", description = "ignore-user-search-filter-for-auth-help",
@@ -153,16 +153,16 @@ public interface LDAPServerConfiguration {
 	public String[] userMappings();
 
 	@Meta.AD(
-		deflt = "", description = "users-dn-help", name = "users-dn",
-		required = false
-	)
-	public String usersDN();
-
-	@Meta.AD(
 		deflt = "(objectClass=inetOrgPerson)",
 		description = "user-search-filter-help", name = "user-search-filter",
 		required = false
 	)
 	public String userSearchFilter();
+
+	@Meta.AD(
+		deflt = "", description = "users-dn-help", name = "users-dn",
+		required = false
+	)
+	public String usersDN();
 
 }

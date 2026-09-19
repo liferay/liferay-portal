@@ -29,15 +29,15 @@ public interface BatchEngineTaskConfiguration {
 	public int completedTasksCleanerScanInterval();
 
 	@Meta.AD(
-		deflt = "30", description = "orphanage-threshold-description",
-		name = "orphanage-threshold", required = false
-	)
-	public int orphanageThreshold();
-
-	@Meta.AD(
 		deflt = "60", description = "orphan-scan-interval-description",
 		min = "1", name = "orphan-scan-interval", required = false
 	)
 	public int orphanScanInterval();
+
+	@Meta.AD(
+		deflt = "30", description = "orphanage-threshold-description",
+		name = "orphanage-threshold", required = false
+	)
+	public int orphanageThreshold();
 
 }

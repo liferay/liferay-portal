@@ -330,11 +330,11 @@ public class JournalContentSearchLocalServiceImpl
 	private LayoutLocalService _layoutLocalService;
 
 	@Reference
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Reference
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Reference
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	private ServiceTrackerMap<String, DisplayInformationProvider>
 		_serviceTrackerMap;

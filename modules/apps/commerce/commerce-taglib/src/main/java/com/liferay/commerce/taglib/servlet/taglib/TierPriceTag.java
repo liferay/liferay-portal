@@ -97,24 +97,24 @@ public class TierPriceTag extends IncludeTag {
 		return super.doStartTag();
 	}
 
-	public long getCommerceCurrencyId() {
-		return _commerceCurrencyId;
-	}
-
 	public long getCPInstanceId() {
 		return _cpInstanceId;
+	}
+
+	public long getCommerceCurrencyId() {
+		return _commerceCurrencyId;
 	}
 
 	public String getTaglibQuantityInputId() {
 		return _taglibQuantityInputId;
 	}
 
-	public void setCommerceCurrencyId(long commerceCurrencyId) {
-		_commerceCurrencyId = commerceCurrencyId;
-	}
-
 	public void setCPInstanceId(long cpInstanceId) {
 		_cpInstanceId = cpInstanceId;
+	}
+
+	public void setCommerceCurrencyId(long commerceCurrencyId) {
+		_commerceCurrencyId = commerceCurrencyId;
 	}
 
 	@Override

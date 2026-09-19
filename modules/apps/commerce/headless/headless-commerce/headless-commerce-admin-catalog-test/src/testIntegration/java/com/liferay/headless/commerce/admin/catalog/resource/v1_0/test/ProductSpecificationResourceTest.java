@@ -403,12 +403,12 @@ public class ProductSpecificationResourceTest
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
-	@DeleteAfterTestRun
-	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
-
 	@Inject
 	private CPDefinitionSpecificationOptionValueLocalService
 		_cpDefinitionSpecificationOptionValueLocalService;
+
+	@DeleteAfterTestRun
+	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private CPOptionCategory _cpOptionCategory;

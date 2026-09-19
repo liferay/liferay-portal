@@ -3648,6 +3648,17 @@ public class DefaultObjectEntryManagerImpl
 		}
 	}
 
+	private Object _toDTO(
+			BaseModel<?> baseModel,
+			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry,
+			SystemObjectDefinitionManager systemObjectDefinitionManager)
+		throws Exception {
+
+		return ObjectEntryDTOConverterUtil.toDTO(
+			baseModel, _dtoConverterRegistry, systemObjectDefinitionManager,
+			_userLocalService.getUser(serviceBuilderObjectEntry.getUserId()));
+	}
+
 	private Date _toDate(Locale locale, String valueString) {
 		if (Validator.isNull(valueString)) {
 			return null;
@@ -3671,17 +3682,6 @@ public class DefaultObjectEntryManagerImpl
 					parseException2);
 			}
 		}
-	}
-
-	private Object _toDTO(
-			BaseModel<?> baseModel,
-			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry,
-			SystemObjectDefinitionManager systemObjectDefinitionManager)
-		throws Exception {
-
-		return ObjectEntryDTOConverterUtil.toDTO(
-			baseModel, _dtoConverterRegistry, systemObjectDefinitionManager,
-			_userLocalService.getUser(serviceBuilderObjectEntry.getUserId()));
 	}
 
 	private List<ObjectEntry> _toObjectEntries(

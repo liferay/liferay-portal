@@ -572,6 +572,25 @@ public class CommerceOrderEngineTest {
 	}
 
 	@Test
+	public void testCheckoutOrderWithTotal0() throws Exception {
+		_commerceOrder.setManuallyAdjusted(true);
+		_commerceOrder.setTotal(BigDecimal.ZERO);
+
+		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
+			_commerceOrder);
+
+		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+			_commerceOrder, _user.getUserId());
+
+		Assert.assertEquals(
+			CommerceOrderConstants.ORDER_STATUS_PENDING,
+			_commerceOrder.getOrderStatus());
+		Assert.assertEquals(
+			CommerceOrderPaymentConstants.STATUS_NOT_REQUIRED,
+			_commerceOrder.getPaymentStatus());
+	}
+
+	@Test
 	public void testCheckoutOrderWithoutBillingAddress() throws Exception {
 		frutillaRule.scenario(
 			"Use the Order Engine to checkout an Order without billing address"
@@ -682,25 +701,6 @@ public class CommerceOrderEngineTest {
 				CommerceOrderShippingMethodException.class,
 				throwable.getClass());
 		}
-	}
-
-	@Test
-	public void testCheckoutOrderWithTotal0() throws Exception {
-		_commerceOrder.setManuallyAdjusted(true);
-		_commerceOrder.setTotal(BigDecimal.ZERO);
-
-		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
-			_commerceOrder);
-
-		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
-			_commerceOrder, _user.getUserId());
-
-		Assert.assertEquals(
-			CommerceOrderConstants.ORDER_STATUS_PENDING,
-			_commerceOrder.getOrderStatus());
-		Assert.assertEquals(
-			CommerceOrderPaymentConstants.STATUS_NOT_REQUIRED,
-			_commerceOrder.getPaymentStatus());
 	}
 
 	@Test

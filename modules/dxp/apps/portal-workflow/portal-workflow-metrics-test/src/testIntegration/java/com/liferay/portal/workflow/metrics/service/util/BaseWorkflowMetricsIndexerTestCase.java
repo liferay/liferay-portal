@@ -525,10 +525,10 @@ public abstract class BaseWorkflowMetricsIndexerTestCase
 	@Inject
 	private KaleoInstanceLocalService _kaleoInstanceLocalService;
 
-	private final Stack<KaleoInstance> _kaleoInstances = new Stack<>();
-
 	@Inject
 	private KaleoInstanceTokenLocalService _kaleoInstanceTokenLocalService;
+
+	private final Stack<KaleoInstance> _kaleoInstances = new Stack<>();
 
 	@Inject
 	private KaleoNodeLocalService _kaleoNodeLocalService;

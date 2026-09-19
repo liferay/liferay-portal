@@ -183,6 +183,21 @@ public class MarketplaceService extends BaseService {
 		updateOrder(customFields, order.getId(), order.getOrderStatus());
 	}
 
+	public JSONObject getAIHubApplicationJSONObject(
+		String externalReferenceCode) {
+
+		return new JSONObject(
+			get(
+				_liferayOAuth2AccessTokenManager.getAuthorization(
+					"liferay-marketplace-etc-spring-boot-oahs"),
+				UriComponentsBuilder.fromPath(
+					"/o/c/aihubapplications/by-external-reference-code/" +
+						externalReferenceCode +
+							"?nestedFields=orderToAIHubApplication"
+				).build(
+				).toUri()));
+	}
+
 	public AccountGroupResource getAccountGroupResource() throws Exception {
 		return AccountGroupResource.builder(
 		).header(
@@ -216,21 +231,6 @@ public class MarketplaceService extends BaseService {
 		).endpoint(
 			new URL(lxcDXPServerProtocol + "://" + lxcDXPMainDomain)
 		).build();
-	}
-
-	public JSONObject getAIHubApplicationJSONObject(
-		String externalReferenceCode) {
-
-		return new JSONObject(
-			get(
-				_liferayOAuth2AccessTokenManager.getAuthorization(
-					"liferay-marketplace-etc-spring-boot-oahs"),
-				UriComponentsBuilder.fromPath(
-					"/o/c/aihubapplications/by-external-reference-code/" +
-						externalReferenceCode +
-							"?nestedFields=orderToAIHubApplication"
-				).build(
-				).toUri()));
 	}
 
 	public AttachmentResource getAttachmentResource() throws Exception {

@@ -67,13 +67,6 @@ public class GroupItemSelectorProviderRegistryUtilTest {
 	}
 
 	@Test
-	public void testGetGroupItemSelectorProviderOptionalWithoutRegisteredGroupItemSelectorProvider() {
-		Assert.assertNull(
-			GroupItemSelectorProviderRegistryUtil.getGroupItemSelectorProvider(
-				RandomTestUtil.randomString()));
-	}
-
-	@Test
 	public void testGetGroupItemSelectorProviderOptionalWithRegisteredGroupItemSelectorProvider() {
 		_serviceRegistration = _bundleContext.registerService(
 			GroupItemSelectorProvider.class,
@@ -107,11 +100,10 @@ public class GroupItemSelectorProviderRegistryUtilTest {
 	}
 
 	@Test
-	public void testGetGroupItemSelectorProviderTypesWithoutRegisteredGroupItemSelectorProvider() {
-		Assert.assertEquals(
-			Collections.emptySet(),
-			GroupItemSelectorProviderRegistryUtil.
-				getGroupItemSelectorProviderTypes());
+	public void testGetGroupItemSelectorProviderOptionalWithoutRegisteredGroupItemSelectorProvider() {
+		Assert.assertNull(
+			GroupItemSelectorProviderRegistryUtil.getGroupItemSelectorProvider(
+				RandomTestUtil.randomString()));
 	}
 
 	@Test
@@ -126,6 +118,14 @@ public class GroupItemSelectorProviderRegistryUtilTest {
 				getGroupItemSelectorProviderTypes());
 
 		_serviceRegistration.unregister();
+	}
+
+	@Test
+	public void testGetGroupItemSelectorProviderTypesWithoutRegisteredGroupItemSelectorProvider() {
+		Assert.assertEquals(
+			Collections.emptySet(),
+			GroupItemSelectorProviderRegistryUtil.
+				getGroupItemSelectorProviderTypes());
 	}
 
 	private static BundleContext _bundleContext;
@@ -151,6 +151,11 @@ public class GroupItemSelectorProviderRegistryUtilTest {
 		}
 
 		@Override
+		public String getGroupType() {
+			return "test";
+		}
+
+		@Override
 		public List<Group> getGroups(
 			long companyId, long groupId, String keywords, int start, int end) {
 
@@ -162,11 +167,6 @@ public class GroupItemSelectorProviderRegistryUtilTest {
 			long companyId, long groupId, String keywords) {
 
 			return 3;
-		}
-
-		@Override
-		public String getGroupType() {
-			return "test";
 		}
 
 		@Override

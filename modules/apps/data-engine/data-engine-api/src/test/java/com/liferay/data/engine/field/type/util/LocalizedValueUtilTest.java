@@ -95,6 +95,16 @@ public class LocalizedValueUtilTest {
 	}
 
 	@Test
+	public void testToLocalizedValueValidMap() {
+		LocalizedValue localizedValue = LocalizedValueUtil.toLocalizedValue(
+			HashMapBuilder.<String, Object>put(
+				"en_US", "en_US"
+			).build());
+
+		Assert.assertEquals("en_US", localizedValue.getString(LocaleUtil.US));
+	}
+
+	@Test
 	public void testToLocalizedValuesMapWithLocaleStringMap() throws Exception {
 		_testToLocalizedValuesMapWithLocaleStringMap(
 			Collections.emptyMap(),
@@ -162,16 +172,6 @@ public class LocalizedValueUtilTest {
 					"language", "eng"
 				).toString(),
 				String.valueOf(localizedValuesMap.get("en_US")), false));
-	}
-
-	@Test
-	public void testToLocalizedValueValidMap() {
-		LocalizedValue localizedValue = LocalizedValueUtil.toLocalizedValue(
-			HashMapBuilder.<String, Object>put(
-				"en_US", "en_US"
-			).build());
-
-		Assert.assertEquals("en_US", localizedValue.getString(LocaleUtil.US));
 	}
 
 	@Test

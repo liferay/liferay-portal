@@ -129,33 +129,6 @@ public class JiraTicketResolverUtilTest {
 	}
 
 	@Test
-	public void testGetRelatedLPDKeysWhenLinkedIssueKeyIsMissing() {
-		List<String> lpdKeys = JiraTicketResolverUtil.getRelatedLPDKeys(
-			_createIssueJSONObject(
-				_createIssueLinksJSONArray(
-					JSONUtil.put(
-						"inwardIssue", JSONFactoryUtil.createJSONObject()
-					).put(
-						"type",
-						JSONUtil.put(
-							"name", JiraConstants.LINK_TYPE_RELATIONSHIP)
-					))));
-
-		Assert.assertTrue(lpdKeys.isEmpty());
-	}
-
-	@Test
-	public void testGetRelatedLPDKeysWhenLinkedIssueKeyIsNotLPD() {
-		List<String> lpdKeys = JiraTicketResolverUtil.getRelatedLPDKeys(
-			_createIssueJSONObject(
-				_createIssueLinksJSONArray(
-					_createIssueLinkJSONObject(
-						JiraConstants.LINK_TYPE_RELATIONSHIP, "LPE-5", null))));
-
-		Assert.assertTrue(lpdKeys.isEmpty());
-	}
-
-	@Test
 	public void testGetRelatedLPDKeysWhenLinkEntryIsNull() {
 		JSONArray issueLinksJSONArray = JSONUtil.putAll(
 			0,
@@ -186,6 +159,33 @@ public class JiraTicketResolverUtilTest {
 			_createIssueJSONObject(
 				_createIssueLinksJSONArray(
 					_createIssueLinkJSONObject("Blocks", "LPD-1", null))));
+
+		Assert.assertTrue(lpdKeys.isEmpty());
+	}
+
+	@Test
+	public void testGetRelatedLPDKeysWhenLinkedIssueKeyIsMissing() {
+		List<String> lpdKeys = JiraTicketResolverUtil.getRelatedLPDKeys(
+			_createIssueJSONObject(
+				_createIssueLinksJSONArray(
+					JSONUtil.put(
+						"inwardIssue", JSONFactoryUtil.createJSONObject()
+					).put(
+						"type",
+						JSONUtil.put(
+							"name", JiraConstants.LINK_TYPE_RELATIONSHIP)
+					))));
+
+		Assert.assertTrue(lpdKeys.isEmpty());
+	}
+
+	@Test
+	public void testGetRelatedLPDKeysWhenLinkedIssueKeyIsNotLPD() {
+		List<String> lpdKeys = JiraTicketResolverUtil.getRelatedLPDKeys(
+			_createIssueJSONObject(
+				_createIssueLinksJSONArray(
+					_createIssueLinkJSONObject(
+						JiraConstants.LINK_TYPE_RELATIONSHIP, "LPE-5", null))));
 
 		Assert.assertTrue(lpdKeys.isEmpty());
 	}

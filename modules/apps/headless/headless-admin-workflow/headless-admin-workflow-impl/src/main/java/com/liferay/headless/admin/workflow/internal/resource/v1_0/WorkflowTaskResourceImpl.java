@@ -391,6 +391,18 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 	}
 
 	@Override
+	public WorkflowTask postWorkflowTaskUpdateDueDate(
+			Long workflowTaskId, WorkflowTaskAssignToMe workflowTaskAssignToMe)
+		throws Exception {
+
+		return _toWorkflowTask(
+			_workflowTaskManager.updateDueDate(
+				contextCompany.getCompanyId(), contextUser.getUserId(),
+				workflowTaskId, workflowTaskAssignToMe.getComment(),
+				workflowTaskAssignToMe.getDueDate()));
+	}
+
+	@Override
 	public Page<WorkflowTask> postWorkflowTasksPage(
 			Pagination pagination, Sort[] sorts,
 			WorkflowTasksBulkSelection workflowTasksBulkSelection)
@@ -428,18 +440,6 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 		return Page.of(
 			transform(workflowTasks.getWorkflowModels(), this::_toWorkflowTask),
 			pagination, workflowTasks.getLength());
-	}
-
-	@Override
-	public WorkflowTask postWorkflowTaskUpdateDueDate(
-			Long workflowTaskId, WorkflowTaskAssignToMe workflowTaskAssignToMe)
-		throws Exception {
-
-		return _toWorkflowTask(
-			_workflowTaskManager.updateDueDate(
-				contextCompany.getCompanyId(), contextUser.getUserId(),
-				workflowTaskId, workflowTaskAssignToMe.getComment(),
-				workflowTaskAssignToMe.getDueDate()));
 	}
 
 	private Map<String, Map<String, String>> _getActions() {

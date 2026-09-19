@@ -76,6 +76,18 @@ public class ProgressTrackerTest {
 	}
 
 	@Test
+	public void testInitialStatus() throws Exception {
+		_mockInstallProcess.initialize();
+
+		ProgressTracker progressTracker = getAttribute(ProgressTracker.PERCENT);
+
+		Assert.assertEquals(
+			ProgressStatusConstants.PREPARED, progressTracker.getStatus());
+		Assert.assertEquals(StringPool.BLANK, progressTracker.getMessage());
+		Assert.assertEquals(0, progressTracker.getPercent());
+	}
+
+	@Test
 	public void testInitializeAndFinish() throws Exception {
 		_mockInstallProcess.initialize();
 
@@ -88,18 +100,6 @@ public class ProgressTrackerTest {
 		progressTracker = getAttribute(ProgressTracker.PERCENT);
 
 		Assert.assertNull(progressTracker);
-	}
-
-	@Test
-	public void testInitialStatus() throws Exception {
-		_mockInstallProcess.initialize();
-
-		ProgressTracker progressTracker = getAttribute(ProgressTracker.PERCENT);
-
-		Assert.assertEquals(
-			ProgressStatusConstants.PREPARED, progressTracker.getStatus());
-		Assert.assertEquals(StringPool.BLANK, progressTracker.getMessage());
-		Assert.assertEquals(0, progressTracker.getPercent());
 	}
 
 	protected ProgressTracker getAttribute(String status) {

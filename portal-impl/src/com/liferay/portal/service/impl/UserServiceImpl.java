@@ -153,36 +153,6 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			userIds, new long[] {groupId}, null);
 	}
 
-	/**
-	 * Adds the users to the organization.
-	 *
-	 * @param organizationId the primary key of the organization
-	 * @param userIds the primary keys of the users
-	 */
-	@Override
-	public void addOrganizationUsers(long organizationId, long[] userIds)
-		throws PortalException {
-
-		if (userIds.length == 0) {
-			return;
-		}
-
-		validateUserIds(userIds);
-
-		OrganizationPermissionUtil.check(
-			getPermissionChecker(), organizationId, ActionKeys.ASSIGN_MEMBERS);
-
-		validateOrganizationUsers(organizationId, userIds);
-
-		OrganizationMembershipPolicyUtil.checkMembership(
-			userIds, new long[] {organizationId}, null);
-
-		userLocalService.addOrganizationUsers(organizationId, userIds);
-
-		OrganizationMembershipPolicyUtil.propagateMembership(
-			userIds, new long[] {organizationId}, null);
-	}
-
 	@Override
 	public User addOrUpdateUser(
 			String externalReferenceCode, long creatorUserId, long companyId,
@@ -268,6 +238,36 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 		finally {
 			WorkflowThreadLocal.setEnabled(workflowEnabled);
 		}
+	}
+
+	/**
+	 * Adds the users to the organization.
+	 *
+	 * @param organizationId the primary key of the organization
+	 * @param userIds the primary keys of the users
+	 */
+	@Override
+	public void addOrganizationUsers(long organizationId, long[] userIds)
+		throws PortalException {
+
+		if (userIds.length == 0) {
+			return;
+		}
+
+		validateUserIds(userIds);
+
+		OrganizationPermissionUtil.check(
+			getPermissionChecker(), organizationId, ActionKeys.ASSIGN_MEMBERS);
+
+		validateOrganizationUsers(organizationId, userIds);
+
+		OrganizationMembershipPolicyUtil.checkMembership(
+			userIds, new long[] {organizationId}, null);
+
+		userLocalService.addOrganizationUsers(organizationId, userIds);
+
+		OrganizationMembershipPolicyUtil.propagateMembership(
+			userIds, new long[] {organizationId}, null);
 	}
 
 	/**
@@ -1364,35 +1364,6 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 			userGroup.getCompanyId(), userGroupId, gtUserId, size);
 	}
 
-	@Override
-	public int getOrganizationsAndUserGroupsUsersCount(
-			long[] organizationIds, long[] userGroupIds)
-		throws PrincipalException {
-
-		PermissionChecker permissionChecker = getPermissionChecker();
-
-		if (!permissionChecker.hasPermission(
-				null, Organization.class.getName(),
-				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW_MEMBERS)) {
-
-			throw new PrincipalException.MustHavePermission(
-				permissionChecker, Organization.class.getName(), 0,
-				ActionKeys.VIEW_MEMBERS);
-		}
-
-		if (!permissionChecker.hasPermission(
-				null, UserGroup.class.getName(),
-				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW_MEMBERS)) {
-
-			throw new PrincipalException.MustHavePermission(
-				permissionChecker, UserGroup.class.getName(), 0,
-				ActionKeys.VIEW_MEMBERS);
-		}
-
-		return userLocalService.getOrganizationsAndUserGroupsUsersCount(
-			organizationIds, userGroupIds);
-	}
-
 	/**
 	 * Returns the primary keys of all the users belonging to the organization.
 	 *
@@ -1488,6 +1459,35 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 
 		return userLocalService.getOrganizationUsersCount(
 			organizationId, status);
+	}
+
+	@Override
+	public int getOrganizationsAndUserGroupsUsersCount(
+			long[] organizationIds, long[] userGroupIds)
+		throws PrincipalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.hasPermission(
+				null, Organization.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW_MEMBERS)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, Organization.class.getName(), 0,
+				ActionKeys.VIEW_MEMBERS);
+		}
+
+		if (!permissionChecker.hasPermission(
+				null, UserGroup.class.getName(),
+				CompanyThreadLocal.getCompanyId(), ActionKeys.VIEW_MEMBERS)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, UserGroup.class.getName(), 0,
+				ActionKeys.VIEW_MEMBERS);
+		}
+
+		return userLocalService.getOrganizationsAndUserGroupsUsersCount(
+			organizationIds, userGroupIds);
 	}
 
 	/**

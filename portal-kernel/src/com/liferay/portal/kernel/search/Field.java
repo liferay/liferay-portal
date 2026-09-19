@@ -213,10 +213,6 @@ public class Field implements Serializable {
 		return LocalizationUtil.getLocalizedName(name, languageId);
 	}
 
-	public static String getSortableFieldName(String name) {
-		return name.concat(_SORTABLE_FIELD_SUFFIX);
-	}
-
 	public static String getSortFieldName(Sort sort, String scoreFieldName) {
 		if (sort.getType() == Sort.SCORE_TYPE) {
 			return scoreFieldName;
@@ -239,6 +235,10 @@ public class Field implements Serializable {
 		}
 
 		return getSortableFieldName(fieldName);
+	}
+
+	public static String getSortableFieldName(String name) {
+		return name.concat(_SORTABLE_FIELD_SUFFIX);
 	}
 
 	public static String getUID(String portletId, String field1) {

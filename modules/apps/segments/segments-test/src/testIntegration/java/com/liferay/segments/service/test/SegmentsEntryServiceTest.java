@@ -161,6 +161,28 @@ public class SegmentsEntryServiceTest {
 	}
 
 	@Test
+	public void testGetSegmentsEntriesCountWithViewPermission()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		SegmentsTestUtil.addSegmentsEntry(serviceContext);
+		SegmentsTestUtil.addSegmentsEntry(serviceContext);
+		SegmentsTestUtil.addSegmentsEntry(serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
+
+			Assert.assertEquals(
+				3,
+				_segmentsEntryService.getSegmentsEntriesCount(
+					_group.getGroupId()));
+		}
+	}
+
+	@Test
 	public void testGetSegmentsEntriesCountWithoutViewPermission()
 		throws Exception {
 
@@ -187,24 +209,31 @@ public class SegmentsEntryServiceTest {
 	}
 
 	@Test
-	public void testGetSegmentsEntriesCountWithViewPermission()
-		throws Exception {
-
+	public void testGetSegmentsEntriesWithViewPermission() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group, TestPropsValues.getUserId());
 
-		SegmentsTestUtil.addSegmentsEntry(serviceContext);
-		SegmentsTestUtil.addSegmentsEntry(serviceContext);
-		SegmentsTestUtil.addSegmentsEntry(serviceContext);
+		SegmentsEntry segmentsEntry1 = SegmentsTestUtil.addSegmentsEntry(
+			serviceContext);
+		SegmentsEntry segmentsEntry2 = SegmentsTestUtil.addSegmentsEntry(
+			serviceContext);
+		SegmentsEntry segmentsEntry3 = SegmentsTestUtil.addSegmentsEntry(
+			serviceContext);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
 
+			List<SegmentsEntry> segmentsEntries =
+				_segmentsEntryService.getSegmentsEntries(
+					_group.getGroupId(), 0, 100, null);
+
 			Assert.assertEquals(
-				3,
-				_segmentsEntryService.getSegmentsEntriesCount(
-					_group.getGroupId()));
+				segmentsEntries.toString(), 3, segmentsEntries.size());
+
+			Assert.assertTrue(segmentsEntries.contains(segmentsEntry1));
+			Assert.assertTrue(segmentsEntries.contains(segmentsEntry2));
+			Assert.assertTrue(segmentsEntries.contains(segmentsEntry3));
 		}
 	}
 
@@ -238,31 +267,16 @@ public class SegmentsEntryServiceTest {
 	}
 
 	@Test
-	public void testGetSegmentsEntriesWithViewPermission() throws Exception {
-		ServiceContext serviceContext =
+	public void testGetSegmentsEntryWithViewPermission() throws Exception {
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
 			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId());
-
-		SegmentsEntry segmentsEntry1 = SegmentsTestUtil.addSegmentsEntry(
-			serviceContext);
-		SegmentsEntry segmentsEntry2 = SegmentsTestUtil.addSegmentsEntry(
-			serviceContext);
-		SegmentsEntry segmentsEntry3 = SegmentsTestUtil.addSegmentsEntry(
-			serviceContext);
+				_group, TestPropsValues.getUserId()));
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
 
-			List<SegmentsEntry> segmentsEntries =
-				_segmentsEntryService.getSegmentsEntries(
-					_group.getGroupId(), 0, 100, null);
-
-			Assert.assertEquals(
-				segmentsEntries.toString(), 3, segmentsEntries.size());
-
-			Assert.assertTrue(segmentsEntries.contains(segmentsEntry1));
-			Assert.assertTrue(segmentsEntries.contains(segmentsEntry2));
-			Assert.assertTrue(segmentsEntries.contains(segmentsEntry3));
+			_segmentsEntryService.getSegmentsEntry(
+				segmentsEntry.getSegmentsEntryId());
 		}
 	}
 
@@ -285,20 +299,6 @@ public class SegmentsEntryServiceTest {
 				String.valueOf(segmentsEntry.getSegmentsEntryId()),
 				role.getRoleId(), ActionKeys.VIEW);
 		}
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
-
-			_segmentsEntryService.getSegmentsEntry(
-				segmentsEntry.getSegmentsEntryId());
-		}
-	}
-
-	@Test
-	public void testGetSegmentsEntryWithViewPermission() throws Exception {
-		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
-			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId()));
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
@@ -331,6 +331,22 @@ public class SegmentsEntryServiceTest {
 		}
 	}
 
+	@Test
+	public void testUpdateSegmentsEntryWithUpdatePermission() throws Exception {
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId()));
+
+		_segmentsEntryService.updateSegmentsEntry(
+			null, segmentsEntry.getSegmentsEntryId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap(), true,
+			CriteriaSerializer.serialize(new Criteria()),
+			ServiceContextTestUtil.getServiceContext(
+				_group, _groupUser.getUserId()));
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testUpdateSegmentsEntryWithoutUpdatePermission()
 		throws Exception {
@@ -356,22 +372,6 @@ public class SegmentsEntryServiceTest {
 				ServiceContextTestUtil.getServiceContext(
 					_group, guestUser.getUserId()));
 		}
-	}
-
-	@Test
-	public void testUpdateSegmentsEntryWithUpdatePermission() throws Exception {
-		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
-			ServiceContextTestUtil.getServiceContext(
-				_group, TestPropsValues.getUserId()));
-
-		_segmentsEntryService.updateSegmentsEntry(
-			null, segmentsEntry.getSegmentsEntryId(),
-			RandomTestUtil.randomString(),
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(), true,
-			CriteriaSerializer.serialize(new Criteria()),
-			ServiceContextTestUtil.getServiceContext(
-				_group, _groupUser.getUserId()));
 	}
 
 	@Inject

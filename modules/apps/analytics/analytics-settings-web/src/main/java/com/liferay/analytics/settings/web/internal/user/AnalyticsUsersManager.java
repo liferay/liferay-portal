@@ -79,31 +79,6 @@ public class AnalyticsUsersManager {
 		return _getUsersCount(searchContext);
 	}
 
-	public int getOrganizationsAndUserGroupsUsersCount(
-		long[] organizationIds, long[] userGroupIds) {
-
-		if (ArrayUtil.isEmpty(organizationIds) &&
-			ArrayUtil.isEmpty(userGroupIds)) {
-
-			return 0;
-		}
-
-		if (!_isIndexerEnabled()) {
-			return _userLocalService.getOrganizationsAndUserGroupsUsersCount(
-				organizationIds, userGroupIds);
-		}
-
-		SearchContext searchContext = _createSearchContext();
-
-		searchContext.setAttribute("selectedOrganizationIds", organizationIds);
-		searchContext.setAttribute("selectedUserGroupIds", userGroupIds);
-		searchContext.setCompanyId(CompanyThreadLocal.getCompanyId());
-
-		_populateSearchContext(searchContext);
-
-		return _getUsersCount(searchContext);
-	}
-
 	public int getOrganizationUsersCount(long organizationId) {
 		if (!_isIndexerEnabled()) {
 			try {
@@ -124,6 +99,31 @@ public class AnalyticsUsersManager {
 
 		searchContext.setAttribute(
 			"selectedOrganizationIds", new long[] {organizationId});
+		searchContext.setCompanyId(CompanyThreadLocal.getCompanyId());
+
+		_populateSearchContext(searchContext);
+
+		return _getUsersCount(searchContext);
+	}
+
+	public int getOrganizationsAndUserGroupsUsersCount(
+		long[] organizationIds, long[] userGroupIds) {
+
+		if (ArrayUtil.isEmpty(organizationIds) &&
+			ArrayUtil.isEmpty(userGroupIds)) {
+
+			return 0;
+		}
+
+		if (!_isIndexerEnabled()) {
+			return _userLocalService.getOrganizationsAndUserGroupsUsersCount(
+				organizationIds, userGroupIds);
+		}
+
+		SearchContext searchContext = _createSearchContext();
+
+		searchContext.setAttribute("selectedOrganizationIds", organizationIds);
+		searchContext.setAttribute("selectedUserGroupIds", userGroupIds);
 		searchContext.setCompanyId(CompanyThreadLocal.getCompanyId());
 
 		_populateSearchContext(searchContext);

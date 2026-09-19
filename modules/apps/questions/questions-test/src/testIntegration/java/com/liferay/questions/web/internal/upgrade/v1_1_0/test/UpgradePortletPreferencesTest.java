@@ -81,11 +81,6 @@ public class UpgradePortletPreferencesTest {
 	}
 
 	@Test
-	public void testUpgradeWithoutTopicRootId() throws Exception {
-		_testUpgrade(Collections.emptyMap(), Collections.emptyMap());
-	}
-
-	@Test
 	public void testUpgradeWithValidTopicRootId() throws Exception {
 		MBCategory mbCategory = _mbCategoryLocalService.addCategory(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
@@ -96,6 +91,11 @@ public class UpgradePortletPreferencesTest {
 
 		_testUpgrade(
 			mbCategory.getExternalReferenceCode(), mbCategory.getCategoryId());
+	}
+
+	@Test
+	public void testUpgradeWithoutTopicRootId() throws Exception {
+		_testUpgrade(Collections.emptyMap(), Collections.emptyMap());
 	}
 
 	private void _assertPortletPreferences(Map<String, String> expectedMap)

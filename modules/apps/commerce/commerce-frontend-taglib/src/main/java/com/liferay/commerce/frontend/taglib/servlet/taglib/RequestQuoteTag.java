@@ -221,11 +221,11 @@ public class RequestQuoteTag extends IncludeTag {
 			"liferay-commerce:request-quote:skuOptions", _skuOptions);
 	}
 
-	public void setCpCatalogEntry(CPCatalogEntry cpCatalogEntry) {
+	public void setCPCatalogEntry(CPCatalogEntry cpCatalogEntry) {
 		_cpCatalogEntry = cpCatalogEntry;
 	}
 
-	public void setCPCatalogEntry(CPCatalogEntry cpCatalogEntry) {
+	public void setCpCatalogEntry(CPCatalogEntry cpCatalogEntry) {
 		_cpCatalogEntry = cpCatalogEntry;
 	}
 

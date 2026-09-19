@@ -832,6 +832,39 @@ public class UserLocalServiceTest {
 	}
 
 	@Test
+	public void testGetOrganizationUsers() throws Exception {
+		Organization organization = OrganizationTestUtil.addOrganization();
+
+		long[] userIds = _addUsers(20);
+
+		_userLocalService.addOrganizationUsers(
+			organization.getOrganizationId(), userIds);
+
+		long[] organizationUserIds = _userLocalService.getOrganizationUserIds(
+			organization.getOrganizationId());
+
+		Assert.assertEquals(
+			organizationUserIds.toString(), userIds.length,
+			organizationUserIds.length);
+		Assert.assertTrue(ArrayUtil.containsAll(organizationUserIds, userIds));
+
+		int start = 5;
+		int delta = 5;
+
+		List<User> organizationUsers = _userLocalService.getOrganizationUsers(
+			organization.getOrganizationId(), WorkflowConstants.STATUS_APPROVED,
+			start, start + delta, null);
+
+		Assert.assertEquals(
+			organizationUsers.toString(), delta, organizationUsers.size());
+		Assert.assertTrue(
+			ArrayUtil.containsAll(
+				userIds,
+				ListUtil.toLongArray(
+					organizationUsers, User.USER_ID_ACCESSOR)));
+	}
+
+	@Test
 	public void testGetOrganizationsAndUserGroupsUsersCount() throws Exception {
 		long[] commonUserIds = _addUsers(5);
 
@@ -919,39 +952,6 @@ public class UserLocalServiceTest {
 			commonUsersCount + uniqueUserGroupUsersCount,
 			_userLocalService.getOrganizationsAndUserGroupsUsersCount(
 				emptyLongArray.clone(), userGroupIds));
-	}
-
-	@Test
-	public void testGetOrganizationUsers() throws Exception {
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		long[] userIds = _addUsers(20);
-
-		_userLocalService.addOrganizationUsers(
-			organization.getOrganizationId(), userIds);
-
-		long[] organizationUserIds = _userLocalService.getOrganizationUserIds(
-			organization.getOrganizationId());
-
-		Assert.assertEquals(
-			organizationUserIds.toString(), userIds.length,
-			organizationUserIds.length);
-		Assert.assertTrue(ArrayUtil.containsAll(organizationUserIds, userIds));
-
-		int start = 5;
-		int delta = 5;
-
-		List<User> organizationUsers = _userLocalService.getOrganizationUsers(
-			organization.getOrganizationId(), WorkflowConstants.STATUS_APPROVED,
-			start, start + delta, null);
-
-		Assert.assertEquals(
-			organizationUsers.toString(), delta, organizationUsers.size());
-		Assert.assertTrue(
-			ArrayUtil.containsAll(
-				userIds,
-				ListUtil.toLongArray(
-					organizationUsers, User.USER_ID_ACCESSOR)));
 	}
 
 	@Test

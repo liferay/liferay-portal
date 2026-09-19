@@ -310,9 +310,9 @@ public class AssetTagNamesMultiLanguageSearchTest {
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
+	private UserSearchFixture _userSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private UserSearchFixture _userSearchFixture;
 
 }

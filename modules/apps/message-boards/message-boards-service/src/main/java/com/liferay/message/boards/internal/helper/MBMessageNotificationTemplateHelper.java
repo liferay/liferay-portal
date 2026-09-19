@@ -234,6 +234,14 @@ public class MBMessageNotificationTemplateHelper {
 		return StringUtils.repeat(_QUOTE_MARK, depth) + _getQuoteMark();
 	}
 
+	private String _getQuoteMark() {
+		if (_htmlFormat) {
+			return StringPool.BLANK;
+		}
+
+		return _QUOTE_MARK + StringPool.SPACE;
+	}
+
 	private String _getQuotedMessage(
 		boolean lastPosition, String messageBody, String quoteMark) {
 
@@ -256,14 +264,6 @@ public class MBMessageNotificationTemplateHelper {
 		}
 
 		return sb.toString();
-	}
-
-	private String _getQuoteMark() {
-		if (_htmlFormat) {
-			return StringPool.BLANK;
-		}
-
-		return _QUOTE_MARK + StringPool.SPACE;
 	}
 
 	private String _getUserName(MBMessage message, String quoteMark) {

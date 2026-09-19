@@ -202,30 +202,6 @@ public class JSPUpgradeRemovedTagsCheck extends BaseTagAttributesCheck {
 		return attributeNames;
 	}
 
-	private synchronized JSONObject _getTaglibsJSONObject(String version)
-		throws Exception {
-
-		JSONObject taglibsJSONObject = _taglibsJSONObjectMap.get(version);
-
-		if (taglibsJSONObject != null) {
-			return taglibsJSONObject;
-		}
-
-		JSONObject portalJSONObject =
-			PortalJSONObjectUtil.getPortalJSONObjectByVersion(version);
-
-		if (portalJSONObject.has("taglibs")) {
-			taglibsJSONObject = portalJSONObject.getJSONObject("taglibs");
-		}
-		else {
-			taglibsJSONObject = new JSONObjectImpl();
-		}
-
-		_taglibsJSONObjectMap.put(version, taglibsJSONObject);
-
-		return taglibsJSONObject;
-	}
-
 	private Tuple _getTagStatusTuple(JSONObject taglibsJSONObject, Tag tag) {
 		JSONObject taglibJSONObject = taglibsJSONObject.getJSONObject(
 			tag.getTaglibName());
@@ -257,6 +233,30 @@ public class JSPUpgradeRemovedTagsCheck extends BaseTagAttributesCheck {
 		}
 
 		return new Tuple(TagStatus.ATTRIBUTES_FOUND, matchingAttributeNames);
+	}
+
+	private synchronized JSONObject _getTaglibsJSONObject(String version)
+		throws Exception {
+
+		JSONObject taglibsJSONObject = _taglibsJSONObjectMap.get(version);
+
+		if (taglibsJSONObject != null) {
+			return taglibsJSONObject;
+		}
+
+		JSONObject portalJSONObject =
+			PortalJSONObjectUtil.getPortalJSONObjectByVersion(version);
+
+		if (portalJSONObject.has("taglibs")) {
+			taglibsJSONObject = portalJSONObject.getJSONObject("taglibs");
+		}
+		else {
+			taglibsJSONObject = new JSONObjectImpl();
+		}
+
+		_taglibsJSONObjectMap.put(version, taglibsJSONObject);
+
+		return taglibsJSONObject;
 	}
 
 	private static final Pattern _multilineTagPattern = Pattern.compile(

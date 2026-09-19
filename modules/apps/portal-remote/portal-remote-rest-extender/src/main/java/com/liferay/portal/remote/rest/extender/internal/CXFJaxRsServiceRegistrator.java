@@ -205,9 +205,9 @@ public class CXFJaxRsServiceRegistrator {
 	}
 
 	private final Collection<Application> _applications = new ArrayList<>();
-	private final Collection<Bus> _buses = new ArrayList<>();
 	private final Map<Bus, Map<Object, Server>> _busServers =
 		new IdentityHashMap<>();
+	private final Collection<Bus> _buses = new ArrayList<>();
 	private final Map<String, Object> _properties;
 	private final Collection<Object> _providers = new ArrayList<>();
 	private final Collection<Object> _services = new ArrayList<>();

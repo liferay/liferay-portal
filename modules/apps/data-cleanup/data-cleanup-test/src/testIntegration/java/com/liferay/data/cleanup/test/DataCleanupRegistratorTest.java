@@ -115,6 +115,13 @@ public class DataCleanupRegistratorTest {
 	}
 
 	@Test
+	public void testDataCleanupUpgradeHTMLPreview() throws Exception {
+		_testModuleDataCleanup(
+			"com.liferay.html.preview.service",
+			"dependencies/html-preview-tables.sql", null, null);
+	}
+
+	@Test
 	public void testDataCleanupUpgradeHelloVelocity() throws Exception {
 		_testModuleDataCleanup(
 			"com.liferay.hello.velocity.web", null,
@@ -127,13 +134,6 @@ public class DataCleanupRegistratorTest {
 		_testModuleDataCleanup(
 			"com.liferay.hello.world.web", null,
 			"com_liferay_hello_world_web_portlet_HelloWorldPortlet", null);
-	}
-
-	@Test
-	public void testDataCleanupUpgradeHTMLPreview() throws Exception {
-		_testModuleDataCleanup(
-			"com.liferay.html.preview.service",
-			"dependencies/html-preview-tables.sql", null, null);
 	}
 
 	@Test

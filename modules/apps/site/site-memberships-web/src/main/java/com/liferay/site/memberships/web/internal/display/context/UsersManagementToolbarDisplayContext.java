@@ -386,29 +386,6 @@ public class UsersManagementToolbarDisplayContext
 		return new String[] {"first-name", "screen-name"};
 	}
 
-	private String _getSelectorURL(String mvcPath) {
-		return PortletURLBuilder.createRenderURL(
-			liferayPortletResponse
-		).setMVCPath(
-			mvcPath
-		).setParameter(
-			"groupId", _usersDisplayContext.getGroupId()
-		).setParameter(
-			"roleType",
-			() -> {
-				Group scopeGroup = _themeDisplay.getScopeGroup();
-
-				if (scopeGroup.isDepot()) {
-					return String.valueOf(RoleConstants.TYPE_DEPOT);
-				}
-
-				return null;
-			}
-		).setWindowState(
-			LiferayWindowState.POP_UP
-		).buildString();
-	}
-
 	private String _getSelectTeamsURL() {
 		ItemSelector itemSelector =
 			(ItemSelector)httpServletRequest.getAttribute(
@@ -446,6 +423,29 @@ public class UsersManagementToolbarDisplayContext
 				RequestBackedPortletURLFactoryUtil.create(httpServletRequest),
 				liferayPortletResponse.getNamespace() + "selectUsers",
 				userSiteMembershipItemSelectorCriterion));
+	}
+
+	private String _getSelectorURL(String mvcPath) {
+		return PortletURLBuilder.createRenderURL(
+			liferayPortletResponse
+		).setMVCPath(
+			mvcPath
+		).setParameter(
+			"groupId", _usersDisplayContext.getGroupId()
+		).setParameter(
+			"roleType",
+			() -> {
+				Group scopeGroup = _themeDisplay.getScopeGroup();
+
+				if (scopeGroup.isDepot()) {
+					return String.valueOf(RoleConstants.TYPE_DEPOT);
+				}
+
+				return null;
+			}
+		).setWindowState(
+			LiferayWindowState.POP_UP
+		).buildString();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

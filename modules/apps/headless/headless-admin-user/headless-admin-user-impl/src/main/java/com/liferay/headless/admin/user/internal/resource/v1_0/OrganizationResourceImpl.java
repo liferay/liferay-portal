@@ -1076,6 +1076,27 @@ public class OrganizationResourceImpl
 		return _file.getBytes(fileEntry.getContentStream());
 	}
 
+	private List<OrgLabor> _getOrgLabors(
+			Organization organization,
+			com.liferay.portal.kernel.model.Organization
+				serviceBuilderOrganization)
+		throws Exception {
+
+		Service[] services = organization.getServices();
+
+		if (services == null) {
+			if (serviceBuilderOrganization != null) {
+				return _orgLaborService.getOrgLabors(
+					serviceBuilderOrganization.getOrganizationId());
+			}
+
+			return Collections.emptyList();
+		}
+
+		return ListUtil.filter(
+			transformToList(services, this::_toOrgLabor), Objects::nonNull);
+	}
+
 	private Page<Organization> _getOrganizationsPage(
 			Map<String, Map<String, String>> actions,
 			String parentOrganizationId, Boolean flatten, Filter filter,
@@ -1123,27 +1144,6 @@ public class OrganizationResourceImpl
 			sorts,
 			document -> _toOrganization(
 				GetterUtil.getString(document.get(Field.ENTRY_CLASS_PK))));
-	}
-
-	private List<OrgLabor> _getOrgLabors(
-			Organization organization,
-			com.liferay.portal.kernel.model.Organization
-				serviceBuilderOrganization)
-		throws Exception {
-
-		Service[] services = organization.getServices();
-
-		if (services == null) {
-			if (serviceBuilderOrganization != null) {
-				return _orgLaborService.getOrgLabors(
-					serviceBuilderOrganization.getOrganizationId());
-			}
-
-			return Collections.emptyList();
-		}
-
-		return ListUtil.filter(
-			transformToList(services, this::_toOrgLabor), Objects::nonNull);
 	}
 
 	private long _getParentOrganizationId(
@@ -1319,17 +1319,6 @@ public class OrganizationResourceImpl
 		}
 	}
 
-	private Organization _toOrganization(String organizationId)
-		throws Exception {
-
-		if (Validator.isBlank(organizationId)) {
-			return null;
-		}
-
-		return _organizationResourceDTOConverter.toDTO(
-			_getDTOConverterContext(organizationId));
-	}
-
 	private OrgLabor _toOrgLabor(Service service) {
 		long listTypeId = ServiceBuilderListTypeUtil.toServiceBuilderListTypeId(
 			contextCompany.getCompanyId(), "administrative",
@@ -1407,6 +1396,17 @@ public class OrganizationResourceImpl
 		}
 
 		return orgLabor;
+	}
+
+	private Organization _toOrganization(String organizationId)
+		throws Exception {
+
+		if (Validator.isBlank(organizationId)) {
+			return null;
+		}
+
+		return _organizationResourceDTOConverter.toDTO(
+			_getDTOConverterContext(organizationId));
 	}
 
 	private int _toTime(String timeString) {
@@ -1504,6 +1504,12 @@ public class OrganizationResourceImpl
 	private ListTypeLocalService _listTypeLocalService;
 
 	@Reference
+	private OrgLaborLocalService _orgLaborLocalService;
+
+	@Reference
+	private OrgLaborService _orgLaborService;
+
+	@Reference
 	private OrganizationLocalService _organizationLocalService;
 
 	@Reference(
@@ -1515,12 +1521,6 @@ public class OrganizationResourceImpl
 
 	@Reference
 	private OrganizationService _organizationService;
-
-	@Reference
-	private OrgLaborLocalService _orgLaborLocalService;
-
-	@Reference
-	private OrgLaborService _orgLaborService;
 
 	@Reference
 	private PhoneService _phoneService;

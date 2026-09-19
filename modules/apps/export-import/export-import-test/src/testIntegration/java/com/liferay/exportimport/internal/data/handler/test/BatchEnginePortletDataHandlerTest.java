@@ -2904,18 +2904,6 @@ public class BatchEnginePortletDataHandlerTest {
 
 	}
 
-	private DepotEntry _addDepotEntry() throws Exception {
-		return _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			DepotConstants.TYPE_ASSET_LIBRARY,
-			ServiceContextTestUtil.getServiceContext());
-	}
-
 	private DLFileEntry _addDLFileEntry(byte[] content, long groupId)
 		throws Exception {
 
@@ -2930,6 +2918,18 @@ public class BatchEnginePortletDataHandlerTest {
 
 		return _dlFileEntryLocalService.getFileEntry(
 			fileEntry.getFileEntryId());
+	}
+
+	private DepotEntry _addDepotEntry() throws Exception {
+		return _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private FileEntry _addImageFileEntry(long groupId) throws Exception {
@@ -3549,16 +3549,6 @@ public class BatchEnginePortletDataHandlerTest {
 		return group.getGroupId();
 	}
 
-	private JSONArray _getExportedObjectEntriesJSONArray(
-			String fileNamePrefix, File file, long groupId)
-		throws Exception {
-
-		try (InputStream inputStream = new FileInputStream(file)) {
-			return ExportImportTestUtil.getExportedJSONArray(
-				fileNamePrefix, groupId, inputStream);
-		}
-	}
-
 	private Map<String, String[]> _getExportImportParameterMap(
 		boolean deletions, boolean includeDocumentLibrary,
 		boolean includeLanguageOverrides,
@@ -3656,6 +3646,16 @@ public class BatchEnginePortletDataHandlerTest {
 		}
 
 		return parameterMap;
+	}
+
+	private JSONArray _getExportedObjectEntriesJSONArray(
+			String fileNamePrefix, File file, long groupId)
+		throws Exception {
+
+		try (InputStream inputStream = new FileInputStream(file)) {
+			return ExportImportTestUtil.getExportedJSONArray(
+				fileNamePrefix, groupId, inputStream);
+		}
 	}
 
 	private JSONArray _getExternalReferenceCodesJSONArray(
@@ -4670,12 +4670,12 @@ public class BatchEnginePortletDataHandlerTest {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-	@DeleteAfterTestRun
-	private List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
-
 	@Inject
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+
+	@DeleteAfterTestRun
+	private List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

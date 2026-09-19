@@ -1145,16 +1145,6 @@ public class GroupServiceTest {
 		Assert.assertEquals(scopeGroup.getParentGroupId(), group.getGroupId());
 	}
 
-	@Test
-	public void testSelectableParentSites() throws Exception {
-		_testSelectableParentSites(false);
-	}
-
-	@Test
-	public void testSelectableParentSitesStaging() throws Exception {
-		_testSelectableParentSites(true);
-	}
-
 	@Test(expected = GroupParentException.MustNotHaveChildParent.class)
 	public void testSelectFirstChildGroupAsParentSite() throws Exception {
 		Group parentGroup = GroupTestUtil.addGroup();
@@ -1230,6 +1220,16 @@ public class GroupServiceTest {
 			_group.isManualMembership(), _group.getMembershipRestriction(),
 			_group.getFriendlyURL(), _group.isInheritContent(),
 			_group.isActive(), ServiceContextTestUtil.getServiceContext());
+	}
+
+	@Test
+	public void testSelectableParentSites() throws Exception {
+		_testSelectableParentSites(false);
+	}
+
+	@Test
+	public void testSelectableParentSitesStaging() throws Exception {
+		_testSelectableParentSites(true);
 	}
 
 	@Test
@@ -1553,11 +1553,11 @@ public class GroupServiceTest {
 	@Inject
 	private GroupLocalService _groupLocalService;
 
-	@DeleteAfterTestRun
-	private final LinkedList<Group> _groups = new LinkedList<>();
-
 	@Inject
 	private GroupService _groupService;
+
+	@DeleteAfterTestRun
+	private final LinkedList<Group> _groups = new LinkedList<>();
 
 	@Inject
 	private Language _language;

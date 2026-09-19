@@ -219,20 +219,20 @@ public class AddFormInstanceRecordMVCCommandUtilTest {
 		_assertDDMFormFields(required, new UnlocalizedValue(_STRING_VALUE));
 	}
 
-	private void _assertDDMFormFields(
-		boolean expectedRequired, Value expectedValue) {
-
-		Assert.assertEquals(expectedRequired, _ddmFormField.isRequired());
-		Assert.assertEquals(expectedValue, _getFieldValue(_FIELD_NAME));
-		Assert.assertEquals(expectedValue, _getFieldValue(_NESTED_FIELD_NAME));
-	}
-
 	private void _assertDDMFormFieldValue(
 		String expectedFieldValue, DDMFormFieldValue ddmFormFieldValue) {
 
 		Value value = ddmFormFieldValue.getValue();
 
 		Assert.assertEquals(expectedFieldValue, value.getString(LocaleUtil.US));
+	}
+
+	private void _assertDDMFormFields(
+		boolean expectedRequired, Value expectedValue) {
+
+		Assert.assertEquals(expectedRequired, _ddmFormField.isRequired());
+		Assert.assertEquals(expectedValue, _getFieldValue(_FIELD_NAME));
+		Assert.assertEquals(expectedValue, _getFieldValue(_NESTED_FIELD_NAME));
 	}
 
 	private void _createDDMFormFields(

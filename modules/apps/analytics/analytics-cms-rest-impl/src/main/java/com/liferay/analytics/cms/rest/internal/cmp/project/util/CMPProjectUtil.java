@@ -29,17 +29,6 @@ import java.util.List;
  */
 public class CMPProjectUtil {
 
-	public static Long[] getFilteredCMPProjectIds(
-			String actionId, Long[] cmpProjectIds)
-		throws PortalException {
-
-		if (ArrayUtil.isEmpty(cmpProjectIds)) {
-			return null;
-		}
-
-		return _getCMPProjectIds(actionId, cmpProjectIds);
-	}
-
 	public static String getFilterString(
 		Long[] cmpProjectIds, String filterString) {
 
@@ -57,6 +46,17 @@ public class CMPProjectUtil {
 
 		return StringBundler.concat(
 			"(", filterString, ") and ", cmpProjectFilterString);
+	}
+
+	public static Long[] getFilteredCMPProjectIds(
+			String actionId, Long[] cmpProjectIds)
+		throws PortalException {
+
+		if (ArrayUtil.isEmpty(cmpProjectIds)) {
+			return null;
+		}
+
+		return _getCMPProjectIds(actionId, cmpProjectIds);
 	}
 
 	public static boolean hasNoVisibleCMPProjects(

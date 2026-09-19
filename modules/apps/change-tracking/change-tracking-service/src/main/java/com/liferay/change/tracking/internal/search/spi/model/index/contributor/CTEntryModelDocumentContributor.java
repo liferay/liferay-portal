@@ -132,6 +132,18 @@ public class CTEntryModelDocumentContributor
 		return locales.toArray(new Locale[0]);
 	}
 
+	private Date _getCTCollectionStatusDate(CTCollection ctCollection) {
+		if (ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {
+			return ctCollection.getStatusDate();
+		}
+
+		if (ctCollection.getStatus() == WorkflowConstants.STATUS_SCHEDULED) {
+			return ctCollection.getScheduledDate();
+		}
+
+		return null;
+	}
+
 	private Map<Locale, String> _getChangeTypeLabelMap(
 		Locale[] locales, int changeType) {
 
@@ -144,18 +156,6 @@ public class CTEntryModelDocumentContributor
 		}
 
 		return map;
-	}
-
-	private Date _getCTCollectionStatusDate(CTCollection ctCollection) {
-		if (ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {
-			return ctCollection.getStatusDate();
-		}
-
-		if (ctCollection.getStatus() == WorkflowConstants.STATUS_SCHEDULED) {
-			return ctCollection.getScheduledDate();
-		}
-
-		return null;
 	}
 
 	private <T extends BaseModel<T>> Group _getGroup(

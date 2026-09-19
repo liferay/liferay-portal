@@ -30,23 +30,6 @@ public class ItemSelectorRepositoryEntryBrowserUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetItemSelectorReturnTypeClassNameWithoutResolver()
-		throws Exception {
-
-		String itemSelectorReturnTypeClassName =
-			ItemSelectorRepositoryEntryBrowserUtil.
-				getItemSelectorReturnTypeClassName(
-					null, new TestItemSelectorReturnType());
-
-		Class<TestItemSelectorReturnType> testItemSelectorReturnTypeClass =
-			TestItemSelectorReturnType.class;
-
-		Assert.assertEquals(
-			testItemSelectorReturnTypeClass.getName(),
-			itemSelectorReturnTypeClassName);
-	}
-
-	@Test
 	public void testGetItemSelectorReturnTypeClassNameWithResolver()
 		throws Exception {
 
@@ -62,6 +45,23 @@ public class ItemSelectorRepositoryEntryBrowserUtilTest {
 
 		Assert.assertEquals(
 			fileEntryItemSelectorReturnTypeClass.getName(),
+			itemSelectorReturnTypeClassName);
+	}
+
+	@Test
+	public void testGetItemSelectorReturnTypeClassNameWithoutResolver()
+		throws Exception {
+
+		String itemSelectorReturnTypeClassName =
+			ItemSelectorRepositoryEntryBrowserUtil.
+				getItemSelectorReturnTypeClassName(
+					null, new TestItemSelectorReturnType());
+
+		Class<TestItemSelectorReturnType> testItemSelectorReturnTypeClass =
+			TestItemSelectorReturnType.class;
+
+		Assert.assertEquals(
+			testItemSelectorReturnTypeClass.getName(),
 			itemSelectorReturnTypeClassName);
 	}
 

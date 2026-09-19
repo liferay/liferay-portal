@@ -159,32 +159,6 @@ public class SXPBlueprintLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
-	public SXPBlueprint updateStatus(
-			long userId, long sxpBlueprintId, int status,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		SXPBlueprint sxpBlueprint = sxpBlueprintPersistence.findByPrimaryKey(
-			sxpBlueprintId);
-
-		if (sxpBlueprint.getStatus() == status) {
-			return sxpBlueprint;
-		}
-
-		sxpBlueprint.setStatus(status);
-
-		User user = _userLocalService.getUser(userId);
-
-		sxpBlueprint.setStatusByUserId(user.getUserId());
-		sxpBlueprint.setStatusByUserName(user.getFullName());
-
-		sxpBlueprint.setStatusDate(serviceContext.getModifiedDate(null));
-
-		return sxpBlueprintPersistence.update(sxpBlueprint);
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
 	public SXPBlueprint updateSXPBlueprint(
 			String externalReferenceCode, long userId, long sxpBlueprintId,
 			String configurationJSON, Map<Locale, String> descriptionMap,
@@ -209,6 +183,32 @@ public class SXPBlueprintLocalServiceImpl
 				GetterUtil.getFloat(sxpBlueprint.getVersion(), 0.9F) + 0.1));
 
 		return updateSXPBlueprint(sxpBlueprint);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public SXPBlueprint updateStatus(
+			long userId, long sxpBlueprintId, int status,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		SXPBlueprint sxpBlueprint = sxpBlueprintPersistence.findByPrimaryKey(
+			sxpBlueprintId);
+
+		if (sxpBlueprint.getStatus() == status) {
+			return sxpBlueprint;
+		}
+
+		sxpBlueprint.setStatus(status);
+
+		User user = _userLocalService.getUser(userId);
+
+		sxpBlueprint.setStatusByUserId(user.getUserId());
+		sxpBlueprint.setStatusByUserName(user.getFullName());
+
+		sxpBlueprint.setStatusDate(serviceContext.getModifiedDate(null));
+
+		return sxpBlueprintPersistence.update(sxpBlueprint);
 	}
 
 	private String _enhanceConfiguration(String configuration)

@@ -120,16 +120,6 @@ public class OutboundLinksUtilTest {
 				otherExternalReferenceCode));
 	}
 
-	private void _testGetObjectEntryExternalReferenceCodesWithoutReferences() {
-		Assert.assertEquals(
-			Collections.emptySet(),
-			OutboundLinksUtil.getObjectEntryExternalReferenceCodes(
-				StringBundler.concat(
-					"<p>Some rich text</p><p><a href=\"www.claude.com\">",
-					"www.claude.com</a></p><p>",
-					"<a href=\"/web/guest/home\">A page</a></p>")));
-	}
-
 	private void _testGetObjectEntryExternalReferenceCodesWithUnescapedQueryString() {
 		String externalReferenceCode = RandomTestUtil.randomString();
 
@@ -140,6 +130,16 @@ public class OutboundLinksUtilTest {
 					"/documents/1/2?objectEntryExternalReferenceCode=",
 					externalReferenceCode,
 					"&objectFieldExternalReferenceCode=FILE")));
+	}
+
+	private void _testGetObjectEntryExternalReferenceCodesWithoutReferences() {
+		Assert.assertEquals(
+			Collections.emptySet(),
+			OutboundLinksUtil.getObjectEntryExternalReferenceCodes(
+				StringBundler.concat(
+					"<p>Some rich text</p><p><a href=\"www.claude.com\">",
+					"www.claude.com</a></p><p>",
+					"<a href=\"/web/guest/home\">A page</a></p>")));
 	}
 
 }

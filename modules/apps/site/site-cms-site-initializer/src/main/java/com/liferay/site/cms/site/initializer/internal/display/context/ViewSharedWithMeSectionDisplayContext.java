@@ -54,6 +54,12 @@ public class ViewSharedWithMeSectionDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
+	public String getAPIURL() {
+		return "/o/headless-admin-user/v1.0/my-user-account/shared-assets" +
+			"/shared-with-me?filter=(spaceDepotEntry eq true)" +
+				"&nestedFields=file&sort=dateModified:desc";
+	}
+
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"autocompleteURL",
@@ -137,12 +143,6 @@ public class ViewSharedWithMeSectionDisplayContext {
 				LiferayWindowState.POP_UP, "&redirect=",
 				_themeDisplay.getURLCurrent(), "&objectEntryId={embedded.id}")
 		).build();
-	}
-
-	public String getAPIURL() {
-		return "/o/headless-admin-user/v1.0/my-user-account/shared-assets" +
-			"/shared-with-me?filter=(spaceDepotEntry eq true)" +
-				"&nestedFields=file&sort=dateModified:desc";
 	}
 
 	public Map<String, Object> getBreadcrumbProps() throws PortalException {

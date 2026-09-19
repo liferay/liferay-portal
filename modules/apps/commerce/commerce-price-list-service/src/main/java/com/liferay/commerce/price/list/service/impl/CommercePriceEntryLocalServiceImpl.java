@@ -954,6 +954,26 @@ public class CommercePriceEntryLocalServiceImpl
 		}
 	}
 
+	private CPInstanceUnitOfMeasure _getCPInstanceUnitOfMeasure(
+		long cpInstanceId, String unitOfMeasureKey) {
+
+		if (!Validator.isBlank(unitOfMeasureKey)) {
+			return _cpInstanceUnitOfMeasureLocalService.
+				fetchCPInstanceUnitOfMeasure(cpInstanceId, unitOfMeasureKey);
+		}
+
+		int count =
+			_cpInstanceUnitOfMeasureLocalService.
+				getCPInstanceUnitOfMeasuresCount(cpInstanceId);
+
+		if (count == 1) {
+			return _cpInstanceUnitOfMeasureLocalService.
+				fetchPrimaryCPInstanceUnitOfMeasure(cpInstanceId);
+		}
+
+		return null;
+	}
+
 	private List<CommercePriceEntry> _getCommercePriceEntries(Hits hits)
 		throws PortalException {
 
@@ -986,26 +1006,6 @@ public class CommercePriceEntryLocalServiceImpl
 		}
 
 		return commercePriceEntries;
-	}
-
-	private CPInstanceUnitOfMeasure _getCPInstanceUnitOfMeasure(
-		long cpInstanceId, String unitOfMeasureKey) {
-
-		if (!Validator.isBlank(unitOfMeasureKey)) {
-			return _cpInstanceUnitOfMeasureLocalService.
-				fetchCPInstanceUnitOfMeasure(cpInstanceId, unitOfMeasureKey);
-		}
-
-		int count =
-			_cpInstanceUnitOfMeasureLocalService.
-				getCPInstanceUnitOfMeasuresCount(cpInstanceId);
-
-		if (count == 1) {
-			return _cpInstanceUnitOfMeasureLocalService.
-				fetchPrimaryCPInstanceUnitOfMeasure(cpInstanceId);
-		}
-
-		return null;
 	}
 
 	private GroupByStep _getGroupByStep(

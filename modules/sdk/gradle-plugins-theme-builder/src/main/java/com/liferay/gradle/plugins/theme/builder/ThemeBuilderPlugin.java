@@ -215,23 +215,6 @@ public class ThemeBuilderPlugin implements Plugin<Project> {
 			});
 	}
 
-	private void _configureTasksBuildTheme(
-		Project project, final FileCollection classpath) {
-
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			BuildThemeTask.class,
-			new Action<BuildThemeTask>() {
-
-				@Override
-				public void execute(BuildThemeTask buildThemeTask) {
-					buildThemeTask.setClasspath(classpath);
-				}
-
-			});
-	}
-
 	private void _configureTaskWar(
 		War war, final BuildCSSTask buildCSSTask,
 		final BuildThemeTask buildThemeTask) {
@@ -294,6 +277,23 @@ public class ThemeBuilderPlugin implements Plugin<Project> {
 
 		war.setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
 		war.setIncludeEmptyDirs(false);
+	}
+
+	private void _configureTasksBuildTheme(
+		Project project, final FileCollection classpath) {
+
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			BuildThemeTask.class,
+			new Action<BuildThemeTask>() {
+
+				@Override
+				public void execute(BuildThemeTask buildThemeTask) {
+					buildThemeTask.setClasspath(classpath);
+				}
+
+			});
 	}
 
 	private File _getThemeFile(Iterable<File> files, String name)

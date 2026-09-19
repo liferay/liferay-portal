@@ -409,10 +409,10 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 	}
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CProductLocalService _cProductLocalService;
 
 	@Reference
-	private CProductLocalService _cProductLocalService;
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
 	private IndexerRegistry _indexerRegistry;

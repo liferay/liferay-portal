@@ -186,49 +186,6 @@ public class ListServiceTrackerMapTest {
 	}
 
 	@Test
-	public void testGetServicesIsNullAfterDeregistration() {
-		_serviceTrackerMap = createServiceTrackerMap(_bundleContext);
-
-		ServiceRegistration<TrackedOne> serviceRegistration1 = registerService(
-			new TrackedOne());
-		ServiceRegistration<TrackedOne> serviceRegistration2 = registerService(
-			new TrackedOne());
-
-		Assert.assertNotNull(_serviceTrackerMap.getService("aTarget"));
-
-		serviceRegistration1.unregister();
-		serviceRegistration2.unregister();
-
-		Assert.assertNull(_serviceTrackerMap.getService("aTarget"));
-	}
-
-	@Test
-	public void testGetServicesWithDifferentKeys() {
-		_serviceTrackerMap = createServiceTrackerMap(_bundleContext);
-
-		_serviceRegistrations.add(registerService(new TrackedOne(), "aTarget"));
-		_serviceRegistrations.add(
-			registerService(new TrackedOne(), "anotherTarget"));
-		_serviceRegistrations.add(registerService(new TrackedOne(), "aTarget"));
-		_serviceRegistrations.add(
-			registerService(new TrackedOne(), "anotherTarget"));
-		_serviceRegistrations.add(
-			registerService(new TrackedOne(), "anotherTarget"));
-
-		List<TrackedOne> aTargetList = _serviceTrackerMap.getService("aTarget");
-
-		Assert.assertNotNull(aTargetList);
-		Assert.assertEquals(aTargetList.toString(), 2, aTargetList.size());
-
-		List<TrackedOne> anotherTargetList = _serviceTrackerMap.getService(
-			"anotherTarget");
-
-		Assert.assertNotNull(anotherTargetList);
-		Assert.assertEquals(
-			anotherTargetList.toString(), 3, anotherTargetList.size());
-	}
-
-	@Test
 	public void testGetServiceWithChangingServiceRanking() {
 		_serviceTrackerMap = createServiceTrackerMap(_bundleContext);
 
@@ -396,6 +353,49 @@ public class ListServiceTrackerMapTest {
 		List<TrackedOne> trackedOnes = _serviceTrackerMap.getService("aTarget");
 
 		Assert.assertEquals(trackedOnes.toString(), 2, trackedOnes.size());
+	}
+
+	@Test
+	public void testGetServicesIsNullAfterDeregistration() {
+		_serviceTrackerMap = createServiceTrackerMap(_bundleContext);
+
+		ServiceRegistration<TrackedOne> serviceRegistration1 = registerService(
+			new TrackedOne());
+		ServiceRegistration<TrackedOne> serviceRegistration2 = registerService(
+			new TrackedOne());
+
+		Assert.assertNotNull(_serviceTrackerMap.getService("aTarget"));
+
+		serviceRegistration1.unregister();
+		serviceRegistration2.unregister();
+
+		Assert.assertNull(_serviceTrackerMap.getService("aTarget"));
+	}
+
+	@Test
+	public void testGetServicesWithDifferentKeys() {
+		_serviceTrackerMap = createServiceTrackerMap(_bundleContext);
+
+		_serviceRegistrations.add(registerService(new TrackedOne(), "aTarget"));
+		_serviceRegistrations.add(
+			registerService(new TrackedOne(), "anotherTarget"));
+		_serviceRegistrations.add(registerService(new TrackedOne(), "aTarget"));
+		_serviceRegistrations.add(
+			registerService(new TrackedOne(), "anotherTarget"));
+		_serviceRegistrations.add(
+			registerService(new TrackedOne(), "anotherTarget"));
+
+		List<TrackedOne> aTargetList = _serviceTrackerMap.getService("aTarget");
+
+		Assert.assertNotNull(aTargetList);
+		Assert.assertEquals(aTargetList.toString(), 2, aTargetList.size());
+
+		List<TrackedOne> anotherTargetList = _serviceTrackerMap.getService(
+			"anotherTarget");
+
+		Assert.assertNotNull(anotherTargetList);
+		Assert.assertEquals(
+			anotherTargetList.toString(), 3, anotherTargetList.size());
 	}
 
 	@Test

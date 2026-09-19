@@ -437,20 +437,6 @@ public class LayoutServiceTest {
 		}
 	}
 
-	private String[] _addPortletsToLayout(
-			int columnIndex, long plid, String[] portletNames)
-		throws Exception {
-
-		String[] portletIds = new String[portletNames.length];
-
-		for (int i = 0; i < portletNames.length; i++) {
-			portletIds[i] = _addPortletToLayout(
-				columnIndex, i, plid, portletNames[i]);
-		}
-
-		return portletIds;
-	}
-
 	private String _addPortletToLayout(
 			int columnIndex, int columnPos, long plid, String portletName)
 		throws Exception {
@@ -473,6 +459,20 @@ public class LayoutServiceTest {
 			layout.getTypeSettings());
 
 		return portletId;
+	}
+
+	private String[] _addPortletsToLayout(
+			int columnIndex, long plid, String[] portletNames)
+		throws Exception {
+
+		String[] portletIds = new String[portletNames.length];
+
+		for (int i = 0; i < portletNames.length; i++) {
+			portletIds[i] = _addPortletToLayout(
+				columnIndex, i, plid, portletNames[i]);
+		}
+
+		return portletIds;
 	}
 
 	private Layout _addTypePortletLayout(

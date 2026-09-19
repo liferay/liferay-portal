@@ -445,6 +445,18 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		assertValid(putUserAccount);
 	}
 
+	private void _testPutAssetLibraryUserAccountWithSiteExternalReferenceCode()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		assertHttpResponseStatusCode(
+			404,
+			userAccountResource.putAssetLibraryUserAccountHttpResponse(
+				group.getExternalReferenceCode(),
+				_testUser.getExternalReferenceCode()));
+	}
+
 	private void _testPutAssetLibraryUserAccountWithoutAssignMembersPermission()
 		throws Exception {
 
@@ -465,18 +477,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 					putAssetLibraryUserAccount(
 						testDepotEntryGroup.getExternalReferenceCode(),
 						userAccount.getExternalReferenceCode()));
-	}
-
-	private void _testPutAssetLibraryUserAccountWithSiteExternalReferenceCode()
-		throws Exception {
-
-		Group group = GroupTestUtil.addGroup();
-
-		assertHttpResponseStatusCode(
-			404,
-			userAccountResource.putAssetLibraryUserAccountHttpResponse(
-				group.getExternalReferenceCode(),
-				_testUser.getExternalReferenceCode()));
 	}
 
 	@Inject

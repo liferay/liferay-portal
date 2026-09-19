@@ -57,11 +57,6 @@ public class IndexCPCatalogEntryImpl implements CPCatalogEntry {
 	}
 
 	@Override
-	public long getCProductId() {
-		return GetterUtil.getLong(_document.get(CPField.PRODUCT_ID));
-	}
-
-	@Override
 	public List<CPSku> getCPSkus() {
 		List<CPSku> cpSkus = new ArrayList<>();
 
@@ -88,6 +83,11 @@ public class IndexCPCatalogEntryImpl implements CPCatalogEntry {
 		}
 
 		return cpSkus;
+	}
+
+	@Override
+	public long getCProductId() {
+		return GetterUtil.getLong(_document.get(CPField.PRODUCT_ID));
 	}
 
 	@Override

@@ -198,21 +198,6 @@ public class CommerceOrganizationDisplayContext {
 		return StringPool.BLANK;
 	}
 
-	public User getSelectedUser() throws PortalException {
-		return _userLocalService.getUser(getSelectedUserId());
-	}
-
-	public long getSelectedUserId() {
-		long userId = ParamUtil.getLong(
-			_commerceOrganizationRequestHelper.getRequest(), "userId");
-
-		if (userId > 0) {
-			return userId;
-		}
-
-		return _commerceOrganizationRequestHelper.getUserId();
-	}
-
 	public String getSelectLogoURL() {
 		return PortletURLBuilder.createRenderURL(
 			_portal.getLiferayPortletResponse(
@@ -234,6 +219,21 @@ public class CommerceOrganizationDisplayContext {
 		).setWindowState(
 			LiferayWindowState.POP_UP
 		).buildString();
+	}
+
+	public User getSelectedUser() throws PortalException {
+		return _userLocalService.getUser(getSelectedUserId());
+	}
+
+	public long getSelectedUserId() {
+		long userId = ParamUtil.getLong(
+			_commerceOrganizationRequestHelper.getRequest(), "userId");
+
+		if (userId > 0) {
+			return userId;
+		}
+
+		return _commerceOrganizationRequestHelper.getUserId();
 	}
 
 	public boolean hasAddOrganizationPermissions() throws PortalException {

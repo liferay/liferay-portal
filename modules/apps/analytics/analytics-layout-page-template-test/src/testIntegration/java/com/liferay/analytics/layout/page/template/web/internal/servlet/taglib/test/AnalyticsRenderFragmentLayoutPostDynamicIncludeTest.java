@@ -152,22 +152,6 @@ public class AnalyticsRenderFragmentLayoutPostDynamicIncludeTest {
 	}
 
 	@Test
-	public void testIncludeWithoutLayoutDisplayPageObjectProvider()
-		throws Exception {
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_include(mockHttpServletRequest, mockHttpServletResponse);
-
-		Assert.assertEquals(
-			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
-	}
-
-	@Test
 	public void testIncludeWithUnregisteredClassAndEscapedCharactersInTitle()
 		throws Exception {
 
@@ -212,6 +196,22 @@ public class AnalyticsRenderFragmentLayoutPostDynamicIncludeTest {
 				MockObject.class.getCanonicalName(),
 				"'})};\n\n</script><script>\n\n</script>"),
 			mockHttpServletResponse.getContentAsString());
+	}
+
+	@Test
+	public void testIncludeWithoutLayoutDisplayPageObjectProvider()
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_include(mockHttpServletRequest, mockHttpServletResponse);
+
+		Assert.assertEquals(
+			StringPool.BLANK, mockHttpServletResponse.getContentAsString());
 	}
 
 	private void _include(

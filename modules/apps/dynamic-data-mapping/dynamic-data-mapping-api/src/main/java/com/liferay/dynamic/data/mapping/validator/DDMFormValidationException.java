@@ -140,15 +140,6 @@ public class DDMFormValidationException extends PortalException {
 
 	}
 
-	public static class MustSetFieldsForForm
-		extends DDMFormValidationException {
-
-		public MustSetFieldsForForm() {
-			super("At least one field must be set");
-		}
-
-	}
-
 	public static class MustSetFieldType extends DDMFormValidationException {
 
 		public MustSetFieldType(String fieldName) {
@@ -166,6 +157,15 @@ public class DDMFormValidationException extends PortalException {
 		}
 
 		private String _fieldName;
+
+	}
+
+	public static class MustSetFieldsForForm
+		extends DDMFormValidationException {
+
+		public MustSetFieldsForForm() {
+			super("At least one field must be set");
+		}
 
 	}
 

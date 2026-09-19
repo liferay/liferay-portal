@@ -75,10 +75,10 @@ public class WikiNodeUADExporterTest
 	)
 	private UADExporter<WikiNode> _uadExporter;
 
-	@DeleteAfterTestRun
-	private final List<WikiNode> _wikiNodes = new ArrayList<>();
-
 	@Inject
 	private WikiNodeUADTestHelper _wikiNodeUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<WikiNode> _wikiNodes = new ArrayList<>();
 
 }

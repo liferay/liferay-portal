@@ -49,13 +49,13 @@ public class AssetTagSegmentsFieldCustomizer
 	public static final String KEY = "tag";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getAssetTag(fieldValue);
+	public String getClassName() {
+		return AssetTag.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return AssetTag.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getAssetTag(fieldValue);
 	}
 
 	@Override

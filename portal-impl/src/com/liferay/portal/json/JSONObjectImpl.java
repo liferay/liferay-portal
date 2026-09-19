@@ -178,13 +178,13 @@ public class JSONObjectImpl implements JSONObject {
 	}
 
 	@Override
-	public Iterator<String> keys() {
-		return _jsonObject.keys();
+	public Set<String> keySet() {
+		return _jsonObject.keySet();
 	}
 
 	@Override
-	public Set<String> keySet() {
-		return _jsonObject.keySet();
+	public Iterator<String> keys() {
+		return _jsonObject.keys();
 	}
 
 	@Override

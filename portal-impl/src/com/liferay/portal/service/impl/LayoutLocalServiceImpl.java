@@ -2580,6 +2580,31 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	@Override
+	public boolean hasLayoutSetPrototypeLayout(
+			long layoutSetPrototypeId, String layoutUuid)
+		throws PortalException {
+
+		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
+			_layoutSetPrototypePersistence.findByPrimaryKey(
+				layoutSetPrototypeId),
+			layoutUuid);
+	}
+
+	@Override
+	public boolean hasLayoutSetPrototypeLayout(
+			String layoutSetPrototypeUuid, long companyId, String layoutUuid)
+		throws PortalException {
+
+		LayoutSetPrototype layoutSetPrototype =
+			_layoutSetPrototypeLocalService.
+				getLayoutSetPrototypeByUuidAndCompanyId(
+					layoutSetPrototypeUuid, companyId);
+
+		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
+			layoutSetPrototype, layoutUuid);
+	}
+
+	@Override
 	public boolean hasLayouts(Group group) throws PortalException {
 		List<LayoutSet> groupLayoutSets = _layoutSetPersistence.findByGroupId(
 			group.getGroupId());
@@ -2744,31 +2769,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		throws PortalException {
 
 		return hasLayouts(user.getGroup(), privateLayout, includeUserGroups);
-	}
-
-	@Override
-	public boolean hasLayoutSetPrototypeLayout(
-			long layoutSetPrototypeId, String layoutUuid)
-		throws PortalException {
-
-		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
-			_layoutSetPrototypePersistence.findByPrimaryKey(
-				layoutSetPrototypeId),
-			layoutUuid);
-	}
-
-	@Override
-	public boolean hasLayoutSetPrototypeLayout(
-			String layoutSetPrototypeUuid, long companyId, String layoutUuid)
-		throws PortalException {
-
-		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypeLocalService.
-				getLayoutSetPrototypeByUuidAndCompanyId(
-					layoutSetPrototypeUuid, companyId);
-
-		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
-			layoutSetPrototype, layoutUuid);
 	}
 
 	@Override
@@ -4698,12 +4698,12 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	@BeanReference(type = LayoutSetPrototypePersistence.class)
 	private LayoutSetPrototypePersistence _layoutSetPrototypePersistence;
 
-	@BeanReference(type = PortalPreferencesPersistence.class)
-	private PortalPreferencesPersistence _portalPreferencesPersistence;
-
 	@BeanReference(type = PortalPreferenceValueLocalService.class)
 	private PortalPreferenceValueLocalService
 		_portalPreferenceValueLocalService;
+
+	@BeanReference(type = PortalPreferencesPersistence.class)
+	private PortalPreferencesPersistence _portalPreferencesPersistence;
 
 	@BeanReference(type = PortletPreferencesLocalService.class)
 	private PortletPreferencesLocalService _portletPreferencesLocalService;

@@ -58,6 +58,120 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = ResourceHelper.class)
 public class ResourceHelper {
 
+	public ScriptedMetricAggregation
+		creatInstanceCountScriptedMetricAggregation(
+			List<Long> assigneeIds, Boolean completed, Date dateEnd,
+			Date dateStart, List<String> taskNames) {
+
+		ScriptedMetricAggregation scriptedMetricAggregation =
+			_aggregations.scriptedMetric("instanceCount");
+
+		scriptedMetricAggregation.setCombineScript(
+			_workflowMetricsInstanceCountCombineScript);
+		scriptedMetricAggregation.setInitScript(
+			_workflowMetricsInstanceCountInitScript);
+		scriptedMetricAggregation.setMapScript(
+			_workflowMetricsInstanceCountMapScript);
+		scriptedMetricAggregation.setParameters(
+			HashMapBuilder.<String, Object>put(
+				"assigneeIds",
+				() -> {
+					if (ListUtil.isEmpty(assigneeIds)) {
+						return null;
+					}
+
+					return TransformUtil.transform(
+						assigneeIds, String::valueOf);
+				}
+			).put(
+				"assigneeType", Role.class.getName()
+			).put(
+				"completed", () -> completed
+			).put(
+				"endDate",
+				() -> {
+					if (dateEnd == null) {
+						return null;
+					}
+
+					return dateEnd.getTime();
+				}
+			).put(
+				"startDate",
+				() -> {
+					if (dateStart == null) {
+						return null;
+					}
+
+					return dateStart.getTime();
+				}
+			).put(
+				"taskNames",
+				() -> {
+					if (taskNames.isEmpty()) {
+						return null;
+					}
+
+					return taskNames;
+				}
+			).build());
+		scriptedMetricAggregation.setReduceScript(
+			_workflowMetricsInstanceCountReduceScript);
+
+		return scriptedMetricAggregation;
+	}
+
+	public ScriptedMetricAggregation creatTaskCountScriptedMetricAggregation(
+		List<Long> assigneeIds, List<String> slaStatuses,
+		List<String> taskNames) {
+
+		ScriptedMetricAggregation scriptedMetricAggregation =
+			_aggregations.scriptedMetric("taskCount");
+
+		scriptedMetricAggregation.setCombineScript(
+			_workflowMetricsTaskCountCombineScript);
+		scriptedMetricAggregation.setInitScript(
+			_workflowMetricsTaskCountInitScript);
+		scriptedMetricAggregation.setMapScript(
+			_workflowMetricsTaskCountMapScript);
+		scriptedMetricAggregation.setParameters(
+			HashMapBuilder.<String, Object>put(
+				"assigneeIds",
+				() -> {
+					if (assigneeIds.isEmpty()) {
+						return null;
+					}
+
+					return TransformUtil.transform(
+						assigneeIds, String::valueOf);
+				}
+			).put(
+				"assigneeType", Role.class.getName()
+			).put(
+				"slaStatuses",
+				() -> {
+					if (ListUtil.isEmpty(slaStatuses)) {
+						return null;
+					}
+
+					return slaStatuses;
+				}
+			).put(
+				"taskNames",
+				() -> {
+					if (ListUtil.isEmpty(taskNames)) {
+						return null;
+					}
+
+					return taskNames;
+				}
+			).build());
+		scriptedMetricAggregation.setReduceScript(
+			_workflowMetricsTaskCountReduceScript);
+
+		return scriptedMetricAggregation;
+	}
+
 	public ScriptedMetricAggregation createBreachedScriptedMetricAggregation() {
 		ScriptedMetricAggregation scriptedMetricAggregation =
 			_aggregations.scriptedMetric("breachedInstanceCount");
@@ -211,120 +325,6 @@ public class ResourceHelper {
 
 		return booleanQuery.addMustNotQueryClauses(
 			QueriesUtil.term("instanceId", 0));
-	}
-
-	public ScriptedMetricAggregation
-		creatInstanceCountScriptedMetricAggregation(
-			List<Long> assigneeIds, Boolean completed, Date dateEnd,
-			Date dateStart, List<String> taskNames) {
-
-		ScriptedMetricAggregation scriptedMetricAggregation =
-			_aggregations.scriptedMetric("instanceCount");
-
-		scriptedMetricAggregation.setCombineScript(
-			_workflowMetricsInstanceCountCombineScript);
-		scriptedMetricAggregation.setInitScript(
-			_workflowMetricsInstanceCountInitScript);
-		scriptedMetricAggregation.setMapScript(
-			_workflowMetricsInstanceCountMapScript);
-		scriptedMetricAggregation.setParameters(
-			HashMapBuilder.<String, Object>put(
-				"assigneeIds",
-				() -> {
-					if (ListUtil.isEmpty(assigneeIds)) {
-						return null;
-					}
-
-					return TransformUtil.transform(
-						assigneeIds, String::valueOf);
-				}
-			).put(
-				"assigneeType", Role.class.getName()
-			).put(
-				"completed", () -> completed
-			).put(
-				"endDate",
-				() -> {
-					if (dateEnd == null) {
-						return null;
-					}
-
-					return dateEnd.getTime();
-				}
-			).put(
-				"startDate",
-				() -> {
-					if (dateStart == null) {
-						return null;
-					}
-
-					return dateStart.getTime();
-				}
-			).put(
-				"taskNames",
-				() -> {
-					if (taskNames.isEmpty()) {
-						return null;
-					}
-
-					return taskNames;
-				}
-			).build());
-		scriptedMetricAggregation.setReduceScript(
-			_workflowMetricsInstanceCountReduceScript);
-
-		return scriptedMetricAggregation;
-	}
-
-	public ScriptedMetricAggregation creatTaskCountScriptedMetricAggregation(
-		List<Long> assigneeIds, List<String> slaStatuses,
-		List<String> taskNames) {
-
-		ScriptedMetricAggregation scriptedMetricAggregation =
-			_aggregations.scriptedMetric("taskCount");
-
-		scriptedMetricAggregation.setCombineScript(
-			_workflowMetricsTaskCountCombineScript);
-		scriptedMetricAggregation.setInitScript(
-			_workflowMetricsTaskCountInitScript);
-		scriptedMetricAggregation.setMapScript(
-			_workflowMetricsTaskCountMapScript);
-		scriptedMetricAggregation.setParameters(
-			HashMapBuilder.<String, Object>put(
-				"assigneeIds",
-				() -> {
-					if (assigneeIds.isEmpty()) {
-						return null;
-					}
-
-					return TransformUtil.transform(
-						assigneeIds, String::valueOf);
-				}
-			).put(
-				"assigneeType", Role.class.getName()
-			).put(
-				"slaStatuses",
-				() -> {
-					if (ListUtil.isEmpty(slaStatuses)) {
-						return null;
-					}
-
-					return slaStatuses;
-				}
-			).put(
-				"taskNames",
-				() -> {
-					if (ListUtil.isEmpty(taskNames)) {
-						return null;
-					}
-
-					return taskNames;
-				}
-			).build());
-		scriptedMetricAggregation.setReduceScript(
-			_workflowMetricsTaskCountReduceScript);
-
-		return scriptedMetricAggregation;
 	}
 
 	public long getBreachedInstanceCount(Bucket bucket) {

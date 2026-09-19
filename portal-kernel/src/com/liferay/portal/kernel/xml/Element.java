@@ -37,8 +37,6 @@ public interface Element extends Branch {
 
 	public Element addEntity(String name, String text);
 
-	public List<Namespace> additionalNamespaces();
-
 	public Element addNamespace(String prefix, String uri);
 
 	public Element addProcessingInstruction(
@@ -47,6 +45,8 @@ public interface Element extends Branch {
 	public Element addProcessingInstruction(String target, String data);
 
 	public Element addText(String text);
+
+	public List<Namespace> additionalNamespaces();
 
 	public void appendAttributes(Element element);
 
@@ -60,8 +60,6 @@ public interface Element extends Branch {
 
 	public Iterator<Attribute> attributeIterator();
 
-	public List<Attribute> attributes();
-
 	public String attributeValue(QName qName);
 
 	public String attributeValue(QName qName, String defaultValue);
@@ -69,6 +67,8 @@ public interface Element extends Branch {
 	public String attributeValue(String name);
 
 	public String attributeValue(String name, String defaultValue);
+
+	public List<Attribute> attributes();
 
 	public Element createCopy();
 
@@ -88,12 +88,6 @@ public interface Element extends Branch {
 
 	public Iterator<Element> elementIterator(String name);
 
-	public List<Element> elements();
-
-	public List<Element> elements(QName qName);
-
-	public List<Element> elements(String name);
-
 	public String elementText(QName qName);
 
 	public String elementText(String name);
@@ -101,6 +95,12 @@ public interface Element extends Branch {
 	public String elementTextTrim(QName qName);
 
 	public String elementTextTrim(String name);
+
+	public List<Element> elements();
+
+	public List<Element> elements(QName qName);
+
+	public List<Element> elements(String name);
 
 	public Object getData();
 
@@ -112,9 +112,9 @@ public interface Element extends Branch {
 
 	public String getNamespacePrefix();
 
-	public List<Namespace> getNamespacesForURI(String uri);
-
 	public String getNamespaceURI();
+
+	public List<Namespace> getNamespacesForURI(String uri);
 
 	public QName getQName();
 

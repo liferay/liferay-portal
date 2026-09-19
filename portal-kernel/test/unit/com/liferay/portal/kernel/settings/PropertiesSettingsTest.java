@@ -35,6 +35,41 @@ public class PropertiesSettingsTest {
 	}
 
 	@Test
+	public void testGetValueWithDefaultValue() {
+		Assert.assertEquals(
+			"default", _propertiesSettings.getValue("missingKey", "default"));
+	}
+
+	@Test
+	public void testGetValueWithExistingKey() {
+		Assert.assertEquals(
+			_SINGLE_VALUE, _propertiesSettings.getValue(_SINGLE_KEY, null));
+	}
+
+	@Test
+	public void testGetValueWithMissingKey() {
+		Assert.assertEquals(
+			null, _propertiesSettings.getValue("missingKey", null));
+	}
+
+	@Test
+	public void testGetValueWithResourceValue() {
+		String expectedValue = "resourceValue";
+
+		PropertiesSettings propertiesSettings = new PropertiesSettings(
+			_createLocationVariableResolver(
+				_RESOURCE_SINGLE_VALUE, expectedValue),
+			new Properties() {
+				{
+					put(_SINGLE_KEY, _RESOURCE_SINGLE_VALUE);
+				}
+			});
+
+		Assert.assertEquals(
+			expectedValue, propertiesSettings.getValue(_SINGLE_KEY, null));
+	}
+
+	@Test
 	public void testGetValuesWithDefaultValue() {
 		String[] defaultValue = {"default0", "default1"};
 
@@ -72,41 +107,6 @@ public class PropertiesSettingsTest {
 		Assert.assertArrayEquals(
 			expectedValue.split(","),
 			propertiesSettings.getValues(_MULTIPLE_KEY, null));
-	}
-
-	@Test
-	public void testGetValueWithDefaultValue() {
-		Assert.assertEquals(
-			"default", _propertiesSettings.getValue("missingKey", "default"));
-	}
-
-	@Test
-	public void testGetValueWithExistingKey() {
-		Assert.assertEquals(
-			_SINGLE_VALUE, _propertiesSettings.getValue(_SINGLE_KEY, null));
-	}
-
-	@Test
-	public void testGetValueWithMissingKey() {
-		Assert.assertEquals(
-			null, _propertiesSettings.getValue("missingKey", null));
-	}
-
-	@Test
-	public void testGetValueWithResourceValue() {
-		String expectedValue = "resourceValue";
-
-		PropertiesSettings propertiesSettings = new PropertiesSettings(
-			_createLocationVariableResolver(
-				_RESOURCE_SINGLE_VALUE, expectedValue),
-			new Properties() {
-				{
-					put(_SINGLE_KEY, _RESOURCE_SINGLE_VALUE);
-				}
-			});
-
-		Assert.assertEquals(
-			expectedValue, propertiesSettings.getValue(_SINGLE_KEY, null));
 	}
 
 	private LocationVariableResolver _createLocationVariableResolver(

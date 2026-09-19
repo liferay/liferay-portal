@@ -91,12 +91,6 @@ public class JournalTemplateHandler extends BaseDDMTemplateHandler {
 	}
 
 	@Override
-	public String getTemplatesHelpPath(String language) {
-		return "com/liferay/journal/web/portlet/template/dependencies" +
-			"/template.ftl";
-	}
-
-	@Override
 	public Map<String, TemplateVariableGroup> getTemplateVariableGroups(
 			long classPK, String language, Locale locale)
 		throws Exception {
@@ -142,6 +136,12 @@ public class JournalTemplateHandler extends BaseDDMTemplateHandler {
 			journalServicesTemplateVariableGroup);
 
 		return templateVariableGroups;
+	}
+
+	@Override
+	public String getTemplatesHelpPath(String language) {
+		return "com/liferay/journal/web/portlet/template/dependencies" +
+			"/template.ftl";
 	}
 
 	@Override

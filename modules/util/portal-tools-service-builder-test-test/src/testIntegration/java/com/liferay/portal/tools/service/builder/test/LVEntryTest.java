@@ -364,29 +364,6 @@ public class LVEntryTest {
 	}
 
 	@Test
-	public void testDeleteLatestVersion() throws Exception {
-		LVEntry draftLVEntry = _versionService.create();
-
-		_lvEntry = _versionService.publishDraft(draftLVEntry);
-
-		LVEntryVersion lvEntryVersion = _versionService.fetchLatestVersion(
-			_lvEntry);
-
-		Assert.assertNotNull(lvEntryVersion);
-
-		try {
-			_versionService.deleteVersion(lvEntryVersion);
-
-			Assert.fail();
-		}
-		catch (IllegalArgumentException illegalArgumentException) {
-			Assert.assertEquals(
-				"Unable to delete latest version 1",
-				illegalArgumentException.getMessage());
-		}
-	}
-
-	@Test
 	public void testDeleteLVEntry() throws Exception {
 		LVEntry draftLVEntry = _versionService.create();
 
@@ -463,6 +440,29 @@ public class LVEntryTest {
 		}
 		finally {
 			_versionService.unregisterListener(testVersionServiceListener);
+		}
+	}
+
+	@Test
+	public void testDeleteLatestVersion() throws Exception {
+		LVEntry draftLVEntry = _versionService.create();
+
+		_lvEntry = _versionService.publishDraft(draftLVEntry);
+
+		LVEntryVersion lvEntryVersion = _versionService.fetchLatestVersion(
+			_lvEntry);
+
+		Assert.assertNotNull(lvEntryVersion);
+
+		try {
+			_versionService.deleteVersion(lvEntryVersion);
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				"Unable to delete latest version 1",
+				illegalArgumentException.getMessage());
 		}
 	}
 

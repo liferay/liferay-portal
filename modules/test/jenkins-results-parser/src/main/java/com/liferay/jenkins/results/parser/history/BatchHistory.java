@@ -18,9 +18,9 @@ public interface BatchHistory {
 
 	public String getBatchName();
 
-	public JobHistory getJobHistory();
-
 	public JSONObject getJSONObject();
+
+	public JobHistory getJobHistory();
 
 	public String getPortalUpstreamBranchName();
 

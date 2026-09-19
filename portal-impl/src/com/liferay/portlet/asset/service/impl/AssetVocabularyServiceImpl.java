@@ -241,43 +241,6 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 	}
 
 	@Override
-	public List<AssetVocabulary> getGroupsVocabularies(long[] groupIds) {
-		return getGroupsVocabularies(groupIds, null);
-	}
-
-	@Override
-	public List<AssetVocabulary> getGroupsVocabularies(
-		long[] groupIds, String className) {
-
-		return getGroupsVocabularies(
-			groupIds, className, AssetCategoryConstants.ALL_CLASS_TYPE_PK);
-	}
-
-	@Override
-	public List<AssetVocabulary> getGroupsVocabularies(
-		long[] groupIds, String className, long classTypePK) {
-
-		if (ArrayUtil.isEmpty(groupIds)) {
-			return Collections.emptyList();
-		}
-
-		List<AssetVocabulary> vocabularies =
-			assetVocabularyPersistence.filterFindByGroupId(groupIds);
-
-		if (Validator.isNull(className)) {
-			return vocabularies;
-		}
-
-		long classNameId = _classNameLocalService.getClassNameId(className);
-
-		return ListUtil.filter(
-			vocabularies,
-			assetVocabulary ->
-				assetVocabulary.isAssociatedToClassNameIdAndClassTypePK(
-					classNameId, classTypePK));
-	}
-
-	@Override
 	public List<AssetVocabulary> getGroupVocabularies(long groupId)
 		throws PortalException {
 
@@ -435,6 +398,43 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 
 		return getGroupVocabulariesDisplay(
 			groupId, name, start, end, false, orderByComparator);
+	}
+
+	@Override
+	public List<AssetVocabulary> getGroupsVocabularies(long[] groupIds) {
+		return getGroupsVocabularies(groupIds, null);
+	}
+
+	@Override
+	public List<AssetVocabulary> getGroupsVocabularies(
+		long[] groupIds, String className) {
+
+		return getGroupsVocabularies(
+			groupIds, className, AssetCategoryConstants.ALL_CLASS_TYPE_PK);
+	}
+
+	@Override
+	public List<AssetVocabulary> getGroupsVocabularies(
+		long[] groupIds, String className, long classTypePK) {
+
+		if (ArrayUtil.isEmpty(groupIds)) {
+			return Collections.emptyList();
+		}
+
+		List<AssetVocabulary> vocabularies =
+			assetVocabularyPersistence.filterFindByGroupId(groupIds);
+
+		if (Validator.isNull(className)) {
+			return vocabularies;
+		}
+
+		long classNameId = _classNameLocalService.getClassNameId(className);
+
+		return ListUtil.filter(
+			vocabularies,
+			assetVocabulary ->
+				assetVocabulary.isAssociatedToClassNameIdAndClassTypePK(
+					classNameId, classTypePK));
 	}
 
 	public AssetVocabulary getOrAddEmptyVocabulary(

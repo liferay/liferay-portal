@@ -118,6 +118,19 @@ public class JournalDDMStructuresDisplayContextTest {
 			Mockito.mock(PortletPreferencesFactory.class));
 	}
 
+	private void _testGetOrderByColWithParameter() {
+		String orderByColParamValue = RandomTestUtil.randomString();
+
+		JournalDDMStructuresDisplayContext journalDDMStructuresDisplayContext =
+			_getJournalDDMStructuresDisplayContext(
+				SearchContainer.DEFAULT_ORDER_BY_COL_PARAM,
+				orderByColParamValue, new PortalPreferencesImpl());
+
+		Assert.assertEquals(
+			orderByColParamValue,
+			journalDDMStructuresDisplayContext.getOrderByCol());
+	}
+
 	private void _testGetOrderByColWithoutParameter() {
 		String orderByColParamValue = RandomTestUtil.randomString();
 
@@ -142,17 +155,17 @@ public class JournalDDMStructuresDisplayContextTest {
 				JournalPortletKeys.JOURNAL, "ddm-structure-order-by-col"));
 	}
 
-	private void _testGetOrderByColWithParameter() {
-		String orderByColParamValue = RandomTestUtil.randomString();
+	private void _testGetOrderByTypeWithParameter() {
+		String orderByTypeParamValue = RandomTestUtil.randomString();
 
 		JournalDDMStructuresDisplayContext journalDDMStructuresDisplayContext =
 			_getJournalDDMStructuresDisplayContext(
-				SearchContainer.DEFAULT_ORDER_BY_COL_PARAM,
-				orderByColParamValue, new PortalPreferencesImpl());
+				SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM,
+				orderByTypeParamValue, new PortalPreferencesImpl());
 
 		Assert.assertEquals(
-			orderByColParamValue,
-			journalDDMStructuresDisplayContext.getOrderByCol());
+			orderByTypeParamValue,
+			journalDDMStructuresDisplayContext.getOrderByType());
 	}
 
 	private void _testGetOrderByTypeWithoutParameter() {
@@ -177,19 +190,6 @@ public class JournalDDMStructuresDisplayContextTest {
 			orderByTypeParamValue,
 			portalPreferences.getValue(
 				JournalPortletKeys.JOURNAL, "ddm-structure-order-by-type"));
-	}
-
-	private void _testGetOrderByTypeWithParameter() {
-		String orderByTypeParamValue = RandomTestUtil.randomString();
-
-		JournalDDMStructuresDisplayContext journalDDMStructuresDisplayContext =
-			_getJournalDDMStructuresDisplayContext(
-				SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM,
-				orderByTypeParamValue, new PortalPreferencesImpl());
-
-		Assert.assertEquals(
-			orderByTypeParamValue,
-			journalDDMStructuresDisplayContext.getOrderByType());
 	}
 
 }

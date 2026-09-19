@@ -96,17 +96,6 @@ public class SiteTeamsPortlet extends MVCPortlet {
 		_teamService.deleteTeam(teamId);
 	}
 
-	public void deleteTeams(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws Exception {
-
-		long[] teamIds = ParamUtil.getLongValues(actionRequest, "rowIds");
-
-		for (long teamId : teamIds) {
-			_teamService.deleteTeam(teamId);
-		}
-	}
-
 	public void deleteTeamUserGroups(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
@@ -147,6 +136,17 @@ public class SiteTeamsPortlet extends MVCPortlet {
 		}
 
 		_userService.unsetTeamUsers(teamId, removeUserIds);
+	}
+
+	public void deleteTeams(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		long[] teamIds = ParamUtil.getLongValues(actionRequest, "rowIds");
+
+		for (long teamId : teamIds) {
+			_teamService.deleteTeam(teamId);
+		}
 	}
 
 	public void editTeam(

@@ -63,6 +63,28 @@ public class UpgradeLogContextTest {
 	}
 
 	@Test
+	public void testUpgradeClassWithContext() {
+		Assert.assertEquals(
+			_defaultContext,
+			_logContext.getContext(DBUpgrader.class.getName()));
+
+		try {
+			UpgradeLogContext.setContext("Test");
+
+			Assert.assertEquals(
+				Collections.singletonMap("component", "Test"),
+				_logContext.getContext(DBUpgrader.class.getName()));
+		}
+		finally {
+			UpgradeLogContext.clearContext();
+
+			Assert.assertEquals(
+				_defaultContext,
+				_logContext.getContext(DBUpgrader.class.getName()));
+		}
+	}
+
+	@Test
 	public void testUpgradeClassesDefaultContext() {
 		Assert.assertEquals(
 			_defaultContext,
@@ -93,28 +115,6 @@ public class UpgradeLogContextTest {
 			_logContext.getContext(
 				"com.liferay.portal.upgrade.internal.release." +
 					"ReleaseManagerImpl"));
-	}
-
-	@Test
-	public void testUpgradeClassWithContext() {
-		Assert.assertEquals(
-			_defaultContext,
-			_logContext.getContext(DBUpgrader.class.getName()));
-
-		try {
-			UpgradeLogContext.setContext("Test");
-
-			Assert.assertEquals(
-				Collections.singletonMap("component", "Test"),
-				_logContext.getContext(DBUpgrader.class.getName()));
-		}
-		finally {
-			UpgradeLogContext.clearContext();
-
-			Assert.assertEquals(
-				_defaultContext,
-				_logContext.getContext(DBUpgrader.class.getName()));
-		}
 	}
 
 	private static final Map<String, String> _defaultContext =

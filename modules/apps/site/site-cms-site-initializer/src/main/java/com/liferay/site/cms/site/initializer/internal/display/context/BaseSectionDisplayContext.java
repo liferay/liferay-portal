@@ -88,6 +88,14 @@ public abstract class BaseSectionDisplayContext {
 			httpServletRequest.getAttribute(InfoDisplayWebKeys.INFO_ITEM));
 	}
 
+	public String getAPIURL() {
+		if (isFolderSearchEnabled()) {
+			return "/o/search/v1.0/search";
+		}
+
+		return "/o/search/v1.0/search?" + getAdditionalAPIURLParameters();
+	}
+
 	public String getAdditionalAPIURLParameters() {
 		return SectionDisplayContextUtil.getAdditionalAPIURLParameters(
 			getCMSSectionFilterString(), httpServletRequest,
@@ -251,14 +259,6 @@ public abstract class BaseSectionDisplayContext {
 		).put(
 			"redirect", themeDisplay.getURLCurrent()
 		).build();
-	}
-
-	public String getAPIURL() {
-		if (isFolderSearchEnabled()) {
-			return "/o/search/v1.0/search";
-		}
-
-		return "/o/search/v1.0/search?" + getAdditionalAPIURLParameters();
 	}
 
 	public Map<String, Object> getBreadcrumbProps() throws PortalException {

@@ -368,6 +368,9 @@ public class PriceModifierResourceImpl extends BasePriceModifierResourceImpl {
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommercePriceListService _commercePriceListService;
 
 	@Reference(
@@ -384,9 +387,6 @@ public class PriceModifierResourceImpl extends BasePriceModifierResourceImpl {
 
 	@Reference
 	private CommercePricingClassService _commercePricingClassService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

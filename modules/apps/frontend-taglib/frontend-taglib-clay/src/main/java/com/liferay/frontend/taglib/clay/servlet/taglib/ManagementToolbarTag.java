@@ -538,12 +538,12 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		_searchValue = searchValue;
 	}
 
-	public void setSelectable(Boolean selectable) {
-		_selectable = selectable;
-	}
-
 	public void setSelectAllURL(String selectAllURL) {
 		_selectAllURL = selectAllURL;
+	}
+
+	public void setSelectable(Boolean selectable) {
+		_selectable = selectable;
 	}
 
 	public void setSelectedItems(Integer selectedItems) {
@@ -1414,8 +1414,8 @@ public class ManagementToolbarTag extends BaseContainerTag {
 	private String _searchInputName;
 	private String _searchResultsTitle;
 	private String _searchValue;
-	private Boolean _selectable;
 	private String _selectAllURL;
+	private Boolean _selectable;
 	private Integer _selectedItems;
 	private Boolean _showAdvancedSearch;
 	private Boolean _showCreationMenu;

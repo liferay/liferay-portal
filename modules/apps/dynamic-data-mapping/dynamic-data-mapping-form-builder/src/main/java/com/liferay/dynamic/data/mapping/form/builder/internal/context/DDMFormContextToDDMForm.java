@@ -416,56 +416,6 @@ public class DDMFormContextToDDMForm
 		ddmForm.setDefaultLocale(LocaleUtil.fromLanguageId(defaultLanguageId));
 	}
 
-	private void _setDDMFormFields(JSONArray jsonArray, DDMForm ddmForm) {
-		DDMFormContextVisitor ddmFormTemplateContextVisitor =
-			new DDMFormContextVisitor(jsonArray);
-
-		ddmFormTemplateContextVisitor.onVisitField(
-			new Consumer<JSONObject>() {
-
-				@Override
-				public void accept(JSONObject jsonObject) {
-					DDMFormField ddmFormField = createDDMFormField(jsonObject);
-
-					ddmForm.addDDMFormField(ddmFormField);
-				}
-
-				protected DDMFormField createDDMFormField(
-					JSONObject jsonObject) {
-
-					String name = jsonObject.getString("name");
-					String type = jsonObject.getString("type");
-
-					DDMFormField ddmFormField = new DDMFormField(name, type);
-
-					if (jsonObject.has("nestedFields")) {
-						JSONArray nestedFieldsJSONArray =
-							jsonObject.getJSONArray("nestedFields");
-
-						for (int i = 0; i < nestedFieldsJSONArray.length();
-							 i++) {
-
-							DDMFormField nestedDDMFormField =
-								createDDMFormField(
-									nestedFieldsJSONArray.getJSONObject(i));
-
-							ddmFormField.addNestedDDMFormField(
-								nestedDDMFormField);
-						}
-					}
-
-					_setDDMFormFieldSettings(
-						jsonObject.getJSONObject("settingsContext"), ddmForm,
-						ddmFormField);
-
-					return ddmFormField;
-				}
-
-			});
-
-		ddmFormTemplateContextVisitor.visit();
-	}
-
 	private void _setDDMFormFieldSettings(
 		JSONObject jsonObject, DDMForm ddmForm, DDMFormField ddmFormField) {
 
@@ -512,6 +462,56 @@ public class DDMFormContextToDDMForm
 					}
 
 					return "value";
+				}
+
+			});
+
+		ddmFormTemplateContextVisitor.visit();
+	}
+
+	private void _setDDMFormFields(JSONArray jsonArray, DDMForm ddmForm) {
+		DDMFormContextVisitor ddmFormTemplateContextVisitor =
+			new DDMFormContextVisitor(jsonArray);
+
+		ddmFormTemplateContextVisitor.onVisitField(
+			new Consumer<JSONObject>() {
+
+				@Override
+				public void accept(JSONObject jsonObject) {
+					DDMFormField ddmFormField = createDDMFormField(jsonObject);
+
+					ddmForm.addDDMFormField(ddmFormField);
+				}
+
+				protected DDMFormField createDDMFormField(
+					JSONObject jsonObject) {
+
+					String name = jsonObject.getString("name");
+					String type = jsonObject.getString("type");
+
+					DDMFormField ddmFormField = new DDMFormField(name, type);
+
+					if (jsonObject.has("nestedFields")) {
+						JSONArray nestedFieldsJSONArray =
+							jsonObject.getJSONArray("nestedFields");
+
+						for (int i = 0; i < nestedFieldsJSONArray.length();
+							 i++) {
+
+							DDMFormField nestedDDMFormField =
+								createDDMFormField(
+									nestedFieldsJSONArray.getJSONObject(i));
+
+							ddmFormField.addNestedDDMFormField(
+								nestedDDMFormField);
+						}
+					}
+
+					_setDDMFormFieldSettings(
+						jsonObject.getJSONObject("settingsContext"), ddmForm,
+						ddmFormField);
+
+					return ddmFormField;
 				}
 
 			});

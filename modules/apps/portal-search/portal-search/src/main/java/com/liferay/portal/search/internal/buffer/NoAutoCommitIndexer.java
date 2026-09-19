@@ -109,11 +109,6 @@ public class NoAutoCommitIndexer<T> implements Indexer<T> {
 	}
 
 	@Override
-	public int hashCode() {
-		return _indexer.hashCode();
-	}
-
-	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker, String entryClassName,
 			long entryClassPK, String actionId)
@@ -121,6 +116,11 @@ public class NoAutoCommitIndexer<T> implements Indexer<T> {
 
 		return _indexer.hasPermission(
 			permissionChecker, entryClassName, entryClassPK, actionId);
+	}
+
+	@Override
+	public int hashCode() {
+		return _indexer.hashCode();
 	}
 
 	@Override

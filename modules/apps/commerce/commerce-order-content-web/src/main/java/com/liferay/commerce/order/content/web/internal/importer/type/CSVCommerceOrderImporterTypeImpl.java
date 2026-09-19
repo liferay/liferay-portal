@@ -226,21 +226,6 @@ public class CSVCommerceOrderImporterTypeImpl
 				CommerceOrderImporterTypeConfiguration.class, properties);
 	}
 
-	private CommerceOrderImporterItemImpl[] _getCommerceOrderImporterItemImpls(
-			long companyId, long accountEntryId, long commerceChannelGroupId,
-			long commerceOrderTypeId, FileEntry fileEntry)
-		throws Exception {
-
-		CSVParser csvParser = _getCSVParser(fileEntry);
-
-		return TransformUtil.transformToArray(
-			csvParser.getRecords(),
-			csvRecord -> _toCommerceOrderImporterItemImpl(
-				companyId, accountEntryId, commerceChannelGroupId,
-				commerceOrderTypeId, csvRecord),
-			CommerceOrderImporterItemImpl.class);
-	}
-
 	private CSVParser _getCSVParser(FileEntry fileEntry) throws Exception {
 		CSVFormat csvFormat = CommerceOrderImporterTypeUtil.getCSVFormat(
 			_commerceOrderImporterTypeConfiguration);
@@ -257,6 +242,21 @@ public class CSVCommerceOrderImporterTypeImpl
 
 			throw new CommerceOrderImporterTypeException();
 		}
+	}
+
+	private CommerceOrderImporterItemImpl[] _getCommerceOrderImporterItemImpls(
+			long companyId, long accountEntryId, long commerceChannelGroupId,
+			long commerceOrderTypeId, FileEntry fileEntry)
+		throws Exception {
+
+		CSVParser csvParser = _getCSVParser(fileEntry);
+
+		return TransformUtil.transformToArray(
+			csvParser.getRecords(),
+			csvRecord -> _toCommerceOrderImporterItemImpl(
+				companyId, accountEntryId, commerceChannelGroupId,
+				commerceOrderTypeId, csvRecord),
+			CommerceOrderImporterItemImpl.class);
 	}
 
 	private CommerceOrderImporterItemImpl _toCommerceOrderImporterItemImpl(

@@ -114,12 +114,6 @@ public class EditVocabularySettingsDisplayContext {
 		return selectOptions;
 	}
 
-	public List<AssetRendererFactory<?>> getClassTypedAssetRenderFactories() {
-		return ListUtil.filter(
-			getAvailableAssetRendererFactories(),
-			AssetRendererFactory::isSupportsClassTypes);
-	}
-
 	public List<SelectOption> getClassTypePKOptions(
 		AssetRendererFactory<?> assetRendererFactory, long selectedClassNameId,
 		long selectedClassTypePK) {
@@ -168,6 +162,12 @@ public class EditVocabularySettingsDisplayContext {
 		}
 
 		return selectOptions;
+	}
+
+	public List<AssetRendererFactory<?>> getClassTypedAssetRenderFactories() {
+		return ListUtil.filter(
+			getAvailableAssetRendererFactories(),
+			AssetRendererFactory::isSupportsClassTypes);
 	}
 
 	public long[] getSelectedClassNameIds() {

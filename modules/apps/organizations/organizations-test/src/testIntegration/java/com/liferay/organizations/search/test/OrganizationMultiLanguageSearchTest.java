@@ -175,10 +175,10 @@ public class OrganizationMultiLanguageSearchTest {
 	protected RegionService regionService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private Map<String, String> _getMapResult(String keywords) {
 		return HashMapBuilder.put(

@@ -65,6 +65,31 @@ public class DateObjectFieldBusinessType extends BaseObjectFieldBusinessType {
 	}
 
 	@Override
+	public Serializable getDTOValue(
+			DTOConverterContext dtoConverterContext,
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			ObjectField objectField, Serializable serializable)
+		throws Exception {
+
+		if (Validator.isNull(serializable)) {
+			return null;
+		}
+
+		if (serializable instanceof String) {
+			Date date = DateUtil.parseDate(
+				"yyyy-MM-dd", (String)serializable,
+				LocaleUtil.getSiteDefault());
+
+			serializable = new Timestamp(date.getTime());
+		}
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+		return simpleDateFormat.format((Timestamp)serializable);
+	}
+
+	@Override
 	public String getDescription(Locale locale) {
 		return _language.get(locale, "add-a-date");
 	}
@@ -92,31 +117,6 @@ public class DateObjectFieldBusinessType extends BaseObjectFieldBusinessType {
 		}
 
 		return _getValue(MapUtil.getString(values, objectField.getName()));
-	}
-
-	@Override
-	public Serializable getDTOValue(
-			DTOConverterContext dtoConverterContext,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-			ObjectField objectField, Serializable serializable)
-		throws Exception {
-
-		if (Validator.isNull(serializable)) {
-			return null;
-		}
-
-		if (serializable instanceof String) {
-			Date date = DateUtil.parseDate(
-				"yyyy-MM-dd", (String)serializable,
-				LocaleUtil.getSiteDefault());
-
-			serializable = new Timestamp(date.getTime());
-		}
-
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-		return simpleDateFormat.format((Timestamp)serializable);
 	}
 
 	@Override

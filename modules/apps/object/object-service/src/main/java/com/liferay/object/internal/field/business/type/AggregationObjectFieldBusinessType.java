@@ -267,6 +267,15 @@ public class AggregationObjectFieldBusinessType
 		}
 	}
 
+	private void _validateObjectFilterValue(
+		Set<String> missingObjectFilterValues, String objectFilterName,
+		String objectFilterValue) {
+
+		if (Validator.isNull(objectFilterValue)) {
+			missingObjectFilterValues.add(objectFilterName);
+		}
+	}
+
 	private void _validateObjectFilters(
 			ObjectDefinition objectDefinition, String objectFieldName,
 			List<ObjectFilter> objectFilters)
@@ -308,15 +317,6 @@ public class AggregationObjectFieldBusinessType
 					objectFieldName, "filterBy",
 					GetterUtil.getString(objectFilter.getFilterBy()));
 			}
-		}
-	}
-
-	private void _validateObjectFilterValue(
-		Set<String> missingObjectFilterValues, String objectFilterName,
-		String objectFilterValue) {
-
-		if (Validator.isNull(objectFilterValue)) {
-			missingObjectFilterValues.add(objectFilterName);
 		}
 	}
 

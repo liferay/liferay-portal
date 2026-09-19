@@ -403,6 +403,17 @@ public class BlogsEditEntryDisplayContext {
 		return _title;
 	}
 
+	public String getURLTitle() {
+		if (_urlTitle != null) {
+			return _urlTitle;
+		}
+
+		_urlTitle = BeanParamUtil.getString(
+			getBlogsEntry(), _httpServletRequest, "urlTitle");
+
+		return _urlTitle;
+	}
+
 	public String getUploadCoverImageURL() {
 		return PortletURLBuilder.createActionURL(
 			_liferayPortletResponse
@@ -417,17 +428,6 @@ public class BlogsEditEntryDisplayContext {
 		).setActionName(
 			"/blogs/upload_small_image"
 		).buildString();
-	}
-
-	public String getURLTitle() {
-		if (_urlTitle != null) {
-			return _urlTitle;
-		}
-
-		_urlTitle = BeanParamUtil.getString(
-			getBlogsEntry(), _httpServletRequest, "urlTitle");
-
-		return _urlTitle;
 	}
 
 	public String getViewEntryURL() {
@@ -477,6 +477,14 @@ public class BlogsEditEntryDisplayContext {
 		return _allowTrackbacks;
 	}
 
+	public boolean isAutoTaggingEnabled() {
+		if (getBlogsEntry() == null) {
+			return false;
+		}
+
+		return _assetAutoTaggerConfiguration.isEnabled();
+	}
+
 	public boolean isAutomaticURL() {
 		String uniqueUrlTitle = BlogsEntryLocalServiceUtil.getUniqueUrlTitle(
 			_blogsEntry);
@@ -504,14 +512,6 @@ public class BlogsEditEntryDisplayContext {
 		}
 
 		return false;
-	}
-
-	public boolean isAutoTaggingEnabled() {
-		if (getBlogsEntry() == null) {
-			return false;
-		}
-
-		return _assetAutoTaggerConfiguration.isEnabled();
 	}
 
 	public boolean isCustomAbstract() {

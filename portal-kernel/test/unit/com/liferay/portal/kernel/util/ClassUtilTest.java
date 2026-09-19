@@ -73,6 +73,13 @@ public class ClassUtilTest {
 	}
 
 	@Test
+	public void testGetClassName() {
+		Assert.assertEquals(
+			"java.lang.Object", ClassUtil.getClassName(new Object()));
+		Assert.assertNull(ClassUtil.getClassName(null));
+	}
+
+	@Test
 	public void testGetClasses() throws Exception {
 		_testGetClasses("@Annotation", "Annotation");
 		_testGetClasses("@AnnotationClass.Annotation", "AnnotationClass");
@@ -118,13 +125,6 @@ public class ClassUtilTest {
 		_testGetClassesWithFile(
 			"TestClass.txt", "@Annotation({A.class,B.class} TestClass", "A",
 			"B", "Annotation", "TestClass");
-	}
-
-	@Test
-	public void testGetClassName() {
-		Assert.assertEquals(
-			"java.lang.Object", ClassUtil.getClassName(new Object()));
-		Assert.assertNull(ClassUtil.getClassName(null));
 	}
 
 	@Test

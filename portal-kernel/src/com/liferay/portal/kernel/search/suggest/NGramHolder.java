@@ -41,16 +41,16 @@ public class NGramHolder {
 		return _nGramEnds;
 	}
 
-	public Map<String, List<String>> getNGrams() {
-		return _nGrams;
-	}
-
 	public Map<String, String> getNGramStarts() {
 		return _nGramStarts;
 	}
 
+	public Map<String, List<String>> getNGrams() {
+		return _nGrams;
+	}
+
 	private final Map<String, String> _nGramEnds = new HashMap<>();
-	private final Map<String, List<String>> _nGrams = new HashMap<>();
 	private final Map<String, String> _nGramStarts = new HashMap<>();
+	private final Map<String, List<String>> _nGrams = new HashMap<>();
 
 }

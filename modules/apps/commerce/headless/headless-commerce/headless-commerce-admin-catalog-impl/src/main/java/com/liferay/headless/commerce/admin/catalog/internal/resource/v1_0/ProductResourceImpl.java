@@ -1057,6 +1057,39 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		return productShippingConfiguration;
 	}
 
+	private ProductTaxConfiguration _getProductTaxConfiguration(
+		Product product) {
+
+		ProductConfiguration productConfiguration =
+			product.getProductConfiguration();
+
+		if (productConfiguration != null) {
+			return _getProductTaxConfiguration(productConfiguration);
+		}
+
+		ProductTaxConfiguration productTaxConfiguration =
+			product.getTaxConfiguration();
+
+		if (productTaxConfiguration != null) {
+			return productTaxConfiguration;
+		}
+
+		return new ProductTaxConfiguration();
+	}
+
+	private ProductTaxConfiguration _getProductTaxConfiguration(
+		ProductConfiguration productConfiguration) {
+
+		ProductTaxConfiguration productTaxConfiguration =
+			productConfiguration.getProductTaxConfiguration();
+
+		if (productTaxConfiguration == null) {
+			return new ProductTaxConfiguration();
+		}
+
+		return productTaxConfiguration;
+	}
+
 	private Page<Product> _getProductsPage(
 			long companyId, String search, Filter filter, Pagination pagination,
 			Sort[] sorts,
@@ -1091,39 +1124,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				}
 			},
 			sorts, transformUnsafeFunction);
-	}
-
-	private ProductTaxConfiguration _getProductTaxConfiguration(
-		Product product) {
-
-		ProductConfiguration productConfiguration =
-			product.getProductConfiguration();
-
-		if (productConfiguration != null) {
-			return _getProductTaxConfiguration(productConfiguration);
-		}
-
-		ProductTaxConfiguration productTaxConfiguration =
-			product.getTaxConfiguration();
-
-		if (productTaxConfiguration != null) {
-			return productTaxConfiguration;
-		}
-
-		return new ProductTaxConfiguration();
-	}
-
-	private ProductTaxConfiguration _getProductTaxConfiguration(
-		ProductConfiguration productConfiguration) {
-
-		ProductTaxConfiguration productTaxConfiguration =
-			productConfiguration.getProductTaxConfiguration();
-
-		if (productTaxConfiguration == null) {
-			return new ProductTaxConfiguration();
-		}
-
-		return productTaxConfiguration;
 	}
 
 	private boolean _isPublishedCPDefinitionVersionable(
@@ -1865,6 +1865,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	private AssetTagService _assetTagService;
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
@@ -1899,9 +1902,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	private CPConfigurationEntryService _cpConfigurationEntryService;
 
 	@Reference
-	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
-
-	@Reference
 	private CPDefinitionInventoryService _cpDefinitionInventoryService;
 
 	@Reference
@@ -1932,10 +1932,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 		_cpDefinitionVirtualSettingService;
 
 	@Reference
-	private CPDVirtualSettingFileEntryService
-		_cpdVirtualSettingFileEntryService;
-
-	@Reference
 	private CPInstanceService _cpInstanceService;
 
 	@Reference
@@ -1948,9 +1944,6 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 	private CPOptionService _cpOptionService;
 
 	@Reference
-	private CProductLocalService _cProductLocalService;
-
-	@Reference
 	private CPSpecificationOptionService _cpSpecificationOptionService;
 
 	@Reference
@@ -1958,6 +1951,13 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;
+
+	@Reference
+	private CPDAvailabilityEstimateService _cpdAvailabilityEstimateService;
+
+	@Reference
+	private CPDVirtualSettingFileEntryService
+		_cpdVirtualSettingFileEntryService;
 
 	@Reference
 	private CSDiagramEntryService _csDiagramEntryService;

@@ -58,10 +58,10 @@ public class WikiNodeUADDisplayTest extends BaseUADDisplayTestCase<WikiNode> {
 	)
 	private UADDisplay<WikiNode> _uadDisplay;
 
-	@DeleteAfterTestRun
-	private final List<WikiNode> _wikiNodes = new ArrayList<>();
-
 	@Inject
 	private WikiNodeUADTestHelper _wikiNodeUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<WikiNode> _wikiNodes = new ArrayList<>();
 
 }

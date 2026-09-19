@@ -570,6 +570,55 @@ public class DXPCloudClientTestrayImporter {
 		}
 	}
 
+	private static Element _getTestSuiteEnvironmentsElement() {
+		Element environmentsElement = Dom4JUtil.getNewElement("environments");
+
+		Element browserEnvironmentElement = environmentsElement.addElement(
+			"environment");
+
+		browserEnvironmentElement.addAttribute(
+			"option", _environmentBrowserName);
+		browserEnvironmentElement.addAttribute("type", "Browser");
+
+		Element operatingSystemEnvironmentElement =
+			environmentsElement.addElement("environment");
+
+		operatingSystemEnvironmentElement.addAttribute(
+			"option", _environmentOperatingSystemName);
+		operatingSystemEnvironmentElement.addAttribute(
+			"type", "Operating System");
+
+		return environmentsElement;
+	}
+
+	private static Element _getTestSuitePropertiesElement() {
+		TestrayBuild testrayBuild = _getTestrayBuild();
+
+		TestrayProductVersion testrayProductVersion =
+			testrayBuild.getTestrayProductVersion();
+		TestrayProject testrayProject = testrayBuild.getTestrayProject();
+		TestrayRoutine testrayRoutine = testrayBuild.getTestrayRoutine();
+
+		Properties properties = new Properties();
+
+		properties.setProperty(
+			"testray.build.date",
+			JenkinsResultsParserUtil.toDateString(
+				new Date(), "yyy-MM-dd HH:mm:ss", "America/Los_Angeles"));
+		properties.setProperty("testray.build.name", testrayBuild.getName());
+		properties.setProperty("testray.build.type", testrayRoutine.getName());
+		properties.setProperty(
+			"testray.product.version", testrayProductVersion.getName());
+		properties.setProperty(
+			"testray.project.name", testrayProject.getName());
+		properties.setProperty(
+			"testray.run.id",
+			JenkinsResultsParserUtil.join(
+				"|", _environmentBrowserName, _environmentOperatingSystemName));
+
+		return _getPropertiesElement(properties);
+	}
+
 	private static TestrayBuild _getTestrayBuild() {
 		if (_testrayBuild != null) {
 			return _testrayBuild;
@@ -619,55 +668,6 @@ public class DXPCloudClientTestrayImporter {
 			JenkinsResultsParserUtil.toDateString(
 				new Date(_START_TIME), "yyyy-MM-dd[HH:mm:ss]",
 				"America/Los_Angeles"));
-	}
-
-	private static Element _getTestSuiteEnvironmentsElement() {
-		Element environmentsElement = Dom4JUtil.getNewElement("environments");
-
-		Element browserEnvironmentElement = environmentsElement.addElement(
-			"environment");
-
-		browserEnvironmentElement.addAttribute(
-			"option", _environmentBrowserName);
-		browserEnvironmentElement.addAttribute("type", "Browser");
-
-		Element operatingSystemEnvironmentElement =
-			environmentsElement.addElement("environment");
-
-		operatingSystemEnvironmentElement.addAttribute(
-			"option", _environmentOperatingSystemName);
-		operatingSystemEnvironmentElement.addAttribute(
-			"type", "Operating System");
-
-		return environmentsElement;
-	}
-
-	private static Element _getTestSuitePropertiesElement() {
-		TestrayBuild testrayBuild = _getTestrayBuild();
-
-		TestrayProductVersion testrayProductVersion =
-			testrayBuild.getTestrayProductVersion();
-		TestrayProject testrayProject = testrayBuild.getTestrayProject();
-		TestrayRoutine testrayRoutine = testrayBuild.getTestrayRoutine();
-
-		Properties properties = new Properties();
-
-		properties.setProperty(
-			"testray.build.date",
-			JenkinsResultsParserUtil.toDateString(
-				new Date(), "yyy-MM-dd HH:mm:ss", "America/Los_Angeles"));
-		properties.setProperty("testray.build.name", testrayBuild.getName());
-		properties.setProperty("testray.build.type", testrayRoutine.getName());
-		properties.setProperty(
-			"testray.product.version", testrayProductVersion.getName());
-		properties.setProperty(
-			"testray.project.name", testrayProject.getName());
-		properties.setProperty(
-			"testray.run.id",
-			JenkinsResultsParserUtil.join(
-				"|", _environmentBrowserName, _environmentOperatingSystemName));
-
-		return _getPropertiesElement(properties);
 	}
 
 	private static void _initEnvironmentVariables() {
@@ -896,6 +896,7 @@ public class DXPCloudClientTestrayImporter {
 		"test\\[(?<testName>[^\\]]{1,150})[^\\]]*\\]");
 	private static File _projectDir = new File(".");
 	private static String _relativeURLPath;
+	private static String _testType;
 	private static TestrayBuild _testrayBuild;
 	private static String _testrayBuildName =
 		"DXP Cloud Client Build - $(start.time)";
@@ -910,6 +911,5 @@ public class DXPCloudClientTestrayImporter {
 	private static String _testrayRoutineName = "DXP Cloud Client Routine";
 	private static String _testrayServerURL = "https://testray.liferay.com";
 	private static String _testrayTeamName = "DXP Cloud Client Team";
-	private static String _testType;
 
 }

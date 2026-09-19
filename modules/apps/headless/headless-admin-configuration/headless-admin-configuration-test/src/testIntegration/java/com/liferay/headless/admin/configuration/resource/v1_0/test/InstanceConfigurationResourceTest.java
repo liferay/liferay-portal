@@ -287,22 +287,6 @@ public class InstanceConfigurationResourceTest
 		assertValid(getInstanceConfiguration);
 	}
 
-	private void _testGetInstanceConfigurationWithoutPermission()
-		throws Exception {
-
-		try {
-			_userInstanceConfigurationResource.getInstanceConfiguration(
-				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
-	}
-
 	private void _testGetInstanceConfigurationWithPasswordKey()
 		throws Exception {
 
@@ -330,6 +314,22 @@ public class InstanceConfigurationResourceTest
 		properties = instanceConfiguration.getProperties();
 
 		Assert.assertNull(properties.get("passwordStringKey"));
+	}
+
+	private void _testGetInstanceConfigurationWithoutPermission()
+		throws Exception {
+
+		try {
+			_userInstanceConfigurationResource.getInstanceConfiguration(
+				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
 	}
 
 	private void _testPutInstanceConfigurationWithoutPermission()

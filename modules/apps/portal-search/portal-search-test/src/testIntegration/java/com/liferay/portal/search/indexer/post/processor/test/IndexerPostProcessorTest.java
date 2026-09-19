@@ -194,11 +194,10 @@ public class IndexerPostProcessorTest {
 	private final IndexerPostProcessor _indexerPostProcessor =
 		createIndexerPostProcessor();
 	private ServiceRegistration<?> _serviceRegistration;
+	private final UserSearchFixture _userSearchFixture =
+		new UserSearchFixture();
 
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private final UserSearchFixture _userSearchFixture =
-		new UserSearchFixture();
 
 }

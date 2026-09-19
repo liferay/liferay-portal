@@ -219,6 +219,48 @@ public class OrganizationLocalServiceImpl
 		return true;
 	}
 
+	@Override
+	public Organization addOrUpdateOrganization(
+			String externalReferenceCode, long userId,
+			long parentOrganizationId, String name, String type, long regionId,
+			long countryId, long statusListTypeId, String comments,
+			boolean hasLogo, byte[] logoBytes, boolean site,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		Organization organization = organizationPersistence.fetchByERC_C(
+			externalReferenceCode, user.getCompanyId());
+
+		if (organization == null) {
+			organization = addOrganization(
+				externalReferenceCode, userId, parentOrganizationId, name, type,
+				regionId, countryId, statusListTypeId, comments, site,
+				serviceContext);
+
+			UserFileUploadsSettings userFileUploadsSettings =
+				_userFileUploadsSettingsSnapshot.get();
+
+			PortalUtil.updateImageId(
+				organization, hasLogo, logoBytes, "logoId",
+				userFileUploadsSettings.getImageMaxSize(),
+				userFileUploadsSettings.getImageMaxHeight(),
+				userFileUploadsSettings.getImageMaxWidth());
+
+			organization = organizationPersistence.update(organization);
+		}
+		else {
+			organization = updateOrganization(
+				externalReferenceCode, user.getCompanyId(),
+				organization.getOrganizationId(), parentOrganizationId, name,
+				type, regionId, countryId, statusListTypeId, comments, hasLogo,
+				logoBytes, site, serviceContext);
+		}
+
+		return organization;
+	}
+
 	/**
 	 * Adds an organization.
 	 *
@@ -444,48 +486,6 @@ public class OrganizationLocalServiceImpl
 		_userLocalService.addOrganizationUser(organizationId, user);
 
 		return user;
-	}
-
-	@Override
-	public Organization addOrUpdateOrganization(
-			String externalReferenceCode, long userId,
-			long parentOrganizationId, String name, String type, long regionId,
-			long countryId, long statusListTypeId, String comments,
-			boolean hasLogo, byte[] logoBytes, boolean site,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		Organization organization = organizationPersistence.fetchByERC_C(
-			externalReferenceCode, user.getCompanyId());
-
-		if (organization == null) {
-			organization = addOrganization(
-				externalReferenceCode, userId, parentOrganizationId, name, type,
-				regionId, countryId, statusListTypeId, comments, site,
-				serviceContext);
-
-			UserFileUploadsSettings userFileUploadsSettings =
-				_userFileUploadsSettingsSnapshot.get();
-
-			PortalUtil.updateImageId(
-				organization, hasLogo, logoBytes, "logoId",
-				userFileUploadsSettings.getImageMaxSize(),
-				userFileUploadsSettings.getImageMaxHeight(),
-				userFileUploadsSettings.getImageMaxWidth());
-
-			organization = organizationPersistence.update(organization);
-		}
-		else {
-			organization = updateOrganization(
-				externalReferenceCode, user.getCompanyId(),
-				organization.getOrganizationId(), parentOrganizationId, name,
-				type, regionId, countryId, statusListTypeId, comments, hasLogo,
-				logoBytes, site, serviceContext);
-		}
-
-		return organization;
 	}
 
 	/**

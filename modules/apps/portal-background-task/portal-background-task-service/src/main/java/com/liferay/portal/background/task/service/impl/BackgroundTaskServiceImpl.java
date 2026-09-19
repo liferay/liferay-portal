@@ -23,6 +23,12 @@ import org.osgi.service.component.annotations.Component;
 public class BackgroundTaskServiceImpl extends BackgroundTaskServiceBaseImpl {
 
 	@Override
+	public String getBackgroundTaskStatusJSON(long backgroundTaskId) {
+		return backgroundTaskLocalService.getBackgroundTaskStatusJSON(
+			backgroundTaskId);
+	}
+
+	@Override
 	public int getBackgroundTasksCount(
 		long groupId, String taskExecutorClassName, boolean completed) {
 
@@ -36,12 +42,6 @@ public class BackgroundTaskServiceImpl extends BackgroundTaskServiceBaseImpl {
 
 		return backgroundTaskLocalService.getBackgroundTasksCount(
 			groupId, name, taskExecutorClassName);
-	}
-
-	@Override
-	public String getBackgroundTaskStatusJSON(long backgroundTaskId) {
-		return backgroundTaskLocalService.getBackgroundTaskStatusJSON(
-			backgroundTaskId);
 	}
 
 }

@@ -53,11 +53,11 @@ public class RoleUADExporterTest extends BaseUADExporterTestCase<Role> {
 		return _uadExporter;
 	}
 
-	@DeleteAfterTestRun
-	private final List<Role> _roles = new ArrayList<>();
-
 	@Inject
 	private RoleUADTestHelper _roleUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<Role> _roles = new ArrayList<>();
 
 	@Inject(
 		filter = "component.name=com.liferay.roles.uad.exporter.RoleUADExporter"

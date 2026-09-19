@@ -166,15 +166,6 @@ public class SuggestionsPortletDisplayContextBuilderTest {
 	}
 
 	@Test
-	public void testGetSpellCheckSuggestionsNullByDefault() {
-		SuggestionsPortletDisplayContext suggestionsPortletDisplayContext =
-			_displayContextBuilder.build();
-
-		Assert.assertNull(
-			suggestionsPortletDisplayContext.getSpellCheckSuggestion());
-	}
-
-	@Test
 	public void testGetSpellCheckSuggestionWithEmptySuggestion() {
 		_setUpSearchedKeywords("q", "a b");
 
@@ -186,6 +177,15 @@ public class SuggestionsPortletDisplayContextBuilderTest {
 		_setUpSearchedKeywords("q", "a b");
 
 		Assert.assertNull(buildSpellCheckSuggestion(null));
+	}
+
+	@Test
+	public void testGetSpellCheckSuggestionsNullByDefault() {
+		SuggestionsPortletDisplayContext suggestionsPortletDisplayContext =
+			_displayContextBuilder.build();
+
+		Assert.assertNull(
+			suggestionsPortletDisplayContext.getSpellCheckSuggestion());
 	}
 
 	@Test

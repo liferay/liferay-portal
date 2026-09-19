@@ -1311,23 +1311,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 	}
 
-	private void _testGetSiteFragmentSetFragmentsPageWithoutPermissions()
-		throws Exception {
-
-		_postSiteFragmentSetFragment(
-			_randomFragment(true, true, _fragmentCollection),
-			_fragmentCollection.getExternalReferenceCode());
-
-		Page<Fragment> page =
-			_userWithoutPermissionsFragmentResource.
-				getSiteFragmentSetFragmentsPage(
-					testGroup.getExternalReferenceCode(),
-					_fragmentCollection.getExternalReferenceCode(),
-					Pagination.of(1, 10));
-
-		Assert.assertEquals(0, page.getTotalCount());
-	}
-
 	private void _testGetSiteFragmentSetFragmentsPageWithStatus()
 		throws Exception {
 
@@ -1367,6 +1350,78 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		assertContains(approvedFragment, items);
 		assertContains(draftFragment, items);
 		Assert.assertEquals(items.toString(), 3, items.size());
+	}
+
+	private void _testGetSiteFragmentSetFragmentsPageWithoutPermissions()
+		throws Exception {
+
+		_postSiteFragmentSetFragment(
+			_randomFragment(true, true, _fragmentCollection),
+			_fragmentCollection.getExternalReferenceCode());
+
+		Page<Fragment> page =
+			_userWithoutPermissionsFragmentResource.
+				getSiteFragmentSetFragmentsPage(
+					testGroup.getExternalReferenceCode(),
+					_fragmentCollection.getExternalReferenceCode(),
+					Pagination.of(1, 10));
+
+		Assert.assertEquals(0, page.getTotalCount());
+	}
+
+	private void _testGetSiteFragmentThumbnailURLReference() throws Exception {
+		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
+
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				postFragment.getExternalReferenceCode(),
+				testGroup.getGroupId());
+
+		FileEntry fileEntry = _addPortletFileEntry("thumbnail_1.png");
+
+		_fragmentEntryLocalService.updateFragmentEntry(
+			fragmentEntry.getFragmentEntryId(), fileEntry.getFileEntryId());
+
+		Fragment getFragment = fragmentResource.getSiteFragment(
+			testGroup.getExternalReferenceCode(),
+			postFragment.getExternalReferenceCode());
+
+		Assert.assertNull(getFragment.getThumbnailURLReference());
+
+		FragmentResource fragmentResource = _getFragmentResource(
+			"thumbnailURLReference");
+
+		_assertThumbnailURLReference(
+			_thumbnail1Bytes, fileEntry.getExternalReferenceCode(),
+			fragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				postFragment.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteFragmentWithFormFragment() throws Exception {
+		FieldType[] fieldTypes = {RandomTestUtil.randomEnum(FieldType.class)};
+
+		Fragment fragment = _postSiteFragmentSetFragment(
+			_randomFormFragment(fieldTypes));
+
+		_assertFormFragment(
+			fieldTypes,
+			fragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				fragment.getExternalReferenceCode()));
+	}
+
+	private void _testGetSiteFragmentWithoutPermissionsProblemException()
+		throws Exception {
+
+		Fragment fragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, true, _fragmentCollection));
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> _userWithoutPermissionsFragmentResource.getSiteFragment(
+				testGroup.getExternalReferenceCode(),
+				fragment.getExternalReferenceCode()));
 	}
 
 	private void _testGetSiteFragmentsPageWithFilter() throws Exception {
@@ -1438,61 +1493,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 				Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
-	}
-
-	private void _testGetSiteFragmentThumbnailURLReference() throws Exception {
-		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
-
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
-				postFragment.getExternalReferenceCode(),
-				testGroup.getGroupId());
-
-		FileEntry fileEntry = _addPortletFileEntry("thumbnail_1.png");
-
-		_fragmentEntryLocalService.updateFragmentEntry(
-			fragmentEntry.getFragmentEntryId(), fileEntry.getFileEntryId());
-
-		Fragment getFragment = fragmentResource.getSiteFragment(
-			testGroup.getExternalReferenceCode(),
-			postFragment.getExternalReferenceCode());
-
-		Assert.assertNull(getFragment.getThumbnailURLReference());
-
-		FragmentResource fragmentResource = _getFragmentResource(
-			"thumbnailURLReference");
-
-		_assertThumbnailURLReference(
-			_thumbnail1Bytes, fileEntry.getExternalReferenceCode(),
-			fragmentResource.getSiteFragment(
-				testGroup.getExternalReferenceCode(),
-				postFragment.getExternalReferenceCode()));
-	}
-
-	private void _testGetSiteFragmentWithFormFragment() throws Exception {
-		FieldType[] fieldTypes = {RandomTestUtil.randomEnum(FieldType.class)};
-
-		Fragment fragment = _postSiteFragmentSetFragment(
-			_randomFormFragment(fieldTypes));
-
-		_assertFormFragment(
-			fieldTypes,
-			fragmentResource.getSiteFragment(
-				testGroup.getExternalReferenceCode(),
-				fragment.getExternalReferenceCode()));
-	}
-
-	private void _testGetSiteFragmentWithoutPermissionsProblemException()
-		throws Exception {
-
-		Fragment fragment = _postSiteFragmentSetFragment(
-			_randomFragment(true, true, _fragmentCollection));
-
-		_assertProblemExceptionProblemStatus(
-			"NOT_FOUND",
-			() -> _userWithoutPermissionsFragmentResource.getSiteFragment(
-				testGroup.getExternalReferenceCode(),
-				fragment.getExternalReferenceCode()));
 	}
 
 	private void _testPostFragmentApproved(

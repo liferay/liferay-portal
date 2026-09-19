@@ -184,33 +184,6 @@ public class ConvertLayoutMVCActionCommandTest {
 	}
 
 	@Test
-	public void testConvertWidgetLayoutToContentLayoutWithoutPermissions()
-		throws Exception {
-
-		Layout originalLayout = LayoutTestUtil.addTypePortletLayout(
-			_group.getGroupId(),
-			UnicodePropertiesBuilder.put(
-				LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID, "1_column"
-			).buildString());
-
-		User user = _userLocalService.getDefaultUser(_company.getCompanyId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			Exception exception = Assert.assertThrows(
-				PortletException.class,
-				() -> _mvcActionCommand.processAction(
-					_getMockLiferayPortletActionRequest(
-						originalLayout.getPlid(), user),
-					new MockLiferayPortletActionResponse()));
-
-			Assert.assertTrue(
-				exception.getCause() instanceof PrincipalException);
-		}
-	}
-
-	@Test
 	@TestInfo("LPS-98589")
 	public void testConvertWidgetLayoutToContentLayoutWithPortletDecorators()
 		throws Exception {
@@ -340,6 +313,33 @@ public class ConvertLayoutMVCActionCommandTest {
 		Assert.assertFalse(
 			draftTypeSettingsPropertiesUnicodeProperties.containsKey(
 				"column-2-customizable"));
+	}
+
+	@Test
+	public void testConvertWidgetLayoutToContentLayoutWithoutPermissions()
+		throws Exception {
+
+		Layout originalLayout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(),
+			UnicodePropertiesBuilder.put(
+				LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID, "1_column"
+			).buildString());
+
+		User user = _userLocalService.getDefaultUser(_company.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Exception exception = Assert.assertThrows(
+				PortletException.class,
+				() -> _mvcActionCommand.processAction(
+					_getMockLiferayPortletActionRequest(
+						originalLayout.getPlid(), user),
+					new MockLiferayPortletActionResponse()));
+
+			Assert.assertTrue(
+				exception.getCause() instanceof PrincipalException);
+		}
 	}
 
 	private void _assertTypeSettingsProperties(
@@ -594,11 +594,11 @@ public class ConvertLayoutMVCActionCommandTest {
 	private Portal _portal;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;

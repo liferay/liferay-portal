@@ -97,26 +97,6 @@ public class CPInstanceDisplayContext extends BaseCPDefinitionsDisplayContext {
 			cpInstanceId);
 	}
 
-	public String getCommerceCurrencyCode() throws PortalException {
-		CommerceCurrency commerceCurrency = getCommerceCurrency();
-
-		if (commerceCurrency != null) {
-			return commerceCurrency.getCode();
-		}
-
-		return StringPool.BLANK;
-	}
-
-	public CommercePriceEntry getCommercePriceEntry(CPInstance cpInstance) {
-		if (cpInstance == null) {
-			return null;
-		}
-
-		return _commercePriceEntryService.getInstanceBaseCommercePriceEntry(
-			cpInstance.getCPInstanceUuid(),
-			CommercePriceListConstants.TYPE_PRICE_LIST, StringPool.BLANK);
-	}
-
 	public List<CPDefinitionOptionRel> getCPDefinitionOptionRels()
 		throws PortalException {
 
@@ -178,6 +158,26 @@ public class CPInstanceDisplayContext extends BaseCPDefinitionsDisplayContext {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	public String getCommerceCurrencyCode() throws PortalException {
+		CommerceCurrency commerceCurrency = getCommerceCurrency();
+
+		if (commerceCurrency != null) {
+			return commerceCurrency.getCode();
+		}
+
+		return StringPool.BLANK;
+	}
+
+	public CommercePriceEntry getCommercePriceEntry(CPInstance cpInstance) {
+		if (cpInstance == null) {
+			return null;
+		}
+
+		return _commercePriceEntryService.getInstanceBaseCommercePriceEntry(
+			cpInstance.getCPInstanceUuid(),
+			CommercePriceListConstants.TYPE_PRICE_LIST, StringPool.BLANK);
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

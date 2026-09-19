@@ -271,13 +271,13 @@ public interface PortletDataContext extends Serializable {
 
 	public String getRootPortletId();
 
-	public Set<String> getScopedPrimaryKeys();
-
 	public long getScopeGroupId();
 
 	public String getScopeLayoutUuid();
 
 	public String getScopeType();
+
+	public Set<String> getScopedPrimaryKeys();
 
 	public long getSourceCompanyGroupId();
 

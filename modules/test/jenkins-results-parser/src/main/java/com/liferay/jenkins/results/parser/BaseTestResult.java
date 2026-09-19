@@ -209,6 +209,10 @@ public abstract class BaseTestResult implements TestResult {
 		return sb.toString();
 	}
 
+	protected String getTestTaskName() {
+		return null;
+	}
+
 	protected String getTestrayLogsURL() {
 		Properties buildProperties = null;
 
@@ -242,10 +246,6 @@ public abstract class BaseTestResult implements TestResult {
 			startPropertiesTempMap.get("TOP_LEVEL_JOB_NAME"), "/",
 			startPropertiesTempMap.get("TOP_LEVEL_BUILD_NUMBER"), "/",
 			build.getJobVariant(), "/", getAxisNumber());
-	}
-
-	protected String getTestTaskName() {
-		return null;
 	}
 
 	protected boolean hasLiferayLog() {

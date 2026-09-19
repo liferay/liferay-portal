@@ -53,6 +53,42 @@ public class SchemaResourceImpl extends BaseSchemaResourceImpl {
 		return getV2SchemaById(null);
 	}
 
+	private SCIMResponse _getSCIMResponse(String id) {
+		try {
+			ScimUtil.getScimClientOAuth2ApplicationConfiguration(
+				contextCompany.getCompanyId(), _configurationAdmin);
+
+			if (Validator.isNull(id)) {
+				return new SCIMResponse(
+					ResponseCodeConstants.CODE_OK, _getSchemasJSON(),
+					ScimUtil.getHeaders(SCIMConstants.SCHEMAS_ENDPOINT));
+			}
+
+			String schemaJSON = _getSchemaJSON(id);
+
+			if (Validator.isNull(schemaJSON)) {
+				throw new NotFoundException(
+					"No schema found with schema ID " + id);
+			}
+
+			return new SCIMResponse(
+				ResponseCodeConstants.CODE_OK, schemaJSON,
+				ScimUtil.getHeaders(SCIMConstants.SCHEMAS_ENDPOINT));
+		}
+		catch (AbstractCharonException abstractCharonException) {
+			return AbstractResourceManager.encodeSCIMException(
+				abstractCharonException);
+		}
+		catch (Exception exception) {
+			if (exception instanceof ConflictException) {
+				return AbstractResourceManager.encodeSCIMException(
+					(ConflictException)exception);
+			}
+
+			throw exception;
+		}
+	}
+
 	private String _getSchemaJSON(String id) throws AbstractCharonException {
 		String schemaFileName = _schemaFileNames.get(id);
 
@@ -89,42 +125,6 @@ public class SchemaResourceImpl extends BaseSchemaResourceImpl {
 		).put(
 			"totalResults", _schemaFileNames.size()
 		).toString();
-	}
-
-	private SCIMResponse _getSCIMResponse(String id) {
-		try {
-			ScimUtil.getScimClientOAuth2ApplicationConfiguration(
-				contextCompany.getCompanyId(), _configurationAdmin);
-
-			if (Validator.isNull(id)) {
-				return new SCIMResponse(
-					ResponseCodeConstants.CODE_OK, _getSchemasJSON(),
-					ScimUtil.getHeaders(SCIMConstants.SCHEMAS_ENDPOINT));
-			}
-
-			String schemaJSON = _getSchemaJSON(id);
-
-			if (Validator.isNull(schemaJSON)) {
-				throw new NotFoundException(
-					"No schema found with schema ID " + id);
-			}
-
-			return new SCIMResponse(
-				ResponseCodeConstants.CODE_OK, schemaJSON,
-				ScimUtil.getHeaders(SCIMConstants.SCHEMAS_ENDPOINT));
-		}
-		catch (AbstractCharonException abstractCharonException) {
-			return AbstractResourceManager.encodeSCIMException(
-				abstractCharonException);
-		}
-		catch (Exception exception) {
-			if (exception instanceof ConflictException) {
-				return AbstractResourceManager.encodeSCIMException(
-					(ConflictException)exception);
-			}
-
-			throw exception;
-		}
 	}
 
 	private JSONObject _read(String fileName) throws InternalErrorException {

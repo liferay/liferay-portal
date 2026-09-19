@@ -29,31 +29,6 @@ public class JCalendarUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetDaysBetween() {
-		Assert.assertEquals(
-			1,
-			JCalendarUtil.getDaysBetween(
-				JCalendarUtil.getJCalendar(
-					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
-				JCalendarUtil.getJCalendar(
-					2025, Calendar.JUNE, 1, 12, 30, 0, 0, TimeZoneUtil.GMT)));
-		Assert.assertEquals(
-			1,
-			JCalendarUtil.getDaysBetween(
-				JCalendarUtil.getJCalendar(
-					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
-				JCalendarUtil.getJCalendar(
-					2025, Calendar.JUNE, 2, 0, 0, 0, 0, TimeZoneUtil.GMT)));
-		Assert.assertEquals(
-			2,
-			JCalendarUtil.getDaysBetween(
-				JCalendarUtil.getJCalendar(
-					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
-				JCalendarUtil.getJCalendar(
-					2025, Calendar.JUNE, 2, 0, 1, 0, 0, TimeZoneUtil.GMT)));
-	}
-
-	@Test
 	public void testGetDSTShiftAtLosAngelesDuringDST() {
 		Calendar jCalendar1 = JCalendarUtil.getJCalendar(
 			2012, Calendar.MAY, 1, 12, 0, 0, 0, TimeZoneUtil.GMT);
@@ -103,6 +78,31 @@ public class JCalendarUtilTest {
 			jCalendar1, jCalendar2, _losAngelesTimeZone);
 
 		Assert.assertEquals(-1 * JCalendarUtil.HOUR, shift);
+	}
+
+	@Test
+	public void testGetDaysBetween() {
+		Assert.assertEquals(
+			1,
+			JCalendarUtil.getDaysBetween(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 30, 0, 0, TimeZoneUtil.GMT)));
+		Assert.assertEquals(
+			1,
+			JCalendarUtil.getDaysBetween(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 2, 0, 0, 0, 0, TimeZoneUtil.GMT)));
+		Assert.assertEquals(
+			2,
+			JCalendarUtil.getDaysBetween(
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 1, 12, 0, 0, 0, TimeZoneUtil.GMT),
+				JCalendarUtil.getJCalendar(
+					2025, Calendar.JUNE, 2, 0, 1, 0, 0, TimeZoneUtil.GMT)));
 	}
 
 	@Test

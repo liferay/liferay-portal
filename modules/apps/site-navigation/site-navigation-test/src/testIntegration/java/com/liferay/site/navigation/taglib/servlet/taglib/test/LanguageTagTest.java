@@ -437,18 +437,6 @@ public class LanguageTagTest {
 				LocaleUtil.US));
 	}
 
-	private void _testGetLanguageEntriesWithoutLayout() throws Exception {
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		themeDisplay.setCompany(
-			CompanyLocalServiceUtil.getCompany(_group.getCompanyId()));
-		themeDisplay.setLocale(LocaleUtil.US);
-
-		Assert.assertEquals(
-			_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
-			_getURL(_getLanguageEntries(themeDisplay), LocaleUtil.FRANCE));
-	}
-
 	private void _testGetLanguageEntriesWithRedirectParameter()
 		throws Exception {
 
@@ -538,6 +526,18 @@ public class LanguageTagTest {
 				LocaleUtil.FRANCE));
 
 		layoutSet.setVirtualHostnames(new TreeMap<>());
+	}
+
+	private void _testGetLanguageEntriesWithoutLayout() throws Exception {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			CompanyLocalServiceUtil.getCompany(_group.getCompanyId()));
+		themeDisplay.setLocale(LocaleUtil.US);
+
+		Assert.assertEquals(
+			_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
+			_getURL(_getLanguageEntries(themeDisplay), LocaleUtil.FRANCE));
 	}
 
 	private static final String _FORM_ACTION = "/custom/view";

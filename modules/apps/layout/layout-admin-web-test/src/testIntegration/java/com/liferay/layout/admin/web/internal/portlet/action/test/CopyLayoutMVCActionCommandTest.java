@@ -270,24 +270,6 @@ public class CopyLayoutMVCActionCommandTest {
 	}
 
 	@Test
-	public void testCopyLayoutWithoutPermissions() throws Exception {
-		_addFragmentEntryLinkToLayout(null);
-
-		User user = _userLocalService.getDefaultUser(_group.getCompanyId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			Exception exception = Assert.assertThrows(
-				PortletException.class,
-				() -> _processAction(false, Collections.emptyMap(), user));
-
-			Assert.assertTrue(
-				exception.getCause() instanceof PrincipalException);
-		}
-	}
-
-	@Test
 	@TestInfo({"LPS-175090", "LPS-192724"})
 	public void testCopyLayoutWithPermissions() throws Exception {
 		_addFragmentEntryLinkToLayout(null);
@@ -327,6 +309,24 @@ public class CopyLayoutMVCActionCommandTest {
 			count,
 			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
 				_group.getGroupId(), draftLayout.getPlid()));
+	}
+
+	@Test
+	public void testCopyLayoutWithoutPermissions() throws Exception {
+		_addFragmentEntryLinkToLayout(null);
+
+		User user = _userLocalService.getDefaultUser(_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Exception exception = Assert.assertThrows(
+				PortletException.class,
+				() -> _processAction(false, Collections.emptyMap(), user));
+
+			Assert.assertTrue(
+				exception.getCause() instanceof PrincipalException);
+		}
 	}
 
 	private void _addFragmentEntryLinkToLayout(String editableValues)

@@ -260,6 +260,52 @@ public class WikiPageResourceTest extends BaseWikiPageResourceTestCase {
 		}
 	}
 
+	private void _testPutWikiPageSuccessTaxonomyCategoryBriefWithAssetCategory()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				testGroup.getCreatorUserId(), testGroup.getGroupId(),
+				RandomTestUtil.randomString(),
+				ServiceContextTestUtil.getServiceContext(
+					testGroup.getGroupId()));
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			RandomTestUtil.randomString(), testGroup.getCreatorUserId(),
+			testGroup.getGroupId(), 0, RandomTestUtil.randomLocaleStringMap(),
+			null, assetVocabulary.getVocabularyId(), false, null,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		TaxonomyCategoryBrief[] expectedTaxonomyCategoryBriefs = {
+			new TaxonomyCategoryBrief() {
+				{
+					taxonomyCategoryId = assetCategory.getCategoryId();
+					taxonomyCategoryName = assetCategory.getName();
+					taxonomyCategoryReference =
+						new TaxonomyCategoryReference() {
+							{
+								externalReferenceCode =
+									assetCategory.getExternalReferenceCode();
+								siteKey = testGroup.getGroupKey();
+							}
+						};
+				}
+			}
+		};
+
+		_testPutWikiPageSuccessTaxonomyCategoryBriefs(
+			expectedTaxonomyCategoryBriefs, assetCategory.getCategoryId());
+	}
+
+	private void _testPutWikiPageSuccessTaxonomyCategoryBriefWithoutAssetCategory()
+		throws Exception {
+
+		WikiPage wikiPage = _addWikiPage();
+
+		_assertEqualsIgnoringOrder(
+			new TaxonomyCategoryBrief[0], wikiPage.getTaxonomyCategoryBriefs());
+	}
+
 	private void _testPutWikiPageSuccessTaxonomyCategoryBriefs(
 			TaxonomyCategoryBrief[] expectedTaxonomyCategoryBriefs,
 			Long assetCategoryId)
@@ -326,52 +372,6 @@ public class WikiPageResourceTest extends BaseWikiPageResourceTestCase {
 		_assertEqualsIgnoringOrder(
 			expectedTaxonomyCategoryBriefs,
 			wikiPage.getTaxonomyCategoryBriefs());
-	}
-
-	private void _testPutWikiPageSuccessTaxonomyCategoryBriefWithAssetCategory()
-		throws Exception {
-
-		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.addVocabulary(
-				testGroup.getCreatorUserId(), testGroup.getGroupId(),
-				RandomTestUtil.randomString(),
-				ServiceContextTestUtil.getServiceContext(
-					testGroup.getGroupId()));
-
-		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
-			RandomTestUtil.randomString(), testGroup.getCreatorUserId(),
-			testGroup.getGroupId(), 0, RandomTestUtil.randomLocaleStringMap(),
-			null, assetVocabulary.getVocabularyId(), false, null,
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
-
-		TaxonomyCategoryBrief[] expectedTaxonomyCategoryBriefs = {
-			new TaxonomyCategoryBrief() {
-				{
-					taxonomyCategoryId = assetCategory.getCategoryId();
-					taxonomyCategoryName = assetCategory.getName();
-					taxonomyCategoryReference =
-						new TaxonomyCategoryReference() {
-							{
-								externalReferenceCode =
-									assetCategory.getExternalReferenceCode();
-								siteKey = testGroup.getGroupKey();
-							}
-						};
-				}
-			}
-		};
-
-		_testPutWikiPageSuccessTaxonomyCategoryBriefs(
-			expectedTaxonomyCategoryBriefs, assetCategory.getCategoryId());
-	}
-
-	private void _testPutWikiPageSuccessTaxonomyCategoryBriefWithoutAssetCategory()
-		throws Exception {
-
-		WikiPage wikiPage = _addWikiPage();
-
-		_assertEqualsIgnoringOrder(
-			new TaxonomyCategoryBrief[0], wikiPage.getTaxonomyCategoryBriefs());
 	}
 
 	@Inject

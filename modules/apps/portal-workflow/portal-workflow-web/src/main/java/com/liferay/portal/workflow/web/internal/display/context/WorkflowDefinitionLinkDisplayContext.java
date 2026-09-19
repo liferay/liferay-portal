@@ -298,6 +298,13 @@ public class WorkflowDefinitionLinkDisplayContext {
 				_workflowDefinitionLinkRequestHelper.getRequest()));
 	}
 
+	public String getWorkflowDefinitionValue(
+		WorkflowDefinition workflowDefinition) {
+
+		return HtmlUtil.escapeAttribute(workflowDefinition.getName()) +
+			StringPool.AT + workflowDefinition.getVersion();
+	}
+
 	public List<WorkflowDefinition> getWorkflowDefinitions()
 		throws PortalException {
 
@@ -314,13 +321,6 @@ public class WorkflowDefinitionLinkDisplayContext {
 				WorkflowDefinitionConstants.SCOPE_ALL));
 
 		return _workflowDefinitions;
-	}
-
-	public String getWorkflowDefinitionValue(
-		WorkflowDefinition workflowDefinition) {
-
-		return HtmlUtil.escapeAttribute(workflowDefinition.getName()) +
-			StringPool.AT + workflowDefinition.getVersion();
 	}
 
 	public boolean isControlPanelPortlet() {

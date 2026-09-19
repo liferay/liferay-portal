@@ -63,17 +63,17 @@ public class OrganizationVerticalCard extends BaseVerticalCard {
 	}
 
 	@Override
-	public List<LabelItem> getLabels() {
-		return LabelItemListBuilder.add(
-			labelItem -> labelItem.setStatus(_organization.getStatus())
-		).build();
-	}
-
-	@Override
 	public Map<String, String> getLabelStylesMap() {
 		return HashMapBuilder.put(
 			"labelStylesMap",
 			WorkflowConstants.getStatusStyle(_organization.getStatus())
+		).build();
+	}
+
+	@Override
+	public List<LabelItem> getLabels() {
+		return LabelItemListBuilder.add(
+			labelItem -> labelItem.setStatus(_organization.getStatus())
 		).build();
 	}
 

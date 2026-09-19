@@ -261,6 +261,25 @@ public class ViewAssetDisplayContextTest extends BaseDisplayContextTestCase {
 				"getAdditionalProps", new Class<?>[0]));
 	}
 
+	private void _testGetAdditionalPropsWithPermissions() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(user);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, permissionChecker)) {
+
+			_testGetAdditionalProps(
+				true, Arrays.asList(ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW),
+				permissionChecker, role);
+		}
+	}
+
 	private void _testGetAdditionalPropsWithoutCommentPermission()
 		throws Exception {
 
@@ -299,25 +318,6 @@ public class ViewAssetDisplayContextTest extends BaseDisplayContextTestCase {
 			Assert.assertTrue(
 				exception.getCause() instanceof
 					PrincipalException.MustHavePermission);
-		}
-	}
-
-	private void _testGetAdditionalPropsWithPermissions() throws Exception {
-		User user = UserTestUtil.addUser();
-
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		_userLocalService.addRoleUser(role.getRoleId(), user);
-
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(user);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, permissionChecker)) {
-
-			_testGetAdditionalProps(
-				true, Arrays.asList(ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW),
-				permissionChecker, role);
 		}
 	}
 

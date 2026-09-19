@@ -76,12 +76,12 @@ public class ProductDisplayPageDTOConverter
 	}
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
 	private CPDisplayLayoutLocalService _cpDisplayLayoutLocalService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 }

@@ -88,9 +88,9 @@ public class Statistics {
 
 	private static final long _START_TIME = System.currentTimeMillis();
 
-	private final Map<String, Queue<Long>> _durationsMap =
-		new ConcurrentHashMap<>();
 	private final Map<String, AtomicLong> _durationSumsMap =
+		new ConcurrentHashMap<>();
+	private final Map<String, Queue<Long>> _durationsMap =
 		new ConcurrentHashMap<>();
 	private final int _runCount;
 	private final Queue<String> _testStepNames = new ConcurrentLinkedQueue<>();

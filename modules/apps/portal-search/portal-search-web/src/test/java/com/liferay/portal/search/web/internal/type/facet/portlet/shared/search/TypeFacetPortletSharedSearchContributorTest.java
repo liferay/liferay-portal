@@ -82,6 +82,20 @@ public class TypeFacetPortletSharedSearchContributorTest {
 		);
 	}
 
+	private SearchRequestBuilder _setUpSearchRequestBuilder(
+		Consumer<SearchContext> searchContextConsumer) {
+
+		SearchRequestBuilderFactory searchRequestBuilderFactory =
+			new SearchRequestBuilderFactoryImpl();
+
+		SearchRequestBuilder searchRequestBuilder =
+			searchRequestBuilderFactory.builder();
+
+		searchRequestBuilder.withSearchContext(searchContextConsumer);
+
+		return searchRequestBuilder;
+	}
+
 	private void _setUpSearchableAssetTypes(
 		List<String> searchableAssetTypes,
 		SearchRequestBuilder searchRequestBuilder) {
@@ -100,20 +114,6 @@ public class TypeFacetPortletSharedSearchContributorTest {
 			TypeFacetPortletPreferences.PREFERENCE_KEY_ASSET_TYPES,
 			StringPool.BLANK
 		);
-	}
-
-	private SearchRequestBuilder _setUpSearchRequestBuilder(
-		Consumer<SearchContext> searchContextConsumer) {
-
-		SearchRequestBuilderFactory searchRequestBuilderFactory =
-			new SearchRequestBuilderFactoryImpl();
-
-		SearchRequestBuilder searchRequestBuilder =
-			searchRequestBuilderFactory.builder();
-
-		searchRequestBuilder.withSearchContext(searchContextConsumer);
-
-		return searchRequestBuilder;
 	}
 
 	private void _setUpTypeFacetPortletSharedContributor() {

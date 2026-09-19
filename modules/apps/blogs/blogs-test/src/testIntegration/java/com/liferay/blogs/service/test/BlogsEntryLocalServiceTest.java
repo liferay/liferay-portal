@@ -1085,6 +1085,26 @@ public class BlogsEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetGroupUserEntriesCountInTrash() throws Exception {
+		testGetGroupUserEntriesCount(true);
+	}
+
+	@Test
+	public void testGetGroupUserEntriesCountNotInTrash() throws Exception {
+		testGetGroupUserEntriesCount(false);
+	}
+
+	@Test
+	public void testGetGroupUserEntriesInTrash() throws Exception {
+		testGetGroupUserEntries(true);
+	}
+
+	@Test
+	public void testGetGroupUserEntriesNotInTrash() throws Exception {
+		testGetGroupUserEntries(false);
+	}
+
+	@Test
 	public void testGetGroupsEntries() throws Exception {
 		List<BlogsEntry> initialBlogsEntries =
 			_blogsEntryLocalService.getGroupsEntries(
@@ -1117,26 +1137,6 @@ public class BlogsEntryLocalServiceTest {
 					" but should belong to company ", _user.getCompanyId()),
 				_user.getCompanyId(), actualBlogsEntry.getCompanyId());
 		}
-	}
-
-	@Test
-	public void testGetGroupUserEntriesCountInTrash() throws Exception {
-		testGetGroupUserEntriesCount(true);
-	}
-
-	@Test
-	public void testGetGroupUserEntriesCountNotInTrash() throws Exception {
-		testGetGroupUserEntriesCount(false);
-	}
-
-	@Test
-	public void testGetGroupUserEntriesInTrash() throws Exception {
-		testGetGroupUserEntries(true);
-	}
-
-	@Test
-	public void testGetGroupUserEntriesNotInTrash() throws Exception {
-		testGetGroupUserEntries(false);
 	}
 
 	@Test
@@ -1197,6 +1197,106 @@ public class BlogsEntryLocalServiceTest {
 				_user.getUserId());
 
 		Assert.assertEquals(initialCount + 1, actualCount);
+	}
+
+	@Test
+	public void testURLTitleIsNotUpdatedWhenUpdatingEntryTitle()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
+
+		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		String urlTitle = entry.getUrlTitle();
+
+		entry = _blogsEntryLocalService.updateEntry(
+			_user.getUserId(), entry.getEntryId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		Assert.assertEquals(urlTitle, entry.getUrlTitle());
+	}
+
+	@Test
+	public void testURLTitleIsNotUpdatedWhenUpdatingEntryTitleToDraftEntry()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
+
+		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		String urlTitle = entry.getUrlTitle();
+
+		serviceContext.setWorkflowAction(WorkflowConstants.STATUS_DRAFT);
+
+		entry = _blogsEntryLocalService.updateEntry(
+			_user.getUserId(), entry.getEntryId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		Assert.assertEquals(urlTitle, entry.getUrlTitle());
+	}
+
+	@Test
+	public void testURLTitleIsSavedWhenAddingApprovedEntry() throws Exception {
+		String title = RandomTestUtil.randomString();
+
+		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+			_user.getUserId(), title, RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				_group, _user.getUserId()));
+
+		Assert.assertEquals(
+			_getUrlTitleMethod.invoke(null, entry.getEntryId(), title),
+			entry.getUrlTitle());
+	}
+
+	@Test
+	public void testURLTitleIsSavedWhenAddingApprovedEntryWithWorkflow()
+		throws Exception {
+
+		String title = RandomTestUtil.randomString();
+
+		BlogsEntry entry = BlogsTestUtil.addEntryWithWorkflow(
+			_user.getUserId(), title, true,
+			ServiceContextTestUtil.getServiceContext(
+				_group, _user.getUserId()));
+
+		Assert.assertEquals(
+			_getUrlTitleMethod.invoke(null, entry.getEntryId(), title),
+			entry.getUrlTitle());
+	}
+
+	@Test
+	public void testURLTitleIsSavedWhenAddingDraftEntry() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
+
+		serviceContext.setWorkflowAction(WorkflowConstants.STATUS_DRAFT);
+
+		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+			_user.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		Assert.assertTrue(Validator.isNotNull(entry.getUrlTitle()));
+	}
+
+	@Test
+	public void testURLTitleIsSavedWhenAddingDraftEntryWithWorkflow()
+		throws Exception {
+
+		BlogsEntry entry = BlogsTestUtil.addEntryWithWorkflow(
+			_user.getUserId(), RandomTestUtil.randomString(), false,
+			ServiceContextTestUtil.getServiceContext(
+				_group, _user.getUserId()));
+
+		Assert.assertTrue(Validator.isNotNull(entry.getUrlTitle()));
 	}
 
 	@Test
@@ -1336,106 +1436,6 @@ public class BlogsEntryLocalServiceTest {
 			null, null, null, serviceContext);
 
 		Assert.assertEquals(expectedUrlTitle, entry.getUrlTitle());
-	}
-
-	@Test
-	public void testURLTitleIsNotUpdatedWhenUpdatingEntryTitle()
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
-
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), serviceContext);
-
-		String urlTitle = entry.getUrlTitle();
-
-		entry = _blogsEntryLocalService.updateEntry(
-			_user.getUserId(), entry.getEntryId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
-
-		Assert.assertEquals(urlTitle, entry.getUrlTitle());
-	}
-
-	@Test
-	public void testURLTitleIsNotUpdatedWhenUpdatingEntryTitleToDraftEntry()
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
-
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), serviceContext);
-
-		String urlTitle = entry.getUrlTitle();
-
-		serviceContext.setWorkflowAction(WorkflowConstants.STATUS_DRAFT);
-
-		entry = _blogsEntryLocalService.updateEntry(
-			_user.getUserId(), entry.getEntryId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
-
-		Assert.assertEquals(urlTitle, entry.getUrlTitle());
-	}
-
-	@Test
-	public void testURLTitleIsSavedWhenAddingApprovedEntry() throws Exception {
-		String title = RandomTestUtil.randomString();
-
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
-			_user.getUserId(), title, RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext(
-				_group, _user.getUserId()));
-
-		Assert.assertEquals(
-			_getUrlTitleMethod.invoke(null, entry.getEntryId(), title),
-			entry.getUrlTitle());
-	}
-
-	@Test
-	public void testURLTitleIsSavedWhenAddingApprovedEntryWithWorkflow()
-		throws Exception {
-
-		String title = RandomTestUtil.randomString();
-
-		BlogsEntry entry = BlogsTestUtil.addEntryWithWorkflow(
-			_user.getUserId(), title, true,
-			ServiceContextTestUtil.getServiceContext(
-				_group, _user.getUserId()));
-
-		Assert.assertEquals(
-			_getUrlTitleMethod.invoke(null, entry.getEntryId(), title),
-			entry.getUrlTitle());
-	}
-
-	@Test
-	public void testURLTitleIsSavedWhenAddingDraftEntry() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
-
-		serviceContext.setWorkflowAction(WorkflowConstants.STATUS_DRAFT);
-
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
-			_user.getUserId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), serviceContext);
-
-		Assert.assertTrue(Validator.isNotNull(entry.getUrlTitle()));
-	}
-
-	@Test
-	public void testURLTitleIsSavedWhenAddingDraftEntryWithWorkflow()
-		throws Exception {
-
-		BlogsEntry entry = BlogsTestUtil.addEntryWithWorkflow(
-			_user.getUserId(), RandomTestUtil.randomString(), false,
-			ServiceContextTestUtil.getServiceContext(
-				_group, _user.getUserId()));
-
-		Assert.assertTrue(Validator.isNotNull(entry.getUrlTitle()));
 	}
 
 	protected BlogsEntry addEntry(boolean statusInTrash) throws Exception {

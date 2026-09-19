@@ -1805,8 +1805,8 @@ public class PortletURLImpl
 	private Map<String, String[]> _portletURLParameterMap;
 	private long _refererGroupId;
 	private long _refererPlid;
-	private Set<String> _removedParameterNames;
 	private final Set<String> _removePublicRenderParameters;
+	private Set<String> _removedParameterNames;
 	private String _resourceID;
 	private boolean _secure;
 	private String _toString;

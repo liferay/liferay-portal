@@ -290,6 +290,11 @@ public class GroupSelectorDisplayContextTest {
 		}
 
 		@Override
+		public String getGroupType() {
+			return _groupType;
+		}
+
+		@Override
 		public List<Group> getGroups(
 			long companyId, long groupId, String keywords, int start, int end) {
 
@@ -301,11 +306,6 @@ public class GroupSelectorDisplayContextTest {
 			long companyId, long groupId, String keywords) {
 
 			return 3;
-		}
-
-		@Override
-		public String getGroupType() {
-			return _groupType;
 		}
 
 		@Override

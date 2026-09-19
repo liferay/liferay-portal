@@ -138,10 +138,10 @@ public class BlogsEntryMultiLanguageSearchTest {
 	protected Indexer<BlogsEntry> indexer;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private Map<String, String> _getMapResult(BlogsEntry blogsEntry) {
 		String title = blogsEntry.getTitle();

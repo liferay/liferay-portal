@@ -24,6 +24,37 @@ public class ParameterMapSettingsTest {
 	}
 
 	@Test
+	public void testGetValueWhenFoundInParameterMap() {
+		_parameterMap.put("preferences--key--", new String[] {"requestValue"});
+
+		_parentSettings.setValue("key", "settingsValue");
+
+		Assert.assertEquals(
+			"requestValue",
+			_parameterMapSettings.getValue("key", "defaultValue"));
+	}
+
+	@Test
+	public void testGetValueWhenFoundInParameterMapWithParameterNamePrefix() {
+		_parameterMap.put("prefix--key", new String[] {"requestValue"});
+
+		_parameterMapSettings.setParameterNamePrefix("prefix--");
+
+		Assert.assertEquals(
+			"requestValue",
+			_parameterMapSettings.getValue("key", "defaultValue"));
+	}
+
+	@Test
+	public void testGetValueWhenFoundInSettings() {
+		_parentSettings.setValue("key", "settingsValue");
+
+		Assert.assertEquals(
+			"settingsValue",
+			_parameterMapSettings.getValue("key", "defaultValue"));
+	}
+
+	@Test
 	public void testGetValuesWhenFoundInParameterMap() {
 		String[] values = {"requestValue1", "requestValue2"};
 
@@ -59,37 +90,6 @@ public class ParameterMapSettingsTest {
 			values,
 			_parameterMapSettings.getValues(
 				"key", new String[] {"defaultValue"}));
-	}
-
-	@Test
-	public void testGetValueWhenFoundInParameterMap() {
-		_parameterMap.put("preferences--key--", new String[] {"requestValue"});
-
-		_parentSettings.setValue("key", "settingsValue");
-
-		Assert.assertEquals(
-			"requestValue",
-			_parameterMapSettings.getValue("key", "defaultValue"));
-	}
-
-	@Test
-	public void testGetValueWhenFoundInParameterMapWithParameterNamePrefix() {
-		_parameterMap.put("prefix--key", new String[] {"requestValue"});
-
-		_parameterMapSettings.setParameterNamePrefix("prefix--");
-
-		Assert.assertEquals(
-			"requestValue",
-			_parameterMapSettings.getValue("key", "defaultValue"));
-	}
-
-	@Test
-	public void testGetValueWhenFoundInSettings() {
-		_parentSettings.setValue("key", "settingsValue");
-
-		Assert.assertEquals(
-			"settingsValue",
-			_parameterMapSettings.getValue("key", "defaultValue"));
 	}
 
 	private final Map<String, String[]> _parameterMap = new HashMap<>();

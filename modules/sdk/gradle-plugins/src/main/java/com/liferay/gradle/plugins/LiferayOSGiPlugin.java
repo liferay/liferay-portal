@@ -1392,6 +1392,38 @@ public class LiferayOSGiPlugin implements Plugin<Project> {
 			});
 	}
 
+	private void _configureTaskZipZippableResources(
+		final Project project,
+		final List<TaskProvider<Zip>> zippableResourcesTaskProviders,
+		TaskProvider<Task> zipZippableResourcesTaskProvider) {
+
+		zipZippableResourcesTaskProvider.configure(
+			new Action<Task>() {
+
+				@Override
+				public void execute(Task zipZippableResourcesTask) {
+					File zippableResourcesDir = project.file(
+						"src/main/zippableResources");
+
+					StringBuilder sb = new StringBuilder();
+
+					sb.append("Assembles Zip files from the subdirectories ");
+					sb.append(project.relativePath(zippableResourcesDir));
+					sb.append('.');
+
+					zipZippableResourcesTask.setDescription(sb.toString());
+
+					for (TaskProvider<Zip> zippableResourcesTaskProvider :
+							zippableResourcesTaskProviders) {
+
+						zipZippableResourcesTask.dependsOn(
+							zippableResourcesTaskProvider);
+					}
+				}
+
+			});
+	}
+
 	private void _configureTaskZippableResources(
 		final Project project, TaskProvider<Zip> zippableResourcesTaskProvider,
 		final File zippableResourcesDir) {
@@ -1429,38 +1461,6 @@ public class LiferayOSGiPlugin implements Plugin<Project> {
 						zippableResourcesZip.getDestinationDirectory();
 
 					directoryProperty.set(project.file("classes"));
-				}
-
-			});
-	}
-
-	private void _configureTaskZipZippableResources(
-		final Project project,
-		final List<TaskProvider<Zip>> zippableResourcesTaskProviders,
-		TaskProvider<Task> zipZippableResourcesTaskProvider) {
-
-		zipZippableResourcesTaskProvider.configure(
-			new Action<Task>() {
-
-				@Override
-				public void execute(Task zipZippableResourcesTask) {
-					File zippableResourcesDir = project.file(
-						"src/main/zippableResources");
-
-					StringBuilder sb = new StringBuilder();
-
-					sb.append("Assembles Zip files from the subdirectories ");
-					sb.append(project.relativePath(zippableResourcesDir));
-					sb.append('.');
-
-					zipZippableResourcesTask.setDescription(sb.toString());
-
-					for (TaskProvider<Zip> zippableResourcesTaskProvider :
-							zippableResourcesTaskProviders) {
-
-						zipZippableResourcesTask.dependsOn(
-							zippableResourcesTaskProvider);
-					}
 				}
 
 			});

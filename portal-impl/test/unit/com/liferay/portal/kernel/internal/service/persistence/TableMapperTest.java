@@ -1680,30 +1680,6 @@ public class TableMapperTest {
 	}
 
 	@Test
-	public void testTableMapperFactoryCache() {
-		Set<String> cachelessMappingTableNames =
-			ReflectionTestUtil.getAndSetFieldValue(
-				TableMapperFactory.class, "_cachelessMappingTableNames",
-				new HashSet<String>() {
-
-					@Override
-					public boolean contains(Object object) {
-						return true;
-					}
-
-				});
-
-		try {
-			testTableMapperFactory1();
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				TableMapperFactory.class, "_cachelessMappingTableNames",
-				cachelessMappingTableNames);
-		}
-	}
-
-	@Test
 	public void testTableMapperFactoryCTModel() {
 		MockBasePersistence<CTLeft> ctLeftBasePersistence =
 			new MockBasePersistence<>(CTLeft.class);
@@ -1742,6 +1718,30 @@ public class TableMapperTest {
 				ctRightBasePersistence);
 
 		Assert.assertTrue(ctTableMapper instanceof CTTableMapper);
+	}
+
+	@Test
+	public void testTableMapperFactoryCache() {
+		Set<String> cachelessMappingTableNames =
+			ReflectionTestUtil.getAndSetFieldValue(
+				TableMapperFactory.class, "_cachelessMappingTableNames",
+				new HashSet<String>() {
+
+					@Override
+					public boolean contains(Object object) {
+						return true;
+					}
+
+				});
+
+		try {
+			testTableMapperFactory1();
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				TableMapperFactory.class, "_cachelessMappingTableNames",
+				cachelessMappingTableNames);
+		}
 	}
 
 	protected void testDestroy(TableMapper<?, ?> tableMapper) {
@@ -1956,6 +1956,48 @@ public class TableMapperTest {
 		extends RecorderModelListener<Left> {
 	}
 
+	private static class RecordInvocationHandler implements InvocationHandler {
+
+		public void assertCall(String methodName, Object... args) {
+			Object[] record = _records.get(methodName);
+
+			Assert.assertArrayEquals(record, args);
+		}
+
+		@Override
+		public Object invoke(Object proxy, Method method, Object[] args) {
+			_records.put(method.getName(), args);
+
+			Class<?> returnType = method.getReturnType();
+
+			if (returnType == boolean.class) {
+				return false;
+			}
+			else if (returnType == int.class) {
+				return 0;
+			}
+			else if (returnType == List.class) {
+				return Collections.emptyList();
+			}
+			else if (returnType == long[].class) {
+				return new long[0];
+			}
+			else if (returnType == TableMapper.class) {
+				return _tableMapper;
+			}
+
+			return null;
+		}
+
+		public void setTableMapper(TableMapper<?, ?> tableMapper) {
+			_tableMapper = tableMapper;
+		}
+
+		private final Map<String, Object[]> _records = new HashMap<>();
+		private TableMapper<?, ?> _tableMapper;
+
+	}
+
 	private static class RecorderModelListener<T extends BaseModel<T>>
 		extends BaseModelListener<T> {
 
@@ -2054,48 +2096,6 @@ public class TableMapperTest {
 		private final Object[] _associationClassPKs = new Object[4];
 		private final Object[] _classPKs = new Object[4];
 		private final boolean[] _markers = new boolean[4];
-
-	}
-
-	private static class RecordInvocationHandler implements InvocationHandler {
-
-		public void assertCall(String methodName, Object... args) {
-			Object[] record = _records.get(methodName);
-
-			Assert.assertArrayEquals(record, args);
-		}
-
-		@Override
-		public Object invoke(Object proxy, Method method, Object[] args) {
-			_records.put(method.getName(), args);
-
-			Class<?> returnType = method.getReturnType();
-
-			if (returnType == boolean.class) {
-				return false;
-			}
-			else if (returnType == int.class) {
-				return 0;
-			}
-			else if (returnType == List.class) {
-				return Collections.emptyList();
-			}
-			else if (returnType == long[].class) {
-				return new long[0];
-			}
-			else if (returnType == TableMapper.class) {
-				return _tableMapper;
-			}
-
-			return null;
-		}
-
-		public void setTableMapper(TableMapper<?, ?> tableMapper) {
-			_tableMapper = tableMapper;
-		}
-
-		private final Map<String, Object[]> _records = new HashMap<>();
-		private TableMapper<?, ?> _tableMapper;
 
 	}
 

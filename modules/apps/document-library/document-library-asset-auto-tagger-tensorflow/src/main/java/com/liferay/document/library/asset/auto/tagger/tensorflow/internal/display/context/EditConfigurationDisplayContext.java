@@ -24,10 +24,6 @@ public class EditConfigurationDisplayContext {
 			tensorFlowImageAssetAutoTagProviderCompanyConfiguration;
 	}
 
-	public boolean isDownloaded() throws PortalException {
-		return _tensorFlowDownloadHelper.isDownloaded();
-	}
-
 	public boolean isDownloadFailed() {
 		if (isTensorFlowImageAssetAutoTagProviderEnabled() &&
 			_tensorFlowDownloadHelper.isDownloadFailed()) {
@@ -36,6 +32,10 @@ public class EditConfigurationDisplayContext {
 		}
 
 		return false;
+	}
+
+	public boolean isDownloaded() throws PortalException {
+		return _tensorFlowDownloadHelper.isDownloaded();
 	}
 
 	public boolean isTensorFlowImageAssetAutoTagProviderEnabled() {

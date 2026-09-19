@@ -421,8 +421,8 @@ public class SearchEngineInitializer implements Runnable {
 	private final ExecutorService _executorService;
 	private boolean _finished;
 	private final boolean _fullMode;
-	private final List<Indexer<?>> _indexers;
 	private final IndexNameBuilder _indexNameBuilder;
+	private final List<Indexer<?>> _indexers;
 	private final JSONFactory _jsonFactory;
 	private final SearchEngineAdapter _searchEngineAdapter;
 	private final Map<String, Object> _sharedReindexCacheMap;

@@ -58,12 +58,12 @@ public class ScimUser {
 		return _groupIds;
 	}
 
-	public String getId() {
-		return _id;
-	}
-
 	public Map<String, String> getIMs() {
 		return _ims;
+	}
+
+	public String getId() {
+		return _id;
 	}
 
 	public String getJobTitle() {
@@ -228,12 +228,12 @@ public class ScimUser {
 		_groupIds = groupIds;
 	}
 
-	public void setId(String id) {
-		_id = id;
-	}
-
 	public void setIMs(Map<String, String> ims) {
 		_ims = ims;
+	}
+
+	public void setId(String id) {
+		_id = id;
 	}
 
 	public void setJobTitle(String jobTitle) {

@@ -506,6 +506,27 @@ public class AssetListFiltersUtilTest {
 	}
 
 	@Test
+	public void testFilterQueriesWithKeywordTextContainsOperators() {
+		String keywordTextFieldName = RandomTestUtil.randomString();
+
+		_setUpKeywordTextObjectField(keywordTextFieldName);
+
+		_assertWildcardQuery(
+			"nestedFieldArray.value_keyword", "*alpha*",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_getFilterJSONObject("contains", keywordTextFieldName, "Alpha"),
+				keywordTextFieldName));
+		_assertWildcardQuery(
+			"nestedFieldArray.value_keyword", "*alpha*",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST_NOT,
+				_getFilterJSONObject(
+					"not-contains", keywordTextFieldName, "Alpha"),
+				keywordTextFieldName));
+	}
+
+	@Test
 	public void testFilterQueriesWithKeywordsFilter() {
 		String keyword = RandomTestUtil.randomString();
 
@@ -548,27 +569,6 @@ public class AssetListFiltersUtilTest {
 			_assertCommonFieldQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_getKeywordsFilterJSONObject("not-contains", keywordPhrase)));
-	}
-
-	@Test
-	public void testFilterQueriesWithKeywordTextContainsOperators() {
-		String keywordTextFieldName = RandomTestUtil.randomString();
-
-		_setUpKeywordTextObjectField(keywordTextFieldName);
-
-		_assertWildcardQuery(
-			"nestedFieldArray.value_keyword", "*alpha*",
-			_assertNestedQuery(
-				BooleanClauseOccur.MUST,
-				_getFilterJSONObject("contains", keywordTextFieldName, "Alpha"),
-				keywordTextFieldName));
-		_assertWildcardQuery(
-			"nestedFieldArray.value_keyword", "*alpha*",
-			_assertNestedQuery(
-				BooleanClauseOccur.MUST_NOT,
-				_getFilterJSONObject(
-					"not-contains", keywordTextFieldName, "Alpha"),
-				keywordTextFieldName));
 	}
 
 	@Test

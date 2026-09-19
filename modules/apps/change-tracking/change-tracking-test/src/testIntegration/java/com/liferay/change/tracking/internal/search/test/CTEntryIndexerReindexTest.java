@@ -127,9 +127,9 @@ public class CTEntryIndexerReindexTest {
 	private IndexWriterHelper _indexWriterHelper;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 }

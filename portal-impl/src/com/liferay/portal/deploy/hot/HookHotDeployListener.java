@@ -563,38 +563,6 @@ public class HookHotDeployListener
 		return serviceRegistrations;
 	}
 
-	protected void initAuthenticators(
-			String servletContextName, ClassLoader portletClassLoader,
-			Properties portalProperties)
-		throws Exception {
-
-		initAuthenticators(
-			servletContextName, portletClassLoader, portalProperties,
-			AUTH_PIPELINE_PRE);
-		initAuthenticators(
-			servletContextName, portletClassLoader, portalProperties,
-			AUTH_PIPELINE_POST);
-	}
-
-	protected void initAuthenticators(
-			String servletContextName, ClassLoader portletClassLoader,
-			Properties portalProperties, String key)
-		throws Exception {
-
-		String[] authenticatorClassNames = StringUtil.split(
-			portalProperties.getProperty(key));
-
-		for (String authenticatorClassName : authenticatorClassNames) {
-			Authenticator authenticator = (Authenticator)newInstance(
-				portletClassLoader, Authenticator.class,
-				authenticatorClassName);
-
-			registerService(
-				servletContextName, authenticatorClassName, Authenticator.class,
-				authenticator, "key", key);
-		}
-	}
-
 	protected void initAuthFailures(
 			String servletContextName, ClassLoader portletClassLoader,
 			Properties portalProperties)
@@ -661,6 +629,38 @@ public class HookHotDeployListener
 			registerService(
 				servletContextName, authVerifierClassName, AuthVerifier.class,
 				authVerifier, properties);
+		}
+	}
+
+	protected void initAuthenticators(
+			String servletContextName, ClassLoader portletClassLoader,
+			Properties portalProperties)
+		throws Exception {
+
+		initAuthenticators(
+			servletContextName, portletClassLoader, portalProperties,
+			AUTH_PIPELINE_PRE);
+		initAuthenticators(
+			servletContextName, portletClassLoader, portalProperties,
+			AUTH_PIPELINE_POST);
+	}
+
+	protected void initAuthenticators(
+			String servletContextName, ClassLoader portletClassLoader,
+			Properties portalProperties, String key)
+		throws Exception {
+
+		String[] authenticatorClassNames = StringUtil.split(
+			portalProperties.getProperty(key));
+
+		for (String authenticatorClassName : authenticatorClassNames) {
+			Authenticator authenticator = (Authenticator)newInstance(
+				portletClassLoader, Authenticator.class,
+				authenticatorClassName);
+
+			registerService(
+				servletContextName, authenticatorClassName, Authenticator.class,
+				authenticator, "key", key);
 		}
 	}
 

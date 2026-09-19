@@ -753,6 +753,14 @@ public class ObjectEntryFolderResourceTest
 		}
 	}
 
+	private Map<String, String> _getActionValue(String href, String method) {
+		return HashMapBuilder.put(
+			"href", href
+		).put(
+			"method", method
+		).build();
+	}
+
 	private JSONObject _getActionsJSONObject(
 			com.liferay.object.model.ObjectEntryFolder objectEntryFolder,
 			String password, User user)
@@ -777,14 +785,6 @@ public class ObjectEntryFolderResourceTest
 		);
 
 		return atomicReference.get();
-	}
-
-	private Map<String, String> _getActionValue(String href, String method) {
-		return HashMapBuilder.put(
-			"href", href
-		).put(
-			"method", method
-		).build();
 	}
 
 	private Map<String, Map<String, String>> _getExpectedActions(
@@ -957,6 +957,29 @@ public class ObjectEntryFolderResourceTest
 	}
 
 	@TestInfo("LPD-62553")
+	private void _testGetObjectEntryFolderActionsWithSharingEnabled()
+		throws Exception {
+
+		_testGetObjectEntryFolderActions(true);
+	}
+
+	@TestInfo("LPD-62553")
+	private void _testGetObjectEntryFolderActionsWithSystemSharingDisabled()
+		throws Exception {
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.sharing.internal.configuration." +
+						"SharingSystemConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"enabled", false
+					).build())) {
+
+			_testGetObjectEntryFolderActions(false);
+		}
+	}
+
+	@TestInfo("LPD-62553")
 	private void _testGetObjectEntryFolderActionsWithoutUpdatePermission()
 		throws Exception {
 
@@ -990,29 +1013,6 @@ public class ObjectEntryFolderResourceTest
 			objectEntryFolder.getActions();
 
 		Assert.assertFalse(actions.containsKey("share"));
-	}
-
-	@TestInfo("LPD-62553")
-	private void _testGetObjectEntryFolderActionsWithSharingEnabled()
-		throws Exception {
-
-		_testGetObjectEntryFolderActions(true);
-	}
-
-	@TestInfo("LPD-62553")
-	private void _testGetObjectEntryFolderActionsWithSystemSharingDisabled()
-		throws Exception {
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					"com.liferay.sharing.internal.configuration." +
-						"SharingSystemConfiguration",
-					HashMapDictionaryBuilder.<String, Object>put(
-						"enabled", false
-					).build())) {
-
-			_testGetObjectEntryFolderActions(false);
-		}
 	}
 
 	@TestInfo("LPD-83639")

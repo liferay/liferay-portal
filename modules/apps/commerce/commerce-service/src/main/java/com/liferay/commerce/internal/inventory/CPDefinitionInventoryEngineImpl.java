@@ -291,12 +291,12 @@ public class CPDefinitionInventoryEngineImpl
 	}
 
 	@Reference
-	private CPDAvailabilityEstimateLocalService
-		_cpdAvailabilityEstimateLocalService;
-
-	@Reference
 	private CPDefinitionInventoryLocalService
 		_cpDefinitionInventoryLocalService;
+
+	@Reference
+	private CPDAvailabilityEstimateLocalService
+		_cpdAvailabilityEstimateLocalService;
 
 	@Reference
 	private Language _language;

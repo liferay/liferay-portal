@@ -34,6 +34,42 @@ import jakarta.servlet.ServletContext;
  */
 public class ServletContextUtil {
 
+	public static CPCompareHelper getCPCompareHelper() {
+		return _cpCompareHelperSnapshot.get();
+	}
+
+	public static CPContentHelper getCPContentHelper() {
+		return _cpContentHelperSnapshot.get();
+	}
+
+	public static CPDefinitionHelper getCPDefinitionHelper() {
+		return _cpDefinitionHelperSnapshot.get();
+	}
+
+	public static CPDefinitionOptionRelLocalService
+		getCPDefinitionOptionRelLocalService() {
+
+		return _cpDefinitionOptionRelLocalServiceSnapshot.get();
+	}
+
+	public static CPFriendlyURL getCPFriendlyURL() {
+		return _cpFriendlyURLSnapshot.get();
+	}
+
+	public static CPInstanceHelper getCPInstanceHelper() {
+		return _cpInstanceHelperSnapshot.get();
+	}
+
+	public static CPInstanceUnitOfMeasureLocalService
+		getCPInstanceUnitOfMeasureLocalService() {
+
+		return _cpInstanceUnitOfMeasureLocalServiceSnapshot.get();
+	}
+
+	public static CPSubscriptionTypeRegistry getCPSubscriptionTypeRegistry() {
+		return _cpSubscriptionTypeRegistrySnapshot.get();
+	}
+
 	public static CommerceChannelLocalService getCommerceChannelLocalService() {
 		return _commerceChannelLocalServiceSnapshot.get();
 	}
@@ -70,42 +106,6 @@ public class ServletContextUtil {
 
 	public static ConfigurationProvider getConfigurationProvider() {
 		return _configurationProviderSnapshot.get();
-	}
-
-	public static CPCompareHelper getCPCompareHelper() {
-		return _cpCompareHelperSnapshot.get();
-	}
-
-	public static CPContentHelper getCPContentHelper() {
-		return _cpContentHelperSnapshot.get();
-	}
-
-	public static CPDefinitionHelper getCPDefinitionHelper() {
-		return _cpDefinitionHelperSnapshot.get();
-	}
-
-	public static CPDefinitionOptionRelLocalService
-		getCPDefinitionOptionRelLocalService() {
-
-		return _cpDefinitionOptionRelLocalServiceSnapshot.get();
-	}
-
-	public static CPFriendlyURL getCPFriendlyURL() {
-		return _cpFriendlyURLSnapshot.get();
-	}
-
-	public static CPInstanceHelper getCPInstanceHelper() {
-		return _cpInstanceHelperSnapshot.get();
-	}
-
-	public static CPInstanceUnitOfMeasureLocalService
-		getCPInstanceUnitOfMeasureLocalService() {
-
-		return _cpInstanceUnitOfMeasureLocalServiceSnapshot.get();
-	}
-
-	public static CPSubscriptionTypeRegistry getCPSubscriptionTypeRegistry() {
-		return _cpSubscriptionTypeRegistrySnapshot.get();
 	}
 
 	public static InfoItemRendererRegistry getInfoItemRendererRegistry() {

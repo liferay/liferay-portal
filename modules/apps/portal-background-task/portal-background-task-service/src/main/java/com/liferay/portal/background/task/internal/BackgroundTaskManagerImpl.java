@@ -243,6 +243,12 @@ public class BackgroundTaskManagerImpl implements BackgroundTaskManager {
 	}
 
 	@Override
+	public String getBackgroundTaskStatusJSON(long backgroundTaskId) {
+		return _backgroundTaskLocalService.getBackgroundTaskStatusJSON(
+			backgroundTaskId);
+	}
+
+	@Override
 	public List<BackgroundTask> getBackgroundTasks(long groupId, int status) {
 		return _translate(
 			_backgroundTaskLocalService.getBackgroundTasks(groupId, status));
@@ -530,12 +536,6 @@ public class BackgroundTaskManagerImpl implements BackgroundTaskManager {
 
 		return _backgroundTaskLocalService.getBackgroundTasksCount(
 			groupIds, name, taskExecutorClassNames);
-	}
-
-	@Override
-	public String getBackgroundTaskStatusJSON(long backgroundTaskId) {
-		return _backgroundTaskLocalService.getBackgroundTaskStatusJSON(
-			backgroundTaskId);
 	}
 
 	@Override

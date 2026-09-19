@@ -144,23 +144,6 @@ public class JournalContentExportImportTest
 
 	@Test
 	@TestInfo("LPD-103207")
-	public void testExportImportSelectedArticleWithoutStaging()
-		throws Exception {
-
-		JournalArticle article = JournalTestUtil.addArticle(
-			group.getGroupId(), 0);
-
-		_exportImportSelectedArticle(article, false);
-
-		Assert.assertNotNull(
-			_journalArticleLocalService.
-				fetchLatestArticleByExternalReferenceCode(
-					importedGroup.getGroupId(),
-					article.getExternalReferenceCode()));
-	}
-
-	@Test
-	@TestInfo("LPD-103207")
 	public void testExportImportSelectedArticleWithPortletStaging()
 		throws Exception {
 
@@ -179,6 +162,23 @@ public class JournalContentExportImportTest
 			article.getTitle(LocaleUtil.getSiteDefault()),
 			importedArticle.getTitle(LocaleUtil.getSiteDefault()));
 		Assert.assertEquals(article.getContent(), importedArticle.getContent());
+	}
+
+	@Test
+	@TestInfo("LPD-103207")
+	public void testExportImportSelectedArticleWithoutStaging()
+		throws Exception {
+
+		JournalArticle article = JournalTestUtil.addArticle(
+			group.getGroupId(), 0);
+
+		_exportImportSelectedArticle(article, false);
+
+		Assert.assertNotNull(
+			_journalArticleLocalService.
+				fetchLatestArticleByExternalReferenceCode(
+					importedGroup.getGroupId(),
+					article.getExternalReferenceCode()));
 	}
 
 	@Test
@@ -227,21 +227,6 @@ public class JournalContentExportImportTest
 
 	@Test
 	@TestInfo("LPD-98716")
-	public void testGetPortletConfigurationWithoutStaging() throws Exception {
-		StagingLocalServiceUtil.enableLocalStaging(
-			TestPropsValues.getUserId(), group, false, false,
-			new ServiceContext());
-
-		Group stagingGroup = group.getStagingGroup();
-
-		Assert.assertEquals(
-			stagingGroup.getExternalReferenceCode(),
-			_getExportedGroupExternalReferenceCode(
-				stagingGroup.getExternalReferenceCode()));
-	}
-
-	@Test
-	@TestInfo("LPD-98716")
 	public void testGetPortletConfigurationWithRemoteStaging()
 		throws Exception {
 
@@ -267,6 +252,21 @@ public class JournalContentExportImportTest
 				group.getExternalReferenceCode()));
 
 		ExportImportThreadLocal.setPortletStagingInProcess(false);
+	}
+
+	@Test
+	@TestInfo("LPD-98716")
+	public void testGetPortletConfigurationWithoutStaging() throws Exception {
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			new ServiceContext());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		Assert.assertEquals(
+			stagingGroup.getExternalReferenceCode(),
+			_getExportedGroupExternalReferenceCode(
+				stagingGroup.getExternalReferenceCode()));
 	}
 
 	private void _exportImportSelectedArticle(

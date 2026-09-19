@@ -144,29 +144,6 @@ public class DefaultSegmentsEntryProviderTest {
 	}
 
 	@Test
-	public void testGetSegmentsEntryClassPKsWithoutCriteria() throws Exception {
-		_user1 = UserTestUtil.addUser(_group.getGroupId());
-		_user2 = UserTestUtil.addUser(_group.getGroupId());
-
-		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
-			_group.getGroupId(), CriteriaSerializer.serialize(new Criteria()));
-
-		_segmentsEntryRelLocalService.addSegmentsEntryRel(
-			segmentsEntry.getSegmentsEntryId(),
-			_portal.getClassNameId(User.class.getName()), _user1.getUserId(),
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		Assert.assertEquals(
-			1,
-			_segmentsEntryProvider.getSegmentsEntryClassPKsCount(
-				segmentsEntry.getSegmentsEntryId()));
-		Assert.assertArrayEquals(
-			new long[] {_user1.getUserId()},
-			_segmentsEntryProvider.getSegmentsEntryClassPKs(
-				segmentsEntry.getSegmentsEntryId(), 0, 1));
-	}
-
-	@Test
 	public void testGetSegmentsEntryClassPKsWithSingleCriterion()
 		throws Exception {
 
@@ -182,6 +159,29 @@ public class DefaultSegmentsEntryProviderTest {
 
 		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
 			_group.getGroupId(), CriteriaSerializer.serialize(criteria));
+
+		Assert.assertEquals(
+			1,
+			_segmentsEntryProvider.getSegmentsEntryClassPKsCount(
+				segmentsEntry.getSegmentsEntryId()));
+		Assert.assertArrayEquals(
+			new long[] {_user1.getUserId()},
+			_segmentsEntryProvider.getSegmentsEntryClassPKs(
+				segmentsEntry.getSegmentsEntryId(), 0, 1));
+	}
+
+	@Test
+	public void testGetSegmentsEntryClassPKsWithoutCriteria() throws Exception {
+		_user1 = UserTestUtil.addUser(_group.getGroupId());
+		_user2 = UserTestUtil.addUser(_group.getGroupId());
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId(), CriteriaSerializer.serialize(new Criteria()));
+
+		_segmentsEntryRelLocalService.addSegmentsEntryRel(
+			segmentsEntry.getSegmentsEntryId(),
+			_portal.getClassNameId(User.class.getName()), _user1.getUserId(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		Assert.assertEquals(
 			1,

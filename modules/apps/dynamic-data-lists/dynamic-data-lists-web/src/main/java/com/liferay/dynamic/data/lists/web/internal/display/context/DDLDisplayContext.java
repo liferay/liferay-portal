@@ -148,6 +148,10 @@ public class DDLDisplayContext {
 			HtmlUtil.escape(structureName), false);
 	}
 
+	public String getCSVExport() {
+		return _ddlWebConfiguration.csvExport();
+	}
+
 	public String getClearResultsURL() throws PortletException {
 		return PortletURLBuilder.create(
 			PortletURLUtil.clone(getPortletURL(), _renderResponse)
@@ -171,10 +175,6 @@ public class DDLDisplayContext {
 					LanguageUtil.get(_ddlRequestHelper.getRequest(), "add"));
 			}
 		).build();
-	}
-
-	public String getCSVExport() {
-		return _ddlWebConfiguration.csvExport();
 	}
 
 	public OrderByComparator<DDLRecordSet> getDDLRecordSetOrderByComparator(

@@ -190,6 +190,9 @@ public class DiscountProductResourceImpl
 				commerceDiscountRel.getCommerceDiscountRelId()));
 	}
 
+	@Reference
+	private CProductLocalService _cProductLocalService;
+
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.discount.model.CommerceDiscountRel)"
 	)
@@ -201,9 +204,6 @@ public class DiscountProductResourceImpl
 
 	@Reference
 	private CommerceDiscountService _commerceDiscountService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.pricing.internal.dto.v2_0.converter.DiscountProductDTOConverter)"

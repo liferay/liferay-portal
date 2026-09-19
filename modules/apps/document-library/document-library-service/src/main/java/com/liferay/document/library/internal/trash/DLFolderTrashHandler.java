@@ -165,6 +165,15 @@ public class DLFolderTrashHandler extends BaseDLTrashHandler {
 	}
 
 	@Override
+	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				DLFolder.class.getName());
+
+		return (TrashRenderer)assetRendererFactory.getAssetRenderer(classPK);
+	}
+
+	@Override
 	public TrashedModel getTrashedModel(long classPK) {
 		try {
 			return getDLFolder(classPK);
@@ -176,15 +185,6 @@ public class DLFolderTrashHandler extends BaseDLTrashHandler {
 
 			return null;
 		}
-	}
-
-	@Override
-	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
-		AssetRendererFactory<?> assetRendererFactory =
-			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
-				DLFolder.class.getName());
-
-		return (TrashRenderer)assetRendererFactory.getAssetRenderer(classPK);
 	}
 
 	@Override

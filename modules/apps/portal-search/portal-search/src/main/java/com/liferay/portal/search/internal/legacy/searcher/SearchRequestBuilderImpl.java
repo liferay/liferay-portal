@@ -386,20 +386,20 @@ public class SearchRequestBuilderImpl implements SearchRequestBuilder {
 	}
 
 	@Override
-	public SearchRequestBuilder modelIndexerClasses(Class<?>... classes) {
+	public SearchRequestBuilder modelIndexerClassNames(String... classNames) {
 		_withSearchRequestImpl(
 			searchRequestImpl -> searchRequestImpl.setModelIndexerClassNames(
-				TransformUtil.transform(
-					classes, Class::getCanonicalName, String.class)));
+				classNames));
 
 		return this;
 	}
 
 	@Override
-	public SearchRequestBuilder modelIndexerClassNames(String... classNames) {
+	public SearchRequestBuilder modelIndexerClasses(Class<?>... classes) {
 		_withSearchRequestImpl(
 			searchRequestImpl -> searchRequestImpl.setModelIndexerClassNames(
-				classNames));
+				TransformUtil.transform(
+					classes, Class::getCanonicalName, String.class)));
 
 		return this;
 	}

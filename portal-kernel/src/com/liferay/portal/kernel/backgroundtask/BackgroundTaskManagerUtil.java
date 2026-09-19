@@ -187,6 +187,14 @@ public class BackgroundTaskManagerUtil {
 		return backgroundTaskManager.getBackgroundTask(backgroundTaskId);
 	}
 
+	public static String getBackgroundTaskStatusJSON(long backgroundTaskId) {
+		BackgroundTaskManager backgroundTaskManager =
+			_backgroundTaskManagerSnapshot.get();
+
+		return backgroundTaskManager.getBackgroundTaskStatusJSON(
+			backgroundTaskId);
+	}
+
 	public static List<BackgroundTask> getBackgroundTasks(
 		long groupId, int status) {
 
@@ -507,14 +515,6 @@ public class BackgroundTaskManagerUtil {
 
 		return backgroundTaskManager.getBackgroundTasksCount(
 			groupIds, name, taskExecutorClassNames);
-	}
-
-	public static String getBackgroundTaskStatusJSON(long backgroundTaskId) {
-		BackgroundTaskManager backgroundTaskManager =
-			_backgroundTaskManagerSnapshot.get();
-
-		return backgroundTaskManager.getBackgroundTaskStatusJSON(
-			backgroundTaskId);
 	}
 
 	public static void resumeBackgroundTask(long backgroundTaskId) {

@@ -495,23 +495,6 @@ public class RepositoryBrowserTagDisplayContext {
 		).build();
 	}
 
-	private String _getDeleteFileEntryURL(FileEntry fileEntry) {
-		return HttpComponentsUtil.addParameter(
-			_getRepositoryBrowserURL(), "fileEntryId",
-			fileEntry.getFileEntryId());
-	}
-
-	private String _getDeleteFileShortcutURL(FileShortcut fileShortcut) {
-		return HttpComponentsUtil.addParameter(
-			_getRepositoryBrowserURL(), "fileShortcutId",
-			fileShortcut.getFileShortcutId());
-	}
-
-	private String _getDeleteFolderURL(Folder folder) {
-		return HttpComponentsUtil.addParameter(
-			_getRepositoryBrowserURL(), "folderId", folder.getFolderId());
-	}
-
 	private SearchContainer<Object> _getDLSearchContainer()
 		throws PortalException {
 
@@ -546,6 +529,23 @@ public class RepositoryBrowserTagDisplayContext {
 		}
 
 		return searchContainer;
+	}
+
+	private String _getDeleteFileEntryURL(FileEntry fileEntry) {
+		return HttpComponentsUtil.addParameter(
+			_getRepositoryBrowserURL(), "fileEntryId",
+			fileEntry.getFileEntryId());
+	}
+
+	private String _getDeleteFileShortcutURL(FileShortcut fileShortcut) {
+		return HttpComponentsUtil.addParameter(
+			_getRepositoryBrowserURL(), "fileShortcutId",
+			fileShortcut.getFileShortcutId());
+	}
+
+	private String _getDeleteFolderURL(Folder folder) {
+		return HttpComponentsUtil.addParameter(
+			_getRepositoryBrowserURL(), "folderId", folder.getFolderId());
 	}
 
 	private FileEntry _getFileEntry(RepositoryEntry repositoryEntry)

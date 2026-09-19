@@ -436,18 +436,6 @@ public class SetUpPaymentRestController extends BaseRestController {
 				).toUri()));
 	}
 
-	private JSONObject _getPaymentSourceJSONObject(
-		JSONObject commercePaymentEntryJSONObject, String fundingSource,
-		JSONObject orderJSONObject) {
-
-		return new JSONObject(
-		).put(
-			fundingSource,
-			_getPayPalPaymentSourceJSONObject(
-				commercePaymentEntryJSONObject, fundingSource, orderJSONObject)
-		);
-	}
-
 	private JSONObject _getPayPalPaymentSourceJSONObject(
 		JSONObject commercePaymentEntryJSONObject, String fundingSource,
 		JSONObject orderJSONObject) {
@@ -485,6 +473,18 @@ public class SetUpPaymentRestController extends BaseRestController {
 				commercePaymentEntryJSONObject.getString("callbackURL"),
 				commercePaymentEntryJSONObject.getString("cancelURL"),
 				fundingSource, shippable));
+	}
+
+	private JSONObject _getPaymentSourceJSONObject(
+		JSONObject commercePaymentEntryJSONObject, String fundingSource,
+		JSONObject orderJSONObject) {
+
+		return new JSONObject(
+		).put(
+			fundingSource,
+			_getPayPalPaymentSourceJSONObject(
+				commercePaymentEntryJSONObject, fundingSource, orderJSONObject)
+		);
 	}
 
 	private JSONArray _getPurchaseUnitJSONArray(

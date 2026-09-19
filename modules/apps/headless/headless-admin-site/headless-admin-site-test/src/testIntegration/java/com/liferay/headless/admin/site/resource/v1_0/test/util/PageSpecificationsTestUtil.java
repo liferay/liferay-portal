@@ -414,16 +414,6 @@ public class PageSpecificationsTestUtil {
 			scopeGroupId, status);
 	}
 
-	public static PageSpecification[] getContentPageSpecifications(
-		String publishedPageSpecificationExternalReferenceCode,
-		long scopeGroupId) {
-
-		return _getContentPageSpecifications(
-			getCustomFields(), RandomTestUtil.randomString(), null,
-			getCustomFields(), publishedPageSpecificationExternalReferenceCode,
-			null, scopeGroupId);
-	}
-
 	public static ContentPageSpecification
 		getContentPageSpecificationWithPageExperiences(
 			String contentPageSpecificationExternalReferenceCode,
@@ -449,6 +439,16 @@ public class PageSpecificationsTestUtil {
 			contentPageSpecificationExternalReferenceCode, null, null,
 			new PageExperience[] {defaultPageExperience, pageExperience},
 			groupId, status);
+	}
+
+	public static PageSpecification[] getContentPageSpecifications(
+		String publishedPageSpecificationExternalReferenceCode,
+		long scopeGroupId) {
+
+		return _getContentPageSpecifications(
+			getCustomFields(), RandomTestUtil.randomString(), null,
+			getCustomFields(), publishedPageSpecificationExternalReferenceCode,
+			null, scopeGroupId);
 	}
 
 	public static CustomField[] getCustomFields() {

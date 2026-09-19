@@ -501,6 +501,9 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 	}
 
 	@Reference
+	private CProductPersistence _cProductPersistence;
+
+	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	@Reference(
@@ -514,8 +517,5 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 
 	@Reference
 	private CPDefinitionPersistence _cpDefinitionPersistence;
-
-	@Reference
-	private CProductPersistence _cProductPersistence;
 
 }

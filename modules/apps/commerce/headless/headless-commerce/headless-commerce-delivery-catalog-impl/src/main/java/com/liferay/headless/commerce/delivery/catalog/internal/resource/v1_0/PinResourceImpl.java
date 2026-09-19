@@ -137,6 +137,9 @@ public class PinResourceImpl extends BasePinResourceImpl {
 	private AccountEntryService _accountEntryService;
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceAccountHelper _commerceAccountHelper;
 
 	@Reference
@@ -150,9 +153,6 @@ public class PinResourceImpl extends BasePinResourceImpl {
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private CSDiagramPinLocalService _csDiagramPinLocalService;

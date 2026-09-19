@@ -203,6 +203,47 @@ public class CTConflictChecker<T extends CTModel<T>> {
 		}
 	}
 
+	private void _checkCTEntries(
+		CTPersistence<T> ctPersistence, List<ConflictInfo> conflictInfos) {
+
+		Class<?> clazz = ctPersistence.getModelClass();
+
+		CTEntryConflictHelper ctEntryConflictHelper =
+			_ctEntryConflictHelperServiceTrackerMap.getService(clazz.getName());
+
+		if (ctEntryConflictHelper == null) {
+			return;
+		}
+
+		for (CTEntry ctEntry : _ctEntries) {
+			String missingRequirementTypeName =
+				ctEntryConflictHelper.getMissingRequirementTypeName(
+					ctEntry, _targetCTCollectionId);
+
+			if (Validator.isNotNull(missingRequirementTypeName)) {
+				conflictInfos.add(
+					new MissingRequirementConflictInfo(
+						ctEntry.getModelClassPK(), missingRequirementTypeName));
+			}
+
+			if (ctEntryConflictHelper.hasModificationConflict(
+					ctEntry, _targetCTCollectionId)) {
+
+				conflictInfos.add(
+					new ModificationConflictInfo(
+						ctEntry.getModelClassPK(), false));
+			}
+
+			if (ctEntryConflictHelper.hasDeletionModificationConflict(
+					ctEntry, _targetCTCollectionId)) {
+
+				conflictInfos.add(
+					new DeletionModificationConflictInfo(
+						ctEntry.getModelClassPK()));
+			}
+		}
+	}
+
 	private void _checkConstraint(
 			Connection connection, CTPersistence<T> ctPersistence,
 			List<ConflictInfo> conflictInfos, String primaryKeyName,
@@ -316,47 +357,6 @@ public class CTConflictChecker<T extends CTModel<T>> {
 				new ConstraintResolverConflictInfo(
 					constraintResolver, false, currentPrimaryKeys.getKey(),
 					currentPrimaryKeys.getValue()));
-		}
-	}
-
-	private void _checkCTEntries(
-		CTPersistence<T> ctPersistence, List<ConflictInfo> conflictInfos) {
-
-		Class<?> clazz = ctPersistence.getModelClass();
-
-		CTEntryConflictHelper ctEntryConflictHelper =
-			_ctEntryConflictHelperServiceTrackerMap.getService(clazz.getName());
-
-		if (ctEntryConflictHelper == null) {
-			return;
-		}
-
-		for (CTEntry ctEntry : _ctEntries) {
-			String missingRequirementTypeName =
-				ctEntryConflictHelper.getMissingRequirementTypeName(
-					ctEntry, _targetCTCollectionId);
-
-			if (Validator.isNotNull(missingRequirementTypeName)) {
-				conflictInfos.add(
-					new MissingRequirementConflictInfo(
-						ctEntry.getModelClassPK(), missingRequirementTypeName));
-			}
-
-			if (ctEntryConflictHelper.hasModificationConflict(
-					ctEntry, _targetCTCollectionId)) {
-
-				conflictInfos.add(
-					new ModificationConflictInfo(
-						ctEntry.getModelClassPK(), false));
-			}
-
-			if (ctEntryConflictHelper.hasDeletionModificationConflict(
-					ctEntry, _targetCTCollectionId)) {
-
-				conflictInfos.add(
-					new DeletionModificationConflictInfo(
-						ctEntry.getModelClassPK()));
-			}
 		}
 	}
 

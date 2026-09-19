@@ -115,19 +115,6 @@ public class AuthorizeNetCommercePaymentMethodTest {
 	}
 
 	@Test
-	public void testGetTransactionRequestTypeWithoutAddresses()
-		throws Exception {
-
-		TransactionRequestType transactionRequestType =
-			_getTransactionRequestType(
-				_getCommerceOrder(
-					null, null, new BigDecimal(RandomTestUtil.randomDouble())));
-
-		Assert.assertNull(transactionRequestType.getBillTo());
-		Assert.assertNull(transactionRequestType.getShipTo());
-	}
-
-	@Test
 	public void testGetTransactionRequestTypeWithSingleWordName()
 		throws Exception {
 
@@ -144,6 +131,19 @@ public class AuthorizeNetCommercePaymentMethodTest {
 
 		Assert.assertEquals(firstName, customerAddressType.getFirstName());
 		Assert.assertNull(customerAddressType.getLastName());
+	}
+
+	@Test
+	public void testGetTransactionRequestTypeWithoutAddresses()
+		throws Exception {
+
+		TransactionRequestType transactionRequestType =
+			_getTransactionRequestType(
+				_getCommerceOrder(
+					null, null, new BigDecimal(RandomTestUtil.randomDouble())));
+
+		Assert.assertNull(transactionRequestType.getBillTo());
+		Assert.assertNull(transactionRequestType.getShipTo());
 	}
 
 	private void _assertNameAndAddressType(

@@ -31,6 +31,19 @@ import java.util.Map;
  */
 public class DataDefinitionTestUtil {
 
+	public static DDMStructure addDDMStructure(Group group) throws Exception {
+		DDMStructureTestHelper ddmStructureTestHelper =
+			new DDMStructureTestHelper(
+				PortalUtil.getClassNameId(TestDataDefinitionContentType.class),
+				group);
+
+		return ddmStructureTestHelper.addStructure(
+			PortalUtil.getClassNameId(TestDataDefinitionContentType.class),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			read("test-structured-content-structure.json"),
+			StorageType.DEFAULT.getValue());
+	}
+
 	public static DataDefinition addDataDefinition(
 			DataDefinition dataDefinition, Long groupId)
 		throws Exception {
@@ -108,19 +121,6 @@ public class DataDefinitionTestUtil {
 
 		return dataDefinitionResource.postSiteDataDefinitionByContentType(
 			groupId, "test", dataDefinition);
-	}
-
-	public static DDMStructure addDDMStructure(Group group) throws Exception {
-		DDMStructureTestHelper ddmStructureTestHelper =
-			new DDMStructureTestHelper(
-				PortalUtil.getClassNameId(TestDataDefinitionContentType.class),
-				group);
-
-		return ddmStructureTestHelper.addStructure(
-			PortalUtil.getClassNameId(TestDataDefinitionContentType.class),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			read("test-structured-content-structure.json"),
-			StorageType.DEFAULT.getValue());
 	}
 
 	public static String read(String fileName) throws Exception {

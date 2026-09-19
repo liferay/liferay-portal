@@ -460,6 +460,25 @@ public class PortletBagFactory {
 		}
 	}
 
+	private void _registerPOPMessageListeners(
+			BundleContext bundleContext, Portlet portlet,
+			Dictionary<String, Object> properties,
+			List<ServiceRegistration<?>> serviceRegistrations)
+		throws Exception {
+
+		if (Validator.isNotNull(portlet.getPopMessageListenerClass())) {
+			MessageListener popMessageListenerInstance = _newInstance(
+				MessageListener.class, portlet.getPopMessageListenerClass());
+
+			ServiceRegistration<?> serviceRegistration =
+				bundleContext.registerService(
+					MessageListener.class, popMessageListenerInstance,
+					properties);
+
+			serviceRegistrations.add(serviceRegistration);
+		}
+	}
+
 	private void _registerPermissionPropagators(
 			BundleContext bundleContext, Portlet portlet,
 			Dictionary<String, Object> properties,
@@ -474,25 +493,6 @@ public class PortletBagFactory {
 			ServiceRegistration<?> serviceRegistration =
 				bundleContext.registerService(
 					PermissionPropagator.class, permissionPropagatorInstance,
-					properties);
-
-			serviceRegistrations.add(serviceRegistration);
-		}
-	}
-
-	private void _registerPOPMessageListeners(
-			BundleContext bundleContext, Portlet portlet,
-			Dictionary<String, Object> properties,
-			List<ServiceRegistration<?>> serviceRegistrations)
-		throws Exception {
-
-		if (Validator.isNotNull(portlet.getPopMessageListenerClass())) {
-			MessageListener popMessageListenerInstance = _newInstance(
-				MessageListener.class, portlet.getPopMessageListenerClass());
-
-			ServiceRegistration<?> serviceRegistration =
-				bundleContext.registerService(
-					MessageListener.class, popMessageListenerInstance,
 					properties);
 
 			serviceRegistrations.add(serviceRegistration);

@@ -213,6 +213,18 @@ public class RemoteCommerceTaxEngineTest {
 			_recordedParameterMap.get(prefix + "AddressZip"));
 	}
 
+	private CPTaxCategory _getCPTaxCategory() {
+		CPTaxCategory cpTaxCategory = Mockito.mock(CPTaxCategory.class);
+
+		Mockito.when(
+			cpTaxCategory.getCPTaxCategoryId()
+		).thenReturn(
+			5L
+		);
+
+		return cpTaxCategory;
+	}
+
 	private CommerceAddress _getCommerceAddress(
 			String city, long commerceAddressId,
 			String commerceCountryThreeLettersISOCode,
@@ -358,18 +370,6 @@ public class RemoteCommerceTaxEngineTest {
 		);
 
 		return country;
-	}
-
-	private CPTaxCategory _getCPTaxCategory() {
-		CPTaxCategory cpTaxCategory = Mockito.mock(CPTaxCategory.class);
-
-		Mockito.when(
-			cpTaxCategory.getCPTaxCategoryId()
-		).thenReturn(
-			5L
-		);
-
-		return cpTaxCategory;
 	}
 
 	private Region _getRegion(String code) {

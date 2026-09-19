@@ -996,18 +996,18 @@ public class ContentDashboardAdminManagementToolbarDisplayContext
 		}
 	}
 
+	private String _getStatusLabel(int status) {
+		String label = WorkflowConstants.getStatusLabel(status);
+
+		return _language.get(httpServletRequest, label);
+	}
+
 	private List<Integer> _getStatuses() {
 		return Arrays.asList(
 			WorkflowConstants.STATUS_ANY, WorkflowConstants.STATUS_APPROVED,
 			WorkflowConstants.STATUS_DRAFT, WorkflowConstants.STATUS_EXPIRED,
 			WorkflowConstants.STATUS_PENDING,
 			WorkflowConstants.STATUS_SCHEDULED);
-	}
-
-	private String _getStatusLabel(int status) {
-		String label = WorkflowConstants.getStatusLabel(status);
-
-		return _language.get(httpServletRequest, label);
 	}
 
 	private boolean _isCustomDateActive() {

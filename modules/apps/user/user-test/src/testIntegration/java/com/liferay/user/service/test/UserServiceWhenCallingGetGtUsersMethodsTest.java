@@ -142,10 +142,10 @@ public class UserServiceWhenCallingGetGtUsersMethodsTest {
 	@Inject
 	private UserLocalService _userLocalService;
 
-	@DeleteAfterTestRun
-	private final List<User> _users = new ArrayList<>();
-
 	@Inject
 	private UserService _userService;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
 
 }

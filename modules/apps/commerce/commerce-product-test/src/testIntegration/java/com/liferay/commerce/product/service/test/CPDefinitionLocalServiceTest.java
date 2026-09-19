@@ -2297,6 +2297,9 @@ public class CPDefinitionLocalServiceTest {
 	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	@Inject
+	private CProductLocalService _cProductLocalService;
+
+	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
 	private CommerceCatalog _commerceCatalog;
@@ -2357,9 +2360,6 @@ public class CPDefinitionLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private final List<CPOption> _cpOptions = new ArrayList<>();
-
-	@Inject
-	private CProductLocalService _cProductLocalService;
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;

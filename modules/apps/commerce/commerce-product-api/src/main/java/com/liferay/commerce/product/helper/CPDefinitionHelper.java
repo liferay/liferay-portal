@@ -51,14 +51,6 @@ public interface CPDefinitionHelper {
 			int start, int end)
 		throws PortalException;
 
-	public long searchCount(
-			long groupId, SearchContext searchContext, CPQuery cpQuery)
-		throws PortalException;
-
-	public long searchCount(
-			long[] groupIds, SearchContext searchContext, CPQuery cpQuery)
-		throws PortalException;
-
 	public List<CPDefinition> searchCPDefinitions(
 			long groupId, SearchContext searchContext, CPQuery cpQuery,
 			int start, int end)
@@ -67,6 +59,14 @@ public interface CPDefinitionHelper {
 	public List<CPDefinition> searchCPDefinitions(
 			long[] groupIds, SearchContext searchContext, CPQuery cpQuery,
 			int start, int end)
+		throws PortalException;
+
+	public long searchCount(
+			long groupId, SearchContext searchContext, CPQuery cpQuery)
+		throws PortalException;
+
+	public long searchCount(
+			long[] groupIds, SearchContext searchContext, CPQuery cpQuery)
 		throws PortalException;
 
 }

@@ -116,8 +116,8 @@ public class CommerceReturnItem {
 	}
 
 	private final BigDecimal _amount;
-	private final BigDecimal _authorized;
 	private final Boolean _authorizeReturnWithoutReturningProducts;
+	private final BigDecimal _authorized;
 	private final long _commerceOrderItemId;
 	private final Date _createDate;
 	private final String _currencyCode;

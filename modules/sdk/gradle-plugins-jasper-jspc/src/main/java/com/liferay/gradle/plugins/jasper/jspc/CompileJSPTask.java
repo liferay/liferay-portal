@@ -120,11 +120,6 @@ public class CompileJSPTask extends DefaultTask {
 		return GradleUtil.toFile(getProject(), _destinationDir);
 	}
 
-	@Classpath
-	public FileCollection getJspCClasspath() {
-		return _jspCClasspath;
-	}
-
 	@InputFiles
 	@PathSensitive(PathSensitivity.RELATIVE)
 	@SkipWhenEmpty
@@ -145,6 +140,11 @@ public class CompileJSPTask extends DefaultTask {
 		args.put("include", "**/*.jsp");
 
 		return project.fileTree(args);
+	}
+
+	@Classpath
+	public FileCollection getJspCClasspath() {
+		return _jspCClasspath;
 	}
 
 	@InputDirectory

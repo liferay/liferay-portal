@@ -14,6 +14,24 @@ import java.util.regex.Pattern;
  */
 public class ControllerPortalTopLevelBuildData extends PortalTopLevelBuildData {
 
+	public String getTestSuiteName() {
+		String jobName = getJobName();
+
+		Matcher matcher = _jobNamePattern.matcher(jobName);
+
+		if (!matcher.find()) {
+			throw new RuntimeException("Invalid job name " + jobName);
+		}
+
+		String testSuiteName = matcher.group("testSuiteName");
+
+		if (testSuiteName == null) {
+			testSuiteName = "default";
+		}
+
+		return testSuiteName;
+	}
+
 	public String getTestrayBuildName() {
 		String testrayProjectName = getTestrayProjectName();
 
@@ -49,24 +67,6 @@ public class ControllerPortalTopLevelBuildData extends PortalTopLevelBuildData {
 		return JenkinsResultsParserUtil.combine(
 			"[", getPortalUpstreamBranchName(), "] ci:test:",
 			getTestSuiteName());
-	}
-
-	public String getTestSuiteName() {
-		String jobName = getJobName();
-
-		Matcher matcher = _jobNamePattern.matcher(jobName);
-
-		if (!matcher.find()) {
-			throw new RuntimeException("Invalid job name " + jobName);
-		}
-
-		String testSuiteName = matcher.group("testSuiteName");
-
-		if (testSuiteName == null) {
-			testSuiteName = "default";
-		}
-
-		return testSuiteName;
 	}
 
 	protected ControllerPortalTopLevelBuildData(

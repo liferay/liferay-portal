@@ -507,6 +507,9 @@ public class PlacedOrderItemResourceTest
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	@DeleteAfterTestRun
+	private final List<CPDefinition> _commerceCPDefinitions = new ArrayList<>();
+
+	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
 
 	@DeleteAfterTestRun
@@ -514,9 +517,6 @@ public class PlacedOrderItemResourceTest
 
 	@Inject
 	private CommerceChannelLocalService _commerceChannelLocalService;
-
-	@DeleteAfterTestRun
-	private final List<CPDefinition> _commerceCPDefinitions = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private CommerceCurrency _commerceCurrency;

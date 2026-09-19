@@ -204,15 +204,15 @@ public class UpgradePortalPreferencesTest {
 
 	private PortalCache<?, ?> _portalCache;
 
+	@Inject
+	private PortalPreferenceValueLocalService
+		_portalPreferenceValueLocalService;
+
 	@DeleteAfterTestRun
 	private PortalPreferences _portalPreferences;
 
 	@Inject
 	private PortalPreferencesLocalService _portalPreferencesLocalService;
-
-	@Inject
-	private PortalPreferenceValueLocalService
-		_portalPreferenceValueLocalService;
 
 	private UpgradeProcess _upgradeProcess;
 

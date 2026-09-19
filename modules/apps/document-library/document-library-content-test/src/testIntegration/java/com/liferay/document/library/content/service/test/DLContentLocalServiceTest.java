@@ -191,6 +191,29 @@ public class DLContentLocalServiceTest {
 	}
 
 	@Test
+	public void testGetContentVersion() throws Exception {
+		String path = RandomTestUtil.randomString();
+
+		DLContent addDLContent1 = _dlContentLocalService.addContent(
+			_companyId, _repositoryId, path, Store.VERSION_DEFAULT,
+			new UnsyncByteArrayInputStream(_DATA_VERSION_1));
+
+		DLContent getDLContent1 = _dlContentLocalService.getContent(
+			_companyId, _repositoryId, path, Store.VERSION_DEFAULT);
+
+		assertEquals(addDLContent1, getDLContent1);
+
+		DLContent addDLContent2 = _dlContentLocalService.addContent(
+			_companyId, _repositoryId, path, "1.1",
+			new UnsyncByteArrayInputStream(_DATA_VERSION_2));
+
+		DLContent getDLContent2 = _dlContentLocalService.getContent(
+			_companyId, _repositoryId, path, "1.1");
+
+		assertEquals(addDLContent2, getDLContent2);
+	}
+
+	@Test
 	public void testGetContentsAll() throws Exception {
 		DLContent dlContent1 = _dlContentLocalService.addContent(
 			_companyId, _repositoryId, RandomTestUtil.randomString(),
@@ -281,29 +304,6 @@ public class DLContentLocalServiceTest {
 			dlContents2.toString(), dlContents2.contains(dlContent3));
 		Assert.assertTrue(
 			dlContents2.toString(), dlContents2.contains(dlContent4));
-	}
-
-	@Test
-	public void testGetContentVersion() throws Exception {
-		String path = RandomTestUtil.randomString();
-
-		DLContent addDLContent1 = _dlContentLocalService.addContent(
-			_companyId, _repositoryId, path, Store.VERSION_DEFAULT,
-			new UnsyncByteArrayInputStream(_DATA_VERSION_1));
-
-		DLContent getDLContent1 = _dlContentLocalService.getContent(
-			_companyId, _repositoryId, path, Store.VERSION_DEFAULT);
-
-		assertEquals(addDLContent1, getDLContent1);
-
-		DLContent addDLContent2 = _dlContentLocalService.addContent(
-			_companyId, _repositoryId, path, "1.1",
-			new UnsyncByteArrayInputStream(_DATA_VERSION_2));
-
-		DLContent getDLContent2 = _dlContentLocalService.getContent(
-			_companyId, _repositoryId, path, "1.1");
-
-		assertEquals(addDLContent2, getDLContent2);
 	}
 
 	@Test

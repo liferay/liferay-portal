@@ -294,6 +294,42 @@ public class ContentTargetingUpgradeProcessTest {
 	}
 
 	@Test
+	public void testUpgradeContentTargetingUserSegmentsWithOSRule()
+		throws Exception {
+
+		long contentTargetingUserSegmentId = -1L;
+
+		insertContentTargetingRuleInstance(
+			contentTargetingUserSegmentId, "OSRule", "iOS");
+
+		insertContentTargetingUserSegment(
+			contentTargetingUserSegmentId,
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap());
+
+		_contentTargetingUpgradeProcess.upgrade();
+
+		_segmentsEntry = _segmentsEntryLocalService.fetchSegmentsEntry(
+			_group.getGroupId(), "CT_" + contentTargetingUserSegmentId);
+
+		Assert.assertNotNull(_segmentsEntry);
+
+		Criteria criteria = _segmentsEntry.getCriteriaObj();
+
+		Assert.assertNotNull(criteria);
+
+		Criteria.Criterion criterion = criteria.getCriterion("context");
+
+		Assert.assertNotNull(criterion);
+
+		Assert.assertEquals(
+			Criteria.Conjunction.AND,
+			Criteria.Conjunction.parse(criterion.getConjunction()));
+		Assert.assertEquals(
+			"contains(userAgent, 'iOS')", criterion.getFilterString());
+	}
+
+	@Test
 	public void testUpgradeContentTargetingUserSegmentsWithOrganizationMemberRule()
 		throws Exception {
 
@@ -328,42 +364,6 @@ public class ContentTargetingUpgradeProcessTest {
 			Criteria.Conjunction.parse(criterion.getConjunction()));
 		Assert.assertEquals(
 			"(organizationId eq '12345')", criterion.getFilterString());
-	}
-
-	@Test
-	public void testUpgradeContentTargetingUserSegmentsWithOSRule()
-		throws Exception {
-
-		long contentTargetingUserSegmentId = -1L;
-
-		insertContentTargetingRuleInstance(
-			contentTargetingUserSegmentId, "OSRule", "iOS");
-
-		insertContentTargetingUserSegment(
-			contentTargetingUserSegmentId,
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap());
-
-		_contentTargetingUpgradeProcess.upgrade();
-
-		_segmentsEntry = _segmentsEntryLocalService.fetchSegmentsEntry(
-			_group.getGroupId(), "CT_" + contentTargetingUserSegmentId);
-
-		Assert.assertNotNull(_segmentsEntry);
-
-		Criteria criteria = _segmentsEntry.getCriteriaObj();
-
-		Assert.assertNotNull(criteria);
-
-		Criteria.Criterion criterion = criteria.getCriterion("context");
-
-		Assert.assertNotNull(criterion);
-
-		Assert.assertEquals(
-			Criteria.Conjunction.AND,
-			Criteria.Conjunction.parse(criterion.getConjunction()));
-		Assert.assertEquals(
-			"contains(userAgent, 'iOS')", criterion.getFilterString());
 	}
 
 	@Test

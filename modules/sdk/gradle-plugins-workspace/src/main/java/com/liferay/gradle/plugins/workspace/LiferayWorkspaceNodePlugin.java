@@ -110,11 +110,6 @@ public class LiferayWorkspaceNodePlugin implements Plugin<Project> {
 		);
 	}
 
-	private String _getLts(Project project) {
-		return GradleUtil.getProperty(
-			project, NODE_LTS_PROPERTY_NAME, (String)null);
-	}
-
 	private Optional<NodeInfo> _getLTSNodeInfoOptional(Project project) {
 		String lts = _getLts(project);
 
@@ -157,6 +152,11 @@ public class LiferayWorkspaceNodePlugin implements Plugin<Project> {
 		}
 
 		return nodeInfoOptional;
+	}
+
+	private String _getLts(Project project) {
+		return GradleUtil.getProperty(
+			project, NODE_LTS_PROPERTY_NAME, (String)null);
 	}
 
 	private final NodeInfos _nodeInfos;

@@ -25,15 +25,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface MFAFIDO2Configuration {
 
 	/**
-	 * Number of allowed credentials(authenticators) per user.
-	 */
-	@Meta.AD(
-		deflt = "1", description = "allowed-credentials-per-user-description",
-		name = "allowed-credentials-per-user", required = false
-	)
-	public int allowedCredentialsPerUser();
-
-	/**
 	 * If <code>true</code>, the origin matching rule is relaxed to allow any
 	 * port number.
 	 */
@@ -53,6 +44,15 @@ public interface MFAFIDO2Configuration {
 		name = "allow-origin-subdomain", required = false
 	)
 	public boolean allowOriginSubdomain();
+
+	/**
+	 * Number of allowed credentials(authenticators) per user.
+	 */
+	@Meta.AD(
+		deflt = "1", description = "allowed-credentials-per-user-description",
+		name = "allowed-credentials-per-user", required = false
+	)
+	public int allowedCredentialsPerUser();
 
 	@Meta.AD(
 		deflt = "false", description = "mfa-fido2-enabled-description",

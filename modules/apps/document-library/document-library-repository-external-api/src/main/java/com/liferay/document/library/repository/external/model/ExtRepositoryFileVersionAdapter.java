@@ -75,6 +75,11 @@ public class ExtRepositoryFileVersionAdapter
 	}
 
 	@Override
+	public ExtRepositoryFileVersion getExtRepositoryModel() {
+		return _extRepositoryFileVersion;
+	}
+
+	@Override
 	public String getExtension() {
 		return _extRepositoryFileEntryAdapter.getExtension();
 	}
@@ -82,11 +87,6 @@ public class ExtRepositoryFileVersionAdapter
 	@Override
 	public String getExtraSettings() {
 		return null;
-	}
-
-	@Override
-	public ExtRepositoryFileVersion getExtRepositoryModel() {
-		return _extRepositoryFileVersion;
 	}
 
 	@Override

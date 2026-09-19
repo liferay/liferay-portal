@@ -31,12 +31,12 @@ public class DTOProperty {
 		this(new HashMap<>(), name, type);
 	}
 
-	public String getDescription() {
-		return _description;
-	}
-
 	public List<DTOProperty> getDTOProperties() {
 		return _dtoProperties;
+	}
+
+	public String getDescription() {
+		return _description;
 	}
 
 	public Map<String, Object> getExtensions() {
@@ -59,12 +59,12 @@ public class DTOProperty {
 		return _required;
 	}
 
-	public void setDescription(String description) {
-		_description = description;
-	}
-
 	public void setDTOProperties(List<DTOProperty> dtoProperties) {
 		_dtoProperties = dtoProperties;
+	}
+
+	public void setDescription(String description) {
+		_description = description;
 	}
 
 	public void setName(String name) {

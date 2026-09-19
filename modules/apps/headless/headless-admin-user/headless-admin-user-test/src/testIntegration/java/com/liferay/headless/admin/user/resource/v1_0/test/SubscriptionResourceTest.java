@@ -129,18 +129,6 @@ public class SubscriptionResourceTest extends BaseSubscriptionResourceTestCase {
 				subscription.getId()));
 	}
 
-	private void _testDeleteMyUserAccountSubscriptionWithoutOwnerUser()
-		throws Exception {
-
-		Subscription subscription = _addSubscription(_adminUser.getUserId());
-
-		assertHttpResponseStatusCode(
-			403,
-			_userSubscriptionResource.
-				deleteMyUserAccountSubscriptionHttpResponse(
-					subscription.getId()));
-	}
-
 	private void _testDeleteMyUserAccountSubscriptionWithOwnerUser()
 		throws Exception {
 
@@ -148,6 +136,18 @@ public class SubscriptionResourceTest extends BaseSubscriptionResourceTestCase {
 
 		assertHttpResponseStatusCode(
 			204,
+			_userSubscriptionResource.
+				deleteMyUserAccountSubscriptionHttpResponse(
+					subscription.getId()));
+	}
+
+	private void _testDeleteMyUserAccountSubscriptionWithoutOwnerUser()
+		throws Exception {
+
+		Subscription subscription = _addSubscription(_adminUser.getUserId());
+
+		assertHttpResponseStatusCode(
+			403,
 			_userSubscriptionResource.
 				deleteMyUserAccountSubscriptionHttpResponse(
 					subscription.getId()));
@@ -164,17 +164,6 @@ public class SubscriptionResourceTest extends BaseSubscriptionResourceTestCase {
 				subscription.getId()));
 	}
 
-	private void _testGetMyUserAccountSubscriptionWithoutOwnerUser()
-		throws Exception {
-
-		Subscription subscription = _addSubscription(_adminUser.getUserId());
-
-		assertHttpResponseStatusCode(
-			404,
-			_userSubscriptionResource.getMyUserAccountSubscriptionHttpResponse(
-				subscription.getId()));
-	}
-
 	private void _testGetMyUserAccountSubscriptionWithOwnerUser()
 		throws Exception {
 
@@ -183,6 +172,17 @@ public class SubscriptionResourceTest extends BaseSubscriptionResourceTestCase {
 		assertEquals(
 			subscription,
 			_userSubscriptionResource.getMyUserAccountSubscription(
+				subscription.getId()));
+	}
+
+	private void _testGetMyUserAccountSubscriptionWithoutOwnerUser()
+		throws Exception {
+
+		Subscription subscription = _addSubscription(_adminUser.getUserId());
+
+		assertHttpResponseStatusCode(
+			404,
+			_userSubscriptionResource.getMyUserAccountSubscriptionHttpResponse(
 				subscription.getId()));
 	}
 

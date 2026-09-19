@@ -135,14 +135,6 @@ public class UpgradePortletPreferencesTest
 	}
 
 	@Test
-	public void testUpgradeWithoutAssetListEntry() throws Exception {
-		testUpgrade(
-			HashMapBuilder.put(
-				"selectionStyle", "asset-list"
-			).build());
-	}
-
-	@Test
 	public void testUpgradeWithSameGroupAssetListEntry() throws Exception {
 		AssetListEntry assetListEntry = _addAssetListEntry(group);
 
@@ -157,6 +149,14 @@ public class UpgradePortletPreferencesTest
 			HashMapBuilder.put(
 				"assetListEntryId",
 				String.valueOf(assetListEntry.getAssetListEntryId())
+			).build());
+	}
+
+	@Test
+	public void testUpgradeWithoutAssetListEntry() throws Exception {
+		testUpgrade(
+			HashMapBuilder.put(
+				"selectionStyle", "asset-list"
 			).build());
 	}
 

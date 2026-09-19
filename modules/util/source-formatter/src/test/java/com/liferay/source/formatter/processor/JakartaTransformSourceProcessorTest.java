@@ -40,13 +40,13 @@ public class JakartaTransformSourceProcessorTest
 	}
 
 	@Test
-	public void testJavaJakartaTransform() throws Exception {
-		test("jakartatransform/JakartaTransform.testjava");
+	public void testJSPJakartaTransform() throws Exception {
+		test("jakartatransform/JakartaTransform.testjsp");
 	}
 
 	@Test
-	public void testJSPJakartaTransform() throws Exception {
-		test("jakartatransform/JakartaTransform.testjsp");
+	public void testJavaJakartaTransform() throws Exception {
+		test("jakartatransform/JakartaTransform.testjava");
 	}
 
 	@Test

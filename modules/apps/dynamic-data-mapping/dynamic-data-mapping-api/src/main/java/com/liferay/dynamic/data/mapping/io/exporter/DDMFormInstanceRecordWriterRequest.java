@@ -18,16 +18,16 @@ import java.util.Map;
  */
 public final class DDMFormInstanceRecordWriterRequest {
 
+	public List<Map<String, String>> getDDMFormFieldValues() {
+		return _ddmFormFieldValues;
+	}
+
 	public Map<String, DDMFormField> getDDMFormFields() {
 		return _ddmFormFields;
 	}
 
 	public Map<String, String> getDDMFormFieldsLabel() {
 		return _ddmFormFieldsLabel;
-	}
-
-	public List<Map<String, String>> getDDMFormFieldValues() {
-		return _ddmFormFieldValues;
 	}
 
 	public static class Builder {
@@ -65,6 +65,12 @@ public final class DDMFormInstanceRecordWriterRequest {
 				ddmFormFieldValues;
 		}
 
+		private String _formatLabelString(String fieldName, String label) {
+			return StringBundler.concat(
+				label, StringPool.SPACE, StringPool.OPEN_PARENTHESIS, fieldName,
+				StringPool.CLOSE_PARENTHESIS);
+		}
+
 		private Map<String, String> _formatLabels(
 			Map<String, String> ddmFormFieldsLabel) {
 
@@ -93,12 +99,6 @@ public final class DDMFormInstanceRecordWriterRequest {
 			return ddmFormFieldsLabel;
 		}
 
-		private String _formatLabelString(String fieldName, String label) {
-			return StringBundler.concat(
-				label, StringPool.SPACE, StringPool.OPEN_PARENTHESIS, fieldName,
-				StringPool.CLOSE_PARENTHESIS);
-		}
-
 		private final DDMFormInstanceRecordWriterRequest
 			_ddmFormInstanceRecordWriterRequest =
 				new DDMFormInstanceRecordWriterRequest();
@@ -108,8 +108,8 @@ public final class DDMFormInstanceRecordWriterRequest {
 	private DDMFormInstanceRecordWriterRequest() {
 	}
 
+	private List<Map<String, String>> _ddmFormFieldValues;
 	private Map<String, DDMFormField> _ddmFormFields;
 	private Map<String, String> _ddmFormFieldsLabel;
-	private List<Map<String, String>> _ddmFormFieldValues;
 
 }

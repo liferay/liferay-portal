@@ -461,6 +461,9 @@ public class DiscountResourceImpl extends BaseDiscountResourceImpl {
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceDiscountCommerceAccountGroupRelService
 		_commerceDiscountCommerceAccountGroupRelService;
 
@@ -472,9 +475,6 @@ public class DiscountResourceImpl extends BaseDiscountResourceImpl {
 
 	@Reference
 	private CommerceDiscountService _commerceDiscountService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.pricing.internal.dto.v1_0.converter.DiscountDTOConverter)"

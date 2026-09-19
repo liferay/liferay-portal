@@ -421,44 +421,6 @@ public class LayoutsTreeDisplayContext {
 		);
 	}
 
-	private JSONArray _getPagesOptionGroupJSONArray() {
-		if (!_isPrivateLayoutsEnabled()) {
-			return JSONUtil.putAll(
-				_getOptionJSONObject(
-					LanguageUtil.get(
-						_themeDisplay.getLocale(), "pages-hierarchy"),
-					ProductNavigationProductMenuWebKeys.PUBLIC_LAYOUT));
-		}
-
-		return JSONUtil.putAll(
-			_getOptionJSONObject(
-				LanguageUtil.get(_themeDisplay.getLocale(), _PUBLIC_PAGES_KEY),
-				ProductNavigationProductMenuWebKeys.PUBLIC_LAYOUT),
-			_getOptionJSONObject(
-				LanguageUtil.get(_themeDisplay.getLocale(), _PRIVATE_PAGES_KEY),
-				ProductNavigationProductMenuWebKeys.PRIVATE_LAYOUT));
-	}
-
-	private String _getPagesTreeURL() {
-		return PortletURLBuilder.create(
-			PortletURLFactoryUtil.create(
-				_liferayPortletRequest,
-				ProductNavigationProductMenuPortletKeys.
-					PRODUCT_NAVIGATION_PRODUCT_MENU,
-				RenderRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/portlet/pages_tree.jsp"
-		).setRedirect(
-			_getRedirect()
-		).setBackURL(
-			_getBackURL()
-		).setParameter(
-			"selPpid", this::_getSelPlid
-		).setWindowState(
-			LiferayWindowState.EXCLUSIVE
-		).buildString();
-	}
-
 	private JSONArray _getPageTypeOptionsJSONArray() {
 		return JSONUtil.putAll(
 			_getOptionGroupJSONObject("pages", _getPagesOptionGroupJSONArray()),
@@ -524,6 +486,44 @@ public class LayoutsTreeDisplayContext {
 		return _getPageTypeSelectedOption();
 	}
 
+	private JSONArray _getPagesOptionGroupJSONArray() {
+		if (!_isPrivateLayoutsEnabled()) {
+			return JSONUtil.putAll(
+				_getOptionJSONObject(
+					LanguageUtil.get(
+						_themeDisplay.getLocale(), "pages-hierarchy"),
+					ProductNavigationProductMenuWebKeys.PUBLIC_LAYOUT));
+		}
+
+		return JSONUtil.putAll(
+			_getOptionJSONObject(
+				LanguageUtil.get(_themeDisplay.getLocale(), _PUBLIC_PAGES_KEY),
+				ProductNavigationProductMenuWebKeys.PUBLIC_LAYOUT),
+			_getOptionJSONObject(
+				LanguageUtil.get(_themeDisplay.getLocale(), _PRIVATE_PAGES_KEY),
+				ProductNavigationProductMenuWebKeys.PRIVATE_LAYOUT));
+	}
+
+	private String _getPagesTreeURL() {
+		return PortletURLBuilder.create(
+			PortletURLFactoryUtil.create(
+				_liferayPortletRequest,
+				ProductNavigationProductMenuPortletKeys.
+					PRODUCT_NAVIGATION_PRODUCT_MENU,
+				RenderRequest.RENDER_PHASE)
+		).setMVCPath(
+			"/portlet/pages_tree.jsp"
+		).setRedirect(
+			_getRedirect()
+		).setBackURL(
+			_getBackURL()
+		).setParameter(
+			"selPpid", this::_getSelPlid
+		).setWindowState(
+			LiferayWindowState.EXCLUSIVE
+		).buildString();
+	}
+
 	private String _getProductMenuPortletURL() {
 		return PortletURLBuilder.create(
 			PortletURLFactoryUtil.create(
@@ -556,6 +556,22 @@ public class LayoutsTreeDisplayContext {
 		_redirect = redirect;
 
 		return _redirect;
+	}
+
+	private long _getSelPlid() {
+		Layout layout = _themeDisplay.getLayout();
+
+		if (layout.isTypeControlPanel()) {
+			return ParamUtil.get(
+				_liferayPortletRequest, "selPlid",
+				LayoutConstants.DEFAULT_PLID);
+		}
+
+		if (layout.isSystem() && layout.isTypeContent()) {
+			return layout.getClassPK();
+		}
+
+		return layout.getPlid();
 	}
 
 	private long _getSelectedLayoutId() {
@@ -621,22 +637,6 @@ public class LayoutsTreeDisplayContext {
 		return _selectedSiteNavigationMenuItemId;
 	}
 
-	private long _getSelPlid() {
-		Layout layout = _themeDisplay.getLayout();
-
-		if (layout.isTypeControlPanel()) {
-			return ParamUtil.get(
-				_liferayPortletRequest, "selPlid",
-				LayoutConstants.DEFAULT_PLID);
-		}
-
-		if (layout.isSystem() && layout.isTypeContent()) {
-			return layout.getClassPK();
-		}
-
-		return layout.getPlid();
-	}
-
 	private long _getSiteNavigationMenuId() {
 		if (_siteNavigationMenuId != null) {
 			return _siteNavigationMenuId;
@@ -682,33 +682,6 @@ public class LayoutsTreeDisplayContext {
 		);
 	}
 
-	private JSONArray _getSiteNavigationMenuItemsJSONArray() {
-		if (_siteNavigationMenuItemsJSONArray != null) {
-			return _siteNavigationMenuItemsJSONArray;
-		}
-
-		if (_getSiteNavigationMenuId() > 0) {
-			_siteNavigationMenuItemsJSONArray =
-				_getChildSiteNavigationMenuItemsJSONArray(
-					_getSiteNavigationMenuId(), 0L);
-		}
-		else {
-			_siteNavigationMenuItemsJSONArray =
-				JSONFactoryUtil.createJSONArray();
-		}
-
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				StringBundler.concat(
-					"GroupId: ", _getGroupId(), " SiteNavigationMenuId: ",
-					_getSiteNavigationMenuId(),
-					" SiteNavigationMenuItemHierarchy: ",
-					_siteNavigationMenuItemsJSONArray));
-		}
-
-		return _siteNavigationMenuItemsJSONArray;
-	}
-
 	private String _getSiteNavigationMenuItemURL(
 		SiteNavigationMenuItem siteNavigationMenuItem,
 		SiteNavigationMenuItemType siteNavigationMenuItemType) {
@@ -739,6 +712,33 @@ public class LayoutsTreeDisplayContext {
 		}
 
 		return url;
+	}
+
+	private JSONArray _getSiteNavigationMenuItemsJSONArray() {
+		if (_siteNavigationMenuItemsJSONArray != null) {
+			return _siteNavigationMenuItemsJSONArray;
+		}
+
+		if (_getSiteNavigationMenuId() > 0) {
+			_siteNavigationMenuItemsJSONArray =
+				_getChildSiteNavigationMenuItemsJSONArray(
+					_getSiteNavigationMenuId(), 0L);
+		}
+		else {
+			_siteNavigationMenuItemsJSONArray =
+				JSONFactoryUtil.createJSONArray();
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				StringBundler.concat(
+					"GroupId: ", _getGroupId(), " SiteNavigationMenuId: ",
+					_getSiteNavigationMenuId(),
+					" SiteNavigationMenuItemHierarchy: ",
+					_siteNavigationMenuItemsJSONArray));
+		}
+
+		return _siteNavigationMenuItemsJSONArray;
 	}
 
 	private JSONArray _getSiteNavigationMenuJSONArray() {
@@ -943,9 +943,9 @@ public class LayoutsTreeDisplayContext {
 	private Long _siteNavigationMenuId;
 	private final SiteNavigationMenuItemLocalService
 		_siteNavigationMenuItemLocalService;
-	private JSONArray _siteNavigationMenuItemsJSONArray;
 	private final SiteNavigationMenuItemTypeRegistry
 		_siteNavigationMenuItemTypeRegistry;
+	private JSONArray _siteNavigationMenuItemsJSONArray;
 	private JSONArray _siteNavigationMenuJSONArray;
 	private final SiteNavigationMenuLocalService
 		_siteNavigationMenuLocalService;

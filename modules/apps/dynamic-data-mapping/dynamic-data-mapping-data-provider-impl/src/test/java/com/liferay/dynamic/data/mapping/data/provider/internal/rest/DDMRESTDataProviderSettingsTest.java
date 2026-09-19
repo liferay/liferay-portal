@@ -119,14 +119,6 @@ public class DDMRESTDataProviderSettingsTest {
 		Assert.assertEquals("checkbox", ddmFormField.getType());
 	}
 
-	private void _assertFilterable(DDMFormField ddmFormField) {
-		Assert.assertNotNull(ddmFormField);
-
-		Assert.assertEquals("boolean", ddmFormField.getDataType());
-		Assert.assertEquals("true", ddmFormField.getProperty("showAsSwitcher"));
-		Assert.assertEquals("checkbox", ddmFormField.getType());
-	}
-
 	private void _assertFilterParameterName(DDMFormField ddmFormField) {
 		Assert.assertNotNull(ddmFormField);
 
@@ -138,6 +130,14 @@ public class DDMRESTDataProviderSettingsTest {
 		Assert.assertTrue(properties.containsKey("tooltip"));
 
 		Assert.assertEquals("text", ddmFormField.getType());
+	}
+
+	private void _assertFilterable(DDMFormField ddmFormField) {
+		Assert.assertNotNull(ddmFormField);
+
+		Assert.assertEquals("boolean", ddmFormField.getDataType());
+		Assert.assertEquals("true", ddmFormField.getProperty("showAsSwitcher"));
+		Assert.assertEquals("checkbox", ddmFormField.getType());
 	}
 
 	private void _assertInputParameters(DDMFormField ddmFormField) {

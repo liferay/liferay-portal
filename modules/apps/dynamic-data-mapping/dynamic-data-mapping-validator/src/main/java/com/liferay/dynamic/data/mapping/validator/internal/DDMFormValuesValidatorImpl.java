@@ -289,26 +289,6 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 		}
 	}
 
-	private void _traverseDDMFormFields(
-			List<DDMFormField> ddmFormFields,
-			Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap)
-		throws DDMFormValuesValidationException {
-
-		for (DDMFormField ddmFormField : ddmFormFields) {
-			List<DDMFormFieldValue> ddmFormFieldValues =
-				_getDDMFormFieldValuesByFieldName(
-					ddmFormFieldValuesMap, ddmFormField.getName());
-
-			_validateDDMFormFieldValues(ddmFormField, ddmFormFieldValues);
-
-			for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
-				_traverseDDMFormFields(
-					ddmFormField.getNestedDDMFormFields(),
-					ddmFormFieldValue.getNestedDDMFormFieldValuesMap());
-			}
-		}
-	}
-
 	private void _traverseDDMFormFieldValues(
 			List<DDMFormFieldValue> ddmFormFieldValues,
 			Map<String, DDMFormField> ddmFormFieldsMap)
@@ -326,6 +306,26 @@ public class DDMFormValuesValidatorImpl implements DDMFormValuesValidator {
 				_traverseDDMFormFieldValues(
 					ddmFormFieldValue.getNestedDDMFormFieldValues(),
 					ddmFormField.getNestedDDMFormFieldsMap());
+			}
+		}
+	}
+
+	private void _traverseDDMFormFields(
+			List<DDMFormField> ddmFormFields,
+			Map<String, List<DDMFormFieldValue>> ddmFormFieldValuesMap)
+		throws DDMFormValuesValidationException {
+
+		for (DDMFormField ddmFormField : ddmFormFields) {
+			List<DDMFormFieldValue> ddmFormFieldValues =
+				_getDDMFormFieldValuesByFieldName(
+					ddmFormFieldValuesMap, ddmFormField.getName());
+
+			_validateDDMFormFieldValues(ddmFormField, ddmFormFieldValues);
+
+			for (DDMFormFieldValue ddmFormFieldValue : ddmFormFieldValues) {
+				_traverseDDMFormFields(
+					ddmFormField.getNestedDDMFormFields(),
+					ddmFormFieldValue.getNestedDDMFormFieldValuesMap());
 			}
 		}
 	}

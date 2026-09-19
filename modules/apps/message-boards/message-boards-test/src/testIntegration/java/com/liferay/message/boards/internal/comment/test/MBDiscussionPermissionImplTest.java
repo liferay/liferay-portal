@@ -165,84 +165,6 @@ public class MBDiscussionPermissionImplTest {
 	}
 
 	@Test
-	public void testUserCannotUpdateHisComment() throws Exception {
-		long commentId = _addComment(_siteUser1);
-
-		PermissionChecker permissionChecker =
-			PermissionCheckerFactoryUtil.create(_siteUser1);
-
-		Assert.assertFalse(
-			_discussionPermission.hasUpdatePermission(
-				permissionChecker, commentId));
-	}
-
-	@Test
-	public void testUserCannotUpdateSomeoneElseCommentIfPropsEnabled()
-		throws Exception {
-
-		_withAlwaysEditableByOwnerEnabled(
-			() -> {
-				long commentId = _addComment(_siteUser1);
-
-				PermissionChecker permissionChecker =
-					PermissionCheckerFactoryUtil.create(_siteUser2);
-
-				Assert.assertFalse(
-					_discussionPermission.hasUpdatePermission(
-						permissionChecker, commentId));
-			});
-	}
-
-	@Test
-	@TestInfo("LPD-100338")
-	public void testUserCannotUpdateSomeoneElseCommentInCMPProject()
-		throws Exception {
-
-		PermissionChecker originalPermissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-		String originalName = PrincipalThreadLocal.getName();
-
-		try {
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(_user));
-			PrincipalThreadLocal.setName(_user.getUserId());
-
-			long commentId = _addCMPProjectComment(_siteUser1);
-
-			Comment comment = _commentManager.fetchComment(commentId);
-
-			_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-			_resourcePermissionLocalService.setResourcePermissions(
-				TestPropsValues.getCompanyId(), comment.getClassName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(comment.getClassPK()), _role.getRoleId(),
-				new String[] {
-					ActionKeys.DELETE_DISCUSSION, ActionKeys.UPDATE_DISCUSSION,
-					ActionKeys.VIEW
-				});
-
-			RoleLocalServiceUtil.addUserRole(
-				_siteUser2.getUserId(), _role.getRoleId());
-
-			PermissionChecker permissionChecker =
-				PermissionCheckerFactoryUtil.create(_siteUser2);
-
-			Assert.assertFalse(
-				_discussionPermission.hasUpdatePermission(
-					permissionChecker, commentId));
-			Assert.assertTrue(
-				_discussionPermission.hasDeletePermission(
-					permissionChecker, commentId));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(
-				originalPermissionChecker);
-			PrincipalThreadLocal.setName(originalName);
-		}
-	}
-
-	@Test
 	@TestInfo("LPD-100338")
 	public void testUserCanUpdateAndDeleteHisCommentInCMPProject()
 		throws Exception {
@@ -360,6 +282,84 @@ public class MBDiscussionPermissionImplTest {
 					_discussionPermission.hasUpdatePermission(
 						permissionChecker, commentId));
 			});
+	}
+
+	@Test
+	public void testUserCannotUpdateHisComment() throws Exception {
+		long commentId = _addComment(_siteUser1);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_siteUser1);
+
+		Assert.assertFalse(
+			_discussionPermission.hasUpdatePermission(
+				permissionChecker, commentId));
+	}
+
+	@Test
+	public void testUserCannotUpdateSomeoneElseCommentIfPropsEnabled()
+		throws Exception {
+
+		_withAlwaysEditableByOwnerEnabled(
+			() -> {
+				long commentId = _addComment(_siteUser1);
+
+				PermissionChecker permissionChecker =
+					PermissionCheckerFactoryUtil.create(_siteUser2);
+
+				Assert.assertFalse(
+					_discussionPermission.hasUpdatePermission(
+						permissionChecker, commentId));
+			});
+	}
+
+	@Test
+	@TestInfo("LPD-100338")
+	public void testUserCannotUpdateSomeoneElseCommentInCMPProject()
+		throws Exception {
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+		String originalName = PrincipalThreadLocal.getName();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(_user));
+			PrincipalThreadLocal.setName(_user.getUserId());
+
+			long commentId = _addCMPProjectComment(_siteUser1);
+
+			Comment comment = _commentManager.fetchComment(commentId);
+
+			_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+			_resourcePermissionLocalService.setResourcePermissions(
+				TestPropsValues.getCompanyId(), comment.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(comment.getClassPK()), _role.getRoleId(),
+				new String[] {
+					ActionKeys.DELETE_DISCUSSION, ActionKeys.UPDATE_DISCUSSION,
+					ActionKeys.VIEW
+				});
+
+			RoleLocalServiceUtil.addUserRole(
+				_siteUser2.getUserId(), _role.getRoleId());
+
+			PermissionChecker permissionChecker =
+				PermissionCheckerFactoryUtil.create(_siteUser2);
+
+			Assert.assertFalse(
+				_discussionPermission.hasUpdatePermission(
+					permissionChecker, commentId));
+			Assert.assertTrue(
+				_discussionPermission.hasDeletePermission(
+					permissionChecker, commentId));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+			PrincipalThreadLocal.setName(originalName);
+		}
 	}
 
 	private long _addCMPProjectComment(User user) throws Exception {

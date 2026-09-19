@@ -1099,6 +1099,16 @@ public class PortletImpl extends PortletBaseImpl {
 	}
 
 	/**
+	 * Returns the instance ID of the portlet.
+	 *
+	 * @return the instance ID of the portlet
+	 */
+	@Override
+	public String getInstanceId() {
+		return PortletIdCodec.decodeInstanceId(getPortletId());
+	}
+
+	/**
 	 * Returns <code>true</code> if the portlet can be added multiple times to a
 	 * layout.
 	 *
@@ -1108,16 +1118,6 @@ public class PortletImpl extends PortletBaseImpl {
 	@Override
 	public boolean getInstanceable() {
 		return _instanceable;
-	}
-
-	/**
-	 * Returns the instance ID of the portlet.
-	 *
-	 * @return the instance ID of the portlet
-	 */
-	@Override
-	public String getInstanceId() {
-		return PortletIdCodec.decodeInstanceId(getPortletId());
 	}
 
 	/**
@@ -1995,27 +1995,6 @@ public class PortletImpl extends PortletBaseImpl {
 	}
 
 	/**
-	 * Returns <code>true</code> if the portlet is an undeployed portlet.
-	 *
-	 * @return <code>true</code> if the portlet is a placeholder of an
-	 *         undeployed portlet
-	 */
-	@Override
-	public boolean getUndeployedPortlet() {
-		return _undeployedPortlet;
-	}
-
-	/**
-	 * Returns the unlinked roles of the portlet.
-	 *
-	 * @return unlinked roles of the portlet
-	 */
-	@Override
-	public Set<String> getUnlinkedRoles() {
-		return _unlinkedRoles;
-	}
-
-	/**
 	 * Returns the name of the URL encoder class of the portlet.
 	 *
 	 * @return the name of the URL encoder class of the portlet
@@ -2039,6 +2018,27 @@ public class PortletImpl extends PortletBaseImpl {
 		}
 
 		return portletBag.getURLEncoderInstance();
+	}
+
+	/**
+	 * Returns <code>true</code> if the portlet is an undeployed portlet.
+	 *
+	 * @return <code>true</code> if the portlet is a placeholder of an
+	 *         undeployed portlet
+	 */
+	@Override
+	public boolean getUndeployedPortlet() {
+		return _undeployedPortlet;
+	}
+
+	/**
+	 * Returns the unlinked roles of the portlet.
+	 *
+	 * @return unlinked roles of the portlet
+	 */
+	@Override
+	public Set<String> getUnlinkedRoles() {
+		return _unlinkedRoles;
 	}
 
 	/**
@@ -2274,13 +2274,6 @@ public class PortletImpl extends PortletBaseImpl {
 	}
 
 	@Override
-	public int hashCode() {
-		String portletId = getPortletId();
-
-		return portletId.hashCode();
-	}
-
-	@Override
 	public boolean hasHeaderPortalCss() {
 		return !_headerPortalCss.isEmpty();
 	}
@@ -2406,6 +2399,13 @@ public class PortletImpl extends PortletBaseImpl {
 		}
 
 		return mimeTypeWindowStates.contains(windowState.toString());
+	}
+
+	@Override
+	public int hashCode() {
+		String portletId = getPortletId();
+
+		return portletId.hashCode();
 	}
 
 	/**
@@ -4023,6 +4023,16 @@ public class PortletImpl extends PortletBaseImpl {
 	}
 
 	/**
+	 * Sets the name of the URL encoder class of the portlet.
+	 *
+	 * @param urlEncoderClass the name of the URL encoder class of the portlet
+	 */
+	@Override
+	public void setURLEncoderClass(String urlEncoderClass) {
+		_urlEncoderClass = urlEncoderClass;
+	}
+
+	/**
 	 * Set to <code>true</code> if the portlet is an undeployed portlet.
 	 *
 	 * @param undeployedPortlet boolean value for whether the portlet is an
@@ -4041,16 +4051,6 @@ public class PortletImpl extends PortletBaseImpl {
 	@Override
 	public void setUnlinkedRoles(Set<String> unlinkedRoles) {
 		_unlinkedRoles = unlinkedRoles;
-	}
-
-	/**
-	 * Sets the name of the URL encoder class of the portlet.
-	 *
-	 * @param urlEncoderClass the name of the URL encoder class of the portlet
-	 */
-	@Override
-	public void setURLEncoderClass(String urlEncoderClass) {
-		_urlEncoderClass = urlEncoderClass;
 	}
 
 	/**

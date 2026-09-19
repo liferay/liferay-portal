@@ -1643,11 +1643,11 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 	private final DDM _ddm;
 	private final DDMFormDeserializer _ddmFormJSONDeserializer;
 	private final DDMFormLayoutSerializer _ddmFormLayoutSerializer;
-	private final Map<Long, DDMForm> _ddmForms = new HashMap<>();
 	private final DDMFormSerializer _ddmFormSerializer;
 	private final DDMFormValuesDeserializer _ddmFormValuesDeserializer;
 	private final DDMFormValuesSerializer _ddmFormValuesSerializer;
 	private final DDMFormDeserializer _ddmFormXSDDeserializer;
+	private final Map<Long, DDMForm> _ddmForms = new HashMap<>();
 	private final DLFileEntryLocalService _dlFileEntryLocalService;
 	private final DLFileVersionLocalService _dlFileVersionLocalService;
 	private final DLFolderLocalService _dlFolderLocalService;
@@ -1668,43 +1668,6 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 	private final Map<Long, String> _templateResourceClassNames =
 		new HashMap<>();
 	private final ViewCountEntryLocalService _viewCountEntryLocalService;
-
-	private static class DateDDMFormFieldValueTransformer
-		implements DDMFormFieldValueTransformer {
-
-		@Override
-		public String getFieldType() {
-			return DDMFormFieldType.DATE;
-		}
-
-		@Override
-		public void transform(DDMFormFieldValue ddmFormFieldValue)
-			throws PortalException {
-
-			Value value = ddmFormFieldValue.getValue();
-
-			if (value != null) {
-				for (Locale locale : value.getAvailableLocales()) {
-					String valueString = value.getString(locale);
-
-					if (Validator.isNull(valueString) ||
-						!Validator.isNumber(valueString)) {
-
-						continue;
-					}
-
-					Date dateValue = new Date(GetterUtil.getLong(valueString));
-
-					value.addString(locale, _dateFormat.format(dateValue));
-				}
-			}
-		}
-
-		private final DateFormat _dateFormat =
-			DateFormatFactoryUtil.getSimpleDateFormat(
-				"yyyy-MM-dd", TimeZoneUtil.getTimeZone("UTC"));
-
-	}
 
 	private static class DDMFormValuesXSDDeserializer {
 
@@ -1997,6 +1960,15 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 			return ddmFormFieldValue;
 		}
 
+		protected String getDDMFormFieldValueValueString(
+			Element dynamicElementElement, Locale locale, int index) {
+
+			Element dynamicContentElement = getDynamicContentElement(
+				dynamicElementElement, locale, index);
+
+			return dynamicContentElement.getTextTrim();
+		}
+
 		protected List<DDMFormFieldValue> getDDMFormFieldValues(
 			List<Element> dynamicElementElements) {
 
@@ -2007,15 +1979,6 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 			return TransformUtil.transform(
 				dynamicElementElements,
 				dynamicElement -> getDDMFormFieldValue(dynamicElement));
-		}
-
-		protected String getDDMFormFieldValueValueString(
-			Element dynamicElementElement, Locale locale, int index) {
-
-			Element dynamicContentElement = getDynamicContentElement(
-				dynamicElementElement, locale, index);
-
-			return dynamicContentElement.getTextTrim();
 		}
 
 		protected Locale getDefaultLocale(Element dynamicElementElement) {
@@ -2175,6 +2138,43 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 		}
 
 		private long _companyId;
+
+	}
+
+	private static class DateDDMFormFieldValueTransformer
+		implements DDMFormFieldValueTransformer {
+
+		@Override
+		public String getFieldType() {
+			return DDMFormFieldType.DATE;
+		}
+
+		@Override
+		public void transform(DDMFormFieldValue ddmFormFieldValue)
+			throws PortalException {
+
+			Value value = ddmFormFieldValue.getValue();
+
+			if (value != null) {
+				for (Locale locale : value.getAvailableLocales()) {
+					String valueString = value.getString(locale);
+
+					if (Validator.isNull(valueString) ||
+						!Validator.isNumber(valueString)) {
+
+						continue;
+					}
+
+					Date dateValue = new Date(GetterUtil.getLong(valueString));
+
+					value.addString(locale, _dateFormat.format(dateValue));
+				}
+			}
+		}
+
+		private final DateFormat _dateFormat =
+			DateFormatFactoryUtil.getSimpleDateFormat(
+				"yyyy-MM-dd", TimeZoneUtil.getTimeZone("UTC"));
 
 	}
 

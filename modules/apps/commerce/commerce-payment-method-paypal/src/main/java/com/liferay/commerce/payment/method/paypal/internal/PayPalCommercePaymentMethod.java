@@ -1011,6 +1011,16 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 		return _buildMinimalRequestBody(commerceOrder);
 	}
 
+	private APIContext _getAPIContext(long groupId) throws PortalException {
+		PayPalGroupServiceConfiguration payPalGroupServiceConfiguration =
+			_getPayPalGroupServiceConfiguration(groupId);
+
+		return new APIContext(
+			payPalGroupServiceConfiguration.clientId(),
+			payPalGroupServiceConfiguration.clientSecret(),
+			payPalGroupServiceConfiguration.mode());
+	}
+
 	private Agreement _getAgreement(
 			CommerceOrder commerceOrder, APIContext apiContext, Plan plan,
 			Locale locale)
@@ -1079,16 +1089,6 @@ public class PayPalCommercePaymentMethod implements CommercePaymentMethod {
 			2, RoundingMode.valueOf(commerceCurrency.getRoundingMode()));
 
 		return scaledAmount.toPlainString();
-	}
-
-	private APIContext _getAPIContext(long groupId) throws PortalException {
-		PayPalGroupServiceConfiguration payPalGroupServiceConfiguration =
-			_getPayPalGroupServiceConfiguration(groupId);
-
-		return new APIContext(
-			payPalGroupServiceConfiguration.clientId(),
-			payPalGroupServiceConfiguration.clientSecret(),
-			payPalGroupServiceConfiguration.mode());
 	}
 
 	private List<String> _getErrorMessages(

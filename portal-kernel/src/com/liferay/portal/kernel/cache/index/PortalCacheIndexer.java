@@ -97,9 +97,9 @@ public class PortalCacheIndexer<I, K extends Serializable, V> {
 		}
 	}
 
+	private final IndexEncoder<I, K> _indexEncoder;
 	private final ConcurrentMap<I, Set<K>> _indexedCacheKeys =
 		new ConcurrentHashMap<>();
-	private final IndexEncoder<I, K> _indexEncoder;
 	private final PortalCache<K, V> _portalCache;
 
 	private class IndexerPortalCacheListener

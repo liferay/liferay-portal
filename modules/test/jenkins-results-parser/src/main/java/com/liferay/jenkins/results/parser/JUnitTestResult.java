@@ -139,6 +139,40 @@ public class JUnitTestResult extends BaseTestResult {
 	}
 
 	@Override
+	public String getTestReportURL() {
+		StringBuilder sb = new StringBuilder();
+
+		Build build = getBuild();
+
+		sb.append(build.getBuildURL());
+
+		sb.append("/testReport/");
+
+		String packageName = getPackageName();
+
+		sb.append(packageName.replaceAll("/", "_"));
+
+		sb.append("/");
+		sb.append(getSimpleClassName());
+		sb.append("/");
+		sb.append(getEncodedTestName());
+
+		String testReportURL = sb.toString();
+
+		if (testReportURL.startsWith("http")) {
+			try {
+				return JenkinsResultsParserUtil.encode(testReportURL);
+			}
+			catch (MalformedURLException | URISyntaxException exception) {
+				System.out.println(
+					"Unable to encode the test report " + testReportURL);
+			}
+		}
+
+		return testReportURL;
+	}
+
+	@Override
 	public String getTestrayLogsURL() {
 		Properties buildProperties = null;
 
@@ -180,40 +214,6 @@ public class JUnitTestResult extends BaseTestResult {
 		}
 
 		return build.getBuildURL();
-	}
-
-	@Override
-	public String getTestReportURL() {
-		StringBuilder sb = new StringBuilder();
-
-		Build build = getBuild();
-
-		sb.append(build.getBuildURL());
-
-		sb.append("/testReport/");
-
-		String packageName = getPackageName();
-
-		sb.append(packageName.replaceAll("/", "_"));
-
-		sb.append("/");
-		sb.append(getSimpleClassName());
-		sb.append("/");
-		sb.append(getEncodedTestName());
-
-		String testReportURL = sb.toString();
-
-		if (testReportURL.startsWith("http")) {
-			try {
-				return JenkinsResultsParserUtil.encode(testReportURL);
-			}
-			catch (MalformedURLException | URISyntaxException exception) {
-				System.out.println(
-					"Unable to encode the test report " + testReportURL);
-			}
-		}
-
-		return testReportURL;
 	}
 
 	protected JUnitTestResult(Build build, JSONObject caseJSONObject) {

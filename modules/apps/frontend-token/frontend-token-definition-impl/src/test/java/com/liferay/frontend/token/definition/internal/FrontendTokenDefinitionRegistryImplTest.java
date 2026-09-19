@@ -216,44 +216,6 @@ public class FrontendTokenDefinitionRegistryImplTest {
 	}
 
 	@Test
-	public void testGetThemeMapsWithoutServletContext() {
-		FrontendTokenDefinitionRegistryImpl
-			frontendTokenDefinitionRegistryImpl =
-				new FrontendTokenDefinitionRegistryImpl();
-
-		Bundle bundle = Mockito.mock(Bundle.class);
-
-		Mockito.when(
-			bundle.getEntry("WEB-INF/liferay-look-and-feel.xml")
-		).thenReturn(
-			_liferayLookAndFeelXMLURL
-		);
-
-		Mockito.when(
-			bundle.getHeaders(Mockito.anyString())
-		).thenReturn(
-			new HashMapDictionary<>()
-		);
-
-		frontendTokenDefinitionRegistryImpl.portal = new PortalImpl();
-
-		List<Map<String, String>> themeMaps =
-			frontendTokenDefinitionRegistryImpl.getThemeMaps(bundle);
-
-		Assert.assertEquals(themeMaps.toString(), 2, themeMaps.size());
-
-		Map<String, String> themesData1 = themeMaps.get(0);
-
-		Assert.assertEquals("classic", themesData1.get("id"));
-		Assert.assertEquals("Classic", themesData1.get("name"));
-
-		Map<String, String> themesData2 = themeMaps.get(1);
-
-		Assert.assertEquals("modern", themesData2.get("id"));
-		Assert.assertEquals("Modern", themesData2.get("name"));
-	}
-
-	@Test
 	public void testGetThemeMapsWithServletContext() {
 		FrontendTokenDefinitionRegistryImpl
 			frontendTokenDefinitionRegistryImpl =
@@ -292,6 +254,44 @@ public class FrontendTokenDefinitionRegistryImplTest {
 		Map<String, String> themesData2 = themeMaps.get(1);
 
 		Assert.assertEquals("modern_WAR_twothemes", themesData2.get("id"));
+		Assert.assertEquals("Modern", themesData2.get("name"));
+	}
+
+	@Test
+	public void testGetThemeMapsWithoutServletContext() {
+		FrontendTokenDefinitionRegistryImpl
+			frontendTokenDefinitionRegistryImpl =
+				new FrontendTokenDefinitionRegistryImpl();
+
+		Bundle bundle = Mockito.mock(Bundle.class);
+
+		Mockito.when(
+			bundle.getEntry("WEB-INF/liferay-look-and-feel.xml")
+		).thenReturn(
+			_liferayLookAndFeelXMLURL
+		);
+
+		Mockito.when(
+			bundle.getHeaders(Mockito.anyString())
+		).thenReturn(
+			new HashMapDictionary<>()
+		);
+
+		frontendTokenDefinitionRegistryImpl.portal = new PortalImpl();
+
+		List<Map<String, String>> themeMaps =
+			frontendTokenDefinitionRegistryImpl.getThemeMaps(bundle);
+
+		Assert.assertEquals(themeMaps.toString(), 2, themeMaps.size());
+
+		Map<String, String> themesData1 = themeMaps.get(0);
+
+		Assert.assertEquals("classic", themesData1.get("id"));
+		Assert.assertEquals("Classic", themesData1.get("name"));
+
+		Map<String, String> themesData2 = themeMaps.get(1);
+
+		Assert.assertEquals("modern", themesData2.get("id"));
 		Assert.assertEquals("Modern", themesData2.get("name"));
 	}
 

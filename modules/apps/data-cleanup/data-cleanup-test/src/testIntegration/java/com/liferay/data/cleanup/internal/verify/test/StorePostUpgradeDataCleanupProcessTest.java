@@ -57,13 +57,13 @@ public class StorePostUpgradeDataCleanupProcessTest
 	}
 
 	@Override
-	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {_store};
+	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
+		return new Class<?>[] {Store.class};
 	}
 
 	@Override
-	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
-		return new Class<?>[] {Store.class};
+	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
+		return new Object[] {_store};
 	}
 
 	@Override

@@ -77,13 +77,13 @@ public class FrontendTokenDefinitionImpl implements FrontendTokenDefinition {
 	}
 
 	@Override
-	public Collection<FrontendToken> getFrontendTokens() {
-		return _frontendTokens;
+	public Collection<FrontendTokenSet> getFrontendTokenSets() {
+		return _frontendTokenSets;
 	}
 
 	@Override
-	public Collection<FrontendTokenSet> getFrontendTokenSets() {
-		return _frontendTokenSets;
+	public Collection<FrontendToken> getFrontendTokens() {
+		return _frontendTokens;
 	}
 
 	@Override
@@ -129,9 +129,9 @@ public class FrontendTokenDefinitionImpl implements FrontendTokenDefinition {
 		new ArrayList<>();
 	private final Collection<FrontendTokenMapping> _frontendTokenMappings =
 		new ArrayList<>();
-	private final Collection<FrontendToken> _frontendTokens = new ArrayList<>();
 	private final Collection<FrontendTokenSet> _frontendTokenSets =
 		new ArrayList<>();
+	private final Collection<FrontendToken> _frontendTokens = new ArrayList<>();
 	private final JSONFactory _jsonFactory;
 	private final JSONLocalizer _jsonLocalizer;
 	private final ResourceBundleLoader _resourceBundleLoader;

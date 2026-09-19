@@ -45,11 +45,11 @@ public class SitemapSiteSettingsConfigurationScreenWrapper
 	private ServletContext _servletContext;
 
 	@Reference
-	private SitemapConfigurationManager _sitemapConfigurationManager;
-
-	@Reference
 	private SiteSettingsConfigurationScreenFactory
 		_siteSettingsConfigurationScreenFactory;
+
+	@Reference
+	private SitemapConfigurationManager _sitemapConfigurationManager;
 
 	private class SitemapSiteSettingsConfigurationScreenContributor
 		implements SiteSettingsConfigurationScreenContributor {

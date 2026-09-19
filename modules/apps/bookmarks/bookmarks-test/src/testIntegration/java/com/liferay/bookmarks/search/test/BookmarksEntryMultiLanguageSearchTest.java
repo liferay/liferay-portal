@@ -201,10 +201,10 @@ public class BookmarksEntryMultiLanguageSearchTest {
 	protected Indexer<BookmarksEntry> indexer;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	@Inject
 	protected UserLocalService userLocalService;

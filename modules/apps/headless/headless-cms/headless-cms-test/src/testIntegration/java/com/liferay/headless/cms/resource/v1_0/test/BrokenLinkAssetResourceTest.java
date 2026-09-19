@@ -526,41 +526,6 @@ public class BrokenLinkAssetResourceTest
 				null, null, Pagination.of(1, 20), null));
 	}
 
-	private void _testGetBrokenLinkAssetsPageWithoutUpdatePermission()
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext();
-
-		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
-
-		ObjectDefinition objectDefinition =
-			_getBasicWebContentObjectDefinition();
-
-		ObjectEntry expiredObjectEntry = _addExpiredObjectEntry(
-			depotEntry, objectDefinition, serviceContext);
-
-		_addObjectEntry(
-			CMSOutboundLinkTestUtil.getImageHTML(
-				expiredObjectEntry.getExternalReferenceCode()),
-			depotEntry, objectDefinition, RandomTestUtil.randomString());
-
-		BrokenLinkAsset brokenLinkAsset = _getSingleBrokenLinkAsset(
-			brokenLinkAssetResource, depotEntry);
-
-		Map<String, Map<String, String>> actions = brokenLinkAsset.getActions();
-
-		Assert.assertNotNull(actions.get("update"));
-
-		BrokenLinkAsset spaceMemberBrokenLinkAsset = _getSingleBrokenLinkAsset(
-			_getSpaceMemberBrokenLinkAssetResource(depotEntry), depotEntry);
-
-		Map<String, Map<String, String>> spaceMemberActions =
-			spaceMemberBrokenLinkAsset.getActions();
-
-		Assert.assertNull(spaceMemberActions.get("update"));
-	}
-
 	private void _testGetBrokenLinkAssetsPageWithRelationshipReference()
 		throws Exception {
 
@@ -604,6 +569,41 @@ public class BrokenLinkAssetResourceTest
 			brokenLinkAsset.getObjectDefinitionExternalReferenceCode());
 	}
 
+	private void _testGetBrokenLinkAssetsPageWithoutUpdatePermission()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
+
+		ObjectDefinition objectDefinition =
+			_getBasicWebContentObjectDefinition();
+
+		ObjectEntry expiredObjectEntry = _addExpiredObjectEntry(
+			depotEntry, objectDefinition, serviceContext);
+
+		_addObjectEntry(
+			CMSOutboundLinkTestUtil.getImageHTML(
+				expiredObjectEntry.getExternalReferenceCode()),
+			depotEntry, objectDefinition, RandomTestUtil.randomString());
+
+		BrokenLinkAsset brokenLinkAsset = _getSingleBrokenLinkAsset(
+			brokenLinkAssetResource, depotEntry);
+
+		Map<String, Map<String, String>> actions = brokenLinkAsset.getActions();
+
+		Assert.assertNotNull(actions.get("update"));
+
+		BrokenLinkAsset spaceMemberBrokenLinkAsset = _getSingleBrokenLinkAsset(
+			_getSpaceMemberBrokenLinkAssetResource(depotEntry), depotEntry);
+
+		Map<String, Map<String, String>> spaceMemberActions =
+			spaceMemberBrokenLinkAsset.getActions();
+
+		Assert.assertNull(spaceMemberActions.get("update"));
+	}
+
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
 
@@ -613,12 +613,12 @@ public class BrokenLinkAssetResourceTest
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-	@DeleteAfterTestRun
-	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
-
 	@Inject
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+
+	@DeleteAfterTestRun
+	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;

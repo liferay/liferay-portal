@@ -396,13 +396,13 @@ public class SharedAssetDTOConverter
 		SharedAssetDTOConverter.class);
 
 	@Reference
+	private DLFileEntryLocalService _dLFileEntryLocalService;
+
+	@Reference
 	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private DLAppService _dlAppService;
-
-	@Reference
-	private DLFileEntryLocalService _dLFileEntryLocalService;
 
 	@Reference
 	private DLMimeTypeDisplayContext _dlMimeTypeDisplayContext;

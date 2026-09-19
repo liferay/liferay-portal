@@ -54,44 +54,6 @@ public abstract class BaseCPDefinitionsDisplayContext {
 		liferayPortletResponse = cpRequestHelper.getLiferayPortletResponse();
 	}
 
-	public String getCatalogDefaultLanguageId() throws PortalException {
-		CommerceCatalog commerceCatalog = getCommerceCatalog();
-
-		if (commerceCatalog == null) {
-			ThemeDisplay themeDisplay = cpRequestHelper.getThemeDisplay();
-
-			return LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale());
-		}
-
-		return commerceCatalog.getCatalogDefaultLanguageId();
-	}
-
-	public CommerceCatalog getCommerceCatalog() throws PortalException {
-		if (_commerceCatalog != null) {
-			return _commerceCatalog;
-		}
-
-		CPDefinition cpDefinition = getCPDefinition();
-
-		if (cpDefinition == null) {
-			return null;
-		}
-
-		_commerceCatalog = _cpDefinition.getCommerceCatalog();
-
-		return _commerceCatalog;
-	}
-
-	public long getCommerceCatalogId() throws PortalException {
-		CommerceCatalog commerceCatalog = getCommerceCatalog();
-
-		if (commerceCatalog == null) {
-			return 0;
-		}
-
-		return commerceCatalog.getCommerceCatalogId();
-	}
-
 	public CPDefinition getCPDefinition() throws PortalException {
 		if (_cpDefinition != null) {
 			return _cpDefinition;
@@ -130,6 +92,44 @@ public abstract class BaseCPDefinitionsDisplayContext {
 
 	public List<CPType> getCPTypes() {
 		return actionHelper.getCPTypes();
+	}
+
+	public String getCatalogDefaultLanguageId() throws PortalException {
+		CommerceCatalog commerceCatalog = getCommerceCatalog();
+
+		if (commerceCatalog == null) {
+			ThemeDisplay themeDisplay = cpRequestHelper.getThemeDisplay();
+
+			return LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale());
+		}
+
+		return commerceCatalog.getCatalogDefaultLanguageId();
+	}
+
+	public CommerceCatalog getCommerceCatalog() throws PortalException {
+		if (_commerceCatalog != null) {
+			return _commerceCatalog;
+		}
+
+		CPDefinition cpDefinition = getCPDefinition();
+
+		if (cpDefinition == null) {
+			return null;
+		}
+
+		_commerceCatalog = _cpDefinition.getCommerceCatalog();
+
+		return _commerceCatalog;
+	}
+
+	public long getCommerceCatalogId() throws PortalException {
+		CommerceCatalog commerceCatalog = getCommerceCatalog();
+
+		if (commerceCatalog == null) {
+			return 0;
+		}
+
+		return commerceCatalog.getCommerceCatalogId();
 	}
 
 	public PortletURL getEditProductDefinitionURL() throws PortalException {

@@ -24,16 +24,6 @@ public class PortalAppReleaseJob extends BaseJob implements PortalTestClassJob {
 	}
 
 	@Override
-	public List<String> getJobPropertyOptions() {
-		List<String> jobPropertyOptions = super.getJobPropertyOptions();
-
-		jobPropertyOptions.add(
-			_portalGitWorkingDirectory.getUpstreamBranchName());
-
-		return jobPropertyOptions;
-	}
-
-	@Override
 	public JSONObject getJSONObject() {
 		if (jsonObject != null) {
 			return jsonObject;
@@ -45,6 +35,16 @@ public class PortalAppReleaseJob extends BaseJob implements PortalTestClassJob {
 			"portal_upstream_branch_name", _portalUpstreamBranchName);
 
 		return jsonObject;
+	}
+
+	@Override
+	public List<String> getJobPropertyOptions() {
+		List<String> jobPropertyOptions = super.getJobPropertyOptions();
+
+		jobPropertyOptions.add(
+			_portalGitWorkingDirectory.getUpstreamBranchName());
+
+		return jobPropertyOptions;
 	}
 
 	@Override

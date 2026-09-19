@@ -92,38 +92,6 @@ public class CPDefinitionConfigurationDisplayContext
 		_cpTaxCategoryLocalService = cpTaxCategoryLocalService;
 	}
 
-	public List<CommerceAvailabilityEstimate> getCommerceAvailabilityEstimates()
-		throws PortalException {
-
-		return _commerceAvailabilityEstimateLocalService.
-			getCommerceAvailabilityEstimates(
-				cpRequestHelper.getCompanyId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				CommerceAvailabilityEstimatePriorityComparator.getInstance(
-					true));
-	}
-
-	public String getCommerceCurrencyCode() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		CommerceCurrency commerceCurrency =
-			_commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
-				themeDisplay.getCompanyId());
-
-		if (commerceCurrency == null) {
-			return StringPool.BLANK;
-		}
-
-		return commerceCurrency.getCode();
-	}
-
-	public List<CommerceLowStockActivity> getCommerceLowStockActivities() {
-		return _commerceLowStockActivityRegistry.
-			getCommerceLowStockActivities();
-	}
-
 	public CPDAvailabilityEstimate getCPDAvailabilityEstimate()
 		throws PortalException {
 
@@ -171,6 +139,38 @@ public class CPDefinitionConfigurationDisplayContext
 
 		return _cpTaxCategoryLocalService.getCPTaxCategories(
 			themeDisplay.getCompanyId());
+	}
+
+	public List<CommerceAvailabilityEstimate> getCommerceAvailabilityEstimates()
+		throws PortalException {
+
+		return _commerceAvailabilityEstimateLocalService.
+			getCommerceAvailabilityEstimates(
+				cpRequestHelper.getCompanyId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS,
+				CommerceAvailabilityEstimatePriorityComparator.getInstance(
+					true));
+	}
+
+	public String getCommerceCurrencyCode() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		CommerceCurrency commerceCurrency =
+			_commerceCurrencyLocalService.fetchPrimaryCommerceCurrency(
+				themeDisplay.getCompanyId());
+
+		if (commerceCurrency == null) {
+			return StringPool.BLANK;
+		}
+
+		return commerceCurrency.getCode();
+	}
+
+	public List<CommerceLowStockActivity> getCommerceLowStockActivities() {
+		return _commerceLowStockActivityRegistry.
+			getCommerceLowStockActivities();
 	}
 
 	@Override
@@ -227,13 +227,13 @@ public class CPDefinitionConfigurationDisplayContext
 	private final CommerceCurrencyLocalService _commerceCurrencyLocalService;
 	private final CommerceLowStockActivityRegistry
 		_commerceLowStockActivityRegistry;
-	private final CPDAvailabilityEstimateService
-		_cpdAvailabilityEstimateService;
 	private CPDefinitionInventory _cpDefinitionInventory;
 	private final CPDefinitionInventoryEngineRegistry
 		_cpDefinitionInventoryEngineRegistry;
 	private final CPDefinitionInventoryService _cpDefinitionInventoryService;
 	private final CPMeasurementUnitLocalService _cpMeasurementUnitLocalService;
 	private final CPTaxCategoryLocalService _cpTaxCategoryLocalService;
+	private final CPDAvailabilityEstimateService
+		_cpdAvailabilityEstimateService;
 
 }

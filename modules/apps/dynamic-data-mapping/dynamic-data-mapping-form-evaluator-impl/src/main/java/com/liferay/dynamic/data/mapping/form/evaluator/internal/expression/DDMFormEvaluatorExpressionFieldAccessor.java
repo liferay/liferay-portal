@@ -257,11 +257,11 @@ public class DDMFormEvaluatorExpressionFieldAccessor
 
 	private final DDMFormEvaluatorFormValuesHelper
 		_ddmFormEvaluatorFormValuesHelper;
+	private final DDMFormFieldTypeServicesRegistry
+		_ddmFormFieldTypeServicesRegistry;
 	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private final Map<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
 		_ddmFormFieldsPropertyChanges;
-	private final DDMFormFieldTypeServicesRegistry
-		_ddmFormFieldTypeServicesRegistry;
 	private final DDMFormFieldValueAccessor<String>
 		_defaultDDMFormFieldValueAccessor =
 			new DefaultDDMFormFieldValueAccessor();

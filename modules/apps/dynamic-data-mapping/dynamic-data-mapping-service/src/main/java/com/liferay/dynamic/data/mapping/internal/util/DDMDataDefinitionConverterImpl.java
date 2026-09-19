@@ -369,13 +369,6 @@ public class DDMDataDefinitionConverterImpl
 		ddmFormField.setVisibilityExpression(StringPool.BLANK);
 	}
 
-	private void _upgradeDateField(DDMFormField ddmFormField) {
-		ddmFormField.setDataType("date");
-		ddmFormField.setFieldNamespace(StringPool.BLANK);
-		ddmFormField.setType("date");
-		ddmFormField.setVisibilityExpression(StringPool.BLANK);
-	}
-
 	private void _upgradeDDMFormFieldOptionsReferences(
 		DDMFormFieldOptions ddmFormFieldOptions) {
 
@@ -389,6 +382,13 @@ public class DDMDataDefinitionConverterImpl
 		ddmFormFieldOptionsValues.forEach(
 			ddmFormFieldOptionsValue -> ddmFormFieldOptions.addOptionReference(
 				ddmFormFieldOptionsValue, ddmFormFieldOptionsValue));
+	}
+
+	private void _upgradeDateField(DDMFormField ddmFormField) {
+		ddmFormField.setDataType("date");
+		ddmFormField.setFieldNamespace(StringPool.BLANK);
+		ddmFormField.setType("date");
+		ddmFormField.setVisibilityExpression(StringPool.BLANK);
 	}
 
 	private void _upgradeDecimalField(DDMFormField ddmFormField) {

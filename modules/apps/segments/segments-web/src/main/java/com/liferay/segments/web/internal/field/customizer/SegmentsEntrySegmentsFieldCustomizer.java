@@ -49,13 +49,13 @@ public class SegmentsEntrySegmentsFieldCustomizer
 	public static final String KEY = "segment";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getSegmentsEntry(fieldValue);
+	public String getClassName() {
+		return SegmentsEntry.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return SegmentsEntry.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getSegmentsEntry(fieldValue);
 	}
 
 	@Override

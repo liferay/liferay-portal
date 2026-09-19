@@ -201,23 +201,6 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 			(List<UserGroup>)page.getItems());
 	}
 
-	private void _testGetProjectUserGroupsPageWithoutDepotEntry()
-		throws Exception {
-
-		ObjectEntry objectEntry = CMPTestUtil.addCMPProjectObjectEntry();
-
-		com.liferay.portal.kernel.model.UserGroup serviceBuilderUserGroup =
-			UserGroupTestUtil.addUserGroup();
-
-		Page<UserGroup> page = userGroupResource.getProjectUserGroupsPage(
-			objectEntry.getObjectEntryId(), null, Pagination.of(1, 100));
-
-		for (UserGroup userGroup : page.getItems()) {
-			Assert.assertNotEquals(
-				serviceBuilderUserGroup.getName(), userGroup.getName());
-		}
-	}
-
 	private void _testGetProjectUserGroupsPageWithProjectManager()
 		throws Exception {
 
@@ -256,6 +239,23 @@ public class UserGroupResourceTest extends BaseUserGroupResourceTestCase {
 			Problem.ProblemException.class, null,
 			() -> userGroupResource.getProjectUserGroupsPage(
 				objectEntry.getObjectEntryId(), null, Pagination.of(1, 100)));
+	}
+
+	private void _testGetProjectUserGroupsPageWithoutDepotEntry()
+		throws Exception {
+
+		ObjectEntry objectEntry = CMPTestUtil.addCMPProjectObjectEntry();
+
+		com.liferay.portal.kernel.model.UserGroup serviceBuilderUserGroup =
+			UserGroupTestUtil.addUserGroup();
+
+		Page<UserGroup> page = userGroupResource.getProjectUserGroupsPage(
+			objectEntry.getObjectEntryId(), null, Pagination.of(1, 100));
+
+		for (UserGroup userGroup : page.getItems()) {
+			Assert.assertNotEquals(
+				serviceBuilderUserGroup.getName(), userGroup.getName());
+		}
 	}
 
 	private UserGroup _toUserGroup(

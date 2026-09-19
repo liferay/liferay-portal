@@ -852,21 +852,6 @@ public class SingleLogoutProfileImpl
 		return samlPeerEntityContext;
 	}
 
-	private List<SamlIdpSpSession> _getSamlIdpSpSessions(String idpSessionIndex)
-		throws Exception {
-
-		SamlSpSession samlSpSession =
-			samlSpSessionLocalService.getSamlSpSessionBySessionIndex(
-				CompanyThreadLocal.getCompanyId(), idpSessionIndex);
-
-		SamlIdpSsoSession samlIdpSsoSession =
-			_samlIdpSsoSessionLocalService.fetchSamlIdpSsoByUserId(
-				samlSpSession.getUserId());
-
-		return _samlIdpSpSessionLocalService.getSamlIdpSpSessions(
-			samlIdpSsoSession.getSamlIdpSsoSessionId());
-	}
-
 	private String _getSAMLPeerEntityBinding(MessageContext<?> messageContext) {
 		SAMLPeerEntityContext samlPeerEntityContext =
 			messageContext.getSubcontext(SAMLPeerEntityContext.class);
@@ -893,6 +878,21 @@ public class SingleLogoutProfileImpl
 		Endpoint endpoint = samlPeerEndpointContext.getEndpoint();
 
 		return endpoint.getLocation();
+	}
+
+	private List<SamlIdpSpSession> _getSamlIdpSpSessions(String idpSessionIndex)
+		throws Exception {
+
+		SamlSpSession samlSpSession =
+			samlSpSessionLocalService.getSamlSpSessionBySessionIndex(
+				CompanyThreadLocal.getCompanyId(), idpSessionIndex);
+
+		SamlIdpSsoSession samlIdpSsoSession =
+			_samlIdpSsoSessionLocalService.fetchSamlIdpSsoByUserId(
+				samlSpSession.getUserId());
+
+		return _samlIdpSpSessionLocalService.getSamlIdpSpSessions(
+			samlIdpSsoSession.getSamlIdpSsoSessionId());
 	}
 
 	private SamlSloContext _getSamlSloContext(

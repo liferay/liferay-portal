@@ -125,10 +125,10 @@ public class WikiNodeUADAnonymizerTest
 	@Inject
 	private WikiNodeLocalService _wikiNodeLocalService;
 
-	@DeleteAfterTestRun
-	private final List<WikiNode> _wikiNodes = new ArrayList<>();
-
 	@Inject
 	private WikiNodeUADTestHelper _wikiNodeUADTestHelper;
+
+	@DeleteAfterTestRun
+	private final List<WikiNode> _wikiNodes = new ArrayList<>();
 
 }

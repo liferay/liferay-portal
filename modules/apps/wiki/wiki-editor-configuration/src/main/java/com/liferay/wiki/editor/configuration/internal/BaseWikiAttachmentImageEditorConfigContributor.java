@@ -135,6 +135,16 @@ public abstract class BaseWikiAttachmentImageEditorConfigContributor
 		String itemSelectedEventName, long wikiPageResourcePrimKey,
 		ThemeDisplay themeDisplay);
 
+	protected ItemSelectorCriterion getURLItemSelectorCriterion() {
+		ItemSelectorCriterion itemSelectorCriterion =
+			new URLItemSelectorCriterion();
+
+		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new URLItemSelectorReturnType());
+
+		return itemSelectorCriterion;
+	}
+
 	protected ItemSelectorCriterion getUploadItemSelectorCriterion(
 		long wikiPageResourcePrimKey, ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
@@ -175,16 +185,6 @@ public abstract class BaseWikiAttachmentImageEditorConfigContributor
 				"resourcePrimKey", wikiPageResourcePrimKey
 			).buildString()
 		).build();
-	}
-
-	protected ItemSelectorCriterion getURLItemSelectorCriterion() {
-		ItemSelectorCriterion itemSelectorCriterion =
-			new URLItemSelectorCriterion();
-
-		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			new URLItemSelectorReturnType());
-
-		return itemSelectorCriterion;
 	}
 
 	protected ItemSelectorCriterion getWikiAttachmentItemSelectorCriterion(

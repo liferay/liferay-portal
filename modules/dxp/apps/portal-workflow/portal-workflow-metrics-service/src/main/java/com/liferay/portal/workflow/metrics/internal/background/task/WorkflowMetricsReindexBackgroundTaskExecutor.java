@@ -174,10 +174,10 @@ public class WorkflowMetricsReindexBackgroundTaskExecutor
 	private WorkflowMetricsPortalExecutor _workflowMetricsPortalExecutor;
 
 	@Reference
-	private WorkflowMetricsReindexerRegistry _workflowMetricsReindexerRegistry;
-
-	@Reference
 	private WorkflowMetricsReindexStatusMessageSender
 		_workflowMetricsReindexStatusMessageSender;
+
+	@Reference
+	private WorkflowMetricsReindexerRegistry _workflowMetricsReindexerRegistry;
 
 }

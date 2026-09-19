@@ -313,24 +313,6 @@ public class NestedFieldsSetterUtilTest {
 	}
 
 	@Test
-	public void testGetNestedFieldsWithoutOverridingMethod() throws Exception {
-		_test(
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"externalCode", "codigoExterno"
-				).put(
-					"id", 1
-				),
-				JSONUtil.put("id", 2)),
-			HashMapBuilder.put(
-				"externalCode.AcceptLanguage", "es_ES"
-			).put(
-				"nestedFields", "externalCode"
-			).build(),
-			false, "v1.0");
-	}
-
-	@Test
 	public void testGetNestedFieldsWithPagination() throws Exception {
 		_test(
 			JSONUtil.putAll(
@@ -404,6 +386,24 @@ public class NestedFieldsSetterUtilTest {
 			"v2.0");
 	}
 
+	@Test
+	public void testGetNestedFieldsWithoutOverridingMethod() throws Exception {
+		_test(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"externalCode", "codigoExterno"
+				).put(
+					"id", 1
+				),
+				JSONUtil.put("id", 2)),
+			HashMapBuilder.put(
+				"externalCode.AcceptLanguage", "es_ES"
+			).put(
+				"nestedFields", "externalCode"
+			).build(),
+			false, "v1.0");
+	}
+
 	@Path("/v1.0")
 	public abstract static class BaseProductResource_v1_0_Impl
 		implements ProductResource_v1_0,
@@ -427,19 +427,19 @@ public class NestedFieldsSetterUtilTest {
 		}
 
 		@GET
-		@Path("/products/{id}/productOptions")
+		@Path("/productOptions/{id}/productOptionValues")
 		@Produces("application/*")
-		public List<ProductOption> getProductOptions(
-			@PathParam("id") Long id, @QueryParam("name") String name) {
+		public List<ProductOptionValue> getProductOptionValues(
+			@PathParam("id") Long id) {
 
 			return Collections.emptyList();
 		}
 
 		@GET
-		@Path("/productOptions/{id}/productOptionValues")
+		@Path("/products/{id}/productOptions")
 		@Produces("application/*")
-		public List<ProductOptionValue> getProductOptionValues(
-			@PathParam("id") Long id) {
+		public List<ProductOption> getProductOptions(
+			@PathParam("id") Long id, @QueryParam("name") String name) {
 
 			return Collections.emptyList();
 		}
@@ -796,6 +796,25 @@ public class NestedFieldsSetterUtilTest {
 			return "codigoExterno";
 		}
 
+		@NestedField("productOptionValues")
+		@Override
+		public List<ProductOptionValue> getProductOptionValues(Long id) {
+			Assert.assertNotNull(_company);
+			Assert.assertNotNull(contextCompany);
+
+			if (id == 10) {
+				return Arrays.asList(
+					_toProductOptionValue(100L), _toProductOptionValue(200L),
+					_toProductOptionValue(300L));
+			}
+			else if (id == 20) {
+				return Arrays.asList(
+					_toProductOptionValue(400L), _toProductOptionValue(500L));
+			}
+
+			return Collections.emptyList();
+		}
+
 		@NestedField("productOptions")
 		@Override
 		public List<ProductOption> getProductOptions(Long id, String name) {
@@ -818,25 +837,6 @@ public class NestedFieldsSetterUtilTest {
 			}
 
 			return productOptions;
-		}
-
-		@NestedField("productOptionValues")
-		@Override
-		public List<ProductOptionValue> getProductOptionValues(Long id) {
-			Assert.assertNotNull(_company);
-			Assert.assertNotNull(contextCompany);
-
-			if (id == 10) {
-				return Arrays.asList(
-					_toProductOptionValue(100L), _toProductOptionValue(200L),
-					_toProductOptionValue(300L));
-			}
-			else if (id == 20) {
-				return Arrays.asList(
-					_toProductOptionValue(400L), _toProductOptionValue(500L));
-			}
-
-			return Collections.emptyList();
 		}
 
 		@Override
@@ -980,9 +980,9 @@ public class NestedFieldsSetterUtilTest {
 
 	public interface ProductResource_v1_0 {
 
-		public List<ProductOption> getProductOptions(Long id, String name);
-
 		public List<ProductOptionValue> getProductOptionValues(Long id);
+
+		public List<ProductOption> getProductOptions(Long id, String name);
 
 		public List<Product> getProducts(boolean inlineInitialization);
 

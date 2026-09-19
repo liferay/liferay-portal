@@ -227,30 +227,6 @@ public class AppDockerPlugin implements Plugin<Project> {
 		return dockerPushImage;
 	}
 
-	private void _addTasksPushAppDockerImage(
-		DockerBuildImage buildAppDockerImageTask,
-		DockerPushImage pushAppDockerImageTask,
-		AppDockerExtension appDockerExtension) {
-
-		String imageRepository = _getImageRepository(appDockerExtension);
-
-		for (Object imageTagObject : appDockerExtension.getImageTags()) {
-			String imageTag = GradleUtil.toString(imageTagObject);
-
-			if (Validator.isNull(imageTag)) {
-				continue;
-			}
-
-			DockerTagImage dockerTagImage = _addTaskTagAppDockerImage(
-				buildAppDockerImageTask, imageRepository, imageTag);
-
-			DockerPushImage dockerPushImage = _addTaskPushAppDockerImage(
-				dockerTagImage);
-
-			pushAppDockerImageTask.dependsOn(dockerPushImage);
-		}
-	}
-
 	private DockerTagImage _addTaskTagAppDockerImage(
 		final DockerBuildImage buildAppDockerImagetask, String imageRepository,
 		String imageTag) {
@@ -293,6 +269,30 @@ public class AppDockerPlugin implements Plugin<Project> {
 			});
 
 		return dockerTagImage;
+	}
+
+	private void _addTasksPushAppDockerImage(
+		DockerBuildImage buildAppDockerImageTask,
+		DockerPushImage pushAppDockerImageTask,
+		AppDockerExtension appDockerExtension) {
+
+		String imageRepository = _getImageRepository(appDockerExtension);
+
+		for (Object imageTagObject : appDockerExtension.getImageTags()) {
+			String imageTag = GradleUtil.toString(imageTagObject);
+
+			if (Validator.isNull(imageTag)) {
+				continue;
+			}
+
+			DockerTagImage dockerTagImage = _addTaskTagAppDockerImage(
+				buildAppDockerImageTask, imageRepository, imageTag);
+
+			DockerPushImage dockerPushImage = _addTaskPushAppDockerImage(
+				dockerTagImage);
+
+			pushAppDockerImageTask.dependsOn(dockerPushImage);
+		}
 	}
 
 	private void _configureTaskPrepareAppDockerImageInputDir(

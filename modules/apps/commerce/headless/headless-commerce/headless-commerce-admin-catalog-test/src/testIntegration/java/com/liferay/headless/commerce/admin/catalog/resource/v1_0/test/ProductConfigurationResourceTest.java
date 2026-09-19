@@ -690,24 +690,6 @@ public class ProductConfigurationResourceTest
 			_commerceAvailabilityEstimate2, postProductConfiguration.getId());
 	}
 
-	private void _testPatchProductConfigurationWithoutAvailabilityEstimate()
-		throws Exception {
-
-		ProductConfiguration postProductConfiguration =
-			_postProductConfigurationWithAvailabilityEstimate(
-				_commerceAvailabilityEstimate1);
-
-		ProductConfiguration productConfiguration = new ProductConfiguration();
-
-		productConfiguration.setPurchasable(RandomTestUtil.randomBoolean());
-
-		productConfigurationResource.patchProductConfiguration(
-			postProductConfiguration.getId(), productConfiguration);
-
-		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
-			_commerceAvailabilityEstimate1, postProductConfiguration.getId());
-	}
-
 	private void _testPatchProductConfigurationWithUnresolvableAvailabilityEstimateERC()
 		throws Exception {
 
@@ -727,6 +709,24 @@ public class ProductConfigurationResourceTest
 			_commerceAvailabilityEstimate2.getCommerceAvailabilityEstimateId());
 
 		_assertPatchProductConfigurationNotFound(
+			postProductConfiguration.getId(), productConfiguration);
+
+		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			_commerceAvailabilityEstimate1, postProductConfiguration.getId());
+	}
+
+	private void _testPatchProductConfigurationWithoutAvailabilityEstimate()
+		throws Exception {
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		ProductConfiguration productConfiguration = new ProductConfiguration();
+
+		productConfiguration.setPurchasable(RandomTestUtil.randomBoolean());
+
+		productConfigurationResource.patchProductConfiguration(
 			postProductConfiguration.getId(), productConfiguration);
 
 		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
@@ -785,6 +785,9 @@ public class ProductConfigurationResourceTest
 		ProductConfigurationResourceTest.class);
 
 	@Inject
+	private CProductLocalService _cProductLocalService;
+
+	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
@@ -814,9 +817,6 @@ public class ProductConfigurationResourceTest
 	@Inject
 	private CPDAvailabilityEstimateLocalService
 		_cpdAvailabilityEstimateLocalService;
-
-	@Inject
-	private CProductLocalService _cProductLocalService;
 
 	private CPConfigurationList _masterCPConfigurationList;
 	private User _user;

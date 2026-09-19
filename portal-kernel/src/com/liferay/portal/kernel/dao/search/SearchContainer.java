@@ -275,10 +275,6 @@ public class SearchContainer<R> {
 		return _normalizedHeaderNames;
 	}
 
-	public Map<String, String> getOrderableHeaders() {
-		return _orderableHeaders;
-	}
-
 	public String getOrderByCol() {
 		return _orderByCol;
 	}
@@ -301,6 +297,10 @@ public class SearchContainer<R> {
 
 	public String getOrderByTypeParam() {
 		return _orderByTypeParam;
+	}
+
+	public Map<String, String> getOrderableHeaders() {
+		return _orderableHeaders;
 	}
 
 	public PortletRequest getPortletRequest() {
@@ -445,10 +445,6 @@ public class SearchContainer<R> {
 		_iteratorURL = iteratorURL;
 	}
 
-	public void setOrderableHeaders(Map<String, String> orderableHeaders) {
-		_orderableHeaders = orderableHeaders;
-	}
-
 	public void setOrderByCol(String orderByCol) {
 		_orderByCol = orderByCol;
 
@@ -475,6 +471,10 @@ public class SearchContainer<R> {
 
 	public void setOrderByTypeParam(String orderByTypeParam) {
 		_orderByTypeParam = orderByTypeParam;
+	}
+
+	public void setOrderableHeaders(Map<String, String> orderableHeaders) {
+		_orderableHeaders = orderableHeaders;
 	}
 
 	public <T extends BaseModel<T>> void setResultsAndTotal(
@@ -602,13 +602,13 @@ public class SearchContainer<R> {
 	private String _id;
 	private PortletURL _iteratorURL;
 	private List<String> _normalizedHeaderNames;
-	private Map<String, String> _orderableHeaders;
 	private String _orderByCol;
 	private String _orderByColParam = DEFAULT_ORDER_BY_COL_PARAM;
 	private OrderByComparator<R> _orderByComparator;
 	private String _orderByJS;
 	private String _orderByType;
 	private String _orderByTypeParam = DEFAULT_ORDER_BY_TYPE_PARAM;
+	private Map<String, String> _orderableHeaders;
 	private final PortletRequest _portletRequest;
 	private int _resultEnd;
 	private final List<ResultRow> _resultRows = new ArrayList<>();

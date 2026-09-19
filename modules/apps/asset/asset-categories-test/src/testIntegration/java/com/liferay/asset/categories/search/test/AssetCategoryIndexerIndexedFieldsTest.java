@@ -164,10 +164,10 @@ public class AssetCategoryIndexerIndexedFieldsTest {
 	protected SearchEngineHelper searchEngineHelper;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	@Inject
 	protected UIDFactory uidFactory;

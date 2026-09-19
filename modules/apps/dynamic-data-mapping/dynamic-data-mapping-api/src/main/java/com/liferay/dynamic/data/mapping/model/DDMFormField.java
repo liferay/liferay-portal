@@ -189,6 +189,37 @@ public class DDMFormField implements Serializable {
 		return false;
 	}
 
+	public DDMForm getDDMForm() {
+		return _ddmForm;
+	}
+
+	public DDMFormFieldOptions getDDMFormFieldOptions() {
+		DDMFormFieldOptions ddmFormFieldOptions = _ddmFormFieldOptions;
+
+		String dataSourceType = getDataSourceType();
+
+		if ((ddmFormFieldOptions != null) &&
+			Validator.isNotNull(dataSourceType) &&
+			!dataSourceType.equals(_DATA_SOURCE_TYPE_MANUAL)) {
+
+			Locale defaultLocale = ddmFormFieldOptions.getDefaultLocale();
+
+			ddmFormFieldOptions = new DDMFormFieldOptions();
+
+			ddmFormFieldOptions.setDefaultLocale(defaultLocale);
+		}
+
+		return ddmFormFieldOptions;
+	}
+
+	public DDMFormFieldValidation getDDMFormFieldValidation() {
+		return _ddmFormFieldValidation;
+	}
+
+	public DDMFormLayout getDDMFormLayout() {
+		return _ddmFormLayout;
+	}
+
 	public String getDataSourceType() {
 		Object propertyDataSourceType = _properties.get("dataSourceType");
 
@@ -232,37 +263,6 @@ public class DDMFormField implements Serializable {
 
 	public String getDataType() {
 		return _dataType;
-	}
-
-	public DDMForm getDDMForm() {
-		return _ddmForm;
-	}
-
-	public DDMFormFieldOptions getDDMFormFieldOptions() {
-		DDMFormFieldOptions ddmFormFieldOptions = _ddmFormFieldOptions;
-
-		String dataSourceType = getDataSourceType();
-
-		if ((ddmFormFieldOptions != null) &&
-			Validator.isNotNull(dataSourceType) &&
-			!dataSourceType.equals(_DATA_SOURCE_TYPE_MANUAL)) {
-
-			Locale defaultLocale = ddmFormFieldOptions.getDefaultLocale();
-
-			ddmFormFieldOptions = new DDMFormFieldOptions();
-
-			ddmFormFieldOptions.setDefaultLocale(defaultLocale);
-		}
-
-		return ddmFormFieldOptions;
-	}
-
-	public DDMFormFieldValidation getDDMFormFieldValidation() {
-		return _ddmFormFieldValidation;
-	}
-
-	public DDMFormLayout getDDMFormLayout() {
-		return _ddmFormLayout;
 	}
 
 	public String getFieldNamespace() {
@@ -407,15 +407,15 @@ public class DDMFormField implements Serializable {
 		return _visibilityExpression;
 	}
 
+	public boolean hasProperty(String propertyKey) {
+		return _properties.containsKey(propertyKey);
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = HashUtil.hash(0, _properties);
 
 		return HashUtil.hash(hash, _nestedDDMFormFields);
-	}
-
-	public boolean hasProperty(String propertyKey) {
-		return _properties.containsKey(propertyKey);
 	}
 
 	public boolean isLocalizable() {
@@ -463,14 +463,6 @@ public class DDMFormField implements Serializable {
 		_properties.remove(propertyKey);
 	}
 
-	public void setDataType(String dataType) {
-		dataType = GetterUtil.getString(dataType);
-
-		_properties.put("dataType", dataType);
-
-		_dataType = dataType;
-	}
-
 	public void setDDMForm(DDMForm ddmForm) {
 		for (DDMFormField nestedDDMFormField : _nestedDDMFormFields) {
 			nestedDDMFormField.setDDMForm(ddmForm);
@@ -500,6 +492,14 @@ public class DDMFormField implements Serializable {
 
 	public void setDDMFormLayout(DDMFormLayout ddmFormLayout) {
 		_ddmFormLayout = ddmFormLayout;
+	}
+
+	public void setDataType(String dataType) {
+		dataType = GetterUtil.getString(dataType);
+
+		_properties.put("dataType", dataType);
+
+		_dataType = dataType;
 	}
 
 	public void setFieldNamespace(String fieldNamespace) {

@@ -100,6 +100,22 @@ public class PortalInstancesConfigurationFactoryTest {
 	}
 
 	@Test
+	public void testAddCompanyWithSomeAdminProperties() throws Exception {
+		_testAddCompany(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"adminFirstName", "testAdminFirstName"
+			).put(
+				"adminLastName", "testAdminLastName"
+			).put(
+				"adminPassword", RandomTestUtil.randomString()
+			).put(
+				"mx", _domain
+			).put(
+				"virtualHostname", _domain
+			).build());
+	}
+
+	@Test
 	public void testAddCompanyWithoutDefaultAdmin() throws Exception {
 		ConfigurationTestUtil.saveConfiguration(
 			_configuration,
@@ -115,22 +131,6 @@ public class PortalInstancesConfigurationFactoryTest {
 
 		Assert.assertEquals(
 			0, _userLocalService.getCompanyUsersCount(_company.getCompanyId()));
-	}
-
-	@Test
-	public void testAddCompanyWithSomeAdminProperties() throws Exception {
-		_testAddCompany(
-			HashMapDictionaryBuilder.<String, Object>put(
-				"adminFirstName", "testAdminFirstName"
-			).put(
-				"adminLastName", "testAdminLastName"
-			).put(
-				"adminPassword", RandomTestUtil.randomString()
-			).put(
-				"mx", _domain
-			).put(
-				"virtualHostname", _domain
-			).build());
 	}
 
 	private void _testAddCompany(Dictionary<String, Object> properties)

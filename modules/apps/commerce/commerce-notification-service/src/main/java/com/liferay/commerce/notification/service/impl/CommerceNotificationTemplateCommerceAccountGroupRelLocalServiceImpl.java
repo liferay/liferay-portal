@@ -68,21 +68,21 @@ public class CommerceNotificationTemplateCommerceAccountGroupRelLocalServiceImpl
 
 	@Override
 	public void
-		deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
-
-		commerceNotificationTemplateCommerceAccountGroupRelPersistence.
-			removeByCommerceAccountGroupId(commerceAccountGroupId);
-	}
-
-	@Override
-	public void
 		deleteCNTemplateCommerceAccountGroupRelsByCommerceNotificationTemplateId(
 			long commerceNotificationTemplateId) {
 
 		commerceNotificationTemplateCommerceAccountGroupRelPersistence.
 			removeByCommerceNotificationTemplateId(
 				commerceNotificationTemplateId);
+	}
+
+	@Override
+	public void
+		deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
+			long commerceAccountGroupId) {
+
+		commerceNotificationTemplateCommerceAccountGroupRelPersistence.
+			removeByCommerceAccountGroupId(commerceAccountGroupId);
 	}
 
 	@Override

@@ -1953,6 +1953,31 @@ public class CalendarBookingLocalServiceImpl
 		return WorkflowConstants.STATUS_PENDING;
 	}
 
+	private Calendar _getNotLiveCalendar(Calendar calendar)
+		throws PortalException {
+
+		CalendarResource calendarResource = calendar.getCalendarResource();
+
+		if (_isCalendarResourceStaged(calendarResource)) {
+			Group group = _getCalendarResourceSiteGroup(calendarResource);
+
+			Group stagingGroup = group.getStagingGroup();
+
+			calendar = _calendarPersistence.findByUUID_G(
+				calendar.getUuid(), stagingGroup.getGroupId());
+		}
+
+		return calendar;
+	}
+
+	private long _getNotLiveCalendarId(long calendarId) throws PortalException {
+		Calendar calendar = _calendarPersistence.findByPrimaryKey(calendarId);
+
+		calendar = _getNotLiveCalendar(calendar);
+
+		return calendar.getCalendarId();
+	}
+
 	private List<NotificationRecipient> _getNotificationRecipients(
 			CalendarBooking calendarBooking)
 		throws Exception {
@@ -1985,31 +2010,6 @@ public class CalendarBookingLocalServiceImpl
 
 				return null;
 			});
-	}
-
-	private Calendar _getNotLiveCalendar(Calendar calendar)
-		throws PortalException {
-
-		CalendarResource calendarResource = calendar.getCalendarResource();
-
-		if (_isCalendarResourceStaged(calendarResource)) {
-			Group group = _getCalendarResourceSiteGroup(calendarResource);
-
-			Group stagingGroup = group.getStagingGroup();
-
-			calendar = _calendarPersistence.findByUUID_G(
-				calendar.getUuid(), stagingGroup.getGroupId());
-		}
-
-		return calendar;
-	}
-
-	private long _getNotLiveCalendarId(long calendarId) throws PortalException {
-		Calendar calendar = _calendarPersistence.findByPrimaryKey(calendarId);
-
-		calendar = _getNotLiveCalendar(calendar);
-
-		return calendar.getCalendarId();
 	}
 
 	private List<CalendarBooking> _getOverlappingCalendarBookings(

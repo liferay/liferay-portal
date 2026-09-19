@@ -319,6 +319,12 @@ public class CommerceMediaResolverTest {
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
 
+	@DeleteAfterTestRun
+	private final List<CPDefinition> _commerceCPDefinitions = new ArrayList<>();
+
+	@DeleteAfterTestRun
+	private final List<CPInstance> _commerceCPInstances = new ArrayList<>();
+
 	private CommerceCatalog _commerceCatalog;
 
 	@DeleteAfterTestRun
@@ -326,12 +332,6 @@ public class CommerceMediaResolverTest {
 
 	@Inject
 	private CommerceChannelLocalService _commerceChannelLocalService;
-
-	@DeleteAfterTestRun
-	private final List<CPDefinition> _commerceCPDefinitions = new ArrayList<>();
-
-	@DeleteAfterTestRun
-	private final List<CPInstance> _commerceCPInstances = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private CommerceCurrency _commerceCurrency;

@@ -371,6 +371,47 @@ public class DDMValueUtil {
 			_toImageString(contentFieldValue, dlAppService));
 	}
 
+	private static String _toJSON(
+			String description, DLAppService dlAppService, long fileEntryId)
+		throws Exception {
+
+		FileEntry fileEntry = null;
+
+		try {
+			fileEntry = dlAppService.getFileEntry(fileEntryId);
+		}
+		catch (Exception exception) {
+			throw new BadRequestException(
+				"No document exists with ID " + fileEntryId, exception);
+		}
+
+		return JSONUtil.put(
+			"alt", description
+		).put(
+			"classPK", fileEntry.getFileEntryId()
+		).put(
+			"description", description
+		).put(
+			"fileEntryId", fileEntry.getFileEntryId()
+		).put(
+			"groupId", fileEntry.getGroupId()
+		).put(
+			"name", fileEntry.getFileName()
+		).put(
+			"resourcePrimKey", fileEntry.getPrimaryKey()
+		).put(
+			"title", fileEntry.getFileName()
+		).put(
+			"type", "document"
+		).put(
+			"url",
+			DLURLHelperUtil.getPreviewURL(
+				fileEntry, fileEntry.getFileVersion(), null, StringPool.BLANK)
+		).put(
+			"uuid", fileEntry.getUuid()
+		).toString();
+	}
+
 	private static String _toJournalArticleString(
 		ContentFieldValue contentFieldValue,
 		JournalArticleService journalArticleService, Locale locale) {
@@ -426,47 +467,6 @@ public class DDMValueUtil {
 		return new UnlocalizedValue(
 			_toJournalArticleString(
 				contentFieldValue, journalArticleService, preferredLocale));
-	}
-
-	private static String _toJSON(
-			String description, DLAppService dlAppService, long fileEntryId)
-		throws Exception {
-
-		FileEntry fileEntry = null;
-
-		try {
-			fileEntry = dlAppService.getFileEntry(fileEntryId);
-		}
-		catch (Exception exception) {
-			throw new BadRequestException(
-				"No document exists with ID " + fileEntryId, exception);
-		}
-
-		return JSONUtil.put(
-			"alt", description
-		).put(
-			"classPK", fileEntry.getFileEntryId()
-		).put(
-			"description", description
-		).put(
-			"fileEntryId", fileEntry.getFileEntryId()
-		).put(
-			"groupId", fileEntry.getGroupId()
-		).put(
-			"name", fileEntry.getFileName()
-		).put(
-			"resourcePrimKey", fileEntry.getPrimaryKey()
-		).put(
-			"title", fileEntry.getFileName()
-		).put(
-			"type", "document"
-		).put(
-			"url",
-			DLURLHelperUtil.getPreviewURL(
-				fileEntry, fileEntry.getFileVersion(), null, StringPool.BLANK)
-		).put(
-			"uuid", fileEntry.getUuid()
-		).toString();
 	}
 
 	private static String _toLinkToPageString(

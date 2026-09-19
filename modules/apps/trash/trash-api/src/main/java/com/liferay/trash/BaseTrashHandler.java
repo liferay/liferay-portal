@@ -215,11 +215,6 @@ public abstract class BaseTrashHandler implements TrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return null;
-	}
-
-	@Override
 	public int getTrashModelsCount(long classPK) throws PortalException {
 		return 0;
 	}
@@ -238,6 +233,11 @@ public abstract class BaseTrashHandler implements TrashHandler {
 			}
 		}
 
+		return null;
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
 		return null;
 	}
 

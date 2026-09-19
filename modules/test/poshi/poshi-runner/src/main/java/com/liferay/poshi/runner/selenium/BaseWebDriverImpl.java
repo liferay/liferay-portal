@@ -3559,6 +3559,32 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		return LiferaySeleniumUtil.getBy(locator);
 	}
 
+	protected String getCSSSource(String htmlSource) throws Exception {
+		org.jsoup.nodes.Document htmlDocument = Jsoup.parse(htmlSource);
+
+		Elements elements = htmlDocument.select("link[type=text/css]");
+
+		StringBuilder sb = new StringBuilder();
+
+		for (Element element : elements) {
+			String href = element.attr("href");
+
+			if (!href.contains(poshiProperties.portalURL)) {
+				href = poshiProperties.portalURL + href;
+			}
+
+			Connection connection = Jsoup.connect(href);
+
+			org.jsoup.nodes.Document document = connection.get();
+
+			sb.append(document.text());
+
+			sb.append("\n");
+		}
+
+		return sb.toString();
+	}
+
 	protected Condition getConfirmationCondition(String pattern) {
 		return new Condition() {
 
@@ -3606,32 +3632,6 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 			}
 
 		};
-	}
-
-	protected String getCSSSource(String htmlSource) throws Exception {
-		org.jsoup.nodes.Document htmlDocument = Jsoup.parse(htmlSource);
-
-		Elements elements = htmlDocument.select("link[type=text/css]");
-
-		StringBuilder sb = new StringBuilder();
-
-		for (Element element : elements) {
-			String href = element.attr("href");
-
-			if (!href.contains(poshiProperties.portalURL)) {
-				href = poshiProperties.portalURL + href;
-			}
-
-			Connection connection = Jsoup.connect(href);
-
-			org.jsoup.nodes.Document document = connection.get();
-
-			sb.append(document.text());
-
-			sb.append("\n");
-		}
-
-		return sb.toString();
 	}
 
 	protected String getDefaultWindowHandle() {

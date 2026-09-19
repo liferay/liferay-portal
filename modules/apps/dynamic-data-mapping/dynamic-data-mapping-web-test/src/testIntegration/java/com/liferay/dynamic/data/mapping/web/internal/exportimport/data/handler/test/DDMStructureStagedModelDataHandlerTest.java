@@ -199,59 +199,6 @@ public class DDMStructureStagedModelDataHandlerTest
 	}
 
 	@Test
-	@TestInfo("LPS-155637")
-	public void testImportStructuresComposedFromFieldsets() throws Exception {
-		DDMStructure ddmStructure1 = DDMStructureTestUtil.addStructure(
-			stagingGroup.getGroupId(), _CLASS_NAME);
-
-		DDMStructure ddmStructure2 = _addFieldsetStructure(
-			RandomTestUtil.randomString(), ddmStructure1);
-
-		DDMStructure ddmStructure3 = _addFieldsetStructure(
-			RandomTestUtil.randomString(), ddmStructure2);
-
-		initExport();
-
-		StagedModelDataHandlerUtil.exportStagedModel(
-			portletDataContext, ddmStructure3);
-
-		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
-			DDMStructure exportedDDMStructure1 =
-				(DDMStructure)readExportedStagedModel(ddmStructure2);
-
-			DDMStructure exportedDDMStructure2 =
-				(DDMStructure)readExportedStagedModel(ddmStructure3);
-
-			StagedModelDataHandlerUtil.importStagedModel(
-				portletDataContext, exportedDDMStructure2);
-
-			_importDEDataDefinitionFieldLinks(exportedDDMStructure1);
-			_importDEDataDefinitionFieldLinks(exportedDDMStructure2);
-		}
-
-		DDMStructure importedDDMStructure1 =
-			DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
-				ddmStructure1.getUuid(), liveGroup.getGroupId());
-
-		DDMStructure importedDDMStructure2 =
-			DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
-				ddmStructure2.getUuid(), liveGroup.getGroupId());
-
-		DDMStructure importedDDMStructure3 =
-			DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
-				ddmStructure3.getUuid(), liveGroup.getGroupId());
-
-		Assert.assertNotNull(importedDDMStructure1);
-		Assert.assertNotNull(importedDDMStructure2);
-		Assert.assertNotNull(importedDDMStructure3);
-
-		_assertDEDataDefinitionFieldLink(
-			importedDDMStructure2, importedDDMStructure1.getStructureId());
-		_assertDEDataDefinitionFieldLink(
-			importedDDMStructure3, importedDDMStructure2.getStructureId());
-	}
-
-	@Test
 	public void testImportStructureToGlobalSite() throws Exception {
 		Company company = CompanyLocalServiceUtil.getCompany(
 			stagingGroup.getCompanyId());
@@ -356,6 +303,59 @@ public class DDMStructureStagedModelDataHandlerTest
 
 			Assert.assertNotNull(importedStagedModel);
 		}
+	}
+
+	@Test
+	@TestInfo("LPS-155637")
+	public void testImportStructuresComposedFromFieldsets() throws Exception {
+		DDMStructure ddmStructure1 = DDMStructureTestUtil.addStructure(
+			stagingGroup.getGroupId(), _CLASS_NAME);
+
+		DDMStructure ddmStructure2 = _addFieldsetStructure(
+			RandomTestUtil.randomString(), ddmStructure1);
+
+		DDMStructure ddmStructure3 = _addFieldsetStructure(
+			RandomTestUtil.randomString(), ddmStructure2);
+
+		initExport();
+
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, ddmStructure3);
+
+		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
+			DDMStructure exportedDDMStructure1 =
+				(DDMStructure)readExportedStagedModel(ddmStructure2);
+
+			DDMStructure exportedDDMStructure2 =
+				(DDMStructure)readExportedStagedModel(ddmStructure3);
+
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, exportedDDMStructure2);
+
+			_importDEDataDefinitionFieldLinks(exportedDDMStructure1);
+			_importDEDataDefinitionFieldLinks(exportedDDMStructure2);
+		}
+
+		DDMStructure importedDDMStructure1 =
+			DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
+				ddmStructure1.getUuid(), liveGroup.getGroupId());
+
+		DDMStructure importedDDMStructure2 =
+			DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
+				ddmStructure2.getUuid(), liveGroup.getGroupId());
+
+		DDMStructure importedDDMStructure3 =
+			DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
+				ddmStructure3.getUuid(), liveGroup.getGroupId());
+
+		Assert.assertNotNull(importedDDMStructure1);
+		Assert.assertNotNull(importedDDMStructure2);
+		Assert.assertNotNull(importedDDMStructure3);
+
+		_assertDEDataDefinitionFieldLink(
+			importedDDMStructure2, importedDDMStructure1.getStructureId());
+		_assertDEDataDefinitionFieldLink(
+			importedDDMStructure3, importedDDMStructure2.getStructureId());
 	}
 
 	@Test

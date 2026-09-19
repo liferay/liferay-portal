@@ -60,6 +60,27 @@ public class PreviewableResolverUtilTest {
 	}
 
 	@Test
+	public void testGetPreviewIds() {
+		Long previewId = PreviewableResolverUtil.addPreviewableMap(
+			Collections.emptyMap());
+
+		try {
+			Set<Long> previewIds = PreviewableResolverUtil.getPreviewIds();
+
+			Assert.assertTrue(
+				previewIds.toString(), previewIds.contains(previewId));
+		}
+		finally {
+			PreviewableResolverUtil.removePreviewableMap(previewId);
+		}
+
+		Set<Long> previewIds = PreviewableResolverUtil.getPreviewIds();
+
+		Assert.assertFalse(
+			previewIds.toString(), previewIds.contains(previewId));
+	}
+
+	@Test
 	public void testGetPreviewableMap() {
 		Map<Serializable, Serializable> pkMap =
 			Collections.<Serializable, Serializable>singletonMap(1L, 2L);
@@ -89,27 +110,6 @@ public class PreviewableResolverUtilTest {
 		finally {
 			PreviewableResolverUtil.removePreviewableMap(previewId);
 		}
-	}
-
-	@Test
-	public void testGetPreviewIds() {
-		Long previewId = PreviewableResolverUtil.addPreviewableMap(
-			Collections.emptyMap());
-
-		try {
-			Set<Long> previewIds = PreviewableResolverUtil.getPreviewIds();
-
-			Assert.assertTrue(
-				previewIds.toString(), previewIds.contains(previewId));
-		}
-		finally {
-			PreviewableResolverUtil.removePreviewableMap(previewId);
-		}
-
-		Set<Long> previewIds = PreviewableResolverUtil.getPreviewIds();
-
-		Assert.assertFalse(
-			previewIds.toString(), previewIds.contains(previewId));
 	}
 
 	@Test
@@ -175,14 +175,6 @@ public class PreviewableResolverUtilTest {
 	}
 
 	@Test
-	public void testResolveBaseModelWithoutPreviewId() {
-		TestModel testModel = new TestModel(1L);
-
-		Assert.assertSame(
-			testModel, PreviewableResolverUtil.resolve(testModel));
-	}
-
-	@Test
 	public void testResolveBaseModelWithUnmappedPrimaryKey() {
 		TestModel testModel = new TestModel(3L);
 
@@ -199,6 +191,14 @@ public class PreviewableResolverUtilTest {
 		finally {
 			PreviewableResolverUtil.removePreviewableMap(previewId);
 		}
+	}
+
+	@Test
+	public void testResolveBaseModelWithoutPreviewId() {
+		TestModel testModel = new TestModel(1L);
+
+		Assert.assertSame(
+			testModel, PreviewableResolverUtil.resolve(testModel));
 	}
 
 	@Test

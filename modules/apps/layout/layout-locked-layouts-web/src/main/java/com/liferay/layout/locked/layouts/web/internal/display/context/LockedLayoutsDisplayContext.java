@@ -420,8 +420,8 @@ public class LockedLayoutsDisplayContext {
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private LockedLayoutOrder _lockedLayoutOrder;
-	private List<LockedLayout> _lockedLayouts;
 	private LockedLayoutType _lockedLayoutType;
+	private List<LockedLayout> _lockedLayouts;
 	private String _orderByCol;
 	private String _orderByType;
 	private final Portal _portal;

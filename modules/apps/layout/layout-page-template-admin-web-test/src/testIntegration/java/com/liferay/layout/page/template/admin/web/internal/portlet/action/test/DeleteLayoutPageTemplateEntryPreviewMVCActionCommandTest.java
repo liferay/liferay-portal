@@ -69,31 +69,6 @@ public class DeleteLayoutPageTemplateEntryPreviewMVCActionCommandTest {
 	}
 
 	@Test
-	public void testDeleteLayoutPageTemplateEntryPreviewWithoutPermissions()
-		throws Exception {
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
-				_group.getGroupId());
-
-		User user = UserTestUtil.addGroupUser(_group, RoleConstants.POWER_USER);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> ReflectionTestUtil.invoke(
-					_deleteLayoutPageTemplateEntryPreviewMVCActionCommand,
-					"doProcessAction",
-					new Class<?>[] {ActionRequest.class, ActionResponse.class},
-					_getMockLiferayPortletActionRequest(
-						layoutPageTemplateEntry, user),
-					new MockLiferayPortletActionResponse()));
-		}
-	}
-
-	@Test
 	public void testDeleteLayoutPageTemplateEntryPreviewWithPermissions()
 		throws Exception {
 
@@ -140,6 +115,31 @@ public class DeleteLayoutPageTemplateEntryPreviewMVCActionCommandTest {
 				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
 
 		Assert.assertEquals(0, layoutPageTemplateEntry.getPreviewFileEntryId());
+	}
+
+	@Test
+	public void testDeleteLayoutPageTemplateEntryPreviewWithoutPermissions()
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+				_group.getGroupId());
+
+		User user = UserTestUtil.addGroupUser(_group, RoleConstants.POWER_USER);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> ReflectionTestUtil.invoke(
+					_deleteLayoutPageTemplateEntryPreviewMVCActionCommand,
+					"doProcessAction",
+					new Class<?>[] {ActionRequest.class, ActionResponse.class},
+					_getMockLiferayPortletActionRequest(
+						layoutPageTemplateEntry, user),
+					new MockLiferayPortletActionResponse()));
+		}
 	}
 
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(

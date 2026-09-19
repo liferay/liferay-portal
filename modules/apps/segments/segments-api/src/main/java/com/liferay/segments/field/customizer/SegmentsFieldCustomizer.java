@@ -25,11 +25,11 @@ import java.util.ResourceBundle;
  */
 public interface SegmentsFieldCustomizer {
 
-	public default ClassedModel getClassedModel(String fieldValue) {
+	public default String getClassName() {
 		return null;
 	}
 
-	public default String getClassName() {
+	public default ClassedModel getClassedModel(String fieldValue) {
 		return null;
 	}
 

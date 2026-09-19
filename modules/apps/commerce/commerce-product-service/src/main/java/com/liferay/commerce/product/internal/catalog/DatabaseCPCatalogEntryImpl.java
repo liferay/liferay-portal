@@ -52,11 +52,6 @@ public class DatabaseCPCatalogEntryImpl implements CPCatalogEntry {
 	}
 
 	@Override
-	public long getCProductId() {
-		return _cpDefinition.getCProductId();
-	}
-
-	@Override
 	public List<CPSku> getCPSkus() {
 		return TransformUtil.transform(
 			_cpInstanceLocalService.getCPDefinitionInstances(
@@ -67,6 +62,11 @@ public class DatabaseCPCatalogEntryImpl implements CPCatalogEntry {
 				cpInstance,
 				_cpInstanceHelper.fetchCPInstanceUnitPrice(cpInstance),
 				_cpInstanceHelper.fetchCPInstanceUnitPromoPrice(cpInstance)));
+	}
+
+	@Override
+	public long getCProductId() {
+		return _cpDefinition.getCProductId();
 	}
 
 	@Override

@@ -155,6 +155,17 @@ public class CalendarUtil {
 		return 28;
 	}
 
+	public static Date getGTDate(Calendar cal) {
+		Calendar gtCal = (Calendar)cal.clone();
+
+		gtCal.set(Calendar.HOUR_OF_DAY, 0);
+		gtCal.set(Calendar.MINUTE, 0);
+		gtCal.set(Calendar.SECOND, 0);
+		gtCal.set(Calendar.MILLISECOND, 0);
+
+		return gtCal.getTime();
+	}
+
 	public static int getGregorianDay(Calendar cal) {
 		int year = cal.get(Calendar.YEAR) - 1600;
 
@@ -171,15 +182,15 @@ public class CalendarUtil {
 				(30.6 * month) + 0.2 + day);
 	}
 
-	public static Date getGTDate(Calendar cal) {
-		Calendar gtCal = (Calendar)cal.clone();
+	public static Date getLTDate(Calendar cal) {
+		Calendar ltCal = (Calendar)cal.clone();
 
-		gtCal.set(Calendar.HOUR_OF_DAY, 0);
-		gtCal.set(Calendar.MINUTE, 0);
-		gtCal.set(Calendar.SECOND, 0);
-		gtCal.set(Calendar.MILLISECOND, 0);
+		ltCal.set(Calendar.HOUR_OF_DAY, 23);
+		ltCal.set(Calendar.MINUTE, 59);
+		ltCal.set(Calendar.SECOND, 59);
+		ltCal.set(Calendar.MILLISECOND, 990);
 
-		return gtCal.getTime();
+		return ltCal.getTime();
 	}
 
 	public static int getLastDayOfWeek(Calendar cal) {
@@ -205,17 +216,6 @@ public class CalendarUtil {
 		}
 
 		return Calendar.FRIDAY;
-	}
-
-	public static Date getLTDate(Calendar cal) {
-		Calendar ltCal = (Calendar)cal.clone();
-
-		ltCal.set(Calendar.HOUR_OF_DAY, 23);
-		ltCal.set(Calendar.MINUTE, 59);
-		ltCal.set(Calendar.SECOND, 59);
-		ltCal.set(Calendar.MILLISECOND, 990);
-
-		return ltCal.getTime();
 	}
 
 	public static int[] getMonthIds() {

@@ -311,16 +311,6 @@ public class GetFileStrutsActionTest {
 				_addUser(fileEntry, ActionKeys.VIEW)));
 	}
 
-	private void _testGetFileByIdWithoutViewAndDownloadPermission()
-		throws Exception {
-
-		FileEntry fileEntry = _addFileEntry();
-
-		_assertUnauthorized(
-			_getMockHttpServletResponse(
-				_getFileEntryIdParameters(fileEntry), _addUser(fileEntry)));
-	}
-
 	private void _testGetFileByIdWithViewAndDownloadPermission()
 		throws Exception {
 
@@ -330,6 +320,16 @@ public class GetFileStrutsActionTest {
 			_getMockHttpServletResponse(
 				_getFileEntryIdParameters(fileEntry),
 				_addUser(fileEntry, ActionKeys.DOWNLOAD, ActionKeys.VIEW)));
+	}
+
+	private void _testGetFileByIdWithoutViewAndDownloadPermission()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry();
+
+		_assertUnauthorized(
+			_getMockHttpServletResponse(
+				_getFileEntryIdParameters(fileEntry), _addUser(fileEntry)));
 	}
 
 	private void _testGetFileByNameWithOnlyViewPermission() throws Exception {

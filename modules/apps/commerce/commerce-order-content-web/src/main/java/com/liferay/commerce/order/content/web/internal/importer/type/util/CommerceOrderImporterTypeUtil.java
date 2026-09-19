@@ -43,6 +43,27 @@ import org.apache.commons.csv.CSVFormat;
  */
 public class CommerceOrderImporterTypeUtil {
 
+	public static CSVFormat getCSVFormat(
+		CommerceOrderImporterTypeConfiguration
+			commerceOrderImporterTypeConfiguration) {
+
+		CSVFormat csvFormat = CSVFormat.DEFAULT;
+
+		String csvSeparator =
+			commerceOrderImporterTypeConfiguration.csvSeparator();
+
+		if (StringPool.SEMICOLON.equals(csvSeparator)) {
+			csvFormat = csvFormat.withDelimiter(CharPool.SEMICOLON);
+		}
+
+		csvFormat = csvFormat.withFirstRecordAsHeader();
+		csvFormat = csvFormat.withIgnoreEmptyLines();
+		csvFormat = csvFormat.withIgnoreSurroundingSpaces();
+		csvFormat = csvFormat.withNullString(StringPool.BLANK);
+
+		return csvFormat;
+	}
+
 	public static List<CommerceOrderImporterItem> getCommerceOrderImporterItems(
 			CommerceContextFactory commerceContextFactory,
 			CommerceOrder commerceOrder,
@@ -161,27 +182,6 @@ public class CommerceOrderImporterTypeUtil {
 			CommerceOrderThreadLocal.setSkipValidateAccountLimit(
 				skipValidateAccountLimit);
 		}
-	}
-
-	public static CSVFormat getCSVFormat(
-		CommerceOrderImporterTypeConfiguration
-			commerceOrderImporterTypeConfiguration) {
-
-		CSVFormat csvFormat = CSVFormat.DEFAULT;
-
-		String csvSeparator =
-			commerceOrderImporterTypeConfiguration.csvSeparator();
-
-		if (StringPool.SEMICOLON.equals(csvSeparator)) {
-			csvFormat = csvFormat.withDelimiter(CharPool.SEMICOLON);
-		}
-
-		csvFormat = csvFormat.withFirstRecordAsHeader();
-		csvFormat = csvFormat.withIgnoreEmptyLines();
-		csvFormat = csvFormat.withIgnoreSurroundingSpaces();
-		csvFormat = csvFormat.withNullString(StringPool.BLANK);
-
-		return csvFormat;
 	}
 
 	private static void _addPreviousCommerceOrderItems(

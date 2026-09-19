@@ -36,15 +36,15 @@ public interface HighlightBuilder {
 
 	public HighlightBuilder forceSource(Boolean forceSource);
 
-	public HighlightBuilder fragmenter(String fragmenter);
-
 	public HighlightBuilder fragmentSize(Integer fragmentSize);
 
-	public HighlightBuilder highlighterType(String highlighterType);
+	public HighlightBuilder fragmenter(String fragmenter);
 
 	public HighlightBuilder highlightFilter(Boolean highlightFilter);
 
 	public HighlightBuilder highlightQuery(Query highlightQuery);
+
+	public HighlightBuilder highlighterType(String highlighterType);
 
 	public HighlightBuilder noMatchSize(Integer noMatchSize);
 

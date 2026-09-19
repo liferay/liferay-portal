@@ -307,6 +307,24 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 		return _toFragment(fragmentEntry);
 	}
 
+	private FragmentVersion _getFragmentVersion(
+		Fragment fragment, FragmentVersion.Status status) {
+
+		FragmentVersion[] fragmentVersions = fragment.getFragmentVersions();
+
+		if (fragmentVersions == null) {
+			return null;
+		}
+
+		for (FragmentVersion fragmentVersion : fragmentVersions) {
+			if (status == fragmentVersion.getStatus()) {
+				return fragmentVersion;
+			}
+		}
+
+		return null;
+	}
+
 	private Page<Fragment> _getFragmentsPage(
 			Filter filter, long fragmentCollectionId, long groupId,
 			Pagination pagination)
@@ -339,24 +357,6 @@ public class FragmentResourceImpl extends BaseFragmentResourceImpl {
 
 				return _toFragment(fragmentEntry);
 			});
-	}
-
-	private FragmentVersion _getFragmentVersion(
-		Fragment fragment, FragmentVersion.Status status) {
-
-		FragmentVersion[] fragmentVersions = fragment.getFragmentVersions();
-
-		if (fragmentVersions == null) {
-			return null;
-		}
-
-		for (FragmentVersion fragmentVersion : fragmentVersions) {
-			if (status == fragmentVersion.getStatus()) {
-				return fragmentVersion;
-			}
-		}
-
-		return null;
 	}
 
 	private FragmentCollection _getOrAddFragmentCollection(

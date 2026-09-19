@@ -339,22 +339,6 @@ public class KBArticleLocalServiceTest {
 	}
 
 	@Test
-	public void testAddKBArticlesMarkdownWithNoWorkflow() throws Exception {
-		updateWorkflowDefinitionForKBArticle("");
-
-		importMarkdownArticles();
-	}
-
-	@Test
-	public void testAddKBArticlesMarkdownWithSingleApproverWorkflow()
-		throws Exception {
-
-		updateWorkflowDefinitionForKBArticle("Single Approver@1");
-
-		importMarkdownArticles();
-	}
-
-	@Test
 	public void testAddKBArticleUpdatesExpirationReviewDate() throws Exception {
 		_serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
@@ -645,28 +629,6 @@ public class KBArticleLocalServiceTest {
 	}
 
 	@Test
-	public void testAddKBArticleWithoutExternalReferenceCode()
-		throws Exception {
-
-		KBArticle kbArticle1 = _kbArticleLocalService.addKBArticle(
-			null, _user.getUserId(), _kbFolderClassNameId,
-			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), StringUtil.randomString(), null,
-			StringPool.BLANK, new Date(), null, null, null, _serviceContext);
-
-		String externalReferenceCode = kbArticle1.getExternalReferenceCode();
-
-		Assert.assertEquals(externalReferenceCode, kbArticle1.getUuid());
-
-		KBArticle kbArticle2 =
-			_kbArticleLocalService.getLatestKBArticleByExternalReferenceCode(
-				_group.getGroupId(), externalReferenceCode);
-
-		Assert.assertEquals(kbArticle1, kbArticle2);
-	}
-
-	@Test
 	public void testAddKBArticleWithValidParentKBArticle() throws Exception {
 		KBArticle kbArticle = _addKbArticle();
 
@@ -704,6 +666,44 @@ public class KBArticleLocalServiceTest {
 			StringUtil.randomString(), StringUtil.randomString(),
 			StringUtil.randomString(), StringUtil.randomString(), null,
 			sourceURL, new Date(), null, null, null, _serviceContext);
+	}
+
+	@Test
+	public void testAddKBArticleWithoutExternalReferenceCode()
+		throws Exception {
+
+		KBArticle kbArticle1 = _kbArticleLocalService.addKBArticle(
+			null, _user.getUserId(), _kbFolderClassNameId,
+			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(), null,
+			StringPool.BLANK, new Date(), null, null, null, _serviceContext);
+
+		String externalReferenceCode = kbArticle1.getExternalReferenceCode();
+
+		Assert.assertEquals(externalReferenceCode, kbArticle1.getUuid());
+
+		KBArticle kbArticle2 =
+			_kbArticleLocalService.getLatestKBArticleByExternalReferenceCode(
+				_group.getGroupId(), externalReferenceCode);
+
+		Assert.assertEquals(kbArticle1, kbArticle2);
+	}
+
+	@Test
+	public void testAddKBArticlesMarkdownWithNoWorkflow() throws Exception {
+		updateWorkflowDefinitionForKBArticle("");
+
+		importMarkdownArticles();
+	}
+
+	@Test
+	public void testAddKBArticlesMarkdownWithSingleApproverWorkflow()
+		throws Exception {
+
+		updateWorkflowDefinitionForKBArticle("Single Approver@1");
+
+		importMarkdownArticles();
 	}
 
 	@Test
@@ -1889,22 +1889,6 @@ public class KBArticleLocalServiceTest {
 
 	@FeatureFlag("LPD-11003")
 	@Test
-	public void testUpdateKBArticleWithoutPreviousLock() throws Exception {
-		KBArticle kbArticle = _addKbArticle();
-
-		_kbArticleLocalService.updateKBArticle(
-			_user.getUserId(), kbArticle.getResourcePrimKey(),
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), null, null, new Date(), null, null, null,
-			null, _serviceContext);
-
-		Assert.assertFalse(
-			_kbArticleLocalService.hasKBArticleLock(
-				_user.getUserId(), kbArticle.getResourcePrimKey()));
-	}
-
-	@FeatureFlag("LPD-11003")
-	@Test
 	public void testUpdateKBArticleWithPreviousLockByCurrentUser()
 		throws Exception {
 
@@ -1925,6 +1909,22 @@ public class KBArticleLocalServiceTest {
 
 		_kbArticleLocalService.unlockKBArticle(
 			_user.getUserId(), kbArticle.getResourcePrimKey());
+	}
+
+	@FeatureFlag("LPD-11003")
+	@Test
+	public void testUpdateKBArticleWithoutPreviousLock() throws Exception {
+		KBArticle kbArticle = _addKbArticle();
+
+		_kbArticleLocalService.updateKBArticle(
+			_user.getUserId(), kbArticle.getResourcePrimKey(),
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), null, null, new Date(), null, null, null,
+			null, _serviceContext);
+
+		Assert.assertFalse(
+			_kbArticleLocalService.hasKBArticleLock(
+				_user.getUserId(), kbArticle.getResourcePrimKey()));
 	}
 
 	protected void importMarkdownArticles() throws PortalException {

@@ -124,7 +124,6 @@ public class SearchDisplayContextTest {
 	protected RenderRequest renderRequest = Mockito.mock(RenderRequest.class);
 	protected SearchContextFactory searchContextFactory = Mockito.mock(
 		SearchContextFactory.class);
-	protected Searcher searcher = Mockito.mock(Searcher.class);
 	protected SearchRequestBuilderFactory searchRequestBuilderFactory =
 		new SearchRequestBuilderFactoryImpl();
 	protected SearchResponse searchResponse = Mockito.mock(
@@ -133,6 +132,7 @@ public class SearchDisplayContextTest {
 		SearchResponseBuilder.class);
 	protected SearchResponseBuilderFactory searchResponseBuilderFactory =
 		Mockito.mock(SearchResponseBuilderFactory.class);
+	protected Searcher searcher = Mockito.mock(Searcher.class);
 	protected ThemeDisplay themeDisplay;
 
 	private void _assertSearchKeywords(
@@ -325,6 +325,22 @@ public class SearchDisplayContextTest {
 		);
 	}
 
+	private void _setUpSearchResponseBuilderFactory() {
+		Mockito.doReturn(
+			searchResponseBuilder
+		).when(
+			searchResponseBuilderFactory
+		).builder(
+			Mockito.any()
+		);
+
+		Mockito.doReturn(
+			searchResponse
+		).when(
+			searchResponseBuilder
+		).build();
+	}
+
 	private void _setUpSearcher() throws Exception {
 		Mockito.doReturn(
 			Mockito.mock(Hits.class)
@@ -341,22 +357,6 @@ public class SearchDisplayContextTest {
 		).search(
 			Mockito.any()
 		);
-	}
-
-	private void _setUpSearchResponseBuilderFactory() {
-		Mockito.doReturn(
-			searchResponseBuilder
-		).when(
-			searchResponseBuilderFactory
-		).builder(
-			Mockito.any()
-		);
-
-		Mockito.doReturn(
-			searchResponse
-		).when(
-			searchResponseBuilder
-		).build();
 	}
 
 	private static final MockedStatic<FrameworkUtil>

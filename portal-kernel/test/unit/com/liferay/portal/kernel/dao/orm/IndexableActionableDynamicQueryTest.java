@@ -109,10 +109,10 @@ public class IndexableActionableDynamicQueryTest {
 	protected Document document1 = Mockito.mock(Document.class);
 	protected Document document2 = Mockito.mock(Document.class);
 	protected Document document3 = Mockito.mock(Document.class);
-	protected IndexableActionableDynamicQuery indexableActionableDynamicQuery =
-		new IndexableActionableDynamicQuery();
 	protected IndexWriterHelper indexWriterHelper = Mockito.mock(
 		IndexWriterHelper.class);
+	protected IndexableActionableDynamicQuery indexableActionableDynamicQuery =
+		new IndexableActionableDynamicQuery();
 
 	private void _addDocument(Document document) throws Exception {
 		Method method = IndexableActionableDynamicQuery.class.getDeclaredMethod(
@@ -127,10 +127,10 @@ public class IndexableActionableDynamicQueryTest {
 		SystemBundleUtil.getBundleContext();
 
 	private final List<Document> _documents = new ArrayList<>();
-	private ServiceRegistration<IndexerRegistry>
-		_indexerRegistryServiceRegistration;
 	private ServiceRegistration<IndexWriterHelper>
 		_indexWriterHelperServiceRegistration;
+	private ServiceRegistration<IndexerRegistry>
+		_indexerRegistryServiceRegistration;
 	private ServiceRegistration<PortalExecutorManager>
 		_portalExecutorManagerServiceRegistration;
 	private final List<Document> _updatedDocuments = new ArrayList<>();

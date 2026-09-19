@@ -209,13 +209,6 @@ public abstract class BaseTestClass implements TestClass {
 	}
 
 	@Override
-	public int hashCode() {
-		JSONObject jsonObject = getJSONObject();
-
-		return jsonObject.hashCode();
-	}
-
-	@Override
 	public boolean hasTestClassMethods() {
 		List<TestClassMethod> testClassMethods = getTestClassMethods();
 
@@ -224,6 +217,13 @@ public abstract class BaseTestClass implements TestClass {
 		}
 
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		JSONObject jsonObject = getJSONObject();
+
+		return jsonObject.hashCode();
 	}
 
 	@Override

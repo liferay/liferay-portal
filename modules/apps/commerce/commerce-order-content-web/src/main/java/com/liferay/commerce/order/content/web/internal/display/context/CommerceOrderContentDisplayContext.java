@@ -238,6 +238,37 @@ public class CommerceOrderContentDisplayContext {
 			QueryUtil.ALL_POS);
 	}
 
+	public String getCSVTemplateDownloadURL() throws Exception {
+		FileEntry fileEntry =
+			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
+				_cpRequestHelper.getScopeGroupId(), "CSV_TEMPLATE_ERC");
+
+		if (fileEntry == null) {
+			Class<?> clazz = getClass();
+
+			InputStream inputStream = clazz.getResourceAsStream(
+				"dependencies/csv_template.csv");
+
+			File file = FileUtil.createTempFile(inputStream);
+
+			fileEntry = _dlAppLocalService.addFileEntry(
+				"CSV_TEMPLATE_ERC", _cpRequestHelper.getUserId(),
+				_cpRequestHelper.getScopeGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "csv_template.csv",
+				MimeTypesUtil.getContentType(file), "csv_template",
+				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, file,
+				null, null, null,
+				ServiceContextFactory.getInstance(
+					_cpRequestHelper.getRequest()));
+
+			FileUtil.delete(file);
+		}
+
+		return DLURLHelperUtil.getDownloadURL(
+			fileEntry, fileEntry.getFileVersion(),
+			_cpRequestHelper.getThemeDisplay(), StringPool.BLANK, false, true);
+	}
+
 	public long getCommerceAccountId() {
 		long accountEntryId = 0;
 
@@ -463,37 +494,6 @@ public class CommerceOrderContentDisplayContext {
 
 		return "/o/headless-commerce-delivery-order/v1.0/placed-order-items/" +
 			commerceOrderItemId + "/placed-order-item-shipments";
-	}
-
-	public String getCSVTemplateDownloadURL() throws Exception {
-		FileEntry fileEntry =
-			_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
-				_cpRequestHelper.getScopeGroupId(), "CSV_TEMPLATE_ERC");
-
-		if (fileEntry == null) {
-			Class<?> clazz = getClass();
-
-			InputStream inputStream = clazz.getResourceAsStream(
-				"dependencies/csv_template.csv");
-
-			File file = FileUtil.createTempFile(inputStream);
-
-			fileEntry = _dlAppLocalService.addFileEntry(
-				"CSV_TEMPLATE_ERC", _cpRequestHelper.getUserId(),
-				_cpRequestHelper.getScopeGroupId(),
-				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "csv_template.csv",
-				MimeTypesUtil.getContentType(file), "csv_template",
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, file,
-				null, null, null,
-				ServiceContextFactory.getInstance(
-					_cpRequestHelper.getRequest()));
-
-			FileUtil.delete(file);
-		}
-
-		return DLURLHelperUtil.getDownloadURL(
-			fileEntry, fileEntry.getFileVersion(),
-			_cpRequestHelper.getThemeDisplay(), StringPool.BLANK, false, true);
 	}
 
 	public String getDescriptiveAddress(CommerceAddress commerceAddress) {

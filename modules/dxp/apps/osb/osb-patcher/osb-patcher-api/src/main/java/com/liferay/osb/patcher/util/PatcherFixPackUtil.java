@@ -230,6 +230,15 @@ public class PatcherFixPackUtil {
 		return StringUtil.merge(patcherFixPackRequirements);
 	}
 
+	public static List<PatcherFixPack> getPatcherFixPackVersions(
+		PatcherFixPack patcherFixPack, boolean older) {
+
+		return PatcherFixPackLocalServiceUtil.getPatcherFixPacks(
+			patcherFixPack.getPatcherFixComponentId(),
+			patcherFixPack.getPatcherProjectVersionId(),
+			patcherFixPack.getVersion(), older);
+	}
+
 	public static List<PatcherFixPack> getPatcherFixPacks(
 			List<String> patcherFixPackNames, long patcherProjectVersionId)
 		throws Exception {
@@ -242,15 +251,6 @@ public class PatcherFixPackUtil {
 		}
 
 		return patcherFixPacks;
-	}
-
-	public static List<PatcherFixPack> getPatcherFixPackVersions(
-		PatcherFixPack patcherFixPack, boolean older) {
-
-		return PatcherFixPackLocalServiceUtil.getPatcherFixPacks(
-			patcherFixPack.getPatcherFixComponentId(),
-			patcherFixPack.getPatcherProjectVersionId(),
-			patcherFixPack.getVersion(), older);
 	}
 
 	public static Set<PatcherFixPack> getPrerequisitePatcherFixPacks(

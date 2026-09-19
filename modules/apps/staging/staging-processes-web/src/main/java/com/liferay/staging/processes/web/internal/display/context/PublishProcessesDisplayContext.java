@@ -215,16 +215,16 @@ public class PublishProcessesDisplayContext {
 		return ScopeUtil.getAPIURL(_liveGroup, "/scheduled-publish-processes");
 	}
 
-	private String _getTabs1() {
-		return ParamUtil.getString(_httpServletRequest, "tabs1", "processes");
-	}
-
 	private String _getTabURL(String tabs1) {
 		return PortletURLBuilder.createRenderURL(
 			_liferayPortletResponse
 		).setTabs1(
 			tabs1
 		).buildString();
+	}
+
+	private String _getTabs1() {
+		return ParamUtil.getString(_httpServletRequest, "tabs1", "processes");
 	}
 
 	private final HttpServletRequest _httpServletRequest;

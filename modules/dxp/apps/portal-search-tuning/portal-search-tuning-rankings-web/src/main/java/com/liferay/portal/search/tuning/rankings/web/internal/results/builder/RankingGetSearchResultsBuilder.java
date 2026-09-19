@@ -145,8 +145,8 @@ public class RankingGetSearchResultsBuilder {
 	private final ResourceActions _resourceActions;
 	private final ResourceRequest _resourceRequest;
 	private final ResourceResponse _resourceResponse;
-	private final Searcher _searcher;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private final Searcher _searcher;
 	private int _size;
 
 }

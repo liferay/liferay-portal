@@ -11531,23 +11531,6 @@ public class DefaultObjectEntryManagerImplTest
 		AssertUtils.assertEquals(expectedStatusCode, status.getCode());
 	}
 
-	private void _assertObjectEntryVersions(
-		int expectedSize, int expectedStatus, ObjectEntry objectEntry) {
-
-		List<ObjectEntryVersion> objectEntryVersions =
-			_objectEntryVersionLocalService.getObjectEntryVersions(
-				objectEntry.getId());
-
-		Assert.assertEquals(
-			objectEntryVersions.toString(), expectedSize,
-			objectEntryVersions.size());
-
-		ListUtil.isNotEmptyForEach(
-			objectEntryVersions,
-			objectEntryVersion -> Assert.assertEquals(
-				expectedStatus, objectEntryVersion.getStatus()));
-	}
-
 	private void _assertObjectEntryVersionUser(
 			User creatorUser, long objectEntryId, User user)
 		throws Exception {
@@ -11565,6 +11548,23 @@ public class DefaultObjectEntryManagerImplTest
 		Assert.assertEquals(user.getUserId(), objectEntryVersion.getUserId());
 		Assert.assertEquals(
 			user.getFullName(), objectEntryVersion.getUserName());
+	}
+
+	private void _assertObjectEntryVersions(
+		int expectedSize, int expectedStatus, ObjectEntry objectEntry) {
+
+		List<ObjectEntryVersion> objectEntryVersions =
+			_objectEntryVersionLocalService.getObjectEntryVersions(
+				objectEntry.getId());
+
+		Assert.assertEquals(
+			objectEntryVersions.toString(), expectedSize,
+			objectEntryVersions.size());
+
+		ListUtil.isNotEmptyForEach(
+			objectEntryVersions,
+			objectEntryVersion -> Assert.assertEquals(
+				expectedStatus, objectEntryVersion.getStatus()));
 	}
 
 	private void _assertObjectEntryWithPicklistObjectField(
@@ -13995,8 +13995,8 @@ public class DefaultObjectEntryManagerImplTest
 
 	private static String _originalName;
 	private static PermissionChecker _originalPermissionChecker;
-	private static DateFormat _simpleDateFormat;
 	private static DTOConverterContext _simpleDTOConverterContext;
+	private static DateFormat _simpleDateFormat;
 	private static ObjectDefinition _siteObjectDefinitionA;
 	private static ObjectDefinition _siteObjectDefinitionAA;
 	private static ObjectDefinition _siteObjectDefinitionB;
@@ -14154,10 +14154,10 @@ public class DefaultObjectEntryManagerImplTest
 	private ObjectDefinition _rootObjectDefinition;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Inject
 	private SubscriptionLocalService _subscriptionLocalService;

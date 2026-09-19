@@ -351,72 +351,6 @@ public class TransactionalPortalCacheUtil {
 			ArrayList::new, false);
 	private static volatile Boolean _transactionalCacheEnabled;
 
-	private static class MarkerMVCCUncommittedBuffer
-		extends MVCCUncommittedBuffer {
-
-		@Override
-		public void commit(boolean readOnly) {
-			if (skipCommit(readOnly)) {
-				return;
-			}
-
-			if (readOnly) {
-				if (_markers.get(_portalCacheName) == _marker) {
-					doCommit();
-				}
-			}
-			else {
-				if (_markers.remove(_portalCacheName) != _marker) {
-					commitByRemove = true;
-				}
-
-				doCommit();
-			}
-		}
-
-		@Override
-		public void put(Serializable key, ValueEntry valueEntry) {
-			ValueEntry oldValueEntry = super._uncommittedMap.put(
-				key, valueEntry);
-
-			if (oldValueEntry != null) {
-				oldValueEntry.merge(valueEntry);
-			}
-		}
-
-		private MarkerMVCCUncommittedBuffer(
-			long companyId, PortalCache<Serializable, Object> portalCache) {
-
-			super(portalCache);
-
-			_portalCacheName =
-				portalCache.getPortalCacheName() + StringPool.UNDERLINE +
-					companyId;
-
-			_marker = _markers.computeIfAbsent(
-				_portalCacheName, key -> new Object());
-		}
-
-		private MarkerMVCCUncommittedBuffer(
-			PortalCache<Serializable, Object> portalCache) {
-
-			super(portalCache);
-
-			_portalCacheName = portalCache.getPortalCacheName();
-
-			_marker = _markers.computeIfAbsent(
-				_portalCacheName, key -> new Object());
-		}
-
-		private static final Map<String, Object> _markers =
-			new ConcurrentReferenceValueHashMap<>(
-				FinalizeManager.WEAK_REFERENCE_FACTORY);
-
-		private final Object _marker;
-		private final String _portalCacheName;
-
-	}
-
 	private static class MVCCUncommittedBuffer implements UncommittedBuffer {
 
 		public void commit(boolean readOnly) {
@@ -533,6 +467,72 @@ public class TransactionalPortalCacheUtil {
 		private boolean _skipReplicator = true;
 		private final Map<Serializable, ValueEntry> _uncommittedMap =
 			new HashMap<>();
+
+	}
+
+	private static class MarkerMVCCUncommittedBuffer
+		extends MVCCUncommittedBuffer {
+
+		@Override
+		public void commit(boolean readOnly) {
+			if (skipCommit(readOnly)) {
+				return;
+			}
+
+			if (readOnly) {
+				if (_markers.get(_portalCacheName) == _marker) {
+					doCommit();
+				}
+			}
+			else {
+				if (_markers.remove(_portalCacheName) != _marker) {
+					commitByRemove = true;
+				}
+
+				doCommit();
+			}
+		}
+
+		@Override
+		public void put(Serializable key, ValueEntry valueEntry) {
+			ValueEntry oldValueEntry = super._uncommittedMap.put(
+				key, valueEntry);
+
+			if (oldValueEntry != null) {
+				oldValueEntry.merge(valueEntry);
+			}
+		}
+
+		private MarkerMVCCUncommittedBuffer(
+			long companyId, PortalCache<Serializable, Object> portalCache) {
+
+			super(portalCache);
+
+			_portalCacheName =
+				portalCache.getPortalCacheName() + StringPool.UNDERLINE +
+					companyId;
+
+			_marker = _markers.computeIfAbsent(
+				_portalCacheName, key -> new Object());
+		}
+
+		private MarkerMVCCUncommittedBuffer(
+			PortalCache<Serializable, Object> portalCache) {
+
+			super(portalCache);
+
+			_portalCacheName = portalCache.getPortalCacheName();
+
+			_marker = _markers.computeIfAbsent(
+				_portalCacheName, key -> new Object());
+		}
+
+		private static final Map<String, Object> _markers =
+			new ConcurrentReferenceValueHashMap<>(
+				FinalizeManager.WEAK_REFERENCE_FACTORY);
+
+		private final Object _marker;
+		private final String _portalCacheName;
 
 	}
 

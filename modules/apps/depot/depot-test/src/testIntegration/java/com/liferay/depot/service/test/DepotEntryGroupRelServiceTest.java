@@ -103,6 +103,47 @@ public class DepotEntryGroupRelServiceTest {
 	}
 
 	@Test
+	public void testGetDepotEntryGroupRelsWithPermissions() throws Exception {
+		Group group = _groupLocalService.addGroup(
+			StringPool.BLANK, TestPropsValues.getUserId(), 0, null, 0,
+			GroupConstants.DEFAULT_LIVE_GROUP_ID,
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			GroupConstants.TYPE_SITE_OPEN, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
+			FriendlyURLNormalizerUtil.normalize(RandomTestUtil.randomString()),
+			true, false, true, ServiceContextTestUtil.getServiceContext());
+
+		DepotEntry depotEntry = _addDepotEntry();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), group.getGroupId());
+
+		try {
+			List<DepotEntryGroupRel> depotEntryGroupRels =
+				_depotEntryGroupRelService.getDepotEntryGroupRels(
+					group.getGroupId(), DepotConstants.TYPE_ASSET_LIBRARY, 0,
+					20);
+
+			Assert.assertEquals(
+				depotEntryGroupRels.toString(), 1, depotEntryGroupRels.size());
+
+			DepotEntryGroupRel depotEntryGroupRel = depotEntryGroupRels.get(0);
+
+			Assert.assertEquals(
+				depotEntry.getDepotEntryId(),
+				depotEntryGroupRel.getDepotEntryId());
+			Assert.assertEquals(
+				group.getGroupId(), depotEntryGroupRel.getToGroupId());
+		}
+		finally {
+			_groupLocalService.deleteGroup(group);
+		}
+	}
+
+	@Test
 	public void testGetDepotEntryGroupRelsWithoutPermissions()
 		throws Exception {
 
@@ -147,47 +188,6 @@ public class DepotEntryGroupRelServiceTest {
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 			_groupLocalService.deleteGroup(group);
 			_userLocalService.deleteUser(user);
-		}
-	}
-
-	@Test
-	public void testGetDepotEntryGroupRelsWithPermissions() throws Exception {
-		Group group = _groupLocalService.addGroup(
-			StringPool.BLANK, TestPropsValues.getUserId(), 0, null, 0,
-			GroupConstants.DEFAULT_LIVE_GROUP_ID,
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			GroupConstants.TYPE_SITE_OPEN, null, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
-			FriendlyURLNormalizerUtil.normalize(RandomTestUtil.randomString()),
-			true, false, true, ServiceContextTestUtil.getServiceContext());
-
-		DepotEntry depotEntry = _addDepotEntry();
-
-		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-			depotEntry.getDepotEntryId(), group.getGroupId());
-
-		try {
-			List<DepotEntryGroupRel> depotEntryGroupRels =
-				_depotEntryGroupRelService.getDepotEntryGroupRels(
-					group.getGroupId(), DepotConstants.TYPE_ASSET_LIBRARY, 0,
-					20);
-
-			Assert.assertEquals(
-				depotEntryGroupRels.toString(), 1, depotEntryGroupRels.size());
-
-			DepotEntryGroupRel depotEntryGroupRel = depotEntryGroupRels.get(0);
-
-			Assert.assertEquals(
-				depotEntry.getDepotEntryId(),
-				depotEntryGroupRel.getDepotEntryId());
-			Assert.assertEquals(
-				group.getGroupId(), depotEntryGroupRel.getToGroupId());
-		}
-		finally {
-			_groupLocalService.deleteGroup(group);
 		}
 	}
 

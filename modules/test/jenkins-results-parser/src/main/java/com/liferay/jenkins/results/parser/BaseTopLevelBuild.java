@@ -483,11 +483,6 @@ public abstract class BaseTopLevelBuild
 	}
 
 	@Override
-	public synchronized List<URL> getTestrayAttachmentURLs() {
-		return _testrayAttachmentURLs;
-	}
-
-	@Override
 	public JSONObject getTestReportJSONObject(boolean cache) {
 		return null;
 	}
@@ -501,6 +496,11 @@ public abstract class BaseTopLevelBuild
 		}
 
 		return testSuiteName;
+	}
+
+	@Override
+	public synchronized List<URL> getTestrayAttachmentURLs() {
+		return _testrayAttachmentURLs;
 	}
 
 	public TimelineData getTimelineData() {
@@ -2373,18 +2373,6 @@ public abstract class BaseTopLevelBuild
 		addDownstreamBuilds(urlAxisNames);
 	}
 
-	private List<Build> _getCachedDownstreamBuilds() {
-		List<Build> cachedDownstreamBuilds = new ArrayList<>();
-
-		for (Build downstreamBuild : getDownstreamBuilds()) {
-			if (downstreamBuild.isBuildCached()) {
-				cachedDownstreamBuilds.add(downstreamBuild);
-			}
-		}
-
-		return cachedDownstreamBuilds;
-	}
-
 	private String _getCISystemStatusURL() {
 		try {
 			String masterHostname = JenkinsResultsParserUtil.getBuildProperty(
@@ -2405,6 +2393,18 @@ public abstract class BaseTopLevelBuild
 		}
 
 		return _URL_CI_SYSTEM_STATUS;
+	}
+
+	private List<Build> _getCachedDownstreamBuilds() {
+		List<Build> cachedDownstreamBuilds = new ArrayList<>();
+
+		for (Build downstreamBuild : getDownstreamBuilds()) {
+			if (downstreamBuild.isBuildCached()) {
+				cachedDownstreamBuilds.add(downstreamBuild);
+			}
+		}
+
+		return cachedDownstreamBuilds;
 	}
 
 	private Map<Map<String, String>, Integer> _getSlaveUsageByLabels() {

@@ -231,6 +231,14 @@ public class DDMFormContextToDDMFormLayout
 			_getDDMFormLayoutRows(jsonArray));
 	}
 
+	private void _setDDMFormLayoutPageTitle(
+		JSONObject jsonObject, Set<Locale> availableLocales,
+		Locale defaultLocale, DDMFormLayoutPage ddmFormLayoutPage) {
+
+		ddmFormLayoutPage.setTitle(
+			getLocalizedValue(jsonObject, availableLocales, defaultLocale));
+	}
+
 	private void _setDDMFormLayoutPages(
 		JSONArray jsonArray, DDMFormLayout ddmFormLayout) {
 
@@ -239,14 +247,6 @@ public class DDMFormContextToDDMFormLayout
 			ddmFormLayout.getDefaultLocale());
 
 		ddmFormLayout.setDDMFormLayoutPages(ddmFormLayoutPages);
-	}
-
-	private void _setDDMFormLayoutPageTitle(
-		JSONObject jsonObject, Set<Locale> availableLocales,
-		Locale defaultLocale, DDMFormLayoutPage ddmFormLayoutPage) {
-
-		ddmFormLayoutPage.setTitle(
-			getLocalizedValue(jsonObject, availableLocales, defaultLocale));
 	}
 
 	private void _setDDMFormLayoutPaginationMode(

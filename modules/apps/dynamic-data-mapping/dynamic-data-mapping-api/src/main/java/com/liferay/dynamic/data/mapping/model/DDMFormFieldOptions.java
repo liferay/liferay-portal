@@ -108,18 +108,6 @@ public class DDMFormFieldOptions implements Serializable {
 		return _optionsReferences.get(optionValue);
 	}
 
-	public Map<String, LocalizedValue> getOptions() {
-		return _options;
-	}
-
-	public Map<String, String> getOptionsReferences() {
-		return _optionsReferences;
-	}
-
-	public Set<String> getOptionsValues() {
-		return _options.keySet();
-	}
-
 	public String getOptionValue(String optionReference) {
 		for (Map.Entry<String, String> optionsReference :
 				_optionsReferences.entrySet()) {
@@ -132,6 +120,18 @@ public class DDMFormFieldOptions implements Serializable {
 		}
 
 		return null;
+	}
+
+	public Map<String, LocalizedValue> getOptions() {
+		return _options;
+	}
+
+	public Map<String, String> getOptionsReferences() {
+		return _optionsReferences;
+	}
+
+	public Set<String> getOptionsValues() {
+		return _options.keySet();
 	}
 
 	@Override

@@ -106,12 +106,6 @@ public class DocumentsAssert {
 			_getSortedString(actualValues));
 	}
 
-	private static List<Object> _getFieldValues(
-		String fieldName, com.liferay.portal.kernel.search.Document document) {
-
-		return Arrays.asList((Object[])document.getValues(fieldName));
-	}
-
 	private static String _getFieldValueString(List<Object> fieldValues) {
 		if (fieldValues.isEmpty()) {
 			return StringPool.BLANK;
@@ -141,6 +135,12 @@ public class DocumentsAssert {
 		return TransformUtil.transformToList(
 			documents,
 			document -> _getFieldValueString(document.getValues(fieldName)));
+	}
+
+	private static List<Object> _getFieldValues(
+		String fieldName, com.liferay.portal.kernel.search.Document document) {
+
+		return Arrays.asList((Object[])document.getValues(fieldName));
 	}
 
 	private static String _getMessage(

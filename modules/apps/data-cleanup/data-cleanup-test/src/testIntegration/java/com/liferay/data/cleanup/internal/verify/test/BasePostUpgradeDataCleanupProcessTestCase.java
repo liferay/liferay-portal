@@ -71,10 +71,10 @@ public abstract class BasePostUpgradeDataCleanupProcessTestCase {
 		DataAccess.cleanUp(connection);
 	}
 
-	protected abstract Object[] getPostUpgradeDataCleanupProcessArguments();
-
 	protected abstract Class<?>[]
 		getPostUpgradeDataCleanupProcessArgumentTypes();
+
+	protected abstract Object[] getPostUpgradeDataCleanupProcessArguments();
 
 	protected abstract String getPostUpgradeDataCleanupProcessClassName();
 

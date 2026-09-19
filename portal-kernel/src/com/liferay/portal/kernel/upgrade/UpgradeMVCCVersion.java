@@ -112,6 +112,15 @@ public class UpgradeMVCCVersion extends UpgradeProcess {
 		}
 	}
 
+	protected void upgradeMVCCVersion(
+			DatabaseMetaData databaseMetaData, Element classElement)
+		throws Exception {
+
+		String tableName = classElement.attributeValue("table");
+
+		upgradeMVCCVersion(databaseMetaData, tableName);
+	}
+
 	protected void upgradeModuleTableMVCCVersions() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
@@ -122,15 +131,6 @@ public class UpgradeMVCCVersion extends UpgradeProcess {
 				upgradeMVCCVersion(databaseMetaData, moduleTableName);
 			}
 		}
-	}
-
-	protected void upgradeMVCCVersion(
-			DatabaseMetaData databaseMetaData, Element classElement)
-		throws Exception {
-
-		String tableName = classElement.attributeValue("table");
-
-		upgradeMVCCVersion(databaseMetaData, tableName);
 	}
 
 }

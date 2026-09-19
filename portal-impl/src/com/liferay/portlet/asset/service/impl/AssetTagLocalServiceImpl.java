@@ -296,23 +296,6 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns the asset tags in the groups.
-	 *
-	 * @param  groupIds the primary keys of the groups
-	 * @return the asset tags in the groups
-	 */
-	@Override
-	public List<AssetTag> getGroupsTags(long[] groupIds) {
-		List<AssetTag> groupsTags = new ArrayList<>();
-
-		for (long groupId : groupIds) {
-			groupsTags.addAll(getGroupTags(groupId));
-		}
-
-		return groupsTags;
-	}
-
-	/**
 	 * Returns the asset tags in the group.
 	 *
 	 * @param  groupId the primary key of the group
@@ -364,6 +347,23 @@ public class AssetTagLocalServiceImpl extends AssetTagLocalServiceBaseImpl {
 	@Override
 	public int getGroupTagsCount(long groupId) {
 		return assetTagPersistence.countByGroupId(groupId);
+	}
+
+	/**
+	 * Returns the asset tags in the groups.
+	 *
+	 * @param  groupIds the primary keys of the groups
+	 * @return the asset tags in the groups
+	 */
+	@Override
+	public List<AssetTag> getGroupsTags(long[] groupIds) {
+		List<AssetTag> groupsTags = new ArrayList<>();
+
+		for (long groupId : groupIds) {
+			groupsTags.addAll(getGroupTags(groupId));
+		}
+
+		return groupsTags;
 	}
 
 	/**

@@ -244,11 +244,6 @@ public class LiferayFolder
 	}
 
 	@Override
-	public int hashCode() {
-		return _dlFolder.hashCode();
-	}
-
-	@Override
 	public boolean hasInheritableLock() {
 		return _dlFolder.hasInheritableLock();
 	}
@@ -256,6 +251,11 @@ public class LiferayFolder
 	@Override
 	public boolean hasLock() {
 		return _dlFolder.hasLock();
+	}
+
+	@Override
+	public int hashCode() {
+		return _dlFolder.hashCode();
 	}
 
 	@Override

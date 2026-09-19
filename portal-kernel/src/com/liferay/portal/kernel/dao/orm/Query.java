@@ -52,11 +52,11 @@ public interface Query {
 
 	public Query setBoolean(String name, boolean value);
 
-	public Query setCacheable(boolean cacheable);
-
 	public Query setCacheMode(CacheMode cacheMode);
 
 	public Query setCacheRegion(String cacheRegion);
+
+	public Query setCacheable(boolean cacheable);
 
 	public Query setDouble(int pos, double value);
 

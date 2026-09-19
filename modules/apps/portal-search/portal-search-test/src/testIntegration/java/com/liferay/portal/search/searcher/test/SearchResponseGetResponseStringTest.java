@@ -145,9 +145,9 @@ public class SearchResponseGetResponseStringTest {
 	private Dictionary<String, Object> _properties;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 }

@@ -202,15 +202,18 @@ public class ContentDashboardSearchContextBuilderTest {
 	}
 
 	@Test
-	public void testBuildWithCustomDateFilterWithInvalidDates() {
+	public void testBuildWithCustomDateFilterWithInvalidDateType() {
+		DateFormat simpleDateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd");
+
 		HttpServletRequest httpServletRequest =
 			_getHttpServletRequestWithParameters(
 				HashMapBuilder.put(
 					"dateType", RandomTestUtil.randomString()
 				).put(
-					"endDate", RandomTestUtil.randomString()
+					"endDate", simpleDateFormat.format(new Date())
 				).put(
-					"startDate", RandomTestUtil.randomString()
+					"startDate", simpleDateFormat.format(new Date())
 				).build());
 
 		AssetCategoryLocalService assetCategoryLocalService = Mockito.mock(
@@ -243,18 +246,15 @@ public class ContentDashboardSearchContextBuilderTest {
 	}
 
 	@Test
-	public void testBuildWithCustomDateFilterWithInvalidDateType() {
-		DateFormat simpleDateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
-			"yyyy-MM-dd");
-
+	public void testBuildWithCustomDateFilterWithInvalidDates() {
 		HttpServletRequest httpServletRequest =
 			_getHttpServletRequestWithParameters(
 				HashMapBuilder.put(
 					"dateType", RandomTestUtil.randomString()
 				).put(
-					"endDate", simpleDateFormat.format(new Date())
+					"endDate", RandomTestUtil.randomString()
 				).put(
-					"startDate", simpleDateFormat.format(new Date())
+					"startDate", RandomTestUtil.randomString()
 				).build());
 
 		AssetCategoryLocalService assetCategoryLocalService = Mockito.mock(
@@ -415,6 +415,29 @@ public class ContentDashboardSearchContextBuilderTest {
 		return contentDashboardItemFilterProviderRegistry;
 	}
 
+	private HttpServletRequest _getHttpServletRequestWithParameterValues(
+		String parameterName, String... parameterValues) {
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
+		Mockito.when(
+			httpServletRequest.getParameterValues(parameterName)
+		).thenReturn(
+			parameterValues
+		);
+
+		return httpServletRequest;
+	}
+
 	private HttpServletRequest _getHttpServletRequestWithParameters(
 		Map<String, String> parameters) {
 
@@ -436,29 +459,6 @@ public class ContentDashboardSearchContextBuilderTest {
 				entry.getValue()
 			);
 		}
-
-		return httpServletRequest;
-	}
-
-	private HttpServletRequest _getHttpServletRequestWithParameterValues(
-		String parameterName, String... parameterValues) {
-
-		HttpServletRequest httpServletRequest = Mockito.mock(
-			HttpServletRequest.class);
-
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		Mockito.when(
-			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			themeDisplay
-		);
-
-		Mockito.when(
-			httpServletRequest.getParameterValues(parameterName)
-		).thenReturn(
-			parameterValues
-		);
 
 		return httpServletRequest;
 	}

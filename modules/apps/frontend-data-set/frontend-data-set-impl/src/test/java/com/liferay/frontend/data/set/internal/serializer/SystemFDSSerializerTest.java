@@ -96,65 +96,6 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testSerializeAdditionalAPIURLParameters() throws Exception {
-
-		// No parameters
-
-		ServiceTrackerMap
-			<String,
-			 ServiceTrackerCustomizerFactory.ServiceWrapper<FDSAPIURLResolver>>
-				serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-					bundleContext, FDSAPIURLResolver.class,
-					"fds.rest.application.key",
-					ServiceTrackerCustomizerFactory.
-						<FDSAPIURLResolver>serviceWrapper(bundleContext));
-
-		systemFDSSerializer.fdsAPIURLResolverRegistry =
-			new FDSAPIURLResolverRegistryImpl(serviceTrackerMap);
-
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		Mockito.when(
-			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			themeDisplay
-		);
-
-		Mockito.when(
-			themeDisplay.getUser()
-		).thenReturn(
-			Mockito.mock(User.class)
-		);
-
-		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
-
-		Assert.assertNull(
-			systemFDSSerializer.serializeAdditionalAPIURLParameters(
-				FDS_NAMES[0], httpServletRequest));
-
-		_unregisterServices();
-
-		// Parameters
-
-		_registerServices(
-			_registerSystemFDSEntry(
-				SystemFDSEntryFactory.create(
-					FDS_NAMES[0]
-				).withAdditionalURLParameters(
-					API_URL_PARAMETERS
-				)));
-
-		Assert.assertEquals(
-			API_URL_PARAMETERS,
-			systemFDSSerializer.serializeAdditionalAPIURLParameters(
-				FDS_NAMES[0], httpServletRequest));
-
-		_unregisterServices();
-
-		serviceTrackerMap.close();
-	}
-
-	@Test
 	public void testSerializeAPIURL() throws Exception {
 
 		// No parameters
@@ -207,6 +148,65 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		Assert.assertEquals(
 			"/o/app/endpoint",
 			systemFDSSerializer.serializeAPIURL(
+				FDS_NAMES[0], httpServletRequest));
+
+		_unregisterServices();
+
+		serviceTrackerMap.close();
+	}
+
+	@Test
+	public void testSerializeAdditionalAPIURLParameters() throws Exception {
+
+		// No parameters
+
+		ServiceTrackerMap
+			<String,
+			 ServiceTrackerCustomizerFactory.ServiceWrapper<FDSAPIURLResolver>>
+				serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+					bundleContext, FDSAPIURLResolver.class,
+					"fds.rest.application.key",
+					ServiceTrackerCustomizerFactory.
+						<FDSAPIURLResolver>serviceWrapper(bundleContext));
+
+		systemFDSSerializer.fdsAPIURLResolverRegistry =
+			new FDSAPIURLResolverRegistryImpl(serviceTrackerMap);
+
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
+		Mockito.when(
+			themeDisplay.getUser()
+		).thenReturn(
+			Mockito.mock(User.class)
+		);
+
+		_registerServices(_registerSystemFDSEntry(FDS_NAMES[0]));
+
+		Assert.assertNull(
+			systemFDSSerializer.serializeAdditionalAPIURLParameters(
+				FDS_NAMES[0], httpServletRequest));
+
+		_unregisterServices();
+
+		// Parameters
+
+		_registerServices(
+			_registerSystemFDSEntry(
+				SystemFDSEntryFactory.create(
+					FDS_NAMES[0]
+				).withAdditionalURLParameters(
+					API_URL_PARAMETERS
+				)));
+
+		Assert.assertEquals(
+			API_URL_PARAMETERS,
+			systemFDSSerializer.serializeAdditionalAPIURLParameters(
 				FDS_NAMES[0], httpServletRequest));
 
 		_unregisterServices();

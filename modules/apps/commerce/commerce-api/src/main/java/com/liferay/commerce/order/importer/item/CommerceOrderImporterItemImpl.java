@@ -20,11 +20,6 @@ public class CommerceOrderImporterItemImpl
 	implements CommerceOrderImporterItem {
 
 	@Override
-	public CommerceOrderItemPrice getCommerceOrderItemPrice() {
-		return _commerceOrderItemPrice;
-	}
-
-	@Override
 	public long getCPDefinitionId() {
 		return _cpDefinitionId;
 	}
@@ -32,6 +27,11 @@ public class CommerceOrderImporterItemImpl
 	@Override
 	public long getCPInstanceId() {
 		return _cpInstanceId;
+	}
+
+	@Override
+	public CommerceOrderItemPrice getCommerceOrderItemPrice() {
+		return _commerceOrderItemPrice;
 	}
 
 	@Override
@@ -97,18 +97,18 @@ public class CommerceOrderImporterItemImpl
 		return ArrayUtil.isEmpty(getErrorMessages());
 	}
 
-	public void setCommerceOrderItemPrice(
-		CommerceOrderItemPrice commerceOrderItemPrice) {
-
-		_commerceOrderItemPrice = commerceOrderItemPrice;
-	}
-
 	public void setCPDefinitionId(long cpDefinitionId) {
 		_cpDefinitionId = cpDefinitionId;
 	}
 
 	public void setCPInstanceId(long cpInstanceId) {
 		_cpInstanceId = cpInstanceId;
+	}
+
+	public void setCommerceOrderItemPrice(
+		CommerceOrderItemPrice commerceOrderItemPrice) {
+
+		_commerceOrderItemPrice = commerceOrderItemPrice;
 	}
 
 	public void setErrorMessages(String[] errorMessages) {

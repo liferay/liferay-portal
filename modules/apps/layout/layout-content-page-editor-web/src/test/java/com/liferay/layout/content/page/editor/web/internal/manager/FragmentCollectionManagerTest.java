@@ -67,6 +67,32 @@ public class FragmentCollectionManagerTest {
 		);
 	}
 
+	private void _testGetLayoutElementMapsListMapWithViewPermission() {
+		_setUpInfoItemClassDetails();
+
+		InfoPermissionProvider<?> infoPermissionProvider = Mockito.mock(
+			InfoPermissionProvider.class);
+
+		Mockito.when(
+			infoPermissionProvider.hasViewPermission(_permissionChecker)
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoPermissionProvider.class, _CLASS_NAME)
+		).thenReturn(
+			infoPermissionProvider
+		);
+
+		Map<String, List<Map<String, Object>>> layoutElementMapsListMap =
+			_fragmentCollectionManager.getLayoutElementMapsListMap(
+				_permissionChecker);
+
+		Assert.assertTrue(layoutElementMapsListMap.containsKey("INPUTS"));
+	}
+
 	private void _testGetLayoutElementMapsListMapWithoutEditPageInfoItemCapability() {
 		Mockito.when(
 			_infoItemServiceRegistry.getInfoItemClassDetails(
@@ -123,32 +149,6 @@ public class FragmentCollectionManagerTest {
 				_permissionChecker);
 
 		Assert.assertFalse(layoutElementMapsListMap.containsKey("INPUTS"));
-	}
-
-	private void _testGetLayoutElementMapsListMapWithViewPermission() {
-		_setUpInfoItemClassDetails();
-
-		InfoPermissionProvider<?> infoPermissionProvider = Mockito.mock(
-			InfoPermissionProvider.class);
-
-		Mockito.when(
-			infoPermissionProvider.hasViewPermission(_permissionChecker)
-		).thenReturn(
-			true
-		);
-
-		Mockito.when(
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoPermissionProvider.class, _CLASS_NAME)
-		).thenReturn(
-			infoPermissionProvider
-		);
-
-		Map<String, List<Map<String, Object>>> layoutElementMapsListMap =
-			_fragmentCollectionManager.getLayoutElementMapsListMap(
-				_permissionChecker);
-
-		Assert.assertTrue(layoutElementMapsListMap.containsKey("INPUTS"));
 	}
 
 	private static final String _CLASS_NAME =

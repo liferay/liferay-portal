@@ -131,14 +131,6 @@ public abstract class BaseJournalTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public int getTrashModelsCount(long classPK) throws PortalException {
-		JournalFolder folder = JournalFolderLocalServiceUtil.getFolder(classPK);
-
-		return JournalFolderLocalServiceUtil.getFoldersAndArticlesCount(
-			folder.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
 	public List<TrashedModel> getTrashModelTrashedModels(
 			long classPK, int start, int end,
 			OrderByComparator<?> orderByComparator)
@@ -157,6 +149,14 @@ public abstract class BaseJournalTrashHandler extends BaseTrashHandler {
 
 				return (JournalArticle)folderOrArticle;
 			});
+	}
+
+	@Override
+	public int getTrashModelsCount(long classPK) throws PortalException {
+		JournalFolder folder = JournalFolderLocalServiceUtil.getFolder(classPK);
+
+		return JournalFolderLocalServiceUtil.getFoldersAndArticlesCount(
+			folder.getGroupId(), classPK, WorkflowConstants.STATUS_IN_TRASH);
 	}
 
 	protected abstract long getGroupId(long classPK) throws PortalException;

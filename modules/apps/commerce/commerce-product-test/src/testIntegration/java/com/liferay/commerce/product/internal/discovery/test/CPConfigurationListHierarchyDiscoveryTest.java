@@ -310,32 +310,6 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 	}
 
 	@Test
-	public void testGetCPConfigurationListWithoutEligibilityConfigured()
-		throws Exception {
-
-		frutillaRule.scenario(
-			"When multiple product configuration list are defined for the " +
-				"same catalog the highest in the hierarchy shall be taken"
-		).given(
-			"There is a product configuration list without eligibility " +
-				"configured"
-		).when(
-			"The product configuration list is discovered using no eligibility"
-		).then(
-			"The eligible product configuration list should be returned"
-		);
-
-		CPConfigurationList discoveredCPConfigurationList =
-			_cpConfigurationListDiscovery.getCPConfigurationList(
-				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
-				0, 0, 0);
-
-		Assert.assertEquals(
-			_cpConfigurationList1.getCPConfigurationListId(),
-			discoveredCPConfigurationList.getCPConfigurationListId());
-	}
-
-	@Test
 	public void testGetCPConfigurationListWithQualifiedAccount()
 		throws Exception {
 
@@ -632,6 +606,32 @@ public class CPConfigurationListHierarchyDiscoveryTest {
 
 		Assert.assertEquals(
 			_cpConfigurationList5.getCPConfigurationListId(),
+			discoveredCPConfigurationList.getCPConfigurationListId());
+	}
+
+	@Test
+	public void testGetCPConfigurationListWithoutEligibilityConfigured()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"When multiple product configuration list are defined for the " +
+				"same catalog the highest in the hierarchy shall be taken"
+		).given(
+			"There is a product configuration list without eligibility " +
+				"configured"
+		).when(
+			"The product configuration list is discovered using no eligibility"
+		).then(
+			"The eligible product configuration list should be returned"
+		);
+
+		CPConfigurationList discoveredCPConfigurationList =
+			_cpConfigurationListDiscovery.getCPConfigurationList(
+				_commerceCatalog.getCompanyId(), _commerceCatalog.getGroupId(),
+				0, 0, 0);
+
+		Assert.assertEquals(
+			_cpConfigurationList1.getCPConfigurationListId(),
 			discoveredCPConfigurationList.getCPConfigurationListId());
 	}
 

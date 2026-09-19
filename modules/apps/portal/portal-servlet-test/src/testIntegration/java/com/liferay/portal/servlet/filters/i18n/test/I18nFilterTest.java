@@ -152,16 +152,6 @@ public class I18nFilterTest {
 	}
 
 	@Test
-	public void testGetRedirectWithoutVirtualHost() throws Exception {
-		_testGetRedirect(0, "localhost", null, null);
-		_testGetRedirect(1, "localhost", null, null);
-		_testGetRedirect(
-			2, "localhost",
-			"/" + _portal.getI18nPathLanguageId(LocaleUtil.US, null), null);
-		_testGetRedirect(3, "localhost", null, null);
-	}
-
-	@Test
 	public void testGetRedirectWithVirtualHost() throws Exception {
 		LayoutSet layoutSet = _group.getPublicLayoutSet();
 		String layoutHostname =
@@ -186,6 +176,16 @@ public class I18nFilterTest {
 		_testGetRedirect(
 			3, layoutHostname,
 			"/" + _portal.getI18nPathLanguageId(LocaleUtil.SPAIN, null), null);
+	}
+
+	@Test
+	public void testGetRedirectWithoutVirtualHost() throws Exception {
+		_testGetRedirect(0, "localhost", null, null);
+		_testGetRedirect(1, "localhost", null, null);
+		_testGetRedirect(
+			2, "localhost",
+			"/" + _portal.getI18nPathLanguageId(LocaleUtil.US, null), null);
+		_testGetRedirect(3, "localhost", null, null);
 	}
 
 	@Test

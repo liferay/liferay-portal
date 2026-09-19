@@ -30,6 +30,13 @@ public class UpgradeAssetVocabularyTest {
 	}
 
 	@Test
+	public void testUpgradeWithMultiValuedSettings() {
+		testUpgrade(
+			"multiValued=true\nselectedClassNameIds=10007,10005\n",
+			"multiValued=true\nselectedClassNameIds=10007:-1,10005:-1\n");
+	}
+
+	@Test
 	public void testUpgradeWithMultipleRequiredSettings() {
 		testUpgrade(
 			"multiValued=true\nrequiredClassNameIds=10005\n" +
@@ -39,10 +46,12 @@ public class UpgradeAssetVocabularyTest {
 	}
 
 	@Test
-	public void testUpgradeWithMultiValuedSettings() {
+	public void testUpgradeWithRequiredSettings() {
 		testUpgrade(
-			"multiValued=true\nselectedClassNameIds=10007,10005\n",
-			"multiValued=true\nselectedClassNameIds=10007:-1,10005:-1\n");
+			"multiValued=false\nrequiredClassNameIds=10007\n" +
+				"selectedClassNameIds=10007\n",
+			"multiValued=false\nrequiredClassNameIds=10007:-1\n" +
+				"selectedClassNameIds=10007:-1\n");
 	}
 
 	@Test
@@ -50,15 +59,6 @@ public class UpgradeAssetVocabularyTest {
 		testUpgrade(
 			"multiValued=false\nselectedClassNameIds=10007\n",
 			"multiValued=false\nselectedClassNameIds=10007:-1\n");
-	}
-
-	@Test
-	public void testUpgradeWithRequiredSettings() {
-		testUpgrade(
-			"multiValued=false\nrequiredClassNameIds=10007\n" +
-				"selectedClassNameIds=10007\n",
-			"multiValued=false\nrequiredClassNameIds=10007:-1\n" +
-				"selectedClassNameIds=10007:-1\n");
 	}
 
 	protected void testUpgrade(

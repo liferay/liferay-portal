@@ -60,68 +60,6 @@ public class CommerceProductStatusUpgradeProcessTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testUpgradeCommerceCatalog() throws Exception {
-		CommerceCatalog commerceCatalog =
-			_commerceCatalogLocalService.addCommerceCatalog(
-				null, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(),
-				LocaleUtil.US.getDisplayLanguage(),
-				ServiceContextTestUtil.getServiceContext());
-
-		try (Connection connection = DataAccess.getConnection();
-
-			PreparedStatement preparedStatement =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					"update CommerceCatalog set status = ? where " +
-						"commerceCatalogId = ?")) {
-
-			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
-			preparedStatement.setLong(
-				2, commerceCatalog.getCommerceCatalogId());
-
-			preparedStatement.executeUpdate();
-		}
-
-		_runUpgrade();
-
-		commerceCatalog = _commerceCatalogLocalService.getCommerceCatalog(
-			commerceCatalog.getCommerceCatalogId());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, commerceCatalog.getStatus());
-	}
-
-	@Test
-	public void testUpgradeCommerceChannel() throws Exception {
-		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
-			TestPropsValues.getGroupId(), RandomTestUtil.randomString());
-
-		try (Connection connection = DataAccess.getConnection();
-
-			PreparedStatement preparedStatement =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					"update CommerceChannel set status = ? where " +
-						"commerceChannelId = ?")) {
-
-			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
-			preparedStatement.setLong(
-				2, commerceChannel.getCommerceChannelId());
-
-			preparedStatement.executeUpdate();
-		}
-
-		_runUpgrade();
-
-		commerceChannel = _commerceChannelLocalService.getCommerceChannel(
-			commerceChannel.getCommerceChannelId());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, commerceChannel.getStatus());
-	}
-
-	@Test
 	public void testUpgradeCPMeasurementUnit() throws Exception {
 		CPMeasurementUnit cpMeasurementUnit =
 			_cpMeasurementUnitLocalService.addCPMeasurementUnit(
@@ -299,6 +237,68 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, cpTaxCategory.getStatus());
+	}
+
+	@Test
+	public void testUpgradeCommerceCatalog() throws Exception {
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.addCommerceCatalog(
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
+				LocaleUtil.US.getDisplayLanguage(),
+				ServiceContextTestUtil.getServiceContext());
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CommerceCatalog set status = ? where " +
+						"commerceCatalogId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(
+				2, commerceCatalog.getCommerceCatalogId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		commerceCatalog = _commerceCatalogLocalService.getCommerceCatalog(
+			commerceCatalog.getCommerceCatalogId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, commerceCatalog.getStatus());
+	}
+
+	@Test
+	public void testUpgradeCommerceChannel() throws Exception {
+		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
+			TestPropsValues.getGroupId(), RandomTestUtil.randomString());
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CommerceChannel set status = ? where " +
+						"commerceChannelId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(
+				2, commerceChannel.getCommerceChannelId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		commerceChannel = _commerceChannelLocalService.getCommerceChannel(
+			commerceChannel.getCommerceChannelId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, commerceChannel.getStatus());
 	}
 
 	private void _runUpgrade() throws Exception {

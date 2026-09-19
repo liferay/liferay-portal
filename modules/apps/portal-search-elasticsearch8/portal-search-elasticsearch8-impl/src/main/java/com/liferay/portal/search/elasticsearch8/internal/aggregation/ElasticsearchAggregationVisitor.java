@@ -1633,6 +1633,17 @@ public class ElasticsearchAggregationVisitor
 		return fieldAndFormats;
 	}
 
+	private ChiSquareHeuristic _translateChiSquareHeuristic(
+		ChiSquareSignificanceHeuristic chiSquareSignificanceHeuristic) {
+
+		return ChiSquareHeuristic.of(
+			chiSquareHeuristic -> chiSquareHeuristic.backgroundIsSuperset(
+				chiSquareSignificanceHeuristic.isBackgroundIsSuperset()
+			).includeNegatives(
+				chiSquareSignificanceHeuristic.isIncludeNegatives()
+			));
+	}
+
 	private co.elastic.clients.elasticsearch._types.aggregations.Aggregation
 		_translateChildAggregations(
 			Aggregation aggregation, ContainerBuilder containerBuilder) {
@@ -1654,17 +1665,6 @@ public class ElasticsearchAggregationVisitor
 		}
 
 		return containerBuilder.build();
-	}
-
-	private ChiSquareHeuristic _translateChiSquareHeuristic(
-		ChiSquareSignificanceHeuristic chiSquareSignificanceHeuristic) {
-
-		return ChiSquareHeuristic.of(
-			chiSquareHeuristic -> chiSquareHeuristic.backgroundIsSuperset(
-				chiSquareSignificanceHeuristic.isBackgroundIsSuperset()
-			).includeNegatives(
-				chiSquareSignificanceHeuristic.isIncludeNegatives()
-			));
 	}
 
 	private TermsAggregationCollectMode _translateCollectMode(

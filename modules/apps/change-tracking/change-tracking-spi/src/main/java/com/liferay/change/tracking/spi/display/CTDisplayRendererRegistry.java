@@ -41,18 +41,18 @@ public interface CTDisplayRendererRegistry {
 		long ctCollectionId, CTSQLModeThreadLocal.CTSQLMode ctSQLMode, T model,
 		long modelClassNameId);
 
+	public <T extends BaseModel<?>> CTDisplayRenderer<T> getCTDisplayRenderer(
+		long modelClassNameId);
+
+	public CTSQLModeThreadLocal.CTSQLMode getCTSQLMode(
+		long ctCollectionId, CTEntry ctEntry);
+
+	public CTService<?> getCTService(CTModel<?> ctModel);
+
 	public <T extends BaseModel<T>> int getChangeType(CTEntry ctEntry, T model);
 
 	public long getCtCollectionId(CTCollection ctCollection, CTEntry ctEntry)
 		throws PortalException;
-
-	public <T extends BaseModel<?>> CTDisplayRenderer<T> getCTDisplayRenderer(
-		long modelClassNameId);
-
-	public CTService<?> getCTService(CTModel<?> ctModel);
-
-	public CTSQLModeThreadLocal.CTSQLMode getCTSQLMode(
-		long ctCollectionId, CTEntry ctEntry);
 
 	public <T extends BaseModel<T>> String getDefaultLanguageId(
 		T model, long modelClassNameId);

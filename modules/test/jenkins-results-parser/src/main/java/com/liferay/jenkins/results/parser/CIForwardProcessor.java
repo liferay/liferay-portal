@@ -299,20 +299,6 @@ public class CIForwardProcessor {
 		return propertyValue.split("\\s*,\\s*");
 	}
 
-	private String _getCanceledCommentBody(String reason) {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("Pull request will not be forwarded to `");
-		sb.append(_recipientUsername);
-		sb.append("` because ");
-		sb.append(reason);
-		sb.append(".\n[Console](");
-		sb.append(_consoleLogURL);
-		sb.append(")\n");
-
-		return sb.toString();
-	}
-
 	private String _getCIForwardBranchName() throws IOException {
 		return JenkinsResultsParserUtil.combine(
 			JenkinsResultsParserUtil.getBuildProperty(
@@ -404,6 +390,20 @@ public class CIForwardProcessor {
 			sb.append("Original pull request comment:\n");
 			sb.append(pullRequestBody);
 		}
+
+		return sb.toString();
+	}
+
+	private String _getCanceledCommentBody(String reason) {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Pull request will not be forwarded to `");
+		sb.append(_recipientUsername);
+		sb.append("` because ");
+		sb.append(reason);
+		sb.append(".\n[Console](");
+		sb.append(_consoleLogURL);
+		sb.append(")\n");
 
 		return sb.toString();
 	}
@@ -605,32 +605,6 @@ public class CIForwardProcessor {
 		return openForwardedPullRequestUrls;
 	}
 
-	private String _getPassedCommentBody() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("All required test suite(s) ");
-
-		if (_force) {
-			sb.append("completed");
-		}
-		else {
-			sb.append("passed");
-		}
-
-		sb.append(".\n");
-		sb.append("Forwarding pull request to `");
-		sb.append(_recipientUsername);
-		sb.append("`.\n");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(_consoleLogURL)) {
-			sb.append("[Console](");
-			sb.append(_consoleLogURL);
-			sb.append(")\n");
-		}
-
-		return sb.toString();
-	}
-
 	private String _getPRCheckStatusLine() {
 		String state = _getSenderSHAStatusState("pr-check");
 
@@ -675,6 +649,32 @@ public class CIForwardProcessor {
 				"`/pr-check` Claude Code skill and publish the result with ",
 				"`/pr-check-publish`."),
 			"pr-check");
+	}
+
+	private String _getPassedCommentBody() {
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("All required test suite(s) ");
+
+		if (_force) {
+			sb.append("completed");
+		}
+		else {
+			sb.append("passed");
+		}
+
+		sb.append(".\n");
+		sb.append("Forwarding pull request to `");
+		sb.append(_recipientUsername);
+		sb.append("`.\n");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(_consoleLogURL)) {
+			sb.append("[Console](");
+			sb.append(_consoleLogURL);
+			sb.append(")\n");
+		}
+
+		return sb.toString();
 	}
 
 	private String[] _getRequiredCompletedTestSuiteNames() throws IOException {

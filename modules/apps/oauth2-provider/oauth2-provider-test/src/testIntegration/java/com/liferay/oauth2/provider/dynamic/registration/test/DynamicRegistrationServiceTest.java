@@ -601,6 +601,39 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	}
 
 	@Test
+	public void testRegisterInOpenModeWithRateLimitDisabled() throws Exception {
+		String clientHost = RandomTestUtil.randomString();
+
+		WebTarget registerWebTarget = getRegisterWebTarget();
+
+		String body = _createOpenRegistrationJSONObject(
+			true, _getRandomRedirectURI()
+		).toString();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					_createCompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"oauth2.dynamic.registration.maximum.number.of." +
+							"registrations.per.hour",
+						0, "oauth2.dynamic.registration.trust.proxy.headers",
+						true)) {
+
+			for (int i = 0; i < 15; i++) {
+				Invocation.Builder invocationBuilder =
+					registerWebTarget.request();
+
+				invocationBuilder.header("X-Forwarded-For", clientHost);
+
+				Response response = invocationBuilder.method(
+					"post", Entity.json(body));
+
+				Assert.assertEquals(201, response.getStatus());
+			}
+		}
+	}
+
+	@Test
 	public void testRegisterInOpenModeWithoutRedirectURIs() throws Exception {
 		WebTarget registerWebTarget = getRegisterWebTarget();
 
@@ -638,39 +671,6 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 			Assert.assertEquals(
 				"open", additionalInfoJSONObject.getString("mode"));
-		}
-	}
-
-	@Test
-	public void testRegisterInOpenModeWithRateLimitDisabled() throws Exception {
-		String clientHost = RandomTestUtil.randomString();
-
-		WebTarget registerWebTarget = getRegisterWebTarget();
-
-		String body = _createOpenRegistrationJSONObject(
-			true, _getRandomRedirectURI()
-		).toString();
-
-		try (CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
-					_createCompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						"oauth2.dynamic.registration.maximum.number.of." +
-							"registrations.per.hour",
-						0, "oauth2.dynamic.registration.trust.proxy.headers",
-						true)) {
-
-			for (int i = 0; i < 15; i++) {
-				Invocation.Builder invocationBuilder =
-					registerWebTarget.request();
-
-				invocationBuilder.header("X-Forwarded-For", clientHost);
-
-				Response response = invocationBuilder.method(
-					"post", Entity.json(body));
-
-				Assert.assertEquals(201, response.getStatus());
-			}
 		}
 	}
 

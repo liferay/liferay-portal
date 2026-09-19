@@ -223,38 +223,6 @@ public class JiraService extends BaseService {
 		return new BusinessEvent(StringPool.BLANK, assetObjectJSONObject);
 	}
 
-	public List<BusinessEvent> getBusinessEvents(
-			String accountExternalReferenceCode)
-		throws Exception {
-
-		List<BusinessEvent> businessEvents = new ArrayList<>();
-
-		String aql = StringBundler.concat(
-			"objectSchema = \"Business Events\" AND objectType = \"Business ",
-			"Event\" AND \"Account\".\"External Key\" = \"",
-			accountExternalReferenceCode, "\"");
-
-		JSONArray assetsObjectsJSONArray = _searchAssetsObjectsJSONArray(
-			_jiraWorkspaceId, aql);
-
-		if ((assetsObjectsJSONArray != null) &&
-			!assetsObjectsJSONArray.isEmpty()) {
-
-			for (int i = 0; i < assetsObjectsJSONArray.length(); i++) {
-				JSONObject assetObjectJSONObject =
-					assetsObjectsJSONArray.getJSONObject(i);
-
-				_injectBusinessEventAttributeNames(assetObjectJSONObject);
-
-				businessEvents.add(
-					new BusinessEvent(
-						accountExternalReferenceCode, assetObjectJSONObject));
-			}
-		}
-
-		return businessEvents;
-	}
-
 	public List<BusinessEventVersion> getBusinessEventVersions(
 			String businessEventId)
 		throws Exception {
@@ -285,6 +253,38 @@ public class JiraService extends BaseService {
 		}
 
 		return businessEventVersions;
+	}
+
+	public List<BusinessEvent> getBusinessEvents(
+			String accountExternalReferenceCode)
+		throws Exception {
+
+		List<BusinessEvent> businessEvents = new ArrayList<>();
+
+		String aql = StringBundler.concat(
+			"objectSchema = \"Business Events\" AND objectType = \"Business ",
+			"Event\" AND \"Account\".\"External Key\" = \"",
+			accountExternalReferenceCode, "\"");
+
+		JSONArray assetsObjectsJSONArray = _searchAssetsObjectsJSONArray(
+			_jiraWorkspaceId, aql);
+
+		if ((assetsObjectsJSONArray != null) &&
+			!assetsObjectsJSONArray.isEmpty()) {
+
+			for (int i = 0; i < assetsObjectsJSONArray.length(); i++) {
+				JSONObject assetObjectJSONObject =
+					assetsObjectsJSONArray.getJSONObject(i);
+
+				_injectBusinessEventAttributeNames(assetObjectJSONObject);
+
+				businessEvents.add(
+					new BusinessEvent(
+						accountExternalReferenceCode, assetObjectJSONObject));
+			}
+		}
+
+		return businessEvents;
 	}
 
 	@Cacheable("assetObjectFieldOptions")
@@ -351,6 +351,36 @@ public class JiraService extends BaseService {
 		return null;
 	}
 
+	public List<JiraSupportIssue> getJSMJiraSupportIssues(
+			String externalReferenceCode, String[] issueKeys)
+		throws Exception {
+
+		StringBundler sb = new StringBundler(12);
+
+		sb.append("Organization in aqlFunction('\\\"External Key\\\" = \\\"");
+		sb.append(externalReferenceCode);
+		sb.append("\\\"') and (status not in ('");
+		sb.append(
+			StringUtil.merge(
+				JiraIssueConstants.STATUSES_SOLVED_AND_CLOSED, "','"));
+		sb.append("')) and ");
+		sb.append(
+			JiraIssueConstants.toJQLCustomField(
+				_jiraSupportHCFieldRequestType));
+		sb.append(" = '");
+		sb.append(JiraIssueConstants.TYPE_GENERAL_REQUEST);
+		sb.append("'");
+
+		if (ArrayUtil.isNotEmpty(issueKeys)) {
+			sb.append(" or key in ('");
+			sb.append(StringUtil.merge(issueKeys, "','"));
+			sb.append("')");
+		}
+
+		return search(
+			sb.toString(), new String[] {"key", "labels", "status", "summary"});
+	}
+
 	public JiraSupportIssue getJiraSupportIssue(String issueKey)
 		throws Exception {
 
@@ -391,36 +421,6 @@ public class JiraService extends BaseService {
 		}
 
 		return null;
-	}
-
-	public List<JiraSupportIssue> getJSMJiraSupportIssues(
-			String externalReferenceCode, String[] issueKeys)
-		throws Exception {
-
-		StringBundler sb = new StringBundler(12);
-
-		sb.append("Organization in aqlFunction('\\\"External Key\\\" = \\\"");
-		sb.append(externalReferenceCode);
-		sb.append("\\\"') and (status not in ('");
-		sb.append(
-			StringUtil.merge(
-				JiraIssueConstants.STATUSES_SOLVED_AND_CLOSED, "','"));
-		sb.append("')) and ");
-		sb.append(
-			JiraIssueConstants.toJQLCustomField(
-				_jiraSupportHCFieldRequestType));
-		sb.append(" = '");
-		sb.append(JiraIssueConstants.TYPE_GENERAL_REQUEST);
-		sb.append("'");
-
-		if (ArrayUtil.isNotEmpty(issueKeys)) {
-			sb.append(" or key in ('");
-			sb.append(StringUtil.merge(issueKeys, "','"));
-			sb.append("')");
-		}
-
-		return search(
-			sb.toString(), new String[] {"key", "labels", "status", "summary"});
 	}
 
 	@CacheEvict(allEntries = true, value = "affectedVersions")
@@ -1480,6 +1480,23 @@ public class JiraService extends BaseService {
 	@Value("${liferay.customer.jira.security.vulnerability.field.affects}")
 	private String _jiraSecurityVulnerabilityFieldAffects;
 
+	@Value("${liferay.customer.jira.security.vulnerability.field.cve.ids}")
+	private String _jiraSecurityVulnerabilityFieldCVEIds;
+
+	@Value(
+		"${liferay.customer.jira.security.vulnerability.field.cvss.base.score}"
+	)
+	private String _jiraSecurityVulnerabilityFieldCVSSBaseScore;
+
+	@Value(
+		"${liferay.customer.jira.security.vulnerability.field.cvss.vector." +
+			"string}"
+	)
+	private String _jiraSecurityVulnerabilityFieldCVSSVectorString;
+
+	@Value("${liferay.customer.jira.security.vulnerability.field.cwe.ids}")
+	private String _jiraSecurityVulnerabilityFieldCWEIds;
+
 	@Value("${liferay.customer.jira.security.vulnerability.field.categories}")
 	private String _jiraSecurityVulnerabilityFieldCategories;
 
@@ -1500,23 +1517,6 @@ public class JiraService extends BaseService {
 			"publishing.date}"
 	)
 	private String _jiraSecurityVulnerabilityFieldCustomerPublishingDate;
-
-	@Value("${liferay.customer.jira.security.vulnerability.field.cve.ids}")
-	private String _jiraSecurityVulnerabilityFieldCVEIds;
-
-	@Value(
-		"${liferay.customer.jira.security.vulnerability.field.cvss.base.score}"
-	)
-	private String _jiraSecurityVulnerabilityFieldCVSSBaseScore;
-
-	@Value(
-		"${liferay.customer.jira.security.vulnerability.field.cvss.vector." +
-			"string}"
-	)
-	private String _jiraSecurityVulnerabilityFieldCVSSVectorString;
-
-	@Value("${liferay.customer.jira.security.vulnerability.field.cwe.ids}")
-	private String _jiraSecurityVulnerabilityFieldCWEIds;
 
 	@Value("${liferay.customer.jira.security.vulnerability.field.fix.versions}")
 	private String _jiraSecurityVulnerabilityFieldFixVersions;

@@ -1084,26 +1084,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		return installCacheTask;
 	}
 
-	private Jar _addTaskJarJavadoc(Project project) {
-		Jar jar = GradleUtil.addTask(project, JAR_JAVADOC_TASK_NAME, Jar.class);
-
-		jar.setDescription(
-			"Assembles a jar archive containing the Javadoc files for this " +
-				"project.");
-		jar.setGroup(BasePlugin.BUILD_GROUP);
-
-		Property<String> property = jar.getArchiveClassifier();
-
-		property.set("javadoc");
-
-		Javadoc javadoc = (Javadoc)GradleUtil.getTask(
-			project, JavaPlugin.JAVADOC_TASK_NAME);
-
-		jar.from(javadoc);
-
-		return jar;
-	}
-
 	private Jar _addTaskJarJSDoc(Project project) {
 		Jar jar = GradleUtil.addTask(project, JAR_JSDOC_TASK_NAME, Jar.class);
 
@@ -1145,6 +1125,26 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			project, JspCPlugin.COMPILE_JSP_TASK_NAME);
 
 		jar.from(javaCompile);
+
+		return jar;
+	}
+
+	private Jar _addTaskJarJavadoc(Project project) {
+		Jar jar = GradleUtil.addTask(project, JAR_JAVADOC_TASK_NAME, Jar.class);
+
+		jar.setDescription(
+			"Assembles a jar archive containing the Javadoc files for this " +
+				"project.");
+		jar.setGroup(BasePlugin.BUILD_GROUP);
+
+		Property<String> property = jar.getArchiveClassifier();
+
+		property.set("javadoc");
+
+		Javadoc javadoc = (Javadoc)GradleUtil.getTask(
+			project, JavaPlugin.JAVADOC_TASK_NAME);
+
+		jar.from(javadoc);
 
 		return jar;
 	}
@@ -2185,63 +2185,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		resolutionStrategy.cacheDynamicVersionsFor(0, TimeUnit.SECONDS);
 	}
 
-	private void _configureConfigurations(
-		Project project, File appBndFile, LiferayExtension liferayExtension,
-		boolean publishing) {
-
-		_configureConfigurationDefault(project);
-		_configureConfigurationJspC(project, liferayExtension);
-
-		String projectPath = project.getPath();
-
-		if (projectPath.startsWith(":dxp:apps:osb:")) {
-			_configureDependenciesReleaseAPI(
-				project, JavaPlugin.API_CONFIGURATION_NAME);
-			_configureDependenciesReleaseAPI(
-				project, JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME);
-			_configureDependenciesReleaseAPI(
-				project, JspCPlugin.CONFIGURATION_NAME);
-		}
-
-		if (projectPath.startsWith(":apps:") ||
-			projectPath.startsWith(":core:") ||
-			projectPath.startsWith(":dxp:apps:") ||
-			projectPath.startsWith(":dxp:core:") ||
-			projectPath.startsWith(":private:apps:") ||
-			projectPath.startsWith(":private:core:")) {
-
-			_configureConfigurationTransitive(
-				project, JavaPlugin.API_CONFIGURATION_NAME, false);
-			_configureConfigurationTransitive(
-				project, JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME,
-				false);
-
-			_configureDependenciesGroupPortal(
-				project, appBndFile, JavaPlugin.API_CONFIGURATION_NAME,
-				publishing);
-			_configureDependenciesGroupPortal(
-				project, appBndFile,
-				JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME, publishing);
-		}
-
-		_configureDependenciesTransitive(
-			project, LiferayOSGiPlugin.COMPILE_INCLUDE_CONFIGURATION_NAME,
-			false);
-
-		ConfigurationContainer configurationContainer =
-			project.getConfigurations();
-
-		configurationContainer.all(
-			new Action<Configuration>() {
-
-				@Override
-				public void execute(Configuration configuration) {
-					_configureConfiguration(configuration);
-				}
-
-			});
-	}
-
 	private void _configureConfigurationTest(Project project, String name) {
 		final Configuration configuration = GradleUtil.getConfiguration(
 			project, name);
@@ -2305,6 +2248,63 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 			project, name);
 
 		configuration.setTransitive(transitive);
+	}
+
+	private void _configureConfigurations(
+		Project project, File appBndFile, LiferayExtension liferayExtension,
+		boolean publishing) {
+
+		_configureConfigurationDefault(project);
+		_configureConfigurationJspC(project, liferayExtension);
+
+		String projectPath = project.getPath();
+
+		if (projectPath.startsWith(":dxp:apps:osb:")) {
+			_configureDependenciesReleaseAPI(
+				project, JavaPlugin.API_CONFIGURATION_NAME);
+			_configureDependenciesReleaseAPI(
+				project, JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME);
+			_configureDependenciesReleaseAPI(
+				project, JspCPlugin.CONFIGURATION_NAME);
+		}
+
+		if (projectPath.startsWith(":apps:") ||
+			projectPath.startsWith(":core:") ||
+			projectPath.startsWith(":dxp:apps:") ||
+			projectPath.startsWith(":dxp:core:") ||
+			projectPath.startsWith(":private:apps:") ||
+			projectPath.startsWith(":private:core:")) {
+
+			_configureConfigurationTransitive(
+				project, JavaPlugin.API_CONFIGURATION_NAME, false);
+			_configureConfigurationTransitive(
+				project, JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME,
+				false);
+
+			_configureDependenciesGroupPortal(
+				project, appBndFile, JavaPlugin.API_CONFIGURATION_NAME,
+				publishing);
+			_configureDependenciesGroupPortal(
+				project, appBndFile,
+				JavaPlugin.COMPILE_CLASSPATH_CONFIGURATION_NAME, publishing);
+		}
+
+		_configureDependenciesTransitive(
+			project, LiferayOSGiPlugin.COMPILE_INCLUDE_CONFIGURATION_NAME,
+			false);
+
+		ConfigurationContainer configurationContainer =
+			project.getConfigurations();
+
+		configurationContainer.all(
+			new Action<Configuration>() {
+
+				@Override
+				public void execute(Configuration configuration) {
+					_configureConfiguration(configuration);
+				}
+
+			});
 	}
 
 	private void _configureDependenciesGroupPortal(
@@ -3786,98 +3786,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		}
 	}
 
-	private void _configureTasksCheckOSGiBundleState(
-		Project project, final LiferayExtension liferayExtension) {
-
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			CheckOSGiBundleStateTask.class,
-			new Action<CheckOSGiBundleStateTask>() {
-
-				@Override
-				public void execute(
-					CheckOSGiBundleStateTask checkOSGiBundleState) {
-
-					_configureTaskCheckOSGiBundleState(
-						checkOSGiBundleState, liferayExtension);
-				}
-
-			});
-	}
-
-	private void _configureTasksEnabledIfStaleSnapshot(
-		Project project, boolean testProject, String... taskNames) {
-
-		boolean snapshotIfStale = false;
-
-		if (project.hasProperty(SNAPSHOT_IF_STALE_PROPERTY_NAME)) {
-			snapshotIfStale = GradleUtil.getProperty(
-				project, SNAPSHOT_IF_STALE_PROPERTY_NAME, true);
-		}
-
-		if (!snapshotIfStale || (!testProject && _isSnapshotStale(project))) {
-			return;
-		}
-
-		for (String taskName : taskNames) {
-			Task task = GradleUtil.getTask(project, taskName);
-
-			task.setDependsOn(Collections.emptySet());
-			task.setEnabled(false);
-			task.setFinalizedBy(Collections.emptySet());
-		}
-	}
-
-	private void _configureTasksJavaCompile(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			JavaCompile.class,
-			new Action<JavaCompile>() {
-
-				@Override
-				public void execute(JavaCompile javaCompile) {
-					_configureTaskJavaCompile(javaCompile);
-				}
-
-			});
-	}
-
-	private void _configureTasksJspC(
-		Project project, BundleExtension bundleExtension) {
-
-		String fragmentHost = bundleExtension.getInstruction(
-			Constants.FRAGMENT_HOST);
-
-		if (Validator.isNotNull(fragmentHost)) {
-			Task compileJSPTask = GradleUtil.getTask(
-				project, JspCPlugin.COMPILE_JSP_TASK_NAME);
-
-			compileJSPTask.setEnabled(false);
-
-			Task generateJSPJavaTask = GradleUtil.getTask(
-				project, JspCPlugin.GENERATE_JSP_JAVA_TASK_NAME);
-
-			generateJSPJavaTask.setEnabled(false);
-		}
-	}
-
-	private void _configureTasksPmd(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			Pmd.class,
-			new Action<Pmd>() {
-
-				@Override
-				public void execute(Pmd pmd) {
-					_configureTaskPmd(pmd);
-				}
-
-			});
-	}
-
 	private void _configureTaskSpotBugs(SpotBugsTask spotBugsTask) {
 		Property<String> maxHeapSizeProperty = spotBugsTask.getMaxHeapSize();
 
@@ -3939,21 +3847,6 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 						logger.lifecycle(
 							"Creating report: {}", FileUtil.getUrl(file));
 					}
-				}
-
-			});
-	}
-
-	private void _configureTasksSpotBugs(Project project) {
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			SpotBugsTask.class,
-			new Action<SpotBugsTask>() {
-
-				@Override
-				public void execute(SpotBugsTask spotBugsTask) {
-					_configureTaskSpotBugs(spotBugsTask);
 				}
 
 			});
@@ -4118,6 +4011,113 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 			updateVersionTask.finalizedBy(taskCache.getRefreshDigestTaskName());
 		}
+	}
+
+	private void _configureTasksCheckOSGiBundleState(
+		Project project, final LiferayExtension liferayExtension) {
+
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			CheckOSGiBundleStateTask.class,
+			new Action<CheckOSGiBundleStateTask>() {
+
+				@Override
+				public void execute(
+					CheckOSGiBundleStateTask checkOSGiBundleState) {
+
+					_configureTaskCheckOSGiBundleState(
+						checkOSGiBundleState, liferayExtension);
+				}
+
+			});
+	}
+
+	private void _configureTasksEnabledIfStaleSnapshot(
+		Project project, boolean testProject, String... taskNames) {
+
+		boolean snapshotIfStale = false;
+
+		if (project.hasProperty(SNAPSHOT_IF_STALE_PROPERTY_NAME)) {
+			snapshotIfStale = GradleUtil.getProperty(
+				project, SNAPSHOT_IF_STALE_PROPERTY_NAME, true);
+		}
+
+		if (!snapshotIfStale || (!testProject && _isSnapshotStale(project))) {
+			return;
+		}
+
+		for (String taskName : taskNames) {
+			Task task = GradleUtil.getTask(project, taskName);
+
+			task.setDependsOn(Collections.emptySet());
+			task.setEnabled(false);
+			task.setFinalizedBy(Collections.emptySet());
+		}
+	}
+
+	private void _configureTasksJavaCompile(Project project) {
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			JavaCompile.class,
+			new Action<JavaCompile>() {
+
+				@Override
+				public void execute(JavaCompile javaCompile) {
+					_configureTaskJavaCompile(javaCompile);
+				}
+
+			});
+	}
+
+	private void _configureTasksJspC(
+		Project project, BundleExtension bundleExtension) {
+
+		String fragmentHost = bundleExtension.getInstruction(
+			Constants.FRAGMENT_HOST);
+
+		if (Validator.isNotNull(fragmentHost)) {
+			Task compileJSPTask = GradleUtil.getTask(
+				project, JspCPlugin.COMPILE_JSP_TASK_NAME);
+
+			compileJSPTask.setEnabled(false);
+
+			Task generateJSPJavaTask = GradleUtil.getTask(
+				project, JspCPlugin.GENERATE_JSP_JAVA_TASK_NAME);
+
+			generateJSPJavaTask.setEnabled(false);
+		}
+	}
+
+	private void _configureTasksPmd(Project project) {
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			Pmd.class,
+			new Action<Pmd>() {
+
+				@Override
+				public void execute(Pmd pmd) {
+					_configureTaskPmd(pmd);
+				}
+
+			});
+	}
+
+	private void _configureTasksSpotBugs(Project project) {
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			SpotBugsTask.class,
+			new Action<SpotBugsTask>() {
+
+				@Override
+				public void execute(SpotBugsTask spotBugsTask) {
+					_configureTaskSpotBugs(spotBugsTask);
+				}
+
+			});
 	}
 
 	private void _configureTestIntegrationTomcat(Project project) {

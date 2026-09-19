@@ -45,18 +45,6 @@ public class BlogsCoverImageCaptionAlloyEditorConfigContributor
 		);
 	}
 
-	private JSONObject _getToolbarsJSONObject() {
-		return JSONUtil.put("styles", _getToolbarsStylesJSONObject());
-	}
-
-	private JSONObject _getToolbarsStylesJSONObject() {
-		return JSONUtil.put(
-			"selections", _getToolbarStylesSelectionsJSONArray()
-		).put(
-			"tabIndex", 1
-		);
-	}
-
 	private JSONArray _getToolbarStylesSelectionsJSONArray() {
 		return JSONUtil.putAll(
 			_getToolbarStylesSelectionsLinkJSONObject(),
@@ -80,6 +68,18 @@ public class BlogsCoverImageCaptionAlloyEditorConfigContributor
 			"name", "text"
 		).put(
 			"test", "AlloyEditor.SelectionTest.text"
+		);
+	}
+
+	private JSONObject _getToolbarsJSONObject() {
+		return JSONUtil.put("styles", _getToolbarsStylesJSONObject());
+	}
+
+	private JSONObject _getToolbarsStylesJSONObject() {
+		return JSONUtil.put(
+			"selections", _getToolbarStylesSelectionsJSONArray()
+		).put(
+			"tabIndex", 1
 		);
 	}
 

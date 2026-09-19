@@ -1799,11 +1799,11 @@ public class ViewChangesDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ViewChangesDisplayContext.class);
 
-	private static final Snapshot<Searcher> _searcherSnapshot = new Snapshot<>(
-		ViewChangesDisplayContext.class, Searcher.class);
 	private static final Snapshot<SearchRequestBuilderFactory>
 		_searchRequestBuilderFactorySnapshot = new Snapshot<>(
 			ViewChangesDisplayContext.class, SearchRequestBuilderFactory.class);
+	private static final Snapshot<Searcher> _searcherSnapshot = new Snapshot<>(
+		ViewChangesDisplayContext.class, Searcher.class);
 	private static final Snapshot<Sorts> _sortsSnapshot = new Snapshot<>(
 		ViewChangesDisplayContext.class, Sorts.class);
 

@@ -629,12 +629,12 @@ public class FinderCacheImpl
 		return cacheKeyGenerator;
 	}
 
-	private String _getCacheNameWithoutPagination(String cacheName) {
-		return cacheName.concat(".List2");
-	}
-
 	private String _getCacheNameWithPagination(String cacheName) {
 		return cacheName.concat(".List1");
+	}
+
+	private String _getCacheNameWithoutPagination(String cacheName) {
+		return cacheName.concat(".List2");
 	}
 
 	private Collection<FinderPath> _getFinderPaths(String cacheName) {

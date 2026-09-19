@@ -221,16 +221,6 @@ public class KaleoDesignerDisplayContext {
 		return orderByComparator;
 	}
 
-	public List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
-		KaleoDefinitionVersion kaleoDefinitionVersion) {
-
-		return _kaleoDefinitionVersionLocalService.getKaleoDefinitionVersions(
-			kaleoDefinitionVersion.getCompanyId(),
-			kaleoDefinitionVersion.getName(), QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS,
-			KaleoDefinitionVersionModifiedDateComparator.getInstance(false));
-	}
-
 	public KaleoDefinitionVersionSearch getKaleoDefinitionVersionSearch(
 		int status) {
 
@@ -261,6 +251,16 @@ public class KaleoDesignerDisplayContext {
 					status));
 
 		return kaleoDefinitionVersionSearch;
+	}
+
+	public List<KaleoDefinitionVersion> getKaleoDefinitionVersions(
+		KaleoDefinitionVersion kaleoDefinitionVersion) {
+
+		return _kaleoDefinitionVersionLocalService.getKaleoDefinitionVersions(
+			kaleoDefinitionVersion.getCompanyId(),
+			kaleoDefinitionVersion.getName(), QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS,
+			KaleoDefinitionVersionModifiedDateComparator.getInstance(false));
 	}
 
 	public JSONArray getKaleoDefinitionVersionsJSONArray(

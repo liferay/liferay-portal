@@ -27,17 +27,17 @@ public interface BuildDatabase {
 	public static final String FILE_NAME_BUILD_DATABASE_JSON_SHA =
 		"build-database.json.sha512";
 
-	public File getBuildDatabaseFile();
-
 	public JSONObject getBuildDataJSONObject(String key);
 
 	public JSONObject getBuildDataJSONObject(URL buildURL);
 
+	public File getBuildDatabaseFile();
+
+	public JSONObject getJSONObject();
+
 	public Job getJob(String key);
 
 	public List<Job> getJobs();
-
-	public JSONObject getJSONObject();
 
 	public PortalFixpackRelease getPortalFixpackRelease(String key);
 

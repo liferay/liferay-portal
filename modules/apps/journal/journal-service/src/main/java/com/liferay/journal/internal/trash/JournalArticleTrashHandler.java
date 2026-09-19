@@ -188,11 +188,6 @@ public class JournalArticleTrashHandler extends BaseJournalTrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return _journalArticleLocalService.fetchLatestArticle(classPK);
-	}
-
-	@Override
 	public TrashRenderer getTrashRenderer(long classPK) throws PortalException {
 		AssetRendererFactory<JournalArticle> assetRendererFactory =
 			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClass(
@@ -203,6 +198,11 @@ public class JournalArticleTrashHandler extends BaseJournalTrashHandler {
 
 		return (TrashRenderer)assetRendererFactory.getAssetRenderer(
 			article.getId());
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
+		return _journalArticleLocalService.fetchLatestArticle(classPK);
 	}
 
 	@Override

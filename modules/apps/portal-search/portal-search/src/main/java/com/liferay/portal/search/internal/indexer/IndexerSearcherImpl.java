@@ -190,9 +190,9 @@ public class IndexerSearcherImpl<T extends BaseModel<?>>
 	}
 
 	private final HitsProcessorRegistry _hitsProcessorRegistry;
+	private final IndexSearcherHelper _indexSearcherHelper;
 	private final IndexerPermissionPostFilter _indexerPermissionPostFilter;
 	private final IndexerQueryBuilder _indexerQueryBuilder;
-	private final IndexSearcherHelper _indexSearcherHelper;
 	private final Iterable<QueryConfigContributor>
 		_modelQueryConfigContributors;
 	private final ModelSearchSettings _modelSearchSettings;

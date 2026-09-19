@@ -54,6 +54,11 @@ public class GroupItemSelectorProviderImpl
 	}
 
 	@Override
+	public String getGroupType() {
+		return "site";
+	}
+
+	@Override
 	public List<Group> getGroups(
 		long companyId, long groupId, String keywords, int start, int end) {
 
@@ -99,11 +104,6 @@ public class GroupItemSelectorProviderImpl
 			).put(
 				"site", Boolean.TRUE
 			).build());
-	}
-
-	@Override
-	public String getGroupType() {
-		return "site";
 	}
 
 	@Override

@@ -67,6 +67,31 @@ public class CounterDataCleanupPreupgradeProcessTest
 	}
 
 	@Test
+	public void testUpgradeCTCollectionSpecificCounter() throws Exception {
+		long ctCollectionId =
+			CounterLocalServiceUtil.increment(CTCollection.class.getName()) +
+				1000;
+
+		_test(
+			(UnsafeRunnable<Exception>)() -> runSQL(
+				"delete from CTCollection where ctCollectionId = " +
+					ctCollectionId),
+			(UnsafeRunnable<Exception>)() -> runSQL(
+				StringBundler.concat(
+					"insert into CTCollection (mvccVersion, ctCollectionId) ",
+					"values (0, ", ctCollectionId, ")")),
+			(UnsafeConsumer<List<String>, Exception>)messages -> {
+				Assert.assertEquals(messages.toString(), 1, messages.size());
+				Assert.assertTrue(
+					messages.toString(),
+					messages.contains(
+						StringBundler.concat(
+							"Counter ", CTCollection.class.getName(),
+							" has been reset to value ", ctCollectionId)));
+			});
+	}
+
+	@Test
 	public void testUpgradeCompanyDoesNotAffectKernelCounter()
 		throws Exception {
 
@@ -100,31 +125,6 @@ public class CounterDataCleanupPreupgradeProcessTest
 				else {
 					Assert.assertTrue(messages.toString(), messages.isEmpty());
 				}
-			});
-	}
-
-	@Test
-	public void testUpgradeCTCollectionSpecificCounter() throws Exception {
-		long ctCollectionId =
-			CounterLocalServiceUtil.increment(CTCollection.class.getName()) +
-				1000;
-
-		_test(
-			(UnsafeRunnable<Exception>)() -> runSQL(
-				"delete from CTCollection where ctCollectionId = " +
-					ctCollectionId),
-			(UnsafeRunnable<Exception>)() -> runSQL(
-				StringBundler.concat(
-					"insert into CTCollection (mvccVersion, ctCollectionId) ",
-					"values (0, ", ctCollectionId, ")")),
-			(UnsafeConsumer<List<String>, Exception>)messages -> {
-				Assert.assertEquals(messages.toString(), 1, messages.size());
-				Assert.assertTrue(
-					messages.toString(),
-					messages.contains(
-						StringBundler.concat(
-							"Counter ", CTCollection.class.getName(),
-							" has been reset to value ", ctCollectionId)));
 			});
 	}
 

@@ -87,6 +87,9 @@ public class CProductModelListenerTest {
 			cpDefinitionGroupedEntries.size());
 	}
 
+	@Inject
+	private CProductLocalService _cProductLocalService;
+
 	private CommerceCatalog _commerceCatalog;
 
 	@Inject
@@ -95,9 +98,6 @@ public class CProductModelListenerTest {
 	@Inject
 	private CPDefinitionGroupedEntryLocalService
 		_cpDefinitionGroupedEntryLocalService;
-
-	@Inject
-	private CProductLocalService _cProductLocalService;
 
 	private ServiceContext _serviceContext;
 

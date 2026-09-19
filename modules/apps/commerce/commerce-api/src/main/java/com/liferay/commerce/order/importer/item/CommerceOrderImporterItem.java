@@ -16,11 +16,11 @@ import java.util.Locale;
  */
 public interface CommerceOrderImporterItem {
 
-	public CommerceOrderItemPrice getCommerceOrderItemPrice();
-
 	public long getCPDefinitionId();
 
 	public long getCPInstanceId();
+
+	public CommerceOrderItemPrice getCommerceOrderItemPrice();
 
 	public String[] getErrorMessages();
 

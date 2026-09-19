@@ -799,17 +799,17 @@ public class SitemapRegenerationSchedulerTest {
 	)
 	private SchedulerJobConfiguration _schedulerJobConfiguration;
 
-	@Inject
-	private SitemapManager _sitemapManager;
-
-	@Inject
-	private SitemapStorageHelper _sitemapStorageHelper;
-
 	@DeleteAfterTestRun
 	private ObjectDefinition _siteObjectDefinition;
 
 	@Inject
 	private SiteSitemapRegenerationEntryLocalService
 		_siteSitemapRegenerationEntryLocalService;
+
+	@Inject
+	private SitemapManager _sitemapManager;
+
+	@Inject
+	private SitemapStorageHelper _sitemapStorageHelper;
 
 }

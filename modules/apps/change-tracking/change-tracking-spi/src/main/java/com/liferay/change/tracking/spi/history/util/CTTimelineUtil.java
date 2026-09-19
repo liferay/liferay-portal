@@ -17,18 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class CTTimelineUtil {
 
-	public static void setClassName(
-		HttpServletRequest httpServletRequest, Class<?> clazz) {
-
-		setCTTimelineKeys(httpServletRequest, clazz, 0);
-	}
-
-	public static void setClassName(
-		RenderRequest renderRequest, Class<?> clazz) {
-
-		setCTTimelineKeys(renderRequest, clazz, 0);
-	}
-
 	public static void setCTTimelineKeys(
 		HttpServletRequest httpServletRequest, Class<?> clazz, long classPK) {
 
@@ -48,6 +36,18 @@ public class CTTimelineUtil {
 
 		setCTTimelineKeys(
 			PortalUtil.getHttpServletRequest(renderRequest), clazz, classPK);
+	}
+
+	public static void setClassName(
+		HttpServletRequest httpServletRequest, Class<?> clazz) {
+
+		setCTTimelineKeys(httpServletRequest, clazz, 0);
+	}
+
+	public static void setClassName(
+		RenderRequest renderRequest, Class<?> clazz) {
+
+		setCTTimelineKeys(renderRequest, clazz, 0);
 	}
 
 }

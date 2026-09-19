@@ -37,28 +37,6 @@ public class AMRuntimeException extends SystemException {
 	}
 
 	/**
-	 * This exception is thrown when there is a processor configuration error.
-	 */
-	public static final class InvalidConfiguration extends AMRuntimeException {
-
-		public InvalidConfiguration() {
-		}
-
-		public InvalidConfiguration(String s) {
-			super(s);
-		}
-
-		public InvalidConfiguration(String s, Throwable throwable) {
-			super(s, throwable);
-		}
-
-		public InvalidConfiguration(Throwable throwable) {
-			super(throwable);
-		}
-
-	}
-
-	/**
 	 * This exception wraps {@link java.io.IOException} instances. Since it is a
 	 * system error, it is reasonable to wrap it inside a runtime exception.
 	 */
@@ -76,6 +54,28 @@ public class AMRuntimeException extends SystemException {
 		}
 
 		public IOException(Throwable throwable) {
+			super(throwable);
+		}
+
+	}
+
+	/**
+	 * This exception is thrown when there is a processor configuration error.
+	 */
+	public static final class InvalidConfiguration extends AMRuntimeException {
+
+		public InvalidConfiguration() {
+		}
+
+		public InvalidConfiguration(String s) {
+			super(s);
+		}
+
+		public InvalidConfiguration(String s, Throwable throwable) {
+			super(s, throwable);
+		}
+
+		public InvalidConfiguration(Throwable throwable) {
 			super(throwable);
 		}
 

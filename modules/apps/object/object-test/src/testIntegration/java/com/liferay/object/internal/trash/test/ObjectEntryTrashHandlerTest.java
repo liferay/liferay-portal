@@ -263,6 +263,17 @@ public class ObjectEntryTrashHandlerTest extends BaseTrashHandlerTestCase {
 			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 	}
 
+	private void _testCheckEntriesWithPermissions() throws Exception {
+		ObjectEntry objectEntry = _addExpiredTrashedObjectEntry();
+
+		TrashEntryLocalServiceUtil.checkEntries();
+
+		Assert.assertNull(
+			TrashEntryLocalServiceUtil.fetchEntry(
+				_objectDefinition.getClassName(),
+				objectEntry.getObjectEntryId()));
+	}
+
 	private void _testCheckEntriesWithoutPermissions() throws Exception {
 		ObjectEntry objectEntry = _addExpiredTrashedObjectEntry();
 
@@ -281,17 +292,6 @@ public class ObjectEntryTrashHandlerTest extends BaseTrashHandlerTestCase {
 			PermissionThreadLocal.setPermissionChecker(
 				originalPermissionChecker);
 		}
-
-		Assert.assertNull(
-			TrashEntryLocalServiceUtil.fetchEntry(
-				_objectDefinition.getClassName(),
-				objectEntry.getObjectEntryId()));
-	}
-
-	private void _testCheckEntriesWithPermissions() throws Exception {
-		ObjectEntry objectEntry = _addExpiredTrashedObjectEntry();
-
-		TrashEntryLocalServiceUtil.checkEntries();
 
 		Assert.assertNull(
 			TrashEntryLocalServiceUtil.fetchEntry(

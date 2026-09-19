@@ -94,28 +94,15 @@ public class LayoutsTreeDisplayContext {
 		return "child-page-export-process-warning";
 	}
 
-	public String getLayoutsCountMessageKey() throws PortalException {
-		int messageKeyLayoutsCount = LayoutLocalServiceUtil.getLayoutsCount(
-			getSelectPagesGroup(), isSelectPagesPrivateLayout(),
-			ArrayUtil.toLongArray(_getSelectedLayoutIdsArray()));
-
-		int totalLayoutsCount = LayoutLocalServiceUtil.getLayoutsCount(
-			_getSelectPagesGroupId(), isSelectPagesPrivateLayout());
-
-		if (messageKeyLayoutsCount > totalLayoutsCount) {
-			messageKeyLayoutsCount = totalLayoutsCount;
+	public long getLayoutSetBranchId() {
+		if (_layoutSetBranchId != null) {
+			return _layoutSetBranchId;
 		}
 
-		if (totalLayoutsCount == 0) {
-			return LanguageUtil.get(_themeDisplay.getLocale(), "none");
-		}
+		_layoutSetBranchId = MapUtil.getLong(
+			getParameterMap(), "layoutSetBranchId");
 
-		return LanguageUtil.format(
-			_themeDisplay.getLocale(), "x-of-x",
-			new String[] {
-				"<strong>" + messageKeyLayoutsCount + "</strong>",
-				String.valueOf(totalLayoutsCount)
-			});
+		return _layoutSetBranchId;
 	}
 
 	public List<LayoutSetBranch> getLayoutSetBranches() throws PortalException {
@@ -139,15 +126,28 @@ public class LayoutsTreeDisplayContext {
 		return layoutSetBranches;
 	}
 
-	public long getLayoutSetBranchId() {
-		if (_layoutSetBranchId != null) {
-			return _layoutSetBranchId;
+	public String getLayoutsCountMessageKey() throws PortalException {
+		int messageKeyLayoutsCount = LayoutLocalServiceUtil.getLayoutsCount(
+			getSelectPagesGroup(), isSelectPagesPrivateLayout(),
+			ArrayUtil.toLongArray(_getSelectedLayoutIdsArray()));
+
+		int totalLayoutsCount = LayoutLocalServiceUtil.getLayoutsCount(
+			_getSelectPagesGroupId(), isSelectPagesPrivateLayout());
+
+		if (messageKeyLayoutsCount > totalLayoutsCount) {
+			messageKeyLayoutsCount = totalLayoutsCount;
 		}
 
-		_layoutSetBranchId = MapUtil.getLong(
-			getParameterMap(), "layoutSetBranchId");
+		if (totalLayoutsCount == 0) {
+			return LanguageUtil.get(_themeDisplay.getLocale(), "none");
+		}
 
-		return _layoutSetBranchId;
+		return LanguageUtil.format(
+			_themeDisplay.getLocale(), "x-of-x",
+			new String[] {
+				"<strong>" + messageKeyLayoutsCount + "</strong>",
+				String.valueOf(totalLayoutsCount)
+			});
 	}
 
 	public Map<String, Object> getPagesTreeData() throws Exception {
@@ -376,6 +376,18 @@ public class LayoutsTreeDisplayContext {
 			));
 	}
 
+	private long _getSelectPagesGroupId() {
+		if (_selectPagesGroupId != null) {
+			return _selectPagesGroupId;
+		}
+
+		_selectPagesGroupId = GetterUtil.getLong(
+			_httpServletRequest.getAttribute(
+				"liferay-staging:select-pages:groupId"));
+
+		return _selectPagesGroupId;
+	}
+
 	private Set<Long> _getSelectedLayoutIdsArray() throws PortalException {
 		if (_selectedLayoutIdsArray != null) {
 			return _selectedLayoutIdsArray;
@@ -427,18 +439,6 @@ public class LayoutsTreeDisplayContext {
 		return _selectedLayoutIdsArray;
 	}
 
-	private long _getSelectPagesGroupId() {
-		if (_selectPagesGroupId != null) {
-			return _selectPagesGroupId;
-		}
-
-		_selectPagesGroupId = GetterUtil.getLong(
-			_httpServletRequest.getAttribute(
-				"liferay-staging:select-pages:groupId"));
-
-		return _selectPagesGroupId;
-	}
-
 	private String _getTreeId() {
 		if (_treeId != null) {
 			return _treeId;
@@ -467,10 +467,10 @@ public class LayoutsTreeDisplayContext {
 	private Map<String, String[]> _parameterMap;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
-	private Set<Long> _selectedLayoutIdsArray;
 	private Group _selectPagesGroup;
 	private Long _selectPagesGroupId;
 	private Boolean _selectPagesPrivateLayout;
+	private Set<Long> _selectedLayoutIdsArray;
 	private Map<String, Serializable> _settingsMap;
 	private final ThemeDisplay _themeDisplay;
 	private String _treeId;

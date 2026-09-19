@@ -409,24 +409,6 @@ public abstract class BaseSearchTestCase {
 		assertBaseModelsCount(initialBaseModelsSearchCount + 1, searchContext);
 	}
 
-	protected Hits searchBaseModelsCount(
-			Class<?> clazz, long groupId, SearchContext searchContext)
-		throws Exception {
-
-		Indexer<?> indexer = IndexerRegistryUtil.getIndexer(clazz);
-
-		searchContext.setGroupIds(new long[] {groupId});
-
-		return indexer.search(searchContext);
-	}
-
-	protected Hits searchBaseModelsCount(SearchContext searchContext)
-		throws Exception {
-
-		return searchBaseModelsCount(
-			getBaseModelClass(), group.getGroupId(), searchContext);
-	}
-
 	protected void searchBaseModelWithDelete() throws Exception {
 		searchBaseModelWithDelete(0);
 	}
@@ -516,6 +498,24 @@ public abstract class BaseSearchTestCase {
 		searchContext.setKeywords(updatedKeywords);
 
 		assertBaseModelsCount(initialBaseModelsSearchCount + 1, searchContext);
+	}
+
+	protected Hits searchBaseModelsCount(
+			Class<?> clazz, long groupId, SearchContext searchContext)
+		throws Exception {
+
+		Indexer<?> indexer = IndexerRegistryUtil.getIndexer(clazz);
+
+		searchContext.setGroupIds(new long[] {groupId});
+
+		return indexer.search(searchContext);
+	}
+
+	protected Hits searchBaseModelsCount(SearchContext searchContext)
+		throws Exception {
+
+		return searchBaseModelsCount(
+			getBaseModelClass(), group.getGroupId(), searchContext);
 	}
 
 	protected void searchByDDMStructureField() throws Exception {

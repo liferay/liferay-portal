@@ -645,6 +645,9 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
@@ -699,9 +702,6 @@ public class PriceListResourceImpl extends BasePriceListResourceImpl {
 
 	@Reference
 	private CommerceTierPriceEntryService _commerceTierPriceEntryService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;

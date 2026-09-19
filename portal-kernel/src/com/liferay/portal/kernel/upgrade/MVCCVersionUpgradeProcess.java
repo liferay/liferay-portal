@@ -55,6 +55,15 @@ public class MVCCVersionUpgradeProcess extends UpgradeProcess {
 		return new String[] {"BackgroundTask", "Lock_"};
 	}
 
+	protected void upgradeMVCCVersion(
+			DatabaseMetaData databaseMetaData, Element classElement)
+		throws Exception {
+
+		String tableName = classElement.attributeValue("table");
+
+		upgradeMVCCVersion(databaseMetaData, tableName);
+	}
+
 	protected void upgradeModuleTableMVCCVersions() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
@@ -65,15 +74,6 @@ public class MVCCVersionUpgradeProcess extends UpgradeProcess {
 				upgradeMVCCVersion(databaseMetaData, tableName);
 			}
 		}
-	}
-
-	protected void upgradeMVCCVersion(
-			DatabaseMetaData databaseMetaData, Element classElement)
-		throws Exception {
-
-		String tableName = classElement.attributeValue("table");
-
-		upgradeMVCCVersion(databaseMetaData, tableName);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

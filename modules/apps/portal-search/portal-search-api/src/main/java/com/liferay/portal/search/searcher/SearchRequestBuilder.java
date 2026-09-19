@@ -142,9 +142,9 @@ public interface SearchRequestBuilder {
 
 	public SearchRequestBuilder locale(Locale locale);
 
-	public SearchRequestBuilder modelIndexerClasses(Class<?>... classes);
-
 	public SearchRequestBuilder modelIndexerClassNames(String... classNames);
+
+	public SearchRequestBuilder modelIndexerClasses(Class<?>... classes);
 
 	public SearchRequestBuilder ownerUserId(Long userId);
 

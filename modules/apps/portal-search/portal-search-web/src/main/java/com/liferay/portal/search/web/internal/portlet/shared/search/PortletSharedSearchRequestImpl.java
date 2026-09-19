@@ -111,10 +111,10 @@ public class PortletSharedSearchRequestImpl
 	protected PortletSharedTaskExecutor portletSharedTaskExecutor;
 
 	@Reference
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Reference
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private SearchContainer<Document> _buildSearchContainer(
 		SearchSettings searchSettings, RenderRequest renderRequest) {

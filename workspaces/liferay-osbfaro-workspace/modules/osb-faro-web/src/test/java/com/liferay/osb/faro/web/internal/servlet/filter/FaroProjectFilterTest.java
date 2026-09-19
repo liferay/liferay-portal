@@ -250,67 +250,6 @@ public class FaroProjectFilterTest {
 	}
 
 	@Test
-	public void testProcessFilterWithoutDataPlatformProject() throws Exception {
-		FaroProject faroProject = Mockito.mock(FaroProject.class);
-
-		Mockito.when(
-			faroProject.getSubscription()
-		).thenReturn(
-			"{}"
-		);
-
-		Mockito.when(
-			_faroProjectLocalService.fetchFaroProjectByGroupId(123L)
-		).thenReturn(
-			faroProject
-		);
-
-		Group group = Mockito.mock(Group.class);
-
-		Mockito.when(
-			group.getGroupId()
-		).thenReturn(
-			123L
-		);
-
-		Mockito.when(
-			_groupLocalService.fetchFriendlyURLGroup(
-				Mockito.anyLong(), Mockito.eq("/123"))
-		).thenReturn(
-			group
-		);
-
-		Mockito.when(
-			_httpServletRequest.getRequestURI()
-		).thenReturn(
-			"/workspace/123"
-		);
-
-		JSONObject jsonObject = Mockito.mock(JSONObject.class);
-
-		Mockito.when(
-			jsonObject.getString("name")
-		).thenReturn(
-			ProductConstants.PRODUCT_ENTRY_NAME_ENTERPRISE_CONTACTS
-		);
-
-		Mockito.when(
-			_jsonFactory.createJSONObject(Mockito.anyString())
-		).thenReturn(
-			jsonObject
-		);
-
-		_faroProjectFilter.processFilter(
-			_httpServletRequest, _httpServletResponse, _filterChain);
-
-		Mockito.verify(
-			_filterChain
-		).doFilter(
-			_httpServletRequest, _httpServletResponse
-		);
-	}
-
-	@Test
 	public void testProcessFilterWithPageViewsLimitExceeded() throws Exception {
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
@@ -431,6 +370,67 @@ public class FaroProjectFilterTest {
 			_httpServletResponse
 		).sendRedirect(
 			StringPool.FORWARD_SLASH
+		);
+	}
+
+	@Test
+	public void testProcessFilterWithoutDataPlatformProject() throws Exception {
+		FaroProject faroProject = Mockito.mock(FaroProject.class);
+
+		Mockito.when(
+			faroProject.getSubscription()
+		).thenReturn(
+			"{}"
+		);
+
+		Mockito.when(
+			_faroProjectLocalService.fetchFaroProjectByGroupId(123L)
+		).thenReturn(
+			faroProject
+		);
+
+		Group group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			group.getGroupId()
+		).thenReturn(
+			123L
+		);
+
+		Mockito.when(
+			_groupLocalService.fetchFriendlyURLGroup(
+				Mockito.anyLong(), Mockito.eq("/123"))
+		).thenReturn(
+			group
+		);
+
+		Mockito.when(
+			_httpServletRequest.getRequestURI()
+		).thenReturn(
+			"/workspace/123"
+		);
+
+		JSONObject jsonObject = Mockito.mock(JSONObject.class);
+
+		Mockito.when(
+			jsonObject.getString("name")
+		).thenReturn(
+			ProductConstants.PRODUCT_ENTRY_NAME_ENTERPRISE_CONTACTS
+		);
+
+		Mockito.when(
+			_jsonFactory.createJSONObject(Mockito.anyString())
+		).thenReturn(
+			jsonObject
+		);
+
+		_faroProjectFilter.processFilter(
+			_httpServletRequest, _httpServletResponse, _filterChain);
+
+		Mockito.verify(
+			_filterChain
+		).doFilter(
+			_httpServletRequest, _httpServletResponse
 		);
 	}
 

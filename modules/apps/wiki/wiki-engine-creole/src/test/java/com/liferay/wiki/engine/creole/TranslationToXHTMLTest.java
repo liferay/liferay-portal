@@ -178,19 +178,19 @@ public class TranslationToXHTMLTest {
 	}
 
 	@Test
-	public void testInterwikiTiddlyWiki() throws Exception {
-		Assert.assertEquals(
-			"<p><a href=\"http://www.tiddlywiki.com/#Liferay\">" +
-				"Liferay</a> </p>",
-			translate("interwikitiddlywiki.creole"));
-	}
-
-	@Test
 	public void testInterwikiTWiki() throws Exception {
 		Assert.assertEquals(
 			"<p><a href=\"http://twiki.org/cgi-bin/view/TWiki/Liferay\">" +
 				"Liferay</a> </p>",
 			translate("interwikitwiki.creole"));
+	}
+
+	@Test
+	public void testInterwikiTiddlyWiki() throws Exception {
+		Assert.assertEquals(
+			"<p><a href=\"http://www.tiddlywiki.com/#Liferay\">" +
+				"Liferay</a> </p>",
+			translate("interwikitiddlywiki.creole"));
 	}
 
 	@Test
@@ -520,17 +520,17 @@ public class TranslationToXHTMLTest {
 	}
 
 	@Test
-	public void testParseLinkMailTo() throws Exception {
-		Assert.assertEquals(
-			"<p><a href=\"mailto:liferay@liferay.com\">Liferay Mail</a> </p>",
-			translate("link-13.creole"));
-	}
-
-	@Test
 	public void testParseLinkMMS() throws Exception {
 		Assert.assertEquals(
 			"<p><a href=\"mms://liferay.com/file\">Liferay File</a> </p>",
 			translate("link-14.creole"));
+	}
+
+	@Test
+	public void testParseLinkMailTo() throws Exception {
+		Assert.assertEquals(
+			"<p><a href=\"mailto:liferay@liferay.com\">Liferay Mail</a> </p>",
+			translate("link-13.creole"));
 	}
 
 	@Test

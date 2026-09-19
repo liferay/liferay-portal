@@ -330,10 +330,10 @@ public class IndexerScoreDistortionTest {
 	protected MBMessageLocalService mbMessageLocalService;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	@Inject
 	protected Sorts sorts;
@@ -365,10 +365,11 @@ public class IndexerScoreDistortionTest {
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
 
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 	private User _user;
 
 	@DeleteAfterTestRun

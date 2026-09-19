@@ -73,6 +73,26 @@ public class ActionUtil {
 		getEmailAddress(PortalUtil.getHttpServletRequest(portletRequest));
 	}
 
+	public static void getOrgLabor(HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		long orgLaborId = ParamUtil.getLong(httpServletRequest, "orgLaborId");
+
+		OrgLabor orgLabor = null;
+
+		if (orgLaborId > 0) {
+			orgLabor = OrgLaborServiceUtil.getOrgLabor(orgLaborId);
+		}
+
+		httpServletRequest.setAttribute(WebKeys.ORG_LABOR, orgLabor);
+	}
+
+	public static void getOrgLabor(PortletRequest portletRequest)
+		throws Exception {
+
+		getOrgLabor(PortalUtil.getHttpServletRequest(portletRequest));
+	}
+
 	public static Organization getOrganization(
 			HttpServletRequest httpServletRequest)
 		throws Exception {
@@ -97,26 +117,6 @@ public class ActionUtil {
 
 		return getOrganization(
 			PortalUtil.getHttpServletRequest(portletRequest));
-	}
-
-	public static void getOrgLabor(HttpServletRequest httpServletRequest)
-		throws Exception {
-
-		long orgLaborId = ParamUtil.getLong(httpServletRequest, "orgLaborId");
-
-		OrgLabor orgLabor = null;
-
-		if (orgLaborId > 0) {
-			orgLabor = OrgLaborServiceUtil.getOrgLabor(orgLaborId);
-		}
-
-		httpServletRequest.setAttribute(WebKeys.ORG_LABOR, orgLabor);
-	}
-
-	public static void getOrgLabor(PortletRequest portletRequest)
-		throws Exception {
-
-		getOrgLabor(PortalUtil.getHttpServletRequest(portletRequest));
 	}
 
 	public static void getPhone(HttpServletRequest httpServletRequest)

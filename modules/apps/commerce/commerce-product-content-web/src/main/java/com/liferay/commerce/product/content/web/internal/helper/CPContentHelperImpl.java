@@ -154,17 +154,6 @@ public class CPContentHelperImpl implements CPContentHelper {
 	}
 
 	@Override
-	public List<CPDefinitionSpecificationOptionValue>
-			getCategorizedCPDefinitionSpecificationOptionValues(
-				long cpDefinitionId, long cpOptionCategoryId)
-		throws PortalException {
-
-		return _cpDefinitionSpecificationOptionValueLocalService.
-			getCPDefinitionSpecificationOptionValues(
-				cpDefinitionId, cpOptionCategoryId, true);
-	}
-
-	@Override
 	public CPCatalogEntry getCPCatalogEntry(
 			HttpServletRequest httpServletRequest)
 		throws PortalException {
@@ -362,6 +351,17 @@ public class CPContentHelperImpl implements CPContentHelper {
 	}
 
 	@Override
+	public List<CPDefinitionSpecificationOptionValue>
+			getCategorizedCPDefinitionSpecificationOptionValues(
+				long cpDefinitionId, long cpOptionCategoryId)
+		throws PortalException {
+
+		return _cpDefinitionSpecificationOptionValueLocalService.
+			getCPDefinitionSpecificationOptionValues(
+				cpDefinitionId, cpOptionCategoryId, true);
+	}
+
+	@Override
 	public CPInstance getDefaultCPInstance(CPCatalogEntry cpCatalogEntry)
 		throws Exception {
 
@@ -417,6 +417,15 @@ public class CPContentHelperImpl implements CPContentHelper {
 	}
 
 	@Override
+	public String getImageURL(FileEntry fileEntry, ThemeDisplay themeDisplay)
+		throws Exception {
+
+		CPMedia cpMedia = new CPMediaImpl(fileEntry, themeDisplay);
+
+		return cpMedia.getURL();
+	}
+
+	@Override
 	public List<CPMedia> getImages(
 			long cpDefinitionId, boolean gallery, ThemeDisplay themeDisplay)
 		throws PortalException {
@@ -430,15 +439,6 @@ public class CPContentHelperImpl implements CPContentHelper {
 			cpDefinition.getCPDefinitionId(), _commerceCatalogDefaultImage,
 			_commerceMediaResolver, _cpAttachmentFileEntryLocalService, gallery,
 			cpDefinition.getGroupId(), themeDisplay);
-	}
-
-	@Override
-	public String getImageURL(FileEntry fileEntry, ThemeDisplay themeDisplay)
-		throws Exception {
-
-		CPMedia cpMedia = new CPMediaImpl(fileEntry, themeDisplay);
-
-		return cpMedia.getURL();
 	}
 
 	@Override
@@ -602,11 +602,6 @@ public class CPContentHelperImpl implements CPContentHelper {
 	}
 
 	@Override
-	public boolean hasChildCPDefinitions(long cpDefinitionId) {
-		return _cpDefinitionLocalService.hasChildCPDefinitions(cpDefinitionId);
-	}
-
-	@Override
 	public boolean hasCPDefinitionOptionRels(long cpDefinitionId) {
 		int cpDefinitionOptionRelsCount =
 			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRelsCount(
@@ -631,6 +626,11 @@ public class CPContentHelperImpl implements CPContentHelper {
 						QueryUtil.ALL_POS, null);
 
 		return !cpDefinitionSpecificationOptionValues.isEmpty();
+	}
+
+	@Override
+	public boolean hasChildCPDefinitions(long cpDefinitionId) {
+		return _cpDefinitionLocalService.hasChildCPDefinitions(cpDefinitionId);
 	}
 
 	@Override
@@ -853,6 +853,9 @@ public class CPContentHelperImpl implements CPContentHelper {
 	private AMImageHTMLTagFactory _amImageHTMLTagFactory;
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceCatalogDefaultImage _commerceCatalogDefaultImage;
 
 	@Reference
@@ -914,9 +917,6 @@ public class CPContentHelperImpl implements CPContentHelper {
 
 	@Reference
 	private CPOptionCategoryLocalService _cpOptionCategoryLocalService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;

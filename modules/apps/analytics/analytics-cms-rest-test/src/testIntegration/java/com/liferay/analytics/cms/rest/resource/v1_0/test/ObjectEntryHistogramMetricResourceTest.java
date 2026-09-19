@@ -245,6 +245,29 @@ public class ObjectEntryHistogramMetricResourceTest
 		}
 	}
 
+	private void _testGetObjectEntryHistogramMetricWithUnsyncedGroup()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_BAD_REQUEST,
+				objectEntryHistogramMetricResource.
+					getObjectEntryHistogramMetricHttpResponse(
+						testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+						RandomTestUtil.nextInt(),
+						new String[] {"downloadsMetric"}));
+		}
+	}
+
 	private void _testGetObjectEntryHistogramMetricWithoutViewPermission()
 		throws Exception {
 
@@ -275,29 +298,6 @@ public class ObjectEntryHistogramMetricResourceTest
 				objectEntryHistogramMetricResource.
 					getObjectEntryHistogramMetricHttpResponse(
 						null, _objectEntry.getObjectEntryId(),
-						RandomTestUtil.nextInt(),
-						new String[] {"downloadsMetric"}));
-		}
-	}
-
-	private void _testGetObjectEntryHistogramMetricWithUnsyncedGroup()
-		throws Exception {
-
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false);
-			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.WARN)) {
-
-			assertHttpResponseStatusCode(
-				HttpURLConnection.HTTP_BAD_REQUEST,
-				objectEntryHistogramMetricResource.
-					getObjectEntryHistogramMetricHttpResponse(
-						testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
 						RandomTestUtil.nextInt(),
 						new String[] {"downloadsMetric"}));
 		}

@@ -109,24 +109,6 @@ public class AttachmentObjectFieldBusinessType
 	}
 
 	@Override
-	public String getDescription(Locale locale) {
-		return _language.get(
-			locale, "upload-files-or-select-from-documents-and-media");
-	}
-
-	@Override
-	public Object getDisplayContextValue(
-			ObjectField objectField, long userId, Map<String, Object> values)
-		throws PortalException {
-
-		if (objectField.isLocalized()) {
-			return getLocalizedValues(objectField, userId, values);
-		}
-
-		return super.getDisplayContextValue(objectField, userId, values);
-	}
-
-	@Override
 	public Serializable getDTOValue(
 			DTOConverterContext dtoConverterContext,
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
@@ -241,6 +223,24 @@ public class AttachmentObjectFieldBusinessType
 						dlFileEntryUnsafeSupplierValue));
 			}
 		};
+	}
+
+	@Override
+	public String getDescription(Locale locale) {
+		return _language.get(
+			locale, "upload-files-or-select-from-documents-and-media");
+	}
+
+	@Override
+	public Object getDisplayContextValue(
+			ObjectField objectField, long userId, Map<String, Object> values)
+		throws PortalException {
+
+		if (objectField.isLocalized()) {
+			return getLocalizedValues(objectField, userId, values);
+		}
+
+		return super.getDisplayContextValue(objectField, userId, values);
 	}
 
 	@Override
@@ -786,13 +786,13 @@ public class AttachmentObjectFieldBusinessType
 		AttachmentObjectFieldBusinessType.class);
 
 	@Reference
+	private DLFileEntryLocalService _dLFileEntryLocalService;
+
+	@Reference
 	private DDMFieldLocalService _ddmFieldLocalService;
 
 	@Reference
 	private DLAppService _dlAppService;
-
-	@Reference
-	private DLFileEntryLocalService _dLFileEntryLocalService;
 
 	@Reference
 	private DLFileEntryMetadataLocalService _dlFileEntryMetadataLocalService;

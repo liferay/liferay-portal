@@ -897,22 +897,6 @@ public class JavaParser {
 		return lastEnumConstantDefinitionDetailAST;
 	}
 
-	private static List<String> _getLines(String s) throws IOException {
-		List<String> lines = new ArrayList<>();
-
-		try (UnsyncBufferedReader unsyncBufferedReader =
-				new UnsyncBufferedReader(new UnsyncStringReader(s))) {
-
-			String line = null;
-
-			while ((line = unsyncBufferedReader.readLine()) != null) {
-				lines.add(line);
-			}
-		}
-
-		return lines;
-	}
-
 	private static int _getLineStartPos(String content, int lineNumber) {
 		if (lineNumber <= 0) {
 			return -1;
@@ -933,6 +917,22 @@ public class JavaParser {
 		}
 
 		return x + 1;
+	}
+
+	private static List<String> _getLines(String s) throws IOException {
+		List<String> lines = new ArrayList<>();
+
+		try (UnsyncBufferedReader unsyncBufferedReader =
+				new UnsyncBufferedReader(new UnsyncStringReader(s))) {
+
+			String line = null;
+
+			while ((line = unsyncBufferedReader.readLine()) != null) {
+				lines.add(line);
+			}
+		}
+
+		return lines;
 	}
 
 	private static ParsedJavaClass _getParsedJavaClass(

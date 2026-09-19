@@ -630,25 +630,6 @@ public class AMImageProcessorImplTest {
 		);
 	}
 
-	@Test(expected = AMRuntimeException.InvalidConfiguration.class)
-	public void testProcessInvalidConfigurationException() throws Exception {
-		Mockito.when(
-			_amImageValidator.isProcessingSupported(_fileVersion)
-		).thenReturn(
-			true
-		);
-
-		Mockito.doThrow(
-			AMRuntimeException.InvalidConfiguration.class
-		).when(
-			_amImageConfigurationHelper
-		).getAMImageConfigurationEntries(
-			Mockito.anyLong()
-		);
-
-		_amImageAMProcessor.process(_fileVersion);
-	}
-
 	@Test(expected = AMRuntimeException.IOException.class)
 	public void testProcessIOExceptionInImageProcessor() throws Exception {
 		Mockito.when(
@@ -742,6 +723,25 @@ public class AMImageProcessorImplTest {
 			Mockito.any(AMImageConfigurationEntry.class),
 			Mockito.any(FileVersion.class), Mockito.eq(150), Mockito.eq(200),
 			Mockito.any(InputStream.class), Mockito.eq(100L)
+		);
+
+		_amImageAMProcessor.process(_fileVersion);
+	}
+
+	@Test(expected = AMRuntimeException.InvalidConfiguration.class)
+	public void testProcessInvalidConfigurationException() throws Exception {
+		Mockito.when(
+			_amImageValidator.isProcessingSupported(_fileVersion)
+		).thenReturn(
+			true
+		);
+
+		Mockito.doThrow(
+			AMRuntimeException.InvalidConfiguration.class
+		).when(
+			_amImageConfigurationHelper
+		).getAMImageConfigurationEntries(
+			Mockito.anyLong()
 		);
 
 		_amImageAMProcessor.process(_fileVersion);

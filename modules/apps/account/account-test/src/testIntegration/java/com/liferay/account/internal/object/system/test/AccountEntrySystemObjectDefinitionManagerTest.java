@@ -116,6 +116,16 @@ public class AccountEntrySystemObjectDefinitionManagerTest
 	}
 
 	@Override
+	protected void assertGetOrAddEmptyBaseModelWithPermissions(
+		BaseModel<?> baseModel) {
+
+		AccountEntry accountEntry = (AccountEntry)baseModel;
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, accountEntry.getStatus());
+	}
+
+	@Override
 	protected void assertGetOrAddEmptyBaseModelWithoutPermissions(
 		BaseModel<?> baseModel, User user) {
 
@@ -136,16 +146,6 @@ public class AccountEntrySystemObjectDefinitionManagerTest
 				accountEntry.getAccountEntryId()),
 			() -> systemObjectDefinitionManager.getOrAddEmptyBaseModel(
 				accountEntry.getExternalReferenceCode(), user));
-	}
-
-	@Override
-	protected void assertGetOrAddEmptyBaseModelWithPermissions(
-		BaseModel<?> baseModel) {
-
-		AccountEntry accountEntry = (AccountEntry)baseModel;
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EMPTY, accountEntry.getStatus());
 	}
 
 	@Override

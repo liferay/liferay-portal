@@ -147,6 +147,38 @@ public class CommerceOrderFDSUtil {
 		).buildString();
 	}
 
+	public static String getOrderViewDetailURL(
+			long commerceOrderId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		PortletURL portletURL = PortletURLFactoryUtil.create(
+			themeDisplay.getRequest(), portletDisplay.getId(),
+			themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
+
+		portletURL.setParameter(
+			"backURL",
+			PortletURLBuilder.create(
+				portletURL
+			).setParameter(
+				"itemsPerPage",
+				ParamUtil.getString(themeDisplay.getRequest(), "pageSize")
+			).setParameter(
+				"pageNumber",
+				ParamUtil.getString(themeDisplay.getRequest(), "page")
+			).setParameter(
+				"tableName", CommerceOrderFDSNames.PLACED_ORDERS
+			).buildString());
+		portletURL.setParameter(
+			"mvcRenderCommandName",
+			"/commerce_order_content/view_commerce_order_details");
+		portletURL.setParameter(
+			"commerceOrderId", String.valueOf(commerceOrderId));
+
+		return portletURL.toString();
+	}
+
 	public static List<Order> getOrders(
 			long commerceChannelGroupId, List<CommerceOrder> commerceOrders,
 			CommerceOrderStatusRegistry commerceOrderStatusRegistry,
@@ -230,38 +262,6 @@ public class CommerceOrderFDSUtil {
 					commerceOrder.getPurchaseOrderNumber(),
 					workflowStatusLabel);
 			});
-	}
-
-	public static String getOrderViewDetailURL(
-			long commerceOrderId, ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
-
-		PortletURL portletURL = PortletURLFactoryUtil.create(
-			themeDisplay.getRequest(), portletDisplay.getId(),
-			themeDisplay.getPlid(), PortletRequest.RENDER_PHASE);
-
-		portletURL.setParameter(
-			"backURL",
-			PortletURLBuilder.create(
-				portletURL
-			).setParameter(
-				"itemsPerPage",
-				ParamUtil.getString(themeDisplay.getRequest(), "pageSize")
-			).setParameter(
-				"pageNumber",
-				ParamUtil.getString(themeDisplay.getRequest(), "page")
-			).setParameter(
-				"tableName", CommerceOrderFDSNames.PLACED_ORDERS
-			).buildString());
-		portletURL.setParameter(
-			"mvcRenderCommandName",
-			"/commerce_order_content/view_commerce_order_details");
-		portletURL.setParameter(
-			"commerceOrderId", String.valueOf(commerceOrderId));
-
-		return portletURL.toString();
 	}
 
 	public static String getViewShipmentURL(

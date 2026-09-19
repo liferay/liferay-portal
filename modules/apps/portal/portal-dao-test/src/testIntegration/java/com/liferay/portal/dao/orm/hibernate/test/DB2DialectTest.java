@@ -69,13 +69,13 @@ public class DB2DialectTest {
 	}
 
 	@Test
-	public void testPagingWithoutOffset() {
-		testPaging(_SQL, 0, 20, 20);
+	public void testPagingWithStartAfterEnd() {
+		testPaging(_SQL, 10, 5, 0);
 	}
 
 	@Test
-	public void testPagingWithStartAfterEnd() {
-		testPaging(_SQL, 10, 5, 0);
+	public void testPagingWithoutOffset() {
+		testPaging(_SQL, 0, 20, 20);
 	}
 
 	protected void testPaging(

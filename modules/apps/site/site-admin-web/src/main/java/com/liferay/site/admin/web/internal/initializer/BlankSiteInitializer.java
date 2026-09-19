@@ -137,13 +137,13 @@ public class BlankSiteInitializer implements SiteInitializer {
 		_layoutPageTemplateStructureLocalService;
 
 	@Reference
-	private LayoutsImporter _layoutsImporter;
-
-	@Reference
 	private LayoutUtilityPageEntryDefaultPageElementDefinitionProvider
 		_layoutUtilityPageEntryDefaultPageElementDefinitionProvider;
 
 	@Reference
 	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
+
+	@Reference
+	private LayoutsImporter _layoutsImporter;
 
 }

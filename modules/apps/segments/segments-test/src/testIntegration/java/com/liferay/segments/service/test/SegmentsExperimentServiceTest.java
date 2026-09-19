@@ -74,9 +74,14 @@ public class SegmentsExperimentServiceTest {
 		_user = UserTestUtil.addGroupUser(_group, _role.getName());
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testAddSegmentsExperimentWithoutManageSegmentsEntriesPermission()
+	@Test
+	public void testAddSegmentsExperimentWithUpdateLayoutPermission()
 		throws Exception {
+
+		ResourcePermissionLocalServiceUtil.addResourcePermission(
+			_group.getCompanyId(), Layout.class.getName(),
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			_role.getRoleId(), ActionKeys.UPDATE);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -87,14 +92,9 @@ public class SegmentsExperimentServiceTest {
 		}
 	}
 
-	@Test
-	public void testAddSegmentsExperimentWithUpdateLayoutPermission()
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testAddSegmentsExperimentWithoutManageSegmentsEntriesPermission()
 		throws Exception {
-
-		ResourcePermissionLocalServiceUtil.addResourcePermission(
-			_group.getCompanyId(), Layout.class.getName(),
-			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
-			_role.getRoleId(), ActionKeys.UPDATE);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user, PermissionCheckerFactoryUtil.create(_user))) {
@@ -210,21 +210,6 @@ public class SegmentsExperimentServiceTest {
 		}
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateSegmentsExperimentWithoutUpdatePermission()
-		throws Exception {
-
-		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user, PermissionCheckerFactoryUtil.create(_user))) {
-
-			_segmentsExperimentService.updateSegmentsExperimentStatus(
-				segmentsExperiment.getSegmentsExperimentKey(),
-				SegmentsExperimentConstants.STATUS_TERMINATED);
-		}
-	}
-
 	@Test
 	public void testUpdateSegmentsExperimentWithUpdatePermission()
 		throws Exception {
@@ -243,6 +228,21 @@ public class SegmentsExperimentServiceTest {
 			_segmentsExperimentService.updateSegmentsExperimentStatus(
 				segmentsExperiment.getSegmentsExperimentKey(),
 				SegmentsExperimentConstants.STATUS_RUNNING);
+		}
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateSegmentsExperimentWithoutUpdatePermission()
+		throws Exception {
+
+		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_segmentsExperimentService.updateSegmentsExperimentStatus(
+				segmentsExperiment.getSegmentsExperimentKey(),
+				SegmentsExperimentConstants.STATUS_TERMINATED);
 		}
 	}
 

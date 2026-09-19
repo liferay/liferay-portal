@@ -94,12 +94,12 @@ public class ContactsApplication extends BaseApplication {
 	private ActivityGroupFaroController _activityGroupFaroController;
 
 	@Reference
-	private AssetSummaryCategoryFaroController
-		_assetSummaryCategoryFaroController;
-
-	@Reference
 	private AssetSummaryCMPProjectFaroController
 		_assetSummaryCMPProjectFaroController;
+
+	@Reference
+	private AssetSummaryCategoryFaroController
+		_assetSummaryCategoryFaroController;
 
 	@Reference
 	private AssetSummaryFaroController _assetSummaryFaroController;

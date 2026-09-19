@@ -70,6 +70,48 @@ public class CPDefinitionOptionValueRelDisplayContext
 		return cpDefinitionOptionValueRel.fetchCPInstance();
 	}
 
+	public CPDefinitionOptionRel getCPDefinitionOptionRel()
+		throws PortalException {
+
+		if (_cpDefinitionOptionRel != null) {
+			return _cpDefinitionOptionRel;
+		}
+
+		_cpDefinitionOptionRel = actionHelper.getCPDefinitionOptionRel(
+			cpRequestHelper.getRenderRequest());
+
+		return _cpDefinitionOptionRel;
+	}
+
+	public long getCPDefinitionOptionRelId() throws PortalException {
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			getCPDefinitionOptionRel();
+
+		if (cpDefinitionOptionRel == null) {
+			return 0;
+		}
+
+		return cpDefinitionOptionRel.getCPDefinitionOptionRelId();
+	}
+
+	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel()
+		throws PortalException {
+
+		return actionHelper.getCPDefinitionOptionValueRel(
+			cpRequestHelper.getRenderRequest());
+	}
+
+	public long getCPDefinitionOptionValueRelId() throws PortalException {
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			getCPDefinitionOptionValueRel();
+
+		if (cpDefinitionOptionValueRel == null) {
+			return 0;
+		}
+
+		return cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId();
+	}
+
 	public Calendar getCalendar() throws PortalException {
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
 			getCPDefinitionOptionValueRel();
@@ -126,48 +168,6 @@ public class CPDefinitionOptionValueRelDisplayContext
 		}
 
 		return String.valueOf(cpInstance.getCPInstanceId());
-	}
-
-	public CPDefinitionOptionRel getCPDefinitionOptionRel()
-		throws PortalException {
-
-		if (_cpDefinitionOptionRel != null) {
-			return _cpDefinitionOptionRel;
-		}
-
-		_cpDefinitionOptionRel = actionHelper.getCPDefinitionOptionRel(
-			cpRequestHelper.getRenderRequest());
-
-		return _cpDefinitionOptionRel;
-	}
-
-	public long getCPDefinitionOptionRelId() throws PortalException {
-		CPDefinitionOptionRel cpDefinitionOptionRel =
-			getCPDefinitionOptionRel();
-
-		if (cpDefinitionOptionRel == null) {
-			return 0;
-		}
-
-		return cpDefinitionOptionRel.getCPDefinitionOptionRelId();
-	}
-
-	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel()
-		throws PortalException {
-
-		return actionHelper.getCPDefinitionOptionValueRel(
-			cpRequestHelper.getRenderRequest());
-	}
-
-	public long getCPDefinitionOptionValueRelId() throws PortalException {
-		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			getCPDefinitionOptionValueRel();
-
-		if (cpDefinitionOptionValueRel == null) {
-			return 0;
-		}
-
-		return cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId();
 	}
 
 	public int getDuration() throws PortalException {

@@ -126,6 +126,26 @@ public class DDMTemplateLocalServiceTest extends BaseDDMServiceTestCase {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	@Test(expected = TemplateCreationDisabledException.class)
+	public void testAddTemplateWithTemplateCreationDisabled() throws Exception {
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					"com.liferay.dynamic.data.mapping.configuration." +
+						"DDMWebConfiguration",
+					HashMapDictionaryBuilder.<String, Object>put(
+						"enableTemplateCreation", false
+					).build())) {
+
+			addTemplate(
+				_classNameId, 0, null, "Test Template",
+				DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
+				DDMTemplateConstants.TEMPLATE_MODE_CREATE,
+				TemplateConstants.LANG_TYPE_VM,
+				getTestTemplateScript(TemplateConstants.LANG_TYPE_VM),
+				WorkflowConstants.STATUS_APPROVED);
+		}
+	}
+
 	@Test(expected = TemplateNameException.class)
 	public void testAddTemplateWithoutName() throws Exception {
 		addTemplate(
@@ -145,26 +165,6 @@ public class DDMTemplateLocalServiceTest extends BaseDDMServiceTestCase {
 			DDMTemplateConstants.TEMPLATE_MODE_CREATE,
 			TemplateConstants.LANG_TYPE_VM, StringPool.BLANK,
 			WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Test(expected = TemplateCreationDisabledException.class)
-	public void testAddTemplateWithTemplateCreationDisabled() throws Exception {
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					"com.liferay.dynamic.data.mapping.configuration." +
-						"DDMWebConfiguration",
-					HashMapDictionaryBuilder.<String, Object>put(
-						"enableTemplateCreation", false
-					).build())) {
-
-			addTemplate(
-				_classNameId, 0, null, "Test Template",
-				DDMTemplateConstants.TEMPLATE_TYPE_DISPLAY,
-				DDMTemplateConstants.TEMPLATE_MODE_CREATE,
-				TemplateConstants.LANG_TYPE_VM,
-				getTestTemplateScript(TemplateConstants.LANG_TYPE_VM),
-				WorkflowConstants.STATUS_APPROVED);
-		}
 	}
 
 	@Test

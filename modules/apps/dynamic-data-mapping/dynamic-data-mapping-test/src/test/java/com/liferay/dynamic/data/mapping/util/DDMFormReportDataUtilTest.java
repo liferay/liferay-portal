@@ -52,30 +52,6 @@ public class DDMFormReportDataUtilTest extends BaseDDMTestCase {
 	}
 
 	@Test
-	public void testGetFieldsJSONArray() throws Exception {
-		JSONAssert.assertEquals(
-			JSONUtil.put(
-				JSONUtil.put(
-					"columns", JSONFactoryUtil.createJSONObject()
-				).put(
-					"label", "TextField"
-				).put(
-					"name", "TextField"
-				).put(
-					"options", JSONFactoryUtil.createJSONObject()
-				).put(
-					"rows", JSONFactoryUtil.createJSONObject()
-				).put(
-					"type", "text"
-				)
-			).toString(),
-			String.valueOf(
-				DDMFormReportDataUtil.getFieldsJSONArray(
-					_mockDDMFormInstanceReport())),
-			JSONCompareMode.STRICT_ORDER);
-	}
-
-	@Test
 	public void testGetFieldValuesJSONArray() throws Exception {
 		DDMFormValues ddmFormValues = DDMFormValuesTestUtil.createDDMFormValues(
 			DDMFormTestUtil.createDDMForm("TextField"));
@@ -123,6 +99,30 @@ public class DDMFormReportDataUtilTest extends BaseDDMTestCase {
 			String.valueOf(
 				DDMFormReportDataUtil.getFieldValuesJSONArray(
 					ddmFormInstanceRecords, "nestedTextField")),
+			JSONCompareMode.STRICT_ORDER);
+	}
+
+	@Test
+	public void testGetFieldsJSONArray() throws Exception {
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				JSONUtil.put(
+					"columns", JSONFactoryUtil.createJSONObject()
+				).put(
+					"label", "TextField"
+				).put(
+					"name", "TextField"
+				).put(
+					"options", JSONFactoryUtil.createJSONObject()
+				).put(
+					"rows", JSONFactoryUtil.createJSONObject()
+				).put(
+					"type", "text"
+				)
+			).toString(),
+			String.valueOf(
+				DDMFormReportDataUtil.getFieldsJSONArray(
+					_mockDDMFormInstanceReport())),
 			JSONCompareMode.STRICT_ORDER);
 	}
 

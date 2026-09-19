@@ -152,72 +152,6 @@ public class ModelPermissionsFactoryTest {
 	}
 
 	@Test
-	public void testCreateWithoutParameters() throws Exception {
-		Map<String, String[]> parameterMap = new HashMap<>();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setParameters(parameterMap);
-
-		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
-			mockHttpServletRequest);
-
-		Assert.assertNull(modelPermissions);
-	}
-
-	@Test
-	public void testCreateWithoutParametersAndWithClassName() throws Exception {
-		Map<String, String[]> parameterMap = new HashMap<>();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setParameters(parameterMap);
-
-		String className = RandomTestUtil.randomString();
-
-		ResourceActionsUtil resourceActionsUtil = new ResourceActionsUtil();
-
-		ResourceActions resourceActions = Mockito.mock(ResourceActions.class);
-
-		resourceActionsUtil.setResourceActions(resourceActions);
-
-		Mockito.when(
-			resourceActions.getModelResourceGroupDefaultActions(className)
-		).thenReturn(
-			Collections.singletonList(ActionKeys.VIEW)
-		);
-
-		Mockito.when(
-			resourceActions.getModelResourceGuestDefaultActions(className)
-		).thenReturn(
-			Collections.singletonList(ActionKeys.VIEW)
-		);
-
-		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
-			mockHttpServletRequest, className);
-
-		Collection<String> roleNames = modelPermissions.getRoleNames();
-
-		Assert.assertEquals(roleNames.toString(), 2, roleNames.size());
-
-		Assert.assertTrue(roleNames.contains(RoleConstants.GUEST));
-
-		Assert.assertTrue(
-			roleNames.contains(RoleConstants.PLACEHOLDER_DEFAULT_GROUP_ROLE));
-
-		Assert.assertArrayEquals(
-			new String[] {ActionKeys.VIEW},
-			modelPermissions.getActionIds(RoleConstants.GUEST));
-
-		Assert.assertArrayEquals(
-			new String[] {ActionKeys.VIEW},
-			modelPermissions.getActionIds(
-				RoleConstants.PLACEHOLDER_DEFAULT_GROUP_ROLE));
-	}
-
-	@Test
 	public void testCreateWithParameterForOneRole() throws Exception {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -355,6 +289,72 @@ public class ModelPermissionsFactoryTest {
 		Assert.assertArrayEquals(
 			new String[] {ActionKeys.DELETE, ActionKeys.VIEW},
 			modelPermissions.getActionIds(RoleConstants.ORGANIZATION_USER));
+	}
+
+	@Test
+	public void testCreateWithoutParameters() throws Exception {
+		Map<String, String[]> parameterMap = new HashMap<>();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameters(parameterMap);
+
+		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
+			mockHttpServletRequest);
+
+		Assert.assertNull(modelPermissions);
+	}
+
+	@Test
+	public void testCreateWithoutParametersAndWithClassName() throws Exception {
+		Map<String, String[]> parameterMap = new HashMap<>();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameters(parameterMap);
+
+		String className = RandomTestUtil.randomString();
+
+		ResourceActionsUtil resourceActionsUtil = new ResourceActionsUtil();
+
+		ResourceActions resourceActions = Mockito.mock(ResourceActions.class);
+
+		resourceActionsUtil.setResourceActions(resourceActions);
+
+		Mockito.when(
+			resourceActions.getModelResourceGroupDefaultActions(className)
+		).thenReturn(
+			Collections.singletonList(ActionKeys.VIEW)
+		);
+
+		Mockito.when(
+			resourceActions.getModelResourceGuestDefaultActions(className)
+		).thenReturn(
+			Collections.singletonList(ActionKeys.VIEW)
+		);
+
+		ModelPermissions modelPermissions = ModelPermissionsFactory.create(
+			mockHttpServletRequest, className);
+
+		Collection<String> roleNames = modelPermissions.getRoleNames();
+
+		Assert.assertEquals(roleNames.toString(), 2, roleNames.size());
+
+		Assert.assertTrue(roleNames.contains(RoleConstants.GUEST));
+
+		Assert.assertTrue(
+			roleNames.contains(RoleConstants.PLACEHOLDER_DEFAULT_GROUP_ROLE));
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.VIEW},
+			modelPermissions.getActionIds(RoleConstants.GUEST));
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.VIEW},
+			modelPermissions.getActionIds(
+				RoleConstants.PLACEHOLDER_DEFAULT_GROUP_ROLE));
 	}
 
 }

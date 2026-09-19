@@ -278,22 +278,6 @@ public class SystemConfigurationResourceTest
 		assertValid(getSystemConfiguration);
 	}
 
-	private void _testGetSystemConfigurationWithoutPermission()
-		throws Exception {
-
-		try {
-			_userSystemConfigurationResource.getSystemConfiguration(
-				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
-	}
-
 	private void _testGetSystemConfigurationWithPasswordKey() throws Exception {
 		PropsUtil.set(
 			PropsKeys.MODULE_FRAMEWORK_EXPORT_PASSWORD_ATTRIBUTES, "true");
@@ -319,6 +303,22 @@ public class SystemConfigurationResourceTest
 		properties = systemConfiguration.getProperties();
 
 		Assert.assertNull(properties.get("passwordStringKey"));
+	}
+
+	private void _testGetSystemConfigurationWithoutPermission()
+		throws Exception {
+
+		try {
+			_userSystemConfigurationResource.getSystemConfiguration(
+				ConfigurationTestUtil.TEST_CONFIGURATION_PID);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
 	}
 
 	private void _testPutSystemConfigurationWithoutPermission()

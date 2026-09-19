@@ -32,6 +32,16 @@ public interface FDSSerializer {
 	public boolean isAvailable(
 		String fdsName, HttpServletRequest httpServletRequest);
 
+	public default String serializeAPIURL(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		return serializeAPIURL(fdsName, httpServletRequest, true, null);
+	}
+
+	public String serializeAPIURL(
+		String fdsName, HttpServletRequest httpServletRequest,
+		boolean interpolate, JSONObject tokenResolutionsJSONObject);
+
 	public default String serializeAdditionalAPIURLParameters(
 		String fdsName, HttpServletRequest httpServletRequest) {
 
@@ -40,16 +50,6 @@ public interface FDSSerializer {
 	}
 
 	public String serializeAdditionalAPIURLParameters(
-		String fdsName, HttpServletRequest httpServletRequest,
-		boolean interpolate, JSONObject tokenResolutionsJSONObject);
-
-	public default String serializeAPIURL(
-		String fdsName, HttpServletRequest httpServletRequest) {
-
-		return serializeAPIURL(fdsName, httpServletRequest, true, null);
-	}
-
-	public String serializeAPIURL(
 		String fdsName, HttpServletRequest httpServletRequest,
 		boolean interpolate, JSONObject tokenResolutionsJSONObject);
 

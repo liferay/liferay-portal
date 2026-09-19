@@ -139,6 +139,32 @@ public class SegmentsExperimentRelLocalServiceTest {
 				segmentsExperience.getSegmentsExperienceId()));
 	}
 
+	@Test(expected = LockedSegmentsExperimentException.class)
+	public void testDeleteSegmentsExperimentRelWithLockedExperiment()
+		throws Exception {
+
+		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
+
+		_segmentsExperimentLocalService.updateSegmentsExperimentStatus(
+			segmentsExperiment.getSegmentsExperimentId(),
+			SegmentsExperimentConstants.STATUS_RUNNING);
+
+		SegmentsExperience segmentsExperience = _addSegmentsExperience();
+
+		SegmentsExperimentRel segmentsExperimentRel =
+			_segmentsExperimentRelLocalService.addSegmentsExperimentRel(
+				segmentsExperiment.getSegmentsExperimentId(),
+				segmentsExperience.getSegmentsExperienceId(),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_segmentsExperimentRelLocalService.deleteSegmentsExperimentRel(
+			segmentsExperimentRel);
+
+		Assert.assertNull(
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				segmentsExperience.getSegmentsExperienceId()));
+	}
+
 	@Test
 	public void testDeleteSegmentsExperimentRels() throws Exception {
 		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
@@ -165,32 +191,6 @@ public class SegmentsExperimentRelLocalServiceTest {
 				segmentsExperiment.getSegmentsExperimentId());
 
 		Assert.assertTrue(segmentsExperimentRels.isEmpty());
-	}
-
-	@Test(expected = LockedSegmentsExperimentException.class)
-	public void testDeleteSegmentsExperimentRelWithLockedExperiment()
-		throws Exception {
-
-		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
-
-		_segmentsExperimentLocalService.updateSegmentsExperimentStatus(
-			segmentsExperiment.getSegmentsExperimentId(),
-			SegmentsExperimentConstants.STATUS_RUNNING);
-
-		SegmentsExperience segmentsExperience = _addSegmentsExperience();
-
-		SegmentsExperimentRel segmentsExperimentRel =
-			_segmentsExperimentRelLocalService.addSegmentsExperimentRel(
-				segmentsExperiment.getSegmentsExperimentId(),
-				segmentsExperience.getSegmentsExperienceId(),
-				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		_segmentsExperimentRelLocalService.deleteSegmentsExperimentRel(
-			segmentsExperimentRel);
-
-		Assert.assertNull(
-			_segmentsExperienceLocalService.fetchSegmentsExperience(
-				segmentsExperience.getSegmentsExperienceId()));
 	}
 
 	@Test

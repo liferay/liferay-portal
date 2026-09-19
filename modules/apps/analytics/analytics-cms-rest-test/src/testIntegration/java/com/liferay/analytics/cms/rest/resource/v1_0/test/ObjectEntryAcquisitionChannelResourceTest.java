@@ -208,6 +208,28 @@ public class ObjectEntryAcquisitionChannelResourceTest
 		}
 	}
 
+	private void _testGetObjectEntryAcquisitionChannelsPageWithUnsyncedGroup()
+		throws Exception {
+
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_BAD_REQUEST,
+				objectEntryAcquisitionChannelResource.
+					getObjectEntryAcquisitionChannelsPageHttpResponse(
+						testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+						RandomTestUtil.randomInt()));
+		}
+	}
+
 	private void _testGetObjectEntryAcquisitionChannelsPageWithoutViewPermission()
 		throws Exception {
 
@@ -238,28 +260,6 @@ public class ObjectEntryAcquisitionChannelResourceTest
 				objectEntryAcquisitionChannelResource.
 					getObjectEntryAcquisitionChannelsPageHttpResponse(
 						null, _objectEntry.getObjectEntryId(),
-						RandomTestUtil.randomInt()));
-		}
-	}
-
-	private void _testGetObjectEntryAcquisitionChannelsPageWithUnsyncedGroup()
-		throws Exception {
-
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false);
-			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.WARN)) {
-
-			assertHttpResponseStatusCode(
-				HttpURLConnection.HTTP_BAD_REQUEST,
-				objectEntryAcquisitionChannelResource.
-					getObjectEntryAcquisitionChannelsPageHttpResponse(
-						testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
 						RandomTestUtil.randomInt()));
 		}
 	}

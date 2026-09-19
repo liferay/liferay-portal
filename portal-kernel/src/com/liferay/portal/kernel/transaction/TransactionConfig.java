@@ -54,24 +54,24 @@ public class TransactionConfig {
 		return _isolation;
 	}
 
-	public Class<?>[] getNoRollbackForClasses() {
-		return _noRollbackForClasses;
-	}
-
 	public String[] getNoRollbackForClassNames() {
 		return _noRollbackForClassNames;
+	}
+
+	public Class<?>[] getNoRollbackForClasses() {
+		return _noRollbackForClasses;
 	}
 
 	public Propagation getPropagation() {
 		return _propagation;
 	}
 
-	public Class<?>[] getRollbackForClasses() {
-		return _rollbackForClasses;
-	}
-
 	public String[] getRollbackForClassNames() {
 		return _rollbackForClassNames;
+	}
+
+	public Class<?>[] getRollbackForClasses() {
+		return _rollbackForClasses;
 	}
 
 	public int getTimeout() {
@@ -157,18 +157,18 @@ public class TransactionConfig {
 			return this;
 		}
 
-		public Builder setNoRollbackForClasses(
-			Class<?>... noRollbackForClasses) {
-
-			_noRollbackForClasses = noRollbackForClasses;
-
-			return this;
-		}
-
 		public Builder setNoRollbackForClassNames(
 			String... noRollbackForClassNames) {
 
 			_noRollbackForClassNames = noRollbackForClassNames;
+
+			return this;
+		}
+
+		public Builder setNoRollbackForClasses(
+			Class<?>... noRollbackForClasses) {
+
+			_noRollbackForClasses = noRollbackForClasses;
 
 			return this;
 		}
@@ -185,16 +185,16 @@ public class TransactionConfig {
 			return this;
 		}
 
-		public Builder setRollbackForClasses(Class<?>... rollbackForClasses) {
-			_rollbackForClasses = rollbackForClasses;
-
-			return this;
-		}
-
 		public Builder setRollbackForClassNames(
 			String... rollbackForClassNames) {
 
 			_rollbackForClassNames = rollbackForClassNames;
+
+			return this;
+		}
+
+		public Builder setRollbackForClasses(Class<?>... rollbackForClasses) {
+			_rollbackForClasses = rollbackForClasses;
 
 			return this;
 		}
@@ -218,12 +218,12 @@ public class TransactionConfig {
 		private static final Class<?>[] _EMPTY_CLASS_ARRAY = new Class<?>[0];
 
 		private Isolation _isolation = Isolation.DEFAULT;
-		private Class<?>[] _noRollbackForClasses = _EMPTY_CLASS_ARRAY;
 		private String[] _noRollbackForClassNames = StringPool.EMPTY_ARRAY;
+		private Class<?>[] _noRollbackForClasses = _EMPTY_CLASS_ARRAY;
 		private Propagation _propagation = Propagation.REQUIRED;
 		private boolean _readOnly;
-		private Class<?>[] _rollbackForClasses = _EMPTY_CLASS_ARRAY;
 		private String[] _rollbackForClassNames = StringPool.EMPTY_ARRAY;
+		private Class<?>[] _rollbackForClasses = _EMPTY_CLASS_ARRAY;
 		private boolean _strictReadOnly;
 		private int _timeout = TransactionDefinition.TIMEOUT_DEFAULT;
 
@@ -275,12 +275,12 @@ public class TransactionConfig {
 	}
 
 	private final Isolation _isolation;
-	private final Class<?>[] _noRollbackForClasses;
 	private final String[] _noRollbackForClassNames;
+	private final Class<?>[] _noRollbackForClasses;
 	private final Propagation _propagation;
 	private final boolean _readOnly;
-	private final Class<?>[] _rollbackForClasses;
 	private final String[] _rollbackForClassNames;
+	private final Class<?>[] _rollbackForClasses;
 	private final boolean _strictReadOnly;
 	private final int _timeout;
 

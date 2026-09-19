@@ -64,28 +64,6 @@ public class DepotEntrySearchTest {
 			PermissionCheckerMethodTestRule.INSTANCE,
 			SynchronousDestinationTestRule.INSTANCE);
 
-	@Test
-	public void testSearchBothWithoutPermissions() throws Exception {
-		_addDepotEntry(TestPropsValues.getUser(), "Depot Entry 1");
-		_addDepotEntry(TestPropsValues.getUser(), "Depot Entry 2");
-
-		DepotTestUtil.withRegularUser(
-			(user, role) -> {
-				Indexer<DepotEntry> indexer = IndexerRegistryUtil.getIndexer(
-					DepotEntry.class);
-
-				SearchContext searchContext =
-					SearchContextTestUtil.getSearchContext(
-						TestPropsValues.getGroupId());
-
-				searchContext.setKeywords("Depot Entry");
-
-				Hits hits = indexer.search(searchContext);
-
-				Assert.assertEquals(hits.toString(), 0, hits.getLength());
-			});
-	}
-
 	@Ignore
 	@Test
 	public void testSearchBothWithPermissions() throws Exception {
@@ -131,6 +109,28 @@ public class DepotEntrySearchTest {
 					depotEntry2,
 					_depotEntryService.getDepotEntry(
 						secondSearchResult.getClassPK()));
+			});
+	}
+
+	@Test
+	public void testSearchBothWithoutPermissions() throws Exception {
+		_addDepotEntry(TestPropsValues.getUser(), "Depot Entry 1");
+		_addDepotEntry(TestPropsValues.getUser(), "Depot Entry 2");
+
+		DepotTestUtil.withRegularUser(
+			(user, role) -> {
+				Indexer<DepotEntry> indexer = IndexerRegistryUtil.getIndexer(
+					DepotEntry.class);
+
+				SearchContext searchContext =
+					SearchContextTestUtil.getSearchContext(
+						TestPropsValues.getGroupId());
+
+				searchContext.setKeywords("Depot Entry");
+
+				Hits hits = indexer.search(searchContext);
+
+				Assert.assertEquals(hits.toString(), 0, hits.getLength());
 			});
 	}
 

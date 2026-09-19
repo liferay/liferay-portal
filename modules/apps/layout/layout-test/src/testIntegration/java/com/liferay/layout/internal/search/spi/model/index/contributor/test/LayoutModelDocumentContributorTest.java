@@ -223,76 +223,6 @@ public class LayoutModelDocumentContributorTest {
 	}
 
 	@Test
-	@TestInfo("LPD-63304")
-	public void testReindexPublishedLayoutFragmentEntryLinkWithinCollectionDisplay()
-		throws Exception {
-
-		String expectedContent = RandomTestUtil.randomString();
-
-		FragmentEntry fragmentEntry = _addFragmentEntry(
-			"<h1 data-lfr-editable-id=\"element-text\" " +
-				"data-lfr-editable-type=\"text\">Heading Example</h1>");
-
-		long segmentsExperienceId =
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				_draftLayout.getPlid());
-
-		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-			JSONUtil.put(
-				FragmentEntryProcessorConstants.
-					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-				JSONUtil.put(
-					"element-text",
-					JSONUtil.put(
-						LocaleUtil.toLanguageId(_locale), expectedContent))
-			).toString(),
-			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
-			fragmentEntry.getExternalReferenceCode(),
-			ScopeUtil.getItemScopeExternalReferenceCode(
-				fragmentEntry.getGroupId(), _draftLayout.getGroupId()),
-			fragmentEntry.getHtml(), fragmentEntry.getJs(), _draftLayout,
-			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
-			0, segmentsExperienceId);
-
-		String notExpectedContent = RandomTestUtil.randomString();
-
-		ContentLayoutTestUtil.addCollectionDisplayToLayout(
-			JSONUtil.put(
-				"itemType", AssetEntry.class.getName()
-			).put(
-				"key",
-				"com.liferay.asset.internal.info.collection.provider." +
-					"RecentContentInfoCollectionProvider"
-			).put(
-				"type", InfoListProviderItemSelectorReturnType.class.getName()
-			),
-			_draftLayout, _layoutStructureProvider, null, null, 0,
-			segmentsExperienceId,
-			_fragmentEntryLinkLocalService.addFragmentEntryLink(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
-				null, null, segmentsExperienceId, _draftLayout.getPlid(),
-				fragmentEntry.getCss(), fragmentEntry.getHtml(),
-				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-				JSONUtil.put(
-					FragmentEntryProcessorConstants.
-						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
-					JSONUtil.put(
-						"element-text",
-						JSONUtil.put(
-							LocaleUtil.toLanguageId(_locale),
-							notExpectedContent))
-				).toString(),
-				StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
-				fragmentEntry.getType(), _serviceContext));
-
-		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
-
-		_assertReindex(expectedContent);
-
-		_layoutIndexerFixture.searchNoOne(notExpectedContent);
-	}
-
-	@Test
 	public void testReindexPublishedLayoutFragmentEntryLinkWithInformationTemplate()
 		throws Exception {
 
@@ -362,6 +292,76 @@ public class LayoutModelDocumentContributorTest {
 			).build());
 
 		_assertReindexPublishedLayoutFragmentEntryLinkWithPortlet();
+	}
+
+	@Test
+	@TestInfo("LPD-63304")
+	public void testReindexPublishedLayoutFragmentEntryLinkWithinCollectionDisplay()
+		throws Exception {
+
+		String expectedContent = RandomTestUtil.randomString();
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			"<h1 data-lfr-editable-id=\"element-text\" " +
+				"data-lfr-editable-type=\"text\">Heading Example</h1>");
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_draftLayout.getPlid());
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(
+					"element-text",
+					JSONUtil.put(
+						LocaleUtil.toLanguageId(_locale), expectedContent))
+			).toString(),
+			fragmentEntry.getCss(), fragmentEntry.getConfiguration(),
+			fragmentEntry.getExternalReferenceCode(),
+			ScopeUtil.getItemScopeExternalReferenceCode(
+				fragmentEntry.getGroupId(), _draftLayout.getGroupId()),
+			fragmentEntry.getHtml(), fragmentEntry.getJs(), _draftLayout,
+			fragmentEntry.getFragmentEntryKey(), fragmentEntry.getType(), null,
+			0, segmentsExperienceId);
+
+		String notExpectedContent = RandomTestUtil.randomString();
+
+		ContentLayoutTestUtil.addCollectionDisplayToLayout(
+			JSONUtil.put(
+				"itemType", AssetEntry.class.getName()
+			).put(
+				"key",
+				"com.liferay.asset.internal.info.collection.provider." +
+					"RecentContentInfoCollectionProvider"
+			).put(
+				"type", InfoListProviderItemSelectorReturnType.class.getName()
+			),
+			_draftLayout, _layoutStructureProvider, null, null, 0,
+			segmentsExperienceId,
+			_fragmentEntryLinkLocalService.addFragmentEntryLink(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, null, segmentsExperienceId, _draftLayout.getPlid(),
+				fragmentEntry.getCss(), fragmentEntry.getHtml(),
+				fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+				JSONUtil.put(
+					FragmentEntryProcessorConstants.
+						KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+					JSONUtil.put(
+						"element-text",
+						JSONUtil.put(
+							LocaleUtil.toLanguageId(_locale),
+							notExpectedContent))
+				).toString(),
+				StringPool.BLANK, 0, fragmentEntry.getFragmentEntryKey(),
+				fragmentEntry.getType(), _serviceContext));
+
+		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
+
+		_assertReindex(expectedContent);
+
+		_layoutIndexerFixture.searchNoOne(notExpectedContent);
 	}
 
 	@Test

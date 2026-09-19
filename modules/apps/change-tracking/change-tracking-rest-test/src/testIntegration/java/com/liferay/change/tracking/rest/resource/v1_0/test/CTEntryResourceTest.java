@@ -414,50 +414,6 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 	}
 
 	@Override
-	protected CTEntry testGetCtCollectionCTEntriesPage_addCTEntry(
-			Long ctCollectionId, CTEntry ctEntry)
-		throws Exception {
-
-		return _addCTEntry(ctCollectionId, ctEntry.getTitle());
-	}
-
-	@Override
-	protected Long testGetCtCollectionCTEntriesPage_getCtCollectionId()
-		throws Exception {
-
-		return _getCTCollectionId();
-	}
-
-	@Override
-	protected Long
-			testGetCtCollectionCTEntriesPage_getIrrelevantCtCollectionId()
-		throws Exception {
-
-		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
-			null, testCompany.getCompanyId(), testCompany.getUserId(), 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-		return ctCollection.getCtCollectionId();
-	}
-
-	@Override
-	protected CTEntry
-			testGetCtCollectionCTEntryByModelClassNameByModelClassPkModelClassPK_addCTEntry()
-		throws Exception {
-
-		return _addCTEntry(_getCTCollectionId(), RandomTestUtil.randomString());
-	}
-
-	@Override
-	protected Long
-			testGetCtCollectionCTEntryByModelClassNameByModelClassPkModelClassPK_getCtCollectionId(
-				CTEntry ctEntry)
-		throws Exception {
-
-		return ctEntry.getCtCollectionId();
-	}
-
-	@Override
 	protected void testGetCTEntriesHistoryPageWithFilter(
 			String operator, EntityField.Type type)
 		throws Exception {
@@ -549,6 +505,50 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 	@Override
 	protected CTEntry testGetCTEntry_addCTEntry() throws Exception {
 		return _addCTEntry(_getCTCollectionId(), RandomTestUtil.randomString());
+	}
+
+	@Override
+	protected CTEntry testGetCtCollectionCTEntriesPage_addCTEntry(
+			Long ctCollectionId, CTEntry ctEntry)
+		throws Exception {
+
+		return _addCTEntry(ctCollectionId, ctEntry.getTitle());
+	}
+
+	@Override
+	protected Long testGetCtCollectionCTEntriesPage_getCtCollectionId()
+		throws Exception {
+
+		return _getCTCollectionId();
+	}
+
+	@Override
+	protected Long
+			testGetCtCollectionCTEntriesPage_getIrrelevantCtCollectionId()
+		throws Exception {
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, testCompany.getCompanyId(), testCompany.getUserId(), 0,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		return ctCollection.getCtCollectionId();
+	}
+
+	@Override
+	protected CTEntry
+			testGetCtCollectionCTEntryByModelClassNameByModelClassPkModelClassPK_addCTEntry()
+		throws Exception {
+
+		return _addCTEntry(_getCTCollectionId(), RandomTestUtil.randomString());
+	}
+
+	@Override
+	protected Long
+			testGetCtCollectionCTEntryByModelClassNameByModelClassPkModelClassPK_getCtCollectionId(
+				CTEntry ctEntry)
+		throws Exception {
+
+		return ctEntry.getCtCollectionId();
 	}
 
 	@Override

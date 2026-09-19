@@ -69,6 +69,31 @@ public class JiraService extends BaseService {
 			StringPool.BLANK, _getAssetObjectJSONObject(id, _jiraWorkspaceId));
 	}
 
+	public List<BusinessEventVersion> getBusinessEventVersions(
+			String businessEventId)
+		throws Exception {
+
+		List<BusinessEventVersion> businessEventVersions = new ArrayList<>();
+
+		String aql = StringBundler.concat(
+			"objectSchema = \"Business Events\" AND objectType = \"Business ",
+			"Event Version\" AND \"Business Event\" = ", businessEventId,
+			" ORDER BY Updated DESC");
+
+		JSONArray assetsObjectsJSONArray = _searchAssetsObjectsJSONArray(
+			aql, _jiraWorkspaceId);
+
+		if (assetsObjectsJSONArray != null) {
+			for (int i = 0; i < assetsObjectsJSONArray.length(); i++) {
+				businessEventVersions.add(
+					_businessEventVersionConverter.toBusinessEventVersion(
+						assetsObjectsJSONArray.getJSONObject(i)));
+			}
+		}
+
+		return businessEventVersions;
+	}
+
 	public List<BusinessEvent> getBusinessEvents(
 			String accountExternalReferenceCode)
 		throws Exception {
@@ -93,31 +118,6 @@ public class JiraService extends BaseService {
 		}
 
 		return businessEvents;
-	}
-
-	public List<BusinessEventVersion> getBusinessEventVersions(
-			String businessEventId)
-		throws Exception {
-
-		List<BusinessEventVersion> businessEventVersions = new ArrayList<>();
-
-		String aql = StringBundler.concat(
-			"objectSchema = \"Business Events\" AND objectType = \"Business ",
-			"Event Version\" AND \"Business Event\" = ", businessEventId,
-			" ORDER BY Updated DESC");
-
-		JSONArray assetsObjectsJSONArray = _searchAssetsObjectsJSONArray(
-			aql, _jiraWorkspaceId);
-
-		if (assetsObjectsJSONArray != null) {
-			for (int i = 0; i < assetsObjectsJSONArray.length(); i++) {
-				businessEventVersions.add(
-					_businessEventVersionConverter.toBusinessEventVersion(
-						assetsObjectsJSONArray.getJSONObject(i)));
-			}
-		}
-
-		return businessEventVersions;
 	}
 
 	public List<JiraSupportIssue> getJSMJiraSupportIssues(

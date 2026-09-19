@@ -49,12 +49,6 @@ public class PendingAccountOrdersDataSetDisplayContext
 			CommerceWebKeys.COMMERCE_CONTEXT);
 	}
 
-	public Map<String, Object> getAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"setCurrentOrderURL", () -> _getEditOrderURL()
-		).build();
-	}
-
 	public String getAPIURL() throws PortalException {
 		long accountEntryId = 0;
 
@@ -68,6 +62,12 @@ public class PendingAccountOrdersDataSetDisplayContext
 			"/o/headless-commerce-delivery-cart/v1.0/channels/",
 			_commerceContext.getCommerceChannelId(), "/account/",
 			accountEntryId, "/carts");
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"setCurrentOrderURL", () -> _getEditOrderURL()
+		).build();
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {

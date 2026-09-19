@@ -280,10 +280,10 @@ public class InfoCollectionProviderSXPBlueprintModelListener
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	private final Map<Long, ServiceRegistration<?>> _serviceRegistrations =
 		new ConcurrentHashMap<>();

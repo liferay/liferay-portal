@@ -550,11 +550,11 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
-
 	@Inject
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
+
+	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

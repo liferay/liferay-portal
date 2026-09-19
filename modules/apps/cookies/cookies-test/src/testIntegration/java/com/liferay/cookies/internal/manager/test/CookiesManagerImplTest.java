@@ -301,41 +301,6 @@ public class CookiesManagerImplTest {
 	}
 
 	@Test
-	public void testAddCookieWithoutConsentType() {
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				_CLASS_NAME, LoggerTestUtil.WARN)) {
-
-			Cookie cookie = new Cookie(
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-			CookiesManagerUtil.addCookie(
-				cookie, _mockHttpServletRequest, _mockHttpServletResponse);
-
-			Assert.assertNull(
-				CookiesManagerUtil.getCookieValue(
-					cookie.getName(), _mockHttpServletRequest));
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"The following cookie is trying to be added without consent " +
-					"type: " + cookie.getName(),
-				logEntry.getMessage());
-
-			logEntry = logEntries.get(1);
-
-			Assert.assertEquals(
-				"The cookie will be deleted. Use the API with explicitly " +
-					"declared consent type.",
-				logEntry.getMessage());
-		}
-	}
-
-	@Test
 	public void testAddCookieWithPreferenceHandlingDisabled1()
 		throws Exception {
 
@@ -422,6 +387,41 @@ public class CookiesManagerImplTest {
 			_mockHttpServletResponse);
 
 		Assert.assertEquals(StringPool.SLASH, cookie.getPath());
+	}
+
+	@Test
+	public void testAddCookieWithoutConsentType() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME, LoggerTestUtil.WARN)) {
+
+			Cookie cookie = new Cookie(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+			CookiesManagerUtil.addCookie(
+				cookie, _mockHttpServletRequest, _mockHttpServletResponse);
+
+			Assert.assertNull(
+				CookiesManagerUtil.getCookieValue(
+					cookie.getName(), _mockHttpServletRequest));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"The following cookie is trying to be added without consent " +
+					"type: " + cookie.getName(),
+				logEntry.getMessage());
+
+			logEntry = logEntries.get(1);
+
+			Assert.assertEquals(
+				"The cookie will be deleted. Use the API with explicitly " +
+					"declared consent type.",
+				logEntry.getMessage());
+		}
 	}
 
 	@Test

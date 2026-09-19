@@ -761,31 +761,6 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		return null;
 	}
 
-	private DataLayoutResource _getDataLayoutResource(boolean checkPermission) {
-		DataLayoutResource.Builder dataLayoutResourceBuilder =
-			_dataLayoutResourceFactory.create();
-
-		return dataLayoutResourceBuilder.checkPermissions(
-			checkPermission
-		).user(
-			contextUser
-		).build();
-	}
-
-	private DataRecordCollectionResource _getDataRecordCollectionResource(
-		boolean checkPermission) {
-
-		DataRecordCollectionResource.Builder
-			dataRecordCollectionResourceBuilder =
-				_dataRecordCollectionResourceFactory.create();
-
-		return dataRecordCollectionResourceBuilder.checkPermissions(
-			checkPermission
-		).user(
-			contextUser
-		).build();
-	}
-
 	private DDMForm _getDDMForm() {
 		DDMStructure ddmStructure = _ddmStructureLocalService.fetchDDMStructure(
 			ParamUtil.getLong(contextHttpServletRequest, "ddmStructureId"));
@@ -835,6 +810,31 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		return _ddmStructureLocalService.fetchStructure(
 			_portal.getSiteGroupId(contextCompany.getGroupId()), classNameId,
 			ddmStructureKey);
+	}
+
+	private DataLayoutResource _getDataLayoutResource(boolean checkPermission) {
+		DataLayoutResource.Builder dataLayoutResourceBuilder =
+			_dataLayoutResourceFactory.create();
+
+		return dataLayoutResourceBuilder.checkPermissions(
+			checkPermission
+		).user(
+			contextUser
+		).build();
+	}
+
+	private DataRecordCollectionResource _getDataRecordCollectionResource(
+		boolean checkPermission) {
+
+		DataRecordCollectionResource.Builder
+			dataRecordCollectionResourceBuilder =
+				_dataRecordCollectionResourceFactory.create();
+
+		return dataRecordCollectionResourceBuilder.checkPermissions(
+			checkPermission
+		).user(
+			contextUser
+		).build();
 	}
 
 	private long _getDefaultDataLayoutId(

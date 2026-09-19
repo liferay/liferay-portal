@@ -43,10 +43,10 @@ public class FacetedSearcherManagerImpl implements FacetedSearcherManager {
 	protected ExpandoQueryContributorHelper expandoQueryContributorHelper;
 
 	@Reference
-	protected IndexerRegistry indexerRegistry;
+	protected IndexSearcherHelper indexSearcherHelper;
 
 	@Reference
-	protected IndexSearcherHelper indexSearcherHelper;
+	protected IndexerRegistry indexerRegistry;
 
 	protected Localization localization;
 
@@ -58,10 +58,10 @@ public class FacetedSearcherManagerImpl implements FacetedSearcherManager {
 	protected PreFilterContributorHelper preFilterContributorHelper;
 
 	@Reference
-	protected SearchableAssetClassNamesProvider
-		searchableAssetClassNamesProvider;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Reference
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected SearchableAssetClassNamesProvider
+		searchableAssetClassNamesProvider;
 
 }

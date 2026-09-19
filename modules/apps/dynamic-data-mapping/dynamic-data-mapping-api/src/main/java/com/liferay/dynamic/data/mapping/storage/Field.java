@@ -115,18 +115,18 @@ public class Field implements Serializable {
 		return _valuesMap.keySet();
 	}
 
-	public String getDataType() throws PortalException {
-		DDMStructure ddmStructure = getDDMStructure();
-
-		return ddmStructure.getFieldDataType(_name);
-	}
-
 	public DDMStructure getDDMStructure() {
 		return DDMStructureLocalServiceUtil.fetchStructure(_ddmStructureId);
 	}
 
 	public long getDDMStructureId() {
 		return _ddmStructureId;
+	}
+
+	public String getDataType() throws PortalException {
+		DDMStructure ddmStructure = getDDMStructure();
+
+		return ddmStructure.getFieldDataType(_name);
 	}
 
 	public Locale getDefaultLocale() {

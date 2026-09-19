@@ -47,12 +47,6 @@ public class EditProfileDisplayContext {
 		_renderRequest = renderRequest;
 	}
 
-	public Map<String, Object> getAdditionalProps() {
-		return HashMapBuilder.<String, Object>put(
-			"profileERC", _getProfileERC()
-		).build();
-	}
-
 	public String getAPIURL() {
 		String apiURL = HttpComponentsUtil.addParameter(
 			"/o/mcp/server-profile-tools", "fields",
@@ -63,6 +57,12 @@ public class EditProfileDisplayContext {
 			StringBundler.concat(
 				"r_mcpServerProfileToTools_l_mcpServerProfileERC eq '",
 				StringUtil.replace(_getProfileERC(), '\'', "''"), "'"));
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"profileERC", _getProfileERC()
+		).build();
 	}
 
 	public String getBackURL() {

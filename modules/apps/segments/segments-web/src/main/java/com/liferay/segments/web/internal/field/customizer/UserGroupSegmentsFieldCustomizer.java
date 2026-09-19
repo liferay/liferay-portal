@@ -49,13 +49,13 @@ public class UserGroupSegmentsFieldCustomizer
 	public static final String KEY = "userGroup";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getUserGroup(fieldValue);
+	public String getClassName() {
+		return UserGroup.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return UserGroup.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getUserGroup(fieldValue);
 	}
 
 	@Override

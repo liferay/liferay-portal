@@ -412,14 +412,6 @@ public abstract class BaseDB implements DB {
 	}
 
 	@Override
-	public List<Index> getIndexes(Connection connection) throws SQLException {
-		return TransformUtil.transform(
-			getIndexMetadatas(connection, null, null, false),
-			index -> new Index(
-				index.getIndexName(), index.getTableName(), index.isUnique()));
-	}
-
-	@Override
 	public List<IndexMetadata> getIndexMetadatas(
 			Connection connection, String tableName, String columnName,
 			boolean onlyUnique)
@@ -543,6 +535,14 @@ public abstract class BaseDB implements DB {
 		return databaseMetaData.getIndexInfo(
 			dbInspector.getCatalog(), dbInspector.getSchema(), tableName,
 			onlyUnique, false);
+	}
+
+	@Override
+	public List<Index> getIndexes(Connection connection) throws SQLException {
+		return TransformUtil.transform(
+			getIndexMetadatas(connection, null, null, false),
+			index -> new Index(
+				index.getIndexName(), index.getTableName(), index.isUnique()));
 	}
 
 	@Override
@@ -1882,8 +1882,8 @@ public abstract class BaseDB implements DB {
 	private final int _majorVersion;
 	private final int _minorVersion;
 	private final Map<String, Integer> _sqlTypeDecimalDigits = new HashMap<>();
-	private final Map<String, Integer> _sqlTypes = new HashMap<>();
 	private final Map<String, Integer> _sqlTypeSizes = new HashMap<>();
+	private final Map<String, Integer> _sqlTypes = new HashMap<>();
 	private boolean _supportsStringCaseSensitiveQuery = true;
 	private final Map<String, String> _templates = new HashMap<>();
 

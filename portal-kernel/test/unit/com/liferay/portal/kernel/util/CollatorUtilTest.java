@@ -73,34 +73,6 @@ public class CollatorUtilTest {
 	}
 
 	@Test
-	public void testGetInstanceWithoutProperty() {
-		_propsUtilMockedStatic.when(
-			() -> PropsUtil.get(
-				Mockito.eq("collator.rules"), Mockito.any(Filter.class))
-		).thenReturn(
-			""
-		);
-
-		Collator collator = CollatorUtil.getInstance(LocaleUtil.US);
-
-		Assert.assertEquals(Collator.getInstance(LocaleUtil.US), collator);
-
-		List<String> expected = new ArrayList<>();
-
-		expected.add("AB");
-		expected.add("A B");
-
-		List<String> actual = new ArrayList<>();
-
-		actual.add("A B");
-		actual.add("AB");
-
-		actual.sort(collator);
-
-		Assert.assertEquals(expected, actual);
-	}
-
-	@Test
 	public void testGetInstanceWithProperty() {
 		_propsUtilMockedStatic.when(
 			() -> PropsUtil.get(
@@ -124,6 +96,34 @@ public class CollatorUtilTest {
 
 		actual.add("AB");
 		actual.add("A B");
+
+		actual.sort(collator);
+
+		Assert.assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testGetInstanceWithoutProperty() {
+		_propsUtilMockedStatic.when(
+			() -> PropsUtil.get(
+				Mockito.eq("collator.rules"), Mockito.any(Filter.class))
+		).thenReturn(
+			""
+		);
+
+		Collator collator = CollatorUtil.getInstance(LocaleUtil.US);
+
+		Assert.assertEquals(Collator.getInstance(LocaleUtil.US), collator);
+
+		List<String> expected = new ArrayList<>();
+
+		expected.add("AB");
+		expected.add("A B");
+
+		List<String> actual = new ArrayList<>();
+
+		actual.add("A B");
+		actual.add("AB");
 
 		actual.sort(collator);
 

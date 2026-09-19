@@ -283,65 +283,6 @@ public class JournalArticleStagedModelDataHandlerTest
 	}
 
 	@Test
-	public void testArticlesWithSameResourceUUID() throws Exception {
-		initExport();
-
-		JournalArticle journalArticle = JournalTestUtil.addArticle(
-			stagingGroup.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(liveGroup.getGroupId());
-
-		serviceContext.setAttribute(
-			"articleResourceUuid", journalArticle.getArticleResourceUuid());
-		serviceContext.setCommand(Constants.ADD);
-		serviceContext.setLayoutFullURL("http://localhost");
-
-		JournalArticle importJournalArticle = JournalTestUtil.addArticle(
-			liveGroup.getGroupId(), journalArticle.getFolderId(),
-			serviceContext);
-
-		Assert.assertEquals(
-			journalArticle.getArticleResourceUuid(),
-			importJournalArticle.getArticleResourceUuid());
-		Assert.assertEquals(
-			liveGroup.getGroupId(), importJournalArticle.getGroupId());
-		Assert.assertNotEquals(
-			journalArticle.getUuid(), importJournalArticle.getUuid());
-
-		StagedModelDataHandlerUtil.exportStagedModel(
-			portletDataContext, journalArticle);
-
-		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
-			StagedModel exportedStagedModel = readExportedStagedModel(
-				journalArticle);
-
-			Assert.assertNotNull(exportedStagedModel);
-
-			ExportImportThreadLocal.setPortletImportInProcess(true);
-
-			try {
-				StagedModelDataHandlerUtil.importStagedModel(
-					portletDataContext, exportedStagedModel);
-			}
-			finally {
-				ExportImportThreadLocal.setPortletImportInProcess(false);
-			}
-
-			importJournalArticle =
-				JournalArticleLocalServiceUtil.
-					fetchJournalArticleByUuidAndGroupId(
-						journalArticle.getUuid(), liveGroup.getGroupId());
-
-			Assert.assertNotNull(importJournalArticle);
-			Assert.assertEquals(
-				journalArticle.getVersion(), importJournalArticle.getVersion(),
-				0D);
-		}
-	}
-
-	@Test
 	public void testArticleWithAssetDisplayPageEntry() throws Exception {
 		initExport();
 
@@ -488,6 +429,65 @@ public class JournalArticleStagedModelDataHandlerTest
 		journalArticle = JournalTestUtil.updateArticle(journalArticle);
 
 		exportImportStagedModel(journalArticle);
+	}
+
+	@Test
+	public void testArticlesWithSameResourceUUID() throws Exception {
+		initExport();
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			stagingGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(liveGroup.getGroupId());
+
+		serviceContext.setAttribute(
+			"articleResourceUuid", journalArticle.getArticleResourceUuid());
+		serviceContext.setCommand(Constants.ADD);
+		serviceContext.setLayoutFullURL("http://localhost");
+
+		JournalArticle importJournalArticle = JournalTestUtil.addArticle(
+			liveGroup.getGroupId(), journalArticle.getFolderId(),
+			serviceContext);
+
+		Assert.assertEquals(
+			journalArticle.getArticleResourceUuid(),
+			importJournalArticle.getArticleResourceUuid());
+		Assert.assertEquals(
+			liveGroup.getGroupId(), importJournalArticle.getGroupId());
+		Assert.assertNotEquals(
+			journalArticle.getUuid(), importJournalArticle.getUuid());
+
+		StagedModelDataHandlerUtil.exportStagedModel(
+			portletDataContext, journalArticle);
+
+		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
+			StagedModel exportedStagedModel = readExportedStagedModel(
+				journalArticle);
+
+			Assert.assertNotNull(exportedStagedModel);
+
+			ExportImportThreadLocal.setPortletImportInProcess(true);
+
+			try {
+				StagedModelDataHandlerUtil.importStagedModel(
+					portletDataContext, exportedStagedModel);
+			}
+			finally {
+				ExportImportThreadLocal.setPortletImportInProcess(false);
+			}
+
+			importJournalArticle =
+				JournalArticleLocalServiceUtil.
+					fetchJournalArticleByUuidAndGroupId(
+						journalArticle.getUuid(), liveGroup.getGroupId());
+
+			Assert.assertNotNull(importJournalArticle);
+			Assert.assertEquals(
+				journalArticle.getVersion(), importJournalArticle.getVersion(),
+				0D);
+		}
 	}
 
 	@Override

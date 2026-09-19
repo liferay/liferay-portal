@@ -160,6 +160,14 @@ public class Time {
 		return getSimpleDate(new Date(milliseconds), DURATION_FORMAT);
 	}
 
+	public static String getRFC822() {
+		return getRFC822(new Date());
+	}
+
+	public static String getRFC822(Date date) {
+		return getSimpleDate(date, RFC822_FORMAT);
+	}
+
 	public static String getRelativeTimeDescription(
 		Date date, Locale locale, TimeZone timeZone) {
 
@@ -219,14 +227,6 @@ public class Time {
 		}
 
 		return dateTimeFormat.format(milliseconds);
-	}
-
-	public static String getRFC822() {
-		return getRFC822(new Date());
-	}
-
-	public static String getRFC822(Date date) {
-		return getSimpleDate(date, RFC822_FORMAT);
 	}
 
 	public static String getShortTimestamp() {

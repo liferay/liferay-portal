@@ -28,26 +28,34 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = CPDefinitionVirtualSettingActionHelper.class)
 public class CPDefinitionVirtualSettingActionHelper {
 
-	public CommerceVirtualOrderItemFileEntry
-			getCommerceVirtualOrderItemFileEntry(RenderRequest renderRequest)
+	public CPDVirtualSettingFileEntry getCPDVirtualSettingFileEntry(
+			RenderRequest renderRequest)
 		throws PortalException {
 
-		long commerceVirtualOrderItemFileEntryId = ParamUtil.getLong(
-			renderRequest, "commerceVirtualOrderItemFileEntryId");
+		CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
+			(CPDVirtualSettingFileEntry)renderRequest.getAttribute(
+				CPDefinitionVirtualSettingWebKeys.
+					CPD_VIRTUAL_SETTING_FILE_ENTRY);
 
-		CommerceVirtualOrderItemFileEntry commerceVirtualOrderItemFileEntry =
-			_commerceVirtualOrderItemFileEntryService.
-				fetchCommerceVirtualOrderItemFileEntry(
-					commerceVirtualOrderItemFileEntryId);
+		if (cpdVirtualSettingFileEntry != null) {
+			return cpdVirtualSettingFileEntry;
+		}
 
-		if (commerceVirtualOrderItemFileEntry != null) {
+		long cpdVirtualSettingFileEntryId = ParamUtil.getLong(
+			renderRequest, "cpdVirtualSettingFileEntryId");
+
+		cpdVirtualSettingFileEntry =
+			_cpdefinitionVirtualSettingFileEntryService.
+				fetchCPDVirtualSettingFileEntry(cpdVirtualSettingFileEntryId);
+
+		if (cpdVirtualSettingFileEntry != null) {
 			renderRequest.setAttribute(
 				CPDefinitionVirtualSettingWebKeys.
 					CPD_VIRTUAL_SETTING_FILE_ENTRY,
-				commerceVirtualOrderItemFileEntryId);
+				cpdVirtualSettingFileEntry);
 		}
 
-		return commerceVirtualOrderItemFileEntry;
+		return cpdVirtualSettingFileEntry;
 	}
 
 	public CPDefinitionVirtualSetting getCPDefinitionVirtualSetting(
@@ -89,34 +97,26 @@ public class CPDefinitionVirtualSettingActionHelper {
 		return cpDefinitionVirtualSetting;
 	}
 
-	public CPDVirtualSettingFileEntry getCPDVirtualSettingFileEntry(
-			RenderRequest renderRequest)
+	public CommerceVirtualOrderItemFileEntry
+			getCommerceVirtualOrderItemFileEntry(RenderRequest renderRequest)
 		throws PortalException {
 
-		CPDVirtualSettingFileEntry cpdVirtualSettingFileEntry =
-			(CPDVirtualSettingFileEntry)renderRequest.getAttribute(
-				CPDefinitionVirtualSettingWebKeys.
-					CPD_VIRTUAL_SETTING_FILE_ENTRY);
+		long commerceVirtualOrderItemFileEntryId = ParamUtil.getLong(
+			renderRequest, "commerceVirtualOrderItemFileEntryId");
 
-		if (cpdVirtualSettingFileEntry != null) {
-			return cpdVirtualSettingFileEntry;
-		}
+		CommerceVirtualOrderItemFileEntry commerceVirtualOrderItemFileEntry =
+			_commerceVirtualOrderItemFileEntryService.
+				fetchCommerceVirtualOrderItemFileEntry(
+					commerceVirtualOrderItemFileEntryId);
 
-		long cpdVirtualSettingFileEntryId = ParamUtil.getLong(
-			renderRequest, "cpdVirtualSettingFileEntryId");
-
-		cpdVirtualSettingFileEntry =
-			_cpdefinitionVirtualSettingFileEntryService.
-				fetchCPDVirtualSettingFileEntry(cpdVirtualSettingFileEntryId);
-
-		if (cpdVirtualSettingFileEntry != null) {
+		if (commerceVirtualOrderItemFileEntry != null) {
 			renderRequest.setAttribute(
 				CPDefinitionVirtualSettingWebKeys.
 					CPD_VIRTUAL_SETTING_FILE_ENTRY,
-				cpdVirtualSettingFileEntry);
+				commerceVirtualOrderItemFileEntryId);
 		}
 
-		return cpdVirtualSettingFileEntry;
+		return commerceVirtualOrderItemFileEntry;
 	}
 
 	@Reference
@@ -124,11 +124,11 @@ public class CPDefinitionVirtualSettingActionHelper {
 		_commerceVirtualOrderItemFileEntryService;
 
 	@Reference
-	private CPDVirtualSettingFileEntryService
-		_cpdefinitionVirtualSettingFileEntryService;
-
-	@Reference
 	private CPDefinitionVirtualSettingService
 		_cpDefinitionVirtualSettingService;
+
+	@Reference
+	private CPDVirtualSettingFileEntryService
+		_cpdefinitionVirtualSettingFileEntryService;
 
 }

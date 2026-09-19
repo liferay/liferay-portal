@@ -64,6 +64,15 @@ public class CommerceSubscriptionContentDisplayContext {
 		_cpRequestHelper = new CPRequestHelper(httpServletRequest);
 	}
 
+	public String getCPDefinitionURL(
+			CommerceSubscriptionEntry commerceSubscriptionEntry,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		return _cpDefinitionHelper.getFriendlyURL(
+			commerceSubscriptionEntry.getCPDefinitionId(), themeDisplay);
+	}
+
 	public DropdownItemList getCommerceSubscriptionEntryActionItemList(
 			CommerceSubscriptionEntry commerceSubscriptionEntry,
 			PortletRequest portletRequest, PortletResponse portletResponse)
@@ -90,15 +99,6 @@ public class CommerceSubscriptionContentDisplayContext {
 				(CommerceContext)httpServletRequest.getAttribute(
 					CommerceWebKeys.COMMERCE_CONTEXT)),
 			commerceSubscriptionEntry.getCPInstanceId());
-	}
-
-	public String getCPDefinitionURL(
-			CommerceSubscriptionEntry commerceSubscriptionEntry,
-			ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		return _cpDefinitionHelper.getFriendlyURL(
-			commerceSubscriptionEntry.getCPDefinitionId(), themeDisplay);
 	}
 
 	public List<KeyValuePair> getKeyValuePairs(

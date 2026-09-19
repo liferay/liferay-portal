@@ -1755,6 +1755,10 @@ public class SitemapManagerImpl implements SitemapManager {
 	private ServiceTrackerMap<Long, SitemapURLProvider> _serviceTrackerMap;
 
 	@Reference
+	private SiteSitemapRegenerationEntryLocalService
+		_siteSitemapRegenerationEntryLocalService;
+
+	@Reference
 	private SitemapConfigurationManager _sitemapConfigurationManager;
 
 	@Reference
@@ -1762,10 +1766,6 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Reference
 	private SitemapURLProviderHelper _sitemapURLProviderHelper;
-
-	@Reference
-	private SiteSitemapRegenerationEntryLocalService
-		_siteSitemapRegenerationEntryLocalService;
 
 	@Reference
 	private TriggerFactory _triggerFactory;

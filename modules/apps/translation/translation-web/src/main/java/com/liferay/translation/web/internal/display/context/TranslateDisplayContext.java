@@ -133,25 +133,6 @@ public class TranslateDisplayContext {
 				PortalUtil.getLocale(_httpServletRequest)));
 	}
 
-	public List<InfoField> getInfoFields(InfoFieldSetEntry infoFieldSetEntry) {
-		if (infoFieldSetEntry instanceof InfoField) {
-			InfoField infoField = (InfoField)infoFieldSetEntry;
-
-			if (_translationInfoFieldChecker.isTranslatable(infoField)) {
-				return Arrays.asList(infoField);
-			}
-		}
-		else if (infoFieldSetEntry instanceof InfoFieldSet) {
-			InfoFieldSet infoFieldSet = (InfoFieldSet)infoFieldSetEntry;
-
-			return ListUtil.filter(
-				infoFieldSet.getAllInfoFields(),
-				_translationInfoFieldChecker::isTranslatable);
-		}
-
-		return Collections.emptyList();
-	}
-
 	public List<InfoFieldSetEntry> getInfoFieldSetEntries() {
 		return _infoForm.getInfoFieldSetEntries();
 	}
@@ -303,6 +284,25 @@ public class TranslateDisplayContext {
 		}
 
 		return null;
+	}
+
+	public List<InfoField> getInfoFields(InfoFieldSetEntry infoFieldSetEntry) {
+		if (infoFieldSetEntry instanceof InfoField) {
+			InfoField infoField = (InfoField)infoFieldSetEntry;
+
+			if (_translationInfoFieldChecker.isTranslatable(infoField)) {
+				return Arrays.asList(infoField);
+			}
+		}
+		else if (infoFieldSetEntry instanceof InfoFieldSet) {
+			InfoFieldSet infoFieldSet = (InfoFieldSet)infoFieldSetEntry;
+
+			return ListUtil.filter(
+				infoFieldSet.getAllInfoFields(),
+				_translationInfoFieldChecker::isTranslatable);
+		}
+
+		return Collections.emptyList();
 	}
 
 	public String getLanguageIdTitle(String languageId) {

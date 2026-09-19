@@ -8998,52 +8998,6 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testUpdateObjectEntryWithoutReloading() throws Exception {
-		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
-			Collections.singletonList(
-				ObjectFieldUtil.createObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-					ObjectFieldConstants.DB_TYPE_STRING, "Name", "name")));
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			objectDefinition,
-			Collections.<String, Serializable>singletonMap("name", "Peter"),
-			ServiceContextTestUtil.getServiceContext());
-
-		FinderCacheUtil.clearDSLQueryCache(objectDefinition.getDBTableName());
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"org.hibernate.SQL", LoggerTestUtil.DEBUG)) {
-
-			objectEntry = _objectEntryLocalService.updateObjectEntry(
-				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-				objectEntry.getObjectEntryFolderId(),
-				Collections.<String, Serializable>singletonMap("name", "Paul"),
-				ServiceContextTestUtil.getServiceContext());
-
-			Assert.assertEquals(
-				"Paul", MapUtil.getString(objectEntry.getValues(), "name"));
-
-			int count = 0;
-
-			for (LogEntry logEntry : logCapture.getLogEntries()) {
-				String message = logEntry.getMessage();
-
-				if (message.startsWith("select") &&
-					message.contains(objectDefinition.getDBTableName())) {
-
-					count++;
-				}
-			}
-
-			Assert.assertEquals(
-				String.valueOf(logCapture.getLogEntries()), 1, count);
-		}
-
-		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
-	}
-
-	@Test
 	public void testUpdateObjectEntryWithPhoneNumberObjectField()
 		throws Exception {
 
@@ -9166,6 +9120,52 @@ public class ObjectEntryLocalServiceTest {
 			objectEntry.getURLTitleMap());
 
 		_assertFriendlyURLEntries(2, objectDefinition, objectEntry);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
+	public void testUpdateObjectEntryWithoutReloading() throws Exception {
+		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
+			Collections.singletonList(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "Name", "name")));
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			Collections.<String, Serializable>singletonMap("name", "Peter"),
+			ServiceContextTestUtil.getServiceContext());
+
+		FinderCacheUtil.clearDSLQueryCache(objectDefinition.getDBTableName());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"org.hibernate.SQL", LoggerTestUtil.DEBUG)) {
+
+			objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				Collections.<String, Serializable>singletonMap("name", "Paul"),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.assertEquals(
+				"Paul", MapUtil.getString(objectEntry.getValues(), "name"));
+
+			int count = 0;
+
+			for (LogEntry logEntry : logCapture.getLogEntries()) {
+				String message = logEntry.getMessage();
+
+				if (message.startsWith("select") &&
+					message.contains(objectDefinition.getDBTableName())) {
+
+					count++;
+				}
+			}
+
+			Assert.assertEquals(
+				String.valueOf(logCapture.getLogEntries()), 1, count);
+		}
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}

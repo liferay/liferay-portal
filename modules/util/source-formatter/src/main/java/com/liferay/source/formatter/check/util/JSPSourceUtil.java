@@ -284,6 +284,42 @@ public class JSPSourceUtil {
 		return referenceFileNames;
 	}
 
+	public static boolean isJSSource(String content, int pos) {
+		if (isJavaSource(content, pos)) {
+			return false;
+		}
+
+		String s = content.substring(pos);
+
+		Matcher matcher = _auiScriptEndTagPattern.matcher(s);
+
+		if (matcher.find()) {
+			s = s.substring(0, matcher.start());
+
+			matcher = _auiScriptStartTagPattern.matcher(s);
+
+			if (!matcher.find()) {
+				return true;
+			}
+		}
+
+		s = content.substring(pos);
+
+		matcher = _scriptEndTagPattern.matcher(s);
+
+		if (matcher.find()) {
+			s = s.substring(0, matcher.start());
+
+			matcher = _scriptStartTagPattern.matcher(s);
+
+			if (!matcher.find()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public static boolean isJavaSource(String content, int pos) {
 		return isJavaSource(content, pos, false);
 	}
@@ -327,42 +363,6 @@ public class JSPSourceUtil {
 
 		if (!s.contains("<%")) {
 			return true;
-		}
-
-		return false;
-	}
-
-	public static boolean isJSSource(String content, int pos) {
-		if (isJavaSource(content, pos)) {
-			return false;
-		}
-
-		String s = content.substring(pos);
-
-		Matcher matcher = _auiScriptEndTagPattern.matcher(s);
-
-		if (matcher.find()) {
-			s = s.substring(0, matcher.start());
-
-			matcher = _auiScriptStartTagPattern.matcher(s);
-
-			if (!matcher.find()) {
-				return true;
-			}
-		}
-
-		s = content.substring(pos);
-
-		matcher = _scriptEndTagPattern.matcher(s);
-
-		if (matcher.find()) {
-			s = s.substring(0, matcher.start());
-
-			matcher = _scriptStartTagPattern.matcher(s);
-
-			if (!matcher.find()) {
-				return true;
-			}
 		}
 
 		return false;

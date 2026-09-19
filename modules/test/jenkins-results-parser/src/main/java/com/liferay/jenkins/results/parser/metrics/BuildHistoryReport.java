@@ -36,40 +36,6 @@ import org.json.JSONObject;
  */
 public class BuildHistoryReport extends BaseReport {
 
-	public static BuildHistoryReport newAggregateReport(
-		long durationDays, File outputDir, String startDateString) {
-
-		BuildHistoryReport buildHistoryReport = new BuildHistoryReport(
-			outputDir);
-
-		buildHistoryReport.addFilesFromResource(
-			"dependencies/metrics/aggregate-report", "/index.html");
-
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(_getGeneratedDateJavaScriptVariable());
-		sb.append(_getWeeklyServerDurationJavaScriptVariable());
-
-		long duration = TimeUnit.DAYS.toMillis(durationDays);
-		long startTime = _getStartTime(startDateString);
-
-		Collection<BuildHistory> buildHistories =
-			BuildHistoryProcessor.newAggregateJobHistories(duration, startTime);
-
-		sb.append(
-			_getTableDataJavaScriptVariable(
-				buildHistories, "Job Category", 1, "[Total]"));
-
-		buildHistoryReport.addFile(sb.toString(), "js/table-data.js");
-
-		buildHistoryReport.addFile(
-			_getTimelineDataJavaScriptVariable(
-				buildHistories, duration, startTime),
-			"js/timeline-data.js");
-
-		return buildHistoryReport;
-	}
-
 	public static BuildHistoryReport newAWSBuildComparisonReport(
 		long durationDays, File outputDir, String startDateString) {
 
@@ -206,6 +172,40 @@ public class BuildHistoryReport extends BaseReport {
 		sb.append(";");
 
 		buildHistoryReport.addFile(sb.toString(), "js/table-data.js");
+
+		return buildHistoryReport;
+	}
+
+	public static BuildHistoryReport newAggregateReport(
+		long durationDays, File outputDir, String startDateString) {
+
+		BuildHistoryReport buildHistoryReport = new BuildHistoryReport(
+			outputDir);
+
+		buildHistoryReport.addFilesFromResource(
+			"dependencies/metrics/aggregate-report", "/index.html");
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(_getGeneratedDateJavaScriptVariable());
+		sb.append(_getWeeklyServerDurationJavaScriptVariable());
+
+		long duration = TimeUnit.DAYS.toMillis(durationDays);
+		long startTime = _getStartTime(startDateString);
+
+		Collection<BuildHistory> buildHistories =
+			BuildHistoryProcessor.newAggregateJobHistories(duration, startTime);
+
+		sb.append(
+			_getTableDataJavaScriptVariable(
+				buildHistories, "Job Category", 1, "[Total]"));
+
+		buildHistoryReport.addFile(sb.toString(), "js/table-data.js");
+
+		buildHistoryReport.addFile(
+			_getTimelineDataJavaScriptVariable(
+				buildHistories, duration, startTime),
+			"js/timeline-data.js");
 
 		return buildHistoryReport;
 	}

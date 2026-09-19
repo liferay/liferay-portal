@@ -173,22 +173,6 @@ public class DDLViewRecordsDisplayContext {
 		return orderByComparator;
 	}
 
-	public List<DDMFormField> getDDMFormFields() {
-		if (_ddmFormFields == null) {
-			DDMForm ddmForm = _ddmStructure.getDDMForm();
-
-			List<DDMFormField> ddmFormFields = new ArrayList<>();
-
-			for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
-				_addDDMFormField(ddmFormFields, ddmFormField);
-			}
-
-			_ddmFormFields = ddmFormFields;
-		}
-
-		return _ddmFormFields;
-	}
-
 	public Map<String, List<DDMFormFieldValue>> getDDMFormFieldValuesMap(
 			DDLRecordVersion recordVersion)
 		throws StorageException {
@@ -206,6 +190,22 @@ public class DDLViewRecordsDisplayContext {
 		}
 
 		return ddmFormFieldValuesMap;
+	}
+
+	public List<DDMFormField> getDDMFormFields() {
+		if (_ddmFormFields == null) {
+			DDMForm ddmForm = _ddmStructure.getDDMForm();
+
+			List<DDMFormField> ddmFormFields = new ArrayList<>();
+
+			for (DDMFormField ddmFormField : ddmForm.getDDMFormFields()) {
+				_addDDMFormField(ddmFormFields, ddmFormField);
+			}
+
+			_ddmFormFields = ddmFormFields;
+		}
+
+		return _ddmFormFields;
 	}
 
 	public DDMStructure getDDMStructure() {

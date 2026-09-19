@@ -89,16 +89,6 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 	}
 
 	@GET
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public List<AccountLifecycle> getAccountLifecycles(
-			@PathParam("groupId") long groupId)
-		throws Exception {
-
-		return contactsEngineClient.getAccountLifecycles(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId));
-	}
-
-	@GET
 	@Path("/{id}/stages")
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public List<AccountLifecycleStageMetric> getAccountLifecycleStageMetrics(
@@ -111,6 +101,16 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 		return contactsEngineClient.getAccountLifecycleStageMetrics(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId), country,
 			id, industry, segmentId);
+	}
+
+	@GET
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public List<AccountLifecycle> getAccountLifecycles(
+			@PathParam("groupId") long groupId)
+		throws Exception {
+
+		return contactsEngineClient.getAccountLifecycles(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId));
 	}
 
 	@GET

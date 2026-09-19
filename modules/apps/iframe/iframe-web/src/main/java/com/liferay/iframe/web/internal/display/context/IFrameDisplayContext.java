@@ -116,6 +116,30 @@ public class IFrameDisplayContext {
 		return _hiddenVariables;
 	}
 
+	public IFramePortletInstanceConfiguration
+		getIFramePortletInstanceConfiguration() {
+
+		return _iFramePortletInstanceConfiguration;
+	}
+
+	public List<String> getIFrameVariables() {
+		List<String> iFrameVariables = new ArrayList<>();
+
+		Enumeration<String> enumeration = _request.getParameterNames();
+
+		while (enumeration.hasMoreElements()) {
+			String name = enumeration.nextElement();
+
+			if (name.startsWith(_IFRAME_PREFIX)) {
+				iFrameVariables.add(
+					name.substring(_IFRAME_PREFIX.length()) + StringPool.EQUAL +
+						_request.getParameter(name));
+			}
+		}
+
+		return iFrameVariables;
+	}
+
 	public String getIframeBaseSrc() {
 		if (_iFrameBaseSrc != null) {
 			return _iFrameBaseSrc;
@@ -134,12 +158,6 @@ public class IFrameDisplayContext {
 		}
 
 		return _iFrameBaseSrc;
-	}
-
-	public IFramePortletInstanceConfiguration
-		getIFramePortletInstanceConfiguration() {
-
-		return _iFramePortletInstanceConfiguration;
 	}
 
 	public String getIframeSrc() {
@@ -168,24 +186,6 @@ public class IFrameDisplayContext {
 		}
 
 		return _iFrameSrc;
-	}
-
-	public List<String> getIFrameVariables() {
-		List<String> iFrameVariables = new ArrayList<>();
-
-		Enumeration<String> enumeration = _request.getParameterNames();
-
-		while (enumeration.hasMoreElements()) {
-			String name = enumeration.nextElement();
-
-			if (name.startsWith(_IFRAME_PREFIX)) {
-				iFrameVariables.add(
-					name.substring(_IFRAME_PREFIX.length()) + StringPool.EQUAL +
-						_request.getParameter(name));
-			}
-		}
-
-		return iFrameVariables;
 	}
 
 	public String getPassword() throws PortalException {

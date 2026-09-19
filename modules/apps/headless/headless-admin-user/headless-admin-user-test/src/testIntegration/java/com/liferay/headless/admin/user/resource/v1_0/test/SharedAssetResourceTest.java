@@ -246,20 +246,6 @@ public class SharedAssetResourceTest extends BaseSharedAssetResourceTestCase {
 			testGroup.getGroupId(), _objectDefinition, sharedAsset);
 	}
 
-	private DepotEntry _addDepotEntry(int type) throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			new HashMap<>(), type,
-			ServiceContextTestUtil.getServiceContext(
-				TestPropsValues.getGroupId(), _user.getUserId()));
-
-		_depotEntries.add(depotEntry);
-
-		return depotEntry;
-	}
-
 	private DLFileEntry _addDLFileEntry(long groupId, long userId)
 		throws Exception {
 
@@ -277,6 +263,20 @@ public class SharedAssetResourceTest extends BaseSharedAssetResourceTestCase {
 			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT, null,
 			null, inputStream, bytes.length, null, null, null,
 			ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
+	private DepotEntry _addDepotEntry(int type) throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			new HashMap<>(), type,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), _user.getUserId()));
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry;
 	}
 
 	private ObjectDefinition _addObjectDefinition(String scope)

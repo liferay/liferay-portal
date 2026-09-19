@@ -70,12 +70,6 @@ public interface DDMRESTDataProviderSettings
 	public boolean cacheable();
 
 	@DDMFormField(
-		label = "%support-filtering-by-keyword",
-		properties = "showAsSwitcher=true"
-	)
-	public boolean filterable();
-
-	@DDMFormField(
 		label = "%filter-parameter-name",
 		properties = {
 			"placeholder=%enter-a-name-that-matches-one-of-the-rest-providers-parameters",
@@ -83,6 +77,12 @@ public interface DDMRESTDataProviderSettings
 		}
 	)
 	public String filterParameterName();
+
+	@DDMFormField(
+		label = "%support-filtering-by-keyword",
+		properties = "showAsSwitcher=true"
+	)
+	public boolean filterable();
 
 	@DDMFormField(
 		label = "%support-pagination", predefinedValue = "false",

@@ -84,18 +84,13 @@ public class HighlightImpl implements Highlight {
 	}
 
 	@Override
-	public String getFragmenter() {
-		return _fragmenter;
-	}
-
-	@Override
 	public Integer getFragmentSize() {
 		return _fragmentSize;
 	}
 
 	@Override
-	public String getHighlighterType() {
-		return _highlighterType;
+	public String getFragmenter() {
+		return _fragmenter;
 	}
 
 	@Override
@@ -106,6 +101,11 @@ public class HighlightImpl implements Highlight {
 	@Override
 	public Query getHighlightQuery() {
 		return _highlightQuery;
+	}
+
+	@Override
+	public String getHighlighterType() {
+		return _highlighterType;
 	}
 
 	@Override
@@ -225,13 +225,6 @@ public class HighlightImpl implements Highlight {
 		}
 
 		@Override
-		public HighlightBuilder fragmenter(String fragmenter) {
-			_highlightImpl._fragmenter = fragmenter;
-
-			return this;
-		}
-
-		@Override
 		public HighlightBuilder fragmentSize(Integer fragmentSize) {
 			_highlightImpl._fragmentSize = fragmentSize;
 
@@ -239,8 +232,8 @@ public class HighlightImpl implements Highlight {
 		}
 
 		@Override
-		public HighlightBuilder highlighterType(String highlighterType) {
-			_highlightImpl._highlighterType = highlighterType;
+		public HighlightBuilder fragmenter(String fragmenter) {
+			_highlightImpl._fragmenter = fragmenter;
 
 			return this;
 		}
@@ -255,6 +248,13 @@ public class HighlightImpl implements Highlight {
 		@Override
 		public HighlightBuilder highlightQuery(Query highlightQuery) {
 			_highlightImpl._highlightQuery = highlightQuery;
+
+			return this;
+		}
+
+		@Override
+		public HighlightBuilder highlighterType(String highlighterType) {
+			_highlightImpl._highlighterType = highlighterType;
 
 			return this;
 		}
@@ -335,11 +335,11 @@ public class HighlightImpl implements Highlight {
 	private String _encoder;
 	private final List<FieldConfig> _fieldConfigs = new ArrayList<>();
 	private Boolean _forceSource;
-	private String _fragmenter;
 	private Integer _fragmentSize;
-	private String _highlighterType;
+	private String _fragmenter;
 	private Boolean _highlightFilter;
 	private Query _highlightQuery;
+	private String _highlighterType;
 	private Integer _noMatchSize;
 	private Integer _numOfFragments;
 	private String _order;

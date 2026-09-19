@@ -163,11 +163,11 @@ public class PortalPreferencesLocalServiceTest {
 	private BundleContext _bundleContext;
 
 	@Inject
-	private PortalPreferencesLocalService _portalPreferencesLocalService;
-
-	@Inject
 	private PortalPreferenceValueLocalService
 		_portalPreferenceValueLocalService;
+
+	@Inject
+	private PortalPreferencesLocalService _portalPreferencesLocalService;
 
 	@Inject
 	private PrefsProps _prefsProps;

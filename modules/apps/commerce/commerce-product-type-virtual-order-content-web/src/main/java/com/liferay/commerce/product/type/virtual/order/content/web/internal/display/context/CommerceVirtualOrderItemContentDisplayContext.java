@@ -129,17 +129,6 @@ public class CommerceVirtualOrderItemContentDisplayContext {
 		return _articleDisplay;
 	}
 
-	public String getCommerceOrderItemThumbnailSrc(
-			CommerceOrderItem commerceOrderItem)
-		throws Exception {
-
-		return _cpInstanceHelper.getCPInstanceThumbnailSrc(
-			CommerceUtil.getCommerceAccountId(
-				(CommerceContext)_httpServletRequest.getAttribute(
-					CommerceWebKeys.COMMERCE_CONTEXT)),
-			commerceOrderItem.getCPInstanceId());
-	}
-
 	public String getCPDefinitionURL(
 			long cpDefinitionId, ThemeDisplay themeDisplay)
 		throws PortalException {
@@ -168,6 +157,17 @@ public class CommerceVirtualOrderItemContentDisplayContext {
 		}
 
 		return cpDefinitionVirtualSetting;
+	}
+
+	public String getCommerceOrderItemThumbnailSrc(
+			CommerceOrderItem commerceOrderItem)
+		throws Exception {
+
+		return _cpInstanceHelper.getCPInstanceThumbnailSrc(
+			CommerceUtil.getCommerceAccountId(
+				(CommerceContext)_httpServletRequest.getAttribute(
+					CommerceWebKeys.COMMERCE_CONTEXT)),
+			commerceOrderItem.getCPInstanceId());
 	}
 
 	public String getDisplayStyle() {

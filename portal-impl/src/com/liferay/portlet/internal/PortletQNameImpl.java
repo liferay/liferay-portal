@@ -179,7 +179,7 @@ public class PortletQNameImpl implements PortletQName {
 		PortletQNameImpl.class);
 
 	private final Map<String, String> _identifiers = new ConcurrentHashMap<>();
-	private final Map<String, QName> _qNames = new ConcurrentHashMap<>();
 	private final Map<QName, String> _qNameStrings = new ConcurrentHashMap<>();
+	private final Map<String, QName> _qNames = new ConcurrentHashMap<>();
 
 }

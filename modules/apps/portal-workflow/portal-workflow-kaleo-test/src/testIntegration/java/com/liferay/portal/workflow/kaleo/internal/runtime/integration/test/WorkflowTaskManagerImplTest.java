@@ -264,45 +264,6 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 	}
 
 	@Test
-	public void testApproveDLFileEntryInDLFolderWithoutWorkflowWhenHomeDLFolderHasWorkflow()
-		throws Exception {
-
-		_activateSingleApproverWorkflow(DLFolder.class.getName(), 0, -1);
-
-		Folder folder = _addFolder();
-
-		folder = _updateFolder(
-			folder, DLFolderConstants.RESTRICTION_TYPE_WORKFLOW);
-
-		FileVersion fileVersion1 = _addFileVersion(folder.getFolderId());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, fileVersion1.getStatus());
-
-		FileVersion fileVersion2 = _addFileVersion(
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_PENDING, fileVersion2.getStatus());
-
-		_assignWorkflowTaskToUser(
-			_adminUser, _adminUser, _REVIEW, DLFileEntry.class.getName(),
-			fileVersion2.getFileVersionId());
-
-		_completeWorkflowTask(
-			_adminUser, Constants.APPROVE, _REVIEW, DLFileEntry.class.getName(),
-			fileVersion2.getFileVersionId());
-
-		fileVersion2 = _dlAppService.getFileVersion(
-			fileVersion2.getFileVersionId());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, fileVersion2.getStatus());
-
-		_deactivateWorkflow(DLFolder.class.getName(), 0, -1);
-	}
-
-	@Test
 	public void testApproveDLFileEntryInDLFolderWithSpecificType()
 		throws Exception {
 
@@ -396,6 +357,45 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, fileVersion2.getStatus());
+	}
+
+	@Test
+	public void testApproveDLFileEntryInDLFolderWithoutWorkflowWhenHomeDLFolderHasWorkflow()
+		throws Exception {
+
+		_activateSingleApproverWorkflow(DLFolder.class.getName(), 0, -1);
+
+		Folder folder = _addFolder();
+
+		folder = _updateFolder(
+			folder, DLFolderConstants.RESTRICTION_TYPE_WORKFLOW);
+
+		FileVersion fileVersion1 = _addFileVersion(folder.getFolderId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, fileVersion1.getStatus());
+
+		FileVersion fileVersion2 = _addFileVersion(
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_PENDING, fileVersion2.getStatus());
+
+		_assignWorkflowTaskToUser(
+			_adminUser, _adminUser, _REVIEW, DLFileEntry.class.getName(),
+			fileVersion2.getFileVersionId());
+
+		_completeWorkflowTask(
+			_adminUser, Constants.APPROVE, _REVIEW, DLFileEntry.class.getName(),
+			fileVersion2.getFileVersionId());
+
+		fileVersion2 = _dlAppService.getFileVersion(
+			fileVersion2.getFileVersionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, fileVersion2.getStatus());
+
+		_deactivateWorkflow(DLFolder.class.getName(), 0, -1);
 	}
 
 	@Test

@@ -61,13 +61,6 @@ public class RoleMembershipPolicyRolesTest
 	}
 
 	@Test(expected = MembershipPolicyException.class)
-	public void testAssignUsersToForbiddenRole() throws Exception {
-		long[] forbiddenRoleIds = addForbiddenRoles();
-
-		UserServiceUtil.addRoleUsers(forbiddenRoleIds[0], addUsers());
-	}
-
-	@Test(expected = MembershipPolicyException.class)
 	public void testAssignUserToForbiddenRole() throws Exception {
 		long[] userIds = addUsers();
 		long[] forbiddenRoleIds = addForbiddenRoles();
@@ -85,15 +78,11 @@ public class RoleMembershipPolicyRolesTest
 		RoleServiceUtil.addUserRoles(userIds[0], addForbiddenRoles());
 	}
 
-	@Test
-	public void testPropagateWhenAssigningRolesToUser() throws Exception {
-		long[] userIds = addUsers();
+	@Test(expected = MembershipPolicyException.class)
+	public void testAssignUsersToForbiddenRole() throws Exception {
+		long[] forbiddenRoleIds = addForbiddenRoles();
 
-		MembershipPolicyTestUtil.updateUser(
-			UserLocalServiceUtil.getUser(userIds[0]), null, addStandardRoles(),
-			null, null, Collections.<UserGroupRole>emptyList());
-
-		Assert.assertTrue(isPropagateRoles());
+		UserServiceUtil.addRoleUsers(forbiddenRoleIds[0], addUsers());
 	}
 
 	@Test
@@ -106,10 +95,12 @@ public class RoleMembershipPolicyRolesTest
 	}
 
 	@Test
-	public void testPropagateWhenAssigningUsersToRole() throws Exception {
-		long[] standardRoleId = addStandardRoles();
+	public void testPropagateWhenAssigningRolesToUser() throws Exception {
+		long[] userIds = addUsers();
 
-		UserServiceUtil.addRoleUsers(standardRoleId[0], addUsers());
+		MembershipPolicyTestUtil.updateUser(
+			UserLocalServiceUtil.getUser(userIds[0]), null, addStandardRoles(),
+			null, null, Collections.<UserGroupRole>emptyList());
 
 		Assert.assertTrue(isPropagateRoles());
 	}
@@ -119,6 +110,15 @@ public class RoleMembershipPolicyRolesTest
 		long[] userIds = addUsers();
 
 		RoleServiceUtil.addUserRoles(userIds[0], addStandardRoles());
+
+		Assert.assertTrue(isPropagateRoles());
+	}
+
+	@Test
+	public void testPropagateWhenAssigningUsersToRole() throws Exception {
+		long[] standardRoleId = addStandardRoles();
+
+		UserServiceUtil.addRoleUsers(standardRoleId[0], addUsers());
 
 		Assert.assertTrue(isPropagateRoles());
 	}

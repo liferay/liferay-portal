@@ -203,16 +203,6 @@ public class UpdateTranslationMVCActionCommand extends BaseMVCActionCommand {
 		return values;
 	}
 
-	private <T> List<InfoField<?>> _getInfoFields(String className, T object) {
-		InfoItemFormProvider<T> infoItemFormProvider =
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				InfoItemFormProvider.class, className);
-
-		InfoForm infoForm = infoItemFormProvider.getInfoForm(object);
-
-		return infoForm.getAllInfoFields();
-	}
-
 	private <T> List<InfoFieldValue<Object>> _getInfoFieldValues(
 		ActionRequest actionRequest, InfoItemFieldValues infoItemFieldValues,
 		String className, T object) {
@@ -254,6 +244,16 @@ public class UpdateTranslationMVCActionCommand extends BaseMVCActionCommand {
 		}
 
 		return infoFieldValues;
+	}
+
+	private <T> List<InfoField<?>> _getInfoFields(String className, T object) {
+		InfoItemFormProvider<T> infoItemFormProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemFormProvider.class, className);
+
+		InfoForm infoForm = infoItemFormProvider.getInfoForm(object);
+
+		return infoForm.getAllInfoFields();
 	}
 
 	private Object _getInfoItemFieldValue(

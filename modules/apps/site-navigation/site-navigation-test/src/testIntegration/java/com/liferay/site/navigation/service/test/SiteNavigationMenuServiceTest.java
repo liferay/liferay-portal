@@ -137,36 +137,6 @@ public class SiteNavigationMenuServiceTest {
 				_group, _groupUser.getUserId()));
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testAddSiteNavigationMenuWithoutPermissions1()
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group, _groupUser.getUserId());
-
-		UserTestUtil.setUser(_groupUser);
-
-		_siteNavigationMenuService.addSiteNavigationMenu(
-			null, _group.getGroupId(), RandomTestUtil.randomString(),
-			SiteNavigationConstants.TYPE_DEFAULT, serviceContext);
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testAddSiteNavigationMenuWithoutPermissions2()
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group, _groupUser.getUserId());
-
-		UserTestUtil.setUser(_groupUser);
-
-		_siteNavigationMenuService.addSiteNavigationMenu(
-			null, _group.getGroupId(), RandomTestUtil.randomString(),
-			serviceContext);
-	}
-
 	@Test
 	public void testAddSiteNavigationMenuWithPermissions1() throws Exception {
 		ServiceContext serviceContext =
@@ -205,6 +175,36 @@ public class SiteNavigationMenuServiceTest {
 
 		_deleteSiteMemberRoleResourcePermissions(
 			SiteNavigationConstants.RESOURCE_NAME);
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testAddSiteNavigationMenuWithoutPermissions1()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, _groupUser.getUserId());
+
+		UserTestUtil.setUser(_groupUser);
+
+		_siteNavigationMenuService.addSiteNavigationMenu(
+			null, _group.getGroupId(), RandomTestUtil.randomString(),
+			SiteNavigationConstants.TYPE_DEFAULT, serviceContext);
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testAddSiteNavigationMenuWithoutPermissions2()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, _groupUser.getUserId());
+
+		UserTestUtil.setUser(_groupUser);
+
+		_siteNavigationMenuService.addSiteNavigationMenu(
+			null, _group.getGroupId(), RandomTestUtil.randomString(),
+			serviceContext);
 	}
 
 	@Test(expected = NoSuchMenuException.class)
@@ -265,20 +265,6 @@ public class SiteNavigationMenuServiceTest {
 		}
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testDeleteSiteNavigationMenuWithoutPermissions()
-		throws Exception {
-
-		SiteNavigationMenu siteNavigationMenu =
-			SiteNavigationMenuTestUtil.addSiteNavigationMenu(
-				_user.getUserId(), _group);
-
-		UserTestUtil.setUser(_groupUser);
-
-		_siteNavigationMenuService.deleteSiteNavigationMenu(
-			siteNavigationMenu.getSiteNavigationMenuId());
-	}
-
 	@Test
 	public void testDeleteSiteNavigationMenuWithPermissions() throws Exception {
 		SiteNavigationMenu siteNavigationMenu =
@@ -295,6 +281,20 @@ public class SiteNavigationMenuServiceTest {
 
 		_deleteSiteMemberRoleResourcePermissions(
 			SiteNavigationMenu.class.getName());
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testDeleteSiteNavigationMenuWithoutPermissions()
+		throws Exception {
+
+		SiteNavigationMenu siteNavigationMenu =
+			SiteNavigationMenuTestUtil.addSiteNavigationMenu(
+				_user.getUserId(), _group);
+
+		UserTestUtil.setUser(_groupUser);
+
+		_siteNavigationMenuService.deleteSiteNavigationMenu(
+			siteNavigationMenu.getSiteNavigationMenuId());
 	}
 
 	@Test
@@ -521,40 +521,6 @@ public class SiteNavigationMenuServiceTest {
 			actualSiteNavigationMenusCount);
 	}
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateSiteNavigationMenuWithoutUpdatePermissions1()
-		throws Exception {
-
-		SiteNavigationMenu siteNavigationMenu =
-			SiteNavigationMenuTestUtil.addSiteNavigationMenu(
-				_user.getUserId(), _group);
-
-		UserTestUtil.setUser(_groupUser);
-
-		_siteNavigationMenuService.updateSiteNavigationMenu(
-			siteNavigationMenu.getSiteNavigationMenuId(),
-			siteNavigationMenu.getType(), siteNavigationMenu.isAuto(),
-			ServiceContextTestUtil.getServiceContext(
-				_group, _groupUser.getUserId()));
-	}
-
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateSiteNavigationMenuWithoutUpdatePermissions2()
-		throws Exception {
-
-		SiteNavigationMenu siteNavigationMenu =
-			SiteNavigationMenuTestUtil.addSiteNavigationMenu(
-				_user.getUserId(), _group);
-
-		UserTestUtil.setUser(_groupUser);
-
-		_siteNavigationMenuService.updateSiteNavigationMenu(
-			siteNavigationMenu.getSiteNavigationMenuId(),
-			RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext(
-				_group, _groupUser.getUserId()));
-	}
-
 	@Test
 	public void testUpdateSiteNavigationMenuWithUpdatePermissions1()
 		throws Exception {
@@ -604,6 +570,40 @@ public class SiteNavigationMenuServiceTest {
 
 		_deleteSiteMemberRoleResourcePermissions(
 			SiteNavigationMenu.class.getName());
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateSiteNavigationMenuWithoutUpdatePermissions1()
+		throws Exception {
+
+		SiteNavigationMenu siteNavigationMenu =
+			SiteNavigationMenuTestUtil.addSiteNavigationMenu(
+				_user.getUserId(), _group);
+
+		UserTestUtil.setUser(_groupUser);
+
+		_siteNavigationMenuService.updateSiteNavigationMenu(
+			siteNavigationMenu.getSiteNavigationMenuId(),
+			siteNavigationMenu.getType(), siteNavigationMenu.isAuto(),
+			ServiceContextTestUtil.getServiceContext(
+				_group, _groupUser.getUserId()));
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateSiteNavigationMenuWithoutUpdatePermissions2()
+		throws Exception {
+
+		SiteNavigationMenu siteNavigationMenu =
+			SiteNavigationMenuTestUtil.addSiteNavigationMenu(
+				_user.getUserId(), _group);
+
+		UserTestUtil.setUser(_groupUser);
+
+		_siteNavigationMenuService.updateSiteNavigationMenu(
+			siteNavigationMenu.getSiteNavigationMenuId(),
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				_group, _groupUser.getUserId()));
 	}
 
 	private void _addSiteMemberRoleResourcePermission(

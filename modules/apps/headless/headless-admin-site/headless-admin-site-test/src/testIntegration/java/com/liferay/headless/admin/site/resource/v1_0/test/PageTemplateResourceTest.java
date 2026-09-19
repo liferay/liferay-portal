@@ -1322,6 +1322,34 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 		assertValid(getPageTemplate);
 	}
 
+	private void _testGetSitePageTemplateWithNestedFields(
+			PageTemplate pageTemplate)
+		throws Exception {
+
+		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
+
+		PageTemplate postPageTemplate =
+			pageTemplateResource.postSitePageTemplate(
+				testGroup.getExternalReferenceCode(), pageTemplate);
+
+		PageTemplate getPageTemplate = pageTemplateResource.getSitePageTemplate(
+			testGroup.getExternalReferenceCode(),
+			postPageTemplate.getExternalReferenceCode());
+
+		assertEquals(postPageTemplate, getPageTemplate);
+		assertValid(getPageTemplate);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					getPageTemplate.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		PageSpecificationsTestUtil.assertPageSpecifications(
+			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
+			getPageTemplate.getPageSpecifications());
+	}
+
 	private void _testGetSitePageTemplatesPageWithThumbnailAsNestedField()
 		throws Exception {
 
@@ -1374,34 +1402,6 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 				Assert.assertNull(pageTemplate.getThumbnailURLReference());
 			}
 		}
-	}
-
-	private void _testGetSitePageTemplateWithNestedFields(
-			PageTemplate pageTemplate)
-		throws Exception {
-
-		PageTemplateResource pageTemplateResource = _getPageTemplateResource();
-
-		PageTemplate postPageTemplate =
-			pageTemplateResource.postSitePageTemplate(
-				testGroup.getExternalReferenceCode(), pageTemplate);
-
-		PageTemplate getPageTemplate = pageTemplateResource.getSitePageTemplate(
-			testGroup.getExternalReferenceCode(),
-			postPageTemplate.getExternalReferenceCode());
-
-		assertEquals(postPageTemplate, getPageTemplate);
-		assertValid(getPageTemplate);
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
-					getPageTemplate.getExternalReferenceCode(),
-					testGroup.getGroupId());
-
-		PageSpecificationsTestUtil.assertPageSpecifications(
-			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
-			getPageTemplate.getPageSpecifications());
 	}
 
 	private void _testPatchSitePageTemplate(

@@ -34,11 +34,11 @@ public interface TestClassHistory {
 
 	public long getTestCount();
 
-	public URL getTestrayCaseURL();
-
 	public TestTaskHistory getTestTaskHistory();
 
 	public String getTestTaskName();
+
+	public URL getTestrayCaseURL();
 
 	public boolean isFlaky();
 

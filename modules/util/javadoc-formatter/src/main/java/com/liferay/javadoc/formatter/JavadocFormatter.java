@@ -1503,120 +1503,6 @@ public class JavadocFormatter {
 		return sb.toString();
 	}
 
-	private Document _getJavadocDocument(JavaClass javaClass) throws Exception {
-		Element rootElement = DocumentHelper.createElement("javadoc");
-
-		Document document = DocumentHelper.createDocument(rootElement);
-
-		_addClassElement(rootElement, javaClass, false);
-
-		return document;
-	}
-
-	private Tuple _getJavadocsXmlTuple(String fileName) throws Exception {
-		File file = new File(_inputDirName + fileName);
-
-		String absolutePath = file.getAbsolutePath();
-
-		absolutePath = StringUtil.replace(absolutePath, '\\', '/');
-		absolutePath = StringUtil.replace(absolutePath, "/./", "/");
-
-		int pos = absolutePath.indexOf("/portal-impl/src/");
-
-		String srcDirName = null;
-
-		if (pos != -1) {
-			srcDirName = absolutePath.substring(0, pos + 17);
-		}
-
-		if (srcDirName == null) {
-			pos = absolutePath.indexOf("/portal-kernel/src/");
-
-			if (pos == -1) {
-				pos = absolutePath.indexOf("/portal-kernel/src/");
-			}
-
-			if (pos == -1) {
-				pos = absolutePath.indexOf("/util-bridges/src/");
-			}
-
-			if (pos == -1) {
-				pos = absolutePath.indexOf("/util-java/src/");
-			}
-
-			if (pos == -1) {
-				pos = absolutePath.indexOf("/util-taglib/src/");
-			}
-
-			if (pos != -1) {
-				srcDirName =
-					absolutePath.substring(0, pos) + "/portal-impl/src/";
-			}
-		}
-
-		if (srcDirName == null) {
-			pos = absolutePath.indexOf("/WEB-INF/src/");
-
-			if (pos != -1) {
-				srcDirName = absolutePath.substring(0, pos + 13);
-			}
-		}
-
-		if (srcDirName == null) {
-			pos = absolutePath.indexOf("/src/main/java/");
-
-			if (pos != -1) {
-				srcDirName =
-					absolutePath.substring(0, pos) + "/src/main/resources";
-			}
-		}
-
-		if (srcDirName == null) {
-			return null;
-		}
-
-		Tuple tuple = _javadocxXmlTuples.get(srcDirName);
-
-		if (tuple != null) {
-			return tuple;
-		}
-
-		File metaInfDir = new File(srcDirName, "META-INF");
-
-		if (!metaInfDir.exists()) {
-			metaInfDir.mkdirs();
-		}
-
-		File javadocsXmlFile = new File(
-			metaInfDir, _outputFilePrefix + "-all.xml");
-
-		String javadocsXmlContent = null;
-
-		if (!javadocsXmlFile.exists()) {
-			javadocsXmlContent =
-				"<?xml version=\"1.0\"?>\n\n<javadocs>\n</javadocs>";
-
-			_write(javadocsXmlFile, javadocsXmlContent);
-
-			_modifiedFileNames.add(javadocsXmlFile.getAbsolutePath());
-		}
-
-		javadocsXmlContent = JavadocFormatterUtil.read(javadocsXmlFile);
-
-		SAXReader saxReader = _getSAXReader();
-
-		Document javadocsXmlDocument = saxReader.read(
-			new XMLSafeReader(javadocsXmlContent));
-
-		tuple = new Tuple(
-			srcDirName, javadocsXmlFile, javadocsXmlContent,
-			javadocsXmlDocument);
-
-		_javadocxXmlTuples.put(srcDirName, tuple);
-
-		return tuple;
-	}
-
 	private String _getJavaExecutableComment(
 			Map<String, Element> executableElementsMap,
 			JavaExecutable javaExecutable, String indent)
@@ -1844,6 +1730,120 @@ public class JavadocFormatter {
 		}
 
 		return lineNumbers;
+	}
+
+	private Document _getJavadocDocument(JavaClass javaClass) throws Exception {
+		Element rootElement = DocumentHelper.createElement("javadoc");
+
+		Document document = DocumentHelper.createDocument(rootElement);
+
+		_addClassElement(rootElement, javaClass, false);
+
+		return document;
+	}
+
+	private Tuple _getJavadocsXmlTuple(String fileName) throws Exception {
+		File file = new File(_inputDirName + fileName);
+
+		String absolutePath = file.getAbsolutePath();
+
+		absolutePath = StringUtil.replace(absolutePath, '\\', '/');
+		absolutePath = StringUtil.replace(absolutePath, "/./", "/");
+
+		int pos = absolutePath.indexOf("/portal-impl/src/");
+
+		String srcDirName = null;
+
+		if (pos != -1) {
+			srcDirName = absolutePath.substring(0, pos + 17);
+		}
+
+		if (srcDirName == null) {
+			pos = absolutePath.indexOf("/portal-kernel/src/");
+
+			if (pos == -1) {
+				pos = absolutePath.indexOf("/portal-kernel/src/");
+			}
+
+			if (pos == -1) {
+				pos = absolutePath.indexOf("/util-bridges/src/");
+			}
+
+			if (pos == -1) {
+				pos = absolutePath.indexOf("/util-java/src/");
+			}
+
+			if (pos == -1) {
+				pos = absolutePath.indexOf("/util-taglib/src/");
+			}
+
+			if (pos != -1) {
+				srcDirName =
+					absolutePath.substring(0, pos) + "/portal-impl/src/";
+			}
+		}
+
+		if (srcDirName == null) {
+			pos = absolutePath.indexOf("/WEB-INF/src/");
+
+			if (pos != -1) {
+				srcDirName = absolutePath.substring(0, pos + 13);
+			}
+		}
+
+		if (srcDirName == null) {
+			pos = absolutePath.indexOf("/src/main/java/");
+
+			if (pos != -1) {
+				srcDirName =
+					absolutePath.substring(0, pos) + "/src/main/resources";
+			}
+		}
+
+		if (srcDirName == null) {
+			return null;
+		}
+
+		Tuple tuple = _javadocxXmlTuples.get(srcDirName);
+
+		if (tuple != null) {
+			return tuple;
+		}
+
+		File metaInfDir = new File(srcDirName, "META-INF");
+
+		if (!metaInfDir.exists()) {
+			metaInfDir.mkdirs();
+		}
+
+		File javadocsXmlFile = new File(
+			metaInfDir, _outputFilePrefix + "-all.xml");
+
+		String javadocsXmlContent = null;
+
+		if (!javadocsXmlFile.exists()) {
+			javadocsXmlContent =
+				"<?xml version=\"1.0\"?>\n\n<javadocs>\n</javadocs>";
+
+			_write(javadocsXmlFile, javadocsXmlContent);
+
+			_modifiedFileNames.add(javadocsXmlFile.getAbsolutePath());
+		}
+
+		javadocsXmlContent = JavadocFormatterUtil.read(javadocsXmlFile);
+
+		SAXReader saxReader = _getSAXReader();
+
+		Document javadocsXmlDocument = saxReader.read(
+			new XMLSafeReader(javadocsXmlContent));
+
+		tuple = new Tuple(
+			srcDirName, javadocsXmlFile, javadocsXmlContent,
+			javadocsXmlDocument);
+
+		_javadocxXmlTuples.put(srcDirName, tuple);
+
+		return tuple;
 	}
 
 	private SAXReader _getSAXReader() {
@@ -2373,14 +2373,14 @@ public class JavadocFormatter {
 		"(^.*?(?=\n\n|$)+|(?<=<p>\n).*?(?=\n</p>))", Pattern.DOTALL);
 
 	private final String _author;
-	private Document _deprecationsDocument;
 	private final String _deprecationSyncDirName;
+	private Document _deprecationsDocument;
 	private String _fullyQualifiedName;
 	private final boolean _generateXml;
 	private final boolean _initializeMissingJavadocs;
 	private final String _inputDirName;
-	private final Map<String, Tuple> _javadocxXmlTuples = new HashMap<>();
 	private JavaProjectBuilder _javaProjectBuilder;
+	private final Map<String, Tuple> _javadocxXmlTuples = new HashMap<>();
 	private final Properties _languageProperties;
 	private final File _languagePropertiesFile;
 	private final Set<String> _modifiedFileNames = new HashSet<>();

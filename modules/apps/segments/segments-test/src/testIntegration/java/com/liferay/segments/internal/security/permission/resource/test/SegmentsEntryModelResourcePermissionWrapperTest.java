@@ -65,24 +65,6 @@ public class SegmentsEntryModelResourcePermissionWrapperTest {
 	}
 
 	@Test
-	public void testContainsWithoutPermissions() throws Exception {
-		User user = UserTestUtil.addUser(_group.getGroupId());
-
-		try {
-			SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
-				_group.getGroupId());
-
-			Assert.assertFalse(
-				_segmentsEntryModelResourcePermission.contains(
-					_permissionCheckerFactory.create(user),
-					segmentsEntry.getSegmentsEntryId(), ActionKeys.UPDATE));
-		}
-		finally {
-			_userLocalService.deleteUser(user);
-		}
-	}
-
-	@Test
 	public void testContainsWithSourceAsahFaroBackend() throws Exception {
 		SegmentsEntry segmentsEntry =
 			_segmentsEntryLocalService.addSegmentsEntry(
@@ -99,6 +81,24 @@ public class SegmentsEntryModelResourcePermissionWrapperTest {
 			_segmentsEntryModelResourcePermission.contains(
 				_permissionCheckerFactory.create(TestPropsValues.getUser()),
 				segmentsEntry.getSegmentsEntryId(), ActionKeys.UPDATE));
+	}
+
+	@Test
+	public void testContainsWithoutPermissions() throws Exception {
+		User user = UserTestUtil.addUser(_group.getGroupId());
+
+		try {
+			SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+				_group.getGroupId());
+
+			Assert.assertFalse(
+				_segmentsEntryModelResourcePermission.contains(
+					_permissionCheckerFactory.create(user),
+					segmentsEntry.getSegmentsEntryId(), ActionKeys.UPDATE));
+		}
+		finally {
+			_userLocalService.deleteUser(user);
+		}
 	}
 
 	@DeleteAfterTestRun

@@ -145,10 +145,10 @@ public class BlogsEntryIndexerIndexedFieldsTest {
 	protected SearchEngineHelper searchEngineHelper;
 
 	@Inject
-	protected Searcher searcher;
+	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
 	@Inject
-	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
+	protected Searcher searcher;
 
 	private Map<String, String> _expectedFieldValues(BlogsEntry blogsEntry)
 		throws Exception {

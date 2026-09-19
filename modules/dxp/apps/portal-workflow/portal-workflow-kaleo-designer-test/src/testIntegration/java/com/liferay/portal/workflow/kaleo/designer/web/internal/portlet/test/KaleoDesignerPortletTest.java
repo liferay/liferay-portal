@@ -201,20 +201,6 @@ public class KaleoDesignerPortletTest {
 			mockLiferayPortletRenderRequest);
 	}
 
-	private void _testRenderWithoutViewPermission() throws Exception {
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest(
-				_kaleoDefinition.getName(), "/designer/error.jsp", _addUser());
-
-		_portlet.render(
-			mockLiferayPortletRenderRequest,
-			new MockLiferayPortletRenderResponse());
-
-		_assertSessionError(
-			PrincipalException.MustBeCompanyAdmin.class,
-			mockLiferayPortletRenderRequest);
-	}
-
 	private void _testRenderWithViewPermission() throws Exception {
 		User user = _addUser();
 
@@ -237,6 +223,20 @@ public class KaleoDesignerPortletTest {
 				_kaleoDefinition.getCompanyId(), _kaleoDefinition.getName()),
 			mockLiferayPortletRenderRequest.getAttribute(
 				"KALEO_DRAFT_DEFINITION"));
+	}
+
+	private void _testRenderWithoutViewPermission() throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				_kaleoDefinition.getName(), "/designer/error.jsp", _addUser());
+
+		_portlet.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		_assertSessionError(
+			PrincipalException.MustBeCompanyAdmin.class,
+			mockLiferayPortletRenderRequest);
 	}
 
 	@DeleteAfterTestRun

@@ -483,23 +483,23 @@ public class AggregationWrapperConverter {
 			new IncludeExcludeClause() {
 
 				@Override
-				public String[] getExcludedValues() {
-					return finalExcludedValues;
-				}
-
-				@Override
 				public String getExcludeRegex() {
 					return finalExcludeRegex;
 				}
 
 				@Override
-				public String[] getIncludedValues() {
-					return finalIncludedValues;
+				public String[] getExcludedValues() {
+					return finalExcludedValues;
 				}
 
 				@Override
 				public String getIncludeRegex() {
 					return finalIncludeRegex;
+				}
+
+				@Override
+				public String[] getIncludedValues() {
+					return finalIncludedValues;
 				}
 
 			});

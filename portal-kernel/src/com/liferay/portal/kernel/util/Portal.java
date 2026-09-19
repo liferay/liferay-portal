@@ -291,6 +291,36 @@ public interface Portal {
 	public long[] getAncestorSiteGroupIds(long groupId);
 
 	/**
+	 * Returns the secure (HTTPS) or insecure (HTTP) content distribution
+	 * network (CDN) host address for this portal.
+	 *
+	 * @param  secure whether to get the secure or insecure CDN host address
+	 * @return the CDN host address
+	 */
+	public String getCDNHost(boolean secure);
+
+	public String getCDNHost(HttpServletRequest httpServletRequest)
+		throws PortalException;
+
+	/**
+	 * Returns the insecure (HTTP) content distribution network (CDN) host
+	 * address
+	 *
+	 * @param  companyId the company ID of a site
+	 * @return the CDN host address
+	 */
+	public String getCDNHostHttp(long companyId);
+
+	/**
+	 * Returns the secure (HTTPS) content distribution network (CDN) host
+	 * address
+	 *
+	 * @param  companyId the company ID of a site
+	 * @return the CDN host address
+	 */
+	public String getCDNHostHttps(long companyId);
+
+	/**
 	 * Returns the canonical URL of the page, to distinguish it among its
 	 * translations.
 	 *
@@ -352,36 +382,6 @@ public interface Portal {
 			String completeURL, ThemeDisplay themeDisplay, Layout layout,
 			boolean forceLayoutFriendlyURL, boolean includeQueryString)
 		throws PortalException;
-
-	/**
-	 * Returns the secure (HTTPS) or insecure (HTTP) content distribution
-	 * network (CDN) host address for this portal.
-	 *
-	 * @param  secure whether to get the secure or insecure CDN host address
-	 * @return the CDN host address
-	 */
-	public String getCDNHost(boolean secure);
-
-	public String getCDNHost(HttpServletRequest httpServletRequest)
-		throws PortalException;
-
-	/**
-	 * Returns the insecure (HTTP) content distribution network (CDN) host
-	 * address
-	 *
-	 * @param  companyId the company ID of a site
-	 * @return the CDN host address
-	 */
-	public String getCDNHostHttp(long companyId);
-
-	/**
-	 * Returns the secure (HTTPS) content distribution network (CDN) host
-	 * address
-	 *
-	 * @param  companyId the company ID of a site
-	 * @return the CDN host address
-	 */
-	public String getCDNHostHttps(long companyId);
 
 	public String getChangeLanguageURL(
 			String currentURL, HttpServletRequest httpServletRequest,
@@ -943,6 +943,8 @@ public interface Portal {
 
 	public String[] getSystemSiteRoles();
 
+	public String getURLWithSessionId(String url, String sessionId);
+
 	public String getUniqueElementId(
 		HttpServletRequest httpServletRequest, String namespace, String id);
 
@@ -960,8 +962,6 @@ public interface Portal {
 		String location);
 
 	public Date getUptime();
-
-	public String getURLWithSessionId(String url, String sessionId);
 
 	public User getUser(HttpServletRequest httpServletRequest)
 		throws PortalException;
@@ -1044,11 +1044,11 @@ public interface Portal {
 
 	public boolean isOmniadmin(User user);
 
+	public boolean isRSSFeedsEnabled();
+
 	public boolean isReservedParameter(String name);
 
 	public boolean isRightToLeft(HttpServletRequest httpServletRequest);
-
-	public boolean isRSSFeedsEnabled();
 
 	public boolean isSecure(HttpServletRequest httpServletRequest);
 

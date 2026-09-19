@@ -946,10 +946,10 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private RoleLocalService _roleLocalService;
 
 	@Reference
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Reference
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.object.web)")
 	private ServletContext _servletContext;

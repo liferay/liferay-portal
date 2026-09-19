@@ -98,18 +98,6 @@ public abstract class BaseAddressCheckoutStepDisplayContext {
 		return commerceAddressService.fetchCommerceAddress(commerceAddressId);
 	}
 
-	public List<CommerceAddress> getCommerceAddresses() throws PortalException {
-		if (!hasViewCommerceAddressesPermission()) {
-			return Collections.emptyList();
-		}
-
-		return commerceAddressService.getCommerceAddressesByCompanyId(
-			_commerceOrder.getCompanyId(), AccountEntry.class.getName(),
-			_commerceOrder.getCommerceAccountId(), QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS,
-			CommerceAddressNameComparator.getInstance(false));
-	}
-
 	public long getCommerceAddressId(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
@@ -155,6 +143,18 @@ public abstract class BaseAddressCheckoutStepDisplayContext {
 		}
 
 		return 0;
+	}
+
+	public List<CommerceAddress> getCommerceAddresses() throws PortalException {
+		if (!hasViewCommerceAddressesPermission()) {
+			return Collections.emptyList();
+		}
+
+		return commerceAddressService.getCommerceAddressesByCompanyId(
+			_commerceOrder.getCompanyId(), AccountEntry.class.getName(),
+			_commerceOrder.getCommerceAccountId(), QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS,
+			CommerceAddressNameComparator.getInstance(false));
 	}
 
 	public CommerceContext getCommerceContext() {

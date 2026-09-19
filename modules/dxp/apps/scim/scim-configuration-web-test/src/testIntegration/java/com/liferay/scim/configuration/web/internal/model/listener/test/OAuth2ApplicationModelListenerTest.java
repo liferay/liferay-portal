@@ -62,16 +62,6 @@ public class OAuth2ApplicationModelListenerTest {
 		ConfigurationTestUtil.deleteConfiguration(_pid);
 	}
 
-	@Test(expected = RequiredOAuth2ApplicationException.class)
-	public void testOnBeforeRemoveWithoutResetInProcess() throws Exception {
-		OAuth2Application scimOAuth2Application =
-			_oAuth2ApplicationLocalService.getOAuth2Application(
-				TestPropsValues.getCompanyId(), _clientId);
-
-		_oAuth2ApplicationLocalService.deleteOAuth2Application(
-			scimOAuth2Application.getOAuth2ApplicationId());
-	}
-
 	@Test
 	public void testOnBeforeRemoveWithResetInProcess() throws Exception {
 		boolean resetInProcess = ScimThreadLocal.isResetInProcess();
@@ -93,6 +83,16 @@ public class OAuth2ApplicationModelListenerTest {
 		finally {
 			ScimThreadLocal.setResetInProcess(resetInProcess);
 		}
+	}
+
+	@Test(expected = RequiredOAuth2ApplicationException.class)
+	public void testOnBeforeRemoveWithoutResetInProcess() throws Exception {
+		OAuth2Application scimOAuth2Application =
+			_oAuth2ApplicationLocalService.getOAuth2Application(
+				TestPropsValues.getCompanyId(), _clientId);
+
+		_oAuth2ApplicationLocalService.deleteOAuth2Application(
+			scimOAuth2Application.getOAuth2ApplicationId());
 	}
 
 	private String _clientId;

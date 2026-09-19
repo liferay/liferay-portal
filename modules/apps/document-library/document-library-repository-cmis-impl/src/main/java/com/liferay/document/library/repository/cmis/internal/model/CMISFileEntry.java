@@ -560,13 +560,6 @@ public class CMISFileEntry extends BaseCMISModel implements FileEntry {
 	}
 
 	@Override
-	public int hashCode() {
-		String versionSeriesId = _document.getVersionSeriesId();
-
-		return versionSeriesId.hashCode();
-	}
-
-	@Override
 	public boolean hasLock() {
 		if (!isCheckedOut()) {
 			return false;
@@ -598,6 +591,13 @@ public class CMISFileEntry extends BaseCMISModel implements FileEntry {
 		}
 
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		String versionSeriesId = _document.getVersionSeriesId();
+
+		return versionSeriesId.hashCode();
 	}
 
 	@Override

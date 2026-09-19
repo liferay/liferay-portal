@@ -952,6 +952,22 @@ public class ResourceFolderResourceTest
 						Pagination.of(1, 10)));
 	}
 
+	private void _testGetSiteResourceFolderWithoutPermissionsProblemException()
+		throws Exception {
+
+		ResourceFolder resourceFolder =
+			resourceFolderResource.postSiteResourceFolder(
+				testGroup.getExternalReferenceCode(), randomResourceFolder());
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() ->
+				_userWithoutPermissionsResourceFolderResource.
+					getSiteResourceFolder(
+						testGroup.getExternalReferenceCode(),
+						resourceFolder.getExternalReferenceCode()));
+	}
+
 	private void _testGetSiteResourceFoldersPage() throws Exception {
 		FragmentCollection fragmentCollection1 = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -1041,22 +1057,6 @@ public class ResourceFolderResourceTest
 					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
-	}
-
-	private void _testGetSiteResourceFolderWithoutPermissionsProblemException()
-		throws Exception {
-
-		ResourceFolder resourceFolder =
-			resourceFolderResource.postSiteResourceFolder(
-				testGroup.getExternalReferenceCode(), randomResourceFolder());
-
-		_assertProblemExceptionProblemStatus(
-			"NOT_FOUND",
-			() ->
-				_userWithoutPermissionsResourceFolderResource.
-					getSiteResourceFolder(
-						testGroup.getExternalReferenceCode(),
-						resourceFolder.getExternalReferenceCode()));
 	}
 
 	private void _testPostSiteFragmentSetResourceFolderWithoutPermissionsProblemException()

@@ -157,6 +157,10 @@ public class LiferayFileEntry extends LiferayModel implements FileEntry {
 		return _dlFileEntry.getCtCollectionId();
 	}
 
+	public DLFileEntry getDLFileEntry() {
+		return _dlFileEntry;
+	}
+
 	@Override
 	public String getDescription() {
 		return _dlFileEntry.getDescription();
@@ -165,10 +169,6 @@ public class LiferayFileEntry extends LiferayModel implements FileEntry {
 	@Override
 	public Date getDisplayDate() {
 		return _dlFileEntry.getDisplayDate();
-	}
-
-	public DLFileEntry getDLFileEntry() {
-		return _dlFileEntry;
 	}
 
 	@Override
@@ -415,13 +415,13 @@ public class LiferayFileEntry extends LiferayModel implements FileEntry {
 	}
 
 	@Override
-	public int hashCode() {
-		return _dlFileEntry.hashCode();
+	public boolean hasLock() {
+		return _dlFileEntry.hasLock();
 	}
 
 	@Override
-	public boolean hasLock() {
-		return _dlFileEntry.hasLock();
+	public int hashCode() {
+		return _dlFileEntry.hashCode();
 	}
 
 	@Override

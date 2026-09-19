@@ -107,6 +107,9 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 	}
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
 
 	@Reference
@@ -115,9 +118,6 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 	@Reference
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference(target = DTOConverterConstants.PRODUCT_OPTION_DTO_CONVERTER)
 	private DTOConverter<CPDefinitionOptionRel, ProductOption>

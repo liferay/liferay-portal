@@ -243,14 +243,14 @@ public class InfoForm {
 		}
 
 		private InfoLocalizedValue<String> _descriptionInfoLocalizedValue;
+		private final Map<String, InfoFieldSetEntry>
+			_infoFieldSetEntriesByName = new LinkedHashMap<>();
 		private final Map<String, InfoField<?>> _infoFieldsByExternalUniqueId =
 			new LinkedHashMap<>();
 		private final Map<String, InfoField<?>> _infoFieldsByName =
 			new LinkedHashMap<>();
 		private final Map<String, InfoField<?>> _infoFieldsByUniqueId =
 			new LinkedHashMap<>();
-		private final Map<String, InfoFieldSetEntry>
-			_infoFieldSetEntriesByName = new LinkedHashMap<>();
 		private InfoLocalizedValue<String> _labelInfoLocalizedValue;
 		private String _name;
 

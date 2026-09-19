@@ -98,10 +98,10 @@ public class XMLSitemapRegenerationSchedulerJobConfiguration
 	private CompanyLocalService _companyLocalService;
 
 	@Reference
-	private SitemapManager _sitemapManager;
-
-	@Reference
 	private SiteSitemapRegenerationEntryLocalService
 		_siteSitemapRegenerationEntryLocalService;
+
+	@Reference
+	private SitemapManager _sitemapManager;
 
 }

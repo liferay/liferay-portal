@@ -222,16 +222,16 @@ public class BulkActionBulkSelectionFactory {
 			return this;
 		}
 
-		public Builder searcher(Searcher searcher) {
-			_searcher = searcher;
-
-			return this;
-		}
-
 		public Builder searchRequestBuilderFactory(
 			SearchRequestBuilderFactory searchRequestBuilderFactory) {
 
 			_searchRequestBuilderFactory = searchRequestBuilderFactory;
+
+			return this;
+		}
+
+		public Builder searcher(Searcher searcher) {
+			_searcher = searcher;
 
 			return this;
 		}
@@ -265,8 +265,8 @@ public class BulkActionBulkSelectionFactory {
 		private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
 		private String _scope;
 		private String _search;
-		private Searcher _searcher;
 		private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+		private Searcher _searcher;
 		private Sort[] _sorts;
 		private User _user;
 
@@ -695,8 +695,8 @@ public class BulkActionBulkSelectionFactory {
 		_objectEntryVersionLocalService;
 	private final String _scope;
 	private final String _search;
-	private final Searcher _searcher;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private final Searcher _searcher;
 	private final Sort[] _sorts;
 	private final User _user;
 

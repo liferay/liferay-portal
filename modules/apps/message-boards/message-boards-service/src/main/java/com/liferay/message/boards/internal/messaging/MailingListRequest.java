@@ -88,12 +88,12 @@ public class MailingListRequest implements Serializable {
 		_inServerPort = inServerPort;
 	}
 
-	public void setInUserName(String inUserName) {
-		_inUserName = inUserName;
-	}
-
 	public void setInUseSSL(boolean inUseSSL) {
 		_inUseSSL = inUseSSL;
+	}
+
+	public void setInUserName(String inUserName) {
+		_inUserName = inUserName;
 	}
 
 	public void setUserId(long id) {
@@ -110,8 +110,8 @@ public class MailingListRequest implements Serializable {
 	private String _inProtocol;
 	private String _inServerName;
 	private int _inServerPort;
-	private String _inUserName;
 	private boolean _inUseSSL;
+	private String _inUserName;
 	private long _userId;
 
 }

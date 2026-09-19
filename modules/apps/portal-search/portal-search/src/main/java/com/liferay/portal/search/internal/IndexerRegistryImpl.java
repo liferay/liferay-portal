@@ -255,6 +255,10 @@ public class IndexerRegistryImpl implements IndexerRegistry {
 		_bufferedInvocationHandlers = new ConcurrentHashMap<>();
 	private BundleContext _bundleContext;
 	private final Indexer<?> _dummyIndexer = new DummyIndexer();
+
+	@Reference
+	private IndexStatusManager _indexStatusManager;
+
 	private ServiceTrackerMap<String, List<IndexerPostProcessor>>
 		_indexerPostProcessorsServiceTrackerMap;
 	private volatile IndexerRegistryConfiguration _indexerRegistryConfiguration;
@@ -264,10 +268,6 @@ public class IndexerRegistryImpl implements IndexerRegistry {
 		_indexerRequestBufferOverflowHandler;
 
 	private ServiceTrackerMap<String, Indexer> _indexerServiceTrackerMap;
-
-	@Reference
-	private IndexStatusManager _indexStatusManager;
-
 	private final Map<String, Indexer<? extends Object>> _proxiedIndexers =
 		new ConcurrentHashMap<>();
 

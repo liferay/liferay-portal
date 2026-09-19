@@ -82,11 +82,6 @@ public class FieldConfigImpl implements FieldConfig {
 	}
 
 	@Override
-	public String getFragmenter() {
-		return _fragmenter;
-	}
-
-	@Override
 	public Integer getFragmentOffset() {
 		return _fragmentOffset;
 	}
@@ -97,8 +92,8 @@ public class FieldConfigImpl implements FieldConfig {
 	}
 
 	@Override
-	public String getHighlighterType() {
-		return _highlighterType;
+	public String getFragmenter() {
+		return _fragmenter;
 	}
 
 	@Override
@@ -109,6 +104,11 @@ public class FieldConfigImpl implements FieldConfig {
 	@Override
 	public Query getHighlightQuery() {
 		return _highlightQuery;
+	}
+
+	@Override
+	public String getHighlighterType() {
+		return _highlighterType;
 	}
 
 	@Override
@@ -215,13 +215,6 @@ public class FieldConfigImpl implements FieldConfig {
 		}
 
 		@Override
-		public FieldConfigBuilder fragmenter(String fragmenter) {
-			_fieldConfigImpl._fragmenter = fragmenter;
-
-			return this;
-		}
-
-		@Override
 		public FieldConfigBuilder fragmentOffset(Integer fragmentOffset) {
 			_fieldConfigImpl._fragmentOffset = fragmentOffset;
 
@@ -236,8 +229,8 @@ public class FieldConfigImpl implements FieldConfig {
 		}
 
 		@Override
-		public FieldConfigBuilder highlighterType(String highlighterType) {
-			_fieldConfigImpl._highlighterType = highlighterType;
+		public FieldConfigBuilder fragmenter(String fragmenter) {
+			_fieldConfigImpl._fragmenter = fragmenter;
 
 			return this;
 		}
@@ -252,6 +245,13 @@ public class FieldConfigImpl implements FieldConfig {
 		@Override
 		public FieldConfigBuilder highlightQuery(Query highlightQuery) {
 			_fieldConfigImpl._highlightQuery = highlightQuery;
+
+			return this;
+		}
+
+		@Override
+		public FieldConfigBuilder highlighterType(String highlighterType) {
+			_fieldConfigImpl._highlighterType = highlighterType;
 
 			return this;
 		}
@@ -322,12 +322,12 @@ public class FieldConfigImpl implements FieldConfig {
 	private String _boundaryScannerType;
 	private String _fieldName;
 	private Boolean _forceSource;
-	private String _fragmenter;
 	private Integer _fragmentOffset;
 	private Integer _fragmentSize;
-	private String _highlighterType;
+	private String _fragmenter;
 	private Boolean _highlightFilter;
 	private Query _highlightQuery;
+	private String _highlighterType;
 	private String[] _matchedFields = {};
 	private Integer _noMatchSize;
 	private Integer _numFragments;

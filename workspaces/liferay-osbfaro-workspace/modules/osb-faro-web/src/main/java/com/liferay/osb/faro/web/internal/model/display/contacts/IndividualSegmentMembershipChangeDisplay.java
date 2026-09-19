@@ -62,8 +62,8 @@ public class IndividualSegmentMembershipChangeDisplay {
 	private String _individualEmail;
 	private String _individualId;
 	private String _individualName;
-	private Long _individualsCount;
 	private String _individualSegmentId;
+	private Long _individualsCount;
 	private String _operation;
 
 }

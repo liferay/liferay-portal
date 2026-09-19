@@ -346,6 +346,32 @@ public class AMImageRequestHandlerTest {
 		);
 	}
 
+	private AMImageConfigurationEntry _createAMImageConfigurationEntry(
+		long companyId, int width, int height) {
+
+		String uuid = "testUuid" + Math.random();
+
+		AMImageConfigurationEntryImpl amImageConfigurationEntryImpl =
+			new AMImageConfigurationEntryImpl(
+				uuid, uuid,
+				HashMapBuilder.put(
+					"configuration-uuid", uuid
+				).put(
+					"max-height", String.valueOf(height)
+				).put(
+					"max-width", String.valueOf(width)
+				).build());
+
+		Mockito.when(
+			_amImageConfigurationHelper.getAMImageConfigurationEntry(
+				companyId, amImageConfigurationEntryImpl.getUUID())
+		).thenReturn(
+			amImageConfigurationEntryImpl
+		);
+
+		return amImageConfigurationEntryImpl;
+	}
+
 	private AdaptiveMedia<AMProcessor<FileVersion>> _createAdaptiveMedia(
 			FileVersion fileVersion,
 			AMImageConfigurationEntry amImageConfigurationEntry)
@@ -404,32 +430,6 @@ public class AMImageRequestHandlerTest {
 				}
 			},
 			AMImageAttributeMapping.fromProperties(properties), null);
-	}
-
-	private AMImageConfigurationEntry _createAMImageConfigurationEntry(
-		long companyId, int width, int height) {
-
-		String uuid = "testUuid" + Math.random();
-
-		AMImageConfigurationEntryImpl amImageConfigurationEntryImpl =
-			new AMImageConfigurationEntryImpl(
-				uuid, uuid,
-				HashMapBuilder.put(
-					"configuration-uuid", uuid
-				).put(
-					"max-height", String.valueOf(height)
-				).put(
-					"max-width", String.valueOf(width)
-				).build());
-
-		Mockito.when(
-			_amImageConfigurationHelper.getAMImageConfigurationEntry(
-				companyId, amImageConfigurationEntryImpl.getUUID())
-		).thenReturn(
-			amImageConfigurationEntryImpl
-		);
-
-		return amImageConfigurationEntryImpl;
 	}
 
 	private HttpServletRequest _createRequestFor(

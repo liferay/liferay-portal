@@ -187,16 +187,15 @@ public class SearchResponseGetSearchTimeValueTest {
 	private PermissionCheckerFactory _permissionCheckerFactory;
 
 	@Inject
-	private Searcher _searcher;
-
-	@Inject
 	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
+	@Inject
+	private Searcher _searcher;
+
 	private User _user;
+	private UserSearchFixture _userSearchFixture;
 
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private UserSearchFixture _userSearchFixture;
 
 }

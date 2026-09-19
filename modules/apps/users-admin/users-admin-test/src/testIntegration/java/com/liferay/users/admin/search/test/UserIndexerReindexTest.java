@@ -99,15 +99,15 @@ public class UserIndexerReindexTest {
 	@Inject
 	protected UserLocalService userLocalService;
 
+	private GroupSearchFixture _groupSearchFixture;
+
 	@DeleteAfterTestRun
 	private List<Group> _groups;
 
-	private GroupSearchFixture _groupSearchFixture;
 	private IndexerFixture<User> _indexerFixture;
+	private UserSearchFixture _userSearchFixture;
 
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private UserSearchFixture _userSearchFixture;
 
 }

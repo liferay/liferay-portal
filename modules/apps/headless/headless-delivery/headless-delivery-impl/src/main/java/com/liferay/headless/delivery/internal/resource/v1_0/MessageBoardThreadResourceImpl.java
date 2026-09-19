@@ -627,30 +627,6 @@ public class MessageBoardThreadResourceImpl
 		return dynamicQuery;
 	}
 
-	private Page<MessageBoardThread> _getSiteMessageBoardThreadsPage(
-			Map<String, Map<String, String>> actions,
-			UnsafeConsumer<BooleanQuery, Exception> booleanQueryUnsafeConsumer,
-			Long siteId, Aggregation aggregation, Filter filter,
-			String keywords, Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		return SearchUtil.search(
-			actions, booleanQueryUnsafeConsumer, filter,
-			MBMessage.class.getName(), keywords, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
-			searchContext -> {
-				searchContext.addVulcanAggregation(aggregation);
-				searchContext.setCompanyId(contextCompany.getCompanyId());
-				searchContext.setGroupIds(new long[] {siteId});
-			},
-			sorts,
-			document -> _toMessageBoardThread(
-				_mbMessageService.getMessage(
-					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))),
-				true));
-	}
-
 	private SPIRatingResource<Rating> _getSPIRatingResource() {
 		return new SPIRatingResource<>(
 			MBMessage.class.getName(), _ratingsEntryLocalService,
@@ -683,6 +659,30 @@ public class MessageBoardThreadResourceImpl
 					_portal, ratingsEntry, _userLocalService);
 			},
 			contextUser);
+	}
+
+	private Page<MessageBoardThread> _getSiteMessageBoardThreadsPage(
+			Map<String, Map<String, String>> actions,
+			UnsafeConsumer<BooleanQuery, Exception> booleanQueryUnsafeConsumer,
+			Long siteId, Aggregation aggregation, Filter filter,
+			String keywords, Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return SearchUtil.search(
+			actions, booleanQueryUnsafeConsumer, filter,
+			MBMessage.class.getName(), keywords, pagination,
+			queryConfig -> queryConfig.setSelectedFieldNames(
+				Field.ENTRY_CLASS_PK),
+			searchContext -> {
+				searchContext.addVulcanAggregation(aggregation);
+				searchContext.setCompanyId(contextCompany.getCompanyId());
+				searchContext.setGroupIds(new long[] {siteId});
+			},
+			sorts,
+			document -> _toMessageBoardThread(
+				_mbMessageService.getMessage(
+					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK))),
+				true));
 	}
 
 	private MessageBoardThread _toMessageBoardThread(

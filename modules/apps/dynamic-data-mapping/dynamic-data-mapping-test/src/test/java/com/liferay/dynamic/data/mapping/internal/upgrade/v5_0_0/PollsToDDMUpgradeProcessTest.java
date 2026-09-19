@@ -102,24 +102,6 @@ public class PollsToDDMUpgradeProcessTest extends BaseDDMTestCase {
 	}
 
 	@Test
-	public void testGetDataJSONObject() throws Exception {
-		Assert.assertEquals(
-			JSONUtil.put(
-				"SingleSelection",
-				JSONUtil.put(
-					"type", "radio"
-				).put(
-					"values", JSONFactoryUtil.createJSONObject()
-				)
-			).put(
-				"totalItems", 0
-			).toString(),
-			String.valueOf(
-				_pollsToDDMUpgradeProcess.getDataJSONObject(
-					"SingleSelection")));
-	}
-
-	@Test
 	public void testGetDDMForm() throws Exception {
 		DDMForm ddmForm = _pollsToDDMUpgradeProcess.getDDMForm(
 			new DDMFormField("fieldName", "radio"));
@@ -163,6 +145,24 @@ public class PollsToDDMUpgradeProcessTest extends BaseDDMTestCase {
 			read("ddm-form-layout-definition.json"),
 			_pollsToDDMUpgradeProcess.getDDMFormLayoutDefinition(ddmFormField),
 			false);
+	}
+
+	@Test
+	public void testGetDataJSONObject() throws Exception {
+		Assert.assertEquals(
+			JSONUtil.put(
+				"SingleSelection",
+				JSONUtil.put(
+					"type", "radio"
+				).put(
+					"values", JSONFactoryUtil.createJSONObject()
+				)
+			).put(
+				"totalItems", 0
+			).toString(),
+			String.valueOf(
+				_pollsToDDMUpgradeProcess.getDataJSONObject(
+					"SingleSelection")));
 	}
 
 	@Test

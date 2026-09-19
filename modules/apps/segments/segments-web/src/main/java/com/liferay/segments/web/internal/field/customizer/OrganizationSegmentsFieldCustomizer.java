@@ -46,13 +46,13 @@ public class OrganizationSegmentsFieldCustomizer
 	public static final String KEY = "organization";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getOrganization(fieldValue);
+	public String getClassName() {
+		return Organization.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return Organization.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getOrganization(fieldValue);
 	}
 
 	@Override

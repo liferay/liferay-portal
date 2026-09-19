@@ -84,33 +84,6 @@ public class SiteMembershipPolicyMembershipsTest
 	}
 
 	@Test(expected = MembershipPolicyException.class)
-	public void testAssignUsersToForbiddenGroup() throws Exception {
-		long[] forbiddenGroupIds = addForbiddenGroups();
-
-		UserServiceUtil.addGroupUsers(
-			forbiddenGroupIds[0], addUsers(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	@Test
-	public void testAssignUsersToRequiredGroup() throws Exception {
-		long[] requiredGroupIds = addRequiredGroups();
-
-		int initialGroupUsersCount = UserLocalServiceUtil.getGroupUsersCount(
-			requiredGroupIds[0]);
-
-		UserServiceUtil.addGroupUsers(
-			requiredGroupIds[0], addUsers(),
-			ServiceContextTestUtil.getServiceContext());
-
-		Assert.assertEquals(
-			initialGroupUsersCount + 2,
-			UserLocalServiceUtil.getGroupUsersCount(requiredGroupIds[0]));
-
-		Assert.assertTrue(isPropagateMembership());
-	}
-
-	@Test(expected = MembershipPolicyException.class)
 	public void testAssignUserToForbiddenGroups() throws Exception {
 		long[] userIds = addUsers();
 
@@ -140,22 +113,36 @@ public class SiteMembershipPolicyMembershipsTest
 		Assert.assertTrue(isPropagateMembership());
 	}
 
+	@Test(expected = MembershipPolicyException.class)
+	public void testAssignUsersToForbiddenGroup() throws Exception {
+		long[] forbiddenGroupIds = addForbiddenGroups();
+
+		UserServiceUtil.addGroupUsers(
+			forbiddenGroupIds[0], addUsers(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	@Test
-	public void testPropagateWhenAddingUserToRequiredGroups() throws Exception {
-		MembershipPolicyTestUtil.addUser(null, null, addRequiredGroups(), null);
+	public void testAssignUsersToRequiredGroup() throws Exception {
+		long[] requiredGroupIds = addRequiredGroups();
+
+		int initialGroupUsersCount = UserLocalServiceUtil.getGroupUsersCount(
+			requiredGroupIds[0]);
+
+		UserServiceUtil.addGroupUsers(
+			requiredGroupIds[0], addUsers(),
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertEquals(
+			initialGroupUsersCount + 2,
+			UserLocalServiceUtil.getGroupUsersCount(requiredGroupIds[0]));
 
 		Assert.assertTrue(isPropagateMembership());
 	}
 
 	@Test
-	public void testPropagateWhenAssigningUsersToRequiredGroup()
-		throws Exception {
-
-		long[] requiredGroupIds = addRequiredGroups();
-
-		UserServiceUtil.addGroupUsers(
-			requiredGroupIds[0], addUsers(),
-			ServiceContextTestUtil.getServiceContext());
+	public void testPropagateWhenAddingUserToRequiredGroups() throws Exception {
+		MembershipPolicyTestUtil.addUser(null, null, addRequiredGroups(), null);
 
 		Assert.assertTrue(isPropagateMembership());
 	}
@@ -169,6 +156,19 @@ public class SiteMembershipPolicyMembershipsTest
 		MembershipPolicyTestUtil.updateUser(
 			UserLocalServiceUtil.getUser(userIds[0]), null, null,
 			addRequiredGroups(), null, Collections.<UserGroupRole>emptyList());
+
+		Assert.assertTrue(isPropagateMembership());
+	}
+
+	@Test
+	public void testPropagateWhenAssigningUsersToRequiredGroup()
+		throws Exception {
+
+		long[] requiredGroupIds = addRequiredGroups();
+
+		UserServiceUtil.addGroupUsers(
+			requiredGroupIds[0], addUsers(),
+			ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertTrue(isPropagateMembership());
 	}

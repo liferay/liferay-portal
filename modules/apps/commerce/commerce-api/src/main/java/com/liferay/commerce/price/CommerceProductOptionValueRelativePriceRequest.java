@@ -15,10 +15,6 @@ import java.math.BigDecimal;
  */
 public class CommerceProductOptionValueRelativePriceRequest {
 
-	public CommerceContext getCommerceContext() {
-		return _commerceContext;
-	}
-
 	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel() {
 		return _cpDefinitionOptionValueRel;
 	}
@@ -33,6 +29,10 @@ public class CommerceProductOptionValueRelativePriceRequest {
 
 	public String getCPInstanceUnitOfMeasureKey() {
 		return _cpInstanceUnitOfMeasureKey;
+	}
+
+	public CommerceContext getCommerceContext() {
+		return _commerceContext;
 	}
 
 	public CPDefinitionOptionValueRel getSelectedCPDefinitionOptionValueRel() {

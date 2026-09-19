@@ -543,11 +543,11 @@ public class CTCollectionServiceTest {
 	private volatile ModelResourcePermission<CTCollection>
 		_ctCollectionModelResourcePermission;
 
-	@DeleteAfterTestRun
-	private final List<CTCollection> _ctCollections = new ArrayList<>();
-
 	@Inject
 	private CTCollectionService _ctCollectionService;
+
+	@DeleteAfterTestRun
+	private final List<CTCollection> _ctCollections = new ArrayList<>();
 
 	@Inject
 	private CTEntryLocalService _ctEntryLocalService;
@@ -572,10 +572,10 @@ public class CTCollectionServiceTest {
 	private RoleLocalService _roleLocalService;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	private User _user;
 

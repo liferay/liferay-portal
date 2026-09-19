@@ -161,6 +161,57 @@ public class SXPBlueprintUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
+	private void _upgradeSXPBlueprintOptionsPortlets() {
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				StringBundler.concat(
+					"select PortletPreferenceValue.smallValue, ",
+					"PortletPreferenceValue.portletPreferencesId from ",
+					"PortletPreferenceValue inner join PortletPreferences on ",
+					"PortletPreferences.portletPreferencesId  = ",
+					"PortletPreferenceValue.portletPreferencesId where ",
+					"PortletPreferences.portletId like ",
+					"'%com_liferay_search_experiences_web_internal_blueprint_",
+					"options_portlet_SXPBlueprintOptionsPortlet_INSTANCE_%' ",
+					"and PortletPreferenceValue.name = 'sxpBlueprintId'"));
+
+			ResultSet resultSet1 = preparedStatement1.executeQuery();
+
+			PreparedStatement preparedStatement2 = connection.prepareStatement(
+				"select externalReferenceCode from SXPBlueprint where " +
+					"sxpBlueprintId = ?");
+			PreparedStatement preparedStatement3 =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update PortletPreferenceValue set name = ?, smallValue " +
+						"= ? where portletPreferencesId = ? and name = " +
+							"'sxpBlueprintId'")) {
+
+			while (resultSet1.next()) {
+				preparedStatement2.setLong(1, resultSet1.getLong("smallValue"));
+
+				ResultSet resultSet2 = preparedStatement2.executeQuery();
+
+				if (!resultSet2.next()) {
+					continue;
+				}
+
+				preparedStatement3.setString(
+					1, "sxpBlueprintExternalReferenceCode");
+				preparedStatement3.setString(
+					2, resultSet2.getString("externalReferenceCode"));
+				preparedStatement3.setLong(
+					3, resultSet1.getLong("portletPreferencesId"));
+
+				preparedStatement3.addBatch();
+			}
+
+			preparedStatement3.executeBatch();
+		}
+		catch (SQLException sqlException) {
+			throw new RuntimeException(sqlException);
+		}
+	}
+
 	private void _upgradeSearchBarPortlets() throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
@@ -221,57 +272,6 @@ public class SXPBlueprintUpgradeProcess extends UpgradeProcess {
 			}
 
 			preparedStatement3.executeBatch();
-		}
-	}
-
-	private void _upgradeSXPBlueprintOptionsPortlets() {
-		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
-				StringBundler.concat(
-					"select PortletPreferenceValue.smallValue, ",
-					"PortletPreferenceValue.portletPreferencesId from ",
-					"PortletPreferenceValue inner join PortletPreferences on ",
-					"PortletPreferences.portletPreferencesId  = ",
-					"PortletPreferenceValue.portletPreferencesId where ",
-					"PortletPreferences.portletId like ",
-					"'%com_liferay_search_experiences_web_internal_blueprint_",
-					"options_portlet_SXPBlueprintOptionsPortlet_INSTANCE_%' ",
-					"and PortletPreferenceValue.name = 'sxpBlueprintId'"));
-
-			ResultSet resultSet1 = preparedStatement1.executeQuery();
-
-			PreparedStatement preparedStatement2 = connection.prepareStatement(
-				"select externalReferenceCode from SXPBlueprint where " +
-					"sxpBlueprintId = ?");
-			PreparedStatement preparedStatement3 =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					"update PortletPreferenceValue set name = ?, smallValue " +
-						"= ? where portletPreferencesId = ? and name = " +
-							"'sxpBlueprintId'")) {
-
-			while (resultSet1.next()) {
-				preparedStatement2.setLong(1, resultSet1.getLong("smallValue"));
-
-				ResultSet resultSet2 = preparedStatement2.executeQuery();
-
-				if (!resultSet2.next()) {
-					continue;
-				}
-
-				preparedStatement3.setString(
-					1, "sxpBlueprintExternalReferenceCode");
-				preparedStatement3.setString(
-					2, resultSet2.getString("externalReferenceCode"));
-				preparedStatement3.setLong(
-					3, resultSet1.getLong("portletPreferencesId"));
-
-				preparedStatement3.addBatch();
-			}
-
-			preparedStatement3.executeBatch();
-		}
-		catch (SQLException sqlException) {
-			throw new RuntimeException(sqlException);
 		}
 	}
 

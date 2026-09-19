@@ -55,6 +55,18 @@ public class CPOptionDisplayContext {
 		cpRequestHelper = new CPRequestHelper(httpServletRequest);
 	}
 
+	public CPOption getCPOption() {
+		return _cpOption;
+	}
+
+	public long getCPOptionId() {
+		if (_cpOption == null) {
+			return 0;
+		}
+
+		return _cpOption.getCPOptionId();
+	}
+
 	public String getCommerceOptionTypeKeys() throws PortalException {
 		CPOptionConfiguration cpOptionConfiguration =
 			_configurationProvider.getConfiguration(
@@ -86,18 +98,6 @@ public class CPOptionDisplayContext {
 
 		return CommerceOptionTypeUtil.getAllowedCommerceOptionTypes(
 			commerceOptionTypes, allowedCommerceOptionTypes);
-	}
-
-	public CPOption getCPOption() {
-		return _cpOption;
-	}
-
-	public long getCPOptionId() {
-		if (_cpOption == null) {
-			return 0;
-		}
-
-		return _cpOption.getCPOptionId();
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

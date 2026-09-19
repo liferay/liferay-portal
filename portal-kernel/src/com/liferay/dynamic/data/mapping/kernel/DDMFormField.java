@@ -38,16 +38,16 @@ public class DDMFormField implements Serializable {
 		_nestedDDMFormFields.add(nestedDDMFormField);
 	}
 
-	public String getDataType() {
-		return MapUtil.getString(_properties, "dataType");
-	}
-
 	public DDMForm getDDMForm() {
 		return _ddmForm;
 	}
 
 	public DDMFormFieldOptions getDDMFormFieldOptions() {
 		return (DDMFormFieldOptions)_properties.get("options");
+	}
+
+	public String getDataType() {
+		return MapUtil.getString(_properties, "dataType");
 	}
 
 	public String getFieldNamespace() {
@@ -141,10 +141,6 @@ public class DDMFormField implements Serializable {
 		return Validator.isNull(getDataType());
 	}
 
-	public void setDataType(String dataType) {
-		_properties.put("dataType", dataType);
-	}
-
 	public void setDDMForm(DDMForm ddmForm) {
 		for (DDMFormField nestedDDMFormField : _nestedDDMFormFields) {
 			nestedDDMFormField.setDDMForm(ddmForm);
@@ -157,6 +153,10 @@ public class DDMFormField implements Serializable {
 		DDMFormFieldOptions ddmFormFieldOptions) {
 
 		_properties.put("options", ddmFormFieldOptions);
+	}
+
+	public void setDataType(String dataType) {
+		_properties.put("dataType", dataType);
 	}
 
 	public void setFieldNamespace(String fieldNamespace) {

@@ -101,13 +101,13 @@ public class AnnotationsExtendedObjectClassDefinition
 	}
 
 	@Override
-	public InputStream getIcon(int size) throws IOException {
-		return _objectClassDefinition.getIcon(size);
+	public String getID() {
+		return _objectClassDefinition.getID();
 	}
 
 	@Override
-	public String getID() {
-		return _objectClassDefinition.getID();
+	public InputStream getIcon(int size) throws IOException {
+		return _objectClassDefinition.getIcon(size);
 	}
 
 	@Override

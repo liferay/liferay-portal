@@ -79,6 +79,30 @@ public class DDMFormTemplateContextProcessorTest {
 	}
 
 	@Test
+	public void testGetDDMFormFieldValue() {
+		String instanceId = RandomTestUtil.randomString();
+
+		DDMFormFieldValue ddmFormFieldValue =
+			_ddmFormTemplateContextProcessor.getDDMFormFieldValue(
+				JSONUtil.put(
+					"confirmationValue", "Confirmation Value"
+				).put(
+					"fieldName", "Text12345678"
+				).put(
+					"fieldReference", "TextFieldReference"
+				).put(
+					"instanceId", instanceId
+				));
+
+		Assert.assertEquals(
+			"Confirmation Value", ddmFormFieldValue.getConfirmationValue());
+		Assert.assertEquals(
+			"TextFieldReference", ddmFormFieldValue.getFieldReference());
+		Assert.assertEquals(instanceId, ddmFormFieldValue.getInstanceId());
+		Assert.assertEquals("Text12345678", ddmFormFieldValue.getName());
+	}
+
+	@Test
 	public void testGetDDMFormFieldsGroup() {
 		long ddmStructureId = RandomTestUtil.randomLong();
 		long ddmStructureLayoutId = RandomTestUtil.randomLong();
@@ -149,30 +173,6 @@ public class DDMFormTemplateContextProcessorTest {
 		Assert.assertTrue(
 			(boolean)ddmFormField.getProperty("upgradedStructure"));
 		Assert.assertEquals("fieldset", ddmFormField.getType());
-	}
-
-	@Test
-	public void testGetDDMFormFieldValue() {
-		String instanceId = RandomTestUtil.randomString();
-
-		DDMFormFieldValue ddmFormFieldValue =
-			_ddmFormTemplateContextProcessor.getDDMFormFieldValue(
-				JSONUtil.put(
-					"confirmationValue", "Confirmation Value"
-				).put(
-					"fieldName", "Text12345678"
-				).put(
-					"fieldReference", "TextFieldReference"
-				).put(
-					"instanceId", instanceId
-				));
-
-		Assert.assertEquals(
-			"Confirmation Value", ddmFormFieldValue.getConfirmationValue());
-		Assert.assertEquals(
-			"TextFieldReference", ddmFormFieldValue.getFieldReference());
-		Assert.assertEquals(instanceId, ddmFormFieldValue.getInstanceId());
-		Assert.assertEquals("Text12345678", ddmFormFieldValue.getName());
 	}
 
 	@Test

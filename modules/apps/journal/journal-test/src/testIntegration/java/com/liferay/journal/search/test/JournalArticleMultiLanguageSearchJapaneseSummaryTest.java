@@ -93,15 +93,15 @@ public class JournalArticleMultiLanguageSearchJapaneseSummaryTest {
 	}
 
 	@Test
-	public void testJapaneseSummaryHighlightedTermWithoutWordBoundaries()
+	public void testJapaneseSummaryHighlightedTermWithWordBoundaries()
 		throws Exception {
 
 		String highlightedContent = StringBundler.concat(
-			HighlightUtil.HIGHLIGHT_TAG_OPEN, "新規",
-			HighlightUtil.HIGHLIGHT_TAG_CLOSE, "作成");
+			"新規", HighlightUtil.HIGHLIGHT_TAG_OPEN, "作成",
+			HighlightUtil.HIGHLIGHT_TAG_CLOSE);
 		String highlightedTitle = StringBundler.concat(
-			HighlightUtil.HIGHLIGHT_TAG_OPEN, "新規",
-			HighlightUtil.HIGHLIGHT_TAG_CLOSE, "作成");
+			"新規", HighlightUtil.HIGHLIGHT_TAG_OPEN, "作成",
+			HighlightUtil.HIGHLIGHT_TAG_CLOSE);
 
 		Locale locale = LocaleUtil.JAPAN;
 
@@ -114,15 +114,15 @@ public class JournalArticleMultiLanguageSearchJapaneseSummaryTest {
 	}
 
 	@Test
-	public void testJapaneseSummaryHighlightedTermWithWordBoundaries()
+	public void testJapaneseSummaryHighlightedTermWithoutWordBoundaries()
 		throws Exception {
 
 		String highlightedContent = StringBundler.concat(
-			"新規", HighlightUtil.HIGHLIGHT_TAG_OPEN, "作成",
-			HighlightUtil.HIGHLIGHT_TAG_CLOSE);
+			HighlightUtil.HIGHLIGHT_TAG_OPEN, "新規",
+			HighlightUtil.HIGHLIGHT_TAG_CLOSE, "作成");
 		String highlightedTitle = StringBundler.concat(
-			"新規", HighlightUtil.HIGHLIGHT_TAG_OPEN, "作成",
-			HighlightUtil.HIGHLIGHT_TAG_CLOSE);
+			HighlightUtil.HIGHLIGHT_TAG_OPEN, "新規",
+			HighlightUtil.HIGHLIGHT_TAG_CLOSE, "作成");
 
 		Locale locale = LocaleUtil.JAPAN;
 
@@ -205,17 +205,16 @@ public class JournalArticleMultiLanguageSearchJapaneseSummaryTest {
 	private List<Group> _groups;
 
 	private Indexer<JournalArticle> _indexer;
+	private JournalArticleSearchFixture _journalArticleSearchFixture;
 
 	@DeleteAfterTestRun
 	private List<JournalArticle> _journalArticles;
 
-	private JournalArticleSearchFixture _journalArticleSearchFixture;
 	private SummaryFixture<JournalArticle> _summaryFixture;
 	private User _user;
+	private UserSearchFixture _userSearchFixture;
 
 	@DeleteAfterTestRun
 	private List<User> _users;
-
-	private UserSearchFixture _userSearchFixture;
 
 }

@@ -856,6 +856,9 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			postSkuVirtualSettings.getTermsOfUseJournalArticleId());
 	}
 
+	@DeleteAfterTestRun
+	private CProduct _cProduct;
+
 	@Inject
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 
@@ -891,9 +894,6 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 
 	@Inject
 	private CPOptionValueLocalService _cpOptionValueLocalService;
-
-	@DeleteAfterTestRun
-	private CProduct _cProduct;
 
 	@DeleteAfterTestRun
 	private Group _group;

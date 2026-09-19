@@ -537,18 +537,18 @@ public class ClassNamePostUpgradeDataCleanupProcessTest
 	}
 
 	@Override
-	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {
-			_classNameLocalService, _companyLocalService, connection,
-			_objectDefinitionLocalService
-		};
-	}
-
-	@Override
 	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
 		return new Class<?>[] {
 			ClassNameLocalService.class, CompanyLocalService.class,
 			Connection.class, ObjectDefinitionLocalService.class
+		};
+	}
+
+	@Override
+	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
+		return new Object[] {
+			_classNameLocalService, _companyLocalService, connection,
+			_objectDefinitionLocalService
 		};
 	}
 

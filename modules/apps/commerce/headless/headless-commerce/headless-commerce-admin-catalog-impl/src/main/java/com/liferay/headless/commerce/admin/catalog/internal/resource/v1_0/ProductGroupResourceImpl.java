@@ -298,14 +298,14 @@ public class ProductGroupResourceImpl extends BaseProductGroupResourceImpl {
 		new ProductGroupEntityModel();
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommercePricingClassCPDefinitionRelService
 		_commercePricingClassCPDefinitionRelService;
 
 	@Reference
 	private CommercePricingClassService _commercePricingClassService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.ProductGroupDTOConverter)"

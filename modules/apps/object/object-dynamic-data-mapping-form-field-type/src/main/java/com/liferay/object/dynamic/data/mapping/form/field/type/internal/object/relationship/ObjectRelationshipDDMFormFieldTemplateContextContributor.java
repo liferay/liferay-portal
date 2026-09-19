@@ -168,20 +168,6 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributor
 		return valueString;
 	}
 
-	private String _getAdditionalAPIURLParameters(
-		ObjectDefinition objectDefinition) {
-
-		SystemObjectDefinitionManager systemObjectDefinitionManager =
-			_systemObjectDefinitionManagerRegistry.
-				getSystemObjectDefinitionManager(objectDefinition.getName());
-
-		if (systemObjectDefinitionManager == null) {
-			return StringPool.BLANK;
-		}
-
-		return systemObjectDefinitionManager.getAdditionalAPIURLParameters();
-	}
-
 	private String _getAPIURL(
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext) {
@@ -219,6 +205,20 @@ public class ObjectRelationshipDDMFormFieldTemplateContextContributor
 		}
 
 		return apiURL;
+	}
+
+	private String _getAdditionalAPIURLParameters(
+		ObjectDefinition objectDefinition) {
+
+		SystemObjectDefinitionManager systemObjectDefinitionManager =
+			_systemObjectDefinitionManagerRegistry.
+				getSystemObjectDefinitionManager(objectDefinition.getName());
+
+		if (systemObjectDefinitionManager == null) {
+			return StringPool.BLANK;
+		}
+
+		return systemObjectDefinitionManager.getAdditionalAPIURLParameters();
 	}
 
 	private long _getGroupId(

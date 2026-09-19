@@ -85,47 +85,6 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 
 	@Test
 	@TestInfo("LPD-83557")
-	public void testExportFragmentCollectionsWithoutPermissions()
-		throws Exception {
-
-		User user = UserTestUtil.addGroupUser(_group, RoleConstants.POWER_USER);
-
-		FragmentCollection fragmentCollection1 =
-			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
-		FragmentEntryTestUtil.addFragmentEntry(
-			fragmentCollection1.getFragmentCollectionId());
-
-		FragmentCollection fragmentCollection2 =
-			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
-		FragmentEntryTestUtil.addFragmentEntry(
-			fragmentCollection2.getFragmentCollectionId());
-
-		Company company = _companyLocalService.getCompany(
-			_group.getCompanyId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				_getMockLiferayResourceRequest(
-					company, fragmentCollection1.getFragmentCollectionId(),
-					user);
-
-			PortletException portletException = Assert.assertThrows(
-				PortletException.class,
-				() -> _mvcResourceCommand.serveResource(
-					mockLiferayResourceRequest,
-					new MockLiferayResourceResponse()));
-
-			Assert.assertTrue(
-				portletException.getCause() instanceof PrincipalException);
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-83557")
 	public void testExportFragmentCollectionWithResourceFromCompanyGroup()
 		throws Exception {
 
@@ -205,6 +164,47 @@ public class ExportFragmentCollectionsMVCResourceCommandTest {
 		}
 		finally {
 			FileUtil.delete(tempFile);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-83557")
+	public void testExportFragmentCollectionsWithoutPermissions()
+		throws Exception {
+
+		User user = UserTestUtil.addGroupUser(_group, RoleConstants.POWER_USER);
+
+		FragmentCollection fragmentCollection1 =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		FragmentEntryTestUtil.addFragmentEntry(
+			fragmentCollection1.getFragmentCollectionId());
+
+		FragmentCollection fragmentCollection2 =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		FragmentEntryTestUtil.addFragmentEntry(
+			fragmentCollection2.getFragmentCollectionId());
+
+		Company company = _companyLocalService.getCompany(
+			_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			MockLiferayResourceRequest mockLiferayResourceRequest =
+				_getMockLiferayResourceRequest(
+					company, fragmentCollection1.getFragmentCollectionId(),
+					user);
+
+			PortletException portletException = Assert.assertThrows(
+				PortletException.class,
+				() -> _mvcResourceCommand.serveResource(
+					mockLiferayResourceRequest,
+					new MockLiferayResourceResponse()));
+
+			Assert.assertTrue(
+				portletException.getCause() instanceof PrincipalException);
 		}
 	}
 

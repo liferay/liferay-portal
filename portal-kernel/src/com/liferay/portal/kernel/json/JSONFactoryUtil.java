@@ -30,13 +30,6 @@ public class JSONFactoryUtil {
 		return _jsonFactory.convertXMLtoJSONMLObject(xml);
 	}
 
-	public static JSONTransformer createJavaScriptNormalizerJSONTransformer(
-		List<String> javaScriptAttributes) {
-
-		return _jsonFactory.createJavaScriptNormalizerJSONTransformer(
-			javaScriptAttributes);
-	}
-
 	public static JSONArray createJSONArray() {
 		return _jsonFactory.createJSONArray();
 	}
@@ -73,6 +66,13 @@ public class JSONFactoryUtil {
 
 	public static JSONSerializer createJSONSerializer() {
 		return _jsonFactory.createJSONSerializer();
+	}
+
+	public static JSONTransformer createJavaScriptNormalizerJSONTransformer(
+		List<String> javaScriptAttributes) {
+
+		return _jsonFactory.createJavaScriptNormalizerJSONTransformer(
+			javaScriptAttributes);
 	}
 
 	public static Object deserialize(JSONObject jsonObject) {

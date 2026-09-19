@@ -398,6 +398,20 @@ public class BackgroundTaskLocalServiceImpl
 		return backgroundTaskPersistence.findByPrimaryKey(backgroundTaskId);
 	}
 
+	@Clusterable(onMaster = true)
+	@Override
+	public String getBackgroundTaskStatusJSON(long backgroundTaskId) {
+		BackgroundTaskStatus backgroundTaskStatus =
+			_backgroundTaskStatusRegistry.getBackgroundTaskStatus(
+				backgroundTaskId);
+
+		if (backgroundTaskStatus != null) {
+			return backgroundTaskStatus.getAttributesJSON();
+		}
+
+		return StringPool.BLANK;
+	}
+
 	@Override
 	public List<BackgroundTask> getBackgroundTasks(long groupId, int status) {
 		return backgroundTaskPersistence.findByG_S(groupId, status);
@@ -639,20 +653,6 @@ public class BackgroundTaskLocalServiceImpl
 
 		return backgroundTaskPersistence.countByG_T_C(
 			groupIds, taskExecutorClassNames, completed);
-	}
-
-	@Clusterable(onMaster = true)
-	@Override
-	public String getBackgroundTaskStatusJSON(long backgroundTaskId) {
-		BackgroundTaskStatus backgroundTaskStatus =
-			_backgroundTaskStatusRegistry.getBackgroundTaskStatus(
-				backgroundTaskId);
-
-		if (backgroundTaskStatus != null) {
-			return backgroundTaskStatus.getAttributesJSON();
-		}
-
-		return StringPool.BLANK;
 	}
 
 	@Clusterable(onMaster = true)

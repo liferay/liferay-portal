@@ -696,17 +696,17 @@ public class QuartzSchedulerEngineTest {
 		}
 
 		@Override
-		public List<? extends org.quartz.Trigger> getTriggersOfJob(
-			JobKey jobKey) {
-
-			return Collections.emptyList();
-		}
-
-		@Override
 		public org.quartz.Trigger.TriggerState getTriggerState(
 			TriggerKey triggerKey) {
 
 			return null;
+		}
+
+		@Override
+		public List<? extends org.quartz.Trigger> getTriggersOfJob(
+			JobKey jobKey) {
+
+			return Collections.emptyList();
 		}
 
 		@Override

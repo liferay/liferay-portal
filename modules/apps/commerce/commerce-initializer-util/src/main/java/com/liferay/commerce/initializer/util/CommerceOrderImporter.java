@@ -223,6 +223,9 @@ public class CommerceOrderImporter {
 	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CommerceAccountHelper _commerceAccountHelper;
 
 	@Reference
@@ -236,9 +239,6 @@ public class CommerceOrderImporter {
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private JSONFactory _jsonFactory;

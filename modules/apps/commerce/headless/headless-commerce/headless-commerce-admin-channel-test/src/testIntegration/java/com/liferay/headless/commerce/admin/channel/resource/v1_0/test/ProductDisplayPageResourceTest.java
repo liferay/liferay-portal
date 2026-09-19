@@ -374,6 +374,9 @@ public class ProductDisplayPageResourceTest
 			GetterUtil.getLong(postProductDisplayPage.getProductId()));
 	}
 
+	@Inject
+	private CProductLocalService _cProductLocalService;
+
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
 
@@ -400,9 +403,6 @@ public class ProductDisplayPageResourceTest
 
 	@DeleteAfterTestRun
 	private List<CPDisplayLayout> _cpDisplayLayouts = new ArrayList<>();
-
-	@Inject
-	private CProductLocalService _cProductLocalService;
 
 	@DeleteAfterTestRun
 	private List<Layout> _layouts = new ArrayList<>();

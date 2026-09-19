@@ -2647,9 +2647,9 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 
 		private final long _groupId;
 		private final long _layoutPageTemplateCollectionId;
+		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final List<LayoutsImporterResultEntry>
 			_layoutsImporterResultEntries;
-		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final PageTemplateEntry _pageTemplateEntry;
 		private final boolean _preserveItemIds;
 		private final long _userId;
@@ -2750,9 +2750,9 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 		private final DisplayPageTemplate _displayPageTemplate;
 		private final long _groupId;
 		private final long _layoutPageTemplateCollectionId;
+		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final List<LayoutsImporterResultEntry>
 			_layoutsImporterResultEntries;
-		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final PageDefinition _pageDefinition;
 		private final boolean _preserveItemIds;
 		private final Thumbnail _thumbnail;
@@ -2797,9 +2797,9 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 		}
 
 		private final long _groupId;
+		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final List<LayoutsImporterResultEntry>
 			_layoutsImporterResultEntries;
-		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final String _name;
 		private final PageDefinition _pageDefinition;
 		private final boolean _preserveItemIds;
@@ -2920,9 +2920,9 @@ public class LayoutsImporterImpl implements LayoutsImporter {
 		}
 
 		private final long _groupId;
+		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final List<LayoutsImporterResultEntry>
 			_layoutsImporterResultEntries;
-		private final LayoutsImportStrategy _layoutsImportStrategy;
 		private final PageDefinition _pageDefinition;
 		private final boolean _preserveItemIds;
 		private final Thumbnail _thumbnail;

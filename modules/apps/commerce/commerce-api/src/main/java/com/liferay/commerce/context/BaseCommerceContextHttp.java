@@ -128,6 +128,27 @@ public class BaseCommerceContextHttp implements CommerceContext {
 	}
 
 	@Override
+	public long getCPConfigurationListId(long groupId) throws PortalException {
+		Map<Long, CPConfigurationList> cpConfigurationLists =
+			_getCPConfigurationLists();
+
+		CPConfigurationList cpConfigurationList = cpConfigurationLists.get(
+			groupId);
+
+		return cpConfigurationList.getCPConfigurationListId();
+	}
+
+	@Override
+	public long[] getCPConfigurationListIds() throws PortalException {
+		Map<Long, CPConfigurationList> cpConfigurationLists =
+			_getCPConfigurationLists();
+
+		return TransformUtil.transformToLongArray(
+			cpConfigurationLists.values(),
+			CPConfigurationList::getCPConfigurationListId);
+	}
+
+	@Override
 	public long[] getCommerceAccountGroupIds() throws PortalException {
 		if (_commerceAccountGroupIds != null) {
 			return _commerceAccountGroupIds.clone();
@@ -307,30 +328,43 @@ public class BaseCommerceContextHttp implements CommerceContext {
 		return _commerceAccountGroupServiceConfiguration.commerceSiteType();
 	}
 
-	@Override
-	public long getCPConfigurationListId(long groupId) throws PortalException {
-		Map<Long, CPConfigurationList> cpConfigurationLists =
-			_getCPConfigurationLists();
-
-		CPConfigurationList cpConfigurationList = cpConfigurationLists.get(
-			groupId);
-
-		return cpConfigurationList.getCPConfigurationListId();
-	}
-
-	@Override
-	public long[] getCPConfigurationListIds() throws PortalException {
-		Map<Long, CPConfigurationList> cpConfigurationLists =
-			_getCPConfigurationLists();
-
-		return TransformUtil.transformToLongArray(
-			cpConfigurationLists.values(),
-			CPConfigurationList::getCPConfigurationListId);
-	}
-
 	private CommerceChannel _fetchCommerceChannel() throws PortalException {
 		return _commerceChannelLocalService.fetchCommerceChannelBySiteGroupId(
 			_portal.getScopeGroupId(_httpServletRequest));
+	}
+
+	private Map<Long, CPConfigurationList> _getCPConfigurationLists()
+		throws PortalException {
+
+		if (MapUtil.isNotEmpty(_cpConfigurationLists)) {
+			return _cpConfigurationLists;
+		}
+
+		_cpConfigurationLists = new HashMap<>();
+
+		long orderTypeId = 0;
+
+		CommerceOrder commerceOrder = getCommerceOrder();
+
+		if (commerceOrder != null) {
+			orderTypeId = commerceOrder.getCommerceOrderTypeId();
+		}
+
+		for (long groupId :
+				TransformUtil.transformToLongArray(
+					_commerceCatalogLocalService.getCommerceCatalogs(
+						_portal.getCompanyId(_httpServletRequest)),
+					CommerceCatalog::getGroupId)) {
+
+			_cpConfigurationLists.put(
+				groupId,
+				_cpConfigurationListDiscovery.getCPConfigurationList(
+					_portal.getCompanyId(_httpServletRequest), groupId,
+					CommerceUtil.getCommerceAccountId(this),
+					getCommerceChannelId(), orderTypeId));
+		}
+
+		return _cpConfigurationLists;
 	}
 
 	private CommerceCurrency _getCommerceCurrency(
@@ -371,40 +405,6 @@ public class BaseCommerceContextHttp implements CommerceContext {
 		}
 
 		return commerceCurrency;
-	}
-
-	private Map<Long, CPConfigurationList> _getCPConfigurationLists()
-		throws PortalException {
-
-		if (MapUtil.isNotEmpty(_cpConfigurationLists)) {
-			return _cpConfigurationLists;
-		}
-
-		_cpConfigurationLists = new HashMap<>();
-
-		long orderTypeId = 0;
-
-		CommerceOrder commerceOrder = getCommerceOrder();
-
-		if (commerceOrder != null) {
-			orderTypeId = commerceOrder.getCommerceOrderTypeId();
-		}
-
-		for (long groupId :
-				TransformUtil.transformToLongArray(
-					_commerceCatalogLocalService.getCommerceCatalogs(
-						_portal.getCompanyId(_httpServletRequest)),
-					CommerceCatalog::getGroupId)) {
-
-			_cpConfigurationLists.put(
-				groupId,
-				_cpConfigurationListDiscovery.getCPConfigurationList(
-					_portal.getCompanyId(_httpServletRequest), groupId,
-					CommerceUtil.getCommerceAccountId(this),
-					getCommerceChannelId(), orderTypeId));
-		}
-
-		return _cpConfigurationLists;
 	}
 
 	private boolean _isChannelAccountEntry(

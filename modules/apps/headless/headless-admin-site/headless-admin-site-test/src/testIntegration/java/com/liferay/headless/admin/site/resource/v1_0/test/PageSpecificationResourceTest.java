@@ -272,6 +272,14 @@ public class PageSpecificationResourceTest
 
 	@Override
 	@Test
+	public void testGetSiteSitePagePageSpecificationVersionPageSpecification()
+		throws Exception {
+
+		super.testGetSiteSitePagePageSpecificationVersionPageSpecification();
+	}
+
+	@Override
+	@Test
 	public void testGetSiteSitePagePageSpecificationsPage() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -286,14 +294,6 @@ public class PageSpecificationResourceTest
 				pageSpecificationResource.getSiteSitePagePageSpecificationsPage(
 					testGroup.getExternalReferenceCode(),
 					layout.getExternalReferenceCode()));
-	}
-
-	@Override
-	@Test
-	public void testGetSiteSitePagePageSpecificationVersionPageSpecification()
-		throws Exception {
-
-		super.testGetSiteSitePagePageSpecificationVersionPageSpecification();
 	}
 
 	@Override

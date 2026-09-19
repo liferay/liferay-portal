@@ -482,35 +482,6 @@ public class DisplayPagesImporterTest {
 	}
 
 	@Test
-	public void testImportDisplayPages() throws Exception {
-		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
-			_getLayoutsImporterResultEntries("display-page-template-multiple");
-
-		Assert.assertEquals(
-			layoutsImporterResultEntries.toString(), 2,
-			layoutsImporterResultEntries.size());
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
-			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 0);
-		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
-			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 1);
-
-		List<String> actualLayoutPageTemplateEntryNames = ListUtil.sort(
-			new ArrayList() {
-				{
-					add(layoutPageTemplateEntry1.getName());
-					add(layoutPageTemplateEntry2.getName());
-				}
-			});
-
-		Assert.assertArrayEquals(
-			new String[] {
-				"Display Page Template One", "Display Page Template Two"
-			},
-			actualLayoutPageTemplateEntryNames.toArray(new String[0]));
-	}
-
-	@Test
 	public void testImportDisplayPageWithCollectionDisplay() throws Exception {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_importLayoutPageTemplateEntry(
@@ -565,6 +536,35 @@ public class DisplayPagesImporterTest {
 				"provider.AssetCategoriesForAssetEntryRelatedInfoItem" +
 					"CollectionProvider",
 			collectionJSONObject.getString("key"));
+	}
+
+	@Test
+	public void testImportDisplayPages() throws Exception {
+		List<LayoutsImporterResultEntry> layoutsImporterResultEntries =
+			_getLayoutsImporterResultEntries("display-page-template-multiple");
+
+		Assert.assertEquals(
+			layoutsImporterResultEntries.toString(), 2,
+			layoutsImporterResultEntries.size());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry1 =
+			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 0);
+		LayoutPageTemplateEntry layoutPageTemplateEntry2 =
+			_getLayoutPageTemplateEntry(layoutsImporterResultEntries, 1);
+
+		List<String> actualLayoutPageTemplateEntryNames = ListUtil.sort(
+			new ArrayList() {
+				{
+					add(layoutPageTemplateEntry1.getName());
+					add(layoutPageTemplateEntry2.getName());
+				}
+			});
+
+		Assert.assertArrayEquals(
+			new String[] {
+				"Display Page Template One", "Display Page Template Two"
+			},
+			actualLayoutPageTemplateEntryNames.toArray(new String[0]));
 	}
 
 	private void _assertLayoutPageTemplateCollections(

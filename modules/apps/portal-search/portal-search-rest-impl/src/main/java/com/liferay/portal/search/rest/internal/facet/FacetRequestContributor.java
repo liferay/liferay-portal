@@ -425,6 +425,13 @@ public class FacetRequestContributor {
 		return attributes.get(key);
 	}
 
+	private String _getDDMDateValueFieldName(String indexType, String suffix) {
+		String valueFieldName = _ddmIndexer.getValueFieldName(
+			indexType, _getLocaleFromSuffix(suffix));
+
+		return valueFieldName + "_date";
+	}
+
 	private Aggregation _getDateRangeChildAggregation(
 		FacetConfiguration facetConfiguration, String fieldToAggregate,
 		JSONArray rangesJSONArray) {
@@ -487,13 +494,6 @@ public class FacetRequestContributor {
 		}
 
 		return booleanFilter;
-	}
-
-	private String _getDDMDateValueFieldName(String indexType, String suffix) {
-		String valueFieldName = _ddmIndexer.getValueFieldName(
-			indexType, _getLocaleFromSuffix(suffix));
-
-		return valueFieldName + "_date";
 	}
 
 	private Locale _getLocaleFromSuffix(String string) {

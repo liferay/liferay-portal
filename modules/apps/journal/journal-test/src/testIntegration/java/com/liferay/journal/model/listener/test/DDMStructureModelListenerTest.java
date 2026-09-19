@@ -318,14 +318,6 @@ public class DDMStructureModelListenerTest {
 		return journalArticle;
 	}
 
-	private void _assertDataDefinitionStructureKeyChanged(
-		DataDefinition actualDataDefinition, String expectedDataDefinitionKey) {
-
-		Assert.assertEquals(
-			expectedDataDefinitionKey,
-			actualDataDefinition.getDataDefinitionKey());
-	}
-
 	private void _assertDDMFormFieldValuesMap(
 		Map<String, List<String>> expectedFieldValuesMap,
 		DDMFormValues ddmFormValues) {
@@ -365,6 +357,14 @@ public class DDMStructureModelListenerTest {
 				Assert.assertEquals(expectedFieldValues.get(i), stringValue);
 			}
 		}
+	}
+
+	private void _assertDataDefinitionStructureKeyChanged(
+		DataDefinition actualDataDefinition, String expectedDataDefinitionKey) {
+
+		Assert.assertEquals(
+			expectedDataDefinitionKey,
+			actualDataDefinition.getDataDefinitionKey());
 	}
 
 	private void _assertJournalArticleStructureKeyChanged(

@@ -146,12 +146,12 @@ public abstract class BaseSystemObjectDefinitionManagerTestCase {
 		deleteBaseModel(baseModelId);
 	}
 
+	protected abstract void assertGetOrAddEmptyBaseModelWithPermissions(
+		BaseModel<?> baseModel);
+
 	protected abstract void assertGetOrAddEmptyBaseModelWithoutPermissions(
 			BaseModel<?> baseModel, User user)
 		throws PortalException;
-
-	protected abstract void assertGetOrAddEmptyBaseModelWithPermissions(
-		BaseModel<?> baseModel);
 
 	protected abstract void assertUpdateBaseModelWithPermissions(
 			long baseModelId, Map<String, Object> values)

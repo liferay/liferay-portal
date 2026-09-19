@@ -100,34 +100,6 @@ public class LayoutPageTemplateEntryClassTypeKeyUpgradeProcessTest {
 
 	@Test
 	@TestInfo("LPD-103532")
-	public void testUpgradeJournalArticleDisplayPageTemplateWithClassTypeKey()
-		throws Exception {
-
-		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
-			_group.getGroupId(), JournalArticle.class.getName());
-
-		String classTypeKey = RandomTestUtil.randomString();
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_addDisplayPageTemplate(
-				_portal.getClassNameId(JournalArticle.class.getName()),
-				ddmStructure.getStructureId(), classTypeKey);
-
-		_runUpgrade();
-
-		layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
-				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
-
-		Assert.assertEquals(
-			ddmStructure.getStructureId(),
-			layoutPageTemplateEntry.getClassTypeId());
-		Assert.assertEquals(
-			classTypeKey, layoutPageTemplateEntry.getClassTypeKey());
-	}
-
-	@Test
-	@TestInfo("LPD-103532")
 	public void testUpgradeJournalArticleDisplayPageTemplateWithCTCollection()
 		throws Exception {
 
@@ -158,6 +130,34 @@ public class LayoutPageTemplateEntryClassTypeKeyUpgradeProcessTest {
 		finally {
 			_ctCollectionLocalService.deleteCTCollection(ctCollection);
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-103532")
+	public void testUpgradeJournalArticleDisplayPageTemplateWithClassTypeKey()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		String classTypeKey = RandomTestUtil.randomString();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addDisplayPageTemplate(
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureId(), classTypeKey);
+
+		_runUpgrade();
+
+		layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+		Assert.assertEquals(
+			ddmStructure.getStructureId(),
+			layoutPageTemplateEntry.getClassTypeId());
+		Assert.assertEquals(
+			classTypeKey, layoutPageTemplateEntry.getClassTypeKey());
 	}
 
 	@Test

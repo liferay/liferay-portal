@@ -288,6 +288,17 @@ public class Entity implements Comparable<Entity> {
 		return _blobEntityColumns;
 	}
 
+	public Set<String> getCTColumnResolutionTypeNames() {
+		Set<String> ctColumnResolutionTypeNames = new TreeSet<>();
+
+		for (EntityColumn entityColumn : getEntityColumns()) {
+			ctColumnResolutionTypeNames.add(
+				entityColumn.getCTColumnResolutionTypeName());
+		}
+
+		return ctColumnResolutionTypeNames;
+	}
+
 	public List<EntityColumn> getCollectionEntityColumns() {
 		return _collectionEntityColumns;
 	}
@@ -312,23 +323,12 @@ public class Entity implements Comparable<Entity> {
 			TextFormatter.format(_name, TextFormatter.H), TextFormatter.A);
 	}
 
-	public Set<String> getCTColumnResolutionTypeNames() {
-		Set<String> ctColumnResolutionTypeNames = new TreeSet<>();
-
-		for (EntityColumn entityColumn : getEntityColumns()) {
-			ctColumnResolutionTypeNames.add(
-				entityColumn.getCTColumnResolutionTypeName());
-		}
-
-		return ctColumnResolutionTypeNames;
+	public String getDataSource() {
+		return _dataSource;
 	}
 
 	public List<EntityColumn> getDatabaseRegularEntityColumns() {
 		return _databaseRegularEntityColumns;
-	}
-
-	public String getDataSource() {
-		return _dataSource;
 	}
 
 	public EntityColumn getEntityColumn(String name) {
@@ -562,18 +562,6 @@ public class Entity implements Comparable<Entity> {
 		return overrideColumnName;
 	}
 
-	public String getPackagePath() {
-		return _packagePath;
-	}
-
-	public List<String> getParentTransients() {
-		return _parentTransients;
-	}
-
-	public String getPersistenceClassName() {
-		return _persistenceClassName;
-	}
-
 	public String getPKClassName() {
 		if (hasCompoundPK()) {
 			return _name + "PK";
@@ -623,6 +611,18 @@ public class Entity implements Comparable<Entity> {
 		EntityColumn entityColumn = _getPKEntityColumn();
 
 		return entityColumn.getName();
+	}
+
+	public String getPackagePath() {
+		return _packagePath;
+	}
+
+	public List<String> getParentTransients() {
+		return _parentTransients;
+	}
+
+	public String getPersistenceClassName() {
+		return _persistenceClassName;
 	}
 
 	public String getPluralHumanName() {
@@ -675,16 +675,16 @@ public class Entity implements Comparable<Entity> {
 		return TextFormatter.format(_name, TextFormatter.L);
 	}
 
+	public String getTXManager() {
+		return _txManager;
+	}
+
 	public String getTable() {
 		return _table;
 	}
 
 	public List<String> getTransients() {
 		return _transients;
-	}
-
-	public String getTXManager() {
-		return _txManager;
 	}
 
 	public List<String> getTxRequiredMethodNames() {
@@ -812,12 +812,12 @@ public class Entity implements Comparable<Entity> {
 		return _variableName;
 	}
 
-	public Entity getVersionedEntity() {
-		return _versionedEntity;
-	}
-
 	public Entity getVersionEntity() {
 		return _versionEntity;
+	}
+
+	public Entity getVersionedEntity() {
+		return _versionedEntity;
 	}
 
 	public boolean hasActionableDynamicQuery() {
@@ -896,11 +896,6 @@ public class Entity implements Comparable<Entity> {
 		return Validator.isNotNull(_finderClassName);
 	}
 
-	@Override
-	public int hashCode() {
-		return _name.hashCode();
-	}
-
 	public boolean hasLazyBlobEntityColumn() {
 		if (ListUtil.isEmpty(_blobEntityColumns)) {
 			return false;
@@ -947,6 +942,11 @@ public class Entity implements Comparable<Entity> {
 
 	public boolean hasUuidAccessor() {
 		return _uuidAccessor;
+	}
+
+	@Override
+	public int hashCode() {
+		return _name.hashCode();
 	}
 
 	public boolean isAttachedModel() {
@@ -1280,14 +1280,14 @@ public class Entity implements Comparable<Entity> {
 		_transients = transients;
 	}
 
-	public void setVersionedEntity(Entity versionedEntity) {
-		_versionedEntity = versionedEntity;
-	}
-
 	public void setVersionEntity(Entity versionEntity) {
 		_versionEntity = versionEntity;
 
 		_referenceEntities.add(versionEntity);
+	}
+
+	public void setVersionedEntity(Entity versionedEntity) {
+		_versionedEntity = versionedEntity;
 	}
 
 	private EntityColumn _getPKEntityColumn() {
@@ -1314,8 +1314,8 @@ public class Entity implements Comparable<Entity> {
 	private boolean _changeTrackingEnabled;
 	private final List<EntityColumn> _collectionEntityColumns;
 	private final boolean _containerModel;
-	private final List<EntityColumn> _databaseRegularEntityColumns;
 	private final String _dataSource;
+	private final List<EntityColumn> _databaseRegularEntityColumns;
 	private final boolean _deprecated;
 	private final boolean _dynamicUpdateEnabled;
 	private final List<EntityColumn> _entityColumns;
@@ -1327,9 +1327,9 @@ public class Entity implements Comparable<Entity> {
 	private final String _humanName;
 	private final List<EntityFinder> _indexOnlyEntityFinders;
 	private final boolean _jsonEnabled;
+	private final boolean _localService;
 	private Entity _localizedEntity;
 	private List<EntityColumn> _localizedEntityColumns;
-	private final boolean _localService;
 	private final boolean _mvccEnabled;
 	private final String _name;
 	private final String _packagePath;
@@ -1360,7 +1360,7 @@ public class Entity implements Comparable<Entity> {
 	private final boolean _uuid;
 	private final boolean _uuidAccessor;
 	private final String _variableName;
-	private Entity _versionedEntity;
 	private Entity _versionEntity;
+	private Entity _versionedEntity;
 
 }

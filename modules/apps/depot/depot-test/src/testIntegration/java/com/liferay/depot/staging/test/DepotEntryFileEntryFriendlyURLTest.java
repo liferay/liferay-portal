@@ -282,6 +282,35 @@ public class DepotEntryFileEntryFriendlyURLTest {
 	}
 
 	@Test
+	public void testStageDepotEntryFileEntryFriendlyURLEntries()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _liveDepotEntry.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			StringUtil.randomString(), "urltitle", StringUtil.randomString(),
+			StringUtil.randomString(), new byte[0], null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_liveDepotEntry.getGroupId()));
+
+		_stagingDepotEntry = DepotStagingTestUtil.enableLocalStaging(
+			_liveDepotEntry);
+
+		FileEntry stagedFileEntry =
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				fileEntry.getUuid(), _liveDepotEntry.getGroupId());
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+				_portal.getClassNameId(FileEntry.class),
+				stagedFileEntry.getFileEntryId());
+
+		Assert.assertNotNull(friendlyURLEntry);
+		Assert.assertEquals("urltitle", friendlyURLEntry.getUrlTitle());
+	}
+
+	@Test
 	public void testStagedDepotEntryFileEntryFriendlyURLEntriesNormalizedTitle()
 		throws Exception {
 
@@ -311,35 +340,6 @@ public class DepotEntryFileEntryFriendlyURLTest {
 		Assert.assertEquals(
 			_friendlyURLNormalizer.normalizeWithEncoding(fileEntry.getTitle()),
 			friendlyURLEntry.getUrlTitle());
-	}
-
-	@Test
-	public void testStageDepotEntryFileEntryFriendlyURLEntries()
-		throws Exception {
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), _liveDepotEntry.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
-			StringUtil.randomString(), "urltitle", StringUtil.randomString(),
-			StringUtil.randomString(), new byte[0], null, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				_liveDepotEntry.getGroupId()));
-
-		_stagingDepotEntry = DepotStagingTestUtil.enableLocalStaging(
-			_liveDepotEntry);
-
-		FileEntry stagedFileEntry =
-			_dlAppLocalService.getFileEntryByUuidAndGroupId(
-				fileEntry.getUuid(), _liveDepotEntry.getGroupId());
-
-		FriendlyURLEntry friendlyURLEntry =
-			_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
-				_portal.getClassNameId(FileEntry.class),
-				stagedFileEntry.getFileEntryId());
-
-		Assert.assertNotNull(friendlyURLEntry);
-		Assert.assertEquals("urltitle", friendlyURLEntry.getUrlTitle());
 	}
 
 	private DepotEntry _addDepotEntry() throws Exception {

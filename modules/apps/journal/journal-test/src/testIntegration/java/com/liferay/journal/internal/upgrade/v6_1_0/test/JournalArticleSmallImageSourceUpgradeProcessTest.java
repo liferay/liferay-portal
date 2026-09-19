@@ -84,14 +84,6 @@ public class JournalArticleSmallImageSourceUpgradeProcessTest {
 			journalArticleWithSmallImageFromUserComputer.getSmallImageSource());
 	}
 
-	private JournalArticle _addJournalArticleWithoutSmallImage()
-		throws Exception {
-
-		return JournalTestUtil.addArticle(
-			_group.getGroupId(),
-			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-	}
-
 	private JournalArticle _addJournalArticleWithSmallImageFromURL()
 		throws Exception {
 
@@ -117,6 +109,14 @@ public class JournalArticleSmallImageSourceUpgradeProcessTest {
 		journalArticle.setSmallImageId(RandomTestUtil.nextLong());
 
 		return _journalArticleLocalService.updateJournalArticle(journalArticle);
+	}
+
+	private JournalArticle _addJournalArticleWithoutSmallImage()
+		throws Exception {
+
+		return JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 	}
 
 	private void _runUpgrade() throws Exception {

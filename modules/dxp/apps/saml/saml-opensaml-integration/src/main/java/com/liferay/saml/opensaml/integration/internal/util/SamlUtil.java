@@ -343,6 +343,60 @@ public class SamlUtil {
 		return null;
 	}
 
+	public static SingleLogoutService resolveSingleLogoutService(
+		RoleDescriptor roleDescriptor, String preferredBinding) {
+
+		if (roleDescriptor instanceof IDPSSODescriptor) {
+			return resolveSingleLogoutService(
+				(IDPSSODescriptor)roleDescriptor, preferredBinding);
+		}
+		else if (roleDescriptor instanceof SSODescriptor) {
+			return resolveSingleLogoutService(
+				(SPSSODescriptor)roleDescriptor, preferredBinding);
+		}
+
+		throw new UnsupportedOperationException(
+			"Invalid role descriptor " + roleDescriptor);
+	}
+
+	public static SingleLogoutService resolveSingleLogoutService(
+		SSODescriptor ssoDescriptor, String preferredBinding) {
+
+		List<SingleLogoutService> singleLogoutServices =
+			ssoDescriptor.getSingleLogoutServices();
+
+		for (SingleLogoutService singleLogoutService : singleLogoutServices) {
+			if (preferredBinding.equals(singleLogoutService.getBinding())) {
+				return singleLogoutService;
+			}
+		}
+
+		if (!singleLogoutServices.isEmpty()) {
+			return singleLogoutServices.get(0);
+		}
+
+		return null;
+	}
+
+	public static SingleSignOnService resolveSingleSignOnService(
+		IDPSSODescriptor idpSSODescriptor, String preferredBinding) {
+
+		List<SingleSignOnService> singleSignOnServices =
+			idpSSODescriptor.getSingleSignOnServices();
+
+		for (SingleSignOnService singleSignOnService : singleSignOnServices) {
+			if (preferredBinding.equals(singleSignOnService.getBinding())) {
+				return singleSignOnService;
+			}
+		}
+
+		if (!singleSignOnServices.isEmpty()) {
+			return singleSignOnServices.get(0);
+		}
+
+		return null;
+	}
+
 	public static AssertionConsumerService resolverAssertionConsumerService(
 		MessageContext<?> messageContext, String binding,
 		boolean dynamicACSURL) {
@@ -405,60 +459,6 @@ public class SamlUtil {
 			if (binding.equals(assertionConsumerService.getBinding())) {
 				return assertionConsumerService;
 			}
-		}
-
-		return null;
-	}
-
-	public static SingleLogoutService resolveSingleLogoutService(
-		RoleDescriptor roleDescriptor, String preferredBinding) {
-
-		if (roleDescriptor instanceof IDPSSODescriptor) {
-			return resolveSingleLogoutService(
-				(IDPSSODescriptor)roleDescriptor, preferredBinding);
-		}
-		else if (roleDescriptor instanceof SSODescriptor) {
-			return resolveSingleLogoutService(
-				(SPSSODescriptor)roleDescriptor, preferredBinding);
-		}
-
-		throw new UnsupportedOperationException(
-			"Invalid role descriptor " + roleDescriptor);
-	}
-
-	public static SingleLogoutService resolveSingleLogoutService(
-		SSODescriptor ssoDescriptor, String preferredBinding) {
-
-		List<SingleLogoutService> singleLogoutServices =
-			ssoDescriptor.getSingleLogoutServices();
-
-		for (SingleLogoutService singleLogoutService : singleLogoutServices) {
-			if (preferredBinding.equals(singleLogoutService.getBinding())) {
-				return singleLogoutService;
-			}
-		}
-
-		if (!singleLogoutServices.isEmpty()) {
-			return singleLogoutServices.get(0);
-		}
-
-		return null;
-	}
-
-	public static SingleSignOnService resolveSingleSignOnService(
-		IDPSSODescriptor idpSSODescriptor, String preferredBinding) {
-
-		List<SingleSignOnService> singleSignOnServices =
-			idpSSODescriptor.getSingleSignOnServices();
-
-		for (SingleSignOnService singleSignOnService : singleSignOnServices) {
-			if (preferredBinding.equals(singleSignOnService.getBinding())) {
-				return singleSignOnService;
-			}
-		}
-
-		if (!singleSignOnServices.isEmpty()) {
-			return singleSignOnServices.get(0);
 		}
 
 		return null;

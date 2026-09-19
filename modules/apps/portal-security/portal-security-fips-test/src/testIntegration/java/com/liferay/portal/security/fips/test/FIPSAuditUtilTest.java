@@ -251,6 +251,26 @@ public class FIPSAuditUtilTest {
 	}
 
 	@Test
+	public void testWriteWithPosixFileSystem() throws Exception {
+		FIPSAuditUtil.write(
+			new FIPSAuditEvent(
+				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
+
+		Path path = FIPSTestUtil.getAuditLogPath();
+
+		FileSystem fileSystem = path.getFileSystem();
+
+		Set<String> supportedFileAttributeViews =
+			fileSystem.supportedFileAttributeViews();
+
+		Assume.assumeTrue(supportedFileAttributeViews.contains("posix"));
+
+		Assert.assertEquals(
+			PosixFilePermissions.fromString("rw-------"),
+			Files.getPosixFilePermissions(path));
+	}
+
+	@Test
 	public void testWriteWithoutADeploymentInstanceId() throws Exception {
 		Assume.assumeTrue(
 			Validator.isNull(PropsValues.FIPS_AUDIT_DEPLOYMENT_INSTANCE_ID));
@@ -272,26 +292,6 @@ public class FIPSAuditUtilTest {
 		Assert.assertEquals(
 			deploymentInstanceId.trim(),
 			jsonObject.getString("deployment-instance-id"));
-	}
-
-	@Test
-	public void testWriteWithPosixFileSystem() throws Exception {
-		FIPSAuditUtil.write(
-			new FIPSAuditEvent(
-				RandomTestUtil.randomString(), FIPSAuditEvent.Severity.INFO));
-
-		Path path = FIPSTestUtil.getAuditLogPath();
-
-		FileSystem fileSystem = path.getFileSystem();
-
-		Set<String> supportedFileAttributeViews =
-			fileSystem.supportedFileAttributeViews();
-
-		Assume.assumeTrue(supportedFileAttributeViews.contains("posix"));
-
-		Assert.assertEquals(
-			PosixFilePermissions.fromString("rw-------"),
-			Files.getPosixFilePermissions(path));
 	}
 
 	private void _assertBootStateTransitions(List<JSONObject> jsonObjects) {

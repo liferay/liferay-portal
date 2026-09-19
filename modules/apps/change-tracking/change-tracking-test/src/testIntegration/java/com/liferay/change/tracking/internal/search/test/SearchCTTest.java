@@ -507,10 +507,10 @@ public class SearchCTTest {
 	private UserGroup _productionUserGroup;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	@Inject
 	private UIDFactory _uidFactory;

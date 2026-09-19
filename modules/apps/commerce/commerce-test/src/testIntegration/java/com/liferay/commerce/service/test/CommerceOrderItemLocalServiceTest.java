@@ -978,6 +978,28 @@ public class CommerceOrderItemLocalServiceTest {
 	}
 
 	@Test
+	public void testAddProductBundleWithStaticOptionWithSKU() throws Exception {
+		frutillaRule.scenario(
+			"Add a product bundle with static price option linked to a SKU " +
+				"to an order"
+		).given(
+			"A catalog with 2 cpInstances"
+		).and(
+			"A product bundle with a static-price option with values linked " +
+				"to the cpInstances"
+		).when(
+			"I add the bundle to an order"
+		).then(
+			"I should have 2 orderItems in the order. 1 for the bundle and 1 " +
+				"for the selected value of the option with the correct " +
+					"quantities"
+		);
+
+		_addProductBundleWithOptionLinkedToSKU(
+			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC);
+	}
+
+	@Test
 	public void testAddProductBundleWithStaticOptionWithSameSKU()
 		throws Exception {
 
@@ -999,28 +1021,6 @@ public class CommerceOrderItemLocalServiceTest {
 
 		_addProductBundleWithOptionLinkedToSKU(
 			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC, true);
-	}
-
-	@Test
-	public void testAddProductBundleWithStaticOptionWithSKU() throws Exception {
-		frutillaRule.scenario(
-			"Add a product bundle with static price option linked to a SKU " +
-				"to an order"
-		).given(
-			"A catalog with 2 cpInstances"
-		).and(
-			"A product bundle with a static-price option with values linked " +
-				"to the cpInstances"
-		).when(
-			"I add the bundle to an order"
-		).then(
-			"I should have 2 orderItems in the order. 1 for the bundle and 1 " +
-				"for the selected value of the option with the correct " +
-					"quantities"
-		);
-
-		_addProductBundleWithOptionLinkedToSKU(
-			CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC);
 	}
 
 	@Test(expected = CommerceOrderValidatorException.class)
@@ -2568,14 +2568,14 @@ public class CommerceOrderItemLocalServiceTest {
 	@Inject
 	private CPOptionLocalService _cpOptionLocalService;
 
-	@DeleteAfterTestRun
-	private List<CPOption> _cpOptions = new ArrayList<>();
-
 	@Inject
 	private CPOptionValueLocalService _cpOptionValueLocalService;
 
 	@DeleteAfterTestRun
 	private List<CPOptionValue> _cpOptionValues = new ArrayList<>();
+
+	@DeleteAfterTestRun
+	private List<CPOption> _cpOptions = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private Group _group;

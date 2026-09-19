@@ -21,12 +21,12 @@ public interface ServiceComponentConfiguration {
 
 	public InputStream getModelHintsInputStream();
 
-	public String getServletContextName();
-
 	public InputStream getSQLIndexesInputStream();
 
 	public InputStream getSQLSequencesInputStream();
 
 	public InputStream getSQLTablesInputStream();
+
+	public String getServletContextName();
 
 }

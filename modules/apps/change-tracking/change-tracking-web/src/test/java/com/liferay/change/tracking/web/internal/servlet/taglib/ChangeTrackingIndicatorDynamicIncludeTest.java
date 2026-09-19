@@ -88,20 +88,20 @@ public class ChangeTrackingIndicatorDynamicIncludeTest {
 		_testInclude(0);
 	}
 
-	private void _setUpChangeTrackingIndicatorDynamicInclude() {
-		_setUpCTSettingsConfigurationHelper();
-
-		ReflectionTestUtil.setFieldValue(
-			_changeTrackingIndicatorDynamicInclude,
-			"_ctSettingsConfigurationHelper", _ctSettingsConfigurationHelper);
-	}
-
 	private void _setUpCTSettingsConfigurationHelper() {
 		Mockito.when(
 			_ctSettingsConfigurationHelper.isEnabled(Mockito.anyLong())
 		).thenReturn(
 			true
 		);
+	}
+
+	private void _setUpChangeTrackingIndicatorDynamicInclude() {
+		_setUpCTSettingsConfigurationHelper();
+
+		ReflectionTestUtil.setFieldValue(
+			_changeTrackingIndicatorDynamicInclude,
+			"_ctSettingsConfigurationHelper", _ctSettingsConfigurationHelper);
 	}
 
 	private void _setUpHttpServletRequest() {

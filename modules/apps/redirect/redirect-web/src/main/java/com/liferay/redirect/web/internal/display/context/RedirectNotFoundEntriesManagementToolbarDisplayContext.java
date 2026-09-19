@@ -229,18 +229,6 @@ public class RedirectNotFoundEntriesManagementToolbarDisplayContext
 		return ParamUtil.getInteger(httpServletRequest, "filterDate");
 	}
 
-	private List<DropdownItem> _getFilterDateDropdownItems() {
-		return DropdownItemListBuilder.add(
-			_getFilterDateDropdownItemUnsafeConsumer(0)
-		).add(
-			_getFilterDateDropdownItemUnsafeConsumer(1)
-		).add(
-			_getFilterDateDropdownItemUnsafeConsumer(7)
-		).add(
-			_getFilterDateDropdownItemUnsafeConsumer(30)
-		).build();
-	}
-
 	private UnsafeConsumer<DropdownItem, Exception>
 		_getFilterDateDropdownItemUnsafeConsumer(int days) {
 
@@ -254,6 +242,18 @@ public class RedirectNotFoundEntriesManagementToolbarDisplayContext
 				).buildPortletURL());
 			dropdownItem.setLabel(_getFilterDateLabel(days));
 		};
+	}
+
+	private List<DropdownItem> _getFilterDateDropdownItems() {
+		return DropdownItemListBuilder.add(
+			_getFilterDateDropdownItemUnsafeConsumer(0)
+		).add(
+			_getFilterDateDropdownItemUnsafeConsumer(1)
+		).add(
+			_getFilterDateDropdownItemUnsafeConsumer(7)
+		).add(
+			_getFilterDateDropdownItemUnsafeConsumer(30)
+		).build();
 	}
 
 	private String _getFilterDateLabel(int days) {

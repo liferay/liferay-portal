@@ -208,8 +208,7 @@ public class AutoSaveArticleMVCResourceCommandTest {
 
 		String articleId = RandomTestUtil.randomString();
 
-		mockLiferayResourceRequest.setParameter(
-			"articleId", articleId);
+		mockLiferayResourceRequest.setParameter("articleId", articleId);
 
 		mockLiferayResourceRequest.setParameter(
 			"autoArticleId", StringPool.FALSE);

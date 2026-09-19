@@ -183,22 +183,6 @@ public class WorkflowInstanceViewDisplayContext
 		return _orderByType;
 	}
 
-	public List<WorkflowHandler<?>> getSearchableAssetsWorkflowHandlers() {
-		List<WorkflowHandler<?>> searchableAssetsWorkflowHandlers =
-			new ArrayList<>();
-
-		List<WorkflowHandler<?>> workflowHandlers =
-			WorkflowHandlerRegistryUtil.getWorkflowHandlers();
-
-		for (WorkflowHandler<?> workflowHandler : workflowHandlers) {
-			if (workflowHandler.isAssetTypeSearchable()) {
-				searchableAssetsWorkflowHandlers.add(workflowHandler);
-			}
-		}
-
-		return searchableAssetsWorkflowHandlers;
-	}
-
 	public WorkflowInstanceSearch getSearchContainer() throws PortalException {
 		if (Objects.nonNull(_searchContainer)) {
 			return _searchContainer;
@@ -222,6 +206,22 @@ public class WorkflowInstanceViewDisplayContext
 			workflowModelSearchResult.getLength());
 
 		return _searchContainer;
+	}
+
+	public List<WorkflowHandler<?>> getSearchableAssetsWorkflowHandlers() {
+		List<WorkflowHandler<?>> searchableAssetsWorkflowHandlers =
+			new ArrayList<>();
+
+		List<WorkflowHandler<?>> workflowHandlers =
+			WorkflowHandlerRegistryUtil.getWorkflowHandlers();
+
+		for (WorkflowHandler<?> workflowHandler : workflowHandlers) {
+			if (workflowHandler.isAssetTypeSearchable()) {
+				searchableAssetsWorkflowHandlers.add(workflowHandler);
+			}
+		}
+
+		return searchableAssetsWorkflowHandlers;
 	}
 
 	public String getWorkflowContextEntryClassName(

@@ -107,12 +107,6 @@ public class IGConfigurationDisplayContext {
 		return _folderName;
 	}
 
-	public long getSelectedRepositoryId() throws PortalException {
-		_initRepository();
-
-		return _selectedRepositoryId;
-	}
-
 	public String getSelectRootFolderURL() throws PortalException {
 		FolderItemSelectorURLProvider folderItemSelectorURLProvider =
 			new FolderItemSelectorURLProvider(
@@ -120,6 +114,12 @@ public class IGConfigurationDisplayContext {
 
 		return folderItemSelectorURLProvider.getSelectRootFolderURL(
 			getSelectedRepositoryId(), getRootFolderId());
+	}
+
+	public long getSelectedRepositoryId() throws PortalException {
+		_initRepository();
+
+		return _selectedRepositoryId;
 	}
 
 	public boolean isRootFolderInTrash() throws PortalException {

@@ -25,13 +25,13 @@ public abstract class BaseCKEditorRenderer implements EditorRenderer {
 	}
 
 	@Override
-	public String getResourcesJspPath() {
-		return null;
+	public String getResourceType() {
+		return PortalWebResourceConstants.RESOURCE_TYPE_EDITOR_CKEDITOR;
 	}
 
 	@Override
-	public String getResourceType() {
-		return PortalWebResourceConstants.RESOURCE_TYPE_EDITOR_CKEDITOR;
+	public String getResourcesJspPath() {
+		return null;
 	}
 
 }

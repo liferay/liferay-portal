@@ -826,6 +826,77 @@ public class UsersAdminUtil {
 		return orderByComparator;
 	}
 
+	public static List<OrgLabor> getOrgLabors(ActionRequest actionRequest) {
+		List<OrgLabor> orgLabors = new ArrayList<>();
+
+		int[] orgLaborsIndexes = StringUtil.split(
+			ParamUtil.getString(actionRequest, "orgLaborsIndexes"), 0);
+
+		for (int orgLaborsIndex : orgLaborsIndexes) {
+			long listTypeId = ParamUtil.getLong(
+				actionRequest, "orgLaborListTypeId" + orgLaborsIndex, -1);
+
+			if (listTypeId == -1) {
+				continue;
+			}
+
+			long orgLaborId = ParamUtil.getLong(
+				actionRequest, "orgLaborId" + orgLaborsIndex);
+
+			int sunOpen = ParamUtil.getInteger(
+				actionRequest, "sunOpen" + orgLaborsIndex, -1);
+			int sunClose = ParamUtil.getInteger(
+				actionRequest, "sunClose" + orgLaborsIndex, -1);
+			int monOpen = ParamUtil.getInteger(
+				actionRequest, "monOpen" + orgLaborsIndex, -1);
+			int monClose = ParamUtil.getInteger(
+				actionRequest, "monClose" + orgLaborsIndex, -1);
+			int tueOpen = ParamUtil.getInteger(
+				actionRequest, "tueOpen" + orgLaborsIndex, -1);
+			int tueClose = ParamUtil.getInteger(
+				actionRequest, "tueClose" + orgLaborsIndex, -1);
+			int wedOpen = ParamUtil.getInteger(
+				actionRequest, "wedOpen" + orgLaborsIndex, -1);
+			int wedClose = ParamUtil.getInteger(
+				actionRequest, "wedClose" + orgLaborsIndex, -1);
+			int thuOpen = ParamUtil.getInteger(
+				actionRequest, "thuOpen" + orgLaborsIndex, -1);
+			int thuClose = ParamUtil.getInteger(
+				actionRequest, "thuClose" + orgLaborsIndex, -1);
+			int friOpen = ParamUtil.getInteger(
+				actionRequest, "friOpen" + orgLaborsIndex, -1);
+			int friClose = ParamUtil.getInteger(
+				actionRequest, "friClose" + orgLaborsIndex, -1);
+			int satOpen = ParamUtil.getInteger(
+				actionRequest, "satOpen" + orgLaborsIndex, -1);
+			int satClose = ParamUtil.getInteger(
+				actionRequest, "satClose" + orgLaborsIndex, -1);
+
+			OrgLabor orgLabor = OrgLaborLocalServiceUtil.createOrgLabor(
+				orgLaborId);
+
+			orgLabor.setListTypeId(listTypeId);
+			orgLabor.setSunOpen(sunOpen);
+			orgLabor.setSunClose(sunClose);
+			orgLabor.setMonOpen(monOpen);
+			orgLabor.setMonClose(monClose);
+			orgLabor.setTueOpen(tueOpen);
+			orgLabor.setTueClose(tueClose);
+			orgLabor.setWedOpen(wedOpen);
+			orgLabor.setWedClose(wedClose);
+			orgLabor.setThuOpen(thuOpen);
+			orgLabor.setThuClose(thuClose);
+			orgLabor.setFriOpen(friOpen);
+			orgLabor.setFriClose(friClose);
+			orgLabor.setSatOpen(satOpen);
+			orgLabor.setSatClose(satClose);
+
+			orgLabors.add(orgLabor);
+		}
+
+		return orgLabors;
+	}
+
 	public static Long[] getOrganizationIds(List<Organization> organizations) {
 		if (ListUtil.isEmpty(organizations)) {
 			return new Long[0];
@@ -917,77 +988,6 @@ public class UsersAdminUtil {
 		}
 
 		return organizations;
-	}
-
-	public static List<OrgLabor> getOrgLabors(ActionRequest actionRequest) {
-		List<OrgLabor> orgLabors = new ArrayList<>();
-
-		int[] orgLaborsIndexes = StringUtil.split(
-			ParamUtil.getString(actionRequest, "orgLaborsIndexes"), 0);
-
-		for (int orgLaborsIndex : orgLaborsIndexes) {
-			long listTypeId = ParamUtil.getLong(
-				actionRequest, "orgLaborListTypeId" + orgLaborsIndex, -1);
-
-			if (listTypeId == -1) {
-				continue;
-			}
-
-			long orgLaborId = ParamUtil.getLong(
-				actionRequest, "orgLaborId" + orgLaborsIndex);
-
-			int sunOpen = ParamUtil.getInteger(
-				actionRequest, "sunOpen" + orgLaborsIndex, -1);
-			int sunClose = ParamUtil.getInteger(
-				actionRequest, "sunClose" + orgLaborsIndex, -1);
-			int monOpen = ParamUtil.getInteger(
-				actionRequest, "monOpen" + orgLaborsIndex, -1);
-			int monClose = ParamUtil.getInteger(
-				actionRequest, "monClose" + orgLaborsIndex, -1);
-			int tueOpen = ParamUtil.getInteger(
-				actionRequest, "tueOpen" + orgLaborsIndex, -1);
-			int tueClose = ParamUtil.getInteger(
-				actionRequest, "tueClose" + orgLaborsIndex, -1);
-			int wedOpen = ParamUtil.getInteger(
-				actionRequest, "wedOpen" + orgLaborsIndex, -1);
-			int wedClose = ParamUtil.getInteger(
-				actionRequest, "wedClose" + orgLaborsIndex, -1);
-			int thuOpen = ParamUtil.getInteger(
-				actionRequest, "thuOpen" + orgLaborsIndex, -1);
-			int thuClose = ParamUtil.getInteger(
-				actionRequest, "thuClose" + orgLaborsIndex, -1);
-			int friOpen = ParamUtil.getInteger(
-				actionRequest, "friOpen" + orgLaborsIndex, -1);
-			int friClose = ParamUtil.getInteger(
-				actionRequest, "friClose" + orgLaborsIndex, -1);
-			int satOpen = ParamUtil.getInteger(
-				actionRequest, "satOpen" + orgLaborsIndex, -1);
-			int satClose = ParamUtil.getInteger(
-				actionRequest, "satClose" + orgLaborsIndex, -1);
-
-			OrgLabor orgLabor = OrgLaborLocalServiceUtil.createOrgLabor(
-				orgLaborId);
-
-			orgLabor.setListTypeId(listTypeId);
-			orgLabor.setSunOpen(sunOpen);
-			orgLabor.setSunClose(sunClose);
-			orgLabor.setMonOpen(monOpen);
-			orgLabor.setMonClose(monClose);
-			orgLabor.setTueOpen(tueOpen);
-			orgLabor.setTueClose(tueClose);
-			orgLabor.setWedOpen(wedOpen);
-			orgLabor.setWedClose(wedClose);
-			orgLabor.setThuOpen(thuOpen);
-			orgLabor.setThuClose(thuClose);
-			orgLabor.setFriOpen(friOpen);
-			orgLabor.setFriClose(friClose);
-			orgLabor.setSatOpen(satOpen);
-			orgLabor.setSatClose(satClose);
-
-			orgLabors.add(orgLabor);
-		}
-
-		return orgLabors;
 	}
 
 	public static List<Phone> getPhones(ActionRequest actionRequest) {

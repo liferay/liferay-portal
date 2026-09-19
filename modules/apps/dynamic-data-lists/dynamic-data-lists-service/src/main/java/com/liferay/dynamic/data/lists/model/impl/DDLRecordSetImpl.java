@@ -61,11 +61,6 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 	}
 
 	@Override
-	public List<DDLRecord> getRecords() {
-		return DDLRecordLocalServiceUtil.getRecords(getRecordSetId());
-	}
-
-	@Override
 	public DDLRecordSetVersion getRecordSetVersion() throws PortalException {
 		return getRecordSetVersion(getVersion());
 	}
@@ -76,6 +71,11 @@ public class DDLRecordSetImpl extends DDLRecordSetBaseImpl {
 
 		return DDLRecordSetVersionLocalServiceUtil.getRecordSetVersion(
 			getRecordSetId(), version);
+	}
+
+	@Override
+	public List<DDLRecord> getRecords() {
+		return DDLRecordLocalServiceUtil.getRecords(getRecordSetId());
 	}
 
 	@Override

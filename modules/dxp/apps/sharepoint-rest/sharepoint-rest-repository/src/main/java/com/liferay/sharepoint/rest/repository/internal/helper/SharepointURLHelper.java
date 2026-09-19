@@ -116,15 +116,6 @@ public class SharepointURLHelper {
 				extRepositoryFileEntry.getExtRepositoryModelKey()));
 	}
 
-	public String getFilesURL(String extRepositoryFolderKey) {
-		return String.format(
-			"%s/_api/web/GetFolderByServerRelativePath(decodedUrl='%s')" +
-				"/Files?$select=%s&$expand=%s",
-			_siteAbsoluteURL,
-			HttpComponentsUtil.encodePath(extRepositoryFolderKey),
-			_FIELDS_SELECTED_FILE, _FIELDS_EXPANDED_FILE);
-	}
-
 	public String getFileVersionContentURL(
 		ExtRepositoryFileEntry extRepositoryFileEntry, String versionId) {
 
@@ -147,6 +138,15 @@ public class SharepointURLHelper {
 				extRepositoryFileEntry.getExtRepositoryModelKey()));
 	}
 
+	public String getFilesURL(String extRepositoryFolderKey) {
+		return String.format(
+			"%s/_api/web/GetFolderByServerRelativePath(decodedUrl='%s')" +
+				"/Files?$select=%s&$expand=%s",
+			_siteAbsoluteURL,
+			HttpComponentsUtil.encodePath(extRepositoryFolderKey),
+			_FIELDS_SELECTED_FILE, _FIELDS_EXPANDED_FILE);
+	}
+
 	public String getFoldersURL(String extRepositoryFolderKey) {
 		return String.format(
 			"%s/_api/web/GetFolderByServerRelativePath(decodedUrl='%s')" +
@@ -167,6 +167,27 @@ public class SharepointURLHelper {
 			HttpComponentsUtil.encodePath(extRepositoryFileEntryKey),
 			HttpComponentsUtil.encodePath(extRepositoryFolderKey) +
 				StringPool.SLASH + HttpComponentsUtil.encodePath(title));
+	}
+
+	public <T extends ExtRepositoryObject> String getObjectURL(
+		ExtRepositoryObjectType<T> extRepositoryObjectType,
+		String extRepositoryObjectKey) {
+
+		if (extRepositoryObjectType == ExtRepositoryObjectType.FILE) {
+			return String.format(
+				"%s/_api/web/GetFileByServerRelativePath(decodedUrl='%s')" +
+					"?$select=%s&$expand=%s",
+				_siteAbsoluteURL,
+				HttpComponentsUtil.encodePath(extRepositoryObjectKey),
+				_FIELDS_SELECTED_FILE, _FIELDS_EXPANDED_FILE);
+		}
+
+		return String.format(
+			"%s/_api/web/GetFolderByServerRelativePath(decodedUrl='%s')" +
+				"?$select=%s&$expand=%s",
+			_siteAbsoluteURL,
+			HttpComponentsUtil.encodePath(extRepositoryObjectKey),
+			_FIELDS_SELECTED_FOLDER, _FIELDS_EXPANDED_FOLDER);
 	}
 
 	public <T extends ExtRepositoryObject> String getObjectsCountURL(
@@ -194,27 +215,6 @@ public class SharepointURLHelper {
 				"/Files?$select=Level",
 			_siteAbsoluteURL,
 			HttpComponentsUtil.encodePath(extRepositoryFolderKey));
-	}
-
-	public <T extends ExtRepositoryObject> String getObjectURL(
-		ExtRepositoryObjectType<T> extRepositoryObjectType,
-		String extRepositoryObjectKey) {
-
-		if (extRepositoryObjectType == ExtRepositoryObjectType.FILE) {
-			return String.format(
-				"%s/_api/web/GetFileByServerRelativePath(decodedUrl='%s')" +
-					"?$select=%s&$expand=%s",
-				_siteAbsoluteURL,
-				HttpComponentsUtil.encodePath(extRepositoryObjectKey),
-				_FIELDS_SELECTED_FILE, _FIELDS_EXPANDED_FILE);
-		}
-
-		return String.format(
-			"%s/_api/web/GetFolderByServerRelativePath(decodedUrl='%s')" +
-				"?$select=%s&$expand=%s",
-			_siteAbsoluteURL,
-			HttpComponentsUtil.encodePath(extRepositoryObjectKey),
-			_FIELDS_SELECTED_FOLDER, _FIELDS_EXPANDED_FOLDER);
 	}
 
 	public String getSearchURL(String queryText, int start, int end) {

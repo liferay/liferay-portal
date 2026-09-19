@@ -594,8 +594,8 @@ public class NPMRegistryImpl implements NPMRegistry {
 			new ConcurrentHashMap<>();
 		private final Map<String, String> _exactMatchMap;
 		private final Map<String, JSModule> _jsModules;
-		private final Map<String, JSPackage> _jsPackages;
 		private final List<JSPackageVersion> _jsPackageVersions;
+		private final Map<String, JSPackage> _jsPackages;
 		private final Map<String, JSModule> _resolvedJSModules;
 		private final Map<String, JSPackage> _resolvedJSPackages;
 

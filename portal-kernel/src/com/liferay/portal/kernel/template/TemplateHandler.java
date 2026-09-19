@@ -83,6 +83,34 @@ public interface TemplateHandler {
 	public String[] getRestrictedVariables(String language);
 
 	/**
+	 * Returns the template's map of script variable groups for which hints are
+	 * displayed in the template editor palette.
+	 *
+	 * <p>
+	 * Script variables can be grouped arbitrarily. As examples, a group of
+	 * entity fields could be mapped to the keyword <code>Fields</code>, or a
+	 * group of general variables portal variables could be mapped to the phrase
+	 * <code>General Variables</code>, etc.
+	 * </p>
+	 *
+	 * @param  classPK the primary key of the entity that defines the variable
+	 *         groups for the template. For example, consider specifying the
+	 *         primary key of the structure associated to the template.
+	 * @param  language the template's scripting language. Acceptable values for
+	 *         the FreeMarker or Velocity languages are {@link
+	 *         TemplateConstants#LANG_TYPE_FTL}, or {@link
+	 *         TemplateConstants#LANG_TYPE_VM}, respectively.
+	 * @param  locale the locale of the variable groups to get
+	 * @return the template's map of script variable groups for which hints are
+	 *         displayed in the template editor palette
+	 * @throws Exception if an exception occurred retrieving the template
+	 *         variable groups
+	 */
+	public Map<String, TemplateVariableGroup> getTemplateVariableGroups(
+			long classPK, String language, Locale locale)
+		throws Exception;
+
+	/**
 	 * Returns initial template content for helping the user create a new
 	 * template.
 	 *
@@ -114,34 +142,6 @@ public interface TemplateHandler {
 	 *         defines the path to the template's help content
 	 */
 	public String getTemplatesHelpPropertyKey();
-
-	/**
-	 * Returns the template's map of script variable groups for which hints are
-	 * displayed in the template editor palette.
-	 *
-	 * <p>
-	 * Script variables can be grouped arbitrarily. As examples, a group of
-	 * entity fields could be mapped to the keyword <code>Fields</code>, or a
-	 * group of general variables portal variables could be mapped to the phrase
-	 * <code>General Variables</code>, etc.
-	 * </p>
-	 *
-	 * @param  classPK the primary key of the entity that defines the variable
-	 *         groups for the template. For example, consider specifying the
-	 *         primary key of the structure associated to the template.
-	 * @param  language the template's scripting language. Acceptable values for
-	 *         the FreeMarker or Velocity languages are {@link
-	 *         TemplateConstants#LANG_TYPE_FTL}, or {@link
-	 *         TemplateConstants#LANG_TYPE_VM}, respectively.
-	 * @param  locale the locale of the variable groups to get
-	 * @return the template's map of script variable groups for which hints are
-	 *         displayed in the template editor palette
-	 * @throws Exception if an exception occurred retrieving the template
-	 *         variable groups
-	 */
-	public Map<String, TemplateVariableGroup> getTemplateVariableGroups(
-			long classPK, String language, Locale locale)
-		throws Exception;
 
 	/**
 	 * Returns <code>true</code> if the entity is a display template handler.

@@ -433,10 +433,10 @@ public class DynamicDataMappingUpgradeProcess extends UpgradeProcess {
 		DynamicDataMappingUpgradeProcess.class);
 
 	private final DDMFormDeserializer _ddmFormDeserializer;
-	private final Map<Long, DDMForm> _ddmForms = new HashMap<>();
 	private final DDMFormSerializer _ddmFormSerializer;
 	private final DDMFormValuesDeserializer _ddmFormValuesDeserializer;
 	private final DDMFormValuesSerializer _ddmFormValuesSerializer;
+	private final Map<Long, DDMForm> _ddmForms = new HashMap<>();
 	private final Map<Long, DDMForm> _fullHierarchyDDMForms = new HashMap<>();
 	private final JSONFactory _jsonFactory;
 

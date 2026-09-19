@@ -27,12 +27,12 @@ public interface LayoutLockManager {
 
 	public void getLock(Layout layout, long userId) throws PortalException;
 
-	public List<LockedLayout> getLockedLayouts(
-		long companyId, long groupId, Locale locale);
-
 	public String getLockedLayoutURL(ActionRequest actionRequest);
 
 	public String getLockedLayoutURL(HttpServletRequest httpServletRequest);
+
+	public List<LockedLayout> getLockedLayouts(
+		long companyId, long groupId, Locale locale);
 
 	public String getUnlockDraftLayoutURL(
 			LiferayPortletResponse liferayPortletResponse,

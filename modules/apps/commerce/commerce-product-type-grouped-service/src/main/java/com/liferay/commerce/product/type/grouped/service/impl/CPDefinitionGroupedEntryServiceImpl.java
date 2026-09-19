@@ -212,13 +212,13 @@ public class CPDefinitionGroupedEntryServiceImpl
 	}
 
 	@Reference
+	protected CProductLocalService cProductLocalService;
+
+	@Reference
 	protected CommerceCatalogLocalService commerceCatalogLocalService;
 
 	@Reference
 	protected CPDefinitionLocalService cpDefinitionLocalService;
-
-	@Reference
-	protected CProductLocalService cProductLocalService;
 
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)
 		throws PortalException {

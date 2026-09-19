@@ -19,6 +19,15 @@ import com.liferay.info.localized.InfoLocalizedValue;
  */
 public class CSDiagramEntryInfoItemFields {
 
+	public static final InfoField<NumberInfoFieldType> cProductIdInfoField =
+		CSDiagramEntryInfoItemFields.BuilderHolder._builder.infoFieldType(
+			NumberInfoFieldType.INSTANCE
+		).name(
+			"cProductId"
+		).labelInfoLocalizedValue(
+			InfoLocalizedValue.localize(
+				CSDiagramEntryInfoItemFields.class, "cProductId")
+		).build();
 	public static final InfoField<NumberInfoFieldType> companyIdInfoField =
 		CSDiagramEntryInfoItemFields.BuilderHolder._builder.infoFieldType(
 			NumberInfoFieldType.INSTANCE
@@ -45,15 +54,6 @@ public class CSDiagramEntryInfoItemFields {
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CSDiagramEntryInfoItemFields.class, "cpInstanceId")
-		).build();
-	public static final InfoField<NumberInfoFieldType> cProductIdInfoField =
-		CSDiagramEntryInfoItemFields.BuilderHolder._builder.infoFieldType(
-			NumberInfoFieldType.INSTANCE
-		).name(
-			"cProductId"
-		).labelInfoLocalizedValue(
-			InfoLocalizedValue.localize(
-				CSDiagramEntryInfoItemFields.class, "cProductId")
 		).build();
 	public static final InfoField<DateInfoFieldType> createDateInfoField =
 		CSDiagramEntryInfoItemFields.BuilderHolder._builder.infoFieldType(

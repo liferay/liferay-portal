@@ -166,13 +166,13 @@ public class UpgradeResourceBlockTest extends BaseUpgradeResourceBlock {
 	}
 
 	@Test
-	public void testUpgradeWithoutUserId() throws Exception {
-		_testUpgrade(false);
+	public void testUpgradeWithUserId() throws Exception {
+		_testUpgrade(true);
 	}
 
 	@Test
-	public void testUpgradeWithUserId() throws Exception {
-		_testUpgrade(true);
+	public void testUpgradeWithoutUserId() throws Exception {
+		_testUpgrade(false);
 	}
 
 	@Override

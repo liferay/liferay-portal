@@ -69,14 +69,14 @@ public interface SearchRequest {
 
 	public List<String> getIndexes();
 
+	public List<String> getModelIndexerClassNames();
+
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *             #getModelIndexerClassNames()}
 	 */
 	@Deprecated
 	public List<Class<?>> getModelIndexerClasses();
-
-	public List<String> getModelIndexerClassNames();
 
 	public String getPaginationStartParameterName();
 

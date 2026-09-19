@@ -53,6 +53,20 @@ public class ViewRoomsSectionDisplayContext extends BaseSectionDisplayContext {
 			objectEntryService);
 	}
 
+	@Override
+	public String getAPIURL() {
+		StringBundler sb = new StringBundler(3);
+
+		sb.append("/o/digital-sales-room/rooms?nestedFields=creator,");
+		sb.append("r_accountToDSRRooms_accountEntryId");
+
+		if (isHomePage()) {
+			sb.append("&pageSize=5&sort=dateModified:desc");
+		}
+
+		return sb.toString();
+	}
+
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"companyAdmin",
@@ -96,20 +110,6 @@ public class ViewRoomsSectionDisplayContext extends BaseSectionDisplayContext {
 					objectDefinition.getCompanyId()),
 				this::_getLayoutSetPrototypeJSONObject)
 		).build();
-	}
-
-	@Override
-	public String getAPIURL() {
-		StringBundler sb = new StringBundler(3);
-
-		sb.append("/o/digital-sales-room/rooms?nestedFields=creator,");
-		sb.append("r_accountToDSRRooms_accountEntryId");
-
-		if (isHomePage()) {
-			sb.append("&pageSize=5&sort=dateModified:desc");
-		}
-
-		return sb.toString();
 	}
 
 	@Override

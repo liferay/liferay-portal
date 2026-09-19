@@ -26,11 +26,6 @@ import org.json.JSONObject;
 public abstract class BaseBuildDatabase implements BuildDatabase {
 
 	@Override
-	public File getBuildDatabaseFile() {
-		return _buildDatabaseFile;
-	}
-
-	@Override
 	public JSONObject getBuildDataJSONObject(String key) {
 		JSONObject buildsJSONObject = _jsonObject.getJSONObject("builds");
 
@@ -64,6 +59,16 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 	}
 
 	@Override
+	public File getBuildDatabaseFile() {
+		return _buildDatabaseFile;
+	}
+
+	@Override
+	public JSONObject getJSONObject() {
+		return new JSONObject(_jsonObject.toString());
+	}
+
+	@Override
 	public Job getJob(String key) {
 		if (!hasJob(key)) {
 			return null;
@@ -91,11 +96,6 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 		}
 
 		return jobs;
-	}
-
-	@Override
-	public JSONObject getJSONObject() {
-		return new JSONObject(_jsonObject.toString());
 	}
 
 	@Override

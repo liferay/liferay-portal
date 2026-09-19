@@ -666,10 +666,10 @@ public class ConfigurationEnvBuilder {
 	private static final Log _log = LogFactoryUtil.getLog(
 		ConfigurationEnvBuilder.class);
 
-	private static final Pattern _attributeDefaultValuePattern =
-		Pattern.compile("\\bdeflt = \"(?<defaultValue>[^\"]*)\"");
 	private static final Pattern _attributeDefMetaAnnotationPattern =
 		Pattern.compile("@Meta.AD\\b");
+	private static final Pattern _attributeDefaultValuePattern =
+		Pattern.compile("\\bdeflt = \"(?<defaultValue>[^\"]*)\"");
 	private static final Pattern _attributeDeprecatedPattern = Pattern.compile(
 		"\\b(?<deprecated>@Deprecated)");
 	private static final Pattern _attributeDescriptionPattern = Pattern.compile(

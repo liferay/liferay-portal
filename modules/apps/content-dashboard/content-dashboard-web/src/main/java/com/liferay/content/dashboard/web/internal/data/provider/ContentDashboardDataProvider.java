@@ -431,8 +431,8 @@ public class ContentDashboardDataProvider {
 	private final Aggregations _aggregations;
 	private final Locale _locale;
 	private final ResourceBundle _resourceBundle;
-	private final Searcher _searcher;
 	private final SearchRequestBuilder _searchRequestBuilder;
+	private final Searcher _searcher;
 
 	private static class IncludeExcludeClauseImpl
 		implements IncludeExcludeClause {
@@ -452,18 +452,13 @@ public class ContentDashboardDataProvider {
 		}
 
 		@Override
-		public String[] getExcludedValues() {
-			return _excludedValues;
-		}
-
-		@Override
 		public String getExcludeRegex() {
 			return _excludeRegex;
 		}
 
 		@Override
-		public String[] getIncludedValues() {
-			return _includedValues;
+		public String[] getExcludedValues() {
+			return _excludedValues;
 		}
 
 		@Override
@@ -471,10 +466,15 @@ public class ContentDashboardDataProvider {
 			return _includeRegex;
 		}
 
-		private String[] _excludedValues;
+		@Override
+		public String[] getIncludedValues() {
+			return _includedValues;
+		}
+
 		private String _excludeRegex;
-		private String[] _includedValues;
+		private String[] _excludedValues;
 		private String _includeRegex;
+		private String[] _includedValues;
 
 	}
 

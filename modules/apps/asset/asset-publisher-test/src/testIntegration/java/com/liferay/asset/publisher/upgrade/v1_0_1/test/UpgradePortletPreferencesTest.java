@@ -150,6 +150,16 @@ public class UpgradePortletPreferencesTest {
 		_assertPortletPreferences(portletId, expectedMap);
 	}
 
+	private String[] _getAssetEntryXMLs(Map<String, String> map)
+		throws Exception {
+
+		List<String> assetEntryXMLs = TransformUtil.transform(
+			map.entrySet(),
+			entry -> _getAssetEntryXml(entry.getKey(), entry.getValue()));
+
+		return assetEntryXMLs.toArray(new String[0]);
+	}
+
 	private String _getAssetEntryXml(
 			String assetEntryType, String assetEntryUuid)
 		throws Exception {
@@ -169,16 +179,6 @@ public class UpgradePortletPreferencesTest {
 		assetEntryUuidElement.addText(assetEntryUuid);
 
 		return document.formattedString(StringPool.BLANK);
-	}
-
-	private String[] _getAssetEntryXMLs(Map<String, String> map)
-		throws Exception {
-
-		List<String> assetEntryXMLs = TransformUtil.transform(
-			map.entrySet(),
-			entry -> _getAssetEntryXml(entry.getKey(), entry.getValue()));
-
-		return assetEntryXMLs.toArray(new String[0]);
 	}
 
 	private HashMap<String, String[]> _getPreferenceMap(Map<String, String> map)

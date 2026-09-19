@@ -27,6 +27,16 @@ import java.util.regex.Pattern;
  */
 public class ClassUtil {
 
+	public static String getClassName(Object object) {
+		if (object == null) {
+			return null;
+		}
+
+		Class<?> clazz = object.getClass();
+
+		return clazz.getName();
+	}
+
 	public static Set<String> getClasses(File file) throws IOException {
 		String fileName = file.getName();
 
@@ -105,16 +115,6 @@ public class ClassUtil {
 		classes.remove(className);
 
 		return classes;
-	}
-
-	public static String getClassName(Object object) {
-		if (object == null) {
-			return null;
-		}
-
-		Class<?> clazz = object.getClass();
-
-		return clazz.getName();
 	}
 
 	public static boolean isSubclass(Class<?> a, Class<?> b) {

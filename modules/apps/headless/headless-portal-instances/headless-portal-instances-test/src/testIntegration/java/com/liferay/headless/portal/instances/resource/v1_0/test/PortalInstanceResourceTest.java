@@ -628,20 +628,6 @@ public class PortalInstanceResourceTest
 				_portalInstance.getPortalInstanceId()));
 	}
 
-	private void _testGetPortalInstancesPageWithoutOmniadminPermission()
-		throws Exception {
-
-		PortalInstanceResource userPortalInstanceResource =
-			_createUserPortalInstanceResource();
-
-		// PrincipalExceptionMapper converts a denied GET request to a
-		// 404 to avoid disclosing the portal instance's existence
-
-		_assertProblemExceptionProblemStatus(
-			"NOT_FOUND",
-			() -> userPortalInstanceResource.getPortalInstancesPage(null));
-	}
-
 	private void _testGetPortalInstanceWithoutOmniadminPermission()
 		throws Exception {
 
@@ -655,6 +641,20 @@ public class PortalInstanceResourceTest
 			"NOT_FOUND",
 			() -> userPortalInstanceResource.getPortalInstance(
 				_portalInstance.getPortalInstanceId()));
+	}
+
+	private void _testGetPortalInstancesPageWithoutOmniadminPermission()
+		throws Exception {
+
+		PortalInstanceResource userPortalInstanceResource =
+			_createUserPortalInstanceResource();
+
+		// PrincipalExceptionMapper converts a denied GET request to a
+		// 404 to avoid disclosing the portal instance's existence
+
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
+			() -> userPortalInstanceResource.getPortalInstancesPage(null));
 	}
 
 	private void _testPatchPortalInstace(

@@ -963,11 +963,11 @@ public class AnalyticsConfigurationRegistryImpl
 		new ConcurrentHashMap<>();
 
 	@Reference
-	private AnalyticsDeleteMessageLocalService
-		_analyticsDeleteMessageLocalService;
+	private AnalyticsDXPEntityBatchExporter _analyticsDXPEntityBatchExporter;
 
 	@Reference
-	private AnalyticsDXPEntityBatchExporter _analyticsDXPEntityBatchExporter;
+	private AnalyticsDeleteMessageLocalService
+		_analyticsDeleteMessageLocalService;
 
 	@Reference
 	private AnalyticsSettingsManager _analyticsSettingsManager;

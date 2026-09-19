@@ -668,6 +668,13 @@ public class AntlrCreoleParserTest {
 	}
 
 	@Test
+	public void testParseSimpleTextWithItalicTextInMultipleLines()
+		throws Exception {
+
+		Assert.assertNotNull(getWikiPageNode("text-8.creole"));
+	}
+
+	@Test
 	public void testParseSimpleTextWithItalics() throws Exception {
 		WikiPageNode wikiPageNode = getWikiPageNode("text-3.creole");
 
@@ -708,13 +715,6 @@ public class AntlrCreoleParserTest {
 		unformattedTextNode = (UnformattedTextNode)collectionNode.get(0);
 
 		Assert.assertEquals("italic", unformattedTextNode.getContent());
-	}
-
-	@Test
-	public void testParseSimpleTextWithItalicTextInMultipleLines()
-		throws Exception {
-
-		Assert.assertNotNull(getWikiPageNode("text-8.creole"));
 	}
 
 	@Test

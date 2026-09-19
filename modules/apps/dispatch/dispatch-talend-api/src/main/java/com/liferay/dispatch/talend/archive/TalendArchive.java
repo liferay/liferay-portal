@@ -33,6 +33,10 @@ public class TalendArchive {
 		return _contextProperties;
 	}
 
+	public String getJVMOptions() {
+		return _jvmOptions;
+	}
+
 	public String getJobDirectory() {
 		return _jobDirectory;
 	}
@@ -47,10 +51,6 @@ public class TalendArchive {
 
 	public String getJobMainClassFQN() {
 		return _jobMainClassFQN;
-	}
-
-	public String getJVMOptions() {
-		return _jvmOptions;
 	}
 
 	public boolean hasJVMOptions() {

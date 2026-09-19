@@ -60,16 +60,6 @@ public class OpenAPISchemaUtilTest {
 	}
 
 	@Test
-	public void testSetDescriptionWithoutReference() {
-		Schema schema = new ObjectSchema();
-
-		Assert.assertSame(
-			schema, OpenAPISchemaUtil.setDescription(_DESCRIPTION, schema));
-		Assert.assertNull(schema.getAllOf());
-		Assert.assertEquals(_DESCRIPTION, schema.getDescription());
-	}
-
-	@Test
 	public void testSetDescriptionWithReference() {
 		Schema schema = _getSchemaWithReference();
 
@@ -87,6 +77,16 @@ public class OpenAPISchemaUtilTest {
 		Assert.assertEquals(_DESCRIPTION, wrapperSchema.getDescription());
 		Assert.assertEquals(
 			schema.getExtensions(), wrapperSchema.getExtensions());
+	}
+
+	@Test
+	public void testSetDescriptionWithoutReference() {
+		Schema schema = new ObjectSchema();
+
+		Assert.assertSame(
+			schema, OpenAPISchemaUtil.setDescription(_DESCRIPTION, schema));
+		Assert.assertNull(schema.getAllOf());
+		Assert.assertEquals(_DESCRIPTION, schema.getDescription());
 	}
 
 	@Test

@@ -54,17 +54,17 @@ public class DynamicDataSource implements DataSource {
 	}
 
 	@Override
-	public int getLoginTimeout() throws SQLException {
-		DataSource dataSource = _getDataSource();
-
-		return dataSource.getLoginTimeout();
-	}
-
-	@Override
 	public PrintWriter getLogWriter() throws SQLException {
 		DataSource dataSource = _getDataSource();
 
 		return dataSource.getLogWriter();
+	}
+
+	@Override
+	public int getLoginTimeout() throws SQLException {
+		DataSource dataSource = _getDataSource();
+
+		return dataSource.getLoginTimeout();
 	}
 
 	@Override
@@ -90,17 +90,17 @@ public class DynamicDataSource implements DataSource {
 	}
 
 	@Override
-	public void setLoginTimeout(int seconds) throws SQLException {
-		DataSource dataSource = _getDataSource();
-
-		dataSource.setLoginTimeout(seconds);
-	}
-
-	@Override
 	public void setLogWriter(PrintWriter printWriter) throws SQLException {
 		DataSource dataSource = _getDataSource();
 
 		dataSource.setLogWriter(printWriter);
+	}
+
+	@Override
+	public void setLoginTimeout(int seconds) throws SQLException {
+		DataSource dataSource = _getDataSource();
+
+		dataSource.setLoginTimeout(seconds);
 	}
 
 	@Override

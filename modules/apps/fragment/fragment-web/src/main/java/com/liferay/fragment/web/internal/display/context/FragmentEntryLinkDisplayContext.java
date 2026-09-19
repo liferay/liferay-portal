@@ -207,17 +207,17 @@ public class FragmentEntryLinkDisplayContext {
 		return _orderByType;
 	}
 
-	public int getPagesUsageCount() throws PortalException {
-		return FragmentEntryLinkLocalServiceUtil.
-			getLayoutFragmentEntryLinksCountByFragmentEntry(
-				_getScopeGroupId(), getFragmentEntry());
-	}
-
 	public int getPageTemplatesUsageCount() throws PortalException {
 		return FragmentEntryLinkLocalServiceUtil.
 			getLayoutPageTemplateFragmentEntryLinksCountByFragmentEntry(
 				_getScopeGroupId(), getFragmentEntry(),
 				LayoutPageTemplateEntryTypeConstants.BASIC);
+	}
+
+	public int getPagesUsageCount() throws PortalException {
+		return FragmentEntryLinkLocalServiceUtil.
+			getLayoutFragmentEntryLinksCountByFragmentEntry(
+				_getScopeGroupId(), getFragmentEntry());
 	}
 
 	public PortletURL getPortletURL() {

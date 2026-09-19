@@ -122,6 +122,38 @@ public class IndexActionsDisplayContextBuilder {
 		).build();
 	}
 
+	private Map<String, List<Object>> _getIndexReindexersMap() {
+		Map<String, List<Object>> indexReindexersMap = new TreeMap<>();
+
+		if (_indexReindexerClassNamesMap == null) {
+			return indexReindexersMap;
+		}
+
+		for (Map.Entry<String, List<String>> entry :
+				_indexReindexerClassNamesMap.entrySet()) {
+
+			List<Object> indexReindexers = new ArrayList<>();
+
+			for (String indexReindexerClassName : entry.getValue()) {
+				indexReindexers.add(
+					HashMapBuilder.put(
+						"className", indexReindexerClassName
+					).put(
+						"displayName",
+						_language.get(
+							_httpServletRequest,
+							"model.resource." + indexReindexerClassName)
+					).build());
+			}
+
+			indexReindexersMap.put(
+				_language.get(_httpServletRequest, entry.getKey()),
+				indexReindexers);
+		}
+
+		return indexReindexersMap;
+	}
+
 	private Map<String, List<Object>> _getIndexersMap() {
 		Set<Indexer<?>> indexersSet = IndexerRegistryUtil.getIndexers();
 
@@ -201,38 +233,6 @@ public class IndexActionsDisplayContextBuilder {
 		}
 
 		return indexersMap;
-	}
-
-	private Map<String, List<Object>> _getIndexReindexersMap() {
-		Map<String, List<Object>> indexReindexersMap = new TreeMap<>();
-
-		if (_indexReindexerClassNamesMap == null) {
-			return indexReindexersMap;
-		}
-
-		for (Map.Entry<String, List<String>> entry :
-				_indexReindexerClassNamesMap.entrySet()) {
-
-			List<Object> indexReindexers = new ArrayList<>();
-
-			for (String indexReindexerClassName : entry.getValue()) {
-				indexReindexers.add(
-					HashMapBuilder.put(
-						"className", indexReindexerClassName
-					).put(
-						"displayName",
-						_language.get(
-							_httpServletRequest,
-							"model.resource." + indexReindexerClassName)
-					).build());
-			}
-
-			indexReindexersMap.put(
-				_language.get(_httpServletRequest, entry.getKey()),
-				indexReindexers);
-		}
-
-		return indexReindexersMap;
 	}
 
 	private long[] _getInitialCompanyIds() {

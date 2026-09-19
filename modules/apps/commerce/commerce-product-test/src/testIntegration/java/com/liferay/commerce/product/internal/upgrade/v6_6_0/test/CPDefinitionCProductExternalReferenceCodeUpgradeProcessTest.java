@@ -81,10 +81,10 @@ public class CPDefinitionCProductExternalReferenceCodeUpgradeProcessTest {
 			"CPDefinitionCProductExternalReferenceCodeUpgradeProcess";
 
 	@Inject
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CProductLocalService _cProductLocalService;
 
 	@Inject
-	private CProductLocalService _cProductLocalService;
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Inject(
 		filter = "(&(component.name=com.liferay.commerce.product.internal.upgrade.registry.CommerceProductServiceUpgradeStepRegistrator))"

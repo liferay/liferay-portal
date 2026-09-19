@@ -69,6 +69,46 @@ public class PublisherRequestUpgradeProcess extends UpgradeProcess {
 		return StagingUtil.getSchedulerGroupName(destinationName, groupId);
 	}
 
+	private void _updateScheduleRemotePublication(
+			SchedulerResponse schedulerResponse)
+		throws PortalException {
+
+		Message message = schedulerResponse.getMessage();
+
+		LayoutsRemotePublisherRequest publisherRequest =
+			(LayoutsRemotePublisherRequest)message.getPayload();
+
+		User user = _userLocalService.getUser(publisherRequest.getUserId());
+
+		Map<String, Serializable> publishLayoutRemoteSettingsMap =
+			ExportImportConfigurationSettingsMapFactoryUtil.
+				buildPublishLayoutRemoteSettingsMap(
+					user, publisherRequest.getSourceGroupId(),
+					publisherRequest.isPrivateLayout(),
+					publisherRequest.getLayoutIdMap(),
+					publisherRequest.getParameterMap(),
+					publisherRequest.getRemoteAddress(),
+					publisherRequest.getRemotePort(),
+					publisherRequest.getRemotePathContext(),
+					publisherRequest.isSecureConnection(),
+					publisherRequest.getRemoteGroupId(),
+					publisherRequest.isRemotePrivateLayout());
+
+		ExportImportConfiguration exportImportConfiguration =
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					user.getUserId(), schedulerResponse.getDescription(),
+					ExportImportConfigurationConstants.
+						TYPE_SCHEDULED_PUBLISH_LAYOUT_REMOTE,
+					publishLayoutRemoteSettingsMap);
+
+		_schedulerEngineHelper.schedule(
+			schedulerResponse.getTrigger(), StorageType.PERSISTED,
+			schedulerResponse.getDescription(),
+			DestinationNames.LAYOUTS_REMOTE_PUBLISHER,
+			exportImportConfiguration.getExportImportConfigurationId());
+	}
+
 	private void _updateScheduledLocalPublication(
 			SchedulerResponse schedulerResponse)
 		throws PortalException {
@@ -129,46 +169,6 @@ public class PublisherRequestUpgradeProcess extends UpgradeProcess {
 				}
 			}
 		}
-	}
-
-	private void _updateScheduleRemotePublication(
-			SchedulerResponse schedulerResponse)
-		throws PortalException {
-
-		Message message = schedulerResponse.getMessage();
-
-		LayoutsRemotePublisherRequest publisherRequest =
-			(LayoutsRemotePublisherRequest)message.getPayload();
-
-		User user = _userLocalService.getUser(publisherRequest.getUserId());
-
-		Map<String, Serializable> publishLayoutRemoteSettingsMap =
-			ExportImportConfigurationSettingsMapFactoryUtil.
-				buildPublishLayoutRemoteSettingsMap(
-					user, publisherRequest.getSourceGroupId(),
-					publisherRequest.isPrivateLayout(),
-					publisherRequest.getLayoutIdMap(),
-					publisherRequest.getParameterMap(),
-					publisherRequest.getRemoteAddress(),
-					publisherRequest.getRemotePort(),
-					publisherRequest.getRemotePathContext(),
-					publisherRequest.isSecureConnection(),
-					publisherRequest.getRemoteGroupId(),
-					publisherRequest.isRemotePrivateLayout());
-
-		ExportImportConfiguration exportImportConfiguration =
-			_exportImportConfigurationLocalService.
-				addDraftExportImportConfiguration(
-					user.getUserId(), schedulerResponse.getDescription(),
-					ExportImportConfigurationConstants.
-						TYPE_SCHEDULED_PUBLISH_LAYOUT_REMOTE,
-					publishLayoutRemoteSettingsMap);
-
-		_schedulerEngineHelper.schedule(
-			schedulerResponse.getTrigger(), StorageType.PERSISTED,
-			schedulerResponse.getDescription(),
-			DestinationNames.LAYOUTS_REMOTE_PUBLISHER,
-			exportImportConfiguration.getExportImportConfigurationId());
 	}
 
 	private final ExportImportConfigurationLocalService

@@ -596,47 +596,6 @@ public class PublishLayoutMVCActionCommandTest {
 	}
 
 	@Test
-	@TestInfo("LPS-148426")
-	public void testPublishedLayoutWithNoninstanciablePortlets()
-		throws Exception {
-
-		String[] portletIds = {
-			"com_liferay_commerce_checkout_web_internal_portlet_" +
-				"CommerceCheckoutPortlet",
-			"com_liferay_commerce_order_content_web_internal_portlet_" +
-				"CommerceOpenOrderContentPortlet",
-			"com_liferay_commerce_order_content_web_internal_portlet_" +
-				"CommerceOrderContentPortlet",
-			"com_liferay_commerce_wish_list_web_internal_portlet_" +
-				"CommerceWishListContentPortlet"
-		};
-
-		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
-
-		String html = ContentLayoutTestUtil.getRenderLayoutHTML(
-			_layout, _layoutServiceContextHelper, _layoutStructureProvider,
-			_segmentsExperienceId);
-
-		for (String portletId : portletIds) {
-			Assert.assertFalse(html.contains(portletId));
-		}
-
-		for (String portletId : portletIds) {
-			ContentLayoutTestUtil.addPortletToLayout(_draftLayout, portletId);
-		}
-
-		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
-
-		html = ContentLayoutTestUtil.getRenderLayoutHTML(
-			_layout, _layoutServiceContextHelper, _layoutStructureProvider,
-			_segmentsExperienceId);
-
-		for (String portletId : portletIds) {
-			Assert.assertTrue(html.contains(portletId));
-		}
-	}
-
-	@Test
 	@TestInfo("LPD-39258")
 	public void testPublishedLayoutWithNoninstanciablePortletWithZeroInstanceId()
 		throws Exception {
@@ -678,6 +637,47 @@ public class PublishLayoutMVCActionCommandTest {
 			_layout, map,
 			LayoutContentPageEditorWebPortletKeys.
 				LAYOUT_CONTENT_PAGE_EDITOR_WEB_NONINSTANCEABLE_TEST_PORTLET);
+	}
+
+	@Test
+	@TestInfo("LPS-148426")
+	public void testPublishedLayoutWithNoninstanciablePortlets()
+		throws Exception {
+
+		String[] portletIds = {
+			"com_liferay_commerce_checkout_web_internal_portlet_" +
+				"CommerceCheckoutPortlet",
+			"com_liferay_commerce_order_content_web_internal_portlet_" +
+				"CommerceOpenOrderContentPortlet",
+			"com_liferay_commerce_order_content_web_internal_portlet_" +
+				"CommerceOrderContentPortlet",
+			"com_liferay_commerce_wish_list_web_internal_portlet_" +
+				"CommerceWishListContentPortlet"
+		};
+
+		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
+
+		String html = ContentLayoutTestUtil.getRenderLayoutHTML(
+			_layout, _layoutServiceContextHelper, _layoutStructureProvider,
+			_segmentsExperienceId);
+
+		for (String portletId : portletIds) {
+			Assert.assertFalse(html.contains(portletId));
+		}
+
+		for (String portletId : portletIds) {
+			ContentLayoutTestUtil.addPortletToLayout(_draftLayout, portletId);
+		}
+
+		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
+
+		html = ContentLayoutTestUtil.getRenderLayoutHTML(
+			_layout, _layoutServiceContextHelper, _layoutStructureProvider,
+			_segmentsExperienceId);
+
+		for (String portletId : portletIds) {
+			Assert.assertTrue(html.contains(portletId));
+		}
 	}
 
 	@Test

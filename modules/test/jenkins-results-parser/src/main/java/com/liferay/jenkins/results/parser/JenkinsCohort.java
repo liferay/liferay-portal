@@ -679,27 +679,6 @@ public class JenkinsCohort {
 		return buildsCount + " (" + buildPercentage + ")";
 	}
 
-	private List<JenkinsMaster> _getAvailableJenkinsMasters(
-		List<String> blacklist) {
-
-		Properties buildProperties = null;
-
-		try {
-			buildProperties = JenkinsResultsParserUtil.getBuildProperties(
-				false);
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(
-				"Unable to get build properties", ioException);
-		}
-
-		return LoadBalancerUtil.getAvailableJenkinsMasters(
-			JenkinsResultsParserUtil.join(",", blacklist),
-			LoadBalancerUtil.getMasterPrefix(
-				"http://" + getName() + ".liferay.com"),
-			buildProperties, true);
-	}
-
 	private synchronized Map<String, List<AWSFleetCloud>>
 		_getAWSFleetCloudsMap() {
 
@@ -728,6 +707,27 @@ public class JenkinsCohort {
 		}
 
 		return _awsFleetCloudsMap;
+	}
+
+	private List<JenkinsMaster> _getAvailableJenkinsMasters(
+		List<String> blacklist) {
+
+		Properties buildProperties = null;
+
+		try {
+			buildProperties = JenkinsResultsParserUtil.getBuildProperties(
+				false);
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to get build properties", ioException);
+		}
+
+		return LoadBalancerUtil.getAvailableJenkinsMasters(
+			JenkinsResultsParserUtil.join(",", blacklist),
+			LoadBalancerUtil.getMasterPrefix(
+				"http://" + getName() + ".liferay.com"),
+			buildProperties, true);
 	}
 
 	private void _loadBuildURL(String buildURL) {
@@ -903,13 +903,13 @@ public class JenkinsCohort {
 			return _topLevelBuildURLs.size() + _otherBuildURLs.size();
 		}
 
+		public List<String> getTopLevelBuildURLs() {
+			return _topLevelBuildURLs;
+		}
+
 		public int getTopLevelBuildsCount() {
 			return _topLevelBuildURLs.size() +
 				_queuedTopLevelBuildsJsonMap.size();
-		}
-
-		public List<String> getTopLevelBuildURLs() {
-			return _topLevelBuildURLs;
 		}
 
 		public String getTotalBuildPercentage() {

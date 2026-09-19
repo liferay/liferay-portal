@@ -208,15 +208,6 @@ public class CPDefinitionGroupedEntriesDisplayContext
 		return searchContainer;
 	}
 
-	private long[] _getCheckedCPDefinitionIds(long cpDefinitionId)
-		throws PortalException {
-
-		return TransformUtil.transformToLongArray(
-			_getCPDefinitionGroupedEntries(cpDefinitionId),
-			cpDefinitionGroupedEntry ->
-				cpDefinitionGroupedEntry.getEntryCPDefinitionId());
-	}
-
 	private List<CPDefinitionGroupedEntry> _getCPDefinitionGroupedEntries(
 			long cpDefinitionId)
 		throws PortalException {
@@ -227,6 +218,15 @@ public class CPDefinitionGroupedEntriesDisplayContext
 
 		return _cpDefinitionGroupedEntryService.getCPDefinitionGroupedEntries(
 			cpDefinitionId, 0, total, null);
+	}
+
+	private long[] _getCheckedCPDefinitionIds(long cpDefinitionId)
+		throws PortalException {
+
+		return TransformUtil.transformToLongArray(
+			_getCPDefinitionGroupedEntries(cpDefinitionId),
+			cpDefinitionGroupedEntry ->
+				cpDefinitionGroupedEntry.getEntryCPDefinitionId());
 	}
 
 	private long[] _getDisabledCPDefinitionIds(long cpDefinitionId)

@@ -234,42 +234,6 @@ public class PageSpecificationResourceImpl
 					layoutPageTemplateEntry.getPlid())));
 	}
 
-	@NestedField(parentClass = SitePage.class, value = "pageSpecifications")
-	@Override
-	public Page<PageSpecification> getSiteSitePagePageSpecificationsPage(
-			String siteExternalReferenceCode,
-			@NestedFieldId(value = "externalReferenceCode") String
-				sitePageExternalReferenceCode)
-		throws Exception {
-
-		EnabledUtil.checkEnabled(contextCompany);
-
-		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
-			sitePageExternalReferenceCode,
-			GroupUtil.getGroupId(
-				true, contextCompany.getCompanyId(),
-				siteExternalReferenceCode));
-
-		if (layout.isDraftLayout() || layout.isTypeAssetDisplay() ||
-			layout.isTypeUtility()) {
-
-			throw new IllegalArgumentException(
-				"This page type cannot be modified through this endpoint");
-		}
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
-
-		if (layoutPageTemplateEntry != null) {
-			throw new IllegalArgumentException(
-				"The provided page external reference code belongs to a page " +
-					"template and cannot be used");
-		}
-
-		return Page.of(_toPageSpecifications(layout));
-	}
-
 	@NestedField(
 		parentClass = PageSpecificationVersion.class,
 		value = "pageSpecification"
@@ -309,6 +273,42 @@ public class PageSpecificationResourceImpl
 		}
 
 		return PageSpecification.unsafeToDTO(layoutContentVersion.getData());
+	}
+
+	@NestedField(parentClass = SitePage.class, value = "pageSpecifications")
+	@Override
+	public Page<PageSpecification> getSiteSitePagePageSpecificationsPage(
+			String siteExternalReferenceCode,
+			@NestedFieldId(value = "externalReferenceCode") String
+				sitePageExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkEnabled(contextCompany);
+
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
+			sitePageExternalReferenceCode,
+			GroupUtil.getGroupId(
+				true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode));
+
+		if (layout.isDraftLayout() || layout.isTypeAssetDisplay() ||
+			layout.isTypeUtility()) {
+
+			throw new IllegalArgumentException(
+				"This page type cannot be modified through this endpoint");
+		}
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
+
+		if (layoutPageTemplateEntry != null) {
+			throw new IllegalArgumentException(
+				"The provided page external reference code belongs to a page " +
+					"template and cannot be used");
+		}
+
+		return Page.of(_toPageSpecifications(layout));
 	}
 
 	@NestedField(parentClass = UtilityPage.class, value = "pageSpecifications")

@@ -199,16 +199,6 @@ public class FirebasePushNotificationsSenderTest {
 	}
 
 	@Test
-	public void testSendWithoutConfiguration() {
-		AssertUtils.assertFailure(
-			PushNotificationsException.class,
-			"Firebase push notifications sender is not configured properly",
-			() -> _pushNotificationsDeviceLocalService.sendPushNotification(
-				_PLATFORM, Arrays.asList(RandomTestUtil.randomString()),
-				JSONFactoryUtil.createJSONObject()));
-	}
-
-	@Test
 	public void testSendWithSeveralDestinations() throws Exception {
 		_saveConfiguration();
 
@@ -381,6 +371,16 @@ public class FirebasePushNotificationsSenderTest {
 					" and name ", groupName),
 				logEntry.getMessage());
 		}
+	}
+
+	@Test
+	public void testSendWithoutConfiguration() {
+		AssertUtils.assertFailure(
+			PushNotificationsException.class,
+			"Firebase push notifications sender is not configured properly",
+			() -> _pushNotificationsDeviceLocalService.sendPushNotification(
+				_PLATFORM, Arrays.asList(RandomTestUtil.randomString()),
+				JSONFactoryUtil.createJSONObject()));
 	}
 
 	private int _getCode(boolean success) {

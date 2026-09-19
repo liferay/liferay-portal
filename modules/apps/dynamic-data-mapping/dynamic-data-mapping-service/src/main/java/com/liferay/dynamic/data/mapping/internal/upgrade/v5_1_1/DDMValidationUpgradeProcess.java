@@ -60,44 +60,6 @@ public class DDMValidationUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private boolean _upgradeDateValidation(
-		JSONObject fieldJSONObject, boolean upgraded) {
-
-		if (Objects.equals(
-				DDMFormFieldTypeConstants.DATE,
-				fieldJSONObject.getString("type"))) {
-
-			JSONObject validationJSONObject = fieldJSONObject.getJSONObject(
-				"validation");
-
-			if (validationJSONObject == null) {
-				return upgraded;
-			}
-
-			JSONObject expressionJSONObject =
-				validationJSONObject.getJSONObject("expression");
-
-			if (Objects.equals(
-					expressionJSONObject.getString("name"), "dateRange") &&
-				StringUtil.startsWith(
-					expressionJSONObject.getString("value"), "dateRange")) {
-
-				String fieldName = fieldJSONObject.getString("name");
-
-				expressionJSONObject.put(
-					"value",
-					StringBundler.concat(
-						"futureDates(", fieldName,
-						", \"{parameter}\") AND pastDates(", fieldName,
-						", \"{parameter}\")"));
-
-				return true;
-			}
-		}
-
-		return upgraded;
-	}
-
 	private void _upgradeDDMStructure(
 			PreparedStatement selectPreparedStatement1,
 			PreparedStatement selectPreparedStatement2,
@@ -159,6 +121,44 @@ public class DDMValidationUpgradeProcess extends UpgradeProcess {
 				}
 			}
 		}
+	}
+
+	private boolean _upgradeDateValidation(
+		JSONObject fieldJSONObject, boolean upgraded) {
+
+		if (Objects.equals(
+				DDMFormFieldTypeConstants.DATE,
+				fieldJSONObject.getString("type"))) {
+
+			JSONObject validationJSONObject = fieldJSONObject.getJSONObject(
+				"validation");
+
+			if (validationJSONObject == null) {
+				return upgraded;
+			}
+
+			JSONObject expressionJSONObject =
+				validationJSONObject.getJSONObject("expression");
+
+			if (Objects.equals(
+					expressionJSONObject.getString("name"), "dateRange") &&
+				StringUtil.startsWith(
+					expressionJSONObject.getString("value"), "dateRange")) {
+
+				String fieldName = fieldJSONObject.getString("name");
+
+				expressionJSONObject.put(
+					"value",
+					StringBundler.concat(
+						"futureDates(", fieldName,
+						", \"{parameter}\") AND pastDates(", fieldName,
+						", \"{parameter}\")"));
+
+				return true;
+			}
+		}
+
+		return upgraded;
 	}
 
 	private boolean _upgradeDefinition(JSONObject definitionJSONObject) {

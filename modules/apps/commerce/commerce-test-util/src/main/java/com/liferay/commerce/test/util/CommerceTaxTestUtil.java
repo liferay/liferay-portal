@@ -77,6 +77,16 @@ public class CommerceTaxTestUtil {
 		return cpTaxCategory.getCPTaxCategoryId();
 	}
 
+	public static BigDecimal getPriceWithTaxAmount(
+		BigDecimal price, BigDecimal taxRate, RoundingMode roundingMode) {
+
+		BigDecimal taxValue = price.multiply(taxRate);
+
+		taxValue = taxValue.divide(_ONE_HUNDRED, _SCALE, roundingMode);
+
+		return price.add(taxValue);
+	}
+
 	public static BigDecimal getPriceWithoutTaxAmount(
 		BigDecimal priceWithTaxAmount, BigDecimal taxRate,
 		RoundingMode roundingMode) {
@@ -88,16 +98,6 @@ public class CommerceTaxTestUtil {
 		taxValue = taxValue.divide(denominator, _SCALE, roundingMode);
 
 		return priceWithTaxAmount.subtract(taxValue);
-	}
-
-	public static BigDecimal getPriceWithTaxAmount(
-		BigDecimal price, BigDecimal taxRate, RoundingMode roundingMode) {
-
-		BigDecimal taxValue = price.multiply(taxRate);
-
-		taxValue = taxValue.divide(_ONE_HUNDRED, _SCALE, roundingMode);
-
-		return price.add(taxValue);
 	}
 
 	public static void setCommerceMethodTaxRate(

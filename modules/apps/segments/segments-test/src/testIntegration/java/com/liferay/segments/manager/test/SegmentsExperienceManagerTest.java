@@ -60,15 +60,6 @@ public class SegmentsExperienceManagerTest {
 	}
 
 	@Test
-	public void testGetSegmentsExperienceIdWithoutSegmentsExperienceIds() {
-		Assert.assertEquals(
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				_layout.getPlid()),
-			_segmentsExperienceManager.getSegmentsExperienceId(
-				_getMockHttpServletRequest(false)));
-	}
-
-	@Test
 	public void testGetSegmentsExperienceIdWithSegmentsExperienceId1()
 		throws PortalException {
 
@@ -145,6 +136,15 @@ public class SegmentsExperienceManagerTest {
 			segmentsExperience.getSegmentsExperienceId(),
 			_segmentsExperienceManager.getSegmentsExperienceId(
 				mockHttpServletRequest));
+	}
+
+	@Test
+	public void testGetSegmentsExperienceIdWithoutSegmentsExperienceIds() {
+		Assert.assertEquals(
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_layout.getPlid()),
+			_segmentsExperienceManager.getSegmentsExperienceId(
+				_getMockHttpServletRequest(false)));
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(

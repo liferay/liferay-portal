@@ -36,13 +36,13 @@ public class DataSourceWrapper implements DataSource {
 	}
 
 	@Override
-	public int getLoginTimeout() throws SQLException {
-		return _dataSource.getLoginTimeout();
+	public PrintWriter getLogWriter() throws SQLException {
+		return _dataSource.getLogWriter();
 	}
 
 	@Override
-	public PrintWriter getLogWriter() throws SQLException {
-		return _dataSource.getLogWriter();
+	public int getLoginTimeout() throws SQLException {
+		return _dataSource.getLoginTimeout();
 	}
 
 	@Override
@@ -63,13 +63,13 @@ public class DataSourceWrapper implements DataSource {
 	}
 
 	@Override
-	public void setLoginTimeout(int seconds) throws SQLException {
-		_dataSource.setLoginTimeout(seconds);
+	public void setLogWriter(PrintWriter printWriter) throws SQLException {
+		_dataSource.setLogWriter(printWriter);
 	}
 
 	@Override
-	public void setLogWriter(PrintWriter printWriter) throws SQLException {
-		_dataSource.setLogWriter(printWriter);
+	public void setLoginTimeout(int seconds) throws SQLException {
+		_dataSource.setLoginTimeout(seconds);
 	}
 
 	public void setWrappedDataSource(DataSource wrappedDataSource) {

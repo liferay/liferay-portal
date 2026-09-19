@@ -173,13 +173,13 @@ public class CPDefinitionLayoutDisplayPageProvider
 	}
 
 	@Reference
+	private CProductLocalService _cProductLocalService;
+
+	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Reference
 	private CPFriendlyURL _cpFriendlyURL;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;

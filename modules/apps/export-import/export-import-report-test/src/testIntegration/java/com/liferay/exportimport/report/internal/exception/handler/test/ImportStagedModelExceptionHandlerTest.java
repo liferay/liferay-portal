@@ -256,10 +256,10 @@ public class ImportStagedModelExceptionHandlerTest {
 	private GroupLocalService _groupLocalService;
 
 	@Inject
-	private Searcher _searcher;
+	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
 
 	@Inject
-	private SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private Searcher _searcher;
 
 	private class TestStagedModel
 		implements ExternalReferenceCodeModel, StagedModel {

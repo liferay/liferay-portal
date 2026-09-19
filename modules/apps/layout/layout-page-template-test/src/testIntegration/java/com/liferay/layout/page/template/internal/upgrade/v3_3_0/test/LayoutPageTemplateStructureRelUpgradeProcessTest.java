@@ -599,11 +599,11 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 	private PortletLocalService _portletLocalService;
 
 	@Inject
-	private PortletPreferencesLocalService _portletPreferencesLocalService;
-
-	@Inject
 	private PortletPreferenceValueLocalService
 		_portletPreferenceValueLocalService;
+
+	@Inject
+	private PortletPreferencesLocalService _portletPreferencesLocalService;
 
 	private long _segmentsExperienceId1;
 	private long _segmentsExperienceId2;

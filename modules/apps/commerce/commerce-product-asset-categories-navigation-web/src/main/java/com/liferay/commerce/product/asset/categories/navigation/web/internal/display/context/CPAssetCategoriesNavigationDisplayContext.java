@@ -160,16 +160,16 @@ public class CPAssetCategoriesNavigationDisplayContext {
 		return _assetVocabulary;
 	}
 
-	public List<AssetCategory> getChildAssetCategories(long categoryId)
-		throws PortalException {
-
-		return _assetCategoryService.getChildCategories(categoryId);
-	}
-
 	public CPAssetCategoriesNavigationPortletInstanceConfiguration
 		getCPAssetCategoriesNavigationPortletInstanceConfiguration() {
 
 		return _cpAssetCategoriesNavigationPortletInstanceConfiguration;
+	}
+
+	public List<AssetCategory> getChildAssetCategories(long categoryId)
+		throws PortalException {
+
+		return _assetCategoryService.getChildCategories(categoryId);
 	}
 
 	public String getDefaultImageSrc(long categoryId) throws Exception {

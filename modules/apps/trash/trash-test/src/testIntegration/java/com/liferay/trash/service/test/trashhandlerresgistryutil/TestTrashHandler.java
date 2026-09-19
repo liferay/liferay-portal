@@ -174,17 +174,17 @@ public class TestTrashHandler implements TrashHandler {
 	}
 
 	@Override
-	public TrashedModel getTrashedModel(long classPK) {
-		return null;
-	}
-
-	@Override
 	public int getTrashModelsCount(long classPK) {
 		return 0;
 	}
 
 	@Override
 	public TrashRenderer getTrashRenderer(long classPK) {
+		return null;
+	}
+
+	@Override
+	public TrashedModel getTrashedModel(long classPK) {
 		return null;
 	}
 

@@ -489,6 +489,36 @@ public class AssetListAssetEntryProviderFiltersTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
 	@Test
+	public void testGetAssetEntriesInfoPageWithKeywordTextContainsFilters()
+		throws Exception {
+
+		String keyword = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, keyword
+			).build());
+
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
+			objectEntry1);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, RandomTestUtil.randomString()
+			).build());
+
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
+					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
+			objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
 	public void testGetAssetEntriesInfoPageWithKeywordsFilter()
 		throws Exception {
 
@@ -541,36 +571,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 		_assertFilteredObjectEntries(
 			_getFiltersJSONArray(
 				_getKeywordsFilterJSONObject("not-contains", keywordPhrase)),
-			objectEntry2);
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
-	@Test
-	public void testGetAssetEntriesInfoPageWithKeywordTextContainsFilters()
-		throws Exception {
-
-		String keyword = RandomTestUtil.randomString();
-
-		ObjectEntry objectEntry1 = _addObjectEntry(
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME_KEYWORD, keyword
-			).build());
-
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getFilterJSONObject(
-					"contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
-			objectEntry1);
-
-		ObjectEntry objectEntry2 = _addObjectEntry(
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME_KEYWORD, RandomTestUtil.randomString()
-			).build());
-
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getFilterJSONObject(
-					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
 			objectEntry2);
 	}
 
@@ -1091,22 +1091,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 		);
 	}
 
-	private List<Long> _getFilteredClassPKs(JSONArray filtersJSONArray)
-		throws Exception {
-
-		AssetListEntry assetListEntry = _addDynamicAssetListEntryWithFilters(
-			filtersJSONArray.toString());
-
-		InfoPage<AssetEntry> infoPage =
-			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
-				assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
-				null, null, StringPool.BLANK, StringPool.BLANK,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		return TransformUtil.transform(
-			infoPage.getPageItems(), AssetEntry::getClassPK);
-	}
-
 	private JSONObject _getFilterJSONObject(
 		String operatorName, String propertyName, Object value) {
 
@@ -1122,6 +1106,22 @@ public class AssetListAssetEntryProviderFiltersTest {
 		).put(
 			"value", value
 		);
+	}
+
+	private List<Long> _getFilteredClassPKs(JSONArray filtersJSONArray)
+		throws Exception {
+
+		AssetListEntry assetListEntry = _addDynamicAssetListEntryWithFilters(
+			filtersJSONArray.toString());
+
+		InfoPage<AssetEntry> infoPage =
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
+				null, null, StringPool.BLANK, StringPool.BLANK,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		return TransformUtil.transform(
+			infoPage.getPageItems(), AssetEntry::getClassPK);
 	}
 
 	private JSONArray _getFiltersJSONArray(JSONObject... filterJSONObjects) {

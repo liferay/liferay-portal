@@ -27,16 +27,16 @@ public interface SharepointStorage {
 			SharepointRequest sharepointRequest)
 		throws Exception;
 
-	public Tree getDocumentsTree(SharepointRequest sharepointRequest)
-		throws Exception;
-
 	public Tree getDocumentTree(SharepointRequest sharepointRequest)
 		throws Exception;
 
-	public Tree getFoldersTree(SharepointRequest sharepointRequest)
+	public Tree getDocumentsTree(SharepointRequest sharepointRequest)
 		throws Exception;
 
 	public Tree getFolderTree(SharepointRequest sharepointRequest)
+		throws Exception;
+
+	public Tree getFoldersTree(SharepointRequest sharepointRequest)
 		throws Exception;
 
 	public void getParentFolderIds(

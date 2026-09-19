@@ -248,6 +248,26 @@ public class ObjectEntryMetricResourceTest
 		}
 	}
 
+	private void _testGetObjectEntryMetricWithUnsyncedGroup() throws Exception {
+		try (AnalyticsCompanyConfigurationTemporarySwapper
+				analyticsCompanyConfigurationTemporarySwapper =
+					new AnalyticsCompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						RandomTestUtil.randomString(), false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				HttpURLConnection.HTTP_BAD_REQUEST,
+				objectEntryMetricResource.getObjectEntryMetricHttpResponse(
+					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
+					RandomTestUtil.nextInt(),
+					new String[] {"downloadsMetric", "viewsMetric"}));
+		}
+	}
+
 	private void _testGetObjectEntryMetricWithoutViewPermission()
 		throws Exception {
 
@@ -276,26 +296,6 @@ public class ObjectEntryMetricResourceTest
 				HttpURLConnection.HTTP_NOT_FOUND,
 				objectEntryMetricResource.getObjectEntryMetricHttpResponse(
 					null, _objectEntry.getObjectEntryId(),
-					RandomTestUtil.nextInt(),
-					new String[] {"downloadsMetric", "viewsMetric"}));
-		}
-	}
-
-	private void _testGetObjectEntryMetricWithUnsyncedGroup() throws Exception {
-		try (AnalyticsCompanyConfigurationTemporarySwapper
-				analyticsCompanyConfigurationTemporarySwapper =
-					new AnalyticsCompanyConfigurationTemporarySwapper(
-						testCompany.getCompanyId(),
-						RandomTestUtil.randomString(), false);
-			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.WARN)) {
-
-			assertHttpResponseStatusCode(
-				HttpURLConnection.HTTP_BAD_REQUEST,
-				objectEntryMetricResource.getObjectEntryMetricHttpResponse(
-					testGroup.getGroupId(), _objectEntry.getObjectEntryId(),
 					RandomTestUtil.nextInt(),
 					new String[] {"downloadsMetric", "viewsMetric"}));
 		}

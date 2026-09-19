@@ -1148,6 +1148,19 @@ public class CommerceShipmentTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
+	private CPInstance _createCPInstance() throws Exception {
+		return CPTestUtil.addCPInstanceWithRandomSku(_group.getGroupId());
+	}
+
+	private CPInstance _createCPInstance(BigDecimal price) throws Exception {
+		return CPTestUtil.addCPInstanceWithRandomSku(
+			_group.getGroupId(), price);
+	}
+
+	private CPInstance _createCPInstance(long groupId) throws Exception {
+		return CPTestUtil.addCPInstanceWithRandomSku(groupId);
+	}
+
 	private CommerceInventoryWarehouse _createCommerceInventoryWarehouse(
 			long commerceChannelId, boolean active)
 		throws Exception {
@@ -1164,19 +1177,6 @@ public class CommerceShipmentTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		return commerceInventoryWarehouse;
-	}
-
-	private CPInstance _createCPInstance() throws Exception {
-		return CPTestUtil.addCPInstanceWithRandomSku(_group.getGroupId());
-	}
-
-	private CPInstance _createCPInstance(BigDecimal price) throws Exception {
-		return CPTestUtil.addCPInstanceWithRandomSku(
-			_group.getGroupId(), price);
-	}
-
-	private CPInstance _createCPInstance(long groupId) throws Exception {
-		return CPTestUtil.addCPInstanceWithRandomSku(groupId);
 	}
 
 	private CommerceChannel _commerceChannel;

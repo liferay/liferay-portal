@@ -41,21 +41,21 @@ public class DummyHttpServletResponse implements HttpServletResponse {
 		return false;
 	}
 
-	public String encodeRedirectUrl(String url) {
-		return null;
-	}
-
 	@Override
 	public String encodeRedirectURL(String url) {
 		return null;
 	}
 
-	public String encodeUrl(String url) {
+	public String encodeRedirectUrl(String url) {
 		return null;
 	}
 
 	@Override
 	public String encodeURL(String url) {
+		return null;
+	}
+
+	public String encodeUrl(String url) {
 		return null;
 	}
 

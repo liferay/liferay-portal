@@ -234,85 +234,6 @@ public class DDMFormInstanceRecordExporterImplTest {
 	}
 
 	@Test
-	public void testGetDDMFormFieldsLabel() {
-		DDMFormInstanceRecordExporterImpl ddmFormInstanceRecordExporterImpl =
-			new DDMFormInstanceRecordExporterImpl();
-
-		ReflectionTestUtil.setFieldValue(
-			ddmFormInstanceRecordExporterImpl, "_language", _language);
-
-		Locale locale = new Locale("pt", "BR");
-
-		Mockito.when(
-			_language.get(locale, "status")
-		).thenReturn(
-			"Estado"
-		);
-
-		Mockito.when(
-			_language.get(locale, "modified-date")
-		).thenReturn(
-			"Data de Modificação"
-		);
-
-		Mockito.when(
-			_language.get(locale, "author")
-		).thenReturn(
-			"Autor"
-		);
-
-		Mockito.when(
-			_language.get(locale, "default-language")
-		).thenReturn(
-			"Idioma"
-		);
-
-		LocalizedValue localizedValue1 = new LocalizedValue();
-
-		localizedValue1.addString(locale, "Campo 1");
-
-		Map<String, String> ddmFormFieldsLabel =
-			ddmFormInstanceRecordExporterImpl.getDDMFormFieldsLabel(
-				HashMapBuilder.<String, DDMFormField>put(
-					"field1",
-					() -> {
-						DDMFormField ddmFormField1 = new DDMFormField(
-							"field1", "text");
-
-						ddmFormField1.setFieldReference("reference1");
-						ddmFormField1.setLabel(localizedValue1);
-
-						return ddmFormField1;
-					}
-				).put(
-					"field2",
-					() -> {
-						DDMFormField ddmFormField2 = new DDMFormField(
-							"field2", "text");
-
-						ddmFormField2.setFieldReference("reference2");
-
-						LocalizedValue localizedValue2 = new LocalizedValue();
-
-						localizedValue2.addString(locale, "Campo 2");
-
-						ddmFormField2.setLabel(localizedValue2);
-
-						return ddmFormField2;
-					}
-				).build(),
-				locale);
-
-		Assert.assertEquals("Autor", ddmFormFieldsLabel.get("author"));
-		Assert.assertEquals("Idioma", ddmFormFieldsLabel.get("languageId"));
-		Assert.assertEquals(
-			"Data de Modificação", ddmFormFieldsLabel.get("modifiedDate"));
-		Assert.assertEquals("Campo 1", ddmFormFieldsLabel.get("reference1"));
-		Assert.assertEquals("Campo 2", ddmFormFieldsLabel.get("reference2"));
-		Assert.assertEquals("Estado", ddmFormFieldsLabel.get("status"));
-	}
-
-	@Test
 	public void testGetDDMFormFieldValue() throws Exception {
 		DDMFormFieldValue ddmFormFieldValue = Mockito.mock(
 			DDMFormFieldValue.class);
@@ -493,6 +414,85 @@ public class DDMFormInstanceRecordExporterImplTest {
 		).getStatusMessage(
 			Mockito.anyInt(), Mockito.any(Locale.class)
 		);
+	}
+
+	@Test
+	public void testGetDDMFormFieldsLabel() {
+		DDMFormInstanceRecordExporterImpl ddmFormInstanceRecordExporterImpl =
+			new DDMFormInstanceRecordExporterImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			ddmFormInstanceRecordExporterImpl, "_language", _language);
+
+		Locale locale = new Locale("pt", "BR");
+
+		Mockito.when(
+			_language.get(locale, "status")
+		).thenReturn(
+			"Estado"
+		);
+
+		Mockito.when(
+			_language.get(locale, "modified-date")
+		).thenReturn(
+			"Data de Modificação"
+		);
+
+		Mockito.when(
+			_language.get(locale, "author")
+		).thenReturn(
+			"Autor"
+		);
+
+		Mockito.when(
+			_language.get(locale, "default-language")
+		).thenReturn(
+			"Idioma"
+		);
+
+		LocalizedValue localizedValue1 = new LocalizedValue();
+
+		localizedValue1.addString(locale, "Campo 1");
+
+		Map<String, String> ddmFormFieldsLabel =
+			ddmFormInstanceRecordExporterImpl.getDDMFormFieldsLabel(
+				HashMapBuilder.<String, DDMFormField>put(
+					"field1",
+					() -> {
+						DDMFormField ddmFormField1 = new DDMFormField(
+							"field1", "text");
+
+						ddmFormField1.setFieldReference("reference1");
+						ddmFormField1.setLabel(localizedValue1);
+
+						return ddmFormField1;
+					}
+				).put(
+					"field2",
+					() -> {
+						DDMFormField ddmFormField2 = new DDMFormField(
+							"field2", "text");
+
+						ddmFormField2.setFieldReference("reference2");
+
+						LocalizedValue localizedValue2 = new LocalizedValue();
+
+						localizedValue2.addString(locale, "Campo 2");
+
+						ddmFormField2.setLabel(localizedValue2);
+
+						return ddmFormField2;
+					}
+				).build(),
+				locale);
+
+		Assert.assertEquals("Autor", ddmFormFieldsLabel.get("author"));
+		Assert.assertEquals("Idioma", ddmFormFieldsLabel.get("languageId"));
+		Assert.assertEquals(
+			"Data de Modificação", ddmFormFieldsLabel.get("modifiedDate"));
+		Assert.assertEquals("Campo 1", ddmFormFieldsLabel.get("reference1"));
+		Assert.assertEquals("Campo 2", ddmFormFieldsLabel.get("reference2"));
+		Assert.assertEquals("Estado", ddmFormFieldsLabel.get("status"));
 	}
 
 	@Test

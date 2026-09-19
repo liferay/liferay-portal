@@ -1032,26 +1032,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertEquals(SitePage.Type.PAGE_SET_PAGE, sitePage.getType());
 	}
 
-	private void _assertPageSpecifications(
-			ContentPageSpecification draftContentPageSpecification,
-			ContentPageSpecification publishedContentPageSpecification,
-			SitePage sitePage)
-		throws Exception {
-
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
-			sitePage.getExternalReferenceCode(), testGroup.getGroupId());
-
-		PageSpecification.Status status = PageSpecification.Status.APPROVED;
-
-		if (!layout.isPublished()) {
-			status = PageSpecification.Status.DRAFT;
-		}
-
-		PageSpecificationsTestUtil.assertPageSpecifications(
-			draftContentPageSpecification, publishedContentPageSpecification,
-			sitePage.getPageSpecifications(), layout, status);
-	}
-
 	private void _assertPageSpecificationVersions(
 			Layout layout, PageSpecificationVersion[] pageSpecificationVersions)
 		throws Exception {
@@ -1095,6 +1075,26 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertEquals(
 			Arrays.toString(pageSpecificationVersions),
 			layoutContentVersions.size(), pageSpecificationVersions.length);
+	}
+
+	private void _assertPageSpecifications(
+			ContentPageSpecification draftContentPageSpecification,
+			ContentPageSpecification publishedContentPageSpecification,
+			SitePage sitePage)
+		throws Exception {
+
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			sitePage.getExternalReferenceCode(), testGroup.getGroupId());
+
+		PageSpecification.Status status = PageSpecification.Status.APPROVED;
+
+		if (!layout.isPublished()) {
+			status = PageSpecification.Status.DRAFT;
+		}
+
+		PageSpecificationsTestUtil.assertPageSpecifications(
+			draftContentPageSpecification, publishedContentPageSpecification,
+			sitePage.getPageSpecifications(), layout, status);
 	}
 
 	private void _assertParentAndPriority(
@@ -2319,38 +2319,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testGetSiteSitePageWithNestedFields(sitePage);
 	}
 
-	private void _testGetSiteSitePagesPageWithPageSpecificationVersionsNestedField()
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
-
-		Assert.assertTrue(
-			ListUtil.isNotEmpty(
-				_layoutContentVersionLocalService.getLayoutContentVersions(
-					draftLayout.getPlid())));
-
-		LayoutTestUtil.addTypePortletLayout(testGroup);
-
-		SitePageResource sitePageResource = _getSitePageResource(
-			"pageSpecificationVersions");
-
-		Page<SitePage> sitePagesPage = sitePageResource.getSiteSitePagesPage(
-			testGroup.getExternalReferenceCode(), false, null, null, null,
-			Pagination.of(1, -1), null);
-
-		for (SitePage sitePage : sitePagesPage.getItems()) {
-			_assertPageSpecificationVersions(
-				_layoutLocalService.getLayoutByExternalReferenceCode(
-					sitePage.getExternalReferenceCode(),
-					testGroup.getGroupId()),
-				sitePage.getPageSpecificationVersions());
-		}
-	}
-
 	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
 		throws Exception {
 
@@ -2387,6 +2355,38 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 		_assertWidgetPageWidgetInstances(
 			null, 1, customApplicationDecorator, sitePage);
+	}
+
+	private void _testGetSiteSitePagesPageWithPageSpecificationVersionsNestedField()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		Assert.assertTrue(
+			ListUtil.isNotEmpty(
+				_layoutContentVersionLocalService.getLayoutContentVersions(
+					draftLayout.getPlid())));
+
+		LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecificationVersions");
+
+		Page<SitePage> sitePagesPage = sitePageResource.getSiteSitePagesPage(
+			testGroup.getExternalReferenceCode(), false, null, null, null,
+			Pagination.of(1, -1), null);
+
+		for (SitePage sitePage : sitePagesPage.getItems()) {
+			_assertPageSpecificationVersions(
+				_layoutLocalService.getLayoutByExternalReferenceCode(
+					sitePage.getExternalReferenceCode(),
+					testGroup.getGroupId()),
+				sitePage.getPageSpecificationVersions());
+		}
 	}
 
 	private SitePage _testPatchSiteSitePage(

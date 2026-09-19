@@ -523,15 +523,15 @@ public class PortletPreferencesPostUpgradeDataCleanupProcessTest
 	}
 
 	@Override
-	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {connection, _deletePortlets, _portletLocalService};
-	}
-
-	@Override
 	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
 		return new Class<?>[] {
 			Connection.class, boolean.class, PortletLocalService.class
 		};
+	}
+
+	@Override
+	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
+		return new Object[] {connection, _deletePortlets, _portletLocalService};
 	}
 
 	@Override

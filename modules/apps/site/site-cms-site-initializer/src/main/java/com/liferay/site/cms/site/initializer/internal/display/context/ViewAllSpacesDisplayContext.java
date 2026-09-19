@@ -77,6 +77,12 @@ public class ViewAllSpacesDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
+	public String getAPIURL() {
+		return "/o/headless-asset-library/v1.0/asset-libraries?filter=type " +
+			"eq 'Space'&nestedFields=numberOfConnectedSites" +
+				",numberOfUserAccounts,numberOfUserGroups";
+	}
+
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"baseSpaceURL", ActionUtil.getBaseSpaceURL(_themeDisplay)
@@ -95,12 +101,6 @@ public class ViewAllSpacesDisplayContext {
 			"spacePermissionAdditionalProps",
 			_getSpacePermissionAdditionalProps()
 		).build();
-	}
-
-	public String getAPIURL() {
-		return "/o/headless-asset-library/v1.0/asset-libraries?filter=type " +
-			"eq 'Space'&nestedFields=numberOfConnectedSites" +
-				",numberOfUserAccounts,numberOfUserGroups";
 	}
 
 	public Map<String, Object> getBreadcrumbProps() throws PortalException {

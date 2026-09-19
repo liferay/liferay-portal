@@ -109,27 +109,6 @@ public class DisplayPageActionDropdownItemsProviderTest {
 	}
 
 	@Test
-	public void testGetActionDropdownItemsWithoutUpdatePermission()
-		throws Exception {
-
-		_setUpLayoutPageTemplateEntryPermission(false);
-
-		DisplayPageActionDropdownItemsProvider
-			displayPageActionDropdownItemsProvider =
-				new DisplayPageActionDropdownItemsProvider(
-					false, false, _layoutPageTemplateEntry, _renderRequest,
-					_renderResponse);
-
-		List<DropdownItem> dropdownItems = _getActionDropdownItems(
-			displayPageActionDropdownItemsProvider.getActionDropdownItems());
-
-		Assert.assertEquals(dropdownItems.toString(), 2, dropdownItems.size());
-
-		_assertDropdownItems(
-			dropdownItems, new String[] {"view-usages", "export"});
-	}
-
-	@Test
 	public void testGetActionDropdownItemsWithUpdatePermission()
 		throws Exception {
 
@@ -153,6 +132,27 @@ public class DisplayPageActionDropdownItemsProviderTest {
 				"view-usages", "make-a-copy", "export", "move", "configure",
 				"permissions", "delete"
 			});
+	}
+
+	@Test
+	public void testGetActionDropdownItemsWithoutUpdatePermission()
+		throws Exception {
+
+		_setUpLayoutPageTemplateEntryPermission(false);
+
+		DisplayPageActionDropdownItemsProvider
+			displayPageActionDropdownItemsProvider =
+				new DisplayPageActionDropdownItemsProvider(
+					false, false, _layoutPageTemplateEntry, _renderRequest,
+					_renderResponse);
+
+		List<DropdownItem> dropdownItems = _getActionDropdownItems(
+			displayPageActionDropdownItemsProvider.getActionDropdownItems());
+
+		Assert.assertEquals(dropdownItems.toString(), 2, dropdownItems.size());
+
+		_assertDropdownItems(
+			dropdownItems, new String[] {"view-usages", "export"});
 	}
 
 	private void _assertDropdownItems(

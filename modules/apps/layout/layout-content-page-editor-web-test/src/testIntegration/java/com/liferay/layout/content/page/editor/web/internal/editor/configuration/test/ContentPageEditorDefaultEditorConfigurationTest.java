@@ -133,6 +133,22 @@ public class ContentPageEditorDefaultEditorConfigurationTest {
 			JSONUtil.isEmpty(toolbarsJSONObject));
 	}
 
+	private void _assertToolbarStylesSelectionsTextJSONObject(
+		JSONObject jsonObject) {
+
+		JSONArray buttonsJSONArray = jsonObject.getJSONArray("buttons");
+
+		JSONObject styleFormatsJSONObject = buttonsJSONArray.getJSONObject(0);
+
+		Assert.assertTrue(styleFormatsJSONObject.has("cfg"));
+		Assert.assertEquals("styles", styleFormatsJSONObject.getString("name"));
+
+		for (int i = 1; i < buttonsJSONArray.length(); i++) {
+			ArrayUtil.contains(
+				_STYLES_SELECTIONS_TEXT, buttonsJSONArray.getString(i));
+		}
+	}
+
 	private void _assertToolbarsJSONObject(JSONObject jsonObject) {
 		JSONObject addJSONObject = jsonObject.getJSONObject("add");
 
@@ -201,22 +217,6 @@ public class ContentPageEditorDefaultEditorConfigurationTest {
 				"test", "AlloyEditor.SelectionTest.table"
 			).toString(),
 			selectionsStylesJSONObject.toString());
-	}
-
-	private void _assertToolbarStylesSelectionsTextJSONObject(
-		JSONObject jsonObject) {
-
-		JSONArray buttonsJSONArray = jsonObject.getJSONArray("buttons");
-
-		JSONObject styleFormatsJSONObject = buttonsJSONArray.getJSONObject(0);
-
-		Assert.assertTrue(styleFormatsJSONObject.has("cfg"));
-		Assert.assertEquals("styles", styleFormatsJSONObject.getString("name"));
-
-		for (int i = 1; i < buttonsJSONArray.length(); i++) {
-			ArrayUtil.contains(
-				_STYLES_SELECTIONS_TEXT, buttonsJSONArray.getString(i));
-		}
 	}
 
 	private JSONObject _getEditorConfigurationConfigJSONObject(

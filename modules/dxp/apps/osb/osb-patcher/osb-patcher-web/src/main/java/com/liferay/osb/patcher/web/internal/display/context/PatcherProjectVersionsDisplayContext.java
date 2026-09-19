@@ -60,6 +60,35 @@ public class PatcherProjectVersionsDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
+	public JSONArray getDXP70AndNewerPatcherProductVersionIdsJSONArray() {
+		JSONArray patcherProductVersionIdsJSONArray =
+			JSONFactoryUtil.createJSONArray();
+
+		List<PatcherProductVersion> patcherProductVersions =
+			PatcherProductVersionUtil.getPatcherProductVersions(
+				PatcherProductVersionConstants.
+					TYPE_FIX_DELIVERY_METHOD_FIX_PACK_30);
+
+		for (PatcherProductVersion patcherProductVersion :
+				patcherProductVersions) {
+
+			patcherProductVersionIdsJSONArray.put(
+				patcherProductVersion.getPatcherProductVersionId());
+		}
+
+		PatcherProductVersion patcherProductVersion =
+			PatcherProductVersionLocalServiceUtil.fetchPatcherProductVersion(
+				PatcherProductVersionConstants.
+					LABEL_PRODUCT_VERSION_QUARTERLY_RELEASES);
+
+		if (patcherProductVersion != null) {
+			patcherProductVersionIdsJSONArray.put(
+				patcherProductVersion.getPatcherProductVersionId());
+		}
+
+		return patcherProductVersionIdsJSONArray;
+	}
+
 	public List<DropdownItem> getDropdownItems(
 		PatcherProjectVersion patcherProjectVersion) {
 
@@ -106,35 +135,6 @@ public class PatcherProjectVersionsDisplayContext {
 					LanguageUtil.get(_httpServletRequest, "delete"));
 			}
 		).build();
-	}
-
-	public JSONArray getDXP70AndNewerPatcherProductVersionIdsJSONArray() {
-		JSONArray patcherProductVersionIdsJSONArray =
-			JSONFactoryUtil.createJSONArray();
-
-		List<PatcherProductVersion> patcherProductVersions =
-			PatcherProductVersionUtil.getPatcherProductVersions(
-				PatcherProductVersionConstants.
-					TYPE_FIX_DELIVERY_METHOD_FIX_PACK_30);
-
-		for (PatcherProductVersion patcherProductVersion :
-				patcherProductVersions) {
-
-			patcherProductVersionIdsJSONArray.put(
-				patcherProductVersion.getPatcherProductVersionId());
-		}
-
-		PatcherProductVersion patcherProductVersion =
-			PatcherProductVersionLocalServiceUtil.fetchPatcherProductVersion(
-				PatcherProductVersionConstants.
-					LABEL_PRODUCT_VERSION_QUARTERLY_RELEASES);
-
-		if (patcherProductVersion != null) {
-			patcherProductVersionIdsJSONArray.put(
-				patcherProductVersion.getPatcherProductVersionId());
-		}
-
-		return patcherProductVersionIdsJSONArray;
 	}
 
 	public JSONArray getMarketplaceReleasePatcherProductVersionIdsJSONArray()

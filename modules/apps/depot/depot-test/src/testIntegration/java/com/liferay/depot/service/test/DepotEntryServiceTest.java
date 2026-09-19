@@ -51,11 +51,6 @@ public class DepotEntryServiceTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testAddDepotEntryWithoutPermissions() throws Exception {
-		DepotTestUtil.withRegularUser((user, role) -> _addDepotEntry(user));
-	}
-
 	@Test
 	public void testAddDepotEntryWithPermissions() throws Exception {
 		DepotTestUtil.withRegularUser(
@@ -71,12 +66,8 @@ public class DepotEntryServiceTest {
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testDeleteDepotEntryWithoutPermissions() throws Exception {
-		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUser());
-
-		DepotTestUtil.withRegularUser(
-			(user, role) -> _depotEntryService.deleteDepotEntry(
-				depotEntry.getDepotEntryId()));
+	public void testAddDepotEntryWithoutPermissions() throws Exception {
+		DepotTestUtil.withRegularUser((user, role) -> _addDepotEntry(user));
 	}
 
 	@Test
@@ -100,11 +91,11 @@ public class DepotEntryServiceTest {
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testGetDepotEntryWithoutPermissions() throws Exception {
+	public void testDeleteDepotEntryWithoutPermissions() throws Exception {
 		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUser());
 
 		DepotTestUtil.withRegularUser(
-			(user, role) -> _depotEntryService.getDepotEntry(
+			(user, role) -> _depotEntryService.deleteDepotEntry(
 				depotEntry.getDepotEntryId()));
 	}
 
@@ -127,12 +118,12 @@ public class DepotEntryServiceTest {
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testGetGroupDepotEntryWithoutPermissions() throws Exception {
+	public void testGetDepotEntryWithoutPermissions() throws Exception {
 		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUser());
 
 		DepotTestUtil.withRegularUser(
-			(user, role) -> _depotEntryService.getGroupDepotEntry(
-				depotEntry.getGroupId()));
+			(user, role) -> _depotEntryService.getDepotEntry(
+				depotEntry.getDepotEntryId()));
 	}
 
 	@Test
@@ -154,11 +145,12 @@ public class DepotEntryServiceTest {
 	}
 
 	@Test(expected = PrincipalException.MustHavePermission.class)
-	public void testUpdateDepotEntryWithoutPermissions() throws Exception {
+	public void testGetGroupDepotEntryWithoutPermissions() throws Exception {
 		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUser());
 
 		DepotTestUtil.withRegularUser(
-			(user, role) -> _updateDepotEntry(depotEntry, user));
+			(user, role) -> _depotEntryService.getGroupDepotEntry(
+				depotEntry.getGroupId()));
 	}
 
 	@Test
@@ -175,6 +167,14 @@ public class DepotEntryServiceTest {
 
 				Assert.assertNotNull(_updateDepotEntry(depotEntry, user));
 			});
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateDepotEntryWithoutPermissions() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(TestPropsValues.getUser());
+
+		DepotTestUtil.withRegularUser(
+			(user, role) -> _updateDepotEntry(depotEntry, user));
 	}
 
 	private DepotEntry _addDepotEntry(User user) throws Exception {

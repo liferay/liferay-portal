@@ -148,50 +148,6 @@ public class JournalArticleTypeUpgradeProcess extends UpgradeProcess {
 		}
 	}
 
-	private void _updateArticles(
-			long companyId,
-			Map<String, Long> journalArticleTypesToAssetCategoryIds)
-		throws Exception {
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select JournalArticle.resourcePrimKey, ",
-					"JournalArticle.type_ from JournalArticle left join ",
-					"JournalArticle tempJournalArticle on ",
-					"(JournalArticle.groupId = tempJournalArticle.groupId) ",
-					"and (JournalArticle.articleId = ",
-					"tempJournalArticle.articleId) and ",
-					"(JournalArticle.version < tempJournalArticle.version) ",
-					"where JournalArticle.companyId = ? and ",
-					"tempJournalArticle.id_ is null"))) {
-
-			preparedStatement.setLong(1, companyId);
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while (resultSet.next()) {
-					long resourcePrimKey = resultSet.getLong("resourcePrimKey");
-
-					AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-						JournalArticle.class.getName(), resourcePrimKey);
-
-					if (assetEntry == null) {
-						continue;
-					}
-
-					String type = StringUtil.toLowerCase(
-						resultSet.getString("type_"));
-
-					long assetCategoryId =
-						journalArticleTypesToAssetCategoryIds.get(type);
-
-					_assetEntryAssetCategoryRelLocalService.
-						addAssetEntryAssetCategoryRel(
-							assetEntry.getEntryId(), assetCategoryId);
-				}
-			}
-		}
-	}
-
 	private void _updateArticleType() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			if (!_hasSelectedArticleTypes()) {
@@ -248,6 +204,50 @@ public class JournalArticleTypeUpgradeProcess extends UpgradeProcess {
 			finally {
 				LocaleThreadLocal.setDefaultLocale(
 					localeThreadLocalDefaultLocale);
+			}
+		}
+	}
+
+	private void _updateArticles(
+			long companyId,
+			Map<String, Long> journalArticleTypesToAssetCategoryIds)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select JournalArticle.resourcePrimKey, ",
+					"JournalArticle.type_ from JournalArticle left join ",
+					"JournalArticle tempJournalArticle on ",
+					"(JournalArticle.groupId = tempJournalArticle.groupId) ",
+					"and (JournalArticle.articleId = ",
+					"tempJournalArticle.articleId) and ",
+					"(JournalArticle.version < tempJournalArticle.version) ",
+					"where JournalArticle.companyId = ? and ",
+					"tempJournalArticle.id_ is null"))) {
+
+			preparedStatement.setLong(1, companyId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long resourcePrimKey = resultSet.getLong("resourcePrimKey");
+
+					AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+						JournalArticle.class.getName(), resourcePrimKey);
+
+					if (assetEntry == null) {
+						continue;
+					}
+
+					String type = StringUtil.toLowerCase(
+						resultSet.getString("type_"));
+
+					long assetCategoryId =
+						journalArticleTypesToAssetCategoryIds.get(type);
+
+					_assetEntryAssetCategoryRelLocalService.
+						addAssetEntryAssetCategoryRel(
+							assetEntry.getEntryId(), assetCategoryId);
+				}
 			}
 		}
 	}

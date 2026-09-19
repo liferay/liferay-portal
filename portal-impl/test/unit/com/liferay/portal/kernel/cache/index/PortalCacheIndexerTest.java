@@ -273,24 +273,6 @@ public class PortalCacheIndexerTest {
 	}
 
 	@Test
-	public void testRemoveIndexedCacheKeysWithIndex() {
-		_portalCache.put(_INDEX_1_KEY_1, _VALUE);
-
-		_portalCacheIndexer.removeKeys(_indexEncoder.encode(_INDEX_1_KEY_1));
-
-		assertIndexCacheSynchronization();
-	}
-
-	@Test
-	public void testRemoveIndexedCacheKeysWithoutIndex() {
-		_portalCache.put(_INDEX_1_KEY_1, _VALUE);
-
-		_portalCacheIndexer.removeKeys(_indexEncoder.encode(_INDEX_2_KEY_3));
-
-		assertIndexCacheSynchronization();
-	}
-
-	@Test
 	public void testRemoveIndexedCacheKeyWithKey() {
 		_portalCache.put(_INDEX_1_KEY_1, _VALUE);
 		_portalCache.put(_INDEX_1_KEY_2, _VALUE);
@@ -305,6 +287,24 @@ public class PortalCacheIndexerTest {
 		_portalCache.put(_INDEX_1_KEY_1, _VALUE);
 
 		_portalCache.remove(_INDEX_1_KEY_2);
+
+		assertIndexCacheSynchronization();
+	}
+
+	@Test
+	public void testRemoveIndexedCacheKeysWithIndex() {
+		_portalCache.put(_INDEX_1_KEY_1, _VALUE);
+
+		_portalCacheIndexer.removeKeys(_indexEncoder.encode(_INDEX_1_KEY_1));
+
+		assertIndexCacheSynchronization();
+	}
+
+	@Test
+	public void testRemoveIndexedCacheKeysWithoutIndex() {
+		_portalCache.put(_INDEX_1_KEY_1, _VALUE);
+
+		_portalCacheIndexer.removeKeys(_indexEncoder.encode(_INDEX_2_KEY_3));
 
 		assertIndexCacheSynchronization();
 	}

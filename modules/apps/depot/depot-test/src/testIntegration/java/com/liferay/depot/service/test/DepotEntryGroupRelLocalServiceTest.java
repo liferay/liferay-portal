@@ -120,7 +120,7 @@ public class DepotEntryGroupRelLocalServiceTest {
 	}
 
 	@Test
-	public void testAddDepotEntryGroupRelWithLayoutSetPrototypeWithoutPropagation()
+	public void testAddDepotEntryGroupRelWithLayoutSetPrototypeWithPropagation()
 		throws Exception {
 
 		DepotEntry depotEntry = _addDepotEntry(
@@ -153,7 +153,7 @@ public class DepotEntryGroupRelLocalServiceTest {
 	}
 
 	@Test
-	public void testAddDepotEntryGroupRelWithLayoutSetPrototypeWithPropagation()
+	public void testAddDepotEntryGroupRelWithLayoutSetPrototypeWithoutPropagation()
 		throws Exception {
 
 		DepotEntry depotEntry = _addDepotEntry(
@@ -206,6 +206,57 @@ public class DepotEntryGroupRelLocalServiceTest {
 	}
 
 	@Test
+	public void testDeleteDepotEntryGroupRelWithLayoutSetPrototypeWithPropagation()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		LayoutSetPrototype layoutSetPrototype =
+			_layoutSetPrototypeLocalService.addLayoutSetPrototype(
+				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()
+				).build(),
+				null, true, true, ServiceContextTestUtil.getServiceContext());
+
+		Group group = _setUpLayoutSetPrototypeGroup(layoutSetPrototype);
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), group.getGroupId());
+
+		Assert.assertEquals(
+			1,
+			_depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
+				depotEntry));
+
+		int systemEventsCount = _systemEventLocalService.getSystemEventsCount();
+
+		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
+			depotEntryGroupRel.getDepotEntryGroupRelId());
+
+		Assert.assertNull(
+			_depotEntryGroupRelLocalService.fetchDepotEntryGroupRel(
+				depotEntryGroupRel.getDepotEntryGroupRelId()));
+		Assert.assertNull(
+			_depotEntryGroupRelLocalService.
+				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
+					depotEntry.getDepotEntryId(), _group1.getGroupId()));
+		Assert.assertNull(
+			_depotEntryGroupRelLocalService.
+				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
+					depotEntry.getDepotEntryId(), _group2.getGroupId()));
+		Assert.assertEquals(
+			0,
+			_depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
+				depotEntry));
+		Assert.assertEquals(
+			systemEventsCount + 1,
+			_systemEventLocalService.getSystemEventsCount());
+	}
+
+	@Test
 	public void testDeleteDepotEntryGroupRelWithLayoutSetPrototypeWithoutPropagation()
 		throws Exception {
 
@@ -237,57 +288,6 @@ public class DepotEntryGroupRelLocalServiceTest {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
 			).build(),
 			null, true, true, ServiceContextTestUtil.getServiceContext());
-
-		int systemEventsCount = _systemEventLocalService.getSystemEventsCount();
-
-		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
-			depotEntryGroupRel.getDepotEntryGroupRelId());
-
-		Assert.assertNull(
-			_depotEntryGroupRelLocalService.fetchDepotEntryGroupRel(
-				depotEntryGroupRel.getDepotEntryGroupRelId()));
-		Assert.assertNull(
-			_depotEntryGroupRelLocalService.
-				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
-					depotEntry.getDepotEntryId(), _group1.getGroupId()));
-		Assert.assertNull(
-			_depotEntryGroupRelLocalService.
-				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
-					depotEntry.getDepotEntryId(), _group2.getGroupId()));
-		Assert.assertEquals(
-			0,
-			_depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
-				depotEntry));
-		Assert.assertEquals(
-			systemEventsCount + 1,
-			_systemEventLocalService.getSystemEventsCount());
-	}
-
-	@Test
-	public void testDeleteDepotEntryGroupRelWithLayoutSetPrototypeWithPropagation()
-		throws Exception {
-
-		DepotEntry depotEntry = _addDepotEntry(
-			DepotConstants.TYPE_ASSET_LIBRARY);
-
-		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypeLocalService.addLayoutSetPrototype(
-				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
-				HashMapBuilder.put(
-					LocaleUtil.getDefault(), RandomTestUtil.randomString()
-				).build(),
-				null, true, true, ServiceContextTestUtil.getServiceContext());
-
-		Group group = _setUpLayoutSetPrototypeGroup(layoutSetPrototype);
-
-		DepotEntryGroupRel depotEntryGroupRel =
-			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-				depotEntry.getDepotEntryId(), group.getGroupId());
-
-		Assert.assertEquals(
-			1,
-			_depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
-				depotEntry));
 
 		int systemEventsCount = _systemEventLocalService.getSystemEventsCount();
 

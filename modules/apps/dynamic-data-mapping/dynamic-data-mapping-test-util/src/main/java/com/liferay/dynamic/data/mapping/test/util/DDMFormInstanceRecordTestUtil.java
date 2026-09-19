@@ -31,20 +31,6 @@ public class DDMFormInstanceRecordTestUtil {
 			ddmFormValues, ServiceContextTestUtil.getServiceContext());
 	}
 
-	public static DDMFormInstanceRecord addDDMFormInstanceRecordWithoutValues(
-			Group group, long userId)
-		throws Exception {
-
-		DDMFormInstance ddmFormInstance =
-			DDMFormInstanceTestUtil.addDDMFormInstance(group, userId);
-
-		return addDDMFormInstanceRecord(
-			ddmFormInstance,
-			DDMFormValuesTestUtil.createDDMFormValues(
-				ddmFormInstance.getDDMForm()),
-			group, userId);
-	}
-
 	public static DDMFormInstanceRecord
 			addDDMFormInstanceRecordWithRandomValues(
 				DDMFormInstance ddmFormInstance, Group group, long userId)
@@ -84,6 +70,20 @@ public class DDMFormInstanceRecordTestUtil {
 			WorkflowConstants.STATUS_APPROVED,
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId()));
+	}
+
+	public static DDMFormInstanceRecord addDDMFormInstanceRecordWithoutValues(
+			Group group, long userId)
+		throws Exception {
+
+		DDMFormInstance ddmFormInstance =
+			DDMFormInstanceTestUtil.addDDMFormInstance(group, userId);
+
+		return addDDMFormInstanceRecord(
+			ddmFormInstance,
+			DDMFormValuesTestUtil.createDDMFormValues(
+				ddmFormInstance.getDDMForm()),
+			group, userId);
 	}
 
 }

@@ -132,25 +132,6 @@ public class ReleaseGraphManagerTest {
 	}
 
 	@Test
-	public void testgetSinkNodesWithMultipleEndNodes() {
-		UpgradeInfo upgradeInfo1 = _createUpgradeInfo("0.0.0", "0.1.0");
-		UpgradeInfo upgradeInfo2 = _createUpgradeInfo("0.1.0", "0.2.0");
-		UpgradeInfo upgradeInfo3 = _createUpgradeInfo("0.2.0", "1.0.0");
-		UpgradeInfo upgradeInfo4 = _createUpgradeInfo("1.0.0", "2.0.0");
-		UpgradeInfo upgradeInfo5 = _createUpgradeInfo("1.0.0", "2.2.0");
-
-		ReleaseGraphManager releaseGraphManager = new ReleaseGraphManager(
-			Arrays.asList(
-				upgradeInfo1, upgradeInfo2, upgradeInfo3, upgradeInfo4,
-				upgradeInfo5));
-
-		List<String> sinkNodes = releaseGraphManager.getEndVertices();
-
-		Assert.assertTrue(sinkNodes.toString(), sinkNodes.contains("2.0.0"));
-		Assert.assertTrue(sinkNodes.toString(), sinkNodes.contains("2.2.0"));
-	}
-
-	@Test
 	public void testGetUpgradePath() {
 		UpgradeInfo upgradeInfo1 = _createUpgradeInfo("0.0.0", "0.1.0");
 		UpgradeInfo upgradeInfo2 = _createUpgradeInfo("0.1.0", "0.2.0");
@@ -245,6 +226,25 @@ public class ReleaseGraphManagerTest {
 			"0.0.0", "2.0.1");
 
 		Assert.assertEquals(upgradeInfos.toString(), 0, upgradeInfos.size());
+	}
+
+	@Test
+	public void testgetSinkNodesWithMultipleEndNodes() {
+		UpgradeInfo upgradeInfo1 = _createUpgradeInfo("0.0.0", "0.1.0");
+		UpgradeInfo upgradeInfo2 = _createUpgradeInfo("0.1.0", "0.2.0");
+		UpgradeInfo upgradeInfo3 = _createUpgradeInfo("0.2.0", "1.0.0");
+		UpgradeInfo upgradeInfo4 = _createUpgradeInfo("1.0.0", "2.0.0");
+		UpgradeInfo upgradeInfo5 = _createUpgradeInfo("1.0.0", "2.2.0");
+
+		ReleaseGraphManager releaseGraphManager = new ReleaseGraphManager(
+			Arrays.asList(
+				upgradeInfo1, upgradeInfo2, upgradeInfo3, upgradeInfo4,
+				upgradeInfo5));
+
+		List<String> sinkNodes = releaseGraphManager.getEndVertices();
+
+		Assert.assertTrue(sinkNodes.toString(), sinkNodes.contains("2.0.0"));
+		Assert.assertTrue(sinkNodes.toString(), sinkNodes.contains("2.2.0"));
 	}
 
 	private UpgradeInfo _createUpgradeInfo(String from, String to) {

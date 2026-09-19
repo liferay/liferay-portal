@@ -85,6 +85,40 @@ public class DateTimeObjectFieldBusinessType
 	}
 
 	@Override
+	public Serializable getDTOValue(
+			DTOConverterContext dtoConverterContext,
+			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+			ObjectField objectField, Serializable serializable)
+		throws Exception {
+
+		if (Validator.isNull(serializable)) {
+			return null;
+		}
+
+		if (serializable instanceof String dateString) {
+			Date date = DateUtil.parseDate(
+				ObjectFieldUtil.getDateTimePattern(dateString), dateString,
+				LocaleUtil.getSiteDefault());
+
+			serializable = new Timestamp(date.getTime());
+		}
+
+		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+
+		if (StringUtil.equals(
+				ObjectFieldSettingUtil.getValue(
+					ObjectFieldSettingConstants.NAME_TIME_STORAGE, objectField),
+				ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC)) {
+
+			pattern += "'Z'";
+		}
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+
+		return simpleDateFormat.format((Timestamp)serializable);
+	}
+
+	@Override
 	public String getDescription(Locale locale) {
 		return _language.get(locale, "add-date-and-time-values");
 	}
@@ -133,40 +167,6 @@ public class DateTimeObjectFieldBusinessType
 				ObjectFieldSettingUtil.getTimeZoneId(
 					objectField.getObjectFieldSettings(), user),
 				value));
-	}
-
-	@Override
-	public Serializable getDTOValue(
-			DTOConverterContext dtoConverterContext,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-			ObjectField objectField, Serializable serializable)
-		throws Exception {
-
-		if (Validator.isNull(serializable)) {
-			return null;
-		}
-
-		if (serializable instanceof String dateString) {
-			Date date = DateUtil.parseDate(
-				ObjectFieldUtil.getDateTimePattern(dateString), dateString,
-				LocaleUtil.getSiteDefault());
-
-			serializable = new Timestamp(date.getTime());
-		}
-
-		String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS";
-
-		if (StringUtil.equals(
-				ObjectFieldSettingUtil.getValue(
-					ObjectFieldSettingConstants.NAME_TIME_STORAGE, objectField),
-				ObjectFieldSettingConstants.VALUE_CONVERT_TO_UTC)) {
-
-			pattern += "'Z'";
-		}
-
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-
-		return simpleDateFormat.format((Timestamp)serializable);
 	}
 
 	@Override

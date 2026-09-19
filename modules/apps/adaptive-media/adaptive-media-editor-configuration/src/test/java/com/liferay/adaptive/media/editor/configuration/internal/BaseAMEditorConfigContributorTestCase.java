@@ -54,6 +54,69 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 	}
 
 	@Test
+	public void testAMReturnTypeIsAddedToAllItemSelectorCriteria()
+		throws Exception {
+
+		ItemSelectorCriterion[] itemSelectorCriteria = {
+			_initializeItemSelectorCriterion(getItemSelectorCriterion()),
+			_initializeItemSelectorCriterion(new FileItemSelectorCriterion()),
+			_initializeItemSelectorCriterion(new ImageItemSelectorCriterion()),
+			_initializeItemSelectorCriterion(new UploadItemSelectorCriterion())
+		};
+
+		JSONObject jsonObject = JSONUtil.put(
+			"filebrowserImageBrowseLinkUrl", RandomTestUtil.randomString());
+
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(Mockito.anyString())
+		).thenReturn(
+			Arrays.asList(itemSelectorCriteria)
+		);
+
+		Mockito.when(
+			_itemSelector.getItemSelectedEventName(Mockito.anyString())
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			_itemSelector.getItemSelectorURL(
+				Mockito.any(RequestBackedPortletURLFactory.class),
+				Mockito.anyString(), Mockito.any(ItemSelectorCriterion[].class))
+		).thenReturn(
+			_portletURL
+		);
+
+		Mockito.when(
+			_portletURL.toString()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		BaseAMEditorConfigContributor baseAMEditorConfigContributor =
+			getBaseAMEditorConfigContributor();
+
+		ReflectionTestUtil.setFieldValue(
+			baseAMEditorConfigContributor, "itemSelector", _itemSelector);
+
+		baseAMEditorConfigContributor.populateConfigJSONObject(
+			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
+			_requestBackedPortletURLFactory);
+
+		for (ItemSelectorCriterion itemSelectorCriterion :
+				itemSelectorCriteria) {
+
+			for (ItemSelectorReturnType itemSelectorReturnType :
+					itemSelectorCriterion.getDesiredItemSelectorReturnTypes()) {
+
+				Assert.assertTrue(
+					itemSelectorReturnType instanceof
+						AMImageFileEntryItemSelectorReturnType);
+			}
+		}
+	}
+
+	@Test
 	public void testAdaptiveMediaFileEntryAttributeNameIsAdded()
 		throws Exception {
 
@@ -244,69 +307,6 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 			itemSelectorReturnType ->
 				itemSelectorReturnType instanceof
 					FileEntryItemSelectorReturnType);
-	}
-
-	@Test
-	public void testAMReturnTypeIsAddedToAllItemSelectorCriteria()
-		throws Exception {
-
-		ItemSelectorCriterion[] itemSelectorCriteria = {
-			_initializeItemSelectorCriterion(getItemSelectorCriterion()),
-			_initializeItemSelectorCriterion(new FileItemSelectorCriterion()),
-			_initializeItemSelectorCriterion(new ImageItemSelectorCriterion()),
-			_initializeItemSelectorCriterion(new UploadItemSelectorCriterion())
-		};
-
-		JSONObject jsonObject = JSONUtil.put(
-			"filebrowserImageBrowseLinkUrl", RandomTestUtil.randomString());
-
-		Mockito.when(
-			_itemSelector.getItemSelectorCriteria(Mockito.anyString())
-		).thenReturn(
-			Arrays.asList(itemSelectorCriteria)
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectedEventName(Mockito.anyString())
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		Mockito.when(
-			_itemSelector.getItemSelectorURL(
-				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.any(ItemSelectorCriterion[].class))
-		).thenReturn(
-			_portletURL
-		);
-
-		Mockito.when(
-			_portletURL.toString()
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		BaseAMEditorConfigContributor baseAMEditorConfigContributor =
-			getBaseAMEditorConfigContributor();
-
-		ReflectionTestUtil.setFieldValue(
-			baseAMEditorConfigContributor, "itemSelector", _itemSelector);
-
-		baseAMEditorConfigContributor.populateConfigJSONObject(
-			jsonObject, _inputEditorTaglibAttributes, _themeDisplay,
-			_requestBackedPortletURLFactory);
-
-		for (ItemSelectorCriterion itemSelectorCriterion :
-				itemSelectorCriteria) {
-
-			for (ItemSelectorReturnType itemSelectorReturnType :
-					itemSelectorCriterion.getDesiredItemSelectorReturnTypes()) {
-
-				Assert.assertTrue(
-					itemSelectorReturnType instanceof
-						AMImageFileEntryItemSelectorReturnType);
-			}
-		}
 	}
 
 	@Test

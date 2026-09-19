@@ -146,17 +146,6 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	}
 
 	@Override
-	public Page<ExportProcess> getExportProcessesPage(
-			Long creatorId, String portletId, String search, Integer status,
-			Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		return _getExportProcessesPage(
-			creatorId, GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
-			pagination, portletId, search, sorts, status);
-	}
-
-	@Override
 	public ProcessProgress getExportProcessProgress(Long exportProcessId)
 		throws Exception {
 
@@ -176,6 +165,17 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 						backgroundTask.getBackgroundTaskId()));
 			}
 		};
+	}
+
+	@Override
+	public Page<ExportProcess> getExportProcessesPage(
+			Long creatorId, String portletId, String search, Integer status,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		return _getExportProcessesPage(
+			creatorId, GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
+			pagination, portletId, search, sorts, status);
 	}
 
 	@Override

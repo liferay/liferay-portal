@@ -1778,6 +1778,65 @@ public class DDMStructureLocalServiceImpl
 		}
 	}
 
+	private long[] _getDDMDataProviderInstanceIds(JSONArray jsonArray) {
+		long[] ddmDataProviderInstanceIds = new long[jsonArray.length()];
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			ddmDataProviderInstanceIds[i] = jsonArray.getLong(i);
+		}
+
+		return ddmDataProviderInstanceIds;
+	}
+
+	private long[] _getDDMDataProviderInstanceIds(
+		Object ddmDataProviderInstanceId) {
+
+		if (ddmDataProviderInstanceId instanceof JSONArray) {
+			JSONArray jsonArray = (JSONArray)ddmDataProviderInstanceId;
+
+			return _getDDMDataProviderInstanceIds(jsonArray);
+		}
+		else if (ddmDataProviderInstanceId instanceof String) {
+			try {
+				JSONArray jsonArray = _jsonFactory.createJSONArray(
+					(String)ddmDataProviderInstanceId);
+
+				return _getDDMDataProviderInstanceIds(jsonArray);
+			}
+			catch (Exception exception) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(exception);
+				}
+			}
+		}
+
+		long ddmDataProviderInstanceIdLong = GetterUtil.getLong(
+			ddmDataProviderInstanceId);
+
+		if (ddmDataProviderInstanceIdLong > 0) {
+			return new long[] {ddmDataProviderInstanceIdLong};
+		}
+
+		return GetterUtil.DEFAULT_LONG_VALUES;
+	}
+
+	private Set<String> _getDDMFormFieldsNames(DDMForm ddmForm) {
+		Map<String, DDMFormField> ddmFormFieldsMap =
+			ddmForm.getDDMFormFieldsMap(true);
+
+		if (MapUtil.isEmpty(ddmFormFieldsMap)) {
+			return Collections.emptySet();
+		}
+
+		Set<String> ddmFormFieldsNames = new HashSet<>();
+
+		for (String ddmFormFieldName : ddmFormFieldsMap.keySet()) {
+			ddmFormFieldsNames.add(StringUtil.toLowerCase(ddmFormFieldName));
+		}
+
+		return ddmFormFieldsNames;
+	}
+
 	private Set<Long> _getDataProviderInstanceIds(
 		long groupId, DDMForm ddmForm) {
 
@@ -1837,65 +1896,6 @@ public class DDMStructureLocalServiceImpl
 		}
 
 		return dataProviderInstanceIds;
-	}
-
-	private long[] _getDDMDataProviderInstanceIds(JSONArray jsonArray) {
-		long[] ddmDataProviderInstanceIds = new long[jsonArray.length()];
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			ddmDataProviderInstanceIds[i] = jsonArray.getLong(i);
-		}
-
-		return ddmDataProviderInstanceIds;
-	}
-
-	private long[] _getDDMDataProviderInstanceIds(
-		Object ddmDataProviderInstanceId) {
-
-		if (ddmDataProviderInstanceId instanceof JSONArray) {
-			JSONArray jsonArray = (JSONArray)ddmDataProviderInstanceId;
-
-			return _getDDMDataProviderInstanceIds(jsonArray);
-		}
-		else if (ddmDataProviderInstanceId instanceof String) {
-			try {
-				JSONArray jsonArray = _jsonFactory.createJSONArray(
-					(String)ddmDataProviderInstanceId);
-
-				return _getDDMDataProviderInstanceIds(jsonArray);
-			}
-			catch (Exception exception) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(exception);
-				}
-			}
-		}
-
-		long ddmDataProviderInstanceIdLong = GetterUtil.getLong(
-			ddmDataProviderInstanceId);
-
-		if (ddmDataProviderInstanceIdLong > 0) {
-			return new long[] {ddmDataProviderInstanceIdLong};
-		}
-
-		return GetterUtil.DEFAULT_LONG_VALUES;
-	}
-
-	private Set<String> _getDDMFormFieldsNames(DDMForm ddmForm) {
-		Map<String, DDMFormField> ddmFormFieldsMap =
-			ddmForm.getDDMFormFieldsMap(true);
-
-		if (MapUtil.isEmpty(ddmFormFieldsMap)) {
-			return Collections.emptySet();
-		}
-
-		Set<String> ddmFormFieldsNames = new HashSet<>();
-
-		for (String ddmFormFieldName : ddmFormFieldsMap.keySet()) {
-			ddmFormFieldsNames.add(StringUtil.toLowerCase(ddmFormFieldName));
-		}
-
-		return ddmFormFieldsNames;
 	}
 
 	private String _getNextVersion(String version, boolean majorVersion) {

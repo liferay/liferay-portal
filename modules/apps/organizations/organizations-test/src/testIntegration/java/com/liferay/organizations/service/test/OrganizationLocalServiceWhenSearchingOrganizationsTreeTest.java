@@ -112,23 +112,6 @@ public class OrganizationLocalServiceWhenSearchingOrganizationsTreeTest {
 	}
 
 	@Test
-	public void testShouldIncludeSuborganizationsWithUpdateSuborganizationsPermission()
-		throws Exception {
-
-		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		RoleTestUtil.addResourcePermission(
-			_role, Organization.class.getName(),
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(_user.getCompanyId()),
-			ActionKeys.UPDATE_SUBORGANIZATIONS);
-
-		userLocalService.addRoleUser(_role.getRoleId(), _user);
-
-		_assertSearch(true);
-	}
-
-	@Test
 	public void testShouldIncludeSuborganizationsWitManageSuborganizationPermission()
 		throws Exception {
 
@@ -139,6 +122,23 @@ public class OrganizationLocalServiceWhenSearchingOrganizationsTreeTest {
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(_user.getCompanyId()),
 			ActionKeys.MANAGE_SUBORGANIZATIONS);
+
+		userLocalService.addRoleUser(_role.getRoleId(), _user);
+
+		_assertSearch(true);
+	}
+
+	@Test
+	public void testShouldIncludeSuborganizationsWithUpdateSuborganizationsPermission()
+		throws Exception {
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			_role, Organization.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_user.getCompanyId()),
+			ActionKeys.UPDATE_SUBORGANIZATIONS);
 
 		userLocalService.addRoleUser(_role.getRoleId(), _user);
 

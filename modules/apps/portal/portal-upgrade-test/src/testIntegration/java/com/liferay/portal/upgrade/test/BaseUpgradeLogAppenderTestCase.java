@@ -199,159 +199,6 @@ public abstract class BaseUpgradeLogAppenderTestCase {
 	}
 
 	@Test
-	public void testDatabaseTablesAreSorted() throws Exception {
-		_appender.start();
-
-		_appender.stop();
-
-		if (_reportContent == null) {
-			_reportContent = _getReportContent();
-		}
-
-		_assertTablesAreSortedByInitialRows(
-			_logContextTablesInitialFinalRowsPattern.matcher(
-				_getLogContextValue(
-					"upgrade.report.tables.initial.final.rows")));
-		_assertTablesAreSortedByInitialRows(_pattern.matcher(_reportContent));
-	}
-
-	@Test
-	public void testDatabaseTablesCounts() throws Exception {
-		_db.runSQL("insert into UpgradeReportTable2 (id_) values (1)");
-
-		_appender.start();
-
-		_db.runSQL("insert into UpgradeReportTable1 (id_) values (1)");
-
-		_db.runSQL("delete from UpgradeReportTable2 where id_ = 1");
-
-		_appender.stop();
-
-		if (_reportContent == null) {
-			_reportContent = _getReportContent();
-		}
-
-		Matcher matcher = _pattern.matcher(_reportContent);
-
-		boolean table1Exists = false;
-		boolean table2Exists = false;
-
-		while (matcher.find()) {
-			String tableName = matcher.group(1);
-
-			int initialTableCount = GetterUtil.getInteger(matcher.group(2), -1);
-			int finalTableCount = GetterUtil.getInteger(matcher.group(3), -1);
-
-			if (StringUtil.equalsIgnoreCase(tableName, "UpgradeReportTable1")) {
-				table1Exists = true;
-
-				Assert.assertEquals(0, initialTableCount);
-				Assert.assertEquals(1, finalTableCount);
-			}
-			else if (StringUtil.equalsIgnoreCase(
-						tableName, "UpgradeReportTable2")) {
-
-				table2Exists = true;
-
-				Assert.assertEquals(1, initialTableCount);
-				Assert.assertEquals(0, finalTableCount);
-			}
-			else {
-				Assert.assertTrue(
-					(initialTableCount > 0) || (finalTableCount > 0));
-			}
-		}
-
-		Assert.assertTrue(table1Exists && table2Exists);
-
-		_assertLogContext(
-			"upgrade.report.tables.initial.final.rows",
-			"UpgradeReportTable1:0:1");
-		_assertLogContext(
-			"upgrade.report.tables.initial.final.rows",
-			"UpgradeReportTable2:1:0");
-	}
-
-	@Test
-	public void testDatabaseTablesEmpty() throws Exception {
-		ReflectionTestUtil.setFieldValue(
-			StartupHelperUtil.class, "_newRelease", false);
-
-		_appender.start();
-
-		_appender.stop();
-
-		String content = _getReportContent();
-
-		Assert.assertFalse(content.contains("Table Name"));
-	}
-
-	@Test
-	public void testDataCleanupMessages() throws Exception {
-		Thread currentThread = Thread.currentThread();
-
-		long randomCompanyId = RandomTestUtil.nextLong();
-
-		try (AutoCloseable autoCloseable =
-				ReflectionTestUtil.setFieldValueWithAutoCloseable(
-					PortalClassLoaderUtil.class, "_classLoader",
-					currentThread.getContextClassLoader());
-			Connection connection = DataAccess.getConnection()) {
-
-			_db.runSQL(
-				StringBundler.concat(
-					"insert into Portlet (mvccVersion, id_, companyId, ",
-					"portletId, active_) values (0, ",
-					RandomTestUtil.nextLong(), ", ", randomCompanyId, ", '",
-					RandomTestUtil.randomString(), "', [$FALSE$])"));
-
-			_appender.start();
-
-			UpgradeProcess upgradeProcess =
-				new TestDataCleanupPreupgradeProcess();
-
-			upgradeProcess.upgrade();
-
-			upgradeProcess =
-				new TestDeleteDuplicateUniqueFinderRowsUpgradeProcess(
-					RandomTestUtil.randomString(),
-					new String[] {RandomTestUtil.randomString()},
-					RandomTestUtil.randomString());
-
-			upgradeProcess.upgrade();
-
-			OrphanReferencesDataCleanupUtil.cleanUpTable(
-				connection, null, null, "companyId", "Portlet",
-				new String[] {"companyId"}, "Company");
-
-			_appender.stop();
-
-			DBInspector dbInspector = new DBInspector(connection);
-
-			_assertLogContextDiagnostics(
-				"upgrade.report.data.clean.up", _CLEANUP_INFO_MESSAGE);
-			_assertLogContextDiagnostics(
-				"upgrade.report.data.clean.up",
-				_DELETE_DUPLICATES_FINDER_WARNING_MESSAGE);
-			_assertLogContextDiagnostics(
-				"upgrade.report.data.clean.up",
-				StringBundler.concat(
-					"Table ", dbInspector.normalizeName("Portlet"),
-					", 1 row deleted because ",
-					dbInspector.normalizeName("companyId"), StringPool.SPACE,
-					randomCompanyId, " was not found in column ",
-					dbInspector.normalizeName("companyId"), " from table ",
-					dbInspector.normalizeName("Company")));
-			_assertLogContextDiagnostics(
-				"upgrade.report.warnings", _CLEANUP_WARNING_MESSAGE);
-		}
-		finally {
-			_db.runSQL(
-				"delete from Portlet where companyId = " + randomCompanyId);
-		}
-	}
-
-	@Test
 	public void testDLAndLiferayHome() throws Exception {
 		_appender.start();
 
@@ -463,6 +310,159 @@ public abstract class BaseUpgradeLogAppenderTestCase {
 
 		_assertLogContext("upgrade.report.document.library.storage.size", size);
 		_assertReport("Document library storage size: " + size);
+	}
+
+	@Test
+	public void testDataCleanupMessages() throws Exception {
+		Thread currentThread = Thread.currentThread();
+
+		long randomCompanyId = RandomTestUtil.nextLong();
+
+		try (AutoCloseable autoCloseable =
+				ReflectionTestUtil.setFieldValueWithAutoCloseable(
+					PortalClassLoaderUtil.class, "_classLoader",
+					currentThread.getContextClassLoader());
+			Connection connection = DataAccess.getConnection()) {
+
+			_db.runSQL(
+				StringBundler.concat(
+					"insert into Portlet (mvccVersion, id_, companyId, ",
+					"portletId, active_) values (0, ",
+					RandomTestUtil.nextLong(), ", ", randomCompanyId, ", '",
+					RandomTestUtil.randomString(), "', [$FALSE$])"));
+
+			_appender.start();
+
+			UpgradeProcess upgradeProcess =
+				new TestDataCleanupPreupgradeProcess();
+
+			upgradeProcess.upgrade();
+
+			upgradeProcess =
+				new TestDeleteDuplicateUniqueFinderRowsUpgradeProcess(
+					RandomTestUtil.randomString(),
+					new String[] {RandomTestUtil.randomString()},
+					RandomTestUtil.randomString());
+
+			upgradeProcess.upgrade();
+
+			OrphanReferencesDataCleanupUtil.cleanUpTable(
+				connection, null, null, "companyId", "Portlet",
+				new String[] {"companyId"}, "Company");
+
+			_appender.stop();
+
+			DBInspector dbInspector = new DBInspector(connection);
+
+			_assertLogContextDiagnostics(
+				"upgrade.report.data.clean.up", _CLEANUP_INFO_MESSAGE);
+			_assertLogContextDiagnostics(
+				"upgrade.report.data.clean.up",
+				_DELETE_DUPLICATES_FINDER_WARNING_MESSAGE);
+			_assertLogContextDiagnostics(
+				"upgrade.report.data.clean.up",
+				StringBundler.concat(
+					"Table ", dbInspector.normalizeName("Portlet"),
+					", 1 row deleted because ",
+					dbInspector.normalizeName("companyId"), StringPool.SPACE,
+					randomCompanyId, " was not found in column ",
+					dbInspector.normalizeName("companyId"), " from table ",
+					dbInspector.normalizeName("Company")));
+			_assertLogContextDiagnostics(
+				"upgrade.report.warnings", _CLEANUP_WARNING_MESSAGE);
+		}
+		finally {
+			_db.runSQL(
+				"delete from Portlet where companyId = " + randomCompanyId);
+		}
+	}
+
+	@Test
+	public void testDatabaseTablesAreSorted() throws Exception {
+		_appender.start();
+
+		_appender.stop();
+
+		if (_reportContent == null) {
+			_reportContent = _getReportContent();
+		}
+
+		_assertTablesAreSortedByInitialRows(
+			_logContextTablesInitialFinalRowsPattern.matcher(
+				_getLogContextValue(
+					"upgrade.report.tables.initial.final.rows")));
+		_assertTablesAreSortedByInitialRows(_pattern.matcher(_reportContent));
+	}
+
+	@Test
+	public void testDatabaseTablesCounts() throws Exception {
+		_db.runSQL("insert into UpgradeReportTable2 (id_) values (1)");
+
+		_appender.start();
+
+		_db.runSQL("insert into UpgradeReportTable1 (id_) values (1)");
+
+		_db.runSQL("delete from UpgradeReportTable2 where id_ = 1");
+
+		_appender.stop();
+
+		if (_reportContent == null) {
+			_reportContent = _getReportContent();
+		}
+
+		Matcher matcher = _pattern.matcher(_reportContent);
+
+		boolean table1Exists = false;
+		boolean table2Exists = false;
+
+		while (matcher.find()) {
+			String tableName = matcher.group(1);
+
+			int initialTableCount = GetterUtil.getInteger(matcher.group(2), -1);
+			int finalTableCount = GetterUtil.getInteger(matcher.group(3), -1);
+
+			if (StringUtil.equalsIgnoreCase(tableName, "UpgradeReportTable1")) {
+				table1Exists = true;
+
+				Assert.assertEquals(0, initialTableCount);
+				Assert.assertEquals(1, finalTableCount);
+			}
+			else if (StringUtil.equalsIgnoreCase(
+						tableName, "UpgradeReportTable2")) {
+
+				table2Exists = true;
+
+				Assert.assertEquals(1, initialTableCount);
+				Assert.assertEquals(0, finalTableCount);
+			}
+			else {
+				Assert.assertTrue(
+					(initialTableCount > 0) || (finalTableCount > 0));
+			}
+		}
+
+		Assert.assertTrue(table1Exists && table2Exists);
+
+		_assertLogContext(
+			"upgrade.report.tables.initial.final.rows",
+			"UpgradeReportTable1:0:1");
+		_assertLogContext(
+			"upgrade.report.tables.initial.final.rows",
+			"UpgradeReportTable2:1:0");
+	}
+
+	@Test
+	public void testDatabaseTablesEmpty() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			StartupHelperUtil.class, "_newRelease", false);
+
+		_appender.start();
+
+		_appender.stop();
+
+		String content = _getReportContent();
+
+		Assert.assertFalse(content.contains("Table Name"));
 	}
 
 	@Test
@@ -900,46 +900,6 @@ public abstract class BaseUpgradeLogAppenderTestCase {
 	}
 
 	@Test
-	public void testSchemaVersion() throws Exception {
-		_appender.start();
-
-		_restoreRelease();
-
-		_appender.stop();
-
-		_assertLogContext(
-			"upgrade.report.portal.expected.build.number",
-			String.valueOf(ReleaseInfo.getBuildNumber()));
-
-		Version latestSchemaVersion =
-			PortalUpgradeProcess.getLatestSchemaVersion();
-
-		_assertLogContext(
-			"upgrade.report.portal.expected.schema.version",
-			latestSchemaVersion.toString());
-
-		_assertLogContext(
-			"upgrade.report.portal.final.build.number",
-			String.valueOf(ReleaseInfo.getBuildNumber()));
-		_assertLogContext(
-			"upgrade.report.portal.final.schema.version",
-			latestSchemaVersion.toString());
-		_assertLogContext("upgrade.report.portal.initial.build.number", "7100");
-		_assertLogContext(
-			"upgrade.report.portal.initial.schema.version", "1.0.0");
-		_assertReport(
-			StringBundler.concat(
-				"Portal initial build number: 7100\n",
-				"Portal initial schema version: 1.0.0\n",
-				"Portal final build number: ", ReleaseInfo.getBuildNumber(),
-				"\nPortal final schema version: ", latestSchemaVersion,
-				"\nPortal expected build number: ",
-				ReleaseInfo.getBuildNumber(),
-				"\nPortal expected schema version: ", latestSchemaVersion,
-				StringPool.NEW_LINE));
-	}
-
-	@Test
 	public void testSQLStatementsWithClassNameAndDuration() throws Exception {
 		String sql1 = "insert into UpgradeReportTable1 (id_) values (2)";
 
@@ -1030,6 +990,46 @@ public abstract class BaseUpgradeLogAppenderTestCase {
 						upgradeProcessClassName, sql, duration));
 			}
 		}
+	}
+
+	@Test
+	public void testSchemaVersion() throws Exception {
+		_appender.start();
+
+		_restoreRelease();
+
+		_appender.stop();
+
+		_assertLogContext(
+			"upgrade.report.portal.expected.build.number",
+			String.valueOf(ReleaseInfo.getBuildNumber()));
+
+		Version latestSchemaVersion =
+			PortalUpgradeProcess.getLatestSchemaVersion();
+
+		_assertLogContext(
+			"upgrade.report.portal.expected.schema.version",
+			latestSchemaVersion.toString());
+
+		_assertLogContext(
+			"upgrade.report.portal.final.build.number",
+			String.valueOf(ReleaseInfo.getBuildNumber()));
+		_assertLogContext(
+			"upgrade.report.portal.final.schema.version",
+			latestSchemaVersion.toString());
+		_assertLogContext("upgrade.report.portal.initial.build.number", "7100");
+		_assertLogContext(
+			"upgrade.report.portal.initial.schema.version", "1.0.0");
+		_assertReport(
+			StringBundler.concat(
+				"Portal initial build number: 7100\n",
+				"Portal initial schema version: 1.0.0\n",
+				"Portal final build number: ", ReleaseInfo.getBuildNumber(),
+				"\nPortal final schema version: ", latestSchemaVersion,
+				"\nPortal expected build number: ",
+				ReleaseInfo.getBuildNumber(),
+				"\nPortal expected schema version: ", latestSchemaVersion,
+				StringPool.NEW_LINE));
 	}
 
 	@Test

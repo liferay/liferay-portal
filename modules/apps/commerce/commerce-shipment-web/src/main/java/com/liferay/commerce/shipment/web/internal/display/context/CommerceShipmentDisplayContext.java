@@ -104,16 +104,6 @@ public class CommerceShipmentDisplayContext
 		_regionService = regionService;
 	}
 
-	public List<AccountEntry> getCommerceAccountsWithShippableOrders()
-		throws PortalException {
-
-		return TransformUtil.transformToList(
-			ArrayUtil.unique(
-				TransformUtil.transformToLongArray(
-					getCommerceOrders(), CommerceOrder::getCommerceAccountId)),
-			AccountEntryServiceUtil::getAccountEntry);
-	}
-
 	public String getCommerceAccountThumbnailURL(
 		AccountEntry accountEntry, String pathImage) {
 
@@ -130,6 +120,16 @@ public class CommerceShipmentDisplayContext
 		}
 
 		return sb.toString();
+	}
+
+	public List<AccountEntry> getCommerceAccountsWithShippableOrders()
+		throws PortalException {
+
+		return TransformUtil.transformToList(
+			ArrayUtil.unique(
+				TransformUtil.transformToLongArray(
+					getCommerceOrders(), CommerceOrder::getCommerceAccountId)),
+			AccountEntryServiceUtil::getAccountEntry);
 	}
 
 	public String getCommerceChannelName() throws PortalException {

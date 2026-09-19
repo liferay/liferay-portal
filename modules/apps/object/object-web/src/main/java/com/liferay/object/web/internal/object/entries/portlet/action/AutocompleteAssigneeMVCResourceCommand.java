@@ -153,8 +153,8 @@ public class AutocompleteAssigneeMVCResourceCommand
 	}
 
 	private final RoleLocalService _roleLocalService;
-	private final Searcher _searcher;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
+	private final Searcher _searcher;
 	private final UserLocalService _userLocalService;
 
 }

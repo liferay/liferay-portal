@@ -461,20 +461,6 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 			SetUtil.fromArray(document.getValues("outboundLinks")));
 	}
 
-	private void _testContributeWithoutReferences() throws Exception {
-		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
-
-		ObjectEntry objectEntry = _addObjectEntry(
-			objectDefinition,
-			HashMapBuilder.<String, Serializable>put(
-				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>No references at all</p>"
-			).build());
-
-		Document document = _getDocument(objectDefinition, objectEntry);
-
-		Assert.assertNull(document.getField("outboundLinks"));
-	}
-
 	private void _testContributeWithRelationshipReference() throws Exception {
 		ObjectDefinition parentObjectDefinition = _addCMSObjectDefinition();
 		ObjectDefinition childObjectDefinition = _addCMSObjectDefinition();
@@ -538,6 +524,20 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 			document.getValues("outboundLinks"));
 	}
 
+	private void _testContributeWithoutReferences() throws Exception {
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				_RICH_TEXT_OBJECT_FIELD_NAME, "<p>No references at all</p>"
+			).build());
+
+		Document document = _getDocument(objectDefinition, objectEntry);
+
+		Assert.assertNull(document.getField("outboundLinks"));
+	}
+
 	private static final String _ATTACHMENT_OBJECT_FIELD_NAME = "upload";
 
 	private static final String _RICH_TEXT_OBJECT_FIELD_NAME = "content";
@@ -553,12 +553,11 @@ public class CMSContentOutboundLinksModelDocumentContributorTest {
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
-	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
-
 	@Inject
 	private ObjectDefinitionSettingLocalService
 		_objectDefinitionSettingLocalService;
 
+	private final List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 	private ObjectEntryFolder _objectEntryFolder;
 
 	@Inject

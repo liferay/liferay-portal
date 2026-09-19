@@ -135,10 +135,10 @@ public class UpdateOrganizationOrganizationSiteMVCActionCommand
 	private EmailAddressService _emailAddressService;
 
 	@Reference
-	private OrganizationService _organizationService;
+	private OrgLaborService _orgLaborService;
 
 	@Reference
-	private OrgLaborService _orgLaborService;
+	private OrganizationService _organizationService;
 
 	@Reference
 	private PhoneService _phoneService;

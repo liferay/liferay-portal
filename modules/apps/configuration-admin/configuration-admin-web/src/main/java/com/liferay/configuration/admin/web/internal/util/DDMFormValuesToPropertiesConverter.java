@@ -130,25 +130,6 @@ public class DDMFormValuesToPropertiesConverter {
 		return ddmFormField.getType();
 	}
 
-	private String _getDataTypeDefaultValue(String dataType) {
-		if (dataType.equals(FieldConstants.BOOLEAN)) {
-			return "false";
-		}
-		else if (dataType.equals(FieldConstants.DOUBLE) ||
-				 dataType.equals(FieldConstants.FLOAT)) {
-
-			return "0.0";
-		}
-		else if (dataType.equals(FieldConstants.INTEGER) ||
-				 dataType.equals(FieldConstants.LONG) ||
-				 dataType.equals(FieldConstants.SHORT)) {
-
-			return "0";
-		}
-
-		return StringPool.BLANK;
-	}
-
 	private String _getDDMFormFieldValueString(
 		DDMFormFieldValue ddmFormFieldValue) {
 
@@ -182,6 +163,25 @@ public class DDMFormValuesToPropertiesConverter {
 		}
 
 		return valueString;
+	}
+
+	private String _getDataTypeDefaultValue(String dataType) {
+		if (dataType.equals(FieldConstants.BOOLEAN)) {
+			return "false";
+		}
+		else if (dataType.equals(FieldConstants.DOUBLE) ||
+				 dataType.equals(FieldConstants.FLOAT)) {
+
+			return "0.0";
+		}
+		else if (dataType.equals(FieldConstants.INTEGER) ||
+				 dataType.equals(FieldConstants.LONG) ||
+				 dataType.equals(FieldConstants.SHORT)) {
+
+			return "0";
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private boolean _isDefaultResourceValue(
@@ -269,10 +269,10 @@ public class DDMFormValuesToPropertiesConverter {
 		DDMFormValuesToPropertiesConverter.class);
 
 	private final ConfigurationModel _configurationModel;
-	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private final Map<String, List<DDMFormFieldValue>> _ddmFormFieldValuesMap;
 	private final Map<String, List<DDMFormFieldValue>>
 		_ddmFormFieldValuesReferencesMap;
+	private final Map<String, DDMFormField> _ddmFormFieldsMap;
 	private final Locale _defaultLocale;
 	private final JSONFactory _jsonFactory;
 	private final Locale _locale;

@@ -59,6 +59,16 @@ public class CommonStylesUtil {
 		return _availableStyleNames;
 	}
 
+	public static String getCSSTemplate(String propertyKey) {
+		if (_cssTemplates != null) {
+			return _cssTemplates.get(propertyKey);
+		}
+
+		_loadCSSTemplates();
+
+		return _cssTemplates.get(propertyKey);
+	}
+
 	public static JSONArray getCommonStylesJSONArray() {
 		try {
 			return getCommonStylesJSONArray(
@@ -146,16 +156,6 @@ public class CommonStylesUtil {
 		}
 
 		return jsonArray;
-	}
-
-	public static String getCSSTemplate(String propertyKey) {
-		if (_cssTemplates != null) {
-			return _cssTemplates.get(propertyKey);
-		}
-
-		_loadCSSTemplates();
-
-		return _cssTemplates.get(propertyKey);
 	}
 
 	public static Object getDefaultStyleValue(String name) {

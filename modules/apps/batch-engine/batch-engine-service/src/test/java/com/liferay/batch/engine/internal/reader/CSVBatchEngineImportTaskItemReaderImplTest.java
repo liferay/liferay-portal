@@ -77,32 +77,6 @@ public class CSVBatchEngineImportTaskItemReaderImplTest
 	}
 
 	@Test
-	public void testColumnMappingWithoutHeaders() throws Exception {
-		try (CSVBatchEngineImportTaskItemReaderImpl
-				csvBatchEngineImportTaskItemReaderImpl =
-					_getCSVBatchEngineImportTaskItemReader(
-						null, false, StringPool.SEMICOLON, null,
-						new Object[][] {
-							{
-								createDateString, "sample description", 1,
-								"sample name"
-							}
-						})) {
-
-			validate(
-				createDateString, "sample description", 1L,
-				HashMapBuilder.put(
-					"0", "createDate"
-				).put(
-					"1", "description"
-				).put(
-					"2", "id"
-				).build(),
-				csvBatchEngineImportTaskItemReaderImpl.read(), null);
-		}
-	}
-
-	@Test
 	public void testColumnMappingWithUndefinedColumn() throws Exception {
 		try (CSVBatchEngineImportTaskItemReaderImpl
 				csvBatchEngineImportTaskItemReaderImpl =
@@ -159,6 +133,32 @@ public class CSVBatchEngineImportTaskItemReaderImplTest
 						put("name1", null);
 					}
 				},
+				csvBatchEngineImportTaskItemReaderImpl.read(), null);
+		}
+	}
+
+	@Test
+	public void testColumnMappingWithoutHeaders() throws Exception {
+		try (CSVBatchEngineImportTaskItemReaderImpl
+				csvBatchEngineImportTaskItemReaderImpl =
+					_getCSVBatchEngineImportTaskItemReader(
+						null, false, StringPool.SEMICOLON, null,
+						new Object[][] {
+							{
+								createDateString, "sample description", 1,
+								"sample name"
+							}
+						})) {
+
+			validate(
+				createDateString, "sample description", 1L,
+				HashMapBuilder.put(
+					"0", "createDate"
+				).put(
+					"1", "description"
+				).put(
+					"2", "id"
+				).build(),
 				csvBatchEngineImportTaskItemReaderImpl.read(), null);
 		}
 	}
@@ -371,6 +371,21 @@ public class CSVBatchEngineImportTaskItemReaderImplTest
 		return rowValues;
 	}
 
+	private CSVBatchEngineImportTaskItemReaderImpl
+			_getCSVBatchEngineImportTaskItemReader(
+				String[] columnNames, boolean containsHeaders, String delimiter,
+				String enclosingCharacter, Object[][] rowValues)
+		throws IOException {
+
+		return new CSVBatchEngineImportTaskItemReaderImpl(
+			StringPool.COMMA,
+			new ByteArrayInputStream(
+				_getContent(
+					columnNames, containsHeaders, delimiter, enclosingCharacter,
+					rowValues)),
+			_getProperties(containsHeaders, delimiter, enclosingCharacter));
+	}
+
 	private byte[] _getContent(
 		String[] columnNames, boolean containsHeaders, String delimiter,
 		String enclosingCharacter, Object[][] rowValues) {
@@ -397,21 +412,6 @@ public class CSVBatchEngineImportTaskItemReaderImplTest
 		String content = sb.toString();
 
 		return content.getBytes();
-	}
-
-	private CSVBatchEngineImportTaskItemReaderImpl
-			_getCSVBatchEngineImportTaskItemReader(
-				String[] columnNames, boolean containsHeaders, String delimiter,
-				String enclosingCharacter, Object[][] rowValues)
-		throws IOException {
-
-		return new CSVBatchEngineImportTaskItemReaderImpl(
-			StringPool.COMMA,
-			new ByteArrayInputStream(
-				_getContent(
-					columnNames, containsHeaders, delimiter, enclosingCharacter,
-					rowValues)),
-			_getProperties(containsHeaders, delimiter, enclosingCharacter));
 	}
 
 	private Map<String, Serializable> _getProperties(

@@ -52,11 +52,11 @@ public interface PortletApp extends Serializable {
 
 	public Set<PortletFilter> getPortletFilters();
 
-	public List<Portlet> getPortlets();
-
 	public PortletURLListener getPortletURLListener(String listenerClass);
 
 	public Set<PortletURLListener> getPortletURLListeners();
+
+	public List<Portlet> getPortlets();
 
 	public PublicRenderParameter getPublicRenderParameter(String identifier);
 

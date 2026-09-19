@@ -142,8 +142,8 @@ public class BookmarksFixture {
 
 	private final List<BookmarksEntry> _bookmarksEntries = new ArrayList<>();
 	private final BookmarksEntryLocalService _bookmarksEntryLocalService;
-	private final List<BookmarksFolder> _bookmarksFolders = new ArrayList<>();
 	private final BookmarksFolderService _bookmarksFolderService;
+	private final List<BookmarksFolder> _bookmarksFolders = new ArrayList<>();
 	private final Group _group;
 	private final User _user;
 

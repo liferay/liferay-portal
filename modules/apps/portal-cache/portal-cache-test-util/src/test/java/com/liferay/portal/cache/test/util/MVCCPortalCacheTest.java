@@ -177,13 +177,13 @@ public class MVCCPortalCacheTest {
 	}
 
 	@Test
-	public void testMVCCCacheWithoutTTL() {
-		doTestMVCCCache(false);
+	public void testMVCCCacheWithTTL() {
+		doTestMVCCCache(true);
 	}
 
 	@Test
-	public void testMVCCCacheWithTTL() {
-		doTestMVCCCache(true);
+	public void testMVCCCacheWithoutTTL() {
+		doTestMVCCCache(false);
 	}
 
 	@Test

@@ -162,6 +162,53 @@ public class CTDisplayRendererRegistryImpl
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends BaseModel<?>> CTDisplayRenderer<T> getCTDisplayRenderer(
+		long modelClassNameId) {
+
+		CTDisplayRenderer<T> ctDisplayRenderer =
+			(CTDisplayRenderer<T>)_getCTDisplayRenderer(modelClassNameId);
+
+		if (ctDisplayRenderer == null) {
+			ctDisplayRenderer = getDefaultRenderer();
+		}
+
+		return ctDisplayRenderer;
+	}
+
+	@Override
+	public CTSQLModeThreadLocal.CTSQLMode getCTSQLMode(
+		long ctCollectionId, CTEntry ctEntry) {
+
+		if (ctCollectionId == CTConstants.CT_COLLECTION_ID_PRODUCTION) {
+			return CTSQLModeThreadLocal.CTSQLMode.DEFAULT;
+		}
+
+		if (ctCollectionId != ctEntry.getCtCollectionId()) {
+			ctEntry = _ctEntryLocalService.fetchCTEntry(
+				ctCollectionId, ctEntry.getModelClassNameId(),
+				ctEntry.getModelClassPK());
+
+			if (ctEntry == null) {
+				return CTSQLModeThreadLocal.CTSQLMode.DEFAULT;
+			}
+		}
+
+		if (ctEntry.getChangeType() == CTConstants.CT_CHANGE_TYPE_DELETION) {
+			return CTSQLModeThreadLocal.CTSQLMode.CT_ONLY;
+		}
+
+		return CTSQLModeThreadLocal.CTSQLMode.DEFAULT;
+	}
+
+	@Override
+	public CTService<?> getCTService(CTModel<?> ctModel) {
+		Class<?> modelClass = ctModel.getModelClass();
+
+		return _ctServiceServiceTrackerMap.getService(modelClass.getName());
+	}
+
+	@Override
 	public <T extends BaseModel<T>> int getChangeType(
 		CTEntry ctEntry, T model) {
 
@@ -210,53 +257,6 @@ public class CTDisplayRendererRegistryImpl
 		}
 
 		return ctCollection.getCtCollectionId();
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends BaseModel<?>> CTDisplayRenderer<T> getCTDisplayRenderer(
-		long modelClassNameId) {
-
-		CTDisplayRenderer<T> ctDisplayRenderer =
-			(CTDisplayRenderer<T>)_getCTDisplayRenderer(modelClassNameId);
-
-		if (ctDisplayRenderer == null) {
-			ctDisplayRenderer = getDefaultRenderer();
-		}
-
-		return ctDisplayRenderer;
-	}
-
-	@Override
-	public CTService<?> getCTService(CTModel<?> ctModel) {
-		Class<?> modelClass = ctModel.getModelClass();
-
-		return _ctServiceServiceTrackerMap.getService(modelClass.getName());
-	}
-
-	@Override
-	public CTSQLModeThreadLocal.CTSQLMode getCTSQLMode(
-		long ctCollectionId, CTEntry ctEntry) {
-
-		if (ctCollectionId == CTConstants.CT_COLLECTION_ID_PRODUCTION) {
-			return CTSQLModeThreadLocal.CTSQLMode.DEFAULT;
-		}
-
-		if (ctCollectionId != ctEntry.getCtCollectionId()) {
-			ctEntry = _ctEntryLocalService.fetchCTEntry(
-				ctCollectionId, ctEntry.getModelClassNameId(),
-				ctEntry.getModelClassPK());
-
-			if (ctEntry == null) {
-				return CTSQLModeThreadLocal.CTSQLMode.DEFAULT;
-			}
-		}
-
-		if (ctEntry.getChangeType() == CTConstants.CT_CHANGE_TYPE_DELETION) {
-			return CTSQLModeThreadLocal.CTSQLMode.CT_ONLY;
-		}
-
-		return CTSQLModeThreadLocal.CTSQLMode.DEFAULT;
 	}
 
 	@Override

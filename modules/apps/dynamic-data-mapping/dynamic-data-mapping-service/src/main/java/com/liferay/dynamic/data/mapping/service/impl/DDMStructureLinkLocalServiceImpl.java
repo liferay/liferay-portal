@@ -123,39 +123,6 @@ public class DDMStructureLinkLocalServiceImpl
 	}
 
 	@Override
-	public List<DDMStructureLink> getStructureLinks(long structureId) {
-		return ddmStructureLinkPersistence.findByStructureId(structureId);
-	}
-
-	@Override
-	public List<DDMStructureLink> getStructureLinks(
-		long structureId, int start, int end) {
-
-		return ddmStructureLinkPersistence.findByStructureId(
-			structureId, start, end);
-	}
-
-	@Override
-	public List<DDMStructureLink> getStructureLinks(
-		long classNameId, long classPK) {
-
-		return ddmStructureLinkPersistence.findByC_C(classNameId, classPK);
-	}
-
-	@Override
-	public List<DDMStructureLink> getStructureLinks(
-		long classNameId, long classPK, int start, int end) {
-
-		return ddmStructureLinkPersistence.findByC_C(
-			classNameId, classPK, start, end);
-	}
-
-	@Override
-	public int getStructureLinksCount(long classNameId, long classPK) {
-		return ddmStructureLinkPersistence.countByC_C(classNameId, classPK);
-	}
-
-	@Override
 	public List<DDMStructure> getStructureLinkStructures(
 			long classNameId, long classPK)
 		throws PortalException {
@@ -212,6 +179,39 @@ public class DDMStructureLinkLocalServiceImpl
 
 		return ddmStructureLinkFinder.countByKeywords(
 			classNameId, classPK, keywords);
+	}
+
+	@Override
+	public List<DDMStructureLink> getStructureLinks(long structureId) {
+		return ddmStructureLinkPersistence.findByStructureId(structureId);
+	}
+
+	@Override
+	public List<DDMStructureLink> getStructureLinks(
+		long structureId, int start, int end) {
+
+		return ddmStructureLinkPersistence.findByStructureId(
+			structureId, start, end);
+	}
+
+	@Override
+	public List<DDMStructureLink> getStructureLinks(
+		long classNameId, long classPK) {
+
+		return ddmStructureLinkPersistence.findByC_C(classNameId, classPK);
+	}
+
+	@Override
+	public List<DDMStructureLink> getStructureLinks(
+		long classNameId, long classPK, int start, int end) {
+
+		return ddmStructureLinkPersistence.findByC_C(
+			classNameId, classPK, start, end);
+	}
+
+	@Override
+	public int getStructureLinksCount(long classNameId, long classPK) {
+		return ddmStructureLinkPersistence.countByC_C(classNameId, classPK);
 	}
 
 	@Override

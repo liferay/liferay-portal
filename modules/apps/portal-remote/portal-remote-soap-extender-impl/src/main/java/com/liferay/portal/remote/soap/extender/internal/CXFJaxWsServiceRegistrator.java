@@ -217,9 +217,9 @@ public class CXFJaxWsServiceRegistrator {
 		}
 	}
 
-	private final Collection<Bus> _buses = new ArrayList<>();
 	private final Map<Bus, Map<Object, Server>> _busServers =
 		new IdentityHashMap<>();
+	private final Collection<Bus> _buses = new ArrayList<>();
 
 	@SuppressWarnings("rawtypes")
 	private final List<Handler> _handlers = new ArrayList<>();

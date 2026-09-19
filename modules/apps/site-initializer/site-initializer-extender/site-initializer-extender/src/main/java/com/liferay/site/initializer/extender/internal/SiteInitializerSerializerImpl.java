@@ -445,6 +445,32 @@ public class SiteInitializerSerializerImpl
 		}
 	}
 
+	private void _serializeLayoutUtilityPageEntries(
+			long groupId, ZipWriter zipWriter)
+		throws Exception {
+
+		File file = _layoutsExporter.exportLayoutUtilityPageEntries(
+			ListUtil.toLongArray(
+				_layoutUtilityPageEntryLocalService.getLayoutUtilityPageEntries(
+					groupId),
+				LayoutUtilityPageEntry.LAYOUT_UTILITY_PAGE_ENTRY_ID_ACCESSOR));
+
+		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
+			for (String name : zipReader.getEntries()) {
+				String fileName = "layout-utility-page-entries/";
+
+				fileName += StringUtil.removeSubstring(
+					name, "layout-utility-page-template/");
+
+				_addZipEntry(
+					fileName, zipReader.getEntryAsInputStream(name), zipWriter);
+			}
+		}
+		finally {
+			file.delete();
+		}
+	}
+
 	private void _serializeLayouts(
 			long groupId, boolean privateLayout, long layoutId,
 			String zipDirName, ZipWriter zipWriter)
@@ -474,32 +500,6 @@ public class SiteInitializerSerializerImpl
 		_serializeLayouts(
 			groupId, true, LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, zipDirName,
 			zipWriter);
-	}
-
-	private void _serializeLayoutUtilityPageEntries(
-			long groupId, ZipWriter zipWriter)
-		throws Exception {
-
-		File file = _layoutsExporter.exportLayoutUtilityPageEntries(
-			ListUtil.toLongArray(
-				_layoutUtilityPageEntryLocalService.getLayoutUtilityPageEntries(
-					groupId),
-				LayoutUtilityPageEntry.LAYOUT_UTILITY_PAGE_ENTRY_ID_ACCESSOR));
-
-		try (ZipReader zipReader = _zipReaderFactory.getZipReader(file)) {
-			for (String name : zipReader.getEntries()) {
-				String fileName = "layout-utility-page-entries/";
-
-				fileName += StringUtil.removeSubstring(
-					name, "layout-utility-page-template/");
-
-				_addZipEntry(
-					fileName, zipReader.getEntryAsInputStream(name), zipWriter);
-			}
-		}
-		finally {
-			file.delete();
-		}
 	}
 
 	private void _serializeObjectDefinition(
@@ -852,11 +852,11 @@ public class SiteInitializerSerializerImpl
 		_layoutPageTemplateStructureLocalService;
 
 	@Reference
-	private LayoutsExporter _layoutsExporter;
-
-	@Reference
 	private LayoutUtilityPageEntryLocalService
 		_layoutUtilityPageEntryLocalService;
+
+	@Reference
+	private LayoutsExporter _layoutsExporter;
 
 	@Reference
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;

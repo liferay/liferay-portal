@@ -187,6 +187,41 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 				_serviceContext);
 	}
 
+	@Test
+	public void testGetOrderWithNestedFields() throws Exception {
+		User omniadminUser = UserTestUtil.addOmniadminUser();
+
+		String password = RandomTestUtil.randomString();
+
+		_userLocalService.updatePassword(
+			omniadminUser.getUserId(), password, password, false, true);
+
+		OrderResource orderResource = OrderResource.builder(
+		).authentication(
+			omniadminUser.getEmailAddress(), password
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "orderItems,orderItems.shippingAddress"
+		).build();
+
+		Order expectedOrder = orderResource.postOrder(
+			_randomOrderWithNestedFields(false));
+
+		Order actualOrder = orderResource.getOrder(expectedOrder.getId());
+
+		assertEquals(expectedOrder, actualOrder);
+
+		OrderItem[] expectedOrderItems = expectedOrder.getOrderItems();
+
+		OrderItem[] actualOrderItems = actualOrder.getOrderItems();
+
+		Assert.assertEquals(
+			Arrays.toString(actualOrderItems), expectedOrderItems.length,
+			actualOrderItems.length);
+		Assert.assertNotNull(actualOrderItems[0].getShippingAddress());
+	}
+
 	@Override
 	@Test
 	public void testGetOrdersPage() throws Exception {
@@ -280,41 +315,6 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 	@Test
 	public void testGetOrdersPageWithPagination() throws Exception {
 		super.testGetOrdersPageWithPagination();
-	}
-
-	@Test
-	public void testGetOrderWithNestedFields() throws Exception {
-		User omniadminUser = UserTestUtil.addOmniadminUser();
-
-		String password = RandomTestUtil.randomString();
-
-		_userLocalService.updatePassword(
-			omniadminUser.getUserId(), password, password, false, true);
-
-		OrderResource orderResource = OrderResource.builder(
-		).authentication(
-			omniadminUser.getEmailAddress(), password
-		).locale(
-			LocaleUtil.getDefault()
-		).parameters(
-			"nestedFields", "orderItems,orderItems.shippingAddress"
-		).build();
-
-		Order expectedOrder = orderResource.postOrder(
-			_randomOrderWithNestedFields(false));
-
-		Order actualOrder = orderResource.getOrder(expectedOrder.getId());
-
-		assertEquals(expectedOrder, actualOrder);
-
-		OrderItem[] expectedOrderItems = expectedOrder.getOrderItems();
-
-		OrderItem[] actualOrderItems = actualOrder.getOrderItems();
-
-		Assert.assertEquals(
-			Arrays.toString(actualOrderItems), expectedOrderItems.length,
-			actualOrderItems.length);
-		Assert.assertNotNull(actualOrderItems[0].getShippingAddress());
 	}
 
 	@Ignore

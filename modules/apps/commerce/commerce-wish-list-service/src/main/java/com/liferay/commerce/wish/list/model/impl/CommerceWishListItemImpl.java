@@ -27,12 +27,6 @@ public class CommerceWishListItemImpl extends CommerceWishListItemBaseImpl {
 	}
 
 	@Override
-	public CommerceWishList getCommerceWishList() throws PortalException {
-		return CommerceWishListLocalServiceUtil.getCommerceWishList(
-			getCommerceWishListId());
-	}
-
-	@Override
 	public CPDefinition getCPDefinition() throws PortalException {
 		CProduct cProduct = getCProduct();
 
@@ -43,6 +37,12 @@ public class CommerceWishListItemImpl extends CommerceWishListItemBaseImpl {
 	@Override
 	public CProduct getCProduct() throws PortalException {
 		return CProductLocalServiceUtil.getCProduct(getCProductId());
+	}
+
+	@Override
+	public CommerceWishList getCommerceWishList() throws PortalException {
+		return CommerceWishListLocalServiceUtil.getCommerceWishList(
+			getCommerceWishListId());
 	}
 
 	@Override

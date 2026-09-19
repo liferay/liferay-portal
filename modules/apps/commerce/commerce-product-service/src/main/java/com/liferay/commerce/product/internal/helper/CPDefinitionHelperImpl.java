@@ -171,25 +171,6 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 	}
 
 	@Override
-	public long searchCount(
-			long groupId, SearchContext searchContext, CPQuery cpQuery)
-		throws PortalException {
-
-		return searchCount(new long[] {groupId}, searchContext, cpQuery);
-	}
-
-	@Override
-	public long searchCount(
-			long[] groupIds, SearchContext searchContext, CPQuery cpQuery)
-		throws PortalException {
-
-		CPDefinitionSearcher cpDefinitionSearcher = _getCPDefinitionSearcher(
-			groupIds, searchContext, cpQuery, 0, 0);
-
-		return cpDefinitionSearcher.searchCount(searchContext);
-	}
-
-	@Override
 	public List<CPDefinition> searchCPDefinitions(
 			long groupId, SearchContext searchContext, CPQuery cpQuery,
 			int start, int end)
@@ -225,6 +206,25 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 		}
 
 		return cpDefinitions;
+	}
+
+	@Override
+	public long searchCount(
+			long groupId, SearchContext searchContext, CPQuery cpQuery)
+		throws PortalException {
+
+		return searchCount(new long[] {groupId}, searchContext, cpQuery);
+	}
+
+	@Override
+	public long searchCount(
+			long[] groupIds, SearchContext searchContext, CPQuery cpQuery)
+		throws PortalException {
+
+		CPDefinitionSearcher cpDefinitionSearcher = _getCPDefinitionSearcher(
+			groupIds, searchContext, cpQuery, 0, 0);
+
+		return cpDefinitionSearcher.searchCount(searchContext);
 	}
 
 	private long[] _checkChannelGroupIds(long[] groupIds) {
@@ -393,15 +393,6 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 			_getOrderByCol(sortField), orderByType);
 	}
 
-	private Sort[] _getSorts(CPQuery cpQuery) {
-		Sort sort1 = _getSort(
-			cpQuery.getOrderByType1(), cpQuery.getOrderByCol1());
-		Sort sort2 = _getSort(
-			cpQuery.getOrderByType2(), cpQuery.getOrderByCol2());
-
-		return new Sort[] {sort1, sort2};
-	}
-
 	private int _getSortType(String fieldType) {
 		int sortType = Sort.STRING_TYPE;
 
@@ -421,8 +412,20 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 		return sortType;
 	}
 
+	private Sort[] _getSorts(CPQuery cpQuery) {
+		Sort sort1 = _getSort(
+			cpQuery.getOrderByType1(), cpQuery.getOrderByCol1());
+		Sort sort2 = _getSort(
+			cpQuery.getOrderByType2(), cpQuery.getOrderByCol2());
+
+		return new Sort[] {sort1, sort2};
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		CPDefinitionHelperImpl.class);
+
+	@Reference
+	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
@@ -458,9 +461,6 @@ public class CPDefinitionHelperImpl implements CPDefinitionHelper {
 
 	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;
-
-	@Reference
-	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;

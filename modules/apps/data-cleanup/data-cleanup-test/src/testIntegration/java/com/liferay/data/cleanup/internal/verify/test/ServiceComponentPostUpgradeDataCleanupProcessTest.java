@@ -216,15 +216,15 @@ public class ServiceComponentPostUpgradeDataCleanupProcessTest
 	}
 
 	@Override
-	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
-		return new Object[] {connection, _serviceComponentLocalService};
-	}
-
-	@Override
 	protected Class<?>[] getPostUpgradeDataCleanupProcessArgumentTypes() {
 		return new Class<?>[] {
 			Connection.class, ServiceComponentLocalService.class
 		};
+	}
+
+	@Override
+	protected Object[] getPostUpgradeDataCleanupProcessArguments() {
+		return new Object[] {connection, _serviceComponentLocalService};
 	}
 
 	@Override

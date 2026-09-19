@@ -961,20 +961,6 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 	}
 
 	@Test
-	public void testExportImportLayouts() throws Exception {
-		LayoutTestUtil.addTypePortletLayout(group);
-
-		exportImportLayouts(
-			ExportImportHelperUtil.getLayoutIds(
-				_layoutLocalService.getLayouts(group.getGroupId(), false)),
-			getImportParameterMap());
-
-		Assert.assertEquals(
-			_layoutLocalService.getLayoutsCount(group, false),
-			_layoutLocalService.getLayoutsCount(importedGroup, false));
-	}
-
-	@Test
 	public void testExportImportLayoutSetInvalidLARType() throws Exception {
 
 		// Import a layout set to a layout prototype
@@ -1072,6 +1058,56 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 
 			group = null;
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-90359")
+	public void testExportImportLayoutThemeSettings() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			group.getGroupId(),
+			UnicodePropertiesBuilder.put(
+				"lfr-theme:regular:show-header-search", Boolean.FALSE.toString()
+			).put(
+				"lfr-theme:regular:show-maximize-minimize-application-links",
+				Boolean.TRUE.toString()
+			).buildString());
+
+		exportImportLayouts(
+			new long[] {layout.getLayoutId()}, getImportParameterMap());
+
+		Layout importedLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			layout.getUuid(), importedGroup.getGroupId(), false);
+
+		Assert.assertEquals(
+			Boolean.FALSE.toString(),
+			importedLayout.getTypeSettingsProperty(
+				"lfr-theme:regular:show-header-search"));
+		Assert.assertEquals(
+			Boolean.TRUE.toString(),
+			importedLayout.getTypeSettingsProperty(
+				"lfr-theme:regular:show-maximize-minimize-application-links"));
+	}
+
+	@Test
+	@TestInfo("LPD-77689")
+	public void testExportImportLayoutUtilityPageEntryWithPreviewFileEntryWithBatch()
+		throws Exception {
+
+		_testExportImportLayoutUtilityPageEntryWithPreviewFileEntry();
+	}
+
+	@Test
+	public void testExportImportLayouts() throws Exception {
+		LayoutTestUtil.addTypePortletLayout(group);
+
+		exportImportLayouts(
+			ExportImportHelperUtil.getLayoutIds(
+				_layoutLocalService.getLayouts(group.getGroupId(), false)),
+			getImportParameterMap());
+
+		Assert.assertEquals(
+			_layoutLocalService.getLayoutsCount(group, false),
+			_layoutLocalService.getLayoutsCount(importedGroup, false));
 	}
 
 	@Test
@@ -1418,42 +1454,6 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 			html + " contains " + updatedTitle, html.contains(updatedTitle));
 		Assert.assertTrue(
 			html + " does not contain " + title, html.contains(title));
-	}
-
-	@Test
-	@TestInfo("LPD-90359")
-	public void testExportImportLayoutThemeSettings() throws Exception {
-		Layout layout = LayoutTestUtil.addTypePortletLayout(
-			group.getGroupId(),
-			UnicodePropertiesBuilder.put(
-				"lfr-theme:regular:show-header-search", Boolean.FALSE.toString()
-			).put(
-				"lfr-theme:regular:show-maximize-minimize-application-links",
-				Boolean.TRUE.toString()
-			).buildString());
-
-		exportImportLayouts(
-			new long[] {layout.getLayoutId()}, getImportParameterMap());
-
-		Layout importedLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
-			layout.getUuid(), importedGroup.getGroupId(), false);
-
-		Assert.assertEquals(
-			Boolean.FALSE.toString(),
-			importedLayout.getTypeSettingsProperty(
-				"lfr-theme:regular:show-header-search"));
-		Assert.assertEquals(
-			Boolean.TRUE.toString(),
-			importedLayout.getTypeSettingsProperty(
-				"lfr-theme:regular:show-maximize-minimize-application-links"));
-	}
-
-	@Test
-	@TestInfo("LPD-77689")
-	public void testExportImportLayoutUtilityPageEntryWithPreviewFileEntryWithBatch()
-		throws Exception {
-
-		_testExportImportLayoutUtilityPageEntryWithPreviewFileEntry();
 	}
 
 	@Test

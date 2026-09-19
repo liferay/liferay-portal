@@ -340,27 +340,6 @@ public class CSSBuilderPlugin implements Plugin<Project> {
 			});
 	}
 
-	private void _configureTasksBuildCSS(
-		Project project, final Configuration cssBuilderConfiguration,
-		final Configuration portalCommonCSSConfiguration) {
-
-		TaskContainer taskContainer = project.getTasks();
-
-		taskContainer.withType(
-			BuildCSSTask.class,
-			new Action<BuildCSSTask>() {
-
-				@Override
-				public void execute(BuildCSSTask buildCSSTask) {
-					_configureTaskBuildCSSClasspath(
-						buildCSSTask, cssBuilderConfiguration);
-					_configureTaskBuildCSSImportFile(
-						buildCSSTask, portalCommonCSSConfiguration);
-				}
-
-			});
-	}
-
 	private void _configureTaskWarForWarPlugin(
 		final BuildCSSTask buildCSSTask, final Sync copyCSSTask) {
 
@@ -413,6 +392,27 @@ public class CSSBuilderPlugin implements Plugin<Project> {
 
 		war.setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
 		war.setIncludeEmptyDirs(false);
+	}
+
+	private void _configureTasksBuildCSS(
+		Project project, final Configuration cssBuilderConfiguration,
+		final Configuration portalCommonCSSConfiguration) {
+
+		TaskContainer taskContainer = project.getTasks();
+
+		taskContainer.withType(
+			BuildCSSTask.class,
+			new Action<BuildCSSTask>() {
+
+				@Override
+				public void execute(BuildCSSTask buildCSSTask) {
+					_configureTaskBuildCSSClasspath(
+						buildCSSTask, cssBuilderConfiguration);
+					_configureTaskBuildCSSImportFile(
+						buildCSSTask, portalCommonCSSConfiguration);
+				}
+
+			});
 	}
 
 	private File _getResourcesDir(Project project) {

@@ -249,6 +249,16 @@ public class OrganizationSystemObjectDefinitionManagerTest
 	}
 
 	@Override
+	protected void assertGetOrAddEmptyBaseModelWithPermissions(
+		BaseModel<?> baseModel) {
+
+		Organization organization = (Organization)baseModel;
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EMPTY, organization.getStatus());
+	}
+
+	@Override
 	protected void assertGetOrAddEmptyBaseModelWithoutPermissions(
 		BaseModel<?> baseModel, User user) {
 
@@ -270,16 +280,6 @@ public class OrganizationSystemObjectDefinitionManagerTest
 				organization.getOrganizationId()),
 			() -> systemObjectDefinitionManager.getOrAddEmptyBaseModel(
 				organization.getExternalReferenceCode(), user));
-	}
-
-	@Override
-	protected void assertGetOrAddEmptyBaseModelWithPermissions(
-		BaseModel<?> baseModel) {
-
-		Organization organization = (Organization)baseModel;
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EMPTY, organization.getStatus());
 	}
 
 	@Override

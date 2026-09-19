@@ -88,8 +88,8 @@ public class DDMFormInstanceIndexer extends BaseIndexer<DDMFormInstance> {
 	}
 
 	protected DDMFormInstanceLocalService ddmFormInstanceLocalService;
-	protected IndexerRegistry indexerRegistry;
 	protected IndexWriterHelper indexWriterHelper;
+	protected IndexerRegistry indexerRegistry;
 
 	private void _reindexRecords(DDMFormInstance ddmFormInstance)
 		throws Exception {

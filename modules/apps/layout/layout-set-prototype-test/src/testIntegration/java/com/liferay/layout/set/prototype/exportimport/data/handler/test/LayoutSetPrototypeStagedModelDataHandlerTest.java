@@ -433,8 +433,8 @@ public class LayoutSetPrototypeStagedModelDataHandlerTest
 	private final Map<String, List<LayoutFriendlyURL>> _layoutFriendlyURLs =
 		new HashMap<>();
 	private LayoutPrototype _layoutPrototype;
-	private final Map<String, List<Layout>> _layouts = new HashMap<>();
 	private LayoutSetPrototype _layoutSetPrototype;
+	private final Map<String, List<Layout>> _layouts = new HashMap<>();
 
 	@Inject
 	private ZipReaderFactory _zipReaderFactory;

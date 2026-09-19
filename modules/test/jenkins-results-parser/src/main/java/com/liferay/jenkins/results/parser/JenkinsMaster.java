@@ -233,6 +233,25 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return jenkinsUser.getAPITokens();
 	}
 
+	public List<AWSFleetCloud> getAWSFleetClouds() {
+		long currentTimestamp = JenkinsResultsParserUtil.getCurrentTimeMillis();
+
+		long timeSinceLastUpdate =
+			currentTimestamp - _awsFleetCloudLastUpdateTimestamp;
+
+		if ((_awsFleetClouds != null) &&
+			(timeSinceLastUpdate <= _AWS_FLEET_CLOUD_UPDATE_DURATION)) {
+
+			return _awsFleetClouds;
+		}
+
+		_awsFleetClouds = AWSFactory.getAWSFleetClouds(this);
+
+		_awsFleetCloudLastUpdateTimestamp = currentTimestamp;
+
+		return _awsFleetClouds;
+	}
+
 	@Override
 	public List<String> getAssignedLabels() {
 		return _assignedLabels;
@@ -256,25 +275,6 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			(float)busyNodesCount + queueItemsCount + recentBatchSizesTotal;
 
 		return queueLength / usableNodesCount;
-	}
-
-	public List<AWSFleetCloud> getAWSFleetClouds() {
-		long currentTimestamp = JenkinsResultsParserUtil.getCurrentTimeMillis();
-
-		long timeSinceLastUpdate =
-			currentTimestamp - _awsFleetCloudLastUpdateTimestamp;
-
-		if ((_awsFleetClouds != null) &&
-			(timeSinceLastUpdate <= _AWS_FLEET_CLOUD_UPDATE_DURATION)) {
-
-			return _awsFleetClouds;
-		}
-
-		_awsFleetClouds = AWSFactory.getAWSFleetClouds(this);
-
-		_awsFleetCloudLastUpdateTimestamp = currentTimestamp;
-
-		return _awsFleetClouds;
 	}
 
 	public List<JSONObject> getBuildJSONObjects(String jobName) {
@@ -633,91 +633,6 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return onlineJenkinsSlavesCount;
 	}
 
-	public JSONObject getQueuedBuildJSONObject(
-		String jobName, Map<String, String> buildParameters) {
-
-		try {
-			JSONObject queueJSONObject = JenkinsResultsParserUtil.toJSONObject(
-				JenkinsResultsParserUtil.combine(
-					getURL(), "/queue/api/json?",
-					"tree=items[actions[parameters[name,value]],id,task[url]]"),
-				false, 5000);
-
-			JSONArray itemsJSONArray = queueJSONObject.optJSONArray("items");
-
-			for (int i = 0; i < itemsJSONArray.length(); i++) {
-				JSONObject itemJSONObject = itemsJSONArray.optJSONObject(i);
-
-				if (itemJSONObject == JSONObject.NULL) {
-					continue;
-				}
-
-				JSONObject taskJSONObject = itemJSONObject.optJSONObject(
-					"task");
-
-				String taskURL = taskJSONObject.optString("url", "");
-
-				if (!taskURL.contains("/" + jobName + "/")) {
-					continue;
-				}
-
-				boolean matchingBuildParameters = true;
-
-				Map<String, String> parameters = _getParameters(itemJSONObject);
-
-				for (Map.Entry<String, String> buildParameter :
-						buildParameters.entrySet()) {
-
-					String parameterValue = parameters.get(
-						buildParameter.getKey());
-
-					if (!Objects.equals(
-							buildParameter.getValue(), parameterValue)) {
-
-						matchingBuildParameters = false;
-
-						break;
-					}
-				}
-
-				if (matchingBuildParameters) {
-					return itemJSONObject;
-				}
-			}
-		}
-		catch (Exception exception) {
-			return null;
-		}
-
-		return null;
-	}
-
-	public Map<String, JSONObject> getQueuedBuildURLs() {
-		Map<String, JSONObject> queuedBuildURLs = new HashMap<>();
-
-		List<QueueItem> queueItems = getQueueItems();
-
-		if (queueItems.isEmpty()) {
-			return queuedBuildURLs;
-		}
-
-		for (QueueItem queueItem : queueItems) {
-			if (!queueItem.isValidQueueItem()) {
-				continue;
-			}
-
-			String queueItemURL = queueItem.getURL();
-
-			if (queueItemURL == null) {
-				continue;
-			}
-
-			queuedBuildURLs.put(queueItemURL, queueItem.getJSONObject());
-		}
-
-		return queuedBuildURLs;
-	}
-
 	public QueueItem getQueueItem(long queueId) {
 		String queueItemAPIURL = JenkinsResultsParserUtil.combine(
 			getURL(), "/queue/item/", String.valueOf(queueId),
@@ -805,6 +720,91 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+	}
+
+	public JSONObject getQueuedBuildJSONObject(
+		String jobName, Map<String, String> buildParameters) {
+
+		try {
+			JSONObject queueJSONObject = JenkinsResultsParserUtil.toJSONObject(
+				JenkinsResultsParserUtil.combine(
+					getURL(), "/queue/api/json?",
+					"tree=items[actions[parameters[name,value]],id,task[url]]"),
+				false, 5000);
+
+			JSONArray itemsJSONArray = queueJSONObject.optJSONArray("items");
+
+			for (int i = 0; i < itemsJSONArray.length(); i++) {
+				JSONObject itemJSONObject = itemsJSONArray.optJSONObject(i);
+
+				if (itemJSONObject == JSONObject.NULL) {
+					continue;
+				}
+
+				JSONObject taskJSONObject = itemJSONObject.optJSONObject(
+					"task");
+
+				String taskURL = taskJSONObject.optString("url", "");
+
+				if (!taskURL.contains("/" + jobName + "/")) {
+					continue;
+				}
+
+				boolean matchingBuildParameters = true;
+
+				Map<String, String> parameters = _getParameters(itemJSONObject);
+
+				for (Map.Entry<String, String> buildParameter :
+						buildParameters.entrySet()) {
+
+					String parameterValue = parameters.get(
+						buildParameter.getKey());
+
+					if (!Objects.equals(
+							buildParameter.getValue(), parameterValue)) {
+
+						matchingBuildParameters = false;
+
+						break;
+					}
+				}
+
+				if (matchingBuildParameters) {
+					return itemJSONObject;
+				}
+			}
+		}
+		catch (Exception exception) {
+			return null;
+		}
+
+		return null;
+	}
+
+	public Map<String, JSONObject> getQueuedBuildURLs() {
+		Map<String, JSONObject> queuedBuildURLs = new HashMap<>();
+
+		List<QueueItem> queueItems = getQueueItems();
+
+		if (queueItems.isEmpty()) {
+			return queuedBuildURLs;
+		}
+
+		for (QueueItem queueItem : queueItems) {
+			if (!queueItem.isValidQueueItem()) {
+				continue;
+			}
+
+			String queueItemURL = queueItem.getURL();
+
+			if (queueItemURL == null) {
+				continue;
+			}
+
+			queuedBuildURLs.put(queueItemURL, queueItem.getJSONObject());
+		}
+
+		return queuedBuildURLs;
 	}
 
 	public JenkinsSlave getRandomJenkinsSlave() {
@@ -1225,12 +1225,12 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			return _jsonObject.getLong("inQueueSince");
 		}
 
-		public JenkinsMaster getJenkinsMaster() {
-			return _jenkinsMaster;
-		}
-
 		public JSONObject getJSONObject() {
 			return _jsonObject;
+		}
+
+		public JenkinsMaster getJenkinsMaster() {
+			return _jenkinsMaster;
 		}
 
 		public String getLabelExpression() {
@@ -2097,9 +2097,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	private boolean _blacklisted;
 	private final Map<String, List<JSONObject>> _buildJSONObjectsMap =
 		new HashMap<>();
+	private final List<String> _buildURLs = new CopyOnWriteArrayList<>();
 	private JSONObject _buildsCountJSONObject;
 	private final Map<String, Long> _buildsUpdateTimes = new HashMap<>();
-	private final List<String> _buildURLs = new CopyOnWriteArrayList<>();
 	private int _busyExecutorsCount;
 	private final List<DefaultBuild> _defaultBuilds = new ArrayList<>();
 	private Map<String, String> _globalEnvironmentVariables;

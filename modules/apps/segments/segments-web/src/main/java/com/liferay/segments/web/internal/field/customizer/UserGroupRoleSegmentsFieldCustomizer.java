@@ -51,13 +51,13 @@ public class UserGroupRoleSegmentsFieldCustomizer
 	public static final String KEY = "userGroupRole";
 
 	@Override
-	public ClassedModel getClassedModel(String fieldValue) {
-		return _getRole(fieldValue);
+	public String getClassName() {
+		return Role.class.getName();
 	}
 
 	@Override
-	public String getClassName() {
-		return Role.class.getName();
+	public ClassedModel getClassedModel(String fieldValue) {
+		return _getRole(fieldValue);
 	}
 
 	@Override

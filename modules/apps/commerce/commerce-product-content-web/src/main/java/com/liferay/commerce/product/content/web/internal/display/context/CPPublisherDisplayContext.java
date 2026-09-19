@@ -405,6 +405,7 @@ public class CPPublisherDisplayContext extends BaseCPPublisherDisplayContext {
 		CPPublisherDisplayContext.class);
 
 	private final AMImageHTMLTagFactory _amImageHTMLTagFactory;
+	private final long _cProductId;
 	private final CommerceCatalogDefaultImage _commerceCatalogDefaultImage;
 	private final CommerceMediaResolver _commerceMediaResolver;
 	private final ConfigurationProvider _configurationProvider;
@@ -414,7 +415,6 @@ public class CPPublisherDisplayContext extends BaseCPPublisherDisplayContext {
 	private final CPDefinitionHelper _cpDefinitionHelper;
 	private final CPDefinitionLocalService _cpDefinitionLocalService;
 	private final CPFriendlyURL _cpFriendlyURL;
-	private final long _cProductId;
 	private final int _delta;
 	private final DLFileEntryLocalService _dlFileEntryLocalService;
 	private final ModelResourcePermission<DLFileEntry>

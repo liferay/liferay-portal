@@ -1340,16 +1340,6 @@ public class ProjectFaroController extends BaseFaroController {
 		return projectDisplay;
 	}
 
-	private String _getDeletionFailedErrorMessage(User user) {
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			"content.Language", user.getLocale(), getClass());
-
-		return language.get(
-			resourceBundle,
-			"the-workspace-cannot-be-deleted-because-it-has-received-data-" +
-				"recently");
-	}
-
 	private DSLQuery _getDSLQuery(
 			Date endDate, long faroProjectId, Date startDate)
 		throws Exception {
@@ -1391,6 +1381,16 @@ public class ProjectFaroController extends BaseFaroController {
 		).orderBy(
 			faroProjectUsageTable.monthDateKey.descending()
 		);
+	}
+
+	private String _getDeletionFailedErrorMessage(User user) {
+		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+			"content.Language", user.getLocale(), getClass());
+
+		return language.get(
+			resourceBundle,
+			"the-workspace-cannot-be-deleted-because-it-has-received-data-" +
+				"recently");
 	}
 
 	private String _getEmailAddressDomainsErrorMessage(

@@ -33,12 +33,12 @@ public class ShipmentItem {
 		return _externalReferenceCode;
 	}
 
-	public BigDecimal getOrderedQuantity() {
-		return _orderedQuantity;
-	}
-
 	public long getOrderId() {
 		return _orderId;
+	}
+
+	public BigDecimal getOrderedQuantity() {
+		return _orderedQuantity;
 	}
 
 	public long getShipmentItemId() {
@@ -66,8 +66,8 @@ public class ShipmentItem {
 	}
 
 	private final String _externalReferenceCode;
-	private final BigDecimal _orderedQuantity;
 	private final long _orderId;
+	private final BigDecimal _orderedQuantity;
 	private final long _shipmentItemId;
 	private final BigDecimal _shippedQuantity;
 	private final String _sku;

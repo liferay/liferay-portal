@@ -209,193 +209,6 @@ public class CommerceSiteInitializerImpl implements CommerceSiteInitializer {
 		return CommerceOrder.class.getName();
 	}
 
-	private void _addCommerceChannelConfiguration(
-			Channel channel, String resourcePath, ServletContext servletContext)
-		throws Exception {
-
-		String json = SiteInitializerUtil.read(resourcePath, servletContext);
-
-		if (json == null) {
-			return;
-		}
-
-		CommerceChannel commerceChannel =
-			_commerceChannelService.getCommerceChannel(channel.getId());
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject(json);
-
-		Map<String, Object> map1 = jsonObject.toMap();
-
-		for (Map.Entry<String, Object> entry1 : map1.entrySet()) {
-			Settings settings = FallbackKeysSettingsUtil.getSettings(
-				new GroupServiceSettingsLocator(
-					commerceChannel.getGroupId(), entry1.getKey()));
-
-			ModifiableSettings modifiableSettings =
-				settings.getModifiableSettings();
-
-			Map<String, Object> map2 = (Map<String, Object>)entry1.getValue();
-
-			for (Map.Entry<String, Object> entry2 : map2.entrySet()) {
-				modifiableSettings.setValue(
-					entry2.getKey(), String.valueOf(entry2.getValue()));
-			}
-
-			modifiableSettings.store();
-		}
-
-		_accountEntryGroupSettings.setAllowedTypes(
-			commerceChannel.getSiteGroupId(),
-			_getAllowedTypes(commerceChannel.getGroupId()));
-	}
-
-	private List<CommerceInventoryWarehouse> _addCommerceInventoryWarehouses(
-			ServiceContext serviceContext, ServletContext servletContext)
-		throws Exception {
-
-		return _commerceInventoryWarehousesImporter.
-			importCommerceInventoryWarehouses(
-				_jsonFactory.createJSONArray(
-					SiteInitializerUtil.read(
-						"/site-initializer/commerce-inventory-warehouses.json",
-						servletContext)),
-				serviceContext.getScopeGroupId(), serviceContext.getUserId());
-	}
-
-	private void _addCommerceNotificationTemplate(
-			Bundle bundle, long commerceChannelId, String resourcePath,
-			ServiceContext serviceContext, ServletContext servletContext,
-			Map<String, String> stringUtilReplaceValues)
-		throws Exception {
-
-		String json = SiteInitializerUtil.read(
-			resourcePath + "commerce-notification-template.json",
-			servletContext);
-
-		if (Validator.isNull(json)) {
-			return;
-		}
-
-		JSONObject commerceNotificationTemplateJSONObject =
-			_jsonFactory.createJSONObject(json);
-
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(commerceChannelId);
-
-		JSONObject bodyJSONObject = _jsonFactory.createJSONObject();
-
-		Enumeration<URL> enumeration = bundle.findEntries(
-			resourcePath, "*.html", false);
-
-		if (enumeration != null) {
-			while (enumeration.hasMoreElements()) {
-				URL url = enumeration.nextElement();
-
-				bodyJSONObject.put(
-					FileUtil.getShortFileName(
-						FileUtil.stripExtension(url.getPath())),
-					StringUtil.replace(
-						URLUtil.toString(url), "[$", "$]",
-						stringUtilReplaceValues));
-			}
-		}
-
-		_commerceNotificationTemplateLocalService.
-			addCommerceNotificationTemplate(
-				serviceContext.getUserId(), commerceChannel.getGroupId(),
-				commerceNotificationTemplateJSONObject.getString("name"),
-				commerceNotificationTemplateJSONObject.getString("description"),
-				commerceNotificationTemplateJSONObject.getString("from"),
-				SiteInitializerUtil.toMap(
-					commerceNotificationTemplateJSONObject.getString(
-						"fromName")),
-				commerceNotificationTemplateJSONObject.getString("to"),
-				commerceNotificationTemplateJSONObject.getString("cc"),
-				commerceNotificationTemplateJSONObject.getString("bcc"),
-				StringUtil.replace(
-					commerceNotificationTemplateJSONObject.getString("type"),
-					"[$", "$]", stringUtilReplaceValues),
-				commerceNotificationTemplateJSONObject.getBoolean("enabled"),
-				SiteInitializerUtil.toMap(
-					commerceNotificationTemplateJSONObject.getString(
-						"subject")),
-				SiteInitializerUtil.toMap(bodyJSONObject.toString()),
-				serviceContext);
-	}
-
-	private void _addCommerceNotificationTemplates(
-			Bundle bundle, long commerceChannelId,
-			ServiceContext serviceContext, ServletContext servletContext,
-			Map<String, String> stringUtilReplaceValues)
-		throws Exception {
-
-		Set<String> resourcePaths = servletContext.getResourcePaths(
-			"/site-initializer/commerce-notification-templates");
-
-		if (SetUtil.isEmpty(resourcePaths)) {
-			return;
-		}
-
-		for (String resourcePath : resourcePaths) {
-			_addCommerceNotificationTemplate(
-				bundle, commerceChannelId, resourcePath, serviceContext,
-				servletContext, stringUtilReplaceValues);
-		}
-	}
-
-	private void _addCommerceProductSpecifications(
-			String resourcePath, ServiceContext serviceContext,
-			ServletContext servletContext)
-		throws Exception {
-
-		ProductSpecificationResource.Builder
-			productSpecificationResourceBuilder =
-				_productSpecificationResourceFactory.create();
-
-		ProductSpecificationResource productSpecificationResource =
-			productSpecificationResourceBuilder.user(
-				serviceContext.fetchUser()
-			).build();
-
-		String json = SiteInitializerUtil.read(resourcePath, servletContext);
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
-
-		_cpSpecificationOptionsImporter.importCPSpecificationOptions(
-			jsonArray, serviceContext.getScopeGroupId(),
-			serviceContext.getUserId());
-
-		for (int i = 0; i < jsonArray.length(); i++) {
-			JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-			CPDefinition cpDefinition =
-				_cpDefinitionLocalService.
-					fetchCPDefinitionByCProductExternalReferenceCode(
-						jsonObject.getString(
-							"cpDefinitionExternalReferenceCode"),
-						serviceContext.getCompanyId(), true);
-
-			if (cpDefinition == null) {
-				continue;
-			}
-
-			ProductSpecification productSpecification =
-				new ProductSpecification() {
-					{
-						setProductId(cpDefinition::getCProductId);
-						setSpecificationKey(() -> jsonObject.getString("key"));
-						setValue(
-							() -> JSONUtil.toStringMap(
-								jsonObject.getJSONObject(
-									"productSpecificationValue")));
-					}
-				};
-
-			productSpecificationResource.postProductIdProductSpecification(
-				cpDefinition.getCProductId(), productSpecification);
-		}
-	}
-
 	private void _addCPDefinitions(
 			String assetVocabularyName, Bundle bundle, Catalog catalog,
 			Channel channel,
@@ -592,6 +405,193 @@ public class CommerceSiteInitializerImpl implements CommerceSiteInitializer {
 			serviceContext.getUserId());
 	}
 
+	private void _addCommerceChannelConfiguration(
+			Channel channel, String resourcePath, ServletContext servletContext)
+		throws Exception {
+
+		String json = SiteInitializerUtil.read(resourcePath, servletContext);
+
+		if (json == null) {
+			return;
+		}
+
+		CommerceChannel commerceChannel =
+			_commerceChannelService.getCommerceChannel(channel.getId());
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(json);
+
+		Map<String, Object> map1 = jsonObject.toMap();
+
+		for (Map.Entry<String, Object> entry1 : map1.entrySet()) {
+			Settings settings = FallbackKeysSettingsUtil.getSettings(
+				new GroupServiceSettingsLocator(
+					commerceChannel.getGroupId(), entry1.getKey()));
+
+			ModifiableSettings modifiableSettings =
+				settings.getModifiableSettings();
+
+			Map<String, Object> map2 = (Map<String, Object>)entry1.getValue();
+
+			for (Map.Entry<String, Object> entry2 : map2.entrySet()) {
+				modifiableSettings.setValue(
+					entry2.getKey(), String.valueOf(entry2.getValue()));
+			}
+
+			modifiableSettings.store();
+		}
+
+		_accountEntryGroupSettings.setAllowedTypes(
+			commerceChannel.getSiteGroupId(),
+			_getAllowedTypes(commerceChannel.getGroupId()));
+	}
+
+	private List<CommerceInventoryWarehouse> _addCommerceInventoryWarehouses(
+			ServiceContext serviceContext, ServletContext servletContext)
+		throws Exception {
+
+		return _commerceInventoryWarehousesImporter.
+			importCommerceInventoryWarehouses(
+				_jsonFactory.createJSONArray(
+					SiteInitializerUtil.read(
+						"/site-initializer/commerce-inventory-warehouses.json",
+						servletContext)),
+				serviceContext.getScopeGroupId(), serviceContext.getUserId());
+	}
+
+	private void _addCommerceNotificationTemplate(
+			Bundle bundle, long commerceChannelId, String resourcePath,
+			ServiceContext serviceContext, ServletContext servletContext,
+			Map<String, String> stringUtilReplaceValues)
+		throws Exception {
+
+		String json = SiteInitializerUtil.read(
+			resourcePath + "commerce-notification-template.json",
+			servletContext);
+
+		if (Validator.isNull(json)) {
+			return;
+		}
+
+		JSONObject commerceNotificationTemplateJSONObject =
+			_jsonFactory.createJSONObject(json);
+
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(commerceChannelId);
+
+		JSONObject bodyJSONObject = _jsonFactory.createJSONObject();
+
+		Enumeration<URL> enumeration = bundle.findEntries(
+			resourcePath, "*.html", false);
+
+		if (enumeration != null) {
+			while (enumeration.hasMoreElements()) {
+				URL url = enumeration.nextElement();
+
+				bodyJSONObject.put(
+					FileUtil.getShortFileName(
+						FileUtil.stripExtension(url.getPath())),
+					StringUtil.replace(
+						URLUtil.toString(url), "[$", "$]",
+						stringUtilReplaceValues));
+			}
+		}
+
+		_commerceNotificationTemplateLocalService.
+			addCommerceNotificationTemplate(
+				serviceContext.getUserId(), commerceChannel.getGroupId(),
+				commerceNotificationTemplateJSONObject.getString("name"),
+				commerceNotificationTemplateJSONObject.getString("description"),
+				commerceNotificationTemplateJSONObject.getString("from"),
+				SiteInitializerUtil.toMap(
+					commerceNotificationTemplateJSONObject.getString(
+						"fromName")),
+				commerceNotificationTemplateJSONObject.getString("to"),
+				commerceNotificationTemplateJSONObject.getString("cc"),
+				commerceNotificationTemplateJSONObject.getString("bcc"),
+				StringUtil.replace(
+					commerceNotificationTemplateJSONObject.getString("type"),
+					"[$", "$]", stringUtilReplaceValues),
+				commerceNotificationTemplateJSONObject.getBoolean("enabled"),
+				SiteInitializerUtil.toMap(
+					commerceNotificationTemplateJSONObject.getString(
+						"subject")),
+				SiteInitializerUtil.toMap(bodyJSONObject.toString()),
+				serviceContext);
+	}
+
+	private void _addCommerceNotificationTemplates(
+			Bundle bundle, long commerceChannelId,
+			ServiceContext serviceContext, ServletContext servletContext,
+			Map<String, String> stringUtilReplaceValues)
+		throws Exception {
+
+		Set<String> resourcePaths = servletContext.getResourcePaths(
+			"/site-initializer/commerce-notification-templates");
+
+		if (SetUtil.isEmpty(resourcePaths)) {
+			return;
+		}
+
+		for (String resourcePath : resourcePaths) {
+			_addCommerceNotificationTemplate(
+				bundle, commerceChannelId, resourcePath, serviceContext,
+				servletContext, stringUtilReplaceValues);
+		}
+	}
+
+	private void _addCommerceProductSpecifications(
+			String resourcePath, ServiceContext serviceContext,
+			ServletContext servletContext)
+		throws Exception {
+
+		ProductSpecificationResource.Builder
+			productSpecificationResourceBuilder =
+				_productSpecificationResourceFactory.create();
+
+		ProductSpecificationResource productSpecificationResource =
+			productSpecificationResourceBuilder.user(
+				serviceContext.fetchUser()
+			).build();
+
+		String json = SiteInitializerUtil.read(resourcePath, servletContext);
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
+
+		_cpSpecificationOptionsImporter.importCPSpecificationOptions(
+			jsonArray, serviceContext.getScopeGroupId(),
+			serviceContext.getUserId());
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.
+					fetchCPDefinitionByCProductExternalReferenceCode(
+						jsonObject.getString(
+							"cpDefinitionExternalReferenceCode"),
+						serviceContext.getCompanyId(), true);
+
+			if (cpDefinition == null) {
+				continue;
+			}
+
+			ProductSpecification productSpecification =
+				new ProductSpecification() {
+					{
+						setProductId(cpDefinition::getCProductId);
+						setSpecificationKey(() -> jsonObject.getString("key"));
+						setValue(
+							() -> JSONUtil.toStringMap(
+								jsonObject.getJSONObject(
+									"productSpecificationValue")));
+					}
+				};
+
+			productSpecificationResource.postProductIdProductSpecification(
+				cpDefinition.getCProductId(), productSpecification);
+		}
+	}
+
 	private void _addDefaultCPDisplayLayout(
 			Channel channel, String resourcePath, ServiceContext serviceContext,
 			ServletContext servletContext)
@@ -663,6 +663,26 @@ public class CommerceSiteInitializerImpl implements CommerceSiteInitializer {
 					).build(),
 					null));
 		}
+	}
+
+	private void _addOrUpdateCPOptionCategories(
+			ServiceContext serviceContext, ServletContext servletContext)
+		throws Exception {
+
+		String resourcePath =
+			"/site-initializer/commerce-option-categories.json";
+
+		String json = SiteInitializerUtil.read(resourcePath, servletContext);
+
+		if (json == null) {
+			return;
+		}
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
+
+		_cpOptionCategoriesImporter.importCPOptionCategories(
+			jsonArray, serviceContext.getScopeGroupId(),
+			serviceContext.getUserId());
 	}
 
 	private void _addOrUpdateCommerceCatalogs(
@@ -926,26 +946,6 @@ public class CommerceSiteInitializerImpl implements CommerceSiteInitializer {
 				commercePriceEntry.isPriceOnApplication(), BigDecimal.ZERO,
 				null, serviceContext);
 		}
-	}
-
-	private void _addOrUpdateCPOptionCategories(
-			ServiceContext serviceContext, ServletContext servletContext)
-		throws Exception {
-
-		String resourcePath =
-			"/site-initializer/commerce-option-categories.json";
-
-		String json = SiteInitializerUtil.read(resourcePath, servletContext);
-
-		if (json == null) {
-			return;
-		}
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray(json);
-
-		_cpOptionCategoriesImporter.importCPOptionCategories(
-			jsonArray, serviceContext.getScopeGroupId(),
-			serviceContext.getUserId());
 	}
 
 	private String[] _getAllowedTypes(long commerceChannelGroupId)

@@ -35,12 +35,12 @@ public class Product {
 		_errorMessages = errorMessages;
 	}
 
-	public List<Product> getChildItems() {
-		return _childItems;
-	}
-
 	public long getCPInstanceId() {
 		return _cpInstanceId;
+	}
+
+	public List<Product> getChildItems() {
+		return _childItems;
 	}
 
 	public String[] getErrorMessages() {
@@ -87,12 +87,12 @@ public class Product {
 		return _unitOfMeasureKey;
 	}
 
-	public void setChildItems(List<Product> childItems) {
-		_childItems = childItems;
-	}
-
 	public void setCPInstanceId(long cpInstanceId) {
 		_cpInstanceId = cpInstanceId;
+	}
+
+	public void setChildItems(List<Product> childItems) {
+		_childItems = childItems;
 	}
 
 	public void setErrorMessages(String[] errorMessages) {

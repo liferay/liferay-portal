@@ -199,6 +199,25 @@ public class COREntryRelLocalServiceImpl
 	}
 
 	@Override
+	public List<COREntryRel> getCOREntryRels(long corEntryId) {
+		return corEntryRelPersistence.findByCOREntryId(corEntryId);
+	}
+
+	@Override
+	public List<COREntryRel> getCOREntryRels(
+		long corEntryId, int start, int end,
+		OrderByComparator<COREntryRel> orderByComparator) {
+
+		return corEntryRelPersistence.findByCOREntryId(
+			corEntryId, start, end, orderByComparator);
+	}
+
+	@Override
+	public int getCOREntryRelsCount(long corEntryId) {
+		return corEntryRelPersistence.countByCOREntryId(corEntryId);
+	}
+
+	@Override
 	public List<COREntryRel> getCommerceChannelCOREntryRels(
 		long corEntryId, String keywords, int start, int end) {
 
@@ -260,25 +279,6 @@ public class COREntryRelLocalServiceImpl
 					COREntryRelTable.INSTANCE.classPK),
 				corEntryId, CommerceOrderType.class.getName(), keywords,
 				CommerceOrderTypeTable.INSTANCE.name));
-	}
-
-	@Override
-	public List<COREntryRel> getCOREntryRels(long corEntryId) {
-		return corEntryRelPersistence.findByCOREntryId(corEntryId);
-	}
-
-	@Override
-	public List<COREntryRel> getCOREntryRels(
-		long corEntryId, int start, int end,
-		OrderByComparator<COREntryRel> orderByComparator) {
-
-		return corEntryRelPersistence.findByCOREntryId(
-			corEntryId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCOREntryRelsCount(long corEntryId) {
-		return corEntryRelPersistence.countByCOREntryId(corEntryId);
 	}
 
 	private GroupByStep _getGroupByStep(

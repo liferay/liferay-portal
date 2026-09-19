@@ -478,6 +478,7 @@ public class ProductOptionResourceTest
 			postProductOption.getOptionExternalReferenceCode());
 	}
 
+	private CProduct _cProduct;
 	private CPDefinition _cpDefinition;
 
 	@Inject
@@ -491,7 +492,6 @@ public class ProductOptionResourceTest
 	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
 
 	private CPInstance _cpInstance;
-	private CProduct _cProduct;
 	private final Map<Long, ProductOption> _productOptions = new HashMap<>();
 
 }

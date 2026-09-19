@@ -20,13 +20,13 @@ public class ModificationConflictInfo extends BaseConflictInfo {
 	}
 
 	@Override
-	public String getConflictDescription(ResourceBundle resourceBundle) {
-		return LanguageUtil.get(resourceBundle, "modification-conflict");
+	public long getCTAutoResolutionInfoId() {
+		return _ctAutoResolutionInfoId;
 	}
 
 	@Override
-	public long getCTAutoResolutionInfoId() {
-		return _ctAutoResolutionInfoId;
+	public String getConflictDescription(ResourceBundle resourceBundle) {
+		return LanguageUtil.get(resourceBundle, "modification-conflict");
 	}
 
 	@Override

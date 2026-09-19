@@ -45,15 +45,15 @@ public class ViewVocabulariesDisplayContext {
 		_themeDisplay = themeDisplay;
 	}
 
+	public String getAPIURL() {
+		return "/o/headless-admin-taxonomy/v1.0/sites/" +
+			_themeDisplay.getScopeGroupId() + "/taxonomy-vocabularies";
+	}
+
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
 			"cmpEnabled", LicenseManagerUtil.isAppEnabled(App.CMP)
 		).build();
-	}
-
-	public String getAPIURL() {
-		return "/o/headless-admin-taxonomy/v1.0/sites/" +
-			_themeDisplay.getScopeGroupId() + "/taxonomy-vocabularies";
 	}
 
 	public CreationMenu getCreationMenu() {

@@ -518,7 +518,6 @@ public class SearchOmniSearchResultProviderTest {
 	private final Portal _portal = Mockito.mock(Portal.class);
 	private final ResourceActions _resourceActions = Mockito.mock(
 		ResourceActions.class);
-	private final Searcher _searcher = Mockito.mock(Searcher.class);
 	private final SearchHits _searchHits = Mockito.mock(SearchHits.class);
 	private final SearchOmniSearchResultProvider
 		_searchOmniSearchResultProvider = new SearchOmniSearchResultProvider();
@@ -526,6 +525,7 @@ public class SearchOmniSearchResultProviderTest {
 		Mockito.mock(SearchRequestBuilderFactory.class);
 	private final SearchResponse _searchResponse = Mockito.mock(
 		SearchResponse.class);
+	private final Searcher _searcher = Mockito.mock(Searcher.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 }

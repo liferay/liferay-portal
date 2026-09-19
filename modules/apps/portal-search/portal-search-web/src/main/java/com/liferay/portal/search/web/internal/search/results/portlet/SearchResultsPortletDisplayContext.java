@@ -72,12 +72,6 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 		return _searchContainer;
 	}
 
-	public SearchResultsPortletInstanceConfiguration
-		getSearchResultsPortletInstanceConfiguration() {
-
-		return _searchResultsPortletInstanceConfiguration;
-	}
-
 	public SearchResultSummaryDisplayContext
 		getSearchResultSummaryDisplayContext(Document document) {
 
@@ -92,6 +86,12 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 		}
 
 		return new ArrayList<>();
+	}
+
+	public SearchResultsPortletInstanceConfiguration
+		getSearchResultsPortletInstanceConfiguration() {
+
+		return _searchResultsPortletInstanceConfiguration;
 	}
 
 	public int getTotalHits() {
@@ -126,18 +126,18 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 		_searchContainer = searchContainer;
 	}
 
-	public void setSearchResultsSummariesHolder(
-		SearchResultsSummariesHolder searchResultsSummariesHolder) {
-
-		_searchResultsSummariesHolder = searchResultsSummariesHolder;
-	}
-
 	public void setSearchResultSummaryDisplayContexts(
 		List<SearchResultSummaryDisplayContext>
 			searchResultSummaryDisplayContexts) {
 
 		_searchResultSummaryDisplayContexts =
 			searchResultSummaryDisplayContexts;
+	}
+
+	public void setSearchResultsSummariesHolder(
+		SearchResultsSummariesHolder searchResultsSummariesHolder) {
+
+		_searchResultsSummariesHolder = searchResultsSummariesHolder;
 	}
 
 	public void setShowEmptyResultMessage(boolean showEmptyResultMessage) {
@@ -167,11 +167,11 @@ public class SearchResultsPortletDisplayContext implements Serializable {
 	private String _keywords;
 	private boolean _renderNothing;
 	private SearchContainer<Document> _searchContainer;
+	private List<SearchResultSummaryDisplayContext>
+		_searchResultSummaryDisplayContexts;
 	private final SearchResultsPortletInstanceConfiguration
 		_searchResultsPortletInstanceConfiguration;
 	private SearchResultsSummariesHolder _searchResultsSummariesHolder;
-	private List<SearchResultSummaryDisplayContext>
-		_searchResultSummaryDisplayContexts;
 	private boolean _showEmptyResultMessage;
 	private boolean _showPagination;
 	private int _totalHits;

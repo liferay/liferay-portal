@@ -739,6 +739,9 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 			GetterUtil.getLong(postAttachment.getFileEntryId()));
 	}
 
+	@DeleteAfterTestRun
+	private CProduct _cProduct;
+
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
@@ -754,9 +757,6 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 	@DeleteAfterTestRun
 	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
-
-	@DeleteAfterTestRun
-	private CProduct _cProduct;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;

@@ -706,6 +706,30 @@ public class UserODataRetrieverTest {
 	}
 
 	@Test
+	public void testGetUsersFilterByGroupIdWithAnd() throws Exception {
+		String firstName = RandomTestUtil.randomString();
+
+		_user1 = _addUser(
+			firstName, new long[] {_group1.getGroupId(), _group2.getGroupId()});
+		_user2 = _addUser(firstName, _group1);
+
+		String filterString = String.format(
+			"(firstName eq '%s') and (groupId eq '%s') and (groupId eq '%s')",
+			firstName, _group1.getGroupId(), _group2.getGroupId());
+
+		int count = _oDataRetriever.getResultsCount(
+			_group1.getCompanyId(), filterString, LocaleUtil.getDefault());
+
+		Assert.assertEquals(1, count);
+
+		List<User> users = _oDataRetriever.getResults(
+			_group1.getCompanyId(), filterString, LocaleUtil.getDefault(), 0,
+			2);
+
+		Assert.assertEquals(_user1, users.get(0));
+	}
+
+	@Test
 	public void testGetUsersFilterByGroupIds() throws Exception {
 		String firstName = RandomTestUtil.randomString();
 
@@ -753,30 +777,6 @@ public class UserODataRetrieverTest {
 
 		Assert.assertTrue(users.contains(_user1));
 		Assert.assertTrue(users.contains(_user2));
-	}
-
-	@Test
-	public void testGetUsersFilterByGroupIdWithAnd() throws Exception {
-		String firstName = RandomTestUtil.randomString();
-
-		_user1 = _addUser(
-			firstName, new long[] {_group1.getGroupId(), _group2.getGroupId()});
-		_user2 = _addUser(firstName, _group1);
-
-		String filterString = String.format(
-			"(firstName eq '%s') and (groupId eq '%s') and (groupId eq '%s')",
-			firstName, _group1.getGroupId(), _group2.getGroupId());
-
-		int count = _oDataRetriever.getResultsCount(
-			_group1.getCompanyId(), filterString, LocaleUtil.getDefault());
-
-		Assert.assertEquals(1, count);
-
-		List<User> users = _oDataRetriever.getResults(
-			_group1.getCompanyId(), filterString, LocaleUtil.getDefault(), 0,
-			2);
-
-		Assert.assertEquals(_user1, users.get(0));
 	}
 
 	@Test

@@ -16,8 +16,8 @@ public interface EditorRenderer {
 
 	public String getJspPath();
 
-	public String getResourcesJspPath();
-
 	public String getResourceType();
+
+	public String getResourcesJspPath();
 
 }

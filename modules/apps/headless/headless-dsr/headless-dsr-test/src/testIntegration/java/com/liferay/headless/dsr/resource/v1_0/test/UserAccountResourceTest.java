@@ -519,6 +519,27 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
 	}
 
+	private void _testPatchRoomUserAccountWithPermission() throws Exception {
+		String password = RandomTestUtil.randomString();
+		Role role = _addRole();
+
+		UserAccountResource userAccountResource = _getUserAccountResource(
+			password, _addUser(password, role.getName()));
+
+		User user = UserTestUtil.addUser();
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class,
+			"You do not have permission to assign this role.",
+			() -> userAccountResource.patchRoomUserAccount(
+				_objectEntry.getObjectEntryId(), user.getUserId(),
+				new UserAccount() {
+					{
+						roleKey = RoleConstants.SITE_ADMINISTRATOR;
+					}
+				}));
+	}
+
 	private void _testPatchRoomUserAccountWithoutRoleKey() throws Exception {
 		User user = _addUser(
 			RandomTestUtil.randomString(),
@@ -539,27 +560,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		Assert.assertEquals(
 			DSRRoleConstants.NAME_DSR_CONTENT_CONTRIBUTOR,
 			userAccount.getRoleKey());
-	}
-
-	private void _testPatchRoomUserAccountWithPermission() throws Exception {
-		String password = RandomTestUtil.randomString();
-		Role role = _addRole();
-
-		UserAccountResource userAccountResource = _getUserAccountResource(
-			password, _addUser(password, role.getName()));
-
-		User user = UserTestUtil.addUser();
-
-		AssertUtils.assertFailure(
-			Problem.ProblemException.class,
-			"You do not have permission to assign this role.",
-			() -> userAccountResource.patchRoomUserAccount(
-				_objectEntry.getObjectEntryId(), user.getUserId(),
-				new UserAccount() {
-					{
-						roleKey = RoleConstants.SITE_ADMINISTRATOR;
-					}
-				}));
 	}
 
 	private void _testPostRoomUserAccount() throws Exception {

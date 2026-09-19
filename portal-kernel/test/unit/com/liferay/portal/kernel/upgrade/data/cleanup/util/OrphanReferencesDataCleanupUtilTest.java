@@ -23,35 +23,6 @@ import org.mockito.Mockito;
 public class OrphanReferencesDataCleanupUtilTest {
 
 	@Test
-	public void testExecuteDeleteWithoutRetry() throws Exception {
-		PreparedStatement preparedStatement = Mockito.mock(
-			PreparedStatement.class);
-
-		Mockito.doThrow(
-			new SQLException(
-				RandomTestUtil.randomString(), _SQL_STATE_CONSTRAINT_VIOLATION)
-		).when(
-			preparedStatement
-		).executeUpdate();
-
-		try {
-			_invokeExecuteDelete(preparedStatement);
-
-			Assert.fail();
-		}
-		catch (Exception exception) {
-			SQLException sqlException = (SQLException)exception;
-
-			Assert.assertEquals(
-				_SQL_STATE_CONSTRAINT_VIOLATION, sqlException.getSQLState());
-		}
-
-		Mockito.verify(
-			preparedStatement, Mockito.times(1)
-		).executeUpdate();
-	}
-
-	@Test
 	public void testExecuteDeleteWithRetry() throws Exception {
 		PreparedStatement preparedStatement = Mockito.mock(
 			PreparedStatement.class);
@@ -101,6 +72,35 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 		Mockito.verify(
 			preparedStatement, Mockito.times(expectedAttempts)
+		).executeUpdate();
+	}
+
+	@Test
+	public void testExecuteDeleteWithoutRetry() throws Exception {
+		PreparedStatement preparedStatement = Mockito.mock(
+			PreparedStatement.class);
+
+		Mockito.doThrow(
+			new SQLException(
+				RandomTestUtil.randomString(), _SQL_STATE_CONSTRAINT_VIOLATION)
+		).when(
+			preparedStatement
+		).executeUpdate();
+
+		try {
+			_invokeExecuteDelete(preparedStatement);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			SQLException sqlException = (SQLException)exception;
+
+			Assert.assertEquals(
+				_SQL_STATE_CONSTRAINT_VIOLATION, sqlException.getSQLState());
+		}
+
+		Mockito.verify(
+			preparedStatement, Mockito.times(1)
 		).executeUpdate();
 	}
 

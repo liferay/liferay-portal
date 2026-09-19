@@ -661,6 +661,17 @@ public final class CommandLogger {
 		return loggerElement;
 	}
 
+	private LoggerElement _getScreenshotSpanLoggerElement(
+		String screenshotName) {
+
+		LoggerElement loggerElement = new LoggerElement();
+
+		loggerElement.setName("span");
+		loggerElement.setText(StringUtil.upperCaseFirstLetter(screenshotName));
+
+		return loggerElement;
+	}
+
 	private LoggerElement _getScreenshotsLoggerElement(int detailsLinkId)
 		throws Exception {
 
@@ -677,17 +688,6 @@ public final class CommandLogger {
 
 		loggerElement.addChildLoggerElement(
 			_getScreenshotContainerLoggerElement("after", detailsLinkId));
-
-		return loggerElement;
-	}
-
-	private LoggerElement _getScreenshotSpanLoggerElement(
-		String screenshotName) {
-
-		LoggerElement loggerElement = new LoggerElement();
-
-		loggerElement.setName("span");
-		loggerElement.setText(StringUtil.upperCaseFirstLetter(screenshotName));
 
 		return loggerElement;
 	}

@@ -420,34 +420,6 @@ public class NestedFieldsSetterUtil {
 			return null;
 		}
 
-		private Object[] _getMethodArgs(
-				ContextDataInjector contextDataInjector, String fieldName,
-				Object item, NestedFieldsContext nestedFieldsContext,
-				Method resourceMethod,
-				Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries)
-			throws Exception {
-
-			Object[] args = new Object[resourceMethod.getParameterCount()];
-
-			for (int i = 0; i < resourceMethod.getParameterCount(); i++) {
-				if (resourceMethodArgNameTypeEntries[i] == null) {
-					continue;
-				}
-
-				args[i] = _getMethodArgValueFromItem(
-					item, resourceMethodArgNameTypeEntries[i]);
-
-				if (args[i] == null) {
-					args[i] = _getMethodArgValueFromRequest(
-						contextDataInjector, fieldName,
-						resourceMethodArgNameTypeEntries[i],
-						nestedFieldsContext);
-				}
-			}
-
-			return args;
-		}
-
 		private Object _getMethodArgValueFromItem(
 				Object item,
 				Map.Entry<String, Class<?>> resourceMethodArgNameTypeEntry)
@@ -520,6 +492,34 @@ public class NestedFieldsSetterUtil {
 			}
 
 			return argValue;
+		}
+
+		private Object[] _getMethodArgs(
+				ContextDataInjector contextDataInjector, String fieldName,
+				Object item, NestedFieldsContext nestedFieldsContext,
+				Method resourceMethod,
+				Map.Entry<String, Class<?>>[] resourceMethodArgNameTypeEntries)
+			throws Exception {
+
+			Object[] args = new Object[resourceMethod.getParameterCount()];
+
+			for (int i = 0; i < resourceMethod.getParameterCount(); i++) {
+				if (resourceMethodArgNameTypeEntries[i] == null) {
+					continue;
+				}
+
+				args[i] = _getMethodArgValueFromItem(
+					item, resourceMethodArgNameTypeEntries[i]);
+
+				if (args[i] == null) {
+					args[i] = _getMethodArgValueFromRequest(
+						contextDataInjector, fieldName,
+						resourceMethodArgNameTypeEntries[i],
+						nestedFieldsContext);
+				}
+			}
+
+			return args;
 		}
 
 		private Object _getNestedFieldValue(

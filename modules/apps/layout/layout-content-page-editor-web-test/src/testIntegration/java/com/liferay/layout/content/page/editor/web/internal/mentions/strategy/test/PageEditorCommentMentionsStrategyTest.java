@@ -57,28 +57,6 @@ public class PageEditorCommentMentionsStrategyTest {
 	}
 
 	@Test
-	public void testGetUsersWithCustomRoleWithoutUpdatePermission()
-		throws Exception {
-
-		Role role = _addRole();
-
-		_addUserWithRole(_group.getGroupId(), role.getName(), "example");
-
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
-
-		RoleTestUtil.addResourcePermission(
-			role, "com.liferay.portal.kernel.model.Layout",
-			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
-			ActionKeys.VIEW);
-
-		List<User> users = _mentionsStrategy.getUsers(
-			_group.getCompanyId(), TestPropsValues.getUserId(), "exa",
-			JSONUtil.put("plid", layout.getPlid()));
-
-		Assert.assertEquals(users.toString(), 0, users.size());
-	}
-
-	@Test
 	public void testGetUsersWithCustomRoleWithUpdatePermission()
 		throws Exception {
 
@@ -102,6 +80,28 @@ public class PageEditorCommentMentionsStrategyTest {
 		User user = users.get(0);
 
 		Assert.assertEquals("example", user.getScreenName());
+	}
+
+	@Test
+	public void testGetUsersWithCustomRoleWithoutUpdatePermission()
+		throws Exception {
+
+		Role role = _addRole();
+
+		_addUserWithRole(_group.getGroupId(), role.getName(), "example");
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		RoleTestUtil.addResourcePermission(
+			role, "com.liferay.portal.kernel.model.Layout",
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			ActionKeys.VIEW);
+
+		List<User> users = _mentionsStrategy.getUsers(
+			_group.getCompanyId(), TestPropsValues.getUserId(), "exa",
+			JSONUtil.put("plid", layout.getPlid()));
+
+		Assert.assertEquals(users.toString(), 0, users.size());
 	}
 
 	@Test

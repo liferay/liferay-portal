@@ -554,35 +554,6 @@ public class DynamicDataMappingUpgradeProcessTest extends BaseDDMTestCase {
 	}
 
 	@Test
-	public void testToXMLWithoutLocalizedData() throws Exception {
-		String fieldsDisplay = "Text_INSTANCE_hcxo";
-
-		String xml = _dynamicDataMappingUpgradeProcess.toXML(
-			HashMapBuilder.put(
-				"_fieldsDisplay",
-				_createLocalizationXML(new String[] {fieldsDisplay})
-			).put(
-				"Text", _createLocalizationXML(new String[] {"Joe Bloggs"})
-			).build());
-
-		Document document = SAXReaderUtil.read(xml);
-
-		Map<String, Map<String, List<String>>> dataMap = _toDataMap(document);
-
-		Map<String, List<String>> actualTextData = dataMap.get("Text");
-
-		_assertEquals(
-			ListUtil.fromArray("Joe Bloggs"), actualTextData.get("en_US"));
-
-		Map<String, List<String>> actualFieldsDisplayData = dataMap.get(
-			"_fieldsDisplay");
-
-		_assertEquals(
-			ListUtil.fromArray(fieldsDisplay),
-			actualFieldsDisplayData.get("en_US"));
-	}
-
-	@Test
 	public void testToXMLWithRepeatableAndLocalizedData() throws Exception {
 		String fieldsDisplay =
 			"Text_INSTANCE_hcxo,Text_INSTANCE_vfqd,Text_INSTANCE_ycey";
@@ -608,6 +579,35 @@ public class DynamicDataMappingUpgradeProcessTest extends BaseDDMTestCase {
 
 		_assertEquals(
 			ListUtil.fromArray("D", "E", "F"), actualTextData.get("pt_BR"));
+
+		Map<String, List<String>> actualFieldsDisplayData = dataMap.get(
+			"_fieldsDisplay");
+
+		_assertEquals(
+			ListUtil.fromArray(fieldsDisplay),
+			actualFieldsDisplayData.get("en_US"));
+	}
+
+	@Test
+	public void testToXMLWithoutLocalizedData() throws Exception {
+		String fieldsDisplay = "Text_INSTANCE_hcxo";
+
+		String xml = _dynamicDataMappingUpgradeProcess.toXML(
+			HashMapBuilder.put(
+				"_fieldsDisplay",
+				_createLocalizationXML(new String[] {fieldsDisplay})
+			).put(
+				"Text", _createLocalizationXML(new String[] {"Joe Bloggs"})
+			).build());
+
+		Document document = SAXReaderUtil.read(xml);
+
+		Map<String, Map<String, List<String>>> dataMap = _toDataMap(document);
+
+		Map<String, List<String>> actualTextData = dataMap.get("Text");
+
+		_assertEquals(
+			ListUtil.fromArray("Joe Bloggs"), actualTextData.get("en_US"));
 
 		Map<String, List<String>> actualFieldsDisplayData = dataMap.get(
 			"_fieldsDisplay");

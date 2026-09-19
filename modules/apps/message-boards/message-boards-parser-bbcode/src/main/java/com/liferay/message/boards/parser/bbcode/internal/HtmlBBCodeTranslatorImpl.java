@@ -130,13 +130,13 @@ public class HtmlBBCodeTranslatorImpl implements BBCodeTranslator {
 	}
 
 	@Override
-	public String[][] getEmoticons() {
-		return _EMOTICONS;
+	public String[] getEmoticonSymbols() {
+		return _emoticonSymbols;
 	}
 
 	@Override
-	public String[] getEmoticonSymbols() {
-		return _emoticonSymbols;
+	public String[][] getEmoticons() {
+		return _EMOTICONS;
 	}
 
 	@Override

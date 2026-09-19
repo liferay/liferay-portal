@@ -61,13 +61,13 @@ public abstract class SharepointWSObject
 	}
 
 	@Override
-	public String getExtension() {
-		return sharepointObject.getExtension();
+	public String getExtRepositoryModelKey() {
+		return String.valueOf(sharepointObject.getSharepointObjectId());
 	}
 
 	@Override
-	public String getExtRepositoryModelKey() {
-		return String.valueOf(sharepointObject.getSharepointObjectId());
+	public String getExtension() {
+		return sharepointObject.getExtension();
 	}
 
 	@Override

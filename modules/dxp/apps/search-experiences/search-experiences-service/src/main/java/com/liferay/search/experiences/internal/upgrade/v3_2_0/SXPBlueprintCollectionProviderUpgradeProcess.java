@@ -70,6 +70,18 @@ public class SXPBlueprintCollectionProviderUpgradeProcess
 		}
 	}
 
+	private void _upgradeSXPBlueprintSchemaVersion() throws Exception {
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"update SXPBlueprint set schemaVersion = ? where " +
+					"schemaVersion <> ?")) {
+
+			preparedStatement.setString(1, _SCHEMA_VERSION);
+			preparedStatement.setString(2, _SCHEMA_VERSION);
+
+			preparedStatement.executeUpdate();
+		}
+	}
+
 	private void _upgradeSXPBlueprints(long companyId) throws Exception {
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				"select configurationJSON, sxpBlueprintId from SXPBlueprint " +
@@ -100,18 +112,6 @@ public class SXPBlueprintCollectionProviderUpgradeProcess
 
 				preparedStatement2.executeBatch();
 			}
-		}
-	}
-
-	private void _upgradeSXPBlueprintSchemaVersion() throws Exception {
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"update SXPBlueprint set schemaVersion = ? where " +
-					"schemaVersion <> ?")) {
-
-			preparedStatement.setString(1, _SCHEMA_VERSION);
-			preparedStatement.setString(2, _SCHEMA_VERSION);
-
-			preparedStatement.executeUpdate();
 		}
 	}
 

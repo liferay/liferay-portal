@@ -21,9 +21,9 @@ public interface TestClassGroup {
 
 	public Job getJob();
 
-	public List<TestClass> getTestClasses();
-
 	public List<File> getTestClassFiles();
+
+	public List<TestClass> getTestClasses();
 
 	public boolean hasTestClasses();
 

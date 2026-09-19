@@ -25,12 +25,12 @@ public interface GroupItemSelectorProvider {
 		return getEmptyResultsMessage();
 	}
 
+	public String getGroupType();
+
 	public List<Group> getGroups(
 		long companyId, long groupId, String keywords, int start, int end);
 
 	public int getGroupsCount(long companyId, long groupId, String keywords);
-
-	public String getGroupType();
 
 	public String getIcon();
 

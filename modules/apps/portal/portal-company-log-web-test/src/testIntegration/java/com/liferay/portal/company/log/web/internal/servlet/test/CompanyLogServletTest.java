@@ -187,20 +187,6 @@ public class CompanyLogServletTest {
 			HttpServletResponse.SC_NOT_FOUND);
 	}
 
-	@Test
-	public void testDownloadWithoutStartAndEnd() throws Exception {
-		MockHttpServletRequest mockHttpServletRequest =
-			_createMockHttpServletRequest(
-				StringBundler.concat(
-					StringPool.SLASH, _company.getCompanyId(), StringPool.SLASH,
-					_file.getName()),
-				_companyAdminUser);
-
-		_servlet.service(mockHttpServletRequest, _mockHttpServletResponse);
-
-		_assertHttpServletResponse(0, _file.length());
-	}
-
 	@Ignore
 	@Test
 	public void testDownloadWithStartGreaterThanOrEqualsToEnd()
@@ -236,6 +222,20 @@ public class CompanyLogServletTest {
 		_assertDownloadWithInvalidData("-3", "-2");
 		_assertDownloadWithInvalidData("-3", "3");
 		_assertDownloadWithInvalidData("3", "-3");
+	}
+
+	@Test
+	public void testDownloadWithoutStartAndEnd() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest =
+			_createMockHttpServletRequest(
+				StringBundler.concat(
+					StringPool.SLASH, _company.getCompanyId(), StringPool.SLASH,
+					_file.getName()),
+				_companyAdminUser);
+
+		_servlet.service(mockHttpServletRequest, _mockHttpServletResponse);
+
+		_assertHttpServletResponse(0, _file.length());
 	}
 
 	@Ignore

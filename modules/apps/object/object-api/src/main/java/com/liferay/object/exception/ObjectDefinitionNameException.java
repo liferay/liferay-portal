@@ -21,20 +21,20 @@ public class ObjectDefinitionNameException extends PortalException {
 
 	}
 
-	public static class MustBeginWithUpperCaseLetter
-		extends ObjectDefinitionNameException {
-
-		public MustBeginWithUpperCaseLetter() {
-			super("The first character of a name must be an upper case letter");
-		}
-
-	}
-
 	public static class MustBeLessThan41Characters
 		extends ObjectDefinitionNameException {
 
 		public MustBeLessThan41Characters() {
 			super("Name must be less than 41 characters");
+		}
+
+	}
+
+	public static class MustBeginWithUpperCaseLetter
+		extends ObjectDefinitionNameException {
+
+		public MustBeginWithUpperCaseLetter() {
+			super("The first character of a name must be an upper case letter");
 		}
 
 	}
