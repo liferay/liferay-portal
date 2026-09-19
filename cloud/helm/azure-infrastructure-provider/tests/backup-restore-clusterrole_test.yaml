@@ -6,6 +6,18 @@ templates:
     -   charts/liferay-subchart-backup-restore/templates/clusterrole.yaml
 tests:
     -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        apiGroups: ["azure.liferay.com"]
+                    path: rules
+            -   notContains:
+                    any: true
+                    content:
+                        resources: ["secrets"]
+                    path: rules
+        it: Grants no access to a cloud specific composite or secrets
+    -   asserts:
             -   hasDocuments:
                     count: 1
             -   isKind:
@@ -41,15 +53,3 @@ tests:
                             resources: ["accounts"]
                             verbs: ["get", "list"]
         it: Renders the backup restore cluster role
-    -   asserts:
-            -   notContains:
-                    any: true
-                    content:
-                        apiGroups: ["azure.liferay.com"]
-                    path: rules
-            -   notContains:
-                    any: true
-                    content:
-                        resources: ["secrets"]
-                    path: rules
-        it: Grants no access to a cloud specific composite or secrets

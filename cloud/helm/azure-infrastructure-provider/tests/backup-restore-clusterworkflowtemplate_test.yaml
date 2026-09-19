@@ -47,37 +47,6 @@ tests:
         it: Pins the dataprotection extension and logs in before any az command
     -   asserts:
             -   equal:
-                    path: spec.templates[13].name
-                    value: restore-document-library-blob
-            -   matchRegex:
-                    path: spec.templates[13].script.source
-                    pattern: --target-resource-id
-            -   notMatchRegex:
-                    path: spec.templates[13].script.source
-                    pattern: --backup-instance-id
-            -   matchRegex:
-                    path: spec.templates[13].script.source
-                    pattern: az dataprotection job show
-            -   matchRegex:
-                    path: spec.templates[13].script.source
-                    pattern: --query properties.status
-        it: Restores to the alternate location and gates on the job status
-    -   asserts:
-            -   equal:
-                    path: spec.templates[6].name
-                    value: get-recovery-point-time
-            -   matchRegex:
-                    path: spec.templates[6].script.source
-                    pattern: --query properties.recoveryPointTime
-            -   matchRegex:
-                    path: spec.templates[6].script.source
-                    pattern: --query backup.earliestRestoreDate
-            -   matchRegex:
-                    path: spec.templates[6].script.source
-                    pattern: "\\[\\?properties.dataSourceInfo.resourceID=="
-        it: Reads the restore point from the recovery point and guards it against the window
-    -   asserts:
-            -   equal:
                     path: spec.arguments.parameters[0].name
                     value: recovery-point-id
             -   equal:
@@ -95,6 +64,20 @@ tests:
         it: Reads the recovery point identifier LCD-53113 declares but does not forward
     -   asserts:
             -   equal:
+                    path: spec.templates[6].name
+                    value: get-recovery-point-time
+            -   matchRegex:
+                    path: spec.templates[6].script.source
+                    pattern: --query properties.recoveryPointTime
+            -   matchRegex:
+                    path: spec.templates[6].script.source
+                    pattern: --query backup.earliestRestoreDate
+            -   matchRegex:
+                    path: spec.templates[6].script.source
+                    pattern: "\\[\\?properties.dataSourceInfo.resourceID=="
+        it: Reads the restore point from the recovery point and guards it against the window
+    -   asserts:
+            -   equal:
                     path: spec.templates[10].name
                     value: reset-restore-phase
             -   matchRegex:
@@ -106,18 +89,21 @@ tests:
         it: Resets the restore phase under the same field manager on exit
     -   asserts:
             -   equal:
-                    path: spec.templates[3].activeDeadlineSeconds
-                    value: 7200
-            -   equal:
-                    path: spec.templates[6].activeDeadlineSeconds
-                    value: 7200
-            -   equal:
-                    path: spec.templates[13].activeDeadlineSeconds
-                    value: 7200
-            -   equal:
-                    path: spec.templates[17].activeDeadlineSeconds
-                    value: 3600
-        it: Sets every step timeout well above the measured restore duration
+                    path: spec.templates[13].name
+                    value: restore-document-library-blob
+            -   matchRegex:
+                    path: spec.templates[13].script.source
+                    pattern: --target-resource-id
+            -   notMatchRegex:
+                    path: spec.templates[13].script.source
+                    pattern: --backup-instance-id
+            -   matchRegex:
+                    path: spec.templates[13].script.source
+                    pattern: az dataprotection job show
+            -   matchRegex:
+                    path: spec.templates[13].script.source
+                    pattern: --query properties.status
+        it: Restores to the alternate location and gates on the job status
     -   asserts:
             -   equal:
                     path: spec.templates[9].name
@@ -149,27 +135,18 @@ tests:
         it: Runs the database and document library restores as independent legs
     -   asserts:
             -   equal:
-                    path: spec.templates[5].name
-                    value: get-inactive-storage-account
-            -   matchRegex:
-                    path: spec.templates[5].script.source
-                    pattern: conditions\[\?\(@.type=='Ready'\)\]
+                    path: spec.templates[3].activeDeadlineSeconds
+                    value: 7200
             -   equal:
-                    path: spec.templates[3].retryStrategy.retryPolicy
-                    value: OnFailure
+                    path: spec.templates[6].activeDeadlineSeconds
+                    value: 7200
             -   equal:
-                    path: spec.templates[3].retryStrategy.limit
-                    value: 5
-            -   matchRegex:
-                    path: spec.templates[3].script.source
-                    pattern: ":lower:"
-            -   matchRegex:
-                    path: spec.templates[3].script.source
-                    pattern: "exists}\" = \"false\""
+                    path: spec.templates[13].activeDeadlineSeconds
+                    value: 7200
             -   equal:
-                    path: spec.templates[3].retryStrategy.backoff.maxDuration
-                    value: 20m
-        it: Waits only for the storage account and retries past role assignment propagation
+                    path: spec.templates[17].activeDeadlineSeconds
+                    value: 3600
+        it: Sets every step timeout well above the measured restore duration
     -   asserts:
             -   equal:
                     path: spec.templates[9].dag.tasks[9].name
@@ -211,3 +188,26 @@ tests:
                     path: spec.templates[16].script.source
                     pattern: (?s)function main \{.*?\nmain
         it: Suspends backups on the demoted plane and resumes them on the promoted one
+    -   asserts:
+            -   equal:
+                    path: spec.templates[5].name
+                    value: get-inactive-storage-account
+            -   matchRegex:
+                    path: spec.templates[5].script.source
+                    pattern: conditions\[\?\(@.type=='Ready'\)\]
+            -   equal:
+                    path: spec.templates[3].retryStrategy.retryPolicy
+                    value: OnFailure
+            -   equal:
+                    path: spec.templates[3].retryStrategy.limit
+                    value: 5
+            -   matchRegex:
+                    path: spec.templates[3].script.source
+                    pattern: ":lower:"
+            -   matchRegex:
+                    path: spec.templates[3].script.source
+                    pattern: "exists}\" = \"false\""
+            -   equal:
+                    path: spec.templates[3].retryStrategy.backoff.maxDuration
+                    value: 20m
+        it: Waits only for the storage account and retries past role assignment propagation
