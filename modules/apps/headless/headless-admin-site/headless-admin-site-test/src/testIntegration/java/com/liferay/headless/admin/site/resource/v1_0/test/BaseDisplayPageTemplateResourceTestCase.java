@@ -227,6 +227,49 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteDesignLibraryDisplayPageTemplate() throws Exception {
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DisplayPageTemplate displayPageTemplate =
+			testDeleteDesignLibraryDisplayPageTemplate_addDisplayPageTemplate();
+
+		assertHttpResponseStatusCode(
+			204,
+			displayPageTemplateResource.
+				deleteDesignLibraryDisplayPageTemplateHttpResponse(
+					testDeleteDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode(),
+					displayPageTemplate.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplateHttpResponse(
+					testDeleteDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode(),
+					displayPageTemplate.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplateHttpResponse(
+					testDeleteDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode(),
+					"-"));
+	}
+
+	protected DisplayPageTemplate
+			testDeleteDesignLibraryDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		return displayPageTemplateResource.postSiteDisplayPageTemplate(
+			testGroup.getExternalReferenceCode(), randomDisplayPageTemplate());
+	}
+
+	protected String
+			testDeleteDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testDeleteSiteDisplayPageTemplate() throws Exception {
 		@SuppressWarnings("PMD.UnusedLocalVariable")
 		DisplayPageTemplate displayPageTemplate =
@@ -264,6 +307,558 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 		throws Exception {
 
 		return testGroup.getExternalReferenceCode();
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplate() throws Exception {
+		DisplayPageTemplate postDisplayPageTemplate =
+			testGetDesignLibraryDisplayPageTemplate_addDisplayPageTemplate();
+
+		DisplayPageTemplate getDisplayPageTemplate =
+			displayPageTemplateResource.getDesignLibraryDisplayPageTemplate(
+				testGetDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode(),
+				postDisplayPageTemplate.getExternalReferenceCode());
+
+		assertEquals(postDisplayPageTemplate, getDisplayPageTemplate);
+		assertValid(getDisplayPageTemplate);
+	}
+
+	protected DisplayPageTemplate
+			testGetDesignLibraryDisplayPageTemplate_addDisplayPageTemplate()
+		throws Exception {
+
+		return displayPageTemplateResource.postSiteDisplayPageTemplate(
+			testGroup.getExternalReferenceCode(), randomDisplayPageTemplate());
+	}
+
+	protected String
+			testGetDesignLibraryDisplayPageTemplate_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatePermissionsPage()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DisplayPageTemplate postDisplayPageTemplate =
+			testGetDesignLibraryDisplayPageTemplatePermissionsPage_addDisplayPageTemplate();
+
+		Page<Permission> page =
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatePermissionsPage(
+					null, postDisplayPageTemplate.getExternalReferenceCode(),
+					RoleConstants.GUEST);
+
+		Assert.assertNotNull(page);
+	}
+
+	protected DisplayPageTemplate
+			testGetDesignLibraryDisplayPageTemplatePermissionsPage_addDisplayPageTemplate()
+		throws Exception {
+
+		return displayPageTemplateResource.postSiteDisplayPageTemplate(
+			testGroup.getExternalReferenceCode(), randomDisplayPageTemplate());
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPage()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryDisplayPageTemplatesPage_getDesignLibraryExternalReferenceCode();
+		String irrelevantDesignLibraryExternalReferenceCode =
+			testGetDesignLibraryDisplayPageTemplatesPage_getIrrelevantDesignLibraryExternalReferenceCode();
+
+		Page<DisplayPageTemplate> page =
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantDesignLibraryExternalReferenceCode != null) {
+			DisplayPageTemplate irrelevantDisplayPageTemplate =
+				testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+					irrelevantDesignLibraryExternalReferenceCode,
+					randomIrrelevantDisplayPageTemplate());
+
+			page =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						irrelevantDesignLibraryExternalReferenceCode, null,
+						null, null, Pagination.of(1, (int)totalCount + 1),
+						null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantDisplayPageTemplate,
+				(List<DisplayPageTemplate>)page.getItems());
+			assertValid(
+				page,
+				testGetDesignLibraryDisplayPageTemplatesPage_getExpectedActions(
+					irrelevantDesignLibraryExternalReferenceCode));
+		}
+
+		DisplayPageTemplate displayPageTemplate1 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				randomDisplayPageTemplate());
+
+		DisplayPageTemplate displayPageTemplate2 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				randomDisplayPageTemplate());
+
+		page =
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatesPage(
+					designLibraryExternalReferenceCode, null, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			displayPageTemplate1, (List<DisplayPageTemplate>)page.getItems());
+		assertContains(
+			displayPageTemplate2, (List<DisplayPageTemplate>)page.getItems());
+		assertValid(
+			page,
+			testGetDesignLibraryDisplayPageTemplatesPage_getExpectedActions(
+				designLibraryExternalReferenceCode));
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetDesignLibraryDisplayPageTemplatesPage_getExpectedActions(
+				String designLibraryExternalReferenceCode)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithFilterDateTimeEquals()
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryDisplayPageTemplatesPage_getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate1 = randomDisplayPageTemplate();
+
+		displayPageTemplate1 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode, displayPageTemplate1);
+
+		for (EntityField entityField : entityFields) {
+			Page<DisplayPageTemplate> page =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null,
+						getFilterString(
+							entityField, "between", displayPageTemplate1),
+						Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(displayPageTemplate1),
+				(List<DisplayPageTemplate>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithFilterDoubleEquals()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithFilter(
+			"eq", EntityField.Type.DOUBLE);
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithFilterStringContains()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithFilter(
+			"contains", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithFilterStringEquals()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithFilter(
+			"eq", EntityField.Type.STRING);
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithFilterStringStartsWith()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithFilter(
+			"startswith", EntityField.Type.STRING);
+	}
+
+	protected void testGetDesignLibraryDisplayPageTemplatesPageWithFilter(
+			String operator, EntityField.Type type)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryDisplayPageTemplatesPage_getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate1 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				randomDisplayPageTemplate());
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DisplayPageTemplate displayPageTemplate2 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				randomDisplayPageTemplate());
+
+		for (EntityField entityField : entityFields) {
+			Page<DisplayPageTemplate> page =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null,
+						getFilterString(
+							entityField, operator, displayPageTemplate1),
+						Pagination.of(1, 2), null);
+
+			assertEquals(
+				Collections.singletonList(displayPageTemplate1),
+				(List<DisplayPageTemplate>)page.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithPagination()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryDisplayPageTemplatesPage_getDesignLibraryExternalReferenceCode();
+
+		Page<DisplayPageTemplate> displayPageTemplatesPage =
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatesPage(
+					designLibraryExternalReferenceCode, null, null, null, null,
+					null);
+
+		int totalCount = GetterUtil.getInteger(
+			displayPageTemplatesPage.getTotalCount());
+
+		DisplayPageTemplate displayPageTemplate1 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				randomDisplayPageTemplate());
+
+		DisplayPageTemplate displayPageTemplate2 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				randomDisplayPageTemplate());
+
+		DisplayPageTemplate displayPageTemplate3 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode,
+				randomDisplayPageTemplate());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<DisplayPageTemplate> page1 =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				displayPageTemplate1,
+				(List<DisplayPageTemplate>)page1.getItems());
+
+			Page<DisplayPageTemplate> page2 =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			assertContains(
+				displayPageTemplate2,
+				(List<DisplayPageTemplate>)page2.getItems());
+
+			Page<DisplayPageTemplate> page3 =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(
+							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+							pageSizeLimit),
+						null);
+
+			assertContains(
+				displayPageTemplate3,
+				(List<DisplayPageTemplate>)page3.getItems());
+		}
+		else {
+			Page<DisplayPageTemplate> page1 =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(1, totalCount + 2), null);
+
+			List<DisplayPageTemplate> displayPageTemplates1 =
+				(List<DisplayPageTemplate>)page1.getItems();
+
+			Assert.assertEquals(
+				displayPageTemplates1.toString(), totalCount + 2,
+				displayPageTemplates1.size());
+
+			Page<DisplayPageTemplate> page2 =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<DisplayPageTemplate> displayPageTemplates2 =
+				(List<DisplayPageTemplate>)page2.getItems();
+
+			Assert.assertEquals(
+				displayPageTemplates2.toString(), 1,
+				displayPageTemplates2.size());
+
+			Page<DisplayPageTemplate> page3 =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(
+				displayPageTemplate1,
+				(List<DisplayPageTemplate>)page3.getItems());
+			assertContains(
+				displayPageTemplate2,
+				(List<DisplayPageTemplate>)page3.getItems());
+			assertContains(
+				displayPageTemplate3,
+				(List<DisplayPageTemplate>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithSortDateTime()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, displayPageTemplate1, displayPageTemplate2) -> {
+				BeanTestUtil.setProperty(
+					displayPageTemplate1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithSortDouble()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, displayPageTemplate1, displayPageTemplate2) -> {
+				BeanTestUtil.setProperty(
+					displayPageTemplate1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					displayPageTemplate2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithSortInteger()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, displayPageTemplate1, displayPageTemplate2) -> {
+				BeanTestUtil.setProperty(
+					displayPageTemplate1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					displayPageTemplate2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetDesignLibraryDisplayPageTemplatesPageWithSortString()
+		throws Exception {
+
+		testGetDesignLibraryDisplayPageTemplatesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, displayPageTemplate1, displayPageTemplate2) -> {
+				Class<?> clazz = displayPageTemplate1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						displayPageTemplate1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						displayPageTemplate2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						displayPageTemplate1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						displayPageTemplate2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						displayPageTemplate1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						displayPageTemplate2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetDesignLibraryDisplayPageTemplatesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, DisplayPageTemplate, DisplayPageTemplate,
+				 Exception> unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String designLibraryExternalReferenceCode =
+			testGetDesignLibraryDisplayPageTemplatesPage_getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate1 = randomDisplayPageTemplate();
+		DisplayPageTemplate displayPageTemplate2 = randomDisplayPageTemplate();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, displayPageTemplate1, displayPageTemplate2);
+		}
+
+		displayPageTemplate1 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode, displayPageTemplate1);
+
+		displayPageTemplate2 =
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				designLibraryExternalReferenceCode, displayPageTemplate2);
+
+		Page<DisplayPageTemplate> page =
+			displayPageTemplateResource.
+				getDesignLibraryDisplayPageTemplatesPage(
+					designLibraryExternalReferenceCode, null, null, null, null,
+					null);
+
+		for (EntityField entityField : entityFields) {
+			Page<DisplayPageTemplate> ascPage =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
+						entityField.getName() + ":asc");
+
+			assertContains(
+				displayPageTemplate1,
+				(List<DisplayPageTemplate>)ascPage.getItems());
+			assertContains(
+				displayPageTemplate2,
+				(List<DisplayPageTemplate>)ascPage.getItems());
+
+			Page<DisplayPageTemplate> descPage =
+				displayPageTemplateResource.
+					getDesignLibraryDisplayPageTemplatesPage(
+						designLibraryExternalReferenceCode, null, null, null,
+						Pagination.of(1, (int)page.getTotalCount() + 1),
+						entityField.getName() + ":desc");
+
+			assertContains(
+				displayPageTemplate2,
+				(List<DisplayPageTemplate>)descPage.getItems());
+			assertContains(
+				displayPageTemplate1,
+				(List<DisplayPageTemplate>)descPage.getItems());
+		}
+	}
+
+	protected DisplayPageTemplate
+			testGetDesignLibraryDisplayPageTemplatesPage_addDisplayPageTemplate(
+				String designLibraryExternalReferenceCode,
+				DisplayPageTemplate displayPageTemplate)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetDesignLibraryDisplayPageTemplatesPage_getDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testGetDesignLibraryDisplayPageTemplatesPage_getIrrelevantDesignLibraryExternalReferenceCode()
+		throws Exception {
+
+		return null;
 	}
 
 	@Test
@@ -1068,6 +1663,55 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 	}
 
 	@Test
+	public void testPutDesignLibraryDisplayPageTemplatePermissionsPage()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		DisplayPageTemplate displayPageTemplate =
+			testPutDesignLibraryDisplayPageTemplatePermissionsPage_addDisplayPageTemplate();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		assertHttpResponseStatusCode(
+			200,
+			displayPageTemplateResource.
+				putDesignLibraryDisplayPageTemplatePermissionsPageHttpResponse(
+					null, displayPageTemplate.getExternalReferenceCode(),
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"VIEW"});
+								setRoleName(role.getName());
+							}
+						}
+					}));
+
+		assertHttpResponseStatusCode(
+			404,
+			displayPageTemplateResource.
+				putDesignLibraryDisplayPageTemplatePermissionsPageHttpResponse(
+					null, displayPageTemplate.getExternalReferenceCode(),
+					new Permission[] {
+						new Permission() {
+							{
+								setActionIds(new String[] {"-"});
+								setRoleName("-");
+							}
+						}
+					}));
+	}
+
+	protected DisplayPageTemplate
+			testPutDesignLibraryDisplayPageTemplatePermissionsPage_addDisplayPageTemplate()
+		throws Exception {
+
+		return displayPageTemplateResource.postSiteDisplayPageTemplate(
+			testGroup.getExternalReferenceCode(), randomDisplayPageTemplate());
+	}
+
+	@Test
 	public void testPutSiteDisplayPageTemplate() throws Exception {
 		DisplayPageTemplate postDisplayPageTemplate =
 			testPutSiteDisplayPageTemplate_addDisplayPageTemplate();
@@ -1362,6 +2006,14 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (displayPageTemplate.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals(
 					"contentTypeReference", additionalAssertFieldName)) {
@@ -1671,6 +2323,17 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)displayPageTemplate1.getActions(),
+						(Map)displayPageTemplate2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals(
 					"contentTypeReference", additionalAssertFieldName)) {
@@ -2038,6 +2701,11 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
 
 		if (entityFieldName.equals("contentTypeReference")) {
 			throw new IllegalArgumentException(
@@ -2705,4 +3373,4 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			DisplayPageTemplateResource _displayPageTemplateResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:813250976
+// LIFERAY-REST-BUILDER-HASH:1579022092

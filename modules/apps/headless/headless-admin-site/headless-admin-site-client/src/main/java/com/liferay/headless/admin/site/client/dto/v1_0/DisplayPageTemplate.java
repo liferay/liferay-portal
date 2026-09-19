@@ -27,6 +27,28 @@ public class DisplayPageTemplate implements Cloneable, Serializable {
 		return DisplayPageTemplateSerDes.toDTO(json);
 	}
 
+	public Map<String, Map<String, String>> getActions() {
+		return actions;
+	}
+
+	public void setActions(Map<String, Map<String, String>> actions) {
+		this.actions = actions;
+	}
+
+	public void setActions(
+		UnsafeSupplier<Map<String, Map<String, String>>, Exception>
+			actionsUnsafeSupplier) {
+
+		try {
+			actions = actionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Map<String, Map<String, String>> actions;
+
 	public ClassSubtypeReference getContentTypeReference() {
 		return contentTypeReference;
 	}
@@ -434,4 +456,4 @@ public class DisplayPageTemplate implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1285173238
+// LIFERAY-REST-BUILDER-HASH:-747269028

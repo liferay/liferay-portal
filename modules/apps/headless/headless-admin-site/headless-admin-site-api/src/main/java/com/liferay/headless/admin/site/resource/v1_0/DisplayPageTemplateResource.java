@@ -47,9 +47,34 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface DisplayPageTemplateResource {
 
+	public void deleteDesignLibraryDisplayPageTemplate(
+			String designLibraryExternalReferenceCode,
+			String displayPageTemplateExternalReferenceCode)
+		throws Exception;
+
 	public void deleteSiteDisplayPageTemplate(
 			String siteExternalReferenceCode,
 			String displayPageTemplateExternalReferenceCode)
+		throws Exception;
+
+	public DisplayPageTemplate getDesignLibraryDisplayPageTemplate(
+			String designLibraryExternalReferenceCode,
+			String displayPageTemplateExternalReferenceCode)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			getDesignLibraryDisplayPageTemplatePermissionsPage(
+				String designLibraryExternalReferenceCode,
+				String displayPageTemplateExternalReferenceCode,
+				String roleNames)
+		throws Exception;
+
+	public Page<DisplayPageTemplate> getDesignLibraryDisplayPageTemplatesPage(
+			String designLibraryExternalReferenceCode, String search,
+			com.liferay.portal.vulcan.aggregation.Aggregation aggregation,
+			com.liferay.portal.kernel.search.filter.Filter filter,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public DisplayPageTemplate getSiteDisplayPageTemplate(
@@ -113,6 +138,13 @@ public interface DisplayPageTemplateResource {
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
+		throws Exception;
+
+	public Page<com.liferay.portal.vulcan.permission.Permission>
+			putDesignLibraryDisplayPageTemplatePermissionsPage(
+				String designLibraryExternalReferenceCode,
+				String displayPageTemplateExternalReferenceCode,
+				com.liferay.portal.vulcan.permission.Permission[] permissions)
 		throws Exception;
 
 	public DisplayPageTemplate putSiteDisplayPageTemplate(
@@ -224,4 +256,4 @@ public interface DisplayPageTemplateResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2029838213
+// LIFERAY-REST-BUILDER-HASH:1151756371
