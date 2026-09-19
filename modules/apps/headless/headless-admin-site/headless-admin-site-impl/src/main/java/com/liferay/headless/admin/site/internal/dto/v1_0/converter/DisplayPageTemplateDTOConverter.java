@@ -62,6 +62,14 @@ public class DisplayPageTemplateDTOConverter
 
 		return new DisplayPageTemplate() {
 			{
+				setActions(
+					() -> {
+						if (dtoConverterContext == null) {
+							return null;
+						}
+
+						return dtoConverterContext.getActions();
+					});
 				setContentTypeReference(
 					() -> new ClassSubtypeReference() {
 						{
