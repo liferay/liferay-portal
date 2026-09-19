@@ -40,6 +40,7 @@ create table ObjectDefinition (
 	active_ BOOLEAN,
 	className VARCHAR(255) null,
 	dbTableName VARCHAR(75) null,
+	description STRING null,
 	enableCategorization BOOLEAN,
 	enableComments BOOLEAN,
 	enableFormContainer BOOLEAN,

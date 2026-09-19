@@ -54,6 +54,7 @@
 		<field name="DBTableName" type="String">
 			<validator name="required" />
 		</field>
+		<field localized="true" name="description" type="String" />
 		<field name="enableCategorization" type="boolean" />
 		<field name="enableComments" type="boolean" />
 		<field name="enableFormContainer" type="boolean" />

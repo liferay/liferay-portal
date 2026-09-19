@@ -148,6 +148,8 @@ public class ObjectDefinitionPersistenceTest {
 
 		newObjectDefinition.setDBTableName(RandomTestUtil.randomString());
 
+		newObjectDefinition.setDescription(RandomTestUtil.randomString());
+
 		newObjectDefinition.setEnableCategorization(
 			RandomTestUtil.randomBoolean());
 
@@ -266,6 +268,9 @@ public class ObjectDefinitionPersistenceTest {
 		Assert.assertEquals(
 			existingObjectDefinition.getDBTableName(),
 			newObjectDefinition.getDBTableName());
+		Assert.assertEquals(
+			existingObjectDefinition.getDescription(),
+			newObjectDefinition.getDescription());
 		Assert.assertEquals(
 			existingObjectDefinition.isEnableCategorization(),
 			newObjectDefinition.isEnableCategorization());
@@ -559,9 +564,9 @@ public class ObjectDefinitionPersistenceTest {
 			true, "descriptionObjectFieldId", true, "objectFolderId", true,
 			"titleObjectFieldId", true, "accountEntryRestricted", true,
 			"active", true, "className", true, "dbTableName", true,
-			"enableCategorization", true, "enableComments", true,
-			"enableFormContainer", true, "enableFriendlyURLCustomization", true,
-			"enableIndexSearch", true, "enableObjectEntryDraft", true,
+			"description", true, "enableCategorization", true, "enableComments",
+			true, "enableFormContainer", true, "enableFriendlyURLCustomization",
+			true, "enableIndexSearch", true, "enableObjectEntryDraft", true,
 			"enableObjectEntryHistory", true, "enableObjectEntrySchedule", true,
 			"enableObjectEntrySubscription", true,
 			"enableObjectEntryVersioning", true, "friendlyURLSeparator", true,
@@ -919,6 +924,8 @@ public class ObjectDefinitionPersistenceTest {
 
 		objectDefinition.setDBTableName(RandomTestUtil.randomString());
 
+		objectDefinition.setDescription(RandomTestUtil.randomString());
+
 		objectDefinition.setEnableCategorization(
 			RandomTestUtil.randomBoolean());
 
@@ -988,4 +995,4 @@ public class ObjectDefinitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-932054519
+// LIFERAY-SERVICE-BUILDER-HASH:-114808798

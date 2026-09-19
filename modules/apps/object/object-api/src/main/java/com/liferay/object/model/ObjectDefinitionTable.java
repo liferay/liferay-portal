@@ -73,6 +73,9 @@ public class ObjectDefinitionTable extends BaseTable<ObjectDefinitionTable> {
 	public final Column<ObjectDefinitionTable, String> dbTableName =
 		createColumn(
 			"dbTableName", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<ObjectDefinitionTable, String> description =
+		createColumn(
+			"description", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<ObjectDefinitionTable, Boolean> enableCategorization =
 		createColumn(
 			"enableCategorization", Boolean.class, Types.BOOLEAN,
@@ -161,4 +164,4 @@ public class ObjectDefinitionTable extends BaseTable<ObjectDefinitionTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:368111822
+// LIFERAY-SERVICE-BUILDER-HASH:-1016209254

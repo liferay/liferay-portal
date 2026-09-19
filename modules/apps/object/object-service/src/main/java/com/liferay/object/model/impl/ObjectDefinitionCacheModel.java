@@ -69,7 +69,7 @@ public class ObjectDefinitionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(85);
+		StringBundler sb = new StringBundler(87);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -105,6 +105,8 @@ public class ObjectDefinitionCacheModel
 		sb.append(className);
 		sb.append(", dbTableName=");
 		sb.append(dbTableName);
+		sb.append(", description=");
+		sb.append(description);
 		sb.append(", enableCategorization=");
 		sb.append(enableCategorization);
 		sb.append(", enableComments=");
@@ -227,6 +229,13 @@ public class ObjectDefinitionCacheModel
 		}
 		else {
 			objectDefinitionImpl.setDBTableName(dbTableName);
+		}
+
+		if (description == null) {
+			objectDefinitionImpl.setDescription("");
+		}
+		else {
+			objectDefinitionImpl.setDescription(description);
 		}
 
 		objectDefinitionImpl.setEnableCategorization(enableCategorization);
@@ -357,6 +366,7 @@ public class ObjectDefinitionCacheModel
 		active = objectInput.readBoolean();
 		className = objectInput.readUTF();
 		dbTableName = objectInput.readUTF();
+		description = objectInput.readUTF();
 
 		enableCategorization = objectInput.readBoolean();
 
@@ -457,6 +467,13 @@ public class ObjectDefinitionCacheModel
 		}
 		else {
 			objectOutput.writeUTF(dbTableName);
+		}
+
+		if (description == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(description);
 		}
 
 		objectOutput.writeBoolean(enableCategorization);
@@ -577,6 +594,7 @@ public class ObjectDefinitionCacheModel
 	public boolean active;
 	public String className;
 	public String dbTableName;
+	public String description;
 	public boolean enableCategorization;
 	public boolean enableComments;
 	public boolean enableFormContainer;
@@ -604,4 +622,4 @@ public class ObjectDefinitionCacheModel
 	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2015390850
+// LIFERAY-SERVICE-BUILDER-HASH:439145040

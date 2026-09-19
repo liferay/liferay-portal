@@ -81,7 +81,7 @@ public class ObjectDefinitionModelImpl
 		{"objectFolderId", Types.BIGINT}, {"titleObjectFieldId", Types.BIGINT},
 		{"accountEntryRestricted", Types.BOOLEAN}, {"active_", Types.BOOLEAN},
 		{"className", Types.VARCHAR}, {"dbTableName", Types.VARCHAR},
-		{"enableCategorization", Types.BOOLEAN},
+		{"description", Types.VARCHAR}, {"enableCategorization", Types.BOOLEAN},
 		{"enableComments", Types.BOOLEAN},
 		{"enableFormContainer", Types.BOOLEAN},
 		{"enableFriendlyURLCustomization", Types.BOOLEAN},
@@ -122,6 +122,7 @@ public class ObjectDefinitionModelImpl
 		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("className", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("dbTableName", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("enableCategorization", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("enableComments", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("enableFormContainer", Types.BOOLEAN);
@@ -150,7 +151,7 @@ public class ObjectDefinitionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ObjectDefinition (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectDefinitionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,accountERObjectFieldId LONG,descriptionObjectFieldId LONG,objectFolderId LONG,titleObjectFieldId LONG,accountEntryRestricted BOOLEAN,active_ BOOLEAN,className VARCHAR(255) null,dbTableName VARCHAR(75) null,enableCategorization BOOLEAN,enableComments BOOLEAN,enableFormContainer BOOLEAN,enableFriendlyURLCustomization BOOLEAN,enableIndexSearch BOOLEAN,enableObjectEntryDraft BOOLEAN,enableObjectEntryHistory BOOLEAN,enableObjectEntrySchedule BOOLEAN,enableObjectEntrySubscription BOOLEAN,enableObjectEntryVersioning BOOLEAN,friendlyURLSeparator VARCHAR(75) null,label STRING null,modifiable BOOLEAN,name VARCHAR(75) null,panelAppOrder VARCHAR(75) null,panelCategoryKey VARCHAR(75) null,pkObjectFieldDBColumnName VARCHAR(75) null,pkObjectFieldName VARCHAR(75) null,pluralLabel STRING null,portlet BOOLEAN,scope VARCHAR(75) null,storageType VARCHAR(255) null,system_ BOOLEAN,version INTEGER,status INTEGER)";
+		"create table ObjectDefinition (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectDefinitionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,accountERObjectFieldId LONG,descriptionObjectFieldId LONG,objectFolderId LONG,titleObjectFieldId LONG,accountEntryRestricted BOOLEAN,active_ BOOLEAN,className VARCHAR(255) null,dbTableName VARCHAR(75) null,description STRING null,enableCategorization BOOLEAN,enableComments BOOLEAN,enableFormContainer BOOLEAN,enableFriendlyURLCustomization BOOLEAN,enableIndexSearch BOOLEAN,enableObjectEntryDraft BOOLEAN,enableObjectEntryHistory BOOLEAN,enableObjectEntrySchedule BOOLEAN,enableObjectEntrySubscription BOOLEAN,enableObjectEntryVersioning BOOLEAN,friendlyURLSeparator VARCHAR(75) null,label STRING null,modifiable BOOLEAN,name VARCHAR(75) null,panelAppOrder VARCHAR(75) null,panelCategoryKey VARCHAR(75) null,pkObjectFieldDBColumnName VARCHAR(75) null,pkObjectFieldName VARCHAR(75) null,pluralLabel STRING null,portlet BOOLEAN,scope VARCHAR(75) null,storageType VARCHAR(255) null,system_ BOOLEAN,version INTEGER,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table ObjectDefinition";
 
@@ -403,6 +404,8 @@ public class ObjectDefinitionModelImpl
 			attributeGetterFunctions.put(
 				"dbTableName", ObjectDefinition::getDBTableName);
 			attributeGetterFunctions.put(
+				"description", ObjectDefinition::getDescription);
+			attributeGetterFunctions.put(
 				"enableCategorization",
 				ObjectDefinition::getEnableCategorization);
 			attributeGetterFunctions.put(
@@ -543,6 +546,10 @@ public class ObjectDefinitionModelImpl
 				"dbTableName",
 				(BiConsumer<ObjectDefinition, String>)
 					ObjectDefinition::setDBTableName);
+			attributeSetterBiConsumers.put(
+				"description",
+				(BiConsumer<ObjectDefinition, String>)
+					ObjectDefinition::setDescription);
 			attributeSetterBiConsumers.put(
 				"enableCategorization",
 				(BiConsumer<ObjectDefinition, Boolean>)
@@ -1041,6 +1048,118 @@ public class ObjectDefinitionModelImpl
 		}
 
 		_dbTableName = dbTableName;
+	}
+
+	@JSON
+	@Override
+	public String getDescription() {
+		if (_description == null) {
+			return "";
+		}
+		else {
+			return _description;
+		}
+	}
+
+	@Override
+	public String getDescription(Locale locale) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId);
+	}
+
+	@Override
+	public String getDescription(Locale locale, boolean useDefault) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return getDescription(languageId, useDefault);
+	}
+
+	@Override
+	public String getDescription(String languageId) {
+		return LocalizationUtil.getLocalization(getDescription(), languageId);
+	}
+
+	@Override
+	public String getDescription(String languageId, boolean useDefault) {
+		return LocalizationUtil.getLocalization(
+			getDescription(), languageId, useDefault);
+	}
+
+	@Override
+	public String getDescriptionCurrentLanguageId() {
+		return _descriptionCurrentLanguageId;
+	}
+
+	@JSON
+	@Override
+	public String getDescriptionCurrentValue() {
+		Locale locale = getLocale(_descriptionCurrentLanguageId);
+
+		return getDescription(locale);
+	}
+
+	@Override
+	public Map<Locale, String> getDescriptionMap() {
+		return LocalizationUtil.getLocalizationMap(getDescription());
+	}
+
+	@Override
+	public void setDescription(String description) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_description = description;
+	}
+
+	@Override
+	public void setDescription(String description, Locale locale) {
+		setDescription(description, locale, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescription(
+		String description, Locale locale, Locale defaultLocale) {
+
+		String languageId = LocaleUtil.toLanguageId(locale);
+		String defaultLanguageId = LocaleUtil.toLanguageId(defaultLocale);
+
+		if (Validator.isNotNull(description)) {
+			setDescription(
+				LocalizationUtil.updateLocalization(
+					getDescription(), "Description", description, languageId,
+					defaultLanguageId));
+		}
+		else {
+			setDescription(
+				LocalizationUtil.removeLocalization(
+					getDescription(), "Description", languageId));
+		}
+	}
+
+	@Override
+	public void setDescriptionCurrentLanguageId(String languageId) {
+		_descriptionCurrentLanguageId = languageId;
+	}
+
+	@Override
+	public void setDescriptionMap(Map<Locale, String> descriptionMap) {
+		setDescriptionMap(descriptionMap, LocaleUtil.getDefault());
+	}
+
+	@Override
+	public void setDescriptionMap(
+		Map<Locale, String> descriptionMap, Locale defaultLocale) {
+
+		if (descriptionMap == null) {
+			return;
+		}
+
+		setDescription(
+			LocalizationUtil.updateLocalization(
+				descriptionMap, getDescription(), "Description",
+				LocaleUtil.toLanguageId(defaultLocale)));
 	}
 
 	@JSON
@@ -1840,6 +1959,17 @@ public class ObjectDefinitionModelImpl
 	public String[] getAvailableLanguageIds() {
 		Set<String> availableLanguageIds = new TreeSet<String>();
 
+		Map<Locale, String> descriptionMap = getDescriptionMap();
+
+		for (Map.Entry<Locale, String> entry : descriptionMap.entrySet()) {
+			Locale locale = entry.getKey();
+			String value = entry.getValue();
+
+			if (Validator.isNotNull(value)) {
+				availableLanguageIds.add(LocaleUtil.toLanguageId(locale));
+			}
+		}
+
 		Map<Locale, String> labelMap = getLabelMap();
 
 		for (Map.Entry<Locale, String> entry : labelMap.entrySet()) {
@@ -1868,7 +1998,7 @@ public class ObjectDefinitionModelImpl
 
 	@Override
 	public String getDefaultLanguageId() {
-		String xml = getLabel();
+		String xml = getDescription();
 
 		if (xml == null) {
 			return "";
@@ -1902,6 +2032,17 @@ public class ObjectDefinitionModelImpl
 		Locale defaultLocale = LocaleUtil.getDefault();
 
 		String modelDefaultLanguageId = getDefaultLanguageId();
+
+		String description = getDescription(defaultLocale);
+
+		if (Validator.isNull(description)) {
+			setDescription(
+				getDescription(modelDefaultLanguageId), defaultLocale);
+		}
+		else {
+			setDescription(
+				getDescription(defaultLocale), defaultLocale, defaultLocale);
+		}
 
 		String label = getLabel(defaultLocale);
 
@@ -1964,6 +2105,7 @@ public class ObjectDefinitionModelImpl
 		objectDefinitionImpl.setActive(isActive());
 		objectDefinitionImpl.setClassName(getClassName());
 		objectDefinitionImpl.setDBTableName(getDBTableName());
+		objectDefinitionImpl.setDescription(getDescription());
 		objectDefinitionImpl.setEnableCategorization(isEnableCategorization());
 		objectDefinitionImpl.setEnableComments(isEnableComments());
 		objectDefinitionImpl.setEnableFormContainer(isEnableFormContainer());
@@ -2040,6 +2182,8 @@ public class ObjectDefinitionModelImpl
 			this.<String>getColumnOriginalValue("className"));
 		objectDefinitionImpl.setDBTableName(
 			this.<String>getColumnOriginalValue("dbTableName"));
+		objectDefinitionImpl.setDescription(
+			this.<String>getColumnOriginalValue("description"));
 		objectDefinitionImpl.setEnableCategorization(
 			this.<Boolean>getColumnOriginalValue("enableCategorization"));
 		objectDefinitionImpl.setEnableComments(
@@ -2254,6 +2398,14 @@ public class ObjectDefinitionModelImpl
 			objectDefinitionCacheModel.dbTableName = null;
 		}
 
+		objectDefinitionCacheModel.description = getDescription();
+
+		String description = objectDefinitionCacheModel.description;
+
+		if ((description != null) && (description.length() == 0)) {
+			objectDefinitionCacheModel.description = null;
+		}
+
 		objectDefinitionCacheModel.enableCategorization =
 			isEnableCategorization();
 
@@ -2460,6 +2612,8 @@ public class ObjectDefinitionModelImpl
 	private boolean _active;
 	private String _className;
 	private String _dbTableName;
+	private String _description;
+	private String _descriptionCurrentLanguageId;
 	private boolean _enableCategorization;
 	private boolean _enableComments;
 	private boolean _enableFormContainer;
@@ -2539,6 +2693,7 @@ public class ObjectDefinitionModelImpl
 		_columnOriginalValues.put("active_", _active);
 		_columnOriginalValues.put("className", _className);
 		_columnOriginalValues.put("dbTableName", _dbTableName);
+		_columnOriginalValues.put("description", _description);
 		_columnOriginalValues.put(
 			"enableCategorization", _enableCategorization);
 		_columnOriginalValues.put("enableComments", _enableComments);
@@ -2634,55 +2789,57 @@ public class ObjectDefinitionModelImpl
 
 		columnBitmasks.put("dbTableName", 65536L);
 
-		columnBitmasks.put("enableCategorization", 131072L);
+		columnBitmasks.put("description", 131072L);
 
-		columnBitmasks.put("enableComments", 262144L);
+		columnBitmasks.put("enableCategorization", 262144L);
 
-		columnBitmasks.put("enableFormContainer", 524288L);
+		columnBitmasks.put("enableComments", 524288L);
 
-		columnBitmasks.put("enableFriendlyURLCustomization", 1048576L);
+		columnBitmasks.put("enableFormContainer", 1048576L);
 
-		columnBitmasks.put("enableIndexSearch", 2097152L);
+		columnBitmasks.put("enableFriendlyURLCustomization", 2097152L);
 
-		columnBitmasks.put("enableObjectEntryDraft", 4194304L);
+		columnBitmasks.put("enableIndexSearch", 4194304L);
 
-		columnBitmasks.put("enableObjectEntryHistory", 8388608L);
+		columnBitmasks.put("enableObjectEntryDraft", 8388608L);
 
-		columnBitmasks.put("enableObjectEntrySchedule", 16777216L);
+		columnBitmasks.put("enableObjectEntryHistory", 16777216L);
 
-		columnBitmasks.put("enableObjectEntrySubscription", 33554432L);
+		columnBitmasks.put("enableObjectEntrySchedule", 33554432L);
 
-		columnBitmasks.put("enableObjectEntryVersioning", 67108864L);
+		columnBitmasks.put("enableObjectEntrySubscription", 67108864L);
 
-		columnBitmasks.put("friendlyURLSeparator", 134217728L);
+		columnBitmasks.put("enableObjectEntryVersioning", 134217728L);
 
-		columnBitmasks.put("label", 268435456L);
+		columnBitmasks.put("friendlyURLSeparator", 268435456L);
 
-		columnBitmasks.put("modifiable", 536870912L);
+		columnBitmasks.put("label", 536870912L);
 
-		columnBitmasks.put("name", 1073741824L);
+		columnBitmasks.put("modifiable", 1073741824L);
 
-		columnBitmasks.put("panelAppOrder", 2147483648L);
+		columnBitmasks.put("name", 2147483648L);
 
-		columnBitmasks.put("panelCategoryKey", 4294967296L);
+		columnBitmasks.put("panelAppOrder", 4294967296L);
 
-		columnBitmasks.put("pkObjectFieldDBColumnName", 8589934592L);
+		columnBitmasks.put("panelCategoryKey", 8589934592L);
 
-		columnBitmasks.put("pkObjectFieldName", 17179869184L);
+		columnBitmasks.put("pkObjectFieldDBColumnName", 17179869184L);
 
-		columnBitmasks.put("pluralLabel", 34359738368L);
+		columnBitmasks.put("pkObjectFieldName", 34359738368L);
 
-		columnBitmasks.put("portlet", 68719476736L);
+		columnBitmasks.put("pluralLabel", 68719476736L);
 
-		columnBitmasks.put("scope", 137438953472L);
+		columnBitmasks.put("portlet", 137438953472L);
 
-		columnBitmasks.put("storageType", 274877906944L);
+		columnBitmasks.put("scope", 274877906944L);
 
-		columnBitmasks.put("system_", 549755813888L);
+		columnBitmasks.put("storageType", 549755813888L);
 
-		columnBitmasks.put("version", 1099511627776L);
+		columnBitmasks.put("system_", 1099511627776L);
 
-		columnBitmasks.put("status", 2199023255552L);
+		columnBitmasks.put("version", 2199023255552L);
+
+		columnBitmasks.put("status", 4398046511104L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -2691,4 +2848,4 @@ public class ObjectDefinitionModelImpl
 	private ObjectDefinition _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2111085837
+// LIFERAY-SERVICE-BUILDER-HASH:-1331558791
