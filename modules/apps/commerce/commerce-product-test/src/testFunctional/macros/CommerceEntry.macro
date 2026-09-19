@@ -113,37 +113,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addNewCatalogsEntry(catalogName = null, supplierAccountName = null, catalogLanguage = null, catalogCurrency = null) {
-		WaitForElementPresent(locator1 = "IFrame#MODAL_BODY");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-		Type(
-			locator1 = "CommerceEntry#NAME_FIELD",
-			value1 = ${catalogName});
-
-		Select(
-			key_title = "Default Catalog Language",
-			locator1 = "CommerceEntry#CATALOGS_FORM",
-			value1 = ${catalogLanguage});
-
-		Select(
-			key_title = "Currency",
-			locator1 = "CommerceEntry#CATALOGS_FORM",
-			value1 = ${catalogCurrency});
-
-		if (isSet(linkCatalogSupplier)) {
-			Click(
-				key_label = "Link Catalog to a Supplier",
-				locator1 = "CommerceEntry#ANY_AUTOCOMPLETE_CONTAINS_TEXT_FIELD");
-
-			Click(
-				key_categoryName = ${supplierAccountName},
-				locator1 = "CommerceEntry#COMMERCE_CATEGORY_AUTOCOMPLETE_SPECIFIC");
-		}
-	}
-
-	@summary = "Default summary"
 	macro addNewChannelsEntry(channelCurrency = null, siteName = null, channelName = null, channelType = null) {
 		WaitForElementPresent(locator1 = "IFrame#MODAL_IFRAME");
 
