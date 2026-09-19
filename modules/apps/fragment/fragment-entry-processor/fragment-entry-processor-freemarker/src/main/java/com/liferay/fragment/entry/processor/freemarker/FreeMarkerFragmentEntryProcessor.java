@@ -205,6 +205,12 @@ public class FreeMarkerFragmentEntryProcessor
 	private Object _getInfoItem(
 		FragmentEntryProcessorContext fragmentEntryProcessorContext) {
 
+		Object infoItem = fragmentEntryProcessorContext.getContextInfoItem();
+
+		if (infoItem != null) {
+			return infoItem;
+		}
+
 		InfoItemReference infoItemReference =
 			fragmentEntryProcessorContext.getContextInfoItemReference();
 
