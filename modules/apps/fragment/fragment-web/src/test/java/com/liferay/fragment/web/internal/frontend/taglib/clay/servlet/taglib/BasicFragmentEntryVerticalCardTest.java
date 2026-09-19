@@ -6,8 +6,6 @@
 package com.liferay.fragment.web.internal.frontend.taglib.clay.servlet.taglib;
 
 import com.liferay.fragment.model.FragmentEntry;
-import com.liferay.fragment.web.internal.servlet.taglib.util.BaseActionDropdownItemsProviderTestCase;
-import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.RowChecker;
 import com.liferay.portal.kernel.language.Language;
@@ -15,8 +13,15 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.Locale;
@@ -33,8 +38,7 @@ import org.mockito.stubbing.Answer;
 /**
  * @author Diego Hu
  */
-public class BasicFragmentEntryVerticalCardTest
-	extends BaseActionDropdownItemsProviderTestCase {
+public class BasicFragmentEntryVerticalCardTest {
 
 	@ClassRule
 	@Rule
@@ -42,11 +46,9 @@ public class BasicFragmentEntryVerticalCardTest
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	@Override
 	public void setUp() {
-		super.setUp();
-
 		_setUpLanguageUtil();
+		_setUpPortalUtil();
 	}
 
 	@Test
@@ -85,20 +87,20 @@ public class BasicFragmentEntryVerticalCardTest
 
 	@Test
 	@TestInfo("LPD-101584")
-	public void testGetUsageCount() {
-		setUpFragmentPermission(true);
+	public void testGetSubtitle() {
+		Mockito.when(
+			_fragmentEntry.getUsageCount()
+		).thenReturn(
+			3
+		);
 
 		BasicFragmentEntryVerticalCard basicFragmentEntryVerticalCard =
 			new BasicFragmentEntryVerticalCard(
-				_fragmentEntry, renderRequest, renderResponse,
+				_fragmentEntry, _renderRequest,
+				Mockito.mock(RenderResponse.class),
 				Mockito.mock(RowChecker.class));
 
-		basicFragmentEntryVerticalCard.getSubtitle();
-
-		List<DropdownItem> dropdownItems =
-			basicFragmentEntryVerticalCard.getActionDropdownItems();
-
-		Assert.assertFalse(dropdownItems.toString(), dropdownItems.isEmpty());
+		Assert.assertEquals("3", basicFragmentEntryVerticalCard.getSubtitle());
 
 		Mockito.verify(
 			_fragmentEntry, Mockito.times(1)
@@ -111,7 +113,16 @@ public class BasicFragmentEntryVerticalCardTest
 		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
-			language.get(Mockito.eq(httpServletRequest), Mockito.anyString())
+			language.format(
+				Mockito.eq(_httpServletRequest), Mockito.anyString(),
+				Mockito.any(Object.class))
+		).thenAnswer(
+			(Answer<String>)invocationOnMock -> String.valueOf(
+				invocationOnMock.getArgument(2, Object.class))
+		);
+
+		Mockito.when(
+			language.get(Mockito.eq(_httpServletRequest), Mockito.anyString())
 		).thenAnswer(
 			(Answer<String>)invocationOnMock -> invocationOnMock.getArgument(
 				1, String.class)
@@ -127,10 +138,23 @@ public class BasicFragmentEntryVerticalCardTest
 		languageUtil.setLanguage(language);
 	}
 
+	private void _setUpPortalUtil() {
+		PortalUtil portalUtil = new PortalUtil();
+
+		Mockito.when(
+			_portal.getHttpServletRequest(_renderRequest)
+		).thenReturn(
+			_httpServletRequest
+		);
+
+		portalUtil.setPortal(_portal);
+	}
+
 	private void _testGetLabels(String... expectedLabels) {
 		BasicFragmentEntryVerticalCard basicFragmentEntryVerticalCard =
 			new BasicFragmentEntryVerticalCard(
-				_fragmentEntry, renderRequest, renderResponse,
+				_fragmentEntry, _renderRequest,
+				Mockito.mock(RenderResponse.class),
 				Mockito.mock(RowChecker.class));
 
 		List<String> labels = TransformUtil.transform(
@@ -146,5 +170,10 @@ public class BasicFragmentEntryVerticalCardTest
 
 	private final FragmentEntry _fragmentEntry = Mockito.mock(
 		FragmentEntry.class);
+	private final HttpServletRequest _httpServletRequest = Mockito.mock(
+		HttpServletRequest.class);
+	private final Portal _portal = Mockito.mock(Portal.class);
+	private final RenderRequest _renderRequest = Mockito.mock(
+		RenderRequest.class);
 
 }
