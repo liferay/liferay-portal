@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.aop.AopMethodInvocation;
 import com.liferay.portal.kernel.aop.ChainableMethodAdvice;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.mass.delete.MassDeleteCacheThreadLocal;
 import com.liferay.portal.kernel.model.AuditedModel;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ClassedModel;
@@ -55,10 +54,6 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 			AopMethodInvocation aopMethodInvocation, Object[] arguments)
 		throws Throwable {
 
-		if (MassDeleteCacheThreadLocal.isMassDeleteMode()) {
-			return null;
-		}
-
 		SystemEvent systemEvent = aopMethodInvocation.getAdviceMethodContext();
 
 		if (systemEvent.action() != SystemEventConstants.ACTION_NONE) {
@@ -94,10 +89,6 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 			AopMethodInvocation aopMethodInvocation, Object[] arguments,
 			Object result)
 		throws Throwable {
-
-		if (MassDeleteCacheThreadLocal.isMassDeleteMode()) {
-			return result;
-		}
 
 		SystemEvent systemEvent = aopMethodInvocation.getAdviceMethodContext();
 
@@ -176,10 +167,6 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 	@Override
 	protected void duringFinally(
 		AopMethodInvocation aopMethodInvocation, Object[] arguments) {
-
-		if (MassDeleteCacheThreadLocal.isMassDeleteMode()) {
-			return;
-		}
 
 		SystemEvent systemEvent = aopMethodInvocation.getAdviceMethodContext();
 
