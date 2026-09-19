@@ -13,6 +13,7 @@ import com.liferay.account.internal.upgrade.v2_12_1.AccountEntryResourcePermissi
 import com.liferay.account.internal.upgrade.v2_4_0.AccountGroupResourceUpgradeProcess;
 import com.liferay.account.internal.upgrade.v2_5_0.AccountRoleResourceUpgradeProcess;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -233,6 +234,11 @@ public class AccountServiceUpgradeStepRegistrator
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
+
+	@Reference(
+		target = "(&(release.bundle.symbolic.name=com.liferay.object.service)(release.schema.version>=3.23.0))"
+	)
+	private Release _objectServiceRelease;
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;
