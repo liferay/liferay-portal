@@ -16035,7 +16035,7 @@ cluster.link.bind.addr["cluster-link-udp"]=127.0.0.1</echo>
 
 									set -e
 
-									${database.sqlserver.executable} -b -P "${database.sqlserver.password}" -Q "restore database ${database.sqlserver.schema} from disk='/tmp/${database.type}.bak'" -S localhost -U ${database.sqlserver.username}
+									${database.sqlserver.executable} -b -P "${database.sqlserver.password}" -Q "restore database ${database.sqlserver.schema} from disk='/tmp/${database.type}.bak' with replace" -S localhost -U ${database.sqlserver.username}
 
 									${database.sqlserver.executable} -b -P "${database.sqlserver.password}" -Q "alter database ${database.sqlserver.schema} set allow_snapshot_isolation on;" -S localhost -U ${database.sqlserver.username}
 
