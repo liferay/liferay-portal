@@ -167,6 +167,13 @@ public class SourceFormatterPlugin implements Plugin<Project> {
 				Boolean.parseBoolean(formatLocalChanges));
 		}
 
+		String gitWorkingBranchName = GradleUtil.getTaskPrefixedProperty(
+			formatSourceTask, "git.working.branch.name");
+
+		if (Validator.isNotNull(gitWorkingBranchName)) {
+			formatSourceTask.setGitWorkingBranchName(gitWorkingBranchName);
+		}
+
 		String javaParserEnabled = GradleUtil.getTaskPrefixedProperty(
 			formatSourceTask, "java.parser.enabled");
 
