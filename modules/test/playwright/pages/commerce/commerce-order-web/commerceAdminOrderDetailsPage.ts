@@ -53,6 +53,7 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 	readonly firstTransactionTimestampCell: Locator;
 	readonly page: Page;
 	readonly paymentMethodName: Locator;
+	readonly paymentMethodOption: (paymentMethod: string) => Locator;
 	readonly paymentMethodRadioButton: (
 		paymentMethod: string
 	) => Promise<Locator>;
@@ -182,6 +183,10 @@ export class CommerceAdminOrderDetailsPage extends CommerceDNDTablePage {
 		);
 		this.page = page;
 		this.paymentMethodName = page.locator('.payment-name');
+		this.paymentMethodOption = (paymentMethod: string) =>
+			this.editPaymentMethodFrame
+				.locator('.list-group-title')
+				.getByText(paymentMethod, {exact: true});
 		this.paymentMethodRadioButton = async (paymentMethod: string) => {
 			return this.editPaymentMethodFrame
 				.locator('li')

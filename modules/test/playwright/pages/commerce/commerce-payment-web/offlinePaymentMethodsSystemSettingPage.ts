@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 
 import {waitForAlert} from '../../../utils/waitForAlert';
-import {SystemSettingsPage} from '../../configuration-admin-web/SystemSettingsPage';
+import {waitForPageToBeLoaded} from '../../../utils/waitForPageToBeLoaded';
 
 export class OfflinePaymentMethodsSystemSettingPage {
 	readonly actionsButton: (key: string) => Locator;
@@ -16,7 +16,6 @@ export class OfflinePaymentMethodsSystemSettingPage {
 	readonly keyInput: Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
-	readonly systemSettingsPage: SystemSettingsPage;
 	readonly updateButton: Locator;
 
 	constructor(page: Page) {
@@ -36,16 +35,22 @@ export class OfflinePaymentMethodsSystemSettingPage {
 		this.keyInput = page.getByRole('textbox', {exact: true, name: 'Key'});
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
-		this.systemSettingsPage = new SystemSettingsPage(page);
 		this.updateButton = page.getByRole('button', {name: 'Update'});
 	}
 
 	async goto() {
-		await this.systemSettingsPage.goToSystemSetting(
-			'Payment',
-			'Offline Payment Method Keys',
-			'System Scope'
+		const portletId =
+			'com_liferay_configuration_admin_web_portlet_SystemSettingsPortlet';
+
+		await this.page.goto(
+			`/group/control_panel/manage?p_p_id=${portletId}` +
+				`&_${portletId}_mvcRenderCommandName=` +
+				'%2Fconfiguration_admin%2Fview_factory_instances' +
+				`&_${portletId}_factoryPid=com.liferay.commerce.payment` +
+				'.internal.configuration.OfflineCommercePaymentMethodConfiguration'
 		);
+
+		await waitForPageToBeLoaded(this.page);
 	}
 
 	async addKey(key: string) {

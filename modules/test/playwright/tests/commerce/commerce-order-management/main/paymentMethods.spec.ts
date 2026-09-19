@@ -10,6 +10,8 @@ import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
+import {CommerceAdminChannelDetailsPage} from '../../../../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsPage';
+import {CommerceAdminChannelsPage} from '../../../../pages/commerce/commerce-channel-web/commerceAdminChannelsPage';
 import {OfflinePaymentMethodsSystemSettingPage} from '../../../../pages/commerce/commerce-payment-web/offlinePaymentMethodsSystemSettingPage';
 import getRandomString from '../../../../utils/getRandomString';
 import {
@@ -33,7 +35,10 @@ let channel: {id: number; name: string};
 let setupData: Array<{id: number | string; type: string}>;
 let site: Site;
 
+const activatedPaymentMethods: string[] = [];
 const createdPaymentMethodKeys: string[] = [];
+
+let subscriptionProductId: number;
 
 test.beforeAll(async ({browser}) => {
 	const page = await browser.newPage();
@@ -97,6 +102,36 @@ test.afterEach(async ({browser}) => {
 		}
 
 		createdPaymentMethodKeys.length = 0;
+	}
+
+	if (subscriptionProductId) {
+		await apiHelpers.headlessCommerceAdminCatalog.patchProductSubscriptionConfiguration(
+			subscriptionProductId,
+			{enable: false}
+		);
+
+		subscriptionProductId = undefined;
+	}
+
+	if (activatedPaymentMethods.length) {
+		const commerceAdminChannelDetailsPage =
+			new CommerceAdminChannelDetailsPage(page);
+		const commerceAdminChannelsPage = new CommerceAdminChannelsPage(page);
+
+		await commerceAdminChannelsPage.goto();
+
+		await (
+			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+		).click();
+
+		for (const paymentMethod of activatedPaymentMethods) {
+			await commerceAdminChannelDetailsPage.deactivateChannelConfiguration(
+				paymentMethod,
+				'Payment Methods'
+			);
+		}
+
+		activatedPaymentMethods.length = 0;
 	}
 
 	await page.close();
@@ -603,5 +638,251 @@ test(
 				'Edit'
 			)
 		).toBeVisible();
+	}
+);
+
+test(
+	'PayPal Subscriptions is offered only to orders with a subscription product',
+	{tag: ['@COMMERCE-12920', '@LPD-106360']},
+	async ({
+		apiHelpers,
+		checkoutPage,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+		commerceAdminOrderDetailsPage,
+		commerceAdminOrdersPage,
+		orderDetailsPage,
+		page,
+		pendingOrdersPage,
+	}) => {
+		test.setTimeout(180000);
+
+		await commerceAdminChannelsPage.goto();
+
+		await (
+			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+		).click();
+
+		for (const paymentMethod of [
+			'Money Order',
+			'PayPal',
+			'PayPal Subscriptions',
+		]) {
+			await commerceAdminChannelDetailsPage.activateChannelConfiguration(
+				paymentMethod,
+				'Payment Methods'
+			);
+
+			activatedPaymentMethods.push(paymentMethod);
+		}
+
+		const subscriptionProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'ABS Sensor'
+			);
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProductSubscriptionConfiguration(
+			subscriptionProduct.productId,
+			{
+				enable: true,
+				length: 2,
+				numberOfLength: 0,
+				subscriptionType: 'monthly',
+				subscriptionTypeSettings: {monthDay: 1, monthlyMode: 0},
+			}
+		);
+
+		const plainProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'U-Joint'
+			);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		await apiHelpers.headlessCommerceAdminAccount.postAddress(account.id, {
+			city: 'Test City',
+			countryISOCode: 'US',
+			defaultBilling: true,
+			defaultShipping: true,
+			name: 'Test Address',
+			regionISOCode: 'CA',
+			street1: 'Test Street',
+			zip: '12345',
+		});
+
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
+
+		const operationsManagerUser =
+			await configureOperationsManagerUserForSite(
+				account,
+				apiHelpers,
+				companyId,
+				site,
+				[
+					{
+						actionIds: ['MANAGE_COMMERCE_ORDER_PAYMENT_METHODS'],
+						primaryKey: companyId,
+						resourceName: 'com.liferay.commerce.order',
+						scope: 1,
+					},
+				]
+			);
+
+		subscriptionProductId = subscriptionProduct.productId;
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		const goToPaymentStep = async (orderId: number) => {
+			await pendingOrdersPage.gotoOrder(site.friendlyUrlPath, orderId);
+
+			await orderDetailsPage.checkoutButton.click();
+
+			await checkoutPage.continueButton.click();
+
+			await page.waitForURL((url) =>
+				url.href.includes('shipping-method')
+			);
+
+			await checkoutPage.shippingMethodRadio('Standard').check();
+
+			await checkoutPage.continueButton.click();
+		};
+
+		const plainOrder =
+			await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [
+						{
+							options: '[]',
+							quantity: 1,
+							skuId: plainProduct.skus[0].id,
+						},
+					],
+				},
+				channel.id
+			);
+
+		await test.step('A non-subscription order cannot pay with PayPal Subscriptions', async () => {
+			await goToPaymentStep(plainOrder.id);
+
+			await page.waitForURL((url) => url.href.includes('payment-method'));
+
+			await expect(
+				checkoutPage.paymentMethodRadio('Money Order', true)
+			).toBeVisible();
+			await expect(
+				checkoutPage.paymentMethodRadio('PayPal', true)
+			).toBeVisible();
+			await expect(
+				checkoutPage.paymentMethodRadio('PayPal Subscriptions', true)
+			).toHaveCount(0);
+		});
+
+		const subscriptionOrder =
+			await apiHelpers.headlessCommerceDeliveryCart.postCart(
+				{
+					accountId: account.id,
+					cartItems: [
+						{
+							options: '[]',
+							quantity: 1,
+							skuId: subscriptionProduct.skus[0].id,
+						},
+					],
+				},
+				channel.id
+			);
+
+		await test.step('A subscription order is placed on PayPal Subscriptions without a choice', async () => {
+			await goToPaymentStep(subscriptionOrder.id);
+
+			await page.waitForURL((url) => url.href.includes('order-summary'));
+
+			await expect(checkoutPage.checkoutStepLabels).not.toContainText([
+				'Payment Method',
+			]);
+			await expect(
+				checkoutPage.paymentMethodRadio('Money Order', true)
+			).toHaveCount(0);
+			await expect(
+				checkoutPage.paymentMethodRadio('PayPal', true)
+			).toHaveCount(0);
+			await expect(checkoutPage.orderSummaryPaymentMethod).toContainText(
+				'PayPal Subscriptions'
+			);
+		});
+
+		await performUserSwitch(page, operationsManagerUser.alternateName);
+
+		for (const {eligible, notEligible, orderId} of [
+			{
+				eligible: ['Money Order', 'PayPal'],
+				notEligible: ['PayPal Subscriptions'],
+				orderId: plainOrder.id,
+			},
+			{
+				eligible: ['PayPal Subscriptions'],
+				notEligible: ['Money Order', 'PayPal'],
+				orderId: subscriptionOrder.id,
+			},
+		]) {
+			await test.step(`Order ${orderId} offers only its eligible payment methods in the orders admin`, async () => {
+				await commerceAdminOrdersPage.goto();
+
+				await (
+					await commerceAdminOrdersPage.tableRowLink({
+						colIndex: 1,
+						rowValue: orderId,
+					})
+				).click();
+
+				await (
+					await commerceAdminOrderDetailsPage.orderDetailsTab(
+						'Payments'
+					)
+				).click();
+
+				await (
+					await commerceAdminOrderDetailsPage.editEntryActionLink(
+						'Payment Method',
+						'Edit'
+					)
+				).click();
+
+				for (const paymentMethod of eligible) {
+					await expect(
+						commerceAdminOrderDetailsPage.paymentMethodOption(
+							paymentMethod
+						)
+					).toBeVisible();
+				}
+
+				for (const paymentMethod of notEligible) {
+					await expect(
+						commerceAdminOrderDetailsPage.paymentMethodOption(
+							paymentMethod
+						)
+					).toHaveCount(0);
+				}
+
+				await (
+					await commerceAdminOrderDetailsPage.paymentMethodRadioButton(
+						eligible[0]
+					)
+				).click();
+
+				await commerceAdminOrderDetailsPage.submitPaymentMethod.click();
+
+				await expect(
+					commerceAdminOrderDetailsPage.paymentMethodName
+				).toContainText(eligible[0]);
+			});
+		}
 	}
 );

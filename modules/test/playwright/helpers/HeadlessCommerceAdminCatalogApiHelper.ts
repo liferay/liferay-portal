@@ -158,6 +158,14 @@ type TProductSpecifications = {
 	visible?: boolean;
 };
 
+export type TProductSubscriptionConfiguration = {
+	enable?: boolean;
+	length?: number;
+	numberOfLength?: number;
+	subscriptionType?: string;
+	subscriptionTypeSettings?: {[key: string]: number};
+};
+
 export type TProductTaxConfiguration = {
 	id?: number;
 	taxCategory?: string;
@@ -491,6 +499,18 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		return this.apiHelpers.patch(
 			`${this.apiHelpers.baseUrl}${this.basePath}/productSpecifications/${id}`,
 			productSpecifications
+		);
+	}
+
+	async patchProductSubscriptionConfiguration(
+		productId: number,
+		productSubscriptionConfiguration: TProductSubscriptionConfiguration
+	) {
+		return this.apiHelpers.patch(
+			`${this.apiHelpers.baseUrl}${this.basePath}/products/${productId}/subscriptionConfiguration`,
+			{
+				...(productSubscriptionConfiguration || {}),
+			}
 		);
 	}
 

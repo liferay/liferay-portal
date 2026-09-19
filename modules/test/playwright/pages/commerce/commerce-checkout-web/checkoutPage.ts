@@ -28,6 +28,7 @@ type TAddress = {
 
 export class CheckoutPage extends CommerceDNDTablePage {
 	readonly activeCheckoutStep: Locator;
+	readonly checkoutStepLabels: Locator;
 	readonly assertDataDeliveryGroupModal: (data: string) => Locator;
 	readonly addressInput: Locator;
 	readonly cityInput: Locator;
@@ -69,6 +70,7 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	readonly orderSummaryItemPromoPrice: (productName: string) => Locator;
 	readonly orderSummaryItemRow: (productName: string) => Locator;
 	readonly orderSummarySubtotal: Locator;
+	readonly orderSummaryPaymentMethod: Locator;
 	readonly orderSummaryTotal: Locator;
 	readonly orderSummaryTableRow: (
 		colPosition: number,
@@ -76,7 +78,7 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		strictEqual?: boolean
 	) => Promise<{column: Locator; row: Locator}>;
 	readonly page: Page;
-	readonly paymentMethodRadio: (name: string) => Locator;
+	readonly paymentMethodRadio: (name: string, exact?: boolean) => Locator;
 	readonly paymentMethodRadios: Locator;
 	readonly paymentTermLink: (label: string) => Locator;
 	readonly paymentTermOption: (label: string) => Locator;
@@ -111,6 +113,7 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.activeCheckoutStep = page.locator(
 			'.multi-step-item.active .multi-step-indicator-label'
 		);
+		this.checkoutStepLabels = page.locator('.multi-step-indicator-label');
 		this.addressInput = page.getByPlaceholder('Address', {exact: true});
 		this.cityInput = page.getByPlaceholder('City', {exact: true});
 		this.commerceAddressSelect = page.locator(
@@ -218,6 +221,7 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		this.orderSummarySubtotal = page.locator(
 			'.commerce-subtotal .commerce-value'
 		);
+		this.orderSummaryPaymentMethod = page.locator('div.payment-method');
 		this.orderSummaryTotal = page.locator(
 			'.commerce-total .commerce-value'
 		);
@@ -234,8 +238,8 @@ export class CheckoutPage extends CommerceDNDTablePage {
 			);
 		};
 		this.page = page;
-		this.paymentMethodRadio = (name: string) =>
-			page.getByRole('radio', {name});
+		this.paymentMethodRadio = (name: string, exact: boolean = false) =>
+			page.getByRole('radio', {exact, name});
 		this.paymentMethodRadios = page.locator(
 			'input[name$="commercePaymentMethodKey"]'
 		);

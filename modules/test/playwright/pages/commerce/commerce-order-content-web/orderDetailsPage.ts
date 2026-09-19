@@ -5,10 +5,14 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+
 export class OrderDetailsPage {
 	readonly accountNotQualifiedError: Locator;
+	readonly actionsMenuButton: Locator;
 	readonly applyCouponCodeButton: Locator;
 	readonly checkoutButton: Locator;
+	readonly deleteMenuItem: Locator;
 	readonly couponCodeHeading: (code: string) => Locator;
 	readonly couponCodeUsageLimitError: Locator;
 	readonly discountNotApplicableError: Locator;
@@ -34,9 +38,14 @@ export class OrderDetailsPage {
 		this.accountNotQualifiedError = page.getByText(
 			'The account is not qualified to use the discount.'
 		);
+		this.actionsMenuButton = page.locator('.thumb-menu');
 		this.applyCouponCodeButton = page.getByRole('button', {
 			exact: true,
 			name: 'Apply',
+		});
+		this.deleteMenuItem = page.getByRole('link', {
+			exact: true,
+			name: 'Delete',
 		});
 		this.checkoutButton = page.getByRole('button', {
 			exact: true,
@@ -84,6 +93,17 @@ export class OrderDetailsPage {
 			{name: 'Submit'}
 		);
 		this.totalDiscountLabel = page.getByText('Total Discount').first();
+	}
+
+	async deleteOrder() {
+		this.page.once('dialog', (dialog) => dialog.accept());
+
+		await clickAndExpectToBeVisible({
+			target: this.deleteMenuItem,
+			trigger: this.actionsMenuButton,
+		});
+
+		await this.deleteMenuItem.click();
 	}
 
 	async applyCouponCode(code: string) {
