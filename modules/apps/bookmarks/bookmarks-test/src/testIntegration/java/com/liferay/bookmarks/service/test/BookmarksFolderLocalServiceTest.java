@@ -15,14 +15,18 @@ import com.liferay.bookmarks.test.util.BookmarksTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.SystemEventLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -91,6 +95,34 @@ public class BookmarksFolderLocalServiceTest {
 		Assert.assertTrue(
 			_bookmarksFolderModelResourcePermission.contains(
 				permissionChecker, folder, ActionKeys.ADD_FOLDER));
+	}
+
+	@Test
+	public void testDeleteFolderSystemEvent() throws Exception {
+		BookmarksFolder folder = BookmarksTestUtil.addFolder(
+			_group.getGroupId(), RandomTestUtil.randomString());
+
+		BookmarksFolder subfolder = BookmarksTestUtil.addFolder(
+			_group.getGroupId(), folder.getFolderId(),
+			RandomTestUtil.randomString());
+
+		BookmarksFolderLocalServiceUtil.deleteFolder(folder);
+
+		long classNameId = ClassNameLocalServiceUtil.getClassNameId(
+			BookmarksFolder.class);
+
+		List<SystemEvent> systemEvents =
+			SystemEventLocalServiceUtil.getSystemEvents(
+				_group.getGroupId(), classNameId, folder.getFolderId(),
+				SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 1, systemEvents.size());
+
+		systemEvents = SystemEventLocalServiceUtil.getSystemEvents(
+			_group.getGroupId(), classNameId, subfolder.getFolderId(),
+			SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 0, systemEvents.size());
 	}
 
 	@Test
