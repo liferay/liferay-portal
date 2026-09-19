@@ -85,6 +85,24 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 	}
 
 	@Override
+	public Object invoke(
+			AopMethodInvocation aopMethodInvocation, Object[] arguments)
+		throws Throwable {
+
+		SystemEventHierarchyEntry systemEventHierarchyEntry =
+			SystemEventHierarchyEntryThreadLocal.peek();
+
+		if ((systemEventHierarchyEntry != null) &&
+			(systemEventHierarchyEntry.getAction() ==
+				SystemEventConstants.ACTION_SKIP)) {
+
+			return aopMethodInvocation.proceed(arguments);
+		}
+
+		return super.invoke(aopMethodInvocation, arguments);
+	}
+
+	@Override
 	protected Object afterReturning(
 			AopMethodInvocation aopMethodInvocation, Object[] arguments,
 			Object result)
