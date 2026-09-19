@@ -52,7 +52,7 @@ public class JSUnitAxisTestClassGroup extends AxisTestClassGroup {
 
 		File testBaseDir = getTestBaseDir();
 
-		if (testBaseDir != null) {
+		if ((testBaseDir != null) && testBaseDir.exists()) {
 			jsonObject.put(
 				"test_base_dir",
 				JenkinsResultsParserUtil.getCanonicalPath(testBaseDir));
