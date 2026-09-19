@@ -205,6 +205,15 @@ public abstract class BaseCheck extends AbstractCheck {
 			true);
 	}
 
+	protected List<String> getChainedMethodNames(
+		DetailAST methodCallDetailAST) {
+
+		ChainInformation chainInformation = getChainInformation(
+			methodCallDetailAST);
+
+		return chainInformation.getMethodNames();
+	}
+
 	protected ChainInformation getChainInformation(
 		DetailAST methodCallDetailAST) {
 
@@ -242,15 +251,6 @@ public abstract class BaseCheck extends AbstractCheck {
 
 			chainInformation.addMethodName(getMethodName(methodCallDetailAST));
 		}
-	}
-
-	protected List<String> getChainedMethodNames(
-		DetailAST methodCallDetailAST) {
-
-		ChainInformation chainInformation = getChainInformation(
-			methodCallDetailAST);
-
-		return chainInformation.getMethodNames();
 	}
 
 	protected String getClassOrVariableName(DetailAST methodCallDetailAST) {
@@ -1761,11 +1761,11 @@ public abstract class BaseCheck extends AbstractCheck {
 
 	private static final Log _log = LogFactoryUtil.getLog(BaseCheck.class);
 
+	private JSONObject _attributesJSONObject = new JSONObjectImpl();
 	private final Map<String, String> _attributeValueMap =
 		new ConcurrentHashMap<>();
 	private final Map<String, List<String>> _attributeValuesMap =
 		new ConcurrentHashMap<>();
-	private JSONObject _attributesJSONObject = new JSONObjectImpl();
 	private JSONObject _excludesJSONObject = new JSONObjectImpl();
 	private final Map<String, List<String>> _excludesValuesMap =
 		new ConcurrentHashMap<>();

@@ -383,6 +383,28 @@ public class BNDExportsCheck extends BaseFileCheck {
 			});
 	}
 
+	private List<String> _getExportPackages(String content) {
+		Matcher matcher = _exportsPattern.matcher(content);
+
+		if (!matcher.find()) {
+			return Collections.emptyList();
+		}
+
+		List<String> exportPackages = new ArrayList<>();
+
+		for (String line : StringUtil.splitLines(matcher.group(3))) {
+			line = StringUtil.trim(line);
+
+			if (Validator.isNotNull(line) && !line.equals("\\") &&
+				!line.contains(StringPool.SEMICOLON)) {
+
+				exportPackages.add(StringUtil.removeSubstring(line, ",\\"));
+			}
+		}
+
+		return exportPackages;
+	}
+
 	private File[] _getExportPackageSrcFiles(
 		String srcDirLocation, String exportPackagePath, boolean modulesFile) {
 
@@ -407,28 +429,6 @@ public class BNDExportsCheck extends BaseFileCheck {
 				}
 
 			});
-	}
-
-	private List<String> _getExportPackages(String content) {
-		Matcher matcher = _exportsPattern.matcher(content);
-
-		if (!matcher.find()) {
-			return Collections.emptyList();
-		}
-
-		List<String> exportPackages = new ArrayList<>();
-
-		for (String line : StringUtil.splitLines(matcher.group(3))) {
-			line = StringUtil.trim(line);
-
-			if (Validator.isNotNull(line) && !line.equals("\\") &&
-				!line.contains(StringPool.SEMICOLON)) {
-
-				exportPackages.add(StringUtil.removeSubstring(line, ",\\"));
-			}
-		}
-
-		return exportPackages;
 	}
 
 	private String _getSrcDirLocation(String fileName, boolean modulesFile) {

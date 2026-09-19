@@ -965,32 +965,6 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
-	public void testSQLBooleanValues() throws Exception {
-		test(
-			SourceProcessorTestParameters.create(
-				"SQLBooleanValues.testjava"
-			).addExpectedMessage(
-				"Use \"[$TRUE$]\" instead of \"true\" in SQL statements", 21
-			).addExpectedMessage(
-				"Use \"[$TRUE$]\" instead of \"true\" in SQL statements", 28
-			).addExpectedMessage(
-				"Use \"[$TRUE$]\" instead of \"true\" in SQL statements", 42
-			).addExpectedMessage(
-				"Use \"[$FALSE$]\" instead of \"false\" in SQL statements", 53
-			).addExpectedMessage(
-				"Use \"SQLTransformer.transform\" to wrap SQL statement if " +
-					"it contains \"[$FALSE$]\" or \"[$TRUE$]\"",
-				63
-			).addExpectedMessage(
-				"Use \"[$FALSE$]\" instead of \"false\" in SQL statements", 72
-			).addExpectedMessage(
-				"Use \"SQLTransformer.transform\" to wrap SQL statement if " +
-					"it contains \"[$FALSE$]\" or \"[$TRUE$]\"",
-				83
-			));
-	}
-
-	@Test
 	public void testSafeCloseableMissingClose() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(
@@ -1099,6 +1073,32 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testSortMethodsWithAnnotatedParameters() throws Exception {
 		test("SortMethodsWithAnnotatedParameters.testjava");
+	}
+
+	@Test
+	public void testSQLBooleanValues() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"SQLBooleanValues.testjava"
+			).addExpectedMessage(
+				"Use \"[$TRUE$]\" instead of \"true\" in SQL statements", 21
+			).addExpectedMessage(
+				"Use \"[$TRUE$]\" instead of \"true\" in SQL statements", 28
+			).addExpectedMessage(
+				"Use \"[$TRUE$]\" instead of \"true\" in SQL statements", 42
+			).addExpectedMessage(
+				"Use \"[$FALSE$]\" instead of \"false\" in SQL statements", 53
+			).addExpectedMessage(
+				"Use \"SQLTransformer.transform\" to wrap SQL statement if " +
+					"it contains \"[$FALSE$]\" or \"[$TRUE$]\"",
+				63
+			).addExpectedMessage(
+				"Use \"[$FALSE$]\" instead of \"false\" in SQL statements", 72
+			).addExpectedMessage(
+				"Use \"SQLTransformer.transform\" to wrap SQL statement if " +
+					"it contains \"[$FALSE$]\" or \"[$TRUE$]\"",
+				83
+			));
 	}
 
 	@Test
