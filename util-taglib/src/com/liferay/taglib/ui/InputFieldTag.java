@@ -207,8 +207,8 @@ public class InputFieldTag extends IncludeTag {
 		_disabled = false;
 		_field = null;
 		_fieldParam = null;
-		_format = null;
 		_formName = "fm";
+		_format = null;
 		_id = null;
 		_ignoreRequestValue = false;
 		_languageId = null;

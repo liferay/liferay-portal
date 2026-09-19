@@ -362,8 +362,8 @@ public class VerticalCardTag extends BaseCardTag {
 		_flushVertical = null;
 		_imageAlt = null;
 		_imageSrc = null;
-		_labels = null;
 		_labelStylesMap = null;
+		_labels = null;
 		_showSticker = null;
 		_stickerCssClass = null;
 		_stickerIcon = null;

@@ -86,10 +86,10 @@ public class UnitOfMeasureTierPriceTag extends IncludeTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_cProductId = 0;
 		_commerceAccountId = 0;
 		_commerceChannelId = 0;
 		_cpInstanceId = 0;
-		_cProductId = 0;
 		_namespace = null;
 	}
 

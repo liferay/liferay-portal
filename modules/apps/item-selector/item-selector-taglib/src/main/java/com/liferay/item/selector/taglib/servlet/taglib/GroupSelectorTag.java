@@ -60,9 +60,9 @@ public class GroupSelectorTag extends IncludeTag {
 	protected void cleanUp() {
 		super.cleanUp();
 
+		_groupType = null;
 		_groups = null;
 		_groupsCount = -1;
-		_groupType = null;
 		_keywords = null;
 		_scopeGroupType = null;
 	}

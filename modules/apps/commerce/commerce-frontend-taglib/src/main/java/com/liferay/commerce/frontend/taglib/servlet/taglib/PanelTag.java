@@ -278,9 +278,9 @@ public class PanelTag extends IncludeTag {
 		_actionTargetId = null;
 		_actionURL = null;
 		_bodyClasses = null;
-		_collapsed = false;
 		_collapseLabel = null;
 		_collapseSwitchName = null;
+		_collapsed = false;
 		_collapsible = false;
 		_elementClasses = null;
 		_secondaryActionContext = null;

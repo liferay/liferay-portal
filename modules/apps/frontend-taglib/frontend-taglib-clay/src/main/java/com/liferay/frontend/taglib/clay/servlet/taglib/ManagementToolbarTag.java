@@ -637,8 +637,8 @@ public class ManagementToolbarTag extends BaseContainerTag {
 		_searchInputName = null;
 		_searchResultsTitle = null;
 		_searchValue = null;
-		_selectable = null;
 		_selectAllURL = null;
+		_selectable = null;
 		_selectedItems = null;
 		_showAdvancedSearch = null;
 		_showCreationMenu = null;

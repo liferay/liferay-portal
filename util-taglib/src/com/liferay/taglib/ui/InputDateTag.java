@@ -209,8 +209,8 @@ public class InputDateTag extends BaseValidatorTagSupport {
 		_dateTogglerCheckboxLabel = null;
 		_dayParam = null;
 		_dayValue = 0;
-		_disabled = false;
 		_disableNamespace = false;
+		_disabled = false;
 		_firstDayOfWeek = Calendar.SUNDAY - 2;
 		_firstEnabledDate = null;
 		_formName = "fm";
