@@ -54,17 +54,17 @@ public interface CommerceWishListItem
 	public com.liferay.commerce.product.model.CPInstance fetchCPInstance()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public CommerceWishList getCommerceWishList()
-		throws com.liferay.portal.kernel.exception.PortalException;
-
 	public com.liferay.commerce.product.model.CPDefinition getCPDefinition()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public com.liferay.commerce.product.model.CProduct getCProduct()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
+	public CommerceWishList getCommerceWishList()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 	public boolean isIgnoreSKUCombinations()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1004371108
+// LIFERAY-SERVICE-BUILDER-HASH:1357421532

@@ -56,6 +56,10 @@ public interface ObjectDefinition
 
 	public String getLocalizationDBTableName();
 
+	public String getOSGiJaxRsName();
+
+	public String getOSGiJaxRsName(String className);
+
 	public java.util.List<ObjectDefinitionSetting>
 		getObjectDefinitionSettings();
 
@@ -65,15 +69,11 @@ public interface ObjectDefinition
 
 	public String getObjectFolderExternalReferenceCode();
 
-	public String getOSGiJaxRsName();
-
-	public String getOSGiJaxRsName(String className);
-
 	public String getPortletId();
 
-	public String getResourceName();
-
 	public String getRESTContextPath();
+
+	public String getResourceName();
 
 	public String getRootObjectDefinitionExternalReferenceCode();
 
@@ -116,4 +116,4 @@ public interface ObjectDefinition
 	public void setObjectFolder(ObjectFolder objectFolder);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1251103539
+// LIFERAY-SERVICE-BUILDER-HASH:-442249019

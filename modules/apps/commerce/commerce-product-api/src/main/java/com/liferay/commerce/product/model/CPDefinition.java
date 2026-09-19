@@ -60,8 +60,6 @@ public interface CPDefinition extends CPDefinitionModel, PersistedModel {
 	public CPConfigurationEntry fetchMasterCPConfigurationEntry()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public CommerceCatalog getCommerceCatalog();
-
 	public java.util.List<CPAttachmentFileEntry> getCPAttachmentFileEntries(
 			int type, int status)
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -73,11 +71,13 @@ public interface CPDefinition extends CPDefinitionModel, PersistedModel {
 
 	public java.util.List<CPInstance> getCPInstances();
 
+	public CPTaxCategory getCPTaxCategory()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 	public CProduct getCProduct()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public CPTaxCategory getCPTaxCategory()
-		throws com.liferay.portal.kernel.exception.PortalException;
+	public CommerceCatalog getCommerceCatalog();
 
 	public String getDefaultImageThumbnailSrc(long commerceAccountId)
 		throws Exception;
@@ -131,4 +131,4 @@ public interface CPDefinition extends CPDefinitionModel, PersistedModel {
 		java.util.Map<java.util.Locale, String> urlTitleMap);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1435482833
+// LIFERAY-SERVICE-BUILDER-HASH:1637029073

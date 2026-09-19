@@ -970,49 +970,6 @@ public class BlogsEntryServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.blogs.model.BlogsEntry>
-			getGroupsEntries(
-				HttpPrincipal httpPrincipal, long companyId, long groupId,
-				java.util.Date displayDate, int status, int max)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				BlogsEntryServiceUtil.class, "getGroupsEntries",
-				_getGroupsEntriesParameterTypes23);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, companyId, groupId, displayDate, status, max);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (java.util.List<com.liferay.blogs.model.BlogsEntry>)
-				returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static java.util.List<com.liferay.blogs.model.BlogsEntry>
 		getGroupUserEntries(
 			HttpPrincipal httpPrincipal, long groupId, long userId, int status,
 			int start, int end,
@@ -1022,7 +979,7 @@ public class BlogsEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				BlogsEntryServiceUtil.class, "getGroupUserEntries",
-				_getGroupUserEntriesParameterTypes24);
+				_getGroupUserEntriesParameterTypes23);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, userId, status, start, end,
@@ -1060,7 +1017,7 @@ public class BlogsEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				BlogsEntryServiceUtil.class, "getGroupUserEntries",
-				_getGroupUserEntriesParameterTypes25);
+				_getGroupUserEntriesParameterTypes24);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, userId, statuses, start, end,
@@ -1094,7 +1051,7 @@ public class BlogsEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				BlogsEntryServiceUtil.class, "getGroupUserEntriesCount",
-				_getGroupUserEntriesCountParameterTypes26);
+				_getGroupUserEntriesCountParameterTypes25);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, userId, status);
@@ -1127,7 +1084,7 @@ public class BlogsEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				BlogsEntryServiceUtil.class, "getGroupUserEntriesCount",
-				_getGroupUserEntriesCountParameterTypes27);
+				_getGroupUserEntriesCountParameterTypes26);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, groupId, userId, statuses);
@@ -1143,6 +1100,49 @@ public class BlogsEntryServiceHttp {
 			}
 
 			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static java.util.List<com.liferay.blogs.model.BlogsEntry>
+			getGroupsEntries(
+				HttpPrincipal httpPrincipal, long companyId, long groupId,
+				java.util.Date displayDate, int status, int max)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				BlogsEntryServiceUtil.class, "getGroupsEntries",
+				_getGroupsEntriesParameterTypes27);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, companyId, groupId, displayDate, status, max);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List<com.liferay.blogs.model.BlogsEntry>)
+				returnObj;
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException
 					systemException) {
@@ -1578,24 +1578,24 @@ public class BlogsEntryServiceHttp {
 			String.class, double.class, String.class, String.class,
 			String.class, com.liferay.portal.kernel.theme.ThemeDisplay.class
 		};
-	private static final Class<?>[] _getGroupsEntriesParameterTypes23 =
-		new Class[] {
-			long.class, long.class, java.util.Date.class, int.class, int.class
-		};
-	private static final Class<?>[] _getGroupUserEntriesParameterTypes24 =
+	private static final Class<?>[] _getGroupUserEntriesParameterTypes23 =
 		new Class[] {
 			long.class, long.class, int.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getGroupUserEntriesParameterTypes25 =
+	private static final Class<?>[] _getGroupUserEntriesParameterTypes24 =
 		new Class[] {
 			long.class, long.class, int[].class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getGroupUserEntriesCountParameterTypes26 =
+	private static final Class<?>[] _getGroupUserEntriesCountParameterTypes25 =
 		new Class[] {long.class, long.class, int.class};
-	private static final Class<?>[] _getGroupUserEntriesCountParameterTypes27 =
+	private static final Class<?>[] _getGroupUserEntriesCountParameterTypes26 =
 		new Class[] {long.class, long.class, int[].class};
+	private static final Class<?>[] _getGroupsEntriesParameterTypes27 =
+		new Class[] {
+			long.class, long.class, java.util.Date.class, int.class, int.class
+		};
 	private static final Class<?>[] _getOrganizationEntriesParameterTypes28 =
 		new Class[] {long.class, java.util.Date.class, int.class, int.class};
 	private static final Class<?>[] _getOrganizationEntriesRSSParameterTypes29 =
@@ -1632,4 +1632,4 @@ public class BlogsEntryServiceHttp {
 	};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1105594064
+// LIFERAY-SERVICE-BUILDER-HASH:-500313778

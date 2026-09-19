@@ -468,94 +468,6 @@ public class CPConfigurationListRelServiceHttp {
 		}
 	}
 
-	public static java.util.List
-		<com.liferay.commerce.product.model.CPConfigurationListRel>
-				getCommerceOrderTypeCPConfigurationListRels(
-					HttpPrincipal httpPrincipal, long cpConfigurationListId,
-					String keywords, int start, int end)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				CPConfigurationListRelServiceUtil.class,
-				"getCommerceOrderTypeCPConfigurationListRels",
-				_getCommerceOrderTypeCPConfigurationListRelsParameterTypes10);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpConfigurationListId, keywords, start, end);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (java.util.List
-				<com.liferay.commerce.product.model.CPConfigurationListRel>)
-					returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static int getCommerceOrderTypeCPConfigurationListRelsCount(
-			HttpPrincipal httpPrincipal, long cpConfigurationListId,
-			String keywords)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				CPConfigurationListRelServiceUtil.class,
-				"getCommerceOrderTypeCPConfigurationListRelsCount",
-				_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes11);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, cpConfigurationListId, keywords);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return ((Integer)returnObj).intValue();
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
 	public static com.liferay.commerce.product.model.CPConfigurationListRel
 			getCPConfigurationListRel(
 				HttpPrincipal httpPrincipal, long cpConfigurationListRelId)
@@ -565,7 +477,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRel",
-				_getCPConfigurationListRelParameterTypes12);
+				_getCPConfigurationListRelParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListRelId);
@@ -609,7 +521,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes13);
+				_getCPConfigurationListRelsParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId);
@@ -658,7 +570,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes14);
+				_getCPConfigurationListRelsParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId, start, end,
@@ -705,7 +617,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes15);
+				_getCPConfigurationListRelsParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, cpConfigurationListId);
@@ -754,7 +666,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRels",
-				_getCPConfigurationListRelsParameterTypes16);
+				_getCPConfigurationListRelsParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, cpConfigurationListId, start, end,
@@ -798,7 +710,7 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRelsCount",
-				_getCPConfigurationListRelsCountParameterTypes17);
+				_getCPConfigurationListRelsCountParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, cpConfigurationListId);
@@ -840,10 +752,98 @@ public class CPConfigurationListRelServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				CPConfigurationListRelServiceUtil.class,
 				"getCPConfigurationListRelsCount",
-				_getCPConfigurationListRelsCountParameterTypes18);
+				_getCPConfigurationListRelsCountParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, className, cpConfigurationListId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static java.util.List
+		<com.liferay.commerce.product.model.CPConfigurationListRel>
+				getCommerceOrderTypeCPConfigurationListRels(
+					HttpPrincipal httpPrincipal, long cpConfigurationListId,
+					String keywords, int start, int end)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPConfigurationListRelServiceUtil.class,
+				"getCommerceOrderTypeCPConfigurationListRels",
+				_getCommerceOrderTypeCPConfigurationListRelsParameterTypes17);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpConfigurationListId, keywords, start, end);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.product.model.CPConfigurationListRel>)
+					returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static int getCommerceOrderTypeCPConfigurationListRelsCount(
+			HttpPrincipal httpPrincipal, long cpConfigurationListId,
+			String keywords)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPConfigurationListRelServiceUtil.class,
+				"getCommerceOrderTypeCPConfigurationListRelsCount",
+				_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes18);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpConfigurationListId, keywords);
 
 			Object returnObj = null;
 
@@ -910,38 +910,38 @@ public class CPConfigurationListRelServiceHttp {
 	private static final Class<?>[]
 		_getAccountGroupCPConfigurationListRelsCountParameterTypes9 =
 			new Class[] {long.class, String.class};
-	private static final Class<?>[]
-		_getCommerceOrderTypeCPConfigurationListRelsParameterTypes10 =
-			new Class[] {long.class, String.class, int.class, int.class};
-	private static final Class<?>[]
-		_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes11 =
-			new Class[] {long.class, String.class};
-	private static final Class<?>[] _getCPConfigurationListRelParameterTypes12 =
+	private static final Class<?>[] _getCPConfigurationListRelParameterTypes10 =
 		new Class[] {long.class};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes13 = new Class[] {long.class};
+		_getCPConfigurationListRelsParameterTypes11 = new Class[] {long.class};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes14 = new Class[] {
+		_getCPConfigurationListRelsParameterTypes12 = new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes15 = new Class[] {
+		_getCPConfigurationListRelsParameterTypes13 = new Class[] {
 			String.class, long.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsParameterTypes16 = new Class[] {
+		_getCPConfigurationListRelsParameterTypes14 = new Class[] {
 			String.class, long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsCountParameterTypes17 = new Class[] {
+		_getCPConfigurationListRelsCountParameterTypes15 = new Class[] {
 			long.class
 		};
 	private static final Class<?>[]
-		_getCPConfigurationListRelsCountParameterTypes18 = new Class[] {
+		_getCPConfigurationListRelsCountParameterTypes16 = new Class[] {
 			String.class, long.class
 		};
+	private static final Class<?>[]
+		_getCommerceOrderTypeCPConfigurationListRelsParameterTypes17 =
+			new Class[] {long.class, String.class, int.class, int.class};
+	private static final Class<?>[]
+		_getCommerceOrderTypeCPConfigurationListRelsCountParameterTypes18 =
+			new Class[] {long.class, String.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-905928885
+// LIFERAY-SERVICE-BUILDER-HASH:-1773196083

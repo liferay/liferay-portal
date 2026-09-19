@@ -78,42 +78,6 @@ public class UserServiceHttp {
 		}
 	}
 
-	public static void addOrganizationUsers(
-			HttpPrincipal httpPrincipal, long organizationId, long[] userIds)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				UserServiceUtil.class, "addOrganizationUsers",
-				_addOrganizationUsersParameterTypes1);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, organizationId, userIds);
-
-			try {
-				TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
 	public static com.liferay.portal.kernel.model.User addOrUpdateUser(
 			HttpPrincipal httpPrincipal, String externalReferenceCode,
 			long creatorUserId, long companyId, boolean autoPassword,
@@ -135,7 +99,7 @@ public class UserServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				UserServiceUtil.class, "addOrUpdateUser",
-				_addOrUpdateUserParameterTypes2);
+				_addOrUpdateUserParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, creatorUserId, companyId,
@@ -163,6 +127,42 @@ public class UserServiceHttp {
 			}
 
 			return (com.liferay.portal.kernel.model.User)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static void addOrganizationUsers(
+			HttpPrincipal httpPrincipal, long organizationId, long[] userIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				UserServiceUtil.class, "addOrganizationUsers",
+				_addOrganizationUsersParameterTypes2);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, organizationId, userIds);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
 		}
 		catch (com.liferay.portal.kernel.exception.SystemException
 					systemException) {
@@ -1383,49 +1383,6 @@ public class UserServiceHttp {
 		}
 	}
 
-	public static int getOrganizationsAndUserGroupsUsersCount(
-			HttpPrincipal httpPrincipal, long[] organizationIds,
-			long[] userGroupIds)
-		throws com.liferay.portal.kernel.security.auth.PrincipalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				UserServiceUtil.class,
-				"getOrganizationsAndUserGroupsUsersCount",
-				_getOrganizationsAndUserGroupsUsersCountParameterTypes30);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, organizationIds, userGroupIds);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.security.auth.
-							PrincipalException) {
-
-					throw (com.liferay.portal.kernel.security.auth.
-						PrincipalException)exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return ((Integer)returnObj).intValue();
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
 	public static long[] getOrganizationUserIds(
 			HttpPrincipal httpPrincipal, long organizationId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1433,7 +1390,7 @@ public class UserServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				UserServiceUtil.class, "getOrganizationUserIds",
-				_getOrganizationUserIdsParameterTypes31);
+				_getOrganizationUserIdsParameterTypes30);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, organizationId);
@@ -1474,7 +1431,7 @@ public class UserServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				UserServiceUtil.class, "getOrganizationUsers",
-				_getOrganizationUsersParameterTypes32);
+				_getOrganizationUsersParameterTypes31);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, organizationId);
@@ -1519,7 +1476,7 @@ public class UserServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				UserServiceUtil.class, "getOrganizationUsers",
-				_getOrganizationUsersParameterTypes33);
+				_getOrganizationUsersParameterTypes32);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, organizationId, status, start, end,
@@ -1564,7 +1521,7 @@ public class UserServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				UserServiceUtil.class, "getOrganizationUsers",
-				_getOrganizationUsersParameterTypes34);
+				_getOrganizationUsersParameterTypes33);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, organizationId, status, orderByComparator);
@@ -1605,7 +1562,7 @@ public class UserServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				UserServiceUtil.class, "getOrganizationUsersCount",
-				_getOrganizationUsersCountParameterTypes35);
+				_getOrganizationUsersCountParameterTypes34);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, organizationId, status);
@@ -1621,6 +1578,49 @@ public class UserServiceHttp {
 
 					throw (com.liferay.portal.kernel.exception.PortalException)
 						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static int getOrganizationsAndUserGroupsUsersCount(
+			HttpPrincipal httpPrincipal, long[] organizationIds,
+			long[] userGroupIds)
+		throws com.liferay.portal.kernel.security.auth.PrincipalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				UserServiceUtil.class,
+				"getOrganizationsAndUserGroupsUsersCount",
+				_getOrganizationsAndUserGroupsUsersCountParameterTypes35);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, organizationIds, userGroupIds);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.security.auth.
+							PrincipalException) {
+
+					throw (com.liferay.portal.kernel.security.auth.
+						PrincipalException)exception;
 				}
 
 				throw new com.liferay.portal.kernel.exception.SystemException(
@@ -3474,9 +3474,7 @@ public class UserServiceHttp {
 			long.class, long[].class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _addOrganizationUsersParameterTypes1 =
-		new Class[] {long.class, long[].class};
-	private static final Class<?>[] _addOrUpdateUserParameterTypes2 =
+	private static final Class<?>[] _addOrUpdateUserParameterTypes1 =
 		new Class[] {
 			String.class, long.class, long.class, boolean.class, String.class,
 			String.class, boolean.class, String.class, String.class,
@@ -3486,6 +3484,8 @@ public class UserServiceHttp {
 			java.util.List.class, java.util.List.class, boolean.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
+	private static final Class<?>[] _addOrganizationUsersParameterTypes2 =
+		new Class[] {long.class, long[].class};
 	private static final Class<?>[] _addPasswordPolicyUsersParameterTypes3 =
 		new Class[] {long.class, long[].class};
 	private static final Class<?>[] _addRoleUsersParameterTypes4 = new Class[] {
@@ -3614,26 +3614,26 @@ public class UserServiceHttp {
 		new Class[] {long.class, long.class, int.class};
 	private static final Class<?>[] _getGtUserGroupUsersParameterTypes29 =
 		new Class[] {long.class, long.class, int.class};
-	private static final Class<?>[]
-		_getOrganizationsAndUserGroupsUsersCountParameterTypes30 = new Class[] {
-			long[].class, long[].class
-		};
-	private static final Class<?>[] _getOrganizationUserIdsParameterTypes31 =
+	private static final Class<?>[] _getOrganizationUserIdsParameterTypes30 =
+		new Class[] {long.class};
+	private static final Class<?>[] _getOrganizationUsersParameterTypes31 =
 		new Class[] {long.class};
 	private static final Class<?>[] _getOrganizationUsersParameterTypes32 =
-		new Class[] {long.class};
-	private static final Class<?>[] _getOrganizationUsersParameterTypes33 =
 		new Class[] {
 			long.class, int.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getOrganizationUsersParameterTypes34 =
+	private static final Class<?>[] _getOrganizationUsersParameterTypes33 =
 		new Class[] {
 			long.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getOrganizationUsersCountParameterTypes35 =
+	private static final Class<?>[] _getOrganizationUsersCountParameterTypes34 =
 		new Class[] {long.class, int.class};
+	private static final Class<?>[]
+		_getOrganizationsAndUserGroupsUsersCountParameterTypes35 = new Class[] {
+			long[].class, long[].class
+		};
 	private static final Class<?>[] _getRoleUserIdsParameterTypes36 =
 		new Class[] {long.class};
 	private static final Class<?>[] _getUserByEmailAddressParameterTypes37 =
@@ -3799,4 +3799,4 @@ public class UserServiceHttp {
 	};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2032426377
+// LIFERAY-SERVICE-BUILDER-HASH:630345419

@@ -58,11 +58,6 @@ public interface CommerceOrderItem
 
 	public com.liferay.commerce.product.model.CProduct fetchCProduct();
 
-	public java.util.List<CommerceOrderItem> getChildCommerceOrderItems();
-
-	public CommerceOrder getCommerceOrder()
-		throws com.liferay.portal.kernel.exception.PortalException;
-
 	public com.liferay.commerce.product.model.CPDefinition getCPDefinition()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
@@ -80,6 +75,11 @@ public interface CommerceOrderItem
 	 */
 	@Deprecated
 	public com.liferay.commerce.product.model.CProduct getCProduct()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public java.util.List<CommerceOrderItem> getChildCommerceOrderItems();
+
+	public CommerceOrder getCommerceOrder()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public com.liferay.commerce.currency.model.CommerceMoney
@@ -118,4 +118,4 @@ public interface CommerceOrderItem
 	public boolean hasParentCommerceOrderItem();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1865294040
+// LIFERAY-SERVICE-BUILDER-HASH:954746782

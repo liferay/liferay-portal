@@ -403,177 +403,6 @@ public class COREntryRelServiceHttp {
 		}
 	}
 
-	public static java.util.List
-		<com.liferay.commerce.order.rule.model.COREntryRel>
-				getCommerceChannelCOREntryRels(
-					HttpPrincipal httpPrincipal, long corEntryId,
-					String keywords, int start, int end)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				COREntryRelServiceUtil.class, "getCommerceChannelCOREntryRels",
-				_getCommerceChannelCOREntryRelsParameterTypes9);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, corEntryId, keywords, start, end);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (java.util.List
-				<com.liferay.commerce.order.rule.model.COREntryRel>)returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static int getCommerceChannelCOREntryRelsCount(
-			HttpPrincipal httpPrincipal, long corEntryId, String keywords)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				COREntryRelServiceUtil.class,
-				"getCommerceChannelCOREntryRelsCount",
-				_getCommerceChannelCOREntryRelsCountParameterTypes10);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, corEntryId, keywords);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return ((Integer)returnObj).intValue();
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static java.util.List
-		<com.liferay.commerce.order.rule.model.COREntryRel>
-				getCommerceOrderTypeCOREntryRels(
-					HttpPrincipal httpPrincipal, long corEntryId,
-					String keywords, int start, int end)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				COREntryRelServiceUtil.class,
-				"getCommerceOrderTypeCOREntryRels",
-				_getCommerceOrderTypeCOREntryRelsParameterTypes11);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, corEntryId, keywords, start, end);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (java.util.List
-				<com.liferay.commerce.order.rule.model.COREntryRel>)returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static int getCommerceOrderTypeCOREntryRelsCount(
-			HttpPrincipal httpPrincipal, long corEntryId, String keywords)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				COREntryRelServiceUtil.class,
-				"getCommerceOrderTypeCOREntryRelsCount",
-				_getCommerceOrderTypeCOREntryRelsCountParameterTypes12);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, corEntryId, keywords);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return ((Integer)returnObj).intValue();
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
 	public static com.liferay.commerce.order.rule.model.COREntryRel
 			getCOREntryRel(HttpPrincipal httpPrincipal, long corEntryRelId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -581,7 +410,7 @@ public class COREntryRelServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				COREntryRelServiceUtil.class, "getCOREntryRel",
-				_getCOREntryRelParameterTypes13);
+				_getCOREntryRelParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, corEntryRelId);
@@ -622,7 +451,7 @@ public class COREntryRelServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				COREntryRelServiceUtil.class, "getCOREntryRels",
-				_getCOREntryRelsParameterTypes14);
+				_getCOREntryRelsParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, corEntryId);
@@ -668,7 +497,7 @@ public class COREntryRelServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				COREntryRelServiceUtil.class, "getCOREntryRels",
-				_getCOREntryRelsParameterTypes15);
+				_getCOREntryRelsParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, corEntryId, start, end, orderByComparator);
@@ -709,10 +538,181 @@ public class COREntryRelServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				COREntryRelServiceUtil.class, "getCOREntryRelsCount",
-				_getCOREntryRelsCountParameterTypes16);
+				_getCOREntryRelsCountParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, corEntryId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static java.util.List
+		<com.liferay.commerce.order.rule.model.COREntryRel>
+				getCommerceChannelCOREntryRels(
+					HttpPrincipal httpPrincipal, long corEntryId,
+					String keywords, int start, int end)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				COREntryRelServiceUtil.class, "getCommerceChannelCOREntryRels",
+				_getCommerceChannelCOREntryRelsParameterTypes13);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, corEntryId, keywords, start, end);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.order.rule.model.COREntryRel>)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static int getCommerceChannelCOREntryRelsCount(
+			HttpPrincipal httpPrincipal, long corEntryId, String keywords)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				COREntryRelServiceUtil.class,
+				"getCommerceChannelCOREntryRelsCount",
+				_getCommerceChannelCOREntryRelsCountParameterTypes14);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, corEntryId, keywords);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static java.util.List
+		<com.liferay.commerce.order.rule.model.COREntryRel>
+				getCommerceOrderTypeCOREntryRels(
+					HttpPrincipal httpPrincipal, long corEntryId,
+					String keywords, int start, int end)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				COREntryRelServiceUtil.class,
+				"getCommerceOrderTypeCOREntryRels",
+				_getCommerceOrderTypeCOREntryRelsParameterTypes15);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, corEntryId, keywords, start, end);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.order.rule.model.COREntryRel>)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static int getCommerceOrderTypeCOREntryRelsCount(
+			HttpPrincipal httpPrincipal, long corEntryId, String keywords)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				COREntryRelServiceUtil.class,
+				"getCommerceOrderTypeCOREntryRelsCount",
+				_getCommerceOrderTypeCOREntryRelsCountParameterTypes16);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, corEntryId, keywords);
 
 			Object returnObj = null;
 
@@ -773,33 +773,33 @@ public class COREntryRelServiceHttp {
 		_getAccountGroupCOREntryRelsCountParameterTypes8 = new Class[] {
 			long.class, String.class
 		};
-	private static final Class<?>[]
-		_getCommerceChannelCOREntryRelsParameterTypes9 = new Class[] {
-			long.class, String.class, int.class, int.class
-		};
-	private static final Class<?>[]
-		_getCommerceChannelCOREntryRelsCountParameterTypes10 = new Class[] {
-			long.class, String.class
-		};
-	private static final Class<?>[]
-		_getCommerceOrderTypeCOREntryRelsParameterTypes11 = new Class[] {
-			long.class, String.class, int.class, int.class
-		};
-	private static final Class<?>[]
-		_getCommerceOrderTypeCOREntryRelsCountParameterTypes12 = new Class[] {
-			long.class, String.class
-		};
-	private static final Class<?>[] _getCOREntryRelParameterTypes13 =
+	private static final Class<?>[] _getCOREntryRelParameterTypes9 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getCOREntryRelsParameterTypes14 =
+	private static final Class<?>[] _getCOREntryRelsParameterTypes10 =
 		new Class[] {long.class};
-	private static final Class<?>[] _getCOREntryRelsParameterTypes15 =
+	private static final Class<?>[] _getCOREntryRelsParameterTypes11 =
 		new Class[] {
 			long.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getCOREntryRelsCountParameterTypes16 =
+	private static final Class<?>[] _getCOREntryRelsCountParameterTypes12 =
 		new Class[] {long.class};
+	private static final Class<?>[]
+		_getCommerceChannelCOREntryRelsParameterTypes13 = new Class[] {
+			long.class, String.class, int.class, int.class
+		};
+	private static final Class<?>[]
+		_getCommerceChannelCOREntryRelsCountParameterTypes14 = new Class[] {
+			long.class, String.class
+		};
+	private static final Class<?>[]
+		_getCommerceOrderTypeCOREntryRelsParameterTypes15 = new Class[] {
+			long.class, String.class, int.class, int.class
+		};
+	private static final Class<?>[]
+		_getCommerceOrderTypeCOREntryRelsCountParameterTypes16 = new Class[] {
+			long.class, String.class
+		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1628152109
+// LIFERAY-SERVICE-BUILDER-HASH:1893838467

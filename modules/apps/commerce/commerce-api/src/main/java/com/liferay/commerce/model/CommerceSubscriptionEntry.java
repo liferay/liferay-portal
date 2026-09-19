@@ -54,12 +54,12 @@ public interface CommerceSubscriptionEntry
 
 			};
 
-	public CommerceOrderItem fetchCommerceOrderItem();
-
 	public com.liferay.commerce.product.model.CPDefinition fetchCPDefinition()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public com.liferay.commerce.product.model.CPInstance fetchCPInstance();
+
+	public CommerceOrderItem fetchCommerceOrderItem();
 
 	public long getCPDefinitionId()
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -81,4 +81,4 @@ public interface CommerceSubscriptionEntry
 			subscriptionTypeSettingsUnicodeProperties);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2115129686
+// LIFERAY-SERVICE-BUILDER-HASH:1034934230

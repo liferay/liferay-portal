@@ -61,8 +61,6 @@ public interface DLFileEntry
 	public java.io.InputStream getContentStream(String version)
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public long getDataRepositoryId();
-
 	public java.util.Map
 		<String, com.liferay.dynamic.data.mapping.kernel.DDMFormValues>
 				getDDMFormValuesMap(long fileVersionId)
@@ -70,6 +68,8 @@ public interface DLFileEntry
 
 	public DLFileEntryType getDLFileEntryType()
 		throws com.liferay.portal.kernel.exception.PortalException;
+
+	public long getDataRepositoryId();
 
 	public com.liferay.expando.kernel.model.ExpandoBridge getExpandoBridge();
 
@@ -122,4 +122,4 @@ public interface DLFileEntry
 			extraSettingsUnicodeProperties);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:978159339
+// LIFERAY-SERVICE-BUILDER-HASH:-245621861

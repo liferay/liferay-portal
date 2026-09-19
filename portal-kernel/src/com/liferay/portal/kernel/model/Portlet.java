@@ -512,6 +512,13 @@ public interface Portlet extends PersistedModel, PortletModel {
 	public java.util.Map<String, String> getInitParams();
 
 	/**
+	 * Returns the instance ID of the portlet.
+	 *
+	 * @return the instance ID of the portlet
+	 */
+	public String getInstanceId();
+
+	/**
 	 * Returns <code>true</code> if the portlet can be added multiple times to a
 	 * layout.
 	 *
@@ -519,13 +526,6 @@ public interface Portlet extends PersistedModel, PortletModel {
 	 layout
 	 */
 	public boolean getInstanceable();
-
-	/**
-	 * Returns the instance ID of the portlet.
-	 *
-	 * @return the instance ID of the portlet
-	 */
-	public String getInstanceId();
 
 	/**
 	 * Returns <code>true</code> to allow the portlet to be cached within the
@@ -1114,6 +1114,20 @@ public interface Portlet extends PersistedModel, PortletModel {
 		getTrashHandlerInstances();
 
 	/**
+	 * Returns the name of the URL encoder class of the portlet.
+	 *
+	 * @return the name of the URL encoder class of the portlet
+	 */
+	public String getURLEncoderClass();
+
+	/**
+	 * Returns the URL encoder instance of the portlet.
+	 *
+	 * @return the URL encoder instance of the portlet
+	 */
+	public com.liferay.portal.kernel.servlet.URLEncoder getURLEncoderInstance();
+
+	/**
 	 * Returns <code>true</code> if the portlet is an undeployed portlet.
 	 *
 	 * @return <code>true</code> if the portlet is a placeholder of an
@@ -1127,20 +1141,6 @@ public interface Portlet extends PersistedModel, PortletModel {
 	 * @return unlinked roles of the portlet
 	 */
 	public java.util.Set<String> getUnlinkedRoles();
-
-	/**
-	 * Returns the name of the URL encoder class of the portlet.
-	 *
-	 * @return the name of the URL encoder class of the portlet
-	 */
-	public String getURLEncoderClass();
-
-	/**
-	 * Returns the URL encoder instance of the portlet.
-	 *
-	 * @return the URL encoder instance of the portlet
-	 */
-	public com.liferay.portal.kernel.servlet.URLEncoder getURLEncoderInstance();
 
 	/**
 	 * Returns <code>true</code> if the portlet uses the default template.
@@ -1276,8 +1276,6 @@ public interface Portlet extends PersistedModel, PortletModel {
 
 	public boolean hasFooterPortletJavaScript();
 
-	public int hashCode();
-
 	public boolean hasHeaderPortalCss();
 
 	public boolean hasHeaderPortalJavaScript();
@@ -1327,6 +1325,8 @@ public interface Portlet extends PersistedModel, PortletModel {
 	 */
 	public boolean hasWindowState(
 		String mimeType, jakarta.portlet.WindowState windowState);
+
+	public int hashCode();
 
 	/**
 	 * Returns <code>true</code> if an action URL for this portlet should cause
@@ -2435,6 +2435,13 @@ public interface Portlet extends PersistedModel, PortletModel {
 		java.util.List<String> trashHandlerClasses);
 
 	/**
+	 * Sets the name of the URL encoder class of the portlet.
+	 *
+	 * @param urlEncoderClass the name of the URL encoder class of the portlet
+	 */
+	public void setURLEncoderClass(String urlEncoderClass);
+
+	/**
 	 * Set to <code>true</code> if the portlet is an undeployed portlet.
 	 *
 	 * @param undeployedPortlet boolean value for whether the portlet is an
@@ -2448,13 +2455,6 @@ public interface Portlet extends PersistedModel, PortletModel {
 	 * @param unlinkedRoles the unlinked roles of the portlet
 	 */
 	public void setUnlinkedRoles(java.util.Set<String> unlinkedRoles);
-
-	/**
-	 * Sets the name of the URL encoder class of the portlet.
-	 *
-	 * @param urlEncoderClass the name of the URL encoder class of the portlet
-	 */
-	public void setURLEncoderClass(String urlEncoderClass);
 
 	/**
 	 * Set to <code>true</code> if the portlet uses the default template.
@@ -2543,4 +2543,4 @@ public interface Portlet extends PersistedModel, PortletModel {
 	public void unsetReady();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-581819074
+// LIFERAY-SERVICE-BUILDER-HASH:-804702034

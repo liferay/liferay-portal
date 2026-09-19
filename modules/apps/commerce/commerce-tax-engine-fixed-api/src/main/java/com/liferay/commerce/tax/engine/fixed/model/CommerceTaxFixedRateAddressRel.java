@@ -55,6 +55,9 @@ public interface CommerceTaxFixedRateAddressRel
 
 			};
 
+	public com.liferay.commerce.product.model.CPTaxCategory getCPTaxCategory()
+		throws com.liferay.portal.kernel.exception.PortalException;
+
 	public com.liferay.commerce.tax.model.CommerceTaxMethod
 			getCommerceTaxMethod()
 		throws com.liferay.portal.kernel.exception.PortalException;
@@ -62,11 +65,8 @@ public interface CommerceTaxFixedRateAddressRel
 	public com.liferay.portal.kernel.model.Country getCountry()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public com.liferay.commerce.product.model.CPTaxCategory getCPTaxCategory()
-		throws com.liferay.portal.kernel.exception.PortalException;
-
 	public com.liferay.portal.kernel.model.Region getRegion()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-151608278
+// LIFERAY-SERVICE-BUILDER-HASH:-2084845436
