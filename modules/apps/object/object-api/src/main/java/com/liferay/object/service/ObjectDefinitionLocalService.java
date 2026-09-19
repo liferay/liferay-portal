@@ -67,10 +67,11 @@ public interface ObjectDefinitionLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectDefinition addCustomObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
-			String className, boolean enableCategorization,
-			boolean enableComments, boolean enableFormContainer,
-			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
-			boolean enableObjectEntryDraft, boolean enableObjectEntrySchedule,
+			String className, Map<Locale, String> descriptionMap,
+			boolean enableCategorization, boolean enableComments,
+			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
+			boolean enableIndexSearch, boolean enableObjectEntryDraft,
+			boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			Map<Locale, String> labelMap, String name, String panelAppOrder,
@@ -120,7 +121,8 @@ public interface ObjectDefinitionLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public ObjectDefinition addSystemObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
-			String className, String dbTableName, boolean enableCategorization,
+			String className, String dbTableName,
+			Map<Locale, String> descriptionMap, boolean enableCategorization,
 			boolean enableComments, boolean enableFormContainer,
 			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
 			boolean enableObjectEntryDraft, boolean enableObjectEntryHistory,
@@ -474,7 +476,8 @@ public interface ObjectDefinitionLocalService
 			long accountEntryRestrictedObjectFieldId,
 			long descriptionObjectFieldId, long objectFolderId,
 			long titleObjectFieldId, boolean accountEntryRestricted,
-			boolean active, String className, boolean enableCategorization,
+			boolean active, String className,
+			Map<Locale, String> descriptionMap, boolean enableCategorization,
 			boolean enableComments, boolean enableFormContainer,
 			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
 			boolean enableObjectEntryDraft, boolean enableObjectEntryHistory,
@@ -532,4 +535,4 @@ public interface ObjectDefinitionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1406267445
+// LIFERAY-SERVICE-BUILDER-HASH:-534404729

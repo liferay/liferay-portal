@@ -32,10 +32,12 @@ public class ObjectDefinitionLocalServiceWrapper
 	@Override
 	public com.liferay.object.model.ObjectDefinition addCustomObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
-			String className, boolean enableCategorization,
-			boolean enableComments, boolean enableFormContainer,
-			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
-			boolean enableObjectEntryDraft, boolean enableObjectEntrySchedule,
+			String className,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean enableCategorization, boolean enableComments,
+			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
+			boolean enableIndexSearch, boolean enableObjectEntryDraft,
+			boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			java.util.Map<java.util.Locale, String> labelMap, String name,
@@ -53,14 +55,14 @@ public class ObjectDefinitionLocalServiceWrapper
 
 		return _objectDefinitionLocalService.addCustomObjectDefinition(
 			externalReferenceCode, userId, objectFolderId, className,
-			enableCategorization, enableComments, enableFormContainer,
-			enableFriendlyURLCustomization, enableIndexSearch,
-			enableObjectEntryDraft, enableObjectEntrySchedule,
-			enableObjectEntrySubscription, enableObjectEntryVersioning,
-			friendlyURLSeparator, labelMap, name, panelAppOrder,
-			panelCategoryKey, pluralLabelMap, portlet, scope, storageType,
-			objectDefinitionSettings, objectFields, workflowDefinitionLinks,
-			serviceContext);
+			descriptionMap, enableCategorization, enableComments,
+			enableFormContainer, enableFriendlyURLCustomization,
+			enableIndexSearch, enableObjectEntryDraft,
+			enableObjectEntrySchedule, enableObjectEntrySubscription,
+			enableObjectEntryVersioning, friendlyURLSeparator, labelMap, name,
+			panelAppOrder, panelCategoryKey, pluralLabelMap, portlet, scope,
+			storageType, objectDefinitionSettings, objectFields,
+			workflowDefinitionLinks, serviceContext);
 	}
 
 	/**
@@ -128,11 +130,12 @@ public class ObjectDefinitionLocalServiceWrapper
 	@Override
 	public com.liferay.object.model.ObjectDefinition addSystemObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
-			String className, String dbTableName, boolean enableCategorization,
-			boolean enableComments, boolean enableFormContainer,
-			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
-			boolean enableObjectEntryDraft, boolean enableObjectEntryHistory,
-			boolean enableObjectEntrySchedule,
+			String className, String dbTableName,
+			java.util.Map<java.util.Locale, String> descriptionMap,
+			boolean enableCategorization, boolean enableComments,
+			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
+			boolean enableIndexSearch, boolean enableObjectEntryDraft,
+			boolean enableObjectEntryHistory, boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			java.util.Map<java.util.Locale, String> labelMap,
@@ -152,7 +155,7 @@ public class ObjectDefinitionLocalServiceWrapper
 
 		return _objectDefinitionLocalService.addSystemObjectDefinition(
 			externalReferenceCode, userId, objectFolderId, className,
-			dbTableName, enableCategorization, enableComments,
+			dbTableName, descriptionMap, enableCategorization, enableComments,
 			enableFormContainer, enableFriendlyURLCustomization,
 			enableIndexSearch, enableObjectEntryDraft, enableObjectEntryHistory,
 			enableObjectEntrySchedule, enableObjectEntrySubscription,
@@ -740,8 +743,10 @@ public class ObjectDefinitionLocalServiceWrapper
 				long accountEntryRestrictedObjectFieldId,
 				long descriptionObjectFieldId, long objectFolderId,
 				long titleObjectFieldId, boolean accountEntryRestricted,
-				boolean active, String className, boolean enableCategorization,
-				boolean enableComments, boolean enableFormContainer,
+				boolean active, String className,
+				java.util.Map<java.util.Locale, String> descriptionMap,
+				boolean enableCategorization, boolean enableComments,
+				boolean enableFormContainer,
 				boolean enableFriendlyURLCustomization,
 				boolean enableIndexSearch, boolean enableObjectEntryDraft,
 				boolean enableObjectEntryHistory,
@@ -767,7 +772,7 @@ public class ObjectDefinitionLocalServiceWrapper
 			externalReferenceCode, objectDefinitionId,
 			accountEntryRestrictedObjectFieldId, descriptionObjectFieldId,
 			objectFolderId, titleObjectFieldId, accountEntryRestricted, active,
-			className, enableCategorization, enableComments,
+			className, descriptionMap, enableCategorization, enableComments,
 			enableFormContainer, enableFriendlyURLCustomization,
 			enableIndexSearch, enableObjectEntryDraft, enableObjectEntryHistory,
 			enableObjectEntrySchedule, enableObjectEntrySubscription,
@@ -871,4 +876,4 @@ public class ObjectDefinitionLocalServiceWrapper
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1928204886
+// LIFERAY-SERVICE-BUILDER-HASH:-1360588635

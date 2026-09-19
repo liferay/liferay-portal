@@ -33,6 +33,7 @@ public class ObjectDefinitionServiceUtil {
 	 */
 	public static ObjectDefinition addCustomObjectDefinition(
 			String externalReferenceCode, long objectFolderId, String className,
+			Map<java.util.Locale, String> descriptionMap,
 			boolean enableCategorization, boolean enableComments,
 			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
 			boolean enableIndexSearch, boolean enableObjectEntryDraft,
@@ -52,7 +53,7 @@ public class ObjectDefinitionServiceUtil {
 		throws PortalException {
 
 		return getService().addCustomObjectDefinition(
-			externalReferenceCode, objectFolderId, className,
+			externalReferenceCode, objectFolderId, className, descriptionMap,
 			enableCategorization, enableComments, enableFormContainer,
 			enableFriendlyURLCustomization, enableIndexSearch,
 			enableObjectEntryDraft, enableObjectEntrySchedule,
@@ -75,11 +76,11 @@ public class ObjectDefinitionServiceUtil {
 
 	public static ObjectDefinition addSystemObjectDefinition(
 			String externalReferenceCode, long userId, long objectFolderId,
-			String className, boolean enableCategorization,
-			boolean enableComments, boolean enableFormContainer,
-			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
-			boolean enableObjectEntryDraft, boolean enableObjectEntryHistory,
-			boolean enableObjectEntrySchedule,
+			String className, Map<java.util.Locale, String> descriptionMap,
+			boolean enableCategorization, boolean enableComments,
+			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
+			boolean enableIndexSearch, boolean enableObjectEntryDraft,
+			boolean enableObjectEntryHistory, boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			Map<java.util.Locale, String> labelMap, String name,
@@ -95,9 +96,9 @@ public class ObjectDefinitionServiceUtil {
 
 		return getService().addSystemObjectDefinition(
 			externalReferenceCode, userId, objectFolderId, className,
-			enableCategorization, enableComments, enableFormContainer,
-			enableFriendlyURLCustomization, enableIndexSearch,
-			enableObjectEntryDraft, enableObjectEntryHistory,
+			descriptionMap, enableCategorization, enableComments,
+			enableFormContainer, enableFriendlyURLCustomization,
+			enableIndexSearch, enableObjectEntryDraft, enableObjectEntryHistory,
 			enableObjectEntrySchedule, enableObjectEntrySubscription,
 			enableObjectEntryVersioning, friendlyURLSeparator, labelMap, name,
 			panelAppOrder, panelCategoryKey, pluralLabelMap, portlet, scope,
@@ -191,11 +192,12 @@ public class ObjectDefinitionServiceUtil {
 			long accountEntryRestrictedObjectFieldId,
 			long descriptionObjectFieldId, long objectFolderId,
 			long titleObjectFieldId, boolean accountEntryRestricted,
-			boolean active, String className, boolean enableCategorization,
-			boolean enableComments, boolean enableFormContainer,
-			boolean enableFriendlyURLCustomization, boolean enableIndexSearch,
-			boolean enableObjectEntryDraft, boolean enableObjectEntryHistory,
-			boolean enableObjectEntrySchedule,
+			boolean active, String className,
+			Map<java.util.Locale, String> descriptionMap,
+			boolean enableCategorization, boolean enableComments,
+			boolean enableFormContainer, boolean enableFriendlyURLCustomization,
+			boolean enableIndexSearch, boolean enableObjectEntryDraft,
+			boolean enableObjectEntryHistory, boolean enableObjectEntrySchedule,
 			boolean enableObjectEntrySubscription,
 			boolean enableObjectEntryVersioning, String friendlyURLSeparator,
 			Map<java.util.Locale, String> labelMap, String name,
@@ -214,7 +216,7 @@ public class ObjectDefinitionServiceUtil {
 			externalReferenceCode, objectDefinitionId,
 			accountEntryRestrictedObjectFieldId, descriptionObjectFieldId,
 			objectFolderId, titleObjectFieldId, accountEntryRestricted, active,
-			className, enableCategorization, enableComments,
+			className, descriptionMap, enableCategorization, enableComments,
 			enableFormContainer, enableFriendlyURLCustomization,
 			enableIndexSearch, enableObjectEntryDraft, enableObjectEntryHistory,
 			enableObjectEntrySchedule, enableObjectEntrySubscription,
@@ -265,4 +267,4 @@ public class ObjectDefinitionServiceUtil {
 			ObjectDefinitionServiceUtil.class, ObjectDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1209643437
+// LIFERAY-SERVICE-BUILDER-HASH:1377800454
