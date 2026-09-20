@@ -4,5 +4,7 @@
  */
 
 export function nextId(kind: string): string {
-	return `${kind}-${crypto.randomUUID().slice(0, 8)}`;
+	const [value] = crypto.getRandomValues(new Uint32Array(1));
+
+	return `${kind}-${value.toString(16).padStart(8, '0')}`;
 }
