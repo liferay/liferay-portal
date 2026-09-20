@@ -9,6 +9,8 @@ import {DataApiHelpers, getHeader} from '../../../helpers/ApiHelpers';
 import {TPermission} from '../../../helpers/HeadlessAdminUserApiHelper';
 import {CommerceAdminChannelDetailsPage} from '../../../pages/commerce/commerce-channel-web/commerceAdminChannelDetailsPage';
 import {CommerceAdminChannelsPage} from '../../../pages/commerce/commerce-channel-web/commerceAdminChannelsPage';
+import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
+import {DisplayPageTemplatesPage} from '../../../pages/layout-page-template-admin-web/DisplayPageTemplatesPage';
 import getRandomString from '../../../utils/getRandomString';
 import {performLogout, userData} from '../../../utils/performLogin';
 import {openProductMenu} from '../../../utils/productMenu';
@@ -780,6 +782,70 @@ export async function guestCheckoutSetUp(
 	await expect(page.locator('.btn-account-selector')).not.toBeVisible();
 }
 
+export async function deployProductFragmentsOnDefaultDPT(
+	apiHelpers: DataApiHelpers,
+	{
+		displayPageTemplatesPage,
+		fragmentNames,
+		onFragmentsAdded,
+		pageEditorPage,
+		site,
+		widgets = [],
+	}: {
+		displayPageTemplatesPage: DisplayPageTemplatesPage;
+		fragmentNames: string[];
+		onFragmentsAdded?: () => Promise<void>;
+		pageEditorPage: PageEditorPage;
+		site: Site;
+		widgets?: Array<{category: string; name: string}>;
+	}
+) {
+	const displayPageTemplateName = `Product DPT ${getRandomString()}`;
+
+	const {classNameId} =
+		await apiHelpers.jsonWebServicesClassName.fetchClassName(
+			'com.liferay.commerce.product.model.CPDefinition'
+		);
+
+	const {layoutPageTemplateEntryId} =
+		await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+			{
+				classNameId,
+				groupId: String(site.id),
+				name: displayPageTemplateName,
+			}
+		);
+
+	await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.markAsDefaultDisplayPageLayoutPageTemplateEntry(
+		{layoutPageTemplateEntryId}
+	);
+
+	apiHelpers.data.push({
+		id: layoutPageTemplateEntryId,
+		type: 'layoutPageTemplateEntry',
+	});
+
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
+
+	for (const fragmentName of fragmentNames) {
+		await pageEditorPage.addFragment('Product', fragmentName);
+	}
+
+	for (const widget of widgets) {
+		await pageEditorPage.addWidget(widget.category, widget.name);
+	}
+
+	if (onFragmentsAdded) {
+		await onFragmentsAdded();
+	}
+
+	await displayPageTemplatesPage.publishTemplate();
+
+	return displayPageTemplateName;
+}
+
 export async function miniumSetUp(
 	apiHelpers: DataApiHelpers,
 	siteName?: string
@@ -903,6 +969,33 @@ export async function createAccountWithSupplierUser(
 	return {account, supplierUser};
 }
 
+export async function assignBuyerUserToAccount(
+	account: TAccount,
+	apiHelpers: DataApiHelpers,
+	buyerUser: {emailAddress?: string}
+) {
+	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+		account.id,
+		[buyerUser.emailAddress]
+	);
+
+	const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
+		account.id
+	);
+
+	const buyerRole = rolesResponse?.items?.find(
+		(role: {name: string}) => role.name === 'Buyer'
+	);
+
+	if (buyerRole) {
+		await apiHelpers.headlessAdminUser.assignAccountRoles(
+			account.externalReferenceCode,
+			buyerRole.id,
+			buyerUser.emailAddress
+		);
+	}
+}
+
 export async function createBuyerUserForAccount(
 	account: TAccount,
 	apiHelpers: DataApiHelpers,
@@ -928,26 +1021,7 @@ export async function createBuyerUserForAccount(
 		givenName: userFirstName,
 	});
 
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		[buyerUser.emailAddress]
-	);
-
-	const rolesResponse = await apiHelpers.headlessAdminUser.getAccountRoles(
-		account.id
-	);
-
-	const buyerRole = rolesResponse?.items?.find(
-		(role: {name: string}) => role.name === 'Buyer'
-	);
-
-	if (buyerRole) {
-		await apiHelpers.headlessAdminUser.assignAccountRoles(
-			account.externalReferenceCode,
-			buyerRole.id,
-			buyerUser.emailAddress
-		);
-	}
+	await assignBuyerUserToAccount(account, apiHelpers, buyerUser);
 
 	const siteRole =
 		await apiHelpers.headlessAdminUser.getRoleByName('Site Member');

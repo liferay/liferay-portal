@@ -15,10 +15,14 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly accountSelectorNoAccountsMessage: Locator;
 	readonly accountSelectorNoOrderSelectedMessage: Locator;
 	readonly accountSelectorOrderId: Locator;
+	readonly accountSelectorOrderLink: (orderId: string) => Locator;
 	readonly accountSelectorOrdersList: Locator;
 	readonly accountSelectorOrderWorkflowStatus: Locator;
 	readonly accountSelectorSearchAccountInput: Locator;
 	readonly accountSelectorSearchOrderInput: Locator;
+	readonly accountSelectorSelectedAccount: Locator;
+	readonly addToCartFragment: Locator;
+	readonly addToCartFragmentButton: Locator;
 	readonly catalogSearch: Locator;
 	readonly clearSearchButton: Locator;
 	readonly configurationIFrame: FrameLocator;
@@ -44,6 +48,7 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly quantitySelectorErrorContainer: (
 		targetLocator: Locator
 	) => Locator;
+	readonly quantitySelectorList: (targetLocator: Locator) => Locator;
 	readonly optionsButton: Locator;
 	readonly orderByButton: Locator;
 	readonly page: Page;
@@ -68,18 +73,36 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly productCardFragmentCompareCheckbox: (
 		targetLocator: Locator
 	) => Locator;
+	readonly productCardFragmentDescription: (
+		targetLocator: Locator
+	) => Locator;
 	readonly productCardFragmentImage: (targetLocator: Locator) => Locator;
+	readonly productCardFragmentInactivePrice: (
+		targetLocator: Locator
+	) => Locator;
 	readonly productCardFragmentName: (
 		targetLocator: Locator,
 		productName: string
 	) => Locator;
+	readonly productCardFragmentNetPrice: (targetLocator: Locator) => Locator;
 	readonly productCardFragmentPrice: (
 		targetLocator: Locator,
 		productPrice: string
 	) => Locator;
+	readonly productCardFragmentPriceOnApplicationLabel: (
+		targetLocator: Locator
+	) => Locator;
+	readonly productCardFragmentPromoPrice: (targetLocator: Locator) => Locator;
 	readonly productCardFragmentSku: (
 		targetLocator: Locator,
 		productSku: string
+	) => Locator;
+	readonly productCardFragmentViewButton: (targetLocator: Locator) => Locator;
+	readonly productCardFragmentWishListFullIcon: (
+		targetLocator: Locator
+	) => Locator;
+	readonly productCardFragmentWishListToggle: (
+		targetLocator: Locator
 	) => Locator;
 	readonly productLink: (productName: string) => Locator;
 
@@ -109,6 +132,10 @@ export class CommerceThemeMiniumCatalogPage {
 			);
 		this.accountSelectorOrderId =
 			this.accountSelectorButton.locator('.order-id');
+		this.accountSelectorOrderLink = (orderId: string) =>
+			page
+				.locator('.orders-table')
+				.getByRole('button', {exact: true, name: orderId});
 		this.accountSelectorOrdersList = page.locator('.orders-list');
 		this.accountSelectorOrderWorkflowStatus =
 			this.accountSelectorButton.locator('.workflow-status');
@@ -118,6 +145,12 @@ export class CommerceThemeMiniumCatalogPage {
 			});
 		this.accountSelectorSearchOrderInput =
 			this.accountSelectorDropdownMenu.getByPlaceholder('Search Order');
+		this.accountSelectorSelectedAccount =
+			this.accountSelectorButton.locator('.account-name');
+		this.addToCartFragment = page.locator('.add-to-cart');
+		this.addToCartFragmentButton = this.addToCartFragment.locator(
+			'button.btn-add-to-cart:not(.skeleton)'
+		);
 		this.catalogSearch = page.getByTestId('searchInput');
 		this.clearSearchButton = page.getByRole('button', {
 			name: 'Clear Search',
@@ -173,6 +206,8 @@ export class CommerceThemeMiniumCatalogPage {
 			targetLocator.getByRole('spinbutton');
 		this.quantitySelectorErrorContainer = (targetLocator: Locator) =>
 			this.quantitySelector(targetLocator).locator('..');
+		this.quantitySelectorList = (targetLocator: Locator) =>
+			targetLocator.locator('select.quantity-selector');
 		this.optionsButton = page
 			.locator(
 				'[id^="portlet_com_liferay_commerce_product_content_search_web_internal_portlet_CPSortPortlet"]'
@@ -213,8 +248,12 @@ export class CommerceThemeMiniumCatalogPage {
 			targetLocator.locator('[class*="availability-label"]');
 		this.productCardFragmentCompareCheckbox = (targetLocator: Locator) =>
 			targetLocator.locator('.compare-checkbox');
+		this.productCardFragmentDescription = (targetLocator: Locator) =>
+			targetLocator.locator('.two-lined-description');
 		this.productCardFragmentImage = (targetLocator: Locator) =>
 			targetLocator.locator('img.product-card-picture');
+		this.productCardFragmentInactivePrice = (targetLocator: Locator) =>
+			targetLocator.locator('.price-value-inactive');
 		this.productCardFragmentName = (
 			targetLocator: Locator,
 			productName: string
@@ -222,6 +261,8 @@ export class CommerceThemeMiniumCatalogPage {
 			targetLocator
 				.locator('.card-title')
 				.getByText(productName, {exact: true});
+		this.productCardFragmentNetPrice = (targetLocator: Locator) =>
+			targetLocator.locator('.price-value-final');
 		this.productCardFragmentPrice = (
 			targetLocator: Locator,
 			productPrice: string
@@ -229,6 +270,14 @@ export class CommerceThemeMiniumCatalogPage {
 			targetLocator
 				.locator('.card-text')
 				.getByText(productPrice, {exact: true});
+		this.productCardFragmentPriceOnApplicationLabel = (
+			targetLocator: Locator
+		) =>
+			targetLocator
+				.locator('.card-text .price-value')
+				.filter({hasText: 'Price on Application'});
+		this.productCardFragmentPromoPrice = (targetLocator: Locator) =>
+			targetLocator.locator('.price-value-promo');
 		this.productCardFragmentSku = (
 			targetLocator: Locator,
 			productSku: string
@@ -236,6 +285,14 @@ export class CommerceThemeMiniumCatalogPage {
 			targetLocator
 				.locator('.card-subtitle')
 				.getByText(productSku, {exact: true});
+		this.productCardFragmentViewButton = (targetLocator: Locator) =>
+			targetLocator.getByRole('button', {exact: true, name: 'View'});
+		this.productCardFragmentWishListFullIcon = (targetLocator: Locator) =>
+			targetLocator.locator(
+				'.add-to-wish-list svg.lexicon-icon-heart-full'
+			);
+		this.productCardFragmentWishListToggle = (targetLocator: Locator) =>
+			targetLocator.locator('.add-to-wish-list button:not(.skeleton)');
 		this.productLink = (productName: string) =>
 			this.page.getByRole('link', {
 				exact: true,

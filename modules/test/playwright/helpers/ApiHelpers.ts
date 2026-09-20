@@ -635,6 +635,11 @@ export class DataApiHelpers extends ApiHelpers {
 						id: item.id,
 					});
 				}
+				else if (item.type === 'layoutPageTemplateEntry') {
+					await this.jsonWebServicesLayoutPageTemplateEntry.deleteLayoutPageTemplateEntry(
+						{layoutPageTemplateEntryId: String(item.id)}
+					);
+				}
 				else if (item.type === 'layoutSetPrototype') {
 					await this.jsonWebServicesLayoutSetPrototype.deleteLayoutSetPrototypes(
 						item.id

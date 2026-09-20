@@ -76,6 +76,31 @@ export class JSONWebServicesLayoutSetApiHelper {
 		);
 	}
 
+	async updateLookAndFeel({
+		groupId,
+		themeId,
+	}: {
+		groupId: string;
+		themeId: string;
+	}) {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('colorSchemeId', '');
+		urlSearchParams.append('css', '');
+		urlSearchParams.append('groupId', groupId);
+		urlSearchParams.append('privateLayout', false.toString());
+		urlSearchParams.append('themeId', themeId);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/update-look-and-feel`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
 	async updateVirtualHosts({
 		groupId,
 		virtualHostname,

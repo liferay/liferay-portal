@@ -22,10 +22,12 @@ export class CommerceMiniCartPage {
 	readonly miniCartItemsContainer: Locator;
 	readonly miniCartItemListPrice: (productName: string) => Locator;
 	readonly miniCartItemPrice: (text: RegExp, productName?: string) => Locator;
+	readonly miniCartItemPriceOnApplication: (productName: string) => Locator;
 	readonly miniCartItemPromoPrice: (productName: string) => Locator;
 	readonly miniCartItemReplacementLabel: (productName: string) => Locator;
 	readonly miniCartItemUnitOfMeasure: (productName: string) => Locator;
 	readonly miniCartReplacementInfoMessage: Locator;
+	readonly miniCartResume: Locator;
 	readonly miniCartSaveButton: Locator;
 	readonly miniCartSku: (skuName: string) => Locator;
 	readonly miniCartSummaryItem: (label: string) => Locator;
@@ -96,6 +98,10 @@ export class CommerceMiniCartPage {
 			this.miniCartItem(productName).locator(
 				'.mini-cart-item-price .price-value:not(.price-value-promo)'
 			);
+		this.miniCartItemPriceOnApplication = (productName: string) =>
+			this.miniCartItem(productName).locator(
+				'.price-on-application.price-value'
+			);
 		this.miniCartItemPromoPrice = (productName: string) =>
 			this.miniCartItem(productName).locator(
 				'.mini-cart-item-price .price-value-promo'
@@ -116,6 +122,7 @@ export class CommerceMiniCartPage {
 		this.miniCartReplacementInfoMessage = page.getByText(
 			'There are replacement products in your cart.'
 		);
+		this.miniCartResume = page.locator('.mini-cart-header-resume');
 		this.miniCartSaveButton = page
 			.locator('.mini-cart-footer')
 			.getByRole('button', {

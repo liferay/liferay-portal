@@ -481,6 +481,16 @@ export class HeadlessAdminUserApiHelper {
 		});
 	}
 
+	async patchAccount(
+		accountId: number,
+		patchedAccount: DataObject
+	): Promise<TAccount> {
+		return this.apiHelpers.patch(
+			`${this.apiHelpers.baseUrl}${this.basePath}/accounts/${accountId}`,
+			patchedAccount
+		);
+	}
+
 	async patchUserAccount(
 		userAccount?: TUserAccount,
 		patchedUserAccount?: DataObject

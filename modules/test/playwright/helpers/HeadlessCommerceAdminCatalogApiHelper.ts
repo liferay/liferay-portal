@@ -80,6 +80,12 @@ export type TProduct = {
 	expirationDate?: string;
 	externalReferenceCode?: string;
 	id?: number;
+	images?: Array<{
+		attachment?: string;
+		title?: {
+			[key: string]: string;
+		};
+	}>;
 	name?: {
 		[key: string]: string;
 	};
@@ -108,6 +114,9 @@ export type TProduct = {
 	};
 	skus?: TSku[];
 	tags?: [string];
+	urls?: {
+		[key: string]: string;
+	};
 	version?: number;
 };
 
@@ -393,11 +402,19 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
-	async getProductByName(name: string) {
+	async getProductByName(
+		name: string,
+		{
+			catalogId,
+			nestedFields = 'skus',
+		}: {catalogId?: number; nestedFields?: string} = {}
+	) {
 		const {items} = await this.getProducts(
 			new URLSearchParams({
-				filter: `name eq '${name}'`,
-				nestedFields: 'skus',
+				filter: catalogId
+					? `catalogId eq ${catalogId} and name eq '${name}'`
+					: `name eq '${name}'`,
+				nestedFields,
 			})
 		);
 
