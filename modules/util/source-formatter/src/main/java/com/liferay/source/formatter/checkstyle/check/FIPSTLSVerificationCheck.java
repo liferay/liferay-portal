@@ -65,7 +65,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 		String className = _getClassName(literalNewDetailAST);
 
 		if (!ArrayUtil.contains(_ANONYMOUS_CLASS_NAMES, className) ||
-			_hasGuard(literalNewDetailAST)) {
+			_hasEnclosingGuard(literalNewDetailAST)) {
 
 			return;
 		}
@@ -83,7 +83,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 				identDetailAST, TokenTypes.EXTENDS_CLAUSE,
 				TokenTypes.IMPLEMENTS_CLAUSE, TokenTypes.IMPORT,
 				TokenTypes.STATIC_IMPORT) ||
-			_hasGuard(identDetailAST)) {
+			_hasEnclosingGuard(identDetailAST)) {
 
 			return;
 		}
@@ -128,7 +128,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 			}
 		}
 
-		if ((argument == null) || _hasGuard(methodCallDetailAST)) {
+		if ((argument == null) || _hasEnclosingGuard(methodCallDetailAST)) {
 			return;
 		}
 
@@ -164,7 +164,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 
 		if ((methodName == null) ||
 			!ArrayUtil.contains(_SINK_METHOD_NAMES, methodName) ||
-			_hasGuard(lambdaDetailAST)) {
+			_hasEnclosingGuard(lambdaDetailAST)) {
 
 			return;
 		}
@@ -233,7 +233,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 		return className;
 	}
 
-	private boolean _hasGuard(DetailAST detailAST) {
+	private boolean _hasEnclosingGuard(DetailAST detailAST) {
 		DetailAST parentDetailAST = getParentWithTokenType(
 			detailAST, TokenTypes.CTOR_DEF, TokenTypes.INSTANCE_INIT,
 			TokenTypes.METHOD_DEF, TokenTypes.STATIC_INIT);
