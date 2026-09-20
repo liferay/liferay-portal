@@ -39,10 +39,18 @@ public class FeatureFlagTestRule
 
 		_restoreFeatureFlags(previousValues);
 
+		if (_serviceSupplier == null) {
+			return;
+		}
+
+		Snapshot<FeatureFlagManager> featureFlagManagerSnapshot =
+			ReflectionTestUtil.getFieldValue(
+				FeatureFlagManagerUtil.class, "_featureFlagManagerSnapshot");
+
 		ReflectionTestUtil.setFieldValue(
-			FeatureFlagManagerUtil.class, "_featureFlagManagerSnapshot",
-			new Snapshot<>(
-				FeatureFlagManagerUtil.class, FeatureFlagManager.class));
+			featureFlagManagerSnapshot, "_serviceSupplier", _serviceSupplier);
+
+		_serviceSupplier = null;
 	}
 
 	@Override
@@ -66,6 +74,11 @@ public class FeatureFlagTestRule
 			featureFlagManagerSnapshot.get();
 
 		if (featureFlagManager != null) {
+			if (_serviceSupplier == null) {
+				_serviceSupplier = ReflectionTestUtil.getFieldValue(
+					featureFlagManagerSnapshot, "_serviceSupplier");
+			}
+
 			ReflectionTestUtil.setFieldValue(
 				featureFlagManagerSnapshot, "_serviceSupplier",
 				(Supplier<Object>)() -> new MockFeatureFlagManager(
@@ -133,6 +146,8 @@ public class FeatureFlagTestRule
 
 		return previousValues;
 	}
+
+	private Supplier<Object> _serviceSupplier;
 
 	private static class MockFeatureFlagManager implements FeatureFlagManager {
 
