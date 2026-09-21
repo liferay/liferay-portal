@@ -960,7 +960,7 @@ public class TransactionalPortalCacheTest {
 					new TestPortalCache<>("Test MVCC Portal Cache")),
 				true);
 
-		// Outside tx
+		// Outside transaction
 
 		boolean[] uncommittedBufferMissMarker = {false};
 
@@ -969,7 +969,7 @@ public class TransactionalPortalCacheTest {
 				transactionalPortalCache, _KEY_1, uncommittedBufferMissMarker));
 		Assert.assertFalse(uncommittedBufferMissMarker[0]);
 
-		// Inside tx
+		// Inside transaction
 
 		TransactionalPortalCacheUtil.begin();
 
@@ -994,7 +994,7 @@ public class TransactionalPortalCacheTest {
 
 		TransactionalPortalCacheUtil.commit(false);
 
-		// Outside tx, after commit
+		// Outside transaction, after commit
 
 		uncommittedBufferMissMarker = new boolean[] {false};
 
@@ -1004,7 +1004,7 @@ public class TransactionalPortalCacheTest {
 				transactionalPortalCache, _KEY_1, uncommittedBufferMissMarker));
 		Assert.assertFalse(uncommittedBufferMissMarker[0]);
 
-		// Try-with-resources coverage
+		// Try with resources
 
 		try (AutoCloseable autoCloseable =
 				ReflectionTestUtil.setFieldValueWithAutoCloseable(
