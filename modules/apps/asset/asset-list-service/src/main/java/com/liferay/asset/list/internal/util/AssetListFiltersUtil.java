@@ -384,27 +384,27 @@ public class AssetListFiltersUtil {
 	private static Query _toMatchQuery(
 		String field, JSONObject jsonObject, String value) {
 
-		if (!Objects.equals(jsonObject.getString("quantifier"), "all")) {
-			return new MatchQuery(field, value);
-		}
+		List<String> terms = _splitTerms(value);
 
-		String[] terms = StringUtil.split(value, CharPool.SPACE);
-
-		if (terms.length == 0) {
+		if (terms.isEmpty()) {
 			return null;
 		}
 
-		if (terms.length == 1) {
-			return new MatchQuery(field, value);
+		if (terms.size() == 1) {
+			return _toTermMatchQuery(field, terms.get(0));
+		}
+
+		BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.SHOULD;
+
+		if (Objects.equals(jsonObject.getString("quantifier"), "all")) {
+			booleanClauseOccur = BooleanClauseOccur.MUST;
 		}
 
 		BooleanQuery booleanQuery = new BooleanQuery();
 
 		for (String term : terms) {
-			if (Validator.isNotNull(term)) {
-				booleanQuery.add(
-					new MatchQuery(field, term), BooleanClauseOccur.MUST);
-			}
+			booleanQuery.add(
+				_toTermMatchQuery(field, term), booleanClauseOccur);
 		}
 
 		return booleanQuery;
@@ -510,6 +510,16 @@ public class AssetListFiltersUtil {
 		return _toTermRangeQuery(
 			dateField, dateField && _isDateTimeField(objectField), subfield,
 			filterJSONObject, operatorName);
+	}
+
+	private static MatchQuery _toTermMatchQuery(String field, String term) {
+		MatchQuery matchQuery = new MatchQuery(field, term);
+
+		if (term.indexOf(CharPool.SPACE) != -1) {
+			matchQuery.setType(MatchQuery.Type.PHRASE);
+		}
+
+		return matchQuery;
 	}
 
 	private static Query _toTermRangeQuery(
