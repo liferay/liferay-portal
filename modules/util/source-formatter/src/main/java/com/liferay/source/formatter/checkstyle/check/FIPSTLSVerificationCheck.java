@@ -5,8 +5,8 @@
 
 package com.liferay.source.formatter.checkstyle.check;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
@@ -94,9 +94,10 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 	private void _checkEndpointIdentificationAlgorithm(
 		DetailAST methodCallDetailAST) {
 
-		String methodName = getMethodName(methodCallDetailAST);
+		if (!StringUtil.equals(
+				getMethodName(methodCallDetailAST),
+				"setEndpointIdentificationAlgorithm")) {
 
-		if ((methodName == null) || !methodName.equals(_METHOD_NAME)) {
 			return;
 		}
 
@@ -134,7 +135,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 
 		log(
 			methodCallDetailAST, _MSG_REQUIRED_GUARD_METHOD,
-			StringBundler.concat(_METHOD_NAME, "(", argument, ")"));
+			"setEndpointIdentificationAlgorithm(" + argument + ")");
 	}
 
 	private void _checkLambda(DetailAST lambdaDetailAST) {
@@ -205,9 +206,10 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 
 			FullIdent fullIdent = FullIdent.createFullIdent(dotDetailAST);
 
-			String text = fullIdent.getText();
+			if (StringUtil.equals(
+					fullIdent.getText(), "PropsValues.FIPS_ENABLED") &&
+				_isCondition(dotDetailAST)) {
 
-			if (text.equals(_GUARD_NAME) && _isCondition(dotDetailAST)) {
 				return true;
 			}
 		}
@@ -278,11 +280,6 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 		"ALLOW_ALL_HOSTNAME_VERIFIER", "AllowAllHostnameVerifier",
 		"NoopHostnameVerifier", "TrustAllStrategy", "TrustSelfSignedStrategy"
 	};
-
-	private static final String _GUARD_NAME = "PropsValues.FIPS_ENABLED";
-
-	private static final String _METHOD_NAME =
-		"setEndpointIdentificationAlgorithm";
 
 	private static final String _MSG_REQUIRED_GUARD_CLASS =
 		"guard.class.required";
