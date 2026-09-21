@@ -515,33 +515,6 @@ const SnapshotsControls = () => {
 			});
 	};
 
-	const setInitialDataSetSnapshotERC = () => {
-		if (!activeSnapshot) {
-			return;
-		}
-
-		updateUserConfiguration({
-			...userConfiguration,
-			initialDataSetSnapshotERC: activeSnapshot.erc,
-		})
-			.then(() => {
-				openToast({
-					message: Liferay.Language.get(
-						'the-user-view-was-set-as-the-initial-view'
-					),
-					type: 'success',
-				});
-			})
-			.catch(() => {
-				openToast({
-					message: Liferay.Language.get(
-						'an-unexpected-error-occurred'
-					),
-					type: 'danger',
-				});
-			});
-	};
-
 	const openDeleteSnapshotModal = ({snapshotERC}: {snapshotERC: string}) => {
 		openModal({
 			bodyHTML: Liferay.Language.get(
@@ -569,6 +542,33 @@ const SnapshotsControls = () => {
 			status: 'danger',
 			title: Liferay.Language.get('delete-view'),
 		});
+	};
+
+	const setInitialDataSetSnapshotERC = () => {
+		if (!activeSnapshot) {
+			return;
+		}
+
+		updateUserConfiguration({
+			...userConfiguration,
+			initialDataSetSnapshotERC: activeSnapshot.erc,
+		})
+			.then(() => {
+				openToast({
+					message: Liferay.Language.get(
+						'the-user-view-was-set-as-the-initial-view'
+					),
+					type: 'success',
+				});
+			})
+			.catch(() => {
+				openToast({
+					message: Liferay.Language.get(
+						'an-unexpected-error-occurred'
+					),
+					type: 'danger',
+				});
+			});
 	};
 
 	return (
