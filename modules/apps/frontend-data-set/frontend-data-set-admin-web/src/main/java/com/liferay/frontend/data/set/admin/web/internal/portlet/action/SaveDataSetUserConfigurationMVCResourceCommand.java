@@ -64,53 +64,40 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
+		HttpServletRequest httpServletRequest =
+			_portal.getOriginalServletRequest(
+				_portal.getHttpServletRequest(resourceRequest));
+
+		String configuration = ParamUtil.getString(
+			httpServletRequest, "configuration");
+
+		if (Validator.isNull(configuration)) {
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
+				HttpServletResponse.SC_BAD_REQUEST);
+
+			return;
+		}
+
+		String fdsName = ParamUtil.getString(httpServletRequest, "fdsName");
+
+		if (Validator.isNull(fdsName)) {
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
+				HttpServletResponse.SC_BAD_REQUEST);
+
+			return;
+		}
+
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
 		User user = themeDisplay.getUser();
 
 		if (user.isGuestUser()) {
-			_writeEmptyResponse(
-				new PrincipalException(), resourceRequest, resourceResponse,
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
 				HttpServletResponse.SC_FORBIDDEN);
-
-			return;
-		}
-
-		HttpServletRequest httpServletRequest =
-			_portal.getOriginalServletRequest(
-				_portal.getHttpServletRequest(resourceRequest));
-
-		String fdsName = ParamUtil.getString(httpServletRequest, "fdsName");
-
-		if (Validator.isNull(fdsName)) {
-			_writeEmptyResponse(
-				new NullPointerException(), resourceRequest, resourceResponse,
-				HttpServletResponse.SC_BAD_REQUEST);
-
-			return;
-		}
-
-		String configuration = ParamUtil.getString(
-			httpServletRequest, "configuration");
-
-		if (Validator.isNull(configuration)) {
-			_writeEmptyResponse(
-				new NullPointerException(), resourceRequest, resourceResponse,
-				HttpServletResponse.SC_BAD_REQUEST);
-
-			return;
-		}
-
-		JSONObject jsonObject = null;
-
-		try {
-			jsonObject = _jsonFactory.createJSONObject(configuration);
-		}
-		catch (JSONException jsonException) {
-			_writeEmptyResponse(
-				jsonException, resourceRequest, resourceResponse,
-				HttpServletResponse.SC_BAD_REQUEST);
 
 			return;
 		}
@@ -123,9 +110,26 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 					"L_DATA_SET_USER_CONFIGURATION", companyId);
 
 		if (objectDefinition == null) {
-			_writeEmptyResponse(
-				new NullPointerException(), resourceRequest, resourceResponse,
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
 				HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+			return;
+		}
+
+		JSONObject jsonObject = null;
+
+		try {
+			jsonObject = _jsonFactory.createJSONObject(configuration);
+		}
+		catch (JSONException jsonException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
+
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
+				HttpServletResponse.SC_BAD_REQUEST);
 
 			return;
 		}
@@ -139,15 +143,23 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 				jsonObject.getString("initialDataSetSnapshotERC"), user);
 		}
 		catch (PrincipalException principalException) {
-			_writeEmptyResponse(
-				principalException, resourceRequest, resourceResponse,
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException);
+			}
+
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
 				HttpServletResponse.SC_FORBIDDEN);
 
 			return;
 		}
 		catch (JSONException jsonException) {
-			_writeEmptyResponse(
-				jsonException, resourceRequest, resourceResponse,
+			if (_log.isDebugEnabled()) {
+				_log.debug(jsonException);
+			}
+
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
 				HttpServletResponse.SC_BAD_REQUEST);
 
 			return;
@@ -173,10 +185,10 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 
 	private void _checkInitialDataSetSnapshotERC(
 			long companyId, JSONObject dataSetUserConfigurationJSONObject,
-			String initialDataSetSnapshotERC, User user)
+			String externalReferenceCode, User user)
 		throws Exception {
 
-		if (Validator.isNull(initialDataSetSnapshotERC)) {
+		if (Validator.isNull(externalReferenceCode)) {
 			return;
 		}
 
@@ -186,13 +198,12 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 					"L_DATA_SET_SNAPSHOT", companyId);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
-			initialDataSetSnapshotERC, 0,
-			objectDefinition.getObjectDefinitionId());
+			externalReferenceCode, 0, objectDefinition.getObjectDefinitionId());
 
 		if (objectEntry == null) {
 			throw new PortalException(
 				"Unable to find data set snapshot with external reference " +
-					"code " + initialDataSetSnapshotERC);
+					"code " + externalReferenceCode);
 		}
 
 		if ((objectEntry.getUserId() != user.getUserId()) &&
@@ -204,22 +215,17 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 
 			throw new PrincipalException(
 				"User does not have permission to access data set snapshot " +
-					"with external reference code " +
-						initialDataSetSnapshotERC);
+					"with external reference code " + externalReferenceCode);
 		}
 
 		dataSetUserConfigurationJSONObject.put(
-			"initialDataSetSnapshotERC", initialDataSetSnapshotERC);
+			"initialDataSetSnapshotERC", externalReferenceCode);
 	}
 
-	private void _writeEmptyResponse(
-			Exception exception, ResourceRequest resourceRequest,
-			ResourceResponse resourceResponse, int statusCode)
+	private void _writeEmptyJSONObject(
+			ResourceRequest resourceRequest, ResourceResponse resourceResponse,
+			int statusCode)
 		throws IOException {
-
-		if (_log.isWarnEnabled()) {
-			_log.warn(exception);
-		}
 
 		resourceResponse.setProperty(
 			ResourceResponse.HTTP_STATUS_CODE, String.valueOf(statusCode));

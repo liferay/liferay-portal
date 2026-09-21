@@ -212,7 +212,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HttpServletResponse.SC_BAD_REQUEST,
 			_serveResource(StringPool.BLANK));
 
-		// Blank FDSName
+		// Blank frontend data set name
 
 		_assertResponse(_serveResource());
 
