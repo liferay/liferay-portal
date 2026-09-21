@@ -31,6 +31,7 @@ import {Field, SelectFromListField, getDefaultField} from '../utils/field';
 import findAvailableFieldName from '../utils/findAvailableFieldName';
 import findChild from '../utils/findChild';
 import {getChildrenUuids} from '../utils/getChildrenUuids';
+import getOwnFields from '../utils/getOwnFields';
 import getRandomId from '../utils/getRandomId';
 import getUuid from '../utils/getUuid';
 import normalizeString from '../utils/normalizeString';
@@ -302,20 +303,33 @@ function reducer(state: State, action: Action): State {
 
 			const {structure} = state;
 
-			let parent: Structure | Group = structure;
+			let owner: Structure | Group = structure;
 
 			if (field.parent !== structure.uuid) {
 				const item = findChild({root: structure, uuid: field.parent});
 
 				if (item?.type === 'group') {
-					parent = item;
+					owner = item;
 				}
 			}
+
+			while (owner.type === 'group' && !owner.isRepeatable) {
+				const item = findChild({root: structure, uuid: owner.parent});
+
+				owner = item?.type === 'group' ? item : structure;
+			}
+
+			const ownFields = new Map(
+				getOwnFields(owner.children).map((ownField) => [
+					ownField.uuid,
+					ownField,
+				])
+			);
 
 			const nextField = {
 				...field,
 				name: findAvailableFieldName(
-					parent.children,
+					ownFields,
 					state.history.deletedChildren,
 					field.name
 				),
