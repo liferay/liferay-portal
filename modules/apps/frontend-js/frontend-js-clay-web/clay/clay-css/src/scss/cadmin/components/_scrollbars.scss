@@ -6,10 +6,8 @@
 
 @if (map-has-key($cadmin-c-root, --cadmin-scrollbar-thumb)) {
 	html#{$cadmin-selector} {
-		&[data-color-scheme='dark'] .cadmin,
-		&[data-color-scheme='dark'] .cadmin *,
-		&[data-color-scheme='dark-high-contrast'] .cadmin,
-		&[data-color-scheme='dark-high-contrast'] .cadmin * {
+		.cadmin,
+		.cadmin * {
 			&::-webkit-scrollbar {
 				background: $cadmin-scrollbar-track;
 				height: $cadmin-scrollbar-size;
@@ -45,8 +43,7 @@
 
 	@supports #{'not selector(::-webkit-scrollbar)'} {
 		html#{$cadmin-selector} {
-			&[data-color-scheme='dark'] .cadmin,
-			&[data-color-scheme='dark-high-contrast'] .cadmin {
+			.cadmin {
 				scrollbar-color: $cadmin-scrollbar-thumb $cadmin-scrollbar-track;
 			}
 		}
