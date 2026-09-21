@@ -290,6 +290,10 @@ public class TestrayCaseResult {
 			return _testrayCaseResultURL;
 		}
 
+		if (_testrayCaseResultURLCached) {
+			return null;
+		}
+
 		URL cachedTestrayCaseResultURL = _fetchTestrayCaseResultURL();
 
 		if (cachedTestrayCaseResultURL != null) {
@@ -297,6 +301,8 @@ public class TestrayCaseResult {
 
 			return _testrayCaseResultURL;
 		}
+
+		_testrayCaseResultURLCached = true;
 
 		_testrayCaseResultURL = _createTestrayCaseResultURL();
 
@@ -549,7 +555,15 @@ public class TestrayCaseResult {
 	}
 
 	protected void cacheTestrayCaseResultURL() {
-		getTestrayCaseResultURL();
+		try {
+			getTestrayCaseResultURL();
+		}
+		catch (RuntimeException runtimeException) {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"WARNING: Unable to create Testray case result for ",
+					getName(), ": ", runtimeException.getMessage()));
+		}
 	}
 
 	protected synchronized void initTestrayAttachments() {
@@ -857,6 +871,7 @@ public class TestrayCaseResult {
 	private TestrayCase _testrayCase;
 	private boolean _testrayCaseCached;
 	private URL _testrayCaseResultURL;
+	private boolean _testrayCaseResultURLCached;
 	private TestrayComponent _testrayComponent;
 	private boolean _testrayComponentCached;
 	private TestrayRun _testrayRun;
