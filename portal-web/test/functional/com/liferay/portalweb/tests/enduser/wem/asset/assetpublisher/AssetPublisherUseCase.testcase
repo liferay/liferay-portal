@@ -219,6 +219,10 @@ definition {
 		property portal.acceptance = "true";
 		property timeout.explicit.wait = "10";
 
+		task ("Enable Message Boards") {
+			MessageboardsPortlet.enableMessageBoards();
+		}
+
 		task ("Add a Message Boards to page") {
 			JSONLayout.addWidgetToPublicLayout(
 				groupName = "Test Site Name",

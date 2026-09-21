@@ -136,6 +136,11 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro enableMessageBoards() {
+		PagesAdmin.enableDeprecationFeatureFlag(featureFlagName = "Message Boards");
+	}
+
+	@summary = "Default summary"
 	macro gotoInlinePermissionsPG() {
 		Click(locator1 = "Icon#BODY_VERTICAL_ELLIPSIS");
 

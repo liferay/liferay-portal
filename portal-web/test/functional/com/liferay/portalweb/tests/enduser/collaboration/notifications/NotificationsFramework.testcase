@@ -111,6 +111,10 @@ definition {
 	@priority = 5
 	@refactordone
 	test CanFilterByReadAndUnread {
+		task ("Enable Message Boards") {
+			MessageboardsPortlet.enableMessageBoards();
+		}
+
 		Navigator.gotoPage(pageName = "Site Page");
 
 		MessageboardsPortlet.subscribePG();

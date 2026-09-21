@@ -30,6 +30,10 @@ definition {
 	@description = "Restore MB attachment from recycle bin."
 	@priority = 3
 	test RecycleBinMBAttachment {
+		task ("Enable Message Boards") {
+			MessageboardsPortlet.enableMessageBoards();
+		}
+
 		task ("Add a message and attachement to mb") {
 			JSONMBMessage.addMessage(
 				groupName = "Site Name",

@@ -23,6 +23,10 @@ definition {
 			widgetName = "Message Boards");
 
 		PagesAdmin.enableWidgetPages();
+
+		task ("Enable Message Boards") {
+			MessageboardsPortlet.enableMessageBoards();
+		}
 	}
 
 	tearDown {
