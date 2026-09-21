@@ -58,6 +58,7 @@ import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1034,6 +1035,18 @@ public class TestrayImporter {
 			throw new RuntimeException(timeoutException);
 		}
 
+		int uncreatedTestrayCaseResultCount =
+			_uncreatedTestrayCaseResultCount.get();
+
+		if (uncreatedTestrayCaseResultCount > 0) {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"WARNING: ",
+					String.valueOf(uncreatedTestrayCaseResultCount), " of ",
+					String.valueOf(callables.size()),
+					" Testray case results were not created."));
+		}
+
 		List<Long> testrayBuildIds = new ArrayList<>();
 
 		for (TestrayBuild testrayBuild : _testrayBuilds.values()) {
@@ -1667,6 +1680,10 @@ public class TestrayImporter {
 
 		buildTestrayCaseResult.cacheTestrayCaseResultURL();
 
+		if (buildTestrayCaseResult.getTestrayCaseResultURL() == null) {
+			_uncreatedTestrayCaseResultCount.incrementAndGet();
+		}
+
 		testrayCaseResults.add(buildTestrayCaseResult);
 
 		if (axisTestClassGroup instanceof FunctionalAxisTestClassGroup ||
@@ -2280,6 +2297,8 @@ public class TestrayImporter {
 	private final Map<File, TestrayServer> _testrayServers =
 		Collections.synchronizedMap(new HashMap<File, TestrayServer>());
 	private final TopLevelBuildReport _topLevelBuildReport;
+	private final AtomicInteger _uncreatedTestrayCaseResultCount =
+		new AtomicInteger();
 	private final List<Workspace> _workspaces;
 
 }
