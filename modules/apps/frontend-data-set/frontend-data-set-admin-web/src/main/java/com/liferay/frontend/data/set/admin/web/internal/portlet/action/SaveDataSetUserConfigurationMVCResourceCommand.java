@@ -102,7 +102,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			return;
 		}
 
-		JSONObject jsonObject;
+		JSONObject jsonObject = null;
 
 		try {
 			jsonObject = _jsonFactory.createJSONObject(configuration);

@@ -98,16 +98,16 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_SNAPSHOT", TestPropsValues.getCompanyId());
 
+		_user = UserTestUtil.addUser();
+
+		_dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
+			_user.getUserId());
+
 		_dataSetUserConfigurationObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DATA_SET_USER_CONFIGURATION",
 					TestPropsValues.getCompanyId());
-
-		_user = UserTestUtil.addUser();
-
-		_dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
-			_user.getUserId());
 
 		_dataSetUserConfigurationJSONObject = JSONUtil.put(
 			"initialDataSetSnapshotERC",
