@@ -867,6 +867,67 @@ public class AssetListAssetEntryProviderFiltersTest {
 			objectEntry2);
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageWithTextPhraseFilters()
+		throws Exception {
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, "the red car"
+			).build());
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, "the blue bicycle"
+			).build());
+
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, "the car is red"
+			).build());
+
+		ObjectEntry objectEntry4 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, "the blue red car"
+			).build());
+
+		String textFieldValue = "\"red car\" blue";
+
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_TEXT, textFieldValue
+				).put(
+					"quantifier", "all"
+				)),
+			objectEntry4);
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_TEXT, textFieldValue
+				).put(
+					"quantifier", "any"
+				)),
+			objectEntry1, objectEntry2, objectEntry4);
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
+					"not-contains", _OBJECT_FIELD_NAME_TEXT, textFieldValue
+				).put(
+					"quantifier", "all"
+				)),
+			objectEntry1, objectEntry2, objectEntry3);
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getFilterJSONObject(
+					"not-contains", _OBJECT_FIELD_NAME_TEXT, textFieldValue
+				).put(
+					"quantifier", "any"
+				)),
+			objectEntry3);
+	}
+
 	@FeatureFlag(enable = false, value = "LPD-74731")
 	@Test
 	public void testGetAssetEntryQueryWithFiltersWhenFeatureFlagDisabled()
