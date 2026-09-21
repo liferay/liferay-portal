@@ -7,13 +7,13 @@ function main {
 	az extension add \
 		--name dataprotection \
 		--version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
-		--yes >/dev/null
+		--yes > /dev/null
 
 	az login \
 		--federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
 		--service-principal \
 		--tenant "${AZURE_TENANT_ID}" \
-		--username "${AZURE_CLIENT_ID}" >/dev/null
+		--username "${AZURE_CLIENT_ID}" > /dev/null
 
 	local storage_account_name
 
@@ -22,13 +22,13 @@ function main {
 	az storage container delete \
 		--account-name "${storage_account_name}" \
 		--auth-mode login \
-		--name document-library >/dev/null
+		--name document-library > /dev/null
 
 	local timeout
 
 	timeout=$(($(date +%s) + 300))
 
-	while [ $(date +%s) -lt ${timeout} ]
+	while [[ "$(date +%s)" -lt "${timeout}" ]]
 	do
 		local exists
 
@@ -41,7 +41,7 @@ function main {
 				--query exists \
 				| tr "[:upper:]" "[:lower:]")
 
-		if [ "${exists}" = "false" ]
+		if [ "${exists}" == "false" ]
 		then
 			echo "The document-library container was deleted from ${storage_account_name}."
 

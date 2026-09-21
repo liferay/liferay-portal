@@ -7,20 +7,22 @@ function main {
 	az extension add \
 		--name dataprotection \
 		--version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
-		--yes >/dev/null
+		--yes > /dev/null
 
 	az login \
 		--federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
 		--service-principal \
 		--tenant "${AZURE_TENANT_ID}" \
-		--username "${AZURE_CLIENT_ID}" >/dev/null
+		--username "${AZURE_CLIENT_ID}" > /dev/null
 
 	local backup_vault_name
 
 	backup_vault_name="{{ "{{" }}inputs.parameters.backup-vault-name}}"
+
 	local resource_group_name
 
 	resource_group_name="{{ "{{" }}inputs.parameters.resource-group-name}}"
+
 	local storage_account_id
 
 	storage_account_id="{{ "{{" }}inputs.parameters.storage-account-id}}"
@@ -80,11 +82,12 @@ function main {
 	local recovery_point_second
 
 	recovery_point_second=$(echo "${recovery_point_time}" | cut --characters=1-19)
+
 	local earliest_restore_second
 
 	earliest_restore_second=$(echo "${earliest_restore_date}" | cut --characters=1-19)
 
-	if [ "$(printf "%s\n%s\n" "${earliest_restore_second}" "${recovery_point_second}" | sort | head -1)" != "${earliest_restore_second}" ]
+	if [ "$(printf "%s\n%s\n" "${earliest_restore_second}" "${recovery_point_second}" | sort | head --lines=1)" != "${earliest_restore_second}" ]
 	then
 		echo "The recovery point time ${recovery_point_time} falls before the earliest restore date ${earliest_restore_date}, so the database cannot be paired with it." >&2
 

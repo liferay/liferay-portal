@@ -170,16 +170,16 @@ tests:
                     pattern: backup-instance suspend-backup
             -   matchRegex:
                     path: spec.templates[16].script.source
-                    pattern: promoted_state.. = .BackupsSuspended
+                    pattern: promoted_state.. == .BackupsSuspended
             -   matchRegex:
                     path: spec.templates[16].script.source
-                    pattern: demoted_state.. = .ProtectionConfigured
+                    pattern: demoted_state.. == .ProtectionConfigured
             -   notMatchRegex:
                     path: spec.templates[16].script.source
                     pattern: stop-protection
             -   matchRegex:
                     path: spec.templates[16].script.source
-                    pattern: wait_for_protection_state
+                    pattern: _wait_for_protection_state
             -   matchRegex:
                     path: spec.templates[16].script.source
                     pattern: (?s)resume-protection.*?--no-wait
@@ -188,7 +188,7 @@ tests:
                     pattern: (?s)suspend-backup.*?--no-wait
             -   matchRegex:
                     path: spec.templates[16].script.source
-                    pattern: (?s)function wait_for_protection_state \{.*?function main \{
+                    pattern: (?s)function main \{.*?function _wait_for_protection_state \{
             -   matchRegex:
                     path: spec.templates[16].script.source
                     pattern: (?s)function main \{.*?\nmain
@@ -211,7 +211,7 @@ tests:
                     pattern: ":lower:"
             -   matchRegex:
                     path: spec.templates[3].script.source
-                    pattern: "exists}\" = \"false\""
+                    pattern: "exists}\" == \"false\""
             -   equal:
                     path: spec.templates[3].retryStrategy.backoff.maxDuration
                     value: 20m

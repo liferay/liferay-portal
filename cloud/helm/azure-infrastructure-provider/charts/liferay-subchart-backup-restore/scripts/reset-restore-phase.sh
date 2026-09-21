@@ -8,7 +8,7 @@ function main {
 
 	liferay_infrastructure_name=$( \
 		kubectl get liferayinfrastructure \
-			--output jsonpath="{.items[0].metadata.name}" 2>/dev/null || echo "")
+			--output jsonpath="{.items[0].metadata.name}" 2> /dev/null || echo "")
 
 	if [ -z "${liferay_infrastructure_name}" ]
 	then

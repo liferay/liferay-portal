@@ -12,16 +12,16 @@ function main {
 
 	timeout=$(($(date +%s) + {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}))
 
-	while [ $(date +%s) -lt ${timeout} ]
+	while [[ "$(date +%s)" -lt "${timeout}" ]]
 	do
 		local ready
 
 		ready=$( \
 			kubectl get accounts.storage.azure.m.upbound.io \
 				--output jsonpath="{.items[0].status.conditions[?(@.type=='Ready')].status}" \
-				--selector "dataPlane=${data_plane_inactive}" 2>/dev/null || echo "")
+				--selector "dataPlane=${data_plane_inactive}" 2> /dev/null || echo "")
 
-		if [ "${ready}" = "True" ]
+		if [ "${ready}" == "True" ]
 		then
 			break
 		fi

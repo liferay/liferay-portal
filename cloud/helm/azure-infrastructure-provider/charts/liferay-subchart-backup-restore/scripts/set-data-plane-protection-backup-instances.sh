@@ -3,56 +3,26 @@
 set -o errexit
 set -o nounset
 
-function wait_for_protection_state {
-	local deadline
-	local state
-
-	deadline=$(($(date +%s) + {{ .Values.azureBackupService.protectionWaitTimeoutSeconds }}))
-
-	while [ $(date +%s) -lt ${deadline} ]
-	do
-		state=$( \
-			az dataprotection backup-instance show \
-				--name "${1}" \
-				--output tsv \
-				--query properties.currentProtectionState \
-				--resource-group "${resource_group_name}" \
-				--vault-name "${backup_vault_name}")
-
-		if [ "${state}" = "${2}" ]
-		then
-			return 0
-		fi
-
-		echo "The backup instance ${1} reports the protection state ${state}."
-
-		sleep 15
-	done
-
-	return 1
-}
-
 function main {
 	az extension add \
 		--name dataprotection \
 		--version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
-		--yes >/dev/null
+		--yes > /dev/null
 
 	az login \
 		--federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
 		--service-principal \
 		--tenant "${AZURE_TENANT_ID}" \
-		--username "${AZURE_CLIENT_ID}" >/dev/null
+		--username "${AZURE_CLIENT_ID}" > /dev/null
 
-	local backup_vault_name
+	_BACKUP_VAULT_NAME="{{ "{{" }}inputs.parameters.backup-vault-name}}"
 
-	backup_vault_name="{{ "{{" }}inputs.parameters.backup-vault-name}}"
-	local resource_group_name
+	_RESOURCE_GROUP_NAME="{{ "{{" }}inputs.parameters.resource-group-name}}"
 
-	resource_group_name="{{ "{{" }}inputs.parameters.resource-group-name}}"
 	local storage_account_id_demoted
 
 	storage_account_id_demoted="{{ "{{" }}inputs.parameters.storage-account-id-demoted}}"
+
 	local storage_account_id_promoted
 
 	storage_account_id_promoted="{{ "{{" }}inputs.parameters.storage-account-id-promoted}}"
@@ -65,14 +35,14 @@ function main {
 
 	timeout=$(($(date +%s) + {{ .Values.azureBackupService.protectionWaitTimeoutSeconds }}))
 
-	while [ $(date +%s) -lt ${timeout} ]
+	while [[ "$(date +%s)" -lt "${timeout}" ]]
 	do
 		promoted_instance_name=$( \
 			az dataprotection backup-instance list \
 				--output tsv \
 				--query "[?properties.dataSourceInfo.resourceID=='${storage_account_id_promoted}'].name | [0]" \
-				--resource-group "${resource_group_name}" \
-				--vault-name "${backup_vault_name}")
+				--resource-group "${_RESOURCE_GROUP_NAME}" \
+				--vault-name "${_BACKUP_VAULT_NAME}")
 
 		if [ -n "${promoted_instance_name}" ]
 		then
@@ -98,19 +68,19 @@ function main {
 			--name "${promoted_instance_name}" \
 			--output tsv \
 			--query properties.currentProtectionState \
-			--resource-group "${resource_group_name}" \
-			--vault-name "${backup_vault_name}")
+			--resource-group "${_RESOURCE_GROUP_NAME}" \
+			--vault-name "${_BACKUP_VAULT_NAME}")
 
-	if [ "${promoted_state}" = "BackupsSuspended" ]
+	if [ "${promoted_state}" == "BackupsSuspended" ]
 	then
 		az dataprotection backup-instance resume-protection \
 			--name "${promoted_instance_name}" \
 			--no-wait \
 			--output none \
-			--resource-group "${resource_group_name}" \
-			--vault-name "${backup_vault_name}"
+			--resource-group "${_RESOURCE_GROUP_NAME}" \
+			--vault-name "${_BACKUP_VAULT_NAME}"
 
-		if ! wait_for_protection_state "${promoted_instance_name}" ProtectionConfigured
+		if ! _wait_for_protection_state "${promoted_instance_name}" ProtectionConfigured
 		then
 			echo "Backups were not resumed on the promoted data plane." >&2
 
@@ -126,8 +96,8 @@ function main {
 		az dataprotection backup-instance list \
 			--output tsv \
 			--query "[?properties.dataSourceInfo.resourceID=='${storage_account_id_demoted}'].name | [0]" \
-			--resource-group "${resource_group_name}" \
-			--vault-name "${backup_vault_name}")
+			--resource-group "${_RESOURCE_GROUP_NAME}" \
+			--vault-name "${_BACKUP_VAULT_NAME}")
 
 	if [ -z "${demoted_instance_name}" ]
 	then
@@ -143,19 +113,19 @@ function main {
 			--name "${demoted_instance_name}" \
 			--output tsv \
 			--query properties.currentProtectionState \
-			--resource-group "${resource_group_name}" \
-			--vault-name "${backup_vault_name}")
+			--resource-group "${_RESOURCE_GROUP_NAME}" \
+			--vault-name "${_BACKUP_VAULT_NAME}")
 
-	if [ "${demoted_state}" = "ProtectionConfigured" ]
+	if [ "${demoted_state}" == "ProtectionConfigured" ]
 	then
 		az dataprotection backup-instance suspend-backup \
 			--name "${demoted_instance_name}" \
 			--no-wait \
 			--output none \
-			--resource-group "${resource_group_name}" \
-			--vault-name "${backup_vault_name}"
+			--resource-group "${_RESOURCE_GROUP_NAME}" \
+			--vault-name "${_BACKUP_VAULT_NAME}"
 
-		if ! wait_for_protection_state "${demoted_instance_name}" BackupsSuspended
+		if ! _wait_for_protection_state "${demoted_instance_name}" BackupsSuspended
 		then
 			echo "Backups were not suspended on the demoted data plane." >&2
 
@@ -164,6 +134,36 @@ function main {
 
 		echo "Backups were suspended on the demoted data plane."
 	fi
+}
+
+function _wait_for_protection_state {
+	local state
+
+	local deadline
+
+	deadline=$(($(date +%s) + {{ .Values.azureBackupService.protectionWaitTimeoutSeconds }}))
+
+	while [[ "$(date +%s)" -lt "${deadline}" ]]
+	do
+		state=$( \
+			az dataprotection backup-instance show \
+				--name "${1}" \
+				--output tsv \
+				--query properties.currentProtectionState \
+				--resource-group "${_RESOURCE_GROUP_NAME}" \
+				--vault-name "${_BACKUP_VAULT_NAME}")
+
+		if [ "${state}" == "${2}" ]
+		then
+			return 0
+		fi
+
+		echo "The backup instance ${1} reports the protection state ${state}."
+
+		sleep 15
+	done
+
+	return 1
 }
 
 main

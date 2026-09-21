@@ -7,20 +7,22 @@ function main {
 	az extension add \
 		--name dataprotection \
 		--version {{ .Values.images.azureCli.dataprotectionExtensionVersion }} \
-		--yes >/dev/null
+		--yes > /dev/null
 
 	az login \
 		--federated-token "$(cat "${AZURE_FEDERATED_TOKEN_FILE}")" \
 		--service-principal \
 		--tenant "${AZURE_TENANT_ID}" \
-		--username "${AZURE_CLIENT_ID}" >/dev/null
+		--username "${AZURE_CLIENT_ID}" > /dev/null
 
 	local backup_instance_name
 
 	backup_instance_name="{{ "{{" }}inputs.parameters.backup-instance-name}}"
+
 	local backup_vault_name
 
 	backup_vault_name="{{ "{{" }}inputs.parameters.backup-vault-name}}"
+
 	local resource_group_name
 
 	resource_group_name="{{ "{{" }}inputs.parameters.resource-group-name}}"
@@ -35,7 +37,7 @@ function main {
 
 	local triggered_at
 
-	triggered_at=$(date -u +%Y-%m-%dT%H:%M:%S)
+	triggered_at=$(date --utc +%Y-%m-%dT%H:%M:%S)
 
 	az dataprotection backup-instance restore trigger \
 		--backup-instance-name "${backup_instance_name}" \
@@ -53,7 +55,7 @@ function main {
 
 	discovery_timeout=$(($(date +%s) + 300))
 
-	while [ $(date +%s) -lt ${discovery_timeout} ]
+	while [[ "$(date +%s)" -lt "${discovery_timeout}" ]]
 	do
 		local candidate_id
 
@@ -74,9 +76,9 @@ function main {
 				--vault-name "${backup_vault_name}" \
 				| cut --characters=1-19)
 
-		if [ -n "${candidate_id}" ] && [ "$(printf "%s\n%s\n" "${triggered_at}" "${candidate_started}" | sort | head -1)" = "${triggered_at}" ]
+		if [ -n "${candidate_id}" ] && [ "$(printf "%s\n%s\n" "${triggered_at}" "${candidate_started}" | sort | head --lines=1)" == "${triggered_at}" ]
 		then
-			job_id="${candidate_id}"
+			job_id=${candidate_id}
 
 			break
 		fi
@@ -97,7 +99,7 @@ function main {
 
 	timeout=$(($(date +%s) + {{ .Values.azureBackupService.restoreWaitTimeoutSeconds }}))
 
-	while [ $(date +%s) -lt ${timeout} ]
+	while [[ "$(date +%s)" -lt "${timeout}" ]]
 	do
 		local status
 
@@ -109,12 +111,12 @@ function main {
 				--resource-group "${resource_group_name}" \
 				--vault-name "${backup_vault_name}")
 
-		if [ "${status}" = "Completed" ] || [ "${status}" = "CompletedWithWarnings" ]
+		if [ "${status}" == "Completed" ] || [ "${status}" == "CompletedWithWarnings" ]
 		then
 			echo "The restore job ${job_id} finished with status \"${status}\"."
 
 			exit 0
-		elif [ "${status}" = "Failed" ] || [ "${status}" = "Cancelled" ]
+		elif [ "${status}" == "Failed" ] || [ "${status}" == "Cancelled" ]
 		then
 			echo "The restore job ${job_id} finished with status \"${status}\"." >&2
 

@@ -15,7 +15,7 @@ function main {
 
 	restore_phase=$(echo "${liferay_infrastructure_json}" | jq --raw-output ".spec.restorePhase")
 
-	if [ "${restore_phase}" = "promoting" ] || [ "${restore_phase}" = "provisioning" ]
+	if [ "${restore_phase}" == "promoting" ] || [ "${restore_phase}" == "provisioning" ]
 	then
 		echo "The LiferayInfrastructure spec.restorePhase is set to ${restore_phase}. A restore is in progress." >&2
 
@@ -30,7 +30,7 @@ function main {
 
 	echo "${data_plane_active}" > /tmp/data-plane-active.txt
 
-	if [ "${data_plane_active}" = "blue" ]
+	if [ "${data_plane_active}" == "blue" ]
 	then
 		echo "green" > /tmp/data-plane-inactive.txt
 	else
