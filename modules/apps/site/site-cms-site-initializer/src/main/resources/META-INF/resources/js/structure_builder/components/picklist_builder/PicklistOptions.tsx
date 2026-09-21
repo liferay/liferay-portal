@@ -9,6 +9,7 @@ import {sub} from 'frontend-js-web';
 import React, {useMemo, useState} from 'react';
 
 import {Option, Options} from '../../../common/types/Picklist';
+import getLocalizedValue from '../../../common/utils/getLocalizedValue';
 import {
 	useOptions,
 	useRemoveOptions,
@@ -104,6 +105,15 @@ export default function PicklistOptions() {
 					}) => {
 						removeOptions(selectedData.keyValues);
 					}}
+					onItemsPropSearch={(item: Item, query: string) =>
+						[
+							item.name && getLocalizedValue(item.name),
+							item.key,
+							item.erc,
+						].some((value) =>
+							value?.toLowerCase().includes(query.toLowerCase())
+						)
+					}
 					searchAsYouType={true}
 					searchSuggestionsEnabled={true}
 					selectionType="multiple"
@@ -137,7 +147,9 @@ export default function PicklistOptions() {
 	);
 }
 
-function toItems(options: Options) {
+type Item = Partial<Option> & {erc: string; id: string};
+
+function toItems(options: Options): Item[] {
 	return [...options].map(([erc, value]) => ({
 		erc,
 		id: erc,

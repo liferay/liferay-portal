@@ -160,6 +160,30 @@ describe('[CMS] Instant search', () => {
 		}
 	);
 
+	// Picklist Options holds its items rather than fetching them, so the query
+	// only reaches them through a predicate of its own
+
+	it('searches the Picklist Options Data Set by every column it shows', () => {
+		render(
+			<MockStateProvider>
+				<PicklistOptions />
+			</MockStateProvider>
+		);
+
+		const [{onItemsPropSearch}] = mockFrontendDataSet.mock.calls[0];
+
+		const item = {
+			erc: 'optionERC',
+			key: 'optionKey',
+			name: {en_US: 'Name'},
+		};
+
+		expect(onItemsPropSearch(item, 'name')).toBe(true);
+		expect(onItemsPropSearch(item, 'optionKey')).toBe(true);
+		expect(onItemsPropSearch(item, 'optionERC')).toBe(true);
+		expect(onItemsPropSearch(item, 'nothing')).toBe(false);
+	});
+
 	// The Select Assets picker is the one Data Set that searches as the user
 	// types without offering suggestions, because its id is new on every open
 
