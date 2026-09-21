@@ -7,62 +7,32 @@ package com.liferay.source.formatter.dependencies;
 
 import com.liferay.portal.kernel.util.PropsValues;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
+import java.security.cert.X509Certificate;
 
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.impl.client.HttpClientBuilder;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * @author Caio Farias
  */
-public class FIPSTLSVerification2 {
+public class FIPSTLSVerification2 implements X509TrustManager {
 
-	public HostnameVerifier getHostnameVerifier() {
-		return _hostnameVerifier;
+	@Override
+	public void checkClientTrusted(
+		X509Certificate[] x509Certificates, String authType) {
 	}
 
-	public void guarded(HttpClientBuilder httpClientBuilder) {
-		if (PropsValues.FIPS_ENABLED && !_VERIFY_SERVER_HOSTNAME) {
-			throw new SecurityException(
-				"TLS verification must be enabled in FIPS mode");
-		}
-
-		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+	@Override
+	public void checkServerTrusted(
+		X509Certificate[] x509Certificates, String authType) {
 	}
 
-	public void guardedWithQuotedBlockComment(
-		HttpClientBuilder httpClientBuilder) {
-
-		if (PropsValues.FIPS_ENABLED && !_VERIFY_SERVER_HOSTNAME) {
-			throw new SecurityException(
-				"TLS verification must be enabled in FIPS mode");
-		}
-
-		httpClientBuilder.setUserAgent("*/*");
-
-		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+	@Override
+	public X509Certificate[] getAcceptedIssuers() {
+		return null;
 	}
 
-	public void unguarded(HttpClientBuilder httpClientBuilder) {
-		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-	}
-
-	public void unguardedWithMention(HttpClientBuilder httpClientBuilder) {
-		httpClientBuilder.setUserAgent(
-			String.valueOf(PropsValues.FIPS_ENABLED));
-
-		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-	}
-
-	private static final boolean _VERIFY_SERVER_HOSTNAME = true;
-
-	private static final HostnameVerifier _hostnameVerifier =
-		NoopHostnameVerifier.INSTANCE;
-
-	static {
-		HttpsURLConnection.setDefaultHostnameVerifier(
-			NoopHostnameVerifier.INSTANCE);
+	public boolean isEnabled() {
+		return PropsValues.FIPS_ENABLED;
 	}
 
 }

@@ -297,105 +297,43 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"FIPSTLSVerification1.testjava"
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				35
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"ALLOW_ALL_HOSTNAME_VERIFIER\", see LPD-93649",
-				42
+				29
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"AllowAllHostnameVerifier\", see LPD-93649",
-				49
+				36
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"new HostnameVerifier()\", see LPD-93649",
-				54
+				41
 			).addExpectedMessage(
 				StringBundler.concat(
 					"Check \"PropsValues.FIPS_ENABLED\" in the same method as ",
 					"\"setEndpointIdentificationAlgorithm(\"\")\", see ",
 					"LPD-93649"),
-				67
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				81
+				54
 			).addExpectedMessage(
 				StringBundler.concat(
 					"Check \"PropsValues.FIPS_ENABLED\" in the same method as ",
 					"\"setEndpointIdentificationAlgorithm(null)\", see ",
 					"LPD-93649"),
-				94
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"new X509ExtendedTrustManager()\", see LPD-93649",
-				106
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"new X509TrustManager()\", see LPD-93649",
-				151
+				58
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"setSSLHostnameVerifier\", see LPD-93649",
-				173
+				72
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"NoopHostnameVerifier\", see LPD-93649",
-				177
+				76
 			).addExpectedMessage(
 				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
 					"\"NoopHostnameVerifier\", see LPD-93649",
-				188
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				195
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"TrustSelfSignedStrategy\", see LPD-93649",
-				201
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"TrustAllStrategy\", see LPD-93649",
-				214
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				218
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				222
+				83
 			));
 		test(
-			SourceProcessorTestParameters.create(
-				"FIPSTLSVerification2.testjava"
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				48
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				55
-			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
-				65
-			));
-		test(
-			"FIPSTLSVerification3.testjava",
-			"Check \"PropsValues.FIPS_ENABLED\" in the same class as a trust " +
-				"manager, see LPD-93649",
-			15);
-		test(
-			"FIPSTLSVerification4.testjava",
-			"Check \"PropsValues.FIPS_ENABLED\" in the same class as a trust " +
-				"manager, see LPD-93649",
-			15);
-		test(
-			"FIPSTLSVerification5.testjava",
+			"FIPSTLSVerification2.testjava",
 			"Check \"PropsValues.FIPS_ENABLED\" in the same class as a trust " +
 				"manager, see LPD-93649",
 			17);

@@ -5,35 +5,22 @@
 
 package com.liferay.source.formatter.dependencies;
 
-import java.net.Socket;
-
-import java.security.KeyStore;
-import java.security.cert.X509Certificate;
+import com.liferay.portal.kernel.util.PropsValues;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.X509ExtendedTrustManager;
-import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.ssl.SSLContextBuilder;
 
 /**
  * @author Caio Farias
  */
 public class FIPSTLSVerification1 {
-
-	public FIPSTLSVerification1(HttpClientBuilder httpClientBuilder) {
-		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-	}
 
 	public void allowAllHostnameVerifierConstant(
 		HttpClientBuilder httpClientBuilder) {
@@ -67,105 +54,17 @@ public class FIPSTLSVerification1 {
 		sslParameters.setEndpointIdentificationAlgorithm("");
 	}
 
-	public void commentedBypass(HttpClientBuilder httpClientBuilder) {
-
-		// httpClientBuilder.setSSLHostnameVerifier(
-		// 	NoopHostnameVerifier.INSTANCE);
-
-	}
-
-	public void commentedGuard(HttpClientBuilder httpClientBuilder) {
-
-		// if (PropsValues.FIPS_ENABLED) {
-
-		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-	}
-
-	public void documented(
-		HttpClientBuilder httpClientBuilder,
-		HostnameVerifier hostnameVerifier) {
-
-		// Do not use NoopHostnameVerifier here
-
-		httpClientBuilder.setSSLHostnameVerifier(hostnameVerifier);
-	}
-
 	public void endpointIdentificationAlgorithm(SSLParameters sslParameters) {
 		sslParameters.setEndpointIdentificationAlgorithm(null);
 	}
 
-	public String getBypassName() {
-		return "NoopHostnameVerifier";
-	}
+	public void guarded(HttpClientBuilder httpClientBuilder) {
+		if (PropsValues.FIPS_ENABLED && !_VERIFY_SERVER_HOSTNAME) {
+			throw new SecurityException(
+				"TLS verification must be enabled in FIPS mode");
+		}
 
-	public HostnameVerifier getHostnameVerifier() {
-		return _hostnameVerifier;
-	}
-
-	public X509ExtendedTrustManager getX509ExtendedTrustManager() {
-		return new X509ExtendedTrustManager() {
-
-			@Override
-			public void checkClientTrusted(
-				X509Certificate[] x509Certificates, String authType) {
-			}
-
-			@Override
-			public void checkClientTrusted(
-				X509Certificate[] x509Certificates, String authType,
-				Socket socket) {
-			}
-
-			@Override
-			public void checkClientTrusted(
-				X509Certificate[] x509Certificates, String authType,
-				SSLEngine sslEngine) {
-			}
-
-			@Override
-			public void checkServerTrusted(
-				X509Certificate[] x509Certificates, String authType) {
-			}
-
-			@Override
-			public void checkServerTrusted(
-				X509Certificate[] x509Certificates, String authType,
-				Socket socket) {
-			}
-
-			@Override
-			public void checkServerTrusted(
-				X509Certificate[] x509Certificates, String authType,
-				SSLEngine sslEngine) {
-			}
-
-			@Override
-			public X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
-
-		};
-	}
-
-	public X509TrustManager getX509TrustManager() {
-		return new X509TrustManager() {
-
-			@Override
-			public void checkClientTrusted(
-				X509Certificate[] x509Certificates, String authType) {
-			}
-
-			@Override
-			public void checkServerTrusted(
-				X509Certificate[] x509Certificates, String authType) {
-			}
-
-			@Override
-			public X509Certificate[] getAcceptedIssuers() {
-				return null;
-			}
-
-		};
+		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
 	}
 
 	public void lambdaHostnameVerifier(HttpClientBuilder httpClientBuilder) {
@@ -173,49 +72,11 @@ public class FIPSTLSVerification1 {
 			(hostName, sslSession) -> true);
 	}
 
-	public void noopHostnameVerifier(HttpClientBuilder httpClientBuilder) {
+	public void unguarded(HttpClientBuilder httpClientBuilder) {
 		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
 	}
 
-	public void pinnedTrustAnchor(
-			SSLContextBuilder sslContextBuilder, KeyStore keyStore)
-		throws Exception {
-
-		sslContextBuilder.loadTrustMaterial(keyStore, null);
-	}
-
-	public void quotedBlockComment(HttpClientBuilder httpClientBuilder) {
-		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
-
-		httpClientBuilder.setUserAgent("*/*");
-	}
-
-	public void quotedSlashes(HttpClientBuilder httpClientBuilder) {
-		httpClientBuilder.setSSLHostnameVerifier(
-			"https://example.com", NoopHostnameVerifier.INSTANCE);
-	}
-
-	public void selfSignedTrustStrategy(SSLContextBuilder sslContextBuilder)
-		throws Exception {
-
-		sslContextBuilder.loadTrustMaterial(new TrustSelfSignedStrategy());
-	}
-
-	public void strictHostnameVerifier(
-		HttpClientBuilder httpClientBuilder,
-		HostnameVerifier hostnameVerifier) {
-
-		httpClientBuilder.setSSLHostnameVerifier(hostnameVerifier);
-	}
-
-	public void trustAllStrategy(SSLContextBuilder sslContextBuilder)
-		throws Exception {
-
-		sslContextBuilder.loadTrustMaterial(new TrustAllStrategy());
-	}
-
-	private static final HostnameVerifier _hostnameVerifier =
-		NoopHostnameVerifier.INSTANCE;
+	private static final boolean _VERIFY_SERVER_HOSTNAME = true;
 
 	static {
 		HttpsURLConnection.setDefaultHostnameVerifier(
