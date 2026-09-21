@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.security.key.secret.SecretResolver;
 
 import java.net.HttpURLConnection;
 
@@ -92,6 +93,7 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProvider
 	}
 
 	private Collection<String> _getClassificationTagNames(
+			long companyId,
 			GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration
 				gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			String documentPayload, Locale locale)
@@ -108,8 +110,10 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProvider
 
 		JSONObject responseJSONObject = _post(
 			_getServiceURL(
-				gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.
-					apiKey(),
+				_secretResolver.resolve(
+					companyId,
+					gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.
+						apiKey()),
 				"classifyText"),
 			documentPayload);
 		float confidence =
@@ -136,6 +140,7 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProvider
 	}
 
 	private Collection<String> _getEntitiesTagNames(
+			long companyId,
 			GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration
 				gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			String documentPayload, Locale locale)
@@ -151,8 +156,10 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProvider
 
 		JSONObject responseJSONObject = _post(
 			_getServiceURL(
-				gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.
-					apiKey(),
+				_secretResolver.resolve(
+					companyId,
+					gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.
+						apiKey()),
 				"analyzeEntities"),
 			documentPayload);
 		float salience =
@@ -197,11 +204,11 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProvider
 			textSupplier.get(), mimeType);
 
 		Collection<String> classificationTagNames = _getClassificationTagNames(
-			gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
+			companyId, gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			documentPayload, locale);
 
 		Collection<String> entitiesTagNames = _getEntitiesTagNames(
-			gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
+			companyId, gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			documentPayload, locale);
 
 		Set<String> tagNames = new HashSet<>();
@@ -338,6 +345,9 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProvider
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private SecretResolver _secretResolver;
 
 	@Reference
 	private TextExtractorRegistry _textExtractorRegistry;

@@ -89,9 +89,11 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProviderTest {
 			_gCloudNaturalLanguageDocumentAssetAutoTagProvider,
 			"_getClassificationTagNames",
 			new Class<?>[] {
+				long.class,
 				GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.class,
 				String.class, Locale.class
 			},
+			RandomTestUtil.randomLong(),
 			gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			RandomTestUtil.randomString(), null);
 
@@ -141,9 +143,11 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProviderTest {
 			_gCloudNaturalLanguageDocumentAssetAutoTagProvider,
 			"_getClassificationTagNames",
 			new Class<?>[] {
+				long.class,
 				GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.class,
 				String.class, Locale.class
 			},
+			RandomTestUtil.randomLong(),
 			gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			RandomTestUtil.randomString(), LocaleUtil.GERMAN);
 
@@ -193,9 +197,11 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProviderTest {
 			_gCloudNaturalLanguageDocumentAssetAutoTagProvider,
 			"_getEntitiesTagNames",
 			new Class<?>[] {
+				long.class,
 				GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.class,
 				String.class, Locale.class
 			},
+			RandomTestUtil.randomLong(),
 			gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			RandomTestUtil.randomString(), null);
 
@@ -245,9 +251,11 @@ public class GCloudNaturalLanguageDocumentAssetAutoTagProviderTest {
 			_gCloudNaturalLanguageDocumentAssetAutoTagProvider,
 			"_getEntitiesTagNames",
 			new Class<?>[] {
+				long.class,
 				GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration.class,
 				String.class, Locale.class
 			},
+			RandomTestUtil.randomLong(),
 			gCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration,
 			RandomTestUtil.randomString(), LocaleUtil.TAIWAN);
 
