@@ -18,7 +18,6 @@ import com.liferay.commerce.exception.CPDefinitionInventoryMultipleOrderQuantity
 import com.liferay.commerce.exception.CPDefinitionInventoryQuantityException;
 import com.liferay.commerce.exception.NoSuchCPDefinitionInventoryException;
 import com.liferay.commerce.model.CPDefinitionInventory;
-import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.CPConfigurationEntryAllowedOrderQuantitiesException;
@@ -47,7 +46,6 @@ import com.liferay.commerce.service.CPDefinitionInventoryService;
 import com.liferay.commerce.util.CommerceOrderItemQuantityFormatter;
 import com.liferay.friendly.url.exception.FriendlyURLLengthException;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -64,7 +62,6 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -120,33 +117,16 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		try {
-			CPDefinition cpDefinition = _getCPDefinition(actionRequest);
+			CPDefinition cpDefinition = _getCPDefinition(
+				actionRequest, cmd,
+				ParamUtil.getBoolean(actionRequest, "saveAsDraft"));
 
 			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
-				boolean convertToDraft = ParamUtil.getBoolean(
-					actionRequest, "convertToDraft");
-
-				if ((cpDefinition != null) && !convertToDraft) {
-					cpDefinition = _cpDefinitionService.copyCPDefinition(
-						cpDefinition.getCPDefinitionId(),
-						cpDefinition.getGroupId(),
-						WorkflowConstants.STATUS_DRAFT);
-				}
-
 				Callable<CPDefinition> cpDefinitionCallable =
 					new CPDefinitionCallable(actionRequest, cpDefinition);
 
 				cpDefinition = TransactionInvokerUtil.invoke(
 					_transactionConfig, cpDefinitionCallable);
-
-				if (convertToDraft) {
-					cpDefinition = _cpDefinitionService.updateStatus(
-						cpDefinition.getCPDefinitionId(),
-						WorkflowConstants.STATUS_DRAFT,
-						ServiceContextFactory.getInstance(
-							CPDefinition.class.getName(), actionRequest),
-						null);
-				}
 
 				String redirect = getSaveAndContinueRedirect(
 					actionRequest, cpDefinition.getCPDefinitionId(),
@@ -387,8 +367,9 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		_reindexCPDefinition(cpDefinitionId);
 	}
 
-	private CPDefinition _getCPDefinition(ActionRequest actionRequest)
-		throws Exception {
+	private CPDefinition _getCPDefinition(
+			ActionRequest actionRequest, String cmd, boolean saveAsDraft)
+		throws PortalException {
 
 		long cpDefinitionId = ParamUtil.getLong(
 			actionRequest, "cpDefinitionId");
@@ -400,30 +381,12 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
 			cpDefinitionId);
 
-		ServiceContext serviceContext = ServiceContextFactory.getInstance(
-			CPDefinition.class.getName(), actionRequest);
+		if (saveAsDraft &&
+			(cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE))) {
 
-		if (!cpDefinition.isDraft() &&
-			(serviceContext.getWorkflowAction() ==
-				WorkflowConstants.ACTION_SAVE_DRAFT)) {
-
-			CProductVersionConfiguration cProductVersionConfiguration =
-				_configurationProvider.getConfiguration(
-					CProductVersionConfiguration.class,
-					new CompanyServiceSettingsLocator(
-						cpDefinition.getCompanyId(),
-						CProductVersionConfiguration.class.getName()));
-
-			if (cProductVersionConfiguration.enabled()) {
-				boolean saveAsDraft = ParamUtil.getBoolean(
-					actionRequest, "saveAsDraft");
-
-				if (saveAsDraft) {
-					cpDefinition = _cpDefinitionService.copyCPDefinition(
-						cpDefinitionId, cpDefinition.getGroupId(),
-						WorkflowConstants.STATUS_DRAFT);
-				}
-			}
+			return _cpDefinitionService.copyCPDefinition(
+				cpDefinitionId, cpDefinition.getGroupId(),
+				WorkflowConstants.STATUS_DRAFT);
 		}
 
 		return cpDefinition;
@@ -1008,9 +971,6 @@ public class EditCPDefinitionMVCActionCommand extends BaseMVCActionCommand {
 	@Reference
 	private CommerceOrderItemQuantityFormatter
 		_commerceOrderItemQuantityFormatter;
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private CPConfigurationEntryService _cpConfigurationEntryService;
