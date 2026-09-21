@@ -167,7 +167,18 @@ public class UpgradeExecutor {
 		UpgradeStepRegistry upgradeStepRegistry = _serviceTrackerMap.getService(
 			bundleSymbolicName);
 
-		return upgradeStepRegistry.getUpgradeInfos();
+		if (upgradeStepRegistry == null) {
+			return null;
+		}
+
+		try {
+			return upgradeStepRegistry.getUpgradeInfos();
+		}
+		catch (Throwable throwable) {
+			_failedBundleSymbolicNames.add(bundleSymbolicName);
+
+			return ReflectionUtil.throwException(throwable);
+		}
 	}
 
 	@Activate
