@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLayout from '@clayui/layout';
 import React, {useState} from 'react';
 
 import {Wizard, WizardStep} from '../../components/Wizard';
@@ -18,6 +19,7 @@ import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHand
 import DataSelectionStep from './steps/DataSelectionStep';
 import FileSelectionStep from './steps/FileSelectionStep';
 import SettingsStep, {SETTINGS_STEP_INITIAL_VALUES} from './steps/SettingsStep';
+import SiteSelection from './steps/SiteSelection';
 
 export function NewImport({
 	backURL,
@@ -26,6 +28,7 @@ export function NewImport({
 	importProcessAPIURL,
 	lookAndFeelEnabled = false,
 	scope,
+	sitesEnabled = false,
 }: {
 	backURL: string;
 	commentsAndRatingsEnabled?: boolean;
@@ -33,6 +36,7 @@ export function NewImport({
 	importProcessAPIURL: string;
 	lookAndFeelEnabled?: boolean;
 	scope: Scope;
+	sitesEnabled?: boolean;
 }) {
 	const [importPreview, setImportPreview] = useState<
 		ImportPreview | undefined
@@ -69,8 +73,12 @@ export function NewImport({
 					contentSelection: undefined,
 					deletions: false,
 					permissions: false,
+					siteExternalReferenceCodes: [],
 				}}
-				isStepValid={(values) => !!values.contentSelection}
+				isStepValid={(values) =>
+					!!values.contentSelection ||
+					!!values.siteExternalReferenceCodes?.length
+				}
 				title={Liferay.Language.get('data-selection')}
 			>
 				<DataSelectionStep
@@ -78,6 +86,14 @@ export function NewImport({
 					importPreview={importPreview}
 					lookAndFeelEnabled={lookAndFeelEnabled}
 				/>
+
+				{sitesEnabled && (
+					<ClayLayout.Sheet className="mt-4 option-group">
+						<SiteSelection
+							previewSites={importPreview?.previewSites ?? []}
+						/>
+					</ClayLayout.Sheet>
+				)}
 			</WizardStep>
 
 			<WizardStep
@@ -123,6 +139,8 @@ export function NewImport({
 										[],
 									values.contentSelection
 								),
+							siteExternalReferenceCodes:
+								values.siteExternalReferenceCodes,
 							userIdStrategy:
 								values.userIdStrategy as UserIdStrategy,
 						},
