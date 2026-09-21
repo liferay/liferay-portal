@@ -16,10 +16,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -40,34 +38,6 @@ public class StaticSiteExportDocument {
 
 	public String getHTML() {
 		return _document.outerHtml();
-	}
-
-	public Map<String, String> getImportMapPrefixes() {
-		Map<String, String> importMapPrefixes = new LinkedHashMap<>();
-
-		for (Element element : _document.select("script[type=importmap]")) {
-			JSONObject importsJSONObject = _getImportsJSONObject(element);
-
-			if (importsJSONObject == null) {
-				continue;
-			}
-
-			Iterator<String> iterator = importsJSONObject.keys();
-
-			while (iterator.hasNext()) {
-				String specifier = iterator.next();
-
-				String url = importsJSONObject.getString(specifier);
-
-				if (specifier.endsWith(StringPool.SLASH) &&
-					url.endsWith(StringPool.SLASH)) {
-
-					importMapPrefixes.put(specifier, url);
-				}
-			}
-		}
-
-		return importMapPrefixes;
 	}
 
 	public Set<String> getURLs() {

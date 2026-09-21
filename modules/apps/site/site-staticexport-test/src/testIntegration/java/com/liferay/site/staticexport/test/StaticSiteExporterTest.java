@@ -205,7 +205,6 @@ public class StaticSiteExporterTest {
 
 		boolean bundleResource = false;
 		boolean generatedResource = false;
-		boolean referencedByResource = false;
 		boolean stylesheet = false;
 
 		for (StaticSiteExportResource staticSiteExportResource :
@@ -232,24 +231,18 @@ public class StaticSiteExporterTest {
 				generatedResource = true;
 			}
 
-			String html = staticSiteExportLayout.getHTML();
-
-			if (!html.contains(StringPool.SLASH + path)) {
-				referencedByResource = true;
-
-				continue;
-			}
-
 			if (url.contains(".css")) {
 				stylesheet = true;
+
+				Assert.assertThat(
+					staticSiteExportLayout.getHTML(),
+					CoreMatchers.containsString(StringPool.SLASH + path));
 			}
 		}
 
 		Assert.assertTrue(staticSiteExportResources.toString(), bundleResource);
 		Assert.assertTrue(
 			staticSiteExportResources.toString(), generatedResource);
-		Assert.assertTrue(
-			staticSiteExportResources.toString(), referencedByResource);
 		Assert.assertTrue(staticSiteExportResources.toString(), stylesheet);
 
 		StaticSiteExportReport staticSiteExportReport =

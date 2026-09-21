@@ -7,6 +7,7 @@ package com.liferay.site.staticexport.internal;
 
 import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.layout.util.LayoutServiceContextHelper;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.site.staticexport.StaticSiteExport;
@@ -40,13 +42,11 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.File;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -186,37 +186,13 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		List<StaticSiteExportResource> staticSiteExportResources =
 			new ArrayList<>();
 
-		StaticSiteExportResourceHarvester staticSiteExportResourceHarvester =
-			new StaticSiteExportResourceHarvester();
-
-		Map<String, String> importMapPrefixes = new LinkedHashMap<>();
-		Deque<String> urls = new ArrayDeque<>();
-
-		for (StaticSiteExportDocument staticSiteExportDocument :
-				staticSiteExportDocuments) {
-
-			importMapPrefixes.putAll(
-				staticSiteExportDocument.getImportMapPrefixes());
-			urls.addAll(
-				staticSiteExportResourceHarvester.harvestDocument(
-					staticSiteExportDocument));
-		}
-
 		StaticSiteExportResourceFetcher staticSiteExportResourceFetcher =
 			new StaticSiteExportResourceFetcher(
 				httpServletRequest, new DummyHttpServletResponse(), portalURL,
 				ServletContextPool.get(_portal.getServletContextName()),
 				new StaticSiteExportBundleResourceResolver(_bundleContext));
 
-		Set<String> visitedURLs = new HashSet<>();
-
-		while (!urls.isEmpty()) {
-			String url = urls.removeFirst();
-
-			if (!visitedURLs.add(url)) {
-				continue;
-			}
-
+		for (String url : _getResourceURLs(staticSiteExportDocuments)) {
 			File file = null;
 
 			try {
@@ -245,12 +221,6 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 			staticSiteExportResources.add(
 				new StaticSiteExportResource(
 					file, StaticSiteExportResourcePathUtil.getPath(url), url));
-
-			if (_isScriptURL(url)) {
-				urls.addAll(
-					staticSiteExportResourceHarvester.harvestJS(
-						importMapPrefixes, FileUtil.read(file), url));
-			}
 		}
 
 		return staticSiteExportResources;
@@ -360,12 +330,38 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		return resourcePaths;
 	}
 
-	private boolean _isScriptURL(String url) {
-		if (url.endsWith(".js") || url.contains(".js?")) {
-			return true;
+	private Set<String> _getResourceURLs(
+		Collection<StaticSiteExportDocument> staticSiteExportDocuments) {
+
+		Set<String> resourceURLs = new LinkedHashSet<>();
+
+		for (StaticSiteExportDocument staticSiteExportDocument :
+				staticSiteExportDocuments) {
+
+			for (String url : staticSiteExportDocument.getURLs()) {
+				if (Validator.isNull(url)) {
+					continue;
+				}
+
+				url = StringUtil.trim(url);
+
+				int index = url.indexOf(CharPool.POUND);
+
+				if (index != -1) {
+					url = url.substring(0, index);
+				}
+
+				for (String resourcePrefix : _RESOURCE_PREFIXES) {
+					if (url.startsWith(resourcePrefix)) {
+						resourceURLs.add(url);
+
+						break;
+					}
+				}
+			}
 		}
 
-		return false;
+		return resourceURLs;
 	}
 
 	private boolean _isStylesheetURL(String url) {
@@ -426,6 +422,10 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 		return staticSiteExportResources;
 	}
+
+	private static final String[] _RESOURCE_PREFIXES = {
+		"/combo", "/documents/", "/image/", "/o/", "/webserver/"
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		StaticSiteExporterImpl.class);
