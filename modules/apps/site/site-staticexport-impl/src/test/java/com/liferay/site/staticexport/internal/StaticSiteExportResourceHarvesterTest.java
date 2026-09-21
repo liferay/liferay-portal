@@ -27,22 +27,6 @@ public class StaticSiteExportResourceHarvesterTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testHarvestCSS() {
-		Set<String> urls = _staticSiteExportResourceHarvester.harvestCSS(
-			"@import \"/o/other-web/base.css\"; a { background: " +
-				"url(../images/loading.gif); } b { background: " +
-					"url(data:image/gif;base64,AAAA); } c { mask: url(#m); }",
-			"/o/classic-theme/css/clay.css");
-
-		Assert.assertEquals(urls.toString(), 2, urls.size());
-		Assert.assertTrue(
-			urls.toString(), urls.contains("/o/other-web/base.css"));
-		Assert.assertTrue(
-			urls.toString(),
-			urls.contains("/o/classic-theme/images/loading.gif"));
-	}
-
-	@Test
 	public void testHarvestJS() {
 		StaticSiteExportDocument staticSiteExportDocument =
 			new StaticSiteExportDocument(

@@ -21,30 +21,6 @@ import java.util.regex.Pattern;
  */
 public class StaticSiteExportResourceHarvester {
 
-	public Set<String> harvestCSS(String css, String cssURL) {
-		Set<String> urls = new LinkedHashSet<>();
-
-		Matcher matcher = _cssURLPattern.matcher(css);
-
-		while (matcher.find()) {
-			String url = matcher.group(1);
-
-			if (url == null) {
-				url = matcher.group(2);
-			}
-
-			url = _unquote(url);
-
-			if (url.startsWith(StringPool.POUND)) {
-				continue;
-			}
-
-			_addURL(_resolve(cssURL, url), urls);
-		}
-
-		return urls;
-	}
-
 	public Set<String> harvestDocument(
 		StaticSiteExportDocument staticSiteExportDocument) {
 
@@ -158,23 +134,6 @@ public class StaticSiteExportResourceHarvester {
 		return path + url;
 	}
 
-	private String _unquote(String url) {
-		if (Validator.isNull(url)) {
-			return url;
-		}
-
-		url = StringUtil.unquote(StringUtil.trim(url));
-
-		while (!url.isEmpty() &&
-			   ((url.charAt(0) == CharPool.QUOTE) ||
-				(url.charAt(0) == CharPool.APOSTROPHE))) {
-
-			url = url.substring(1);
-		}
-
-		return url;
-	}
-
 	private static final String _RESOURCE_EXTENSIONS =
 		"css|gif|ico|jpeg|jpg|js|json|png|svg|webp|woff|woff2";
 
@@ -184,8 +143,6 @@ public class StaticSiteExportResourceHarvester {
 
 	private static final Pattern _blockCommentPattern = Pattern.compile(
 		"/\\*.*?\\*/", Pattern.DOTALL);
-	private static final Pattern _cssURLPattern = Pattern.compile(
-		"url\\(([^)]+)\\)|@import\\s+[\"']([^\"']+)[\"']");
 	private static final Pattern _jsModulePathPattern = Pattern.compile(
 		"[\"'`](?:\\$\\{[^}]*\\})?/?(o/[-@$/.\\w()]+\\.(?:" +
 			_RESOURCE_EXTENSIONS + "))[\"'`]");

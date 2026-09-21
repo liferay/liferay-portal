@@ -246,12 +246,7 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 				new StaticSiteExportResource(
 					file, StaticSiteExportResourcePathUtil.getPath(url), url));
 
-			if (_isStylesheetURL(url)) {
-				urls.addAll(
-					staticSiteExportResourceHarvester.harvestCSS(
-						FileUtil.read(file), url));
-			}
-			else if (_isScriptURL(url)) {
+			if (_isScriptURL(url)) {
 				urls.addAll(
 					staticSiteExportResourceHarvester.harvestJS(
 						importMapPrefixes, FileUtil.read(file), url));
