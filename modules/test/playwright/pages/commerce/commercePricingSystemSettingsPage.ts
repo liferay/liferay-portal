@@ -9,18 +9,32 @@ import {waitForAlert} from '../../utils/waitForAlert';
 import {SystemSettingsPage} from '../configuration-admin-web/SystemSettingsPage';
 
 export class CommercePricingSystemSettingsPage {
+	readonly displayDiscountLevelsCheckbox: Locator;
 	readonly page: Page;
 	readonly priceListDiscoveryMethodInput: Locator;
 	readonly submitConfiguration: Locator;
 	readonly systemSettingsPage: SystemSettingsPage;
 
 	constructor(page: Page) {
+		this.displayDiscountLevelsCheckbox = page.getByLabel(
+			'Display Discount Levels'
+		);
 		this.page = page;
 		this.priceListDiscoveryMethodInput = this.page.getByRole('textbox', {
 			name: 'Price List Discovery Method',
 		});
 		this.submitConfiguration = page.getByTestId('submitConfiguration');
 		this.systemSettingsPage = new SystemSettingsPage(page);
+	}
+
+	async setDisplayDiscountLevels(checked: boolean) {
+		await this.systemSettingsPage.goToSystemSetting('Pricing', 'Price');
+
+		await this.displayDiscountLevelsCheckbox.setChecked(checked);
+
+		await this.submitConfiguration.click();
+
+		await waitForAlert(this.page);
 	}
 
 	async setPriceListDiscoveryMethod(mode = 'hierarchy') {

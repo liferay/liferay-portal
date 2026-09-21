@@ -51,6 +51,15 @@ export class ProductDetailsPage {
 	readonly paginationText: (text: string) => Locator;
 	readonly pinAddToCartButton: Locator;
 	readonly priceContainer: Locator;
+	readonly priceFragment: Locator;
+	readonly priceFragmentDiscount: Locator;
+	readonly priceFragmentDiscountLevels: Locator;
+	readonly priceFragmentInactivePrice: Locator;
+	readonly priceFragmentListPrice: Locator;
+	readonly priceFragmentPromoInactivePrice: Locator;
+	readonly priceFragmentPromoPrice: Locator;
+	readonly priceFragmentNetPrice: Locator;
+	readonly priceFragmentPriceOnApplicationLabel: Locator;
 	readonly priceField: (
 		price: string,
 		container?: Locator | Page
@@ -186,6 +195,29 @@ export class ProductDetailsPage {
 			.locator("[class='diagram-tooltip']")
 			.getByRole('button');
 		this.priceContainer = page.locator('div.price-container');
+		this.priceFragment = page.locator('span.price');
+		this.priceFragmentDiscount = this.priceFragment.locator(
+			'.price-value-discount'
+		);
+		this.priceFragmentDiscountLevels = this.priceFragment.locator(
+			'.price-value-discount .price-value-percentages'
+		);
+		this.priceFragmentInactivePrice = this.priceFragment.locator(
+			'.price-value-inactive:not(.price-value-promo)'
+		);
+		this.priceFragmentListPrice = this.priceFragment.locator(
+			'[class="price-value"]'
+		);
+		this.priceFragmentNetPrice =
+			this.priceFragment.locator('.price-value-final');
+		this.priceFragmentPromoInactivePrice = this.priceFragment.locator(
+			'.price-value-promo.price-value-inactive'
+		);
+		this.priceFragmentPromoPrice =
+			this.priceFragment.locator('.price-value-promo');
+		this.priceFragmentPriceOnApplicationLabel = this.priceFragment.locator(
+			'.price-on-application'
+		);
 		this.priceField = async (price: string, container = this.page) => {
 			return container.getByText(price, {exact: true});
 		};
