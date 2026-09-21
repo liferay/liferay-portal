@@ -27,7 +27,6 @@ import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
-import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 
 import java.util.Dictionary;
@@ -244,13 +243,24 @@ public class ConfigurationSecretConfigurationModelListener
 				continue;
 			}
 
-			if (!_isSecretResolverClassLoaded(bundle)) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
+			String location = bundle.getLocation();
+
+			if ((location != null) && location.contains("static=true")) {
+				FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+					"configuration-vaulting-skipped",
+					FIPSAuditEvent.Severity.WARNING);
+
+				fipsAuditEvent.put(
+					"configuration-pid", GetterUtil.getString(metaTypePid));
+
+				FIPSAuditUtil.write(fipsAuditEvent);
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(
 						StringBundler.concat(
-							"Not vaulting configuration \"", pid,
-							"\" because bundle \"", bundle.getSymbolicName(),
-							"\" cannot resolve a key reference"));
+							"Configuration ", metaTypePid,
+							" is declared by a static module and its ",
+							"credentials are not vaulted"));
 				}
 
 				return null;
@@ -261,21 +271,6 @@ public class ConfigurationSecretConfigurationModelListener
 		}
 
 		return null;
-	}
-
-	private boolean _isSecretResolverClassLoaded(Bundle bundle) {
-		try {
-			bundle.loadClass(SecretResolver.class.getName());
-
-			return true;
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(classNotFoundException);
-			}
-		}
-
-		return false;
 	}
 
 	private void _validateKeyReference(

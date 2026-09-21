@@ -20,7 +20,6 @@ import com.liferay.portal.security.key.KeyReference;
 import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
-import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.exception.SecretException;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfile;
 import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
@@ -66,14 +65,6 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 			_bundleContext.getBundles()
 		).thenReturn(
 			new Bundle[] {_bundle}
-		);
-
-		Mockito.doReturn(
-			SecretResolver.class
-		).when(
-			_bundle
-		).loadClass(
-			Mockito.anyString()
 		);
 
 		Mockito.when(
@@ -140,7 +131,7 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 	@Test
 	public void testOnBeforeSave() throws Exception {
 		_testOnBeforeSave();
-		_testOnBeforeSaveWhenBundleCannotResolveKeyReference();
+		_testOnBeforeSaveWhenBundleIsInStaticRegion();
 		_testOnBeforeSaveWhenConfigurationHasNoMetatype();
 		_testOnBeforeSaveWhenKeyManagerProfileIsInactive();
 		_testOnBeforeSaveWhenReferenceIsNotAConfiguration();
@@ -364,17 +355,16 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		Assert.assertTrue(secret.isDestroyed());
 	}
 
-	private void _testOnBeforeSaveWhenBundleCannotResolveKeyReference()
+	private void _testOnBeforeSaveWhenBundleIsInStaticRegion()
 		throws Exception {
 
 		setUp();
 
-		Mockito.doThrow(
-			ClassNotFoundException.class
-		).when(
-			_bundle
-		).loadClass(
-			Mockito.anyString()
+		Mockito.when(
+			_bundle.getLocation()
+		).thenReturn(
+			"file:/opt/liferay/osgi/static/com.liferay.example.jar" +
+				"?protocol=jar&static=true"
 		);
 
 		String value = RandomTestUtil.randomString();
