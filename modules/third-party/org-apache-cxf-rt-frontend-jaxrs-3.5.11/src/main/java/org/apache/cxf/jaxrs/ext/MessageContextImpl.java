@@ -274,6 +274,8 @@ public class MessageContextImpl implements MessageContext {
                 m.getExchange().getInMessage().get(AttachmentDeserializer.ATTACHMENT_MAX_SIZE));
             inMessage.put(AttachmentDeserializer.ATTACHMENT_MAX_HEADER_SIZE,
                 m.getExchange().getInMessage().get(AttachmentDeserializer.ATTACHMENT_MAX_HEADER_SIZE));
+            inMessage.put(AttachmentDeserializer.ATTACHMENT_MAX_COUNT,
+                    m.getExchange().getInMessage().get(AttachmentDeserializer.ATTACHMENT_MAX_COUNT));
             inMessage.setContent(InputStream.class,
                 m.getExchange().getInMessage().get("org.apache.cxf.multipart.embedded.input"));
             inMessage.put(Message.CONTENT_TYPE,
@@ -282,6 +284,16 @@ public class MessageContextImpl implements MessageContext {
 
 
         new AttachmentInputInterceptor().handleMessage(inMessage);
+
+        final Object maxCountProperty = inMessage.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_COUNT);
+        int maxAttachmentCount = 50;
+        if (maxCountProperty != null) {
+            if (maxCountProperty instanceof Integer) {
+                maxAttachmentCount = (Integer)maxCountProperty;
+            } else {
+                maxAttachmentCount = Integer.parseInt((String)maxCountProperty);
+            }
+        }
 
         List<Attachment> newAttachments = new LinkedList<>();
         try {
@@ -294,6 +306,9 @@ public class MessageContextImpl implements MessageContext {
                                      inMessage),
                                      new ProvidersImpl(inMessage));
             newAttachments.add(first);
+            if (newAttachments.size() > maxAttachmentCount) {
+                throw new IOException("The message contains more attachments than are permitted");
+            }
         } catch (IOException ex) {
             throw ExceptionUtils.toInternalServerErrorException(ex, null);
         }
@@ -303,9 +318,17 @@ public class MessageContextImpl implements MessageContext {
         if (childAttachments == null) {
             childAttachments = Collections.emptyList();
         }
-        for (org.apache.cxf.message.Attachment a : childAttachments) {
-            newAttachments.add(new Attachment(a, new ProvidersImpl(inMessage)));
+        try {
+            for (org.apache.cxf.message.Attachment a : childAttachments) {
+                newAttachments.add(new Attachment(a, new ProvidersImpl(inMessage)));
+                if (newAttachments.size() > maxAttachmentCount) {
+                    throw new IOException("The message contains more attachments than are permitted");
+                }
+            }
+        } catch (IOException ex) {
+            throw ExceptionUtils.toInternalServerErrorException(ex, null);
         }
+
         MediaType mt = embeddedAttachment
             ? (MediaType)inMessage.get("org.apache.cxf.multipart.embedded.ctype")
             : getHttpHeaders().getMediaType();
@@ -315,3 +338,4 @@ public class MessageContextImpl implements MessageContext {
     }
 
 }
+/* @generated */
