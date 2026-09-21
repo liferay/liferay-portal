@@ -1835,13 +1835,7 @@ public class BatchEnginePortletDataHandlerTest {
 			externalReferenceCodes.contains(
 				notificationTemplate2.getExternalReferenceCode()));
 
-		new ExportImportExecutor(
-		).withGroupId(
-			_getCompanyGroupId()
-		).withIncludeNotificationTemplates(
-		).withLARFile(
-			larFile1
-		).executeImport();
+		_importNotificationTemplates(larFile1, null);
 
 		NotificationTemplate importedNotificationTemplate =
 			_fetchNotificationTemplate(
@@ -1851,13 +1845,7 @@ public class BatchEnginePortletDataHandlerTest {
 
 		_notificationTemplates.add(importedNotificationTemplate);
 
-		new ExportImportExecutor(
-		).withGroupId(
-			_getCompanyGroupId()
-		).withIncludeNotificationTemplates(
-		).withLARFile(
-			larFile2
-		).executeImport();
+		_importNotificationTemplates(larFile2, null);
 
 		Assert.assertNotNull(
 			_fetchNotificationTemplate(
@@ -1989,13 +1977,7 @@ public class BatchEnginePortletDataHandlerTest {
 			_getNotificationTemplate(
 				notificationTemplate.getExternalReferenceCode()));
 
-		new ExportImportExecutor(
-		).withGroupId(
-			_getCompanyGroupId()
-		).withIncludeNotificationTemplates(
-		).withLARFile(
-			larFile
-		).executeImport();
+		_importNotificationTemplates(larFile, null);
 
 		_assertNotificationTemplateRoleNames(
 			notificationTemplate.getExternalReferenceCode(),
@@ -2017,13 +1999,7 @@ public class BatchEnginePortletDataHandlerTest {
 				existingNotificationTemplate.getNotificationTemplateId()),
 			_getSiteMemberRoleId(), new String[] {ActionKeys.VIEW});
 
-		new ExportImportExecutor(
-		).withGroupId(
-			_getCompanyGroupId()
-		).withIncludeNotificationTemplates(
-		).withLARFile(
-			larFile
-		).executeImport();
+		_importNotificationTemplates(larFile, null);
 
 		_assertNotificationTemplateRoleNames(
 			notificationTemplate.getExternalReferenceCode(),
