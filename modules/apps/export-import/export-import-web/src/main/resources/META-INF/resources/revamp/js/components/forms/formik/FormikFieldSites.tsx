@@ -7,32 +7,35 @@ import {FormikValues, useFormikContext} from 'formik';
 import React from 'react';
 
 import {PreviewSite} from '../../../types/exportImportPreview';
+import {ExportImportProcess} from '../../../types/exportImportProcess';
 import SitesControl from '../site_selector/SitesControl';
 
 export function FormikFieldSites({
 	apiURL,
 	name,
 	previewSites,
-	showExistsInInstance,
+	process,
 	totalCount,
 }: {
 	apiURL?: string;
 	name: string;
 	previewSites?: PreviewSite[];
-	showExistsInInstance?: boolean;
+	process?: ExportImportProcess;
 	totalCount?: number;
 }) {
-	const {setFieldValue, values} = useFormikContext<FormikValues>();
+	const {setFieldTouched, setFieldValue, values} =
+		useFormikContext<FormikValues>();
 
 	return (
 		<SitesControl
 			apiURL={apiURL}
-			onChange={(externalReferenceCodes) =>
-				setFieldValue(name, externalReferenceCodes)
-			}
+			onChange={(externalReferenceCodes) => {
+				setFieldValue(name, externalReferenceCodes);
+				setFieldTouched(name, true);
+			}}
 			previewSites={previewSites}
+			process={process}
 			selectedExternalReferenceCodes={values[name] ?? []}
-			showExistsInInstance={showExistsInInstance}
 			totalCount={totalCount}
 		/>
 	);

@@ -223,7 +223,7 @@ describe('NewExport', () => {
 		renderComponent({
 			exportPreviewSitesAPIURL:
 				'/o/export-import/v1.0/export-preview/sites',
-			sitesEnabled: true,
+			siteSelectionEnabled: true,
 		});
 
 		const nameInput = await screen.findByRole('textbox', {
@@ -284,7 +284,7 @@ describe('NewExport', () => {
 		renderComponent({
 			exportPreviewSitesAPIURL:
 				'/o/export-import/v1.0/export-preview/preview-sites',
-			sitesEnabled: true,
+			siteSelectionEnabled: true,
 		});
 
 		await userEvent.type(

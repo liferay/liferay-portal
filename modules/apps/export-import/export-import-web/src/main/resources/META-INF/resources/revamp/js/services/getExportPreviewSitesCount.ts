@@ -16,10 +16,6 @@ export interface PreviewSitesPage {
 	totalCount: number;
 }
 
-/**
- * Asks only how many sites there are. The dialog reads the sites themselves,
- * but the row that opens it shows the total before it is opened.
- */
 export function getExportPreviewSitesCount(
 	url: string
 ): Promise<RequestResult<PreviewSitesPage>> {

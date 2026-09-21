@@ -9,10 +9,7 @@ import {FrontendDataSet, IView} from '@liferay/frontend-data-set-web';
 import React, {useState} from 'react';
 
 import {PreviewSite} from '../../../types/exportImportPreview';
-
-const DELTAS = [{label: 20}, {label: 40}, {label: 60}];
-
-const FDS_ID = 'exportImportSiteSelector';
+import {ExportImportProcess} from '../../../types/exportImportProcess';
 
 const SORTS = [
 	{
@@ -24,7 +21,7 @@ const SORTS = [
 	},
 ];
 
-function getView(showExistsInInstance: boolean): IView {
+function getView(process: ExportImportProcess): IView {
 	return {
 		contentRenderer: 'table',
 		default: true,
@@ -41,7 +38,7 @@ function getView(showExistsInInstance: boolean): IView {
 					fieldName: 'path',
 					label: Liferay.Language.get('path'),
 				},
-				showExistsInInstance
+				process === 'import'
 					? {
 							fieldName: 'existsInInstance',
 							label: Liferay.Language.get('exists-in-instance'),
@@ -55,70 +52,59 @@ function getView(showExistsInInstance: boolean): IView {
 	};
 }
 
-function toRow(previewSite: PreviewSite) {
-	return {
-		...previewSite,
-		id: previewSite.externalReferenceCode,
-	};
-}
-
 export default function SiteSelectorModal({
 	apiURL,
 	onClose,
 	onSubmit,
 	previewSites,
+	process = 'export',
 	selectedExternalReferenceCodes,
-	showExistsInInstance = false,
 }: {
 	apiURL?: string;
 	onClose: () => void;
 	onSubmit: (previewSites: PreviewSite[]) => void;
 	previewSites?: PreviewSite[];
+	process?: ExportImportProcess;
 	selectedExternalReferenceCodes: string[];
-	showExistsInInstance?: boolean;
 }) {
 	const {observer, onClose: closeModal} = useModal({onClose});
-
-	const items = previewSites?.map(toRow);
 
 	const [selectedItems, setSelectedItems] = useState<PreviewSite[]>(() =>
 		selectedExternalReferenceCodes.map(
 			(externalReferenceCode) =>
-				items?.find(
-					(item) =>
-						item.externalReferenceCode === externalReferenceCode
+				previewSites?.find(
+					(previewSite) =>
+						previewSite.externalReferenceCode ===
+						externalReferenceCode
 				) ?? {externalReferenceCode}
 		)
 	);
 
 	return (
-		<ClayModal observer={observer} size="lg">
-			<ClayModal.Header>
+		<ClayModal observer={observer} size="full-screen">
+			<ClayModal.Header
+				closeButtonAriaLabel={Liferay.Language.get('close')}
+			>
 				{Liferay.Language.get('select-sites')}
 			</ClayModal.Header>
 
-			<ClayModal.Body>
+			<ClayModal.Body className="p-0">
 				<FrontendDataSet
 					apiURL={apiURL}
-					id={FDS_ID}
-					itemsActions={[]}
+					id={`exportImportSiteSelector_${process}`}
 					onItemsPropSearch={(item, query) =>
-						String(item.descriptiveName ?? '')
+						(item.descriptiveName ?? '')
 							.toLowerCase()
 							.includes(query.toLowerCase())
 					}
 					onSelectedItemsChange={setSelectedItems}
-					pagination={{deltas: DELTAS, initialDelta: DELTAS[0].label}}
+					pagination={{initialDelta: 20}}
 					selectedItems={selectedItems}
 					selectedItemsKey="externalReferenceCode"
 					selectionType="multiple"
-					showManagementBar
-					showPagination
-					showSearch
-					showSelectAll
-					style="stacked"
-					views={[getView(showExistsInInstance)]}
-					{...(items ? {items} : {sorts: SORTS})}
+					style="fluid"
+					views={[getView(process)]}
+					{...(previewSites ? {items: previewSites} : {sorts: SORTS})}
 				/>
 			</ClayModal.Body>
 

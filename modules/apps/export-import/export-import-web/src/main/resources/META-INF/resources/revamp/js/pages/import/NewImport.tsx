@@ -5,7 +5,6 @@
 
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
-import ClayLayout from '@clayui/layout';
 import React, {useState} from 'react';
 
 import {Wizard, WizardStep} from '../../components/Wizard';
@@ -28,7 +27,7 @@ export function NewImport({
 	importProcessAPIURL,
 	lookAndFeelEnabled = false,
 	scope,
-	sitesEnabled = false,
+	siteSelectionEnabled = false,
 }: {
 	backURL: string;
 	commentsAndRatingsEnabled?: boolean;
@@ -36,7 +35,7 @@ export function NewImport({
 	importProcessAPIURL: string;
 	lookAndFeelEnabled?: boolean;
 	scope: Scope;
-	sitesEnabled?: boolean;
+	siteSelectionEnabled?: boolean;
 }) {
 	const [importPreview, setImportPreview] = useState<
 		ImportPreview | undefined
@@ -85,15 +84,14 @@ export function NewImport({
 					commentsAndRatingsEnabled={commentsAndRatingsEnabled}
 					importPreview={importPreview}
 					lookAndFeelEnabled={lookAndFeelEnabled}
+					sitesSelection={
+						siteSelectionEnabled && (
+							<SiteSelection
+								previewSites={importPreview?.previewSites ?? []}
+							/>
+						)
+					}
 				/>
-
-				{sitesEnabled && (
-					<ClayLayout.Sheet className="mt-4 option-group">
-						<SiteSelection
-							previewSites={importPreview?.previewSites ?? []}
-						/>
-					</ClayLayout.Sheet>
-				)}
 			</WizardStep>
 
 			<WizardStep

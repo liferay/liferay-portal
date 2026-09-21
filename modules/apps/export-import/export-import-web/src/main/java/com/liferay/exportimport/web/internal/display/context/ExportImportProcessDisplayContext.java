@@ -206,7 +206,7 @@ public class ExportImportProcessDisplayContext {
 		return false;
 	}
 
-	public boolean isSitesEnabled() {
+	public boolean isSiteSelectionEnabled() {
 		if ((getScope() == Scope.COMPANY) &&
 			FeatureFlagManagerUtil.isEnabled(
 				_group.getCompanyId(), "LPD-85946")) {

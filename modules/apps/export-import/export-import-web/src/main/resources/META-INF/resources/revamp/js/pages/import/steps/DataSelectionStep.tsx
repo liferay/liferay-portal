@@ -4,7 +4,7 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import React from 'react';
+import React, {ReactNode} from 'react';
 
 import {
 	FormikFieldCheckbox,
@@ -17,10 +17,12 @@ export default function DataSelectionStep({
 	commentsAndRatingsEnabled = false,
 	importPreview,
 	lookAndFeelEnabled = false,
+	sitesSelection,
 }: {
 	commentsAndRatingsEnabled?: boolean;
 	importPreview?: ImportPreview;
 	lookAndFeelEnabled?: boolean;
+	sitesSelection?: ReactNode;
 }) {
 	if (!importPreview) {
 		return null;
@@ -49,6 +51,12 @@ export default function DataSelectionStep({
 					/>
 				)}
 			</ClayLayout.Sheet>
+
+			{sitesSelection && (
+				<ClayLayout.Sheet className="mt-4 option-group">
+					{sitesSelection}
+				</ClayLayout.Sheet>
+			)}
 
 			<div data-testid="data-selection-section">
 				<FormikFieldContentSelector

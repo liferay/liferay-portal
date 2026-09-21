@@ -46,7 +46,7 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getImportTitle());
 			).put(
 				"scope", exportImportProcessDisplayContext.getScope()
 			).put(
-				"sitesEnabled", exportImportProcessDisplayContext.isSitesEnabled()
+				"siteSelectionEnabled", exportImportProcessDisplayContext.isSiteSelectionEnabled()
 			).build()
 		%>'
 	/>

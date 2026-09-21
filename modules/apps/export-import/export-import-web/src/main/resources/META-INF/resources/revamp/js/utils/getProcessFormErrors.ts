@@ -5,15 +5,9 @@
 
 import {FormikValues} from 'formik';
 
-/**
- * The errors shared by the process forms. `sitesEnabled` says whether sites are
- * on offer: where they are, either an entity type or a site satisfies the form,
- * and the error belongs to neither control, so it is reported as `selection`
- * rather than marking one of them invalid.
- */
 export function getProcessFormErrors(
 	values: FormikValues,
-	sitesEnabled = false
+	siteSelectionEnabled = false
 ): {
 	[key: string]: string;
 } {
@@ -27,7 +21,7 @@ export function getProcessFormErrors(
 		!values.contentSelection &&
 		!values.siteExternalReferenceCodes?.length
 	) {
-		if (sitesEnabled) {
+		if (siteSelectionEnabled) {
 			errors.selection = Liferay.Language.get(
 				'please-select-at-least-one-entity-type-or-site-to-continue'
 			);

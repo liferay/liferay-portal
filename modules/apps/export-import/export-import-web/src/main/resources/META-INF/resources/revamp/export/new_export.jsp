@@ -57,7 +57,7 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 					"privateLayoutsAvailable", liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
 				).build()
 			).put(
-				"sitesEnabled", exportImportProcessDisplayContext.isSitesEnabled()
+				"siteSelectionEnabled", exportImportProcessDisplayContext.isSiteSelectionEnabled()
 			).build()
 		%>'
 	/>

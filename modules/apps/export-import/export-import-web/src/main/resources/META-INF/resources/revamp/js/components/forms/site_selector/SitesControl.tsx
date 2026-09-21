@@ -4,25 +4,49 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayLabel from '@clayui/label';
+import ClayLayout from '@clayui/layout';
+import {sub} from 'frontend-js-web';
 import React, {useId, useState} from 'react';
 
 import {PreviewSite} from '../../../types/exportImportPreview';
+import {ExportImportProcess} from '../../../types/exportImportProcess';
+import SectionTags from '../content_selector/SectionTags';
 import SiteSelectorModal from './SiteSelectorModal';
+
+const MAX_NAMED_SITES = 5;
+
+function getSelectedSites(
+	pickedSites: PreviewSite[],
+	previewSites: PreviewSite[],
+	selectedExternalReferenceCodes: string[]
+) {
+	const previewSitesByExternalReferenceCode = new Map(
+		[...previewSites, ...pickedSites].map((previewSite) => [
+			previewSite.externalReferenceCode,
+			previewSite,
+		])
+	);
+
+	return selectedExternalReferenceCodes
+		.map((externalReferenceCode) =>
+			previewSitesByExternalReferenceCode.get(externalReferenceCode)
+		)
+		.filter(Boolean) as PreviewSite[];
+}
 
 export default function SitesControl({
 	apiURL,
 	onChange,
 	previewSites,
+	process = 'export',
 	selectedExternalReferenceCodes,
-	showExistsInInstance = false,
 	totalCount,
 }: {
 	apiURL?: string;
 	onChange: (externalReferenceCodes: string[]) => void;
 	previewSites?: PreviewSite[];
+	process?: ExportImportProcess;
 	selectedExternalReferenceCodes: string[];
-	showExistsInInstance?: boolean;
 	totalCount?: number;
 }) {
 	const descriptionId = useId();
@@ -35,67 +59,63 @@ export default function SitesControl({
 
 	const selectedCount = selectedExternalReferenceCodes.length;
 
-	const selectedNames = [...(previewSites ?? []), ...pickedSites]
-		.filter(
-			(previewSite, index, sites) =>
-				selectedExternalReferenceCodes.includes(
-					previewSite.externalReferenceCode
-				) &&
-				sites.findIndex(
-					({externalReferenceCode}) =>
-						externalReferenceCode ===
-						previewSite.externalReferenceCode
-				) === index
-		)
-		.map(
-			(previewSite) =>
-				previewSite.descriptiveName || previewSite.externalReferenceCode
-		);
+	const selectedNames = getSelectedSites(
+		pickedSites,
+		previewSites ?? [],
+		selectedExternalReferenceCodes
+	).map(
+		(previewSite) =>
+			previewSite.descriptiveName || previewSite.externalReferenceCode
+	);
 
 	let description = Liferay.Language.get('no-sites-are-selected');
 
 	if (selectedCount) {
-		description = selectedNames.length
-			? Liferay.Util.sub(
-					Liferay.Language.get('selected-x'),
-					selectedNames.join(', ')
-				)
-			: Liferay.Util.sub(
-					Liferay.Language.get('x-sites-are-selected'),
-					String(selectedCount)
-				);
+		description =
+			selectedNames.length === selectedCount &&
+			selectedCount <= MAX_NAMED_SITES
+				? sub(
+						Liferay.Language.get('selected-x'),
+						selectedNames.join(', ')
+					)
+				: sub(
+						Liferay.Language.get('x-sites-are-selected'),
+						String(selectedCount)
+					);
 	}
 
 	return (
 		<>
-			<div className="align-items-center d-flex">
-				<span className="font-weight-bold text-6">
-					{Liferay.Language.get('sites')}
-				</span>
+			<ClayLayout.ContentRow className="align-items-center">
+				<ClayLayout.ContentCol expand>
+					<span className="align-items-center d-inline-flex">
+						<span className="font-weight-semi-bold text-dark">
+							{Liferay.Language.get('sites')}
+						</span>
 
-				{totalCount !== undefined && (
-					<ClayLabel className="ml-2" displayType="secondary">
-						{Liferay.Util.sub(
-							Liferay.Language.get('x-items'),
-							String(totalCount)
-						)}
-					</ClayLabel>
-				)}
-			</div>
+						<SectionTags additionCount={totalCount} />
+					</span>
 
-			<span className="d-block small text-secondary" id={descriptionId}>
-				{description}
-			</span>
+					<span
+						className="d-block small text-secondary"
+						id={descriptionId}
+					>
+						{description}
+					</span>
+				</ClayLayout.ContentCol>
 
-			<ClayButton
-				aria-describedby={descriptionId}
-				className="font-weight-semi-bold mt-2 pl-0"
-				displayType="link"
-				onClick={() => setShowModal(true)}
-				size="sm"
-			>
-				{Liferay.Language.get('select-sites')}
-			</ClayButton>
+				<ClayLayout.ContentCol expand={false}>
+					<ClayButton
+						aria-describedby={descriptionId}
+						className="font-weight-semi-bold"
+						displayType="link"
+						onClick={() => setShowModal(true)}
+						size="sm"
+					>
+						{Liferay.Language.get('select-sites')}
+					</ClayButton>
+				</ClayLayout.ContentCol>
+			</ClayLayout.ContentRow>
 
 			{showModal && (
 				<SiteSelectorModal
@@ -112,10 +132,10 @@ export default function SitesControl({
 						);
 					}}
 					previewSites={previewSites}
+					process={process}
 					selectedExternalReferenceCodes={
 						selectedExternalReferenceCodes
 					}
-					showExistsInInstance={showExistsInInstance}
 				/>
 			)}
 		</>

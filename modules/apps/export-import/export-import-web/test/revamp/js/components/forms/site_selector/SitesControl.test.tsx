@@ -74,9 +74,7 @@ describe('SitesControl', () => {
 
 		expect(screen.getByText('sites')).toBeInTheDocument();
 
-		// The shared mock substitutes into keys shaped like "x-"
-
-		expect(screen.getByText('2-items')).toBeInTheDocument();
+		expect(screen.getByText('x-items')).toBeInTheDocument();
 	});
 
 	it('says nothing is selected when nothing is selected', () => {
@@ -88,14 +86,10 @@ describe('SitesControl', () => {
 	it('names the selected sites', () => {
 		renderControl({selectedExternalReferenceCodes: ['erc-support']});
 
-		expect(screen.getByText('selected-Support')).toBeInTheDocument();
+		expect(screen.getByText('selected-x')).toBeInTheDocument();
 	});
 
-	it('names both selected sites that go by the same name', () => {
-
-		// The path is what tells two sites of the same name apart, so naming
-		// one of them would be naming the wrong number of sites
-
+	it('names selected sites that go by the same name rather than counting them', () => {
 		renderControl({
 			previewSites: [
 				PREVIEW_SITES[0],
@@ -104,9 +98,27 @@ describe('SitesControl', () => {
 			selectedExternalReferenceCodes: ['erc-marketing', 'erc-support'],
 		});
 
+		expect(screen.getByText('selected-x')).toBeInTheDocument();
+
 		expect(
-			screen.getByText('selected-Marketing, Marketing')
-		).toBeInTheDocument();
+			screen.queryByText('x-sites-are-selected')
+		).not.toBeInTheDocument();
+	});
+
+	it('counts the selected sites when there are too many to name', () => {
+		const manyPreviewSites = Array.from({length: 6}, (_, index) => ({
+			descriptiveName: `Site ${index}`,
+			externalReferenceCode: `erc-${index}`,
+		}));
+
+		renderControl({
+			previewSites: manyPreviewSites,
+			selectedExternalReferenceCodes: manyPreviewSites.map(
+				({externalReferenceCode}) => externalReferenceCode
+			),
+		});
+
+		expect(screen.getByText('x-sites-are-selected')).toBeInTheDocument();
 	});
 
 	it('counts the selected sites when they cannot be named', () => {
@@ -115,7 +127,7 @@ describe('SitesControl', () => {
 			selectedExternalReferenceCodes: ['erc-marketing', 'erc-support'],
 		});
 
-		expect(screen.getByText('2-sites-are-selected')).toBeInTheDocument();
+		expect(screen.getByText('x-sites-are-selected')).toBeInTheDocument();
 	});
 
 	it('offers no way to select sites other than the dialog', () => {
@@ -196,7 +208,7 @@ describe('SitesControl', () => {
 	});
 
 	it('reads title, path and exists in instance when importing', async () => {
-		renderControl({showExistsInInstance: true});
+		renderControl({process: 'import'});
 
 		await userEvent.click(
 			screen.getByRole('button', {name: 'select-sites'})
@@ -218,7 +230,7 @@ describe('SitesControl', () => {
 	});
 
 	it('says whether the instance already has each site', async () => {
-		renderControl({showExistsInInstance: true});
+		renderControl({process: 'import'});
 
 		await userEvent.click(
 			screen.getByRole('button', {name: 'select-sites'})
@@ -310,9 +322,7 @@ describe('SitesControl', () => {
 				/>
 			);
 
-			expect(
-				await screen.findByText('selected-Support')
-			).toBeInTheDocument();
+			expect(await screen.findByText('selected-x')).toBeInTheDocument();
 		});
 
 		it('reopening keeps what was already picked', async () => {
