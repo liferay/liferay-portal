@@ -5,12 +5,16 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+
 export class CommerceThemeMiniumCatalogPage {
 	readonly accountSelectorAccount: (accountName: string) => Locator;
 	readonly accountSelectorBackButton: Locator;
 	readonly accountSelectorButton: Locator;
 	readonly accountSelectorDropdownMenu: Locator;
 	readonly accountSelectorNoAccountsMessage: Locator;
+	readonly accountSelectorNoOrderSelectedMessage: Locator;
+	readonly accountSelectorOrderId: Locator;
 	readonly accountSelectorOrdersList: Locator;
 	readonly accountSelectorOrderWorkflowStatus: Locator;
 	readonly accountSelectorSearchAccountInput: Locator;
@@ -86,18 +90,25 @@ export class CommerceThemeMiniumCatalogPage {
 				.getByText(accountName, {exact: false});
 		this.accountSelectorBackButton = page
 			.locator('.dropdown-menu.show')
-			.getByRole('button', {name: 'Back'});
+			.getByRole('button', {exact: true, name: 'Back to Accounts'});
 		this.accountSelectorButton = page
 			.locator('.account-selector-dropdown')
 			.getByRole('button');
 		this.accountSelectorDropdownMenu = page.locator(
-			'.account-selector-dropdown-menu'
+			'.account-selector-dropdown-menu.show'
 		);
 		this.accountSelectorNoAccountsMessage =
 			this.accountSelectorDropdownMenu.getByText(
 				'No accounts were found.',
 				{exact: true}
 			);
+		this.accountSelectorNoOrderSelectedMessage =
+			this.accountSelectorButton.getByText(
+				'There is no order selected.',
+				{exact: true}
+			);
+		this.accountSelectorOrderId =
+			this.accountSelectorButton.locator('.order-id');
 		this.accountSelectorOrdersList = page.locator('.orders-list');
 		this.accountSelectorOrderWorkflowStatus =
 			this.accountSelectorButton.locator('.workflow-status');
@@ -312,11 +323,20 @@ export class CommerceThemeMiniumCatalogPage {
 	}
 
 	async openAccountSelectorDropdown() {
-		await this.accountSelectorButton.click();
+		await clickAndExpectToBeVisible({
+			target: this.accountSelectorDropdownMenu,
+			trigger: this.accountSelectorButton,
+		});
 
-		if (await this.accountSelectorBackButton.isVisible()) {
-			await this.accountSelectorBackButton.click();
-		}
+		await expect(async () => {
+			if (await this.accountSelectorBackButton.isVisible()) {
+				await this.accountSelectorBackButton.click({timeout: 500});
+			}
+
+			await expect(this.accountSelectorSearchAccountInput).toBeVisible({
+				timeout: 500,
+			});
+		}).toPass({timeout: 5000});
 	}
 
 	async checkQuantitiesInPopOverMessages(

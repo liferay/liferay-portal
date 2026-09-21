@@ -338,6 +338,8 @@ test(
 		});
 
 		await test.step('Check that the account was not created', async () => {
+			await commerceThemeMiniumCatalogPage.openAccountSelectorDropdown();
+
 			await commerceThemeMiniumCatalogPage.accountSelectorSearchAccountInput.fill(
 				accountName
 			);
@@ -356,7 +358,12 @@ test(
 test(
 	'Correct current order is fetched when creating an order with an impersonated user and then impersonating a second user',
 	{tag: ['@LPD-59082', '@LPP-59365']},
-	async ({apiHelpers, commerceThemeMiniumCatalogPage, page}) => {
+	async ({
+		apiHelpers,
+		commerceThemeMiniumCatalogPage,
+		page,
+		usersAndOrganizationsPage,
+	}) => {
 		const {site} = await miniumSetUp(apiHelpers);
 
 		const companyId = await page.evaluate(() => {
@@ -446,26 +453,80 @@ test(
 			[user2.emailAddress]
 		);
 
-		const doAsUserIdURL1 = `/web/${site.name}?&doAsUserId=${user1.id}`;
-		await page.goto(doAsUserIdURL1);
+		const getDoAsUserId = async (screenName: string) => {
+			await usersAndOrganizationsPage.goto();
 
-		await commerceThemeMiniumCatalogPage.firstCardItemAddToCartButton.click();
+			await usersAndOrganizationsPage.usersSearchBar.fill(screenName);
 
-		const accountNameField = page.getByText('There is no order selected.');
+			await usersAndOrganizationsPage.usersSearchBar.press('Enter');
 
-		await page.reload();
+			const impersonateLink = page.locator('a[href*="doAsUserId"]');
 
-		await expect(accountNameField).not.toBeVisible();
+			await expect(impersonateLink).toHaveCount(1);
 
-		const doAsUserIdURL2 = `/web/${site.name}?&doAsUserId=${user2.id}`;
-		await page.goto(doAsUserIdURL2);
+			const impersonateURL = new URL(
+				await impersonateLink.getAttribute('href'),
+				page.url()
+			);
 
-		await expect(accountNameField).toBeVisible();
+			return impersonateURL.searchParams.get('doAsUserId');
+		};
 
-		await commerceThemeMiniumCatalogPage.firstCardItemAddToCartButton.click();
+		const doAsUserId1 = await getDoAsUserId(user1.alternateName);
+		const doAsUserId2 = await getDoAsUserId(user2.alternateName);
 
-		await page.reload();
+		let order1Id;
 
-		await expect(accountNameField).not.toBeVisible();
+		await test.step('The first user starts with its own account selected and no order', async () => {
+			await page.goto(`/web/${site.name}?doAsUserId=${doAsUserId1}`, {
+				waitUntil: 'networkidle',
+			});
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorNoOrderSelectedMessage
+			).toBeVisible();
+
+			await commerceThemeMiniumCatalogPage.firstCardItemAddToCartButton.click();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorOrderId
+			).toBeVisible();
+
+			order1Id =
+				await commerceThemeMiniumCatalogPage.accountSelectorOrderId.innerText();
+
+			await page.reload();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorOrderId
+			).toHaveText(order1Id);
+		});
+
+		await test.step('The second user must not inherit the order of the first one', async () => {
+			await page.goto(`/web/${site.name}?doAsUserId=${doAsUserId2}`, {
+				waitUntil: 'networkidle',
+			});
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorNoOrderSelectedMessage
+			).toBeVisible();
+
+			await commerceThemeMiniumCatalogPage.firstCardItemAddToCartButton.click();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorOrderId
+			).toBeVisible();
+
+			const order2Id =
+				await commerceThemeMiniumCatalogPage.accountSelectorOrderId.innerText();
+
+			expect(order2Id).not.toBe(order1Id);
+
+			await page.reload();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.accountSelectorOrderId
+			).toHaveText(order2Id);
+		});
 	}
 );
