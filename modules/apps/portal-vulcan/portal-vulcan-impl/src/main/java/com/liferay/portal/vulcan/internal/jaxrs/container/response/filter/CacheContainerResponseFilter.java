@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.internal.configuration.admin.service.HeadlessAPICacheManagedServiceFactory;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerResponseContext;
@@ -62,7 +64,8 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 			(statusType.getFamily() == Response.Status.Family.SUCCESSFUL) &&
 			(_company != null) && (_user != null) && _user.isGuestUser() &&
 			CTCollectionThreadLocal.isProductionMode() &&
-			!headers.containsKey("Set-Cookie")) {
+			!headers.containsKey("Set-Cookie") &&
+			(_httpServletRequest.getSession(false) == null)) {
 
 			UriInfo uriInfo = containerRequestContext.getUriInfo();
 
@@ -104,6 +107,9 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 
 	private final HeadlessAPICacheManagedServiceFactory
 		_headlessAPICacheManagedServiceFactory;
+
+	@Context
+	private HttpServletRequest _httpServletRequest;
 
 	@Context
 	private User _user;
