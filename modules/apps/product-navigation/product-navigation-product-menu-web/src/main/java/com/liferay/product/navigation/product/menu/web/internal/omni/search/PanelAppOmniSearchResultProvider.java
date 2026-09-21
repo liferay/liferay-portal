@@ -55,14 +55,11 @@ public class PanelAppOmniSearchResultProvider
 		HttpServletRequest httpServletRequest =
 			_portal.getOriginalServletRequest(
 				_portal.getHttpServletRequest(liferayPortletRequest));
-
-		Locale locale = themeDisplay.getLocale();
-
 		String lowerCaseKeywords = StringUtil.toLowerCase(keywords.trim());
 
 		for (String rootPanelCategoryKey : _ROOT_PANEL_CATEGORY_KEYS) {
 			_addOmniSearchResult(
-				httpServletRequest, locale, lowerCaseKeywords,
+				httpServletRequest, themeDisplay.getLocale(), lowerCaseKeywords,
 				omniSearchResults, rootPanelCategoryKey, themeDisplay);
 		}
 
