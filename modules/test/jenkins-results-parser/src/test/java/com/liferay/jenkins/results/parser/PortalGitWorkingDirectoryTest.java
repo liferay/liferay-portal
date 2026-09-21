@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
@@ -57,6 +58,21 @@ public class PortalGitWorkingDirectoryTest
 		testEquals(
 			"/opt/java/jdk-zulu8-ee74",
 			releaseFilteredEnvironment.get("JAVA_HOME"));
+	}
+
+	@Test
+	public void testGetJSUnitFilePaths() {
+		String standardOut = JenkinsResultsParserUtil.combine(
+			"modules/apps/foo/test/Foo.test.js:describe('Foo', () => {\n",
+			"modules/apps/bar/test/Bar.test.tsx:describe('Bar: x', () => {\n",
+			"modules/apps/baz/test/Baz.test.ts:describe('Baz', () => {");
+
+		testEquals(
+			Arrays.asList(
+				"modules/apps/foo/test/Foo.test.js",
+				"modules/apps/bar/test/Bar.test.tsx",
+				"modules/apps/baz/test/Baz.test.ts"),
+			PortalGitWorkingDirectory.getJSUnitFilePaths(standardOut));
 	}
 
 	private Map<String, String> _getFilteredEnvironment(

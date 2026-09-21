@@ -119,11 +119,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 					exception);
 			}
 
-			Matcher matcher = _jsUnitFilePathPattern.matcher(standardOut);
-
-			while (matcher.find()) {
-				String filePath = matcher.group("filePath");
-
+			for (String filePath : getJSUnitFilePaths(standardOut)) {
 				_jsUnitFiles.add(new File(portalPrivateDir, filePath));
 			}
 		}
@@ -597,6 +593,18 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		private final File _file;
 		private final int _priority;
 
+	}
+
+	protected static List<String> getJSUnitFilePaths(String standardOut) {
+		List<String> filePaths = new ArrayList<>();
+
+		Matcher matcher = _jsUnitFilePathPattern.matcher(standardOut);
+
+		while (matcher.find()) {
+			filePaths.add(matcher.group("filePath"));
+		}
+
+		return filePaths;
 	}
 
 	protected PortalGitWorkingDirectory(
