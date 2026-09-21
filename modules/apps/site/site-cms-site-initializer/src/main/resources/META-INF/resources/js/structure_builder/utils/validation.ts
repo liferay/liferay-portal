@@ -42,6 +42,7 @@ export type ValidationError =
 	| 'lowercase'
 	| 'max-length'
 	| 'default-language-label'
+	| 'no-children'
 	| 'no-fields'
 	| 'prefix-reserved'
 	| 'unexpected'
@@ -195,11 +196,16 @@ export function validateGroup({
 	}
 
 	if (children) {
-		const valid = isRepeatable
-			? getOwnFields(children).length > 0
-			: children.size > 0;
-
-		valid ? errors.delete('global') : errors.set('global', 'no-fields');
+		if (isRepeatable) {
+			getOwnFields(children).length
+				? errors.delete('global')
+				: errors.set('global', 'no-fields');
+		}
+		else {
+			children.size
+				? errors.delete('global')
+				: errors.set('global', 'no-children');
+		}
 	}
 
 	return errors;
@@ -312,9 +318,15 @@ export function getErrorMessage(
 			);
 		}
 
+		if (error === 'no-children') {
+			return Liferay.Language.get(
+				'this-group-needs-at-least-one-field-to-be-published'
+			);
+		}
+
 		if (error === 'no-fields') {
 			return Liferay.Language.get(
-				'this-group-needs-at-least-one-field-of-its-own-to-be-published'
+				'this-group-needs-at-least-one-field-that-is-not-a-referenced-structure-or-select-related-content-to-be-published'
 			);
 		}
 	}
