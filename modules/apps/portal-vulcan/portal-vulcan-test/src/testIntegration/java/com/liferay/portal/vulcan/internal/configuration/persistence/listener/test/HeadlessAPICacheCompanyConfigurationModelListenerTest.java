@@ -79,11 +79,41 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 	}
 
 	@Test
+	public void testOnBeforeSaveWithPathMissingLeadingSlash() throws Exception {
+		try {
+			_configurationModelListener.onBeforeSave(
+				StringPool.BLANK,
+				HashMapDictionaryBuilder.<String, Object>put(
+					"cacheControl", "public"
+				).put(
+					"maxAge", 0
+				).put(
+					"path", "captcha/v1.0/captcha/challenge"
+				).build());
+
+			Assert.fail();
+		}
+		catch (ConfigurationModelListenerException
+					configurationModelListenerException) {
+
+			String message = configurationModelListenerException.getMessage();
+
+			Assert.assertTrue(
+				message,
+				message.contains(
+					_language.get(
+						LocaleUtil.US,
+						"headless-api-cacheable-endpoint-path-must-start-" +
+							"with-a-slash")));
+		}
+	}
+
+	@Test
 	public void testOnBeforeSaveWithoutCacheControl() throws Exception {
 		_configurationModelListener.onBeforeSave(
 			StringPool.BLANK,
 			HashMapDictionaryBuilder.<String, Object>put(
-				"path", RandomTestUtil.randomString()
+				"path", StringPool.SLASH + RandomTestUtil.randomString()
 			).build());
 	}
 
@@ -174,7 +204,7 @@ public class HeadlessAPICacheCompanyConfigurationModelListenerTest {
 		).put(
 			"maxAge", maxAge
 		).put(
-			"path", RandomTestUtil.randomString()
+			"path", StringPool.SLASH + RandomTestUtil.randomString()
 		).build();
 	}
 
