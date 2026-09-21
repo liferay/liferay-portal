@@ -540,4 +540,86 @@ describe('FrontendDataSet', () => {
 			).toBeUndefined();
 		});
 	});
+
+	describe('Search in the browser history', () => {
+		let pushState: jest.SpyInstance;
+		let replaceState: jest.SpyInstance;
+
+		beforeEach(() => {
+			pushState = jest.spyOn(window.history, 'pushState');
+			replaceState = jest.spyOn(window.history, 'replaceState');
+		});
+
+		afterEach(() => {
+			jest.restoreAllMocks();
+		});
+
+		async function renderLoaded(searchAsYouType: boolean) {
+			const requests = mockPendingRequests();
+
+			render(
+				<FrontendDataSet
+					apiURL="/o/products"
+					id={id}
+					searchAsYouType={searchAsYouType}
+					views={VIEWS}
+				/>
+			);
+
+			await waitFor(() => expect(requests).toHaveLength(1));
+
+			act(() => requests[0].resolve(itemsResponse(['unfiltered'])));
+
+			expect(await screen.findByText('unfiltered')).toBeInTheDocument();
+
+			return requests;
+		}
+
+		async function typeAndSettle(
+			requests: ReturnType<typeof mockPendingRequests>,
+			keystrokes: string
+		) {
+			const requestCount = requests.length;
+
+			await userEvent.type(screen.getByRole('searchbox'), keystrokes);
+
+			await waitFor(() =>
+				expect(requests).toHaveLength(requestCount + 1)
+			);
+
+			act(() => requests[requestCount].resolve(itemsResponse(['hit'])));
+
+			await settle();
+		}
+
+		function configInURL() {
+			return new URLSearchParams(window.location.search).get(
+				`${id}_fdsConfig`
+			);
+		}
+
+		it('keeps one entry for the queries committed while typing', async () => {
+			const requests = await renderLoaded(true);
+
+			await typeAndSettle(requests, 'lego');
+			await typeAndSettle(requests, 'land');
+
+			expect(pushState).not.toHaveBeenCalled();
+			expect(replaceState).toHaveBeenCalled();
+
+			// The query is still shareable and survives a reload
+
+			expect(configInURL()).toContain('q:legoland');
+		});
+
+		it('adds an entry for every query submitted with Enter', async () => {
+			const requests = await renderLoaded(false);
+
+			await typeAndSettle(requests, 'lego{Enter}');
+			await typeAndSettle(requests, 'land{Enter}');
+
+			expect(pushState).toHaveBeenCalledTimes(2);
+			expect(configInURL()).toContain('q:legoland');
+		});
+	});
 });
