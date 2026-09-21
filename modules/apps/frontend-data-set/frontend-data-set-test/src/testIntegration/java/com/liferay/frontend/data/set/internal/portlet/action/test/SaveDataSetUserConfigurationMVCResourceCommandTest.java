@@ -135,7 +135,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 	@Test
 	public void testServeResource() throws Exception {
 
-		// empty data set user configuration
+		// Empty data set user configuration
 
 		_assertResponse(_serveResource());
 
@@ -143,7 +143,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HttpServletResponse.SC_OK,
 			_serveResource(_jsonFactory.createJSONObject()));
 
-		// null value in data set user configuration
+		// Null value in data set user configuration
 
 		_assertResponse(_serveResource());
 
@@ -151,7 +151,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HttpServletResponse.SC_OK,
 			_serveResource("{\"initialDataSetSnapshotERC\": null}"));
 
-		// owned data set snapshot
+		// Owned data set snapshot
 
 		_assertResponse(_serveResource());
 
@@ -167,7 +167,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		_objectEntryLocalService.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
 
-		// random entry in data set user configuration
+		// Random entry in data set user configuration
 
 		_assertResponse(
 			_serveResource(
@@ -177,7 +177,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 						StringPool.AT + RandomTestUtil.randomString(),
 						RandomTestUtil.randomString()))));
 
-		// shared data set snapshot
+		// Shared data set snapshot
 
 		objectEntry = _addDataSetSnapshotObjectEntry(
 			TestPropsValues.getUserId());
@@ -204,7 +204,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 	@Test
 	public void testServeResourceWithError() throws Exception {
 
-		// blank data set user configuration
+		// Blank data set user configuration
 
 		_assertResponse(_serveResource());
 
@@ -212,7 +212,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HttpServletResponse.SC_BAD_REQUEST,
 			_serveResource(StringPool.BLANK));
 
-		// blank FDSName
+		// Blank FDSName
 
 		_assertResponse(_serveResource());
 
@@ -221,7 +221,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			_serveResource(
 				StringPool.BLANK, _dataSetSnapshotObjectEntry, _user));
 
-		// guest user
+		// Guest user
 
 		_assertResponse(_serveResource());
 
@@ -232,7 +232,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 				_userLocalService.getGuestUser(
 					TestPropsValues.getCompanyId())));
 
-		// malformed data set user configuration
+		// Malformed data set user configuration
 
 		_assertResponse(_serveResource());
 
@@ -240,14 +240,14 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HttpServletResponse.SC_BAD_REQUEST,
 			_serveResource(RandomTestUtil.randomString()));
 
-		// null data set user configuration
+		// Null data set user configuration
 
 		_assertResponse(_serveResource());
 
 		_assertResponse(
 			HttpServletResponse.SC_BAD_REQUEST, _serveResource((String)null));
 
-		// user can not access the data set snapshot
+		// User cannot access the data set snapshot
 
 		_assertResponse(_serveResource());
 
