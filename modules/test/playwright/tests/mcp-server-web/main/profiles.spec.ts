@@ -1114,14 +1114,28 @@ test.describe('Profiles - Tools tab', () => {
 
 test.describe('Profiles - Status', () => {
 	test(
-		'Rejects activating a new profile without tools',
+		'Rejects activating a profile without tools',
 		{tag: '@LPD-99378'},
-		async ({page, profilesPage}) => {
+		async ({apiHelpers, page, profilesPage}) => {
+			const name = profileName();
+
 			await profilesPage.goto();
 			await profilesPage.newProfileButton.click();
 
-			await profilesPage.nameInput.fill(profileName());
+			await profilesPage.nameInput.fill(name);
 			await profilesPage.descriptionInput.fill('Created from the UI');
+
+			await expect(profilesPage.statusToggle).toBeDisabled();
+
+			await profilesPage.saveButton.click();
+
+			await trackUIProfileForCleanup(apiHelpers, page);
+
+			await waitForAlert(page, `${name} was saved successfully.`);
+
+			await expect(profilesPage.formHeading).toHaveText('Edit Profile');
+			await expect(profilesPage.statusToggle).toBeEnabled();
+
 			await profilesPage.statusToggle.click();
 			await profilesPage.saveButton.click();
 
@@ -1130,8 +1144,6 @@ test.describe('Profiles - Status', () => {
 				'This profile cannot be activated because it has no associated tools.',
 				{type: 'danger'}
 			);
-
-			await expect(profilesPage.formHeading).toHaveText('New Profile');
 		}
 	);
 
