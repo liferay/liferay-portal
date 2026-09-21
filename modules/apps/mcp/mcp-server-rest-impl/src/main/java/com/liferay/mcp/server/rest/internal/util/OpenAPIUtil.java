@@ -283,7 +283,7 @@ public class OpenAPIUtil {
 
 		if (Objects.equals(name, "fields")) {
 			parameterSchemaMap = _getParameterSchemaMap(
-				_DESCRIPTION_FIELDS, responseFieldNames);
+				_DESCRIPTION, responseFieldNames);
 		}
 		else {
 			parameterSchemaMap = (Map<String, Object>)_getSchemaObject(
@@ -697,7 +697,7 @@ public class OpenAPIUtil {
 			properties.put(
 				"fields",
 				_getParameterSchemaMap(
-					_DESCRIPTION_FIELDS, responseFieldNames));
+					_DESCRIPTION, responseFieldNames));
 		}
 
 		return LinkedHashMapBuilder.<String, Object>put(
@@ -711,12 +711,14 @@ public class OpenAPIUtil {
 
 	private static String _getMaskedFilterString(String filterString) {
 		char[] chars = filterString.toCharArray();
+
 		boolean quoted = false;
 
 		for (int i = 0; i < chars.length; i++) {
 			if (chars[i] == CharPool.APOSTROPHE) {
-				quoted = !quoted;
 				chars[i] = CharPool.SPACE;
+
+				quoted = !quoted;
 			}
 			else if (quoted) {
 				chars[i] = CharPool.SPACE;
@@ -1358,17 +1360,17 @@ public class OpenAPIUtil {
 			return;
 		}
 
+		String[] restrictFieldNames = StringUtil.split(restrictFields);
+
 		Map<String, Object> parameterSchemaObjects = _getParameterSchemaObjects(
 			"query", inputJSONObject, operation);
-
-		String[] restrictFieldNames = StringUtil.split(restrictFields);
 
 		for (Map.Entry<String, Object> entry :
 				parameterSchemaObjects.entrySet()) {
 
-			String name = entry.getKey();
-
 			Set<String> fieldPaths = null;
+
+			String name = entry.getKey();
 
 			if (Objects.equals(name, "filter")) {
 				fieldPaths = _getFilterFieldPaths(
@@ -1399,7 +1401,7 @@ public class OpenAPIUtil {
 		}
 	}
 
-	private static final String _DESCRIPTION_FIELDS =
+	private static final String _DESCRIPTION =
 		"Fields to include in the response. Pass only the fields the user " +
 			"actually needs.";
 
