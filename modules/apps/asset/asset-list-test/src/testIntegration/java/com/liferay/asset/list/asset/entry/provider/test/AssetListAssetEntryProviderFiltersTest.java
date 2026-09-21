@@ -489,64 +489,7 @@ public class AssetListAssetEntryProviderFiltersTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
 	@Test
-	public void testGetAssetEntriesInfoPageWithKeywordTextContainsFilters()
-		throws Exception {
-
-		String keyword = RandomTestUtil.randomString();
-
-		ObjectEntry objectEntry1 = _addObjectEntry(
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME_KEYWORD, keyword
-			).build());
-
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getFilterJSONObject(
-					"contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
-			objectEntry1);
-
-		ObjectEntry objectEntry2 = _addObjectEntry(
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME_KEYWORD, RandomTestUtil.randomString()
-			).build());
-
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getFilterJSONObject(
-					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
-			objectEntry2);
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
-	@Test
 	public void testGetAssetEntriesInfoPageWithKeywordsFilter()
-		throws Exception {
-
-		String keyword = "alpha";
-
-		ObjectEntry objectEntry1 = _addObjectEntry(
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME_TEXT, keyword
-			).build());
-
-		ObjectEntry objectEntry2 = _addObjectEntry(
-			HashMapBuilder.<String, Serializable>put(
-				_OBJECT_FIELD_NAME_TEXT, "bravo"
-			).build());
-
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getKeywordsFilterJSONObject("contains", keyword)),
-			objectEntry1);
-		_assertFilteredObjectEntries(
-			_getFiltersJSONArray(
-				_getKeywordsFilterJSONObject("not-contains", keyword)),
-			objectEntry2);
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
-	@Test
-	public void testGetAssetEntriesInfoPageWithKeywordsPhraseFilter()
 		throws Exception {
 
 		String keyword1 = "alpha";
@@ -554,24 +497,58 @@ public class AssetListAssetEntryProviderFiltersTest {
 
 		ObjectEntry objectEntry1 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, keyword1
+			).put(
 				_OBJECT_FIELD_NAME_TEXT, keyword1 + StringPool.SPACE + keyword2
 			).build());
 
 		ObjectEntry objectEntry2 = _addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, keyword2
+			).put(
 				_OBJECT_FIELD_NAME_TEXT, keyword2 + StringPool.SPACE + keyword1
 			).build());
 
-		String keywordPhrase = keyword1 + StringPool.SPACE + keyword2;
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, keyword2
+			).put(
+				_OBJECT_FIELD_NAME_TEXT, "charlie"
+			).build());
+
+		ObjectEntry objectEntry4 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, keyword1
+			).put(
+				_OBJECT_FIELD_NAME_TEXT, keyword1 + " delta"
+			).build());
 
 		_assertFilteredObjectEntries(
 			_getFiltersJSONArray(
-				_getKeywordsFilterJSONObject("contains", keywordPhrase)),
-			objectEntry1);
+				_getFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_KEYWORD, keyword1)),
+			objectEntry1, objectEntry4);
+
 		_assertFilteredObjectEntries(
 			_getFiltersJSONArray(
-				_getKeywordsFilterJSONObject("not-contains", keywordPhrase)),
-			objectEntry2);
+				_getFilterJSONObject(
+					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword1)),
+			objectEntry2, objectEntry3);
+
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getKeywordsFilterJSONObject("contains", "any", keyword1)),
+			objectEntry1, objectEntry2, objectEntry4);
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getKeywordsFilterJSONObject("not-contains", "any", keyword1)),
+			objectEntry3);
+
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getKeywordsFilterJSONObject(
+					"contains", "all", keyword1 + StringPool.SPACE + keyword2)),
+			objectEntry1, objectEntry2);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
@@ -1154,12 +1131,14 @@ public class AssetListAssetEntryProviderFiltersTest {
 	}
 
 	private JSONObject _getKeywordsFilterJSONObject(
-		String operatorName, String value) {
+		String operatorName, String quantifier, String value) {
 
 		return JSONUtil.put(
 			"operatorName", operatorName
 		).put(
 			"propertyName", "keywords"
+		).put(
+			"quantifier", quantifier
 		).put(
 			"value", value
 		);
