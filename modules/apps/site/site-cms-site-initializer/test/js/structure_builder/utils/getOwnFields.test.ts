@@ -12,8 +12,8 @@ import {
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
 import {Uuid} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Uuid';
 import {getDefaultField} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
+import getOwnFields from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getOwnFields';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
-import hasOwnField from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/hasOwnField';
 
 const PARENT_UUID = getUuid();
 
@@ -58,13 +58,13 @@ const RELATED_CONTENT: RelatedContent = {
 	uuid: getUuid(),
 };
 
-describe('hasOwnField', () => {
+describe('getOwnFields', () => {
 	it('Returns false without children', () => {
-		expect(hasOwnField(new Map())).toBe(false);
+		expect(getOwnFields(new Map())).toEqual([]);
 	});
 
 	it('Finds a direct field', () => {
-		expect(hasOwnField(buildChildren([buildField()]))).toBe(true);
+		expect(getOwnFields(buildChildren([buildField()])).length).toBe(1);
 	});
 
 	it('Finds a field nested in groups that are not repeatable', () => {
@@ -72,13 +72,13 @@ describe('hasOwnField', () => {
 			buildGroup([buildGroup([buildField()])]),
 		]);
 
-		expect(hasOwnField(children)).toBe(true);
+		expect(getOwnFields(children).length).toBe(1);
 	});
 
 	it('Ignores the fields of a nested repeatable group', () => {
 		const children = buildChildren([buildRepeatableGroup([buildField()])]);
 
-		expect(hasOwnField(children)).toBe(false);
+		expect(getOwnFields(children)).toEqual([]);
 	});
 
 	it('Ignores the fields behind a repeatable group at any depth', () => {
@@ -86,10 +86,10 @@ describe('hasOwnField', () => {
 			buildGroup([buildRepeatableGroup([buildField()])]),
 		]);
 
-		expect(hasOwnField(children)).toBe(false);
+		expect(getOwnFields(children)).toEqual([]);
 	});
 
 	it('Ignores related content', () => {
-		expect(hasOwnField(buildChildren([RELATED_CONTENT]))).toBe(false);
+		expect(getOwnFields(buildChildren([RELATED_CONTENT]))).toEqual([]);
 	});
 });

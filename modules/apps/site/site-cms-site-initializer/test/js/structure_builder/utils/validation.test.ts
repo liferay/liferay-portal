@@ -94,7 +94,7 @@ describe('validateGroup', () => {
 	it('Rejects an empty group', () => {
 		const errors = validateGroup({data: buildGroup([])});
 
-		expect(errors.get('global')).toBe('no-fields');
+		expect(errors.get('global')).toBe('no-children');
 	});
 
 	it('Accepts a group that only holds related content', () => {

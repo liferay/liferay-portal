@@ -67,93 +67,117 @@ function buildNestedGroups(
 }
 
 describe('exceedsMaxNesting', () => {
-	it('Allows a new group at the root level', () => {
-		const structure = buildStructure([]);
+	afterEach(() => {
+		delete Liferay.FeatureFlags['LPD-96666'];
+	});
 
+	it('Allows a new group at the root level', () => {
 		expect(
 			exceedsMaxNesting({
 				items: [getDefaultField({parent: ROOT_UUID, type: 'text'})],
 				newGroup: true,
-				structure,
+				structure: buildStructure([]),
 				targetUuid: ROOT_UUID,
 			})
 		).toBe(false);
 	});
 
-	it('Allows a new group inside three nested groups', () => {
-		const structure = buildStructure([buildNestedGroups(3)]);
-
+	it('Allows four levels without the feature flag', () => {
 		expect(
 			exceedsMaxNesting({
 				items: [],
 				newGroup: true,
-				structure,
+				structure: buildStructure([buildNestedGroups(3)]),
 				targetUuid: LEVEL_UUIDS[LEVEL_UUIDS.length - 1],
 			})
 		).toBe(false);
 	});
 
-	it('Rejects a new group inside four nested groups', () => {
-		const structure = buildStructure([buildNestedGroups(4)]);
-
+	it('Rejects five levels without the feature flag', () => {
 		expect(
 			exceedsMaxNesting({
 				items: [],
 				newGroup: true,
-				structure,
+				structure: buildStructure([buildNestedGroups(4)]),
 				targetUuid: LEVEL_UUIDS[LEVEL_UUIDS.length - 1],
 			})
 		).toBe(true);
 	});
 
-	it('Counts the groups of the moved items', () => {
-		const structure = buildStructure([buildNestedGroups(3)]);
-
-		const movedUuid = getUuid();
-
-		const moved = buildGroup({
-			children: [
-				buildGroup({
-					children: [],
-					parent: movedUuid,
-					uuid: getUuid(),
-				}),
-			],
-			parent: ROOT_UUID,
-			uuid: movedUuid,
+	describe('with the feature flag', () => {
+		beforeEach(() => {
+			Liferay.FeatureFlags['LPD-96666'] = true;
 		});
 
-		expect(
-			exceedsMaxNesting({
-				items: [moved],
-				structure,
-				targetUuid: LEVEL_UUIDS[LEVEL_UUIDS.length - 2],
-			})
-		).toBe(false);
+		it('Allows a new group inside one group', () => {
+			expect(
+				exceedsMaxNesting({
+					items: [],
+					newGroup: true,
+					structure: buildStructure([buildNestedGroups(1)]),
+					targetUuid: LEVEL_UUIDS[LEVEL_UUIDS.length - 1],
+				})
+			).toBe(false);
+		});
 
-		expect(
-			exceedsMaxNesting({
-				items: [moved],
-				structure,
-				targetUuid: LEVEL_UUIDS[LEVEL_UUIDS.length - 1],
-			})
-		).toBe(true);
-	});
+		it('Rejects a new group inside two nested groups', () => {
+			expect(
+				exceedsMaxNesting({
+					items: [],
+					newGroup: true,
+					structure: buildStructure([buildNestedGroups(2)]),
+					targetUuid: LEVEL_UUIDS[LEVEL_UUIDS.length - 1],
+				})
+			).toBe(true);
+		});
 
-	it('Ignores the depth of items that are not groups', () => {
-		const structure = buildStructure([buildNestedGroups(4)]);
+		it('Counts the groups of the moved items', () => {
+			const structure = buildStructure([buildNestedGroups(1)]);
 
-		expect(
-			exceedsMaxNesting({
-				items: [
-					getDefaultField({
-						parent: LEVEL_UUIDS[LEVEL_UUIDS.length - 1],
-						type: 'text',
-					}),
-				],
-				structure,
-				targetUuid: LEVEL_UUIDS[LEVEL_UUIDS.length - 1],
-			})
-		).toBe(false);
+			const targetUuid = LEVEL_UUIDS[LEVEL_UUIDS.length - 1];
+
+			const movedUuid = getUuid();
+
+			expect(
+				exceedsMaxNesting({
+					items: [buildGroup({parent: ROOT_UUID, uuid: movedUuid})],
+					structure,
+					targetUuid,
+				})
+			).toBe(false);
+
+			expect(
+				exceedsMaxNesting({
+					items: [
+						buildGroup({
+							children: [
+								buildGroup({
+									parent: movedUuid,
+									uuid: getUuid(),
+								}),
+							],
+							parent: ROOT_UUID,
+							uuid: movedUuid,
+						}),
+					],
+					structure,
+					targetUuid,
+				})
+			).toBe(true);
+		});
+
+		it('Ignores the depth of items that are not groups', () => {
+			const targetUuid = LEVEL_UUIDS[LEVEL_UUIDS.length - 1];
+
+			expect(
+				exceedsMaxNesting({
+					items: [
+						getDefaultField({parent: targetUuid, type: 'text'}),
+					],
+					structure: buildStructure([buildNestedGroups(2)]),
+					targetUuid,
+				})
+			).toBe(false);
+		});
 	});
 });
