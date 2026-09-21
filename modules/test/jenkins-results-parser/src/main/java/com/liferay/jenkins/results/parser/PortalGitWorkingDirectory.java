@@ -723,7 +723,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
 		"@esbuild-(linux-.*?)-.*");
 	private static final Pattern _jsUnitFilePathPattern = Pattern.compile(
-		"(?<filePath>[^:]+):.+");
+		"(?<filePath>[^\\n:]+):.+");
 
 	private Properties _appServerProperties;
 	private List<File> _jsUnitFiles;
