@@ -122,7 +122,7 @@ public class CacheContainerResponseFilterTest {
 		Assert.assertEquals(
 			"public, max-age=3600", _getCacheControl(httpURLConnection));
 		Assert.assertEquals(
-			"Accept, Accept-Encoding, Accept-Language, " +
+			"Accept, Accept-Encoding, Accept-Language, Origin, " +
 				"X-Accept-All-Languages, X-Liferay-Accept-All-Languages, " +
 					"X-Liferay-Data-Masks",
 			httpURLConnection.getHeaderField("Vary"));
