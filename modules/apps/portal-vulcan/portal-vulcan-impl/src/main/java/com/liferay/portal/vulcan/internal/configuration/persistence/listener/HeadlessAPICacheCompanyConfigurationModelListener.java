@@ -11,6 +11,8 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.petra.string.StringPool;
+
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.internal.configuration.HeadlessAPICacheCompanyConfiguration;
@@ -65,6 +67,16 @@ public class HeadlessAPICacheCompanyConfigurationModelListener
 				ResourceBundleUtil.getString(
 					_getResourceBundle(),
 					"headless-api-cacheable-endpoint-path-required"),
+				HeadlessAPICacheCompanyConfiguration.class, getClass(),
+				dictionary);
+		}
+
+		if (!path.startsWith(StringPool.SLASH)) {
+			throw new ConfigurationModelListenerException(
+				ResourceBundleUtil.getString(
+					_getResourceBundle(),
+					"headless-api-cacheable-endpoint-path-must-start-with-a-" +
+						"slash"),
 				HeadlessAPICacheCompanyConfiguration.class, getClass(),
 				dictionary);
 		}
