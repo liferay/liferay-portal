@@ -137,10 +137,21 @@ public class MCPServerServlet extends HttpServlet {
 		}
 
 		if (!MCPServerProfileUtil.isActive(mcpServerProfileObjectEntry)) {
-			_sendInactiveMCPServerProfileError(
+			httpServletResponse.setCharacterEncoding(StringPool.UTF8);
+			httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
+			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+			ServletResponseUtil.write(
 				httpServletResponse,
-				MapUtil.getString(
-					mcpServerProfileObjectEntry.getValues(), "name"));
+				JSONUtil.put(
+					"error",
+					StringBundler.concat(
+						"MCP server profile \"",
+						MapUtil.getString(
+							mcpServerProfileObjectEntry.getValues(), "name"),
+						"\" is inactive. Activate it in the MCP Server ",
+						"control panel to make its tools available.")
+				).toString());
 
 			return;
 		}
@@ -554,26 +565,6 @@ public class MCPServerServlet extends HttpServlet {
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
-	}
-
-	private void _sendInactiveMCPServerProfileError(
-			HttpServletResponse httpServletResponse,
-			String mcpServerProfileName)
-		throws IOException {
-
-		httpServletResponse.setCharacterEncoding(StringPool.UTF8);
-		httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
-		httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-
-		ServletResponseUtil.write(
-			httpServletResponse,
-			JSONUtil.put(
-				"error",
-				StringBundler.concat(
-					"MCP server profile \"", mcpServerProfileName,
-					"\" is inactive. Activate it in the MCP Server control ",
-					"panel to make its tools available.")
-			).toString());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
