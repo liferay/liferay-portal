@@ -66,21 +66,31 @@ public class ViewFilesSectionSystemFDSEntryTest {
 	}
 
 	@Test
-	public void testGetImportMetadata() {
+	public void testGetDefaultItemsPerPage() {
 		Assert.assertEquals(
 			20, _filesSectionSystemFDSEntry.getDefaultItemsPerPage());
-		Assert.assertTrue(
-			_filesSectionSystemFDSEntry.getHideManagementBarInEmptyState());
-		Assert.assertEquals(
-			"documents-and-media", _filesSectionSystemFDSEntry.getSymbol());
 	}
 
 	@Test
-	public void testGetRESTConfiguration() {
+	public void testGetHideManagementBarInEmptyState() {
+		Assert.assertTrue(
+			_filesSectionSystemFDSEntry.getHideManagementBarInEmptyState());
+	}
+
+	@Test
+	public void testGetRESTApplication() {
 		Assert.assertEquals(
 			"/search/v1.0", _filesSectionSystemFDSEntry.getRESTApplication());
+	}
+
+	@Test
+	public void testGetRESTEndpoint() {
 		Assert.assertEquals(
 			"/v1.0/search", _filesSectionSystemFDSEntry.getRESTEndpoint());
+	}
+
+	@Test
+	public void testGetRESTSchema() {
 		Assert.assertEquals(
 			"SearchResult", _filesSectionSystemFDSEntry.getRESTSchema());
 	}
@@ -88,6 +98,12 @@ public class ViewFilesSectionSystemFDSEntryTest {
 	@Test
 	public void testGetSnapshotsEnabled() {
 		Assert.assertTrue(_filesSectionSystemFDSEntry.getSnapshotsEnabled());
+	}
+
+	@Test
+	public void testGetSymbol() {
+		Assert.assertEquals(
+			"documents-and-media", _filesSectionSystemFDSEntry.getSymbol());
 	}
 
 	private Company _company;
