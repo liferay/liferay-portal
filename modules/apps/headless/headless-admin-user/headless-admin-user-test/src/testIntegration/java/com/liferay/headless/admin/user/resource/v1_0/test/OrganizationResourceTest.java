@@ -1213,6 +1213,9 @@ public class OrganizationResourceTest extends BaseOrganizationResourceTestCase {
 			OrganizationResource.builder(
 			).authentication(
 				"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
 			).locale(
 				LocaleUtil.getDefault()
 			).parameters(
