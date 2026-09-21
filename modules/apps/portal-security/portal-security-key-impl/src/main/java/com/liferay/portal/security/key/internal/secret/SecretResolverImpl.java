@@ -12,6 +12,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
 import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -22,12 +23,17 @@ import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
 import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.security.key.secret.exception.SecretException;
+import com.liferay.portal.security.key.spi.profile.KeyManagerProfile;
+import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
+
+import java.util.Objects;
 
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Pedro Victor Silvestre
@@ -61,6 +67,19 @@ public class SecretResolverImpl implements SecretResolver {
 				throw new SecretException(
 					"Crypto key references are not supported by the secret " +
 						"resolver");
+			}
+
+			if (companyId != CompanyConstants.SYSTEM) {
+				KeyManagerProfile keyManagerProfile =
+					_keyManagerProfileRegistry.getActiveKeyManagerProfile();
+
+				if ((keyManagerProfile != null) &&
+					Objects.equals(
+						keyReference.getProviderId(),
+						keyManagerProfile.getSystemSecretProviderId())) {
+
+					companyId = CompanyConstants.SYSTEM;
+				}
 			}
 
 			String key = getKey(companyId, value);
@@ -172,6 +191,9 @@ public class SecretResolverImpl implements SecretResolver {
 	private static final Snapshot<SecretManager> _secretManagerSnapshot =
 		new Snapshot<>(
 			SecretResolverImpl.class, SecretManager.class, null, true);
+
+	@Reference
+	private KeyManagerProfileRegistry _keyManagerProfileRegistry;
 
 	private PortalCache<String, String> _portalCache;
 

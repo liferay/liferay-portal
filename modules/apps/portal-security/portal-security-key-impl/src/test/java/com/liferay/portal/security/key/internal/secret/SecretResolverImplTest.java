@@ -8,6 +8,7 @@ package com.liferay.portal.security.key.internal.secret;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -17,6 +18,8 @@ import com.liferay.portal.security.key.KeyReferenceUtil;
 import com.liferay.portal.security.key.secret.Secret;
 import com.liferay.portal.security.key.secret.SecretManager;
 import com.liferay.portal.security.key.secret.exception.SecretException;
+import com.liferay.portal.security.key.spi.profile.KeyManagerProfile;
+import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -45,6 +48,9 @@ public class SecretResolverImplTest {
 	public void setUp() {
 		MockitoAnnotations.openMocks(this);
 
+		ReflectionTestUtil.setFieldValue(
+			_secretResolverImpl, "_keyManagerProfileRegistry",
+			_keyManagerProfileRegistry);
 		ReflectionTestUtil.setFieldValue(
 			_secretResolverImpl, "_portalCache", _portalCache);
 		ReflectionTestUtil.setFieldValue(
@@ -94,6 +100,46 @@ public class SecretResolverImplTest {
 				RandomTestUtil.randomLong(), "${secretRef:provider}"));
 
 		Mockito.verifyNoInteractions(_secretManager);
+	}
+
+	@Test
+	public void testResolveWhenProviderIsSystem() throws Exception {
+		String systemSecretProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_keyManagerProfile.getSystemSecretProviderId()
+		).thenReturn(
+			systemSecretProviderId
+		);
+
+		Mockito.when(
+			_keyManagerProfileRegistry.getActiveKeyManagerProfile()
+		).thenReturn(
+			_keyManagerProfile
+		);
+
+		KeyReference keyReference = new KeyReference(
+			RandomTestUtil.randomString(), systemSecretProviderId,
+			KeyReference.Type.SECRET);
+		String value = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_secretManager.getSecret(CompanyConstants.SYSTEM, keyReference)
+		).thenReturn(
+			new Secret(keyReference, value)
+		);
+
+		Assert.assertEquals(
+			value,
+			_secretResolverImpl.resolve(
+				RandomTestUtil.randomLong(),
+				KeyReferenceUtil.toKeyReferenceString(keyReference)));
+
+		Mockito.verify(
+			_secretManager
+		).getSecret(
+			CompanyConstants.SYSTEM, keyReference
+		);
 	}
 
 	@Test
@@ -354,6 +400,12 @@ public class SecretResolverImplTest {
 				identifier, RandomTestUtil.randomString(),
 				KeyReference.Type.SECRET));
 	}
+
+	@Mock
+	private KeyManagerProfile _keyManagerProfile;
+
+	@Mock
+	private KeyManagerProfileRegistry _keyManagerProfileRegistry;
 
 	@Mock
 	private PortalCache<String, String> _portalCache;
