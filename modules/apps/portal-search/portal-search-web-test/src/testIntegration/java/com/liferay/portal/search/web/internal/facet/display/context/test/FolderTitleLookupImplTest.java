@@ -66,18 +66,14 @@ public class FolderTitleLookupImplTest {
 		bundle = BundleUtil.getBundle(
 			bundle.getBundleContext(), "com.liferay.portal.search.web");
 
-		Class<?> folderSearcherClass = bundle.loadClass(
-			_PACKAGE_NAME + ".FolderSearcher");
+		Class<?> clazz = bundle.loadClass(
+			"com.liferay.portal.search.web.internal.facet.display.context." +
+				"FolderSearcher");
 
-		_folderSearcherConstructor = folderSearcherClass.getConstructor(
-			Long.TYPE);
+		_folderSearcherConstructor = clazz.getConstructor(Long.TYPE);
 
-		Class<?> folderTitleLookupImplClass = bundle.loadClass(
-			_PACKAGE_NAME + ".FolderTitleLookupImpl");
-
-		_folderTitleLookupImplConstructor =
-			folderTitleLookupImplClass.getConstructor(
-				LongFunction.class, HttpServletRequest.class);
+		_folderTitleLookupImplConstructor = clazz.getConstructor(
+			LongFunction.class, HttpServletRequest.class);
 	}
 
 	@Test
@@ -143,9 +139,6 @@ public class FolderTitleLookupImplTest {
 			throw new RuntimeException(reflectiveOperationException);
 		}
 	}
-
-	private static final String _PACKAGE_NAME =
-		"com.liferay.portal.search.web.internal.facet.display.context";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
