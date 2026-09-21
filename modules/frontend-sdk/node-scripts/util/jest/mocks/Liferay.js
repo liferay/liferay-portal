@@ -302,6 +302,8 @@ const ThemeDisplay = {
 
 	getUserId: jest.fn(() => '20164'),
 
+	isImpersonated: jest.fn(() => false),
+
 	isSignedIn: jest.fn(() => true),
 };
 
