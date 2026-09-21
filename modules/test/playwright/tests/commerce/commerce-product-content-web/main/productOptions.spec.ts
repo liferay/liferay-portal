@@ -13,6 +13,7 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
+import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
@@ -29,6 +30,7 @@ import {
 	classicCommerceSetUp,
 	configureBuyerUserForSite,
 	createAccountWithBuyerUser,
+	deployProductFragmentsOnDefaultDPT,
 } from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -40,7 +42,8 @@ export const test = mergeTests(
 	}),
 	isolatedSiteTest,
 	loginTest(),
-	pageEditorPagesTest
+	pageEditorPagesTest,
+	pageViewModePagesTest
 );
 
 test(
@@ -1729,5 +1732,328 @@ test(
 				apiHelpers.data.push({id: orders.items[0].id, type: 'order'});
 			}
 		}
+	}
+);
+
+test(
+	'The Option Selector fragment renders every option value with its delta price',
+	{tag: ['@COMMERCE-9383', '@LPD-106767']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		productDetailsPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const optionName = 'Option Select from List';
+		const productName = 'Product' + getRandomInt();
+
+		let buyerUser;
+		let catalog;
+
+		await test.step('Create a channel, a catalog, a storefront page and a buyer user via API', async () => {
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
+
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+
+			await waitForAlert(page);
+
+			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			await widgetPagePage.addPortlet('Product Details');
+
+			catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog(
+				{name: getRandomString()}
+			);
+
+			({buyerUser} = await createAccountWithBuyerUser(
+				apiHelpers,
+				site.id
+			));
+		});
+
+		await test.step('Create a product whose option values are each linked to a SKU with a delta price', async () => {
+			const optionValueSkuIds = [];
+
+			for (const price of [10, 20, 30]) {
+				const optionValueProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						name: {en_US: 'Product' + getRandomInt()},
+					});
+
+				optionValueSkuIds.push(optionValueProduct.skus[0].id);
+
+				await apiHelpers.headlessCommerceAdminCatalog.patchSku(
+					String(optionValueProduct.skus[0].id),
+					{price, sku: optionValueProduct.skus[0].sku}
+				);
+			}
+
+			const optionKey = getRandomString();
+
+			const option =
+				await apiHelpers.headlessCommerceAdminCatalog.postOption(
+					'select',
+					optionKey,
+					optionName
+				);
+
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: productName},
+				productOptions: [
+					{
+						fieldType: 'select',
+						key: optionKey,
+						name: {en_US: optionName},
+						optionId: option.id,
+						priceType: 'static',
+						priority: 1,
+						productOptionValues: [10, 20, 30].map(
+							(deltaPrice, index) => ({
+								deltaPrice,
+								key: `value${index + 1}`,
+								name: {en_US: `Value ${index + 1}`},
+								priority: index + 1,
+								quantity: 1,
+								skuId: optionValueSkuIds[index],
+							})
+						),
+						required: true,
+						skuContributor: true,
+					},
+				],
+			});
+
+			await commerceAdminProductPage.gotoProduct(productName);
+			await commerceAdminProductPage.generateSkus();
+		});
+
+		await test.step('Deploy the Option Selector fragment on the default product display page template', async () => {
+			await deployProductFragmentsOnDefaultDPT(apiHelpers, {
+				displayPageTemplatesPage,
+				fragmentNames: ['Option Selector'],
+				pageEditorPage,
+				site,
+			});
+		});
+
+		await test.step('Each value carries its delta price over the first one', async () => {
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+					productName
+				);
+
+			await performLogout(page);
+			await performLoginViaApi({
+				page,
+				screenName: buyerUser.alternateName,
+			});
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}/p/${product.urls['en_US']}`,
+				{waitUntil: 'networkidle'}
+			);
+
+			await expect(
+				productDetailsPage.optionSelectorValues(optionName)
+			).toHaveText([
+				'Choose an Option',
+				'Value 1',
+				'Value 2 + $ 10.00',
+				'Value 3 + $ 20.00',
+			]);
+		});
+	}
+);
+
+test(
+	'The Availability fragment follows the SKU combination resolved by the Option Selector fragment',
+	{tag: ['@COMMERCE-9383', '@LPD-106767']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		productDetailsPage,
+		site,
+		widgetPagePage,
+	}) => {
+		const productName = 'Product' + getRandomInt();
+		const selectOptionName = 'Option Select from List';
+		const radioOptionName = 'Option Single Selection';
+
+		let buyerUser;
+		let catalog;
+		let channel;
+
+		await test.step('Create a channel, a catalog, a storefront page and a buyer user via API', async () => {
+			channel = await apiHelpers.headlessCommerceAdminChannel.postChannel(
+				{siteGroupId: site.id}
+			);
+
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+
+			await waitForAlert(page);
+
+			const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			await widgetPagePage.addPortlet('Product Details');
+
+			catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog(
+				{name: getRandomString()}
+			);
+
+			({buyerUser} = await createAccountWithBuyerUser(
+				apiHelpers,
+				site.id
+			));
+		});
+
+		await test.step('Create a product carrying two SKU contributing options and display its availability', async () => {
+			const productOptions = [];
+
+			for (const [index, [fieldType, optionName]] of [
+				['select', selectOptionName],
+				['radio', radioOptionName],
+			].entries()) {
+				const optionKey = getRandomString();
+
+				const option =
+					await apiHelpers.headlessCommerceAdminCatalog.postOption(
+						fieldType,
+						optionKey,
+						optionName
+					);
+
+				productOptions.push({
+					fieldType,
+					key: optionKey,
+					name: {en_US: optionName},
+					optionId: option.id,
+					priority: index + 1,
+					productOptionValues: [1, 2].map((value) => ({
+						key: `value${value}`,
+						name: {en_US: `Value ${value}`},
+						priority: value,
+					})),
+					required: true,
+					skuContributor: true,
+				});
+			}
+
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: productName},
+				productConfiguration: {displayAvailability: true},
+				productOptions,
+			});
+
+			await commerceAdminProductPage.gotoProduct(productName);
+			await commerceAdminProductPage.generateSkus();
+		});
+
+		await test.step('Stock only the combination of the first value of each option', async () => {
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+					productName
+				);
+
+			const warehouse =
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+					{
+						active: true,
+						latitude: getRandomInt(),
+						longitude: getRandomInt(),
+						warehouseItems: [
+							{
+								quantity: 100,
+								sku: product.skus.find(
+									(sku: {
+										skuOptions: Array<{value: string}>;
+									}) =>
+										!!sku.skuOptions.length &&
+										sku.skuOptions.every(
+											({value}) => value === 'value1'
+										)
+								).sku,
+							},
+						],
+					}
+				);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+				warehouse.id,
+				channel.id
+			);
+		});
+
+		await test.step('Deploy the Option Selector and Availability fragments on the default product display page template', async () => {
+			await deployProductFragmentsOnDefaultDPT(apiHelpers, {
+				displayPageTemplatesPage,
+				fragmentNames: ['Option Selector', 'Availability'],
+				pageEditorPage,
+				site,
+			});
+		});
+
+		await test.step('An unstocked combination reads Unavailable and a stocked one reads Available', async () => {
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+					productName
+				);
+
+			await performLogout(page);
+			await performLoginViaApi({
+				page,
+				screenName: buyerUser.alternateName,
+			});
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}/p/${product.urls['en_US']}`,
+				{waitUntil: 'networkidle'}
+			);
+
+			for (const [value, availability] of [
+				['Value 2', 'Unavailable'],
+				['Value 1', 'Available'],
+			]) {
+				await productDetailsPage
+					.optionSelector(selectOptionName)
+					.selectOption({label: value});
+
+				await productDetailsPage.optionRadio(value).check();
+
+				await expect(productDetailsPage.availabilityLabel).toHaveText(
+					availability
+				);
+			}
+		});
 	}
 );

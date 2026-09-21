@@ -45,7 +45,9 @@ export class ProductDetailsPage {
 	readonly mappedProductsTable: Locator;
 	readonly mpnField: (mpn: string) => Promise<Locator>;
 	readonly nameField: (name: string) => Promise<Locator>;
+	readonly optionRadio: (optionValue: string) => Locator;
 	readonly optionSelector: (optionName: string) => Locator;
+	readonly optionSelectorValues: (optionName: string) => Locator;
 	readonly page: Page;
 	readonly pageTitle: Locator;
 	readonly paginationText: (text: string) => Locator;
@@ -81,6 +83,9 @@ export class ProductDetailsPage {
 	readonly replacementsSearchButton: Locator;
 	readonly replacementsTab: Locator;
 	readonly replacementsTableCell: (cellValue: string) => Locator;
+	readonly availabilityLabel: Locator;
+	readonly dynamicFieldLabels: Locator;
+	readonly dynamicFieldValues: Locator;
 	readonly requestAQuoteButton: Locator;
 	readonly requestAQuoteModal: Locator;
 	readonly requestAQuoteModalSubmit: Locator;
@@ -188,14 +193,25 @@ export class ProductDetailsPage {
 		this.nameField = async (name: string) => {
 			return page.getByRole('heading', {exact: true, name});
 		};
+		this.optionRadio = (optionValue: string) =>
+			page.getByRole('radio', {exact: true, name: optionValue});
 		this.optionSelector = (optionName: string) => {
 			return page.getByLabel(optionName);
 		};
+		this.optionSelectorValues = (optionName: string) =>
+			this.optionSelector(optionName).locator('option');
 		this.page = page;
 		this.paginationText = (text: string) => page.getByText(text);
 		this.pinAddToCartButton = page
 			.locator("[class='diagram-tooltip']")
 			.getByRole('button');
+		this.availabilityLabel = page.locator('[class*="availability-label"]');
+		this.dynamicFieldLabels = page.locator(
+			'[class*="dynamic-field"] .node-label'
+		);
+		this.dynamicFieldValues = page.locator(
+			'[class*="dynamic-field"] .node-value'
+		);
 		this.priceContainer = page.locator('div.price-container');
 		this.priceFragment = page.locator('span.price');
 		this.priceFragmentDiscount = this.priceFragment.locator(
