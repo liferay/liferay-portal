@@ -296,46 +296,52 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			SourceProcessorTestParameters.create(
 				"FIPSTLSVerification1.testjava"
 			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"ALLOW_ALL_HOSTNAME_VERIFIER\", see LPD-93649",
+				"Missing check \"PropsValues.FIPS_ENABLED\" in if-statement " +
+					"condition in the same method as \"ALLOW_ALL_HOSTNAME_" +
+						"VERIFIER\", see LPD-93649",
 				29
 			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"AllowAllHostnameVerifier\", see LPD-93649",
+				"Missing check \"PropsValues.FIPS_ENABLED\" in if-statement " +
+					"condition in the same method as \"AllowAllHostname" +
+						"Verifier\", see LPD-93649",
 				36
 			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"new HostnameVerifier()\", see LPD-93649",
+				"Missing check \"PropsValues.FIPS_ENABLED\" in if-statement " +
+					"condition in the same method as \"new HostnameVerifier()" +
+						"\", see LPD-93649",
 				41
 			).addExpectedMessage(
 				StringBundler.concat(
-					"Check \"PropsValues.FIPS_ENABLED\" in the same method as ",
-					"\"setEndpointIdentificationAlgorithm(\"\")\", see ",
-					"LPD-93649"),
+					"Missing check \"PropsValues.FIPS_ENABLED\" in if-",
+					"statement condition in the same method as \"setEndpoint",
+					"IdentificationAlgorithm(\"\")\", see LPD-93649"),
 				54
 			).addExpectedMessage(
 				StringBundler.concat(
-					"Check \"PropsValues.FIPS_ENABLED\" in the same method as ",
-					"\"setEndpointIdentificationAlgorithm(null)\", see ",
-					"LPD-93649"),
+					"Missing check \"PropsValues.FIPS_ENABLED\" in if-",
+					"statement condition in the same method as \"setEndpoint",
+					"IdentificationAlgorithm(null)\", see LPD-93649"),
 				58
 			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"setSSLHostnameVerifier\", see LPD-93649",
+				"Missing check \"PropsValues.FIPS_ENABLED\" in if-statement " +
+					"condition in the same method as \"setSSLHostnameVerifier" +
+						"\", see LPD-93649",
 				72
 			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
+				"Missing check \"PropsValues.FIPS_ENABLED\" in if-statement " +
+					"condition in the same method as \"NoopHostnameVerifier\"" +
+						", see LPD-93649",
 				76
 			).addExpectedMessage(
-				"Check \"PropsValues.FIPS_ENABLED\" in the same method as " +
-					"\"NoopHostnameVerifier\", see LPD-93649",
+				"Missing check \"PropsValues.FIPS_ENABLED\" in if-statement " +
+					"condition in the same method as \"NoopHostnameVerifier\"" +
+						", see LPD-93649",
 				83
 			));
 		test(
 			"FIPSTLSVerification2.testjava",
-			"Check \"PropsValues.FIPS_ENABLED\" in the same class as a trust " +
-				"manager, see LPD-93649",
+			"Missing check \"PropsValues.FIPS_ENABLED\" in if-statement " +
+				"condition in the same class as a trust manager, see LPD-93649",
 			17);
 	}
 
