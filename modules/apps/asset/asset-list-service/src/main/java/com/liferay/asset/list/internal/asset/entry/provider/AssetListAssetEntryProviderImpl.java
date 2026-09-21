@@ -1062,13 +1062,19 @@ public class AssetListAssetEntryProviderImpl
 		assetEntryQuery.setAllKeywords(
 			ArrayUtil.append(
 				assetEntryQuery.getAllKeywords(),
-				AssetListFiltersUtil.getKeywords(true, filtersJSONArray)));
+				AssetListFiltersUtil.getKeywords(
+					true, true, filtersJSONArray)));
 		assetEntryQuery.setAnyCategoryIds(
 			ArrayUtil.append(
 				assetEntryQuery.getAnyCategoryIds(),
 				_filterAssetCategoryIds(
 					AssetListFiltersUtil.getAssetCategoryIds(
 						false, true, filtersJSONArray))));
+		assetEntryQuery.setAnyKeywords(
+			ArrayUtil.append(
+				assetEntryQuery.getAnyKeywords(),
+				AssetListFiltersUtil.getKeywords(
+					false, true, filtersJSONArray)));
 		assetEntryQuery.setAnyTagIds(
 			ArrayUtil.append(
 				assetEntryQuery.getAnyTagIds(),
@@ -1081,6 +1087,11 @@ public class AssetListAssetEntryProviderImpl
 				assetEntryQuery.getNotAllCategoryIds(),
 				AssetListFiltersUtil.getAssetCategoryIds(
 					true, false, filtersJSONArray)));
+		assetEntryQuery.setNotAllKeywords(
+			ArrayUtil.append(
+				assetEntryQuery.getNotAllKeywords(),
+				AssetListFiltersUtil.getKeywords(
+					true, false, filtersJSONArray)));
 		assetEntryQuery.setNotAnyCategoryIds(
 			ArrayUtil.append(
 				assetEntryQuery.getNotAnyCategoryIds(),
@@ -1089,7 +1100,8 @@ public class AssetListAssetEntryProviderImpl
 		assetEntryQuery.setNotAnyKeywords(
 			ArrayUtil.append(
 				assetEntryQuery.getNotAnyKeywords(),
-				AssetListFiltersUtil.getKeywords(false, filtersJSONArray)));
+				AssetListFiltersUtil.getKeywords(
+					false, false, filtersJSONArray)));
 		assetEntryQuery.setNotAnyTagIds(
 			ArrayUtil.append(
 				assetEntryQuery.getNotAnyTagIds(),

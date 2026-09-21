@@ -108,7 +108,7 @@ public class AssetListFiltersUtil {
 	}
 
 	public static String[] getKeywords(
-		boolean contains, JSONArray filtersJSONArray) {
+		boolean all, boolean contains, JSONArray filtersJSONArray) {
 
 		if (JSONUtil.isEmpty(filtersJSONArray)) {
 			return new String[0];
@@ -119,24 +119,18 @@ public class AssetListFiltersUtil {
 		for (int i = 0; i < filtersJSONArray.length(); i++) {
 			JSONObject jsonObject = filtersJSONArray.getJSONObject(i);
 
-			boolean negatedOperator = _isNegatedOperator(
-				jsonObject.getString("operatorName", "contains"));
-
-			if (!_isCommonFieldRow(jsonObject) ||
-				(negatedOperator == contains) ||
-				!Objects.equals(
-					jsonObject.getString("propertyName"), "keywords")) {
-
+			if (!_isMatchingRow(all, contains, jsonObject, "keywords")) {
 				continue;
 			}
 
-			String value = jsonObject.getString("value");
+			for (String term :
+					StringUtil.split(
+						jsonObject.getString("value"), CharPool.SPACE)) {
 
-			if (Validator.isNull(value)) {
-				continue;
+				if (Validator.isNotNull(term)) {
+					keywords.add(term);
+				}
 			}
-
-			keywords.add(value);
 		}
 
 		return keywords.toArray(new String[0]);
@@ -155,16 +149,7 @@ public class AssetListFiltersUtil {
 		for (int i = 0; i < filtersJSONArray.length(); i++) {
 			JSONObject jsonObject = filtersJSONArray.getJSONObject(i);
 
-			boolean negatedOperator = _isNegatedOperator(
-				jsonObject.getString("operatorName", "contains"));
-
-			if (!_isCommonFieldRow(jsonObject) ||
-				(negatedOperator == contains) ||
-				!Objects.equals(
-					jsonObject.getString("propertyName"), propertyName) ||
-				(Objects.equals(jsonObject.getString("quantifier"), "all") !=
-					all)) {
-
+			if (!_isMatchingRow(all, contains, jsonObject, propertyName)) {
 				continue;
 			}
 
@@ -230,6 +215,25 @@ public class AssetListFiltersUtil {
 	private static boolean _isDateTimeField(ObjectField objectField) {
 		return ObjectFieldConstants.DB_TYPE_DATE_TIME.equals(
 			objectField.getDBType());
+	}
+
+	private static boolean _isMatchingRow(
+		boolean all, boolean contains, JSONObject jsonObject,
+		String propertyName) {
+
+		boolean negatedOperator = _isNegatedOperator(
+			jsonObject.getString("operatorName", "contains"));
+
+		if (!_isCommonFieldRow(jsonObject) || (negatedOperator == contains) ||
+			!Objects.equals(
+				jsonObject.getString("propertyName"), propertyName) ||
+			(Objects.equals(jsonObject.getString("quantifier"), "all") !=
+				all)) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private static boolean _isNegatedOperator(String operatorName) {

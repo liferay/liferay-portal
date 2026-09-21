@@ -493,32 +493,44 @@ public class AssetListFiltersUtilTest {
 		String keyword = RandomTestUtil.randomString();
 
 		_assertKeywords(
-			true, _getKeywordsFilterJSONObject("contains", keyword), keyword);
+			true, true,
+			_getKeywordsFilterJSONObject("contains", "all", keyword), keyword);
 		_assertKeywords(
-			false, _getKeywordsFilterJSONObject("not-contains", keyword),
+			false, true,
+			_getKeywordsFilterJSONObject("contains", "any", keyword), keyword);
+		_assertKeywords(
+			true, false,
+			_getKeywordsFilterJSONObject("not-contains", "all", keyword),
+			keyword);
+		_assertKeywords(
+			false, false,
+			_getKeywordsFilterJSONObject("not-contains", "any", keyword),
 			keyword);
 
 		Assert.assertArrayEquals(
 			new String[0],
 			AssetListFiltersUtil.getKeywords(
-				true,
+				true, true,
 				JSONUtil.putAll(
 					_getKeywordsFilterJSONObject(
-						"contains", StringPool.BLANK))));
+						"contains", "all", StringPool.BLANK))));
 	}
 
 	@Test
 	public void testFilterQueriesWithKeywordsPhraseFilter() {
-		String keywordPhrase =
-			RandomTestUtil.randomString() + StringPool.SPACE +
-				RandomTestUtil.randomString();
+		String keyword1 = RandomTestUtil.randomString();
+		String keyword2 = RandomTestUtil.randomString();
+
+		String keywordPhrase = keyword1 + StringPool.SPACE + keyword2;
 
 		_assertKeywords(
-			true, _getKeywordsFilterJSONObject("contains", keywordPhrase),
-			keywordPhrase);
+			true, true,
+			_getKeywordsFilterJSONObject("contains", "all", keywordPhrase),
+			keyword1, keyword2);
 		_assertKeywords(
-			false, _getKeywordsFilterJSONObject("not-contains", keywordPhrase),
-			keywordPhrase);
+			false, false,
+			_getKeywordsFilterJSONObject("not-contains", "any", keywordPhrase),
+			keyword1, keyword2);
 	}
 
 	@Test
@@ -1027,17 +1039,24 @@ public class AssetListFiltersUtilTest {
 	}
 
 	private void _assertKeywords(
-		boolean contains, JSONObject filterJSONObject,
+		boolean all, boolean contains, JSONObject filterJSONObject,
 		String... expectedKeywords) {
 
 		JSONArray filtersJSONArray = JSONUtil.putAll(filterJSONObject);
 
 		Assert.assertArrayEquals(
 			expectedKeywords,
-			AssetListFiltersUtil.getKeywords(contains, filtersJSONArray));
+			AssetListFiltersUtil.getKeywords(all, contains, filtersJSONArray));
 		Assert.assertArrayEquals(
 			new String[0],
-			AssetListFiltersUtil.getKeywords(!contains, filtersJSONArray));
+			AssetListFiltersUtil.getKeywords(!all, contains, filtersJSONArray));
+		Assert.assertArrayEquals(
+			new String[0],
+			AssetListFiltersUtil.getKeywords(all, !contains, filtersJSONArray));
+		Assert.assertArrayEquals(
+			new String[0],
+			AssetListFiltersUtil.getKeywords(
+				!all, !contains, filtersJSONArray));
 
 		BooleanClause[] booleanClauses =
 			AssetListFiltersUtil.getFiltersBooleanClauses(
@@ -1260,12 +1279,14 @@ public class AssetListFiltersUtilTest {
 	}
 
 	private JSONObject _getKeywordsFilterJSONObject(
-		String operatorName, String value) {
+		String operatorName, String quantifier, String value) {
 
 		return JSONUtil.put(
 			"operatorName", operatorName
 		).put(
 			"propertyName", "keywords"
+		).put(
+			"quantifier", quantifier
 		).put(
 			"value", value
 		);
