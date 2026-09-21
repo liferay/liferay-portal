@@ -255,7 +255,9 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 			if (parentDetailAST.getType() == TokenTypes.LITERAL_IF) {
 				DetailAST lparenDetailAST = parentDetailAST.getFirstChild();
 
-				if (childDetailAST == lparenDetailAST.getNextSibling()) {
+				if ((lparenDetailAST != null) &&
+					(childDetailAST == lparenDetailAST.getNextSibling())) {
+
 					return true;
 				}
 			}
