@@ -97,6 +97,16 @@ public class ViewExpiredAssetsSectionSystemFDSEntry implements SystemFDSEntry {
 	}
 
 	@Override
+	public boolean getSearchAsYouType() {
+		return true;
+	}
+
+	@Override
+	public boolean getSearchSuggestionsEnabled() {
+		return true;
+	}
+
+	@Override
 	public String getSymbol() {
 		return "warning-full";
 	}

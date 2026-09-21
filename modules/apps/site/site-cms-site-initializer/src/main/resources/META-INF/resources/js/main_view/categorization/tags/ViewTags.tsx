@@ -319,6 +319,8 @@ export default function ViewTags({
 				]}
 				onActionDropdownItemClick={onActionDropdownItemClick}
 				pagination={{initialDelta: 20}}
+				searchAsYouType={true}
+				searchSuggestionsEnabled={true}
 				showManagementBar={true}
 				showPagination={true}
 				showSearch={true}

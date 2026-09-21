@@ -122,6 +122,16 @@ public class ViewAllSectionSystemFDSEntry implements SystemFDSEntry {
 	}
 
 	@Override
+	public boolean getSearchAsYouType() {
+		return true;
+	}
+
+	@Override
+	public boolean getSearchSuggestionsEnabled() {
+		return true;
+	}
+
+	@Override
 	public boolean getSnapshotsEnabled() {
 		return true;
 	}

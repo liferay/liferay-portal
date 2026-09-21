@@ -26,11 +26,7 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 };
 
 describe('[CMS Categorization] Components: ViewTags', () => {
-	afterEach(() => {
-		jest.clearAllMocks();
-	});
-
-	it('passes a Space-typed asset library filter to FrontendDataSet', () => {
+	const renderViewTags = () =>
 		render(
 			<ViewTags
 				actionItems={[] as any}
@@ -43,6 +39,13 @@ describe('[CMS Categorization] Components: ViewTags', () => {
 			/>
 		);
 
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
+	it('passes a Space-typed asset library filter to FrontendDataSet', () => {
+		renderViewTags();
+
 		const [{filters}] = mockFrontendDataSet.mock.calls[0] as any;
 
 		const spaceFilter = filters.find(
@@ -50,5 +53,14 @@ describe('[CMS Categorization] Components: ViewTags', () => {
 		);
 
 		expect(spaceFilter?.apiURL).toContain("filter=type eq 'Space'");
+	});
+
+	it('searches as the user types and offers search suggestions', () => {
+		renderViewTags();
+
+		const [props] = mockFrontendDataSet.mock.calls[0] as any;
+
+		expect(props.searchAsYouType).toBe(true);
+		expect(props.searchSuggestionsEnabled).toBe(true);
 	});
 });

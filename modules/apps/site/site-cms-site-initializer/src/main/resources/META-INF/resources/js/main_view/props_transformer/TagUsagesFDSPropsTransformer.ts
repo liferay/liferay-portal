@@ -36,5 +36,7 @@ export default function TagUsagesFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

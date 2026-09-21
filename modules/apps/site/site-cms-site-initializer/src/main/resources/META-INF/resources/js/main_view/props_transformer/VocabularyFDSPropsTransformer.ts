@@ -81,5 +81,7 @@ export default function VocabularyFDSPropsTransformer({
 				);
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

@@ -88,5 +88,7 @@ export default function CategoryFDSPropsTransformer({
 				});
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

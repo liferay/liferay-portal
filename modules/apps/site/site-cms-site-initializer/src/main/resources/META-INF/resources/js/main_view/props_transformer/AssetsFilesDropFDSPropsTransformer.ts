@@ -76,6 +76,8 @@ export default function AssetsFilesDropFDSPropsTransformer({
 			}
 		),
 		fileDropSettings,
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 		snapshotsEnabled: true,
 
 		// Custom views do not receive the top-level drop settings, so they are

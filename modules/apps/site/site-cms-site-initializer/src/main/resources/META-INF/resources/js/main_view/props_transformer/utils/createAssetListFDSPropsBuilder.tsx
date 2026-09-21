@@ -84,6 +84,8 @@ export function createAssetListFDSPropsBuilder<T = ISearchAssetObjectEntry>({
 			},
 			hideManagementBarInEmptyState: true,
 			itemsActions,
+			searchAsYouType: true,
+			searchSuggestionsEnabled: true,
 			views: [
 				{
 					contentRenderer: 'list',

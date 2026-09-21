@@ -180,5 +180,7 @@ export default function StructuresFDSPropsTransformer({
 				});
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

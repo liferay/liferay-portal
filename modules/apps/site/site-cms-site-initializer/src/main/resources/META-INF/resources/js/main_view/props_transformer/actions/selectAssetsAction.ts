@@ -38,6 +38,13 @@ export default function selectAssetsAction(
 				deltas: [{label: 20}, {label: 40}, {label: 60}],
 				initialDelta: 20,
 			},
+
+			// The id is new on every open, so the modal keeps its state out of
+			// the atom registry and out of the page URL. That id also keys the
+			// search history, which nothing could ever read back, so the
+			// suggestions stay off here.
+
+			searchAsYouType: true,
 			views: [
 				{
 					contentRenderer: 'cards',

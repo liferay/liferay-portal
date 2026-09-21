@@ -318,6 +318,8 @@ export default function ReviewDuplicateTopicsModal({
 						id={FDS_ID}
 						itemsActions={itemsActions}
 						pagination={{initialDelta: 20}}
+						searchAsYouType={true}
+						searchSuggestionsEnabled={true}
 						showManagementBar={true}
 						showPagination={true}
 						showSearch={true}

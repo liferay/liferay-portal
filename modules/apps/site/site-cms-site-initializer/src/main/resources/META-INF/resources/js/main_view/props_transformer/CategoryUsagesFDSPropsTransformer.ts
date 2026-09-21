@@ -36,5 +36,7 @@ export default function CategoryUsagesFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

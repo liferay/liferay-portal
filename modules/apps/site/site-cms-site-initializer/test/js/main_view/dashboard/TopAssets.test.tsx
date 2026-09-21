@@ -36,4 +36,17 @@ describe('TopAssets', () => {
 		expect(additionalAPIURLParameters).toContain('file.previewURL');
 		expect(additionalAPIURLParameters).toContain('file.thumbnailURL');
 	});
+
+	it('searches as the user types and offers search suggestions', () => {
+		render(
+			<PerformanceContextProvider additionalProps={{} as any}>
+				<TopAssets />
+			</PerformanceContextProvider>
+		);
+
+		const [props] = mockFrontendDataSet.mock.calls[0];
+
+		expect(props.searchAsYouType).toBe(true);
+		expect(props.searchSuggestionsEnabled).toBe(true);
+	});
 });

@@ -255,5 +255,7 @@ export default function AllSpacesFDSPropsTransformer({
 				});
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

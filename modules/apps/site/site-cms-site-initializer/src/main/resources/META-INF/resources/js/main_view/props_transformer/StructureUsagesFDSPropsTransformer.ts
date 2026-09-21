@@ -83,5 +83,7 @@ export default function StructureUsagesFDSPropsTransformer({
 				});
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

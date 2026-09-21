@@ -79,6 +79,8 @@ const FDS_DEFAULT_PROPS: Partial<IFrontendDataSetProps> = {
 		deltas: [{label: 20}, {label: 40}, {label: 60}],
 		initialDelta: 20,
 	},
+	searchAsYouType: true,
+	searchSuggestionsEnabled: true,
 	selectionType: 'single',
 };
 

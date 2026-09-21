@@ -931,6 +931,8 @@ export default function AssetsFDSPropsTransformer({
 				});
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 		snapshotsEnabled: true,
 		views: transformViewsItemsProps({
 			fileMimeTypeCssClasses: additionalProps.fileMimeTypeCssClasses,

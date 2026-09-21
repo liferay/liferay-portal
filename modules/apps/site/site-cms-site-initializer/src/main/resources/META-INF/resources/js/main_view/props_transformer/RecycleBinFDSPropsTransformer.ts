@@ -178,5 +178,7 @@ export default function RecycleBinFDSPropsTransformer({
 				}
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

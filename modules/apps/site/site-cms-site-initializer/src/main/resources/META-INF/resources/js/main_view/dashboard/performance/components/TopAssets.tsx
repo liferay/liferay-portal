@@ -296,6 +296,8 @@ export function TopAssets() {
 				key={additionalAPIURLParameters}
 				onActionDropdownItemClick={onActionDropdownItemClick}
 				pagination={{initialDelta: 20}}
+				searchAsYouType={true}
+				searchSuggestionsEnabled={true}
 				selectedItemsKey="embedded.id"
 				selectionType="multiple"
 				showManagementBar={true}

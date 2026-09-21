@@ -193,5 +193,7 @@ export default function SharedWithMeFDSPropsTransformer({
 				});
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

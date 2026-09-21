@@ -104,6 +104,8 @@ export default function PicklistOptions() {
 					}) => {
 						removeOptions(selectedData.keyValues);
 					}}
+					searchAsYouType={true}
+					searchSuggestionsEnabled={true}
 					selectionType="multiple"
 					style="fluid"
 					views={[

@@ -284,6 +284,8 @@ export default function MergeTagsModalContent({
 
 							setSelectedTags(setTag);
 						}}
+						searchAsYouType={true}
+						searchSuggestionsEnabled={true}
 						selectedItemsKey="id"
 						selectionType="multiple"
 						views={[

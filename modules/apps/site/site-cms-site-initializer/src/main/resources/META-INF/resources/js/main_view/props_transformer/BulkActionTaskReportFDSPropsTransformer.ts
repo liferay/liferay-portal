@@ -24,5 +24,7 @@ export default function BulkActionTaskReportFDSPropsTransformer({
 			],
 		},
 		hideManagementBarInEmptyState: true,
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

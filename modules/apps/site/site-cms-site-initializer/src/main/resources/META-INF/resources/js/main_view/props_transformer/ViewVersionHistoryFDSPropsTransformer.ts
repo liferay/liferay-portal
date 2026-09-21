@@ -328,5 +328,7 @@ export default function ViewVersionHistoryFDSPropsTransformer({
 				});
 			}
 		},
+		searchAsYouType: true,
+		searchSuggestionsEnabled: true,
 	};
 }

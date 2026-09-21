@@ -108,6 +108,7 @@ export function Summary() {
 						initialDelta: 10,
 					}}
 					searchAsYouType={true}
+					searchSuggestionsEnabled={true}
 					showPagination
 					style="fluid"
 					views={[
