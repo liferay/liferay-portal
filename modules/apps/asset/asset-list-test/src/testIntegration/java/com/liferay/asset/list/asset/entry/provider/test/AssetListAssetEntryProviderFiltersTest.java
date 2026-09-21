@@ -37,6 +37,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -549,6 +550,34 @@ public class AssetListAssetEntryProviderFiltersTest {
 				_getKeywordsFilterJSONObject(
 					"contains", "all", keyword1 + StringPool.SPACE + keyword2)),
 			objectEntry1, objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageWithKeywordsPhraseFilter()
+		throws Exception {
+
+		String keyword1 = "alpha";
+		String keyword2 = "bravo";
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, keyword1 + StringPool.SPACE + keyword2
+			).build());
+
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, keyword2 + StringPool.SPACE + keyword1
+			).build());
+
+		_assertFilteredObjectEntries(
+			_getFiltersJSONArray(
+				_getKeywordsFilterJSONObject(
+					"contains", "all",
+					StringUtil.quote(
+						keyword1 + StringPool.SPACE + keyword2,
+						CharPool.QUOTE))),
+			objectEntry1);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
