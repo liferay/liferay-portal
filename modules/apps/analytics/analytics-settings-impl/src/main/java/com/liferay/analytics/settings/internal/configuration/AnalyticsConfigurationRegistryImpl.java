@@ -236,6 +236,15 @@ public class AnalyticsConfigurationRegistryImpl
 			companyId, sapEntryName);
 
 		if (sapEntry != null) {
+			if (!Objects.equals(
+					sapEntry.getAllowedServiceSignatures(),
+					_SAP_ENTRY_OBJECT[1])) {
+
+				sapEntry.setAllowedServiceSignatures(_SAP_ENTRY_OBJECT[1]);
+
+				_sapEntryLocalService.updateSAPEntry(sapEntry);
+			}
+
 			return;
 		}
 
@@ -938,6 +947,8 @@ public class AnalyticsConfigurationRegistryImpl
 	private static final String[] _SAP_ENTRY_OBJECT = {
 		AnalyticsSecurityConstants.SERVICE_ACCESS_POLICY_NAME,
 		StringBundler.concat(
+			"com.liferay.segments.asah.rest.internal.resource.v1_0.",
+			"AsahSegmentsEntryResourceImpl#postAsahSegmentsEntry\n",
 			"com.liferay.segments.asah.rest.internal.resource.v1_0.",
 			"ExperimentResourceImpl#deleteExperiment\n",
 			"com.liferay.segments.asah.rest.internal.resource.v1_0.",

@@ -5,11 +5,15 @@
 
 package com.liferay.segments.asah.rest.internal.resource.v1_0;
 
+import com.liferay.analytics.settings.security.constants.AnalyticsSecurityConstants;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -46,6 +50,8 @@ public class AsahSegmentsEntryResourceImpl
 	public Response postAsahSegmentsEntry(AsahSegmentsEntry asahSegmentsEntry)
 		throws Exception {
 
+		_checkAnalyticsAdminUser();
+
 		ServiceContext serviceContext = _getServiceContext();
 
 		SegmentsEntry segmentsEntry =
@@ -62,7 +68,7 @@ public class AsahSegmentsEntryResourceImpl
 					null, asahSegmentsEntry.getId(), nameMap,
 					Collections.emptyMap(), true, null,
 					SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
-					SegmentsEntryConstants.TYPE_DEFAULT, serviceContext);
+					SegmentsEntryConstants.TYPE_REAL_TIME, serviceContext);
 			}
 			else {
 				segmentsEntry = _segmentsEntryLocalService.updateSegmentsEntry(
@@ -103,14 +109,25 @@ public class AsahSegmentsEntryResourceImpl
 		}
 	}
 
-	private ServiceContext _getServiceContext() throws PortalException {
+	private void _checkAnalyticsAdminUser() throws Exception {
+		User user = _userLocalService.fetchUserByScreenName(
+			contextCompany.getCompanyId(),
+			AnalyticsSecurityConstants.SCREEN_NAME_ANALYTICS_ADMIN);
+
+		if ((user == null) || (user.getUserId() != contextUser.getUserId())) {
+			throw new PrincipalException(
+				StringBundler.concat(
+					"User ", contextUser.getUserId(), " must be the \"",
+					AnalyticsSecurityConstants.SCREEN_NAME_ANALYTICS_ADMIN,
+					"\" user to post Analytics Cloud segments"));
+		}
+	}
+
+	private ServiceContext _getServiceContext() {
 		ServiceContext serviceContext = new ServiceContext();
 
 		serviceContext.setScopeGroupId(contextCompany.getGroupId());
-
-		User user = contextCompany.getGuestUser();
-
-		serviceContext.setUserId(user.getUserId());
+		serviceContext.setUserId(contextUser.getUserId());
 
 		return serviceContext;
 	}
@@ -145,6 +162,16 @@ public class AsahSegmentsEntryResourceImpl
 		Long userId) {
 
 		if (userId != null) {
+			User user = _userLocalService.fetchUser(userId);
+
+			if ((user == null) ||
+				(user.getCompanyId() != contextCompany.getCompanyId())) {
+
+				_log.error("Unable to process user ID " + userId);
+
+				return;
+			}
+
 			if (removed) {
 				_removeSegmentsEntryRels(
 					segmentsEntry, Collections.singleton(userId));
@@ -171,5 +198,8 @@ public class AsahSegmentsEntryResourceImpl
 
 	@Reference
 	private SegmentsEntryLocalService _segmentsEntryLocalService;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
