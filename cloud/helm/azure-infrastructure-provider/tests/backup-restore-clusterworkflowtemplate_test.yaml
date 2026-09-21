@@ -21,6 +21,11 @@ tests:
         it: Binds every composite patch to the field manager ArgoCD tolerates
     -   asserts:
             -   equal:
+                    path: spec.podMetadata.annotations["karpenter.sh/do-not-disrupt"]
+                    value: "true"
+        it: Keeps node consolidation from evicting a restore that is still running
+    -   asserts:
+            -   equal:
                     path: spec.podMetadata.labels["azure.workload.identity/use"]
                     value: "true"
         it: Labels every workflow pod so the workload identity webhook injects a token
