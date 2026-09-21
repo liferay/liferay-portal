@@ -22,10 +22,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 
 import java.io.Serializable;
+
+import java.util.Map;
 
 /**
  * @author Jose Luis Navarro
@@ -92,20 +93,22 @@ public class MCPProfileStatusUpgradeProcess extends UpgradeProcess {
 					continue;
 				}
 
+				Map<String, Serializable> values =
+					_objectEntryLocalService.getValues(objectEntry);
+
 				if (_log.isInfoEnabled()) {
 					_log.info(
 						StringBundler.concat(
 							"Deactivating MCP server profile \"",
-							MapUtil.getString(objectEntry.getValues(), "name"),
+							MapUtil.getString(values, "name"),
 							"\" because it has no associated tools"));
 				}
 
-				_objectEntryLocalService.partialUpdateObjectEntry(
+				values.put("profileStatus", "inactive");
+
+				_objectEntryLocalService.updateObjectEntry(
 					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-					objectEntry.getObjectEntryFolderId(),
-					HashMapBuilder.<String, Serializable>put(
-						"profileStatus", "inactive"
-					).build(),
+					objectEntry.getObjectEntryFolderId(), values,
 					new ServiceContext());
 			}
 		}

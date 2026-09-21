@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -147,13 +146,15 @@ public class MCPServerProfileToolObjectEntryModelListener
 				return;
 			}
 
-			_objectEntryLocalService.partialUpdateObjectEntry(
+			Map<String, Serializable> values =
+				_objectEntryLocalService.getValues(mcpServerProfileObjectEntry);
+
+			values.put("profileStatus", "inactive");
+
+			_objectEntryLocalService.updateObjectEntry(
 				mcpServerProfileObjectEntry.getUserId(),
 				mcpServerProfileObjectEntry.getObjectEntryId(),
-				mcpServerProfileObjectEntry.getObjectEntryFolderId(),
-				HashMapBuilder.<String, Serializable>put(
-					"profileStatus", "inactive"
-				).build(),
+				mcpServerProfileObjectEntry.getObjectEntryFolderId(), values,
 				new ServiceContext());
 		}
 		catch (PortalException portalException) {
