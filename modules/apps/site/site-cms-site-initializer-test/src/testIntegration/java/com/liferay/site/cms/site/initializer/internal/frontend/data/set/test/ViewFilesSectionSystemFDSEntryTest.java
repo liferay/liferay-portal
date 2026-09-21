@@ -7,7 +7,6 @@ package com.liferay.site.cms.site.initializer.internal.frontend.data.set.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.frontend.data.set.SystemFDSEntry;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -17,7 +16,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,20 +34,15 @@ public class ViewFilesSectionSystemFDSEntryTest {
 	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
 		new LiferayIntegrationTestRule();
 
-	@Before
-	public void setUp() throws Exception {
-		_company = _companyLocalService.getCompany(
-			TestPropsValues.getCompanyId());
-	}
-
 	@Test
-	public void testGetAdditionalAPIURLParameters() throws Exception {
+	public void test() throws Exception {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		themeDisplay.setCompany(_company);
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		mockHttpServletRequest.setAttribute(
@@ -63,50 +56,21 @@ public class ViewFilesSectionSystemFDSEntryTest {
 			additionalAPIURLParameters.contains(
 				"cmsRoot eq true and cmsSection eq 'files' and " +
 					"rootDescendantNode eq false"));
-	}
 
-	@Test
-	public void testGetDefaultItemsPerPage() {
 		Assert.assertEquals(
 			20, _filesSectionSystemFDSEntry.getDefaultItemsPerPage());
-	}
-
-	@Test
-	public void testGetHideManagementBarInEmptyState() {
 		Assert.assertTrue(
 			_filesSectionSystemFDSEntry.getHideManagementBarInEmptyState());
-	}
-
-	@Test
-	public void testGetRESTApplication() {
 		Assert.assertEquals(
 			"/search/v1.0", _filesSectionSystemFDSEntry.getRESTApplication());
-	}
-
-	@Test
-	public void testGetRESTEndpoint() {
 		Assert.assertEquals(
 			"/v1.0/search", _filesSectionSystemFDSEntry.getRESTEndpoint());
-	}
-
-	@Test
-	public void testGetRESTSchema() {
 		Assert.assertEquals(
 			"SearchResult", _filesSectionSystemFDSEntry.getRESTSchema());
-	}
-
-	@Test
-	public void testGetSnapshotsEnabled() {
 		Assert.assertTrue(_filesSectionSystemFDSEntry.getSnapshotsEnabled());
-	}
-
-	@Test
-	public void testGetSymbol() {
 		Assert.assertEquals(
 			"documents-and-media", _filesSectionSystemFDSEntry.getSymbol());
 	}
-
-	private Company _company;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
