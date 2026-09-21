@@ -547,10 +547,16 @@ public class CPDefinitionLocalServiceTest {
 
 		expirationCalendar.setTime(expirationDate);
 
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_commerceCatalog.getGroupId());
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
 		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
 			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME,
 			displayDate, expirationDate, false, false,
-			WorkflowConstants.STATUS_EXPIRED);
+			WorkflowConstants.STATUS_EXPIRED, serviceContext);
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_EXPIRED, cpDefinition.getStatus());
