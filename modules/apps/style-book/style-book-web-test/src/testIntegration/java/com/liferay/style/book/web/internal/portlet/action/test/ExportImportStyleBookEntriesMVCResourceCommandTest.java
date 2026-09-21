@@ -550,16 +550,14 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
-		String content = StringBundler.concat(
-			"--", _MULTIPART_BOUNDARY, "--\r\n");
+		String content = "--StyleBookEntryImportBoundary--\r\n";
 
 		mockHttpServletRequest.setContent(
 			content.getBytes(StandardCharsets.UTF_8));
 
 		mockHttpServletRequest.setContentType(
-			StringBundler.concat(
-				ContentTypes.MULTIPART_FORM_DATA, "; boundary=",
-				_MULTIPART_BOUNDARY));
+			ContentTypes.MULTIPART_FORM_DATA +
+				"; boundary=StyleBookEntryImportBoundary");
 
 		return mockHttpServletRequest;
 	}
@@ -701,9 +699,6 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 				FileUtil.getBytes(zipFile.getInputStream(zipEntry)));
 		}
 	}
-
-	private static final String _MULTIPART_BOUNDARY =
-		"StyleBookEntryImportBoundary";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
