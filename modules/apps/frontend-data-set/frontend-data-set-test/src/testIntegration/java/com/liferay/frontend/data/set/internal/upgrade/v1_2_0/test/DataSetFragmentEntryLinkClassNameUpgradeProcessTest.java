@@ -79,7 +79,7 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcessTest {
 			).put(
 				"label", RandomTestUtil.randomString()
 			),
-			_RENDERER_KEY);
+			_RENDERER_KEY_NEW);
 
 		FragmentEntryLink legacyRendererKeyFragmentEntryLink =
 			_addFragmentEntryLink(
@@ -88,7 +88,7 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcessTest {
 				).put(
 					"id", _ID
 				),
-				_RENDERER_KEY_LEGACY);
+				_RENDERER_KEY_OLD);
 
 		String className = RandomTestUtil.randomString();
 
@@ -98,11 +98,11 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcessTest {
 			).put(
 				"externalReferenceCode", _EXTERNAL_REFERENCE_CODE
 			),
-			_RENDERER_KEY);
+			_RENDERER_KEY_NEW);
 
 		FragmentEntryLink unconfiguredFragmentEntryLink = _addFragmentEntryLink(
 			JSONUtil.put("externalReferenceCode", StringPool.BLANK),
-			_RENDERER_KEY);
+			_RENDERER_KEY_NEW);
 
 		_runUpgrade();
 
@@ -167,7 +167,7 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcessTest {
 		fragmentEntryLink = _fragmentEntryLinkLocalService.getFragmentEntryLink(
 			fragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(_RENDERER_KEY, fragmentEntryLink.getRendererKey());
+		Assert.assertEquals(_RENDERER_KEY_NEW, fragmentEntryLink.getRendererKey());
 	}
 
 	private JSONObject _getItemSelectorJSONObject(
@@ -205,11 +205,11 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcessTest {
 
 	private static final long _ID = RandomTestUtil.randomLong();
 
-	private static final String _RENDERER_KEY =
+	private static final String _RENDERER_KEY_NEW =
 		"com.liferay.frontend.data.set.fragment.web.internal.fragment." +
 			"renderer.FDSFragmentRenderer";
 
-	private static final String _RENDERER_KEY_LEGACY =
+	private static final String _RENDERER_KEY_OLD =
 		"com.liferay.frontend.data.set.admin.web.internal.fragment.renderer." +
 			"FDSAdminFragmentRenderer";
 

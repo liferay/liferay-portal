@@ -50,8 +50,8 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcess
 						"rendererKey = ? where ctCollectionId = ? and " +
 							"fragmentEntryLinkId = ?")) {
 
-			preparedStatement1.setString(1, _RENDERER_KEY);
-			preparedStatement1.setString(2, _RENDERER_KEY_LEGACY);
+			preparedStatement1.setString(1, _RENDERER_KEY_NEW);
+			preparedStatement1.setString(2, _RENDERER_KEY_OLD);
 
 			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 				while (resultSet.next()) {
@@ -66,14 +66,14 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcess
 					if (!upgraded &&
 						Objects.equals(
 							resultSet.getString("rendererKey"),
-							_RENDERER_KEY)) {
+							_RENDERER_KEY_NEW)) {
 
 						continue;
 					}
 
 					preparedStatement2.setString(
 						1, editableValuesJSONObject.toString());
-					preparedStatement2.setString(2, _RENDERER_KEY);
+					preparedStatement2.setString(2, _RENDERER_KEY_NEW);
 					preparedStatement2.setLong(
 						3, resultSet.getLong("ctCollectionId"));
 					preparedStatement2.setLong(
@@ -157,11 +157,11 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcess
 		return true;
 	}
 
-	private static final String _RENDERER_KEY =
+	private static final String _RENDERER_KEY_NEW =
 		"com.liferay.frontend.data.set.fragment.web.internal.fragment." +
 			"renderer.FDSFragmentRenderer";
 
-	private static final String _RENDERER_KEY_LEGACY =
+	private static final String _RENDERER_KEY_OLD =
 		"com.liferay.frontend.data.set.admin.web.internal.fragment.renderer." +
 			"FDSAdminFragmentRenderer";
 
