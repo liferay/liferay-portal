@@ -896,9 +896,11 @@ public class CPDefinitionLocalServiceImpl
 		CPDefinition sourceCPDefinition =
 			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
 
-		CProduct sourceCProduct = sourceCPDefinition.getCProduct();
+		CProduct sourceCProduct = _cProductPersistence.fetchByPrimaryKey(
+			sourceCPDefinition.getCProductId());
 
-		if (!cpDefinitionLocalService.isVersionable(
+		if ((sourceCProduct == null) ||
+			!cpDefinitionLocalService.isVersionable(
 				sourceCProduct.getPublishedCPDefinitionId()) ||
 			(sourceCPDefinition.isDraft() &&
 			 (status == WorkflowConstants.STATUS_DRAFT))) {
@@ -907,13 +909,13 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		if (status == WorkflowConstants.STATUS_DRAFT) {
-			CPDefinition draftCPDefinition =
+			CPDefinition cpDefinition =
 				cpDefinitionLocalService.fetchCPDefinitionByCProductId(
 					sourceCPDefinition.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT);
 
-			if (draftCPDefinition != null) {
-				return draftCPDefinition;
+			if (cpDefinition != null) {
+				return cpDefinition;
 			}
 		}
 
