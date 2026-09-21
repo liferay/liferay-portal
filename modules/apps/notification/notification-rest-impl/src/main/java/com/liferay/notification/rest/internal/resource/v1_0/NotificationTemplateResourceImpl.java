@@ -443,9 +443,7 @@ public class NotificationTemplateResourceImpl
 	}
 
 	private void _checkFeatureFlag() {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-49854")) {
-
+		if (!_isFeatureFlagEnabled()) {
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -470,6 +468,11 @@ public class NotificationTemplateResourceImpl
 		}
 
 		return contextAcceptLanguage.getPreferredLocale();
+	}
+
+	private boolean _isFeatureFlagEnabled() {
+		return FeatureFlagManagerUtil.isEnabled(
+			contextCompany.getCompanyId(), "LPD-49854");
 	}
 
 	private ModelPermissions _toModelPermissions(
@@ -584,9 +587,7 @@ public class NotificationTemplateResourceImpl
 						serviceBuilderNotificationTemplate.getBodyMap()));
 				setCreator(
 					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-49854")) {
-
+						if (!_isFeatureFlagEnabled()) {
 							return null;
 						}
 
@@ -634,9 +635,7 @@ public class NotificationTemplateResourceImpl
 					serviceBuilderNotificationTemplate::getObjectDefinitionId);
 				setPermissions(
 					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-49854")) {
-
+						if (!_isFeatureFlagEnabled()) {
 							return null;
 						}
 
