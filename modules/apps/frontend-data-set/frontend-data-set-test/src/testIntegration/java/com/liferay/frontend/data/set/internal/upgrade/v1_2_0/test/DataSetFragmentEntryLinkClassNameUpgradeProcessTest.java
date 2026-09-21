@@ -167,7 +167,8 @@ public class DataSetFragmentEntryLinkClassNameUpgradeProcessTest {
 		fragmentEntryLink = _fragmentEntryLinkLocalService.getFragmentEntryLink(
 			fragmentEntryLink.getFragmentEntryLinkId());
 
-		Assert.assertEquals(_RENDERER_KEY_NEW, fragmentEntryLink.getRendererKey());
+		Assert.assertEquals(
+			_RENDERER_KEY_NEW, fragmentEntryLink.getRendererKey());
 	}
 
 	private JSONObject _getItemSelectorJSONObject(
