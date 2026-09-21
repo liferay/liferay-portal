@@ -7,16 +7,42 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {loginTest} from '../../../fixtures/loginTest';
+import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {RecycleBinPage} from '../../../pages/trash-web/RecycleBinPage';
 import {viewUpgradedDocument} from '../utils/viewUpgradedDocument';
 
-const test = mergeTests(documentLibraryPagesTest, loginTest());
+const test = mergeTests(
+	documentLibraryPagesTest,
+	loginTest(),
+	searchAdminPageTest
+);
 
 test.describe.serial('View AFS store upgrade', () => {
 	test(
 		'Can view the upgraded document library',
 		{tag: '@LPD-104390'},
-		async ({page}) => {
+		async ({page, searchAdminPage}) => {
+			await test.step('Reindex all search indexes', async () => {
+				await searchAdminPage.goto();
+
+				await searchAdminPage.goToIndexActionsTab();
+
+				await searchAdminPage.reindexAllSearchIndexes();
+
+				const reindexAllSearchIndexes =
+					await searchAdminPage.getIndexActionsItem(
+						'All Search Indexes'
+					);
+
+				await expect(reindexAllSearchIndexes).toBeVisible();
+
+				const progress = reindexAllSearchIndexes.locator('.progress');
+
+				await expect(progress).toBeVisible();
+
+				await expect(progress).toBeHidden({timeout: 120 * 1000});
+			});
+
 			for (const [title, expectedSize] of [
 				['Document1', 22016],
 				['Image1', 5176],
