@@ -22,60 +22,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _postProductGroups(productsJSON = null, productGroupName = null, productNames = null) {
-		Variables.assertDefined(parameterList = ${productGroupName});
-
-		var baseURL = ${baseURL};
-
-		if (!(isSet(baseURL))) {
-			var baseURL = JSONCompany.getPortalURL();
-		}
-
-		if (isSet(productNames)) {
-			var payload = "";
-			var productIds = CommerceJSONProductsAPI.getProductIdsByName(
-				productNames = ${productNames},
-				responseBody = ${productsJSON});
-
-			for (var productId : list ${productIds}) {
-				if (${payload} != "") {
-					var comma = ",";
-				}
-				else {
-					var comma = "";
-				}
-
-				var payload = '''
-						${payload}${comma}
-						{
-							"productId": ${productId}
-						}
-					''';
-			}
-		}
-		else {
-			var payload = "";
-		}
-
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/product-groups \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-				-H 'Content-Type: application/json' \
-				-d '{
-					"products": [${payload}],
-					"title": {
-						"en_US": "${productGroupName}"
-					}
-				}'
-		''';
-
-		JSONCurlUtil.post(${curl});
-	}
-
-	@summary = "Default summary"
 	macro getProductGroupIdsByName(productGroupNames = null) {
 		Variables.assertDefined(parameterList = ${productGroupNames});
 

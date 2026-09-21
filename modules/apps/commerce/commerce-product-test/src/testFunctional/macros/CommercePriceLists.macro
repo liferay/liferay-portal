@@ -1,30 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro addNewPriceModifier(modifier = null, name = null, target = null) {
-		Click(locator1 = "Button#PLUS");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
-
-		Type(
-			key_fieldLabel = "Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${name});
-
-		Select(
-			key_fieldLabel = "Target",
-			locator1 = "Select#GENERIC_SELECT_FIELD",
-			value1 = ${target});
-
-		Select(
-			key_fieldLabel = "Modifier",
-			locator1 = "Select#GENERIC_SELECT_FIELD",
-			value1 = ${modifier});
-
-		Button.clickSubmitButton();
-	}
-
-	@summary = "Default summary"
 	macro assertDeleteButtonNotPresent(baseEntryName = null) {
 		Click(
 			key_value = ${baseEntryName},
@@ -128,58 +104,6 @@ definition {
 			value1 = ${priceListEntryPrice});
 
 		Button.clickSave();
-	}
-
-	@summary = "Default summary"
-	macro editPriceModifier(amountValue = null, modifier = null, entryName = null, priceModifierName = null, modifierTarget = null, target = null, relation = null) {
-		if (!(isSet(active))) {
-			var active = "true";
-		}
-
-		Click(
-			key_value = ${priceModifierName},
-			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
-
-		MenuItem.click(key_menuItem = "Edit");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		if (isSet(modifier)) {
-			Select(
-				key_fieldLabel = "Modifier",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = ${modifier});
-		}
-
-		if (isSet(modifierTarget)) {
-			Select(
-				key_fieldLabel = "Target",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = ${modifierTarget});
-		}
-
-		if (isSet(amountValue)) {
-			Type(
-				key_fieldLabel = "Amount",
-				locator1 = "TextInput#GENERIC_TEXT_INPUT",
-				value1 = ${amountValue});
-		}
-
-		if (${active} == "true") {
-			Check.checkToggleSwitch(locator1 = "ToggleSwitch#ACTIVE");
-		}
-
-		Button.clickSave();
-
-		CommerceEntry.gotoMenuTab(menuTab = ${target});
-
-		CommerceRelations.assignSingleRelationToProductsEntry(
-			entryName = ${entryName},
-			title = ${relation});
-
-		Click(locator1 = "Icon#CLOSE");
-
-		SelectFrameTop();
 	}
 
 	@summary = "Default summary"
