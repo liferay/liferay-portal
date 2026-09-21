@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {EConfigInURLBehavior} from '@liferay/frontend-data-set-web';
 import {render} from '@testing-library/react';
 import React from 'react';
 
@@ -170,4 +171,40 @@ describe('[CMS] Instant search', () => {
 		expect(fdsProps.searchAsYouType).toBe(true);
 		expect(fdsProps.searchSuggestionsEnabled).toBeUndefined();
 	});
+
+	it.each([
+		[
+			'Folder Item Selector',
+			() =>
+				render(
+					<FolderItemSelectorModalContent
+						action="move"
+						assetLibraries={[]}
+						itemData={{embedded: {id: 1, scopeId: 1}, id: 1} as any}
+						loadData={jest.fn() as any}
+						objectEntryFolderExternalReferenceCode={undefined}
+						rootObjectEntryFolderExternalReferenceCode="CONTENTS"
+						selectedData={{} as any}
+					/>
+				),
+			mockItemSelectorModal,
+		],
+		[
+			'Select Assets',
+			() =>
+				selectAssetsAction({
+					searchAPIURL: '/o/search/v1.0/search',
+				} as any),
+			mockOpenItemSelectorModal,
+		],
+	] as Array<[string, () => void, jest.Mock]>)(
+		'keeps the %s picker out of the URL of the page behind it',
+		(_dataSet, openPicker, mock) => {
+			openPicker();
+
+			const [{fdsProps}] = mock.mock.calls[0];
+
+			expect(fdsProps.configInURLBehavior).toBe(EConfigInURLBehavior.OFF);
+		}
+	);
 });

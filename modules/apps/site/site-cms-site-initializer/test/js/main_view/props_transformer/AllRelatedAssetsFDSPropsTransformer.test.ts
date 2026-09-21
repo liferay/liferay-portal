@@ -6,6 +6,7 @@
 import AllRelatedAssetsFDSPropsTransformer from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/AllRelatedAssetsFDSPropsTransformer';
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
+	...(jest.requireActual('@liferay/frontend-data-set-web') as any),
 	replaceTokens: jest.fn(),
 }));
 
