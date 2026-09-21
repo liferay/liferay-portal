@@ -89,6 +89,14 @@ public class ViewPromptsDisplayContext {
 			).build()
 		).add(
 			FDSSortItemBuilder.setDirection(
+				"asc"
+			).setKey(
+				"promptStatus"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "status")
+			).build()
+		).add(
+			FDSSortItemBuilder.setDirection(
 				"desc"
 			).setKey(
 				"dateModified"
