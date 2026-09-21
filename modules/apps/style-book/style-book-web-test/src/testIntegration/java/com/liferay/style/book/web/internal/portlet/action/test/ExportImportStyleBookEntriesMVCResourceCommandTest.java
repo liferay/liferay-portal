@@ -7,6 +7,7 @@ package com.liferay.style.book.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -55,6 +56,8 @@ import com.liferay.style.book.zip.processor.StyleBookEntryZipProcessorImportResu
 
 import java.io.File;
 import java.io.InputStream;
+
+import java.nio.charset.StandardCharsets;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -543,6 +546,24 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 			null);
 	}
 
+	private MockHttpServletRequest _getMultipartMockHttpServletRequest() {
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		String content = StringBundler.concat(
+			"--", _MULTIPART_BOUNDARY, "--\r\n");
+
+		mockHttpServletRequest.setContent(
+			content.getBytes(StandardCharsets.UTF_8));
+
+		mockHttpServletRequest.setContentType(
+			StringBundler.concat(
+				ContentTypes.MULTIPART_FORM_DATA, "; boundary=",
+				_MULTIPART_BOUNDARY));
+
+		return mockHttpServletRequest;
+	}
+
 	private ThemeDisplay _getThemeDisplay() throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -591,7 +612,7 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 
 					return UploadTestUtil.createUploadPortletRequest(
 						UploadTestUtil.createUploadServletRequest(
-							new MockHttpServletRequest(),
+							_getMultipartMockHttpServletRequest(),
 							HashMapBuilder.put(
 								"file", new FileItem[] {_getFileItem(file)}
 							).build(),
@@ -680,6 +701,9 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 				FileUtil.getBytes(zipFile.getInputStream(zipEntry)));
 		}
 	}
+
+	private static final String _MULTIPART_BOUNDARY =
+		"StyleBookEntryImportBoundary";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

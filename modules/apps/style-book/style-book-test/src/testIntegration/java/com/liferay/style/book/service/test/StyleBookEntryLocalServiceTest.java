@@ -131,9 +131,9 @@ public class StyleBookEntryLocalServiceTest {
 		StyleBookEntry sourceStyleBookEntry =
 			_styleBookEntryLocalService.addStyleBookEntry(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, frontendTokenDefinition,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				null, RandomTestUtil.randomString(), _serviceContext);
+				_group.getGroupId(), false, frontendTokenDefinition, null,
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), _serviceContext);
 
 		StyleBookEntry draftStyleBookEntry =
 			_styleBookEntryLocalService.getDraft(sourceStyleBookEntry);
