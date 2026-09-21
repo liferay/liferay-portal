@@ -88,8 +88,23 @@ export function useUpdateConfig({
 	id: string;
 }): Function {
 	return useCallback(
-		(config: Partial<IConfigInURL>) =>
-			updateConfig({config, configInURLBehavior, id}),
+		(
+			config: Partial<IConfigInURL>,
+			configInURLBehaviorOverride?: EConfigInURLBehavior
+		) =>
+			updateConfig({
+				config,
+
+				// A single write may ask for a weaker behavior than the one the
+				// Data Set runs on, never a stronger one, so a Data Set that
+				// keeps its configuration out of the URL keeps every key out
+
+				configInURLBehavior:
+					configInURLBehavior === EConfigInURLBehavior.OFF
+						? configInURLBehavior
+						: configInURLBehaviorOverride ?? configInURLBehavior,
+				id,
+			}),
 		[id, configInURLBehavior]
 	);
 }

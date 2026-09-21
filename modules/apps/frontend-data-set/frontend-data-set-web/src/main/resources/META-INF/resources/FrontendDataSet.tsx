@@ -856,6 +856,14 @@ const FrontendDataSetContent = ({
 			(urlSearchQuery ?? '') !== (globalFDSStateSearchQuery ?? '') &&
 			(urlSearchQuery || globalFDSStateSearchQuery);
 
+		// Search as you type commits a query on every pause in the typing, so
+		// the query replaces the current history entry rather than adding one
+		// and Back leaves the page instead of walking the partial queries. A
+		// search that only runs on Enter is one deliberate action and keeps
+		// its entry.
+
+		const shouldReplaceSearch = shouldUpdateSearch && searchAsYouType;
+
 		const updateConfig: Partial<IConfigInURL> = {};
 
 		if (shouldUpdateFilters) {
@@ -878,13 +886,27 @@ const FrontendDataSetContent = ({
 				: undefined;
 		}
 
-		if (shouldUpdateSearch) {
+		if (shouldUpdateSearch && !shouldReplaceSearch) {
 			updateConfig[EConfigInURLKeys.SEARCH_PARAM] =
 				globalFDSState.search.query;
 		}
 
 		if (Object.keys(updateConfig).length) {
 			updateConfigInURL(updateConfig);
+		}
+
+		// The search goes in a write of its own so that the keys above keep the
+		// behavior the Data Set runs on, and last so that the entry it replaces
+		// already carries them
+
+		if (shouldReplaceSearch) {
+			updateConfigInURL(
+				{
+					[EConfigInURLKeys.SEARCH_PARAM]:
+						globalFDSState.search.query,
+				},
+				EConfigInURLBehavior.REPLACE
+			);
 		}
 
 		if (skipSnapshotsUpdatedChangeRef.current) {
@@ -903,6 +925,7 @@ const FrontendDataSetContent = ({
 		globalFDSState,
 		globalFDSStateInitialized,
 		id,
+		searchAsYouType,
 		updateConfigInURL,
 		viewsDispatch,
 	]);
