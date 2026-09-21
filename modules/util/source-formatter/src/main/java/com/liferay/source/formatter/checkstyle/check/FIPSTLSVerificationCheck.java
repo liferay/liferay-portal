@@ -96,7 +96,8 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 
 		if (!StringUtil.equals(
 				getMethodName(methodCallDetailAST),
-				"setEndpointIdentificationAlgorithm")) {
+				"setEndpointIdentificationAlgorithm") ||
+			_hasEnclosingGuard(methodCallDetailAST)) {
 
 			return;
 		}
@@ -116,26 +117,20 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 			return;
 		}
 
-		String argument = null;
-
 		if (firstChildDetailAST.getType() == TokenTypes.LITERAL_NULL) {
-			argument = "null";
+			log(
+				methodCallDetailAST, _MSG_REQUIRED_GUARD_METHOD,
+				"setEndpointIdentificationAlgorithm(null)");
 		}
 		else if (firstChildDetailAST.getType() == TokenTypes.STRING_LITERAL) {
-			String text = firstChildDetailAST.getText();
-
-			if (text.equals("\"\"")) {
-				argument = text;
+			if (!StringUtil.equals(firstChildDetailAST.getText(), "\"\"")) {
+				return;
 			}
-		}
 
-		if ((argument == null) || _hasEnclosingGuard(methodCallDetailAST)) {
-			return;
+			log(
+				methodCallDetailAST, _MSG_REQUIRED_GUARD_METHOD,
+				"setEndpointIdentificationAlgorithm(\"\")");
 		}
-
-		log(
-			methodCallDetailAST, _MSG_REQUIRED_GUARD_METHOD,
-			"setEndpointIdentificationAlgorithm(" + argument + ")");
 	}
 
 	private void _checkLambda(DetailAST lambdaDetailAST) {
