@@ -40,10 +40,10 @@ public class MappedProductUtil {
 			ServiceContextHelper serviceContextHelper)
 		throws PortalException {
 
+		long skuId = 0;
+
 		String skuExternalReferenceCode =
 			mappedProduct.getSkuExternalReferenceCode();
-
-		long skuId = 0;
 
 		if (Validator.isNull(skuExternalReferenceCode)) {
 			skuId = GetterUtil.getLong(mappedProduct.getSkuId());
