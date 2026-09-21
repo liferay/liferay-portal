@@ -13,7 +13,8 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
-import {miniumSetUp} from '../../utils/commerce';
+import {performUserSwitchViaApi} from '../../../../utils/performLogin';
+import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -24,174 +25,197 @@ export const test = mergeTests(
 	pageViewModePagesTest
 );
 
-test('LPD-27036 Cart shows decimal quantities', async ({
-	apiHelpers,
-	commerceCartPage,
-	page,
-	site,
-	widgetPagePage,
-}) => {
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
-		title: getRandomString(),
-	});
-
-	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		siteGroupId: site.id,
-	});
-
-	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-		name: getRandomString(),
-	});
-
-	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-		catalogId: catalog.id,
-		name: {en_US: getRandomString()},
-		productConfiguration: {
-			minOrderQuantity: 1.22,
-			multipleOrderQuantity: 1.22,
-		},
-	});
-
-	const productSkus = await apiHelpers.headlessCommerceAdminCatalog
-		.getProduct(product.productId)
-		.then((product) => {
-			return product.skus;
+test(
+	'Cart shows decimal quantities',
+	{tag: '@LPD-27036'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceCartPage,
+		page,
+		site,
+		widgetPagePage,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
 		});
 
-	const sku = productSkus[0];
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
 
-	const uom =
-		await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
-			sku.id,
-			{
-				incrementalOrderQuantity: 1.22,
-				name: {en_US: 'UOM'},
-				precision: 2,
-				priority: 0,
-			}
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+				productConfiguration: {
+					minOrderQuantity: 1.22,
+					multipleOrderQuantity: 1.22,
+				},
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku = productSkus[0];
+
+		const uom =
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					incrementalOrderQuantity: 1.22,
+					name: {en_US: 'UOM'},
+					precision: 2,
+					priority: 0,
+				}
+			);
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
 		);
 
-	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: getRandomString(),
-		type: 'person',
-	});
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
 
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		['test@liferay.com']
-	);
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
-	await apiHelpers.headlessCommerceDeliveryCart.postCart(
-		{
-			accountId: account.id,
-			cartItems: [
-				{
-					quantity: 1.22,
-					skuId: sku.id,
-					skuUnitOfMeasure: {key: uom.key},
-				},
-			],
-			currencyCode: 'USD',
-		},
-		channel.id
-	);
+		await widgetPagePage.addPortlet('Cart');
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
 
-	await widgetPagePage.addPortlet('Cart');
-
-	await expect(
-		await commerceCartPage.commerceOrderItemsTableRowQuantityInput(
-			product.name['en_US']
-		)
-	).toHaveValue('1.22');
-});
-
-test('LPD-29864 Cart updates when order is open', async ({apiHelpers}) => {
-	const site = await apiHelpers.headlessAdminSite.postSite({
-		name: 'Cart Site',
-	});
-
-	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		siteGroupId: site.id,
-	});
-
-	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-		name: 'Cart Catalog',
-	});
-
-	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-		catalogId: catalog.id,
-		name: {en_US: 'Product1'},
-		skus: [
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
 			{
-				cost: 0,
-				price: 10,
-				published: true,
-				purchasable: true,
-				sku: 'Sku' + getRandomInt(),
+				accountId: account.id,
+				cartItems: [
+					{
+						quantity: 1.22,
+						skuId: sku.id,
+						skuUnitOfMeasure: {key: uom.key},
+					},
+				],
+				currencyCode: 'USD',
 			},
-		],
-	});
+			channel.id
+		);
 
-	const productSkus = await apiHelpers.headlessCommerceAdminCatalog
-		.getProduct(product.productId)
-		.then((product) => {
-			return product.skus;
-		});
+		await expect(async () => {
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
-	const sku = productSkus[0];
-
-	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: 'Cart Account',
-		type: 'person',
-	});
-
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		['test@liferay.com']
-	);
-
-	const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
-		{
-			accountId: account.id,
-			cartItems: [
-				{
-					quantity: 1,
-					skuId: sku.id,
-				},
-			],
-			currencyCode: 'USD',
-		},
-		channel.id
-	);
-
-	await apiHelpers.headlessCommerceAdminOrder.patchOrder(cart.id, {
-		shippingAmount: 10,
-	});
-
-	await apiHelpers.headlessCommerceDeliveryCart.patchCart(
-		{
-			accountId: account.id,
-			cartItems: [
-				{
-					quantity: 2,
-					skuId: sku.id,
-				},
-			],
-			currencyCode: 'USD',
-		},
-		cart.id
-	);
-
-	const order = await apiHelpers.headlessCommerceAdminOrder.getOrder(cart.id);
-
-	expect(order.total).toBe(30);
-});
+			await expect(
+				await commerceCartPage.commerceOrderItemsTableRowQuantityInput(
+					product.name['en_US']
+				)
+			).toHaveValue('1.22', {timeout: 500});
+		}).toPass({timeout: 5000});
+	}
+);
 
 test(
-	'COMMERCE-7695 Clicking a cart item in the Cart widget redirects to the product details page',
+	'Cart updates when order is open',
+	{tag: '@LPD-29864'},
+	async ({apiHelpers}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: 'Cart Site',
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: 'Cart Catalog',
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: 'Product1'},
+				skus: [
+					{
+						cost: 0,
+						price: 10,
+						published: true,
+						purchasable: true,
+						sku: 'Sku' + getRandomInt(),
+					},
+				],
+			});
+
+		const productSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product.productId)
+			.then((product) => {
+				return product.skus;
+			});
+
+		const sku = productSkus[0];
+
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			name: 'Cart Account',
+			type: 'person',
+		});
+
+		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+			account.id,
+			['test@liferay.com']
+		);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [
+					{
+						quantity: 1,
+						skuId: sku.id,
+					},
+				],
+				currencyCode: 'USD',
+			},
+			channel.id
+		);
+
+		await apiHelpers.headlessCommerceAdminOrder.patchOrder(cart.id, {
+			shippingAmount: 10,
+		});
+
+		await apiHelpers.headlessCommerceDeliveryCart.patchCart(
+			{
+				accountId: account.id,
+				cartItems: [
+					{
+						quantity: 2,
+						skuId: sku.id,
+					},
+				],
+				currencyCode: 'USD',
+			},
+			cart.id
+		);
+
+		const order = await apiHelpers.headlessCommerceAdminOrder.getOrder(
+			cart.id
+		);
+
+		expect(order.total).toBe(30);
+	}
+);
+
+test(
+	'Clicking a cart item in the Cart widget redirects to the product details page',
 	{tag: '@COMMERCE-7695'},
 	async ({
 		apiHelpers,

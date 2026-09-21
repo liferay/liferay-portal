@@ -12,6 +12,8 @@ import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import getRandomString from '../../../../utils/getRandomString';
+import {performUserSwitchViaApi} from '../../../../utils/performLogin';
+import {createAccountWithBuyerUser} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -22,80 +24,88 @@ export const test = mergeTests(
 	pageViewModePagesTest
 );
 
-test('LPD-3360 Checkout with single approval', async ({
-	apiHelpers,
-	commerceAdminChannelsPage,
-	commerceMiniCartPage,
-	page,
-	site,
-	widgetPagePage,
-}) => {
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
-		title: getRandomString(),
-	});
-
-	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
-		siteGroupId: site.id,
-	});
-
-	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-		name: `${site.name} Catalog`,
-	});
-
-	const product1 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-		catalogId: catalog.id,
-		name: {en_US: 'Product1'},
-	});
-
-	const product1Skus = await apiHelpers.headlessCommerceAdminCatalog
-		.getProduct(product1.productId)
-		.then((product) => {
-			return product.skus;
+test(
+	'Checkout with single approval',
+	{tag: '@LPD-3360'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		page,
+		site,
+		widgetPagePage,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
 		});
 
-	const sku1 = product1Skus[0];
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
 
-	const account = await apiHelpers.headlessAdminUser.postAccount({
-		name: getRandomString(),
-		type: 'business',
-	});
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: `${site.name} Catalog`,
+			});
 
-	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-		account.id,
-		['test@liferay.com']
-	);
+		const product1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: 'Product1'},
+			});
 
-	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
-		channel.name,
-		'B2B'
-	);
+		const product1Skus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProduct(product1.productId)
+			.then((product) => {
+				return product.skus;
+			});
 
-	await commerceAdminChannelsPage.changeCommerceChannelBuyerOrderApprovalWorkflow(
-		'Single Approver (Version 1)',
-		channel.name
-	);
+		const sku1 = product1Skus[0];
 
-	await apiHelpers.headlessCommerceDeliveryCart.postCart(
-		{
-			accountId: account.id,
-			cartItems: [
-				{
-					options: '[]',
-					quantity: 1,
-					replacedSkuId: 0,
-					skuId: sku1.id,
-				},
-			],
-		},
-		channel.id
-	);
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
 
-	await widgetPagePage.addPortlet('Cart Summary');
+		await commerceAdminChannelsPage.changeCommerceChannelBuyerOrderApprovalWorkflow(
+			'Single Approver (Version 1)',
+			channel.name
+		);
 
-	await commerceMiniCartPage.submitButton.waitFor({state: 'visible'});
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
-	await expect(commerceMiniCartPage.submitButton).toBeVisible();
-});
+		await widgetPagePage.addPortlet('Cart Summary');
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+			{
+				accountId: account.id,
+				cartItems: [
+					{
+						options: '[]',
+						quantity: 1,
+						replacedSkuId: 0,
+						skuId: sku1.id,
+					},
+				],
+			},
+			channel.id
+		);
+
+		await expect(async () => {
+			await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+			await expect(commerceMiniCartPage.submitButton).toBeVisible({
+				timeout: 500,
+			});
+		}).toPass({timeout: 5000});
+	}
+);
