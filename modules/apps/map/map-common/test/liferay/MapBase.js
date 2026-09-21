@@ -122,6 +122,25 @@ describe('MapBase', () => {
 			});
 			expect(mapImpl.zoom).toBe(2);
 		});
+
+		it('requests the browser geolocation with a timeout', () => {
+			const getCurrentPosition = jest.fn();
+
+			navigator.geolocation = {getCurrentPosition};
+
+			try {
+				new MapImpl();
+
+				expect(getCurrentPosition).toHaveBeenCalledWith(
+					expect.any(Function),
+					expect.any(Function),
+					{timeout: 10000}
+				);
+			}
+			finally {
+				delete navigator.geolocation;
+			}
+		});
 	});
 
 	describe('destructor()', () => {
