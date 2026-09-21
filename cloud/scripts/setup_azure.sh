@@ -6,6 +6,10 @@ set -o pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/_azure_common.sh"
 
+_CONFIG_JSON_DEFAULTS_FILE="${SCRIPTS_DIR}/config.json.defaults"
+
+readonly _CONFIG_JSON_DEFAULTS_FILE
+
 function main {
 	if [ ${#} -eq 0 ]
 	then
@@ -20,20 +24,24 @@ function main {
 
 	validate_config_json "${1}"
 
-	generate_tfvars "${1}" "aks"
+	local configuration_json_file
 
-	generate_tfvars "${1}" "platform"
+	configuration_json_file=$(_resolve_config_json "${1}")
 
-	az_login "${1}"
+	generate_tfvars "${configuration_json_file}" "aks"
+
+	generate_tfvars "${configuration_json_file}" "platform"
+
+	az_login "${configuration_json_file}"
 
 	local terraform_args=()
 
 	while IFS= read -r terraform_arg
 	do
 		terraform_args+=("${terraform_arg}")
-	done < <(get_terraform_args "${1}")
+	done < <(get_terraform_args "${configuration_json_file}")
 
-	if jq --exit-status '.tfstate | objects' "${1}" &> /dev/null
+	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
 	then
 		local container_name
 		local deployment_name
@@ -41,11 +49,11 @@ function main {
 		local resource_group_name
 		local storage_account_name
 
-		container_name="$(jq --raw-output '.tfstate.container_name' "${1}")"
-		deployment_name="$(jq --raw-output '.deployment_name' "${1}")"
-		region="$(jq --raw-output '.region' "${1}")"
-		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${1}")"
-		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${1}")"
+		container_name="$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")"
+		deployment_name="$(jq --raw-output '.deployment_name' "${configuration_json_file}")"
+		region="$(jq --raw-output '.region' "${configuration_json_file}")"
+		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${configuration_json_file}")"
+		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${configuration_json_file}")"
 
 		_create_tfstate_storage "${container_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 
@@ -60,7 +68,7 @@ function main {
 
 	_set_up_azure_platform "${terraform_args[@]}"
 
-	_install_liferay_platform_chart "${1}"
+	_install_liferay_platform_chart "${configuration_json_file}"
 }
 
 function _configure_storage_account {
@@ -152,6 +160,51 @@ function _create_tfstate_storage {
 	else
 		_log "Storage container ${container_name} already exists. Skipping creation process."
 	fi
+}
+
+function _get_artifact_values {
+	local configuration_json_file="${1}"
+
+	jq \
+		'.artifacts
+		| "oci://\(.registries.helm_chart)" as $helm_chart_registry
+		| {
+			platformComponents: {
+				repoURL: "\($helm_chart_registry)/liferay-platform-components",
+				targetRevision: .charts."liferay-platform-components",
+				values: {
+					infrastructure: {
+						repoURL: "\($helm_chart_registry)/liferay-infrastructure",
+						targetRevision: .charts."liferay-infrastructure"
+					},
+					infrastructureProvider: {
+						repoURL: "\($helm_chart_registry)/liferay-azure-infrastructure-provider",
+						targetRevision: .charts."liferay-azure-infrastructure-provider"
+					},
+					liferay: {
+						repoURL: "\($helm_chart_registry)/liferay-azure",
+						targetRevision: .charts."liferay-azure"
+					},
+					observability: {
+						repoURL: "\($helm_chart_registry)/observability",
+						targetRevision: .charts.observability
+					},
+					operatorApplications: {
+						dxpOperator: {
+							repoURL: "\($helm_chart_registry)/liferay-dxp-operator",
+							targetRevision: .charts."liferay-dxp-operator",
+							values: {
+								image: {
+									repository: "\(.registries.container_image)/liferay-dxp-operator",
+									tag: .images."liferay-dxp-operator"
+								}
+							}
+						}
+					}
+				}
+			}
+		}' \
+		"${configuration_json_file}"
 }
 
 function _get_keda_operator_application {
@@ -267,8 +320,8 @@ function _install_liferay_platform_chart {
 	local platform_repo_url
 	local platform_target_revision
 
-	platform_repo_url=$(jq --raw-output '.platform.repoURL // "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-platform"' "${configuration_json_file}")
-	platform_target_revision=$(jq --raw-output --slurpfile chart_versions "${SCRIPTS_DIR}/chart_versions.json" '.platform.targetRevision // $chart_versions[0]."liferay-platform"' "${configuration_json_file}")
+	platform_repo_url=$(jq --raw-output '"oci://\(.artifacts.registries.helm_chart)/liferay-platform"' "${configuration_json_file}")
+	platform_target_revision=$(jq --raw-output '.artifacts.charts."liferay-platform"' "${configuration_json_file}")
 
 	echo "Applying the Liferay platform root application."
 
@@ -284,6 +337,10 @@ function _install_liferay_platform_chart {
 
 	tenant_id=$(jq --raw-output '.tenant_id' "${configuration_json_file}")
 
+	local artifact_values
+
+	artifact_values=$(_get_artifact_values "${configuration_json_file}")
+
 	local keda_operator_application
 
 	keda_operator_application=$(_get_keda_operator_application "${platform_module_outputs}" "${tenant_id}")
@@ -297,13 +354,14 @@ function _install_liferay_platform_chart {
 	observability_parameters=$(_get_observability_parameters "${platform_module_outputs}" "${tenant_id}")
 
 	jq \
+		--argjson artifact_values "${artifact_values}" \
 		--argjson keda_operator_application "${keda_operator_application}" \
 		--argjson liferay_parameters "${liferay_parameters}" \
 		--argjson observability_parameters "${observability_parameters}" \
 		--argjson platform_module_outputs "${platform_module_outputs}" \
 		--null-input \
 		--slurpfile configuration "${configuration_json_file}" \
-		'($configuration[0].platform.values // {}) * {
+		'{
 			platformComponents: {
 				values: (($configuration[0].platformComponents.values // {}) * {
 					clusterSecretStore: {
@@ -340,7 +398,7 @@ function _install_liferay_platform_chart {
 					}
 				})
 			}
-		}' \
+		} * $artifact_values' \
 	| helm \
 		upgrade \
 		liferay-platform \
@@ -353,6 +411,18 @@ function _install_liferay_platform_chart {
 
 function _log {
 	echo "[Tfstate storage configuration] ${1}"
+}
+
+function _resolve_config_json {
+	local configuration_json_file="${1}"
+
+	local resolved_configuration_json_file
+
+	resolved_configuration_json_file=$(mktemp)
+
+	jq --slurp '.[0] * .[1]' "${_CONFIG_JSON_DEFAULTS_FILE}" "${configuration_json_file}" > "${resolved_configuration_json_file}"
+
+	echo "${resolved_configuration_json_file}"
 }
 
 function _set_up_azure_aks {

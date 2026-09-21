@@ -14,6 +14,13 @@ _VERSIONS_JSON_FILE="${SCRIPTS_DIR}/versions.json"
 readonly _VERSIONS_JSON_FILE
 
 function main {
+	if [[ ${1:-} == --sync ]]
+	then
+		_sync_default_versions
+
+		return
+	fi
+
 	local aws_bootstrap_sources=(
 		"${ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
 		"${ROOT_CLOUD_DIR}/terraform/aws/eks"
@@ -25,7 +32,7 @@ function main {
 
 	local azure_bootstrap_sources=(
 		"${ROOT_CLOUD_DIR}/scripts/_azure_common.sh"
-		"${ROOT_CLOUD_DIR}/scripts/chart_versions.json"
+		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
 		"${ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
 		"${ROOT_CLOUD_DIR}/terraform/azure/aks"
 		"${ROOT_CLOUD_DIR}/terraform/azure/platform"
@@ -80,11 +87,11 @@ function _bump_bootstrap_version {
 
 	local config_json_example_file="${ROOT_CLOUD_DIR}/scripts/config.json.example_${bootstrap_name}"
 
-	local updated_config_json
-
-	updated_config_json=$(jq --arg version "${new_version}" --tab '.options.version = $version' "${config_json_example_file}")
-
-	printf '%s' "${updated_config_json}" > "${config_json_example_file}"
+	_write_json_file \
+		"${config_json_example_file}" \
+		--arg version "${new_version}" \
+		--tab \
+		'.options.version = $version'
 
 	local blame_line
 
@@ -134,15 +141,7 @@ function _bump_operator_version {
 		--expression "${blame_line}s/\"liferay-dxp-operator\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-dxp-operator\": \"${new_version}\"/" \
 		"${_VERSIONS_JSON_FILE}"
 
-	local operator_values_yaml="${ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
-
-	record_chart_file_update \
-		"${operator_values_yaml}" \
-		sed \
-			--in-place \
-			--regexp-extended \
-			--expression "/^image:/,/^[^[:space:]]/ s/^(    tag: ).*/\1${new_version}/" \
-			"${operator_values_yaml}"
+	_update_operator_image_version "${new_version}"
 }
 
 function _check_bootstrap {
@@ -248,16 +247,50 @@ function _record_modified_bootstrap {
 	_MODIFIED_BOOTSTRAPS+=("${bootstrap_name}")
 }
 
-function _update_chart_versions_json {
-	local chart_name="liferay-${1}"
-	local new_version=${2}
+function _sync_default_versions {
+	_update_default_versions
 
-	local chart_versions_json_file="${SCRIPTS_DIR}/chart_versions.json"
+	local operator_version
+
+	operator_version=$(jq --raw-output '."liferay-dxp-operator"' "${_VERSIONS_JSON_FILE}")
+
+	_update_operator_image_version "${operator_version}"
+
+	local default_version_files=(
+		"${ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
+		"${ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
+		"${ROOT_CLOUD_DIR}/helm/platform/values.yaml"
+		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
+		"${ROOT_CLOUD_DIR}/terraform/aws/gitops/resources/terraform.tfvars"
+		"${ROOT_CLOUD_DIR}/terraform/gcp/gitops/resources/terraform.tfvars"
+	)
+
+	if ! git diff --exit-code -- "${default_version_files[@]}"
+	then
+		echo "" >&2
+		echo "The default versions above are out of sync with their Chart.yaml and versions.json versions. Run cloud/scripts/update_default_versions.sh --sync locally and commit the synchronized files." >&2
+
+		exit 1
+	fi
+}
+
+function _update_artifact {
+	local name=${1}
+	local type=${2}
+	local version=${3}
+
+	local config_json_defaults_file="${SCRIPTS_DIR}/config.json.defaults"
 
 	_record_bootstrap_file_update \
 		"azure" \
-		"${chart_versions_json_file}" \
-		_write_chart_versions_json "${chart_name}" "${new_version}" "${chart_versions_json_file}"
+		"${config_json_defaults_file}" \
+		_write_json_file \
+			"${config_json_defaults_file}" \
+			--arg name "${name}" \
+			--arg type "${type}" \
+			--arg version "${version}" \
+			--tab \
+			'.artifacts[$type][$name] = $version'
 }
 
 function _update_default_chart_version {
@@ -267,36 +300,45 @@ function _update_default_chart_version {
 
 	helm_chart_name=$(basename "$(dirname "${helm_chart_yaml}")")
 
-	local new_version
+	local chart_name
 
-	new_version=$(yq '.version' "${helm_chart_yaml}")
+	chart_name=$(yq '.name' "${helm_chart_yaml}")
 
-	case "${helm_chart_name}" in
-		"aws" | "gcp")
-			_update_resources_tfvars "${helm_chart_name}" "liferay_helm_chart_version" "${new_version}"
-			;;
-		"aws-infrastructure" | "gcp-infrastructure")
-			_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_helm_chart_version" "${new_version}"
-			;;
-		"aws-infrastructure-provider" | "gcp-infrastructure-provider")
-			_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_provider_helm_chart_version" "${new_version}"
-			;;
-		"dxp-operator")
-			_update_platform_components_target_revision "liferay-dxp-operator" "${new_version}"
-			;;
-		"observability")
-			_update_platform_components_target_revision "observability" "${new_version}"
+	local version
 
-			_update_resources_tfvars "aws" "observability_helm_chart_version" "${new_version}"
-			_update_resources_tfvars "gcp" "observability_helm_chart_version" "${new_version}"
-			;;
-		"platform")
-			_update_chart_versions_json "${helm_chart_name}" "${new_version}"
-			;;
-		"platform-components")
-			_update_platform_target_revision "${new_version}"
-			;;
-	esac
+	version=$(yq '.version' "${helm_chart_yaml}")
+
+	if [[ ${helm_chart_name} == aws ]] || [[ ${helm_chart_name} == gcp ]]
+	then
+		_update_resources_tfvars "${helm_chart_name}" "liferay_helm_chart_version" "${version}"
+	elif [[ ${helm_chart_name} == aws-infrastructure ]] || [[ ${helm_chart_name} == gcp-infrastructure ]]
+	then
+		_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_helm_chart_version" "${version}"
+	elif [[ ${helm_chart_name} == aws-infrastructure-provider ]] || [[ ${helm_chart_name} == gcp-infrastructure-provider ]]
+	then
+		_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_provider_helm_chart_version" "${version}"
+	elif [[ ${helm_chart_name} == azure ]] || [[ ${helm_chart_name} == azure-infrastructure-provider ]] || [[ ${helm_chart_name} == infrastructure ]] || [[ ${helm_chart_name} == platform ]]
+	then
+		_update_artifact "${chart_name}" "charts" "${version}"
+	elif [[ ${helm_chart_name} == dxp-operator ]]
+	then
+		_update_artifact "${chart_name}" "charts" "${version}"
+
+		_update_platform_components_target_revision "liferay-dxp-operator" "${version}"
+	elif [[ ${helm_chart_name} == observability ]]
+	then
+		_update_artifact "${chart_name}" "charts" "${version}"
+
+		_update_platform_components_target_revision "observability" "${version}"
+
+		_update_resources_tfvars "aws" "observability_helm_chart_version" "${version}"
+		_update_resources_tfvars "gcp" "observability_helm_chart_version" "${version}"
+	elif [[ ${helm_chart_name} == platform-components ]]
+	then
+		_update_artifact "${chart_name}" "charts" "${version}"
+
+		_update_platform_target_revision "${version}"
+	fi
 }
 
 function _update_default_versions {
@@ -308,29 +350,45 @@ function _update_default_versions {
 	done < <(find "${ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f)
 }
 
+function _update_operator_image_version {
+	local version=${1}
+
+	local operator_values_yaml="${ROOT_CLOUD_DIR}/helm/dxp-operator/values.yaml"
+
+	record_chart_file_update \
+		"${operator_values_yaml}" \
+		sed \
+			--in-place \
+			--regexp-extended \
+			--expression "/^image:/,/^[^[:space:]]/ s/^(    tag: ).*/\1${version}/" \
+			"${operator_values_yaml}"
+
+	_update_artifact "liferay-dxp-operator" "images" "${version}"
+}
+
 function _update_platform_components_target_revision {
 	local chart_repository_name=${1}
-	local new_version=${2}
+	local version=${2}
 
 	local platform_components_values_yaml="${ROOT_CLOUD_DIR}/helm/platform-components/values.yaml"
 
 	record_chart_file_update \
 		"${platform_components_values_yaml}" \
 		sed \
-			--expression "\|repoURL: .*/${chart_repository_name}\$|,/targetRevision: / s/\(targetRevision: \).*/\1${new_version}/" \
+			--expression "\|repoURL: .*/${chart_repository_name}\$|,/targetRevision: / s/\(targetRevision: \).*/\1${version}/" \
 			--in-place \
 			"${platform_components_values_yaml}"
 }
 
 function _update_platform_target_revision {
-	local new_version=${1}
+	local version=${1}
 
 	local platform_values_yaml="${ROOT_CLOUD_DIR}/helm/platform/values.yaml"
 
 	record_chart_file_update \
 		"${platform_values_yaml}" \
 		sed \
-			--expression "s/^\(    targetRevision: \).*/\1${new_version}/" \
+			--expression "s/^\(    targetRevision: \).*/\1${version}/" \
 			--in-place \
 			"${platform_values_yaml}"
 }
@@ -338,7 +396,7 @@ function _update_platform_target_revision {
 function _update_resources_tfvars {
 	local cloud=${1}
 	local variable_name=${2}
-	local new_version=${3}
+	local version=${3}
 
 	local resources_tfvars_file="${ROOT_CLOUD_DIR}/terraform/${cloud}/gitops/resources/terraform.tfvars"
 
@@ -346,27 +404,21 @@ function _update_resources_tfvars {
 		"${cloud}" \
 		"${resources_tfvars_file}" \
 		sed \
-			--expression "s/\(${variable_name} *= *\)\".*\"/\1\"${new_version}\"/" \
+			--expression "s/\(${variable_name} *= *\)\".*\"/\1\"${version}\"/" \
 			--in-place \
 			"${resources_tfvars_file}"
 }
 
-function _write_chart_versions_json {
-	local chart_name=${1}
-	local new_version=${2}
-	local chart_versions_json_file=${3}
+function _write_json_file {
+	local file=${1}
 
-	local updated_chart_versions_json
+	shift
 
-	updated_chart_versions_json=$( \
-		jq \
-			--arg chart_name "${chart_name}" \
-			--arg version "${new_version}" \
-			--tab \
-			'.[$chart_name] = $version' \
-			"${chart_versions_json_file}")
+	local updated_json
 
-	printf '%s' "${updated_chart_versions_json}" > "${chart_versions_json_file}"
+	updated_json=$(jq "${@}" "${file}")
+
+	printf '%s' "${updated_json}" > "${file}"
 }
 
 main "${@}"

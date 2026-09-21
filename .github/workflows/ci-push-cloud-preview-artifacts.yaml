@@ -1,0 +1,103 @@
+concurrency:
+    cancel-in-progress: true
+    group: push-cloud-preview-artifacts-${{github.ref_name}}
+defaults:
+    run:
+        shell: bash
+jobs:
+    check-default-versions:
+        needs: check-repository
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 1
+                    filter: tree:0
+                    show-progress: false
+                    sparse-checkout: cloud
+            -   name: Check default versions
+                run: cloud/scripts/update_default_versions.sh --sync
+    check-repository:
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Check repository
+                run: |
+                    echo "The repository is cloudnative-team/liferay-portal. All preview artifacts will be pushed."
+    push-bootstrap:
+        needs:
+            -   check-default-versions
+            -   push-chart
+            -   push-image-dxp-operator
+        strategy:
+            fail-fast: false
+            matrix:
+                provider:
+                    -   aws
+                    -   azure
+                    -   gcp
+        uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
+        with:
+            is_preview: true
+            provider: ${{matrix.provider}}
+    push-chart:
+        needs: check-repository
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    -   chart_name: liferay-aws
+                        working_directory: ./cloud/helm/aws
+                    -   chart_name: liferay-aws-infrastructure
+                        working_directory: ./cloud/helm/aws-infrastructure
+                    -   chart_name: liferay-aws-infrastructure-provider
+                        working_directory: ./cloud/helm/aws-infrastructure-provider
+                    -   chart_name: liferay-azure
+                        working_directory: ./cloud/helm/azure
+                    -   chart_name: liferay-azure-infrastructure-provider
+                        working_directory: ./cloud/helm/azure-infrastructure-provider
+                    -   chart_name: liferay-default
+                        working_directory: ./cloud/helm/default
+                    -   chart_name: liferay-dxp-operator
+                        working_directory: ./cloud/helm/dxp-operator
+                    -   chart_name: liferay-gcp
+                        working_directory: ./cloud/helm/gcp
+                    -   chart_name: liferay-gcp-infrastructure
+                        working_directory: ./cloud/helm/gcp-infrastructure
+                    -   chart_name: liferay-gcp-infrastructure-provider
+                        working_directory: ./cloud/helm/gcp-infrastructure-provider
+                    -   chart_name: liferay-infrastructure
+                        working_directory: ./cloud/helm/infrastructure
+                    -   chart_name: liferay-platform
+                        working_directory: ./cloud/helm/platform
+                    -   chart_name: liferay-platform-components
+                        working_directory: ./cloud/helm/platform-components
+                    -   chart_name: observability
+                        working_directory: ./cloud/helm/observability
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: ${{matrix.chart_name}}
+            working_directory: ${{matrix.working_directory}}
+    push-image-dxp-operator:
+        needs: check-repository
+        uses: ./.github/workflows/ci-reusable-push-container-image.yaml
+        with:
+            image_name: liferay-dxp-operator
+            sparse_checkout: |
+                cloud/operator
+                cloud/scripts
+            working_directory: ./cloud/operator
+on:
+    push:
+        branches:
+            -   LCD-*
+        paths:
+            -   .github/workflows/ci-push-cloud-preview-artifacts.yaml
+            -   .github/workflows/ci-reusable-push-bootstrap-tarball.yaml
+            -   .github/workflows/ci-reusable-push-container-image.yaml
+            -   .github/workflows/ci-reusable-push-helm-chart.yaml
+            -   cloud/**
+permissions:
+    contents: read
+    id-token: write

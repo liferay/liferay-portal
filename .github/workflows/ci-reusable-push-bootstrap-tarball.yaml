@@ -47,11 +47,44 @@ jobs:
 
                         echo "OBJECT_BASENAME=${object_basename}" >> ${GITHUB_ENV}
 
-                        local object_name="${BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr '/' '-')/liferay-${provider}-bootstrap/${object_basename}"
+                        local object_name
+
+                        object_name="${BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr '/' '-')/liferay-${provider}-bootstrap/${object_basename}"
 
                         echo "OBJECT_NAME=${object_name}" >> ${GITHUB_ENV}
                         echo "object_name=${object_name}" >> ${GITHUB_OUTPUT}
                         echo "version=${version}" >> ${GITHUB_OUTPUT}
+                    }
+
+                    main "${@}"
+            -   env:
+                    CONTAINER_IMAGE_REGISTRY_NONPRODUCTION: ${{vars.CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}}
+                    HELM_CHART_REGISTRY_NONPRODUCTION: ${{vars.HELM_CHART_REGISTRY_NONPRODUCTION}}
+                if: ${{inputs.is_preview}}
+                name: Point the artifacts at the preview registries
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local config_json_defaults_file="./cloud/scripts/config.json.defaults"
+
+                        local registry_path_suffix
+
+                        registry_path_suffix="$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')/${GITHUB_SHA::7}"
+
+                        local updated_config_json_defaults
+
+                        updated_config_json_defaults=$( \
+                            jq \
+                                --arg container_image_registry "${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
+                                --arg helm_chart_registry "${HELM_CHART_REGISTRY_NONPRODUCTION}/${registry_path_suffix}" \
+                                --tab \
+                                '.artifacts.registries.container_image = $container_image_registry | .artifacts.registries.helm_chart = $helm_chart_registry' \
+                                "${config_json_defaults_file}")
+
+                        printf '%s' "${updated_config_json_defaults}" > "${config_json_defaults_file}"
                     }
 
                     main "${@}"
@@ -78,7 +111,7 @@ jobs:
                         then
                             files=(
                                 cloud/scripts/_azure_common.sh
-                                cloud/scripts/chart_versions.json
+                                cloud/scripts/config.json.defaults
                                 cloud/scripts/setup_azure.sh
                                 cloud/terraform/azure/aks/*
                                 cloud/terraform/azure/platform/*
@@ -120,6 +153,10 @@ jobs:
 on:
     workflow_call:
         inputs:
+            is_preview:
+                default: false
+                required: false
+                type: boolean
             provider:
                 required: true
                 type: string
