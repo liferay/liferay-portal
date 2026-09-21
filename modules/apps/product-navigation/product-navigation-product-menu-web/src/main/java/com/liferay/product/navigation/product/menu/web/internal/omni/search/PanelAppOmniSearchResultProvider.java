@@ -76,11 +76,11 @@ public class PanelAppOmniSearchResultProvider
 
 	private void _addOmniSearchResult(
 			HttpServletRequest httpServletRequest, Locale locale,
-			String lowerCaseKeywords, List<OmniSearchResult> omniSearchResults,
+			String lowerCaseKeywords, List<OmniSearchResult> omniSearchResults1,
 			String rootPanelCategoryKey, ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		List<OmniSearchResult> entryOmniSearchResults = new ArrayList<>();
+		List<OmniSearchResult> omniSearchResults2 = new ArrayList<>();
 
 		for (PanelCategory childPanelCategory :
 				_panelCategoryHelper.getChildPanelCategories(
@@ -88,9 +88,9 @@ public class PanelAppOmniSearchResultProvider
 
 			_addOmniSearchResults(
 				httpServletRequest, locale, lowerCaseKeywords,
-				entryOmniSearchResults, childPanelCategory, null, themeDisplay);
+				omniSearchResults2, childPanelCategory, null, themeDisplay);
 
-			if (entryOmniSearchResults.size() >=
+			if (omniSearchResults2.size() >=
 					OmniSearchConstants.MAX_ENTRIES_PER_SECTION) {
 
 				break;
@@ -102,10 +102,10 @@ public class PanelAppOmniSearchResultProvider
 
 				_addOmniSearchResults(
 					httpServletRequest, locale, lowerCaseKeywords,
-					entryOmniSearchResults, grandchildPanelCategory,
+					omniSearchResults2, grandchildPanelCategory,
 					childPanelCategory.getLabel(locale), themeDisplay);
 
-				if (entryOmniSearchResults.size() >=
+				if (omniSearchResults2.size() >=
 						OmniSearchConstants.MAX_ENTRIES_PER_SECTION) {
 
 					break;
@@ -113,13 +113,13 @@ public class PanelAppOmniSearchResultProvider
 			}
 		}
 
-		if (entryOmniSearchResults.isEmpty()) {
+		if (omniSearchResults2.isEmpty()) {
 			return;
 		}
 
-		omniSearchResults.add(
+		omniSearchResults1.add(
 			new OmniSearchResult(
-				"grid", entryOmniSearchResults,
+				"grid", omniSearchResults2,
 				_getRootPanelCategoryLabel(locale, rootPanelCategoryKey)));
 	}
 

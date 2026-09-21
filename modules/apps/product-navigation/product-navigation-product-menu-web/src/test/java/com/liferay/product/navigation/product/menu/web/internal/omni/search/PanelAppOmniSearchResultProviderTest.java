@@ -126,31 +126,28 @@ public class PanelAppOmniSearchResultProviderTest {
 		Assert.assertEquals(
 			omniSearchResults.toString(), 1, omniSearchResults.size());
 
-		OmniSearchResult sectionOmniSearchResult = omniSearchResults.get(0);
+		OmniSearchResult omniSearchResult = omniSearchResults.get(0);
 
-		Assert.assertEquals("grid", sectionOmniSearchResult.getIcon());
+		Assert.assertEquals("grid", omniSearchResult.getIcon());
+		Assert.assertEquals("applications-menu", omniSearchResult.getTitle());
 		Assert.assertEquals(
-			"applications-menu", sectionOmniSearchResult.getTitle());
-		Assert.assertEquals(
-			OmniSearchResult.Type.SECTION, sectionOmniSearchResult.getType());
+			OmniSearchResult.Type.SECTION, omniSearchResult.getType());
 
-		List<OmniSearchResult> entryOmniSearchResults =
-			sectionOmniSearchResult.getOmniSearchResults();
+		omniSearchResults = omniSearchResult.getOmniSearchResults();
 
 		Assert.assertEquals(
-			entryOmniSearchResults.toString(), 1,
-			entryOmniSearchResults.size());
+			omniSearchResults.toString(), 1, omniSearchResults.size());
 
-		OmniSearchResult entryOmniSearchResult = entryOmniSearchResults.get(0);
+		omniSearchResult = omniSearchResults.get(0);
 
-		Assert.assertEquals("Users", entryOmniSearchResult.getDescription());
-		Assert.assertEquals("grid", entryOmniSearchResult.getIcon());
+		Assert.assertEquals("Users", omniSearchResult.getDescription());
+		Assert.assertEquals("grid", omniSearchResult.getIcon());
 		Assert.assertEquals(
-			"Users and Organizations", entryOmniSearchResult.getTitle());
+			"Users and Organizations", omniSearchResult.getTitle());
 		Assert.assertEquals(
-			OmniSearchResult.Type.ENTRY, entryOmniSearchResult.getType());
+			OmniSearchResult.Type.ENTRY, omniSearchResult.getType());
 		Assert.assertEquals(
-			String.valueOf(portletURL), entryOmniSearchResult.getURL());
+			String.valueOf(portletURL), omniSearchResult.getURL());
 	}
 
 	@Test
@@ -167,23 +164,20 @@ public class PanelAppOmniSearchResultProviderTest {
 		List<OmniSearchResult> omniSearchResults = _getOmniSearchResults(
 			"organizations");
 
-		OmniSearchResult sectionOmniSearchResult = omniSearchResults.get(0);
+		OmniSearchResult omniSearchResult = omniSearchResults.get(0);
+
+		Assert.assertEquals("applications-menu", omniSearchResult.getTitle());
+
+		omniSearchResults = omniSearchResult.getOmniSearchResults();
 
 		Assert.assertEquals(
-			"applications-menu", sectionOmniSearchResult.getTitle());
+			omniSearchResults.toString(), 1, omniSearchResults.size());
 
-		List<OmniSearchResult> entryOmniSearchResults =
-			sectionOmniSearchResult.getOmniSearchResults();
-
-		Assert.assertEquals(
-			entryOmniSearchResults.toString(), 1,
-			entryOmniSearchResults.size());
-
-		OmniSearchResult entryOmniSearchResult = entryOmniSearchResults.get(0);
+		omniSearchResult = omniSearchResults.get(0);
 
 		Assert.assertEquals(
-			"Users \u203a Memberships", entryOmniSearchResult.getDescription());
-		Assert.assertEquals("Organizations", entryOmniSearchResult.getTitle());
+			"Users \u203a Memberships", omniSearchResult.getDescription());
+		Assert.assertEquals("Organizations", omniSearchResult.getTitle());
 	}
 
 	@Test
@@ -224,14 +218,13 @@ public class PanelAppOmniSearchResultProviderTest {
 		Assert.assertEquals(
 			omniSearchResults.toString(), 2, omniSearchResults.size());
 
-		for (OmniSearchResult sectionOmniSearchResult : omniSearchResults) {
-			List<OmniSearchResult> entryOmniSearchResults =
-				sectionOmniSearchResult.getOmniSearchResults();
+		for (OmniSearchResult omniSearchResult : omniSearchResults) {
+			omniSearchResults = omniSearchResult.getOmniSearchResults();
 
 			Assert.assertEquals(
-				entryOmniSearchResults.toString(),
+				omniSearchResults.toString(),
 				OmniSearchConstants.MAX_ENTRIES_PER_SECTION,
-				entryOmniSearchResults.size());
+				omniSearchResults.size());
 		}
 
 		Mockito.verify(
