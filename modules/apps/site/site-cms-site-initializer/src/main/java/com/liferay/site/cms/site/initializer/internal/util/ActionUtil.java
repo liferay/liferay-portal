@@ -295,15 +295,16 @@ public class ActionUtil {
 		ObjectLayout objectLayout = _getGroupObjectLayout(objectDefinition);
 
 		if (objectLayout != null) {
-			layoutStructure = _addObjectLayoutFragmentEntryLinks(
-				formManager, fragmentEntryLinkListenerRegistry,
-				addedFragmentEntryLinks, fragmentEntryLinkService,
-				fragmentRendererRegistry, infoFieldSet, layout, layoutStructure,
-				formStyledLayoutStructureItem, objectLayout,
-				segmentsExperienceId, serviceContext);
+			layoutStructure =
+				_addObjectLayoutFragmentEntryLinksToLayoutStructure(
+					formManager, fragmentEntryLinkListenerRegistry,
+					addedFragmentEntryLinks, fragmentEntryLinkService,
+					fragmentRendererRegistry, infoFieldSet, layout,
+					layoutStructure, formStyledLayoutStructureItem,
+					objectLayout, segmentsExperienceId, serviceContext);
 		}
 		else {
-			layoutStructure = _addInputFragmentEntryLinks(
+			layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
 				true, formManager, fragmentEntryLinkListenerRegistry,
 				addedFragmentEntryLinks, fragmentEntryLinkService,
 				fragmentRendererRegistry, infoFieldSet, layout, layoutStructure,
@@ -408,7 +409,7 @@ public class ActionUtil {
 			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
 			serviceContext);
 
-		layoutStructure = _addInputFragmentEntryLinks(
+		layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
 			false, formManager, fragmentEntryLinkListenerRegistry,
 			addedFragmentEntryLinks, fragmentEntryLinkService,
 			fragmentRendererRegistry,
@@ -472,7 +473,7 @@ public class ActionUtil {
 			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
 			serviceContext);
 
-		layoutStructure = _addInputFragmentEntryLinks(
+		layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
 			false, formManager, fragmentEntryLinkListenerRegistry,
 			addedFragmentEntryLinks, fragmentEntryLinkService,
 			fragmentRendererRegistry,
@@ -1295,13 +1296,16 @@ public class ActionUtil {
 		return getBaseViewFolderURL(themeDisplay) + objectEntryFolderId;
 	}
 
-	private static LayoutStructure _addAccordionFragmentEntryLink(
-			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
-			FragmentEntryLinkService fragmentEntryLinkService,
-			FragmentRendererRegistry fragmentRendererRegistry, String itemId,
-			Layout layout, LayoutStructure layoutStructure, String parentItemId,
-			long segmentsExperienceId, ServiceContext serviceContext,
-			JSONObject stylesJSONObject, JSONObject titleJSONObject)
+	private static LayoutStructure
+			_addAccordionFragmentEntryLinkToLayoutStructure(
+				FragmentEntryLinkListenerRegistry
+					fragmentEntryLinkListenerRegistry,
+				FragmentEntryLinkService fragmentEntryLinkService,
+				FragmentRendererRegistry fragmentRendererRegistry,
+				String itemId, Layout layout, LayoutStructure layoutStructure,
+				String parentItemId, long segmentsExperienceId,
+				ServiceContext serviceContext, JSONObject stylesJSONObject,
+				JSONObject titleJSONObject)
 		throws Exception {
 
 		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
@@ -1326,7 +1330,7 @@ public class ActionUtil {
 		layoutStructureItem.updateItemConfig(
 			JSONUtil.put("styles", stylesJSONObject));
 
-		return _persistAndRefetchLayoutStructure(
+		return _updateLayoutStructure(
 			fragmentEntryLink, fragmentEntryLinkListenerRegistry, layout,
 			layoutStructure, segmentsExperienceId, serviceContext);
 	}
@@ -1590,7 +1594,7 @@ public class ActionUtil {
 		}
 	}
 
-	private static LayoutStructure _addInputFragmentEntryLinks(
+	private static LayoutStructure _addInputFragmentEntryLinksToLayoutStructure(
 			boolean editMode, FormManager formManager,
 			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
 			List<FragmentEntryLink> fragmentEntryLinks,
@@ -1607,7 +1611,7 @@ public class ActionUtil {
 		if (infoFieldSet.isRelationship()) {
 			String accordionItemId = PortalUUIDUtil.generate();
 
-			layoutStructure = _addAccordionFragmentEntryLink(
+			layoutStructure = _addAccordionFragmentEntryLinkToLayoutStructure(
 				fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
 				fragmentRendererRegistry, accordionItemId, layout,
 				layoutStructure, layoutStructureItem.getItemId(),
@@ -1651,7 +1655,7 @@ public class ActionUtil {
 					stylesJSONObject, serviceContext);
 			}
 			else if (infoFieldSetEntry instanceof InfoFieldSet) {
-				layoutStructure = _addInputFragmentEntryLinks(
+				layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
 					editMode, formManager, fragmentEntryLinkListenerRegistry,
 					fragmentEntryLinks, fragmentEntryLinkService,
 					fragmentRendererRegistry, (InfoFieldSet)infoFieldSetEntry,
@@ -1664,16 +1668,19 @@ public class ActionUtil {
 		return layoutStructure;
 	}
 
-	private static LayoutStructure _addObjectLayoutFragmentEntryLinks(
-			FormManager formManager,
-			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
-			List<FragmentEntryLink> fragmentEntryLinks,
-			FragmentEntryLinkService fragmentEntryLinkService,
-			FragmentRendererRegistry fragmentRendererRegistry,
-			InfoFieldSet infoFieldSet, Layout layout,
-			LayoutStructure layoutStructure,
-			LayoutStructureItem layoutStructureItem, ObjectLayout objectLayout,
-			long segmentsExperienceId, ServiceContext serviceContext)
+	private static LayoutStructure
+			_addObjectLayoutFragmentEntryLinksToLayoutStructure(
+				FormManager formManager,
+				FragmentEntryLinkListenerRegistry
+					fragmentEntryLinkListenerRegistry,
+				List<FragmentEntryLink> fragmentEntryLinks,
+				FragmentEntryLinkService fragmentEntryLinkService,
+				FragmentRendererRegistry fragmentRendererRegistry,
+				InfoFieldSet infoFieldSet, Layout layout,
+				LayoutStructure layoutStructure,
+				LayoutStructureItem layoutStructureItem,
+				ObjectLayout objectLayout, long segmentsExperienceId,
+				ServiceContext serviceContext)
 		throws Exception {
 
 		Map<String, InfoField<?>> infoFields = new HashMap<>();
@@ -1702,7 +1709,7 @@ public class ActionUtil {
 
 		String tabsItemId = PortalUUIDUtil.generate();
 
-		layoutStructure = _addTabsFragmentEntryLink(
+		layoutStructure = _addTabsFragmentEntryLinkToLayoutStructure(
 			fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
 			fragmentRendererRegistry, tabsItemId, layout, layoutStructure,
 			layoutStructureItem.getItemId(), segmentsExperienceId,
@@ -1722,7 +1729,7 @@ public class ActionUtil {
 
 			String tabAccordionItemId = PortalUUIDUtil.generate();
 
-			layoutStructure = _addAccordionFragmentEntryLink(
+			layoutStructure = _addAccordionFragmentEntryLinkToLayoutStructure(
 				fragmentEntryLinkListenerRegistry, fragmentEntryLinkService,
 				fragmentRendererRegistry, tabAccordionItemId, layout,
 				layoutStructure, tabItemId, segmentsExperienceId,
@@ -1752,17 +1759,20 @@ public class ActionUtil {
 								_REPEATABLE_GROUP_NAME_PREFIX.length()));
 
 					if (relationshipInfoFieldSet != null) {
-						layoutStructure = _addInputFragmentEntryLinks(
-							true, formManager,
-							fragmentEntryLinkListenerRegistry,
-							fragmentEntryLinks, fragmentEntryLinkService,
-							fragmentRendererRegistry, relationshipInfoFieldSet,
-							layout, layoutStructure,
-							layoutStructure.getLayoutStructureItem(
-								tabContentItemId),
-							infoFieldSet.getName(), false, segmentsExperienceId,
-							JSONUtil.put("marginBottom", "16px"),
-							serviceContext);
+						layoutStructure =
+							_addInputFragmentEntryLinksToLayoutStructure(
+								true, formManager,
+								fragmentEntryLinkListenerRegistry,
+								fragmentEntryLinks, fragmentEntryLinkService,
+								fragmentRendererRegistry,
+								relationshipInfoFieldSet, layout,
+								layoutStructure,
+								layoutStructure.getLayoutStructureItem(
+									tabContentItemId),
+								infoFieldSet.getName(), false,
+								segmentsExperienceId,
+								JSONUtil.put("marginBottom", "16px"),
+								serviceContext);
 					}
 
 					continue;
@@ -1773,14 +1783,16 @@ public class ActionUtil {
 				if (objectLayoutBox.isCollapsable()) {
 					String boxAccordionItemId = PortalUUIDUtil.generate();
 
-					layoutStructure = _addAccordionFragmentEntryLink(
-						fragmentEntryLinkListenerRegistry,
-						fragmentEntryLinkService, fragmentRendererRegistry,
-						boxAccordionItemId, layout, layoutStructure,
-						tabContentItemId, segmentsExperienceId, serviceContext,
-						JSONUtil.put("marginBottom", "16px"),
-						_getLocalizedNameJSONObject(
-							objectLayoutBox.getNameMap()));
+					layoutStructure =
+						_addAccordionFragmentEntryLinkToLayoutStructure(
+							fragmentEntryLinkListenerRegistry,
+							fragmentEntryLinkService, fragmentRendererRegistry,
+							boxAccordionItemId, layout, layoutStructure,
+							tabContentItemId, segmentsExperienceId,
+							serviceContext,
+							JSONUtil.put("marginBottom", "16px"),
+							_getLocalizedNameJSONObject(
+								objectLayoutBox.getNameMap()));
 
 					boxContentItemId = _getChildrenItemId(
 						tabContentItemId, 0, boxAccordionItemId,
@@ -1825,7 +1837,7 @@ public class ActionUtil {
 		return layoutStructure;
 	}
 
-	private static LayoutStructure _addTabsFragmentEntryLink(
+	private static LayoutStructure _addTabsFragmentEntryLinkToLayoutStructure(
 			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
 			FragmentEntryLinkService fragmentEntryLinkService,
 			FragmentRendererRegistry fragmentRendererRegistry, String itemId,
@@ -1866,7 +1878,7 @@ public class ActionUtil {
 			fragmentEntryLink.getFragmentEntryLinkId(), itemId, parentItemId,
 			-1);
 
-		return _persistAndRefetchLayoutStructure(
+		return _updateLayoutStructure(
 			fragmentEntryLink, fragmentEntryLinkListenerRegistry, layout,
 			layoutStructure, segmentsExperienceId, serviceContext);
 	}
@@ -2032,7 +2044,7 @@ public class ActionUtil {
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
 				layout.getCompanyId(), layoutPageTemplateEntry.getClassName());
 
-		layoutStructure = _addInputFragmentEntryLinks(
+		layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
 			true, formManager, fragmentEntryLinkListenerRegistry,
 			addedFragmentEntryLinks, fragmentEntryLinkService,
 			fragmentRendererRegistry,
@@ -2260,7 +2272,7 @@ public class ActionUtil {
 		return FriendlyURLResolverConstants.URL_SEPARATOR_X_CUSTOM_ASSET;
 	}
 
-	private static LayoutStructure _persistAndRefetchLayoutStructure(
+	private static LayoutStructure _updateLayoutStructure(
 			FragmentEntryLink fragmentEntryLink,
 			FragmentEntryLinkListenerRegistry fragmentEntryLinkListenerRegistry,
 			Layout layout, LayoutStructure layoutStructure,
