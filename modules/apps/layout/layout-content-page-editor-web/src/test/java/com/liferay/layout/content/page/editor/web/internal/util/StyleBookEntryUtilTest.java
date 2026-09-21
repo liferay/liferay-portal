@@ -497,7 +497,6 @@ public class StyleBookEntryUtilTest {
 							"custom:" + _SUCCESS_COLOR_TOKEN_NAME,
 							JSONUtil.put("value", "#CUSTOM")))),
 				_SUCCESS_COLOR_TOKEN_NAME));
-
 		Assert.assertEquals(
 			"#CUSTOM",
 			_getFrontendTokenValue(
@@ -512,7 +511,6 @@ public class StyleBookEntryUtilTest {
 							JSONUtil.put("value", "#CUSTOM")
 						))),
 				_SUCCESS_COLOR_TOKEN_NAME));
-
 		Assert.assertEquals(
 			"#THEME",
 			_getFrontendTokenValue(
