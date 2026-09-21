@@ -236,7 +236,6 @@ public class ActionUtil {
 			infoItemServiceRegistry, infoSearchClassMapperRegistry);
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks,
 			JSONUtil.put(
 				"placeholder",
 				() -> {
@@ -254,10 +253,10 @@ public class ActionUtil {
 
 					return jsonObject;
 				}),
-			formManager, "INPUTS-inline-text-input",
+			formManager, "INPUTS-inline-text-input", addedFragmentEntryLinks,
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, false, segmentsExperienceId,
-			JSONUtil.put("marginBottom", "5"), serviceContext);
+			serviceContext, JSONUtil.put("marginBottom", "5"));
 
 		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
 			StringPool.BLANK,
@@ -278,12 +277,12 @@ public class ActionUtil {
 		}
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager,
-			"INPUTS-friendly-url-input",
+			null, formManager, "INPUTS-friendly-url-input",
+			addedFragmentEntryLinks,
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, false,
-			segmentsExperienceId, JSONUtil.put("marginBottom", "5"),
-			serviceContext);
+			segmentsExperienceId, serviceContext,
+			JSONUtil.put("marginBottom", "5"));
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
@@ -309,8 +308,8 @@ public class ActionUtil {
 				addedFragmentEntryLinks, fragmentEntryLinkService,
 				fragmentRendererRegistry, infoFieldSet, layout, layoutStructure,
 				formStyledLayoutStructureItem, objectDefinition.getName(),
-				false, segmentsExperienceId,
-				JSONUtil.put("marginBottom", "16px"), serviceContext);
+				false, segmentsExperienceId, serviceContext,
+				JSONUtil.put("marginBottom", "16px"));
 		}
 
 		LayoutPageTemplateStructureLocalServiceUtil.
@@ -397,17 +396,17 @@ public class ActionUtil {
 				layout.getPlid());
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
+			null, formManager, "INPUTS-text-input", addedFragmentEntryLinks,
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, true, segmentsExperienceId,
-			JSONUtil.put("marginBottom", "24px"), serviceContext);
+			serviceContext, JSONUtil.put("marginBottom", "24px"));
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
+			null, formManager, "INPUTS-text-input", addedFragmentEntryLinks,
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, true,
-			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
-			serviceContext);
+			segmentsExperienceId, serviceContext,
+			JSONUtil.put("marginBottom", "24px"));
 
 		layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
 			false, formManager, fragmentEntryLinkListenerRegistry,
@@ -415,8 +414,8 @@ public class ActionUtil {
 			fragmentRendererRegistry,
 			(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
 			layoutStructure, formStyledLayoutStructureItem, name, true,
-			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
-			serviceContext);
+			segmentsExperienceId, serviceContext,
+			JSONUtil.put("marginBottom", "24px"));
 
 		FragmentEntryLink localizationSelectFragmentEntryLink =
 			_addFragmentEntryLink(
@@ -461,17 +460,17 @@ public class ActionUtil {
 				"cssClasses", JSONUtil.put("lfr-main-form-container")));
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
+			null, formManager, "INPUTS-text-input", addedFragmentEntryLinks,
 			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
 			formStyledLayoutStructureItem, false, segmentsExperienceId,
-			JSONUtil.put("marginBottom", "24px"), serviceContext);
+			serviceContext, JSONUtil.put("marginBottom", "24px"));
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager, "INPUTS-text-input",
+			null, formManager, "INPUTS-text-input", addedFragmentEntryLinks,
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, false,
-			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
-			serviceContext);
+			segmentsExperienceId, serviceContext,
+			JSONUtil.put("marginBottom", "24px"));
 
 		layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
 			false, formManager, fragmentEntryLinkListenerRegistry,
@@ -479,8 +478,8 @@ public class ActionUtil {
 			fragmentRendererRegistry,
 			(InfoFieldSet)infoForm.getInfoFieldSetEntry(name), layout,
 			layoutStructure, formStyledLayoutStructureItem, name, false,
-			segmentsExperienceId, JSONUtil.put("marginBottom", "24px"),
-			serviceContext);
+			segmentsExperienceId, serviceContext,
+			JSONUtil.put("marginBottom", "24px"));
 
 		localizationSelectFragmentEntryLink = _addFragmentEntryLink(
 			JSONUtil.toString(
@@ -1501,8 +1500,8 @@ public class ActionUtil {
 			List<FragmentEntryLink> fragmentEntryLinks, InfoField<?> infoField,
 			Layout layout, LayoutStructure layoutStructure,
 			LayoutStructureItem layoutStructureItem, boolean readOnly,
-			long segmentsExperienceId, JSONObject stylesJSONObject,
-			ServiceContext serviceContext)
+			long segmentsExperienceId, ServiceContext serviceContext,
+			JSONObject stylesJSONObject)
 		throws Exception {
 
 		if (RelationshipInfoFieldType.INSTANCE ==
@@ -1525,29 +1524,29 @@ public class ActionUtil {
 					RelationshipInfoFieldType.MULTIPLE)) {
 
 				_addInputFragmentEntryLink(
-					fragmentEntryLinks, null, formManager,
-					"INPUTS-multiselector-dropdown", infoField, layout,
-					layoutStructure, layoutStructureItem, readOnly,
-					segmentsExperienceId, stylesJSONObject, serviceContext);
+					null, formManager, "INPUTS-multiselector-dropdown",
+					fragmentEntryLinks, infoField, layout, layoutStructure,
+					layoutStructureItem, readOnly, segmentsExperienceId,
+					serviceContext, stylesJSONObject);
 
 				return;
 			}
 		}
 
 		_addInputFragmentEntryLink(
-			fragmentEntryLinks, null, formManager, null, infoField, layout,
+			null, formManager, null, fragmentEntryLinks, infoField, layout,
 			layoutStructure, layoutStructureItem, readOnly,
-			segmentsExperienceId, stylesJSONObject, serviceContext);
+			segmentsExperienceId, serviceContext, stylesJSONObject);
 	}
 
 	private static void _addInputFragmentEntryLink(
-			List<FragmentEntryLink> fragmentEntryLinks,
 			JSONObject configurationJSONObject, FormManager formManager,
-			String fragmentEntryKey, InfoField<?> infoField, Layout layout,
+			String fragmentEntryKey, List<FragmentEntryLink> fragmentEntryLinks,
+			InfoField<?> infoField, Layout layout,
 			LayoutStructure layoutStructure,
 			LayoutStructureItem layoutStructureItem, boolean readOnly,
-			long segmentsExperienceId, JSONObject stylesJSONObject,
-			ServiceContext serviceContext)
+			long segmentsExperienceId, ServiceContext serviceContext,
+			JSONObject stylesJSONObject)
 		throws Exception {
 
 		if (infoField == null) {
@@ -1604,8 +1603,8 @@ public class ActionUtil {
 			LayoutStructure layoutStructure,
 			LayoutStructureItem layoutStructureItem,
 			String objectDefinitionName, boolean readOnly,
-			long segmentsExperienceId, JSONObject stylesJSONObject,
-			ServiceContext serviceContext)
+			long segmentsExperienceId, ServiceContext serviceContext,
+			JSONObject stylesJSONObject)
 		throws Exception {
 
 		if (infoFieldSet.isRelationship()) {
@@ -1652,7 +1651,7 @@ public class ActionUtil {
 					editMode, formManager, fragmentEntryLinks,
 					(InfoField<?>)infoFieldSetEntry, layout, layoutStructure,
 					layoutStructureItem, readOnly, segmentsExperienceId,
-					stylesJSONObject, serviceContext);
+					serviceContext, stylesJSONObject);
 			}
 			else if (infoFieldSetEntry instanceof InfoFieldSet) {
 				layoutStructure = _addInputFragmentEntryLinksToLayoutStructure(
@@ -1661,7 +1660,7 @@ public class ActionUtil {
 					fragmentRendererRegistry, (InfoFieldSet)infoFieldSetEntry,
 					layout, layoutStructure, layoutStructureItem,
 					objectDefinitionName, readOnly, segmentsExperienceId,
-					stylesJSONObject, serviceContext);
+					serviceContext, stylesJSONObject);
 			}
 		}
 
@@ -1770,9 +1769,8 @@ public class ActionUtil {
 								layoutStructure.getLayoutStructureItem(
 									tabContentItemId),
 								infoFieldSet.getName(), false,
-								segmentsExperienceId,
-								JSONUtil.put("marginBottom", "16px"),
-								serviceContext);
+								segmentsExperienceId, serviceContext,
+								JSONUtil.put("marginBottom", "16px"));
 					}
 
 					continue;
@@ -1826,9 +1824,8 @@ public class ActionUtil {
 						_addInfoFieldFragmentEntryLink(
 							true, formManager, fragmentEntryLinks, infoField,
 							layout, layoutStructure, boxLayoutStructureItem,
-							false, segmentsExperienceId,
-							JSONUtil.put("marginBottom", "16px"),
-							serviceContext);
+							false, segmentsExperienceId, serviceContext,
+							JSONUtil.put("marginBottom", "16px"));
 					}
 				}
 			}
@@ -2008,11 +2005,11 @@ public class ActionUtil {
 			infoItemServiceRegistry, infoSearchClassMapperRegistry);
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager,
-			"INPUTS-inline-text-input",
-			infoForm.getInfoField("ObjectField_title"), layout, layoutStructure,
-			formStyledLayoutStructureItem, true, segmentsExperienceId,
-			JSONUtil.put("marginBottom", "5"), serviceContext);
+			null, formManager, "INPUTS-inline-text-input",
+			addedFragmentEntryLinks, infoForm.getInfoField("ObjectField_title"),
+			layout, layoutStructure, formStyledLayoutStructureItem, true,
+			segmentsExperienceId, serviceContext,
+			JSONUtil.put("marginBottom", "5"));
 
 		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
 			StringPool.BLANK,
@@ -2033,12 +2030,12 @@ public class ActionUtil {
 		}
 
 		_addInputFragmentEntryLink(
-			addedFragmentEntryLinks, null, formManager,
-			"INPUTS-friendly-url-input",
+			null, formManager, "INPUTS-friendly-url-input",
+			addedFragmentEntryLinks,
 			infoForm.getInfoField("objectEntryFriendlyURL"), layout,
 			layoutStructure, formStyledLayoutStructureItem, true,
-			segmentsExperienceId, JSONUtil.put("marginBottom", "5"),
-			serviceContext);
+			segmentsExperienceId, serviceContext,
+			JSONUtil.put("marginBottom", "5"));
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
@@ -2052,7 +2049,7 @@ public class ActionUtil {
 				objectDefinition.getName()),
 			layout, layoutStructure, formStyledLayoutStructureItem,
 			objectDefinition.getName(), true, segmentsExperienceId,
-			JSONUtil.put("marginBottom", "16px"), serviceContext);
+			serviceContext, JSONUtil.put("marginBottom", "16px"));
 
 		LayoutPageTemplateStructureLocalServiceUtil.
 			updateLayoutPageTemplateStructureData(
