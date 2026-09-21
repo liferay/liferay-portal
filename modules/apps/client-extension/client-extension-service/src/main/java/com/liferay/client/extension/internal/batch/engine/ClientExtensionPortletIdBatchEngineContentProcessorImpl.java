@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Dániel Szimkó
  */
 @Component(
-	property = "field.name=*", service = BatchEngineContentProcessor.class
+	service = BatchEngineContentProcessor.class
 )
 public class ClientExtensionPortletIdBatchEngineContentProcessorImpl
 	implements BatchEngineContentProcessor {
