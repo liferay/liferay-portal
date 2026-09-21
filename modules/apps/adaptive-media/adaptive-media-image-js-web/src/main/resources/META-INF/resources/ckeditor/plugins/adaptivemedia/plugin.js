@@ -33,13 +33,17 @@ function sourceTagTemplate({media, srcset}) {
 
 					event.cancel();
 
-					if (typeof event.data.commandData === 'function') {
-						instance._imageSelectorCallback =
-							event.data.commandData;
-					}
+					const imageSelectorCallback =
+						typeof event.data.commandData === 'function'
+							? event.data.commandData
+							: null;
 
 					const onSelectedImageChangeFn =
-						instance._onSelectedImageChange.bind(instance, editor);
+						instance._onSelectedImageChange.bind(
+							instance,
+							editor,
+							imageSelectorCallback
+						);
 
 					editor.execCommand(
 						'imageselector',
@@ -122,17 +126,30 @@ function sourceTagTemplate({media, srcset}) {
 			return pictureEl;
 		},
 
-		_onSelectedImageChange(editor, imageSrc, selectedItem) {
+		_onSelectedImageChange(
+			editor,
+			imageSelectorCallback,
+			imageSrc,
+			selectedItem
+		) {
 			const instance = this;
-
-			if (instance._imageSelectorCallback) {
-				instance._imageSelectorCallback(imageSrc);
-			}
-
-			let element;
 
 			const fileEntryAttributeName =
 				editor.config.adaptiveMediaFileEntryAttributeName;
+
+			if (imageSelectorCallback) {
+				imageSelectorCallback(imageSrc);
+
+				instance._setFileEntryId(
+					editor,
+					fileEntryAttributeName,
+					selectedItem
+				);
+
+				return;
+			}
+
+			let element;
 
 			if (
 				selectedItem.returnType === STR_ADAPTIVE_MEDIA_URL_RETURN_TYPE
@@ -154,25 +171,7 @@ function sourceTagTemplate({media, srcset}) {
 				const elementOuterHtml = element.getOuterHtml();
 				const emptySelectionMarkup = '&nbsp;';
 
-				const selectedElement = editor
-					.getSelection()
-					.getSelectedElement();
-
-				if (selectedElement) {
-					const itemValue = JSON.parse(selectedItem.value);
-
-					const imgElement = selectedElement.findOne('img').$;
-
-					imgElement.onload = function () {
-						imgElement.setAttribute(
-							'data-fileentryid',
-							itemValue.fileEntryId
-						);
-					};
-				}
-				else {
-					editor.insertHtml(elementOuterHtml + emptySelectionMarkup);
-				}
+				editor.insertHtml(elementOuterHtml + emptySelectionMarkup);
 			}
 			else {
 				editor.insertElement(element);
@@ -185,6 +184,34 @@ function sourceTagTemplate({media, srcset}) {
 					region: element.getClientRect(),
 				},
 			});
+		},
+
+		_setFileEntryId(editor, fileEntryAttributeName, selectedItem) {
+			const selectedElement = editor.getSelection().getSelectedElement();
+
+			if (!selectedElement) {
+				return;
+			}
+
+			const imgElement = selectedElement.is('img')
+				? selectedElement.$
+				: selectedElement.findOne('img')?.$;
+
+			if (!imgElement) {
+				return;
+			}
+
+			try {
+				const itemValue = JSON.parse(selectedItem.value);
+
+				imgElement.onload = function () {
+					imgElement.setAttribute(
+						fileEntryAttributeName,
+						itemValue.fileEntryId
+					);
+				};
+			}
+			catch (error) {}
 		},
 
 		init(editor) {
