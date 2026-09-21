@@ -158,6 +158,7 @@ export type AdditionalProps = {
 	collaboratorURLs: Record<string, string>;
 	contentViewURL: string;
 	defaultPermissionAdditionalProps?: any;
+	editableImageMIMETypes: string[];
 	fileMimeTypeCssClasses: Record<string, string>;
 	fileMimeTypeIcons: Record<string, string>;
 	filter?: string;
@@ -404,6 +405,16 @@ export default function AssetsFDSPropsTransformer({
 					...action,
 					isVisible: (item: any) =>
 						Boolean(item?.embedded?.file?.link?.href),
+				};
+			}
+			else if (action?.data?.id === 'edit-image') {
+				return {
+					...action,
+					isVisible: (item: any) =>
+						Boolean(item?.embedded?.file?.link?.href) &&
+						additionalProps.editableImageMIMETypes.includes(
+							item?.embedded?.file?.mimeType
+						),
 				};
 			}
 			else if (

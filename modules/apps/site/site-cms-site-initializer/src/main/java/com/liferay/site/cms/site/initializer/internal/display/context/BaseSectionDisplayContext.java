@@ -219,6 +219,9 @@ public abstract class BaseSectionDisplayContext {
 			PermissionUtil.getDefaultPermissionAdditionalProps(
 				httpServletRequest, themeDisplay)
 		).put(
+			"editableImageMIMETypes",
+			PropsUtil.getArray(PropsKeys.DL_FILE_ENTRY_PREVIEW_IMAGE_MIME_TYPES)
+		).put(
 			"fileMimeTypeCssClasses",
 			() -> {
 				if (_dlConfiguration == null) {
