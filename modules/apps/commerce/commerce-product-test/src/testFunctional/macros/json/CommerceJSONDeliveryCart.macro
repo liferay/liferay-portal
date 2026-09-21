@@ -148,15 +148,4 @@ definition {
 		JSONCurlUtil.post(${curl});
 	}
 
-	@summary = "Default summary"
-	macro getOrderItemPostRequestStatus(cartItems = null, accountEntryName = null) {
-		var responseBody = CommerceJSONDeliveryCart._addCommerceCart(
-			accountEntryName = ${accountEntryName},
-			cartItems = ${cartItems});
-
-		var status = JSONUtil.getWithJSONPath(${responseBody}, "$..['status']");
-
-		return ${status};
-	}
-
 }

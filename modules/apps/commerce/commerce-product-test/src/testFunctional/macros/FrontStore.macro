@@ -1040,44 +1040,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewProductDetail(fsProductName = null, fsOptionValuesList = null, fsOptionName = null) {
-		AssertTextEquals(
-			locator1 = "CommerceFrontStore#FS_PRODUCT_NAME",
-			value1 = ${fsProductName});
-
-		if (IsElementPresent(locator1 = "CommerceFrontStore#FS_PRODUCT_OPTIONS_SELECT")) {
-			for (var fsOptionValues : list ${fsOptionValuesList}) {
-				var fsOptionValue = StringUtil.extractFirst(${fsOptionValues}, ":");
-				var fsPrice = StringUtil.extractLast(${fsOptionValues}, ":");
-				var fsOptionValueUppercase = StringUtil.upperCase(${fsOptionValue});
-
-				FrontStore.selectAssociatedFSOptionsValue(
-					fsOptionName = ${fsOptionName},
-					fsOptionValue = ${fsOptionValue});
-
-				echo("Checking ${fsOptionValue} ${fsProductName} SKU is correct...");
-
-				AssertElementPresent(
-					key_productSku = "${fsOptionValueUppercase}SKU",
-					locator1 = "CommerceFrontStore#FS_PRODUCT_SKU");
-
-				echo("Checking ${fsOptionValue} ${fsProductName} price is correct...");
-
-				AssertTextEquals.assertPartialText(
-					locator1 = "CommerceAccelerators#PRODUCT_DETAILS_LIST_PRICE",
-					value1 = ${fsPrice});
-
-				echo("Checking ${fsOptionValue} ${fsProductName} image is correct...");
-
-				AssertElementPresent(
-					key_fsProductImage = ${fsOptionValue},
-					locator1 = "CommerceFrontStore#FS_PRODUCT_IMAGE",
-					value1 = ${fsOptionValue});
-			}
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewQuantitySelectorPopoverListItem(quantityConfiguration = null, quantity = null) {
 		Variables.assertDefined(parameterList = "${quantityConfiguration},${quantity}");
 
