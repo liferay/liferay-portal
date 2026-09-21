@@ -17,11 +17,14 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.internal.test.util.URLConnectionUtil;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Application;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 
@@ -141,6 +144,14 @@ public class CacheContainerResponseFilterTest {
 	}
 
 	@Test
+	public void testCacheWithHttpSession() throws Exception {
+		_addCacheableEndpoint(
+			"/test-vulcan-cache/with-http-session", "public", 3600);
+
+		_assertNotCacheable(_openURLConnection("/with-http-session"));
+	}
+
+	@Test
 	public void testCacheWithoutMaxAge() throws Exception {
 		_addCacheableEndpoint("/test-vulcan-cache/test", "public", 0);
 
@@ -255,6 +266,14 @@ public class CacheContainerResponseFilterTest {
 					"1"
 				).build()
 			).build();
+		}
+
+		@GET
+		@Path("/with-http-session")
+		public void withHttpSession(
+			@Context HttpServletRequest httpServletRequest) {
+
+			httpServletRequest.getSession();
 		}
 
 	}
