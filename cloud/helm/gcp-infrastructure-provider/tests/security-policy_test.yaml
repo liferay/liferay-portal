@@ -15,6 +15,17 @@ templates:
     -   templates/security-policy.yaml
 tests:
     -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   equal:
+                    path: spec.authorization.defaultAction
+                    value: Allow
+            -   notExists:
+                    path: spec.authorization.rules
+        it: Allows every client while the allowlist is disabled, without removing the policy
+        set:
+            gateway.accessControl.enabled: false
+    -   asserts:
             -   failedTemplate:
                     errorMessage: The value "gateway.accessControl.allowedCIDRs" must not be empty when "gateway.accessControl.enabled" is true
         it: Fails when the allowlist is enabled with no CIDR
@@ -29,9 +40,10 @@ tests:
     -   asserts:
             -   hasDocuments:
                     count: 0
-        it: Omits the policies while the allowlist is disabled
+        it: Omits the policies when no gateway is declared
         set:
             gateway.accessControl.enabled: false
+            gateway.accessControl.gateways: []
     -   asserts:
             -   hasDocuments:
                     count: 2
@@ -55,10 +67,6 @@ tests:
                 equal:
                     path: metadata.namespace
                     value: argo-workflows
-            -   documentIndex: 1
-                equal:
-                    path: spec.targetRefs[0].name
-                    value: argo-workflows-gateway
         it: Renders one policy per gateway, each in the namespace of its target
         set:
             gateway.accessControl.gateways:

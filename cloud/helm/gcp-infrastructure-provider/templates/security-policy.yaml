@@ -1,16 +1,19 @@
-{{- if .Values.gateway.accessControl.enabled -}}
 {{- $accessControl := .Values.gateway.accessControl -}}
+
+{{- if $accessControl.enabled }}
 {{- if not $accessControl.allowedCIDRs }}
-{{- fail "The value \"gateway.accessControl.allowedCIDRs\" must not be empty when \"gateway.accessControl.enabled\" is true" }}
+{{- fail (printf "The value %q must not be empty when %q is true" "gateway.accessControl.allowedCIDRs" "gateway.accessControl.enabled") }}
 {{- end }}
+
 {{- if not $accessControl.gateways }}
-{{- fail "The value \"gateway.accessControl.gateways\" must not be empty when \"gateway.accessControl.enabled\" is true" }}
+{{- fail (printf "The value %q must not be empty when %q is true" "gateway.accessControl.gateways" "gateway.accessControl.enabled") }}
 {{- end }}
-{{- range $index, $gateway := $accessControl.gateways }}
-{{- if $index }}
+{{- end }}
+
+{{- range $gateway := $accessControl.gateways }}
+{{- $name := required (printf "The value %q is required for every entry of %q" "name" "gateway.accessControl.gateways") $gateway.name }}
+{{- $namespace := required (printf "The value %q is required for every entry of %q" "namespace" "gateway.accessControl.gateways") $gateway.namespace }}
 ---
-{{ end }}
-{{- $name := required "The value \"name\" is required for every entry of \"gateway.accessControl.gateways\"" $gateway.name }}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
@@ -21,9 +24,10 @@ metadata:
         app: liferay
         component: security-policy
     name: {{ $name }}-security-policy
-    namespace: {{ required "The value \"namespace\" is required for every entry of \"gateway.accessControl.gateways\"" $gateway.namespace }}
+    namespace: {{ $namespace }}
 spec:
     authorization:
+        {{- if $accessControl.enabled }}
         defaultAction: Deny
         rules:
             -   action: Allow
@@ -33,9 +37,11 @@ spec:
                         {{- range $accessControl.allowedCIDRs }}
                         -   {{ . | quote }}
                         {{- end }}
+        {{- else }}
+        defaultAction: Allow
+        {{- end }}
     targetRefs:
         -   group: gateway.networking.k8s.io
             kind: Gateway
             name: {{ $name }}
-{{- end }}
 {{- end -}}
