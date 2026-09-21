@@ -141,7 +141,8 @@ public class ObjectDefinitionServiceUtil {
 	}
 
 	public static List<ObjectDefinition> getObjectDefinitions(
-		int start, int end) {
+			int start, int end)
+		throws PortalException {
 
 		return getService().getObjectDefinitions(start, end);
 	}
@@ -264,4 +265,4 @@ public class ObjectDefinitionServiceUtil {
 			ObjectDefinitionServiceUtil.class, ObjectDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:614828673
+// LIFERAY-SERVICE-BUILDER-HASH:-1209643437

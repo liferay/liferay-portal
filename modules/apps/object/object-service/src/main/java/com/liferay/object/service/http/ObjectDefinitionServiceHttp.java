@@ -425,7 +425,9 @@ public class ObjectDefinitionServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.object.model.ObjectDefinition>
-		getObjectDefinitions(HttpPrincipal httpPrincipal, int start, int end) {
+			getObjectDefinitions(
+				HttpPrincipal httpPrincipal, int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -441,6 +443,13 @@ public class ObjectDefinitionServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -950,4 +959,4 @@ public class ObjectDefinitionServiceHttp {
 		new Class[] {long.class, long.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-566079793
+// LIFERAY-SERVICE-BUILDER-HASH:-555337975

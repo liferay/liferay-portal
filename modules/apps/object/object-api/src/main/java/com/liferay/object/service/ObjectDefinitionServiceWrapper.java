@@ -157,7 +157,8 @@ public class ObjectDefinitionServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.object.model.ObjectDefinition>
-		getObjectDefinitions(int start, int end) {
+			getObjectDefinitions(int start, int end)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectDefinitionService.getObjectDefinitions(start, end);
 	}
@@ -310,4 +311,4 @@ public class ObjectDefinitionServiceWrapper
 	private ObjectDefinitionService _objectDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2077148175
+// LIFERAY-SERVICE-BUILDER-HASH:111110845

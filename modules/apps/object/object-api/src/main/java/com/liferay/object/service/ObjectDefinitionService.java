@@ -109,7 +109,8 @@ public interface ObjectDefinitionService extends BaseService {
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ObjectDefinition> getObjectDefinitions(int start, int end);
+	public List<ObjectDefinition> getObjectDefinitions(int start, int end)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<ObjectDefinition> getObjectDefinitions(
@@ -174,4 +175,4 @@ public interface ObjectDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1246563774
+// LIFERAY-SERVICE-BUILDER-HASH:-1632629014
