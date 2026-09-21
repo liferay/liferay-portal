@@ -306,8 +306,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			ObjectEntry objectEntry = _fetchDataSetUserConfigurationObjectEntry(
 				_getDataSetUserConfigurationObjectEntryERC(_FDS_NAME, _user));
 
-			Assert.assertNotNull(objectEntry);
-
 			Map<String, Serializable> values = objectEntry.getValues();
 
 			JSONObject dataSetUserConfigurationJSONObject =
