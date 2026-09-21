@@ -1,5 +1,6 @@
 backup:
     enabled: false
+    region: ""
     restore:
         sanitizationScripts: {}
     rules:

@@ -10,6 +10,7 @@ metadata:
 spec:
     backup:
         enabled: {{ .Values.backup.enabled }}
+        region: {{ .Values.backup.region | quote }}
         rules: {{ .Values.backup.rules | toYaml | nindent 12 }}
         vaultTags: {{ .Values.backup.vaultTags | default dict | toYaml | nindent 12 }}
     cmk: {{ .Values.cmk | toYaml | nindent 8 }}

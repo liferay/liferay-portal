@@ -46,6 +46,13 @@ tests:
             backup.restore.sanitizationScripts.x-010-fix-urls: UPDATE Foo SET url = 'https://a.example.com';
     -   asserts:
             -   equal:
+                    path: spec.backup.region
+                    value: eu-west-1
+        it: Propagates the backup region into the spec
+        set:
+            backup.region: eu-west-1
+    -   asserts:
+            -   equal:
                     path: spec.commonTags.EnvironmentId
                     value: env-123
             -   equal:
