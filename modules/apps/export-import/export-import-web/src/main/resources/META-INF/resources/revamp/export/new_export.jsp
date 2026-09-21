@@ -42,7 +42,9 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 			).put(
 				"exportPreviewAPIURL", exportImportProcessDisplayContext.getExportPreviewAPIURL()
 			).put(
-				"exportProcessAPIURL", exportImportProcessDisplayContext.getExportProcessAPIURL()
+				"exportPreviewSitesAPIURL", exportImportPreviewDisplayContext.getExportPreviewSitesAPIURL()
+			).put(
+				"exportProcessAPIURL", exportImportPreviewDisplayContext.getExportProcessAPIURL()
 			).put(
 				"lookAndFeelEnabled", exportImportProcessDisplayContext.isLookAndFeelEnabled()
 			).put(
@@ -54,6 +56,8 @@ renderResponse.setTitle(exportImportProcessDisplayContext.getExportTitle());
 				).put(
 					"privateLayoutsAvailable", liveGroup.isPrivateLayoutsEnabled() && liveGroup.hasPrivateLayouts()
 				).build()
+			).put(
+				"sitesEnabled", exportImportPreviewDisplayContext.isSitesEnabled()
 			).build()
 		%>'
 	/>

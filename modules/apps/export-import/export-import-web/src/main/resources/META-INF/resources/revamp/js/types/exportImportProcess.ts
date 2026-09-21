@@ -31,6 +31,7 @@ export interface ExportProcessRequest {
 	permissions?: boolean;
 	ratings?: boolean;
 	requestPortletDataHandlers?: RequestPortletDataHandler[];
+	siteExternalReferenceCodes?: string[];
 	sitePagesSettings?: boolean;
 	siteTemplateSettings?: boolean;
 	startDate?: string;
@@ -70,6 +71,7 @@ export interface ImportProcessRequest {
 	permissions?: boolean;
 	ratings?: boolean;
 	requestPortletDataHandlers?: RequestPortletDataHandler[];
+	siteExternalReferenceCodes?: string[];
 	sitePagesSettings?: boolean;
 	siteTemplateSettings?: boolean;
 	themeSettings?: boolean;

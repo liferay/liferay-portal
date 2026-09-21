@@ -219,6 +219,42 @@ describe('NewExport', () => {
 		expect(dataSelectionGroup).not.toHaveAttribute('aria-invalid');
 	});
 
+	it('asks for an entity type or a site below both, where sites are on offer', async () => {
+		renderComponent({
+			exportPreviewSitesAPIURL:
+				'/o/export-import/v1.0/export-preview/sites',
+			sitesEnabled: true,
+		});
+
+		const nameInput = await screen.findByRole('textbox', {
+			name: /^name/i,
+		});
+		await userEvent.type(nameInput, 'test-file');
+
+		await userEvent.click(screen.getByRole('checkbox', {name: 'Design'}));
+		await userEvent.click(
+			screen.getByRole('checkbox', {name: 'Site Builder'})
+		);
+		await userEvent.click(
+			screen.getByRole('checkbox', {name: 'Content & Data'})
+		);
+
+		const alert = await screen.findByText(
+			'please-select-at-least-one-entity-type-or-site-to-continue'
+		);
+
+		expect(
+			screen.getByRole('group', {name: 'data-selection'})
+		).not.toHaveAttribute('aria-invalid');
+
+		const sitesHeading = screen.getByText('sites');
+
+		expect(
+			sitesHeading.compareDocumentPosition(alert) &
+				Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
+	});
+
 	it('keeps form values after applying a filter', async () => {
 		renderComponent();
 

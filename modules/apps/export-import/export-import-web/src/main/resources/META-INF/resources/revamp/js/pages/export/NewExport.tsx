@@ -6,6 +6,7 @@
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
+import ClayLayout from '@clayui/layout';
 import {Form, Formik} from 'formik';
 import {sub} from 'frontend-js-web';
 import React from 'react';
@@ -27,6 +28,7 @@ import {
 } from '../../utils/contentSelection';
 import {getProcessFormErrors} from '../../utils/getProcessFormErrors';
 import {toRequestPortletDataHandlers} from '../../utils/toRequestPortletDataHandlers';
+import SiteSelection from './components/SiteSelection';
 
 type ExportFormValues = {
 	contentSelection: ContentSelection | undefined;
@@ -34,24 +36,40 @@ type ExportFormValues = {
 	deletions: boolean;
 	name: string;
 	permissions: boolean;
+	siteExternalReferenceCodes: string[];
 };
+
+/**
+ * The form's errors. `selection` belongs to no single field: it says that
+ * neither an entity type nor a site was picked, so blaming either control for
+ * it would mark the wrong one invalid.
+ */
+interface NewExportErrors {
+	contentSelection?: string;
+	name?: string;
+	selection?: string;
+}
 
 export function NewExport({
 	backURL,
 	commentsAndRatingsEnabled = false,
 	exportPreview,
 	exportPreviewAPIURL,
+	exportPreviewSitesAPIURL,
 	exportProcessAPIURL,
 	lookAndFeelEnabled = false,
 	pageTreeModalConfiguration,
+	sitesEnabled = false,
 }: {
 	backURL: string;
 	commentsAndRatingsEnabled?: boolean;
 	exportPreview?: Preview;
 	exportPreviewAPIURL: string;
+	exportPreviewSitesAPIURL?: string;
 	exportProcessAPIURL: string;
 	lookAndFeelEnabled?: boolean;
 	pageTreeModalConfiguration: PageTreeModalConfiguration;
+	sitesEnabled?: boolean;
 }) {
 	const {appliedDateFilterRef, error, handleApplyFilter, loading, preview} =
 		usePreview(exportPreviewAPIURL, exportPreview);
@@ -69,6 +87,7 @@ export function NewExport({
 		deletions: false,
 		name: '',
 		permissions: false,
+		siteExternalReferenceCodes: [],
 	};
 
 	return (
@@ -87,6 +106,8 @@ export function NewExport({
 								previewPortletDataHandlerSections,
 								values.contentSelection
 							),
+						siteExternalReferenceCodes:
+							values.siteExternalReferenceCodes,
 					},
 					url: exportProcessAPIURL,
 				});
@@ -102,11 +123,14 @@ export function NewExport({
 
 				Liferay.Util.navigate(backURL);
 			}}
-			validate={getProcessFormErrors}
+			validate={(values) => getProcessFormErrors(values, sitesEnabled)}
 			validateOnMount
 		>
 			{(formik) => {
 				const contentSelection = formik.values.contentSelection;
+
+				const {selection: selectionError} =
+					formik.errors as NewExportErrors;
 
 				return (
 					<Form noValidate>
@@ -163,6 +187,26 @@ export function NewExport({
 								'select-and-filter-the-data-you-want-to-include-in-your-export'
 							)}
 						/>
+
+						{sitesEnabled && exportPreviewSitesAPIURL && (
+							<ClayLayout.Sheet className="mt-4 option-group">
+								<SiteSelection
+									exportPreviewSitesAPIURL={
+										exportPreviewSitesAPIURL
+									}
+								/>
+							</ClayLayout.Sheet>
+						)}
+
+						{formik.touched.contentSelection && selectionError && (
+							<ClayAlert
+								className="mt-4"
+								displayType="danger"
+								title={Liferay.Language.get('error-colon')}
+							>
+								{selectionError}
+							</ClayAlert>
+						)}
 
 						<Footer
 							actionButton={
