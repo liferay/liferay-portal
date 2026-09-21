@@ -580,13 +580,15 @@ public class NotificationTemplateResourceTest
 
 		String defaultLanguageId = LocaleUtil.toLanguageId(
 			LocaleUtil.getSiteDefault());
+		String translatedLanguageId = LocaleUtil.toLanguageId(
+			LocaleUtil.BRAZIL);
 		String translatedName = RandomTestUtil.randomString();
 
 		notificationTemplate.setName_i18n(
 			HashMapBuilder.put(
 				defaultLanguageId, notificationTemplate.getName()
 			).put(
-				"pt_BR", translatedName
+				translatedLanguageId, translatedName
 			).build());
 
 		notificationTemplate = _addNotificationTemplate(notificationTemplate);
@@ -610,7 +612,8 @@ public class NotificationTemplateResourceTest
 		Map<String, String> nameI18nMap = notificationTemplate.getName_i18n();
 
 		Assert.assertEquals(name, nameI18nMap.get(defaultLanguageId));
-		Assert.assertEquals(translatedName, nameI18nMap.get("pt_BR"));
+		Assert.assertEquals(
+			translatedName, nameI18nMap.get(translatedLanguageId));
 	}
 
 	private void _testPostNotificationTemplate(JSONObject recipientJSONObject)
@@ -708,7 +711,9 @@ public class NotificationTemplateResourceTest
 				HTTPTestUtil.invokeToHttpCode(
 					JSONUtil.put(
 						"name_i18n",
-						JSONUtil.put("pt_BR", RandomTestUtil.randomString())
+						JSONUtil.put(
+							LocaleUtil.toLanguageId(LocaleUtil.BRAZIL),
+							RandomTestUtil.randomString())
 					).put(
 						"recipients", JSONUtil.putAll()
 					).toString(),
@@ -753,6 +758,8 @@ public class NotificationTemplateResourceTest
 
 		String defaultLanguageId = LocaleUtil.toLanguageId(
 			LocaleUtil.getSiteDefault());
+		String translatedLanguageId = LocaleUtil.toLanguageId(
+			LocaleUtil.BRAZIL);
 
 		// With a name internationalization map
 
@@ -767,7 +774,7 @@ public class NotificationTemplateResourceTest
 			HashMapBuilder.put(
 				defaultLanguageId, name1
 			).put(
-				"pt_BR", translatedName
+				translatedLanguageId, translatedName
 			).build());
 
 		notificationTemplate1 =
@@ -779,7 +786,8 @@ public class NotificationTemplateResourceTest
 		Map<String, String> nameI18nMap1 = notificationTemplate1.getName_i18n();
 
 		Assert.assertEquals(name1, nameI18nMap1.get(defaultLanguageId));
-		Assert.assertEquals(translatedName, nameI18nMap1.get("pt_BR"));
+		Assert.assertEquals(
+			translatedName, nameI18nMap1.get(translatedLanguageId));
 
 		// Without a name internationalization map
 
