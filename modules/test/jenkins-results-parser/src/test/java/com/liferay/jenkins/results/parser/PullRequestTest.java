@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Properties;
 
 import org.json.JSONObject;
 
@@ -52,6 +53,24 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 			pullRequest.getFileNames());
 	}
 
+	@Test
+	public void testHasRequiredCompletedTestSuites() throws Exception {
+		PullRequest pullRequest = _newPullRequestWithRequiredSuites(
+			"required.completed.suites");
+
+		Assert.assertTrue(pullRequest.hasRequiredCompletedTestSuites());
+		Assert.assertFalse(pullRequest.hasRequiredCompletedTestSuites(true));
+	}
+
+	@Test
+	public void testHasRequiredPassingTestSuites() throws Exception {
+		PullRequest pullRequest = _newPullRequestWithRequiredSuites(
+			"required.passing.suites");
+
+		Assert.assertTrue(pullRequest.hasRequiredPassingTestSuites());
+		Assert.assertFalse(pullRequest.hasRequiredPassingTestSuites(true));
+	}
+
 	private PullRequest _newPullRequest() {
 		BuildDatabase buildDatabase =
 			BuildDatabaseTestUtil.newBuildDatabaseWithPullRequest();
@@ -66,6 +85,45 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 		Iterator<String> iterator = pullRequestsJSONObject.keys();
 
 		return PullRequestFactory.newPullRequest(iterator.next(), null);
+	}
+
+	private PullRequest _newPullRequestWithRequiredSuites(
+			String propertyNameSuffix)
+		throws Exception {
+
+		PullRequest pullRequest = _newPullRequest();
+
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			"[{\"context\": \"liferay/ci:test:sf\", \"state\": \"success\"}]",
+			"/statuses", urlReader);
+
+		Properties buildProperties = new Properties();
+
+		_setRequiredSuites(
+			buildProperties, pullRequest, "ci.forward." + propertyNameSuffix,
+			"sf");
+		_setRequiredSuites(
+			buildProperties, pullRequest,
+			"ci.forward.force." + propertyNameSuffix, "relevant");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		return pullRequest;
+	}
+
+	private void _setRequiredSuites(
+		Properties buildProperties, PullRequest pullRequest,
+		String basePropertyName, String branchKeyedValue) {
+
+		buildProperties.setProperty(basePropertyName, "relevant");
+
+		buildProperties.setProperty(
+			JenkinsResultsParserUtil.combine(
+				basePropertyName, "[", pullRequest.getGitRepositoryName(), "][",
+				pullRequest.getRefName(), "]"),
+			branchKeyedValue);
 	}
 
 }

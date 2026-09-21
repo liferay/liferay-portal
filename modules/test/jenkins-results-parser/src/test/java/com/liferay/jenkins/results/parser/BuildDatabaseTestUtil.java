@@ -68,6 +68,8 @@ public class BuildDatabaseTestUtil {
 				"base",
 				new JSONObject(
 				).put(
+					"ref", "master"
+				).put(
 					"repo",
 					new JSONObject(
 					).put(
@@ -90,6 +92,8 @@ public class BuildDatabaseTestUtil {
 				"html_url", htmlURL
 			).put(
 				"number", index
+			).put(
+				"statuses_url", htmlURL + "/statuses"
 			)
 		);
 	}
