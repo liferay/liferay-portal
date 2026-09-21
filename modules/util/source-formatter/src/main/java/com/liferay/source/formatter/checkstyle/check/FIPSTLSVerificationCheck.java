@@ -208,7 +208,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 
 			if (StringUtil.equals(
 					fullIdent.getText(), "PropsValues.FIPS_ENABLED") &&
-				_isCondition(dotDetailAST)) {
+				_isInsideIfCondition(dotDetailAST)) {
 
 				return true;
 			}
@@ -252,7 +252,7 @@ public class FIPSTLSVerificationCheck extends BaseCheck {
 		return _containsGuard(parentDetailAST);
 	}
 
-	private boolean _isCondition(DetailAST detailAST) {
+	private boolean _isInsideIfCondition(DetailAST detailAST) {
 		DetailAST childDetailAST = detailAST;
 		DetailAST parentDetailAST = detailAST.getParent();
 
