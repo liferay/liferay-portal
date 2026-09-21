@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.service.ReleaseLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -60,14 +61,13 @@ public class UpgradeOSGiCommandsTest {
 
 		Class<?> clazz = _upgradeOSGiCommands.getClass();
 
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"UPGRADE_DATABASE_AUTO_RUN", false, false);
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				clazz.getName(), LoggerTestUtil.OFF)) {
 
-			_registerUpgradeStepRegistrator(
-				bundle,
-				registry -> {
-					throw new IllegalStateException();
-				});
+			_registerFailingUpgradeStepRegistrator(bundle);
 
 			_assertExecuteAll(
 				"The following modules had errors while upgrading:\n\t" +
@@ -96,6 +96,14 @@ public class UpgradeOSGiCommandsTest {
 			Assert.assertFalse(
 				failedBundleSymbolicNames.toString(),
 				failedBundleSymbolicNames.contains(bundleSymbolicName));
+
+			_serviceRegistration.unregister();
+
+			_registerFailingUpgradeStepRegistrator(bundle);
+
+			_assertExecuteAll(
+				"The following modules had errors while upgrading:\n\t" +
+					bundleSymbolicName);
 		}
 		finally {
 			Release release = _releaseLocalService.fetchRelease(
@@ -150,6 +158,23 @@ public class UpgradeOSGiCommandsTest {
 				bundleSymbolicName);
 
 			_assertRecovered(bundleSymbolicName, "2.0.0");
+
+			_serviceRegistration.unregister();
+
+			_registerFailingUpgradeStepRegistrator(bundle);
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					clazz.getName(), LoggerTestUtil.OFF)) {
+
+				String message = ReflectionTestUtil.invoke(
+					_upgradeOSGiCommands, "execute",
+					new Class<?>[] {String.class, String.class},
+					bundleSymbolicName, RandomTestUtil.randomString());
+
+				Assert.assertEquals(
+					"The upgrade of module " + bundleSymbolicName + " failed",
+					message);
+			}
 		}
 		finally {
 			Release release = _releaseLocalService.fetchRelease(
@@ -162,23 +187,45 @@ public class UpgradeOSGiCommandsTest {
 	}
 
 	@Test
-	public void testListWithFailedRegistration() {
+	public void testListWithFailedRegistration() throws Exception {
 		Bundle bundle = FrameworkUtil.getBundle(UpgradeOSGiCommandsTest.class);
 
-		_registerUpgradeStepRegistrator(
-			bundle,
-			registry -> {
-				throw new IllegalStateException();
-			});
+		String bundleSymbolicName = bundle.getSymbolicName();
 
-		String message = ReflectionTestUtil.invoke(
-			_upgradeOSGiCommands, "list", new Class<?>[0]);
+		_registerFailingUpgradeStepRegistrator(bundle);
 
-		Assert.assertTrue(
-			message,
-			message.contains(
-				"The upgrade of module " + bundle.getSymbolicName() +
-					" failed"));
+		_assertList(bundleSymbolicName);
+
+		_serviceRegistration.unregister();
+
+		Release release = _releaseLocalService.addRelease(
+			bundleSymbolicName, "1.0.0");
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"UPGRADE_DATABASE_AUTO_RUN", false, false)) {
+
+			_registerFailingUpgradeStepRegistrator(bundle);
+
+			Class<?> clazz = _upgradeOSGiCommands.getClass();
+
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					clazz.getName(), LoggerTestUtil.OFF)) {
+
+				String message = ReflectionTestUtil.invoke(
+					_upgradeOSGiCommands, "list", new Class<?>[] {String.class},
+					bundleSymbolicName);
+
+				Assert.assertEquals(
+					"The upgrade of module " + bundleSymbolicName + " failed",
+					message);
+
+				_assertList(bundleSymbolicName);
+			}
+		}
+		finally {
+			_releaseLocalService.deleteRelease(release);
+		}
 	}
 
 	private void _assertExecuteAll(String expectedMessage) {
@@ -186,6 +233,16 @@ public class UpgradeOSGiCommandsTest {
 			_upgradeOSGiCommands, "executeAll", new Class<?>[0]);
 
 		Assert.assertTrue(message, message.contains(expectedMessage));
+	}
+
+	private void _assertList(String bundleSymbolicName) {
+		String message = ReflectionTestUtil.invoke(
+			_upgradeOSGiCommands, "list", new Class<?>[0]);
+
+		Assert.assertTrue(
+			message,
+			message.contains(
+				"The upgrade of module " + bundleSymbolicName + " failed"));
 	}
 
 	private void _assertRecovered(
@@ -201,6 +258,14 @@ public class UpgradeOSGiCommandsTest {
 		Assert.assertFalse(
 			failedBundleSymbolicNames.toString(),
 			failedBundleSymbolicNames.contains(bundleSymbolicName));
+	}
+
+	private void _registerFailingUpgradeStepRegistrator(Bundle bundle) {
+		_registerUpgradeStepRegistrator(
+			bundle,
+			registry -> {
+				throw new IllegalStateException();
+			});
 	}
 
 	private void _registerRecoveringUpgradeStepRegistrator(Bundle bundle) {
