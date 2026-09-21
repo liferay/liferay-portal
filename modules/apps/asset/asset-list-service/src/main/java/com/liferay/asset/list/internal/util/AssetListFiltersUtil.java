@@ -41,6 +41,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.apache.commons.lang.text.StrMatcher;
+import org.apache.commons.lang.text.StrTokenizer;
+
 /**
  * @author Joshua Cords
  */
@@ -123,14 +126,7 @@ public class AssetListFiltersUtil {
 				continue;
 			}
 
-			for (String term :
-					StringUtil.split(
-						jsonObject.getString("value"), CharPool.SPACE)) {
-
-				if (Validator.isNotNull(term)) {
-					keywords.add(term);
-				}
-			}
+			keywords.addAll(_splitTerms(jsonObject.getString("value")));
 		}
 
 		return keywords.toArray(new String[0]);
@@ -277,6 +273,14 @@ public class AssetListFiltersUtil {
 		}
 
 		return format.format(calendar.getTime());
+	}
+
+	private static List<String> _splitTerms(String value) {
+		StrTokenizer strTokenizer = new StrTokenizer(value);
+
+		strTokenizer.setQuoteMatcher(StrMatcher.quoteMatcher());
+
+		return (List<String>)strTokenizer.getTokenList();
 	}
 
 	private static Query _toCommonFieldQuery(
