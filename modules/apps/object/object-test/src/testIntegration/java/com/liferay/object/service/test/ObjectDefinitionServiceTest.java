@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -51,7 +52,9 @@ import com.liferay.site.cms.site.initializer.util.RoleUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -266,6 +269,41 @@ public class ObjectDefinitionServiceTest {
 				" permission for ", ObjectDefinition.class.getName(),
 				StringPool.SPACE, objectDefinition3.getObjectDefinitionId()),
 			() -> _testGetObjectDefinition(objectDefinition3, _user));
+	}
+
+	@Test
+	public void testGetObjectDefinitions() throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			ObjectDefinition customObjectDefinition =
+				_addCustomObjectDefinition(_adminUser);
+
+			List<ObjectDefinition> objectDefinitions =
+				_objectDefinitionService.getObjectDefinitions(0, 100);
+
+			Assert.assertTrue(ListUtil.isNotEmpty(objectDefinitions));
+
+			for (ObjectDefinition objectDefinition : objectDefinitions) {
+				Assert.assertNotEquals(
+					customObjectDefinition.getObjectDefinitionId(),
+					objectDefinition.getObjectDefinitionId());
+			}
+		}
+	}
+
+	@Test
+	public void testGetObjectDefinitionsCount() throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			int count = _objectDefinitionService.getObjectDefinitionsCount();
+
+			_addCustomObjectDefinition(_adminUser);
+
+			Assert.assertEquals(
+				count, _objectDefinitionService.getObjectDefinitionsCount());
+		}
 	}
 
 	@Test
