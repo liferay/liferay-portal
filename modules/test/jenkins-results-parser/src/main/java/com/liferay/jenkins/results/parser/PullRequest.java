@@ -816,7 +816,8 @@ public class PullRequest {
 
 		String requiredCompletedTestSuiteNames =
 			JenkinsResultsParserUtil.getProperty(
-				buildProperties, propertyName, getGitRepositoryName());
+				buildProperties, propertyName, getGitRepositoryName(),
+				getRefName());
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(
 				requiredCompletedTestSuiteNames)) {
@@ -856,7 +857,8 @@ public class PullRequest {
 
 		String requiredPassingTestSuiteNames =
 			JenkinsResultsParserUtil.getProperty(
-				buildProperties, propertyName, getGitRepositoryName());
+				buildProperties, propertyName, getGitRepositoryName(),
+				getRefName());
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(
 				requiredPassingTestSuiteNames)) {
