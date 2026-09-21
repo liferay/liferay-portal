@@ -157,12 +157,7 @@ async function setUpFacetPage(
 
 	await specificationFacetsPage.addRequiredFacetWidgets();
 
-	await specificationFacetsPage.configureSearchBar({
-		destination: '',
-		scope: 'everything',
-	});
-
-	await page.reload();
+	await specificationFacetsPage.configureSearchBar();
 
 	await specificationFacetsPage.configureSearchOptions();
 

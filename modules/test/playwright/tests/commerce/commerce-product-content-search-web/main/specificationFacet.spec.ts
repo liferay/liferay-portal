@@ -24,7 +24,7 @@ export const test = mergeTests(
 
 test(
 	'Can sort specifications by specification group and label priority',
-	{tag: '@LPD-13560'},
+	{tag: ['@LPD-106409', '@LPD-13560']},
 	async ({apiHelpers, page, site, specificationFacetsPage}) => {
 		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
@@ -38,6 +38,9 @@ test(
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
 		await specificationFacetsPage.addRequiredFacetWidgets();
+
+		await specificationFacetsPage.configureSearchBar();
+
 		await specificationFacetsPage.configureSearchOptions();
 
 		const optionCategory1 =
@@ -146,7 +149,7 @@ test(
 
 test(
 	'Option and Specification facet portlets behave the same way',
-	{tag: '@LPD-20340'},
+	{tag: ['@LPD-106409', '@LPD-20340']},
 	async ({apiHelpers, page, site, specificationFacetsPage}) => {
 		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
@@ -237,6 +240,9 @@ test(
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
 		await specificationFacetsPage.addRequiredFacetWidgets();
+
+		await specificationFacetsPage.configureSearchBar();
+
 		await specificationFacetsPage.configureSearchOptions();
 
 		await expect(
@@ -291,7 +297,7 @@ test(
 
 test(
 	'Only visible specifications are listed in facet widget',
-	{tag: '@LPD-48103'},
+	{tag: ['@LPD-106409', '@LPD-48103']},
 	async ({apiHelpers, page, site, specificationFacetsPage}) => {
 		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
 			groupId: site.id,
@@ -305,6 +311,9 @@ test(
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
 		await specificationFacetsPage.addRequiredFacetWidgets();
+
+		await specificationFacetsPage.configureSearchBar();
+
 		await specificationFacetsPage.configureSearchOptions();
 
 		const optionCategory1 =

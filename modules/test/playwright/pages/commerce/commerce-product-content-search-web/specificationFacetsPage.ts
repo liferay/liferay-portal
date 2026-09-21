@@ -174,25 +174,23 @@ export class SpecificationFacetsPage {
 	}
 
 	async configureSearchBar({
-		destination,
-		scope,
+		destination = '',
+		scope = 'everything',
 	}: {
 		destination?: string;
 		scope?: string;
-	}) {
+	} = {}) {
 		await this.searchBarPortlet.getByLabel('Options').click();
 		await this.configurationMenuItem.click();
 		await this.searchBarScopeSelect.waitFor({state: 'visible'});
 
-		if (scope !== undefined) {
-			await this.searchBarScopeSelect.selectOption(scope);
-		}
+		await this.searchBarScopeSelect.selectOption(scope);
 
-		if (destination !== undefined) {
-			await this.searchBarDestinationInput.fill(destination);
-		}
+		await this.searchBarDestinationInput.fill(destination);
 
 		await this.saveConfiguration();
+
+		await this.reloadPage();
 	}
 
 	async configureSearchOptions() {
