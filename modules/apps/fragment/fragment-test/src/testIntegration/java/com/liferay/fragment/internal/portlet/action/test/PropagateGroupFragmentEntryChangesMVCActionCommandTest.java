@@ -361,10 +361,10 @@ public class PropagateGroupFragmentEntryChangesMVCActionCommandTest {
 	private void _testPropagateChangesFromDesignLibraryWithSourceGroup()
 		throws Exception {
 
-		Group depotGroup = _groupLocalService.getGroup(
+		FragmentEntry fragmentEntry = _addFragmentEntry(
 			_depotEntry.getGroupId());
 
-		FragmentEntry fragmentEntry = _addFragmentEntry(
+		Group depotGroup = _groupLocalService.getGroup(
 			_depotEntry.getGroupId());
 
 		Layout depotLayout = LayoutTestUtil.addTypeContentLayout(depotGroup);
