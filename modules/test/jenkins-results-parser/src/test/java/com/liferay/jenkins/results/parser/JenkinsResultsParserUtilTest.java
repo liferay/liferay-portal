@@ -366,6 +366,9 @@ public class JenkinsResultsParserUtilTest
 			"false", properties, "build.caching.enabled",
 			"forward-pullrequest");
 		_testGetProperty(
+			"false", properties, "build.caching.enabled",
+			"merge-central-subrepository");
+		_testGetProperty(
 			"true", properties, "build.caching.enabled",
 			"test-portal-fixpack-release");
 		_testGetProperty(
@@ -378,6 +381,9 @@ public class JenkinsResultsParserUtilTest
 			"test-portal-source-format");
 		_testGetProperty(
 			"false", properties, "git.archive.enabled", "forward-pullrequest");
+		_testGetProperty(
+			"false", properties, "git.archive.enabled",
+			"merge-portal-subrepository");
 		_testGetProperty(
 			"true", properties, "git.archive.enabled", "test-portal-release");
 		_testGetProperty(
