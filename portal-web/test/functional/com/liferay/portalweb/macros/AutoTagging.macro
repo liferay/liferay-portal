@@ -167,12 +167,7 @@ definition {
 	@summary = "Default summary"
 	macro enableUpdateAutoTags(enableUpdateAutoTagsFor = null) {
 		if (${enableUpdateAutoTagsFor} == "System Settings") {
-			AutoTagging.openToAssetAutoTagging(configurationScope = "System Settings");
-
-			Click(
-				key_configurationName = "Asset Auto Tagging",
-				key_configurationScope = "Virtual Instance Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
+			SystemSettings.openToConfigInSystemSettings(portletId = "com.liferay.asset.auto.tagger.internal.configuration.AssetAutoTaggerCompanyConfiguration");
 		}
 		else if (${enableUpdateAutoTagsFor} == "Instance Settings") {
 			AutoTagging.openToAssetAutoTagging(configurationScope = "Instance Settings");
@@ -239,12 +234,7 @@ definition {
 	@summary = "Default summary"
 	macro viewUpdateAutoTagsSetting(updateAutoTagsFor = null, updateAutoTags = null) {
 		if (${updateAutoTagsFor} == "System Settings") {
-			AutoTagging.openToAssetAutoTagging(configurationScope = "System Settings");
-
-			Click(
-				key_configurationName = "Asset Auto Tagging",
-				key_configurationScope = "Virtual Instance Scope",
-				locator1 = "SystemSettings#SCOPED_CONFIGURATION_NAME");
+			SystemSettings.openToConfigInSystemSettings(portletId = "com.liferay.asset.auto.tagger.internal.configuration.AssetAutoTaggerCompanyConfiguration");
 		}
 		else {
 			Panel.expandPanel(panel = "Categorization");
