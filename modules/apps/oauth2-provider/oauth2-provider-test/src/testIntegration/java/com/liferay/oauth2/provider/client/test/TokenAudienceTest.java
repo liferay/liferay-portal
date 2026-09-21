@@ -65,24 +65,32 @@ public class TokenAudienceTest extends BaseClientTestCase {
 	public void testTokenIntrospectionAudienceWithAuthorizationCodeGrant()
 		throws Exception {
 
-		String authorizationCode = parseAuthorizationCodeString(
-			getCodeResponse(
-				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
-				null,
-				getCodeFunction(
-					webTarget -> webTarget.queryParam(
-						"client_id", _CLIENT_ID
-					).queryParam(
-						"response_type", "code"
-					))));
+		JSONObject authorizationCodeTokenJSONObject =
+			_getAuthorizationCodeTokenJSONObject();
 
-		Assert.assertNotNull(authorizationCode);
+		Assert.assertEquals(
+			Collections.singletonList(_RESOURCE_URI),
+			_getAudiences(
+				authorizationCodeTokenJSONObject.getString("access_token")));
+	}
+
+	@Test
+	public void testTokenIntrospectionAudienceWithRefreshTokenGrant()
+		throws Exception {
+
+		JSONObject authorizationCodeTokenJSONObject =
+			_getAuthorizationCodeTokenJSONObject();
+
+		Assert.assertEquals(
+			Collections.singletonList(_RESOURCE_URI),
+			_getAudiences(
+				authorizationCodeTokenJSONObject.getString("access_token")));
 
 		WebTarget tokenWebTarget = getTokenWebTarget();
 
-		Invocation.Builder tokenInvocationBuilder = tokenWebTarget.request();
+		Invocation.Builder invocationBuilder = tokenWebTarget.request();
 
-		Response tokenResponse = tokenInvocationBuilder.post(
+		Response response = invocationBuilder.post(
 			Entity.form(
 				new MultivaluedHashMap<>(
 					HashMapBuilder.put(
@@ -90,45 +98,20 @@ public class TokenAudienceTest extends BaseClientTestCase {
 					).put(
 						"client_secret", _CLIENT_SECRET
 					).put(
-						"code", authorizationCode
+						"grant_type", "refresh_token"
 					).put(
-						"grant_type", "authorization_code"
-					).put(
-						"resource", _RESOURCE_URI
+						"refresh_token",
+						authorizationCodeTokenJSONObject.getString(
+							"refresh_token")
 					).build())));
 
-		Assert.assertEquals(200, tokenResponse.getStatus());
+		Assert.assertEquals(200, response.getStatus());
 
-		String accessToken = parseTokenString(tokenResponse);
+		JSONObject jsonObject = parseJSONObject(response);
 
-		Assert.assertNotNull(accessToken);
-
-		WebTarget introspectWebTarget = getIntrospectWebTarget();
-
-		Invocation.Builder introspectInvocationBuilder =
-			introspectWebTarget.request();
-
-		Response introspectResponse = introspectInvocationBuilder.post(
-			Entity.form(
-				new MultivaluedHashMap<>(
-					HashMapBuilder.put(
-						"client_id", _CLIENT_ID
-					).put(
-						"client_secret", _CLIENT_SECRET
-					).put(
-						"token", accessToken
-					).build())));
-
-		Assert.assertEquals(200, introspectResponse.getStatus());
-
-		JSONObject jsonObject = parseJSONObject(introspectResponse);
-
-		Assert.assertTrue(jsonObject.getBoolean("active"));
-
-		JSONArray audJSONArray = jsonObject.getJSONArray("aud");
-
-		Assert.assertEquals(1, audJSONArray.length());
-		Assert.assertEquals(_RESOURCE_URI, audJSONArray.getString(0));
+		Assert.assertEquals(
+			Collections.singletonList(_RESOURCE_URI),
+			_getAudiences(jsonObject.getString("access_token")));
 	}
 
 	@Test
@@ -144,6 +127,75 @@ public class TokenAudienceTest extends BaseClientTestCase {
 	@Override
 	protected BundleActivator getBundleActivator() {
 		return new TokenAudienceTestPreparatorBundleActivator();
+	}
+
+	private List<String> _getAudiences(String accessToken) throws Exception {
+		WebTarget introspectWebTarget = getIntrospectWebTarget();
+
+		Invocation.Builder invocationBuilder = introspectWebTarget.request();
+
+		Response response = invocationBuilder.post(
+			Entity.form(
+				new MultivaluedHashMap<>(
+					HashMapBuilder.put(
+						"client_id", _CLIENT_ID
+					).put(
+						"client_secret", _CLIENT_SECRET
+					).put(
+						"token", accessToken
+					).build())));
+
+		Assert.assertEquals(200, response.getStatus());
+
+		JSONObject jsonObject = parseJSONObject(response);
+
+		Assert.assertTrue(jsonObject.getBoolean("active"));
+
+		JSONArray audJSONArray = jsonObject.getJSONArray("aud");
+
+		if (audJSONArray == null) {
+			return Collections.emptyList();
+		}
+
+		return JSONUtil.toStringList(audJSONArray);
+	}
+
+	private JSONObject _getAuthorizationCodeTokenJSONObject() throws Exception {
+		String authorizationCode = parseAuthorizationCodeString(
+			getCodeResponse(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				null,
+				getCodeFunction(
+					webTarget -> webTarget.queryParam(
+						"client_id", _CLIENT_ID
+					).queryParam(
+						"response_type", "code"
+					))));
+
+		Assert.assertNotNull(authorizationCode);
+
+		WebTarget tokenWebTarget = getTokenWebTarget();
+
+		Invocation.Builder invocationBuilder = tokenWebTarget.request();
+
+		Response response = invocationBuilder.post(
+			Entity.form(
+				new MultivaluedHashMap<>(
+					HashMapBuilder.put(
+						"client_id", _CLIENT_ID
+					).put(
+						"client_secret", _CLIENT_SECRET
+					).put(
+						"code", authorizationCode
+					).put(
+						"grant_type", "authorization_code"
+					).put(
+						"resource", _RESOURCE_URI
+					).build())));
+
+		Assert.assertEquals(200, response.getStatus());
+
+		return parseJSONObject(response);
 	}
 
 	private void _testTokenIntrospectionAudience(List<String> resources)
@@ -176,34 +228,10 @@ public class TokenAudienceTest extends BaseClientTestCase {
 
 		Assert.assertNotNull(accessToken);
 
-		WebTarget introspectWebTarget = getIntrospectWebTarget();
+		List<String> audiences = _getAudiences(accessToken);
 
-		Invocation.Builder introspectInvocationBuilder =
-			introspectWebTarget.request();
-
-		Response introspectResponse = introspectInvocationBuilder.post(
-			Entity.form(
-				new MultivaluedHashMap<>(
-					HashMapBuilder.put(
-						"client_id", _CLIENT_ID
-					).put(
-						"client_secret", _CLIENT_SECRET
-					).put(
-						"token", accessToken
-					).build())));
-
-		Assert.assertEquals(200, introspectResponse.getStatus());
-
-		JSONObject jsonObject = parseJSONObject(introspectResponse);
-
-		Assert.assertTrue(jsonObject.getBoolean("active"));
-
-		JSONArray audJSONArray = jsonObject.getJSONArray("aud");
-
-		Assert.assertEquals(resources.size(), audJSONArray.length());
-
-		List<String> audiences = JSONUtil.toStringList(audJSONArray);
-
+		Assert.assertEquals(
+			audiences.toString(), resources.size(), audiences.size());
 		Assert.assertTrue(audiences.containsAll(resources));
 	}
 
@@ -252,7 +280,8 @@ public class TokenAudienceTest extends BaseClientTestCase {
 			createOAuth2Application(
 				companyId, _user, _CLIENT_ID, _CLIENT_SECRET,
 				Arrays.asList(
-					GrantType.CLIENT_CREDENTIALS, GrantType.AUTHORIZATION_CODE),
+					GrantType.CLIENT_CREDENTIALS, GrantType.AUTHORIZATION_CODE,
+					GrantType.REFRESH_TOKEN),
 				"client_secret_post", null,
 				Collections.singletonList(
 					Http.HTTP_WITH_SLASH + RandomTestUtil.randomString()),

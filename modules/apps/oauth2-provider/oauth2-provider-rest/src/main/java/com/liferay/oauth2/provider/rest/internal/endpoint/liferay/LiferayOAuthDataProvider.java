@@ -538,6 +538,7 @@ public class LiferayOAuthDataProvider
 			refreshToken.setAccessTokens(
 				Collections.singletonList(
 					oAuth2Authorization.getAccessTokenContent()));
+			refreshToken.setAudiences(oAuth2Authorization.getAudiencesList());
 			refreshToken.setScopes(
 				convertScopeToPermissions(
 					refreshToken.getClient(),
