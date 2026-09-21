@@ -47,7 +47,8 @@ import org.osgi.service.metatype.ObjectClassDefinition;
  * @author Pedro Victor Silvestre
  */
 @Component(
-	property = "model.class.name=*", service = ConfigurationModelListener.class
+	enabled = false, property = "model.class.name=*",
+	service = ConfigurationModelListener.class
 )
 public class ConfigurationSecretConfigurationModelListener
 	implements ConfigurationModelListener {
