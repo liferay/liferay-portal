@@ -82,7 +82,33 @@ public class MCPServerProfileToolObjectEntryModelListener
 		throws ModelListenerException {
 
 		_clearServletCache(objectEntry);
-		_deactivateMCPServerProfile(objectEntry);
+
+		ObjectEntry mcpServerProfileObjectEntry =
+			_objectEntryLocalService.fetchObjectEntry(
+				MapUtil.getLong(
+					objectEntry.getValues(),
+					"r_mcpServerProfileToTools_l_mcpServerProfileId"));
+
+		if ((mcpServerProfileObjectEntry == null) ||
+			!MCPServerProfileUtil.isActive(mcpServerProfileObjectEntry)) {
+
+			return;
+		}
+
+		try {
+			int toolsCount = MCPServerProfileUtil.getToolsCount(
+				mcpServerProfileObjectEntry, _objectEntryLocalService,
+				_objectRelationshipLocalService);
+
+			if (toolsCount > 1) {
+				return;
+			}
+
+			_deactivateMCPServerProfile(mcpServerProfileObjectEntry);
+		}
+		catch (PortalException portalException) {
+			throw new ModelListenerException(portalException);
+		}
 	}
 
 	@Override
@@ -122,44 +148,20 @@ public class MCPServerProfileToolObjectEntryModelListener
 			MapUtil.getString(mcpServerProfileObjectEntry.getValues(), "name"));
 	}
 
-	private void _deactivateMCPServerProfile(ObjectEntry objectEntry)
-		throws ModelListenerException {
+	private void _deactivateMCPServerProfile(
+			ObjectEntry mcpServerProfileObjectEntry)
+		throws PortalException {
 
-		ObjectEntry mcpServerProfileObjectEntry =
-			_objectEntryLocalService.fetchObjectEntry(
-				MapUtil.getLong(
-					objectEntry.getValues(),
-					"r_mcpServerProfileToTools_l_mcpServerProfileId"));
+		Map<String, Serializable> values = _objectEntryLocalService.getValues(
+			mcpServerProfileObjectEntry);
 
-		if ((mcpServerProfileObjectEntry == null) ||
-			!MCPServerProfileUtil.isActive(mcpServerProfileObjectEntry)) {
+		values.put("profileStatus", "inactive");
 
-			return;
-		}
-
-		try {
-			int toolsCount = MCPServerProfileUtil.getToolsCount(
-				mcpServerProfileObjectEntry, _objectEntryLocalService,
-				_objectRelationshipLocalService);
-
-			if (toolsCount > 1) {
-				return;
-			}
-
-			Map<String, Serializable> values =
-				_objectEntryLocalService.getValues(mcpServerProfileObjectEntry);
-
-			values.put("profileStatus", "inactive");
-
-			_objectEntryLocalService.updateObjectEntry(
-				mcpServerProfileObjectEntry.getUserId(),
-				mcpServerProfileObjectEntry.getObjectEntryId(),
-				mcpServerProfileObjectEntry.getObjectEntryFolderId(), values,
-				new ServiceContext());
-		}
-		catch (PortalException portalException) {
-			throw new ModelListenerException(portalException);
-		}
+		_objectEntryLocalService.updateObjectEntry(
+			mcpServerProfileObjectEntry.getUserId(),
+			mcpServerProfileObjectEntry.getObjectEntryId(),
+			mcpServerProfileObjectEntry.getObjectEntryFolderId(), values,
+			new ServiceContext());
 	}
 
 	private void _validateRestrictFields(ObjectEntry objectEntry)
