@@ -42,6 +42,8 @@ import com.liferay.sharing.service.SharingEntryLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -180,11 +182,11 @@ public abstract class BaseFDSSerializer {
 				return null;
 			}
 
+			Map<String, Serializable> values =
+				serviceBuilderObjectEntry.getValues();
+
 			String configuration = GetterUtil.getString(
-				serviceBuilderObjectEntry.getValues(
-				).get(
-					"configuration"
-				));
+				values.get("configuration"));
 
 			if (Validator.isNull(configuration)) {
 				return null;
