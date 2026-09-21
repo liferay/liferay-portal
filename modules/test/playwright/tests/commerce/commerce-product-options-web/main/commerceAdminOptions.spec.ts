@@ -231,7 +231,9 @@ test(
 			).row
 		).toBeVisible();
 
-		await commerceAdminProductDetailsProductOptionsPage.optionActionsButton.click();
+		await commerceAdminProductDetailsProductOptionsPage
+			.optionActionsButton(option.name['en_US'])
+			.click();
 
 		await commerceAdminProductDetailsProductOptionsPage.deleteMenuItem.click();
 
