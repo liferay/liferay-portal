@@ -50,10 +50,10 @@ export type ActionContext = {
 	loadData: () => void;
 };
 
-export type PromptStatusKey = 'active' | 'inactive';
+export type MCPStatusKey = 'active' | 'inactive';
 
-export type PromptStatusPicklistValue = {
-	key: PromptStatusKey;
+export type MCPStatusPicklistValue = {
+	key: MCPStatusKey;
 	name: string;
 };
 
@@ -64,7 +64,7 @@ export type Profile = {
 	friendlyUrlPath?: string;
 	id?: number;
 	name: string;
-	profileStatus?: {key: string; name?: string};
+	profileStatus?: MCPStatusPicklistValue;
 };
 
 export type ProfileActionContext = {
@@ -100,7 +100,7 @@ export type ProfileFormValues = {
 export type ProfilePayload = {
 	description: string;
 	name: string;
-	profileStatus: {key: string};
+	profileStatus: {key: MCPStatusKey};
 };
 
 export type ProfileTool = {
@@ -164,7 +164,7 @@ export type Prompt = {
 	identifier: string;
 	name: string;
 	prompt: string;
-	promptStatus: PromptStatusPicklistValue;
+	promptStatus?: MCPStatusPicklistValue;
 };
 
 export type PromptPayload = {
@@ -172,7 +172,7 @@ export type PromptPayload = {
 	identifier: string;
 	name: string;
 	prompt: string;
-	promptStatus: {key: PromptStatusKey};
+	promptStatus: {key: MCPStatusKey};
 };
 
 export type PromptActionContext = {
