@@ -360,8 +360,6 @@ public class CPDefinitionsDisplayContext
 						liferayPortletResponse
 					).setActionName(
 						"/cp_definitions/edit_cp_definition"
-					).setParameter(
-						"convertToDraft", true
 					).buildString()
 				).setLabel(
 					LanguageUtil.get(httpServletRequest, "convert-to-draft")
