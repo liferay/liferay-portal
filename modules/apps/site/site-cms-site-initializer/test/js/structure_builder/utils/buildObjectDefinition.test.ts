@@ -4,6 +4,7 @@
  */
 
 import {
+	NonRepeatableGroup,
 	ReferencedStructure,
 	RelatedContent,
 	RepeatableGroup,
@@ -172,6 +173,7 @@ describe('buildObjectDefinition', () => {
 					system: true,
 				},
 			],
+			objectLayouts: [],
 			objectRelationships: [],
 			pluralLabel: {en_US: 'Structure'},
 			scope: 'depot',
@@ -220,6 +222,7 @@ describe('buildObjectDefinition', () => {
 					system: false,
 				},
 			],
+			objectLayouts: [],
 			objectRelationships: [],
 			pluralLabel: {en_US: 'Structure'},
 			scope: 'depot',
@@ -329,6 +332,7 @@ describe('buildObjectDefinition', () => {
 					system: false,
 				},
 			],
+			objectLayouts: [],
 			objectRelationships: [],
 			pluralLabel: {en_US: 'Structure'},
 			scope: 'depot',
@@ -506,5 +510,103 @@ describe('buildObjectDefinition', () => {
 				type: 'oneToMany',
 			},
 		]);
+	});
+});
+
+describe('buildObjectDefinition object layout', () => {
+	const buildGroup = (
+		label: string,
+		children: StructureChild[]
+	): NonRepeatableGroup => ({
+		children: new Map(children.map((child) => [child.uuid, child])),
+		isRepeatable: false,
+		label: {en_US: label},
+		parent: getUuid(),
+		type: 'group',
+		uuid: getUuid(),
+	});
+
+	const build = (children: StructureChild[]) =>
+		buildObjectDefinition({
+			children: new Map(children.map((child) => [child.uuid, child])),
+			erc: 'structureERC',
+			label: {en_US: 'Structure'},
+			name: 'myStructure',
+			spaces: [],
+			status: 'draft',
+		});
+
+	it('Clears the layout when there is no group', () => {
+		expect(build([TEXT_FIELD]).objectLayouts).toEqual([]);
+	});
+
+	it('Clears the layout when the only group becomes repeatable', () => {
+		const objectDefinition = build([
+			TEXT_FIELD,
+			{
+				...buildGroup('Group', [TITLE_FIELD]),
+				erc: 'group-erc',
+				isRepeatable: true,
+				name: 'Group',
+				relationshipERC: 'relationship-erc',
+				relationshipName: 'group',
+			},
+		]);
+
+		expect(objectDefinition.objectLayouts).toEqual([]);
+	});
+
+	it('Puts the fields of the structure in the first tab', () => {
+		const [objectLayout] = build([
+			TEXT_FIELD,
+			buildGroup('Group', [TITLE_FIELD]),
+		]).objectLayouts!;
+
+		const [first, second] = objectLayout.objectLayoutTabs;
+
+		expect(first.name).toEqual({en_US: 'Structure'});
+		expect(
+			first.objectLayoutBoxes[0].objectLayoutRows[0]
+				.objectLayoutColumns[0].objectFieldName
+		).toBe(TEXT_FIELD.name);
+		expect(second.name).toEqual({en_US: 'Group'});
+	});
+
+	it('Nests a group of a group in a collapsable box', () => {
+		const [objectLayout] = build([
+			buildGroup('Group', [
+				TEXT_FIELD,
+				buildGroup('Nested', [TITLE_FIELD]),
+			]),
+		]).objectLayouts!;
+
+		const [{objectLayoutBoxes}] = objectLayout.objectLayoutTabs;
+
+		expect(objectLayoutBoxes[0].collapsable).toBe(false);
+		expect(objectLayoutBoxes[1].collapsable).toBe(true);
+		expect(objectLayoutBoxes[1].name).toEqual({en_US: 'Nested'});
+	});
+
+	it('Gives every tab and box a priority', () => {
+		const [objectLayout] = build([
+			TEXT_FIELD,
+			buildGroup('Group', [TITLE_FIELD]),
+		]).objectLayouts!;
+
+		for (const objectLayoutTab of objectLayout.objectLayoutTabs) {
+			expect(objectLayoutTab.priority).toEqual(expect.any(Number));
+
+			for (const objectLayoutBox of objectLayoutTab.objectLayoutBoxes) {
+				expect(objectLayoutBox.priority).toEqual(expect.any(Number));
+			}
+		}
+	});
+
+	it('Declares the fields of a group in the definition', () => {
+		const objectDefinition = build([buildGroup('Group', [TEXT_FIELD])]);
+
+		expect(objectDefinition.objectFields!.map(({name}) => name)).toContain(
+			TEXT_FIELD.name
+		);
 	});
 });

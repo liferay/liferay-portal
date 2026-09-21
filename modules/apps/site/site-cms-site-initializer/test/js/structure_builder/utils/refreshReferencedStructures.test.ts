@@ -5,9 +5,13 @@
 
 import {ObjectDefinition} from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
 import {
+	NonRepeatableGroup,
 	ReferencedStructure,
+	RepeatableGroup,
 	Structure,
+	StructureChild,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
+import {Uuid} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Uuid';
 import {Field} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/field';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import refreshReferencedStructures from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/state/refreshReferencedStructures';
@@ -152,5 +156,132 @@ describe('refreshReferencedStructures', () => {
 		expect(updatedField.uuid).toBe(updatedField.uuid);
 
 		expect(newField.label.en_US).toBe('New Field');
+	});
+});
+
+describe('refreshReferencedStructures with groups', () => {
+	it('Does not duplicate the fields of a nested group', () => {
+		const structureUuid = getUuid();
+		const repeatableUuid = getUuid();
+		const nestedUuid = getUuid();
+
+		const buildTextField = (
+			erc: string,
+			name: string,
+			parent: Uuid
+		): Field => ({
+			erc,
+			indexableConfig: {indexed: false},
+			label: {en_US: name},
+			localized: false,
+			locked: false,
+			name,
+			parent,
+			required: false,
+			settings: {},
+			type: 'text' as const,
+			uuid: getUuid(),
+		});
+
+		const text = buildTextField('text-erc', 'text', repeatableUuid);
+
+		const longText = buildTextField(
+			'long-text-erc',
+			'longText',
+			nestedUuid
+		);
+
+		const nestedGroup: NonRepeatableGroup = {
+			children: new Map([[longText.uuid, longText]]),
+			isRepeatable: false,
+			label: {en_US: 'Group'},
+			parent: repeatableUuid,
+			type: 'group',
+			uuid: nestedUuid,
+		};
+
+		const repeatableGroup: RepeatableGroup = {
+			children: new Map<Uuid, StructureChild>([
+				[text.uuid, text],
+				[nestedUuid, nestedGroup],
+			]),
+			erc: 'repeatable-erc',
+			isRepeatable: true,
+			label: {en_US: 'Group'},
+			name: 'C_Group',
+			parent: structureUuid,
+			relationshipERC: 'relationship-erc',
+			relationshipName: 'relationship',
+			type: 'group',
+			uuid: repeatableUuid,
+		};
+
+		const root: Structure = {
+			children: new Map([[repeatableUuid, repeatableGroup]]),
+			erc: 'structure-erc',
+			label: {en_US: 'Structure'},
+			name: 'structure-name',
+			path: '',
+			slug: '',
+			spaces: [],
+			status: 'published',
+			system: false,
+			type: 'L_CMS_CONTENT_STRUCTURES',
+			uuid: structureUuid,
+			workflows: {},
+		};
+
+		const objectDefinition: ObjectDefinition = {
+			enableComments: true,
+			enableFriendlyURLCustomization: true,
+			enableIndexSearch: true,
+			enableLocalization: true,
+			enableObjectEntryDraft: true,
+			enableObjectEntryHistory: true,
+			enableObjectEntrySchedule: true,
+			enableObjectEntryVersioning: true,
+			externalReferenceCode: 'repeatable-erc',
+			id: 1,
+			label: {en_US: 'Group'},
+			name: 'C_Group',
+			objectFields: [text, longText].map(({erc, label, name}) => ({
+				DBType: 'String',
+				businessType: 'Text',
+				externalReferenceCode: erc,
+				indexed: true,
+				indexedLanguageId: 'en_US',
+				label,
+				listTypeDefinitionId: 0,
+				localized: true,
+				name,
+				objectFieldSettings: [],
+				required: false,
+				system: false,
+			})),
+			objectRelationships: [],
+			pluralLabel: {},
+			scope: 'depot',
+		};
+
+		const children = refreshReferencedStructures({
+			objectDefinitions: {
+				[objectDefinition.externalReferenceCode]: objectDefinition,
+			},
+			root,
+		});
+
+		const repeatable = children.get(repeatableUuid) as RepeatableGroup;
+
+		expect(
+			Array.from(repeatable.children.values()).map(({type}) => type)
+		).toEqual(['text', 'group']);
+
+		const nested = repeatable.children.get(
+			nestedUuid
+		) as NonRepeatableGroup;
+
+		expect(
+			Array.from(nested.children.values()).map(({name}) => name)
+		).toEqual(['longText']);
 	});
 });

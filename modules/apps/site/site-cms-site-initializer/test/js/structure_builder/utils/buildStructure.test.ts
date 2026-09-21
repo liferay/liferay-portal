@@ -8,6 +8,7 @@ import {
 	ObjectField,
 	ObjectRelationship,
 } from '../../../../src/main/resources/META-INF/resources/js/common/types/ObjectDefinition';
+import {NonRepeatableGroup} from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
 import buildObjectDefinition from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectDefinition';
 import buildObjectRelationships from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildObjectRelationships';
 import buildStructure from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/buildStructure';
@@ -532,5 +533,118 @@ describe('buildStructure', () => {
 		expect(fieldNames).toContain('customField');
 		expect(fieldNames).not.toContain('content');
 		expect(fieldNames).not.toContain('videoURL');
+	});
+});
+
+describe('buildStructure object layout', () => {
+	it('Restores the groups from the layout', () => {
+		const textField: Field = {
+			erc: 'textFieldERC',
+			indexableConfig: {indexed: true, indexedAsKeyword: true},
+			label: {en_US: 'Text'},
+			localized: false,
+			locked: false,
+			name: 'textField',
+			parent: getUuid(),
+			required: true,
+			settings: {},
+			type: 'text',
+			uuid: getUuid(),
+		};
+
+		const groupUuid = getUuid();
+
+		const objectDefinition = buildObjectDefinition({
+			children: new Map([
+				[
+					groupUuid,
+					{
+						children: new Map([
+							[textField.uuid, {...textField, parent: groupUuid}],
+						]),
+						isRepeatable: false,
+						label: {en_US: 'Group'},
+						parent: getUuid(),
+						type: 'group',
+						uuid: groupUuid,
+					},
+				],
+			]),
+			erc: 'structureERC',
+			label: {en_US: 'Structure'},
+			name: 'myStructure',
+			spaces: [],
+			status: 'draft',
+		});
+
+		const structure = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {},
+		});
+
+		const [group] = Array.from(structure.children.values());
+
+		expect(group.type).toBe('group');
+		expect(group.label).toEqual({en_US: 'Group'});
+		expect(
+			Array.from((group as NonRepeatableGroup).children.values()).map(
+				({name}) => name
+			)
+		).toEqual([textField.name]);
+	});
+
+	it('Restores a group whose label matches the structure', () => {
+		const textField: Field = {
+			erc: 'textFieldERC',
+			indexableConfig: {indexed: true, indexedAsKeyword: true},
+			label: {en_US: 'Text'},
+			localized: false,
+			locked: false,
+			name: 'textField',
+			parent: getUuid(),
+			required: true,
+			settings: {},
+			type: 'text',
+			uuid: getUuid(),
+		};
+
+		const groupUuid = getUuid();
+
+		const objectDefinition = buildObjectDefinition({
+			children: new Map([
+				[
+					groupUuid,
+					{
+						children: new Map([
+							[textField.uuid, {...textField, parent: groupUuid}],
+						]),
+						isRepeatable: false,
+						label: {en_US: 'Structure'},
+						parent: getUuid(),
+						type: 'group',
+						uuid: groupUuid,
+					},
+				],
+			]),
+			erc: 'structureERC',
+			label: {en_US: 'Structure'},
+			name: 'myStructure',
+			spaces: [],
+			status: 'draft',
+		});
+
+		const structure = buildStructure({
+			mainObjectDefinition: objectDefinition,
+			objectDefinitions: {},
+		});
+
+		const [group] = Array.from(structure.children.values());
+
+		expect(group.type).toBe('group');
+		expect(
+			Array.from((group as NonRepeatableGroup).children.values()).map(
+				({name}) => name
+			)
+		).toEqual([textField.name]);
 	});
 });
