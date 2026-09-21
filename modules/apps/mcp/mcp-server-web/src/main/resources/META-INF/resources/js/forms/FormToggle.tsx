@@ -8,14 +8,16 @@ import {useField} from 'formik';
 import React from 'react';
 
 interface FormToggleProps {
+	disabled?: boolean;
 	name: string;
 }
 
-export function FormToggle({name}: FormToggleProps) {
+export function FormToggle({disabled, name}: FormToggleProps) {
 	const [field, , helpers] = useField<boolean>(name);
 
 	return (
 		<ClayToggle
+			disabled={disabled}
 			label={
 				field.value
 					? Liferay.Language.get('active')

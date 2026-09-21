@@ -98,6 +98,8 @@ function ProfileForm({
 	portletNamespace,
 	profile,
 }: ProfileFormProps) {
+	const isNew = !profile?.externalReferenceCode;
+
 	const formik = useFormik<ProfileFormValues>({
 		initialValues: {
 			active: profile?.profileStatus?.key === 'active',
@@ -129,7 +131,7 @@ function ProfileForm({
 					)
 				);
 
-				if (profile?.externalReferenceCode) {
+				if (!isNew) {
 					navigate(backURL);
 				}
 				else {
@@ -169,7 +171,7 @@ function ProfileForm({
 							)}
 						</span>
 
-						<FormToggle name="active" />
+						<FormToggle disabled={isNew} name="active" />
 					</div>
 				</FormSection>
 
