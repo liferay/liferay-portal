@@ -453,7 +453,7 @@ public class NotificationTemplateResourceTest
 		).put(
 			"name", RandomTestUtil.randomString()
 		).put(
-			"permissions", JSONUtil.putAll(_getPermissionsJSONObject(roleName))
+			"permissions", JSONUtil.putAll(_getPermissionJSONObject(roleName))
 		).put(
 			"recipients", JSONUtil.putAll()
 		).put(
@@ -466,7 +466,7 @@ public class NotificationTemplateResourceTest
 		);
 	}
 
-	private JSONObject _getPermissionsJSONObject(String roleName) {
+	private JSONObject _getPermissionJSONObject(String roleName) {
 		return JSONUtil.put(
 			"actionIds", new String[] {ActionKeys.VIEW}
 		).put(
@@ -737,7 +737,7 @@ public class NotificationTemplateResourceTest
 						JSONUtil.put(
 							"permissions",
 							JSONUtil.putAll(
-								_getPermissionsJSONObject(
+								_getPermissionJSONObject(
 									RoleConstants.ADMINISTRATOR)))),
 					"notification/v1.0/notification-templates",
 					Http.Method.POST));

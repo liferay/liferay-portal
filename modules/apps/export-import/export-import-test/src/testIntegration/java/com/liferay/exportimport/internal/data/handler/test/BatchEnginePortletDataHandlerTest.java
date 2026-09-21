@@ -1808,11 +1808,7 @@ public class BatchEnginePortletDataHandlerTest {
 		NotificationTemplate notificationTemplate2 = _addNotificationTemplate(
 			TestPropsValues.getUserId());
 
-		File larFile1 = new ExportImportExecutor(
-		).withGroupId(
-			_getCompanyGroupId()
-		).withIncludeNotificationTemplates(
-		).executeExport();
+		File larFile1 = _exportNotificationTemplates();
 
 		_notificationTemplateLocalService.deleteNotificationTemplate(
 			notificationTemplate1);
@@ -3920,13 +3916,9 @@ public class BatchEnginePortletDataHandlerTest {
 			NotificationTemplate notificationTemplate)
 		throws Exception {
 
-		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
-
 		Assert.assertEquals(
 			expectedNotificationRecipientSettingsMap,
-			NotificationRecipientSettingUtil.toMap(
-				notificationRecipient.getNotificationRecipientSettings()));
+			_getNotificationRecipientSettingsMap(notificationTemplate));
 	}
 
 	private void _assertNotificationTemplate(
