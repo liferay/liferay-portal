@@ -4,22 +4,20 @@
  */
 
 import {Group} from '../types/Structure';
+import {Field} from './field';
 import isField from './isField';
 
-export default function hasOwnField(children: Group['children']): boolean {
+export default function getOwnFields(children: Group['children']): Field[] {
+	const fields: Field[] = [];
+
 	for (const child of children.values()) {
 		if (isField(child)) {
-			return true;
+			fields.push(child);
 		}
-
-		if (
-			child.type === 'group' &&
-			!child.isRepeatable &&
-			hasOwnField(child.children)
-		) {
-			return true;
+		else if (child.type === 'group' && !child.isRepeatable) {
+			fields.push(...getOwnFields(child.children));
 		}
 	}
 
-	return false;
+	return fields;
 }

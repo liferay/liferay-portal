@@ -19,7 +19,7 @@ import {
 	StructureChild,
 } from '../types/Structure';
 import {Field, SelectFromListField} from './field';
-import hasOwnField from './hasOwnField';
+import getOwnFields from './getOwnFields';
 
 const NAME_MAX_LENGTH = 41;
 const ERC_MAX_LENGTH = 75;
@@ -195,7 +195,9 @@ export function validateGroup({
 	}
 
 	if (children) {
-		const valid = isRepeatable ? hasOwnField(children) : children.size > 0;
+		const valid = isRepeatable
+			? getOwnFields(children).length > 0
+			: children.size > 0;
 
 		valid ? errors.delete('global') : errors.set('global', 'no-fields');
 	}
