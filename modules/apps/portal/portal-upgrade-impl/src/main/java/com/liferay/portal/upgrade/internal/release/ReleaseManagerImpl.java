@@ -161,9 +161,9 @@ public class ReleaseManagerImpl implements ReleaseManager {
 			_upgradeExecutor.getFailedBundleSymbolicNames());
 
 		for (String bundleSymbolicName : failedBundleSymbolicNames) {
-			sb.append("The upgrade of module ");
-			sb.append(bundleSymbolicName);
-			sb.append(" failed\n");
+			sb.append(
+				ReleaseManagerUtil.getFailedModuleMessage(bundleSymbolicName));
+			sb.append(StringPool.NEW_LINE);
 		}
 
 		Set<String> bundleSymbolicNames =
@@ -178,8 +178,24 @@ public class ReleaseManagerImpl implements ReleaseManager {
 				ReleaseManagerUtil.getSchemaVersionString(
 					_releaseLocalService.fetchRelease(bundleSymbolicName));
 
-			ReleaseGraphManager releaseGraphManager = new ReleaseGraphManager(
-				_upgradeExecutor.getUpgradeInfos(bundleSymbolicName));
+			ReleaseGraphManager releaseGraphManager = null;
+
+			try {
+				releaseGraphManager = new ReleaseGraphManager(
+					_upgradeExecutor.getUpgradeInfos(bundleSymbolicName));
+			}
+			catch (Throwable throwable) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(throwable);
+				}
+
+				sb.append(
+					ReleaseManagerUtil.getFailedModuleMessage(
+						bundleSymbolicName));
+				sb.append(StringPool.NEW_LINE);
+
+				continue;
+			}
 
 			List<List<UpgradeInfo>> upgradeInfosList =
 				releaseGraphManager.getUpgradeInfosList(schemaVersionString);
@@ -343,10 +359,6 @@ public class ReleaseManagerImpl implements ReleaseManager {
 	}
 
 	private boolean _isPendingModuleUpgrades() {
-		if (_hasFailedModuleUpgrades()) {
-			return true;
-		}
-
 		for (String bundleSymbolicName :
 				_upgradeExecutor.getBundleSymbolicNames()) {
 
@@ -358,14 +370,10 @@ public class ReleaseManagerImpl implements ReleaseManager {
 			}
 		}
 
-		return false;
+		return _hasFailedModuleUpgrades();
 	}
 
 	private boolean _isPendingRequiredModuleUpgrades() {
-		if (_hasFailedModuleUpgrades()) {
-			return true;
-		}
-
 		Set<String> upgradableBundleSymbolicNames =
 			ReleaseManagerUtil.getUpgradableBundleSymbolicNames(
 				_upgradeExecutor.getBundleSymbolicNames(), _releaseLocalService,
@@ -394,7 +402,7 @@ public class ReleaseManagerImpl implements ReleaseManager {
 			}
 		}
 
-		return false;
+		return _hasFailedModuleUpgrades();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
