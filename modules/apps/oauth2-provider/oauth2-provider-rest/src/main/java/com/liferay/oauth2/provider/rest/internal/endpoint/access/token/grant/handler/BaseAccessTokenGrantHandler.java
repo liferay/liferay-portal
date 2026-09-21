@@ -29,6 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -82,19 +83,10 @@ public abstract class BaseAccessTokenGrantHandler
 		Client client, MultivaluedMap<String, String> params,
 		Supplier<ServerAccessToken> supplier) {
 
-		List<String> resources = params.get("resource");
+		List<String> resources = getResources(params);
 
 		if (ListUtil.isEmpty(resources)) {
 			return supplier.get();
-		}
-
-		for (String resource : resources) {
-			if (!_isValidResource(resource)) {
-				OAuth2ErrorUtil.reportInvalidRequestError(
-					"The resource parameter must be an absolute URI without " +
-						"a fragment",
-					"invalid_target", Response.Status.BAD_REQUEST);
-			}
 		}
 
 		List<String> registeredAudiences = client.getRegisteredAudiences();
@@ -119,6 +111,25 @@ public abstract class BaseAccessTokenGrantHandler
 
 	protected abstract ServerAccessToken doCreateAccessToken(
 		Client client, MultivaluedMap<String, String> params);
+
+	protected List<String> getResources(MultivaluedMap<String, String> params) {
+		List<String> resources = params.get("resource");
+
+		if (ListUtil.isEmpty(resources)) {
+			return Collections.emptyList();
+		}
+
+		for (String resource : resources) {
+			if (!_isValidResource(resource)) {
+				OAuth2ErrorUtil.reportInvalidRequestError(
+					"The resource parameter must be an absolute URI without " +
+						"a fragment",
+					"invalid_target", Response.Status.BAD_REQUEST);
+			}
+		}
+
+		return resources;
+	}
 
 	protected boolean hasCreateTokenPermission(
 		long userId, OAuth2Application oAuth2Application) {

@@ -8,12 +8,15 @@ package com.liferay.oauth2.provider.rest.internal.endpoint.access.token.grant.ha
 import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.rest.internal.endpoint.liferay.LiferayOAuthDataProvider;
+import com.liferay.oauth2.provider.rest.internal.endpoint.util.OAuth2ErrorUtil;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,22 @@ public class LiferayRefreshTokenAccessTokenGrantHandler
 	@Override
 	protected ServerAccessToken doCreateAccessToken(
 		Client client, MultivaluedMap<String, String> params) {
+
+		List<String> resources = getResources(params);
+
+		if (ListUtil.isNotEmpty(resources)) {
+			RefreshToken refreshToken =
+				_liferayOAuthDataProvider.getRefreshToken(
+					params.getFirst("refresh_token"));
+
+			List<String> audiences = refreshToken.getAudiences();
+
+			if (!audiences.containsAll(resources)) {
+				OAuth2ErrorUtil.reportInvalidRequestError(
+					"The resource parameter is not a granted audience",
+					"invalid_target", Response.Status.BAD_REQUEST);
+			}
+		}
 
 		return _refreshTokenGrantHandler.createAccessToken(client, params);
 	}

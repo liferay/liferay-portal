@@ -52,6 +52,43 @@ public class TokenAudienceTest extends BaseClientTestCase {
 		new LiferayIntegrationTestRule();
 
 	@Test
+	public void testRefreshTokenWithGrantedResource() throws Exception {
+		JSONObject authorizationCodeTokenJSONObject =
+			_getAuthorizationCodeTokenJSONObject();
+
+		JSONObject refreshTokenJSONObject = _getRefreshTokenJSONObject(
+			authorizationCodeTokenJSONObject.getString("refresh_token"),
+			_RESOURCE_URI);
+
+		Assert.assertEquals(
+			Collections.singletonList(_RESOURCE_URI),
+			_getAudiences(refreshTokenJSONObject.getString("access_token")));
+	}
+
+	@Test
+	public void testRefreshTokenWithInvalidResource() throws Exception {
+		_testRefreshTokenWithInvalidResource(RandomTestUtil.randomString());
+		_testRefreshTokenWithInvalidResource(
+			StringBundler.concat(
+				Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(), "/#",
+				RandomTestUtil.randomString()));
+		_testRefreshTokenWithInvalidResource(StringPool.SPACE);
+	}
+
+	@Test
+	public void testRefreshTokenWithUngrantedResource() throws Exception {
+		JSONObject authorizationCodeTokenJSONObject =
+			_getAuthorizationCodeTokenJSONObject();
+
+		Response response = _getRefreshTokenResponse(
+			authorizationCodeTokenJSONObject.getString("refresh_token"),
+			Http.HTTPS_WITH_SLASH + RandomTestUtil.randomString());
+
+		Assert.assertEquals(400, response.getStatus());
+		Assert.assertEquals("invalid_target", parseError(response));
+	}
+
+	@Test
 	public void testTokenIntrospectionAudience() throws Exception {
 		_testTokenIntrospectionAudience(
 			Collections.singletonList(_RESOURCE_URI));
@@ -86,42 +123,22 @@ public class TokenAudienceTest extends BaseClientTestCase {
 			_getAudiences(
 				authorizationCodeTokenJSONObject.getString("access_token")));
 
-		WebTarget tokenWebTarget = getTokenWebTarget();
-
-		Invocation.Builder invocationBuilder = tokenWebTarget.request();
-
-		Response response = invocationBuilder.post(
-			Entity.form(
-				new MultivaluedHashMap<>(
-					HashMapBuilder.put(
-						"client_id", _CLIENT_ID
-					).put(
-						"client_secret", _CLIENT_SECRET
-					).put(
-						"grant_type", "refresh_token"
-					).put(
-						"refresh_token",
-						authorizationCodeTokenJSONObject.getString(
-							"refresh_token")
-					).build())));
-
-		Assert.assertEquals(200, response.getStatus());
-
-		JSONObject jsonObject = parseJSONObject(response);
+		JSONObject refreshTokenJSONObject = _getRefreshTokenJSONObject(
+			authorizationCodeTokenJSONObject.getString("refresh_token"), null);
 
 		Assert.assertEquals(
 			Collections.singletonList(_RESOURCE_URI),
-			_getAudiences(jsonObject.getString("access_token")));
+			_getAudiences(refreshTokenJSONObject.getString("access_token")));
 	}
 
 	@Test
 	public void testTokenRequestWithInvalidResource() throws Exception {
-		_testTokenRequestWithInvalidResource(StringPool.SPACE);
+		_testTokenRequestWithInvalidResource(RandomTestUtil.randomString());
 		_testTokenRequestWithInvalidResource(
 			StringBundler.concat(
 				Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(), "/#",
 				RandomTestUtil.randomString()));
-		_testTokenRequestWithInvalidResource(RandomTestUtil.randomString());
+		_testTokenRequestWithInvalidResource(StringPool.SPACE);
 	}
 
 	@Override
@@ -196,6 +213,56 @@ public class TokenAudienceTest extends BaseClientTestCase {
 		Assert.assertEquals(200, response.getStatus());
 
 		return parseJSONObject(response);
+	}
+
+	private JSONObject _getRefreshTokenJSONObject(
+		String refreshToken, String resource) {
+
+		Response response = _getRefreshTokenResponse(refreshToken, resource);
+
+		Assert.assertEquals(200, response.getStatus());
+
+		return parseJSONObject(response);
+	}
+
+	private Response _getRefreshTokenResponse(
+		String refreshToken, String resource) {
+
+		MultivaluedHashMap<String, String> tokenFormData =
+			new MultivaluedHashMap<>(
+				HashMapBuilder.put(
+					"client_id", _CLIENT_ID
+				).put(
+					"client_secret", _CLIENT_SECRET
+				).put(
+					"grant_type", "refresh_token"
+				).put(
+					"refresh_token", refreshToken
+				).build());
+
+		if (resource != null) {
+			tokenFormData.add("resource", resource);
+		}
+
+		WebTarget tokenWebTarget = getTokenWebTarget();
+
+		Invocation.Builder invocationBuilder = tokenWebTarget.request();
+
+		return invocationBuilder.post(Entity.form(tokenFormData));
+	}
+
+	private void _testRefreshTokenWithInvalidResource(String resource)
+		throws Exception {
+
+		JSONObject authorizationCodeTokenJSONObject =
+			_getAuthorizationCodeTokenJSONObject();
+
+		Response response = _getRefreshTokenResponse(
+			authorizationCodeTokenJSONObject.getString("refresh_token"),
+			resource);
+
+		Assert.assertEquals(400, response.getStatus());
+		Assert.assertEquals("invalid_target", parseError(response));
 	}
 
 	private void _testTokenIntrospectionAudience(List<String> resources)
