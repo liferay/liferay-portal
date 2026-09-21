@@ -270,7 +270,7 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			HashMapBuilder.<String, Serializable>put(
 				"fdsName", _FDS_NAME
 			).put(
-				"label", _LABEL
+				"label", RandomTestUtil.randomString()
 			).build(),
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), userId));
@@ -439,8 +439,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 	}
 
 	private static final String _FDS_NAME = RandomTestUtil.randomString();
-
-	private static final String _LABEL = RandomTestUtil.randomString();
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
