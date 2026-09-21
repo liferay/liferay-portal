@@ -156,7 +156,9 @@ definition {
 
 			var key_roleTitle = StringUtil.lowerCase(${key_roleTitle});
 
-			ScrollWebElementIntoView(locator1 = "Permissions#CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX");
+			if (!(IsElementPresent(locator1 = "Permissions#CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX"))) {
+				Search.searchCP(searchTerm = ${roleTitle});
+			}
 
 			takeScreenshot();
 
@@ -166,13 +168,13 @@ definition {
 			else if (${addOrRemoveViewPermission} == "Remove") {
 				Uncheck.uncheckNotVisible(locator1 = "Permissions#CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX");
 			}
+
+			Button.clickSave();
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "Message#SUCCESS",
+				value1 = "successfully.");
 		}
-
-		Button.clickSave();
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#SUCCESS",
-			value1 = "successfully.");
 	}
 
 	@summary = "Default summary"
