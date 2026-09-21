@@ -38,6 +38,20 @@ function getJestConfig({rootDir = '<rootDir>'}) {
 		moduleNameMapper,
 		modulePathIgnorePatterns: ['/__fixtures__/', '/build/', '/classes/'],
 		prettierPath: null,
+		reporters: [
+			'default',
+			[
+				'jest-junit',
+				{
+					ancestorSeparator: ' > ',
+					classNameTemplate: '{filepath}',
+					outputName: 'TEST-frontend-js.xml',
+					reportTestSuiteErrors: true,
+					suiteNameTemplate: '{filepath}',
+					titleTemplate: '{classname} > {title}',
+				},
+			],
+		],
 		resolver: path.join(__dirname, 'resolver.js'),
 		setupFiles: [path.join(__dirname, 'setup.js')],
 		setupFilesAfterEnv: [path.join(__dirname, 'setupAfterEnv.js')],
@@ -51,7 +65,6 @@ function getJestConfig({rootDir = '<rootDir>'}) {
 			`${rootDir}/test/stories/`,
 			'/test/__lib__/',
 		],
-		testResultsProcessor: '@liferay/jest-junit-reporter',
 		transform: {
 
 			/* eslint-disable sort-keys */
