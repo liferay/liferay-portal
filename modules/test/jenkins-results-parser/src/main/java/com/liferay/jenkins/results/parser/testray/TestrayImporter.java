@@ -1041,10 +1041,9 @@ public class TestrayImporter {
 		if (uncreatedTestrayCaseResultCount > 0) {
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
-					"WARNING: ",
+					"Unable to create ",
 					String.valueOf(uncreatedTestrayCaseResultCount), " of ",
-					String.valueOf(callables.size()),
-					" Testray case results were not created."));
+					String.valueOf(callables.size()), " Testray case results"));
 		}
 
 		List<Long> testrayBuildIds = new ArrayList<>();
