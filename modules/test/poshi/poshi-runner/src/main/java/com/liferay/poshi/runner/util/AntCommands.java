@@ -86,9 +86,6 @@ public class AntCommands implements Callable<Void> {
 
 		process.waitFor();
 
-		// Read the exit value only after the process ends, so that the
-		// buffering threads are given time to drain the last of the output
-
 		int exitValue = process.exitValue();
 
 		StringBuilder outputSB = new StringBuilder();
