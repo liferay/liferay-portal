@@ -101,18 +101,18 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
+			String portalURL = _portal.getPortalURL(
+				company.getVirtualHostname(),
+				_portal.getPortalServerPort(false), false);
+
 			List<StaticSiteExportResource> staticSiteExportResources =
 				_fetchStaticSiteExportResources(
-					serviceContext.getRequest(),
-					_portal.getPortalURL(
-						company.getVirtualHostname(),
-						_portal.getPortalServerPort(false), false),
-					resourceFailures, staticSiteExportDocuments.values());
+					serviceContext.getRequest(), portalURL, resourceFailures,
+					staticSiteExportDocuments.values());
 
 			StaticSiteExportURLRewriter staticSiteExportURLRewriter =
 				new StaticSiteExportURLRewriter(
-					_getPagePaths(group, staticSiteExportLayouts),
-					company.getVirtualHostname(),
+					_getPagePaths(group, portalURL, staticSiteExportLayouts),
 					_getResourcePaths(staticSiteExportResources));
 
 			return new StaticSiteExportImpl(
@@ -246,7 +246,8 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 	}
 
 	private Map<String, String> _getPagePaths(
-			Group group, List<StaticSiteExportLayout> staticSiteExportLayouts)
+			Group group, String portalURL,
+			List<StaticSiteExportLayout> staticSiteExportLayouts)
 		throws PortalException {
 
 		Map<String, String> pagePaths = new HashMap<>();
@@ -284,17 +285,18 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 
 			for (String url : urls) {
 				if (Objects.equals(locale, siteDefaultLocale)) {
-					pagePaths.put(url, path);
+					_putPagePath(pagePaths, path, portalURL, url);
 				}
 
-				pagePaths.put(
+				_putPagePath(
+					pagePaths, path, portalURL,
 					StringBundler.concat(
-						StringPool.SLASH, LocaleUtil.toLanguageId(locale), url),
-					path);
-				pagePaths.put(
+						StringPool.SLASH, LocaleUtil.toLanguageId(locale),
+						url));
+				_putPagePath(
+					pagePaths, path, portalURL,
 					StringBundler.concat(
-						StringPool.SLASH, locale.getLanguage(), url),
-					path);
+						StringPool.SLASH, locale.getLanguage(), url));
 			}
 		}
 
@@ -370,6 +372,14 @@ public class StaticSiteExporterImpl implements StaticSiteExporter {
 		}
 
 		return false;
+	}
+
+	private void _putPagePath(
+		Map<String, String> pagePaths, String path, String portalURL,
+		String url) {
+
+		pagePaths.put(portalURL + url, path);
+		pagePaths.put(url, path);
 	}
 
 	private List<StaticSiteExportLayout> _rewriteLayouts(

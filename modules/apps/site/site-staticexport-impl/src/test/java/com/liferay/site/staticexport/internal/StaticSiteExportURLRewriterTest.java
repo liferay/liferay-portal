@@ -35,8 +35,13 @@ public class StaticSiteExportURLRewriterTest {
 					"/web/site", "home.html"
 				).put(
 					"/web/site/about", "about.html"
+				).put(
+					"http://localhost:8080/es/web/site/about", "es/about.html"
+				).put(
+					"http://localhost:8080/web/site", "home.html"
+				).put(
+					"http://localhost:8080/web/site/about", "about.html"
 				).build(),
-				"localhost",
 				HashMapBuilder.put(
 					"/o/react-web/react.js", "o/react-web/react.js"
 				).put(

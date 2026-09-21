@@ -5,7 +5,6 @@
 
 package com.liferay.site.staticexport.internal;
 
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -18,11 +17,9 @@ import java.util.Map;
 public class StaticSiteExportURLRewriter {
 
 	public StaticSiteExportURLRewriter(
-		Map<String, String> pagePaths, String portalHost,
-		Map<String, String> resourcePaths) {
+		Map<String, String> pagePaths, Map<String, String> resourcePaths) {
 
 		_pagePaths = pagePaths;
-		_portalHost = portalHost;
 		_resourcePaths = resourcePaths;
 	}
 
@@ -48,7 +45,7 @@ public class StaticSiteExportURLRewriter {
 			return null;
 		}
 
-		url = _toPortalPath(StringUtil.trim(url));
+		url = StringUtil.trim(url);
 
 		String path = _resourcePaths.get(url);
 
@@ -63,36 +60,7 @@ public class StaticSiteExportURLRewriter {
 		return StringPool.SLASH + path;
 	}
 
-	private String _toPortalPath(String url) {
-		int index = url.indexOf("://");
-
-		if (index == -1) {
-			return url;
-		}
-
-		int pathIndex = url.indexOf(CharPool.SLASH, index + 3);
-
-		if (pathIndex == -1) {
-			return url;
-		}
-
-		String host = url.substring(index + 3, pathIndex);
-
-		int portIndex = host.indexOf(CharPool.COLON);
-
-		if (portIndex != -1) {
-			host = host.substring(0, portIndex);
-		}
-
-		if (StringUtil.equalsIgnoreCase(host, _portalHost)) {
-			return url.substring(pathIndex);
-		}
-
-		return url;
-	}
-
 	private final Map<String, String> _pagePaths;
-	private final String _portalHost;
 	private final Map<String, String> _resourcePaths;
 
 }

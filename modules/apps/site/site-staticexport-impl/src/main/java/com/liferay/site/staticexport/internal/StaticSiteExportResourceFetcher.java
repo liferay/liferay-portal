@@ -85,7 +85,7 @@ public class StaticSiteExportResourceFetcher {
 		Http.Options options = new Http.Options();
 
 		options.setFollowRedirects(true);
-		options.setLocation(_portalURL + url);
+		options.setLocation(_getLocation(url));
 
 		File file = FileUtil.createTempFile();
 
@@ -106,6 +106,14 @@ public class StaticSiteExportResourceFetcher {
 		}
 
 		return file;
+	}
+
+	private String _getLocation(String url) {
+		if (Validator.isNotNull(HttpComponentsUtil.getDomain(url))) {
+			return url;
+		}
+
+		return _portalURL + url;
 	}
 
 	private String _getModuleName(String path) {
