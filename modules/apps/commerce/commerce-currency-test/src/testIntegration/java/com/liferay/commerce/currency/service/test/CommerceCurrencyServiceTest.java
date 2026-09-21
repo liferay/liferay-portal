@@ -11,7 +11,6 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
@@ -54,8 +53,7 @@ public class CommerceCurrencyServiceTest {
 	@Test
 	public void testGetCommerceCurrencies() throws Exception {
 		_commerceCurrency = _commerceCurrencyService.addCommerceCurrency(
-			null,
-			RandomTestUtil.randomString(UniqueStringRandomizerBumper.INSTANCE),
+			null, RandomTestUtil.randomString(),
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomString(3), BigDecimal.ONE,
 			LocalizationUtil.getLocalizationMap(
