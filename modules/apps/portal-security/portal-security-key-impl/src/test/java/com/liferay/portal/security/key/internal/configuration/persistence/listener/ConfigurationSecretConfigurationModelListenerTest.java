@@ -41,6 +41,7 @@ import org.mockito.MockitoAnnotations;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.metatype.AttributeDefinition;
 import org.osgi.service.metatype.ObjectClassDefinition;
@@ -118,10 +119,22 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 			_bundleContext);
 		ReflectionTestUtil.setFieldValue(
 			_configurationSecretConfigurationModelListener,
+			"_configurationAdmin", _configurationAdmin);
+		ReflectionTestUtil.setFieldValue(
+			_configurationSecretConfigurationModelListener,
 			"_extendedMetaTypeService", _extendedMetaTypeService);
 		ReflectionTestUtil.setFieldValue(
 			_configurationSecretConfigurationModelListener, "_secretManager",
 			_secretManager);
+	}
+
+	@Test
+	public void testOnBeforeDelete() throws Exception {
+		_testOnBeforeDelete();
+		_testOnBeforeDeleteWhenDeleteFails();
+		_testOnBeforeDeleteWhenKeyManagerProfileIsInactive();
+		_testOnBeforeDeleteWhenPropertiesAreNull();
+		_testOnBeforeDeleteWhenReferenceIsNotAConfiguration();
 	}
 
 	@Test
@@ -174,6 +187,132 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 		ReflectionTestUtil.setFieldValue(
 			_configurationSecretConfigurationModelListener,
 			"_keyManagerProfileRegistry", keyManagerProfileRegistry);
+	}
+
+	private void _testOnBeforeDelete() throws Exception {
+		setUp();
+
+		KeyReference keyReference = new KeyReference(
+			"config/" + _PID + "/0/credential", "provider",
+			KeyReference.Type.SECRET);
+
+		Mockito.when(
+			_configuration.getProperties()
+		).thenReturn(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"credential",
+				KeyReferenceUtil.toKeyReferenceString(keyReference)
+			).put(
+				"host", RandomTestUtil.randomString()
+			).build()
+		);
+
+		Mockito.when(
+			_configurationAdmin.listConfigurations("(service.pid=" + _PID + ")")
+		).thenReturn(
+			new Configuration[] {_configuration}
+		);
+
+		_configurationSecretConfigurationModelListener.onBeforeDelete(_PID);
+
+		Mockito.verify(
+			_secretManager
+		).deleteSecret(
+			CompanyConstants.SYSTEM, keyReference
+		);
+	}
+
+	private void _testOnBeforeDeleteWhenDeleteFails() throws Exception {
+		setUp();
+
+		KeyReference keyReference1 = new KeyReference(
+			_IDENTIFIER, "provider", KeyReference.Type.SECRET);
+		KeyReference keyReference2 = new KeyReference(
+			_IDENTIFIER_PREFIX + _PID + "/0/host", "provider",
+			KeyReference.Type.SECRET);
+
+		Mockito.doThrow(
+			SecretException.class
+		).when(
+			_secretManager
+		).deleteSecret(
+			CompanyConstants.SYSTEM, keyReference1
+		);
+
+		Mockito.when(
+			_configuration.getProperties()
+		).thenReturn(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"credential",
+				KeyReferenceUtil.toKeyReferenceString(keyReference1)
+			).put(
+				"host", KeyReferenceUtil.toKeyReferenceString(keyReference2)
+			).build()
+		);
+
+		Mockito.when(
+			_configurationAdmin.listConfigurations("(service.pid=" + _PID + ")")
+		).thenReturn(
+			new Configuration[] {_configuration}
+		);
+
+		_configurationSecretConfigurationModelListener.onBeforeDelete(_PID);
+
+		Mockito.verify(
+			_secretManager
+		).deleteSecret(
+			CompanyConstants.SYSTEM, keyReference2
+		);
+	}
+
+	private void _testOnBeforeDeleteWhenKeyManagerProfileIsInactive()
+		throws Exception {
+
+		setUp();
+
+		_setUpKeyManagerProfileRegistry(null);
+
+		_configurationSecretConfigurationModelListener.onBeforeDelete(_PID);
+
+		Mockito.verifyNoInteractions(_secretManager);
+	}
+
+	private void _testOnBeforeDeleteWhenPropertiesAreNull() throws Exception {
+		setUp();
+
+		Mockito.when(
+			_configurationAdmin.listConfigurations("(service.pid=" + _PID + ")")
+		).thenReturn(
+			new Configuration[] {_configuration}
+		);
+
+		_configurationSecretConfigurationModelListener.onBeforeDelete(_PID);
+
+		Mockito.verifyNoInteractions(_secretManager);
+	}
+
+	private void _testOnBeforeDeleteWhenReferenceIsNotAConfiguration()
+		throws Exception {
+
+		setUp();
+
+		Mockito.when(
+			_configuration.getProperties()
+		).thenReturn(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"credential", "${secretRef:provider:oauth2/1234/clientSecret}"
+			).build()
+		);
+
+		Mockito.when(
+			_configurationAdmin.listConfigurations("(service.pid=" + _PID + ")")
+		).thenReturn(
+			new Configuration[] {_configuration}
+		);
+
+		_configurationSecretConfigurationModelListener.onBeforeDelete(_PID);
+
+		Mockito.verifyNoInteractions(_secretManager);
 	}
 
 	private void _testOnBeforeSave() throws Exception {
@@ -454,6 +593,12 @@ public class ConfigurationSecretConfigurationModelListenerTest {
 
 	@Mock
 	private BundleContext _bundleContext;
+
+	@Mock
+	private Configuration _configuration;
+
+	@Mock
+	private ConfigurationAdmin _configurationAdmin;
 
 	private final ConfigurationSecretConfigurationModelListener
 		_configurationSecretConfigurationModelListener =
