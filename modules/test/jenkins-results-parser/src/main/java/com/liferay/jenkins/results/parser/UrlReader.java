@@ -467,14 +467,18 @@ public class UrlReader {
 
 					sb.append(exceptionMessage);
 
+					String errorResponse = null;
+
 					try (InputStream errorInputStream =
 							httpURLConnection.getErrorStream()) {
 
 						if (errorInputStream != null) {
-							sb.append("\nError response:\n");
-							sb.append(
+							errorResponse =
 								JenkinsResultsParserUtil.readInputStream(
-									errorInputStream));
+									errorInputStream);
+
+							sb.append("\nError response:\n");
+							sb.append(errorResponse);
 						}
 					}
 					catch (IOException ioException2) {
@@ -491,8 +495,9 @@ public class UrlReader {
 
 					System.out.println(sb.toString());
 
-					if (httpAuthorization instanceof
-							ClientCredentialsHTTPAuthorization) {
+					if ((httpAuthorization instanceof
+							ClientCredentialsHTTPAuthorization) &&
+						!_isHTMLErrorResponse(errorResponse)) {
 
 						ClientCredentialsHTTPAuthorization
 							clientCredentialsHTTPAuthorization =
@@ -560,6 +565,24 @@ public class UrlReader {
 				JenkinsResultsParserUtil.sleep(retryPeriodMillis);
 			}
 		}
+	}
+
+	private boolean _isHTMLErrorResponse(String errorResponse) {
+		if (JenkinsResultsParserUtil.isNullOrEmpty(errorResponse)) {
+			return false;
+		}
+
+		errorResponse = errorResponse.trim();
+
+		errorResponse = errorResponse.toLowerCase();
+
+		if (errorResponse.startsWith("<!doctype html") ||
+			errorResponse.startsWith("<html")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final int _SECONDS_RETRY_PERIOD_MAX = 60 * 30;
