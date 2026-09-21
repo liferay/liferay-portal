@@ -20,6 +20,7 @@ import com.liferay.fragment.util.comparator.FragmentCollectionCreateDateComparat
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.frontend.token.definition.constants.FrontendTokenDefinitionConstants;
+import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.item.selector.LayoutItemSelectorReturnType;
@@ -33,6 +34,7 @@ import com.liferay.layout.util.comparator.LayoutModifiedDateComparator;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -80,7 +82,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Eudaldo Alonso
@@ -128,8 +129,7 @@ public class EditStyleBookEntryDisplayContext {
 				"/style_book/preview_fragment_collection"
 			).buildString()
 		).put(
-			"frontendTokenDefinitions",
-			_getFrontendTokenDefinitionsJSONObjects()
+			"frontendTokenDefinitions", _getFrontendTokenDefinitionsJSONArray()
 		).put(
 			"frontendTokensValues",
 			() -> {
@@ -335,51 +335,61 @@ public class EditStyleBookEntryDisplayContext {
 		return fragmentCollectionsCount + fragmentCollectionContributors.size();
 	}
 
-	private List<JSONObject> _getFrontendTokenDefinitionsJSONObjects()
-		throws Exception {
+	private JSONArray _getFrontendTokenDefinitionsJSONArray() {
+		FrontendTokenDefinition themeFrontendTokenDefinition =
+			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
+				_themeDisplay.getCompanyId(), _styleBookEntry.getThemeId());
 
-		List<FrontendTokenDefinition> frontendTokenDefinitions = ListUtil.sort(
-			ListUtil.filter(
-				_frontendTokenDefinitionRegistry.getFrontendTokenDefinitions(
-					_themeDisplay.getCompanyId()),
-				frontendTokenDefinition ->
-					Objects.equals(
-						frontendTokenDefinition.getThemeId(),
-						_styleBookEntry.getThemeId()) ||
-					Objects.equals(
-						frontendTokenDefinition.getThemeType(),
-						FrontendTokenDefinitionConstants.THEME_TYPE_GLOBAL)),
-			(frontendTokenDefinition1, frontendTokenDefinition2) ->
-				Integer.compare(
-					frontendTokenDefinition2.getPriority(),
-					frontendTokenDefinition1.getPriority()));
+		JSONObject themeFrontendTokenDefinitionJSONObject =
+			themeFrontendTokenDefinition.getJSONObject(
+				_themeDisplay.getLocale());
 
-		return TransformUtil.transform(
-			frontendTokenDefinitions,
-			frontendTokenDefinition -> {
-				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		JSONObject overrideFrontendTokenDefinitionJSONObject =
+			FrontendTokenDefinitionUtil.parseFrontendTokenDefinitionJSONObject(
+				_styleBookEntry.getFrontendTokenDefinition());
 
-				JSONObject frontendTokenDefinitionJSONObject =
-					frontendTokenDefinition.getJSONObject(
-						_themeDisplay.getLocale());
+		if (overrideFrontendTokenDefinitionJSONObject != null) {
+			themeFrontendTokenDefinitionJSONObject =
+				FrontendTokenDefinitionUtil.
+					mergeFrontendTokenDefinitionJSONObject(
+						themeFrontendTokenDefinitionJSONObject,
+						overrideFrontendTokenDefinitionJSONObject);
+		}
 
-				for (String key : frontendTokenDefinitionJSONObject.keySet()) {
-					jsonObject.put(
-						key, frontendTokenDefinitionJSONObject.get(key));
-				}
+		JSONArray jsonArray = JSONUtil.put(
+			themeFrontendTokenDefinitionJSONObject.put(
+				"id", themeFrontendTokenDefinition.getThemeId()
+			).put(
+				"name",
+				themeFrontendTokenDefinition.getThemeName(
+					_themeDisplay.getLocale())
+			).put(
+				"priority", themeFrontendTokenDefinition.getPriority()
+			));
 
-				jsonObject.put(
-					"id", frontendTokenDefinition.getThemeId()
-				).put(
-					"name",
-					frontendTokenDefinition.getThemeName(
-						_themeDisplay.getLocale())
-				).put(
-					"priority", frontendTokenDefinition.getPriority()
-				);
+		FrontendTokenDefinition globalFrontendTokenDefinition =
+			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
+				_themeDisplay.getCompanyId(),
+				"com.liferay.frontend.js.clay.web");
 
-				return jsonObject;
-			});
+		if (globalFrontendTokenDefinition == null) {
+			return jsonArray;
+		}
+
+		JSONObject globalFrontendTokenDefinitionJSONObject =
+			globalFrontendTokenDefinition.getJSONObject(
+				_themeDisplay.getLocale());
+
+		return jsonArray.put(
+			globalFrontendTokenDefinitionJSONObject.put(
+				"id", globalFrontendTokenDefinition.getThemeId()
+			).put(
+				"name",
+				globalFrontendTokenDefinition.getThemeName(
+					_themeDisplay.getLocale())
+			).put(
+				"priority", globalFrontendTokenDefinition.getPriority()
+			));
 	}
 
 	private String _getName(Group entryGroup, Layout layout) {
