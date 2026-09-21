@@ -531,6 +531,21 @@ public class AssetListFiltersUtilTest {
 			false, false,
 			_getKeywordsFilterJSONObject("not-contains", "any", keywordPhrase),
 			keyword1, keyword2);
+
+		String quotedKeywordPhrase = StringUtil.quote(
+			keywordPhrase, CharPool.QUOTE);
+
+		_assertKeywords(
+			true, true,
+			_getKeywordsFilterJSONObject(
+				"contains", "all", quotedKeywordPhrase),
+			keywordPhrase);
+		_assertKeywords(
+			true, true,
+			_getKeywordsFilterJSONObject(
+				"contains", "all",
+				quotedKeywordPhrase + StringPool.SPACE + keyword1),
+			keywordPhrase, keyword1);
 	}
 
 	@Test
