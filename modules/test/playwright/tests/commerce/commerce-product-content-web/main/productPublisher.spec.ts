@@ -200,3 +200,33 @@ test(
 		await expect(productTiles).toHaveCSS('display', 'grid');
 	}
 );
+
+test(
+	'The Product Publisher configuration reveals the Product Entries panel as soon as the product source is manual',
+	{tag: ['@COMMERCE-10454', '@LPD-106723']},
+	async ({apiHelpers, page, productPublisherPage, site, widgetPagePage}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Publisher');
+
+		await productPublisherPage.goToProductSelection();
+
+		await expect(
+			productPublisherPage.productSelectionRadio('Dynamic')
+		).toBeChecked();
+		await expect(productPublisherPage.productEntriesButton).toHaveCount(0);
+
+		await productPublisherPage.productSelectionRadio('Manual').click();
+
+		await expect(productPublisherPage.productEntriesButton).toBeVisible();
+	}
+);

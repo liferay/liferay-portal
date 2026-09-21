@@ -27,6 +27,7 @@ import performLogin, {
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
+import {templatesPageTest} from '../../../template-web/main/fixtures/templatesPageTest';
 import {
 	createAccountWithBuyerUser,
 	miniumSetUp,
@@ -54,6 +55,7 @@ export const test = mergeTests(
 	pageEditorPagesTest,
 	pageViewModePagesTest,
 	systemSettingsPageTest,
+	templatesPageTest,
 	usersAndOrganizationsPagesTest
 );
 
@@ -2068,5 +2070,54 @@ test(
 		await expect(placedOrdersPage.orderDetailsValue('ERC')).toHaveText(
 			externalReferenceCode
 		);
+	}
+);
+
+test(
+	'A display template selected in the Placed Orders widget configuration survives reopening it',
+	{tag: ['@COMMERCE-12266', '@LPD-106723']},
+	async ({
+		apiHelpers,
+		page,
+		placedOrdersPage,
+		site,
+		templatesPage,
+		widgetPagePage,
+	}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
+		const displayTemplateName = `Placed Orders ${getRandomString()}`;
+
+		await templatesPage.gotoWidgetTemplates(site.friendlyUrlPath);
+
+		await templatesPage.createWidgetTemplate(
+			displayTemplateName,
+			'Placed Orders Template'
+		);
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`, {
+			waitUntil: 'networkidle',
+		});
+
+		await widgetPagePage.addPortlet('Placed Orders');
+
+		await placedOrdersPage.goToConfiguration();
+
+		await placedOrdersPage.selectDisplayTemplate(displayTemplateName);
+
+		await page.reload();
+
+		await placedOrdersPage.goToConfiguration();
+
+		await expect(
+			placedOrdersPage.configurationIFrameDisplayTemplateSelector
+		).toHaveText(displayTemplateName);
 	}
 );

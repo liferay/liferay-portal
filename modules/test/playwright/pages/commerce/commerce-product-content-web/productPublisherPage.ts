@@ -33,7 +33,9 @@ export class ProductPublisherPage {
 		productName: string,
 		productPrice: string
 	) => Locator;
+	readonly productEntriesButton: Locator;
 	readonly productLink: (productName: string) => Promise<Locator>;
+	readonly productSelectionRadio: (productSelection: string) => Locator;
 	readonly productSku: (productSku: string) => Promise<Locator>;
 	readonly removeTagNameButton: (tagName: string) => Promise<Locator>;
 	readonly tagsInput: Locator;
@@ -107,9 +109,15 @@ export class ProductPublisherPage {
 			this.productCard(productName).getByText(productPrice, {
 				exact: true,
 			});
+		this.productEntriesButton = this.configurationFrame.getByRole(
+			'button',
+			{name: 'Product Entries'}
+		);
 		this.productLink = async (productName: string) => {
 			return page.getByRole('link', {exact: true, name: productName});
 		};
+		this.productSelectionRadio = (productSelection: string) =>
+			this.configurationFrame.getByLabel(productSelection, {exact: true});
 		this.productSku = async (productSku: string) => {
 			return page.getByText(productSku);
 		};
@@ -226,5 +234,16 @@ export class ProductPublisherPage {
 
 	async goto() {
 		await this.layoutsPage.goto();
+	}
+
+	async goToProductSelection() {
+		await expect(async () => {
+			await this.optionsButton.click();
+			await this.configurationMenuItem.click({timeout: 1000});
+		}).toPass();
+
+		await this.configurationProductSelectionTab.click();
+
+		await expandSection(this.configurationProductSelectionButton);
 	}
 }

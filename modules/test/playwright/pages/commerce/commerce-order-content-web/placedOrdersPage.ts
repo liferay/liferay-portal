@@ -5,12 +5,14 @@
 
 import {FrameLocator, Locator, Page} from '@playwright/test';
 
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {CommerceDNDTablePage} from '../commerceDNDTablePage';
 import {CommerceLayoutsPage} from './commerceLayoutsPage';
 
 export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly commerceBillingAddress: Locator;
 	readonly configurationIFrame: FrameLocator;
+	readonly configurationIFrameDisplayTemplateSelector: Locator;
 	readonly configurationIFrameSaveButton: Locator;
 	readonly configurationIFrameShowFullAddressToggle: Locator;
 	readonly configurationIFrameShowPhoneNumberToggle: Locator;
@@ -48,6 +50,10 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		this.configurationIFrame = page.frameLocator(
 			'iframe[id="modalIframe"]'
 		);
+		this.configurationIFrameDisplayTemplateSelector =
+			this.configurationIFrame.locator(
+				'[id="_com_liferay_portlet_configuration_web_portlet_PortletConfigurationPortlet_displayStyle"]'
+			);
 		this.configurationIFrameSaveButton = this.configurationIFrame.getByRole(
 			'button',
 			{name: 'Save'}
@@ -144,5 +150,26 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 
 	async goto() {
 		await this.layoutsPage.goto();
+	}
+
+	async goToConfiguration() {
+		await this.optionsButton.click();
+
+		await this.configurationMenuItem.click();
+	}
+
+	async selectDisplayTemplate(displayTemplateName: string) {
+		await this.configurationIFrameDisplayTemplateSelector.click();
+
+		await this.configurationIFrame
+			.getByRole('option', {name: displayTemplateName})
+			.click();
+
+		await this.configurationIFrameSaveButton.click();
+
+		await waitForAlert(
+			this.configurationIFrame,
+			'Success:You have successfully updated the setup'
+		);
 	}
 }

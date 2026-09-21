@@ -22,6 +22,7 @@ import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
 	performLoginViaApi,
 	performLogout,
+	performUserSwitch,
 	performUserSwitchViaApi,
 	userData,
 } from '../../../../utils/performLogin';
@@ -31,7 +32,9 @@ import getPageDefinition from '../../../layout-content-page-editor-web/main/util
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
 	configureBuyerUserForSite,
+	createAccountWithBuyerUser,
 	createChannelAccountManagerUser,
+	deployProductFragmentsOnDefaultDPT,
 	miniumSetUp,
 } from '../../utils/commerce';
 
@@ -301,7 +304,7 @@ test('COMMERCE-9677 As a buyer, I want to be able to view a virtual product Deta
 
 test(
 	'User can see SKU updated on the product details page when values are selected from multiple options',
-	{tag: '@COMMERCE-12167'},
+	{tag: ['@COMMERCE-12167', '@LPD-106723']},
 	async ({
 		apiHelpers,
 		commerceAdminProductPage,
@@ -433,6 +436,26 @@ test(
 			.click();
 		await commerceAdminProductPage.generateSkus();
 
+		const bundleSkus = await apiHelpers.headlessCommerceAdminCatalog
+			.getProductByName('ProductBundle', {
+				catalogId: catalog.id,
+				nestedFields: 'skus',
+			})
+			.then((product) => product.skus);
+
+		const bundleSku = (color: string, size: string) =>
+			bundleSkus.find(
+				(bundleSku: {
+					skuOptions: Array<{key: string; value: string}>;
+				}) =>
+					bundleSku.skuOptions.some(
+						({key, value}) => key === 'color' && value === color
+					) &&
+					bundleSku.skuOptions.some(
+						({key, value}) => key === 'size' && value === size
+					)
+			).sku;
+
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
 		await widgetPagePage.addPortlet('Product Details');
@@ -459,6 +482,22 @@ test(
 		await expect(
 			await productDetailsPage.priceField('$ 50.00')
 		).toBeVisible();
+		await expect(
+			await productDetailsPage.skuField(bundleSku('black', 'xl'))
+		).toBeVisible();
+
+		await test.step('Changing a value resolves the combination to a different SKU', async () => {
+			await productDetailsPage
+				.optionSelector('Color')
+				.selectOption({label: 'White'});
+
+			await expect(
+				await productDetailsPage.skuField(bundleSku('white', 'xl'))
+			).toBeVisible();
+			await expect(
+				await productDetailsPage.skuField(bundleSku('black', 'xl'))
+			).toHaveCount(0);
+		});
 	}
 );
 
@@ -1828,6 +1867,98 @@ test(
 			await expect(page.getByText('0 in Stock')).toBeVisible();
 
 			await expect(productDetailsPage.addToCartButton).toBeDisabled();
+		});
+	}
+);
+
+test(
+	'The Request Quote fragment on a product display page template follows the SKU price on application flag',
+	{tag: ['@COMMERCE-11324', '@LPD-106723']},
+	async ({
+		apiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		productDetailsPage,
+	}) => {
+		test.setTimeout(300000);
+
+		const {catalog, site} = await miniumSetUp(apiHelpers);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id,
+			{accountName: `Commerce Account ${site.name}`}
+		);
+
+		await deployProductFragmentsOnDefaultDPT(apiHelpers, {
+			displayPageTemplatesPage,
+			fragmentNames: ['Request Quote', 'Price'],
+			pageEditorPage,
+			site,
+		});
+
+		const basePriceListId = (
+			await apiHelpers.headlessCommerceAdminPricing.getBasePriceListId(
+				catalog.id
+			)
+		).items[0].id;
+
+		const priceEntries =
+			await apiHelpers.headlessCommerceAdminPricing.getPriceListEntries(
+				basePriceListId
+			);
+
+		const uJoint =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'U-Joint',
+				{catalogId: catalog.id, nestedFields: 'skus'}
+			);
+
+		await apiHelpers.headlessCommerceAdminPricing.patchPriceEntry(
+			priceEntries.items.find(
+				(entry: {skuId: number}) => entry.skuId === uJoint.skus[0].id
+			).priceEntryId,
+			{priceOnApplication: true}
+		);
+
+		const coolerLine =
+			await apiHelpers.headlessCommerceAdminCatalog.getProductByName(
+				'Transmission Cooler Line Assembly',
+				{catalogId: catalog.id, nestedFields: 'skus'}
+			);
+
+		const coolerLinePrice = priceEntries.items.find(
+			(entry: {skuId: number}) => entry.skuId === coolerLine.skus[0].id
+		).price;
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await test.step('A SKU priced on application offers the quote instead of a price', async () => {
+			await page.goto(
+				`/web${site.friendlyUrlPath}/p/${uJoint.urls['en_US']}`,
+				{waitUntil: 'networkidle'}
+			);
+
+			await expect(
+				productDetailsPage.requestQuoteFragmentButton
+			).toBeVisible();
+			await expect(
+				productDetailsPage.priceFragmentPriceOnApplicationLabel
+			).toBeVisible();
+		});
+
+		await test.step('A fully priced SKU shows its list price and no quote button', async () => {
+			await page.goto(
+				`/web${site.friendlyUrlPath}/p/${coolerLine.urls['en_US']}`
+			);
+
+			await expect(productDetailsPage.priceFragmentListPrice).toHaveText(
+				`$ ${coolerLinePrice.toFixed(2)}`
+			);
+			await expect(productDetailsPage.requestQuoteFragment).toHaveCount(
+				0
+			);
 		});
 	}
 );

@@ -13,7 +13,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {performLogout} from '../../../../utils/performLogin';
-import {miniumSetUp} from '../../utils/commerce';
+import {enableGuestPageView, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -602,3 +602,61 @@ test('COMMERCE-6329 As a buyer, I want to search for products in Catalog by typi
 		)
 	).toBeVisible();
 });
+
+test(
+	'A guest user of a B2X channel can search the catalog, and quoting the term narrows the results to the exact phrase',
+	{tag: ['@COMMERCE-11398', '@LPD-106723']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+	}) => {
+		const {channel, site} = await miniumSetUp(apiHelpers);
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2X'
+		);
+
+		await enableGuestPageView(page, site);
+
+		await performLogout(page);
+
+		await page.goto(`/web${site.friendlyUrlPath}/catalog`, {
+			waitUntil: 'networkidle',
+		});
+
+		await test.step('An unquoted term matches every product sharing a token with it', async () => {
+			await commerceThemeMiniumCatalogPage.catalogSearch.fill('U-Joint');
+			await commerceThemeMiniumCatalogPage.catalogSearch.press('Enter');
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productLink('U-Joint')
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productLink('Ball Joints')
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productCards
+			).toHaveCount(2);
+		});
+
+		await test.step('Quoting the term narrows the match to the exact phrase', async () => {
+			await commerceThemeMiniumCatalogPage.catalogSearch.fill(
+				'"U-Joint"'
+			);
+			await commerceThemeMiniumCatalogPage.catalogSearch.press('Enter');
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productLink('U-Joint')
+			).toBeVisible();
+			await expect(
+				commerceThemeMiniumCatalogPage.productLink('Ball Joints')
+			).toHaveCount(0);
+			await expect(
+				commerceThemeMiniumCatalogPage.productCards
+			).toHaveCount(1);
+		});
+	}
+);

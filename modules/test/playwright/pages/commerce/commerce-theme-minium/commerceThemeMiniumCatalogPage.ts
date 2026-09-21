@@ -104,6 +104,7 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly productCardFragmentWishListToggle: (
 		targetLocator: Locator
 	) => Locator;
+	readonly productCards: Locator;
 	readonly productLink: (productName: string) => Locator;
 
 	constructor(page: Page) {
@@ -293,6 +294,7 @@ export class CommerceThemeMiniumCatalogPage {
 			);
 		this.productCardFragmentWishListToggle = (targetLocator: Locator) =>
 			targetLocator.locator('.add-to-wish-list button:not(.skeleton)');
+		this.productCards = page.locator('.product-card');
 		this.productLink = (productName: string) =>
 			this.page.getByRole('link', {
 				exact: true,

@@ -84,6 +84,8 @@ export class ProductDetailsPage {
 	readonly requestAQuoteButton: Locator;
 	readonly requestAQuoteModal: Locator;
 	readonly requestAQuoteModalSubmit: Locator;
+	readonly requestQuoteFragment: Locator;
+	readonly requestQuoteFragmentButton: Locator;
 	readonly selectDocumentFrame: FrameLocator;
 	readonly selectedDocumentLabel: Locator;
 	readonly selectOption: (
@@ -277,6 +279,10 @@ export class ProductDetailsPage {
 			{
 				name: 'Submit',
 			}
+		);
+		this.requestQuoteFragment = page.locator('.request-quote-wrapper');
+		this.requestQuoteFragmentButton = this.requestQuoteFragment.locator(
+			'button:not(.skeleton)'
 		);
 		this.selectDocumentFrame = page.frameLocator(
 			'iframe[title="Select Document"]'
