@@ -6,7 +6,11 @@
 import '@testing-library/jest-dom';
 
 import {editedImageMarkup} from '../../src/main/resources/META-INF/resources/js/imaging/exportImage';
-import {initialEditState} from '../../src/main/resources/META-INF/resources/js/state/editorReducer';
+import {
+	editorReducer,
+	initialEditState,
+	initialHistory,
+} from '../../src/main/resources/META-INF/resources/js/state/editorReducer';
 import {
 	Adjustments,
 	Frame,
@@ -42,6 +46,16 @@ function markup(
 describe('editedImageMarkup', () => {
 	it('renders the image at the crop size', () => {
 		expect(markup()).toContain('viewBox="0 0 1600 1000"');
+	});
+
+	it('swaps the sides of the picture after a quarter turn', () => {
+		const {present} = editorReducer(initialHistory(1600, 1000), {
+			type: 'rotate-90',
+		});
+
+		expect(editedImageMarkup(present, DATA_URL, PIXEL_URLS)).toContain(
+			'viewBox="0 0 1000 1600"'
+		);
 	});
 
 	it('leaves the image unfiltered when nothing is adjusted', () => {

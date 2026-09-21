@@ -220,3 +220,73 @@ describe('the annotation tools of the host', () => {
 		expect(document.querySelector('.editor-sidebar')).toBeNull();
 	});
 });
+
+describe('the view', () => {
+	const stageWidth = () =>
+		document.querySelector('.editor-stage')?.getAttribute('width');
+
+	const measureWorkspace = (width: number, height: number) => {
+		const workspace = screen.getByRole('region', {
+			name: 'image-workspace',
+		});
+
+		Object.defineProperty(workspace, 'clientWidth', {
+			configurable: true,
+			value: width,
+		});
+		Object.defineProperty(workspace, 'clientHeight', {
+			configurable: true,
+			value: height,
+		});
+	};
+
+	it('fits the picture to the workspace and brings it back after a zoom step', () => {
+		render(
+			<ImageEditor
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		measureWorkspace(648, 448);
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'fit-image-to-window'})
+		);
+
+		expect(stageWidth()).toBe('600');
+
+		fireEvent.click(screen.getByRole('button', {name: 'zoom-in'}));
+
+		expect(stageWidth()).toBe('900');
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'fit-image-to-window'})
+		);
+
+		expect(stageWidth()).toBe('600');
+	});
+
+	it('lists the keyboard shortcuts on request and closes the list', async () => {
+		render(
+			<ImageEditor
+				image={image('blob:a')}
+				{...HOST}
+				spritemap="/icons.svg"
+			/>
+		);
+
+		fireEvent.click(
+			screen.getByRole('button', {name: 'keyboard-shortcuts'})
+		);
+
+		expect(await screen.findByText('Esc')).toBeInTheDocument();
+
+		fireEvent.click(screen.getByRole('button', {name: 'close'}));
+
+		await waitFor(() =>
+			expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+		);
+	});
+});

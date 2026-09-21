@@ -42,6 +42,21 @@ import {
 	Overlay,
 } from '../../src/main/resources/META-INF/resources/js/state/types';
 
+jest.mock(
+	'../../src/main/resources/META-INF/resources/js/imaging/loadImage',
+	() => ({
+		...jest.requireActual<object>(
+			'../../src/main/resources/META-INF/resources/js/imaging/loadImage'
+		),
+		loadOverlayImage: () =>
+			Promise.resolve({
+				height: 8,
+				src: 'data:image/png;base64,',
+				width: 8,
+			}),
+	})
+);
+
 const IMAGE: LoadedImage = {
 	blob: new Blob(),
 	fileName: 'test.jpg',
@@ -1701,6 +1716,32 @@ describe('an emoji annotation', () => {
 
 		expect(Math.round(centerX)).toBe(900);
 		expect(Math.round(centerY)).toBe(600);
+	});
+});
+
+describe('an image annotation', () => {
+	it('takes the name of its file and is renamed from its properties', async () => {
+		render(<AnnotationHarness />);
+
+		fireEvent.change(
+			document.querySelector(
+				'.editor-annotate-actions input[type="file"]'
+			) as HTMLInputElement,
+			{
+				target: {
+					files: [new File([''], 'badge.png', {type: 'image/png'})],
+				},
+			}
+		);
+
+		const imageName = await screen.findByLabelText('image-name');
+
+		expect(imageName).toHaveValue('badge');
+
+		fireEvent.change(imageName, {target: {value: 'Company Logo'}});
+		fireEvent.keyDown(imageName, {key: 'Enter'});
+
+		expect(layerNames()).toContain('Company Logo');
 	});
 });
 
