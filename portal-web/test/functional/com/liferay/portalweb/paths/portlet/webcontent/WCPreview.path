@@ -27,7 +27,7 @@
 </tr>
 <tr>
 	<td>BODY_FIELD_VIDEO</td>
-	<td>//div[@class='portlet-body']//div[contains(@data-embed-id,'${key_service}')]</td>
+	<td>//div[@class='portlet-body']//iframe[contains(@src,'${key_service}')]</td>
 	<td></td>
 </tr>
 </tbody>
