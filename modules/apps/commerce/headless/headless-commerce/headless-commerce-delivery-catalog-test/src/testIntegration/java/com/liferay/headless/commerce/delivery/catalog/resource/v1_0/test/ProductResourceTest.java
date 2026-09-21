@@ -186,6 +186,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	private Product _addCPDefinition(Product product) throws Exception {
 		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinition(
 			testGroup.getGroupId(), "simple", true, false);
+
+		_cpDefinitions.add(cpDefinition1);
+
 		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
 
 		CPDefinition cpDefinition2 =
@@ -252,6 +255,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinition(
 			testGroup.getGroupId(), "simple", true, false);
+
+		_cpDefinitions.add(cpDefinition1);
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId());
@@ -363,8 +368,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				commerceCatalog.getGroupId(), 0, false,
 				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
 				0, true, new ServiceContext());
+
 		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinition(
 			commerceCatalog.getGroupId());
+
+		_cpDefinitions.add(cpDefinition1);
 
 		CPConfigurationEntry cpConfigurationEntry =
 			_cpConfigurationEntryLocalService.addCPConfigurationEntry(
@@ -379,6 +387,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinition(
 			commerceCatalog.getGroupId());
+
+		_cpDefinitions.add(cpDefinition2);
+
 		CPConfigurationList masterCPConfigurationList =
 			_cpConfigurationListLocalService.getMasterCPConfigurationList(
 				commerceCatalog.getGroupId());

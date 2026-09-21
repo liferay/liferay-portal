@@ -22,6 +22,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -31,7 +32,9 @@ import com.liferay.portal.test.rule.Inject;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -285,8 +288,13 @@ public class PaymentResourceTest extends BasePaymentResourceTestCase {
 		commercePaymentEntry.setCreateDate(
 			new Date(System.currentTimeMillis() - Time.HOUR));
 
-		return _commercePaymentEntryLocalService.updateCommercePaymentEntry(
-			commercePaymentEntry);
+		commercePaymentEntry =
+			_commercePaymentEntryLocalService.updateCommercePaymentEntry(
+				commercePaymentEntry);
+
+		_commercePaymentEntries.add(commercePaymentEntry);
+
+		return commercePaymentEntry;
 	}
 
 	@Inject
@@ -301,6 +309,10 @@ public class PaymentResourceTest extends BasePaymentResourceTestCase {
 
 	@Inject
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@DeleteAfterTestRun
+	private final List<CommercePaymentEntry> _commercePaymentEntries =
+		new ArrayList<>();
 
 	@Inject
 	private CommercePaymentEntryLocalService _commercePaymentEntryLocalService;
