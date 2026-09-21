@@ -19,4 +19,13 @@ export interface ImportPreview {
 	fileName: string;
 	fileSize: number;
 	previewPortletDataHandlerSections: PreviewPortletDataHandlerSection[];
+	previewSites?: PreviewSite[];
+}
+
+export interface PreviewSite {
+	childSiteCount?: number;
+	descriptiveName?: string;
+	existsInInstance?: boolean;
+	externalReferenceCode: string;
+	path?: string;
 }
