@@ -94,7 +94,7 @@ public class CacheContainerResponseFilter implements ContainerResponseFilter {
 		headers.putSingle("Cache-Control", cacheControl);
 		headers.putSingle(
 			"Vary",
-			"Accept, Accept-Encoding, Accept-Language, " +
+			"Accept, Accept-Encoding, Accept-Language, Origin, " +
 				"X-Accept-All-Languages, X-Liferay-Accept-All-Languages, " +
 					"X-Liferay-Data-Masks");
 	}
