@@ -478,7 +478,9 @@ public class NotificationTemplateResourceTest
 		throws Exception {
 
 		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
-			String.valueOf(_getNotificationTemplateJSONObject(roleName)),
+			_getNotificationTemplateJSONObject(
+				roleName
+			).toString(),
 			"notification/v1.0/notification-templates?nestedFields=permissions",
 			Http.Method.POST);
 
@@ -494,7 +496,9 @@ public class NotificationTemplateResourceTest
 		throws Exception {
 
 		return HTTPTestUtil.invokeToJSONObject(
-			String.valueOf(_getNotificationTemplateJSONObject(roleName)),
+			_getNotificationTemplateJSONObject(
+				roleName
+			).toString(),
 			"notification/v1.0/notification-templates/" +
 				notificationTemplateId + "?nestedFields=permissions",
 			Http.Method.PUT);
@@ -733,12 +737,12 @@ public class NotificationTemplateResourceTest
 			Assert.assertEquals(
 				400,
 				HTTPTestUtil.invokeToHttpCode(
-					String.valueOf(
-						JSONUtil.put(
-							"permissions",
-							JSONUtil.putAll(
-								_getPermissionJSONObject(
-									RoleConstants.ADMINISTRATOR)))),
+					JSONUtil.put(
+						"permissions",
+						JSONUtil.putAll(
+							_getPermissionJSONObject(
+								RoleConstants.ADMINISTRATOR))
+					).toString(),
 					"notification/v1.0/notification-templates",
 					Http.Method.POST));
 		}
