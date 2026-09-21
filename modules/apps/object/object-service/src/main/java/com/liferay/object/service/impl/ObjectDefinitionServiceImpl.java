@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -221,8 +222,13 @@ public class ObjectDefinitionServiceImpl
 	}
 
 	@Override
-	public List<ObjectDefinition> getObjectDefinitions(int start, int end) {
-		return objectDefinitionLocalService.getObjectDefinitions(start, end);
+	public List<ObjectDefinition> getObjectDefinitions(int start, int end)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		return objectDefinitionPersistence.filterFindByCompanyId(
+			permissionChecker.getCompanyId(), start, end);
 	}
 
 	@Override
@@ -235,7 +241,10 @@ public class ObjectDefinitionServiceImpl
 
 	@Override
 	public int getObjectDefinitionsCount() throws PortalException {
-		return objectDefinitionPersistence.countAll();
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		return objectDefinitionPersistence.filterCountByCompanyId(
+			permissionChecker.getCompanyId());
 	}
 
 	@Override
