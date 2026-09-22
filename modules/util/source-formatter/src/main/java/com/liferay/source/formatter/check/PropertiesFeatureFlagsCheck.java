@@ -482,10 +482,10 @@ public class PropertiesFeatureFlagsCheck extends BaseFileCheck {
 		"\"feature\\.flag\\.key=([A-Z]+-\\d+)\"");
 	private static final Pattern _featureFlagPattern5 = Pattern.compile(
 		"featureFlagKey = \"([A-Z]+-\\d+)\"");
-	private static final Pattern _featureFlagsPattern = Pattern.compile(
-		"(\n|\\A)##\n## Feature Flag\n##(\n\n[\\s\\S]*?)(?=(\n\n##|\\Z))");
 	private static final Pattern _featureFlagUIPattern = Pattern.compile(
 		"(\n|\\A)##\n## Feature Flag UI\n##(\n\n[\\s\\S]*?)(?=(\n\n##|\\Z))");
+	private static final Pattern _featureFlagsPattern = Pattern.compile(
+		"(\n|\\A)##\n## Feature Flag\n##(\n\n[\\s\\S]*?)(?=(\n\n##|\\Z))");
 	private static final Pattern _mapUtilSingletonDictionaryPattern =
 		Pattern.compile("MapUtil\\.singletonDictionary\\(");
 

@@ -438,6 +438,72 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 		}
 	}
 
+	private void _checkBuildString(
+		DetailAST methodCallDetailAST, DetailAST assignDetailAST,
+		String variableName, int startLineNumber, int endLineNumber) {
+
+		Class<?> clazz = getClass();
+
+		String className = clazz.getName();
+
+		if (!className.endsWith("URLBuilderCheck")) {
+			return;
+		}
+
+		List<String> chainedMethodNames = getChainedMethodNames(
+			methodCallDetailAST);
+
+		String methodName = chainedMethodNames.get(
+			chainedMethodNames.size() - 1);
+
+		if (methodName.equals("buildString")) {
+			return;
+		}
+
+		DetailAST variableDefinitionDetailAST = getVariableDefinitionDetailAST(
+			assignDetailAST, variableName, false);
+
+		if (variableDefinitionDetailAST == null) {
+			return;
+		}
+
+		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
+			variableDefinitionDetailAST, variableName);
+
+		DetailAST lastDetailAST = variableCallerDetailASTs.get(
+			variableCallerDetailASTs.size() - 1);
+
+		if (lastDetailAST.getLineNo() <= endLineNumber) {
+			return;
+		}
+
+		FullIdent fullIdent = FullIdent.createFullIdent(
+			lastDetailAST.getParent());
+
+		if (!Objects.equals(fullIdent.getText(), variableName + ".toString")) {
+			return;
+		}
+
+		if (variableCallerDetailASTs.size() > 1) {
+			DetailAST secondToLastDetailAST = variableCallerDetailASTs.get(
+				variableCallerDetailASTs.size() - 2);
+
+			if (secondToLastDetailAST.getLineNo() > startLineNumber) {
+				return;
+			}
+		}
+
+		if (equals(variableDefinitionDetailAST, assignDetailAST.getParent()) ||
+			equals(
+				getParentWithTokenType(assignDetailAST, TokenTypes.SLIST),
+				getParentWithTokenType(lastDetailAST, TokenTypes.SLIST))) {
+
+			log(
+				fullIdent.getLineNo(), _MSG_USE_BUILD_STRING, variableName,
+				methodName);
+		}
+	}
+
 	private void _checkBuilder(DetailAST methodCallDetailAST) {
 		DetailAST firstChildDetailAST = methodCallDetailAST.getFirstChild();
 
@@ -615,72 +681,6 @@ public abstract class BaseBuilderCheck extends BaseChainedMethodCheck {
 			}
 
 			nextSiblingDetailAST = nextSiblingDetailAST.getNextSibling();
-		}
-	}
-
-	private void _checkBuildString(
-		DetailAST methodCallDetailAST, DetailAST assignDetailAST,
-		String variableName, int startLineNumber, int endLineNumber) {
-
-		Class<?> clazz = getClass();
-
-		String className = clazz.getName();
-
-		if (!className.endsWith("URLBuilderCheck")) {
-			return;
-		}
-
-		List<String> chainedMethodNames = getChainedMethodNames(
-			methodCallDetailAST);
-
-		String methodName = chainedMethodNames.get(
-			chainedMethodNames.size() - 1);
-
-		if (methodName.equals("buildString")) {
-			return;
-		}
-
-		DetailAST variableDefinitionDetailAST = getVariableDefinitionDetailAST(
-			assignDetailAST, variableName, false);
-
-		if (variableDefinitionDetailAST == null) {
-			return;
-		}
-
-		List<DetailAST> variableCallerDetailASTs = getVariableCallerDetailASTs(
-			variableDefinitionDetailAST, variableName);
-
-		DetailAST lastDetailAST = variableCallerDetailASTs.get(
-			variableCallerDetailASTs.size() - 1);
-
-		if (lastDetailAST.getLineNo() <= endLineNumber) {
-			return;
-		}
-
-		FullIdent fullIdent = FullIdent.createFullIdent(
-			lastDetailAST.getParent());
-
-		if (!Objects.equals(fullIdent.getText(), variableName + ".toString")) {
-			return;
-		}
-
-		if (variableCallerDetailASTs.size() > 1) {
-			DetailAST secondToLastDetailAST = variableCallerDetailASTs.get(
-				variableCallerDetailASTs.size() - 2);
-
-			if (secondToLastDetailAST.getLineNo() > startLineNumber) {
-				return;
-			}
-		}
-
-		if (equals(variableDefinitionDetailAST, assignDetailAST.getParent()) ||
-			equals(
-				getParentWithTokenType(assignDetailAST, TokenTypes.SLIST),
-				getParentWithTokenType(lastDetailAST, TokenTypes.SLIST))) {
-
-			log(
-				fullIdent.getLineNo(), _MSG_USE_BUILD_STRING, variableName,
-				methodName);
 		}
 	}
 

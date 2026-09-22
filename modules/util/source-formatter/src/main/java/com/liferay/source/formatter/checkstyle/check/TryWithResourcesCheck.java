@@ -180,29 +180,6 @@ public class TryWithResourcesCheck extends BaseCheck {
 		return variableNames;
 	}
 
-	private List<String> _getCloseableTypeNames() {
-		Tuple closeableTypeNamesTuple = _getCloseableTypeNamesTuple();
-
-		JSONObject jsonObject = (JSONObject)closeableTypeNamesTuple.getObject(
-			0);
-
-		JSONArray jsonArray = (JSONArray)jsonObject.get(
-			_CLOSEABLE_TYPE_NAMES_CATEGORY);
-
-		return JSONUtil.toStringList(jsonArray, "name");
-	}
-
-	private synchronized Tuple _getCloseableTypeNamesTuple() {
-		if (_closeableTypeNamesTuple != null) {
-			return _closeableTypeNamesTuple;
-		}
-
-		_closeableTypeNamesTuple = getTypeNamesTuple(
-			_CLOSEABLE_TYPE_NAMES_FILE_NAME, _CLOSEABLE_TYPE_NAMES_CATEGORY);
-
-		return _closeableTypeNamesTuple;
-	}
-
 	private String _getCloseVariableName(
 		DetailAST methodCallDetailAST, DetailAST literalFinallyDetailAST) {
 
@@ -282,6 +259,29 @@ public class TryWithResourcesCheck extends BaseCheck {
 		}
 
 		return null;
+	}
+
+	private List<String> _getCloseableTypeNames() {
+		Tuple closeableTypeNamesTuple = _getCloseableTypeNamesTuple();
+
+		JSONObject jsonObject = (JSONObject)closeableTypeNamesTuple.getObject(
+			0);
+
+		JSONArray jsonArray = (JSONArray)jsonObject.get(
+			_CLOSEABLE_TYPE_NAMES_CATEGORY);
+
+		return JSONUtil.toStringList(jsonArray, "name");
+	}
+
+	private synchronized Tuple _getCloseableTypeNamesTuple() {
+		if (_closeableTypeNamesTuple != null) {
+			return _closeableTypeNamesTuple;
+		}
+
+		_closeableTypeNamesTuple = getTypeNamesTuple(
+			_CLOSEABLE_TYPE_NAMES_FILE_NAME, _CLOSEABLE_TYPE_NAMES_CATEGORY);
+
+		return _closeableTypeNamesTuple;
 	}
 
 	private void _populateCloseableTypeNames(

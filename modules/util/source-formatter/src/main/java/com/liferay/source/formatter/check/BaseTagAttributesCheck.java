@@ -147,6 +147,12 @@ public abstract class BaseTagAttributesCheck extends BaseFileCheck {
 		return content;
 	}
 
+	protected Tag formatTagAttributeType(String absolutePath, Tag tag)
+		throws Exception {
+
+		return tag;
+	}
+
 	protected String formatTagAttributes(
 			String absolutePath, String s, boolean escapeQuotes,
 			boolean forceSingleLine)
@@ -167,12 +173,6 @@ public abstract class BaseTagAttributesCheck extends BaseFileCheck {
 		}
 
 		return tag.toString();
-	}
-
-	protected Tag formatTagAttributeType(String absolutePath, Tag tag)
-		throws Exception {
-
-		return tag;
 	}
 
 	protected List<String> getJSPTags(String line) {
