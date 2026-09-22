@@ -1,0 +1,10 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+    name: netpol-smoke
+    namespace: elastic-system
+spec:
+    nodeSets:
+        -   count: 1
+            name: default
+    version: 0.0.0-not-a-real-version

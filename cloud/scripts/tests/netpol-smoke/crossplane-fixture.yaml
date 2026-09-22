@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: netpol-smoke-cm
+    namespace: crossplane-system
+data:
+    purpose: netpol smoke test fixture
+---
+apiVersion: protection.crossplane.io/v1beta1
+kind: Usage
+metadata:
+    name: netpol-smoke-usage
+    namespace: crossplane-system
+spec:
+    of:
+        apiVersion: v1
+        kind: ConfigMap
+        resourceRef:
+            name: netpol-smoke-cm
+    reason: netpol smoke test fixture
