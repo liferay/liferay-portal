@@ -61,7 +61,7 @@ if (assetVocabulary != null) {
 								for (AssetVocabulary curAssetVocabulary : cpAssetCategoriesNavigationDisplayContext.getAssetVocabularies()) {
 								%>
 
-									<aui:option label="<%= HtmlUtil.escape(curAssetVocabulary.getTitle(locale)) %>" selected="<%= curAssetVocabulary.getExternalReferenceCode() == assetVocabularyExternalReferenceCode %>" value="<%= curAssetVocabulary.getExternalReferenceCode() %>" />
+									<aui:option label="<%= HtmlUtil.escape(curAssetVocabulary.getTitle(locale)) %>" selected="<%= Objects.equals(curAssetVocabulary.getExternalReferenceCode(), assetVocabularyExternalReferenceCode) %>" value="<%= curAssetVocabulary.getExternalReferenceCode() %>" />
 
 								<%
 								}
@@ -93,6 +93,7 @@ if (assetVocabulary != null) {
 									categoryIds="<%= cpAssetCategoriesNavigationDisplayContext.getRootAssetCategoryId() %>"
 									hiddenInput="assetCategoriesSelectorCategoryId"
 									singleSelect="<%= true %>"
+									useDataCategoriesAttribute="<%= true %>"
 								/>
 							</div>
 						</div>
