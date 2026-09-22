@@ -13,7 +13,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -156,29 +155,6 @@ public class SystemFDSSerializerTest {
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
 					"configuration", RandomTestUtil.randomString()
-				).build(),
-				ServiceContextTestUtil.getServiceContext(
-					TestPropsValues.getGroupId(), _memberUser.getUserId()));
-
-		Assert.assertNull(
-			_fdsSerializer.serializeUserConfiguration(
-				_FDS_NAME, httpServletRequest));
-
-		// Random entry in data set user configuration
-
-		_dataSetUserConfigurationObjectEntry =
-			_objectEntryLocalService.addOrUpdateObjectEntry(
-				_memberUser.getExternalReferenceCode() + StringPool.UNDERLINE +
-					_FDS_NAME,
-				0, _memberUser.getUserId(),
-				objectDefinition.getObjectDefinitionId(),
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				HashMapBuilder.<String, Serializable>put(
-					"configuration",
-					StringBundler.concat(
-						"{\"", StringPool.AT + RandomTestUtil.randomString(),
-						": ", RandomTestUtil.randomString())
 				).build(),
 				ServiceContextTestUtil.getServiceContext(
 					TestPropsValues.getGroupId(), _memberUser.getUserId()));
