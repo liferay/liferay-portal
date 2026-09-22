@@ -18,6 +18,15 @@ import {
 import SearchResultsMessage from '../search_results_message/SearchResultsMessage';
 import {PageTreePickerSelection} from './usePageTreePickerSelection';
 
+interface Props<T> {
+	dataSource: PageTreePickerDataSource<T>;
+	onError: (error: unknown) => void;
+	onItemSelect?: (item: PageTreePickerItem<T>) => void;
+	query: string;
+	selection: PageTreePickerSelection<T>;
+	selectionMode?: PageTreePickerSelectionMode;
+}
+
 export default function PageTreePickerSearchResults<T>({
 	dataSource,
 	onError,
@@ -25,14 +34,7 @@ export default function PageTreePickerSearchResults<T>({
 	query,
 	selection,
 	selectionMode = 'multiple',
-}: {
-	dataSource: PageTreePickerDataSource<T>;
-	onError: (error: unknown) => void;
-	onItemSelect?: (item: PageTreePickerItem<T>) => void;
-	query: string;
-	selection: PageTreePickerSelection<T>;
-	selectionMode?: PageTreePickerSelectionMode;
-}) {
+}: Props<T>) {
 	const {registerItems, select, selectedKeys, toggleKey} = selection;
 
 	const singleSelection = selectionMode === 'single';

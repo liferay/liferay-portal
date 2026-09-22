@@ -48,7 +48,7 @@ function openErrorToast() {
 	});
 }
 
-interface PageTreePickerPanelProps<T> {
+interface Props<T> {
 	dataSource: PageTreePickerDataSource<T>;
 	defaultExpandedIds?: string[];
 	defaultRegisteredItems?: Array<PageTreePickerItem<T>>;
@@ -71,7 +71,7 @@ export default function PageTreePickerPanel<T>({
 	onItemSelect,
 	onSelectionChange,
 	selectionMode = 'multiple',
-}: PageTreePickerPanelProps<T>) {
+}: Props<T>) {
 	const [entries, setEntries] = useState<
 		Array<PageTreePickerSelectionEntry<T>>
 	>(defaultSelectedEntries ?? []);

@@ -200,7 +200,7 @@ interface PageTreePickerLoadMore {
 	) => Promise<void> | undefined;
 }
 
-interface PageTreePickerProps<T> {
+interface Props<T> {
 	dataSource: PageTreePickerDataSource<T>;
 	defaultExpandedIds?: string[];
 	hidden?: boolean;
@@ -218,7 +218,7 @@ export default function PageTreePicker<T>({
 	onItemSelect,
 	selection,
 	selectionMode = 'multiple',
-}: PageTreePickerProps<T>) {
+}: Props<T>) {
 	const treeContainerRef = useRef<HTMLDivElement>(null);
 	const pageTreePickerId = useId();
 

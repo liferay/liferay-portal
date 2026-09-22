@@ -16,7 +16,7 @@ import createSitePageDataSource, {
 	SitePageTreeSelection,
 } from './createSitePageDataSource';
 
-interface PageTreePickerModalProps {
+interface Props {
 	initialSelection?: SitePageTreeSelection | null;
 	onClose: () => void;
 	onSubmit: (selection: SitePageTreeSelection | null) => void;
@@ -37,7 +37,7 @@ export default function PageTreePickerModal({
 		Liferay.Language.get('select-x'),
 		Liferay.Language.get('pages')
 	),
-}: PageTreePickerModalProps) {
+}: Props) {
 	const {observer} = useModal({onClose});
 
 	const dataSource = useMemo(
