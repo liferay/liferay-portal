@@ -4,6 +4,8 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
+import path from 'path';
 
 import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
@@ -42,7 +44,7 @@ export const test = mergeTests(
 
 test(
 	'COMMERCE-5864. Verify buyer can view the product card informations correctly',
-	{tag: ['@LPD-56323']},
+	{tag: ['@LPD-56323', '@LPD-96522']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
@@ -59,6 +61,9 @@ test(
 		let product2;
 		let product3;
 		let product4;
+		let product5;
+		let product6;
+		let product7;
 		let site;
 
 		await test.step('Initialize Commerce Classic Site', async () => {
@@ -112,7 +117,70 @@ test(
 			product1 =
 				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 					catalogId: catalog.id,
-					name: {en_US: 'Product1'},
+					name: {en_US: 'Product1', es_ES: 'Producto1'},
+				});
+		});
+
+		await test.step('Create a product without images and two bundled products with a single SKU', async () => {
+			const getSku = (skuOptions = []) => {
+				return {
+					cost: 0,
+					price: 25,
+					published: true,
+					purchasable: true,
+					sku: getRandomString(),
+					skuOptions,
+				};
+			};
+
+			product5 =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: 'Product5'},
+					skus: [getSku()],
+				});
+
+			const option =
+				await apiHelpers.headlessCommerceAdminCatalog.postOption();
+
+			const skuOptions = [{key: option.key, value: 'value'}];
+
+			const getProductOption = (priceType: string) => {
+				return {
+					fieldType: 'select',
+					key: option.key,
+					name: option.name,
+					optionId: option.id,
+					priceType,
+					priority: 1,
+					productOptionValues: [
+						{
+							deltaPrice: 10,
+							key: 'value',
+							name: {en_US: 'Value'},
+							priority: 1,
+							quantity: 1,
+							skuId: product5.skus[0].id,
+						},
+					],
+					skuContributor: true,
+				};
+			};
+
+			product6 =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: 'Product6'},
+					productOptions: [getProductOption('dynamic')],
+					skus: [getSku(skuOptions)],
+				});
+
+			product7 =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: 'Product7'},
+					productOptions: [getProductOption('static')],
+					skus: [getSku(skuOptions)],
 				});
 		});
 
@@ -342,6 +410,108 @@ test(
 					product4.name['en_US']
 				)
 			).not.toBeVisible();
+		});
+
+		await test.step('Products with multiple SKUs show the view all variants link in the product card', async () => {
+			await expect(
+				commerceThemeClassicCatalogPage.productCardViewAllVariantsButton(
+					product4.name['en_US']
+				)
+			).toBeVisible();
+		});
+
+		await test.step('Bundled products with a single SKU can be added to cart from the product card', async () => {
+			await page.goto(`/web/${site.name}`);
+
+			await expect(
+				commerceThemeClassicCatalogPage.productCardAddToCartButton(
+					product6.name['en_US']
+				)
+			).toBeEnabled();
+			await expect(
+				commerceThemeClassicCatalogPage.productCardViewAllVariantsButton(
+					product6.name['en_US']
+				)
+			).toHaveCount(0);
+
+			await expect(
+				commerceThemeClassicCatalogPage.productCardAddToCartButton(
+					product7.name['en_US']
+				)
+			).toBeEnabled();
+			await expect(
+				commerceThemeClassicCatalogPage.productCardViewAllVariantsButton(
+					product7.name['en_US']
+				)
+			).toHaveCount(0);
+		});
+
+		let defaultImageSrc;
+
+		await test.step('Product cards without an image share the catalog default image', async () => {
+			defaultImageSrc = await commerceThemeClassicCatalogPage
+				.productCardImage(product1.name['en_US'])
+				.getAttribute('src');
+
+			await expect(
+				commerceThemeClassicCatalogPage.productCardImage(
+					product5.name['en_US']
+				)
+			).toHaveAttribute('src', defaultImageSrc);
+		});
+
+		await test.step('Product card shows the custom image once one is uploaded', async () => {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			const document = await apiHelpers.headlessDelivery.postDocument(
+				site.id,
+				createReadStream(
+					path.join(__dirname, '/dependencies/liferay.png')
+				)
+			);
+
+			apiHelpers.data.push({id: document.id, type: 'document'});
+
+			await apiHelpers.headlessCommerceAdminCatalog.postImage(
+				product1.productId,
+				document.id,
+				document.title
+			);
+
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'demo.unprivileged'});
+
+			await page.goto(`/web/${site.name}`);
+
+			await expect(
+				commerceThemeClassicCatalogPage.productCardImage(
+					product1.name['en_US']
+				)
+			).toHaveAttribute('src', new RegExp(document.fileName));
+			await expect(
+				commerceThemeClassicCatalogPage.productCardImage(
+					product1.name['en_US']
+				)
+			).not.toHaveAttribute('src', defaultImageSrc);
+		});
+
+		await test.step('Product card name follows the page language', async () => {
+			await page.goto(`/es/web/${site.name}`);
+
+			await expect(
+				commerceThemeClassicCatalogPage.productCard(
+					product1.name['es_ES']
+				)
+			).toBeVisible();
+
+			await page.goto(`/en/web/${site.name}`);
+
+			await expect(
+				commerceThemeClassicCatalogPage.productCard(
+					product1.name['en_US']
+				)
+			).toBeVisible();
 		});
 
 		await test.step('AllowBackOrder is disabled', async () => {

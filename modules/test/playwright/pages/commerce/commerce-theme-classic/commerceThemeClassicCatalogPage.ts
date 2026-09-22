@@ -29,6 +29,7 @@ export class CommerceThemeClassicCatalogPage {
 		productName: string,
 		productSku: string
 	) => Locator;
+	readonly productCardViewAllVariantsButton: (productName: string) => Locator;
 	readonly productCardAddToCartButton: (productName: string) => Locator;
 	readonly productCardAddToWishListButton: (productName: string) => Locator;
 	readonly productCardLink: (productName: string) => Locator;
@@ -73,6 +74,11 @@ export class CommerceThemeClassicCatalogPage {
 			});
 		this.productCardSku = (productName: string, productSku: string) =>
 			this.productCard(productName).getByText(productSku);
+		this.productCardViewAllVariantsButton = (productName: string) =>
+			this.productCard(productName).getByRole('button', {
+				exact: true,
+				name: 'View all variants',
+			});
 		this.productCardAddToCartButton = (productName: string) =>
 			this.productCard(productName).getByRole('button', {
 				exact: true,
