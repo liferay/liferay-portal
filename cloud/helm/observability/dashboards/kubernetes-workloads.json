@@ -1058,7 +1058,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod) (\n  avg_over_time(container_memory_working_set_bytes{namespace=\"$environment${ES_NAMESPACE_SUFFIX}\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n)",
+							"expr": "sum by (pod) (\n  avg_over_time(container_memory_working_set_bytes{namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n)",
 							"legendFormat": "Usage | {{pod}}",
 							"range": true,
 							"refId": "pod_usage"
@@ -1069,7 +1069,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"memory\", ${NS_LABEL}=\"$environment${ES_NAMESPACE_SUFFIX}\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"memory\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Requests",
 							"range": true,
@@ -1081,7 +1081,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_limits{resource=\"memory\", ${NS_LABEL}=\"$environment${ES_NAMESPACE_SUFFIX}\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_limits{resource=\"memory\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Limits",
 							"range": true,
@@ -1259,7 +1259,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$environment${ES_NAMESPACE_SUFFIX}\", container=~\"elasticsearch|opensearch\"}[$__rate_interval]))",
+							"expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval]))",
 							"legendFormat": "Usage | {{ pod }}",
 							"range": true,
 							"refId": "usage"
@@ -1270,7 +1270,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"cpu\", ${NS_LABEL}=\"$environment${ES_NAMESPACE_SUFFIX}\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"cpu\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Request",
 							"range": true,
@@ -1282,7 +1282,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (avg_over_time(\n    kube_pod_container_resource_limits{resource=\"cpu\", ${NS_LABEL}=\"$environment${ES_NAMESPACE_SUFFIX}\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (avg_over_time(\n    kube_pod_container_resource_limits{resource=\"cpu\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Limits",
 							"range": true,
@@ -1392,7 +1392,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod)(increase(kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment${ES_NAMESPACE_SUFFIX}\", container=~\"elasticsearch|opensearch\"}[${__interval}]))",
+							"expr": "sum by (pod)(increase(kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[${__interval}]))",
 							"format": "time_series",
 							"instant": false,
 							"interval": "",
