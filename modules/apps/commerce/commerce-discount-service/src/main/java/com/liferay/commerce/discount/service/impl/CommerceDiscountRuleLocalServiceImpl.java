@@ -241,7 +241,11 @@ public class CommerceDiscountRuleLocalServiceImpl
 		throws PortalException {
 
 		CommerceDiscount commerceDiscount =
-			_commerceDiscountPersistence.findByPrimaryKey(commerceDiscountId);
+			_commerceDiscountPersistence.fetchByPrimaryKey(commerceDiscountId);
+
+		if (commerceDiscount == null) {
+			return;
+		}
 
 		Indexer<CommerceDiscount> indexer =
 			IndexerRegistryUtil.nullSafeGetIndexer(CommerceDiscount.class);
