@@ -203,6 +203,7 @@ interface PageTreePickerLoadMore {
 interface PageTreePickerProps<T> {
 	dataSource: PageTreePickerDataSource<T>;
 	defaultExpandedIds?: string[];
+	hidden?: boolean;
 	onError: (error: unknown) => void;
 	onItemSelect?: (item: PageTreePickerItem<T>) => void;
 	selection: PageTreePickerSelection<T>;
@@ -212,6 +213,7 @@ interface PageTreePickerProps<T> {
 export default function PageTreePicker<T>({
 	dataSource,
 	defaultExpandedIds,
+	hidden,
 	onError,
 	onItemSelect,
 	selection,
@@ -286,6 +288,10 @@ export default function PageTreePicker<T>({
 				checkboxElement.checked = selectedKeys.has(itemId);
 			});
 	});
+
+	if (hidden) {
+		return null;
+	}
 
 	if (!items) {
 		return <ClayLoadingIndicator />;

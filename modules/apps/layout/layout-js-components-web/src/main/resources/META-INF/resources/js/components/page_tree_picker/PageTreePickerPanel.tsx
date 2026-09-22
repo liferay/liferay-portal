@@ -350,7 +350,7 @@ export default function PageTreePickerPanel<T>({
 			)}
 
 			<div className="p-3">
-				{query ? (
+				{query && (
 					<PageTreePickerSearchResults
 						dataSource={dataSource}
 						onError={handleError}
@@ -359,20 +359,19 @@ export default function PageTreePickerPanel<T>({
 						selection={selection}
 						selectionMode={selectionMode}
 					/>
-				) : (
-					<>
-						{!singleSelection && <ShiftHint />}
-
-						<PageTreePicker<T>
-							dataSource={dataSource}
-							defaultExpandedIds={defaultExpandedIds}
-							onError={handleError}
-							onItemSelect={onItemSelect}
-							selection={selection}
-							selectionMode={selectionMode}
-						/>
-					</>
 				)}
+
+				{!singleSelection && !query && <ShiftHint />}
+
+				<PageTreePicker<T>
+					dataSource={dataSource}
+					defaultExpandedIds={defaultExpandedIds}
+					hidden={Boolean(query)}
+					onError={handleError}
+					onItemSelect={onItemSelect}
+					selection={selection}
+					selectionMode={selectionMode}
+				/>
 			</div>
 		</>
 	);
