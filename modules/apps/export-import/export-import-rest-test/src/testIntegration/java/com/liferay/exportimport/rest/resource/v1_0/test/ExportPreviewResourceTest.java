@@ -637,6 +637,16 @@ public class ExportPreviewResourceTest
 			404,
 			_exportPreviewResource.getSiteExportPreviewHttpResponse(
 				externalReferenceCode, null, null, 0L, null, null));
+
+		RoleTestUtil.addResourcePermission(
+			_role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testGroup.getGroupId()),
+			ActionKeys.EXPORT_IMPORT_LAYOUTS);
+
+		assertHttpResponseStatusCode(
+			200,
+			_exportPreviewResource.getSiteExportPreviewHttpResponse(
+				externalReferenceCode, null, null, 0L, null, null));
 	}
 
 	@TestInfo({"LPD-67433", "LPD-90359"})
