@@ -1,0 +1,34 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: LiferayInfrastructure Composition
+templates:
+    -   templates/liferayinfrastructure-composition.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'SEARCH_URL: http://\{\{ \$elasticsearchName \}\}-es-http\.\{\{ \$elasticsearchNamespace \}\}\.svc:9200'
+        documentSelector:
+            path: kind
+            value: Composition
+        it: Resolves the search URL through the dedicated Elasticsearch namespace
+    -   asserts:
+            -   matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'name: \{\{ \$elasticsearchName \}\}\n\s+namespace: \{\{ \$elasticsearchNamespace \}\}'
+            -   matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'name: \{\{ \$elasticsearchSecretName \}\}\n\s+namespace: \{\{ \$elasticsearchNamespace \}\}'
+        documentSelector:
+            path: kind
+            value: Composition
+        it: Observes the Elasticsearch resource and its secret in the dedicated namespace
+    -   asserts:
+            -   matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: 'name: search-connection-details\n\s+namespace: \{\{ \$namespace \}\}'
+        documentSelector:
+            path: kind
+            value: Composition
+        it: Writes the search connection details beside the Liferay workload
