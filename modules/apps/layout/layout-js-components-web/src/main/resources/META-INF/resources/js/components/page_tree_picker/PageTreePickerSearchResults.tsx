@@ -18,6 +18,8 @@ import {
 import SearchResultsMessage from '../search_results_message/SearchResultsMessage';
 import {PageTreePickerSelection} from './usePageTreePickerSelection';
 
+const SEARCH_DEBOUNCE = 500;
+
 interface Props<T> {
 	dataSource: PageTreePickerDataSource<T>;
 	onError: (error: unknown) => void;
@@ -68,7 +70,7 @@ export default function PageTreePickerSearchResults<T>({
 					setTotalCount(nextTotalCount);
 				})
 				.catch((error) => !cancelled && onError(error));
-		}, 500);
+		}, SEARCH_DEBOUNCE);
 
 		return () => {
 			cancelled = true;
