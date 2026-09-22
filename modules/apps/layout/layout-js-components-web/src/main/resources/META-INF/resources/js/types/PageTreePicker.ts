@@ -5,14 +5,14 @@
 
 export interface PageTreePickerDataSource<T = unknown> {
 	getChildren(
-		parentPageTreePickerItem: PageTreePickerItem<T> | null,
+		parentItem: PageTreePickerItem<T> | null,
 		page: number
 	): Promise<PageTreePickerPage<T>>;
 
-	getSubtreeCount(pageTreePickerItem: PageTreePickerItem<T>): Promise<number>;
+	getSubtreeCount(item: PageTreePickerItem<T>): Promise<number>;
 
 	resolveItems(
-		pageTreePickerItems: Array<PageTreePickerItem<T>>
+		items: Array<PageTreePickerItem<T>>
 	): Promise<Array<PageTreePickerItem<T>>>;
 
 	search(query: string, page: number): Promise<PageTreePickerPage<T>>;

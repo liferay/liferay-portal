@@ -33,6 +33,51 @@ const FIELDS =
 
 export const ROOT_ITEM_ID = 'liferay-page-tree-picker-root';
 
+async function fetchPage(
+	requestURL: URL
+): Promise<{items: SitePage[]; totalCount: number}> {
+	const response = await fetch(requestURL.toString(), {
+		headers: {Accept: 'application/json'},
+	});
+
+	if (!response.ok) {
+		throw new Error(
+			`Request to ${requestURL.pathname} failed with status ${response.status}`
+		);
+	}
+
+	const {items = [], totalCount = 0} = (await response.json()) as {
+		items?: SitePage[];
+		totalCount?: number;
+	};
+
+	return {items, totalCount};
+}
+
+function getCachedPromise<T>(
+	promises: Map<string, Promise<T>>,
+	externalReferenceCode: string,
+	createPromise: () => Promise<T>
+): Promise<T> {
+	let promise = promises.get(externalReferenceCode);
+
+	if (!promise) {
+		promise = createPromise();
+
+		promise.catch(() => {
+			promises.delete(externalReferenceCode);
+		});
+
+		promises.set(externalReferenceCode, promise);
+	}
+
+	return promise;
+}
+
+function getChildSitePagesPath(externalReferenceCode: string): string {
+	return `site-pages/${encodeURIComponent(externalReferenceCode)}/site-pages`;
+}
+
 function getIcon(sitePage: SitePage): string {
 	if (sitePage.type === 'ContentPage') {
 		return 'page';
@@ -58,6 +103,40 @@ function getName(sitePage: SitePage): string {
 	);
 }
 
+function toAncestorItems(
+	ancestorSitePagesList: SitePage[][]
+): Array<PageTreePickerItem<SitePage | null>> {
+	const ancestorItems = new Map<
+		string,
+		PageTreePickerItem<SitePage | null>
+	>();
+
+	ancestorSitePagesList.forEach((ancestorSitePages) =>
+		ancestorSitePages.forEach((ancestorSitePage) =>
+			ancestorItems.set(
+				ancestorSitePage.externalReferenceCode,
+				toItem(ancestorSitePage, true)
+			)
+		)
+	);
+
+	return Array.from(ancestorItems.values());
+}
+
+function toItem(
+	sitePage: SitePage,
+	hasChildren: boolean
+): PageTreePickerItem<SitePage | null> {
+	return {
+		hasChildren,
+		icon: getIcon(sitePage),
+		id: sitePage.externalReferenceCode,
+		label: getName(sitePage),
+		page: sitePage,
+		parentId: sitePage.parentSitePageExternalReferenceCode ?? ROOT_ITEM_ID,
+	};
+}
+
 function toStubEntries(
 	externalReferenceCodes: string[] | undefined,
 	excluded: boolean,
@@ -79,13 +158,14 @@ function toStubEntries(
 export default class SitePageTreeDataSource
 	implements PageTreePickerDataSource<SitePage | null>
 {
-	private readonly _descendantSitePagesCountPromisesByExternalReferenceCode =
-		new Map<string, Promise<number>>();
-	private readonly _hasChildSitePagesPromisesByExternalReferenceCode =
-		new Map<string, Promise<boolean>>();
+	private readonly _descendantCountPromises = new Map<
+		string,
+		Promise<number>
+	>();
+	private readonly _hasChildrenPromises = new Map<string, Promise<boolean>>();
 	private readonly _pageSize: number;
 	private readonly _privateLayout: boolean;
-	private readonly _sitePagePromisesByExternalReferenceCode = new Map<
+	private readonly _sitePagePromises = new Map<
 		string,
 		Promise<SitePage | null>
 	>();
@@ -109,10 +189,10 @@ export default class SitePageTreeDataSource
 	}
 
 	async getChildren(
-		parentPageTreePickerItem: PageTreePickerItem<SitePage | null> | null,
+		parentItem: PageTreePickerItem<SitePage | null> | null,
 		page: number
 	): Promise<PageTreePickerPage<SitePage | null>> {
-		if (!parentPageTreePickerItem) {
+		if (!parentItem) {
 			return {items: [this.getRootItem()], totalCount: 1};
 		}
 
@@ -123,20 +203,18 @@ export default class SitePageTreeDataSource
 		};
 
 		const requestURL =
-			parentPageTreePickerItem.id === ROOT_ITEM_ID
+			parentItem.id === ROOT_ITEM_ID
 				? this._getURL('site-pages', {
 						...searchParams,
 						privateLayout: String(this._privateLayout),
 						sort: 'pageSettings/priority:asc',
 					})
 				: this._getURL(
-						this._getChildSitePagesPath(
-							parentPageTreePickerItem.id
-						),
+						getChildSitePagesPath(parentItem.id),
 						searchParams
 					);
 
-		const {items, totalCount} = await this._fetchPage(requestURL);
+		const {items, totalCount} = await fetchPage(requestURL);
 
 		items.forEach((sitePage) => this._registerSitePage(sitePage));
 
@@ -158,37 +236,31 @@ export default class SitePageTreeDataSource
 	}
 
 	getSubtreeCount(
-		pageTreePickerItem: PageTreePickerItem<SitePage | null>
+		item: PageTreePickerItem<SitePage | null>
 	): Promise<number> {
-		if (pageTreePickerItem.id === ROOT_ITEM_ID) {
+		if (item.id === ROOT_ITEM_ID) {
 			return this._getSitePagesCount();
 		}
 
-		return this._getCachedPromise(
-			this._descendantSitePagesCountPromisesByExternalReferenceCode,
-			pageTreePickerItem.id,
-			() =>
-				this._fetchPage(
-					this._getURL(
-						this._getChildSitePagesPath(pageTreePickerItem.id),
-						{
-							fields: 'externalReferenceCode',
-							flatten: 'true',
-							pageSize: '1',
-						}
-					)
-				).then(({totalCount}) => totalCount)
+		return getCachedPromise(this._descendantCountPromises, item.id, () =>
+			fetchPage(
+				this._getURL(getChildSitePagesPath(item.id), {
+					fields: 'externalReferenceCode',
+					flatten: 'true',
+					pageSize: '1',
+				})
+			).then(({totalCount}) => totalCount)
 		);
 	}
 
 	async resolveItems(
-		pageTreePickerItems: Array<PageTreePickerItem<SitePage | null>>
+		items: Array<PageTreePickerItem<SitePage | null>>
 	): Promise<Array<PageTreePickerItem<SitePage | null>>> {
 		const sitePages = (
 			await Promise.all(
 				Array.from(
 					new Set(
-						pageTreePickerItems
+						items
 							.filter((item) => item.id !== ROOT_ITEM_ID)
 							.map((item) => item.id)
 					)
@@ -198,7 +270,7 @@ export default class SitePageTreeDataSource
 			)
 		).filter((sitePage): sitePage is SitePage => sitePage !== null);
 
-		const [ancestorSitePagesList, items] = await Promise.all([
+		const [ancestorSitePagesList, resolvedItems] = await Promise.all([
 			Promise.all(
 				sitePages.map((sitePage) =>
 					this._getAncestorSitePages(sitePage)
@@ -207,14 +279,14 @@ export default class SitePageTreeDataSource
 			this._toItems(sitePages),
 		]);
 
-		return [...this._toAncestorItems(ancestorSitePagesList), ...items];
+		return [...toAncestorItems(ancestorSitePagesList), ...resolvedItems];
 	}
 
 	async search(
 		query: string,
 		page: number
 	): Promise<PageTreePickerPage<SitePage | null>> {
-		const {items, totalCount} = await this._fetchPage(
+		const {items: sitePages, totalCount} = await fetchPage(
 			this._getURL('site-pages', {
 				fields: FIELDS,
 				flatten: 'true',
@@ -225,19 +297,21 @@ export default class SitePageTreeDataSource
 			})
 		);
 
-		items.forEach((sitePage) => this._registerSitePage(sitePage));
+		sitePages.forEach((sitePage) => this._registerSitePage(sitePage));
 
-		const [ancestorSitePagesList, pageTreePickerItems] = await Promise.all([
+		const [ancestorSitePagesList, items] = await Promise.all([
 			Promise.all(
-				items.map((sitePage) => this._getAncestorSitePages(sitePage))
+				sitePages.map((sitePage) =>
+					this._getAncestorSitePages(sitePage)
+				)
 			),
-			this._toItems(items),
+			this._toItems(sitePages),
 		]);
 
 		return {
-			ancestors: this._toAncestorItems(ancestorSitePagesList),
-			items: pageTreePickerItems.map((pageTreePickerItem, index) => ({
-				...pageTreePickerItem,
+			ancestors: toAncestorItems(ancestorSitePagesList),
+			items: items.map((item, index) => ({
+				...item,
 				path: ancestorSitePagesList[index].map(getName),
 			})),
 			totalCount,
@@ -315,32 +389,11 @@ export default class SitePageTreeDataSource
 		};
 	}
 
-	private async _fetchPage(
-		requestURL: URL
-	): Promise<{items: SitePage[]; totalCount: number}> {
-		const response = await fetch(requestURL.toString(), {
-			headers: {Accept: 'application/json'},
-		});
-
-		if (!response.ok) {
-			throw new Error(
-				`Request to ${requestURL.pathname} failed with status ${response.status}`
-			);
-		}
-
-		const {items = [], totalCount = 0} = (await response.json()) as {
-			items?: SitePage[];
-			totalCount?: number;
-		};
-
-		return {items, totalCount};
-	}
-
 	private _fetchSitePage(
 		externalReferenceCode: string
 	): Promise<SitePage | null> {
-		return this._getCachedPromise(
-			this._sitePagePromisesByExternalReferenceCode,
+		return getCachedPromise(
+			this._sitePagePromises,
 			externalReferenceCode,
 			async () => {
 				const requestURL = this._getURL(
@@ -393,37 +446,9 @@ export default class SitePageTreeDataSource
 		return ancestorSitePages;
 	}
 
-	private _getCachedPromise<T>(
-		promisesByExternalReferenceCode: Map<string, Promise<T>>,
-		externalReferenceCode: string,
-		createPromise: () => Promise<T>
-	): Promise<T> {
-		let promise = promisesByExternalReferenceCode.get(
-			externalReferenceCode
-		);
-
-		if (!promise) {
-			promise = createPromise();
-
-			promise.catch(() => {
-				promisesByExternalReferenceCode.delete(externalReferenceCode);
-			});
-
-			promisesByExternalReferenceCode.set(externalReferenceCode, promise);
-		}
-
-		return promise;
-	}
-
-	private _getChildSitePagesPath(externalReferenceCode: string): string {
-		return `site-pages/${encodeURIComponent(
-			externalReferenceCode
-		)}/site-pages`;
-	}
-
 	private _getSitePagesCount(): Promise<number> {
 		if (!this._sitePagesCountPromise) {
-			this._sitePagesCountPromise = this._fetchPage(
+			this._sitePagesCountPromise = fetchPage(
 				this._getURL('site-pages', {
 					fields: 'externalReferenceCode',
 					flatten: 'true',
@@ -456,59 +481,24 @@ export default class SitePageTreeDataSource
 	private _hasChildSitePages(
 		externalReferenceCode: string
 	): Promise<boolean> {
-		return this._getCachedPromise(
-			this._hasChildSitePagesPromisesByExternalReferenceCode,
+		return getCachedPromise(
+			this._hasChildrenPromises,
 			externalReferenceCode,
 			() =>
-				this._fetchPage(
-					this._getURL(
-						this._getChildSitePagesPath(externalReferenceCode),
-						{fields: 'externalReferenceCode', pageSize: '1'}
-					)
+				fetchPage(
+					this._getURL(getChildSitePagesPath(externalReferenceCode), {
+						fields: 'externalReferenceCode',
+						pageSize: '1',
+					})
 				).then(({totalCount}) => totalCount > 0)
 		);
 	}
 
 	private _registerSitePage(sitePage: SitePage) {
-		this._sitePagePromisesByExternalReferenceCode.set(
+		this._sitePagePromises.set(
 			sitePage.externalReferenceCode,
 			Promise.resolve(sitePage)
 		);
-	}
-
-	private _toAncestorItems(
-		ancestorSitePagesList: SitePage[][]
-	): Array<PageTreePickerItem<SitePage | null>> {
-		const ancestorItemsByExternalReferenceCode = new Map<
-			string,
-			PageTreePickerItem<SitePage | null>
-		>();
-
-		ancestorSitePagesList.forEach((ancestorSitePages) =>
-			ancestorSitePages.forEach((ancestorSitePage) =>
-				ancestorItemsByExternalReferenceCode.set(
-					ancestorSitePage.externalReferenceCode,
-					this._toItem(ancestorSitePage, true)
-				)
-			)
-		);
-
-		return Array.from(ancestorItemsByExternalReferenceCode.values());
-	}
-
-	private _toItem(
-		sitePage: SitePage,
-		hasChildren: boolean
-	): PageTreePickerItem<SitePage | null> {
-		return {
-			hasChildren,
-			icon: getIcon(sitePage),
-			id: sitePage.externalReferenceCode,
-			label: getName(sitePage),
-			page: sitePage,
-			parentId:
-				sitePage.parentSitePageExternalReferenceCode ?? ROOT_ITEM_ID,
-		};
 	}
 
 	private _toItems(
@@ -516,7 +506,7 @@ export default class SitePageTreeDataSource
 	): Promise<Array<PageTreePickerItem<SitePage | null>>> {
 		return Promise.all(
 			sitePages.map(async (sitePage) =>
-				this._toItem(
+				toItem(
 					sitePage,
 					await this._hasChildSitePages(
 						sitePage.externalReferenceCode
