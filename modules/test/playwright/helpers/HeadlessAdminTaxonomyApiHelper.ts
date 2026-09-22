@@ -121,6 +121,36 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}
 
 	/**
+	 * It allows creating a vocabulary inside an asset library.
+	 *
+	 * @param assetLibraryId the group id of the asset library in which the
+	 * vocabulary will be created
+	 * @param name the name of the vocabulary
+	 */
+
+	async postAssetLibraryTaxonomyVocabulary({
+		assetLibraryId,
+		name,
+	}: {
+		assetLibraryId: number | string;
+		name: string;
+	}): Promise<TTaxonomyVocabulary> {
+		const taxonomyVocabulary = await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries/${assetLibraryId}/taxonomy-vocabularies`,
+			{data: {name}}
+		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: taxonomyVocabulary.id,
+				type: 'taxonomyVocabulary',
+			});
+		}
+
+		return taxonomyVocabulary;
+	}
+
+	/**
 	 * It allows creating a vocabulary inside a site.
 	 *
 	 * @param siteId the id of the site in which the vocabulary will be created
