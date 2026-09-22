@@ -59,6 +59,8 @@ function createDataSource(
 				totalCount: items.length,
 			});
 		},
+		getSubtreeCount: () => Promise.resolve(0),
+		resolveItems: (items) => Promise.resolve(items),
 		search: (query, page) => {
 			const items = Object.values(childrenByParentId)
 				.flat()

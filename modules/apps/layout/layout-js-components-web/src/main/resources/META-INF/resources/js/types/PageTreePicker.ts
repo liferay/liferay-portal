@@ -9,11 +9,9 @@ export interface PageTreePickerDataSource<T = unknown> {
 		page: number
 	): Promise<PageTreePickerPage<T>>;
 
-	getSubtreeCount?(
-		pageTreePickerItem: PageTreePickerItem<T>
-	): Promise<number>;
+	getSubtreeCount(pageTreePickerItem: PageTreePickerItem<T>): Promise<number>;
 
-	resolveItems?(
+	resolveItems(
 		pageTreePickerItems: Array<PageTreePickerItem<T>>
 	): Promise<Array<PageTreePickerItem<T>>>;
 

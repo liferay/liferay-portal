@@ -169,7 +169,7 @@ export default function PageTreePickerPanel<T>({
 			(entry) => entry.item
 		);
 
-		if (!dataSource.resolveItems || !items?.length) {
+		if (!items?.length) {
 			return;
 		}
 
@@ -216,7 +216,7 @@ export default function PageTreePickerPanel<T>({
 	const singleSelection = selectionMode === 'single';
 
 	useEffect(() => {
-		if (singleSelection || !dataSource.getSubtreeCount) {
+		if (singleSelection) {
 			return;
 		}
 
@@ -236,7 +236,7 @@ export default function PageTreePickerPanel<T>({
 					);
 
 					if (!subtreeCountPromise) {
-						subtreeCountPromise = dataSource.getSubtreeCount!(
+						subtreeCountPromise = dataSource.getSubtreeCount(
 							entry.item
 						);
 
