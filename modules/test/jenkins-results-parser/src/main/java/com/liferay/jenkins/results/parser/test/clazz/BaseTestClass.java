@@ -101,7 +101,8 @@ public abstract class BaseTestClass implements TestClass {
 		).put(
 			"average_overhead_duration", getAverageOverheadDuration()
 		).put(
-			"file", getTestClassFile()
+			"file",
+			JenkinsResultsParserUtil.getCanonicalPath(getTestClassFile())
 		).put(
 			"ignored", isIgnored()
 		);
