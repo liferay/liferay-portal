@@ -1905,7 +1905,7 @@ public class BatchEnginePortletDataHandlerTest {
 	public void testExportImportNotificationTemplatesWithPermissions()
 		throws Exception {
 
-		// Import over a deleted notification template with permissions
+		// Import with permissions over a deleted notification template
 
 		NotificationTemplate notificationTemplate = _addNotificationTemplate(
 			TestPropsValues.getUserId());
@@ -1942,7 +1942,7 @@ public class BatchEnginePortletDataHandlerTest {
 			notificationTemplate.getExternalReferenceCode(),
 			RoleConstants.OWNER, RoleConstants.GUEST);
 
-		// Import over an existing notification template with permissions
+		// Import with permissions over an existing notification template
 
 		NotificationTemplate importedNotificationTemplate =
 			_getNotificationTemplate(
@@ -1971,7 +1971,7 @@ public class BatchEnginePortletDataHandlerTest {
 			notificationTemplate.getExternalReferenceCode(),
 			RoleConstants.OWNER, RoleConstants.GUEST);
 
-		// Import over a deleted notification template without permissions
+		// Import without permissions over a deleted notification template
 
 		_notificationTemplateLocalService.deleteNotificationTemplate(
 			_getNotificationTemplate(
@@ -1983,7 +1983,7 @@ public class BatchEnginePortletDataHandlerTest {
 			notificationTemplate.getExternalReferenceCode(),
 			RoleConstants.OWNER);
 
-		// Import over an existing notification template without permissions
+		// Import without permissions over an existing notification template
 
 		NotificationTemplate existingNotificationTemplate =
 			_getNotificationTemplate(
