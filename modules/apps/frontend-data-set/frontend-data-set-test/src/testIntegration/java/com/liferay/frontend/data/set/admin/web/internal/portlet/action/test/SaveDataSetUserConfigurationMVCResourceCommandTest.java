@@ -296,9 +296,13 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 			testMockLiferayResourceResponse.getProperty(
 				ResourceResponse.HTTP_STATUS_CODE));
 
+		ByteArrayOutputStream byteArrayOutputStream =
+			(ByteArrayOutputStream)
+				testMockLiferayResourceResponse.getPortletOutputStream();
+
 		JSONAssert.assertEquals(
-			_getResponseJSONObject(
-				testMockLiferayResourceResponse
+			JSONFactoryUtil.createJSONObject(
+				byteArrayOutputStream.toString()
 			).toString(),
 			jsonObject.toString(), JSONCompareMode.STRICT);
 
@@ -308,12 +312,10 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 
 			Map<String, Serializable> values = objectEntry.getValues();
 
-			JSONObject dataSetUserConfigurationJSONObject =
-				JSONFactoryUtil.createJSONObject(
-					GetterUtil.getString(values.get("configuration")));
-
 			JSONAssert.assertEquals(
-				dataSetUserConfigurationJSONObject.toString(),
+				JSONFactoryUtil.createJSONObject(
+					GetterUtil.getString(values.get("configuration"))
+				).toString(),
 				jsonObject.toString(), JSONCompareMode.STRICT);
 		}
 	}
@@ -339,18 +341,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommandTest {
 		String fdsName, User user) {
 
 		return user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
-	}
-
-	private JSONObject _getResponseJSONObject(
-			TestMockLiferayResourceResponse testMockLiferayResourceResponse)
-		throws Exception {
-
-		ByteArrayOutputStream byteArrayOutputStream =
-			(ByteArrayOutputStream)
-				testMockLiferayResourceResponse.getPortletOutputStream();
-
-		return JSONFactoryUtil.createJSONObject(
-			byteArrayOutputStream.toString());
 	}
 
 	private TestMockLiferayResourceResponse _serveResource() throws Exception {
