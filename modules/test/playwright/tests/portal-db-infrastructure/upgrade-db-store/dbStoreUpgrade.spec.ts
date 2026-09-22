@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {mergeTests} from '@playwright/test';
 
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchAdminPageTest} from '../../../fixtures/searchAdminPageTest';
 import {RecycleBinPage} from '../../../pages/trash-web/RecycleBinPage';
+import {reindexAllSearchIndexes} from '../utils/reindexAllSearchIndexes';
 import {viewUpgradedDocument} from '../utils/viewUpgradedDocument';
 
 const test = mergeTests(
@@ -23,24 +24,7 @@ test.describe('View DB store upgrade', () => {
 		{tag: '@LPD-104391'},
 		async ({documentLibraryPage, page, searchAdminPage}) => {
 			await test.step('Reindex all search indexes', async () => {
-				await searchAdminPage.goto();
-
-				await searchAdminPage.goToIndexActionsTab();
-
-				await searchAdminPage.reindexAllSearchIndexes();
-
-				const reindexAllSearchIndexes =
-					await searchAdminPage.getIndexActionsItem(
-						'All Search Indexes'
-					);
-
-				await expect(reindexAllSearchIndexes).toBeVisible();
-
-				const progress = reindexAllSearchIndexes.locator('.progress');
-
-				await expect(progress).toBeVisible();
-
-				await expect(progress).toBeHidden({timeout: 120 * 1000});
+				await reindexAllSearchIndexes({searchAdminPage});
 			});
 
 			await test.step('View the document after upgrade', async () => {
