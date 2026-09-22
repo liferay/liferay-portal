@@ -350,7 +350,7 @@
 </tr>
 <tr>
 	<td>VIDEO_BUTTON_PLAY</td>
-	<td>//div[contains(@class,'thumbnail-overlay')]//button[contains(@aria-label,'Play')]</td>
+	<td>//div[contains(@class,'thumbnail-overlay')]//button[contains(@aria-label,'Play')] | //button[contains(@aria-label,'Play video')]</td>
 	<td></td>
 </tr>
 

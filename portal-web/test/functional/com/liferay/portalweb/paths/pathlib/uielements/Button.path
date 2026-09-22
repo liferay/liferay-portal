@@ -1012,7 +1012,7 @@
 </tr>
 <tr>
 	<td>YOUTUBE_PLAY</td>
-	<td>//button[contains(@class,'ytp-large-play-button')]</td>
+	<td>//button[contains(@class,'ytp-large-play-button')] | //button[contains(@aria-label,'Play video')]</td>
 	<td></td>
 </tr>
 <tr>
