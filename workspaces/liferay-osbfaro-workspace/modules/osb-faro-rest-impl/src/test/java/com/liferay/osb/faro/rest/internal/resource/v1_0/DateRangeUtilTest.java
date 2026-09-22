@@ -27,15 +27,15 @@ public class DateRangeUtilTest {
 			_toDate(LocalDate.of(2026, 8, 31)),
 			DateRangeUtil.getEndDate("2026-08-31", null));
 
-		LocalDate today = LocalDate.now(ZoneOffset.UTC);
+		LocalDate loalDate = LocalDate.now(ZoneOffset.UTC);
 
 		Assert.assertEquals(
-			_toDate(today),
+			_toDate(loalDate),
 			DateRangeUtil.getEndDate("2020-01-01", "LAST_30_DAYS"));
 		Assert.assertEquals(
-			_toDate(today), DateRangeUtil.getEndDate(null, "LAST_24_HOURS"));
+			_toDate(loalDate), DateRangeUtil.getEndDate(null, "LAST_24_HOURS"));
 		Assert.assertEquals(
-			_toDate(today.minusDays(1)),
+			_toDate(loalDate.minusDays(1)),
 			DateRangeUtil.getEndDate(null, "YESTERDAY"));
 	}
 
@@ -47,16 +47,16 @@ public class DateRangeUtilTest {
 			_toDate(LocalDate.of(2026, 8, 1)),
 			DateRangeUtil.getStartDate(null, "2026-08-01"));
 
-		LocalDate today = LocalDate.now(ZoneOffset.UTC);
+		LocalDate loalDate = LocalDate.now(ZoneOffset.UTC);
 
 		Assert.assertEquals(
-			_toDate(today.minusDays(30)),
+			_toDate(loalDate.minusDays(30)),
 			DateRangeUtil.getStartDate("LAST_30_DAYS", "2020-01-01"));
 		Assert.assertEquals(
-			_toDate(today.minusDays(1)),
+			_toDate(loalDate.minusDays(1)),
 			DateRangeUtil.getStartDate("LAST_24_HOURS", null));
 		Assert.assertEquals(
-			_toDate(today.minusDays(1)),
+			_toDate(loalDate.minusDays(1)),
 			DateRangeUtil.getStartDate("YESTERDAY", null));
 	}
 

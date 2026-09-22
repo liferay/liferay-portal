@@ -15,8 +15,8 @@ public class IntervalTest {
 
 	@Test
 	public void testGetGraphQLInterval() {
-		Assert.assertEquals("D", Interval.getGraphQLInterval(null));
 		Assert.assertEquals("D", Interval.getGraphQLInterval("DAY"));
+		Assert.assertEquals("D", Interval.getGraphQLInterval(null));
 		Assert.assertEquals("M", Interval.getGraphQLInterval("MONTH"));
 		Assert.assertEquals("W", Interval.getGraphQLInterval("WEEK"));
 
