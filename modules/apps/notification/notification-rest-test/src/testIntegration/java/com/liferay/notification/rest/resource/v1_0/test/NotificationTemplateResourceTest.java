@@ -756,12 +756,12 @@ public class NotificationTemplateResourceTest
 	private void _testPutNotificationTemplateWithNameTranslations()
 		throws Exception {
 
+		// With a name internationalization map
+
 		String defaultLanguageId = LocaleUtil.toLanguageId(
 			LocaleUtil.getSiteDefault());
 		String translatedLanguageId = LocaleUtil.toLanguageId(
 			LocaleUtil.BRAZIL);
-
-		// With a name internationalization map
 
 		NotificationTemplate notificationTemplate1 = _addNotificationTemplate(
 			randomNotificationTemplate());
