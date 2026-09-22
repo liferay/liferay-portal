@@ -34,7 +34,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.object.service.ObjectEntryServiceWrapper;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
@@ -44,6 +43,7 @@ import com.liferay.object.tree.Edge;
 import com.liferay.object.tree.Node;
 import com.liferay.object.tree.Tree;
 import com.liferay.object.tree.constants.TreeConstants;
+import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -60,7 +60,6 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -71,7 +70,6 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
@@ -113,7 +111,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -124,9 +121,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 /**
  * @author Marco Leo
@@ -671,10 +665,24 @@ public class ObjectEntryServiceTest {
 
 	@Test
 	public void testGetManyToManyObjectEntries() throws Exception {
-		_testGetManyToManyObjectEntries(false, false);
-		_testGetManyToManyObjectEntries(false, true);
-		_testGetManyToManyObjectEntries(true, false);
-		_testGetManyToManyObjectEntries(true, true);
+		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
+			unsafeBiFunction = (objectRelationshipId, primaryKey) ->
+				_objectEntryService.getManyToManyObjectEntries(
+					_group.getGroupId(), objectRelationshipId, primaryKey, true,
+					false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		_testGetObjectEntries(
+			false, false, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			false, true, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			true, false, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			true, true, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
+			unsafeBiFunction);
 	}
 
 	@Test
@@ -984,6 +992,29 @@ public class ObjectEntryServiceTest {
 			objectRelationship);
 
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+	}
+
+	@Test
+	public void testGetOneToManyObjectEntries() throws Exception {
+		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
+			unsafeBiFunction = (objectRelationshipId, primaryKey) ->
+				_objectEntryService.getOneToManyObjectEntries(
+					_group.getGroupId(), objectRelationshipId, null, false,
+					primaryKey, true, null, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null);
+
+		_testGetObjectEntries(
+			false, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			false, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			true, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
+		_testGetObjectEntries(
+			true, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+			unsafeBiFunction);
 	}
 
 	@Test
@@ -1596,8 +1627,10 @@ public class ObjectEntryServiceTest {
 		}
 	}
 
-	private void _testGetManyToManyObjectEntries(
-			boolean hasPermission, boolean sqlCheckEnabled)
+	private void _testGetObjectEntries(
+			boolean hasPermission, boolean sqlCheckEnabled, String type,
+			UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
+				unsafeBiFunction)
 		throws Exception {
 
 		ObjectRelationship objectRelationship =
@@ -1607,8 +1640,7 @@ public class ObjectEntryServiceTest {
 				_objectDefinition.getObjectDefinitionId(), 0,
 				ObjectRelationshipConstants.DELETION_TYPE_PREVENT, false,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				"relationship", false,
-				ObjectRelationshipConstants.TYPE_MANY_TO_MANY, null);
+				"relationship", false, type, null);
 
 		ObjectEntry objectEntry = _addObjectEntry(_adminUser);
 		ObjectEntry relatedObjectEntry1 = _addObjectEntry(_adminUser);
@@ -1637,34 +1669,6 @@ public class ObjectEntryServiceTest {
 				RoleConstants.USER, new String[] {ActionKeys.VIEW});
 		}
 
-		AtomicInteger atomicInteger = new AtomicInteger();
-
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-
-		ServiceRegistration<?> serviceRegistration =
-			bundleContext.registerService(
-				ServiceWrapper.class,
-				new ObjectEntryServiceWrapper(_objectEntryService) {
-
-					@Override
-					public void checkModelResourcePermission(
-							long objectDefinitionId, long objectEntryId,
-							String actionId)
-						throws PortalException {
-
-						atomicInteger.incrementAndGet();
-
-						super.checkModelResourcePermission(
-							objectDefinitionId, objectEntryId, actionId);
-					}
-
-				},
-				HashMapDictionaryBuilder.<String, Object>put(
-					"service.ranking", Integer.MAX_VALUE
-				).put(
-					"service.wrapper.class", ObjectEntryService.class.getName()
-				).build());
-
 		_setUser(_user);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -1679,47 +1683,20 @@ public class ObjectEntryServiceTest {
 				Assert.assertEquals(
 					SetUtil.fromArray(relatedObjectEntry1, relatedObjectEntry2),
 					SetUtil.fromList(
-						_objectEntryService.getManyToManyObjectEntries(
-							_group.getGroupId(),
+						unsafeBiFunction.apply(
 							objectRelationship.getObjectRelationshipId(),
-							objectEntry.getObjectEntryId(), true, false, null,
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+							objectEntry.getObjectEntryId())));
 			}
-			else if (sqlCheckEnabled) {
+			else {
 				Assert.assertEquals(
 					SetUtil.fromArray(relatedObjectEntry1),
 					SetUtil.fromList(
-						_objectEntryService.getManyToManyObjectEntries(
-							_group.getGroupId(),
+						unsafeBiFunction.apply(
 							objectRelationship.getObjectRelationshipId(),
-							objectEntry.getObjectEntryId(), true, false, null,
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
-			}
-			else {
-				AssertUtils.assertFailure(
-					PrincipalException.MustHavePermission.class,
-					StringBundler.concat(
-						"User ", _user.getUserId(),
-						" must have VIEW permission for ",
-						_objectDefinition.getClassName(), " ",
-						relatedObjectEntry2.getObjectEntryId()),
-					() -> _objectEntryService.getManyToManyObjectEntries(
-						_group.getGroupId(),
-						objectRelationship.getObjectRelationshipId(),
-						objectEntry.getObjectEntryId(), true, false, null,
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS));
-			}
-
-			if (sqlCheckEnabled) {
-				Assert.assertEquals(0, atomicInteger.get());
-			}
-			else {
-				Assert.assertEquals(2, atomicInteger.get());
+							objectEntry.getObjectEntryId())));
 			}
 		}
 		finally {
-			serviceRegistration.unregister();
-
 			_setUser(_adminUser);
 
 			_objectRelationshipLocalService.deleteObjectRelationship(
