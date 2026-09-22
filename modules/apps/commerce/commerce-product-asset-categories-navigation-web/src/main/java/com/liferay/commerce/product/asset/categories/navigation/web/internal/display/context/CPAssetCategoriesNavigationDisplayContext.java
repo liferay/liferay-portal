@@ -31,21 +31,23 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Marco Leo
@@ -87,12 +89,18 @@ public class CPAssetCategoriesNavigationDisplayContext {
 			return _assetCategories;
 		}
 
-		AssetCategory assetCategory = _getParentCategory();
+		List<AssetCategory> parentCategories = _getParentCategories();
 
-		if (assetCategory != null) {
-			_assetCategories = _assetCategoryService.getVocabularyCategories(
-				assetCategory.getCategoryId(), assetCategory.getVocabularyId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		if (ListUtil.isNotEmpty(parentCategories)) {
+			_assetCategories = new ArrayList<>();
+
+			for (AssetCategory parentCategory : parentCategories) {
+				_assetCategories.addAll(
+					_assetCategoryService.getVocabularyCategories(
+						parentCategory.getCategoryId(),
+						parentCategory.getVocabularyId(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null));
+			}
 		}
 		else {
 			if (useRootCategory()) {
@@ -120,13 +128,20 @@ public class CPAssetCategoriesNavigationDisplayContext {
 			return _assetVocabularies;
 		}
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
+		long companyGroupId = _themeDisplay.getCompanyGroupId();
 
-		_assetVocabularies = _assetVocabularyService.getGroupVocabularies(
-			themeDisplay.getCompanyGroupId(),
-			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
+		long scopeGroupId = _themeDisplay.getScopeGroupId();
+
+		_assetVocabularies = new ArrayList<>(
+			_assetVocabularyService.getGroupVocabularies(
+				scopeGroupId, AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC));
+
+		if (scopeGroupId != companyGroupId) {
+			_assetVocabularies.addAll(
+				_assetVocabularyService.getGroupVocabularies(
+					companyGroupId,
+					AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC));
+		}
 
 		return _assetVocabularies;
 	}
@@ -141,19 +156,17 @@ public class CPAssetCategoriesNavigationDisplayContext {
 				assetVocabularyExternalReferenceCode();
 
 		if (Validator.isNull(assetVocabularyExternalReferenceCode)) {
-			return _assetVocabulary;
+			return null;
 		}
 
-		try {
-			_assetVocabulary =
-				_assetVocabularyService.
-					getAssetVocabularyByExternalReferenceCode(
-						_themeDisplay.getCompanyGroupId(),
-						assetVocabularyExternalReferenceCode);
-		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
+		for (AssetVocabulary assetVocabulary : getAssetVocabularies()) {
+			if (Objects.equals(
+					assetVocabulary.getExternalReferenceCode(),
+					assetVocabularyExternalReferenceCode)) {
+
+				_assetVocabulary = assetVocabulary;
+
+				break;
 			}
 		}
 
@@ -298,24 +311,15 @@ public class CPAssetCategoriesNavigationDisplayContext {
 	}
 
 	public String getRootAssetCategoryId() throws PortalException {
-		AssetCategory assetCategory = null;
+		List<AssetCategory> parentCategories = _getParentCategories();
 
-		String rootAssetCategoryExternalReferenceCode =
-			_cpAssetCategoriesNavigationPortletInstanceConfiguration.
-				rootAssetCategoryExternalReferenceCode();
-
-		if (Validator.isNotNull(rootAssetCategoryExternalReferenceCode)) {
-			assetCategory =
-				_assetCategoryService.fetchCategoryByExternalReferenceCode(
-					rootAssetCategoryExternalReferenceCode,
-					_themeDisplay.getCompanyGroupId());
+		if (ListUtil.isEmpty(parentCategories)) {
+			return StringPool.BLANK;
 		}
 
-		if (assetCategory != null) {
-			return String.valueOf(assetCategory.getCategoryId());
-		}
-
-		return StringPool.BLANK;
+		return StringUtil.merge(
+			ListUtil.toList(parentCategories, AssetCategory::getCategoryId),
+			StringPool.COMMA);
 	}
 
 	public String getVocabularyNavigation(ThemeDisplay themeDisplay)
@@ -408,25 +412,70 @@ public class CPAssetCategoriesNavigationDisplayContext {
 		}
 	}
 
-	private AssetCategory _getParentCategory() throws PortalException {
-		AssetCategory assetCategory = null;
+	private List<AssetCategory> _getParentCategories() throws PortalException {
+		if (!useRootCategory()) {
+			return Collections.emptyList();
+		}
 
-		if (useRootCategory()) {
-			if (useCategoryFromRequest()) {
-				assetCategory = (AssetCategory)_httpServletRequest.getAttribute(
+		if (useCategoryFromRequest()) {
+			AssetCategory assetCategory =
+				(AssetCategory)_httpServletRequest.getAttribute(
 					WebKeys.ASSET_CATEGORY);
-			}
-			else {
-				long categoryId = GetterUtil.getLong(getRootAssetCategoryId());
 
-				if (categoryId > 0) {
-					assetCategory = _assetCategoryService.getCategory(
-						categoryId);
-				}
+			if (assetCategory != null) {
+				return Collections.singletonList(assetCategory);
+			}
+
+			return Collections.emptyList();
+		}
+
+		String rootAssetCategoryExternalReferenceCode =
+			_cpAssetCategoriesNavigationPortletInstanceConfiguration.
+				rootAssetCategoryExternalReferenceCode();
+
+		if (Validator.isNull(rootAssetCategoryExternalReferenceCode)) {
+			return Collections.emptyList();
+		}
+
+		List<AssetCategory> parentCategories = new ArrayList<>();
+
+		for (String externalReferenceCode :
+				StringUtil.split(rootAssetCategoryExternalReferenceCode)) {
+
+			if (Validator.isNull(externalReferenceCode)) {
+				continue;
+			}
+
+			AssetCategory assetCategory =
+				_assetCategoryService.fetchCategoryByExternalReferenceCode(
+					externalReferenceCode, _themeDisplay.getScopeGroupId());
+
+			if ((assetCategory == null) &&
+				(_themeDisplay.getScopeGroupId() !=
+					_themeDisplay.getCompanyGroupId())) {
+
+				assetCategory =
+					_assetCategoryService.fetchCategoryByExternalReferenceCode(
+						externalReferenceCode,
+						_themeDisplay.getCompanyGroupId());
+			}
+
+			if (assetCategory != null) {
+				parentCategories.add(assetCategory);
 			}
 		}
 
-		return assetCategory;
+		return parentCategories;
+	}
+
+	private AssetCategory _getParentCategory() throws Exception {
+		List<AssetCategory> parentCategories = _getParentCategories();
+
+		if (ListUtil.isEmpty(parentCategories)) {
+			return null;
+		}
+
+		return parentCategories.get(0);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
