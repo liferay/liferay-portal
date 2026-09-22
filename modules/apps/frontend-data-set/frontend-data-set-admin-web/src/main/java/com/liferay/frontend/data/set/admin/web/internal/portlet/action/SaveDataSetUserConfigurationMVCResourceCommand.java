@@ -12,6 +12,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
@@ -143,17 +144,6 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			_validateInitialDataSetSnapshotERC(
 				companyId, initialDataSetSnapshotERC, user);
 		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
-			}
-
-			_writeEmptyJSONObject(
-				resourceRequest, resourceResponse,
-				HttpServletResponse.SC_FORBIDDEN);
-
-			return;
-		}
 		catch (NoSuchObjectEntryException noSuchObjectEntryException) {
 			if (_log.isDebugEnabled()) {
 				_log.debug(noSuchObjectEntryException);
@@ -162,6 +152,17 @@ public class SaveDataSetUserConfigurationMVCResourceCommand
 			_writeEmptyJSONObject(
 				resourceRequest, resourceResponse,
 				HttpServletResponse.SC_BAD_REQUEST);
+
+			return;
+		}
+		catch (PrincipalException principalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(principalException);
+			}
+
+			_writeEmptyJSONObject(
+				resourceRequest, resourceResponse,
+				HttpServletResponse.SC_FORBIDDEN);
 
 			return;
 		}
